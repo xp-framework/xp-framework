@@ -1,14 +1,13 @@
-Index: ExifData.class.php
+Index: skeleton/img/util/ExifData.class.php
 ===================================================================
---- ExifData.class.php	(revision 11247)
-+++ ExifData.class.php	(working copy)
+--- skeleton/img/util/ExifData.class.php	(revision 11284)
++++ skeleton/img/util/ExifData.class.php	(working copy)
 @@ -9,16 +9,29 @@
      'img.ImagingException',
      'img.Image',
      'img.io.StreamReader',
 -    'io.Stream'
 +    'io.Stream',
-+    'img.util.MetadataException', 
 +    'lang.ElementNotFoundException'
    );
  
@@ -22,6 +21,7 @@ Index: ExifData.class.php
 +   *   echo ExifData::fromFile(new File($filename), ExifData::$EMPTY)->toString();
 +   * </code>
 +   *
++   * @test     xp://net.xp_framework.unittest.img.ExifDataTest
 +   * @see      php://exif_read_data
     * @ext      exif
     * @purpose  Utility
@@ -45,135 +45,111 @@ Index: ExifData.class.php
       * Read from a file
       *
       * @param   io.File file
-+     * @param   mixed default default FALSE what should be returned in case no data is found
++     * @param   mixed default default void what should be returned in case no data is found
       * @return  img.util.ExifData
-+     * @throws  img.MetadataException in case reading meta data fails
-      * @throws  img.ImagingException in case extracting data fails
+-     * @throws  img.ImagingException in case extracting data fails
++     * @throws  lang.FormatException in case malformed meta data is encountered
++     * @throws  lang.ElementNotFoundException in case no meta data is available
++     * @throws  img.ImagingException in case reading meta data fails
       */
 -    public static function fromFile($file) {
-+    public static function fromFile(File $file, $default= FALSE) {
++    public static function fromFile(File $file) {
 +      if (FALSE === getimagesize($file->getURI(), $info)) {
-+        throw new ImagingException('Cannot read EXIF information from '.$file->getURI());
++        throw new ImagingException('Cannot read image information from '.$file->getURI());
 +      }
 +      if (!isset($info['APP1'])) {
-+        if (FALSE !== $default) return $default;
-+        throw new MetadataException(
-+          'Cannot get EXIF information from '.$file->getURI(), 
-+          new ElementNotFoundException('No APP1 marker')
++        if (func_num_args() > 1) return func_get_arg(1);
++        throw new ElementNotFoundException(
++          'Cannot get EXIF information from '.$file->getURI().' (no APP1 marker)' 
 +        );
 +      }
        if (!($info= exif_read_data($file->getURI()))) {
 -        throw(new ImagingException(
 -          'Cannot get EXIF information from '.$file->getURI()
 -        ));
-+        throw new ImagingException('Cannot get EXIF information from '.$file->getURI());
++        throw new FormatException('Cannot get EXIF information from '.$file->getURI());
        }
        
        // Calculate orientation from dimensions if not available
-Index: IptcData.class.php
+Index: skeleton/img/util/IptcData.class.php
 ===================================================================
---- IptcData.class.php	(revision 11247)
-+++ IptcData.class.php	(working copy)
-@@ -4,23 +4,34 @@
-  * $Id$ 
-  */
- 
+--- skeleton/img/util/IptcData.class.php	(revision 11284)
++++ skeleton/img/util/IptcData.class.php	(working copy)
+@@ -1,500 +1,523 @@
+-<?php
+-/* This class is part of the XP framework
+- *
+- * $Id$ 
+- */
+-
 -  uses('util.Date', 'img.ImagingException');
-+  uses(
-+    'util.Date', 
-+    'img.ImagingException', 
-+    'img.util.MetadataException', 
-+    'lang.ElementNotFoundException'
-+  );
- 
-   /**
+-
+-  /**
 -   * Reads the IPTC headers from Photoshop-files, JPEG or TIFF
-+   * Reads the IPTC headers from Photoshop-files, JPEGs or TIFFs
-    *
-    * <code>
-    *   uses('img.util.IptcData', 'io.File');
+-   *
+-   * <code>
+-   *   uses('img.util.IptcData', 'io.File');
 -   *   $i= IptcData::fromFile(new File($filename));
 -   *   echo $i->toString();
-+   *
-+   *   // Use empty iptc data as default value when no iptc data is found
-+   *   echo IptcData::fromFile(new File($filename), IptcData::$EMPTY)->toString();
-    * </code>
-    *
-    * @ext      iptc
-    * @purpose  Utility
-+   * @see      php://iptcparse
-+   * @see      http://photothumb.com/IPTCExt/
-    * @see      http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
-    */
-   class IptcData extends Object {
+-   * </code>
+-   *
+-   * @ext      iptc
+-   * @purpose  Utility
+-   * @see      http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
+-   */
+-  class IptcData extends Object {
 -    protected
-+    public static
-+      $EMPTY= NULL;
-+
-+    public
-       $title                         = '',
-       $urgency                       = '',
-       $category                      = '',
-@@ -41,21 +52,36 @@
-       $supplementalCategories        = array(),
-       $originalTransmissionReference = '';
- 
-+    static function __static() {
-+      self::$EMPTY= new self();
-+    }
-+
-     /**
-      * Read from a file
-      *
-      * @param   io.File file
-+     * @param   mixed default default FALSE what should be returned in case no data is found
-      * @return  img.util.IptcData
-+     * @throws  img.MetadataException in case reading meta data fails
-      * @throws  img.ImagingException in case extracting data fails
-      */
+-      $title                         = '',
+-      $urgency                       = '',
+-      $category                      = '',
+-      $keywords                      = array(), 
+-      $dateCreated                   = NULL, 
+-      $author                        = '', 
+-      $authorPosition                = '', 
+-      $city                          = '', 
+-      $state                         = '', 
+-      $country                       = '', 
+-      $headline                      = '', 
+-      $credit                        = '', 
+-      $source                        = '', 
+-      $copyrightNotice               = '', 
+-      $caption                       = '', 
+-      $writer                        = '', 
+-      $specialInstructions           = '',
+-      $supplementalCategories        = array(),
+-      $originalTransmissionReference = '';
+-
+-    /**
+-     * Read from a file
+-     *
+-     * @param   io.File file
+-     * @return  img.util.IptcData
+-     * @throws  img.ImagingException in case extracting data fails
+-     */
 -    public static function fromFile($file) {
 -      getimagesize($file->getURI(), $info);
 -      if (!($info['APP13'])) {
 -        throw new ImagingException(
 -          'Cannot get IPTC information from '.$file->getURI()
-+    public static function fromFile(File $file, $default= FALSE) {
-+      if (FALSE === getimagesize($file->getURI(), $info)) {
-+        throw new ImagingException('Cannot read IPTC information from '.$file->getURI());
-+      }
-+      if (!isset($info['APP13'])) {
-+        if (FALSE !== $default) return $default;
-+        throw new MetadataException(
-+          'Cannot get IPTC information from '.$file->getURI(), 
-+          new ElementNotFoundException('No APP13 marker')
-         );
-       }
+-        );
+-      }
 -      $iptc= iptcparse($info['APP13']);
-+      if (!($iptc= iptcparse($info['APP13']))) {
-+        throw new MetadataException(
-+          'Cannot extract IPTC information from '.$file->getURI(),
-+          new FormatException('Cannot parse APP13 marker')
-+        );
-+      }
-       
-       // Parse creation date
-       if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
-@@ -65,25 +91,25 @@
-       }
- 
-       with ($i= new self()); {
+-      
+-      // Parse creation date
+-      if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
+-        $created= Date::create($year, $month, $day, 0, 0, 0);
+-      } else {
+-        $created= NULL;
+-      }
+-
+-      with ($i= new self()); {
 -        $i->setTitle($iptc['2#005'][0]);
 -        $i->setUrgency($iptc['2#010'][0]);
 -        $i->setCategory($iptc['2#015'][0]);
 -        $i->setSupplementalCategories($iptc['2#020']);
 -        $i->setKeywords($iptc['2#025']);
 -        $i->setSpecialInstructions($iptc['2#040'][0]);
-+        $i->setTitle(@$iptc['2#005'][0]);
-+        $i->setUrgency(@$iptc['2#010'][0]);
-+        $i->setCategory(@$iptc['2#015'][0]);
-+        $i->setSupplementalCategories(@$iptc['2#020']);
-+        $i->setKeywords(@$iptc['2#025']);
-+        $i->setSpecialInstructions(@$iptc['2#040'][0]);
-         $i->setDateCreated($created);
+-        $i->setDateCreated($created);
 -        $i->setAuthor($iptc['2#080'][0]);
 -        $i->setAuthorPosition($iptc['2#085'][0]);
 -        $i->setCity($iptc['2#090'][0]);
@@ -186,6 +162,517 @@ Index: IptcData.class.php
 -        $i->setCopyrightNotice($iptc['2#116'][0]);
 -        $i->setCaption($iptc['2#120'][0]);
 -        $i->setWriter($iptc['2#122'][0]);
+-      }
+-      return $i;
+-    }
+-
+-    /**
+-     * Set Title
+-     *
+-     * @param   string title
+-     */
+-    public function setTitle($title) {
+-      $this->title= $title;
+-    }
+-
+-    /**
+-     * Get Title
+-     *
+-     * @return  string
+-     */
+-    public function getTitle() {
+-      return $this->title;
+-    }
+-
+-    
+-    /**
+-     * Set Urgency
+-     *
+-     * @param   string urgency
+-     */
+-    public function setUrgency($urgency) {
+-      $this->urgency= $urgency;
+-    }
+-
+-    /**
+-     * Get Urgency
+-     *
+-     * @return  string
+-     */
+-    public function getUrgency() {
+-      return $this->urgency;
+-    }
+-
+-    
+-    /**
+-     * Set Category
+-     *
+-     * @param   string category
+-     */
+-    public function setCategory($category) {
+-      $this->category= $category;
+-    }
+-
+-    /**
+-     * Get Category
+-     *
+-     * @return  string
+-     */
+-    public function getCategory() {
+-      return $this->category;
+-    }
+-
+-    
+-    /**
+-     * Set Keywords
+-     *
+-     * @param   string[] keywords
+-     */
+-    public function setKeywords($keywords) {
+-      $this->keywords= $keywords;
+-    }
+-
+-    /**
+-     * Get Keywords
+-     *
+-     * @return  string[]
+-     */
+-    public function getKeywords() {
+-      return $this->keywords;
+-    }
+-
+-    
+-    /**
+-     * Set DateCreated
+-     *
+-     * @param   util.Date dateCreated
+-     */
+-    public function setDateCreated(Date $dateCreated) {
+-      $this->dateCreated= $dateCreated;
+-    }
+-
+-    /**
+-     * Get DateCreated
+-     *
+-     * @return  util.Date
+-     */
+-    public function getDateCreated() {
+-      return $this->dateCreated;
+-    }
+-
+-    
+-    /**
+-     * Set Author
+-     *
+-     * @param   string author
+-     */
+-    public function setAuthor($author) {
+-      $this->author= $author;
+-    }
+-
+-    /**
+-     * Get Author
+-     *
+-     * @return  string
+-     */
+-    public function getAuthor() {
+-      return $this->author;
+-    }
+-
+-    
+-    /**
+-     * Set AuthorPosition
+-     *
+-     * @param   string authorPosition
+-     */
+-    public function setAuthorPosition($authorPosition) {
+-      $this->authorPosition= $authorPosition;
+-    }
+-
+-    /**
+-     * Get AuthorPosition
+-     *
+-     * @return  string
+-     */
+-    public function getAuthorPosition() {
+-      return $this->authorPosition;
+-    }
+-
+-    
+-    /**
+-     * Set City
+-     *
+-     * @param   string city
+-     */
+-    public function setCity($city) {
+-      $this->city= $city;
+-    }
+-
+-    /**
+-     * Get City
+-     *
+-     * @return  string
+-     */
+-    public function getCity() {
+-      return $this->city;
+-    }
+-
+-    
+-    /**
+-     * Set State
+-     *
+-     * @param   string state
+-     */
+-    public function setState($state) {
+-      $this->state= $state;
+-    }
+-
+-    /**
+-     * Get State
+-     *
+-     * @return  string
+-     */
+-    public function getState() {
+-      return $this->state;
+-    }
+-
+-    
+-    /**
+-     * Set Country
+-     *
+-     * @param   string country
+-     */
+-    public function setCountry($country) {
+-      $this->country= $country;
+-    }
+-
+-    /**
+-     * Get Country
+-     *
+-     * @return  string
+-     */
+-    public function getCountry() {
+-      return $this->country;
+-    }
+-
+-    
+-    /**
+-     * Set Headline
+-     *
+-     * @param   string headline
+-     */
+-    public function setHeadline($headline) {
+-      $this->headline= $headline;
+-    }
+-
+-    /**
+-     * Get Headline
+-     *
+-     * @return  string
+-     */
+-    public function getHeadline() {
+-      return $this->headline;
+-    }
+-
+-    
+-    /**
+-     * Set Credit
+-     *
+-     * @param   string credit
+-     */
+-    public function setCredit($credit) {
+-      $this->credit= $credit;
+-    }
+-
+-    /**
+-     * Get Credit
+-     *
+-     * @return  string
+-     */
+-    public function getCredit() {
+-      return $this->credit;
+-    }
+-
+-    
+-    /**
+-     * Set Source
+-     *
+-     * @param   string source
+-     */
+-    public function setSource($source) {
+-      $this->source= $source;
+-    }
+-
+-    /**
+-     * Get Source
+-     *
+-     * @return  string
+-     */
+-    public function getSource() {
+-      return $this->source;
+-    }
+-
+-    
+-    /**
+-     * Set CopyrightNotice
+-     *
+-     * @param   string copyrightNotice
+-     */
+-    public function setCopyrightNotice($copyrightNotice) {
+-      $this->copyrightNotice= $copyrightNotice;
+-    }
+-
+-    /**
+-     * Get CopyrightNotice
+-     *
+-     * @return  string
+-     */
+-    public function getCopyrightNotice() {
+-      return $this->copyrightNotice;
+-    }
+-
+-    
+-    /**
+-     * Set Caption
+-     *
+-     * @param   string caption
+-     */
+-    public function setCaption($caption) {
+-      $this->caption= $caption;
+-    }
+-
+-    /**
+-     * Get Caption
+-     *
+-     * @return  string
+-     */
+-    public function getCaption() {
+-      return $this->caption;
+-    }
+-
+-    
+-    /**
+-     * Set Writer
+-     *
+-     * @param   string writer
+-     */
+-    public function setWriter($writer) {
+-      $this->writer= $writer;
+-    }
+-
+-    /**
+-     * Get Writer
+-     *
+-     * @return  string
+-     */
+-    public function getWriter() {
+-      return $this->writer;
+-    }
+-
+-    
+-    /**
+-     * Set SupplementalCategories
+-     *
+-     * @param   string[] supplementalCategories
+-     */
+-    public function setSupplementalCategories($supplementalCategories) {
+-      $this->supplementalCategories= $supplementalCategories;
+-    }
+-
+-    /**
+-     * Get SupplementalCategories
+-     *
+-     * @return  string[]
+-     */
+-    public function getSupplementalCategories() {
+-      return $this->supplementalCategories;
+-    }
+-
+-    
+-    /**
+-     * Set SpecialInstructions
+-     *
+-     * @param   string specialInstructions
+-     */
+-    public function setSpecialInstructions($specialInstructions) {
+-      $this->specialInstructions= $specialInstructions;
+-    }
+-
+-    /**
+-     * Get SpecialInstructions
+-     *
+-     * @return  string
+-     */
+-    public function getSpecialInstructions() {
+-      return $this->specialInstructions;
+-    }
+-
+-    
+-    /**
+-     * Set OriginalTransmissionReference
+-     *
+-     * @param   string originalTransmissionReference
+-     */
+-    public function setOriginalTransmissionReference($originalTransmissionReference) {
+-      $this->originalTransmissionReference= $originalTransmissionReference;
+-    }
+-
+-    /**
+-     * Get OriginalTransmissionReference
+-     *
+-     * @return  string
+-     */
+-    public function getOriginalTransmissionReference() {
+-      return $this->originalTransmissionReference;
+-    }
+-
+-    /**
+-     * Retrieve a string representation
+-     *
+-     * @return  string
+-     */
+-    public function toString() {
+-      return sprintf(
+-        "  [title                        ] %s\n".
+-        "  [urgency                      ] %s\n".
+-        "  [category                     ] %s\n".
+-        "  [keywords                     ] %s\n".
+-        "  [dateCreated                  ] %s\n".
+-        "  [author                       ] %s\n".
+-        "  [authorPosition               ] %s\n".
+-        "  [city                         ] %s\n".
+-        "  [state                        ] %s\n".
+-        "  [country                      ] %s\n".
+-        "  [headline                     ] %s\n".
+-        "  [credit                       ] %s\n".
+-        "  [source                       ] %s\n".
+-        "  [copyrightNotice              ] %s\n".
+-        "  [caption                      ] %s\n".
+-        "  [writer                       ] %s\n".
+-        "  [supplementalCategories       ] %s\n".
+-        "  [specialInstructions          ] %s\n".
+-        "  [originalTransmissionReference] %s\n".
+-        "}",  
+-        $this->title,
+-        $this->urgency,
+-        $this->category,
+-        xp::stringOf($this->keywords, '  '),
+-        xp::stringOf($this->dateCreated),
+-        $this->author,
+-        $this->authorPosition,
+-        $this->city,
+-        $this->state,
+-        $this->country,
+-        $this->headline,
+-        $this->credit,
+-        $this->source,
+-        $this->copyrightNotice,
+-        $this->caption,
+-        $this->writer,
+-        xp::stringOf($this->supplementalCategories, '  '),
+-        $this->specialInstructions,
+-        $this->originalTransmissionReference
+-      );
+-    }
+-  }
+-?>
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'util.Date', 
++    'img.ImagingException', 
++    'lang.ElementNotFoundException'
++  );
++
++  /**
++   * Reads the IPTC headers from Photoshop-files, JPEGs or TIFFs
++   *
++   * <code>
++   *   uses('img.util.IptcData', 'io.File');
++   *
++   *   // Use empty iptc data as default value when no iptc data is found
++   *   echo IptcData::fromFile(new File($filename), IptcData::$EMPTY)->toString();
++   * </code>
++   *
++   * @test     xp://net.xp_framework.unittest.img.IptcDataTest
++   * @ext      iptc
++   * @purpose  Utility
++   * @see      php://iptcparse
++   * @see      http://photothumb.com/IPTCExt/
++   * @see      http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
++   */
++  class IptcData extends Object {
++    public static
++      $EMPTY= NULL;
++
++    public
++      $title                         = '',
++      $urgency                       = '',
++      $category                      = '',
++      $keywords                      = array(), 
++      $dateCreated                   = NULL, 
++      $author                        = '', 
++      $authorPosition                = '', 
++      $city                          = '', 
++      $state                         = '', 
++      $country                       = '', 
++      $headline                      = '', 
++      $credit                        = '', 
++      $source                        = '', 
++      $copyrightNotice               = '', 
++      $caption                       = '', 
++      $writer                        = '', 
++      $specialInstructions           = '',
++      $supplementalCategories        = array(),
++      $originalTransmissionReference = '';
++
++    static function __static() {
++      self::$EMPTY= new self();
++    }
++
++    /**
++     * Read from a file
++     *
++     * @param   io.File file
++     * @param   mixed default default void what should be returned in case no data is found
++     * @return  img.util.IptcData
++     * @throws  lang.FormatException in case malformed meta data is encountered
++     * @throws  lang.ElementNotFoundException in case no meta data is available
++     * @throws  img.ImagingException in case reading meta data fails
++     */
++    public static function fromFile(File $file) {
++      if (FALSE === getimagesize($file->getURI(), $info)) {
++        throw new ImagingException('Cannot read image information from '.$file->getURI());
++      }
++      if (!isset($info['APP13'])) {
++        if (func_num_args() > 1) return func_get_arg(1);
++        throw new ElementNotFoundException(
++          'Cannot get IPTC information from '.$file->getURI().' (no APP13 marker)'
++        );
++      }
++      if (!($iptc= iptcparse($info['APP13']))) {
++        throw new FormatException('Cannot parse IPTC information from '.$file->getURI());
++      }
++      
++      // Parse creation date
++      if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
++        $created= Date::create($year, $month, $day, 0, 0, 0);
++      } else {
++        $created= NULL;
++      }
++
++      with ($i= new self()); {
++        $i->setTitle(@$iptc['2#005'][0]);
++        $i->setUrgency(@$iptc['2#010'][0]);
++        $i->setCategory(@$iptc['2#015'][0]);
++        $i->setSupplementalCategories(@$iptc['2#020']);
++        $i->setKeywords(@$iptc['2#025']);
++        $i->setSpecialInstructions(@$iptc['2#040'][0]);
++        $i->setDateCreated($created);
 +        $i->setAuthor(@$iptc['2#080'][0]);
 +        $i->setAuthorPosition(@$iptc['2#085'][0]);
 +        $i->setCity(@$iptc['2#090'][0]);
@@ -198,40 +685,640 @@ Index: IptcData.class.php
 +        $i->setCopyrightNotice(@$iptc['2#116'][0]);
 +        $i->setCaption(@$iptc['2#120'][0]);
 +        $i->setWriter(@$iptc['2#122'][0]);
-       }
-       return $i;
-     }
-@@ -167,9 +193,9 @@
-     /**
-      * Set DateCreated
-      *
--     * @param   util.Date dateCreated
++      }
++      return $i;
++    }
++
++    /**
++     * Set Title
++     *
++     * @param   string title
++     */
++    public function setTitle($title) {
++      $this->title= $title;
++    }
++
++    /**
++     * Get Title
++     *
++     * @return  string
++     */
++    public function getTitle() {
++      return $this->title;
++    }
++
++    
++    /**
++     * Set Urgency
++     *
++     * @param   string urgency
++     */
++    public function setUrgency($urgency) {
++      $this->urgency= $urgency;
++    }
++
++    /**
++     * Get Urgency
++     *
++     * @return  string
++     */
++    public function getUrgency() {
++      return $this->urgency;
++    }
++
++    
++    /**
++     * Set Category
++     *
++     * @param   string category
++     */
++    public function setCategory($category) {
++      $this->category= $category;
++    }
++
++    /**
++     * Get Category
++     *
++     * @return  string
++     */
++    public function getCategory() {
++      return $this->category;
++    }
++
++    
++    /**
++     * Set Keywords
++     *
++     * @param   string[] keywords
++     */
++    public function setKeywords($keywords) {
++      $this->keywords= $keywords;
++    }
++
++    /**
++     * Get Keywords
++     *
++     * @return  string[]
++     */
++    public function getKeywords() {
++      return $this->keywords;
++    }
++
++    
++    /**
++     * Set DateCreated
++     *
 +     * @param   util.Date dateCreated default NULL
-      */
--    public function setDateCreated(Date $dateCreated) {
++     */
 +    public function setDateCreated(Date $dateCreated= NULL) {
-       $this->dateCreated= $dateCreated;
-     }
- 
-Index: MetadataException.class.php
-===================================================================
---- MetadataException.class.php	(revision 0)
-+++ MetadataException.class.php	(revision 0)
-@@ -0,0 +1,17 @@
-+<?php
-+/* This class is part of the XP framework
-+ * 
-+ * $Id$
-+ */
-+ 
-+  /**
-+   * Indicates an error occured while processing meta data
-+   *
-+   * @see     xp://img.util.IptcData#fromFile
-+   * @see     xp://lang.ChainedException
-+   * @purpose Exception
-+   */
-+  class MetadataException extends ChainedException {
-+  
++      $this->dateCreated= $dateCreated;
++    }
++
++    /**
++     * Get DateCreated
++     *
++     * @return  util.Date
++     */
++    public function getDateCreated() {
++      return $this->dateCreated;
++    }
++
++    
++    /**
++     * Set Author
++     *
++     * @param   string author
++     */
++    public function setAuthor($author) {
++      $this->author= $author;
++    }
++
++    /**
++     * Get Author
++     *
++     * @return  string
++     */
++    public function getAuthor() {
++      return $this->author;
++    }
++
++    
++    /**
++     * Set AuthorPosition
++     *
++     * @param   string authorPosition
++     */
++    public function setAuthorPosition($authorPosition) {
++      $this->authorPosition= $authorPosition;
++    }
++
++    /**
++     * Get AuthorPosition
++     *
++     * @return  string
++     */
++    public function getAuthorPosition() {
++      return $this->authorPosition;
++    }
++
++    
++    /**
++     * Set City
++     *
++     * @param   string city
++     */
++    public function setCity($city) {
++      $this->city= $city;
++    }
++
++    /**
++     * Get City
++     *
++     * @return  string
++     */
++    public function getCity() {
++      return $this->city;
++    }
++
++    
++    /**
++     * Set State
++     *
++     * @param   string state
++     */
++    public function setState($state) {
++      $this->state= $state;
++    }
++
++    /**
++     * Get State
++     *
++     * @return  string
++     */
++    public function getState() {
++      return $this->state;
++    }
++
++    
++    /**
++     * Set Country
++     *
++     * @param   string country
++     */
++    public function setCountry($country) {
++      $this->country= $country;
++    }
++
++    /**
++     * Get Country
++     *
++     * @return  string
++     */
++    public function getCountry() {
++      return $this->country;
++    }
++
++    
++    /**
++     * Set Headline
++     *
++     * @param   string headline
++     */
++    public function setHeadline($headline) {
++      $this->headline= $headline;
++    }
++
++    /**
++     * Get Headline
++     *
++     * @return  string
++     */
++    public function getHeadline() {
++      return $this->headline;
++    }
++
++    
++    /**
++     * Set Credit
++     *
++     * @param   string credit
++     */
++    public function setCredit($credit) {
++      $this->credit= $credit;
++    }
++
++    /**
++     * Get Credit
++     *
++     * @return  string
++     */
++    public function getCredit() {
++      return $this->credit;
++    }
++
++    
++    /**
++     * Set Source
++     *
++     * @param   string source
++     */
++    public function setSource($source) {
++      $this->source= $source;
++    }
++
++    /**
++     * Get Source
++     *
++     * @return  string
++     */
++    public function getSource() {
++      return $this->source;
++    }
++
++    
++    /**
++     * Set CopyrightNotice
++     *
++     * @param   string copyrightNotice
++     */
++    public function setCopyrightNotice($copyrightNotice) {
++      $this->copyrightNotice= $copyrightNotice;
++    }
++
++    /**
++     * Get CopyrightNotice
++     *
++     * @return  string
++     */
++    public function getCopyrightNotice() {
++      return $this->copyrightNotice;
++    }
++
++    
++    /**
++     * Set Caption
++     *
++     * @param   string caption
++     */
++    public function setCaption($caption) {
++      $this->caption= $caption;
++    }
++
++    /**
++     * Get Caption
++     *
++     * @return  string
++     */
++    public function getCaption() {
++      return $this->caption;
++    }
++
++    
++    /**
++     * Set Writer
++     *
++     * @param   string writer
++     */
++    public function setWriter($writer) {
++      $this->writer= $writer;
++    }
++
++    /**
++     * Get Writer
++     *
++     * @return  string
++     */
++    public function getWriter() {
++      return $this->writer;
++    }
++
++    
++    /**
++     * Set SupplementalCategories
++     *
++     * @param   string[] supplementalCategories
++     */
++    public function setSupplementalCategories($supplementalCategories) {
++      $this->supplementalCategories= $supplementalCategories;
++    }
++
++    /**
++     * Get SupplementalCategories
++     *
++     * @return  string[]
++     */
++    public function getSupplementalCategories() {
++      return $this->supplementalCategories;
++    }
++
++    
++    /**
++     * Set SpecialInstructions
++     *
++     * @param   string specialInstructions
++     */
++    public function setSpecialInstructions($specialInstructions) {
++      $this->specialInstructions= $specialInstructions;
++    }
++
++    /**
++     * Get SpecialInstructions
++     *
++     * @return  string
++     */
++    public function getSpecialInstructions() {
++      return $this->specialInstructions;
++    }
++
++    
++    /**
++     * Set OriginalTransmissionReference
++     *
++     * @param   string originalTransmissionReference
++     */
++    public function setOriginalTransmissionReference($originalTransmissionReference) {
++      $this->originalTransmissionReference= $originalTransmissionReference;
++    }
++
++    /**
++     * Get OriginalTransmissionReference
++     *
++     * @return  string
++     */
++    public function getOriginalTransmissionReference() {
++      return $this->originalTransmissionReference;
++    }
++
++    /**
++     * Retrieve a string representation
++     *
++     * @return  string
++     */
++    public function toString() {
++      return sprintf(
++        "  [title                        ] %s\n".
++        "  [urgency                      ] %s\n".
++        "  [category                     ] %s\n".
++        "  [keywords                     ] %s\n".
++        "  [dateCreated                  ] %s\n".
++        "  [author                       ] %s\n".
++        "  [authorPosition               ] %s\n".
++        "  [city                         ] %s\n".
++        "  [state                        ] %s\n".
++        "  [country                      ] %s\n".
++        "  [headline                     ] %s\n".
++        "  [credit                       ] %s\n".
++        "  [source                       ] %s\n".
++        "  [copyrightNotice              ] %s\n".
++        "  [caption                      ] %s\n".
++        "  [writer                       ] %s\n".
++        "  [supplementalCategories       ] %s\n".
++        "  [specialInstructions          ] %s\n".
++        "  [originalTransmissionReference] %s\n".
++        "}",  
++        $this->title,
++        $this->urgency,
++        $this->category,
++        xp::stringOf($this->keywords, '  '),
++        xp::stringOf($this->dateCreated),
++        $this->author,
++        $this->authorPosition,
++        $this->city,
++        $this->state,
++        $this->country,
++        $this->headline,
++        $this->credit,
++        $this->source,
++        $this->copyrightNotice,
++        $this->caption,
++        $this->writer,
++        xp::stringOf($this->supplementalCategories, '  '),
++        $this->specialInstructions,
++        $this->originalTransmissionReference
++      );
++    }
 +  }
 +?>
+Index: ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php	(revision 0)
+@@ -0,0 +1,88 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'io.streams.Streams',
++    'io.streams.MemoryInputStream',
++    'img.util.ExifData'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://img.util.ExifData
++   * @purpose  Unittest
++   */
++  class ExifDataTest extends TestCase {
++  
++    /**
++     * Returns a file for a classloader resource
++     *
++     * @param   string name
++     * @return  io.File
++     */
++    protected function resourceAsFile($name) {
++      return Streams::readableFile(
++        new MemoryInputStream($this->getClass()->getPackage()->getResource($name)), 
++        FALSE
++      );
++    }
++  
++    /**
++     * Test reading Exif data from this file (which is definitely not an
++     * image)
++     *
++     */
++    #[@test, @expect('img.ImagingException')]
++    public function fromNonImageFile() {
++      ExifData::fromFile(new File(__FILE__));
++    }
++
++    /**
++     * Test reading Exif data from an empty file
++     *
++     */
++    #[@test, @expect('img.ImagingException')]
++    public function fromEmptyFile() {
++      ExifData::fromFile($this->resourceAsFile('empty.jpg'));
++    }
++
++    /**
++     * Test reading Exif data from a file which contains exif-data
++     * only
++     *
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function fromFileWithoutExif() {
++      ExifData::fromFile($this->resourceAsFile('iptc-only.jpg'));
++    }
++
++    /**
++     * Test reading Exif data from a file which contains exif-data
++     * AND Exif-data
++     *
++     */
++    #[@test]
++    public function fromFileWithExifAndIptc() {
++      $i= ExifData::fromFile($this->resourceAsFile('exif-and-iptc.jpg'));
++      $this->assertEquals(1, $i->getWidth());
++      $this->assertEquals(1, $i->getHeight());
++    }
++
++    /**
++     * Test reading Exif data from a file which contains exif-data
++     * AND Exif-data
++     *
++     */
++    #[@test]
++    public function fromFile() {
++      $i= ExifData::fromFile($this->resourceAsFile('exif-only.jpg'));
++      $this->assertEquals(1, $i->getWidth());
++      $this->assertEquals(1, $i->getHeight());
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php	(revision 0)
+@@ -0,0 +1,87 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'io.streams.Streams',
++    'io.streams.MemoryInputStream',
++    'img.util.IptcData',
++    'io.File'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://img.util.IptcData
++   * @purpose  Unittest
++   */
++  class IptcDataTest extends TestCase {
++  
++    /**
++     * Returns a file for a classloader resource
++     *
++     * @param   string name
++     * @return  io.File
++     */
++    protected function resourceAsFile($name) {
++      return Streams::readableFile(
++        new MemoryInputStream($this->getClass()->getPackage()->getResource($name)), 
++        FALSE
++      );
++    }
++  
++    /**
++     * Test reading IPTC data from this file (which is definitely not an
++     * image)
++     *
++     */
++    #[@test, @expect('img.ImagingException')]
++    public function fromNonImageFile() {
++      IptcData::fromFile(new File(__FILE__));
++    }
++
++    /**
++     * Test reading IPTC data from an empty file
++     *
++     */
++    #[@test, @expect('img.ImagingException')]
++    public function fromEmptyFile() {
++      IptcData::fromFile($this->resourceAsFile('empty.jpg'));
++    }
++
++    /**
++     * Test reading IPTC data from a file which contains exif-data
++     * only
++     *
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function fromFileWithoutIptc() {
++      IptcData::fromFile($this->resourceAsFile('exif-only.jpg'));
++    }
++
++    /**
++     * Test reading IPTC data from a file which contains exif-data
++     * AND iptc-data
++     *
++     */
++    #[@test]
++    public function fromFileWithExifAndIptc() {
++      $i= IptcData::fromFile($this->resourceAsFile('exif-and-iptc.jpg'));
++      $this->assertEquals('Unittest Image', $i->getTitle());
++    }
++
++    /**
++     * Test reading IPTC data from a file which contains exif-data
++     * AND iptc-data
++     *
++     */
++    #[@test]
++    public function fromFile() {
++      $i= IptcData::fromFile($this->resourceAsFile('iptc-only.jpg'));
++      $this->assertEquals('Unittest Image', $i->getTitle());
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/img/exif-and-iptc.jpg
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: ports/classes/net/xp_framework/unittest/img/exif-and-iptc.jpg
+___________________________________________________________________
+Name: svn:executable
+   + *
+Name: svn:mime-type
+   + application/octet-stream
+
+Index: ports/classes/net/xp_framework/unittest/img/exif-only.jpg
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: ports/classes/net/xp_framework/unittest/img/exif-only.jpg
+___________________________________________________________________
+Name: svn:executable
+   + *
+Name: svn:mime-type
+   + application/octet-stream
+
+Index: ports/classes/net/xp_framework/unittest/img/empty.jpg
+===================================================================
+Index: ports/classes/net/xp_framework/unittest/img/iptc-only.jpg
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+
+Property changes on: ports/classes/net/xp_framework/unittest/img/iptc-only.jpg
+___________________________________________________________________
+Name: svn:executable
+   + *
+Name: svn:mime-type
+   + application/octet-stream
+
