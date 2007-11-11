@@ -75,7 +75,7 @@ Index: skeleton/img/util/IptcData.class.php
 ===================================================================
 --- skeleton/img/util/IptcData.class.php	(revision 11284)
 +++ skeleton/img/util/IptcData.class.php	(working copy)
-@@ -4,23 +4,34 @@
+@@ -4,23 +4,33 @@
   * $Id$ 
   */
  
@@ -99,8 +99,8 @@ Index: skeleton/img/util/IptcData.class.php
 +   *   echo IptcData::fromFile(new File($filename), IptcData::$EMPTY)->toString();
     * </code>
     *
+-   * @ext      iptc
 +   * @test     xp://net.xp_framework.unittest.img.IptcDataTest
-    * @ext      iptc
     * @purpose  Utility
 +   * @see      php://iptcparse
 +   * @see      http://photothumb.com/IPTCExt/
@@ -115,7 +115,7 @@ Index: skeleton/img/util/IptcData.class.php
        $title                         = '',
        $urgency                       = '',
        $category                      = '',
-@@ -41,21 +52,33 @@
+@@ -41,21 +51,33 @@
        $supplementalCategories        = array(),
        $originalTransmissionReference = '';
  
@@ -156,7 +156,7 @@ Index: skeleton/img/util/IptcData.class.php
        
        // Parse creation date
        if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
-@@ -65,25 +88,25 @@
+@@ -65,25 +87,25 @@
        }
  
        with ($i= new self()); {
@@ -200,7 +200,7 @@ Index: skeleton/img/util/IptcData.class.php
        }
        return $i;
      }
-@@ -167,9 +190,9 @@
+@@ -167,9 +189,9 @@
      /**
       * Set DateCreated
       *
@@ -216,60 +216,63 @@ Index: ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php	(revision 0)
 +++ ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php	(revision 0)
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,91 @@
 +<?php
 +/* This class is part of the XP framework
 + *
 + * $Id$ 
 + */
 +
-+  uses(
-+    'unittest.TestCase',
-+    'io.streams.Streams',
-+    'io.streams.MemoryInputStream',
-+    'img.util.ExifData'
-+  );
++  uses('net.xp_framework.unittest.img.MetaDataTest', 'img.util.ExifData');
 +
 +  /**
-+   * TestCase
++   * TestCase for IptcData class
 +   *
++   * @see      xp://net.xp_framework.unittest.img.MetaDataTest
 +   * @see      xp://img.util.ExifData
 +   * @purpose  Unittest
 +   */
-+  class ExifDataTest extends TestCase {
-+  
++  class ExifDataTest extends MetaDataTest {
++
 +    /**
-+     * Returns a file for a classloader resource
++     * Sets up this unittest 
 +     *
-+     * @param   string name
-+     * @return  io.File
++     * @throws  unittest.PrerequisitesNotMetError
 +     */
-+    protected function resourceAsFile($name) {
-+      return Streams::readableFile(
-+        new MemoryInputStream($this->getClass()->getPackage()->getResource($name)), 
-+        FALSE
-+      );
-+    }
-+  
-+    /**
-+     * Test reading Exif data from this file (which is definitely not an
-+     * image)
-+     *
-+     */
-+    #[@test, @expect('img.ImagingException')]
-+    public function fromNonImageFile() {
-+      ExifData::fromFile(new File(__FILE__));
++    public function setUp() {
++      if (!extension_loaded('exif')) {
++        throw new PrerequisitesNotMetError('EXIF extension not loaded');
++      }
 +    }
 +
 +    /**
-+     * Test reading Exif data from an empty file
++     * Extract from file and return the instance
 +     *
++     * @param   io.File f
++     * @return  lang.Generic the instance
 +     */
-+    #[@test, @expect('img.ImagingException')]
-+    public function fromEmptyFile() {
-+      ExifData::fromFile($this->resourceAsFile('empty.jpg'));
++    protected function extractFromFile(File $f) {
++      return ExifData::fromFile($f);
 +    }
 +
++    /**
++     * Test default value is returned if no Exif data is found
++     *
++     */
++    #[@test]
++    public function defaultValueIfNotFound() {
++      $this->assertNull(ExifData::fromFile($this->resourceAsFile('iptc-only.jpg'), NULL));
++    }
++
++    /**
++     * Test empty EXIF data
++     *
++     */
++    #[@test]
++    public function emptyExifData() {
++      $this->assertEquals(0, ExifData::$EMPTY->getWidth());
++    }
++  
 +    /**
 +     * Test reading Exif data from a file which contains exif-data
 +     * only
@@ -277,7 +280,7 @@ Index: ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php
 +     */
 +    #[@test, @expect('lang.ElementNotFoundException')]
 +    public function fromFileWithoutExif() {
-+      ExifData::fromFile($this->resourceAsFile('iptc-only.jpg'));
++      $this->extractFromFile($this->resourceAsFile('iptc-only.jpg'));
 +    }
 +
 +    /**
@@ -287,7 +290,7 @@ Index: ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php
 +     */
 +    #[@test]
 +    public function fromFileWithExifAndIptc() {
-+      $i= ExifData::fromFile($this->resourceAsFile('exif-and-iptc.jpg'));
++      $i= $this->extractFromFile($this->resourceAsFile('exif-and-iptc.jpg'));
 +      $this->assertEquals(1, $i->getWidth());
 +      $this->assertEquals(1, $i->getHeight());
 +    }
@@ -299,7 +302,7 @@ Index: ports/classes/net/xp_framework/unittest/img/ExifDataTest.class.php
 +     */
 +    #[@test]
 +    public function fromFile() {
-+      $i= ExifData::fromFile($this->resourceAsFile('exif-only.jpg'));
++      $i= $this->extractFromFile($this->resourceAsFile('exif-only.jpg'));
 +      $this->assertEquals(1, $i->getWidth());
 +      $this->assertEquals(1, $i->getHeight());
 +    }
@@ -309,61 +312,52 @@ Index: ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php	(revision 0)
 +++ ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php	(revision 0)
-@@ -0,0 +1,87 @@
+@@ -0,0 +1,78 @@
 +<?php
 +/* This class is part of the XP framework
 + *
 + * $Id$ 
 + */
 +
-+  uses(
-+    'unittest.TestCase',
-+    'io.streams.Streams',
-+    'io.streams.MemoryInputStream',
-+    'img.util.IptcData',
-+    'io.File'
-+  );
++  uses('net.xp_framework.unittest.img.MetaDataTest', 'img.util.IptcData');
 +
 +  /**
-+   * TestCase
++   * TestCase for IptcData class
 +   *
++   * @see      xp://net.xp_framework.unittest.img.MetaDataTest
 +   * @see      xp://img.util.IptcData
 +   * @purpose  Unittest
 +   */
-+  class IptcDataTest extends TestCase {
-+  
++  class IptcDataTest extends MetaDataTest {
++
 +    /**
-+     * Returns a file for a classloader resource
++     * Extract from file and return the instance
 +     *
-+     * @param   string name
-+     * @return  io.File
++     * @param   io.File f
++     * @return  lang.Generic the instance
 +     */
-+    protected function resourceAsFile($name) {
-+      return Streams::readableFile(
-+        new MemoryInputStream($this->getClass()->getPackage()->getResource($name)), 
-+        FALSE
-+      );
-+    }
-+  
-+    /**
-+     * Test reading IPTC data from this file (which is definitely not an
-+     * image)
-+     *
-+     */
-+    #[@test, @expect('img.ImagingException')]
-+    public function fromNonImageFile() {
-+      IptcData::fromFile(new File(__FILE__));
++    protected function extractFromFile(File $f) {
++      return IptcData::fromFile($f);
 +    }
 +
 +    /**
-+     * Test reading IPTC data from an empty file
++     * Test default value is returned if no IPTC data is found
 +     *
 +     */
-+    #[@test, @expect('img.ImagingException')]
-+    public function fromEmptyFile() {
-+      IptcData::fromFile($this->resourceAsFile('empty.jpg'));
++    #[@test]
++    public function defaultValueIfNotFound() {
++      $this->assertNull(IptcData::fromFile($this->resourceAsFile('exif-only.jpg'), NULL));
 +    }
 +
++    /**
++     * Test empty IPTC data
++     *
++     */
++    #[@test]
++    public function emptyIptcData() {
++      $this->assertEquals('', IptcData::$EMPTY->getTitle());
++    }
++  
 +    /**
 +     * Test reading IPTC data from a file which contains exif-data
 +     * only
@@ -371,7 +365,7 @@ Index: ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php
 +     */
 +    #[@test, @expect('lang.ElementNotFoundException')]
 +    public function fromFileWithoutIptc() {
-+      IptcData::fromFile($this->resourceAsFile('exif-only.jpg'));
++      $this->extractFromFile($this->resourceAsFile('exif-only.jpg'));
 +    }
 +
 +    /**
@@ -381,7 +375,7 @@ Index: ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php
 +     */
 +    #[@test]
 +    public function fromFileWithExifAndIptc() {
-+      $i= IptcData::fromFile($this->resourceAsFile('exif-and-iptc.jpg'));
++      $i= $this->extractFromFile($this->resourceAsFile('exif-and-iptc.jpg'));
 +      $this->assertEquals('Unittest Image', $i->getTitle());
 +    }
 +
@@ -392,7 +386,7 @@ Index: ports/classes/net/xp_framework/unittest/img/IptcDataTest.class.php
 +     */
 +    #[@test]
 +    public function fromFile() {
-+      $i= IptcData::fromFile($this->resourceAsFile('iptc-only.jpg'));
++      $i= $this->extractFromFile($this->resourceAsFile('iptc-only.jpg'));
 +      $this->assertEquals('Unittest Image', $i->getTitle());
 +    }
 +  }
