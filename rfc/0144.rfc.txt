@@ -1,0 +1,91 @@
+RFC 0144: Instrumentation
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Nov 11 22:14:18     2007
+@status: draft
+@category: lang.instrumentation
+
+Scope of Change
+---------------
+A new API will be introduced that will enable the creation of AOP tools.
+
+
+Rationale
+---------
+Add AOP support to the XP framework.
+
+
+Functionality
+-------------
+
+Definition
+~~~~~~~~~~
+<pre>
+  instrumentation: "the use or application of instruments (as for 
+  observation, measurement, or control)
+</pre>
+
+Usage
+~~~~~
+The xp runners will be extended to accept a system argument called
+"instrumentation":
+
+<pre>
+  # Without instrumentation
+  $ xpcli net.xp_forge.demo.enum.Operation
+  
+  # With instrumentation
+  $ xpcli -i invoke.aop net.xp_forge.demo.enum.Operation
+</pre>
+
+Instrumentations
+~~~~~~~~~~~~~~~~
+Instrumentations can:
+* Intercept class loading
+
+
+Example instrumentation
+~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $package= 'invoke.aop';
+  
+  class invoke·aop·Instrumentation extends Instrumentation implements ClassFileTransformer {
+    
+    /**
+     * Transform a class
+     *
+     * @param   lang.IClassLoader cl
+     * @param   string class fully qualified class name
+     * @return  string
+     */
+    public function transform(IClassLoader $cl, $class) {
+      if (!isset(Aspects::$pointcuts[$class])) {
+      
+        // No pointcuts for this class, leave it alone!
+        return NULL;
+      }
+
+      return Weaver::weaved(Aspects::$pointcuts[$class], $cl->loadClassBytes($class));
+    }
+  }
+?>
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
+  
