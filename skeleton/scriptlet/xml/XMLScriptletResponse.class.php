@@ -7,7 +7,7 @@
   uses(
     'scriptlet.HttpScriptletResponse',
     'scriptlet.xml.OutputDocument',
-    'xml.XSLProcessor'
+    'xml.IXSLProcessor'
   );
   
   define('XSLT_BUFFER', 0x0000);
@@ -37,7 +37,7 @@
     /**
      * Constructor
      *
-     * @param   xml.XSLProcessor processor
+     * @param   xml.IXSLProcessor processor
      */
     public function __construct($processor= NULL) {
       $this->processor= $processor;
