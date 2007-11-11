@@ -48,7 +48,7 @@
     
     public function getOffset($request) {
       if (0 == strlen($request->getQueryString())) return 0;
-      if (1 != sscanf($request->getQueryString(), '%d', &$offset)) throw new IllegalStateException('Query string broken: "'.$request->getQueryString().'"');
+      if (1 != sscanf($request->getQueryString(), '%d', $offset)) throw new IllegalStateException('Query string broken: "'.$request->getQueryString().'"');
       return $offset;
     }
     
