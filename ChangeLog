@@ -20,6 +20,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0143: Image metadata API enhancements
+  (friebe)
 - Implemented RFC #0139: XPForge SVN
   (friebe, kiesel)
 - Implemented RFC #0141: FTP Transfer listening
