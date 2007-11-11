@@ -24,7 +24,7 @@
      *
      */
     public function fetchCategory($db, $id) {
-      return $db->select('
+      return current($db->select('
       	  categoryid,
       	  category_name
       	from
@@ -32,7 +32,11 @@
       	where categoryid= %d
       	',
       	$id
-      );
+      ));
+    }
+    
+    protected function sanitizeHref($name) {
+      return preg_replace('#[^a-zA-Z0-9\-\._]#', '_', $name);
     }
     
     /**
@@ -80,11 +84,12 @@
       $url= $request->getURL();
       
       $feed->setChannel(
-      	$category['name'],
-      	sprintf('%s://%s/xml/news.en_US/overview?%d',
+      	$category['category_name'],
+      	sprintf('%s://%s/%d/%s',
       	  $url->getScheme(),
       	  $url->getHost(),
-      	  $categoryid
+      	  $categoryid,
+      	  $this->sanitizeHref($category['category_name'])
       	)
       );
       
@@ -93,10 +98,12 @@
       while ($q && $r= $q->next()) {
       	$feed->addItem(
       	  $r['title'],
-      	  sprintf('%s://%s/xml/news.en_US/view?%d',
+      	  sprintf('%s://%s/article/%d/%s/%s',
       	    $url->getScheme(),
       	    $url->getHost(),
-      	    $r['id']
+      	    $r['id'],
+      	    create(new Date($r['timestamp']))->toString('Y/m/d'),
+      	    $this->sanitizeHref($r['title'])
       	  ),
       	  $markupBuilder->markupFor($r['body']),
       	  new Date($r['timestamp'])
@@ -104,10 +111,10 @@
       }
       
       // Write out prepared tree
-      $response->setHeader('Content-type: application/xml; charset=iso-8859-1');
+      $response->setHeader('Content-type', 'application/xml; charset=iso-8859-1');
       
       $rdf= $feed->getDeclaration()."\n".$feed->getSource(0);
-      $response->setHeader('Content-length: '.strlen($rdf));
+      $response->setHeader('Content-length', strlen($rdf));
       $response->write($rdf);
     }
   }
