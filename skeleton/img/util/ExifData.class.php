@@ -9,16 +9,29 @@
     'img.ImagingException',
     'img.Image',
     'img.io.StreamReader',
-    'io.Stream'
+    'io.Stream',
+    'lang.ElementNotFoundException'
   );
 
   /**
    * Reads the EXIF headers from JPEG or TIFF
    *
+   * <code>
+   *   uses('img.util.ExifData', 'io.File');
+   *
+   *   // Use empty Exif data as default value when no Exif data is found
+   *   echo ExifData::fromFile(new File($filename), ExifData::$EMPTY)->toString();
+   * </code>
+   *
+   * @test     xp://net.xp_framework.unittest.img.ExifDataTest
+   * @see      php://exif_read_data
    * @ext      exif
    * @purpose  Utility
    */
   class ExifData extends Object {
+    public static
+      $EMPTY= NULL;
+
     public
       $height           = 0,
       $width            = 0,
@@ -39,18 +52,32 @@
       $isoSpeedRatings  = 0,
       $focalLength      = 0;
 
+    static function __static() {
+      self::$EMPTY= new self();
+    }
+
     /**
      * Read from a file
      *
      * @param   io.File file
+     * @param   mixed default default void what should be returned in case no data is found
      * @return  img.util.ExifData
-     * @throws  img.ImagingException in case extracting data fails
+     * @throws  lang.FormatException in case malformed meta data is encountered
+     * @throws  lang.ElementNotFoundException in case no meta data is available
+     * @throws  img.ImagingException in case reading meta data fails
      */
-    public static function fromFile($file) {
+    public static function fromFile(File $file) {
+      if (FALSE === getimagesize($file->getURI(), $info)) {
+        throw new ImagingException('Cannot read image information from '.$file->getURI());
+      }
+      if (!isset($info['APP1'])) {
+        if (func_num_args() > 1) return func_get_arg(1);
+        throw new ElementNotFoundException(
+          'Cannot get EXIF information from '.$file->getURI().' (no APP1 marker)' 
+        );
+      }
       if (!($info= exif_read_data($file->getURI()))) {
-        throw(new ImagingException(
-          'Cannot get EXIF information from '.$file->getURI()
-        ));
+        throw new FormatException('Cannot get EXIF information from '.$file->getURI());
       }
       
       // Calculate orientation from dimensions if not available

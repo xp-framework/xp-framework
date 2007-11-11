@@ -4,23 +4,33 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'img.ImagingException');
+  uses(
+    'util.Date', 
+    'img.ImagingException', 
+    'lang.ElementNotFoundException'
+  );
 
   /**
-   * Reads the IPTC headers from Photoshop-files, JPEG or TIFF
+   * Reads the IPTC headers from Photoshop-files, JPEGs or TIFFs
    *
    * <code>
    *   uses('img.util.IptcData', 'io.File');
-   *   $i= IptcData::fromFile(new File($filename));
-   *   echo $i->toString();
+   *
+   *   // Use empty iptc data as default value when no iptc data is found
+   *   echo IptcData::fromFile(new File($filename), IptcData::$EMPTY)->toString();
    * </code>
    *
-   * @ext      iptc
+   * @test     xp://net.xp_framework.unittest.img.IptcDataTest
    * @purpose  Utility
+   * @see      php://iptcparse
+   * @see      http://photothumb.com/IPTCExt/
    * @see      http://www.controlledvocabulary.com/pdf/IPTC_mapped_fields.pdf
    */
   class IptcData extends Object {
-    protected
+    public static
+      $EMPTY= NULL;
+
+    public
       $title                         = '',
       $urgency                       = '',
       $category                      = '',
@@ -41,21 +51,33 @@
       $supplementalCategories        = array(),
       $originalTransmissionReference = '';
 
+    static function __static() {
+      self::$EMPTY= new self();
+    }
+
     /**
      * Read from a file
      *
      * @param   io.File file
+     * @param   mixed default default void what should be returned in case no data is found
      * @return  img.util.IptcData
-     * @throws  img.ImagingException in case extracting data fails
+     * @throws  lang.FormatException in case malformed meta data is encountered
+     * @throws  lang.ElementNotFoundException in case no meta data is available
+     * @throws  img.ImagingException in case reading meta data fails
      */
-    public static function fromFile($file) {
-      getimagesize($file->getURI(), $info);
-      if (!($info['APP13'])) {
-        throw new ImagingException(
-          'Cannot get IPTC information from '.$file->getURI()
+    public static function fromFile(File $file) {
+      if (FALSE === getimagesize($file->getURI(), $info)) {
+        throw new ImagingException('Cannot read image information from '.$file->getURI());
+      }
+      if (!isset($info['APP13'])) {
+        if (func_num_args() > 1) return func_get_arg(1);
+        throw new ElementNotFoundException(
+          'Cannot get IPTC information from '.$file->getURI().' (no APP13 marker)'
         );
       }
-      $iptc= iptcparse($info['APP13']);
+      if (!($iptc= iptcparse($info['APP13']))) {
+        throw new FormatException('Cannot parse IPTC information from '.$file->getURI());
+      }
       
       // Parse creation date
       if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
@@ -65,25 +87,25 @@
       }
 
       with ($i= new self()); {
-        $i->setTitle($iptc['2#005'][0]);
-        $i->setUrgency($iptc['2#010'][0]);
-        $i->setCategory($iptc['2#015'][0]);
-        $i->setSupplementalCategories($iptc['2#020']);
-        $i->setKeywords($iptc['2#025']);
-        $i->setSpecialInstructions($iptc['2#040'][0]);
+        $i->setTitle(@$iptc['2#005'][0]);
+        $i->setUrgency(@$iptc['2#010'][0]);
+        $i->setCategory(@$iptc['2#015'][0]);
+        $i->setSupplementalCategories(@$iptc['2#020']);
+        $i->setKeywords(@$iptc['2#025']);
+        $i->setSpecialInstructions(@$iptc['2#040'][0]);
         $i->setDateCreated($created);
-        $i->setAuthor($iptc['2#080'][0]);
-        $i->setAuthorPosition($iptc['2#085'][0]);
-        $i->setCity($iptc['2#090'][0]);
-        $i->setState($iptc['2#095'][0]);
-        $i->setCountry($iptc['2#101'][0]);
-        $i->setOriginalTransmissionReference($iptc['2#103'][0]);   
-        $i->setHeadline($iptc['2#105'][0]);
-        $i->setCredit($iptc['2#110'][0]);
-        $i->setSource($iptc['2#115'][0]);
-        $i->setCopyrightNotice($iptc['2#116'][0]);
-        $i->setCaption($iptc['2#120'][0]);
-        $i->setWriter($iptc['2#122'][0]);
+        $i->setAuthor(@$iptc['2#080'][0]);
+        $i->setAuthorPosition(@$iptc['2#085'][0]);
+        $i->setCity(@$iptc['2#090'][0]);
+        $i->setState(@$iptc['2#095'][0]);
+        $i->setCountry(@$iptc['2#101'][0]);
+        $i->setOriginalTransmissionReference(@$iptc['2#103'][0]);   
+        $i->setHeadline(@$iptc['2#105'][0]);
+        $i->setCredit(@$iptc['2#110'][0]);
+        $i->setSource(@$iptc['2#115'][0]);
+        $i->setCopyrightNotice(@$iptc['2#116'][0]);
+        $i->setCaption(@$iptc['2#120'][0]);
+        $i->setWriter(@$iptc['2#122'][0]);
       }
       return $i;
     }
@@ -167,9 +189,9 @@
     /**
      * Set DateCreated
      *
-     * @param   util.Date dateCreated
+     * @param   util.Date dateCreated default NULL
      */
-    public function setDateCreated(Date $dateCreated) {
+    public function setDateCreated(Date $dateCreated= NULL) {
       $this->dateCreated= $dateCreated;
     }
 
