@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated xml.XSLProcessor class
+  (friebe)
 - Changed img.util.IptcData::setDateCreated() to accept and 
   img.util.IptcData::getDateCreated() to return util.Date instances
   (friebe)
@@ -62,6 +64,9 @@ Bugfixes
  
 Features
 ~~~~~~~~
+- Made XMLScritplets use the XSL processor's output encoding in their
+  Content-Type response header
+  (friebe)
 - text.parser.DateParser makes use of parser capabilities of php.DateTime
   (kiesel)
 - util.Date objects preserve GMT offset after deserialization
