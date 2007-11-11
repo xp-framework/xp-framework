@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sat Nov  3 16:23:29     2007
-@status: discussion, ends Sun Nov 11 17:22:01     2007
+@status: implemented, Sun Nov 11 20:51:18     2007
 @category: img.util
 
 Scope of Change
