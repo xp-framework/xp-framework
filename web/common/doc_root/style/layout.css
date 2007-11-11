@@ -179,7 +179,7 @@ blockquote {
   margin: 10px 10px 0px 10px;
   padding-left: 10px;
   color: #666666;
-  background: url(image/quotes.png);
+  background: url(/common/image/quotes.png);
   background-position: left top; 
   background-repeat: no-repeat;
 }
