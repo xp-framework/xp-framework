@@ -304,7 +304,7 @@
       }
       
       $this->content= $this->processor->output();
-      
+      $this->setContentType('text/html; charset='.$this->processor->outputEncoding());
       return TRUE;
     }
     
