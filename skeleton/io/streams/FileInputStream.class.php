@@ -79,5 +79,14 @@
     public function seek($offset, $whence= SEEK_SET) {
       $this->file->seek($offset, $whence);
     }
+
+    /**
+     * Return current offset
+     *
+     * @return  int offset
+     */
+    public function tell() {
+      return $this->file->tell();
+    }
   }
 ?>

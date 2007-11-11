@@ -20,6 +20,13 @@
      * @throws  io.IOException in case of error
      */
     public function seek($offset, $whence= SEEK_SET);
+
+    /**
+     * Return current offset
+     *
+     * @return  int offset
+     */
+    public function tell();
   
   }
 ?>

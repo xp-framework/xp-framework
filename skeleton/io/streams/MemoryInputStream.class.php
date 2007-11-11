@@ -69,5 +69,14 @@
         case SEEK_END: $this->pos= strlen($this->bytes) + $offset; break;
       }
     }
+
+    /**
+     * Return current offset
+     *
+     * @return  int offset
+     */
+    public function tell() {
+      return $this->pos;
+    }
   }
 ?>
