@@ -38,11 +38,12 @@
    */
   class DomXSLProcessor extends Object implements IXSLProcessor {
     public 
-      $processor    = NULL,
-      $stylesheet   = NULL,
-      $document     = NULL,
-      $params       = array(),
-      $output       = '';
+      $processor      = NULL,
+      $stylesheet     = NULL,
+      $document       = NULL,
+      $params         = array(),
+      $output         = '',
+      $outputEncoding = '';
 
     public
       $_instances   = array(),
@@ -221,6 +222,16 @@
       }
       $this->processor->registerPHPFunctions(array('XSLCallback::invoke'));
       
+      // Figure out outputEncoding
+      if ($output= $this->stylesheet
+        ->documentElement
+        ->getElementsByTagNameNS('http://www.w3.org/1999/XSL/Transform', 'output')
+        ->item(0)
+      ) {
+        $this->outputEncoding= $output->getAttribute('encoding');
+      }
+      $this->outputEncoding || $this->outputEncoding= 'utf-8';   // Default
+      
       // Start transformation
       $this->output= $this->processor->transformToXML($this->document);
 
@@ -261,6 +272,15 @@
      */
     public function output() {
       return (string)$this->output;
+    }
+
+    /**
+     * Retrieve the transformation's result's encoding
+     *
+     * @return  string
+     */
+    public function outputEncoding() {
+      return $this->outputEncoding;
     }
   }
 ?>
