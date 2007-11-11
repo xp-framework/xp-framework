@@ -105,5 +105,12 @@
      * @return  string
      */
     public function output();
+
+    /**
+     * Retrieve the transformation's result's encoding
+     *
+     * @return  string
+     */
+    public function outputEncoding();
   }
 ?>
