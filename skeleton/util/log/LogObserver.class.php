@@ -9,7 +9,7 @@
   /**
    * Observer interface
    *
-   * @see      &util.Observable
+   * @see      xp://util.Observable
    * @purpose  Interface
    */
   class LogObserver extends Object implements DBObserver {
@@ -43,6 +43,5 @@
     public function update($obs, $arg= NULL) {
       $this->cat->debug($arg);
     }
-
   } 
 ?>
