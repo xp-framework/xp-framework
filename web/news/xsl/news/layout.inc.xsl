@@ -21,6 +21,8 @@
     <area name="news"/>
   </xsl:variable>
 
+  <xsl:template name="tracking-code">UA-617805-6</xsl:template>
+
   <xsl:template match="pager">
     <div style="text-align: center;">
       <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @prev)}">&lt;&lt;&lt;</a>

@@ -16,4 +16,5 @@
 >
   <xsl:template name="html-head"/>
   <xsl:template name="html-title">XP Framework</xsl:template>
+  <xsl:template name="tracking-code"/>
 </xsl:stylesheet>

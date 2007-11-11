@@ -33,6 +33,14 @@
       <title><xsl:call-template name="html-title"/></title>
       <link rel="stylesheet" type="text/css" href="/style/style.css"/>
       <xsl:call-template name="html-head"/>
+      <xsl:variable name="tracking-code"><xsl:call-template name="tracking-code"/></xsl:variable>
+      <xsl:if test="$tracking-code != ''"><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+        </script>
+        <script type="text/javascript">
+        _uacct = "<xsl:value-of select="$tracking-code"/>";
+        urchinTracker();
+        </script>
+      </xsl:if>
     </head>
   </xsl:template>
   

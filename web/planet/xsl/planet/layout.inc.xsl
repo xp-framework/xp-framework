@@ -15,6 +15,7 @@
  exclude-result-prefixes="func php exsl xsl xp"
 >
   <xsl:include href="../../../common/xsl/layout.inc.xsl"/>
+  <xsl:template name="tracking-code">UA-617805-5</xsl:template>
   <xsl:variable name="navigation">
     <area name="home"/>
   </xsl:variable>

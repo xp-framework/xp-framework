@@ -30,7 +30,7 @@
           <h1>framework news</h1>
     
           <xsl:for-each select="/formresult/entries/entry">
-            <h2><a href="{xp:link(concat('view?', @id))}"><xsl:value-of select="title"/></a></h2>
+            <h2><a href="{xp:linkArticle(@id, @link, date)}"><xsl:value-of select="title"/></a></h2>
             <em>
               <xsl:for-each select="category"><xsl:value-of select="."/>, </xsl:for-each>
               <xsl:value-of select="xp:date(date)"/> 
