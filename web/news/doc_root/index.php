@@ -4,7 +4,7 @@
  * $Id: index.php 8216 2006-10-22 10:13:38Z kiesel $ 
  */
   require('lang.base.php');
-  xp::sapi('scriptlet.development', 'cgi');
+  xp::sapi('scriptlet.production', 'cgi');
   uses(
     'net.xp_framework.website.news.scriptlet.NewsScriptlet',
     'util.PropertyManager',

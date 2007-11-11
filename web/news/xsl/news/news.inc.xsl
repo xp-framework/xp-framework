@@ -22,7 +22,7 @@
    !-->
   <xsl:template match="emoticon">
     <img 
-     src="/image/icons/{@id}.gif" 
+     src="/common/image/icons/{@id}.gif" 
      width="13" 
      height="13" 
      border="0" 
@@ -94,10 +94,7 @@
   <xsl:template match="img">
     <img>
       <xsl:copy-of select="@*"/>
-      <xsl:attribute name="src"><xsl:value-of select="concat(
-        'http://blog.xp-framework.net',
-        @src
-      )"/></xsl:attribute>
+      <xsl:attribute name="src"><xsl:value-of select="concat('/image/fetch/', @src)"/></xsl:attribute>
     </img>
   </xsl:template>
 

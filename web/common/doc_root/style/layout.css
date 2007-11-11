@@ -25,7 +25,7 @@ h2 {
 }
 h2 a {
   text-decoration: none;
-  background: url(image/arrow.png);
+  background: url(/common/image/arrow.png);
   background-position: right center; 
   background-repeat: no-repeat;
   padding-right: 20px;
@@ -35,7 +35,7 @@ h3 {
   margin-bottom: 1px;
 }
 h3 a {
-  background: url(../image/arrow.png);
+  background: url(/common/image/arrow.png);
   background-position: right center; 
   background-repeat: no-repeat;
   padding-right: 20px;
@@ -87,7 +87,7 @@ div#menu {
   margin: 0;
   padding: 0;
   width: 100%;
-  background: white url(../image/bg_topmenu_w.gif) repeat-x top left;
+  background: white url(/common/image/bg_topmenu_w.gif) repeat-x top left;
   border-top: 1px solid #002372;
   border-bottom: 2px solid #88929a;
 }
@@ -115,14 +115,14 @@ div#menu li a {
 }
 
 div#menu ul li#select a {
-  background: #dff4dd url(../image/bg_topmenu_w.gif) repeat-x top left;
+  background: #dff4dd url(/common/image/bg_topmenu_w.gif) repeat-x top left;
   border-right: 1px solid;
   border-top: 1px solid white;
   border-left: 1px solid white;
 }
 
 div#menu ul li#active a {
-  background: #29b2e6 url(../image/bg_topmenu_selected.gif) repeat-x top left;
+  background: #29b2e6 url(/common/image/bg_topmenu_selected.gif) repeat-x top left;
   color: white;
   border-right: 1px solid #297de6;
   border-top: 1px solid #dee6ff;
@@ -132,7 +132,7 @@ div#menu ul li#active a {
 
 table.columned ul {
   list-style-type: square;
-  list-style-image: url(../image/li.gif);
+  list-style-image: url(/common/image/li.gif);
   line-height: 18px;
 }
 
