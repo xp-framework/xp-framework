@@ -122,12 +122,13 @@
         'link'          => $link,
         'description'   => $description,
         'dc:language'   => $language,
-        'dc:date'       => $date->toString('Y-m-d\TH:i:s'),
+        'dc:date'       => $date->toString(DATE_ATOM),
         'dc:creator'    => $creator,
         'dc:publisher'  => $publisher,
         'dc:rights'     => $rights
       ), 'channel');
-      $items= $node->addChild(new Node('items'));
+      $node->setAttribute('rdf:about', $link);
+      $items= $node->addChild(new Node('items'));;
 
       $this->channel->node= $node;
       $this->channel->sequence= $items->addChild(new Node('rdf:Seq'));
@@ -187,7 +188,7 @@
      */
     public function addItem($title, $link, $description= '', $date= NULL) {
       if (NULL === $date) {
-        $date= isset($this->channel->date) ? $this->channel->date : new Date(time());
+        $date= isset($this->channel->date) ? $this->channel->date : Date::now();
       }
       
       $item= new stdClass();
@@ -199,7 +200,7 @@
         'title'         => $title,
         'link'          => $link,
         'description'   => $description,
-        'dc:date'       => $date->toString('Y-m-d\TH:i:s')
+        'dc:date'       => $date->toString(DATE_ATOM)
       ), 'item');
       $node->setAttribute('rdf:about', $link);
       $item->node= $this->root->addChild($node);
@@ -310,8 +311,7 @@
           break;
 
         case 'channel/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
-          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
-          $this->channel->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
+          $this->channel->date= new Date($cdata);
           break;
 
         case 'channel/dc:publisher':
@@ -358,8 +358,7 @@
           break;
         
         case 'channel/item/dc:date':  
-          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
-          $this->items[sizeof($this->items)- 1]->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
+          $this->items[sizeof($this->items)- 1]->date= new Date($cdata);
           break;
 
         case 'channel/item/category':
@@ -379,10 +378,8 @@
           break;
 
         case 'item/dc:date':         // 2002-07-12T15:59 or 2003-12-19T12:26:00+01:00
-          sscanf($cdata, '%4d-%2d-%2dT%2d:%2d', $year, $month, $day, $hour, $minute);
-          $this->items[sizeof($this->items)- 1]->date= new Date(mktime($hour, $minute, 0, $month, $day, $year));
+          $this->items[sizeof($this->items)- 1]->date= new Date($cdata);
           break;
-
 
         default:
           // Ignore
