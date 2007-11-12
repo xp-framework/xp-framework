@@ -44,7 +44,7 @@
       }
       
       try {
-        return new Date($stamp);
+        return new Date($s);
       } catch (IllegalArgumentException $e) {
         throw new FormatException($e->getMessage());
       }
