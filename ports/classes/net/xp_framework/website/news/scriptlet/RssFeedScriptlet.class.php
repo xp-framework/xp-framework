@@ -21,7 +21,10 @@
       MASTER_CATEGORY  = 8;
       
     /**
-     *
+     * Fetch category information
+     * 
+     * @param   rdbms.DBConnection db
+     * @param   int id
      */
     public function fetchCategory($db, $id) {
       return current($db->select('
@@ -35,6 +38,12 @@
       ));
     }
     
+    /**
+     * Sanitize output for use in a URL
+     *
+     * @param   string name
+     * @return  string
+     */
     protected function sanitizeHref($name) {
       return preg_replace('#[^a-zA-Z0-9\-\._]#', '_', $name);
     }
@@ -90,12 +99,20 @@
       	  $url->getHost(),
       	  $categoryid,
       	  $this->sanitizeHref($category['category_name'])
-      	)
+      	),
+      	'XP Framework',
+      	NULL,
+      	'en-US',
+      	'xp-admin@xp-framework.net'
       );
+      
+      $seen= array();
       
       // Add items to feed, build markup
       $markupBuilder= new MarkupBuilder();
       while ($q && $r= $q->next()) {
+        if (isset($seen[$r['id']])) continue;
+        
       	$feed->addItem(
       	  $r['title'],
       	  sprintf('%s://%s/article/%d/%s/%s',
@@ -108,6 +125,7 @@
       	  $markupBuilder->markupFor($r['body']),
       	  new Date($r['timestamp'])
       	);
+      	$seen[$r['id']]= TRUE;
       }
       
       // Write out prepared tree
