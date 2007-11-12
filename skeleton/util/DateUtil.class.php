@@ -26,15 +26,9 @@
      * @return  util.Date
      */
     public static function getMidnight(Date $date) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth(),
-        $date->getDay(),
-        0,
-        0,
-        0,
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_time_set($hdl, 0, 0, 0);
+      return new Date($hdl);
     }
     
     /**
@@ -44,15 +38,9 @@
      * @return  util.Date
      */
     public static function getLastOfMonth(Date $date) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth() + 1,
-        0,
-        $date->getHours(),
-        $date->getMinutes(),
-        $date->getSeconds(),
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_date_set($hdl, $date->getYear(), $date->getMonth() + 1, 0);
+      return new Date($hdl);
     }
     
     /**
@@ -62,15 +50,9 @@
      * @return  util.Date
      */
     public static function getFirstOfMonth(Date $date) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth(),
-        1,
-        $date->getHours(),
-        $date->getMinutes(),
-        $date->getSeconds(),
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_date_set($hdl, $date->getYear(), $date->getMonth(), 1);
+      return new Date($hdl);
     }
 
     /**
@@ -90,15 +72,11 @@
      * @return  util.Date
      */
     public static function getEndOfWeek(Date $date) {
-      $date= Date::create(
-        $date->getYear(),
-        $date->getMonth(),
-        $date->getDay(),
-        23,
-        59,
-        59,
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_date_set($hdl, $date->getYear(), $date->getMonth(), $date->getDay());
+      date_time_set($hdl, 23, 59, 59);
+
+      $date= new Date($hdl);
       return DateUtil::addDays($date, 6- $date->getDayOfWeek());
     }
 
@@ -110,15 +88,9 @@
      * @return  util.Date
      */
     public static function addMonths(Date $date, $count= 1) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth() + $count,
-        $date->getDay(),
-        $date->getHours(),
-        $date->getMinutes(),
-        $date->getSeconds(),
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_date_set($hdl, $date->getYear(), $date->getMonth() + $count, $date->getDay());
+      return new Date($hdl);
     }
 
     /**
@@ -140,15 +112,9 @@
      * @return  util.Date
      */
     public static function addDays(Date $date, $count= 1) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth(),
-        $date->getDay() + $count,
-        $date->getHours(),
-        $date->getMinutes(),
-        $date->getSeconds(),
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_date_set($hdl, $date->getYear(), $date->getMonth(), $date->getDay() + $count);
+      return new Date($hdl);
     }
     
     /**
@@ -159,15 +125,9 @@
      * @return  util.Date
      */
     public static function addHours(Date $date, $count= 1) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getHours() + $count,
-        $date->getMinutes(),
-        $date->getSeconds(),
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_time_set($hdl, $date->getHours() + $count, $date->getMinutes(), $date->getSeconds());
+      return new Date($hdl);
     }
     
     /**
@@ -178,15 +138,9 @@
      * @return  util.Date
      */
     public static function addMinutes(Date $date, $count= 1) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getHours(),
-        $date->getMinutes() + $count,
-        $date->getSeconds(),
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_time_set($hdl, $date->getHours(), $date->getMinutes() + $count, $date->getSeconds());
+      return new Date($hdl);
     }
 
     /**
@@ -197,15 +151,9 @@
      * @return  util.Date
      */
     public static function addSeconds(Date $date, $count= 1) {
-      return Date::create(
-        $date->getYear(),
-        $date->getMonth(),
-        $date->getDay(),
-        $date->getHours(),
-        $date->getMinutes(),
-        $date->getSeconds() + $count,
-        $date->getTimeZone()
-      );
+      $hdl= $date->getHandle();
+      date_time_set($hdl, $date->getHours(), $date->getMinutes(), $date->getSeconds() + $count);
+      return new Date($hdl);
     }
     
     /**
