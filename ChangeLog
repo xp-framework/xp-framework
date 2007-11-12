@@ -36,6 +36,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Work around PHP bug #43206 by using date_time_set / date_date_set
+  in util.DateUtil instead of Date::getTimeZone().
+  (clang)
 - Fix XPSoapMessage::_recurseData() to return array keys without ":" in
   case a namespace is included in node name
   (hinckel)
