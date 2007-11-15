@@ -19,7 +19,10 @@
      * @return  int
      */
     public function getParentCategory($request) {
-      return $request->getEnvValue('CATID', 8);        
+      return ($request->getEnvValue('CATID')
+        ? $request->getEnvValue('CATID')
+        : 8
+      );        
     }
     
     /**

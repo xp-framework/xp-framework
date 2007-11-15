@@ -33,10 +33,15 @@
           <xsl:for-each select="/formresult/entries/entry">
             <h2><a href="{xp:linkArticle(@id, @link, date)}"><xsl:value-of select="title"/></a></h2>
             <em>
-              <xsl:for-each select="category"><xsl:value-of select="."/>, </xsl:for-each>
-              <xsl:value-of select="xp:date(date)"/> 
-              (<xsl:value-of select="num_comments"/> comments)
+              at <xsl:value-of select="xp:date(date)"/>
+              in <xsl:for-each select="category">
+                <a href="{xp:linkCategory(@id, .)}">
+                  <xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if>
+                </a>
+              </xsl:for-each>
+              by <xsl:value-of select="author"/> 
             </em>
+            <br/><br/>
             <p><xsl:apply-templates select="body"/></p>
             <xsl:if test="extended_length != 0"><br/>(<a href="{xp:linkArticle(@id, @link, date)}">more</a>)</xsl:if>
             <br/><br clear="all"/>

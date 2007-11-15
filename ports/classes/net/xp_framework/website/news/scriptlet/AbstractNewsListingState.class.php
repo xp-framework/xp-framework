@@ -67,14 +67,25 @@
 
       // Add all categories to the formresult
       $n= $response->addFormResult(new Node('categories'));
-      $q= $db->query(
-        'select categoryid, category_name from serendipity_category where parentid= %d',
-        $this->getParentCategory($request)
+      $q= $db->query('
+        select 
+          c.categoryid, 
+          c.parentid,
+          c.category_name 
+         from 
+           serendipity_category as p,
+           serendipity_category as c
+         where p.categoryid= %d
+           and c.category_left >= p.category_left
+           and c.category_right <= p.category_right
+        ',
+        8
       );
       while ($record= $q->next()) {
         $n->addChild(new Node('category', $record['category_name'], array(
-          'id'   => $record['categoryid'],
-          'link' => $this->sanitizeHref($record['category_name'])
+          'id'        => $record['categoryid'],
+          'parentid'  => $record['parentid'],
+          'link'      => $this->sanitizeHref($record['category_name'])
         )));
       }
       
