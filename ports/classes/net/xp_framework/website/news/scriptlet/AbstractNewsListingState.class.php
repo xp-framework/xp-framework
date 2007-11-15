@@ -49,16 +49,36 @@
       return self::MASTER_CATEGORY;
     }
     
+    /**
+     * Retrieve page offset
+     *
+     * @param   scriptlet.HttpScriptletRequest $request
+     * @return  int
+     * @throws  lang.IllegalStateException if query string is broken
+     */
     public function getOffset($request) {
       if (0 == strlen($request->getQueryString())) return 0;
       if (1 != sscanf($request->getQueryString(), '%d', $offset)) throw new IllegalStateException('Query string broken: "'.$request->getQueryString().'"');
       return $offset;
     }
     
+    /**
+     * Create "sanitized" href from the given string. Replaces characters not
+     * suitable for use in a URL
+     *
+     * @param   string $name
+     * @return  string
+     */
     protected function sanitizeHref($name) {
       return preg_replace('#[^a-zA-Z0-9\-\._]#', '_', $name);
     }
     
+    /**
+     * Retrieve categories an entry is in
+     *
+     * @param   int $id
+     * @return  mixed[]
+     */
     protected function categoriesOfEntry($id) {
       return ConnectionManager::getInstance()->getByHost('news', 0)->select('
           c.categoryid,
@@ -97,25 +117,19 @@
            and c.category_left >= p.category_left
            and c.category_right <= p.category_right
         ',
-        8
+        self::MASTER_CATEGORY
       );
       while ($record= $q->next()) {
-        $n->addChild(new Node('category', $record['category_name'], array(
+        $node= $n->addChild(new Node('category', $record['category_name'], array(
           'id'        => $record['categoryid'],
           'parentid'  => $record['parentid'],
           'link'      => $this->sanitizeHref($record['category_name'])
         )));
+        if ($this->getParentCategory($request) == $record['categoryid']) {
+          $node->setAttribute('current-category', 'true');
+        }
       }
       
-      $self= $db->query('select categoryid, category_name from serendipity_category where categoryid= %d', $this->getParentCategory($request));
-      if (($record= $self->next())) {
-        $response->addFormResult(new Node('current-category', $record['category_name'], array(
-          'id' => $record['categoryid'],
-          'link'  => $this->sanitizeHref($record['category_name'])
-        )));
-      }
-            
-
       // Call the getEntries() method (which is overridden by subclasses
       // and returns the corresponding entries). For perfomance reasons, it
       // does a join on entries and categories (which have a 1:n
