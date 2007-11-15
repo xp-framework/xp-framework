@@ -27,17 +27,18 @@
     <table id="main" cellpadding="0" cellspacing="10">
       <tr>
         <td id="content">
-          <h1><xsl:value-of select="/formresult/current-category"/></h1>
+          <h1><xsl:value-of select="/formresult/categories/category[@current-category= 'true']"/></h1>
           <xsl:apply-templates select="/formresult/pager"/>
     
           <xsl:for-each select="/formresult/entries/entry">
             <h2><a href="{xp:linkArticle(@id, @link, date)}"><xsl:value-of select="title"/></a></h2>
             <em>
               at <xsl:value-of select="xp:date(date)"/>
-              in <xsl:for-each select="category">
-                <a href="{xp:linkCategory(@id, .)}">
-                  <xsl:value-of select="."/><xsl:if test="position() != last()">, </xsl:if>
+              in <xsl:for-each select="categories/category">
+                <a href="{xp:linkCategory(@id, @link)}">
+                  <xsl:value-of select="."/>
                 </a>
+                <xsl:if test="position() != last()">,&#160;</xsl:if>
               </xsl:for-each>
               by <xsl:value-of select="author"/> 
             </em>
@@ -59,41 +60,5 @@
   <xsl:template name="context">
     <xsl:call-template name="context-feed"/>
     <xsl:apply-templates select="/formresult/categories"/>
-  </xsl:template>
-  
-  <xsl:template name="context-feed">
-    <xsl:variable name="feed">/rss/<xsl:if test="/formresult/current-category and /formresult/current-category/@id != 8">?c=<xsl:value-of select="/formresult/current-category/@id"/></xsl:if>
-    </xsl:variable>
-    <h3>
-      <a href="{$feed}">
-        <img align="right" src="/common/image/feed.png" border="0"/>
-      </a>
-      Subscribe
-    </h3>
-    You can subscribe to the XP framework's news by using <a href="{$feed}">RSS syndication</a>.
-    <br clear="all"/>
-  </xsl:template>
-  
-  <xsl:template match="categories">
-    <h3>Categories</h3>
-    <xsl:apply-templates select="category[@id= 8]"/>
-  </xsl:template>
-  
-  <xsl:template match="category">
-    <xsl:param name="depth" select="0"/>
-    <xsl:variable name="id" select="@id"/>
-    
-    <a href="{xp:linkCategory(@id, @link)}">
-      <xsl:if test="$depth &gt; 0">
-        <xsl:attribute name="style"><xsl:value-of select="concat('padding-left: ', $depth * 6, 'px;')"/></xsl:attribute>
-      </xsl:if>
-      <xsl:choose>
-        <xsl:when test="@id = /formresult/current-category/@id"><b><xsl:value-of select="."/></b></xsl:when>
-        <xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
-      </xsl:choose>
-    </a><br/>
-    <xsl:apply-templates select="../category[@parentid= $id]">
-      <xsl:with-param name="depth" select="$depth+ 1"/>
-    </xsl:apply-templates>
   </xsl:template>
 </xsl:stylesheet>

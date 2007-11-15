@@ -40,16 +40,17 @@
   </xsl:template>
   
   <xsl:template match="entry">
-    <h2><a href="{xp:link('overview')}"><xsl:value-of select="title"/></a></h2>
+    <h2><a href="{xp:linkCategory(categories/category[1]/@id, categories/category[1]/@link)}"><xsl:value-of select="title"/></a></h2>
     <em>
       at <xsl:value-of select="xp:date(date)"/>
       in <xsl:for-each select="categories/category">
-        <a href="{xp:link(concat('bycategory?', @id))}">
-          <xsl:value-of select="@name"/><xsl:if test="position() != last()">, </xsl:if>
+        <a href="{xp:linkCategory(@id, @link)}">
+          <xsl:value-of select="."/>
         </a>
+        <xsl:if test="position() != last()">,&#160;</xsl:if>
       </xsl:for-each>
       by <xsl:value-of select="author"/> 
-      (<xsl:value-of select="num_comments"/> comments)
+      (<xsl:value-of select="count(comments/comment)"/> comments)
     </em>
     <p><xsl:apply-templates select="body"/></p>
     <p><xsl:apply-templates select="extended"/></p>
@@ -65,11 +66,7 @@
   </xsl:template>
   
   <xsl:template name="context">
-    <h3>
-      <img align="right" src="/common/image/feed.png"/>
-      Subscribe
-    </h3>
-    You can subscribe to the XP framework's news by using <a href="/rss/">RSS syndication</a>.
-    <br clear="all"/>
+    <xsl:call-template name="context-feed"/>
+    <xsl:apply-templates select="/formresult/categories"/>
   </xsl:template>
 </xsl:stylesheet>
