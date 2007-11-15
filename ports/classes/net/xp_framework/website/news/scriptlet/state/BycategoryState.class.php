@@ -14,18 +14,6 @@
   class BycategoryState extends AbstractNewsListingState {
 
     /**
-     * Retrieve parent category's ID
-     *
-     * @return  int
-     */
-    public function getParentCategory($request) {
-      return ($request->getEnvValue('CATID')
-        ? $request->getEnvValue('CATID')
-        : 8
-      );        
-    }
-    
-    /**
      * Retrieve entries
      *
      * @param   rdbms.DBConnection db

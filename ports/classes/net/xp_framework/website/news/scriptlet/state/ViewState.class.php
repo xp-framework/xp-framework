@@ -6,7 +6,7 @@
 
   uses(
     'net.xp_framework.util.markup.FormresultHelper',
-    'scriptlet.xml.workflow.AbstractState',
+    'net.xp_framework.website.news.scriptlet.AbstractNewsState',
     'rdbms.ConnectionManager',
     'util.Date'
   );
@@ -16,12 +16,18 @@
    *
    * @purpose  State
    */
-  class ViewState extends AbstractState {
+  class ViewState extends AbstractNewsState {
 
+    /**
+     * Retrieve article id
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest $request
+     * @return  int
+     */
     protected function getArticleId($request) {
       return $request->getEnvValue('ARTID');
     }
-  
+
     /**
      * Process this state.
      *
@@ -111,12 +117,21 @@
       );
       
       $catnode= $entry->addChild(new Node('categories'));
+      $category_id= NULL;
       while ($q && $r= $q->next()) {
-      	$catnode->addChild(new Node('category', NULL, array(
+        if (NULL === $category_id) $category_id= $r['categoryid'];
+      	$catnode->addChild(new Node('category', $r['category_name'], array(
       	  'id'   => $r['categoryid'],
-      	  'name' => $r['category_name'])
-        ));
+      	  'link' => $this->sanitizeHref($r['category_name'])
+        )));
       }
+      
+      // Add all categories to the formresult
+      $this->insertCategories(
+        $category_id,
+        $response->addFormResult(new Node('categories'))
+      );
+      
     }
   }
 ?>
