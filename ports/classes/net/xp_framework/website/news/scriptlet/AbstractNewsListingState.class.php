@@ -17,6 +17,9 @@
    * @purpose  Abstract base class
    */
   abstract class AbstractNewsListingState extends AbstractState {
+    const
+      MASTER_CATEGORY   = 8,
+      PAGER_LENGTH      = 10;
 
     /**
      * Retrieve entries
@@ -43,7 +46,7 @@
      * @return  int
      */
     public function getParentCategory($request) {
-      return 0;
+      return self::MASTER_CATEGORY;
     }
     
     public function getOffset($request) {
@@ -54,6 +57,21 @@
     
     protected function sanitizeHref($name) {
       return preg_replace('#[^a-zA-Z0-9\-\._]#', '_', $name);
+    }
+    
+    protected function categoriesOfEntry($id) {
+      return ConnectionManager::getInstance()->getByHost('news', 0)->select('
+          c.categoryid,
+          c.category_name,
+          c.parentid
+        from
+          serendipity_entrycat matrix,
+          serendipity_category c
+        where c.categoryid= matrix.categoryid
+          and matrix.entryid= %d
+        ',
+        $id
+      );
     }
     
     /**
@@ -103,34 +121,35 @@
       // does a join on entries and categories (which have a 1:n
       // relationship, so the returned results are not unique)
       $q= $this->getEntries($db, $request);
+      $cnt= 0;
 
       $n= $response->addFormResult(new Node('entries'));
       while ($record= $q->next()) {
-        if (!isset($entry[$record['id']])) {
-          $entry[$record['id']]= $n->addChild(new Node('entry', NULL, array('id' => $record['id'], 'link' => $this->sanitizeHref($record['title']))));
-          $entry[$record['id']]->addChild(new Node('title', $record['title']));
-          $entry[$record['id']]->addChild(new Node('author', $record['author']));
-          $entry[$record['id']]->addChild(new Node('extended_length', $record['extended_length']));
-          $entry[$record['id']]->addChild(new Node('num_comments', $record['num_comments']));
-          $entry[$record['id']]->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
-          $entry[$record['id']]->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
-        }
+        $cnt++;
+        $e= $n->addChild(new Node('entry', NULL, array('id' => $record['id'], 'link' => $this->sanitizeHref($record['title']))));
+        $e->addChild(new Node('title', $record['title']));
+        $e->addChild(new Node('author', $record['author']));
+        $e->addChild(new Node('extended_length', $record['extended_length']));
+        $e->addChild(new Node('num_comments', $record['num_comments']));
+        $e->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
+        $e->addChild(FormresultHelper::markupNodeFor('body', $record['body']));
         
-        // Add categories
-        $entry[$record['id']]->addChild(new Node(
-          'category', 
-          $record['category'], 
-          array('id' => $record['category_id'])
-        ));
+        $cnode= $e->addChild(new Node('categories'));
+        foreach ($this->categoriesOfEntry($record['id']) as $row) {
+          $cnode->addChild(new Node('category', $row['category_name'], array(
+            'link'  => $this->sanitizeHref($row['category_name']),
+            'id'    => $row['categoryid']
+          )));
+        }
       }
       
       // Add pager element
       $pager= array(
         'offset'  => $this->getOffset($request),
-        'prev'    => max(0, $this->getOffset($request)- 10)
+        'prev'    => max(0, $this->getOffset($request)- self::PAGER_LENGTH)
       );
-      if (sizeof($entry)) {
-        $pager['next']= $this->getOffset($request)+ 10;
+      if ($cnt >= self::PAGER_LENGTH) {
+        $pager['next']= $this->getOffset($request)+ self::PAGER_LENGTH;
       }
       $response->addFormResult(new Node('pager', NULL, $pager));
       
