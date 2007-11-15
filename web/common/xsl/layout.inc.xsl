@@ -28,31 +28,38 @@
     </html>
   </xsl:template>
   
+  <xsl:template name="generate-tracking-code">
+	  <xsl:variable name="tracking-code"><xsl:call-template name="tracking-code"/></xsl:variable>
+	  <xsl:if test="$tracking-code != ''">
+	    <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+	    </script>
+	    <script type="text/javascript">
+	    _uacct = "<xsl:value-of select="$tracking-code"/>";
+	    urchinTracker();
+	    </script>
+	  </xsl:if>
+  </xsl:template>
+  
   <xsl:template name="generate-page-head">
     <head>
       <title><xsl:call-template name="html-title"/></title>
       <link rel="stylesheet" type="text/css" href="/style/style.css"/>
       <xsl:call-template name="html-head"/>
-      <xsl:variable name="tracking-code"><xsl:call-template name="tracking-code"/></xsl:variable>
-      <xsl:if test="$tracking-code != ''"><script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-        </script>
-        <script type="text/javascript">
-        _uacct = "<xsl:value-of select="$tracking-code"/>";
-        urchinTracker();
-        </script>
-      </xsl:if>
     </head>
   </xsl:template>
   
   <xsl:template name="generate-page-body">
-    <xsl:call-template name="top-navigation"/>
-    <xsl:call-template name="content"/>
+    <body>
+      <xsl:call-template name="top-navigation"/>
+      <xsl:call-template name="content"/>
+      <xsl:call-template name="generate-tracking-code"/>
+    </body>
   </xsl:template>
   
   <xsl:template name="generate-page-foot">
     <div id="footer">
-      <a href="credits.html">Credits</a> |
-      <a href="feedback.html">Feedback</a>
+      <a href="#">Credits</a> |
+      <a href="#">Feedback</a>
       
       <br/>
       
