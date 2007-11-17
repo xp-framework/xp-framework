@@ -2,7 +2,7 @@
 <!--
  ! Stylesheet include for text display
  !
- ! $Id: news.inc.xsl 5134 2005-05-17 20:04:52Z friebe $
+ ! $Id$
  !-->
 <xsl:stylesheet
  version="1.0"

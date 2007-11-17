@@ -2,7 +2,7 @@
 <!--
  ! Overview page
  !
- ! $Id: master.xsl 4410 2004-12-18 18:19:28Z friebe $
+ ! $Id$
  !-->
 <xsl:stylesheet
  version="1.0"

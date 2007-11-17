@@ -1,7 +1,7 @@
 <?php
 /* This file is part of the XP framework website
  *
- * $Id: index.php 8216 2006-10-22 10:13:38Z kiesel $ 
+ * $Id$ 
  */
   require('lang.base.php');
   xp::sapi('scriptlet.production', 'cgi');
