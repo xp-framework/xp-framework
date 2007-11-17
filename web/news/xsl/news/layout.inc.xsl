@@ -27,7 +27,7 @@
     <div style="text-align: center;">
       <xsl:choose>
         <xsl:when test="@offset &gt; 0">
-          <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @prev)}">&lt;&lt;&lt;</a>
+          <a href="{concat(xp:linkCategory(/formresult/categories/category[@current-category= 'true']/@id, /formresult/categories/category[@current-category= 'true']/@link), '?', @prev)}">&lt;&lt;&lt;</a>
         </xsl:when>
         <xsl:otherwise>&lt;&lt;&lt;</xsl:otherwise>
       </xsl:choose>
