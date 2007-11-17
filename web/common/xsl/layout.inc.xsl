@@ -31,7 +31,7 @@
   <xsl:template name="generate-tracking-code">
     <xsl:variable name="tracking-code"><xsl:call-template name="tracking-code"/></xsl:variable>
     <xsl:if test="$tracking-code != ''">
-      <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+      <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">&#160;
       </script>
       <script type="text/javascript">
       _uacct = "<xsl:value-of select="$tracking-code"/>";

@@ -34,7 +34,7 @@
       |
       <xsl:choose>
         <xsl:when test="@next">
-          <a href="{concat(xp:linkCategory(/formresult/current-category/@id, /formresult/current-category/@link), '?', @next)}">&gt;&gt;&gt;</a>
+          <a href="{concat(xp:linkCategory(/formresult/categories/category[@current-category= 'true']/@id, /formresult/categories/category[@current-category= 'true']/@link), '?', @next)}">&gt;&gt;&gt;</a>
         </xsl:when>
         <xsl:otherwise>&gt;&gt;&gt;</xsl:otherwise>
       </xsl:choose>
