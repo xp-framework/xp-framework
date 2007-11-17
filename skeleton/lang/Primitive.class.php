@@ -44,14 +44,14 @@
     }
     
     /**
-     * Boxes a type - that is, turns primitives into Generics
+     * Boxes a type - that is, turns Generics into primitives
      *
      * @param   mixed in
      * @return  mixed the primitive if not already primitive
      * @throws  lang.IllegalArgumentException in case in cannot be unboxed.
      */
     public static function unboxed($in) {
-      if ($in instanceof String) return $in->getBuffer();
+      if ($in instanceof String) return $in->toString();
       if ($in instanceof Double) return $in->floatValue();
       if ($in instanceof Integer) return $in->intValue();
       if ($in instanceof Boolean) return $in->value;
