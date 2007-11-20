@@ -36,6 +36,11 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.mail.Message which set the Date of the message via
+  Date::now()->toString(). Since the default behaviour of toString
+  was changed with the new date object this led to a non rfc-conform
+  date in the mail header.
+  (hinckel, doebele)
 - Work around PHP bug #43206 by using date_time_set / date_date_set
   in util.DateUtil instead of Date::getTimeZone().
   (clang)
@@ -59,7 +64,7 @@ Bugfixes
   (doebele)
 - Fixed bug in parsing of keywords and supplementalCategories in 
   img.util.IptcData which would return only the first element
- (friebe)
+  (friebe)
 - Fixed bug in peer.mail.store.ImapStore where one could not disable
   checking the validity of a certificate
   (doebele, kiesel)
