@@ -43,7 +43,8 @@
       $document       = NULL,
       $params         = array(),
       $output         = '',
-      $outputEncoding = '';
+      $outputEncoding = '',
+      $baseURI        = '';
 
     public
       $_instances   = array(),
@@ -100,6 +101,7 @@
 
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->load($this->_base.$file);
+      $this->baseURI= $this->_base.$file;
 
       $this->_checkErrors($file);
     }
@@ -115,7 +117,8 @@
       $this->stylesheet= new DOMDocument();
       $this->stylesheet->loadXML($xsl);
       strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
-
+      $this->baseURI= $this->_base.':string';
+      
       $this->_checkErrors($xsl);
     }
 
@@ -199,6 +202,65 @@
     function registerInstance($name, $instance) {
       $this->_instances[$name]= $instance;
     }
+    
+    /**
+     * Determine output encoding. 
+     *
+     * Note: This is a workaround for the problem that when calling:
+     * <code>
+     *   $result= $processor->transformToXML($xml);
+     * </code>
+     * the charset of $result (a string) is unknown. 
+     *
+     * When using:
+     * <code>
+     *   $result= $processor->transformToDoc($xml);   
+     * </code>
+     * the charset can be retrieved by having a look at $result's actualEncoding 
+     * property, but then again the output method is neglected and we do not 
+     * know what to save the result as (saveHTML? saveXML?)
+     *
+     * Thus we manually check for xsl:output in the stylesheet and all its 
+     * includes and imports (recursively!) - the overhead is typically about 
+     * 8 to 10 milliseconds.
+     *
+     * @param   php.DOMElement root
+     * @param   string base
+     * @return  string encoding
+     * @throws  xml.TransformerException in case an include or import cannot be found
+     */
+    protected function determineOutputEncoding(DOMElement $root, $base) {
+      static $xsltNs= 'http://www.w3.org/1999/XSL/Transform';
+
+      // Check whether a xsl:output-method tag exists and if it has an 
+      // encoding attribute - in this case, we've one.
+      if ($output= $root->getElementsByTagNameNS($xsltNs, 'output')->item(0)) {
+        if ($e= $output->getAttribute('encoding')) return $e;
+      }
+      
+      $baseDir= dirname($base);
+
+      // Check xsl:include nodes
+      foreach ($root->getElementsByTagNameNS($xsltNs, 'include') as $include) {
+        $dom= new DOMDocument();
+        if (!($dom->load($b= $baseDir.'/'.$include->getAttribute('href')))) {
+          throw new TransformerException('Cannot find include '.$b."\n at ".$base);
+        }
+        if ($e= $this->determineOutputEncoding($dom->documentElement, $b)) return $e;
+      }
+
+      // Check xsl:import nodes
+      foreach ($root->getElementsByTagNameNS($xsltNs, 'import') as $import) {
+        $dom= new DOMDocument();
+        if (!($dom->load($b= $baseDir.'/'.$import->getAttribute('href')))) {
+          throw new TransformerException('Cannot find import '.$b."\n at ".$base);
+        }
+        if ($e= $this->determineOutputEncoding($dom->documentElement, $b)) return $e;
+      }
+      
+      // Return default encoding
+      return 'utf-8';
+    }
 
     /**
      * Run the XSL transformation
@@ -212,7 +274,7 @@
       $this->processor= new XSLTProcessor();
       $this->processor->importStyleSheet($this->stylesheet);
       $this->processor->setParameter('', $this->params);
-      
+
       // If we have registered instances, register them in XSLCallback
       if (sizeof($this->_instances)) {
         $cb= XSLCallback::getInstance();
@@ -221,26 +283,37 @@
         }
       }
       $this->processor->registerPHPFunctions(array('XSLCallback::invoke'));
-      
-      // Figure out outputEncoding
-      if ($output= $this->stylesheet
-        ->documentElement
-        ->getElementsByTagNameNS('http://www.w3.org/1999/XSL/Transform', 'output')
-        ->item(0)
-      ) {
-        $this->outputEncoding= $output->getAttribute('encoding');
-      }
-      $this->outputEncoding || $this->outputEncoding= 'utf-8';   // Default
+      $this->outputEncoding= $this->determineOutputEncoding(
+        $this->stylesheet->documentElement,
+        $this->baseURI
+      );
       
       // Start transformation
       $this->output= $this->processor->transformToXML($this->document);
-
-      // Check for errors
-      $this->_checkErrors('<transformation>');
-
+      
       // Perform cleanup when necessary (free singleton for further use)
       sizeof($this->_instances) && XSLCallback::getInstance()->clearInstances();
       
+      // Check for transformation errors
+      if (FALSE === $this->output) {
+        if ($error= libxml_get_last_error()) {
+          libxml_clear_errors();
+          $message= sprintf(
+            "Transformation error: #%d: %s\n  at %s, line %d, column %d",
+            $error->code,
+            trim($error->message),
+            strlen($error->file) ? $error->file : '<transformation>',
+            $error->line,
+            $error->column
+          );
+        } else {
+          $message= 'Unknown transformation error while transforming '.$this->baseURI;
+        }
+        throw new TransformerException($message);
+      }
+      
+      // Check for left-over errors that did not make the transformation fail
+      $this->_checkErrors('<transformation>');
       return TRUE;
     }
     
@@ -255,7 +328,8 @@
         libxml_clear_errors();
         if (LIBXML_ERR_FATAL != $error->level) return;
         
-        throw new TransformerException(sprintf("Transformation failed: #%d: %s\n  at %s, line %d, column %d",
+        throw new TransformerException(sprintf(
+          "Unexpected transformation error: #%d: %s\n  at %s, line %d, column %d",
           $error->code,
           trim($error->message),
           strlen($error->file) ? $error->file : xp::stringOf($source),
