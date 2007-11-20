@@ -83,7 +83,7 @@
      */
     #[@test]
     public function baseAccessors() {
-      $path= rtrim(realpath('../xml/'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      $path= rtrim(realpath(dirname(__FILE__).'/../xml/'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       $this->processor->setBase($path);
       $this->assertEquals($path, $this->processor->getBase());
     }
@@ -94,7 +94,7 @@
      */
     #[@test]
     public function setBaseAddsTrailingDirectorySeparator() {
-      $path= rtrim(realpath('../xml/'), DIRECTORY_SEPARATOR);
+      $path= rtrim(realpath(dirname(__FILE__).'/../xml/'), DIRECTORY_SEPARATOR);
       $this->processor->setBase($path);
       $this->assertEquals($path.DIRECTORY_SEPARATOR, $this->processor->getBase());
     }
@@ -283,6 +283,66 @@
     }
 
     /**
+     * Tests a transformation to HTML
+     *
+     */
+    #[@test]
+    public function transformationToHtml() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="html" encoding="utf-8"/>
+          <xsl:template match="/">
+            <b>Hello</b>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('<b>Hello</b>', trim($this->processor->output()));
+    }
+
+    /**
+     * Tests a transformation javascript embedded in a CDATA section
+     *
+     */
+    #[@test]
+    public function javaScriptInCDataSection() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="html" encoding="utf-8"/>
+          <xsl:template match="/">
+            <script language="JavaScript"><![CDATA[ alert(1 && 2); ]]></script>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals(
+        '<script language="JavaScript"> alert(1 && 2); </script>', 
+        trim($this->processor->output())
+      );
+    }
+
+    /**
+     * Tests a transformation with parameters
+     *
+     */
+    #[@test]
+    public function omitXmlDeclaration() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="xml" encoding="utf-8" omit-xml-declaration="yes"/>
+          <xsl:template match="/">
+            <tag>No XML declaration</tag>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('<tag>No XML declaration</tag>', trim($this->processor->output()));
+    }
+
+    /**
      * Tests a transformation with parameters
      *
      */
@@ -347,6 +407,40 @@
     public function malformedXSL() {
       $this->processor->setXMLBuf('<document/>');
       $this->processor->setXSLBuf('@@MALFORMED@@');
+      $this->processor->run();
+    }
+
+    /**
+     * Tests a transformation with malformed XSL expression
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function malformedExpression() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:template match="/">
+            <xsl:value-of select="concat(\'Hello\', "/>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+    }
+
+    /**
+     * Tests a transformation with an unbound variable
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function unboundVariable() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:template match="/">
+            <xsl:value-of select="$a"/>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
       $this->processor->run();
     }
   }
