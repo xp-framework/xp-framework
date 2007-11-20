@@ -648,7 +648,7 @@
         HEADER_MIMEVER      => $this->mimever,
         HEADER_ENCODING     => $this->encoding,
         HEADER_PRIORITY     => $this->priority.' ('.$priorities[$this->priority].')',
-        HEADER_DATE         => $this->date->toString(),
+        HEADER_DATE         => $this->date->toString('r'),
         HEADER_MESSAGEID    => $this->message_id,
         HEADER_RETURNPATH   => $this->returnpath
       )) as $key => $val) {
