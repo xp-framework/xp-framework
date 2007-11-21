@@ -6,11 +6,20 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+
+RFCs
+~~~~
+
 Bugfixes
 ~~~~~~~~
 - Ports: Fixed Nagios Heartbeat adding two dots between unqualified host
   name and domain (e.g. example..1and1.com where example is the host name)
   (hinckel, doebele)
+
+Features
+~~~~~~~~
 
 Version 5.6.2, released 2007-11-21
 ----------------------------------
@@ -60,7 +69,7 @@ Bugfixes
 - Fixed xp::sapi() when using XAR-releases on Windows
   (friebe)
 - Added support for field type tinytext, mediumblob and bit to
-  rdbms.MySQLDBAdapter
+  rdbms.mysql.MySQLDBAdapter
   (wagner, hinckel)
 - Ensured file is only then closed in io.streams.FileOutputStream's 
   destructor if it's still open
@@ -69,7 +78,7 @@ Bugfixes
   the util.Date object for parsing the date string instead of 
   text.parser.DateParser. The DateParser led to erroneous results.
   (doebele)
-- Fixed a bug which prevented Dataset objects from joins to 
+- Fixed a bug which prevented dataset objects from joins to 
   build correctly
   (doebele)
 - Fixed bug in parsing of keywords and supplementalCategories in 
