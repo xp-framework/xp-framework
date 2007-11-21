@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
@@ -42,10 +42,10 @@
       $port     = 5667,
       $version  = NSCA_VERSION_2,
       $service  = NULL;
-    
+
     protected static
       $instance   = NULL;
-    
+
     /**
      * Get instance of this class.
      *
@@ -55,7 +55,7 @@
       if (NULL === self::$instance) self::$instance= new Heartbeat();
       return self::$instance;
     }
-    
+
     /**
      * Setup the class instance. A dsn string must be given with the relevant information
      * about the server and script:
@@ -66,14 +66,17 @@
      */
     public function setup($dsn) {
       $url= new URL($dsn);
-      
+
       $this->server=  $url->getHost();
       $this->port=    $url->getPort(5667);
       $this->version= $url->getParam('version', NSCA_VERSION_2);
       $this->service= trim($url->getPath(), '/');
-      $this->host=    $url->getParam('hostname', System::getProperty('host.name').rtrim('.'.$url->getParam('domain', ''), '.'));
+      $this->host=    $url->getParam('hostname', System::getProperty('host.name'));
+      if ($url->hasParam('domain')) {
+        $this->host.= '.'.ltrim($url->getParam('domain', ''), '.');
+      }
     }
-    
+
     /**
      * Sends a heartbeat to nagios, if the server is not reachable, do not throw
      * an exception.
@@ -92,13 +95,13 @@
       } catch (IOException $ignore) {
       }
     }
-    
+
     /**
      * Sends a heartbeat to nagios
      *
      * @param   int status status of service (one of NSCA_OK, NSCA_WARN, NSCA_ERROR, NSCA_UNKNOWN)
      * @param   string message default ''
-     * @throws  io.IOException in case 
+     * @throws  io.IOException in case
      */
     public function send($status, $message= '') {
       $nsca= new NscaClient(
