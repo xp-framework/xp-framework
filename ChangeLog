@@ -96,7 +96,7 @@ Features
 - Added tell() method to io.streams.Seekable interface and its
   implementations to complement seek()
   (friebe)
-- Made XMLScritplets use the XSL processor's output encoding in their
+- Made XMLScriptlets use the XSL processor's output encoding in their
   Content-Type response header
   (friebe)
 - text.parser.DateParser makes use of parser capabilities of php.DateTime
