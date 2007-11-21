@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Ports: Fixed Nagios Heartbeat adding two dots between unqualified host
+  name and domain (e.g. example..1and1.com where example is the host name)
+  (hinckel, doebele)
+
 Version 5.6.2, released 2007-11-21
 ----------------------------------
 SVN version: 11353
