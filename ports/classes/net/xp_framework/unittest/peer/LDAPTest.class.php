@@ -68,5 +68,27 @@
       $this->assertClass($entry, 'peer.ldap.LDAPEntry');
       return $entry;
     }
+    
+    /**
+     * Test LDAP read
+     *
+     * @param   
+     * @return  
+     */
+    #[@test]
+    public function readEntry() {
+      $res= $this->lc->read(new LDAPEntry('uid=kurt,ou=People,dc=OpenLDAP,dc=Org'));
+      $this->assertEquals('uid=kurt,ou=People,dc=OpenLDAP,dc=Org', $res->getDN());
+      var_dump($res);
+    }
+    
+    /**
+     * Test LDAP read on non-existing object
+     *
+     */
+    #[@test, @expect('peer.ldap.LDAPException')]
+    public function readNonExistingEntry() {
+      $this->assertEquals(NULL, $this->lc->read(new LDAPEntry('uid=unknown,ou=People,dc=OpenLDAP,dc=Org')));
+    }
   }
 ?>
