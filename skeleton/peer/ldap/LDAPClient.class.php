@@ -277,13 +277,8 @@
       if (0 != ldap_errno($this->_hdl)) {
         throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
-      
-      // Nothing found?
-      $result= ldap_get_entries($this->_hdl, $res);
-      if (!is_resource($res) || 0 == $result['count']) return NULL;
-      ldap_free_result($res);
-      
-      return LDAPEntry::fromData($result[0]);
+
+      return LDAPEntry::fromData($this->_hdl, ldap_first_entry($this->_hdl, $res));
     }
     
     /**

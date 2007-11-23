@@ -24,12 +24,14 @@
      * Constructor
      *
      * @param   string dn default NULL "distinct name"
-     * @param   mixed[] attrs
+     * @param   mixed[] attrs default array()
      */
     public function __construct($dn= NULL, $attrs= array()) {
       $this->dn= $dn;
-      $this->attributes= array_change_key_case($attrs, CASE_LOWER);
-      $this->_ans= array_combine(array_keys($this->attributes), array_keys($attrs));
+      if (sizeof($attrs)) {
+        $this->attributes= array_change_key_case($attrs, CASE_LOWER);
+        $this->_ans= array_combine(array_keys($this->attributes), array_keys($attrs));
+      }
     }
 
     /**
