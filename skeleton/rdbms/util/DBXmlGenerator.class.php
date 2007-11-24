@@ -82,13 +82,11 @@
             'primary' => $index->isPrimaryKey() ? 'true' : 'false',
           )));
 
-          $cs= '';
           foreach ($index->getKeys() as $key) {
-            $cs.= '|'.$key;
             $n->addChild(new Node('key', $key));
           }
-          if ($indexes[$cs] && $this->cat) $this->cat->warn('('.substr($cs, 1).')', 'has been indexed twice');
-          $indexes[$cs]= true;
+          if (isset($indexes[implode('|', $index->getKeys())]) && $this->cat) $this->cat->warn('('.implode('|', $index->getKeys()).')', 'has been indexed twice');
+          $indexes[implode('|', $index->getKeys())]= TRUE;
 
         } while ($index= $this->table->getNextIndex());
 

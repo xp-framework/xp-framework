@@ -137,7 +137,7 @@
       NULL === $name && $name= 'all';
 
       if (!($m= $this->getClass()->getMethod($name))) {
-        throw new FinderException('No such finder', new MethodNotImplementedException($name));
+        throw new FinderException('No such finder', new MethodNotImplementedException('Cannot find finder method', $name));
       }
       if (!$m->hasAnnotation('finder')) {
         throw new FinderException('Not a finder', new IllegalArgumentException($m->getName()));
