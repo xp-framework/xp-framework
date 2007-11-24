@@ -23,7 +23,7 @@
      */
     #[@test]
     public function withoutCause() {
-      $e= new ChainedException('Message');
+      $e= new ChainedException('Message', NULL);
       $this->assertEquals('Message', $e->getMessage()) &&
       $this->assertNull($e->getCause()) &&
       $this->assertFalse(strstr($e->toString(), 'Caused by'));

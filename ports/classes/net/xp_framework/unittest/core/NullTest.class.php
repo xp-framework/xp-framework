@@ -103,7 +103,7 @@
     #[@test, @expect('lang.NullPointerException')]
     public function memberWriteccess() {
       $null= xp::null();
-      $null->member= $i;
+      $null->member= 15;
     }
   }
 ?>
