@@ -42,7 +42,6 @@
       
       // Initialize details array
       $details= array(
-        DETAIL_MODIFIERS    => 0,
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => 'void',
         DETAIL_THROWS       => array(),
@@ -57,11 +56,6 @@
       
       foreach ($matches as $match) {
         switch ($match[1]) {
-          case 'access':
-          case 'model':
-            $details[DETAIL_MODIFIERS] |= constant('MODIFIER_'.strtoupper($match[2]));
-            break;
-
           case 'param':
             $details[DETAIL_ARGUMENTS][]= new Argument(
               isset($match[3]) ? $match[3] : 'param',
@@ -145,67 +139,6 @@
       );
     }
     
-    /**
-     * Tests parsing of the "access" tag
-     *
-     */
-    #[@test]
-    public function publicAccess() {
-      $this->assertAccessFlags(MODIFIER_PUBLIC, '
-        /**
-         * A public method
-         *
-         * @access  public
-         */
-      ');
-    }
-
-    /**
-     * Tests parsing of the "access" tag
-     *
-     */
-    #[@test]
-    public function protectedAccess() {
-      $this->assertAccessFlags(MODIFIER_PROTECTED, '
-        /**
-         * A protected method
-         *
-         * @access  protected
-         */
-      ');
-    }
-
-    /**
-     * Tests parsing of the "access" tag
-     *
-     */
-    #[@test]
-    public function privateAccess() {
-      $this->assertAccessFlags(MODIFIER_PRIVATE, '
-        /**
-         * A private method
-         *
-         * @access  private
-         */
-      ');
-    }
-
-    /**
-     * Tests parsing of the "access" tag
-     *
-     */
-    #[@test]
-    public function staticAccess() {
-      $this->assertAccessFlags(MODIFIER_PUBLIC | MODIFIER_STATIC, '
-        /**
-         * A public method
-         *
-         * @model   static
-         * @access  public
-         */
-      ');
-    }
-
     /**
      * Tests parsing of the "param" tag with a scalar parameter
      *
