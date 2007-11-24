@@ -289,7 +289,7 @@
         }
         
         default: 
-          throw(new JsonException('Invalid character: "'.token.'" at position '.$this->stream->tell()));
+          throw new JsonException('Invalid character: "'.$token.'" at position '.$this->stream->tell());
       }
     }
     

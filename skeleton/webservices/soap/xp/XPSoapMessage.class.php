@@ -227,7 +227,7 @@
         case 'array':
           
           // Check for specific type information
-          list($ns, $typeSpec)= explode(':', $regs[1]);
+          @list($ns, $typeSpec)= explode(':', $regs[1]);
           if (2 == sscanf($typeSpec, '%[^[][%d]', $childType, $length) && 'anyType' != $childType) {
 
             // Arrays of XP objects
@@ -306,7 +306,7 @@
             // <item xmlns:xp="http://xp-framework.net/xmlns/xp" xsi:type="xp:de.schlund.db.irc.IrcChannel"/>        
             //
             // For other objects, check SOAPMapping registry
-            if ($this->namespaces[XMLNS_XP] == $regs[1]) {
+            if (isset($this->namespaces[XMLNS_XP]) && $this->namespaces[XMLNS_XP] == $regs[1]) {
               try {
                 $xpclass= XPClass::forName($regs[2]);
               } catch (ClassNotFoundException $e) {

@@ -40,7 +40,7 @@
 
       // Set class and method members from XML structure
       $target= $msg->tree->root->children[0]->getContent();
-      list($msg->class, $msg->method)= explode('.', $target);
+      @list($msg->class, $msg->method)= explode('.', $target);
 
       return $msg;
     }
