@@ -37,23 +37,25 @@
      * @return  string
      */
     protected static function contentOf($element) {
-      if (xp::typeOf($element) == 'php.DOMNodeList') {
+      if ($element instanceof DOMNodeList) {
           return $element->length ? utf8_decode($element->item(0)->textContent) : NULL;
       
-      } else switch ($element->nodeType) {
-        case 1:   // DOMElement
-          return utf8_decode($element->textContent);
-
-        case 2:   // DOMAttr
-          return utf8_decode($element->value);
+      } else if (is_scalar($element)) {
+        return $element;
         
-        case 3:   // DOMText
-        case 4:   // DOMCharacterData
-          return utf8_decode($element->data);
+      } else if ($element instanceof DOMNode) {
+        switch ($element->nodeType) {
+          case 1:   // DOMElement
+            return utf8_decode($element->textContent);
 
-        default:
-          return is_scalar($element) ? $element : NULL;
-      }
+          case 2:   // DOMAttr
+            return utf8_decode($element->value);
+
+          case 3:   // DOMText
+          case 4:   // DOMCharacterData
+            return utf8_decode($element->data);
+        }
+      } else return NULL;
     }
 
     /**
