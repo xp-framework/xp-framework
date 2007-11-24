@@ -23,15 +23,6 @@
     }
 
     /**
-     * Tests cloning of non-objects which shouldn't work
-     *
-     */
-    #[@test, @expect('lang.CloneNotSupportedException'), @ignore('E_NOTICE in PHP5')]
-    public function cloningOfNonObjects() {
-      clone(6100);
-    }
-
-    /**
      * Tests cloning of an object without a __clone interceptor
      *
      */
