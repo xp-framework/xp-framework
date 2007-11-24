@@ -182,7 +182,7 @@
       if (!$this->assertEquals(200, $response->statusCode)) return;
 
       $msg= XPSoapMessage::fromString($response->getContent());
-      $data= array_shift($msg->getData());
+      $data= current($msg->getData());
       
       $this->assertEquals('Lalala', $data[0]) &&
       $this->assertEquals(1, $data[1]) &&

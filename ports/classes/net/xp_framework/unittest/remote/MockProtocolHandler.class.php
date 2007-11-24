@@ -42,7 +42,7 @@
      */
     public function lookup($name) {
       if (!isset($this->server['ctx'][$name])) {
-        throw(new NameNotFoundException($name.' not bound'));
+        throw new NameNotFoundException($name.' not bound', NULL);
       }
       
       return $this->server['ctx'][$name];

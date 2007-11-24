@@ -71,7 +71,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function readMember() {
-      $o= new UnknownRemoteObject();
+      $o= new UnknownRemoteObject('name');
       $id= $o->id;
     }  
 
@@ -81,7 +81,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function writeMember() {
-      $o= new UnknownRemoteObject();
+      $o= new UnknownRemoteObject('name');
       $o->id= 1;
     }  
 
@@ -91,7 +91,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function invokeMethod() {
-      $o= new UnknownRemoteObject();
+      $o= new UnknownRemoteObject('name');
       $o->method();
     }  
   }

@@ -36,7 +36,7 @@
      */
     #[@test]
     public function attributeAccessors() {
-      $n= new Node();
+      $n= new Node('node');
       $n->setAttribute('id', 1);
       $this->assertTrue($n->hasAttribute('id'));
       $this->assertFalse($n->hasAttribute('href'));
@@ -52,7 +52,7 @@
     #[@test]
     public function contentAccessors() {
       $content= '"This is interesting", Tom\'s friend said. "It\'s > 4 but < 2!"';
-      $n= new Node();
+      $n= new Node('node');
       $n->setContent($content);
       $this->assertEquals($content, $n->getContent());
     }
@@ -65,7 +65,7 @@
      */
     #[@test]
     public function nameAccessors() {
-      $n= new Node();
+      $n= new Node('node');
       $n->setName('name');
       $this->assertEquals('name', $n->getName());
     }
@@ -78,7 +78,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function illegalContent() {
-      $n= new Node();
+      $n= new Node('node');
       $n->setContent("\0");
     }
     
@@ -90,7 +90,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addingNullChild() {
-      $n= new Node();
+      $n= new Node('node');
       $n->addChild($child= NULL);
     }
 
@@ -101,8 +101,8 @@
      */
     #[@test]
     public function addingReturnsChild() {
-      $n= new Node();
-      $child= new Node();
+      $n= new Node('node');
+      $child= new Node('node');
       $this->assertEquals($child, $n->addChild($child));
     }
     

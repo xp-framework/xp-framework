@@ -374,10 +374,10 @@
      */
     #[@test]
     public function bestMapping() {
-      $fooClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.FooClass', 'lang.Object');
-      $barClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BarClass', 'FooClass');
-      $bazClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazClass', 'BarClass');
-      $bazookaClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazookaClass', 'BazClass');
+      $fooClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.FooClass', 'lang.Object', NULL);
+      $barClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BarClass', 'FooClass', NULL);
+      $bazClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazClass', 'BarClass', NULL);
+      $bazookaClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazookaClass', 'BazClass', NULL);
       
       // Both must be serialized with the FOO mapping, because both are Foo or Foo-derived objects.
       $this->serializer->mapping('FOO', newinstance('remote.protocol.SerializerMapping', array(), '{

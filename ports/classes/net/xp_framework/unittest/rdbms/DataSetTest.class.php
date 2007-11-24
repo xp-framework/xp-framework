@@ -18,9 +18,6 @@
     'net.xp_framework.unittest.rdbms.dataset.Job'
   );
   
-  define('MOCK_CONNECTION_CLASS', 'net.xp_framework.unittest.rdbms.mock.MockConnection');
-  define('IRRELEVANT_NUMBER',     -1);
-
   /**
    * O/R-mapping API unit test
    *
@@ -28,13 +25,16 @@
    * @purpose  TestCase
    */
   class DataSetTest extends TestCase {
+    const
+      MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection',
+      IRRELEVANT_NUMBER     = -1;
 
     /**
      * Static initializer
      *
      */  
     public static function __static() {
-      DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
+      DriverManager::register('mock', XPClass::forName(self::MOCK_CONNECTION_CLASS));
     }
     
     /**
@@ -132,7 +132,7 @@
         0 => array(   // First row
           'job_id'      => 1,
           'title'       => 'Unit tester',
-          'valid_from'  => $now,
+          'valid_from'  => Date::now(),
           'expire_at'   => NULL
         )
       )));
@@ -164,7 +164,7 @@
     #[@test]
     public function noResultsDuringGetByJob_id() {
       $this->setResults(new MockResultSet());
-      $this->assertNull(Job::getByJob_id(IRRELEVANT_NUMBER));
+      $this->assertNull(Job::getByJob_id(self::IRRELEVANT_NUMBER));
     }
 
     /**
@@ -177,7 +177,7 @@
       $mock= $this->getConnection();
       $mock->makeQueryFail(1, 'Select failed');
 
-      Job::getByJob_id(IRRELEVANT_NUMBER);
+      Job::getByJob_id(self::IRRELEVANT_NUMBER);
     }
 
     /**
@@ -229,7 +229,7 @@
         0 => array(   // First row
           'job_id'      => 1,
           'title'       => 'Unit tester',
-          'valid_from'  => $now,
+          'valid_from'  => Date::now(),
           'expire_at'   => NULL
         )
       )));
@@ -312,7 +312,7 @@
       $this->setResults(new MockResultSet());
     
       $peer= Job::getPeer();
-      $jobs= $peer->doSelect(new Criteria(array('job_id', IRRELEVANT_NUMBER, EQUAL)));
+      $jobs= $peer->doSelect(new Criteria(array('job_id', self::IRRELEVANT_NUMBER, EQUAL)));
 
       $this->assertArray($jobs);
       $this->assertEquals(0, sizeof($jobs));

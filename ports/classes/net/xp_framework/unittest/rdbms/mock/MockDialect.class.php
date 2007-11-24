@@ -52,7 +52,7 @@
      */
     public function makeJoinBy(Array $conditions) {
       if (0 == sizeof($conditions)) throw new IllegalArgumentException('conditions can not be empty');
-      $tableString.= current($conditions)->getSource()->toSqlString();
+      $tableString= current($conditions)->getSource()->toSqlString();
       $conditionString= '';
 
       foreach ($conditions as $link) {
