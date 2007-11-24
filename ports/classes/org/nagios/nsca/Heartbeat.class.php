@@ -49,7 +49,7 @@
     /**
      * Get instance of this class.
      *
-     * @return  &sapi.de.schlund.nagios.Heartbeat
+     * @return  org.nagios.nsca.Heartbeat
      */
     public static function getInstance() {
       if (NULL === self::$instance) self::$instance= new Heartbeat();
@@ -72,8 +72,8 @@
       $this->version= $url->getParam('version', NSCA_VERSION_2);
       $this->service= trim($url->getPath(), '/');
       $this->host=    $url->getParam('hostname', System::getProperty('host.name'));
-      if ($url->hasParam('domain')) {
-        $this->host.= '.'.ltrim($url->getParam('domain', ''), '.');
+      if (FALSE !== $url->getParam('domain', FALSE)) {
+        $this->host.= '.'.ltrim($url->getParam('domain'), '.');
       }
     }
 
