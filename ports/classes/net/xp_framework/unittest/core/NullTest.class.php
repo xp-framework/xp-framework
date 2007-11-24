@@ -40,24 +40,6 @@
     }
 
     /**
-     * Tests xp::null evaluates to FALSE so it can be used in constructs
-     * such as:
-     * <code>
-     *   function &constructorOf(&$class) {
-     *     if (!$class->hasConstructor()) return xp::null();
-     *     return $class->getConstructor();
-     *   }
-     *   
-     *   if (!($c= &constructorOf($class))) { ... }
-     * </code>
-     *
-     */
-    #[@test, @ignore('Does no longer work with PHP5')]
-    public function isFalse() {
-      $this->assertTrue(!xp::null());
-    }
-
-    /**
      * Tests the xp::typeOf() function's return value for xp::nulls
      *
      */
