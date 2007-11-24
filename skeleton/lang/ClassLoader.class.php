@@ -145,10 +145,10 @@
      * @throws  lang.ClassNotFoundException if given parent class does not exist
      */
     public static function defineInterface($class, $parents, $bytes= '{}') {
-      $name= xp::reflect($class);
+      $name= xp::reflect($class); $if= array();
       if (!isset(xp::$registry['classloader.'.$class])) {
         if (!empty($parents)) {
-          $if= array_map(array('xp', 'reflect'), $parents);
+          $if= array_map(array('xp', 'reflect'), (array)$parents);
           foreach ($if as $super) {
             if (interface_exists($super)) continue;
             throw new ClassNotFoundException('Superinterface "'.$super.'" does not exist.');
@@ -159,7 +159,7 @@
           $dyn->setClassBytes($class, sprintf(
             'interface %s%s %s',
             $name,
-            $interfaces ? ' implements '.implode(', ', $if) : '',
+            sizeof($if) ? ' extends '.implode(', ', $if) : '',
             $bytes
           ));
           

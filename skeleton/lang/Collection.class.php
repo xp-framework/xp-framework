@@ -192,7 +192,7 @@
      * @return  lang.Object
      */
     public function get($index) {
-      return $this->list[$index];
+      return @$this->list[$index];
     }
     
     /**
@@ -298,7 +298,7 @@
     public function equals($collection) {
       if (
         !$collection instanceof self ||
-        $this->size != $collection->size
+        $this->size() != $collection->size()
       ) return FALSE;
       
       // Compare element by element
