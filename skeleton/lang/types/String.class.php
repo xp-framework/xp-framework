@@ -82,7 +82,7 @@
      */
     public function offsetSet($offset, $value) {
       if (!is_int($offset)) {
-        throw new IllegalArgumentException('Incorrect type '.$t.' for index');
+        throw new IllegalArgumentException('Incorrect type '.gettype($offset).' for index');
       }
       
       if ($offset >= $this->length || $offset < 0) {

@@ -75,7 +75,7 @@
       if ('string' === $t) return new String($in);
       if ('integer' === $t) return new Integer($in);
       if ('double' === $t) return new Double($in);
-      if ('boolean' === $t) return new Boolean($value);
+      if ('boolean' === $t) return new Boolean($in);
       if ('array' === $t) return ArrayList::newInstance($in);
       throw new IllegalArgumentException('Cannot box '.xp::typeOf($in));
     }

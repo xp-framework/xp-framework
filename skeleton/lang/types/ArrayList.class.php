@@ -97,7 +97,7 @@
      */
     public function offsetSet($offset, $value) {
       if (!is_int($offset)) {
-        throw new IllegalArgumentException('Incorrect type '.$t.' for index');
+        throw new IllegalArgumentException('Incorrect type '.gettype($offset).' for index');
       }
       
       if ($offset >= $this->length || $offset < 0) {
@@ -135,7 +135,7 @@
     protected function arrayequals($a1, $a2) {
       if (sizeof($a1) != sizeof($a2)) return FALSE;
 
-      foreach (array_keys($a1) as $k) {
+      foreach (array_keys((array)$a1) as $k) {
         switch (TRUE) {
           case !array_key_exists($k, $a2): 
             return FALSE;
