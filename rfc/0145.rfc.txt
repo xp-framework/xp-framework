@@ -4,7 +4,7 @@ $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
 @authors: kiesel
 @created: Sun Nov 25 12:19:46     2007
-@status: draft
+@status: discussion, ends at Mon Nov 26 16:00:00     2007
 @category: unittest
 
 Scope of Change
@@ -38,8 +38,14 @@ n/a
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0145.diff
+  Implementing patch
 
 Comments
 --------
+- kiesel, Sun Nov 25 12:40:06     2007
+  Should this behavior be deactivateable by a @non-strict class annotation?
+
+
 
 <EOF>

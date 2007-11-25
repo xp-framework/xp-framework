@@ -1,64 +1,385 @@
+Index: sapi/scriptlet/ScriptletRunner.class.php
+===================================================================
+--- sapi/scriptlet/ScriptletRunner.class.php	(revision 10764)
++++ sapi/scriptlet/ScriptletRunner.class.php	(working copy)
+@@ -8,6 +8,8 @@
+   define('SCRIPTLET_SHOW_XML',            0x0002);
+   define('SCRIPTLET_SHOW_ERRORS',         0x0004);
+ 
++  uses('scriptlet.sapi.WebserverAPI');
++
+   /**
+    * Utility class to easily run HttpScriptlet derived scriptlets.
+    * Automatically handles development/production environments,
+@@ -31,14 +33,23 @@
+     }
+     
+     /**
++     * (Insert method's description here)
++     *
++     * @param   
++     * @return  
++     */
++    public function _api() {
++      return new WebserverAPI();
++    }
++    
++    /**
+      * Handle exception from scriptlet
+      *
+      * @param   scriptlet.xml.XMLScriptletResponse response
+      * @param   lang.XPException e
+      */
+     public function except($response, $e) {
+-      $class= $this->getClass();
+-      $loader= $class->getClassLoader();
++      $loader= $this->getClass()->getClassLoader();
+       
+       $response->setContent(str_replace(
+         '<xp:value-of select="reason"/>',
+@@ -58,11 +69,13 @@
+     public function run($scriptlet) {
+       try {
+         $scriptlet->init();
+-        $response= $scriptlet->process();
++        $response= $scriptlet->process($this->_api());
+       } catch (HttpScriptletException $e) {
+         $response= $e->getResponse();
++        $response->setApi(new WebserverAPI());
+         $this->except($response, $e);
+       }
++      
+ 
+       // Send output
+       $response->sendHeaders();
+Index: scriptlet/HttpScriptletResponse.class.php
+===================================================================
+--- scriptlet/HttpScriptletResponse.class.php	(revision 10764)
++++ scriptlet/HttpScriptletResponse.class.php	(working copy)
+@@ -23,7 +23,20 @@
+       $statusCode=      HTTP_OK,
+       $headers=         array();
+     
++    protected
++      $api=             NULL;
++    
+     /**
++     * (Insert method's description here)
++     *
++     * @param   
++     * @return  
++     */
++    public function setApi(ServerAPI $api) {
++      $this->api= $api;
++    }
++    
++    /**
+      * Redirects the client to the specified location. Most HTTP clients
+      * (such as all browsers) ignore the body if one is sent, search engines
+      * _may_ not, and of course, your favorite command line tool (such as
+@@ -125,7 +138,7 @@
+      * @return  bool
+      */
+     public function headersSent() {
+-      return headers_sent();
++      return $this->api->headersSent();
+     }
+     
+     /**
+@@ -137,19 +150,13 @@
+      * @throws  lang.IllegalStateException if headers have already been sent
+      */  
+     public function sendHeaders() {
+-      if (headers_sent($file, $line))
+-        throw(new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line));
++      if (($details= $this->api->headersSentAt()))
++        throw(new IllegalStateException('Headers have already been sent at: '.$details[0].', line '.$details[1]));
+         
+-      switch (php_sapi_name()) {
+-        case 'cgi':
+-          header('Status: '.$this->statusCode);
+-          break;
+-
+-        default:
+-          header(sprintf('HTTP/%s %d', $this->version, $this->statusCode));
+-      } 
++      $this->api->setHeader(sprintf('HTTP/%s %d', $this->version, $this->statusCode));
++      
+       foreach ($this->headers as $header) {
+-        header(strtr($header, array("\r" => '', "\n" => "\n\t")), FALSE);
++        $this->api->setHeader(strtr($header, array("\r" => '', "\n" => "\n\t")), FALSE);
+       }
+     }
+ 
+@@ -180,7 +187,7 @@
+      *
+      */
+     public function sendContent() {
+-      echo $this->getContent();
++      $this->api->send($this->getContent());
+     }
+     
+     /**
 Index: scriptlet/HttpScriptlet.class.php
 ===================================================================
---- scriptlet/HttpScriptlet.class.php	(revision 7155)
+--- scriptlet/HttpScriptlet.class.php	(revision 10764)
 +++ scriptlet/HttpScriptlet.class.php	(working copy)
-@@ -177,12 +177,12 @@
+@@ -11,7 +11,8 @@
+     'scriptlet.HttpScriptletResponse',
+     'scriptlet.HttpScriptletException',
+     'scriptlet.HttpSessionInvalidException',
+-    'scriptlet.HttpSession'
++    'scriptlet.HttpSession',
++    'scriptlet.sapi.WebserverAPI'
+   );
+   
+   /**
+@@ -161,7 +162,8 @@
+     public function handleMethod($request) {
+       switch ($request->method) {
+         case HTTP_POST:
+-          $request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
++        
++          // FIXME
+           if (!empty($_FILES)) {
+             $request->params= array_merge($request->params, $_FILES);
+           }
+@@ -169,14 +171,12 @@
            break;
            
          case HTTP_GET:
 -          $request->setData(getenv('QUERY_STRING'));
-+          $request->setData($request->getEnvValue('QUERY_STRING'));
            $m= 'doGet';
            break;
            
          case HTTP_HEAD:
 -          $request->setData(getenv('QUERY_STRING'));
-+          $request->setData($request->getEnvValue('QUERY_STRING'));
            $m= 'doHead';
-           break;        
+-          break;        
++          break;
            
-@@ -330,15 +330,15 @@
-      * @param   &scriptlet.HttpRequest request
-      */
-     function _setupRequest(&$request) {
+         default:
+           $m= NULL;
+@@ -310,22 +310,6 @@
+     public function finalize() { }
+     
+     /**
+-     * Set the request from the environment.
+-     *
+-     * @param   scriptlet.HttpRequest request
+-     */
+-    protected function _setupRequest($request) {
 -      $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
 -      $request->method= getenv('REQUEST_METHOD');
 -      $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-+      // $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
-+      $request->method= $request->getEnvValue('REQUEST_METHOD');
-+      // $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-       $request->setURI(new URL(
+-      $request->setURI(new URL(
 -        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
 -        getenv('HTTP_HOST').
 -        getenv('REQUEST_URI')
-+        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
-+        $request->getEnvValue('HTTP_HOST').
-+        $request->getEnvValue('REQUEST_URI')
-       ));
+-      ));
 -    }    
-+    }
-     
-     /**
+-    
+-    /**
       * This method is called to process any request and dispatches
+      * it to on of the do* -methods of the scriptlet. It will also
+      * call the <pre>doCreateSession()</pre> method if necessary.
+@@ -333,19 +317,24 @@
+      * @return  scriptlet.HttpScriptletResponse the response object
+      * @throws  scriptlet.HttpScriptletException indicating fatal errors
+      */
+-    public function process() {
++    public function process($api= NULL) {
++      // Keep BC!
++      if (!$api) $api= new WebserverAPI();
++      
++      if (!$api instanceof ServerAPI) throw new IllegalArgumentException('No ServerAPI given');
++    
+       $request= $this->_request();
+-      $this->_setupRequest($request);
++      $request->setEnvironment($api->getEnvironment());
+ 
+       // Check if this method can be handled. In case it can't, throw a
+       // HttpScriptletException with the HTTP status code 501 ("Method not
+       // implemented"). The request object will already have all headers
+       // and the request method set when this method is called.
+       if (!($method= $this->handleMethod($request))) {
+-        throw(new HttpScriptletException(
++        throw new HttpScriptletException(
+           'HTTP method "'.$request->method.'" not supported',
+           HTTP_METHOD_NOT_IMPLEMENTED
+-        ));
++        );
+       }
+ 
+       // Call the request's initialization method
+@@ -378,10 +367,10 @@
+         // code 400 ("Bad request").
+         if (!$request->session->isValid()) {
+           if (!$this->handleInvalidSession($request, $response)) {
+-            throw(new HttpSessionInvalidException(
++            throw new HttpSessionInvalidException(
+               'Session is invalid',
+               HTTP_BAD_REQUEST
+-            ));
++            );
+           }
+ 
+           // Fall through, otherwise
+@@ -396,6 +385,7 @@
+       // the two methods will result in a HttpScriptletException with the HTTP
+       // status code 500 ("Internal Server Error") being thrown.
+       $response= $this->_response();
++      $response->setApi($api);
+       try {
+         $r= call_user_func_array(
+           array($this, $method), 
 Index: scriptlet/HttpScriptletRequest.class.php
 ===================================================================
---- scriptlet/HttpScriptletRequest.class.php	(revision 7155)
+--- scriptlet/HttpScriptletRequest.class.php	(revision 10764)
 +++ scriptlet/HttpScriptletRequest.class.php	(working copy)
-@@ -31,6 +31,8 @@
-      * @access  public
+@@ -17,9 +17,8 @@
+    */  
+   class HttpScriptletRequest extends Object {
+     public
++      $environment=     NULL,
+       $headers=         array(),
+-      $params=          array(),
+-      $data=            '',
+       $method=          HTTP_GET,
+       $session=         NULL;
+     
+@@ -58,6 +57,22 @@
+     public function setSession($s) {
+       $this->session= $s;
+     }
++    
++    /**
++     * (Insert method's description here)
++     *
++     * @param   
++     * @return  
++     */
++    public function setEnvironment(HttpScriptletEnvironment $env) {
++      $this->env= $env;
++      $this->method= $this->getEnvValue('REQUEST_METHOD');
++      $this->setURI(new URL(
++        ('on' == $this->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
++        $this->getEnvValue('HTTP_HOST').
++        $this->getEnvValue('REQUEST_URI')
++      ));
++    }
+ 
+     /**
+      * Returns environment value or the value of default if the 
+@@ -68,7 +83,7 @@
+      * @return  string
       */
-     function initialize() {
-+      $this->headers= array_change_key_case(getallheaders(), CASE_LOWER);
-+      $this->params= array_change_key_case($_REQUEST, CASE_LOWER);
+     public function getEnvValue($name, $default= NULL) {
+-      return (FALSE === ($e= getenv($name))) ? $default : $e;
++      return $this->env->getEnvValue(strtolower($name), $default);
+     }
+ 
+     /**
+@@ -77,11 +92,7 @@
+      * @return  peer.http.Cookie[]
+      */
+     public function getCookies() {
+-      $r= array();
+-      foreach (array_keys($_COOKIE) as $name) {
+-        $r[]= new Cookie($name, $_COOKIE[$name]);
+-      }
+-      return $r;
++      return $this->env->getCookies();
      }
      
      /**
-@@ -274,7 +276,7 @@
+@@ -99,7 +110,7 @@
+      * @return  bool
+      */
+     public function hasCookie($name) {
+-      return isset($_COOKIE[$name]);
++      return $this->env->hasCookie(strtolower($name));
+     }
+ 
+     /**
+@@ -109,7 +120,7 @@
+      * @return  peer.http.Cookie
+      */
+     public function getCookie($name, $default= NULL) {
+-      if (isset($_COOKIE[$name])) return new Cookie($name, $_COOKIE[$name]); else return $default;
++      $this->env->getCookie(strtolower($name), $default);
+     }
+ 
+     /**
+@@ -122,8 +133,7 @@
+      * @return  string Header value
+      */
+     public function getHeader($name, $default= NULL) {
+-      $name= strtolower($name);
+-      if (isset($this->headers[$name])) return $this->headers[$name]; else return $default;
++      return $this->env->getHeader(strtolower($name), $default);
+     }
+     
+     /**
+@@ -136,7 +146,7 @@
+      */
+     public function getParam($name, $default= NULL) {
+       $name= strtolower(strtr($name, '. ', '__'));
+-      if (isset($this->params[$name])) return $this->params[$name]; else return $default;
++      return $this->env->getParam($name, $default);
+     }
+ 
+     /**
+@@ -146,7 +156,7 @@
+      * @return  bool
+      */
+     public function hasParam($name) {
+-      return isset($this->params[strtolower(strtr($name, '. ', '__'))]);
++      return $this->env->hasParam(strtolower(strtr($name, '. ', '__')));
+     }
+ 
+     /**
+@@ -156,7 +166,7 @@
+      * @param   mixed value
+      */
+     public function setParam($name, $value) {
+-      $this->params[$name]= $value;
++      $this->env->setParam($name, $value);
+     }
+     
+     /**
+@@ -235,15 +245,7 @@
+      * @return  string data
+      */
+     public function getData() {
+-      if (NULL === $this->data) {
+-        $fd= fopen('php://input', 'r');
+-        $this->data= '';
+-        while (!feof($fd)) {
+-          $this->data.= fread($fd, 1024);
+-        }
+-        fclose($fd);
+-      }
+-      return $this->data;
++      return $this->env->getData();
+     }
+     
+     /**
+@@ -253,7 +255,7 @@
       * @return  string
       */
-     function getQueryString() {
+     public function getQueryString() {
 -      return urldecode(getenv('QUERY_STRING'));
-+      return urldecode($this->getEnvValue('QUERY_STRING'));
++      return urldecode($this->env->getEnvValue('QUERY_STRING'));
+     }
+     
+     /**
+@@ -262,7 +264,7 @@
+      * @return  string
+      */
+     public function getContentType() {
+-      return $this->getHeader('Content-Type');
++      return $this->env->getHeader('Content-Type');
      }
      
      /**
