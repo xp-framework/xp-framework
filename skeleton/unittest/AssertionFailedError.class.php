@@ -67,7 +67,7 @@
      * @return  string
      */
     public function toString() {
-      $s= $this->compoundMessage()."\n";
+      $s= $this->compoundMessage();
       
       // Slice the first four trace elements, they contain the
       // traces of assert() callbacks which aren't really interesting
