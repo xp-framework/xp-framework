@@ -163,12 +163,7 @@
       $s->setTimeout($timeout);
       
       $request= $this->getRequestString();
-      try {
-        $s->connect($connecttimeout) && $s->write($request);
-      } catch (Exception $e) {
-        throw($e);
-      }
-      
+      $s->connect($connecttimeout) && $s->write($request);
       return new HttpResponse($s);
     }
   }

@@ -52,11 +52,7 @@
      * @throws  img.ImagingException
      */
     public function getResource() {
-      try {
-        $handle= $this->readFromStream();
-      } catch (ImagingException $e) {
-        throw($e);
-      }
+      $handle= $this->readFromStream();
       if (!is_resource($handle)) {
         throw(new ImagingException('Cannot read image'));
       }

@@ -128,11 +128,7 @@
         
         // Process params node
         foreach (array_keys($this->root->children[$idx]->children) as $params) {
-          try {
-            $ret[]= $this->_unmarshall($this->root->children[$idx]->children[$params]);
-          } catch (Exception $e) {
-            throw($e);
-          }
+          $ret[]= $this->_unmarshall($this->root->children[$idx]->children[$params]);
         }
         
         return $ret;

@@ -26,11 +26,7 @@
      * @return  mixed
      */
     public function valueOf($serializer, $serialized, $context= array()) {
-      try {
-        $class= XPClass::forName($serializer->exceptionName($serialized->consumeString()));
-      } catch (ClassNotFoundException $e) {
-        throw($e);
-      }
+      $class= XPClass::forName($serializer->exceptionName($serialized->consumeString()));
 
       $size= $serialized->consumeSize();
       $serialized->offset++;  // Opening "{"

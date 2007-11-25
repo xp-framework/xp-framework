@@ -90,13 +90,7 @@
      * @see     rfc://2518
      */
     public function exists($uri) {    
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->head();
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;  
+      return $this->getConnection($uri)->head();
     }
     
     /**
@@ -109,17 +103,13 @@
      * @see     rfc://2518
      */
     public function read($uri= NULL, $xml= NULL, $depth= '1') {     
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->propfind(
-          $xml,
-          array(
-            new Header('Depth', $depth)
-          )
-        );
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $c= $this->getConnection($uri);
+      $response= $c->propfind(
+        $xml,
+        array(
+          new Header('Depth', $depth)
+        )
+      );
       return $response;
     }
     
@@ -139,17 +129,13 @@
       $uri= rawurlencode($uri);    
       
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->put(
-          $file->read($file->size()),
-          array(
-            new Header('Content-Type', MimeType::getByFilename($uri))
-          )
-        );
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $c= $this->getConnection($uri);
+      $response= $c->put(
+        $file->read($file->size()),
+        array(
+          new Header('Content-Type', MimeType::getByFilename($uri))
+        )
+      );
       return $response;
     }
     
@@ -161,13 +147,7 @@
      * @see     rfc://2518
      */
     public function get($uri= NULL) {    
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->get();
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;
+      return $this->getConnection($uri)->get();
     }
     
     /**
@@ -179,13 +159,7 @@
      * @see     rfc://2518
      */
     public function proppatch($xml, $uri= NULL) {          
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->proppatch($xml);
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;    
+      return $this->getConnection($uri)->proppatch($xml);    
     }
     
     /**
@@ -196,13 +170,7 @@
      * @see     rfc://2518
      */
     public function mkcol($uri) {        
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->mkcol();
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;      
+      return $this->getConnection($uri)->mkcol();      
     }
         
     /**
@@ -216,20 +184,15 @@
      * @see     rfc://2518
      */
     public function copy($source, $destination, $overwrite= FALSE, $depth= 'Infinity') {        
-      try {
-        $c= $this->getConnection($source);
-        $response= $c->copy(
-          NULL,
-          array(
-            new Header('Overwrite', $overwrite ? 'T' : 'F'),
-            new Header('Destination', $destination),
-            new Header('Depth', $depth)
-          )
-        );
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;      
+      $c= $this->getConnection($source);
+      return $c->copy(
+        NULL,
+        array(
+          new Header('Overwrite', $overwrite ? 'T' : 'F'),
+          new Header('Destination', $destination),
+          new Header('Depth', $depth)
+        )
+      );
     }
     
     /**
@@ -242,19 +205,14 @@
      * @see     rfc://2518
      */
     public function move($source, $destination, $overwrite= FALSE) {   
-      try {
-        $c= $this->getConnection($source);
-        $response= $c->move(
-          NULL,
-          array(
-            new Header('Overwrite', $overwrite ? 'T' : 'F'),
-            new Header('Destination', $destination)
-          )
-        );
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;     
+      $c= $this->getConnection($source);
+      return $c->move(
+        NULL,
+        array(
+          new Header('Overwrite', $overwrite ? 'T' : 'F'),
+          new Header('Destination', $destination)
+        )
+      );
     }
     
     /**
@@ -266,20 +224,15 @@
      * @see     rfc://2518
      */
     public function lock($uri, $xml) {    
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->lock(
-          $xml,
-          array(
-            new Header('Timeout', 'Infinity'),
-            new Header('Content-Type', 'text/xml'),
-            new Header('Content-Length', strlen($xml))
-          )
-        );
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;   
+      $c= $this->getConnection($uri);
+      return $c->lock(
+        $xml,
+        array(
+          new Header('Timeout', 'Infinity'),
+          new Header('Content-Type', 'text/xml'),
+          new Header('Content-Length', strlen($xml))
+        )
+      );
     }  
     
     /**
@@ -291,18 +244,13 @@
      * @see     rfc://2518
      */
     public function unlock($uri, $locktoken) {    
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->unlock(
-          NULL,
-          array(
-            new Header('Lock-Token', $locktoken)
-          )
-        );
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;  
+      $c= $this->getConnection($uri);
+      return $c->unlock(
+        NULL,
+        array(
+          new Header('Lock-Token', $locktoken)
+        )
+      );
     }
     
     /**
@@ -313,13 +261,7 @@
      * @see     rfc://2518
      */
     public function delete($uri) {    
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->delete();
-      } catch (Exception $e) {
-        throw($e);
-      }
-      return $response;  
+      return $this->getConnection($uri)->delete();  
     }
     
     /**
@@ -330,12 +272,8 @@
      * @see     rfc://2518
      */
     public function version($uri) {    
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->version();
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $c= $this->getConnection($uri);
+      $response= $c->version();
       return $response;  
     }
     
@@ -347,12 +285,8 @@
      * @see     rfc://2518
      */
     public function report($uri) {    
-      try {
-        $c= $this->getConnection($uri);
-        $response= $c->report();
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $c= $this->getConnection($uri);
+      $response= $c->report();
       return $response;  
     }
     

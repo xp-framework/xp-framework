@@ -145,12 +145,8 @@
         ));      
       }
       
-      try {
-        $nf= new Folder ($this->_root.DIRECTORY_SEPARATOR.$f->name);
-        $nf->open();
-      } catch (IOException $e) {
-        throw ($e);
-      }
+      $nf= new Folder ($this->_root.DIRECTORY_SEPARATOR.$f->name);
+      $nf->open();
       
       $this->_folder= $nf;
       
@@ -193,16 +189,11 @@
         return 0;
       
       $cnt= 0;
-      try {
-        $f->open();
-        while ($e= $f->getEntry()) {
-          if ($attr & $this->_getMailFlags ($e)) $cnt++;
-        }
-        $f->close();
-      } catch (Exception $e) {
-        throw ($e);
+      $f->open();
+      while ($e= $f->getEntry()) {
+        if ($attr & $this->_getMailFlags ($e)) $cnt++;
       }
-      
+      $f->close();
       return $cnt;
     }
     
@@ -259,14 +250,10 @@
     protected function _readMessageRaw($filename) {
       $header= '';
       $body= '';
-      try {
-        $f= new File ($filename);
-        $f->open ();
-        $d= $f->read ($f->size());
-        $f->close();
-      } catch (IOException $e) {
-        throw ($e);
-      }
+      $f= new File ($filename);
+      $f->open ();
+      $d= $f->read ($f->size());
+      $f->close();
     
       if (FALSE === ($hdrEnd= strpos ($d, "\n\r\n\r")))
         $hdrEnd= 0;

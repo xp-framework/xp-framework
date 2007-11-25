@@ -72,12 +72,7 @@
      * @return  mixed
      */
     public function handleData($socket) { 
-      try {
-        if (NULL === ($data= $socket->readBinary())) throw(new IOException('EOF'));
-      } catch (IOException $e) {
-        throw($e);
-      }
-
+      if (NULL === ($data= $socket->readBinary())) throw(new IOException('EOF'));
       $this->notify(new ConnectionEvent(EVENT_DATA, $socket, $data));
     }
 

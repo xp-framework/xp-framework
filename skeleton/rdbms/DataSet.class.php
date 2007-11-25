@@ -326,11 +326,7 @@
      * @throws  rdbms.SQLException
      */
     public function insert() {
-      try {
-        $identity= $this->doInsert();
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $identity= $this->doInsert();
       $this->_new= FALSE;
       return $identity;
     }
@@ -369,12 +365,7 @@
     public function save() {
       $peer= $this->getPeer();
       
-      try {
-        $this->_new ? $this->insert() : $this->update();
-      } catch (SQLException $e) {
-        throw($e);
-      }
-
+      $this->_new ? $this->insert() : $this->update();
       return $peer->identity ? $this->{$peer->identity} : NULL;
     }
 

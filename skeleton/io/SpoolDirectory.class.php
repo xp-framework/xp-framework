@@ -41,19 +41,15 @@
      * @throws  io.IOException if there are permission problems
      */    
     public function open() {
-      try {
-        $this->_hNew=   new Folder ($this->root.DIRECTORY_SEPARATOR.'new');
-        $this->_hTodo=  new Folder ($this->root.DIRECTORY_SEPARATOR.'todo');
-        $this->_hDone=  new Folder ($this->root.DIRECTORY_SEPARATOR.'done');
-        $this->_hError= new Folder ($this->root.DIRECTORY_SEPARATOR.'error');
+      $this->_hNew=   new Folder ($this->root.DIRECTORY_SEPARATOR.'new');
+      $this->_hTodo=  new Folder ($this->root.DIRECTORY_SEPARATOR.'todo');
+      $this->_hDone=  new Folder ($this->root.DIRECTORY_SEPARATOR.'done');
+      $this->_hError= new Folder ($this->root.DIRECTORY_SEPARATOR.'error');
 
-        if (!$this->_hNew->exists())    $this->_hNew->create ();
-        if (!$this->_hTodo->exists())   $this->_hTodo->create ();
-        if (!$this->_hDone->exists())   $this->_hDone->create ();
-        if (!$this->_hError->exists())  $this->_hError->create ();                  
-      } catch (IOException $e) {
-        throw ($e);
-      }
+      if (!$this->_hNew->exists())    $this->_hNew->create ();
+      if (!$this->_hTodo->exists())   $this->_hTodo->create ();
+      if (!$this->_hDone->exists())   $this->_hDone->create ();
+      if (!$this->_hError->exists())  $this->_hError->create ();                  
       
       return TRUE;
     }

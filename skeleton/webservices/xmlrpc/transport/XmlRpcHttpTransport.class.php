@@ -46,11 +46,7 @@
      * @param   webservices.xmlrpc.XmlRpcMessage message
      * @return  scriptlet.HttpScriptletResponse
      */
-    public function send($message) {
-      
-      if (!is('webservices.xmlrpc.XmlRpcMessage', $message)) throw(new IllegalArgumentException(
-        'parameter "message" must be a webservices.xmlrpc.XmlRpcMessage'
-      ));
+    public function send(XmlRpcMessage $message) {
       
       // Send XML
       $this->_conn->request->setMethod(HTTP_POST);
@@ -61,14 +57,8 @@
       // Add custom headers
       $this->_conn->request->addHeaders($this->_headers);
       
-      try {
-        $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-        $res= $this->_conn->request->send($this->_conn->getTimeout());
-      } catch (IOException $e) {
-        throw ($e);
-      }
-      
-      return $res;
+      $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
+      return $this->_conn->request->send($this->_conn->getTimeout());
     }
     
     /**
@@ -80,48 +70,40 @@
     public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
 
-      try {
-        $code= $response->getStatusCode();
-      } catch (SocketException $e) {
-        throw($e);
-      }
+      $code= $response->getStatusCode();
       
       switch ($code) {
         case HTTP_OK:
         case HTTP_INTERNAL_SERVER_ERROR:
-          try {
-            $xml= '';
-            while ($buf= $response->readData()) $xml.= $buf;
+          $xml= '';
+          while ($buf= $response->readData()) $xml.= $buf;
 
-            $this->cat && $this->cat->debug('<<<', $xml);
-            if ($answer= XmlRpcResponseMessage::fromString($xml)) {
+          $this->cat && $this->cat->debug('<<<', $xml);
+          if ($answer= XmlRpcResponseMessage::fromString($xml)) {
 
-              // Check encoding
-              if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-                @list($type, $charset)= explode('; charset=', $content_type);
-                if (!empty($charset)) $answer->setEncoding($charset);
-              }
+            // Check encoding
+            if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+              @list($type, $charset)= explode('; charset=', $content_type);
+              if (!empty($charset)) $answer->setEncoding($charset);
             }
-          } catch (Exception $e) {
-            throw($e);
           }
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
-            throw(new XmlRpcFaultException($fault));
+            throw new XmlRpcFaultException($fault);
           }
           
           return $answer;
         
         case HTTP_AUTHORIZATION_REQUIRED:
-          throw(new IllegalAccessException(
+          throw new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
-          ));
+          );
         
         default:
-          throw(new IllegalStateException(
+          throw new IllegalStateException(
             'Unexpected return code: '.$response->getStatusCode()
-          ));
+          );
       }
     }    
   }

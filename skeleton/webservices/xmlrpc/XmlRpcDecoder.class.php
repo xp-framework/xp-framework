@@ -55,11 +55,7 @@
             $cname= $ret['__xp_class'];
             
             // Load the class definition
-            try {
-              XPClass::forName($cname);
-            } catch (ClassNotFoundException $e) {
-              throw($e);
-            }
+            XPClass::forName($cname);
             
             // Cast the object to the class
             unset($ret['__xp_class']);

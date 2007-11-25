@@ -121,29 +121,21 @@
       $c->request->setHeader('Content-Type', 'text/xml; charset='.$m->encoding);
 
       // Send it
-      try {
-        $this->cat && $this->cat->debug('>>>', $c->request->getRequestString());
-        $response= $c->request->send();
-      } catch (IOException $e) {
-        throw ($e);
-      }
+      $this->cat && $this->cat->debug('>>>', $c->request->getRequestString());
+      $response= $c->request->send();
 
       // Read response
       $sc= $response->getStatusCode();
       $this->cat && $this->cat->debug('<<<', $response);
-      try {
-        $xml= '';
-        while ($buf= $response->readData()) $xml.= $buf;
-        $this->cat && $this->cat->debug('<<<', $xml);
+      $xml= '';
+      while ($buf= $response->readData()) $xml.= $buf;
+      $this->cat && $this->cat->debug('<<<', $xml);
 
-        if ($answer= SOAPMessage::fromString($xml)) {
-          if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-            @list($type, $charset)= explode('; charset=', $content_type);
-            if (!empty($charset)) $answer->setEncoding($charset);
-          }
+      if ($answer= SOAPMessage::fromString($xml)) {
+        if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+          @list($type, $charset)= explode('; charset=', $content_type);
+          if (!empty($charset)) $answer->setEncoding($charset);
         }
-      } catch (Exception $e) {
-        throw($e);
       }
       
       // Check for faults

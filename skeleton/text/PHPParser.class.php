@@ -42,7 +42,6 @@
      * @param   string filename The filename to parse
      */
     public function __construct($filename) {
-      
       $this->filename= $filename;
     }
     
@@ -62,11 +61,7 @@
      * @throws  lang.XPException in case the file could not be read
      */
     public function parse() {
-      try {
-        $php= FileUtil::getContents (new File ($this->filename));
-      } catch (Exception $e) {
-        throw ($e);
-      }
+      $php= FileUtil::getContents (new File ($this->filename));
       
       $tokens= token_get_all ($php);
       $lineno= 1;

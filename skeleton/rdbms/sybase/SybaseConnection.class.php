@@ -210,11 +210,7 @@
 
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
-        try {
-          $c= $this->connect();
-        } catch (SQLException $e) {
-          throw ($e);
-        }
+        $c= $this->connect();
         
         // Check for subsequent connection errors
         if (FALSE === $c) throw(new SQLStateException('Previously failed to connect'));

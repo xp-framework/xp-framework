@@ -51,15 +51,10 @@
      */
     public function getDatabases() {
       $dbs= array();
-      try {
-        $q= $this->conn->query('show databases');
-        while ($name= $q->next()) {
-          $dbs[]= $name[key($name)];
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $q= $this->conn->query('show databases');
+      while ($name= $q->next()) {
+        $dbs[]= $name[key($name)];
       }
-
       return $dbs;
     }
 
@@ -72,18 +67,13 @@
     public function getTables($database= NULL) {
       $t= array();
       $database= $this->database($database);
-      try {
-        $q= $this->conn->query(
-          'show tables from %c',
-          $database
-        );
-        while ($table= $q->next()) {
-          $t[]= $this->getTable($table[key($table)], $database);
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $q= $this->conn->query(
+        'show tables from %c',
+        $database
+      );
+      while ($table= $q->next()) {
+        $t[]= $this->getTable($table[key($table)], $database);
       }
-
       return $t;
     }
 
@@ -96,82 +86,77 @@
      */
     public function getTable($table, $database= NULL) {
       $t= new DBTable($table);
-      try {
 
-        // Get the table's attributes
-        // +-------------+--------------+------+-----+---------------------+----------------+
-        // | Field       | Type         | Null | Key | Default             | Extra          |
-        // +-------------+--------------+------+-----+---------------------+----------------+
-        // | contract_id | int(8)       |      | PRI | NULL                | auto_increment |
-        // | user_id     | int(8)       |      |     | 0                   |                |
-        // | mandant_id  | int(4)       |      |     | 0                   |                |
-        // | description | varchar(255) |      |     |                     |                |
-        // | comment     | varchar(255) |      |     |                     |                |
-        // | bz_id       | int(6)       |      |     | 0                   |                |
-        // | lastchange  | datetime     |      |     | 0000-00-00 00:00:00 |                |
-        // | changedby   | varchar(16)  |      |     |                     |                |
-        // +-------------+--------------+------+-----+---------------------+----------------+
-        // 8 rows in set (0.00 sec)
-        $q= $this->conn->query('describe %c', $this->qualifiedTablename($table, $database));
-        while ($record= $q->next()) {
-          preg_match('#^([a-z]+)(\(([0-9,]+)\))?#', $record['Type'], $regs);
+      // Get the table's attributes
+      // +-------------+--------------+------+-----+---------------------+----------------+
+      // | Field       | Type         | Null | Key | Default             | Extra          |
+      // +-------------+--------------+------+-----+---------------------+----------------+
+      // | contract_id | int(8)       |      | PRI | NULL                | auto_increment |
+      // | user_id     | int(8)       |      |     | 0                   |                |
+      // | mandant_id  | int(4)       |      |     | 0                   |                |
+      // | description | varchar(255) |      |     |                     |                |
+      // | comment     | varchar(255) |      |     |                     |                |
+      // | bz_id       | int(6)       |      |     | 0                   |                |
+      // | lastchange  | datetime     |      |     | 0000-00-00 00:00:00 |                |
+      // | changedby   | varchar(16)  |      |     |                     |                |
+      // +-------------+--------------+------+-----+---------------------+----------------+
+      // 8 rows in set (0.00 sec)
+      $q= $this->conn->query('describe %c', $this->qualifiedTablename($table, $database));
+      while ($record= $q->next()) {
+        preg_match('#^([a-z]+)(\(([0-9,]+)\))?#', $record['Type'], $regs);
 
-          $t->addAttribute(new DBTableAttribute(
-            $record['Field'],
-            $this->map[$regs[1]],
-            strstr($record['Extra'], 'auto_increment'),
-            !(empty($record['Null']) || ('NO' == $record['Null'])),
-            $regs[3],
-            0,
-            0
+        $t->addAttribute(new DBTableAttribute(
+          $record['Field'],
+          $this->map[$regs[1]],
+          strstr($record['Extra'], 'auto_increment'),
+          !(empty($record['Null']) || ('NO' == $record['Null'])),
+          $regs[3],
+          0,
+          0
+        ));
+      }
+
+      // Get keys
+      // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
+      // | Table    | Non_unique | Key_name      | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Comment |
+      // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
+      // | contract |          0 | PRIMARY       |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
+      // | contract |          0 | contract_id_2 |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
+      // | contract |          1 | contract_id   |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
+      // | contract |          1 | contract_id   |            2 | user_id     | A         |           6 |     NULL | NULL   |         |
+      // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
+      $q= $this->conn->query('show keys from %c', $this->qualifiedTablename($table, $database));
+      $key= NULL;
+      while ($record= $q->next()) {
+        if ($record['Key_name'] != $key) {
+          $index= $t->addIndex(new DBIndex(
+            $record['Key_name'],
+            array()
           ));
+          $key= $record['Key_name'];
         }
+        $index->unique= ('0' == $record['Non_unique']);
+        $index->primary= ('PRIMARY' == $record['Key_name']);
+        $index->keys[]= $record['Column_name'];
+      }
 
-        // Get keys
-        // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
-        // | Table    | Non_unique | Key_name      | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Comment |
-        // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
-        // | contract |          0 | PRIMARY       |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
-        // | contract |          0 | contract_id_2 |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
-        // | contract |          1 | contract_id   |            1 | contract_id | A         |           6 |     NULL | NULL   |         |
-        // | contract |          1 | contract_id   |            2 | user_id     | A         |           6 |     NULL | NULL   |         |
-        // +----------+------------+---------------+--------------+-------------+-----------+-------------+----------+--------+---------+
-        $q= $this->conn->query('show keys from %c', $this->qualifiedTablename($table, $database));
-        $key= NULL;
-        while ($record= $q->next()) {
-          if ($record['Key_name'] != $key) {
-            $index= $t->addIndex(new DBIndex(
-              $record['Key_name'],
-              array()
-            ));
-            $key= $record['Key_name'];
+      // Get foreign key constraints
+      // in mysql the only way is to parse the creat statement
+      $createTableString= $this->conn->query('show create table %c', $this->qualifiedTablename($table, $database))->next('Create Table');
+      for ($i= 0; $i < strlen($createTableString); $i++) {
+        switch ($createTableString{$i}) {
+          case '`':
+          $this->parseQuoteString($createTableString, $i);
+          break;
+
+          case '(':
+          $tableConstraints= $this->filterConstraints($this->extractParams($this->parseBracerString($createTableString, $i)));
+          foreach ($tableConstraints as $tableConstraint) {
+            if (strstr($tableConstraint, 'FOREIGN KEY') === FALSE) continue;
+            $t->addForeignKeyConstraint($this->parseForeignKeyString($tableConstraint));
           }
-          $index->unique= ('0' == $record['Non_unique']);
-          $index->primary= ('PRIMARY' == $record['Key_name']);
-          $index->keys[]= $record['Column_name'];
+          break;
         }
-
-        // Get foreign key constraints
-        // in mysql the only way is to parse the creat statement
-        $createTableString= $this->conn->query('show create table %c', $this->qualifiedTablename($table, $database))->next('Create Table');
-        for ($i= 0; $i < strlen($createTableString); $i++) {
-          switch ($createTableString{$i}) {
-            case '`':
-            $this->parseQuoteString($createTableString, $i);
-            break;
-
-            case '(':
-            $tableConstraints= $this->filterConstraints($this->extractParams($this->parseBracerString($createTableString, $i)));
-            foreach ($tableConstraints as $tableConstraint) {
-              if (strstr($tableConstraint, 'FOREIGN KEY') === FALSE) continue;
-              $t->addForeignKeyConstraint($this->parseForeignKeyString($tableConstraint));
-            }
-            break;
-          }
-        }
-
-      } catch (SQLException $e) {
-        throw($e);
       }
       return $t;
     }

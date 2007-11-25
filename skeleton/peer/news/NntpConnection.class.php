@@ -136,11 +136,7 @@
      * @throws  peer.ConnectException in case there's an error during connecting
      */
     public function connect($auth= FALSE) {
-      try {
-        $this->_sock->connect();
-      } catch (ConnectException $e) {
-        throw($e);
-      }
+      $this->_sock->connect();
       
       // Read banner message
       if (!($response= $this->_readResponse()))
@@ -177,15 +173,11 @@
      * @throws  peer.AuthenticationException in case authentication failed
      */  
     public function authenticate() {
-      try {
-        $status= $this->_sendcmd('AUTHINFO user', $this->url->getUser());
+      $status= $this->_sendcmd('AUTHINFO user', $this->url->getUser());
 
-        // Send password if requested
-        if (NNTP_AUTH_NEEDMODE === $status) {
-          $status= $this->_sendcmd('AUTHINFO pass', $this->url->getPassword());
-        }
-      } catch (IOException $e) {
-        throw($e);
+      // Send password if requested
+      if (NNTP_AUTH_NEEDMODE === $status) {
+        $status= $this->_sendcmd('AUTHINFO pass', $this->url->getPassword());
       }
       
       switch ($status) {

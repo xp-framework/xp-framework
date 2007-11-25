@@ -23,13 +23,7 @@
      * @return  xml.portlet.Portlet
      */
     public function addPortlet($classname, $layout= NULL) {
-      try {
-        $class= XPClass::forName($classname);
-      } catch (ClassNotFoundException $e) {
-        throw($e);
-      }
-      
-      with ($portlet= $class->newInstance()); {
+      with ($portlet= XPClass::forName($classname)->newInstance()); {
         $portlet->setLayout($layout);
         $this->portlets[]= $portlet;
       }      

@@ -39,11 +39,7 @@
      * @return  bool success
      */    
     protected function _readstatus() {
-      try {
-        $str= $this->stream->read();
-      } catch (SocketException $e) {
-        throw($e);
-      }
+      $str= $this->stream->read();
       
       $s= chop($str);
       if (3 > ($r= sscanf(

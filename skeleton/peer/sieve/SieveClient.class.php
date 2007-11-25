@@ -91,11 +91,7 @@
      * @throws  lang.FormatException in case the response cannot be parsed
      */  
     public function connect() {
-      try {
-        $this->_sock->connect();
-      } catch (IOException $e) {
-        throw($e);
-      }
+      $this->_sock->connect();
       
       // Read the banner message. Example:
       //
@@ -167,11 +163,7 @@
     protected function _response($discard= FALSE, $error= TRUE) {
       $lines= array();
       do {
-        try {
-          $line= $this->_sock->readLine();
-        } catch (IOException $e) {
-          throw ($e);
-        }
+        $line= $this->_sock->readLine();
         
         $this->cat && $this->cat->debug('<<<', $line);
         
@@ -297,12 +289,9 @@
           $len= $this->_sock->readLine(0x400);
           $str= base64_decode($this->_sock->readLine());
           $this->cat && $this->cat->debug('Challenge (length '.$len.'):', $str);
-          try {
-            $challenge= DigestChallenge::fromString($str);
-            $response= $challenge->responseFor(DC_QOP_AUTH, $user, $pass, $auth);
-          } catch (FormatException $e) {
-            throw($e);
-          }
+
+          $challenge= DigestChallenge::fromString($str);
+          $response= $challenge->responseFor(DC_QOP_AUTH, $user, $pass, $auth);
           $this->cat && $this->cat->debug($challenge, $response);
 
           // Build and send challenge response
@@ -473,13 +462,8 @@
      *
      */
     public function close() {
-      try {
-        $this->_sock->write("LOGOUT\r\n"); 
-        $this->_sock->close();
-      } catch (IOException $e) {
-        throw($e);
-      }
-      
+      $this->_sock->write("LOGOUT\r\n"); 
+      $this->_sock->close();
       return TRUE;      
     }
 

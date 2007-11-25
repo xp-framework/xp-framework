@@ -54,11 +54,7 @@
      * @param   Stream stream
      */    
     public function setInputStream($stream) {
-      try {
-        if (!$stream->isOpen()) $stream->open();
-      } catch (IOException $e) {
-        throw ($e);
-      }
+      if (!$stream->isOpen()) $stream->open();
       $this->stream= $stream;
     }
     
@@ -148,17 +144,13 @@
      * @return  string buffer
      */    
     protected function _getNextRecord() {
-      try {
-        if ($this->stream->eof()) return FALSE;
+      if ($this->stream->eof()) return FALSE;
 
-        $row= $this->stream->readLine();
-        while (0 !== substr_count($row, $this->escape) % 2)
-          $row.= "\n".$this->stream->readLine();
-      
-        $this->buffer= $row;
-      } catch (IOException $e) {
-        throw ($e);
-      }
+      $row= $this->stream->readLine();
+      while (0 !== substr_count($row, $this->escape) % 2)
+        $row.= "\n".$this->stream->readLine();
+
+      $this->buffer= $row;
       
       return $this->buffer;
     }
@@ -239,12 +231,7 @@
      * @throws  io.IOException if stream operation failed
      */    
     public function getNextRecord() {
-      try {
-        $this->_getNextRecord();
-      } catch (IOException $e) {
-        throw($e);
-      }
-
+      $this->_getNextRecord();
       if (empty($this->buffer)) return FALSE;
         
       $data= array(); $idx= 0;

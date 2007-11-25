@@ -28,19 +28,15 @@
     public function convert($image) { 
       if (!imageistruecolor($image->handle)) return FALSE;
       
-      try {
-        $tmp= Image::create($image->getWidth(), $image->getHeight(), IMG_TRUECOLOR);
-        $tmp->copyFrom($image);
-        imagetruecolortopalette(
-          $image->handle, 
-          $this->dither, 
-          $this->ncolors
-        );
-        imagecolormatch($tmp->handle, $image->handle);
-        delete($tmp);
-      } catch (ImagingException $e) {
-        throw($e);
-      }
+      $tmp= Image::create($image->getWidth(), $image->getHeight(), IMG_TRUECOLOR);
+      $tmp->copyFrom($image);
+      imagetruecolortopalette(
+        $image->handle, 
+        $this->dither, 
+        $this->ncolors
+      );
+      imagecolormatch($tmp->handle, $image->handle);
+      delete($tmp);
       return TRUE;
     }
   }

@@ -681,11 +681,7 @@
                 if (FALSE !== strpos($t, '@')) break;
               } while ($t= strtok("\n"));
               
-              try {
-                $daemonmessage->setFailedRecipient(InternetAddress::fromString(trim($t, "\n\r<>: ")));
-              } catch (Exception $e) {
-                throw($e);
-              }
+              $daemonmessage->setFailedRecipient(InternetAddress::fromString(trim($t, "\n\r<>: ")));
               
               // Next line
               $t= strtok("\n");

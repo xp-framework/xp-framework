@@ -32,13 +32,9 @@
      * @return  security.checksum.CRC32
      */
     public static function fromFile($file) {
-      try {
-        $file->open(FILE_MODE_READ);
-        $data= $file->read($file->size());
-        $file->close();
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $file->open(FILE_MODE_READ);
+      $data= $file->read($file->size());
+      $file->close();
       return CRC32::fromString($data);
     }
   }

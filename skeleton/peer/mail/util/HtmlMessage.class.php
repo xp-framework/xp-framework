@@ -97,12 +97,7 @@
         ));
       }
       
-      try {
-        list($data, $contentType)= $this->_loaders[$scheme]->load($source);
-      } catch (Exception $e) {
-        throw($e);
-      }
-        
+      list($data, $contentType)= $this->_loaders[$scheme]->load($source);
       return $this->addImage($data, $contentType);
     }
     
@@ -142,11 +137,7 @@
         if (isset($images[$uri])) {
           $cid= $images[$uri];
         } else {
-          try {
-            $cid= $this->loadImage(new URL($uri));
-          } catch (Throwable $e) {
-            throw($e);
-          }
+          $cid= $this->loadImage(new URL($uri));
         }
         
         $this->html->body= str_replace(

@@ -62,15 +62,10 @@
      */
     public function getDatabases() {
       $dbs= array();
-      try {
-        $q= $this->conn->query('select name from master..sysdatabases');
-        while ($name= $q->next('name')) {
-          $dbs[]= $name;
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $q= $this->conn->query('select name from master..sysdatabases');
+      while ($name= $q->next('name')) {
+        $dbs[]= $name;
       }
-      
       return $dbs;
     }
 

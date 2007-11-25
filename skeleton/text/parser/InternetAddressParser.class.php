@@ -43,12 +43,7 @@
       
         // No " in this string, so this contains one address
         if (FALSE === ($pos= strpos($tok, '"'))) {
-          try {
-            $result[]= InternetAddress::fromString($tok);
-          } catch (FormatException $e) {
-            throw($e);
-          }
-          
+          $result[]= InternetAddress::fromString($tok);
           $tok= $st->nextToken();
           continue;
         }
@@ -68,11 +63,7 @@
           continue;
         }
 
-        try {
-          $result[]= InternetAddress::fromString($tok);
-        } catch (FormatException $e) {
-          throw($e);
-        }
+        $result[]= InternetAddress::fromString($tok);
         
         // Handle next token
         $tok= $st->nextToken();

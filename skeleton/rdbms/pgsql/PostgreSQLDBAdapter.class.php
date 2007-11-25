@@ -53,13 +53,9 @@
      */
     public function getDatabases() {
       $dbs= array();
-      try {
-        $q= $this->conn->query("Select db.datname as name from pg_database as db join pg_user as u on (db.datdba= u.usesysid) where u.usename=current_user;");
-        while ($name= $q->next()) {
-          $dbs[]= $name[key($name)];
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $q= $this->conn->query("Select db.datname as name from pg_database as db join pg_user as u on (db.datdba= u.usesysid) where u.usename=current_user;");
+      while ($name= $q->next()) {
+        $dbs[]= $name[key($name)];
       }
       
       return $dbs;
@@ -74,18 +70,13 @@
     public function getTables($database= NULL) {
       $t= array();
       $database= $this->database($database);
-      try {
-        $q= $this->conn->query(
-          "select * from information_schema.tables where table_schema='public' and table_catalog=%s", 
-          $database
-        );
-        while ($table= $q->next('table_name')) {
-          $t[]= $this->getTable($table, $database);
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $q= $this->conn->query(
+        "select * from information_schema.tables where table_schema='public' and table_catalog=%s", 
+        $database
+      );
+      while ($table= $q->next('table_name')) {
+        $t[]= $this->getTable($table, $database);
       }
-      
       return $t;
     }
     

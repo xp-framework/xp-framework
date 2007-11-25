@@ -48,13 +48,8 @@
       
       // Add observers
       foreach (array_keys($obs) as $observer) {
-        try {
-          $class= XPClass::forName($observer);
-          $inst= call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
-        } catch (ClassNotFoundException $e) {
-          throw ($e);
-        }
-
+        $class= XPClass::forName($observer);
+        $inst= call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
         $this->addObserver($inst);
       }
     }

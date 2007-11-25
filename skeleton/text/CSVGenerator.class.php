@@ -38,13 +38,9 @@
      * @return  bool success
      */    
     public function setOutputStream($stream) {
-      try {
-        if (!$stream->isOpen()) $stream->open (STREAM_MODE_WRITE);
-        $this->stream= $stream;
-      } catch (Exception $e) {
-        throw ($e);
-      }
-      return true;
+      if (!$stream->isOpen()) $stream->open (STREAM_MODE_WRITE);
+      $this->stream= $stream;
+      return TRUE;
     }
     
     /**

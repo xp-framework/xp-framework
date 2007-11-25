@@ -54,13 +54,9 @@
      * @return  security.checksum.HMAC_MD5
      */
     public static function fromFile($file, $key= NULL) {
-      try {
-        $file->open(FILE_MODE_READ);
-        $str= $file->read($file->size());
-        $file->close();
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $file->open(FILE_MODE_READ);
+      $str= $file->read($file->size());
+      $file->close();
       return new HMAC_MD5(HMAC_MD5::hash($str, $key));
     }
   }

@@ -66,14 +66,8 @@
       // Add custom headers
       $this->_conn->request->addHeaders($this->_headers);
       
-      try {
-        $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-        $res= $this->_conn->request->send($this->_conn->getTimeout());
-      } catch (IOException $e) {
-        throw ($e);
-      }
-      
-      return $res;
+      $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
+      return $this->_conn->request->send($this->_conn->getTimeout());
     }
     
     /**
@@ -85,30 +79,22 @@
     public function retrieve($response) {
       $this->cat && $this->cat->debug('<<<', $response->toString());
       
-      try {
-        $code= $response->getStatusCode();
-      } catch (SocketException $e) {
-        throw($e);
-      }
+      $code= $response->getStatusCode();
       
       switch ($code) {
         case HTTP_OK:
         case HTTP_INTERNAL_SERVER_ERROR:
-          try {
-            $xml= '';
-            while ($buf= $response->readData()) $xml.= $buf;
+          $xml= '';
+          while ($buf= $response->readData()) $xml.= $buf;
 
-            $this->cat && $this->cat->debug('<<<', $xml);
-            if ($answer= WddxMessage::fromString($xml)) {
+          $this->cat && $this->cat->debug('<<<', $xml);
+          if ($answer= WddxMessage::fromString($xml)) {
 
-              // Check encoding
-              if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-                @list($type, $charset)= explode('; charset=', $content_type);
-                if (!empty($charset)) $answer->setEncoding($charset);
-              }
+            // Check encoding
+            if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
+              @list($type, $charset)= explode('; charset=', $content_type);
+              if (!empty($charset)) $answer->setEncoding($charset);
             }
-          } catch (Exception $e) {
-            throw($e);
           }
 
           // Fault?
