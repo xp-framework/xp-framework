@@ -1,6 +1,6 @@
 RFC 0145: Make unittests strict
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: kiesel
 @created: Sun Nov 25 12:19:46     2007
