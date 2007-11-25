@@ -1,0 +1,45 @@
+RFC 0145: Make unittests strict
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: kiesel
+@created: Sun Nov 25 12:19:46     2007
+@status: draft
+@category: unittest
+
+Scope of Change
+---------------
+A new check will be introduced to the unittest.TestCase class that will assert
+that no PHP notices have been produced while running a test.
+
+Rationale
+---------
+PHP notices often indicate some kind of defect in a software which is 
+not critical at first glance but can have a hidden impact whose source
+then is hard to spot.
+A recent test-run revealed some (real) bugs in XP core packages that went
+unnoticed until now and which were found by checking the error stack.
+
+Functionality
+-------------
+A new check will be performed after each test method run.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
