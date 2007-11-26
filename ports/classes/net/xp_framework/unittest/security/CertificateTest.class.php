@@ -31,16 +31,26 @@
     }
     
     /**
+     * Assertion helper
+     *
+     * @param   string pattern
+     * @param   security.Principal p
+     * @param   string cause
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertPrincipal($pattern, Principal $p, $cause) {
+      if (!preg_match($pattern, $p->getName())) {
+        $this->fail($cause.' did not match', $p->getName(), $pattern);
+      }
+    }
+    
+    /**
      * Test an X.509 certificate
      *
      */
     #[@test]
     public function testX509Certificate() {
-      $esubject= '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#';
-      $eissuer= '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#';
-      $ehash= 'f2473bfa';
-      try {
-        $x509= X509Certificate::fromString(<<<EOC
+      $x509= X509Certificate::fromString(<<<EOC
 -----BEGIN CERTIFICATE-----
 MIICtDCCAh2gAwIBAwIBADANBgkqhkiG9w0BAQQFADCBnzELMAkGA1UEBhMCREUx
 GjAYBgNVBAgUEUJhZGVuLVf8cnR0ZW1iZXJnMRIwEAYDVQQHEwlLYXJsc3J1aGUx
@@ -60,15 +70,22 @@ WPDyiSAwwKIzRnlGBb+eJGQX2ZDyvPg7
 -----END CERTIFICATE-----
 EOC
 );
-      } catch (CertificateException $e) {
-        return $this->fail($e->getClassName(), $e->getMessage(), 'fromstring');
-      }
 
-      $subject= $x509->getSubjectDN();
-      $issuer= $x509->getIssuerDN();
-      $this->assertTrue((bool)preg_match($esubject, $subject->getName()), 'subject');
-      $this->assertTrue((bool)preg_match($eissuer, $issuer->getName()), 'issuer');
-      $this->assertEquals($x509->getHash(), $ehash, 'hash');
+      $this->assertPrincipal(
+        '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#', 
+        $x509->getSubjectDN(), 
+        'subject'
+      );
+      $this->assertPrincipal(
+        '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#', 
+        $x509->getIssuerDN(), 
+        'issuer'
+      );
+      $this->assertEquals(
+        'f2473bfa', 
+        $x509->getHash(), 
+        'hash'
+      );
     }
   }
 ?>
