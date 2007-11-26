@@ -23,6 +23,7 @@
     public function castValue($value) {
       $return= array();
       foreach ($value as $k => $v) {
+        if ('' === $v) return 'empty';
         try {
           $date= new Date($v);
         } catch (IllegalArgumentException $e) {
