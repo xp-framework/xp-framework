@@ -20,7 +20,7 @@ Bugfixes
 - Fixed DomXSLProcessor::determineOutputEncoding() to return the output
   encoding declared in imported XSL files using <xsl:import/>
   (friebe, hinckel)
-- Fix LDAPClient::read() method
+- Fixed LDAPClient::read() method
   (kiesel)
 - Ports: Fixed Nagios Heartbeat adding two dots between unqualified host
   name and domain (e.g. example..1and1.com where example is the host name)
