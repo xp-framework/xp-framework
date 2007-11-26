@@ -14,6 +14,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed scriptlet.xml.workflow.casters.ToDate which was accepting 
+  when it encountered empty input (unittest said it shouldn't)
+  (friebe)
 - Fixed DomXSLProcessor::determineOutputEncoding() to handle absolute
   URIs in xsl:include/xsl:import hrefs correctly
   (friebe)
