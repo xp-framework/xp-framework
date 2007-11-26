@@ -243,19 +243,27 @@
       // Check xsl:include nodes
       foreach ($root->getElementsByTagNameNS($xsltNs, 'include') as $include) {
         $dom= new DOMDocument();
-        if (!($dom->load($b= $baseDir.'/'.$include->getAttribute('href')))) {
-          throw new TransformerException('Cannot find include '.$b."\n at ".$base);
+        $href= $include->getAttribute('href');
+        if (!('/' === $href{0} || strstr($href, '://') || ':/' === substr($href, 1, 2))) {
+          $href= $baseDir.'/'.$href;    // Relative
         }
-        if ($e= $this->determineOutputEncoding($dom->documentElement, $b)) return $e;
+        if (!($dom->load($href))) {
+          throw new TransformerException('Cannot find include '.$href."\n at ".$base);
+        }
+        if ($e= $this->determineOutputEncoding($dom->documentElement, $href)) return $e;
       }
 
       // Check xsl:import nodes
       foreach ($root->getElementsByTagNameNS($xsltNs, 'import') as $import) {
         $dom= new DOMDocument();
-        if (!($dom->load($b= $baseDir.'/'.$import->getAttribute('href')))) {
-          throw new TransformerException('Cannot find import '.$b."\n at ".$base);
+        $href= $import->getAttribute('href');
+        if (!('/' === $href{0} || strstr($href, '://') || ':/' === substr($href, 1, 2))) {
+          $href= $baseDir.'/'.$href;    // Relative
         }
-        if ($e= $this->determineOutputEncoding($dom->documentElement, $b)) return $e;
+        if (!($dom->load($href))) {
+          throw new TransformerException('Cannot find import '.$href."\n at ".$base);
+        }
+        if ($e= $this->determineOutputEncoding($dom->documentElement, $href)) return $e;
       }
       
       // Cannot determine encoding
