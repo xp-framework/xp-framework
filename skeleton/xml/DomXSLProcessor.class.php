@@ -226,7 +226,7 @@
      *
      * @param   php.DOMElement root
      * @param   string base
-     * @return  string encoding
+     * @return  string encoding or NULL if no user-defined encoding could be found
      * @throws  xml.TransformerException in case an include or import cannot be found
      */
     protected function determineOutputEncoding(DOMElement $root, $base) {
@@ -258,8 +258,8 @@
         if ($e= $this->determineOutputEncoding($dom->documentElement, $b)) return $e;
       }
       
-      // Return default encoding
-      return 'utf-8';
+      // Cannot determine encoding
+      return NULL;
     }
 
     /**
@@ -283,10 +283,12 @@
         }
       }
       $this->processor->registerPHPFunctions(array('XSLCallback::invoke'));
-      $this->outputEncoding= $this->determineOutputEncoding(
+      if (NULL === ($this->outputEncoding= $this->determineOutputEncoding(
         $this->stylesheet->documentElement,
         $this->baseURI
-      );
+      ))) {
+        $this->outputEncoding= 'utf-8';   // Use default
+      }
       
       // Start transformation
       $this->output= $this->processor->transformToXML($this->document);
