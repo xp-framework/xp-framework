@@ -14,7 +14,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Fix DomXSLProcessor::determineOutputEncoding() to return the output
+- Fixed DomXSLProcessor::determineOutputEncoding() to handle absolute
+  URIs in xsl:include/xsl:import hrefs correctly
+  (friebe)
+- Fixed DomXSLProcessor::determineOutputEncoding() to return the output
   encoding declared in imported XSL files using <xsl:import/>
   (friebe, hinckel)
 - Fix LDAPClient::read() method
