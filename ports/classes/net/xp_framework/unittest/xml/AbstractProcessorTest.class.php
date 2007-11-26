@@ -32,6 +32,20 @@
         preg_replace('#>[\s\r\n]+<#', '><', trim($actual))
       );
     }
+    
+    /**
+     * Gets the include URI
+     *
+     * @param   string stylesheet name (w/o .xsl extension) of a XSL file in the same directory as this class
+     * @return  string
+     */
+    protected function includeUri($stylesheet) {
+      $name= $this->getClass()->getPackage()->getResourceAsStream($stylesheet.'.xsl')->getURI();
+      
+      // FIXME: workaround for "xsl:include : invalid URI reference C:\cygwin\...\include.xsl"
+      // oddity in PHP's XSL libraries (needs forward-slash even on Windows)
+      return strtr($name, DIRECTORY_SEPARATOR, '/');
+    }
 
     /**
      * Returns the PHP extension needed for this processor test to work
@@ -43,7 +57,7 @@
     /**
      * Returns the XSL processor instance to be used
      *
-     * @return  &xml.IXSLProcessor
+     * @return  xml.IXSLProcessor
      */
     public function processorInstance() { }
 
@@ -442,6 +456,144 @@
         </xsl:stylesheet>
       ');
       $this->processor->run();
+    }
+
+    /**
+     * Tests a transformation with an xsl:include reference to a non-
+     * existant file.
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function includeNotFound() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:include href=":@@FILE-DOES-NOT-EXIST@@:"/>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+    }
+
+    /**
+     * Tests a transformation with an xsl:import reference to a non-
+     * existant file.
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function importNotFound() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:import href=":@@FILE-DOES-NOT-EXIST@@:"/>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+    }
+
+    /**
+     * Tests a transformation with an xsl:include reference to an
+     * existant file.
+     *
+     */
+    #[@test]
+    public function includingAFile() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:include href="'.$this->includeUri('include').'"/>
+          <xsl:template match="/">
+            <xsl:value-of select="$a"/>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('TEST', $this->processor->output());
+    }
+
+    /**
+     * Tests a transformation with an xsl:import reference to an
+     * existant file.
+     *
+     */
+    #[@test]
+    public function importingAFile() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:import href="'.$this->includeUri('include').'"/>
+          <xsl:template match="/">
+            <xsl:value-of select="$a"/>
+          </xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('TEST', $this->processor->output());
+    }
+
+    /**
+     * Tests the output-encoding is determined from the included file
+     *
+     */
+    #[@test]
+    public function outputEncodingFromIncludedFile() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:include href="'.$this->includeUri('include').'"/>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
+    }
+
+    /**
+     * Tests the output-encoding is determined from the imported file
+     *
+     */
+    #[@test]
+    public function outputEncodingFromImportedFile() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:import href="'.$this->includeUri('include').'"/>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
+    }
+
+    /**
+     * Tests the output-encoding is determined from the file included 
+     * from an imported file.
+     *
+     */
+    #[@test]
+    public function outputEncodingFromIncludedInImportedFile() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:import href="'.$this->includeUri('includer').'"/>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
+    }
+
+    /**
+     * Tests the output-encoding is determined from the file included 
+     * from an included file.
+     *
+     */
+    #[@test]
+    public function outputEncodingFromIncludedInIncludedFile() {
+      $this->processor->setXMLBuf('<document/>');
+      $this->processor->setXSLBuf('
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:include href="'.$this->includeUri('includer').'"/>
+        </xsl:stylesheet>
+      ');
+      $this->processor->run();
+      $this->assertEquals('iso-8859-1', $this->processor->outputEncoding());
     }
   }
 ?>
