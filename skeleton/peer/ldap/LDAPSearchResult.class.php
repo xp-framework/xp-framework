@@ -14,12 +14,13 @@
    */
   class LDAPSearchResult extends Object {
     public
-      $size= NULL;
+      $size     = NULL;
 
     protected
-      $_hdl= NULL,
-      $_res= NULL,
-      $_id= NULL;
+      $_hdl     = NULL,
+      $_res     = NULL,
+      $entry    = NULL,
+      $entries  = array();
 
     /**
      * Constructor
@@ -45,27 +46,36 @@
     /**
      * Gets first entry
      *
-     * @return  mixed entry or FALSE if there is no such entry
+     * @return  peer.ldap.LDAPEntry or FALSE if none exists by this offset
+     * @throws  peer.ldap.LDAPException in case of a read error
      */
     public function getFirstEntry() {
-      return $this->getEntry(ldap_first_entry($this->_hdl, $this->_res));
+      $this->entry= ldap_first_entry($this->_hdl, $this->_res);
+      if (FALSE === $this->entry) {
+        if (!($e= ldap_errno($this->_hdl))) return FALSE;
+        throw new LDAPException('Could not fetch first result entry.', $e);
+      }
+      
+      return LDAPEntry::fromResource($this->_hdl, $this->entry);
     }
     
     /**
      * Get a search entry by resource
      *
-     * @param   int id
-     * @return  mixed entry or FALSE if none exists by this offset
-     * @throws  lang.IllegalStateException in case no search has been performed before
+     * @param   int offset
+     * @return  peer.ldap.LDAPEntry or FALSE if none exists by this offset
+     * @throws  peer.ldap.LDAPException in case of a read error
      */
-    public function getEntry($id) {
-      if (NULL == $this->size) {
-        throw(new IllegalStateException('Please perform a search first'));
+    public function getEntry($offset) {
+      if (!$this->entries) {
+        $this->entries= ldap_get_entries($this->_hdl, $this->_res);
+        if (!is_array($this->entries)) {
+          throw new LDAPException('Could not read result entries.', ldap_errno($this->_hdl));
+        }
       }
-
-      $this->_id= $id;
-      if (FALSE === $id) return FALSE;
-      return LDAPEntry::fromData($this->_hdl, $this->_id);
+      
+      if (!isset($this->entries[$offset])) return FALSE;
+      return LDAPEntry::fromData($this->entries[$offset]);
     }
     
     /**
@@ -76,11 +86,18 @@
      *   }
      * </code>
      *
-     * @return  mixed entry or FALSE if there are none more
+     * @return  peer.ldap.LDAPEntry or FALSE if none exists by this offset
+     * @throws  peer.ldap.LDAPException in case of a read error
      */
     public function getNextEntry() {
-      if (NULL === $this->_id) return $this->getFirstEntry();
-      return $this->getEntry(ldap_next_entry($this->_hdl, $this->_id));
+      if (NULL === $this->entry) return $this->getFirstEntry();
+      $this->entry= ldap_next_entry($this->_hdl, $this->entry);
+      if (FALSE === $this->entry) {
+        if (!($e= ldap_errno($this->_hdl))) return FALSE;
+        throw new LDAPException('Could not fetch next result entry.', $e);
+      }
+      
+      return LDAPEntry::fromResource($this->_hdl, $this->entry);
     }
 
     /**

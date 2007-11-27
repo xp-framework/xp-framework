@@ -278,7 +278,7 @@
         throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
       }
 
-      return LDAPEntry::fromData($this->_hdl, ldap_first_entry($this->_hdl, $res));
+      return LDAPEntry::fromResource($this->_hdl, ldap_first_entry($this->_hdl, $res));
     }
     
     /**

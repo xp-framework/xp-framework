@@ -47,6 +47,36 @@
       }
       return utf8_decode($v);
     }
+    
+    /**
+     * Create LDAPEntry from a given DN and associative
+     * array
+     *
+     * @param   string dn
+     * @param   <string,string> data
+     * @return  peer.ldap.LDAPEntry
+     */
+    protected static function _create($dn, array $data) {
+      $e= new self($dn);
+
+      foreach ($data as $key => $value) {
+        if ('count' == $key || is_int($key)) continue;
+
+        // Store case-preserved version of key name in _ans array        
+        $lkey= strtolower($key);
+        $e->_ans[$lkey]= $key;
+        
+        if (is_array($value)) {
+          $e->attributes[$lkey]= array_map(array($e, '_decode'), $value);
+        } else {
+          $e->attributes[$lkey]= $e->_decode($value);
+        }
+        
+        unset($e->attributes[$lkey]['count']);
+      }
+
+      return $e;
+    }
         
     /**
      * Creates an LDAP from the raw return data of PHP's ldap_* functions
@@ -56,23 +86,20 @@
      * @param   resource res ldap result resource
      * @return  peer.ldap.LDAPEntry object
      */
-    public static function fromData($handle, $res) {
-      $data= ldap_get_attributes($handle, $res);
-      $e= new LDAPEntry(ldap_get_dn($handle, $res));
-
-      foreach ($data as $key => $value) {
-        if ('count' == $key || is_int($key)) continue;
-        $e->_ans[strtolower($key)]= $key;
-        
-        if (is_array($value)) {
-          $e->attributes[strtolower($key)]= array_map(array($e, '_decode'), $value);
-        } else {
-          $e->attributes[strtolower($key)]= $e->_decode($value);
-        }
-        unset($e->attributes[strtolower($key)]['count']);
-      }
-
-      return $e;
+    public static function fromResource($handle, $res) {
+      return self::_create(ldap_get_dn($handle, $res), ldap_get_attributes($handle, $res));
+    }
+    
+    /**
+     * Creates an LDAP from the raw return data of PHP's ldap_* functions
+     * Also performs decoding on the attributes.
+     *
+     * @param   mixed data return value from ldap_* functions
+     * @return  peer.ldap.LDAPEntry object
+     */
+    public static function fromData($data) {
+      $dn= $data['dn']; unset($data['dn']);
+      return self::_create($dn, $data);
     }
     
     /**
@@ -116,9 +143,10 @@
      * @return  mixed attribute
      */
     public function getAttribute($key, $idx= -1) {
+      $lkey= strtolower($key);
       return (($idx >= 0)
-        ? (isset($this->attributes[strtolower($key)][$idx]) ? $this->attributes[strtolower($key)][$idx] : NULL)
-        : (isset($this->attributes[strtolower($key)]) ? $this->attributes[strtolower($key)] : NULL)
+        ? (isset($this->attributes[$lkey][$idx]) ? $this->attributes[$lkey][$idx] : NULL)
+        : (isset($this->attributes[$lkey]) ? $this->attributes[$lkey] : NULL)
       );
     }
     
