@@ -79,7 +79,6 @@
     public function readEntry() {
       $res= $this->lc->read(new LDAPEntry('uid=kurt,ou=People,dc=OpenLDAP,dc=Org'));
       $this->assertEquals('uid=kurt,ou=People,dc=OpenLDAP,dc=Org', $res->getDN());
-      var_dump($res);
     }
     
     /**

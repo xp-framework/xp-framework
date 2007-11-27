@@ -54,16 +54,6 @@
     }
 
     /**
-     * Test empty resultset
-     *
-     */
-    #[@test, @expect('lang.IllegalStateException')]
-    public function testEmptyResult() {
-      $r= new LDAPSearchResult();
-      $r->getNextEntry();
-    }
-
-    /**
      * Test LDAP search
      *
      */
@@ -130,7 +120,7 @@
      *
      */
     #[@test]
-    public function ommitFirstEntry() {
+    public function omitFirstEntry() {
       $res= $this->lc->search(
         'ou=People,dc=OpenLDAP,dc=Org',
         '(objectClass=person)'
@@ -155,6 +145,58 @@
       $this->assertClass($entry, 'peer.ldap.LDAPEntry');
       $this->assertNotEmpty($entry->getDN());
       $this->assertArray($attributes= $entry->getAttributes());
+    }
+    
+    /**
+     * Test searching with empty resultset
+     *
+     */
+    #[@test]
+    public function emptyResult() {
+      $res= $this->lc->search(
+        'ou=Groups,dc=OpenLDAP,dc=Org',
+        '(objectClass=person)'
+      );
+      $this->assertEquals(FALSE, $res->getFirstEntry());      
+    }
+    
+    /**
+     * Test empty resultset
+     *
+     */
+    #[@test]
+    public function testEmptyResult() {
+      $res= $this->lc->search(
+        'ou=Groups,dc=OpenLDAP,dc=Org',
+        '(objectClass=person)'
+      );
+      $this->assertEquals(FALSE, $res->getNextEntry());      
+    }
+    
+    /**
+     * Test non-empty resultset
+     *
+     */
+    #[@test]
+    public function readEntries() {
+      $res= $this->lc->search(
+        'ou=Groups,dc=OpenLDAP,dc=Org',
+        '(objectClass=*)'
+      );
+      $this->assertEquals(TRUE, $res->getEntry(0) instanceof LDAPEntry);
+    }
+
+    /**
+     * Test empty resultset
+     *
+     */
+    #[@test]
+    public function readEmptyEntries() {
+      $res= $this->lc->search(
+        'ou=Groups,dc=OpenLDAP,dc=Org',
+        '(objectClass=person)'
+      );
+      $this->assertEquals(FALSE, $res->getEntry(0));      
     }
   }
 ?>
