@@ -14,6 +14,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed pre-fetching mode in peer.ldap-API
+  (friebe, kiesel)
 - Fixed scriptlet.xml.workflow.casters.ToDate which was accepting 
   when it encountered empty input (unittest said it shouldn't)
   (friebe)
@@ -23,6 +25,11 @@ Bugfixes
 - Fixed DomXSLProcessor::determineOutputEncoding() to return the output
   encoding declared in imported XSL files using <xsl:import/>
   (friebe, hinckel)
+- Fixed lang.ClassLoader::defineInterface() and defineClass() methods
+  (kiesel)
+- Fixed use of undefined variables in lang.Primitive,
+  lang.types.ArrayList and lang.types.String
+  (kiesel)
 - Fixed LDAPClient::read() method
   (kiesel)
 - Ports: Fixed Nagios Heartbeat adding two dots between unqualified host
