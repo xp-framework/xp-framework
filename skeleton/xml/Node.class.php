@@ -230,9 +230,9 @@
           break;
 
         case 'object':
-          if (is('PCData', $this->content)) {
+          if ($this->content instanceof PCData) {
             $content= $this->content->pcdata;
-          } else if (is('CData', $this->content)) {
+          } else if ($this->content instanceof CData) {
             $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
           }
           break;
