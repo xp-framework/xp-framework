@@ -9,6 +9,7 @@
     'rdbms.join.JoinProcessor',
     'rdbms.SQLExpression',
     'rdbms.Column',
+    'rdbms.criterion.Criterion',
     'rdbms.criterion.Projections',
     'rdbms.join.Fetchmode'
   );
@@ -47,7 +48,7 @@
      * @param   rdbms.criterion.Criterion condition default NULL
      */
     public function __construct($criterion= NULL) {
-      if (is('rdbms.criterion.Criterion', $criterion)) {
+      if ($criterion instanceof Criterion) {
         $this->conditions[]= $criterion;
       } else if (is_array($criterion)) {
         $this->conditions[]= new SimpleExpression($criterion[0], $criterion[1], $criterion[2]);
