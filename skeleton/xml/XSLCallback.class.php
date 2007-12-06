@@ -8,6 +8,7 @@
    * XSL callback class.
    *
    * @ext      dom
+   * @test     xp://net.xp_framework.unittest.xml.XslCallbackTest
    * @see      php://xslt_registerphpfunctions
    * @purpose  Provide PHP callback functions on object instances
    */
