@@ -60,28 +60,21 @@
      * @throws  lang.IllegalArgumentException if the instance is not known
      * @throws  lang.IllegalArgumentException if the given method does not exist or is not xsl-accessible
      */
-    public static function invoke() {
-      $args= func_get_args();
-      if (sizeof($args) < 2) throw (new IllegalArgumentException(
-        'Cannot call XSL callback with less than 2 arguments.'
-      ));
-      
-      $name= array_shift($args);
-      $method= array_shift($args);
-
-      if (!isset(self::getInstance()->instances[$name])) throw (new IllegalArgumentException(
+    public static function invoke($name, $method) {
+      if (!isset(self::$instance->instances[$name])) throw new IllegalArgumentException(
         'No such registered XSL callback instance: "'.$name.'"'
-      ));
-      $instance= self::getInstance()->instances[$name];
-      
+      );
+
+      $instance= self::$instance->instances[$name];
       if (
-        !$instance->getClass()->hasMethod($method) ||
-        !$instance->getClass()->getMethod($method)->hasAnnotation('xslmethod')
-      ) throw (new IllegalArgumentException(
-        'Instance '.$name.' does not have (xsl-accessible) method '.$method
-      ));
+        !($m= $instance->getClass()->getMethod($method)) ||
+        !($m->hasAnnotation('xslmethod'))
+      ) throw new IllegalArgumentException(
+        'Instance "'.$name.'" does not have (xsl-accessible) method "'.$method.'"'
+      );
       
-      return $instance->getClass()->getMethod($method)->invoke($instance, $args);
+      $args= func_get_args();
+      return call_user_func_array(array($instance, $method), array_slice($args, 2));
     }
   }
 ?>
