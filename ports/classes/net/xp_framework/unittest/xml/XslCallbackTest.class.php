@@ -19,22 +19,6 @@
   class XslCallbackTest extends TestCase {
 
     /**
-     * Sets up test case
-     *
-     */
-    public function setUp() {
-      XSLCallback::getInstance()->registerInstance('this', $this);
-    }
-
-    /**
-     * Tears down case
-     *
-     */
-    public function tearDown() {
-      XSLCallback::getInstance()->clearInstances();
-    }
-
-    /**
      * Runs a transformation
      *
      * @param   string xml
@@ -45,6 +29,7 @@
     protected function runTransformation($xml, $callback, $arguments) {
       sscanf($callback, '%[^:]::%s', $name, $method);
       $p= new DomXSLProcessor();
+      $p->registerInstance('this', $this);
       $p->setXMLBuf($xml);
       $p->setXSLBuf(sprintf('
         <xsl:stylesheet 
