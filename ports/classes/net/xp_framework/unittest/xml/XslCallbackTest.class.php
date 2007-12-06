@@ -7,7 +7,9 @@
   uses(
     'unittest.TestCase',
     'xml.XSLCallback',
-    'xml.DomXSLProcessor'
+    'xml.DomXSLProcessor',
+    'xml.Node',
+    'util.Date'
   );
 
   /**
@@ -115,6 +117,77 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function callNonExistantMethod() {
       $this->runTransformation('<irrelevant/>', 'this::nonExistantMethod', array());
+    }
+
+    /**
+     * Test xp.date::format
+     *
+     * @see      xp://xml.xslt.XSLDateCallback
+     */
+    #[@test]
+    public function dateFormatCallback() {
+      $date= Date::now();
+      $this->assertEquals($date->toString('Y-m-d H:i:s'), $this->runTransformation(
+        Node::fromObject($date)->getSource(),
+        'xp.date::format',
+        array('string(/date/value)', "'Y-m-d H:i:s'")
+      ));
+    }
+
+    /**
+     * Test xp.string::urlencode
+     *
+     * @see      xp://xml.xslt.XSLStringCallback
+     */
+    #[@test]
+    public function stringUrlencodeCallback() {
+      $this->assertEquals('a+%26+b%3F', $this->runTransformation(
+        '<url>a &amp; b?</url>',
+        'xp.string::urlencode',
+        array('string(/)')
+      ));
+    }
+
+    /**
+     * Test xp.string::urldecode
+     *
+     * @see      xp://xml.xslt.XSLStringCallback
+     */
+    #[@test]
+    public function stringUrldecodeCallback() {
+      $this->assertEquals('a & b?', $this->runTransformation(
+        '<url>a+%26+b%3F</url>',
+        'xp.string::urldecode',
+        array('string(/)')
+      ));
+    }
+
+    /**
+     * Test xp.string::replace
+     *
+     * @see      xp://xml.xslt.XSLStringCallback
+     */
+    #[@test]
+    public function stringReplaceCallback() {
+      $this->assertEquals('Hello World!', $this->runTransformation(
+        '<string>Hello Test!</string>',
+        'xp.string::replace',
+        array('string(/)', "'Test'", "'World'")
+      ));
+    }
+
+    /**
+     * Test xp.string::nl2br
+     *
+     * @see      xp://xml.xslt.XSLStringCallback
+     */
+    #[@test]
+    public function stringNl2BrCallback() {
+      $this->assertEquals("Line 1<br />\nLine 2", $this->runTransformation(
+        "<string>Line 1\nLine 2</string>",
+        'xp.string::nl2br',
+        array('string(/)')
+      ));
     }
   }
 ?>
