@@ -17,6 +17,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Improved performance of xml.XSLCallback class
+  (friebe)
 - Improved performance of XPClass::getMethods() / XPClass::getMethod() / 
   XPClass::hasMethod() and XPClass::getConstructor() / 
   XPClass::hasConstructor()
