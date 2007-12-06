@@ -47,10 +47,10 @@
      * @throws  lang.IllegalAccessException in case the method is not public or if it is abstract
      */
     public function invoke($obj, $args= array()) {
-      if (NULL !== $obj && !($obj instanceof $this->_ref)) {
+      if (NULL !== $obj && !($obj instanceof $this->_class)) {
         throw new IllegalArgumentException(sprintf(
           'Passed argument is not a %s class (%s)',
-          xp::nameOf($this->_ref),
+          xp::nameOf($this->_class),
           xp::typeOf($obj)
         ));
       }
@@ -61,19 +61,19 @@
         throw new IllegalAccessException(sprintf(
           'Cannot invoke %s %s::%s',
           Modifiers::stringOf($this->getModifiers()),
-          $this->_ref,
-          $this->name
+          $this->_class,
+          $this->_reflect->getName()
         ));
       }
 
       try {
         return $this->_reflect->invokeArgs($obj, (array)$args);
       } catch (Throwable $e) {
-        throw new TargetInvocationException($this->_ref.'::'.$this->name.'() ~ '.$e->getMessage(), $e);
+        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() ~ '.$e->getMessage(), $e);
       } catch (ReflectionException $e) {
 
         // This should never occur, we checked everything beforehand...
-        throw new TargetInvocationException($this->_ref.'::'.$this->name.'() ~ '.$e->getMessage(), new XPException($e->getMessage()));
+        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() ~ '.$e->getMessage(), new XPException($e->getMessage()));
       }
     }
   }

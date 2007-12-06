@@ -21,37 +21,30 @@
    * @purpose  Reflection
    */
   class Routine extends Object {
-    public
-      $_ref     = NULL,
-      $name     = '';
-    
     protected
+      $_class   = NULL;
+
+    public 
       $_reflect = NULL;
 
     /**
      * Constructor
      *
-     * @param   mixed ref
-     * @param   string name
+     * @param   string class
+     * @param   php.ReflectionMethod reflect
      */    
-    public function __construct($ref, $name) {
-      $this->_ref= is_object($ref) ? get_class($ref) : $ref;
-      $this->name= $name;
-      $this->_reflect= new ReflectionMethod($this->_ref, $this->name);
+    public function __construct($class, $reflect) {
+      $this->_class= $class;
+      $this->_reflect= $reflect;
     }
     
     /**
-     * Get method's name. If the optional parameter "asDeclared" is set to TRUE,
-     * the name will be parsed from the sourcecode, thus preserving case.
+     * Get routine's name.
      *
-     * @param   bool asDeclared default FALSE
      * @return  string
      */
-    public function getName($asDeclared= FALSE) {
-      if (!$asDeclared) return $this->name;
-
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
-      return $details[DETAIL_NAME];
+    public function getName() {
+      return $this->_reflect->getName();
     }
     
     /**
@@ -87,7 +80,7 @@
      * @return  lang.reflect.Argument[]
      */
     public function getArguments() {
-      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
       $r= array();
 
       foreach ($this->_reflect->getParameters() as $pos => $param) {
@@ -109,7 +102,7 @@
      * @return  lang.reflect.Argument
      */
     public function getArgument($pos) {
-      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
       $param= $this->_reflect->getParameters();
       if (!isset($param[$pos])) return NULL;
 
@@ -137,7 +130,7 @@
      * @return  string
      */
     public function getReturnType() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
       return ltrim($details[DETAIL_RETURNS], '&');
     }
 
@@ -157,7 +150,7 @@
      * @return  string[]
      */
     public function getExceptionNames() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
       return $details[DETAIL_THROWS];
     }
 
@@ -191,7 +184,7 @@
      * @return  string
      */
     public function getComment() {
-      if (!($details= XPClass::detailsForMethod($this->_ref, $this->name))) return NULL;
+      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
       return $details[DETAIL_COMMENT];
     }
     
@@ -203,7 +196,7 @@
      * @return  bool
      */
     public function hasAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
 
       return $details && ($key 
         ? array_key_exists($key, (array)@$details[DETAIL_ANNOTATIONS][$name]) 
@@ -220,7 +213,7 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
 
       if (!$details || !($key 
         ? array_key_exists($key, @$details[DETAIL_ANNOTATIONS][$name]) 
@@ -242,7 +235,7 @@
      * @return  bool
      */
     public function hasAnnotations() {
-      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
       return $details ? !empty($details[DETAIL_ANNOTATIONS]) : FALSE;
     }
 
@@ -252,7 +245,7 @@
      * @return  array annotations
      */
     public function getAnnotations() {
-      $details= XPClass::detailsForMethod($this->_ref, $this->name);
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
       return $details ? $details[DETAIL_ANNOTATIONS] : array();
     }
     
@@ -265,7 +258,7 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $cmp->name == $this->name &&
+        $cmp->_reflect->getName() === $this->_reflect->getName() &&
         $cmp->getDeclaringClass()->equals($this->getDeclaringClass())
       );
     }

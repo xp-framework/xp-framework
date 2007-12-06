@@ -42,8 +42,10 @@
    * @purpose  Reflection
    */
   class XPClass extends Type {
+    protected
+      $_class   = NULL;
+
     public 
-      $_objref  = NULL,
       $_reflect = NULL;
       
     /**
@@ -52,8 +54,8 @@
      * @param   mixed ref either a class name or an object
      */
     public function __construct($ref) {
-      parent::__construct(xp::nameOf(is_object($ref) ? get_class($ref) : $ref));
-      $this->_objref= $ref;
+      $this->_class= is_object($ref) ? get_class($ref) : $ref;
+      parent::__construct(xp::nameOf($this->_class));
       $this->_reflect= new ReflectionClass($ref);
     }
     
@@ -109,31 +111,17 @@
     }
     
     /**
-     * Helper function that returns this class' methods.
-     *
-     * @param   string filter
-     * @return  string[] method names
-     */
-    protected function _methods($filter) {
-      $r= array();
-      foreach ($this->_reflect->getMethods() as $m) {
-        $n= $m->getName();
-        preg_match($filter, $n) && $r[]= $n;
-      }
-      return $r;
-    }
-    
-    /**
      * Gets class methods for this class
      *
      * @return  lang.reflect.Method[]
      */
     public function getMethods() {
-      $m= array();
-      foreach ($this->_methods('/^[^__]/') as $method) {
-        $m[]= new Method($this->_objref, $method);
+      $list= array();
+      foreach ($this->_reflect->getMethods() as $m) {
+        if (0 == strncmp('__', $m->getName(), 2)) continue;
+        $list[]= new Method($this->_class, $m);
       }
-      return $m;
+      return $list;
     }
 
     /**
@@ -146,7 +134,7 @@
      */
     public function getMethod($name) {
       if ($this->hasMethod($name)) {
-        return new Method($this->_objref, $name);
+        return new Method($this->_class, $this->_reflect->getMethod($name));
       }
       return NULL;
     }
@@ -162,7 +150,10 @@
      * @return  bool TRUE if method exists
      */
     public function hasMethod($method) {
-      return (bool)$this->_methods('/^'.$method.'$/i');
+      return ((0 === strncmp('__', $method, 2))
+        ? FALSE
+        : $this->_reflect->hasMethod($method)
+      );
     }
     
     /**
@@ -171,7 +162,7 @@
      * @return  bool
      */
     public function hasConstructor() {
-      return (bool)$this->_methods('/^__construct$/');
+      return $this->_reflect->hasMethod('__construct');
     }
     
     /**
@@ -183,7 +174,7 @@
      */
     public function getConstructor() {
       if ($this->hasConstructor()) {
-        return new Constructor($this->_objref); 
+        return new Constructor($this->_class, $this->_reflect->getMethod('__construct')); 
       }
       return NULL;
     }
@@ -195,15 +186,12 @@
      */
     public function getFields() {
       $f= array();
-      $v= (is_object($this->_objref) 
-        ? get_object_vars($this->_objref) 
-        : get_class_vars($this->_objref)
-      );
+      $v= get_class_vars($this->_class);
       foreach ($this->_reflect->getProperties() as $p) {
         if ('__id' == ($name= $p->getName())) continue;
         
         $f[]= new Field(
-          $this->_objref, 
+          $this->_class, 
           $name,
           isset($v[$name]) ? gettype($v[$name]) : NULL
         );
@@ -221,11 +209,8 @@
     public function getField($name) {
       if (!$this->hasField($name)) return NULL;
 
-      $v= (is_object($this->_objref) 
-        ? get_object_vars($this->_objref) 
-        : get_class_vars($this->_objref)
-      );
-      return new Field($this->_objref, $name, isset($v[$name]) ? gettype($v[$name]) : NULL);
+      $v= get_class_vars($this->_class);
+      return new Field($this->_class, $name, isset($v[$name]) ? gettype($v[$name]) : NULL);
     }
     
     /**

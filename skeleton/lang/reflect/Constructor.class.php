@@ -16,15 +16,6 @@
   class Constructor extends Routine {
 
     /**
-     * Constructor
-     *
-     * @param   mixed ref
-     */    
-    public function __construct($ref) {
-      parent::__construct($ref, '__construct');
-    }
-    
-    /**
      * Uses the constructor represented by this Constructor object to create 
      * and initialize a new instance of the constructor's declaring class, 
      * with the specified initialization parameters.
@@ -53,7 +44,7 @@
         throw new IllegalAccessException(sprintf(
           'Cannot invoke %s constructor of class %s',
           Modifiers::stringOf($this->getModifiers()),
-          $this->_ref
+          $this->_class
         ));
       }
 
@@ -64,9 +55,9 @@
       }
       
       try {
-        return eval('return new '.$this->_ref.'('.substr($paramstr, 2).');');
+        return eval('return new '.$this->_class.'('.substr($paramstr, 2).');');
       } catch (Throwable $e) {
-        throw new TargetInvocationException($this->_ref.'::<init>', $e);
+        throw new TargetInvocationException($this->_class.'::<init>', $e);
       }
     }
 
@@ -76,7 +67,7 @@
      * @return  string
      */
     public function getReturnType() {
-      return xp::nameOf($this->_ref);
+      return xp::nameOf($this->_class);
     }
   }
 ?>
