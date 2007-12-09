@@ -21,6 +21,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made lang.archive.ArchiveClassLoader use xar loader provided by
+  lang.base.php instead of having to use an extra ArchiveReader class
+  (friebe, kiesel)
 - Improved performance of xml.XSLCallback class
   (friebe)
 - Improved performance of XPClass::getMethods() / XPClass::getMethod() / 
