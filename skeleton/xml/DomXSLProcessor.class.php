@@ -49,6 +49,10 @@
     public
       $_instances   = array(),
       $_base        = '';
+
+    static function __static() {
+      libxml_use_internal_errors(TRUE);
+    }
       
     /**
      * Constructor
