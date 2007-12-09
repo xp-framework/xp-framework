@@ -18,22 +18,12 @@
    * <code>
    *   uses('security.cert.X509Certificate');
    *   
-   *   try(); {
-   *     $x509= &X509Certificate::fromString(<<<EOC
+   *   $x509= X509Certificate::fromString(<<<EOC
    * -----BEGIN CERTIFICATE-----
    * [...]
    * -----END CERTIFICATE-----
    * EOC
-   * );
-   *   } if (catch('CertificateException', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
-   *   
-   *   $subject= &$x509->getSubjectDN();
-   *   $issuer= &$x509->getIssuerDN();
-   *   $notBefore= &$x509->getNotBefore();
-   *   $notAfter= &$x509->getNotAfter();
+   *  );
    *   
    *   printf(<<<EOP
    * Certificate information
@@ -54,13 +44,13 @@
    * 
    * EOP
    *     ,
-   *     $subject->getName(),
-   *     $issuer->getName(),
+   *     $x509->getSubjectDN()->getName(),
+   *     $x509->getIssuerDN()->getName(),
    *     $x509->getSerialNumber(),
    *     $x509->getVersion(),
    *     $x509->getHash(),
-   *     $notBefore->toString(),
-   *     $notAfter->toString(),
+   *     $x509->getNotBefore()->toString(),
+   *     $x509->getNotAfter()->toString(),
    *     $x509->checkValidity() ? 'yes' : 'no',
    *     var_export($x509->getKeyUsage(), 1)
    *   );
@@ -94,7 +84,7 @@
      * @return  bool TRUE if this certificate is valid for the given date
      */
     public function checkValidity($date= NULL) {
-      if (NULL === $date) $date= new Date(time());
+      if (NULL === $date) $date= new Date();
       return (
         ($date->getTime() >= $this->_info['validFrom_time_t']) ||
         ($date->getTime() <= $this->_info['validTo_time_t'])
@@ -125,7 +115,7 @@
      * @return  security.Principal
      */
     public function getIssuerDN() {
-      return new Principal($this->_info['issuer']);
+      return new Principal(array_map('utf8_decode', $this->_info['issuer']));
     }
     
     /**
@@ -134,7 +124,7 @@
      * @return  security.Principal
      */
     public function getSubjectDN() {
-      return new Principal($this->_info['subject']);
+      return new Principal(array_map('utf8_decode', $this->_info['subject']));
     }
     
     /**
@@ -185,9 +175,9 @@
      */
     public function export() {
       if (FALSE === openssl_x509_export($this->_res, $out)) {
-        throw(new CertificateException(
+        throw new CertificateException(
           'Could not export certificate', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return $out;
@@ -202,14 +192,14 @@
      */
     public static function fromString($str) {
       if (!is_resource($_res= openssl_x509_read($str))) {
-        throw(new CertificateException(
+        throw new CertificateException(
           'Could not read certificate', OpenSslUtil::getErrors()
-        ));
+        );
       }
       if (!is_array($_info= openssl_x509_parse($_res, TRUE))) {
-        throw(new CertificateException(
+        throw new CertificateException(
           'Cannot parse certificate information', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return new X509Certificate($_info, $_res);
