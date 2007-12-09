@@ -68,7 +68,7 @@
 
       $uri= $file->getURI();
       $path= dirname($uri);
-      $paths= array_flip(array_map('realpath', explode(PATH_SEPARATOR, ini_get('include_path'))));
+      $paths= array_flip(array_filter(array_map('realpath', explode(PATH_SEPARATOR, ini_get('include_path')))));
 
       while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
         if (isset($paths[$path])) {
@@ -145,7 +145,7 @@
         try {
           $ignored= $this->suite->addTestClass(
             $class, 
-            $arguments->values[0] ? $arguments->values[0] : $this->arguments
+            $arguments->length ? $arguments : $this->arguments
           );
         } catch (NoSuchElementException $e) {
           $this->out->writeLine('*** Warning: ', $e->getMessage());
