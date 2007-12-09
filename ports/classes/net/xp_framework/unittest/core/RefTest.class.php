@@ -43,7 +43,8 @@
     #[@test]
     public function derefOfRef() {
       $object= new Object();
-      $this->assertReference($object, deref(ref($object)));
+      $r= ref($object);
+      $this->assertReference($object, deref($r));
     }
 
     /**
