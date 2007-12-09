@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Sun Nov 25 12:19:46     2007
-@status: discussion, ends at Mon Nov 26 16:00:00     2007
+@status: implemented, Sun Dec  9 16:08:16     2007
 @category: unittest
 
 Scope of Change
