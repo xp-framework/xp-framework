@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase');
+  uses('unittest.TestCase', 'lang.archive.ArchiveReader');
 
   /**
    * TestCase

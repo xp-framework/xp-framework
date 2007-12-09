@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'lang.archive.ArchiveReader',
     'util.Date'
   );
 
