@@ -42,37 +42,20 @@
      * @throws  lang.IllegalArgumentException in case the date is unparseable
      */
     public function __construct($in= NULL, TimeZone $timezone= NULL) {
-      switch (TRUE) {
-        case $in instanceof DateTime: {
-          $this->date= $in;
-          return;
-        }
+      if ($in instanceof DateTime) {
+        $this->date= $in;
+      } else if (is_numeric($in)) {
         
         // Specially mark timestamps for parsing (we assume here that strings
         // containing only digits are timestamps)
-        case is_numeric($in): {
-          $this->date= date_create('@'.$in);
-          return;
-        }
-
-        default: {
-          switch (TRUE) {
-            case $timezone instanceof TimeZone: {
-              $this->date= date_create($in, $timezone->getHandle());
-              break;
-            }
-            
-            default: {
-              $this->date= date_create($in); break;
-            }
-          }
-          
-          if (FALSE === $this->date)
-            throw new IllegalArgumentException(
-              'Given argument is neither a timestamp nor a well-formed timestring: "'.$in.'"'
-            );
-          return;
-        }
+        $this->date= date_create('@'.$in);
+      } else if (FALSE === ($this->date= $timezone instanceof TimeZone
+        ? date_create($in, $timezone->getHandle())
+        : date_create($in)
+      )) {
+        throw new IllegalArgumentException(
+          'Given argument is neither a timestamp nor a well-formed timestring: "'.$in.'"'
+        );
       }
     }
     
