@@ -35,7 +35,7 @@
 
       // Check whether class is abstract
       if ($this->_reflect->getDeclaringClass()->isAbstract()) {
-        throw new IllegalAccessException('Cannot instantiate abstract class '.$this->_ref);
+        throw new IllegalAccessException('Cannot instantiate abstract class '.$this->_class);
       }
 
       // Check modifers
