@@ -24,6 +24,28 @@ Functionality
 -------------
 A new check will be performed after each test method run.
 
+Note
+~~~~
+<pre>
+  Checks on the error registry are only performed when a test case does not
+  throw an exception.
+</pre>
+
+Consider this:
+<?php
+  if (!($exif= exif_read_data('/tmp/image.jpg'))) {
+    throw new FormatException('Cannot read EXIF data');
+  }
+?>
+
+* exif_read_data() will return FALSE which is checked and an exception
+  is thrown. A unittest will test for this behaviour using @expect e.g.
+* exif_read_data() will also emit a warning explaining *why* it couldn't
+  read the EXIF data.
+* This warning contains useful information, so it shouldn't be deleted
+  in the above example.
+  
+
 Security considerations
 -----------------------
 n/a
@@ -45,7 +67,5 @@ Comments
 --------
 - kiesel, Sun Nov 25 12:40:06     2007
   Should this behavior be deactivateable by a @non-strict class annotation?
-
-
 
 <EOF>
