@@ -99,7 +99,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function setPermissions($perm) {
-      static $m= array('r' => 4, 'w' => 2, 'x' => 1, '-' => 0);
+      static $m= array('r' => 4, 'w' => 2, 'x' => 1, '-' => 0, 't' => 0);
 
       if (is_string($perm) && 9 == strlen($perm)) {
         $this->permissions= (
