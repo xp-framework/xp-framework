@@ -269,19 +269,15 @@
       $method= $this->getClass()->getMethod($this->name);
 
       if (!$method) {
-        throw(new MethodNotImplementedException(
+        throw new MethodNotImplementedException(
           'Method does not exist', $this->name
-        ));
+        );
       }
 
       // Check for @expect
       $expected= NULL;
       if ($method->hasAnnotation('expect')) {
-        try {
-          $expected= XPClass::forName($method->getAnnotation('expect'));
-        } catch (Exception $e) {
-          throw($e);
-        }
+        $expected= XPClass::forName($method->getAnnotation('expect'));
       }
       
       // Check for @limit
@@ -315,11 +311,14 @@
 
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
-          $r= (!$eta || $timer->elapsedTime() <= $eta 
-            ? $result->setSucceeded($this, $timer->elapsedTime())
-            : $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
-          );
           $this->tearDown();
+          if (sizeof(xp::registry('errors')) > 0) {
+            $r= $result->setFailed($this, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime());
+          } else if ($eta && $timer->elapsedTime() > $eta) {
+            $r= $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime());
+          } else {
+            $r= $result->setSucceeded($this, $timer->elapsedTime());
+          }
           xp::gc();
           return $r;
         }
@@ -343,10 +342,14 @@
         return FALSE;
       }
       
-      $r= (!$eta || $timer->elapsedTime() <= $eta 
-        ? $result->setSucceeded($this, $timer->elapsedTime())
-        : $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
-      );
+      if (sizeof(xp::registry('errors')) > 0) {
+        $r= $result->setFailed($this, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime());
+      } else if ($eta && $timer->elapsedTime() > $eta) {
+        $r= $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime());
+      } else {
+        $r= $result->setSucceeded($this, $timer->elapsedTime());
+      }
+      xp::gc();
       return $r;
     }
     
