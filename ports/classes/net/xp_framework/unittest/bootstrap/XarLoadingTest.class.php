@@ -4,10 +4,7 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'net.xp_framework.unittest.bootstrap.SandboxSourceRunner'
-  );
+  uses('net.xp_framework.unittest.bootstrap.AbstractBootstrapTestCase');
 
   /**
    * TestCase for loading classes from an XP archive (.xar).
@@ -15,16 +12,14 @@
    * @see      xp://lang.archive.ArchiveClassLoader
    * @purpose  Test class loading
    */
-  class XarLoadingTest extends TestCase {
-  
+  class XarLoadingTest extends AbstractBootstrapTestCase {
+
     /**
-     * Sets up test case
+     * Sets up test case. Includes XAR into include_path
      *
      */
     public function setUp() {
-      $this->sandbox= new SandboxSourceRunner();
-      
-      // Include XAR into include_path
+      parent::setUp();
       $this->sandbox->setSetting('include_path',
         $this->sandbox->getSetting('include_path').
         PATH_SEPARATOR.
@@ -38,10 +33,10 @@
      */
     #[@test]
     public function load() {
-      $this->assertEquals(0, $this->sandbox->run('
+      $this->assertExitcode(0, '
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.A");
-      '));
+      ');
     }
 
     /**
@@ -50,10 +45,10 @@
      */
     #[@test]
     public function loadFromArchive() {
-      $this->assertEquals(0, $this->sandbox->run('
+      $this->assertExitcode(0, '
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.D");
-      '));
+      ');
     }
     
     /**
@@ -62,13 +57,13 @@
      */
     #[@test]
     public function loadFromArchiveWithArchiveDependency() {
-      $this->assertEquals(0, $this->sandbox->run('
+      $this->assertExitcode(0, '
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.E");
         
         // E extends D, so D must be loaded, as well
         class_exists("D") || xp::error("Class not found: D");
-      '));
+      ');
     }
     
     /**
@@ -77,10 +72,10 @@
      */
     #[@test]
     public function loadFromArchiveWithNonarchiveDependency() {
-      $this->assertEquals(0, $this->sandbox->run('
+      $this->assertExitcode(0, '
         require("lang.base.php");
         uses("net.xp_framework.unittest.bootstrap.F");
-      '));
+      ');
     }
     
     /**
@@ -89,14 +84,14 @@
      */
     #[@test]
     public function registeredClassLoader() {
-      $this->assertEquals(0, $this->sandbox->run('
+      $this->assertExitcode(0, '
         require("lang.base.php");
         $xpclass= XPClass::forName("net.xp_framework.unittest.bootstrap.F");
         is("lang.archive.ArchiveClassLoader", $xpclass->getClassLoader()) || xp::error("Incorrect classloader for class loaded from archive");
         
         $xpclass= XPClass::forName("net.xp_framework.unittest.bootstrap.C");
         !is("lang.archive.ArchiveClassLoader", $xpclass->getClassLoader()) || xp::error("Incorrect classloader for class not loaded from archive");
-      '));
+      ');
     }
   }
 ?>
