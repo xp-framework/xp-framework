@@ -80,7 +80,7 @@
       }
       
       // Parse creation date
-      if (3 == sscanf($iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
+      if (3 == sscanf(@$iptc['2#055'][0], '%4d%2d%d', $year, $month, $day)) {
         $created= Date::create($year, $month, $day, 0, 0, 0);
       } else {
         $created= NULL;
