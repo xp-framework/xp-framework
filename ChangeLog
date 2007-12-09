@@ -16,6 +16,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed security.cert.X509Certificate::getSubjectDN() and
+  security.cert.X509Certificate::getIssuerDN() to decode DNs correctly
+  (friebe)
 - Fixed notices and warnings in various places (E_ALL conformance).
   (friebe)
 
