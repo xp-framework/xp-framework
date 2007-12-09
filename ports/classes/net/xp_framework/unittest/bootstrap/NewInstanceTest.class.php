@@ -5,8 +5,7 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'net.xp_framework.unittest.bootstrap.SandboxSourceRunner',
+    'net.xp_framework.unittest.bootstrap.AbstractBootstrapTestCase',
     'util.log.Traceable',
     'util.log.LogAppender'
   );
@@ -16,7 +15,7 @@
    *
    * @purpose  Test newinstance()
    */
-  class NewInstanceTest extends TestCase {
+  class NewInstanceTest extends AbstractBootstrapTestCase {
   
     /**
      * Test creating an instance of the util.log.Traceable interface
@@ -80,20 +79,12 @@
      * @throws  unittest.PrerequisitesNotMetError in case the sandbox runner cannot be setup
      */
     public function assertBailsWith($message, $expr) {
-      try {
-        $sandbox= new SandboxSourceRunner();
-      } catch (IllegalStateException $e) {
-        throw(new PrerequisitesNotMetError($e->getMessage(), $e));
-      }
       
       // Run and verify exitcode 255
-      if (!$this->assertEquals(
-        255, 
-        $sandbox->run('require("lang.base.php"); '.$expr
-      ))) return FALSE;
+      $this->assertEquals(255, $this->sandbox->run('require("lang.base.php"); '.$expr));
 
-      // Check for error message on STDERR
-      $stderr= implode("\n", $sandbox->getStdErr());
+      // Check for error message on STDERR and STDOUT
+      $stderr= implode("\n", $this->sandbox->getStderr()).implode("\n", $this->sandbox->getStdout());
       if (1 !== preg_match('/'.preg_quote($message).'/i', $stderr)) {
         $this->fail('Error message incorrect', $stderr, $message);
       }
@@ -108,7 +99,7 @@
     #[@test]
     public function interfaceMethodNotImplemented() {
       $this->assertBailsWith(
-        'Interface method traceable::settrace() not implemented', 
+        'contains 1 abstract method and must therefore be declared abstract or implement the remaining methods', 
         'uses("util.log.Traceable"); newinstance("util.log.Traceable", array(), "{}");'
       );
     }
