@@ -61,7 +61,9 @@
     public function getResourceAsStream() {
       $stream= ClassLoader::getDefault()->getResourceAsStream('META-INF/manifest.ini');
       $this->assertSubClass($stream, 'io.Stream');
+      $stream->open(STREAM_MODE_READ);
       $this->assertManifestFile($stream->read($stream->size()));
+      $stream->close();
     }
 
     /**
