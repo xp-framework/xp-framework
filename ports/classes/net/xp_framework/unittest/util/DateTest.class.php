@@ -220,7 +220,7 @@
     public function pre1970() {
       $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('01.02.1969'));
       $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('1969-02-01'));
-      $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('1969-02-01 00:00AM'));
+      $this->assertDateEquals('1969-02-01T00:00:00+00:00', Date::fromString('1969-02-01 12:00AM'));
     }
     
     /**
