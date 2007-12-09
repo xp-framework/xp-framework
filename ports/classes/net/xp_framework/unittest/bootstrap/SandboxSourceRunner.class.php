@@ -24,23 +24,23 @@
     /**
      * Constructor
      *
-     * @throws  lang.IllegalStateException if sapi does not support forking
+     * @param   string executable
      */
-    public function __construct() {
-      if (!isset($_SERVER['_'])) {
-        throw(new IllegalStateException('Sandbox not supported in sapi '.php_sapi_name()));
-      }
-      
-      $this->setExecutable(preg_replace('#^/cygdrive/(\w)/#', '$1:/', $_SERVER['_']));
+    public function __construct($executable) {
+      $this->setExecutable(preg_replace('#^/cygdrive/(\w)/#', '$1:/', $executable));
       $this->setSetting('include_path', ini_get('include_path'));
     }
 
     /**
      * Set Executable
      *
-     * @param   string executable
+     * @param   string executable executable's filename
+     * @throws  lang.IllegalArgumentException in case the argument is not executable
      */
     public function setExecutable($executable) {
+      if (!is_executable($executable)) {
+        throw new IllegalArgumentException('File "'.$executable.'" is not executable');
+      }
       $this->executable= $executable;
     }
 
