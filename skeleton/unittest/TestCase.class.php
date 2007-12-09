@@ -312,9 +312,7 @@
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
           $this->tearDown();
-          if (sizeof(xp::registry('errors')) > 0) {
-            $r= $result->setFailed($this, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime());
-          } else if ($eta && $timer->elapsedTime() > $eta) {
+          if ($eta && $timer->elapsedTime() > $eta) {
             $r= $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime());
           } else {
             $r= $result->setSucceeded($this, $timer->elapsedTime());
