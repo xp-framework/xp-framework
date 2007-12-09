@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Jul 26 14:36:21 CEST 2007
-@status: draft
+@status: rejected, see comments
 @category: xml
 
 Scope of Change
@@ -53,5 +53,8 @@ Related documents
   
 Comments
 --------
+- friebe, Sun Dec  9 17:41:32     2007
+  Synthetic and - more interesting - real-world tests have shown that this
+  method would be slower(!) than using the current approach(!)
 
 <EOF>
