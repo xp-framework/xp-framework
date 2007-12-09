@@ -250,7 +250,7 @@
     /**
      * Set Birthday
      *
-     * @param   &util.Date birthday
+     * @param   util.Date birthday
      */
     public function setBirthday($birthday) {
       $this->birthday= $birthday;
@@ -259,7 +259,7 @@
     /**
      * Get Birthday
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getBirthday() {
       return $this->birthday;
@@ -436,21 +436,14 @@
      * Creata a vCard from a stream
      *
      * <code>
-     *   try(); {
-     *     $vcard= &VCard::fromStream(new File('/tmp/imc.vcf'));
-     *   } if (catch('Exception', $e)) {
-     *     $e->printStackTrace();
-     *     exit(-1);
-     *   }
-     *   
-     *   var_dump($vcard);
+     *   echo VCard::fromStream(new File('/tmp/imc.vcf'))->toString();
      * </code>
      *
-     * @param   &io.Stream stream
-     * @return  &org.imc.VCard
+     * @param   io.Stream stream
+     * @return  org.imc.VCard
      */
     public static function fromStream($stream) {
-      $card= new VCard();
+      $card= new self();
       
       $p= new VFormatParser(VCARD_ID);
       $p->setDefaultHandler(array($card, 'addProperty'));
@@ -483,7 +476,7 @@
      *
      * <code>
      *   [...]
-     *   $f= &new File('me.vcf');
+     *   $f= new File('me.vcf');
      *   $f->open(FILE_MODE_WRITE);
      *   $f->write($card->export());
      *   $f->close();
@@ -539,7 +532,7 @@
           $this->name['suffix']
         )).
         $this->_export('FN', $this->fullname).
-        $this->_export('TITLE', $this->fullname).
+        $this->_export('TITLE', $this->title).
         $this->_export('NICKNAME', $this->nick).
         $this->_export('ORG', $this->organization).
         $this->_export('URL', $this->url).
