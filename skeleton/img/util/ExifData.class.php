@@ -91,20 +91,20 @@
       with ($e= new ExifData()); {
         $e->setWidth($info['COMPUTED']['Width']);
         $e->setHeight($info['COMPUTED']['Height']);
-        $e->setMake($info['Make']);
-        $e->setModel($info['Model']);
-        $e->setFlash($info['Flash']);
-        $e->setOrientation($info['Orientation']);
-        $e->setFileName($info['FileName']);
-        $e->setFileSize($info['FileSize']);
-        $e->setMimeType($info['MimeType']);
-        $e->setApertureFNumber($info['COMPUTED']['ApertureFNumber']);
-        $e->setSoftware($info['software']);
-        $e->setExposureTime($info['ExposureTime']);
-        $e->setExposureProgram($info['ExposureProgram']);
-        $e->setMeteringMode($info['MeteringMode']);
-        $e->setWhiteBalance($info['WhiteBalance']);
-        $e->setIsoSpeedRatings($info['ISOSpeedRatings']);
+        $e->setMake(@$info['Make']);
+        $e->setModel(@$info['Model']);
+        $e->setFlash(@$info['Flash']);
+        $e->setOrientation(@$info['Orientation']);
+        $e->setFileName(@$info['FileName']);
+        $e->setFileSize(@$info['FileSize']);
+        $e->setMimeType(@$info['MimeType']);
+        $e->setApertureFNumber(@$info['COMPUTED']['ApertureFNumber']);
+        $e->setSoftware(@$info['software']);
+        $e->setExposureTime(@$info['ExposureTime']);
+        $e->setExposureProgram(@$info['ExposureProgram']);
+        $e->setMeteringMode(@$info['MeteringMode']);
+        $e->setWhiteBalance(@$info['WhiteBalance']);
+        $e->setIsoSpeedRatings(@$info['ISOSpeedRatings']);
         
         // Extract focal length. Some models store "80" as "80/1", rip off
         // the divisor "1" in this case.
