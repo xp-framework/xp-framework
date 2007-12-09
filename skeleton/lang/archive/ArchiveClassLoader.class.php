@@ -29,17 +29,20 @@
    * @ext      tokenize
    */
   class ArchiveClassLoader extends Object implements IClassLoader {
-    public
+    protected
       $archive  = NULL;
     
     /**
      * Constructor
      * 
-     * @param   lang.archive.Archive archive
+     * @param   mixed archive either a string, a lang.archive.Archive or lang.archive.ArchiveReader instance
      */
     public function __construct($archive) {
-      $this->archive= $archive;
-      $this->archive->isOpen() || $this->archive->open(ARCHIVE_READ);
+      if ($archive instanceof ArchiveReader || $archive instanceof Archive) {
+        $this->archive= 'xar://'.$archive->getURI().'?';
+      } else {
+        $this->archive= 'xar://'.$archive.'?';
+      }
     }
 
     /**
@@ -48,7 +51,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName(). '<'.$this->archive->getURI().'>';
+      return $this->getClassName(). '<'.$this->archive.'>';
     }
     
     /**
@@ -58,7 +61,7 @@
      * @return  string
      */
     public function loadClassBytes($name) {
-      return $this->archive->extract(strtr($name, '.', '/').xp::CLASS_FILE_EXT);
+      return file_get_contents($this->archive.strtr($name, '.', '/').xp::CLASS_FILE_EXT);
     }
     
     /**
@@ -85,9 +88,9 @@
         return substr(array_search($class, xp::$registry), 6);
       }
 
-      xp::$registry['classloader.'.$class]= 'lang.archive.ArchiveClassLoader://'.$this->archive->getURI();
+      xp::$registry['classloader.'.$class]= 'lang.archive.ArchiveClassLoader://'.substr($this->archive, 6, -1);
       $package= NULL;
-      if (FALSE === include('xar://'.$this->archive->getURI().'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
+      if (FALSE === include($this->archive.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
         unset(xp::$registry['classloader.'.$class]);
         throw new FormatException('Cannot define class "'.$class.'"');
       }
@@ -107,7 +110,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($string) {
-      if (FALSE !== ($r= $this->archive->extract($string))) {
+      if (FALSE !== ($r= file_get_contents($this->archive.$string))) {
         return $r;
       }
 
@@ -122,11 +125,10 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($string) {
-      if (FALSE !== ($s= $this->archive->getStream($string))) {
-        return $s;
+      if (!file_exists($this->archive.$string)) {
+        return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
       }
-    
-      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
+      return new File($this->archive.$string);
     }
     
     /**
@@ -136,7 +138,7 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return $this->archive->contains(strtr($class, '.', '/').xp::CLASS_FILE_EXT);
+      return file_exists($this->archive.strtr($class, '.', '/').xp::CLASS_FILE_EXT);
     }
 
     /**
@@ -146,7 +148,7 @@
      * @return  bool
      */
     public function providesResource($filename) {
-      return $this->archive->contains($filename);
+      return file_exists($this->archive.$filename);
     }
 
     /**
@@ -156,7 +158,7 @@
      * @return  bool
      */
     public function providesPackage($package) {
-      return $this->archive->contains(strtr($package, '.', '/'));
+      return file_exists($this->archive.strtr($package, '.', '/'));
     }
     
     /**
@@ -169,7 +171,7 @@
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= new self(new ArchiveReader(realpath($path)));
+        $pool[$path]= new self(realpath($path));
       }
       
       return $pool[$path];
@@ -183,12 +185,11 @@
      */
     public function packageContents($package) {
       $contents= array();
-      for (
-        $cmps= strtr($package, '.', '/'), 
-        $cmpl= strlen($cmps),
-        $this->archive->rewind(); 
-        $e= $this->archive->getEntry(); 
-      ) {
+      $acquired= xarloader::acquire(substr($this->archive, 6, -1));
+      $cmps= strtr($package, '.', '/');
+      $cmpl= strlen($cmps);
+      
+      foreach (array_keys($acquired['index']) as $e) {
         if (strncmp($cmps, $e, $cmpl) != 0) continue;
         $entry= substr($e, $cmpl+ 1);
         

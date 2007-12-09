@@ -8,7 +8,6 @@
     'lang.IClassLoader',
     'lang.FileSystemClassLoader',
     'lang.DynamicClassLoader',
-    'lang.archive.ArchiveReader',
     'lang.archive.ArchiveClassLoader'
   );
   
