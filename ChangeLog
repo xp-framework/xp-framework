@@ -11,9 +11,13 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0145: Make unittests strict
+  (friebe, kiesel)
 
 Bugfixes
 ~~~~~~~~
+- Fixed notices and warnings in various places (E_ALL conformance).
+  (friebe)
 
 Features
 ~~~~~~~~
