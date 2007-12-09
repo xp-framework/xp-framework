@@ -102,26 +102,26 @@
      */ 
     public function value($long, $short= NULL, $default= NULL) {
       if (is_int($long)) {
-        if (NULL === $default && !isset($this->list[$long]))
-          throw (new IllegalArgumentException ('Parameter #'.$long.' does not exist'));        
+        if (NULL === $default && !isset($this->list[$long])) {
+          throw new IllegalArgumentException ('Parameter #'.$long.' does not exist');
+        }
 
         return isset($this->list[$long]) ? $this->list[$long] : $default;
       }
   
       $pos= $this->_find($long, $short);
-      if (FALSE === $pos && NULL === $default)
-        throw (new IllegalArgumentException ('Parameter --'.$long.' does not exist'));
+      if (FALSE === $pos && NULL === $default) {
+        throw new IllegalArgumentException ('Parameter --'.$long.' does not exist');
+      }
       
       // Default usage (eg.: '--with-foo=bar')
-      if (
-        $pos !== FALSE && 
-        isset($this->list[$pos]) && 
-        strncmp('--'.$long, $this->list[$pos], strlen($long) + 2) == 0
-      ) {
+      $length= strlen($long)+ 2;
+      if ($pos !== FALSE && isset($this->list[$pos]) && strncmp('--'.$long, $this->list[$pos], $length) == 0) {
       
         // Usage with value (eg.: '--with-foo=bar')
-        if ('=' === $this->list[$pos]{strlen($long) + 2})
-          return substr($this->list[$pos], strlen($long) + 3);  // Return string after `--{option}=`
+        if (strlen($this->list[$pos]) > $length && '=' === $this->list[$pos]{$length}) {
+          return substr($this->list[$pos], $length + 1);  // Return string after `--{option}=`
+        }
           
         // Usage as switch (eg.: '--enable-foo')
         return NULL;
@@ -130,17 +130,11 @@
       // Usage in short (eg.: '-v' or '-f /foo/bar')
       // If the found element is a new parameter, the searched one is used as
       // flag, so just return TRUE, otherwise return the value.
-      if (
-        $pos !== FALSE &&
-        (!isset($this->list[$pos]) || '-' == $this->list[$pos]{0})
-      ) {
+      if ($pos !== FALSE && (!isset($this->list[$pos]) || '-' === $this->list[$pos]{0})) {
         return $default;
       }
       
-      return ($pos !== FALSE
-        ? $this->list[$pos]
-        : $default
-      );
+      return ($pos !== FALSE ? $this->list[$pos] : $default);
     }
   }
 ?>
