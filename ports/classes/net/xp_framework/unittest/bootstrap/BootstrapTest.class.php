@@ -4,43 +4,15 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'net.xp_framework.unittest.bootstrap.SandboxSourceRunner'
-  );
+  uses('net.xp_framework.unittest.bootstrap.AbstractBootstrapTestCase');
 
   /**
-   * TestCase
+   * TestCase for uses() statement
    *
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Unittest
    */
-  class BootstrapTest extends TestCase {
-    public
-      $sandbox    = NULL;
-      
-    /**
-     * Sets up the tests
-     *
-     */
-    public function setUp() {
-      if (!isset($_SERVER['_'])) throw(new PrerequisitesNotMetError(
-        'This test can only be run in a non-web environment'
-      ));
-      
-      $this->sandbox= new SandboxSourceRunner();
-    }
-  
-    /**
-     * Run XP script and check exitcode
-     *
-     * @param   int code expected exitcode
-     * @param   string source sourcecode to execute
-     */
-    public function assertExitCode($code, $source) {
-      $this->assertEquals($code, $this->sandbox->run($source));
-    }
-    
+  class BootstrapTest extends AbstractBootstrapTestCase {
+
     /**
      * Test
      *
