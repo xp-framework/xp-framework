@@ -115,7 +115,11 @@
      * @return  security.Principal
      */
     public function getIssuerDN() {
-      return new Principal(array_map('utf8_decode', $this->_info['issuer']));
+      if (version_compare(phpversion(), '5.2.2', '<')) {
+        return new Principal($this->_info['issuer']);
+      } else {
+        return new Principal(array_map('utf8_decode', $this->_info['issuer']));
+      }
     }
     
     /**
@@ -124,7 +128,11 @@
      * @return  security.Principal
      */
     public function getSubjectDN() {
-      return new Principal(array_map('utf8_decode', $this->_info['subject']));
+      if (version_compare(phpversion(), '5.2.2', '<')) {
+        return new Principal($this->_info['subject']);
+      } else {
+        return new Principal(array_map('utf8_decode', $this->_info['subject']));
+      }
     }
     
     /**
