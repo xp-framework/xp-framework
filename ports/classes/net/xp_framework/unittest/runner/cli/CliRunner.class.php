@@ -145,7 +145,7 @@
         try {
           $ignored= $this->suite->addTestClass(
             $class, 
-            $arguments->length ? $arguments : $this->arguments
+            $arguments->length ? $arguments->values : $this->arguments->values
           );
         } catch (NoSuchElementException $e) {
           $this->out->writeLine('*** Warning: ', $e->getMessage());
