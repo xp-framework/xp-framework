@@ -88,8 +88,7 @@
  * lang.Error, lang.XPException, lang.reflect.Argument, 
  * lang.reflect.Routine, lang.reflect.Method, lang.reflect.Field, 
  * lang.reflect.Constructor, lang.reflect.Modifiers, lang.XPClass
- * lang.ClassLoader, lang.archive.ArchiveReader, 
- * lang.archive.ArchiveClassLoader.
+ * lang.ClassLoader, lang.archive.ArchiveClassLoader.
  *
  * These exceptions are guaranteed to be loaded at any given time:
  *
