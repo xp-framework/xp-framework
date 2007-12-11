@@ -56,14 +56,16 @@
     }
     
     /**
-     * get XML source
+     * Get XML source
      *
-     * @return  String source
+     * @return  string source
      */
-    function getSource() {
+    public function getSource() {
       $indexes= array();
+
       // Attributes
       with ($t= $this->doc->root->children[0]); {
+        $t->children= array();
         if ($attr= $this->table->getFirstAttribute()) do {
           $t->addChild(new Node('attribute', NULL, array(
             'name'     => trim($attr->getName()),
@@ -74,7 +76,7 @@
           )));
         } while ($attr= $this->table->getNextAttribute());
 
-        // Attributes
+        // Indexes
         if ($index= $this->table->getFirstIndex()) do {
           $n= $t->addChild(new Node('index', NULL, array(
             'name'    => trim($index->getName()),
