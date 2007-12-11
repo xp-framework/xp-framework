@@ -158,7 +158,14 @@
      * @return  bool
      */
     public function providesPackage($package) {
-      return file_exists($this->archive.strtr($package, '.', '/'));
+      $acquired= xarloader::acquire(substr($this->archive, 6, -1));
+      $cmps= strtr($package, '.', '/');
+      $cmpl= strlen($cmps);
+      
+      foreach (array_keys($acquired['index']) as $e) {
+        if (strncmp($cmps, $e, $cmpl) === 0) return TRUE;
+      }
+      return FALSE;
     }
     
     /**
