@@ -35,10 +35,10 @@
     /**
      * Constructor
      * 
-     * @param   mixed archive either a string, a lang.archive.Archive or lang.archive.ArchiveReader instance
+     * @param   mixed archive either a string or a lang.archive.Archive instance
      */
     public function __construct($archive) {
-      if ($archive instanceof ArchiveReader || $archive instanceof Archive) {
+      if ($archive instanceof Archive) {
         $this->archive= 'xar://'.$archive->getURI().'?';
       } else {
         $this->archive= 'xar://'.$archive.'?';
