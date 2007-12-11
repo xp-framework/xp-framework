@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated lang.archive.ArchiveReader in favor of lang.archive.Archive
+  http://news.xp-framework.net/article/226/2007/12/11/ArchiveReader_deprecation
+  (friebe)
 
 RFCs
 ~~~~
