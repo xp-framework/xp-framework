@@ -535,7 +535,7 @@
   // Registry initialization
   xp::$registry['null']= new null();
   xp::$registry['loader']= new xp();
-  xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
+  xp::$registry['classpath']= array_filter(array_map('realpath', explode(PATH_SEPARATOR, get_include_path())));
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'xarloader');
