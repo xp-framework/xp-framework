@@ -16,6 +16,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.util.DBXmlGenerator::getSource() - (bug #25)
+  (friebe)
 - Fixed security.cert.X509Certificate::getSubjectDN() and
   security.cert.X509Certificate::getIssuerDN() to decode DNs correctly
   (friebe)
