@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.cmd.Command');
+  uses('util.cmd.Command', 'lang.archive.Archive');
 
   /**
    * XAR command
@@ -37,7 +37,7 @@
             $this->options|= self::OPTION_SIMULATE;
             break;
           case 'v': $this->options|= self::OPTION_VERBOSE; break;
-          case 'f': $thhis->filename= ''; break;
+          case 'f': $this->filename= ''; break;
           default: throw new IllegalArgumentException('Unsupported commandline option "'.$op{$i}.'"');
         }
       }
