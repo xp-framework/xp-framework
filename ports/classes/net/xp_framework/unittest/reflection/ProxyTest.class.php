@@ -173,7 +173,7 @@
      */
     #[@test]
     public function allowDoubledInterfaceMethod() {
-      $newIteratorClass= ClassLoader::defineInterface('util.NewIterator', 'XPIterator');
+      $newIteratorClass= ClassLoader::defineInterface('util.NewIterator', 'util.XPIterator');
       
       $this->proxyInstanceFor(array(
         XPClass::forName('util.XPIterator'),
