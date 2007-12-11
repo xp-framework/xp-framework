@@ -107,6 +107,34 @@
     }
 
     /**
+     * Tests ClassLoader::providesPackage() method for classes in
+     * the filesystem.
+     *
+     */
+    #[@test]
+    public function fileSystemClassPackageProvided() {
+      $class= XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassOne');
+      $this->assertTrue($class
+        ->getClassLoader()
+        ->providesPackage($class->getPackage()->getName())
+      );
+    }
+
+    /**
+     * Tests ClassLoader::providesPackage() method for classes in 
+     * archives.
+     *
+     */
+    #[@test]
+    public function archiveClassPackageProvided() {
+      $class= XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassThree');
+      $this->assertTrue($class
+        ->getClassLoader()
+        ->providesPackage($class->getPackage()->getName())
+      );
+    }
+
+    /**
      * Tests providesClass() method
      *
      */
