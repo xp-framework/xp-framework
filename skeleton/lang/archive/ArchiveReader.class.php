@@ -4,16 +4,12 @@
  * $Id$ 
  */
 
-  define('ARCHIVE_READ',             0x0000);
-  define('ARCHIVE_CREATE',           0x0001);
-  define('ARCHIVE_HEADER_SIZE',      0x0100);
-  define('ARCHIVE_INDEX_ENTRY_SIZE', 0x0100);
-
   /**
    * Simple lightweight archive reader. This is a reading-only
    * archive class which can be used to minimize class
    * dependencies.
    * 
+   * @deprecated use lang.archive.Archive instead
    * @see      xp://lang.archive.ArchiveClassLoader
    * @purpose  Lightweight archive reader
    */
