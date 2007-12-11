@@ -25,7 +25,7 @@
      * @param   string path default '' file system path
      */
     public function __construct($path= '') {
-      $this->path= rtrim(realpath($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      $this->path= rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
     }
     
     /**
@@ -154,13 +154,14 @@
      * Fetch instance of classloader by the path to the archive
      *
      * @param   string path
+     * @param   bool expand default TRUE whether to expand the path using realpath
      * @return  lang.FileSystemClassLoader
      */
-    public static function instanceFor($path) {
+    public static function instanceFor($path, $expand= TRUE) {
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= new self($path);
+        $pool[$path]= new self($expand ? realpath($path) : $path);
       }
       
       return $pool[$path];

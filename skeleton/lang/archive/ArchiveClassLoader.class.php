@@ -172,13 +172,14 @@
      * Fetch instance of classloader by the path to the archive
      *
      * @param   string path
+     * @param   bool expand default TRUE whether to expand the path using realpath
      * @return  lang.archive.ArchiveClassLoader
      */
-    public static function instanceFor($path) {
+    public static function instanceFor($path, $expand= TRUE) {
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= new self(realpath($path));
+        $pool[$path]= new self($expand ? realpath($path) : $path);
       }
       
       return $pool[$path];

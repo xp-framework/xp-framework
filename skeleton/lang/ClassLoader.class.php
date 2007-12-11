@@ -56,9 +56,9 @@
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
         if (is_dir($element)) {
-          self::registerLoader(FileSystemClassLoader::instanceFor($element));
+          self::registerLoader(FileSystemClassLoader::instanceFor($element, FALSE));
         } else if (is_file($element)) {
-          self::registerLoader(ArchiveClassLoader::instanceFor($element));
+          self::registerLoader(ArchiveClassLoader::instanceFor($element, FALSE));
         }
       }
     }
