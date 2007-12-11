@@ -19,6 +19,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.archive.ArchiveClassLoader::providesPackage() method
+  (friebe)
 - Fixed rdbms.util.DBXmlGenerator::getSource() - (bug #25)
   (friebe)
 - Fixed security.cert.X509Certificate::getSubjectDN() and
