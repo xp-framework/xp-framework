@@ -25,18 +25,14 @@
       $interfacename   = '';
 
     /**
-     * Returns class bytes as a stream
+     * Adds sourcecode to a given XAR archive
      *
-     * @param   string bytes
-     * @return  &io.Stream
+     * @param   lang.archive.Archive a
+     * @param   string name
+     * @param   string bytes sourcecode
      */
-    protected function classStream($bytes) {
-      $cstr= new Stream();
-      $cstr->open(STREAM_MODE_WRITE);
-      $cstr->write('<?php '.$bytes.' ?>');
-      $cstr->close();
-      
-      return $cstr;
+    protected function add(Archive $a, $name, $bytes) {
+      $a->addFileBytes($name.'.class.php', $path= '', $name.'.class.php', '<?php '.$bytes.' ?>');
     }
     
     /**
@@ -49,7 +45,7 @@
     protected function testClassName($prefix= '') {
       $classname= $prefix.'ClassUsedForArchiveClassLoader'.ucfirst($this->name).'Test';
       if (class_exists($classname)) {
-        throw(new IllegalStateException('Class '.$this->classname.' may not exist!'));
+        throw new IllegalStateException('Class '.$this->classname.' may not exist!');
       }
       return $classname;
     }
@@ -67,43 +63,26 @@
       }
 
       // Create an archive
-      $archive= new Archive($this->tempfile= new TempFile($this->name));
+      $this->tempfile= new TempFile($this->name);
+      $archive= new Archive($this->tempfile);
       $archive->open(ARCHIVE_CREATE);
-      $archive->add(
-        $this->classStream(
-          'uses("util.Comparator", "'.$this->interfacename.'");
-           class '.$this->classname.' extends Object implements '.$this->interfacename.', Comparator { 
-            public function compare($a, $b) {
-              return strcmp($a, $b);
-            }
+
+      $this->add($archive, $this->classname, '
+        uses("util.Comparator", "'.$this->interfacename.'");
+        class '.$this->classname.' extends Object implements '.$this->interfacename.', Comparator { 
+          public function compare($a, $b) {
+            return strcmp($a, $b);
           }
-        '), 
-        $this->classname.'.class.php'
-      );
-      $archive->add(
-        $this->classStream(
-          'interface '.$this->interfacename.' {
-        
-          }
-        '), 
-        $this->interfacename.'.class.php'
-      );
+        }
+      ');
+      $this->add($archive, $this->interfacename, 'interface '.$this->interfacename.' { } ');
       $archive->create();
-      fputs(STDERR, $this->name.' '.xp::typeOf($archive->file)."\n");
       
       // Setup classloader
       $this->classloader= new ArchiveClassLoader($archive);
+      ClassLoader::getDefault()->registerLoader($this->classloader, TRUE);
     }
     
-    /**
-     * Tears down test case
-     *
-     */
-    public function tearDown() {
-      $this->tempfile->close();
-      $this->tempfile->unlink();
-    }
-
     /**
      * Test loadClass() method
      *
@@ -112,7 +91,7 @@
     public function loadClass() {
       $this->assertEquals($this->classloader->loadClass($this->classname)->getName(), $this->classname);
     }
-    
+
     /**
      * Test class implements the interface from the archive
      *
