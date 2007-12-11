@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase', 'lang.archive.ArchiveReader');
+  uses('unittest.TestCase', 'lang.archive.Archive', 'io.File');
 
   /**
    * TestCase
@@ -16,7 +16,7 @@
   
     static function __static() {
       ClassLoader::registerLoader(new ArchiveClassLoader(
-        new ArchiveReader(dirname(__FILE__).'/lib/three-and-four.xar')
+        new Archive(new File(dirname(__FILE__).'/lib/three-and-four.xar'))
       ));
     }
 

@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'lang.archive.ArchiveReader',
+    'lang.archive.Archive',
+    'io.File',
     'util.Date'
   );
 
@@ -20,7 +21,7 @@
 
     static function __static() {
       ClassLoader::registerLoader(new ArchiveClassLoader(
-        new ArchiveReader(dirname(__FILE__).'/lib/fqcns.xar')
+        new Archive(new File(dirname(__FILE__).'/lib/fqcns.xar'))
       ));
       XPClass::forName('info.binford6100.Date');
       XPClass::forName('de.thekid.util.ObjectComparator');
