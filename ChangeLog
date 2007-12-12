@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Made util.Properties::fromFile() throw an IOException when the given
+  file cannot be read
+  (friebe)
 - Deprecated lang.archive.ArchiveReader in favor of lang.archive.Archive
   http://news.xp-framework.net/article/226/2007/12/11/ArchiveReader_deprecation
   (friebe)
@@ -19,6 +22,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.Properties class to throw IOExceptions in case the ini file
+  cannot be read
+  (friebe)
 - Fixed lang.archive.ArchiveClassLoader::providesPackage() method
   (friebe)
 - Fixed rdbms.util.DBXmlGenerator::getSource() - (bug #25)
