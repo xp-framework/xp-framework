@@ -89,6 +89,21 @@
     }
 
     /**
+     * Unregister a class loader as a delegate
+     *
+     * @param   lang.IClassLoader l
+     * @return  bool TRUE if the delegate was unregistered
+     */
+    public static function removeLoader(IClassLoader $l) {
+      foreach (array_keys(self::$delegates) as $i) {
+        if (self::$delegates[$i] !== $l) continue;
+        unset(self::$delegates[$i]);
+        return TRUE;
+      }
+      return FALSE;
+    }
+
+    /**
      * Define a class with a given name
      *
      * @param   string class fully qualified class name
