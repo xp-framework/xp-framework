@@ -70,6 +70,31 @@
     }    
 
     /**
+     * Tests adding a test class without tests inside
+     *
+     */    
+    #[@test, @expect('util.NoSuchElementException')]
+    public function addingEmptyTest() {
+      $this->suite->addTestClass(XPClass::forName('net.xp_framework.unittest.tests.EmptyTestCase'));
+    }    
+
+    /**
+     * Tests adding a test class
+     *
+     */    
+    #[@test]
+    public function addingEmptyTestAfter() {
+      $this->suite->addTestClass(XPClass::forName('net.xp_framework.unittest.tests.SimpleTestCase'));
+      $before= $this->suite->numTests();
+      try {
+        $this->suite->addTestClass(XPClass::forName('net.xp_framework.unittest.tests.EmptyTestCase'));
+        $this->fail('Expected exception not thrown', NULL, 'util.NoSuchElementException');
+      } catch (NoSuchElementException $expected) { 
+      }
+      $this->assertEquals($before, $this->suite->numTests());
+    }
+
+    /**
      * Tests adding a test class
      *
      */    
