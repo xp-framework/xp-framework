@@ -31,6 +31,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.ClassLoader::removeLoader() method to complement its
+  registerLoader() method.
+  (friebe)
 - Made lang.archive.ArchiveClassLoader use xar loader provided by
   lang.base.php instead of having to use an extra ArchiveReader class
   (friebe, kiesel)
