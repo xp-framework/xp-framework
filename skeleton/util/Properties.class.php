@@ -41,7 +41,6 @@
      */
     public function __construct($filename) {
       $this->_file= $filename;
-      
     }
     
     /**
@@ -49,8 +48,12 @@
      *
      * @param   io.File file
      * @return  util.Properties
+     * @throws  io.IOException in case the file given does not exist
      */
-    public static function fromFile($file) {
+    public static function fromFile(File $file) {
+      if (!$file->exists()) {
+        throw new IOException('The file "'.$file->getURI().'" could not be read');
+      }
       return new Properties($file->getURI());
     }
 
@@ -125,9 +128,11 @@
      * @throws  io.IOException
      */
     protected function _load($force= FALSE) {
-      if (!$force && NULL != $this->_data) return;
-      if (FALSE === ($this->_data= parse_ini_file($this->_file, 1))) {
-        throw(new IOException('The file "'.$this->_file.'" could not be read'));
+      if (!$force && NULL !== $this->_data) return;
+      $this->_data= parse_ini_file($this->_file, TRUE);
+      if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+        $this->_data= NULL;
+        throw new IOException('The file "'.$this->_file.'" could not be read');
       }
     }
     
