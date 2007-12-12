@@ -27,6 +27,7 @@
    *   echo $suite->run()->toString();
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.tests.SuiteTest
    * @see      http://junit.sourceforge.net/doc/testinfected/testing.htm
    * @purpose  Testcase container
    */
@@ -56,10 +57,11 @@
      */
     public function addTestClass($class, $arguments= array()) {
       if (!$class->isSubclassOf('unittest.TestCase')) {
-        throw(new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')'));
+        throw new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')');
       }
 
       $ignored= array();
+      $numBefore= $this->numTests();
       foreach ($class->getMethods() as $m) {
         if (!$m->hasAnnotation('test')) continue;
 
@@ -75,8 +77,8 @@
         )));
       }
 
-      if (0 == $this->numTests()) {
-        throw(new NoSuchElementException('No tests found in ', $class->getName()));
+      if ($numBefore === $this->numTests()) {
+        throw new NoSuchElementException('No tests found in ', $class->getName());
       }
 
       return $ignored;
