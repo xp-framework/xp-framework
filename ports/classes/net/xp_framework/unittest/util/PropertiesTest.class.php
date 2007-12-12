@@ -18,14 +18,56 @@
    */
   class PropertiesTest extends TestCase {
   
-  
     /**
-     * Test construction.
+     * Test construction via fromFile() method for a non-existant file
+     *
+     */
+    #[@test, @expect('io.IOException')]
+    public function fromNonExistantFile() {
+      Properties::fromFile(new File('@@does-not-exist.ini@@'));
+    }
+
+    /**
+     * Test construction via fromFile() method for an existant file.
+     * Relies on a file "example.ini" existing parallel to this class.
      *
      */
     #[@test]
-    public function testFromString() {
-      $p= Properties::fromString('');
+    public function fromFile() {
+      $p= Properties::fromFile($this
+        ->getClass()
+        ->getPackage()
+        ->getResourceAsStream('example.ini')
+      );
+      $this->assertEquals('value', $p->readString('section', 'key'));
+    }
+
+    /**
+     * Test exceptions are not thrown until first read
+     *
+     */
+    #[@test]
+    public function lazyRead() {
+      $p= new Properties('@@does-not-exist.ini@@');
+      
+      // This cannot be done via @expect because it would also catch if an
+      // exception was thrown from util.Properties' constructor. We explicitely
+      // want the exception to be thrown later on
+      try {
+        $p->readString('section', 'key');
+        $this->fail('Expected exception not thrown', NULL, 'io.IOException');
+      } catch (IOException $expected) {
+        xp::gc();
+      }
+    }
+  
+    /**
+     * Test construction via fromString() when given an empty string
+     *
+     */
+    #[@test]
+    public function fromEmptyString() {
+      Properties::fromString('');
     }
     
     /**
