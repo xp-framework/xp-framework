@@ -219,6 +219,7 @@
         if (FALSE !== ($p= strpos($entry, '/'))) {
           $entry= substr($entry, 0, $p);
           if (strstr($entry, '/')) continue;
+          $entry.= '/';
         }
         $contents[$entry]= NULL;
       }
