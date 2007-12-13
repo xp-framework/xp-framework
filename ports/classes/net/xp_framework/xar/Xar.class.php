@@ -32,6 +32,7 @@
         switch ($op{$i}) {
           case 'c': $operation= 'create'; break;
           case 'x': $operation= 'extract'; break;
+          case 's': $operation= 'show'; break;
           case 't':
             $operation= 'extract';
             $this->options|= self::OPTION_SIMULATE;
