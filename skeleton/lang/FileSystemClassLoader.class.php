@@ -160,8 +160,9 @@
     public static function instanceFor($path, $expand= TRUE) {
       static $pool= array();
       
+      $path= $expand ? realpath($path) : $path;
       if (!isset($pool[$path])) {
-        $pool[$path]= new self($expand ? realpath($path) : $path);
+        $pool[$path]= new self($path);
       }
       
       return $pool[$path];
