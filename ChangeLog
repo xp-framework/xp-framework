@@ -8,6 +8,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed stack trace elements generated from PHP error message to no 
+  longer contain the class. The filename cannot really be translated to 
+  the fully qualified class name in a consistent *and* fast-enough manner
+  (friebe)
 - Made util.Properties::fromFile() throw an IOException when the given
   file cannot be read
   (friebe)
