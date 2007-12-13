@@ -34,7 +34,7 @@
       $this->message= $message;
       
       $errors= xp::$registry['errors'];
-      foreach (debug_backtrace() as $no => $trace) {
+      foreach (debug_backtrace() as $trace) {
         if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
 
         // Not all of these are always set: debug_backtrace() should
@@ -51,19 +51,7 @@
       
       // Remaining error messages
       foreach ($errors as $file => $list) {
-        $class= ('.class.php' == substr($file, -10)
-          ? substr(basename($file), 0, -10)
-          : '<main>'
-        );
-        
-        $this->addStackTraceFor(
-          $file,
-          $class,
-          NULL,
-          NULL,
-          array(),
-          $list
-        );
+        $this->addStackTraceFor($file, NULL, NULL, NULL, array(), $list);
       }
     }
     
