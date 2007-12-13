@@ -250,13 +250,12 @@
       
     // {{{ static mixed[] acquire(string archive)
     //     Archive instance handling pool function, opens an archive and reads header only once
-    public static function acquire($archive) {
+    static function acquire($archive) {
       static $archives= array();
+      
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
         $current= &$archives[$archive];
-
-        // Bootstrap loading, only to be used for core classes.
         $current['handle']= fopen($archive, 'rb');
         $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
         for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
@@ -275,8 +274,8 @@
     // {{{ function bool stream_open(string path, string mode, int options, string opened_path)
     //     Open the given stream and check if file exists
     function stream_open($path, $mode, $options, $opened_path) {
-      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
-      $this->archive= $archive;
+      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
+      $this->archive= urldecode($archive);
       $this->filename= $file;
       
       $current= self::acquire($this->archive);
@@ -308,26 +307,46 @@
     
     // {{{ <string,int> stream_stat()
     //     Retrieve status of stream
-    public function stream_stat() {
+    function stream_stat() {
       $current= self::acquire($this->archive);
       return array(
         'size'  => $current['index'][$this->filename][0]
       );
     }
     // }}}
+
+    // {{{ bool stream_seek(int offset, int whence)
+    //     Callback for fseek
+    function stream_seek($offset, $whence) {
+      switch ($whence) {
+        case SEEK_SET: $this->position= $offset; break;
+        case SEEK_CUR: $this->position+= $offset; break;
+        case SEEK_END: 
+          $current= self::acquire($this->archive);
+          $this->position= $current['index'][$this->filename][0] + $offset; 
+          break;
+      }
+      return TRUE;
+    }
+    // }}}
+    
+    // {{{ int stream_tell
+    //     Callback for ftell
+    function stream_tell() {
+      return $this->position;
+    }
+    // }}}
     
     // {{{ <string,int> url_stat(string path)
     //     Retrieve status of url
     function url_stat($path) {
-      list($archive, $file)= sscanf($path, 'xar://%[^?]?%[^$]');
-      $this->archive= $archive;
-      $this->filename= $file;
-      $current= self::acquire($this->archive);
+      sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
+      $current= self::acquire(urldecode($archive));
 
-      if (!isset($current['index'][$this->filename])) return FALSE;
-      return array(
-        'size'  => $current['index'][$this->filename][0]
-      );
+      return isset($current['index'][$file]) 
+        ? array('size' => $current['index'][$file][0])
+        : FALSE
+      ;
     }
     // }}}
   }

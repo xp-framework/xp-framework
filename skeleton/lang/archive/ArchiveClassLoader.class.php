@@ -38,10 +38,13 @@
      * @param   mixed archive either a string or a lang.archive.Archive instance
      */
     public function __construct($archive) {
-      if ($archive instanceof Archive) {
-        $this->archive= 'xar://'.$archive->getURI().'?';
+      $uri= $archive instanceof Archive ? $archive->getURI() : $archive;
+
+      // Archive within an archive
+      if (0 === strncmp('xar://', $uri, 6)) {
+        $this->archive= 'xar://'.urlencode($uri).'?';
       } else {
-        $this->archive= 'xar://'.$archive.'?';
+        $this->archive= 'xar://'.$uri.'?';
       }
     }
 
@@ -158,7 +161,7 @@
      * @return  bool
      */
     public function providesPackage($package) {
-      $acquired= xarloader::acquire(substr($this->archive, 6, -1));
+      $acquired= xarloader::acquire(urldecode(substr($this->archive, 6, -1)));
       $cmps= strtr($package, '.', '/');
       $cmpl= strlen($cmps);
       
@@ -179,7 +182,7 @@
       static $pool= array();
       
       if (!isset($pool[$path])) {
-        $pool[$path]= new self($expand ? realpath($path) : $path);
+        $pool[$path]= new self($expand && 0 !== strncmp('xar%3A%2F%2F', $path, 12) ? realpath($path) : $path);
       }
       
       return $pool[$path];
@@ -193,7 +196,7 @@
      */
     public function packageContents($package) {
       $contents= array();
-      $acquired= xarloader::acquire(substr($this->archive, 6, -1));
+      $acquired= xarloader::acquire(urldecode(substr($this->archive, 6, -1)));
       $cmps= strtr($package, '.', '/');
       $cmpl= strlen($cmps);
       
