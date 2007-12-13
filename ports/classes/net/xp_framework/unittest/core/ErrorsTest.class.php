@@ -74,18 +74,17 @@
       $line= __LINE__ - 1;
 
       try {
-        throw(new XPException(''));
-      } catch (Exception $e) {
-        $self= get_class($this);
+        throw new XPException('');
+      } catch (XPException $e) {
         foreach ($e->getStackTrace() as $element) {
-          if ($element->class != $self || $element->line != $line) continue;
+          if ($element->file !== __FILE__ || $element->line !== $line) continue;
           
           // We've found the stack trace element we're looking for
           // TBI: Check more detailed if this really is the correct one?
           return;
         }
 
-        $this->fail('Error not in stacktrace', NULL, 'lang.StackTraceElement');
+        $this->fail('Error not in stacktrace', $e->getStackTrace(), 'lang.StackTraceElement');
         return;
       }
 
