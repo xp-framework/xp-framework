@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase', 'lang.archive.Archive', 'io.File');
+  uses('unittest.TestCase', 'lang.archive.Archive');
 
   /**
    * TestCase
@@ -21,11 +21,30 @@
       $testPackages= array(
         'classes', 'lib'
       );
+    
+    protected
+      $libraryLoader= NULL;
 
-    static function __static() {
-      ClassLoader::registerLoader(new ArchiveClassLoader(
-        new Archive(new File(dirname(__FILE__).'/lib/three-and-four.xar'))
-      ));
+    /**
+     * Setup this test. Registeres class loaders deleates for the 
+     * afforementioned XARs
+     *
+     */
+    public function setUp() {
+      $this->libraryLoader= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive(XPClass::forName(xp::nameOf(__CLASS__))
+        ->getPackage()
+        ->getPackage('lib')
+        ->getResourceAsStream('three-and-four.xar')
+      )));
+    }
+    
+    /**
+     * Tear down this test. Removes classloader delegates registered 
+     * during setUp()
+     *
+     */
+    public function tearDown() {
+      ClassLoader::removeLoader($this->libraryLoader);
     }
 
     /**
