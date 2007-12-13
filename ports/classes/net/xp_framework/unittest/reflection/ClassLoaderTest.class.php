@@ -4,20 +4,53 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase', 'lang.archive.Archive', 'io.File');
+  uses('unittest.TestCase', 'lang.archive.Archive');
 
   /**
-   * TestCase
+   * TestCase for classloading
    *
-   * @see      reference
-   * @purpose  purpose
+   * Makes use of the following classes in the package
+   * net.xp_framework.unittest.reflection.classes:
+   * <ul>
+   *   <li>ClassOne, ClassTwo - exist in the same directory as this class</li>
+   *   <li>ClassThree, ClassFour - exist in "lib/three-and-four.xar"</li>
+   *   <li>ClassFive - exists in "contained.xar" within "lib/three-and-four.xar"</li>
+   * </ul>
+   *
+   * @see      xp://lang.ClassLoader
+   * @see      xp://lang.XPClass#getClassLoader
+   * @purpose  Unittest
    */
   class ClassLoaderTest extends TestCase {
-  
-    static function __static() {
-      ClassLoader::registerLoader(new ArchiveClassLoader(
-        new Archive(new File(dirname(__FILE__).'/lib/three-and-four.xar'))
-      ));
+    protected
+      $libraryLoader   = NULL,
+      $containedLoader = NULL;  
+      
+    /**
+     * Setup this test. Registeres class loaders deleates for the 
+     * afforementioned XARs
+     *
+     */
+    public function setUp() {
+      $this->libraryLoader= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive(XPClass::forName(xp::nameOf(__CLASS__))
+        ->getPackage()
+        ->getPackage('lib')
+        ->getResourceAsStream('three-and-four.xar')
+      )));
+      $this->containedLoader= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive($this
+        ->libraryLoader
+        ->getResourceAsStream('contained.xar')
+      )));
+    }
+    
+    /**
+     * Tear down this test. Removes classloader delegates registered 
+     * during setUp()
+     *
+     */
+    public function tearDown() {
+      ClassLoader::removeLoader($this->libraryLoader);
+      ClassLoader::removeLoader($this->containedLoader);
     }
 
     /**
@@ -33,22 +66,42 @@
     }
 
     /**
-     * Test "ClassOne" class is loaded from file system
+     * Display some information
+     *
+     */
+    #[@test, @ignore('For CLI debugging purposes only')]
+    public function classLoaderInformation() {
+      with ($p= Package::forName('net.xp_framework.unittest.reflection.classes')); {
+        Console::writeLine('Object     : ', XPClass::forName('lang.Object')->getClassLoader());
+        Console::writeLine('This       : ', $this->getClass()->getClassLoader());
+        Console::writeLine('ClassOne   : ', $p->loadClass('ClassOne')->getClassLoader());
+        Console::writeLine('ClassTwo   : ', $p->loadClass('ClassTwo')->getClassLoader());
+        Console::writeLine('ClassThree : ', $p->loadClass('ClassThree')->getClassLoader());
+        Console::writeLine('ClassFour  : ', $p->loadClass('ClassFour')->getClassLoader());
+        Console::writeLine('ClassFive  : ', $p->loadClass('ClassFive')->getClassLoader());
+      }
+    }
+
+    /**
+     * Test "ClassOne" class is loaded from the same class loader 
+     * as this class (it exists in the same directory).
      *
      */
     #[@test]
-    public function fileSystemClassLoader() {
-      $cl= XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassOne')->getClassLoader();
-      $this->assertClass($cl, 'lang.FileSystemClassLoader');
+    public function sameClassLoader() {
+      $this->assertEquals(
+        XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassOne')->getClassLoader(),
+        $this->getClass()->getClassLoader()
+      );
     }
   
     /**
      * Test class loaders are equal for two classes loaded from the
-     * file system.
+     * same place (both exist in the same directory).
      *
      */
     #[@test]
-    public function twoClassesFromFileSystem() {
+    public function twoClassesFromSamePlace() {
       $this->assertEquals(
         XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassOne')->getClassLoader(),
         XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassTwo')->getClassLoader()
@@ -61,8 +114,22 @@
      */
     #[@test]
     public function archiveClassLoader() {
-      $cl= XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassThree')->getClassLoader();
-      $this->assertClass($cl, 'lang.archive.ArchiveClassLoader');
+      $this->assertClass(
+         XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassThree')->getClassLoader(),
+        'lang.archive.ArchiveClassLoader'
+      );
+    }
+
+    /**
+     * Test "ClassFive" is loaded from an archive
+     *
+     */
+    #[@test]
+    public function containedArchiveClassLoader() {
+      $this->assertClass(
+         XPClass::forName('net.xp_framework.unittest.reflection.classes.ClassFive')->getClassLoader(),
+        'lang.archive.ArchiveClassLoader'
+      );
     }
 
     /**
@@ -120,8 +187,7 @@
         return $this->fail('Class "'.$name.'" may not exist!');
       }
 
-      $class= ClassLoader::getDefault()->loadClass($name);
-      $this->assertXPClass($name, $class);
+      $this->assertXPClass($name, ClassLoader::getDefault()->loadClass($name));
       $this->assertTrue(LoaderTestClass::initializerCalled());
     }
 
