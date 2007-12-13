@@ -37,6 +37,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for XARs inside XARs
+  (friebe)
 - Added lang.ClassLoader::removeLoader() method to complement its
   registerLoader() method.
   (friebe)
