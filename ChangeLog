@@ -41,6 +41,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added setters for all elements of an URL to peer.URL class
+  (kiesel)
 - Added support for XARs inside XARs
   (friebe)
 - Added lang.ClassLoader::removeLoader() method to complement its
