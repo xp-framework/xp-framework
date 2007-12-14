@@ -24,12 +24,36 @@
     }
 
     /**
+     * Test setScheme()
+     *
+     */
+    #[@test]
+    public function schemeMutability() {
+      $this->assertEquals(
+        'ftp://localhost', 
+        create(new URL('http://localhost'))->setScheme('ftp')->getURL()
+      );
+    }
+
+    /**
      * Test getHost() method
      *
      */
     #[@test]
     public function host() {
       $this->assertEquals('localhost', create(new URL('http://localhost'))->getHost());
+    }
+
+    /**
+     * Test setHost()
+     *
+     */
+    #[@test]
+    public function hostMutability() {
+      $this->assertEquals(
+        'http://127.0.0.1', 
+        create(new URL('http://localhost'))->setHost('127.0.0.1')->getURL()
+      );
     }
 
     /**
@@ -69,6 +93,18 @@
     }
 
     /**
+     * Test setPath()
+     *
+     */
+    #[@test]
+    public function pathMutability() {
+      $this->assertEquals(
+        'http://localhost/index.html', 
+        create(new URL('http://localhost'))->setPath('/index.html')->getURL()
+      );
+    }
+
+    /**
      * Test getUser() method
      *
      */
@@ -96,12 +132,42 @@
     }
 
     /**
+     * Test getUser() method
+     *
+     */
+    #[@test]
+    public function urlEncodedUser() {
+      $this->assertEquals('user?', create(new URL('http://user%3F@localhost'))->getUser());
+    }
+
+    /**
+     * Test setUser()
+     *
+     */
+    #[@test]
+    public function userMutability() {
+      $this->assertEquals(
+        'http://thekid@localhost', 
+        create(new URL('http://localhost'))->setUser('thekid')->getURL()
+      );
+    }
+
+    /**
      * Test getPassword() method
      *
      */
     #[@test]
     public function password() {
       $this->assertEquals('password', create(new URL('http://user:password@localhost'))->getPassword());
+    }
+
+    /**
+     * Test getPassword() method
+     *
+     */
+    #[@test]
+    public function urlEncodedPassword() {
+      $this->assertEquals('pass?word', create(new URL('http://user:pass%3Fword@localhost'))->getPassword());
     }
 
     /**
@@ -122,6 +188,17 @@
       $this->assertEquals('secret', create(new URL('http://user@localhost'))->getPassword('secret'));
     }
 
+    /**
+     * Test setPassword()
+     *
+     */
+    #[@test]
+    public function passwordMutability() {
+      $this->assertEquals(
+        'http://anon:anon@localhost', 
+        create(new URL('http://anon@localhost'))->setPassword('anon')->getURL()
+      );
+    }
 
     /**
      * Test getQuery() method
@@ -157,6 +234,18 @@
     #[@test]
     public function queryDefault() {
       $this->assertEquals('1,2,3', create(new URL('http://localhost'))->getQuery('1,2,3'));
+    }
+
+    /**
+     * Test setQuery()
+     *
+     */
+    #[@test]
+    public function queryMutability() {
+      $this->assertEquals(
+        'http://localhost?a=b', 
+        create(new URL('http://localhost'))->setQuery('a=b')->getURL()
+      );
     }
 
     /**
@@ -196,6 +285,18 @@
     }
 
     /**
+     * Test setFragment()
+     *
+     */
+    #[@test]
+    public function fragmentMutability() {
+      $this->assertEquals(
+        'http://localhost#list', 
+        create(new URL('http://localhost'))->setFragment('list')->getURL()
+      );
+    }
+
+    /**
      * Test getPort() method
      *
      */
@@ -220,6 +321,18 @@
     #[@test]
     public function portDefault() {
       $this->assertEquals(80, create(new URL('http://localhost'))->getPort(80));
+    }
+
+    /**
+     * Test setPort()
+     *
+     */
+    #[@test]
+    public function portMutability() {
+      $this->assertEquals(
+        'http://localhost:8081', 
+        create(new URL('http://localhost'))->setPort(8081)->getURL()
+      );
     }
 
     /**
@@ -258,6 +371,78 @@
       $this->assertEquals('x', create(new URL('http://localhost?a=b'))->getParam('c', 'x'));
     }
  
+    /**
+     * Test addParam()
+     *
+     */
+    #[@test]
+    public function newParam() {
+      $this->assertEquals(
+        'http://localhost?a=b', 
+        create(new URL('http://localhost'))->addParam('a', 'b')->getURL()
+      );
+    }
+
+    /**
+     * Test addParam()
+     *
+     */
+    #[@test]
+    public function additionalParam() {
+      $this->assertEquals(
+        'http://localhost?a=b&c=d', 
+        create(new URL('http://localhost?a=b'))->addParam('c', 'd')->getURL()
+      );
+    }
+
+    /**
+     * Test addParam()
+     *
+     */
+    #[@test]
+    public function additionalParams() {
+      $this->assertEquals(
+        'http://localhost?a=b&c=d&e=f', 
+        create(new URL('http://localhost?a=b'))->addParam('c', 'd')->addParam('e', 'f')->getURL()
+      );
+    }
+
+    /**
+     * Test addParam()
+     *
+     */
+    #[@test]
+    public function existingParam() {
+      $this->assertEquals(
+        'http://localhost?a=b&a=b', 
+        create(new URL('http://localhost?a=b'))->addParam('a', 'b')->getURL()
+      );
+    }
+
+    /**
+     * Test addParam()
+     *
+     */
+    #[@test]
+    public function addNewParams() {
+      $this->assertEquals(
+        'http://localhost?a=b&c=d', 
+        create(new URL('http://localhost'))->addParams(array('a' => 'b', 'c' => 'd'))->getURL()
+      );
+    }
+
+    /**
+     * Test addParam()
+     *
+     */
+    #[@test]
+    public function addAdditionalParams() {
+      $this->assertEquals(
+        'http://localhost?z=x&a=b&c=d', 
+        create(new URL('http://localhost?z=x'))->addParams(array('a' => 'b', 'c' => 'd'))->getURL()
+      );
+    }
+
     /**
      * Test getParams() method
      *
