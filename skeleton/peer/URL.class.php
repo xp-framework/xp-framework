@@ -13,7 +13,7 @@
    *
    * Usage example:
    * <code>
-   *   $u= &new URL('http://user:pass@foo.bar:8081/news/1,2,6100.html?a=a#frag');
+   *   $u= new URL('http://user:pass@foo.bar:8081/news/1,2,6100.html?a=a#frag');
    *   echo $u->toString();
    * </code>
    *
@@ -71,6 +71,16 @@
     public function getScheme($default= NULL) {
       return isset($this->_info['scheme']) ? $this->_info['scheme'] : $default;
     }
+    
+    /**
+     * Set scheme
+     *
+     * @param   string scheme
+     */
+    public function setScheme($scheme) {
+      $this->_info['scheme']= $scheme;
+      unset($this->_info['url']);
+    }
 
     /**
      * Retrieve host
@@ -80,6 +90,16 @@
      */
     public function getHost($default= NULL) {
       return isset($this->_info['host']) ? $this->_info['host'] : $default;
+    }
+    
+    /**
+     * Set host
+     *
+     * @param   string host 
+     */
+    public function setHost($host) {
+      $this->_info['host']= $host;
+      unset($this->_info['url']);
     }
 
     /**
@@ -91,6 +111,16 @@
     public function getPath($default= NULL) {
       return isset($this->_info['path']) ? $this->_info['path'] : $default;
     }
+    
+    /**
+     * Set path
+     *
+     * @param   string path 
+     */
+    public function setPath($path) {
+      $this->_info['path']= $path;
+      unset($this->_info['url']);
+    }    
 
     /**
      * Retrieve user
@@ -101,6 +131,16 @@
     public function getUser($default= NULL) {
       return isset($this->_info['user']) ? $this->_info['user'] : $default;
     }
+    
+    /**
+     * Set user
+     *
+     * @param   string user 
+     */
+    public function setUser($user) {
+      $this->_info['user']= $user;
+      unset($this->_info['url']);
+    }    
 
     /**
      * Retrieve password
@@ -113,6 +153,16 @@
     }
 
     /**
+     * Set password
+     *
+     * @param   string password 
+     */
+    public function setPassword($password) {
+      $this->_info['pass']= $password;
+      unset($this->_info['url']);
+    }    
+
+    /**
      * Retrieve query
      *
      * @param   mixed default default NULL  
@@ -120,6 +170,17 @@
      */
     public function getQuery($default= NULL) {
       return isset($this->_info['query']) ? $this->_info['query'] : $default;
+    }
+
+    /**
+     * Set query
+     *
+     * @param   string query 
+     */
+    public function setQuery($query) {
+      $this->_info['query']= $query;
+      parse_str($this->_info['query'], $this->_info['params']);
+      unset($this->_info['url']);
     }
 
     /**
@@ -133,6 +194,16 @@
     }
 
     /**
+     * Set fragment
+     *
+     * @param   string fragment 
+     */
+    public function setFragment($fragment) {
+      $this->_info['fragment']= $fragment;
+      unset($this->_info['url']);
+    }
+
+    /**
      * Retrieve port
      *
      * @param   mixed default default NULL  
@@ -142,6 +213,16 @@
       return isset($this->_info['port']) ? $this->_info['port'] : $default;
     }
     
+    /**
+     * Set port
+     *
+     * @param   int port 
+     */
+    public function setPort($port) {
+      $this->_info['port']= $port;
+      unset($this->_info['url']);
+    }
+
     /**
      * Retrieve parameter by a specified name
      *
@@ -264,7 +345,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return is('peer.URL', $cmp) && $this->getURL() == $cmp->getURL();
+      return $cmp instanceof self && $this->getURL() == $cmp->getURL();
     }
   }
 ?>
