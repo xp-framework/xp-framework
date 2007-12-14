@@ -17,6 +17,7 @@
    *   echo $u->toString();
    * </code>
    *
+   * @test   xp://net.xp_framework.unittest.peer.URLTest
    * @see    php://parse_url
    */
   class URL extends Object {
@@ -76,10 +77,12 @@
      * Set scheme
      *
      * @param   string scheme
+     * @return  peer.URL this object
      */
     public function setScheme($scheme) {
       $this->_info['scheme']= $scheme;
       unset($this->_info['url']);
+      return $this;
     }
 
     /**
@@ -96,10 +99,12 @@
      * Set host
      *
      * @param   string host 
+     * @return  peer.URL this object
      */
     public function setHost($host) {
       $this->_info['host']= $host;
       unset($this->_info['url']);
+      return $this;
     }
 
     /**
@@ -116,10 +121,12 @@
      * Set path
      *
      * @param   string path 
+     * @return  peer.URL this object
      */
     public function setPath($path) {
       $this->_info['path']= $path;
       unset($this->_info['url']);
+      return $this;
     }    
 
     /**
@@ -136,10 +143,12 @@
      * Set user
      *
      * @param   string user 
+     * @return  peer.URL this object
      */
     public function setUser($user) {
       $this->_info['user']= $user;
       unset($this->_info['url']);
+      return $this;
     }    
 
     /**
@@ -156,10 +165,12 @@
      * Set password
      *
      * @param   string password 
+     * @return  peer.URL this object
      */
     public function setPassword($password) {
       $this->_info['pass']= $password;
       unset($this->_info['url']);
+      return $this;
     }    
 
     /**
@@ -176,11 +187,13 @@
      * Set query
      *
      * @param   string query 
+     * @return  peer.URL this object
      */
     public function setQuery($query) {
       $this->_info['query']= $query;
       parse_str($this->_info['query'], $this->_info['params']);
       unset($this->_info['url']);
+      return $this;
     }
 
     /**
@@ -197,10 +210,12 @@
      * Set fragment
      *
      * @param   string fragment 
+     * @return  peer.URL this object
      */
     public function setFragment($fragment) {
       $this->_info['fragment']= $fragment;
       unset($this->_info['url']);
+      return $this;
     }
 
     /**
@@ -217,10 +232,12 @@
      * Set port
      *
      * @param   int port 
+     * @return  peer.URL this object
      */
     public function setPort($port) {
       $this->_info['port']= $port;
       unset($this->_info['url']);
+      return $this;
     }
 
     /**
@@ -248,16 +265,25 @@
      *
      * @param   string key
      * @param   string value
+     * @return  peer.URL this object
      */
     public function addParam($key, $value) {
-      $this->_info['query'].= sprintf(
-        '%s%s=%s',
-        ('' == $this->_info['query']) ? '' : '&',
-        urlencode($key),
-        urlencode($value)
-      );
+      if (!isset($this->_info['query'])) {
+        $this->_info['query']= sprintf(
+          '%s=%s',
+          urlencode($key),
+          urlencode($value)
+        );          
+      } else {
+        $this->_info['query'].= sprintf(
+          '&%s=%s',
+          urlencode($key),
+          urlencode($value)
+        );
+      }
       parse_str($this->_info['query'], $this->_info['params']); 
       unset($this->_info['url']);   // Indicate recalculation is needed
+      return $this;
     }
 
     /**
@@ -267,7 +293,11 @@
      * @param   array hash
      */
     public function addParams($hash) {
-      if ('' != $this->_info['query']) $this->_info['query'].= '&';
+      if (!isset($this->_info['query'])) {
+        $this->_info['query']= '';
+      } else {
+        $this->_info['query'].= '&';
+      }
       
       foreach (array_keys($hash) as $key) {
         $this->_info['query'].= sprintf(
@@ -279,6 +309,7 @@
       $this->_info['query']= substr($this->_info['query'], 0, -1);
       parse_str($this->_info['query'], $this->_info['params']); 
       unset($this->_info['url']);   // Indicate recalculation is needed
+      return $this;
     }
 
     /**
@@ -299,12 +330,12 @@
       if (!isset($this->_info['url'])) {
         $this->_info['url']= $this->_info['scheme'].'://';
         if (isset($this->_info['user'])) $this->_info['url'].= sprintf(
-          '%s%s%s@',
+          '%s%s@',
           $this->_info['user'],
-          (isset($this->_info['pass']) ? ':' : ''),
-          $this->_info['pass']
+          (isset($this->_info['pass']) ? ':'.$this->_info['pass'] : '')
         );
         $this->_info['url'].= $this->_info['host'];
+        isset($this->_info['port']) && $this->_info['url'].= ':'.$this->_info['port'];
         isset($this->_info['path']) && $this->_info['url'].= $this->_info['path'];
         isset($this->_info['query']) && $this->_info['url'].= '?'.$this->_info['query'];
         isset($this->_info['fragment']) && $this->_info['url'].= '#'.$this->_info['fragment'];
