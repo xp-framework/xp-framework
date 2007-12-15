@@ -25,9 +25,9 @@
       $nodeType = 'node';
 
     public
-      $_cnt,
-      $_cdata,
-      $_objs;
+      $_cnt     = NULL,
+      $_cdata   = NULL,
+      $_objs    = NULL;
     
     /**
      * Constructor
@@ -150,8 +150,16 @@
         $parent= $this->_objs[$this->_cnt- 1];
         $parent->addChild($node);
         $this->_cdata= '';
+      } else {
+        $this->root->content= $this->_cdata;
+        $this->_cdata= '';
       }
       $this->_cnt--;
+      
+      // Clean up upon last element
+      if (0 === $this->_cnt) {
+        unset($this->_cnt, $this->_cdata, $this->_objs);
+      }
     }
 
     /**
