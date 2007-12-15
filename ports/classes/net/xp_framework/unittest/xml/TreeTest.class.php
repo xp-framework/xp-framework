@@ -92,6 +92,48 @@
         $this->assertEquals('value', $c->getContent());
       }
     }
+    
+    /**
+     * Tests xml is parsed to correct encoding
+     *
+     */
+    #[@test]
+    public function fromStringEncodingIso88591() {
+      $tree= Tree::fromString('<?xml version="1.0" encoding="iso-8859-1"?>
+        <document><node>Some umlauts: öäü</node></document>
+      ');
+      
+      $this->assertEquals(1, sizeof($tree->root->children));
+      $this->assertEquals('document', $tree->root->getName());
+      $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
+    }
+
+    /**
+     * Tests xml is converted to iso-8859-1
+     *
+     */
+    #[@test]
+    public function fromStringEncodingUTF8() {
+      $tree= Tree::fromString('<?xml version="1.0" encoding="UTF-8"?>
+        <document><node>Some umlauts: Ã¶Ã¤Ã¼</node></document>
+      ');
+      
+      $this->assertEquals(1, sizeof($tree->root->children));
+      $this->assertEquals('document', $tree->root->getName());
+      $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function singleElement() {
+      $tree= Tree::fromString('<document empty="false">Content</document>');
+      $this->assertEquals(0, sizeof($tree->root->children));
+      $this->assertEquals('Content', $tree->root->getContent());
+      $this->assertEquals('false', $tree->root->getAttribute('empty'));
+    }
 
     /**
      * Tests fromString when given incorrect XML
