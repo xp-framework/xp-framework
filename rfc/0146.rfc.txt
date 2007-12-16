@@ -145,7 +145,7 @@ http://bugs.php.net/30195
 
 Because PHP's directory and filesystem functions report unicode characters 
 in filenames as question marks, file names like this:
-[[img:unicode-filename.png]]
+[[img:unicode-filenames.png]]
 cannot be supported.
 
 
