@@ -135,6 +135,15 @@ Files without explicit encoding (text files) will be assumed to be in
 platform encoding.
 
 
+File names
+~~~~~~~~~~
+File names will be assumed to be in platform encoding.
+
+<pre>
+Windows supports Unicode in filenames, PHP cannot cope with this, see
+http://bugs.php.net/30195
+</pre>
+
 Console
 ~~~~~~~
 The console encoding is determined by querying the environment with:
