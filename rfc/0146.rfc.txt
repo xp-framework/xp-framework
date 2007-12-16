@@ -218,5 +218,9 @@ Related documents
 
 Comments
 --------
+- friebe, Sun Dec 16 16:36:25     2007
+  I think when unicode development should start in a separate branch (xp6).
+  When we have tested and confirmed it to be working, we can move SVN head
+  to branches/xp5 and branches/xp6 to SVN head.
 
 <EOF>
