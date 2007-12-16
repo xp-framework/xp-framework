@@ -22,43 +22,157 @@ Functionality
 
 General overview
 ~~~~~~~~~~~~~~~~
-
+<pre>
+* We will use utf-8 as internal encoding
+* All strings will contain utf-8
+* Thus, all source files will need to be in utf-8
+* Bytes != Characters: The capital german umlaut "U" (Ü) is one character
+  but represented by two bytes in utf-8!
+</pre>
 
 Strings
 ~~~~~~~
+The framework already contains supporting classes to represent strings
+and characters, both of these can handle unicode characters transparently
+(lang.types.String, lang.types.Character).
 
+<?php
+  $s= new String('Übercoder', 'iso-8859-1');
+  $s->length();                 // 9
+  $s->charAt(0);                // lang.types.Character<"Ü">
+  $s->charAt(0)->getBytes();    // 2 bytes (\xC3 \x9C)
+  $s->getBytes();               // 10 bytes (\xC3 \x9C b e r c o d e r)
+ 
+  $s= new String('Ãœbercoder'); // same as: new String('Ãœbercoder', 'utf-8');
+  $s->length();                 // 9
+  $s->charAt(0);                // lang.types.Character<"Ü">
+  $s->charAt(0)->getBytes();    // 2 bytes (\xC3 \x9C)
+  $s->getBytes();               // 10 bytes (\xC3 \x9C b e r c o d e r)
+?>
 
-Regular expressions
-~~~~~~~~~~~~~~~~~~~
+Primitive strings *must* be written in utf-8:
 
-
-XML
-~~~
-
-
-Databases
-~~~~~~~~~
-
-
-LDAP
-~~~~
-
-
-Scriptlets
-~~~~~~~~~~
-
-
-Files
-~~~~~
-
-
-Console
-~~~~~~~
+<?php
+  $s= 'Übercoder';    // DISALLOWED!
+  $s= 'Ãœbercoder';   // Correct
+?>
 
 
 Binary data
 ~~~~~~~~~~~
+Binary data (e.g., the contents of a JPEG image) may not be en- or decoded
+in any way. Thus, we will add a new class to represent binary data.
 
+TODO: Name? Suggestions:
+* lang.types.ByteArray 
+* lang.types.Bytes
+* lang.types.ByteList
+* lang.types.Binary
+
+
+Regular expressions
+~~~~~~~~~~~~~~~~~~~
+There will be supporting classes for regular expressions modeled after
+the idea in http://experiments.xp-framework.net/?arena,regex
+
+For all preg_* functions, the /u modifier exists for unicode.
+
+
+XML
+~~~
+The default encoding of all XML documents will be changed to utf-8.
+
+
+Databases
+~~~~~~~~~
+The database APIs will be changed to set the client character set to
+utf-8. By doing this, the server will automatically convert data from
+and to this character set if necessary, thus making no further client-
+side conversions necessary.
+
+* MySQL: 
+  After connecting, the SQL query 'set names "utf8";' will be sent.
+
+* Sybase: 
+  The character set parameter of sybase_connect() will be set to the 
+  string "utf-8"
+
+* PostgreSQL:
+  TODO
+
+* SQLite:
+  TODO
+
+<pre>
+MySQL versions < 4.1 do not support 'set names "utf8";' and Sybase
+must have character set conversions sp_configure'd - what should
+we do if setting the client character set fails? Fail to connect? Add
+a client-side conversion?
+</pre>
+
+
+LDAP
+~~~~
+LDAP already stores everything in utf-8, so the de/encoding process can
+be removed.
+
+
+Scriptlets
+~~~~~~~~~~
+Scriptlet's content-type headers will be set to 
+
+  Content-Type: text/html; charset="utf-8"
+
+per default. XMLScriptlets already honour the charset given in
+
+  <xsl:output encoding="..."/>
+
+
+
+Files
+~~~~~
+Files without explicit encoding (text files) will be assumed to be in 
+platform encoding.
+
+
+Console
+~~~~~~~
+The console encoding is determined by querying the environment with:
+<?php
+  $ctype= getenv('LC_CTYPE');
+  $ctype || $ctype= getenv('LANG');
+  $ctype || $ctype= setlocale(LC_CTYPE, 0);
+?>
+
+* All input parameters are encoded from this encoding to internal encoding.
+* All output is encoded from internal encoding to this encoding.
+
+The following script: (echo-param.php)
+<?php
+  require('lang.base.php');
+  uses('util.cmd.Console', 'util.cmd.ParamString');
+  
+  Console::writeLine('Param: ', create(new ParamString())->value(1));
+?>
+
+When run inside a Windows shell on German Windows setup the XP framework
+will:
+* Detect $ctype= "German_Germany.1252" via setlocale(LC_CTYPE, 0)
+* Set input and output encoding to "CP1252"
+* Convert values in $argv from CP1252 to utf-8 (= internal encoding)
+* When writing to the console, convert from utf-8 to CP1252.
+
+Everything will work as expected:
+<pre>
+  C:\> php echo-param.php "Übercoder"
+  Param: Übercoder
+</pre>
+
+When run inside a cygwin "uxterm" shell on the same machine the XP 
+framework will:
+* Detect $ctype= "en_US.UTF-8" via getenv("LANG")
+* Set input and output encoding to "UTF-8"
+* Not convert anything.
 
 Security considerations
 -----------------------
