@@ -1,0 +1,87 @@
+RFC 0146: Unicode
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 16 15:14:52     2007
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The XP framework will fully support Unicode.
+
+
+Rationale
+---------
+Internationalization.
+
+
+Functionality
+-------------
+
+General overview
+~~~~~~~~~~~~~~~~
+
+
+Strings
+~~~~~~~
+
+
+Regular expressions
+~~~~~~~~~~~~~~~~~~~
+
+
+XML
+~~~
+
+
+Databases
+~~~~~~~~~
+
+
+LDAP
+~~~~
+
+
+Scriptlets
+~~~~~~~~~~
+
+
+Files
+~~~~~
+
+
+Console
+~~~~~~~
+
+
+Binary data
+~~~~~~~~~~~
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower when converting data.
+
+
+Dependencies
+------------
+* iconv extension (default since PHP5)
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0146.diff
+  Implementing patch
+
+
+Comments
+--------
+
+<EOF>

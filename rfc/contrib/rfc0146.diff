@@ -1,0 +1,815 @@
+Index: skeleton/lang.base.php
+===================================================================
+--- skeleton/lang.base.php	(revision 11433)
++++ skeleton/lang.base.php	(working copy)
+@@ -540,6 +540,15 @@
+   // Register stream wrapper for .xar class loading
+   stream_wrapper_register('xar', 'xarloader');
+ 
++  // Unicode
++  if (($ctype= getenv('LC_CTYPE')) || ($ctype= setlocale(LC_CTYPE, 0))) {
++    sscanf($ctype, '%[^.].%s', $language, $charset);
++    is_numeric($charset) && $charset= 'CP'.$charset;
++    iconv_set_encoding('output_encoding', $charset);
++    iconv_set_encoding('input_encoding', $charset);
++  }
++  iconv_set_encoding('internal_encoding', 'UTF-8');
++
+   // Omnipresent classes
+   uses(
+     'lang.Object',
+Index: skeleton/webservices/soap/xp/XPSoapNode.class.php
+===================================================================
+--- skeleton/webservices/soap/xp/XPSoapNode.class.php	(revision 11433)
++++ skeleton/webservices/soap/xp/XPSoapNode.class.php	(working copy)
+@@ -101,8 +101,8 @@
+       }
+       
+       // Decode if necessary
+-      switch (strtolower($encoding)) {
+-        case 'utf-8': $ret= utf8_decode($ret); break;
++      if ('utf-8' !== strtolower($encoding)) {
++        $ret= iconv($encoding, 'UTF-8', $ret);
+       }
+ 
+       // Set type
+Index: skeleton/lang/types/String.class.php
+===================================================================
+--- skeleton/lang/types/String.class.php	(revision 11433)
++++ skeleton/lang/types/String.class.php	(working copy)
+@@ -23,17 +23,16 @@
+      * Convert a string to internal encoding
+      *
+      * @param   string string
+-     * @param   string charset default NULL
++     * @param   string charset default 'UTF-8'
+      * @return  string
+      * @throws  lang.FormatException in case a conversion error occurs
+      */
+-    protected function asIntern($arg, $charset= NULL) {
++    protected function asIntern($arg, $charset= 'UTF-8') {
+       if ($arg instanceof self) {
+         return $arg->buffer;
+       } else if ($arg instanceof Character) {
+-        return $arg->getBytes();
++        return $arg->toString();
+       } else if (is_string($arg)) {
+-        if (!$charset) $charset= iconv_get_encoding('input_encoding');
+ 
+         // Convert the input to internal encoding
+         $buffer= iconv($charset, STR_ENC, $arg);
+@@ -55,9 +54,9 @@
+      * Constructor
+      *
+      * @param   string initial default ''
+-     * @param   string charset default NULL
++     * @param   string charset default 'UTF-8'
+      */
+-    public function __construct($initial= '', $charset= NULL) {
++    public function __construct($initial= '', $charset= 'UTF-8') {
+       $this->buffer= $this->asIntern($initial, $charset);
+       $this->length= iconv_strlen($this->buffer, STR_ENC);
+     }
+@@ -274,32 +273,31 @@
+     }
+ 
+     /**
+-     * Returns a string representation of this string. Uses the current
+-     * output encoding and transliteration.
++     * Returns a string representation of this string.
+      *
+      * @return  string
+      */
+     public function toString() {
+-      return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
++      return $this->buffer;
+     }
+ 
+     /**
+-     * Returns a string representation of this string. Uses the current
+-     * output encoding and transliteration.
++     * Returns a string representation of this string.
+      *
+      * @return  string
+      */
+     public function __toString() {
+-      return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
++      return $this->buffer;
+     }
+-   
++
+     /**
+-     * Returns the bytes in internal encoding (UTF-8)
++     * Returns the bytes in the specified encoding
+      *
++     * @param   string encoding
+      * @return  string
+      */
+-    public function getBytes() {
+-      return $this->buffer;
++    public function getBytes($encoding) {
++      return iconv(STR_ENC, $encoding, $this->buffer);
+     }
+   }
+ ?>
+Index: skeleton/lang/types/Character.class.php
+===================================================================
+--- skeleton/lang/types/Character.class.php	(revision 11433)
++++ skeleton/lang/types/Character.class.php	(working copy)
+@@ -32,16 +32,14 @@
+      * Constructor
+      *
+      * @param   mixed arg either a string or an int
+-     * @param   string charset default NULL
++     * @param   string charset default 'UTF-8'
+      */
+-    public function __construct($arg, $charset= NULL) {
++    public function __construct($arg, $charset= 'UTF-8') {
+       if (is_int($arg)) {
+         $this->buffer= iconv('UCS-4BE', 'UTF-8', pack('N', $arg));
+         return;
+       }        
+ 
+-      if (!$charset) $charset= iconv_get_encoding('input_encoding');
+-
+       // Convert the input to internal encoding
+       $this->buffer= iconv($charset, 'UTF-8', $arg);
+       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+@@ -78,32 +76,31 @@
+     }
+ 
+     /**
+-     * Returns a string representation of this string. Uses the current
+-     * output encoding and transliteration.
++     * Returns a string representation of this string. 
+      *
+      * @return  string
+      */
+     public function toString() {
+-      return iconv('UTF-8', iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
++      return $this->buffer;
+     }
+ 
+     /**
+-     * Returns a string representation of this string. Uses the current
+-     * output encoding and transliteration.
++     * Returns a string representation of this string. 
+      *
+      * @return  string
+      */
+     public function __toString() {
+-      return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
++      return $this->buffer;
+     }
+ 
+     /**
+-     * Returns the bytes in internal encoding (UTF-8)
++     * Returns the bytes in the specified encoding
+      *
++     * @param   string encoding
+      * @return  string
+      */
+-    public function getBytes() {
+-      return $this->buffer;
++    public function getBytes($encoding) {
++      return iconv(STR_ENC, $encoding, $this->buffer);
+     }
+   }
+ ?>
+Index: skeleton/text/parser/VFormatParser.class.php
+===================================================================
+--- skeleton/text/parser/VFormatParser.class.php	(revision 11433)
++++ skeleton/text/parser/VFormatParser.class.php	(working copy)
+@@ -77,7 +77,7 @@
+      * @return  string
+      */
+     public static function decodeString($str) {
+-      return strtr(utf8_decode($str), array(
++      return strtr($str, array(
+         '\,'    => ',',
+         '\N'    => "\n",
+         '\n'    => "\n"
+@@ -209,7 +209,7 @@
+       // Charsets and encodings
+       for ($i= 0, $m= sizeof($kargs); $i < $m; $i++) switch ($kargs[$i]) {
+         case 'CHARSET=UTF-8': 
+-          $value= utf8_decode($value); 
++          // Do nothing, everything already is in unicode
+           break;
+           
+         case 'ENCODING=BASE64':
+Index: skeleton/peer/ldap/LDAPClient.class.php
+===================================================================
+--- skeleton/peer/ldap/LDAPClient.class.php	(revision 11433)
++++ skeleton/peer/ldap/LDAPClient.class.php	(working copy)
+@@ -312,11 +312,7 @@
+      * @return  string encoded entry
+      */
+     protected function _encode($v) {
+-      if (is_array($v)) {
+-        foreach (array_keys($v) as $i) $v[$i]= $this->_encode($v[$i]);
+-        return $v;
+-      }
+-      return utf8_encode($v);
++      return $v;
+     }
+     
+     /**
+Index: skeleton/peer/ldap/LDAPEntry.class.php
+===================================================================
+--- skeleton/peer/ldap/LDAPEntry.class.php	(revision 11433)
++++ skeleton/peer/ldap/LDAPEntry.class.php	(working copy)
+@@ -41,11 +41,7 @@
+      * @return  string decoded entry
+      */
+     protected function _decode($v) {
+-      if (is_array($v)) for ($i= 0, $m= sizeof($v); $i < $m; $i++) {
+-        $v[$i]= $this->_decode($v[$i]);
+-        return $v;
+-      }
+-      return utf8_decode($v);
++      return $v;
+     }
+     
+     /**
+Index: skeleton/remote/protocol/ByteCountedString.class.php
+===================================================================
+--- skeleton/remote/protocol/ByteCountedString.class.php	(revision 11433)
++++ skeleton/remote/protocol/ByteCountedString.class.php	(working copy)
+@@ -37,7 +37,7 @@
+      * @param   string string default ''
+      */
+     public function __construct($string= '') {
+-      $this->string= utf8_encode($string);
++      $this->string= $string;
+     }
+     
+     /**
+@@ -99,7 +99,7 @@
+         $s.= self::readFully($stream, $ctl['length']);
+       } while ($ctl['next']);
+       
+-      return utf8_decode($s);
++      return $s;
+     }
+   }
+ ?>
+Index: skeleton/remote/server/EascProtocol.class.php
+===================================================================
+--- skeleton/remote/server/EascProtocol.class.php	(revision 11433)
++++ skeleton/remote/server/EascProtocol.class.php	(working copy)
+@@ -151,7 +151,7 @@
+         $offset+= $ctl['length']+ 1;
+       } while ($ctl['next']);
+ 
+-      return utf8_decode($string);
++      return $string;
+     }    
+     
+     /**
+Index: skeleton/xml/meta/Unmarshaller.class.php
+===================================================================
+--- skeleton/xml/meta/Unmarshaller.class.php	(revision 11433)
++++ skeleton/xml/meta/Unmarshaller.class.php	(working copy)
+@@ -38,7 +38,7 @@
+      */
+     protected static function contentOf($element) {
+       if ($element instanceof DOMNodeList) {
+-          return $element->length ? utf8_decode($element->item(0)->textContent) : NULL;
++          return $element->length ? $element->item(0)->textContent : NULL;
+       
+       } else if (is_scalar($element)) {
+         return $element;
+@@ -46,14 +46,14 @@
+       } else if ($element instanceof DOMNode) {
+         switch ($element->nodeType) {
+           case 1:   // DOMElement
+-            return utf8_decode($element->textContent);
++            return $element->textContent;
+ 
+           case 2:   // DOMAttr
+-            return utf8_decode($element->value);
++            return $element->value;
+ 
+           case 3:   // DOMText
+           case 4:   // DOMCharacterData
+-            return utf8_decode($element->data);
++            return $element->data;
+         }
+       } else return NULL;
+     }
+@@ -135,13 +135,13 @@
+             // * If the xmlmapping annotation contains a key "type", cast the node's
+             //   contents to the specified type before passing it to the method.
+             $arguments= array(cast(
+-              utf8_decode($node->textContent),
++              $node->textContent,
+               $method->getAnnotation('xmlmapping', 'type')
+             ));
+           } else {
+ 
+             // * Otherwise, pass the node's content to the method
+-            $arguments= array(utf8_decode($node->textContent));
++            $arguments= array($node->textContent);
+           }
+           
+           $method->invoke($instance, $arguments);
+Index: skeleton/xml/XML.class.php
+===================================================================
+--- skeleton/xml/XML.class.php	(revision 11433)
++++ skeleton/xml/XML.class.php	(working copy)
+@@ -11,7 +11,7 @@
+   class XML extends Object {
+     public 
+       $version   = '1.0',
+-      $_encoding = 'iso-8859-1';
++      $_encoding = 'utf-8';
+     
+     /**
+      * Set encoding
+Index: skeleton/io/streams/DecodingOutputStream.class.php
+===================================================================
+--- skeleton/io/streams/DecodingOutputStream.class.php	(revision 0)
++++ skeleton/io/streams/DecodingOutputStream.class.php	(revision 0)
+@@ -0,0 +1,66 @@
++<?php
++/* This class is part of the XP framework's experiments
++ *
++ * $Id: ConsoleOutputStream.class.php 8963 2006-12-27 14:21:05Z friebe $
++ */
++
++  uses('io.streams.ConsoleOutputStream');
++
++  /**
++   * OuputStream that decodes the UTF-8 strings we use internally
++   * into the specified encoding.
++   *
++   * @ext      iconv
++   * @purpose  OuputStream implementation
++   */
++  class DecodingOutputStream extends Object implements OutputStream {
++    protected
++      $enclosed = NULL,
++      $charset  = NULL;
++    
++    /**
++     * Constructor
++     *
++     * @param   io.streams.OutputStream enclodes
++     * @param   string charset the charset to convert to
++     */
++    public function __construct(OutputStream $enclosed, $charset) {
++      $this->enclosed= $enclosed;
++      $this->charset= $charset;
++    }
++    
++    /**
++     * Creates a string representation of this output stream
++     *
++     * @return  string
++     */
++    public function toString() {
++      return $this->getClassName().'[decode->'.$this->charset.']->*'.$this->enclosed->toString();
++    }
++
++    /**
++     * Write a string
++     *
++     * @param   mixed arg
++     */
++    public function write($arg) {
++      $this->enclosed->write(iconv('UTF-8', $this->charset, $arg));
++    }
++
++    /**
++     * Flush this stream.
++     *
++     */
++    public function flush() { 
++      $this->enclosed->flush();
++    }
++
++    /**
++     * Close this stream.
++     *
++     */
++    public function close() {
++      $this->enclosed->close();
++    }
++  }
++?>
+Index: skeleton/rdbms/sybase/SybaseConnection.class.php
+===================================================================
+--- skeleton/rdbms/sybase/SybaseConnection.class.php	(revision 11435)
++++ skeleton/rdbms/sybase/SybaseConnection.class.php	(working copy)
+@@ -51,13 +51,15 @@
+         $this->handle= sybase_pconnect(
+           $this->dsn->getHost(), 
+           $this->dsn->getUser(), 
+-          $this->dsn->getPassword()
++          $this->dsn->getPassword(),
++          'utf8'
+         );
+       } else {
+         $this->handle= sybase_connect(
+           $this->dsn->getHost(), 
+           $this->dsn->getUser(), 
+-          $this->dsn->getPassword()
++          $this->dsn->getPassword(),
++          'utf8'
+         );
+       }
+ 
+Index: skeleton/rdbms/mysql/MySQLConnection.class.php
+===================================================================
+--- skeleton/rdbms/mysql/MySQLConnection.class.php	(revision 11433)
++++ skeleton/rdbms/mysql/MySQLConnection.class.php	(working copy)
+@@ -76,6 +76,9 @@
+       if (!is_resource($this->handle)) {
+         throw(new SQLConnectException(mysql_error(), $this->dsn));
+       }
++      
++      // Set client character set to UTF-8
++      mysql_query('set names utf8', $this->handle);
+ 
+       // Figure out sql_mode and update formatter's escaperules accordingly
+       // - See: http://bugs.mysql.com/bug.php?id=10214
+Index: skeleton/security/sasl/DigestResponse.class.php
+===================================================================
+--- skeleton/security/sasl/DigestResponse.class.php	(revision 11433)
++++ skeleton/security/sasl/DigestResponse.class.php	(working copy)
+@@ -43,8 +43,8 @@
+      * @return  string
+      */    
+     protected function _encode($value) {
+-      if (0 == strcasecmp('utf-8', $this->charset)) {
+-        return utf8_encode($value);
++      if (0 !== strcasecmp('utf-8', $this->charset)) {
++        return iconv($this->charset, 'UTF-8', $value);
+       }        
+       return $value;
+     }
+Index: skeleton/security/cert/X509Certificate.class.php
+===================================================================
+--- skeleton/security/cert/X509Certificate.class.php	(revision 11435)
++++ skeleton/security/cert/X509Certificate.class.php	(working copy)
+@@ -116,9 +116,9 @@
+      */
+     public function getIssuerDN() {
+       if (version_compare(phpversion(), '5.2.2', '<')) {
++        return new Principal(array_map('utf8_encode', $this->_info['issuer']));
++      } else {
+         return new Principal($this->_info['issuer']);
+-      } else {
+-        return new Principal(array_map('utf8_decode', $this->_info['issuer']));
+       }
+     }
+     
+@@ -129,9 +129,9 @@
+      */
+     public function getSubjectDN() {
+       if (version_compare(phpversion(), '5.2.2', '<')) {
++        return new Principal(array_map('utf8_encode', $this->_info['subject']));
++      } else {
+         return new Principal($this->_info['subject']);
+-      } else {
+-        return new Principal(array_map('utf8_decode', $this->_info['subject']));
+       }
+     }
+     
+Index: skeleton/scriptlet/HttpScriptletResponse.class.php
+===================================================================
+--- skeleton/scriptlet/HttpScriptletResponse.class.php	(revision 11433)
++++ skeleton/scriptlet/HttpScriptletResponse.class.php	(working copy)
+@@ -87,9 +87,10 @@
+      * text/html; charset=UTF-8.
+      *
+      * @param   string type
++     * @param   string charset default NULL
+      */
+-    public function setContentType($type) {
+-      $this->headers[]= 'Content-Type: '.$type;
++    public function setContentType($type, $charset= NULL) {
++      $this->headers[]= 'Content-Type: '.$type.($charset ? '; charset= '.$charset : '');
+     }
+     
+     /**
+Index: skeleton/util/cmd/ParamString.class.php
+===================================================================
+--- skeleton/util/cmd/ParamString.class.php	(revision 11433)
++++ skeleton/util/cmd/ParamString.class.php	(working copy)
+@@ -18,6 +18,15 @@
+       $list     = array(),
+       $count    = 0,
+       $string   = '';
++
++    static function __static() {
++      // If input encoding is not UTF-8, encode the arguments
++      if ('UTF-8' != ($ie= iconv_get_encoding('input_encoding'))) {
++        foreach ($_SERVER['argv'] as $i => $value) {
++          $_SERVER['argv'][$i]= iconv($ie, 'UTF-8', $value);
++        }
++      }
++    }
+     
+     /**
+      * Constructor
+Index: skeleton/util/cmd/Console.class.php
+===================================================================
+--- skeleton/util/cmd/Console.class.php	(revision 11433)
++++ skeleton/util/cmd/Console.class.php	(working copy)
+@@ -4,7 +4,11 @@
+  * $Id$ 
+  */
+ 
+-  uses('io.streams.StringWriter', 'io.streams.ConsoleOutputStream');
++  uses(
++    'io.streams.StringWriter', 
++    'io.streams.DecodingOutputStream',
++    'io.streams.ConsoleOutputStream'
++  );
+ 
+   /**
+    * Represents system console
+@@ -35,8 +39,18 @@
+       $err= NULL;
+ 
+     static function __static() {
+-      self::$out= new StringWriter(new ConsoleOutputStream(STDOUT));
+-      self::$err= new StringWriter(new ConsoleOutputStream(STDERR));
++      $out= new ConsoleOutputStream(STDOUT);
++      $err= new ConsoleOutputStream(STDERR);
++      
++      // If the console supports UTF-8, no conversion is needed. Otherwise, we
++      // need to convert the UTF-8 we use internally to the console's encoding.
++      if ('UTF-8' != ($oe= iconv_get_encoding('output_encoding'))) {
++        $out= new DecodingOutputStream($out, $oe.'//IGNORE');
++        $err= new DecodingOutputStream($err, $oe.'//IGNORE');
++      }
++
++      self::$out= new StringWriter($out);
++      self::$err= new StringWriter($err);
+     }
+ 
+     /**
+Index: ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php	(revision 11433)
++++ ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php	(working copy)
+@@ -18,21 +18,12 @@
+   class StringTest extends TestCase {
+ 
+     /**
+-     * Setup this test. Forces input and output encoding to ISO-8859-1
+-     *
+-     */
+-    public function setUp() {
+-      iconv_set_encoding('input_encoding', 'ISO-8859-1');
+-      iconv_set_encoding('output_encoding', 'ISO-8859-1');
+-    }
+-
+-    /**
+      * Test a string with an incomplete multibyte character in it
+      *
+      */
+     #[@test, @expect('lang.FormatException')]
+     public function incompleteMultiByteCharacter() {
+-      new String('ä', 'UTF-8');
++      new String('ä', 'utf-8');
+     }
+   
+     /**
+@@ -41,7 +32,7 @@
+      */
+     #[@test, @expect('lang.FormatException')]
+     public function illegalCharacter() {
+-      new String('ä', 'US-ASCII');
++      new String('ä', 'us-ascii');
+     }
+ 
+     /**
+@@ -51,7 +42,7 @@
+     #[@test]
+     public function usAsciiString() {
+       $str= new String('Hello');
+-      $this->assertEquals('Hello', $str->getBytes());
++      $this->assertEquals('Hello', $str->getBytes('us-ascii'));
+       $this->assertEquals(5, $str->length());
+     }
+ 
+@@ -61,8 +52,8 @@
+      */
+     #[@test]
+     public function umlautString() {
+-      $str= new String('Hällo');
+-      $this->assertEquals('HÃ¤llo', $str->getBytes());
++      $str= new String('Hällo', 'iso-8859-1');
++      $this->assertEquals('HÃ¤llo', $str->getBytes('utf-8'));
+       $this->assertEquals(5, $str->length());
+     }
+ 
+@@ -79,26 +70,14 @@
+     }
+ 
+     /**
+-     * Test translatiom
+-     *
+-     */
+-    #[@test]
+-    public function transliteration() {
+-      $this->assertEquals(
+-        'Trenciansky kraj', 
+-        create(new String('TrenÄiansky kraj', 'UTF-8'))->toString()
+-      );
+-    }
+-
+-    /**
+      * Test indexOf() method
+      *
+      */
+     #[@test]
+     public function indexOf() {
+-      $str= new String('Hällo');
+-      $this->assertEquals(1, $str->indexOf('ä'));
+-      $this->assertEquals(1, $str->indexOf(new String('ä')));
++      $str= new String('Hällo', 'iso-8859-1');
++      $this->assertEquals(1, $str->indexOf(new Character('ä', 'iso-8859-1')));
++      $this->assertEquals(1, $str->indexOf(new String('ä', 'iso-8859-1')));
+       $this->assertEquals(-1, $str->indexOf(''));
+       $this->assertEquals(-1, $str->indexOf('4'));
+     }
+@@ -109,9 +88,9 @@
+      */
+     #[@test]
+     public function contains() {
+-      $str= new String('Hällo');
++      $str= new String('Hällo', 'iso-8859-1');
+       $this->assertTrue($str->contains('H'));
+-      $this->assertTrue($str->contains('ä'));
++      $this->assertTrue($str->contains(new Character('ä', 'iso-8859-1')));
+       $this->assertTrue($str->contains('o'));
+       $this->assertFalse($str->contains(''));
+       $this->assertFalse($str->contains('4'));
+@@ -123,8 +102,8 @@
+      */
+     #[@test]
+     public function substring() {
+-      $str= new String('Hällo');
+-      $this->assertEquals(new String('ällo'), $str->substring(1));
++      $str= new String('Hällo', 'iso-8859-1');
++      $this->assertEquals(new String('ällo', 'iso-8859-1'), $str->substring(1));
+       $this->assertEquals(new String('ll'), $str->substring(2, -1));
+       $this->assertEquals(new String('o'), $str->substring(-1, 1));
+     }
+@@ -135,10 +114,10 @@
+      */
+     #[@test]
+     public function startsWith() {
+-      $str= new String('www.müller.com');
++      $str= new String('www.müller.com', 'iso-8859-1');
+       $this->assertTrue($str->startsWith('www.'));
+       $this->assertFalse($str->startsWith('ww.'));
+-      $this->assertFalse($str->startsWith('müller'));
++      $this->assertFalse($str->startsWith(new String('müller', 'iso-8859-1')));
+     }
+ 
+     /**
+@@ -147,11 +126,11 @@
+      */
+     #[@test]
+     public function endsWith() {
+-      $str= new String('www.müller.com');
++      $str= new String('www.müller.com', 'iso-8859-1');
+       $this->assertTrue($str->endsWith('.com'));
+-      $this->assertTrue($str->endsWith('üller.com'));
++      $this->assertTrue($str->endsWith(new String('üller.com', 'iso-8859-1')));
+       $this->assertFalse($str->endsWith('.co'));
+-      $this->assertFalse($str->endsWith('müller'));
++      $this->assertFalse($str->endsWith(new String('müller', 'iso-8859-1')));
+     }
+ 
+     /**
+@@ -160,9 +139,9 @@
+      */
+     #[@test]
+     public function replace() {
+-      $str= new String('www.müller.com');
+-      $this->assertEquals(new String('müller'), $str->replace('www.')->replace('.com'));
+-      $this->assertEquals(new String('muller'), $str->replace('ü', 'u'));
++      $str= new String('www.müller.com', 'iso-8859-1');
++      $this->assertEquals(new String('müller', 'iso-8859-1'), $str->replace('www.')->replace('.com'));
++      $this->assertEquals(new String('muller'), $str->replace(new Character('ü', 'iso-8859-1'), 'u'));
+     }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/core/types/CharacterTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/types/CharacterTest.class.php	(revision 11433)
++++ ports/classes/net/xp_framework/unittest/core/types/CharacterTest.class.php	(working copy)
+@@ -18,15 +18,6 @@
+   class CharacterTest extends TestCase {
+ 
+     /**
+-     * Setup this test. Forces input and output encoding to ISO-8859-1
+-     *
+-     */
+-    public function setUp() {
+-      iconv_set_encoding('input_encoding', 'ISO-8859-1');
+-      iconv_set_encoding('output_encoding', 'ISO-8859-1');
+-    }
+-
+-    /**
+      * Test a string with an incomplete multibyte character in it
+      *
+      */
+@@ -41,7 +32,7 @@
+      */
+     #[@test]
+     public function nullByte() {
+-      $this->assertEquals("\x00", create(new Character(0))->getBytes());
++      $this->assertEquals("\x00", create(new Character(0))->getBytes('iso-8859-1'));
+     }
+ 
+     /**
+@@ -50,7 +41,7 @@
+      */
+     #[@test]
+     public function euroSymbol() {
+-      $this->assertEquals("\xe2\x82\xac", create(new Character(8364))->getBytes()); // &#8364; in HTML
++      $this->assertEquals("\xe2\x82\xac", create(new Character(8364))->getBytes('utf-8')); // &#8364; in HTML
+     }
+   
+     /**
+@@ -68,7 +59,7 @@
+      */
+     #[@test]
+     public function usAsciiCharacter() {
+-      $this->assertEquals('H', create(new Character('H'))->getBytes());
++      $this->assertEquals('H', create(new Character('H'))->getBytes('utf-8'));
+     }
+ 
+     /**
+@@ -77,7 +68,7 @@
+      */
+     #[@test]
+     public function umlautCharacter() {
+-      $this->assertEquals('Ã¤', create(new Character('ä'))->getBytes());
++      $this->assertEquals('Ã¤', create(new Character('ä', 'iso-8859-1'))->getBytes('utf-8'));
+     }
+ 
+     /**
+@@ -91,14 +82,5 @@
+         new Character('ä', 'ISO-8859-1')
+       );
+     }
+-
+-    /**
+-     * Test translatiom
+-     *
+-     */
+-    #[@test]
+-    public function transliteration() {
+-      $this->assertEquals('c', create(new String('Ä', 'UTF-8'))->toString());
+-    }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/tests/AssertionsTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/AssertionsTest.class.php	(revision 11433)
++++ ports/classes/net/xp_framework/unittest/tests/AssertionsTest.class.php	(working copy)
+@@ -193,7 +193,7 @@
+      */    
+     #[@test]
+     public function stringObjectsAreEqual() {
+-      foreach (array(new String(''), new String('Hello'), new String('äöüß')) as $str) {
++      foreach (array(new String(''), new String('Hello'), new String('äöüß', 'iso-8859-1')) as $str) {
+         $this->assertEquals($str, $str, xp::stringOf($str));
+       }
+     }
+Index: ports/classes/net/xp_framework/unittest/security/CertificateTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/security/CertificateTest.class.php	(revision 11433)
++++ ports/classes/net/xp_framework/unittest/security/CertificateTest.class.php	(working copy)
+@@ -6,6 +6,7 @@
+  
+   uses(
+     'unittest.TestCase',
++    'lang.types.String',
+     'security.cert.X509Certificate'
+   );
+ 
+@@ -72,12 +73,12 @@
+ );
+ 
+       $this->assertPrincipal(
+-        '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#', 
++        new String('#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#', 'iso-8859-1'), 
+         $x509->getSubjectDN(), 
+         'subject'
+       );
+       $this->assertPrincipal(
+-        '#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#', 
++        new String('#^/C=DE/ST=Baden-Württemberg/L=Karlsruhe/O=XP Team/OU=XP Team/CN=Timm Friebe/EMAIL(ADDRESS)?=friebe@xp-framework.net$#', 'iso-8859-1'), 
+         $x509->getIssuerDN(), 
+         'issuer'
+       );
