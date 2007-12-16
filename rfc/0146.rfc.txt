@@ -188,6 +188,9 @@ Dependencies
 ------------
 * iconv extension (default since PHP5)
 
+* This will bump the major version number (the first unicode release
+  would be 6.0.0)
+
 
 Related documents
 -----------------
