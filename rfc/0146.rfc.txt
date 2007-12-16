@@ -139,10 +139,15 @@ File names
 ~~~~~~~~~~
 File names will be assumed to be in platform encoding.
 
-<pre>
+Note:
 Windows supports Unicode in filenames, PHP cannot cope with this, see
 http://bugs.php.net/30195
-</pre>
+
+Because PHP's directory and filesystem functions report unicode characters 
+in filenames as question marks, file names like this:
+[[img:unicode-filename.png]]
+cannot be supported.
+
 
 Console
 ~~~~~~~
