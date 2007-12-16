@@ -10,18 +10,18 @@
    * VFormat Parser (VCalendar, VCard, ...)
    *
    * <code>
-   *   $p= &new VFormatParser('VCARD');
+   *   $p= new VFormatParser('VCARD');
    *   $p->setHandler('EMAIL', 'setEmail');
    *   $p->setHandler('NICKNAME', 'setNick');
    *   $p->setDefaultHandler('var_dump');
-   *   try(); {
+   *   try {
    *     $p->parse(new File('test.vcf'));
-   *   } if (catch('FormatException', $e)) {
+   *   } catch(FormatException $e) {
    *     
    *     // This does not seem to be a VFormat
    *     $e->printStackTrace();
    *     exit(-1);
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *
    *     // Any other error
    *     $e->printStackTrace();
@@ -83,23 +83,7 @@
         '\n'    => "\n"
       ));
     }
-    
-    /**
-     * Decodes a date string
-     *
-     * Example of encoded string
-     * <pre>
-     * 20030220T101358Z
-     * </pre>
-     *
-     * @param   string str
-     * @return  int
-     */
-    public static function decodeDate($str) {
-      $parts= sscanf($str, '%4d%2d%2dT%2d%2d%2d');
-      return mktime($parts[3], $parts[4], $parts[5], $parts[1], $parts[2], $parts[0]);
-    }
-       
+           
     /**
      * Parse a stream
      *
