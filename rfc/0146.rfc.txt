@@ -174,6 +174,12 @@ framework will:
 * Set input and output encoding to "UTF-8"
 * Not convert anything.
 
+<pre>
+  $ php echo-param.php "Übercoder"
+  Param: Übercoder
+</pre>
+
+
 Security considerations
 -----------------------
 n/a
@@ -196,6 +202,18 @@ Related documents
 -----------------
 - http://xp-framework.net/rfc/contrib/rfc0146.diff
   Implementing patch
+  
+- http://de3.php.net/iconv
+  PHP's iconv extension
+  
+- http://java.sun.com/docs/books/tutorial/i18n/index.html
+  Java Tutorials: Internationalization
+
+- http://www.microsoft.com/globaldev/getwr/dotneti18n.mspx
+  Microsoft .NET Internationalization
+
+- http://www.python.org/dev/peps/pep-0100/
+  PEP 100: Python Unicode Integration
 
 
 Comments
