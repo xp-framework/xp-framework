@@ -24,10 +24,10 @@
      */    
     public function __construct($arg) {
       if (is_object($arg)) {
-        $this->date= new Date(VFormatParser::decodeDate($arg->_value));
+        $this->date= new Date($arg->_value);
         $this->timezone= $arg->tzid;
       } else {
-        $this->date= new Date(VFormatParser::decodeDate($arg));
+        $this->date= new Date($arg);
       }
     }
     
@@ -37,7 +37,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->date->format('%Y%m%dT%H%M%SZ')
+      return $this->date->toString('Ymd\THis\Z', new TimeZone('UTC'));
     }
     
     /**

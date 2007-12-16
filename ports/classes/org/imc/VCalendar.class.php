@@ -246,15 +246,15 @@
               break;
             
             case 'DTSTAMP':     // DTSTAMP:20030220T101358Z
-              $event->date= new Date(VFormatParser::decodeDate($value));
+              $event->date= new Date($value);
               break;
               
             case 'DTSTART':
-              $event->starts= new Date(VFormatParser::decodeDate($value));
+              $event->starts= new Date($value);
               break;
 
             case 'DTEND':
-              $event->ends= new Date(VFormatParser::decodeDate($value));
+              $event->ends= new Date($value);
               break;
             
             case 'SUMMARY':
@@ -311,7 +311,7 @@
               break;
             
             case 'LAST-MOD':
-              $timezone->setLastMod(new Date(VFormatParser::decodeDate($value)));
+              $timezone->setLastMod(new Date($value));
               break;
             
             case 'TZURL':
@@ -329,7 +329,7 @@
               break;
             
             case 'DTSTART':
-              $timezone->{$type}['dtstart']= new Date(VFormatParser::decodeDate($value));
+              $timezone->{$type}['dtstart']= new Date($value);
               break;
             
             case 'TZOFFSETTO':
@@ -387,7 +387,7 @@
      */    
     protected function _export($key, $value) {
       if ($value instanceof Date) {   // Convert date into string
-        $representation= $value->format('%Y%m%dT%H%M%SZ');
+        $representation= $value->toString('Ymd\THis\Z', new TimeZone('UTC'));
       } else {                        // Escape string, encode it to UTF8    
         $representation= strtr(utf8_encode($value), array (
           ','   => '\,',
