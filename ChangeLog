@@ -41,6 +41,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added 'd' (diff) instruction to xar command
+  (kiesel)
 - Added setters for all elements of an URL to peer.URL class
   (kiesel)
 - Added support for XARs inside XARs
