@@ -33,7 +33,7 @@
      * @return  string ISO 8601 conform date (1977-12-14T11:55:0)
      */
     public function toString() {
-      return $this->value->toString('Y-m-d\TH:i:s');
+      return $this->value->toString('Y-m-d\TH:i:sP');
     }
     
     /**

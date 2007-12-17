@@ -92,8 +92,7 @@
           
         case 'date':
         case 'datetime':    // ISO 8601: http://www.w3.org/TR/xmlschema-2/#ISO8601 http://www.w3.org/TR/xmlschema-2/#dateTime
-          sscanf($ret, '%4d-%2d-%2dT%2d:%2d:%2d', $year, $month, $day, $hour, $minute, $second);
-          return new Date(mktime($hour, $minute, $second, $month, $day, $year));
+          return new Date($ret);
           break;
           
         default:
@@ -151,7 +150,7 @@
       }
       
       if (is('Date', $value)) {       // Date
-        $value= new SOAPDateTime($value->getTime());
+        $value= new SOAPDateTime($value->getHandle());
         // Fallthrough intended
       }
       
