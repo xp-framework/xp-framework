@@ -148,6 +148,20 @@ in filenames as question marks, file names like this:
 [[img:unicode-filenames.png]]
 cannot be supported.
 
+The following Java sourcecode:
+<code>
+public class Ls {
+    public static void main(String... args) {
+        for (String name: (new java.io.File(args[0])).list()) {
+            System.out.println("- " + name);
+        }
+    }
+}
+</code>
+...yields the same problem. If the VM is started with "-Dfile.encoding=utf8"
+though, the filenames are utf8-encoded *twice* (and will display correctly
+in a Unicode-aware terminal but *not* in others).
+
 
 Console
 ~~~~~~~
