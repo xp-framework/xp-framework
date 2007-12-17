@@ -140,8 +140,14 @@ File names
 File names will be assumed to be in platform encoding.
 
 Note:
-Windows supports Unicode in filenames, PHP cannot cope with this, see
-http://bugs.php.net/30195
+Windows supports Unicode in filenames, see
+
+  http://msdn2.microsoft.com/en-us/library/aa365247.aspx
+  "Naming a File"
+
+PHP cannot cope with this, see
+  http://bugs.php.net/30195
+  "scandir etc cannot read Chinese file/folder name"
 
 Because PHP's directory and filesystem functions report unicode characters 
 in filenames as question marks, file names like this:
@@ -162,6 +168,14 @@ public class Ls {
 though, the filenames are utf8-encoded *twice* (and will display correctly
 in a Unicode-aware terminal but *not* in others).
 
+Python can handle unicode filenames *if* the argument passed to os.listdir()
+is of type unicode:
+<code>
+import os, sys
+
+print os.listdir(unicode(sys.argv[1]))
+</code>
+Note this will not work using Cygwin-Python.
 
 Console
 ~~~~~~~
@@ -243,6 +257,8 @@ Related documents
 - http://www.python.org/dev/peps/pep-0100/
   PEP 100: Python Unicode Integration
 
+- http://www.amk.ca/python/howto/unicode
+  Unicode HOWTO (Python-specific, also discusses unicode in general)
 
 Comments
 --------
