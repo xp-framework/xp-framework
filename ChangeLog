@@ -26,6 +26,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed webservices.soap API to properly read timezone from serialized
+  SOAP dateTime values and also pass timezone information
+  (kiesel)
 - Fixed util.Properties class to throw IOExceptions in case the ini file
   cannot be read
   (friebe)
