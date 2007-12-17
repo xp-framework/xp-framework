@@ -27,22 +27,35 @@
      * @param   string command
      */
     #[@arg(position= 0)]
-    public function setOperation($op) {
+    public function parseInstructions($op) {
       for ($i= 0, $operation= NULL; $i < strlen($op); $i++) {
         switch ($op{$i}) {
-          case 'c': $operation= 'create'; break;
-          case 'x': $operation= 'extract'; break;
-          case 's': $operation= 'show'; break;
+          case 'c': $this->setOperation('create'); break;
+          case 'x': $this->setOperation('extract'); break;
+          case 's': $this->setOperation('show'); break;
+          case 'd': $this->setOperation('diff'); break;
           case 't':
             $operation= 'extract';
             $this->options|= self::OPTION_SIMULATE;
             break;
           case 'v': $this->options|= self::OPTION_VERBOSE; break;
           case 'f': $this->filename= ''; break;
+          
           default: throw new IllegalArgumentException('Unsupported commandline option "'.$op{$i}.'"');
         }
       }
-      $this->operation= XPClass::forName('net.xp_framework.xar.instruction.'.ucfirst($operation).'Instruction');
+    }
+    
+    /**
+     * Set operation
+     *
+     * @param   string name
+     */
+    protected function setOperation($name) {
+      if (NULL !== $this->operation)
+        throw new IllegalArgumentException('Cannot execute more than one instruction at a time.');
+      
+      $this->operation= XPClass::forName('net.xp_framework.xar.instruction.'.ucfirst($name).'Instruction');
     }
 
     /**
@@ -80,7 +93,7 @@
      *
      */
     public function run() {
-      $this->operation->newInstance($this->options, $this->archive, $this->args)->perform();
+      $this->operation->newInstance($this->out, $this->err, $this->options, $this->archive, $this->args)->perform();
     }
   }
 ?>

@@ -65,7 +65,7 @@
           FileUtil::setContents($f, $data);
         }
         
-        $this->options & Xar::OPTION_VERBOSE && Console::writeLinef('%10s %s', number_format(strlen($data), 0, FALSE, '.'), $entry);
+        $this->options & Xar::OPTION_VERBOSE && $this->out->writeLinef('%10s %s', number_format(strlen($data), 0, FALSE, '.'), $entry);
       }
       
       $this->archive->close();

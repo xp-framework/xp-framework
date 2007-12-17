@@ -29,7 +29,7 @@
      */
     protected function add($uri, $cwd) {
       $urn= strtr(preg_replace('#^('.preg_quote($cwd, '#').'|/)#', '', $uri), DIRECTORY_SEPARATOR, '/');
-      $this->options & Xar::OPTION_VERBOSE && Console::writeLine($urn);
+      $this->options & Xar::OPTION_VERBOSE && $this->out->writeLine($urn);
       $this->archive->add(new File($uri), $urn);
     }
 

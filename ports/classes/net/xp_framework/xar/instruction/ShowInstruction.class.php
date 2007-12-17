@@ -51,8 +51,8 @@
       while ($entry= $this->archive->getEntry()) {
         if (!$this->_filter($entry, $args)) continue;
       
-        Console::writeLine('== ', $entry, ' ==');
-        Console::writeLine($this->archive->extract($entry));
+        $this->out->writeLine('== ', $entry, ' ==');
+        $this->out->writeLine($this->archive->extract($entry));
       }
       
       $this->archive->close();

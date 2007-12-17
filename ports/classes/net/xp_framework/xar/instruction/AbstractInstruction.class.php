@@ -29,7 +29,9 @@
      * @param   lang.archive.Archive archive
      * @param   string[] args
      */
-    public function __construct($options, $archive, $args) {
+    public function __construct($out, $err, $options, $archive, $args) {
+      $this->out= $out;
+      $this->err= $err;
       $this->options= $options;
       $this->archive= $archive;
       $this->args= $args;
