@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Fixed a bug in peer.ldap which occurred when the size-limit for the results
+  was exceeded.. 
+  (hinckel, doebele)
 - An implementation of scriptlet.rpc.AbstractRpcRequest::getMessage()
   must set the message's encoding on it's own now, the router does
   not do this anymore
