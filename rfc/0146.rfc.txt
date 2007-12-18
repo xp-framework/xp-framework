@@ -30,6 +30,17 @@ General overview
   but represented by two bytes in utf-8!
 </pre>
 
+
+Platform encoding
+~~~~~~~~~~~~~~~~~
+The platform encoding is determined by querying the environment with:
+<?php
+  $ctype= getenv('LC_CTYPE');
+  $ctype || $ctype= getenv('LANG');
+  $ctype || $ctype= setlocale(LC_CTYPE, 0);
+?>
+
+
 Strings
 ~~~~~~~
 The framework already contains supporting classes to represent strings
@@ -177,17 +188,11 @@ print os.listdir(unicode(sys.argv[1]))
 </code>
 Note this will not work using Cygwin-Python.
 
+
 Console
 ~~~~~~~
-The console encoding is determined by querying the environment with:
-<?php
-  $ctype= getenv('LC_CTYPE');
-  $ctype || $ctype= getenv('LANG');
-  $ctype || $ctype= setlocale(LC_CTYPE, 0);
-?>
-
-* All input parameters are encoded from this encoding to internal encoding.
-* All output is encoded from internal encoding to this encoding.
+* Input parameters are encoded from platform encoding to internal encoding.
+* Output is encoded from internal encoding to platform encoding.
 
 The following script: (echo-param.php)
 <?php
