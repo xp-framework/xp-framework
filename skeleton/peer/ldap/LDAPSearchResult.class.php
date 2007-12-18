@@ -93,7 +93,13 @@
       if (NULL === $this->entry) return $this->getFirstEntry();
       $this->entry= ldap_next_entry($this->_hdl, $this->entry);
       if (FALSE === $this->entry) {
-        if (!($e= ldap_errno($this->_hdl))) return FALSE;
+      
+        // Check for LDAP_TIMELIMIT_EXCEEDED and LDAP_SIZELIMIT_EXCEEDED when fetching results
+        if 
+          (!($e= ldap_errno($this->_hdl)) ||
+          0x03 === $e ||
+          0x04 === $e
+        ) return FALSE;
         throw new LDAPException('Could not fetch next result entry.', $e);
       }
       
