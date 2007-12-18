@@ -12,7 +12,7 @@
    * @see      xp://scriptlet.rpc.AbstractRpcRouter
    * @purpose  Rquest
    */
-  class AbstractRpcRequest extends HttpScriptletRequest implements Traceable {
+  abstract class AbstractRpcRequest extends HttpScriptletRequest implements Traceable {
     public
       $cat      = NULL;
     
@@ -27,13 +27,14 @@
   
     /**
      * Create message from request
+     * Override this. You must set the 'class' and 'method' members of
+     * the respective RpcMessage class.
+     *
+     * Be sure to set the encoding appropriately
      *
      * @return  scriptlet.rpc.AbstractRpcMessage
      */
-    public function getMessage() {
-      // Override this. You must set the 'class' and 'method' members of
-      // the respective RpcMessage class.
-    }
+    protected abstract function getMessage();
     
     /**
      * Determine encoding.

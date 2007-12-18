@@ -16,7 +16,7 @@
    *
    * @purpose  Provide RPC services
    */
-  class AbstractRpcRouter extends HttpScriptlet implements Traceable {
+  abstract class AbstractRpcRouter extends HttpScriptlet implements Traceable {
     public
       $package      = NULL,
       $cat          = NULL;
@@ -58,7 +58,7 @@
      *
      * @return  scriptlet.rpc.AbstractRpcMessage
      */
-    protected function _message() {}
+    protected abstract function _message();
 
     /**
      * Handle GET requests. XML-RPC requests are only sent via HTTP POST,
@@ -104,7 +104,6 @@
 
         // Get message
         $msg= $request->getMessage();
-        $msg->setEncoding($request->getEncoding());
 
         // Create answer
         $answer= $this->_message();
