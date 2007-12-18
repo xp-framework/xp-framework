@@ -540,10 +540,6 @@
   ini_set('magic_quotes_runtime', FALSE);
   
   // Constants
-  define('SKELETON_PATH', (getenv('SKELETON_PATH')
-    ? getenv('SKELETON_PATH')
-    : dirname(__FILE__).DIRECTORY_SEPARATOR
-  ));
   define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
   define('LONG_MIN', -LONG_MAX - 1);
 
