@@ -76,10 +76,14 @@
      * @throws  lang.NullPointerException in case a parser could not be created
      */
     public function parse($data, $source= NULL) {
-      if ($parser = xml_parser_create($this->encoding)) {
+      if ($parser = xml_parser_create('')) {
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
-        xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, 'ISO-8859-1');
-
+        xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, ($this->encoding
+          ? $this->encoding
+          : 'ISO-8859-1'
+        ));
+        $this->encoding= xml_parser_get_option($parser, XML_OPTION_TARGET_ENCODING);
+        
         // Register callback
         if ($this->callback) {
           xml_set_object($parser, $this->callback);

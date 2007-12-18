@@ -81,6 +81,9 @@
       $parser->setCallback($tree);
       $parser->parse($string, 1);
 
+      // Fetch actual encoding from parser
+      $tree->setEncoding($parser->getEncoding());
+
       delete($parser);
       return $tree;
     }
@@ -109,8 +112,10 @@
       $file->close();
       $parser->parse($string);
 
+      // Fetch actual encoding from parser
+      $tree->setEncoding($parser->getEncoding());
+
       delete($parser);
-      
       return $tree;
     }
     
