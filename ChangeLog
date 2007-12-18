@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed constant SKELETON_PATH
+  (friebe)
 - Changed stack trace elements generated from PHP error message to no 
   longer contain the class. The filename cannot really be translated to 
   the fully qualified class name in a consistent *and* fast-enough manner
