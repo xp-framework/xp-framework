@@ -212,7 +212,7 @@
       if (empty($methods[$filter->getScope()]))
         throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
       
-      if (FALSE === ($res= call_user_func_array(
+      if (FALSE === ($res= @call_user_func_array(
         $methods[$filter->getScope()], array(
         $this->_hdl,
         $filter->getBase(),
