@@ -8,6 +8,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- An implementation of scriptlet.rpc.AbstractRpcRequest::getMessage()
+  must set the message's encoding on it's own now, the router does
+  not do this anymore
+  (kiesel)
 - Removed constant SKELETON_PATH
   (friebe)
 - Changed stack trace elements generated from PHP error message to no 
@@ -28,6 +32,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed webservices.soap API to fix problem with SOAP clients that send 
+  UTF-8 encoded values
+  (kiesel)
 - Fixed webservices.soap API to properly read timezone from serialized
   SOAP dateTime values and also pass timezone information
   (kiesel)
@@ -46,6 +53,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added option to choose target encoding in xml.parser.XMLParser with
+  the setEncoding() method. Default encoding still is ISO-8859-1.
+  (kiesel)
 - Added 'd' (diff) instruction to xar command
   (kiesel)
 - Added setters for all elements of an URL to peer.URL class
