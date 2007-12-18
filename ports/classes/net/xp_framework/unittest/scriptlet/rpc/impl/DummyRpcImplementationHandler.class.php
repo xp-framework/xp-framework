@@ -76,5 +76,19 @@
       $args= func_get_args();
       return $args;
     }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@webmethod]
+    public function checkUTF8Content($string) {
+      var_dump($string);
+      if ('Störung in Düsseldorf' !== $string) {
+        throw new IllegalArgumentException('Invalid encoding: "'.$string.'"');
+      }
+    }
   }
 ?>

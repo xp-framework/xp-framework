@@ -189,5 +189,80 @@
       $this->assertEquals(array(12, 'Egypt', FALSE, -31), $data[2]) &&
       $this->assertEquals(array('lowerBound' => 18, 'upperBound' => 139), $data[3]);
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function handleIso88591Message() {
+      $this->router->setMockHeaders(array(
+        'Host'          => 'outage.xp-framework.net',
+        'Connection'    => 'Keep-Alive',
+        'Content-Type'  => 'text/xml; charset=iso-8859-1',
+        'SOAPAction'    => 'DummyRpcImplementation#checkUTF8Content',
+        'User-Agent'    => 'PHP SOAP 0.1'
+      ));
+      $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
+        <SOAP-ENV:Envelope 
+         xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+         xmlns:ns1="urn:Outage" 
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+         SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+          <SOAP-ENV:Body>
+            <ns1:createDSLOutageStringDate>
+              <description xsi:type="xsd:string">Störung in Düsseldorf</description>
+            </ns1:createDSLOutageStringDate>
+          </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
+      ');
+      
+      $this->router->init();
+      $response= $this->router->process();
+      
+      // The executed method throws an error, if the string is wrong and this
+      // will be indicated by a different statuscode than 200
+      $this->assertEquals(200, $response->statusCode);
+    }
+    
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function handleUTF8Message() {
+      $this->router->setMockHeaders(array(
+        'Host'          => 'outage.xp-framework.net',
+        'Connection'    => 'Keep-Alive',
+        'Content-Type'  => 'text/xml; charset=utf-8',
+        'SOAPAction'    => 'DummyRpcImplementation#checkUTF8Content',
+        'User-Agent'    => 'PHP SOAP 0.1'
+      ));
+      $this->router->setMockData('<?xml version="1.0" encoding="UTF-8"?>
+        <SOAP-ENV:Envelope 
+         xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" 
+         xmlns:ns1="urn:Outage" 
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" 
+         SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+          <SOAP-ENV:Body>
+            <ns1:createDSLOutageStringDate>
+              <description xsi:type="xsd:string">StÃ¶rung in DÃ¼sseldorf</description>
+            </ns1:createDSLOutageStringDate>
+          </SOAP-ENV:Body>
+        </SOAP-ENV:Envelope>
+      ');
+      
+      $this->router->init();
+      $response= $this->router->process();
+      
+      // The executed method throws an error, if the string is wrong and this
+      // will be indicated by a different statuscode than 200
+      $this->assertEquals(200, $response->statusCode);
+    }
   }
 ?>
