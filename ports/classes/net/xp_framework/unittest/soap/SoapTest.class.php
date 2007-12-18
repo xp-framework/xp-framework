@@ -77,7 +77,7 @@
         $src, '<bool xsi:type="xsd:boolean">true</bool>', 'bool'
       );
       $this->assertContains(
-        $src, '<date xsi:type="xsd:dateTime">1977-12-14T10:55:00</date>', 'date'
+        $src, '<date xsi:type="xsd:dateTime">1977-12-14T11:55:00+01:00</date>', 'date'
       );
       $this->assertContains(
         $src, '<null xsi:nil="true"/>', 'null'
