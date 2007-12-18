@@ -143,23 +143,23 @@
         return;
       }
 
-      if (is('Parameter', $value)) {  // Named parameter
+      if ($value instanceof Parameter) {  // Named parameter
         $child->name= $value->name;
         $this->_marshall($child, $value->value, $mapping);
         return;
       }
       
-      if (is('Date', $value)) {       // Date
+      if ($value instanceof Date) {       // Date
         $value= new SOAPDateTime($value->getHandle());
         // Fallthrough intended
       }
       
-      if (is('Hashmap', $value)) {    // Hashmap
+      if ($value instanceof Hashmap) {    // Hashmap
         $value= new SOAPHashMap($value->_hash);
         // Fallthrough intended
       }
       
-      if (is('SoapType', $value)) {   // Special SoapTypes
+      if ($value instanceof SoapType) {   // Special SoapTypes
         if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
         $this->_marshall($child, $value->toString(), $mapping);
         
@@ -183,7 +183,7 @@
         return;
       }
       
-      if (is('Collection', $value)) { // XP collection
+      if ($value instanceof Collection) { // XP collection
         $child->attribute['xsi:type']= 'SOAP-ENC:Array';
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
@@ -191,7 +191,7 @@
         return;
       }
       
-      if (is('Generic', $value)) {     // XP objects
+      if ($value instanceof Generic) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
         $this->_recurse($child, get_object_vars($value), $mapping);

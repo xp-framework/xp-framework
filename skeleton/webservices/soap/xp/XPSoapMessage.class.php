@@ -52,7 +52,6 @@
     public 
       $body         = NULL,
       $namespace    = 'ctl',
-      $encoding     = 'iso-8859-1',
       $mapping      = NULL,
       $nodeType     = 'XPSoapNode',
       $action       = '',
@@ -562,7 +561,7 @@
         $headers[]= XPSoapHeaderElement::fromNode(
           $h->children[$idx], 
           $this->namespaces,
-          $this->encoding
+          $this->getEncoding()
         );
       }
       
