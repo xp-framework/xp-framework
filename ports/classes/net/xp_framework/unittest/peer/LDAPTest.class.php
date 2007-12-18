@@ -6,6 +6,7 @@
  
   uses(
     'peer.ldap.LDAPClient',
+    'peer.ldap.LDAPQuery',
     'unittest.TestCase'
   );
 
@@ -88,6 +89,24 @@
     #[@test, @expect('peer.ldap.LDAPException')]
     public function readNonExistingEntry() {
       $this->assertEquals(NULL, $this->lc->read(new LDAPEntry('uid=unknown,ou=People,dc=OpenLDAP,dc=Org')));
+    }
+    
+    /**
+     * Test LDAP search with result limit
+     *
+     */
+    #[@test]
+    public function maxlimitSearch() {
+      $query= new LDAPQuery('ou=People,dc=OpenLDAP,dc=Org', '(objectClass=*)');
+      $query->setSizelimit(3);
+      $query->setScope(LDAP_SCOPE_SUB);
+      $res= $this->lc->searchBy($query);
+      $this->assertClass($res, 'peer.ldap.LDAPSearchResult');
+      $this->assertNotEquals(0, $res->numEntries());
+      $entry= $res->getFirstEntry();
+      $this->assertClass($entry, 'peer.ldap.LDAPEntry');
+      while ($res->getNextEntry()) {}
+      return $entry;
     }
   }
 ?>
