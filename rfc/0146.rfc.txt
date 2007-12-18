@@ -40,6 +40,21 @@ The platform encoding is determined by querying the environment with:
   $ctype || $ctype= setlocale(LC_CTYPE, 0);
 ?>
 
+Values:
+<pre>
+Platform                   env.LC_CTYPE env.LANG     loc.LC_CTYPE
+-------------------------- ------------ ------------ ---------------------
+WinXP Cygwin terminal      (n/a)        C            German_Germany.1252
+WinXP Cygwin uxterm        (n/a)        en_US.UTF-8  German_Germany.1252
+WinXP cmd.exe              (n/a)        C            German_Germany.1252 
+
+FreeBSD 6 via ssh          (n/a)        C            (n/a)
+FreeBSD 5 via ssh          (n/a)        C            (n/a)
+
+Debian 3.1 via ssh         (n/a)        C            C
+Debian 4.0 via ssh         (n/a)        C            C
+</pre>
+
 
 Strings
 ~~~~~~~
