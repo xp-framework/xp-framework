@@ -23,7 +23,6 @@
      *
      */
     public function setUp() {
-      xp::gc();
       $this->router= new SoapRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
       $this->router->setMockMethod(HTTP_POST);
       $this->router->setMockHeaders(array(
@@ -60,7 +59,7 @@
     }
 
     /**
-     * Test
+     * Test get request
      *
      */
     #[@test, @expect('scriptlet.HttpScriptletException')]
@@ -71,7 +70,7 @@
     }
     
     /**
-     * Test
+     * Test calling a nonexistant class results in HTTP status code 500
      *
      */
     #[@test]
@@ -88,7 +87,7 @@
     }
     
     /**
-     * Test
+     * Test calling a nonexistant method results in HTTP status code 500
      *
      */
     #[@test]
@@ -104,7 +103,8 @@
     }
 
     /**
-     * Test
+     * Test calling a method without @webmethod annotation
+     * results in HTTP status code 500
      *
      */
     #[@test]
@@ -120,7 +120,8 @@
     }
 
     /**
-     * Test
+     * Test calling a failing function results in
+     * HTTP status code 403
      *
      */
     #[@test]
@@ -140,7 +141,7 @@
     }
     
     /**
-     * Test
+     * Test multiple parameters are corretly deserialized
      *
      */
     #[@test]
@@ -191,7 +192,8 @@
     }
     
     /**
-     * Test
+     * Test messages in encoding ISO-8859-1 are deserialized
+     * correctly
      *
      */
     #[@test]
@@ -229,7 +231,8 @@
     
     
     /**
-     * Test
+     * Test messages in encoding UTF-8 are deserialized
+     * correctly
      *
      */
     #[@test]
