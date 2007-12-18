@@ -24,6 +24,7 @@
     public function getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());
       $m= JsonRequestMessage::fromString($this->getData());
+      $m->setEncoding($this->getEncoding());
       return $m;
     }
   }

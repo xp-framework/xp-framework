@@ -25,6 +25,7 @@
     public function getMessage() {
       $this->cat && $this->cat->debug('<<< ', $this->getData());
       $m= XmlRpcRequestMessage::fromString($this->getData());
+      $m->setEncoding($this->getEncoding());
       return $m;
     }
   }
