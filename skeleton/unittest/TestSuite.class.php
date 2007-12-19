@@ -81,7 +81,7 @@
       }
 
       if ($numBefore === $this->numTests()) {
-        throw new NoSuchElementException('No tests found in ', $class->getName());
+        throw new NoSuchElementException('No tests found in '.$class->getName());
       }
 
       return $ignored;
