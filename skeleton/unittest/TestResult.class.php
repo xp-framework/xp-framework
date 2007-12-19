@@ -29,7 +29,7 @@
      * @param   float elapsed
      */
     public function setSucceeded($test, $elapsed) {
-      $this->succeeded[$test->hashCode()]= new TestSuccess($test, $elapsed);
+      return $this->succeeded[$test->hashCode()]= new TestSuccess($test, $elapsed);
     }
     
     /**
@@ -40,7 +40,7 @@
      * @param   float elapsed
      */
     public function setFailed($test, $reason, $elapsed) {
-      $this->failed[$test->hashCode()]= new TestFailure($test, $reason, $elapsed);
+      return $this->failed[$test->hashCode()]= new TestFailure($test, $reason, $elapsed);
     }
 
     /**
@@ -49,9 +49,10 @@
      * @param   unittest.TestCase test
      * @param   mixed reason
      * @param   float elapsed
+     * @return  unittest.TestSkipped s
      */
     public function setSkipped($test, $reason, $elapsed) {
-      $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
+      return $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
     }
 
     /**

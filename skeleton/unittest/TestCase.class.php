@@ -5,10 +5,8 @@
  */
 
   uses(
-    'util.profiling.Timer',
     'unittest.AssertionFailedError',
-    'unittest.PrerequisitesNotMetError',
-    'lang.MethodNotImplementedException'
+    'unittest.PrerequisitesNotMetError'
   );
 
   /**
@@ -45,15 +43,9 @@
      * @param   string reason
      * @param   mixed actual
      * @param   mixed expect
-     * @return  bool FALSE
      */
     public function fail($reason, $actual, $expect) {
-      throw(new AssertionFailedError(
-        $reason, 
-        $actual,
-        $expect
-      ));
-      return FALSE;
+      throw new AssertionFailedError($reason, $actual, $expect);
     }
     
     /**
@@ -61,13 +53,11 @@
      *
      * @param   mixed var
      * @param   string error default 'notnull'
-     * @return  bool
      */
     public function assertNull($var, $error= 'notnull') {
       if (NULL !== $var) {
-        return $this->fail($error, $var, NULL);
+        $this->fail($error, $var, NULL);
       }
-      return TRUE;
     }
     
     /**
@@ -76,13 +66,11 @@
      *
      * @param   mixed var
      * @param   string error default 'notarray'
-     * @return  bool
      */
     public function assertArray($var, $error= 'notarray') {
       if (!is_array($var) && !is('lang.types.ArrayList', $var)) {
-        return $this->fail($error, 'array', xp::typeOf($var));
+        $this->fail($error, 'array', xp::typeOf($var));
       }
-      return TRUE;
     }
     
     /**
@@ -90,43 +78,37 @@
      *
      * @param   mixed var
      * @param   string error default 'notobject'
-     * @return  bool
      */
     public function assertObject($var, $error= 'notobject') {
       if (!is_object($var)) {
-        return $this->fail($error, 'object', xp::typeOf($var));
+        $this->fail($error, 'object', xp::typeOf($var));
       }
-      return TRUE;
     }
     
     /**
      * Assert that a value is empty
      *
      * @param   mixed var
-     * @return  bool
      * @param   string error default 'notempty'
      * @see     php://empty
      */
     public function assertEmpty($var, $error= 'notempty') {
       if (!empty($var)) {
-        return $this->fail($error, '<empty>', $var);
+        $this->fail($error, '<empty>', $var);
       }
-      return TRUE;
     }
 
     /**
      * Assert that a value is not empty
      *
      * @param   mixed var
-     * @return  bool
      * @param   string error default 'empty'
      * @see     php://empty
      */
     public function assertNotEmpty($var, $error= 'empty') {
       if (empty($var)) {
-        return $this->fail($error, '<not empty>', $var);
+        $this->fail($error, '<not empty>', $var);
       }
-      return TRUE;
     }
     
     /**
@@ -134,7 +116,7 @@
      *
      * @param   mixed a
      * @param   mixed b
-     * @return  bool
+     * @return  bool TRUE if the two values are equal, FALSE otherwise
      */
     protected function _compare($a, $b) {
       if (is_array($a)) {
@@ -144,7 +126,7 @@
           if (!$this->_compare($a[$key], $b[$key])) return FALSE;
         }
         return TRUE;
-      } 
+      }
       
       return $a instanceof Generic ? $a->equals($b) : $a === $b;
     }
@@ -155,13 +137,11 @@
      * @param   mixed expected
      * @param   mixed actual
      * @param   string error default 'notequal'
-     * @return  bool
      */
     public function assertEquals($expected, $actual, $error= 'notequal') {
       if (!$this->_compare($expected, $actual)) {
-        return $this->fail($error, $actual, $expected);
+        $this->fail($error, $actual, $expected);
       }
-      return TRUE;
     }
     
     /**
@@ -170,13 +150,11 @@
      * @param   mixed expected
      * @param   mixed actual
      * @param   string error default 'equal'
-     * @return  bool
      */
     public function assertNotEquals($expected, $actual, $error= 'equal') {
       if ($this->_compare($expected, $actual)) {
-        return $this->fail($error, $actual, $expected);
+        $this->fail($error, $actual, $expected);
       }
-      return TRUE;
     }
 
     /**
@@ -184,13 +162,11 @@
      *
      * @param   mixed var
      * @param   string error default 'nottrue'
-     * @return  bool
      */
     public function assertTrue($var, $error= 'nottrue') {
       if (TRUE !== $var) {
-        return $this->fail($error, $var, TRUE);
+        $this->fail($error, $var, TRUE);
       }
-      return TRUE;
     }
     
     /**
@@ -198,13 +174,11 @@
      *
      * @param   mixed var
      * @param   string error default 'notfalse'
-     * @return  bool
      */
     public function assertFalse($var, $error= 'notfalse') {
       if (FALSE !== $var) {
-        return $this->fail($error, $var, FALSE);
+        $this->fail($error, $var, FALSE);
       }
-      return TRUE;
     }
     
     /**
@@ -213,16 +187,14 @@
      * @param   lang.Generic var
      * @param   string name
      * @param   string error default 'notequal'
-     * @return  bool
      */
     public function assertClass($var, $name, $error= 'notequal') {
       if (!($var instanceof Generic)) {
-        return $this->fail($error, $var, $error);
+        $this->fail($error, $var, $error);
       }
       if ($var->getClassName() !== $name) {
-        return $this->fail($error, $var->getClassName(), $name);
+        $this->fail($error, $var->getClassName(), $name);
       }
-      return TRUE;
     }
 
     /**
@@ -231,16 +203,14 @@
      * @param   lang.Generic var
      * @param   string name
      * @param   string error default 'notsubclass'
-     * @return  bool
      */
     public function assertSubclass($var, $name, $error= 'notsubclass') {
       if (!($var instanceof Generic)) {
-        return $this->fail($error, $var, $error);
+        $this->fail($error, $var, $error);
       }
       if (!is($name, $var)) {
-        return $this->fail($error, $name, $var->getClassName());
+        $this->fail($error, $name, $var->getClassName());
       }
-      return TRUE;
     }
     
     /**
@@ -259,99 +229,6 @@
     public function tearDown() { }
     
     /**
-     * Run this test case.
-     *
-     * @param   unittest.TestResult result
-     * @return  bool success
-     * @throws  lang.MethodNotImplementedException
-     */
-    public function run($result) {
-      $method= $this->getClass()->getMethod($this->name);
-
-      if (!$method) {
-        throw new MethodNotImplementedException(
-          'Method does not exist', $this->name
-        );
-      }
-
-      // Check for @expect
-      $expected= NULL;
-      if ($method->hasAnnotation('expect')) {
-        $expected= XPClass::forName($method->getAnnotation('expect'));
-      }
-      
-      // Check for @limit
-      $eta= 0;
-      if ($method->hasAnnotation('limit')) {
-        $eta= $method->getAnnotation('limit', 'time');
-      }
-
-      $timer= new Timer();
-      $timer->start();
-
-      // Setup test
-      try {
-        $this->setUp();
-      } catch (PrerequisitesNotMetError $e) {
-        $timer->stop();
-        $result->setSkipped($this, $e, $timer->elapsedTime());
-        return FALSE;
-      } catch (AssertionFailedError $e) {
-        $timer->stop();
-        $result->setFailed($this, $e, $timer->elapsedTime());
-        return FALSE;
-      }
-
-      // Run test
-      try {
-        $method->invoke($this, NULL);
-      } catch (TargetInvocationException $t) {
-        $timer->stop();
-        $e= $t->getCause();
-
-        // Was that an expected exception?
-        if ($expected && $expected->isInstance($e)) {
-          $this->tearDown();
-          if ($eta && $timer->elapsedTime() > $eta) {
-            $r= $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime());
-          } else {
-            $r= $result->setSucceeded($this, $timer->elapsedTime());
-          }
-          xp::gc();
-          return $r;
-        }
-
-        $result->setFailed($this, $e, $timer->elapsedTime());
-        $this->tearDown();
-        return FALSE;
-      }
-
-      $timer->stop();
-      $this->tearDown();
-
-      // Check expected exception
-      if ($expected) {
-        $e= new AssertionFailedError(
-          'Expected exception not caught',
-          (isset($e) && $e instanceof XPException ? $e->getClassName() : NULL),
-          $method->getAnnotation('expect')
-        );
-        $result->setFailed($this, $e, $timer->elapsedTime());
-        return FALSE;
-      }
-      
-      if (sizeof(xp::registry('errors')) > 0) {
-        $r= $result->setFailed($this, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime());
-      } else if ($eta && $timer->elapsedTime() > $eta) {
-        $r= $result->setFailed($this, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime());
-      } else {
-        $r= $result->setSucceeded($this, $timer->elapsedTime());
-      }
-      xp::gc();
-      return $r;
-    }
-    
-    /**
      * Creates a string representation of this testcase
      *
      * @return  string
@@ -364,7 +241,6 @@
      * Returns whether an object is equal to this testcase
      *
      * @param   lang.Generic cmp
-     * @return  bool
      */
     public function equals($cmp) {
       return $cmp instanceof self && $this->name == $cmp->name;
