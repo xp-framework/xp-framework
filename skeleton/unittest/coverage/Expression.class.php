@@ -38,10 +38,10 @@
      */
     public function equals($expr) {
       return (
-        is('Expression', $expr) && 
-        $this->code == $expr->code &&
-        $this->start == $expr->start &&
-        $this->end == $expr->end
+        $expr instanceof self && 
+        $this->code === $expr->code &&
+        $this->start === $expr->start &&
+        $this->end === $expr->end
       );
     }
 

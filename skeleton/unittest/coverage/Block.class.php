@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.Collection', 'unittest.coverage.Fragment');
+  uses('lang.Collection', 'util.collections.Vector', 'unittest.coverage.Fragment');
 
   /**
    * Represents an Block
@@ -29,23 +29,25 @@
       $this->code= $code;
       $this->start= $start;
       $this->end= $end;
-      $this->expressions= Collection::forClass('Fragment');
-      $this->expressions->addAll($expressions);
+      $this->expressions= create('new util.collections.Vector<unittest.coverage.Fragment>()');
+      foreach ($expressions as $expr) {
+        $this->expressions->add($expr);
+      }
     }
     
     /**
      * Checks if a specified object is equal to this object.
      *
-     * @param   lang.Object block
+     * @param   lang.Generic cmp
      * @return  bool
      */
-    public function equals($block) {
+    public function equals($cmp) {
       return (
-        is('Block', $block) && 
-        $this->start == $block->start &&
-        $this->end == $block->end &&
-        $this->code == $block->code &&
-        $this->expressions->equals($block->expressions)
+        $cmp instanceof self && 
+        $this->start === $cmp->start &&
+        $this->end === $cmp->end &&
+        $this->code === $cmp->code &&
+        $this->expressions->equals($cmp->expressions)
       );
     }
 
@@ -55,7 +57,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'@({'.$this->code.' {'.$this->expressions->toString().'}} at lines '.$this->start.' - '.$this->end.')';
+      return $this->getClassName().'@({'.$this->code.' {'.str_replace("\n", "\n  ", $this->expressions->toString()).'}} at lines '.$this->start.' - '.$this->end.')';
     }
 
   } 

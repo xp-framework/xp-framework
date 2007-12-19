@@ -5,7 +5,7 @@
  */
 
   uses(
-    'lang.Collection',
+    'util.collections.Vector',
     'unittest.coverage.Expression',
     'unittest.coverage.Comment',
     'unittest.coverage.Block'
@@ -29,7 +29,7 @@
       static $delim= array(')', ';', ',', '=', '+', '-', '*', '/', '%');
       
       $tokens= token_get_all(trim($code));
-      $expressions= Collection::forClass('Fragment');
+      $expressions= create('new util.collections.Vector<unittest.coverage.Fragment>()');
       $expression= '';
       $line= 1 + substr_count($tokens[0][1], "\n");
       $last= 1;
@@ -91,11 +91,25 @@
             $last= -1;
             break;
           
-          case T_COMMENT:
+          case T_DOC_COMMENT:
             $last= substr_count($tokens[$i][1], "\n");
             $collections[$level]->add(new Comment($tokens[$i][1], $line, $last+ $line));
             $expression= '';
             $line+= $last;
+            $last= -1;
+            break;
+
+          case T_COMMENT:
+            if ('#' == $tokens[$i][1]{0} || '/' == $tokens[$i][1]{1}) {
+              // Single-line comments
+              $collections[$level]->add(new Comment($tokens[$i][1], $line, $line));
+              $line++;
+            } else {
+              $last= substr_count($tokens[$i][1], "\n");
+              $collections[$level]->add(new Comment($tokens[$i][1], $line, $last+ $line));
+              $line+= $last;
+            }
+            $expression= '';
             $last= -1;
             break;
 
@@ -129,7 +143,7 @@
         $collections[$level]->add(new Expression(trim($expression).';', $last, $line));
       }
       
-      return $expressions->values();
+      return $expressions->elements();
     }
   }
 ?>

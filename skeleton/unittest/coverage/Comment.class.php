@@ -38,10 +38,10 @@
      */
     public function equals($expr) {
       return (
-        is('Comment', $expr) && 
-        $this->text == $expr->text &&
-        $this->start == $expr->start &&
-        $this->end == $expr->end
+        $expr instanceof Comment && 
+        $this->text === $expr->text &&
+        $this->start === $expr->start &&
+        $this->end === $expr->end
       );
     }
 
