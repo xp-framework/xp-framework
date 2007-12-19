@@ -63,7 +63,7 @@
     #[@test]
     public function addingATestClass() {
       $ignored= $this->suite->addTestClass(XPClass::forName('net.xp_framework.unittest.tests.SimpleTestCase'));
-      $this->assertEmpty($ignored);
+      $this->assertNotEmpty($ignored);
       for ($i= 0, $s= $this->suite->numTests(); $i < $s; $i++) {
         $this->assertSubclass($this->suite->testAt($i), 'unittest.TestCase');
       }
