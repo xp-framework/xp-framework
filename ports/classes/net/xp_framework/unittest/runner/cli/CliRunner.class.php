@@ -31,7 +31,7 @@
    *
    * @purpose  Runs unittests
    */
-  class CliRunner extends Command {
+  class CliRunner extends Command implements TestListener {
     protected 
       $suite      = NULL,
       $tests      = NULL,
@@ -148,6 +148,64 @@
         implode(', ', array_map(array('xp', 'stringOf'), $this->arguments))
       );
     }
+    
+    /**
+     * Called when a test case starts.
+     *
+     * @param   unittest.TestCase failure
+     */
+    public function testStarted(TestCase $case) {
+      // NOOP
+    }
+
+    /**
+     * Called when a test fails.
+     *
+     * @param   unittest.TestFailure failure
+     */
+    public function testFailed(TestFailure $failure) {
+      $this->out->write('F');
+    }
+    
+    /**
+     * Called when a test finished successfully.
+     *
+     * @param   unittest.TestSuccess success
+     */
+    public function testSucceeded(TestSuccess $success) {
+      $this->out->write('.');
+    }
+    
+    /**
+     * Called when a test is not run - usually because it is skipped
+     * due to a non-met prerequisite or if it has been ignored by using
+     * the @ignore annotation.
+     *
+     * @param   unittest.TestSkipped skipped
+     */
+    public function testSkipped(TestSkipped $skipped) {
+      $this->out->write('S');
+    }
+
+    /**
+     * Called when a test run starts.
+     *
+     * @param   unittest.TestSuite suite
+     */
+    public function testRunStarted(TestSuite $suite) {
+      $this->out->writeLine('===> Running test suite');
+    }
+    
+    /**
+     * Called when a test run finishes.
+     *
+     * @param   unittest.TestSuite suite
+     * @param   unittest.TestResult result
+     */
+    public function testRunFinished(TestSuite $suite, TestResult $result) {
+      $this->out->writeLine();
+      $this->out->writeLine('===> ', $result);
+    }
 
     /**
      * Runs the test suite
@@ -160,7 +218,7 @@
         $arguments= $this->tests->get($class);
 
         try {
-          $ignored= $this->suite->addTestClass(
+          $this->suite->addTestClass(
             $class,
             $arguments->length ? $arguments->values : $this->arguments
           );
@@ -171,19 +229,10 @@
           $this->out->writeLine('*** Error: ', $e->getMessage());
           return;
         }
-
-        foreach ($ignored as $method) {
-          $this->out->writeLinef(
-            '     >> Ignoring %s::%s (%s)', 
-            $class->getName(TRUE), 
-            $method->getName(),
-            $method->getAnnotation('ignore')
-          );
-        }
       }
       
-      $this->out->writeLine('===> Running test suite');
-      $this->out->writeLine($this->suite->run());
+      $this->suite->addListener($this);
+      $this->suite->run();
     }
   }
 ?>
