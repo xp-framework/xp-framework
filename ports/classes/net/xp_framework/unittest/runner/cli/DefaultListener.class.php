@@ -68,7 +68,7 @@
      * @param   unittest.TestSuite suite
      */
     public function testRunStarted(TestSuite $suite) {
-      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s)');
+      $this->out->write('[');
     }
     
     /**
@@ -78,7 +78,8 @@
      * @param   unittest.TestResult result
      */
     public function testRunFinished(TestSuite $suite, TestResult $result) {
-
+      $this->out->writeLine(']');
+      
       // Show failed test details
       if ($result->failureCount() > 0) {
         $this->out->writeLine();
@@ -88,9 +89,10 @@
       }
 
       $this->out->writeLinef(
-        "\n===> %s: %d run (%d skipped), %d succeeded, %d failed\n",
+        "\n%s: %d/%d run (%d skipped), %d succeeded, %d failed",
         $result->failureCount() ? 'FAIL' : 'OK',
         $result->count() - $result->skipCount(),
+        $result->count(),
         $result->skipCount(),
         $result->successCount(),
         $result->failureCount()
