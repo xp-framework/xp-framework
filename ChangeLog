@@ -56,6 +56,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made it possible to run multiple unittests at once with the
+  unittest cli runner - see "unittest -?" for examples.
+  (friebe)
 - Added option to choose target encoding in xml.parser.XMLParser with
   the setEncoding() method. Default encoding still is ISO-8859-1.
   (kiesel)
