@@ -8,9 +8,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
-- Fixed a bug in peer.ldap which occurred when the size-limit for the results
-  was exceeded.. 
-  (hinckel, doebele)
+- Refactored unittest.TestSuite/unittest.TestCase for added listener API.
+  With these changes, test cases cannot be run on their own but must always
+  be added to a suite before - it can run single tests via runTest()
+  (friebe)
 - An implementation of scriptlet.rpc.AbstractRpcRequest::getMessage()
   must set the message's encoding on it's own now, the router does
   not do this anymore
@@ -35,6 +36,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed a bug in peer.ldap which occurred when the size-limit for the results
+  was exceeded.. 
+  (hinckel, doebele)
 - Fixed webservices.soap API to fix problem with SOAP clients that send 
   UTF-8 encoded values
   (kiesel)
@@ -56,6 +60,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added API to listen to events during a unit test run
+  (friebe)
 - Made it possible to run multiple unittests at once with the
   unittest cli runner - see "unittest -?" for examples.
   (friebe)
