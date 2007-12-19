@@ -5,6 +5,8 @@
  */
 
   uses(
+    'net.xp_framework.unittest.runner.cli.DefaultListener',
+    'net.xp_framework.unittest.runner.cli.VerboseListener',
     'io.File',
     'unittest.TestSuite',
     'util.Properties',
@@ -31,7 +33,7 @@
    *
    * @purpose  Runs unittests
    */
-  class CliRunner extends Command implements TestListener {
+  class CliRunner extends Command {
     protected 
       $suite      = NULL,
       $tests      = NULL,
@@ -116,7 +118,13 @@
      */
     #[@arg]
     public function setVerbosity($arg= 'no') {
-      $this->verbose= in_array(strtolower($arg), array('yes', 'y'));
+      if (in_array(strtolower($arg), array('yes', 'y'))) {
+        $this->verbose= TRUE;
+        $this->suite->addListener(new VerboseListener($this->out));
+      } else {
+        $this->verbose= FALSE;
+        $this->suite->addListener(new DefaultListener($this->out));
+      }
     }
 
     /**
@@ -159,93 +167,6 @@
         implode(', ', array_map(array('xp', 'stringOf'), $this->arguments))
       );
     }
-    
-    /**
-     * Called when a test case starts.
-     *
-     * @param   unittest.TestCase failure
-     */
-    public function testStarted(TestCase $case) {
-      // NOOP
-    }
-
-    /**
-     * Called when a test fails.
-     *
-     * @param   unittest.TestFailure failure
-     */
-    public function testFailed(TestFailure $failure) {
-      $this->out->write('F');
-    }
-    
-    /**
-     * Called when a test finished successfully.
-     *
-     * @param   unittest.TestSuccess success
-     */
-    public function testSucceeded(TestSuccess $success) {
-      $this->out->write('.');
-    }
-    
-    /**
-     * Called when a test is not run - usually because it is skipped
-     * due to a non-met prerequisite or if it has been ignored by using
-     * the @ignore annotation.
-     *
-     * @param   unittest.TestSkipped skipped
-     */
-    public function testSkipped(TestSkipped $skipped) {
-      $this->out->write('S');
-    }
-
-    /**
-     * Called when a test run starts.
-     *
-     * @param   unittest.TestSuite suite
-     */
-    public function testRunStarted(TestSuite $suite) {
-      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s)');
-    }
-    
-    /**
-     * Called when a test run finishes.
-     *
-     * @param   unittest.TestSuite suite
-     * @param   unittest.TestResult result
-     */
-    public function testRunFinished(TestSuite $suite, TestResult $result) {
-      $this->out->writeLine();
-
-      // Details: Show succeeded and skipped tests only if verbose flag 
-      // was given, but show failed tests always
-      if ($this->verbose && $result->successCount() > 0) {
-        $this->verbose && $this->out->writeLine("\n---> Succeeeded:");
-        foreach (array_keys($result->succeeded) as $key) {
-          $this->out->writeLine('* ', $result->succeeded[$key]);
-        }
-      }
-      if ($this->verbose && $result->skipCount() > 0) {
-        $this->verbose && $this->out->writeLine("\n---> Skipped:");
-        foreach (array_keys($result->skipped) as $key) {
-          $this->out->writeLine('* ', $result->skipped[$key]);
-        }
-      }
-      if ($result->failureCount() > 0) {
-        $this->verbose && $this->out->writeLine("\n---> Failed:");
-        foreach (array_keys($result->failed) as $key) {
-          $this->out->writeLine('* ', $result->failed[$key]);
-        }
-      }
-
-      $this->out->writeLinef(
-        "\n===> %s: %d run (%d skipped), %d succeeded, %d failed\n",
-        $result->failureCount() ? 'FAIL' : 'OK',
-        $result->count() - $result->skipCount(),
-        $result->skipCount(),
-        $result->successCount(),
-        $result->failureCount()
-      );
-    }
 
     /**
      * Runs the test suite
@@ -264,13 +185,13 @@
           );
         } catch (NoSuchElementException $e) {
           $this->out->writeLine('*** Warning: ', $e->getMessage());
+          return;
         } catch (IllegalArgumentException $e) {
           $this->out->writeLine('*** Error: ', $e->getMessage());
           return;
         }
       }
       
-      $this->suite->addListener($this);
       $this->suite->run();
     }
   }
