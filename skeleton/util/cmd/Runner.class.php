@@ -302,17 +302,21 @@
             return 2;
           }
         } else if ($method->hasAnnotation('args')) { // Pass all arguments
-          $pass= array();
-          foreach (preg_split('/, ?/', $method->getAnnotation('args', 'select')) as $def) {
-            if (is_numeric($def) || '-' == $def{0}) {
-              $pass[]= $classparams->value((int)$def);
-            } else {
-              sscanf($def, '[%d..%d]', $begin, $end);
-              isset($begin) || $begin= 0;
-              isset($end) || $end= $classparams->count- 1;
-            
-              while ($begin <= $end) {
-                $pass[]= $classparams->value($begin++);
+          if (!$method->hasAnnotation('args', 'select')) {
+            $pass= array_slice($classparams->list, 0, $classparams->count);
+          } else {
+            $pass= array();
+            foreach (preg_split('/, ?/', $method->getAnnotation('args', 'select')) as $def) {
+              if (is_numeric($def) || '-' == $def{0}) {
+                $pass[]= $classparams->value((int)$def);
+              } else {
+                sscanf($def, '[%d..%d]', $begin, $end);
+                isset($begin) || $begin= 0;
+                isset($end) || $end= $classparams->count- 1;
+
+                while ($begin <= $end) {
+                  $pass[]= $classparams->value($begin++);
+                }
               }
             }
           }
