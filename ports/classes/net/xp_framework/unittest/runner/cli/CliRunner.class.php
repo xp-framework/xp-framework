@@ -16,6 +16,19 @@
   /**
    * CLI runner for XP unittests
    *
+   * Run all tests contained in a certain property file:
+   * <tt> $ unittest unittests.ini </tt>
+   *
+   * Run a class by its fully qualified name:
+   * <tt> $ unittest net.xp_framework.unittest.core.ErrorsTest </tt>
+   *
+   * Run a class by passing the class' filename:
+   * <tt> $ unittest ports/classes/net/xp_framework/unittest/core/IsTest.class.php </tt>
+   *
+   * Run multiple tests at once:
+   * <tt> $ unittest tests.TestOne tests.TestTwo tests.TestThree </tt>
+   * <tt> $ unittest tests.TestOne tests/TestTwo.class.php tests/*.ini </tt>
+   *
    * @purpose  Runs unittests
    */
   class CliRunner extends Command {
@@ -96,22 +109,26 @@
     }
 
     /**
-     * Set runner target. This is one of the following:
+     * Set runner targets. This is one of the following:
      *
      * - A property file (recognized via .ini-extension)
      * - A class file (recognized via .class.php-extension)
      * - A fully qualified class name
      *
-     * @param   string target
+     * @param   string[] targets
      */
-    #[@arg(position= 0)]
-    public function setTarget($target) {
-      if (strstr($target, '.ini')) {
-        $this->loadTestsFromProperties(new Properties($target));
-      } else if (strstr($target, '.class.php')) {
-        $this->loadTestsFromClassFile(new File($target));
-      } else {
-        $this->loadTestsFromClass(XPClass::forName($target));
+    #[@args]
+    public function setTargets($targets) {
+      for ($i= 0, $s= sizeof($targets); $i < $s; $i++) {
+        if ('-' === $targets[$i]{0}) {
+          $i+= '-' === $targets[$i]{1} ? 0 : 1;    // Ignore
+        } else if (strstr($targets[$i], '.ini')) {
+          $current= $this->loadTestsFromProperties(new Properties($targets[$i]));
+        } else if (strstr($targets[$i], '.class.php')) {
+          $this->loadTestsFromClassFile(new File($targets[$i]));
+        } else {
+          $this->loadTestsFromClass(XPClass::forName($targets[$i]));
+        }
       }
     }
     
