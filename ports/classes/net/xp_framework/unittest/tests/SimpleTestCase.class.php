@@ -17,6 +17,17 @@
   class SimpleTestCase extends TestCase {
 
     /**
+     * Sets up this test. Throws a PrerequisitesNotMetError if the "skipped" 
+     * test is run.
+     *
+     */
+    public function setUp() {
+      if ('skipped' === $this->name) {
+        throw new PrerequisitesNotMetError('SKIP', $this->name);
+      }
+    }
+
+    /**
      * Always succeeds
      *
      */
@@ -32,6 +43,23 @@
     #[@test]
     public function fails() {
       $this->assertTrue(FALSE);
+    }
+
+    /**
+     * Always skipped
+     *
+     */
+    #[@test]
+    public function skipped() {
+      $this->fail('Prerequisites not met, should not be executed');
+    }
+
+    /**
+     * Always ignored
+     *
+     */
+    #[@test, @ignore('For test purposes')]
+    public function ignored() {
     }
 
     /**
