@@ -35,6 +35,7 @@
     protected 
       $suite      = NULL,
       $tests      = NULL,
+      $verbose    = FALSE,
       $arguments  = array();
 
     /**
@@ -52,7 +53,7 @@
      * @param   util.Properties config
      */
     public function loadTestsFromProperties(Properties $config) {
-      $this->out->writeLinef(
+      $this->verbose && $this->out->writeLinef(
         '===> Using configuration from %s (%s)', 
         $config->getFilename(),
         $config->readString('this', 'description')
@@ -75,7 +76,7 @@
      * @param   io.File file
      */
     public function loadTestsFromClassFile(File $file) {
-      $this->out->writeLinef('===> Using test file %s', $file->getURI());
+      $this->verbose && $this->out->writeLinef('===> Using test file %s', $file->getURI());
 
       if (!$file->exists()) throw new IllegalArgumentException('File does not exist!');
 
@@ -104,8 +105,18 @@
      * @param   io.File class
      */
     public function loadTestsFromClass(XPClass $class) {
-      $this->out->writeLinef('===> Using test class %s', $class->toString());
+      $this->verbose && $this->out->writeLinef('===> Using test class %s', $class->toString());
       $this->tests->put($class, new ArrayList());
+    }
+
+    /**
+     * Set whether to be verbose
+     *
+     * @param   string default "no"
+     */
+    #[@arg]
+    public function setVerbosity($arg= 'no') {
+      $this->verbose= in_array(strtolower($arg), array('yes', 'y'));
     }
 
     /**
@@ -131,7 +142,7 @@
         }
       }
     }
-    
+
     /**
      * Set arguments that should be passed to the tests' constructors.
      *
@@ -143,7 +154,7 @@
         ? array() 
         : array_map('trim', explode(',', $arguments))
       );
-      $this->out->writeLinef(
+      $this->verbose && $this->out->writeLinef(
         '---> Have arguments [%s]',
         implode(', ', array_map(array('xp', 'stringOf'), $this->arguments))
       );
@@ -193,7 +204,7 @@
      * @param   unittest.TestSuite suite
      */
     public function testRunStarted(TestSuite $suite) {
-      $this->out->writeLine('===> Running test suite');
+      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s)');
     }
     
     /**
@@ -204,7 +215,36 @@
      */
     public function testRunFinished(TestSuite $suite, TestResult $result) {
       $this->out->writeLine();
-      $this->out->writeLine('===> ', $result);
+
+      // Details: Show succeeded and skipped tests only if verbose flag 
+      // was given, but show failed tests always
+      if ($this->verbose && $result->successCount() > 0) {
+        $this->verbose && $this->out->writeLine("\n---> Succeeeded:");
+        foreach (array_keys($result->succeeded) as $key) {
+          $this->out->writeLine('* ', $result->succeeded[$key]);
+        }
+      }
+      if ($this->verbose && $result->skipCount() > 0) {
+        $this->verbose && $this->out->writeLine("\n---> Skipped:");
+        foreach (array_keys($result->skipped) as $key) {
+          $this->out->writeLine('* ', $result->skipped[$key]);
+        }
+      }
+      if ($result->failureCount() > 0) {
+        $this->verbose && $this->out->writeLine("\n---> Failed:");
+        foreach (array_keys($result->failed) as $key) {
+          $this->out->writeLine('* ', $result->failed[$key]);
+        }
+      }
+
+      $this->out->writeLinef(
+        "\n===> %s: %d run (%d skipped), %d succeeded, %d failed\n",
+        $result->failureCount() ? 'FAIL' : 'OK',
+        $result->count() - $result->skipCount(),
+        $result->skipCount(),
+        $result->successCount(),
+        $result->failureCount()
+      );
     }
 
     /**
@@ -212,7 +252,7 @@
      *
      */
     public function run() {
-      $this->out->writeLine('===> Setting up suite');
+      $this->verbose && $this->out->writeLine('===> Setting up suite');
       
       foreach ($this->tests->keys() as $class) {
         $arguments= $this->tests->get($class);
@@ -224,7 +264,6 @@
           );
         } catch (NoSuchElementException $e) {
           $this->out->writeLine('*** Warning: ', $e->getMessage());
-          return;
         } catch (IllegalArgumentException $e) {
           $this->out->writeLine('*** Error: ', $e->getMessage());
           return;
