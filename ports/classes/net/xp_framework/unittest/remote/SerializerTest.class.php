@@ -191,7 +191,7 @@
     public function representationOfValueObject() {
       $this->assertEquals(
         'O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}',
-        $this->serializer->representationOf(new Person())
+        $this->serializer->representationOf(new net·xp_framework·unittest·remote·Person())
       );
     }
 
@@ -319,7 +319,7 @@
       ));
       $this->assertClass($return, 'lang.types.ArrayList');
       $this->assertEquals(2, sizeof($return->values));
-      $this->assertEquals(new Person(), $return->values[0]);
+      $this->assertEquals(new net·xp_framework·unittest·remote·Person(), $return->values[0]);
       $this->assertEquals('World', $return->values[1]);
     }
 

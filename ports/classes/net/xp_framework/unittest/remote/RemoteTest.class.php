@@ -153,7 +153,7 @@
       $r= Remote::forName(REMOTE_SPEC_ONE);
       
       // Bind a person object
-      $person= new Person();
+      $person= new net·xp_framework·unittest·remote·Person();
       $this->handler[REMOTE_SPEC_ONE]->server['ctx']['xp/demo/Person']= $person;
 
       // Lookup the person object

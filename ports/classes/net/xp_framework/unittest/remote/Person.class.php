@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  $package= 'net.xp_framework.unittest.remote';
+
   /**
    * Person object
    *
    * @see      xp://net.xp_framework.unittest.remote.SerializerTest
    * @purpose  Helper class for SerializerTest
    */
-  class Person extends Object {
+  class net·xp_framework·unittest·remote·Person extends Object {
     public
       $id     = 1549,
       $name   = 'Timm Friebe';
@@ -54,11 +56,11 @@
     /**
      * Checks whether a given object is equal to this person.
      *
-     * @param   &lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool
      */
     public function equals($cmp) {
-      return is('Person', $cmp) && $cmp->name == $this->name && $cmp->id == $this->id;
+      return $cmp instanceof self && $cmp->name == $this->name && $cmp->id == $this->id;
     }
   }
 ?>
