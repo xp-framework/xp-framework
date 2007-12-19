@@ -15,7 +15,7 @@
    * @see      xp://text.Tokenizer
    * @purpose  Abstract base class for different tokenizer tests
    */
-  abstract class TokenizerTest extends TestCase {
+  abstract class AbstractTokenizerTest extends TestCase {
   
     /**
      * Retrieve a tokenizer instance

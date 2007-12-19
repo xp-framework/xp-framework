@@ -5,7 +5,7 @@
  */
 
   uses(
-    'net.xp_framework.unittest.text.TokenizerTest',
+    'net.xp_framework.unittest.text.AbstractTokenizerTest',
     'io.streams.MemoryInputStream',
     'text.StreamTokenizer'
   );
@@ -16,7 +16,7 @@
    * @see      xp://text.StringTokenizer
    * @purpose  TestCase
    */
-  class StreamTokenizerTest extends TokenizerTest {
+  class StreamTokenizerTest extends AbstractTokenizerTest {
   
     /**
      * Retrieve a tokenizer instance

@@ -5,7 +5,7 @@
  */
 
   uses(
-    'net.xp_framework.unittest.text.TokenizerTest',
+    'net.xp_framework.unittest.text.AbstractTokenizerTest',
     'text.StringTokenizer'
   );
 
@@ -15,7 +15,7 @@
    * @see      xp://text.StringTokenizer
    * @purpose  TestCase
    */
-  class StringTokenizerTest extends TokenizerTest {
+  class StringTokenizerTest extends AbstractTokenizerTest {
   
     /**
      * Retrieve a tokenizer instance
