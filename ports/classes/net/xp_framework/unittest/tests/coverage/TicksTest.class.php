@@ -22,7 +22,7 @@
      * so they will not interfere with ours.
      *
      */
-    public static function __static() {
+    static function __static() {
       declare(ticks= 0);
     }
     
@@ -552,8 +552,7 @@
     }
 
     /**
-     * Tests exceptions. The "if (catch(...))" line produces a tick because
-     * of the closing } (see the codeBlock() test).
+     * Tests exceptions.
      *
      */
     #[@test]
@@ -561,22 +560,18 @@
       declare(ticks= 1) {
         $line= __LINE__;                            // tick
         $message= NULL;                             // tick
-        try {                                    // tick
-          throw(new XPException('*Boom*'));           // tick
-        } catch (Exception $e) {             // tick
+        try {
+          throw new XPException('*Boom*');
+        } catch (XPException $e) {
           $message= $e->getMessage();               // tick
-        }                                           // tick
+        }
       }                                             // tick (2?)
 
       $this->assertEquals('*Boom*', $message);
       $this->assertTicks(__FILE__, array(
         $line    => 1,
         $line+ 1 => 1,
-        $line+ 2 => 1,
-        $line+ 3 => 1,
-        $line+ 4 => 1,
         $line+ 5 => 1,
-        $line+ 6 => 1,
         $line+ 7 => 2,
       ));
     }
