@@ -17,8 +17,8 @@
    * @purpose  Unit Test
    */
   class LDAPTest extends TestCase {
-    public
-      $lc      = NULL;
+    protected
+      $lc= NULL;
       
     /**
      * Setup function
@@ -31,17 +31,17 @@
         $this->lc->connect();
         $this->lc->bind();
       } catch (ConnectException $e) {
-        throw (new PrerequisitesNotMetError(
+        throw new PrerequisitesNotMetError(
           PREREQUISITE_INITFAILED,
           $e,
           array('connect', 'ldapv3://ldap.openldap.org')
-        ));
+        );
       } catch (LDAPException $e) {
-        throw (new PrerequisitesNotMetError(
+        throw new PrerequisitesNotMetError(
           PREREQUISITE_INITFAILED,
           $e,
           array('bind', 'ldapv3://ldap.openldap.org')
-        ));
+        );
       }
     }
     
@@ -58,7 +58,7 @@
      *
      */
     #[@test]
-    public function testSearch() {
+    public function search() {
       $res= $this->lc->search(
         'ou=People,dc=OpenLDAP,dc=Org', 
         '(objectClass=*)'
@@ -67,7 +67,6 @@
       $this->assertNotEquals(0, $res->numEntries());
       $entry= $res->getFirstEntry();
       $this->assertClass($entry, 'peer.ldap.LDAPEntry');
-      return $entry;
     }
     
     /**
