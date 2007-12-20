@@ -101,7 +101,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return is('lang.StackTraceElement', $cmp) && $this->toString() == $cmp->toString();
+      return $cmp instanceof self && $this->toString() == $cmp->toString();
     }
   }
 ?>
