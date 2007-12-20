@@ -50,13 +50,14 @@
      * @throws  peer.ldap.LDAPException in case of a read error
      */
     public function getFirstEntry() {
-      $this->entry= ldap_first_entry($this->_hdl, $this->_res);
-      if (FALSE === $this->entry) {
+      $this->entry= array(ldap_first_entry($this->_hdl, $this->_res));
+      if (FALSE === $this->entry[0]) {
         if (!($e= ldap_errno($this->_hdl))) return FALSE;
         throw new LDAPException('Could not fetch first result entry.', $e);
       }
       
-      return LDAPEntry::fromResource($this->_hdl, $this->entry);
+      $this->entry[1]= 1;
+      return LDAPEntry::fromResource($this->_hdl, $this->entry[0]);
     }
     
     /**
@@ -90,20 +91,34 @@
      * @throws  peer.ldap.LDAPException in case of a read error
      */
     public function getNextEntry() {
-      if (NULL === $this->entry) return $this->getFirstEntry();
-      $this->entry= ldap_next_entry($this->_hdl, $this->entry);
-      if (FALSE === $this->entry) {
+    
+      // Check if we were called without getFirstEntry() being called first
+      // Tolerate this situation by simply returning whatever getFirstEntry()
+      // returns.
+      if (NULL === $this->entry) {
+        return $this->getFirstEntry();
+      }
       
-        // Check for LDAP_TIMELIMIT_EXCEEDED and LDAP_SIZELIMIT_EXCEEDED when fetching results
-        if 
-          (!($e= ldap_errno($this->_hdl)) ||
-          0x03 === $e ||
-          0x04 === $e
-        ) return FALSE;
+      // If we have reached the number of results reported by ldap_count_entries()
+      // - see constructor, return FALSE without trying to read further. Trying
+      // to read "past the end" results in LDAP error #84 (decoding error) in some 
+      // client/server constellations, which is then incorrectly reported as an error.
+      if ($this->entry[1] >= $this->size) {
+        return FALSE;
+      }
+      
+      // Fetch the next entry. Return FALSE if it was the last one (where really,
+      // we shouldn't be getting here)
+      $this->entry[0]= ldap_next_entry($this->_hdl, $this->entry[0]);
+      if (FALSE === $this->entry[0]) {
+        if (!($e= ldap_errno($this->_hdl))) return FALSE;
         throw new LDAPException('Could not fetch next result entry.', $e);
       }
       
-      return LDAPEntry::fromResource($this->_hdl, $this->entry);
+      // Keep track how many etnries we have fetched so we stop once we
+      // have reached this number - see above for explanation.
+      $this->entry[1]++;
+      return LDAPEntry::fromResource($this->_hdl, $this->entry[0]);
     }
 
     /**
