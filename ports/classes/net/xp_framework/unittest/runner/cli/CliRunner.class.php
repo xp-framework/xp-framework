@@ -112,7 +112,7 @@
     }
 
     /**
-     * Set whether to be verbose
+     * Set whether to be verbose (pass -v yes or --verbose=yes to be)
      *
      * @param   string default "no"
      */
