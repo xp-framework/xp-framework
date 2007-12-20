@@ -92,21 +92,46 @@
     }
     
     /**
-     * Test LDAP search with result limit
+     * Test LDAP search with result limit of n (here: three)
      *
      */
     #[@test]
-    public function maxlimitSearch() {
-      $query= new LDAPQuery('ou=People,dc=OpenLDAP,dc=Org', '(objectClass=*)');
-      $query->setSizelimit(3);
-      $query->setScope(LDAP_SCOPE_SUB);
-      $res= $this->lc->searchBy($query);
-      $this->assertClass($res, 'peer.ldap.LDAPSearchResult');
-      $this->assertNotEquals(0, $res->numEntries());
-      $entry= $res->getFirstEntry();
-      $this->assertClass($entry, 'peer.ldap.LDAPEntry');
-      while ($res->getNextEntry()) {}
-      return $entry;
+    public function searchWithSizeLimitN() {
+      with ($query= new LDAPQuery('ou=People,dc=OpenLDAP,dc=Org', '(objectClass=*)'), $limit= 3); {
+        $query->setSizelimit($limit);
+        $query->setScope(LDAP_SCOPE_SUB);
+        $res= $this->lc->searchBy($query);
+      
+        $this->assertClass($res, 'peer.ldap.LDAPSearchResult');
+        $this->assertNotEquals(0, $res->numEntries());
+        $this->assertClass($res->getFirstEntry(), 'peer.ldap.LDAPEntry');
+      
+        $i= 0;
+        while ($res->getNextEntry()) { 
+          $i++;
+        }
+        $this->assertTrue($i > 1, 'At least one entry, have '.$i);
+        $this->assertTrue($i <= $limit, 'At most '.$limit.' entries, have '.$i);
+      }
+    }
+
+    /**
+     * Test LDAP search with result limit of 1
+     *
+     */
+    #[@test]
+    public function searchWithSizeLimitOne() {
+      with ($query= new LDAPQuery('ou=People,dc=OpenLDAP,dc=Org', '(objectClass=*)')); {
+        $query->setSizelimit(1);
+        $query->setScope(LDAP_SCOPE_SUB);
+        $res= $this->lc->searchBy($query);
+      
+        $this->assertClass($res, 'peer.ldap.LDAPSearchResult');
+        $this->assertEquals(1, $res->numEntries());
+        $this->assertClass($res->getFirstEntry(), 'peer.ldap.LDAPEntry');
+      
+        $this->assertFalse($res->getNextEntry());
+      }
     }
   }
 ?>
