@@ -214,12 +214,9 @@
      * Test Enum::valueOf() method
      *
      */
-    #[@test]
-    public function valuseOf() {
-      $this->assertEquals(
-        array(Coin::$penny, Coin::$nickel, Coin::$dime, Coin::$quarter),
-        Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Coin'))
-      );
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function valueOfNonExistant() {
+      Enum::valueOf(XPClass::forName('net.xp_framework.unittest.core.Coin'), '@@DOES_NOT_EXIST@@');
     }
 
     /**
@@ -227,8 +224,29 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function valueOfNonExistant() {
-      Enum::valueOf(XPClass::forName('net.xp_framework.unittest.core.Coin'), '@@DOES_NOT_EXIST@@');
+    public function valueOfNonEnum() {
+      Enum::valueOf($tbis, 'irrelevant');
+    }
+
+    /**
+     * Test Enum::valuesOf() method
+     *
+     */
+    #[@test]
+    public function valuesOf() {
+      $this->assertEquals(
+        array(Coin::$penny, Coin::$nickel, Coin::$dime, Coin::$quarter),
+        Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Coin'))
+      );
+    }
+
+    /**
+     * Test Enum::valuesOf() method
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function valuesOfNonEnum() {
+      Enum::valuesOf($this);
     }
 
     /**
