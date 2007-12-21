@@ -1,0 +1,133 @@
+RFC 0147: New LDAP API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Dec 21 21:23:27     2007
+@status: draft
+@category: peer.ldap
+
+Scope of Change
+---------------
+A new LDAP API will be created and will supersede the old classes.
+
+
+Rationale
+---------
+Changes to the existing API would create numerous BC breaks.
+
+
+Functionality
+-------------
+
+Entry point
+~~~~~~~~~~~
+The class peer.ldap.LdapConnection class will be the entry point class.
+
+<?php
+  class LdapConnection extends Object {
+  
+    /**
+     * Constructor. Accepts a string of the following form:
+     * <pre>
+     *   ldap://[user:password]@host[:port]
+     * </pre>
+     *
+     * @param   string dsn
+     */
+    public function __construct($dsn) {
+      // ... 
+    }
+  
+    /**
+     * Connect
+     *
+     * @throws  peer.ldap.LdapException in case of a protocol error
+     */
+    public function connect() { 
+      // ... 
+    }
+
+    /**
+     * Disconnect
+     *
+     * @return  bool success
+     */
+    public function close() { 
+      // ... 
+    }
+    
+    /**
+     * Search
+     *
+     * @param   peer.ldap.LdapQuery q
+     * @return  peer.ldap.LdapResults
+     * @throws  peer.ldap.LdapException in case of a protocol error
+     */
+    public function searchFor(LdapQuery $q) {
+      // ... 
+    }
+
+    /**
+     * List all entries in a given base DN
+     *
+     * @param   peer.ldap.DN base
+     * @return  peer.ldap.LdapResults
+     * @throws  peer.ldap.LdapException in case of a protocol error
+     */
+    public function entriesIn(DN $base) {
+      // ... 
+    }
+
+    /**
+     * Retrieve an entry by its DN
+     *
+     * @param   peer.ldap.DN dn
+     * @return  peer.ldap.LdapEntry entry or NULL if it doesn't exist
+     * @throws  peer.ldap.LdapException in case of a protocol error
+     */
+    public function findBy(DN $dn) { 
+      // ... 
+    }
+
+    /**
+     * Retrieve an entry by its DN
+     *
+     * @param   peer.ldap.DN dn
+     * @return  peer.ldap.LdapEntry entry
+     * @throws  lang.ElementNotFoundException in case the given entry cannot be foujnd
+     * @throws  peer.ldap.LdapException in case of a protocol error
+     */
+    public function getBy(DN $dn) { 
+      // ... 
+    }
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
