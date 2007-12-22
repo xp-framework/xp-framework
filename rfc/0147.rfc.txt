@@ -178,6 +178,14 @@ Create a new or update an existing entry:
     
     $e->save();
   }
+  $lc->close();
+?>
+
+Delete an existing entry:
+<?php
+  $lc= new LdapConnection('ldap://uid=update,ou=Tools,dc=Example,dc=Com:pass@ldap.example.com/');
+  $lc->getBy(new DN('uid=timm,ou=People,dc=Example,dc=Com'))->delete();
+  $lc->close();
 ?>
 
 
