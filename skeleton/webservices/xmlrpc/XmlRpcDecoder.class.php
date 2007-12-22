@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.XMLFormatException');
+  uses('xml.XMLFormatException', 'util.Date');
 
   /**
    * XML-RPC decoder
