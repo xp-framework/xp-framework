@@ -12,26 +12,21 @@
    * @purpose  Reflection
    */
   class Field extends Object {
-    public
-      $_ref   = NULL,
-      $name   = '',
-      $type   = NULL;
-
     protected
+      $_class   = NULL;
+
+    public
       $_reflect = NULL;
 
     /**
      * Constructor
      *
-     * @param   mixed ref
-     * @param   string name
-     * @param   string type default NULL
+     * @param   string class
+     * @param   php.ReflectionProperty reflect
      */    
-    public function __construct($ref, $name, $type= NULL) {
-      $this->_ref= is_object($ref) ? get_class($ref) : $ref;
-      $this->name= $name;
-      $this->type= $type;
-      $this->_reflect= new ReflectionProperty($this->_ref, $this->name);
+    public function __construct($class, $reflect) {
+      $this->_class= $class;
+      $this->_reflect= $reflect;
     }
 
     /**
@@ -40,7 +35,7 @@
      * @return  string
      */
     public function getName() {
-      return $this->name;
+      return $this->_reflect->getName();
     }
     
     /**
@@ -49,8 +44,7 @@
      * @return  string
      */
     public function getType() {
-      if (isset($this->type)) return $this->type;
-      if ($details= XPClass::detailsForField($this->_ref, $this->name)) {
+      if ($details= XPClass::detailsForField($this->_class, $this->_reflect->getName())) {
         if (isset($details[DETAIL_ANNOTATIONS]['type'])) return $details[DETAIL_ANNOTATIONS]['type'];
       }
       return NULL;
@@ -75,15 +69,28 @@
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      */
     public function get($instance) {
-      if (!is(xp::nameOf($this->_ref), $instance)) {
-        throw(new IllegalArgumentException(sprintf(
+      if ($this->_reflect->isStatic()) {
+        return $this->_reflect->getValue(NULL);
+      }
+      if (!($instance instanceof $this->_class)) {
+        throw new IllegalArgumentException(sprintf(
           'Passed argument is not a %s class (%s)',
-          xp::nameOf($this->_ref),
-          xp::nameOf($instance)
-        )));
+          xp::nameOf($this->_class),
+          xp::typeOf($instance)
+        ));
       }
 
-      return $instance->{$this->name};
+      $m= $this->_reflect->getModifiers();
+      if (!($m & MODIFIER_PUBLIC)) {
+        throw new IllegalAccessException(sprintf(
+          'Cannot read %s %s::$%s',
+          Modifiers::stringOf($this->getModifiers()),
+          $this->_class,
+          $this->_reflect->getName()
+        ));
+      }
+
+      return $this->_reflect->getValue($instance);
     }
 
     /**
