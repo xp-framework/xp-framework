@@ -35,6 +35,12 @@ The class peer.ldap.LdapConnection class will be the entry point class.
      *   ldap://[user:password]@host[:port][?arguments]
      * </pre>
      *
+     * Note:
+     * If credentials are missing, an anonymous bind is performed.
+     *
+     * Note:
+     * Port defaults to 389.
+     *
      * Arguments:
      * <ul>
      *   <li>
@@ -206,7 +212,8 @@ n/a
 
 Related documents
 -----------------
-n/a
+- http://php3.de/ldap
+  PHP Manual: LDAP Functions
 
 
 Comments
