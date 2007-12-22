@@ -134,10 +134,9 @@
 
             // * If the xmlmapping annotation contains a key "type", cast the node's
             //   contents to the specified type before passing it to the method.
-            $arguments= array(cast(
-              utf8_decode($node->textContent),
-              $method->getAnnotation('xmlmapping', 'type')
-            ));
+            $value= utf8_decode($node->textContent);
+            settype($value, $method->getAnnotation('xmlmapping', 'type'));
+            $arguments= array($value);
           } else {
 
             // * Otherwise, pass the node's content to the method
