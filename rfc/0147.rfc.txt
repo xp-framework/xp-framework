@@ -14,7 +14,9 @@ A new LDAP API will be created and will supersede the old classes.
 
 Rationale
 ---------
-Changes to the existing API would create numerous BC breaks.
+* Changes to the existing API would create numerous BC breaks.
+* Be consistent with other APIs accessing remote systems (FtpConnection,
+  HttpConnection, SybaseConnection, ...)
 
 
 Functionality
@@ -30,8 +32,20 @@ The class peer.ldap.LdapConnection class will be the entry point class.
     /**
      * Constructor. Accepts a string of the following form:
      * <pre>
-     *   ldap://[user:password]@host[:port]
+     *   ldap://[user:password]@host[:port][?arguments]
      * </pre>
+     *
+     * Arguments:
+     * <ul>
+     *   <li>
+     *     version: Specifies the LDAP protocol version to use. 
+     *     Defaults to 3
+     *   </li>
+     *   <li>
+     *     autoconnect: Specifies whether to automatically connect on 
+     *     first use. Defaults to no
+     *   </li>
+     * </ul>
      *
      * @param   string dsn
      */
@@ -40,8 +54,9 @@ The class peer.ldap.LdapConnection class will be the entry point class.
     }
   
     /**
-     * Connect
+     * Connect (and login, if necessary)
      *
+     * @throws  peer.ConnectException in case of a connection error
      * @throws  peer.ldap.LdapException in case of a protocol error
      */
     public function connect() { 
@@ -51,7 +66,6 @@ The class peer.ldap.LdapConnection class will be the entry point class.
     /**
      * Disconnect
      *
-     * @return  bool success
      */
     public function close() { 
       // ... 
@@ -102,6 +116,43 @@ The class peer.ldap.LdapConnection class will be the entry point class.
       // ... 
     }
   }
+?>
+
+
+Examples
+~~~~~~~~
+
+Reading an LDAP entry by its Distinguished Name (DN)
+<?php
+  $lc= new LdapConnection('ldap://ldap.openldap.org/?autoconnect=1');
+  echo $lc->getBy(new DN('uid=kurt,ou=People,dc=OpenLDAP,dc=Org'))->toString();
+  $lc->close();
+?>
+
+Search for entries:
+<?php
+  $lc= new LdapConnection('ldap://ldap.openldap.org/?autoconnect=1');
+  $r= $lc->seachFor(new LdapQuery('ou=People,dc=OpenLDAP,dc=Org', '(objectClass=*)'));
+  echo $r->toString(), "\n";
+  
+  // Iterate using foreach
+  foreach ($r->entries() as $entry) {
+    echo '- ', $entry->toString(), "\n";
+  }
+  $lc->close();
+?>
+
+List entries inside a given base DN:
+<?php
+  $lc= new LdapConnection('ldap://ldap.openldap.org/?autoconnect=1');
+  $r= $lc->entriesIn(new DN('ou=People,dc=OpenLDAP,dc=Org'));
+  echo $r->toString(), "\n";
+  
+  // Iterate using foreach
+  foreach ($r->entries() as $entry) {
+    echo '- ', $entry->toString(), "\n";
+  }
+  $lc->close();
 ?>
 
 
