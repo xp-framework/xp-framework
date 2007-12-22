@@ -1,0 +1,84 @@
+RFC 0148: Bytes type
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 23 00:00:08     2007
+@status: draft
+@category: lang.types
+
+Scope of Change
+---------------
+A new type wrapper class lang.types.Bytes will be added. It represents
+an array of bytes (byte[] in Java).
+
+
+Rationale
+---------
+* Type to detect binary data to be used in numerous APIs (SOAP, XMLRPC,
+  EASC, ...)
+* Forward-compatibility with Unicode version
+
+
+Functionality
+-------------
+
+Bytes class
+~~~~~~~~~~~
+<?php
+  class Bytes extends Object {
+
+    /**
+     * Constructor.
+     *
+     * @param   mixed initial default NULL
+     * @throws  lang.IllegalArgumentException in case argument is of incorrect type.
+     */
+    public function __construct($initial= NULL) {
+      // ...
+    }    
+  }
+?>
+
+Examples
+~~~~~~~~
+<?php
+  // Creates an empty byte array
+  $bytes= new Bytes();
+  
+  // Creates a byte array from a string
+  $bytes= new Bytes('Hello');
+  
+  // Creates a byte array from an array of bytes
+  $bytes= new Bytes(array('H', 'e', 'l', 'l', 'o'));
+  
+  // Creates a byte array from an array of ints
+  $bytes= new Bytes(array(72, 101, 108, 108, 111));
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- RFC #146
+  Unicode RFC
+
+
+Comments
+--------
+
+<EOF>
