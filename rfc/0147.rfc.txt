@@ -114,6 +114,18 @@ The class peer.ldap.LdapConnection class will be the entry point class.
      * Retrieve an entry by its DN
      *
      * @param   peer.ldap.DN dn
+     * @return  peer.ldap.LdapEntry new entry
+     * @throws  lang.IllegalStateException in case the given entry exists
+     * @throws  peer.ldap.LdapException in case of a protocol error
+     */
+    public function newEntry(DN $dn) { 
+      // ... 
+    }
+
+    /**
+     * Retrieve an entry by its DN
+     *
+     * @param   peer.ldap.DN dn
      * @return  peer.ldap.LdapEntry entry or NULL if it doesn't exist
      * @throws  peer.ldap.LdapException in case of a protocol error
      */
@@ -176,6 +188,21 @@ Create a new or update an existing entry:
 <?php
   $lc= new LdapConnection('ldap://uid=update,ou=Tools,dc=Example,dc=Com:pass@ldap.example.com/');
   with ($e= $lc->entryFor(new DN('uid=timm,ou=People,dc=Example,dc=Com'))); {
+    $e->setObjectClass('inetOrgPerson');
+    $e->setAttribute('displayName', 'Timm Friebe');
+    $e->setAttribute('mail', 'timm@example.com');
+    $e->setAttribute('sn', 'Friebe');
+    // ...
+    
+    $e->save();
+  }
+  $lc->close();
+?>
+
+Create a new entry:
+<?php
+  $lc= new LdapConnection('ldap://uid=update,ou=Tools,dc=Example,dc=Com:pass@ldap.example.com/');
+  with ($e= $lc->newEntry(new DN('uid=timm,ou=People,dc=Example,dc=Com'))); {
     $e->setObjectClass('inetOrgPerson');
     $e->setAttribute('displayName', 'Timm Friebe');
     $e->setAttribute('mail', 'timm@example.com');
