@@ -9,20 +9,19 @@
   /**
    * XML-RPC decoder
    *
-   * @ext      xml
+   * @test     xp://net.xp_framework.unittest.scriptlet.rpc.XmlRpcDecoderTest
    * @see      http://xmlrpc.com
    * @purpose  Decode XML-RPC data
    */
   class XmlRpcDecoder extends Object {
   
     /**
-     * Decode XML node-set into the data structures
-     * they represent
+     * Decode XML node-set into the data structures they represent
      *
      * @param   xml.Node node
      * @return  mixed
      */
-    public function decode($node) {
+    public function decode(Node $node) {
       return $this->_unmarshall($node);
     }
       
@@ -35,72 +34,75 @@
      * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
      * @throws  xml.XMLFormatException
      */
-    protected function _unmarshall($node) {
-      if (!is('xml.Node', $node->children[0]))
-        throw(new XMLFormatException('Tried to access nonexistant node.'));
-        
-      switch ($node->children[0]->getName()) {
+    protected function _unmarshall(Node $node) {
+      if (!isset($node->children[0])) {
+        throw new XMLFormatException('Tried to access nonexistant node.');
+      }
+
+      $c= $node->children[0];
+      switch ($c->getName()) {
         case 'struct':
           $ret= array();
-          foreach (array_keys($node->children[0]->children) as $idx) {
+          foreach ($c->children as $child) {
             $data= array();
-            $data[$node->children[0]->children[$idx]->children[0]->getName()]= $node->children[0]->children[$idx]->children[0];
-            $data[$node->children[0]->children[$idx]->children[1]->getName()]= $node->children[0]->children[$idx]->children[1];
+            $data[$child->children[0]->getName()]= $child->children[0];
+            $data[$child->children[1]->getName()]= $child->children[1];
             $ret[$data['name']->getContent()]= $this->_unmarshall($data['value']);
             unset($data);
           }
           
-          // Check whether this is a XP object
-          if (isset($ret['__xp_class'])) {
-            $cname= $ret['__xp_class'];
-            
-            // Load the class definition
-            XPClass::forName($cname);
-            
-            // Cast the object to the class
-            unset($ret['__xp_class']);
-            $ret= cast($ret, xp::reflect($cname));
-          }
+          if (!isset($ret['__xp_class'])) return $ret;
           
-          return $ret;
-          break;
+          // Check whether this is a XP object. If so, load the class and
+          // create an instance without invoking the constructor.
+          $fields= XPClass::forName($ret['__xp_class'])->getFields();
+          $cname= substr(array_search($ret['__xp_class'], xp::$registry), 6);
+          $s= ''; $n= 0;
+          foreach ($fields as $field) {
+            if (!isset($ret[$field->getName()])) continue;
+            $m= $field->getModifiers();
+            if ($m & MODIFIER_STATIC) {
+              continue;
+            } else if ($m & MODIFIER_PUBLIC) {
+              $name= $field->getName();
+            } else if ($m & MODIFIER_PROTECTED) {
+              $name= "\0*\0".$field->getName();
+            } else if ($m & MODIFIER_PRIVATE) {
+              $name= "\0".substr(array_search($field->getDeclaringClass()->getName(), xp::$registry), 6)."\0".$field->getName();
+            }
+            $s.= 's:'.strlen($name).':"'.$name.'";'.serialize($ret[$field->getName()]);
+            $n++;
+          }
+          return unserialize('O:'.strlen($cname).':"'.$cname.'":'.$n.':{'.$s.'}');
           
         case 'array':
           $ret= array();
-          foreach (array_keys($node->children[0]->children[0]->children) as $idx) {
-            $ret[]= $this->_unmarshall($node->children[0]->children[0]->children[$idx]);
+          foreach ($c->children[0]->children as $child) {
+            $ret[]= $this->_unmarshall($child);
           }
           return $ret;
-          break;
         
         case 'int':
         case 'i4':
-          $i= (int)$node->children[0]->getContent();
-          return $i;
+          return (int)$c->getContent();
         
         case 'double':
-          $d= (double)$node->children[0]->getContent();
-          return $d;
+          return (double)$c->getContent();
         
         case 'boolean':
-          $b= (bool)$node->children[0]->getContent();
-          return $b;
+          return (bool)$c->getContent();
         
         case 'string':
-          $s= (string)$node->children[0]->getContent();
-          return $s;
+          return (string)$c->getContent();
         
         case 'dateTime.iso8601':
-          $d= Date::fromString($node->children[0]->getContent());
-          return $d;
+          return Date::fromString($c->getContent());
         
         case 'nil':
-          $n= NULL;
-          return $n;
+          return NULL;
           
         default:
-          throw(new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$node->children[0]->getName()));
-          break;
+          throw new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$c->getName());
       }
     }
   }
