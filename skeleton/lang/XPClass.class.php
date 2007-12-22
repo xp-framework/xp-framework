@@ -186,15 +186,9 @@
      */
     public function getFields() {
       $f= array();
-      $v= get_class_vars($this->_class);
       foreach ($this->_reflect->getProperties() as $p) {
-        if ('__id' == ($name= $p->getName())) continue;
-        
-        $f[]= new Field(
-          $this->_class, 
-          $name,
-          isset($v[$name]) ? gettype($v[$name]) : NULL
-        );
+        if ('__id' === $p->getName()) continue;
+        $f[]= new Field($this->_class, $p);
       }
       return $f;
     }
@@ -209,8 +203,7 @@
     public function getField($name) {
       if (!$this->hasField($name)) return NULL;
 
-      $v= get_class_vars($this->_class);
-      return new Field($this->_class, $name, isset($v[$name]) ? gettype($v[$name]) : NULL);
+      return new Field($this->_class, $this->_reflect->getProperty($name));
     }
     
     /**
@@ -245,7 +238,7 @@
       if ($name == $this->name) return FALSE;   // Catch bordercase (ZE bug?)
       return $this->_reflect->isSubclassOf(XPClass::forName($name)->_reflect);
     }
-    
+
     /**
      * Determines whether the specified object is an instance of this
      * class. This is the equivalent of the is() core functionality.
