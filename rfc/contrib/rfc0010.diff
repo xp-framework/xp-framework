@@ -1,3 +1,79 @@
+Index: skeleton/lang.base.php
+===================================================================
+--- skeleton/lang.base.php	(revision 11558)
++++ skeleton/lang.base.php	(working copy)
+@@ -391,55 +391,27 @@
+   }
+   // }}}
+ 
+-  // {{{ mixed cast (mixed var, mixed type default NULL)
+-  //     Casts. If var === NULL, it won't be touched
+-  function cast($var, $type= NULL) {
+-    if (NULL === $var) return NULL;
+-
+-    switch ($type) {
+-      case NULL: 
+-        break;
+-
+-      case 'int':
+-      case 'integer':
+-      case 'float':
+-      case 'double':
+-      case 'string':
+-      case 'bool':
+-      case 'null':
+-        if ($var instanceof Object) $var= $var->toString();
+-        settype($var, $type);
+-        break;
+-
+-      case 'array':
+-      case 'object':
+-        settype($var, $type);
+-        break;
+-
+-      default:
+-        // Cast to an object of "$type"
+-        $o= new $type;
+-        if (is_object($var) || is_array($var)) {
+-          foreach ($var as $k => $v) {
+-            $o->$k= $v;
+-          }
+-        } else {
+-          $o->scalar= $var;
+-        }
+-        return $o;
+-        break;
++  // {{{ Generic cast (Generic expression, string type)
++  //     Casts an expression.
++  function cast(Generic $expression= NULL, $type) {
++    if (NULL === $expression) {
++      return xp::null();
++    } else if (XPClass::forName($type)->isInstance($expression)) {
++      return $expression;
+     }
+-    return $var;
+-  }
+-  // }}}
+ 
++    raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$type);
++   }
++
+   // {{{ proto bool is(string class, lang.Object object)
+   //     Checks whether a given object is of the class, a subclass or implements an interface
+   function is($class, $object) {
+-    $p= get_class($object);
+-    if (is_null($class)) $class= 'null';
+-    $class= xp::reflect($class);
+-    return $object instanceof $class;
++    if (NULL === $class) {  
++      return $object instanceof null;
++    } else {
++      $class= xp::reflect($class);
++      return $object instanceof $class;
++    }
+   }
+   // }}}
+ 
 Index: skeleton/lang/ClassCastException.class.php
 ===================================================================
 --- skeleton/lang/ClassCastException.class.php	(revision 0)
@@ -26,11 +102,11 @@ Name: svn:keywords
 
 Index: skeleton/lang/XPClass.class.php
 ===================================================================
---- skeleton/lang/XPClass.class.php	(revision 11558)
+--- skeleton/lang/XPClass.class.php	(revision 11561)
 +++ skeleton/lang/XPClass.class.php	(working copy)
-@@ -245,6 +245,22 @@
-       if ($name == $this->name) return FALSE;   // Catch bordercase (ZE bug?)
-       return $this->_reflect->isSubclassOf(XPClass::forName($name)->_reflect);
+@@ -227,6 +227,22 @@
+       if (!$parent) return NULL;
+       return new self($parent->getName());
      }
 +
 +    /**
@@ -50,7 +126,7 @@ Index: skeleton/lang/XPClass.class.php
 +    }
      
      /**
-      * Determines whether the specified object is an instance of this
+      * Tests whether this class is a subclass of a specified class.
 Index: ports/classes/net/xp_framework/unittest/core/CastingTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/core/CastingTest.class.php	(revision 0)
