@@ -1,0 +1,210 @@
+Index: skeleton/lang/ClassCastException.class.php
+===================================================================
+--- skeleton/lang/ClassCastException.class.php	(revision 0)
++++ skeleton/lang/ClassCastException.class.php	(revision 0)
+@@ -0,0 +1,15 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Indicates a class cast failed
++   *
++   * @purpose  Exception
++   */
++  class ClassCastException extends XPException {
++    
++  }
++?>
+
+Property changes on: skeleton/lang/ClassCastException.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/lang/XPClass.class.php
+===================================================================
+--- skeleton/lang/XPClass.class.php	(revision 11558)
++++ skeleton/lang/XPClass.class.php	(working copy)
+@@ -245,6 +245,22 @@
+       if ($name == $this->name) return FALSE;   // Catch bordercase (ZE bug?)
+       return $this->_reflect->isSubclassOf(XPClass::forName($name)->_reflect);
+     }
++
++    /**
++     * Cast a given object to the class represented by this object
++     *
++     * @param   lang.Generic expression
++     * @return  lang.Generic the given expression
++     * @throws  lang.ClassCastException
++     */
++    public function cast(Generic $expression= NULL) {
++      if (NULL === $expression) {
++        return xp::null();
++      } else if (is($this->name, $expression)) {
++        return $expression;
++      }
++      raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$this->name);
++    }
+     
+     /**
+      * Determines whether the specified object is an instance of this
+Index: ports/classes/net/xp_framework/unittest/core/CastingTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/CastingTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/CastingTest.class.php	(revision 0)
+@@ -0,0 +1,135 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('unittest.TestCase', 'lang.Runnable');
++
++  /**
++   * Tests cast() functionality
++   *
++   * @purpose  Unittest
++   */
++  class CastingTest extends TestCase implements Runnable {
++
++    /**
++     * Runnable implementation
++     *
++     */
++    public function run() { 
++      // Intentionally empty
++    }
++
++    /**
++     * Test casting of anonymous classes created w/ newinstance()
++     *
++     */
++    #[@test]
++    public function newinstance() {
++      $runnable= newinstance('lang.Runnable', array(), '{
++        public function run() { return "RUN"; }
++      }');
++      $this->assertEquals('RUN', cast($runnable, 'lang.Runnable')->run());
++    }
++
++    /**
++     * Test casting of NULL values
++     *
++     */
++    #[@test]
++    public function null() {
++      $this->assertEquals(xp::null(), cast(NULL, 'lang.Object'));
++    }
++
++    /**
++     * Test casting to this class
++     *
++     */
++    #[@test]
++    public function thisClass() {
++      $this->assertTrue($this === cast($this, $this->getClassName()));
++    }
++
++    /**
++     * Test casting to interface implemented by this class
++     *
++     */
++    #[@test]
++    public function runnableInterface() {
++      $this->assertTrue($this === cast($this, 'lang.Runnable'));
++    }
++
++    /**
++     * Test casting to parent class
++     *
++     */
++    #[@test]
++    public function parentClass() {
++      $this->assertTrue($this === cast($this, 'unittest.TestCase'));
++    }
++
++    /**
++     * Test casting to lang.Object class
++     *
++     */
++    #[@test]
++    public function objectClass() {
++      $this->assertTrue($this === cast($this, 'lang.Object'));
++    }
++
++    /**
++     * Test casting to interface implemented by parent class
++     *
++     */
++    #[@test]
++    public function genericInterface() {
++      $this->assertTrue($this === cast($this, 'lang.Generic'));
++    }
++
++    /**
++     * Test casting to unrelated class
++     *
++     */
++    #[@test, @expect('lang.ClassCastException')]
++    public function unrelated() {
++      cast($this, 'lang.types.String');
++    }
++
++    /**
++     * Test casting to subclass
++     *
++     */
++    #[@test, @expect('lang.ClassCastException')]
++    public function subClass() {
++      cast(new Object(), 'lang.types.String');
++    }
++
++    /**
++     * Test casting to a non-existant class
++     *
++     */
++    #[@test, @expect('lang.ClassNotFoundException')]
++    public function nonExistant() {
++      cast($this, '@@NON_EXISTANT_CLASS@@');
++    }
++
++    /**
++     * Test casting of NULL values
++     *
++     */
++    #[@test, @expect('lang.NullPointerException')]
++    public function npe() {
++      cast(NULL, 'lang.Runnable')->run();
++    }
++
++    /**
++     * Test casting of primitives
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function primitive() {
++      cast('primitive', 'lang.Object');
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/CastingTest.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: ports/unittest/core.ini
+===================================================================
+--- ports/unittest/core.ini	(revision 11558)
++++ ports/unittest/core.ini	(working copy)
+@@ -83,3 +83,6 @@
+ 
+ [chained_exception]
+ class="net.xp_framework.unittest.core.ChainedExceptionTest"
++
++[casting]
++class="net.xp_framework.unittest.core.CastingTest"
