@@ -20,11 +20,11 @@
    *   try {
    *     $a->open(ARCHIVE_CREATE);
    *     $a->add(
-   *       new File(SKELETON_PATH.'xml/soap/SOAPMessage.class.php'),
+   *       new File('xml/soap/SOAPMessage.class.php'),
    *       'webservices.soap.SOAPMessage'
    *     );
    *     $a->add(
-   *       new File(SKELETON_PATH.'xml/soap/SOAPClient.class.php'),
+   *       new File('xml/soap/SOAPClient.class.php'),
    *       'webservices.soap.SOAPClient'
    *     );
    *     $a->create();
