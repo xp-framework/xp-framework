@@ -35,7 +35,7 @@
           case 's': $this->setOperation('show'); break;
           case 'd': $this->setOperation('diff'); break;
           case 't':
-            $operation= 'extract';
+            $this->setOperation('extract');
             $this->options|= self::OPTION_SIMULATE;
             break;
           case 'v': $this->options|= self::OPTION_VERBOSE; break;
