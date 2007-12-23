@@ -1,0 +1,49 @@
+RFC 0149: Code coverage
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Dec 23 16:37:38     2007
+@status: draft
+@category: unittest
+
+Scope of Change
+---------------
+Code coverage functionality will be added to the unittest API.
+
+
+Rationale
+---------
+Find unused and/or untested code paths.
+
+
+Functionality
+-------------
+Code coverage functionality will depend on the XDebug extension which
+can be retrieved from http://xdebug.org/
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Unittests will run slower if this optional functionality is used.
+
+
+Dependencies
+------------
+XDebug extension
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
