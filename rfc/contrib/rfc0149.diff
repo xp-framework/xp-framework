@@ -1,0 +1,174 @@
+Index: ports/classes/net/xp_framework/unittest/runner/cli/CliRunner.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/runner/cli/CliRunner.class.php	(revision 11547)
++++ ports/classes/net/xp_framework/unittest/runner/cli/CliRunner.class.php	(working copy)
+@@ -169,6 +169,48 @@
+     }
+ 
+     /**
++     * Generate code coverage to the given file (needs XDebug installed)
++     *
++     * @param   string file default NULL
++     */
++    #[@arg]
++    public function setCoverage($file= NULL) {
++      if (!$file) return;
++      
++      $cl= XPClass::forName('net.xp_framework.unittest.runner.cli.CoverageListener');
++      $this->verbose && $this->out->writeLine('---> Add ', $cl);
++      $this->suite->addListener($cl->newInstance(newinstance('lang.Object', array($this->out, new File($file)), '{
++        protected $out, $file;
++
++        public function __construct(OutputStreamWriter $out, $file) {
++          $this->out= $out;
++          $this->file= $file;
++        }
++
++        public function generate($coverage) {
++          $this->out->writeLine("===> Generating code coverage report");
++          $this->file->open(FILE_MODE_WRITE);
++
++          foreach ($coverage as $file => $ticks) {
++            $this->file->write("== ".$file." ==\n");
++            $this->out->write(".");
++            $source= file_get_contents($file);
++            foreach (explode("\n", $source) as $number => $line) {
++              if (isset($ticks[$number + 1])) {
++                $ne= $ticks[$number + 1];
++              } else {
++                $ne= "" === trim($line) ? "-" : 0;
++              }
++              $this->file->write(sprintf("%-4d %3s %s\n", $number + 1, $ne, $line));
++            }
++          }
++          $this->file->close();
++          $this->out->writeLine("\n===> Saved to ", $this->file->getURI());
++        }
++      }')));
++    }
++
++    /**
+      * Runs the test suite
+      *
+      */
+Index: ports/classes/net/xp_framework/unittest/runner/cli/CoverageListener.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/runner/cli/CoverageListener.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/runner/cli/CoverageListener.class.php	(revision 0)
+@@ -0,0 +1,116 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: DefaultListener.class.php 11542 2007-12-19 21:42:23Z friebe $ 
++ */
++
++  uses('unittest.TestListener');
++
++  /**
++   * Coverage listener - writes code coverage analysis gathered via
++   * XDebug
++   *
++   * @ext      xdebug
++   * @see      see http://www.xdebug.org/
++   * @purpose  TestListener
++   */
++  class CoverageListener extends Object implements TestListener {
++    public
++      $report   = NULL,
++      $coverage = array();
++    
++    /**
++     * Constructor
++     *
++     * @param   mixed report XXX FIXME CoverageReport type
++     * @throws  lang.IllegalStateException in case XDebug is not available
++     */
++    public function __construct($report) {
++      if (!function_exists('xdebug_is_enabled')) {
++        throw new IllegalStateException('XDebug not loaded');
++      }
++      $this->report= $report;
++    }
++
++    /**
++     * Called when a test case starts.
++     *
++     * @param   unittest.TestCase failure
++     */
++    public function testStarted(TestCase $case) {
++       xdebug_start_code_coverage();
++    }
++    
++    /**
++     * Ends coverage gathering
++     *
++     */
++    protected function endCoverage() {
++      $gathered= xdebug_get_code_coverage();
++      foreach ($gathered as $file => $coverage) {
++        if (!isset($this->coverage[$file])) {
++          $this->coverage[$file]= $coverage;
++        } else {
++          foreach ($coverage as $line => $n) {
++            if (!isset($this->coverage[$file][$line])) {
++              $this->coverage[$file][$line]= $n;
++            } else {
++              $this->coverage[$file][$line]+= $n;
++            }
++          }
++        }
++      }
++    }
++
++    /**
++     * Called when a test fails.
++     *
++     * @param   unittest.TestFailure failure
++     */
++    public function testFailed(TestFailure $failure) {
++      $this->endCoverage();
++    }
++    
++    /**
++     * Called when a test finished successfully.
++     *
++     * @param   unittest.TestSuccess success
++     */
++    public function testSucceeded(TestSuccess $success) {
++      $this->endCoverage();
++    }
++    
++    /**
++     * Called when a test is not run - usually because it is skipped
++     * due to a non-met prerequisite or if it has been ignored by using
++     * the @ignore annotation.
++     *
++     * @param   unittest.TestSkipped skipped
++     */
++    public function testSkipped(TestSkipped $skipped) {
++      $this->endCoverage();
++    }
++
++    /**
++     * Called when a test run starts.
++     *
++     * @param   unittest.TestSuite suite
++     */
++    public function testRunStarted(TestSuite $suite) {
++      $this->coverage= array();
++    }
++    
++    /**
++     * Called when a test run finishes.
++     *
++     * @param   unittest.TestSuite suite
++     * @param   unittest.TestResult result
++     */
++    public function testRunFinished(TestSuite $suite, TestResult $result) {
++      $this->report->generate($this->coverage);
++      
++      // Free memory
++      $this->coverage= array();
++    }
++  }
++?>
