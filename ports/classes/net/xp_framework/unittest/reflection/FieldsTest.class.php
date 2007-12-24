@@ -253,5 +253,24 @@
       );
     }
 
+    /**
+     * Tests retrieving the "date" field's is defined
+     *
+     * @see     xp://lang.reflect.Field#getType
+     */
+    #[@test]
+    public function dateFieldType() {
+      $this->assertEquals('util.Date', $this->fixture->getField('date')->getType());
+    }
+
+    /**
+     * Tests retrieving the "cache" field's type is unknown
+     *
+     * @see     xp://lang.reflect.Field#getType
+     */
+    #[@test]
+    public function cacheFieldType() {
+      $this->assertEquals(NULL, $this->fixture->getField('cache')->getType());
+    }
   }
 ?>
