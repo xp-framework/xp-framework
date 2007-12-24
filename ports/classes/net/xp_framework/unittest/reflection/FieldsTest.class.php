@@ -16,14 +16,14 @@
    */
   class FieldsTest extends TestCase {
     protected
-      $class  = NULL;
+      $fixture  = NULL;
   
     /**
      * Sets up test case
      *
      */
     public function setUp() {
-      $this->class= XPClass::forName('net.xp_framework.unittest.reflection.TestClass');
+      $this->fixture= XPClass::forName('net.xp_framework.unittest.reflection.TestClass');
     }
     
     /**
@@ -33,7 +33,7 @@
      */
     #[@test]
     public function fields() {
-      $fields= $this->class->getFields();
+      $fields= $this->fixture->getFields();
       $this->assertArray($fields);
       foreach ($fields as $field) {
         $this->assertClass($field, 'lang.reflect.Field');
@@ -48,8 +48,8 @@
     #[@test]
     public function declaredField() {
       $this->assertEquals(
-        $this->class,
-        $this->class->getField('map')->getDeclaringClass()
+        $this->fixture,
+        $this->fixture->getField('map')->getDeclaringClass()
       );
     }
 
@@ -61,9 +61,31 @@
     #[@test]
     public function inheritedField() {
       $this->assertEquals(
-        $this->class->getParentClass(),
-        $this->class->getField('inherited')->getDeclaringClass()
+        $this->fixture->getParentClass(),
+        $this->fixture->getField('inherited')->getDeclaringClass()
       );
+    }
+
+    /**
+     * Tests getting a non-existant field
+     *
+     * @see     xp://lang.reflect.Field#getField
+     */
+    #[@test]
+    public function nonExistantField() {
+      $this->assertFalse($this->fixture->hasField('@@nonexistant@@'));
+      $this->assertNull($this->fixture->getField('@@nonexistant@@'));
+    }
+
+    /**
+     * Tests the special "__id" member is not recognized as field
+     *
+     * @see     xp://lang.reflect.Field#getField
+     */
+    #[@test]
+    public function specialIdField() {
+      $this->assertFalse($this->fixture->hasField('__id'));
+      $this->assertNull($this->fixture->getField('__id'));
     }
 
     /**
@@ -74,7 +96,7 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function assertModifiers($modifiers, $field) {
-      $this->assertEquals($modifiers, $this->class->getField($field)->getModifiers());
+      $this->assertEquals($modifiers, $this->fixture->getField($field)->getModifiers());
     }
 
     /**
@@ -135,12 +157,12 @@
      */
     #[@test]
     public function dateField() {
-      $this->assertTrue($this->class->hasField('date'));
-      with ($field= $this->class->getField('date')); {
+      $this->assertTrue($this->fixture->hasField('date'));
+      with ($field= $this->fixture->getField('date')); {
         $this->assertClass($field, 'lang.reflect.Field');
         $this->assertEquals('date', $field->getName());
         $this->assertEquals('util.Date', $field->getType());
-        $this->assertTrue($this->class->equals($field->getDeclaringClass()));
+        $this->assertTrue($this->fixture->equals($field->getDeclaringClass()));
       }
     }
 
@@ -151,7 +173,7 @@
      */
     #[@test]
     public function dateFieldValue() {
-      $this->assertClass($this->class->getField('date')->get($this->class->newInstance()), 'util.Date');
+      $this->assertClass($this->fixture->getField('date')->get($this->fixture->newInstance()), 'util.Date');
     }
 
     /**
@@ -161,7 +183,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function dateFieldValueOnWrongObject() {
-      $this->class->getField('date')->get(new Object());
+      $this->fixture->getField('date')->get(new Object());
     }
 
     /**
@@ -171,7 +193,7 @@
      */
     #[@test]
     public function initializerCalledFieldValue() {
-      $this->assertEquals(TRUE, $this->class->getField('initializerCalled')->get(NULL));
+      $this->assertEquals(TRUE, $this->fixture->getField('initializerCalled')->get(NULL));
     }
 
     /**
@@ -181,7 +203,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function cacheFieldValue() {
-      $this->class->getField('cache')->get(NULL);
+      $this->fixture->getField('cache')->get(NULL);
     }
 
     /**
@@ -191,7 +213,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function sizeFieldValue() {
-      $this->class->getField('size')->get($this->class->newInstance());
+      $this->fixture->getField('size')->get($this->fixture->newInstance());
     }
 
     /**
@@ -201,7 +223,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function factorFieldValue() {
-      $this->class->getField('factor')->get($this->class->newInstance());
+      $this->fixture->getField('factor')->get($this->fixture->newInstance());
     }
   }
 ?>
