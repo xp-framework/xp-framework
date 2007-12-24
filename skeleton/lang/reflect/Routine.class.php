@@ -135,16 +135,6 @@
     }
 
     /**
-     * Retrieve whether this method returns a reference
-     *
-     * @return  string
-     */
-    #[@deprecated]
-    public function returnsReference() {
-      return $this->_reflect->returnsReference();
-    }
-    
-    /**
      * Retrieve exception names
      *
      * @return  string[]
