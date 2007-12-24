@@ -63,6 +63,15 @@
     }
 
     /**
+     * Test constructor invocation with three characters
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function illegalLength() {
+      new Character('ABC');
+    }
+
+    /**
      * Test
      *
      */
@@ -99,6 +108,38 @@
     #[@test]
     public function transliteration() {
       $this->assertEquals('c', create(new String('Ä', 'UTF-8'))->toString());
+    }
+
+    /**
+     * Test string conversion overloading
+     *
+     */
+    #[@test]
+    public function worksWithEchoStatement() {
+      ob_start();
+      echo new Character('ü');
+      $this->assertEquals('ü', ob_get_clean());
+    }
+
+    /**
+     * Test string conversion overloading
+     *
+     */
+    #[@test]
+    public function stringCast() {
+      $this->assertEquals('w', (string)new Character('w'));
+    }
+
+    /**
+     * Test string conversion overloading
+     *
+     */
+    #[@test]
+    public function usedInStringFunction() {
+      $this->assertEquals(
+        'z', 
+        str_replace('Z', 'z', new Character('Z')
+      ));
     }
   }
 ?>
