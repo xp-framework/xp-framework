@@ -37,7 +37,21 @@
       if (class_exists(xp::reflect($name))) {
         $this->fail('Class "'.$name.'" may not exist!');
       }
-      return ClassLoader::defineClass($name, $parent, $interfaces, $bytes);
+      return ClassLoader::getDefault()->defineClass($name, $parent, $interfaces, $bytes);
+    }
+
+    /**
+     * Helper method
+     *
+     * @param   string name
+     * @param   lang.XPClass class
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function defineInterface($name, $parents, $bytes) {
+      if (interface_exists(xp::reflect($name))) {
+        $this->fail('Interface "'.$name.'" may not exist!');
+      }
+      return ClassLoader::getDefault()->defineInterface($name, $parents, $bytes);
     }
 
     /**
@@ -95,6 +109,50 @@
         array(XPClass::forName('util.log.Traceable'))
       );
       $this->assertClass($c->getClassLoader(), 'lang.DynamicClassLoader');
+    }
+
+    /**
+     * Test defineInterface() method
+     *
+     */
+    #[@test]
+    public function defineSimpleInterface() {
+      $name= 'net.xp_framework.unittest.reflection.SimpleInterface';
+      $class= $this->defineInterface($name, array(), '{
+        public function setTrace($cat);
+      }');
+      $this->assertXPClass($name, $class);
+      $this->assertTrue($class->isInterface());
+      $this->assertEquals(array(), $class->getInterfaces());
+      $this->assertClass($class->getClassLoader(), 'lang.DynamicClassLoader');
+    }
+
+    /**
+     * Test defineInterface() method
+     *
+     */
+    #[@test]
+    public function defineInterfaceWithParent() {
+      $name= 'net.xp_framework.unittest.reflection.InterfaceWithParent';
+      $class= $this->defineInterface($name, array('util.log.Traceable'), '{
+        public function setDebug($cat);
+      }');
+      $this->assertXPClass($name, $class);
+      $this->assertTrue($class->isInterface());
+      $this->assertEquals(array(XPClass::forName('util.log.Traceable')), $class->getInterfaces());
+      $this->assertClass($class->getClassLoader(), 'lang.DynamicClassLoader');
+    }
+
+    /**
+     * Test defineInterface() method
+     *
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function defineInterfaceWithNonExistantParent() {
+      $name= 'net.xp_framework.unittest.reflection.ErroneousInterface';
+      $this->defineInterface($name, array('@@nonexistant@@'), '{
+        public function setDebug($cat);
+      }');
     }
   }
 ?>
