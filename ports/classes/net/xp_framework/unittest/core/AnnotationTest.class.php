@@ -47,6 +47,26 @@
     }
 
     /**
+     * Tests this class' methodAnnotation() method has no annotations
+     *
+     * @see     xp://lang.reflect.Routine#hasAnnotations
+     */
+    #[@test]
+    public function methodAnnotationHasNoAnnotations() {
+      $this->assertFalse($this->getClass()->getMethod('methodAnnotation')->hasAnnotations());
+    }
+
+    /**
+     * Tests this method has annotations
+     *
+     * @see     xp://lang.reflect.Routine#hasAnnotations
+     */
+    #[@test]
+    public function thisMethodHasAnnotations() {
+      $this->assertTrue($this->getClass()->getMethod('thisMethodHasAnnotations')->hasAnnotations());
+    }
+
+    /**
      * Tests method with a simple annotation without a value exists
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simple
