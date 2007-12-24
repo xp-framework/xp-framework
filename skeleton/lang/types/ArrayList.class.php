@@ -144,7 +144,7 @@
             if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
             break;
 
-          case is('Generic', $a1[$k]):
+          case $a1[$k] instanceof Generic:
             if (!$a1[$k]->equals($a2[$k])) return FALSE;
             break;
 
