@@ -350,21 +350,21 @@
     }
 
     /**
-     * Tests string representation of a method with void return value
+     * Tests string representation of a method with a class return value
      *
-     * @see     xp://net.xp_framework.unittest.reflection.TestClass#setDate
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#getDate
      * @see     xp://lang.reflect.Method#toString
      */
     #[@test]
-    public function setDateString() {
+    public function getDateString() {
       $this->assertEquals(
-        'public void setDate(util.Date $date)', 
-        $this->fixture->getMethod('setDate')->toString()
+        'public util.Date getDate()', 
+        $this->fixture->getMethod('getDate')->toString()
       );
     }
 
     /**
-     * Tests string representation of a protected method
+     * Tests string representation of a protected method with void return value
      *
      * @see     xp://net.xp_framework.unittest.reflection.TestClass#clearMap
      * @see     xp://lang.reflect.Method#toString
@@ -415,6 +415,11 @@
     #[@test]
     public function thrownExceptionNames() {
       $this->assertEquals(
+        array('lang.IllegalArgumentException', 'lang.IllegalStateException'), 
+        $this->fixture->getMethod('setDate')->getExceptionNames(),
+        'with multiple throws'
+      );
+      $this->assertEquals(
         array('lang.IllegalStateException'), 
         $this->fixture->getMethod('setTrace')->getExceptionNames(),
         'with throws'
@@ -433,6 +438,11 @@
      */
     #[@test]
     public function thrownExceptionTypes() {
+      $this->assertEquals(
+        array(XPClass::forName('lang.IllegalArgumentException'), XPClass::forName('lang.IllegalStateException')), 
+        $this->fixture->getMethod('setDate')->getExceptionTypes(),
+        'with multiple throws'
+      );
       $this->assertEquals(
         array(XPClass::forName('lang.IllegalStateException')), 
         $this->fixture->getMethod('setTrace')->getExceptionTypes(),
