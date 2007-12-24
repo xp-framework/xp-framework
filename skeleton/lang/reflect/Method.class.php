@@ -9,6 +9,7 @@
   /**
    * Represents a class method
    *
+   * @test     xp://net.xp_framework.unittest.reflection.MethodsTest
    * @see      xp://lang.XPClass
    * @see      xp://lang.reflect.Routine
    * @purpose  Reflection
