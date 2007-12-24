@@ -7,7 +7,7 @@
   /**
    * Represents a class field
    *
-   * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
+   * @test     xp://net.xp_framework.unittest.reflection.FieldsTest
    * @see      xp://lang.XPClass
    * @purpose  Reflection
    */
@@ -67,11 +67,22 @@
      * @param   lang.Object instance
      * @return  mixed  
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
+     * @throws  lang.IllegalAccessException in case this field is not public
      */
     public function get($instance) {
+    
+      // Verify the field is public
+      if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
+        throw new IllegalAccessException('Cannot read '.$this->toString());
+      }
+
+      // Short-circuit further checks for static members
       if ($this->_reflect->isStatic()) {
         return $this->_reflect->getValue(NULL);
       }
+
+      // Verify given instance is instance of the class declaring this 
+      // property
       if (!($instance instanceof $this->_class)) {
         throw new IllegalArgumentException(sprintf(
           'Passed argument is not a %s class (%s)',
@@ -80,15 +91,6 @@
         ));
       }
 
-      $m= $this->_reflect->getModifiers();
-      if (!($m & MODIFIER_PUBLIC)) {
-        throw new IllegalAccessException(sprintf(
-          'Cannot read %s %s::$%s',
-          Modifiers::stringOf($this->getModifiers()),
-          $this->_class,
-          $this->_reflect->getName()
-        ));
-      }
 
       return $this->_reflect->getValue($instance);
     }
@@ -109,7 +111,14 @@
      * @return  string
      */
     public function toString() {
-      return Modifiers::stringOf($this->getModifiers()).' '.$this->getType().' $'.$this->name;
+      $t= $this->getType();
+      return sprintf(
+        '%s%s %s::$%s',
+        Modifiers::stringOf($this->getModifiers()),
+        $t ? ' '.$t : '',
+        $this->getDeclaringClass()->getName(),
+        $this->getName()
+      );
     }
   }
 ?>
