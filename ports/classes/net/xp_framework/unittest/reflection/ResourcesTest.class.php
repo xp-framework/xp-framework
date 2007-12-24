@@ -74,5 +74,14 @@
     public function nonExistantResource() {
       ClassLoader::getDefault()->getResource('::DOES-NOT-EXIST::');
     }
+
+    /**
+     * Tests getResourceAsStream() method
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function nonExistantResourceStream() {
+      ClassLoader::getDefault()->getResourceAsStream('::DOES-NOT-EXIST::');
+    }
   }
 ?>
