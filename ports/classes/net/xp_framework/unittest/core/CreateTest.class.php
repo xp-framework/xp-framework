@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'util.collections.Vector',
     'util.collections.HashTable'
   );
 
@@ -24,7 +25,7 @@
      *   $c= create(new Criteria())->add('bz_id', 20000, EQUAL);
      * </code>
      *
-     * @see   http://xp-framework.info/xml/xp.en_US/news/view?184
+     * @see   http://news.xp-framework.net/article/184/2007/05/06/
      */
     #[@test]
     public function createReturnsObjects() {
@@ -40,6 +41,18 @@
     public function createWithShortNames() {
       $h= create('new HashTable<String, String>');
       $this->assertEquals(array('String', 'String'), $h->__generic);
+    }
+
+    /**
+     * Test create() using short class names
+     *
+     */
+    #[@test]
+    public function createInvokesConstructor() {
+      $this->assertEquals(
+        new String('Hello'), 
+        create('new util.collections.Vector<lang.types.String>', array(new String('Hello')))->get(0)
+      );
     }
 
     /**
