@@ -18,10 +18,10 @@
       $_iotrace = NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
+     * @param   string endpoint
+     * @param   string uri
      */
     public function __construct($endpoint, $uri) {
       $this->client= SoapDriver::getInstance()->forEndpoint($endpoint, $uri);

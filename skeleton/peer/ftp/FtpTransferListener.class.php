@@ -7,10 +7,11 @@
   uses('peer.ftp.FtpTransfer');
 
   /**
-   * (Insert class' description here)
+   * Interface FtpTransferListener
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.ftp.FtpFile#uploadFrom
+   * @see      xp://peer.ftp.FtpFile#downloadTo
+   * @purpose  Interface
    */
   interface FtpTransferListener {
   

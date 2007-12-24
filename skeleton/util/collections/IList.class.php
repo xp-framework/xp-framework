@@ -7,7 +7,7 @@
   uses('lang.IndexOutOfBoundsException');
 
   /**
-   * (Insert class' description here)
+   * Interface for lists
    *
    * @purpose  Interface
    */
