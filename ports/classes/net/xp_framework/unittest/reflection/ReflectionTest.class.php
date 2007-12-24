@@ -192,6 +192,17 @@
     }
     
     /**
+     * Tests getAnnotation() throws an exception if the passed annotation
+     * name does not exist.
+     *
+     * @see     xp://lang.XPClass#getAnnotation
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function nonExistantAnnotation() {
+      $this->class->getAnnotation('non-existant');
+    }
+    
+    /**
      * Tests dynamic class loading via forName()
      *
      * @see     xp://lang.XPClass#forName
@@ -213,6 +224,20 @@
     #[@test, @expect('lang.ClassNotFoundException')]
     public function nonExistantforName() {
       $class= XPClass::forName('class.does.not.Exist');
+    }
+
+    /**
+     * Tests getClasses()
+     *
+     * @see     xp://lang.XPClass#getClasses
+     */
+    #[@test]
+    public function getClasses() {
+      $classes= XPClass::getClasses();
+      $this->assertArray($classes);
+      foreach ($classes as $class) {
+        $this->assertClass($class, 'lang.XPClass');
+      }
     }
   }
 ?>
