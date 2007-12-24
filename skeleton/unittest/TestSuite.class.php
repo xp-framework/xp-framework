@@ -202,12 +202,11 @@
         $method->invoke($test, NULL);
       } catch (TargetInvocationException $t) {
         $timer->stop();
+        $test->tearDown();
         $e= $t->getCause();
-        xp::gc();
 
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
-          $test->tearDown();
           if ($eta && $timer->elapsedTime() > $eta) {
             $this->notifyListeners('testFailed', array(
               $result->setFailed($test, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
@@ -217,7 +216,6 @@
               $result->setSucceeded($test, $timer->elapsedTime())
             ));
           }
-          return;
         } else if ($expected && !$expected->isInstance($e)) {
           $this->notifyListeners('testFailed', array(
             $result->setFailed(
@@ -226,13 +224,12 @@
               $timer->elapsedTime()
             )
           ));
-          return;
+        } else {
+          $this->notifyListeners('testFailed', array(
+            $result->setFailed($test, $e, $timer->elapsedTime())
+          ));
         }
-
-        $this->notifyListeners('testFailed', array(
-          $result->setFailed($test, $e, $timer->elapsedTime())
-        ));
-        $test->tearDown();
+        xp::gc();
         return;
       }
 
