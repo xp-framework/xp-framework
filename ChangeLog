@@ -66,6 +66,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Improved performance of lang.types.ArrayList::equals() method
+  (friebe)
 - Improved performance of XPClass::getFields() and XPClass::getField()
   (friebe)
 - Added API to listen to events during a unit test run
