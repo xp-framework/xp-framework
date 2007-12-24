@@ -31,6 +31,9 @@
     
     public static
       $initializerCalled= FALSE;
+    
+    private static
+      $cache  = array();
 
     static function __static() {
       self::$initializerCalled= TRUE;
