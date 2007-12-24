@@ -27,6 +27,34 @@
     }
 
     /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function stringIsEqualToItself() {
+      $a= new String('');
+      $this->assertTrue($a->equals($a));
+    }
+
+    /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function stringIsEqualSameString() {
+      $this->assertTrue(create(new String('ABC'))->equals(new String('ABC')));
+    }
+
+    /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function stringIsNotEqualToDifferentString() {
+      $this->assertFalse(create(new String('ABC'))->equals(new String('CBA')));
+    }
+
+    /**
      * Test a string with an incomplete multibyte character in it
      *
      */
@@ -225,6 +253,43 @@
     }
 
     /**
+     * Test concat() method
+     *
+     */
+    #[@test]
+    public function concat() {
+      $this->assertEquals(new String('www.müller.com'), create(new String('www'))
+        ->concat(new Character('.'))
+        ->concat('müller')
+        ->concat('.com')
+      );
+    }
+    
+    /**
+     * Test hashCode() method
+     *
+     */
+    #[@test]
+    public function hashesOfSameStringEqual() {
+      $this->assertEquals(
+        create(new String(''))->hashCode(),
+        create(new String(''))->hashCode()
+      );
+    }
+
+    /**
+     * Test hashCode() method
+     *
+     */
+    #[@test]
+    public function hashesOfDifferentStringsNotEqual() {
+      $this->assertNotEquals(
+        create(new String('A'))->hashCode(),
+        create(new String('B'))->hashCode()
+      );
+    }
+    
+    /**
      * Test charAt() method
      *
      */
@@ -379,7 +444,6 @@
       unset($str[-1]);
     }
 
-
     /**
      * Test unset() overloading
      *
@@ -388,6 +452,38 @@
     public function offsetUnsetAfterEnd() {
       $str= new String('www.müller.com');
       unset($str[1024]);
+    }
+
+    /**
+     * Test string conversion overloading
+     *
+     */
+    #[@test]
+    public function worksWithEchoStatement() {
+      ob_start();
+      echo new String('www.müller.com');
+      $this->assertEquals('www.müller.com', ob_get_clean());
+    }
+
+    /**
+     * Test string conversion overloading
+     *
+     */
+    #[@test]
+    public function stringCast() {
+      $this->assertEquals('www.müller.com', (string)new String('www.müller.com'));
+    }
+
+    /**
+     * Test string conversion overloading
+     *
+     */
+    #[@test]
+    public function usedInStringFunction() {
+      $this->assertEquals(
+        'ftp.müller.com', 
+        str_replace('www', 'ftp', new String('www.müller.com')
+      ));
     }
   }
 ?>
