@@ -390,5 +390,59 @@
         $this->fixture->getMethod('fromMap')->toString()
       );
     }
+
+    /**
+     * Tests string representation of method with throws documentation
+     *
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#setTrace
+     * @see     xp://lang.reflect.Method#toString
+     */
+    #[@test]
+    public function setTraceString() {
+      $this->assertEquals(
+        'public void setTrace(util.log.LogCategory $cat) throws lang.IllegalStateException', 
+        $this->fixture->getMethod('setTrace')->toString()
+      );
+    }
+
+    /**
+     * Tests getExceptionNames method
+     *
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#setTrace
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#currentTimestamp
+     * @see     xp://lang.reflect.Method#getExceptionNames
+     */
+    #[@test]
+    public function thrownExceptionNames() {
+      $this->assertEquals(
+        array('lang.IllegalStateException'), 
+        $this->fixture->getMethod('setTrace')->getExceptionNames(),
+        'with throws'
+      );
+      $this->assertEquals(
+        array(), 
+        $this->fixture->getMethod('currentTimestamp')->getExceptionNames(),
+        'without throws'
+      );
+    }
+
+    /**
+     * Tests getExceptionTypes method
+     *
+     * @see     xp://lang.reflect.Method#getExceptionTypes
+     */
+    #[@test]
+    public function thrownExceptionTypes() {
+      $this->assertEquals(
+        array(XPClass::forName('lang.IllegalStateException')), 
+        $this->fixture->getMethod('setTrace')->getExceptionTypes(),
+        'with throws'
+      );
+      $this->assertEquals(
+        array(), 
+        $this->fixture->getMethod('currentTimestamp')->getExceptionTypes(),
+        'without throws'
+      );
+    }
   }
 ?>
