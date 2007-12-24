@@ -56,6 +56,61 @@
     }
 
     /**
+     * Test string invoked with integer number as sole constructor argument
+     *
+     */
+    #[@test]
+    public function integerString() {
+      $str= new String(1);
+      $this->assertEquals('1', $str->getBytes());
+      $this->assertEquals(1, $str->length());
+    }
+
+    /**
+     * Test string invoked with double number as sole constructor argument
+     *
+     */
+    #[@test]
+    public function doubleString() {
+      $str= new String(1.1);
+      $this->assertEquals('1.1', $str->getBytes());
+      $this->assertEquals(3, $str->length());
+    }
+
+    /**
+     * Test string invoked with boolean as sole constructor argument
+     *
+     */
+    #[@test]
+    public function trueString() {
+      $str= new String(TRUE);
+      $this->assertEquals('1', $str->getBytes());
+      $this->assertEquals(1, $str->length());
+    }
+
+    /**
+     * Test string invoked with boolean as sole constructor argument
+     *
+     */
+    #[@test]
+    public function falseString() {
+      $str= new String(FALSE);
+      $this->assertEquals('', $str->getBytes());
+      $this->assertEquals(0, $str->length());
+    }
+
+    /**
+     * Test string invoked with null as sole constructor argument
+     *
+     */
+    #[@test]
+    public function nullString() {
+      $str= new String(NULL);
+      $this->assertEquals('', $str->getBytes());
+      $this->assertEquals(0, $str->length());
+    }
+
+    /**
      * Test a string containing German umlauts
      *
      */
@@ -97,10 +152,25 @@
     #[@test]
     public function indexOf() {
       $str= new String('Hällo');
+      $this->assertEquals(0, $str->indexOf('H'));
       $this->assertEquals(1, $str->indexOf('ä'));
       $this->assertEquals(1, $str->indexOf(new String('ä')));
       $this->assertEquals(-1, $str->indexOf(''));
       $this->assertEquals(-1, $str->indexOf('4'));
+    }
+
+    /**
+     * Test lastIndexOf() method
+     *
+     */
+    #[@test]
+    public function lastIndexOf() {
+      $str= new String('HälloH');
+      $this->assertEquals($str->length()- 1, $str->lastIndexOf('H'));
+      $this->assertEquals(1, $str->lastIndexOf('ä'));
+      $this->assertEquals(1, $str->lastIndexOf(new String('ä')));
+      $this->assertEquals(-1, $str->lastIndexOf(''));
+      $this->assertEquals(-1, $str->lastIndexOf('4'));
     }
 
     /**
@@ -142,7 +212,7 @@
     }
 
     /**
-     * Test startsWith() method
+     * Test endsWith() method
      *
      */
     #[@test]
@@ -155,6 +225,33 @@
     }
 
     /**
+     * Test charAt() method
+     *
+     */
+    #[@test]
+    public function charAt() {
+      $this->assertEquals(new Character('ü'), create(new String('www.müller.com'))->charAt(5));
+    }
+
+    /**
+     * Test charAt() method
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function charAtNegative() {
+      create(new String('ABC'))->charAt(-1);
+    }
+
+    /**
+     * Test charAt() method
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function charAtAfterEnd() {
+      create(new String('ABC'))->charAt(4);
+    }
+
+    /**
      * Test replace() method
      *
      */
@@ -163,6 +260,134 @@
       $str= new String('www.müller.com');
       $this->assertEquals(new String('müller'), $str->replace('www.')->replace('.com'));
       $this->assertEquals(new String('muller'), $str->replace('ü', 'u'));
+    }
+
+    /**
+     * Test []= overloading
+     *
+     */
+    #[@test]
+    public function offsetSet() {
+      $str= new String('www.müller.com');
+      $str[5]= 'u';
+      $this->assertEquals(new String('www.muller.com'), $str);
+    }
+
+    /**
+     * Test []= overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function offsetSetNegative() {
+      $str= new String('www.müller.com');
+      $str[-1]= 'u';
+    }
+
+    /**
+     * Test []= overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function offsetSetAfterEnd() {
+      $str= new String('www.müller.com');
+      $str[$str->length()]= 'u';
+    }
+
+    /**
+     * Test []= overloading
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function offsetSetIncorrectLength() {
+      $str= new String('www.müller.com');
+      $str[5]= 'ue';
+    }
+
+    /**
+     * Test []= overloading
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function offsetAdd() {
+      $str= new String('www.müller.com');
+      $str[]= '.';
+    }
+
+    /**
+     * Test =[] overloading
+     *
+     */
+    #[@test]
+    public function offsetGet() {
+      $str= new String('www.müller.com');
+      $this->assertEquals(new Character('ü'), $str[5]);
+    }
+
+    /**
+     * Test isset() overloading
+     *
+     */
+    #[@test]
+    public function offsetExists() {
+      $str= new String('www.müller.com');
+      $this->assertTrue(isset($str[0]), 0);
+      $this->assertTrue(isset($str[5]), 5);
+      $this->assertFalse(isset($str[-1]), -1);
+      $this->assertFalse(isset($str[1024]), 1024);
+    }
+
+    /**
+     * Test unset() overloading
+     *
+     */
+    #[@test]
+    public function offsetUnsetAtBeginning() {
+      $str= new String('www.müller.com');
+      unset($str[0]);
+      $this->assertEquals(new String('ww.müller.com'), $str);
+    }
+
+    /**
+     * Test unset() overloading
+     *
+     */
+    #[@test]
+    public function offsetUnsetAtEnd() {
+      $str= new String('www.müller.com');
+      unset($str[$str->length()- 1]);
+      $this->assertEquals(new String('www.müller.co'), $str);
+    }
+
+    /**
+     * Test unset() overloading
+     *
+     */
+    #[@test]
+    public function offsetUnsetInBetween() {
+      $str= new String('www.müller.com');
+      unset($str[5]);
+      $this->assertEquals(new String('www.mller.com'), $str);
+    }
+
+    /**
+     * Test unset() overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function offsetUnsetNegative() {
+      $str= new String('www.müller.com');
+      unset($str[-1]);
+    }
+
+
+    /**
+     * Test unset() overloading
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function offsetUnsetAfterEnd() {
+      $str= new String('www.müller.com');
+      unset($str[1024]);
     }
   }
 ?>
