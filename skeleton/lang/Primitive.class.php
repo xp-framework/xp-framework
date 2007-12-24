@@ -24,6 +24,7 @@
    *   <li>array</li>
    * </ul>
    *
+   * @test     xp://net.xp_framework.unittest.reflection.PrimitiveTest 
    * @see      xp://lang.Type
    * @purpose  Type implementation
    */
@@ -70,7 +71,7 @@
      * @throws  lang.IllegalArgumentException in case in cannot be boxed.
      */
     public static function boxed($in) {
-      if ($in instanceof Generic) return $in;
+      if (NULL === $in || $in instanceof Generic) return $in;
       $t= gettype($in);
       if ('string' === $t) return new String($in);
       if ('integer' === $t) return new Integer($in);
