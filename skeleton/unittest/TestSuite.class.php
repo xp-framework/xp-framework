@@ -203,6 +203,7 @@
       } catch (TargetInvocationException $t) {
         $timer->stop();
         $e= $t->getCause();
+        xp::gc();
 
         // Was that an expected exception?
         if ($expected && $expected->isInstance($e)) {
@@ -216,7 +217,15 @@
               $result->setSucceeded($test, $timer->elapsedTime())
             ));
           }
-          xp::gc();
+          return;
+        } else if ($expected && !$expected->isInstance($e)) {
+          $this->notifyListeners('testFailed', array(
+            $result->setFailed(
+              $test, 
+              new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected->getName()),
+              $timer->elapsedTime()
+            )
+          ));
           return;
         }
 
@@ -232,18 +241,14 @@
 
       // Check expected exception
       if ($expected) {
-        $e= new AssertionFailedError(
-          'Expected exception not caught',
-          (isset($e) && $e instanceof XPException ? $e->getClassName() : NULL),
-          $method->getAnnotation('expect')
-        );
         $this->notifyListeners('testFailed', array(
-          $result->setFailed($test, $e, $timer->elapsedTime())
+          $result->setFailed(
+            $test, 
+            new AssertionFailedError('Expected exception not caught', NULL, $expected->getName()),
+            $timer->elapsedTime()
+          )
         ));
-        return;
-      }
-      
-      if (sizeof(xp::registry('errors')) > 0) {
+      } else if (sizeof(xp::registry('errors')) > 0) {
         $this->notifyListeners('testFailed', array(
           $result->setFailed($test, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime())
         ));
