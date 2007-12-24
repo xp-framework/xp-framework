@@ -226,5 +226,32 @@
     public function factorFieldValue() {
       $this->fixture->getField('factor')->get($this->fixture->newInstance());
     }
+
+    /**
+     * Tests retrieving the "date" field's string representation
+     *
+     * @see     xp://lang.reflect.Field#toString
+     */
+    #[@test]
+    public function dateFieldString() {
+      $this->assertEquals(
+        'public util.Date net.xp_framework.unittest.reflection.TestClass::$date', 
+        $this->fixture->getField('date')->toString()
+      );
+    }
+
+    /**
+     * Tests retrieving the "cache" field's string representation
+     *
+     * @see     xp://lang.reflect.Field#toString
+     */
+    #[@test]
+    public function cacheFieldString() {
+      $this->assertEquals(
+        'private static net.xp_framework.unittest.reflection.TestClass::$cache', 
+        $this->fixture->getField('cache')->toString()
+      );
+    }
+
   }
 ?>
