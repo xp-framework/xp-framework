@@ -70,8 +70,15 @@
      * Set date
      *
      * @param   util.Date date
+     * @throws  lang.IllegalArgumentException in case the given argument is of incorrect type
+     * @throws  lang.IllegalStateException if date is before 1970
      */    
     public function setDate($date) {
+      if (!$date instanceof Date) {
+        throw new IllegalArgumentException('Given argument is not a util.Date');
+      } else if ($date->getYear() < 1970) {
+        throw new IllegalStateException('Date must be after 1970');
+      }
       $this->date= $date;
     }
     
@@ -89,7 +96,7 @@
      * Set a trace for debugging
      *
      * @param   util.log.LogCategory cat
-     * @throws  lang.IllegalStateException
+     * @throws  lang.IllegalStateException *ALWAYS*
      */
     public function setTrace($cat) {
       throw new IllegalStateException('Not debuggable yet');
