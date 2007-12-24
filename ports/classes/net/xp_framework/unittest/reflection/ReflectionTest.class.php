@@ -97,7 +97,7 @@
     }
 
     /**
-     * Tests the constructor
+     * Tests this class has a constructor
      *
      * @see     xp://lang.XPClass#hasConstructor
      * @see     xp://lang.XPClass#getConstructor
@@ -106,6 +106,19 @@
     public function constructor() {
       $this->assertTrue($this->class->hasConstructor());
       $this->assertClass($this->class->getConstructor(), 'lang.reflect.Constructor');
+    }
+
+    /**
+     * Tests lang.Object class has no constructor
+     *
+     * @see     xp://lang.XPClass#hasConstructor
+     * @see     xp://lang.XPClass#getConstructor
+     */
+    #[@test]
+    public function noConstructor() {
+      $objectClass= XPClass::forName('lang.Object');
+      $this->assertFalse($objectClass->hasConstructor());
+      $this->assertNull($objectClass->getConstructor());
     }
 
     /**
@@ -141,6 +154,16 @@
     #[@test, @expect('lang.IllegalAccessException')]
     public function newInstanceForAbstractClass() {
       XPClass::forName('net.xp_framework.unittest.reflection.AbstractTestClass')->newInstance();
+    }
+
+    /**
+     * Tests trying to instantiate an interface throws an exception
+     *
+     * @see     xp://lang.reflect.Constructor#newInstance
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function newInstanceForInterface() {
+      XPClass::forName('util.log.Traceable')->newInstance();
     }
 
     /**
