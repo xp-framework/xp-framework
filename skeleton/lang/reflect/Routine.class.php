@@ -150,8 +150,8 @@
      * @return  string[]
      */
     public function getExceptionNames() {
-      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
-      return $details[DETAIL_THROWS];
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      return $details ? $details[DETAIL_THROWS] : array();
     }
 
     /**
@@ -160,11 +160,8 @@
      * @return  lang.XPClass[]
      */
     public function getExceptionTypes() {
-      $r= array();
-      foreach ($this->getExceptionNames() as $name) {
-        $r[]= new XPClass($name);
-      }
-      return $r;
+      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      return $details ? array_map(array('XPClass', 'forName'), $details[DETAIL_THROWS]) : array();
     }
     
     /**
