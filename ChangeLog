@@ -36,6 +36,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.reflect.Routine::getExceptionTypes() always throwing exceptions.
+  (friebe)
 - Fixed lang.Primitive::boxed() for NULL values
   (friebe)
 - Fixed a bug in peer.ldap which occurred when the size-limit for the results
