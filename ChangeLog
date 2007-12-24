@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated lang.reflect.Routine::returnsReference() method
+  (friebe)
 - Refactored unittest.TestSuite/unittest.TestCase for added listener API.
   With these changes, test cases cannot be run on their own but must always
   be added to a suite before - it can run single tests via runTest()
