@@ -114,14 +114,9 @@
         }
       }');
      
-      // Create reference to equalsInvoked member. This is because assertEquals() 
-      // will create a copy of the argument (because of its signature, where 
-      // the expected and actual arguments are not pass-by-ref arguments; which
-      // they can't be, because else assertEquals(TRUE, $other) wouldn't work...
-      $invoked= &$instance->equalsInvoked;
       $this->assertEquals($instance, $instance);
       $this->assertNotEquals($instance, NULL);
-      $this->assertEquals(2, $invoked);
+      $this->assertEquals(2, $instance->equalsInvoked);
     }
 
     /**
