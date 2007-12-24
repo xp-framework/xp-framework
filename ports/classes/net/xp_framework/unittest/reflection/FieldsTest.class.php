@@ -5,7 +5,8 @@
  */
 
   uses(
-    'unittest.TestCase'
+    'unittest.TestCase',
+    'net.xp_framework.unittest.reflection.TestClass'
   );
 
   /**
