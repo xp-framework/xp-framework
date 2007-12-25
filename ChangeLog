@@ -73,6 +73,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made rdbms.DriverManager::register() throw an IllegalArgumentException
+  when an incorrect driver class was given
+  (friebe)
 - Improved performance of lang.types.ArrayList::equals() method
   (friebe)
 - Improved performance of XPClass::getFields() and XPClass::getField()
