@@ -350,6 +350,20 @@
     }
 
     /**
+     * Tests string representation of a method with generic return value
+     *
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#filterMap
+     * @see     xp://lang.reflect.Method#toString
+     */
+    #[@test]
+    public function filterMapString() {
+      $this->assertEquals(
+        'public lang.Collection<lang.Object> filterMap([string $pattern= NULL])', 
+        $this->fixture->getMethod('filterMap')->toString()
+      );
+    }
+
+    /**
      * Tests string representation of a method with a class return value
      *
      * @see     xp://net.xp_framework.unittest.reflection.TestClass#getDate
