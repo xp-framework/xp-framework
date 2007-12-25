@@ -24,6 +24,7 @@
    *   var_dump($r->next('version'));
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.DriverManagerTest
    * @purpose  Manager
    */
   class DriverManager extends Object {
@@ -60,7 +61,7 @@
      * <code>
      *   DriverManager::register('mydb', XPClass::forName('my.db.Connection'));
      *   // [...]
-     *   $conn= &DriverManager::getConnection('mydb://...');
+     *   $conn= DriverManager::getConnection('mydb://...');
      * </code>
      *
      * @param   string name identifier
