@@ -173,6 +173,9 @@
      */
     public function addAll($objects) { 
       $result= FALSE;
+      $hash= $this->_hash;
+      $elements= $this->_elements;
+      
       for ($i= 0, $s= sizeof($objects); $i < $s; $i++) {
         if ($this->__generic && !$objects[$i] instanceof $this->__generic[0]) {
           throw new IllegalArgumentException('Object #'.$i.' '.xp::stringOf($objects[$i]).' must be of '.$this->__generic[0]);
@@ -181,9 +184,13 @@
         if (isset($this->_elements[$h])) continue;
         
         $result= TRUE;
-        $this->_hash+= HashProvider::hashOf($h);
-        $this->_elements[$h]= $objects[$i];
+        $hash+= HashProvider::hashOf($h);
+        $elements[$h]= $objects[$i];
       }
+      
+      $this->_hash= $hash;
+      $this->_elements= $elements;
+      
       return $result;
     }
 
