@@ -9,6 +9,7 @@
   /**
    * Resizable array list
    *
+   * @test     xp://net.xp_framework.unittest.util.collections.VectorTest
    * @see      xp://lang.types.ArrayList
    * @purpose  IList implementation
    */
@@ -276,7 +277,7 @@
      * @return  string
      */
     public function toString() {
-      $r= $this->getClassName().'<'.$this->class.">@{\n";
+      $r= $this->getClassName().'['.$this->size."]@{\n";
       for ($i= 0; $i < $this->size; $i++) {
         $r.= '  '.$i.': '.str_replace("\n", "\n  ", xp::stringOf($this->elements[$i]))."\n";
       } 
