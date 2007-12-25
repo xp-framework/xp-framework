@@ -7,10 +7,9 @@
   /**
    * Unknown remote object
    *
-   * @ext      overload
    * @see      php://__PHP_Incomplete_Class
    * @test     xp://net.xp_framework.unittest.remote.UnknownRemoteObjectTest
-   * @purpose  purpose
+   * @purpose  Fallback for situations when no class can be found for a remote object
    */
   class UnknownRemoteObject extends Object {
     public
