@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated rdbms.Criteria::newInstance() method
+  (friebe)
 - Removed deprecated lang.reflect.Routine::returnsReference() method
   (friebe)
 - Refactored unittest.TestSuite/unittest.TestCase for added listener API.
