@@ -65,9 +65,16 @@
      * </code>
      *
      * @param   string name identifier
-     * @param   lang.XPClass class
+     * @param   lang.XPClass<rdbms.DBConnection> class
+     * @throws  lang.IllegalArgumentException in case an incorrect class is given
      */
-    public static function register($name, $class) {
+    public static function register($name, XPClass $class) {
+      if (!$class->isSubclassOf('rdbms.DBConnection')) {
+        throw new IllegalArgumentException(sprintf(
+          'Given argument must be lang.XPClass<rdbms.DBConnection>, %s given',
+          $class->toString()
+        ));
+      }
       self::$instance->drivers[$name]= $class;
     }
     
