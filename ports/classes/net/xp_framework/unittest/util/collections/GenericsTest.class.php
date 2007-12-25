@@ -169,6 +169,15 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringVectorSetIllegalValue() {
+      create('new Vector<String>', array(new String('')))->set(0, new Integer(1));
+    }
+
+    /**
+     * Tests Vector<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
     public function stringVectorContainsIllegalValue() {
       create('new Vector<String>')->contains(new Integer(1));
     }
