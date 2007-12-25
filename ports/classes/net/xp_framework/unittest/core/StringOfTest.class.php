@@ -161,16 +161,14 @@
       $a[1]= array();
       $a[1][0]= 'Inner array';
       $a[1][1]= &$a;
-      $this->assertEquals(<<<__
-[
+      $this->assertEquals('[
   0 => "Outer array"
   1 => [
     0 => "Inner array"
     1 => ->{:recursion:}
   ]
-]
-__
-      , xp::stringOf($a));
+]', 
+      xp::stringOf($a));
     }
 
     /**
@@ -182,14 +180,12 @@ __
       $o= new StdClass();
       $o->child= new StdClass();
       $o->child->parent= $o;
-      $this->assertEquals(<<<__
-php.stdClass {
+      $this->assertEquals('php.stdClass {
   child => php.stdClass {
     parent => ->{:recursion:}
   }
-}
-__
-      , xp::stringOf($o));
+}',
+      xp::stringOf($o));
     }
 
     /**

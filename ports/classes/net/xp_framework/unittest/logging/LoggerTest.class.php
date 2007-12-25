@@ -71,14 +71,13 @@
      */
     #[@test]
     public function configure() {
-      $this->logger->configure(Properties::fromString(<<<__
+      $this->logger->configure(Properties::fromString(trim('
 [sql]
 appenders="util.log.FileAppender"
 appender.util.log.FileAppender.params="filename"
 appender.util.log.FileAppender.param.filename="/var/log/xp/sql-errors_%Y-%m-%d.log"
 appender.util.log.FileAppender.flags="LOGGER_FLAG_ERROR|LOGGER_FLAG_WARN"
-__
-      ));
+      ')));
       
       with ($cat= $this->logger->getCategory('sql')); {
         $this->assertFalse($cat === $this->logger->getCategory());
