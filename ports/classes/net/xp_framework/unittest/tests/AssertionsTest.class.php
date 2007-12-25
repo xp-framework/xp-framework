@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('unittest.TestCase', 'lang.types.String');
+  uses('unittest.TestCase', 'lang.types.String', 'lang.types.ArrayList');
 
   /**
    * Test assertion methods
@@ -178,8 +178,7 @@
     #[@test]
     public function hashesOrderNotRelevant() {
       $hash= array('&' => '&amp;', '"' => '&quot;');
-      $reverse= array_reverse($hash, TRUE);
-      $this->assertEquals($hash, $reverse, xp::stringOf($hash));
+      $this->assertEquals($hash, array_reverse($hash, TRUE), xp::stringOf($hash));
     }    
 
     /**
@@ -194,6 +193,15 @@
     }
 
     /**
+     * Test assertEquals() fails for FALSE and NULL
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function differentNotTypesAreNotEqual() {
+      $this->assertEquals(FALSE, NULL);
+    }    
+
+    /**
      * Test assertNotEquals() for integers
      *
      */    
@@ -203,7 +211,6 @@
         $this->assertNotEquals(1, $cmp);
       }
     }    
-
 
     /**
      * Test assertNotEquals() for strings
@@ -225,6 +232,204 @@
       foreach (array(-1, 1.0, NULL, FALSE, TRUE, 1, array(1), new String('1')) as $cmp) {
         $this->assertNotEquals(array(), $cmp);
       }
+    }    
+
+    /**
+     * Test assertNotEquals() throws exceptions on equality
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function sameIntegersAreEqual() {
+      $this->assertNotEquals(1, 1);
+    }    
+
+    /**
+     * Test assertEmpty() for an empty array
+     *
+     */    
+    #[@test]
+    public function emptyArrayEmpty() {
+      $this->assertEmpty(array());
+    }    
+
+    /**
+     * Test assertEmpty() for a non-empty array
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nonEmptyArrayEmpty() {
+      $this->assertEmpty(array(1));
+    }    
+
+    /**
+     * Test assertNotEmpty() for a non-empty array
+     *
+     */    
+    #[@test]
+    public function nonEmptyArrayNotEmpty() {
+      $this->assertNotEmpty(array(0));
+    }    
+
+    /**
+     * Test assertNotEmpty() for an empty array
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function emptyArrayNotEmpty() {
+      $this->assertNotEmpty(array());
+    }    
+
+    /**
+     * Test assertClass() for NULLs
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotAClass() {
+      $this->assertClass(NULL, 'lang.Object');
+    }    
+
+    /**
+     * Test assertClass() for strings
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function primitiveIsNotOfStringClass() {
+      $this->assertClass('string', 'lang.types.String');
+    }    
+
+    /**
+     * Test assertClass() for lang.Object
+     *
+     */    
+    #[@test]
+    public function objectIsOfObjectClass() {
+      $this->assertClass(new Object(), 'lang.Object');
+    }    
+
+    /**
+     * Test assertClass() for this
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function thisIsOfNotObjectClass() {
+      $this->assertClass($this, 'lang.Object');
+    }    
+
+    /**
+     * Test assertSubclass() for NULLs
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotASubClass() {
+      $this->assertClass(NULL, 'lang.Object');
+    }    
+
+    /**
+     * Test assertSubclass() for lang.Object
+     *
+     */    
+    #[@test]
+    public function objectIsOfObjectSubclass() {
+      $this->assertClass(new Object(), 'lang.Object');
+    }    
+
+    /**
+     * Test assertSubclass() for this
+     *
+     */    
+    #[@test]
+    public function thisIsOfObjectSubclass() {
+      $this->assertSubClass($this, 'lang.Object');
+    }    
+
+    /**
+     * Test assertSubclass() for strings
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function primitiveIsNotOfStringSubclass() {
+      $this->assertClass('string', 'lang.types.String');
+    }    
+
+    /**
+     * Test assertObject() for this
+     *
+     */    
+    #[@test]
+    public function thisIsAnObject() {
+      $this->assertObject($this);
+    }    
+
+    /**
+     * Test assertObject() for NULL
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotAnObject() {
+      $this->assertObject(NULL);
+    }    
+
+    /**
+     * Test assertObject() for primitives
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function primitiveIsNotAnObject() {
+      $this->assertObject('string');
+    }    
+
+    /**
+     * Test assertArray() for an empty array
+     *
+     */    
+    #[@test]
+    public function emptyArrayIsAnArray() {
+      $this->assertArray(array());
+    }    
+
+    /**
+     * Test assertArray() for a non-empty array
+     *
+     */    
+    #[@test]
+    public function arrayIsAnArray() {
+      $this->assertArray(array(1, 2, 3));
+    }    
+
+    /**
+     * Test assertArray() for an associative array
+     *
+     */    
+    #[@test]
+    public function hashIsAnArray() {
+      $this->assertArray(array('key' => 'value'));
+    }    
+
+    /**
+     * Test assertArray() for a lang.types.ArrayList
+     *
+     */    
+    #[@test]
+    public function arrayListIsAnArray() {
+      $this->assertArray(new ArrayList());
+    }    
+
+    /**
+     * Test assertArray() for a lang.Object
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function objectIsNotAnArray() {
+      $this->assertArray(new Object());
+    }    
+
+    /**
+     * Test assertArray() for NULL
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotAnArray() {
+      $this->assertArray(NULL);
     }    
   }
 ?>
