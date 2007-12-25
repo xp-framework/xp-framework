@@ -47,8 +47,12 @@
      * @param   unittest.TestCase test
      * @return  unittest.TestCase
      * @throws  lang.IllegalArgumentException in case given argument is not a testcase
+     * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
      */
     public function addTest(TestCase $test) {
+      if (!$test->getClass()->getMethod($test->name)) {
+        throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
+      }
       $this->tests[]= $test;
       return $test;
     }
@@ -151,10 +155,7 @@
      * @throws  lang.MethodNotImplementedException
      */
     protected function runInternal($test, $result) {
-      if (!($method= $test->getClass()->getMethod($test->name))) {
-        throw new MethodNotImplementedException('Method does not exist', $test->name);
-      }
-
+      $method= $test->getClass()->getMethod($test->name);
       $this->notifyListeners('testStarted', array($test));
       
       // Check for @ignore
