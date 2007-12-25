@@ -11,25 +11,24 @@
    * @purpose  Test class
    */
   class LoaderTestClass extends Object {
+    protected static
+      $initializerCalled= FALSE;
 
     /**
      * Static initializer
      *
      */
     public static function __static() {
-      LoaderTestClass::initializerCalled(TRUE);
+      self::$initializerCalled= TRUE;
     }
     
     /**
-     * Static variables simulation
+     * Returns whether the static initializer was called
      *
-     * @param   bool value default NULL
      * @return  bool
      */
-    public static function initializerCalled($value= NULL) {
-      static $called;
-      if (NULL !== $value) $called= $value;
-      return $called;
+    public static function initializerCalled() {
+      return self::$initializerCalled;
     }
   }
 ?>
