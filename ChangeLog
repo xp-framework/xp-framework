@@ -40,8 +40,6 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Fixed raise() method when called with more than one argument
-  (kiesel)
 - Fixed util.collections.HashSet::addAll() to not change the list if one
   of the array elements is of invalid type
   (friebe)
@@ -73,6 +71,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed raise() functionality to support more than one argument to be
+  passed to exception's constructor via varargs
+  (kiesel, friebe)
 - Made rdbms.DriverManager::register() throw an IllegalArgumentException
   when an incorrect driver class was given
   (friebe)
