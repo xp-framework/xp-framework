@@ -148,5 +148,29 @@
       create($e)->printStackTrace(Streams::writeableFd($out));
       $this->assertEquals($e->toString(), $out->getBytes());
     }
+    
+    /**
+     * Test raise() works when passing the exception's message 
+     * directly and as single argument
+     */
+    #[@test]
+    public function raiseWithOneArgument() {
+      try {
+        raise('lang.IllegalArgumentException', 'This is the message');
+        $this->fail('Exception has not been thrown', NULL, NULL);
+      } catch (IllegalArgumentException $e) {
+        $this->assertEquals('This is the message', $e->getMessage());
+      }
+    }
+    
+    #[@test]
+    public function raiseWithMoreArguments() {
+      try {
+        raise('lang.MethodNotImplementedException', array('This is the message', __FUNCTION__));
+        $this->fail('Exception has not been thrown', NULL, NULL);
+      } catch (MethodNotImplementedException $e) {
+        $this->assertEquals('This is the message', $e->getMessage());
+      }
+    }
   }
 ?>
