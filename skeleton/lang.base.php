@@ -381,7 +381,7 @@
       xp::error($e->getMessage());
     }
     
-    throw $class->newInstance($message);
+    throw call_user_func_array(array($class, 'newInstance'), (array)$message);
   }
   // }}}
 
