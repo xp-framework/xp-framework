@@ -87,5 +87,14 @@
         'net.xp_framework.unittest.rdbms.mock.MockConnection'
       );
     }
+
+    /**
+     * Test registering a class which is not a subclass of rdbms.DBConnection
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function registerNonDbConnection() {
+      DriverManager::register('fail', $this->getClass());
+    }
   }
 ?>
