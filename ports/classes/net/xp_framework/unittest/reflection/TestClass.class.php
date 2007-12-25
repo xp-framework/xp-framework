@@ -160,5 +160,15 @@
       $c->addAll(array_values($this->map));
       return $c;
     }
+
+    /**
+     * Retrieve values filtered by a given pattern
+     *
+     * @param   string pattern default NULL
+     * @return  lang.Collection<lang.Object>
+     */
+    public function filterMap($pattern= NULL) {
+      // TBI
+    }
   } 
 ?>
