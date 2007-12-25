@@ -33,7 +33,7 @@
     #[@test]
     public function thrownExceptionCaught() {
       try {
-        throw(new XPException('Test'));
+        throw new XPException('Test');
       } catch (XPException $caught) {
         $this->assertSubclass($caught, 'Exception');
         delete($caught);
@@ -166,10 +166,11 @@
     #[@test]
     public function raiseWithMoreArguments() {
       try {
-        raise('lang.MethodNotImplementedException', array('This is the message', __FUNCTION__));
+        raise('lang.MethodNotImplementedException', 'This is the message', __FUNCTION__);
         $this->fail('Exception has not been thrown', NULL, NULL);
       } catch (MethodNotImplementedException $e) {
         $this->assertEquals('This is the message', $e->getMessage());
+        $this->assertEquals(__FUNCTION__, $e->method);
       }
     }
   }

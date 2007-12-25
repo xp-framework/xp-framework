@@ -372,16 +372,17 @@
   }
   // }}}
   
-  // {{{ null raise (string classname, string message)
+  // {{{ void raise (string classname, mixed* args)
   //     throws an exception by a given class name
-  function raise($classname, $message) {
+  function raise($classname) {
     try {
       $class= XPClass::forName($classname);
     } catch (ClassNotFoundException $e) {
       xp::error($e->getMessage());
     }
     
-    throw call_user_func_array(array($class, 'newInstance'), (array)$message);
+    $a= func_get_args();
+    throw call_user_func_array(array($class, 'newInstance'), array_slice($a, 1));
   }
   // }}}
 
