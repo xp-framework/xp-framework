@@ -58,26 +58,7 @@
         }
       }
     }
-    
-    /**
-     * Creates a new instance.
-     *
-     * Fluent interface:
-     * <code>
-     *   $c= create(new Criteria())
-     *     ->add('bz_id', 500, EQUAL)
-     *     ->add('author', array(1549, 1552), IN)
-     *     ->addOrderBy('created_at', DESCENDING)
-     *   ;
-     * </code>
-     *
-     * @deprecated Use create() core functionality instead
-     * @return  rdbms.Criteria
-     */
-    public static function newInstance() {
-      return new self();
-    }
-    
+
     /**
      * Add a condition
      *

@@ -44,7 +44,7 @@
      */
     #[@finder(kind= COLLECTION)]
     public function newestJobs() {
-      return Criteria::newInstance()->addOrderBy('valid_from', DESCENDING);
+      return create(new Criteria())->addOrderBy('valid_from', DESCENDING);
     }
 
     /**

@@ -47,7 +47,7 @@
      * compare the resulting string to the expected string.
      *
      * @param   string sql
-     * @param   &rdbms.Criteria criteria
+     * @param   rdbms.Criteria criteria
      * @throws  unittest.AssertionFailedError
      */
     protected function assertSql($sql, $criteria) {
@@ -144,16 +144,6 @@
         'where job_id = 1 and title = "Hello"', 
         new Criteria(array('job_id', 1, EQUAL), array('title', 'Hello', EQUAL))
       );
-    }
-
-    /**
-     * Tests rdbms.Criteria's fluent interface 
-     *
-     * @see     xp://rdbms.Criteria#newInstance
-     */
-    #[@test]
-    public function newInstance() {
-      $this->assertClass(Criteria::newInstance(), 'rdbms.Criteria');
     }
 
     /**
