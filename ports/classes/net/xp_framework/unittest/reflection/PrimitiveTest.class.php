@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestCase', 'io.streams.Streams', 'io.streams.MemoryInputStream');
+  uses('unittest.TestCase', 'lang.Primitive', 'io.streams.Streams', 'io.streams.MemoryInputStream');
 
   /**
    * TestCase
