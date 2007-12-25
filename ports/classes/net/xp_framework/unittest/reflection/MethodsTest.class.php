@@ -454,5 +454,44 @@
         'without throws'
       );
     }
+
+    /**
+     * Tests same methods are equal
+     *
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#setTrace
+     * @see     xp://lang.reflect.Routine#equals
+     */
+    #[@test]
+    public function equality() {
+      $this->assertEquals(
+        $this->fixture->getMethod('setTrace'),
+        $this->fixture->getMethod('setTrace')
+      );
+    }
+
+    /**
+     * Tests equals() method does not choke on NULL
+     *
+     * @see     xp://lang.reflect.Routine#equals
+     */
+    #[@test]
+    public function notEqualToNull() {
+      $this->assertFalse($this->fixture->getMethod('setTrace')->equals(NULL));
+    }
+
+    /**
+     * Tests inherited methods are not equal
+     *
+     * @see     xp://net.xp_framework.unittest.reflection.AbstractTestClass#getDate
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#getDate
+     * @see     xp://lang.reflect.Routine#equals
+     */
+    #[@test]
+    public function inheritedMethodsAreNotEqual() {
+      $this->assertNotEquals(
+        $this->fixture->getMethod('getDate'),
+        $this->fixture->getParentClass()->getMethod('getDate')
+      );
+    }
   }
 ?>
