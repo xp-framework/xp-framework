@@ -132,6 +132,7 @@
     public function runningASingleSucceedingTest() {
       $r= $this->suite->runTest(new SimpleTestCase('succeeds'));
       $this->assertClass($r, 'unittest.TestResult');
+      $this->assertEquals(1, $r->count(), 'count');
       $this->assertEquals(1, $r->runCount(), 'runCount');
       $this->assertEquals(1, $r->successCount(), 'successCount');
       $this->assertEquals(0, $r->failureCount(), 'failureCount');
@@ -146,10 +147,30 @@
     public function runningASingleFailingTest() {
       $r= $this->suite->runTest(new SimpleTestCase('fails'));
       $this->assertClass($r, 'unittest.TestResult');
+      $this->assertEquals(1, $r->count(), 'count');
       $this->assertEquals(1, $r->runCount(), 'runCount');
       $this->assertEquals(0, $r->successCount(), 'successCount');
       $this->assertEquals(1, $r->failureCount(), 'failureCount');
       $this->assertEquals(0, $r->skipCount(), 'skipCount');
+    }    
+
+    /**
+     * Tests running multiple tests
+     *
+     */    
+    #[@test]
+    public function runMultipleTests() {
+      $this->suite->addTest(new SimpleTestCase('fails'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $this->suite->addTest(new SimpleTestCase('skipped'));
+      $this->suite->addTest(new SimpleTestCase('ignored'));
+      $r= $this->suite->run();
+      $this->assertClass($r, 'unittest.TestResult');
+      $this->assertEquals(4, $r->count(), 'count');
+      $this->assertEquals(2, $r->runCount(), 'runCount');
+      $this->assertEquals(1, $r->successCount(), 'successCount');
+      $this->assertEquals(1, $r->failureCount(), 'failureCount');
+      $this->assertEquals(2, $r->skipCount(), 'skipCount');
     }    
   }
 ?>
