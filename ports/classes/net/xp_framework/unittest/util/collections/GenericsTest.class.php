@@ -205,8 +205,17 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function stringStackIllegalValue() {
+    public function stringStackPushIllegalValue() {
       create('new util.collections.Stack<String>')->push(new Integer(1));
+    }
+
+    /**
+     * Tests Stack<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringStackSearchIllegalValue() {
+      create('new util.collections.Stack<String>')->search(new Integer(1));
     }
 
     /**
@@ -223,8 +232,26 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function stringQueueIllegalValue() {
+    public function stringQueuePutIllegalValue() {
       create('new util.collections.Queue<String>')->put(new Integer(1));
+    }
+
+    /**
+     * Tests Queue<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringQueueSearchIllegalValue() {
+      create('new util.collections.Queue<String>')->search(new Integer(1));
+    }
+
+    /**
+     * Tests Queue<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringQueueRemoveIllegalValue() {
+      create('new util.collections.Queue<String>')->remove(new Integer(1));
     }
 
     /**
@@ -241,8 +268,17 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function stringLRUBufferIllegalValue() {
+    public function stringLRUBufferAddIllegalValue() {
       create('new util.collections.LRUBuffer<String>', 1)->add(new Integer(1));
+    }
+
+    /**
+     * Tests LRUBuffer<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringLRUBufferUpdateIllegalValue() {
+      create('new util.collections.LRUBuffer<String>', 1)->update(new Integer(1));
     }
 
     /**
