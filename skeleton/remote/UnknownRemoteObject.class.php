@@ -36,20 +36,7 @@
     public function toString() {
       $s= $this->getClassName().'@('.$this->__name.") {\n";
       foreach (array_keys($this->__members) as $member) {
-
-        // Create a temporary copy of the member because of ext/overload
-        // weirdnesses with references. Omitting the $m= $this->__members...
-        // assignment will lead to a fatal error:
-        //
-        //   "Only variables can be passed by reference"...
-        //
-        // ...and creating a reference (via $m= &$this->__members...) will
-        // lead to this fatal error:
-        //
-        //   "Cannot create references to/from string offsets nor overloaded objects"
-        //
-        // This is a bug in ext/overload.
-        $s.= sprintf("  [%-20s] %s\n", $member, xp::stringOf($m= $this->__members[$member]));
+        $s.= sprintf("  [%-20s] %s\n", $member, xp::stringOf($this->__members[$member]));
       }
       return $s.'}';
     }
@@ -59,23 +46,20 @@
      *
      * @param   string name
      * @param   mixed value
-     * @return  bool TRUE on success
+     * @throws  lang.IllegalAccessException
      */
     public function __set($name, $value) {
-      throw(new IllegalAccessException('Access to undefined member "'.$name.'"'));
-      return FALSE;
+      throw new IllegalAccessException('Access to undefined member "'.$name.'"');
     }
     
     /**
      * Member get interceptor
      *
      * @param   string name
-     * @param   mixed value
-     * @return  bool TRUE on success
+     * @throws  lang.IllegalAccessException
      */
     public function __get($name) {
-      throw(new IllegalAccessException('Access to undefined member "'.$name.'"'));
-      return FALSE;
+      throw new IllegalAccessException('Access to undefined member "'.$name.'"');
     }
   
     /**
@@ -83,13 +67,10 @@
      *
      * @param   string name
      * @param   mixed[] args
-     * @param   mixed return
-     * @return  bool TRUE on success
      * @throws  lang.IllegalAccessException
      */
     public function __call($name, $args) {
-      throw(new IllegalAccessException('Cannot call method "'.$name.'" on an unknown remote object'));
-      return FALSE;
+      throw new IllegalAccessException('Cannot call method "'.$name.'" on an unknown remote object');
     }
   }
 ?>
