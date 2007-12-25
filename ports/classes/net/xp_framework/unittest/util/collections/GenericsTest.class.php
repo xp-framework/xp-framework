@@ -85,8 +85,44 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function stringStringHashIllegalValue() {
+    public function stringStringHashPutIllegalValue() {
       create('new HashTable<String, String>')->put('hello', new Integer(1));
+    }
+
+    /**
+     * Tests HashTable<String, String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringStringHashGetIllegalValue() {
+      create('new HashTable<String, String>')->get(new Integer(1));
+    }
+
+    /**
+     * Tests HashTable<String, String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringStringHashRemoveIllegalValue() {
+      create('new HashTable<String, String>')->remove(new Integer(1));
+    }
+
+    /**
+     * Tests HashTable<String, String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringStringHashContainsKeyIllegalValue() {
+      create('new HashTable<String, String>')->containsKey(new Integer(1));
+    }
+
+    /**
+     * Tests HashTable<String, String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringStringHashContainsValueIllegalValue() {
+      create('new HashTable<String, String>')->containsValue(new Integer(1));
     }
 
     /**
@@ -124,8 +160,26 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function stringVectorIllegalValue() {
+    public function stringVectorAddIllegalValue() {
       create('new Vector<String>')->add(new Integer(1));
+    }
+
+    /**
+     * Tests Vector<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringVectorContainsIllegalValue() {
+      create('new Vector<String>')->contains(new Integer(1));
+    }
+
+    /**
+     * Tests Vector<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringVectorRemoveIllegalValue() {
+      create('new Vector<String>')->remove(new Integer(1));
     }
 
     /**
@@ -205,8 +259,52 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function stringHashSetIllegalValue() {
+    public function stringHashSetAddIllegalValue() {
       create('new util.collections.HashSet<String>')->add(new Integer(1));
+    }
+
+    /**
+     * Tests HashSet<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringHashSetContainsIllegalValue() {
+      create('new util.collections.HashSet<String>')->contains(new Integer(1));
+    }
+
+    /**
+     * Tests HashSet<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringHashSetRemoveIllegalValue() {
+      create('new util.collections.HashSet<String>')->remove(new Integer(1));
+    }
+
+    /**
+     * Tests HashSet<String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function stringHashSetAddAllIllegalValue() {
+      create('new util.collections.HashSet<String>')->addAll(array(
+        new String('HELLO'),    // Still OK
+        new Integer(2),         // Blam
+      ));
+    }
+
+    /**
+     * Tests HashSet<String>
+     *
+     */
+    #[@test]
+    public function stringHashSetUnchangedAferAddAllIllegalValue() {
+      $h= create('new util.collections.HashSet<String>');
+      try {
+        $h->addAll(array(new String('HELLO'), new Integer(2)));
+      } catch (IllegalArgumentException $expected) {
+      }
+      $this->assertTrue($h->isEmpty());
     }
   }
 ?>
