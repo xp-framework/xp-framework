@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('unittest.TestCase');
+  uses('unittest.TestCase', 'io.streams.Streams', 'io.streams.MemoryOutputStream');
 
   /**
    * Test the XP exception mechanism
@@ -21,7 +21,7 @@
     public function noException() {
       try {
         // Nothing
-      } catch (Exception $caught) {
+      } catch (XPException $caught) {
         return $this->fail('Caught an exception but none where thrown', $caught);
       }
     }
@@ -34,7 +34,7 @@
     public function thrownExceptionCaught() {
       try {
         throw(new XPException('Test'));
-      } catch (Exception $caught) {
+      } catch (XPException $caught) {
         $this->assertSubclass($caught, 'Exception');
         delete($caught);
         return TRUE;
@@ -54,13 +54,99 @@
         throw(new XPException('Test'));
       } catch (IllegalArgumentException $caught) {
         return $this->fail('Exception should have been caught in Exception block', 'IllegalArgumentException');
-      } catch (Exception $caught) {
+      } catch (XPException $caught) {
         return TRUE;
       } catch (Throwable $caught) {
         return $this->fail('Exception should have been caught in Exception block', 'Throwable');
       }
 
       $this->fail('Thrown Exception not caught');
+    }
+
+    /**
+     * Tests getStackTrace() method
+     *
+     */
+    #[@test]
+    public function stackTrace() {
+      $trace= create(new Throwable('Test'))->getStackTrace();
+      $this->assertArray($trace);
+      $this->assertNotEmpty($trace);
+      foreach ($trace as $element) {
+        $this->assertClass($element, 'lang.StackTraceElement');
+      }
+    }
+
+    /**
+     * Tests equals() method
+     *
+     */
+    #[@test]
+    public function allExceptionsAreUnique() {
+      $this->assertNotEquals(new Throwable('Test'), new Throwable('Test'));
+    }
+
+    /**
+     * Tests hashCode() method
+     *
+     */
+    #[@test]
+    public function hashCodesAreUnique() {
+      $this->assertNotEquals(
+        create(new Throwable('Test'))->hashCode(),
+        create(new Throwable('Test'))->hashCode()
+      );
+    }
+
+    /**
+     * Tests getMessage() method
+     *
+     */
+    #[@test]
+    public function message() {
+      $this->assertEquals('Test', create(new Throwable('Test'))->getMessage());
+    }
+
+    /**
+     * Tests getClass() method
+     *
+     */
+    #[@test]
+    public function classMethod() {
+      $this->assertEquals(XPClass::forName('lang.Throwable'), create(new Throwable('Test'))->getClass());
+    }
+
+    /**
+     * Tests getClassName() method
+     *
+     */
+    #[@test]
+    public function classNameMethod() {
+      $this->assertEquals('lang.Throwable', create(new Throwable('Test'))->getClassName());
+    }
+
+    /**
+     * Tests compoundMessage() method
+     *
+     */
+    #[@test]
+    public function compoundMessage() {
+      $this->assertEquals(
+        'Exception lang.Throwable (Test)', 
+        create(new Throwable('Test'))->compoundMessage()
+      );
+    }
+
+    /**
+     * Tests printStackTrace() method
+     *
+     */
+    #[@test]
+    public function printStackTrace() {
+      $out= new MemoryOutputStream();
+      $e= new Throwable('Test');
+      create($e)->printStackTrace(Streams::writeableFd($out));
+      $this->assertEquals($e->toString(), $out->getBytes());
     }
   }
 ?>
