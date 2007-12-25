@@ -22,11 +22,12 @@
    * </dialog>
    * __;
    *   
-   *   $xpath= &new XPath($xml);
+   *   $xpath= new XPath($xml);
    *   var_dump($xpath->query('/dialog/buttons/button/@name'));
    * </code>
    *
-   * @ext      domxml
+   * @ext      dom
+   * @test     xp://net.xp_framework.unittest.xml.XPathTest
    * @purpose  Provide XPath functionality
    */
   class XPath extends Object {
@@ -73,11 +74,11 @@
           break;
         
         case 'xml.Tree':
-          $this->context= new DomXPath($this->loadXML($arg->getSource()));
+          $this->context= new DomXPath($this->loadXML($arg->getSource(INDENT_NONE)));
           break;
         
         default:
-          throw(new IllegalArgumentException('Unsupported parameter type '.xp::typeOf($arg)));
+          throw new IllegalArgumentException('Unsupported parameter type '.xp::typeOf($arg));
       }
     }
     
