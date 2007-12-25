@@ -38,6 +38,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.collections.HashSet::addAll() to not change the list if one
+  of the array elements is of invalid type
+  (friebe)
 - Fixed lang.reflect.Routine::getExceptionTypes() always throwing exceptions.
   (friebe)
 - Fixed lang.Primitive::boxed() for NULL values
