@@ -21,17 +21,15 @@
    * @purpose  Testcase
    */
   class NumberTest extends TestCase {
-    public
-      $number = NULL;
 
     /**
      * Tests a given type
      *
-     * @param   &lang.types.Number number
+     * @param   lang.types.Number number
      * @param   int int
      * @param   float float
      */
-    protected function testType($number, $int, $float) {
+    protected function testType(Number $number, $int, $float) {
       $this->assertEquals($int, $number->intValue(), 'intValue');
       $this->assertEquals($float, $number->floatValue(), 'floatValue');
       $this->assertEquals($number, clone($number), 'clone');
@@ -73,7 +71,7 @@
      * @see     xp://lang.types.Integer
      */
     #[@test]
-    public function IntegerType() {
+    public function integerType() {
       $this->testType(new Integer(0), 0, 0.0);
     }
 
