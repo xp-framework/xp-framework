@@ -54,7 +54,16 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addNonTest() {
       $this->suite->addTest(new Object());
-    }    
+    }
+
+    /**
+     * Tests adding an invalid test
+     *
+     */    
+    #[@test, @expect('lang.MethodNotImplementedException')]
+    public function addInvalidTest() {
+      $this->suite->addTest(newinstance('unittest.TestCase', array('nonExistant'), '{}'));
+    }
 
     /**
      * Tests adding a test class
