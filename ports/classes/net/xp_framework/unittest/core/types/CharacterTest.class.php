@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'lang.types.String',
     'lang.types.Character'
   );
 
