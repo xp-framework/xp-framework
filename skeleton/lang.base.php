@@ -392,53 +392,23 @@
   }
   // }}}
 
-  // {{{ mixed cast (mixed var, mixed type default NULL)
-  //     Casts. If var === NULL, it won't be touched
-  function cast($var, $type= NULL) {
-    if (NULL === $var) return NULL;
-
-    switch ($type) {
-      case NULL: 
-        break;
-
-      case 'int':
-      case 'integer':
-      case 'float':
-      case 'double':
-      case 'string':
-      case 'bool':
-      case 'null':
-        if ($var instanceof Object) $var= $var->toString();
-        settype($var, $type);
-        break;
-
-      case 'array':
-      case 'object':
-        settype($var, $type);
-        break;
-
-      default:
-        // Cast to an object of "$type"
-        $o= new $type;
-        if (is_object($var) || is_array($var)) {
-          foreach ($var as $k => $v) {
-            $o->$k= $v;
-          }
-        } else {
-          $o->scalar= $var;
-        }
-        return $o;
-        break;
+  // {{{ Generic cast (Generic expression, string type)
+  //     Casts an expression.
+  function cast(Generic $expression= NULL, $type) {
+    if (NULL === $expression) {
+      return xp::null();
+    } else if (XPClass::forName($type)->isInstance($expression)) {
+      return $expression;
     }
-    return $var;
-  }
-  // }}}
+
+    raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$type);
+   }
 
   // {{{ proto bool is(string class, lang.Object object)
   //     Checks whether a given object is of the class, a subclass or implements an interface
   function is($class, $object) {
-    $p= get_class($object);
-    if (is_null($class)) $class= 'null';
+    if (NULL === $class) return $object instanceof null;
+
     $class= xp::reflect($class);
     return $object instanceof $class;
   }
