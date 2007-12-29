@@ -6,6 +6,20 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed cast() core functionality to no longer change the object given,
+  throw a lang.ClassCastException in case of errors, throw a 
+  lang.ClassNotFoundException in case the given type does not exist,
+  no longer support primitives (will result in a lang.IllegalArgumentException)
+  and to return xp::null() if NULL is given
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0010: Type casts
+  (friebe)
+
 
 Version 5.6.4, released 2007-12-25
 ----------------------------------
