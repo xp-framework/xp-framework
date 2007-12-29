@@ -227,6 +227,22 @@
       if (!$parent) return NULL;
       return new self($parent->getName());
     }
+
+    /**
+     * Cast a given object to the class represented by this object
+     *
+     * @param   lang.Generic expression
+     * @return  lang.Generic the given expression
+     * @throws  lang.ClassCastException
+     */
+    public function cast(Generic $expression= NULL) {
+      if (NULL === $expression) {
+        return xp::null();
+      } else if (is($this->name, $expression)) {
+        return $expression;
+      }
+      raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$this->name);
+    }
     
     /**
      * Tests whether this class is a subclass of a specified class.
