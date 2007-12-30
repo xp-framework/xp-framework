@@ -99,6 +99,15 @@ with any of PHP's string functions:
   $s= strtr(new Bytes('Hello'), 'e', 'a');  // s= string(5) "Hallo"
 ?>
 
+Furthermore, iteration is supported. The following example prints
+"72,101,108,108,111,END" (without the quote signs).
+<?php
+  foreach (new Bytes('Hello') as $byte) {
+    echo $byte->intValue(), ',';
+  }
+  echo 'END';
+?>
+
 Further lang.types API integration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The lang.types.String's and lang.types.Character's getBytes() methods are
