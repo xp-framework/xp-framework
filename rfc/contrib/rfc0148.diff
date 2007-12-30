@@ -445,6 +445,113 @@ Index: skeleton/lang/types/Character.class.php
      }
    }
  ?>
+Index: skeleton/remote/protocol/Serializer.class.php
+===================================================================
+--- skeleton/remote/protocol/Serializer.class.php	(revision 11654)
++++ skeleton/remote/protocol/Serializer.class.php	(working copy)
+@@ -17,6 +17,7 @@
+     'remote.protocol.ArrayListMapping',
+     'remote.protocol.ExceptionMapping',
+     'remote.protocol.StackTraceElementMapping',
++    'remote.protocol.ByteArrayMapping',
+     'remote.UnknownRemoteObject',
+     'remote.ExceptionReference',
+     'remote.ClassReference'
+@@ -43,21 +44,22 @@
+      *
+      */
+     public function __construct() {
+-      $this->mapping('T', $m= new DateMapping());
+-      $this->mapping('l', $m= new LongMapping());
+-      $this->mapping('B', $m= new ByteMapping());
+-      $this->mapping('S', $m= new ShortMapping());
+-      $this->mapping('f', $m= new FloatMapping());
+-      $this->mapping('d', $m= new DoubleMapping());
+-      $this->mapping('i', $m= new IntegerMapping());
+-      $this->mapping('A', $m= new ArrayListMapping());
+-      $this->mapping('e', $m= new ExceptionMapping());
+-      $this->mapping('t', $m= new StackTraceElementMapping());
++      $this->mapping('T', new DateMapping());
++      $this->mapping('l', new LongMapping());
++      $this->mapping('B', new ByteMapping());
++      $this->mapping('S', new ShortMapping());
++      $this->mapping('f', new FloatMapping());
++      $this->mapping('d', new DoubleMapping());
++      $this->mapping('i', new IntegerMapping());
++      $this->mapping('A', new ArrayListMapping());
++      $this->mapping('e', new ExceptionMapping());
++      $this->mapping('t', new StackTraceElementMapping());
++      $this->mapping('Y', new ByteArrayMapping());
+       
+       // A hashmap doesn't have its own token, because it'll be serialized
+       // as an array. We use HASHMAP as the token, so it will never match
+       // another one (can only be one char). This is a little bit hackish.
+-      $this->mapping('HASHMAP', $m= new HashmapMapping());
++      $this->mapping('HASHMAP', new HashmapMapping());
+       
+       // Setup default exceptions
+       $this->exceptionName('IllegalArgument', 'lang.IllegalArgumentException');
+Index: skeleton/remote/protocol/ByteArrayMapping.class.php
+===================================================================
+--- skeleton/remote/protocol/ByteArrayMapping.class.php	(revision 0)
++++ skeleton/remote/protocol/ByteArrayMapping.class.php	(revision 0)
+@@ -0,0 +1,50 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id: ShortMapping.class.php 10594 2007-06-11 10:04:54Z friebe $ 
++ */
++
++  uses('lang.types.Bytes', 'remote.protocol.SerializerMapping');
++
++  /**
++   * Mapping for lang.types.Bytes
++   *
++   * @see      xp://remote.protocol.Serializer
++   * @purpose  Mapping
++   */
++  class ByteArrayMapping extends Object implements SerializerMapping {
++
++    /**
++     * Returns a value for the given serialized string
++     *
++     * @param   server.protocol.Serializer serializer
++     * @param   remote.protocol.SerializedData serialized
++     * @param   array<string, mixed> context default array()
++     * @return  mixed
++     */
++    public function valueOf($serializer, $serialized, $context= array()) {
++      return new Bytes($serialized->consumeString());
++    }
++
++    /**
++     * Returns an on-the-wire representation of the given value
++     *
++     * @param   server.protocol.Serializer serializer
++     * @param   lang.Object value
++     * @param   array<string, mixed> context default array()
++     * @return  string
++     */
++    public function representationOf($serializer, $value, $context= array()) {
++      return 'Y:'.$value->size.':"'.$value->buffer.'";';
++    }
++    
++    /**
++     * Return XPClass object of class supported by this mapping
++     *
++     * @return  lang.XPClass
++     */
++    public function handledClass() {
++      return XPClass::forName('lang.types.Bytes');
++    }
++  } 
++?>
+
+Property changes on: skeleton/remote/protocol/ByteArrayMapping.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
 Index: ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php	(revision 11654)
@@ -1156,7 +1263,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.class.php	(revision 0)
 +++ ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.class.php	(revision 0)
-@@ -0,0 +1,251 @@
+@@ -0,0 +1,260 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -1185,10 +1292,19 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +     * @return  string
 +     */
 +    protected function encode($value) {
-+      if (!($encoded= create(new XmlRpcEncoder())->encode($value)) instanceof Node) {
-+        $this->fail('Could not encode '.xp::stringOf($value));
-+      }
-+      return $encoded->getSource(INDENT_NONE);
++      return create(new XmlRpcEncoder())->encode($value)->getSource(INDENT_NONE);
++    }
++    
++    /**
++     * Normalizes expected XML and returns whether that is equal to the 
++     * actual XML.
++     *
++     * @param   string expected
++     * @param   string actual
++     * @throws  unittest.AssertionFailedError
++     */
++    protected function assertXmlEquals($expected, $actual) {
++      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim($expected)), $actual);
 +    }
 +  
 +    /**
@@ -1278,7 +1394,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +     */
 +    #[@test]
 +    public function oneElementArray() {
-+      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++      $this->assertXmlEquals('
 +        <value>
 +          <array>
 +            <data>
@@ -1286,7 +1402,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +            </data>
 +          </array>
 +        </value>
-+        ')),
++        ',
 +        $this->encode(array(1))
 +      );
 +    }
@@ -1298,7 +1414,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +     */
 +    #[@test]
 +    public function exampleArray() {
-+      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++      $this->assertXmlEquals('
 +        <value>
 +          <array>
 +            <data>
@@ -1309,7 +1425,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +            </data>
 +          </array>
 +        </value>
-+        ')),
++        ',
 +        $this->encode(array(12, 'Egypt', FALSE, -31))
 +      );
 +    }
@@ -1321,7 +1437,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +     */
 +    #[@test]
 +    public function exampleStruct() {
-+      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++      $this->assertXmlEquals('
 +        <value>
 +          <struct>
 +            <member>
@@ -1334,7 +1450,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +            </member>
 +          </struct>
 +        </value>
-+        ')), 
++        ', 
 +        $this->encode(array('lowerBound' => 18, 'upperBound' => 139))
 +      );
 +    }
@@ -1350,7 +1466,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +      $vo->setAge(30);
 +      $vo->setNew(TRUE);
 +      
-+      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++      $this->assertXmlEquals('
 +        <value>
 +          <struct>
 +            <member>
@@ -1371,7 +1487,7 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +            </member>
 +          </struct>
 +        </value>
-+        ')), 
++        ', 
 +        $this->encode($vo)
 +      );
 +    }
@@ -1408,6 +1524,12 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.c
 +    }
 +  }
 +?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
 Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcDecoderTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcDecoderTest.class.php	(revision 11654)
@@ -1495,6 +1617,48 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/ValueObject.class.p
 +    }
    }
  ?>
+Index: ports/classes/net/xp_framework/unittest/remote/SerializerTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/remote/SerializerTest.class.php	(revision 11654)
++++ ports/classes/net/xp_framework/unittest/remote/SerializerTest.class.php	(working copy)
+@@ -196,6 +196,18 @@
+     }
+ 
+     /**
++     * Test serialization of a Bytes object
++     *
++     */
++    #[@test]
++    public function representationOfByes() {
++      $this->assertEquals(
++        "Y:4:\"\0abc\";", 
++        $this->serializer->representationOf(new Bytes(array(0, 'a', 'b', 'c')))
++      );
++    }
++
++    /**
+      * Test deserialization of an integer
+      *
+      */
+@@ -324,6 +336,18 @@
+     }
+ 
+     /**
++     * Test serialization of a Bytes object
++     *
++     */
++    #[@test]
++    public function valueOfBytes() {
++      $this->assertEquals(
++        new Bytes(array(0, 'a', 'b', 'c')), 
++        $this->serializer->valueOf(new SerializedData("Y:4:\"\0abc\";"))
++      );
++    }
++
++    /**
+      * Test deserialization of an encapsed arraylist
+      *
+      */
 Index: ports/unittest/webservices.ini
 ===================================================================
 --- ports/unittest/webservices.ini	(revision 11654)
