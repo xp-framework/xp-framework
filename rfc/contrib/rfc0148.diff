@@ -1495,3 +1495,14 @@ Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/ValueObject.class.p
 +    }
    }
  ?>
+Index: ports/unittest/webservices.ini
+===================================================================
+--- ports/unittest/webservices.ini	(revision 11654)
++++ ports/unittest/webservices.ini	(working copy)
+@@ -32,3 +32,6 @@
+ 
+ [xmlrpc-decoder]
+ class="net.xp_framework.unittest.scriptlet.rpc.XmlRpcDecoderTest"
++
++[xmlrpc-encoder]
++class="net.xp_framework.unittest.scriptlet.rpc.XmlRpcEncoderTest"
