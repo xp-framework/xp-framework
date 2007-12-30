@@ -2,7 +2,7 @@ Index: skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php
 ===================================================================
 --- skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php	(revision 11654)
 +++ skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php	(working copy)
-@@ -4,7 +4,7 @@
+@@ -4,12 +4,12 @@
   * $Id$ 
   */
  
@@ -11,28 +11,117 @@ Index: skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php
  
    /**
     * Encoder for data structures into XML-RPC format
-@@ -43,12 +43,15 @@
+    *
+-   * @ext      xml
++   * @test     xp://net.xp_framework.unittest.scriptlet.rpc.XmlRpcEncoderTest
+    * @see      http://xmlrpc.com
+    * @purpose  XML-RPC-Encoder
+    */
+@@ -43,15 +43,41 @@
      protected function _marshall($data) {
        $value= new Node('value');
        
 -      if (is('Generic', $data)) {
 -        if (is('util.Date', $data)) {
 -          return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
--        }
--        
--        // Provide a standard-way to serialize Object-derived classes
 +      // Handle objects:
 +      // - util.Date objects are serialized as dateTime.iso8601
 +      // - lang.types.Bytes object are serialized as base64
 +      // - Provide a standard-way to serialize Object-derived classes
 +      if ($data instanceof Date) {
-+        return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
++        $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
++        return $value;
 +      } else if ($data instanceof Bytes) {
-+        return $value->addChild(new Node('base64', base64_encode($data));
++        $value->addChild(new Node('base64', base64_encode($data)));
++        return $value;
 +      } else if ($data instanceof Generic) {
-         $cname= xp::typeOf($data);
-         $data= (array)$data;
-         $data['__xp_class']= $cname;
++
++        $n= $value->addChild(new Node('struct'));
++        $n->addChild(Node::fromArray(array(
++          'name'  => '__xp_class',
++          'value' => array('string' => $data->getClassName())
++        ), 'member'));
++        
++        $values= (array)$data;
++        foreach ($data->getClass()->getFields() as $field) {
++          $m= $field->getModifiers();
++          if ($m & MODIFIER_STATIC) {
++            continue;
++          } else if ($m & MODIFIER_PUBLIC) {
++            $name= $field->getName();
++          } else if ($m & MODIFIER_PROTECTED) {
++            $name= "\0*\0".$field->getName();
++          } else if ($m & MODIFIER_PRIVATE) {
++            $name= "\0".substr(array_search($field->getDeclaringClass()->getName(), xp::$registry), 6)."\0".$field->getName();
++          }
++          $member= $n->addChild(new Node('member'));
++          $member->addChild(new Node('name', $field->getName()));
++          $member->addChild($this->_marshall($values[$name]));
+         }
+-        
+-        // Provide a standard-way to serialize Object-derived classes
+-        $cname= xp::typeOf($data);
+-        $data= (array)$data;
+-        $data['__xp_class']= $cname;
++        return $value;
+       }
+       
+       switch (xp::typeOf($data)) {
+@@ -69,13 +95,19 @@
+           break;
+         
+         case 'array':
+-          $struct= $value->addChild(new Node('struct'));
+-          if (sizeof($data)) foreach (array_keys($data) as $idx) {
+-            $member= $struct->addChild(new Node('member'));
+-            $member->addChild(new Node('name', $idx));
+-            $member->addChild($this->_marshall($data[$idx]));
++          if ($this->_isVector($data)) {
++            $n= $value->addChild(new Node('array'))->addChild(new Node('data'));
++            for ($i= 0, $s= sizeof($data); $i < $s; $i++) {
++              $n->addChild($this->_marshall($data[$i]));
++            }
++          } else {
++            $n= $value->addChild(new Node('struct'));
++            foreach ($data as $name => $v) {
++              $member= $n->addChild(new Node('member'));
++              $member->addChild(new Node('name', $name));
++              $member->addChild($this->_marshall($v));
++            }
+           }
+-          $struct;
+           break;
+         
+         case 'string':
+@@ -87,11 +119,26 @@
+           break;
+         
+         default:
+-          throw(new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"'));
+-          break;
++          throw new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"');
+       }
+       
+       return $value;
+     }
++
++    /**
++     * Checks whether an array is a numerically indexed array
++     * (a vector) or a key/value hashmap.
++     *
++     * @param   array data
++     * @return  bool
++     */
++    protected function _isVector($data) {
++      $start= 0;
++      foreach (array_keys($data) as $key) {
++        if ($key !== $start++) return FALSE;
++      }
++      
++      return TRUE;
++    }
+   }
+ ?>
 Index: skeleton/webservices/xmlrpc/XmlRpcDecoder.class.php
 ===================================================================
 --- skeleton/webservices/xmlrpc/XmlRpcDecoder.class.php	(revision 11654)
@@ -870,7 +959,7 @@ Index: ports/classes/net/xp_framework/unittest/core/types/BytesTest.class.php
 +    public function stringFromIso88591Bytes() {
 +      $this->assertEquals(
 +        new String('Hällo', 'iso-8859-1'),
-+        new String(new Bytes("H\344llo"))
++        new String(new Bytes("H\344llo"), 'iso-8859-1')
 +      );
 +    }
 +
@@ -1063,3 +1152,346 @@ Index: ports/classes/net/xp_framework/unittest/core/types/CharacterTest.class.ph
      }
  
      /**
+Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcEncoderTest.class.php	(revision 0)
+@@ -0,0 +1,251 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses(
++    'unittest.TestCase',
++    'xml.Tree',
++    'webservices.xmlrpc.XmlRpcEncoder',
++    'net.xp_framework.unittest.scriptlet.rpc.ValueObject'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://webservices.xmlrpc.XmlRpcEncoder
++   * @purpose  Unittest
++   */
++  class XmlRpcEncoderTest extends TestCase {
++  
++    /**
++     * Encode a value
++     *
++     * @param   mixed value
++     * @return  string
++     */
++    protected function encode($value) {
++      if (!($encoded= create(new XmlRpcEncoder())->encode($value)) instanceof Node) {
++        $this->fail('Could not encode '.xp::stringOf($value));
++      }
++      return $encoded->getSource(INDENT_NONE);
++    }
++  
++    /**
++     * Test encoding an integer.
++     *
++     */
++    #[@test]
++    public function int() {
++      $this->assertEquals('<value><int>1</int></value>', $this->encode(1));
++    }
++
++    /**
++     * Test encoding an double.
++     *
++     */
++    #[@test]
++    public function double() {
++      $this->assertEquals('<value><double>1.1</double></value>', $this->encode(1.1));
++    }
++
++    /**
++     * Test encoding a string.
++     *
++     */
++    #[@test]
++    public function string() {
++      $this->assertEquals('<value><string>Hello</string></value>', $this->encode('Hello'));
++    }
++
++    /**
++     * Test encoding a string
++     *
++     */
++    #[@test]
++    public function stringWithUmlauts() {
++      $this->assertEquals('<value><string>Hällo</string></value>', $this->encode('Hällo'));
++    }
++
++    /**
++     * Test encoding a string.
++     *
++     */
++    #[@test]
++    public function emptyString() {
++      $this->assertEquals('<value><string></string></value>', $this->encode(''));
++    }
++
++    /**
++     * Test encoding a boolean FALSE.
++     *
++     */
++    #[@test]
++    public function false() {
++      $this->assertEquals('<value><boolean>0</boolean></value>', $this->encode(FALSE));
++    }
++
++    /**
++     * Test encoding a boolean FALSE.
++     *
++     */
++    #[@test]
++    public function true() {
++      $this->assertEquals('<value><boolean>1</boolean></value>', $this->encode(TRUE));
++    }
++
++    /**
++     * Test encoding NULL.
++     *
++     */
++    #[@test]
++    public function nil() {
++      $this->assertEquals('<value><nil></nil></value>', $this->encode(NULL));
++    }
++
++    /**
++     * Test encoding an empty array.
++     *
++     */
++    #[@test]
++    public function emptyArray() {
++      $this->assertEquals('<value><array><data></data></array></value>', $this->encode(array()));
++    }
++
++    /**
++     * Test encoding an array with one element
++     *
++     */
++    #[@test]
++    public function oneElementArray() {
++      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++        <value>
++          <array>
++            <data>
++              <value><int>1</int></value>
++            </data>
++          </array>
++        </value>
++        ')),
++        $this->encode(array(1))
++      );
++    }
++
++    /**
++     * Test encoding the example array from the XMLRPC spec
++     *
++     * @see   http://www.xmlrpc.com/spec
++     */
++    #[@test]
++    public function exampleArray() {
++      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++        <value>
++          <array>
++            <data>
++              <value><int>12</int></value>
++              <value><string>Egypt</string></value>
++              <value><boolean>0</boolean></value>
++              <value><int>-31</int></value>
++            </data>
++          </array>
++        </value>
++        ')),
++        $this->encode(array(12, 'Egypt', FALSE, -31))
++      );
++    }
++
++    /**
++     * Test encoding the example struct from the XMLRPC spec
++     *
++     * @see   http://www.xmlrpc.com/spec
++     */
++    #[@test]
++    public function exampleStruct() {
++      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++        <value>
++          <struct>
++            <member>
++              <name>lowerBound</name>
++              <value><int>18</int></value>
++            </member>
++            <member>
++              <name>upperBound</name>
++              <value><int>139</int></value>
++            </member>
++          </struct>
++        </value>
++        ')), 
++        $this->encode(array('lowerBound' => 18, 'upperBound' => 139))
++      );
++    }
++
++    /**
++     * Test encoding a struct with our special __xp_class member.
++     *
++     */
++    #[@test]
++    public function valueObject() {
++      $vo= new net·xp_framework·unittest·scriptlet·rpc·ValueObject();
++      $vo->setName('Timm');
++      $vo->setAge(30);
++      $vo->setNew(TRUE);
++      
++      $this->assertEquals(preg_replace('#>[\s\r\n]+<#', '><', trim('
++        <value>
++          <struct>
++            <member>
++              <name>__xp_class</name>
++              <value><string>net.xp_framework.unittest.scriptlet.rpc.ValueObject</string></value>
++            </member>
++            <member>
++              <name>name</name>
++              <value><string>Timm</string></value>
++            </member>
++            <member>
++              <name>age</name>
++              <value><int>30</int></value>
++            </member>
++            <member>
++              <name>_new</name>
++              <value><boolean>1</boolean></value>
++            </member>
++          </struct>
++        </value>
++        ')), 
++        $this->encode($vo)
++      );
++    }
++
++    /**
++     * Test encoding dates.
++     *
++     */
++    #[@test]
++    public function date() {
++      $iso8601String= '20051129T18:13:48';
++      $this->assertEquals(
++        '<value><dateTime.iso8601>'.$iso8601String.'</dateTime.iso8601></value>',
++        $this->encode(new Date($iso8601String))
++      );
++    }
++
++    /**
++     * Test encoding base64 data.
++     *
++     */
++    #[@test]
++    public function base64() {
++      $this->assertEquals('<value><base64>VW5pdHRlc3Q=</base64></value>', $this->encode(new Bytes('Unittest')));
++    }
++ 
++    /**
++     * Test encoding unsupported types will raise an exception.
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function unsupported() {
++      $this->encode(STDIN);
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcDecoderTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcDecoderTest.class.php	(revision 11654)
++++ ports/classes/net/xp_framework/unittest/scriptlet/rpc/XmlRpcDecoderTest.class.php	(working copy)
+@@ -67,6 +67,15 @@
+     }
+ 
+     /**
++     * Test decoding a string
++     *
++     */
++    #[@test]
++    public function stringWithUmlauts() {
++      $this->assertEquals('Hällo', $this->decode('<string>HÃ¤llo</string>'));
++    }
++
++    /**
+      * Test decoding a string.
+      *
+      */
+@@ -294,6 +303,15 @@
+         $this->decode('<dateTime.iso8601>'.$iso8601String.'</dateTime.iso8601>'
+       ));
+     }
++
++    /**
++     * Test decoding base64 data.
++     *
++     */
++    #[@test]
++    public function base64() {
++      $this->assertEquals(new Bytes('Unittest'), $this->decode('<base64>VW5pdHRlc3Q=</base64>'));
++    }
+  
+     /**
+      * Test decoding unsupported types will raise an exception.
+Index: ports/classes/net/xp_framework/unittest/scriptlet/rpc/ValueObject.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/scriptlet/rpc/ValueObject.class.php	(revision 11654)
++++ ports/classes/net/xp_framework/unittest/scriptlet/rpc/ValueObject.class.php	(working copy)
+@@ -33,6 +33,15 @@
+     public function getName() {
+       return $this->name;
+     }
++    
++    /**
++     * Set name
++     *
++     * @param  string name
++     */
++    public function setName($name) {
++      $this->name= $name;
++    }
+ 
+     /**
+      * Get age
+@@ -44,6 +53,15 @@
+     }
+ 
+     /**
++     * Set age
++     *
++     * @param   int age
++     */
++    public function setAge($age) {
++      $this->age= $age;
++    }
++
++    /**
+      * Get whether this object is new
+      *
+      * @return  bool
+@@ -51,5 +69,14 @@
+     public function isNew() {
+       return $this->_new;
+     }
++
++    /**
++     * Set whether this object is new
++     *
++     * @param   bool new
++     */
++    public function setNew($new) {
++      $this->_new= $new;
++    }
+   }
+ ?>
