@@ -1,0 +1,1065 @@
+Index: skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php
+===================================================================
+--- skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php	(revision 11654)
++++ skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('xml.Node');
++  uses('xml.Node', 'util.Date', 'lang.types.Bytes');
+ 
+   /**
+    * Encoder for data structures into XML-RPC format
+@@ -43,12 +43,15 @@
+     protected function _marshall($data) {
+       $value= new Node('value');
+       
+-      if (is('Generic', $data)) {
+-        if (is('util.Date', $data)) {
+-          return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
+-        }
+-        
+-        // Provide a standard-way to serialize Object-derived classes
++      // Handle objects:
++      // - util.Date objects are serialized as dateTime.iso8601
++      // - lang.types.Bytes object are serialized as base64
++      // - Provide a standard-way to serialize Object-derived classes
++      if ($data instanceof Date) {
++        return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
++      } else if ($data instanceof Bytes) {
++        return $value->addChild(new Node('base64', base64_encode($data));
++      } else if ($data instanceof Generic) {
+         $cname= xp::typeOf($data);
+         $data= (array)$data;
+         $data['__xp_class']= $cname;
+Index: skeleton/webservices/xmlrpc/XmlRpcDecoder.class.php
+===================================================================
+--- skeleton/webservices/xmlrpc/XmlRpcDecoder.class.php	(revision 11654)
++++ skeleton/webservices/xmlrpc/XmlRpcDecoder.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('xml.XMLFormatException', 'util.Date');
++  uses('xml.XMLFormatException', 'util.Date', 'lang.types.Bytes');
+ 
+   /**
+    * XML-RPC decoder
+@@ -82,8 +82,7 @@
+           }
+           return $ret;
+         
+-        case 'int':
+-        case 'i4':
++        case 'int': case 'i4':
+           return (int)$c->getContent();
+         
+         case 'double':
+@@ -100,9 +99,12 @@
+         
+         case 'nil':
+           return NULL;
++
++        case 'base64':
++          return new Bytes(base64_decode($c->getContent()));
+           
+         default:
+-          throw new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$c->getName());
++          throw new IllegalArgumentException('Could not decode node as its type is not supported: '.$c->getName());
+       }
+     }
+   }
+Index: skeleton/lang/types/String.class.php
+===================================================================
+--- skeleton/lang/types/String.class.php	(revision 11654)
++++ skeleton/lang/types/String.class.php	(working copy)
+@@ -6,7 +6,7 @@
+ 
+   define('STR_ENC', 'UTF-8');
+ 
+-  uses('lang.types.Character');
++  uses('lang.types.Character', 'lang.types.Bytes');
+ 
+   /**
+    * Represents a string
+@@ -31,9 +31,9 @@
+       if ($arg instanceof self) {
+         return $arg->buffer;
+       } else if ($arg instanceof Character) {
+-        return $arg->getBytes();
+-      } else if (is_string($arg)) {
+-        if (!$charset) $charset= iconv_get_encoding('input_encoding');
++        return $arg->getBytes(STR_ENC);
++      } else if (is_string($arg) || $arg instanceof Bytes) {
++        $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
+ 
+         // Convert the input to internal encoding
+         $buffer= iconv($charset, STR_ENC, $arg);
+@@ -294,12 +294,18 @@
+     }
+    
+     /**
+-     * Returns the bytes in internal encoding (UTF-8)
++     * Returns the bytes representing this string
+      *
+-     * @return  string
++     * @param   string charset default 'UTF-8'
++     * @return  lang.types.Bytes
+      */
+-    public function getBytes() {
+-      return $this->buffer;
++    public function getBytes($charset= NULL) {
++      $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
++
++      return new Bytes(STR_ENC === $charset 
++        ? $this->buffer 
++        : iconv(STR_ENC, $charset, $this->buffer)
++      );
+     }
+   }
+ ?>
+Index: skeleton/lang/types/Bytes.class.php
+===================================================================
+--- skeleton/lang/types/Bytes.class.php	(revision 0)
++++ skeleton/lang/types/Bytes.class.php	(revision 0)
+@@ -0,0 +1,184 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('lang.types.Byte');
++
++  /**
++   * Represents a list of bytes
++   *
++   * @purpose  Wrapper type
++   */
++  class Bytes extends Object implements ArrayAccess, IteratorAggregate {
++    protected
++      $iterator = NULL;
++
++    public 
++      $buffer = '',
++      $size   = 0;
++    
++    /**
++     * Returns input as byte
++     *
++     * @param   mixed in
++     * @return  string
++     */
++    protected function asByte($in) {
++      return is_int($in) && -1 < $in && $in < 256 
++        ? chr($in)
++        : ($in instanceof Byte ? chr($in->value) : $in{0})
++      ;
++    }
++
++    /**
++     * Constructor
++     *
++     * @param   mixed initial default NULL
++     * @throws  lang.IllegalArgumentException in case argument is of incorrect type.
++     */
++    public function __construct($initial= NULL) {
++      if (NULL === $initial) {
++        // Intentionally empty
++      } else if (is_array($initial)) {
++        $this->buffer= implode('', array_map(array($this, 'asByte'), $initial));
++      } else if (is_string($initial)) {
++        $this->buffer= $initial;
++      } else {
++        throw new IllegalArgumentException('Expected either Byte[], char[], int[] or string');
++      }
++      $this->size= strlen($this->buffer);
++    }
++
++    /**
++     * Returns an iterator for use in foreach()
++     *
++     * @see     php://language.oop5.iterations
++     * @return  php.Iterator
++     */
++    public function getIterator() {
++      if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
++        private $i= 0, $v;
++        public function __construct($v) { $this->v= $v; }
++        public function current() { $n= ord($this->v->buffer{$this->i}); return new Byte($n < 128 ? $n : $n - 256); }
++        public function key() { return $this->i; }
++        public function next() { $this->i++; }
++        public function rewind() { $this->i= 0; }
++        public function valid() { return $this->i < $this->v->size; }
++      }');
++      return $this->iterator;
++    }
++
++    /**
++     * = list[] overloading
++     *
++     * @param   int offset
++     * @return  lang.types.Byte 
++     * @throws  lang.IndexOutOfBoundsException if offset does not exist
++     */
++    public function offsetGet($offset) {
++      if ($offset >= $this->size || $offset < 0) {
++        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
++      }
++      $n= ord($this->buffer{$offset});
++      return new Byte($n < 128 ? $n : $n - 256);
++    }
++
++    /**
++     * list[]= overloading
++     *
++     * @param   int offset
++     * @param   mixed value
++     * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
++     * @throws  lang.IndexOutOfBoundsException if key does not exist
++     */
++    public function offsetSet($offset, $value) {
++      if (NULL === $offset) {
++        $this->buffer.= $this->asByte($value);
++        $this->size++;
++      } else if ($offset >= $this->size || $offset < 0) {
++        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
++      } else {
++        $this->buffer{$offset}= $this->asByte($value);
++      }
++    }
++
++    /**
++     * isset() overloading
++     *
++     * @param   int offset
++     * @return  bool
++     */
++    public function offsetExists($offset) {
++      return ($offset >= 0 && $offset < $this->size);
++    }
++
++    /**
++     * unset() overloading
++     *
++     * @param   int offset
++     * @throws  lang.IndexOutOfBoundsException if offset does not exist
++     */
++    public function offsetUnset($offset) {
++      if ($offset >= $this->size || $offset < 0) {
++        raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
++      }
++      $this->buffer= (
++        substr($this->buffer, 0, $offset).
++        substr($this->buffer, $offset+ 1, $this->size)
++      );
++      $this->size--;
++    }
++
++    /**
++     * Returns this byte list's size
++     *
++     * @return  string
++     */
++    public function size() {
++      return $this->size;
++    }
++
++    /**
++     * Returns whether a given object is equal to this object
++     *
++     * @param   lang.Generic cmp
++     * @return  bool
++     */
++    public function equals($cmp) {
++      return (
++        $cmp instanceof self && 
++        $this->size === $cmp->size && 
++        $this->buffer === $cmp->buffer
++      );
++    }
++
++    /**
++     * Returns a hashcode for this bytes object
++     *
++     * @return  string
++     */
++    public function hashCode() {
++      return md5($this->buffer);
++    }
++
++    /**
++     * Returns a string representation of this string.
++     *
++     * @return  string
++     */
++    public function toString() {
++      return $this->getClassName().'('.$this->size.')@{'.addcslashes($this->buffer, "\0..\37\177..\377").'}';
++    }
++
++    /**
++     * String conversion overloading. This is for use with fwrite()
++     *
++     * @return  string
++     */
++    public function __toString() {
++      return $this->buffer;
++    }
++  }
++?>
+Index: skeleton/lang/types/Character.class.php
+===================================================================
+--- skeleton/lang/types/Character.class.php	(revision 11654)
++++ skeleton/lang/types/Character.class.php	(working copy)
+@@ -4,6 +4,8 @@
+  * $Id$ 
+  */
+ 
++  uses('lang.types.Bytes');
++
+   /**
+    * Represents a character, which may consist of one or more bytes.
+    *
+@@ -40,7 +42,7 @@
+         return;
+       }        
+ 
+-      if (!$charset) $charset= iconv_get_encoding('input_encoding');
++      $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
+ 
+       // Convert the input to internal encoding
+       $this->buffer= iconv($charset, 'UTF-8', $arg);
+@@ -96,14 +98,20 @@
+     public function __toString() {
+       return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
+     }
+-
++   
+     /**
+-     * Returns the bytes in internal encoding (UTF-8)
++     * Returns the bytes representing this character
+      *
+-     * @return  string
++     * @param   string charset default NULL
++     * @return  lang.types.Bytes
+      */
+-    public function getBytes() {
+-      return $this->buffer;
++    public function getBytes($charset= NULL) {
++      $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
++
++      return new Bytes(STR_ENC === $charset 
++        ? $this->buffer 
++        : iconv(STR_ENC, $charset, $this->buffer)
++      );
+     }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php	(revision 11654)
++++ ports/classes/net/xp_framework/unittest/core/types/StringTest.class.php	(working copy)
+@@ -79,7 +79,7 @@
+     #[@test]
+     public function usAsciiString() {
+       $str= new String('Hello');
+-      $this->assertEquals('Hello', $str->getBytes());
++      $this->assertEquals(new Bytes('Hello'), $str->getBytes());
+       $this->assertEquals(5, $str->length());
+     }
+ 
+@@ -90,7 +90,7 @@
+     #[@test]
+     public function integerString() {
+       $str= new String(1);
+-      $this->assertEquals('1', $str->getBytes());
++      $this->assertEquals(new Bytes('1'), $str->getBytes());
+       $this->assertEquals(1, $str->length());
+     }
+ 
+@@ -101,7 +101,7 @@
+     #[@test]
+     public function doubleString() {
+       $str= new String(1.1);
+-      $this->assertEquals('1.1', $str->getBytes());
++      $this->assertEquals(new Bytes('1.1'), $str->getBytes());
+       $this->assertEquals(3, $str->length());
+     }
+ 
+@@ -112,7 +112,7 @@
+     #[@test]
+     public function trueString() {
+       $str= new String(TRUE);
+-      $this->assertEquals('1', $str->getBytes());
++      $this->assertEquals(new Bytes('1'), $str->getBytes());
+       $this->assertEquals(1, $str->length());
+     }
+ 
+@@ -123,7 +123,7 @@
+     #[@test]
+     public function falseString() {
+       $str= new String(FALSE);
+-      $this->assertEquals('', $str->getBytes());
++      $this->assertEquals(new Bytes(''), $str->getBytes());
+       $this->assertEquals(0, $str->length());
+     }
+ 
+@@ -134,7 +134,7 @@
+     #[@test]
+     public function nullString() {
+       $str= new String(NULL);
+-      $this->assertEquals('', $str->getBytes());
++      $this->assertEquals(new Bytes(''), $str->getBytes());
+       $this->assertEquals(0, $str->length());
+     }
+ 
+@@ -145,7 +145,7 @@
+     #[@test]
+     public function umlautString() {
+       $str= new String('Hällo');
+-      $this->assertEquals('HÃ¤llo', $str->getBytes());
++      $this->assertEquals(new Bytes('HÃ¤llo'), $str->getBytes('utf-8'));
+       $this->assertEquals(5, $str->length());
+     }
+ 
+Index: ports/classes/net/xp_framework/unittest/core/types/BytesTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/types/BytesTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/types/BytesTest.class.php	(revision 0)
+@@ -0,0 +1,595 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'lang.types.Bytes',
++    'lang.types.String',
++    'lang.types.Character'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://lang.types.Bytes
++   * @purpose  Unittest
++   */
++  class BytesTest extends TestCase {
++  
++    /**
++     * Test creating an empty Bytes object by not supplying any 
++     * constructor parameters.
++     *
++     */
++    #[@test]
++    public function emptyBytes() {
++      $this->assertEquals(0, create(new Bytes())->size());
++    }
++
++    /**
++     * Test creating an empty Bytes object from a string
++     *
++     */
++    #[@test]
++    public function fromEmptyString() {
++      $this->assertEquals(0, create(new Bytes(''))->size());
++    }
++
++    /**
++     * Test creating an empty Bytes object from a string
++     *
++     */
++    #[@test]
++    public function fromEmptyArray() {
++      $this->assertEquals(0, create(new Bytes(array()))->size());
++    }
++
++    /**
++     * Test creating a Bytes object from a string
++     *
++     */
++    #[@test]
++    public function fromString() {
++      $b= new Bytes('abcd');
++      $this->assertEquals(4, $b->size());
++      $this->assertEquals(new Byte(97), $b[0]);
++      $this->assertEquals(new Byte(98), $b[1]);
++      $this->assertEquals(new Byte(99), $b[2]);
++      $this->assertEquals(new Byte(100), $b[3]);
++    }
++
++    /**
++     * Test creating a Bytes object from an array of ints
++     *
++     */
++    #[@test]
++    public function fromIntegerArray() {
++      $b= new Bytes(array(97, 98, 99, 100));
++      $this->assertEquals(4, $b->size());
++      $this->assertEquals(new Byte(97), $b[0]);
++      $this->assertEquals(new Byte(98), $b[1]);
++      $this->assertEquals(new Byte(99), $b[2]);
++      $this->assertEquals(new Byte(100), $b[3]);
++    }
++ 
++    /**
++     * Test creating a Bytes object from an array of chars
++     *
++     */
++    #[@test]
++    public function fromCharArray() {
++      $b= new Bytes(array('a', 'b', 'c', 'd'));
++      $this->assertEquals(4, $b->size());
++      $this->assertEquals(new Byte(97), $b[0]);
++      $this->assertEquals(new Byte(98), $b[1]);
++      $this->assertEquals(new Byte(99), $b[2]);
++      $this->assertEquals(new Byte(100), $b[3]);
++    }
++
++    /**
++     * Test creating a Bytes object from an array of Bytes
++     *
++     */
++    #[@test]
++    public function fromByteArray() {
++      $b= new Bytes(array(new Byte(97), new Byte(98), new Byte(99), new Byte(100)));
++      $this->assertEquals(4, $b->size());
++      $this->assertEquals(new Byte(97), $b[0]);
++      $this->assertEquals(new Byte(98), $b[1]);
++      $this->assertEquals(new Byte(99), $b[2]);
++      $this->assertEquals(new Byte(100), $b[3]);
++    }
++ 
++    /**
++     * Test creating a Bytes object with an illegal argument type
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function illegalConstructorArgument() {
++      new Bytes(1);
++    }
++
++    /**
++     * Test size changes after appending
++     *
++     */
++    #[@test]
++    public function sizeChangesAfterAppending() {
++      $b= new Bytes();
++      $this->assertEquals(0, $b->size());
++      $b[]= 1;
++      $this->assertEquals(1, $b->size());
++    }
++
++    /**
++     * Test size changes after removing
++     *
++     */
++    #[@test]
++    public function sizeChangesAfterRemoving() {
++      $b= new Bytes("\0");
++      $this->assertEquals(1, $b->size());
++      unset($b[0]);
++      $this->assertEquals(0, $b->size());
++    }
++
++    /**
++     * Test size does not change when setting
++     *
++     */
++    #[@test]
++    public function sizeDoesNotChangeWhenSetting() {
++      $b= new Bytes("\0");
++      $this->assertEquals(1, $b->size());
++      $b[0]= "\1";
++      $this->assertEquals(1, $b->size());
++    }
++
++    /**
++     * Test appending an integer to a Bytes object
++     *
++     */
++    #[@test]
++    public function appendInteger() {
++      $b= new Bytes();
++      $b[]= 1;
++      $this->assertEquals(new Byte(1), $b[0]);
++    }
++
++    /**
++     * Test appending a char to a Bytes object
++     *
++     */
++    #[@test]
++    public function appendChar() {
++      $b= new Bytes();
++      $b[]= "\1";
++      $this->assertEquals(new Byte(1), $b[0]);
++    }
++
++    /**
++     * Test appending a char to a Bytes object
++     *
++     */
++    #[@test]
++    public function appendByte() {
++      $b= new Bytes();
++      $b[]= new Byte(1);
++      $this->assertEquals(new Byte(1), $b[0]);
++    }
++
++    /**
++     * Test setting an offset to an integer
++     *
++     */
++    #[@test]
++    public function setInteger() {
++      $b= new Bytes("\1\2");
++      $b[0]= 3;
++      $this->assertEquals(new Byte(3), $b[0]);
++    }
++
++    /**
++     * Test setting an offset to a char
++     *
++     */
++    #[@test]
++    public function setChar() {
++      $b= new Bytes("\1\2");
++      $b[0]= "\3";
++      $this->assertEquals(new Byte(3), $b[0]);
++    }
++
++    /**
++     * Test setting an offset to a Byte
++     *
++     */
++    #[@test]
++    public function setByte() {
++      $b= new Bytes("\1\2");
++      $b[0]= new Byte(3);
++      $this->assertEquals(new Byte(3), $b[0]);
++    }
++
++    /**
++     * Test setting a negative offset to a Byte
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function setNegative() {
++      $b= new Bytes('negative');
++      $b[-1]= new Byte(3);
++    }
++
++    /**
++     * Test setting an offset greater than the size to a Byte
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function setPastEnd() {
++      $b= new Bytes('ends');
++      $b[5]= new Byte(3);
++    }
++
++    /**
++     * Test getting a negative offset
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function getNegative() {
++      $b= new Bytes('negative');
++      $read= $b[-1];
++    }
++
++    /**
++     * Test getting an offset greater than the size
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function getPastEnd() {
++      $b= new Bytes('ends');
++      $read= $b[5];
++    }
++
++    /**
++     * Test testing offsets with isset()
++     *
++     */
++    #[@test]
++    public function testingOffsets() {
++      $b= new Bytes('GIF89a');
++      $this->assertFalse(isset($b[-1]), 'offset -1');
++      $this->assertTrue(isset($b[0]), 'offset 0');
++      $this->assertTrue(isset($b[5]), 'offset 5');
++      $this->assertFalse(isset($b[6]), 'offset 6');
++    }
++
++    /**
++     * Test removing offsets with unset()
++     *
++     */
++    #[@test]
++    public function removingFromBeginning() {
++      $b= new Bytes('GIF89a');
++      unset($b[0]);
++      $this->assertEquals(new Bytes('IF89a'), $b);
++    }
++
++    /**
++     * Test removing offsets with unset()
++     *
++     */
++    #[@test]
++    public function removingFromEnd() {
++      $b= new Bytes('GIF89a');
++      unset($b[5]);
++      $this->assertEquals(new Bytes('GIF89'), $b);
++    }
++
++    /**
++     * Test removing offsets with unset()
++     *
++     */
++    #[@test]
++    public function removingInBetween() {
++      $b= new Bytes('GIF89a');
++      unset($b[3]);
++      $this->assertEquals(new Bytes('GIF9a'), $b);
++    }
++
++    /**
++     * Test removing a negative offset
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function removingNegative() {
++      $b= new Bytes('negative');
++      unset($b[-1]);
++    }
++
++    /**
++     * Test removing an offset greater than the size
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function removingPastEnd() {
++      $b= new Bytes('ends');
++      unset($b[5]);
++    }
++
++    /**
++     * Test a NUL byte at the beginning does not cut off the rest
++     *
++     */
++    #[@test]
++    public function binarySafeBeginning() {
++      $b= new Bytes(array("\0", 'A', 'B'));
++      $this->assertEquals(new Byte(0), $b[0]);
++      $this->assertEquals(new Byte(65), $b[1]);
++      $this->assertEquals(new Byte(66), $b[2]);
++    }
++
++    /**
++     * Test a NUL byte somewhere inbetween does not cut off the rest
++     *
++     */
++    #[@test]
++    public function binarySafeInBetween() {
++      $b= new Bytes(array('A', "\0", 'B'));
++      $this->assertEquals(new Byte(65), $b[0]);
++      $this->assertEquals(new Byte(0), $b[1]);
++      $this->assertEquals(new Byte(66), $b[2]);
++    }
++
++    /**
++     * Test a NUL byte at the end is not cut off
++     *
++     */
++    #[@test]
++    public function binarySafeInEnd() {
++      $b= new Bytes(array('A', 'B', "\0"));
++      $this->assertEquals(new Byte(65), $b[0]);
++      $this->assertEquals(new Byte(66), $b[1]);
++      $this->assertEquals(new Byte(0), $b[2]);
++    }
++
++    /**
++     * Test string representation
++     *
++     */
++    #[@test]
++    public function abcBytesToString() {
++      $this->assertEquals(
++        'lang.types.Bytes(6)@{@ ABC!}', 
++        create(new Bytes('@ ABC!'))->toString()
++      );
++    }
++
++    /**
++     * Test string representation of a bytes object with all bytes 
++     * from ASCII 0 - ASCII 31
++     *
++     */
++    #[@test]
++    public function controlCharsToString() {
++      $this->assertEquals(
++        'lang.types.Bytes(32)@{'.
++        '\000\001\002\003\004\005\006\a'.     //  0 -  7
++        '\b\t\n\v\f\r\016\017'.               //  8 - 15
++        '\020\021\022\023\024\025\026\027'.   // 16 - 23
++        '\030\031\032\033\034\035\036\037'.   // 24 - 31
++        '}',
++        create(new Bytes(range(0, 31)))->toString()
++      );
++    }
++
++    /**
++     * Test string representation of a bytes object with "umlaut"
++     * bytes
++     *
++     */
++    #[@test]
++    public function umlautsToString() {
++      $this->assertEquals(
++        'lang.types.Bytes(6)@{A\344O\366U\374}', 
++        create(new Bytes('AäOöUü'))->toString()
++      );
++    }
++
++    /**
++     * Test string casting
++     *
++     */
++    #[@test]
++    public function stringCasting() {
++      $this->assertEquals('Hello', (string)new Bytes('Hello'));
++    }
++
++    /**
++     * Test creating an integer from bytes using "N" as format
++     * (unsigned long (always 32 bit, big endian byte order))
++     *
++     * @see     php://unpack
++     */
++    #[@test]
++    public function unpackUnsignedLong() {
++      $r= unpack('Nnumber', new Bytes("\000\000\003\350"));
++      $this->assertEquals(1000, $r['number']);
++    }
++
++    /**
++     * Test creating bytes from an integer using "N" as format
++     * (unsigned long (always 32 bit, big endian byte order))
++     *
++     * @see     php://pack
++     */
++    #[@test]
++    public function packUnsignedLong() {
++      $this->assertEquals(new Bytes("\000\000\003\350"), new Bytes(pack('N', 1000)));
++    }
++
++    /**
++     * Test creating a String object from a Bytes object
++     *
++     * @see     xp://lang.types.String#__construct
++     */
++    #[@test]
++    public function stringFromIso88591Bytes() {
++      $this->assertEquals(
++        new String('Hällo', 'iso-8859-1'),
++        new String(new Bytes("H\344llo"))
++      );
++    }
++
++    /**
++     * Test creating a String object from a Bytes object
++     *
++     * @see     xp://lang.types.String#__construct
++     */
++    #[@test]
++    public function stringFromUtf8Bytes() {
++      $this->assertEquals(
++        new String('Hällo', 'iso-8859-1'),
++        new String(new Bytes("H\303\244llo"), 'utf-8')
++      );
++    }
++
++    /**
++     * Test creating a String object from a Bytes object
++     *
++     * @see     xp://lang.types.String#__construct
++     */
++    #[@test, @expect('lang.FormatException')]
++    public function stringFromInvalidUtf8Bytes() {
++      new String(new Bytes("H\344llo"), 'utf-8');
++    }
++
++    /**
++     * Test creating a Bytes object from a String object
++     *
++     * @see     xp://lang.types.String#getBytes
++     */
++    #[@test]
++    public function utf8BytesFromString() {
++      $this->assertEquals(
++        new Bytes("H\303\244llo"),
++        create(new String('Hällo', 'iso-8859-1'))->getBytes('utf-8')
++      );
++    }
++
++    /**
++     * Test creating a Bytes object from a String object
++     *
++     * @see     xp://lang.types.String#getBytes
++     */
++    #[@test]
++    public function iso88591BytesFromString() {
++      $this->assertEquals(
++        new Bytes("H\344llo"),
++        create(new String('Hällo', 'iso-8859-1'))->getBytes('iso-8859-1')
++      );
++    }
++
++    /**
++     * Test creating a Character object from a Bytes object
++     *
++     * @see     xp://lang.types.Character#__construct
++     */
++    #[@test]
++    public function characterFromIso88591Bytes() {
++      $this->assertEquals(
++        new Character('ä', 'iso-8859-1'),
++        new Character(new Bytes("\344"))
++      );
++    }
++
++    /**
++     * Test creating a Character object from a Bytes object
++     *
++     * @see     xp://lang.types.Character#__construct
++     */
++    #[@test]
++    public function characterFromUtf8Bytes() {
++      $this->assertEquals(
++        new Character('ä', 'iso-8859-1'),
++        new Character(new Bytes("\303\244"), 'utf-8')
++      );
++    }
++
++    /**
++     * Test creating a Bytes object from a Character object
++     *
++     * @see     xp://lang.types.Character#getBytes
++     */
++    #[@test]
++    public function utf8BytesFromCharacter() {
++      $this->assertEquals(
++        new Bytes("\303\244"),
++        create(new Character('ä', 'iso-8859-1'))->getBytes('utf-8')
++      );
++    }
++
++    /**
++     * Test creating a Bytes object from a Character object
++     *
++     * @see     xp://lang.types.Character#getBytes
++     */
++    #[@test]
++    public function iso88591BytesFromCharacter() {
++      $this->assertEquals(
++        new Bytes("\344"),
++        create(new Character('ä', 'iso-8859-1'))->getBytes('iso-8859-1')
++      );
++    }
++
++    /**
++     * Test string conversion overloading
++     *
++     */
++    #[@test]
++    public function worksWithEchoStatement() {
++      ob_start();
++      echo new Bytes('ü');
++      $this->assertEquals('ü', ob_get_clean());
++    }
++
++    /**
++     * Test byte range from -128 to 127
++     *
++     */
++    #[@test]
++    public function integerArrayToBytes() {
++      $b= new Bytes(array(228, 246, 252));
++      $this->assertEquals(new Byte(-28), $b[0]);
++      $this->assertEquals(new Byte(-10), $b[1]);
++      $this->assertEquals(new Byte(-4), $b[2]);
++    }
++
++    /**
++     * Test byte range from -128 to 127
++     *
++     */
++    #[@test]
++    public function byteArrayToBytes() {
++      $b= new Bytes(array(new Byte(-28)));
++      $this->assertEquals(new Byte(-28), $b[0]);
++    }
++
++    /**
++     * Tests iteration on a Bytes object returns all bytes inside
++     *
++     */
++    #[@test]
++    public function iteration() {
++      $c= array('H', "\303", "\244", 'l', 'l', 'o');
++      $b= new Bytes($c);
++      foreach ($b as $i => $byte) {
++        $this->assertEquals($c[$i], chr($byte->intValue()));
++      }
++      $this->assertEquals($i, sizeof($c)- 1);
++    }
++  }
++?>
+Index: ports/classes/net/xp_framework/unittest/core/types/CharacterTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/types/CharacterTest.class.php	(revision 11654)
++++ ports/classes/net/xp_framework/unittest/core/types/CharacterTest.class.php	(working copy)
+@@ -42,7 +42,7 @@
+      */
+     #[@test]
+     public function nullByte() {
+-      $this->assertEquals("\x00", create(new Character(0))->getBytes());
++      $this->assertEquals(new Bytes("\x00"), create(new Character(0))->getBytes());
+     }
+ 
+     /**
+@@ -51,7 +51,7 @@
+      */
+     #[@test]
+     public function euroSymbol() {
+-      $this->assertEquals("\xe2\x82\xac", create(new Character(8364))->getBytes()); // &#8364; in HTML
++      $this->assertEquals(new Bytes("\xe2\x82\xac"), create(new Character(8364))->getBytes('UTF-8')); // &#8364; in HTML
+     }
+   
+     /**
+@@ -78,7 +78,7 @@
+      */
+     #[@test]
+     public function usAsciiCharacter() {
+-      $this->assertEquals('H', create(new Character('H'))->getBytes());
++      $this->assertEquals(new Bytes('H'), create(new Character('H'))->getBytes());
+     }
+ 
+     /**
+@@ -87,7 +87,7 @@
+      */
+     #[@test]
+     public function umlautCharacter() {
+-      $this->assertEquals('Ã¤', create(new Character('ä'))->getBytes());
++      $this->assertEquals(new Bytes("\303\244"), create(new Character('ä'))->getBytes('utf-8'));
+     }
+ 
+     /**
