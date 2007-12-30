@@ -25,6 +25,7 @@ Functionality
 
 Bytes class
 ~~~~~~~~~~~
+The public API is as follows:
 <?php
   class Bytes extends Object {
 
@@ -37,6 +38,15 @@ Bytes class
     public function __construct($initial= NULL) {
       // ...
     }    
+
+    /**
+     * Returns this byte list's size
+     *
+     * @return  string
+     */
+    public function size() {
+      // ...
+    }
   }
 ?>
 
@@ -54,7 +64,83 @@ Examples
   
   // Creates a byte array from an array of ints
   $bytes= new Bytes(array(72, 101, 108, 108, 111));
+  
+  // Creates a byte array from of Byte objects
+  $bytes= new Bytes(array(new Byte(72), new Byte(105)));
 ?>
+
+Overloading
+~~~~~~~~~~~
+The bytes class overloads array access operations:
+<?php
+  $bytes= new Bytes('Hello');
+  
+  // Read first byte (h= lang.types.Byte(72))
+  $h= $bytes[0];
+  
+  // Write second byte (by either supplying a string literal, an int,
+  // or a lang.types.Byte object)
+  $bytes[1]= 'a';
+  $bytes[1]= 72;
+  $bytes[1]= new Byte(72);
+  
+  // Append a byte (Bytes is now equal to "H" "e" "l" "l" "o" "!")
+  $bytes[]= '!';
+  
+  // Remove a byte (Bytes is now what is was before appending)
+  unset($bytes[5]);
+?>
+
+The bytes class also overloads the string conversion so it will work
+with any of PHP's string functions:
+<?php
+  $s= (string)new Bytes('Hello');           // s= string(5) "Hello"
+  echo new Bytes('Hello');                  // "Hello" is output
+  $s= strtr(new Bytes('Hello'), 'e', 'a');  // s= string(5) "Hallo"
+?>
+
+Further lang.types API integration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The lang.types.String's and lang.types.Character's getBytes() methods are
+changed to return a Bytes instance instead of a primitive string.
+
+<?php
+  // b= lang.types.Bytes{\303 \274 b e r c o d er}
+  $b= create(new String('übercoder', 'iso-8859-1'))->getBytes('utf-8');
+  
+  // b = lang.types.Bytes{\303 \274}
+  $b= create(new Character('ü', 'iso-8859-1'))->getBytes('utf-8');
+  
+  // s= lang.types.String{übercoder}
+  $s= new String(new Bytes("\303\274bercoder"), 'utf-8');
+
+  // c= lang.types.Character{ü}
+  $c= new Character(new Bytes("\303\274"), 'utf-8');
+?>
+
+Integration with other APIs: SOAP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The SOAP API will recognize lang.types.Bytes objects and render them as
+SOAP:Base64Binary during serialization. SOAP:Base64Binary data will be 
+returned as lang.types.Bytes objects during deserialization.
+
+
+Integration with other APIs: XMLRPC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The XMLRPC API will recognize lang.types.Bytes objects and render them as
+Base64 during serialization. Base64 data will be returned as lang.types.Bytes 
+objects during deserialization.
+
+
+Integration with other APIs: EASC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+EASC will map lang.types.Bytes objects to byte[] on the Java-Side and 
+byte[] from the Java-Side to lang.types.Bytes objects. At the moment, byte
+arrays are mapped to an array of Byte[] objects, which is significantly
+larger in storage space.
+
+The token used for byte arrays will be "Y" (because "B" and "b" are 
+already taken for lang.type.Byte and lang.type.Boolean).
 
 
 Security considerations
@@ -69,7 +155,24 @@ n/a
 
 Dependencies
 ------------
-n/a
+
+BC break in EASC API for byte[]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Suppose we have a method called getByteArray() returning (Java notation used)
+new byte[] { (byte)1, (byte)2 }. 
+
+This is what will be returned:
+<?php
+  // Before: lang.types.ArrayList[2] { 
+  //   lang.types.Byte(1), 
+  //   lang.types.Byte(2) 
+  // }
+  $before= $remote->getByteArray();
+  
+  // After: lang.types.Bytes(2) { \1, \2 }
+  $after= $remote->getByteArray();
+?>
+
 
 
 Related documents
