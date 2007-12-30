@@ -189,6 +189,9 @@ Related documents
 - RFC #146
   Unicode RFC
 
+- http://xp-framework.net/rfc/contrib/rfc0149.diff
+  Implementing patch
+
 
 Comments
 --------
