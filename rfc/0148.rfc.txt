@@ -189,7 +189,7 @@ Related documents
 - RFC #146
   Unicode RFC
 
-- http://xp-framework.net/rfc/contrib/rfc0149.diff
+- http://xp-framework.net/rfc/contrib/rfc0148.diff
   Implementing patch
 
 
