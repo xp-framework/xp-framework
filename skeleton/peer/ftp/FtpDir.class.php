@@ -74,7 +74,7 @@
         throw new ProtocolException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
       }
 
-      return $this->connection->parser->entryFrom($f[0], $this->connection);
+      return $this->connection->parser->entryFrom($f[0], $this->connection, $this->name);
     }
 
     /**
@@ -266,7 +266,7 @@
       // reference, ".."
       do {        
         try {
-          $entry= $this->connection->parser->entryFrom($this->entries[$this->_offset]);
+          $entry= $this->connection->parser->entryFrom($this->entries[$this->_offset], $this->connection, $this->name);
         } catch (XPException $e) {
           throw new SocketException(sprintf(
             'During listing of #%d (%s): %s',
