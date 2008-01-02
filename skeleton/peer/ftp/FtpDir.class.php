@@ -124,7 +124,7 @@
       if ($e= $this->findEntry($name)) {
         throw new IllegalStateException('File "'.$name.'" already exists ('.$e->toString().')');
       }
-      return new FtpFile($name, $this->connection);
+      return new FtpFile($this->name.$name, $this->connection);
     }
 
     /**
@@ -140,7 +140,7 @@
      */
     public function file($name) {
       if (!($e= $this->findEntry($name))) {
-        return new FtpFile($name, $this->connection);
+        return new FtpFile($this->name.$name, $this->connection);
       } else if ($e instanceof FtpDir) {
         throw new IllegalStateException('File "'.$name.'" is a directory');
       }
