@@ -408,10 +408,13 @@
     public function onList($event, $params) {
       if (!$socket= $this->openDatasock($event)) return;
             
-      // Remove all -options
+      // Split options from arguments
       if (($parts= sscanf($params, '-%s %s')) && $parts[0]) {
-        $this->cat && $this->cat->debug('+++ Removed options:', $parts[0]);
+        $options= $parts[0];
         $params= $parts[1];
+        $this->cat && $this->cat->debug('+++ Options:', $options);
+      } else {
+        $options= '';
       }
       
       if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
@@ -435,7 +438,7 @@
       
       // If a collection was specified, list its elements, otherwise,
       // list the single element
-      if (is('StorageCollection', $entry)) {
+      if ($entry instanceof StorageCollection && !strstr($options, 'd')) {
         $elements= $entry->elements();
       } else {
         $elements= array($entry);
@@ -472,6 +475,15 @@
      */
     public function onNlst($event, $params) {
       if (!$socket= $this->openDatasock($event)) return;
+
+      // Split options from arguments
+      if (($parts= sscanf($params, '-%s %s')) && $parts[0]) {
+        $options= $parts[0];
+        $params= $parts[1];
+        $this->cat && $this->cat->debug('+++ Options:', $options);
+      } else {
+        $options= '';
+      }
       
       if (!($entry= $this->storage->lookup($event->stream->hashCode(), $params))) {
         $this->answer($event->stream, 550, $params.': No such file or directory');
@@ -492,7 +504,7 @@
       
       // If a collection was specified, list its elements, otherwise,
       // list the single element
-      if (is('StorageCollection', $entry)) {
+      if ($entry instanceof StorageCollection && !strstr($options, 'd')) {
         $elements= $entry->elements();
       } else {
         $elements= array($entry);
