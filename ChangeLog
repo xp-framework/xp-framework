@@ -20,6 +20,17 @@ RFCs
 - Implemented RFC #0010: Type casts
   (friebe)
 
+Bugfixes
+~~~~~~~~
+- Fixed peer.ftp.FtpDir::findEntry() 
+  (gellweiler, kiesel)
+- Fixed FTP server API to parse parameters to NLST correctly and report
+  directories as single entities if "-d" is given in NLST and LIST
+  (gellweiler, friebe)
+
+Features
+~~~~~~~~
+
 
 Version 5.6.4, released 2007-12-25
 ----------------------------------
