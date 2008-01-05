@@ -1,0 +1,118 @@
+RFC 0150: Before and after methods for testcases
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Jan  5 20:45:28     2008
+@status: draft
+@category: unittest
+
+Scope of Change
+---------------
+There will be a way to run methods prior to and after all tests in a 
+TestCase class. In contrast to setUp() and tearDown() they will be run
+only once per class and not once per test.
+
+
+Rationale
+---------
+Initialize and dispose of resources that are expensive to create, e.g.
+a server instance, a network connection, 
+
+
+Functionality
+-------------
+
+Note
+~~~~
+<pre>
+This can violate the principle that unittest should be independent. For
+some cases though this might be a necessary optimization to meet the 
+goal that unittests should run fast - for other situations, setUp() and
+tearDown() serve this purpose.
+</pre>
+
+Annotations
+~~~~~~~~~~~
+The functionality can be used by annotating public static methods with
+the @beforeClass and @afterClass annotations.
+
+
+Example
+~~~~~~~
+<?php
+  class FtpIntegrationTest extends TestCase {
+    protected static $server= NULL;
+  
+    #[@beforeClass]
+    public static function startServer() {
+      self::$server= ...
+      self::$server->start();
+    }
+    
+    #[@test]
+    public function connect() {
+      $this->assertTrue(create(new FtpConnection('ftp://...'))->connect());
+    }
+
+    #[@afterClass]
+    public static function shutdownServer() {
+      self::$server->shutdown();
+    }
+  }
+?>
+
+
+Timeline
+~~~~~~~~
+When a test suite is run, the following is performed for each test class
+added to the suite:  
+<pre>
+  * Call @beforeClass method if present
+  * Then, for each method annotated with @test:
+    * Call setUp() method
+    * Call test method
+    * Call tearDown() method
+  * Call @afterClass method if present.
+</pre>
+
+Definitions
+~~~~~~~~~~~
+* The @beforeClass and @afterClass methods must be public static.
+* There may be one @beforeClass and one @afterClass method, not more.
+* When the @beforeClass method throws an exception, no further tests
+  in that class are run (and instead marked as skipped).
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower because of additional checks.
+
+
+Dependencies
+------------
+none.
+
+
+Related documents
+-----------------
+- JUnit BeforeClass / AfterClass annotations:
+  http://junit.sourceforge.net/javadoc_40/org/junit/BeforeClass.html
+  http://junit.sourceforge.net/javadoc_40/org/junit/AfterClass.html
+
+- TestNG annotations
+  http://testng.org/doc/documentation-main.html#annotations
+
+- Implementing patch
+  http://xp-framework.net/rfc/contrib/rfc0150.diff
+
+
+Comments
+--------
+
+<EOF>

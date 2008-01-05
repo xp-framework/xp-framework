@@ -1,0 +1,348 @@
+Index: skeleton/unittest/TestSuite.class.php
+===================================================================
+--- skeleton/unittest/TestSuite.class.php	(revision 11672)
++++ skeleton/unittest/TestSuite.class.php	(working copy)
+@@ -39,6 +39,7 @@
+       $tests     = array();
+ 
+     protected
++      $order     = array(),
+       $listeners = array();
+ 
+     /**
+@@ -53,6 +54,8 @@
+       if (!$test->getClass()->getMethod($test->name)) {
+         throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
+       }
++      $s= sizeof($this->tests);
++      $this->order[$test->getClassName().$s]= $s;
+       $this->tests[]= $test;
+       return $test;
+     }
+@@ -73,15 +76,17 @@
+ 
+       $ignored= array();
+       $numBefore= $this->numTests();
++      $className= $class->getName();
++      $i= 0;
+       foreach ($class->getMethods() as $m) {
+         if (!$m->hasAnnotation('test')) continue;
+         if ($m->hasAnnotation('ignore')) $ignored[]= $m;
+ 
+-        // Add test method
+-        $this->addTest(call_user_func_array(array($class, 'newInstance'), array_merge(
++        $this->order[$className.$i++]= sizeof($this->tests);
++        $this->tests[]= call_user_func_array(array($class, 'newInstance'), array_merge(
+           (array)$m->getName(TRUE),
+           $arguments
+-        )));
++        ));
+       }
+ 
+       if ($numBefore === $this->numTests()) {
+@@ -106,6 +111,7 @@
+      */
+     public function clearTests() {
+       $this->tests= array();
++      $this->order= array();
+     }
+     
+     /**
+@@ -279,15 +285,47 @@
+      *
+      * @param   unittest.TestCase test
+      * @return  unittest.TestResult
++     * @throws  lang.IllegalArgumentException in case given argument is not a testcase
++     * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
+      */
+     public function runTest(TestCase $test) {
++      if (!$test->getClass()->getMethod($test->name)) {
++        throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
++      }
+       $this->notifyListeners('testRunStarted', array($this));
+       
++      // Check for methods annotated with beforeClass
++      $skip= NULL;
++      foreach ($test->getClass()->getMethods() as $m) {
++        if (!$m->hasAnnotation('beforeClass')) continue;
++        
++        try {
++          $m->invoke(NULL, array());
++        } catch (TargetInvocationException $e) {
++          $skip= $e->getCause();
++        }
++        break;
++      }
++
+       // Run the single test case
+       $result= new TestResult();
+-      $this->runInternal($test, $result);
++      if ($skip) {
++        $this->notifyListeners('testSkipped', array(
++          $result->setSkipped($test, $skip, 0.0)
++        ));
++      } else {
++        $this->runInternal($test, $result);
++      }
+ 
++      // Notify listeners
+       $this->notifyListeners('testRunFinished', array($this, $result));
++
++      // Check for methods annotated with afterClass
++      foreach ($test->getClass()->getMethods() as $m) {
++        if (!$m->hasAnnotation('afterClass')) continue;
++        $m->invoke(NULL, array());
++        break;
++      }
+       return $result;
+     }
+     
+@@ -300,10 +338,57 @@
+       $this->notifyListeners('testRunStarted', array($this));
+ 
+       $result= new TestResult();
+-      for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
+-        $this->runInternal($this->tests[$i], $result);
++      
++      // Ensure the list is in the form:
++      // - classA::test1
++      // - classA::test2
++      // - classB::test1
++      // - classC::test1
++      ksort($this->order);
++      $current= $skip= NULL;
++      foreach ($this->order as $i) {
++        $class= $this->tests[$i]->getClass();
++        if (!$class->equals($current)) {
++          $skip= NULL;
++
++          // Call afterClass method of the last test's class
++          if ($current) foreach ($current->getMethods() as $m) {
++            if (!$m->hasAnnotation('afterClass')) continue;
++            $m->invoke(NULL, array());
++            break;
++          }
++        
++          // Call beforeClass method of this test's class
++          foreach ($class->getMethods() as $m) {
++            if (!$m->hasAnnotation('beforeClass')) continue;
++            try {
++              $m->invoke(NULL, array());
++            } catch (TargetInvocationException $e) {
++              $skip= $e->getCause();
++            }
++            break;
++          }
++          
++          // Update current
++          $current= $class;
++        }
++        
++        if ($skip) {
++          $this->notifyListeners('testSkipped', array(
++            $result->setSkipped($this->tests[$i], $skip, 0.0)
++          ));
++        } else {
++          $this->runInternal($this->tests[$i], $result);
++        }
+       }
+ 
++      // Call afterClass method of the last test's class
++      foreach ($current->getMethods() as $m) {
++        if (!$m->hasAnnotation('afterClass')) continue;
++        $m->invoke(NULL, array());
++        break;
++      }
++
+       $this->notifyListeners('testRunFinished', array($this, $result));
+       return $result;
+     }
+Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 11672)
++++ ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(working copy)
+@@ -15,6 +15,30 @@
+    * @purpose  Unit Test
+    */
+   class SimpleTestCase extends TestCase {
++    public static 
++      $init    = 0, 
++      $dispose = 0;
++      
++    /**
++     * Beforeclass method
++     *
++     */
++    #[@beforeClass]
++    public static function init() {
++      self::$init++;
++      if (0 === self::$init) {
++        throw new PrerequisitesNotMetError('BeforeClass failed', self::$init);
++      }
++    }
++    
++    /**
++     * Afterclass method
++     *
++     */
++    #[@afterClass]
++    public static function dispose() {
++      self::$dispose++;
++    }
+ 
+     /**
+      * Sets up this test. Throws a PrerequisitesNotMetError if the "skipped" 
+Index: ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(revision 11672)
++++ ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(working copy)
+@@ -7,7 +7,8 @@
+   uses(
+     'unittest.TestCase',
+     'unittest.TestSuite',
+-    'net.xp_framework.unittest.tests.SimpleTestCase'
++    'net.xp_framework.unittest.tests.SimpleTestCase',
++    'net.xp_framework.unittest.tests.AnotherTestCase'
+   );
+ 
+   /**
+@@ -57,6 +58,15 @@
+     }
+ 
+     /**
++     * Tests adding a test
++     *
++     */    
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function runNonTest() {
++      $this->suite->runTest(new Object());
++    }
++
++    /**
+      * Tests adding an invalid test
+      *
+      */    
+@@ -66,6 +76,15 @@
+     }
+ 
+     /**
++     * Tests adding an invalid test
++     *
++     */    
++    #[@test, @expect('lang.MethodNotImplementedException')]
++    public function runInvalidTest() {
++      $this->suite->runTest(newinstance('unittest.TestCase', array('nonExistant'), '{}'));
++    }
++
++    /**
+      * Tests adding a test class
+      *
+      */    
+@@ -172,5 +191,71 @@
+       $this->assertEquals(1, $r->failureCount(), 'failureCount');
+       $this->assertEquals(2, $r->skipCount(), 'skipCount');
+     }    
++
++    /**
++     * Tests method decorated with beforeClass is executed
++     *
++     */    
++    #[@test]
++    public function runInvokesBeforeClass() {
++      SimpleTestCase::$init= 0;
++      $this->suite->addTest(new SimpleTestCase('fails'));
++      $this->suite->addTest(new SimpleTestCase('succeeds'));
++      $this->suite->run();
++      $this->assertEquals(1, SimpleTestCase::$init);
++    }    
++
++    /**
++     * Tests method decorated with beforeClass is executed
++     *
++     */    
++    #[@test]
++    public function runTestInvokesBeforeClass() {
++      SimpleTestCase::$init= 0;
++      $this->suite->runTest(new SimpleTestCase('succeeds'));
++      $this->assertEquals(1, SimpleTestCase::$init);
++    }    
++
++    /**
++     * Tests all tests from a test class (but not those of others) are 
++     * marked as skipped when its beforeClass method throws an exception.
++     *
++     */    
++    #[@test]
++    public function beforeClassFails() {
++      SimpleTestCase::$init= -1;
++      $this->suite->addTest(new SimpleTestCase('fails'));
++      $this->suite->addTest(new SimpleTestCase('succeeds'));
++      $this->suite->addTest(new AnotherTestCase('succeeds'));
++      $this->suite->addTest(new SimpleTestCase('skipped'));
++      $this->suite->addTest(new SimpleTestCase('ignored'));
++      $r= $this->suite->run();
++      $this->assertEquals(4, $r->skipCount(), 'skipCount');
++      $this->assertEquals(1, $r->successCount(), 'successCount');
++    }    
++
++    /**
++     * Tests method decorated with afterClass is executed
++     *
++     */    
++    #[@test]
++    public function runInvokesAfterClass() {
++      SimpleTestCase::$dispose= 0;
++      $this->suite->addTest(new SimpleTestCase('fails'));
++      $this->suite->addTest(new SimpleTestCase('succeeds'));
++      $this->suite->run();
++      $this->assertEquals(1, SimpleTestCase::$dispose);
++    }    
++
++    /**
++     * Tests method decorated with afterClass is executed
++     *
++     */    
++    #[@test]
++    public function runTestInvokesAfterClass() {
++      SimpleTestCase::$dispose= 0;
++      $this->suite->runTest(new SimpleTestCase('succeeds'));
++      $this->assertEquals(1, SimpleTestCase::$dispose);
++    }    
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/tests/AnotherTestCase.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/AnotherTestCase.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/tests/AnotherTestCase.class.php	(revision 0)
+@@ -0,0 +1,25 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++ 
++  uses('unittest.TestCase');
++
++  /**
++   * This class is used in the SuiteTest 
++   *
++   * @purpose  Unit Test
++   */
++  class AnotherTestCase extends TestCase {
++
++    /**
++     * Always succeeds
++     *
++     */
++    #[@test]
++    public function succeeds() {
++      $this->assertTrue(TRUE);
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/tests/AnotherTestCase.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
