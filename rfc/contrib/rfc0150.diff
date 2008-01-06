@@ -2,7 +2,15 @@ Index: skeleton/unittest/TestSuite.class.php
 ===================================================================
 --- skeleton/unittest/TestSuite.class.php	(revision 11673)
 +++ skeleton/unittest/TestSuite.class.php	(working copy)
-@@ -39,6 +39,7 @@
+@@ -31,6 +31,7 @@
+    * </code>
+    *
+    * @test     xp://net.xp_framework.unittest.tests.SuiteTest
++   * @test     xp://net.xp_framework.unittest.tests.ListenerTest
+    * @see      http://junit.sourceforge.net/doc/testinfected/testing.htm
+    * @purpose  Testcase container
+    */
+@@ -39,6 +40,7 @@
        $tests     = array();
  
      protected
@@ -10,7 +18,7 @@ Index: skeleton/unittest/TestSuite.class.php
        $listeners = array();
  
      /**
-@@ -53,6 +54,9 @@
+@@ -53,6 +55,9 @@
        if (!$test->getClass()->getMethod($test->name)) {
          throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
        }
@@ -20,7 +28,7 @@ Index: skeleton/unittest/TestSuite.class.php
        $this->tests[]= $test;
        return $test;
      }
-@@ -73,18 +77,21 @@
+@@ -73,18 +78,21 @@
  
        $ignored= array();
        $numBefore= $this->numTests();
@@ -45,7 +53,7 @@ Index: skeleton/unittest/TestSuite.class.php
          throw new NoSuchElementException('No tests found in '.$class->getName());
        }
  
-@@ -106,6 +113,7 @@
+@@ -106,6 +114,7 @@
       */
      public function clearTests() {
        $this->tests= array();
@@ -53,7 +61,7 @@ Index: skeleton/unittest/TestSuite.class.php
      }
      
      /**
-@@ -279,15 +287,45 @@
+@@ -279,15 +288,45 @@
       *
       * @param   unittest.TestCase test
       * @return  unittest.TestResult
@@ -76,7 +84,7 @@ Index: skeleton/unittest/TestSuite.class.php
 +          $m->invoke(NULL, array());
 +        } catch (TargetInvocationException $e) {
 +          $this->notifyListeners('testSkipped', array(
-+            $result->setSkipped($test, $skip, 0.0)
++            $result->setSkipped($test, $e->getCause(), 0.0)
 +          ));
 +          $this->notifyListeners('testRunFinished', array($this, $result));
 +          return;
@@ -101,7 +109,7 @@ Index: skeleton/unittest/TestSuite.class.php
        return $result;
      }
      
-@@ -300,8 +338,40 @@
+@@ -300,8 +339,40 @@
        $this->notifyListeners('testRunStarted', array($this));
  
        $result= new TestResult();
