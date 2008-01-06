@@ -17,7 +17,7 @@ only once per class and not once per test.
 Rationale
 ---------
 Initialize and dispose of resources that are expensive to create, e.g.
-a server instance, a network connection, 
+a server instance, a network connection, ...
 
 
 Functionality
