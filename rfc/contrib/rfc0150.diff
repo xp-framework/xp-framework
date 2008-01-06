@@ -10,28 +10,29 @@ Index: skeleton/unittest/TestSuite.class.php
        $listeners = array();
  
      /**
-@@ -53,6 +54,8 @@
+@@ -53,6 +54,9 @@
        if (!$test->getClass()->getMethod($test->name)) {
          throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
        }
-+      $s= sizeof($this->tests);
-+      $this->order[$test->getClassName().$s]= $s;
++      $className= $test->getClassName();
++      if (!isset($this->order[$className])) $this->order[$className]= array();
++      $this->order[$className][$test->name]= sizeof($this->tests);
        $this->tests[]= $test;
        return $test;
      }
-@@ -73,15 +76,17 @@
+@@ -73,18 +77,21 @@
  
        $ignored= array();
        $numBefore= $this->numTests();
 +      $className= $class->getName();
-+      $i= 0;
++      $this->order[$className]= array();
        foreach ($class->getMethods() as $m) {
          if (!$m->hasAnnotation('test')) continue;
          if ($m->hasAnnotation('ignore')) $ignored[]= $m;
  
 -        // Add test method
 -        $this->addTest(call_user_func_array(array($class, 'newInstance'), array_merge(
-+        $this->order[$className.$i++]= sizeof($this->tests);
++        $this->order[$className][$m->getName()]= sizeof($this->tests);
 +        $this->tests[]= call_user_func_array(array($class, 'newInstance'), array_merge(
            (array)$m->getName(TRUE),
            $arguments
@@ -40,7 +41,11 @@ Index: skeleton/unittest/TestSuite.class.php
        }
  
        if ($numBefore === $this->numTests()) {
-@@ -106,6 +111,7 @@
++        unset($this->order[$className]);
+         throw new NoSuchElementException('No tests found in '.$class->getName());
+       }
+ 
+@@ -106,6 +113,7 @@
       */
      public function clearTests() {
        $this->tests= array();
@@ -48,7 +53,7 @@ Index: skeleton/unittest/TestSuite.class.php
      }
      
      /**
-@@ -279,15 +285,49 @@
+@@ -279,15 +287,45 @@
       *
       * @param   unittest.TestCase test
       * @return  unittest.TestResult
@@ -60,34 +65,31 @@ Index: skeleton/unittest/TestSuite.class.php
 +        throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
 +      }
        $this->notifyListeners('testRunStarted', array($this));
++      $result= new TestResult();
        
-+      // Check for methods annotated with beforeClass
-+      $skip= NULL;
++      // Check for methods annotated with beforeClass. If it throws an exception,
++      // mark test as skipped (using thrown exception as reason)
 +      foreach ($test->getClass()->getMethods() as $m) {
 +        if (!$m->hasAnnotation('beforeClass')) continue;
 +        
 +        try {
 +          $m->invoke(NULL, array());
 +        } catch (TargetInvocationException $e) {
-+          $skip= $e->getCause();
++          $this->notifyListeners('testSkipped', array(
++            $result->setSkipped($test, $skip, 0.0)
++          ));
++          $this->notifyListeners('testRunFinished', array($this, $result));
++          return;
 +        }
 +        break;
 +      }
 +
        // Run the single test case
-       $result= new TestResult();
--      $this->runInternal($test, $result);
-+      if ($skip) {
-+        $this->notifyListeners('testSkipped', array(
-+          $result->setSkipped($test, $skip, 0.0)
-+        ));
-+      } else {
-+        $this->runInternal($test, $result);
-+      }
+-      $result= new TestResult();
+       $this->runInternal($test, $result);
++      $this->notifyListeners('testRunFinished', array($this, $result));
  
-+      // Notify listeners
-       $this->notifyListeners('testRunFinished', array($this, $result));
-+
+-      $this->notifyListeners('testRunFinished', array($this, $result));
 +      // Check for methods annotated with afterClass
 +      foreach ($test->getClass()->getMethods() as $m) {
 +        if (!$m->hasAnnotation('afterClass')) continue;
@@ -99,68 +101,49 @@ Index: skeleton/unittest/TestSuite.class.php
        return $result;
      }
      
-@@ -300,10 +340,59 @@
+@@ -300,8 +338,40 @@
        $this->notifyListeners('testRunStarted', array($this));
  
        $result= new TestResult();
 -      for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
 -        $this->runInternal($this->tests[$i], $result);
-+      
-+      // Ensure the list is in the form:
-+      // - classA::test1
-+      // - classA::test2
-+      // - classB::test1
-+      // - classC::test1
-+      ksort($this->order);
-+      $current= $skip= NULL;
-+      foreach ($this->order as $i) {
-+        $class= $this->tests[$i]->getClass();
-+        if (!$class->equals($current)) {
-+          $skip= NULL;
++      foreach ($this->order as $classname => $tests) {
++        $class= XPClass::forName($classname);
 +
-+          // Call afterClass method of the last test's class
-+          if ($current) foreach ($current->getMethods() as $m) {
-+            if (!$m->hasAnnotation('afterClass')) continue;
-+            try {
-+              $m->invoke(NULL, array());
-+            } catch (TargetInvocationException $ignored) { }
-+            break;
-+          }
-+        
-+          // Call beforeClass method of this test's class
-+          foreach ($class->getMethods() as $m) {
-+            if (!$m->hasAnnotation('beforeClass')) continue;
-+            try {
-+              $m->invoke(NULL, array());
-+            } catch (TargetInvocationException $e) {
-+              $skip= $e->getCause();
++        // Call beforeClass method if present. If it throws an exception,
++        // mark all tests in this class as skipped and continue with tests
++        // from other classes (if available)
++        foreach ($class->getMethods() as $m) {
++          if (!$m->hasAnnotation('beforeClass')) continue;
++          try {
++            $m->invoke(NULL, array());
++          } catch (TargetInvocationException $e) {
++            foreach ($tests as $i) {
++              $this->notifyListeners('testSkipped', array(
++                $result->setSkipped($this->tests[$i], $e->getCause(), 0.0)
++              ));
 +            }
-+            break;
++            continue 2;
 +          }
-+          
-+          // Update current
-+          $current= $class;
++          break;
 +        }
 +        
-+        if ($skip) {
-+          $this->notifyListeners('testSkipped', array(
-+            $result->setSkipped($this->tests[$i], $skip, 0.0)
-+          ));
-+        } else {
++        foreach ($tests as $i) {
 +          $this->runInternal($this->tests[$i], $result);
++        }
++
++        // Call afterClass method of the last test's class. Ignore any
++        // exceptions thrown from this method.
++        foreach ($class->getMethods() as $m) {
++          if (!$m->hasAnnotation('afterClass')) continue;
++          try {
++            $m->invoke(NULL, array());
++          } catch (TargetInvocationException $ignored) { }
++          break;
 +        }
        }
  
-+      // Call afterClass method of the last test's class
-+      foreach ($current->getMethods() as $m) {
-+        if (!$m->hasAnnotation('afterClass')) continue;
-+        $m->invoke(NULL, array());
-+        break;
-+      }
-+
        $this->notifyListeners('testRunFinished', array($this, $result));
-       return $result;
-     }
 Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 11673)
