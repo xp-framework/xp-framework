@@ -1,6 +1,6 @@
 Index: skeleton/unittest/TestSuite.class.php
 ===================================================================
---- skeleton/unittest/TestSuite.class.php	(revision 11672)
+--- skeleton/unittest/TestSuite.class.php	(revision 11673)
 +++ skeleton/unittest/TestSuite.class.php	(working copy)
 @@ -39,6 +39,7 @@
        $tests     = array();
@@ -48,7 +48,7 @@ Index: skeleton/unittest/TestSuite.class.php
      }
      
      /**
-@@ -279,15 +285,47 @@
+@@ -279,15 +285,49 @@
       *
       * @param   unittest.TestCase test
       * @return  unittest.TestResult
@@ -91,13 +91,15 @@ Index: skeleton/unittest/TestSuite.class.php
 +      // Check for methods annotated with afterClass
 +      foreach ($test->getClass()->getMethods() as $m) {
 +        if (!$m->hasAnnotation('afterClass')) continue;
-+        $m->invoke(NULL, array());
++        try {
++          $m->invoke(NULL, array());
++        } catch (TargetInvocationException $ignored) { }
 +        break;
 +      }
        return $result;
      }
      
-@@ -300,10 +338,57 @@
+@@ -300,10 +340,59 @@
        $this->notifyListeners('testRunStarted', array($this));
  
        $result= new TestResult();
@@ -119,7 +121,9 @@ Index: skeleton/unittest/TestSuite.class.php
 +          // Call afterClass method of the last test's class
 +          if ($current) foreach ($current->getMethods() as $m) {
 +            if (!$m->hasAnnotation('afterClass')) continue;
-+            $m->invoke(NULL, array());
++            try {
++              $m->invoke(NULL, array());
++            } catch (TargetInvocationException $ignored) { }
 +            break;
 +          }
 +        
@@ -159,7 +163,7 @@ Index: skeleton/unittest/TestSuite.class.php
      }
 Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 11672)
+--- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 11673)
 +++ ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(working copy)
 @@ -15,6 +15,30 @@
     * @purpose  Unit Test
@@ -194,7 +198,7 @@ Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
       * Sets up this test. Throws a PrerequisitesNotMetError if the "skipped" 
 Index: ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(revision 11672)
+--- ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(revision 11673)
 +++ ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(working copy)
 @@ -7,7 +7,8 @@
    uses(
