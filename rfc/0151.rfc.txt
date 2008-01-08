@@ -1,0 +1,109 @@
+RFC 0151: Runtime class
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Jan  8 14:28:56     2008
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+A new class lang.Runtime will provide access to the PHP runtime.
+
+
+Rationale
+---------
+* Find out PHP runtime executable
+
+
+Functionality
+-------------
+
+lang.Runtime API
+~~~~~~~~~~~~~~~~
+<?php
+  class Runtime extends Object {
+  
+    /**
+     * Retrieve the runtime instance.
+     *
+     * @return  lang.Runtime
+     */
+    public static function getInstance() {
+      // ...
+    }
+    
+    /**
+     * Return the runtime executable
+     *
+     * @return  lang.Process
+     */
+    public function getExecutable() {
+      // ...
+    }
+
+    /**
+     * Register a shutdown hook - a piece of code that will be run before
+     * the runtime shuts down (e.g. with exit).
+     *
+     * @see     php://register_shutdown_function
+     * @param   lang.Runnable r
+     * @return  lang.Runnable the given runnable
+     */
+    public function addShutdownHook(Runnable $r) {
+      // ...
+    }
+  }
+?>
+
+lang.Process new methods
+~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class Process extends Object {
+  
+    /**
+     * Returns this process' ID
+     *
+     * @return  int
+     */
+    public function getProcessId() {
+      // ...
+    }
+
+    /**
+     * Returns this process' executable file name
+     *
+     * @return  string
+     */
+    public function getFileName() {
+      // ...
+    }
+  }
+?>
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None. This class will not be loaded during the bootstrapping process.
+
+
+Dependencies
+------------
+- Changes to the lang.Process class.
+
+
+Related documents
+-----------------
+- http://news.xp-framework.net/article/230/2008/01/07/
+  How to find the PHP binary's filename
+
+
+Comments
+--------
+
+<EOF>
