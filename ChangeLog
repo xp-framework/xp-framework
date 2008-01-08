@@ -17,6 +17,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0150: Before and after methods for testcases
+  (friebe)
 - Implemented RFC #0010: Type casts
   (friebe)
 
