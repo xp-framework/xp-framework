@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'unittest.TestSuite',
-    'net.xp_framework.unittest.tests.SimpleTestCase'
+    'net.xp_framework.unittest.tests.SimpleTestCase',
+    'net.xp_framework.unittest.tests.AnotherTestCase'
   );
 
   /**
@@ -57,12 +58,30 @@
     }
 
     /**
+     * Tests adding a test
+     *
+     */    
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function runNonTest() {
+      $this->suite->runTest(new Object());
+    }
+
+    /**
      * Tests adding an invalid test
      *
      */    
     #[@test, @expect('lang.MethodNotImplementedException')]
     public function addInvalidTest() {
       $this->suite->addTest(newinstance('unittest.TestCase', array('nonExistant'), '{}'));
+    }
+
+    /**
+     * Tests adding an invalid test
+     *
+     */    
+    #[@test, @expect('lang.MethodNotImplementedException')]
+    public function runInvalidTest() {
+      $this->suite->runTest(newinstance('unittest.TestCase', array('nonExistant'), '{}'));
     }
 
     /**
@@ -171,6 +190,72 @@
       $this->assertEquals(1, $r->successCount(), 'successCount');
       $this->assertEquals(1, $r->failureCount(), 'failureCount');
       $this->assertEquals(2, $r->skipCount(), 'skipCount');
+    }    
+
+    /**
+     * Tests method decorated with beforeClass is executed
+     *
+     */    
+    #[@test]
+    public function runInvokesBeforeClass() {
+      SimpleTestCase::$init= 0;
+      $this->suite->addTest(new SimpleTestCase('fails'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $this->suite->run();
+      $this->assertEquals(1, SimpleTestCase::$init);
+    }    
+
+    /**
+     * Tests method decorated with beforeClass is executed
+     *
+     */    
+    #[@test]
+    public function runTestInvokesBeforeClass() {
+      SimpleTestCase::$init= 0;
+      $this->suite->runTest(new SimpleTestCase('succeeds'));
+      $this->assertEquals(1, SimpleTestCase::$init);
+    }    
+
+    /**
+     * Tests all tests from a test class (but not those of others) are 
+     * marked as skipped when its beforeClass method throws an exception.
+     *
+     */    
+    #[@test]
+    public function beforeClassFails() {
+      SimpleTestCase::$init= -1;
+      $this->suite->addTest(new SimpleTestCase('fails'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $this->suite->addTest(new AnotherTestCase('succeeds'));
+      $this->suite->addTest(new SimpleTestCase('skipped'));
+      $this->suite->addTest(new SimpleTestCase('ignored'));
+      $r= $this->suite->run();
+      $this->assertEquals(4, $r->skipCount(), 'skipCount');
+      $this->assertEquals(1, $r->successCount(), 'successCount');
+    }    
+
+    /**
+     * Tests method decorated with afterClass is executed
+     *
+     */    
+    #[@test]
+    public function runInvokesAfterClass() {
+      SimpleTestCase::$dispose= 0;
+      $this->suite->addTest(new SimpleTestCase('fails'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $this->suite->run();
+      $this->assertEquals(1, SimpleTestCase::$dispose);
+    }    
+
+    /**
+     * Tests method decorated with afterClass is executed
+     *
+     */    
+    #[@test]
+    public function runTestInvokesAfterClass() {
+      SimpleTestCase::$dispose= 0;
+      $this->suite->runTest(new SimpleTestCase('succeeds'));
+      $this->assertEquals(1, SimpleTestCase::$dispose);
     }    
   }
 ?>
