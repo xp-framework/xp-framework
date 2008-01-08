@@ -15,6 +15,30 @@
    * @purpose  Unit Test
    */
   class SimpleTestCase extends TestCase {
+    public static 
+      $init    = 0, 
+      $dispose = 0;
+      
+    /**
+     * Beforeclass method
+     *
+     */
+    #[@beforeClass]
+    public static function init() {
+      self::$init++;
+      if (0 === self::$init) {
+        throw new PrerequisitesNotMetError('BeforeClass failed', self::$init);
+      }
+    }
+    
+    /**
+     * Afterclass method
+     *
+     */
+    #[@afterClass]
+    public static function dispose() {
+      self::$dispose++;
+    }
 
     /**
      * Sets up this test. Throws a PrerequisitesNotMetError if the "skipped" 
