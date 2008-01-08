@@ -15,6 +15,7 @@ A new class lang.Runtime will provide access to the PHP runtime.
 Rationale
 ---------
 * Find out PHP runtime executable
+* Wrap library loading
 
 
 Functionality
@@ -40,6 +41,30 @@ lang.Runtime API
      * @return  lang.Process
      */
     public function getExecutable() {
+      // ...
+    }
+
+    /**
+     * Loads a dynamic library.
+     *
+     * @see     php://dl
+     * @param   string name
+     * @throws  lang.IllegalAccessException
+     * @throws  lang.ElementNotFoundException
+     * @throws  lang.SystemException
+     */
+    public function loadLibrary($name) {
+      // ...
+    }
+
+    /**
+     * Check whether a given extension is available
+     *
+     * @see     php://extension_loaded
+     * @param   string name
+     * @return  bool
+     */
+    public function extensionAvailable($name) {
       // ...
     }
 
@@ -82,6 +107,42 @@ lang.Process new methods
   }
 ?>
 
+Examples
+~~~~~~~~
+Query PHP runtime executable:
+<?php
+  $exe= Runtime::getInstance()->getExecutable()->getFileName();
+  $pid= Runtime::getInstance()->getExecutable()->getProcessId();
+?>
+
+Clean up temporary files during shutdown:
+<?php
+  Runtime::getInstance()->addShutdownHook(newinstance('lang.Runnable', array($temp), '{
+    public $target= NULL;
+    
+    public function __construct(File $target) {
+      $this->target= $target;
+    }
+    
+    public function run() {
+      $this->target->exists() && $this->target->delete();
+    }
+  }'));
+?>
+
+Load GTK library:
+<?php
+  try {
+    Runtime::getInstance()->loadLibrary('gtk');
+  } catch (IllegalAccessException $e) {
+    // Access denied, e.g. because in multithreaded environment
+  } catch (ElementNotFoundException $e) {
+    // Could not find php_gtk.dll / php_gtk.so
+  } catch (SystemException $e) {
+    // Errors while loading php_gtk.dll / php_gtk.so
+  }
+?>
+
 Security considerations
 -----------------------
 None.
@@ -102,8 +163,19 @@ Related documents
 - http://news.xp-framework.net/article/230/2008/01/07/
   How to find the PHP binary's filename
 
+- http://de3.php.net/register_shutdown_function
+  PHP's shutdown function API
+
+- http://de3.php.net/dl
+  PHP's dynamic library loading functionality
+  
+- http://javadoc.xp-framework.net/api/java/lang/Runtime.html
+  Java's lang.Runtime class
+
 
 Comments
 --------
+- friebe, Tue Jan  8 14:53:51     2008
+  Not sure about the libary loading - should this be supported?
 
 <EOF>
