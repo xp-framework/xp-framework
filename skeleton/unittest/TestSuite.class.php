@@ -31,6 +31,7 @@
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.tests.SuiteTest
+   * @test     xp://net.xp_framework.unittest.tests.ListenerTest
    * @see      http://junit.sourceforge.net/doc/testinfected/testing.htm
    * @purpose  Testcase container
    */
@@ -39,6 +40,7 @@
       $tests     = array();
 
     protected
+      $order     = array(),
       $listeners = array();
 
     /**
@@ -53,6 +55,9 @@
       if (!$test->getClass()->getMethod($test->name)) {
         throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
       }
+      $className= $test->getClassName();
+      if (!isset($this->order[$className])) $this->order[$className]= array();
+      $this->order[$className][$test->name]= sizeof($this->tests);
       $this->tests[]= $test;
       return $test;
     }
@@ -73,18 +78,21 @@
 
       $ignored= array();
       $numBefore= $this->numTests();
+      $className= $class->getName();
+      $this->order[$className]= array();
       foreach ($class->getMethods() as $m) {
         if (!$m->hasAnnotation('test')) continue;
         if ($m->hasAnnotation('ignore')) $ignored[]= $m;
 
-        // Add test method
-        $this->addTest(call_user_func_array(array($class, 'newInstance'), array_merge(
+        $this->order[$className][$m->getName()]= sizeof($this->tests);
+        $this->tests[]= call_user_func_array(array($class, 'newInstance'), array_merge(
           (array)$m->getName(TRUE),
           $arguments
-        )));
+        ));
       }
 
       if ($numBefore === $this->numTests()) {
+        unset($this->order[$className]);
         throw new NoSuchElementException('No tests found in '.$class->getName());
       }
 
@@ -106,6 +114,7 @@
      */
     public function clearTests() {
       $this->tests= array();
+      $this->order= array();
     }
     
     /**
@@ -279,15 +288,45 @@
      *
      * @param   unittest.TestCase test
      * @return  unittest.TestResult
+     * @throws  lang.IllegalArgumentException in case given argument is not a testcase
+     * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
      */
     public function runTest(TestCase $test) {
+      if (!$test->getClass()->getMethod($test->name)) {
+        throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
+      }
       $this->notifyListeners('testRunStarted', array($this));
-      
-      // Run the single test case
       $result= new TestResult();
-      $this->runInternal($test, $result);
+      
+      // Check for methods annotated with beforeClass. If it throws an exception,
+      // mark test as skipped (using thrown exception as reason)
+      foreach ($test->getClass()->getMethods() as $m) {
+        if (!$m->hasAnnotation('beforeClass')) continue;
+        
+        try {
+          $m->invoke(NULL, array());
+        } catch (TargetInvocationException $e) {
+          $this->notifyListeners('testSkipped', array(
+            $result->setSkipped($test, $e->getCause(), 0.0)
+          ));
+          $this->notifyListeners('testRunFinished', array($this, $result));
+          return;
+        }
+        break;
+      }
 
+      // Run the single test case
+      $this->runInternal($test, $result);
       $this->notifyListeners('testRunFinished', array($this, $result));
+
+      // Check for methods annotated with afterClass
+      foreach ($test->getClass()->getMethods() as $m) {
+        if (!$m->hasAnnotation('afterClass')) continue;
+        try {
+          $m->invoke(NULL, array());
+        } catch (TargetInvocationException $ignored) { }
+        break;
+      }
       return $result;
     }
     
@@ -300,8 +339,40 @@
       $this->notifyListeners('testRunStarted', array($this));
 
       $result= new TestResult();
-      for ($i= 0, $s= sizeof($this->tests); $i < $s; $i++) {
-        $this->runInternal($this->tests[$i], $result);
+      foreach ($this->order as $classname => $tests) {
+        $class= XPClass::forName($classname);
+
+        // Call beforeClass method if present. If it throws an exception,
+        // mark all tests in this class as skipped and continue with tests
+        // from other classes (if available)
+        foreach ($class->getMethods() as $m) {
+          if (!$m->hasAnnotation('beforeClass')) continue;
+          try {
+            $m->invoke(NULL, array());
+          } catch (TargetInvocationException $e) {
+            foreach ($tests as $i) {
+              $this->notifyListeners('testSkipped', array(
+                $result->setSkipped($this->tests[$i], $e->getCause(), 0.0)
+              ));
+            }
+            continue 2;
+          }
+          break;
+        }
+        
+        foreach ($tests as $i) {
+          $this->runInternal($this->tests[$i], $result);
+        }
+
+        // Call afterClass method of the last test's class. Ignore any
+        // exceptions thrown from this method.
+        foreach ($class->getMethods() as $m) {
+          if (!$m->hasAnnotation('afterClass')) continue;
+          try {
+            $m->invoke(NULL, array());
+          } catch (TargetInvocationException $ignored) { }
+          break;
+        }
       }
 
       $this->notifyListeners('testRunFinished', array($this, $result));
