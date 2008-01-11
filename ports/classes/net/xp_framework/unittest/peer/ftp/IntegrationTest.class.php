@@ -201,7 +201,8 @@
     }
 
     /**
-     * Test retrieving the ".trash" directory which is empty.
+     * Test retrieving the ".trash" directory which is empty.(except for
+     * the ".svn" directory).
      *
      */
     #[@test]
@@ -212,7 +213,7 @@
         $dir= $r->getDir('.trash');
         $this->assertClass($dir, 'peer.ftp.FtpDir');
         $this->assertEquals('/.trash/', $dir->getName());
-        $this->assertTrue($dir->entries()->isEmpty());
+        $this->assertEquals(1, $dir->entries()->size());
       }
     }
 
