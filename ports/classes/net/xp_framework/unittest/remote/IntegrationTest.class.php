@@ -169,9 +169,27 @@
      * Test lookup
      *
      */
+    #[@test, @expect('remote.RemoteException')]
+    public function lookupNonExistant() {
+      $this->remote->lookup(':DOES_NOT_EXIST');
+    }
+
+    /**
+     * Test calling a method
+     *
+     */
     #[@test]
     public function callMethod() {
       $this->assertEquals(3, $this->remote->lookup('xp/test/Calculator')->add(1, 2));
+    }
+
+    /**
+     * Test calling a method
+     *
+     */
+    #[@test, @ignore('Fatals')]
+    public function callNonExistantMethod() {
+      $this->remote->lookup('xp/test/Calculator')->doesNotExist();
     }
   }
 ?>
