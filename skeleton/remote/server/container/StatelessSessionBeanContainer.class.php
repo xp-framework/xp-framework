@@ -32,24 +32,12 @@
       // Fetch class' classloader to check for resources configured 
       // for the bean.
       $cl= $class->getClassLoader();
-      
-      // Re-configure PropertyManager to the etc/ directory in the bean
-      $bc->configuration['PROPERTY_PATH']= 'xar://'.$cl->archive->getURI().'?etc';
 
-      // Try loading the log.ini resource, and remember if it exists
-      // TBI: Maybe add a hasResource() method to lang.ClassLoader?
-      try {
-        $cl->getResource('etc/log.ini');
-        $bc->configuration['log.ini']= TRUE;
-      } catch (ElementNotFoundException $ignore) {
-      }
+      // Try loading the well known resources, and remember if it exists
+      $bc->configuration['log.ini']= $cl->providesResource('etc/log.ini');
+      $bc->configuration['database.ini']= $cl->providesResource('etc/log.ini');
       
-      try {
-        $cl->getResource('etc/database.ini');
-        $bc->configuration['database.ini']= TRUE;
-      } catch (ElementNotFoundException $ignore) {
-      }
-        
+      $bc->configuration['cl']= $cl;
       return $bc;
     }
     
@@ -61,14 +49,15 @@
      *
      */
     protected function prepare() {
-      PropertyManager::getInstance()->configure($this->configuration['PROPERTY_PATH']);
-      
-      if (isset($this->configuration['log.ini'])) {
-        Logger::getInstance()->configure(PropertyManager::getInstance()->getProperties('log'));
+      if ($this->configuration['log.ini']) {
+        Logger::getInstance()->configure(Properties::fromString(
+          $this->configuration['cl']->getResource('etc/log.ini')
+        ));
       }
-      
-      if (isset($this->configuration['database.ini'])) {
-        ConnectionManager::getInstance()->configure(PropertyManager::getInstance()->getProperties('database'));
+      if ($this->configuration['database.ini']) {
+        ConnectionManager::getInstance()->configure(Properties::fromString(
+          $this->configuration['cl']->getResource('etc/database.ini')
+        ));
       }
     }
     
