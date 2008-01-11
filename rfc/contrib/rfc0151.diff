@@ -1,0 +1,148 @@
+Index: skeleton/lang/Runtime.class.php
+===================================================================
+--- skeleton/lang/Runtime.class.php	(revision 0)
++++ skeleton/lang/Runtime.class.php	(revision 0)
+@@ -0,0 +1,38 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Represents the runtime - that is, the PHP binary executing the
++   * current process.
++   *
++   * @purpose  purpose
++   */
++  class Runtime extends Object {
++    protected static $instance= NULL;
++    
++    static function __static() {
++      self::$instance= new self();
++    }
++    
++    /**
++     * Retrieve the runtime instance
++     *
++     * @return  lang.Runtime
++     */
++    public static function getInstance() {
++      return self::$instance;
++    }
++    
++    /**
++     * Retrieve the executable associated with this runtime.
++     *
++     * @return  string
++     */
++    public function getExecutable() {
++      return Process::getProcessById(getmypid());
++    }
++  }
++?>
+Index: skeleton/lang/Process.class.php
+===================================================================
+--- skeleton/lang/Process.class.php	(revision 11686)
++++ skeleton/lang/Process.class.php	(working copy)
+@@ -34,34 +34,86 @@
+     /**
+      * Constructor
+      *
+-     * @param   string command
++     * @param   mixed arg
+      * @param   mixed* arguments
+      * @throws  io.IOException in case the command could not be executed
+      */
+-    public function __construct() {
++    public function __construct($arg) {
+       static $spec= array(
+         0 => array('pipe', 'r'),  // stdin
+         1 => array('pipe', 'w'),  // stdout
+         2 => array('pipe', 'w')   // stderr
+       );
+       
+-      // Build command line
+-      $a= func_get_args();
+-      $cmd= implode(' ', $a);
++      if (is_int($arg)) {
++        $this->status= array('pid' => $arg, 'running' => TRUE);
++        if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
++          try {
++            $c= new Com('winmgmts:');
++            $this->status['exe']= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"')->executablePath;
++          } catch (Exception $e) {
++            throw new IllegalStateException('Cannot find executable: '.$e->getMessage();
++          }
++        } else if (file_exists($proc= '/proc/'.$pid)) {
++          $this->status['exe']= readlink($proc.'/exe');
++        } else if ($_= getenv('_')) {
++          $this->status['exe']= realpath($_);
++        } else {
++          throw new IllegalStateException('Cannot find executable');
++        }
++        $this->in= xp::null();
++        $this->out= xp::null();
++        $this->err= xp::null();
++      } else {
+       
+-      // Open process
+-      if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes))) {
+-        throw(new IOException('Could not execute "'.$cmd.'"'));
+-        return;
++        // Build command line
++        $a= func_get_args();
++        $cmd= $arg.' '.implode(' ', array_slice($a, 1));
++
++        // Open process
++        if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes))) {
++          throw new IOException('Could not execute "'.$cmd.'"');
++        }
++        
++        $this->status= proc_get_status($this->_proc);
++        $this->status['exe']= realpath($arg);
++
++        // Assign in, out and err members
++        $this->in= new File($pipes[0]);
++        $this->out= new File($pipes[1]);
++        $this->err= new File($pipes[2]);
+       }
+-
+-      // Assign in, out and err members
+-      $this->in= new File($pipes[0]);
+-      $this->out= new File($pipes[1]);
+-      $this->err= new File($pipes[2]);
+     }
+     
+     /**
++     * Get a process by process ID
++     *
++     * @param   int pid process id
++     * @return  lang.Process
++     */
++    public static function getProcessById($pid) {
++      return new self(intval($pid));
++    }
++    
++    /**
++     * Get process ID
++     *
++     * @return  int
++     */
++    public function getProcessId() {
++      return $this->status['pid'];
++    }
++    
++    /**
++     * Get filename of executable
++     *
++     * @return  string
++     */
++    public function getFilename() {
++      return $this->status['exe'];
++    }
++    
++    /**
+      * Get error stream
+      *
+      * @return  io.File STDERR
