@@ -43,8 +43,12 @@
       }
       $this->f= new Folder($uri);
       $this->st= stat($this->f->getURI());
-      $this->st['pwuid']= posix_getpwuid($this->st['uid']);
-      $this->st['grgid']= posix_getgrgid($this->st['gid']);
+      if (!extension_loaded('posix')) {
+        $this->st['pwuid']= $this->st['grgid']= array('name' => 'none');
+      } else {
+        $this->st['pwuid']= posix_getpwuid($this->st['uid']);
+        $this->st['grgid']= posix_getgrgid($this->st['gid']);
+      }
     }
 
     /**
