@@ -10,6 +10,7 @@
     'remote.protocol.RemoteInterfaceMapping',
     'remote.server.ServerHandler',
     'remote.server.RemoteObjectMap',
+    'remote.server.deploy.Deployer',
     'io.sys.ShmSegment',
     'peer.server.ServerProtocol'
   );
