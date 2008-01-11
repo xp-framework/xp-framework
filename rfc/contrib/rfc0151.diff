@@ -2,21 +2,33 @@ Index: skeleton/lang/Runtime.class.php
 ===================================================================
 --- skeleton/lang/Runtime.class.php	(revision 0)
 +++ skeleton/lang/Runtime.class.php	(revision 0)
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,121 @@
 +<?php
 +/* This class is part of the XP framework
 + *
 + * $Id$ 
 + */
 +
++  uses(
++    'lang.Process', 
++    'lang.Runnable', 
++    'lang.RuntimeError', 
++    'lang.ElementNotFoundException'
++  );
++
 +  /**
 +   * Represents the runtime - that is, the PHP binary executing the
 +   * current process.
 +   *
-+   * @purpose  purpose
++   * @test     xp://net.xp_framework.unittest.core.RuntimeTest
++   * @purpose  Access to PHP runtime
 +   */
 +  class Runtime extends Object {
-+    protected static $instance= NULL;
++    protected static 
++      $instance   = NULL;
++      
++    protected
++      $executable = NULL;
 +    
 +    static function __static() {
 +      self::$instance= new self();
@@ -32,86 +44,148 @@ Index: skeleton/lang/Runtime.class.php
 +    }
 +    
 +    /**
++     * Loads a dynamic library.
++     *
++     * @see     php://dl
++     * @param   string name
++     * @return  bool TRUE if the library was loaded, FALSE if it was already loaded
++     * @throws  lang.IllegalAccessException in case library loading is prohibited
++     * @throws  lang.ElementNotFoundException in case the library does not exist
++     * @throws  lang.RuntimeError in case dl() fails
++     */
++    public function loadLibrary($name) {
++      if (extension_loaded($name)) return FALSE;
++    
++      // dl() will fatal if any of these are set - prevent this
++      if (!(bool)ini_get('enable_dl') || (bool)ini_get('safe_mode')) {
++        throw new IllegalAccessException(sprintf(
++          'Loading libraries not permitted by system configuration [enable_dl= %s, safe_mode= %s]',
++          ini_get('enable_dl'),
++          ini_get('safe_mode')
++        ));
++      }
++      
++      // Qualify filename
++      $path= rtrim(realpath(ini_get('extension_dir')), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
++      $filename= $name.'.'.PHP_SHLIB_SUFFIX;
++      
++      // Try php_<name>.<ext>, <name>.<ext>      
++      if (file_exists($lib= $path.'php_'.$filename)) {
++        // E.g. php_sybase_ct.dll
++      } else if (file_exists($lib= $path.$filename)) {
++        // E.g. sybase_ct.so
++      } else {
++        throw new ElementNotFoundException('Cannot find library "'.$name.'" in "'.$path.'"');
++      }
++      
++      // Found library, try to load it. dl() expects given argument to not contain
++      // a path and will failt with "Temporary module name should contain only 
++      // filename" if it does.
++      if (!dl(basename($lib))) {
++        throw new RuntimeError('dl() failed for '.$lib);
++      }
++      return TRUE;
++    }
++
++    /**
++     * Check whether a given extension is available
++     *
++     * @see     php://extension_loaded
++     * @param   string name
++     * @return  bool
++     */
++    public function extensionAvailable($name) {
++      return extension_loaded($name);
++    }
++
++    /**
++     * Register a shutdown hook - a piece of code that will be run before
++     * the runtime shuts down (e.g. with exit).
++     *
++     * @see     php://register_shutdown_function
++     * @param   lang.Runnable r
++     * @return  lang.Runnable the given runnable
++     */
++    public function addShutdownHook(Runnable $r) {
++      register_shutdown_function(array($r, 'run'));
++      return $r;
++    }
++
++    /**
 +     * Retrieve the executable associated with this runtime.
 +     *
 +     * @return  string
 +     */
 +    public function getExecutable() {
-+      return Process::getProcessById(getmypid());
++      if (NULL === $this->executable) {     // Lazy-init
++        $this->executable= Process::getProcessById(getmypid());
++      }
++      return $this->executable;
 +    }
 +  }
 +?>
 Index: skeleton/lang/Process.class.php
 ===================================================================
---- skeleton/lang/Process.class.php	(revision 11686)
+--- skeleton/lang/Process.class.php	(revision 11693)
 +++ skeleton/lang/Process.class.php	(working copy)
-@@ -34,34 +34,86 @@
+@@ -18,6 +18,7 @@
+    *   var_dump($uptime);
+    * </code>
+    *
++   * @see      xp://lang.Runtime#getExecutable
+    * @see      php://proc_open
+    * @purpose  Execute external programs
+    */
+@@ -28,33 +29,38 @@
+       $err    = NULL,
+       $exitv  = -1;
+       
+-    public
+-      $_proc  = NULL;
++    protected
++      $_proc  = NULL,
++      $status = array();
+       
      /**
       * Constructor
       *
 -     * @param   string command
-+     * @param   mixed arg
-      * @param   mixed* arguments
+-     * @param   mixed* arguments
++     * @param   string command default NULL
++     * @param   string[] arguments default []
       * @throws  io.IOException in case the command could not be executed
       */
 -    public function __construct() {
-+    public function __construct($arg) {
++    public function __construct($command= NULL, $arguments= array()) {
        static $spec= array(
          0 => array('pipe', 'r'),  // stdin
          1 => array('pipe', 'w'),  // stdout
          2 => array('pipe', 'w')   // stderr
        );
        
--      // Build command line
++      // For `new self()` used in getProcessById()
++      if (NULL === $command) return;
++      
+       // Build command line
 -      $a= func_get_args();
 -      $cmd= implode(' ', $a);
-+      if (is_int($arg)) {
-+        $this->status= array('pid' => $arg, 'running' => TRUE);
-+        if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
-+          try {
-+            $c= new Com('winmgmts:');
-+            $this->status['exe']= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"')->executablePath;
-+          } catch (Exception $e) {
-+            throw new IllegalStateException('Cannot find executable: '.$e->getMessage();
-+          }
-+        } else if (file_exists($proc= '/proc/'.$pid)) {
-+          $this->status['exe']= readlink($proc.'/exe');
-+        } else if ($_= getenv('_')) {
-+          $this->status['exe']= realpath($_);
-+        } else {
-+          throw new IllegalStateException('Cannot find executable');
-+        }
-+        $this->in= xp::null();
-+        $this->out= xp::null();
-+        $this->err= xp::null();
-+      } else {
-       
--      // Open process
--      if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes))) {
+-      
++      $cmd= $command.' '.implode(' ', $arguments);
++
+       // Open process
+       if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes))) {
 -        throw(new IOException('Could not execute "'.$cmd.'"'));
 -        return;
-+        // Build command line
-+        $a= func_get_args();
-+        $cmd= $arg.' '.implode(' ', array_slice($a, 1));
-+
-+        // Open process
-+        if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes))) {
-+          throw new IOException('Could not execute "'.$cmd.'"');
-+        }
-+        
-+        $this->status= proc_get_status($this->_proc);
-+        $this->status['exe']= realpath($arg);
-+
-+        // Assign in, out and err members
-+        $this->in= new File($pipes[0]);
-+        $this->out= new File($pipes[1]);
-+        $this->err= new File($pipes[2]);
++        throw new IOException('Could not execute "'.$cmd.'"');
        }
--
--      // Assign in, out and err members
--      $this->in= new File($pipes[0]);
--      $this->out= new File($pipes[1]);
--      $this->err= new File($pipes[2]);
+ 
++      $this->status= proc_get_status($this->_proc);
++      $this->status['exe']= realpath($command);
++
+       // Assign in, out and err members
+       $this->in= new File($pipes[0]);
+       $this->out= new File($pipes[1]);
+@@ -62,6 +68,84 @@
      }
      
      /**
@@ -119,9 +193,50 @@ Index: skeleton/lang/Process.class.php
 +     *
 +     * @param   int pid process id
 +     * @return  lang.Process
++     * @throws  lang.IllegalStateException
 +     */
 +    public static function getProcessById($pid) {
-+      return new self(intval($pid));
++      $self= new self();
++      $self->status= array(
++        'pid'       => $pid, 
++        'running'   => TRUE
++      );
++      
++      // Determine executable and command line:
++      // * On Windows, use Windows Management Instrumentation API - see
++      //   http://en.wikipedia.org/wiki/Windows_Management_Instrumentation
++      //
++      // * On systems with a /proc filesystem, use information from /proc/self
++      //   See http://en.wikipedia.org/wiki/Procfs
++      //
++      // * Fall back to use the "_" environment variable and /bin/ps to retrieve
++      //   the command line (please note unfortunately any quote signs have been 
++      //   lost and it can thus be only used for display purposes)
++      //
++      // Note: It would be really nice to have a getmyexe() function in PHP
++      // complementing getmypid().
++      if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
++        try {
++          $c= new Com('winmgmts:');
++          $p= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"');
++          $self->status['exe']= $p->executablePath;
++          $self->status['command']= $p->commandLine;
++        } catch (Exception $e) {
++          throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
++        }
++      } else if (file_exists($proc= '/proc/'.$pid)) {
++        $self->status['exe']= readlink($proc.'/exe');
++        $self->status['command']= strtr($proc.'/cmdline', "\0", ' ');
++      } else if ($_= getenv('_')) {
++        $self->status['exe']= realpath($_);
++        $self->status['command']= exec('ps -p '.$pid.' -ocommand');
++      } else {
++        throw new IllegalStateException('Cannot find executable');
++      }
++      $self->in= xp::null();
++      $self->out= xp::null();
++      $self->err= xp::null();
++      return $self;
 +    }
 +    
 +    /**
@@ -141,8 +256,271 @@ Index: skeleton/lang/Process.class.php
 +    public function getFilename() {
 +      return $this->status['exe'];
 +    }
++
++    /**
++     * Get command line
++     *
++     * @return  string
++     */
++    public function getCommandLine() {
++      return $this->status['command'];
++    }
 +    
 +    /**
       * Get error stream
       *
       * @return  io.File STDERR
+Index: ports/classes/net/xp_framework/unittest/core/RuntimeTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/RuntimeTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/RuntimeTest.class.php	(revision 0)
+@@ -0,0 +1,249 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'lang.Runtime'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://lang.Runtime
++   * @purpose  Unittest
++   */
++  class RuntimeTest extends TestCase {
++  
++    /**
++     * Test getExecutable() method
++     *
++     */
++    #[@test]
++    public function getExecutable() {
++      $exe= Runtime::getInstance()->getExecutable();
++      $this->assertClass($exe, 'lang.Process');
++      $this->assertEquals(getmypid(), $exe->getProcessId());
++    }
++
++    /**
++     * Test extensionAvailable() method
++     *
++     */
++    #[@test]
++    public function standardExtensionAvailable() {
++      $this->assertTrue(Runtime::getInstance()->extensionAvailable('standard'));
++    }
++
++    /**
++     * Test extensionAvailable() method
++     *
++     */
++    #[@test]
++    public function nonExistantExtension() {
++      $this->assertFalse(Runtime::getInstance()->extensionAvailable(':DOES-NOT-EXIST"'));
++    }
++    
++    /**
++     * Runs sourcecode in a new runtime
++     *
++     * @param   string[] args
++     * @param   string src
++     * @param   int expectedExitCode default 0
++     * @throws  lang.IllegalStateException if process exits with a non-zero exitcode
++     * @return  string out
++     */
++    protected function runInNewRuntime($args, $src, $expectedExitCode= 0) {
++      $defaultArgs= array(
++        '-n',                     // Do not use any configuration file
++        '-dsafe_mode=0',          // Switch off "safe" mode
++        '-dmagic_quotes_gpc=0',   // Get rid of magic quotes
++        '-dextension_dir="'.ini_get('extension_dir').'"',
++        '-dinclude_path="'.get_include_path().'"'
++      );
++
++      with (
++        $out= $err= '', 
++        $p= new Process(Runtime::getInstance()->getExecutable()->getFilename(), array_merge($args, $defaultArgs))
++      ); {
++        $p->in->write('<?php require("lang.base.php"); uses("lang.Runtime"); '.$src.' ?>');
++        $p->in->close();
++
++        // Read output
++        while ($b= $p->out->read()) { $out.= $b; }
++        while ($b= $p->err->read()) { $err.= $b; }
++
++        // Check for exitcode
++        if ($expectedExitCode !== ($exitv= $p->close())) {
++          throw new IllegalStateException(sprintf(
++            "Command %s failed with exit code #%d (instead of %d) {OUT: %s\nERR: %s\n}",
++            $p->getCommandLine(),
++            $exitv,
++            $expectedExitCode,
++            $out,
++            $err
++          ));
++        }
++      }
++      return $out;
++    }
++
++    /**
++     * Test loadLibrary() method
++     *
++     */
++    #[@test]
++    public function loadLoadedLibrary() {
++      $this->assertEquals(
++        '+OK No exception thrown', 
++        $this->runInNewRuntime(array('-denable_dl=1'), '
++          try {
++            Runtime::getInstance()->loadLibrary("standard");
++            echo "+OK No exception thrown";
++          } catch (Throwable $e) {
++            echo "-ERR ".$e->getClassName();
++          }
++        ')
++      );
++    }
++      
++    /**
++     * Test loadLibrary() method
++     *
++     */
++    #[@test]
++    public function loadNonExistantLibrary() {
++      $this->assertEquals(
++        '+OK lang.ElementNotFoundException', 
++        $this->runInNewRuntime(array('-denable_dl=1'), '
++          try {
++            Runtime::getInstance()->loadLibrary(":DOES-NOT-EXIST");
++            echo "-ERR No exception thrown";
++          } catch (ElementNotFoundException $e) {
++            echo "+OK ".$e->getClassName();
++          }
++        ')
++      );
++    }
++
++    /**
++     * Test loadLibrary() method
++     *
++     */
++    #[@test]
++    public function loadLibraryWithoutEnableDl() {
++      $this->assertEquals(
++        '+OK lang.IllegalAccessException', 
++        $this->runInNewRuntime(array('-denable_dl=0'), '
++          try {
++            Runtime::getInstance()->loadLibrary("irrelevant");
++            echo "-ERR No exception thrown";
++          } catch (IllegalAccessException $e) {
++            echo "+OK ".$e->getClassName();
++          }
++        ')
++      );
++    }
++
++    /**
++     * Displays information
++     *
++     */
++    #[@test, @ignore('Enable and edit library name to something loadable to see information')]
++    public function displayInformation() {
++      echo $this->runInNewRuntime(array('-denable_dl=1'), '
++        try {
++          $r= Runtime::getInstance()->loadLibrary("xsl");
++          echo "+OK: ", $r ? "Loaded" : "Compiled";
++        } catch (Throwable $e) {
++          echo "-ERR ".$e->toString();
++        }
++      ');
++    }
++
++    /**
++     * Test addShutdownHook() method
++     *
++     */
++    #[@test]
++    public function shutdownHookRunOnScriptEnd() {
++      $this->assertEquals(
++        '+OK exiting, +OK Shutdown hook run', 
++        $this->runInNewRuntime(array('-denable_dl=0'), '
++          Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
++            public function run() {
++              echo \'+OK Shutdown hook run\';
++            }
++          }"));
++          
++          echo "+OK exiting, ";
++        ')
++      );
++    }
++
++    /**
++     * Test addShutdownHook() method
++     *
++     */
++    #[@test]
++    public function shutdownHookRunOnNormalExit() {
++      $this->assertEquals(
++        '+OK exiting, +OK Shutdown hook run', 
++        $this->runInNewRuntime(array('-denable_dl=0'), '
++          Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
++            public function run() {
++              echo \'+OK Shutdown hook run\';
++            }
++          }"));
++          
++          echo "+OK exiting, ";
++          exit();
++        ')
++      );
++    }
++
++    /**
++     * Test addShutdownHook() method
++     *
++     */
++    #[@test]
++    public function shutdownHookRunOnFatal() {
++      $out= $this->runInNewRuntime(array('-denable_dl=0'), '
++        Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
++          public function run() {
++            echo \'+OK Shutdown hook run\';
++          }
++        }"));
++
++        echo "+OK exiting";
++        $fatal->error();
++      ', 255);
++
++      $this->assertEquals('+OK exiting', substr($out, 0, 11), $out);
++      $this->assertEquals('+OK Shutdown hook run', substr($out, -21), $out);
++    }
++
++    /**
++     * Test addShutdownHook() method
++     *
++     */
++    #[@test]
++    public function shutdownHookRunOnUncaughtException() {
++      $out= $this->runInNewRuntime(array('-denable_dl=0'), '
++        Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
++          public function run() {
++            echo \'+OK Shutdown hook run\';
++          }
++        }"));
++
++        echo "+OK exiting";
++        xp::null()->error();
++      ', 255);
++
++      $this->assertEquals('+OK exiting', substr($out, 0, 11), $out);
++      $this->assertEquals('+OK Shutdown hook run', substr($out, -21), $out);
++    }
++  }
++?>
