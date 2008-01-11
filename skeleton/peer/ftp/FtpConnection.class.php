@@ -100,6 +100,7 @@
       // User & password
       if ($this->url->getUser()) {
         if (FALSE === ftp_login($this->handle, $this->url->getUser(), $this->url->getPassword())) {
+          ftp_close($this->handle);
           throw new AuthenticationException(sprintf(
             'Authentication failed for %s@%s (using password: %s)',
             $this->url->getUser(), $host, $this->url->getPassword() ? 'yes' : 'no'
@@ -117,6 +118,7 @@
       
       // Retrieve root directory
       if (FALSE === ($dir= ftp_pwd($this->handle))) {
+        ftp_close($this->handle);
         throw new SocketException('Cannot retrieve current directory');
       }
       $this->root= new FtpDir($dir, $this);
