@@ -51,7 +51,7 @@ lang.Runtime API
      * @param   string name
      * @throws  lang.IllegalAccessException
      * @throws  lang.ElementNotFoundException
-     * @throws  lang.SystemException
+     * @throws  lang.RuntimeError
      */
     public function loadLibrary($name) {
       // ...
@@ -160,6 +160,9 @@ Dependencies
 
 Related documents
 -----------------
+- http://xp-framework.net/rfc/contrib/rfc0151.diff
+  Implementing patch
+
 - http://news.xp-framework.net/article/230/2008/01/07/
   How to find the PHP binary's filename
 
