@@ -36,6 +36,7 @@
      * @return  string
      */
     protected function realname($clientId, $uri) {
+      $uri= strtr($uri, '/', DIRECTORY_SEPARATOR);    // External uris use "/"
       $path= (DIRECTORY_SEPARATOR == $uri{0}
         ? $uri
         : $this->base[$clientId].DIRECTORY_SEPARATOR.$uri
@@ -91,17 +92,20 @@
      */
     public function getBase($clientId) {
       if (NULL == $this->base[$clientId]) { $this->setBase($clientId); }
-      return $this->base[$clientId];
+      
+      // Return base directory for a given client - all
+      // directories returned should use forward slashes!
+      return strtr($this->base[$clientId], DIRECTORY_SEPARATOR, '/');
     }
     
     /**
      * Creates a new StorageElement or StorageCollection (depending on
      * type)
      *
-     * @param string clientId
-     * @param string uri
-     * @param int type
-     * @return &peer.ftp.server.storage.StorageEntry
+     * @param   string clientId
+     * @param   string uri
+     * @param   int type
+     * @return  peer.ftp.server.storage.StorageEntry
      */
     public function createEntry($clientId, $uri, $type) {
       $path= substr($this->realname($clientId, $uri), strlen($this->root));
@@ -150,7 +154,7 @@
      */
     public function lookup($clientId, $uri) {
       if (!file_exists($path= $this->realname($clientId, $uri))) return NULL;
-      
+
       return $this->createEntry($clientId, $uri, is_dir($path) ? ST_COLLECTION : ST_ELEMENT);
     }
   }
