@@ -13,7 +13,7 @@
   class Argument extends Object {
     public
       $name     = '',
-      $type     = '',
+      $types    = array(),
       $optional = FALSE,
       $default  = NULL;
 
@@ -21,13 +21,13 @@
      * Constructor
      *
      * @param   string name
-     * @param   string type default 'mixed'
+     * @param   string[] types default array
      * @param   bool optional default FALSE
      * @param   string default default NULL
      */    
-    public function __construct($name, $type= 'mixed', $optional= FALSE, $default= NULL) {
+    public function __construct($name, $types= array(), $optional= FALSE, $default= NULL) {
       $this->name= $name;
-      $this->type= $type;
+      $this->types= $types;
       $this->optional= $optional;
       $this->default= $default;
     }
@@ -44,20 +44,11 @@
     /**
      * Get Type
      *
+     * @param   bool hinted default FALSE
      * @return  string
      */
-    public function getType() {
-      return ltrim($this->type, '&');
-    }
-
-    /**
-     * Returns whether this argument is passed by reference
-     *
-     * @return  bool
-     */
-    #[@deprecated]
-    public function isPassedByReference() {
-      return '&' == $this->type{0};
+    public function getType($hinted= FALSE) {
+      return $this->types[0+ (int)$hinted];
     }
 
     /**
@@ -77,6 +68,18 @@
      */
     public function getDefault() {
       return $this->optional ? var_export($this->default, TRUE) : FALSE;
+    }
+
+    /**
+     * Get default value.
+     *
+     * @throws  lang.IllegalStateException in case this argument is not optional
+     * @return  mixed
+     */
+    public function getDefaultValue() {
+      if ($this->optional) return $this->default;
+
+      throw new IllegalStateException('Argument "'.$this->name.'" has no default value');
     }
   }
 ?>

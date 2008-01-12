@@ -87,7 +87,10 @@
         $optional= $param->isOptional();
         $r[]= new Argument(
           $param->getName(),
-          @$details[DETAIL_ARGUMENTS][$pos],
+          array(    // 0 = Declared in apidoc, 1 = Type hint
+            ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
+            $param->isArray() ? 'array' : ($param->getClass() ? xp::nameOf($param->getClass()->getName()) : NULL)
+          ),
           $optional,
           $optional ? $param->getDefaultValue() : NULL
         );
@@ -109,7 +112,10 @@
       $optional= $param[$pos]->isOptional();
       return new Argument(
         $param[$pos]->getName(),
-        @$details[DETAIL_ARGUMENTS][$pos],
+          array(    // 0 = Declared in apidoc, 1 = Type hint
+            ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
+            $param[$pos]->isArray() ? 'array' : ($param[$pos]->getClass() ? xp::nameOf($param[$pos]->getClass()->getName()) : NULL)
+          ),
         $optional,
         $optional ? $param[$pos]->getDefaultValue() : NULL
       );
