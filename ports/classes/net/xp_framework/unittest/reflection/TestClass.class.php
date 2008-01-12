@@ -7,6 +7,7 @@
   uses(
     'util.Date', 
     'util.log.Traceable', 
+    'util.collections.HashTable',
     'net.xp_framework.unittest.reflection.AbstractTestClass'
   );
 
@@ -139,12 +140,21 @@
     }
 
     /**
+     * Initialize map to default values
+     *
+     * @param   util.collections.HashTable h
+     */
+    public function fromHashTable(HashTable $h) {
+      // TBI
+    }
+
+    /**
      * Create a new instance statically
      *
      * @param   array<string, lang.Object> map
      * @return  net.xp_framework.unittest.reflection.TestClass
      */
-    public static function fromMap($map) {
+    public static function fromMap(array $map) {
       $self= new self();
       $self->setMap($map);
       return $self;
