@@ -105,11 +105,12 @@
       }
 
       // Add classloader with CalculatorBean client classes
-      self::$clientClassesLoader= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive(XPClass::forName(xp::nameOf(__CLASS__))
+      $a= XPClass::forName(xp::nameOf(__CLASS__))
         ->getPackage()
         ->getPackage('deploy')
         ->getResourceAsStream('beans.test.CalculatorBean.xar')
-      )));
+      ;
+      self::$clientClassesLoader= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive($a)));
     }
     
     /**
@@ -118,7 +119,7 @@
      */
     #[@afterClass]
     public static function shutdownApplicationServer() {
-      ClassLoader::removeLoader(self::$clientClassesLoader);
+      self::$clientClassesLoader && ClassLoader::removeLoader(self::$clientClassesLoader);
     
       // Send shutdown message (this is not supported by live servers
       // but functionality added via EascMessageFactory::setHandler())
@@ -127,7 +128,7 @@
         $s->connect();
         $s->write(pack('Nc4Na*', DEFAULT_PROTOCOL_MAGIC_NUMBER, 1, 0, 61, FALSE, 0, NULL));
         $s->close();
-      } catch (Throwable $ignored) {
+      } catch (Throwable $e) {
         $e->printStackTrace();
         // Fall through, below should terminate the process anyway
       }
@@ -179,8 +180,44 @@
      *
      */
     #[@test]
-    public function callMethod() {
+    public function addMethod() {
       $this->assertEquals(3, $this->remote->lookup('xp/test/Calculator')->add(1, 2));
+    }
+
+    /**
+     * Test calling a method
+     *
+     */
+    #[@test, @ignore('Integers serialized to primitive ints')]
+    public function addIntegersMethod() {
+      $this->assertEquals(
+        new Integer(3), 
+        $this->remote->lookup('xp/test/Calculator')->addIntegers(new Integer(1), new Integer(2))
+      );
+    }
+
+    /**
+     * Test calling a method
+     *
+     */
+    #[@test]
+    public function addComplexNumbers() {
+      $complex= self::$clientClassesLoader->loadClass('beans.test.Complex');
+      $this->assertEquals(
+        $complex->newInstance(5, 7), 
+        $this->remote->lookup('xp/test/Calculator')->addComplexNumbers($complex->newInstance(2, 3), $complex->newInstance(3, 4))
+      );
+    }
+
+    /**
+     * Test calling a method with incorrect argument types raises
+     * an IllegalArgumentException (this is done on the client-side
+     * already)
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function addIntegersMethodWithIncorrectArguments() {
+      $this->remote->lookup('xp/test/Calculator')->addIntegers(1, new Integer(2));
     }
 
     /**
