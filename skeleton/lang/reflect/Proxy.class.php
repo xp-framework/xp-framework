@@ -102,7 +102,7 @@
           } else {
             $signature= $args= '';
             foreach ($m->getArguments() as $argument) {
-              $signature.= ', $'.$argument->getName();
+              $signature.= ', '.xp::reflect($argument->getType(TRUE)).' $'.$argument->getName();
               $args.= ', $'.$argument->getName();
               $argument->isOptional() && $signature.= '= '.$argument->getDefault();
             }
