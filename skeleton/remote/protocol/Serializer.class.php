@@ -43,27 +43,27 @@
      *
      */
     public function __construct() {
-      $this->mapping('T', $m= new DateMapping());
-      $this->mapping('l', $m= new LongMapping());
-      $this->mapping('B', $m= new ByteMapping());
-      $this->mapping('S', $m= new ShortMapping());
-      $this->mapping('f', $m= new FloatMapping());
-      $this->mapping('d', $m= new DoubleMapping());
-      $this->mapping('i', $m= new IntegerMapping());
-      $this->mapping('A', $m= new ArrayListMapping());
-      $this->mapping('e', $m= new ExceptionMapping());
-      $this->mapping('t', $m= new StackTraceElementMapping());
+      $this->mappings['T']= new DateMapping();
+      $this->mappings['l']= new LongMapping();
+      $this->mappings['B']= new ByteMapping();
+      $this->mappings['S']= new ShortMapping();
+      $this->mappings['f']= new FloatMapping();
+      $this->mappings['d']= new DoubleMapping();
+      $this->mappings['i']= new IntegerMapping();
+      $this->mappings['A']= new ArrayListMapping();
+      $this->mappings['e']= new ExceptionMapping();
+      $this->mappings['t']= new StackTraceElementMapping();
       
       // A hashmap doesn't have its own token, because it'll be serialized
       // as an array. We use HASHMAP as the token, so it will never match
       // another one (can only be one char). This is a little bit hackish.
-      $this->mapping('HASHMAP', $m= new HashmapMapping());
+      $this->mappings['HASHMAP']= new HashmapMapping();
       
       // Setup default exceptions
-      $this->exceptionName('IllegalArgument', 'lang.IllegalArgumentException');
-      $this->exceptionName('IllegalAccess',   'lang.IllegalAccessException');
-      $this->exceptionName('ClassNotFound',   'lang.ClassNotFoundException');
-      $this->exceptionName('NullPointer',     'lang.NullPointerException');
+      $this->exceptions['IllegalArgument']= 'lang.IllegalArgumentException';
+      $this->exceptions['IllegalAccess']= 'lang.IllegalAccessException';
+      $this->exceptions['ClassNotFound']= 'lang.ClassNotFoundException';
+      $this->exceptions['NullPointer']= 'lang.NullPointerException';
     }
 
     /**
