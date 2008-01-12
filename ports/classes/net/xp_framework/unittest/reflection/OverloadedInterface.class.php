@@ -18,7 +18,6 @@
      */
     #[@overloaded(signatures= array(
     #  array('string'),
-    #  array('string', 'string'),
     #  array('string', 'string')
     #))]
     public function overloaded();
