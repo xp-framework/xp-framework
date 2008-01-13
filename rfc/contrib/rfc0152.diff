@@ -1,0 +1,852 @@
+Index: skeleton/lang/XPClass.class.php
+===================================================================
+--- skeleton/lang/XPClass.class.php	(revision 11712)
++++ skeleton/lang/XPClass.class.php	(working copy)
+@@ -51,12 +51,20 @@
+     /**
+      * Constructor
+      *
+-     * @param   mixed ref either a class name or an object
++     * @param   mixed ref either a class name, a ReflectionClass instance or an object
+      */
+     public function __construct($ref) {
+-      $this->_class= is_object($ref) ? get_class($ref) : $ref;
++      if ($ref instanceof ReflectionClass) {
++        $this->_class= $ref->getName();
++        $this->_reflect= $ref;
++      } else if (is_object($ref)) {
++        $this->_class= get_class($ref);
++        $this->_reflect= new ReflectionClass($ref);
++      } else {
++        $this->_class= $ref;
++        $this->_reflect= new ReflectionClass($ref);
++      }
+       parent::__construct(xp::nameOf($this->_class));
+-      $this->_reflect= new ReflectionClass($ref);
+     }
+     
+     /**
+@@ -223,9 +231,7 @@
+      * @return  lang.XPClass class object
+      */
+     public function getParentclass() {
+-      $parent= $this->_reflect->getParentClass();
+-      if (!$parent) return NULL;
+-      return new self($parent->getName());
++      return ($parent= $this->_reflect->getParentClass()) ? new self($parent) : NULL;
+     }
+ 
+     /**
+Index: skeleton/lang/reflect/Routine.class.php
+===================================================================
+--- skeleton/lang/reflect/Routine.class.php	(revision 11712)
++++ skeleton/lang/reflect/Routine.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('lang.reflect.Argument', 'lang.reflect.TargetInvocationException');
++  uses('lang.reflect.Parameter', 'lang.reflect.TargetInvocationException');
+ 
+   /**
+    * Base class for methods and constructors. Note that the methods provided
+@@ -75,17 +75,56 @@
+     }
+     
+     /**
++     * Returns this method's parameters
++     *
++     * @return  lang.reflect.Parameter[]
++     */
++    public function getParameters() {
++      $r= array();
++      foreach ($this->_reflect->getParameters() as $offset => $param) {
++        $r[]= new lang·reflect·Parameter($param, array($this->_class, $this->_reflect->getName(), $offset));
++      }
++      return $r;
++    }
++
++    /**
++     * Retrieve one of this method's parameters by its offset
++     *
++     * @param   int offset
++     * @return  lang.reflect.Parameter or NULL if it does not exist
++     */
++    public function getParameter($offset) {
++      $list= $this->_reflect->getParameters();
++      return isset($list[$offset]) 
++        ? new lang·reflect·Parameter($list[$offset], array($this->_class, $this->_reflect->getName(), $offset))
++        : NULL
++      ;
++    }
++    
++    /**
++     * Retrieve how many parameters this method declares (including optional 
++     * ones)
++     *
++     * @return  int
++     */
++    public function numParameters() {
++      return $this->_reflect->getNumberOfParameters();
++    }
++
++    /**
+      * Retrieve this method's arguments
+      *
++     * @deprecated Use getParameters() instead
+      * @return  lang.reflect.Argument[]
+      */
+     public function getArguments() {
++      $arg= XPClass::forName('lang.reflect.Argument');
+       $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+       $r= array();
+ 
+       foreach ($this->_reflect->getParameters() as $pos => $param) {
+         $optional= $param->isOptional();
+-        $r[]= new Argument(
++        $r[]= $arg->newInstance(
+           $param->getName(),
+           array(    // 0 = Declared in apidoc, 1 = Type hint
+             ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
+@@ -101,6 +140,7 @@
+     /**
+      * Retrieve one of this method's argument by its position
+      *
++     * @deprecated Use getParameter() instead
+      * @param   int pos
+      * @return  lang.reflect.Argument
+      */
+@@ -109,8 +149,9 @@
+       $param= $this->_reflect->getParameters();
+       if (!isset($param[$pos])) return NULL;
+ 
++      $arg= XPClass::forName('lang.reflect.Argument');
+       $optional= $param[$pos]->isOptional();
+-      return new Argument(
++      return $arg->newInstance(
+         $param[$pos]->getName(),
+           array(    // 0 = Declared in apidoc, 1 = Type hint
+             ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
+@@ -124,6 +165,7 @@
+     /**
+      * Retrieve how many arguments this method accepts (including optional ones)
+      *
++     * @deprecated Use numParameters() instead
+      * @return  int
+      */
+     public function numArguments() {
+@@ -167,7 +209,7 @@
+      * @return  lang.XPClass
+      */
+     public function getDeclaringClass() {
+-      return new XPClass($this->_reflect->getDeclaringClass()->getName());
++      return new XPClass($this->_reflect->getDeclaringClass());
+     }
+     
+     /**
+@@ -268,12 +310,12 @@
+      * @return  string
+      */
+     public function toString() {
+-      $args= '';
+-      for ($arguments= $this->getArguments(), $i= 0, $s= sizeof($arguments); $i < $s; $i++) {
+-        if ($arguments[$i]->isOptional()) {
+-          $args.= ', ['.$arguments[$i]->getType().' $'.$arguments[$i]->getName().'= '.$arguments[$i]->getDefault().']';
++      $signature= '';
++      foreach ($this->getParameters() as $param) {
++        if ($param->isOptional()) {
++          $signature.= ', ['.$param->getTypeName().' $'.$param->getName().'= '.xp::stringOf($param->getDefaultValue()).']';
+         } else {
+-          $args.= ', '.$arguments[$i]->getType().' $'.$arguments[$i]->getName();
++          $signature.= ', '.$param->getTypeName().' $'.$param->getName();
+         }
+       }
+       if ($exceptions= $this->getExceptionNames()) {
+@@ -286,7 +328,7 @@
+         Modifiers::stringOf($this->getModifiers()),
+         $this->getReturnType(),
+         $this->getName(),
+-        substr($args, 2),
++        substr($signature, 2),
+         $throws
+       );
+     }
+Index: skeleton/lang/reflect/Parameter.class.php
+===================================================================
+--- skeleton/lang/reflect/Parameter.class.php	(revision 0)
++++ skeleton/lang/reflect/Parameter.class.php	(revision 0)
+@@ -0,0 +1,125 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  $package= 'lang.reflect';
++
++  /**
++   * Represents a method's parameter
++   *
++   * @see      xp://lang.reflect.Method#getParameter
++   * @see      xp://lang.reflect.Method#getParameters
++   * @see      xp://lang.reflect.Method#numParameters
++   * @purpose  purpose
++   */
++  class lang·reflect·Parameter extends Object {
++    protected
++      $_reflect = NULL,
++      $_details = NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   php.ReflectionParameter reflect
++     * @param   array details
++     */    
++    public function __construct($reflect, $details) {
++      $this->_reflect= $reflect;
++      $this->_details= $details;
++    }
++
++    /**
++     * Get parameter's name.
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->_reflect->getName();
++    }
++
++    /**
++     * Get parameter's type.
++     *
++     * @return  lang.Type
++     */
++    public function getType() {
++      if (
++        !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
++        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
++      ) {   // Unknown or unparseable, return ANYTYPE
++        return Type::$ANY;
++      }
++      return Type::forName(ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&'));
++    }
++
++    /**
++     * Get parameter's type.
++     *
++     * @return  string
++     */
++    public function getTypeName() {
++      if (
++        !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
++        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
++      ) {   // Unknown or unparseable, return ANYTYPE
++        return '*';
++      }
++      return ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&');
++    }
++
++    /**
++     * Get parameter's type restriction.
++     *
++     * @return  lang.Type or NULL if there is no restriction
++     */
++    public function getTypeRestriction() {
++      if ($this->_reflect->isArray()) {
++        return Primitive::$ARRAY;
++      } else if ($c= $this->_reflect->getClass()) {
++        return new XPClass($c);
++      } else {
++        return NULL;
++      }
++    }
++
++    /**
++     * Retrieve whether this argument is optional
++     *
++     * @return  bool
++     */
++    public function isOptional() {
++      return $this->_reflect->isOptional();
++    }
++
++    /**
++     * Get default value.
++     *
++     * @throws  lang.IllegalStateException in case this argument is not optional
++     * @return  mixed
++     */
++    public function getDefaultValue() {
++      if ($this->_reflect->isOptional()) {
++        return $this->_reflect->getDefaultValue();
++      }
++
++      throw new IllegalStateException('Parameter "'.$this->_reflect->getName().'" has no default value');
++    }
++    
++    /**
++     * Creates a string representation
++     *
++     * @return  string
++     */
++    public function toString() {
++      return sprintf(
++        '%s<%s %s%s>',
++        $this->getClassName(),
++        $this->getType()->toString(),
++        $this->_reflect->getName(),
++        $this->_reflect->isOptional() ? '= '.xp::stringOf($this->_reflect->getDefaultValue()) : ''
++      );
++    }
++  }
++?>
+
+Property changes on: skeleton/lang/reflect/Parameter.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/lang/reflect/Argument.class.php
+===================================================================
+--- skeleton/lang/reflect/Argument.class.php	(revision 11712)
++++ skeleton/lang/reflect/Argument.class.php	(working copy)
+@@ -7,6 +7,7 @@
+   /**
+    * Represents a method's argument
+    *
++   * @deprecated Use lang.reflect.Parameter instead
+    * @see      xp://lang.reflect.Routine#getArguments
+    * @purpose  Reflection
+    */
+Index: skeleton/lang/Type.class.php
+===================================================================
+--- skeleton/lang/Type.class.php	(revision 11712)
++++ skeleton/lang/Type.class.php	(working copy)
+@@ -9,12 +9,19 @@
+    *
+    * @see      xp://lang.XPClass
+    * @see      xp://lang.Primitive
+-   * @purpose  Abstract base class
++   * @purpose  Base class
+    */
+-  abstract class Type extends Object {
++  class Type extends Object {
++    public static
++      $ANY;
++
+     public
+       $name= '';
+ 
++    static function __static() {
++      self::$ANY= new self('*');
++    }
++
+     /**
+      * Constructor
+      *
+@@ -60,5 +67,64 @@
+     public function hashCode() {
+       return get_class($this).':'.$this->name;
+     }
++    
++    /**
++     * Gets a type for a given name
++     *
++     * Checks for:
++     * <ul>
++     *   <li>Primitive types (string, integer, double, boolean, array)</li>
++     *   <li>Array notations (string[] or string*)</li>
++     *   <li>Resources</li>
++     *   <li>Any type (mixed or *)</li>
++     *   <li>Generic notations (util.collections.HashTable<lang.types.String, lang.Generic)</li>
++     *   <li>Anything else will be passed to XPClass::forName()</li>
++     * </ul>
++     *
++     * @param   string name
++     * @return  lang.Type
++     */
++    public static function forName($name) {
++      switch ($name) {
++        case 'string': 
++        case 'char': 
++          return Primitive::$STRING;
++
++        case 'integer': 
++        case 'int': 
++          return Primitive::$INTEGER;
++
++        case 'double': 
++        case 'float': 
++          return Primitive::$DOUBLE;
++
++        case 'boolean': 
++        case 'bool': 
++          return Primitive::$BOOLEAN;
++
++        case '*': 
++        case 'mixed': 
++          return self::$ANY;
++
++        case 'array': 
++        case '*' == substr($name, -1): 
++        case '[]' === substr($name, -2): 
++          return Primitive::$ARRAY;
++
++        case 'resource':    // XXX FIXME
++          return Primitive::$INTEGER;
++
++        
++        case FALSE !== ($p= strpos($name, '<')):
++          $base= substr($name, 0, $p);
++          return 'array' == $base ? Primitive::$ARRAY : XPClass::forName($base);
++
++        case FALSE === strpos($name, '.'): 
++          return new XPClass(new ReflectionClass($name));
++        
++        default:
++          return XPClass::forName($name);
++      }
++    }
+   }
+ ?>
+Index: ports/unittest/core.ini
+===================================================================
+--- ports/unittest/core.ini	(revision 11712)
++++ ports/unittest/core.ini	(working copy)
+@@ -75,6 +75,9 @@
+ [arguments]
+ class="net.xp_framework.unittest.reflection.ArgumentTest"
+ 
++[parameters]
++class="net.xp_framework.unittest.reflection.ParameterTest"
++
+ [fields]
+ class="net.xp_framework.unittest.reflection.FieldsTest"
+ 
+Index: ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php	(revision 11712)
++++ ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php	(working copy)
+@@ -358,7 +358,7 @@
+     #[@test]
+     public function filterMapString() {
+       $this->assertEquals(
+-        'public lang.Collection<lang.Object> filterMap([string $pattern= NULL])', 
++        'public lang.Collection<lang.Object> filterMap([string $pattern= null])', 
+         $this->fixture->getMethod('filterMap')->toString()
+       );
+     }
+Index: ports/classes/net/xp_framework/unittest/reflection/ParameterTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/ParameterTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/reflection/ParameterTest.class.php	(revision 0)
+@@ -0,0 +1,390 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('unittest.TestCase', 'util.collections.HashTable');
++
++  /**
++   * Test the XP reflection API
++   *
++   * @see      xp://lang.reflect.Parameter
++   * @purpose  Testcase
++   */
++  class ParameterTest extends TestCase {
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     */
++    private function initialize() { }
++  
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   string name
++     */
++    private function setName($name) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   util.Date date default NULL
++     */
++    private function setDate($date= NULL) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   string format
++     * @param   string* values
++     */
++    private function printf($format, $values= NULL) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   * value
++     * @param   util.collections.Map context
++     */
++    private function serialize($value, Map $context) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   util.collections.HashTable map
++     */
++    private function setHashTable(HashTable $map) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   array<string, *> map
++     */
++    private function setHash(array $map) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   string[] map default array
++     */
++    private function setArray(array $map= array()) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   int a
++     * @param   int b default 1
++     */
++    private function inc($a, $b= 1) { }
++
++    /**
++     * Method without functionality to be used by tests.
++     *
++     * @param   boolean new
++     */
++    private function setStatus($new= FALSE) { }
++  
++    /**
++     * Tests Method::numParameters()
++     *
++     */
++    #[@test]
++    public function numParameters() {
++      $this->assertEquals(0, $this->getClass()->getMethod('initialize')->numParameters(), 'initialize');
++      $this->assertEquals(1, $this->getClass()->getMethod('setName')->numParameters(), 'setName');
++      $this->assertEquals(1, $this->getClass()->getMethod('setDate')->numParameters(), 'setDate');
++      $this->assertEquals(2, $this->getClass()->getMethod('printf')->numParameters(), 'printf');
++      $this->assertEquals(2, $this->getClass()->getMethod('serialize')->numParameters(), 'serialize');
++    }
++
++    /**
++     * Tests Method::getParameter
++     *
++     */
++    #[@test]
++    public function getExistingParameter() {
++      $this->assertClass($this->getClass()->getMethod('setName')->getParameter(0), 'lang.reflect.Parameter');
++    }
++
++    /**
++     * Tests Method::getParameter
++     *
++     */
++    #[@test]
++    public function getNonExistantParameter() {
++      $this->assertNull($this->getClass()->getMethod('initialize')->getParameter(0));
++    }
++
++    /**
++     * Tests Method::getParameters
++     *
++     */
++    #[@test]
++    public function initializeParameters() {
++      $this->assertEquals(array(), $this->getClass()->getMethod('initialize')->getParameters());
++    }
++
++    /**
++     * Tests Method::getParameters
++     *
++     */
++    #[@test]
++    public function setNameParameters() {
++      $params= $this->getClass()->getMethod('setName')->getParameters();
++      $this->assertArray($params);
++      $this->assertEquals(1, sizeof($params));
++      $this->assertClass($params[0], 'lang.reflect.Parameter');
++    }
++
++    /**
++     * Tests Method::getParameters
++     *
++     */
++    #[@test]
++    public function serializeParameters() {
++      $params= $this->getClass()->getMethod('serialize')->getParameters();
++      $this->assertArray($params);
++      $this->assertEquals(2, sizeof($params));
++      $this->assertClass($params[0], 'lang.reflect.Parameter');
++      $this->assertClass($params[1], 'lang.reflect.Parameter');
++    }
++
++    /**
++     * Helper method to retrieve a method's parameter by its offset
++     *
++     * @param   string name
++     * @param   string offset
++     * @return  lang.reflect.Parameter
++     */
++    protected function methodParameter($name, $offset) {
++      return $this->getClass()->getMethod($name)->getParameter($offset);
++    }
++  
++    /**
++     * Tests Parameter::getName()
++     *
++     */
++    #[@test]
++    public function name() {
++      $this->assertEquals('name', $this->methodParameter('setName', 0)->getName(), 'setName#0');
++      $this->assertEquals('date', $this->methodParameter('setDate', 0)->getName(), 'setDate#0');
++      $this->assertEquals('value', $this->methodParameter('serialize', 0)->getName(), 'serialize#0');
++      $this->assertEquals('context', $this->methodParameter('serialize', 1)->getName(), 'serialize#1');
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function stringType() {
++      $this->assertEquals(Primitive::$STRING, $this->methodParameter('setName', 0)->getType());
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function integerType() {
++      $this->assertEquals(Primitive::$INTEGER, $this->methodParameter('inc', 0)->getType(), 'inc$a');
++      $this->assertEquals(Primitive::$INTEGER, $this->methodParameter('inc', 1)->getType(), 'inc$b');
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function booleanType() {
++      $this->assertEquals(Primitive::$BOOLEAN, $this->methodParameter('setStatus', 0)->getType());
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function anyType() {
++      $this->assertEquals(Type::$ANY, $this->methodParameter('serialize', 0)->getType());
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function classType() {
++      $this->assertEquals(XPClass::forName('util.Date'), $this->methodParameter('setDate', 0)->getType());
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function interfaceType() {
++      $this->assertEquals(XPClass::forName('util.collections.Map'), $this->methodParameter('serialize', 1)->getType());
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function arrayType() {
++      $this->assertEquals(Primitive::$ARRAY, $this->methodParameter('setArray', 0)->getType());
++    }
++
++    /**
++     * Tests Parameter::getType()
++     *
++     */
++    #[@test]
++    public function varArgsArrayType() {
++      $this->assertEquals(Primitive::$ARRAY, $this->methodParameter('printf', 1)->getType());
++    }
++
++    /**
++     * Tests Parameter::getTypeRestriction()
++     *
++     */
++    #[@test]
++    public function typeRestriction() {
++      $this->assertNull($this->methodParameter('setName', 0)->getTypeRestriction());
++    }
++
++    /**
++     * Tests Parameter::getTypeRestriction()
++     *
++     */
++    #[@test]
++    public function isOptional() {
++      $this->assertFalse($this->methodParameter('setName', 0)->isOptional());
++      $this->assertTrue($this->methodParameter('setDate', 0)->isOptional());
++    }
++
++    /**
++     * Tests Parameter::getDefaultValue()
++     *
++     */
++    #[@test]
++    public function nullDefaultValue() {
++      $this->assertNull($this->methodParameter('setDate', 0)->getDefaultValue());
++    }
++
++    /**
++     * Tests Parameter::getDefaultValue()
++     *
++     */
++    #[@test]
++    public function integerDefaultValue() {
++      $this->assertEquals(1, $this->methodParameter('inc', 1)->getDefaultValue());
++    }
++
++    /**
++     * Tests Parameter::getDefaultValue()
++     *
++     */
++    #[@test]
++    public function booleanDefaultValue() {
++      $this->assertEquals(FALSE, $this->methodParameter('setStatus', 0)->getDefaultValue());
++    }
++
++    /**
++     * Tests Parameter::getDefaultValue()
++     *
++     */
++    #[@test]
++    public function arrayDefaultValue() {
++      $this->assertEquals(array(), $this->methodParameter('setArray', 0)->getDefaultValue());
++    }
++
++    /**
++     * Tests Parameter::toString()
++     *
++     */
++    #[@test]
++    public function stringOfOptional() {
++      $this->assertEquals(
++        'lang.reflect.Parameter<lang.Primitive<boolean> new= false>', 
++        $this->methodParameter('setStatus', 0)->toString()
++      );
++    }
++
++    /**
++     * Tests Parameter::toString()
++     *
++     */
++    #[@test]
++    public function stringOfAnyTyped() {
++      $this->assertEquals(
++        'lang.reflect.Parameter<lang.Type<*> value>', 
++        $this->methodParameter('serialize', 0)->toString()
++      );
++    }
++
++    /**
++     * Tests Parameter::toString()
++     *
++     */
++    #[@test]
++    public function stringOfClassTyped() {
++      $this->assertEquals(
++        'lang.reflect.Parameter<lang.XPClass<util.collections.Map> context>', 
++        $this->methodParameter('serialize', 1)->toString()
++      );
++    }
++
++    /**
++     * Tests Parameter::getDefaultValue() throws an exception if
++     * an Parameter does not have a default value
++     *
++     */
++    #[@test, @expect('lang.IllegalStateException')]
++    public function defaultValueOfNonOptional() {
++      $this->methodParameter('setName', 0)->getDefaultValue();
++    }
++
++    /**
++     * Tests non-type hinted parameter's type restriction is NULL
++     *
++     */
++    #[@test]
++    public function unRestrictedParamType() {
++      $this->assertNull($this->methodParameter('setDate', 0)->getTypeRestriction());
++    }
++
++    /**
++     * Tests type hinted parameter's type is returned via getTypeRestriction()
++     *
++     */
++    #[@test]
++    public function restrictedParamClassType() {
++      $this->assertEquals(
++        XPClass::forName('util.collections.HashTable'),
++        $this->methodParameter('setHashTable', 0)->getTypeRestriction()
++      );
++    }
++
++    /**
++     * Tests type hinted parameter's type is returned via getTypeRestriction()
++     *
++     */
++    #[@test]
++    public function restrictedParamArrayType() {
++      $this->assertEquals(
++        Primitive::$ARRAY,
++        $this->methodParameter('setHash', 0)->getTypeRestriction(),
++        'setHash'
++      );
++      $this->assertEquals(
++        Primitive::$ARRAY,
++        $this->methodParameter('setArray', 0)->getTypeRestriction(),
++        'setArray'
++      );
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/reflection/ParameterTest.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/reflection/ArgumentTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/ArgumentTest.class.php	(revision 11712)
++++ ports/classes/net/xp_framework/unittest/reflection/ArgumentTest.class.php	(working copy)
+@@ -12,6 +12,7 @@
+   /**
+    * Test the XP reflection API
+    *
++   * @deprecated The lang.reflect.Argument class is deprecated 
+    * @see      xp://lang.reflect.Argument
+    * @purpose  Testcase
+    */

@@ -30,16 +30,16 @@ New API
   the lang.reflect.Argument class but will be better integrated with 
   other reflection means (e.g. getType() will return a lang.Type).
   
-* There will be new methods lang.reflect.Routine::getParameters() and 
-  lang.reflect.Routine::getParameter(int offset)
+* There will be new methods lang.reflect.Routine::getParameters(), 
+  ::~numParameters() and ~::getParameter(int offset)
 
 
 Deprecation
 ~~~~~~~~~~~
 * The lang.reflect.Argument class will be deprecated
 
-* The lang.reflect.Routine::getArguments() and ~::getArgument(int offset) 
-  methods will be deprecated
+* The lang.reflect.Routine::getArguments(), ~::numArguments() and 
+  ~::getArgument(int offset) methods will be deprecated
 
 
 Security considerations
@@ -66,8 +66,13 @@ Related documents
 - http://en.wikipedia.org/wiki/Parameter_(computer_science)#Parameters_and_arguments
   Wikipedia entry clarifying parameters and arguments
 
+- http://xp-framework.net/rfc/contrib/rfc0152.diff
+  Implementing patch
+
 
 Comments
 --------
+- friebe, Sun Jan 13 17:53:45     2008
+  What should be do about the "resource" type?
 
 <EOF>
