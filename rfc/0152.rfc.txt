@@ -1,0 +1,73 @@
+RFC 0152: Arguments vs. Parameters
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Jan 13 13:48:46     2008
+@status: draft
+@category: lang.reflect
+
+Scope of Change
+---------------
+The lang.reflect package will use "parameter" where currently "argument"
+is used.
+
+
+Rationale
+---------
+* Clarify "arguments" (the values passed to a method) vs. parameters 
+  (part of the method declaration).
+
+* The reflection APIs of PHP, C# Java all use "parameter"
+
+
+Functionality
+-------------
+
+New API
+~~~~~~~
+* A new lang.reflect.Parameter class will be introduced. It will resemble
+  the lang.reflect.Argument class but will be better integrated with 
+  other reflection means (e.g. getType() will return a lang.Type).
+  
+* There will be new methods lang.reflect.Routine::getParameters() and 
+  lang.reflect.Routine::getParameter(int offset)
+
+
+Deprecation
+~~~~~~~~~~~
+* The lang.reflect.Argument class will be deprecated
+
+* The lang.reflect.Routine::getArguments() and ~::getArgument(int offset) 
+  methods will be deprecated
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+None, the Argument class will be removed from uses() and loaded on-demand
+by the deprecated API.
+
+
+Related documents
+-----------------
+- http://project.ioni.st/post/790
+  Parameters vs arguments
+
+- http://en.wikipedia.org/wiki/Parameter_(computer_science)#Parameters_and_arguments
+  Wikipedia entry clarifying parameters and arguments
+
+
+Comments
+--------
+
+<EOF>
