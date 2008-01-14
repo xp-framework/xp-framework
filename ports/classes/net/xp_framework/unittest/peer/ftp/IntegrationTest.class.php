@@ -9,6 +9,7 @@
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
     'lang.Process',
+    'lang.Runtime',
     'peer.ftp.FtpConnection'
   );
 
@@ -28,24 +29,6 @@
      */
     #[@beforeClass]
     public static function startFtpServer() {
-
-      // Determine PHP executable. TODO: This should go to some base
-      // class or utility class like System / Runtime / ...
-      if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
-        try {
-          $c= new Com('winmgmts:');
-          $cmd= $c->get('//./root/cimv2:Win32_Process.Handle="'.getmypid().'"')->executablePath;
-        } catch (Exception $e) {
-          throw new PrerequisitesNotMetError($e->getMessage(), 'Cannot find PHP executable');
-        }
-      } else {
-        if (!is_executable($cmd= realpath(getenv('_')))) {
-          throw new PrerequisitesNotMetError($e->getMessage(), 'Cannot find PHP executable');
-        }
-      }
-      
-      // Add include path
-      $cmd.= ' -dinclude_path="'.ini_get('include_path').'"';
       
       // Log protocol messages (specify a filename instead of NULL in 
       // the next line to activate)
@@ -99,7 +82,10 @@
       ));
 
       // Start server process
-      self::$serverProcess= new Process($cmd);
+      self::$serverProcess= new Process(
+        Runtime::getInstance()->getExecutable()->getFileName(),
+        array(' -dinclude_path="'.ini_get('include_path').'"')
+      );
       self::$serverProcess->in->write($src);
       self::$serverProcess->in->close();
 
