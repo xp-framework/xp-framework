@@ -70,6 +70,16 @@
           ));
         }
       }
+      
+      // Reload file details
+      with ($e= $this->connection->rootDir()->getFile($this->name)); {
+        $this->permissions= $e->permissions;
+        $this->numlinks= $e->numlinks;
+        $this->user= $e->user;
+        $this->group= $e->group;
+        $this->size= $e->size;
+        $this->date= $e->date;
+      }
       return $this;
     }
     
