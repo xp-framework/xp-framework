@@ -306,8 +306,7 @@
         $dir= $this->conn->rootDir()->getDir('htdocs');
         $file= $dir->file('name.txt')->uploadFrom(new MemoryInputStream($this->name));
         $this->assertTrue($file->exists());
-        // FIXME: File information needs to be reloaded after uploading!
-        // $this->assertEquals(strlen($this->name), $file->getSize());
+        $this->assertEquals(strlen($this->name), $file->getSize());
         $file->delete();
       } catch (Throwable $e) {
         
