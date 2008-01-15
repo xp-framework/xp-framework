@@ -28,6 +28,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.ftp.FtpFile not reloading file details (size, date, permissions,
+  ...) after a successfull upload
+  (friebe)
 - Fixed peer.ftp.FtpDir::findEntry() 
   (gellweiler, kiesel)
 - Fixed FTP server API to parse parameters to NLST correctly and report
