@@ -1,0 +1,69 @@
+RFC 0153: HTTP protocol versions
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Jan 16 11:31:20     2008
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+Scriptlets will answer the request with HTTP version that the user agent
+sends instead of always answering with HTTP/1.1
+
+
+Rationale
+---------
+Fix problems with HTTP/1.1 features such as Transfer-Encoding: chunked
+being used for older clients that cannot cope with this behaviour.
+
+
+Functionality
+-------------
+
+Determining the version
+~~~~~~~~~~~~~~~~~~~~~~~
+The base class, scriptlet.HttpScriptlet, will use the SERVER_PROTOCOL
+environment entry to determine the HTTP protocol version used.
+
+
+Answer
+~~~~~~
+* If a client uses HTTP/1.0, the version used in the answer will also
+  be  HTTP/1.0
+* If a client uses HTTP/1.1, the version used in the answer will also
+  be  HTTP/1.1
+* For any other version, a "HTTP Version Not Supported" (#505) status-
+  code will be set. No further processing is performed.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Slightly slower for the check.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://bugs.php.net/bug.php?id=43843
+  Bug in the PHP website's sourcecode
+  
+- http://xp-framework.net/rfc/contrib/rfc0153.diff
+  Implementing patch
+
+
+Comments
+--------
+(none)
+
+<EOF>
