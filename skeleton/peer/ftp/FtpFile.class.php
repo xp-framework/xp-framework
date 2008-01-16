@@ -72,7 +72,11 @@
       }
       
       // Reload file details
-      with ($e= $this->connection->rootDir()->getFile($this->name)); {
+      $f= ftp_rawlist($this->connection->handle, $this->name);
+      if (1 != sizeof($f)) {
+        throw new ProtocolException('File '.$this->name.' not existant after uploading');
+      }
+      with ($e= $this->connection->parser->entryFrom($f[0], $this->connection, rtrim(dirname($this->name), '/').'/')); {
         $this->permissions= $e->permissions;
         $this->numlinks= $e->numlinks;
         $this->user= $e->user;
