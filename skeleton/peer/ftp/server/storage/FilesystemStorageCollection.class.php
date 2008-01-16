@@ -57,7 +57,9 @@
      * @return  bool TRUE to indicate success
      */
     public function delete() { 
-      return $this->f->unlink();
+      $r= $this->f->unlink();
+      clearstatcache();
+      return $r;
     }
 
     /**
@@ -72,7 +74,9 @@
         : dirname($this->f->getURI()).DIRECTORY_SEPARATOR
       ).$target;
     
-      return $this->f->move($path);
+      $r= $this->f->move($path);
+      clearstatcache();
+      return $r;
     }
 
     /**
@@ -149,6 +153,7 @@
      */  
     public function setPermissions($permissions) {
       chmod($this->f->getURI(), intval((string)$permissions, 8));
+      clearstatcache();
       $this->st['mode']= $permissions;
     }
 
@@ -183,6 +188,5 @@
       $this->f->rewind();
       return $r;
     }
-  
   } 
 ?>

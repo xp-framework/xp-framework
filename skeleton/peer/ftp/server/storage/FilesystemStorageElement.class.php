@@ -43,7 +43,9 @@
      * @return  bool TRUE to indicate success
      */
     public function delete() { 
-      return $this->f->unlink();
+      $r= $this->f->unlink();
+      clearstatcache();
+      return $r;
     }
 
     /**
@@ -58,7 +60,9 @@
         : $this->f->getPath().DIRECTORY_SEPARATOR
       ).$target;
             
-      return $this->f->move($path);
+      $r= $this->f->move($path);
+      clearstatcache();
+      return $r;
     }
     
     /**
@@ -134,6 +138,7 @@
      */  
     public function setPermissions($permissions) { 
       chmod($this->f->getURI(), intval((string)$permissions, 8));
+      clearstatcache();
       $this->st['mode']= $permissions;
     }
 
@@ -153,8 +158,8 @@
      */
     public function open($mode) { 
       switch ($mode) {
-        case SE_READ: return $this->f->open(FILE_MODE_READ);
-        case SE_WRITE: return $this->f->open(FILE_MODE_WRITE);
+        case SE_READ: $this->st['m']= FALSE; return $this->f->open(FILE_MODE_READ);
+        case SE_WRITE: $this->st['m']= TRUE; return $this->f->open(FILE_MODE_WRITE);
       }
     }
     
@@ -181,8 +186,9 @@
      *
      */
     public function close() { 
-      return $this->f->close();
+      $this->f->close();
+      if ($this->st['m']) clearstatcache();
+      unset($this->st['m']);
     }
-    
   } 
 ?>
