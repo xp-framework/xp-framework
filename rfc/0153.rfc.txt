@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Jan 16 11:31:20     2008
-@status: draft
+@status: discussion, ends Sat Jan 19 11:31:20     2008
 @category: scriptlet
 
 Scope of Change
@@ -45,7 +45,7 @@ n/a
 
 Speed impact
 ------------
-Slightly slower for the check.
+Neglectable.
 
 
 Dependencies
