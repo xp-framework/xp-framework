@@ -26,14 +26,15 @@
      * @param   string xml
      * @param   string callback
      * @param   string[] arguments
+     * @param   string xslEncoding default 'utf-8'
      * @return  string
      */
-    protected function runTransformation($xml, $callback, $arguments) {
+    protected function runTransformation($xml, $callback, $arguments, $xslEncoding= 'utf-8') {
       sscanf($callback, '%[^:]::%s', $name, $method);
       $p= new DomXSLProcessor();
       $p->registerInstance('this', $this);
       $p->setXMLBuf($xml);
-      $p->setXSLBuf(sprintf('
+      $p->setXSLBuf(sprintf('<?xml version="1.0" encoding="%s"?>
         <xsl:stylesheet 
          version="1.0" 
          xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
@@ -46,6 +47,7 @@
           </xsl:template>
         </xsl:stylesheet>
         ',
+        $xslEncoding,
         $name,
         $method,
         $arguments ? ', '.implode(', ', $arguments) : ''
@@ -64,6 +66,17 @@
     public function sayHello($name= 'World') {
       return 'Hello '.$name;
     }
+
+    /**
+     * Simple XSL callback method
+     *
+     * @param   string in
+     * @return  string
+     */
+    #[@xslmethod]
+    public function uberCoder($in) {
+      return '�bercoder='.$in;
+    }
     
     /**
      * Test simple XSL callback method
@@ -75,6 +88,62 @@
         '<document/>', 
         'this::sayHello',
         array("'Test'")
+      ));
+    }
+
+    /**
+     * Test simple XSL callback method
+     *
+     */
+    #[@test]
+    public function callUberCoderFromUtf8XmlAndUtf8Xsl() {
+      $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
+        '<?xml version="1.0" encoding="utf-8"?><document/>', 
+        'this::uberCoder',
+        array("'Übercoder'"),   // Need this in utf-8 because XSL is in utf-8
+        'utf-8'
+      ));
+    }
+
+    /**
+     * Test simple XSL callback method
+     *
+     */
+    #[@test]
+    public function callUberCoderFromIso88591XmlAndUtf8Xsl() {
+      $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
+        '<?xml version="1.0" encoding="iso-8859-1"?><document/>', 
+        'this::uberCoder',
+        array("'Übercoder'"),   // Need this in utf-8 because XSL is in utf-8
+        'utf-8'
+      ));
+    }
+
+    /**
+     * Test simple XSL callback method
+     *
+     */
+    #[@test]
+    public function callUberCoderFromUtf8XmlAndIso88591Xsl() {
+      $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
+        '<?xml version="1.0" encoding="utf-8"?><document/>', 
+        'this::uberCoder',
+        array("'�bercoder'"),  // Need this in iso-8859-1 because XSL is in iso-8859-1
+        'iso-8859-1'
+      ));
+    }
+
+    /**
+     * Test simple XSL callback method
+     *
+     */
+    #[@test]
+    public function callUberCoderFromIso88591XmlAndIso88591Xsl() {
+      $this->assertEquals('Übercoder=Übercoder', $this->runTransformation(
+        '<?xml version="1.0" encoding="iso-8859-1"?><document/>', 
+        'this::uberCoder',
+        array("'�bercoder'"),  // Need this in iso-8859-1 because XSL is in iso-8859-1
+        'iso-8859-1'
       ));
     }
 
