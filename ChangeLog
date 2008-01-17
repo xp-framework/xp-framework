@@ -28,6 +28,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Ensured arguments passed to XSL callbacks are utf8_decode()d and return 
+  values are utf8_encode()d
+  (friebe)
 - Fixed peer.ftp.FtpFile not reloading file details (size, date, permissions,
   ...) after a successfull upload
   (friebe)
