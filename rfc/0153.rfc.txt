@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Wed Jan 16 11:31:20     2008
-@status: discussion, ends Sat Jan 19 11:31:20     2008
+@status: implemented, Sat Jan 19 12:34:55     2008
 @category: scriptlet
 
 Scope of Change

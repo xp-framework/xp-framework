@@ -19,6 +19,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0153: HTTP protocol versions
+  (friebe)
 - Implemented RFC #0151: Runtime class
   (friebe)
 - Implemented RFC #0150: Before and after methods for testcases
