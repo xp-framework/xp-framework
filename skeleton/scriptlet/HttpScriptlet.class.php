@@ -391,11 +391,24 @@
         if ($request->session->isNew()) $method= 'doCreateSession';
       }
 
+      // Create response object. Answer with the same protocol version that the
+      // user agent sends us with the request. The only versions we should be 
+      // getting are 1.0 (some proxies or do this) or 1.1 (any current browser).
+      // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
+      // other protocol version.
+      $response= $this->_response();
+      if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
+        throw new HttpScriptletException(
+          'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
+          HTTP_HTTP_VERSION_NOT_SUPPORTED
+        );
+      }
+      $response->version= '1.'.$minor;
+
       // Call method handler and, in case the method handler returns anything
       // else than FALSE, the response processor. Exceptions thrown from any of
       // the two methods will result in a HttpScriptletException with the HTTP
       // status code 500 ("Internal Server Error") being thrown.
-      $response= $this->_response();
       try {
         $r= call_user_func_array(
           array($this, $method), 
@@ -404,8 +417,6 @@
         if (FALSE !== $r && !is(NULL, $r)) {
           $response->process();
         }
-      } catch (HttpScriptletException $e) {
-        throw $e;
       } catch (XPException $e) {
         throw new HttpScriptletException(
           'Request processing failed ['.$method.']: '.$e->getMessage(),
