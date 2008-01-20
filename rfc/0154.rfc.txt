@@ -1,0 +1,61 @@
+RFC 0154: Unify scriptlet environment
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: kiesel
+@created: Sun Jan 20 19:52:18     2008
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+Scriptlets will be instanciated in a well-defined, standard way, controlled
+by environment settings. The "index.php" file will become standardized 
+and look the same in every installation.
+Debug flags can also be set to change logging and verbosity of the 
+application.
+
+Rationale
+---------
+Several aspects exist:
+* Logging / debugging
+  People often forget to remove debugging flags, which need to be passed to
+  the scriptlet running sapi. Applications are committed with debug enabled,
+  which should not happen for production environments.
+  Now logging can be turned on or off globally for a development machine
+  and turned on or off for production machines, either globally or per-vhost.
+
+* Unifying the web-applications startup
+  XP applications need a defined layout for applications, given by conventions
+  defined in this RFC.
+  With conventions on the layout of web-applications, startup can be auto-
+  matized and made by classes which then can be reused in other environments,
+  as eg. within a self-running archive.
+
+* index.php should only contain boilterplate code
+  This ensures all web-applications use scriptlet technologies and they
+  all use it the same way.
+
+Functionality
+-------------
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/0119.rfc.html
+  RFC #0119: Support self-running xars
+
+Comments
+--------
+
+<EOF>
