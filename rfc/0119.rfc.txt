@@ -9,26 +9,33 @@ $Id$
 
 Scope of Change
 ---------------
-The framework's core will be enhanced to support running out of
-a XAR file with no further infrastructure required (except a 
+The framework's core will support running programs straight out 
+of XAR files with no further infrastructure required (except a 
 working PHP binary).
 
 Rationale
 ---------
 This will faciliate providing single file applications, such as
 desktop (GTK) applications and eg. installers.
-Thinkable is further to have web applications that can be installed
-by copying over a single file into the document root.
+Further, it'd become possible to ship console programs and even
+whole web applications that can be installed by copying over a 
+single file into the document root.
 
 Functionality
 -------------
+Self-running xars are a PHP file with the framework's bootstrap file
+lang.base.php's contents at the top and a complete XAR file after the
+__halt_compiler(); marker. Additionally the XAR file optionally contains
+a special file named META-INF/manifest.ini in it: This file contains
+meta-information about the archive and the name of the default
+class to run open invocation.
+
 Self-running xars need to be prepared in a special way:
 . create xar containing all files:
-  + class files
+  + "core" class files
   + application specific files
   + meta information for the runner
 . prepend contents of lang.base.php
-  (replacing trailing '?>' with '__halt_compiler();')
 
 The final file can be run by just invoking php on it:
 
@@ -36,19 +43,36 @@ The final file can be run by just invoking php on it:
 $ php runner.xar
 </pre>
 
-The framework will detect that it is running in single-xar mode
-and start the application that has been denoted as default
-application through the meta information in the XAR.
+Because the xar is prepended with lang.base.php's contents, it will
+be run and detect that it's not running in standard mode, but in
+self-running mode.
+Unlike in standard mode, lang.base.php will load the class 
+lang.archive.ArchiveRunner and pass control this class' run method, in
+which the program execution is triggered.
 
-By passing further commandline options, other applications could
-be run, too.
+Once the program flow returns to lang.base.php, it'll immediately
+stop execution with the exit() command.
 
-The meta-information file will be called "META-INF/manifest.ini"
-and should look like this:
+The lang.archive.ArchiveRunner is responsible for
+. determining the sapi
+. loading META-INF/manifest.ini, if needed
+. depending on the sapi, find the class to run
+
+Determining the class to run is dependent to the sapi due to different
+ways how the environment signals users choices which class to run:
++ for a console application, command line arguments may be used
+  to select the class to run
++ for web applications GET or POST parameters or cookies may have
+  influence on the decision.
+
+The META-INF/manifest.ini can contain the following information:
 
 <pre>
-  [runnable]
-  main-class="remote.server.impl.ApplicationServer"
+  [sapi::cli]
+  main-class="fully.qualified.ClassName"
+  
+  [sapi::web]
+  main-class="fully.qualified.ClassName"
 </pre>
 
 Security considerations
@@ -73,5 +97,13 @@ Related documents
 
 Comments
 --------
+- kiesel, Sun Jan 20 17:24:57     2008
+  Should self-running xars have a different file extension?
+  a) .php - to indicate one can run it as .php directly
+     This could be an argument for web applications as sources
+     would not be shown, even on standard Apache installations
+
+  b) .sxar - (selfrunning)xar
+     Easier for users to distinguish from plain php & plain xars
 
 <EOF>
