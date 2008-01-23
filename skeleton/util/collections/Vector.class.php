@@ -145,6 +145,35 @@
     }
 
     /**
+     * Adds an element to this list
+     *
+     * @param   * elements either an array or an Traversable
+     * @return  bool TRUE if the vector was changed as a result of this operation, FALSE if not
+     * @throws  lang.IllegalArgumentException
+     */
+    public function addAll($elements) {
+      if (!is_array($elements) && !$elements instanceof Traversable) {
+        throw new IllegalArgumentException(sprintf(
+          'Expected either an array or an Traversable',
+          xp::typeOf($elements)
+        ));
+      }
+
+      $e= array();
+      $type= $this->__generic ? $this->__generic[0] : xp::reflect('lang.Generic');
+      foreach ($elements as $element) {
+        if (!$element instanceof $type) {
+          throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$type);
+        }
+        $e[]= $element;
+      }
+      $size= sizeof($e);
+      $this->elements= array_merge($this->elements, $e);
+      $this->size+= $size;
+      return $size > 0;
+    }
+
+    /**
      * Replaces the element at the specified position in this list with 
      * the specified element.
      *

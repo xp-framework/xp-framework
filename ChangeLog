@@ -46,6 +46,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added util.collections.Vector::addAll() method
+  (friebe)
 - Added optional parameter "hinted" to lang.reflect.Argument::getType()
   with which one can retrieve the type hint's type name.
   (friebe)

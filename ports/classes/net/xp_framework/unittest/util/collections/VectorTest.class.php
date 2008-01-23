@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'lang.types.String',
+    'lang.types.ArrayList',
     'util.collections.Vector'
   );
 
@@ -56,6 +57,84 @@
       $v= new Vector();
       $v->add(new Object());
       $this->assertEquals(1, $v->size());
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function addAllArray() {
+      $v= new Vector();
+      $this->assertTrue($v->addAll(array(new Object(), new Object())));
+      $this->assertEquals(2, $v->size());
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function addAllVector() {
+      $v1= new Vector();
+      $v2= new Vector();
+      $v2->add(new Object());
+      $v2->add(new Object());
+      $this->assertTrue($v1->addAll($v2));
+      $this->assertEquals(2, $v1->size());
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function addAllArrayList() {
+      $v= new Vector();
+      $this->assertTrue($v->addAll(new ArrayList(new Object(), new Object())));
+      $this->assertEquals(2, $v->size());
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function addAllEmptyArray() {
+      $this->assertFalse(create(new Vector())->addAll(array()));
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function addAllEmptyVector() {
+      $this->assertFalse(create(new Vector())->addAll(new Vector()));
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function addAllEmptyArrayList() {
+      $this->assertFalse(create(new Vector())->addAll(new ArrayList()));
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function unchangedAfterNullInAddAll() {
+      $v= new Vector();
+      try {
+        $v->addAll(array(new Object(), NULL));
+        $this->fail('addAll() did not throw an exception', NULL, 'lang.IllegalArgumentException');
+      } catch (IllegalArgumentException $expected) {
+      }
+      $this->assertTrue($v->isEmpty());
     }
 
     /**
