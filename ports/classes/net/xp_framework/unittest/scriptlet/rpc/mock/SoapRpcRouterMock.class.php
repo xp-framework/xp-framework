@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('webservices.soap.rpc.SoapRpcRouter');
+  uses('lang.System', 'webservices.soap.rpc.SoapRpcRouter');
 
   /**
    * Mock class
@@ -24,6 +24,7 @@
      * @param   &scriptlet.HttpRequest request
      */
     protected function _setupRequest($request) {
+      System::putEnv('SERVER_PROTOCOL', 'HTTP/1.1');
       $request->headers= array_change_key_case($this->headers, CASE_LOWER);
       $request->method= $this->method;
       $request->setParams(array_change_key_case($this->params, CASE_LOWER));
