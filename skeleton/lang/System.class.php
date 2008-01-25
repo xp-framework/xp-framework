@@ -124,7 +124,7 @@
      * @param   mixed var
      * @return  bool success
      */
-    public function putEnv($name, $var) {
+    public static function putEnv($name, $var) {
       return putenv($name.'='.$var);
     }
     
@@ -135,7 +135,7 @@
      * @param   string name
      * @return  mixed var
      */
-    public function getEnv($name) {
+    public static function getEnv($name) {
       return getenv($name);
     }
     
