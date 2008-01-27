@@ -71,6 +71,21 @@
     public static function getDefault() {
       return xp::$registry['loader'];
     }
+
+    /**
+     * Register a class loader from a path
+     *
+     * @param   string element
+     * @param   bool before default FALSE whether to register this as the first loader
+     * @return  lang.IClassLoader the registered loader
+     */
+    public static function registerPath($element, $before= FALSE) {
+      if (is_dir($element)) {
+        return self::registerLoader(FileSystemClassLoader::instanceFor($element, $before));
+      } else if (is_file($element)) {
+        return self::registerLoader(ArchiveClassLoader::instanceFor($element, $before));
+      }
+    }
     
     /**
      * Register a class loader as a delegate
