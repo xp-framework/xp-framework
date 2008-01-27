@@ -46,6 +46,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added "-cp" command line option to xpcli which will add XAR files and
+  directories given to it to the classpath
+  (friebe)
+- Added lang.ClassLoader::registerPath() method
+  (friebe)
 - Added util.collections.Vector::addAll() method
   (friebe)
 - Added optional parameter "hinted" to lang.reflect.Argument::getType()
