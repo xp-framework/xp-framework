@@ -30,6 +30,8 @@
    *   a database.ini is present there, the ConnectionManager will be #
    *   configured with it.
    * 
+   * --classpath | -cp:
+   *   Add the path value to the class path.
    * </pre>
    *
    * @test     xp://net.xp_framework.unittest.util.cmd.RunnerTest
@@ -158,6 +160,7 @@
      * @return  int
      */
     public function run(ParamString $params) {
+      $pm= PropertyManager::getInstance();
 
       // No arguments given - show our own usage
       if ($params->count <= 1) {
@@ -166,53 +169,30 @@
       }
 
       // Separate runner options from class options
-      $map= array();
-      $options= array(
-        'config'  => 'etc'
-      );
-      $valid= array(
-        'config'  => 1,
-      );
-      foreach ($valid as $key => $val) {
-        $valid[$key{0}]= $val;
-        $map[$key{0}]= $key;
+      $offset= 1;
+      if ($params->exists('config', 'c')) {
+        $pm->configure($params->value('config', 'c'));
+        $offset+= 2;
       }
-      $classname= NULL;
-      for ($i= 1; $i < $params->count; $i++) {
-        $option= $params->list[$i];
-
-        if (0 == strncmp($option, '--', 2)) {        // Long: --foo / --foo=bar
-          $p= strpos($option, '=');
-          $name= substr($option, 2, FALSE === $p ? strlen($option) : $p- 2);
-          if (isset($valid[$name])) {
-            if ($valid[$name] == 1) {
-              $options[$name]= FALSE === $p ? NULL : substr($option, $p+ 1);
-            } else {
-              $options[$name]= TRUE;
-            }
-          }
-        } else if (0 == strncmp($option, '-', 1)) {   // Short: -f / -f bar
-          $short= substr($option, 1);
-          if (isset($valid[$short])) {
-            if ($valid[$short] == 1) {
-              $options[$map[$short]]= $params->list[++$i];
-            } else {
-              $options[$map[$short]]= TRUE;
-            }
-          }
-        } else {
-          unset($params->list[-1]);
-          $classname= $option;
-          $classparams= new ParamString(array_slice($params->list, $i+ 1));
-          break;
+      if ($params->exists('classpath', 'cp')) {
+        foreach (explode(PATH_SEPARATOR, $params->value('classpath', 'cp')) as $element) {
+          ClassLoader::registerPath($element, FALSE);
         }
+        $offset+= 2;
       }
-
+      
       // Sanity check
-      if (!$classname) {
+      if (!$params->exists($offset)) {
         self::$err->writeLine('*** Missing classname');
         return 1;
-      } else if (strstr($classname, xp::CLASS_FILE_EXT)) {
+      }
+      
+      unset($params->list[-1]);
+      $classname= $params->value($offset);
+      $classparams= new ParamString(array_slice($params->list, $offset+ 1));
+
+      // Class file or class name
+      if (strstr($classname, xp::CLASS_FILE_EXT)) {
         $file= new File($classname);
         if (!$file->exists()) {
           self::$err->writeLine('*** Cannot load class from non-existant file ', $classname);
@@ -257,9 +237,6 @@
       }
 
       // Load, instantiate and initialize
-      $pm= PropertyManager::getInstance();
-      $pm->configure($options['config']);
-
       $l= Logger::getInstance();
       $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
 
