@@ -7,7 +7,8 @@
   /**
    * Color class
    *
-   * @see xp://img.Image
+   * @test  xp://net.xp_framework.unittest.img.ColorTest
+   * @see   xp://img.Image
    */
   class Color extends Object {
     public
@@ -27,30 +28,14 @@
     public function __construct() {
       $a= func_get_args();
       if (is_string($a[0])) {
-        $this->fromHex($a[0]);
+        sscanf(ltrim($a[0], '#'), '%2x%2x%2x', $this->red, $this->green, $this->blue);
       } else {
-        list(
-          $this->red,
-          $this->green,
-          $this->blue
-        )= $a;
+        list($this->red, $this->green, $this->blue)= $a;
       }
     }
     
     /**
-     * Set RGB values from hexadecimal string
-     *
-     * @param   string h a string in the format RRGGBB (may contain a leading "#")
-     */
-    public function fromHex($h) {
-      if ('#' == $h{0}) $h= substr($h, 1);
-      $this->red= hexdec(substr($h, 0, 2));
-      $this->green= hexdec(substr($h, 2, 2));
-      $this->blue= hexdec(substr($h, 4, 2));
-    }
-    
-    /**
-     * Get RGB value as hexidecimal string (e.g. #990000)
+     * Get RGB value as hexadecimal string (e.g. #990000)
      *
      * @return  string HTML-style color
      */
