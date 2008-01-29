@@ -7,6 +7,7 @@
   /**
    * Represents a method's argument
    *
+   * @deprecated Use lang.reflect.Parameter instead
    * @see      xp://lang.reflect.Routine#getArguments
    * @purpose  Reflection
    */

@@ -9,11 +9,18 @@
    *
    * @see      xp://lang.XPClass
    * @see      xp://lang.Primitive
-   * @purpose  Abstract base class
+   * @purpose  Base class
    */
-  abstract class Type extends Object {
+  class Type extends Object {
+    public static
+      $ANY;
+
     public
       $name= '';
+
+    static function __static() {
+      self::$ANY= new self('*');
+    }
 
     /**
      * Constructor
@@ -59,6 +66,65 @@
      */
     public function hashCode() {
       return get_class($this).':'.$this->name;
+    }
+    
+    /**
+     * Gets a type for a given name
+     *
+     * Checks for:
+     * <ul>
+     *   <li>Primitive types (string, integer, double, boolean, array)</li>
+     *   <li>Array notations (string[] or string*)</li>
+     *   <li>Resources</li>
+     *   <li>Any type (mixed or *)</li>
+     *   <li>Generic notations (util.collections.HashTable<lang.types.String, lang.Generic)</li>
+     *   <li>Anything else will be passed to XPClass::forName()</li>
+     * </ul>
+     *
+     * @param   string name
+     * @return  lang.Type
+     */
+    public static function forName($name) {
+      switch ($name) {
+        case 'string': 
+        case 'char': 
+          return Primitive::$STRING;
+
+        case 'integer': 
+        case 'int': 
+          return Primitive::$INTEGER;
+
+        case 'double': 
+        case 'float': 
+          return Primitive::$DOUBLE;
+
+        case 'boolean': 
+        case 'bool': 
+          return Primitive::$BOOLEAN;
+
+        case '*': 
+        case 'mixed': 
+          return self::$ANY;
+
+        case 'array': 
+        case '*' == substr($name, -1): 
+        case '[]' === substr($name, -2): 
+          return Primitive::$ARRAY;
+
+        case 'resource':    // XXX FIXME
+          return Primitive::$INTEGER;
+
+        
+        case FALSE !== ($p= strpos($name, '<')):
+          $base= substr($name, 0, $p);
+          return 'array' == $base ? Primitive::$ARRAY : XPClass::forName($base);
+
+        case FALSE === strpos($name, '.'): 
+          return new XPClass(new ReflectionClass($name));
+        
+        default:
+          return XPClass::forName($name);
+      }
     }
   }
 ?>

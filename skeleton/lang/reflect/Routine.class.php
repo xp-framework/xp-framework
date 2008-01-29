@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.reflect.Argument', 'lang.reflect.TargetInvocationException');
+  uses('lang.reflect.Parameter', 'lang.reflect.TargetInvocationException');
 
   /**
    * Base class for methods and constructors. Note that the methods provided
@@ -75,17 +75,56 @@
     }
     
     /**
+     * Returns this method's parameters
+     *
+     * @return  lang.reflect.Parameter[]
+     */
+    public function getParameters() {
+      $r= array();
+      foreach ($this->_reflect->getParameters() as $offset => $param) {
+        $r[]= new lang·reflect·Parameter($param, array($this->_class, $this->_reflect->getName(), $offset));
+      }
+      return $r;
+    }
+
+    /**
+     * Retrieve one of this method's parameters by its offset
+     *
+     * @param   int offset
+     * @return  lang.reflect.Parameter or NULL if it does not exist
+     */
+    public function getParameter($offset) {
+      $list= $this->_reflect->getParameters();
+      return isset($list[$offset]) 
+        ? new lang·reflect·Parameter($list[$offset], array($this->_class, $this->_reflect->getName(), $offset))
+        : NULL
+      ;
+    }
+    
+    /**
+     * Retrieve how many parameters this method declares (including optional 
+     * ones)
+     *
+     * @return  int
+     */
+    public function numParameters() {
+      return $this->_reflect->getNumberOfParameters();
+    }
+
+    /**
      * Retrieve this method's arguments
      *
+     * @deprecated Use getParameters() instead
      * @return  lang.reflect.Argument[]
      */
     public function getArguments() {
+      $arg= XPClass::forName('lang.reflect.Argument');
       $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
       $r= array();
 
       foreach ($this->_reflect->getParameters() as $pos => $param) {
         $optional= $param->isOptional();
-        $r[]= new Argument(
+        $r[]= $arg->newInstance(
           $param->getName(),
           array(    // 0 = Declared in apidoc, 1 = Type hint
             ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
@@ -101,6 +140,7 @@
     /**
      * Retrieve one of this method's argument by its position
      *
+     * @deprecated Use getParameter() instead
      * @param   int pos
      * @return  lang.reflect.Argument
      */
@@ -109,8 +149,9 @@
       $param= $this->_reflect->getParameters();
       if (!isset($param[$pos])) return NULL;
 
+      $arg= XPClass::forName('lang.reflect.Argument');
       $optional= $param[$pos]->isOptional();
-      return new Argument(
+      return $arg->newInstance(
         $param[$pos]->getName(),
           array(    // 0 = Declared in apidoc, 1 = Type hint
             ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
@@ -124,6 +165,7 @@
     /**
      * Retrieve how many arguments this method accepts (including optional ones)
      *
+     * @deprecated Use numParameters() instead
      * @return  int
      */
     public function numArguments() {
@@ -167,7 +209,7 @@
      * @return  lang.XPClass
      */
     public function getDeclaringClass() {
-      return new XPClass($this->_reflect->getDeclaringClass()->getName());
+      return new XPClass($this->_reflect->getDeclaringClass());
     }
     
     /**
@@ -268,12 +310,12 @@
      * @return  string
      */
     public function toString() {
-      $args= '';
-      for ($arguments= $this->getArguments(), $i= 0, $s= sizeof($arguments); $i < $s; $i++) {
-        if ($arguments[$i]->isOptional()) {
-          $args.= ', ['.$arguments[$i]->getType().' $'.$arguments[$i]->getName().'= '.$arguments[$i]->getDefault().']';
+      $signature= '';
+      foreach ($this->getParameters() as $param) {
+        if ($param->isOptional()) {
+          $signature.= ', ['.$param->getTypeName().' $'.$param->getName().'= '.xp::stringOf($param->getDefaultValue()).']';
         } else {
-          $args.= ', '.$arguments[$i]->getType().' $'.$arguments[$i]->getName();
+          $signature.= ', '.$param->getTypeName().' $'.$param->getName();
         }
       }
       if ($exceptions= $this->getExceptionNames()) {
@@ -286,7 +328,7 @@
         Modifiers::stringOf($this->getModifiers()),
         $this->getReturnType(),
         $this->getName(),
-        substr($args, 2),
+        substr($signature, 2),
         $throws
       );
     }

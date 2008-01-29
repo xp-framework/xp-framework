@@ -12,6 +12,7 @@
   /**
    * Test the XP reflection API
    *
+   * @deprecated The lang.reflect.Argument class is deprecated 
    * @see      xp://lang.reflect.Argument
    * @purpose  Testcase
    */

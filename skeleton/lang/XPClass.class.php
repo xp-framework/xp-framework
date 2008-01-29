@@ -51,12 +51,20 @@
     /**
      * Constructor
      *
-     * @param   mixed ref either a class name or an object
+     * @param   mixed ref either a class name, a ReflectionClass instance or an object
      */
     public function __construct($ref) {
-      $this->_class= is_object($ref) ? get_class($ref) : $ref;
+      if ($ref instanceof ReflectionClass) {
+        $this->_class= $ref->getName();
+        $this->_reflect= $ref;
+      } else if (is_object($ref)) {
+        $this->_class= get_class($ref);
+        $this->_reflect= new ReflectionClass($ref);
+      } else {
+        $this->_class= $ref;
+        $this->_reflect= new ReflectionClass($ref);
+      }
       parent::__construct(xp::nameOf($this->_class));
-      $this->_reflect= new ReflectionClass($ref);
     }
     
     /**
@@ -223,9 +231,7 @@
      * @return  lang.XPClass class object
      */
     public function getParentclass() {
-      $parent= $this->_reflect->getParentClass();
-      if (!$parent) return NULL;
-      return new self($parent->getName());
+      return ($parent= $this->_reflect->getParentClass()) ? new self($parent) : NULL;
     }
 
     /**
