@@ -170,17 +170,8 @@
           while ($buf= $response->readData()) $xml.= $buf;
 
           $this->cat && $this->cat->debug('<<<', $xml);
-          if ($answer= XPSoapMessage::fromString($xml)) {
-
-            // Check encoding
-            if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
-              preg_match('/^([^;]+)(; ?charset=([^;]+))?/i', $content_type, $matches);
-              $type= $matches[1];
-              if (!empty($matches[3])) $answer->setEncoding($matches[3]);
-            }
-
-            $answer->action= $this->action;
-          }
+          $answer= XPSoapMessage::fromString($xml);
+          $answer->action= $this->action;
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {

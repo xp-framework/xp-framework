@@ -32,6 +32,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fix double utf8 decode in SOAPHTTPTransport::retrieve() by ignoring the
+  Content-Type header (XMLParser already determines the encoding and uses
+  ISO-8859-1 as default output encoding)
+  (hinckel, kiesel)
 - Added "static" keyword to System::putEnv() und System::getEnv()
   (hinckel)
 - Ensured arguments passed to XSL callbacks are utf8_decode()d and return 
