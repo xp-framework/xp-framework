@@ -74,20 +74,31 @@ define open_file_xpclass {
   }
 }
 
+define get_xp_class_name {
+  classname= $file_name
+  return replace_in_string(classname, ".class.php", "")
+}
+
+define import_xp_template {
+  content= read_file(getenv("HOME") "/.nedit/templates/" $1 ".tmpl")
+  content= replace_in_string(content, "<Class>", get_xp_class_name(), "literal", "copy")
+  insert_string(content)
+}
+
 define create_xp_class {
-  include_file( getenv("HOME") "/.nedit/templates/xpclass.tmpl")
+  import_xp_template("xpclass")
   set_language_mode("PHP")
-  goto_line_number(14)
+  goto_line_number(15, 4)
 }
 
 define create_xp_cli {
-  include_file( getenv("HOME") "/.nedit/templates/xpcli.tmpl")
+  import_xp_template("xpcli")
   set_language_mode("PHP")
-  goto_line_number(68)
+  goto_line_number(68, 6)
 }
 
 define create_xp_testcase {
-  include_file( getenv("HOME") "/.nedit/templates/xptestcase.tmpl" )
+  import_xp_template("xptestcase")
   set_language_mode("PHP")
   goto_line_number(17)
 }
