@@ -18,6 +18,7 @@
    *   var_dump($uptime);
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.core.ProcessTest
    * @see      xp://lang.Runtime#getExecutable
    * @see      php://proc_open
    * @purpose  Execute external programs
@@ -49,6 +50,11 @@
       
       // For `new self()` used in getProcessById()
       if (NULL === $command) return;
+
+      // Check whether the given command is executable
+      if (!is_executable($command)) {
+        throw new IOException('Command "'.$command.'" is not executable');
+      }
       
       // Build command line
       $cmd= $command.' '.implode(' ', $arguments);
