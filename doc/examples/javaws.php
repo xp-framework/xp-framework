@@ -177,20 +177,20 @@
   
   // Execute Java
   $app= $j->getApplicationDesc();
-  $cmd= sprintf(
-    '%s %s -cp %s %s %s 2>&1',
-    $p->value('java', 'j', 'java'),
+  $cmd= $p->value('java', 'j', 'java');
+  $params= array(
     $properties,
-    $classpath,
+    '-cp '.$classpath,
     $app->getMain_Class(),
-    implode(' ', $app->getArguments())
+    implode(' ', $app->getArguments()),
+    '2>&1'
   );
-  Console::writeLine('---> Executing ', $cmd);
+  Console::writeLine(sprintf('---> Executing %s %s', $cmd, implode(' ', $params)));
 
   try {
-    $p= new Process($cmd);
-    while (!$p->out->eof()) {
-      Console::writeLine($p->out->readLine());
+    $proc= new Process($cmd, $params);
+    while (!$proc->out->eof()) {
+      Console::writeLine($proc->out->readLine());
     }
   } catch (XPException $e) {
     $e->printStackTrace();
@@ -198,6 +198,6 @@
   }
   
   // Pass exit value to caller
-  exit($p->close());
+  exit($proc->close());
   // }}}
 ?>
