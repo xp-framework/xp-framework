@@ -172,7 +172,8 @@
      */
     protected function _setStylesheet($request, $response) {
       $response->setStylesheet(sprintf(
-        '%s/%s/%s.xsl',
+        '%2$s%1$s%3$s%1$s%4$s.xsl',
+        DIRECTORY_SEPARATOR,
         $request->getProduct(),
         $request->getLanguage(),
         $request->getStateName()

@@ -56,7 +56,7 @@
     }
 
     /**
-     * Gets the first day of the week
+     * Gets the first day of the week, with week starting on sunday
      *
      * @param   util.Date date
      * @return  util.Date

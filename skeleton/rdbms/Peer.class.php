@@ -247,7 +247,7 @@
     /**
      * Returns an iterator for a select statement
      *
-     * @param   rdbms.SQLExpressin criteria or statement
+     * @param   rdbms.SQLExpression criteria or statement
      * @return  lang.XPIterator
      * @see     xp://lang.XPIterator
      */
