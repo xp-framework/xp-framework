@@ -33,7 +33,7 @@
     protected
       $_proc  = NULL,
       $status = array();
-      
+
     /**
      * Constructor
      *
@@ -51,9 +51,10 @@
       // For `new self()` used in getProcessById()
       if (NULL === $command) return;
 
-      // Check whether the given command is executable
-      if (!is_executable($command)) {
-        throw new IOException('Command "'.$command.'" is not executable');
+      // Check whether the given command is executable.
+      $binary= $this->resolve($command);
+      if (!is_executable($binary)) {
+        throw new IOException('Command "'.$binary.'" is not executable');
       }
       
       // Build command line
@@ -65,14 +66,49 @@
       }
 
       $this->status= proc_get_status($this->_proc);
-      $this->status['exe']= realpath($command);
+      $this->status['exe']= $binary;
 
       // Assign in, out and err members
       $this->in= new File($pipes[0]);
       $this->out= new File($pipes[1]);
       $this->err= new File($pipes[2]);
     }
+
+    /**
+     * Resolve path for a command
+     *
+     * @param   string command
+     * @return  string executable
+     * @throws  io.IOException in case the command could not be found
+     */
+    public function resolve($command) {
+      clearstatcache();
     
+      // If the command is in fully qualified form and refers to a file
+      // that does not exist (e.g. "C:\DoesNotExist.exe", "\DoesNotExist.com"
+      // or /usr/bin/doesnotexist), do not attempt to search for it.
+      if (
+        (strncasecmp(PHP_OS, 'Win', 3) === 0 && ':' === $command{1}) || 
+        (DIRECTORY_SEPARATOR === $command{0})
+      ) {
+        if (file_exists($command)) return realpath($command);
+        throw new IOException('"'.$command.'" does not exist');
+      }
+
+      // Check the PATH environment setting for possible locations of the 
+      // executable if its name is not a fully qualified path name.
+      $paths= explode(PATH_SEPARATOR, getenv('PATH'));
+      $extensions= array('') + explode(PATH_SEPARATOR, getenv('PATHEXT'));
+      foreach ($paths as $path) {
+        foreach ($extensions as $ext) {
+          if (!file_exists($q= $path.DIRECTORY_SEPARATOR.$command.$ext)) continue;
+          return realpath($q);
+        }
+      }
+      
+      throw new IOException('Could not find "'.$command.'" in path');
+    }
+
     /**
      * Get a process by process ID
      *
