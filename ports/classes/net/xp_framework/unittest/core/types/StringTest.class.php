@@ -316,6 +316,16 @@
       create(new String('ABC'))->charAt(4);
     }
 
+
+    /**
+     * Test charAt() method
+     *
+     */
+    #[@test, @expect('lang.IndexOutOfBoundsException')]
+    public function charAtEnd() {
+      create(new String('ABC'))->charAt(3);
+    }
+
     /**
      * Test replace() method
      *
