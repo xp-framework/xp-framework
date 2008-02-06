@@ -134,8 +134,8 @@
         declare @id int
         declare @last int
         declare @keys varchar(200)
-        declare @key varchar(30)
-        declare @obj varchar(30)
+        declare @key varchar(48)
+        declare @obj varchar(48)
 
         delete from #indexes  
 
