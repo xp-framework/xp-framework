@@ -23,14 +23,14 @@
    *
    * Options includes one of the following:
    * <pre>
-   * --config | -c:
+   * -c:
    *   Set the path with which the PropertyManager is configured with. The
    *   PropertyManager is used for dependency injection. If a file called
    *   log.ini exists in this path, the Logger will be configured with. If
-   *   a database.ini is present there, the ConnectionManager will be #
+   *   a database.ini is present there, the ConnectionManager will be
    *   configured with it.
    * 
-   * --classpath | -cp:
+   * -cp:
    *   Add the path value to the class path.
    * </pre>
    *
@@ -169,16 +169,18 @@
       }
 
       // Separate runner options from class options
-      $offset= 1;
-      if ($params->exists('config', 'c')) {
-        $pm->configure($params->value('config', 'c'));
-        $offset+= 2;
-      }
-      if ($params->exists('classpath', 'cp')) {
-        foreach (explode(PATH_SEPARATOR, $params->value('classpath', 'cp')) as $element) {
-          ClassLoader::registerPath($element, FALSE);
+      for ($offset= 1, $i= 1; $i < $params->count; $i++) {
+        if ('-c' === $params->list[$i]) {
+          $pm->configure($params->list[$i+ 1]);
+          $offset+= 2; $i++;
+        } else if ('-cp' === $params->list[$i]) {
+          foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
+            ClassLoader::registerPath($element, FALSE);
+          }
+          $offset+= 2; $i++;
+        } else {
+          break;
         }
-        $offset+= 2;
       }
       
       // Sanity check

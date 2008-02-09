@@ -562,5 +562,53 @@
         public function run() { $this->out->write(implode(", ", $this->args)); }
       }'));
     }
+
+    /**
+     * Test xpcli -c option does not conflict with a Command class -c option.
+     *
+     */
+    #[@test]
+    public function configOption() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        protected $choke= FALSE;
+
+        #[@arg]
+        public function setChoke() { 
+          $this->choke= TRUE; 
+        }
+        
+        public function run() { 
+          $this->out->write($this->choke ? "true" : "false"); 
+        }
+      }');
+      $return= $this->runWith(array('-c', 'etc', $command->getClassName(), '-c'));
+      $this->assertEquals(0, $return);
+      $this->assertEquals('', $this->err->getBytes());
+      $this->assertEquals('true', $this->out->getBytes());
+    }
+
+    /**
+     * Test xpcli -cp option does not conflict with a Command class -cp option.
+     *
+     */
+    #[@test]
+    public function classPathOption() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        protected $copy= NULL;
+        
+        #[@arg(short= "cp")]
+        public function setCopy($copy) { 
+          $this->copy= Package::forName("net.xp_forge.instructions")->loadClass($copy); 
+        }
+        
+        public function run() { 
+          $this->out->write($this->copy); 
+        }
+      }');
+      $return= $this->runWith(array('-cp', dirname(__FILE__).'/instructions.xar', $command->getClassName(), '-cp', 'Copy'));
+      $this->assertEquals(0, $return);
+      $this->assertEquals('', $this->err->getBytes());
+      $this->assertEquals('lang.XPClass<net.xp_forge.instructions.Copy>', $this->out->getBytes());
+    }
   }
 ?>
