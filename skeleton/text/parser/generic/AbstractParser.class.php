@@ -147,7 +147,7 @@
      * @param   int token
      * @return  string name
      */
-    protected abstract  function yyname($token);
+    protected abstract function yyname($token);
     
     /**
      * Computes list of expected tokens on error by tracing the tables.
