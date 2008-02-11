@@ -4,12 +4,12 @@
  * $Id$ 
  */
 
-  uses('xml.Node');
+  uses('xml.Node', 'util.Date', 'lang.types.Bytes');
 
   /**
    * Encoder for data structures into XML-RPC format
    *
-   * @ext      xml
+   * @test     xp://net.xp_framework.unittest.scriptlet.rpc.XmlRpcEncoderTest
    * @see      http://xmlrpc.com
    * @purpose  XML-RPC-Encoder
    */
@@ -43,15 +43,41 @@
     protected function _marshall($data) {
       $value= new Node('value');
       
-      if (is('Generic', $data)) {
-        if (is('util.Date', $data)) {
-          return $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
-        }
+      // Handle objects:
+      // - util.Date objects are serialized as dateTime.iso8601
+      // - lang.types.Bytes object are serialized as base64
+      // - Provide a standard-way to serialize Object-derived classes
+      if ($data instanceof Date) {
+        $value->addChild(new Node('dateTime.iso8601', $data->toString('Ymd\TH:i:s')));
+        return $value;
+      } else if ($data instanceof Bytes) {
+        $value->addChild(new Node('base64', base64_encode($data)));
+        return $value;
+      } else if ($data instanceof Generic) {
+
+        $n= $value->addChild(new Node('struct'));
+        $n->addChild(Node::fromArray(array(
+          'name'  => '__xp_class',
+          'value' => array('string' => $data->getClassName())
+        ), 'member'));
         
-        // Provide a standard-way to serialize Object-derived classes
-        $cname= xp::typeOf($data);
-        $data= (array)$data;
-        $data['__xp_class']= $cname;
+        $values= (array)$data;
+        foreach ($data->getClass()->getFields() as $field) {
+          $m= $field->getModifiers();
+          if ($m & MODIFIER_STATIC) {
+            continue;
+          } else if ($m & MODIFIER_PUBLIC) {
+            $name= $field->getName();
+          } else if ($m & MODIFIER_PROTECTED) {
+            $name= "\0*\0".$field->getName();
+          } else if ($m & MODIFIER_PRIVATE) {
+            $name= "\0".substr(array_search($field->getDeclaringClass()->getName(), xp::$registry), 6)."\0".$field->getName();
+          }
+          $member= $n->addChild(new Node('member'));
+          $member->addChild(new Node('name', $field->getName()));
+          $member->addChild($this->_marshall($values[$name]));
+        }
+        return $value;
       }
       
       switch (xp::typeOf($data)) {
@@ -69,13 +95,19 @@
           break;
         
         case 'array':
-          $struct= $value->addChild(new Node('struct'));
-          if (sizeof($data)) foreach (array_keys($data) as $idx) {
-            $member= $struct->addChild(new Node('member'));
-            $member->addChild(new Node('name', $idx));
-            $member->addChild($this->_marshall($data[$idx]));
+          if ($this->_isVector($data)) {
+            $n= $value->addChild(new Node('array'))->addChild(new Node('data'));
+            for ($i= 0, $s= sizeof($data); $i < $s; $i++) {
+              $n->addChild($this->_marshall($data[$i]));
+            }
+          } else {
+            $n= $value->addChild(new Node('struct'));
+            foreach ($data as $name => $v) {
+              $member= $n->addChild(new Node('member'));
+              $member->addChild(new Node('name', $name));
+              $member->addChild($this->_marshall($v));
+            }
           }
-          $struct;
           break;
         
         case 'string':
@@ -87,11 +119,26 @@
           break;
         
         default:
-          throw(new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"'));
-          break;
+          throw new IllegalArgumentException('Cannot serialize data of type "'.xp::typeOf($data).'"');
       }
       
       return $value;
+    }
+
+    /**
+     * Checks whether an array is a numerically indexed array
+     * (a vector) or a key/value hashmap.
+     *
+     * @param   array data
+     * @return  bool
+     */
+    protected function _isVector($data) {
+      $start= 0;
+      foreach (array_keys($data) as $key) {
+        if ($key !== $start++) return FALSE;
+      }
+      
+      return TRUE;
     }
   }
 ?>

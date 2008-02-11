@@ -17,6 +17,7 @@
     'remote.protocol.ArrayListMapping',
     'remote.protocol.ExceptionMapping',
     'remote.protocol.StackTraceElementMapping',
+    'remote.protocol.ByteArrayMapping',
     'remote.UnknownRemoteObject',
     'remote.ExceptionReference',
     'remote.ClassReference'
@@ -53,6 +54,7 @@
       $this->mappings['A']= new ArrayListMapping();
       $this->mappings['e']= new ExceptionMapping();
       $this->mappings['t']= new StackTraceElementMapping();
+      $this->mappings['Y']= new ByteArrayMapping();
       
       // A hashmap doesn't have its own token, because it'll be serialized
       // as an array. We use HASHMAP as the token, so it will never match

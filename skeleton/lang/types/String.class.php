@@ -6,7 +6,7 @@
 
   define('STR_ENC', 'UTF-8');
 
-  uses('lang.types.Character');
+  uses('lang.types.Character', 'lang.types.Bytes');
 
   /**
    * Represents a string
@@ -31,9 +31,9 @@
       if ($arg instanceof self) {
         return $arg->buffer;
       } else if ($arg instanceof Character) {
-        return $arg->getBytes();
-      } else if (is_string($arg)) {
-        if (!$charset) $charset= iconv_get_encoding('input_encoding');
+        return $arg->getBytes(STR_ENC);
+      } else if (is_string($arg) || $arg instanceof Bytes) {
+        $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
 
         // Convert the input to internal encoding
         $buffer= iconv($charset, STR_ENC, $arg);
@@ -294,12 +294,18 @@
     }
    
     /**
-     * Returns the bytes in internal encoding (UTF-8)
+     * Returns the bytes representing this string
      *
-     * @return  string
+     * @param   string charset default 'UTF-8'
+     * @return  lang.types.Bytes
      */
-    public function getBytes() {
-      return $this->buffer;
+    public function getBytes($charset= NULL) {
+      $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
+
+      return new Bytes(STR_ENC === $charset 
+        ? $this->buffer 
+        : iconv(STR_ENC, $charset, $this->buffer)
+      );
     }
   }
 ?>

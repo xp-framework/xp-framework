@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.XMLFormatException', 'util.Date');
+  uses('xml.XMLFormatException', 'util.Date', 'lang.types.Bytes');
 
   /**
    * XML-RPC decoder
@@ -82,8 +82,7 @@
           }
           return $ret;
         
-        case 'int':
-        case 'i4':
+        case 'int': case 'i4':
           return (int)$c->getContent();
         
         case 'double':
@@ -100,9 +99,12 @@
         
         case 'nil':
           return NULL;
+
+        case 'base64':
+          return new Bytes(base64_decode($c->getContent()));
           
         default:
-          throw new IllegalArgumentException('Could not decode node as it\'s type is not supported: '.$c->getName());
+          throw new IllegalArgumentException('Could not decode node as its type is not supported: '.$c->getName());
       }
     }
   }

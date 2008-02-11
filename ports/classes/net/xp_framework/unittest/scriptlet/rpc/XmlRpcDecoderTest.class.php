@@ -67,6 +67,15 @@
     }
 
     /**
+     * Test decoding a string
+     *
+     */
+    #[@test]
+    public function stringWithUmlauts() {
+      $this->assertEquals('Hällo', $this->decode('<string>HÃ¤llo</string>'));
+    }
+
+    /**
      * Test decoding a string.
      *
      */
@@ -293,6 +302,15 @@
         new Date($iso8601String), 
         $this->decode('<dateTime.iso8601>'.$iso8601String.'</dateTime.iso8601>'
       ));
+    }
+
+    /**
+     * Test decoding base64 data.
+     *
+     */
+    #[@test]
+    public function base64() {
+      $this->assertEquals(new Bytes('Unittest'), $this->decode('<base64>VW5pdHRlc3Q=</base64>'));
     }
  
     /**

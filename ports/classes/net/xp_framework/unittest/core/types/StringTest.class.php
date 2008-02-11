@@ -79,7 +79,7 @@
     #[@test]
     public function usAsciiString() {
       $str= new String('Hello');
-      $this->assertEquals('Hello', $str->getBytes());
+      $this->assertEquals(new Bytes('Hello'), $str->getBytes());
       $this->assertEquals(5, $str->length());
     }
 
@@ -90,7 +90,7 @@
     #[@test]
     public function integerString() {
       $str= new String(1);
-      $this->assertEquals('1', $str->getBytes());
+      $this->assertEquals(new Bytes('1'), $str->getBytes());
       $this->assertEquals(1, $str->length());
     }
 
@@ -101,7 +101,7 @@
     #[@test]
     public function doubleString() {
       $str= new String(1.1);
-      $this->assertEquals('1.1', $str->getBytes());
+      $this->assertEquals(new Bytes('1.1'), $str->getBytes());
       $this->assertEquals(3, $str->length());
     }
 
@@ -112,7 +112,7 @@
     #[@test]
     public function trueString() {
       $str= new String(TRUE);
-      $this->assertEquals('1', $str->getBytes());
+      $this->assertEquals(new Bytes('1'), $str->getBytes());
       $this->assertEquals(1, $str->length());
     }
 
@@ -123,7 +123,7 @@
     #[@test]
     public function falseString() {
       $str= new String(FALSE);
-      $this->assertEquals('', $str->getBytes());
+      $this->assertEquals(new Bytes(''), $str->getBytes());
       $this->assertEquals(0, $str->length());
     }
 
@@ -134,7 +134,7 @@
     #[@test]
     public function nullString() {
       $str= new String(NULL);
-      $this->assertEquals('', $str->getBytes());
+      $this->assertEquals(new Bytes(''), $str->getBytes());
       $this->assertEquals(0, $str->length());
     }
 
@@ -145,7 +145,7 @@
     #[@test]
     public function umlautString() {
       $str= new String('H�llo');
-      $this->assertEquals('Hällo', $str->getBytes());
+      $this->assertEquals(new Bytes('Hällo'), $str->getBytes('utf-8'));
       $this->assertEquals(5, $str->length());
     }
 

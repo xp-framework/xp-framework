@@ -196,6 +196,18 @@
     }
 
     /**
+     * Test serialization of a Bytes object
+     *
+     */
+    #[@test]
+    public function representationOfByes() {
+      $this->assertEquals(
+        "Y:4:\"\0abc\";", 
+        $this->serializer->representationOf(new Bytes(array(0, 'a', 'b', 'c')))
+      );
+    }
+
+    /**
      * Test deserialization of an integer
      *
      */
@@ -321,6 +333,18 @@
       $this->assertEquals(2, sizeof($return->values));
       $this->assertEquals(new net·xp_framework·unittest·remote·Person(), $return->values[0]);
       $this->assertEquals('World', $return->values[1]);
+    }
+
+    /**
+     * Test serialization of a Bytes object
+     *
+     */
+    #[@test]
+    public function valueOfBytes() {
+      $this->assertEquals(
+        new Bytes(array(0, 'a', 'b', 'c')), 
+        $this->serializer->valueOf(new SerializedData("Y:4:\"\0abc\";"))
+      );
     }
 
     /**

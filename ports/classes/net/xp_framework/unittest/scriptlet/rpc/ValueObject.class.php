@@ -33,6 +33,15 @@
     public function getName() {
       return $this->name;
     }
+    
+    /**
+     * Set name
+     *
+     * @param  string name
+     */
+    public function setName($name) {
+      $this->name= $name;
+    }
 
     /**
      * Get age
@@ -44,12 +53,30 @@
     }
 
     /**
+     * Set age
+     *
+     * @param   int age
+     */
+    public function setAge($age) {
+      $this->age= $age;
+    }
+
+    /**
      * Get whether this object is new
      *
      * @return  bool
      */
     public function isNew() {
       return $this->_new;
+    }
+
+    /**
+     * Set whether this object is new
+     *
+     * @param   bool new
+     */
+    public function setNew($new) {
+      $this->_new= $new;
     }
   }
 ?>

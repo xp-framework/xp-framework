@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.types.Bytes');
+
   /**
    * Represents a character, which may consist of one or more bytes.
    *
@@ -40,7 +42,7 @@
         return;
       }        
 
-      if (!$charset) $charset= iconv_get_encoding('input_encoding');
+      $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
 
       // Convert the input to internal encoding
       $this->buffer= iconv($charset, 'UTF-8', $arg);
@@ -96,14 +98,20 @@
     public function __toString() {
       return iconv(STR_ENC, iconv_get_encoding('output_encoding').'//TRANSLIT', $this->buffer);
     }
-
+   
     /**
-     * Returns the bytes in internal encoding (UTF-8)
+     * Returns the bytes representing this character
      *
-     * @return  string
+     * @param   string charset default NULL
+     * @return  lang.types.Bytes
      */
-    public function getBytes() {
-      return $this->buffer;
+    public function getBytes($charset= NULL) {
+      $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
+
+      return new Bytes(STR_ENC === $charset 
+        ? $this->buffer 
+        : iconv(STR_ENC, $charset, $this->buffer)
+      );
     }
   }
 ?>

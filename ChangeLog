@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+RFCs
+~~~~
+- Implemented RFC #0148: Bytes type
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed problem with xpcli -c / -cp option conflicting with the run 
