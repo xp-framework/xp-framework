@@ -13,6 +13,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.Process to not throw exceptions if non-qualified command
+  is given (e.g. new Process('ssh')) by resolving PATH environment
+  (friebe)
 - Fixed problem with xpcli -c / -cp option conflicting with the run 
   Command class' -c / -cp options
   (friebe)
