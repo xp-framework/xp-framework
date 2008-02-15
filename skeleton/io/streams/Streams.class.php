@@ -157,6 +157,15 @@
     }
 
     /**
+     * Stream wrapper method stream_flush
+     *
+     * @return  bool
+     */
+    public function stream_flush() {
+      return TRUE;
+    }
+
+    /**
      * Callback for fwrite
      *
      * @param   string data
