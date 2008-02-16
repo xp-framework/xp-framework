@@ -39,9 +39,11 @@
      *
      * @param   string command default NULL
      * @param   string[] arguments default []
+     * @param   string cwd default NULL the working directory
+     * @param   array<string, string> default NULL the environment
      * @throws  io.IOException in case the command could not be executed
      */
-    public function __construct($command= NULL, $arguments= array()) {
+    public function __construct($command= NULL, $arguments= array(), $cwd= NULL, $env= NULL) {
       static $spec= array(
         0 => array('pipe', 'r'),  // stdin
         1 => array('pipe', 'w'),  // stdout
@@ -61,7 +63,7 @@
       $cmd= $command.' '.implode(' ', $arguments);
 
       // Open process
-      if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes))) {
+      if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes, $cwd, $env))) {
         throw new IOException('Could not execute "'.$cmd.'"');
       }
 
