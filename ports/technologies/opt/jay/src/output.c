@@ -774,7 +774,7 @@ char *prefix;
 		if (is_C_identifier(s))
 		{
 		    if (prefix)
-			printf("  define('TOKEN_");
+			printf("    const ");
 		    c = *s;
 		    if (c == '"')
 		    {
@@ -792,7 +792,7 @@ char *prefix;
 			while (c = *++s);
 		    }
 		    ++outline;
-		    printf("',  %d);\n", symbol_value[i]);
+		    printf("= %d;\n", symbol_value[i]);
 		    
 		    /* global array for debugging purposes! */
 #if DEBUG
@@ -829,7 +829,7 @@ char *prefix;
 	}
 	++outline;
 
-	printf("  define('TOKEN_YY_ERRORCODE', %d);\n", symbol_value[1]);
+	printf("    const YY_ERRORCODE= %d;\n", symbol_value[1]);
 }
 
 

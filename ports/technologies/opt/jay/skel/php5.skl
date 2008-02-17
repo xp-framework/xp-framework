@@ -7,7 +7,6 @@
 .  uses('text.parser.generic.AbstractParser');
 .
  prolog
- tokens var
 .
 .  /**
 .   * Generated parser class
@@ -15,6 +14,8 @@
 .   * @purpose  Parser implementation
 .   */
 .  class {%NAME%}Parser extends AbstractParser {
+ tokens var
+.
  tables
  debug
 .
