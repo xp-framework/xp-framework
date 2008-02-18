@@ -187,7 +187,6 @@ public class Serializer {
 
                 length.value= offset + parsed + 2;
                 return serialized.substring(offset, parsed+ offset); 
-
             }
         },
 
@@ -358,6 +357,17 @@ public class Serializer {
             }
         },
 
+        T_BYTES {
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
+                String byteslength= serialized.substring(2, serialized.indexOf(':', 2));
+                int offset= 2 + byteslength.length() + 2;
+                int parsed= Integer.parseInt(byteslength);
+
+                length.value= offset + parsed + 2;
+                return serialized.substring(offset, parsed+ offset).getBytes("iso-8859-1"); 
+            }
+        },
+
         T_SHORT {
             public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String value= serialized.substring(2, serialized.indexOf(';', 2));
@@ -382,6 +392,7 @@ public class Serializer {
             map.put('O', T_OBJECT);
             map.put('T', T_DATE);
             map.put('B', T_BYTE);
+            map.put('Y', T_BYTES);
             map.put('S', T_SHORT);
         }
       
@@ -541,13 +552,14 @@ public class Serializer {
         return "B:" + b + ";";
     }
     
-    @Handler('A') protected static String representationOf(byte[] array, SerializerContext context) throws Exception {
-        StringBuffer buffer= new StringBuffer("A:" + array.length + ":{");
-        for (int i= 0; i < array.length; i++) {
-            buffer.append("B:" + array[i] + ";");
-        }
-        buffer.append('}');
-        return buffer.toString();
+    @Handler('Y') protected static String representationOf(byte[] bytes, SerializerContext context) throws Exception {
+        return new StringBuffer("Y:")
+            .append(bytes.length)
+            .append(":\"")
+            .append(new String(bytes, "iso-8859-1"))
+            .append("\";")
+            .toString()
+        ;
     }
 
     @Handler('B') protected static String representationOf(Byte b, SerializerContext context) {
