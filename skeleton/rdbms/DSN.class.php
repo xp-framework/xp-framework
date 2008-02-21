@@ -10,6 +10,7 @@
   define('DB_UNBUFFERED',       0x0002);
   define('DB_AUTOCONNECT',      0x0004);
   define('DB_PERSISTENT',       0x0008);
+  define('DB_NEWLINK',          0x0010);
 
   /**
    * DSN
