@@ -61,15 +61,14 @@
         $this->handle= mysql_pconnect(
           $this->dsn->getHost(), 
           $this->dsn->getUser(), 
-          $this->dsn->getPassword(),
-          TRUE
+          $this->dsn->getPassword()
         );
       } else {
         $this->handle= mysql_connect(
           $this->dsn->getHost(), 
           $this->dsn->getUser(), 
           $this->dsn->getPassword(),
-          TRUE
+          ($this->flags & DB_NEWLINK)
         );
       }
       
