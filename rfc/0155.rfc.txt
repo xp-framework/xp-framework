@@ -1,0 +1,63 @@
+RFC 0155: lang.reflect.Routine::getReturnType() BC break
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Feb 24 20:24:10     2008
+@status: draft
+@category: lang.reflect
+
+Scope of Change
+---------------
+Make the lang.reflect.Routine::getReturnType() return a lang.Type. Add
+a getReturnTypeName() method that implements the old behaviour.
+
+
+Rationale
+---------
+Make this consistent with lang.reflect.Parameter::getType() and 
+lang.reflect.getExceptionTypes()
+
+
+Functionality
+-------------
+
+New method
+~~~~~~~~~~
+<?php
+  /**
+   * Retrieve return type
+   *
+   * @return  lang.Type
+   */
+  public function getReturnType() {
+    // ...
+  }
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+BC break
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+<EOF>
