@@ -35,6 +35,11 @@ New method
   }
 ?>
 
+Void
+~~~~
+If a method does not return anything (the return type is "void"), then
+Type::$VOID is returned by the above method.
+
 
 Security considerations
 -----------------------
@@ -48,7 +53,8 @@ None.
 
 Dependencies
 ------------
-BC break
+- BC break
+- New Type::$VOID
 
 
 Related documents
