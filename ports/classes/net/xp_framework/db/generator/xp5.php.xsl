@@ -197,12 +197,12 @@
         <xsl:if test="attribute[@identity= 'true']">
           <xsl:text>&#10;        $peer->setIdentity('</xsl:text><xsl:value-of select="attribute[@identity= 'true']/@name"/><xsl:text>');</xsl:text>
         </xsl:if><xsl:text>
-        $peer->setPrimary(array('</xsl:text>
+        $peer->setPrimary(array(</xsl:text>
           <xsl:for-each select="index[@primary= 'true']/key">
-            <xsl:value-of select="."/>
-            <xsl:if test="position() != last()">', '</xsl:if>
+            <xsl:text>'</xsl:text><xsl:value-of select="."/><xsl:text>'</xsl:text>
+            <xsl:if test="position() != last()">, </xsl:if>
           </xsl:for-each>
-        <xsl:text>'));
+        <xsl:text>));
         $peer->setTypes(array(&#10;</xsl:text>
         <xsl:for-each select="attribute">
           <xsl:text>          '</xsl:text>
