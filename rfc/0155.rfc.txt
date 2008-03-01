@@ -1,10 +1,10 @@
-RFC 0155: lang.reflect.Routine::getReturnType() BC break
+RFC 0155: lang.reflect.Routine::getReturnType(): Type instead of string
 ========================================================================
 $Id$
 
 @authors: friebe
 @created: Sun Feb 24 20:24:10     2008
-@status: draft
+@status: discussion, ends Sun Mar  2 16:00:00     2008
 @category: lang.reflect
 
 Scope of Change
@@ -22,8 +22,22 @@ lang.reflect.getExceptionTypes()
 Functionality
 -------------
 
-New method
+Old method
 ~~~~~~~~~~
+<?php
+  /**
+   * Retrieve return type
+   *
+   * @return  string
+   */
+  public function getReturnType() {
+    // ...
+  }
+?>
+
+
+New methods
+~~~~~~~~~~~
 <?php
   /**
    * Retrieve return type
@@ -33,12 +47,25 @@ New method
   public function getReturnType() {
     // ...
   }
+
+  /**
+   * Retrieve return type name
+   *
+   * @return  string
+   */
+  public function getReturnTypeName() {
+    // ...
+  }
 ?>
+
+Any
+~~~
+If a method's return type is unknown, then Type::$ANY is returned.
 
 Void
 ~~~~
 If a method does not return anything (the return type is "void"), then
-Type::$VOID is returned by the above method.
+Type::$VOID is returned.
 
 
 Security considerations
@@ -59,7 +86,8 @@ Dependencies
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/rfc/contrib/rfc0155.diff
+  Implementing patch
 
 
 Comments

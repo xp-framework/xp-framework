@@ -1,0 +1,144 @@
+Index: skeleton/lang/Type.class.php
+===================================================================
+--- skeleton/lang/Type.class.php	(revision 11773)
++++ skeleton/lang/Type.class.php	(working copy)
+@@ -13,13 +13,15 @@
+    */
+   class Type extends Object {
+     public static
+-      $ANY;
++      $ANY,
++      $VOID;
+ 
+     public
+       $name= '';
+ 
+     static function __static() {
+       self::$ANY= new self('*');
++      self::$VOID= new self('void');
+     }
+ 
+     /**
+@@ -113,8 +115,10 @@
+ 
+         case 'resource':    // XXX FIXME
+           return Primitive::$INTEGER;
+-
+         
++        case 'void':
++          return self::$VOID;
++        
+         case FALSE !== ($p= strpos($name, '<')):
+           $base= substr($name, 0, $p);
+           return 'array' == $base ? Primitive::$ARRAY : XPClass::forName($base);
+Index: skeleton/lang/reflect/Routine.class.php
+===================================================================
+--- skeleton/lang/reflect/Routine.class.php	(revision 11773)
++++ skeleton/lang/reflect/Routine.class.php	(working copy)
+@@ -178,6 +178,16 @@
+      * @return  string
+      */
+     public function getReturnType() {
++      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return Type::$ANY;
++      return Type::forName(ltrim($details[DETAIL_RETURNS], '&'));
++    }
++
++    /**
++     * Retrieve return type name
++     *
++     * @return  string
++     */
++    public function getReturnTypeName() {
+       if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
+       return ltrim($details[DETAIL_RETURNS], '&');
+     }
+@@ -326,7 +336,7 @@
+       return sprintf(
+         '%s %s %s(%s)%s',
+         Modifiers::stringOf($this->getModifiers()),
+-        $this->getReturnType(),
++        $this->getReturnTypeName(),
+         $this->getName(),
+         substr($signature, 2),
+         $throws
+Index: skeleton/lang/reflect/Constructor.class.php
+===================================================================
+--- skeleton/lang/reflect/Constructor.class.php	(revision 11773)
++++ skeleton/lang/reflect/Constructor.class.php	(working copy)
+@@ -64,9 +64,18 @@
+     /**
+      * Retrieve return type
+      *
++     * @return  lang.Type
++     */
++    public function getReturnType() {
++      return XPClass::forName(xp::nameOf($this->_class));
++    }
++
++    /**
++     * Retrieve return type
++     *
+      * @return  string
+      */
+-    public function getReturnType() {
++    public function getReturnTypeName() {
+       return xp::nameOf($this->_class);
+     }
+   }
+Index: ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php	(revision 11773)
++++ ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php	(working copy)
+@@ -199,7 +199,7 @@
+         $this->assertClass($method, 'lang.reflect.Method');
+         $this->assertEquals('getDate', $method->getName(TRUE));
+         $this->assertTrue($this->fixture->equals($method->getDeclaringClass()));
+-        $this->assertEquals('util.Date', $method->getReturnType());
++        $this->assertEquals('util.Date', $method->getReturnTypeName());
+       }
+     }
+ 
+@@ -305,34 +305,40 @@
+     /**
+      * Tests void return value
+      *
++     * @see     xp://lang.reflect.Method#getReturnTypeName
+      * @see     xp://lang.reflect.Method#getReturnType
+      * @see     xp://net.xp_framework.unittest.reflection.TestClass#setDate
+      */
+     #[@test]
+     public function voidReturnValue() {
+-      $this->assertEquals('void', $this->fixture->getMethod('setDate')->getReturnType());
++      $this->assertEquals('void', $this->fixture->getMethod('setDate')->getReturnTypeName());
++      $this->assertEquals(Type::$VOID, $this->fixture->getMethod('setDate')->getReturnType());
+     }
+ 
+     /**
+      * Tests bool return value
+      *
++     * @see     xp://lang.reflect.Method#getReturnTypeName
+      * @see     xp://lang.reflect.Method#getReturnType
+      * @see     xp://net.xp_framework.unittest.reflection.TestClass#initializerCalled
+      */
+     #[@test]
+     public function boolReturnValue() {
+-      $this->assertEquals('bool', $this->fixture->getMethod('initializerCalled')->getReturnType());
++      $this->assertEquals('bool', $this->fixture->getMethod('initializerCalled')->getReturnTypeName());
++      $this->assertEquals(Primitive::$BOOLEAN, $this->fixture->getMethod('initializerCalled')->getReturnType());
+     }
+     
+     /**
+      * Tests generic return value
+      *
++     * @see     xp://lang.reflect.Method#getReturnTypeName
+      * @see     xp://lang.reflect.Method#getReturnType
+      * @see     xp://net.xp_framework.unittest.reflection.TestClass#getMap
+      */
+     #[@test]
+     public function genericReturnValue() {
+-      $this->assertEquals('array<string, lang.Object>', $this->fixture->getMethod('getMap')->getReturnType());
++      $this->assertEquals('array<string, lang.Object>', $this->fixture->getMethod('getMap')->getReturnTypeName());
++      $this->assertEquals(Primitive::$ARRAY, $this->fixture->getMethod('getMap')->getReturnType());
+     }
+ 
+     /**
