@@ -9,14 +9,14 @@ $Id$
 
 Scope of Change
 ---------------
-Make the lang.reflect.Routine::getReturnType() return a lang.Type. Add
-a getReturnTypeName() method that implements the old behaviour.
+Make lang.reflect.Routine::getReturnType() return a lang.Type. Add a 
+getReturnTypeName() method that implements the old behaviour.
 
 
 Rationale
 ---------
 Make this consistent with lang.reflect.Parameter::getType() and 
-lang.reflect.getExceptionTypes()
+lang.reflect.Routine::getExceptionTypes()
 
 
 Functionality
