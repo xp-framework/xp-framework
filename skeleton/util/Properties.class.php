@@ -344,7 +344,12 @@
     public function readBool($section, $key, $default= FALSE) {
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
-      return ('1' === $this->_data[$section][$key]);
+      return (
+        '1'     === $this->_data[$section][$key] ||
+        'yes'   === $this->_data[$section][$key] ||
+        'true'  === $this->_data[$section][$key] ||
+        'on'    === $this->_data[$section][$key]
+      );
     }
     
     /**

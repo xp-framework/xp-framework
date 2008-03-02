@@ -211,10 +211,22 @@ float4=-5.0
      $p= Properties::fromString('
 [section]
 bool1=1
+bool2=yes
+bool3=on
+bool4=true
 bool5=0
+bool6=no
+bool7=off
+bool8=false
       ');
-      $this->assertTrue($p->readBool('section', 'bool1'));
-      $this->assertFalse($p->readBool('section', 'bool2'));
+      $this->assertTrue($p->readBool('section', 'bool1'), '1');
+      $this->assertTrue($p->readBool('section', 'bool2'), 'yes');
+      $this->assertTrue($p->readBool('section', 'bool3'), 'on');
+      $this->assertTrue($p->readBool('section', 'bool4'), 'true');
+      $this->assertFalse($p->readBool('section', 'bool5'), '0');
+      $this->assertFalse($p->readBool('section', 'bool6'), 'no');
+      $this->assertFalse($p->readBool('section', 'bool7'), 'off');
+      $this->assertFalse($p->readBool('section', 'bool8'), 'false');
     }
     
     /**
