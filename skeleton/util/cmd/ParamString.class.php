@@ -35,7 +35,7 @@
      */  
     public function setParams($params) {
       $this->list= $params;
-      $this->list[-1]= $_SERVER['_'];
+      $this->list[-1]= @$_SERVER['_'];
       $this->count= sizeof($params);
       $this->string= implode(' ', $params);
     }
