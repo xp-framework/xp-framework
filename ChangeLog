@@ -13,6 +13,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.Properties::readBool() to return TRUE if any of "1", "yes",
+  "true" or "on" is given (see bug #26)
+  (friebe)
 - Fixed lang.Process to not throw exceptions if non-qualified command
   is given (e.g. new Process('ssh')) by resolving PATH environment
   (friebe)
