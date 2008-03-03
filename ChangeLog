@@ -16,6 +16,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed unittest.TestSuite to not report errors if a previously run
+  test's setUp() routine failed.
+  (friebe)
 - Fixed util.Properties::readBool() to return TRUE if any of "1", "yes",
   "true" or "on" is given (see bug #26)
   (friebe)
