@@ -8,6 +8,9 @@ SVN version: ?????
 
 RFCs
 ~~~~
+- Implemented RFC #0155: Blang.reflect.Routine::getReturnType(): Type 
+  instead of string
+  (friebe)
 - Implemented RFC #0148: Bytes type
   (friebe)
 
