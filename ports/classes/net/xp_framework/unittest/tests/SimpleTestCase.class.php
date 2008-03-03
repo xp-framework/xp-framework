@@ -48,6 +48,9 @@
     public function setUp() {
       if ('skipped' === $this->name) {
         throw new PrerequisitesNotMetError('SKIP', $this->name);
+      } else if ('raisesAnErrorInSetup' === $this->name) {
+        $a.= '';
+        throw new AssertionFailedError('WARN', $this->name);
       }
     }
 
@@ -76,6 +79,24 @@
     #[@test]
     public function raisesAnError() {
       $a.= '';
+    }
+
+    /**
+     * Always fails
+     *
+     */
+    #[@test]
+    public function raisesAnErrorAndFails() {
+      $a.= '';
+      $this->assertTrue(FALSE);
+    }
+
+    /**
+     * Always fails
+     *
+     */
+    #[@test]
+    public function raisesAnErrorInSetup() {
     }
 
     /**

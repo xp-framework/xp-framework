@@ -284,5 +284,30 @@
       $this->assertEquals(1, $r->failureCount());
       $this->assertEquals(1, $r->successCount());
     }
+ 
+    /**
+     * Tests warnings do not affect succeeding tests
+     *
+     */    
+    #[@test]
+    public function warningsFromFailuresDontAffectSucceedingTests() {
+      $this->suite->addTest(new SimpleTestCase('raisesAnErrorAndFails'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->failureCount());
+      $this->assertEquals(1, $r->successCount());
+    }
+
+    /**
+     * Tests warnings do not affect succeeding tests
+     *
+     */    
+    #[@test]
+    public function warningsFromSetupDontAffectSucceedingTests() {
+      $this->suite->addTest(new SimpleTestCase('raisesAnErrorInSetup'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->successCount());
+    }
   }
 ?>
