@@ -198,12 +198,14 @@
         $this->notifyListeners('testSkipped', array(
           $result->setSkipped($test, $e, $timer->elapsedTime())
         ));
+        xp::gc();
         return;
       } catch (AssertionFailedError $e) {
         $timer->stop();
         $this->notifyListeners('testFailed', array(
           $result->setFailed($test, $e, $timer->elapsedTime())
         ));
+        xp::gc();
         return;
       }
 
