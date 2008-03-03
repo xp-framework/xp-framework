@@ -13,13 +13,15 @@
    */
   class Type extends Object {
     public static
-      $ANY;
+      $ANY,
+      $VOID;
 
     public
       $name= '';
 
     static function __static() {
       self::$ANY= new self('*');
+      self::$VOID= new self('void');
     }
 
     /**
@@ -113,7 +115,9 @@
 
         case 'resource':    // XXX FIXME
           return Primitive::$INTEGER;
-
+        
+        case 'void':
+          return self::$VOID;
         
         case FALSE !== ($p= strpos($name, '<')):
           $base= substr($name, 0, $p);

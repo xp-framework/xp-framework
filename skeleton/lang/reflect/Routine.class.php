@@ -178,6 +178,16 @@
      * @return  string
      */
     public function getReturnType() {
+      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return Type::$ANY;
+      return Type::forName(ltrim($details[DETAIL_RETURNS], '&'));
+    }
+
+    /**
+     * Retrieve return type name
+     *
+     * @return  string
+     */
+    public function getReturnTypeName() {
       if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
       return ltrim($details[DETAIL_RETURNS], '&');
     }
@@ -326,7 +336,7 @@
       return sprintf(
         '%s %s %s(%s)%s',
         Modifiers::stringOf($this->getModifiers()),
-        $this->getReturnType(),
+        $this->getReturnTypeName(),
         $this->getName(),
         substr($signature, 2),
         $throws

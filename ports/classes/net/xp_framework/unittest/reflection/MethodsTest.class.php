@@ -199,7 +199,7 @@
         $this->assertClass($method, 'lang.reflect.Method');
         $this->assertEquals('getDate', $method->getName(TRUE));
         $this->assertTrue($this->fixture->equals($method->getDeclaringClass()));
-        $this->assertEquals('util.Date', $method->getReturnType());
+        $this->assertEquals('util.Date', $method->getReturnTypeName());
       }
     }
 
@@ -305,34 +305,40 @@
     /**
      * Tests void return value
      *
+     * @see     xp://lang.reflect.Method#getReturnTypeName
      * @see     xp://lang.reflect.Method#getReturnType
      * @see     xp://net.xp_framework.unittest.reflection.TestClass#setDate
      */
     #[@test]
     public function voidReturnValue() {
-      $this->assertEquals('void', $this->fixture->getMethod('setDate')->getReturnType());
+      $this->assertEquals('void', $this->fixture->getMethod('setDate')->getReturnTypeName());
+      $this->assertEquals(Type::$VOID, $this->fixture->getMethod('setDate')->getReturnType());
     }
 
     /**
      * Tests bool return value
      *
+     * @see     xp://lang.reflect.Method#getReturnTypeName
      * @see     xp://lang.reflect.Method#getReturnType
      * @see     xp://net.xp_framework.unittest.reflection.TestClass#initializerCalled
      */
     #[@test]
     public function boolReturnValue() {
-      $this->assertEquals('bool', $this->fixture->getMethod('initializerCalled')->getReturnType());
+      $this->assertEquals('bool', $this->fixture->getMethod('initializerCalled')->getReturnTypeName());
+      $this->assertEquals(Primitive::$BOOLEAN, $this->fixture->getMethod('initializerCalled')->getReturnType());
     }
     
     /**
      * Tests generic return value
      *
+     * @see     xp://lang.reflect.Method#getReturnTypeName
      * @see     xp://lang.reflect.Method#getReturnType
      * @see     xp://net.xp_framework.unittest.reflection.TestClass#getMap
      */
     #[@test]
     public function genericReturnValue() {
-      $this->assertEquals('array<string, lang.Object>', $this->fixture->getMethod('getMap')->getReturnType());
+      $this->assertEquals('array<string, lang.Object>', $this->fixture->getMethod('getMap')->getReturnTypeName());
+      $this->assertEquals(Primitive::$ARRAY, $this->fixture->getMethod('getMap')->getReturnType());
     }
 
     /**

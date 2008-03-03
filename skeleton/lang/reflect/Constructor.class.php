@@ -64,9 +64,18 @@
     /**
      * Retrieve return type
      *
-     * @return  string
+     * @return  lang.Type
      */
     public function getReturnType() {
+      return XPClass::forName(xp::nameOf($this->_class));
+    }
+
+    /**
+     * Retrieve return type
+     *
+     * @return  string
+     */
+    public function getReturnTypeName() {
       return xp::nameOf($this->_class);
     }
   }
