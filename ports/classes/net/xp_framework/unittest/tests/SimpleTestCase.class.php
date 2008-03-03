@@ -70,6 +70,15 @@
     }
 
     /**
+     * Always fails
+     *
+     */
+    #[@test]
+    public function raisesAnError() {
+      $a.= '';
+    }
+
+    /**
      * Always skipped
      *
      */

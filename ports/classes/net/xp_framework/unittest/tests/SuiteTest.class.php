@@ -142,7 +142,7 @@
       $this->suite->clearTests();
       $this->assertEquals(0, $this->suite->numTests());
     }
-    
+
     /**
      * Tests running a single test
      *
@@ -257,5 +257,32 @@
       $this->suite->runTest(new SimpleTestCase('succeeds'));
       $this->assertEquals(1, SimpleTestCase::$dispose);
     }    
+
+    /**
+     * Tests warnings make a test fail
+     *
+     */    
+    #[@test]
+    public function warningsMakeTestFail() {
+      with ($test= new SimpleTestCase('raisesAnError')); {
+        $this->assertEquals(
+          '<Non-clean error stack>', 
+          $this->suite->runTest($test)->failed[$test->hashCode()]->reason->actual
+        );
+      }
+    }
+
+    /**
+     * Tests warnings do not affect succeeding tests
+     *
+     */    
+    #[@test]
+    public function warningsDontAffectSucceedingTests() {
+      $this->suite->addTest(new SimpleTestCase('raisesAnError'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->failureCount());
+      $this->assertEquals(1, $r->successCount());
+    }
   }
 ?>
