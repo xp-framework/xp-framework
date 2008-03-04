@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Feb 24 20:24:10     2008
-@status: discussion, ends Sun Mar  2 16:00:00     2008
+@status: implemented
 @category: lang.reflect
 
 Scope of Change
