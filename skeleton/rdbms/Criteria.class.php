@@ -278,7 +278,7 @@
      * @return  rdbms.ResultSet
      */
     public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL) {
-      return $conn->query($this->getSelectQueryString($conn, $peer, $jp));
+      return $conn->query('%c', $this->getSelectQueryString($conn, $peer, $jp));
     }
     
     /**
