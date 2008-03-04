@@ -1,0 +1,90 @@
+RFC 0156: Constructor::newInstance()
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Mar  4 09:26:13     2008
+@status: draft
+@category: lang.reflect
+
+Scope of Change
+---------------
+The method lang.reflect.Constructor::newInstance() will be changed no
+longer to accept varargs.
+
+
+Rationale
+---------
+The method lang.XPClass::newInstance() accepts varargs, but there is no
+way to pass an argument array to the constructor except for using
+call_user_func_array().
+
+
+Functionality
+-------------
+
+Old method
+~~~~~~~~~~
+<?php
+  // Declaration
+  public lang.Generic newInstance(any... $args) throws 
+    lang.IllegalAccessException,
+    lang.reflect.TargetInvocationException {
+    // ...
+  }
+  
+  // Usage
+  with ($class= XPClass::forName('utl.Binford')); {
+    $class->newInstance();
+    $class->newInstance(6100);
+    $class->getConstructor()->newInstance();
+    $class->getConstructor()->newInstance(6100);
+  }
+?>
+
+New method
+~~~~~~~~~~
+<?php
+  // Declaration
+  public lang.Generic newInstance(any[] $args) throws 
+    lang.IllegalAccessException,
+    lang.reflect.TargetInvocationException {
+    // ...
+  }
+
+  // Usage
+  with ($class= XPClass::forName('utl.Binford')); {
+    $class->newInstance();
+    $class->newInstance(6100);
+    $class->getConstructor()->newInstance();
+    $class->getConstructor()->newInstance(array(6100));   // !!!
+  }
+?>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+Faster.
+
+
+Dependencies
+------------
+- BC break in lang.reflect.Constructor
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+n/a
+
+
+<EOF>
