@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Tue Mar  4 09:26:13     2008
-@status: draft
+@status: discussion, ends Fri Mar  7 09:00:00     2008
 @category: lang.reflect
 
 Scope of Change
@@ -79,7 +79,8 @@ Dependencies
 
 Related documents
 -----------------
-n/a
+- http://xp-framework.net/rfc/contrib/rfc0156.diff
+  Implementing patch
 
 
 Comments

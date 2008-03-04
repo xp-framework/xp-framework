@@ -1,0 +1,46 @@
+Index: skeleton/lang/reflect/Constructor.class.php
+===================================================================
+--- skeleton/lang/reflect/Constructor.class.php	(revision 11779)
++++ skeleton/lang/reflect/Constructor.class.php	(working copy)
+@@ -27,11 +27,12 @@
+      *   var_dump($constructor->newInstance());
+      * </code>
+      *
+-     * @param   mixed* args
+-     * @return  lang.Object
++     * @param   mixed[] args
++     * @return  lang.Generic
+      * @throws  lang.IllegalAccessException in case the constructor is not public or if it is abstract
++     * @throws  lang.reflect.TargetInvocationException in case the constructor throws an exception
+      */
+-    public function newInstance() {
++    public function newInstance(array $args= array()) {
+ 
+       // Check whether class is abstract
+       if ($this->_reflect->getDeclaringClass()->isAbstract()) {
+@@ -47,10 +48,9 @@
+           $this->_class
+         ));
+       }
+-
++      
+       $paramstr= '';
+-      $args= func_get_args();
+-      for ($i= 0, $m= func_num_args(); $i < $m; $i++) {
++      for ($i= 0, $m= sizeof($args); $i < $m; $i++) {
+         $paramstr.= ', $args['.$i.']';
+       }
+       
+Index: ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php	(revision 11775)
++++ ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php	(working copy)
+@@ -128,7 +128,7 @@
+      */
+     #[@test]
+     public function constructorInvocation() {
+-      $instance= $this->class->getConstructor()->newInstance('1977-12-14');
++      $instance= $this->class->getConstructor()->newInstance(array('1977-12-14'));
+       $this->assertEquals($this->class, $instance->getClass());
+       $this->assertEquals(new Date('1977-12-14'), $instance->getDate());
+     }
