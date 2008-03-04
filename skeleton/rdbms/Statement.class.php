@@ -79,7 +79,7 @@
         '$1.'.implode(', $1.', array_keys($peer->types)),
         $this->arguments[0]
       );
-      return $conn->query(call_user_func_array(array($conn, 'prepare'), $this->arguments));
+      return call_user_func_array(array($conn, 'query'), $this->arguments);
     }
 
   } 
