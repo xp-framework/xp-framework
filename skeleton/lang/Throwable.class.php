@@ -36,6 +36,7 @@
       $errors= xp::$registry['errors'];
       foreach (debug_backtrace() as $trace) {
         if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
+        if (isset($trace['object']) && '__construct' == $trace['function'] && $trace['object'] instanceof self) continue;
 
         // Not all of these are always set: debug_backtrace() should
         // initialize these - at least - to NULL, IMO => Workaround.
