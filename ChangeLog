@@ -16,6 +16,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed problems with percent sign (%) substitution in RDBMS API when
+  using Criteria or Statement class
+  (hinckel)
 - Fixed unittest.TestSuite to not report errors if a previously run
   test's setUp() routine failed.
   (friebe)
