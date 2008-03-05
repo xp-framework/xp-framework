@@ -151,7 +151,7 @@
      * under the specified name, it is replaced
      *
      * @param   string name
-     * @param   mixed& value Any data type
+     * @param   mixed value Any data type
      * @throws  lang.IllegalStateException when session is invalid
      */
     public function putValue($name, $value) {

@@ -12,15 +12,15 @@
    * <code>
    *   uses('foo.bar.MyScriptlet');
    *
-   *   $s= &new MyScriptlet();
-   *   try(); {
+   *   $s= new MyScriptlet();
+   *   try {
    *     $s->init();
-   *     $response= &$s->process();
-   *   } if (catch('HttpScriptletException', $e)) {
-   *     $response= &$e->getResponse(); 
+   *     $response= $s->process();
+   *   } catch (HttpScriptletException $e) {
+   *     $response= $e->getResponse(); 
    *
    *     // Make a nicer errordocument and hide the real message
-   *     $d= &new ErrorDocument(
+   *     $d= new ErrorDocument(
    *       $response->statusCode, 
    *       'en_US'
    *     );

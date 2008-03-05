@@ -14,7 +14,7 @@
    * <code>
    *   uses('scriptlet.LocaleNegotiator');
    *
-   *   $negotiator= &new LocaleNegotiator(
+   *   $negotiator= new LocaleNegotiator(
    *     'de-at, de;q=0.75, en-us;q=0.50, en;q=0.25',
    *     'ISO-8859-1,utf-8;q=0.7,*;q=0.7'
    *   );
@@ -38,12 +38,12 @@
    *
    * Abbreviated example:
    * <code>
-   *   function doGet(&$req, &$res) {
-   *     $negotiator= &new LocaleNegotiator(
+   *   function doGet($req, $res) {
+   *     $negotiator= new LocaleNegotiator(
    *       $req->getHeader('Accept-Language'), 
    *       $req->getHeader('Accept-Charset')
    *     );
-   *     $locale= &$negotiator->getLocale(array('de_DE', 'en_US'), 'de_DE');
+   *     $locale= $negotiator->getLocale(array('de_DE', 'en_US'), 'de_DE');
    *
    *     // [... Do whatever needs to be done for this language ...]
    *

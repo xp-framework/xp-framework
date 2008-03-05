@@ -35,7 +35,7 @@
    *   uses('scriptlet.HttpScriptlet');
    * 
    *   class MyScriptlet extends HttpScriptlet {
-   *     function doGet(&$request, &$response) {
+   *     function doGet($request, $response) {
    *       $response->write('Hello World');
    *     }
    *   }
@@ -44,13 +44,13 @@
    * <code>
    *   uses('foo.bar.MyScriptlet');
    *
-   *   $s= &new MyScriptlet();
-   *   try(); {
+   *   $s= new MyScriptlet();
+   *   try {
    *     $s->init();
-   *     $response= &$s->process();
-   *   } if (catch('HttpScriptletException', $e)) {
+   *     $response= $s->process();
+   *   } catch(HttpScriptletException $e)) {
    *     // Retrieve standard "Internal Server Error"-Document
-   *     $response= &$e->getResponse(); 
+   *     $response= $e->getResponse(); 
    *   }
    * 
    *   $response->sendHeaders();
@@ -161,7 +161,7 @@
     public function handleMethod($request) {
       switch ($request->method) {
         case HTTP_POST:
-          $request->setData($GLOBALS['HTTP_RAW_POST_DATA']);
+          $request->setData(file_get_contents(fopen('php://input', 'r')));
           if (!empty($_FILES)) {
             $request->params= array_merge($request->params, $_FILES);
           }
@@ -169,12 +169,12 @@
           break;
           
         case HTTP_GET:
-          $request->setData(getenv('QUERY_STRING'));
+          $request->setData($request->getEnvValue('QUERY_STRING'));
           $m= 'doGet';
           break;
           
         case HTTP_HEAD:
-          $request->setData(getenv('QUERY_STRING'));
+          $request->setData($request->getEnvValue('QUERY_STRING'));
           $m= 'doHead';
           break;        
           
@@ -198,7 +198,7 @@
      * 
      * Example:
      * <code>
-     *   function doGet(&$request, &$response) {
+     *   function doGet($request, $response) {
      *     if (NULL === ($name= $request->getParam('name'))) {
      *       // Display a form where name is entered
      *       // ...
@@ -316,12 +316,12 @@
      */
     protected function _setupRequest($request) {
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
-      $request->method= getenv('REQUEST_METHOD');
+      $request->method= $request->getEnvValue('REQUEST_METHOD');
       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
       $request->setURI(new URL(
-        ('on' == getenv('HTTPS') ? 'https' : 'http').'://'.
-        getenv('HTTP_HOST').
-        getenv('REQUEST_URI')
+        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
+        $request->getEnvValue('HTTP_HOST').
+        $request->getEnvValue('REQUEST_URI')
       ));
     }    
     

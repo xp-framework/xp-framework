@@ -89,7 +89,7 @@
      *
      * <code>
      *   if ($request->hasCookie('username')) {
-     *     with ($c= &$request->getCookie('username')); {
+     *     with ($c= $request->getCookie('username')); {
      *       $response->write('Welcome back, '.$c->getValue());
      *     }
      *   }
@@ -253,7 +253,7 @@
      * @return  string
      */
     public function getQueryString() {
-      return urldecode(getenv('QUERY_STRING'));
+      return urldecode($this->getEnvValue('QUERY_STRING'));
     }
     
     /**
