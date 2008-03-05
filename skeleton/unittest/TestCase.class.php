@@ -69,7 +69,7 @@
      */
     public function assertArray($var, $error= 'notarray') {
       if (!is_array($var) && !is('lang.types.ArrayList', $var)) {
-        $this->fail($error, 'array', xp::typeOf($var));
+        $this->fail($error, xp::typeOf($var), 'array');
       }
     }
     
@@ -81,7 +81,7 @@
      */
     public function assertObject($var, $error= 'notobject') {
       if (!is_object($var)) {
-        $this->fail($error, 'object', xp::typeOf($var));
+        $this->fail($error, xp::typeOf($var), 'object');
       }
     }
     
@@ -94,7 +94,7 @@
      */
     public function assertEmpty($var, $error= 'notempty') {
       if (!empty($var)) {
-        $this->fail($error, '<empty>', $var);
+        $this->fail($error, $var, '<empty>');
       }
     }
 
@@ -107,7 +107,7 @@
      */
     public function assertNotEmpty($var, $error= 'empty') {
       if (empty($var)) {
-        $this->fail($error, '<not empty>', $var);
+        $this->fail($error, $var, '<not empty>');
       }
     }
     
