@@ -11,6 +11,7 @@
    * It handles escaping of special characters and thus creates
    * csv-files, that can be used to be exchanged with other OSes
    * 
+   * @test    xp://net.xp_framework.unittest.text.CsvGeneratorTest
    * @see     xp://text.parser.CSVParser
    * @purpose Small and simple CSV Generator
    */ 
