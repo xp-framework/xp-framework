@@ -46,7 +46,7 @@
     }
     
     /**
-     * Test
+     * Test delimiter char is enclosed in quotes
      *
      */
     #[@test]
@@ -57,7 +57,7 @@
     }
 
     /**
-     * Test
+     * Test quote char is is escaped
      *
      */
     #[@test]
@@ -65,6 +65,19 @@
       $this->generator->writeRecord(array('A"B', 'C'));
       $this->stream->seek(0);
       $this->assertEquals('"A""B"|C', $this->stream->readLine());
+    }
+
+    /**
+     * Test header writing
+     *
+     */
+    #[@test]
+    public function headerIsWritten() {
+      $this->generator->setHeader(array('id', 'name'));
+      $this->generator->writeRecord(array('1549', 'Timm'));
+      $this->stream->seek(0);
+      $this->assertEquals('id|name', $this->stream->readLine());
+      $this->assertEquals('1549|Timm', $this->stream->readLine());
     }
   }
 ?>
