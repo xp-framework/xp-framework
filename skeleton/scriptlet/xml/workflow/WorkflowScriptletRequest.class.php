@@ -36,15 +36,13 @@
       if ($this->stateName) {
         $name= implode('', array_map('ucfirst', array_reverse(explode('/', $this->stateName))));
         try {
-          $class= XPClass::forName($this->package.'.'.('state.'.$name.'State'));
+          $this->state= XPClass::forName($this->package.'.'.('state.'.$name.'State'))->newInstance();
         } catch (ClassNotFoundException $e) {
           throw new HttpScriptletException(
             $e->getMessage(),
             HTTP_NOT_FOUND
           );
         }
-
-        $this->state= $class->newInstance();
       }
     }
   }
