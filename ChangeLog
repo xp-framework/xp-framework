@@ -6,9 +6,20 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Backwards incompatible changes in lang.reflect package
+  http://news.xp-framework.net/article/240/2008/03/08/BC
+  (friebe)
+- Removed deprecated lang.reflect.Argument class and corresponding 
+  methods in lang.reflect.Routine
+  (friebe)
+
 RFCs
 ~~~~
-- Implemented RFC #0155: Blang.reflect.Routine::getReturnType(): Type 
+- Implemented RFC #0156: Constructor::newInstance()
+  (friebe)
+- Implemented RFC #0155: lang.reflect.Routine::getReturnType(): Type 
   instead of string
   (friebe)
 - Implemented RFC #0148: Bytes type
