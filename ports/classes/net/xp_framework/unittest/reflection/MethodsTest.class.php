@@ -204,22 +204,22 @@
     }
 
     /**
-     * Tests the method argument reflection for the setDate() method
+     * Tests the method Parameter reflection for the setDate() method
      *
-     * @see     xp://lang.reflect.Routine#numArguments
-     * @see     xp://lang.reflect.Routine#getArgument
-     * @see     xp://lang.reflect.Argument
+     * @see     xp://lang.reflect.Routine#numParameters
+     * @see     xp://lang.reflect.Routine#getParameter
+     * @see     xp://lang.reflect.Parameter
      */
     #[@test]
-    public function setDateMethodArguments() {
+    public function setDateMethodParameters() {
       with ($method= $this->fixture->getMethod('setDate')); {
-        $this->assertEquals(1, $method->numArguments());
-        if ($argument= $method->getArgument(0)) {
-          $this->assertClass($argument, 'lang.reflect.Argument');
-          $this->assertEquals('date', $argument->getName());
-          $this->assertEquals('util.Date', $argument->getType());
+        $this->assertEquals(1, $method->numParameters());
+        if ($parameter= $method->getParameter(0)) {
+          $this->assertClass($parameter, 'lang.reflect.Parameter');
+          $this->assertEquals('date', $parameter->getName());
+          $this->assertEquals('util.Date', $parameter->getType());
         }
-        $this->assertNull($method->getArgument(1));
+        $this->assertNull($method->getParameter(1));
       }
     }
 
