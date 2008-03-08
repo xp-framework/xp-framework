@@ -319,11 +319,11 @@
             $short= isset($arg['short']) ? $arg['short'] : NULL;
           }
 
-          if (0 == $method->numArguments()) {
+          if (0 == $method->numParameters()) {
             if (!$classparams->exists($select, $short)) continue;
             $args= array();
           } else if (!$classparams->exists($select, $short)) {
-            list($first, )= $method->getArguments();
+            list($first, )= $method->getParameters();
             if (!$first->isOptional()) {
               self::$err->writeLine('*** Argument '.$name.' does not exist!');
               return 2;
