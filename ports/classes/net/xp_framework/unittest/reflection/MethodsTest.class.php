@@ -217,7 +217,8 @@
         if ($parameter= $method->getParameter(0)) {
           $this->assertClass($parameter, 'lang.reflect.Parameter');
           $this->assertEquals('date', $parameter->getName());
-          $this->assertEquals('util.Date', $parameter->getType());
+          $this->assertEquals('util.Date', $parameter->getTypeName());
+          $this->assertEquals(XPClass::forName('util.Date'), $parameter->getType());
         }
         $this->assertNull($method->getParameter(1));
       }
