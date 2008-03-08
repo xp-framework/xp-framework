@@ -161,7 +161,6 @@
     public function handleMethod($request) {
       switch ($request->method) {
         case HTTP_POST:
-          $request->setData(file_get_contents('php://input'));
           if (!empty($_FILES)) {
             $request->params= array_merge($request->params, $_FILES);
           }
