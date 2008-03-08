@@ -57,12 +57,7 @@
       foreach ($matches as $match) {
         switch ($match[1]) {
           case 'param':
-            $details[DETAIL_ARGUMENTS][]= new Argument(
-              isset($match[3]) ? $match[3] : 'param',
-              $match[2],
-              isset($match[4]),
-              isset($match[4]) ? eval('return '.$match[5].';') : NULL
-            );
+            $details[DETAIL_ARGUMENTS][]= $match[2];
             break;
 
           case 'return':
