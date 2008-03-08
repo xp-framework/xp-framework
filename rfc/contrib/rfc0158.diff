@@ -1,0 +1,42 @@
+Index: scriptlet/xml/XMLScriptlet.class.php
+===================================================================
+--- scriptlet/xml/XMLScriptlet.class.php	(revision 11780)
++++ scriptlet/xml/XMLScriptlet.class.php	(working copy)
+@@ -187,6 +187,9 @@
+      * @param   scriptlet.xml.XMLScriptletResponse response 
+      */
+     public function processRequest($request, $response) {
++    
++      // Register scriptlet as XSL callback
++      $response->getProcessor()->registerInstance('active.scriptlet', $this);
+ 
+       // Define special parameters
+       $response->setParam('state',   $request->getStateName());
+Index: scriptlet/xml/workflow/AbstractXMLScriptlet.class.php
+===================================================================
+--- scriptlet/xml/workflow/AbstractXMLScriptlet.class.php	(revision 11780)
++++ scriptlet/xml/workflow/AbstractXMLScriptlet.class.php	(working copy)
+@@ -157,6 +157,9 @@
+       
+       // If there is no context, we're finished
+       if (!$context) return;
++      
++      // Register context as XSL callback
++      $response->getProcessor()->registerInstance('active.context', $context);
+ 
+       // Tell context to insert form elements. Then store it, if necessary
+       $context->insertStatus($response);
+Index: scriptlet/xml/workflow/AbstractState.class.php
+===================================================================
+--- scriptlet/xml/workflow/AbstractState.class.php	(revision 11780)
++++ scriptlet/xml/workflow/AbstractState.class.php	(working copy)
+@@ -94,6 +94,9 @@
+     public function setup($request, $response, $context) {
+       $this->cat && $this->cat->debug($this->getClassName().'::setup');
+       
++      // Register state as XSL callback
++      $response->getProcessor()->registerInstance('active.state', $this);
++      
+       with ($h= $response->addFormResult(new Node('handlers'))); {
+         for ($i= 0, $s= sizeof($this->handlers); $i < $s; $i++) {
+           with ($name= $this->handlers[$i]->getName()); {

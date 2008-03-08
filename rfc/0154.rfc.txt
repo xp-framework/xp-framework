@@ -1,6 +1,6 @@
 RFC 0154: Unify scriptlet environment
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: kiesel
 @created: Sun Jan 20 19:52:18     2008

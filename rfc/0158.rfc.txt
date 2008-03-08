@@ -1,0 +1,59 @@
+RFC 0158: Register scriptlet, state and context as XSL callback
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Sat Mar  8 11:47:05     2008
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+Register instances of scriptlet objects whereever available to 
+provide a standard basis for applications where to put XSL 
+callback methods.
+
+Rationale
+---------
+XSL callbacks should be used where implementing in XSL is re-
+implementation of thing already available in XP or just to
+difficult to implement.
+A standard way of providing these callbacks need to be provided
+as access to the XSL processor is required to register a callback
+and that access is not given at all places.
+
+Functionality
+-------------
+A scriptlet instance will be registered as 'active.scriptlet'
+where a scriptlet.xml.XMLScriptlet-derived scriplet class is used.
+
+A state instance will be registered as 'active.state' where a 
+state is instanciated and used for the request.
+
+A context instance will be registered as 'active.context' where a
+context is available.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Slower, because more code, but neglectible.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0158.diff
+  Implementing patch
+
+Comments
+--------
+- kiesel, Sat Mar  8 11:58:22     2008
+  Should handlers also be registered? If yes, only active ones?
+  If yes, what should be the naming strategy for the callback?
+
+<EOF>
