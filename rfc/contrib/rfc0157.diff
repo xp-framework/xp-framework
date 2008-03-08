@@ -1,0 +1,183 @@
+Index: scriptlet/xml/XMLScriptlet.class.php
+===================================================================
+--- scriptlet/xml/XMLScriptlet.class.php	(revision 11780)
++++ scriptlet/xml/XMLScriptlet.class.php	(working copy)
+@@ -102,9 +102,10 @@
+      * @see     xp://scriptlet.xml.XMLScriptlet#_handleMethod
+      */
+     public function handleMethod($request) {
+-      if (!$request->getEnvValue('PRODUCT')) {
+-        return 'doCreate';
+-      }
++      // XXX TDB
++      // if (!$request->getEnvValue('PRODUCT')) {
++      //   return 'doCreate';
++      // }
+ 
+       return parent::handleMethod($request);
+     }
+@@ -119,18 +120,28 @@
+      */
+     public function doRedirect($request, $response, $sessionId= NULL) {
+       $uri= $request->getURL();
++      
++      // Determine which settings we need to pass
++      $xsr= array();
++      if (
++        $request->getProduct() != $request->getDefaultProduct() ||
++        $request->getLanguage() != $request->getDefaultLanguage()
++      ) {
++        $xsr[]= $request->getProduct();
++        $xsr[]= $request->getLanguage();
++      }
++      
++      if (!empty($sessionId)) $xsr[]= 'psessionid='.$sessionId;
+ 
+       // Get product, language and statename from the environment if 
+       // necessary. Their default values are "site" (product), 
+       // "en_US" (language) and "static" (statename).
+       // Send redirect
+       $response->sendRedirect(sprintf(
+-        '%s://%s/xml/%s.%s%s/%s%s%s', 
++        '%s://%s/xml/%s%s%s%s', 
+         $uri->getScheme(),
+         $uri->getHost(),
+-        $request->getProduct(), 
+-        $request->getLanguage(), 
+-        empty($sessionId) ? '' : '.psessionid='.$sessionId,
++        (sizeof($xsr) ? implode('.', $xsr).'/' : ''),
+         $request->getStateName(), 
+         $uri->getQuery() ? '?'.$uri->getQuery() : '',
+         $uri->getFragment() ? '#'.$uri->getFragment() : ''
+Index: scriptlet/xml/XMLScriptletRequest.class.php
+===================================================================
+--- scriptlet/xml/XMLScriptletRequest.class.php	(revision 11780)
++++ scriptlet/xml/XMLScriptletRequest.class.php	(working copy)
+@@ -17,9 +17,7 @@
+    * for readability):
+    *
+    * <pre>
+-   * RewriteRule _
+-   * ^/xml/([a-zA-Z]+)\.([a-zA-Z_]+)(\.psessionid=([0-9A-Za-z]+))?/([a-zA-Z/]+)$ /xml.php _
+-   * [E=PRODUCT:$1,E=LANGUAGE:$2,E=SESS:$4,E=STATE:$5,PT]
++   * RewriteRule ^/xml /index.php [PT]
+    * </pre>
+    * 
+    * Make sure you have a directory index file or another RewriteRule to redirect
+@@ -33,7 +31,8 @@
+       $product      = '',
+       $stateName    = '',
+       $language     = '',
+-      $page         = '';
++      $page         = '',
++      $sessionId    = '';
+ 
+     /**
+      * Initialize this request object
+@@ -41,12 +40,33 @@
+      */
+     public function initialize() {
+       parent::initialize();
+-      $this->product= $this->getEnvValue('PRODUCT', $this->getEnvValue('DEF_PROD', 'site'));
+-      $this->stateName= $this->getEnvValue('STATE', $this->getEnvValue('DEF_STATE', 'static'));
+-      $this->language= $this->getEnvValue('LANGUAGE', $this->getEnvValue('DEF_LANG', 'en_US'));
++      
++      // Use default first
++      $this->product=   $this->getEnvValue('PRODUCT', $this->getDefaultProduct());
++      $this->stateName= $this->getEnvValue('STATE', $this->getDefaultStateName());
++      $this->language=  $this->getEnvValue('LANGUAGE', $this->getDefaultLanguage());
++      
++      // Check cookies for session id
++      if ($this->hasCookie('session_id')) {
++        $this->sessionId= $this->getCookie('session_id')->getValue();
++      }
++
++      // Parse path to determine current state, language and product - if not parseable,
++      // just fall back to the defaults
++      if (preg_match(
++        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
++        $this->getURL()->getPath(),
++        $part
++      )) {
++        !empty($part[3]) && $this->setProduct($part[3]);
++        !empty($part[4]) && $this->setLanguage($part[4]);
++        !empty($part[6]) && $this->sessionId= $part[6];
++        !empty($part[7]) && $this->setStateName($part[7]);
++      }
++      
+       $this->page= isset($_REQUEST['__page']) ? $_REQUEST['__page'] : 'home';
+     }
+-
++    
+     /**
+      * Set Page
+      *
+@@ -75,6 +95,15 @@
+     }
+ 
+     /**
++     * Gets default state
++     *
++     * @return  string stateName
++     */
++    public function getDefaultStateName() {
++      return $this->getEnvValue('DEF_STATE');
++    }
++
++    /**
+      * Sets state
+      *
+      * @param   string stateName
+@@ -93,6 +122,15 @@
+     }
+ 
+     /**
++     * Gets default product
++     *
++     * @return  string product
++     */
++    public function getDefaultProduct() {
++      return $this->getEnvValue('DEF_PROD');
++    }
++
++    /**
+      * Sets product
+      *
+      * @param   string product
+@@ -111,6 +149,15 @@
+     }
+ 
+     /**
++     * Gets default language
++     *
++     * @return  string language
++     */
++    public function getDefaultLanguage() {
++      return $this->getEnvValue('DEF_LANG');
++    }
++
++    /**
+      * Sets Language
+      *
+      * @param   string language
+@@ -118,14 +165,17 @@
+     public function setLanguage($language) {
+       $this->language= $language;
+     }
+-    
++
+     /**
+-     * Get session's Id
++     * Get session's Id. This overwrites the parent's implementation 
++     * of fetching the id from the request parameters. XMLScriptlets 
++     * need to have the session id passed through the request URL or
++     * cookie.
+      *
+      * @return  string session id
+      */
+     public function getSessionId() {
+-      return $this->getEnvValue('SESS');
++      return $this->sessionId;
+     }
+   }
+ ?>

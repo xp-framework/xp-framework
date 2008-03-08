@@ -1,0 +1,56 @@
+RFC 0157: Make product, language and session optional URL parts
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Sat Mar  8 11:07:47     2008
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+Make product, language and session an option URL part for XP 
+applications that use XMLScriptlet.
+
+Rationale
+---------
+Every setup includes a default product and a default language
+which can be used when no value has been passed through the URL.
+
+Many applications do not have more than one product or more than
+one language, so always passing it is overhead.
+In case non-default values are chosen, they'll again be passed
+through the known URL format.
+
+Functionality
+-------------
+Parsing product, language and session information will no longer
+be done through Apache rewrite rules but within the scriptlet API
+itself.
+A regular expression is used to parse the string and this expression
+needs to be flexible enough to detect omitted values.
+
+Apache setup will be simpler as the required rewrite rule is
+much simpler.
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+Should have no impact.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0157.diff
+  Implementing patch
+
+Comments
+--------
+
+<EOF>
