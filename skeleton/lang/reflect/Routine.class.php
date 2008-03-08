@@ -112,67 +112,6 @@
     }
 
     /**
-     * Retrieve this method's arguments
-     *
-     * @deprecated Use getParameters() instead
-     * @return  lang.reflect.Argument[]
-     */
-    public function getArguments() {
-      $arg= XPClass::forName('lang.reflect.Argument');
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
-      $r= array();
-
-      foreach ($this->_reflect->getParameters() as $pos => $param) {
-        $optional= $param->isOptional();
-        $r[]= $arg->newInstance(
-          $param->getName(),
-          array(    // 0 = Declared in apidoc, 1 = Type hint
-            ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
-            $param->isArray() ? 'array' : ($param->getClass() ? xp::nameOf($param->getClass()->getName()) : NULL)
-          ),
-          $optional,
-          $optional ? $param->getDefaultValue() : NULL
-        );
-      }
-      return $r;
-    }
-
-    /**
-     * Retrieve one of this method's argument by its position
-     *
-     * @deprecated Use getParameter() instead
-     * @param   int pos
-     * @return  lang.reflect.Argument
-     */
-    public function getArgument($pos) {
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
-      $param= $this->_reflect->getParameters();
-      if (!isset($param[$pos])) return NULL;
-
-      $arg= XPClass::forName('lang.reflect.Argument');
-      $optional= $param[$pos]->isOptional();
-      return $arg->newInstance(
-        $param[$pos]->getName(),
-          array(    // 0 = Declared in apidoc, 1 = Type hint
-            ltrim(@$details[DETAIL_ARGUMENTS][$pos], '&'),
-            $param[$pos]->isArray() ? 'array' : ($param[$pos]->getClass() ? xp::nameOf($param[$pos]->getClass()->getName()) : NULL)
-          ),
-        $optional,
-        $optional ? $param[$pos]->getDefaultValue() : NULL
-      );
-    }
-
-    /**
-     * Retrieve how many arguments this method accepts (including optional ones)
-     *
-     * @deprecated Use numParameters() instead
-     * @return  int
-     */
-    public function numArguments() {
-      return $this->_reflect->getNumberOfParameters();
-    }
-
-    /**
      * Retrieve return type
      *
      * @return  string
