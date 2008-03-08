@@ -65,7 +65,7 @@
         
         // Verify that the Class object actually represents an interface
         if (!$if->isInterface()) {
-          throw(new IllegalArgumentException($if->getName().' is not an interface'));
+          throw new IllegalArgumentException($if->getName().' is not an interface');
         }
         
         // Implement all the interface's methods
@@ -101,10 +101,11 @@
             );
           } else {
             $signature= $args= '';
-            foreach ($m->getArguments() as $argument) {
-              $signature.= ', '.xp::reflect($argument->getType(TRUE)).' $'.$argument->getName();
-              $args.= ', $'.$argument->getName();
-              $argument->isOptional() && $signature.= '= '.$argument->getDefault();
+            foreach ($m->getParameters() as $param) {
+              $restriction= $param->getTypeRestriction();
+              $signature.= ', '.($restriction ? xp::reflect($restriction->getName()) : '').' $'.$param->getName();
+              $args.= ', $'.$param->getName();
+              $param->isOptional() && $signature.= '= '.var_export($param->getDefaultValue(), TRUE);
             }
             $signature= substr($signature, 2);
             $args= substr($args, 2);
@@ -126,7 +127,7 @@
         $dyn->setClassBytes($name, $bytes);
         $class= $dyn->loadClass($name);
       } catch (FormatException $e) {
-        throw(new IllegalArgumentException($e->getMessage()));
+        throw new IllegalArgumentException($e->getMessage());
       }
 
       // Update cache and return XPClass object
