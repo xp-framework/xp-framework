@@ -84,10 +84,10 @@
         $name= strtolower(preg_replace('/^set/', '', $method->getName()));;
         $comment= self::textOf($method->getComment());
 
-        if (0 == $method->numArguments()) {
+        if (0 == $method->numParameters()) {
           $optional= TRUE;
         } else {
-          list($first, )= $method->getArguments();
+          list($first, )= $method->getParameters();
           $optional= $first->isOptional();
         }
 
