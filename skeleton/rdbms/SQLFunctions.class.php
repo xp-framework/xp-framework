@@ -260,6 +260,16 @@
     }
 
     /**
+     * extract weeks from a date field
+     *
+     * @param   mixed col string or rdbms.SQLFunction
+     * @return  rdbms.SQLFunction
+     */
+    public static function week($col) {
+      return new SQLFunction('week', '%d', array($col));
+    }
+
+    /**
      * get the current date
      *
      * @return  rdbms.SQLFunction

@@ -104,6 +104,7 @@
         'trim_3'       => 'trim(%s, %s)',
         'upper_1'      => 'upper(%s)',
         'year_1'       => 'year(%s)',
+        'week_1'       => 'week(%s)',
         'add_2'        => '%f + %f',
         'sub_2'        => '%f - %f',
         'mul_2'        => '%f * %f',
