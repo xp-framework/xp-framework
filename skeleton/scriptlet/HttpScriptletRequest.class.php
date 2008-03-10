@@ -19,7 +19,7 @@
     public
       $headers=         array(),
       $params=          array(),
-      $data=            '',
+      $data=            NULL,
       $method=          HTTP_GET,
       $session=         NULL;
     

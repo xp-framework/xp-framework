@@ -42,6 +42,8 @@ Bugfixes
 - Fixed problem with xpcli -c / -cp option conflicting with the run 
   Command class' -c / -cp options
   (friebe)
+- Fixed HttpScriptletRequest::getData never read from php://input
+  (ruben)
 
 Addon
 ~~~~~
