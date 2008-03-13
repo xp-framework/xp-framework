@@ -27,6 +27,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Added mapping for field type double to rdbms.mysql.MySQLDBAdapter
+  (hinckel)
 - Fixed problems with percent sign (%) substitution in RDBMS API when
   using Criteria or Statement class
   (hinckel)
