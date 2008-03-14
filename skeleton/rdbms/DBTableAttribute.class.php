@@ -108,6 +108,15 @@
     }
     
     /**
+     * Returns this attribute's length
+     *
+     * @return  int length
+     */
+    public function getLength() {
+      return $this->length;
+    }
+
+    /**
      * Returns a textual representation of the type, e.g. 
      * DB_ATTRTYPE_VARCHAR
      *
