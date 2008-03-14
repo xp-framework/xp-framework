@@ -215,7 +215,7 @@
     }
     
     /**
-     * get related peeer by relation path array
+     * Get related peer by relation path array
      *
      * @param   string[] path
      * @return  rdbms.Peer
