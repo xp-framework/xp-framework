@@ -73,6 +73,7 @@
             'identity' => $attr->isIdentity()  ? 'true' : 'false',
             'typename' => $attr->typeName(),
             'nullable' => $attr->isNullable() ? 'true' : 'false',
+            'length'   => $attr->getLength(),
           )));
         } while ($attr= $this->table->getNextAttribute());
 
