@@ -8,13 +8,13 @@
    * Represents a span of time
    *
    * @see      xp://util.DateUtil#timespanBetween
+   * @test     xp://net.xp_framework.unittest.util.TimeSpanTest
    * @purpose  Time and date
    */
   class TimeSpan extends Object {
-    public
+    protected
       $_seconds = 0;
-
-
+    
     /**
      * Contructor
      *
@@ -32,7 +32,97 @@
     }
 
     /**
-     * returns this span of time in seconds
+     * Add a TimeSpan
+     *
+     * @param   util.TimeSpan... args
+     * @return  util.TimeSpan
+     */
+    public function add() {
+      foreach (func_get_args() as $span) {
+        if (!$span instanceof self) {
+          throw (new IllegalArgumentException(
+            'Given argument is not a TimeSpan: '.xp::stringOf($span)
+          ));
+        }
+
+        $this->_seconds+= $span->_seconds;
+      }
+      
+      return $this;
+    }
+
+    /**
+     * Substract a TimeSpan
+     *
+     * @param   util.TimeSpan... args
+     * @return  util.TimeSpan
+     */
+    public function substract() {
+      foreach (func_get_args() as $span) {
+        if (!$span instanceof self) {
+          throw (new IllegalArgumentException(
+            'Given argument is not a TimeSpan: '.xp::stringOf($span)
+          ));
+        }
+
+        $this->_seconds-= $span->_seconds;
+      }
+      
+      return $this;
+    }
+
+    /**
+     * Get timespan from seconds
+     *
+     * @param   int seconds
+     * @return  util.TimeSpan
+     */
+    public static function seconds($seconds) {
+      return new self($seconds);
+    }
+
+    /**
+     * Get timespan from minutes
+     *
+     * @param   int minutes
+     * @return  util.TimeSpan
+     */
+    public static function minutes($minutes) {
+      return new self($minutes * 60);
+    }
+
+    /**
+     * Get timespan from hours
+     *
+     * @param   int hours
+     * @return  util.TimeSpan
+     */
+    public static function hours($hours) {
+      return new self($hours * 3600);
+    }
+
+    /**
+     * Get timespan from days
+     *
+     * @param   int days
+     * @return  util.TimeSpan
+     */
+    public static function days($days) {
+      return new self($days * 86400);
+    }
+
+    /**
+     * Get timespan from weeks
+     *
+     * @param   int weeks
+     * @return  util.TimeSpan
+     */
+    public static function weeks($weeks) {
+      return new self($weeks * 604800);
+    }
+
+    /**
+     * Returns this span of time in seconds
      *
      * @return  int
      */
@@ -41,31 +131,27 @@
     }
 
     /**
-     * returns the amount of 'whole' seconds in this 
+     * Returns the amount of 'whole' seconds in this 
      * span of time
      *
      * @return  int
      */
     public function getWholeSeconds() {
-      $ts= new TimeSpan();
-      $ts->addDays($this->getWholeDays());
-      $ts->addHours($this->getWholeHours());
-      $ts->addMinutes($this->getWholeMinutes());
-      return $this->_seconds- $ts->getSeconds();
+      return $this->_seconds % 60;
     }
     
     /**
-     * returns an amount of minutes less than or equal
+     * Return an amount of minutes less than or equal
      * to this span of time
      *
      * @return  int
      */
     public function getMinutes() {
-      return floor($this->_seconds / 60);
+      return (int)floor($this->_seconds / 60);
     }
     
     /**
-     * returns a float value representing this span of time
+     * Returns a float value representing this span of time
      * in minutes
      *
      * @return  float
@@ -75,39 +161,37 @@
     }
 
     /**
-     * returns the amount of 'whole' minutes in this 
+     * Returns the amount of 'whole' minutes in this 
      * span of time
      *
      * @return  int
      */
     public function getWholeMinutes() {
-      $ts = new TimeSpan();
-      $ts->addDays($this->getWholeDays());
-      $ts->addHours($this->getWholeHours());
-      return floor(($this->_seconds- $ts->getSeconds()) / 60);
+      return (int)floor(($this->_seconds % 3600) / 60);
     }
     
     /**
-     * adds an amount of minutes to this span of time
+     * Adds an amount of minutes to this span of time
      *
      * @param   int mins
+     * @deprecated
      */
     public function addMinutes($mins) {
-      $this->_seconds+= $mins * 60;
+      $this->_seconds+= (int)$mins * 60;
     }
 
     /**
-     * returns an amount of hours less than or equal
+     * Returns an amount of hours less than or equal
      * to this span of time
      *
      * @return  int
      */
     public function getHours() {
-      return floor($this->_seconds / 3600);
+      return (int)floor($this->_seconds / 3600);
     }
     
     /**
-     * returns a float value representing this span of time
+     * Returns a float value representing this span of time
      * in hours
      *
      * @return  float
@@ -117,38 +201,37 @@
     }
 
     /**
-     * returns the amount of 'whole' hours in this 
+     * Returns the amount of 'whole' hours in this 
      * span of time
      *
      * @return  int
      */
     public function getWholeHours() {
-      $ts= new TimeSpan();
-      $ts->addDays($this->getWholeDays());
-      return floor(($this->_seconds- $ts->getSeconds()) / 3600);
+      return (int)floor(($this->_seconds % 86400) / 3600);
     }
     
     /**
-     * adds an amount of Hours to this span of time
+     * Adds an amount of Hours to this span of time
      *
      * @param   int hours
+     * @deprecated
      */
     public function addHours($hours) {
-      $this->_seconds+= $hours * 3600;
+      $this->_seconds+= (int)$hours * 3600;
     }
 
     /**
-     * returns an amount of days less than or equal
+     * Returns an amount of days less than or equal
      * to this span of time
      *
      * @return  int
      */
     public function getDays() {
-      return floor($this->_seconds / 86400);
+      return (int)floor($this->_seconds / 86400);
     }
     
     /**
-     * returns a float value representing this span of time
+     * Returns a float value representing this span of time
      * in days
      *
      * @return  float
@@ -158,7 +241,7 @@
     }
 
     /**
-     * returns the amount of 'whole' days in this 
+     * Returns the amount of 'whole' days in this 
      * span of time
      *
      * @return  int
@@ -168,12 +251,13 @@
     }
 
     /**
-     * adds an amount of Days to this span of time
+     * Adds an amount of Days to this span of time
      *
      * @param   int days
+     * @deprecated
      */
     public function addDays($days) {
-      $this->_seconds+= $days * 86400;
+      $this->_seconds+= (int)$days * 86400;
     }
 
     /**
