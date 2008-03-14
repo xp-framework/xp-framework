@@ -9,42 +9,34 @@
   /**
    * Adapter for MySQL
    *
+   * @test  xp://net.xp_framework.unittest.rdbms.mysql.TableDescriptionTest
    * @see   xp://rdbms.DBAdapter
    * @see   xp://rdbms.mysql.MySQLConnection
    */
   class MySQLDBAdapter extends DBAdapter {
-
-    /**
-     * Constructor
-     *
-     * @param   Object conn database connection
-     */
-    public function __construct($conn) {
-      $this->map= array(
-        'varchar'    => DB_ATTRTYPE_VARCHAR,
-        'char'       => DB_ATTRTYPE_CHAR,
-        'int'        => DB_ATTRTYPE_INT,
-        'bigint'     => DB_ATTRTYPE_NUMERIC,
-        'mediumint'  => DB_ATTRTYPE_SMALLINT,
-        'smallint'   => DB_ATTRTYPE_SMALLINT,
-        'tinyint'    => DB_ATTRTYPE_TINYINT,
-        'bit'        => DB_ATTRTYPE_TINYINT,
-        'date'       => DB_ATTRTYPE_DATE,
-        'datetime'   => DB_ATTRTYPE_DATETIME,
-        'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
-        'tinytext'   => DB_ATTRTYPE_TEXT,
-        'mediumtext' => DB_ATTRTYPE_TEXT,
-        'text'       => DB_ATTRTYPE_TEXT,
-        'enum'       => DB_ATTRTYPE_ENUM,
-        'decimal'    => DB_ATTRTYPE_DECIMAL,
-        'float'      => DB_ATTRTYPE_FLOAT,
-        'double'     => DB_ATTRTYPE_FLOAT,
-        'blob'       => DB_ATTRTYPE_TEXT,
-        'mediumblob' => DB_ATTRTYPE_TEXT
-      );
-      parent::__construct($conn);
-    }
-
+    public static $map= array(
+      'varchar'    => DB_ATTRTYPE_VARCHAR,
+      'char'       => DB_ATTRTYPE_CHAR,
+      'int'        => DB_ATTRTYPE_INT,
+      'bigint'     => DB_ATTRTYPE_NUMERIC,
+      'mediumint'  => DB_ATTRTYPE_SMALLINT,
+      'smallint'   => DB_ATTRTYPE_SMALLINT,
+      'tinyint'    => DB_ATTRTYPE_TINYINT,
+      'bit'        => DB_ATTRTYPE_TINYINT,
+      'date'       => DB_ATTRTYPE_DATE,
+      'datetime'   => DB_ATTRTYPE_DATETIME,
+      'timestamp'  => DB_ATTRTYPE_TIMESTAMP,
+      'tinytext'   => DB_ATTRTYPE_TEXT,
+      'mediumtext' => DB_ATTRTYPE_TEXT,
+      'text'       => DB_ATTRTYPE_TEXT,
+      'enum'       => DB_ATTRTYPE_ENUM,
+      'decimal'    => DB_ATTRTYPE_DECIMAL,
+      'float'      => DB_ATTRTYPE_FLOAT,
+      'double'     => DB_ATTRTYPE_FLOAT,
+      'blob'       => DB_ATTRTYPE_TEXT,
+      'mediumblob' => DB_ATTRTYPE_TEXT
+    );
+    
     /**
      * Get databases
      *
@@ -79,6 +71,43 @@
     }
 
     /**
+     * Creates a table attribute from a "describe {table}" result
+     *
+     * Example:
+     * <pre>
+     * +-------------+--------------+------+-----+---------------------+----------------+
+     * | Field       | Type         | Null | Key | Default             | Extra          |
+     * +-------------+--------------+------+-----+---------------------+----------------+
+     * | contract_id | int(8)       |      | PRI | NULL                | auto_increment |
+     * | user_id     | int(8)       |      |     | 0                   |                |
+     * | mandant_id  | int(4)       |      |     | 0                   |                |
+     * | description | varchar(255) |      |     |                     |                |
+     * | comment     | varchar(255) |      |     |                     |                |
+     * | bz_id       | int(6)       |      |     | 0                   |                |
+     * | lastchange  | datetime     |      |     | 0000-00-00 00:00:00 |                |
+     * | changedby   | varchar(16)  |      |     |                     |                |
+     * +-------------+--------------+------+-----+---------------------+----------------+
+     * 8 rows in set (0.00 sec)
+     * </pre>
+     *
+     * @param   array<string, string> record
+     * @return  rdbms.DBTableAttribute
+     */
+    public static function tableAttributeFrom($record) {
+      preg_match('#^([a-z]+)(\(([0-9,]+)\))?#', $record['Type'], $regs);
+      return new DBTableAttribute(
+        $record['Field'],                                         // name
+        self::$map[$regs[1]],                                     // type
+        FALSE !== strpos($record['Extra'], 'auto_increment'),     // identity
+        !(empty($record['Null']) || ('NO' == $record['Null'])),   // nullable
+        (int)$regs[3],                                            // length
+        0,                                                        // precision
+        0                                                         // scale
+      );
+    }
+    
+
+    /**
      * Get table by name
      *
      * @param   string table
@@ -87,34 +116,9 @@
      */
     public function getTable($table, $database= NULL) {
       $t= new DBTable($table);
-
-      // Get the table's attributes
-      // +-------------+--------------+------+-----+---------------------+----------------+
-      // | Field       | Type         | Null | Key | Default             | Extra          |
-      // +-------------+--------------+------+-----+---------------------+----------------+
-      // | contract_id | int(8)       |      | PRI | NULL                | auto_increment |
-      // | user_id     | int(8)       |      |     | 0                   |                |
-      // | mandant_id  | int(4)       |      |     | 0                   |                |
-      // | description | varchar(255) |      |     |                     |                |
-      // | comment     | varchar(255) |      |     |                     |                |
-      // | bz_id       | int(6)       |      |     | 0                   |                |
-      // | lastchange  | datetime     |      |     | 0000-00-00 00:00:00 |                |
-      // | changedby   | varchar(16)  |      |     |                     |                |
-      // +-------------+--------------+------+-----+---------------------+----------------+
-      // 8 rows in set (0.00 sec)
       $q= $this->conn->query('describe %c', $this->qualifiedTablename($table, $database));
       while ($record= $q->next()) {
-        preg_match('#^([a-z]+)(\(([0-9,]+)\))?#', $record['Type'], $regs);
-
-        $t->addAttribute(new DBTableAttribute(
-          $record['Field'],
-          $this->map[$regs[1]],
-          strstr($record['Extra'], 'auto_increment'),
-          !(empty($record['Null']) || ('NO' == $record['Null'])),
-          $regs[3],
-          0,
-          0
-        ));
+        $t->addAttribute(self::tableAttributeFrom($record));
       }
 
       // Get keys
