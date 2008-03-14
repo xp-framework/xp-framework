@@ -49,6 +49,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added rdbms.DBTableAttribute::getLength() accessor - add this 
+  information to XML generated from databases via DBXmlGenerator
+  (Martin Contento, friebe)
 - Added SQL function to week() to extrakt the "week of year" from a
   date field
   (wagner)
