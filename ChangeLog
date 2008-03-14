@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated addMinutes(), addHours(), addDays() methods in util.TimeSpan
+  (gellweiler)
 - Backwards incompatible changes in lang.reflect package
   http://news.xp-framework.net/article/240/2008/03/08/BC
   (friebe)
@@ -49,6 +51,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added util.TimeSpan::add(), util.TimeSpan::subtract() methods
+  (gellweiler, friebe)
+- Added static seconds(), minutes(), hours(), days() and weeks() to
+  util.TimeSpan
+  (gellweiler, friebe)
 - Added rdbms.DBTableAttribute::getLength() accessor - add this 
   information to XML generated from databases via DBXmlGenerator
   (Martin Contento, friebe)
