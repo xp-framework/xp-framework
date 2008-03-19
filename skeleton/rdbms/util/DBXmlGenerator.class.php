@@ -67,14 +67,17 @@
       with ($t= $this->doc->root->children[0]); {
         $t->children= array();
         if ($attr= $this->table->getFirstAttribute()) do {
-          $t->addChild(new Node('attribute', NULL, array(
+          $a= $t->addChild(new Node('attribute', NULL, array(
             'name'     => trim($attr->getName()),
             'type'     => $attr->getTypeString(),
             'identity' => $attr->isIdentity()  ? 'true' : 'false',
             'typename' => $attr->typeName(),
             'nullable' => $attr->isNullable() ? 'true' : 'false',
-            'length'   => $attr->getLength(),
           )));
+          
+          // Only add length attribute if length is set - "bool" does not
+          // have a length, whereas varchar(255) does.
+          $attr->getLength() && $a->setAttribute('length', $attr->getLength());
         } while ($attr= $this->table->getNextAttribute());
 
         // Indexes
