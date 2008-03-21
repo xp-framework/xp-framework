@@ -67,7 +67,7 @@
     /**
      * Clone interceptor - ensures enums cannot be cloned
      *
-     * @throws  lang.CloneNotSupportedException'  
+     * @throws  lang.CloneNotSupportedException
      */
     public final function __clone() {
       raise('lang.CloneNotSupportedException', 'Enums cannot be cloned');
