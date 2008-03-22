@@ -5,7 +5,7 @@
  */
 
   uses(
-    'webservices.soap.SOAPMessage',
+    'webservices.soap.xp.XPSoapMessage',
     'webservices.soap.SOAPFaultException',
     'peer.http.HttpConnection',
     'webservices.uddi.UDDIConstants',
