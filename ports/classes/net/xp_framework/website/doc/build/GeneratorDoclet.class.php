@@ -20,10 +20,9 @@
   );
 
   /**
-   * (Insert class' description here)
+   * Generates the framework's api documentation
    *
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Doclet
    */
   class GeneratorDoclet extends Doclet {
     protected
@@ -43,6 +42,12 @@
       return isset($tags[$which]) ? $tags[$which]->{$attribute} : NULL;
     }
     
+    /**
+     * Returns a node for a list of annotations
+     *
+     * @param   text.doclet.AnnotationDoc[] list
+     * @return  xml.Node
+     */
     protected function annotationNode($list) {
       $n= new Node('annotations');
       foreach ($list as $annotation) {
@@ -60,6 +65,12 @@
       return $n;
     }
     
+    /**
+     * Returns a node referencing a class for a given class doc
+     *
+     * @param   text.doclet.ClassDoc classdoc
+     * @return  xml.Node
+     */
     protected function classReferenceNode($classdoc) {
       $n= new Node('link', NULL, array(
         'rel'     => 'class',
@@ -69,6 +80,13 @@
       return $n;
     }
     
+    /**
+     * Returns a node for a list of methods
+     *
+     * @param   text.doclet.ClassDoc classdoc
+     * @param   bool inherited
+     * @return  xml.Node
+     */
     protected function methodsNode($classdoc, $inherited= FALSE) {
       $n= new Node('methods');
       $inherited && $n->setAttribute('from', $classdoc->qualifiedName());
@@ -121,6 +139,13 @@
       return $n;
     }
 
+    /**
+     * Returns a node for a list of fields
+     *
+     * @param   text.doclet.ClassDoc classdoc
+     * @param   bool inherited
+     * @return  xml.Node
+     */
     protected function fieldsNode($classdoc, $inherited= FALSE) {
       $n= new Node('fields');
       $inherited && $n->setAttribute('from', $classdoc->qualifiedName());
@@ -137,6 +162,12 @@
       return $n;
     }
 
+    /**
+     * Returns a node for a given class
+     *
+     * @param   text.doclet.ClassDoc classdoc
+     * @return  xml.Node
+     */
     protected function classNode($classdoc) {
       $n= new Node('class', NULL, array(
         'name'    => $classdoc->qualifiedName(),
@@ -297,6 +328,13 @@
       }
     }
 
+    /**
+     * Retrieve Iterator
+     *
+     * @param   text.doclet.RootDoc root
+     * @param   string[] classes
+     * @return  util.XPIterator
+     */
     public function iteratorFor($root, $classes) {
       $collections= array();
       foreach (explode(PATH_SEPARATOR, $root->option('scan')) as $path) {
