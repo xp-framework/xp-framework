@@ -83,6 +83,7 @@
  * the argument as numeric value.
  *
  * @see      xp://peer.ldap.LDAPClient
+ * @see      http://xp-framework.net/rfc/0147
  * @see      http://xp-framework.net/rfc/0019
  * @see      rfc://2254
  * @ext      ldap
