@@ -76,25 +76,26 @@
  *   try {
  *     $news->findByPK(10250);
  *   } catch (FinderException $e) {
- *     Console::writeLine('*** ', $e->getMessage(), ' caused by: ', $e->getCause()->toString());
+ *     Console::writeLine('*** ', $e->getMessage(), ' caused by: ', $e->getCause());
  *   }
  * </code>
  *
  * Classes loaded per default
  * ==========================
  * These classes are guaranteed to be loaded at any given time:
- * 
- * lang.Generic, lang.Object, lang.StackTraceElement, lang.Throwable, 
- * lang.Error, lang.XPException, lang.reflect.Parameter, 
- * lang.reflect.Routine, lang.reflect.Method, lang.reflect.Field, 
- * lang.reflect.Constructor, lang.reflect.Modifiers, lang.XPClass
- * lang.ClassLoader, lang.archive.ArchiveClassLoader.
+ *
+ * lang.Object, lang.StackTraceElement, lang.Throwable, lang.Error, 
+ * lang.XPException, lang.Type, lang.reflect.Routine, lang.reflect.Parameter, 
+ * lang.reflect.TargetInvocationException, lang.reflect.Method, 
+ * lang.reflect.Field, lang.reflect.Constructor, lang.reflect.Modifiers, 
+ * lang.reflect.Package, lang.XPClass, lang.FileSystemClassLoader, 
+ * lang.DynamicClassLoader, lang.archive.ArchiveClassLoader, lang.ClassLoader
  *
  * These exceptions are guaranteed to be loaded at any given time:
  *
- * lang.NullPointerException, lang.IllegalAccessException, 
+ * lang.ChainedException, lang.NullPointerException, lang.IllegalAccessException, 
  * lang.IllegalArgumentException, lang.IllegalStateException, 
- * lang.FormatException, lang.ClassNotFoundException.
+ * lang.FormatException, lang.ClassNotFoundException, 
  * 
  * @see      http://news.xp-framework.net/article/11/2004/11/23/
  * @see      xp://lang.Throwable
