@@ -231,7 +231,7 @@
       
       if (isset($done[$classdoc->hashCode()])) return;    // Already been there
 
-      $out= new File($this->build->getURI().$classdoc->qualifiedName().'.dat');
+      $out= new File($this->build, $classdoc->qualifiedName().'.dat');
       Console::writeLine('- ', $classdoc->toString());
 
       // Add contained package
@@ -290,7 +290,7 @@
       }
 
       // Write to file
-      $out= new File($this->build->getURI().$package['info']->name().'.dat');
+      $out= new File($this->build, $package['info']->name().'.dat');
       FileUtil::setContents($out, serialize($tree));
       Console::writeLine(' OK');
     }
