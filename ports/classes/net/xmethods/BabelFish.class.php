@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservice.soap.SoapDriver');
+  uses('webservices.soap.SoapDriver');
   
   // Language defines
   define('BABELFISH_LANG_ENGLISH',    'en');
