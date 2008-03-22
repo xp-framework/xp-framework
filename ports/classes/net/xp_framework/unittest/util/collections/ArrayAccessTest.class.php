@@ -5,6 +5,7 @@
  */
 
   uses(
+    'unittest.TestCase',
     'lang.types.String',
     'util.collections.HashTable',
     'util.collections.HashSet',
