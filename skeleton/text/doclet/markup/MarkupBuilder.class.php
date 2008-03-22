@@ -72,7 +72,7 @@
           
           // If this is an opening tag and a behaviour is defined for it, switch
           // states and pass control to the processor.
-          if (ctype_alnum($tag[0])) {
+          if (ctype_alnum($tag)) {
             $st->nextToken('>');
             $lookup= strtolower($tag);
 
