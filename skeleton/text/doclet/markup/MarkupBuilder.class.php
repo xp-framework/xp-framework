@@ -61,6 +61,12 @@
         'pre'   => 'copy',
         'code'  => 'code'
       );
+      static $allowed= array(
+        'xmp'   => TRUE,
+        'ul'    => TRUE,
+        'ol'    => TRUE,
+        'li'    => TRUE,
+      );
 
       $processor= $this->pushProcessor(self::$processors['default']);
 
@@ -79,8 +85,10 @@
             if (isset($state[$lookup])) {
               $processor= $this->pushProcessor(self::$processors[$state[$lookup]]);
               $out.= $processor->initialize();
-            } else {
+            } else if (isset($allowed[$lookup])) {
               $out.= '<'.$tag.'>';
+            } else {
+              $out.= '&lt;'.$tag.'&gt;';
             }
             continue;
           }           
@@ -94,8 +102,10 @@
             if (isset($state[$lookup])) {
               $out.= $processor->finalize();
               $processor= $this->popProcessor();
-            } else {
+            } else if (isset($allowed[$lookup])) {
               $out.= '<'.$tag.'>';
+            } else {
+              $out.= '&lt;'.$tag.'&gt;';
             }
             continue;
           }

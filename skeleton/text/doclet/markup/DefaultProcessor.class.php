@@ -15,6 +15,8 @@
   class DefaultProcessor extends MarkupProcessor {
     public
       $patterns= array(
+        '#<#',
+        '#>#',
         '#\r#',
         '#\n\n#',
         '#&(?![a-z0-9\#]+;)#',
@@ -34,6 +36,8 @@
         "#\n([^\n]+)\n[~]{3,}\n#",
       ),
       $replacements= array(
+        '&lt;',
+        '&gt;',
         '',
         "<br/><br/>\n",
         '&amp;', 

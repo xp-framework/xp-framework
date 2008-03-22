@@ -14,11 +14,15 @@
   class CopyProcessor extends MarkupProcessor {
     public
       $patterns= array(
+        '#<#',
+        '#>#',
         '#\r#',
         '#\n#',
         '#&(?![a-z0-9\#]+;)#',
       ),
       $replacements= array(
+        '&lt;',
+        '&gt;',
         '',
         '<br/>',
         '&amp;', 

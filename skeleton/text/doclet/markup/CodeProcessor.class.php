@@ -83,7 +83,15 @@
 
       $current= 'default';
       $out= '';
-      foreach (token_get_all('<?php '.$this->buffer.'?>') as $token) {
+      
+      // Tokenize buffer
+      $tokens= token_get_all('<?php '.$this->buffer.'?>');
+      if (!is_array($tokens) || xp::errorAt(__FILE__, __LINE__ - 1)) {
+        throw new FormatException('Cannot parse "'.$this->buffer.'"');
+      }
+      
+      // Create HTML
+      foreach ($tokens as $token) {
         $class= (isset($classes[$token[0]]) 
           ? $classes[$token[0]]
           : 'default'
