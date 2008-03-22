@@ -135,7 +135,7 @@
         <xsl:value-of select="name()"/>
         <xsl:text> </xsl:text>
       </xsl:for-each>
-      <xsl:value-of select="concat(@type, ' ', @name)"/>
+      <xsl:value-of select="concat(@type, ' ', substring(@name, string-length(@package) + 2))"/>
     </h1>
 
     <!-- Deprecation note -->
