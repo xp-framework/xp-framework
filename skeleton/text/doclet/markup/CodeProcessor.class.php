@@ -96,6 +96,12 @@
           ? $classes[$token[0]]
           : 'default'
         );
+        
+        // Handle annotations
+        if (is_array($token) && T_COMMENT === $token[0] && '#' === $token[1][0]) {
+          $class= 'annotation';
+        }
+        
         if ($current != $class) {
           $out.= '</span><span class="'.$class.'">';
           $current= $class;
