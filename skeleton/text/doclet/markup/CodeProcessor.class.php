@@ -85,7 +85,7 @@
       $out= '';
       
       // Tokenize buffer
-      $tokens= token_get_all('<?php '.$this->buffer.'?>');
+      $tokens= token_get_all('<?php '.trim($this->buffer, "\r\n").'?>');
       if (!is_array($tokens) || xp::errorAt(__FILE__, __LINE__ - 1)) {
         throw new FormatException('Cannot parse "'.$this->buffer.'"');
       }
@@ -107,7 +107,7 @@
         ));
       }
       
-      return '</p><pre class="code"><span>'.substr($out, 8, -5).'</span></pre><p>';
+      return '</p><pre class="code"><span>'.substr($out, 9, -5).'</span></pre><p>';
     }
   }
 ?>
