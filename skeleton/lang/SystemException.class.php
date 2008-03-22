@@ -8,7 +8,7 @@
    * Encapsulates the SystemException which contains an error-code
    * and the error message.
    *
-   * @see Exception
+   * @see   xp://XPException
    */
   class SystemException extends XPException {
     public $code= 0;
