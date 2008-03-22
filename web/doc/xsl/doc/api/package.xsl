@@ -48,6 +48,18 @@
       </ul>
     </xsl:if>
     
+    <xsl:if test="count(package)">
+      <br clear="all"/>
+      <h2>Packages in <xsl:value-of select="@name"/></h2>
+      <a name="__packages"/>
+      <p>
+        <xsl:for-each select="package">
+          <a href="{xp:link(concat('api/package?', @name))}"><b><xsl:value-of select="@name"/></b></a>
+          <xsl:if test="position() &lt; last()">, </xsl:if>
+        </xsl:for-each>
+      </p>
+    </xsl:if>
+
     <br clear="all"/>
     <h2>Package contents</h2>
     <a name="__interfaces"/>
