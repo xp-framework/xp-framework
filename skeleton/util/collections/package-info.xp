@@ -1,0 +1,63 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The util.collections package provides collection classes. All of the
+ * classes in this package work with objects only and not with primitives!
+ *
+ * The Map interface
+ * =================
+ * Defines an object that maps keys to values. No key can occur more than
+ * once. Implemented by the util.collections.HashTable class.
+ *
+ * The Set interface
+ * =================
+ * Defines a list of unique elements, that is, no same element will occur
+ * twice. Implemented by the util.collections.HashSet class.
+ *
+ * The IList interface
+ * ===================
+ * Defines a zero-based, resizeable list of elements. Implemented by the
+ * util.collections.Vector class.
+ *
+ * Generics
+ * ========
+ * The util.collections classes support generic variants of themselves.
+ *
+ * Example:
+ * <code>
+ *   $ht= new HashTable();
+ *   $hg= create('new HashTable<lang.types.String, lang.Object>()');
+ *   
+ *   with ($key= new Integer(1); $value= new String('one')); {
+ *     $ht->put($key, $value);  // OK
+ *     $hg->put($key, $value);  // *** IllegalArgumentException, key not a string!
+ *   }
+ * </code>
+ *
+ * Overloading
+ * ===========
+ * The util.collections classes overload array access where applicable:
+ *
+ * <code>
+ *   $h= new HashTable();
+ *   $h['hello']= new Greeting('Hello');
+ *   
+ *   $v= create('new Vector<net.xp_forge.language.Greeting>()');
+ *   $v[]= new Greeting('Hallo');
+ *   $v[]= new Greeting('Servus');
+ *   $v[]= new Greeting('Grüezi');
+ *   
+ *   Console::writeLine('Hello in German: ', $v[0]);
+ * </code>
+ *
+ * @see      xp://lang.types.ArrayList
+ * @see      http://xp-framework.net/rfc/0106
+ * @see      http://news.xp-framework.net/article/180/2007/04/29/
+ * @purpose  Colllections
+ */
+package util.collections {
+}
