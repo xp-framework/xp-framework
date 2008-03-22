@@ -90,14 +90,14 @@
         background: #ffeac0 url(/image/deprecated.png) 10px 10px no-repeat;
       }
       fieldset.warning p {
-        margin-left: 40px;
+        margin-left: 48px;
       }
       fieldset.hint {
         border: 1px solid #001f83;
         background: #e2e7f8 url(/image/unittest.png) 10px 10px no-repeat;
       }
       fieldset.hint p {
-        margin-left: 40px;
+        margin-left: 48px;
       }
       fieldset.hint a {
         color: #001f83;
@@ -159,7 +159,7 @@
           This class' functionality is verified by the following tests:<br/>
           <xsl:for-each select="test">
             <xsl:variable name="class" select="substring-after(@href, 'xp://')"/>
-            <a class="class" href="?{$class}"><xsl:value-of select="$class"/></a>
+            <a href="?{$class}"><xsl:value-of select="$class"/></a>
             <xsl:if test="position() != last()">, </xsl:if>
           </xsl:for-each>
         </p>
