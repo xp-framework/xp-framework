@@ -40,6 +40,10 @@ h3 a {
   background-repeat: no-repeat;
   padding-right: 20px;
 }
+h4 { 
+  font: bold 13px "Trebuchet MS", "Arial", sans-serif; 
+  margin-top: 0px; 
+}
 
 p, td {
   font: 13px "Lucida Grande", "Trebuchet MS", arial;
@@ -60,6 +64,52 @@ form {
 input {
   border: 1px solid black;
 }
+
+fieldset {
+  margin-top: 20px;
+  padding: 8px;
+}
+
+legend {
+  font: bold 13px "Trebuchet MS", "Arial", sans-serif;
+  color: #3165c5;
+}
+
+fieldset.summary {
+  border: 1px solid #3165c5;
+}
+
+fieldset.warning {
+  border: none;
+  border-top: 1px solid #ffa800;
+  background: url(/common/image/bg_warning.png) repeat-x;
+}
+
+fieldset.warning p {
+  background: url(/common/image/warning.png) 10px 10px no-repeat;
+  padding-left: 48px;
+}
+
+fieldset.hint {
+  border: none;
+  border-top: 1px solid #abb4d2;
+  background: url(/common/image/bg_hint.png) repeat-x;
+}
+
+fieldset.hint p {
+  background: url(/common/image/hint.png) 10px 10px no-repeat;
+  padding-left: 48px;
+}
+
+fieldset.hint a {
+  color: #001f83;
+}
+
+fieldset.warning em {
+  color: #963817;
+  font-weight: bold;
+}
+
 /* }}} */
 
 /* {{{ Search */
@@ -71,7 +121,7 @@ div#search {
 }
 
 div#search input {
-  height: 15px;
+  height: 18px;
 }
 /* }}} */
 
@@ -168,7 +218,19 @@ table#main td#content {
   padding: 10px 15px 20px 15px;
   height: 400px;
 }
+#content ul {
+  list-style-type: square;
+  list-style-image: url(/common/image/li.gif);
+  line-height: 18px;
+  margin-top: 6px;
+  margin-bottom: 0px;
+}
+/* }}} */
 
+/* {{{ Common elements */
+hr { 
+  border: 0; background-color: #cccccc; height: 1px; 
+}
 acronym {
   border-bottom: 1px dotted #666666;
 }
