@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- ! Overview page
+ ! Shows a package's apidoc
  !
  ! $Id$
  !-->
@@ -15,63 +15,7 @@
  extension-element-prefixes="func str"
  exclude-result-prefixes="func php exsl xsl xp str"
 >
-  <xsl:include href="../layout.inc.xsl"/>
-
-  <func:function name="func:first-sentence">
-    <xsl:param name="comment"/>
-    
-    <func:result>
-      <xsl:value-of select="exsl:node-set(str:tokenize($comment, '.&#10;'))"/>
-    </func:result>
-  </func:function>
-  
-  <func:function name="func:cutstring">
-    <xsl:param name="text"/>
-    <xsl:param name="maxlength"/>
-    
-    <func:result>
-      <xsl:choose>
-        <xsl:when test="string-length($text) &lt;= $maxlength">
-          <xsl:value-of select="$text"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <span title="{$text}">
-            <xsl:value-of select="substring($text, 1, $maxlength)"/>
-            <b>[...]</b>
-          </span>
-        </xsl:otherwise>
-      </xsl:choose>
-    </func:result>
-  </func:function>
-  
-  <func:function name="func:typelink">
-    <xsl:param name="type"/>
-    
-    <func:result>
-      <a>
-        <xsl:if test="contains($type, '.')">
-          <xsl:attribute name="href">
-            <xsl:value-of select="concat('?', string(exsl:node-set(str:tokenize(func:ltrim($type, '&amp;'), '[&amp;'))))"/>
-          </xsl:attribute>
-        </xsl:if>
-        
-        <xsl:value-of select="$type"/>
-      </a>
-    </func:result>
-  </func:function>
-  
-  <xsl:template match="comment">
-    <div class="apidoc">
-      <xsl:apply-templates/>
-    </div>
-  </xsl:template>
-
-  <xsl:template match="comment//*">
-    <xsl:copy>
-      <xsl:copy-of select="@*"/>
-      <xsl:apply-templates/>
-    </xsl:copy>
-  </xsl:template>
+  <xsl:include href="doc.inc.xsl"/>
 
   <xsl:template match="package">
     <xsl:variable name="package" select="concat(@name, '.')"/>
@@ -151,50 +95,5 @@
         </ul>
       </fieldset>
     </xsl:if>
-  </xsl:template>
-  
-  <xsl:template match="see[@scheme = 'xp']" mode="short">
-    <a href="?{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
-  </xsl:template>
-
-  <xsl:template match="see[@scheme = 'php']" mode="short">
-    <a href="http://php3.de/{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
-  </xsl:template>
-
-  <xsl:template match="see[@scheme = 'http']" mode="short">
-    <a href="http://{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
-  </xsl:template>
-
-  <xsl:template match="see[@scheme = 'xp']">
-    <a href="?{@href}"><xsl:value-of select="@href"/></a>
-  </xsl:template>
-
-  <xsl:template match="see[@scheme = 'php']">
-    <a href="http://php3.de/{@href}"><xsl:value-of select="@href"/></a>
-  </xsl:template>
-
-  <xsl:template match="see[@scheme = 'http']">
-    <a href="http://{@href}"><xsl:value-of select="@href"/></a>
-  </xsl:template>
-
-  <xsl:template name="html-head">
-    <link rel="shortcut icon" href="/common/favicon.ico" />
-  </xsl:template>
- 
-  <xsl:template name="content">
-    <table id="main" cellpadding="0" cellspacing="10">
-      <tr>
-        <td id="content">
-          <xsl:apply-templates select="/formresult/doc/package"/>
-        </td>
-        <td id="context">
-          <!-- -->
-        </td>
-      </tr>
-    </table>
-  </xsl:template>
-  
-  <xsl:template name="html-title">
-    <xsl:value-of select="/formresult/doc/package/@name"/> - XP Framework Documentation
   </xsl:template>
 </xsl:stylesheet>
