@@ -21,7 +21,10 @@
      */
     public function process($request, $response) {
       sscanf($request->getQueryString(), '%[a-zA-Z_.]', $classname);
-      $f= new File(PropertyManager::getInstance()->getProperties('storage')->readString('storage', 'base').DIRECTORY_SEPARATOR.$classname.'.dat');
+      $f= new File(
+        PropertyManager::getInstance()->getProperties('storage')->readString('storage', 'base'),
+        $classname.'.dat'
+      );
       $response->addFormResult(cast(unserialize(FileUtil::getContents($f)), 'xml.Tree')->root);
     }
   }
