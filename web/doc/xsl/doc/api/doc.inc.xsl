@@ -92,20 +92,8 @@
     </xsl:copy>
   </xsl:template>
   
-  <xsl:template match="see[@scheme = 'xp']" mode="short">
-    <a href="?{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
-  </xsl:template>
-
-  <xsl:template match="see[@scheme = 'php']" mode="short">
-    <a href="http://php3.de/{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
-  </xsl:template>
-
-  <xsl:template match="see[@scheme = 'http']" mode="short">
-    <a href="http://{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
-  </xsl:template>
-
   <xsl:template match="see[@scheme = 'xp']">
-    <a href="?{@href}"><xsl:value-of select="@href"/></a>
+    <a href="{xp:link(concat('api/class?', @href))}"><xsl:value-of select="@href"/></a>
   </xsl:template>
 
   <xsl:template match="see[@scheme = 'php']">
