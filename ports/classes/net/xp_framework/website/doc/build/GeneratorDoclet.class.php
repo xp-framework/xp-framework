@@ -210,7 +210,6 @@
       if (!isset($this->packages[$hash])) {
         $this->packages[$hash]= array('info' => $package);
       }
-
       $this->packages[$hash]['classes'][$classdoc->name()]= $classdoc->classType();
 
       // Create XML tree
@@ -221,10 +220,56 @@
       FileUtil::setContents($out, serialize($tree));
       
       $done[$classdoc->hashCode()]= TRUE;
-      delete($out);
-      delete($tree);
+    }
+
+    protected function marshalPackageDoc($package) {
+      Console::write('- ', $package['info']->toString());
+
+      $tree= new Tree('doc');
+      $p= $tree->addChild(new Node('package', NULL, array('name' => $package['info']->name())));
+      $p->addChild(new Node('comment', $this->markup($package['info']->commentText())));
+
+      $p->addChild(new Node('purpose', $this->tagAttribute($package['info']->tags('purpose'), 0, 'text')));
+      foreach ($package['info']->tags('see') as $ref) {
+        $p->addChild(new Node('see', $ref->text, array(
+          'scheme' => $ref->scheme,
+          'href'   => $ref->urn
+        )));
+      }
+      foreach ($package['info']->tags('test') as $ref) {
+        $p->addChild(new Node('test', NULL, array('href' => $ref->text)));
+      }
+      if ($package['info']->tags('deprecated')) {
+        $p->addChild(new Node('deprecated', $this->tagAttribute($package['info']->tags('deprecated'), 0, 'text')));
+      }
+
+      // Add classes
+      foreach ($package['classes'] as $name => $type) {
+        $p->addChild(new Node('class', NULL, array(
+          'name' => $name,
+          'type' => $type
+        )));
+      }
+
+      // Add subpackages
+      $name= $package['info']->name().'.';
+      foreach ($this->packages as $cmp) {
+        if (0 !== strncmp($name, $cmp['info']->name(), strlen($name))) continue;
+        $p->addChild(new Node('package', NULL, array('name' => $cmp['info']->name())));
+      }
+
+      // Write to file
+      $out= new File($this->build->getURI().$package['info']->name().'.dat');
+      FileUtil::setContents($out, serialize($tree));
+      Console::writeLine(' OK');
     }
     
+    /**
+     * Returns a node with markup for a given apidoc comment
+     *
+     * @param   string comment
+     * @return  xml.Node
+     */
     protected function markup($comment) {
       return new PCData('<p>'.$this->markup->markupFor($comment).'</p>');
     }
@@ -244,45 +289,11 @@
       $this->packages= array();
       while ($root->classes->hasNext()) {
         $this->marshalClassDoc($root->classes->next());
-        xp::gc();
       }
       
       // Marshal packages
       foreach ($this->packages as $package) {
-        Console::write('- ', $package['info']->toString());
-
-        $tree= new Tree('doc');
-        $p= $tree->addChild(new Node('package', NULL, array('name' => $package['info']->name())));
-        $p->addChild(new Node('comment', $this->markup($package['info']->commentText())));
-
-        $p->addChild(new Node('purpose', $this->tagAttribute($package['info']->tags('purpose'), 0, 'text')));
-        foreach ($package['info']->tags('see') as $ref) {
-          $p->addChild(new Node('see', $ref->text, array(
-            'scheme' => $ref->scheme,
-            'href'   => $ref->urn
-          )));
-        }
-        foreach ($package['info']->tags('test') as $ref) {
-          $p->addChild(new Node('test', NULL, array('href' => $ref->text)));
-        }
-        if ($package['info']->tags('deprecated')) {
-          $p->addChild(new Node('deprecated', $this->tagAttribute($package['info']->tags('deprecated'), 0, 'text')));
-        }
-
-        foreach ($package['classes'] as $name => $type) {
-          $p->addChild(new Node('class', NULL, array(
-            'name' => $name,
-            'type' => $type
-          )));
-        }
-
-        // Write to file
-        $out= new File($this->build->getURI().$package['info']->name().'.dat');
-        FileUtil::setContents($out, serialize($tree));
-        Console::writeLine(' OK');
-
-        delete($out);
-        delete($tree);
+        $this->marshalPackageDoc($package);
       }
     }
 
