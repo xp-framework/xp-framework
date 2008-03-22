@@ -24,12 +24,14 @@
    * Represents classes. Every instance of an XP class has an method
    * called getClass() which returns an instance of this class.
    *
-   * Warning:
-   *
+   * Warning
+   * =======
    * Do not construct this class publicly, instead use either the
    * $o->getClass() syntax or the static method 
    * $class= XPClass::forName('fully.qualified.Name')
    *
+   * Example
+   * =======
    * To retrieve the fully qualified name of a class, use this:
    * <code>
    *   $o= new File();
@@ -80,7 +82,8 @@
      * Creates a new instance of the class represented by this Class object.
      * The class is instantiated as if by a new expression with an empty argument list.
      *
-     * Example:
+     * Example
+     * =======
      * <code>
      *   try {
      *     $o= XPClass::forName($name)->newInstance();
@@ -89,7 +92,8 @@
      *   }
      * </code>
      *
-     * Example (passing arguments):
+     * Example (passing arguments)
+     * ===========================
      * <code>
      *   try {
      *     $o= XPClass::forName('peer.Socket')->newInstance('localhost', 6100);
@@ -150,9 +154,10 @@
     /**
      * Checks whether this class has a method named "$method" or not.
      *
-     * Note: Since in PHP, methods are case-insensitive, calling 
-     * hasMethod('toString') will provide the same result as 
-     * hasMethod('tostring')
+     * Note
+     * ====
+     * Since in PHP, methods are case-insensitive, calling hasMethod('toString') 
+     * will provide the same result as hasMethod('tostring')
      *
      * @param   string method the method's name
      * @return  bool TRUE if method exists
@@ -265,6 +270,8 @@
      * Determines whether the specified object is an instance of this
      * class. This is the equivalent of the is() core functionality.
      *
+     * Examples
+     * ========
      * <code>
      *   uses('io.File', 'io.TempFile');
      *   $class= XPClass::forName('io.File');
