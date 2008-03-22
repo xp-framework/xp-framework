@@ -36,16 +36,34 @@
       $_fd= NULL;
     
     /**
-     * Constructor
+     * Constructor. Supports creation via one of the following ways:
+     * <code>
+     *   // via resource
+     *   $f= new File(fopen('lang/Type.class.php', FILE_MODE_READ));
      *
-     * @param   mixed file either a filename or a resource (as returned from fopen)
+     *   // via filename
+     *   $f= new File('lang/Type.class.php');
+     *  
+     *   // via dir- and filename
+     *   $f->new File('lang', 'Type.class.php');
+     *
+     *   // via folder and filename
+     *   $f->new File(new Folder('lang'), 'Type.class.php');
+     * </code>
+     *
+     * @param   mixed base either a resource or a filename
+     * @param   string uri
      */
-    public function __construct($file) {
-      if (is_resource($file)) {
+    public function __construct($base, $uri= NULL) {
+      if (is_resource($base)) {
         $this->uri= NULL;
-        $this->_fd= $file;
+        $this->_fd= $base;
+      } else if (NULL === $uri) {
+        $this->setURI($base);
+      } else if (is('io.Folder', $base)) {
+        $this->setURI($base->getURI().$uri);
       } else {
-        $this->setURI($file);
+        $this->setURI(rtrim($base, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$uri);
       }
     }
     
