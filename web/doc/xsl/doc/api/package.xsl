@@ -29,12 +29,16 @@
       package <xsl:value-of select="@name"/>
     </h1>
 
-    <h2>Purpose: <xsl:value-of select="purpose"/></h2>
+    <br clear="all"/>
+    <h2>Documentation</h2>
+    <h3>
+      Purpose: <xsl:value-of select="purpose"/>
+    </h3>
     <xsl:apply-templates select="comment"/>
     
     <xsl:if test="count(see) &gt; 0">
+      <br clear="all"/>
       <h2>See also</h2>
-
       <ul>
         <xsl:for-each select="see">
           <li>
@@ -44,7 +48,7 @@
       </ul>
     </xsl:if>
     
-
+    <br clear="all"/>
     <h2>Package contents</h2>
     <a name="__interfaces"/>
     <xsl:if test="count(class[@type = 'interface'])">

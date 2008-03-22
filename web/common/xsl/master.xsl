@@ -94,11 +94,7 @@
     <func:result>
       <xsl:value-of select="concat(
         '/xml/', 
-        $__product, 
-        '.', 
-        $__lang,
-        func:concatif($__sess != '', concat('.psessionid=', $__sess)),
-        '/',
+        func:concatif($__sess != '', concat('psessionid=', $__sess, '/')),
         $target
       )"/>
     </func:result>

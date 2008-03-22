@@ -99,6 +99,7 @@
     </xsl:if>
 
     <!-- Apidoc -->
+    <br clear="all"/>
     <h2>Documentation</h2>
     <h3>
       Purpose: <xsl:value-of select="purpose"/>
@@ -107,6 +108,7 @@
 
     <!-- See also -->
     <xsl:if test="count(see) &gt; 0">
+      <br clear="all"/>
       <h2>See also</h2>
       <ul>
         <xsl:for-each select="see">
@@ -120,6 +122,7 @@
     <!-- Constants -->
     <a name="__constants"/>
     <xsl:if test="count(constant) &gt; 0">
+      <br clear="all"/>
       <h2>Constants</h2>
       <ul>
         <xsl:for-each select="constant">
@@ -131,6 +134,7 @@
       </ul>
     </xsl:if>
     
+    <br clear="all"/>
     <h2>Members</h2>
 
     <!-- Fields -->
@@ -220,6 +224,7 @@
       </xsl:for-each>
     </fieldset>
 
+    <br clear="all"/>
     <h2>Method details</h2>
     <xsl:for-each select="methods[not(@from)]/method">
       <a name="{@name}"/>
