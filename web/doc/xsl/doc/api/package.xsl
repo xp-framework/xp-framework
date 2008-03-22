@@ -109,9 +109,20 @@
     </h1>
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
-    <div class="apidoc">
-      <xsl:apply-templates select="comment"/>
-    </div>
+    <xsl:apply-templates select="comment"/>
+    
+    <xsl:if test="count(see) &gt; 0">
+      <h2>See also</h2>
+
+      <ul>
+        <xsl:for-each select="see">
+          <li>
+            <xsl:apply-templates select="."/>
+          </li>
+        </xsl:for-each>
+      </ul>
+    </xsl:if>
+    
 
     <h2>Package contents</h2>
 
