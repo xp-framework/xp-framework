@@ -289,7 +289,6 @@
           /**
            * Constructor
            *
-           * @access  public
            * @param   string initial
            */
           function __construct($initial) {
@@ -300,7 +299,6 @@
            * Find the string offset of the given search string within this
            * string buffer.
            *
-           * @access  public
            * @param   string search
            * @return  int offset or -1 if the search string was not found
            */
@@ -321,7 +319,6 @@
           new Comment('/**
            * Constructor
            *
-           * @access  public
            * @param   string initial
            */', 9, 14),
           new Block('function __construct($initial)', array(
@@ -331,7 +328,6 @@
            * Find the string offset of the given search string within this
            * string buffer.
            *
-           * @access  public
            * @param   string search
            * @return  int offset or -1 if the search string was not found
            */', 19, 26),

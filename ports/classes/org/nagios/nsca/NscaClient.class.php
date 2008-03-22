@@ -121,17 +121,15 @@
     /**
      * Set read Timeout
      *
-     * @access  public
      * @param   int timeout
      */
-    function setTimeout($timeout) {
+    public function setTimeout($timeout) {
       $this->timeout= $timeout;
     }
 
     /**
      * Get Timeout
      *
-     * @access  public
      * @return  int
      */
     function getTimeout() {
