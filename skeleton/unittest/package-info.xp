@@ -1,0 +1,54 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Unittests
+ *
+ * Example
+ * =======
+ * Given the following class (abbreviated):
+ * <code>
+ *   class Calculator extends Object {
+ *     
+ *     public function add($a, $b) {
+ *       return $a + $b;
+ *     }
+ *     
+ *     public function divide($a, $b) {
+ *       if (0 == $b) {
+ *         throw new DivisionByZeroException('May not divide by zero');
+ *       }
+ *       return $a / $b;
+ *     }
+ *   }
+ * </code>
+ * ...we can write a test as follows:
+ * <code>
+ *   class CalculatorTest extends TestCase {
+ *     
+ *     #[@test]
+ *     public function addition() {
+ *       $this->assertEquals(2, create(new Calculator())->add(1, 1));
+ *     }
+ *     
+ *     #[@test]
+ *     public function division() {
+ *       $this->assertEquals(1, create(new Calculator())->divide(1, 1));
+ *     }
+ *     
+ *     #[@test, @expect('DivisionByZeroException')]
+ *     public function divisionByZero() {
+ *       create(new Calculator())->divide(1, 0);
+ *     }
+ *   }
+ * </code>
+ *
+ * @see      http://news.xp-framework.net/category/13/Unittests/
+ * @see      http://c2.com/cgi/wiki?TestDrivenDevelopment
+ * @purpose  Test-driven development
+ */
+package unittest {
+}
