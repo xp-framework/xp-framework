@@ -116,6 +116,10 @@
     <a href="http://{@href}"><xsl:value-of select="@href"/></a>
   </xsl:template>
 
+  <xsl:template match="see[@scheme = 'rfc']">
+    <a href="http://faqs.org/rfcs/rfc{@href}.html">RFC #<xsl:value-of select="@href"/></a>
+  </xsl:template>
+
   <xsl:template name="html-head">
     <link rel="shortcut icon" href="/common/favicon.ico" />
   </xsl:template>
