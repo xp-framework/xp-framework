@@ -33,7 +33,7 @@
     /**
      * Retrieve enum members
      *
-     * @return  util.Interval[]
+     * @return  util.DateInterval[]
      */
     public static function values() {
       return parent::membersOf(__CLASS__);
