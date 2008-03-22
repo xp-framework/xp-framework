@@ -1,0 +1,44 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * This package provides the logging API.
+ * 
+ * Entry point
+ * ===========
+ * The singleton Logger class functions as entry point.
+ * <code>
+ *   $logger= Logger::getInstance();
+ * </code>
+ *
+ * Categories
+ * ==========
+ * The logger contains one or more logging categories - represented by
+ * the util.log.LogCategory class. There will always be a log category 
+ * called "default" available!
+ *
+ * <code>
+ *   $dc= Logger::getInstance()->getCategory();      // Default
+ *   $sc= Logger::getInstance()->getCategory('sql'); // SQL category
+ * </code>
+ *
+ * Appenders
+ * =========
+ * A category itself is useless without appenders. Appenders provide the
+ * means to actually write things to different output devices.
+ *
+ * <code>
+ *   $cat= Logger::getInstance()->getCategory();
+ *   $cat->addAppender(new ConsoleAppender());
+ *   
+ *   $cat->debug('Log message');
+ * </code>
+ *
+ * @see      http://news.xp-framework.net/article/203/2007/07/18/
+ * @purpose  Logging
+ */
+package util.log {
+}
