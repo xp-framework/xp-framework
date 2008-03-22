@@ -12,8 +12,8 @@
  xmlns:php="http://php.net/xsl"
  xmlns:str="http://exslt.org/strings"
  xmlns:xp="http://xp-framework.net/xsl"
- extension-element-prefixes="func"
- exclude-result-prefixes="func php exsl xsl xp"
+ extension-element-prefixes="func str"
+ exclude-result-prefixes="func php exsl xsl xp str"
 >
   <xsl:include href="../layout.inc.xsl"/>
 
@@ -82,6 +82,7 @@
       hr { border: 0; background-color: #cccccc; height: 1px; }
       fieldset {
         margin-top: 20px;
+        padding: 8px;
         border: 1px solid #3165c5;
       }
       legend {
@@ -90,15 +91,17 @@
       }
       #content ul {
         list-style-type: square;
-        list-style-image: url(image/li.gif);
+        list-style-image: url(/common/image/li.gif);
         line-height: 18px;
+        margin-top: 6px;
+        margin-bottom: 0px;
       }
       code {
         display: block;
         white-space: pre;
       }
       a.class {
-        background: url(image/arrow.png);
+        background: url(/common/image/arrow.png);
         background-position: right center; 
         background-repeat: no-repeat;
         padding-right: 20px;
@@ -133,7 +136,7 @@
         <ul>
           <xsl:for-each select="class[@type = 'interface']">
             <li>
-              <a href="?class:{$package}{@name}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
+              <a href="{xp:link(concat('api/class?', $package, @name))}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
             </li>
           </xsl:for-each>
         </ul>
@@ -147,7 +150,7 @@
         <ul>
           <xsl:for-each select="class[@type = 'class']">
             <li>
-              <a href="?class:{$package}{@name}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
+              <a href="{xp:link(concat('api/class?', $package, @name))}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
             </li>
           </xsl:for-each>
         </ul>
@@ -161,7 +164,7 @@
         <ul>
           <xsl:for-each select="class[@type = 'exception']">
             <li>
-              <a href="?class:{$package}{@name}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
+              <a href="{xp:link(concat('api/class?', $package, @name))}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
             </li>
           </xsl:for-each>
         </ul>
@@ -175,7 +178,7 @@
         <ul>
           <xsl:for-each select="class[@type = 'error']">
             <li>
-              <a href="?class:{$package}{@name}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
+              <a href="{xp:link(concat('api/class?', $package, @name))}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
             </li>
           </xsl:for-each>
         </ul>
