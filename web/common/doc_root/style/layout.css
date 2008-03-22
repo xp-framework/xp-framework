@@ -182,7 +182,7 @@ div#menu ul li#active a {
 /* }}} */
 
 div#breadcrumb {
-  background: url(/common/image/breadcrumb.png) no-repeat no-repeat 0px 2px;
+  background: url(/common/image/breadcrumb.png) no-repeat 0px 2px;
   padding-left: 20px;
   border-bottom: 2px solid #dddddd;
   margin-bottom: 4px;
