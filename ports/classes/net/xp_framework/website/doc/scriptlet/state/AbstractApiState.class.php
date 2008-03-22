@@ -7,7 +7,8 @@
   uses('scriptlet.xml.workflow.AbstractState', 'util.PropertyManager', 'xml.Tree', 'io.File', 'io.FileUtil');
 
   /**
-   * Abstract base class for all classes reading 
+   * Abstract base class for all classes reading generated api documentation
+   * from serialized files in the filesystem.
    *
    * @purpose  State
    */
