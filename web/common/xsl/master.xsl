@@ -14,7 +14,7 @@
  extension-element-prefixes="func"
  exclude-result-prefixes="func php exsl xsl xp"
 >
-  <xsl:output method="xml" encoding="utf-8" indent="yes"/>
+  <xsl:output method="xml" encoding="utf-8" indent="no"/>
   <xsl:param name="__page"/>
   <xsl:param name="__frame"/>
   <xsl:param name="__state"/>
