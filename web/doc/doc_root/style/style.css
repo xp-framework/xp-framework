@@ -46,3 +46,24 @@ div#footer {
 div#footer a {
   color: #004926;
 }
+
+/* Apidocs */
+.apidoc a.class {
+  background: url(/common/image/arrow.png);
+  background-position: right center; 
+  background-repeat: no-repeat;
+  padding-right: 20px;
+}
+.apidoc h1 {
+  font: bold 15px "Lucida Grande", "Trebuchet MS", arial;
+  letter-spacing: 2px;
+  margin-bottom: 1px;
+}
+.apidoc p, .apidoc li {
+  color: #444444;
+}
+.annotations {
+  font-family: "Lucida console", "Lucida", "Courier new", monospace;
+  color: #3165c5;
+  margin: 0px;
+}
