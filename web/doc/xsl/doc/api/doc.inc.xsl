@@ -17,6 +17,25 @@
 >
   <xsl:include href="../layout.inc.xsl"/>
 
+  <xsl:template name="hierarchy">
+    <xsl:param name="path"/>
+    <xsl:variable name="nodes" select="str:tokenize($path, '.')"/>
+
+    <xsl:for-each select="$nodes">
+      <xsl:variable name="pos" select="position()"/>
+      <a>
+        <xsl:attribute name="href">
+          <xsl:value-of select="xp:link('api/package?')"/>
+          <xsl:for-each select="$nodes[position() &lt;= $pos]">
+            <xsl:value-of select="."/>
+            <xsl:if test="position() &lt; last()">.</xsl:if>
+          </xsl:for-each>
+        </xsl:attribute>
+      <xsl:value-of select="."/></a>
+      <xsl:if test="$pos &lt; last()">  &#xbb; </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
+
   <func:function name="func:first-sentence">
     <xsl:param name="comment"/>
     

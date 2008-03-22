@@ -14,6 +14,7 @@ body {
 h1 {
   font: 20px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
   letter-spacing: 2px;
+  margin-top: 1px;
   margin-bottom: 1px;
   color: #41a139;
 }
@@ -179,6 +180,16 @@ div#menu ul li#active a {
   border-left: 1px solid #9cc2f6;
 }
 /* }}} */
+
+div#breadcrumb {
+  background: url(/common/image/breadcrumb.png) no-repeat no-repeat 0px 2px;
+  padding-left: 20px;
+  border-bottom: 2px solid #dddddd;
+  margin-bottom: 4px;
+}
+div#breadcrumb a {
+  color: black;
+}
 
 table.columned ul {
   list-style-type: square;

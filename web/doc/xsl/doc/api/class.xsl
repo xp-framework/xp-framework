@@ -18,13 +18,37 @@
   <xsl:include href="doc.inc.xsl"/>
 
   <xsl:template match="class">
+    <xsl:variable name="shortname" select="substring(@name, string-length(@package) + 2)"/>
+    <div id="breadcrumb">
+      <a href="{xp:link('api')}">API documentation</a> &#xbb;
+      <xsl:call-template name="hierarchy">
+        <xsl:with-param name="path" select="@package"/>
+      </xsl:call-template>
+       &#xbb;
+      <a href="{xp:link(concat('api/class?', @name))}"><xsl:value-of select="$shortname"/></a>
+    </div>
     <h1>
       <xsl:for-each select="modifiers/*">
         <xsl:value-of select="name()"/>
         <xsl:text> </xsl:text>
       </xsl:for-each>
-      <xsl:value-of select="concat(@type, ' ', substring(@name, string-length(@package) + 2))"/>
+      <xsl:value-of select="concat(@type, ' ', $shortname)"/>
     </h1>
+    <p>
+      <a><xsl:value-of select="@name"/></a>
+      <xsl:for-each select="extends/link">
+        &#xbb; <a href="?{@href}"><xsl:value-of select="@href"/></a>
+      </xsl:for-each>
+    </p>
+    <xsl:if test="count(implements/link) &gt; 0">
+      <h3>Implemented Interfaces</h3>
+      <p>
+        <xsl:for-each select="implements/link">
+          <a href="?{@href}"><xsl:value-of select="@href"/></a>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+      </p>
+    </xsl:if>
 
     <!-- Deprecation note -->
     <xsl:if test="deprecated">
@@ -74,25 +98,23 @@
       </fieldset>
     </xsl:if>
 
-    <h2>Purpose: <xsl:value-of select="purpose"/></h2>
+    <!-- Apidoc -->
+    <h2>Documentation</h2>
+    <h3>
+      Purpose: <xsl:value-of select="purpose"/>
+    </h3>
     <xsl:apply-templates select="comment"/>
 
-    <h2>Inheritance</h2>
-    <p>
-      <a><xsl:value-of select="@name"/></a>
-      <xsl:for-each select="extends/link">
-        &#xbb; <a href="?{@href}"><xsl:value-of select="@href"/></a>
-      </xsl:for-each>
-    </p>
-
-    <xsl:if test="count(implements/link) &gt; 0">
-      <h2>Implemented Interfaces</h2>
-      <p>
-        <xsl:for-each select="implements/link">
-          <a href="?{@href}"><xsl:value-of select="@href"/></a>
-          <xsl:if test="position() != last()">, </xsl:if>
+    <!-- See also -->
+    <xsl:if test="count(see) &gt; 0">
+      <h2>See also</h2>
+      <ul>
+        <xsl:for-each select="see">
+          <li>
+            <xsl:apply-templates select="."/>
+          </li>
         </xsl:for-each>
-      </p>
+      </ul>
     </xsl:if>
 
     <!-- Constants -->

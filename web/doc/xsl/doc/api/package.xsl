@@ -19,8 +19,14 @@
 
   <xsl:template match="package">
     <xsl:variable name="package" select="concat(@name, '.')"/>
+    <div id="breadcrumb">
+      <a href="{xp:link('api')}">API documentation</a> &#xbb;
+      <xsl:call-template name="hierarchy">
+        <xsl:with-param name="path" select="@name"/>
+      </xsl:call-template>
+    </div>
     <h1>
-      <xsl:value-of select="@name"/>
+      package <xsl:value-of select="@name"/>
     </h1>
 
     <h2>Purpose: <xsl:value-of select="purpose"/></h2>
