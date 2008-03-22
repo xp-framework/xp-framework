@@ -4,25 +4,14 @@
  * $Id$
  */
 
-  uses('scriptlet.xml.workflow.AbstractState', 'xml.Tree', 'io.File', 'io.FileUtil');
+  uses('net.xp_framework.website.doc.scriptlet.state.AbstractApiState');
 
   /**
    * Handles /xml/api/package
    *
    * @purpose  State
    */
-  class PackageApiState extends AbstractState {
+  class PackageApiState extends AbstractApiState {
 
-    /**
-     * Process this state.
-     *
-     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   scriptlet.xml.XMLScriptletResponse response
-     */
-    public function process($request, $response) {
-      sscanf($request->getQueryString(), '%[a-zA-Z_.]', $classname);
-      $f= new File($request->getEnvValue('DOCUMENT_ROOT').'/../build/'.$classname.'.dat');
-      $response->addFormResult(unserialize(FileUtil::getContents($f))->root);
-    }
   }
 ?>
