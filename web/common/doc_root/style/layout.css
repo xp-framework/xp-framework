@@ -86,7 +86,7 @@ fieldset.warning {
 }
 
 fieldset.warning p {
-  background: url(/common/image/warning.png) 10px 10px no-repeat;
+  background: url(/common/image/warning.png) 4px 4px no-repeat;
   padding-left: 48px;
 }
 
@@ -97,7 +97,7 @@ fieldset.hint {
 }
 
 fieldset.hint p {
-  background: url(/common/image/hint.png) 10px 10px no-repeat;
+  background: url(/common/image/hint.png) 4px 4px no-repeat;
   padding-left: 48px;
 }
 
