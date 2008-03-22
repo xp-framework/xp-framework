@@ -298,6 +298,9 @@ pre.code .bracket {
 pre.code .string {
   color: #0000a9;
 }
+pre.code .number {
+  color: #00a000;
+}
 pre.code .comment {
   color: #666666;
 }
