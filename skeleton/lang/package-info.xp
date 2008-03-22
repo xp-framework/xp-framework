@@ -54,7 +54,7 @@
  * Example (abbreviated):
  * <code>
  *   class FinderException extends ChainedException { }
- *
+ *   
  *   class NewsFinder extends Finder {
  *     public function findByPK($pk) {
  *       try {
@@ -71,7 +71,7 @@
  *       return $r;
  *     }
  *   }
- *
+ *   
  *   $news= new NewsFinder();
  *   try {
  *     $news->findByPK(10250);
@@ -85,7 +85,7 @@
  * These classes are guaranteed to be loaded at any given time:
  * 
  * lang.Generic, lang.Object, lang.StackTraceElement, lang.Throwable, 
- * lang.Error, lang.XPException, lang.reflect.Argument, 
+ * lang.Error, lang.XPException, lang.reflect.Parameter, 
  * lang.reflect.Routine, lang.reflect.Method, lang.reflect.Field, 
  * lang.reflect.Constructor, lang.reflect.Modifiers, lang.XPClass
  * lang.ClassLoader, lang.archive.ArchiveClassLoader.
@@ -96,7 +96,7 @@
  * lang.IllegalArgumentException, lang.IllegalStateException, 
  * lang.FormatException, lang.ClassNotFoundException.
  * 
- * @see      http://xp-framework.info/xml/xp.en_US/news/view?11
+ * @see      http://news.xp-framework.net/article/11/2004/11/23/
  * @see      xp://lang.Throwable
  * @see      xp://lang.Object
  * @see      xp://lang.Generic
