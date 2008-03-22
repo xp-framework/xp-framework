@@ -43,7 +43,7 @@
  * </pre>
  *
  * @see      http://news.xp-framework.net/article/205/2007/07/22/
- * @purpose  Colllections
+ * @purpose  CLI
  */
 package util.cmd {
 }
