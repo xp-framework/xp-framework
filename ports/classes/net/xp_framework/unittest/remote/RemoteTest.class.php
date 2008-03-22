@@ -130,7 +130,6 @@
      * Test forName() with and without parameters in DSN string to return
      * always the same handler object (required to make transactions work)
      *
-     * @access public
      */
     #[@test]
     public function forNameEqualsWithDifferentQueryString() {
