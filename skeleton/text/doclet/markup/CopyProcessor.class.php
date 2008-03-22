@@ -28,22 +28,28 @@
         '&amp;', 
       );
 
+    public
+      $buffer = '';
+
     /**
      * Initializes the processor.
      *
      * @return  string
      */
     public function initialize() {
-      return '<pre>';
+      $this->buffer= '';
+      return '';
     }
 
     /**
-     * Finalizes the processor.
+     * Process a token
      *
+     * @param   string token
      * @return  string
-     */    
-    public function finalize() {
-      return '</pre>';
+     */
+    public function process($token) {
+      $this->buffer.= $token;
+      return '';
     }
 
     /**
@@ -52,8 +58,8 @@
      * @param   string token
      * @return  string
      */
-    public function process($token) {
-      return preg_replace($this->patterns, $this->replacements, $token);
+    public function finalize() {
+      return '<pre>'.preg_replace($this->patterns, $this->replacements, trim($this->buffer, "\r\n")).'</pre>';
     }
   }
 ?>
