@@ -284,6 +284,10 @@ pre.code .keyword {
   color: #990000;
   font-weight: bold;
 }
+pre.code .modifier {
+  color: #666666;
+  font-weight: bold;
+}
 pre.code .variable {
   color: #000099;
   font-weight: bold;
