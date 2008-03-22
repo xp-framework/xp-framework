@@ -51,16 +51,12 @@
      */
     public function connect($timeout= 2) {
       $this->_sock->connect($timeout);
-      
-      // Read welcome line
-      $line= $this->_response();
+      $line= $this->_response();    // Read welcome line
     }
     
     /**
-     * (Insert method's description here)
+     * Disconnect from server
      *
-     * @param   
-     * @return  
      */
     public function disconnect() {
       if (!$this->_sock->isConnected()) return;
@@ -320,6 +316,7 @@
      *     \DELETED flag during APPEND/COPY)</li>
      * <li>e - perform EXPUNGE and expunge as a part of CLOSE</li>
      * <li>a - administer (perform SETACL/DELETEACL/GETACL/LISTRIGHTS)</li>
+     * </ul>
      *
      * @see     rfc://4314
      * @param   string username
@@ -340,7 +337,6 @@
      * </pre>
      *
      * Server then closes the connection.
-     *
      */
     public function logout() {
       $this->_sendcmd('LOGOUT');
