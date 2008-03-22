@@ -10,6 +10,7 @@
   define('ERROR_CLASS',       'error');
   define('INTERFACE_CLASS',   'interface');
   define('ORDINARY_CLASS',    'class');
+  define('ENUM_CLASS',        'enum');
 
   /**
    * Represents an XP class or interface and provides access to 
@@ -65,7 +66,7 @@
       static $map= array(
         'lang.XPException' => EXCEPTION_CLASS,
         'lang.Error'       => ERROR_CLASS,
-        'lang.Interface'   => INTERFACE_CLASS
+        'lang.Enum'        => ENUM_CLASS
       );
 
       if ($this->type) return $this->type;    // Already known
