@@ -1,36 +1,27 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ ! Overview page
+ !
+ ! $Id$
+ !-->
 <xsl:stylesheet
  version="1.0"
  xmlns:exsl="http://exslt.org/common"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
- xmlns:str="http://exslt.org/strings"
  xmlns:func="http://exslt.org/functions"
- extension-element-prefixes="exsl func"
+ xmlns:php="http://php.net/xsl"
+ xmlns:str="http://exslt.org/strings"
+ xmlns:xp="http://xp-framework.net/xsl"
+ extension-element-prefixes="func"
+ exclude-result-prefixes="func php exsl xsl xp"
 >
-
-  <xsl:output method="html" encoding="iso-8859-1"/>
+  <xsl:include href="../layout.inc.xsl"/>
 
   <func:function name="func:first-sentence">
     <xsl:param name="comment"/>
     
     <func:result>
       <xsl:value-of select="exsl:node-set(str:tokenize($comment, '.&#10;'))"/>
-    </func:result>
-  </func:function>
-  
-  <func:function name="func:ltrim">
-    <xsl:param name="text"/>
-    <xsl:param name="chars"/>
-    
-    <func:result>
-      <xsl:choose>
-        <xsl:when test="contains(substring($text, 1, 1), $chars)">
-          <xsl:value-of select="func:ltrim(substring($text, 2, string-length($text)), $chars)"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$text"/>
-        </xsl:otherwise>
-      </xsl:choose>
     </func:result>
   </func:function>
   
@@ -60,7 +51,7 @@
       <a>
         <xsl:if test="contains($type, '.')">
           <xsl:attribute name="href">
-            <xsl:value-of select="concat('?class:', string(exsl:node-set(str:tokenize(func:ltrim($type, '&amp;'), '[&amp;'))))"/>
+            <xsl:value-of select="concat('?', string(exsl:node-set(str:tokenize(func:ltrim($type, '&amp;'), '[&amp;'))))"/>
           </xsl:attribute>
         </xsl:if>
         
@@ -68,6 +59,12 @@
       </a>
     </func:result>
   </func:function>
+  
+  <xsl:template match="comment">
+    <div class="apidoc">
+      <xsl:apply-templates/>
+    </div>
+  </xsl:template>
 
   <xsl:template match="comment//*">
     <xsl:copy>
@@ -176,7 +173,7 @@
   </xsl:template>
   
   <xsl:template match="see[@scheme = 'xp']" mode="short">
-    <a href="?class:{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
+    <a href="?{@href}"><xsl:copy-of select="func:cutstring(@href, 24)"/></a>
   </xsl:template>
 
   <xsl:template match="see[@scheme = 'php']" mode="short">
@@ -188,7 +185,7 @@
   </xsl:template>
 
   <xsl:template match="see[@scheme = 'xp']">
-    <a href="?class:{@href}"><xsl:value-of select="@href"/></a>
+    <a href="?{@href}"><xsl:value-of select="@href"/></a>
   </xsl:template>
 
   <xsl:template match="see[@scheme = 'php']">
@@ -199,58 +196,24 @@
     <a href="http://{@href}"><xsl:value-of select="@href"/></a>
   </xsl:template>
 
-  <xsl:template match="/">
-    <html><head><link rel="stylesheet" href="style.css"/></head><body>
-    <div id="search">
-      <form action="/search">
-        <label for="query"><u>S</u>earch XP website for </label>
-        <input name="query" accesskey="s" type="text"></input>
-      </form>
-    </div>
-    <div id="top">&#160;
-    </div>
-    <div id="menu">
-      <ul>
-        <li><a href="home.html">Home</a></li>
-        <li><a href="news.html">News</a></li>
-        <li id="active"><a href="?">Documentation</a></li>
-        <li><a href="download.html">Download</a></li>
-        <li><a href="dev.html">Developers</a></li>
-      </ul>
-      <!-- For Mozilla to calculate height correctly -->
-      &#160;
-    </div>
-    <table id="main" cellpadding="0" cellspacing="10"><tr>
-      <td id="content">
-
-        <xsl:apply-templates select="doc"/>
-        
-      </td>
-      <td id="context">
-        <h3>Jump to</h3>
-        <a href="#__constants">Interfaces</a><br/>
-        <a href="#__fields">Classes</a><br/>
-        <a href="#__methods">Exceptions</a><br/>
-        <a href="#__methods">Errors</a><br/>
-
-        <xsl:if test="count(doc/package/see) &gt; 0">
-          <h3>See also</h3>
-          
-          <xsl:for-each select="doc/package/see">
-            <xsl:apply-templates select="." mode="short"/>
-            <br/>
-          </xsl:for-each>
-        </xsl:if>
-      </td>
-    </tr></table>
-    <div id="footer">
-      <a href="credits.html">Credits</a> |
-      <a href="feedback.html">Feedback</a>
-      
-      <br/>
-      
-      (c) 2001-2007 the XP team
-    </div>
-    </body></html>
+  <xsl:template name="html-head">
+    <link rel="shortcut icon" href="/common/favicon.ico" />
+  </xsl:template>
+ 
+  <xsl:template name="content">
+    <table id="main" cellpadding="0" cellspacing="10">
+      <tr>
+        <td id="content">
+          <xsl:apply-templates select="/formresult/doc/package"/>
+        </td>
+        <td id="context">
+          <!-- -->
+        </td>
+      </tr>
+    </table>
+  </xsl:template>
+  
+  <xsl:template name="html-title">
+    <xsl:value-of select="/formresult/doc/package/@name"/> - XP Framework Documentation
   </xsl:template>
 </xsl:stylesheet>
