@@ -1,0 +1,49 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Provides functionality for command line programs.
+ *
+ * Command
+ * =======
+ * This is the base class for all runnable classes.
+ *
+ * Example:
+ * <code>
+ *   uses('util.cmd.Command', 'peer.http.HttpConnection');
+ *   
+ *   class Head extends Command {
+ *     protected 
+ *       $conn    = NULL, 
+ *       $verbose = FALSE; 
+ *     
+ *     #[@arg(position= 0)]
+ *     public function setUrl($url) {
+ *       $this->conn= new HttpConnection($url);
+ *     }
+ *     
+ *     #[@arg]
+ *     public function setVerbose() {
+ *       $this->verbose= TRUE;    
+ *     }
+ *     
+ *     public function run() {
+ *       $this->verbose && $this->out->writeLine('Opening connection to ', $this->conn);
+ *       $this->out->writeLine($this->conn->head()->toString());
+ *     }
+ *   }
+ * </code>
+ *
+ * This can be run with the "xpcli" utility as follows:
+ * <pre>
+ *   $ xpcli Head http://de3.php.net/ -v
+ * </pre>
+ *
+ * @see      http://news.xp-framework.net/article/205/2007/07/22/
+ * @purpose  Colllections
+ */
+package util.cmd {
+}
