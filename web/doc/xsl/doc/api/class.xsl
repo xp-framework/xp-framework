@@ -108,7 +108,7 @@
       }
       #content ul {
         list-style-type: square;
-        list-style-image: url(image/li.gif);
+        list-style-image: url(/common/image/li.gif);
         line-height: 18px;
       }
       code {
@@ -124,7 +124,7 @@
         color: #444444;
       }
       a.class {
-        background: url(image/arrow.png);
+        background: url(/common/image/arrow.png);
         background-position: right center; 
         background-repeat: no-repeat;
         padding-right: 20px;
