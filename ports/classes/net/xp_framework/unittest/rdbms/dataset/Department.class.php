@@ -66,7 +66,7 @@
      *
      * @param   string name
      * @return  rdbms.Column
-     * @throws  lang.IllegalArumentException
+     * @throws  lang.IllegalArgumentException
      */
     static public function column($name) {
       return self::getPeer()->column($name);
