@@ -75,38 +75,6 @@
 
   <xsl:template match="package">
     <xsl:variable name="package" select="concat(@name, '.')"/>
-    <style type="text/css">
-      h2 { margin-top: 30px; }
-      h3 { margin-top: 20px; }
-      h4 { font: bold 13px "Trebuchet MS", "Arial", sans-serif; margin-top: 0px; }
-      hr { border: 0; background-color: #cccccc; height: 1px; }
-      fieldset {
-        margin-top: 20px;
-        padding: 8px;
-        border: 1px solid #3165c5;
-      }
-      legend {
-        font: bold 13px "Trebuchet MS", "Arial", sans-serif;
-        color: #3165c5;
-      }
-      #content ul {
-        list-style-type: square;
-        list-style-image: url(/common/image/li.gif);
-        line-height: 18px;
-        margin-top: 6px;
-        margin-bottom: 0px;
-      }
-      code {
-        display: block;
-        white-space: pre;
-      }
-      a.class {
-        background: url(/common/image/arrow.png);
-        background-position: right center; 
-        background-repeat: no-repeat;
-        padding-right: 20px;
-      }
-    </style>
     <h1>
       <xsl:value-of select="@name"/>
     </h1>
@@ -128,7 +96,6 @@
     
 
     <h2>Package contents</h2>
-
     <a name="__interfaces"/>
     <xsl:if test="count(class[@type = 'interface'])">
       <fieldset>
@@ -145,7 +112,7 @@
 
     <a name="__classes"/>
     <xsl:if test="count(class[@type = 'class'])">
-      <fieldset>
+      <fieldset class="summary">
         <legend>Class Summary</legend>
         <ul>
           <xsl:for-each select="class[@type = 'class']">
@@ -159,7 +126,7 @@
 
     <a name="__exceptions"/>
     <xsl:if test="count(class[@type = 'exception'])">
-      <fieldset>
+      <fieldset class="summary">
         <legend>Exception Summary</legend>
         <ul>
           <xsl:for-each select="class[@type = 'exception']">
@@ -173,7 +140,7 @@
 
     <a name="__errors"/>
     <xsl:if test="count(class[@type = 'error'])">
-      <fieldset>
+      <fieldset class="summary">
         <legend>Error Summary</legend>
         <ul>
           <xsl:for-each select="class[@type = 'error']">

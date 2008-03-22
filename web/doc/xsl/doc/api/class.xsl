@@ -74,62 +74,6 @@
   </xsl:template>
 
   <xsl:template match="class">
-    <style type="text/css">
-      h4 { font: bold 13px "Trebuchet MS", "Arial", sans-serif; margin-top: 0px; }
-      hr { border: 0; background-color: #cccccc; height: 1px; }
-      fieldset {
-        margin-top: 20px;
-        border: 1px solid #3165c5;
-      }
-      legend {
-        font: bold 13px "Trebuchet MS", "Arial", sans-serif;
-        color: #3165c5;
-      }
-      fieldset.warning {
-        border: 1px solid #ffa800;
-        background: #ffeac0 url(/image/deprecated.png) 10px 10px no-repeat;
-      }
-      fieldset.warning p {
-        margin-left: 48px;
-      }
-      fieldset.hint {
-        border: 1px solid #001f83;
-        background: #e2e7f8 url(/image/unittest.png) 10px 10px no-repeat;
-      }
-      fieldset.hint p {
-        margin-left: 48px;
-      }
-      fieldset.hint a {
-        color: #001f83;
-      }
-      fieldset.warning em {
-        color: #963817;
-        font-weight: bold;
-      }
-      #content ul {
-        list-style-type: square;
-        list-style-image: url(/common/image/li.gif);
-        line-height: 18px;
-      }
-      code {
-        display: block;
-        white-space: pre;
-      }
-      p.annotations {
-        font-family: "Lucida console", "Lucida", "Courier new", monospace;
-        color: #3165c5;
-        margin: 0px;
-      }
-      p.comment {
-        color: #444444;
-      }
-      a.class {
-        background: url(/common/image/arrow.png);
-        background-position: right center; 
-        background-repeat: no-repeat;
-        padding-right: 20px;
-      }
-    </style>
     <h1>
       <xsl:for-each select="modifiers/*">
         <xsl:value-of select="name()"/>
@@ -225,7 +169,7 @@
 
     <!-- Fields -->
     <a name="__fields"/>
-    <fieldset>
+    <fieldset class="summary">
       <legend>Field summary</legend>
       <xsl:choose>
         <xsl:when test="count(fields[not(@from)]/field) &gt; 0">
@@ -267,7 +211,7 @@
 
     <!-- Methods -->
     <a name="__methods"/>
-    <fieldset>
+    <fieldset class="summary">
       <legend>Method summary</legend>
       <xsl:choose>
         <xsl:when test="count(methods[not(@from)]/method) &gt; 0">
