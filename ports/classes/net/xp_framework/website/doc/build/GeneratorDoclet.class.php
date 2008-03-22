@@ -22,7 +22,6 @@
   /**
    * (Insert class' description here)
    *
-   * @ext      extension
    * @see      reference
    * @purpose  purpose
    */
@@ -32,6 +31,14 @@
       $markup   = NULL,
       $packages = array();
 
+    /**
+     * Returns a tag attribute
+     *
+     * @param   array<string, text.doclet.Tag> tags
+     * @param   string which
+     * @param   string attribute
+     * @return  any
+     */
     protected function tagAttribute($tags, $which, $attribute= 'text') {
       return isset($tags[$which]) ? $tags[$which]->{$attribute} : NULL;
     }
@@ -106,7 +113,7 @@
             $a->setAttribute('type', $param[$name]->type);
             $a->addChild(new Node('comment', $param[$name]->text));
           } else {
-            $a->setAttribute('type', 'mixed');
+            $a->setAttribute('type', 'any');
             // DEBUG Console::writeLine('Unknown ', $name, ' in  ', xp::stringOf($method->tags('param')));
           }
         }
@@ -193,7 +200,7 @@
       
       if (isset($done[$classdoc->hashCode()])) return;    // Already been there
 
-      $out= new File($this->build->getURI().$classdoc->qualifiedName().'.xml');
+      $out= new File($this->build->getURI().$classdoc->qualifiedName().'.dat');
       Console::writeLine('- ', $classdoc->toString());
 
       // Add contained package
@@ -211,10 +218,7 @@
       $tree->addChild($this->classNode($classdoc));
 
       // Write to file
-      FileUtil::setContents(
-        $out,
-        $tree->getDeclaration()."\n".$tree->getSource(INDENT_DEFAULT)
-      );
+      FileUtil::setContents($out, serialize($tree));
       
       $done[$classdoc->hashCode()]= TRUE;
       delete($out);
@@ -273,11 +277,8 @@
         }
 
         // Write to file
-        $out= new File($this->build->getURI().$package['info']->name().'.xml');
-        FileUtil::setContents(
-          $out,
-          $tree->getDeclaration()."\n".$tree->getSource(INDENT_DEFAULT)
-        );
+        $out= new File($this->build->getURI().$package['info']->name().'.dat');
+        FileUtil::setContents($out, serialize($tree));
         Console::writeLine(' OK');
 
         delete($out);
