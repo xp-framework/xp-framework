@@ -295,7 +295,10 @@ pre.code .string {
   color: #0000a9;
 }
 pre.code .comment {
-  color: #a9a9a9;
+  color: #666666;
+}
+pre.code .annotation {
+  color: #3165c5;
 }
 /* }}} */
 
