@@ -48,7 +48,7 @@
     <h2>Package contents</h2>
     <a name="__interfaces"/>
     <xsl:if test="count(class[@type = 'interface'])">
-      <fieldset>
+      <fieldset class="summary">
         <legend>Interface Summary</legend>
         <ul>
           <xsl:for-each select="class[@type = 'interface']">
