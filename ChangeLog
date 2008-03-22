@@ -51,6 +51,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made io.File constructor accept (string, string) and (Folder, string)
+  (friebe)
+- QA work: Completed / updated apidocs in multiple places
+  (friebe)
 - Added util.TimeSpan::add(), util.TimeSpan::subtract() methods
   (gellweiler, friebe)
 - Added static seconds(), minutes(), hours(), days() and weeks() to
