@@ -1,0 +1,24 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Remote method invocation on Application Servers
+ *
+ * Example
+ * =======
+ * <code>
+ *   $facade= Remote::forName('xp://jboss.example.com:6448')
+ *     ->lookup('corporate/CustomerFacade/1.0')
+ *     ->create()
+ *   ;
+ *   $customer= $facade->getByCustomerNumber(new Long(1861822));
+ * </code>
+ *
+ * @see      http://news.xp-framework.net/category/11/EASC/
+ * @purpose  Remote
+ */
+package remote {
+}
