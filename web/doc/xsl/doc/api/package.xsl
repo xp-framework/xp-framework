@@ -78,6 +78,20 @@
       </fieldset>
     </xsl:if>
 
+    <a name="__enums"/>
+    <xsl:if test="count(class[@type = 'enum'])">
+      <fieldset class="summary">
+        <legend>Enum Summary</legend>
+        <ul>
+          <xsl:for-each select="class[@type = 'enum']">
+            <li>
+              <a href="{xp:link(concat('api/class?', $package, @name))}"><b><xsl:value-of select="concat($package, @name)"/></b></a>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </fieldset>
+    </xsl:if>
+
     <a name="__exceptions"/>
     <xsl:if test="count(class[@type = 'exception'])">
       <fieldset class="summary">
