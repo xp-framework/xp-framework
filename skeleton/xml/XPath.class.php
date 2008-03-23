@@ -12,18 +12,15 @@
    * <code>
    *   uses('xml.XPath');
    * 
-   *   $xml= <<<__
-   * <dialog id="file.open">
-   *   <caption>Open a file</caption>
-   *   <buttons>
-   *     <button name="ok"/>
-   *     <button name="cancel"/>
-   *   </buttons>
-   * </dialog>
-   * __;
+   *   $xml= '<dialog id="file.open">
+   *    <caption>Open a file</caption>
+   *      <buttons>
+   *        <button name="ok"/>
+   *        <button name="cancel"/>
+   *      </buttons>
+   *   </dialog>';
    *   
-   *   $xpath= new XPath($xml);
-   *   var_dump($xpath->query('/dialog/buttons/button/@name'));
+   *   echo create(new XPath($xml))->query('/dialog/buttons/button/@name'));
    * </code>
    *
    * @ext      dom

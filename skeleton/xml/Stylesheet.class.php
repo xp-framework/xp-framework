@@ -16,7 +16,7 @@
    * <code>
    *   uses('xml.Stylesheet');
    *
-   *   $s= &new Stylesheet();
+   *   $s= new Stylesheet();
    *   $s->setOutputMethod('text');
    *   $s->addImport('test.import.xsl');
    *   $s->addInclude('test.include.xsl');

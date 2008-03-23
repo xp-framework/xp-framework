@@ -92,7 +92,7 @@
      * Construct an XML tree from a file.
      *
      * <code>
-     *   $tree= Tree::fromFile(new File('foo.xml');
+     *   $tree= Tree::fromFile(new File('foo.xml'));
      * </code>
      *
      * @param   io.File file

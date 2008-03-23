@@ -9,7 +9,7 @@
    *
    * Example:
    * <code>
-   *   $tree= &new Tree();
+   *   $tree= new Tree();
    *   $tree->addChild(new Node('data', new CData('<Hello World>')));
    * </code>
    *
