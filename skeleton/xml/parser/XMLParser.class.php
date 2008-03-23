@@ -13,10 +13,11 @@
    * <code>
    *   uses('xml.parser.XMLParser');
    *
-   *   $parser= &new XMLParser();
-   *   try(); {
+   *   $parser= new XMLParser();
+   *   $parser->setCallback(...);
+   *   try {
    *     $parser->parse($xml);
-   *   } if (catch('XMLFormatException', $e)) {
+   *   } catch (XMLFormatException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
