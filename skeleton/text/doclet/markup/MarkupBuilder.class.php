@@ -107,6 +107,8 @@
             } else {
               $out.= '&lt;'.$tag.'&gt;';
             }
+            
+            $out.= $st->nextToken("\n");
             continue;
           }
           
