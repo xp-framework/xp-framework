@@ -276,7 +276,7 @@ blockquote {
 /* {{{ Syntax */
 pre.code {
   font: 12px "Courier New", courier;
-  margin-bottom: 2px;
+  margin-bottom: 12px;
   margin-top: 2px;
   border-left: 2px solid #cccccc;
 }
