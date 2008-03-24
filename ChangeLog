@@ -29,6 +29,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed text.doclet.markup API to handle sourcecode, preformatted text
+  ordered and unordered lists correctly
+  (friebe)
 - Added mapping for field type double to rdbms.mysql.MySQLDBAdapter
   (hinckel)
 - Fixed problems with percent sign (%) substitution in RDBMS API when
