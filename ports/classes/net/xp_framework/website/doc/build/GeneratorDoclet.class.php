@@ -231,11 +231,16 @@
       return $n;
     }
     
+    /**
+     * Marshal class doc
+     *
+     * @param   text.doclet.ClassDoc classdoc
+     */
     protected function marshalClassDoc($classdoc) {
 
       // Add contained package
       $package= $classdoc->containingPackage();
-      $hash= $package->hashCode();
+      $hash= $package->name();
 
       if (!isset($this->packages[$hash])) {
         $this->packages[$hash]= array('info' => $package);
@@ -250,6 +255,11 @@
       $this->storage->store($classdoc->qualifiedName(), $tree);
     }
 
+    /**
+     * Marshal package doc
+     *
+     * @param   array<string, any> package
+     */
     protected function marshalPackageDoc($package) {
       $tree= new Tree('doc');
       $p= $tree->addChild(new Node('package', NULL, array('name' => $package['info']->name())));
@@ -282,6 +292,13 @@
       foreach ($this->packages as $cmp) {
         if (0 !== strncmp($name, $cmp['info']->name(), strlen($name))) continue;
         $p->addChild(new Node('package', NULL, array('name' => $cmp['info']->name())));
+      }
+      
+      // Check for parent packages.
+      $parent= $package['info'];
+      while ($parent= $parent->containingPackage()) {
+        if (isset($this->packages[$parent->name()])) continue;
+        $this->marshalPackageDoc(array('info' => $parent, 'classes' => array()));
       }
 
       // Store it
@@ -329,9 +346,23 @@
         Console::writeLine('- ', $interface, ' implementations');
         $tree= $this->storage->get($interface);
         
-        // Add to class/doc
-        with ($n= $tree->root->children[0]->addChild(new Node('implementations'))); {
+        // Merge into class/doc
+        with ($n= $tree->root->children[0]); {
+          $i= NULL;
+          foreach ($n->children as $child) {
+            if ('implementations' !== $child->name) continue;
+            $i= $child;
+            break;
+          }
+          if (!$i) $i= $n->addChild(new Node('implementations'));
           foreach ($classes as $classdoc) {
+            foreach ($i->children as $child) {
+              if (
+                'link' === $child->name && 
+                'class' === $child->attribute['rel'] &&
+                $classdoc->qualifiedName() === $child->attribute['href']
+              ) continue 2;   // Already exists
+            }
             $n->addChild($this->classReferenceNode($classdoc));
           }
         }
