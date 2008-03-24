@@ -18,6 +18,7 @@
  *   foreach ($usr->getEntry() as $name) {
  *     Console::writeLine('- ', $name);
  *   }
+ *   $usr->close();
  * </code>
  *
  * An io.File object represents a file. To sequentially read a file,
