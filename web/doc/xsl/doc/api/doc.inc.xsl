@@ -85,6 +85,16 @@
     </div>
   </xsl:template>
 
+  <!-- 
+   ! Transform <code> ... </code> to <pre class="code"> ... </pre>
+   ! because of IE's lacking support for white-space: pre
+   !-->
+  <xsl:template match="comment//code">
+    <pre class="code">
+      <xsl:apply-templates/>
+    </pre>
+  </xsl:template>
+
   <xsl:template match="comment//*">
     <xsl:copy>
       <xsl:copy-of select="@*"/>
