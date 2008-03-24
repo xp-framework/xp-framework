@@ -9,6 +9,7 @@
   /**
    * Represents an XP package.
    *
+   * @test     xp://net.xp_framework.unittest.text.doclet.PackageDocTest
    * @purpose  Documents a package
    */
   class PackageDoc extends Doc {
@@ -37,6 +38,17 @@
      */
     public function hashCode() {
       return $this->getClassName().$this->name;
+    }
+
+    /**
+     * Returns whether this package contains another package.
+     *
+     * @param   text.doclet.PackageDoc other
+     * @return  bool
+     */
+    public function contains(PackageDoc $other) {
+      if (FALSE === ($p= strrpos($other->name, '.'))) return FALSE;
+      return 0 === strncmp($this->name, $other->name, $p);
     }
 
     /**
