@@ -17,23 +17,18 @@
    *   uses('com.google.soap.search.GoogleSearchClient');
    *
    *   $g= new GoogleSearchClient();
-   *   try {
-   *     $r= $g->doGoogleSearch(
-   *       $license_key,
-   *       $query,
-   *       0,               // start
-   *       10,              // maxResults
-   *       FALSE,           // filter
-   *       '',              // restrict
-   *       FALSE,           // safeSearch
-   *       '',              // lr
-   *       '',              // ie
-   *       ''               // oe
-   *     );
-   *   } catch(XPException' $e) {
-   *     $e->printStackTrace();
-   *     exit(-1);
-   *   }
+   *   $r= $g->doGoogleSearch(
+   *     $license_key,
+   *     $query,
+   *     0,               // start
+   *     10,              // maxResults
+   *     FALSE,           // filter
+   *     '',              // restrict
+   *     FALSE,           // safeSearch
+   *     '',              // lr
+   *     '',              // ie
+   *     ''               // oe
+   *   );
    *   
    *   echo $r->toString();
    * </code>
