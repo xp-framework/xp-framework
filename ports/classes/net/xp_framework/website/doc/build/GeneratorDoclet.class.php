@@ -363,7 +363,7 @@
                 $classdoc->qualifiedName() === $child->attribute['href']
               ) continue 2;   // Already exists
             }
-            $n->addChild($this->classReferenceNode($classdoc));
+            $i->addChild($this->classReferenceNode($classdoc));
           }
         }
 
