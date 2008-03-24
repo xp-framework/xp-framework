@@ -7,7 +7,7 @@
   /**
    * Iteration filter
    *
-   * @see      xp://io.folder.iterate.FilteredFolderIterator
+   * @see      xp://io.collections.iterate.FilteredIOCollectionIterator
    * @purpose  Interface
    */
   interface IterationFilter {
