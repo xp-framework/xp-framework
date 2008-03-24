@@ -17,14 +17,12 @@
         '#<#',
         '#>#',
         '#\r#',
-        '#\n#',
         '#&(?![a-z0-9\#]+;)#',
       ),
       $replacements= array(
         '&lt;',
         '&gt;',
         '',
-        '<br/>',
         '&amp;', 
       );
 
@@ -59,7 +57,7 @@
      * @return  string
      */
     public function finalize() {
-      return '<pre>'.preg_replace($this->patterns, $this->replacements, trim($this->buffer, "\r\n")).'</pre>';
+      return '</p><pre>'.preg_replace($this->patterns, $this->replacements, trim($this->buffer, "\r\n")).'</pre><p>';
     }
   }
 ?>
