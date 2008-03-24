@@ -80,9 +80,6 @@
         '('                             => 'bracket',
         ')'                             => 'bracket',
       );
-
-      $current= 'default';
-      $out= '';
       
       // Tokenize buffer
       $tokens= token_get_all('<?php '.trim($this->buffer, "\r\n").'?>');
@@ -91,11 +88,11 @@
       }
       
       // Create HTML
-      foreach ($tokens as $token) {
-        $class= (isset($classes[$token[0]]) 
-          ? $classes[$token[0]]
-          : 'default'
-        );
+      $current= NULL;
+      $out= '';
+      for ($i= 1, $s= sizeof($tokens)- 1; $i < $s; $i++) {
+        $token= $tokens[$i];
+        $class= isset($classes[$token[0]]) ? $classes[$token[0]] : 'default';
         
         // Handle annotations
         if (is_array($token) && T_COMMENT === $token[0] && '#' === $token[1][0]) {
@@ -113,7 +110,8 @@
         ));
       }
       
-      return '</p><pre class="code"><span>'.substr($out, 9, -5).'</span></pre><p>';
+      // Skip leading "</span>" (7)
+      return '</p><code>'.substr($out, 7).($current ? '</span>' : '').'</code><p>';
     }
   }
 ?>
