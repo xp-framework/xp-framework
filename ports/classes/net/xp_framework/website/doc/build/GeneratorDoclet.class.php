@@ -306,6 +306,67 @@
     }
     
     /**
+     * Marshal implementations
+     *
+     * @param   string interface
+     * @param   text.doclet.ClassDoc[] classes
+     */
+    protected function marshalImplementation($interface, $classes) {
+      $tree= $this->storage->get($interface);
+
+      // Merge into class/doc
+      with ($n= $tree->root->children[0]); {
+        $i= NULL;
+        foreach ($n->children as $child) {
+          if ('implementations' !== $child->name) continue;
+          $i= $child;
+          break;
+        }
+        if (!$i) $i= $n->addChild(new Node('implementations'));
+        foreach ($classes as $classdoc) {
+          foreach ($i->children as $child) {
+            if (
+              'link' === $child->name && 
+              'class' === $child->attribute['rel'] &&
+              $classdoc->qualifiedName() === $child->attribute['href']
+            ) continue 2;   // Already exists
+          }
+          $i->addChild($this->classReferenceNode($classdoc));
+        }
+      }
+
+      $this->storage->store($interface, $tree);
+    }
+    
+    /**
+     * Marshal implementations
+     *
+     */
+    protected function marshalOverview() {
+      $tree= new Tree('doc');
+      $o= $tree->root->addChild(new Node('overview'));
+
+      // Add all top- and secondlevel packages to the overview
+      ksort($this->packages);
+      foreach ($this->packages as $name => $package) {
+        $parent= $package['info']->containingPackage();
+        if (NULL === $parent) {
+          $l[$name]= $o->addChild(new Node('package', NULL, array(
+            'name'    => $name,
+          )));
+          $l[$name]->addChild(new Node('comment', $this->markup($package['info']->commentText())));
+        } else if (isset($l[$parent->name()])) {
+          $p= $l[$parent->name()]->addChild(new Node('package', NULL, array(
+            'name'    => $name,
+          )));
+          $p->addChild(new Node('comment', $this->markup($package['info']->commentText())));
+        }
+      }
+      
+      $this->storage->store('_overview', $tree);
+    }    
+
+    /**
      * Returns a node with markup for a given apidoc comment
      *
      * @param   string comment
@@ -323,12 +384,11 @@
     public function start($root) {
       $build= new Folder($root->option('build', 'build'));
       $build->exists() || $build->create();
+
       $this->storage= new FileSystemDocStorage($build);
-      
       $this->markup= new MarkupBuilder();
       
       // Marshal classes
-      $this->packages= array();
       while ($root->classes->hasNext()) {
         $classdoc= $root->classes->next();
         Console::writeLine('- ', $classdoc->toString());
@@ -340,34 +400,15 @@
         Console::writeLine('- ', $package['info']->toString());
         $this->marshalPackageDoc($package);
       }
+      
+      // Marshal overview
+      Console::writeLine('- Overview');
+      $this->marshalOverview();
 
       // Add implementations
       foreach ($this->impl as $interface => $classes) {
         Console::writeLine('- ', $interface, ' implementations');
-        $tree= $this->storage->get($interface);
-        
-        // Merge into class/doc
-        with ($n= $tree->root->children[0]); {
-          $i= NULL;
-          foreach ($n->children as $child) {
-            if ('implementations' !== $child->name) continue;
-            $i= $child;
-            break;
-          }
-          if (!$i) $i= $n->addChild(new Node('implementations'));
-          foreach ($classes as $classdoc) {
-            foreach ($i->children as $child) {
-              if (
-                'link' === $child->name && 
-                'class' === $child->attribute['rel'] &&
-                $classdoc->qualifiedName() === $child->attribute['href']
-              ) continue 2;   // Already exists
-            }
-            $i->addChild($this->classReferenceNode($classdoc));
-          }
-        }
-
-        $this->storage->store($interface, $tree);
+        $this->marshalImplementation($interface, $classes);
       }
     }
 
