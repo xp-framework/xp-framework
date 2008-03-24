@@ -1,0 +1,111 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * RDBMS access APIs, connection manager, reverse engineering, O/R mapping.
+ *
+ * Supported drivers
+ * =================
+ * <ul>
+ *   <li>Sybase (name: <tt>sybase</tt>)</li>
+ *   <li>MySQL (name: <tt>mysql</tt>)</li>
+ *   <li>PostgreSQL (name: <tt>pgsql</tt>)</li>
+ *   <li>SQLite (name: <tt>sqlite</tt>)</li>
+ * </ul>
+ * Note: All of the above will require corresponding PHP extensions to be
+ * loaded. See the classes' apidocs for dependency details.
+ *
+ * The DriverManager model
+ * =======================
+ * To retrieve a connection class from the driver manager, you need to use 
+ * the rdbms.DriverManager class. 
+ * <code>
+ *   uses('rdbms.DriverManager');
+ *   
+ *   $conn= DriverManager::getConnection('sybase://user:pass@server/NICOTINE');
+ * </code>
+ * The DriverManager class expects a unified connection string (we call it DSN).
+ * For details, see the <tt>DriverManager</tt>'s apidoc.
+ *
+ * Exceptions
+ * ==========
+ * Methods will throw exceptions for failed SQL queries, syntax errors, 
+ * connection failure etc. All these exceptions are subclasses of 
+ * <tt>rdbms.SQLException</tt>, so to catch all possible errors, use it 
+ * in the catch clause. 
+ *
+ * Basics
+ * ======
+ * Once we have fetched a specific database connection class, we can now 
+ * invoke a number of methods on it. 
+ * <code>
+ *   $conn= DriverManager::getConnection(
+ *     'sybase://user:pass@server/NICOTINE?autoconnect=1'
+ *   );
+ *   $news= $conn->select('news_id, caption, author_id from news');
+ * </code>
+ * The variable <tt>$news</tt> will now contain an array of all result sets
+ * which in turn are associative arrays containing <tt>field => value </tt>
+ * associations.
+ *
+ * Dynamically creating SQL queries 
+ * ================================
+ * To "bind" parameters to an SQL query, the query, select, update, delete 
+ * and insert methods offer a printf style tokenizer and support varargs 
+ * syntax. These take care of NULL and proper escaping for you. 
+ * <code>
+ *   // Selecting
+ *   $q= $conn->query('select * from news where news_id= %d', $newsId);
+ *   
+ *   // Inserting
+ *   $conn->insert('
+ *     into news (
+ *       caption, author_id, body, extended, created_at
+ *     ) values (
+ *       %s, -- caption
+ *       %d, -- author_id
+ *       %s, -- body
+ *       %s, -- extended
+ *       %s  -- created_at
+ *     )',
+ *     $caption,
+ *     $authorId,
+ *     $body,
+ *     $extended,
+ *     Date::now()
+ *   );
+ * </code>
+ *
+ * Transactions
+ * ============
+ * To start a transaction, you can use the connection's begin method as 
+ * follows: 
+ * <code>
+ *   public function createAuthor(...) {
+ *     try {
+ *       $tran= $conn->begin(new Transaction('create_author'));
+ *   
+ *       $id= $conn->insert('into author ...');
+ *       $conn->insert('into notify ...');
+ *   
+ *       $tran->commit();
+ *       return $id;
+ *     } catch (SQLException $e) {
+ *       $tran && $tran->rollback();
+ *       throw $e;
+ *     }
+ *   }
+ * </code>Note: 
+ * Note: Not all RDBMS' support transactions, and of those that do, not all 
+ * support nested transactions. Be sure to read the manual pages of the RDBMS 
+ * you are accessing. 
+ *
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @see      http://news.xp-framework.net/category/14/Databases/
+ * @purpose  Databases
+ */
+package rdbms {
+}
