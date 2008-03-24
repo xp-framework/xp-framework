@@ -19,7 +19,13 @@
  *   $origin= new FileCollection('/home/thekid/multimedia');
  *   $filter= new ExtensionEqualsFilter('jpg');
  *   
+ *   // Non-recursive
  *   foreach (new FilteredIOCollectionIterator($origin, $filter) as $element) {
+ *     Console::writeLine('Element ', $element);
+ *   }
+ *   
+ *   // Recursive
+ *   foreach (new FilteredIOCollectionIterator($origin, $filter, TRUE) as $element) {
  *     Console::writeLine('Element ', $element);
  *   }
  * </code>
