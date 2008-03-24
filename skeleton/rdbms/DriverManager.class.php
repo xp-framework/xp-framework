@@ -9,19 +9,64 @@
   /**
    * Manages database drivers
    *
-   * Usage:
+   * DSNs
+   * ====
+   * The DriverManager class expects a unified connection string (we call 
+   * it DSN) specifying the following: 
+   * <ul>
+   *   <li>The driver (here: <tt>sybase</tt>). This corresponds either to a 
+   *       built-in driver class or one you have previously registered to it.
+   *   </li>
+   *   <li>An optional username and password (here: <tt>user</tt> and 
+   *       <tt>pass</tt>).
+   *   </li>
+   *   <li>The hostname of the rdbms (here: <tt>server</tt>).
+   *       Hostname is not completely correct: in SQLite, for example, this 
+   *       specifies the name of the data file; in Sybase, it corresponds to 
+   *       an entry in the interfaces file.
+   *   </li>
+   *   <li>The database name (here: <tt>NICOTINE</tt>).
+   *       May be ommitted - for instance, Sybase offers a per-user default 
+   *       database setting which automatically selects the specified database 
+   *       after log in.
+   *   </li>
+   *   <li>Optional parameters (here: none).</li>
+   * </ul>
+   * Parameters in DSN are used in a key-value syntax as known from HTTP 
+   * urls, e.g. <tt>mysql://user:pass@server?autoconnect=1</tt>.
+   *
+   * These parameters are recognized: 
+   * <ul>
+   *   <li>*autoconnect=value* - A call to rdbms.DBConnection#connect may be 
+   *       ommitted. Just go ahead and when calling the first method which 
+   *       needs to connect (and log in), a connection will be established.
+   *       Value is an integer of either 1 (on) or 0 (off). Default is 0 (off). 
+   *   </li>
+   *   <li>*persistent=value* - Uses persistent database connections. These 
+   *       are explained in the PHP manual. Value is an integer of either 1 
+   *       (on) or 0 (off). Default is 0 (off). 
+   *   </li>
+   *   <li>*timeout=value* - Sets a connection timeout. Value is an integer 
+   *       specifying the number of seconds to wait before cancelling a connect/ 
+   *       log on procedure. Default may vary between different RDBMS. 
+   *   </li>
+   *   <li>*observer[key]=value* - Adds observers to the connection. The key 
+   *       corresponds to an observer class, the value to a string passed to 
+   *       its constructor. 
+   *   </li>
+   * </ul>
+   * Note: For convenience, <tt>log=category</tt> is supported as an alias 
+   * for <tt>observer[util.log.LogObserver]=category</tt>.
+   *
+   * Usage
+   * =====
    * <code>
    *   uses('rdbms.DriverManager');
-   *
+   *   
    *   $conn= DriverManager::getConnection('sybase://user:pass@server');
-   *   try {
-   *     $conn->connect();
-   *     $r= $conn->query('select @@version as version');
-   *   } catch (SQLException $e) {
-   *     $e->printStackTrace();
-   *     exit(-1);
-   *   }
-   *   var_dump($r->next('version'));
+   *   $conn->connect();
+   *   
+   *   Console::writeLine($conn->query('select @@version as version')->next('version'));
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.DriverManagerTest
