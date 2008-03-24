@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.Tree', 'util.NoSuchElementException');
+  uses('xml.Tree', 'util.Date', 'util.NoSuchElementException');
 
   /**
    * Defines an interface for storing generated api documentation
@@ -45,5 +45,14 @@
      * @return  bool
      */
     public function contains($name);
+
+    /**
+     * Returns when an entry was last modified
+     *
+     * @param   string name
+     * @return  util.Date
+     * @throws  util.NoSuchElementException if no element by the given name exists
+     */
+    public function lastModified($name);
   }
 ?>

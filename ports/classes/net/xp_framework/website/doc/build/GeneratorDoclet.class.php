@@ -235,8 +235,10 @@
      * Marshal class doc
      *
      * @param   text.doclet.ClassDoc classdoc
+     * @return  bool whether class file was actually written
      */
     protected function marshalClassDoc($classdoc) {
+      $qname= $classdoc->qualifiedName();
 
       // Add contained package
       $package= $classdoc->containingPackage();
@@ -246,13 +248,22 @@
         $this->packages[$hash]= array('info' => $package);
       }
       $this->packages[$hash]['classes'][$classdoc->name()]= $classdoc->classType();
+      
+      // Check if a rebuild is necessary
+      if ($this->storage->contains($qname)) {
+        $modified= new Date(filemtime($classdoc->sourceFile()));
+        if ($modified->isBefore($this->storage->lastModified($qname))) {
+          return FALSE;
+        }
+      }
 
       // Create XML tree
       $tree= new Tree('doc');
       $tree->addChild($this->classNode($classdoc));
 
       // Write to file
-      $this->storage->store($classdoc->qualifiedName(), $tree);
+      $this->storage->store($qname, $tree);
+      return TRUE;
     }
 
     /**
@@ -391,8 +402,9 @@
       // Marshal classes
       while ($root->classes->hasNext()) {
         $classdoc= $root->classes->next();
-        Console::writeLine('- ', $classdoc->toString());
-        $this->marshalClassDoc($classdoc);
+        Console::write('- ', $classdoc->toString());
+        $written= $this->marshalClassDoc($classdoc);
+        Console::writeLine($written ? ': OK':  ': Unchanged');
       }
       
       // Marshal packages

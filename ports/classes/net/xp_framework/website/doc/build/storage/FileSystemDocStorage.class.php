@@ -93,5 +93,16 @@
     public function contains($name) {
       return $this->entry($name)->exists();
     }
+
+    /**
+     * Returns when an entry was last modified
+     *
+     * @param   string name
+     * @return  util.Date
+     * @throws  util.NoSuchElementException if no element by the given name exists
+     */
+    public function lastModified($name) {
+      return new Date($this->entry($name)->lastModified());
+    }
   }
 ?>
