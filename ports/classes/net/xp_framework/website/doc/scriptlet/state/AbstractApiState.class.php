@@ -4,7 +4,12 @@
  * $Id$
  */
 
-  uses('scriptlet.xml.workflow.AbstractState', 'util.PropertyManager', 'xml.Tree', 'io.File', 'io.FileUtil');
+  uses(
+    'scriptlet.xml.workflow.AbstractState', 
+    'util.PropertyManager',
+    'io.Folder',
+    'net.xp_framework.website.doc.build.storage.FileSystemDocStorage'
+  );
 
   /**
    * Abstract base class for all classes reading generated api documentation
@@ -21,12 +26,18 @@
      * @param   scriptlet.xml.XMLScriptletResponse response
      */
     public function process($request, $response) {
-      sscanf($request->getQueryString(), '%[a-zA-Z_.]', $classname);
-      $f= new File(
-        PropertyManager::getInstance()->getProperties('storage')->readString('storage', 'base'),
-        $classname.'.dat'
-      );
-      $response->addFormResult(cast(unserialize(FileUtil::getContents($f)), 'xml.Tree')->root);
+      sscanf($request->getQueryString(), '%[a-zA-Z_.]', $entry);
+      
+      $storage= new FileSystemDocStorage(new Folder(PropertyManager::getInstance()
+        ->getProperties('storage')
+        ->readString('storage', 'base')
+      ));
+      
+      try {
+        $response->addFormResult($storage->get($entry)->root);
+      } catch (NoSuchElementException $e) {
+        throw new HttpScriptletException('Entry "'.$entry.'" not found', HTTP_NOT_FOUND);
+      }
     }
   }
 ?>
