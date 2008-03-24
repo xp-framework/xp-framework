@@ -290,7 +290,7 @@
       // Add subpackages
       $name= $package['info']->name().'.';
       foreach ($this->packages as $cmp) {
-        if (0 !== strncmp($name, $cmp['info']->name(), strlen($name))) continue;
+        if (!$package['info']->contains($cmp)) continue;
         $p->addChild(new Node('package', NULL, array('name' => $cmp['info']->name())));
       }
       
