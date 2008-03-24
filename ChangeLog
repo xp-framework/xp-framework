@@ -54,6 +54,12 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added ENUM class type to text.doclet API - ClassDoc::isEnum() will return
+  true and ClassDoc::classType() will yield ENUM_CLASS if this classdoc 
+  object represents a subclass of lang.Enum.
+  (friebe)
+- Added containingPackage() and contains() methods to PackageDoc class
+  (friebe)
 - Made io.File constructor accept (string, string) and (Folder, string)
   (friebe)
 - QA work: Completed / updated apidocs in multiple places
