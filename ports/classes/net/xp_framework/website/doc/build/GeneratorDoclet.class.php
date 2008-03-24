@@ -6,8 +6,6 @@
 
   uses(
     'io.Folder',
-    'io.File',
-    'io.FileUtil',
     'xml.Tree',
     'text.doclet.Doclet',
     'text.doclet.markup.MarkupBuilder',
@@ -16,7 +14,8 @@
     'io.collections.FileCollection', 
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.ExtensionEqualsFilter',
-    'net.xp_framework.website.doc.build.AllClassesIterator'
+    'net.xp_framework.website.doc.build.AllClassesIterator',
+    'net.xp_framework.website.doc.build.storage.FileSystemDocStorage'
   );
 
   /**
@@ -233,8 +232,6 @@
     }
     
     protected function marshalClassDoc($classdoc) {
-      $out= new File($this->build, $classdoc->qualifiedName().'.dat');
-      Console::writeLine('- ', $classdoc->toString());
 
       // Add contained package
       $package= $classdoc->containingPackage();
@@ -250,12 +247,10 @@
       $tree->addChild($this->classNode($classdoc));
 
       // Write to file
-      FileUtil::setContents($out, serialize($tree));
+      $this->storage->store($classdoc->qualifiedName(), $tree);
     }
 
     protected function marshalPackageDoc($package) {
-      Console::write('- ', $package['info']->toString());
-
       $tree= new Tree('doc');
       $p= $tree->addChild(new Node('package', NULL, array('name' => $package['info']->name())));
       $p->addChild(new Node('comment', $this->markup($package['info']->commentText())));
@@ -289,10 +284,8 @@
         $p->addChild(new Node('package', NULL, array('name' => $cmp['info']->name())));
       }
 
-      // Write to file
-      $out= new File($this->build, $package['info']->name().'.dat');
-      FileUtil::setContents($out, serialize($tree));
-      Console::writeLine(' OK');
+      // Store it
+      $this->storage->store($package['info']->name(), $tree);
     }
     
     /**
@@ -311,26 +304,30 @@
      * @param   text.doclet.RootDoc root
      */
     public function start($root) {
-      $this->build= new Folder($root->option('build', 'build'));
-      $this->build->exists() || $this->build->create();
+      $build= new Folder($root->option('build', 'build'));
+      $build->exists() || $build->create();
+      $this->storage= new FileSystemDocStorage($build);
       
       $this->markup= new MarkupBuilder();
       
       // Marshal classes
       $this->packages= array();
       while ($root->classes->hasNext()) {
-        $this->marshalClassDoc($root->classes->next());
+        $classdoc= $root->classes->next();
+        Console::writeLine('- ', $classdoc->toString());
+        $this->marshalClassDoc($classdoc);
       }
       
       // Marshal packages
       foreach ($this->packages as $package) {
+        Console::writeLine('- ', $package['info']->toString());
         $this->marshalPackageDoc($package);
       }
 
       // Add implementations
       foreach ($this->impl as $interface => $classes) {
-        $stor= new File($this->build, $interface.'.dat');
-        $tree= unserialize(FileUtil::getContents($stor));
+        Console::writeLine('- ', $interface, ' implementations');
+        $tree= $this->storage->get($interface);
         
         // Add to class/doc
         with ($n= $tree->root->children[0]->addChild(new Node('implementations'))); {
@@ -339,7 +336,7 @@
           }
         }
 
-        FileUtil::setContents($stor, serialize($tree));
+        $this->storage->store($interface, $tree);
       }
     }
 
