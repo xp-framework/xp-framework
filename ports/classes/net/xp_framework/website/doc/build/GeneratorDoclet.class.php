@@ -28,6 +28,7 @@
     protected
       $build    = NULL,
       $markup   = NULL,
+      $impl     = array(),
       $packages = array();
 
     /**
@@ -76,7 +77,6 @@
         'rel'     => 'class',
         'href'    => $classdoc->qualifiedName(),
       ));
-      $this->marshalClassDoc($classdoc);
       return $n;
     }
     
@@ -211,7 +211,13 @@
       // Interfaces
       $interfaces= $n->addChild(new Node('implements'));
       for ($classdoc->interfaces->rewind(); $classdoc->interfaces->hasNext(); ) {
-        $interfaces->addChild($this->classReferenceNode($classdoc->interfaces->next()));
+        $interface= $classdoc->interfaces->next();
+        $interfaces->addChild($this->classReferenceNode($interface));
+        
+        // Add implementations
+        $qname= $interface->qualifiedName();
+        if (!isset($this->impl[$qname])) $this->impl[$qname]= array();
+        $this->impl[$qname][]= $classdoc;
       }
 
       // Members
@@ -227,10 +233,6 @@
     }
     
     protected function marshalClassDoc($classdoc) {
-      static $done= array();
-      
-      if (isset($done[$classdoc->hashCode()])) return;    // Already been there
-
       $out= new File($this->build, $classdoc->qualifiedName().'.dat');
       Console::writeLine('- ', $classdoc->toString());
 
@@ -249,8 +251,6 @@
 
       // Write to file
       FileUtil::setContents($out, serialize($tree));
-      
-      $done[$classdoc->hashCode()]= TRUE;
     }
 
     protected function marshalPackageDoc($package) {
@@ -325,6 +325,21 @@
       // Marshal packages
       foreach ($this->packages as $package) {
         $this->marshalPackageDoc($package);
+      }
+
+      // Add implementations
+      foreach ($this->impl as $interface => $classes) {
+        $stor= new File($this->build, $interface.'.dat');
+        $tree= unserialize(FileUtil::getContents($stor));
+        
+        // Add to class/doc
+        with ($n= $tree->root->children[0]->addChild(new Node('implementations'))); {
+          foreach ($classes as $classdoc) {
+            $n->addChild($this->classReferenceNode($classdoc));
+          }
+        }
+
+        FileUtil::setContents($stor, serialize($tree));
       }
     }
 
