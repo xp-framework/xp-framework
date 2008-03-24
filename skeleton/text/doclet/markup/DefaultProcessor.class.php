@@ -17,6 +17,7 @@
       $patterns= array(
         '#<#',
         '#>#',
+        '#&lt;(/?(ul|li|ol|tt))&gt;#',
         '#\r#',
         '#\n\n#',
         '#&(?![a-z0-9\#]+;)#',
@@ -38,6 +39,7 @@
       $replacements= array(
         '&lt;',
         '&gt;',
+        '<$1>',
         '',
         "<br/><br/>\n",
         '&amp;', 
