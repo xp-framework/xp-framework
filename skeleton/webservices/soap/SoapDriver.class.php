@@ -8,21 +8,25 @@
    * This is the SOAP driver factory that should be used
    * to retrieve a SOAP client.
    *
-   *
    * Example:
-   *  <code>
-   *    $client= SoapDriver::getInstance()->forEndpoint($endpoint, 'urn:SomeThing', XP); 
+   * <code>
+   *   $client= SoapDriver::getInstance()->forEndpoint(
+   *     $endpoint, 
+   *     'urn:SomeThing', 
+   *     SoapDriver::XP
+   *   ); 
    *
-   *    $client->registerMapping(
-   *      new QName('http://namespace', 'SoapValue'),
-   *      XPClass::forName('you.wanna.map.to.this.class')
-   *    );
-   *    
-   *    $result= $client->invoke(
-   *      'someSoapFunction',
-   *      new Parameter('foo', new SoapLong($foo))
-   *    );
-   *  </code>
+   *   $client->registerMapping(
+   *     new QName('http://namespace', 'SoapValue'),
+   *     XPClass::forName('you.wanna.map.to.this.class')
+   *   );
+   *   
+   *   $result= $client->invoke(
+   *     'someSoapFunction',
+   *     new Parameter('foo', new SoapLong($foo))
+   *   );
+   * </code>
+   *
    * @test      xp://webservices.soap.SoapDriverTest
    * @see       php://soap
    * @purpose   SOAP driver factory
