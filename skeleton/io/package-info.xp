@@ -1,0 +1,54 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Filesystem interaction.
+ *
+ * Filesystem
+ * ==========
+ * A filesystem is organized as a tree, with leafs being files and 
+ * its branches being folders. An io.Folder object represents a folder. 
+ * The following example code lists the contents of the /usr directory, 
+ * omitting the "." and ".." entries:
+ * <code>
+ *   $usr= new Folder('/usr');
+ *   foreach ($usr->getEntry() as $name) {
+ *     Console::writeLine('- ', $name);
+ *   }
+ * </code>
+ *
+ * An io.File object represents a file. To sequentially read a file,
+ * one could use the following sourcecode:
+ * <code>
+ *   $f= new File(new Folder('c:'), 'autoexec.bat');
+ *   $f->open(FILE_MODE_READ);
+ *   while ($chunk= $f->read()) {
+ *     Console::writeLine($chunk);
+ *   }
+ *   $f->close();
+ * </code>
+ *
+ * ...or use the FileUtil class to read it all at once:
+ * <code>
+ *   $contents= FileUtil::getContents(new File('c:\\autoexec.bat'));
+ * </code>
+ *
+ * Temporary files
+ * ===============
+ * To create a temporary file with a unique name, one may use the
+ * io.TempFile class:
+ * <code>
+ *   with ($t= new TempFile()); {
+ *     $t->open(FILE_MODE_WRITE);
+ *     $t->write('Hello');
+ *     $t->close();
+ *   }
+ * </code>
+ *
+ * @purpose  I/O
+ */
+package io {
+}
