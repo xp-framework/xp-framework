@@ -109,5 +109,15 @@
       }  
       return $return;
     }
+    
+    /**
+     * Returns whether another object is equal to this object
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->name === $cmp->name;
+    }
   }
 ?>
