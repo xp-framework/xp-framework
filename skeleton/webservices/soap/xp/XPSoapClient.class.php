@@ -15,18 +15,7 @@
   /**
    * Basic SOAP-Client
    *
-   * Example:
-   * <code>
-   *   $s= new SOAPClient('http://localhost/soapuri, 'ServerURI');
-   *   try {
-   *     $return= $s->invoke($methods, $paramaters);
-   *   } catch (XPException $e) {
-   *     $e->printStackTrace();
-   *     exit(-1);
-   *   }
-   *   var_dump($return);
-   * </code>
-   * 
+   * @see      xp://webservices.soap.SoapDriver
    * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
