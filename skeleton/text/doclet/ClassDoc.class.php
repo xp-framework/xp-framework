@@ -107,6 +107,15 @@
     public function isInterface() {
       return INTERFACE_CLASS == $this->classType();
     }
+
+    /**
+     * Returns whether this class is an interface.
+     *
+     * @return  bool
+     */
+    public function isEnum() {
+      return ENUM_CLASS == $this->classType();
+    }
     
     /**
      * Returns whether this class is a subclass of a given class.
