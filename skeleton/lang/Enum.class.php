@@ -7,6 +7,9 @@
   /**
    * Enumeration
    *
+   * @see      http://news.xp-framework.net/article/222/2007/11/12/
+   * @see      http://news.xp-framework.net/article/207/2007/07/29/
+   * @test     xp://net.xp_framework.unittest.core.EnumTest
    * @purpose  Abstract base class   
    */
   abstract class Enum extends Object {
