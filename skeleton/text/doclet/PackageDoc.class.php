@@ -23,6 +23,15 @@
     }
 
     /**
+     * Returns the source file name this doc was parsed from.
+     *
+     * @return  string
+     */
+    public function sourceFile() {
+      return $this->root->findPackage($this->qualifiedName);
+    }
+
+    /**
      * Returns a string representation of this object
      *
      * @return  string

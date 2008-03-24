@@ -49,6 +49,15 @@
       $this->interfaces->root= $root;
       $this->usedClasses->root= $root;    
     }
+
+    /**
+     * Returns the source file name this doc was parsed from.
+     *
+     * @return  string
+     */
+    public function sourceFile() {
+      return $this->root->findClass($this->qualifiedName);
+    }
     
     /**
      * Retrieve class type, which one of the following constants
