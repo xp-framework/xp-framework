@@ -37,5 +37,13 @@
      * @throws  util.NoSuchElementException if no element by the given name exists
      */
     public function get($name);
+
+    /**
+     * Checks whether an item exists
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function contains($name);
   }
 ?>

@@ -83,5 +83,15 @@
         throw new NoSuchElementException('Storage entry "'.$name.'" not found in '.$this->base->toString());
       }
     }
+
+    /**
+     * Checks whether an item exists
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function contains($name) {
+      return $this->entry($name)->exists();
+    }
   }
 ?>
