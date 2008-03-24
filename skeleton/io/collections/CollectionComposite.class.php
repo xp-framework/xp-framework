@@ -4,23 +4,25 @@
  * $Id$ 
  */
 
+  uses('io.collections.IOCollection');
+  
   /**
    * A composite of multiple collections
    *
    * Example (all files in /home and /usr):
    * <code>
-   *   $collection= &new CollectionComposite(array(
+   *   $collection= new CollectionComposite(array(
    *     new FileCollection('/home'),
    *     new FileCollection('/usr')
    *   ));
    *   $collection->open();
-   *   while (NULL !== ($element= &$collection->next())) {
+   *   while (NULL !== ($element= $collection->next())) {
    *     Console::writeLine('- ', $element->toString());
    *   }
    *   $collection->close();
    * </code>
    *
-   * @see      http://xp-framework.info/xml/xp.en_US/news/view?129
+   * @see      http://news.xp-framework.net/article/129/2006/11/09/
    * @test     xp://net.xp_framework.unittest.io.collections.CollectionCompositeTest 
    * @purpose  Collection implementation
    */
@@ -28,7 +30,7 @@
     public
       $collections = array();
     
-    public
+    protected
       $_current    = 0;
       
     /**
@@ -39,7 +41,7 @@
      */
     public function __construct($collections) {
       if (empty($collections)) {
-        throw(new IllegalArgumentException('Collections may not be empty'));
+        throw new IllegalArgumentException('Collections may not be empty');
       }
       $this->collections= $collections;
     }
@@ -93,5 +95,5 @@
       } while ($this->_current-- > 0);
     }
     
-  } uses('io.collections.IOCollection');
+  }
 ?>
