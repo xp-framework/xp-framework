@@ -40,10 +40,25 @@
         &#xbb; <a href="?{@href}"><xsl:value-of select="@href"/></a>
       </xsl:for-each>
     </p>
+    
+    <!-- Class: Interfaces -->
     <xsl:if test="count(implements/link) &gt; 0">
+      <br clear="all"/>
       <h3>Implemented Interfaces</h3>
       <p>
         <xsl:for-each select="implements/link">
+          <a href="?{@href}"><xsl:value-of select="@href"/></a>
+          <xsl:if test="position() != last()">, </xsl:if>
+        </xsl:for-each>
+      </p>
+    </xsl:if>
+    
+    <!-- Interface: Implementations -->
+    <xsl:if test="count(implementations/link) &gt; 0">
+      <br clear="all"/>
+      <h3>All known implementing classes</h3>
+      <p>
+        <xsl:for-each select="implementations/link">
           <a href="?{@href}"><xsl:value-of select="@href"/></a>
           <xsl:if test="position() != last()">, </xsl:if>
         </xsl:for-each>
