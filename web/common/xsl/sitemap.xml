@@ -2,7 +2,7 @@
 <root>
   <item name="home" href="http://planet-xp.net/">Home</item>
   <item name="news" href="http://news.xp-framework.net/">News</item>
-  <item name="doc" href="http://doc.xp-framework.net/">Documentation</item> -->
+  <item name="docs" href="http://docs.xp-framework.net/">Documentation</item> -->
   <item name="download" href="http://xp-framework.net/downloads/releases/" site="xp-frame">Download</item>
   <!-- <item name="dev" href="http://developer.xp-framework.net/">Developers</item> -->
 </root>
