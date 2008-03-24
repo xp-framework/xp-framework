@@ -18,6 +18,17 @@
    * @purpose  State
    */
   class AbstractApiState extends AbstractState {
+  
+    /**
+     * Returns which entry to display
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @return  string entry name
+     */
+    protected function entryFor($request) {
+      sscanf($request->getQueryString(), '%[a-zA-Z_.]', $entry);
+      return $entry;
+    }
 
     /**
      * Process this state.
@@ -26,13 +37,11 @@
      * @param   scriptlet.xml.XMLScriptletResponse response
      */
     public function process($request, $response) {
-      sscanf($request->getQueryString(), '%[a-zA-Z_.]', $entry);
-      
       $storage= new FileSystemDocStorage(new Folder(PropertyManager::getInstance()
         ->getProperties('storage')
         ->readString('storage', 'base')
       ));
-      
+      $entry= $this->entryFor($request);
       try {
         $response->addFormResult($storage->get($entry)->root);
       } catch (NoSuchElementException $e) {
