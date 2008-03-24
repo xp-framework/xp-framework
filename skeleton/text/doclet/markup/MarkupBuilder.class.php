@@ -14,6 +14,7 @@
   /**
    * Markup builder based on regular expressions
    *
+   * @test     xp://net.xp_framework.unittest.text.doclet.MarkupTest
    * @purpose  Plain text to markup converter
    */
   class MarkupBuilder extends Object {
@@ -59,13 +60,8 @@
     public function markupFor($text) {
       static $state= array(
         'pre'   => 'copy',
+        'xmp'   => 'copy',
         'code'  => 'code'
-      );
-      static $allowed= array(
-        'xmp'   => TRUE,
-        'ul'    => TRUE,
-        'ol'    => TRUE,
-        'li'    => TRUE,
       );
 
       $processor= $this->pushProcessor(self::$processors['default']);
@@ -74,47 +70,41 @@
       $out= '';      
       while ($st->hasMoreTokens()) {
         if ('<' == ($token= $st->nextToken())) {
-          $tag= $st->nextToken('>');
+          $tag= $st->nextToken();
           
           // If this is an opening tag and a behaviour is defined for it, switch
           // states and pass control to the processor.
-          if (ctype_alnum($tag)) {
+          // If this is a closing tag and behaviour is defined for it, switch back
+          // state and return control to the previous processor.
+          if (ctype_alnum($tag[0])) {
             $st->nextToken('>');
             $lookup= strtolower($tag);
 
             if (isset($state[$lookup])) {
               $processor= $this->pushProcessor(self::$processors[$state[$lookup]]);
               $out.= $processor->initialize();
-            } else if (isset($allowed[$lookup])) {
-              $out.= '<'.$tag.'>';
+              continue;
             } else {
-              $out.= '&lt;'.$tag.'&gt;';
+              $token= '<'.$tag.'>';
             }
-            continue;
-          }           
-          
-          // If this is a closing tag and behaviour is defined for it, switch back
-          // state and return control to the previous processor.
-          if ('/' == $tag[0]) {
+          } else if ('/' == $tag[0] && ctype_alnum($tag[1])) {
             $st->nextToken('>');
             $lookup= ltrim(strtolower($tag), '/');
 
             if (isset($state[$lookup])) {
               $out.= $processor->finalize();
               $processor= $this->popProcessor();
-            } else if (isset($allowed[$lookup])) {
-              $out.= '<'.$tag.'>';
+              $st->nextToken("\n");
+              continue;
             } else {
-              $out.= '&lt;'.$tag.'&gt;';
+              $token= '<'.$tag.'>';
             }
-            
-            $out.= $st->nextToken("\n");
-            continue;
+          } else {
+            $token= '<'.$tag;
           }
-          
-          $token= '<'.$tag;
         }
-
+        
+        // Console::writeLine($processor->getClass(), ': "', $token, '"');
         $out.= $processor->process($token);
       }
       
