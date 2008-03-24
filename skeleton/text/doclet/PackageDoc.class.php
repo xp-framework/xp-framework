@@ -38,5 +38,15 @@
     public function hashCode() {
       return $this->getClassName().$this->name;
     }
+
+    /**
+     * Returns the package this class is contained in
+     *
+     * @return  text.doclet.PackageDoc or NULL if this is a top-level package
+     */
+    public function containingPackage() {
+      if (FALSE === ($p= strrpos($this->name, '.'))) return NULL;
+      return $this->root->packageNamed(substr($this->name, 0, $p));
+    }
   }
 ?>
