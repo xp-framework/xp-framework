@@ -11,22 +11,22 @@
    *
    * Usage:
    * <code>
-   *   try(); {
+   *   try {
    *     $d= new Folder('/etc/');
    *     while (FALSE !== ($entry= $d->getEntry())) {
    *       printf("%s/%s\n", $d->uri, $entry);
    *     }
    *     $d->close();
-   *   } if (catch('IOException', $e)) {
+   *   } catch (IOException $e) {
    *     $e->printStackTrace();
    *   }
    * </code>
    */
   class Folder extends Object {
     public 
-      $uri= '',
-      $dirname= '',
-      $path= '';
+      $uri      = '',
+      $dirname  = '',
+      $path     = '';
     
     public
       $_hdir= FALSE;
@@ -38,7 +38,6 @@
      */
     public function __construct($dirname= NULL) {
       if (NULL != $dirname) $this->setURI($dirname);
-      
     }
     
     /**
