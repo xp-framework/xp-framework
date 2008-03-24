@@ -125,7 +125,7 @@
      */
     public function findPackage($package) {
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $package).DIRECTORY_SEPARATOR.'package-info.xp';
-      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
+      foreach (xp::registry('classpath') as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return $dir.DIRECTORY_SEPARATOR.$filename;
       }
@@ -140,7 +140,7 @@
      */
     public function findClass($classname) {
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $classname).'.class.php';
-      foreach (array_unique(explode(PATH_SEPARATOR, ini_get('include_path'))) as $dir) {
+      foreach (xp::registry('classpath') as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return $dir.DIRECTORY_SEPARATOR.$filename;
       }
