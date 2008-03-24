@@ -36,7 +36,7 @@
       try {
         $response->addFormResult($storage->get($entry)->root);
       } catch (NoSuchElementException $e) {
-        throw new HttpScriptletException('Entry "'.$entry.'" not found', HTTP_NOT_FOUND);
+        throw new HttpScriptletException('Entry "'.$entry.'" not found', HTTP_NOT_FOUND, $e);
       }
     }
   }
