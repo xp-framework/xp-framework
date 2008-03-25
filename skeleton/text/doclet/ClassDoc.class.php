@@ -16,6 +16,7 @@
    * Represents an XP class or interface and provides access to 
    * information about it, its comment and tags, and members.
    *
+   * @test     xp://net.xp_framework.unittest.text.doclet.ClassDocTest
    * @purpose  Documents a class
    */
   class ClassDoc extends AnnotatedDoc {
