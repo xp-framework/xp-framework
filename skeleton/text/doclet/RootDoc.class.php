@@ -67,7 +67,7 @@
      */
     public static function start($doclet, $params) {
       $classes= array();
-      $root= new RootDoc();
+      $root= new self();
       
       // Separate options from classes
       $valid= $doclet->validOptions();
@@ -268,7 +268,7 @@
       }
 
       with ($doc= new ClassDoc(), $doc->setRoot($this)); {
-        $annotations= $comment= NULL;
+        $annotations= $comment= $package= NULL;
         $modifiers= array();
         $state= ST_INITIAL;          
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
@@ -299,6 +299,13 @@
                 $annotations= '['.trim($annotations);
               }
               break;
+              
+            case ST_INITIAL.T_VARIABLE:
+              if ('$package' === $t[1]) {   // RFC #0037: $package= 'lang.reflect';
+                while (T_CONSTANT_ENCAPSED_STRING !== $tokens[$i][0] && $i < $s) $i++;
+                $package= $tokens[$i][1];
+              }
+              break;
 
             case ST_INITIAL.T_USES:
               $state= ST_USES;
@@ -306,9 +313,9 @@
 
             case ST_USES.T_CONSTANT_ENCAPSED_STRING:
               $cn= trim($t[1], '"\'');
-              if (!$this->findClass($cn)) throw(new IllegalStateException(
+              if (!$this->findClass($cn)) throw new IllegalStateException(
                 'Could not find used class "'.$cn.'" for class '.$classname
-              ));
+              );
               $doc->usedClasses->classes[$cn]= NULL;
               break;
 
@@ -343,7 +350,7 @@
             case ST_INITIAL.T_CLASS:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
-              $doc->name= $tokens[$i][1];
+              $doc->name= $package ? substr($tokens[$i][1], strlen($package)- 1) : $tokens[$i][1];
               $doc->qualifiedName= $classname;
               $doc->rawComment= $comment;
               $doc->annotations= $annotations;
