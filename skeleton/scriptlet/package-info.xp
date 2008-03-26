@@ -24,9 +24,9 @@
  * Let's have a look at a simple scriptlet: 
  * <code>
  *   uses('scriptlet.HttpScriplet');
- * 
+ *   
  *   class HelloScriptlet extends HttpScriplet {
- *
+ *   
  *     public function doGet($request, $response) {
  *       // [... Sample abridged for brevity ...]
  *       if (empty($request->getParam('name'))) {
@@ -38,11 +38,37 @@
  *         ');
  *         return;
  *       }
+ *    
  *       $response->write('Hello '.$request->getParam('name'));
  *     }
  *   }
  * </code>
  *
+ * Handling request methods
+ * ========================
+ * Request methods are mapped to <tt>do*()</tt> methods as follows:
+ * <ul>
+ *   <li>*POST* - <tt>doPost()</tt></li>
+ *   <li>*GET* - <tt>doGet()</tt></li>
+ *   <li>*HEAD* - <tt>doHead()</tt></li>
+ * </ul>
+ * Other methods may be mapped by overwriting the <tt>handleMethod()</tt>
+ * method (as seen in the webdav implementation).
+ *
+ * Signalling errors
+ * =================
+ * An non-OK statuscode may be produced by throwing a 
+ * <tt>HttpScriptletException</tt> from any of the <tt>do*()</tt> methods.
+ *
+ * Example:
+ * <code>
+ *   public function doPost($request, $response) {
+ *     throw new HttpScriptletException('POST not allowed', HTTP_BAD_REQUEST);
+ *   }
+ * </code>
+ *
+ * @see      xp://peer.http.HttpConstants
+ * @see      xp://org.webdav.WebdavScriptlet
  * @see      xp://scriptlet.Cookie
  * @see      http://xp-framework.net/rfc/0078
  * @see      http://news.xp-framework.net/article/196/2007/06/28/
