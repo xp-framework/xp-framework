@@ -11,8 +11,8 @@
  *
  * Introduction
  * ============
- * Web sites is what PHP was made for. In his announce mail in June of 1995, 
- * Rasmus Lerdorf marketed PHP (then called "Personal Home Page Tools" as 
+ * Web sites are what PHP was made for. In his announce mail in June of 1995, 
+ * Rasmus Lerdorf marketed PHP (then called "Personal Home Page Tools") as 
  * the ideal tool to develop guest books and handle form requests. The XP 
  * framework introduces an API called "scriptlets". Scriptlets are the 
  * counterpart to Java's Servlets - as one might have guessed from their 
@@ -43,6 +43,7 @@
  *   }
  * </code>
  *
+ * @see      xp://scriptlet.Cookie
  * @see      http://xp-framework.net/rfc/0078
  * @see      http://news.xp-framework.net/article/196/2007/06/28/
  * @purpose  Web sites
