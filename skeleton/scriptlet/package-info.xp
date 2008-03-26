@@ -1,0 +1,51 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Scriptlets handle requests made to a webserver and run inside Apache,
+ * IIS, LightHttpd, as a CGI, in our HttpService or any other server API 
+ * PHP supports.
+ *
+ * Introduction
+ * ============
+ * Web sites is what PHP was made for. In his announce mail in June of 1995, 
+ * Rasmus Lerdorf marketed PHP (then called "Personal Home Page Tools" as 
+ * the ideal tool to develop guest books and handle form requests. The XP 
+ * framework introduces an API called "scriptlets". Scriptlets are the 
+ * counterpart to Java's Servlets - as one might have guessed from their 
+ * name. Scriptlets are not a 1:1 implementation of Servlets though one might 
+ * find a lot of similarities!
+ *
+ * Example
+ * =======
+ * Let's have a look at a simple scriptlet: 
+ * <code>
+ *   uses('scriptlet.HttpScriplet');
+ * 
+ *   class HelloScriptlet extends HttpScriplet {
+ *
+ *     public function doGet($request, $response) {
+ *       // [... Sample abridged for brevity ...]
+ *       if (empty($request->getParam('name'))) {
+ *         $response->write('
+ *           <form action="'.basename($request->getEnvValue('SCRIPT_URI')).'">
+ *             Enter your name here: <input type="text" name="name"/>
+ *             <input type="submit"/>
+ *           </form>
+ *         ');
+ *         return;
+ *       }
+ *       $response->write('Hello '.$request->getParam('name'));
+ *     }
+ *   }
+ * </code>
+ *
+ * @see      http://xp-framework.net/rfc/0078
+ * @see      http://news.xp-framework.net/article/196/2007/06/28/
+ * @purpose  Web sites
+ */
+package scriptlet {
+}
