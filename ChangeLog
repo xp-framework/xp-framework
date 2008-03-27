@@ -29,6 +29,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed xml.DomXSLProcessor to produce meaningful error messages in
+  case a transformation failed
+  (kiesel)
 - Fixed text.doclet.markup API to handle sourcecode, preformatted text
   ordered and unordered lists correctly
   (friebe)
