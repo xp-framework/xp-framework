@@ -305,25 +305,17 @@
       // Start transformation
       $this->output= $this->processor->transformToXML($this->document);
       
+      
       // Perform cleanup when necessary (free singleton for further use)
       sizeof($this->_instances) && XSLCallback::getInstance()->clearInstances();
       
       // Check for transformation errors
       if (FALSE === $this->output) {
-        if ($error= libxml_get_last_error()) {
-          libxml_clear_errors();
-          $message= sprintf(
-            "Transformation error: #%d: %s\n  at %s, line %d, column %d",
-            $error->code,
-            trim($error->message),
-            strlen($error->file) ? $error->file : '<transformation>',
-            $error->line,
-            $error->column
-          );
-        } else {
-          $message= 'Unknown transformation error while transforming '.$this->baseURI;
-        }
-        throw new TransformerException($message);
+      
+        // Check for errors, also non-fatal errors, otherwise indicate unknown
+        // transformation error
+        $this->_checkErrors(NULL, TRUE);
+        throw new TransformerException('Unknown XSL transformation error while transforming '.$this->baseURI);
       }
       
       // Check for left-over errors that did not make the transformation fail
@@ -332,24 +324,37 @@
     }
     
     /**
-     * Check for XML/XSLT errors and throw exceptions accordingly
+     * Check for XML/XSLT errors and throw exceptions accordingly.
      *
-     * @param   string source
+     * In case fatal is TRUE, any libxml error will be treated as a
+     * fatal one, resulting in an exception.
+     *
+     *
+     * @param   string source default NULL
+     * @param   bool fatal default FALSE
      * @throws  xml.TransformerException in case an XML error has occurred
      */
-    protected function _checkErrors($source= NULL) {
-      if ($error= libxml_get_last_error()) {
+    protected function _checkErrors($source= NULL, $fatal= FALSE) {
+      if (sizeof($errors= libxml_get_errors())) {
         libxml_clear_errors();
-        if (LIBXML_ERR_FATAL != $error->level) return;
+        $message= '';
         
-        throw new TransformerException(sprintf(
-          "Unexpected transformation error: #%d: %s\n  at %s, line %d, column %d",
-          $error->code,
-          trim($error->message),
-          strlen($error->file) ? $error->file : xp::stringOf($source),
-          $error->line,
-          $error->column
-        ));
+        foreach ($errors as $error) {
+          if (LIBXML_ERR_FATAL == $error->level) $fatal= TRUE;
+          
+          $message.= sprintf(
+            "  #%d: %s\n  at %s, line %d, column %d\n",
+            $error->code,
+            trim($error->message, " \n"),
+            strlen($error->file) ? $error->file : xp::stringOf($source),
+            $error->line,
+            $error->column
+          );
+        }
+        
+        if ($fatal) throw new TransformerException(
+          'XSL Transformation error: '.trim($message, " \n")
+        );
       }
     }
 
