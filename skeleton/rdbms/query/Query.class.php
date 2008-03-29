@@ -12,29 +12,24 @@
   );
 
   /**
-   * store complete queries with criteria, method and peer
-   * base class for SelectQuery, DeleteQuery and UpdateQuery
-   *
-   * There is no InsertQuery class implemented, I can not think up any practical UseCase
-   * for it.
+   * Store complete queries with criteria, method and peer.
    * 
-   * <?php
-   *  
-   *  $dq= new DeleteQuery(Person::getPeer());
-   *  // this query is to only allow the deletion of people who's surname is Maier
-   *  $dq->addRestriction(Person::column('surname')->equal('Maier'));
-   *  
-   *  // .....
-   *
-   *  // will delete Peter Maier in the person table
-   *  $dq->withRestriction(Person::column('name')->equal('Peter'))->execute();
-   *  
-   * ?>
+   * Example
+   * =======
+   * <code>
+   *   $dq= new DeleteQuery(Person::getPeer());
+   *   
+   *   // this query is to only allow the deletion of people who's surname is Maier
+   *   $dq->addRestriction(Person::column('surname')->equal('Maier'));
+   *   
+   *   // will delete Peter Maier in the person table
+   *   $dq->withRestriction(Person::column('name')->equal('Peter'))->execute();
+   * </code>
    *
    * @see      xp://rdbms.query.SelectQuery
    * @see      xp://rdbms.query.InsertQuery
    * @see      xp://rdbms.query.UpdateQuery
-   * @purpose  rdbms.query
+   * @purpose  Base class for SelectQuery, DeleteQuery and UpdateQuery
    */
   abstract class Query extends Object implements QueryExecutable {
     protected
