@@ -30,15 +30,30 @@
    * $o->getClass() syntax or the static method 
    * $class= XPClass::forName('fully.qualified.Name')
    *
-   * Example
-   * =======
+   * Examples
+   * ========
    * To retrieve the fully qualified name of a class, use this:
    * <code>
-   *   $o= new File();
+   *   $o= new File('...');
    *   echo 'The class name for $o is '.$o->getClass()->getName();
    * </code>
    *
-   * @see      xp://lang.Object#getClass()
+   * Create an instance of a class:
+   * <code>
+   *   $instance= XPClass::forName('util.Binford')->newInstance();
+   * </code>
+   *
+   * Invoke a method by its name:
+   * <code>
+   *   try {
+   *     $instance->getClass()->getMethod('connect')->invoke($instance);
+   *   } catch (TargetInvocationException $e) {
+   *     $e->getCause()->printStackTrace();
+   *   }
+   * </code> 
+   *
+   * @see      xp://lang.Object#getClass
+   * @see      xp://lang.XPClass#forName
    * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @test     xp://net.xp_framework.unittest.reflection.ClassDetailsTest
    * @purpose  Reflection
