@@ -1,0 +1,58 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The finder API is used to find DataSet objects. Basically, a <tt>Finder</tt>
+ * subclass is a collection of named queries (that is, methods that 
+ * return SQLExpression instances). 
+ *
+ * Example
+ * =======
+ * Given a "News" DataSet which represents rows in a table called "news",
+ * we define a finder for it as follows:
+ * <code>
+ *  class NewsFinder extends Finder {
+ *    public function getPeer() {
+ *      return News::getPeer();
+ *    }
+ *    
+ *    #[@finder(kind= ENTITY)]
+ *    public function byPrimary($pk) {
+ *      return new Criteria(array('news_id', $pk, EQUAL));
+ *    }
+ *    
+ *    #[@finder(kind= COLLECTION)]
+ *    public function allNews() {
+ *      return new Criteria();
+ *    }
+ *    
+ *    #[@finder(kind= COLLECTION)]
+ *    public function todaysHelloNews() {
+ *      return new Criteria(Restrictions::allOf(
+ *        Restrictions::like('title', 'Hello%'),
+ *        Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
+ *      );
+ *    }
+ *  }
+ * </code>
+ * It can the be used as follows:
+ * <code>
+ *   with ($nf= new NewsFinder()); {
+ *     $entries= $nf->findAll($nf->todaysHelloNews());
+ *     $iterator= $nf->iterate($nf->all());
+ *     $entity= $nf->find($nf->byPrimary(1));
+ *   }
+ * </code>
+ *
+ * @see      xp://rdbms.finder.Finder the entry point class
+ * @see      xp://rdbms.DataSet
+ * @see      xp://rdbms.Criteria
+ * @see      http://xp-framework.net/rfc/0099
+ * @see      http://news.xp-framework.net/article/150/2007/01/24/
+ * @purpose  Finding DataSets
+ */
+package rdbms.finder {
+}
