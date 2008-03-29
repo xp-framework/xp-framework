@@ -7,6 +7,8 @@
   /**
    * Represents a package
    *
+   * @test     xp://net.xp_framework.unittest.reflection.PackageTest
+   * @see      http://news.xp-framework.net/article/187/2007/05/12/
    * @purpose  Reflection
    */
   class Package extends Object {
