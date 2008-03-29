@@ -40,16 +40,19 @@
    *   $t[0]->start();
    *   $t[1]= new TimerThread(2);
    *   $t[1]->start();
-   *   var_dump($t);
+   *   
    *   for ($i= 0; $i < 3; $i++) {
    *     echo "<main> Waiting...\n";
    *     sleep(1);
    *   }
-   *   var_dump($t[0]->join(), $t[1]->join());
+   *   
+   *   $t[0]->join();
+   *   $t[1]->join();
    * </code>
    *
    * @ext      pcntl
    * @ext      posix
+   * @see      http://news.xp-framework.net/article/168/2007/04/05/
    * @see      xp://lang.Runnable
    * @purpose  Base class
    */
