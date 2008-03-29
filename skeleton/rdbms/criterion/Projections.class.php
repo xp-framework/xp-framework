@@ -21,7 +21,6 @@
    * =======
    * <code>
    *   // cut the result down to 2 atributes of a result set
-   *   // for further examples with ProjectionList see rdbms.criterion.ProjectionList API doc
    *   // sql: select name, surname from person;
    *   Person::getPeer()->doSelect(new Criteria()->setProjection(
    *     Projections::projectionList()
@@ -30,9 +29,8 @@
    *   ));
    *   
    *   // just count a result
-   *   // for further examples with ProjectionList see rdbms.criterion.CountProjection API doc
    *   // sql: select count(*) from person where ...
-   *   Person::getPeer()->doSelect(new Criteria()->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::count('*')->add(...)...
    *   ));
    *   
@@ -40,19 +38,20 @@
    *   // sql: select avg(age) from person
    *   // sql: select min(age) from person
    *   // sql: select max(age) from person
-   *   Person::getPeer()->doSelect(new Criteria()->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::avg(Person::column('age'))
    *   ));
-   *   Person::getPeer()->doSelect(new Criteria()->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::min(Person::column('age')))
    *   );
-   *   Person::getPeer()->doSelect(new Criteria()->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::max(Person::column('age'))
    *   ));
    *   
-   *   // ProjectionList::add and Criteria::setprojection, can handle a second parameter as an ailias
+   *   // ProjectionList::add and Criteria::setprojection, can handle a 
+   *   // second parameter as an ailias
    *   // sql: select max(age) as `oldest` from person
-   *   Person::getPeer()->doSelect(new Criteria()->setProjection(
+   *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::max(Person::column('age')), 
    *     'oldest'
    *   ));
