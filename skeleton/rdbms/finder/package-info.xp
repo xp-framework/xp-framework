@@ -38,7 +38,7 @@
  *    }
  *  }
  * </code>
- * It can the be used as follows:
+ * It can then be used as follows:
  * <code>
  *   with ($nf= new NewsFinder()); {
  *     $entries= $nf->findAll($nf->todaysHelloNews());
@@ -47,6 +47,34 @@
  *   }
  * </code>
  *
+ * Defining amounts
+ * ================
+ * Often it is important to find a specific number of entries with a given
+ * SQL query. For example, if we're looking for a customer by the customer
+ * number, we expect to either find one or zero entries (not two, for 
+ * example!)
+ *
+ * The following will throw an exception if more than one result is found:
+ * <code>
+ *   with ($cf= new CustomerFinder()); {
+ *     $customer= $cf->find($cf->byCustomerNumber($number));
+ *   }
+ * </code>
+ *
+ * The other methods provided by finders are <tt>get</tt>, <tt>getAll</tt> and
+ * <tt>findAll</tt>.
+ *
+ * <code>
+ *   // Expecting exactly one
+ *   $customer= $cf->get($cf->byPrimary($customerId));
+ *   
+ *   // Expecting one or more
+ *   $customers= $cf->getAll($cf->byLastName($name));
+ *   
+ *   // Expecting zero or more
+ *   $customers= $cf->findAll($cf->byLastName($name));
+ * </code>
+ * 
  * @see      xp://rdbms.finder.Finder the entry point class
  * @see      xp://rdbms.DataSet
  * @see      xp://rdbms.Criteria
