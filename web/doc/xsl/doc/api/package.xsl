@@ -50,8 +50,7 @@
     
     <xsl:if test="count(package)">
       <br clear="all"/>
-      <h2>Packages in <xsl:value-of select="@name"/></h2>
-      <a name="__packages"/>
+      <a name="__packages"><h2>Packages in <xsl:value-of select="@name"/></h2></a>
       <p>
         <xsl:for-each select="package">
           <a href="{xp:link(concat('api/package?', @name))}"><b><xsl:value-of select="@name"/></b></a>
@@ -61,11 +60,10 @@
     </xsl:if>
 
     <br clear="all"/>
-    <h2>Package contents</h2>
-    <a name="__interfaces"/>
+    <a name="__contents"><h2>Package contents</h2></a>
     <xsl:if test="count(class[@type = 'interface'])">
       <fieldset class="summary">
-        <legend>Interface Summary</legend>
+        <a name="__interfaces"><h3>Interface Summary</h3></a>
         <ul>
           <xsl:for-each select="class[@type = 'interface']">
             <li>
@@ -76,10 +74,9 @@
       </fieldset>
     </xsl:if>
 
-    <a name="__classes"/>
     <xsl:if test="count(class[@type = 'class'])">
       <fieldset class="summary">
-        <legend>Class Summary</legend>
+        <a name="__classes"><h3>Class Summary</h3></a>
         <ul>
           <xsl:for-each select="class[@type = 'class']">
             <li>
@@ -90,10 +87,9 @@
       </fieldset>
     </xsl:if>
 
-    <a name="__enums"/>
     <xsl:if test="count(class[@type = 'enum'])">
       <fieldset class="summary">
-        <legend>Enum Summary</legend>
+        <a name="__enums"><h3>Enum Summary</h3></a>
         <ul>
           <xsl:for-each select="class[@type = 'enum']">
             <li>
@@ -104,10 +100,9 @@
       </fieldset>
     </xsl:if>
 
-    <a name="__exceptions"/>
     <xsl:if test="count(class[@type = 'exception'])">
       <fieldset class="summary">
-        <legend>Exception Summary</legend>
+        <a name="__exceptions"><h3>Exception Summary</h3></a>
         <ul>
           <xsl:for-each select="class[@type = 'exception']">
             <li>
@@ -118,10 +113,9 @@
       </fieldset>
     </xsl:if>
 
-    <a name="__errors"/>
     <xsl:if test="count(class[@type = 'error'])">
       <fieldset class="summary">
-        <legend>Error Summary</legend>
+        <a name="__errors"><h3>Error Summary</h3></a>
         <ul>
           <xsl:for-each select="class[@type = 'error']">
             <li>

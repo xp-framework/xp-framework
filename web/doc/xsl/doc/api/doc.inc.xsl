@@ -36,11 +36,21 @@
     </xsl:for-each>
   </xsl:template>
 
+  <!-- Everything until the end of the first sentence -->
   <func:function name="func:first-sentence">
     <xsl:param name="comment"/>
+    <xsl:variable name="normalized" select="concat($comment/node()[1]/text(), '. ')"/>
+    <xsl:variable name="dot" select="substring-before($normalized, '. ')"/>
     
     <func:result>
-      <xsl:value-of select="exsl:node-set(str:tokenize($comment, '.&#10;'))"/>
+      <xsl:choose>
+        <xsl:when test="string-length($dot) &lt; string-length($normalized)">
+          <xsl:value-of select="$dot"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$normalized"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </func:result>
   </func:function>
   

@@ -37,7 +37,7 @@
         <xsl:value-of select="func:first-sentence(comment)" disable-output-escaping="yes"/>
       </div>
       <fieldset class="summary">
-        <legend>Packages in <xsl:value-of select="@name"/>:</legend>
+        <h3>Packages in <xsl:value-of select="@name"/>:</h3>
         <ul>
           <xsl:for-each select="package">
             <li>

@@ -135,10 +135,9 @@
     </xsl:if>
 
     <!-- Constants -->
-    <a name="__constants"/>
     <xsl:if test="count(constant) &gt; 0">
       <br clear="all"/>
-      <h2>Constants</h2>
+      <a name="__constants"><h2>Constants</h2></a>
       <ul>
         <xsl:for-each select="constant">
           <li>
@@ -153,12 +152,11 @@
     <h2>Members</h2>
 
     <!-- Fields -->
-    <a name="__fields"/>
     <fieldset class="summary">
-      <legend>Field summary</legend>
+      <a name="__fields"><h3>Field summary</h3></a>
       <xsl:choose>
         <xsl:when test="count(fields[not(@from)]/field) &gt; 0">
-          <h3>Fields declared in this class</h3>
+          <h4>Fields declared in this class</h4>
           <ul>
             <xsl:for-each select="fields[not(@from)]/field">
               <li>
@@ -182,7 +180,7 @@
       <!-- Inherited fields -->
       <xsl:for-each select="fields[@from]">
         <xsl:if test="count(field) &gt; 0">
-          <h3>Fields inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
+          <h4>Fields inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h4>
 
           <p>
             <xsl:for-each select="field">
@@ -195,12 +193,11 @@
     </fieldset>
 
     <!-- Methods -->
-    <a name="__methods"/>
     <fieldset class="summary">
-      <legend>Method summary</legend>
+      <a name="__methods"><h3>Method summary</h3></a>
       <xsl:choose>
         <xsl:when test="count(methods[not(@from)]/method) &gt; 0">
-          <h3>Methods declared in this class</h3>
+          <h4>Methods declared in this class</h4>
           <ul>
             <xsl:for-each select="methods[not(@from)]/method">
               <li>
@@ -227,7 +224,7 @@
       <!-- Inherited methods -->
       <xsl:for-each select="methods[@from]">
         <xsl:if test="count(method) &gt; 0">
-          <h3>Methods inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h3>
+          <h4>Methods inherited from <a href="?{@from}"><xsl:value-of select="@from"/></a></h4>
 
           <p>
             <xsl:for-each select="method">

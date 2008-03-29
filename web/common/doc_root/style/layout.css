@@ -80,16 +80,23 @@ legend {
 
 fieldset.summary {
   border: none;
+  border-top: 1px solid #cccccc;
+  padding-top: 4px;
   background: url(/common/image/bg_summary.png) repeat-x;
 }
 
-fieldset.summary legend {
+fieldset.summary h3 {
   color: #504646;
-  margin-bottom: 10px;
+}
+
+fieldset.summary h4 {
+  margin-top: 8px;
+  margin-bottom: 2px;
 }
 
 fieldset.summary ul {
   margin-left: 18px;
+  padding-left: 0;
   padding-top: 10px;
   padding-bottom: 10px;
 }
