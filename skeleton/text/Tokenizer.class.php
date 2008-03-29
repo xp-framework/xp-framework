@@ -7,6 +7,7 @@
   /**
    * A tokenizer splits input strings into tokens.
    * 
+   * @see      http://news.xp-framework.net/article/186/2007/05/11/
    * @see      xp://text.StringTokenizer
    * @see      xp://text.StreamTokenizer
    * @see      php://strtok
