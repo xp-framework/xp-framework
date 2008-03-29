@@ -10,16 +10,16 @@
   );
 
   /**
-   * This is the projection factory.
    * With the projection API a result set of an SQL query can be cut down to a
    * subset of result rows or aggregated (like sum, max, min, avg, count).
    * The projection represents the select part of a query (select <<projection>> from ...)
    * 
    * By default criteria projects the result to all rows of a table. This can be changed by
-   * using the rdbms.criteria::setProjection() method.
+   * using the <tt>rdbms.Criteria::setProjection()</tt> method.
    *
-   * exaple:
-   * <?php
+   * Example
+   * =======
+   * <code>
    *   // cut the result down to 2 atributes of a result set
    *   // for further examples with ProjectionList see rdbms.criterion.ProjectionList API doc
    *   // sql: select name, surname from person;
@@ -28,7 +28,7 @@
    *     ->add(Projections::property(Person::column('name')))
    *     ->add(Projections::property(Person::column('surname')))
    *   ));
-   *
+   *   
    *   // just count a result
    *   // for further examples with ProjectionList see rdbms.criterion.CountProjection API doc
    *   // sql: select count(*) from person where ...
@@ -45,13 +45,13 @@
    *   // ProjectionList::add and Criteria::setprojection, can handle a second parameter as an ailias
    *   // sql: select max(age) as `oldest` from person
    *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(Projections::max(Person::column('age')), 'oldest'));
-   * ?>
+   * </code>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.ProjectionTest
    * @see      xp://rdbms.Criteria
    * @see      xp://rdbms.criterion.ProjectionList
    * @see      xp://rdbms.criterion.CountProjection
-   * @purpose  purpose
+   * @purpose  Projection factory
    */
   class Projections extends Object {
 
