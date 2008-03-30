@@ -7,23 +7,29 @@
 
   /**
    * Class for sql set operations union, intercept and except.
+   *
    * Use the factory methods
-   *   - SetOperation::union(SelectQueryExecutable, SelectQueryExecutable, [ALL])
-   *   - SetOperation::union(SelectQueryExecutable, SelectQueryExecutable, [ALL])
-   *   - SetOperation::union(SelectQueryExecutable, SelectQueryExecutable, [ALL])
+   * <ul>
+   *   <li>SetOperation::union(SelectQueryExecutable, SelectQueryExecutable, [ALL])</li>
+   *   <li>SetOperation::union(SelectQueryExecutable, SelectQueryExecutable, [ALL])</li>
+   *   <li>SetOperation::union(SelectQueryExecutable, SelectQueryExecutable, [ALL])</li>
+   * </ul>
    * instead of direct instantiation.
+   *
    * This class implements the SelectQueryExecutable interface,
    * so it can be reused as an argument for it's own methods.
-   * Example:
-   * <?php
-   *   $overaged= new Query(Person::getPeer);
+   *
+   * Example
+   * =======
+   * <code>
+   *   $overaged= new Query(Person::getPeer());
    *   $overaged->addRestriction(
    *     Restrictions::greaterThan(
    *       SQLFuctions::getdate(),
    *       SQLFunctions::dateadd('year', 21, Person::column('b_date'))
    *     )
    *   );
-   *
+   *   
    *   // query to select all persons who's age are under 16 years
    *   $underaged= new Query(Person::getPeer);
    *   $underaged->addRestriction(
@@ -32,12 +38,15 @@
    *       SQLFuctions::getdate()
    *     )
    *   );
-   *
+   *   
    *   // get all persons from the person table that are not customers yet
    *   // We assume that the Customer table and the Person table have an equal
    *   // column structure. If not you have to add a projection to the criteria.
-   *   SetOperation::except(SetOperation::union($overaged, $underaged), new Query(Customer::getPeer()))->fetchArray();
-   * ?>
+   *   SetOperation::except(
+   *     SetOperation::union($overaged, $underaged), 
+   *     new Query(Customer::getPeer())
+   *   )->fetchArray();
+   * </code>
    *
    * @see      xp://rdbms.query.SelectQuery
    * @see      xp://rdbms.query.Query
@@ -58,7 +67,7 @@
         self::INTERCEPT     => '%s intercept %s',
         self::INTERCEPT_ALL => '%s intercept all %s',
         self::EXCEPT        => '%s except %s',
-        self::EXCEPT_ALL    => '%s exCept all %s',
+        self::EXCEPT_ALL    => '%s except all %s',
       );
    
     private

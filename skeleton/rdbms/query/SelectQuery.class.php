@@ -14,8 +14,7 @@
    * This class implements the SelectQueryExecutable interface,
    * so it can be reused by the methods of SetOperation
    *
-   * <?php
-   *  
+   * <code>
    *   // query to select all persons who's age are over 21 years
    *   $overaged= new Query(Person::getPeer);
    *   $overaged->addRestriction(
@@ -24,7 +23,7 @@
    *       SQLFunctions::dateadd('year', 21, Person::column('b_date'))
    *     )
    *   );
-   *
+   *   
    *   // query to select all persons who's age are under 16 years
    *   $underaged= new Query(Person::getPeer);
    *   $underaged->addRestriction(
@@ -33,21 +32,20 @@
    *       SQLFuctions::getdate()
    *     )
    *   );
-   *
+   *   
    *   // get overaged persons
    *   $overaged->fetchArray();
+   *   
    *   // get underaged persons
    *   $underaged->fetchArray();
+   *   
    *   // get both
    *   SetOperation::union($overaged, $underaged)->fetchArray();
-   *
-   * ?>
-   *
-   *   
+   * </code>
    *
    * @see      xp://rdbms.query.SetOperation
    * @see      xp://rdbms.query.Query
-   * @purpose  rdbms.query
+   * @purpose  SelectQueryExecutable implementation
    */
   class SelectQuery extends Query implements SelectQueryExecutable {
 
