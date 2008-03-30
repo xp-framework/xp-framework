@@ -11,6 +11,7 @@
    * not really existing files
    *
    * @purpose Provide access to nonexistant files
+   * @deprecated Obsolete.
    */
   class VirtualFileManager extends Object {
     
