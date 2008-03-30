@@ -48,13 +48,13 @@
      *
      */
     #[@test]
-    public function ioIsContainingPackageForIoDotStreams() {
+    public function containingPackage() {
       $this->assertEquals(
-        $this->root->packageNamed('io'),
-        $this->root->packageNamed('io.streams')->containingPackage()
+        $this->root->packageNamed('io.collections'),
+        $this->root->packageNamed('io.collections.iterate')->containingPackage()
       );
     }
-    
+
     /**
      * Test containingPackage() method
      *
@@ -62,6 +62,18 @@
     #[@test]
     public function ioIsATopLevelPackage() {
       $this->assertNull($this->root->packageNamed('io')->containingPackage());
+    }
+
+    /**
+     * Test containingPackage() method
+     *
+     */
+    #[@test]
+    public function topLevelContainingPackage() {
+      $this->assertEquals(
+        $this->root->packageNamed('io'),
+        $this->root->packageNamed('io.streams')->containingPackage()
+      );
     }
     
     /**
@@ -94,6 +106,17 @@
     public function subPackageOfSubPackageIsNotContained() {
       $this->assertFalse($this->root->packageNamed('io')->contains(
         $this->root->packageNamed('io.collections.iterate')
+      ));
+    }
+
+    /**
+     * Test contains() method
+     *
+     */
+    #[@test]
+    public function parallelPackageIsNotContained() {
+      $this->assertFalse($this->root->packageNamed('io.collections')->contains(
+        $this->root->packageNamed('io.streams')
       ));
     }
   }
