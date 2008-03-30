@@ -57,7 +57,7 @@
      */
     public function contains(PackageDoc $other) {
       if (FALSE === ($p= strrpos($other->name, '.'))) return FALSE;
-      return 0 === strncmp($this->name, $other->name, $p);
+      return $this->name === substr($other->name, 0, $p);
     }
 
     /**
