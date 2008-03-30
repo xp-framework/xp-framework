@@ -8,6 +8,7 @@ package net.xp_framework.easc.server;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
+import javax.net.ssl.SSLException;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.lang.ref.WeakReference;
@@ -130,6 +131,9 @@ public class ServerThread extends Thread {
 
                 // Create a new thread that will handle this client
                 (new HandlerThread(this.handler, accepted, this.context)).start();
+            } catch (SSLException e) {
+                System.out.println("---> SSL not set up properly, stopping server.");
+                this.stopped= true;
             } catch (IOException ignored) { }
         }
     }

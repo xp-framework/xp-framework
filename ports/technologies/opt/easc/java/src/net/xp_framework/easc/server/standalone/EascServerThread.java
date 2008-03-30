@@ -7,14 +7,21 @@ package net.xp_framework.easc.server.standalone;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.InputStream;
 import java.lang.reflect.Proxy;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.util.Hashtable;
 import java.lang.ref.WeakReference;
-import java.util.Properties;
-import javax.ejb.EJBHome;
 
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+
+import javax.ejb.EJBHome;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -38,10 +45,15 @@ import net.xp_framework.easc.protocol.standard.SerializerContext;
  * 
  */
 public class EascServerThread {
-    private ServerThread server = null;
-
-    private InetAddress address = null;
-    private int port = 14446;
+    protected ServerThread server = null;
+    protected InetAddress address = null;
+    protected int port            = 14446;
+  
+    // Members for SSL support
+    protected boolean enableSsl   = false;
+    protected KeyStore keyStore   = null;
+    protected String keyStorePath = "resources/easc-default.keystore";
+    protected String keyStorePass = "no-password";
 
     /**
      * Set port
@@ -77,6 +89,31 @@ public class EascServerThread {
     }
     
     /**
+     * Enable or disable SSL
+     *
+     */
+    public void enableSsl(boolean enable) {
+        this.enableSsl= enable;
+    }    
+    
+    /**
+     * Check whether SSL is en- or disabled.
+     *
+     */
+    public boolean sslEnabled() {
+        return this.enableSsl;
+    }
+    
+    /**
+     * Set new keystore to use for EASC. This overrides any system 
+     * properties that may be defined.
+     *
+     */
+    public void setKeyStore(KeyStore keyStore) {
+        this.keyStore= keyStore;
+    }
+    
+    /**
      * Perform static setup with global ServerContext
      *
      */
@@ -96,15 +133,80 @@ public class EascServerThread {
     }
     
     /**
+     * Helper method to load keystore from resource
+     *
+     */
+    protected KeyStore getKeyStore() throws IOException, GeneralSecurityException {
+        if (null != this.keyStore)
+            return this.keyStore;
+        
+        KeyStore keyStore= KeyStore.getInstance(KeyStore.getDefaultType());
+
+        InputStream stream= null;
+        try {
+
+            // Load keyStore from locate where this class was loaded from
+            stream= this.getClass().getClassLoader().getResourceAsStream(this.keyStorePath);
+            keyStore.load(stream, this.keyStorePass.toCharArray());
+
+            // Print out subject of used certificate
+            java.util.Enumeration<String> e= keyStore.aliases();
+            while (e.hasMoreElements()) {
+                String alias= e.nextElement();
+                System.out.println("---> Certificate: " + 
+                    ((java.security.cert.X509Certificate)keyStore.getCertificate(alias)).
+                        getSubjectX500Principal().getName()
+                );
+            }
+        } finally {
+            if (stream != null) {
+                stream.close();
+            }
+        }
+        
+        return keyStore;
+    }
+    
+    /**
      * Set up server context
      *
      */
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
+        final String envKeyStore= "javax.net.ssl.keyStore";
         ServerContext sctx = new InvocationServerContext();
         EascServerThread.setup(sctx);
+        ServerSocket ss= null;
+        
+        if (true == this.enableSsl) {
+        
+            // See http://javadoc.xp-framework.net//technotes/guides/security/jsse/JSSERefGuide.html
+            SSLContext context= null;
+        
+            // If System property has been set, use given keystore, otherwise
+            // use default keystore provided by EASC jar.
+            if (null != this.keyStore || null == System.getProperty(envKeyStore)) {
+            
+                System.out.println("===> Setting up EASC default SSL certificate.");
+                // Register keyStore in KeyManagerFactory used to initialize SSLContext
+                KeyManagerFactory kmf= KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+                kmf.init(this.getKeyStore(), this.keyStorePass.toCharArray());
+
+                context= SSLContext.getInstance("SSLv3");
+                context.init(kmf.getKeyManagers(), null, null);
+            } else {
+            
+                // A keyStore has been set through system properties, so just use that...
+                System.out.println("---> Using SSL keystore file: " + System.getProperty(envKeyStore));
+                context= SSLContext.getDefault();
+            }
+
+            ss= context.getServerSocketFactory().createServerSocket(this.port);
+        } else {
+            ss= new ServerSocket(this.port);
+        }
         
         // if address is null, ServerSocket will bind to all interfaces
-        this.server= new ServerThread(new ServerSocket(this.port, 1, this.address));
+        this.server= new ServerThread(ss);
         this.server.setHandler(new InvocationServerHandler());
         this.server.setContext(sctx);
     }

@@ -43,6 +43,11 @@ You should see the following in the logfile:
   Starting net.xp_framework.easc:service=EascService
   Started net.xp_framework.easc:service=EascService
 
+Security
+--------
+EASC makes use of Java's JSSE security system.
+Please see README.SSL for more information on SSL.
+
 Testing
 -------
 To verify the bean has been deployed, you can use the JMX console

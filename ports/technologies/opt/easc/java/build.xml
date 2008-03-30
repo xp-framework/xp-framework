@@ -199,8 +199,9 @@
 
     <!-- Generate MBean SAR -->
     <jar jarfile="${dist.dir}/${dist.name}-${dist.version}.sar">
-	  <zipfileset dir="${dist.resourcesdir}" includes="jboss-service.xml" prefix="META-INF"/>
-	  <fileset dir="${build.destdir}" includes="net/xp_framework/easc/**"/>
+      <zipfileset dir="${dist.resourcesdir}" includes="jboss-service.xml" prefix="META-INF"/>
+      <zipfileset dir="${dist.resourcesdir}" includes="easc-default.keystore" prefix="resources"/>
+      <fileset dir="${build.destdir}" includes="net/xp_framework/easc/**"/>
     </jar>
   </target>
 </project>
