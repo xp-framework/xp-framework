@@ -9,10 +9,10 @@
   );
 
   /**
-   * belongs to the Criterion API
-   * strore a List of projections
+   * Stores a list of projections
+   * 
    * Do not use this class, use the factory rdbms.criterion.Projections instead
-   * <?php
+   * <code>
    *   // select only the fields name and surname from the table Person
    *   // sql: select name, surname from person;
    *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
@@ -20,6 +20,7 @@
    *     ->add(Person::column('name'))
    *     ->add(Person::column('surname'))
    *   ));
+   *   
    *   // is short for
    *   Person::getPeer()->doSelect(create(new Criteria())->setProjection(
    *     Projections::projectionList()
@@ -35,11 +36,11 @@
    *     ),
    *     'name'
    *   ));
-   * ?>
+   * </code>
    *
-   * @test    xp://net.xp_framework.unittest.rdbms.ProjectionListTest
-   * @see     xp://rdbms.criterion.Projections
-   * @purpose rdbms.criterion
+   * @test     xp://net.xp_framework.unittest.rdbms.ProjectionListTest
+   * @see      xp://rdbms.criterion.Projections
+   * @purpose  Projections
    */
   class ProjectionList extends Object implements Projection {
     protected
