@@ -1,0 +1,23 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * PostgreSQL support for RDBMS api.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>pgsql</tt></li>
+ *   <li>Depends on PHP extension <tt>pgsql</tt></li>
+ * </ul>
+ * 
+ * @see      php://pgsql
+ * @see      http://postgresql.org/
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.pgsql {
+}

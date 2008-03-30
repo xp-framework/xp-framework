@@ -1,0 +1,23 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * MySQL support for RDBMS api.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>mysql</tt></li>
+ *   <li>Depends on PHP extension <tt>mysql</tt></li>
+ * </ul>
+ * 
+ * @see      php://mysql
+ * @see      http://mysql.com/
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.mysql {
+}

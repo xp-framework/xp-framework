@@ -1,0 +1,23 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Sybase support for RDBMS api.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>sybase</tt></li>
+ *   <li>Depends on PHP extension <tt>sybase_ct</tt></li>
+ * </ul>
+ * 
+ * @see      php://sybase
+ * @see      http://sybase.com/
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.sybase {
+}

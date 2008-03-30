@@ -1,0 +1,23 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * SQLite support for RDBMS api.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>sqlite</tt></li>
+ *   <li>Depends on PHP extension <tt>sqlite</tt></li>
+ * </ul>
+ * 
+ * @see      php://sqlite
+ * @see      http://sqlite.org/
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.sqlite {
+}
