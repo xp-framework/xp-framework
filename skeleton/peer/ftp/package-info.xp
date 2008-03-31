@@ -1,0 +1,48 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Implements FTP (File Transfer Protocol) - client and server.
+ *
+ * Example: Uploading
+ * ==================
+ * <code>
+ *   with ($c= new FtpConnection('ftp://user:pass@example.com/')); {
+ *     $c->connect();
+ *     
+ *     // Upload index.txt to the connection's root directory
+ *     $c->rootDir()->file('index.txt')->uploadFrom(
+ *       new FileInputStream(new File('index.txt')),
+ *       FTP_ASCII
+ *     );
+ *     
+ *     $c->close();
+ *   }
+ * </code>
+ *
+ * Example: Listing
+ * ================
+ * <code>
+ *   with ($c= new FtpConnection('ftp://user:pass@example.com/')); {
+ *     $c->connect();
+ *     
+ *     // List root directory's contents
+ *     foreach ($c->rootDir()->entries() as $entry) {
+ *       Console::writeLine('- ', $entry);
+ *     }
+ *     
+ *     $c->close();
+ *   }
+ * </code>
+ *
+ * @see      http://xp-framework.net/rfc/0141
+ * @see      http://xp-framework.net/rfc/0140
+ * @see      xp://peer.ftp.FtpConnection - entry point class
+ * @see      rfc://959
+ * @purpose  FTP implementation
+ */
+package peer.ftp {
+}
