@@ -36,7 +36,7 @@
  *   with ($c= new HttpConnection('http://xp-framework.net/')); {
  *     $response= $c->get();
  *     Console::writeLine('Response: ', $response);
- *
+ *     
  *     while ($chunk= $response->readData()) {
  *       // ...
  *     }

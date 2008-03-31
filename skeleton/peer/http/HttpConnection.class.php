@@ -10,29 +10,20 @@
    * HTTP connection
    *
    * <code>
-   *   $c= &new HttpConnection('http://xp-framework.net/');
-   *   try(); {
-   *     $response= &$c->get(
-   *       array('a' => 'b'),
-   *       array(
-   *         new Header('X-Binford', '6100 (more power)'),
-   *         new BasicAuthorization('baz', 'bar'),
-   *         'Cookie' => 'username=fred; lastvisit=2004-01-10'
-   *       )
-   *     );
-   *     while ($buf= $response->readData()) {
-   *       var_dump($buf);
-   *       flush();
-   *     }
-   *   } if (catch('IOException', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
+   *   $c= new HttpConnection('http://xp-framework.net/');
+   *   $response= $c->get(
+   *     array('a' => 'b'),
+   *     array(
+   *       new Header('X-Binford', '6100 (more power)'),
+   *       new BasicAuthorization('baz', 'bar'),
+   *       'Cookie' => 'username=fred; lastvisit=2004-01-10'
+   *     )
+   *   );
+   *   Console::writeLine('Headers: ', $response);
    *   
-   *   var_dump($response);
+   *   while ($chunk= $response->readData()) {
+   *     // ...
+   *   }
    * </code>
    *
    * @see      rfc://2616
