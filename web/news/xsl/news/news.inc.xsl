@@ -49,7 +49,7 @@
    ! @purpose  Text markup
    !-->  
   <xsl:template match="blogentry">
-    <a title="Link to entry {@id}" href="{xp:link(concat('news/view?', @id))}">
+    <a title="Link to entry {@id}" href="{concat('/article/', @id, '/')}">
       <xsl:text>entry #</xsl:text><xsl:value-of select="@id"/>
     </a>
   </xsl:template>
