@@ -1,0 +1,51 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Implements HTTP (HyperText Transfer Protocol) and provides a client
+ * to interact with HTTP servers. The <tt>HttpConnection</tt> is the entry
+ * point class.
+ *
+ * Methods
+ * =======
+ * Different request methods are handled by <tt>HttpConnection</tt> class
+ * methods as follows:
+ * <ul>
+ *   <li>*GET* - via <tt>get()</tt></li>
+ *   <li>*POST* - via <tt>post()</tt></li>
+ *   <li>*HEAD* - via <tt>head()</tt></li>
+ *   <li>*PUT* - via <tt>put()</tt></li>
+ * </ul>
+ * Other methods (e.g. <tt>OPTIONS</tt>) are supported via <tt>request()</tt>.
+ *
+ * Headers
+ * =======
+ * The following code will show the response headers for a HEAD request:
+ * <code>
+ *   with ($c= new HttpConnection('http://xp-framework.net/')); {
+ *     Console::writeLine($c->head()->toString());
+ *   }
+ * </code>
+ *
+ * Getting data
+ * ============
+ * <code>
+ *   with ($c= new HttpConnection('http://xp-framework.net/')); {
+ *     $response= $c->get();
+ *     Console::writeLine('Response: ', $response);
+ *
+ *     while ($chunk= $response->readData()) {
+ *       // ...
+ *     }
+ *   }
+ * </code>
+ * 
+ * @see      xp://peer.http.HttpConnection - entry point class
+ * @see      rfc://2616
+ * @purpose  HTTP implementation
+ */
+package peer.http {
+}
