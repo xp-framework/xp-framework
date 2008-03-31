@@ -42,7 +42,20 @@
  *     }
  *   }
  * </code>
- * 
+ *
+ * SSL support
+ * ===========
+ * This API also supports SSL connections - based on the scheme given to
+ * <tt>HttpConnection</tt>'s constructor the <tt>HttpRequestFactory</tt> 
+ * class will create an SSL connection. This is transparent from the outside,
+ * the rest of the calls are the same!
+ *
+ * Example:
+ * <code>
+ *   $c= new HttpConnection('https://example.com/');
+ * </code>
+ * Note: SSL connections depend on the PHP extension <tt>curl</tt>!
+ *
  * @see      xp://peer.http.HttpConnection - entry point class
  * @see      rfc://2616
  * @purpose  HTTP implementation
