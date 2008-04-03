@@ -263,10 +263,7 @@
           $key,
           (in_array($key, $peer->primary) ? 'PK' : ''), 
           ($key == $peer->identity ? ',I' : ''),
-          (is('Generic', $this->$key) 
-            ? $this->$key->toString()
-            : var_export($this->$key, 1)
-          )
+          xp::stringOf($this->$key)
         )."\n";
       }
       return $s.'}';
@@ -294,13 +291,12 @@
     /**
      * Update this object in the database by specified criteria
      *
-     * @param   rdbms.Criteria criteria
+     * @param   rdbms.SQLExpression criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    public function doUpdate($criteria) {
-      $peer= $this->getPeer();
-      $affected= $peer->doUpdate($this->_changed, $criteria);
+    public function doUpdate(SQLExpression $criteria) {
+      $affected= $this->getPeer()->doUpdate($this->_changed, $criteria);
       $this->_changed= array();
       return $affected;
     }
@@ -308,13 +304,12 @@
     /**
      * Delete this object from the database by specified criteria
      *
-     * @param   rdbms.Criteria criteria
+     * @param   rdbms.SQLExpression criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    public function doDelete($criteria) {
-      $peer= $this->getPeer();
-      $affected= $peer->doDelete($criteria);
+    public function doDelete(SQLExpression $criteria) {
+      $affected= $this->getPeer()->doDelete($criteria);
       $this->_changed= array();
       return $affected;
     }
@@ -343,7 +338,7 @@
 
       $peer= $this->getPeer();
       if (empty($peer->primary)) {
-        throw(new SQLStateException('No primary key'));
+        throw new SQLStateException('No primary key for table '.$peer->getTable());
       }
       $criteria= new Criteria();
       foreach ($peer->primary as $key) {
@@ -380,7 +375,7 @@
     public function delete() { 
       $peer= $this->getPeer();
       if (empty($peer->primary)) {
-        throw(new SQLStateException('No primary key'));
+        throw new SQLStateException('No primary key for table '.$peer->getTable());
       }
       $criteria= new Criteria();
       foreach ($peer->primary as $key) {

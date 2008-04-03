@@ -183,7 +183,7 @@
      * @param   rdbms.Transaction transaction
      * @return  rdbms.Transaction
      */
-    public function begin($transaction) {
+    public function begin(Transaction $transaction) {
       return $this->getConnection()->begin($transaction);
     }
     
@@ -236,7 +236,7 @@
      * @return  rdbms.Record[]
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function doSelect($criteria, $max= 0) {
+    public function doSelect(SQLExpression $criteria, $max= 0) {
       $r= array();
       for ($i= 1, $it= $this->iteratorFor($criteria); $it->hasNext() && (!$max || $i <= $max); $i++) {
         $r[]= $it->next();
@@ -248,10 +248,10 @@
      * Returns an iterator for a select statement
      *
      * @param   rdbms.SQLExpression criteria or statement
-     * @return  lang.XPIterator
+     * @return  util.XPIterator
      * @see     xp://lang.XPIterator
      */
-    public function iteratorFor($criteria) {
+    public function iteratorFor(SQLExpression $criteria) {
       $jp= $criteria->isJoin() ? new JoinProcessor($this) : NULL;
       $rs= $criteria->executeSelect($this->getConnection(), $this, $jp);
 
@@ -332,11 +332,11 @@
      * Update this object in the database by specified criteria
      *
      * @param   array values
-     * @param   rdbms.Criteria criteria
+     * @param   rdbms.SQLExpression criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */
-    public function doUpdate($values, $criteria) {
+    public function doUpdate($values, SQLExpression $criteria) {
       $db= $this->getConnection();
 
       // Build the update command
@@ -357,11 +357,11 @@
     /**
      * Delete this object from the database by specified criteria
      *
-     * @param   rdbms.Criteria criteria
+     * @param   rdbms.SQLExpression criteria
      * @return  int number of affected rows
      * @throws  rdbms.SQLException in case an error occurs
      */  
-    public function doDelete($criteria) {
+    public function doDelete(SQLExpression $criteria) {
       $db= $this->getConnection();
 
       // Send it
