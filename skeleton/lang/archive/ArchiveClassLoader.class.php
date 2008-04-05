@@ -87,9 +87,7 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) {
-        return substr(array_search($class, xp::$registry), 6);
-      }
+      if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
 
       xp::$registry['classloader.'.$class]= 'lang.archive.ArchiveClassLoader://'.substr($this->archive, 6, -1);
       $package= NULL;

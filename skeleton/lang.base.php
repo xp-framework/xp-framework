@@ -187,7 +187,8 @@
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
     static function reflect($str) {
-      return substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1);
+      $l= array_search($str, xp::$registry);
+      return $l ? substr($l, 6) : substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1);
     }
     // }}}
 
