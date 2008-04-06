@@ -59,6 +59,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added security.password package
+  (friebe)
 - Added ENUM class type to text.doclet API - ClassDoc::isEnum() will return
   true and ClassDoc::classType() will yield ENUM_CLASS if this classdoc 
   object represents a subclass of lang.Enum.
