@@ -35,68 +35,82 @@ and filter approach is used:
   }
 ?>
 
-New
-~~~
-The new invoke.Methods class provides static methods to factor selectors.
+Annotation class
+~~~~~~~~~~~~~~~~
+The new invoke.Annotation class provides a fast alternative to searching
+for methods annotated with a certain annotation.
+
 <?php
-  // Find all methods with @inject annotation in some.annotated.Class
-  foreach (Methods::annotatedWith('inject')->of(XPClass::forName('some.annotated.Class')) as $m) {
-    $value= $m->getAnnotation('inject');
-    // ...
-  }
-
-  foreach (Methods::findAll()->annotatedWith('inject')->in(XPClass::forName('some.annotated.Class')) as $m) {
-    $value= $m->getAnnotation('inject');
-    // ...
-  }
-
-// XXX  
-  foreach (Methods::where(Member::isAnnotatedWith('inject'))->of(XPClass::forName('some.annotated.Class')) as $m) {
+  class Annotation extends Object {
   
-  }
-
-  foreach (Methods::findAll()->where(Member::isAnnotatedWith('inject'))->in(XPClass::forName('some.annotated.Class')) as $m) {
-    $value= $m->getAnnotation('inject');
-    // ...
-  }
-
-  // Find all protected methods with @handle annotation in some.annotated.Class
-
-// XXX  
-  foreach (Methods::all(
-    Member::isAccessible(MODIFIER_PROTECTED),
-    Member::isAnnotatedWith('handle')
-  )->of(XPClass::forName('some.annotated.Class')) as $m) {
-  
-  }
-
-  foreach (Methods::findAll()->whereAnyOf(
-    Member::isAccessible(MODIFIER_PROTECTED),
-    Member::isAnnotatedWith('handle')
-  )->in(XPClass::forName('some.annotated.Class')) as $m) {
-    $value= $m->getAnnotation('handle');
-    // ...
-  }
-
-  // Find all methods with @inject or @arg annotation in some.annotated.Class
-
-// XXX  
-  foreach (Methods::any(
-    Member::isAnnotatedWith('inject'), 
-    Member::isAnnotatedWith('arg')
-  )->of(XPClass::forName('some.annotated.Class')) as $m) {
-  
-  }
-  
-  foreach (Methods::findAll()->whereEitherOf(
-    Member::isAnnotatedWith('inject'),
-    Member::isAnnotatedWith('arg')
-  )->in(XPClass::forName('some.annotated.Class')) as $m) {
-    if ($m->hasAnnotation('inject')) {
-      // ...
-    } else if ($m->hasAnnotation('arg')) {
+    /**
+     * Find methods annotated with this annotation
+     *
+     * @param   mixed class either a string with the fully qualified class name or an XPClass
+     * @return  invoke.MethodSet
+     */
+    public static function forName($name) {
       // ...
     }
+    
+    /**
+     * Find methods annotated with this annotation
+     *
+     * @param   mixed class either a string with the fully qualified class name or an XPClass
+     * @return  invoke.MethodSet
+     */
+    public function methodsOf($class) {
+      // ...
+    }
+  }
+?>
+
+Usage:
+<?php
+  foreach (Annotation::forName('test')->methodsOf('some.test.Class') as $m) {
+    // ...
+  }
+?>
+
+Methods class
+~~~~~~~~~~~~~
+The new invoke.Methods class provides static methods to factor selectors.
+
+<?php
+  class Methods extends Object {
+  
+    /**
+     * Get all methods by a selection
+     *
+     * @param   string pattern
+     * @return  invoke.Selection
+     * @throws  util.NoSuchElementException in case no method is found
+     */
+    public static function getAll($pattern) {
+      // ...
+    }
+
+    /**
+     * Get all methods by a selection
+     *
+     * @param   string pattern
+     * @return  invoke.Selection
+     */
+    public static function findAll($pattern) {
+      // ...
+    }
+  }
+?>
+
+Examples:
+<?php
+  foreach (Methods::getAll('[@test] public *()')->in('some.test.Class') as $m) {
+    // ...
+  }
+  
+  foreach (Methods::findAll('[@inject] public *(ioc.Resource)')->in('some.ioc.Class') as $m) {
+    $value= $m->getAnnotation('inject');
+    // ...
   }
 ?>
 
