@@ -17,38 +17,26 @@
   /**
    * Message formatter
    *
-   * 
    * <code>
-   *   $mf= &new MessageFormat(
+   *   $mf= new MessageFormat(
    *     '{2,date,%Y-%m-%d} The disk "{1}" contains {0,printf,%4d} file(s)'
    *   );
-   *   $message= array();
-   *   try(); {
-   *     $message[]= $mf->format(1282, 'MyDisk', new Date(time()));
-   *     $message[]= $mf->format(42, 'HomeDisk', new Date(time()));
-   *   } if (catch('FormatException', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
    *   
-   *   var_dump($message);
+   *   Console::writeLine($mf->format(1282, 'MyDisk', Date::now()));
+   *   Console::writeLine($mf->format(42, 'HomeDisk', Date::now()));
    * </code>
    *
    * <code>
-   *   $mf= &new MessageFormat(
+   *   $mf= new MessageFormat(
    *     'The disk "{1}" contains {0,choice,0:no files|1:one file|*:{0,number,0#,#`} files}.'
-   *   );  
-   *   $message= array();
-   *   try(); {
-   *     $message[]= $mf->format(1282, 'MyDisk');
-   *     $message[]= $mf->format(1, 'MyDisk');
-   *     $message[]= $mf->format(0, 'MyDisk');
-   *   } if (catch('FormatException', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
+   *   );
    *   
-   *   var_dump($message);
+   *   $message= array();
+   *   $message[]= $mf->format(1282, 'MyDisk');
+   *   $message[]= $mf->format(1, 'MyDisk');
+   *   $message[]= $mf->format(0, 'MyDisk');
+   *   
+   *   Console::writeLine($message);
    * </code>
    *
    * @purpose  Format strings

@@ -31,7 +31,7 @@
      */   
     public function __construct($uri) {
       $this->uri= $uri;
-      $this->setCreationDate(new Date(time()));
+      $this->setCreationDate(Date::now());
     }
     
     /**
