@@ -29,6 +29,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed wrong date creation in util.Message which created wrong sending
+  dates
+  (hinckel)
 - Fixed newinstance() and create() for fully qualified classes
   (friebe)
 - Fixed xml.DomXSLProcessor to produce meaningful error messages in

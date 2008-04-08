@@ -98,7 +98,7 @@
      */
     public function __construct($uid= -1) {
       $this->uid= $uid;
-      $this->date= new Date(time());
+      $this->date= new Date();
       
     }
     
