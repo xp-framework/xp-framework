@@ -48,7 +48,8 @@
         
         // Specially mark timestamps for parsing (we assume here that strings
         // containing only digits are timestamps)
-        $this->date= date_create('@'.$in);
+        $this->date= date_create('@'.$in, timezone_open('UTC'));
+        date_timezone_set($this->date, timezone_open(date_default_timezone_get()));
       } else if (FALSE === ($this->date= $timezone instanceof TimeZone
         ? date_create($in, $timezone->getHandle())
         : date_create($in)
