@@ -243,7 +243,7 @@
       date_default_timezone_set('Europe/Athens');
       $date= new Date('2007-11-20 21:45:33 Europe/Berlin');
       $this->assertEquals('Europe/Berlin', $date->getTimeZone()->getName());
-      $this->assertEquals('+0100', $date->getTimeZone()->getOffset());
+      $this->assertEquals('+0100', $date->getOffset());
       
       $copy= unserialize(serialize($date));
       $this->assertEquals('+0100', $copy->getOffset());
