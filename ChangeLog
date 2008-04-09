@@ -29,6 +29,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.Date's constructor with timestamps
+  (doebele, kiesel)
 - Fixed wrong date creation in util.Message which created wrong sending
   dates
   (hinckel)

@@ -344,6 +344,18 @@
     }
     
     /**
+     * Test dates created with a timestamp are in correct timezone if
+     * a timezone has been passed.
+     *
+     */
+    #[@test]
+    public function testTimestampWithTZ() {
+      $d= new Date(328336200, new TimeZone('Australia/Sydney'));
+      $this->assertEquals('Australia/Sydney', $d->getTimeZone()->getName());
+    }
+    
+    
+    /**
      * Test PHP Bug #42910 - timezone should not fallback to default
      * timezone if it actually is unknown.
      *
