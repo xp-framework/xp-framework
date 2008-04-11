@@ -33,6 +33,30 @@ Inheritance
 </pre>
 
 
+Sybase
+~~~~~~
+* Error code: 1205
+* Can be retrieved by: sybase_query('select @@error')
+* See also:
+  http://manuals.sybase.com/onlinebooks/group-as/asg1250e/svrtsg/@Generic__BookTextView/24868;pt=24673/*
+
+
+MySQL
+~~~~~
+* Error code: 1213 (SQLSTATE: 40001 (ER_LOCK_DEADLOCK))
+* Can be retrieved by: mysql_errno()
+* See also:
+  http://dev.mysql.com/doc/refman/5.0/en/error-messages-server.html
+
+
+PostgreSQL
+~~~~~~~~~~
+* Error code: 40P01 DEADLOCK DETECTED 
+* Can be retrieved by: pg_result_status() / pg_result_error_field()
+* See also:
+  http://www.postgresql.org/docs/8.0/static/errcodes-appendix.html
+
+
 Security considerations
 -----------------------
 n/a
@@ -50,8 +74,7 @@ n/a
 
 Related documents
 -----------------
-n/a
-
+- http://www.xaprb.com/blog/2006/08/08/how-to-deliberately-cause-a-deadlock-in-mysql/
 
 Comments
 --------
