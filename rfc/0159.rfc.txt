@@ -1,0 +1,59 @@
+RFC 0159: Deadlock handling
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Fri Apr 11 17:38:39     2008
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+A new class rdbms.SQLDeadlockException will be introduced. The rdbms 
+drivers will handle dead lock situations specially and throw this new
+exception instead of a generic SQLStatementFailedException.
+
+
+Rationale
+---------
+Deadlocks are a very special case in database systems and often need
+special programmatic handling.
+
+
+Functionality
+-------------
+
+Inheritance
+~~~~~~~~~~~
+<pre>
+ lang.Throwable
+ `- lang.XPException
+    `- rdbms.SQLException
+       `- rdbms.SQLDeadlockException
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Neglectible.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
