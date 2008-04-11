@@ -75,6 +75,7 @@ n/a
 Related documents
 -----------------
 - http://www.xaprb.com/blog/2006/08/08/how-to-deliberately-cause-a-deadlock-in-mysql/
+- http://xp-framework.net/rfc/contrib/rfc0159.diff
 
 Comments
 --------
