@@ -88,6 +88,83 @@ Index: skeleton/rdbms/sybase/SybaseResultSet.class.php
        }
        return TRUE;
      }
+Index: skeleton/rdbms/SQLDeadlockException.class.php
+===================================================================
+--- skeleton/rdbms/SQLDeadlockException.class.php	(revision 0)
++++ skeleton/rdbms/SQLDeadlockException.class.php	(revision 0)
+@@ -0,0 +1,54 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('rdbms.SQLException');
++
++  /**
++   * Indicates a deadlock occured
++   * 
++   * @purpose  SQL-Exception
++   */
++  class SQLDeadlockException extends SQLException {
++    public 
++      $sql  = '';
++
++    /**
++     * Constructor
++     *
++     * @param   string message
++     * @param   string sql default NULL the SQL query string sent
++     */
++    public function __construct($message, $sql= NULL) {
++      parent::__construct($message);
++      $this->sql= $sql;
++    }
++
++    /**
++     * Get SQL
++     *
++     * @return  string
++     */
++    public function getSql() {
++      return $this->sql;
++    }
++
++    /**
++     * Return compound message of this exception.
++     *
++     * @return  string
++     */
++    public function compoundMessage() {
++      return sprintf(
++        "Exception %s (deadlock: %s) {\n".
++        "  %s\n".
++        "}\n",
++        $this->getClassName(),
++        $this->message,
++        $this->sql
++      );
++    }
++  }
++?>
+
+Property changes on: skeleton/rdbms/SQLDeadlockException.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/rdbms/DBConnection.class.php
+===================================================================
+--- skeleton/rdbms/DBConnection.class.php	(revision 12005)
++++ skeleton/rdbms/DBConnection.class.php	(working copy)
+@@ -8,6 +8,7 @@
+     'rdbms.SQLException',
+     'rdbms.SQLConnectException',
+     'rdbms.SQLStateException',
++    'rdbms.SQLDeadlockException',
+     'rdbms.SQLStatementFailedException',
+     'rdbms.SQLConnectionClosedException',
+     'rdbms.DBEvent',
 Index: skeleton/rdbms/DBTableAttribute.class.php
 ===================================================================
 --- skeleton/rdbms/DBTableAttribute.class.php	(revision 12005)
