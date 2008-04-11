@@ -33,6 +33,20 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
        }
        return TRUE;
      }
+@@ -209,11 +208,11 @@
+       $sql= call_user_func_array(array($this, 'prepare'), $args);
+ 
+       if (!is_resource($this->handle)) {
+-        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
++        if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+         
+         // Check for subsequent connection errors
+-        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect'));
++        if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
+       }
+       
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 @@ -233,17 +232,19 @@
            // Sybase:  Client message:  Read from SQL server failed. (severity 78)
            //
@@ -61,6 +75,19 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
        }
        
        if (TRUE === $result) {
+Index: skeleton/rdbms/sybase/SybaseResultSet.class.php
+===================================================================
+--- skeleton/rdbms/sybase/SybaseResultSet.class.php	(revision 12005)
++++ skeleton/rdbms/sybase/SybaseResultSet.class.php	(working copy)
+@@ -39,7 +39,7 @@
+      */
+     public function seek($offset) { 
+       if (!sybase_data_seek($this->handle, $offset)) {
+-        throw(new SQLException('Cannot seek to offset '.$offset));
++        throw new SQLException('Cannot seek to offset '.$offset);
+       }
+       return TRUE;
+     }
 Index: skeleton/rdbms/DBTableAttribute.class.php
 ===================================================================
 --- skeleton/rdbms/DBTableAttribute.class.php	(revision 12005)
@@ -103,11 +130,53 @@ Index: skeleton/rdbms/DBTableAttribute.class.php
       * Returns whether this attribute is an identity field
       *
       * @return  bool
+Index: skeleton/rdbms/pgsql/PostgreSQLResultSet.class.php
+===================================================================
+--- skeleton/rdbms/pgsql/PostgreSQLResultSet.class.php	(revision 12005)
++++ skeleton/rdbms/pgsql/PostgreSQLResultSet.class.php	(working copy)
+@@ -38,7 +38,7 @@
+      */
+     public function seek($offset) { 
+       if (!pg_data_seek($this->handle, $offset)) {
+-        throw(new SQLException('Cannot seek to offset '.$offset));
++        throw new SQLException('Cannot seek to offset '.$offset);
+       }
+       return TRUE;
+     }
 Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
 ===================================================================
 --- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(revision 12005)
 +++ skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(working copy)
-@@ -190,33 +190,54 @@
+@@ -21,7 +21,6 @@
+    * @purpose  Database connection
+    */
+   class PostgreSQLConnection extends DBConnection {
+-  
+      private
+        $formatter= NULL;
+ 
+@@ -51,7 +50,7 @@
+       }
+ 
+       if (!is_resource($this->handle)) {
+-        throw(new SQLConnectException(rtrim(pg_last_error()), $this->dsn));
++        throw new SQLConnectException(rtrim(pg_last_error()), $this->dsn);
+       }
+       
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+@@ -80,9 +79,9 @@
+      * @throws  rdbms.SQLStatementFailedException
+      */
+     public function selectdb($db) {
+-      throw(new SQLStatementFailedException(
++      throw new SQLStatementFailedException(
+         'Cannot select database, not implemented in PostgreSQL'
+-      ));
++      );
+     }
+ 
+     /**
+@@ -190,33 +189,54 @@
        $sql= call_user_func_array(array($this, 'prepare'), $args);
  
        if (!is_resource($this->handle)) {
@@ -179,10 +248,134 @@ Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
      }
      
      /**
+Index: skeleton/rdbms/sqlite/SQLiteResultSet.class.php
+===================================================================
+--- skeleton/rdbms/sqlite/SQLiteResultSet.class.php	(revision 12005)
++++ skeleton/rdbms/sqlite/SQLiteResultSet.class.php	(working copy)
+@@ -38,7 +38,7 @@
+      */
+     public function seek($offset) { 
+       if (!sqlite_seek($this->handle, $offset)) {
+-        throw(new SQLException('Cannot seek to offset '.$offset));
++        throw new SQLException('Cannot seek to offset '.$offset);
+       }
+       return TRUE;
+     }
+Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
+===================================================================
+--- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(revision 12005)
++++ skeleton/rdbms/sqlite/SQLiteConnection.class.php	(working copy)
+@@ -50,9 +50,8 @@
+    * @purpose  Database connection
+    */
+   class SQLiteConnection extends DBConnection {
+-  
+-     private
+-       $formatter= NULL;
++    private
++      $formatter= NULL;
+ 
+     /**
+      * Connect
+@@ -80,7 +79,7 @@
+       }
+ 
+       if (!is_resource($this->handle)) {
+-        throw(new SQLConnectException($err, $this->dsn));
++        throw new SQLConnectException($err, $this->dsn);
+       }
+       
+       $this->getFormatter()->dialect->registerCallbackFunctions($this->handle);
+@@ -110,9 +109,9 @@
+      * @throws  rdbms.SQLStatementFailedException
+      */
+     public function selectdb($db) {
+-      throw(new SQLStatementFailedException(
++      throw new SQLStatementFailedException(
+         'Cannot select database, not implemented in SQLite'
+-      ));
++      );
+     }
+ 
+     /**
+@@ -220,11 +219,11 @@
+       $sql= call_user_func_array(array($this, 'prepare'), $args);
+ 
+       if (!is_resource($this->handle)) {
+-        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
++        if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+         
+         // Check for subsequent connection errors
+-        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
++        if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
+       }
+       
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+@@ -237,11 +236,11 @@
+       
+       if (FALSE === $result) {
+         $e= sqlite_last_error($this->handle);
+-        throw(new SQLStatementFailedException(
++        throw new SQLStatementFailedException(
+           'Statement failed: '.sqlite_error_string($e), 
+           $sql, 
+           $e
+-        ));
++        );
+       }
+ 
+       if (TRUE === $result) {
 Index: skeleton/rdbms/mysql/MySQLConnection.class.php
 ===================================================================
 --- skeleton/rdbms/mysql/MySQLConnection.class.php	(revision 12005)
 +++ skeleton/rdbms/mysql/MySQLConnection.class.php	(working copy)
+@@ -22,7 +22,7 @@
+    * @purpose  Database connection
+    */
+   class MySQLConnection extends DBConnection {
+-    public
++    private
+       $formatter= NULL;
+ 
+     /**
+@@ -75,7 +75,7 @@
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+ 
+       if (!is_resource($this->handle)) {
+-        throw(new SQLConnectException(mysql_error(), $this->dsn));
++        throw new SQLConnectException(mysql_error(), $this->dsn);
+       }
+ 
+       // Figure out sql_mode and update formatter's escaperules accordingly
+@@ -120,11 +120,11 @@
+      */
+     public function selectdb($db) {
+       if (!mysql_select_db($db, $this->handle)) {
+-        throw(new SQLStatementFailedException(
++        throw new SQLStatementFailedException(
+           'Cannot select database: '.mysql_error($this->handle), 
+           'use '.$db,
+           mysql_errno($this->handle)
+-        ));
++        );
+       }
+       return TRUE;
+     }
+@@ -235,11 +235,11 @@
+       $sql= call_user_func_array(array($this, 'prepare'), $args);
+ 
+       if (!is_resource($this->handle)) {
+-        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
++        if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+         
+         // Check for subsequent connection errors
+-        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
++        if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
+       }
+       
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 @@ -254,19 +254,21 @@
          switch ($e= mysql_errno($this->handle)) {
            case 2006: // MySQL server has gone away
@@ -210,3 +403,16 @@ Index: skeleton/rdbms/mysql/MySQLConnection.class.php
          }
        }
        
+Index: skeleton/rdbms/mysql/MySQLResultSet.class.php
+===================================================================
+--- skeleton/rdbms/mysql/MySQLResultSet.class.php	(revision 12005)
++++ skeleton/rdbms/mysql/MySQLResultSet.class.php	(working copy)
+@@ -39,7 +39,7 @@
+      */
+     public function seek($offset) { 
+       if (!mysql_data_seek($this->handle, $offset)) {
+-        throw(new SQLException('Cannot seek to offset '.$offset));
++        throw new SQLException('Cannot seek to offset '.$offset);
+       }
+       return TRUE;
+     }
