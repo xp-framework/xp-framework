@@ -17,7 +17,7 @@
    *
    * @purpose  State
    */
-  class AbstractApiState extends AbstractState {
+  abstract class AbstractApiState extends AbstractState {
   
     /**
      * Returns which entry to display
