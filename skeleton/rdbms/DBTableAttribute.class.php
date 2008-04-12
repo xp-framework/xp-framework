@@ -44,7 +44,7 @@
     public 
       $name=        '',
       $type=        -1,
-      $ident=       FALSE,
+      $identity=    FALSE,
       $nullable=    FALSE,
       $length=      0,
       $precision=   0,
@@ -77,7 +77,24 @@
       $this->length= $length;
       $this->precision= $precision;
       $this->scale= $scale;
-      
+    }
+    
+    /**
+     * Returns true if another object is equal to this table attribute
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && (
+        $this->name === $cmp->name &&
+        $this->type === $cmp->type &&
+        $this->identity === $cmp->identity &&
+        $this->nullable === $cmp->nullable &&
+        $this->length === $cmp->length &&
+        $this->precision === $cmp->precision &&
+        $this->scale === $cmp->scale
+      );
     }
     
     /**
