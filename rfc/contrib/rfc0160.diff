@@ -1,0 +1,152 @@
+Index: skeleton/xml/DomXSLProcessor.class.php
+===================================================================
+--- skeleton/xml/DomXSLProcessor.class.php	(revision 12010)
++++ skeleton/xml/DomXSLProcessor.class.php	(working copy)
+@@ -5,6 +5,7 @@
+  */
+ 
+   uses(
++    'xml.Tree',
+     'xml.TransformerException',
+     'io.FileNotFoundException',
+     'xml.IXSLProcessor',
+@@ -127,13 +128,29 @@
+     }
+ 
+     /**
++     * Set XSL from a tree
++     *
++     * @param   xml.Tree xsl
++     */
++    public function setXSLTree(Tree $xsl) {
++      libxml_get_last_error() && libxml_clear_errors();
++
++      $this->stylesheet= new DOMDocument();
++      $this->stylesheet->loadXML($xsl->getDeclaration().$xsl->getSource(INDENT_NONE));
++      strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
++      $this->baseURI= $this->_base.':tree';
++      
++      $this->_checkErrors($xsl);
++    }
++
++    /**
+      * Set XML file
+      *
+      * @param   string file file name
+      */
+     public function setXMLFile($file) {
+       if (!file_exists($this->_base.$file)) {
+-        throw(new FileNotFoundException($this->_base.$file.' not found'));
++        throw new FileNotFoundException($this->_base.$file.' not found');
+       }
+       
+       libxml_get_last_error() && libxml_clear_errors();
+@@ -159,6 +176,20 @@
+     }
+ 
+     /**
++     * Set XML from a tree
++     *
++     * @param   xml.Tree xml
++     */
++    public function setXMLTree(Tree $xml) {
++      libxml_get_last_error() && libxml_clear_errors();
++
++      $this->document= new DOMDocument();
++      $this->document->loadXML($xml->getDeclaration().$xml->getSource(INDENT_NONE));
++
++      $this->_checkErrors($xml);
++    }
++
++    /**
+      * Set XSL transformation parameters
+      *
+      * @param   array params associative array { param_name => param_value }
+Index: skeleton/xml/IXSLProcessor.class.php
+===================================================================
+--- skeleton/xml/IXSLProcessor.class.php	(revision 12010)
++++ skeleton/xml/IXSLProcessor.class.php	(working copy)
+@@ -53,6 +53,13 @@
+      * @param   string xsl the XSL as a string
+      */
+     public function setXSLBuf($xsl);
++
++    /**
++     * Set XSL from a tree
++     *
++     * @param   xml.Tree xsl
++     */
++    public function setXSLTree(Tree $xsl);
+     
+     /**
+      * Set XML file
+@@ -69,6 +76,13 @@
+     public function setXMLBuf($xml);
+ 
+     /**
++     * Set XML from a tree
++     *
++     * @param   xml.Tree xml
++     */
++    public function setXMLTree(Tree $xml);
++
++    /**
+      * Set XSL transformation parameters
+      *
+      * @param   array params associative array { param_name => param_value }
+Index: ports/classes/net/xp_framework/unittest/xml/AbstractProcessorTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/AbstractProcessorTest.class.php	(revision 12019)
++++ ports/classes/net/xp_framework/unittest/xml/AbstractProcessorTest.class.php	(working copy)
+@@ -118,6 +118,24 @@
+     }
+ 
+     /**
++     * Tests setXMLTree() method
++     *
++     */
++    #[@test]
++    public function setXMLTree() {
++      $this->processor->setXMLTree(new Tree('document'));
++    }
++
++    /**
++     * Tests setXMLTree() method
++     *
++     */
++    #[@test, @expect('xml.TransformerException')]
++    public function setMalformedXMLTree() {
++      $this->processor->setXMLTree(new Tree('<!>'));    // xml.Tree does not check this!
++    }
++
++    /**
+      * Tests setXMLBuf() method
+      *
+      */
+@@ -172,6 +190,26 @@
+     }
+ 
+     /**
++     * Tests setXSLTree() method
++     *
++     */
++    #[@test]
++    public function setXSLTree() {
++      $t= new Tree('xsl:stylesheet');
++      $t->root->setAttribute('xmlns:xsl', 'http://www.w3.org/1999/XSL/Transform');
++      $this->processor->setXSLTree($t);
++    }
++
++    /**
++     * Tests setXSLTree() method
++     *
++     */
++    #[@test, @expect('xml.TransformerException')]
++    public function setMalformedXSLTree() {
++      $this->processor->setXSLTree(new Tree('<!>'));    // xml.Tree does not check this!
++    }
++
++    /**
+      * Tests the setParam() and getParam() methods
+      *
+      */

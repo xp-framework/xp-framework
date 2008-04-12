@@ -1,0 +1,74 @@
+RFC 0160: xml.IXSLProcessor::setXMLTree() / setXSLTree()
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Apr 12 13:35:44     2008
+@status: draft
+@category: xml
+
+Scope of Change
+---------------
+Two new methods will be added to the xml.IXSLProcessor interface and
+implementing classes: setXMLTree() and setXSLTree().
+
+
+Rationale
+---------
+Allow for a separate implementation.
+
+
+Functionality
+-------------
+
+New methods
+~~~~~~~~~~~
+<?php
+  interface IXSLProcessor {
+    // ...
+    
+    /**
+     * Set XSL from a tree
+     *
+     * @param   xml.Tree xsl
+     */
+    public function setXSLTree(Tree $xsl);
+
+    /**
+     * Set XML from a tree
+     *
+     * @param   xml.Tree xml
+     */
+    public function setXMLTree(Tree $xml);
+
+    // ...
+  }
+?>
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+Neglectible.
+
+
+Dependencies
+------------
+- xml.DomXSLProcessor changes
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0160.diff
+  Implementing patch
+
+
+Comments
+--------
+
+
+
+<EOF>
