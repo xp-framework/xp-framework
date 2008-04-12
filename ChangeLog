@@ -66,6 +66,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made lang.base.php use PHP_INT_MAX for LONG_MIN / LONG_MAX values 
+  instead of calculating it manually. Saves on function call.
+  (friebe)
 - Added security.password package
   (friebe)
 - Added ENUM class type to text.doclet API - ClassDoc::isEnum() will return
