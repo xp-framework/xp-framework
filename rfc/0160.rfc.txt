@@ -95,7 +95,8 @@ Related documents
 
 Comments
 --------
-
-
+- friebe, Sat Apr 12 14:03:42     2008
+  The above class a patch to the scriptlet.xml.XMLScriptletResponse class
+  which makes it use the new API.
 
 <EOF>
