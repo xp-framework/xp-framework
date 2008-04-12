@@ -116,6 +116,8 @@ n/a
 Related documents
 -----------------
 - http://www.xaprb.com/blog/2006/08/08/how-to-deliberately-cause-a-deadlock-in-mysql/
+- http://www.blacksheepnetworks.com/security/resources/bossconsulting/sybase_dba/sublevels/deadlock.info
+- http://www.compuspec.net/reference/database/sybase/deadlock.shtml
 - http://xp-framework.net/rfc/contrib/rfc0159.diff
 
 Comments
