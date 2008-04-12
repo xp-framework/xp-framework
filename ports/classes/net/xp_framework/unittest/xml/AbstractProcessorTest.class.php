@@ -82,6 +82,96 @@
     }
 
     /**
+     * Tests setXMLFile() method
+     *
+     */
+    #[@test, @expect('io.FileNotFoundException')]
+    public function setNonExistantXMLFile() {
+      $this->processor->setXMLFile(':does-no-exist:');
+    }
+
+    /**
+     * Tests setXMLFile() method
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function setMalformedXMLFile() {
+      $this->processor->setXMLFile($this->includeUri('malformed'));
+    }
+
+    /**
+     * Tests setXMLFile() method
+     *
+     */
+    #[@test]
+    public function setXMLFile() {
+      $this->processor->setXMLFile($this->includeUri('include'));
+    }
+
+    /**
+     * Tests setXMLBuf() method
+     *
+     */
+    #[@test]
+    public function setXMLBuf() {
+      $this->processor->setXMLBuf('<document/>');
+    }
+
+    /**
+     * Tests setXMLBuf() method
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function setMalformedXMLBuf() {
+      $this->processor->setXMLBuf('this-is-not-valid<XML>');
+    }
+
+    /**
+     * Tests setXSLFile() method
+     *
+     */
+    #[@test, @expect('io.FileNotFoundException')]
+    public function setNonExistantXSLFile() {
+      $this->processor->setXSLFile(':does-no-exist:');
+    }
+
+    /**
+     * Tests setXSLFile() method
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function setMalformedXSLFile() {
+      $this->processor->setXSLFile($this->includeUri('malformed'));
+    }
+
+    /**
+     * Tests setXSLFile() method
+     *
+     */
+    #[@test]
+    public function setXSLFile() {
+      $this->processor->setXSLFile($this->includeUri('include'));
+    }
+
+    /**
+     * Tests setXSLBuf() method
+     *
+     */
+    #[@test]
+    public function setXSLBuf() {
+      $this->processor->setXSLBuf('<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"/>');
+    }
+
+    /**
+     * Tests setXSLBuf() method
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function setMalformedXSLBuf() {
+      $this->processor->setXSLBuf('<xsl stylsheet!');
+    }
+
+    /**
      * Tests the setParam() and getParam() methods
      *
      */
