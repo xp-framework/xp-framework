@@ -43,12 +43,13 @@
     public function compoundMessage() {
       return sprintf(
         "Exception %s (%s) {\n".
-        "  Unable to connect to %s@%s - using password: %s\n".
+        "  Unable to connect to %s@%s%s - using password: %s\n".
         "}\n",
         $this->getClassName(),
         $this->message,
         $this->dsn->getUser(),
         $this->dsn->getHost(),
+        $this->dsn->getPort() ? ':'.$this->dsn->getPort() : '',
         $this->dsn->getPassword() ? 'yes' : 'no'
       );
     }

@@ -59,13 +59,13 @@
 
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= mysql_pconnect(
-          $this->dsn->getHost(), 
+          $this->dsn->getHost().':'.$this->dsn->getPort(3306), 
           $this->dsn->getUser(), 
           $this->dsn->getPassword()
         );
       } else {
         $this->handle= mysql_connect(
-          $this->dsn->getHost(), 
+          $this->dsn->getHost().':'.$this->dsn->getPort(3306), 
           $this->dsn->getUser(), 
           $this->dsn->getPassword(),
           ($this->flags & DB_NEWLINK)
@@ -75,7 +75,7 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_resource($this->handle)) {
-        throw(new SQLConnectException(mysql_error(), $this->dsn));
+        throw new SQLConnectException(mysql_error(), $this->dsn);
       }
 
       // Figure out sql_mode and update formatter's escaperules accordingly
