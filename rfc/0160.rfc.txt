@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sat Apr 12 13:35:44     2008
-@status: draft
+@status: discussion, ends Mon Apr 14 18:00:00     2008
 @category: xml
 
 Scope of Change
@@ -42,6 +42,33 @@ New methods
     public function setXMLTree(Tree $xml);
 
     // ...
+  }
+?>
+
+Example
+~~~~~~~
+<?php
+  with ($proc= new DomXSLProcessor()); {
+    
+    // Create a stylesheet
+    $s= new Stylesheet();
+    $s->setOutputMethod('text');
+    
+    // Add template
+    $t= $s->addChild(new Node('xsl:template', NULL, array('match' => '/document')));
+    $t->addChild(new Node('xsl:value-of', NULL, array('select' => 'name')));
+    
+    // Create a tree
+    $t= new Tree();
+    $t->addChild(new Node('name', 'Timm'));
+    
+    // Pass them to the processor
+    $proc->setXSLTree($s);  // instead of $proc->setXSLBuf($s->getDeclaration().$s->getSource());
+    $proc->setXMLTree($t);  // instead of $proc->setXMLBuf($t->getDeclaration().$t->getSource());
+    
+    // Run transformation
+    $proc->run();
+    $result= $proc->output();
   }
 ?>
 
