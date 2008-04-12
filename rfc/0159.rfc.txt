@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Apr 11 17:38:39     2008
-@status: draft
+@status: discussion, ends Wed Apr 16 12:05:00     2008
 @category: rdbms
 
 Scope of Change
@@ -31,7 +31,30 @@ Inheritance
     `- rdbms.SQLException
        `- rdbms.SQLDeadlockException
 </pre>
-
+Example (current usage)
+~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $conn= DriverManager::getConnection('sybase://...');
+  
+  try {
+    $tran= $conn->begin(new Transaction('update'));
+    $conn->query('...');
+    $conn->query('...');
+  } catch (SQLStatementFailedException $e) {
+    if (1205 == $e->getErrorcode()) {
+      // Handle deadlock
+    } else {
+      $tran && $tran->rollback();
+      // Handle other statement errors
+    }
+  } catch (SQLException $e) {
+    $tran && $tran->rollback();
+    // Handle other errors
+  }
+?>
+Problems with this approach:
+* The error code is driver-specific
+* Complicated sourcecode
 
 Sybase
 ~~~~~~
@@ -55,6 +78,24 @@ PostgreSQL
 * Can be retrieved by: pg_result_status() / pg_result_error_field()
 * See also:
   http://www.postgresql.org/docs/8.0/static/errcodes-appendix.html
+
+
+Example (new functionality)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  $conn= DriverManager::getConnection('sybase://...');
+  
+  try {
+    $tran= $conn->begin(new Transaction('update'));
+    $conn->query('...');
+    $conn->query('...');
+  } catch (SQLDeadlockException $e) {
+    // Handle deadlock
+  } catch (SQLException $e) {
+    $tran && $tran->rollback();
+    // Handle other situations
+  }
+?>
 
 
 Security considerations
