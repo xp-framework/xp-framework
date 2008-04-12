@@ -512,8 +512,8 @@
   ini_set('magic_quotes_runtime', FALSE);
   
   // Constants
-  define('LONG_MAX', is_int(2147483648) ? 9223372036854775807 : 2147483647);
-  define('LONG_MIN', -LONG_MAX - 1);
+  define('LONG_MAX', PHP_INT_MAX);
+  define('LONG_MIN', -PHP_INT_MAX - 1);
 
   // Hooks
   set_error_handler('__error');
