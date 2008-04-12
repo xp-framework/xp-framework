@@ -192,7 +192,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletResponse.class.php
 -        $this->document->getDeclaration()."\n".
 -        $this->document->getSource(FALSE)
 -      );
-+      $this->processor->setXMLTree($this->document->getDeclaration());
++      $this->processor->setXMLTree($this->document);
        
        // Transform XML/XSL
        try {
