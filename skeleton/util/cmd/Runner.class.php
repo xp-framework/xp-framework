@@ -336,8 +336,8 @@
 
           try {
             $method->invoke($instance, $args);
-          } catch (Throwable $e) {
-            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getMessage());
+          } catch (TargetInvocationException $e) {
+            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getCause()->compoundMessage());
             return 2;
           }
         }
