@@ -66,10 +66,10 @@
   </xsl:template>
 
   <!--
-   ! Links to a state in this site
+   ! Links to an XP RFC
    !-->
-  <xsl:template match="link[@rel= 'state']">
-    <a href="/xml/{@href}"><xsl:value-of select="."/></a>
+  <xsl:template match="link[@rel= 'rfc']">
+    <a href="http://xp-framework.net/rfc/{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
 
   <!--
