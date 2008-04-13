@@ -350,6 +350,30 @@
     }
 
     /**
+     * Test link with caption
+     *
+     */
+    #[@test]
+    public function linkWithCaption() {
+      $this->assertEquals(
+        '<link href="core/classloading" rel="doc">Classloading</link>',
+        $this->builder->markupFor('[doc://core/classloading Classloading]')
+      );
+    }
+
+    /**
+     * Test ranges are not confused with inline links
+     *
+     */
+    #[@test]
+    public function ranges() {
+      $this->assertEquals(
+        'The pattern is [a-z0-9]',
+        $this->builder->markupFor('The pattern is [a-z0-9]')
+      );
+    }
+
+    /**
      * Test :-) and :)
      *
      */
