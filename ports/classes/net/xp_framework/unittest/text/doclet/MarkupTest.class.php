@@ -284,7 +284,7 @@
     #[@test]
     public function httpLink() {
       $this->assertEquals(
-        '<link href="http://xp-framework.net/"/>',
+        '<link href="xp-framework.net/" rel="http"/>',
         $this->builder->markupFor('http://xp-framework.net/')
       );
     }
@@ -296,7 +296,7 @@
     #[@test]
     public function httpsLink() {
       $this->assertEquals(
-        '<link href="https://login.xp-framework.net/"/>',
+        '<link href="login.xp-framework.net/" rel="https"/>',
         $this->builder->markupFor('https://login.xp-framework.net/')
       );
     }
@@ -358,6 +358,18 @@
       $this->assertEquals(
         '<link href="core/classloading" rel="doc">Classloading</link>',
         $this->builder->markupFor('[doc://core/classloading Classloading]')
+      );
+    }
+
+    /**
+     * Test link with caption
+     *
+     */
+    #[@test]
+    public function httpLinkWithCaption() {
+      $this->assertEquals(
+        '<link href="thekid.de" rel="http">Timm\'s homepage</link>',
+        $this->builder->markupFor('[http://thekid.de Timm\'s homepage]')
       );
     }
 
