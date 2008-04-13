@@ -17,7 +17,7 @@
       $patterns= array(
         '#<#',
         '#>#',
-        '#&lt;(/?(ul|li|ol|tt))&gt;#',
+        '#&lt;(/?(ul|li|ol|tt|em))&gt;#',
         '#\r#',
         '#\n\n#',
         '#&(?![a-z0-9\#]+;)#',
