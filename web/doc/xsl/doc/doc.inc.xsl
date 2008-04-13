@@ -66,11 +66,26 @@
   </xsl:template>
 
   <!--
+   ! Links to a state in this site
+   !-->
+  <xsl:template match="link[@rel= 'state']">
+    <a href="/xml/{@href}"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <!--
+   ! Links without caption
+   !-->
+  <xsl:template match="link[string(.) = '']">
+    <a href="{@rel}://{@href}"><xsl:value-of select="concat(@rel, '://', @href)"/></a>
+  </xsl:template>
+
+  <!--
    ! Links
    !-->
   <xsl:template match="link">
-    <a href="{@href}"><xsl:value-of select="@href"/></a>
+    <a href="{@rel}://{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
+
 
   <!--
    ! Summary
