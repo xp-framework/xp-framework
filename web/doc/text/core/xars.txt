@@ -2,4 +2,94 @@
 XAR archives
 ============
 The XP framework comes with a facility to bundle classes and resources into
-archives - called <em>XAR</em>s.
+archives - called <em>XAR</em>s. They are the rough equivalent of Unix TAR 
+archives, Java's JAR archives and PHP's PHAR archives.
+
+Class loading support
+---------------------
+XAR archives can be added to the class path just like directories:
+<pre>
+  include_path=".:/home/thekid/classes:/usr/local/xp/5.6.6/xp-rt-5.6.6.xar"
+</pre>
+This setting will make the class loader search for classes in:
+<ol>
+  <li>The current directory ("<tt>.</tt>")</li>
+  <li>The directory <tt>/home/thekid/classes</tt></li>
+  <li>The archive <tt>/usr/local/xp/5.6.6/xp-rt-5.6.6.xar</tt></li>
+</ol>
+To register a XAR archive at runtime, use the following sourcecode:
+<code>
+  with ($f= new File('/home/thekid/lib', 'de-thekid.xar')); {
+    ClassLoader::registerLoader(new ArchiveClassLoader(new Archive($f)));
+  }
+</code>
+
+
+The xar utility
+---------------
+To work with xar archives, the XP framework comes along with the <tt>xar</tt> 
+command line utility.
+
+Creating archives
+~~~~~~~~~~~~~~~~~
+To create xar archive containing all the files inside a given directory,
+use the following:
+<pre>
+  $ cd /home/thekid/classes
+  $ ls *
+    /home/thekid/classes/de:
+    thekid
+  
+  # Add all files in de/ (recursively)
+  $ xar cvf de-thekid.xar de
+  
+  # All files in de/ *and* a single other file
+  $ xar cvf de-thekid.xar de META-INF/manifest.ini
+</pre>
+<em>Note: For convenience, well-known version-control directories (<tt>.svn</tt>, 
+<tt>CVS</tt>) are excluded by default!</em>
+
+Listing an archive's contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The files contained in an archive can be listed as follows:
+<pre>
+  $ xar tvf de-thekid.xar
+     2.055 de/thekid/scriptlet/state/HomeState.class.php
+     1.091 de/thekid/auth/Authenticator.class.php
+    14.656 de/thekid/auth/impl/DatabaseAuthenticator.class.php
+</pre>
+
+Extracting
+~~~~~~~~~~
+To extract files from an archive to the current working directory:
+<pre>
+  # Extract all files
+  $ xar xvf de-thekid.xar
+  
+  # Extract only a single file
+  $ xar xvf de-thekid.xar de/thekid/auth/Authenticator.class.php
+
+  # Extract all files inside de/thekid/auth (recursively)
+  $ xar xvf de-thekid.xar de/thekid/auth
+</pre>
+<em>Note: Files and directories are created if necessary. Existing files
+are overwritten without inquiry!</em>
+
+Viewing files inside an archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Showing archives files' contents is like extracting them, with the 
+difference that nothing will be written to the filesystem.
+<pre>
+  $ xar svf de-thekid.xar de/thekid/auth/Authenticator.class.php
+    == de/thekid/auth/Authenticator.class.php ==
+    <?php
+      interface Authenticator {
+        // ...
+      }
+    ?>
+</pre>
+
+History
+-------
+XARs as a core concept were first introduced in October 2006 - see
+http://xp-framework.net/rfc/0074 for details.
