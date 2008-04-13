@@ -1,0 +1,142 @@
+
+Generics
+========
+To best explain what generics are let's start with a non-generic example 
+of a container class:
+
+Example
+-------
+<code>
+  class Container extends Object {
+    public $elements= array();      
+    
+    public function add(Generic $o) {      
+      $this->elements[]= $o;    
+    }  
+  }
+</code>
+
+The Container's <tt>add()</tt> method accepts any value, regardless of 
+its class. Imagine we were using this container to store - say - 
+integers, and suddenly someone was adding a string to this container:
+
+<code>
+  $container= new Container();  
+  $container->add(new Integer(5));  
+  $container->add(new Integer(1));    
+  
+  // ... and then somewhere later on:  
+  $container->add(new String('Hello'));    
+  
+  // ... and finally, somewhere completely different:  
+  foreach ($container->elements() as $number) {    
+    Console::writeLine($number->intValue());  
+  }
+</code>
+
+When the iteration reaches the offset containing the string object, 
+the program will die with a fatal error, because the string class does 
+not provide an <tt>intValue()</tt> method.
+
+Basically, what we want is that to prevent errors from happening by 
+failing fast - that is, at the point someone tries to insert something 
+into our container that we do not want to allow.
+
+This could be done by creating a subclass called <tt>IntegerContainer</tt> 
+and then checking on <tt>Integer</tt>s in the <tt>add()</tt> method. 
+But you can see where this will lead: An endless soup of <tt>XXXContainer</tt> 
+classes, one for every situation we need a container of <tt>XXX</tt> objects.
+
+We could also give the container class a constructor accepting a type 
+name in its constructor, e.g.: <tt>$container= new Container('Integer');</tt>. 
+This has the obvious downside that it might be hard to refactor old - 
+non-generic classes to accept generics.
+
+Introducing generics
+--------------------
+This is where generics come to help you. With generics, we can create a 
+"container of whatever" by using a special syntax:
+
+<code>
+  $container= create('Container<lang.types.Integer>');
+</code>  
+Read this as <em> *Create* a *Container* of *Integer* s</em>.
+
+We now change the <tt>Container</tt> class as follows:
+<code>
+  class Container extends Object {
+    public $elements= array();
+    public $__generic= array();
+  
+    public function add(Generic $o) {
+      if ($this->__generic && !$o instanceof $this->__generic[0]) {
+        throw new IllegalArgumentException(
+          'Argument '.xp::stringOf($o).' must be of '.$this->__generic[0]
+        );
+      }
+      $this->elements[]= $o;
+    }
+  }
+</code>
+...and then revisit the sourcecode example from above, we will see the 
+following behaviour:
+
+<code>
+  $container= create('new Container<lang.types.Integer>');
+  $container->add(new Integer(5));      // Works
+  $container->add(new Integer(1));      // - " -
+  $container->add(new String('Hello')); // Throws an IllegalArgumentException!
+</code>  
+
+
+Comparing to Java / C#
+----------------------
+The first and most noticeable difference is the syntax they are declared 
+and used in. While in Java and C#, the language itself supports generics, 
+the XP framework needs to simulate them on top of PHP5. Because the XP 
+framework is written purely in PHP and because userland PHP cannot modify 
+the language grammar nor the way the engine works, the syntax is a bit 
+kludgy. Java/C# syntax is as follows:
+
+<code>
+  class Container<T> {
+    // ...
+  
+    public void add(T t) {
+      // ...
+    }
+  }
+
+  Container<Integer> c= new Containe<Integer>();
+</code>
+The second most obvious difference is that in the XP framework, all type 
+checks occur at runtime, whereas Java and C# catch type errors when 
+compiling: 
+
+<code>
+  $c->add(new String('Hello')); // XP: Throws an IllegalArgumentException!
+  c.add(new String("Hello"));   // Java/C#: Compile-Time error!
+</code>
+
+
+Classes supporting generics
+---------------------------
+All the classes from the [package://util.collections util.collections] package 
+support generics:
+
+<ul>
+  <li>*HashTable* - a map of keys and values.</li>
+  <li>*HashSet* - a set (unique list) of objects.</li>
+  <li>*Vector* - a resizable list of objects.</li>
+  <li>*Queue* - a First-In-First-Out (FIFO) queue of objects.</li>
+  <li>*Stack* - a Last-In-First-Out (LIFO) stack of objects.</li>
+  <li>*LRUBuffer* - LRU (last recently used) buffer.</li>
+</ul>
+
+Further reading
+---------------
+[rfc://106 RFC #0106] contains more information about how generics work 
+in the XP framework. An introduction into Java generics is availabe at
+http://java.sun.com/docs/books/tutorial/java/generics/gentypes.html and 
+for C# they're explained [http://msdn2.microsoft.com/en-us/library/ms379564(VS.80).aspx over at MSDN].
+
