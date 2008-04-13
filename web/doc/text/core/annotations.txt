@@ -1,0 +1,87 @@
+
+Annotations
+===========
+Annotations are user-defined attributes that can be used to decorate 
+classes, interfaces, enums and methods.
+
+Declaration
+-----------
+To annotate an element, simply put an annotation "on top" of it:
+
+<code>
+  #[@bean(name= 'contract/history/1.0')]
+  class HistoryBean extends Object {
+  
+    #[@remote]
+    public function addAccess(Date $time, ContractId $contract, UserId $user) {
+      // ...
+    }
+  }
+</code>
+
+
+Access
+------
+Annotations can be retrieved by the [doc://core/reflection Reflection API].
+
+<code>
+  with ($class= XPClass::forName('HistoryBean')); {
+    $beanName= $class->getAnnotation('bean', 'name');
+    $isRemote= $class->getMethod('addAccess')->hasAnnotation('remote');
+  }
+</code>
+
+
+Syntax
+------
+The following describes how annotations must be written:
+<ul>
+  <li>All annotations begin with the hash sign ("#") (so that the PHP parser 
+      ignores them) and are then enclosed in square brackets ("[" and "]").
+  </li>
+  <li>Annotation tag names may be made up of any character from a-z and A-Z 
+      and the underscore ("_").
+  </li>
+  <li>Annotation tag names are case-sensitive.</li>
+  <li>Annotations may span multiple lines - each line must be preceded by
+      the hash sign ("#")
+  </li>
+</ul>
+
+Values
+------
+Annotations may or may not have values.
+<summary>
+Simple definition
+~~~~~~~~~~~~~~~~~
+In the simple annotation only a simple annotation tag exists.
+Example: <code> #[@test] </code>
+</summary>
+
+<summary>
+String value
+~~~~~~~~~~~~
+An annotation may have a string value associated to it. 
+Example: <code> #[@deprecated('Use foo() instead')] </code>
+</summary>
+
+<summary>
+Hash key/value pairs
+~~~~~~~~~~~~~~~~~~~~
+An annotation may have a hash map associated to it.
+Example: <code> #[@fromxml(xpath= '/root/element[position() = 3]/@id')] </code>
+
+Hash keys may consist of any character from a-z and A-Z and the 
+underscore ("_"). Key names are case sensitive.
+
+Multiple elements in a hash are separated by commas. 
+Example: <code> #[@inject(type= 'dbconnection', name= 'news'))] </code>
+
+Values may have an array associated with them:
+Example: <code> #[@restricted(roles = array('admin', 'root'))] </code>
+</summary>
+
+History
+-------
+Annotations first appeared in the XP framework as early as February 2005
+and were described in [rfc://0016 RFC #0016].
