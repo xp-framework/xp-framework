@@ -1,0 +1,182 @@
+
+Class loading
+=============
+In the XP framework, all classes are organized into packages. A package
+contains subpackages and classes. Any such item has a fully qualified 
+name consisting of the containing package's name and the name itself. 
+
+Naming
+------
+Qualified names may consist of any letter from <tt>[a..zA..Z]</tt>, the
+underscore (<tt>_</tt>) and may contain numbers <tt>[0..9]</tt> (except 
+at the beginning!). The name parts are separated by dots ("<tt>.</tt>").
+
+Examples
+~~~~~~~~
+<ul>
+  <li><tt>lang.XPClass</tt> - the class <tt>"XPClass"</tt> in the package
+      "<tt>lang</tt>" - represented by lang/XPClass.class.php
+  </li>
+  <li><tt>util.collections</tt> - the package "<tt>collections</tt>", a
+      a subpackage of the "<tt>util</tt>" package (util/collections).
+  </li>
+</ul>
+Additional classes to the framework should be named according to the 
+"reverse domain" principle also used in Java. The classes that form the
+Dialog application (a photoblog software) reside in <tt>de.thekid</tt>.
+
+uses()
+------
+Static dependencies can be written using the <tt>uses()</tt> statement as 
+follows:
+
+<code>
+  uses('util.cmd.Command', 'util.collections.HashTable');
+  
+  class PrintHash extends Command {
+    public function run() {
+      $hash= new HashTable();
+      // ...
+    }
+  }
+</code>
+
+Dynamically loading classes
+---------------------------
+To load a class using the default classloader the following can be used:
+
+<code>
+  ClassLoader::getDefault()->loadClass('util.collections.HashTable');
+</code>
+
+Usually we want to actually do something with this class, so we'd create
+an [class://lang.XPClass XPClass] instance from it. So instead of the
+above, the common practice is to write:
+
+<code>
+  $class= XPClass::forName('util.collections.HashTable');  // or:
+  $class= Package::forName('util.collections')->loadClass('HashTable');
+  
+  // Create an instance
+  $hash= $class->newInstance();
+</code>
+
+<em>For details on what can be done with these <tt>XPClass</tt> objects 
+have a look at the [doc://core/reflection Reflection documentation].</em>
+
+Exceptions
+----------
+Failure to load classes will result in a [class://lang.ClassNotFoundException ClassNotFoundException].
+Here's an abbreviated example from the scriptlet package:
+
+<code>
+  $name= $request->getURL()->getPath();
+  try {
+    return $this->package->loadClass($name)->newInstance();
+  } catch (ClassNotFoundException $e) {
+    throw new HttpScriptletException($name.' not found', HTTP_NOT_FOUND, $e);
+  }
+</code>
+
+Anonymous classes
+-----------------
+Used primarily as "throw-away" objects or as a substitution for closures,
+the XP framework allows for anonymous classes to be created via <tt>newinstance()</tt>:
+
+<code>
+  $cleanup= newinstance('lang.Runnable', array($this->base), '{
+    private $base;
+    
+    public function __construct(Folder $base) { 
+      $this->base= $base; 
+    }
+    
+    public function run() {
+      Console::writeLine("Cleaning temporary files in ", $this->base);
+    }
+  }');
+</code>
+<em>Classes created by <tt>newinstance()</tt> will be named using the base 
+class' local name (here: <tt>Runnable</tt>) and a unique identifier. Typically,
+this class will be named <tt>Runnable·1</tt>.</em>
+
+Proxy classes
+-------------
+To create anonymous instances from interfaces and pass control to a separate
+instances, the [class://lang.reflect.Proxy Proxy class] can be used:
+
+<code>
+  $handler= newinstance('lang.reflect.InvocationHandler', array(), '{
+    public function invoke($method, $args) {
+      Console::writeLine("Invoke ", $method, "(", $args, ")");
+    }
+  }');
+  $proxy= Proxy::newProxyInstance(
+    ClassLoader::getDefault(),
+    array(XPClass::forName('lang.Runnable')),
+    $handler
+  );
+  
+  // Will print "Invoke run([])" on the console output
+  $proxy->run();
+</code>
+
+This method is used in the [package://remote remote package] for example,
+where the invocation handler serializes the invocation, sends it to server, 
+reads the answer, unserializes it and return the obtained value.
+
+<em>Classes created by the Proxy class will be named using the prefix 
+"<tt>Proxy·</tt>" and a unique identifier.</em>
+
+ClassLoader
+-----------
+The [class://lang.ClassLoader Apidocs: lang.ClassLoader] class functions as 
+an entry point for all class loading operations. It maintains a list of 
+delegates which it asks to load classes, packages and resources. For each 
+distinct element in PHP's <tt>include_path</tt> setting, a class loader 
+delegate will be created.
+
+Given the following setting:
+<pre>
+  include_path=".:/home/thekid/classes:/usr/local/xp/5.6.6/xp-rt-5.6.6.xar"
+</pre>
+...the following instances will be created:
+<ol>
+  <li><tt>lang.FilesystemClassLoader<.></tt></li>
+  <li><tt>lang.FilesystemClassLoader</home/thekid/classes/></tt></li>
+  <li><tt>lang.archive.ArchiveClassLoader</usr/local/xp/5.6.6/xp-rt-5.6.6.xar></tt></li>
+</ol>
+<em>A note on distinction: In case the current working directory is 
+<tt>/home/thekid/classes</tt>, there will only be two delegates (#2 and 
+#3 from above). Uniqueness is determined by comparing the elements after
+having applied <tt>realpath()</tt> on them.</em>
+
+To programmatically add delegates, use the following:
+
+<code>
+  with ($f= new File('/home/thekid/lib', 'de-thekid.xar')); {
+    ClassLoader::registerLoader(new ArchiveClassLoader(new Archive($f)));
+  }
+</code>
+
+The class loading mechanism will search for classes by asking each of 
+its delegates if they provide classes by the given fully qualified names. 
+The first delegate classloader to return true will be asked to load the 
+given class.
+
+Inner workings
+--------------
+Once a class is found and has not been previously loaded, the following is 
+typically performed:
+<ol>
+  <li>Transform the fully qualified name to the storage name.
+      On Windows systems using the released XAR files, <tt>lang.XPClass</tt> 
+      becomes something like <tt>xar://c:/Opt/XP/5.6.6/lib/xp-rt-5.6.6.xar?lang/XPClass.class.php</tt>.
+  </li>
+  <li>Using PHP's stream wrapper functionality, the storage name is
+      passed to the <tt>include()</tt> statement.
+  </li>
+  <li>The class bytes are loaded and evaluated.</li>
+  <li>The class is registered. Its fully qualified name and the classloader
+      are stored for later reverse lookup.</li>
+</ol>
