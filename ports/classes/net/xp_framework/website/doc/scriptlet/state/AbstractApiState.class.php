@@ -39,7 +39,7 @@
     public function process($request, $response) {
       $storage= new FileSystemDocStorage(new Folder(PropertyManager::getInstance()
         ->getProperties('storage')
-        ->readString('storage', 'base')
+        ->readString('apidoc', 'base')
       ));
       $entry= $this->entryFor($request);
       try {
