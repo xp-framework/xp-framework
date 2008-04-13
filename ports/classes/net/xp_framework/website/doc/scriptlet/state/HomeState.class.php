@@ -4,49 +4,23 @@
  * $Id$
  */
 
-  uses(
-    'scriptlet.xml.workflow.AbstractState', 
-    'text.doclet.markup.MarkupBuilder',
-    'text.doclet.markup.DelegatingProcessor',
-    'io.File',
-    'io.FileUtil',
-    'util.PropertyManager'
-  );
+  uses('net.xp_framework.website.doc.scriptlet.state.AbstractDocState');
 
   /**
    * Handles /xml/home
    *
    * @purpose  State
    */
-  class HomeState extends AbstractState {
+  class HomeState extends AbstractDocState {
 
     /**
-     * Process this state.
+     * Returns which entry to display
      *
      * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @return  string entry name
      */
-    public function process($request, $response) {
-      sscanf($request->getQueryString(), '%[a-zA-Z_.]', $entry);
-      $entry || $entry= 'home';
-      
-      // Read from storage (XXX: Make exchangeable)
-      $text= FileUtil::getContents(new File(
-        PropertyManager::getInstance()->getProperties('storage')->readString('text', 'base'),
-        $entry.'.txt'
-      ));
-      
-      $builder= new MarkupBuilder();
-      
-      // Add <summary>...</summary>
-      $builder->registerProcessor('summary', newinstance('text.doclet.markup.DelegatingProcessor', array($builder->processors['default']), '{
-        public function tag() { return "summary"; }
-      }'));
-      
-      // Insert markup
-      $response->addFormresult(new Node('documentation', new PCData(
-        '<p>'.$builder->markupFor($text).'</p>'
-      )));
+    protected function entryFor($request) {
+      return 'home';
     }
   }
 ?>
