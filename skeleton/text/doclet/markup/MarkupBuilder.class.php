@@ -20,19 +20,41 @@
   class MarkupBuilder extends Object {
     public 
       $stack      = array(),
+      $processors = array(),
       $state      = array(
         'pre'   => 'copy',
         'xmp'   => 'copy',
         'code'  => 'code'
       );
 
-    public static 
-      $processors = array();
+    protected static 
+      $defaultProcessors = array();
 
     static function __static() {
-      self::$processors['default']= new DefaultProcessor();
-      self::$processors['copy']= new CopyProcessor();
-      self::$processors['code']= new CodeProcessor();
+      self::$defaultProcessors['default']= new DefaultProcessor();
+      self::$defaultProcessors['copy']= new CopyProcessor();
+      self::$defaultProcessors['code']= new CodeProcessor();
+    }
+    
+    /**
+     * Constructor.
+     *
+     */
+    public function __construct() {
+      $this->processors= self::$defaultProcessors;
+    }
+
+    /**
+     * Register a processor
+     *
+     * @param   string tag
+     * @param   text.doclet.markup.MarkupProcessor proc
+     */
+    public function registerProcessor($tag, MarkupProcessor $proc) {
+      with ($unid= $proc->hashCode()); {
+        $this->processors[$unid]= $proc;
+        $this->state[$tag]= $unid;
+      }
     }
 
     /**
@@ -63,7 +85,7 @@
      * @return  string
      */
     public function markupFor($text) {
-      $processor= $this->pushProcessor(self::$processors['default']);
+      $processor= $this->pushProcessor($this->processors['default']);
 
       $st= new StringTokenizer($text, '<>', $returnDelims= TRUE);
       $out= '';      
@@ -80,7 +102,7 @@
             $lookup= strtolower($tag);
 
             if (isset($this->state[$lookup])) {
-              $processor= $this->pushProcessor(self::$processors[$this->state[$lookup]]);
+              $processor= $this->pushProcessor($this->processors[$this->state[$lookup]]);
               $out.= $processor->initialize();
               continue;
             } else {
