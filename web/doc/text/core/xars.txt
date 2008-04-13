@@ -23,7 +23,7 @@ To register a XAR archive at runtime, use the following sourcecode:
     ClassLoader::registerLoader(new ArchiveClassLoader(new Archive($f)));
   }
 </code>
-
+<em>For further details on class loading see [doc://core/classloading here]</em>.
 
 The xar utility
 ---------------
