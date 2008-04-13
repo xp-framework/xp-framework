@@ -1,0 +1,159 @@
+
+Documentation overview
+======================
+The XP framework documentation
+
+FAQ
+---
+What is the XP framework? What is the XP framework's licence? And many
+more questions are answered here.
+
+History
+-------
+From the initial idea until where we are today!
+
+Core concepts
+-------------
+The framework consists of a number of core functionalities:
+
+<ul>
+  <li>[doc://core/classloading Class loading] - class naming, <tt>uses()</tt>, 
+      packages, static intializers, anonymous class creation
+  </li>
+  <li>[doc://core/xars XAR archives] - creating, using, class loading integration,
+      the <tt>xar</tt> command.
+  </li>
+  <li>[doc://core/types Type system] - the <tt>lang.Type</tt> class, primitives,
+      classes, type wrappers, type hierarchy
+  </li>
+  <li>[doc://core/generics Generics] - parametrized types, <tt>create()</tt>,
+      declaration, benefits
+  </li>
+  <li>[doc://core/reflection Reflection] - the <tt>lang.XPClass</tt> class,
+      invoking methods, accessing fields, packages, types
+  </li>
+  <li>[doc://core/annotations Annotations] - meta-data for classes, fields
+      and methods
+  </li>
+  <li>[doc://core/enum Type-safe enumerations] - the <tt>lang.Enum</tt> class,
+      attaching functionality to enum members</li>
+</ul>
+
+Examples
+--------
+This section will give an introduction to the basics of common tasks and 
+how to accomplish them using the XP framework. 
+
+Api documentation
+-----------------
+<em>See also: The [state://api complete overview].</em>
+
+<summary>
+Core
+~~~~
+Reflection, types, class loading, date manipulation, properties, profiling, 
+collections framework and logging. 
+
+Packages: [package://lang lang], [package://util util]
+</summary>
+
+<summary>
+I/O
+~~~
+Local and remote I/O, files, folders, archives, flatfile databases, sockets,
+servers and various protocols implementation. 
+
+Packages: [package://io io], [package://peer peer]
+</summary>
+
+<summary>
+Databases
+~~~~~~~~~
+RDBMS access APIs, connection manager, reverse engineering, O/R mapping. 
+
+Packages: [package://rdbms rdbms]
+</summary>
+
+<summary>
+XML
+~~~
+DOM- and SAX parsing, XPath, XSLT, tree and node data xml creation, XML / 
+object mapping. 
+
+Packages: [package://xml xml]
+</summary>
+
+<summary>
+Web
+~~~
+Http scriptlets, portlets API, XML / XSL based tier solution, SOAP, WDDX,
+JSON and XMLRPC
+
+Packages: [package://scriptlet scriptlet], [package://webservices webservices]
+</summary>
+
+<summary>
+Imaging
+~~~~~~~
+Image creation and manipulation, graphs, EXIF and IPTC extraction support.
+
+Packages: [package://img img]
+</summary>
+
+<summary>
+Text
+~~~~
+Encoders and decoders, formatting, tokenizing and parsing. 
+
+Packages: [package://text text]
+</summary>
+
+<summary>
+Remote
+~~~~~~
+Remote method invocation on Application Servers.
+
+Packages: [package://remote remote]
+</summary>
+
+<summary>
+Test-driven development
+~~~~~~~~~~~~~~~~~~~~~~~
+Unittests.
+
+Packages: [package://unittest unittest]
+</summary>
+
+
+Licensing
+---------
+<pre>
+Copyright (c) 2001-2008, XP-Framework Team
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+* Redistributions of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright
+  notice, this list of conditions and the following disclaimer in the
+  documentation and/or other materials provided with the distribution.
+* Neither the name of the XP-Framework nor the names of its
+  contributors may be used to endorse or promote products derived 
+  from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+</pre>
