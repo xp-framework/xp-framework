@@ -1,0 +1,5 @@
+
+XAR archives
+============
+The XP framework comes with a facility to bundle classes and resources into
+archives - called <em>XAR</em>s.
