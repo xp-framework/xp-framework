@@ -52,6 +52,13 @@
   </xsl:template>
 
   <!--
+   ! Links to api docs
+   !-->
+  <xsl:template match="link[@rel= 'class']">
+    <a href="/xml/api/class?{@href}"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <!--
    ! Links to a state in this site
    !-->
   <xsl:template match="link[@rel= 'state']">
