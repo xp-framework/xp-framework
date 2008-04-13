@@ -19,9 +19,14 @@
    */
   class MarkupBuilder extends Object {
     public 
-      $stack      = array();
+      $stack      = array(),
+      $state      = array(
+        'pre'   => 'copy',
+        'xmp'   => 'copy',
+        'code'  => 'code'
+      );
 
-    protected static 
+    public static 
       $processors = array();
 
     static function __static() {
@@ -58,12 +63,6 @@
      * @return  string
      */
     public function markupFor($text) {
-      static $state= array(
-        'pre'   => 'copy',
-        'xmp'   => 'copy',
-        'code'  => 'code'
-      );
-
       $processor= $this->pushProcessor(self::$processors['default']);
 
       $st= new StringTokenizer($text, '<>', $returnDelims= TRUE);
@@ -80,8 +79,8 @@
             $st->nextToken('>');
             $lookup= strtolower($tag);
 
-            if (isset($state[$lookup])) {
-              $processor= $this->pushProcessor(self::$processors[$state[$lookup]]);
+            if (isset($this->state[$lookup])) {
+              $processor= $this->pushProcessor(self::$processors[$this->state[$lookup]]);
               $out.= $processor->initialize();
               continue;
             } else {
@@ -91,7 +90,7 @@
             $st->nextToken('>');
             $lookup= ltrim(strtolower($tag), '/');
 
-            if (isset($state[$lookup])) {
+            if (isset($this->state[$lookup])) {
               $out.= $processor->finalize();
               $processor= $this->popProcessor();
               $st->nextToken("\n");
