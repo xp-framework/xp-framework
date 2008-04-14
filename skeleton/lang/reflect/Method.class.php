@@ -38,7 +38,7 @@
      * <code>
      *   $method= XPClass::forName('util.log.Logger')->getMethod('getInstance');
      *
-     *   var_dump($method->invoke($obj= NULL));
+     *   var_dump($method->invoke(NULL));
      * </code>
      *
      * @param   lang.Object obj
