@@ -32,11 +32,11 @@
      * @param   remote.server.deploy.Deployable deployment
      */
     public function deployBean($deployment) {
-      if (is('IncompleteDeployment', $deployment)) {
-        throw(new DeployException(
+      if ($deployment instanceof IncompleteDeployment) {
+        throw new DeployException(
           'Incomplete deployment originating from '.$deployment->origin, 
           $deployment->cause
-        ));
+        );
       }
 
       $this->cat && $this->cat->info($this->getClassName(), 'Begin deployment of', $deployment);

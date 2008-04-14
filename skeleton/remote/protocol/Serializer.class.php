@@ -177,9 +177,9 @@
      */
     public function mapping($token, $mapping) {
       if (NULL !== $mapping) {
-        if (!is('SerializerMapping', $mapping)) throw(new IllegalArgumentException(
+        if (!$mapping instanceof SerializerMapping) throw new IllegalArgumentException(
           'Given argument is not a SerializerMapping ('.xp::typeOf($mapping).')'
-        ));
+        );
 
         $this->mappings[$token]= $mapping;
         $this->_classMapping= array();
@@ -322,7 +322,7 @@
         case 'c': {     // builtin classes
           $type= $serialized->consumeWord();
           if (!isset($types[$type])) {
-            throw(new FormatException('Unknown type token "'.$type.'"'));
+            throw new FormatException('Unknown type token "'.$type.'"');
           }
           return $types[$type];
         }
@@ -334,9 +334,9 @@
 
         default: {      // default, check if we have a mapping
           if (!($mapping= $this->mapping($token, $m= NULL))) {
-            throw(new FormatException(
+            throw new FormatException(
               'Cannot deserialize unknown type "'.$token.'" ('.$serialized->toString().')'
-            ));
+            );
           }
 
           return $mapping->valueOf($this, $serialized, $context);

@@ -64,7 +64,7 @@
      */
     public function setScanPeriod($period) {
       if ($period <= 0) {
-        throw(new IllegalArgumentException('ScanPeriod must be > 0; have: ', $period));
+        throw new IllegalArgumentException('ScanPeriod must be > 0; have: ', $period);
       }
 
       $this->period= $period;

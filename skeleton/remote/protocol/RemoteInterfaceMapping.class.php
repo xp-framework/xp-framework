@@ -62,7 +62,7 @@
         }
       }
       
-      throw(new IllegalArgumentException('Not a BeanInterface: '.$var->getClassName()));
+      throw new IllegalArgumentException('Not a BeanInterface: '.$var->getClassName());
     }
     
     /**

@@ -25,7 +25,7 @@
     public function classSet() {
       $set= new HashSet();
       foreach (array_keys($this->fields) as $name) {
-        if (!is('ClassReference', $this->fields[$name])) continue;
+        if (!$this->fields[$name] instanceof ClassReference) continue;
         
         $set->add($this->fields[$name]);
       }

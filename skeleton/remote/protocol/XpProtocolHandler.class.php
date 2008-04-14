@@ -53,7 +53,7 @@
      * @return  string
      */
     protected function stringOf($value) {
-      if (is('Proxy', $value)) {
+      if ($value instanceof Proxy) {
         $s= 'Proxy<';
         foreach ($value->getClass()->getInterfaces() as $iface) {
           $s.= $iface->getName().', ';
@@ -260,12 +260,12 @@
           $this->readBytes(12)
         );
       } catch (IOException $e) {
-        throw(new RemoteException($e->getMessage(), $e));
+        throw new RemoteException($e->getMessage(), $e);
       }
       
       if (DEFAULT_PROTOCOL_MAGIC_NUMBER != $header['magic']) {
         $this->_sock->close();
-        throw(new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER));
+        throw new Error('Magic number mismatch (have: '.$header['magic'].' expect: '.DEFAULT_PROTOCOL_MAGIC_NUMBER);
       }
 
       // Perform actions based on response type
@@ -281,28 +281,28 @@
             $data= ByteCountedString::readFrom($this->_sock);
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
             $reference= $this->serializer->valueOf(new SerializedData($data), $ctx);
-            if (is('RemoteException', $reference)) {
-              throw($reference);
-            } else if (is('ExceptionReference', $reference)) {
-              throw(new RemoteException($reference->getMessage(), $reference));
+            if ($reference instanceof RemoteException) {
+              throw $reference;
+            } else if ($reference instanceof ExceptionReference) {
+              throw new RemoteException($reference->getMessage(), $reference);
             } else {
-              throw(new RemoteException('lang.XPException', new XPException($this->stringOf($reference))));
+              throw new RemoteException('lang.XPException', new XPException($this->stringOf($reference)));
             }
 
           case REMOTE_MSG_ERROR:
             $message= ByteCountedString::readFrom($this->_sock);    // Not serialized!
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($message, "\0..\37!@\177..\377"));
             $this->_sock->close();
-            throw(new RemoteException($message, new Error($message)));
+            throw new RemoteException($message, new Error($message));
 
           default:
             $data= $this->readBytes($header['length']);   // Read all left-over bytes
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
             $this->_sock->close();
-            throw(new Error('Unknown message type'));
+            throw new Error('Unknown message type');
         }
       } catch (IOException $e) {
-        throw(new RemoteException($e->getMessage(), $e));
+        throw new RemoteException($e->getMessage(), $e);
       }
     }
     

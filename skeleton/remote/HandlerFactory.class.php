@@ -67,7 +67,7 @@
     public static function handlerFor($type) {
       $self= self::getInstance();
       if (!isset($self->handlers[$type])) {
-        throw(new UnknownProtocolException($type));
+        throw new UnknownProtocolException($type);
       }
       return $self->handlers[$type];
     }
