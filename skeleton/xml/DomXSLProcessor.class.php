@@ -5,6 +5,7 @@
  */
 
   uses(
+    'xml.Tree',
     'xml.TransformerException',
     'io.FileNotFoundException',
     'xml.IXSLProcessor',
@@ -127,13 +128,29 @@
     }
 
     /**
+     * Set XSL from a tree
+     *
+     * @param   xml.Tree xsl
+     */
+    public function setXSLTree(Tree $xsl) {
+      libxml_get_last_error() && libxml_clear_errors();
+
+      $this->stylesheet= new DOMDocument();
+      $this->stylesheet->loadXML($xsl->getDeclaration().$xsl->getSource(INDENT_NONE));
+      strlen($this->_base) && $this->stylesheet->documentURI= $this->_base;
+      $this->baseURI= $this->_base.':tree';
+      
+      $this->_checkErrors($xsl);
+    }
+
+    /**
      * Set XML file
      *
      * @param   string file file name
      */
     public function setXMLFile($file) {
       if (!file_exists($this->_base.$file)) {
-        throw(new FileNotFoundException($this->_base.$file.' not found'));
+        throw new FileNotFoundException($this->_base.$file.' not found');
       }
       
       libxml_get_last_error() && libxml_clear_errors();
@@ -154,6 +171,20 @@
 
       $this->document= new DOMDocument();
       $this->document->loadXML($xml);
+
+      $this->_checkErrors($xml);
+    }
+
+    /**
+     * Set XML from a tree
+     *
+     * @param   xml.Tree xml
+     */
+    public function setXMLTree(Tree $xml) {
+      libxml_get_last_error() && libxml_clear_errors();
+
+      $this->document= new DOMDocument();
+      $this->document->loadXML($xml->getDeclaration().$xml->getSource(INDENT_NONE));
 
       $this->_checkErrors($xml);
     }

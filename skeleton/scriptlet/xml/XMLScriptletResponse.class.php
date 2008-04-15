@@ -12,6 +12,7 @@
   
   define('XSLT_BUFFER', 0x0000);
   define('XSLT_FILE',   0x0001);
+  define('XSLT_TREE',   0x0002);
   
   /**
    * Wraps XML response
@@ -276,31 +277,32 @@
           try {
             $this->processor->setXSLFile($this->_stylesheet[1]);
           } catch (FileNotFoundException $e) {
-            throw(new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND));
+            throw new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND);
           }
           break;
           
         case XSLT_BUFFER:
           $this->processor->setXSLBuf($this->_stylesheet[1]);
           break;
+
+        case XSLT_TREE:
+          $this->processor->setXSLTree($this->_stylesheet[1]);
+          break;
         
         default:
-          throw(new IllegalStateException(
+          throw new IllegalStateException(
             'Unknown type ('.$this->_stylesheet[0].') for stylesheet'
-          ));
+          );
       }
       
       $this->processor->setParams($this->params);
-      $this->processor->setXMLBuf(
-        $this->document->getDeclaration()."\n".
-        $this->document->getSource(FALSE)
-      );
+      $this->processor->setXMLTree($this->document);
       
       // Transform XML/XSL
       try {
         $this->processor->run();
       } catch (TransformerException $e) {
-        throw(new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR));
+        throw new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR);
       }
       
       $this->content= $this->processor->output();

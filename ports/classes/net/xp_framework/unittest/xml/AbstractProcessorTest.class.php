@@ -118,6 +118,24 @@
     }
 
     /**
+     * Tests setXMLTree() method
+     *
+     */
+    #[@test]
+    public function setXMLTree() {
+      $this->processor->setXMLTree(new Tree('document'));
+    }
+
+    /**
+     * Tests setXMLTree() method
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function setMalformedXMLTree() {
+      $this->processor->setXMLTree(new Tree('<!>'));    // xml.Tree does not check this!
+    }
+
+    /**
      * Tests setXMLBuf() method
      *
      */
@@ -169,6 +187,26 @@
     #[@test, @expect('xml.TransformerException')]
     public function setMalformedXSLBuf() {
       $this->processor->setXSLBuf('<xsl stylsheet!');
+    }
+
+    /**
+     * Tests setXSLTree() method
+     *
+     */
+    #[@test]
+    public function setXSLTree() {
+      $t= new Tree('xsl:stylesheet');
+      $t->root->setAttribute('xmlns:xsl', 'http://www.w3.org/1999/XSL/Transform');
+      $this->processor->setXSLTree($t);
+    }
+
+    /**
+     * Tests setXSLTree() method
+     *
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function setMalformedXSLTree() {
+      $this->processor->setXSLTree(new Tree('<!>'));    // xml.Tree does not check this!
     }
 
     /**

@@ -53,6 +53,13 @@
      * @param   string xsl the XSL as a string
      */
     public function setXSLBuf($xsl);
+
+    /**
+     * Set XSL from a tree
+     *
+     * @param   xml.Tree xsl
+     */
+    public function setXSLTree(Tree $xsl);
     
     /**
      * Set XML file
@@ -67,6 +74,13 @@
      * @param   string xml the XML as a string
      */
     public function setXMLBuf($xml);
+
+    /**
+     * Set XML from a tree
+     *
+     * @param   xml.Tree xml
+     */
+    public function setXMLTree(Tree $xml);
 
     /**
      * Set XSL transformation parameters
