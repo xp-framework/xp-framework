@@ -55,5 +55,11 @@ Comments
 - kiesel, Sat Mar  8 11:58:22     2008
   Should handlers also be registered? If yes, only active ones?
   If yes, what should be the naming strategy for the callback?
+  
+- friebe, Tue Apr 15 13:26:04     2008
+  What scriptlet methods would you use from active.scriptlet?
+
+- friebe, Tue Apr 15 13:26:19     2008
+  We need some use-cases here!
 
 <EOF>
