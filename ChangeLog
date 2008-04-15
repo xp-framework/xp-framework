@@ -19,6 +19,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0160: xml.IXSLProcessor::setXMLTree() / setXSLTree()
+  (friebe)
 - Implemented RFC #0156: Constructor::newInstance()
   (friebe)
 - Implemented RFC #0155: lang.reflect.Routine::getReturnType(): Type 
