@@ -30,7 +30,7 @@
     /**
      * Returns the XSL processor instance to be used
      *
-     * @return  &xml.IXSLProcessor
+     * @return  xml.IXSLProcessor
      */
     public function processorInstance() {
       return new DomXSLProcessor();
