@@ -1,0 +1,169 @@
+RFC 0161: Scriptlet Authenticator
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Apr 16 09:52:43     2008
+@status: draft
+@category: scriptlet.xml.workflow
+
+Scope of Change
+---------------
+A getAuthenticator() method will be added to AbstractXMLScriptlet.
+
+
+Rationale
+---------
+Generalize authentication.
+
+
+Functionality
+-------------
+
+
+
+RequestAuthenticator interface
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  /**
+   * This interface describes objects that take care of request
+   * authentication.
+   *
+   * @see      xp://scriptlet.xml.workflow.AbstractXMLScriptlet#getAuthenticator
+   * @purpose  Authentication for scriptlets
+   */
+  interface RequestAuthenticator {
+  
+    /**
+     * Authenticate a request
+     *
+     * @param   scriptlet.xml.XMLScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.workflow.Context context
+     * @return  bool
+     */
+    public function authenticate($request, $response, $context);
+  }
+?>
+
+Example
+~~~~~~~
+In the scriptlet class, add the following:
+<?php
+  class SiteScriptlet extends AbstractXMLScriptlet {
+    // ...
+
+    /**
+     * Return an authenticator
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @return  scriptlet.xml.workflow.auth.RequestAuthenticator
+     */
+    public function getAuthenticator($request) {
+      return newinstance('scriptlet.xml.workflow.auth.RequestAuthenticator', array(), '{
+        public function authenticate($request, $response, $context) {
+          if ($context->userInfo) return; // OK
+          
+          // Dispatch - LoginHandler will redirect to original state
+          $request->session->putValue("target", $request->getStateName());
+          $request->dispatchTo("login");
+        }
+      }');
+    }
+    
+    // ...
+  }
+?>
+
+Now create a LoginHandler:
+<?php
+  class LoginHandler extends Handler {
+    
+    /**
+     * Handle submitted data
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.Context context
+     */
+    public function handleSubmittedData($request, $context) {
+      try {
+        $user= User::getByUsername($request->getParam('login_username'));
+      } catch (SQLException $e) {
+        return $this->addError($e->getClassName());
+      }
+      
+      // Check if we can find the user
+      if (!$user) return $this->addError('doesnotexist');
+
+      // Verify password
+      if (!UnixCrypt::matches($user->getPassword(), $request->getParam('login_password'))) {
+        return $this->addError('incorrect');
+      }
+      
+      // Check if account is active
+      if (20000 != $user->getBz_id()) {
+        return $this->addError('inactive');
+      }
+      
+      // Authenticated, copy user information to context
+      $context->userInfo= array(
+        'user'   => $user,
+        'person' => $user->getPerson()
+      );
+      $context->setChanged();
+      return TRUE;
+    }
+
+    /**
+     * Finalize this handler
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
+     * @param   scriptlet.xml.XMLScriptletResponse response 
+     * @param   scriptlet.xml.Context context
+     */
+    public function finalize($request, $response, $context) {
+      $request->forwardTo($response, $request->session->getValue('target', 'signup'));
+      $request->session->removeValue('target');
+    }
+  }
+?>
+
+Then create a LoginState class and add the LoginHandler to it:
+<?php
+  class LoginState extends AbstractState {
+
+    /**
+     * Constructor.
+     *
+     */
+    public function __construct() {
+      $this->addHandler(new LoginHandler());
+    }
+  }
+
+?>
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+- RFC #157
+
+
+Related documents
+-----------------
+
+Comments
+--------
+- friebe, Wed Apr 16 09:59:16     2008
+  Current implementations that do not use the new API will work unaffected.
+
+<EOF>
