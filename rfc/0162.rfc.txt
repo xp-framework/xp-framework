@@ -1,0 +1,62 @@
+RFC 0162: HTTP Proxy
+========================================================================
+$Id$
+
+@authors: friebe, kiesel, hinckel
+@created: Wed Apr 16 20:39:56     2008
+@status: draft
+@category: peer.http
+
+Scope of Change
+---------------
+A functionality will be added to the peer.http.HttpConnection class to
+support HTTP proxies.
+
+
+Rationale
+---------
+Some machines in restricted networks may not access other networks
+directly.
+
+
+Functionality
+-------------
+
+Example
+~~~~~~~
+<?php
+  $conn= new HttpConnection($url);
+  with ($proxy= $conn->setProxy($host, $port ? $port : 80)); {
+    $proxy->exclude('localhost');
+  }  
+  $response= $this->conn->get();
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+- http://www.innovation.ch/java/HTTPClient/advanced_info.html
+  Advanced HTTPClient Info
+
+- http://xp-framework.net/rfc/contrib/rfc0162.diff
+  Implementing patch
+
+
+Comments
+--------
+- friebe, Wed Apr 16 20:43:57     2008
+  Patch is proof of concept and still needs some work
+
+<EOF>

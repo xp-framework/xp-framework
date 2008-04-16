@@ -1,0 +1,178 @@
+Index: peer/http/HttpRequest.class.php
+===================================================================
+--- peer/http/HttpRequest.class.php	(revision 12054)
++++ peer/http/HttpRequest.class.php	(working copy)
+@@ -26,6 +26,7 @@
+     public
+       $url        = NULL,
+       $method     = HTTP_GET,
++      $target     = '',
+       $version    = HTTP_VERSION_1_1,
+       $headers    = array(
+         'Connection' => 'close'
+@@ -44,6 +45,7 @@
+       }
+       $port= $this->url->getPort(-1);
+       $this->headers['Host']= $this->url->getHost().(-1 == $port ? '' : ':'.$port);
++      $this->target= $this->url->getPath('/');
+     }
+     
+     /**
+@@ -109,7 +111,7 @@
+           $query.= '&'.$k.'='.urlencode($v);
+         }
+       }
+-      $target= $this->url->getPath('/');
++      $target= $this->target;
+       
+       // Which HTTP method? GET and HEAD use query string, POST etc. use
+       // body for passing parameters
+@@ -144,10 +146,7 @@
+       
+       // Add request headers
+       foreach ($this->headers as $k => $v) {
+-        $request.= (is('Header', $v) 
+-          ? $v->toString() 
+-          : $k.': '.$v
+-        )."\r\n";
++        $request.= ($v instanceof Header ? $v->toString() : $k.': '.$v)."\r\n";
+       }
+       
+       return $request."\r\n".$body;
+@@ -161,7 +160,7 @@
+     public function send($timeout= 60, $connecttimeout= 2.0) {
+       $s= new Socket($this->url->getHost(), $this->url->getPort(80));
+       $s->setTimeout($timeout);
+-      
++
+       $request= $this->getRequestString();
+       $s->connect($connecttimeout) && $s->write($request);
+       return new HttpResponse($s);
+Index: peer/http/HttpConnection.class.php
+===================================================================
+--- peer/http/HttpConnection.class.php	(revision 12060)
++++ peer/http/HttpConnection.class.php	(working copy)
+@@ -36,7 +36,8 @@
+       $response    = NULL,
+       $auth        = NULL;
+     
+-    public
++    protected
++      $proxy        = NULL,
+       $_ctimeout    = 2.0,
+       $_timeout     = 60;
+ 
+@@ -57,6 +58,18 @@
+     protected function _createRequest($url) {
+       $this->request= HttpRequestFactory::factory($url);
+     }
++    
++    /**
++     * Set proxy host and port
++     *
++     * @param   string host
++     * @param   int port
++     * @return  peer.http.Proxy
++     */
++    public function setProxy($host, $port) {
++      $this->proxy= new peer·http·Proxy($host, $port);
++      return $this->proxy;
++    }
+ 
+     /**
+      * Set connect timeout
+@@ -123,7 +136,10 @@
+       $this->request->setParameters($arg);
+       $this->request->addHeaders($headers);
+       
+-      return $this->request->send($this->_timeout, $this->_ctimeout);
++      return ($this->proxy
++        ? $this->proxy->sendRequest($this->request)
++        : $this->request->send($this->_timeout, $this->_ctimeout)
++      );
+     }
+ 
+     /**
+Index: peer/http/Proxy.class.php
+===================================================================
+--- peer/http/Proxy.class.php	(revision 0)
++++ peer/http/Proxy.class.php	(revision 0)
+@@ -0,0 +1,72 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  $package= 'peer.http';
++
++  /**
++   * HTTP proxy
++   *
++   * @see      xp://peer.http.HttpConnection#setProxy
++   * @purpose  Proxy
++   */
++  class peer·http·Proxy extends Object {
++    protected
++      $socket   = NULL,
++      $excludes = array();
++    
++    /**
++     * Constructor
++     *
++     * @param   string host
++     * @param   int port
++     */
++    public function __construct($host, $port) {
++      $this->socket= new Socket($host, $port);
++    }
++    
++    /**
++     * (Insert method's description here)
++     *
++     * @param   
++     */
++    public function exclude($pattern) {
++      $this->excludes[]= $pattern;
++    }
++    
++    /**
++     * Sends a request via this proxy
++     *
++     * @param   peer.http.HttpRequest request
++     * @param   int timeout default 60
++     * @param   float connecttimeout default 2.0
++     * @return  peer.http.HttpResponse response object
++     */
++    public function sendRequest(HttpRequest $request, $timeout= 60, $connecttimeout= 2.0) {
++    
++      // Check if this URL is excluded
++      foreach ($this->excludes as $pattern) {
++        if (!strstr($request->url->getHost(), $pattern)) continue;
++        return $request->send($timeout, $connecttimeout);
++      }
++
++      // Open connection to proxy server
++      $this->socket->setTimeout($timeout);
++      
++      // Modify target, a proxy wants "GET http://example.com/ HTTP/X.X"
++      $request->target= sprintf(
++        '%s://%s%s%s',
++        $request->url->getScheme(),
++        $request->url->getHost(),
++        $request->url->getPort() ? ':'.$request->url->getPort() : '',
++        $request->url->getPath('/')
++      );
++
++      // Write request and return response
++      $this->socket->connect($connecttimeout) && $this->socket->write($request->getRequestString());
++      return new HttpResponse($this->socket);
++    }
++  }
++?>
+
+Property changes on: peer/http/Proxy.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
