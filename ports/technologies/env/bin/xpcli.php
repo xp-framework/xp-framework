@@ -8,6 +8,6 @@
   uses('util.cmd.Runner');
 
   // {{{ main
-  exit(Runner::main($argv));
+  exit(Runner::main(array_slice($argv, 1)));
   // }}}
 ?>

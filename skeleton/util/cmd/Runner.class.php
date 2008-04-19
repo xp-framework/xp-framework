@@ -163,13 +163,13 @@
       $pm= PropertyManager::getInstance();
 
       // No arguments given - show our own usage
-      if ($params->count <= 1) {
+      if ($params->count < 1) {
         self::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
         return 1;
       }
 
       // Separate runner options from class options
-      for ($offset= 1, $i= 1; $i < $params->count; $i++) {
+      for ($offset= 0, $i= 0; $i < $params->count; $i++) {
         if ('-c' === $params->list[$i]) {
           $pm->configure($params->list[$i+ 1]);
           $offset+= 2; $i++;
