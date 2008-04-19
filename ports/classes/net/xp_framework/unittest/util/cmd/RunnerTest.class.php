@@ -39,7 +39,7 @@
     protected function runWith(array $args) {
       $this->out= $this->runner->setOut(new MemoryOutputStream());
       $this->err= $this->runner->setErr(new MemoryOutputStream());
-      return $this->runner->run(new ParamString(array_merge(array('xpcli'), $args)));
+      return $this->runner->run(new ParamString($args));
     }
 
     /**
