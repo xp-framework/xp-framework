@@ -3,10 +3,65 @@ SDK
 ===
 To develop with the XP framework here's an overview of the essential utilities:
 
+The xp utility
+--------------
+Runs XP classes with a <tt>main</tt> method and is the base for all other
+utilities.
+
+Usage
+~~~~~
+Given the following class:
+<code>
+  uses('util.cmd.Console');
+  
+  class SayHello extends Object {
+  
+    public static function main(array $args) {
+      Console::writeLine('Hello ', $args[0]);
+    }
+  }
+</code>
+
+...the following run on a command line:
+<pre>
+  $ xp SayHello World 
+</pre>
+...will print "Hello World" to the console.
+
 The xpcli utility
 -----------------
-Runs [package://util.cmd command line classes] and is the base for all other
-utilities.
+Runs [package://util.cmd command line classes], which greatly simplify the
+task of writing command line utilities. Instead of having to parse arguments, 
+instantiate database connections and load configuration files manually, 
+command line classes can ask for these resources by annotating methods.
+
+The following is the (functional) equivalent of the above:
+<code>
+  uses('util.cmd.Command');
+  
+  class SayHello extends Command {
+    protected $name;
+    
+    #[@arg(position= 0)]
+    public function setName($name) {
+      $this->name= $name;
+    }
+  
+    public function run() {
+      $this->out->writeLine('Hello ', $this->name);
+    }
+  }
+</code>
+
+To print "Hello World" to the console:
+<pre>
+  $ xpcli SayHello World 
+</pre>
+
+This method may look like additional overhead in the beginning (and actually
+is in this case) but has numerous benefits - [http://news.xp-framework.net/article/205/2007/07/22/ this entry] 
+from our blog explains "xpclis" in depth.
+
 
 The unittest utility
 --------------------
