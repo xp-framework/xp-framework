@@ -1,0 +1,11 @@
+#!/bin/sh
+
+XP="`dirname "$0"`"/xp.php
+
+# Take care of target replacement on Windows
+if [ "$OS" = "Windows_NT" ]; then
+        XP=`cygpath -w "$XP"`
+fi
+
+# Run command
+${PHP5CLI:-php} "$XP" "$@"
