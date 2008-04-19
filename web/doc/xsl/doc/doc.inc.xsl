@@ -73,6 +73,13 @@
   </xsl:template>
 
   <!--
+   ! Links to a PHP manual page
+   !-->
+  <xsl:template match="link[@rel= 'php']">
+    <a href="http://de3.php.net/{@href}"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <!--
    ! Links without caption
    !-->
   <xsl:template match="link[string(.) = '']">
