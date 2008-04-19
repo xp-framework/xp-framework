@@ -75,9 +75,8 @@ directory where <tt>xp-rt-X.X.X.xar</tt> resides.
 
 Configure PHP
 ~~~~~~~~~~~~~
-Add the downloaded file to the include_path as described above.
+Add the downloaded file to the <tt>include_path</tt> setting as described above.
 
 Done
 ~~~~
 The package is now available and can be used.
-
