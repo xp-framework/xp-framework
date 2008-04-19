@@ -39,6 +39,10 @@ The framework consists of a number of core functionalities:
       attaching functionality to enum members</li>
 </ul>
 
+Installation
+------------
+To find out how to setup the framework on your machine, see [doc://setup/framework here].
+
 Examples
 --------
 This section will give an introduction to the basics of common tasks and 
