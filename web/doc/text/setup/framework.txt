@@ -1,0 +1,57 @@
+
+Setting up the framework
+========================
+The releases are offered as <tt>tar.gz</tt> or <tt>zip</tt> files which 
+contain lang.base.php and the xp runtime.
+
+Step by step
+------------
+<summary>
+Prerequisite: You need to download and install the 
+[http://de3.php.net/ PHP language] to use the XP framework.
+</summary>
+
+Download
+~~~~~~~~
+Get the zipfile or tar.gz, whatever you're more comfortable with and save 
+it to your disk.
+
+Unpack
+~~~~~~
+Create a directory (e.g. xp) - doesn't matter where - and extract the 
+archive's contents into it. This will create <tt>lang.base.php</tt> and 
+<tt>lib/xp-rt-X.X.X.xar</tt>
+
+Configure PHP
+~~~~~~~~~~~~~
+Open the <tt>php.ini</tt> file and search for a line containing <tt>include_path</tt>.
+Add the directory you unpacked the XP framework release and the <tt>xp-rt-X.X.X.xar</tt>
+to this line.
+
+Un*x: <tt>include_path=".:/home/thekid/xp/:/home/thekid/xp/lib/xp-rt-5.0.0.xar"</tt>
+Windows: <tt>include_path=".;D:\var\xp\;D:\var\xp\lib\xp-rt-5.0.0.xar".</tt>
+
+Done
+~~~~
+You're ready to use the XP framework now!
+
+
+Using additional packages
+-------------------------
+Additional packages (Google Search implementation, Delicio.us, Flickr, 
+Java Webstart, Dia.org UML classes, and many more) are provided in the 
+lib directory and must be downloaded separately.
+
+Download
+~~~~~~~~
+Download the xar files from the releases' lib directory into the same 
+directory where <tt>xp-rt-X.X.X.xar</tt> resides.
+
+Configure PHP
+~~~~~~~~~~~~~
+Add the downloaded file to the include_path as described above.
+
+Done
+~~~~
+The package is now available and can be used.
+
