@@ -1,0 +1,17 @@
+
+SDK
+===
+To develop with the XP framework here's an overview of the essential utilities:
+
+The xpcli utility
+-----------------
+Runs [package://util.cmd command line classes] and is the base for all other
+utilities.
+
+The unittest utility
+--------------------
+Runs [package://unittest unittests].
+
+The xar utility
+---------------
+Works with [doc://core/xars XAR archives].
