@@ -78,6 +78,7 @@
      * @param   string element
      * @param   bool before default FALSE whether to register this as the first loader
      * @return  lang.IClassLoader the registered loader
+     * @throws  lang.ElementNotFoundException if the path cannot be found
      */
     public static function registerPath($element, $before= FALSE) {
       if (is_dir($element)) {
@@ -85,6 +86,7 @@
       } else if (is_file($element)) {
         return self::registerLoader(ArchiveClassLoader::instanceFor($element, $before));
       }
+      raise('lang.ElementNotFoundException', 'Element "'.$element.'" not found');
     }
     
     /**
@@ -116,6 +118,15 @@
         return TRUE;
       }
       return FALSE;
+    }
+
+    /**
+     * Get class loader delegates
+     *
+     * @return  lang.IClassLoader[]
+     */
+    public static function getLoaders() {
+      return self::$delegates;
     }
 
     /**
