@@ -259,6 +259,7 @@
         $current= &$archives[$archive];
         $current['handle']= fopen($archive, 'rb');
         $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
+        if ('CCA' != $header['id']) raise('lang.FormatException', 'Malformed archive '.$archive);
         for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
           $entry= unpack(
             'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 

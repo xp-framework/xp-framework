@@ -34,6 +34,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Made xarloader::acquire() throw a lang.FormatException in case the
+  given file is not a valid XAR archive
+  (friebe)
 - Fixed bug #28 - MySQLConnection does not honor Port given in DSN
   (Martin Contento, friebe)
 - Fixed util.Date's constructor with timestamps
