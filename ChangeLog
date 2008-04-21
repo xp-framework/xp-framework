@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed xpcli / util.cmd.Runner argument passing - argv[0] should not be
+  passed to Runner::main()
+  (friebe)
 - Deprecated addMinutes(), addHours(), addDays() methods in util.TimeSpan
   (gellweiler)
 - Backwards incompatible changes in lang.reflect package
@@ -68,6 +71,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.ClassLoader::getLoaders()
+  (friebe)
+- Made lang.ClassLoader::registerPath() throw an exception in case
+  the given path does not exist
+  (friebe)
 - Made lang.base.php use PHP_INT_MAX for LONG_MIN / LONG_MAX values 
   instead of calculating it manually. Saves on function call.
   (friebe)
