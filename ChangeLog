@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Version 5.6.6, released 2008-04-23
+----------------------------------
+SVN version: 12077
+
 Heads up!
 ~~~~~~~~~
 - Changed xpcli / util.cmd.Runner argument passing - argv[0] should not be
