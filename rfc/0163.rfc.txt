@@ -1,0 +1,47 @@
+RFC 0163: Respect ANSI SQL in rdbms package
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Thu Apr 24 17:40:16 CEST 2008
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+All rdbms drivers will be made more ANSI SQL compatible by preferring
+single quotes as string delimiter over double quotes.
+
+Rationale
+---------
+Some databases can be configured to explicitely support ANSI mode
+where double quotes are an indicator for quoted identifiers rather
+than strings.
+Thus, changing to use ANSI SQL will increase compatibility of the
+XP framework's rdbms API to as many systems as possible.
+
+Functionality
+-------------
+Change to the rdbms systems's respective SQL dialect class.
+
+Security considerations
+-----------------------
+String escaping needs to be adjusted appropriately to still effectively
+suppress SQL injection.
+
+Speed impact
+------------
+n/a
+
+Dependencies
+------------
+
+Related documents
+-----------------
+- http://dev.mysql.com/doc/refman/5.1/en/ansi-mode.html
+  Running MySQL in ANSI mode
+
+Comments
+--------
+
+<EOF>
