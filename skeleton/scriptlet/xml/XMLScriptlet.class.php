@@ -102,9 +102,10 @@
      * @see     xp://scriptlet.xml.XMLScriptlet#_handleMethod
      */
     public function handleMethod($request) {
-      if (!$request->getEnvValue('PRODUCT')) {
-        return 'doCreate';
-      }
+      // XXX TDB
+      // if (!$request->getEnvValue('PRODUCT')) {
+      //   return 'doCreate';
+      // }
 
       return parent::handleMethod($request);
     }
@@ -119,18 +120,28 @@
      */
     public function doRedirect($request, $response, $sessionId= NULL) {
       $uri= $request->getURL();
+      
+      // Determine which settings we need to pass
+      $xsr= array();
+      if (
+        $request->getProduct() != $request->getDefaultProduct() ||
+        $request->getLanguage() != $request->getDefaultLanguage()
+      ) {
+        $xsr[]= $request->getProduct();
+        $xsr[]= $request->getLanguage();
+      }
+      
+      if (!empty($sessionId)) $xsr[]= 'psessionid='.$sessionId;
 
       // Get product, language and statename from the environment if 
       // necessary. Their default values are "site" (product), 
       // "en_US" (language) and "static" (statename).
       // Send redirect
       $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s.%s%s/%s%s%s', 
+        '%s://%s/xml/%s%s%s%s', 
         $uri->getScheme(),
         $uri->getHost(),
-        $request->getProduct(), 
-        $request->getLanguage(), 
-        empty($sessionId) ? '' : '.psessionid='.$sessionId,
+        (sizeof($xsr) ? implode('.', $xsr).'/' : ''),
         $request->getStateName(), 
         $uri->getQuery() ? '?'.$uri->getQuery() : '',
         $uri->getFragment() ? '#'.$uri->getFragment() : ''
