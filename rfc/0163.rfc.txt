@@ -41,7 +41,7 @@ Related documents
 - http://dev.mysql.com/doc/refman/5.1/en/ansi-mode.html
   Running MySQL in ANSI mode
 
-- http://xp-framework.net/rfc/contrif/rfc0163.diff
+- http://xp-framework.net/rfc/contrib/rfc0163.diff
   Implementing patch
 
 Comments
