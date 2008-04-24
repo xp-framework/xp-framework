@@ -7,8 +7,8 @@
   /**
    * helps to build statments for different SQL servers
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.SQLDialectTest
    * @purpose  Base class for all dialects 
-   * @test     net.xp_framework.unittest.rdbms.SQLDialectTest
    */
   abstract class SQLDialect extends Object {
     private static
@@ -123,7 +123,7 @@
       $dateFormat   = '';
 
     /**
-     * get a function format string
+     * Get a function format string
      *
      * @param   SQLFunction func
      * @return  string
@@ -136,7 +136,7 @@
     }
 
     /**
-     * formats a string as date
+     * Formats a string as date
      *
      * @param   string datestring
      * @return  string
@@ -146,7 +146,7 @@
     }
     
     /**
-     * escape a lable string
+     * Escape a label string
      *
      * @param   string escapeString
      * @return  string
@@ -156,7 +156,7 @@
     }
     
     /**
-     * escape a lable string
+     * Escape a lable string
      *
      * @param   string quoteString
      * @return  string
@@ -166,7 +166,7 @@
     }
     
     /**
-     * escape a string
+     * Escape a string
      *
      * @param   string escapeString
      * @return  string
@@ -176,7 +176,7 @@
     }
     
     /**
-     * escape a string
+     * Escape a string
      *
      * @param   string quoteString
      * @return  string
@@ -186,7 +186,7 @@
     }
     
     /**
-     * get a dialect specific datepart
+     * Get a dialect specific datepart
      *
      * @param   string datepart
      * @return  string
@@ -199,7 +199,7 @@
     }
 
     /**
-     * get a dialect specific datatype
+     * Get a dialect specific datatype
      *
      * @param   string datatype
      * @return  string
@@ -239,7 +239,7 @@
     }
 
     /**
-     * build join related part of an SQL query
+     * Build join related part of an SQL query
      *
      * @param   rdbms.join.JoinRelation[] conditions
      * @return  string

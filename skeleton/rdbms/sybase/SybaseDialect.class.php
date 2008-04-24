@@ -6,7 +6,7 @@
   uses('rdbms.SQLDialect');
 
   /**
-   * helps to build functions for different SQL servers
+   * Helps to build functions for different SQL servers
    *
    */
   class SybaseDialect extends SQLDialect {
@@ -32,7 +32,7 @@
       $dateFormat   = 'Y-m-d h:iA';
         
     /**
-     * get a function format string
+     * Get a function format string
      *
      * @param   SQLFunction func
      * @return  string
@@ -42,16 +42,16 @@
       $func_i= $func->func.'_'.sizeof($func->args);
       switch ($func->func) {
         case 'concat':
-        return '('.implode(' + ', array_fill(0, sizeof($func->args), '%s')).')';
+          return '('.implode(' + ', array_fill(0, sizeof($func->args), '%s')).')';
 
         default:
-        if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
+          if (isset(self::$implementations[$func_i])) return self::$implementations[$func_i];
         return parent::formatFunction($func);
       }
     }
   
     /**
-     * get a dialect specific datepart
+     * Get a dialect specific datepart
      *
      * @param   string datepart
      * @return  string
@@ -65,7 +65,7 @@
     }
 
     /**
-     * build join related part of an SQL query
+     * Build join related part of an SQL query
      *
      * @param   rdbms.join.JoinRelation[] conditions
      * @return  string
@@ -73,7 +73,7 @@
      */
     public function makeJoinBy(Array $conditions) {
       if (0 == sizeof($conditions)) throw new IllegalArgumentException('conditions can not be empty');
-      $tableString.= sprintf('%s', current($conditions)->getSource()->toSqlString());
+      $tableString= current($conditions)->getSource()->toSqlString();
       $conditionString= '';
 
       foreach ($conditions as $link) {
