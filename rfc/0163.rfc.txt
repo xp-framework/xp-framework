@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Apr 24 17:40:16 CEST 2008
-@status: draft
+@status: discussion, ends Mon Apr 28 18:00:00 CEST 2008
 @category: rdbms
 
 Scope of Change
@@ -40,6 +40,9 @@ Related documents
 -----------------
 - http://dev.mysql.com/doc/refman/5.1/en/ansi-mode.html
   Running MySQL in ANSI mode
+
+- http://xp-framework.net/rfc/contrif/rfc0163.diff
+  Implementing patch
 
 Comments
 --------
