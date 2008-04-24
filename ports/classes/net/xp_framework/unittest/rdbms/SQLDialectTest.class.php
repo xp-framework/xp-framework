@@ -103,7 +103,7 @@
     function functionTest() {
       foreach (array_keys($this->conn) as $connName) {
         $dialect= $this->conn[$connName]->getFormatter()->dialect;
-        $this->assertEquals('pi()', $dialect->formatFunction(new SQLFunction('pi')));
+        $this->assertEquals('pi()', $dialect->formatFunction(new SQLFunction('pi', '%s')));
         try {
           $dialect->formatFunction(new SQLFunction('foo', 1,2,3,4,5));
           throw new AssertionFailedError('formatFunction should throw an IllegalArgumentException when calling $dialect->formatFunction(new SQLFunction("foo", 1,2,3,4,5))');
