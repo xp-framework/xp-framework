@@ -22,13 +22,73 @@ directly.
 Functionality
 -------------
 
+API: The HttpProxy class
+~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class HttpProxy extends Object {
+    
+    /**
+     * Constructor
+     *
+     * @param   string host
+     * @param   int port default 8080
+     */
+    public function __construct($host, $port= 8080) {
+      // ...
+    }
+
+    /**
+     * Add a URL pattern to exclude.
+     *
+     * @param   string pattern
+     */
+    public function addExclude($pattern) {
+      // ...
+    }
+    
+    /**
+     * Add a URL pattern to exclude and return this proxy. For use with
+     * chained method calls.
+     *
+     * @param   string pattern
+     * @return  peer.http.HttpProxy this object
+     */
+    public function withExclude($pattern) {
+      // ...
+    }
+  }
+?>
+
+API: The HttpConnection class
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?php
+  class HttpConnection extends Object {
+  
+    // ...
+
+    /**
+     * Set proxy
+     *
+     * @param   peer.http.HttpProxy proxy
+     */
+    public function setProxy(HttpProxy $proxy) {
+      // ...
+    }
+
+    // ...
+
+  }
+?>
+
+
 Example
 ~~~~~~~
 <?php
   $conn= new HttpConnection($url);
-  with ($proxy= $conn->setProxy($host, $port ? $port : 80)); {
-    $proxy->exclude('localhost');
-  }  
+  $conn->setProxy(create(new HttpProxy($host, $port))
+    ->withExclude('localhost')
+    ->withExclude('.example.com')
+  );
   $response= $this->conn->get();
 ?>
 
@@ -56,7 +116,5 @@ Related documents
 
 Comments
 --------
-- friebe, Wed Apr 16 20:43:57     2008
-  Patch is proof of concept and still needs some work
 
 <EOF>

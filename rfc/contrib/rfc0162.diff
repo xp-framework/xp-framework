@@ -62,26 +62,23 @@ Index: peer/http/HttpConnection.class.php
        $_ctimeout    = 2.0,
        $_timeout     = 60;
  
-@@ -57,6 +58,18 @@
+@@ -57,6 +58,15 @@
      protected function _createRequest($url) {
        $this->request= HttpRequestFactory::factory($url);
      }
 +    
 +    /**
-+     * Set proxy host and port
++     * Set proxy
 +     *
-+     * @param   string host
-+     * @param   int port
-+     * @return  peer.http.Proxy
++     * @param   peer.http.HttpProxy proxy
 +     */
-+    public function setProxy($host, $port) {
-+      $this->proxy= new peer·http·Proxy($host, $port);
-+      return $this->proxy;
++    public function setProxy(HttpProxy $proxy) {
++      $this->proxy= $proxy;
 +    }
  
      /**
       * Set connect timeout
-@@ -123,7 +136,10 @@
+@@ -123,7 +133,10 @@
        $this->request->setParameters($arg);
        $this->request->addHeaders($headers);
        
@@ -93,18 +90,16 @@ Index: peer/http/HttpConnection.class.php
      }
  
      /**
-Index: peer/http/Proxy.class.php
+Index: peer/http/HttpProxy.class.php
 ===================================================================
---- peer/http/Proxy.class.php	(revision 0)
-+++ peer/http/Proxy.class.php	(revision 0)
-@@ -0,0 +1,72 @@
+--- peer/http/HttpProxy.class.php	(revision 0)
++++ peer/http/HttpProxy.class.php	(revision 0)
+@@ -0,0 +1,82 @@
 +<?php
 +/* This class is part of the XP framework
 + *
 + * $Id$ 
 + */
-+
-+  $package= 'peer.http';
 +
 +  /**
 +   * HTTP proxy
@@ -112,7 +107,7 @@ Index: peer/http/Proxy.class.php
 +   * @see      xp://peer.http.HttpConnection#setProxy
 +   * @purpose  Proxy
 +   */
-+  class peer·http·Proxy extends Object {
++  class HttpProxy extends Object {
 +    protected
 +      $socket   = NULL,
 +      $excludes = array();
@@ -121,19 +116,31 @@ Index: peer/http/Proxy.class.php
 +     * Constructor
 +     *
 +     * @param   string host
-+     * @param   int port
++     * @param   int port default 8080
 +     */
-+    public function __construct($host, $port) {
++    public function __construct($host, $port= 8080) {
 +      $this->socket= new Socket($host, $port);
++    }
++
++    /**
++     * Add a URL pattern to exclude.
++     *
++     * @param   string pattern
++     */
++    public function addExclude($pattern) {
++      $this->excludes[]= $pattern;
 +    }
 +    
 +    /**
-+     * (Insert method's description here)
++     * Add a URL pattern to exclude and return this proxy. For use with
++     * chained method calls.
 +     *
-+     * @param   
++     * @param   string pattern
++     * @return  peer.http.HttpProxy this object
 +     */
-+    public function exclude($pattern) {
++    public function withExclude($pattern) {
 +      $this->excludes[]= $pattern;
++      return $this;
 +    }
 +    
 +    /**
@@ -170,9 +177,3 @@ Index: peer/http/Proxy.class.php
 +    }
 +  }
 +?>
-
-Property changes on: peer/http/Proxy.class.php
-___________________________________________________________________
-Name: svn:keywords
-   + Id
-
