@@ -47,7 +47,7 @@
           $n->addChild(Node::fromObject($rfc->getCreated_at(), 'created'));
           $n->addChild(new Node('title', $rfc->getTitle()));
           $n->addChild(new Node('status', $rfc->getStatus(), array('id' => $bz[$rfc->getBz_id()])));
-          $n->addChild(new Node('author', $rfc->getAuthor()));
+          $n->addChild(Node::fromObject($rfc->getAuthor(), 'author'));
 
           $markup= '<p>'.$builder->markupFor($rfc->getContent()).'</p>';
           try {

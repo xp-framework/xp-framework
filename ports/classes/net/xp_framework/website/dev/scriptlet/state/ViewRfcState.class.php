@@ -33,7 +33,9 @@
       );
 
       sscanf($request->getQueryString(), '%04d', $id);
-      $rfc= Rfc::getByRfc_id($id);
+      if (!($rfc= Rfc::getByRfc_id($id))) {
+        throw new HttpScriptletException('RFC "'.$id.'" not found', HTTP_NOT_FOUND);
+      }
 
       $builder= new MarkupBuilder();
     
@@ -41,7 +43,10 @@
       $n->addChild(Node::fromObject($rfc->getCreated_at(), 'created'));
       $n->addChild(new Node('title', $rfc->getTitle()));
       $n->addChild(new Node('status', $rfc->getStatus(), array('id' => $bz[$rfc->getBz_id()])));
-      $n->addChild(new Node('author', $rfc->getAuthor()));
+      $n->addChild(Node::fromObject($rfc->getAuthor(), 'author'));
+      foreach ($rfc->getContributorRfcList() as $contributor) {
+        $n->addChild(Node::fromObject($contributor->getPerson(), 'contributor'));
+      }
 
       $markup= '<p>'.$builder->markupFor($rfc->getContent()).'</p>';
       try {
