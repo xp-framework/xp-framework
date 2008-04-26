@@ -30,7 +30,8 @@
         </a>
       </h2>
       <em>
-        Created <xsl:value-of select="created"/> by <xsl:value-of select="author"/>, <b><xsl:value-of select="status"/></b>
+        Created <xsl:value-of select="created"/> by <acronym title="{author/realname}"><xsl:value-of select="author/cn"/></acronym>,
+        <b><xsl:value-of select="status"/></b>
       </em>
       <br/><br clear="all"/>
       <xsl:apply-templates select="content/p[2]"/>
@@ -62,7 +63,7 @@
   </xsl:template>
 
   <xsl:template name="html-title">
-    XP Framework Developer Zone - RFCs
+    RFCs - XP Framework Developer Zone
   </xsl:template>
   
 </xsl:stylesheet>
