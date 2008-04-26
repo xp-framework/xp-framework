@@ -7,8 +7,11 @@
   uses(
     'util.cmd.Command',
     'net.xp_framework.db.caffeine.Rfc',
+    'net.xp_framework.db.caffeine.Person',
+    'net.xp_framework.db.caffeine.Contributor',
     'text.StreamTokenizer',
     'io.File',
+    'lang.ElementNotFoundException',
     'io.streams.FileInputStream',
     'io.streams.FileInputStream',
     'io.collections.FileCollection',
@@ -53,6 +56,20 @@
     public function setFilter($pattern= NULL) {
       $this->filter= new NameMatchesFilter('/'.$pattern.'/');
     }
+    
+    /**
+     * Lookup a person
+     *
+     * @param   string cn
+     * @return  net.xp_framework.db.caffeine.Person
+     */
+    protected function personByCn($cn) {
+      if (!($person= Person::getByCn($cn))) {
+        throw new ElementNotFoundException('Cannot find person with cn "'.$cn.'"');
+      }
+      return $person;
+    }
+
 
     /**
      * Main runner method
@@ -105,9 +122,11 @@
               
               case 'authors':
                 $authors= explode(', ', $value);
-                $rfc->setAuthor($authors[0]);
-                foreach (array_slice($authors, 1) as $author) {
-                  // $c->addChild(new Node('author', NULL, array('id' => $author)));
+                $rfc->setAuthor_id($this->personByCn($authors[0])->getPerson_id());
+                
+                $contributors= array();
+                foreach (array_slice($authors, 1) as $contributor) {
+                  $contributors[]= $this->personByCn($contributor)->getPerson_id();
                 }
                 break;
               
@@ -131,8 +150,30 @@
             $rfc->isNew() ? 'Adding' : 'Updating',
             $rfc->getRfc_id()
           );
-          $rfc->save();
-          $this->out->writeLine('OK');
+          
+          try {
+            $tran= Rfc::getPeer()->begin(new Transaction());
+            $rfc->save();
+
+            $current= array();
+            foreach (Contributor::getPeer()->doSelect(create(new Criteria())->add('rfc_id', $rfc->getRfc_id(), EQUAL)) as $c) {
+              $current[]= $c->getPerson_id();
+            }
+            foreach (array_diff($contributors, $current) as $add) {
+              $contributor= new Contributor();
+              $contributor->setRfc_id($rfc->getRfc_id());
+              $contributor->setPerson_id($add);
+              $contributor->insert();
+            }
+            foreach (array_diff($current, $contributors) as $delete) {
+              Contributor::getByPerson_id($delete)->delete();
+            }
+            $tran->commit();
+            $this->out->writeLine('OK');
+          } catch (SQLException $e) {
+            $this->err->writeLine($e->compoundMessage());
+            $tran && $tran->rollback();
+          }
 
           $s->close();
         }
