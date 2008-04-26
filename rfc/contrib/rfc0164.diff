@@ -1,0 +1,307 @@
+Index: skeleton/lang/XPClass.class.php
+===================================================================
+--- skeleton/lang/XPClass.class.php	(revision 12088)
++++ skeleton/lang/XPClass.class.php	(working copy)
+@@ -158,12 +158,13 @@
+      * @param   string name
+      * @return  lang.reflect.Method
+      * @see     xp://lang.reflect.Method
++     * @throws  lang.ElementNotFoundException
+      */
+     public function getMethod($name) {
+       if ($this->hasMethod($name)) {
+         return new Method($this->_class, $this->_reflect->getMethod($name));
+       }
+-      return NULL;
++      raise('lang.ElementNotFoundException', 'No such method "'.$name.'" in class '.$this->name);
+     }
+     
+     /**
+@@ -199,12 +200,13 @@
+      *
+      * @return  lang.reflect.Constructor
+      * @see     xp://lang.reflect.Constructor
++     * @throws  lang.ElementNotFoundException
+      */
+     public function getConstructor() {
+       if ($this->hasConstructor()) {
+         return new Constructor($this->_class, $this->_reflect->getMethod('__construct')); 
+       }
+-      return NULL;
++      raise('lang.ElementNotFoundException', 'No constructor in class '.$this->name);
+     }
+     
+     /**
+@@ -227,11 +229,13 @@
+      *
+      * @param   string name
+      * @return  lang.reflect.Field
++     * @throws  lang.ElementNotFoundException
+      */
+     public function getField($name) {
+-      if (!$this->hasField($name)) return NULL;
+-
+-      return new Field($this->_class, $this->_reflect->getProperty($name));
++      if ($this->hasField($name)) {
++        return new Field($this->_class, $this->_reflect->getProperty($name));
++      }
++      raise('lang.ElementNotFoundException', 'No such field "'.$name.'" in class '.$this->name);
+     }
+     
+     /**
+Index: skeleton/unittest/TestSuite.class.php
+===================================================================
+--- skeleton/unittest/TestSuite.class.php	(revision 12088)
++++ skeleton/unittest/TestSuite.class.php	(working copy)
+@@ -52,7 +52,7 @@
+      * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
+      */
+     public function addTest(TestCase $test) {
+-      if (!$test->getClass()->getMethod($test->name)) {
++      if (!$test->getClass()->hasMethod($test->name)) {
+         throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
+       }
+       $className= $test->getClassName();
+Index: skeleton/xml/XSLCallback.class.php
+===================================================================
+--- skeleton/xml/XSLCallback.class.php	(revision 12088)
++++ skeleton/xml/XSLCallback.class.php	(working copy)
+@@ -58,7 +58,7 @@
+      * @param   mixed* method arguments
+      * @return  mixed
+      * @throws  lang.IllegalArgumentException if the instance is not known
+-     * @throws  lang.IllegalArgumentException if the given method does not exist or is not xsl-accessible
++     * @throws  lang.ElementNotFoundException if the given method does not exist or is not xsl-accessible
+      */
+     public static function invoke($name, $method) {
+       if (!isset(self::$instance->instances[$name])) throw new IllegalArgumentException(
+@@ -66,13 +66,13 @@
+       );
+ 
+       $instance= self::$instance->instances[$name];
+-      if (
+-        !($m= $instance->getClass()->getMethod($method)) ||
+-        !($m->hasAnnotation('xslmethod'))
+-      ) throw new IllegalArgumentException(
+-        'Instance "'.$name.'" does not have (xsl-accessible) method "'.$method.'"'
+-      );
+       
++      if (!($instance->getClass()->getMethod($method)->hasAnnotation('xslmethod'))) {
++        throw new ElementNotFoundException(
++          'Instance "'.$name.'" does not have method "'.$method.'"'
++        );
++      }
++      
+       $va= func_get_args();
+       
+       // Decode arguments [2..*]
+Index: skeleton/rdbms/finder/Finder.class.php
+===================================================================
+--- skeleton/rdbms/finder/Finder.class.php	(revision 12088)
++++ skeleton/rdbms/finder/Finder.class.php	(working copy)
+@@ -130,15 +130,18 @@
+      * name argument is NULL
+      *
+      * @param   string name
+-     * @return  rdbms.finder.FinderMethod in case the method does not exist or is no finder
+-     * @throws  rdbms.finder.FinderException
++     * @return  rdbms.finder.FinderMethod
++     * @throws  rdbms.finder.FinderException in case the method does not exist or is no finder
+      */
+     public function method($name) {
+       NULL === $name && $name= 'all';
+ 
+-      if (!($m= $this->getClass()->getMethod($name))) {
++      try {
++        $m= $this->getClass()->getMethod($name);
++      } catch (ElementNotFoundException $e) {
+         throw new FinderException('No such finder', new MethodNotImplementedException('Cannot find finder method', $name));
+       }
++
+       if (!$m->hasAnnotation('finder')) {
+         throw new FinderException('Not a finder', new IllegalArgumentException($m->getName()));
+       }
+Index: ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php	(revision 12088)
++++ ports/classes/net/xp_framework/unittest/reflection/ReflectionTest.class.php	(working copy)
+@@ -112,13 +112,20 @@
+      * Tests lang.Object class has no constructor
+      *
+      * @see     xp://lang.XPClass#hasConstructor
++     */
++    #[@test]
++    public function checkNoConstructor() {
++      $this->assertFalse(XPClass::forName('lang.Object')->hasConstructor());
++    }
++
++    /**
++     * Tests lang.Object class has no constructor
++     *
+      * @see     xp://lang.XPClass#getConstructor
+      */
+-    #[@test]
++    #[@test, @expect('lang.ElementNotFoundException')]
+     public function noConstructor() {
+-      $objectClass= XPClass::forName('lang.Object');
+-      $this->assertFalse($objectClass->hasConstructor());
+-      $this->assertNull($objectClass->getConstructor());
++      XPClass::forName('lang.Object')->getConstructor();
+     }
+ 
+     /**
+Index: ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php	(revision 12088)
++++ ports/classes/net/xp_framework/unittest/reflection/MethodsTest.class.php	(working copy)
+@@ -79,40 +79,64 @@
+     }
+ 
+     /**
+-     * Tests retrieving a non-existant method
++     * Tests checking for a non-existant method
+      *
+      * @see     xp://lang.reflect.Method#hasMethod
+-     * @see     xp://lang.reflect.Method#getMethod
+      */
+     #[@test]
+     public function nonExistantMethod() {
+       $this->assertFalse($this->fixture->hasMethod('@@nonexistant@@'));
+-      $this->assertNull($this->fixture->getMethod('@@nonexistant@@'));
+     }
+ 
+     /**
++     * Tests retrieving a non-existant method
++     *
++     * @see     xp://lang.reflect.Method#getMethod
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function getNonExistantMethod() {
++      $this->fixture->getMethod('@@nonexistant@@');
++    }
++
++    /**
+      * Tests constructor is not recognized as a method
+      *
+      * @see     xp://lang.reflect.Method#hasMethod
+-     * @see     xp://lang.reflect.Method#getMethod
+      */
+     #[@test]
+-    public function constructorIsNotAMethod() {
++    public function checkConstructorIsNotAMethod() {
+       $this->assertFalse($this->fixture->hasMethod('__construct'));
+-      $this->assertNull($this->fixture->getMethod('__construct'));
+     }
++    
++    /**
++     * Tests retrieving a non-existant method
++     *
++     * @see     xp://lang.reflect.Method#getMethod
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function constructorIsNotAMethod() {
++      $this->fixture->getMethod('__construct');
++    }
+ 
+     /**
+      * Tests static initializer block is not recognized as a method
+      *
+      * @see     xp://lang.reflect.Method#hasMethod
+-     * @see     xp://lang.reflect.Method#getMethod
+      */
+     #[@test]
+-    public function staticInitializerIsNotAMethod() {
++    public function checkStaticInitializerIsNotAMethod() {
+       $this->assertFalse($this->fixture->hasMethod('__static'));
+-      $this->assertNull($this->fixture->getMethod('__static'));
+     }
++    
++    /**
++     * Tests static initializer block is not recognized as a method
++     *
++     * @see     xp://lang.reflect.Method#getMethod
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function staticInitializerIsNotAMethod() {
++      $this->fixture->getMethod('__static');
++    }
+ 
+     /**
+      * Tests the method reflection
+Index: ports/classes/net/xp_framework/unittest/reflection/FieldsTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/reflection/FieldsTest.class.php	(revision 12088)
++++ ports/classes/net/xp_framework/unittest/reflection/FieldsTest.class.php	(working copy)
+@@ -68,26 +68,44 @@
+     }
+ 
+     /**
+-     * Tests getting a non-existant field
++     * Tests checking for a non-existant field
+      *
+-     * @see     xp://lang.reflect.Field#getField
++     * @see     xp://lang.XPClass#hasField
+      */
+     #[@test]
+     public function nonExistantField() {
+       $this->assertFalse($this->fixture->hasField('@@nonexistant@@'));
+-      $this->assertNull($this->fixture->getField('@@nonexistant@@'));
+     }
++    
++    /**
++     * Tests getting a non-existant field
++     *
++     * @see     xp://lang.XPClass#getField
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function getNonExistantField() {
++      $this->fixture->getField('@@nonexistant@@');
++    }
+ 
+     /**
+      * Tests the special "__id" member is not recognized as field
+      *
+-     * @see     xp://lang.reflect.Field#getField
++     * @see     xp://lang.XPClass#hasField
+      */
+     #[@test]
+-    public function specialIdField() {
++    public function checkSpecialIdField() {
+       $this->assertFalse($this->fixture->hasField('__id'));
+-      $this->assertNull($this->fixture->getField('__id'));
+     }
++    
++    /**
++     * Tests the special "__id" member is not recognized as field
++     *
++     * @see     xp://lang.XPClass#getField
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function getSpecialIdField() {
++      $this->fixture->getField('__id');
++    }
+ 
+     /**
+      * Helper method
+Index: ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php	(revision 12088)
++++ ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php	(working copy)
+@@ -174,7 +174,7 @@
+      * Test calling a method without xslmethod annotation
+      *
+      */
+-    #[@test, @expect('lang.IllegalArgumentException')]
++    #[@test, @expect('lang.ElementNotFoundException')]
+     public function callNonXslMethod() {
+       $this->runTransformation('<irrelevant/>', 'this::setUp', array());
+     }
+@@ -183,7 +183,7 @@
+      * Test calling a non-existant method
+      *
+      */
+-    #[@test, @expect('lang.IllegalArgumentException')]
++    #[@test, @expect('lang.ElementNotFoundException')]
+     public function callNonExistantMethod() {
+       $this->runTransformation('<irrelevant/>', 'this::nonExistantMethod', array());
+     }

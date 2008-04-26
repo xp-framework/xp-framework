@@ -1,0 +1,68 @@
+RFC 0164: Exceptions for XPClass::get*()
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Apr 26 12:44:23     2008
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+The following methods in lang.XPClass will throw exceptions instead of
+returning NULL for the case the respective element is not found:
+* getConstructor()
+* getMethod(string name)
+* getField(string name)
+
+
+Rationale
+---------
+Allow for chaining, be consistent with other APIs (if a hasX method exists,
+the getX method will throw an exception) and the getAnnotation() method.
+
+
+Functionality
+-------------
+
+Current
+~~~~~~~
+<?php
+  $m= XPClass::forName('util.cmd.Runner')->getMethod('main');
+  if (!$m) throw new ElementNotFoundException('No "main" method');
+  $m->invoke(NULL, array($args));
+?>
+
+New
+~~~
+<?php
+  XPClass::forName('util.cmd.Runner')->getMethod('main')->invoke(NULL, array($args));
+?>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+- BC break - increases minor version (at the time of writing, that would
+  mean the next release would be 5.7.0)
+
+
+Related documents
+-----------------
+- http://xp-framework.net/rfc/contrib/rfc0164.diff
+  Implementing patch
+
+
+Comments
+--------
+
+<EOF>
