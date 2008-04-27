@@ -36,9 +36,8 @@
       if (!($rfc= Rfc::getByRfc_id($id))) {
         throw new HttpScriptletException('RFC "'.$id.'" not found', HTTP_NOT_FOUND);
       }
-
-      $builder= new MarkupBuilder();
     
+      // Add RFC details
       $n= $response->addFormresult(new Node('rfc', NULL, array('number' => sprintf('%04d', $rfc->getRfc_id()))));
       $n->addChild(Node::fromObject($rfc->getCreated_at(), 'created'));
       $n->addChild(new Node('title', $rfc->getTitle()));
@@ -48,13 +47,10 @@
         $n->addChild(Node::fromObject($contributor->getPerson(), 'contributor'));
       }
 
+      // Add content
+      $builder= new MarkupBuilder();
       $markup= '<p>'.$builder->markupFor($rfc->getContent()).'</p>';
-      try {
-        Tree::fromString('<content>'.$markup.'</content>');
-        $n->addChild(new Node('content', new PCData($markup)));
-      } catch (XPException $e) {
-        $n->addChild(new Node('content', $e->compoundMessage().$builder->markupFor($rfc->getContent())));
-      }
+      $n->addChild(new Node('content', new PCData($markup)));
     }
   }
 ?>
