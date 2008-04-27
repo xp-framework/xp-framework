@@ -50,12 +50,7 @@
           $n->addChild(Node::fromObject($rfc->getAuthor(), 'author'));
 
           $markup= '<p>'.$builder->markupFor($rfc->getContent()).'</p>';
-          try {
-            Tree::fromString('<content>'.$markup.'</content>');
-            $n->addChild(new Node('content', new PCData($markup)));
-          } catch (XPException $e) {
-            $n->addChild(new Node('content', $e->compoundMessage().$builder->markupFor($rfc->getContent())));
-          }
+          $n->addChild(new Node('content', new PCData($markup)));
         }
       }
     }
