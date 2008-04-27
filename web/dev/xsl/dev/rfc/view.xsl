@@ -66,8 +66,16 @@
    ! Links to an XP RFC
    !-->
   <xsl:template match="link[@rel= 'rfc']">
-    <a href="http://xp-framework.net/rfc/{@href}"><xsl:value-of select="."/></a>
+    <a href="/xml/rfc/view?{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
+
+  <!--
+   ! Links to XP-RFCs
+   !-->
+  <xsl:template match="rfc">
+    <a href="/xml/rfc/view?{@id}">RFC #<xsl:value-of select="@id"/></a>
+  </xsl:template>
+
 
   <!--
    ! Links to a PHP manual page
