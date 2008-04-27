@@ -75,6 +75,7 @@
      */
     public function popProcessor() {
       array_shift($this->stack);
+      if (empty($this->stack)) throw new IllegalStateException('Stack underflow');
       return $this->stack[0];
     }
 
