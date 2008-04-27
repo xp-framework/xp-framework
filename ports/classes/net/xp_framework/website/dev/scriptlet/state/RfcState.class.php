@@ -32,15 +32,16 @@
         30001 => 'obsoleted'
       );
 
-      // Select all RFCs currently in discussion 
+      // Select all RFCs currently in discussion and all drafts
       $i= Rfc::getPeer()->iteratorFor(create(new Criteria())
-        ->add('bz_id', 10000, EQUAL)
+        ->add('bz_id', array(500, 10000), IN)
         ->addOrderBy('rfc_id', DESC)
       );
     
       $builder= new MarkupBuilder();
       $l= $response->addFormresult(new Node('list'));
 
+      $count= 0;
       while ($i->hasNext()) {
         with ($rfc= $i->next()); {
           $n= $l->addChild(new Node('rfc', NULL, array('number' => sprintf('%04d', $rfc->getRfc_id()))));
@@ -48,10 +49,11 @@
           $n->addChild(new Node('title', $rfc->getTitle()));
           $n->addChild(new Node('status', $rfc->getStatus(), array('id' => $bz[$rfc->getBz_id()])));
           $n->addChild(Node::fromObject($rfc->getAuthor(), 'author'));
-
-          $markup= '<p>'.$builder->markupFor($rfc->getScope()).'</p>';
-          $n->addChild(new Node('scope', new PCData($markup)));
+          $n->addChild(new Node('scope', new PCData('<p>'.$builder->markupFor($rfc->getScope()).'</p>')));
         }
+        
+        // Only newest 10
+        if ($count++ > 10) break;
       }
     }
   }
