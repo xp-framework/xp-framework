@@ -20,6 +20,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added syntactical support in text.doclet.markup API for ordered and
+  unordered lists.
+  (friebe)
 
 
 Version 5.6.6, released 2008-04-23

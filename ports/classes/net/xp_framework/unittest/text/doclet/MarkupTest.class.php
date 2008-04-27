@@ -41,7 +41,25 @@
     public function unorderedList() {
       $this->assertEquals(
         '<ul><li>Item 1</li><li>Item 2</li></ul>',
-        $this->builder->markupFor('<ul><li>Item 1</li><li>Item 2</li></ul>')
+        $this->builder->markupFor(
+          "* Item 1\n".
+          "* Item 2"
+        )
+      );
+    }
+
+    /**
+     * Test ul / li
+     *
+     */
+    #[@test]
+    public function unorderedListWithBreaks() {
+      $this->assertEquals(
+        "<ul><li>Item 1\n  Item 1 Line 2\n  Item 1 Line 3</li><li>Item 2\n  Item 2 Line 2</li></ul>",
+        $this->builder->markupFor(
+          "* Item 1\n  Item 1 Line 2\n  Item 1 Line 3\n".
+          "* Item 2\n  Item 2 Line 2"
+        )
       );
     }
 
@@ -51,6 +69,33 @@
      */
     #[@test]
     public function orderedList() {
+      $this->assertEquals(
+        '<ol><li>Item 1</li><li>Item 2</li></ol>',
+        $this->builder->markupFor(
+          "1) Item 1\n".
+          "2) Item 2"
+        )
+      );
+    }
+
+    /**
+     * Test ul / li
+     *
+     */
+    #[@test]
+    public function unorderedListWithMarkup() {
+      $this->assertEquals(
+        '<ul><li>Item 1</li><li>Item 2</li></ul>',
+        $this->builder->markupFor('<ul><li>Item 1</li><li>Item 2</li></ul>')
+      );
+    }
+
+    /**
+     * Test ol / li
+     *
+     */
+    #[@test]
+    public function orderedListWithMarkup() {
       $this->assertEquals(
         '<ol><li>Item 1</li><li>Item 2</li></ol>',
         $this->builder->markupFor('<ol><li>Item 1</li><li>Item 2</li></ol>')
@@ -326,6 +371,18 @@
     }
 
     /**
+     * Test rfc-link
+     *
+     */
+    #[@test]
+    public function rfcLink() {
+      $this->assertEquals(
+        '<rfc id="0010"/>',
+        $this->builder->markupFor('rfc #0010')
+      );
+    }
+
+    /**
      * Test blogentry-link
      *
      */
@@ -447,7 +504,7 @@
     public function headline1() {
       $this->assertEquals(
         '</p><h1>Headline1</h1><p>', 
-        $this->builder->markupFor("\nHeadline1\n=========\n")
+        $this->builder->markupFor("Headline1\n=========")
       );
     }
 
@@ -459,7 +516,7 @@
     public function headline2() {
       $this->assertEquals(
         '</p><h2>Headline2</h2><p>', 
-        $this->builder->markupFor("\nHeadline2\n---------\n")
+        $this->builder->markupFor("Headline2\n---------")
       );
     }
 
@@ -471,7 +528,7 @@
     public function headline3() {
       $this->assertEquals(
         '</p><h3>Headline3</h3><p>', 
-        $this->builder->markupFor("\nHeadline3\n~~~~~~~~~\n")
+        $this->builder->markupFor("Headline3\n~~~~~~~~~")
       );
     }
 
