@@ -75,8 +75,8 @@
           $n->addChild(new Node('status', $rfc->getStatus(), array('id' => $bz[$rfc->getBz_id()])));
           $n->addChild(Node::fromObject($rfc->getAuthor(), 'author'));
 
-          $markup= '<p>'.$builder->markupFor($rfc->getContent()).'</p>';
-          $n->addChild(new Node('content', new PCData($markup)));
+          $markup= '<p>'.$builder->markupFor($rfc->getScope()).'</p>';
+          $n->addChild(new Node('scope', new PCData($markup)));
         }
       }
       

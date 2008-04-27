@@ -52,8 +52,8 @@
 
       // Add content
       $builder= new MarkupBuilder();
-      $markup= '<p>'.$builder->markupFor($rfc->getContent()).'</p>';
-      $n->addChild(new Node('content', new PCData($markup)));
+      $n->addChild(new Node('scope', new PCData('<p>'.$builder->markupFor($rfc->getScope()).'</p>')));
+      $n->addChild(new Node('content', new PCData('<p>'.$builder->markupFor($rfc->getContent()).'</p>')));
     }
   }
 ?>

@@ -20,6 +20,7 @@
       $created_at         = NULL,
       $status             = '',
       $categories         = '',
+      $scope              = '',
       $content            = NULL,
       $lastchange         = NULL,
       $changedby          = '',
@@ -43,6 +44,7 @@
           'created_at'          => array('%s', FieldType::DATETIME, FALSE),
           'status'              => array('%s', FieldType::VARCHAR, FALSE),
           'categories'          => array('%s', FieldType::VARCHAR, FALSE),
+          'scope'               => array('%s', FieldType::TEXT, FALSE),
           'content'             => array('%s', FieldType::TEXT, TRUE),
           'lastchange'          => array('%s', FieldType::DATETIME, FALSE),
           'changedby'           => array('%s', FieldType::VARCHAR, FALSE),
@@ -231,6 +233,25 @@
      */
     public function setCategories($categories) {
       return $this->_change('categories', $categories);
+    }
+
+    /**
+     * Retrieves scope
+     *
+     * @return  string
+     */
+    public function getScope() {
+      return $this->scope;
+    }
+      
+    /**
+     * Sets scope
+     *
+     * @param   string scope
+     * @return  string the previous value
+     */
+    public function setScope($scope) {
+      return $this->_change('scope', $scope);
     }
 
     /**

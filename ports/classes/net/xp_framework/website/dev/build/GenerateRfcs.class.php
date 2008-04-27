@@ -122,13 +122,22 @@
             }
           }
           
+          // Scope of change
+          $text= '';
+          while ($st->hasMoreTokens("\n")) {
+            $token= $st->nextToken("\n");
+            if (0 === strncmp('Rationale', $token, 9)) break;
+            $text.= $token."\n";
+          }
+          $rfc->setScope(trim($text));
+          
           // Rest of text (use a token that is not very likely to appear so
           // scanning will happen in large chunks).
-          $text= "\n";
+          $text= $token."\n";
           while ($st->hasMoreTokens("\0")) {
             $text.= $st->nextToken("\0");
           }
-          $rfc->setContent($text);
+          $rfc->setContent(trim($text));
           
           // Save
           $this->out->writef(
