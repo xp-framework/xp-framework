@@ -34,7 +34,7 @@
         <b><xsl:value-of select="status"/></b>
       </em>
       <br/><br clear="all"/>
-      <xsl:apply-templates select="content/p[2]"/>
+      <xsl:apply-templates select="scope/p[2]"/>
       <br clear="all"/>
     </xsl:for-each>
   </xsl:template>

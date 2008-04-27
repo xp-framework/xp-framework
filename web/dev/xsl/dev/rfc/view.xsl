@@ -153,6 +153,9 @@
               </xsl:if>
             </ul>
           </fieldset>
+
+          <xsl:apply-templates select="/formresult/rfc/scope"/>
+          <br clear="all"/>
           
           <xsl:apply-templates select="/formresult/rfc/content"/>
           <br clear="all"/>
