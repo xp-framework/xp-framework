@@ -30,14 +30,6 @@
       $filter = NULL;
     
     /**
-     * Constructor
-     *
-     */
-    public function __construct() {
-      $this->filter= new NameMatchesFilter('/[0-9]{4}\.rfc/');
-    }
-
-    /**
      * Set directories to scan for RFCs
      *
      * @param   string dir
@@ -53,7 +45,7 @@
      * @param   string pattern
      */
     #[@arg]
-    public function setFilter($pattern= NULL) {
+    public function setFilter($pattern= '[0-9]{4}\.rfc') {
       $this->filter= new NameMatchesFilter('/'.$pattern.'/');
     }
     
@@ -111,13 +103,7 @@
                 break;
               
               case 'category':
-                foreach (explode(', ', $value) as $category) {
-                  if ('<' === $category{0}) {
-                    // ...
-                  } else {
-                    // ...
-                  }
-                }
+                $rfc->setCategories($value);
                 break;
               
               case 'authors':

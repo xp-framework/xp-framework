@@ -46,6 +46,9 @@
       foreach ($rfc->getContributorRfcList() as $contributor) {
         $n->addChild(Node::fromObject($contributor->getPerson(), 'contributor'));
       }
+      foreach (explode(', ', $rfc->getCategories()) as $category) {
+        $n->addChild(new Node('category', $category));
+      }
 
       // Add content
       $builder= new MarkupBuilder();

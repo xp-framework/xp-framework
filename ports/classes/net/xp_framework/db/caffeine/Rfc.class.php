@@ -19,6 +19,7 @@
       $author_id          = 0,
       $created_at         = NULL,
       $status             = '',
+      $categories         = '',
       $content            = NULL,
       $lastchange         = NULL,
       $changedby          = '',
@@ -41,6 +42,7 @@
           'author_id'           => array('%d', FieldType::INT, FALSE),
           'created_at'          => array('%s', FieldType::DATETIME, FALSE),
           'status'              => array('%s', FieldType::VARCHAR, FALSE),
+          'categories'          => array('%s', FieldType::VARCHAR, FALSE),
           'content'             => array('%s', FieldType::TEXT, TRUE),
           'lastchange'          => array('%s', FieldType::DATETIME, FALSE),
           'changedby'           => array('%s', FieldType::VARCHAR, FALSE),
@@ -210,6 +212,25 @@
      */
     public function setStatus($status) {
       return $this->_change('status', $status);
+    }
+
+    /**
+     * Retrieves categories
+     *
+     * @return  string
+     */
+    public function getCategories() {
+      return $this->categories;
+    }
+      
+    /**
+     * Sets categories
+     *
+     * @param   string categories
+     * @return  string the previous value
+     */
+    public function setCategories($categories) {
+      return $this->_change('categories', $categories);
     }
 
     /**
