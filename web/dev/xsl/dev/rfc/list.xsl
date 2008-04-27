@@ -17,17 +17,8 @@
 
   <xsl:include href="../layout.inc.xsl"/>
   <xsl:include href="list.inc.xsl"/>
+  <xsl:include href="criteria.inc.xsl"/>
   
-  <xsl:variable name="criteria">
-    <criteria id="status">
-      <filter id="draft">Draft</filter>
-      <filter id="discussion">Discussion</filter>
-      <filter id="implemented">Implemented</filter>
-      <filter id="obsoleted">Obsoleted</filter>
-      <filter id="rejected">Rejected</filter>
-    </criteria>
-  </xsl:variable>
-
   <xsl:template name="content">
     <table id="main" cellpadding="0" cellspacing="10">
       <tr>
