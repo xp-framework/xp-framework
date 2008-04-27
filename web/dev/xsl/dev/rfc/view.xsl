@@ -130,6 +130,12 @@
             </b>
             <ul>
               <li>Created: <xsl:value-of select="/formresult/rfc/created"/></li>
+              <li>Categories: 
+                <xsl:for-each select="/formresult/rfc/category">
+                  <xsl:value-of select="."/>
+                  <xsl:if test="position() &lt; last()">, </xsl:if>
+                </xsl:for-each>
+              </li>
               <li>Author: 
                 <acronym title="{/formresult/rfc/author/realname}">
                   <xsl:value-of select="/formresult/rfc/author/cn"/>
