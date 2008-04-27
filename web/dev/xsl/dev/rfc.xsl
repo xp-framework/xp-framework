@@ -16,55 +16,57 @@
 >
 
   <xsl:include href="layout.inc.xsl"/>
+  <xsl:include href="rfc/criteria.inc.xsl"/>
   
-  <xsl:template name="list">
-    <xsl:param name="elements"/>
-    
-    <xsl:for-each select="exsl:node-set($elements)">
-      <xsl:sort select="@number" data-type="text" order="descending"/>
-    
-      <h2>
-        <img src="/image/{status/@id}.png" widht="16" height="16"/>
-        <a href="{xp:link(concat('rfc/view?', @number))}">
-          #<xsl:value-of select="@number"/>: <xsl:value-of select="title"/>
-        </a>
-      </h2>
-      <em>
-        Created <xsl:value-of select="created"/> by <acronym title="{author/realname}"><xsl:value-of select="author/cn"/></acronym>,
-        <b><xsl:value-of select="status"/></b>
-      </em>
-      <br/><br clear="all"/>
-      <xsl:apply-templates select="scope/p[2]"/>
-      <br clear="all"/>
-    </xsl:for-each>
-  </xsl:template>
-
   <xsl:template name="content">
-    <table id="main" cellpadding="0" cellspacing="10">
-      <tr>
-        <td id="content">
-          <div id="breadcrumb">
-            <a href="{xp:link('home')}">Developer Zone</a> &#xbb;
-            <a href="{xp:link('rfc')}">RFCs</a>
-          </div>
-          
-          <h1>Currently under discussion</h1>
-          <br clear="all"/>
-          <xsl:call-template name="list">
-            <xsl:with-param name="elements" select="/formresult/list/rfc[status/@id = 'discussion']"/>
-          </xsl:call-template>
+    <table id="main" cellpadding="0" cellspacing="10"><tr>
+      <td id="content">
+        <div id="breadcrumb">
+          <a href="{xp:link('home')}">Developer Zone</a> &#xbb;
+          <a href="{xp:link('rfc')}">RFCs</a>
+        </div>
 
-        </td>
-        <td id="context">
-          <h3>RFCs by status</h3>
-          <a href="{xp:link('rfc/list?status.draft')}">Draft</a><br/>
-          <a href="{xp:link('rfc/list?status.discussion')}">Discussion</a><br/>
-          <a href="{xp:link('rfc/list?status.implemented')}">Implemented</a><br/>
-          <a href="{xp:link('rfc/list?status.obsoleted')}">Obsoleted</a><br/>
-          <a href="{xp:link('rfc/list?status.rejected')}">Rejected</a><br/>
-        </td>
-      </tr>
-    </table>
+        <h1>RFCs</h1>
+        <br clear="all"/>
+
+        <!-- Featured items -->
+        <table width="100%" class="columned"><tr>
+          <td width="50%" valign="top">
+            <h2>Current RFCs</h2>
+            <br clear="all"/>
+            <xsl:for-each select="/formresult/list/rfc">
+              <a href="{xp:link(concat('rfc/view?', @number))}">
+                <h3>
+                  <img border="0" src="/image/{status/@id}.png" width="16" height="16"/>
+                  #<xsl:value-of select="@number"/>: <xsl:value-of select="title"/>
+                </h3>
+              </a>
+              <div style="margin-bottom: 18px;">
+                <em><xsl:value-of select="created"/></em>
+                <xsl:apply-templates select="scope/p[2]"/>
+              </div>
+            </xsl:for-each>
+          </td>
+          <td width="25%" valign="top">
+            <h2>RFCs by Status</h2>
+            <br clear="all"/>
+            <ul>
+              <xsl:for-each select="exsl:node-set($criteria)/criteria[@id= 'status']/filter">
+                <li><a href="{xp:link(concat('rfc/list?status.', @id))}"><xsl:value-of select="."/></a></li>
+              </xsl:for-each>
+            </ul>
+          </td>
+          <td width="25%" valign="top">
+            <h2>More</h2>
+            <br clear="all"/>
+            <ul>
+              <li><a href="#">The RFC process</a></li>
+            </ul>
+          </td>
+        </tr></table>
+        <br clear="all"/>
+      </td>
+    </tr></table>
   </xsl:template>
 
   <xsl:template name="html-title">
