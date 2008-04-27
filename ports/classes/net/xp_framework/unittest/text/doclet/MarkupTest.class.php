@@ -53,6 +53,21 @@
      *
      */
     #[@test]
+    public function unorderedListWithLinks() {
+      $this->assertEquals(
+        '<ul><li>Item 1</li><li><link href="example.com" rel="http"/></li></ul>',
+        $this->builder->markupFor(
+          "* Item 1\n".
+          "* http://example.com"
+        )
+      );
+    }
+
+    /**
+     * Test ul / li
+     *
+     */
+    #[@test]
     public function unorderedListWithBreaks() {
       $this->assertEquals(
         "<ul><li>Item 1\n  Item 1 Line 2\n  Item 1 Line 3</li><li>Item 2\n  Item 2 Line 2</li></ul>",
