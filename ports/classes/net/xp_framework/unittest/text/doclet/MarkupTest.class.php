@@ -555,7 +555,7 @@
     public function underline() {
       $this->assertEquals(
         '<u>Underlined</u>', 
-        $this->builder->markupFor("_Underlined_")
+        $this->builder->markupFor('_Underlined_')
       );
     }
 
@@ -567,7 +567,31 @@
     public function italic() {
       $this->assertEquals(
         '<i>Italic</i>', 
-        $this->builder->markupFor("/Italic/")
+        $this->builder->markupFor('/Italic/')
+      );
+    }
+
+    /**
+     * Test italic
+     *
+     */
+    #[@test]
+    public function divisionDoesNotBecomeItalic() {
+      $this->assertEquals(
+        'A / B', 
+        $this->builder->markupFor('A / B')
+      );
+    }
+
+    /**
+     * Test italic
+     *
+     */
+    #[@test]
+    public function slashListDoesNotBecomeItalic() {
+      $this->assertEquals(
+        'Junior / Advanced / Senior', 
+        $this->builder->markupFor('Junior / Advanced / Senior')
       );
     }
 
@@ -579,7 +603,7 @@
     public function bold() {
       $this->assertEquals(
         '<b>Bold</b>', 
-        $this->builder->markupFor("*Bold*")
+        $this->builder->markupFor('*Bold*')
       );
     }
   }
