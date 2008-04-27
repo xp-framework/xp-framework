@@ -56,7 +56,12 @@
 
         </td>
         <td id="context">
-          Table of contents
+          <h3>RFCs by status</h3>
+          <a href="{xp:link('rfc/list?status.draft')}">Draft</a><br/>
+          <a href="{xp:link('rfc/list?status.discussion')}">Discussion</a><br/>
+          <a href="{xp:link('rfc/list?status.implemented')}">Implemented</a><br/>
+          <a href="{xp:link('rfc/list?status.obsoleted')}">Obsoleted</a><br/>
+          <a href="{xp:link('rfc/list?status.rejected')}">Rejected</a><br/>
         </td>
       </tr>
     </table>
