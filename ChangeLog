@@ -17,8 +17,10 @@ RFCs
   
 Bugfixes
 ~~~~~~~~
-- Fix session id initialization in XMLScriptletRequest::initialize()
+- Fixed session id initialization in XMLScriptletRequest::initialize()
   (hinckel)
+- Fixed rdbms.Record::set() method
+  (Michael Bayer, kiesel)
 
 Features
 ~~~~~~~~
