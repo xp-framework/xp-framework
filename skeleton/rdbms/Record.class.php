@@ -31,7 +31,9 @@
      * @return  mixed previous value
      */
     public function set($field, $value) {
-      $this->{$k}= $value;
+      $prev= $this->{$field};
+      $this->{$field}= $value;
+      return $prev;
     }
 
     /**
