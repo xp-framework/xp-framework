@@ -45,6 +45,7 @@
       $this->product=   $this->getEnvValue('PRODUCT', $this->getDefaultProduct());
       $this->stateName= $this->getEnvValue('STATE', $this->getDefaultStateName());
       $this->language=  $this->getEnvValue('LANGUAGE', $this->getDefaultLanguage());
+      $this->sessionId= $this->getEnvValue('SESS');
       
       // Check cookies for session id
       if ($this->hasCookie('session_id')) {
