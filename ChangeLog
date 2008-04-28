@@ -17,6 +17,8 @@ RFCs
   
 Bugfixes
 ~~~~~~~~
+- Fix session id initialization in XMLScriptletRequest::initialize()
+  (hinckel)
 
 Features
 ~~~~~~~~
