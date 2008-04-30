@@ -9,7 +9,8 @@
   /**
    * Casts given values to date objects
    *
-   * @purpose  Caster
+   * @test      xp://net.xp_framework.unittest.scriptlet.workflow.ToDateTest
+   * @purpose   Caster
    */
   class ToDate extends ParamCaster {
 
@@ -24,6 +25,16 @@
       $return= array();
       foreach ($value as $k => $v) {
         if ('' === $v) return 'empty';
+        
+        $pv= date_parse($v);
+        if (
+          !is_int($pv['year']) ||
+          !is_int($pv['month']) ||
+          !is_int($pv['day'])
+        ) {
+          return 'invalid';
+        }
+        
         try {
           $date= new Date($v);
         } catch (IllegalArgumentException $e) {

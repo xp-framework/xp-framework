@@ -19,6 +19,10 @@ RFCs
   
 Bugfixes
 ~~~~~~~~
+- Fixed bug when scriptlet.xml.workflow.casters.ToDate accepted an
+  abbreviated date, interpreted it as a time and used the
+  current date with given time instead the given date
+  (kiesel)
 - Fixed session id initialization in XMLScriptletRequest::initialize()
   (hinckel)
 - Fixed rdbms.Record::set() method
