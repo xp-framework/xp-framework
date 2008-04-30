@@ -21,7 +21,7 @@
     /**
      * Return the caster
      *
-     * @return  &scriptlet.xml.workflow.casters.ParamCaster
+     * @return  scriptlet.xml.workflow.casters.ParamCaster
      */
     protected function caster() {
       return new ToDate();
@@ -36,6 +36,26 @@
       $this->assertEquals(new Date('1977-12-14'), $this->castValue('14.12.1977'));
     }
 
+    /**
+     * Test european date format with short year
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function europeanDateFormatShortYear() {
+      $this->assertEquals(new Date('2008-04-10'), $this->castValue('10.04.08'));
+    }
+    
+    /**
+     * Test european date format with short year but which composisiton
+     * is so unambigous that the parser can extract year, month and
+     * day values from it.
+     *
+     */
+    #[@test]
+    public function europeanDateFormatShortYearButUnambiguous() {
+      $this->assertEquals(new Date('1980-05-28'), $this->castValue('28.05.80'));
+    }
+    
     /**
      * Test US date format (YYYY-MM-DD)
      *
