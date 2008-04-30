@@ -25,10 +25,10 @@
       );
       
     public
-      $escape       = '"',
-      $escapeRules  = array('"' => '""'),
-      $escapeT      = '"',
-      $escapeTRules = array('"' => '""'),
+      $escape       = "'",
+      $escapeRules  = array("'" => "''"),
+      $escapeT      = "'",
+      $escapeTRules = array("'" => "''"),
       $dateFormat   = 'Y-m-d h:iA';
         
     /**
@@ -58,9 +58,9 @@
      * @throws  lang.IllegalArgumentException
      */
     public function datepart($datepart) {
-      $datepart= strToLower($datepart);
+      $datepart= strtolower($datepart);
       if (!array_key_exists($datepart, self::$dateparts)) return parent::datepart($datepart);
-      if (FALSE === self::$dateparts[$datepart]) throw new IllegalArgumentException('SYBASE does not support datepart '.$datepart);
+      if (FALSE === self::$dateparts[$datepart]) throw new IllegalArgumentException('Sybase does not support datepart '.$datepart);
       return self::$dateparts[$datepart];
     }
 
@@ -72,7 +72,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function makeJoinBy(Array $conditions) {
-      if (0 == sizeof($conditions)) throw new IllegalArgumentException('conditions can not be empty');
+      if (0 == sizeof($conditions)) throw new IllegalArgumentException('Conditions cannot be empty');
       $tableString= current($conditions)->getSource()->toSqlString();
       $conditionString= '';
 

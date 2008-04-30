@@ -98,7 +98,7 @@
       }
 
       $this->assertSql(
-        'where job_id = 1 and valid_from >= "2006-01-01 12:00AM" and title like "Hello%" order by valid_from asc', 
+        'where job_id = 1 and valid_from >= \'2006-01-01 12:00AM\' and title like \'Hello%\' order by valid_from asc', 
         $c
       );
     }
@@ -127,8 +127,8 @@
 
       $this->assertSql(
         'where (not (job_id in (1, 2, 3))'
-        .' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'
-        .' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'
+        .' or (title like \'Hello%\' and valid_from > \'2006-01-01 12:00AM\')'
+        .' or (title like \'Hello%\' and valid_from > \'2006-01-01 12:00AM\')'
         .' or job_id between 1 and 5)',
         $c
       );
@@ -141,7 +141,7 @@
     #[@test]
     public function constructorAcceptsVarArgArrays() {
       $this->assertSql(
-        'where job_id = 1 and title = "Hello"', 
+        'where job_id = 1 and title = \'Hello\'', 
         new Criteria(array('job_id', 1, EQUAL), array('title', 'Hello', EQUAL))
       );
     }

@@ -27,9 +27,9 @@
       );
 
     public
-      $escape       = '"',
+      $escape       = "'",
       $escapeRules  = array(
-        '"'   => '\"',
+        "'"   => "''",
         '\\'  => '\\\\'
       ),
       $escapeT      = '`',

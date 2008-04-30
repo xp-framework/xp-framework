@@ -90,8 +90,8 @@
     #[@test]
     public function testStringToken() {
       static $expect= array(
-        'sybase'  => 'select """Hello"", Tom\'s friend said" as strval',
-        'mysql'   => 'select "\"Hello\", Tom\'s friend said" as strval',
+        'sybase'  => "select '\"Hello\", Tom''s friend said' as strval",
+        'mysql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'pgsql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         // Add other built-in rdbms engines when added to the test!
       );
@@ -110,8 +110,8 @@
     #[@test]
     public function testBackslash() {
       static $expect= array(
-        'sybase'  => 'select "Hello \\ " as strval',    // one backslash
-        'mysql'   => 'select "Hello \\\\ " as strval',  // two backslashes
+        'sybase'  => 'select \'Hello \\ \' as strval',    // one backslash
+        'mysql'   => 'select \'Hello \\\\ \' as strval',  // two backslashes
         'pgsql'   => 'select \'Hello \\ \' as strval',    // one backslash
         // TBD: Other built-in rdbms engines
       );
@@ -150,8 +150,8 @@
     #[@test]
     public function testDateArrayToken() {
       static $expect= array(
-        'sybase'  => '"1977-12-14 12:00AM", "1977-12-15 12:00AM"',
-        'mysql'   => '"1977-12-14 00:00:00", "1977-12-15 00:00:00"',
+        'sybase'  => "'1977-12-14 12:00AM', '1977-12-15 12:00AM'",
+        'mysql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
         'pgsql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
         // Add other built-in rdbms engines when added to the test!
       );
@@ -231,8 +231,8 @@
     #[@test]
     public function percentSignInPrepareString() {
       static $expect= array(
-        'sybase'  => 'insert into table values ("value", "str%&ing", "value")',
-        'mysql'   => 'insert into table values ("value", "str%&ing", "value")',
+        'sybase'  => 'insert into table values (\'value\', "str%&ing", \'value\')',
+        'mysql'   => 'insert into table values (\'value\', "str%&ing", \'value\')',
         'pgsql'   => 'insert into table values (\'value\', "str%&ing", \'value\')'
       );
       
@@ -250,8 +250,8 @@
     #[@test]
     public function percentSignInValues() {
       static $expect= array(
-        'sybase'  => 'select "%20"',
-        'mysql'   => 'select "%20"',
+        'sybase'  => "select '%20'",
+        'mysql'   => "select '%20'",
         'pgsql'   => "select '%20'"
       );
 
