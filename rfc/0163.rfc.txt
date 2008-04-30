@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Thu Apr 24 17:40:16 CEST 2008
-@status: discussion, ends Mon Apr 28 18:00:00 CEST 2008
+@status: implemented, Wed Apr 30 17:52:34 CEST 2008
 @category: rdbms
 
 Scope of Change
