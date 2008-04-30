@@ -52,8 +52,8 @@
           $n->addChild(new Node('scope', new PCData('<p>'.$builder->markupFor($rfc->getScope()).'</p>')));
         }
         
-        // Only newest 10
-        if ($count++ > 10) break;
+        // Only newest five
+        if (++$count > 4) break;
       }
     }
   }
