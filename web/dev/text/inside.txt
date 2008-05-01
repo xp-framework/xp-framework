@@ -103,51 +103,6 @@ Put links to any of the following documents here:
   other RFCs
 </summary>
 
-Example
--------
-This is the file <tt>0149.rfc.txt</tt> from the XP SVN checkout:
-<pre>
-RFC 0149: Code coverage
-========================================================================
-$Id: 0149.rfc.txt 11574 2007-12-23 15:42:28Z friebe $
-
-@authors: friebe
-@created: Sun Dec 23 16:37:38     2007
-@status: draft
-@category: unittest
-
-Scope of Change
----------------
-Code coverage functionality will be added to the unittest API.
-
-Rationale
----------
-Find unused and/or untested code paths.
-
-Functionality
--------------
-Code coverage functionality will depend on the XDebug extension which
-can be retrieved from http://xdebug.org/
-
-Security considerations
------------------------
-n/a
-
-Speed impact
-------------
-Unittests will run slower if this optional functionality is used.
-
-Dependencies
-------------
-XDebug extension
-
-Related documents
------------------
-- http://xp-framework.net/rfc/contrib/rfc0149.diff
-  Implementing patch
-
-Comments
---------
-- friebe, Thu May  1 12:10:21     2008
-  This should go into the next release - 5.6.7
-</pre>
+More
+----
+Have a look at the [topic://example example RFC].
