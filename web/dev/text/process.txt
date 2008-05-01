@@ -20,6 +20,31 @@ Diagram
    `----------------------´ 
 </pre>
 
+Status "draft"
+~~~~~~~~~~~~~~
+The RFC is being worked on.
+
+Status "discussion"
+~~~~~~~~~~~~~~~~~~~
+The RFC is to be discussed. Followed by a date when the discussion ends.
+
+Status "implemented"
+~~~~~~~~~~~~~~~~~~~~
+This RFC has been implemented. Followed by a date when the RFC was 
+implemented.
+
+Status "deferred"
+~~~~~~~~~~~~~~~~~
+The RFC has been deferred, which means no work is being made on it.
+
+Status "rejected"
+~~~~~~~~~~~~~~~~~
+This RFC has been rejected.
+
+Status "accepted"
+~~~~~~~~~~~~~~~~~
+This RFC has been accepted but is not yet implemented.
+
 Explanation
 -----------
 * An RFC is always created in the status "draft".

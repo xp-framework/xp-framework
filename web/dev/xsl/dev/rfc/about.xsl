@@ -97,6 +97,13 @@
   </xsl:template>
 
   <!--
+   ! Links to another topic
+   !-->
+  <xsl:template match="link[@rel= 'topic']">
+    <a href="{xp:link(concat($__state, '?', @href))}"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <!--
    ! Links to a PHP manual page
    !-->
   <xsl:template match="link[@rel= 'php']">

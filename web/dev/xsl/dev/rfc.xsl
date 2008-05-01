@@ -64,6 +64,8 @@
             <br clear="all"/>
             <p>Documentation:</p>
             <ul>
+              <li><a href="{xp:link('rfc/about?introduction')}">Introduction</a></li>
+              <li><a href="{xp:link('rfc/about?introduction')}">Inside an RFC</a></li>
               <li><a href="{xp:link('rfc/about?process')}">The RFC process</a></li>
             </ul>
           </td>

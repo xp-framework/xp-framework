@@ -1,0 +1,52 @@
+Introduction
+============
+RFC stands for Request For Comments, but you knew that:)
+
+Why do we have RFCs?
+--------------------
+One of the major deficiencies in the development of many projects is that 
+there is no roadmap or strategy available other than in the developers' heads. 
+Changes are made and then discussed, not the other way around. That's the 
+way it usually works: Decisions are made by the developers, who assume they
+always know what is good and what is not. Userland developers (that is, people
+using projects and not developing the projects themselves) do not participate 
+in this discussion (or rarely do) nor would it make any difference as their 
+vote only counts if they are "hardcore developers".
+
+In contrary, Sun has JSRs (Java Specification Requests) at http://jcp.org/.
+This way, userland developers can follow the development of Java or even
+decide to discuss it. The process is transparent (JSRs are publicly
+downloadable) and creates a touch of professionalism, something developers
+(and, maybe even more important for the reputation of a language: CTOs) will
+definitely be impressed of. JSRs are also used to describe new language
+features such as the ones introduced in JDK 1.5 (Metadata, Enums, Generics,
+... I've pointed you to that before).
+
+Microsoft also has specifications available, for example here:
+http://msdn.microsoft.com/vcsharp/team/language/default.aspx for C# 2.0
+(draft), Python has so-called PEPs (Python Enhancement Proposals) at
+http://www.python.org/peps/
+
+When is an RFC needed?
+----------------------
+An RFC is needed when changes are made that affect one of the following:
+
+* Core functionality in lang.base.php
+* Classes in lang and util
+* Wherever it affects a lot of places, e.g. xml.Node
+* When BC (backwards compatibility) is broken
+* New packages
+
+Who can write RFCs?
+-------------------
+Short answer: Anybody. 
+
+* People with accounts may commit them directly to SVN (in the rfc/ 
+  top-level directory).
+* Users without SVN accounts should send an email with the RFC attached 
+  to the XP framework's mailinglist.
+
+More
+----
+Find out what an RFC [topic://inside looks like] or continue reading about 
+[topic://process the RFC process].
