@@ -19,36 +19,36 @@
 
   <xsl:template name="content">
     <table id="main" cellpadding="0" cellspacing="10"><tr>
-      <td id="content" style="background: white url(image/apple.jpg) no-repeat bottom left">
+      <td id="content" style="background: white url(/image/apple.jpg) no-repeat bottom left">
         <h1>Developer Zone</h1>
         <p>
+          This is the  <!-- TODO -->
         </p>
+        <br clear="all"/>
 
         <!-- Featured items -->
         <table width="100%" class="columned"><tr>
           <td width="50%" valign="top">
             <h2>Features</h2>
+            <p>
+              ...
+            </p>
             <ul>
-              <li><a href="#">Enterprise Application Server Connectivity</a></li>
-              <li><a href="#">O/R-mapping API</a></li>
-              <li><a href="#">Collections framework</a></li>
-              <li><a href="#">XML/XSL scriptlets</a></li>
-              <li><a href="#">Unittests</a></li>
-              <li><a href="#">Web services: Client/Server</a></li>
+              <li><a href="{xp:link('rfc')}">RFC Overview</a></li>
+              <li><a href="{xp:link('static?checkout')}">SVN checkout instructions</a></li>
             </ul>
           </td>
           <td width="25%" valign="top">
-            <h2>RFCs</h2>
+            <h2>Unittests</h2>
           </td>
           <td width="25%" valign="top">
-            <h2>Download</h2>
-            <ul>
-              <li><a href="#">Latest</a></li>
-              <li><a href="#">SVN head</a></li>
-            </ul>
+            <h2>Bugzilla</h2>
           </td>
         </tr></table>
         <br clear="all"/>
+
+        <!-- Move the apple down a bit -->
+        <div style="height: 240px">&#160;</div>
       </td>
     </tr></table>
   </xsl:template>
