@@ -62,8 +62,9 @@
           <td width="25%" valign="top">
             <h2>More</h2>
             <br clear="all"/>
+            <p>Documentation:</p>
             <ul>
-              <li><a href="#">The RFC process</a></li>
+              <li><a href="{xp:link('rfc/about?process')}">The RFC process</a></li>
             </ul>
           </td>
         </tr></table>
