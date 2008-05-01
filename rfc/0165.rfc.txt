@@ -40,15 +40,15 @@ can lead to long debugging / wtf?! sessions. The Pattern class will throw
 an exception.
 
 Retrieving matched text
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 <code>
   // Current
   preg_match('/(([w]{3})\.)?example\.(com|net|org)/', $string, $matches);
   Console::writeLine($matches);
   
   // New
-  $matches= Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match($string)->group(0);
-  Console::writeLine($matches);
+  $match= Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match($string);
+  Console::writeLine($match->group(0));
 </code>
 
 The results in both cases are <tt>[ "www.example.com", "www.", "www", "com" ]</tt>.
@@ -79,6 +79,9 @@ Related documents
   
 - http://www.pcre.org/pcre.txt
   Concatenation of PCRE manpages
+
+- http://experiments.xp-framework.net/?arena,regex
+  Implementation
 
 
 Comments
