@@ -25,7 +25,7 @@ and responses.
 Functionality
 -------------
 Setting a trace for remote.Remote class should go like this:
-<?php
+<code>
   $url= 'xp://jboss01.example.com/';
   
   $l= &Logger::getInstance();
@@ -41,7 +41,7 @@ Setting a trace for remote.Remote class should go like this:
   
   // Proceed with invoking some stuff
   ...
-?>
+</code>
 
 Example logged output:
 <code>
@@ -126,11 +126,11 @@ Comments
   Should setTrace() return TRUE or FALSE in case a ProtocolHandler
   implements util.log.Traceable? Maybe it should always return TRUE to
   be able to use constructs like this:
-<?php
+<code>
   $remote= &Remote::forName('xp://jboss01.example.com/') &&
   $remote->setTrace($cat) &&
   $remote->invokeThisFunction($args);
-?>
+</code>
 
 - ohinckel, Weg Aug  2 08:09:41 CEST 2006
   First initial testing patch:
@@ -178,10 +178,10 @@ Comments
 - ohinckel, Wed 29. Nov 09:48:29 CET 2006
   What about to add a easy way to enable debug logging by putting a "log"
   parameter into the DSN string? Example:
-<?php
+<code>
   $remote= &Remote::forName('xp://jboss01.example.com/?log=default') &&
   $remote->invokeThisFunction($args);
-?>
+</code>
 
 - ohinckel, Mon 29. Jan 11:03:37 CET 2007
   Implementing patch to specify log in DSN string (apply this in trunk

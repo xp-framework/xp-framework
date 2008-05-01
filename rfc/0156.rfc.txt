@@ -25,7 +25,7 @@ Functionality
 
 Old method
 ~~~~~~~~~~
-<?php
+<code>
   // Declaration
   public lang.Generic newInstance(any... $args) throws 
     lang.IllegalAccessException,
@@ -40,11 +40,11 @@ Old method
     $class->getConstructor()->newInstance();
     $class->getConstructor()->newInstance(6100);
   }
-?>
+</code>
 
 New method
 ~~~~~~~~~~
-<?php
+<code>
   // Declaration
   public lang.Generic newInstance(any[] $args) throws 
     lang.IllegalAccessException,
@@ -59,7 +59,7 @@ New method
     $class->getConstructor()->newInstance();
     $class->getConstructor()->newInstance(array(6100));   // !!!
   }
-?>
+</code>
 
 
 Security considerations

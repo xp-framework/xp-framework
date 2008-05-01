@@ -31,13 +31,13 @@ The current implementation takes two arguments:
   * string classname
   * string bytes
 
-<?php
+<code>
   $cl->defineClass($name, 'class ShortName extends Object {
     function __construct() {
       // ...
     }
   } implements("ShortName.class.php", "Constructable");');
-?>
+</code>
 
 New
 ~~~
@@ -47,13 +47,13 @@ The new implementation takes four arguments
   * string[] interfaces
   * string bytes
 
-<?php
+<code>
   $cl->defineClass($name, $parent, $interfaces, '{
     function __construct() {
       // ...
     }
   }');
-?>
+</code>
 
 If only two arguments are passed, the old implementation will be executed.
 

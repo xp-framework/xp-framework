@@ -25,7 +25,7 @@ Overview
 ~~~~~~~~
 Instead of writing a complete script we now declare a class as follows:
 
-<?php
+<code>
   class DumpNews extends Command {
     var
       $id   = 0,
@@ -48,7 +48,7 @@ Instead of writing a complete script we now declare a class as follows:
       )));
     }    
   }
-?>
+</code>
 
 We can run this class by using the cli-runner:
 <pre>
@@ -121,7 +121,7 @@ The runner goes through the following steps when invoked:
 
 The util.cmd.Command class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class Command extends Object {
     var
       $out = NULL,
@@ -135,7 +135,7 @@ The util.cmd.Command class
      */
     function run() { }
   }
-?>
+</code>
 The out and err members are created by the runner and are 
 PrintOutputStream objects. For the console runner, they write data
 to STDOUT and STDERR.
@@ -161,38 +161,38 @@ This annotation marks methods as parameter acceptors.
 How to accept arguments:
 
 1) Positional argument
-<?php
+<code>
   #[@arg(position= 0)]
   function setFirstArgument($v) { }
-?>
+</code>
   This will take the first command line argument
 
 
 2) Named argument
-<?php
+<code>
   #[@arg(name= 'verbosity')]
   function setVerbosity($v) { }
-?>
+</code>
   This will take the value passed as --verbosity=<value> or -v <value>
 
 
 3) Auto-named argument
-<?php
+<code>
   #[@arg]
   function setClassname($v) { }
-?>
+</code>
   This will take the value passed as --classname=<value> or -c <value>
 
   The argument name is calculated by using a lowercase version of the 
   method name and stripping a leading "set".
 
 4) Existance argument
-<?php
+<code>
   #[@arg]
   function setDebug() { 
     $this->debug= TRUE;
   }
-?>
+</code>
   This method will be called only if --debug is supplied.
 
   The argument name is calculated by using a lowercase version of the 
@@ -222,28 +222,28 @@ This annotation marks methods as resource injectors.
 </pre>
 
 1) Injecting database connections
-<?php
+<code>
   #[@inject(type= 'rdbms.DBConnection', name= 'news')]  
   function setConnection(&$conn) { }
-?>
+</code>
   This method will receive a DBConnection instance (via 
   ConnectionManager::getInstance()->getByHost('news', 0))
 
 
 2) Injecting logger categories
-<?php
+<code>
   #[@inject(type= 'util.log.LogCategory', name= 'default')]  
   function setTrace(&$cat) { }
-?>
+</code>
   This method will receive a LogCategory instance (via 
   Logger::getInstance()->getCategory('default'))
 
 
 3) Injecting properties
-<?php
+<code>
   #[@inject(type= 'util.Properties', name= 'app')]  
   function setApplicationConfig(&$conf) { }
-?>
+</code>
   This method will receive a LogCategory instance (via 
   PropertyManager::getInstance()->getProperties('app'))
 

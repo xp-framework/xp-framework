@@ -34,11 +34,11 @@ General overview
 Platform encoding
 ~~~~~~~~~~~~~~~~~
 The platform encoding is determined by querying the environment with:
-<?php
+<code>
   $ctype= getenv('LC_CTYPE');
   $ctype || $ctype= getenv('LANG');
   $ctype || $ctype= setlocale(LC_CTYPE, 0);
-?>
+</code>
 
 Values:
 <pre>
@@ -62,7 +62,7 @@ The framework already contains supporting classes to represent strings
 and characters, both of these can handle unicode characters transparently
 (lang.types.String, lang.types.Character).
 
-<?php
+<code>
   $s= new String('Übercoder', 'iso-8859-1');
   $s->length();                 // 9
   $s->charAt(0);                // lang.types.Character<"Ü">
@@ -74,14 +74,14 @@ and characters, both of these can handle unicode characters transparently
   $s->charAt(0);                // lang.types.Character<"Ü">
   $s->charAt(0)->getBytes();    // 2 bytes (\xC3 \x9C)
   $s->getBytes();               // 10 bytes (\xC3 \x9C b e r c o d e r)
-?>
+</code>
 
 Primitive strings *must* be written in utf-8:
 
-<?php
+<code>
   $s= 'Übercoder';    // DISALLOWED!
   $s= 'Ãœbercoder';   // Correct
-?>
+</code>
 
 
 Binary data
@@ -210,12 +210,12 @@ Console
 * Output is encoded from internal encoding to platform encoding.
 
 The following script: (echo-param.php)
-<?php
+<code>
   require('lang.base.php');
   uses('util.cmd.Console', 'util.cmd.ParamString');
   
   Console::writeLine('Param: ', create(new ParamString())->value(1));
-?>
+</code>
 
 When run inside a Windows shell on German Windows setup the XP framework
 will:

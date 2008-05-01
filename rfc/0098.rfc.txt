@@ -22,7 +22,7 @@ Functionality
 
 The filter interface
 ~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   interface Filter {
   
     /**
@@ -34,11 +34,11 @@ The filter interface
     function accept($subject);
   
   }
-?>
+</code>
 
 Futurama: XP language version
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   interface Filter<T> {
 
     /**
@@ -47,7 +47,7 @@ Futurama: XP language version
      */
     public bool accept(T $subject);
   }
-?>
+</code>
 
 
 Security considerations

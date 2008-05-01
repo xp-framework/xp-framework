@@ -23,29 +23,29 @@ Functionality
 Motivation
 ~~~~~~~~~~
 Consider the following sourcecode:
-<?php
+<code>
   $user= $session->getValue('user');
   echo $user->getUsername();
-?>
+</code>
 
 Because HttpSession::getValue() returns anything, we cannot be really sure
 that we get a user object, or an object at all; in both cases we'd see a
 fatal error occuring.
 
 We could now rewrite the code to:
-<?php
+<code>
   $user= $session->getValue('user');
   if (!$user instanceof User) {
     throw new IllegalStateException('Session key "user" is not a User instance');
   }
   echo $user->getUsername();
-?>
+</code>
 
 This RFC suggests to rewrite that to the following:
-<?php
+<code>
   $user= cast($session->getValue('user'), 'com.example.vo.User');
   echo $user->getUsername();
-?>
+</code>
 
 The cast function would raise an exception in case the value returned is 
 not a User instance, thus yielding the same behaviour as the second 
@@ -55,17 +55,17 @@ Syntax
 ~~~~~~
 <pre>
   T cast(Generic expression= NULL, TypeRef::T class)
-<pre>
+</pre>
 
 Null values
 ~~~~~~~~~~~
 Null values are casted to xp::null().
 
-<?php
+<code>
   $session->putValue('user', NULL);
   $user= cast($session->getValue('user'), 'com.example.vo.User');
   echo $user->getUsername();    // *** NullPointerException ***
-?>
+</code>
 
 Primitives
 ~~~~~~~~~~
@@ -79,7 +79,7 @@ An object can be cast to:
 * One of its superclasses
 * One of its interfaces
 
-<?php
+<code>
   class AbstractConnection extends Object implements Traceable {
     // ...
   }
@@ -99,14 +99,14 @@ An object can be cast to:
 
   cast($c, 'lang.types.String');    // ClassCastException, unrelated class
   cast($a, 'Connection');           // ClassCastException, subclass
-?>
+</code>
 
 If the destination class does not exist, a lang.ClassNotFoundException
 will be thrown.
 
-<?php
+<code>
   cast(new Object(), 'FooBar')      // *** ClassNotFoundException ***
-?>
+</code>
 
 
 Dependencies

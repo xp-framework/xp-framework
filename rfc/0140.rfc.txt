@@ -37,7 +37,7 @@ can be in the FtpEntry class and makes it harder to distinguish them from
 each other.
 
 New layout:
-<?php
+<code>
   abstract class FtpEntry extends Object {
     // Common functionality like name, size, permissions, owner, ...
   }
@@ -49,11 +49,11 @@ New layout:
   class FtpDir extends FtpEntry {
     // Directory specific - getDir(), makeDir(), getFile(), hasFile(), ...
   }
-?>
+</code>
 
 FtpEntryList class
 ~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class FtpEntryList extends Object implements IteratorAggregate {
 
     /**
@@ -94,13 +94,13 @@ FtpEntryList class
       // ...
     }
   }
-?>
+</code>
 
 New methods
 ~~~~~~~~~~~
 
 peer.ftp.FtpConnection:
-<?php
+<code>
   class FtpConnection extends Object {
     /* ... */
 
@@ -136,10 +136,10 @@ peer.ftp.FtpConnection:
   
     /* ... */
   }
-?>
+</code>
 
 peer.ftp.FtpEntry:
-<?php
+<code>
   abstract class FtpEntry {
     /* ... */
 
@@ -184,10 +184,10 @@ peer.ftp.FtpEntry:
   
     /* ... */
   }
-?>
+</code>
 
 peer.ftp.FtpDir:
-<?php
+<code>
   class FtpDir extends FtpEntry {
     /* ... */
 
@@ -311,13 +311,13 @@ peer.ftp.FtpDir:
   
     /* ... */
   }
-?>
+</code>
 
 Examples
 ~~~~~~~~
 
 Checking for entry existance:
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -345,10 +345,10 @@ Checking for entry existance:
     // $filename does not exist
   }
   // }}}
-?>
+</code>
 
 Retrieving the root directory:
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -359,11 +359,11 @@ Retrieving the root directory:
   // New functionality {{{
   $root= $c->rootDir();
   // }}}
-?>
+</code>
 
 
 Exceptions for makeDir():
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -383,10 +383,10 @@ Exceptions for makeDir():
     // Failed creating directory "admin"
   }
   // }}}
-?>
+</code>
 
 Retrieving a single entry:
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -409,10 +409,10 @@ Retrieving a single entry:
   // New functionality {{{
   $entry= $c->rootDir()->getDir('admin')->getFile($name);
   // }}}
-?>
+</code>
 
 Downloading entries:
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -437,10 +437,10 @@ Downloading entries:
     // Local file not writeable
   }
   // }}}
-?>
+</code>
 
 Uploading entries:
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -465,10 +465,10 @@ Uploading entries:
     // Remote file not writeable
   }
   // }}}
-?>
+</code>
 
 Retrieving all entries into an array:
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -483,10 +483,10 @@ Retrieving all entries into an array:
   // New functionality {{{
   $entries= $c->rootDir()->entries()->asArray();
   // }}}
-?>
+</code>
 
 Entry iteration:
-<?php
+<code>
   $c= new FtpConnection('ftp://user:pass@example.com');
   $c->connect();
 
@@ -503,7 +503,7 @@ Entry iteration:
     // ... Handle entry
   }
   // }}}
-?>
+</code>
 
 Security considerations
 -----------------------
@@ -519,11 +519,11 @@ Dependencies
 ------------
 Deprecated methods in peer.ftp.FtpConnection:
 <pre>
-  public peer.ftp.FtpDir getDir([string $dir= NULL]) throws peer.SocketException
-  public bool setDir(peer.ftp.FtpDir $f) throws peer.SocketException
+  public peer.ftp.FtpDir getDir([string $dir= NULL])
+  public bool setDir(peer.ftp.FtpDir $f) 
   public bool makeDir(peer.ftp.FtpDir $f)
-  public bool put(mixed $arg, [string $remote= NULL], [string $mode= 0]) throws peer.SocketException
-  public bool get(string $remote, mixed $arg, [string $mode= 0]) throws peer.SocketException
+  public bool put(mixed $arg, [string $remote= NULL], [string $mode= 0]) 
+  public bool get(string $remote, mixed $arg, [string $mode= 0])
   public bool delete(string $remote)
   public bool rename(string $src, string $target)
   public array quote(string $command)

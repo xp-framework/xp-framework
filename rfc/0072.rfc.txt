@@ -21,7 +21,7 @@ Certain protocols may need setup logic.
 Functionality
 -------------
 New method in ServerProtocol interface:
-<?php
+<code>
   /**
    * Initialize Protocol
    *
@@ -30,7 +30,7 @@ New method in ServerProtocol interface:
    */
   function initialize() { }
   }
-?>
+</code>
 
 The initialize method of the protocol will be called on start of the process,
 e.g. in peer.server.ForkingServer and PreforkingServer everytime a child is

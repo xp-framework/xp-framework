@@ -27,7 +27,7 @@ Functionality
 
 Current (peer.http.UnexpectedResponseException)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   /**
    * Returns string representation
    *
@@ -46,7 +46,7 @@ Current (peer.http.UnexpectedResponseException)
     }
     return $s;
   }
-?>
+</code>
 You can clearly see the boilerplate loop on the stack trace elements.
 
 When this RFC is committed, the UnexpectedResponseException class would
@@ -54,7 +54,7 @@ not overwrite toString() but rather the new compoundMessage() method.
 
 Refactored
 ~~~~~~~~~~
-<?php
+<code>
   /**
    * Return compound message of this exception.
    *
@@ -69,7 +69,7 @@ Refactored
       $this->message
     );
   }
-?>
+</code>
 
 Of course, exception classes need not overwrite the compoundMessage()
 method. The Throwable class provides the following default 
@@ -77,14 +77,12 @@ implementation:
 
 lang.Throwable::compoundMessage()
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   /**
    * Return compound message of this exception. In this default 
    * implementation, returns the following:
    *
-   * <pre>
    *   Exception [FULLY-QUALIFIED-CLASSNAME] ([MESSAGE])
-   * </pre>
    *
    * May be overriden by subclasses
    *
@@ -98,7 +96,7 @@ lang.Throwable::compoundMessage()
       $this->message
     );
   }
-?>
+</code>
 
 
 Security considerations

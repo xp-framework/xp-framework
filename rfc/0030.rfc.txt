@@ -31,7 +31,7 @@ Functionality
 -------------
 Overloaded methods in Interfaces will be declared as follows:
 
-<?php
+<code>
   class HelloWorld extends Interface {
 
     /**
@@ -45,14 +45,14 @@ Overloaded methods in Interfaces will be declared as follows:
     #))]
     function sayHello() { }
   }
-?>
+</code>
 
 The annotation "@overloaded" indicates that there are several methods
 using the same name and describes the different types of parameters of
 those methods. The lang.reflect.Proxy class then generates special code
 for those kind of classes to cover all possible calls of that method:
 
-<?php
+<code>
   class Proxy·0 extends Proxy { 
     function sayhello($_0= NULL) { 
       switch (func_num_args()) {
@@ -64,7 +64,7 @@ for those kind of classes to cover all possible calls of that method:
       }
     }
   }  
-?>
+</code>
 
 
 

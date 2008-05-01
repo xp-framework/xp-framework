@@ -23,11 +23,11 @@ Enumerations have a static function "size()" that returns the number of
 members in the enumeration.
 
 Using the size() method:
-<?php
+<code>
   enum CoinColor { copper, nickel, silver }
   
   echo CoinColor::size();
-?>
+</code>
 
 The above example prints out the following:
 <pre>
@@ -38,7 +38,7 @@ Enumerations have a static function "values()" that returns the values
 as an array.
 
 Using the values() method:
-<?php
+<code>
   function nameOf($member) {
     return $member->name;
   }
@@ -46,7 +46,7 @@ Using the values() method:
   enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
 
   echo implode(', ', array_map('nameOf', Suit::values()));
-?>
+</code>
 
 The above example prints out the following:
 <pre>
@@ -57,7 +57,7 @@ Enumerations have a static function "valueOf()" that returns the value
 of a single member.
 
 Using the valueOf() method:
-<?php
+<code>
   function nameOf($member) {
     return $member->name;
   }
@@ -67,7 +67,7 @@ Using the valueOf() method:
   foreach (range(Monday, Friday) as $day) {
     echo $day, ': ', nameOf(Day::valueOf($day)), "\n";
   }
-?>
+</code>
 
 The above example prints out the following:
 <pre>
@@ -81,7 +81,7 @@ The above example prints out the following:
 Enumerations members may have a value associated with them.
 
 Using the value:
-<?php
+<code>
   function colorOf($coin) {
     switch ($coin->ordinal) {
       case penny: return 'copper';
@@ -106,7 +106,7 @@ Using the value:
   foreach (Coin::values() as $coin) {
     echo $coin->name, ': ', $coin->value(), '¢ (', colorOf($coin), ")\n";
   }
-?>
+</code>
 
 The above example prints out the following:
 <pre>
@@ -118,7 +118,7 @@ The above example prints out the following:
 
 Enumeration members may declare methods.
 
-<?php
+<code>
   enum Operation {
     plus { 
       function evaluate($x, $y) { return $x + $y; } 
@@ -141,7 +141,7 @@ Enumeration members may declare methods.
   foreach (Operation::values() as $op) {
     printf("%d %s %s = %.1f\n", $x, $op->name, $y, $op->evaluate($x, $y));
   }
-?>
+</code>
 
 The above example prints out the following:
 <pre>

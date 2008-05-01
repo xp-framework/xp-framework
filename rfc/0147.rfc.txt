@@ -26,14 +26,12 @@ Entry point
 ~~~~~~~~~~~
 The class peer.ldap.LdapConnection class will be the entry point class.
 
-<?php
+<code>
   class LdapConnection extends Object {
   
     /**
      * Constructor. Accepts a string of the following form:
-     * <pre>
      *   ldap://[user:password]@host[:port][?arguments]
-     * </pre>
      *
      * Note:
      * If credentials are missing, an anonymous bind is performed.
@@ -145,21 +143,21 @@ The class peer.ldap.LdapConnection class will be the entry point class.
       // ... 
     }
   }
-?>
+</code>
 
 
 Examples
 ~~~~~~~~
 
 Reading an LDAP entry by its Distinguished Name (DN)
-<?php
+<code>
   $lc= new LdapConnection('ldap://ldap.openldap.org/?autoconnect=1');
   echo $lc->getBy(new DN('uid=kurt,ou=People,dc=OpenLDAP,dc=Org'))->toString();
   $lc->close();
-?>
+</code>
 
 Search for entries:
-<?php
+<code>
   $lc= new LdapConnection('ldap://ldap.openldap.org/?autoconnect=1');
   $r= $lc->seachFor(new LdapQuery('ou=People,dc=OpenLDAP,dc=Org', '(objectClass=*)'));
   echo $r->toString(), "\n";
@@ -169,10 +167,10 @@ Search for entries:
     echo '- ', $entry->toString(), "\n";
   }
   $lc->close();
-?>
+</code>
 
 List entries inside a given base DN:
-<?php
+<code>
   $lc= new LdapConnection('ldap://ldap.openldap.org/?autoconnect=1');
   $r= $lc->entriesIn(new DN('ou=People,dc=OpenLDAP,dc=Org'));
   echo $r->toString(), "\n";
@@ -182,11 +180,11 @@ List entries inside a given base DN:
     echo '- ', $entry->toString(), "\n";
   }
   $lc->close();
-?>
+</code>
 
 Create a new or update an existing entry:
-<?php
-  $lc= new LdapConnection('ldap://uid=update,ou=Tools,dc=Example,dc=Com:pass@ldap.example.com/');
+<code>
+  $lc= new LdapConnection('ldap://uid=update,dc=Example,dc=Com:pass@example.com/');
   with ($e= $lc->entryFor(new DN('uid=timm,ou=People,dc=Example,dc=Com'))); {
     $e->setObjectClass('inetOrgPerson');
     $e->setAttribute('displayName', 'Timm Friebe');
@@ -197,11 +195,11 @@ Create a new or update an existing entry:
     $e->save();
   }
   $lc->close();
-?>
+</code>
 
 Create a new entry:
-<?php
-  $lc= new LdapConnection('ldap://uid=update,ou=Tools,dc=Example,dc=Com:pass@ldap.example.com/');
+<code>
+  $lc= new LdapConnection('ldap://uid=update,dc=Example,dc=Com:pass@example.com/');
   with ($e= $lc->newEntry(new DN('uid=timm,ou=People,dc=Example,dc=Com'))); {
     $e->setObjectClass('inetOrgPerson');
     $e->setAttribute('displayName', 'Timm Friebe');
@@ -212,14 +210,14 @@ Create a new entry:
     $e->save();
   }
   $lc->close();
-?>
+</code>
 
 Delete an existing entry:
-<?php
-  $lc= new LdapConnection('ldap://uid=update,ou=Tools,dc=Example,dc=Com:pass@ldap.example.com/');
+<code>
+  $lc= new LdapConnection('ldap://uid=update,dc=Example,dc=Com:pass@example.com/');
   $lc->getBy(new DN('uid=timm,ou=People,dc=Example,dc=Com'))->delete();
   $lc->close();
-?>
+</code>
 
 
 Security considerations

@@ -2,7 +2,7 @@ RFC 0162: HTTP Proxy
 ========================================================================
 $Id$
 
-@authors: friebe, kiesel, hinckel
+@authors: friebe, kiesel, ohinckel
 @created: Wed Apr 16 20:39:56     2008
 @status: draft
 @category: peer.http
@@ -24,7 +24,7 @@ Functionality
 
 API: The HttpProxy class
 ~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class HttpProxy extends Object {
     
     /**
@@ -57,11 +57,11 @@ API: The HttpProxy class
       // ...
     }
   }
-?>
+</code>
 
 API: The HttpConnection class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class HttpConnection extends Object {
   
     // ...
@@ -78,19 +78,19 @@ API: The HttpConnection class
     // ...
 
   }
-?>
+</code>
 
 
 Example
 ~~~~~~~
-<?php
+<code>
   $conn= new HttpConnection($url);
   $conn->setProxy(create(new HttpProxy($host, $port))
     ->withExclude('localhost')
     ->withExclude('.example.com')
   );
   $response= $this->conn->get();
-?>
+</code>
 
 
 Security considerations

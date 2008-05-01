@@ -41,7 +41,7 @@ Example structure
 
 Changes in webservices.xmlrpc.XmlRpcDecoder
 ~~~~~~~~~~~~~~~~~
-<?php
+<code>
   switch ($node->children[0]->getName()) {
     [...]
     case 'nil':
@@ -49,11 +49,11 @@ Changes in webservices.xmlrpc.XmlRpcDecoder
       return $n;
     [...]
   }
-?> 
+</code> 
 
 Changes in webservices.xmlrpc.XmlRpcEncoder
 ~~~~~~~~~~~~~~~~~
- <?php
+ <code>
   switch (xp::typeOf($data)) {
     [...]
     case 'NULL':
@@ -61,7 +61,7 @@ Changes in webservices.xmlrpc.XmlRpcEncoder
       break;
     [...]
   }
-?> 
+</code> 
 
 
 Security considerations

@@ -31,7 +31,7 @@ the error handler can be changed by means of set_error_handler().
 
 Example
 ~~~~~~~
-<?php
+<code>
   function myErrorHandler($code, $msg, $file, $line) {
     if (E_USER_ERROR != $code) {
     
@@ -42,7 +42,7 @@ Example
 
     // Handle the otherwise fatal error
   }
-?>
+</code>
 
 
 Security considerations

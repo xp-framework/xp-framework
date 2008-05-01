@@ -23,7 +23,7 @@ Functionality
 Current
 ~~~~~~~
 The suggested functionality can be implemented currently as follows:
-<?php
+<code>
   $remotespecs= array('xp://jboss01.example.com/', 'xp://jboss02.example.com/');
   shuffle($remotespecs);
   foreach ($remotespecs as $remotespec) {
@@ -43,14 +43,14 @@ The suggested functionality can be implemented currently as follows:
   }
   
   $home= &$remote->lookup('xp/demo/IteratorDemo');
-?>
+</code>
 
 
 Proposed
 ~~~~~~~~
 The new functionality would make this transparent, so one would not have
 to differ whether there are one or many remoting servers:
-<?php
+<code>
   try(); {
     $remote= &Remote::forName('xp://jboss01.example.com/,xp://jboss02.example.com/');
   } if (catch('RemoteException', $e)) {
@@ -59,7 +59,7 @@ to differ whether there are one or many remoting servers:
   }
 
   $home= &$remote->lookup('xp/demo/IteratorDemo');
-?>
+</code>
 
 
 Notes
@@ -97,18 +97,18 @@ Comments
 --------
 - friebe, Mon Jun 26 10:33:49 CEST 2006
   More ideas using Remote::forName():
-<?php
+<code>
   Remote::forName(array('xp://jboss01.example.com/', 'xp://jboss02.example.com/'));
   Remote::forName('xp://jboss01.example.com/', 'xp://jboss02.example.com/');
   Remote::forName('xp+ha://jboss01.example.com,jboss02.example.com');
   Remote::forName('xp://[jboss01.example.com,jboss02.example.com]');
-?>
+</code>
 
 - friebe, Mon Jun 26 11:19:24 CEST 2006
   Maybe an extra flag could be added as follows:
-<?php
+<code>
   Remote::forName('xp://jboss01.example.com/?master', 'xp://jboss02.example.com/?failover');
-?>
+</code>
   In this case, no random value would be used - rather, the connection would always
   go to jboss01, and only if that fails, jboss02 would be used.
 

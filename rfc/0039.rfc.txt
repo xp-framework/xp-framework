@@ -2,7 +2,7 @@ RFC 0039: Decode username/password when using parse_url() in framework
 ========================================================================
 $Id$
 
-@authors: oliver
+@authors: ohinckel
 @created: Wed Sep 28 09:12:55 CEST 2005
 @status: implemented, Fri Okt  7 15:29:59 CEST 2005
 @category: <core>
@@ -22,9 +22,9 @@ E.g. passwords using "@" sign doesn't work at the moment because
 parse_url() assumes everything after "@" sign as host name.
 
 Example:
-<?php
+<code>
   var_dump(parse_url('ftp://username:passwordwith@sign@hostname/'));
-?>
+</code>
 
 This example will output the following array:
 <pre>

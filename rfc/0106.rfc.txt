@@ -43,7 +43,7 @@ offsetGet(), offsetSet(), offsetExists() and offsetUnset(). These
 overload getting ($value= $object[$key]), setting ($object[$key]= $value)),
 testing (isset($object[$key])) and removing (unset($object[$key])).
 
-<?php
+<code>
   with ($a= new ArrayList(1, 2, 3));  {
   
     // Element access
@@ -120,7 +120,7 @@ testing (isset($object[$key])) and removing (unset($object[$key])).
     $s->remove(new String('X'));
     unset($s[new String('X')]);
   }
-?>
+</code>
 
 
 Iteration
@@ -129,7 +129,7 @@ The IteratorAggregate interface requires implementing a method called
 getIterator() which must return an Iterator instance. This makes a class
 usable inside the foreach statement.
 
-<?php
+<code>
   // ArrayList foreach-iteration, prints "1 2 3 "
   foreach (new ArrayList(1, 2, 3) as $value) {
     echo $value, ' ';
@@ -154,7 +154,7 @@ usable inside the foreach statement.
   foreach ($h->keys() as $key) {
     echo $key, ' ';
   }
-?>
+</code>
 
 
 Generics
@@ -173,7 +173,7 @@ names referenced by ClassType and ComponentType may be qualified or not and
 need to refer to loaded XP classes or interfaces.
 
 Examples:
-<?php
+<code>
   with ($hash= create('HashTable<String, String>')); {
     $hash['key']= new String('value');
     $hash['key']= new Integer(1);       // Throws an IllegalArgumentException
@@ -202,7 +202,7 @@ Examples:
     $routines[]= XPClass::forName('lang.reflect.Method');
     $routines[]= XPClass::forName('lang.reflect.Constructor');
   }
-?>
+</code>
 
 
 Supporting generics in classes
@@ -211,20 +211,22 @@ To add generics support to a class, a public member named "__generic" must
 be introduced. In all methods, the generic types must be verified manually.
 
 Example:
-<?php
+<code>
   class SortedList extends Object {
     public
       $__generic = array();
     
     public function add($element) {
       if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+        throw new IllegalArgumentException(
+          'Element '.xp::stringOf($element).' must be of '.$this->__generic[0]
+        );
       }
 
       // ...
     }
   }
-?>
+</code>
 
 This poses a higher burden when programming (compared to one being able to
 express this syntactically) but does not introduce a great performance 
@@ -240,14 +242,14 @@ When passed a lang.Generic instance, the instance is simply returned.
 
 This serves the purpose of chaining after "new", which is not supported
 by the PHP language:
-<?php
+<code>
   echo new Date()->toString();  // Parse error
-?>
+</code>
 
 The following is the workaround:
-<?php
+<code>
   echo create(new Date())->toString();
-?>
+</code>
 
 Additional note: ArrayList vs. Vector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -265,7 +267,7 @@ be adapted to this change.
 To be able to create an ArrayList from an array or from a known size,
 a new method "newInstance" will be added. Usage as follows:
 
-<?php
+<code>
   // Constructing an arraylist from an array
   $a= ArrayList::newInstance(array(1, 2, 3, 4));
   $four= $a->length;
@@ -273,7 +275,7 @@ a new method "newInstance" will be added. Usage as follows:
   // Constructing an empty arraylist
   $a= ArrayList::newInstance(4);
   $four= $a->length;
-?>
+</code>
 
 
 

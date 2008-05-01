@@ -24,7 +24,7 @@ Functionality
 
 Example class
 ~~~~~~~~~~~~~
-<?php
+<code>
   class PrintStream extends Object {
     var
       $stream= NULL;
@@ -41,27 +41,27 @@ Example class
       $this->stream->write($data."\n");
     }
   }
-?>
+</code>
 Although we're using references here, the stream member will still be
 a *copy* of the instance passed to the constructor. To understand this,
 we'll have to look at lang.Object's constructor wrapper implementation:
 
 Simplified example:
-<?php
+<code>
   class Object {
     function Object() {
       $a= func_get_args();
       call_user_func_array(array(&$this, '__construct'), $a);
     }
   }
-?>
+</code>
 This wrapper makes it possible for us to have unified constructors
 although PHP 4 does not support this built-in (PHP 5 does!).
 
 
 PrintStream usage with io.File
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   uses('io.File');
 
   $stream= &new File('hello.txt');
@@ -71,7 +71,7 @@ PrintStream usage with io.File
   $s->writeLine('Hello');
   
   $stream->close();
-?>
+</code>
 Here, the data will actually be written to the file as - although we 
 work on a copy of the object - the file handle still points to the 
 underlying file.
@@ -79,7 +79,7 @@ underlying file.
 
 PrintStream usage with io.Stream
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   uses('io.Stream');
 
   $stream= &new Stream();
@@ -89,7 +89,7 @@ PrintStream usage with io.Stream
   $s->writeLine('Hello');
   
   $stream->close();
-?>
+</code>
 The buffer member of the Stream instance in $stream will actually stay 
 empty because PrintStream is working on a copy.
 
@@ -100,7 +100,7 @@ Add a method called setStream() (or similar) to the PrintStream class
 and pass the Stream instance as argument to that. This is what the
 CSVParser and CSVGenerator classes do.
 
-<?php
+<code>
   class PrintStream extends Object {
     // ...
     function setStream(&$stream) {
@@ -113,7 +113,7 @@ CSVParser and CSVGenerator classes do.
   $s= &new PrintStream();
   $s->setStream($stream);
   // ...
-?>
+</code>
 The downside of this approach is that more (unintuitive) source code is
 needed.
 
@@ -122,7 +122,7 @@ Possible solution #2: Static construction
 Avoid constructor and instead create a public static method to create
 an instance of PrintStream.
 
-<?php
+<code>
   class PrintStream extends Object {
     // ...
     function &forStream(&$stream) {
@@ -136,15 +136,15 @@ an instance of PrintStream.
   // ...
   $s= &PrintStream::forStream($stream);
   // ...
-?>
+</code>
 This can cause weird syntax when trying to make PrintStream exchangeable
 ($class::forStream() syntax is not supported), for example something like 
 the following:
 
-<?php
+<code>
   $class= &XPClass::forName($className);
   $s= &$class->invoke($i= NULL, array(&$stream));
-?>
+</code>
 Obviously, this approach also is quite a bit slower.
 
 
@@ -154,7 +154,7 @@ Accept an array in PrintStream's constructor and pass the stream instance
 as array(&$stream) - when an array is copied, references inside are kept 
 intact.
 
-<?php
+<code>
   class PrintStream extends Object {
     // ...
     function __construct($ref) {
@@ -166,7 +166,7 @@ intact.
   // ...
   $s= &new PrintStream(array(&$stream));
   // ...
-?>
+</code>
 The downside here is that it looks unnatural.
 
 
@@ -174,7 +174,7 @@ Possible solution #4: Array-approach, but more natural syntax
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Create "wrappers" for $ref[0] and array(&$object) from above example.
 
-<?php
+<code>
   class PrintStream extends Object {
     // ...
     function __construct(&$stream) {
@@ -186,14 +186,14 @@ Create "wrappers" for $ref[0] and array(&$object) from above example.
   // ...
   $s= &new PrintStream(ref($stream));
   // ...
-?>
+</code>
 This approach internally uses the same "trick" with the arrays from 
 solution #3, but wraps them nicely.
 
 
 Referencing "Wrappers" implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   // {{{ proto &mixed ref(&mixed object)
   //     Creates a "reference" to an object
   function &ref(&$object) {
@@ -207,7 +207,7 @@ Referencing "Wrappers" implementation
     if (is_array($expr)) return $expr[0]; else return $expr;
   }
   // }}}
-?>
+</code>
 As one can see, the deref() implementation also allows for plain objects 
 to be passed in, thus assuring BC in PrintStream's constructor - for the
 use case with File objects, it doesn't really matter when it's copied - 

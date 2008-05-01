@@ -26,7 +26,7 @@ Functionality
 Changes to lang.ClassLoader
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following method will be added:
-<?php
+<code>
   /**
    * Retrieve details for a specified class.
    *
@@ -37,7 +37,7 @@ The following method will be added:
   function getClassDetails($class) {
     // Implementation here
   }
-?>
+</code>
 
 Changes to lang.XPClass
 ~~~~~~~~~~~~~~~~~~~~~~~

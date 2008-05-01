@@ -33,7 +33,7 @@ Consider the following XML:
 
 This can be mapped to a dialog object by declarting the following class:
 
-<?php
+<code>
   class Dialog extends Object {
     var
       $id       = '',
@@ -59,27 +59,27 @@ This can be mapped to a dialog object by declarting the following class:
       return $this->caption;
     }
   }
-?>
+</code>
 
 ...and using the following script:
-<?php
+<code>
   $dialog= &Unmarshaller::unmarshal($xml, 'Dialog');
   echo 'Unmarshalled XML= ', xp::stringOf($dialog);
-?>
+</code>
 
 2) Marshalling
 ~~~~~~~~~~~~~~
 Assuming we've declared the class as above, the following sourcecode will
 create XML from the object:
 
-<?php
+<code>
   $dialog= &new Dialog();
   $dialog->setId('file.open');
   $dialog->setCaption('Open a file');
 
   $xml= Marshaller::marshal($dialog);
   echo 'Marshalled object= ', xp::stringOf($xml);
-?>
+</code>
 
 
 Security considerations

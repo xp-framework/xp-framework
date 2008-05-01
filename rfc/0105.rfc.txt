@@ -21,11 +21,11 @@ Complete documentation.
 
 Functionality
 -------------
-The file will be called "package-info.xp" and thus resemble the convention
+The file will be called "package-info.xp" and thus resembles the convention
 used in JavaDoc >= 1.5.0.
 
 Example:
-<?php
+<code>
 /* This class is part of the XP framework
  *
  * $Id$ 
@@ -37,30 +37,24 @@ Example:
    * Common use-cases
    *
    * Instantiating a class by its name:
-   * <code>
    *   $now= XPClass::forName('util.Date')->newInstance();
-   * </Code>
    *
    * Invoking a method by its name:
-   * <code>
    *   $c= XPClass::forName('util.Binford');
    *   $c->getMethod('setPoweredBy')->invoke($c->newInstance(), array(6100));
-   * </code>
    *
    * Retrieving annotations:
-   * <code>
    *   $s= $service->getClass()->getMethod($invoked)->getAnnotation('security');
    *   if (!in_array($role, $s['roles'])) {
    *     throw new IllegalAccessException('Access denied to '.$invoked);
    *   }
-   * </code>
    *
    * @see      xp://lang.XPClass
    * @purpose  Reflection
    */
   package lang.reflect {
   }
-?>
+</code>
 
 
 Security considerations

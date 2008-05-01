@@ -71,21 +71,21 @@ Details
 * The keyword "with":
   with introduces a block of code which is auto-populated by a variable
   named "self".
-  <?php
+  <code>
     with ($tree->addNode(new Node('child'))) {
       $self->setAttribute('id', 10);
       $self->setAttribute('name', $name);
     }
-  ?>
+  </code>
 
 + An optional throws clause to methods:
   As in Java, one may add a throws clause to methods that indicates 
   which exceptions are thrown from it.
-  <?php
+  <code>
     public function connect() throws IOException, ConnectException {
       // ...
     }
-  ?>
+  </code>
   This clause is, of course, optional and no checks are inferred from
   it (e.g., the caller of this method is not required to catch these
   exceptions). The reflection API provides a way to retrieve these
@@ -97,13 +97,13 @@ Details
 * A catch-all-exceptions mechanism:
   Catch-all is realized by ommitting the exception type from the 
   catch clause. 
-  <?php
+  <code>
     try {
       // ...
     } catch ($e) {
       // ...
     }
-  ?>
+  </code>
   
   This is identical to writing "catch (IException $e)" (see also:
   add an interface instead of built-in exception).
@@ -111,12 +111,12 @@ Details
 + Packages support
   A new keyword "package" begins a block of code that puts every 
   contained class, interface or enumeration (see below) into it.
-  <?php
+  <code>
     package lang {
       class Object { }
       class String extends Object { }
     }
-  ?>
+  </code>
   The package-class-separator is the tilde character (~). Thus, the
   String class can be addressed by its fully qualified name, 
   "lang~String" (the fully qualified name is the only way to 
@@ -124,7 +124,7 @@ Details
   
   An additional function called "import" creates short aliases for 
   these long names.
-  <?php
+  <code>
     import lang~String, lang~Object;
     import de~schlund~webservices~ServiceLocator as Locator;
     
@@ -132,7 +132,7 @@ Details
     $alias= 'MorePower';
     import $class;
     import $class as $alias;
-  ?>
+  </code>
   Name clashes cause a Fatal (Compile-Time) Error.
 
   For details, see 
@@ -142,25 +142,25 @@ Details
   The package keyword may also be prefixed to a method to declare its
   access level package-wide (in addition to public, private and 
   protected).
-  <?php
+  <code>
     package io {
       class File {
         package function handle() { }
       }
     }
-  ?>
+  </code>
 
 + Enumerations:
   A new keyword "enum" is introduced.
-  <?php
+  <code>
     enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES }
-  ?>
+  </code>
 
   Enumerations have a static function "values()" that returns the
   values as an array.
-  <?php
+  <code>
     foreach (Suit::values() as $value) { }
-  ?>
+  </code>
 
   The sizeof() function applied to an enumeration returns the numbers 
   of elements in an enumeration (for the above example, 4).
@@ -168,7 +168,7 @@ Details
 + Annotations support:
   Annotations (metadata) may be embedded within the sourcecode using
   the @ sign to prefix them.
-  <?php
+  <code>
     class SoapClient {
       [@debug('level=1')] public function setTrace(LogCategory $log) {
       }
@@ -176,7 +176,7 @@ Details
       [@remote] public function invoke($params) throws InvokationException {
       }
     }
-  ?>
+  </code>
   
   The Reflection API offers a way to retrieve these annotations.
 
@@ -186,7 +186,7 @@ Details
 * Finally:
   A new keyword finally is introduced which is called regardless of 
   whether an exceptions is raised or not.
-  <?php
+  <code>
     try {
       // ...
     } catch (IOException $e) {
@@ -194,19 +194,19 @@ Details
     } finally {
       $file->close();
     }
-  ?>
+  </code>
 
 * Keywords would be allowed as class and method names where possible
   The keywords class, array, list and so on would be allowed as class
   an method names (where unambiguous):
-  <?php
+  <code>
     class List { }
-  ?>
+  </code>
   
 * Automated getters and setters:
   A new form of declaring getters and setters for variables would be
   introduced:
-  <?php
+  <code>
     class String {
       public $buffer get $buffer set setBuffer;
     }
@@ -214,25 +214,25 @@ Details
     $s= new String();
     $s->buffer= 'Hello';   // calls setBuffer() with 'Hello' as argument
     var_dump($s->buffer);  // reads member "buffer"
-  ?>
+  </code>
 
 * A keyword "synchronized":
   The keyword "synchronized" would protect a block from being executed
   more than once from simultaneously running threads or even instances.
-  <?php
+  <code>
     synchronized {
       // ...  
     }
-  ?>
+  </code>
   
   The synchronized directive takes an optional model as argument (compare
   to "declare(ticks=1)"). Using the model "flock", one could prevent, for
   example, a cron job from running twice at the same time.
-  <?php
+  <code>
     synchronized(model=flock) {
       // ...  
     }
-  ?>
+  </code>
   
   When a synchronized block is hit and another instance tries to execute
   the same code, it would have to wait for the first instance to finish
@@ -243,7 +243,7 @@ Details
   are instances of classes.
   
   Example 1:
-  <?php
+  <code>
     abstract class Comparator {
       abstract public function compare($a, $b);
     }
@@ -259,12 +259,12 @@ Details
         return strnatcmp($a, $b);
       }
     });
-  ?>
+  </code>
   In this case, the class being instantiated is a subclass of the 
   Comparator class.
 
   Example 2:
-  <?php
+  <code>
     interface Comparator {
       public function compare($a, $b);
     }
@@ -280,7 +280,7 @@ Details
         return strnatcmp($a, $b);
       }
     });
-  ?>
+  </code>
   In this case, the class being instantiated is a class implementing
   the Comparator interface.
 
@@ -290,7 +290,7 @@ Details
 
 + "self" reflects runtime class
   This would make the following possible:
-  <?php
+  <code>
     class A {
       public static function getInstance() {
         return new self();
@@ -300,14 +300,14 @@ Details
     class B extends A {}
 
     var_dump(B::getInstance());     // object(B)
-  ?>
+  </code>
 
   For details, see
   http://experiments.xp-framework.net/?arena,php5,syntax
 
 * No implementation check during inheritance
   The following would not be checked upon (not even in strict mode):
-  <?php
+  <code>
     class Window {
       function show(Point $point) { }
     }
@@ -317,7 +317,7 @@ Details
         parent::show(new Point(100, 200));
       }
     }
-  ?>
+  </code>
   Currently, this would give an E_STRICT warning
   
 + Userland exceptions would no longer be forced to extend from the
@@ -348,11 +348,11 @@ Details
 
 * Passing an incorrect argument to a type-hinted parameter would result
   in an IllegalArgument
-  <?php
+  <code>
     function add(int $a, int $b) { }
     
     add(1, '2');    // php~IllegalArgumentException is thrown.
-  ?>
+  </code>
 
 * Safe mode (and alike) would be replaced by a permission manager
   The permission manager would offer a much more open API for systems

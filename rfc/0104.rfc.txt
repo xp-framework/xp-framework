@@ -26,14 +26,14 @@ Functionality
 -------------
 The DomXSLProcessor will have a method registerInstance() where a
 PHP object instance can be registered under a defined name:
-<?php
+<code>
   $myContext= new WebsiteContext();
   // ...
   
   $processor= new DomXSLProcessor();
   $processor->registerInstance('context', $myContext);
   // ...
-?>
+</code>
 
 From within XSL one can call the an invoke method which takes
 define name, method name and method arguments and invokes the
@@ -46,7 +46,12 @@ given method in a non-static context:
    xmlns:php="http://php.net/xsl"
   >
     <xsl:template match="/">
-      <xsl:value-of select="php:function('XSLCallback::invoke', 'context', 'hasPermission', 'view')"/>
+      <xsl:value-of select="php:function(
+        'XSLCallback::invoke', 
+        'context', 
+        'hasPermission', 
+        'view'
+      )"/>
     </xsl:template>
   </xsl:stylesheet>
 </pre>
@@ -55,7 +60,7 @@ This invokation translates into the PHP function call on a method hasPermission(
 argument "view" on the object formerly registered as "context". The method _must_ have
 the annotation @xslmethod:
 
-<php
+<code>
   class WebsiteContext extends Object {
     
     /**
@@ -63,13 +68,13 @@ the annotation @xslmethod:
      *
      * @param   string permission
      * @return  bool
-     /*
+     */
     #[@xslmethod]
     public function hasPermission($permission) {
       return TRUE;
     }
   }
-?>
+</code>
 
 Security considerations
 -----------------------

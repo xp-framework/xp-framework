@@ -52,7 +52,7 @@ Creating an anonymous instance will bail with an error...
 
 Creating an anonymous instance of an interface:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $filter= &newinstance('io.collections.iterate.IterationFilter', array(&$properties), '{
     var
       $properties= NULL;
@@ -68,7 +68,7 @@ Creating an anonymous instance of an interface:
       );
     }
   }');
-?>
+</code>
 
 
 Security considerations

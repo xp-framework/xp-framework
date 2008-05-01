@@ -2,7 +2,7 @@ RFC 0066: TCP_NODELAY server option
 ========================================================================
 $Id$
 
-@authors: friebe, gelli
+@authors: friebe, gellweiler
 @created: Wed Jul  5 17:32:58 CEST 2006
 @status: implemented, Fri Jul  7 11:25:05 CEST 2006
 @category: peer.server
@@ -46,7 +46,7 @@ TCP_NODELAY should be called on the accept()'ed socket.
 
 Example
 ~~~~~~~
-<?php
+<code>
   with ($server= &new Server($argv[1], 6448)); {
     $server->setTcpNoDelay(TRUE);
     $server->addListener(new RemoteInvocationListener());
@@ -54,7 +54,7 @@ Example
     $server->service();
     $server->shutdown();
   }
-?>
+</code>
 
 
 Security considerations

@@ -34,7 +34,7 @@ The entry point class (remote.Remote) will remain the same, though.
 
 Example
 ~~~~~~~
-<?php
+<code>
   $remote= &Remote::forName('xp://localhost:6449/');
   $services= &$remote->lookup('Services');
   
@@ -46,7 +46,7 @@ Example
   // 2. Acquire information about a certain service by passing
   //    its JNDI name
   $bean= &$services->bean('Calculator');
-?>
+</code>
 
 The bean object
 ~~~~~~~~~~~~~~~

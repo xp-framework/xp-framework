@@ -55,7 +55,7 @@ The following classes are defined by this new API:
 Example
 ~~~~~~~
 Iterating a directory (non-recursively), finding all jpeg-files:
-<?php
+<code>
   uses(
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
@@ -69,7 +69,7 @@ Iterating a directory (non-recursively), finding all jpeg-files:
   ) {
     Console::writeLine('Element ', xp::stringOf($i->next()));
   }
-?>
+</code>
 
 
 Security considerations

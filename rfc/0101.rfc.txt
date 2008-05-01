@@ -32,7 +32,7 @@ Classes currently in lang.types:
 </pre>
 
 New class lang.types.String (minimalistic because wrapper type):
-<?php
+<code>
   class String extends Object {
     var $intern= '';
     
@@ -56,7 +56,7 @@ New class lang.types.String (minimalistic because wrapper type):
       return $this->intern;
     }
   }
-?>
+</code>
 
 Security considerations
 -----------------------

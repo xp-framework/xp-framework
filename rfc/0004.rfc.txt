@@ -23,7 +23,7 @@ Functionality
 -------------
 
 These three examples illustrate best the new API:
-<?php
+<code>
 
   // Using the default class loader
   $cl= &ClassLoader::getDefault();
@@ -36,7 +36,7 @@ These three examples illustrate best the new API:
   // Using the net class loader
   $cl= &new NetClassLoader('http://thekid.de/classes');
   $class= &$cl->loadClass('de.thekid.CLTest');
-?>
+</code>
 
 Dependencies
 ------------

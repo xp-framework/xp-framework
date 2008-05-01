@@ -28,29 +28,29 @@ Console::$err will make use of the io.streams.OutputStreamWriter API.
 Current (and still valid) functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The following piece of code prints "Hello" and a CRLF to standard output:
-<?php
+<code>
   Console::writeLine('Hello');
-?>
+</code>
 
 Using the streams
 ~~~~~~~~~~~~~~~~~
 The following is the equivalent of the above shorthand:
-<?php
+<code>
   Console::$out->writeLine('Hello');
-?>
+</code>
 
 This is the variant that writes to standard *error*, which was previously
 unsupported:
-<?php
+<code>
   Console::$err->writeLine('Hello');
-?>
+</code>
 
 Reassigning the streams
 ~~~~~~~~~~~~~~~~~~~~~~~
 The $out and $err properties may be reassigned, for example, to redirect
 output to nirvana:
 
-<?php
+<code>
   Console::$out= newinstance('io.streams.OutputStreamWriter', array(), '{
     public function write() { }
     public function writef() { }
@@ -58,7 +58,7 @@ output to nirvana:
     public function writeLinef() { }
     public function flush() { }
   }'));
-?>
+</code>
 
 
 Security considerations

@@ -21,11 +21,11 @@ Magic quotes cause too much confusion and problems.
 Functionality
 -------------
 The following will be added to lang.base.php:
-<?php
+<code>
   // Get rid of magic quotes 
   ini_get('magic_quotes_gpc') && xp::error('[xp::core] magic_quotes_gpc enabled');
   ini_set('magic_quotes_runtime', FALSE);
-?>
+</code>
 
 
 Security considerations

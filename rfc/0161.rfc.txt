@@ -24,7 +24,7 @@ Functionality
 
 RequestAuthenticator interface
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   /**
    * This interface describes objects that take care of request
    * authentication.
@@ -44,12 +44,12 @@ RequestAuthenticator interface
      */
     public function authenticate($request, $response, $context);
   }
-?>
+</code>
 
 Example
 ~~~~~~~
 In the scriptlet class, add the following:
-<?php
+<code>
   class SiteScriptlet extends AbstractXMLScriptlet {
     // ...
 
@@ -73,10 +73,10 @@ In the scriptlet class, add the following:
     
     // ...
   }
-?>
+</code>
 
 Now create a LoginHandler:
-<?php
+<code>
   class LoginHandler extends Handler {
     
     /**
@@ -126,10 +126,10 @@ Now create a LoginHandler:
       $request->session->removeValue('target');
     }
   }
-?>
+</code>
 
 Then create a LoginState class and add the LoginHandler to it:
-<?php
+<code>
   class LoginState extends AbstractState {
 
     /**
@@ -141,7 +141,7 @@ Then create a LoginState class and add the LoginHandler to it:
     }
   }
 
-?>
+</code>
 
 Security considerations
 -----------------------

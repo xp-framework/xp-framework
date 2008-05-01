@@ -2,7 +2,7 @@ RFC 0035: Interceptors for FTP storage
 ========================================================================
 $Id$
 
-@authors: friebe, gelli, olli
+@authors: friebe, gellweiler, ohinckel
 @created: Wed Aug 24 12:40:35 CEST 2005
 @status: implemented, Wed Aug 31 09:23:29 CEST 2005
 @category: peer.ftp.server
@@ -40,7 +40,7 @@ Interceptable actions
 - Changing a directory
 
 Example (abbreviated):
-<?php
+<code>
 
   // Interface class
   class StorageActionInterceptor extends Interface {
@@ -77,10 +77,10 @@ Example (abbreviated):
   // Add an interceptor for the base "/check/only/in/this/path", idea #1
   $storage->addInterceptorFor('/check/only/in/this/path', new DeleteInterceptor());
 
-?>
+</code>
 
 Extended implementation (abbreviated):
-<?php
+<code>
 
   class InterceptorCondition extends Interface {
     
@@ -121,7 +121,7 @@ Extended implementation (abbreviated):
     array(new PathCondition('/only/gif-and-jpg/dir')),
     new EntrynameInterceptor('/\.(gif|jpg)$/')
   );
-?>
+</code>
 
 Note: The DefaultInterceptor class implements the 
 

@@ -22,13 +22,13 @@ Functionality
 
 Current functionality
 ~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   // Uploading
   $c->rootDir()->file($filename)->uploadFrom(new FileInputStream(new File($local)));
  
   // Downloading
   $c->rootDir()->getFile($filename)->downloadTo(new FileOutputStream(new File($local)));
-?>
+</code>
 Both of these methods are blocking, that is, they will not return until
 the transfer has been completed.
 
@@ -45,7 +45,7 @@ lang.Object
   `-+ peer.ftp.FtpDownload
 </pre>
 The FtpTransfer base class is declared as follows:
-<?php
+<code>
   abstract class FtpTransfer extends Object {
  
     /**
@@ -140,12 +140,12 @@ The FtpTransfer base class is declared as follows:
       // ...
     }
   }
-?>
+</code>
 
 Listener interface
 ~~~~~~~~~~~~~~~~~~
 There will be a new interface, peer.ftp.FtpTransferListener:
-<?php
+<code>
   interface FtpTransferListener {
   
     /**
@@ -185,11 +185,11 @@ There will be a new interface, peer.ftp.FtpTransferListener:
     public function failed(FtpTransfer $transfer, XPException $cause);
   
   }
-?>
+</code>
 
 With listeners
 ~~~~~~~~~~~~~~
-<?php
+<code>
   $listener= newinstance('peer.ftp.FtpTransferListener', array(), '{
     public function started(FtpTransfer $transfer) {
       Console::write($transfer, "\n  [");
@@ -225,30 +225,34 @@ With listeners
     FTP_BINARY,
     $listener
   );
-?>
+</code>
 
 Output
 ~~~~~~
 <pre>
-peer.ftp.FtpUpload@(io.streams.FileInputStream<io.File(uri= .\php.exe, mode= rb)> -> /php.exe)
+peer.ftp.FtpUpload@(
+  io.streams.FileInputStream<io.File(uri= .\php.exe, mode= rb)> -> /php.exe
+)
   [.......] 
 Completed
  
-peer.ftp.FtpDownload@(/php.exe -> io.streams.FileOutputStream<io.File(uri= .\php.exe, mode= wb)>) 
+peer.ftp.FtpDownload@(
+  /php.exe -> io.streams.FileOutputStream<io.File(uri= .\php.exe, mode= wb)>
+) 
   [...................] 
 Completed
 </pre>
 
 Alternative usage
 ~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $transfer= $c->rootDir()->getFile($filename)->start(
     FtpDownload::to(new FileOutputStream(new File($local)))
   );
   while (!$transfer->complete()) {
     $transfer->perform();
   }
-?>
+</code>
 
 
 Security considerations

@@ -34,12 +34,12 @@ line code on line 1
 How to fix it
 ~~~~~~~~~~~~~
 Prepending this:
-<?php
+<code>
   set_error_handler(
     create_function('$c, $m', 'throw new Exception($m);'),
     E_RECOVERABLE_ERROR
   );
-?>
+</code>
 ... to the above code will yield in an uncaught exception instead of
 a fatal error.
 

@@ -2,7 +2,7 @@ RFC 0065: Server Protocol API
 ========================================================================
 $Id$
 
-@authors: friebe, gelli, kiesel
+@authors: friebe, gellweiler, kiesel
 @created: Wed Jul  5 17:28:01 CEST 2006
 @status: implemented, Mon Aug 21 10:31:58 CEST 2006
 @category: peer.server
@@ -23,20 +23,20 @@ Functionality
 
 Setting the protocol implementation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   with ($server= &new Server($argv[1], 6448)); {
     $server->setProtocol(new EascProtocol());
     $server->init();
     $server->service();
     $server->shutdown();
   }
-?>
+</code>
 
 
 Protocol interface
 ~~~~~~~~~~~~~~~~~~
 Stripped of API-Doc for readability, see patch for details:
-<?php
+<code>
   class ServerProtocol extends Interface {
   
     function handleConnect(&$socket) { }
@@ -48,7 +48,7 @@ Stripped of API-Doc for readability, see patch for details:
     function handleError(&$socket, &$e) { }
   
   }
-?>
+</code>
 
 
 BC

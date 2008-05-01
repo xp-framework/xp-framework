@@ -44,7 +44,7 @@ This insight has been made through the following simple benchmark
 script:
 
 Benchmark script:
-<?php
+<code>
   require('lang.base.php');
   
   $cl= ClassLoader::getDefault();
@@ -55,7 +55,7 @@ Benchmark script:
     );
   }
 
-?>
+</code>
 
 Old execution speed:
 ak@boost ~/devel/xp.public/trunk $ time php test.php 

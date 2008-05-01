@@ -25,16 +25,16 @@ Prototype:
 </pre>
 
 Example:
-<?php
+<code>
   try(); {
     raise('lang.ClassCastException', 'An error occured');
   } if (catch('ClassCastException', $e)) {
     $e->printStackTrace();
   }
-?>
+</code>
 
 Implementation:
-<?php
+<code>
   function raise($classname, $message) {
     try(); {
       $class= &XPClass::forName($classname);
@@ -45,7 +45,7 @@ Implementation:
     
     return throw($class->newInstance($message));
   }
-?>
+</code>
 
 Dependencies
 ------------

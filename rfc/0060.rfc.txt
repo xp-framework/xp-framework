@@ -22,19 +22,19 @@ Functionality
 -------------
 Current
 ~~~~~~~
-<?php
+<code>
   if (in_array('OpenLDAPperson', $entry->getAttribute('objectclass'))) {
     // ...
   }
-?>
+</code>
 
 Proposed
 ~~~~~~~~
-<?php
+<code>
   if ($entry->isA('OpenLDAPperson')) {
     // ...
   }
-?>
+</code>
 
 
 Security considerations

@@ -48,7 +48,7 @@ A new method getClassLoader() will be added to lang.XPClass. It will
 return the ClassLoader instance the class was loaded with. 
 
 The XPClass::getClassLoader() method:
-<?php
+<code>
   /**
    * Retrieve the class loader a class was loaded with
    *
@@ -61,7 +61,7 @@ The XPClass::getClassLoader() method:
     }
     return $cl;
   }
-?>
+</code>
 
 
 Security considerations

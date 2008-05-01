@@ -36,15 +36,15 @@ Functionality
 usage
 ~~~~~
 - Functions can be created with the static rdbms.SQLFunctions factory
-<?php SQLFunctions::acos(0.125); ?>
+<code> SQLFunctions::acos(0.125); </code>
 
 - Functions can be nested
-<?php SQLFunctions::acos(SQLFunctions::cos(0.125)); ?>
+<code> SQLFunctions::acos(SQLFunctions::cos(0.125)); </code>
 
 
 - functions can be either used as a projection part or a restriction's value
-<?php Criteria::newInstance()->setProjection(SQLFunctions::rand()); ?>
-<?php Criteria::newInstance()->add(Restrictions::equal("texture_id", SQLFunctions::ceil(0.3))); ?>
+<code> Criteria::newInstance()->setProjection(SQLFunctions::rand()); </code>
+<code> Criteria::newInstance()->add(Restrictions::equal("texture_id", SQLFunctions::ceil(0.3))); </code>
 
 
 Security considerations

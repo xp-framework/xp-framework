@@ -25,7 +25,7 @@ Functionality
 -------------
 A test can be annotated with the @limit annotation as follows:
 
-<?php
+<code>
   class LdapIntegrationTest extends TestCase {
   
     #[@test, @limit(time= 1.0)]
@@ -33,7 +33,7 @@ A test can be annotated with the @limit annotation as follows:
       // ...
     }
   }
-?>
+</code>
 
 Test failure message:
 <code>

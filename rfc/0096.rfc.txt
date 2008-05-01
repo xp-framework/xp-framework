@@ -36,14 +36,14 @@ Advantage
 ~~~~~~~~~
 
 former code:
-<?php
+<code>
   $chief= Person::getPersonById(Department::getDepartmentById(1)->getChief_id());
-?>
+</code>
 
 new code:
-<?php
+<code>
   $chief= Department::getDepartmentById(1)->getDepartmentChief();
-?>
+</code>
 
 
 
@@ -51,17 +51,19 @@ new code:
 usage example
 ~~~~~~~~~~~~~
 
-<?php
+<code>
   uses(    
     'rdbms.ConnectionManager',
     'de.schlund.db.rubentest.Department'
   );
 
-  ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1'));
+  ConnectionManager::getInstance()->register(
+    DriverManager::getConnection('mysql://test:test@localhost/?autoconnect=1')
+  );
   
   $chief= Department::getDepartmentById(1)->getDepartmentChief();
   var_dump($chief);
-?>
+</code>
 
 <pre>
   object(Person)#75 (2) {
@@ -128,9 +130,9 @@ naming strategy
 - The strategy has to implement the abstract class rdbms.util.DBXMLNamingStrategy.
 - To use a self written strategy you can set it by:
 
-<?php
+<code>
   DBXMLNamingContext::setStrategy(new MyStrategy());
-?>
+</code>
 
 - If nothing is set the rdbms.util.DBXMLNamingStrategyDefault will be used.
 

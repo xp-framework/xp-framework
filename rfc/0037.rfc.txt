@@ -26,7 +26,7 @@ A class declares being within a package by setting the variable $package.
 
 Example (Declaration)
 ~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   uses('util.Date');
 
   $package= 'info.binford6100';
@@ -37,16 +37,16 @@ Example (Declaration)
       return 'More Power: '.parent::toString();
     }
   }
-?>
+</code>
 
 Example (Usage)
 ~~~~~~~~~~~~~~~
-<?php
+<code>
   require('lang.base.php');
   uses('info.binford6100.Date');
   
   echo xp::stringOf(new info·binford6100·Date()), "\n";
-?>
+</code>
 
 Output of above example
 ~~~~~~~~~~~~~~~~~~~~~~~

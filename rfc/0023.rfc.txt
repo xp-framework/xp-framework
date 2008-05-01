@@ -32,21 +32,21 @@ As a replacement for the old functionality of the constructor, a new method
 createFor() will be added which must be invoked statically.
 
 The old way of creating criteria objects changes from:
-<?php
+<code>
   $criteria= &new Criteria(array('bz_id', $bz_id, EQUAL));
-?>
+</code>
 
 to
 
-<?php
+<code>
   $criteria= &Criteria::createFor(array('bz_id', $bz_id, EQUAL));
-?>
+</code>
 
 The "safe" way that prevents memory corruption then is
-<?php
+<code>
   $criteria= &new Criteria();
   $criteria->add('bz_id', $bz_id, EQUAL);
-?>
+</code>
 
 Security considerations
 -----------------------

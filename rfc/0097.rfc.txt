@@ -20,13 +20,13 @@ Get rid of another case where catch-all is needed.
 
 Functionality
 -------------
-<?php
+<code>
   try {
     $r= $class->getMethod('doSelect')->invoke($class->newInstance(), $args);
   } catch (TargetInvocationException $e) {
     Console::writeLine($m->getName(), ' invocation failed, cause: ', $e->cause->toString());
   }
-?>
+</code>
 
 Security considerations
 -----------------------

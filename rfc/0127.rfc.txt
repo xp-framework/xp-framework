@@ -29,18 +29,18 @@ to be retrieved.
 
 Current functionality
 ~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $conn= ConnectionManager::getInstance()->getByHost(
     Author::getPeer()->connection,
     0
   );
-?>
+</code>
 
 New functionality
 ~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $conn= Author::getPeer()->getConnection();
-?>
+</code>
 
 
 Security considerations

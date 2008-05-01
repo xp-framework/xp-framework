@@ -21,7 +21,7 @@ will need to dynamically create classes from an interface and delegate
 Functionality
 -------------
 Math.class.php
-<?php
+<code>
   class Math extends Interface {
   
     /**
@@ -34,10 +34,10 @@ Math.class.php
      */
     function add($a, $b) { }
   }
-?>
+</code>
 
 DebugInvocationHandler.class.php
-<?php
+<code>
   class DebugInvocationHandler {
 
     function invoke(&$proxy, $method, $args) { 
@@ -45,10 +45,10 @@ DebugInvocationHandler.class.php
     }
 
   } implements(__FILE__, 'lang.reflect.InvocationHandler');
-?>
+</code>
 
 test.php
-<?php
+<code>
   uses('lang.reflect.Proxy', 'DebugInvocationHandler');
 
   $instance= &Proxy::newProxyInstance(
@@ -67,7 +67,7 @@ test.php
   //   1 => 2,
   // ))
   $instance->add(1, 2);
-?>
+</code>
 
 Dependencies
 ------------

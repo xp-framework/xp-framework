@@ -24,7 +24,7 @@ Functionality
 
 Old method
 ~~~~~~~~~~
-<?php
+<code>
   /**
    * Retrieve return type
    *
@@ -33,12 +33,12 @@ Old method
   public function getReturnType() {
     // ...
   }
-?>
+</code>
 
 
 New methods
 ~~~~~~~~~~~
-<?php
+<code>
   /**
    * Retrieve return type
    *
@@ -56,7 +56,7 @@ New methods
   public function getReturnTypeName() {
     // ...
   }
-?>
+</code>
 
 Any
 ~~~

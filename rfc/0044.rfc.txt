@@ -23,7 +23,7 @@ Functionality
 
 Current example:
 ~~~~~~~~~~~~~~~~
-<?php
+<code>
   $new= FALSE;
   if (!($ds= &DataSetSubClass::getByPk($id))) {
     $ds= &new DataSetSubClass();
@@ -38,11 +38,11 @@ Current example:
   } else {
     $ds->update();
   }
-?>
+</code>
 
 New example:
 ~~~~~~~~~~~~
-<?php
+<code>
   if (!($ds= &DataSetSubClass::getByPk($id))) {
     $ds= &new DataSetSubClass();
   }
@@ -51,7 +51,7 @@ New example:
   
   // Begin new code
   $ds->save();
-?>
+</code>
 
 
 Security considerations

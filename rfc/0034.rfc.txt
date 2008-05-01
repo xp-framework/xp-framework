@@ -71,7 +71,6 @@ Index: util/DateUtil.class.php
 +       return new TimeSpan($d1->getTime()-$d2->getTime());  
 +     }
    }
- ?>
 </pre> 
 
 

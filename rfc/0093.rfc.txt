@@ -25,7 +25,7 @@ Functionality
 
 Current
 ~~~~~~~
-<?php
+<code>
   $dialog= new DialogType();
  
   // Marshaller returns XML as a string
@@ -36,12 +36,12 @@ Current
 
   // Unmarshalling
   $dialog= Unmarshaller::unmarshal($xml, 'de.thekid.dialog.DialogType');
-?>
+</code>
 
 
 New functionality
 ~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $dialog= new DialogType();
  
   // XmlBinding is the entry point
@@ -55,7 +55,7 @@ New functionality
   $u= XmlBinding::newInstance('de.thekid.dialog')->createUnmarshaller();
   $dialog= $u->unmarshal($xml, 'DialogType');
   $dialog= $u->unmarshal($tree, 'DialogType');
-?>
+</code>
 
 
 Security considerations

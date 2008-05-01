@@ -5,7 +5,6 @@ $Id$
 @authors: kiesel
 @created: Fri Sep 15 10:11:39 CEST 2006
 @status: implemented, Fri Oct 13 19:23:21 CEST 2006
-
 @category: <core>
 
 Scope of Change
@@ -176,7 +175,10 @@ Comments
   Run #1: Old lang.base.php behaviour
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   <pre>
-  alex@lost:~/devel/xp.clean# time php -dinclude_path=.:/home/alex/devel/xp.clean/ ../../uses.php 
+  alex@lost:~/devel/xp.clean# time php 
+    -dinclude_path=.:/home/alex/devel/xp.clean/ 
+    ../../uses.php 
+
   21 classes loaded.
   111 classes loaded.
 
@@ -188,7 +190,10 @@ Comments
   Run #2: New implementation with only directory-includes
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   <pre>
-  alex@lost:~/devel/xp.public/trunk/skeleton# time php -dinclude_path=.:/home/alex/devel/xp.public/trunk/skeleton ~/uses.php 
+  alex@lost:~/devel/xp.public/trunk/skeleton# time php 
+    -dinclude_path=.:/home/alex/devel/xp.public/trunk/skeleton 
+    ~/uses.php 
+
   21 classes loaded.
   113 classes loaded.
 
@@ -200,7 +205,10 @@ Comments
   Run #3: New implementation, all classes loaded from archive
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   <pre>
-  alex@lost:~/devel/xp.public/trunk/experiments/people/kiesel/php/cca# time php -dinclude_path=public.xar:. ~/uses.php 
+  alex@lost:~/devel/xp.public/trunk/experiments/people/kiesel/php/cca# time php 
+    -dinclude_path=public.xar:. 
+    ~/uses.php 
+
   21 classes loaded.
   113 classes loaded.
 

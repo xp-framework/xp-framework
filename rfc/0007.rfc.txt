@@ -42,13 +42,13 @@ There are two possible implementations:
    could be forced. Maybe, this could even be achieved in an extension.
    
    A solution could be as simple as this syntax:
-   <?php
+   <code>
      include('foo.class.php');
      // [... Use the class from foo.php ...]
      
      recompile('foo.class.php');
      // [... Use the changed class from foo.php ...]
-   ?>
+   </code>
    
    Downside: Have an extra extension or convince the PHP folks that
    this is needed as core functionality:)

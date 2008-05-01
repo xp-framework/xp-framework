@@ -22,17 +22,17 @@ Functionality
 
 Usage (reading from a MemoryInputStream)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $m= new MemoryInputStream('Hello World');
   
   $fd= Streams::readableFd($m);
   $helloWorld= fread($fd, 1024);
   fclose($fd);
-?>
+</code>
 
 Usage (writing to a MemoryOutputStream)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $m= new MemoryOutputStream();
   
   $fd= Streams::writeableFd($m);
@@ -40,7 +40,7 @@ Usage (writing to a MemoryOutputStream)
   fclose($fd);
   
   $helloWorld= $m->getBytes();
-?>
+</code>
 
 
 Security considerations

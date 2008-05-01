@@ -51,7 +51,7 @@ Therefore, the naming lookup should be made optional for performance
 reasons.
 
 The interface class used in both client and server:
-<?php
+<code>
   class ISearch extends Interface {
 
     /**
@@ -64,25 +64,25 @@ The interface class used in both client and server:
     function execute($query) { }
   
   }
-?>
+</code>
 
 Using the PHP access API without naming lookups:
-<?php
+<code>
   $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch');
 
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
-?>
+</code>
 
 Using the PHP access API with naming lookup:
-<?php
+<code>
   Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
 
   $search= &Naming::lookup('website/ISearch');
 
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
-?>
+</code>
 
 Context
 ~~~~~~~
@@ -92,17 +92,17 @@ keys and values. The context can be accessed by the server
 components.
 
 Using the PHP access API without naming lookups:
-<?php
+<code>
   $context= &new RemoteContext();
   $context->put('write policy', 'immediate');
   $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch', $context);
 
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
-?>
+</code>
 
 Using the PHP access API with naming lookup:
-<?php
+<code>
   Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
 
   $context= &new RemoteContext();
@@ -111,7 +111,7 @@ Using the PHP access API with naming lookup:
   
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
-?>
+</code>
 
 Think of context like environment variables.
 
@@ -121,16 +121,16 @@ If authentication is required, we use the AuthorizedContext class
 instead of the base class.
 
 Using the PHP access API without naming lookups:
-<?php
+<code>
   $context= &new AuthorizedContext(new PasswordAuth('username', 'password'));
   $search= &Remote::forName('rmi://127.0.0.1:4444/ISearch', $context);
 
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
-?>
+</code>
 
 Using the PHP access API with naming lookup:
-<?php
+<code>
   Naming::setProvider(new RemoteNamingProvider('example.com', 1099));
 
   $context= &new AuthorizedContext(new PasswordAuth('username', 'password'));
@@ -138,7 +138,7 @@ Using the PHP access API with naming lookup:
   
   // Now, we can invoke methods on the instance
   var_dump($search->execute('Hello'));
-?>
+</code>
 
 Server side
 ~~~~~~~~~~~
@@ -207,7 +207,7 @@ Each protocol message has a header. It consists of the following elements:
 (=> the header is 12 bytes long).
 
 Encoding the header in PHP:
-<?php
+<code>
   $header= pack(
     'Nc4N', 
     1015490375, 
@@ -217,7 +217,7 @@ Encoding the header in PHP:
     $compressed,
     $dataLength
   );
-?>
+</code>
 
 Reading the header in Java:
 <code>
@@ -259,9 +259,9 @@ The body of a message is encoded depending on the message type.
   
   It contains the context (and with that, the authentication data).
 
-  <?php
+  <code>
     $body= utf($serializedContext);
-  ?>
+  </code>
   
   The body contains a serialized representation of the context, serialized
   according to the rules of object serialization.
@@ -285,14 +285,14 @@ The body of a message is encoded depending on the message type.
   </pre>
 
   In PHP:
-  <?php
+  <code>
     $body= (
       pack('c', $mode).
       utf($objectName).
       utf($operationName).
       utf($serializedParameters)
     );
-  ?>
+  </code>
   
 * Body encoding for reply message (#2)
 
@@ -331,9 +331,9 @@ The body of a message is encoded depending on the message type.
   - Detail message
   
   In PHP:
-  <?php
+  <code>
     $body= pack('ca*', $status, $data);
-  ?>
+  </code>
 
 * Body encoding for ping message (#3)
 
@@ -356,9 +356,9 @@ The body of a message is encoded depending on the message type.
   </pre>
     
   In PHP:
-  <?php
+  <code>
     $body= pack('c', $reason);
-  ?>
+  </code>
   
   The descision to close down a connection can not be vetoed by either
   side. In case the server issues a timeout message, the client may 

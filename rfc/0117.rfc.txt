@@ -25,7 +25,7 @@ Functionality
 
 Package API
 ~~~~~~~~~~~
-<?php
+<code>
   class Package extends Object {
 
     /**
@@ -80,9 +80,7 @@ Package API
      * Creates a string representation of this package
      * 
      * Example:
-     * <pre>
      *   lang.reflect.Package<fully.qualified.package.Name>
-     * </pre>
      */
     public string toString() { ... }
 
@@ -98,17 +96,17 @@ Package API
      */
     public string hashCode() { ... }
   }
-?>
+</code>
 
 Examples
 ~~~~~~~~
 Get all classes in a certain package:
-<?php
+<code>
   Console::writeLine('Classes in com.1and1.apis.login:');
   foreach (Package::forName('com.1and1.apis.login')->getClasses() as $class) {
     Console::writeLine('- ', $class->getName());
   }
-?>
+</code>
 
 
 Security considerations
@@ -124,6 +122,7 @@ n/a
 Dependencies
 ------------
 - RFC #0121
+
 - A getPackage() method will be added to lang.XPClass.
 
 

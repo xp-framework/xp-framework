@@ -174,7 +174,7 @@ PHP API
 The Java side contains a lot of boilerplate code which our target is to 
 simplify.
 
-<?php
+<code>
   $session= &Remote::forName(
     'xp://jndi-proxy-host:4664/jms/queue/session?transacted=no&auto-acknowledge=1'
   );
@@ -209,7 +209,7 @@ simplify.
   $consumer= &$session->consumerFor('topic/Orders');
   $consumer->setMessageListener(new MyTopicListener());
   $session->listen();
-?>
+</code>
 
 
 Security considerations

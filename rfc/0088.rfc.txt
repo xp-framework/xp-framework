@@ -23,7 +23,7 @@ Functionality
 Basics
 ~~~~~~
 These new interfaces will be created (pseudo-code follows):
-<?php
+<code>
   interface io.streams.InputStream {
     string read(int bytes= 8192) throws io.IOException
   }
@@ -31,7 +31,7 @@ These new interfaces will be created (pseudo-code follows):
   interface io.streams.OutputStream {
     int write(string data) throws io.IOException
   }
-?>
+</code>
 
 The io.Stream class will implement all of these interfaces.
 

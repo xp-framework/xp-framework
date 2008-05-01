@@ -29,23 +29,23 @@ a method.
 Functionality
 -------------
 The @expect annotation takes the name of the expected exception:
-<?php
+<code>
   #[@test, @expect('lang.IllegalArgumentException')]
   function testMyFault() {
     $object= &new MyExceptionThrowingClass();
     $object->throwExpectedException();
   }
-?>
+</code>
 
 The @timeout annotation takes the amount of seconds a method may take
 to execute.
-<?php
+<code>
   #[@test, @timeout(13)]
   function testTimeout() {
     // Call lengthy method
     lengthyMethod();
   }
-?>
+</code>
 
 The method will be interrupted if it didn't complete within the time
 specified and the result will be assumed as failed.

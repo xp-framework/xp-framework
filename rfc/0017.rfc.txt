@@ -30,7 +30,7 @@ Functionality
 The webservice tag marks a class as being a web service. The webmethod
 tags identify those methods that are exposed externally as web service
 operations.
-<?php
+<code>
   #[@webservice]
   class HelloWorldHandler extends Object {
   
@@ -39,7 +39,7 @@ operations.
       return 'Hello World!';
     }
   }
-?>
+</code>
 
 Access control
 ~~~~~~~~~~~~~~
@@ -54,7 +54,7 @@ Methods that should be restricted are given a "restricted" annotation
 defining which role a user must have to invoke this method.
 
 Example:
-<?php
+<code>
   #[@webservice]
   class CustomerHandler extends Object {
   
@@ -68,7 +68,7 @@ Example:
       // This method is restricted to users with "admin" role
     }
   }
-?>
+</code>
 
 In case restricted methods are tried to be invoked without authentication,
 the web service should answer with HTTP 401 ("Authentication required").
@@ -81,7 +81,7 @@ WSDL mapping annotations
 Note: This section only applies to SOAP RPCs, not to XMLRPC.
 
 Example:
-<?php
+<code>
   #[@webservice(name = 'Stocks', targetNamespace = 'http://xp-framework.net/wsdl')]
   class StockserviceHandler extends Object {
   
@@ -97,7 +97,7 @@ Example:
       // ...
     }
   }
-?>
+</code>
 
 - The webservice name is mapped to the wsdl:portType and defaults to
   the simple name of the class stripped of the word "Handler".

@@ -2,7 +2,7 @@ RFC 0043: UnknownRemoteObject
 ========================================================================
 $Id$
 
-@authors: friebe, gelli
+@authors: friebe, gellweiler
 @created: Tue Nov 29 15:34:52 CET 2005
 @status: implemented, Fri, 02 Dec 2005 13:33:24 +0100
 @category: remote

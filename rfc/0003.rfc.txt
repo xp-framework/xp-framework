@@ -51,7 +51,7 @@ When an object is cast, all of its member variables should remain
 "intact", i.e. not be a copy of the original class' members.
 
 Examples (abbreviated for readability reasons):
-<?php
+<code>
   class ListIterator extends Object {
     var $elements;
 
@@ -83,7 +83,7 @@ Examples (abbreviated for readability reasons):
       var_dump($i->next());
     }
   }
-?>
+</code>
 
 Dependencies
 ------------

@@ -22,15 +22,15 @@ Functionality
 The static initializer will, if existant for a class, be called by uses().
 
 Implementation:
-<?php
+<code>
   // Call static initializer
   if (is_callable(array($class, '__static'))) {
     call_user_func(array($class, '__static'));
   }
-?>
+</code>
 
 Example:
-<?php
+<code>
   final class Console {
     public static $out, $err= NULL;
     
@@ -39,7 +39,7 @@ Example:
       self::$err= new OutputStream(STDERR);
     }
   }
-?>
+</code>
 
 Dependencies
 ------------

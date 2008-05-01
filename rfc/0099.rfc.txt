@@ -22,27 +22,27 @@ Functionality
 
 Current
 ~~~~~~~
-<?php
+<code>
   $entries= News::getPeer()->doSelect(new Criteria(Restrictions::allOf(
     Restrictions::like('title', 'Hello%'),
     Restrictions::greaterThan('valid_from', DateUtil::getMidnight(Date::now()))
   ));
   $iterator= News::getPeer()->iteratorFor(new Criteria());
   $entity= News::getByNews_id(1);
-?>
+</code>
 
 New
 ~~~
-<?php
+<code>
   $nf= new NewsFinder();
   $entries= $nf->findAll($nf->todaysHelloNews());
   $iterator= $nf->iterate($nf->all());
   $entity= $nf->find($nf->byPrimary(1));
-?>
+</code>
 
 Finder class
 ~~~~~~~~~~~~
-<?php
+<code>
   class NewsFinder extends Finder {
     public function getPeer() {
       return News::getPeer();
@@ -66,7 +66,7 @@ Finder class
       );
     }
   }
-?>
+</code>
 
 Security considerations
 -----------------------

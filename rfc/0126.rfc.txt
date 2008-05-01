@@ -30,7 +30,7 @@ So you will give your implemented Dataset class a column method like that:
 
 Example
 ~~~~~~~
-<?php
+<code>
   class Person extends Dataset {
 
     /**
@@ -44,28 +44,28 @@ Example
       return Peer::forName(__CLASS__)->column($name);
     }
   }
-?>
+</code>
 
 
 Property vs. Column
 ~~~~~~~~~~~~~~~~~~~
 deprecated api
-<?php
+<code>
   $nameColumn= Property::forName('name');
   $idColumn=   Property::forName('person_id');
-?>
+</code>
 
 new api:
-<?php
+<code>
   $nameColumn= Person::column('name');
   $idColumn=   Person::column('person_id');
-?>
+</code>
 
 restrictions e.g.:
-<?php
+<code>
   Restrictions::equal($idColumn, 5);
   $idColumn->equal(5);
-?>
+</code>
 
 
 Security considerations

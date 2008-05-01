@@ -45,7 +45,7 @@ UML diagram
 
 code examples
 ~~~~~~~~~~~~~
-<?php
+<code>
 
   uses(
     'rdbms.query.SelectQuery',
@@ -76,15 +76,17 @@ code examples
   
   Console::writeLine('QueryA: '.$selectQueryA->getQueryString());
   Console::writeLine('QueryB: '.$selectQueryB->getQueryString());
-  Console::writeLine('QueryA &cup; QueryB: '.SetOperation::union($selectQueryA, $selectQueryB)->getQueryString());
-
-?>
+  Console::writeLine('QueryA union QueryB: '.SetOperation::union(
+    $selectQueryA, $selectQueryB)->getQueryString()
+  );
+</code>
 
 Would print:
 <pre>
   QueryA: select  job_id, title from JOBS.job  where job_id = 5
   QueryB: select  job_id, name from JOBS.Person
-  QueryA &cup; QueryB: select  job_id, title from JOBS.job  where job_id = 5 union select  job_id, name from JOBS.Person
+  QueryA union QueryB: select  job_id, title from JOBS.job  where job_id = 5 
+    union select  job_id, name from JOBS.Person
 </pre>
 
 
@@ -127,8 +129,14 @@ Comments
   SetOperation::union, SetOperation::intercept and SetOperation::except accept
   two rdbms.query.SelectQueryExecutables as arguments. So you can realise the
   SQL code above like:
-  <?php
-    SetOperation::union($selctQueryA, SetOperation::union($selectQueryB, SetOperation::union($selectQueryC, ... [etc.], TRUE), TRUE), TRUE);
-  ?>
+  <code>
+    SetOperation::union(
+      $selectQueryA, SetOperation::union(
+        $selectQueryB, SetOperation::union(
+          $selectQueryC, ... [etc.]
+        ), TRUE
+      ), TRUE
+    );
+  </code>
 
 <EOF>

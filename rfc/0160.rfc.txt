@@ -23,7 +23,7 @@ Functionality
 
 New methods
 ~~~~~~~~~~~
-<?php
+<code>
   interface IXSLProcessor {
     // ...
     
@@ -43,11 +43,11 @@ New methods
 
     // ...
   }
-?>
+</code>
 
 Example
 ~~~~~~~
-<?php
+<code>
   with ($proc= new DomXSLProcessor()); {
     
     // Create a stylesheet
@@ -70,7 +70,7 @@ Example
     $proc->run();
     $result= $proc->output();
   }
-?>
+</code>
 
 Security considerations
 -----------------------

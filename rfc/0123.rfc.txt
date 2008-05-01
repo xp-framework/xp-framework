@@ -42,67 +42,67 @@ Functionality
 Column class
 ~~~~~~~~~~~~
 to get an instance of a column:
-<?php
+<code>
   $nameColumn= Person::column('name');
   $idColumn=   Person::column('person_id');
-?>
+</code>
 
 
 Aggregation
 ~~~~~~~~~~~
 projection to the function avg
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(Projections::average($idColumn))
   );
-?>
+</code>
 
 projection to the function max
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(Projections::max($idColumn))
   );
-?>
+</code>
 
 projection to the function min
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(Projections::min($idColumn))
   );
-?>
+</code>
 
 projection to the function sum
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(Projections::sum($idColumn))
   );
-?>
+</code>
 
 projection to the function count
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(Projections::count())
   );
-?>
+</code>
 
 
 Projection
 ~~~~~~~~~~~
 projection to the property name
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(Projections::property($nameColumn))
   );
-?>
+</code>
 is th same as:
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection($nameColumn)
   );
-?>
+</code>
 
 projection to a set of properties
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(
       Projections::projectionList()
@@ -110,9 +110,9 @@ projection to a set of properties
       ->add(Projections::property($nameColumn))
     )
   );
-?>
+</code>
 is th same as:
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(
       Projections::projectionList()
@@ -120,20 +120,20 @@ is th same as:
       ->add($nameColumn)
     )
   );
-?>
+</code>
 
 projection to the property name with the alias surname
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection(Projections::property($nameColumn), "surname")
   );
-?>
+</code>
 is th same as:
-<?php
+<code>
   Person::getPeer()->doSelect(Criteria::newInstance()
     ->setProjection($nameColumn, "surname")
   );
-?>
+</code>
 
 
 
@@ -143,11 +143,13 @@ the method Criteria::withProjection can be used to build a temporary
 Criteria with a projection - e.g. count to test how many results will be
 in the resultset
 
-<?php
+<code>
   $crit= Criteria::newInstance()->add(Restrictions::equal("name", "Mary"));
-  $amountOfMarys= Person::getPeer()->iteratorFor($crit->withProjection(Projections::count()))->next()->get('count');
+  $amountOfMarys= Person::getPeer()->iteratorFor(
+    $crit->withProjection(Projections::count())
+  )->next()->get('count');
   if (LIMIT >= $amountOfMarys) Person::getPeer()->doSelect($crit);
-?>
+</code>
 
 
 Security considerations

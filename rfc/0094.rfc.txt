@@ -20,7 +20,7 @@ Functionality
 
 Example
 ~~~~~~~
-<?php
+<code>
   $service= ServiceManager::getInstance()->locateService('com.1and1.intranet.search');
 
   try {
@@ -31,7 +31,7 @@ Example
   }
   
   Console::writeLine(xp::stringOf($result));
-?>
+</code>
 
 Security considerations
 -----------------------

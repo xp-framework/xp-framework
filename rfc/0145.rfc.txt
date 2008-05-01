@@ -32,11 +32,11 @@ Note
 </pre>
 
 Consider this:
-<?php
+<code>
   if (!($exif= exif_read_data('/tmp/image.jpg'))) {
     throw new FormatException('Cannot read EXIF data');
   }
-?>
+</code>
 
 * exif_read_data() will return FALSE which is checked and an exception
   is thrown. A unittest will test for this behaviour using @expect e.g.

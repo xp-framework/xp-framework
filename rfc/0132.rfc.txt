@@ -23,7 +23,7 @@ Functionality
 Core
 ~~~~
 A new class, lang.Enum will be added:
-<?php
+<code>
   /**
    * Enumeration
    *
@@ -79,13 +79,13 @@ A new class, lang.Enum will be added:
       return array_values($c->getStaticProperties());
     }
   }
-?>
+</code>
 
 Reflection
 ~~~~~~~~~~
 The XPClass class will support an isEnum() method 
 
-<?php
+<code>
   /**
    * Determines if this XPClass object represents an enum type.
    *
@@ -94,7 +94,7 @@ The XPClass class will support an isEnum() method
   public function isEnum() {
     // ...
   }
-?>
+</code>
 
 
 Defining an enum
@@ -114,7 +114,7 @@ To create an enum type, the following is necessary:
   will raise an E_STRICT "Static function Enum::values() should not 
   be abstract"
 
-<?php
+<code>
   class TransactionType extends Enum {
     public static
       $NOT_SUPPORTED,
@@ -139,14 +139,14 @@ To create an enum type, the following is necessary:
       return parent::membersOf(__CLASS__);
     }
   }
-?>
+</code>
 
 Usage: Enum values
 ~~~~~~~~~~~~~~~~~~
 Enum values can be accessed by the following syntax:
-<?php
+<code>
   $transactionType= TransactionType::$MANDATORY;
-?>
+</code>
 
 Note:
 <pre>
@@ -159,25 +159,25 @@ Note:
 Usage: Type-safety
 ~~~~~~~~~~~~~~~~~~
 Because enums are essentially classes, they can be used as type hints:
-<?php
+<code>
   class MethodWrapper extends Object {
   
     public function setTransactionType(TransactionType $t) {
       $this->transactionType= $t;
     }
   }
-?>
+</code>
 
 Usage: Printing
 ~~~~~~~~~~~~~~~
 The following will print "MANDATORY" to the console:
-<?php
+<code>
   Console::writeLine(TransactionType::$MANDATORY);
-?>
+</code>
 
 Usage: Using enums in switch
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $transactionType= TransactionType::$MANDATORY;
 
   // ...later on:
@@ -192,7 +192,7 @@ Usage: Using enums in switch
       break;
     }
   }
-?>
+</code>
 
 Note:
 <pre>
@@ -202,16 +202,16 @@ Note:
 Usage: Enum values
 ~~~~~~~~~~~~~~~~~~
 The following will print all transaction type values to the console:
-<?php
+<code>
   foreach (TransactionType::values() as $type) {
     Console::writeLine('- ', $type);
   }
-?>
+</code>
 
 
 Example: Coin
 ~~~~~~~~~~~~~
-<?php
+<code>
   // Definition
   class Coin extends Enum {
     public static
@@ -248,7 +248,7 @@ Example: Coin
   foreach (Coin::values() as $coin) {
     echo $coin->name, ': ', $coin->value(), '¢ (', $coin->color(), ")\n";
   }
-?>
+</code>
 
 The above example prints out the following:
 <pre>

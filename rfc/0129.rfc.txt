@@ -23,19 +23,21 @@ Rationale
 Functionality
 -------------
 The join result can be accessed like relations in rfc0096, but the database will only be queried once.
-<?php
+<code>
   $crit= Criteria::newInstance()
     ->setFetchMode(Fetchmode::join('Author'))
     ->setFetchMode(Fetchmode::join('Recipient'))
     ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor'))
   ;
   foreach (Mmessage::getPeer()->doSelect($crit) as $Message) {
-    Console::writeLine('==> '.xp::stringOf($Message));
-    Console::writeLine('Author =====> '.xp::stringOf($Message->getAuthor()));
-    Console::writeLine('Recipient ==> '.xp::stringOf($Message->getRecipient()));
-    Console::writeLine('Author of ==> '.xp::stringOf($Message->getRecipient()->getMmessageAuthorList()));
+    Console::writeLine('==> ', $Message);
+    Console::writeLine('Author =====> ', $Message->getAuthor());
+    Console::writeLine('Recipient ==> ', $Message->getRecipient());
+    Console::writeLine('Author of ==> ', $Message->getRecipient()
+      ->getMmessageAuthorList()
+    );
   }
-?>
+</code>
 
 result:
 <pre>
@@ -81,27 +83,27 @@ result:
 
 Restrictions with joins
 ~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $crit= Criteria::newInstance()
     ->setFetchMode(Fetchmode::join('Author'))
     ->setFetchMode(Fetchmode::join('Recipient->MmessageAuthor->Author'))
   ;
 
   // fetch only Mmessages where the author id is 3
-  Mmessage::getPeer()->doSelect(
-    clone($crit)->add(Mmessage::column('author_id')->equal(3))
-  )
+  Mmessage::getPeer()->doSelect(clone($crit)
+    ->add(Mmessage::column('author_id')->equal(3))
+  );
   
   // fetch only Mmessages where the authors name is Peter
-  Mmessage::getPeer()->doSelect(
-    clone($crit)->add(Mmessage::column('Author->name')->equal('Peter'))
-  )
+  Mmessage::getPeer()->doSelect(clone($crit)
+    ->add(Mmessage::column('Author->name')->equal('Peter'))
+  );
   
   // fetch only Mmessages with Recipients who wrote Messages to Peter
-  Mmessage::getPeer()->doSelect(
-    clone($crit)->add(Mmessage::column('Recipient->MmessageAuthor->Recipient->name')->equal('Peter'))
-  )
-?>
+  Mmessage::getPeer()->doSelect(clone($crit)
+    ->add(Mmessage::column('Recipient->MmessageAuthor->Recipient->name')->equal('Peter')
+  ));
+</code>
 
 It is mandatory to use the whole path, relative to the first table of the join, to address a field
 

@@ -47,7 +47,7 @@ Functionality
 
 From scratch
 ~~~~~~~~~~~~
-<?php
+<code>
   $workflow= new Workflow();
 
   // Callbacks
@@ -70,7 +70,7 @@ From scratch
   $instance= $workflow->newInstance();
   $instance->setPayload(...);
   $instance->start();
-?>
+</code>
 
 
 Security considerations

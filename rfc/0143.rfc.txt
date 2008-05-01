@@ -30,7 +30,7 @@ Functionality
 
 Exceptions
 ~~~~~~~~~~
-<?php
+<code>
   try {
     $iptcData= IptcData::fromFile($in);
   } catch (ImagingException $e) {
@@ -40,14 +40,14 @@ Exceptions
   } catch (FormatException $e) {
     // IPTC data malformed
   }
-?>
+</code>
 
 Optional default argument
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 In case no meta data can be found and a default argument is given this will
 be returned instead of throwing an ElementNotFoundException.
 
-<?php
+<code>
   // Return the null pointer
   $iptcData= IptcData::fromFile($in, xp::null());
   
@@ -56,7 +56,7 @@ be returned instead of throwing an ElementNotFoundException.
 
   // Use empty meta data
   $iptcData= IptcData::fromFile($in, IptcData::$EMPTY);
-?>
+</code>
 
 
 

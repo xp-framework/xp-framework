@@ -22,7 +22,7 @@ defined SQL queries.
 Functionality
 -------------
 Currently, the following is possible:
-<?php
+<code>
   with ($peer= &News::getPeer()); {
     $criteria= &new Criteria(array('news_id', 10, LESS_THAN));
 
@@ -34,10 +34,10 @@ Currently, the following is possible:
       $object= &$iterator->next();
     }
   }
-?>
+</code>
 
 The added functionality provides the following equivalents:
-<?php
+<code>
   with ($peer= &News::getPeer()); {
     $statement= &new Statement('select * from news where news_id < 10');
 
@@ -49,7 +49,7 @@ The added functionality provides the following equivalents:
       $object= &$iterator->next();
     }
   }
-?>
+</code>
 
 Dependencies
 ------------

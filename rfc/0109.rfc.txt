@@ -24,7 +24,7 @@ Functionality
 ~~~~~~~~~~~~~~~~~~~
 
 Example: Prerequisites-check:
-<?php
+<code>
   class Account extends Object {
   
     public function transfer($amount) {
@@ -67,10 +67,10 @@ Example: Prerequisites-check:
     $account->getClass()->getMethod('transfer'), 
     array(120000)
   );
-?>
+</code>
 
 Example: Logging:
-<?php
+<code>
   class LoggingInterceptor extends Object implements InvocationInterceptor {
     protected $cat;
 
@@ -90,7 +90,7 @@ Example: Logging:
       return $result;
     }
   }
-?>
+</code>
 
 
 2) Lazy initialization
@@ -104,7 +104,7 @@ a "c", while invoke is spelled with a "k").
 ~~~~~~~~~
 Finding out a method's caller:
 
-<?php
+<code>
   class Account extends Object {
   
     public function deposit($amount) {
@@ -130,7 +130,7 @@ Finding out a method's caller:
   
   $t= new MonetaryTransaction();
   $t->transfer(Account::getByAccountNumber(1), Account::getByAccountNumber(2), 100);
-?>
+</code>
 
 This will print somthing like:
 <pre>
@@ -147,19 +147,19 @@ This will print somthing like:
 </pre>
 
 Another example of using the invocation class:
-<?php
+<code>
   $repr= $instance->getClass()->getMethod('toString')->invoke($instance);
 
   $i= new Invocation($instance, 'toString');
   $repr= $i->invoke();  
-?>
+</code>
 
 
 4) Invocation comparison
 ~~~~~~~~~~~~~~~~~~~~~~~~
 Instead of manually comparing class name, method and parameter counts in
 interceptors, one can make use of the PointCutExpression class.
-<?php
+<code>
   if (
     'com.example.banking.Account' == $chain->instance->getClassName() &&
     'transfer' == $chain->method->getName() && 
@@ -178,7 +178,7 @@ interceptors, one can make use of the PointCutExpression class.
   ) {
     // ...
   }
-?>
+</code>
 
 Syntax that can be used in forName():
 <pre>

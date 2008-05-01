@@ -23,7 +23,7 @@ Functionality
 
 lang.Runtime API
 ~~~~~~~~~~~~~~~~
-<?php
+<code>
   class Runtime extends Object {
   
     /**
@@ -80,11 +80,11 @@ lang.Runtime API
       // ...
     }
   }
-?>
+</code>
 
 lang.Process new methods
 ~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class Process extends Object {
   
     /**
@@ -105,18 +105,18 @@ lang.Process new methods
       // ...
     }
   }
-?>
+</code>
 
 Examples
 ~~~~~~~~
 Query PHP runtime executable:
-<?php
+<code>
   $exe= Runtime::getInstance()->getExecutable()->getFileName();
   $pid= Runtime::getInstance()->getExecutable()->getProcessId();
-?>
+</code>
 
 Clean up temporary files during shutdown:
-<?php
+<code>
   Runtime::getInstance()->addShutdownHook(newinstance('lang.Runnable', array($temp), '{
     public $target= NULL;
     
@@ -128,10 +128,10 @@ Clean up temporary files during shutdown:
       $this->target->exists() && $this->target->delete();
     }
   }'));
-?>
+</code>
 
 Load GTK library:
-<?php
+<code>
   try {
     Runtime::getInstance()->loadLibrary('gtk');
   } catch (IllegalAccessException $e) {
@@ -141,7 +141,7 @@ Load GTK library:
   } catch (SystemException $e) {
     // Errors while loading php_gtk.dll / php_gtk.so
   }
-?>
+</code>
 
 Security considerations
 -----------------------

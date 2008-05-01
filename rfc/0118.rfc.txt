@@ -22,10 +22,10 @@ written to the database.
 Functionality
 -------------
 The following used to work and would send "Hello NULL" to the database:
-<?php
+<code>
   $db->query('Hello %s');             // No arguments
   $db->query('Hello %2$s', 'Timm');   // Beyond sizeof arguments
-?>
+</code>
 
 These will now raise an rdbms.SQLStateException.
 

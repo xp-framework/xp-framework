@@ -28,13 +28,13 @@ it does support user-space wrappers).
 
 Example
 ~~~~~~~
-<?php
+<code>
   // Load from filesystem
   uses('util.Date', 'util.DateUtil');
   
   // Load from date.cca archive
   uses('cca+xp://date.cca/util.Date', 'cca+xp://date.cca/util.DateUtil'); 
-?>
+</code>
 
 Parameter format
 ~~~~~~~~~~~~~~~~
@@ -103,7 +103,7 @@ Security considerations
 -----------------------
 This patch enables you to include content from "unsafe" locations such 
 as HTTP by defining a wrapper for it and then writing
-<?php uses('http+xp://example.com/unsafe/classes/util.Date'); ?>
+<code> uses('http+xp://example.com/unsafe/classes/util.Date'); </code>
 but, in this case, you asked for it.
 
 What you should *NEVER* do is to write uses($variable) or 
@@ -118,9 +118,9 @@ fraction of a millisecond.
 
 Profiled sourcecode
 ~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   uses('util.Date', 'util.DateUtil');
-?>
+</code>
 
 Timings
 ~~~~~~~

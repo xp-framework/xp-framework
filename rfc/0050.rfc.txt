@@ -30,20 +30,20 @@ SQL:
 </pre>
 
 Current (and still valid) functionality:
-<?php
+<code>
   new Criteria(array('domainname', 'thekid.de', EQUAL));
-?>
+</code>
 
 New functionality, using the Restrictions factory:
-<?php
+<code>
   new Criteria(Restrictions::equal('domainname', 'thekid.de'));
-?>
+</code>
 
 New functionality, using the Property object:
-<?php
+<code>
   $domainname= &Property::forName('domainname');
   new Criteria($domainname->equal('thekid.de'));
-?>
+</code>
 
 
 2) Using OR
@@ -54,25 +54,25 @@ SQL:
 </pre>
 
 Current (and still valid) functionality:
-<?php
+<code>
   // Not feasible with Criteria's old API, need to use hardcoded SQL
   new Statement(
     'select ... where expire_at > %s or deleted = %d',
     Date::now(),
     TRUE
   );
-?>
+</code>
 
 New functionality, using the Restrictions factory:
-<?php
+<code>
   new Criteria(Restrictions::anyOf(
     Restrictions::greaterThan('expire_at', Date::now()),
     Restrictions::equal('deleted', TRUE)
   ));
-?>
+</code>
 
 New functionality, using the Property object:
-<?php
+<code>
   $expire_at= &Property::forName('expire_at');
   $deleted= &Property::forName('deleted');
 
@@ -80,7 +80,7 @@ New functionality, using the Property object:
     $expire_at->greaterThan(Date::now()),
     $deleted->equal(TRUE)
   ));
-?>
+</code>
 
 Implementation
 ~~~~~~~~~~~~~~
@@ -232,7 +232,7 @@ Comments
     )
 </pre>
 
-<?php
+<code>
   $hotShots= &new Query();
   $subquery= &new Query();
   
@@ -256,7 +256,7 @@ Comments
       $emp->salary->in(new Expression($subquery))
     )
   );
-?>
+</code>
 
   - friebe, Mon Jan 16 11:11:26 CET 2006
     Before continuing development and including subqueries, joins, 

@@ -31,7 +31,7 @@ not be serialized as their internal structures point to resources which
 aren't deserializable.
 
 Example:
-<?php
+<code>
   class Date extends Object {
   
     // ...
@@ -57,7 +57,7 @@ Example:
     $e->printStackTrace();
     exit(-1);
   }
-?>
+</code>
 
 Dependencies
 ------------

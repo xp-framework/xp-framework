@@ -23,7 +23,7 @@ The defineClass() method defines a class and returns a lang.XPClass object
 on success. On this object, one can invoke the method newInstance() to
 instanciate an object of this class.
 
-<?php
+<code>
   $cl= &new ClassLoader('de.thekid.irc');
   
   // Define the class
@@ -36,7 +36,7 @@ instanciate an object of this class.
   
   // Instanciate it
   $instance= &$class->newInstance();
-?>
+</code>
 
 Dependencies
 ------------

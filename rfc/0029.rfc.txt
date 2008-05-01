@@ -30,7 +30,7 @@ with the first invocation of a method of the represented class.
 Functionality
 -------------
 
-<?php
+<code>
   class AbstractDeferredInvokationHandler extends Object {
     var
       $_instance = NULL;
@@ -50,12 +50,12 @@ Functionality
     }
     
   } implements(__FILE__, 'lang.reflect.InvocationHandler');
-?>
+</code>
 
 Classes extending AbstractDeferredInvokationHandler implement the method 
 initialize() to create objects upon first call of a method:
 
-<?php
+<code>
   class DeferredLdapAuthenticator extends AbstractDeferredInvokationHandler {
     function initialize() {    
       $l= &new LDAPClient('ldap.xp-framework.net', 389);
@@ -70,7 +70,7 @@ initialize() to create objects upon first call of a method:
       return new LdapAuthenticator($l, 'ou=xp, o=1und1, c=DE');
     }
   }
-?>
+</code>
 
 When used within a PreforkingServer, the needed LDAPClient will be created
 on the first call of a method of the LdapAuthenticator object which will be

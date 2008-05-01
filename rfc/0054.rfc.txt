@@ -24,14 +24,14 @@ Functionality
 -------------
 adding custom labels works like that:
 
-<?php
+<code>
   $values= array(2, 3);
   $vlabels= array('value 1', 'value 2', 'value 3');
 
   $chart->add(new Series('Pie', $values, $vlabels));
   $chart->setDisplayValues(TRUE);
   $chart->setDisplayCustomValues(TRUE);
-?>
+</code>
 
 Existing code should not be affected, because the parameter $vlabels is
 optional and default is _not_ to display custom values.
@@ -39,23 +39,23 @@ optional and default is _not_ to display custom values.
 the ImageRenderer Class does the following in the renderPieChart method
 to print out the label for each value if requested:
 
-<?php
+<code>
   imagestring(..., $pc->series[0]->values[$i]);
-?>
+</code>
 
 Better would be
-<?php
+<code>
   $pc->displayValueOf(0, $i)
-?>
+</code>
 
 which does following:
 
-<?php
+<code>
  ($this->dispcustomvalues
    ? $this->series[$j]->labels[$i]
    : $this->series[$j]->values[$i]
  );
-?>
+</code>
 
 $labels is an array as a property of the Series class.
 

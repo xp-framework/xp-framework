@@ -25,7 +25,7 @@ Functionality is achieved by extending the abstract class "Doclet".
 
 de.thekid.doclets.NameListDoclet class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   uses('text.apidoc.Doclet');
   
   class NameListDoclet extends Doclet {
@@ -41,11 +41,11 @@ de.thekid.doclets.NameListDoclet class
       }
     }
   }
-?>
+</code>
 
 doclet.php
 ~~~~~~~~~~
-<?php
+<code>
   require('lang.base.php');
   uses('util.cmd.ParamString', 'text.apidoc.RootDoc');
 
@@ -55,7 +55,7 @@ doclet.php
 
   RootDoc::start($class->newInstance(), $p);
   // }}}
-?>
+</code>
 
 Usage
 ~~~~~

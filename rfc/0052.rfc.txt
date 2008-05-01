@@ -68,20 +68,20 @@ by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
 for PHP-CVS [2].
 
 Class declaration in a package:
-<?php
+<code>
   package util·cmd {
     class Console {
       // ...
     }
   }  
-?>
+</code>
 
 Importing a class from a package:
-<?php
+<code>
   import util·cmd·Console;
   
   Console::writeLine('Hello');
-?>
+</code>
 
 What happens technically:
 Names are resolved at compile time and prefixed by their namespace.
@@ -92,7 +92,7 @@ For PHP4: Compile-time resolved "self" keyword
 A self keyword that works identical to the one used in PHP5.
 
 Example:
-<?php
+<code>
   class Hello {
     public static function usage() {
       // ...
@@ -105,7 +105,7 @@ Example:
       }
     }
   }
-?>
+</code>
 
 What happens technically:
 Self is resolved at compile time and replaced by the current class' name.
@@ -118,7 +118,7 @@ Annotations as described in RFC #0016 but without the #-sign, see
 http://experiments.xp-framework.net/?arena,php5,syntax/metadata.php
   
 Declaring annotations:
-<?php
+<code>
   class CalculatorService {
   
     [@webmethod]
@@ -126,7 +126,7 @@ Declaring annotations:
       return $a + $b;
     }
   }
-?>
+</code>
 
 Annotations can be retrieved via the reflection API.
 
@@ -142,13 +142,13 @@ See http://experiments.xp-framework.net/?arena,php5,syntax/instance_creation.php
 for details.
   
 Usage:
-<?php
+<code>
   $list->sort(new Comparator() {
     public function compare($a, $b) {
       return strnatcmp($a, $b);
     }
   });
-?>
+</code>
 
 What happens technically:
 This is recompiled to the userland version shown at "Instance creation
@@ -160,20 +160,20 @@ With syntactic sugar
 A keyword "with" is added.
 
 Usage:
-<?php
+<code>
   with ($tree->addChild(new Node('tagname')) as $node) {
     $node->setAttribute('attribute', 'value');
   }
-?>
+</code>
 
 What happens technically:
 The with statement, essentialy a no-op, is resolved to the following 
 sourcecode:
-<?php
+<code>
   $node= &$tree->addChild(new Node('tagname')); {
     $node->setAttribute('attribute', 'value');
   }
-?>
+</code>
 
 
 Throws clause
@@ -184,11 +184,11 @@ throws clause and not handling the list of contained exception will not
 lead to a compile-time error. 
 
 Declaration:
-<?php
+<code>
   public function connect() throws IOException, ConnectException {
     // ...
   }
-?>
+</code>
 The thrown exceptions can be retrieved by means of the reflection API.
 
 What happens technically:
@@ -199,9 +199,9 @@ API can retrieve them from there.
 For PHP4: Dereferencing
 ~~~~~~~~~~~~~~~~~~~~~~~
 Method calls will be allowed to be chained as follows:
-<?php
+<code>
   $date= XPClass::forName('util.Date')->newInstance();
-?>
+</code>
 
 What happens technically:
 See http://experiments.xp-framework.net/?people,friebe,chain
@@ -209,13 +209,13 @@ See http://experiments.xp-framework.net/?people,friebe,chain
 For PHP4: Try/catch syntax
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 The try/catch syntax will be changed to allow the following:
-<?php
+<code>
   try {
     $class= XPClass::forName($name);
   } catch (ClassNotFoundException $e) {
     // ...
   }
-?>
+</code>
 
 What happens technically:
 For PHP4, try is rewritten to try(); and catch (...) to if (catch(...)). 
@@ -228,14 +228,14 @@ For PHP4: Interfaces
 An interface keyword that works identical to the one used in PHP5.
 
 Interface declaration:
-<?php
+<code>
   interface Comparable {
     public function compareTo($cmp);
   }
-?>
+</code>
 
 Implementing an interface:
-<?php
+<code>
   class Date implements Comparable {
     // ...
 
@@ -243,7 +243,7 @@ Implementing an interface:
       return $this->utime == $cmp->utime;
     }
   }
-?>
+</code>
 What happens technically:
 For PHP4, the current XP sourcecode with "extends Interface" and
 "implements(__FILE__, 'Comparable'))" is generated, see
@@ -255,11 +255,11 @@ For PHP4: instanceof
 ~~~~~~~~~~~~~~~~~~~~
 An instanceof keyword that works identical to the one used in PHP5.
   
-<?php
+<code>
   if ($instance instanceof Comparable) {
     $instance->compareTo($cmp);
   }
-?>
+</code>
 What happens technically:
 For PHP4, we rewrite this to is('Comparable', $instance). For PHP5 and
 above, the sourcecode is left untouched.
@@ -270,11 +270,11 @@ The type hints that were introduced with PHP5 could be emulated, possibly even
 improved (by throwing an exception instead of a fatal error, and by allowing
 NULL values).
 
-<?php
+<code>
   public function setTrace(LogCategory &$cat) {
     $this->cat= &$cat;
   }
-?>
+</code>
 What happens technically:
 An is() call is being inserted right after the function has been entered
 and the passed value is being checked. If the type does not match the
@@ -313,11 +313,11 @@ Comments
 
 - friebe, Sun Jan 29 02:11:23     2006
   Maybe static imports would also be a worth a try?
-<?php
+<code>
   import static util·cmd·Console·writeLine;
   
   writeLine('Hello');
-?>
+</code>
 
 - kiesel, Tue Jan 31 15:38:38 CET 2006
   The meta-compiler should take care of keeping the current line numbers

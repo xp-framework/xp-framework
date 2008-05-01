@@ -23,7 +23,7 @@ Functionality
 -------------
 A new interface named xml.soap.SOAPHeader will be created:
 
-<?php
+<code>
   class SOAPHeader extends Interface {
 
     /**
@@ -36,12 +36,12 @@ A new interface named xml.soap.SOAPHeader will be created:
      */
     function &getNode($ns) { }
   }
-?>
+</code>
 
 Custom SOAP headers must implement this interface.
 
 Example:
-<?php
+<code>
 
   class EbayRequesterCredentialsHeader extends Object {
     var
@@ -73,7 +73,7 @@ Example:
       return $n;
     }
   } implements (__FILE__, 'xml.soap.SOAPHeader');
-?>
+</code>
 
 Security considerations
 -----------------------

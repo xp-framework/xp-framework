@@ -26,7 +26,7 @@ Functionality
 Bytes class
 ~~~~~~~~~~~
 The public API is as follows:
-<?php
+<code>
   class Bytes extends Object {
 
     /**
@@ -48,11 +48,11 @@ The public API is as follows:
       // ...
     }
   }
-?>
+</code>
 
 Examples
 ~~~~~~~~
-<?php
+<code>
   // Creates an empty byte array
   $bytes= new Bytes();
   
@@ -67,12 +67,12 @@ Examples
   
   // Creates a byte array from of Byte objects
   $bytes= new Bytes(array(new Byte(72), new Byte(105)));
-?>
+</code>
 
 Overloading
 ~~~~~~~~~~~
 The bytes class overloads array access operations:
-<?php
+<code>
   $bytes= new Bytes('Hello');
   
   // Read first byte (h= lang.types.Byte(72))
@@ -89,31 +89,31 @@ The bytes class overloads array access operations:
   
   // Remove a byte (Bytes is now what is was before appending)
   unset($bytes[5]);
-?>
+</code>
 
 The bytes class also overloads the string conversion so it will work
 with any of PHP's string functions:
-<?php
+<code>
   $s= (string)new Bytes('Hello');           // s= string(5) "Hello"
   echo new Bytes('Hello');                  // "Hello" is output
   $s= strtr(new Bytes('Hello'), 'e', 'a');  // s= string(5) "Hallo"
-?>
+</code>
 
 Furthermore, iteration is supported. The following example prints
 "72,101,108,108,111,END" (without the quote signs).
-<?php
+<code>
   foreach (new Bytes('Hello') as $byte) {
     echo $byte->intValue(), ',';
   }
   echo 'END';
-?>
+</code>
 
 Further lang.types API integration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The lang.types.String's and lang.types.Character's getBytes() methods are
 changed to return a Bytes instance instead of a primitive string.
 
-<?php
+<code>
   // b= lang.types.Bytes{\303 \274 b e r c o d er}
   $b= create(new String('übercoder', 'iso-8859-1'))->getBytes('utf-8');
   
@@ -125,7 +125,7 @@ changed to return a Bytes instance instead of a primitive string.
 
   // c= lang.types.Character{ü}
   $c= new Character(new Bytes("\303\274"), 'utf-8');
-?>
+</code>
 
 Integration with other APIs: SOAP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -171,7 +171,7 @@ Suppose we have a method called getByteArray() returning (Java notation used)
 new byte[] { (byte)1, (byte)2 }. 
 
 This is what will be returned:
-<?php
+<code>
   // Before: lang.types.ArrayList[2] { 
   //   lang.types.Byte(1), 
   //   lang.types.Byte(2) 
@@ -180,7 +180,7 @@ This is what will be returned:
   
   // After: lang.types.Bytes(2) { \1, \2 }
   $after= $remote->getByteArray();
-?>
+</code>
 
 
 

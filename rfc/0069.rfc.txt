@@ -2,7 +2,7 @@ RFC 0069: Basic EASC server in PHP
 ========================================================================
 $Id$
 
-@authors: friebe, kiesel, gelli
+@authors: friebe, kiesel, gellweiler
 @created: Mon Aug 14 17:50:46 CEST 2006
 @status: implemented, Thu Jan 25 15:44:56 CET 2007
 @category: remote
@@ -53,7 +53,7 @@ The following rules apply:
 </pre>
 
 Example:
-<?php
+<code>
   #[@bean(type= STATELESS, name= 'xp/demo/Roundtrip')]
   class RoundtripBean extends Object {
   
@@ -67,7 +67,7 @@ Example:
       $this->cat= $cat;
     }
   }
-?>
+</code>
 
 The bean class does not need to implement any interfaces or extend any
 classes other than lang.Object.
@@ -88,28 +88,28 @@ This annotation marks methods as resource injectors.
 </pre>
 
 1) Injecting database connections
-<?php
+<code>
   #[@inject(type= 'rdbms.DBConnection', name= 'news')]  
   function setConnection($conn) { }
-?>
+</code>
   This method will receive a DBConnection instance (via 
   ConnectionManager::getInstance()->getByHost('news', 0))
 
 
 2) Injecting logger categories
-<?php
+<code>
   #[@inject(type= 'util.log.LogCategory', name= 'default')]  
   function setTrace($cat) { }
-?>
+</code>
   This method will receive a LogCategory instance (via 
   Logger::getInstance()->getCategory('default'))
 
 
 3) Injecting properties
-<?php
+<code>
   #[@inject(type= 'util.Properties', name= 'app')]  
   function setApplicationConfig($conf) { }
-?>
+</code>
   This method will receive a LogCategory instance (via 
   PropertyManager::getInstance()->getProperties('app'))
 
@@ -138,18 +138,18 @@ The XAR contains the following:
 
   This name is derived by concatenating the bean class' package and the
   bean name's basename (from @bean.name). 
-  
+
   For the above example, assuming RoundtripBean's fqcn is 
   net.xp_framework.beans.stateless.RoundtripBean, the remote
   interface would be named net.xp_framework.beans.stateless.Roundtrip.
 
 * The bean class' implementation
   A class that extends the bean class and implements the remote interface
-<?php
+<code>
   class RoundtripBeanImpl extends RoundtripBean implements Roundtrip {
    
   }
-?>
+</code>
 
 * Additional resources required by the bean. These can be retrieved
   by the classloader's getResource() method.
@@ -223,6 +223,7 @@ Related documents
 
 - https://glassfish.dev.java.net/
   Glassfish: Open Source Java EE 5 Application Server
+
 Comments
 --------
 - friebe, Wed Aug 23 18:09:21 CEST 2006

@@ -26,7 +26,7 @@ Functionality
 
 Current functionality
 ~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $uri= $request->getURI();
   $sessionId= $request->session ? $request->session->getId() : NULL;
   $response->sendRedirect(sprintf(
@@ -40,11 +40,11 @@ Current functionality
     empty($query) ? '' : '?'.$query,
     empty($fraction) ? '' : '#'.$fraction        
   ));
-?>
+</code>
 
 New functionality
 ~~~~~~~~~~~~~~~~~
-<?php
+<code>
   // Simple forward to state $stateName, e.g. 'news/view'
   $response->forwardTo($stateName);
   
@@ -54,7 +54,7 @@ New functionality
   //   fraction:  'extended'
   // }
   $response->forwardTo($stateName, $query, $fraction);
-?>
+</code>
 
 Note that neither the query argument nor the fraction argument contain
 the separators ("?" for query, "#" for fraction)!

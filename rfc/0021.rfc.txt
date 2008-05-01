@@ -21,7 +21,7 @@ problem.
 Functionality
 -------------
 This is the new syntax:
-<?php
+<code>
   #[@interceptors(classes= array(
   #  'de.schlund.search.interceptor.PermissionInterceptor',
   #  'de.schlund.search.interceptor.SyntaxInterceptor'
@@ -29,7 +29,7 @@ This is the new syntax:
   class InterceptorTest extends Object {
   
   }
-?>
+</code>
 
 Dependencies
 ------------

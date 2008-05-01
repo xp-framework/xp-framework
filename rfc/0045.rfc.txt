@@ -24,12 +24,12 @@ Functionality
 -------------
 
 Take the following script:
-<?php
+<code>
   for ($i= 0; $i < 1000; $i++) {
     $a.= '';    // E_NOTICE: Undefined variable:  a
     unset($a);
   }
-?>
+</code>
 
 At the moment of writing this RFC, this will cause 1000 new elements to
 be added to the xp error registry. When the changes this RFC suggests

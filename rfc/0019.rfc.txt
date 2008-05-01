@@ -25,7 +25,7 @@ queries in a way that makes them immune against SQL code injection.
 Functionality
 -------------
 Example:
-<?php
+<code>
   $ldap= &new LDAPClient('ldap.openldap.org');
   $ldap->connect();
   $ldap->bind();
@@ -42,10 +42,10 @@ Example:
     '*',
     1552
   ));
-?>
+</code>
 
 More subtile settings can be done, too:
-<?php
+<code>
   [...]
   
   $query= &new LDAPQuery();
@@ -53,7 +53,7 @@ More subtile settings can be done, too:
   $query->setBase('ou=permissions,o=openldap,c=DE');
   $query->setFilter('(&(objectClass=foo)(uid=%d))', $_REQUEST['userid']);
   $res= &$ldap->search($query);
-?>
+</code>
 
 To offer a full interface for an LDAP query, peer.ldap.LDAPQuery should offer
 accessors to change query parameters like attributes, attrsonly, sizelimit,

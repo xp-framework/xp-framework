@@ -24,22 +24,22 @@ Functionality
 
 Current functionality
 ~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $cat= Logger::getInstance()->getCategory($traceable->getClassName());
   $cat->addAppender(new SmtpAppender('errors@example.com'), LOGGER_FLAG_ERROR);
   $cat->addAppender(new FileAppender('/var/log/xp/debug.log'));
 
   $traceable->setTrace($cat);
-?>
+</code>
 
 Fluent interface example
 ~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $traceable->setTrace(Logger::getInstance()->getCategory($traceable->getClassName())
     ->withAppender(new SmtpAppender('errors@example.com'), LOGGER_FLAG_ERROR)
     ->withAppender(new FileAppender('/var/log/xp/debug.log'))
   );
-?>
+</code>
 
 
 Security considerations

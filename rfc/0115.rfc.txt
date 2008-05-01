@@ -63,16 +63,17 @@ Other tokens are still supported.
 Functionality
 -------------
 This statement is now true:
-<?php
+<code>
   create(    new Date('01.01.2000 00:00:00', new TimeZone('Europe/Berlin')))   // Berlin
     ->equals(new Date('31.12.1999 23:00:00', new TimeZone('Europe/London')))   // London
   ;
-?>
+</code>
 
 A date object can be output in a specified timezone:
-<?php
-  echo create(new Date("2007-07-24 22:00:00 Europe/Berlin"))->toString("r", new TimeZone("Australia/Sydney"))."\n";
-?>
+<code>
+  $d= new Date('2007-07-24 22:00:00 Europe/Berlin');
+  echo $d->toString('r', new TimeZone('Australia/Sydney'));
+</code>
 
 will output:
 
@@ -82,9 +83,9 @@ Wed, 25 Jul 2007 06:00:00 +1000
 
 Serialization format of an util.Date object will be done using a fully formatted
 date string, and will always store the date in GMT.
-<?php
-  echo serialize(new Date("2007-07-24 22:00:00 Europe/Berlin"));
-?>
+<code>
+  echo serialize(new Date('2007-07-24 22:00:00 Europe/Berlin'));
+</code>
 
 will output:
 <pre>

@@ -29,7 +29,7 @@ that effectively, the annotations are comments).
 
 Example #1: Webservices API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   #[@webservice(name= 'Customer')]
   class CustomerHandler extends Object {
   
@@ -43,11 +43,11 @@ Example #1: Webservices API
       // ...
     }
   }
-?>
+</code>
 
 Example #2: Unit test API
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class ParserTest extends TestCase {
   
     #[@test]
@@ -55,7 +55,7 @@ Example #2: Unit test API
       // ...
     }
   }
-?>
+</code>
 
 Syntax definitions
 ~~~~~~~~~~~~~~~~~~
@@ -69,24 +69,24 @@ Syntax definitions
 
 - Simple definition:
   In the simple annotation only a simple annotation tag exists. Example: 
-  <?php #[@test] ?>
+  <code> #[@test] </code>
 
 - String value:
   An annotation may have a string value associated to it. Example:
-  <?php #[@deprecated('Use foo() instead')] ?>
+  <code> #[@deprecated('Use foo() instead')] </code>
 
 - Hash key/value pairs:
   An annotation may have a hash map associated to it: Example:
-  <?php #[@fromxml(xpath= '/root/element[position() = 3]/@id')] ?>
+  <code> #[@fromxml(xpath= '/root/element[position() = 3]/@id')] </code>
   
   Hash keys may consist of any character from a-z and A-Z and the 
   underscore ("_"). Key names are case sensitive.
 
   Multiple elements in a hash are separated by commas. Example:
-  <?php #[@inject(type= 'dbconnection', name= 'news'))] ?>
+  <code> #[@inject(type= 'dbconnection', name= 'news'))] </code>
 
   Values may have an array associated with them:
-  <?php #[@restricted(roles = array('admin', 'root'))] ?>
+  <code> #[@restricted(roles = array('admin', 'root'))] </code>
 
 Reflection
 ~~~~~~~~~~

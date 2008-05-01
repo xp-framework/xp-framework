@@ -27,17 +27,17 @@ Functionality
 
 Current
 ~~~~~~~
-<?php
+<code>
   $m= XPClass::forName('util.cmd.Runner')->getMethod('main');
   if (!$m) throw new ElementNotFoundException('No "main" method');
   $m->invoke(NULL, array($args));
-?>
+</code>
 
 New
 ~~~
-<?php
+<code>
   XPClass::forName('util.cmd.Runner')->getMethod('main')->invoke(NULL, array($args));
-?>
+</code>
 
 
 Security considerations

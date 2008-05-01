@@ -40,7 +40,7 @@ the @beforeClass and @afterClass annotations.
 
 Example
 ~~~~~~~
-<?php
+<code>
   class FtpIntegrationTest extends TestCase {
     protected static $server= NULL;
   
@@ -60,7 +60,7 @@ Example
       self::$server->shutdown();
     }
   }
-?>
+</code>
 
 
 Timeline

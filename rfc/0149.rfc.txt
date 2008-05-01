@@ -46,5 +46,7 @@ Related documents
 
 Comments
 --------
+- friebe, Thu May  1 12:10:21     2008
+  This should go into the next release - 5.6.7
 
 <EOF>

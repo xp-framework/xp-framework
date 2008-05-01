@@ -32,7 +32,7 @@ Because we have method modifiers the @access und @model tags will become
 obsolete.
 
 XP4:
-<?php
+<code>
   /**
    * Gets the Logger instance
    *
@@ -43,10 +43,10 @@ XP4:
   function &getInstance() {
     // ...
   }
-?>
+</code>
 
 XP5:
-<?php
+<code>
   /**
    * Gets the Logger instance
    *
@@ -55,7 +55,7 @@ XP5:
   public static function getInstance() {
     // ...
   }
-?>
+</code>
 
 Please also note the reference have disappeared!
 
@@ -71,12 +71,12 @@ Method modifiers should be given in the following order:
 [access] is one on public, private or protected.
 
 Examples:
-<?php
+<code>
   protected function __construct() { }
   public static function getInstance() { }
   public abstract function run();
   protected final function getMessage() { }
-?>
+</code>
 
 
 Type hints
@@ -89,7 +89,7 @@ make the engine try to look up a class called "string").
 Type hints are optional.
 
 Example:
-<?php
+<code>
   /**
    * Adds a test
    *
@@ -100,7 +100,7 @@ Example:
     $this->tests[]= $t;
     return $t;
   }
-?>
+</code>
 
 If addTest() is called with - say - a Date object, an IllegalArgumentException
 will be thrown (see RFC #0100).
@@ -112,7 +112,7 @@ Interface methods and methods with the abstract modifier may not include a
 method body. The correct syntax is a semi-colon after the method declaration,
 without any whitespace:
 
-<?php
+<code>
   interface Filter {
     public function accept($e);
   }
@@ -120,7 +120,7 @@ without any whitespace:
   abstract class Command {
     public abstract function run();
   }
-?>
+</code>
 
 
 Try / Throw / Catch Statements
@@ -135,22 +135,22 @@ following changes are necessary:
 </pre>
 
 XP4:
-<?php
+<code>
   try(); {
     throw(new IllegalArgumentException('*BLAM*'));
   } if (catch('IllegalArgumentException', $e)) {
     // ...
   }
-?>
+</code>
 
 XP5:
-<?php
+<code>
   try {
     throw new IllegalArgumentException('*BLAM*');
   } catch (IllegalArgumentException $e) {
     // ...
   }
-?>
+</code>
 
 
 Security considerations

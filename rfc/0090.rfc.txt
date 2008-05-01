@@ -25,7 +25,7 @@ Functionality
 
 1) The SerializedData API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class SerializedData extends Object {
     public string $buffer
     public int $offset
@@ -42,55 +42,55 @@ Functionality
     // Consume everything up to the next ":" character and return it
     public string consumeSize()
   }
-?>
+</code>
 
 2) Public API
 ~~~~~~~~~~~~~
 Current Serializer::valueOf() signature:
-<?php
+<code>
   public &mixed valueOf(
     string serialized, 
     &int length,
     [array context]
   )
-?>
+</code>
 
 New Serializer::valueOf() signature:
-<?php
+<code>
   public &mixed valueOf(
     &remote.protocol.SerializedData serialized,
     [array context]
   )
-?>
+</code>
 
 Example of new public API (unserializing a PersonReference object):
-<?php
+<code>
   $reference= &$serializer->valueOf(new SerializedData(
     'O:15:"PersonReference":1:{s:2:"id";i:1549;}'
   ));
-?>
+</code>
 
 
 3) API changes for SerializerMappings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Current SerializerMapping::valueOf() signature:
-<?php
+<code>
   public &mixed valueOf(
     &remote.protocol.Serializer serializer, 
     string serialized, 
     &int length, 
     [array context]
   )
-?>
+</code>
 
 New Serializer::valueOf() signature:
-<?php
+<code>
   public &mixed valueOf(
     &remote.protocol.Serializer serializer, 
     &remote.protocol.SerializedData serialized,
     [array context]
   )
-?>
+</code>
 
 
 4) Internal changes
@@ -100,7 +100,7 @@ SerializedData() methods (as shown above).
 
 
 Example (from theDateMapping class):
-<?php
+<code>
   // Old API
   function &valueOf(&$serializer, $serialized, &$length, $context= array()) {
     $v= substr($serialized, 2, strpos($serialized, ';', 2)- 2); 
@@ -114,7 +114,7 @@ Example (from theDateMapping class):
     $value= &new Date((int)$serialized->consumeWord());
     return $value;
   }
-?>
+</code>
 
 
 Security considerations
@@ -132,7 +132,7 @@ about 20k less memory.
 
 Test script for the old API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   require('lang.base.php'); 
   uses('remote.protocol.Serializer'); 
   
@@ -146,11 +146,11 @@ Test script for the old API
     $s->valueOf($data, &$length= 0); 
   } 
   var_dump(memory_get_usage());
-?>
+</code>
 
 Test script for the new API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   require('lang.base.php'); 
   uses('remote.protocol.Serializer'); 
   
@@ -165,7 +165,7 @@ Test script for the new API
     $data->offset= 0; 
   } 
   var_dump(memory_get_usage());
-?>
+</code>
 
 Results
 ~~~~~~~

@@ -26,21 +26,21 @@ Functionality
 
 Type hinting member variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   class LoginHandler extends Object {
     var
       #[@type= 'com.example.intranet.User'] 
       $user   = NULL;
   }
-?>
+</code>
 
 Retrieving class fields
 ~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   foreach ($class->getFields() as $field) {
     echo $field->getType(), ' ', $field->getName(), "\n";
   }
-?>
+</code>
 
 
 Security considerations

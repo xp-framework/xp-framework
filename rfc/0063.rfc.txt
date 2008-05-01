@@ -30,7 +30,7 @@ Here's a list of methods that will be removed:
 * assertContains
 
 They can be simulated by using:
-<?php
+<code>
   // assertBoolean()
   $this->assertTrue($value);
   $this->assertFalse($value);
@@ -55,7 +55,7 @@ They can be simulated by using:
 
   // assertMatches()
   $this->assertTrue((bool)preg_match($pattern, $value));
-?>
+</code>
 
 Security considerations
 -----------------------

@@ -2,7 +2,7 @@ RFC 0036: Add timezone offset to date object
 ========================================================================
 $Id$
 
-@authors: hinckel, kiesel
+@authors: ohinckel, kiesel
 @created: Thu Aug 25 13:22:10 CEST 2005
 @status: obsoleted (by RFC #0115)
 @category: <core>

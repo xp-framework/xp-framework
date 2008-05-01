@@ -55,7 +55,7 @@ IOElement interface changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Access to an IOElement's size, creation, last modified and last 
 accessed dates will be added to the IOElement interface.
-<?php
+<code>
   /**
    * Retrieve this element's size in bytes
    *
@@ -87,30 +87,30 @@ accessed dates will be added to the IOElement interface.
    * @return  &util.Date
    */
   function &lastModified() { }
-?>
+</code>
 
 
 Examples
 ~~~~~~~~
 Find all JPEG images that have been modified before Dec 14, 2004:
-<?php
+<code>
   $filter= &new AllOfFilter(array(
     new ModifiedBeforeFilter(new Date('Dec 14  2004')),
     new ExtensionEqualsFilter('jpg')
   ));
-?>
+</code>
 
 Find all files that either end with ".txt" or are smaller than 500 bytes:
-<?php
+<code>
   $filter= &new AnyOfFilter(array(
     new SizeSmallerThanFilter(500),
     new ExtensionEqualsFilter('txt')
   ));
-?>
+</code>
 
 Print a list of all logfiles modified at least one hour ago, but exclude 
 errorlogs:
-<?php
+<code>
   $collection= &new FileCollection($p->value(1));
   $before= &DateUtil::addHours(Date::now(), -1);
   
@@ -129,7 +129,7 @@ errorlogs:
     
     Console::writeLine('- ', xp::stringOf($file));
   }
-?>
+</code>
 
 
 Security considerations

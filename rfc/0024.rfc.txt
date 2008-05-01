@@ -25,7 +25,7 @@ Functionality
 
 Resource interface
 ~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   /**
    * Resource marker interface
    *
@@ -34,24 +34,24 @@ Resource interface
   class Resource extends Interface {
 
   }
-?>
+</code>
 
 Example #1: Registering the database connection to the "orders" database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $pool= &ResourceManager::getInstance();
   $pool->bind(
     'xp://env/rdbms/orders', 
     DriverManager::getConnection('mysql://...')
   );
-?>
+</code>
 
 Example #2: Get an rdbms.DBConnection instance by name "orders"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   $pool= &ResourceManager::getInstance();
   $conn= &$pool->lookup('xp://env/rdbms/orders');
-?>
+</code>
 
 
 Security considerations

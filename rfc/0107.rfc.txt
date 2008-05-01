@@ -30,7 +30,7 @@ array<string, string> to array<string, string[]> in order to be able to
 contain more information.
 
 Comparison: Excerpt from net.xp_framework.unittest.rdbms.dataset.Job
-<?php
+<code>
   // Old
   $peer->setTypes(array(
     'job_id'              => '%d',
@@ -46,7 +46,7 @@ Comparison: Excerpt from net.xp_framework.unittest.rdbms.dataset.Job
     'valid_from'  => array('%s', FieldType::VARCHAR, TRUE),
     'expire_at'   => array('%s', FieldType::DATETIME, FALSE),
   ));
-?>
+</code>
 
 The array contains the following fields:
 <pre>
@@ -60,7 +60,7 @@ The array contains the following fields:
 
 Fieldtype constants
 ~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   const BINARY =         0x0000;             
   const BIT =            0x0001;               
   const CHAR =           0x0002;              
@@ -89,12 +89,12 @@ Fieldtype constants
   const TINYINT =        0x0019;          
   const VARBINARY =      0x001A;        
   const VARCHAR =        0x001B;          
-?>
+</code>
 
 Generic set/get methods
 ~~~~~~~~~~~~~~~~~~~~~~~
 The following two methods will be added to the DataSet class:
-<?php
+<code>
   /**
    * Sets a field's value by the field's name and returns the previous value.
    *
@@ -116,11 +116,11 @@ The following two methods will be added to the DataSet class:
   public function get($field) {
     // ...
   }
-?>
+</code>
 
 This will make dynamic method calls (whether by evaluation brackets or 
 reflection) obsolete:
-<?php
+<code>
   // Old #1
   $id= $dataset->{'get'.$peer->identity}();
   $dataset->{'set'.$field}($value);
@@ -131,13 +131,13 @@ reflection) obsolete:
   
   // New
   $id= $dataset->get($peer->identity);
-?>
+</code>
 
 New DataSet instance creation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A new method rdbms.Peer class will be added to the rdbms.Peer class to 
 complement the objectFor(array<string, mixed>) method:
-<?php
+<code>
   /**
    * Returns a new DataSet object.
    *
@@ -146,16 +146,16 @@ complement the objectFor(array<string, mixed>) method:
   public function newObject() {
     // ...
   }
-?>
+</code>
 
 This is a shorthand for the following:
-<?php
+<code>
   // Old
   $ds= XPClass::forName($peer->identifier)->newInstance();
   
   // New
   $ds= $peer->newObject();
-?>
+</code>
 
 Security considerations
 -----------------------

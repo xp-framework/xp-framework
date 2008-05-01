@@ -41,9 +41,9 @@ This will now create three different classloader instances:
 * ArchiveClassLoader (C:\cygwin\home\thekid\lib\xp-com.a9-5.4.1.xar)
 
 The default classloader, which can be retrieved by invoking
-<?php
+<code>
   $cl= ClassLoader::getDefault();
-?>
+</code>
 can be asked for a class by using its loadClass() method. This method
 will ask all registered classloaders (see list from above) for the class
 and will load it from the first class loader whose providesClass() method
@@ -97,7 +97,7 @@ and the core classes are loaded. The core classes are the following:
 During the bootstrap process, classes are loaded by xp::loadClass0().
 After that, the lang.ClassLoader (delegating to the registered loaders
 as described above) takes over control by registering loaders as follows:
-<?php
+<code>
   foreach (xp::$registry['classpath'] as $element) {
     if (is_dir($element)) {
       self::registerLoader(FileSystemClassLoader::instanceFor($element));
@@ -105,7 +105,7 @@ as described above) takes over control by registering loaders as follows:
       self::registerLoader(ArchiveClassLoader::instanceFor($element));
     }
   }
-?>
+</code>
 Note: From that point on, uses() will no longer bail but throw 
 lang.ClassNotFoundExceptions.
 
@@ -120,7 +120,7 @@ If your are using sourcecode to add to the include_path by manipulating
 the ini setting via ini_set() or set_include_path(), you need to refactor
 that as follows:
 
-<?php
+<code>
   // Will not work any longer
   set_include_path(get_include_path().PATH_SEPARATOR.$dir);
   set_include_path(get_include_path().PATH_SEPARATOR.$xar);
@@ -130,7 +130,7 @@ that as follows:
   ClassLoader::registerLoader(new FileSystemClassLoader($dir));
   ClassLoader::registerLoader(new ArchiveClassLoader(new ArchiveReader($xar)));
   ClassLoader::registerLoader(new ArchiveClassLoader(new ArchiveReader($xar2)), TRUE);
-?>
+</code>
 
 
 uses() wrappers

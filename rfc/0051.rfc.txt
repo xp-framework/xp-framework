@@ -27,7 +27,7 @@ Functionality
 
 Current
 ~~~~~~~
-<?php
+<code>
   $peer= &News::getPeer();
 
   $criteria= &new Criteria();
@@ -39,7 +39,7 @@ Current
 
     // ...
   }
-?>
+</code>
 Problems: 
 - For n entries returned by the iterator, this will issue n + 1 SQL 
   queries.
@@ -70,7 +70,7 @@ Problems:
 
 Proposed
 ~~~~~~~~
-<?php
+<code>
   with ($view= &new DynamicView('entries_with_authors')); {
     $news= &$view->add(News::getPeer(), array(
       'title',
@@ -94,7 +94,7 @@ Proposed
   for ($i= &$peer->iteratorFor($criteria); $i->hasNext(); ) {
     $entry= &$iterator->next();   // DynamicView object
   } 
-?>
+</code>
 
 Security considerations
 -----------------------

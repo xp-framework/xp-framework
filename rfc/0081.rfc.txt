@@ -23,7 +23,7 @@ Functionality
 
 Interface lang.Runnable declaration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-<?php
+<code>
   /**
    * Denotes instances of implementing classes are runnable by 
    * invoking the run() method.
@@ -38,11 +38,11 @@ Interface lang.Runnable declaration
      */
     public function run();
   }
-?>
+</code>
 
 Shutdown hooks
 ~~~~~~~~~~~~~~
-<?php
+<code>
   System::addShutdownHook(newinstance('lang.Runnable', array($transaction), '{
     private $transaction= NULL;
 
@@ -53,11 +53,11 @@ Shutdown hooks
       $this->transaction->isOpen() && $this->transaction->rollback(); 
     }
   }'));
-?>
+</code>
 
 Example
 ~~~~~~~
-<?php
+<code>
   class Processor extends Object {
     private $finalizer= NULL;
     
@@ -85,7 +85,7 @@ Example
     public function run() { Console::writeLine('Done!'); }
   }'));
   $p->process($payload);
-?>
+</code>
 
 
 Security considerations

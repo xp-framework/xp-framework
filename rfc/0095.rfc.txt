@@ -26,21 +26,21 @@ XPClass::getMethods() returns an array of lang.reflect.Method objects. To
 select only those decorated with an @inject annotation, the standard loop
 and filter approach is used:
 
-<?php
+<code>
   foreach (XPClass::forName('some.annotated.Class')->getMethods() as $m) {
     if (!$m->hasAnnotation('inject')) continue;
     
     $value= $m->getAnnotation('inject');
     // ...
   }
-?>
+</code>
 
 Annotation class
 ~~~~~~~~~~~~~~~~
 The new invoke.Annotation class provides a fast alternative to searching
 for methods annotated with a certain annotation.
 
-<?php
+<code>
   class Annotation extends Object {
   
     /**
@@ -63,20 +63,20 @@ for methods annotated with a certain annotation.
       // ...
     }
   }
-?>
+</code>
 
 Usage:
-<?php
+<code>
   foreach (Annotation::forName('test')->methodsOf('some.test.Class') as $m) {
     // ...
   }
-?>
+</code>
 
 Methods class
 ~~~~~~~~~~~~~
 The new invoke.Methods class provides static methods to factor selectors.
 
-<?php
+<code>
   class Methods extends Object {
   
     /**
@@ -100,10 +100,10 @@ The new invoke.Methods class provides static methods to factor selectors.
       // ...
     }
   }
-?>
+</code>
 
 Examples:
-<?php
+<code>
   foreach (Methods::getAll('[@test] public *()')->in('some.test.Class') as $m) {
     // ...
   }
@@ -112,7 +112,7 @@ Examples:
     $value= $m->getAnnotation('inject');
     // ...
   }
-?>
+</code>
 
 
 Security considerations

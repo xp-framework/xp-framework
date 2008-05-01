@@ -28,7 +28,7 @@ attribute tells the framework that a particular method in the test case
 is to be run during the unit testing phase.
 
 Example:
-<?php
+<code>
   class ParserTest extends TestCase {
   
     #[@test]
@@ -36,7 +36,7 @@ Example:
       // ...
     }
   }
-?>
+</code>
 
 Ignoring certain tests
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +47,7 @@ would imply, this attribute will cause the method or class to be ignored
 when the unit tests are run.
 
 Example:
-<?php
+<code>
   class ComplexNumbersTest extends TestCase {
   
     #[@test]
@@ -58,7 +58,7 @@ Example:
     #[@test, @ignore('Not yet implemented')]
     function testDivision() { }
   }
-?>
+</code>
 
 Dependencies
 ------------
