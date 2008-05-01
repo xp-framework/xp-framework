@@ -1,0 +1,87 @@
+RFC 0165: New text.regex package
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Thu May  1 12:25:10     2008
+@status: draft
+@category: text
+
+Scope of Change
+---------------
+A new package text.regex will be added.
+
+
+Rationale
+---------
+Object oriented API for regular expressions.
+
+
+Functionality
+-------------
+
+Testing whether a pattern matches
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<code>
+  // Current
+  if (preg_match('/([w]{3}\.)?example\.(com|net|org)/', $string)) {
+    ...
+  }
+  
+  // New
+  if (Pattern::compile('([w]{3}\.)?example\.(com|net|org)')->matches($string)) {
+    ...
+  }
+</code>
+
+The problem with the preg_match() approach is that it will return FALSE
+if the pattern is malformed (and raise a warning) - this is something that
+can lead to long debugging / wtf?! sessions. The Pattern class will throw
+an exception.
+
+Retrieving matched text
+-----------------------
+<code>
+  // Current
+  preg_match('/(([w]{3})\.)?example\.(com|net|org)/', $string, $matches);
+  Console::writeLine($matches);
+  
+  // New
+  $matches= Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match($string)->group(0);
+  Console::writeLine($matches);
+</code>
+
+The results in both cases are <tt>[ "www.example.com", "www.", "www", "com" ]</tt>.
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+Slightly slower than procedural approach.
+
+
+Dependencies
+------------
+PCRE extension (enabled by default)
+
+
+Related documents
+-----------------
+- http://java.sun.com/docs/books/tutorial/essential/regex/index.html
+  Lesson: Regular Expressions
+
+- http://de3.php.net/pcre
+  PHP Manual: PCRE Functions
+  
+- http://www.pcre.org/pcre.txt
+  Concatenation of PCRE manpages
+
+
+Comments
+--------
+
+<EOF>
