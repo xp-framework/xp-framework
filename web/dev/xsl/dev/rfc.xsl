@@ -48,13 +48,16 @@
             </xsl:for-each>
           </td>
           <td width="25%" valign="top">
-            <h2>RFCs by Status</h2>
-            <br clear="all"/>
-            <ul>
-              <xsl:for-each select="exsl:node-set($criteria)/criteria[@id= 'status']/filter">
-                <li><a href="{xp:link(concat('rfc/list?status.', @id))}"><xsl:value-of select="."/></a></li>
-              </xsl:for-each>
-            </ul>
+            <h2>Browse RFCs</h2>
+            <xsl:for-each select="exsl:node-set($criteria)/criteria">
+              <br clear="all"/>
+              <p>By <xsl:value-of select="@id"/>:</p>
+              <ul>
+                <xsl:for-each select="filter">
+                  <li><a href="{xp:link(concat('rfc/list?status.', @id))}"><xsl:value-of select="."/></a></li>
+                </xsl:for-each>
+              </ul>
+            </xsl:for-each>
           </td>
           <td width="25%" valign="top">
             <h2>More</h2>
