@@ -1,0 +1,41 @@
+The RFC process
+===============
+The workflow is as follows (reflected in all states into the @status
+attribute):
+
+Diagram
+-------
+<pre>
+
+          .-> Obsoleted   .-------------------.
+          |       ^       |                   |
+          |       |       |                   v
+   Draft -+-> Discussion -+-> Accepted -> Implemented
+   ^      |       |               |
+   |      .---<---+--->---.---<---´
+   |      |               |
+   |      v               v
+   |    Rejected       Deferred
+   |                      |
+   `----------------------´ 
+</pre>
+
+Explanation
+-----------
+* An RFC is always created in the status "draft".
+* When the authors decide they are content with it so far, the status
+  is changed to "discussion". During this phase, the core developers
+  will discuss the RFC with the authors. Anybody may join this 
+  discussion. The RFC may be changed during this time in agreement 
+  with the people involved.
+* An RFC can be deferred, meaning that nobody is working on the draft
+  and no decision has been found in the discussion phase. A deferred
+  RFC may be reset to draft status in case work should start again.
+* An RFC can be rejected, either directly after the draft state or
+  during the discussion.
+* An RFC can be obsoleted during its draft or discussion state, meaning 
+  it is no longer needed. In this case, a new RFC replaces this RFC.
+* After an RFC has been discussed and not rejected or deferred, its
+  status goes to "accepted" if it cannot be immediately implemented.
+* After the RFC has been implemented and the necessary files committed,
+  its status goes to "implemented".
