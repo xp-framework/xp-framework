@@ -20,7 +20,7 @@
   <xsl:template name="html-head">
     <link rel="shortcut icon" href="/common/favicon.ico" />
   </xsl:template>
-  
+
   <xsl:template name="content">
     <div style="padding: 0; margin: 0; width: 100%; height: 200px; background: #1981c9 url(/common/image/header.png); color: white">
       <a href="http://xp-framework.net/downloads/releases/"><img align="right" src="/common/image/download.png" alt="Download" vspace="10" hspace="10" border="0"/></a>
@@ -37,7 +37,7 @@
     <table id="main" cellpadding="0" cellspacing="10"><tr>
       <td id="content" style="background: white url(/image/lemon.jpg) no-repeat bottom left">
         <table width="100%" class="columned"><tr>
-          <td width="75%" valign="top" id="left">
+          <td width="70%" valign="top" id="left">
             <h2>I would like to:</h2>
             <h3><a href="#">Use software written in XP</a></h3>
             
@@ -71,19 +71,23 @@
             </p>
             <br/><br clear="all"/>
           </td>
-          <td width="25%" valign="top">
-            <h2>Showcases</h2>
-            <xsl:for-each select="/formresult/showcases/entry">
-              <h3><a href="http://docs.xp-framework.net/"><xsl:value-of select="title"/></a></h3>
-              <em>[<xsl:value-of select="category"/>, <xsl:value-of select="date"/>]</em>
-              <br/><br clear="all"/>
-            </xsl:for-each>
-            
-            <br/>
+          <td width="30%" valign="top">
             <h2>Technology blogs</h2>
             <xsl:for-each select="/formresult/blog/entry">
-              <h3><a href="http://news.xp-framework.net/"><xsl:value-of select="title"/></a></h3>
-              <em>[<xsl:value-of select="category"/>, <xsl:value-of select="date"/>]</em>
+              <div title="{title}" style="width: 100%; height: 1.5em; margin-right: 24px; overflow: hidden">
+                <a href="http://news.xp-framework.net/article/{@id}/{xp:dateformat(date, 'Y/m/d/')}/{@link}}">
+                  <h3><xsl:value-of select="title"/></h3>
+                </a>
+              </div>
+              <em>
+                <xsl:text>[</xsl:text>
+                <xsl:for-each select="category">
+                  <xsl:value-of select="."/>
+                  <xsl:if test="position() &lt; last()">, </xsl:if>
+                </xsl:for-each> @
+                <xsl:value-of select="xp:date(date)"/>
+                <xsl:text>]</xsl:text>
+              </em>
               <br/><br clear="all"/>
             </xsl:for-each>
           </td>
