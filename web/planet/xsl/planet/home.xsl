@@ -52,48 +52,40 @@
             <br/><br clear="all"/>
             
             <!-- Framework -->
-            <h3><a href="#">Use XP to create an application</a></h3>
+            <h3><a href="http://docs.xp-framework.net/">Use XP to create an application</a></h3>
             <p align="justify">
               See how the framework can help you complete common tasks, from database-driven 
               websites, command line utilities, unittests, standalone daemons, XML and image 
               processing, how it works in a heterogenous environment with its integration
               into the J2EE&#8482;-world via native application server support or web services 
               implementations, and how it can even create graphical interfaces.
-              <em>Learn more about the XP Framework <a href="#">here</a>.</em>
+              <em>Learn more about the XP Framework <a href="http://docs.xp-framework.net/">here</a>.</em>
             </p>
             <br/><br clear="all"/>
 
             <!-- Futurama -->
-            <h3><a href="#">See what's next</a></h3>
+            <h3><a href="http://developer.xp-framework.net/">See what's next</a></h3>
             <p align="justify">
               XP Technology is constantly being extended and enhanced.
-              <em>Be part of the evolution <a href="#">here</a>.</em>
+              <em>Be part of the evolution <a href="http://developer.xp-framework.net/">here</a>.</em>
             </p>
             <br/><br clear="all"/>
           </td>
           <td width="25%" valign="top">
             <h2>Showcases</h2>
-            <h3><a href="#">Web 2.0 Showcase</a></h3>
-            <em>[Prototype.js, JSON, and XP]</em>
-            <br/><br clear="all"/>
+            <xsl:for-each select="/formresult/showcases/entry">
+              <h3><a href="http://docs.xp-framework.net/"><xsl:value-of select="title"/></a></h3>
+              <em>[<xsl:value-of select="category"/>, <xsl:value-of select="date"/>]</em>
+              <br/><br clear="all"/>
+            </xsl:for-each>
             
             <br/>
             <h2>Technology blogs</h2>
-            <h3><a href="#">Dialog: IPTC support</a></h3>
-            <em>[Ports News, 2006-07-01]</em>
-            <br/><br clear="all"/>
-
-            <h3><a href="#">newinstance</a></h3>
-            <em>[Core News, 2006-06-14]</em>
-            <br/><br clear="all"/>
-
-            <h3><a href="#">Collection framework</a></h3>
-            <em>[Framework News, 2006-06-12]</em>
-            <br/><br clear="all"/>
-
-            <h3><a href="#" title="So You Wanna Write A Unittest?">So You Wanna Write...</a></h3>
-            <em>[Unittesting, 2006-05-20]</em>
-            <br/><br clear="all"/>
+            <xsl:for-each select="/formresult/blog/entry">
+              <h3><a href="http://news.xp-framework.net/"><xsl:value-of select="title"/></a></h3>
+              <em>[<xsl:value-of select="category"/>, <xsl:value-of select="date"/>]</em>
+              <br/><br clear="all"/>
+            </xsl:for-each>
           </td>
         </tr></table>
         <br clear="all"/>
