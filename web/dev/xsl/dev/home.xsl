@@ -22,13 +22,13 @@
       <td id="content" style="background: white url(/image/apple.jpg) no-repeat bottom left">
         <h1>Developer Zone</h1>
         <p>
-          This is the  <!-- TODO -->
+          This site is dedicated to the development of the XP framework.
         </p>
         <br clear="all"/>
 
         <!-- Featured items -->
         <table width="100%" class="columned"><tr>
-          <td width="50%" valign="top">
+          <td width="70%" valign="top">
             <h2>Features</h2>
             <p>
               ...
@@ -38,11 +38,8 @@
               <li><a href="{xp:link('static?checkout')}">SVN checkout instructions</a></li>
             </ul>
           </td>
-          <td width="25%" valign="top">
-            <h2>Unittests</h2>
-          </td>
-          <td width="25%" valign="top">
-            <h2>Bugzilla</h2>
+          <td width="30%" valign="top">
+            <h2>Contributing</h2>
           </td>
         </tr></table>
         <br clear="all"/>
