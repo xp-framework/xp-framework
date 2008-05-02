@@ -10,22 +10,13 @@
   );
 
   /**
-   * Website scriptlet for http://xp-framework.info/
+   * Website scriptlet for XP Documentation website
    *
-   * @see      http://xp-framework.info/
+   * @see      http://docs.xp-framework.net/
    * @purpose  Scriptlet
    */
   class DocScriptlet extends AbstractXMLScriptlet {
 
-    /**
-     * Set our own processor object
-     *
-     * @return  xml.XSLProcessor
-     */
-    protected function _processor() {
-      return new DomXSLProcessor();
-    }
-    
     /**
      * Sets the responses XSL stylesheet
      *
@@ -39,6 +30,5 @@
         $request->getStateName()
       ));
     }
-    
   }
 ?>
