@@ -19,6 +19,7 @@
   <xsl:variable name="breadcrumb">
     <title for="cs">Coding standards</title>
     <title for="source">Sourcecode</title>
+    <title for="mailinglists">Mailing lists</title>
   </xsl:variable>
 
   <xsl:template name="content">

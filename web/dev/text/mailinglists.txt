@@ -1,0 +1,32 @@
+Mailinglist for XP-developers
+=============================
+We offer an unmoderated list for developers, a list for commit messages 
+and one bug list where all bug mail out of our Bugzilla are sent to.
+
+Subscribing
+-----------
+We use <tt>ezmlm</tt>, so to subscribe just send an email to 
+<tt>xp-subscribe@xp-framework.net</tt>. You will be replied and then need to 
+confirm your subscription by answering that mail.
+If you need help with ezmlm, just send an empty message to
+<tt>xp-help@xp-framework.net</tt>.
+
+The same method - appending '-subscribe' after the list's name applies
+to our other lists, as well; these are <tt>xp-svn@xp-framework.net</tt> for 
+commits and <tt>xp-bugs@xp-framework.net</tt> for the bug activity.
+
+Posting to the lists generally require subscription due to SPAM issues.
+
+Charta, etiquette
+-----------------
+The mailinglist is used to discuss anything that has to do with the 
+XP framework. That includes:
+<ul>
+  <li>Commits</li>
+  <li>Blog entries</li>
+  <li>Release plans</li>
+  <li>RFCs</li>
+  <li>Questions about the framework that are not covered
+      in our online documentation.</li>
+</ul>
+

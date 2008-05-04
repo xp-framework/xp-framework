@@ -76,14 +76,14 @@
             </p>
             <br/><br clear="all"/>
 
-            <!-- Mailings lists
-            <h3><a href="{xp:link('static?contribute/mailinglists')}">Mailing lists</a></h3>
+            <!-- Mailings lists -->
+            <h3><a href="{xp:link('static?mailinglists')}">Mailing lists</a></h3>
             <p align="justify">
-              ...
-              <em>To subscribe, see <a href="{xp:link('static?contribute/mailinglists')}">here</a>.</em>
+              Like many other development teams, the XP core team employs mailinglists 
+              to discuss and announce changes and keep track of anything regarding our code.
+              <em>To subscribe, see <a href="{xp:link('static?mailinglists')}">here</a>.</em>
             </p>
             <br/><br clear="all"/>
-             -->
 
             <!-- Coding standards -->
             <h3><a href="{xp:link('static?cs')}">Coding standards</a></h3>
