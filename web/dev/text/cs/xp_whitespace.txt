@@ -1,0 +1,172 @@
+Coding standards: Framework: Whitespace
+=======================================
+[
+  [topic://cs/xp_files File layout] |
+  [topic://cs/xp_whitespace Whitespace] |
+  [topic://cs/xp_comments Comments] |
+  [topic://cs/xp_statements Statements] |
+]
+
+Indenting
+---------
+Indenting within one file must be unified, indenting width is two spaces.
+Tabs may never be used. 
+
+Blank lines
+-----------
+Blank lines improve the readability of code. A blank line should be 
+inserted at the following situations:
+              
+* Between methods
+* Between the static statement within a function and the first line of 
+  code of that function
+* Prior to a one-line- or a block-comment
+* Following the comment at the document's beginning
+* Between logical sections within a method to make code more
+  readable and denote the belong-together sense of that piece of
+  code.
+
+Spaces
+------
+Spaces should be used in the following scenarios:
+
+A keyword (if, else, while, for, ...), followed by a brace should be 
+separated by a whitespace.
+<code>
+  while (TRUE) {
+    ...
+  }
+</code>
+Note: after a function call and their braces no whitespace shall be
+used. This helps distinguishing keywords and function calls from
+each other.
+
+After the comment char of a one line (inline) comment
+<code>
+  // good
+  //bad
+</code>
+
+After a comma in a list of arguments:
+<code>
+  $method->invoke(NULL, $arguments);    // Good
+  $method->invoke(NULL,$arguments);     // Bad!
+</code>
+
+An array's key/value assignment has to be separated by a whitespace
+prior and following the <tt>=></tt>.
+
+The class instance and the class method or the class attribute have to
+be separated by ->, but never by any whitespace inbetween.
+<code>
+  $this->foo      // OK
+  $this -> bar    // Unneccessary
+</code>
+
+Round braces may not be separated by whitespace
+<code>
+  while (($a > 0) && ($b < 1)) ...   // Correct
+  while ( ($a > 0) && ($b < 1) ) ... // Unneccessary
+</code>              
+
+All operations of (<tt>+ - * / % & | ~ && < > <= >= != == ||</tt> etc.) should
+be separated by whitespaces at both sides.
+                
+All operators in (<tt>++ --</tt> etc.) do not have any preceding whitespace.
+
+The string concatenation operator (.) is not preceded nor followed by any whitespace.
+
+In a for-statement single expressions should be separated by whitespace.
+<code>
+  for ($init; $condition; $update) {
+    ...
+  }
+</code>
+
+Type-casting has no whitespace to the right side, but is directly connected
+to the casted variable.
+<code>
+  myMethod((int)$a, (array)$that);
+</code>
+
+Line wraps
+----------
+When an expression does not fit into one line, it should be wrapped following 
+these rules:
+
+* after a comma
+* before an operator
+* wrapped lines have to be indented
+ 
+An example:
+<code>  
+  $r= sprintf('<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
+    $host, $port, $path, $file, $target, $anchor
+  );
+
+  $r= sprintf(
+    '<a href="http://%s:%d/%s/%s.bar" target="%s">%s</a>',
+    $host, 
+    $port, 
+    $path,
+    $file,
+    $target,
+    $anchor
+  );
+</code>
+
+In method declarations wrapped parameters should be indented as in the
+above sprintf example:
+<code>
+  public function reallyReallyLongFunctionNameWithParameters(
+    $string, 
+    $uriRequesterObject,
+    $foobarbaz, 
+    $longParamNameNumber4
+  ) {
+    ...
+  }
+</code>
+(Note that you should resist to use overly long function names).
+
+Long conditions in an if-statement should be indented this way:
+<code>
+  if (
+    ('172.17.0.27' == $REMOTE_ADDR) ||
+    ('172.17.0.26' == $REMOTE_ADDR) ||
+    ('172.17.0.24' == $REMOTE_ADDR) ||
+  ) {
+    $group= 'root';
+  }
+</code>
+In this example all conditions have been indented to the same column, but still
+remain separated from the "executing" code by one (almost) empty line.
+
+Array declarations always have to be wrapped until the array is an empty one:
+<code>
+  $list= array();
+
+  $list= array(
+    'Hello',
+    'World'
+  );
+
+  $hash= array(
+    'Bla' => 0,
+    'Foo' => array(
+      'Bar',
+      'Baz'
+    ),
+    'XP'  => 'Über-Framework'
+  );
+</code>
+
+Ternary expressions adhere to the following writing guidelines:
+<code>
+  $alpha= ($booleanExpression) ? $beta : $gamma;
+
+  $alpha= ($reallyReallyLongbooleanExpression
+    ? $beta 
+    : $gamma
+  );
+</code>

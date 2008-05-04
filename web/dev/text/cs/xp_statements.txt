@@ -1,0 +1,179 @@
+Coding standards: Framework: Statements
+=======================================
+[
+  [topic://cs/xp_files File layout] |
+  [topic://cs/xp_whitespace Whitespace] |
+  [topic://cs/xp_comments Comments] |
+  [topic://cs/xp_statements Statements] |
+]
+
+One line should only contain one statement:
+<code>
+  $a++;           // Correct
+  $b++;           // Correct
+  $a--; $b--;     // Bad
+</code>
+
+Blocks
+------
+Blocks are enclosed in <tt{</tt> and <tt>}</tt>.
+
+* Blocks have to be indented
+* The opening curly brace is placed at the end of the line beginning the block
+* The closing curly brace should be placed at the beginning of a line and
+  be indented at the same width like the beginning of the block.          
+* Every block must be enclosed in curly braces, even when you could obey it
+  for single line statements. This decreases the danger of adding code and
+  forgetting to add braces leading to breakage of the script as the added
+  code will not execute.
+  
+Exceptions
+~~~~~~~~~~
+There is an exception for statements in conjunction with a return / continue or break:
+<code>
+  $result= $dbo->select('...');
+  if (!$result) return FALSE;
+  
+  foreach ($methods as $method) {
+    if (!$method->hasAnnotation('inject')) continue;
+    
+    // ...
+  }
+  
+  do {
+    if (!$q->hasNext()) break;
+    
+    // ...
+  } while ($r= $q->next());
+</code>
+
+Return
+------
+A return statement should only use braces when they are neccessary or improve
+the readability (by grouping).
+
+<code>
+  return (FALSE);         // Bad
+  return (isset($size)    // OK
+    ? $size 
+    : $defaultSize
+  );
+</code>
+
+if, if-else, if else-if else Statements
+---------------------------------------
+if-else classes of statements should have the following form:
+          
+<code>
+  if ($condition) {
+    imageSize(...);
+  }
+  
+  if ($condition) {
+    imageSize(...);
+  } else {
+    imageCreate(...);
+  }
+  
+  if ($condition) {
+    imageSize(...);
+  } else if ($condition2) {
+    imageCreate(...);
+  } else {
+    imageDispose(...);
+  }
+</code>
+        
+for-Statements
+--------------
+A for-statement should have the following form:
+
+<code>
+  for ($init; $condition; $update) {
+    doSomething();
+  }
+  
+  for ($i= $dba->iterator(); $i->hasNext(); ) {
+    $key= $i->next();
+    // ...
+  }
+</code>
+        
+while-Statements
+------------------
+A while statement should have the following form:
+          
+<code>
+  while ($condition) {
+    doSomething();
+  }
+  
+  do {
+    doSomething();
+  } while ($condition);
+</code>
+        
+switch-Statements
+------------------
+A switch-statement should have the following form:
+          
+<code>
+  switch ($condition) {
+    case ENC_ISO_8859_1:
+      $output= 'bla';
+      $needsParsing= FALSE;
+    
+    case ENC_ISO_8859_2:
+      $output= 'foo';
+      break;
+    
+    default:
+      statement();
+      break;
+  }
+</code>
+
+After the first case we suggest to add a comment to make clear no break 
+is missing accidentally:
+
+<code>
+  switch ($condition) {
+    case ENC_ISO_8859_1:
+      $output= 'bla';
+      $needsParsing= FALSE;
+      // break missing intentionally
+      
+      case ENC_ISO_8859_2:
+        // ...
+        break;
+  }
+</code>
+        
+try/catch-blocks
+----------------
+A try/catch  block should have the following form:
+
+<code>
+  try {
+    doSomethinWhichMightRaiseAnException();
+  } catch (WhatEverException $e) {
+    handleException();
+  } catch (XPException $e) {
+    handleException();
+  }
+</code>
+        
+throw
+-----
+Thrown objects are derived from the [class://lang.Throwable Throwable] base class.
+It is encouraged not to directly inherit this class but one of the following:
+* [class://lang.XPException XPException] - for exceptions
+* [class://lang.Error Error] - for error situation (stronger than exceptions)
+* [class://lang.ChainedException ChainedException] - for chained exceptions
+          
+<code>
+  if (FALSE === ($dbh= sybase_connect([...])) {
+    throw new SQLException('Unable to connect');
+  }
+</code>
+        

@@ -1,0 +1,120 @@
+Coding standards: Framework: Comments
+=====================================
+[
+  [topic://cs/xp_files File layout] |
+  [topic://cs/xp_whitespace Whitespace] |
+  [topic://cs/xp_comments Comments] |
+  [topic://cs/xp_statements Statements] |
+]
+
+In PHP three kinds of comments are supported: C-style /* */, C++'s // as
+well as Perl's # comment sign. From Java, we know the /** ... */ - 
+documentational comment. We can use these to extract useful meta-information
+about the functions with the XP documentation system which was developed to
+supply an automated documentation system.
+
+The # should be avoided, most other commments should be written using //.
+Commenting out multiline areas in a code part is no more possible as it will
+be rejected by the coding standards conformance checker script.
+Multiline commented out code most often is being used to test things. Tests, however,
+should not be committed. Via SVN an undo of a delete can be performed, so
+there just is no need for mutliline comments.
+Therefore comments should not be "drawn" in big comment boxes within /* ... */,
+a comment should always be located directly above the code line to be commented
+and explained.
+
+The line above a comment has to be an empty line. Left and right side of a 
+comment sign a space should be placed:
+          
+<code>  
+  // Correct
+  $a= 0; // Correct as well, but just good and not "better"! :)
+  $a= 0;     // Better
+  
+  //Avoid this!
+  $a= 0;//Avoid this!
+</code>
+
+Block comments
+--------------
+Block comments may be used only to describe files (comments at the top
+of a file) - see [topic://cs/xp_files File layout].
+
+Single line comments
+--------------------
+Single line comments must be written using //. Single line comments should
+be separated from the above parts by an empty line and keep the current
+indenting width:
+<code>
+  if ($condition) {
+  
+    // Fetching files here...
+    ...
+  }
+</code>
+
+If you need to comment more that just one line of code, the following
+notion is recommended:
+<code>
+  if ($condition) {
+    ...
+    
+    // DEBUG
+    // fsockopen('debug-srv', 0x9282);
+    // ...
+  }
+</code>
+
+For an even larger block, <tt>/* */</tt> may be used while in development or
+for special cases (like temporary disabling of code portions).
+Before committing the files, remove it - that's what version control 
+systems are for.
+
+Comments at the end of a line
+-----------------------------
+These comments have to be written using <tt>//</tt> for the same reasons as
+stated above. When multiple comments of this form exist in a code block,
+they should begin at the same indentation.
+
+<code>
+  if ($condition) {
+    return FALSE;	// Reason
+  }
+  
+  if ($condition) {
+    $alpha= FALSE;                             // Reason
+  } else {
+    $alpha= substr($beta, 0, strlen($gamma));  // Why's that?
+  }
+</code>
+        
+Comments for documentation
+--------------------------
+A documentation comment starts with <tt>/**</tt> and ends with <tt>*/</tt>.
+
+<pre>
+/**
+ * Documentation here
+ * 
+ * @see   xp://lang.Throwable
+ */
+</pre> 
+
+Special comments
+------------------
+A "FIXME:" or "TODO:" at the beginning of a comment indicates some
+kind of unresolved problem at this place:
+<pre>
+  // FIXME: A database error could possibly pop up here.
+  // TODO: Implement improved backchecking
+</pre>
+Furthermore, the following special words may be used:
+<pre>
+  // HACK (fix this later)
+  // TBD (to be discussed)
+  // TBI (to be implemented)
+</pre>
+
+Note: The frequency of comments sometimes reflects poor quality of 
+code. When you feel compelled to add a comment, consider rewriting 
+the code to make it clearer. 
