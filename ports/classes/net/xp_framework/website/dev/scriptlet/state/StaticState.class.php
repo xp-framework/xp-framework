@@ -14,11 +14,11 @@
   );
 
   /**
-   * About RFCs
+   * Static state
    *
    * @purpose  State
    */
-  class AboutRfcState extends AbstractState {
+  class StaticState extends AbstractState {
   
     /**
      * Returns which entry to display
@@ -27,8 +27,8 @@
      * @return  string entry name
      */
     protected function entryFor($request) {
-      sscanf($request->getQueryString(), '%[a-zA-Z_]', $entry);
-      return $entry;
+      sscanf($request->getQueryString(), '%[a-zA-Z_]/%[a-zA-Z_]', $base, $entry);
+      return $base.DIRECTORY_SEPARATOR.$entry;
     }
 
     /**
