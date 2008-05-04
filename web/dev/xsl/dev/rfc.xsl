@@ -31,8 +31,9 @@
 
         <!-- Featured items -->
         <table width="100%" class="columned"><tr>
-          <td width="50%" valign="top">
+          <td width="70%" valign="top">
             <h2>Current RFCs</h2>
+            <p>Newest drafts and RFCs currently under discussion:</p>
             <br clear="all"/>
             <xsl:for-each select="/formresult/list/rfc">
               <a href="{xp:link(concat('rfc/view?', @number))}">
@@ -47,21 +48,20 @@
               </div>
             </xsl:for-each>
           </td>
-          <td width="25%" valign="top">
+          <td width="30%" valign="top">
             <h2>Browse RFCs</h2>
             <xsl:for-each select="exsl:node-set($criteria)/criteria">
-              <br clear="all"/>
               <p>By <xsl:value-of select="@id"/>:</p>
               <ul>
                 <xsl:for-each select="filter">
                   <li><a href="{xp:link(concat('rfc/list?status.', @id))}"><xsl:value-of select="."/></a></li>
                 </xsl:for-each>
               </ul>
+              <br clear="all"/>
             </xsl:for-each>
-          </td>
-          <td width="25%" valign="top">
-            <h2>More</h2>
+            
             <br clear="all"/>
+            <h2>More</h2>
             <p>Documentation:</p>
             <ul>
               <li><a href="{xp:link('static?rfc/introduction')}">Introduction</a></li>
