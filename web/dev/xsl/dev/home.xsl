@@ -35,7 +35,7 @@
             </p>
             <ul>
               <li><a href="{xp:link('rfc')}">RFC Overview</a></li>
-              <li><a href="{xp:link('static?checkout')}">SVN checkout instructions</a></li>
+              <li><a href="{xp:link('static?svn/checkout')}">SVN checkout instructions</a></li>
             </ul>
           </td>
           <td width="30%" valign="top">
