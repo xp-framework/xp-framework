@@ -21,24 +21,14 @@
   class StaticState extends AbstractState {
   
     /**
-     * Returns which entry to display
-     *
-     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
-     * @return  string entry name
-     */
-    protected function entryFor($request) {
-      sscanf($request->getQueryString(), '%[a-zA-Z_]/%[a-zA-Z_]', $base, $entry);
-      return $base.DIRECTORY_SEPARATOR.$entry;
-    }
-
-    /**
      * Process this state.
      *
      * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
      * @param   scriptlet.xml.XMLScriptletResponse response
      */
     public function process($request, $response) {
-      $entry= $this->entryFor($request);
+      sscanf($request->getQueryString(), '%[a-zA-Z_]/%[a-zA-Z_]', $base, $topic);
+      $entry= $topic ? $base.DIRECTORY_SEPARATOR.$topic : $base;
 
       // Read from storage (XXX: Make exchangeable)
       try {
@@ -58,9 +48,11 @@
       }'));
       
       // Insert markup
-      $response->addFormresult(new Node('documentation', new PCData(
+      $n= $response->addFormresult(new Node('documentation', new PCData(
         '<p>'.$builder->markupFor($text).'</p>'
       )));
+      $n->setAttribute('base', $base);
+      $topic && $n->setAttribute('topic', $topic);
     }
   }
 ?>
