@@ -1,5 +1,5 @@
-Example
-=======
+Example RFC
+===========
 This is the file <tt>0149.rfc.txt</tt> from the XP SVN checkout:
 <pre>
 RFC 0149: Code coverage

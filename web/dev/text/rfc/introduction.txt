@@ -1,5 +1,5 @@
-Introduction
-============
+Introduction to RFCs
+====================
 RFC stands for Request For Comments, but you knew that:)
 
 Why do we have RFCs?
@@ -48,5 +48,5 @@ Short answer: Anybody.
 
 More
 ----
-Find out what an RFC [topic://inside looks like] or continue reading about 
-[topic://process the RFC process].
+Find out what an RFC [topic://rfc/inside looks like] or continue reading about 
+[topic://rfc/process the RFC process].

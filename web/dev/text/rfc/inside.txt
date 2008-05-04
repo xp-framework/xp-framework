@@ -31,7 +31,7 @@ When this RFC was created.
 Status
 ~~~~~~
 Status. Initially always *draft*. Possible other values: discussion,
-accepted, implemented, obsoleted and rejected. See the [topic://process process]
+accepted, implemented, obsoleted and rejected. See the [topic://rfc/process process]
 topic for more information.
 </summary>
 
@@ -105,4 +105,4 @@ Put links to any of the following documents here:
 
 More
 ----
-Have a look at the [topic://example example RFC].
+Have a look at the [topic://rfc/example example RFC].

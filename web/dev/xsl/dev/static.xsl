@@ -14,7 +14,7 @@
  extension-element-prefixes="func"
  exclude-result-prefixes="func php exsl xsl xp"
 >
-  <xsl:include href="../layout.inc.xsl"/>
+  <xsl:include href="layout.inc.xsl"/>
 
   <xsl:template name="content">
     <table id="main" cellpadding="0" cellspacing="10">
@@ -22,8 +22,7 @@
         <td id="content">
           <div id="breadcrumb">
             <a href="{xp:link('home')}">Developer Zone</a> &#xbb;
-            <a href="{xp:link('rfc')}">RFCs</a> &#xbb;
-            <a href="{xp:link(concat('rfc/about?', $__query))}"><xsl:value-of select="/formresult/documentation/h1"/></a>
+            <a href="{xp:link(concat('static?', $__query))}"><xsl:value-of select="/formresult/documentation/h1"/></a>
           </div>
 
           <xsl:apply-templates select="/formresult/documentation/*"/>
@@ -41,7 +40,7 @@
   </xsl:template>
 
   <xsl:template name="html-title">
-    <xsl:value-of select="/formresult/documentation/h1"/> - RFCs - XP Framework Developer Zone
+    <xsl:value-of select="/formresult/documentation/h1"/> - XP Framework Developer Zone
   </xsl:template>
 
   <!-- 
