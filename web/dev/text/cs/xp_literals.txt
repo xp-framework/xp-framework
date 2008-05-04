@@ -67,13 +67,14 @@ of two columns is being recommended).
 <code>
   // Don't do this
   $result= $dbo->query('select * from foo, bar '.
-             'where baz= 2 '.
-             'and foo.i= bar.i ');
+    'where baz= 2 '.
+    'and foo.i= bar.i '
+  );
 </code>
 
-The preceding piece of code is absolutely unreadable and difficult to
-reuse. And it is error prune when one forgets an whitespace at the end
-of each line (which leads to a syntax error by the DBMS).
+The preceding piece of code is more unreadable and difficult to reuse. 
+And it is error prune when one forgets a whitespace at the end of each line 
+(which leads to a syntax error by the DBMS).
 
 Arrays
 ------
