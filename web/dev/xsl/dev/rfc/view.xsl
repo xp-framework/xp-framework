@@ -27,6 +27,22 @@
     </pre>
   </xsl:template>
 
+  <!-- 
+   ! Add fixes to <pre> ... </pre> for IE
+   !-->
+  <xsl:template match="pre">
+    <xsl:variable name="key" select="generate-id(.)"/>
+    <pre id="{$key}">
+      <xsl:apply-templates/>
+    </pre>
+    <!-- IE fix -->
+    <xsl:comment>[if IE &lt; 8]&gt;
+      &lt;script language="JavaScript"&gt;
+        document.getElementById('<xsl:value-of select="$key"/>').style.width= document.body.offsetWidth - 320;
+      &lt;/script&gt;
+    &lt;![endif]</xsl:comment>
+  </xsl:template>
+
   <!--
    ! Turn "h2"-headlines into scroll links
    !-->
