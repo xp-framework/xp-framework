@@ -9,22 +9,35 @@ Code conventions are important to programmers for a number of reasons:
   <li>If you ship your source code as a product, you need to make sure it is as well 
       packaged and clean as any other product you create.</li> 
   <li>For the conventions to work, every person writing software must conform to the 
-      code conventions. Everyone. </li>
+      code conventions. Everyone.</li>
 </ul>
 
 Framework sourcecode
 --------------------
-* [topic://cs/xp_files File layout]
-* [topic://cs/xp_naming Naming]
-* [topic://cs/xp_whitespace Whitespace]
-* [topic://cs/xp_comments Comments]
-* [topic://cs/xp_literals Literals]
-* [topic://cs/xp_statements Statements]
+The coding standards for the XP framework classes are divided up into
+the following topics:
+
+* [topic://cs/xp_files File layout] - File naming, header and line length.
+* [topic://cs/xp_naming Naming] - Classes, methods, fields, modifiers, variables and constants
+* [topic://cs/xp_whitespace Whitespace] - Identing, blank lines, spaces and line wrapping
+* [topic://cs/xp_comments Comments] - Block comments, single line comments, documentation comments
+* [topic://cs/xp_literals Literals] - Numbers, special literals, strings, arrays
+* [topic://cs/xp_statements Statements] - Control structures, loops, try / catch / throw
 
 SQL
 ---
-TODO
+Modern web applications often have a database driven backend which can 
+be used via the structured query language (SQL). Hence, we often find 
+SQL statements within classes, in a script or in the source for a webpage.
+Just like a normal program, SQL also has to be written by many
+and must be understood by many, so we want to make sure SQL is
+written in a nice and clean way. It should - just like it is with
+program code - not be possible to tell who wrote the SQL just by
+looking at the code.
 
-XML
----
-TODO
+[topic://cs/sql_overview This topic] gives you an overview.
+
+
+More
+----
+See also the [http://java.sun.com/docs/codeconv Java Coding conventions]. 
