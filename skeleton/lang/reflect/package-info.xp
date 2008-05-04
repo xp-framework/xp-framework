@@ -64,7 +64,7 @@
  *  $account->transfer(1000001);   // BLAM
  * </code>
  *
- * @see      http://xp-framework.net/rfc/0030
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0030
  * @see      xp://lang.Generic#getClass
  * @see      xp://lang.XPClass#forName
  * @see      xp://lang.ClassLoader#loadClass

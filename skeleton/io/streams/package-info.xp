@@ -30,8 +30,8 @@
  *   $out->close();
  * </code>
  *
- * @see      http://xp-framework.net/rfc/0088
- * @see      http://xp-framework.net/rfc/0142
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0088
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0142
  * @purpose  I/O
  */
 package io.streams {

@@ -10,9 +10,9 @@
  *
  * This is supported natively by the uses() statement.
  *
- * @see      http://xp-framework.info/xml/xp.en_US/news/view?119
- * @see      http://xp-framework.info/xml/xp.en_US/news/view?122
- * @see      http://xp-framework.net/rfc/0074
+ * @see      http://news.xp-framework.net/article/119/2006/10/14/
+ * @see      http://news.xp-framework.net/article/122/2006/10/15/
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0074
  * @purpose  Class archive
  */
 package lang.archive {

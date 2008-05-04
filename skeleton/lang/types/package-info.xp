@@ -32,9 +32,9 @@
  * an array is "numeric" or not (PHP's array types can be either numeric,
  * hashes or a mix of both and aren't necessarily zero-indexed).
  *
- * @see      http://xp-framework.info/xml/xp.en_US/news/view?52
- * @see      http://xp-framework.info/xml/xp.en_US/news/view?54
- * @see      http://xp-framework.net/rfc/0038
+ * @see      http://news.xp-framework.net/article/52/2005/05/29/
+ * @see      http://news.xp-framework.net/article/54/2005/06/12/
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0038
  * @see      xp://lang.types.Number
  * @see      xp://lang.types.ArrayList
  * @purpose  Type wrappers

@@ -78,7 +78,7 @@
  * @see      xp://rdbms.finder.Finder the entry point class
  * @see      xp://rdbms.DataSet
  * @see      xp://rdbms.Criteria
- * @see      http://xp-framework.net/rfc/0099
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0099
  * @see      http://news.xp-framework.net/article/150/2007/01/24/
  * @purpose  Finding DataSets
  */

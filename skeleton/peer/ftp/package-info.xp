@@ -38,8 +38,8 @@
  *   }
  * </code>
  *
- * @see      http://xp-framework.net/rfc/0141
- * @see      http://xp-framework.net/rfc/0140
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0141
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0140
  * @see      xp://peer.ftp.FtpConnection - entry point class
  * @see      rfc://959
  * @purpose  FTP implementation

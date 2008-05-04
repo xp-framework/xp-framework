@@ -90,7 +90,7 @@
  * @see      xp://util.Date
  * @see      xp://util.Properties
  * @see      xp://util.XPIterator
- * @see      http://xp-framework.net/rfc/0086
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0086
  * @see      xp://util.Observer
  * @see      xp://util.Visitor
  * @purpose  Core

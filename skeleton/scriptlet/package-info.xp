@@ -70,7 +70,7 @@
  * @see      xp://peer.http.HttpConstants
  * @see      xp://org.webdav.WebdavScriptlet
  * @see      xp://scriptlet.Cookie
- * @see      http://xp-framework.net/rfc/0078
+ * @see      http://developer.xp-framework.net/xml/rfc/view?0078
  * @see      http://news.xp-framework.net/article/196/2007/06/28/
  * @purpose  Web sites
  */
