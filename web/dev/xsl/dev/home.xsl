@@ -32,10 +32,10 @@
             <h2>For developers and contributors:</h2>
             
             <!-- SVN -->
-            <h3><a href="{xp:link('static?svn/checkout')}">Use the source</a></h3>
+            <h3><a href="{xp:link('static?source/checkout')}">Use the source</a></h3>
             <p align="justify">
               The framework's sourcecode is maintained in a subversion (SVN) repository.
-              <em>Follow the <a href="{xp:link('static?svn/checkout')}">checkout instructions</a> 
+              <em>Follow the <a href="{xp:link('static?source/checkout')}">checkout instructions</a> 
               to get the framework's sourecode.</em>
             </p>
             <br/><br clear="all"/>
@@ -86,10 +86,10 @@
              -->
 
             <!-- Coding standards -->
-            <h3><a href="{xp:link('static?cs/overview')}">Coding standards</a></h3>
+            <h3><a href="{xp:link('static?cs')}">Coding standards</a></h3>
             <p align="justify">
               Code conventions are important to programmers for a number of reasons. 
-              <em>Read about the <a href="{xp:link('static?cs/overview')}">what the XP team sticks to</a>.</em>
+              <em>Read about the <a href="{xp:link('static?cs')}">what the XP team sticks to</a>.</em>
             </p>
             <br/><br clear="all"/>
           </td>

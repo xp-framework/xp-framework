@@ -1,5 +1,5 @@
-Coding standards: Framework: Comments
-=====================================
+Framework: Comments
+===================
 [
   [topic://cs/xp_files File layout] |
   [topic://cs/xp_naming Naming] |

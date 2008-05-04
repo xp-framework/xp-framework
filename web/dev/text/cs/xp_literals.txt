@@ -1,5 +1,5 @@
-Coding standards: Framework: Literals
-=====================================
+Framework: Literals
+===================
 [
   [topic://cs/xp_files File layout] |
   [topic://cs/xp_naming Naming] |

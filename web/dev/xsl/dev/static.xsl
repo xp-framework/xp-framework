@@ -16,13 +16,27 @@
 >
   <xsl:include href="layout.inc.xsl"/>
 
+  <xsl:variable name="breadcrumb">
+    <title for="cs">Coding standards</title>
+    <title for="source">Sourcecode</title>
+  </xsl:variable>
+
   <xsl:template name="content">
+    <xsl:variable name="base" select="/formresult/documentation/@base"/>
+
     <table id="main" cellpadding="0" cellspacing="10">
       <tr>
         <td id="content">
           <div id="breadcrumb">
             <a href="{xp:link('home')}">Developer Zone</a> &#xbb;
-            <a href="{xp:link(concat('static?', $__query))}"><xsl:value-of select="/formresult/documentation/h1"/></a>
+            <a href="{xp:link(concat('static?', $base))}">
+              <xsl:value-of select="exsl:node-set($breadcrumb)/title[@for= $base]"/>
+            </a>
+            <xsl:if test="/formresult/documentation/@topic"> &#xbb;
+              <a href="{xp:link(concat('static?', $base, '/', /formresult/documentation/@topic))}">
+                <xsl:value-of select="/formresult/documentation/h1"/>
+              </a>
+            </xsl:if>
           </div>
 
           <xsl:apply-templates select="/formresult/documentation/*"/>

@@ -1,5 +1,5 @@
-Coding standards: SQL
-=====================
+SQL
+===
 This document gives an overview about a common way to write SQL,
 it is not a standard but a guideline (but should be complied with
 anyways).

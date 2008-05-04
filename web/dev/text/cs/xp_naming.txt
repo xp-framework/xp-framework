@@ -1,5 +1,5 @@
-Coding standards: Framework: Naming
-===================================
+Framework: Naming
+=================
 [
   [topic://cs/xp_files File layout] |
   [topic://cs/xp_naming Naming] |

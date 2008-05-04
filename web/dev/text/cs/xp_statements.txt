@@ -1,5 +1,5 @@
-Coding standards: Framework: Statements
-=======================================
+Framework: Statements
+=====================
 [
   [topic://cs/xp_files File layout] |
   [topic://cs/xp_naming Naming] |
