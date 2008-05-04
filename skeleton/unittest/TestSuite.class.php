@@ -52,7 +52,7 @@
      * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
      */
     public function addTest(TestCase $test) {
-      if (!$test->getClass()->getMethod($test->name)) {
+      if (!$test->getClass()->hasMethod($test->name)) {
         throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
       }
       $className= $test->getClassName();
@@ -294,7 +294,7 @@
      * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
      */
     public function runTest(TestCase $test) {
-      if (!$test->getClass()->getMethod($test->name)) {
+      if (!$test->getClass()->hasMethod($test->name)) {
         throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
       }
       $this->notifyListeners('testRunStarted', array($this));
