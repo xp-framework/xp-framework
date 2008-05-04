@@ -36,7 +36,7 @@
       <xsl:apply-templates/>
     </pre>
     <!-- IE fix -->
-    <xsl:comment>[if IE &lt; 8]&gt;
+    <xsl:comment>[if lt IE 8]&gt;
       &lt;script language="JavaScript"&gt;
         document.getElementById('<xsl:value-of select="$key"/>').style.width= document.body.offsetWidth - 320;
       &lt;/script&gt;
