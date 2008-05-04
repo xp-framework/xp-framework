@@ -1,0 +1,25 @@
+Coding standards: Overview
+==========================
+Code conventions are important to programmers for a number of reasons: 
+<ul>
+  <li>80% of the lifetime cost of a piece of software goes to maintenance. </li>
+  <li>Hardly any software is maintained for its whole life by the original author. </li>
+  <li>Code conventions improve the readability of the software, allowing engineers to 
+      understand new code more quickly and thoroughly. </li>
+  <li>If you ship your source code as a product, you need to make sure it is as well 
+      packaged and clean as any other product you create.</li> 
+  <li>For the conventions to work, every person writing software must conform to the 
+      code conventions. Everyone. </li>
+</ul>
+
+Framework sourcecode
+--------------------
+TODO
+
+SQL
+---
+TODO
+
+XML
+---
+TODO
