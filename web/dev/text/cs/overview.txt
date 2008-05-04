@@ -14,7 +14,11 @@ Code conventions are important to programmers for a number of reasons:
 
 Framework sourcecode
 --------------------
-TODO
+* [topic://cs/xp_files File layout]
+* [topic://cs/xp_naming Naming]
+* [topic://cs/xp_whitespace Whitespace]
+* [topic://cs/xp_comments Comments]
+* [topic://cs/xp_statements Statements]
 
 SQL
 ---

@@ -2,6 +2,7 @@ Coding standards: Framework: Statements
 =======================================
 [
   [topic://cs/xp_files File layout] |
+  [topic://cs/xp_naming Naming] |
   [topic://cs/xp_whitespace Whitespace] |
   [topic://cs/xp_comments Comments] |
   [topic://cs/xp_statements Statements] |
@@ -14,9 +15,47 @@ One line should only contain one statement:
   $a--; $b--;     // Bad
 </code>
 
+Assignment and comparisons
+--------------------------
+Between an assignment of a variable and the value, a whitespace is at the
+right side of the assignment operator (=).
+
+<code>
+  // Assigning a variable to a constant
+  $a= 'hello';
+  
+  // Assigning a variable to a method call's return value
+  $instance= UserManager::getInstance();
+  
+  // Assigning variables
+  $a= $b;
+    
+  // Creating an instance of a class
+  $object= new Object();
+</code>
+
+When comparing, whitespace is on both sides of a comparison operator. 
+This is supposed to prevent mixing up <tt>$a= 1</tt> (an assignment) and
+<tt>$a == 1</tt> (a comparison);
+<code>
+  if ($a == 'hello') ...
+  
+  // Even better, to prevent typos as well.
+  if ('http://' = substr($uri, 0, 7)) ...   // Won't compile!
+  if ('http://' == substr($uri, 0, 7)) ...
+</code>
+
+For arrays, their keys and values should be equally indented:
+<code>
+  $array= array(
+    IT_STRING     => '<input type="text" value="%s"/>',
+    IT_TEXTAREA   => '<textarea>%s</textarea>'
+  );
+</code>
+
 Blocks
 ------
-Blocks are enclosed in <tt{</tt> and <tt>}</tt>.
+Blocks are enclosed in <tt>{</tt> and <tt>}</tt>.
 
 * Blocks have to be indented
 * The opening curly brace is placed at the end of the line beginning the block
@@ -49,6 +88,52 @@ There is an exception for statements in conjunction with a return / continue or 
 
 Return
 ------
+Return immediately leaves a function, thus instead of:
+<code>
+  public function open($file) {
+    if ($fd= fopen($file, 'r')) {
+        ...
+    } else {
+      return 0;
+    }
+  }
+</code>
+write:
+<code>
+  public function open($file) {
+    if (!$fd= fopen($file, 'r')) return 0;
+    ...
+  }
+</code>
+
+Continue is a similar case:
+<code>
+  while ($entry= $dir->read()) {
+    if('.' == $entry or '..' == $entry) continue;
+    ...
+  }
+</code>
+
+The ternary operator is, as far as possible, to be preferred to an if-else
+construct:
+<code>
+  // Unnecessary
+  if ($condition == NULL) {
+    return FALSE;
+  } else {
+    return TRUE;
+  }
+
+  // Better
+  return ($condition == NULL) ? FALSE : TRUE;
+  
+  // Event better
+  return ($condition != NULL);
+</code>
+
+When a binary operator (e.g. <tt>>=, <=, ==</tt>, etc.) occurs in a ternary expression,
+it should be enclosed in braces.
+          
 A return statement should only use braces when they are neccessary or improve
 the readability (by grouping).
 
@@ -170,10 +255,9 @@ It is encouraged not to directly inherit this class but one of the following:
 * [class://lang.XPException XPException] - for exceptions
 * [class://lang.Error Error] - for error situation (stronger than exceptions)
 * [class://lang.ChainedException ChainedException] - for chained exceptions
-          
+      
+A throw statement looks like this:    
 <code>
-  if (FALSE === ($dbh= sybase_connect([...])) {
-    throw new SQLException('Unable to connect');
-  }
+  throw new SQLException('Unable to connect');
 </code>
         

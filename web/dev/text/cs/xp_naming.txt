@@ -1,0 +1,141 @@
+Coding standards: Framework: Naming
+===================================
+[
+  [topic://cs/xp_files File layout] |
+  [topic://cs/xp_naming Naming] |
+  [topic://cs/xp_whitespace Whitespace] |
+  [topic://cs/xp_comments Comments] |
+  [topic://cs/xp_statements Statements] |
+]
+
+Classes
+-------
+Class names begin with an uppercase letter. Each following word again begins in
+uppercase ("Studly Caps"). Class names should be as short as possible while
+remaining significant for what the class does. 
+
+<code>
+  class Raster { }
+  class GenericTemplate { }
+</code>
+
+The same applies for interfaces and enums.
+
+Static initializer block
+~~~~~~~~~~~~~~~~~~~~~~~~
+The static initializer block is a special static method named __static.
+
+<code>
+  class Logger extends Object {
+    protected static $instance= NULL;
+  
+    static function __static() {
+      self::$instance= new self();
+    }
+  }
+</code>
+
+Constructors
+~~~~~~~~~~~~
+A classes' constructor has to be named __construct(). 
+Calling the parent's constructor when being overwritten is written
+as follows: <tt>parent::__construct()</tt>.
+
+
+Destructors
+~~~~~~~~~~~
+A classes' destructor is called __destruct() and does not take 
+any parameter. Calling the parent's destructor is written as follows:
+<tt>parent::__destruct()</tt>.
+
+
+Methods
+~~~~~~~
+Methods should be verbs, with the first letter in lowercase. Every following 
+word begins in uppercase.
+
+<code>
+  public function run() { ... }
+  public function runBackground() { ... }
+  public function getMessage() { ... }
+  public function makeInstallation() { ... }
+</code>
+
+<summary>
+Exception: In generated [class://rdbms.DataSet DataSet] classes, field accessors are
+generated from the database table's field names. They follow the rule that
+the method name is composed of the verb <tt>get</tt> or <tt>set</tt> and the
+field name with the first letter capitalized:
+<code>
+  public function getPerson_id() { ... }
+  public function setPerson_id($person_id) { ... }
+</code>
+</summary>
+
+<summary>
+Interface methods and methods with the abstract modifier may not include a
+method body. The correct syntax is a semi-colon after the method declaration,
+without any whitespace:
+
+<code>
+  interface Filter {
+    public function accept($e);
+  }
+
+  abstract class Command {
+    public abstract function run();
+  }
+</code>
+</summary>
+
+Modifiers
+---------
+Method and fields modifiers should be given in the following order:
+<pre>
+  [access] static abstract final
+</pre>
+[access] is one on public, private or protected.
+
+Examples:
+<code>
+  protected function __construct() { }
+  public static function getInstance() { }
+  public abstract function run();
+  protected final function getMessage() { }
+</code>
+
+
+Variables
+---------
+Variable names should be short and expressive and tell what they're there for.
+Prevent using variable names like <tt>$foo</tt>, <tt>$bar</tt>, <tt>$baz</tt>, 
+<tt>$fuck</tt> and variable names with less than two chars. 
+Exception: temporary one-way-variables like i,j,k,m,n
+(for integers) and c,d,e (for chars) for e.g. a counting variable. Names in
+variables should be divided by either mixed lower-/uppercase letters or by
+the underline (_).
+<code>
+  $myWidth;
+  $i;
+  $message_id;
+</code>
+
+Constants
+---------
+Constants are written in uppercase letters only.
+<code>
+  define('TA_NOTFOUND',   0x0001);
+  define('TA_OKAY',       0x0002);
+</code>
+If possible only define integers and preferably with an hexadecimal
+notation. Multiple defines keep their right part at the same indentation
+width.
+
+Note
+~~~~
+Use constants instead of integers or character return whereever possible.
+Instead of returning from a function with "return 1", "return "foo"" or
+"return -55", use constants - whereever possible. These should be defines
+preceding other definitions or declarations in a file (just following the
+opening comment). Exceptions are TRUE / FALSE which may be expressed by
+0 or 1 (that is just common sence and is understandable for everyone).
