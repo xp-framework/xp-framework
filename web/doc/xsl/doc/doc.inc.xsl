@@ -69,7 +69,14 @@
    ! Links to an XP RFC
    !-->
   <xsl:template match="link[@rel= 'rfc']">
-    <a href="http://xp-framework.net/rfc/{@href}"><xsl:value-of select="."/></a>
+    <a href="http://developer.xp-framework.net/xml/rfc/view?{@href}"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <!--
+   ! Links to an XP RFC
+   !-->
+  <xsl:template match="link[@rel= 'entry']">
+    <a href="http://news.xp-framework.net/article/{@href}/0000/00/00/"><xsl:value-of select="."/></a>
   </xsl:template>
 
   <!--
@@ -92,7 +99,6 @@
   <xsl:template match="link">
     <a href="{@rel}://{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
-
 
   <!--
    ! Summary

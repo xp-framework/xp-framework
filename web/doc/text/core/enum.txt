@@ -21,6 +21,7 @@ From our blog
   <li>[entry://207 Enum usecases: Profiling]</li>
   <li>[entry://199 EASC and enum types]</li>
 </ul>
+
 History
 ~~~~~~~
-Enums were first introduced in July 2007 within [rfc://0132 RFC #0132].
+Enums were first introduced in July 2007 within [rfc://0132 RFC 0132].
