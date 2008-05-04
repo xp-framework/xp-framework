@@ -28,18 +28,86 @@
 
         <!-- Featured items -->
         <table width="100%" class="columned"><tr>
-          <td width="70%" valign="top">
-            <h2>Features</h2>
-            <p>
-              ...
+          <td width="70%" valign="top" id="left">
+            <h2>For developers and contributors:</h2>
+            
+            <!-- SVN -->
+            <h3><a href="{xp:link('static?svn/checkout')}">Use the source</a></h3>
+            <p align="justify">
+              The framework's sourcecode is maintained in a subversion (SVN) repository.
+              <em>Follow the <a href="{xp:link('static?svn/checkout')}">checkout instructions</a> 
+              to get the framework's sourecode.</em>
             </p>
-            <ul>
-              <li><a href="{xp:link('rfc')}">RFC Overview</a></li>
-              <li><a href="{xp:link('static?svn/checkout')}">SVN checkout instructions</a></li>
-            </ul>
+            <br/><br clear="all"/>
+
+            <!-- RFCs -->
+            <h3><a href="{xp:link('rfc')}">Transparency</a></h3>
+            <p align="justify">
+              One of the major deficiencies in the development of many projects is that there 
+              is no roadmap or strategy available other than in the developers' heads. The
+              XP team publishes its decisions by documenting change requests in form of RFCs.
+              <em>You can find the RFC overview <a href="{xp:link('rfc')}">here</a>.</em>
+            </p>
+            <br/><br clear="all"/>
+
+            <!-- Releases
+            <h3><a href="{xp:link('releases')}">Releases</a></h3>
+            <p align="justify">
+              ...
+              <em>The <a href="{xp:link('releases')}">releases</a>.</em>
+            </p>
+            <br/><br clear="all"/>
+             -->
+
+            <!-- Unittests
+            <h3><a href="{xp:link('unittests')}">Tested</a></h3>
+            <p align="justify">
+              ...
+              <em>See the <a href="{xp:link('unittests')}">unittests</a> page!</em>
+            </p>
+            <br/><br clear="all"/>
+            -->
+             
+            <!-- Bugs -->
+            <h3><a href="http://bugs.xp-framework.net/">Bugs</a></h3>
+            <p align="justify">
+              Although we test our APIs thoroughly, we make mistakes: we are people, after all!
+              <em>You can use our <a href="http://bugs.xp-framework.net/">bug tracker</a> to report bugs.</em>
+            </p>
+            <br/><br clear="all"/>
+
+            <!-- Mailings lists
+            <h3><a href="{xp:link('static?contribute/mailinglists')}">Mailing lists</a></h3>
+            <p align="justify">
+              ...
+              <em>To subscribe, see <a href="{xp:link('static?contribute/mailinglists')}">here</a>.</em>
+            </p>
+            <br/><br clear="all"/>
+             -->
+
+            <!-- Coding standards -->
+            <h3><a href="{xp:link('static?cs/overview')}">Coding standards</a></h3>
+            <p align="justify">
+              Code conventions are important to programmers for a number of reasons. 
+              <em>Read about the <a href="{xp:link('static?cs/overview')}">what the XP team sticks to</a>.</em>
+            </p>
+            <br/><br clear="all"/>
           </td>
           <td width="30%" valign="top">
-            <h2>Contributing</h2>
+            <h2>Utilities</h2>
+            <a href="#"><h3>The XP / IDE integration project</h3></a>
+            <em>[NEdit, Eclipse]</em>
+            <br/><br clear="all"/>
+
+            <a href="#"><h3>Compiler generator</h3></a>
+            <em>[phpJay]</em>
+            <br/><br clear="all"/>
+            
+            <h2>xp::forge</h2>
+            <a href="#http://experiments.xp-forge.net/xml/arena"><h3>Experiments: Arena</h3></a>
+            <em>[Core technologies]</em>
+            <br/><br clear="all"/>
+
           </td>
         </tr></table>
         <br clear="all"/>
