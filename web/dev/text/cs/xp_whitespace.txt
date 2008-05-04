@@ -5,7 +5,8 @@ Coding standards: Framework: Whitespace
   [topic://cs/xp_naming Naming] |
   [topic://cs/xp_whitespace Whitespace] |
   [topic://cs/xp_comments Comments] |
-  [topic://cs/xp_statements Statements] |
+  [topic://cs/xp_literals Literals] |
+  [topic://cs/xp_statements Statements]
 ]
 
 Indenting
@@ -142,25 +143,6 @@ Long conditions in an if-statement should be indented this way:
 </code>
 In this example all conditions have been indented to the same column, but still
 remain separated from the "executing" code by one (almost) empty line.
-
-Array declarations always have to be wrapped until the array is an empty one:
-<code>
-  $list= array();
-
-  $list= array(
-    'Hello',
-    'World'
-  );
-
-  $hash= array(
-    'Bla' => 0,
-    'Foo' => array(
-      'Bar',
-      'Baz'
-    ),
-    'XP'  => 'Über-Framework'
-  );
-</code>
 
 Ternary expressions adhere to the following writing guidelines:
 <code>

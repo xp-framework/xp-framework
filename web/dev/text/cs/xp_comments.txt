@@ -5,7 +5,8 @@ Coding standards: Framework: Comments
   [topic://cs/xp_naming Naming] |
   [topic://cs/xp_whitespace Whitespace] |
   [topic://cs/xp_comments Comments] |
-  [topic://cs/xp_statements Statements] |
+  [topic://cs/xp_literals Literals] |
+  [topic://cs/xp_statements Statements]
 ]
 
 In PHP three kinds of comments are supported: C-style /* */, C++'s // as

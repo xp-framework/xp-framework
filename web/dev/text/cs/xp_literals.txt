@@ -1,0 +1,98 @@
+Coding standards: Framework: Literals
+=====================================
+[
+  [topic://cs/xp_files File layout] |
+  [topic://cs/xp_naming Naming] |
+  [topic://cs/xp_whitespace Whitespace] |
+  [topic://cs/xp_comments Comments] |
+  [topic://cs/xp_literals Literals] |
+  [topic://cs/xp_statements Statements]
+]
+
+Numbers
+-------
+Integer numbers should be written as follows:
+<code>
+  $number= 0;
+  $number= -6100;
+  
+  $number= 0xFFFF;    // Hexadecimal notation
+</code>
+
+Floating point numbers follow this form:
+<code>
+  $number= 0.5;
+  $number= -6.1;
+</code>
+
+The octal representation is to be avoided.
+
+Booleans
+--------
+The boolean values are written in upper-case:
+<code>
+  $t= TRUE;
+  $f= FALSE;
+</code>
+
+Null
+----
+The special null literal is also to be written in upper-case:
+<code>
+  $n= NULL;
+</code>
+
+Strings
+-------
+Strings should be written using single quotes. If a string must 
+contain special escape sequences (<tt>\r</tt>, <tt>\n</tt> or <tt>\t</tt>), 
+double quotes should be used. Variables in strings are to be prevented.
+
+String concatenation vs. multiline strings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Especially for SQL, it is great that line breaks and whitespaces are ignores.
+
+<code>
+  $result= $dbo->query('
+    select * from foo, bar
+    where baz= 2
+    and foo.i= bar.i
+  ');
+</code>
+
+is easy to extend for example, easy to replace by anything else and just easy
+to copy'n'paste into an sql shell window (nonetheless, an additional indentation
+of two columns is being recommended).
+
+<code>
+  // Don't do this
+  $result= $dbo->query('select * from foo, bar '.
+             'where baz= 2 '.
+             'and foo.i= bar.i ');
+</code>
+
+The preceding piece of code is absolutely unreadable and difficult to
+reuse. And it is error prune when one forgets an whitespace at the end
+of each line (which leads to a syntax error by the DBMS).
+
+Arrays
+------
+<code>
+  $list= array();
+  
+  $list= array('Hello', 'World');
+  
+  $hash= array(
+    'Bla' => 0,
+    'Foo' => array('Bar', 'Baz'),
+    'XP'  => 'Über-Framework'
+  );
+</code>
+
+Hash keys
+~~~~~~~~~
+Always to be enclosed in quotes.
+<code>  
+  echo $arr[helptext_domain_name];    // "undefined constant, assuming string"
+  echo $arr['helptext_domain_name'];  // This makes the parser happy
+</code>

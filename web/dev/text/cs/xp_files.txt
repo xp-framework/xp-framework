@@ -5,7 +5,8 @@ Coding standards: Framework: File layout
   [topic://cs/xp_naming Naming] |
   [topic://cs/xp_whitespace Whitespace] |
   [topic://cs/xp_comments Comments] |
-  [topic://cs/xp_statements Statements] |
+  [topic://cs/xp_literals Literals] |
+  [topic://cs/xp_statements Statements]
 ]
 
 The comment at the top of a file should contain the Id-Tag, that is at least
@@ -56,3 +57,25 @@ Lines with more than 80 chars should not be written. Examples for documentation
 purposes should even only contain no more than 70 chars (sending via
 E-Mail).
 
+Example
+-------
+This is the sourcecode of the [class://lang.IndexOutOfBoundsException IndexOutOfBoundsException] class.
+
+<code>
+<?php
+/* This class is part of the XP framework
+ *
+ * $Id: IndexOutOfBoundsException.class.php 8895 2006-12-19 11:54:21Z kiesel $ 
+ */
+  
+  /**
+   * Thrown to indicate that an index of some sort (such as to an array, 
+   * to a string, or to a vector) is out of range.
+   *
+   * @purpose  Exception
+   */
+  class IndexOutOfBoundsException extends XPException {
+  
+  }
+?>
+</code>
