@@ -59,7 +59,7 @@
   <xsl:template name="generate-page-foot">
     <div id="footer">
       <a href="#">Credits</a> |
-      <a href="#">Feedback</a>
+      <a href="http://bugs.xp-framework.net/enter_bug.cgi?product=XP Website&amp;component=New website&amp;bug_severity=enhancement" target="_blank">Feedback</a>
       
       <br/>
       
