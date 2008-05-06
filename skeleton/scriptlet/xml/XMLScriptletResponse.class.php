@@ -242,20 +242,24 @@
      * @param   string fraction default NULL the fraction without the leading "#"
      */
     public function forwardTo($state, $query= NULL, $fraction= NULL) {
-      sscanf(
-        getenv('REQUEST_URI'), 
-        '/xml/%[^.].%[^./].psessionid=%[^/]', 
-        $product,
-        $language,
-        $sessionId
+      preg_match(
+        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)#',
+        getenv('REQUEST_URI'),
+        $part
       );
+      
+      // Fetch product/language/session information
+      $pls= array();
+      !empty($part[3]) && $pls[]= $part[3];
+      !empty($part[4]) && $pls[]= $part[4];
+      !empty($part[6]) && $pls[]= 'psessionid='.$part[6];
+      
+      // Construct new URL
       $this->sendRedirect(sprintf(
-        '%s://%s/xml/%s.%s%s/%s%s%s', 
+        '%s://%s/xml%s/%s%s%s', 
         ('on' == getenv('HTTPS') ? 'https' : 'http'),
-        getenv('HTTP_HOST'),          
-        $product,
-        $language,
-        ('' == (string)$sessionId) ? '' : '.psessionid='.$sessionId,
+        getenv('HTTP_HOST'),
+        (sizeof($pls) ? '/'.implode('.', $pls) : ''),
         $state,
         ('' == (string)$query) ? '' : '?'.$query,
         ('' == (string)$fraction) ? '' : '#'.$fraction        
