@@ -16,10 +16,11 @@
     /**
      * Returns which entry to display
      *
-     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   string base
+     * @param   string topic
      * @return  string entry name
      */
-    protected function entryFor($request) {
+    protected function entryFor($base, $topic) {
       return 'home';
     }
   }
