@@ -416,6 +416,8 @@
         if (FALSE !== $r && !is(NULL, $r)) {
           $response->process();
         }
+      } catch (HttpScriptletException $e) {
+        throw $e;
       } catch (XPException $e) {
         throw new HttpScriptletException(
           'Request processing failed ['.$method.']: '.$e->getMessage(),
