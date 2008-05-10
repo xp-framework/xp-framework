@@ -44,25 +44,25 @@ This section will give an introduction to the basics of common tasks and
 how to accomplish them using the XP framework.
 
 <ul>
-  <li>[doc://topics/overview#Databases Databases] - the <tt>rdbms</tt> package,
+  <li>[doc://topics#Databases Databases] - the <tt>rdbms</tt> package,
       object persistence, finders, criteria, transactions and drivers.
   </li>
-  <li>[doc://topics/overview#I/O I/O] - files, folders, archives, sockets, 
+  <li>[doc://topics#I/O I/O] - files, folders, archives, sockets, 
       servers and various protocols implementation. 
   </li>
-  <li>[doc://topics/overview#XML XML] - DOM- and SAX parsing, XPath, XSLT, 
+  <li>[doc://topics#XML XML] - DOM- and SAX parsing, XPath, XSLT, 
       tree and node data xml creation, XML / object mapping.
   </li>
-  <li>[doc://topics/overview#Dates Dates] - Date and time, timezones,
+  <li>[doc://topics#Dates Dates] - Date and time, timezones,
       date manipulation.
   </li>
-  <li>[doc://topics/overview#Collections Collections] - Map, List, Queue, 
+  <li>[doc://topics#Collections Collections] - Map, List, Queue, 
       Stack, Set and more: The <tt>util.collections</tt> API.
   </li>
-  <li>[doc://topics/overview#Web Web] - Http scriptlets, portlets API, 
+  <li>[doc://topics#Web Web] - Http scriptlets, portlets API, 
       XML / XSL based tier solution, SOAP, WDDX, JSON and XMLRPC
   </li>
-  <li>[doc://topics/overview#Imaging Imaging] - Image creation and manipulation, 
+  <li>[doc://topics#Imaging Imaging] - Image creation and manipulation, 
       graphs, EXIF and IPTC extraction support.
   </li>
 </ul>
