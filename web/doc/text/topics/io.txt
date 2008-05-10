@@ -32,6 +32,16 @@ Writing a file
   }
 </code>
 
+Appending a file
+~~~~~~~~~~~~~~
+<code>
+  with ($f= new File('names.txt')); {
+    $f->open(FILE_MODE_APPEND);
+    $f->write('Timm'."\n");
+    $f->close();
+  }
+</code>
+
 FileUtil
 ~~~~~~~~
 Alternatively, the [class://io.FileUtil FileUtil] class can be used to
