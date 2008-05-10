@@ -1,7 +1,15 @@
-
 Documentation overview
 ======================
-The XP framework documentation
+The XP framework documentation.
+
+Setup
+-----
+Find out how to setup the framework on your machine:
+
+<ul>
+  <li>[doc://setup/framework Installation guide]</li>
+  <li>[doc://setup/licence Licence]</li>
+</ul>
 
 Core concepts
 -------------
@@ -35,132 +43,20 @@ Topics
 This section will give an introduction to the basics of common tasks and 
 how to accomplish them using the XP framework.
 
-Databases
-~~~~~~~~~
 <ul>
-  <li>[doc://topics/databases Basics] - the <tt>rdbms</tt> API, statements,
-      transactions, connection manager.
+  <li>[doc://topics/overview#Databases Databases] - the <tt>rdbms</tt> package,
+      object persistence, finders, criteria, transactions and drivers.
   </li>
-  <li>[doc://topics/objectpersistence Object persistence] - Row Data Gateway,
-      Table Data Gateway, DataSets, criteria, statements and finders.
+  <li>[doc://topics/overview#I/O I/O] - local and remote i/o, files, folders, 
+      archives, flatfile databases, sockets, servers and various protocols 
+      implementation. 
   </li>
 </ul>
 
-Installation
-------------
-To find out how to setup the framework on your machine, see [doc://setup/framework here].
-
-
-Api documentation
+API documentation
 -----------------
-<em>See also: The [state://api complete overview].</em>
+The generated documentation is availabe here:
 
-<summary>
-Core
-~~~~
-Reflection, types, class loading, date manipulation, properties, profiling, 
-collections framework and logging. 
-
-Packages: [package://lang lang], [package://util util]
-</summary>
-
-<summary>
-I/O
-~~~
-Local and remote I/O, files, folders, archives, flatfile databases, sockets,
-servers and various protocols implementation. 
-
-Packages: [package://io io], [package://peer peer]
-</summary>
-
-<summary>
-Databases
-~~~~~~~~~
-RDBMS access APIs, connection manager, reverse engineering, O/R mapping. 
-
-Packages: [package://rdbms rdbms]
-</summary>
-
-<summary>
-XML
-~~~
-DOM- and SAX parsing, XPath, XSLT, tree and node data xml creation, XML / 
-object mapping. 
-
-Packages: [package://xml xml]
-</summary>
-
-<summary>
-Web
-~~~
-Http scriptlets, portlets API, XML / XSL based tier solution, SOAP, WDDX,
-JSON and XMLRPC
-
-Packages: [package://scriptlet scriptlet], [package://webservices webservices]
-</summary>
-
-<summary>
-Imaging
-~~~~~~~
-Image creation and manipulation, graphs, EXIF and IPTC extraction support.
-
-Packages: [package://img img]
-</summary>
-
-<summary>
-Text
-~~~~
-Encoders and decoders, formatting, tokenizing and parsing. 
-
-Packages: [package://text text]
-</summary>
-
-<summary>
-Remote
-~~~~~~
-Remote method invocation on Application Servers.
-
-Packages: [package://remote remote]
-</summary>
-
-<summary>
-Test-driven development
-~~~~~~~~~~~~~~~~~~~~~~~
-Unittests.
-
-Packages: [package://unittest unittest]
-</summary>
-
-
-Licensing
----------
-<pre>
-Copyright (c) 2001-2008, XP-Framework Team
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-* Redistributions of source code must retain the above copyright
-  notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright
-  notice, this list of conditions and the following disclaimer in the
-  documentation and/or other materials provided with the distribution.
-* Neither the name of the XP-Framework nor the names of its
-  contributors may be used to endorse or promote products derived 
-  from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-</pre>
+<ul>
+  <li>[state://api Packages overview]</li>
+</ul>
