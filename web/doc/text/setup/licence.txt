@@ -1,5 +1,10 @@
-Licence
+License
 =======
+The XP Framework is BSD-licensed, that means it's completely free to 
+use, to copy, to extend, to modify and even to redistribute. 
+
+License text
+------------
 <pre>
 Copyright (c) 2001-2008, XP-Framework Team
 All rights reserved.
