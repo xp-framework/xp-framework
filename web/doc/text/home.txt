@@ -47,9 +47,23 @@ how to accomplish them using the XP framework.
   <li>[doc://topics/overview#Databases Databases] - the <tt>rdbms</tt> package,
       object persistence, finders, criteria, transactions and drivers.
   </li>
-  <li>[doc://topics/overview#I/O I/O] - local and remote i/o, files, folders, 
-      archives, flatfile databases, sockets, servers and various protocols 
-      implementation. 
+  <li>[doc://topics/overview#I/O I/O] - files, folders, archives, sockets, 
+      servers and various protocols implementation. 
+  </li>
+  <li>[doc://topics/overview#XML XML] - DOM- and SAX parsing, XPath, XSLT, 
+      tree and node data xml creation, XML / object mapping.
+  </li>
+  <li>[doc://topics/overview#Dates Dates] - Date and time, timezones,
+      date manipulation.
+  </li>
+  <li>[doc://topics/overview#Collections Collections] - Map, List, Queue, 
+      Stack, Set and more: The <tt>util.collections</tt> API.
+  </li>
+  <li>[doc://topics/overview#Web Web] - Http scriptlets, portlets API, 
+      XML / XSL based tier solution, SOAP, WDDX, JSON and XMLRPC
+  </li>
+  <li>[doc://topics/overview#Imaging Imaging] - Image creation and manipulation, 
+      graphs, EXIF and IPTC extraction support.
   </li>
 </ul>
 
