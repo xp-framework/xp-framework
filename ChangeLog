@@ -19,6 +19,9 @@ RFCs
   
 Bugfixes
 ~~~~~~~~
+- Made HttpScriptlet::process() rethrow HttpScriptletExceptions as-is,
+  while any other exception is wrapped into a HttpScriptletException.
+  (friebe).
 - Fixed bug when scriptlet.xml.workflow.casters.ToDate accepted an
   abbreviated date, interpreted it as a time and used the
   current date with given time instead the given date
