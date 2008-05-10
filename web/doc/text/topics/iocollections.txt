@@ -1,0 +1,123 @@
+I/O: Collections
+================
+[
+  [doc://topics/io I/O Basics] |
+  [doc://topics/iocollections Collections] |
+  [doc://topics/streams Streams]
+]
+
+The I/O collections API provides interfaces to work with collections of
+I/O elements, usually files and folders.
+
+Element
+-------
+An I/O element is defined by the [class://io.collections.IOElement IOElement]
+interface. 
+
+<summary>
+An element has:
+
+* A URI (uniform resource identifier)
+* A size (in bytes)
+* A creation date
+* A date when it was last accessed
+* A date when it was last modified
+</summary>
+
+Collection
+----------
+A collection is defined by the [class://io.collections.IOCollection IOCollection] 
+interface, which extends the <tt>IOElement</tt> interface. Ontop of the IOElement 
+attributes, a collection has the following methods to iterate on its contents.
+
+
+Iteration
+---------
+Instead of having to recurse through folder trees, the 
+[class://io.collections.iterate.IOCollectionIterator IOCollectionIterator] class
+produces a flat list of all elements.
+
+
+Example: Listing folder contents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<code>
+  $origin= new FileCollection('/etc');
+  for ($i= new IOCollectionIterator($origin); $i->hasNext(); ) {
+    Console::writeLine('Element ', $i->next());
+  }
+</code>
+
+The above example will recurse into subdirectories if the iterator 
+instanciation is changed to:
+<code>
+  new IOCollectionIterator($origin, TRUE);
+</code>
+
+
+Filters
+-------
+To narrow the list of returned elements, one can exchange the
+<tt>IOCollectionIterator</tt> with the 
+[class://io.collections.iterate.FilteredIOCollectionIterator FilteredIOCollectionIterator]
+class.
+
+Date-based filters
+~~~~~~~~~~~~~~~~~~
+[class://io.collections.iterate.AccessedAfterFilter AccessedAfterFilter],
+[class://io.collections.iterate.AccessedBeforeFilter AccessedBeforeFilter],
+[class://io.collections.iterate.CreatedAfterFilter CreatedAfterFilter],
+[class://io.collections.iterate.CreatedBeforeFilter CreatedBeforeFilter],
+[class://io.collections.iterate.ModifiedAfterFilter ModifiedAfterFilter]
+
+Name-based filters
+~~~~~~~~~~~~~~~~~~
+[class://io.collections.iterate.NameMatchesFilter NameMatchesFilter],
+[class://io.collections.iterate.NameEqualsFilter NameEqualsFilter],
+[class://io.collections.iterate.ExtensionEqualsFilter ExtensionEqualsFilter]
+
+Size-based filters
+~~~~~~~~~~~~~~~~~~
+[class://io.collections.iterate.SizeBiggerThanFilter SizeBiggerThanFilter],
+[class://io.collections.iterate.SizeEqualsFilter SizeEqualsFilter],
+[class://io.collections.iterate.SizeSmallerThanFilter SizeSmallerThanFilter]
+
+Combinations filters
+~~~~~~~~~~~~~~~~~~~~
+[class://io.collections.iterate.NegationOfFilter NegationOfFilter],
+[class://io.collections.iterate.AllOfFilter AllOfFilter],
+[class://io.collections.iterate.AnyOfFilter AnyOfFilter]
+
+
+Example: Finding images
+~~~~~~~~~~~~~~~~~~~~~~~
+<code>
+  $origin= new FileCollection('/home/thekid/multimedia');  
+  $filter= new ExtensionEqualsFilter('.jpg');
+  $recursive= FALSE;
+  
+  foreach (new FilteredIOCollectionIterator($origin, $filter, $recursive) as $element) {
+    Console::writeLine('Element ', $element);
+  }
+</code>
+
+
+Collection composite
+--------------------
+Example (all files in /home and /usr):
+<code>
+  $collection= new CollectionComposite(array(
+    new FileCollection('/home'),
+    new FileCollection('/usr')
+  ));
+
+  foreach (new IOCollectionIterator($origin)) {
+    Console::writeLine('Element ', $i->next());
+  }
+</code>
+
+
+History
+-------
+I/O Collections were first introduced within [rfc://0075 RFC 0075] in
+October 2006 and enhanced later on in [rfc://0077 RFC 0077].
+
