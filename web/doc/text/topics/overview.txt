@@ -1,0 +1,33 @@
+Topics
+======
+The complete overview of all classes and packages is available in the
+[state://api api documentation].
+
+Databases
+---------
+<summary>
+This section covers the [package://rdbms rdbms package].
+<ul>
+  <li>[doc://topics/databases Basics] - the <tt>rdbms</tt> API, statements,
+      transactions, connection manager.
+  </li>
+  <li>[doc://topics/objectpersistence Object persistence] - Row Data Gateway,
+      Table Data Gateway, DataSets, criteria and restrictions.
+  </li>
+</ul>
+</summary>
+
+I/O
+---
+<summary>
+This section covers the [package://io io] and [package://peer peer] packages.
+<ul>
+  <li>[doc://topics/io Basics] - the File and Folder classes, reading
+      file contents.
+  </li>
+  <li>[doc://topics/iocollections Collections] - Iteration and searching.
+  </li>
+  <li>[doc://topics/streams Streams] - Input and Output streams.
+  </li>
+</ul>
+</summary>
