@@ -19,6 +19,7 @@
 
   <xsl:template match="overview">
     <div id="breadcrumb">
+      <a href="{xp:link('home')}">Documentation</a> &#xbb;
       <a href="{xp:link('api')}">API documentation</a>
     </div>
     <h1>

@@ -20,6 +20,7 @@
   <xsl:template match="package">
     <xsl:variable name="package" select="concat(@name, '.')"/>
     <div id="breadcrumb">
+      <a href="{xp:link('home')}">Documentation</a> &#xbb;
       <a href="{xp:link('api')}">API documentation</a> &#xbb;
       <xsl:call-template name="hierarchy">
         <xsl:with-param name="path" select="@name"/>
