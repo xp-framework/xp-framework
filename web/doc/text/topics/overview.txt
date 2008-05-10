@@ -1,12 +1,11 @@
 Topics
 ======
-The complete overview of all classes and packages is available in the
-[state://api api documentation].
+The XP framework packages by topic.
 
 Databases
 ---------
-<summary>
 This section covers the [package://rdbms rdbms package].
+<summary>
 <ul>
   <li>[doc://topics/databases Basics] - the <tt>rdbms</tt> API, statements,
       transactions, connection manager.
@@ -19,8 +18,8 @@ This section covers the [package://rdbms rdbms package].
 
 I/O
 ---
-<summary>
 This section covers the [package://io io] and [package://peer peer] packages.
+<summary>
 <ul>
   <li>[doc://topics/io Basics] - the File and Folder classes, reading
       file contents.
@@ -31,3 +30,74 @@ This section covers the [package://io io] and [package://peer peer] packages.
   </li>
 </ul>
 </summary>
+
+XML
+---
+This section covers the [package://xml xml] package.
+<summary>
+<ul>
+  <li>[doc://topics/xml Basics] - Data-driven Tree and Node classes.
+  </li>
+  <li>[doc://topics/xsl XSL] - XSL processing, callbacks, exslt
+  </li>
+  <li>[doc://topics/xmlmarshal XML Marshalling] - XML / object mapping.
+  </li>
+</ul>
+</summary>
+
+Dates
+-----
+This section covers the date-related classes from the [package://util  util] package.
+<summary>
+<ul>
+  <li>[doc://topics/date Date] - The <tt>Date</tt>, <tt>DateMath</tt> and
+      <tt>TimeSpan</tt> classes.
+  </li>
+  <li>[doc://topics/timezones Timezones] - Time zone handling.
+  </li>
+</ul>
+</summary>
+
+Collections
+-----------
+This section covers the the [package://util.collections  util.collections] package.
+<summary>
+<ul>
+  <li>[doc://topics/collections Basics] - Map, List, Queue, Stack, Set and more
+  </li>
+  <li>[doc://topics/generics Generics] - Shows how the collections classes can
+      be used a generics (a vector of strings e.g.)
+  </li>
+  <li>[doc://topics/overloading Overloading] - Array operator overloading.
+  </li>
+</ul>
+</summary>
+
+Web
+---
+This section covers the [package://scriptlet scriptlet] and [package://webservices webservices] packages.
+<summary>
+<ul>
+  <li>[doc://topics/scriptlets Basics] - The HttpScriptlet base class.
+  </li>
+  <li>[doc://topics/generics Generics] - Shows how the collections classes can
+      be used a generics (a vector of strings e.g.)
+  </li>
+  <li>[doc://topics/overloading Overloading] - Array operator overloading.
+  </li>
+</ul>
+</summary>
+
+Imaging
+-------
+This section covers the [package://img img] package.
+<summary>
+<ul>
+  <li>[doc://topics/imaging Basics] - The <tt>Image</tt> class.
+  </li>
+  <li>[doc://topics/imagemeta Image Meta data] - EXIF and IPTC data
+  </li>
+</ul>
+</summary>
+
+
