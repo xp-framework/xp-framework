@@ -222,7 +222,7 @@
     /**
      * get SQL formatter
      *
-     * @return  rdbms.StatemantFormatter
+     * @return  rdbms.StatementFormatter
      */
     abstract public function getFormatter();
   }
