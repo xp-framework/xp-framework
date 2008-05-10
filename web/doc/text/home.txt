@@ -8,7 +8,7 @@ Find out how to setup the framework on your machine:
 
 <ul>
   <li>[doc://setup/framework Installation guide]</li>
-  <li>[doc://setup/licence Licence]</li>
+  <li>[doc://setup/license License]</li>
 </ul>
 
 Core concepts
