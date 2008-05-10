@@ -87,6 +87,13 @@
   </xsl:template>
 
   <!--
+   ! Links to an image
+   !-->
+  <xsl:template match="link[@rel= 'img']">
+    <img src="http://news.xp-framework.net/image/fetch/uploads/{@href}" alt="{@href}"/>
+  </xsl:template>
+
+  <!--
    ! Links without caption
    !-->
   <xsl:template match="link[string(.) = '']">
