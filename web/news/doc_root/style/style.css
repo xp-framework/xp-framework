@@ -46,3 +46,17 @@ div#footer {
 div#footer a {
   color: #004926;
 }
+
+/* Pager */
+.pager {
+  text-align: right;
+  width: 100%;
+  font: bold 32px "Lucida Grande", "Trebuchet MS", arial;
+  margin: 10px;
+}
+.pagerfalse {
+  color: #666666;
+}
+.pager a {
+  text-decoration: none;
+}

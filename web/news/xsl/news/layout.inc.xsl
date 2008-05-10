@@ -24,20 +24,19 @@
   <xsl:template name="tracking-code">UA-617805-6</xsl:template>
 
   <xsl:template match="pager">
-    <div style="text-align: center;">
-      <xsl:choose>
-        <xsl:when test="@offset &gt; 0">
-          <a href="{concat(xp:linkCategory(/formresult/categories/category[@current-category= 'true']/@id, /formresult/categories/category[@current-category= 'true']/@link), '?', @prev)}">&lt;&lt;&lt;</a>
-        </xsl:when>
-        <xsl:otherwise>&lt;&lt;&lt;</xsl:otherwise>
-      </xsl:choose>
-      |
-      <xsl:choose>
-        <xsl:when test="@next">
-          <a href="{concat(xp:linkCategory(/formresult/categories/category[@current-category= 'true']/@id, /formresult/categories/category[@current-category= 'true']/@link), '?', @next)}">&gt;&gt;&gt;</a>
-        </xsl:when>
-        <xsl:otherwise>&gt;&gt;&gt;</xsl:otherwise>
-      </xsl:choose>
+    <div class="pager">
+      <a title="Newer entries" class="pager{@offset &gt; 0}" id="previous">
+        <xsl:if test="@offset &gt; 0">
+          <xsl:attribute name="href"><xsl:value-of select="concat(xp:linkCategory(/formresult/categories/category[@current-category= 'true']/@id, /formresult/categories/category[@current-category= 'true']/@link), '?', @prev)"/></xsl:attribute>
+        </xsl:if>
+        &#xab;
+      </a>
+      <a title="Older entries" class="pager{@next != ''}" id="next">
+        <xsl:if test="@next">
+          <xsl:attribute name="href"><xsl:value-of select="concat(xp:linkCategory(/formresult/categories/category[@current-category= 'true']/@id, /formresult/categories/category[@current-category= 'true']/@link), '?', @next)"/></xsl:attribute>
+        </xsl:if>
+        &#xbb;
+      </a>
     </div>
   </xsl:template>
   
