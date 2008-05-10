@@ -41,7 +41,7 @@
             <br/><br clear="all"/>
 
             <!-- RFCs -->
-            <h3><a href="{xp:link('rfc')}">Transparency</a></h3>
+            <h3><a href="{xp:link('rfc')}">RFCs: Transparency</a></h3>
             <p align="justify">
               One of the major deficiencies in the development of many projects is that there 
               is no roadmap or strategy available other than in the developers' heads. The
