@@ -51,8 +51,16 @@ be our means of accessing the news table.
 Note: The Peer class uses the connection manager to retrieve a connection to
 the RDBMS, so passing a connection to all the methods is not necessary.
 Instead, it is expected that you register an appropriate connection to
-the [class://rdbms.ConnectionManager ConnectionManager]. The generated 
-class will contain the name of the connection it is using.
+the [class://rdbms.ConnectionManager ConnectionManager]:
+
+<code>
+  ConnectionManager::getInstance()->register(
+    DriverManager::getConnection('pgsql://user:password@host/DB?autoconnect=1'),
+    'news'
+  );
+</code>
+
+The generated class will contain the name of the connection it is using.
 </summary>
 
 
@@ -67,6 +75,21 @@ To retrieve an object the static accessors are used:
   //   select * from news where news_id= 1
   //
   Console::writeLine('News #1: ', News::getByNews_id(1));
+</code>
+
+In the above case, the result will be a single instance of the <tt>News</tt>
+class because the primary key is - of course - unique. Assuming we have a
+non-unique index on the field <tt>author</tt>, we'd get an array:
+
+<code>
+  // Retrieve instances of the news class where 'timm' is the author's
+  // field value:
+  //
+  //   select * from news where author= 'timm'
+  //
+  foreach (News::getByAuthor('timm') as $n) {
+    Console::writeLinef('- News #%d: %s', $n->getNews_id(), $n->getTitle());
+  }
 </code>
 
 
@@ -112,4 +135,98 @@ the setters to modify the data and then write it back using the
   //
   // The update() method will use the primary key in the where clause
   $news->update();
+</code>
+
+
+Using criteria
+--------------
+To compose more complex queries, one can use the [class://rdbms.Criteria Criteria]
+class and pass it to the [class://rdbms.Peer Peer] object associated with the
+dataset class.
+
+<code>
+  // select * from news where author= 'timm' and title like 'Hello%'
+  $entries= News::getPeer()->doSelect(create(new Criteria())
+    ->add('author', 'timm', EQUAL)
+    ->add('title', 'Hello%', LIKE)
+  );
+</code>
+
+The <tt>add()</tt> method is overloaded and has the following signatures:
+
+<pre>
+  public self add(string field, string value, string op)
+  public self add(rdbms.criterion.Criterion c)
+</pre>
+
+Restrictions
+------------
+The default way is to narrow results by adding more criteria with <tt>and</tt>.
+The [class://rdbms.criterion.Restrictions Restrictions] class offers extended
+possibilities - methods available are:
+<ul>
+  <li><tt>in()</tt> and <tt>notIn()</tt></li>
+  <li><tt>like()</tt>, <tt>ilike()</tt> and <tt>notLike()</tt></li>
+  <li><tt>equal</tt> and <tt>notEqual()</tt></li>
+  <li><tt>lessThan()</tt> and <tt>lessThanOrEqualTo()</tt></li>
+  <li><tt>greaterThan()</tt> and <tt>greaterThanOrEqualTo()</tt></li>
+  <li><tt>between()</tt></li>
+  <li><tt>anyOf()</tt> and <tt>allOf()</tt></li>
+  <li><tt>not()</tt></li>
+</ul>
+The above can be rewritten using the second version as follows:
+
+<code>
+  // select * from news where author= 'timm' and title like 'Hello%'
+  $entries= News::getPeer()->doSelect(create(new Criteria())
+    ->add(Restrictions::equal('author', 'timm'))
+    ->add(Restrictions::like('title', 'Hello%'))
+  );
+</code>
+
+Between
+~~~~~~~
+The <tt>between()</tt> constraint selects values with an upper and lower
+boundary
+
+<code>
+  // select * from news where news_id between 1 and 100
+  $entries= News::getPeer()->doSelect(new Criteria(Restrictions::between(
+    'news_id',
+    1,
+    100
+  )));
+</code>
+
+Conjunction / disjunction / negation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+By using the <tt>anyOf</tt>, <tt>allOf</tt> and <tt>not</tt> factory methods,
+queries with <tt>or</tt>, <tt>and</tt> and <tt>not</tt> can be created:
+
+<code>
+  // Restrictions::anyOf()
+  //
+  //   select * from news where (author = 'timm' or title like '%timm%')
+  //
+  $entries= News::getPeer()->doSelect(new Criteria(Restrictions::anyOf(
+    Restrictions::equal('author', 'timm'),
+    Restrictions::like('title', '%timm%')
+  )));
+  
+  // Restrictions::allOf()
+  //
+  //   select * from news where (author = 'timm' and title like '%timm%')
+  //
+  $entries= News::getPeer()->doSelect(new Criteria(Restrictions::allOf(
+    Restrictions::equal('author', 'timm'),
+    Restrictions::like('title', '%timm%')
+  )));
+  
+  // Restrictions::not()
+  //
+  //   select * from news where not (title like '%timm%')
+  //
+  $entries= News::getPeer()->doSelect(new Criteria(Restrictions::not(
+    Restrictions::like('title', '%timm%')
+  )));
 </code>
