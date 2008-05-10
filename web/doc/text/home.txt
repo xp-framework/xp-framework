@@ -3,15 +3,6 @@ Documentation overview
 ======================
 The XP framework documentation
 
-FAQ
----
-What is the XP framework? What is the XP framework's licence? And many
-more questions are answered here.
-
-History
--------
-From the initial idea until where we are today!
-
 Core concepts
 -------------
 The framework consists of a number of core functionalities:
@@ -39,14 +30,26 @@ The framework consists of a number of core functionalities:
       attaching functionality to enum members</li>
 </ul>
 
+Topics
+------
+This section will give an introduction to the basics of common tasks and 
+how to accomplish them using the XP framework.
+
+Databases
+~~~~~~~~~
+<ul>
+  <li>[doc://topics/databases Basics] - the <tt>rdbms</tt> API, statements,
+      transactions, connection manager.
+  </li>
+  <li>[doc://topics/objectpersistence Object persistence] - Row Data Gateway,
+      Table Data Gateway, DataSets, criteria, statements and finders.
+  </li>
+</ul>
+
 Installation
 ------------
 To find out how to setup the framework on your machine, see [doc://setup/framework here].
 
-Examples
---------
-This section will give an introduction to the basics of common tasks and 
-how to accomplish them using the XP framework. 
 
 Api documentation
 -----------------

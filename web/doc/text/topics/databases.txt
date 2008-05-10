@@ -1,0 +1,289 @@
+Databases: Basics
+=================
+[
+  [doc://topics/databases Basics] |
+  [doc://topics/objectpersistence Object Persistence]
+]
+
+The entry point class for all database connections is the 
+[class://rdbms.DriverManager DriverManager] class from the
+[package://rdbms rdbms package].
+
+<code>
+  uses('rdbms.DriverManager');    
+  
+  $conn= DriverManager::getConnection('sybase://user:pass@server/NICOTINE');
+</code>
+
+The connection object returned is an instance of a driver-specific subclass of the 
+[class://rdbms.DBConnection DBConnection] class. In the above example, the connection
+object would be instance of [class://rdbms.sybase.SybaseConnection SybaseConnection].
+
+Querying
+--------
+To query a database using SQL statements, you can either use the generic <tt>query()</tt>
+method or one of the <tt>insert()</tt>, <tt>update()</tt>, <tt>delete()</tt> and 
+<tt>select()</tt> methods.
+
+query
+~~~~~
+The <tt>query()</tt> method returns a [class://rdbms.ResultSet ResultSet] object
+on which one can iterate. Its <tt>next()</tt> method return hashes with keys
+corresponding to the database fields and values to their values.
+
+<code>
+  $q= $conn->query('select person_id, realname, lastchange from person where person_id= 1');
+  while ($record= $q->next()) {
+    // record= [
+    //   'person_id'  => 1,
+    //   'realname'   => 'Übercoder',
+    //   'lastchange' => util.Date<2008-05-10 12:14:00>
+    // ]
+  }
+</code>
+
+select
+~~~~~~
+The <tt>select()</tt> method returns all results into an array of hashes and 
+is particularily useful when it comes to small resultsets.
+
+<code>
+  $a= $conn->select('author_id, person_id from author where bz_id < 30001');
+  // a = [
+  //   0 => [
+  //     'author_id'  => 1,
+  //     'person_id'  => 7
+  //   ],
+  //   1 => [
+  //     'author_id'  => 22,
+  //     'person_id'  => 3
+  //   ],
+  // ]
+</code>
+
+Note that the SQL keyword "select" needs to be omitted from the above
+SQL statement string when using the <tt>select()</tt> method.
+
+insert / update / delete
+~~~~~~~~~~~~~~~~~~~~~~~~~
+The <tt>insert</tt>, <tt>update()</tt> and <tt>delete()</tt> methods returns 
+the number of affected rows:
+
+<code>
+  $n= $conn->insert('option_matrix (contract_id, option_id) values (10, 501)');
+  // n= 1
+  
+  $n= $conn->update('contract set lastchange= getdate() where contract_id= 1');
+  // n= 1 (assuming a contract w/ id #1 exists)
+  
+  $n= $conn->delete('from customer where customer_id= -1');
+  // n= 0 (assuming no customer w/ negative ids exist)
+</code>
+
+
+Exceptions
+----------
+All methods will throw exceptions for any errors encountered during their
+operation. All these exceptions are subclasses of [class://rdbms.SQLException SQLException], 
+so to catch all possible errors, use it in the catch clause. 
+
+Basically, to handle errors nicely, you'd usually do something like this:
+<code>
+  try {
+    $conn->query('update news set author_id= 2 where author_id= 1');
+  } catch (SQLException $e) {
+    // Handle it
+  }
+</code>
+
+If you want to distinguish between the different cases, you can do so
+in a quite fine-grained way:
+<code>
+  try {
+    $conn->query('update news set author_id= 2 where author_id= 1');
+  } catch (SQLConnectionClosedException $ce) {
+    // Connection was closed in the mean-time
+  } catch (SQLDeadlockException $de) {
+    // Query caused a deadlock
+  } catch (SQLStatementFailedException $fe) {
+    // Statement failed (e.g. syntax error in SQL)
+  } catch (SQLStateException $se) {
+    // Previous attempt to (re-)connect failed
+  } catch (SQLException $e) {
+    // Any other error
+  }
+</code>
+
+
+Preparing statements
+--------------------
+In all of the above examples, you notice all the SQL is unparametrized. In most 
+usecases, you'd want to pass parameters to the statements though. To "bind" 
+parameters to an SQL query, all of the afforementioned methods offer a printf 
+style tokenizer and support varargs syntax. These take care of NULL and proper 
+escaping for you. 
+
+<code>
+  // Selecting
+  $q= $conn->query('select * from news where news_id= %d', $newsId);
+  
+  // Inserting
+  $conn->insert('
+    into news (
+      caption, author_id, body, extended, created_at
+    ) values (
+      %s, -- caption
+      %d, -- author_id
+      %s, -- body
+      %s, -- extended
+      %s  -- created_at
+    )',
+    $caption,
+    $authorId,
+    $body,
+    $extended,
+    Date::now()
+  );
+</code>
+
+Tokens
+~~~~~~
+The following tokens are recognized:
+<summary>
+<ul>
+  <li><tt>%d</tt> - the argument is represented as a numeric value</li>
+  <li><tt>%f</tt> - the argument is represented as a decimal value</li>
+  <li><tt>%s</tt> - the argument is represented as a string. Escaping is taken care of.</li>
+  <li><tt>%c</tt> - the argument is taken <tt>as-is</tt></li>
+</ul>
+</summary>
+In addition to the format token, the following rules apply:
+<ul>
+  <li>
+    If the argument is <tt>NULL</tt> (not FALSE, or an empty string, <tt>=== NULL</tt>
+    in PHP terms), the token is replaced by the (unquoted) word <tt>NULL</tt>.
+  </li>
+  <li>
+    Passing an array will result in a comma separated list of replaced tokens.
+    This is particularily useful when dealing with (SQL) <tt>in (...)</tt>.
+  </li>
+  <li>
+    If the argument is a [class://util.Date Date] object,
+    a rdbms-specific representation of the date is put in place of the token.
+  </li>
+  <li>
+    Argument numbering is also supported: Any token may be preceded by
+    an offset (like in PHP's <tt>printf</tt>), as follows: <tt>%1$s</tt>
+  </li>
+</ul>
+To return the tokenized SQL instead of sending it to the database engine, 
+use the connection's <tt>prepare()</tt> method.
+
+Transactions
+------------
+To start a transaction, you can use the connection's <tt>begin</tt> method. It
+will return a [class://rdbms.Transaction Transaction] instance.
+
+<code>
+  public function createAuthor(...) {
+    try {
+      $tran= $conn->begin(new Transaction('create_author'));
+      
+      $id= $conn->insert('into author ...');
+      $conn->insert('into notify ...');
+      
+      $tran->commit();
+      return $id;
+    } catch (SQLException $e) {
+      $tran && $tran->rollback();
+      throw $e;
+    }
+  }
+</code>
+
+Note: Not all RDBMS' support transactions, and of those that do, not all 
+support nested transactions. Be sure to read the manual pages of the RDBMS 
+you are accessing. 
+
+
+Logging
+-------
+When working with databases, it is most common to be log the client/server
+communication, especially during development. The database API integrates 
+with the [package://util.log util.log] package to support this. If you 
+already have a logger set up, it is as easy as modifying the connection 
+string:
+
+<code>
+  $conn= DriverManager::getConnection('mysql://localhost/NEWS?log=default');
+</code> 
+
+To set up a logger category, use the following:
+
+<code>
+  Logger::getInstance()->getCategory()->addAppender(new FileAppender('debug.log'));
+</code>
+
+If you want to split usual debug output from SQL logging, you can use a 
+different logger category:
+
+<code>
+  // Add a FileAppender logging to sql.log for the "sql" category 
+  Logger::getInstance()->getCategory('sql')->addAppender(new FileAppender('sql.log'));
+  
+  // Make connection log to "sql" category
+  DriverManager::getConnection('mysql://localhost/NEWS?log=sql');
+</code>
+
+
+The connection manager
+----------------------
+Often it is necessary to use database connections in various places within 
+sourcecode. Imagine a database-driven web application such as a weblog, forum, 
+or even a configuration suite (such as 1&1's control panel). In either of 
+the aforementioned you will probably use the database connection in state 
+classes (the ones reflecting a page or a set of pages), in handlers (the 
+classes handling submitted data), in helper classes, and maybe in even more 
+places.
+
+The singleton [class://rdbms.ConnectionManager ConnectionManager] class 
+releaves you of the pain of always having to pass the database connection 
+to all methods that (may) need one.
+
+First, you'll need to set up the connection manager. You do this by
+either registering connections manually:
+
+<code>
+  ConnectionManager::getInstance()->register(
+    DriverManager::getConnection('sybase://user:pass@server/CAFFEINE?autoconnect=1'),
+    'caffeine'
+  );
+</code>
+...or by using a configuration file:
+<code>
+  ConnectionManager::getInstance()->configure(
+    new Properties('etc/connections.ini')
+  );
+</code>
+
+For the latter case, the property file <tt>etc/connections.ini</tt> needed 
+will look like this:
+
+<pre>
+  ; Database configuration
+  [caffeine]
+  dsn="sybase://user:pass@server/CAFFEINE?autoconnect=1"
+</pre>
+
+Note: It is generally a good idea to use the property file approach: This
+way, no database credentials exist in the sourcecode.
+
+The connection manager, once set up, is globally available; its instance 
+can be retrieved by using the [class://rdbms.ConnectionManager#getInstance getInstance()]
+method.
+
+<code>
+  $conn= ConnectionManager::getInstance()->getByHost('caffeine', 0);
+  $conn->query('exec sp_brew');
+</code>
+

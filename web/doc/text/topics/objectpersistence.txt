@@ -1,0 +1,115 @@
+Databases: Object persistence
+=============================
+[
+  [doc://topics/databases Basics] |
+  [doc://topics/objectpersistence Object Persistence]
+]
+
+The XP framework also offers an API to object persistence via the 
+[class://rdbms.DataSet DataSet] and [class://rdbms.Peer Peer] classes. 
+These classes implement a variation of the "Row Data Gateway" pattern 
+(described at [http://www.martinfowler.com/eaaCatalog/rowDataGateway.html Martin Fowler's website]):
+<pre>
+  An object that acts as a Gateway to a single record in a data source.
+  There is one instance per row.
+</pre>
+and the "Table Data Gateway" (for details, see [http://www.martinfowler.com/eaaCatalog/tableDataGateway.html here]):
+<pre>
+  A Table Data Gateway holds all the SQL for accessing a single table or
+  view: selects, inserts, updates, and deletes. Other code calls its
+  methods for all interaction with the database.
+</pre>
+
+In the XP framework, the Table Data Gateway is called Peer, the "Row
+Data Gateway" is implemented by subclassing DataSet.
+
+API
+---
+Every DataSet class has a Peer class associated with it. This happens
+automatically as soon as the class is loaded. The Peer class takes care
+of the interaction with the RDBMS and using the <tt>rdbms.DBConnection</tt>
+classes via the <tt>rdbms.ConnectionManager</tt>. It does not
+usually need to be used directly, its methods are invoked by the
+DataSet classes.
+
+Assume the following database structure:
+
+[img://docs/news-table.png News table]
+
+To be able to access this table using the object persistence api, we
+will first have to generate a DataSet subclass. This is done by using
+the generator utility - this creates a class called News which will
+be our means of accessing the news table.
+
+
+* The generated class extends the rdbms.DataSet class
+* For each field in the table, a member is created
+* For each member, a getter an a setter is created
+* For each index, a static getter is created
+
+<summary>
+Note: The Peer class uses the connection manager to retrieve a connection to
+the RDBMS, so passing a connection to all the methods is not necessary.
+Instead, it is expected that you register an appropriate connection to
+the [class://rdbms.ConnectionManager ConnectionManager]. The generated 
+class will contain the name of the connection it is using.
+</summary>
+
+
+Retrieving an object
+--------------------
+To retrieve an object the static accessors are used:
+
+<code>
+  // Retrieve an instance of the news class by its primary key news_id.
+  // This basically equals to:
+  //
+  //   select * from news where news_id= 1
+  //
+  Console::writeLine('News #1: ', News::getByNews_id(1));
+</code>
+
+
+Creating an object
+------------------
+To create a new entry in the news table, use the following:
+
+<code>
+  // Create a News object and insert it. This executes the following SQL:
+  //
+  //   insert into news (author, title, body, lastchange) values (...)
+  //
+  // The insert() method returns the identity value if applicable.
+  with ($n= new News()); {
+    $n->setAuthor('hubert');
+    $n->setTitle('Good news, everyone!');
+    $n->setBody('I have created ...');
+    $n->setLastchange(Date::now());
+
+    $id= $n->insert();
+  }
+  
+  Console::writeLinef('Created news entry, id is %d', $id);
+</code>
+
+
+Modifying an object
+-------------------
+To modify an existing object, we retrieve one from the database, use
+the setters to modify the data and then write it back using the
+<tt>update()</tt> method.
+
+<code>
+  // 1) Retrieve an object
+  $news= News::getByNews_id(1);
+  
+  // 2) Modify it
+  $news->setTitle('Updated: '.$news->getTitle());
+  
+  // 3) Write it back to the database. Only the modified fields will get updated:
+  //
+  //  update news set title = "Updated: Good news, everyone!" where news_id = 1
+  //
+  // The update() method will use the primary key in the where clause
+  $news->update();
+</code>
