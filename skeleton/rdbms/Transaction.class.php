@@ -9,19 +9,21 @@
    *
    * <code>
    *   uses('rdbms.DriverManager');
-   *
-   *   $conn= &DriverManager::getConnection('sybase://user:password@server/database');
-   *   $tran= &$conn->begin(new Transaction('test'));
-   *   try(); {
+   *   
+   *   $conn= DriverManager::getConnection('sybase://user:password@server/database');
+   *   try {
+   *     $tran= $conn->begin(new Transaction('test'));
+   *     
    *     // ... execute SQL statements
-   *   } if (catch('SQLException', $e)) {
-   *     $tran->rollback();
-   *     $e->printStackTrace();
-   *     exit(-1);
+   *     
+   *     $tran->commit();
+   *   } catch (SQLException $e) {
+   *     $tran && $tran->rollback();
+   *     throw $e;
    *   }
-   *   $tran->commit();
    * </code>
    *
+   * @see      xp://rdbms.DBConnection#begin
    * @purpose  Wrap a transaction
    */
   class Transaction extends Object {
