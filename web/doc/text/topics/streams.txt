@@ -71,7 +71,7 @@ Stream adapters
 ---------------
 The [class://io.streams.Streams Streams] class provides static methods
 to wrap stream objects into PHP file handles. This way, legacy APIs can
-be fed with thesefile handles:
+be made to work with streams.
 
 <code>
   // Reading
