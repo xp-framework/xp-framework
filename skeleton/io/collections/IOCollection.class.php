@@ -29,7 +29,7 @@
      * Retrieve next element in collection. Return NULL if no more entries
      * are available
      *
-     * @return  io.collection.IOElement
+     * @return  io.collections.IOElement
      */
     public function next();
 
