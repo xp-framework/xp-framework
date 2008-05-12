@@ -1,0 +1,97 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Perl-compatible regular expressions API.
+ *
+ * The entry point class is text.regex.Pattern which is a wrapper around the
+ * preg_*() functions in PHP.
+ *
+ * Testing whether a pattern matches
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * The most common use-case is to test whether a given pattern matches.
+ *
+ * <code>
+ *   // Current
+ *   if (preg_match('/([w]{3}\.)?example\.(com|net|org)/', $string)) {
+ *     ...
+ *   }
+ *
+ *   // New
+ *   if (Pattern::compile('([w]{3}\.)?example\.(com|net|org)')->matches($string)) {
+ *     ...
+ *   }
+ * </code>
+ *
+ * The problem with the preg_match() approach is that it will return FALSE
+ * if the pattern is malformed (and raise a warning) - this is something that
+ * can lead to long debugging / wtf?! sessions. The Pattern class will throw
+ * an exception.
+ *
+ *
+ * Retrieving matched text
+ * ~~~~~~~~~~~~~~~~~~~~~~~
+ * To match parts out of a string:
+ *
+ * <code>
+ *   // Current
+ *   preg_match('/(([w]{3})\.)?example\.(com|net|org)/', $string, $matches);
+ *   Console::writeLine($matches);
+ *
+ *   // New
+ *   $match= Pattern::compile('(([w]{3})\.)?example\.(com|net|org)')->match($string);
+ *   Console::writeLine($match->group(0));
+ * </code>
+ *
+ * The results in both cases is a string-array with the contents
+ * <tt>[ "www.example.com", "www.", "www", "com" ]</tt>.
+ *
+ *
+ * Working with string objects
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * The text.regex pattern supports the lang.types.String object built-in:
+ *
+ * <code>
+ *   $string= new String('RFC #0001');
+ *   $num= Pattern::compile('RFC #([0-9]+)')->match($string)->group(1);  // "0001"
+ * </code>
+ *
+ * Modifiers
+ * ~~~~~~~~~
+ * Instead of embedding the modifiers in the pattern string, they need to be
+ * passed to the Pattern class' compile() method as bitfield:
+ *
+ * <code>
+ *   // Current
+ *   $ok= preg_match('/[a-z0-9_]+/i', $username);
+ *
+ *   // New
+ *   $ok= Pattern::compile('[a-z0-9_]+', Pattern::CASE_INSENSITIVE)->matches($username);
+ * </code>
+ *
+ * Further modifiers are:
+ * <pre>
+ *   Constant name    Modifier
+ *   ================ ========
+ *   CASE_INSENSITIVE i
+ *   MULTILINE        m
+ *   DOTALL           s
+ *   EXTENDED         x
+ *   ANCHORED         A
+ *   DOLLAR_ENDONLY   D
+ *   ANALYSIS         S
+ *   UNGREEDY         U
+ *   UTF8             u
+ * </pre>
+ *
+ * This is more verbose but easier to read.
+ * 
+ * @see      xp://text.regex.Pattern
+ * @see      php://pcre
+ * @purpose  Regular expressions
+ */
+package text.regex {
+}
