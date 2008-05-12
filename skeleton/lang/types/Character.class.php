@@ -24,6 +24,7 @@
    * </code>
    *
    * @ext      iconv
+   * @test     xp://net.xp_framework.unittest.core.types.CharacterTest
    * @purpose  Wrapper type
    */
   class Character extends Object {

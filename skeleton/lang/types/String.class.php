@@ -12,6 +12,7 @@
    * Represents a string
    *
    * @ext      iconv
+   * @test     xp://net.xp_framework.unittest.core.types.StringTest
    * @purpose  Wrapper type
    */
   class String extends Object implements ArrayAccess {

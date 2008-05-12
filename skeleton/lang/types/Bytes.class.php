@@ -9,6 +9,7 @@
   /**
    * Represents a list of bytes
    *
+   * @test     xp://net.xp_framework.unittest.core.types.BytesTest
    * @purpose  Wrapper type
    */
   class Bytes extends Object implements ArrayAccess, IteratorAggregate {

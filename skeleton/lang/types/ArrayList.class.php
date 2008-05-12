@@ -7,6 +7,7 @@
   /**
    * Represents a "numeric" array
    *
+   * @test     xp://net.xp_framework.unittest.core.types.ArrayListTest
    * @purpose  Wrapper
    */
   class ArrayList extends Object implements ArrayAccess, IteratorAggregate {
