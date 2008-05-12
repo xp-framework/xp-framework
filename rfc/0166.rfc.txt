@@ -19,14 +19,97 @@ Clarification is needed.
 
 Functionality
 -------------
-All XP runners 
+XP runners make it easy to run XP classes.
 
+Hello World-Example
+~~~~~~~~~~~~~~~~~~~
+Hello.class.php:
+<code>
+  uses('util.cmd.Console');
+  
+  class Hello extends Object {
+  
+    public static function main(array $args) {
+      Console::writeLine('Hello ', $args[1]);
+    }
+  }
+</code>
+
+To run this code with php, we would have to type:
+<pre>
+  $ php
+  > -dinclude_path=".:/path/to/xp:/path/to/xp/xp-rt-X.X.X.xar"
+  > -r "require('lang.base.php'); uses('Hello'); Hello::main($argv);"
+  > World
+</pre>
+
+If we use the XP runner, we simply type:
+<pre>
+  $ xp Hello World
+</pre>
+
+Releases
+~~~~~~~~
+Every release comes bundled with the runners:
+<pre>
+  + xp-VERSION/
+    +- lang.base.php
+    +- lib/
+    |  +- xp-rt-VERSION.xar
+    |  +- ... (further xar files)
+    +- bin/
+       +- xp
+       +- xpcli
+       +- ... (further utilities)
+</pre>
+The runners all use <tt>../lang.base.php</tt> and <tt>../lib/xp-rt-VERSION.xar</tt> 
+to ensure no global <tt>include_path</tt> setting will "disturb" the class loading 
+process. Assume you have installed the XP framework to <tt>/usr/local/lib</tt>. 
+By adding<tt>/usr/local/lib/xp-VERSION/bin</tt> to your <tt>PATH</tt>, you can 
+type "xp" in any shell to invoke the xp utility.
+
+Development
+~~~~~~~~~~~
+For a development checkout, the directory tree looks as follows:
+<pre>
+  + trunk/
+    +- skeleton/
+    |  +- lang.base.php
+    |  +- lang/
+    |  |  +- Object.class.php
+    |  |  +- ... (lang package contents)
+    |  +- ... (packages)
+    +- ports/
+       +- classes/
+       |  +- net/
+       |  +- ... (further non-core classes)
+       +- technologies/
+          +- env/
+             +- bin/
+                +- xp
+                +- xpcli
+                +- ... (further utilities)
+</pre>
+XXX TODO: Would they use ../../../skeleton/ as <tt>include_path</tt>? XXX
 
 Core utility: xp
 ~~~~~~~~~~~~~~~~
-Runs classes with a <tt>public static function main($args)</tt>.
+Basic runner
 <pre>
-  $ xp class.with.static.main.Method
+  # Display version
+  $ xp [opt] -v
+
+  # Evaluate
+  $ xp [opt] -e 'echo create(new Object())->hashCode();'
+  
+  # Run main class from xar file (via META-INF/manifest.ini)
+  $ xp [opt] -xar [app.xar]
+  
+  # Run class
+  $ xp [opt] class.with.static.main.Method
+  
+  opt is one of:
+  * -cp [path-list] - Set classpath
 </pre>
 
 
