@@ -18,13 +18,14 @@
   <xsl:include href="layout.inc.xsl"/>
 
   <xsl:template name="content">
+    <div style="padding: 0; margin: 0; width: 100%; height: 200px; background: #015c2c url(/image/header.png); color: white">
+      <p style="padding: 70px 10px 0 10px; margin: 0">
+        This site is dedicated to the development of the XP framework.
+        <br/><br/>
+      </p>
+    </div>
     <table id="main" cellpadding="0" cellspacing="10"><tr>
       <td id="content" style="background: white url(/image/apple.jpg) no-repeat bottom left">
-        <h1>Developer Zone</h1>
-        <p>
-          This site is dedicated to the development of the XP framework.
-        </p>
-        <br clear="all"/>
 
         <!-- Featured items -->
         <table width="100%" class="columned"><tr>
