@@ -60,6 +60,18 @@ Works with XAR archives. An alias for <tt>xp net.xp_framework.xar.Xar</tt>.
 </pre>
 
 
+Development utility: n
+~~~~~~~~~~~~~~~~~~~~~~
+Starts editor.
+<pre>
+  $ n [class-or-file*]
+  
+  class-or-file is one of:
+  * fully.qualified.class.Name
+  * fully/qualified/class/Name.class.php
+</pre>
+
+
 Development utility: unittest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runs classes that extend the unittest.TestCase class. An alias for 
@@ -92,16 +104,25 @@ Runs Quantum buildfiles (<tt>build.cxml</tt>).
 
 Development utility: cgen
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-Compiler generator utility:
+Code generator utility.
 <pre>
-  $ cgen [grammar] [skeleton-name] [parser-name] > [output]
+  # Generate parsers
+  $ cgen [options] Parser <grammar> <skeleton-name> <parser-name>
+  
+  # Generate remote stubs via ESDL
+  $ cgen [options] Stubs [dsn]
+  
+  # Generate datasets
+  $ cgen [options] DataSets [dsn]
+  
+  options is one of:
+  * -o dir/: Generate class files to directory dir/ (default: ./)
 </pre>
 
 
 Development utility: xcc
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Compiles XP sourcecode to bytecode - this only applies to the compiled 
-version of XP, see RFC #0052.
+Compiles XP sourcecode to bytecode.
 <pre>
   $ xcc any/source/File.xp
 </pre>
@@ -109,8 +130,7 @@ version of XP, see RFC #0052.
 
 Development utility: opcodes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Dumps opcode instructions from compiled bytecode - this only applies to 
-the compiled version of XP, see RFC #0052.
+Dumps opcode instructions from compiled bytecode.
 <pre>
   $ opcodes any/source/File.xpc
 </pre>
@@ -143,5 +163,14 @@ friebe, Mon May 12 17:14:05     2008
 I would like to move net.xp_framework.unittest.runner.cli.CliRunner
 and net.xp_framework.xar.Xar to skeleton/ somewhere to get rid of
 the dependency on xp-net.xp_framework-X.X.X.xar
+
+friebe, Mon May 12 17:47:12     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The utilities opcodes and xcc only apply to the compiled version of 
+XP, see RFC #0052.
+
+friebe, Mon May 12 17:52:04     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The utilities cgen and doclet are new! 
 
 <EOF>
