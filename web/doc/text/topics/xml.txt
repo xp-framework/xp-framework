@@ -13,10 +13,12 @@ The [class://xml.Tree Tree] class offers a data-driven approach to XML. It
 is by *far* not a DOM implementation but sufficient for most use-cases where
 we want to transport data as XML.
 
+Creating trees programmatically
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This:
 <code>
   $t= new Tree('dialog');
-  $t->setAttribute('caption', 'Save');
+  $t->root->setAttribute('caption', 'Save');
   
   with ($ok= $t->addChild(new Node('button', NULL, array('id' => 'ok')))); {
     $ok->addChild(new Node('action', 'com.example.actions.SaveAction'));
@@ -33,3 +35,28 @@ This:
     </button>
   </dialog>
 </pre>
+
+Creating trees from XML
+~~~~~~~~~~~~~~~~~~~~~~~
+The [class://xml.Tree#fromString Tree::fromString] and [class://xml.Tree#fromFile Tree::fromFile]
+methods offer possibilities to create tree instances from XML.
+
+<code>
+  $t= Tree::fromString('
+    <database>
+      <table name="contract"/>
+      <table name="customer"/>
+    </database>
+  ');
+</code>
+
+Reading tree data
+~~~~~~~~~~~~~~~~~
+Data inside a tree is stored in [class://xml.Node Node] instances.
+
+<code>
+  with ($r= $t->root); {
+    Console::writeLine($r->getName());                         // 'database'
+    Console::writeLine($r->children[0]->getAttribute('name')); // 'contract'
+  }
+</code>
