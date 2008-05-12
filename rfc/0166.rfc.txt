@@ -38,8 +38,9 @@ Hello.class.php:
 To run this code with php, we would have to type:
 <pre>
   $ php
-  > -dinclude_path=".:/path/to/xp:/path/to/xp/xp-rt-X.X.X.xar"
-  > -r "require('lang.base.php'); uses('Hello'); Hello::main($argv);"
+  > -dinclude_path="/path/to/xp:/path/to/xp/xp-rt-X.X.X.xar:."
+  > -dauto_prepend_file="lang.base.php"
+  > -r "uses('Hello'); Hello::main($argv);"
   > World
 </pre>
 
@@ -48,9 +49,10 @@ If we use the XP runner, we simply type:
   $ xp Hello World
 </pre>
 
-Releases
-~~~~~~~~
+Released versions
+~~~~~~~~~~~~~~~~~
 Every release comes bundled with the runners:
+
 <pre>
   + xp-VERSION/
     +- lang.base.php
@@ -62,15 +64,22 @@ Every release comes bundled with the runners:
        +- xpcli
        +- ... (further utilities)
 </pre>
+
 The runners all use <tt>../lang.base.php</tt> and <tt>../lib/xp-rt-VERSION.xar</tt> 
 to ensure no global <tt>include_path</tt> setting will "disturb" the class loading 
 process. Assume you have installed the XP framework to <tt>/usr/local/lib</tt>. 
-By adding<tt>/usr/local/lib/xp-VERSION/bin</tt> to your <tt>PATH</tt>, you can 
-type "xp" in any shell to invoke the xp utility.
+By adding <tt>/usr/local/lib/xp-VERSION/bin</tt> to your <tt>PATH</tt>, you can 
+type "xp" in any shell to invoke the xp utility. To add XAR files to the class 
+path temporarily, you can use the "-cp" option, e.g. <tt>xp -cp "/path/to/thekid.xar" 
+de.thekid.Hello</tt>. To add XAR files or paths permanently so they don't have to be 
+passed via command line all the time, XXX!
 
-Development
-~~~~~~~~~~~
-For a development checkout, the directory tree looks as follows:
+
+Development checkout
+~~~~~~~~~~~~~~~~~~~~
+For a development checkout (needed for developing the XP framework itself), the 
+directory tree looks as follows:
+
 <pre>
   + trunk/
     +- skeleton/
