@@ -11,6 +11,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0165: New text.regex package
+  (friebe)
 - Implemented RFC #0163: Respect ANSI SQL in rdbms package
   (kiesel)
 - Implemented RFC #0157: Make product, language and session optional 
