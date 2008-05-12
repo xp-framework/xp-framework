@@ -1,0 +1,35 @@
+XML
+===
+[
+  [doc://topics/xml Basics] |
+  [doc://topics/xsl XSL] |
+  [doc://topics/xml XML Marshalling]
+]
+
+
+The Tree class
+--------------
+The [class://xml.Tree Tree] class offers a data-driven approach to XML. It
+is by *far* not a DOM implementation but sufficient for most use-cases where
+we want to transport data as XML.
+
+This:
+<code>
+  $t= new Tree('dialog');
+  $t->setAttribute('caption', 'Save');
+  
+  with ($ok= $t->addChild(new Node('button', NULL, array('id' => 'ok')))); {
+    $ok->addChild(new Node('action', 'com.example.actions.SaveAction'));
+  }
+  
+  Console::writeLine($t->getSource());
+</code>
+
+...prints the following to the console:
+<pre>
+  <dialog caption="Save">
+    <button id="ok">
+      <action>com.example.actions.SaveAction</action>
+    </button>
+  </dialog>
+</pre>
