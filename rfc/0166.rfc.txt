@@ -173,4 +173,9 @@ friebe, Mon May 12 17:52:04     2008
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The utilities cgen and doclet are new! 
 
+friebe, Mon May 12 17:53:43     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The utility "qnt" is currently under development in the XP framework's
+experiments.
+
 <EOF>
