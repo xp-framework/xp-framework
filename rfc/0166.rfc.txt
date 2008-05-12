@@ -1,0 +1,108 @@
+RFC 0166: XP Runners
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon May 12 16:54:34     2008
+@status: draft
+@category: <technologies>
+
+Scope of Change
+---------------
+This RFC defines the standards for the XP runners.
+
+
+Rationale
+---------
+Clarification is needed.
+
+
+Functionality
+-------------
+All XP runners 
+
+Core utility: xp
+~~~~~~~~~~~~~~~~
+Runs classes with a <tt>public static function main($args)</tt>.
+<pre>
+  $ xp class.with.static.main.Method
+</pre>
+
+Core utility: xpcli
+~~~~~~~~~~~~~~~~~~~
+The xp command class runner. An alias for <tt>xp util.cmd.Runner</tt>.
+<pre>
+  # Runs class by fully qualified name
+  $ xpcli class.which.extends.util.cmd.Command
+  
+  # Runs class by filename
+  $ xpcli class/which/extends/util/cmd/Command.class.php
+</pre>
+
+Core utility: xar
+~~~~~~~~~~~~~~~~~
+Works with XAR archives. An alias for <tt>xp net.xp_framework.xar.Xar</tt>.
+<pre>
+  $ xar [instruction] target.xar [file-or-directory*]
+  
+  instruction is one of:
+  * c[v]f - Create
+  * x[v]f - Extract
+  * t[v]f - List
+  * s[v]f - Show
+  
+  file-or-directory is one of:
+  * a directory - all files and directories in the directory will be added
+  * a file - the file will be added
+</pre>
+
+Development utility: unittest
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Runs classes that extend the unittest.TestCase class. An alias for 
+<tt>xp net.xp_framework.unittest.runner.cli.CliRunner</tt>.
+<pre>
+  $ unittest [class-or-config*]
+
+  class-or-config is one of:
+  * class.which.extends.unittest.TestCase - a fully qualified class name
+  * class/which/extends/unittest/TestCase.class.php - a filename
+  * unittests/config.ini - a property file
+</pre>
+
+Development utility: doclet
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Runs doclets.
+<pre>
+  $ doclet class.which.extends.text.doclet.Doclet
+</pre>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+None.
+
+
+Comments
+--------
+friebe, Mon May 12 17:14:05     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I would like to move net.xp_framework.unittest.runner.cli.CliRunner
+and net.xp_framework.xar.Xar to skeleton/ somewhere to get rid of
+the dependency on xp-net.xp_framework-X.X.X.xar
+
+<EOF>
