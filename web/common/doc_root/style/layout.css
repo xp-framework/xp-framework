@@ -277,15 +277,21 @@ blockquote {
   background-position: left top; 
   background-repeat: no-repeat;
 }
+tt {
+  font: 12px "Lucida Console", "Monaco", courier, fixed, monospace;
+}
+pre {
+  font: 12px "Lucida Console", "Monaco", courier, fixed, monospace;
+  line-height: 18px;
+  margin-bottom: 12px;
+  margin-top: 2px;
+  border-left: 2px solid #cccccc;
+}
 /* }}} */
-
 
 /* {{{ Syntax */
 pre.code {
   font: 12px "Courier New", courier;
-  margin-bottom: 12px;
-  margin-top: 2px;
-  border-left: 2px solid #cccccc;
 }
 pre.code .keyword {
   color: #990000;
