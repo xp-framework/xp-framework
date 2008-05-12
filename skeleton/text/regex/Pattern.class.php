@@ -9,6 +9,7 @@
   /**
    * Represents a regular expression pattern
    *
+   * @test     xp://net.xp_framework.unittest.text.PatternTest
    * @see      php://preg
    * @purpose  Regular Expression
    */
