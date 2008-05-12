@@ -21,12 +21,14 @@ Functionality
 -------------
 All XP runners 
 
+
 Core utility: xp
 ~~~~~~~~~~~~~~~~
 Runs classes with a <tt>public static function main($args)</tt>.
 <pre>
   $ xp class.with.static.main.Method
 </pre>
+
 
 Core utility: xpcli
 ~~~~~~~~~~~~~~~~~~~
@@ -38,6 +40,7 @@ The xp command class runner. An alias for <tt>xp util.cmd.Runner</tt>.
   # Runs class by filename
   $ xpcli class/which/extends/util/cmd/Command.class.php
 </pre>
+
 
 Core utility: xar
 ~~~~~~~~~~~~~~~~~
@@ -56,6 +59,7 @@ Works with XAR archives. An alias for <tt>xp net.xp_framework.xar.Xar</tt>.
   * a file - the file will be added
 </pre>
 
+
 Development utility: unittest
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runs classes that extend the unittest.TestCase class. An alias for 
@@ -69,11 +73,46 @@ Runs classes that extend the unittest.TestCase class. An alias for
   * unittests/config.ini - a property file
 </pre>
 
+
 Development utility: doclet
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Runs doclets.
 <pre>
   $ doclet class.which.extends.text.doclet.Doclet
+</pre>
+
+
+Development utility: qnt
+~~~~~~~~~~~~~~~~~~~~~~~~
+Runs Quantum buildfiles (<tt>build.cxml</tt>).
+<pre>
+  $ qnt [target]
+</pre>
+
+
+Development utility: cgen
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Compiler generator utility:
+<pre>
+  $ cgen [grammar] [skeleton-name] [parser-name] > [output]
+</pre>
+
+
+Development utility: xcc
+~~~~~~~~~~~~~~~~~~~~~~~~
+Compiles XP sourcecode to bytecode - this only applies to the compiled 
+version of XP, see RFC #0052.
+<pre>
+  $ xcc any/source/File.xp
+</pre>
+
+
+Development utility: opcodes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Dumps opcode instructions from compiled bytecode - this only applies to 
+the compiled version of XP, see RFC #0052.
+<pre>
+  $ opcodes any/source/File.xpc
 </pre>
 
 
