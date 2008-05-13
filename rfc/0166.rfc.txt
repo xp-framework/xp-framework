@@ -75,6 +75,7 @@ Every release comes bundled with the runners:
     +- lang.base.php
     +- lib/
     |  +- xp-rt-VERSION.xar
+    |  +- xp-net.xp_framework-VERSION.xar
     |  +- ... (further xar files)
     +- bin/
        +- xp
@@ -82,13 +83,14 @@ Every release comes bundled with the runners:
        +- ... (further utilities)
 </pre>
 
-The runners all use <tt>../lang.base.php</tt> and <tt>../lib/xp-rt-VERSION.xar</tt> 
-to ensure no global <tt>include_path</tt> setting will "disturb" the class loading 
-process. Assume you have installed the XP framework to <tt>/usr/local/lib</tt>. 
+The runners all use <tt>../lang.base.php</tt>, <tt>../lib/xp-rt-VERSION.xar</tt> 
+and <tt>../lib/xp-net.xp_framework-VERSION.xar</tt> to ensure no global 
+<tt>include_path</tt> setting will "disturb" the class loading process. 
+Assume you have installed the XP framework to <tt>/usr/local/lib</tt>. 
 By adding <tt>/usr/local/lib/xp-VERSION/bin</tt> to your <tt>PATH</tt>, you can 
 type "xp" in any shell to invoke the xp utility. To add XAR files to the class 
 path temporarily, you can use the "-cp" option, e.g. <tt>xp -cp "/path/to/thekid.xar" 
-de.thekid.Hello</tt> or <tt>xp -cp "/path/to/classes" de.thekid.Hello</tt>. 
+de.thekid.Hello</tt> or <tt>xp -cp "/path/to/classes" de.thekid.Hello</tt>.
 
 
 Development checkout
@@ -343,8 +345,8 @@ None.
 
 Related documents
 -----------------
-* http://mindprod.com/jgloss/classpath.html
-  classpath : Java Glossary
+* [http://mindprod.com/jgloss/classpath.html classpath Java Glossary]
+* [http://bob.pythonmac.org/archives/2005/02/06/using-pth-files-for-python-development/ Using .pth files for Python development]
 
 
 Comments
