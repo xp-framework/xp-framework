@@ -120,18 +120,36 @@ have the following directory layout:
     +- ... (further project-specific directories, e.g. xsl or doc_root)
 </pre>
 
-To add the "classes" directory and the xars in "lib" to your classpath, !XXX!
-
-
-Released projects  and the classpath
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The above project is released in a XAR file.
+In a slightly different setup, we'd have a "common" libdir:
 
 <pre>
-  + PROJECT
+  + xp/
+    +- common/
+    |  +- lib/
+    |     +- supporting.xar
+    |     +- ... (further supporting libraries)
+    +- projects/
+       +- PROJECT
+          +- lib/
+          |  +- app-specific.xar
+          |  +- ... (further app-specific libraries)
+          +- ... (further project-specific directories)
+</pre>
+
+To add the "classes" directory and the xars in "lib" (and "common/lib") to 
+your classpath, !XXX!
+
+Released projects and the classpath
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The above project is released in a XAR file, and all libraries it depends
+on are bundled:
+
+<pre>
+  + PROJECT-VERSION
     +- lib/
     |  +- PROJECT-VERSION.xar
     |  +- supporting.xar
+    |  +- app-specific.xar
     |  +- ... (further supporting libraries)
     +- ... (further project-specific directories, e.g. xsl or doc_root)
 </pre>
