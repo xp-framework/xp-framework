@@ -66,6 +66,29 @@ Dev:
 These files compose the essentials of the XP framework.
 
 
+Path files
+~~~~~~~~~~
+Inspired by a little-known feature in Python (<tt>.pth</tt>-files), the
+XP framework loads path files (which contain a list of paths, each on a
+line by itself) and adds them to <tt>include_path</tt>.
+
+<pre>
+  # boot.pth from a released version
+  ../
+  ../lib/xp-rt-5.6.7RC1.xar
+  ../lib/xp-net.xp_framework-5.6.7RC1.xar
+</pre>
+
+Paths inside <tt>.pth</tt> files are expanded relative to the file they
+are contained in. The special tilde character (<tt>~</tt>) may be used
+to reference the home directory (`getenv HOME` on Un*x and Cygwin, 
+`getenv HOMEPATH` on Windows).
+
+Path files are searched for in the following locations:
+* The directory the runners exist in (`dirname $0`/*.pth)
+* The current directory (`pwd`/*.pth)
+
+
 Released versions
 ~~~~~~~~~~~~~~~~~
 Every release comes bundled with the runners:
@@ -78,6 +101,7 @@ Every release comes bundled with the runners:
     |  +- xp-net.xp_framework-VERSION.xar
     |  +- ... (further xar files)
     +- bin/
+       +- boot.pth
        +- xp
        +- xpcli
        +- ... (further utilities)
@@ -88,9 +112,13 @@ and <tt>../lib/xp-net.xp_framework-VERSION.xar</tt> to ensure no global
 <tt>include_path</tt> setting will "disturb" the class loading process. 
 Assume you have installed the XP framework to <tt>/usr/local/lib</tt>. 
 By adding <tt>/usr/local/lib/xp-VERSION/bin</tt> to your <tt>PATH</tt>, you can 
-type "xp" in any shell to invoke the xp utility. To add XAR files to the class 
-path temporarily, you can use the "-cp" option, e.g. <tt>xp -cp "/path/to/thekid.xar" 
-de.thekid.Hello</tt> or <tt>xp -cp "/path/to/classes" de.thekid.Hello</tt>.
+type "xp" in any shell to invoke the xp utility. 
+
+To add XAR files to the class path temporarily, you can use the "-cp" option, 
+e.g. <tt>xp -cp "/path/to/thekid.xar" de.thekid.Hello</tt> or 
+<tt>xp -cp "/path/to/classes" de.thekid.Hello</tt>. To permanently add paths or 
+xar files to the classpath, create a file containing these and save it
+to /path/to/xp-VERSION/bin/. Its name is irrelevant, though it must end in ".pth".
 
 
 Development checkout
