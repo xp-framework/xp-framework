@@ -166,15 +166,15 @@ a directory layout as follows:
 
 <pre>
   + xp/
-    + classes/
-      + com/
-        + oneandone/
-          +- session/
-          |  +- Session.class.php
-          |  +- SessionProtocol.class.php
-          |  +- ... (further classes and packages)
-          +- SomeClass.class.php
-          +- ... (further classes and packages)
+    +- classes/
+       +- com/
+          +- oneandone/
+             +- session/
+             |  +- Session.class.php
+             |  +- SessionProtocol.class.php
+             |  +- ... (further classes and packages)
+             +- SomeClass.class.php
+             +- ... (further classes and packages)
 </pre>
 
 From this directory, the XARs in the common/lib directory would be created.
