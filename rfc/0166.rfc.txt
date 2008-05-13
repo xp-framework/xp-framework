@@ -191,6 +191,10 @@ The boot.pth file would contain:
 <pre>
   ../devel/xp/trunk/skeleton
   ../devel/xp/trunk/ports/classes
+  
+  # or (because it's equivalent in this case)
+  ~/devel/xp/trunk/skeleton
+  ~/devel/xp/trunk/ports/classes
 </pre>
 
 
@@ -297,6 +301,46 @@ you are fine with allowing this for all users:
 <pre>
   # /usr/local/lib/xp-VERSION/bin/com.1and1.pth
   ~/devel/xp/classes/
+</pre>
+
+
+Websites
+~~~~~~~~
+When running inside a webserver via PHP's Apache Module, the runners aren't
+invoked. The boot classpath must be set from within the web server 
+configuration. Here's an example for apache (on Windows):
+
+<pre>
+  <VirtualHost localhost:80>
+    RewriteEngine on
+    RewriteRule !^/static /index.php
+
+    DirectoryIndex index.php
+    DocumentRoot c:/cygwin/home/thekid/dialog/doc_root/
+
+    php_value include_path ".;d:/share/xp-5.7.0;d:/share/xp-5.7.0/lib/xp-rt-5.7.0.xar"
+  </VirtualHost>
+</pre>
+
+The index.php file is a generic file:
+
+<code>
+  require('lang.base.php');
+  xp::sapi('web');
+  
+  scriptlet::run(__FILE__);
+</code>
+
+It determines the class path from <tt>[DOCUMENT_ROOT]/../WEB-INF/web.ini</tt>.
+
+<pre>
+  ; Dialog web configuration
+
+  [application]  
+  class-path="../lib/dialog-2.4.0.xar"
+
+  [/xml]
+  package="de.thekid.dialog.scriptlet"
 </pre>
 
 
