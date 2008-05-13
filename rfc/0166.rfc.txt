@@ -139,6 +139,7 @@ In a slightly different setup, we'd have a "common" libdir:
 To add the "classes" directory and the xars in "lib" (and "common/lib") to 
 your classpath, !XXX!
 
+
 Released projects and the classpath
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The above project is released in a XAR file, and all libraries it depends
@@ -156,6 +157,29 @@ on are bundled:
 
 To add the "PROJECT-VERSION.xar" and all other xars in the "lib" directory 
 to your classpath, !XXX!
+
+
+Framework*2
+~~~~~~~~~~~
+Developing an internal framework ontop of the XP framework you'd have
+a directory layout as follows:
+
+<pre>
+  + xp/
+    + classes/
+      + com/
+        + oneandone/
+          +- session/
+          |  +- Session.class.php
+          |  +- SessionProtocol.class.php
+          |  +- ... (further classes and packages)
+          +- SomeClass.class.php
+          +- ... (further classes and packages)
+</pre>
+
+From this directory, the XARs in the common/lib directory would be created.
+While developing, it is easier to have the xp/classes directory in your
+classpath; to add it, !XXX!
 
 
 Core utility: xp
