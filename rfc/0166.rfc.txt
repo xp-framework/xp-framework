@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Mon May 12 16:54:34     2008
 @status: draft
-@category: <technologies>
+@category: <infrastructure>
 
 Scope of Change
 ---------------
