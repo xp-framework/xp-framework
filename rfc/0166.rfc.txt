@@ -318,12 +318,12 @@ configuration. Here's an example for apache (on Windows):
     DirectoryIndex index.php
     DocumentRoot c:/cygwin/home/thekid/dialog/doc_root/
 
+    # Boot classpath
     php_value include_path ".;d:/share/xp-5.7.0;d:/share/xp-5.7.0/lib/xp-rt-5.7.0.xar"
   </VirtualHost>
 </pre>
 
 The index.php file is a generic file:
-
 <code>
   require('lang.base.php');
   xp::sapi('web');
@@ -332,7 +332,6 @@ The index.php file is a generic file:
 </code>
 
 It determines the class path from <tt>[DOCUMENT_ROOT]/../WEB-INF/web.ini</tt>.
-
 <pre>
   ; Dialog web configuration
 
