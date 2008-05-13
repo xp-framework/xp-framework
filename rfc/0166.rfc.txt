@@ -49,6 +49,23 @@ If we use the XP runner, we simply type:
   $ xp Hello World
 </pre>
 
+
+Boot classpath
+~~~~~~~~~~~~~~
+The boot classpath consists of the following entries:
+
+Release:
+* /path/to/xp - where lang.base.php resides
+* /path/to/xp/lib/xp-rt-X.X.X.xar - runtime XAR
+* /path/to/xp/lib/xp-net.xp_framework-X.X.X.xar - tools and tests
+
+Dev:
+* /path/to/xp/skeleton - where lang.base.php resides
+* /path/to/xp/ports/classes - where net/xp_framework is
+
+These files compose the essentials of the XP framework.
+
+
 Released versions
 ~~~~~~~~~~~~~~~~~
 Every release comes bundled with the runners:
@@ -161,8 +178,8 @@ to your classpath, !XXX!
 
 Framework*2
 ~~~~~~~~~~~
-Developing an internal framework ontop of the XP framework you'd have
-a directory layout as follows:
+Developing an internal framework ontop of the released XP framework 
+you'd have a directory layout as follows:
 
 <pre>
   + xp/
