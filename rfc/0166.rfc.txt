@@ -305,7 +305,7 @@ Development utility: opcodes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Dumps opcode instructions from compiled bytecode.
 <pre>
-  $ opcodes any/source/File.xpc
+  $ opcodes any/compiled/File.xpc
 </pre>
 
 
