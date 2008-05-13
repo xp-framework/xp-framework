@@ -149,7 +149,49 @@ directory tree looks as follows:
                 +- ... (further utilities)
 </pre>
 
-XXX TODO: Would they use ../../../skeleton/ as <tt>include_path</tt>? XXX
+Because the env/bin directory contains the "raw" form of our utilities, 
+it is required that the platform-specific versions be setup in another 
+directory, for example as follows:
+
+<pre>
+  + xp
+    +- bin
+    |  +- boot.pth
+    |  +- xp
+    |  +- xpcli
+    |  +- ... (further utilities)
+    +- trunk/
+       +- ... (see above)
+</pre>
+
+The boot.pth file would contain:
+
+<pre>
+  ../trunk/skeleton
+  ../trunk/ports/classes
+</pre>
+
+Another setup (if you don't mind you ~/bin/-directory being "cluttered"
+with XP binaries):
+
+<pre>
+  + ~
+    +- bin/
+    |  +- boot.pth
+    |  +- xp
+    |  +- xpcli
+    +- devel/
+       +- xp/
+          +- trunk/
+             +- ... (see above)
+</pre>
+
+The boot.pth file would contain:
+
+<pre>
+  ../devel/xp/trunk/skeleton
+  ../devel/xp/trunk/ports/classes
+</pre>
 
 
 Project Development and the classpath
@@ -246,7 +288,16 @@ you'd have a directory layout as follows:
 
 From this directory, the XARs in the common/lib directory would be created.
 While developing, it is easier to have the xp/classes directory in your
-classpath; to add it, !XXX!
+classpath; to add it, add the directory to your XP installation. 
+
+Assuming the xp-directory from above is in <tt>/home/thekid/devel/xp</tt> and
+the public XP framework installed in <tt>/usr/local/lib/xp-VERSION</tt> and 
+you are fine with allowing this for all users:
+
+<pre>
+  # /usr/local/lib/xp-VERSION/bin/com.1and1.pth
+  ~/devel/xp/classes/
+</pre>
 
 
 Core utility: xp
