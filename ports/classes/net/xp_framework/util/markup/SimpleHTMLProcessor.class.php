@@ -14,7 +14,7 @@
   class SimpleHTMLProcessor extends MarkupProcessor {
     public
       $patterns= array(
-        '#\r#',
+        '#\r#',   // first remove all unneccassary line breaks
         '#(- ){1}([\w\S ]*)(\n){1}#'
       ),
       $replacements= array(
