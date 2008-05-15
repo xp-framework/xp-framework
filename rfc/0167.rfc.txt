@@ -44,11 +44,13 @@ before being inserted:
 </code>
 
 Will end up as:
+<pre>
 +---------------------+
 | lastchange          |
 +---------------------+
 | 2008-05-15 14:56:40 |
 +---------------------+
+</pre>
 
 
 Backwards compatibility
@@ -73,20 +75,19 @@ n/a
 
 Related documents
 -----------------
-- patch against skeleton
-  http://xp-framework.net/rfc/contrib/rfc0167.diff
-  
-- sybase info about timezones and daylight saving times
-  http://www.sybase.com/detail?id=1048699
+* [http://xp-framework.net/rfc/contrib/rfc0167.diff patch against skeleton]
+* [http://www.sybase.com/detail?id=1048699 sybase info about timezones and daylight saving times]
 
 
 Comments
 --------
-- gellweiler (Thu May 15 17:16:31 CEST 2008):
-  Should there be an option to auto detect the timezone of a
-  database? Mysql provides options to autoconvert datetimes and timestamps
-  into the clients timezone which would be an alternative to the current patch.
-  Unfortunately sybase databases don't have any support for timezone handling
-  other than a function called "getutcdate()" which could be used to calculate
-  the timezone offset for getdate().
+gellweiler (Thu May 15 17:16:31 CEST 2008)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Should there be an option to auto detect the timezone of a
+database? Mysql provides options to autoconvert datetimes and timestamps
+into the clients timezone which would be an alternative to the current patch.
+Unfortunately sybase databases don't have any support for timezone handling
+other than a function called "getutcdate()" which could be used to calculate
+the timezone offset for getdate().
+
 <EOF>
