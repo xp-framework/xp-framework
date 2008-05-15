@@ -1,0 +1,204 @@
+Index: sybase/SybaseConnection.class.php
+===================================================================
+--- sybase/SybaseConnection.class.php	(Revision 12232)
++++ sybase/SybaseConnection.class.php	(Arbeitskopie)
+@@ -251,7 +251,7 @@
+         return $result;
+       }
+       
+-      $resultset= new SybaseResultSet($result);
++      $resultset= new SybaseResultSet($result, $this->tz);
+       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
+ 
+       return $resultset;
+Index: sybase/SybaseResultSet.class.php
+===================================================================
+--- sybase/SybaseResultSet.class.php	(Revision 12232)
++++ sybase/SybaseResultSet.class.php	(Arbeitskopie)
+@@ -19,7 +19,7 @@
+      *
+      * @param   resource handle
+      */
+-    public function __construct($result) {
++    public function __construct($result, TimeZone $tz= NULL) {
+       $fields= array();
+       if (is_resource($result)) {
+         for ($i= 0, $num= sybase_num_fields($result); $i < $num; $i++) {
+@@ -27,7 +27,7 @@
+           $fields[$field->name]= $field->type;
+         }
+       }
+-      parent::__construct($result, $fields);
++      parent::__construct($result, $fields, $tz);
+     }
+ 
+     /**
+@@ -63,7 +63,7 @@
+       foreach (array_keys($row) as $key) {
+         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
+         if ('datetime' == $this->fields[$key]) {
+-          $row[$key]= Date::fromString($row[$key]);
++          $row[$key]= Date::fromString($row[$key], $this->tz);
+         }
+       }
+       
+Index: DBConnection.class.php
+===================================================================
+--- DBConnection.class.php	(Revision 12232)
++++ DBConnection.class.php	(Arbeitskopie)
+@@ -14,7 +14,8 @@
+     'rdbms.DSN',
+     'rdbms.ResultSet',
+     'util.log.Logger',
+-    'util.Observable'
++    'util.Observable',
++    'util.TimeZone'
+   );
+   
+   /**
+@@ -27,6 +28,7 @@
+     public 
+       $handle  = NULL,
+       $dsn     = NULL,
++      $tz      = NULL,
+       $timeout = 0,
+       $flags   = 0;
+     
+@@ -52,6 +54,11 @@
+         $inst= call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
+         $this->addObserver($inst);
+       }
++      
++      // Time zone handling
++      if ($tz= $dsn->getProperty('timezone', FALSE)) {
++        $this->tz= new TimeZone($tz);
++      }
+     }
+     
+     /**
+Index: StatementFormatter.class.php
+===================================================================
+--- StatementFormatter.class.php	(Revision 12232)
++++ StatementFormatter.class.php	(Arbeitskopie)
+@@ -111,6 +111,7 @@
+           continue; 
+         } else if ($arg instanceof Date) {
+           $type= 's';
++          $this->conn->tz && $arg= $this->conn->tz->translate($arg);
+           $p= $arg->toString($this->dialect->dateFormat);
+         } else if ($arg instanceof SQLRenderable) {
+           $r.= $arg->asSql($this->conn).', ';
+Index: ResultSet.class.php
+===================================================================
+--- ResultSet.class.php	(Revision 12232)
++++ ResultSet.class.php	(Arbeitskopie)
+@@ -32,10 +32,12 @@
+      *
+      * @param   resource handle
+      * @param   array fields
++     * @param   util.TimeZone tz default null
+      */
+-    public function __construct($handle, $fields) {
++    public function __construct($handle, $fields, TimeZone $tz= NULL) {
+       $this->handle= $handle;
+       $this->fields= $fields;
++      $this->tz= $tz ? $tz : new TimeZone(date_default_timezone_get());
+     }
+     
+     /**
+Index: pgsql/PostgreSQLResultSet.class.php
+===================================================================
+--- pgsql/PostgreSQLResultSet.class.php	(Revision 12232)
++++ pgsql/PostgreSQLResultSet.class.php	(Arbeitskopie)
+@@ -19,14 +19,14 @@
+      *
+      * @param   resource handle
+      */
+-    public function __construct($result) {
++    public function __construct($result, TimeZone $tz= NULL) {
+       $fields= array();
+       if (is_resource($result)) {
+         for ($i= 0, $num= pg_num_fields($result); $i < $num; $i++) {
+           $fields[pg_field_name($result, $i)]= pg_field_type($result, $i);
+         }
+       }
+-      parent::__construct($result, $fields);
++      parent::__construct($result, $fields, $tz);
+     }
+ 
+     /**
+@@ -64,7 +64,7 @@
+           case 'date':
+           case 'time':
+           case 'timestamp':
+-            $row[$key]= Date::fromString($row[$key]);
++            $row[$key]= Date::fromString($row[$key], $this->tz);
+             break;
+ 
+           case 'bool':
+Index: pgsql/PostgreSQLConnection.class.php
+===================================================================
+--- pgsql/PostgreSQLConnection.class.php	(Revision 12232)
++++ pgsql/PostgreSQLConnection.class.php	(Arbeitskopie)
+@@ -213,7 +213,7 @@
+         return TRUE;
+       }
+ 
+-      $resultset= new PostgreSQLResultSet($result);
++      $resultset= new PostgreSQLResultSet($result, $this->tz);
+       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
+ 
+       return $resultset;
+Index: mysql/MySQLConnection.class.php
+===================================================================
+--- mysql/MySQLConnection.class.php	(Revision 12232)
++++ mysql/MySQLConnection.class.php	(Arbeitskopie)
+@@ -275,7 +275,7 @@
+         return $result;
+       }
+ 
+-      $resultset= new MySQLResultSet($result);
++      $resultset= new MySQLResultSet($result, $this->tz);
+       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
+ 
+       return $resultset;
+Index: mysql/MySQLResultSet.class.php
+===================================================================
+--- mysql/MySQLResultSet.class.php	(Revision 12232)
++++ mysql/MySQLResultSet.class.php	(Arbeitskopie)
+@@ -19,7 +19,7 @@
+      *
+      * @param   resource handle
+      */
+-    public function __construct($result) {
++    public function __construct($result, TimeZone $tz= NULL) {
+       $fields= array();
+       if (is_resource($result)) {
+         for ($i= 0, $num= mysql_num_fields($result); $i < $num; $i++) {
+@@ -27,7 +27,7 @@
+           $fields[$field->name]= $field->type;
+         }
+       }
+-      parent::__construct($result, $fields);
++      parent::__construct($result, $fields, $tz);
+     }
+ 
+     /**
+@@ -73,14 +73,14 @@
+                 $time[1],
+                 $time[2],
+                 $time[0]
+-              ));
++              ), $this->tz);
+               
+               break;
+             }
+               
+           case 'datetime':
+-          case 'date':          
+-            $row[$key]= Date::fromString($row[$key]);
++          case 'date':
++            $row[$key]= Date::fromString($row[$key], $this->tz);
+             break;
+             
+           case 'int':

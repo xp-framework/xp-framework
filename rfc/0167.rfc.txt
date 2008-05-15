@@ -1,0 +1,92 @@
+RFC 0167: RDBMS and Timezones
+========================================================================
+$Id$
+
+@authors: gellweiler
+@created: Thu May 15 17:16:31 CEST 2008
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+Extend DBConnections to manage and handle timezones
+
+Rationale
+---------
+Provide a valid timezone for date objects created from database values instead
+of using the default timezone.
+
+Functionality
+-------------
+The DBConnection class will handle an optional parameter "timezone" in the DSN
+of a database. All retrieved date objects will be created in this timezone.
+
+Selecting data
+~~~~~~~~~~~~~~
+Date objects will not be moved in the current timezone of the client but remain
+in the configured timezone:
+
+<code>
+  $db= DriverManager::getConnection('mysql://localhost/TEST?autoconnect=1&timezone=UTC');
+  Console::writeLine($db->query('select lastchange from test')->next('lastchange'));
+</code>
+
+Would return: "2008-05-15 14:28:00+0000" including the timezone set in the DSN.
+
+Inserting data
+~~~~~~~~~~~~~~
+Date objects will be converted in the rdbms' timezone configured in the DSN
+before being inserted: 
+
+<code>
+  $date= Date::fromString('2008-05-15 16:56:40+0200');
+  $db->query('insert into test values (%s), $date');
+</code>
+
+Will end up as:
++---------------------+
+| lastchange          |
++---------------------+
+| 2008-05-15 14:56:40 |
++---------------------+
+
+
+Backwards compatibility
+~~~~~~~~~~~~~~~~~~~~~~~
+When no timezone is configured the current behaviour will be used. Thus there
+is no bc break necessary.
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- patch against skeleton
+  http://xp-framework.net/rfc/contrib/rfc0167.diff
+  
+- sybase info about timezones and daylight saving times
+  http://www.sybase.com/detail?id=1048699
+
+
+Comments
+--------
+- gellweiler (Thu May 15 17:16:31 CEST 2008):
+  Should there be an option to auto detect the timezone of a
+  database? Mysql provides options to autoconvert datetimes and timestamps
+  into the clients timezone which would be an alternative to the current patch.
+  Unfortunately sybase databases don't have any support for timezone handling
+  other than a function called "getutcdate()" which could be used to calculate
+  the timezone offset for getdate().
+<EOF>
