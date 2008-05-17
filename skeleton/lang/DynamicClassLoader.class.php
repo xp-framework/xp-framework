@@ -222,6 +222,31 @@
         'size'  => strlen(self::$bytes[$this->current])
       );
     }
+
+    /**
+     * Stream wrapper method stream_seek
+     *
+     * @param   int offset
+     * @param   int whence
+     * @return  bool
+     */
+    public function stream_seek($offset, $whence) {
+      switch ($whence) {
+        case SEEK_SET: $this->position= $offset; break;
+        case SEEK_CUR: $this->position+= $offset; break;
+        case SEEK_END: $this->position= strlen(self::$bytes[$this->current]); break;
+      }
+      return TRUE;
+    }
+
+    /**
+     * Stream wrapper method stream_tell
+     *
+     * @return  int offset
+     */
+    public function stream_tell() {
+      return $this->position;
+    }
     
     /**
      * Stream wrapper method url_stat
