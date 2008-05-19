@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.streams.OutputStream');
+  uses('io.streams.OutputStream', 'io.File');
 
   /**
    * OuputStream that writes to files
@@ -18,11 +18,12 @@
     /**
      * Constructor
      *
-     * @param   io.File file
+     * @param   * file either an io.File object or a string
+     * @param   bool append default FALSE whether to append
      */
-    public function __construct($file) {
-      $this->file= $file;
-      $this->file->open(FILE_MODE_WRITE);
+    public function __construct($file, $append= FALSE) {
+      $this->file= $file instanceof File ? $file : new File($file);
+      $this->file->open($append ? FILE_MODE_APPEND : FILE_MODE_WRITE);
     }
 
     /**
