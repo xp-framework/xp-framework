@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.streams.InputStream', 'io.streams.Seekable');
+  uses('io.streams.InputStream', 'io.streams.Seekable', 'io.File');
 
   /**
    * InputStream that reads from a file
@@ -18,10 +18,10 @@
     /**
      * Constructor
      *
-     * @param   io.File file
+     * @param   * file either an io.File object or a string
      */
     public function __construct($file) {
-      $this->file= $file;
+      $this->file= $file instanceof File ? $file : new File($file);
       $this->file->open(FILE_MODE_READ);
     }
 
