@@ -35,6 +35,12 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added a parameter "bool append" (defaulting to FALSE) to 
+  io.streams.FileOutputStream's constructor
+  (friebe)
+- Made io.streams.FileInputStream and io.streams.FileOutputStream's
+  constructors accept either an io.File or a string with the filename
+  (friebe)
 - Added syntactical support in text.doclet.markup API for ordered and
   unordered lists.
   (friebe)
