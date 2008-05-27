@@ -22,7 +22,7 @@
    * @purpose  Database connection
    */
   class MySQLConnection extends DBConnection {
-    public
+    private
       $formatter= NULL;
 
     /**
@@ -120,11 +120,11 @@
      */
     public function selectdb($db) {
       if (!mysql_select_db($db, $this->handle)) {
-        throw(new SQLStatementFailedException(
+        throw new SQLStatementFailedException(
           'Cannot select database: '.mysql_error($this->handle), 
           'use '.$db,
           mysql_errno($this->handle)
-        ));
+        );
       }
       return TRUE;
     }
@@ -235,11 +235,11 @@
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
       if (!is_resource($this->handle)) {
-        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
+        if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
         
         // Check for subsequent connection errors
-        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
+        if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
@@ -254,19 +254,19 @@
         switch ($e= mysql_errno($this->handle)) {
           case 2006: // MySQL server has gone away
           case 2013: // Lost connection to MySQL server during query
-            throw(new SQLConnectionClosedException(
-              'Statement failed: '.mysql_error($this->handle), 
+            throw new SQLConnectionClosedException(
+              'Statement failed: '.mysql_error($this->handle).' @ '.$this->dsn->getHost(),
               $sql, 
               $e
-            ));
+            );
             break;
           
           default:  
-            throw(new SQLStatementFailedException(
+            throw new SQLStatementFailedException(
               'Statement failed: '.mysql_error($this->handle), 
               $sql, 
               $e
-            ));
+            );
         }
       }
       

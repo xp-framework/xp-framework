@@ -21,7 +21,6 @@
    * @purpose  Database connection
    */
   class PostgreSQLConnection extends DBConnection {
-  
      private
        $formatter= NULL;
 
@@ -51,7 +50,7 @@
       }
 
       if (!is_resource($this->handle)) {
-        throw(new SQLConnectException(rtrim(pg_last_error()), $this->dsn));
+        throw new SQLConnectException(rtrim(pg_last_error()), $this->dsn);
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
@@ -80,9 +79,9 @@
      * @throws  rdbms.SQLStatementFailedException
      */
     public function selectdb($db) {
-      throw(new SQLStatementFailedException(
+      throw new SQLStatementFailedException(
         'Cannot select database, not implemented in PostgreSQL'
-      ));
+      );
     }
 
     /**
@@ -190,11 +189,11 @@
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
       if (!is_resource($this->handle)) {
-        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
+        if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
         
         // Check for subsequent connection errors
-        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
+        if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
@@ -202,10 +201,10 @@
       $result= pg_query($this->handle, $sql);
 
       if (empty($result)) {
-        throw(new SQLStatementFailedException(
+        throw new SQLStatementFailedException(
           'Statement failed: '.rtrim(pg_last_error($this->handle)),
           $sql
-        ));
+        );
       }
       
       if (TRUE === $result) {
