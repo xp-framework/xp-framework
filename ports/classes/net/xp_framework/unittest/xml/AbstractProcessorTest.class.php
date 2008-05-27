@@ -44,7 +44,7 @@
       
       // FIXME: workaround for "xsl:include : invalid URI reference C:\cygwin\...\include.xsl"
       // oddity in PHP's XSL libraries (needs forward-slash even on Windows)
-      return strtr($name, DIRECTORY_SEPARATOR, '/');
+      return strstr($name, '://') ? $name : 'file:///'.strtr($name, array(DIRECTORY_SEPARATOR => '/', ' ' => '%20'));
     }
 
     /**

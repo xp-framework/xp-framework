@@ -99,13 +99,13 @@
      * @throws  io.FileNotFoundException
      */
     public function setXSLFile($file) {
-      if (!file_exists($this->_base.$file))
+      if (!file_exists($this->_base.urldecode($file)))
         throw new FileNotFoundException($this->_base.$file.' not found');
 
       libxml_get_last_error() && libxml_clear_errors();
 
       $this->stylesheet= new DOMDocument();
-      $this->stylesheet->load($this->_base.$file);
+      $this->stylesheet->load($this->_base.urldecode($file));
       $this->baseURI= $this->_base.$file;
 
       $this->_checkErrors($file);
@@ -149,14 +149,14 @@
      * @param   string file file name
      */
     public function setXMLFile($file) {
-      if (!file_exists($this->_base.$file)) {
+      if (!file_exists($this->_base.urldecode($file))) {
         throw new FileNotFoundException($this->_base.$file.' not found');
       }
       
       libxml_get_last_error() && libxml_clear_errors();
 
       $this->document= new DOMDocument();
-      $this->document->load($file);
+      $this->document->load(urldecode($file));
 
       $this->_checkErrors($file);
     }
@@ -282,7 +282,7 @@
         if (!('/' === $href{0} || strstr($href, '://') || ':/' === substr($href, 1, 2))) {
           $href= $baseDir.'/'.$href;    // Relative
         }
-        if (!($dom->load($href))) {
+        if (!($dom->load(urldecode($href)))) {
           throw new TransformerException('Cannot find include '.$href."\n at ".$base);
         }
         if ($e= $this->determineOutputEncoding($dom->documentElement, $href)) return $e;
@@ -295,7 +295,7 @@
         if (!('/' === $href{0} || strstr($href, '://') || ':/' === substr($href, 1, 2))) {
           $href= $baseDir.'/'.$href;    // Relative
         }
-        if (!($dom->load($href))) {
+        if (!($dom->load(urldecode($href)))) {
           throw new TransformerException('Cannot find import '.$href."\n at ".$base);
         }
         if ($e= $this->determineOutputEncoding($dom->documentElement, $href)) return $e;
