@@ -17,45 +17,28 @@
    * Usage example (Creating):
    * <code>
    *   $a= new Archive(new File('soap.xar'));
-   *   try {
-   *     $a->open(ARCHIVE_CREATE);
-   *     $a->add(
-   *       new File('xml/soap/SOAPMessage.class.php'),
-   *       'webservices.soap.SOAPMessage'
-   *     );
-   *     $a->add(
-   *       new File('xml/soap/SOAPClient.class.php'),
-   *       'webservices.soap.SOAPClient'
-   *     );
-   *     $a->create();
-   *   } catch (XPException $e) {
-   *     $e->printStackTrace();
-   *   }
+   *   $a->open(ARCHIVE_CREATE);
+   *   $a->addFile(
+   *     'webservices/soap/SOAPMessage.class.php'
+   *     new File($path, 'xml/soap/SOAPMessage.class.php')
+   *   );
+   *   $a->create();
    * </code>
    *
    * Usage example (Extracting):
    * <code>
    *   $a= new Archive(new File('soap.xar'));
-   *   try {
-   *     $a->open(ARCHIVE_READ);
-   *     $c= array(
-   *       'webservices.soap.SOAPMessage' => $a->extract('webservices.soap.SOAPMessage'),
-   *       'webservices.soap.SOAPClient'  => $a->extract('webservices.soap.SOAPClient')
-   *     );
-   *   } catch (XPException $e) {
-   *     $e->printStackTrace();
-   *   }
-   *   var_dump($c);
+   *   $bytes= $a->extract('webservices/soap/SOAPMessage.class.php');
    * </code>
    * 
    * @test     xp://net.xp_framework.unittest.archive.ArchiveTest
-   * @purpose  Provide an archiving
+   * @purpose  Provide archiving
    * @see      http://java.sun.com/j2se/1.4/docs/api/java/util/jar/package-summary.html
    */
   class Archive extends Object {
     public
       $file     = NULL,
-      $version  = 1;
+      $version  = 2;
     
     public
       $_index  = array();
@@ -84,19 +67,14 @@
      * @param   io.File file
      * @param   string id the id under which this entry will be located
      * @return  bool success
+     * @deprecated Use addFile() instead
      */
     public function add($file, $id) {
       $file->open(FILE_MODE_READ);
       $data= $file->read($file->size());
       $file->close();
 
-      $this->_index[$id]= array(
-        $file->filename,
-        $file->path,
-        strlen($data),
-        -1,                 // Will be calculated by create()
-        $data
-      );
+      $this->_index[$id]= array(strlen($data), -1, $data);
       return TRUE;
     }
     
@@ -107,15 +85,35 @@
      * @param   string path
      * @param   string filename
      * @param   string bytes
+     * @deprecated Use addBytes() instead
      */
     public function addFileBytes($id, $path, $filename, $bytes) {
-      $this->_index[$id]= array(
-        $filename,
-        $path,
-        strlen($bytes),
-        -1,                 // Will be calculated by create()
-        $bytes
-      );
+      $this->_index[$id]= array(strlen($bytes), -1, $bytes);
+    }
+
+
+    /**
+     * Add a file by its bytes
+     *
+     * @param   string id the id under which this entry will be located
+     * @param   string bytes
+     */
+    public function addBytes($id, $bytes) {
+      $this->_index[$id]= array(strlen($bytes), -1, $bytes);
+    }
+
+    /**
+     * Add a file
+     *
+     * @param   string id the id under which this entry will be located
+     * @param   io.File file
+     */
+    public function addFile($id, $file) {
+      $file->open(FILE_MODE_READ);
+      $bytes= $file->read($file->size());
+      $file->close();
+
+      $this->_index[$id]= array(strlen($bytes), -1, $bytes);
     }
     
     /**
@@ -126,7 +124,7 @@
     public function create() {
       $this->file->truncate();
       $this->file->write(pack(
-        'a3c1i1a248', 
+        'a3c1V1a248', 
         'CCA',
         $this->version,
         sizeof(array_keys($this->_index)),
@@ -137,20 +135,18 @@
       $offset= 0;
       foreach (array_keys($this->_index) as $id) {
         $this->file->write(pack(
-          'a80a80a80i1i1a8',
+          'a240V1V1a8',
           $id,
           $this->_index[$id][0],
-          $this->_index[$id][1],
-          $this->_index[$id][2],
           $offset,
           "\0"                   // Reserved for future use
         ));
-        $offset+= $this->_index[$id][2];
+        $offset+= $this->_index[$id][0];
       }
 
       // Write files
       foreach (array_keys($this->_index) as $id) {
-        $this->file->write($this->_index[$id][4]);
+        $this->file->write($this->_index[$id][2]);
       }
 
       $this->file->close();
@@ -210,13 +206,13 @@
       $pos= (
         ARCHIVE_HEADER_SIZE + 
         sizeof(array_keys($this->_index)) * ARCHIVE_INDEX_ENTRY_SIZE +
-        $this->_index[$id][3]
+        $this->_index[$id][1]
       );
       
       try {
         $this->file->isOpen() || $this->file->open(FILE_MODE_READ);
         $this->file->seek($pos, SEEK_SET);
-        $data= $this->file->read($this->_index[$id][2]);
+        $data= $this->file->read($this->_index[$id][0]);
       } catch (XPException $e) {
         throw new ElementNotFoundException('Element "'.$id.'" cannot be read: '.$e->getMessage());
       }
@@ -233,17 +229,17 @@
      */
     public function getStream($id) {
       if (!$this->contains($id)) {
-        throw(new ElementNotFoundException('Element "'.$id.'" not contained in this archive'));
+        throw new ElementNotFoundException('Element "'.$id.'" not contained in this archive');
       }
 
       // Calculate starting position      
       $pos= (
         ARCHIVE_HEADER_SIZE + 
         sizeof(array_keys($this->_index)) * ARCHIVE_INDEX_ENTRY_SIZE +
-        $this->_index[$id][3]
+        $this->_index[$id][1]
       );
       
-      return new EncapsedStream($this->file, $pos, $this->_index[$id][2]);
+      return new EncapsedStream($this->file, $pos, $this->_index[$id][0]);
     }
     
     /**
@@ -255,13 +251,18 @@
      * @throws  lang.FormatException in case the header is malformed
      */
     public function open($mode) {
+      static $unpack= array(
+        1 => 'a80id/a80*filename/a80*path/V1size/V1offset/a*reserved',
+        2 => 'a240id/V1size/V1offset/a*reserved'
+      );
+      
       switch ($mode) {
         case ARCHIVE_READ:      // Load
           $this->file->open(FILE_MODE_READ);
 
           // Read header
           $header= $this->file->read(ARCHIVE_HEADER_SIZE);
-          $data= unpack('a3id/c1version/i1indexsize/a*reserved', $header);
+          $data= unpack('a3id/c1version/V1indexsize/a*reserved', $header);
 
           // Check header integrity
           if ('CCA' !== $data['id']) throw new FormatException(sprintf(
@@ -270,23 +271,13 @@
           ));
           
           // Copy information
-          $this->version = $data['version'];
+          $this->version= $data['version'];
           
           // Read index
           for ($i= 0; $i < $data['indexsize']; $i++) {
-            $entry= unpack(
-              'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
-              $this->file->read(ARCHIVE_INDEX_ENTRY_SIZE)
-            );
-            $this->_index[$entry['id']]= array(
-              $entry['filename'],
-              $entry['path'],
-              $entry['size'],
-              $entry['offset'],
-              NULL              // Will not be read, use extract()
-            );
+            $entry= unpack($unpack[$this->version], $this->file->read(ARCHIVE_INDEX_ENTRY_SIZE));
+            $this->_index[$entry['id']]= array($entry['size'], $entry['offset'], NULL);
           }
-          
           return TRUE;
           
         case ARCHIVE_CREATE:    // Create
@@ -294,7 +285,7 @@
           
       }
       
-      throw(new IllegalArgumentException('Mode '.$mode.' not recognized'));
+      throw new IllegalArgumentException('Mode '.$mode.' not recognized');
     }
     
     /**

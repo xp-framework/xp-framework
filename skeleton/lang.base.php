@@ -253,16 +253,20 @@
     //     Archive instance handling pool function, opens an archive and reads header only once
     static function acquire($archive) {
       static $archives= array();
+      static $unpack= array(
+        1 => 'a80id/a80*filename/a80*path/V1size/V1offset/a*reserved',
+        2 => 'a240id/V1size/V1offset/a*reserved'
+      );
       
       if (!isset($archives[$archive])) {
         $archives[$archive]= array();
         $current= &$archives[$archive];
         $current['handle']= fopen($archive, 'rb');
-        $header= unpack('a3id/c1version/i1indexsize/a*reserved', fread($current['handle'], 0x0100));
+        $header= unpack('a3id/c1version/V1indexsize/a*reserved', fread($current['handle'], 0x0100));
         if ('CCA' != $header['id']) raise('lang.FormatException', 'Malformed archive '.$archive);
         for ($current['index']= array(), $i= 0; $i < $header['indexsize']; $i++) {
           $entry= unpack(
-            'a80id/a80filename/a80path/i1size/i1offset/a*reserved', 
+            $unpack[$header['version']], 
             fread($current['handle'], 0x0100)
           );
           $current['index'][$entry['id']]= array($entry['size'], $entry['offset']);

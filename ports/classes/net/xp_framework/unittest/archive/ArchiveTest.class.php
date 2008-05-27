@@ -16,7 +16,14 @@
    * @see      xp://lang.archive.Archive
    * @purpose  Unittest
    */
-  class ArchiveTest extends TestCase {
+  abstract class ArchiveTest extends TestCase {
+    
+    /**
+     * Returns the xar version to test
+     *
+     * @return  int
+     */
+    protected abstract function version();
   
     /**
      * Asserts on entries in an archive
@@ -38,18 +45,17 @@
     /**
      * Returns 
      *
-     * @param   int version
      * @return  io.Stream
      */
-    protected function archiveBytesAsStream($version) {
+    protected function archiveBytesAsStream($version= -1) {
       static $bytes= array(
-        1 => "CCA\1\0\0\0",
-        2 => "CCA\2\0\0\0",
+        1 => "CCA\1\0\0\0\0",
+        2 => "CCA\2\0\0\0\0",
       );
       
       $s= new Stream();
       $s->open(STREAM_WRITE);
-      $s->write($bytes[$version]);
+      $s->write($bytes[$version < 0 ? $this->version() : $version]);
       $s->write(str_repeat("\0", 248));   // Reserved bytes
       $s->close();
       
@@ -72,8 +78,9 @@
      */
     #[@test
     public function containsNonExistant() {
-      $a= new Archive($this->archiveBytesAsStream(1));
+      $a= new Archive($this->archiveBytesAsStream());
       $a->open(ARCHIVE_READ);
+      $this->assertEquals($this->version(), $a->version);
       $this->assertFalse($a->contains('DOES-NOT-EXIST'));
     }
 
@@ -83,8 +90,9 @@
      */
     #[@test, @expect('lang.ElementNotFoundException')]
     public function extractNonExistant() {
-      $a= new Archive($this->archiveBytesAsStream(1));
+      $a= new Archive($this->archiveBytesAsStream());
       $a->open(ARCHIVE_READ);
+      $this->assertEquals($this->version(), $a->version);
       $a->extract('DOES-NOT-EXIST');
     }
 
@@ -93,23 +101,24 @@
      *
      */
     #[@test]
-    public function readingEmptyArchiveV1() {
-      $a= new Archive($this->archiveBytesAsStream(1));
+    public function readingEmptyArchive() {
+      $a= new Archive($this->archiveBytesAsStream());
       $a->open(ARCHIVE_READ);
-      
+      $this->assertEquals($this->version(), $a->version);
       $this->assertEntries($a, array());
     }
-  
+
     /**
-     * Test reading empty archive
+     * Test reading non-empty archive
      *
      */
     #[@test]
-    public function readingEmptyArchiveV2() {
-      $a= new Archive($this->archiveBytesAsStream(2));
+    public function readingArchive() {
+      $a= new Archive($this->getClass()->getPackage()->getResourceAsStream('v'.$this->version().'.xar'));
       $a->open(ARCHIVE_READ);
-      
-      $this->assertEntries($a, array());
+      $this->assertEquals($this->version(), $a->version);
+      $this->assertTrue($a->contains('contained.txt'));
+      $this->assertEntries($a, array('contained.txt' => "This file is contained in an archive!\n"));
     }
   
     /**
