@@ -35,6 +35,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added " @ {host}" to rdbms.SQLConnectionClosedException's message
+  (friebe)
+- Changed XAR file format (BC-break-free) to be less memory-consuming,
+  platform-independent and get rid of original filename junk
+  (friebe)
 - Added a parameter "bool append" (defaulting to FALSE) to 
   io.streams.FileOutputStream's constructor
   (friebe)
