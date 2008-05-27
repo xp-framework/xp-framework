@@ -39,7 +39,7 @@
      */
     public function seek($offset) { 
       if (!mysql_data_seek($this->handle, $offset)) {
-        throw(new SQLException('Cannot seek to offset '.$offset));
+        throw new SQLException('Cannot seek to offset '.$offset);
       }
       return TRUE;
     }

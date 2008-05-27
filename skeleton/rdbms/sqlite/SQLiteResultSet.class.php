@@ -38,7 +38,7 @@
      */
     public function seek($offset) { 
       if (!sqlite_seek($this->handle, $offset)) {
-        throw(new SQLException('Cannot seek to offset '.$offset));
+        throw new SQLException('Cannot seek to offset '.$offset);
       }
       return TRUE;
     }
