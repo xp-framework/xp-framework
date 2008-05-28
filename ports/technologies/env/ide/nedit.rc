@@ -580,15 +580,14 @@ nedit.highlightPatterns: C:1:0{\n\
 		package_name:"\\1":""::Preprocessor:package_statement:C\n\
 	}\n\
 	CompactXML:1:0{\n\
-		SingleNode:"[a-zA-Z:.\\[\\]][a-zA-Z]+\\s*;":::Text Escape::D\n\
-		UnAttributedNode:"[a-zA-Z:.\\[\\]]+\\s*\\{":::Text Escape::D\n\
-		TextNode:"[a-zA-Z:.\\[\\]][a-zA-Z]+\\s*\\<":"\\>;"::Text Escape::D\n\
-		Attributes:"[a-zA-Z]+\\s*=\\s*((""[^""]+"")|([^ ,\\)]+))":::String2:Node:D\n\
-		Strings:"\\1":""::String:Attributes:DC\n\
+		Attributes:"[a-zA-Z]+\\s*=\\s*((""[^""]+"")|([^ ,\\)]+))":::String2:Node:\n\
+		Strings:"\\1":""::String:Attributes:C\n\
 		Comment:"#([^\\r\\n]+)":::Comment::\n\
-		Node:"[a-zA-Z:.\\[\\]]+\\s*\\(":"\\);|\\)\\s*\\{"::Text Escape::D\n\
-		Text:"[^>]+":::Text Arg:TextNode:D\n\
 		Declaration:"(import) (""[^""]+"");":::Keyword::D\n\
+		Node:".+":::Text Escape::\n\
+		IdAttribute:"\\[.+\\]":::String2:Node:\n\
+		Text:"\\<":"\\>"::Text Key1:Node:\n\
+		Brackets:"\\{|\\}":::Text Arg:Node:\n\
 	}
 nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	C++:.cc .hh .C .H .i .cpp .cs::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
@@ -623,7 +622,7 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	Ini-Files:.ini:::None::::\n\
 	Unified diff:.diff:"Index:"::::::\n\
 	ChangeLog:ChangeLog:::::::\n\
-	CompactXML:.cml:::::::
+	CompactXML:.cml .cxml:::::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
 	Keyword:darkRed:Bold\n\
