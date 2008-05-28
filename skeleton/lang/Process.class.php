@@ -77,6 +77,18 @@
     }
 
     /**
+     * Create a new instance of this process.
+     *
+     * @param   string[] arguments default []
+     * @param   string cwd default NULL the working directory
+     * @param   array<string, string> default NULL the environment
+     * @throws  io.IOException in case the command could not be executed
+     */
+    public function newInstance($arguments= array(), $cwd= NULL, $env= NULL) {
+      return new self($this->status['exe'], $arguments, $cwd, $env);
+    }
+
+    /**
      * Resolve path for a command
      *
      * @param   string command

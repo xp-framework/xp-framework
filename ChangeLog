@@ -35,6 +35,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.Process::newInstance() method
+  http://news.xp-framework.net/article/258/2008/05/28/New_Process
+  (friebe)
 - Added " @ {host}" to rdbms.SQLConnectionClosedException's message
   (friebe)
 - Changed XAR file format (BC-break-free) to be less memory-consuming,
