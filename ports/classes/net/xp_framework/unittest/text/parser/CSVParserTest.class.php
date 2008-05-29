@@ -58,5 +58,32 @@
         $this->assertEquals('2274004', array_shift($record));
       }
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function lastColumn() {
+      $this->stream->write('foo|bar|baz|'.PHP_EOL);
+      $this->stream->write('bla|bla|bla|'.PHP_EOL);
+      $this->stream->write('bla|bla|bla|'.PHP_EOL);
+      $this->stream->rewind();
+      $this->parser->setColDelimiter('|');
+      $this->parser->getHeaderRecord();
+      
+      $this->assertEquals(array(
+        'foo' => 'bla',
+        'bar' => 'bla',
+        'baz' => 'bla'
+        ), $this->parser->getNextRecord()
+      );
+      $this->assertEquals(array(
+        'foo' => 'bla',
+        'bar' => 'bla',
+        'baz' => 'bla'
+        ), $this->parser->getNextRecord()
+      );
+    }    
   }
 ?>
