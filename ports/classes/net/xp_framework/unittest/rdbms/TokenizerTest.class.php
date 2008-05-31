@@ -90,7 +90,7 @@
     #[@test]
     public function testStringToken() {
       static $expect= array(
-        'sybase'  => "select '\"Hello\", Tom''s friend said' as strval",
+        'sybase'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'mysql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'pgsql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         // Add other built-in rdbms engines when added to the test!
