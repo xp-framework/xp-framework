@@ -98,9 +98,9 @@
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
       if ($before) {
-        array_unshift(self::$delegates, $l);
+        self::$delegates= array_merge(array($l->hashCode() => $l), self::$delegates);
       } else {
-        self::$delegates[]= $l;
+        self::$delegates[$l->hashCode()]= $l;
       }
       return $l;
     }
@@ -112,12 +112,9 @@
      * @return  bool TRUE if the delegate was unregistered
      */
     public static function removeLoader(IClassLoader $l) {
-      foreach (array_keys(self::$delegates) as $i) {
-        if (self::$delegates[$i] !== $l) continue;
-        unset(self::$delegates[$i]);
-        return TRUE;
-      }
-      return FALSE;
+      if (!isset(self::$delegates[$l->hashCode()])) return FALSE;
+      unset(self::$delegates[$l->hashCode()]);
+      return TRUE;
     }
 
     /**
@@ -126,7 +123,7 @@
      * @return  lang.IClassLoader[]
      */
     public static function getLoaders() {
-      return self::$delegates;
+      return array_values(self::$delegates);
     }
 
     /**
@@ -227,7 +224,7 @@
       throw new ClassNotFoundException(sprintf(
         'No classloader provides class "%s" {%s}',
         $class,
-        xp::stringOf(self::$delegates)
+        xp::stringOf(self::getLoaders())
       ));
     }
 
@@ -334,7 +331,7 @@
       raise('lang.ElementNotFoundException', sprintf(
         'No classloader provides resource "%s" {%s}',
         $string,
-        xp::stringOf(self::$delegates)
+        xp::stringOf(self::getLoaders())
       ));
     }
     
@@ -352,7 +349,7 @@
       raise('lang.ElementNotFoundException', sprintf(
         'No classloader provides resource "%s" {%s}',
         $string,
-        xp::stringOf(self::$delegates)
+        xp::stringOf(self::getLoaders())
       ));
     }
 
