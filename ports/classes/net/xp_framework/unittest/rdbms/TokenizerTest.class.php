@@ -37,6 +37,13 @@
      */
     #[@test]
     public function testPercentToken() {
+      static $expect= array(
+        'sybase'  => 'select * from test where name like \'%.de\'',
+        'mysql'   => 'select * from test where name like \'%.de\'',
+        'pgsql'   => 'select * from test where name like \'%.de\'',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select * from test where name like "%.de"',
         $value->prepare('select * from test where name like "%%.de"', 1),
