@@ -22,8 +22,8 @@
    */
   class StatementFormatter extends Object {
     public
-      $dialect= NULL,
-      $conn=    NULL;
+      $dialect = NULL,
+      $conn    = NULL;
   
     /**
      * constructor
@@ -32,8 +32,8 @@
      * @param   rdbms.SQLDialect dialect
      */
     public function __construct(DBConnection $conn, SQLDialect $dialect) {
+      $this->conn= $conn;
       $this->dialect= $dialect;
-      $this->conn=    $conn;
     }
   
     /**
@@ -42,53 +42,74 @@
      * @param   string fmt
      * @param   mixed[] args
      * @return  string
+     * @throws  rdbms.SQLStateException if an error is encountered
      */
     public function format($fmt, $args) {
       static $tokens= 'cdefstul';
       
       $statement= '';
       $argumentOffset= 0;
+      $offset= 0;
+      $length= strlen($fmt)- 1;
       while (TRUE) {
 
         // Find next token (or end of string)
-        $offset= strcspn($fmt, '%');
-        $statement.= substr($fmt, 0, $offset);
-
-        // If offset == length, it was the last token, so return
-        if ($offset == strlen($fmt)) return $statement;
+        $span= strcspn($fmt, '%"\'', $offset);
+        $statement.= substr($fmt, $offset, $span);
+        $offset+= $span;
         
-        if (is_numeric($fmt{$offset + 1})) {
+        // If offset == length, it was the last token, so return
+        if ($offset >= $length) return $statement;
+
+        if ('"' === $fmt{$offset} || "'" === $fmt{$offset}) {
+
+          // Escape string literals (which use double quote characters inside for escaping)
+          $quote= $fmt{$offset};
+          $strlen= $offset+ 1;
+          do {
+            $strlen+= strcspn($fmt, $quote, $strlen);
+            if ($strlen >= $length || $quote !== $fmt{$strlen+ 1}) break;
+            $strlen+= 2;
+          } while (TRUE);
+
+          if ($strlen > $length) {
+            throw new SQLStateException('Unclosed string @offset '.$offset.': ...'.substr($fmt, $offset));
+          }
+
+          $statement.= $this->dialect->escapeString(
+            strtr(substr($fmt, $offset+ 1, $strlen- $offset- 1), 
+            array('%%' => '%', $quote.$quote => $quote)
+          ));
+          $offset= $strlen+ 1;
+          continue;
+        } else if (is_numeric($fmt{$offset+ 1})) {
         
           // Numeric argument type specifier, e.g. %1$s
           sscanf(substr($fmt, $offset), '%%%d$', $overrideOffset);
-          $type= $fmt{$offset + strlen($overrideOffset) + 2};
-          $fmt= substr($fmt, $offset + strlen($overrideOffset) + 3);
-          if (!array_key_exists($overrideOffset - 1, $args)) {
-            throw new SQLStateException('Missing argument #'.($overrideOffset - 1).' @offset '.$offset);
+          $type= $fmt{$offset+ strlen($overrideOffset)+ 2};
+          $offset+= strlen($overrideOffset)+ 3;
+          if (!array_key_exists($overrideOffset- 1, $args)) {
+            throw new SQLStateException('Missing argument #'.($overrideOffset- 1).' @offset '.$offset);
           }
-          $argument= $args[$overrideOffset - 1];
-        } else if (FALSE !== strpos($tokens, $fmt{$offset + 1})) {
+          $argument= $args[$overrideOffset- 1];
+        } else if (FALSE !== strpos($tokens, $fmt{$offset+ 1})) {
         
           // Known tokens
-          $type= $fmt{$offset + 1};
-          $fmt= substr($fmt, $offset + 2);
+          $type= $fmt{$offset+ 1};
+          $offset+= 2;
           if (!array_key_exists($argumentOffset, $args)) {
             throw new SQLStateException('Missing argument #'.$argumentOffset.' @offset '.$offset);
           }
           $argument= $args[$argumentOffset];
           $argumentOffset++;
-        } else if ('%' == $fmt{$offset + 1}) {
+        } else if ('%' == $fmt{$offset+ 1}) {
         
           // Escape sign
           $statement.= '%';
-          $fmt= substr($fmt, $offset + 2);
+          $offset+= 2;
           continue;
         } else {
-        
-          // Unknown tokens
-          $statement.= '%'.$fmt{$offset + 1};
-          $fmt= substr($fmt, $offset + 2);
-          continue;
+          throw new SQLStateException('Unknown token "'.$fmt{$offset+ 1}.'"');
         }
         
         $statement.= $this->prepare($type, $argument);
@@ -104,8 +125,8 @@
      */
     public function prepare($type, $var) {
       $r= '';
-      foreach (is_array($var) ? $var : array($var) as $arg) {
-        // Type-based conversion
+      $traversable= is_array($var) ? $var : array($var);
+      foreach ($traversable as $arg) {
         if (NULL === $arg) {
           $r.= 'NULL, '; 
           continue; 
@@ -140,7 +161,7 @@
     /**
      * Sets the SQL dialect.
      *
-     * @param   SQLDialect dialect
+     * @param   rdbms.SQLDialect dialect
      */
     public function setDialect(SQLDialect $dialect) {
       $this->dialect= $dialect;

@@ -16,8 +16,7 @@
    * @purpose   Unit Test
    */
   class TokenizerTest extends TestCase {
-    public
-      $conn = array();
+    protected $conn= array();
       
     /**
      * Constructor
@@ -30,13 +29,93 @@
       $this->conn['mysql']= DriverManager::getConnection('mysql://localhost/');
       $this->conn['pgsql']= DriverManager::getConnection('pgsql://localhost/');
     }
-      
+
     /**
-     * Test percent token
+     * Test double-quoted string
      *
      */
     #[@test]
-    public function testPercentToken() {
+    public function doubleQuotedString() {
+      static $expect= array(
+        'sybase'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'mysql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'pgsql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select "Uber" + " " + "Coder" as realname'),
+        $key
+      );
+    }
+
+    /**
+     * Test single-quoted string
+     *
+     */
+    #[@test]
+    public function singleQuotedString() {
+      static $expect= array(
+        'sybase'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'mysql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'pgsql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare("select 'Uber' + ' ' + 'Coder' as realname"),
+        $key
+      );
+    }
+
+    /**
+     * Test double-quoted string with escaped double quotes inside
+     *
+     */
+    #[@test]
+    public function doubleQuotedStringWithEscapes() {
+      static $expect= array(
+        'sybase'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'mysql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'pgsql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select "Quote signs: "" \' ` \'" as test'),
+        $key
+      );
+    }
+
+    /**
+     * Test single-quoted string with escaped single quotes inside
+     *
+     */
+    #[@test]
+    public function singleQuotedStringWithEscapes() {
+      static $expect= array(
+        'sybase'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'mysql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'pgsql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare("select 'Quote signs: \" '' ` ''' as test"),
+        $key
+      );
+    }
+      
+    /**
+     * Test escaped percent token inside a string (backwards compat!)
+     *
+     */
+    #[@test]
+    public function escapedPercentTokenInString() {
       static $expect= array(
         'sybase'  => 'select * from test where name like \'%.de\'',
         'mysql'   => 'select * from test where name like \'%.de\'',
@@ -45,8 +124,88 @@
       );
 
       foreach ($this->conn as $key => $value) $this->assertEquals(
-        'select * from test where name like "%.de"',
-        $value->prepare('select * from test where name like "%%.de"', 1),
+        $expect[$key],
+        $value->prepare('select * from test where name like "%%.de"'),
+        $key
+      );
+    }
+
+    /**
+     * Test double-escaped percent token inside a string (backwards compat!)
+     *
+     */
+    #[@test]
+    public function doubleEscapedPercentTokenInString() {
+      static $expect= array(
+        'sybase'  => 'select * from test where url like \'http://%%20\'',
+        'mysql'   => 'select * from test where url like \'http://%%20\'',
+        'pgsql'   => 'select * from test where url like \'http://%%20\'',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select * from test where url like "http://%%%%20"'),
+        $key
+      );
+    }
+
+    /**
+     * Test double-escaped percent token inside a value
+     *
+     */
+    #[@test]
+    public function escapedPercentTokenInValue() {
+      static $expect= array(
+        'sybase'  => 'select * from test where url like \'http://%%20\'',
+        'mysql'   => 'select * from test where url like \'http://%%20\'',
+        'pgsql'   => 'select * from test where url like \'http://%%20\'',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select * from test where url like %s', 'http://%%20'),
+        $key
+      );
+    }
+
+    /**
+     * Test percent token
+     *
+     */
+    #[@test]
+    public function percentTokenInString() {
+      static $expect= array(
+        'sybase'  => 'select * from test where name like \'%.de\'',
+        'mysql'   => 'select * from test where name like \'%.de\'',
+        'pgsql'   => 'select * from test where name like \'%.de\'',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select * from test where name like "%.de"'),
+        $key
+      );
+    }
+
+    /**
+     * Test unknown token inside a string
+     *
+     */
+    #[@test]
+    public function unknownTokenInString() {
+      static $expect= array(
+        'sybase'  => 'select * from test where name like \'%X\'',
+        'mysql'   => 'select * from test where name like \'%X\'',
+        'pgsql'   => 'select * from test where name like \'%X\'',
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select * from test where name like "%X"'),
         $key
       );
     }
@@ -56,20 +215,77 @@
      *
      */
     #[@test]
-    public function testUnknownToken() {
-      foreach ($this->conn as $key => $value) $this->assertEquals(
-        'select * from test where name like "%X"',
-        $value->prepare('select * from test where name like "%X"', 1),
-        $key
-      );
+    public function unknownToken() {
+      foreach ($this->conn as $key => $value) {
+        try {
+          $value->prepare('select * from test where name like %X');
+          $this->fail('Unknown token exception expected', NULL, 'rdbms.SQLStateException');
+        } catch (SQLStateException $expected) { }
+      }
     }
-    
+
     /**
-     * Test integer token
+     * Test an unclosed string leads to a rdbms.SQLStateException
      *
      */
     #[@test]
-    public function testIntegerToken() {
+    public function unclosedDoubleQuotedString() {
+      foreach ($this->conn as $key => $value) {
+        try {
+          $value->prepare('select * from test where name = "unclosed');
+          $this->fail('Unknown token exception expected', NULL, 'rdbms.SQLStateException');
+        } catch (SQLStateException $expected) { }
+      }
+    }
+
+    /**
+     * Test an unclosed string leads to a rdbms.SQLStateException
+     *
+     */
+    #[@test]
+    public function unclosedDoubleQuotedStringEndingWithEscape() {
+      foreach ($this->conn as $key => $value) {
+        try {
+          $value->prepare('select * from test where name = "unclosed""');
+          $this->fail('Unknown token exception expected', NULL, 'rdbms.SQLStateException');
+        } catch (SQLStateException $expected) { }
+      }
+    }
+    
+    /**
+     * Test an unclosed string leads to a rdbms.SQLStateException
+     *
+     */
+    #[@test]
+    public function unclosedSingleQuotedString() {
+      foreach ($this->conn as $key => $value) {
+        try {
+          $value->prepare("select * from test where name = 'unclosed");
+          $this->fail('Unknown token exception expected', NULL, 'rdbms.SQLStateException');
+        } catch (SQLStateException $expected) { }
+      }
+    }
+
+    /**
+     * Test an unclosed string leads to a rdbms.SQLStateException
+     *
+     */
+    #[@test]
+    public function unclosedSingleQuotedStringEndingWithEscape() {
+      foreach ($this->conn as $key => $value) {
+        try {
+          $value->prepare("select * from test where name = 'unclosed''");
+          $this->fail('Unknown token exception expected', NULL, 'rdbms.SQLStateException');
+        } catch (SQLStateException $expected) { }
+      }
+    }
+    
+    /**
+     * Test number token
+     *
+     */
+    #[@test]
+    public function numberTokenWithPrimitive() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select 1 as intval',
         $value->prepare('select %d as intval', 1),
@@ -82,7 +298,7 @@
      *
      */
     #[@test]
-    public function testFloatToken() {
+    public function floatTokenWithPrimitive() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select 6.1 as floatval',
         $value->prepare('select %f as floatval', 6.1),
@@ -95,7 +311,7 @@
      *
      */
     #[@test]
-    public function testStringToken() {
+    public function stringToken() {
       static $expect= array(
         'sybase'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'mysql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
@@ -111,11 +327,93 @@
     }
 
     /**
+     * Test string token
+     *
+     */
+    #[@test]
+    public function stringTypeToken() {
+      static $expect= array(
+        'sybase'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'mysql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'pgsql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        // Add other built-in rdbms engines when added to the test!
+      );
+      
+      foreach ($expect as $key => $value) $this->assertEquals(
+        $value,
+        $this->conn[$key]->prepare('select %s as strval', new String('"Hello", Tom\'s friend said')),
+        $key
+      );
+    }
+
+    /**
+     * Test label token
+     *
+     */
+    #[@test]
+    public function labelToken() {
+      static $expect= array(
+        'sybase'  => 'select * from \'order\'',
+        'mysql'   => 'select * from `order`',
+        'pgsql'   => 'select * from "order"',
+        // TBD: Other built-in rdbms engines
+      );
+
+      foreach ($expect as $key => $value) $this->assertEquals(
+        $value,
+        $this->conn[$key]->prepare('select * from %l', 'order'),
+        $key
+      );
+    }
+
+    /**
+     * Test date token
+     *
+     */
+    #[@test]
+    public function dateToken() {
+      static $expect= array(
+        'sybase'  => "select * from news where date= '1977-12-14 12:00AM'",
+        'mysql'   => "select * from news where date= '1977-12-14 00:00:00'",
+        'pgsql'   => "select * from news where date= '1977-12-14 00:00:00'",
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      $t= new Date('1977-12-14');
+      foreach ($expect as $key => $value) $this->assertEquals(
+        $value,
+        $this->conn[$key]->prepare('select * from news where date= %s', $t),
+        $key
+      );
+    }
+
+    /**
+     * Test timestamp token
+     *
+     */
+    #[@test]
+    public function timeStampToken() {
+      static $expect= array(
+        'sybase'  => "select * from news where created= '1977-12-14 12:00AM'",
+        'mysql'   => "select * from news where created= '1977-12-14 00:00:00'",
+        'pgsql'   => "select * from news where created= '1977-12-14 00:00:00'",
+        // Add other built-in rdbms engines when added to the test!
+      );
+
+      $t= create(new Date('1977-12-14'))->getTime();
+      foreach ($expect as $key => $value) $this->assertEquals(
+        $value,
+        $this->conn[$key]->prepare('select * from news where created= %u', $t),
+        $key
+      );
+    }
+
+    /**
      * Test backslash escaping
      *
      */
     #[@test]
-    public function testBackslash() {
+    public function backslash() {
       static $expect= array(
         'sybase'  => 'select \'Hello \\ \' as strval',    // one backslash
         'mysql'   => 'select \'Hello \\\\ \' as strval',  // two backslashes
@@ -135,7 +433,7 @@
      *
      */
     #[@test]
-    public function testIntegerArrayToken() {
+    public function integerArrayToken() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
           'select * from news where news_id in ()',
@@ -155,7 +453,7 @@
      *
      */
     #[@test]
-    public function testDateArrayToken() {
+    public function dateArrayToken() {
       static $expect= array(
         'sybase'  => "'1977-12-14 12:00AM', '1977-12-15 12:00AM'",
         'mysql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
@@ -168,8 +466,8 @@
       
       foreach ($this->conn as $key => $value) {
         $this->assertEquals(
-          'select * from news where news_id in ('.$expect[$key].')',
-          $value->prepare('select * from news where news_id in (%s)', array($d1, $d2)),
+          'select * from news where created in ('.$expect[$key].')',
+          $value->prepare('select * from news where created in (%s)', array($d1, $d2)),
           $key
         );
       }
@@ -180,7 +478,7 @@
      *
      */
     #[@test]
-    public function testLeadingToken() {
+    public function leadingToken() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select 1',
         $value->prepare('%c', 'select 1'),
@@ -193,7 +491,7 @@
      *
      */
     #[@test]
-    public function testRandomAccess() {
+    public function randomAccess() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select column from table',
         $value->prepare('select %2$c from %1$c', 'table', 'column'),
@@ -206,7 +504,7 @@
      *
      */
     #[@test]
-    public function testPassNullValues() {
+    public function passNullValues() {
       foreach ($this->conn as $key => $value) $this->assertEquals(
         'select NULL from NULL',
         $value->prepare('select %2$c from %1$c', NULL, NULL),
@@ -220,14 +518,12 @@
      *
      */
     #[@test]
-    public function testAccessNonexistant() {
+    public function accessNonexistant() {
       foreach ($this->conn as $key => $value) {
         try {
           $value->prepare('%2$c', NULL);
-          $this->fail('Expected exception not caught');
-        } catch (SQLStateException $expected) {
-          // OK
-        }
+          $this->fail('Expected exception not caught', 'rdbms.SQLStateException', NULL);
+        } catch (SQLStateException $expected) { }
       }
     }
 
@@ -238,9 +534,9 @@
     #[@test]
     public function percentSignInPrepareString() {
       static $expect= array(
-        'sybase'  => 'insert into table values (\'value\', "str%&ing", \'value\')',
-        'mysql'   => 'insert into table values (\'value\', "str%&ing", \'value\')',
-        'pgsql'   => 'insert into table values (\'value\', "str%&ing", \'value\')'
+        'sybase'  => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'mysql'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'pgsql'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')'
       );
       
       foreach ($expect as $key => $value) $this->assertEquals(
@@ -355,11 +651,7 @@
     #[@test]
     public function testDashAsNumber() {
       foreach ($this->conn as $key => $value) {
-        $this->assertEquals(
-          'NULL',
-          $value->prepare('%d', '-'),
-          $key
-        );
+        $this->assertEquals('NULL', $value->prepare('%d', '-'), $key);
       }
     }
 
@@ -370,11 +662,7 @@
     #[@test]
     public function testDotAsNumber() {
       foreach ($this->conn as $key => $value) {
-        $this->assertEquals(
-          'NULL',
-          $value->prepare('%d', '.'),
-          $key
-        );
+        $this->assertEquals('NULL', $value->prepare('%d', '.'), $key);
       }
     }
  
@@ -385,11 +673,7 @@
     #[@test]
     public function testPlusAsNumber() {
       foreach ($this->conn as $key => $value) {
-        $this->assertEquals(
-          'NULL',
-          $value->prepare('%d', '+'),
-          $key
-        );
+        $this->assertEquals('NULL', $value->prepare('%d', '+'), $key);
       }
     } 
   }
