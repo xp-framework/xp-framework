@@ -46,5 +46,44 @@ Related documents
 
 Comments
 --------
+friebe, Sat May 31 18:27:53     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Implemented after initial commit: Support for string literals.
+
+For example, this call <tt>$q= $conn->query('select "Hello"');</tt> will 
+be transformed to <tt>select 'Hello'</tt> in MySQL (since that uses the 
+single quote as string delimiter).
+  
+Unclosed strings will lead to an SQLStateException:
+
+<code>
+  $q= $conn->query('select "Hello');          // *BLAM*
+</code>
+  
+Unknown tokens outside of strings will lead to an SQLStateException:
+
+<code>
+  $q= $conn->query('select %X', 'String');    // *BLAM*
+  $q= $conn->query('select "%X"');            // OK, inside a string
+</code>
+  
+Percent signs in strings still need to be double escaped:
+
+<code>
+  $q= $conn->query('select "%%"');            // select '%'
+  $q= $conn->query('select "%%X"');           // select '%X'
+</code>
+
+Quote signs inside strings are escaped by double-quoting:
+
+<code>
+  $q= $conn->query('select """Hello"""');     // select '"Hello"'
+  $q= $conn->query('select %s', '"Hello"');   // select '"Hello"'
+</code>
+
+The necessity to escape <tt>%</tt> signs in strings is based solely on backwards
+compatibility reasons - it could be removed instantaneously! This behavior
+is inconsistent, though - <tt>$q= $conn->query('select "%"');</tt>>  will 
+also work. TODO: Deprecate this in the next major release (5.7.0?)
 
 <EOF>
