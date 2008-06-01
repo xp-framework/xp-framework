@@ -80,6 +80,8 @@ Speed impact
 
 Dependencies
 ------------
+RFC #0166 (XP Runners)
+
 
 Related documents
 -----------------
