@@ -1,0 +1,73 @@
+RFC 0168: Integrate lang.types
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Jun  1 11:38:34     2008
+@status: draft
+@category: lang.types, rdbms
+
+Scope of Change
+---------------
+The wrapper types from the lang.types package will be integrated into
+the following packages:
+* rdbms
+
+
+Rationale
+---------
+
+Functionality
+-------------
+The lang.types package supports the following types:
+
+* ArrayList - an array in the classic definition
+* Boolean - either TRUE or FALSE
+* Byte - Number (range -128 to 127)
+* Bytes - a byte array (consisting of Byte objects)
+* Character - a character (unicode)
+* Double - Number / double-precision 64-bit IEEE 754 floating point
+* Float - Number / single-precision 32-bit IEEE 754 floating point
+* Integer - Number (range -2,147,483,648 to 2,147,483,647)
+* Long - Number (range -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807)
+* Short - Number (range -32,768 to 32,767)
+* String - a character string (unicode)
+
+rdbms package
+~~~~~~~~~~~~~
+The tokenizer will support any Number, Strings and ArrayLists just like it
+supports util.Date instances:
+
+<code>
+  // String instances
+  $q= $conn->query('select * from author where name= %s', new String('Timm'));
+  
+  // Numbers
+  $q= $conn->query('select * from author where id= %d', new Integer(1));
+
+  // ArrayLists
+  $q= $conn->query('select * from author where id in (%d)', new ArrayList(1, 2, 3));
+</code>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+Java: 
+* http://java.sun.com/docs/books/tutorial/java/nutsandbolts/datatypes.html
+* http://java.sun.com/docs/books/tutorial/java/nutsandbolts/arrays.html
+
+Comments
+--------
+
+<EOF>
