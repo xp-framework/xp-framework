@@ -5,17 +5,19 @@ $Id$
 @authors: friebe
 @created: Sun Jun  1 11:38:34     2008
 @status: draft
-@category: lang.types, rdbms
+@category: lang.types, rdbms, xml, webservices
 
 Scope of Change
 ---------------
 The wrapper types from the lang.types package will be integrated into
-the following packages:
-* rdbms
+the following packages: rdbms, xml, webservices
 
 
 Rationale
 ---------
+Unicode support, Integration with other APIs that use wrapper types 
+such as remoting and the types from util.collections.
+
 
 Functionality
 -------------
@@ -44,10 +46,51 @@ supports util.Date instances:
   
   // Numbers
   $q= $conn->query('select * from author where id= %d', new Integer(1));
-
+  
   // ArrayLists
   $q= $conn->query('select * from author where id in (%d)', new ArrayList(1, 2, 3));
 </code>
+
+
+xml package
+~~~~~~~~~~~
+The xml.Node class will support Strings for its content:
+
+<code>
+  $n= new Node('name', new String('Timm'));
+</code>
+
+
+webservices packages
+~~~~~~~~~~~~~~~~~~~~
+The web services packages will support the full range.
+
+<code>
+  with ($jenc= new JsonFactory::create()); {
+    $jenc->encode(new String('Hello'));
+    $jenc->encode(new Integer(1));
+    $jenc->encode(new Double(1));
+    $jenc->encode(new ArrayList(1, 2, 3));
+    // ...
+  }
+  
+  with ($xenc= new XmlRpcEncoder()); {
+    $xenc->encode(new String('Hello'));
+    $jenc->encode(new Integer(1));
+    $jenc->encode(new Double(1));
+    $jenc->encode(new ArrayList(1, 2, 3));
+    $jenc->encode(new Bytes('abc'));        // base64
+    // ...
+  }
+</code>
+
+Deprecations:
+* webservices.soap.types.SOAPLong - xsd:long -
+  Replaced by lang.types.Long
+* webservices.soap.types.SOAPDouble - xsd:double -
+  Replaced by lang.types.Double
+* webservices.soap.types.SOAPBase64Binary - xsd:base64Binary -
+  Replaced by lang.types.Bytes
 
 
 Security considerations
@@ -57,15 +100,22 @@ None.
 
 Speed impact
 ------------
+Neglectible.
+
 
 Dependencies
 ------------
+None.
+
 
 Related documents
 -----------------
 Java: 
 * http://java.sun.com/docs/books/tutorial/java/nutsandbolts/datatypes.html
 * http://java.sun.com/docs/books/tutorial/java/nutsandbolts/arrays.html
+
+XML:
+* http://books.xmlschemata.org/relaxng/relax-CHP-19.html
 
 Comments
 --------
