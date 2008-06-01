@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel, ohinckel
 @created: Wed Apr 16 20:39:56     2008
-@status: draft
+@status: discussion, ends Wed Jun  3 18:00:00     2008
 @category: peer.http
 
 Scope of Change
@@ -36,7 +36,7 @@ API: The HttpProxy class
     public function __construct($host, $port= 8080) {
       // ...
     }
-
+    
     /**
      * Add a URL pattern to exclude.
      *
@@ -63,9 +63,8 @@ API: The HttpConnection class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <code>
   class HttpConnection extends Object {
-  
     // ...
-
+    
     /**
      * Set proxy
      *
@@ -74,9 +73,8 @@ API: The HttpConnection class
     public function setProxy(HttpProxy $proxy) {
       // ...
     }
-
+    
     // ...
-
   }
 </code>
 
@@ -107,14 +105,20 @@ n/a
 
 Related documents
 -----------------
-- http://www.innovation.ch/java/HTTPClient/advanced_info.html
-  Advanced HTTPClient Info
-
-- http://xp-framework.net/rfc/contrib/rfc0162.diff
-  Implementing patch
+* Advanced HTTPClient Info:
+  http://www.innovation.ch/java/HTTPClient/advanced_info.html
+* Implementing patch
+  http://xp-framework.net/rfc/contrib/rfc0162.diff
 
 
 Comments
 --------
+friebe, Sun Jun  1 13:56:30     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I'm not really happy with the implementation, and it is not testable
+in an easy fashion. Since the HttpConnection class itself isn't easily
+testable either and accessing the request (e.g. for logging purposes)
+is hacky, too (can't be done until is has been sent!), maybe we should
+rewrite completely within this RFC (thus delaying it longer, though).
 
 <EOF>
