@@ -229,9 +229,9 @@ is missing accidentally:
       $needsParsing= FALSE;
       // break missing intentionally
       
-      case ENC_ISO_8859_2:
-        // ...
-        break;
+    case ENC_ISO_8859_2:
+      // ...
+      break;
   }
 </code>
         
