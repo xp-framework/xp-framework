@@ -79,21 +79,21 @@
    ! Links to documentation
    !-->
   <xsl:template match="link[@rel= 'doc']">
-    <a href="/xml/doc?{@href}"><xsl:value-of select="."/></a>
+    <a href="http://docs.xp-framework.net/xml/doc?{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
 
   <!--
    ! Links to api docs
    !-->
   <xsl:template match="link[@rel= 'package']">
-    <a href="/xml/api/package?{@href}"><xsl:value-of select="."/></a>
+    <a href="http://docs.xp-framework.net/xml/api/package?{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
 
   <!--
    ! Links to api docs
    !-->
   <xsl:template match="link[@rel= 'class']">
-    <a href="/xml/api/class?{@href}"><xsl:value-of select="."/></a>
+    <a href="http://docs.xp-framework.net/xml/api/class?{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
 
   <!--
@@ -107,7 +107,7 @@
    ! Links to an XP RFC
    !-->
   <xsl:template match="link[@rel= 'rfc']">
-    <a href="http://xp-framework.net/rfc/{@href}"><xsl:value-of select="."/></a>
+    <a href="http://developer.xp-framework.net/xml/rfc/view?{@href}"><xsl:value-of select="."/></a>
   </xsl:template>
 
   <!--
