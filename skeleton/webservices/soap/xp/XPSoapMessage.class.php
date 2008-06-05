@@ -374,7 +374,9 @@
         if (isset($results[$key])) {
 
           // Convert result to array in case it's not an array already
-          if (!is_array($results[$key])) $results[$key]= array($results[$key]);
+          // or - if it's already an array - check for numeric array key
+          // to make sure it's not an array generated from an object/struct
+          if (!is_array($results[$key]) || !isset($results[$key][0])) $results[$key]= array($results[$key]);
 
           $results[$key][]= $this->unmarshall(
             $node->children[$i], 
