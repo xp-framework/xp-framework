@@ -13,6 +13,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0166: XP Runners
+  (friebe)
 - Implemented RFC #0165: New text.regex package
   (friebe)
 - Implemented RFC #0163: Respect ANSI SQL in rdbms package
