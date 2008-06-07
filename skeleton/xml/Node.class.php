@@ -219,78 +219,80 @@
      * </pre>
      *
      * @param   int indent default INDENT_WRAPPED
+     * @param   string encoding default 'iso-8859-1'
      * @param   string inset default ''
      * @return  string XML
      */
-    public function getSource($indent= INDENT_WRAPPED, $inset= '') {
+    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
       $xml= $inset.'<'.$this->name;
-      switch (gettype($this->content)) {
-        case 'string': 
-          $content= htmlspecialchars($this->content); 
-          break;
-
-        case 'object':
-          if ($this->content instanceof PCData) {
-            $content= $this->content->pcdata;
-          } else if ($this->content instanceof CData) {
-            $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $this->content->cdata).']]>';
-          }
-          break;
-
-        case 'float':
-        
-          // Check for integers bigger than MAX_INT
-          if ($this->content - floor($this->content) == 0) {
-            $content= number_format($this->content, 0, NULL, NULL);
-            break;
-          }
-          // Break missing intentionally
-
-        default: 
-          $content= $this->content; 
-          break;
+      $conv= 'iso-8859-1' != $encoding;
+      
+      if ('string' == ($type= gettype($this->content))) {
+        $content= $conv
+          ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
+          : htmlspecialchars($this->content)
+        ;
+      } else if ('float' == $type) {
+        $content= ($this->content - floor($this->content) == 0)
+          ? number_format($this->content, 0, NULL, NULL)
+          : $this->content
+        ;
+      } else if ($this->content instanceof PCData) {
+        $content= $conv
+          ? iconv('iso-8859-1', $encoding, $this->content->pcdata)
+          : $this->content->pcdata
+        ;
+      } else if ($this->content instanceof CData) {
+        $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $conv
+          ? iconv('iso-8859-1', $encoding, $this->content->cdata)
+          : $this->content->cdata
+        ).']]>';
+      } else if ($this->content instanceof String) {
+        $content= $this->content->getBytes($encoding);
+      } else {
+        $content= $this->content; 
       }
+      
+      if (INDENT_NONE === $indent) {
+        foreach ($this->attribute as $key => $value) {
+          $xml.= ' '.$key.'="'.htmlspecialchars($conv
+            ? iconv('iso-8859-1', $encoding, $value) 
+            : $value
+          ).'"';
+        }
+        $xml.= '>'.$content;
+        foreach ($this->children as $child) {
+          $xml.= $child->getSource($indent, $encoding, $inset);
+        }
+        return $xml.'</'.$this->name.'>';
+      } else {
+        if ($this->attribute) {
+          $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
+          foreach ($this->attribute as $key => $value) {
+            $xml.= $sep.' '.$key.'="'.htmlspecialchars($conv
+              ? iconv('iso-8859-1', $encoding, $value) 
+              : $value
+            ).'"';
+          }
+          $xml.= $sep;
+        }
 
-      switch ($indent) {
-        case INDENT_DEFAULT:
-        case INDENT_WRAPPED:
-          if (!empty($this->attribute)) {
-            $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
-            foreach (array_keys($this->attribute) as $key) {
-              $xml.= $sep.' '.$key.'="'.htmlspecialchars($this->attribute[$key]).'"';
-            }
-            $xml.= $sep;
-          }
+        // No content and no children => close tag
+        if (0 == strlen($content)) {
+          if (!$this->children) return $xml."/>\n";
+          $xml.= '>';
+        } else {
+          $xml.= '>'.($indent ? "\n  ".$inset.$content : trim($content));
+        }
 
-          // No content and no children => close tag
-          if (0 == strlen($content)) {
-            if (empty($this->children)) return $xml."/>\n";
-            $xml.= '>';
-          } else {
-            $xml.= '>'.($indent ? "\n  ".$inset.$content : trim($content));
+        if ($this->children) {
+          $xml.= ($indent ? '' : $inset)."\n";
+          foreach ($this->children as $child) {
+            $xml.= $child->getSource($indent, $encoding, $inset.'  ');
           }
-
-          if (!empty($this->children)) {
-            $xml.= ($indent ? '' : $inset)."\n";
-            foreach (array_keys($this->children) as $key) {
-              $xml.= $this->children[$key]->getSource($indent, $inset.'  ');
-            }
-            $xml= ($indent ? substr($xml, 0, -1) : $xml).$inset;
-          }
-          return $xml.($indent ? "\n".$inset : '').'</'.$this->name.">\n";
-          
-        case INDENT_NONE:
-          foreach (array_keys($this->attribute) as $key) {
-            $xml.= ' '.$key.'="'.htmlspecialchars($this->attribute[$key]).'"';
-          }
-          $xml.= '>'.trim($content);
-          
-          if (!empty($this->children)) {
-            foreach (array_keys($this->children) as $key) {
-              $xml.= $this->children[$key]->getSource($indent, $inset);
-            }
-          }
-          return $xml.'</'.$this->name.'>';
+          $xml= ($indent ? substr($xml, 0, -1) : $xml).$inset;
+        }
+        return $xml.($indent ? "\n".$inset : '').'</'.$this->name.">\n";
       }
     }
     
