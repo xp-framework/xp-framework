@@ -50,7 +50,7 @@
         $this->statuscode,
         $this->message
       ))) {
-        throw(new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']'));
+        throw new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']');
       }
       
       $this->version= $major.'.'.$minor;
@@ -121,10 +121,10 @@
       // details, see RFC 2616, section 3.6.1
       if (!($buf= $this->stream->read(1024))) return $this->closeStream();
       if (!(sscanf($buf, "%x%s\r\n", $chunksize, $extension))) {
-        throw(new IOException(sprintf(
+        throw new IOException(sprintf(
           'Chunked transfer encoding: Indicator line "%s" invalid', 
           addcslashes($buf, "\0..\17")
-        )));
+        ));
         return $this->closeStream();
       }
 
