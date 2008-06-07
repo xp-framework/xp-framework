@@ -7,6 +7,7 @@
   /**
    * Base class for XML documents
    *
+   * @deprecated
    */
   class XML extends Object {
     public 
