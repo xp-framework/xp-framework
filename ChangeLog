@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated xml.XML class
+  (friebe)
 
 RFCs
 ~~~~
