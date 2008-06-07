@@ -15,19 +15,23 @@
    * The Tree class represents a tree which can be exported
    * to and imported from an XML document.
    *
+   * @test     xp://net.xp_framework.unittest.xml.TreeTest
    * @see      xp://xml.parser.XMLParser
    * @purpose  Tree
    */
-  class Tree extends XML implements ParserCallback {
+  class Tree extends Object implements ParserCallback {
     public 
       $root     = NULL,
-      $children = array(),
       $nodeType = 'node';
 
     public
       $_cnt     = NULL,
       $_cdata   = NULL,
       $_objs    = NULL;
+
+    protected 
+      $version  = '1.0',
+      $encoding = 'iso-8859-1';
     
     /**
      * Constructor
@@ -37,6 +41,48 @@
     public function __construct($rootName= 'document') {
       $this->root= new Node($rootName);
     }
+
+    /**
+     * Set encoding
+     *
+     * @param   string e encoding
+     */
+    public function setEncoding($e) {
+      $this->encoding= $e;
+    }
+
+    /**
+     * Set encoding and return this tree
+     *
+     * @param   string e encoding
+     * @return  xml.Tree
+     */
+    public function withEncoding($e) {
+      $this->encoding= $e;
+      return $this;
+    }
+    
+    /**
+     * Retrieve encoding
+     *
+     * @return  string encoding
+     */
+    public function getEncoding() {
+      return $this->encoding;
+    }
+    
+    /**
+     * Returns XML declaration
+     *
+     * @return  string declaration
+     */
+    public function getDeclaration() {
+      return sprintf(
+        '<?xml version="%s" encoding="%s"?>',
+        $this->version,
+        $this->encoding
+      );
+    }
     
     /**
      * Retrieve XML representation
@@ -45,10 +91,7 @@
      * @return  string
      */
     public function getSource($indent= TRUE) {
-      return (isset($this->root)
-        ? $this->root->getSource($indent)
-        : NULL
-      );
+      return $this->root->getSource($indent, strtolower($this->encoding), '');
     }
     
     /**
