@@ -25,6 +25,12 @@ RFCs
   
 Bugfixes
 ~~~~~~~~
+- Fixed FtpConnection::getDir() function by passing FTP connection object
+  to FtpDir constructor
+  (hinckel)
+- Fixed _recurseData() in XPSoapMessage to handle arrays vs. objects
+  correctly
+  (hinckel)
 - Made HttpScriptlet::process() rethrow HttpScriptletExceptions as-is,
   while any other exception is wrapped into a HttpScriptletException.
   (friebe).
