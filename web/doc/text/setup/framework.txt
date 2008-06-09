@@ -33,33 +33,39 @@ Step by step
 ------------
 Follow these steps to install the framework on your workstation:
 
+Preparation
+~~~~~~~~~~~
+Create a directory where you want the XP framework installed to. For 
+example: <tt>mkdir ~/xp</tt>. Change to this directory.
+
 Download
 ~~~~~~~~
-Get the zipfile or tar.gz, whatever you're more comfortable with and save 
-it to your disk.
+Type <tt>wget http://xp-framework.net/downloads/releases/VERSION/setup -O - | php</tt>.
+This installer will get the necessary files and place them in a subdirectory
+named after the version.
 
-Unpack
-~~~~~~
-Create a directory (e.g. xp) - doesn't matter where - and extract the 
-archive's contents into it. This will create <tt>lang.base.php</tt> and 
-<tt>lib/xp-rt-X.X.X.xar</tt>
-
-Configure PHP
-~~~~~~~~~~~~~
-Open the <tt>php.ini</tt> file and search for a line containing <tt>include_path</tt>.
-Add the directory you unpacked the XP framework release and the <tt>xp-rt-X.X.X.xar</tt>
-to this line.
-
+Add to path
+~~~~~~~~~~~
 <summary>
 <ul>
-  <li>Un*x: <tt>include_path=".:/home/thekid/xp/:/home/thekid/xp/lib/xp-rt-5.0.0.xar"</tt></li>
-  <li>Windows: <tt>include_path=".;D:\var\xp\;D:\var\xp\lib\xp-rt-5.0.0.xar".</tt></li>
+  <li>Un*x: Add the following line to the file <tt>.profile</tt> in your 
+      home directory: <tt>export PATH=$PATH:/home/thekid/xp/5.6.7/bin</tt>.
+      If the <tt>.profile</tt> file does not exist, create it.
+  </li>
+  <li>Windows: Press the Windows-Key and "Pause" simultaneously to open
+      the "system properties" dialog window. On the "Extended" tab, press
+      the button labled "Environment variables". Add a variable called 
+      <tt>Path</tt> (or edit an existing one) in the section "user variables"
+      and add <tt>C:\Users\Thekid\xp\5.6.7\bin</tt> as value.
+  </li>
 </ul>
 </summary>
 
 Done
 ~~~~
-You're ready to use the XP framework now!
+You're ready to use the XP framework now! To verify your setup, open a
+*new* shell window (so the environment variables are re-read) and type
+<tt>xp -v</tt>.
 
 
 Using additional packages
@@ -72,10 +78,6 @@ Download
 ~~~~~~~~
 Download the xar files from the releases' lib directory into the same 
 directory where <tt>xp-rt-X.X.X.xar</tt> resides.
-
-Configure PHP
-~~~~~~~~~~~~~
-Add the downloaded file to the <tt>include_path</tt> setting as described above.
 
 Done
 ~~~~
