@@ -214,8 +214,7 @@
         }
       }
         
-      $f= new FtpDir($dir);
-      $f->connection= $this;
+      $f= new FtpDir($dir, $this);
       return $f;
     }
     
