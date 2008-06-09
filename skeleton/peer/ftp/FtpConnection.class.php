@@ -214,8 +214,7 @@
         }
       }
         
-      $f= new FtpDir($dir, $this);
-      return $f;
+      return new FtpDir($dir, $this);
     }
     
     /**
@@ -227,8 +226,8 @@
      * @return  bool success
      */
     public function setDir($f) {
-      if (FALSE === ftp_chdir($this->handle, $f->name)) {
-        throw(new SocketException('Cannot change directory to '.$f->name));
+      if (FALSE === ftp_chdir($this->handle, $f->getName())) {
+        throw(new SocketException('Cannot change directory to '.$f->getName()));
       }
       return TRUE;
     }
