@@ -132,6 +132,21 @@
     }
 
     /**
+     * Test HTTP GET - parameters via setParameters(RequestData)
+     *
+     */
+    #[@test]
+    public function getUrlWithRequestDataParams() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HTTP_GET);
+      $r->setParameters(new RequestData('a=b&c=d'));
+      $this->assertEquals(
+        "GET /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
      * Test HTTP GET - parameters via setParameters(array<string, string>)
      * in combination with parameters passed in the constructor.
      *
@@ -147,7 +162,6 @@
       );
     }
 
-
     /**
      * Test HTTP GET - parameters via setParameters(string)
      * in combination with parameters passed in the constructor.
@@ -160,6 +174,23 @@
       $r->setParameters('a=b');
       $this->assertEquals(
         "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP POST
+     *
+     */
+    #[@test]
+    public function postUrl() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HTTP_POST);
+      $r->setParameters('a=b&c=d');
+      $this->assertEquals(
+        "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "a=b&c=d",
         $r->getRequestString()
       );
     }
