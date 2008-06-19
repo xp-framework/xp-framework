@@ -183,7 +183,7 @@
      *
      */
     #[@test]
-    public function postUrl() {
+    public function post() {
       $r= new HttpRequest(new URL('http://example.com/'));
       $r->setMethod(HTTP_POST);
       $r->setParameters('a=b&c=d');
@@ -191,6 +191,64 @@
         "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
         "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
         "a=b&c=d",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP HEAD
+     *
+     */
+    #[@test]
+    public function head() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HTTP_HEAD);
+      $r->setParameters('a=b&c=d');
+      $this->assertEquals(
+        "HEAD /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test setHeader() method
+     *
+     */
+    #[@test]
+    public function customHeader() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setHeader('X-Binford', 6100);
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test addHeaders() method
+     *
+     */
+    #[@test]
+    public function customHeaders() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->addHeaders(array('X-Binford' => 6100));
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test setHeader() method
+     *
+     */
+    #[@test]
+    public function duplicateHeader() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setHeader('X-Binford', 6100);
+      $r->setHeader('X-Binford', 61000);
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 61000\r\n\r\n",
         $r->getRequestString()
       );
     }
