@@ -62,6 +62,16 @@
     public function isConnected() {
       return is_resource($this->_sock);
     }
+
+    /**
+     * Clone method. Ensure reconnect
+     *
+     */
+    public function __clone() {
+      if (!$this->isConnected()) return;
+      $this->close();
+      $this->connect();
+    }
     
     /**
      * Connect
