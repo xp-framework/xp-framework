@@ -99,7 +99,7 @@ Index: skeleton/peer/http/HttpRequest.class.php
      
      /**
       * Set request method
-@@ -109,7 +136,7 @@
+@@ -109,13 +136,12 @@
            $query.= '&'.$k.'='.urlencode($v);
          }
        }
@@ -108,7 +108,24 @@ Index: skeleton/peer/http/HttpRequest.class.php
        
        // Which HTTP method? GET and HEAD use query string, POST etc. use
        // body for passing parameters
-@@ -144,27 +171,10 @@
+       switch ($this->method) {
+-        case HTTP_HEAD:
+-        case HTTP_GET:
++        case HTTP_HEAD: case HTTP_GET: case HTTP_DELETE: case HTTP_OPTIONS:
+           if (NULL !== $this->url->getQuery()) {
+             $target.= '?'.$this->url->getQuery().(empty($query) ? '' : $query);
+           } else {
+@@ -124,8 +150,7 @@
+           $body= '';
+           break;
+           
+-        case HTTP_POST:
+-        default:
++        case HTTP_POST: case HTTP_PUT: case HTTP_TRACE: default:
+           $body= substr($query, 1);
+           if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
+           $this->headers['Content-Length']= strlen($body);
+@@ -144,27 +169,10 @@
        
        // Add request headers
        foreach ($this->headers as $k => $v) {
@@ -648,6 +665,48 @@ Index: skeleton/peer/http/HttpConnection.class.php
      }
  
      /**
+@@ -167,7 +200,40 @@
+      * @return  peer.http.HttpResponse response object
+      */
+     public function put($arg= NULL, $headers= array()) {
+-      return $this->request(HTTP_PUT, new RequestData($arg), $headers);
++      return $this->request(HTTP_PUT, $arg, $headers);
+     }
++
++    /**
++     * Perform a DELETE request
++     *
++     * @param   string arg default NULL
++     * @param   array headers default array()
++     * @return  peer.http.HttpResponse response object
++     */
++    public function delete($arg= NULL, $headers= array()) {
++      return $this->request(HTTP_DELETE, $arg, $headers);
++    }
++
++    /**
++     * Perform an OPTIONS request
++     *
++     * @param   string arg default NULL
++     * @param   array headers default array()
++     * @return  peer.http.HttpResponse response object
++     */
++    public function options($arg= NULL, $headers= array()) {
++      return $this->request(HTTP_OPTIONS, $arg, $headers);
++    }
++
++    /**
++     * Perform a TRACE request
++     *
++     * @param   string arg default NULL
++     * @param   array headers default array()
++     * @return  peer.http.HttpResponse response object
++     */
++    public function trace($arg= NULL, $headers= array()) {
++      return $this->request(HTTP_TRACE, $arg, $headers);
++    }
+   }
+ ?>
 Index: skeleton/peer/http/SocketHttpTransport.class.php
 ===================================================================
 --- skeleton/peer/http/SocketHttpTransport.class.php	(revision 0)
@@ -1110,6 +1169,88 @@ ___________________________________________________________________
 Name: svn:keywords
    + Id
 
+Index: ports/classes/net/xp_framework/unittest/peer/HttpRequestTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/peer/HttpRequestTest.class.php	(revision 12290)
++++ ports/classes/net/xp_framework/unittest/peer/HttpRequestTest.class.php	(working copy)
+@@ -196,6 +196,40 @@
+     }
+ 
+     /**
++     * Test HTTP PUT
++     *
++     */
++    #[@test]
++    public function put() {
++      $r= new HttpRequest(new URL('http://example.com/'));
++      $r->setMethod(HTTP_PUT);
++      $r->setParameters('a=b&c=d');
++      $this->assertEquals(
++        "PUT / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
++        "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
++        "a=b&c=d",
++        $r->getRequestString()
++      );
++    }
++
++    /**
++     * Test HTTP TRACE
++     *
++     */
++    #[@test]
++    public function trace() {
++      $r= new HttpRequest(new URL('http://example.com/'));
++      $r->setMethod(HTTP_TRACE);
++      $r->setParameters('a=b&c=d');
++      $this->assertEquals(
++        "TRACE / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
++        "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
++        "a=b&c=d",
++        $r->getRequestString()
++      );
++    }
++
++    /**
+      * Test HTTP HEAD
+      *
+      */
+@@ -211,6 +245,36 @@
+     }
+ 
+     /**
++     * Test HTTP DELETE
++     *
++     */
++    #[@test]
++    public function delete() {
++      $r= new HttpRequest(new URL('http://example.com/'));
++      $r->setMethod(HTTP_DELETE);
++      $r->setParameters('a=b&c=d');
++      $this->assertEquals(
++        "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
++        $r->getRequestString()
++      );
++    }
++
++    /**
++     * Test HTTP OPTIONS
++     *
++     */
++    #[@test]
++    public function options() {
++      $r= new HttpRequest(new URL('http://example.com/'));
++      $r->setMethod(HTTP_OPTIONS);
++      $r->setParameters('a=b&c=d');
++      $this->assertEquals(
++        "OPTIONS /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
++        $r->getRequestString()
++      );
++    }
++
++    /**
+      * Test setHeader() method
+      *
+      */
 Index: ports/classes/net/xp_framework/unittest/peer/HttpResponseTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/peer/HttpResponseTest.class.php	(revision 0)
