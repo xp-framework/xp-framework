@@ -29,8 +29,8 @@
      *
      * @param   string str
      */
-    public function __construct($str) {
-      $this->setURL($str);
+    public function __construct($str= NULL) {
+      if (NULL !== $str) $this->setURL($str);
     }
 
     /**
