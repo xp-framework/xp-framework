@@ -1,24 +1,105 @@
-Index: peer/http/HttpRequest.class.php
+Index: skeleton/peer/http/SSLSocketHttpTransport.class.php
 ===================================================================
---- peer/http/HttpRequest.class.php	(revision 12054)
-+++ peer/http/HttpRequest.class.php	(working copy)
-@@ -26,6 +26,7 @@
+--- skeleton/peer/http/SSLSocketHttpTransport.class.php	(revision 0)
++++ skeleton/peer/http/SSLSocketHttpTransport.class.php	(revision 0)
+@@ -0,0 +1,29 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('peer.http.SocketHttpTransport', 'peer.SSLSocket');
++
++  /**
++   * Transport via SSL sockets
++   *
++   * @ext      openssl
++   * @see      xp://peer.SSLSocket
++   * @see      xp://peer.http.HttpConnection
++   * @purpose  Transport
++   */
++  class SSLSocketHttpTransport extends SocketHttpTransport {
++
++    /**
++     * Creates a socket - overridden from parent class
++     *
++     * @param   peer.URL url
++     * @return  peer.Socket
++     */
++    protected function newSocket(URL $url) {
++      return new SSLSocket($url->getHost(), $url->getPort(443));
++    }
++  }
++?>
+
+Property changes on: skeleton/peer/http/SSLSocketHttpTransport.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/peer/http/HttpRequest.class.php
+===================================================================
+--- skeleton/peer/http/HttpRequest.class.php	(revision 12288)
++++ skeleton/peer/http/HttpRequest.class.php	(working copy)
+@@ -26,10 +26,9 @@
      public
        $url        = NULL,
        $method     = HTTP_GET,
 +      $target     = '',
        $version    = HTTP_VERSION_1_1,
-       $headers    = array(
-         'Connection' => 'close'
-@@ -44,6 +45,7 @@
+-      $headers    = array(
+-        'Connection' => 'close'
+-      ),
++      $headers    = array('Connection' => 'close'),
+       $parameters = array();
+       
+     /**
+@@ -37,14 +36,42 @@
+      *
+      * @param   peer.URL url object
+      */
+-    public function __construct($url) {
++    public function __construct(URL $url= NULL) {
++      if (NULL !== $url) $this->setUrl($url);
++    }
++
++    /**
++     * Set URL
++     *
++     * @param   peer.URL url object
++     */
++    public function setUrl(URL $url) {
+       $this->url= $url;
+       if ($url->getUser() && $url->getPassword()) {
+         $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
        }
        $port= $this->url->getPort(-1);
        $this->headers['Host']= $this->url->getHost().(-1 == $port ? '' : ':'.$port);
 +      $this->target= $this->url->getPath('/');
      }
++
++    /**
++     * Get URL
++     *
++     * @return  peer.URL url object
++     */
++    public function getUrl() {
++      return $this->url;
++    }
++
++    /**
++     * Set request target
++     *
++     * @param   string target
++     */
++    public function setTarget($target) {
++      $this->target= $target;
++    }
      
      /**
-@@ -109,7 +111,7 @@
+      * Set request method
+@@ -109,7 +136,7 @@
            $query.= '&'.$k.'='.urlencode($v);
          }
        }
@@ -27,7 +108,7 @@ Index: peer/http/HttpRequest.class.php
        
        // Which HTTP method? GET and HEAD use query string, POST etc. use
        // body for passing parameters
-@@ -144,10 +146,7 @@
+@@ -144,27 +171,10 @@
        
        // Add request headers
        foreach ($this->headers as $k => $v) {
@@ -39,34 +120,73 @@ Index: peer/http/HttpRequest.class.php
        }
        
        return $request."\r\n".$body;
-@@ -161,7 +160,7 @@
-     public function send($timeout= 60, $connecttimeout= 2.0) {
-       $s= new Socket($this->url->getHost(), $this->url->getPort(80));
-       $s->setTimeout($timeout);
--      
-+
-       $request= $this->getRequestString();
-       $s->connect($connecttimeout) && $s->write($request);
-       return new HttpResponse($s);
-Index: peer/http/HttpConnection.class.php
-===================================================================
---- peer/http/HttpConnection.class.php	(revision 12060)
-+++ peer/http/HttpConnection.class.php	(working copy)
-@@ -36,7 +36,8 @@
-       $response    = NULL,
-       $auth        = NULL;
-     
--    public
-+    protected
-+      $proxy        = NULL,
-       $_ctimeout    = 2.0,
-       $_timeout     = 60;
- 
-@@ -57,6 +58,15 @@
-     protected function _createRequest($url) {
-       $this->request= HttpRequestFactory::factory($url);
      }
+-    
+-    /**
+-     * Send request
+-     *
+-     * @return  peer.http.HttpResponse response object
+-     */
+-    public function send($timeout= 60, $connecttimeout= 2.0) {
+-      $s= new Socket($this->url->getHost(), $this->url->getPort(80));
+-      $s->setTimeout($timeout);
+-      
+-      $request= $this->getRequestString();
+-      $s->connect($connecttimeout) && $s->write($request);
+-      return new HttpResponse($s);
+-    }
+   }
+ ?>
+Index: skeleton/peer/http/HttpTransport.class.php
+===================================================================
+--- skeleton/peer/http/HttpTransport.class.php	(revision 0)
++++ skeleton/peer/http/HttpTransport.class.php	(revision 0)
+@@ -0,0 +1,105 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'peer.http.HttpRequest', 
++    'peer.http.HttpResponse',
++    'peer.http.SocketHttpTransport',
++    'peer.URL'
++  );
++
++  /**
++   * Transport via sockets
++   *
++   * @see      xp://peer.http.HttpConnection
++   * @purpose  Transport
++   */
++  abstract class HttpTransport extends Object {
++    protected static
++      $transports = array();
 +    
++    protected
++      $proxy      = NULL;
++    
++    static function __static() {
++      self::$transports['http']= XPClass::forName('peer.http.SocketHttpTransport');
++      
++      // Depending on what extension is available, choose a different implementation 
++      // for SSL transport. CURL is the slower one, so favor SSLSockets.
++      if (extension_loaded('openssl')) {
++        self::$transports['https']= XPClass::forName('peer.http.SSLSocketHttpTransport');
++      } else if (extension_loaded('curl')) {
++        self::$transports['https']= XPClass::forName('peer.http.CurlHttpTransport');
++      }
++    }
++    
++    /**
++     * Constructor
++     *
++     * @param   peer.URL url
++     */
++    abstract public function __construct(URL $url);
++
 +    /**
 +     * Set proxy
 +     *
@@ -75,26 +195,693 @@ Index: peer/http/HttpConnection.class.php
 +    public function setProxy(HttpProxy $proxy) {
 +      $this->proxy= $proxy;
 +    }
++
++    /**
++     * Sends a request via this proxy
++     *
++     * @param   peer.http.HttpRequest request
++     * @param   int timeout default 60
++     * @param   float connecttimeout default 2.0
++     * @return  peer.http.HttpResponse response object
++     */
++    abstract public function send(HttpRequest $request, $timeout= 60, $connecttimeout= 2.0);
++    
++    /**
++     * Creates a string representation of this object
++     *
++     * @return  string
++     */
++    public function toString() {
++      return $this->getClassName();
++    }
++    
++    /**
++     * Register transport implementation for a specific scheme
++     *
++     * @param   string scheme
++     * @param   lang.XPClass<peer.http.HttpTransport> class
++     */
++    public static function register($scheme, XPClass $class) {
++      if (!$class->isSubclassOf('peer.http.HttpTransport')) {
++        throw new IllegalArgumentException(sprintf(
++          'Given argument must be lang.XPClass<peer.http.HttpTransport>, %s given',
++          $class->toString()
++        ));
++      }
++      self::$transports[$scheme]= $class;
++    }
++    
++    /**
++     * Get transport implementation for a specific URL
++     *
++     * @param   peer.URL url
++     * @return  peer.http.HttpTransport
++     * @throws  lang.IllegalArgumentException in case the scheme is not supported
++     */
++    public static function transportFor(URL $url) {
++      $scheme= $url->getScheme();
++      if (!isset(self::$transports[$scheme])) {
++        throw new IllegalArgumentException('Scheme "'.$scheme.'" unsupported');
++      }
++      return self::$transports[$scheme]->newInstance($url);
++    }
++  }
++?>
+
+Property changes on: skeleton/peer/http/HttpTransport.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/peer/http/HttpResponse.class.php
+===================================================================
+--- skeleton/peer/http/HttpResponse.class.php	(revision 12288)
++++ skeleton/peer/http/HttpResponse.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$
+  */
  
-     /**
-      * Set connect timeout
-@@ -123,7 +133,10 @@
-       $this->request->setParameters($arg);
-       $this->request->addHeaders($headers);
+-  uses('peer.SocketException');
++  uses('io.streams.InputStream');
+ 
+   /**
+    * HTTP response
+@@ -20,90 +20,103 @@
+       $headers       = array(),
+       $chunked       = NULL;
+     
+-    public
++    protected
++      $stream        = NULL,
++      $buffer        = '',
+       $_headerlookup = array();
        
--      return $this->request->send($this->_timeout, $this->_ctimeout);
-+      return ($this->proxy
-+        ? $this->proxy->sendRequest($this->request)
-+        : $this->request->send($this->_timeout, $this->_ctimeout)
-+      );
+     /**
+      * Constructor
+      *
+-     * @param   lang.Object stream
++     * @param   io.streams.InputStream stream
+      */
+-    public function __construct($stream) {
++    public function __construct(InputStream $stream) {
+       $this->stream= $stream;
+       
++      // Read status line and headers
++      do { $this->readHeader(); } while (100 === $this->statuscode);
++
++      // Check for chunked transfer encoding
++      $this->chunked= (bool)stristr($this->getHeader('Transfer-Encoding'), 'chunked');
+     }
++    
++    /**
++     * Scan stream until we we find a certain character
++     *
++     * @param   string char
++     * @return  string
++     */
++    protected function scanUntil($char) {
++      $pos= strpos($this->buffer, $char);
++      
++      // Found no line ending in buffer, read until we do!
++      while (FALSE === $pos) {
++        if ($this->stream->available() <= 0) {
++          $pos= strlen($this->buffer);
++          break;
++        }
++        $this->buffer.= $this->stream->read();
++        $pos= strpos($this->buffer, $char);
++      }
+ 
++      // Return line, remove from buffer
++      $line= substr($this->buffer, 0, $pos);
++      $this->buffer= substr($this->buffer, $pos+ 1);
++      return $line;
++    }
++
+     /**
+-     * Read status line
++     * Read a chunk
+      *
+-     * @return  bool success
+-     */    
+-    protected function _readstatus() {
+-      $str= $this->stream->read();
++     * @param   int bytes
++     * @return  string
++     */
++    protected function readChunk($bytes) {
++      $len= strlen($this->buffer);
+       
+-      $s= chop($str);
+-      if (3 > ($r= sscanf(
+-        $s, 
+-        "HTTP/%d.%d %3d %[^\r]",
+-        $major, 
+-        $minor, 
+-        $this->statuscode,
+-        $this->message
+-      ))) {
+-        throw new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']');
++      // Not enough data, read until it's here!
++      while ($len < $bytes) {
++        if ($this->stream->available() <= 0) break;
++        $this->buffer.= $this->stream->read();
++        $len= strlen($this->buffer);
+       }
+       
+-      $this->version= $major.'.'.$minor;
+-      return TRUE;
++      // Return chunk, remove from buffer
++      $chunk= substr($this->buffer, 0, $bytes);
++      $this->buffer= substr($this->buffer, $bytes+ 1);
++      return $chunk;
+     }
+     
+     /**
+-     * Read head if necessary
++     * Reads the header (status line and key/value pairs).
+      *
+-     * @return  bool success
++     * @throws  lang.FormatException
+      */
+-    protected function _readhead() {
+-      if (0 != $this->statuscode) return TRUE;
+-      if (!$this->_readstatus()) return FALSE;
+-      
+-      // HTTP/1.x 100 Continue
+-      if (100 == $this->statuscode) {
+-        while (!$this->stream->eof()) {
+-          if ('' == chop($this->stream->read())) break;
+-        }
+-        
+-        if (!$this->_readstatus()) return FALSE;
++    protected function readHeader() {
++    
++      // Status line
++      $status= $this->scanUntil("\n");
++      $r= sscanf($status, "HTTP/%[0-9.] %3d %[^\r]", $this->version, $this->statuscode, $this->message);
++      if ($r < 3) {
++        throw new FormatException('"'.$status.'" is not a valid HTTP response ['.$r.']');
+       }
+-      
+-      // Read rest of headers
+-      while (!$this->stream->eof()) {
+-        $l= chop($this->stream->read());
+-        if ('' == $l) break;
+-        
+-        list($k, $v)= explode(': ', $l, 2);
+-        $this->headers[$k]= $v;
+-      }
+ 
+-      // Check for chunked transfer encoding
+-      $this->chunked= (bool)stristr($this->getHeader('Transfer-Encoding'), 'chunked');
+-      
+-      return TRUE;
++      // Headers
++      while ($line= $this->scanUntil("\n")) {
++        if (2 != sscanf($line, "%[^:]: %[^\r\n]", $k, $v)) break;
++        $this->headers[$k]= $v;      
++      }
+     }
+-    
++
+     /**
+      * Read data
+      *
+-     * @param   int size default 8192
+-     * @param   bool binary default FALSE
++     * @param   int size default 8192 maximum size to read
+      * @return  string buf or FALSE to indicate EOF
+      */
+-    public function readData($size= 8192, $binary= FALSE) {
+-      if (!$this->_readhead()) return FALSE;        // Read head if not done before
+-      if ($this->stream->eof()) return $this->closeStream();
+-      
++    public function readData($size= 8192) {
+       if (!$this->chunked) {
+-        $func= $binary ? 'readBinary' : 'read';
+-        if (!($buf= $this->stream->$func($size))) {
++        if (!($buf= $this->readChunk($size))) {
+           return $this->closeStream();
+         }
+ 
+@@ -119,43 +132,32 @@
+       // any chunk extensions. We ignore the size and boolean parameters
+       // to this method completely to ensure functionality. For more 
+       // details, see RFC 2616, section 3.6.1
+-      if (!($buf= $this->stream->read(1024))) return $this->closeStream();
+-      if (!(sscanf($buf, "%x%s\r\n", $chunksize, $extension))) {
++      if (!($indicator= $this->scanUntil("\n"))) return $this->closeStream();
++      if (!(sscanf($indicator, "%x%s\r", $chunksize, $extension))) {
++        $this->closeStream();
+         throw new IOException(sprintf(
+           'Chunked transfer encoding: Indicator line "%s" invalid', 
+-          addcslashes($buf, "\0..\17")
++          addcslashes($indicator, "\0..\17")
+         ));
+-        return $this->closeStream();
+       }
+ 
+       // A chunk of size 0 means we're at the end of the document. We 
+       // ignore any trailers.
+       if (0 == $chunksize) return $this->closeStream();
+ 
+-      // A chunk is terminated by \r\n, so add 2 to the chunksize. We will
+-      // trim these characters off later.
+-      $chunksize+= 2;
+-
+-      // Read up until end of chunk
+-      $buf= '';
+-      do {
+-        if (!($data= $this->stream->readBinary($chunksize- strlen($buf)))) return $this->closeStream();
+-        $buf.= $data;
+-      } while (strlen($buf) < $chunksize);
+-
+-      return rtrim($buf, "\r\n");
++      // A chunk is terminated by \r\n, so scan over two more characters
++      $chunk= $this->readChunk($chunksize);
++      $this->readChunk(2);
++      return $chunk;
+     }
+     
+     /**
+-     * Closes the stream if it's at EOF
++     * Closes the stream and returns FALSE
+      *
+-     * @return  boolean 
++     * @return  bool
+      */
+     public function closeStream() {
+-      if ($this->stream->eof()) {
+-        $this->stream->close();
+-      }
+-      
++      $this->stream->close();
+       return FALSE;
+     }
+     
+@@ -176,8 +178,6 @@
+      * @return  toString
+      */
+     public function toString() {
+-      if (!$this->_readhead()) return parent::toString();
+-      
+       $h= '';
+       foreach ($this->headers as $k => $v) {
+         $h.= sprintf("  [%-20s] %s\n", $k, $v);
+@@ -198,7 +198,7 @@
+      * @return  int status code
+      */
+     public function getStatusCode() {
+-      return $this->_readhead() ? $this->statuscode : FALSE;
++      return $this->statuscode;
      }
  
      /**
-Index: peer/http/HttpProxy.class.php
+@@ -216,7 +216,7 @@
+      * @return  array headers
+      */
+     public function getHeaders() {
+-      return $this->_readhead() ? $this->headers : FALSE;
++      return $this->headers;
+     }
+ 
+     /**
+@@ -226,13 +226,11 @@
+      * @return  string value or NULL if this header does not exist
+      */
+     public function getHeader($name) {
+-      if (!$this->_readhead()) return FALSE;
+       if (empty($this->_headerlookup)) {
+         $this->_headerlookup= array_change_key_case($this->headers, CASE_LOWER);
+       }
+       $name= strtolower($name);
+       return isset($this->_headerlookup[$name]) ? $this->_headerlookup[$name] : NULL;
+     }
+-  
+   }
+ ?>
+Index: skeleton/peer/http/HttpConnection.class.php
 ===================================================================
---- peer/http/HttpProxy.class.php	(revision 0)
-+++ peer/http/HttpProxy.class.php	(revision 0)
-@@ -0,0 +1,82 @@
+--- skeleton/peer/http/HttpConnection.class.php	(revision 12288)
++++ skeleton/peer/http/HttpConnection.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$
+  */
+ 
+-  uses('peer.http.HttpRequestFactory');
++  uses('peer.http.HttpTransport', 'peer.http.HttpProxy', 'peer.URL');
+   
+   /**
+    * HTTP connection
+@@ -31,12 +31,9 @@
+    * @purpose  Provide
+    */
+   class HttpConnection extends Object {
+-    public 
+-      $request     = NULL,
+-      $response    = NULL,
+-      $auth        = NULL;
+-    
+-    public
++    protected
++      $url          = NULL,
++      $transport    = NULL,
+       $_ctimeout    = 2.0,
+       $_timeout     = 60;
+ 
+@@ -46,16 +43,17 @@
+      * @param   mixed url a string or a peer.URL object
+      */
+     public function __construct($url) {
+-      $this->_createRequest($url instanceof URL ? $url : new URL($url));
++      $this->url= $url instanceof URL ? $url : new URL($url);
++      $this->transport= HttpTransport::transportFor($this->url);
+     }
+-    
++
+     /**
+-     * Create the request object
++     * Set proxy
+      *
+-     * @param   peer.URL object
++     * @param   peer.http.HttpProxy proxy
+      */
+-    protected function _createRequest($url) {
+-      $this->request= HttpRequestFactory::factory($url);
++    public function setProxy(HttpProxy $proxy) {
++      $this->transport->setProxy($proxy);
+     }
+ 
+     /**
+@@ -101,29 +99,64 @@
+      */
+     public function toString() {
+       return sprintf(
+-        '%s(->URL{%s}, timeout: [read= %.2f, connect= %.2f])',
++        '%s(->URL{%s via %s}, timeout: [read= %.2f, connect= %.2f])',
+         $this->getClassName(),
+-        $this->request->url->getUrl(),
++        $this->url->getUrl(),
++        $this->transport->toString(),
+         $this->_timeout,
+         $this->_ctimeout
+       );
+     }
+     
+     /**
++     * Send a HTTP request
++     *
++     * @param   peer.http.HttpRequest
++     * @return  peer.http.HttpResponse response object
++     */
++    public function send(HttpRequest $r) {
++      return $this->transport->send($r, $this->_timeout, $this->_ctimeout);
++    }
++
++    /**
++     * Creates a new HTTP request. For use in conjunction with send(), e.g.:
++     *
++     * <code>
++     *   $conn= new HttpConnection('http://example.com/');
++     *   
++     *   with ($request= $conn->create(new HttpRequest())); {
++     *     $request->setMethod(HTTP_GET);
++     *     $request->setParameters(array('a' => 'b'));
++     *     $request->setHeader('X-Binford', '6100 (more power)');
++     *
++     *     $response= $conn->send($request);
++     *     // ...
++     *   }
++     * </code>
++     *
++     * @param   peer.http.HttpRequest
++     * @return  peer.http.HttpRequest request object
++     */
++    public function create(HttpRequest $r) {
++      $r->setUrl($this->url);
++      return $r;
++    }
++    
++    /**
+      * Perform any request
+      *
+      * @param   string method request method, e.g. HTTP_GET
+-     * @param   mixed arg
++     * @param   mixed parameters
+      * @param   array headers default array()
+      * @return  peer.http.HttpResponse response object
+      * @throws  io.IOException
+      */
+-    public function request($method, $arg, $headers= array()) {
+-      $this->request->setMethod($method);
+-      $this->request->setParameters($arg);
+-      $this->request->addHeaders($headers);
+-      
+-      return $this->request->send($this->_timeout, $this->_ctimeout);
++    public function request($method, $parameters, $headers= array()) {
++      $r= new HttpRequest($this->url);
++      $r->setMethod($method);
++      $r->setParameters($parameters);
++      $r->addHeaders($headers);
++      return $this->send($r);
+     }
+ 
+     /**
+Index: skeleton/peer/http/SocketHttpTransport.class.php
+===================================================================
+--- skeleton/peer/http/SocketHttpTransport.class.php	(revision 0)
++++ skeleton/peer/http/SocketHttpTransport.class.php	(revision 0)
+@@ -0,0 +1,83 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('peer.http.HttpTransport', 'peer.Socket', 'peer.SocketInputStream');
++
++  /**
++   * Transport via sockets
++   *
++   * @see      xp://peer.Socket
++   * @see      xp://peer.http.HttpConnection
++   * @purpose  Transport
++   */
++  class SocketHttpTransport extends HttpTransport {
++    protected
++      $socket      = NULL,
++      $proxySocket = NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   peer.URL url
++     */
++    public function __construct(URL $url) {
++      $this->socket= $this->newSocket($url);
++    }
++
++    /**
++     * Creates a socket
++     *
++     * @param   peer.URL url
++     * @return  peer.Socket
++     */
++    protected function newSocket(URL $url) {
++      return new Socket($url->getHost(), $url->getPort(80));
++    }
++
++    /**
++     * Set proxy
++     *
++     * @param   peer.http.HttpProxy proxy
++     */
++    public function setProxy(HttpProxy $proxy) {
++      parent::setProxy($proxy);
++      $this->proxySocket= $this->newSocket(create(new URL())->setHost($proxy->host)->setPort($proxy->port));
++    }
++    
++    /**
++     * Sends a request
++     *
++     * @param   peer.http.HttpRequest request
++     * @param   int timeout default 60
++     * @param   float connecttimeout default 2.0
++     * @return  peer.http.HttpResponse response object
++     */
++    public function send(HttpRequest $request, $timeout= 60, $connecttimeout= 2.0) {
++
++      // Use proxy socket and Modify target if a proxy is to be used for this request, 
++      // a proxy wants "GET http://example.com/ HTTP/X.X"
++      if ($this->proxy && !$this->proxy->isExcluded($url= $request->getUrl())) {
++        $request->setTarget(sprintf(
++          '%s://%s%s%s',
++          $url->getScheme(),
++          $url->getHost(),
++          $url->getPort() ? ':'.$url->getPort() : '',
++          $url->getPath('/')
++        ));
++
++        $s= $this->proxySocket;
++      } else {
++        $s= $this->socket;
++      }
++    
++      $s->setTimeout($timeout);
++      $s->connect($connecttimeout);
++      $s->write($request->getRequestString());
++
++      return new HttpResponse(new SocketInputStream($s));
++    }
++  }
++?>
+
+Property changes on: skeleton/peer/http/SocketHttpTransport.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/peer/http/HttpsRequest.class.php
+===================================================================
+--- skeleton/peer/http/HttpsRequest.class.php	(revision 12288)
++++ skeleton/peer/http/HttpsRequest.class.php	(working copy)
+@@ -1,40 +0,0 @@
+-<?php
+-/* This class is part of the XP framework
+- *
+- * $Id$ 
+- */
+-
+-  uses('peer.http.HttpRequest', 'peer.http.HttpsResponse');
+-
+-  /**
+-   * Wrap HTTPS requests (user internally by the HttpConnection class)
+-   *
+-   * @ext      curl
+-   * @see      xp://peer.http.HttpConnection
+-   * @purpose  HTTP request
+-   */
+-  class HttpsRequest extends HttpRequest {
+-  
+-    /**
+-     * Send request
+-     *
+-     * @return  peer.http.HttpsResponse response object
+-     */
+-    public function send($timeout= 60) {
+-      $curl= curl_init($this->url->getURL());
+-      curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $this->getRequestString());
+-      curl_setopt($curl, CURLOPT_HEADER, 1);
+-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); 
+-      curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+-      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+-      curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
+-      
+-      if (FALSE === ($ret= curl_exec($curl))) {
+-        throw(new IOException(sprintf('%d: %s', curl_errno($curl), curl_error($curl))));
+-      }
+-      
+-      return new HttpsResponse(array($curl, $ret));
+-    }
+-  
+-  }
+-?>
+Index: skeleton/peer/http/HttpsResponse.class.php
+===================================================================
+--- skeleton/peer/http/HttpsResponse.class.php	(revision 12288)
++++ skeleton/peer/http/HttpsResponse.class.php	(working copy)
+@@ -1,85 +0,0 @@
+-<?php
+-/* This class is part of the XP framework
+- *
+- * $Id$ 
+- */
+-
+-  uses('peer.http.HttpResponse');
+-
+-  /**
+-   * Specialized subclass of HttpResonse for secure connections
+-   *
+-   * @ext      curl
+-   * @see      xp://peer.http.HttpResponse
+-   * @purpose  Response class for HTTPS
+-   */
+-  class HttpsResponse extends HttpResponse {
+-  
+-    /**
+-     * Read head if necessary
+-     *
+-     * @return  bool success
+-     */
+-    protected function _readhead() {
+-      if (0 != $this->statuscode) return TRUE;
+-      
+-      // Read status line
+-      $s= curl_getinfo($this->stream[0], CURLINFO_HEADER_SIZE);
+-      $h= explode("\r\n", substr($this->stream[1], 0, $s));
+-      $this->stream[1]= substr($this->stream[1], $s);
+-
+-      if (3 != ($r= sscanf(
+-        $h[0], 
+-        'HTTP/%d.%d %3d', 
+-        $major, 
+-        $minor, 
+-        $this->statuscode
+-      ))) {
+-        throw(new FormatException('"'.$h[0].'" is not a valid HTTP response ['.$r.']'));
+-      }
+-
+-      $this->message= substr($s, 12);      
+-      $this->version= $major.'.'.$minor;
+-      
+-      // Read rest of headers
+-      for ($i= 1, $s= sizeof($h); $i < $s; $i++) {
+-        if (empty($h[$i])) continue;
+-        
+-        list($k, $v)= explode(': ', $h[$i], 2);
+-        $this->headers[$k]= $v;
+-      }
+-      
+-      return TRUE;
+-    }
+-
+-    /**
+-     * Read data
+-     *
+-     * @param   int size default 8192
+-     * @param   bool binary default FALSE
+-     * @return  string buf or FALSE to indicate EOF
+-     */
+-    public function readData($size= 8192, $binary= FALSE) {
+-      if (!$this->_readhead()) return FALSE;            // Read head if not done before
+-      if (!isset($this->stream) || 0 == strlen($this->stream[1])) return FALSE;  // EOF
+-      
+-      $str= substr($this->stream[1], 0, $size);
+-      $size= strlen($str);
+-      if (!$binary) {
+-        if (FALSE === ($n= strpos($str, "\n"))) $n= $size;
+-        if (FALSE === ($r= strpos($str, "\r"))) $r= $size;
+-        $size= min($size, $n, $r);
+-        if ($r < $size) $size+= ("\n" == $str{$r+ 1});
+-        $str= substr($str, 0, $size+ 1);
+-        $size++;
+-      }
+-      
+-      if (FALSE === ($this->stream[1]= substr($this->stream[1], $size))) {
+-        curl_close($this->stream[0]);
+-        unset($this->stream);
+-      }
+-      return $str;
+-    }
+-    
+-  }
+-?>
+Index: skeleton/peer/http/HttpProxy.class.php
+===================================================================
+--- skeleton/peer/http/HttpProxy.class.php	(revision 0)
++++ skeleton/peer/http/HttpProxy.class.php	(revision 0)
+@@ -0,0 +1,64 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -105,12 +892,13 @@ Index: peer/http/HttpProxy.class.php
 +   * HTTP proxy
 +   *
 +   * @see      xp://peer.http.HttpConnection#setProxy
-+   * @purpose  Proxy
++   * @purpose  Value object
 +   */
 +  class HttpProxy extends Object {
-+    protected
-+      $socket   = NULL,
-+      $excludes = array();
++    public
++      $host     = '',
++      $port     = 0,
++      $excludes = array('localhost');
 +    
 +    /**
 +     * Constructor
@@ -119,7 +907,8 @@ Index: peer/http/HttpProxy.class.php
 +     * @param   int port default 8080
 +     */
 +    public function __construct($host, $port= 8080) {
-+      $this->socket= new Socket($host, $port);
++      $this->host= $host;
++      $this->port= $port;
 +    }
 +
 +    /**
@@ -142,38 +931,283 @@ Index: peer/http/HttpProxy.class.php
 +      $this->excludes[]= $pattern;
 +      return $this;
 +    }
-+    
++
 +    /**
-+     * Sends a request via this proxy
++     * Check whether a given URL is excluded
++     *
++     * @param   peer.URL url
++     * @return  boolean
++     */
++    public function isExcluded(URL $url) {
++      foreach ($this->excludes as $pattern) {
++        if (stristr($url->getHost(), $pattern)) return TRUE;
++      }
++      return FALSE;
++    }
++  }
++?>
+
+Property changes on: skeleton/peer/http/HttpProxy.class.php
+___________________________________________________________________
+Name: svn:executable
+   + *
+Name: svn:keywords
+   + Id
+
+Index: skeleton/peer/http/CurlHttpTransport.class.php
+===================================================================
+--- skeleton/peer/http/CurlHttpTransport.class.php	(revision 0)
++++ skeleton/peer/http/CurlHttpTransport.class.php	(revision 0)
+@@ -0,0 +1,62 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('peer.http.HttpTransport', 'io.streams.MemoryInputStream');
++
++  /**
++   * Transport via curl functions
++   *
++   * @ext      curl
++   * @see      xp://peer.http.HttpConnection
++   * @purpose  Transport
++   */
++  class CurlHttpTransport extends HttpTransport {
++    protected
++      $handle = NULL;
++
++    /**
++     * Constructor
++     *
++     * @param   peer.URL url
++     */
++    public function __construct(URL $url) {
++      $this->handle= curl_init();
++      curl_setopt($this->handle, CURLOPT_HEADER, 1);
++      curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, 1); 
++      curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, 0);
++      curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, 0);
++    }
++  
++    /**
++     * Sends a request
 +     *
 +     * @param   peer.http.HttpRequest request
 +     * @param   int timeout default 60
 +     * @param   float connecttimeout default 2.0
 +     * @return  peer.http.HttpResponse response object
 +     */
-+    public function sendRequest(HttpRequest $request, $timeout= 60, $connecttimeout= 2.0) {
-+    
-+      // Check if this URL is excluded
-+      foreach ($this->excludes as $pattern) {
-+        if (!strstr($request->url->getHost(), $pattern)) continue;
-+        return $request->send($timeout, $connecttimeout);
++    public function send(HttpRequest $request, $timeout= 60, $connecttimeout= 2.0) {
++      $curl= curl_copy_handle($this->handle);
++      curl_setopt($curl, CURLOPT_URL, $request->url->getUrl());
++      curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getRequestString());
++      curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
++      
++      if ($this->proxy && !$this->proxy->isExcluded($request->getUrl())) {
++        curl_setopt($curl, CURLOPT_PROXY, $this->proxy->host);
++        curl_setopt($curl, CURLOPT_PROXYPORT, $this->proxy->port);
++      }
++      
++      $response= curl_exec($curl);
++      curl_close($curl);
++
++      if (FALSE === $response) {
++        throw new IOException(sprintf('%d: %s', curl_errno($curl), curl_error($curl)));
 +      }
 +
-+      // Open connection to proxy server
-+      $this->socket->setTimeout($timeout);
-+      
-+      // Modify target, a proxy wants "GET http://example.com/ HTTP/X.X"
-+      $request->target= sprintf(
-+        '%s://%s%s%s',
-+        $request->url->getScheme(),
-+        $request->url->getHost(),
-+        $request->url->getPort() ? ':'.$request->url->getPort() : '',
-+        $request->url->getPath('/')
-+      );
-+
-+      // Write request and return response
-+      $this->socket->connect($connecttimeout) && $this->socket->write($request->getRequestString());
-+      return new HttpResponse($this->socket);
++      return new HttpResponse(new MemoryInputStream($response));
 +    }
 +  }
 +?>
+
+Property changes on: skeleton/peer/http/CurlHttpTransport.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/peer/SocketInputStream.class.php
+===================================================================
+--- skeleton/peer/SocketInputStream.class.php	(revision 0)
++++ skeleton/peer/SocketInputStream.class.php	(revision 0)
+@@ -0,0 +1,72 @@
++<?php
++/* This socket is part of the XP framework's experiments
++ *
++ * $Id$
++ */
++
++  uses('io.streams.InputStream', 'peer.Socket');
++
++  /**
++   * InputStream that reads from a socket
++   *
++   * @purpose  InputStream implementation
++   */
++  class SocketInputStream extends Object implements InputStream {
++    protected
++      $socket= NULL;
++    
++    /**
++     * Constructor
++     *
++     * @param   peer.Socket socket
++     */
++    public function __construct(Socket $socket) {
++      $this->socket= $socket;
++      $this->socket->isConnected() || $this->socket->connect();
++    }
++
++    /**
++     * Read a string
++     *
++     * @param   int limit default 8192
++     * @return  string
++     */
++    public function read($limit= 8192) {
++      return $this->socket->read($limit);
++    }
++
++    /**
++     * Returns the number of bytes that can be read from this stream 
++     * without blocking.
++     *
++     */
++    public function available() {
++      return $this->socket->eof() ? -1 : 1;
++    }
++
++    /**
++     * Close this buffer
++     *
++     */
++    public function close() {
++      $this->socket->close();
++    }
++
++    /**
++     * Destructor. Ensures socket is closed.
++     *
++     */
++    public function __destruct() {
++      $this->socket->isConnected() && $this->close();
++    }
++
++    /**
++     * Creates a string representation of this socket
++     *
++     * @return  string
++     */
++    public function toString() {
++      return $this->getClassName().'<'.$this->socket->toString().'>';
++    }
++  }
++?>
+
+Property changes on: skeleton/peer/SocketInputStream.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/peer/HttpResponseTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/peer/HttpResponseTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/peer/HttpResponseTest.class.php	(revision 0)
+@@ -0,0 +1,79 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses(
++    'unittest.TestCase',
++    'peer.http.HttpResponse',
++    'io.streams.MemoryInputStream'
++  );
++
++  /**
++   * TestCase for HTTP responses
++   *
++   * @see      xp://peer.http.HttpResponse
++   * @purpose  Unittest
++   */
++  class HttpResponseTest extends TestCase {
++  
++    /**
++     * Get a response with the specified headers and body
++     *
++     * @param   string[] headers
++     * @param   string body default ''
++     * @return  peer.http.HttpResponse
++     */
++    protected function newResponse(array $headers, $body= '') {
++      return new HttpResponse(new MemoryInputStream(implode("\r\n", $headers)."\r\n\r\n".$body));
++    }
++  
++    /**
++     * Test empty response
++     *
++     */
++    #[@test]
++    public function getEmptyDocument() {
++      $response= $this->newResponse(array('HTTP/1.0 200 OK', 'Content-Length: 0'));
++      $this->assertEquals(200, $response->getStatusCode());
++      $this->assertEquals('0', $response->getHeader('Content-Length'));
++    }
++
++    /**
++     * Test non-empty response
++     *
++     */
++    #[@test]
++    public function getDocument() {
++      $body= '<h1>File not found</h1>';
++      $response= $this->newResponse(array('HTTP/1.0 404 OK', 'Content-Length: 23', 'Content-Type: text/html'), $body);
++      $this->assertEquals(404, $response->getStatusCode());
++      $this->assertEquals('23', $response->getHeader('Content-Length'));
++      $this->assertEquals('text/html', $response->getHeader('Content-Type'));
++      $this->assertEquals($body, $response->readData());
++    }
++
++    /**
++     * Test chunked transfer-encoding
++     *
++     */
++    #[@test]
++    public function getChunkedDocument() {
++      $body= '<h1>File not found</h1>';
++      $response= $this->newResponse(array('HTTP/1.0 404 OK', 'Transfer-Encoding: chunked'), "17\r\n".$body."\r\n0\r\n");
++      $this->assertEquals(404, $response->getStatusCode());
++      $this->assertEquals('chunked', $response->getHeader('Transfer-Encoding'));
++      $this->assertEquals($body, $response->readData());
++    }
++
++    /**
++     * Test what happens when the server responds with an incorrect protocol
++     *
++     */
++    #[@test, @expect('lang.FormatException')]
++    public function incorrectProtocol() {
++      $this->newResponse(array('* OK IMAP server ready H mimap20 68140'));
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/peer/HttpResponseTest.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: ports/unittest/http.ini
+===================================================================
+--- ports/unittest/http.ini	(revision 12288)
++++ ports/unittest/http.ini	(working copy)
+@@ -8,3 +8,6 @@
+ 
+ [request]
+ class="net.xp_framework.unittest.peer.HttpRequestTest"
++
++[response]
++class="net.xp_framework.unittest.peer.HttpResponseTest"
