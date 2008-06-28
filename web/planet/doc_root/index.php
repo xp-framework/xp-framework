@@ -13,6 +13,8 @@
   );
   
   // {{{ main
+  ClassLoader::registerPath('../lib/lucene.xar');
+  
   $pm= PropertyManager::getInstance();
   $pm->configure('../etc/');
   
