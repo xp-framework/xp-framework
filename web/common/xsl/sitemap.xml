@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <item name="home" href="http://planet-xp.net/">Home</item>
-  <item name="forge" href="http://xp-forge.net/">Forge</item>
   <item name="news" href="http://news.xp-framework.net/">News</item>
   <item name="docs" href="http://docs.xp-framework.net/">Documentation</item>
   <item name="dev" href="http://developer.xp-framework.net/">Developers</item>
+  <item name="forge" href="http://xp-forge.net/">Forge</item>
   <item name="download" href="http://xp-framework.net/downloads/releases/" site="xp-frame">Download</item>
 </root>
