@@ -8,7 +8,6 @@
   uses(
     'net.xp_framework.website.forge.scriptlet.ForgeScriptlet',
     'util.PropertyManager',
-    'rdbms.ConnectionManager',
     'util.log.Logger'
   );
   
@@ -17,7 +16,6 @@
   $pm->configure('../etc/');
   
   Logger::getInstance()->configure($pm->getProperties('log'));
-  ConnectionManager::getInstance()->configure($pm->getProperties('database'));
 
   scriptlet::run(new ForgeScriptlet(
     'net.xp_framework.website.forge.scriptlet', 
