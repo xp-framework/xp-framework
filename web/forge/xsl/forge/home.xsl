@@ -20,17 +20,12 @@
   <xsl:template name="content">
     <div style="padding: 0; margin: 0; width: 100%; height: 200px; background: #710303 url(/image/header.png); color: white">
       <p style="padding: 70px 10px 0 10px; margin: 0">
-        This site is dedicated to the development of the XP framework.
+        xp::forge is software written using the XP framework.
         <br/><br/>
       </p>
     </div>
     <table id="main" cellpadding="0" cellspacing="10"><tr>
       <td id="content" style="background: white url(/image/strawberries.jpg) no-repeat bottom left">
-        <h1>xp::forge</h1>
-        <p>
-          Software written using the XP framework.
-        </p>
-        <br clear="all"/>
 
         <!-- Featured items -->
         <table width="100%" class="columned"><tr>
