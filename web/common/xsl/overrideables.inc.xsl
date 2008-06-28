@@ -15,6 +15,6 @@
  exclude-result-prefixes="func php exsl xsl xp"
 >
   <xsl:template name="html-head"/>
-  <xsl:template name="html-title">XP Framework</xsl:template>
+  <xsl:template name="html-title"><xsl:value-of select="$area/name"/></xsl:template>
   <xsl:template name="tracking-code"/>
 </xsl:stylesheet>

@@ -17,7 +17,7 @@
   <xsl:import href="overrideables.inc.xsl"/>
   <xsl:include href="master.xsl"/>
   <xsl:include href="date.inc.xsl"/>
-    
+
   <xsl:variable name="sitemap" select="document('sitemap.xml')"/>
   <xsl:variable name="area" select="exsl:node-set($sitemap)/root/area[@name= exsl:node-set($navigation)/area/@name]"/>
   
