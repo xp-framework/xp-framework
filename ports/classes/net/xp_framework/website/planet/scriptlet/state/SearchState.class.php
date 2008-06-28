@@ -42,7 +42,9 @@
         if (isset($e)) throw new HttpScriptletException('Search failed', HTTP_SERVICE_TEMPORARILY_UNAVAILABLE, $e);
       }
       
-      $n= $response->addFormResult(new Node('searchresult'));
+      $n= $response->addFormResult(new Node('searchresult', NULL, array(
+        'count' => $iterator->length()
+      )));
       foreach ($list->values as $item) {
         $i= $n->addChild(new Node('item', NULL, array(
           'id'      => $item->getIdentifier(),
