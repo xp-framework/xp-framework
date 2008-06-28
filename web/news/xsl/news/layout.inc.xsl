@@ -49,13 +49,14 @@
       </a>
       Subscribe
     </h3>
-    You can subscribe to the XP framework's news by using <a href="{$feed}">RSS syndication</a>.
+    <p>You can subscribe to the XP framework's news by using <a href="{$feed}">RSS syndication</a>.</p>
     <br clear="all"/>
   </xsl:template>
   
   <xsl:template match="categories">
     <h3>Categories</h3>
     <xsl:apply-templates select="category[@id= 8]"/>
+    <br clear="all"/>
   </xsl:template>
   
   <xsl:template match="category">
