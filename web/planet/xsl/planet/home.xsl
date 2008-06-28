@@ -39,7 +39,7 @@
         <table width="100%" class="columned"><tr>
           <td width="70%" valign="top" id="left">
             <h2>I would like to:</h2>
-            <h3><a href="#">Use software written in XP</a></h3>
+            <h3><a href="http://xp-forge.net/">Use software written in XP</a></h3>
             
             <!-- Ports -->
             <p align="justify">
