@@ -68,5 +68,10 @@
   <xsl:template name="context">
     <xsl:call-template name="context-feed"/>
     <xsl:apply-templates select="/formresult/categories"/>
+    
+    <h3>Related</h3>
+    <xsl:variable name="word" select="substring-before(concat(/formresult/entry/title, ' '), ' ')"/>
+    <p>Find related articles by a search for &#xab;<a href="http://planet-xp.net/xml/search?query={$word}"><xsl:value-of select="$word"/></a>&#xbb;.</p>
+    <br clear="all"/>
   </xsl:template>
 </xsl:stylesheet>
