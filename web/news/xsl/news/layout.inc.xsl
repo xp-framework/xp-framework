@@ -18,7 +18,7 @@
   <xsl:include href="links.inc.xsl"/>
   
   <xsl:variable name="navigation">
-    <area name="news"/>
+    <area name="framework"/>
   </xsl:variable>
 
   <xsl:template name="tracking-code">UA-617805-6</xsl:template>

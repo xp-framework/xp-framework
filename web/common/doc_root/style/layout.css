@@ -134,23 +134,59 @@ fieldset.warning em {
 
 /* }}} */
 
-/* {{{ Search */
-div#search {
-  text-align: right;
-  padding: 1px;
-  border-bottom: 1px solid;
-  font: 11px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
-}
-
-div#search input {
-  height: 18px;
-}
-/* }}} */
-
 /* {{{ Logo */
 div#top {
   background: white no-repeat top left;
   height: 60px;
+}
+/* }}} */
+
+div#sites {
+  background-color: #efefef;
+  margin: 0;
+  padding: 0;
+  height: 24px;
+}
+
+div#sites ul {
+  margin: 0 0 11px 0;
+  padding: 0;
+}
+
+div#sites li {
+  list-style: none;
+  float: left;
+}
+
+div#sites li a {
+  padding: 4px 4px;
+  float: left;
+  display: block;
+  color: #444444;
+  font: 11px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
+  border-right: 1px solid #cccccc;
+}
+
+div#sites li.active {
+  background-color: white;
+  text-decoration: none;
+}
+
+div#sites li.active a {
+  text-decoration: none;
+}
+
+/* {{{ Search */
+div#sites li#search {
+  float: right;
+  padding: 1px;
+  font: 11px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
+}
+
+div#sites li#search input {
+  height: 18px;
+  font: 11px "Lucida Grande", "Trebuchet MS", "Arial", sans-serif;
+  border: 1px solid #cccccc;
 }
 /* }}} */
 

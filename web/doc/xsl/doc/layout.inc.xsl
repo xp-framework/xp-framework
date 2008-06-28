@@ -17,7 +17,7 @@
   <xsl:include href="../../../common/xsl/layout.inc.xsl"/>
   
   <xsl:variable name="navigation">
-    <area name="docs"/>
+    <area name="framework"/>
   </xsl:variable>
 
   <xsl:template name="tracking-code">UA-617805-6</xsl:template>

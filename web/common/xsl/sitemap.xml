@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
-  <item name="home" href="http://planet-xp.net/">Home</item>
-  <item name="news" href="http://news.xp-framework.net/">News</item>
-  <item name="docs" href="http://docs.xp-framework.net/">Documentation</item>
-  <item name="dev" href="http://developer.xp-framework.net/">Developers</item>
-  <item name="forge" href="http://xp-forge.net/">Forge</item>
-  <item name="download" href="http://xp-framework.net/downloads/releases/" site="xp-frame">Download</item>
+  <area name="planet" href="http://planet-xp.net/">
+    <name>XP Technology</name>
+    <item name="planet" href="http://planet-xp.net/">Home</item>
+  </area>
+  <area name="framework" href="http://news.xp-framework.net/">
+    <name>XP Framework</name>
+    <item name="news" href="http://news.xp-framework.net/">News</item>
+    <item name="doc" href="http://docs.xp-framework.net/">Documentation</item>
+    <item name="dev" href="http://developer.xp-framework.net/">Developers</item>
+  </area>
+  <area name="forge" href="http://xp-forge.net/">
+    <name>XP Forge</name>
+    <item name="forge" href="http://xp-forge.net/">Forge</item>
+  </area>
+  <area name="download" href="http://xp-framework.net/downloads/releases/">
+    <name>XP Downloads</name>
+    <item name="download" href="http://xp-framework.net/downloads/releases/" site="xp-frame">Download</item>
+  </area>
 </root>

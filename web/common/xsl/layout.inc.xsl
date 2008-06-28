@@ -68,23 +68,34 @@
   </xsl:template>
   
   <xsl:template name="top-navigation">
-    <div id="search">
-      <!-- FIXME: Create search -->
-      <form action="http://planet-xp.net/xml/search">
-        <label for="query"><u>S</u>earch XP website for </label>
-        <input name="query" accesskey="s" type="text" value="{/formresult/formvalues/param[@name= 'query']}">&#160;</input>
-      </form>
+    <div id="sites">
+      <ul>
+        <xsl:for-each select="exsl:node-set($sitemap)/root/area">
+          <li>
+            <xsl:if test="@name = exsl:node-set($navigation)/area/@name"><xsl:attribute name="class">active</xsl:attribute></xsl:if>
+            <a href="{@href}"><xsl:value-of select="name"/></a>
+          </li>
+        </xsl:for-each>
+        <li id="search">
+          <form action="http://planet-xp.net/xml/search">
+            <label for="query"><u>S</u>earch XP website for </label>
+            <input name="query" accesskey="s" type="text" value="{/formresult/formvalues/param[@name= 'query']}">&#160;</input>
+          </form>
+        </li>
+      </ul>
+      <!-- For Mozilla to calculate height correctly -->
+      &#160;
     </div>
     <div id="top">&#160;
     </div>
     <div id="menu">
       <ul>
         <li id="select"><a href="#">&#160;</a></li>
-        <xsl:for-each select="exsl:node-set($sitemap)/root/item">
+        <xsl:for-each select="exsl:node-set($sitemap)/root/area[@name= exsl:node-set($navigation)/area/@name]/item">
           <li>
-            <xsl:if test="@name = exsl:node-set($navigation)/area/@name"><xsl:attribute name="id">active</xsl:attribute></xsl:if>
-           </li>
-           <a href="{@href}"><xsl:value-of select="."/></a>
+            <xsl:if test="@name = $__product"><xsl:attribute name="id">active</xsl:attribute></xsl:if>
+            <a href="{@href}"><xsl:value-of select="."/></a>
+          </li>
         </xsl:for-each>
       </ul>
       <!-- For Mozilla to calculate height correctly -->

@@ -17,7 +17,7 @@
   <xsl:include href="../../../common/xsl/layout.inc.xsl"/>
   
   <xsl:variable name="navigation">
-    <area name="dev"/>
+    <area name="framework"/>
   </xsl:variable>
 
   <xsl:template name="html-head">
