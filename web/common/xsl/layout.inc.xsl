@@ -19,6 +19,7 @@
   <xsl:include href="date.inc.xsl"/>
     
   <xsl:variable name="sitemap" select="document('sitemap.xml')"/>
+  <xsl:variable name="area" select="exsl:node-set($sitemap)/root/area[@name= exsl:node-set($navigation)/area/@name]"/>
   
   <xsl:template match="/">
     <html>
@@ -43,7 +44,7 @@
   <xsl:template name="generate-page-head">
     <head>
       <title><xsl:call-template name="html-title"/></title>
-      <link rel="stylesheet" type="text/css" href="/style/style.css"/>
+      <link rel="stylesheet" type="text/css" href="/common/style/{$area/@name}.css"/>
       <xsl:call-template name="html-head"/>
     </head>
   </xsl:template>
@@ -60,9 +61,7 @@
     <div id="footer">
       <a href="#">Credits</a> |
       <a href="http://bugs.xp-framework.net/enter_bug.cgi?product=XP Website&amp;component=New website&amp;bug_severity=enhancement" target="_blank">Feedback</a>
-      
       <br/>
-      
       © 2001-<xsl:value-of select="xp:dateformat(/formresult/@serial, 'Y')"/> the XP team
     </div>
   </xsl:template>
@@ -91,7 +90,7 @@
     <div id="menu">
       <ul>
         <li id="select"><a href="#">&#160;</a></li>
-        <xsl:for-each select="exsl:node-set($sitemap)/root/area[@name= exsl:node-set($navigation)/area/@name]/item">
+        <xsl:for-each select="exsl:node-set($area)/item">
           <li>
             <xsl:if test="@name = $__product"><xsl:attribute name="id">active</xsl:attribute></xsl:if>
             <a href="{@href}"><xsl:value-of select="."/></a>
