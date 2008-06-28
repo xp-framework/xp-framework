@@ -80,7 +80,7 @@
   <xsl:template name="content">
     <table id="main" cellpadding="0" cellspacing="10"><tr>
       <td id="content">
-        <h1>Search results</h1>
+        <h1>Search</h1>
 
         <xsl:apply-templates select="/formresult/pager"/>
 
@@ -90,6 +90,12 @@
         </xsl:for-each>
 
         <xsl:apply-templates select="/formresult/pager"/>
+      </td>
+      <td id="context">
+        <h3>Results</h3>
+        <p>
+          Found <xsl:value-of select="/formresult/searchresult/@count"/> items.
+        </p>
       </td>
     </tr></table>
   </xsl:template>
