@@ -94,7 +94,8 @@
       <td id="context">
         <h3>Results</h3>
         <p>
-          Found <xsl:value-of select="/formresult/searchresult/@count"/> items.
+          Found <xsl:value-of select="/formresult/searchresult/@count"/> items
+          in <xsl:value-of select="format-number(/formresult/searchresult/@time, '#.###')"/> seconds.
         </p>
       </td>
     </tr></table>
