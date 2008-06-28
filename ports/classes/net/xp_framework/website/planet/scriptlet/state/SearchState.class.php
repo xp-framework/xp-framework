@@ -6,7 +6,8 @@
 
   uses(
     'scriptlet.xml.workflow.AbstractState',
-    'remote.Remote'
+    'remote.Remote',
+    'util.profiling.Timer'
   );
 
   /**
@@ -29,7 +30,8 @@
       $offset= $request->getParam('offset', 0);
       
       $s= Remote::forName('xp://planet-xp.net:14446')->lookup('lucene/Search');
-
+      $t= new Timer();
+      $t->start();
       try {
         $id= $s->search('all', $query);
         $iterator= $s->getHitsIterator($id);
@@ -41,9 +43,11 @@
         isset($id) && $s->removeIterator($id);
         if (isset($e)) throw new HttpScriptletException('Search failed', HTTP_SERVICE_TEMPORARILY_UNAVAILABLE, $e);
       }
+      $t->stop();
       
       $n= $response->addFormResult(new Node('searchresult', NULL, array(
-        'count' => $iterator->length()
+        'count' => $iterator->length(),
+        'time'  => $t->elapsedTime()
       )));
       foreach ($list->values as $item) {
         $i= $n->addChild(new Node('item', NULL, array(
