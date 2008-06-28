@@ -46,7 +46,7 @@
               XP::Forge provides a growing number of ready-to-run applications and APIs such
               as Google Search, Flickr, Delicio.us, Simpy, Java Webstart and Microsoft Office
               automation written using XP technology.
-              <em>If you want to use and/or contribute, <a href="#">here</a>'s
+              <em>If you want to use and/or contribute, <a href="http://xp-forge.net/">here</a>'s
               the place to do so!</em>
             </p>
             <br/><br clear="all"/>
