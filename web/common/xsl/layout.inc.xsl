@@ -70,9 +70,9 @@
   <xsl:template name="top-navigation">
     <div id="search">
       <!-- FIXME: Create search -->
-      <form action="#">
+      <form action="http://planet-xp.net/xml/search">
         <label for="query"><u>S</u>earch XP website for </label>
-        <input name="query" accesskey="s" type="text">&#160;</input>
+        <input name="query" accesskey="s" type="text" value="{/formresult/formvalues/param[@name= 'query']}">&#160;</input>
       </form>
     </div>
     <div id="top">&#160;
