@@ -141,11 +141,14 @@ div#top {
 }
 /* }}} */
 
+/* {{{ Sites bar */
 div#sites {
   background-color: #efefef;
   margin: 0;
   padding: 0;
   height: 24px;
+  border: 1px solid white;
+  border-top: 1px solid #efefef;
 }
 
 div#sites ul {
@@ -176,7 +179,6 @@ div#sites li.active a {
   text-decoration: none;
 }
 
-/* {{{ Search */
 div#sites li#search {
   float: right;
   padding: 1px;
