@@ -1,0 +1,48 @@
+/* Layout stylesheet for XP framework website
+ *
+ * $Id$
+ */
+
+@import url("/common/style/layout.css");
+
+body {
+  border-color: #914456;
+  background-color: #42131e;
+}
+div#top {
+  background-image: url(/image/logo.png);
+}
+div#search {
+  background-color: #d99eac;
+  border-color: #b16e63;
+}
+div#menu li a {
+  background-color: #e5acb6;
+  background-image: url(/image/bg_topmenu.gif);
+  color: #6d042e;
+  border-right-color: #8f99ab;
+}
+div#search input {
+  background-color: #fbe4e3;
+  border-color: #b16e63;
+}
+h1 {
+  color: #872a40;
+}
+h2 {
+  color: #3165c5;
+  border-bottom: 1px solid #3165c5;
+}
+h2 a {
+  color: #3165c5;
+}
+a {
+  color: #a2062b;
+}
+div#footer {
+  background-color: #deb2bd;
+  border-color: #b16e63;
+}
+div#footer a {
+  color: #a60725;
+}
