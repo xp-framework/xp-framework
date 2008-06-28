@@ -6,8 +6,8 @@
 @import url("/common/style/layout.css");
 
 body {
-  border-color: #914456;
-  background-color: #42131e;
+  border-color: #520303;
+  background-color: #520303;
 }
 div#top {
   background-image: url(/image/logo.png);
@@ -26,21 +26,28 @@ div#search input {
   background-color: #fbe4e3;
   border-color: #b16e63;
 }
+div#menu ul li#active a {
+  background-color: #617750;
+  background-image: url(/image/bg_topmenu_selected.gif);
+  border-right-color: #a2c19d;
+  border-top-color: #e1ffde;
+  border-left-color: #c7e8c2;
+}
 h1 {
   color: #872a40;
 }
 h2 {
-  color: #3165c5;
-  border-bottom: 1px solid #3165c5;
+  color: #3d7e4e;
+  border-bottom: 1px solid #3d7e4e;
 }
 h2 a {
   color: #3165c5;
 }
 a {
-  color: #a2062b;
+  color: #710303;
 }
 div#footer {
-  background-color: #deb2bd;
+  background-color: #d2a7a7;
   border-color: #b16e63;
 }
 div#footer a {
