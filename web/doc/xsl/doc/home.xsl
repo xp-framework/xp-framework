@@ -23,7 +23,7 @@
           <xsl:apply-templates select="/formresult/documentation/*"/>
         </td>
         <td id="context">
-          Table of contents
+          <h3>Table of contents</h3>
           <ul style="margin-left: 6px">
             <xsl:for-each select="/formresult/documentation/h2">
               <li><a href="#{string(.)}"><xsl:value-of select="."/></a></li>
