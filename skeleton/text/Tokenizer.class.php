@@ -54,6 +54,13 @@
       }');
       return $this->iterator;
     }
+
+    /**
+     * Push back a string
+     *
+     * @param   string str
+     */
+    public abstract function pushBack($str);
     
     /**
      * Reset this tokenizer
