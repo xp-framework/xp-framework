@@ -29,6 +29,12 @@
   define('MIME_APPLICATION_X_MIF',              'application/x-mif');
   define('MIME_APPLICATION_X_NETCDF',           'application/x-netcdf');
   define('MIME_APPLICATION_X_PERL',             'application/x-perl');
+  define('MIME_APPLICATION_X_PHP',              'application/x-php');
+  define('MIME_APPLICATION_X_JAVA',             'application/x-java');
+  define('MIME_APPLICATION_X_C',                'application/x-c');
+  define('MIME_APPLICATION_X_H',                'application/x-h');
+  define('MIME_APPLICATION_X_CPP',              'application/x-cpp');
+  define('MIME_APPLICATION_X_CSHARP',           'application/x-csharp');
   define('MIME_APPLICATION_X_RAR_COMPRESSED',   'application/x-rar-compressed');
   define('MIME_APPLICATION_X_SH',               'application/x-sh');
   define('MIME_APPLICATION_X_SHAR',             'application/x-shar');
@@ -126,6 +132,13 @@
         '.nc'      => MIME_APPLICATION_X_NETCDF,
         '.pl'      => MIME_APPLICATION_X_PERL,
         '.pm'      => MIME_APPLICATION_X_PERL,
+        '.php'     => MIME_APPLICATION_X_PHP,
+        '.java'    => MIME_APPLICATION_X_JAVA,
+        '.c'       => MIME_APPLICATION_X_C,
+        '.h'       => MIME_APPLICATION_X_H,
+        '.cpp'     => MIME_APPLICATION_X_CPP,
+        '.hpp'     => MIME_APPLICATION_X_CPP,
+        '.cs'      => MIME_APPLICATION_X_CSHARP,
         '.rar'     => MIME_APPLICATION_X_RAR_COMPRESSED,
         '.sh'      => MIME_APPLICATION_X_SH,
         '.shar'    => MIME_APPLICATION_X_SHAR,
