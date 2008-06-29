@@ -15,9 +15,10 @@
         protected
           $filename= NULL;
       
-        public function setFile(File $file) {
+        public function setFile(File $file, $mime= NULL) {
           $this->filename= $file->getURI();
-          $this->setContentType(MimeType::getByFileName($this->filename));
+          $this->setContentType($mime ? $mime : MimeType::getByFileName($this->filename));
+          $this->setHeader("Content-Disposition", "attachment; filename=\"".basename($this->filename)."\"");
           $this->setContentLength($file->size());
         }
                 
@@ -32,12 +33,13 @@
     }
   
     public function doGet($request, $response) {
-      $path= $request->getQueryString();
+      sscanf($request->getQueryString(), "%[^:]:%s", $path, $mime);
       $prop= PropertyManager::getInstance()->getProperties('storage');
-      $response->setFile(new File($prop->readString('storage', 'base'), strtr($path, array(
+      $file= new File($prop->readString('storage', 'base'), strtr($path, array(
         ','   => DIRECTORY_SEPARATOR, 
         '..'  => ''
-      ))));
+      )));
+      $response->setFile($file, $mime);
     }
   }
   // }}} 

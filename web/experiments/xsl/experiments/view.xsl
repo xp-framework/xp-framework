@@ -70,9 +70,13 @@
   </xsl:template>
 
   <xsl:template match="element">
-    <iframe src="/pipe/?{$__query}" width="100%" height="600">
-      <!-- Content -->
-    </iframe>
+    <fieldset class="warning">
+      <p>
+        <b>This file's filetype cannot be viewed inline.</b><br/>
+        To view this file, you need to download it.
+        <br/><br/>
+      </p>
+    </fieldset>
   </xsl:template>
 
   <xsl:template match="element[@mime= 'image/gif' or @mime= 'image/png' or @mine = 'image/jpeg']">
@@ -103,7 +107,18 @@
           <xsl:apply-templates select="/formresult/element"/>
         </td>
         <td id="context">
-          <h3>Table of contents</h3>
+          <h3>
+            <a href="/pipe/?{$__query}:application/octet-stream">
+              <img align="right" src="/common/image/save.png" border="0"/>
+            </a>
+            Download
+          </h3>
+          <p>
+            You can download the file 
+            &#xab;<xsl:value-of select="/formresult/element/name"/>&#xbb;
+            by using 
+            <a href="/pipe/?{$__query}:application/octet-stream">this link</a>.
+          </p>
         </td>
       </tr>
     </table>
