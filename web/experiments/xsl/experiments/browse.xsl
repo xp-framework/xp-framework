@@ -72,6 +72,8 @@
         </td>
         <td id="context">
           <h3>Table of contents</h3>
+          <a href="{xp:link('browse?arena')}">Arena</a><br/>
+          <a href="{xp:link('browse?people')}">People</a><br/>
         </td>
       </tr>
     </table>
