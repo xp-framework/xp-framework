@@ -17,7 +17,7 @@
 
   <xsl:include href="layout.inc.xsl"/>
   
-  <xsl:template match="element[@mime= 'text/plain' or @mime= 'text/css'  or @mime= 'text/html' or name = 'Makefile' or name = 'README']">
+  <xsl:template match="element[@mime= 'text/plain' or @mime= 'text/css' or @mime= 'text/html' or @mime= 'text/xml' or name = 'Makefile' or name = 'README']">
     <pre id="view">
       <xsl:value-of select="php:function('XSLCallback::invoke', 'view', 'contents')"/>
     </pre>
