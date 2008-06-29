@@ -177,12 +177,14 @@
     }
     
     /**
-     * Test pushing back a delimiter
+     * Returns all tokens
      *
+     * @param   string input
+     * @param   string delim
+     * @return  string[] tokens
      */
-    #[@test]
-    public function pushBackDelimiter() {
-      $t= $this->tokenizerInstance("// This is a one-line comment\na= b / c;", "/\n =;", TRUE);
+    protected function allTokens($input, $delim) {
+      $t= $this->tokenizerInstance($input, $delim, TRUE);
       $tokens= array();
       while ($t->hasMoreTokens()) {
         $token= $t->nextToken();
@@ -196,10 +198,30 @@
         }
         $tokens[]= $token;
       }
-      
+      return $tokens;
+    }
+
+    /**
+     * Test pushing back a delimiter
+     *
+     */
+    #[@test]
+    public function pushBackDelimiter() {
       $this->assertEquals(
         array('// This is a one-line comment', "\n", 'a', '=', ' ', 'b', ' ', '/', ' ', 'c', ';'),
-        $tokens
+        $this->allTokens("// This is a one-line comment\na= b / c;", "/\n =;", "/\n =;")
+      );
+    }
+
+    /**
+     * Test pushing back a longer string part which is a regex
+     *
+     */
+    #[@test, @ignore('Fails')]
+    public function pushBackRegex() {
+      $this->assertEquals(
+        array('var', ' ', 'pattern', ' ', '=', ' ', '/', '0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?', '/', ';'),
+        $this->allTokens('var pattern = /0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?/;', "/\n =;")
       );
     }
   }
