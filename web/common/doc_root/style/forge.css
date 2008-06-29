@@ -53,3 +53,9 @@ div#footer {
 div#footer a {
   color: #a60725;
 }
+
+pre {
+  width: 100%;
+  overflow: auto;
+  overflow-y: hidden;
+}

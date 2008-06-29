@@ -17,24 +17,6 @@
 
   <xsl:include href="layout.inc.xsl"/>
   
-  <xsl:template name="hierarchy">
-    <xsl:param name="path"/>
-    <xsl:param name="base" select="''"/>
-    <xsl:variable name="chunk" select="substring-before($path, ',')"/>
-    <xsl:variable name="rest" select="substring-after($path, ',')"/>
-    
-    <a href="{xp:link(concat('browse?', $base, $chunk))}">
-      <xsl:value-of select="$chunk"/>
-    </a>
-    <xsl:if test="$rest">
-      &#xbb;
-      <xsl:call-template name="hierarchy">
-        <xsl:with-param name="path" select="$rest"/>
-        <xsl:with-param name="base" select="concat($base, $chunk, ',')"/>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-  
   <!-- Collections -->
   <xsl:template match="collection">
     <td>
@@ -51,7 +33,7 @@
   <xsl:template match="element">
     <td>
       <img align="left" width="22" height="22" src="/image/icons/{translate(mime, '/', '_')}.png"/>
-      <a href="#"><xsl:value-of select="name"/></a>
+      <a href="{xp:link(concat('view?', $__query, ',', name))}"><xsl:value-of select="name"/></a>
     </td>
     <td>
       <xsl:value-of select="modified"/>

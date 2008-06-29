@@ -26,4 +26,22 @@
 
   <xsl:template name="tracking-code">UA-617805-6</xsl:template>
 
+  <xsl:template name="hierarchy">
+    <xsl:param name="path"/>
+    <xsl:param name="base" select="''"/>
+    <xsl:variable name="chunk" select="substring-before($path, ',')"/>
+    <xsl:variable name="rest" select="substring-after($path, ',')"/>
+    
+    <a href="{xp:link(concat('browse?', $base, $chunk))}">
+      <xsl:value-of select="$chunk"/>
+    </a>
+    <xsl:if test="$rest">
+      &#xbb;
+      <xsl:call-template name="hierarchy">
+        <xsl:with-param name="path" select="$rest"/>
+        <xsl:with-param name="base" select="concat($base, $chunk, ',')"/>
+      </xsl:call-template>
+    </xsl:if>
+  </xsl:template>
+  
 </xsl:stylesheet>
