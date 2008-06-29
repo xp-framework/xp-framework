@@ -31,6 +31,7 @@
   define('MIME_APPLICATION_X_PERL',             'application/x-perl');
   define('MIME_APPLICATION_X_PHP',              'application/x-php');
   define('MIME_APPLICATION_X_JAVA',             'application/x-java');
+  define('MIME_APPLICATION_X_JAVASCRIPT',       'application/x-javascript');
   define('MIME_APPLICATION_X_C',                'application/x-c');
   define('MIME_APPLICATION_X_H',                'application/x-h');
   define('MIME_APPLICATION_X_CPP',              'application/x-cpp');
@@ -134,6 +135,7 @@
         '.pm'      => MIME_APPLICATION_X_PERL,
         '.php'     => MIME_APPLICATION_X_PHP,
         '.java'    => MIME_APPLICATION_X_JAVA,
+        '.js'      => MIME_APPLICATION_X_JAVASCRIPT,
         '.c'       => MIME_APPLICATION_X_C,
         '.h'       => MIME_APPLICATION_X_H,
         '.cpp'     => MIME_APPLICATION_X_CPP,
