@@ -57,8 +57,8 @@
           <!-- Show README file -->
           <xsl:if test="/formresult/readme">
             <xsl:apply-templates select="/formresult/readme"/>
+           <br/><br clear="all"/>
           </xsl:if>
-          <br/><br clear="all"/>
         
           <!-- List: Collections first -->
           <h2>Elements</h2>
