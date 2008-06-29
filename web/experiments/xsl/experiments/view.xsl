@@ -45,7 +45,7 @@
     <xsl:apply-templates select="php:function('XSLCallback::invoke', 'view', 'markup')/markup"/>
   </xsl:template>
 
-  <xsl:template match="element[@mime= 'application/x-perl' or @mime= 'application/x-php' or @mime= 'application/x-java' or @mime= 'application/x-cpp' or @mime= 'application/x-csharp']">
+  <xsl:template match="element[@mime= 'application/x-perl' or @mime= 'application/x-php' or @mime= 'application/x-javascript' or @mime= 'application/x-java' or @mime= 'application/x-cpp' or @mime= 'application/x-csharp']">
     <pre id="view" class="code">
       <xsl:copy-of select="php:function('XSLCallback::invoke', 'view', 'highlight', substring-after(@mime, 'x-'))"/>
     </pre>
