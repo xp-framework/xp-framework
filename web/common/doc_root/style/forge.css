@@ -10,7 +10,7 @@ body {
   background-color: #520303;
 }
 div#top {
-  background-image: url(/image/logo.png);
+  background-image: url(/common/image/forge/logo.png);
 }
 div#search {
   background-color: #d99eac;
@@ -18,7 +18,7 @@ div#search {
 }
 div#menu li a {
   background-color: #e5acb6;
-  background-image: url(/image/bg_topmenu.gif);
+  background-image: url(/common/image/forge/bg_topmenu.gif);
   color: #6d042e;
   border-right-color: #8f99ab;
 }
@@ -28,7 +28,7 @@ div#search input {
 }
 div#menu ul li#active a {
   background-color: #617750;
-  background-image: url(/image/bg_topmenu_selected.gif);
+  background-image: url(/common/image/forge/bg_topmenu_selected.gif);
   border-right-color: #a2c19d;
   border-top-color: #e1ffde;
   border-left-color: #c7e8c2;

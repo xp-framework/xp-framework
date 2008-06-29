@@ -10,7 +10,7 @@ body {
   background-color: #065c00;
 }
 div#top {
-  background-image: url(/common/image/logo.png);
+  background-image: url(/common/image/framework/logo.png);
 }
 div#search {
   background-color: #a3d0a0;

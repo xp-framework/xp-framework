@@ -22,7 +22,7 @@
   </xsl:template>
 
   <xsl:template name="content">
-    <div style="padding: 0; margin: 0; width: 100%; height: 200px; background: #1981c9 url(/common/image/header.png); color: white">
+    <div style="padding: 0; margin: 0; width: 100%; height: 200px; background: #1981c9 url(/image/header.png); color: white">
       <a href="http://xp-framework.net/downloads/releases/"><img align="right" src="/common/image/download.png" alt="Download" vspace="10" hspace="10" border="0"/></a>
       <p style="padding: 70px 170px 0 10px; margin: 0">
         <b>XP technology</b> is a rapid development environment. It will run anywhere PHP runs, 
