@@ -18,7 +18,7 @@
   <xsl:include href="layout.inc.xsl"/>
   
   <!-- Collections -->
-  <xsl:template match="collection">
+  <xsl:template match="list/collection">
     <td>
       <img align="left" width="22" height="22" src="/image/icons/collection.png"/>
       <a href="{xp:link(concat('browse?', $__query, ',', name))}">
@@ -30,7 +30,7 @@
   </xsl:template>
 
   <!-- Elements -->
-  <xsl:template match="element">
+  <xsl:template match="list/element">
     <td>
       <img align="left" width="22" height="22" src="/image/icons/{translate(mime, '/', '_')}.png"/>
       <a href="{xp:link(concat('view?', $__query, ',', name))}"><xsl:value-of select="name"/></a>
@@ -53,6 +53,12 @@
             </xsl:call-template>
           </div>
           <br/>
+
+          <!-- Show README file -->
+          <xsl:if test="/formresult/readme">
+            <xsl:apply-templates select="/formresult/readme"/>
+          </xsl:if>
+          <br/><br clear="all"/>
         
           <!-- List: Collections first -->
           <h2>Elements</h2>
