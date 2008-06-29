@@ -54,7 +54,16 @@
     public function hasMoreTokens() {
       return (!empty($this->_stack) || strlen($this->_buf) > 0);
     }
-    
+
+    /**
+     * Push back a string
+     *
+     * @param   string str
+     */
+    public function pushBack($str) {
+      $this->_buf= $str.$this->_buf;
+    }
+        
     /**
      * Returns the next token from this tokenizer's string
      *
