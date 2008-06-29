@@ -144,5 +144,63 @@
       $this->assertTrue($t->hasMoreTokens());
       $this->assertEquals('A', $t->nextToken());
     }
+
+    /**
+     * Test pushing back a string with delimiters
+     *
+     */
+    #[@test]
+    public function pushBackTokens() {
+      $t= $this->tokenizerInstance('1,2,5', ',');
+      $this->assertEquals('1', $t->nextToken());
+      $this->assertEquals('2', $t->nextToken());
+      $t->pushBack('3,4,');
+      $this->assertEquals('3', $t->nextToken());
+      $this->assertEquals('4', $t->nextToken());
+      $this->assertEquals('5', $t->nextToken());
+    }
+
+    /**
+     * Test pushBack() order
+     *
+     */
+    #[@test]
+    public function pushBackOrder() {
+      $t= $this->tokenizerInstance('1,2,5', ',');
+      $this->assertEquals('1', $t->nextToken());
+      $this->assertEquals('2', $t->nextToken());
+      $t->pushBack('4,');
+      $t->pushBack('3,');
+      $this->assertEquals('3', $t->nextToken());
+      $this->assertEquals('4', $t->nextToken());
+      $this->assertEquals('5', $t->nextToken());
+    }
+    
+    /**
+     * Test pushing back a delimiter
+     *
+     */
+    #[@test]
+    public function pushBackDelimiter() {
+      $t= $this->tokenizerInstance("// This is a one-line comment\na= b / c;", "/\n =;", TRUE);
+      $tokens= array();
+      while ($t->hasMoreTokens()) {
+        $token= $t->nextToken();
+        if ('/' === $token) {
+          $next= $t->nextToken();
+          if ('/' === $next) {
+            $token.= $next.$t->nextToken("\n");
+          } else {
+            $t->pushBack($next);
+          }
+        }
+        $tokens[]= $token;
+      }
+      
+      $this->assertEquals(
+        array('// This is a one-line comment', "\n", 'a', '=', ' ', 'b', ' ', '/', ' ', 'c', ';'),
+        $tokens
+      );
+    }
   }
 ?>
