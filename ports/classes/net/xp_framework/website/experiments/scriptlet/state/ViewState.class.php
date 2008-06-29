@@ -10,6 +10,7 @@
     'io.collections.FileCollection',
     'io.FileUtil',
     'io.File',
+    'text.doclet.markup.MarkupBuilder',
     'util.MimeType',
     'io.streams.FileInputStream',
     'text.StreamTokenizer'
@@ -39,11 +40,40 @@
     public function contents() {
       return FileUtil::getContents($this->element);
     }
+
+    /**
+     * Return this element's markup
+     *
+     * @return  string
+     */
+    #[@xslmethod]
+    public function markup() {
+      $builder= new MarkupBuilder();
+      $d= new DomDocument();
+      $markup= '<markup><p>'.$builder->markupFor(FileUtil::getContents($this->element)).'</p></markup>';
+      if (FALSE === $d->loadXML(utf8_encode($markup))) {
+        throw new FormatException(libxml_get_last_error()->message.' @ '.$this->element->getFileName().': '.htmlspecialchars($markup));
+      }
+      return $d;
+    }
     
+    /**
+     * Process one-line comments
+     *
+     * @param   text.Tokenizer st
+     * @return  string
+     */
     public function oneLineComment($st) {
       return $st->nextToken("\r\n");
     }
 
+    /**
+     * Process multi-line comments
+     *
+     * @param   text.Tokenizer st
+     * @param   string end
+     * @return  string
+     */
     public function multiLineComment($st, $end) {
       $str= '';
       $stop= $end{strlen($end)- 1};
@@ -56,10 +86,24 @@
       return $str.$stop;
     }
 
+    /**
+     * Process variables
+     *
+     * @param   text.Tokenizer st
+     * @param   string delim
+     * @return  string
+     */
     public function variable($st, $delim) {
       return $st->nextToken($delim);
     }
 
+    /**
+     * Process quoted strings
+     *
+     * @param   text.Tokenizer st
+     * @param   string delim
+     * @return  string
+     */
     public function quotedString($st, $delim) {
       $str= '';
       while ($st->hasMoreTokens()) {
