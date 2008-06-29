@@ -4,8 +4,9 @@
     <name>XP Technology</name>
     <item name="planet" href="http://planet-xp.net/">Home</item>
   </area>
-  <area name="framework" href="http://news.xp-framework.net/">
+  <area name="framework" href="http://xp-framework.net/">
     <name>XP Framework</name>
+    <item name="framework" href="http://xp-framework.net/">Home</item>
     <item name="news" href="http://news.xp-framework.net/">News</item>
     <item name="doc" href="http://docs.xp-framework.net/">Documentation</item>
     <item name="dev" href="http://developer.xp-framework.net/">Developers</item>
