@@ -29,7 +29,7 @@
     &lt;![endif]</xsl:comment>
   </xsl:template>
 
-  <xsl:template match="element[starts-with(name, 'Makefile')]">
+  <xsl:template match="element[@mime= 'application/x-sh' or starts-with(name, 'Makefile')]">
     <pre id="view">
       <xsl:value-of select="php:function('XSLCallback::invoke', 'view', 'contents')"/>
     </pre>
@@ -108,9 +108,7 @@
         </td>
         <td id="context">
           <h3>
-            <a href="/pipe/?{$__query}:application/octet-stream">
-              <img align="right" src="/common/image/save.png" border="0"/>
-            </a>
+            <img align="right" src="/common/image/save.png" border="0"/>
             Download
           </h3>
           <p>
