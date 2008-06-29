@@ -61,10 +61,21 @@
           </td>
           <td width="30%" valign="top">
             <h2>Experiments</h2>
-            <a href="#"><h3>Namespaces</h3></a>
-            <em>[PHP5.3]</em>
+            
+            <!-- Namespaces -->
+            <a href="http://experiments.xp-forge.net/xml/browse?arena,namespaces"><h3>Namespaces</h3></a>
+            <em>[XP6 / PHP5.3 @ Arena]</em>
             <br/><br clear="all"/>
 
+            <!-- Unicode -->
+            <a href="http://experiments.xp-forge.net/xml/browse?arena,unicode"><h3>Unicode</h3></a>
+            <em>[XP7 @ Arena]</em>
+            <br/><br clear="all"/>
+
+            <!-- Language -->
+            <a href="http://experiments.xp-forge.net/xml/browse?arena,lang"><h3>XP Language</h3></a>
+            <em>[RFC #0052 / XP8 @ Arena]</em>
+            <br/><br clear="all"/>
           </td>
         </tr></table>
         <br clear="all"/>
