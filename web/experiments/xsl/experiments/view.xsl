@@ -17,7 +17,7 @@
 
   <xsl:include href="layout.inc.xsl"/>
   
-  <xsl:template match="element[@mime= 'text/plain' or @mime= 'text/css' or @mime= 'text/html' or @mime= 'text/xml' or name = 'Makefile' or name = 'README']">
+  <xsl:template match="element[@mime= 'text/plain' or @mime= 'text/css' or @mime= 'text/html' or @mime= 'text/xml']">
     <pre id="view">
       <xsl:value-of select="php:function('XSLCallback::invoke', 'view', 'contents')"/>
     </pre>
@@ -27,6 +27,22 @@
         document.getElementById('view').style.width= document.body.offsetWidth - 320;
       &lt;/script&gt;
     &lt;![endif]</xsl:comment>
+  </xsl:template>
+
+  <xsl:template match="element[starts-with(name, 'Makefile')]">
+    <pre id="view">
+      <xsl:value-of select="php:function('XSLCallback::invoke', 'view', 'contents')"/>
+    </pre>
+    <!-- IE fix -->
+    <xsl:comment>[if lt IE 8]&gt;
+      &lt;script language="JavaScript"&gt;
+        document.getElementById('view').style.width= document.body.offsetWidth - 320;
+      &lt;/script&gt;
+    &lt;![endif]</xsl:comment>
+  </xsl:template>
+
+  <xsl:template match="element[starts-with(name, 'README') or starts-with(name, 'TODO') or starts-with(name, 'ChangeLog')]">
+    <xsl:apply-templates select="php:function('XSLCallback::invoke', 'view', 'markup')/markup"/>
   </xsl:template>
 
   <xsl:template match="element[@mime= 'application/x-perl' or @mime= 'application/x-php' or @mime= 'application/x-java' or @mime= 'application/x-cpp' or @mime= 'application/x-csharp']">
@@ -51,6 +67,12 @@
         document.getElementById('view').style.width= document.body.offsetWidth - 320;
       &lt;/script&gt;
     &lt;![endif]</xsl:comment>
+  </xsl:template>
+
+  <xsl:template match="element">
+    <iframe src="/pipe/?{$__query}" width="100%" height="600">
+      <!-- Content -->
+    </iframe>
   </xsl:template>
 
   <xsl:template match="element[@mime= 'image/gif' or @mime= 'image/png' or @mine = 'image/jpeg']">
