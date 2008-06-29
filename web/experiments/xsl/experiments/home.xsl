@@ -21,7 +21,26 @@
     <table id="main" cellpadding="0" cellspacing="10">
       <tr>
         <td id="content">
-          Hello
+          <h1>Experiments</h1>
+          <p>
+            This is where experimental stuff should go, such as patches, case
+            studies, suggestions or scripts that may be of use.
+          </p>
+          <br/><br clear="all"/>
+          
+          <h2><a href="{xp:link('browse?arena')}">Arena</a></h2>
+          <p>
+            Show-off stuff which could be of interest for everyone.
+          </p>
+          <br/><br clear="all"/>
+
+          <h2><a href="{xp:link('browse?people')}">People</a></h2>
+          <p>
+            This is where your own experiments go. Everything which you 
+            would consider "private" and of minor (or no) particular interest 
+            for the rest.
+          </p>
+          <br/><br clear="all"/>
         </td>
         <td id="context">
           <h3>Table of contents</h3>

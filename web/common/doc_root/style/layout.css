@@ -240,6 +240,7 @@ div#menu ul li#active a {
 }
 /* }}} */
 
+/* {{{ Breadcrumb */
 div#breadcrumb {
   background: url(/common/image/breadcrumb.png) no-repeat 0px 2px;
   padding-left: 20px;
@@ -249,6 +250,21 @@ div#breadcrumb {
 div#breadcrumb a {
   color: black;
 }
+/* }}} */
+
+/* {{{ Dir */
+table.dir {
+  width: 100%;
+}
+
+table.dir td {
+  padding: 2px;
+}
+
+table.dir tr.row1 {
+  background-color: #efefef;
+}
+/* }}} */
 
 table.columned ul {
   list-style-type: square;
