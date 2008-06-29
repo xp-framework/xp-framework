@@ -13,8 +13,8 @@
   <area name="forge" href="http://xp-forge.net/">
     <name>XP Forge</name>
     <item name="forge" href="http://xp-forge.net/">Home</item>
-    <item name="projects" href="#http://projects.xp-forge.net/">Projects</item>
-    <item name="experiments" href="#http://experiments.xp-forge.net/">Experiments</item>
+    <item name="projects" href="http://projects.xp-forge.net/">Projects</item>
+    <item name="experiments" href="http://experiments.xp-forge.net/">Experiments</item>
   </area>
   <area name="download" href="http://xp-framework.net/downloads/releases/">
     <name>XP Downloads</name>
