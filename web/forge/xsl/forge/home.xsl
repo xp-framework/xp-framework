@@ -45,7 +45,7 @@
             <br/><br clear="all"/>
 
             <!-- LuceneD -->
-            <h3><a href="#{xp:link('projects/calc')}">Lucene Daemon</a></h3>
+            <h3><a href="#{xp:link('projects/lucened')}">Lucene Daemon</a></h3>
             <p align="justify">
               Wraps the Apache Lucene search engine in a TCP/IP daemon so it can function as a search service.
             </p>
