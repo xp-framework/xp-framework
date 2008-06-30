@@ -17,6 +17,17 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made peer.Socket instances cloneable
+  (friebe)
+- Made peer.URL constructor parameter optional
+  (friebe)
+- Extended util.MimeType class to include types for various programming
+  languages.
+  (friebe)
+- Added 503 error page to scriptlet SAPI
+  (friebe)
+- Added pushBack() method to text.Tokenizer class and its implementations
+  (friebe)
 
 
 Version 5.6.7, released 2008-06-09
