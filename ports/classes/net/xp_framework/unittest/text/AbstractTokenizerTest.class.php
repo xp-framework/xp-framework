@@ -217,7 +217,7 @@
      * Test pushing back a longer string part which is a regex
      *
      */
-    #[@test, @ignore('Fails')]
+    #[@test]
     public function pushBackRegex() {
       $this->assertEquals(
         array('var', ' ', 'pattern', ' ', '=', ' ', '/', '0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?', '/', ';'),
