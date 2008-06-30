@@ -62,7 +62,8 @@
      * @param   string str
      */
     public function pushBack($str) {
-      $this->_buf= $str.$this->_buf;
+      $this->_buf= $str.implode('', $this->_stack).$this->_buf;
+      $this->_stack= array();
     }
     
     /**
