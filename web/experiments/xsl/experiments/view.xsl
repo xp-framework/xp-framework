@@ -16,6 +16,7 @@
 >
 
   <xsl:include href="layout.inc.xsl"/>
+  <xsl:include href="../../../common/xsl/markup.inc.xsl"/>
   
   <xsl:template match="element[@mime= 'text/plain' or @mime= 'text/css' or @mime= 'text/html' or @mime= 'text/xml']">
     <pre id="view">
