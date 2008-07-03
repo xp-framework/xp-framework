@@ -16,6 +16,7 @@
 >
 
   <xsl:include href="layout.inc.xsl"/>
+  <xsl:include href="../../../common/xsl/markup.inc.xsl"/>
   
   <!-- Collections -->
   <xsl:template match="list/collection">
