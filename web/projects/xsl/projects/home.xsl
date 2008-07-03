@@ -21,7 +21,7 @@
     <table id="main" cellpadding="0" cellspacing="10">
       <tr>
         <td id="content">
-          Hello
+          <h1>Coming soon</h1>
         </td>
         <td id="context">
           <h3>Table of contents</h3>
