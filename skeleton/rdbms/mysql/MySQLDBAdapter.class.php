@@ -34,7 +34,8 @@
       'float'      => DB_ATTRTYPE_FLOAT,
       'double'     => DB_ATTRTYPE_FLOAT,
       'blob'       => DB_ATTRTYPE_TEXT,
-      'mediumblob' => DB_ATTRTYPE_TEXT
+      'mediumblob' => DB_ATTRTYPE_TEXT,
+      'longblob'   => DB_ATTRTYPE_TEXT
     );
     
     /**
