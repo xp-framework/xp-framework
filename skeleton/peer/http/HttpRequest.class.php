@@ -26,10 +26,9 @@
     public
       $url        = NULL,
       $method     = HTTP_GET,
+      $target     = '',
       $version    = HTTP_VERSION_1_1,
-      $headers    = array(
-        'Connection' => 'close'
-      ),
+      $headers    = array('Connection' => 'close'),
       $parameters = array();
       
     /**
@@ -37,13 +36,41 @@
      *
      * @param   peer.URL url object
      */
-    public function __construct($url) {
+    public function __construct(URL $url= NULL) {
+      if (NULL !== $url) $this->setUrl($url);
+    }
+
+    /**
+     * Set URL
+     *
+     * @param   peer.URL url object
+     */
+    public function setUrl(URL $url) {
       $this->url= $url;
       if ($url->getUser() && $url->getPassword()) {
         $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
       }
       $port= $this->url->getPort(-1);
       $this->headers['Host']= $this->url->getHost().(-1 == $port ? '' : ':'.$port);
+      $this->target= $this->url->getPath('/');
+    }
+
+    /**
+     * Get URL
+     *
+     * @return  peer.URL url object
+     */
+    public function getUrl() {
+      return $this->url;
+    }
+
+    /**
+     * Set request target
+     *
+     * @param   string target
+     */
+    public function setTarget($target) {
+      $this->target= $target;
     }
     
     /**
@@ -109,13 +136,12 @@
           $query.= '&'.$k.'='.urlencode($v);
         }
       }
-      $target= $this->url->getPath('/');
+      $target= $this->target;
       
       // Which HTTP method? GET and HEAD use query string, POST etc. use
       // body for passing parameters
       switch ($this->method) {
-        case HTTP_HEAD:
-        case HTTP_GET:
+        case HTTP_HEAD: case HTTP_GET: case HTTP_DELETE: case HTTP_OPTIONS:
           if (NULL !== $this->url->getQuery()) {
             $target.= '?'.$this->url->getQuery().(empty($query) ? '' : $query);
           } else {
@@ -124,8 +150,7 @@
           $body= '';
           break;
           
-        case HTTP_POST:
-        default:
+        case HTTP_POST: case HTTP_PUT: case HTTP_TRACE: default:
           $body= substr($query, 1);
           if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
           $this->headers['Content-Length']= strlen($body);
@@ -144,27 +169,10 @@
       
       // Add request headers
       foreach ($this->headers as $k => $v) {
-        $request.= (is('Header', $v) 
-          ? $v->toString() 
-          : $k.': '.$v
-        )."\r\n";
+        $request.= ($v instanceof Header ? $v->toString() : $k.': '.$v)."\r\n";
       }
       
       return $request."\r\n".$body;
-    }
-    
-    /**
-     * Send request
-     *
-     * @return  peer.http.HttpResponse response object
-     */
-    public function send($timeout= 60, $connecttimeout= 2.0) {
-      $s= new Socket($this->url->getHost(), $this->url->getPort(80));
-      $s->setTimeout($timeout);
-      
-      $request= $this->getRequestString();
-      $s->connect($connecttimeout) && $s->write($request);
-      return new HttpResponse($s);
     }
   }
 ?>

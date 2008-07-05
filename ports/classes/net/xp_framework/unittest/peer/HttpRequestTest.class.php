@@ -196,6 +196,40 @@
     }
 
     /**
+     * Test HTTP PUT
+     *
+     */
+    #[@test]
+    public function put() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HTTP_PUT);
+      $r->setParameters('a=b&c=d');
+      $this->assertEquals(
+        "PUT / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "a=b&c=d",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP TRACE
+     *
+     */
+    #[@test]
+    public function trace() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HTTP_TRACE);
+      $r->setParameters('a=b&c=d');
+      $this->assertEquals(
+        "TRACE / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "a=b&c=d",
+        $r->getRequestString()
+      );
+    }
+
+    /**
      * Test HTTP HEAD
      *
      */
@@ -206,6 +240,36 @@
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "HEAD /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP DELETE
+     *
+     */
+    #[@test]
+    public function delete() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HTTP_DELETE);
+      $r->setParameters('a=b&c=d');
+      $this->assertEquals(
+        "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP OPTIONS
+     *
+     */
+    #[@test]
+    public function options() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HTTP_OPTIONS);
+      $r->setParameters('a=b&c=d');
+      $this->assertEquals(
+        "OPTIONS /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
     }

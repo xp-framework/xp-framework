@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.SocketException');
+  uses('io.streams.InputStream');
 
   /**
    * HTTP response
@@ -20,90 +20,103 @@
       $headers       = array(),
       $chunked       = NULL;
     
-    public
+    protected
+      $stream        = NULL,
+      $buffer        = '',
       $_headerlookup = array();
       
     /**
      * Constructor
      *
-     * @param   lang.Object stream
+     * @param   io.streams.InputStream stream
      */
-    public function __construct($stream) {
+    public function __construct(InputStream $stream) {
       $this->stream= $stream;
       
-    }
-
-    /**
-     * Read status line
-     *
-     * @return  bool success
-     */    
-    protected function _readstatus() {
-      $str= $this->stream->read();
-      
-      $s= chop($str);
-      if (3 > ($r= sscanf(
-        $s, 
-        "HTTP/%d.%d %3d %[^\r]",
-        $major, 
-        $minor, 
-        $this->statuscode,
-        $this->message
-      ))) {
-        throw new FormatException('"'.$s.'" is not a valid HTTP response ['.$r.']');
-      }
-      
-      $this->version= $major.'.'.$minor;
-      return TRUE;
-    }
-    
-    /**
-     * Read head if necessary
-     *
-     * @return  bool success
-     */
-    protected function _readhead() {
-      if (0 != $this->statuscode) return TRUE;
-      if (!$this->_readstatus()) return FALSE;
-      
-      // HTTP/1.x 100 Continue
-      if (100 == $this->statuscode) {
-        while (!$this->stream->eof()) {
-          if ('' == chop($this->stream->read())) break;
-        }
-        
-        if (!$this->_readstatus()) return FALSE;
-      }
-      
-      // Read rest of headers
-      while (!$this->stream->eof()) {
-        $l= chop($this->stream->read());
-        if ('' == $l) break;
-        
-        list($k, $v)= explode(': ', $l, 2);
-        $this->headers[$k]= $v;
-      }
+      // Read status line and headers
+      do { $this->readHeader(); } while (100 === $this->statuscode);
 
       // Check for chunked transfer encoding
       $this->chunked= (bool)stristr($this->getHeader('Transfer-Encoding'), 'chunked');
-      
-      return TRUE;
     }
     
     /**
+     * Scan stream until we we find a certain character
+     *
+     * @param   string char
+     * @return  string
+     */
+    protected function scanUntil($char) {
+      $pos= strpos($this->buffer, $char);
+      
+      // Found no line ending in buffer, read until we do!
+      while (FALSE === $pos) {
+        if ($this->stream->available() <= 0) {
+          $pos= strlen($this->buffer);
+          break;
+        }
+        $this->buffer.= $this->stream->read();
+        $pos= strpos($this->buffer, $char);
+      }
+
+      // Return line, remove from buffer
+      $line= substr($this->buffer, 0, $pos);
+      $this->buffer= substr($this->buffer, $pos+ 1);
+      return $line;
+    }
+
+    /**
+     * Read a chunk
+     *
+     * @param   int bytes
+     * @return  string
+     */
+    protected function readChunk($bytes) {
+      $len= strlen($this->buffer);
+      
+      // Not enough data, read until it's here!
+      while ($len < $bytes) {
+        if ($this->stream->available() <= 0) break;
+        $this->buffer.= $this->stream->read();
+        $len= strlen($this->buffer);
+      }
+      
+      // Return chunk, remove from buffer
+      $chunk= substr($this->buffer, 0, $bytes);
+      $this->buffer= substr($this->buffer, $bytes+ 1);
+      return $chunk;
+    }
+    
+    /**
+     * Reads the header (status line and key/value pairs).
+     *
+     * @throws  lang.FormatException
+     */
+    protected function readHeader() {
+    
+      // Status line
+      $status= $this->scanUntil("\n");
+      $r= sscanf($status, "HTTP/%[0-9.] %3d %[^\r]", $this->version, $this->statuscode, $this->message);
+      if ($r < 3) {
+        throw new FormatException('"'.$status.'" is not a valid HTTP response ['.$r.']');
+      }
+
+      // Headers
+      while ($line= $this->scanUntil("\n")) {
+        if (2 != sscanf($line, "%[^:]: %[^\r\n]", $k, $v)) break;
+        $this->headers[$k]= $v;      
+      }
+    }
+
+    /**
      * Read data
      *
-     * @param   int size default 8192
-     * @param   bool binary default FALSE
+     * @param   int size default 8192 maximum size to read
      * @return  string buf or FALSE to indicate EOF
      */
-    public function readData($size= 8192, $binary= FALSE) {
-      if (!$this->_readhead()) return FALSE;        // Read head if not done before
-      if ($this->stream->eof()) return $this->closeStream();
-      
+    public function readData($size= 8192) {
       if (!$this->chunked) {
-        $func= $binary ? 'readBinary' : 'read';
-        if (!($buf= $this->stream->$func($size))) {
+        if (!($buf= $this->readChunk($size))) {
           return $this->closeStream();
         }
 
@@ -119,43 +132,32 @@
       // any chunk extensions. We ignore the size and boolean parameters
       // to this method completely to ensure functionality. For more 
       // details, see RFC 2616, section 3.6.1
-      if (!($buf= $this->stream->read(1024))) return $this->closeStream();
-      if (!(sscanf($buf, "%x%s\r\n", $chunksize, $extension))) {
+      if (!($indicator= $this->scanUntil("\n"))) return $this->closeStream();
+      if (!(sscanf($indicator, "%x%s\r", $chunksize, $extension))) {
+        $this->closeStream();
         throw new IOException(sprintf(
           'Chunked transfer encoding: Indicator line "%s" invalid', 
-          addcslashes($buf, "\0..\17")
+          addcslashes($indicator, "\0..\17")
         ));
-        return $this->closeStream();
       }
 
       // A chunk of size 0 means we're at the end of the document. We 
       // ignore any trailers.
       if (0 == $chunksize) return $this->closeStream();
 
-      // A chunk is terminated by \r\n, so add 2 to the chunksize. We will
-      // trim these characters off later.
-      $chunksize+= 2;
-
-      // Read up until end of chunk
-      $buf= '';
-      do {
-        if (!($data= $this->stream->readBinary($chunksize- strlen($buf)))) return $this->closeStream();
-        $buf.= $data;
-      } while (strlen($buf) < $chunksize);
-
-      return rtrim($buf, "\r\n");
+      // A chunk is terminated by \r\n, so scan over two more characters
+      $chunk= $this->readChunk($chunksize);
+      $this->readChunk(2);
+      return $chunk;
     }
     
     /**
-     * Closes the stream if it's at EOF
+     * Closes the stream and returns FALSE
      *
-     * @return  boolean 
+     * @return  bool
      */
     public function closeStream() {
-      if ($this->stream->eof()) {
-        $this->stream->close();
-      }
-      
+      $this->stream->close();
       return FALSE;
     }
     
@@ -176,8 +178,6 @@
      * @return  toString
      */
     public function toString() {
-      if (!$this->_readhead()) return parent::toString();
-      
       $h= '';
       foreach ($this->headers as $k => $v) {
         $h.= sprintf("  [%-20s] %s\n", $k, $v);
@@ -198,7 +198,7 @@
      * @return  int status code
      */
     public function getStatusCode() {
-      return $this->_readhead() ? $this->statuscode : FALSE;
+      return $this->statuscode;
     }
 
     /**
@@ -216,7 +216,7 @@
      * @return  array headers
      */
     public function getHeaders() {
-      return $this->_readhead() ? $this->headers : FALSE;
+      return $this->headers;
     }
 
     /**
@@ -226,13 +226,11 @@
      * @return  string value or NULL if this header does not exist
      */
     public function getHeader($name) {
-      if (!$this->_readhead()) return FALSE;
       if (empty($this->_headerlookup)) {
         $this->_headerlookup= array_change_key_case($this->headers, CASE_LOWER);
       }
       $name= strtolower($name);
       return isset($this->_headerlookup[$name]) ? $this->_headerlookup[$name] : NULL;
     }
-  
   }
 ?>

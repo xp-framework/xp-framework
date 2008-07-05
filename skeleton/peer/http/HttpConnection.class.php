@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.http.HttpRequestFactory');
+  uses('peer.http.HttpTransport', 'peer.http.HttpProxy', 'peer.URL');
   
   /**
    * HTTP connection
@@ -31,12 +31,9 @@
    * @purpose  Provide
    */
   class HttpConnection extends Object {
-    public 
-      $request     = NULL,
-      $response    = NULL,
-      $auth        = NULL;
-    
-    public
+    protected
+      $url          = NULL,
+      $transport    = NULL,
       $_ctimeout    = 2.0,
       $_timeout     = 60;
 
@@ -46,16 +43,17 @@
      * @param   mixed url a string or a peer.URL object
      */
     public function __construct($url) {
-      $this->_createRequest($url instanceof URL ? $url : new URL($url));
+      $this->url= $url instanceof URL ? $url : new URL($url);
+      $this->transport= HttpTransport::transportFor($this->url);
     }
-    
+
     /**
-     * Create the request object
+     * Set proxy
      *
-     * @param   peer.URL object
+     * @param   peer.http.HttpProxy proxy
      */
-    protected function _createRequest($url) {
-      $this->request= HttpRequestFactory::factory($url);
+    public function setProxy(HttpProxy $proxy) {
+      $this->transport->setProxy($proxy);
     }
 
     /**
@@ -93,6 +91,15 @@
     public function getTimeout() {
       return $this->_timeout;
     }
+
+    /**
+     * Get URL
+     *
+     * @return  peer.URL
+     */
+    public function getUrl() {
+      return $this->url;
+    }
     
     /**
      * Returns a string representation of this object
@@ -101,29 +108,64 @@
      */
     public function toString() {
       return sprintf(
-        '%s(->URL{%s}, timeout: [read= %.2f, connect= %.2f])',
+        '%s(->URL{%s via %s}, timeout: [read= %.2f, connect= %.2f])',
         $this->getClassName(),
-        $this->request->url->getUrl(),
+        $this->url->getUrl(),
+        $this->transport->toString(),
         $this->_timeout,
         $this->_ctimeout
       );
     }
     
     /**
+     * Send a HTTP request
+     *
+     * @param   peer.http.HttpRequest
+     * @return  peer.http.HttpResponse response object
+     */
+    public function send(HttpRequest $r) {
+      return $this->transport->send($r, $this->_timeout, $this->_ctimeout);
+    }
+
+    /**
+     * Creates a new HTTP request. For use in conjunction with send(), e.g.:
+     *
+     * <code>
+     *   $conn= new HttpConnection('http://example.com/');
+     *   
+     *   with ($request= $conn->create(new HttpRequest())); {
+     *     $request->setMethod(HTTP_GET);
+     *     $request->setParameters(array('a' => 'b'));
+     *     $request->setHeader('X-Binford', '6100 (more power)');
+     *
+     *     $response= $conn->send($request);
+     *     // ...
+     *   }
+     * </code>
+     *
+     * @param   peer.http.HttpRequest
+     * @return  peer.http.HttpRequest request object
+     */
+    public function create(HttpRequest $r) {
+      $r->setUrl($this->url);
+      return $r;
+    }
+    
+    /**
      * Perform any request
      *
      * @param   string method request method, e.g. HTTP_GET
-     * @param   mixed arg
+     * @param   mixed parameters
      * @param   array headers default array()
      * @return  peer.http.HttpResponse response object
      * @throws  io.IOException
      */
-    public function request($method, $arg, $headers= array()) {
-      $this->request->setMethod($method);
-      $this->request->setParameters($arg);
-      $this->request->addHeaders($headers);
-      
-      return $this->request->send($this->_timeout, $this->_ctimeout);
+    public function request($method, $parameters, $headers= array()) {
+      $r= new HttpRequest($this->url);
+      $r->setMethod($method);
+      $r->setParameters($parameters);
+      $r->addHeaders($headers);
+      return $this->send($r);
     }
 
     /**
@@ -167,7 +209,40 @@
      * @return  peer.http.HttpResponse response object
      */
     public function put($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_PUT, new RequestData($arg), $headers);
+      return $this->request(HTTP_PUT, $arg, $headers);
+    }
+
+    /**
+     * Perform a DELETE request
+     *
+     * @param   string arg default NULL
+     * @param   array headers default array()
+     * @return  peer.http.HttpResponse response object
+     */
+    public function delete($arg= NULL, $headers= array()) {
+      return $this->request(HTTP_DELETE, $arg, $headers);
+    }
+
+    /**
+     * Perform an OPTIONS request
+     *
+     * @param   string arg default NULL
+     * @param   array headers default array()
+     * @return  peer.http.HttpResponse response object
+     */
+    public function options($arg= NULL, $headers= array()) {
+      return $this->request(HTTP_OPTIONS, $arg, $headers);
+    }
+
+    /**
+     * Perform a TRACE request
+     *
+     * @param   string arg default NULL
+     * @param   array headers default array()
+     * @return  peer.http.HttpResponse response object
+     */
+    public function trace($arg= NULL, $headers= array()) {
+      return $this->request(HTTP_TRACE, $arg, $headers);
     }
   }
 ?>
