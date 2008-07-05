@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel, ohinckel
 @created: Wed Apr 16 20:39:56     2008
-@status: discussion, ends Wed Jun  3 18:00:00     2008
+@status: implemented, Sat Jul  5 18:59:34     2008
 @category: peer.http
 
 Scope of Change

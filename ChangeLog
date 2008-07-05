@@ -8,9 +8,14 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Completely refactored the peer.http API to be able to nicely 
+  implement RFC #0162.
+  (friebe)
 
 RFCs
 ~~~~
+- Implemented RFC #0162: HTTP proxy
+  (friebe)
 
 Bugfixes
 ~~~~~~~~
