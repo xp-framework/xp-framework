@@ -96,6 +96,8 @@
         $params= $out;
       } else if (is_array($p)) {
         $params= $p;
+      } else {
+        $params= array();
       }
       
       $this->parameters= array_diff($params, $this->url->getParams());
