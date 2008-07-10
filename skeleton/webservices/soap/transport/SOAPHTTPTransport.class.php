@@ -107,46 +107,45 @@
      * @throws  lang.IllegalArgumentException in case the given parameter is not a webservices.soap.SOAPMessage
      */
     public function send(XPSoapMessage $message) {
-      if (!$this->_conn->request) throw(new IllegalArgumentException(
-        'Factory method failed'
-      ));
+      $headers= $this->_headers;
 
       // Action
       $this->action= $message->action;
 
-      // Post XML
-      $this->_conn->request->setMethod(HTTP_POST);
-      $this->_conn->request->setParameters(new RequestData(
-        $message->getDeclaration()."\n".
-        $message->getSource(0)
-      ));
-      
       switch ($this->_actiontype) {
         case SOAP_ACTION_COMPUTE:
-          $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'#'.$message->method.'"');
+          $headers['SOAPAction']= '"'.$message->action.'#'.$message->method.'"';
           break;
         
         case SOAP_ACTION_HARDCODE:
-          $this->_conn->request->setHeader('SOAPAction', '"'.$message->action.'"');
+          $headers['SOAPAction']= '"'.$message->action.'"';
           break;
         
         case SOAP_ACTION_EMPTY:
-          $this->_conn->request->setHeader('SOAPAction', '""');
+          $headers['SOAPAction']= '""';
           break;
         
         case SOAP_ACTION_NULL:
-          $this->_conn->request->setHeader('SOAPAction', '');
+          $headers['SOAPAction']= '';
           break;
         
         default:
       }
       
-      $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
+      $headers['Content-Type']= 'text/xml; charset='.$message->getEncoding();
 
-      // Add more headers
-      $this->_conn->request->addHeaders($this->_headers);
-      $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-      return $this->_conn->request->send($this->_conn->getTimeout());
+      // Post XML
+      with ($request= $this->_conn->create(new HttpRequest())); {
+        $request->setMethod(HTTP_POST);
+        $request->setParameters(new RequestData(
+          $message->getDeclaration()."\n".
+          $message->getSource(0)
+        ));
+        $request->addHeaders($headers);
+        
+        $this->cat && $this->cat->debug('>>>', $request->getRequestString());
+        return $this->_conn->send($request);
+      }
     }
    
     /**
