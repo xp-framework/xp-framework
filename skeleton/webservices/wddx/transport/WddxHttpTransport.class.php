@@ -68,7 +68,7 @@
         $r->addHeaders($this->_headers);
 
         $this->cat && $this->cat->debug('>>>', $r->getRequestString());
-        return $r->send($this->_conn->getTimeout());
+        return $this->_conn->send($r);
       }
     }
     
