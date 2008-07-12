@@ -112,17 +112,19 @@
       }
       
       // Assemble request
-      $c->request->setMethod(HTTP_POST);
-      $c->request->setParameters(new RequestData(
-        $m->getDeclaration()."\n".
-        $m->getSource(0)
-      ));
-      $c->request->setHeader('SOAPAction', '""');
-      $c->request->setHeader('Content-Type', 'text/xml; charset='.$m->encoding);
+      with ($r= $c->request->create(new HttpRequest())); {
+        $r->setMethod(HTTP_POST);
+        $r->setParameters(new RequestData(
+          $m->getDeclaration()."\n".
+          $m->getSource(0)
+        ));
+        $r->setHeader('SOAPAction', '""');
+        $r->setHeader('Content-Type', 'text/xml; charset='.$m->encoding);
 
-      // Send it
-      $this->cat && $this->cat->debug('>>>', $c->request->getRequestString());
-      $response= $c->request->send();
+        // Send it
+        $this->cat && $this->cat->debug('>>>', $r->getRequestString());
+        $response= $c->send($r);
+      }
 
       // Read response
       $sc= $response->getStatusCode();
