@@ -47,18 +47,18 @@
      * @return  scriptlet.HttpScriptletResponse
      */
     public function send(XmlRpcMessage $message) {
-      
-      // Send XML
-      $this->_conn->request->setMethod(HTTP_POST);
-      $this->_conn->request->setParameters(new RequestData($message->serializeData()));
-      $this->_conn->request->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
-      $this->_conn->request->setHeader('User-Agent', 'XP Framework XML-RPC Client (http://xp-framework.net)');
+      with ($r= $this->_conn->create(new HttpRequest())); {
+        $r->setMethod(HTTP_POST);
+        $r->setParameters(new RequestData($message->serializeData()));
+        $r->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
+        $r->setHeader('User-Agent', 'XP Framework XML-RPC Client (http://xp-framework.net)');
 
-      // Add custom headers
-      $this->_conn->request->addHeaders($this->_headers);
-      
-      $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-      return $this->_conn->request->send($this->_conn->getTimeout());
+        // Add custom headers
+        $r->addHeaders($this->_headers);
+
+        $this->cat && $this->cat->debug('>>>', $r->getRequestString());
+        return $this->_conn->send($r);
+      }
     }
     
     /**
