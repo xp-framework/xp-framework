@@ -28,15 +28,19 @@
      * Construct a XML-RPC response message from a string
      *
      * <code>
-     *   $msg= &XmlRpcResponseMessage::fromString('<methodCall>...</methodCall>');
+     *   $msg= XmlRpcResponseMessage::fromString('<methodCall>...</methodCall>');
      * </code>
      *
      * @param   string string
      * @return  webservices.xmlrpc.XmlRpcResponse Message
      */
     public static function fromString($string) {
-      $msg= new XmlRpcResponseMessage();
+      $msg= new self();
       $msg->tree= Tree::fromString($string);
+
+      if (!isset($msg->tree->root->children[0])) {
+        throw new FormatException('Response is not well formed'); 
+      }
 
       // Set class and method members from XML structure
       $target= $msg->tree->root->children[0]->getContent();
