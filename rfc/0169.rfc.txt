@@ -1,0 +1,67 @@
+RFC 0169: New package unittest.web
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Jul 13 12:38:18     2008
+@status: draft
+@category: unittest
+
+Scope of Change
+---------------
+A new package "unittest.web" will be created. It will contain the base
+class "WebTestCase" with which web tests can be written.
+
+
+Rationale
+---------
+Integration testing.
+
+
+Functionality
+-------------
+
+Example
+~~~~~~~
+<code>
+  class PlanetXpTestCase extends WebTestCase {
+
+    protected function getConnection($url= NULL) {
+      return new HttpConnection($url ? $url : 'http://planet-xp.net/');
+    }
+
+    #[@test]
+    public function homePage() {
+      $this->beginAt('/xml/home');
+      $this->assertStatus(HTTP_OK);
+      $this->assertTitleEquals('XP Technology');
+      $this->assertTextPresent('Credits');
+    }
+  }
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+No existing infrastructure is changed, thus none.
+
+
+Dependencies
+------------
+RFC #0162 (implemented)
+
+
+Related documents
+-----------------
+* http://experiments.xp-forge.net/xml/browse?arena,webtest - Experiment
+
+
+Comments
+--------
+
+<EOF>
