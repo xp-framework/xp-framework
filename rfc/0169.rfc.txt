@@ -20,22 +20,80 @@ Integration testing.
 
 Functionality
 -------------
+As with regular unittests, web tests are created by extending a base class,
+in this case <tt>unittest.web.WebTestCase</tt>.
 
 Example
 ~~~~~~~
 <code>
   class PlanetXpTestCase extends WebTestCase {
-
+    
     protected function getConnection($url= NULL) {
       return new HttpConnection($url ? $url : 'http://planet-xp.net/');
     }
-
+    
     #[@test]
     public function homePage() {
       $this->beginAt('/xml/home');
       $this->assertStatus(HTTP_OK);
       $this->assertTitleEquals('XP Technology');
       $this->assertTextPresent('Credits');
+    }
+  }
+</code>
+
+Assertion Methods
+~~~~~~~~~~~~~~~~~
+In addition to the assertion methods from the <tt>unittest.TestCase</tt>
+class (which the WebTestCase class extends), the following assertion
+methods are available:
+
+<code>
+  public function assertStatus($status, $message= 'not_equals');
+  public function assertUrlEquals(URL $url, $message= 'not_equals');
+  public function assertContentType($ctype, $message= 'not_equals');
+  public function assertHeader($header, $value, $message= 'not_equals');
+  public function assertElementPresent($id, $message= 'not_present');
+  public function assertElementNotPresent($id, $message= 'present');
+  public function assertTextPresent($text, $message= 'not_present');
+  public function assertTextNotPresent($text, $message= 'present');
+  public function assertImagePresent($src, $message= 'not_present');
+  public function assertImageNotPresent($src, $message= 'present');
+  public function assertLinkPresent($url, $message= 'not_present');
+  public function assertLinkNotPresent($url, $message= 'present');
+  public function assertLinkPresentWithText($text, $message= 'not_present');
+  public function assertLinkNotPresentWithText($text, $message= 'present');
+  public function assertFormPresent($name= NULL, $message= 'not_present');
+  public function assertFormNotPresent($name= NULL, $message= 'present');
+  public function assertTitleEquals($title, $message= 'not_equals');
+</code>
+
+Navigation
+~~~~~~~~~~
+To follow links inside a page, a web test can utilize the click methods:
+<code>
+  protected function clickLink($id);
+  protected function clickLinkWithText($text);
+</code>
+
+Forms
+~~~~~
+To work with forms, the <tt>getForm()</tt> method can be used:
+<code>
+  class XpSearchTestCase extends WebTestCase {
+    
+    protected function getConnection($url= NULL) {
+      return new HttpConnection($url ? $url : 'http://planet-xp.net/');
+    }
+    
+    #[@test]
+    public function searchFunction() {
+      $this->beginAt('/xml/home');
+      $form= $this->getForm();
+      $form->getField('query')->setValue('Unittest');
+      $form->submit();
+      $this->assertStatus(HTTP_OK);
+      $this->assertTitleEquals('Search for "Unittest" - XP Framework');
     }
   }
 </code>
