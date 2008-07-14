@@ -117,7 +117,6 @@
       }
       $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        unset(xp::$registry['classloader.'.$class]);
         raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
       }
       xp::$registry['class.'.$name]= $class;
