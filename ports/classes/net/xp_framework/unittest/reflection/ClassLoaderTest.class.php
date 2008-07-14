@@ -207,7 +207,7 @@
      */
     #[@test, @expect('lang.ClassFormatException')]
     public function loadClassFileWithoutDeclaration() {
-      XPClass::forName('net.xp_framework.unittest.reflection.classes.NoClass');
+      XPClass::forName('net.xp_framework.unittest.reflection.classes.broken.NoClass');
     }
 
     /**
@@ -216,7 +216,7 @@
      */
     #[@test, @expect('lang.ClassFormatException')]
     public function loadClassFileWithIncorrectDeclaration() {
-      XPClass::forName('net.xp_framework.unittest.reflection.classes.FalseClass');
+      XPClass::forName('net.xp_framework.unittest.reflection.classes.broken.FalseClass');
     }
   }
 ?>
