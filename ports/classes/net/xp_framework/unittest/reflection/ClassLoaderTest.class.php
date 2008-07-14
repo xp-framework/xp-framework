@@ -200,5 +200,23 @@
     public function loadNonExistantClass() {
       ClassLoader::getDefault()->loadClass('@@NON-EXISTANT@@');
     }
+
+    /**
+     * Loads a class file that does not declare a class
+     *
+     */
+    #[@test, @expect('lang.ClassFormatException')]
+    public function loadClassFileWithoutDeclaration() {
+      XPClass::forName('net.xp_framework.unittest.reflection.classes.NoClass');
+    }
+
+    /**
+     * Loads a class file that does not declare a class
+     *
+     */
+    #[@test, @expect('lang.ClassFormatException')]
+    public function loadClassFileWithIncorrectDeclaration() {
+      XPClass::forName('net.xp_framework.unittest.reflection.classes.FalseClass');
+    }
   }
 ?>

@@ -104,6 +104,7 @@
      * @param   string class fully qualified class name io.File
      * @return  string class name
      * @throws  lang.ClassNotFoundException in case the class can not be found
+     * @throws  lang.ClassFormatException in case the class format is invalud
      */
     public function loadClass0($class) {
       if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
@@ -115,6 +116,10 @@
         throw new ClassNotFoundException('Class "'.$class.'" not found');
       }
       $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
+      if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
+        unset(xp::$registry['classloader.'.$class]);
+        raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
+      }
       xp::$registry['class.'.$name]= $class;
       is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
       return $name;

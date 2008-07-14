@@ -213,6 +213,7 @@
      * @param   string class fully qualified class name
      * @return  string class name of class loaded
      * @throws  lang.ClassNotFoundException in case the class can not be found
+     * @throws  lang.ClassFormatException in case the class format is invalud
      */
     public function loadClass0($class) {
       if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
