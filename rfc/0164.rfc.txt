@@ -24,20 +24,39 @@ the getX method will throw an exception) and the getAnnotation() method.
 
 Functionality
 -------------
+The following can be written in a more concise way:
 
-Current
-~~~~~~~
 <code>
   $m= XPClass::forName('util.cmd.Runner')->getMethod('main');
   if (!$m) throw new ElementNotFoundException('No "main" method');
   $m->invoke(NULL, array($args));
 </code>
 
-New
-~~~
+New:
 <code>
   XPClass::forName('util.cmd.Runner')->getMethod('main')->invoke(NULL, array($args));
 </code>
+
+
+BC break
+~~~~~~~~
+The following will no longer work:
+<code>
+  if (!($m= $class->getMethod($name))) {
+    // The method does not exist
+  }
+</code>
+
+...and must be rewritten to use hasMethod():
+<code>
+  if (!$class->hasMethod($name)) {
+    // The method does not exist
+  }
+  $m= $class->getMethod($name);
+</code>
+
+If the first version is run, the block below the getMethod() call will never
+be reached (as it will throw an exception).
 
 
 Security considerations
