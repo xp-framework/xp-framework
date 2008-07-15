@@ -96,6 +96,41 @@
     }
 
     /**
+     * Changes the value of the field represented by this Field, on the 
+     * specified object.
+     *
+     * @param   lang.Object instance
+     * @param   mixed value
+     * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
+     * @throws  lang.IllegalAccessException in case this field is not public
+     */
+    public function set($instance, $value) {
+    
+      // Verify the field is public
+      if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
+        throw new IllegalAccessException('Cannot write '.$this->toString());
+      }
+
+      // Short-circuit further checks for static members
+      if ($this->_reflect->isStatic()) {
+        return $this->_reflect->setValue(NULL, $value);
+      }
+
+      // Verify given instance is instance of the class declaring this 
+      // property
+      if (!($instance instanceof $this->_class)) {
+        throw new IllegalArgumentException(sprintf(
+          'Passed argument is not a %s class (%s)',
+          xp::nameOf($this->_class),
+          xp::typeOf($instance)
+        ));
+      }
+
+
+      $this->_reflect->setValue($instance, $value);
+    }
+
+    /**
      * Retrieve this field's modifiers
      *
      * @see     xp://lang.reflect.Modifiers

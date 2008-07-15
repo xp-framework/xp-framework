@@ -178,13 +178,38 @@
     }
 
     /**
+     * Tests reading and writing the "date" field
+     *
+     * @see     xp://lang.reflect.Field#get
+     * @see     xp://lang.reflect.Field#set
+     */
+    #[@test]
+    public function dateFieldRoundTrip() {
+      $instance= $this->fixture->newInstance();
+      $date= Date::now();
+      $field= $this->fixture->getField('date');
+      $field->set($instance, $date);
+      $this->assertEquals($date, $field->get($instance));
+    }
+
+    /**
      * Tests retrieving the "date" field's value on a wrong object
      *
      * @see     xp://lang.reflect.Field#get
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function dateFieldValueOnWrongObject() {
+    public function getDateFieldValueOnWrongObject() {
       $this->fixture->getField('date')->get(new Object());
+    }
+
+    /**
+     * Tests writing the "date" field's value on a wrong object
+     *
+     * @see     xp://lang.reflect.Field#set
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function setDateFieldValueOnWrongObject() {
+      $this->fixture->getField('date')->set(new Object(), Date::now());
     }
 
     /**
@@ -198,13 +223,39 @@
     }
 
     /**
+     * Tests retrieving the "initializerCalled" field's value
+     *
+     * @see     xp://lang.reflect.Field#get
+     * @see     xp://lang.reflect.Field#set
+     */
+    #[@test]
+    public function initializerCalledFieldRoundTrip() {
+      with ($f= $this->fixture->getField('initializerCalled')); {
+        $f->set(NULL, FALSE);
+        $this->assertEquals(FALSE, $f->get(NULL));
+        $f->set(NULL, TRUE);
+        $this->assertEquals(TRUE, $f->get(NULL));
+      }
+    }
+
+    /**
      * Tests retrieving the private static "cache" field's value
      *
      * @see     xp://lang.reflect.Field#get
      */
     #[@test, @expect('lang.IllegalAccessException')]
-    public function cacheFieldValue() {
+    public function getCacheFieldValue() {
       $this->fixture->getField('cache')->get(NULL);
+    }
+
+    /**
+     * Tests setting the private static "cache" field's value
+     *
+     * @see     xp://lang.reflect.Field#set
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function setCacheFieldValue() {
+      $this->fixture->getField('cache')->set(NULL, array());
     }
 
     /**
@@ -213,8 +264,18 @@
      * @see     xp://lang.reflect.Field#get
      */
     #[@test, @expect('lang.IllegalAccessException')]
-    public function sizeFieldValue() {
+    public function getSizeFieldValue() {
       $this->fixture->getField('size')->get($this->fixture->newInstance());
+    }
+
+    /**
+     * Tests setting the protected "size" field's value
+     *
+     * @see     xp://lang.reflect.Field#set
+     */
+    #[@test, @expect('lang.IllegalAccessException')]
+    public function setSizeFieldValue() {
+      $this->fixture->getField('size')->set($this->fixture->newInstance(), 1);
     }
 
     /**
