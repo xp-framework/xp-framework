@@ -25,6 +25,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.reflect.Field::set() method
+  (friebe)
 - Made peer.Socket instances cloneable
   (friebe)
 - Made peer.URL constructor parameter optional
