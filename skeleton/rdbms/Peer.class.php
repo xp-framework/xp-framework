@@ -66,6 +66,15 @@
     public function setTable($table) {
       $this->table= $table;
     }
+    
+    /**
+     * Get Table
+     *
+     * @return string
+     */
+    public function getTable() {
+      return $this->table;
+    }
 
     /**
      * Set Connection

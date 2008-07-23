@@ -19,6 +19,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Add missing function rdbms.Peer::getTable() which is used in
+  rdbms.DataSet class
+  (hinckel)
 - Made lang.ClassLoader::loadClass() raise a ClassFormatException in
   case the included file does not declare the class.
   (friebe)
