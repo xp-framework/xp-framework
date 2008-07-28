@@ -67,6 +67,24 @@
     }
 
     /**
+     * Test chunked transfer-encoding
+     *
+     */
+    #[@test]
+    public function multipleChunkedDocument() {
+      $response= $this->newResponse(
+        array('HTTP/1.0 404 OK', 'Transfer-Encoding: chunked'),
+        "17\r\n<h1>File not found</h1>\r\n13\r\nDid my best, sorry.\r\n0\r\n"
+      );
+      $this->assertEquals(404, $response->getStatusCode());
+      $this->assertEquals('chunked', $response->getHeader('Transfer-Encoding'));
+      
+      // Read data & test body contents
+      $buffer= ''; while ($l= $response->readData()) { $buffer.= $l; }
+      $this->assertEquals('<h1>File not found</h1>Did my best, sorry.', $buffer);
+    }
+
+    /**
      * Test HTTP 100 Continue
      *
      */
