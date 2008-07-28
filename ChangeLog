@@ -19,6 +19,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fix off-by-one error when reading chunked http response bodies and
+  added a unittest for this
+  (kiesel, hinckel)
 - Add missing function rdbms.Peer::getTable() which is used in
   rdbms.DataSet class
   (hinckel)

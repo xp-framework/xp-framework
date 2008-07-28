@@ -83,7 +83,7 @@
       
       // Return chunk, remove from buffer
       $chunk= substr($this->buffer, 0, $bytes);
-      $this->buffer= substr($this->buffer, $bytes+ 1);
+      $this->buffer= substr($this->buffer, $bytes);
       return $chunk;
     }
     
