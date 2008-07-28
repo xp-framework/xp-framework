@@ -318,7 +318,8 @@
      * @return  bool
      */
     public function isEnum() {
-      return $this->_reflect->isSubclassOf(xp::reflect('lang.Enum'));
+      $e= xp::reflect('lang.Enum');
+      return class_exists($e) && $this->_reflect->isSubclassOf($e);
     }
     
     /**
