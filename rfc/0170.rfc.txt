@@ -1,0 +1,45 @@
+RFC 0170: Make Specifying nonexistant classpaths fatal
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Tue Jul 29 16:15:17 CEST 2008
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+Make having a classpath part to a XAR file or directory that actually 
+does not exist or is not readable a fatal error.
+
+Rationale
+---------
+Classpaths (or "include_path"s) are specified to change the order of
+and enhance the class loading process. A path within the classpaths that
+does not exist does not serve any useful purpose, but is usually a
+indicator of a simple mistake, which should be detected early.
+
+The XP framework should follow the paradigma "bail out early".
+
+By not bailing out before running the program, error detection will
+be made much harder at a later stage.
+
+Functionality
+-------------
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
