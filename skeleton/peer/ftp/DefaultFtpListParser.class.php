@@ -38,10 +38,16 @@
         $filename
       );
       
-      if ('d' == $permissions{0}) {
-        $e= new FtpDir($base.$filename, $conn);
+      // Only qualify filenames if they appear unqualified in the listing
+      if ('/' !== $filename{0}) {
+        $filename= $base.$filename;
+      }
+      
+      // Create a directory or an entry
+      if ('d' === $permissions{0}) {
+        $e= new FtpDir($filename, $conn);
       } else {
-        $e= new FtpFile($base.$filename, $conn);
+        $e= new FtpFile($filename, $conn);
       }
 
       $d= new Date($month.' '.$day.' '.(strstr($date, ':') ? date('Y').' '.$date : $date));
