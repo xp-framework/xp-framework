@@ -94,6 +94,14 @@
         $this->collections[$this->_current]->close(); 
       } while ($this->_current-- > 0);
     }
-    
+
+    /**
+     * Returns a string representation of this object.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(->@'.$this->_current.') '.xp::stringOf($this->collections);
+    }    
   }
 ?>
