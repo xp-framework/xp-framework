@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('peer.http.HttpInputStream', 'peer.http.HttpResponse', 'peer.http.HttpConstants');
+  uses(
+    'io.streams.MemoryInputStream',
+    'peer.http.HttpInputStream', 
+    'peer.http.HttpResponse', 
+    'peer.http.HttpConstants'
+  );
 
   /**
    * HTTP input stream tests
@@ -23,24 +28,13 @@
      * @return  peer.http.HttpResponse
      */
     protected function httpResponse($status, $headers, $body= '') {
-    
-      // FIXME: Compatibility with peer.Socket class
-      $s= newinstance('io.Stream', array(), '{
-        public function read($limit= 8192) { return parent::readLine($limit); }
-        public function readBinary($limit= 8192) { return parent::read($limit); }
-      }');
-      $s->open(STREAM_MODE_READWRITE);
-      
-      // Write status line, headers and body
-      $s->write('HTTP/1.1 '.$status." Test\r\n");
+      $response= 'HTTP/1.1 '.$status." Test\r\n";
       foreach ($headers as $key => $val) {
-        $s->write($key.': '.$val."\r\n");
+        $response.= $key.': '.$val."\r\n";
       }
-      $s->write("\r\n");
-      $s->write($body);
-      $s->rewind();
+      $response.="\r\n".$body;
 
-      return new HttpResponse($s);
+      return new HttpResponse(new MemoryInputStream($response));
     }
     
     /**
