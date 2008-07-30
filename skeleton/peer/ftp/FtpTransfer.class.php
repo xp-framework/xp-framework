@@ -93,39 +93,15 @@
      * @param   int mode
      */    
     protected abstract function initiate($mode);
-    
-    /**
-     * Starts this transfer
-     *
-     * @param   int mode
-     * @return  peer.ftp.FtpTransfer this
-     */
-    public function start($mode) {
-      $this->initiate($mode);
-
-      // Notify listener
-      $this->listener && $this->listener->started($this);
-      return $this;
-    }
 
     /**
-     * Returns whether this transfer is complete
+     * Handles continuation of this transfer
      *
-     * @return  bool TRUE if this transfer is complete, FALSE otherwiese
+     * @throws  lang.IllegalStateException
      */
-    public function complete() {
-      return FTP_MOREDATA !== $this->r;
-    }
-
-    /**
-     * Continues this transfer
-     *
-     * @throws  peer.SocketException in case this transfer fails
-     * @throws  lang.IllegalStateException in case start() has not been called before
-     */
-    public function perform() {
+    protected function handleContinuation() {
       $e= NULL;
-      switch ($this->r= ftp_nb_continue($this->h)) {
+      switch ($this->r) {
         case FTP_MOREDATA: {
           $this->listener && $this->listener->transferred($this);
           return;
@@ -151,6 +127,9 @@
           $this->listener && $this->listener->failed($this, $e);
           break;
         }
+        
+        default:
+          $e= new IllegalStateException('Unknown return code from ftp_nb_continue: '.$this->r);
       }
 
       // Close file handle, reset result to initial value -1
@@ -158,6 +137,40 @@
       $this->f= NULL;
       $this->r= -1;
       if ($e) throw $e;
+    }
+
+    
+    /**
+     * Starts this transfer
+     *
+     * @param   int mode
+     * @return  peer.ftp.FtpTransfer this
+     */
+    public function start($mode) {      
+      $this->initiate($mode);
+      $this->listener && $this->listener->started($this);
+      $this->handleContinuation();
+      return $this;
+    }
+    
+    /**
+     * Returns whether this transfer is complete
+     *
+     * @return  bool TRUE if this transfer is complete, FALSE otherwise
+     */
+    public function complete() {
+      return FTP_MOREDATA !== $this->r;
+    }
+
+    /**
+     * Continues this transfer
+     *
+     * @throws  peer.SocketException in case this transfer fails
+     * @throws  lang.IllegalStateException in case start() has not been called before
+     */
+    public function perform() {
+      $this->r= ftp_nb_continue($this->h);
+      $this->handleContinuation();
     }
   }
 ?>
