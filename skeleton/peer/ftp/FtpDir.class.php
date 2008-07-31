@@ -64,17 +64,31 @@
      *
      * @param   string name
      * @return  peer.ftp.FtpEntry entry or NULL if nothing was found
-     * @throws  peer.ProtocolException in case listing fails
+     * @throws  io.IOException in case listing fails
+     * @throws  peer.ProtocolException in case listing yields an unexpected result
      */
     protected function findEntry($name) {
-      if (!($f= ftp_rawlist($this->connection->handle, '-d '.$this->name.$name))) return NULL;
-
-      // Ensure we only get one result
-      if (1 != ($s= sizeof($f))) {
-        throw new ProtocolException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
+      if (!($f= ftp_rawlist($this->connection->handle, '-ald '.$this->name.$name))) {
+        if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+          throw new IOException('Listing "'.$this->name.$name.'" failed');
+        }
+        return NULL;
       }
 
-      return $this->connection->parser->entryFrom($f[0], $this->connection, $this->name);
+      // If we get more than one result and the first result ends with a 
+      // dot, the server ignored the "-d" option and listed the directory's 
+      // contents instead. In this case, replace the "." by the directory
+      // name. Otherwise, we don't expect more than one result!
+      $entry= $f[0];
+      if (($s= sizeof($f)) > 1) {
+        if ('.' === $entry{strlen($entry)- 1}) {
+          $entry= substr($entry, 0, -1).$name;
+        } else {
+          throw new ProtocolException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
+        }
+      }
+      
+      return $this->connection->parser->entryFrom($entry, $this->connection, $this->name);
     }
 
     /**
