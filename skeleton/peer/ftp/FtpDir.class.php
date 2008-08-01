@@ -82,13 +82,19 @@
       $entry= $f[0];
       if (($s= sizeof($f)) > 1) {
         if ('.' === $entry{strlen($entry)- 1}) {
-          $entry= substr($entry, 0, -1).$name;
+          $entry= substr($entry, 0, -1).basename($name);
         } else {
           throw new ProtocolException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
         }
       }
       
-      return $this->connection->parser->entryFrom($entry, $this->connection, $this->name);
+      // Calculate base
+      $base= $this->name;
+      if (FALSE !== ($p= strrpos(rtrim($name, '/'), '/'))) {
+        $base.= substr($name, 0, $p+ 1);
+      }
+      
+      return $this->connection->parser->entryFrom($entry, $this->connection, $base);
     }
 
     /**
