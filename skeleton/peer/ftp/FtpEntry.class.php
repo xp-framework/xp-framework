@@ -214,6 +214,23 @@
     }
 
     /**
+     * Get last modified date
+     *
+     * @return  util.Date or NULL if the server does not support this
+     * @throws  io.IOException in case the connection is closed
+     */
+    public function lastModified() {
+      $t= ftp_mdtm($this->connection->handle, $this->name);
+      if (FALSE === $t || NULL === $t) {
+        throw new IOException('MDTM "'.$this->name.' "failed');
+      } else if (-1 === $t) {
+        return NULL;              // Unknown
+      } else {
+        return new Date($t);
+      }
+    }
+
+    /**
      * Set Name
      *
      * @param   mixed name
