@@ -3,7 +3,7 @@ RFC 0131: Query class and operation
 $Id$
 
 @authors: wagner
-@created: Di  3 Jul 2007 13:26:05 CEST
+@created: Tue 3 Jul 2007 13:26:05 CEST
 @status: implemented Mi 11 Jul 2007 17:45:09 CEST
 @category: rdbms
 

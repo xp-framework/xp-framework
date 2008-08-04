@@ -3,7 +3,7 @@ RFC 0128: webservices.xmlrpc handling of NULL
 $Id$
 
 @authors: gellweiler
-@created: We May 16 15:36:16 CEST 2007
+@created: Wed May 16 15:36:16 CEST 2007
 @status: implemented, Mo May 21 14:48:00 2007
 @category: webservices.xmlrpc
 

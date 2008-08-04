@@ -3,7 +3,7 @@ RFC 0054: Custom labels in Chart API
 $Id$
 
 @authors: sperber, friebe
-@created: Fr Jan 20 14:18:32 CET 2006
+@created: Fri Jan 20 14:18:32 CET 2006
 @status: draft
 @category: img.chart
 
