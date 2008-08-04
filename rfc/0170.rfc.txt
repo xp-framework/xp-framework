@@ -27,6 +27,46 @@ be made much harder at a later stage.
 Functionality
 -------------
 
+Patch
+~~~~~
+<pre>
+Index: skeleton/lang.base.php
+===================================================================
+--- skeleton/lang.base.php      (revision 12411)
++++ skeleton/lang.base.php      (working copy)
+@@ -526,7 +526,7 @@
+   // Registry initialization
+   xp::$registry['null']= new null();
+   xp::$registry['loader']= new xp();
+-  xp::$registry['classpath']= array_filter(array_map('realpath', explode(PATH_SEPARATOR, get_include_path())));
++  xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
+ 
+   // Register stream wrapper for .xar class loading
+   stream_wrapper_register('xar', 'xarloader');
+Index: skeleton/lang/ClassLoader.class.php
+===================================================================
+--- skeleton/lang/ClassLoader.class.php (revision 12411)
++++ skeleton/lang/ClassLoader.class.php (working copy)
+@@ -55,10 +55,13 @@
+       
+       // Scan include-path, setting up classloaders for each element
+       foreach (xp::$registry['classpath'] as $element) {
+-        if (is_dir($element)) {
+-          self::registerLoader(FileSystemClassLoader::instanceFor($element, FALSE));
+-        } else if (is_file($element)) {
+-          self::registerLoader(ArchiveClassLoader::instanceFor($element, FALSE));
++        $resolved= realpath($element);
++        if (is_dir($resolved)) {
++          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
++        } else if (is_file($resolved)) {
++          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
++        } else {
++          xp::error('[bootstrap] Classpath element ['.$element.'] not found');
+         }
+       }
+     }
+</pre>
+
 Security considerations
 -----------------------
 
