@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'lang.Runtime',
     'net.xp_framework.unittest.bootstrap.SandboxSourceRunner'
   );
 
@@ -28,7 +29,7 @@
      */
     public function __construct($name, $exe= NULL) {
       parent::__construct($name);
-      $this->exe= $exe ? $exe : getenv('_');
+      $this->exe= $exe ? $exe : Runtime::getInstance()->getExecutable()->getFileName();
     }
   
     /**

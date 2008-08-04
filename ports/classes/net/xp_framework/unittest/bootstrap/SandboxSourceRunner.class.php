@@ -161,12 +161,12 @@
      * @return  int exitcode
      */
     public function run($source) {
-      $cmdline= $this->getExecutable();
+      $args= array();
       foreach ($this->settings as $key => $value) {
-        $cmdline.= sprintf(' -d%s=%s', $key, $value);
+        $args[]= sprintf(' -d%s=%s', $key, $value);
       }
 
-      $p= new Process($cmdline);
+      $p= new Process($this->getExecutable(), $args);
       $p->in->write('<?php '.$source.'?>');
       $p->in->close();
 
