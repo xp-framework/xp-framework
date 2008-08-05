@@ -1,0 +1,57 @@
+RFC 0171: Rename util.DateInterval class
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Aug  5 10:18:17     2008
+@status: draft
+@category: util
+
+Scope of Change
+---------------
+The util.DateInterval class will be renamed.
+
+
+Rationale
+---------
+PHP 5.3 has a class called DateInterval built-in. Thus, non-namespaced 
+versions of the XP framework won't run on PHP 5.3.
+
+
+Functionality
+-------------
+
+Deprecation
+~~~~~~~~~~~
+The <tt>util.DateInterval</tt> class will be deprecated.
+
+New name
+~~~~~~~~
+A new class <tt>util.TimeInterval</tt> class will be created. It will
+have the same API as the DateInterval class.
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+DateInterval in the .NET framework:
+http://msdn.microsoft.com/en-us/library/60z1tx96.aspx
+
+Comments
+--------
+
+<EOF>
