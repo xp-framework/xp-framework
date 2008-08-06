@@ -31,9 +31,20 @@
      */
     public static function diff(DateInterval $interval, Date $date1, Date $date2) {
     
-      // Convert date2 to same timezone as date1, then "cut off" tz
-      // $date1= create(new TimeZone('GMT'))->convertDate($date1);
-      $date2= $date1->getTimeZone()->translate($date2);
+      // Convert date2 to same timezone as date1, then "cut off" tz. To workaround
+      // bug #45038, not just take the timezone of date1, but construct a new one which
+      // will have a timezone ID - which is required for this kind of computation.
+      $tz= new TimeZone(timezone_name_from_abbr(
+        '', 
+        $date1->getOffsetInSeconds(), 
+        $date1->toString('I')
+      ));
+
+      // Now, convert both dates to the same time (actually we only need to convert the
+      // second one, as the first will remain in the same timezone)
+      $date2= $tz->translate($date2);
+      
+      // Then cut off timezone, by setting both to GMT
       $date1= DateUtil::setTimeZone($date1, new TimeZone('GMT'));
       $date2= DateUtil::setTimeZone($date2, new TimeZone('GMT'));
       
