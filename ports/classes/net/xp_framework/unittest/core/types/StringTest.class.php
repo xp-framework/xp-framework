@@ -95,6 +95,17 @@
     }
 
     /**
+     * Test string invoked with a Character as sole constructor argument
+     *
+     */
+    #[@test]
+    public function characterString() {
+      $str= new String(new Character('Ä'));
+      $this->assertEquals(new Bytes("\304"), $str->getBytes('iso-8859-1'));
+      $this->assertEquals(1, $str->length());
+    }
+
+    /**
      * Test string invoked with double number as sole constructor argument
      *
      */
