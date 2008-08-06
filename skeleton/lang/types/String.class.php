@@ -32,7 +32,7 @@
       if ($arg instanceof self) {
         return $arg->buffer;
       } else if ($arg instanceof Character) {
-        return $arg->getBytes(STR_ENC);
+        return $arg->getBytes(STR_ENC)->buffer;
       } else if (is_string($arg) || $arg instanceof Bytes) {
         $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
 
