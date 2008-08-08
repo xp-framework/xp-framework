@@ -1,0 +1,287 @@
+Index: skeleton/util/DateMath.class.php
+===================================================================
+--- skeleton/util/DateMath.class.php	(revision 12416)
++++ skeleton/util/DateMath.class.php	(working copy)
+@@ -8,7 +8,7 @@
+     'util.Date', 
+     'util.DateUtil',
+     'util.TimeZone',
+-    'util.DateInterval'
++    'util.TimeInterval'
+   );
+ 
+   /**
+@@ -26,10 +26,10 @@
+      *
+      * @param   util.Date date1
+      * @param   util.Date date2
+-     * @param   util.DateInterval interval
++     * @param   util.TimeInterval interval
+      * @return  int
+      */
+-    public static function diff(DateInterval $interval, Date $date1, Date $date2) {
++    public static function diff(TimeInterval $interval, Date $date1, Date $date2) {
+     
+       // Convert date2 to same timezone as date1, then "cut off" tz
+       // $date1= create(new TimeZone('GMT'))->convertDate($date1);
+@@ -38,30 +38,30 @@
+       $date2= DateUtil::setTimeZone($date2, new TimeZone('GMT'));
+       
+       switch ($interval) {
+-        case DateInterval::$YEAR: {
++        case TimeInterval::$YEAR: {
+           return -($date1->getYear()- $date2->getYear());
+         }
+         
+-        case DateInterval::$MONTH: {
++        case TimeInterval::$MONTH: {
+           return -(
+             (($date1->getYear()- $date2->getYear()) * 12) +
+             ($date1->getMonth()- $date2->getMonth())
+           );
+         }
+         
+-        case DateInterval::$DAY: {
++        case TimeInterval::$DAY: {
+           return -(intval($date1->getTime() / 86400)- intval($date2->getTime() / 86400));
+         }
+         
+-        case DateInterval::$HOURS: {
++        case TimeInterval::$HOURS: {
+           return -(intval($date1->getTime() / 3600)- intval($date2->getTime() / 3600));
+         }
+ 
+-        case DateInterval::$MINUTES: {
++        case TimeInterval::$MINUTES: {
+           return -(intval($date1->getTime() / 60)- intval($date2->getTime() / 60));
+         }
+ 
+-        case DateInterval::$SECONDS: {
++        case TimeInterval::$SECONDS: {
+           return -($date1->getTime()- $date2->getTime());
+         }
+       }
+Index: skeleton/util/TimeInterval.class.php
+===================================================================
+--- skeleton/util/TimeInterval.class.php	(revision 0)
++++ skeleton/util/TimeInterval.class.php	(revision 0)
+@@ -0,0 +1,42 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('lang.Enum');
++
++  /**
++   * Interval enumeration
++   *
++   * @see      xp://util.DateMath
++   * @purpose  Intervals
++   */
++  class TimeInterval extends Enum {
++    public static
++      $YEAR,
++      $MONTH,
++      $DAY,
++      $HOURS,
++      $MINUTES,
++      $SECONDS;
++    
++    static function __static() {
++      self::$YEAR=    new self(0, 'year');
++      self::$MONTH=   new self(1, 'month');
++      self::$DAY=     new self(2, 'day');
++      self::$HOURS=   new self(3, 'hours');
++      self::$MINUTES= new self(4, 'minutes');
++      self::$SECONDS= new self(5, 'seconds');
++    }
++    
++    /**
++     * Retrieve enum members
++     *
++     * @return  util.TimeInterval[]
++     */
++    public static function values() {
++      return parent::membersOf(__CLASS__);
++    }
++  }
++?>
+
+Property changes on: skeleton/util/TimeInterval.class.php
+___________________________________________________________________
+Name: svn:executable
+   + *
+Name: svn:keywords
+   + Id
+
+Index: skeleton/util/DateInterval.class.php
+===================================================================
+--- skeleton/util/DateInterval.class.php	(revision 12416)
++++ skeleton/util/DateInterval.class.php	(working copy)
+@@ -9,6 +9,7 @@
+   /**
+    * Interval enumeration
+    *
++   * @deprecated Use util.TimeInterval instead!
+    * @see      xp://util.DateMath
+    * @purpose  Intervals
+    */
+Index: skeleton/xml/xslt/XSLDateCallback.class.php
+===================================================================
+--- skeleton/xml/xslt/XSLDateCallback.class.php	(revision 12416)
++++ skeleton/xml/xslt/XSLDateCallback.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('util.Date', 'util.DateMath', 'util.DateInterval');
++  uses('util.Date', 'util.DateMath', 'util.TimeInterval');
+ 
+   /**
+    * XSL callbacks for Date operations
+@@ -41,7 +41,7 @@
+     #[@xslmethod]
+     public function diff($type, $strdate1, $strdate2) {
+       return DateMath::diff(
+-        Enum::valueOf(XPClass::forName('util.DateInterval'), strtoupper($type)),
++        Enum::valueOf(XPClass::forName('util.TimeInterval'), strtoupper($type)),
+         new Date($strdate1),
+         new Date($strdate2)
+       );
+Index: ports/classes/net/xp_framework/unittest/util/DateMathTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/util/DateMathTest.class.php	(revision 12416)
++++ ports/classes/net/xp_framework/unittest/util/DateMathTest.class.php	(working copy)
+@@ -25,7 +25,7 @@
+     public function diffSimple() {
+       $this->assertEquals(
+         0,
+-        DateMath::diff(DateInterval::$DAY, new Date('2007-08-24'), new Date('2007-08-24'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2007-08-24'), new Date('2007-08-24'))
+       );
+     }
+     
+@@ -37,7 +37,7 @@
+     public function diffYesterday() {
+       $this->assertEquals(
+         -1,
+-        DateMath::diff(DateInterval::$DAY, new Date('2007-08-24'), new Date('2007-08-23'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2007-08-24'), new Date('2007-08-23'))
+       );
+     }
+     
+@@ -49,7 +49,7 @@
+     public function diffTomorrow() {
+       $this->assertEquals(
+         1,
+-        DateMath::diff(DateInterval::$DAY, new Date('2007-08-23'), new Date('2007-08-24'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2007-08-23'), new Date('2007-08-24'))
+       );
+     }
+     
+@@ -61,7 +61,7 @@
+     public function diffMidnightToMidnight() {
+       $this->assertEquals(
+         0,
+-        DateMath::diff(DateInterval::$DAY, new Date('2007-08-24 00:00:00'), new Date('2007-08-24 23:59:59'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2007-08-24 00:00:00'), new Date('2007-08-24 23:59:59'))
+       );
+     }
+     
+@@ -73,7 +73,7 @@
+     public function diffOneSecond() {
+       $this->assertEquals(
+         1,
+-        DateMath::diff(DateInterval::$DAY, new Date('2007-08-23 23:59:59'), new Date('2007-08-24 00:00:00'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2007-08-23 23:59:59'), new Date('2007-08-24 00:00:00'))
+       );
+     }
+     
+@@ -85,7 +85,7 @@
+     public function diffleapYear() {
+       $this->assertEquals(
+         2,
+-        DateMath::diff(DateInterval::$DAY, new Date('2004-02-28 23:59:59'), new Date('2004-03-01 00:00:00'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2004-02-28 23:59:59'), new Date('2004-03-01 00:00:00'))
+       );
+     }
+     
+@@ -97,7 +97,7 @@
+     public function diffTimezoneIndependence() {
+       $this->assertEquals(
+         0,
+-        DateMath::diff(DateInterval::$DAY, new Date('2000-01-01 00:00:00 Europe/Berlin'), new Date('1999-12-31 23:59:59 Europe/London'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2000-01-01 00:00:00 Europe/Berlin'), new Date('1999-12-31 23:59:59 Europe/London'))
+       );
+     }
+     
+@@ -109,7 +109,7 @@
+     public function diffDayInForeignTimezone() {
+       $this->assertEquals(
+         1,
+-        DateMath::diff(DateInterval::$DAY, new Date('2007-08-27 23:59:59 Australia/Sydney'), new Date('2007-08-28 00:00:00 Australia/Sydney'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2007-08-27 23:59:59 Australia/Sydney'), new Date('2007-08-28 00:00:00 Australia/Sydney'))
+       );
+     }    
+     
+@@ -121,7 +121,7 @@
+     public function diffOneYear() {
+       $this->assertEquals(
+         365,
+-        DateMath::diff(DateInterval::$DAY, new Date('2006-08-24'), new Date('2007-08-24'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2006-08-24'), new Date('2007-08-24'))
+       );
+     }
+     
+@@ -133,7 +133,7 @@
+     public function diffOneLeapYear() {
+       $this->assertEquals(
+         366,
+-        DateMath::diff(DateInterval::$DAY, new Date('2004-02-24'), new Date('2005-02-24'))
++        DateMath::diff(TimeInterval::$DAY, new Date('2004-02-24'), new Date('2005-02-24'))
+       );
+     }
+     
+@@ -143,9 +143,9 @@
+      */
+     #[@test]
+     public function yearDiff() {
+-      $this->assertEquals(0, DateMath::diff(DateInterval::$YEAR, new Date('2007-01-01'), new Date('2007-12-31')));
+-      $this->assertEquals(1, DateMath::diff(DateInterval::$YEAR, new Date('2007-01-01'), new Date('2008-01-01')));
+-      $this->assertEquals(-1, DateMath::diff(DateInterval::$YEAR, new Date('2007-01-01'), new Date('2006-12-31')));
++      $this->assertEquals(0, DateMath::diff(TimeInterval::$YEAR, new Date('2007-01-01'), new Date('2007-12-31')));
++      $this->assertEquals(1, DateMath::diff(TimeInterval::$YEAR, new Date('2007-01-01'), new Date('2008-01-01')));
++      $this->assertEquals(-1, DateMath::diff(TimeInterval::$YEAR, new Date('2007-01-01'), new Date('2006-12-31')));
+     }
+ 
+     /**
+@@ -154,10 +154,10 @@
+      */
+     #[@test]
+     public function monthDiff() {
+-      $this->assertEquals(0, DateMath::diff(DateInterval::$MONTH, new Date('2004-01-01'), new Date('2004-01-31')));
+-      $this->assertEquals(1, DateMath::diff(DateInterval::$MONTH, new Date('2004-02-29'), new Date('2004-03-01')));
+-      $this->assertEquals(0, DateMath::diff(DateInterval::$MONTH, new Date('2005-02-29'), new Date('2005-03-01')));
+-      $this->assertEquals(-1, DateMath::diff(DateInterval::$MONTH, new Date('2007-01-01'), new Date('2006-12-31')));
++      $this->assertEquals(0, DateMath::diff(TimeInterval::$MONTH, new Date('2004-01-01'), new Date('2004-01-31')));
++      $this->assertEquals(1, DateMath::diff(TimeInterval::$MONTH, new Date('2004-02-29'), new Date('2004-03-01')));
++      $this->assertEquals(0, DateMath::diff(TimeInterval::$MONTH, new Date('2005-02-29'), new Date('2005-03-01')));
++      $this->assertEquals(-1, DateMath::diff(TimeInterval::$MONTH, new Date('2007-01-01'), new Date('2006-12-31')));
+     }
+     
+     /**
+@@ -166,9 +166,9 @@
+      */
+     #[@test]
+     public function hourDiff() {
+-      $this->assertEquals(0, DateMath::diff(DateInterval::$HOURS, new Date('2007-08-12 12:00:00'), new Date('2007-08-12 12:59:59')));
+-      $this->assertEquals(1, DateMath::diff(DateInterval::$HOURS, new Date('2007-08-12 12:00:00'), new Date('2007-08-12 13:00:00')));
+-      $this->assertEquals(-1, DateMath::diff(DateInterval::$HOURS, new Date('2007-08-12 12:00:00'), new Date('2007-08-12 11:59:59')));
++      $this->assertEquals(0, DateMath::diff(TimeInterval::$HOURS, new Date('2007-08-12 12:00:00'), new Date('2007-08-12 12:59:59')));
++      $this->assertEquals(1, DateMath::diff(TimeInterval::$HOURS, new Date('2007-08-12 12:00:00'), new Date('2007-08-12 13:00:00')));
++      $this->assertEquals(-1, DateMath::diff(TimeInterval::$HOURS, new Date('2007-08-12 12:00:00'), new Date('2007-08-12 11:59:59')));
+     }
+   }
+ ?>
