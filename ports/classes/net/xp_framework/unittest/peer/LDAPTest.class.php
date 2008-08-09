@@ -19,12 +19,16 @@
   class LDAPTest extends TestCase {
     protected
       $lc= NULL;
-      
+
     /**
-     * Setup function
+     * Setup method
      *
      */
     public function setUp() {
+      if (!extension_loaded('ldap')) {
+        throw new PrerequisitesNotMetError('LDAP extension not available.');
+      }
+      
       $this->lc= new LDAPClient('ldap.openldap.org');
       try {
         $this->lc->setOption(LDAP_OPT_PROTOCOL_VERSION, 3);

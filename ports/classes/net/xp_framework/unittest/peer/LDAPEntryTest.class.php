@@ -36,6 +36,10 @@
      *
      */    
     public function setUp() {
+      if (!extension_loaded('ldap')) {
+        throw new PrerequisitesNotMetError('LDAP extension not available.');
+      }
+      
       $this->entry= new LDAPEntry($this->dn, $this->attributes);
     }
 

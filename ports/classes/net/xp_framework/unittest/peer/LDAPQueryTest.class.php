@@ -17,6 +17,17 @@
    * @purpose  Unit Test
    */
   class LDAPQueryTest extends TestCase {
+
+    /**
+     * Setup method
+     *
+     */
+    public function setUp() {
+      if (!extension_loaded('ldap')) {
+        throw new PrerequisitesNotMetError('LDAP extension not available.');
+      }
+    }
+
     /**
      * Test general functionality with tokenizer
      *
