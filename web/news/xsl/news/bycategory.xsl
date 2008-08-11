@@ -20,7 +20,8 @@
   
   <xsl:template name="html-head">
     <link rel="shortcut icon" href="/common/favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title="RSS Feed for XP Framework news" href="{concat('/rss/?c=', /formresult/current-category/@id)}"/>
+    <link rel="alternate" type="application/rss+xml" title="XP Framework news rss (all)" href="/rss"/>
+    <link rel="alternate" type="application/rss+xml" title="XP Framework news rss (Category {/formresult/categories/category[@current-category= 'true']})" href="{concat('/rss/?c=', /formresult/categories/category[@current-category= 'true']/@id)}"/>
   </xsl:template>
   
   <xsl:template name="content">
