@@ -20,6 +20,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- moved xml.wsdl to net.xp_framework.wsdl; this package only contained
+  wsdl.xsl - so no code affected.
+  (kiesel)
 
 
 Version 5.6.8, released 2008-08-03
