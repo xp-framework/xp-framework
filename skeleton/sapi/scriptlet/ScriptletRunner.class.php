@@ -76,7 +76,7 @@
         ($this->flags & SCRIPTLET_SHOW_XML) &&
         ($response && isset($response->document))
       ) {
-        echo '<xmp>', $response->document->getSource(0), '</xmp>';
+        echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
       }
       
       if (($this->flags & SCRIPTLET_SHOW_ERRORS)) {
