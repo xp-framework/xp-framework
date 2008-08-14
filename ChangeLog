@@ -11,6 +11,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0171 - Rename util.DateInterval class
+  (friebe)
 
 Bugfixes
 ~~~~~~~~
@@ -20,9 +22,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- added XML declaration to debug output at sapi scriptlet.development
+- Added XML declaration to debug output at sapi scriptlet.development
   (kiesel)
-- moved xml.wsdl to net.xp_framework.wsdl; this package only contained
+- Moved xml.wsdl to net.xp_framework.wsdl; this package only contained
   wsdl.xsl - so no code affected.
   (kiesel)
 
