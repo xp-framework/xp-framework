@@ -184,7 +184,7 @@
   <xsl:text>;
   
     protected
-      $cache= array(</xsl:text>
+      $cached= array(</xsl:text>
       <xsl:for-each select="my:referencing($this) | my:referenced($this)"><xsl:text>
         '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
       </xsl:for-each><xsl:text>
