@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Jul 13 12:38:18     2008
-@status: draft
+@status: discussion, ends Sat Aug 16 12:00:00     2008
 @category: unittest
 
 Scope of Change
