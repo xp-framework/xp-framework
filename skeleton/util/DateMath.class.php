@@ -8,7 +8,7 @@
     'util.Date', 
     'util.DateUtil',
     'util.TimeZone',
-    'util.DateInterval'
+    'util.TimeInterval'
   );
 
   /**
@@ -26,10 +26,10 @@
      *
      * @param   util.Date date1
      * @param   util.Date date2
-     * @param   util.DateInterval interval
+     * @param   util.TimeInterval interval
      * @return  int
      */
-    public static function diff(DateInterval $interval, Date $date1, Date $date2) {
+    public static function diff(TimeInterval $interval, Date $date1, Date $date2) {
     
       // Convert date2 to same timezone as date1, then "cut off" tz. To workaround
       // bug #45038, not just take the timezone of date1, but construct a new one which
@@ -49,30 +49,30 @@
       $date2= DateUtil::setTimeZone($date2, new TimeZone('GMT'));
       
       switch ($interval) {
-        case DateInterval::$YEAR: {
+        case TimeInterval::$YEAR: {
           return -($date1->getYear()- $date2->getYear());
         }
         
-        case DateInterval::$MONTH: {
+        case TimeInterval::$MONTH: {
           return -(
             (($date1->getYear()- $date2->getYear()) * 12) +
             ($date1->getMonth()- $date2->getMonth())
           );
         }
         
-        case DateInterval::$DAY: {
+        case TimeInterval::$DAY: {
           return -(intval($date1->getTime() / 86400)- intval($date2->getTime() / 86400));
         }
         
-        case DateInterval::$HOURS: {
+        case TimeInterval::$HOURS: {
           return -(intval($date1->getTime() / 3600)- intval($date2->getTime() / 3600));
         }
 
-        case DateInterval::$MINUTES: {
+        case TimeInterval::$MINUTES: {
           return -(intval($date1->getTime() / 60)- intval($date2->getTime() / 60));
         }
 
-        case DateInterval::$SECONDS: {
+        case TimeInterval::$SECONDS: {
           return -($date1->getTime()- $date2->getTime());
         }
       }

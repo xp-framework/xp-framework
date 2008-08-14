@@ -9,6 +9,7 @@
   /**
    * Interval enumeration
    *
+   * @deprecated Use util.TimeInterval instead!
    * @see      xp://util.DateMath
    * @purpose  Intervals
    */

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date', 'util.DateMath', 'util.DateInterval');
+  uses('util.Date', 'util.DateMath', 'util.TimeInterval');
 
   /**
    * XSL callbacks for Date operations
@@ -41,7 +41,7 @@
     #[@xslmethod]
     public function diff($type, $strdate1, $strdate2) {
       return DateMath::diff(
-        Enum::valueOf(XPClass::forName('util.DateInterval'), strtoupper($type)),
+        Enum::valueOf(XPClass::forName('util.TimeInterval'), strtoupper($type)),
         new Date($strdate1),
         new Date($strdate2)
       );
