@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated util.DateInterval in favor util.TimeInterval
+  (friebe)
 
 RFCs
 ~~~~
