@@ -1,11 +1,16 @@
 <?php
-
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
   uses(
     'util.cmd.Command',
     'xml.DomXSLProcessor', 
+    'text.StringTokenizer',
     'io.File', 
-    'io.Folder', 
-    'text.StringTokenizer'
+    'io.Folder',
+    'peer.http.HttpUtil',
+    'peer.http.HttpConnection'
   );
 
   /**
@@ -19,6 +24,7 @@
       BOUNDARY      = '------_=_NextPart_d4c3$bd1e091e.e245bfe04';
     
     protected
+      $wsdl       = NULL,
       $xsl        = NULL,
       $package    = NULL;
     
@@ -29,7 +35,17 @@
      */
     #[@arg(position= 0)]
     public function setWsdl($w) {
-      $this->wsdl= $w;    
+      if (
+        0 == strncmp('https://', $w, 8) ||
+        0 == strncmp('http://', $w, 7)
+      ) {
+        $this->wsdl= HttpUtil::get(new HttpConnection(new URL($w)));
+      } else if (is_file($w)) {
+        $this->wsdl= FileUtil::getContents(new File($w));
+      }
+      
+      if (NULL === $this->wsdl)
+        throw new IllegalArgumentException('Could not load WSDL information from '.$w);
     }
     
     /**
@@ -47,11 +63,10 @@
      *
      */
     public function run() {
-
       $proc= new DomXSLProcessor();
       $proc->setParam('collection', $this->package);
       $proc->setXSLBuf($this->getClass()->getPackage()->getResource('wsdl.xsl'));
-      $proc->setXMLFile($this->wsdl);
+      $proc->setXMLBuf($this->wsdl);
 
       $proc->run();
 
