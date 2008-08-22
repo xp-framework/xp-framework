@@ -584,7 +584,8 @@
  */
   uses(
     'webservices.soap.SoapDriver',
-    'webservices.soap.Parameter'
+    'webservices.soap.Parameter',
+    'util.log.Traceable'
   );
   
   /**
@@ -599,7 +600,7 @@
     <xsl:call-template name="class">
       <xsl:with-param name="name" select="concat($prefix, wsdl:service/@name)"/>
     </xsl:call-template>
-    <xsl:text><![CDATA[Client extends Object {
+    <xsl:text><![CDATA[Client extends Object implements Traceable {
       protected
         $client = NULL;
     
@@ -632,6 +633,15 @@
       );</xsl:text>
     </xsl:for-each>
     <xsl:text>
+    }
+    
+    /**
+     * Set trace
+     *
+     * @param   util.log.LogCategory default NULL
+     */
+    public function setTrace($cat= NULL) {
+      $this->client->setTrace($cat);
     }
 </xsl:text>
     <xsl:apply-templates select="wsdl:portType"/>
