@@ -15,6 +15,8 @@ RFCs
 ~~~~
 - Implemented RFC #0171 - Rename util.DateInterval class
   (friebe)
+- Implemented RFC #0169 - New package unittest.web
+  (friebe)
 
 Bugfixes
 ~~~~~~~~
