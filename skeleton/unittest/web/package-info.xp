@@ -1,0 +1,14 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Web tests
+ *
+ * @see      http://jwebunit.sourceforge.net/quickstart.html
+ * @purpose  Test-driven development
+ */
+package unittest.web {
+}
