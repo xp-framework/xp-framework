@@ -20,6 +20,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.types.Number::equals() to return false for different types
+  with same values (new Integer(1)->equals(new Long(1)) no longer yields
+  TRUE now).
+  (friebe)
 - Made util.DateMath::diff() produce correct results (fixed segfault
   for PHP 5.2.6).
   (kiesel)
