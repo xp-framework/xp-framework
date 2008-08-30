@@ -94,5 +94,16 @@
     public function floatType() {
       $this->testType(new Float(0), 0, 0.0);
     }
+
+    /**
+     * Tests different wrapper types are not equal
+     *
+     */
+    #[@test]
+    public function differentTypesNotEqual() {
+      $this->assertNotEquals(new Integer(1), new Long(1), 'integer = long');
+      $this->assertNotEquals(new Byte(1), new Short(1), 'byte = short');
+      $this->assertNotEquals(new Double(1.0), new Float(1.0), 'double = float');
+    }
   }
 ?>
