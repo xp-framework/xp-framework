@@ -92,6 +92,26 @@
     }
     
     /**
+     * Retrieve whether this field has annotations
+     *
+     * @return  bool
+     */
+    public function hasAnnotations() {
+      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+      return $details ? !empty($details[DETAIL_ANNOTATIONS]) : FALSE;
+    }
+
+    /**
+     * Retrieve all of this field's annotations
+     *
+     * @return  array annotations
+     */
+    public function getAnnotations() {
+      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+      return $details ? $details[DETAIL_ANNOTATIONS] : array();
+    }
+
+    /**
      * Returns the XPClass object representing the class or interface 
      * that declares the field represented by this Field object.
      *
