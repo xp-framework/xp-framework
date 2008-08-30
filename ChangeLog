@@ -26,6 +26,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added annotation accessors to lang.reflect.Field: hasAnnotation(),
+  getAnnotation(), hasAnnotations(), getAnnotations()
+  (friebe)
 - Added XML declaration to debug output at sapi scriptlet.development
   (kiesel)
 - Moved xml.wsdl to net.xp_framework.wsdl; this package only contained
