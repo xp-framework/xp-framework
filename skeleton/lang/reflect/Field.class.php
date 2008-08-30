@@ -49,6 +49,47 @@
       }
       return NULL;
     }
+
+    /**
+     * Check whether an annotation exists
+     *
+     * @param   string name
+     * @param   string key default NULL
+     * @return  bool
+     */
+    public function hasAnnotation($name, $key= NULL) {
+      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+
+      return $details && ($key 
+        ? array_key_exists($key, (array)@$details[DETAIL_ANNOTATIONS][$name]) 
+        : array_key_exists($name, (array)@$details[DETAIL_ANNOTATIONS])
+      );
+    }
+
+    /**
+     * Retrieve annotation by name
+     *
+     * @param   string name
+     * @param   string key default NULL
+     * @return  mixed
+     * @throws  lang.ElementNotFoundException
+     */
+    public function getAnnotation($name, $key= NULL) {
+      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+
+      if (!$details || !($key 
+        ? array_key_exists($key, @$details[DETAIL_ANNOTATIONS][$name]) 
+        : array_key_exists($name, @$details[DETAIL_ANNOTATIONS])
+      )) return raise(
+        'lang.ElementNotFoundException', 
+        'Annotation "'.$name.($key ? '.'.$key : '').'" does not exist'
+      );
+
+      return ($key 
+        ? $details[DETAIL_ANNOTATIONS][$name][$key] 
+        : $details[DETAIL_ANNOTATIONS][$name]
+      );
+    }
     
     /**
      * Returns the XPClass object representing the class or interface 
