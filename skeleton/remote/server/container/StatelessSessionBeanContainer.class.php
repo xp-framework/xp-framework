@@ -6,7 +6,7 @@
 
   uses( 
     'remote.server.container.BeanContainer',
-    'lang.Collection',
+    'util.collections.Vector',
     'util.PropertyManager',
     'util.log.Logger',
     'rdbms.ConnectionManager'
@@ -25,9 +25,10 @@
      * @param   lang.XPClass class
      * @return  remote.server.BeanContainer
      */
-    public static function forClass($class) {
-      $bc= new StatelessSessionBeanContainer();
-      $bc->instancePool= Collection::forClass($class->getName());
+    public static function forClass(XPClass $class) {
+      $bc= new self();
+      $bc->instancePool= new Vector();
+      $bc->poolClass= $class;      
       
       // Fetch class' classloader to check for resources configured 
       // for the bean.
@@ -70,23 +71,19 @@
      * @return  mixed
      */
     public function invoke($proxy, $method, $args) {
-      $class= $this->instancePool->getElementClass();
-
-      // Prepare environment
       $this->prepare();
 
       if ($this->instancePool->isEmpty()) {
       
         // Create particular bean instance and perform resource injection
-        $instance= $class->newInstance();
-        $this->inject($instance);
-
-        $this->instancePool->add($instance);
+        $instance= $this->instancePool->add($this->inject($this->poolClass->newInstance()));
       } else {
+      
+        // Use previously created instance.
         $instance= $this->instancePool->get(0);
       }
 
-      $m= $class->getMethod($method);
+      $m= $this->poolClass->getMethod($method);
       $this->cat && $this->cat->debug('BeanContainer::invoke() ', $m->toString(), '(', $args, ')');
 
       return $m->invoke($instance, $args);

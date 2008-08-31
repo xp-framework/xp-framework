@@ -5,7 +5,7 @@
  */
 
   uses(
-    'lang.Collection', 
+    'util.collections.Vector', 
     'util.log.Traceable',
     'remote.server.container.BeanInjector'
   );
@@ -17,7 +17,8 @@
    */
   abstract class BeanContainer extends Object implements Traceable {
     public
-      $instancePool = NULL;
+      $instancePool = NULL,
+      $poolClass    = NULL;
     
     protected
       $cat            = NULL,
@@ -45,6 +46,7 @@
      * Perform resource injection.
      *
      * @param   lang.Object instance
+     * @param   lang.Object the given instance
      */
     protected function inject($instance) {
       foreach ($instance->getClass()->getMethods() as $method) {
@@ -55,6 +57,7 @@
         
         $method->invoke($instance, array($this->injector->injectFor($inject['type'], $inject['name'])));
       }
+      return $instance;
     }
 
     /**
@@ -63,9 +66,10 @@
      * @param   lang.XPClass class
      * @return  remote.server.BeanContainer
      */
-    public static function forClass($class) {
-      $bc= new BeanContainer();
-      $bc->instancePool= Collection::forClass($class->getName());
+    public static function forClass(XPClass $class) {
+      $bc= new self();
+      $bc->instancePool= new Vector();
+      $bc->poolClass= $class;
       return $bc;
     }
 
