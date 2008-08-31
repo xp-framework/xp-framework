@@ -33,6 +33,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added util.collections.Arrays class: extension methods and bridging
+  between lang.types and util.collections.
+  (friebe)
 - Added annotation accessors to lang.reflect.Field: hasAnnotation(),
   getAnnotation(), hasAnnotations(), getAnnotations()
   (friebe)
