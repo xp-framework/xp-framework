@@ -18,6 +18,7 @@
    *   $coll->add(1);                               // Fails
    * </code>
    *
+   * @deprecated Use lang.types.ArrayList or the classes from util.collections
    * @test     xp://net.xp_framework.unittest.core.CollectionTest
    * @purpose  "Type-safe" array
    */

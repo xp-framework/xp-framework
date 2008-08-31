@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated lang.Collection class - Use lang.types.ArrayList or the 
+  classes from util.collections instead
+  (friebe)
 - Deprecated util.DateInterval in favor util.TimeInterval
   (friebe)
 
