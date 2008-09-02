@@ -41,7 +41,11 @@
       static $characters = NULL;
       
       if (!isset($characters)) {
-        $characters= array_merge(array(64, 58, 61, 46, 44, 95), range(0, 31), range(127, 255));
+        $characters= array_merge(
+          array(44, 46, 58, 61, 63, 64, 95),
+          range(0, 31),
+          range(127, 255)
+        );
       }
       
       return $characters;
