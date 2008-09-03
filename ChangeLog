@@ -8,7 +8,7 @@ SVN version: ?????
 
 Version 5.6.9, released 2008-09-03
 ----------------------------------
-SVN version: ?????
+SVN version: 12451
 
 Heads up!
 ~~~~~~~~~
@@ -30,7 +30,7 @@ RFCs
 Bugfixes
 ~~~~~~~~
 - Fixed text.encode.QuotedPrintable to encode question marks
-  (reuter)
+  (treuter)
 - Fixed lang.types.Number::equals() to return false for different types
   with same values (new Integer(1)->equals(new Long(1)) no longer yields
   TRUE now).
