@@ -112,13 +112,20 @@
      * Tests lang.Object class has no constructor
      *
      * @see     xp://lang.XPClass#hasConstructor
-     * @see     xp://lang.XPClass#getConstructor
      */
     #[@test]
+    public function checkNoConstructor() {
+      $this->assertFalse(XPClass::forName('lang.Object')->hasConstructor());
+    }
+
+    /**
+     * Tests lang.Object class has no constructor
+     *
+     * @see     xp://lang.XPClass#getConstructor
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
     public function noConstructor() {
-      $objectClass= XPClass::forName('lang.Object');
-      $this->assertFalse($objectClass->hasConstructor());
-      $this->assertNull($objectClass->getConstructor());
+      XPClass::forName('lang.Object')->getConstructor();
     }
 
     /**

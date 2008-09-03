@@ -130,15 +130,18 @@
      * name argument is NULL
      *
      * @param   string name
-     * @return  rdbms.finder.FinderMethod in case the method does not exist or is no finder
-     * @throws  rdbms.finder.FinderException
+     * @return  rdbms.finder.FinderMethod
+     * @throws  rdbms.finder.FinderException in case the method does not exist or is no finder
      */
     public function method($name) {
       NULL === $name && $name= 'all';
 
-      if (!($m= $this->getClass()->getMethod($name))) {
+      try {
+        $m= $this->getClass()->getMethod($name);
+      } catch (ElementNotFoundException $e) {
         throw new FinderException('No such finder', new MethodNotImplementedException('Cannot find finder method', $name));
       }
+
       if (!$m->hasAnnotation('finder')) {
         throw new FinderException('Not a finder', new IllegalArgumentException($m->getName()));
       }

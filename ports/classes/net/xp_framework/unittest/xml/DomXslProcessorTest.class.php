@@ -90,7 +90,7 @@
      * Test
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.ElementNotFoundException')]
     public function callNonXslHook() {
       $this->processor->registerInstance('proc', $this);
       $this->processor->setXMLBuf('<document/>');

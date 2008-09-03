@@ -174,7 +174,7 @@
      * Test calling a method without xslmethod annotation
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.ElementNotFoundException')]
     public function callNonXslMethod() {
       $this->runTransformation('<irrelevant/>', 'this::setUp', array());
     }
@@ -183,7 +183,7 @@
      * Test calling a non-existant method
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.ElementNotFoundException')]
     public function callNonExistantMethod() {
       $this->runTransformation('<irrelevant/>', 'this::nonExistantMethod', array());
     }

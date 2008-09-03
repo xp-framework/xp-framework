@@ -68,25 +68,43 @@
     }
 
     /**
-     * Tests getting a non-existant field
+     * Tests checking for a non-existant field
      *
-     * @see     xp://lang.reflect.Field#getField
+     * @see     xp://lang.XPClass#hasField
      */
     #[@test]
     public function nonExistantField() {
       $this->assertFalse($this->fixture->hasField('@@nonexistant@@'));
-      $this->assertNull($this->fixture->getField('@@nonexistant@@'));
+    }
+    
+    /**
+     * Tests getting a non-existant field
+     *
+     * @see     xp://lang.XPClass#getField
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function getNonExistantField() {
+      $this->fixture->getField('@@nonexistant@@');
     }
 
     /**
      * Tests the special "__id" member is not recognized as field
      *
-     * @see     xp://lang.reflect.Field#getField
+     * @see     xp://lang.XPClass#hasField
      */
     #[@test]
-    public function specialIdField() {
+    public function checkSpecialIdField() {
       $this->assertFalse($this->fixture->hasField('__id'));
-      $this->assertNull($this->fixture->getField('__id'));
+    }
+    
+    /**
+     * Tests the special "__id" member is not recognized as field
+     *
+     * @see     xp://lang.XPClass#getField
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function getSpecialIdField() {
+      $this->fixture->getField('__id');
     }
 
     /**

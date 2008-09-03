@@ -79,39 +79,63 @@
     }
 
     /**
-     * Tests retrieving a non-existant method
+     * Tests checking for a non-existant method
      *
      * @see     xp://lang.reflect.Method#hasMethod
-     * @see     xp://lang.reflect.Method#getMethod
      */
     #[@test]
     public function nonExistantMethod() {
       $this->assertFalse($this->fixture->hasMethod('@@nonexistant@@'));
-      $this->assertNull($this->fixture->getMethod('@@nonexistant@@'));
+    }
+
+    /**
+     * Tests retrieving a non-existant method
+     *
+     * @see     xp://lang.reflect.Method#getMethod
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function getNonExistantMethod() {
+      $this->fixture->getMethod('@@nonexistant@@');
     }
 
     /**
      * Tests constructor is not recognized as a method
      *
      * @see     xp://lang.reflect.Method#hasMethod
-     * @see     xp://lang.reflect.Method#getMethod
      */
     #[@test]
-    public function constructorIsNotAMethod() {
+    public function checkConstructorIsNotAMethod() {
       $this->assertFalse($this->fixture->hasMethod('__construct'));
-      $this->assertNull($this->fixture->getMethod('__construct'));
+    }
+    
+    /**
+     * Tests retrieving a non-existant method
+     *
+     * @see     xp://lang.reflect.Method#getMethod
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function constructorIsNotAMethod() {
+      $this->fixture->getMethod('__construct');
     }
 
     /**
      * Tests static initializer block is not recognized as a method
      *
      * @see     xp://lang.reflect.Method#hasMethod
-     * @see     xp://lang.reflect.Method#getMethod
      */
     #[@test]
-    public function staticInitializerIsNotAMethod() {
+    public function checkStaticInitializerIsNotAMethod() {
       $this->assertFalse($this->fixture->hasMethod('__static'));
-      $this->assertNull($this->fixture->getMethod('__static'));
+    }
+    
+    /**
+     * Tests static initializer block is not recognized as a method
+     *
+     * @see     xp://lang.reflect.Method#getMethod
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function staticInitializerIsNotAMethod() {
+      $this->fixture->getMethod('__static');
     }
 
     /**

@@ -158,12 +158,13 @@
      * @param   string name
      * @return  lang.reflect.Method
      * @see     xp://lang.reflect.Method
+     * @throws  lang.ElementNotFoundException
      */
     public function getMethod($name) {
       if ($this->hasMethod($name)) {
         return new Method($this->_class, $this->_reflect->getMethod($name));
       }
-      return NULL;
+      raise('lang.ElementNotFoundException', 'No such method "'.$name.'" in class '.$this->name);
     }
     
     /**
@@ -199,12 +200,13 @@
      *
      * @return  lang.reflect.Constructor
      * @see     xp://lang.reflect.Constructor
+     * @throws  lang.ElementNotFoundException
      */
     public function getConstructor() {
       if ($this->hasConstructor()) {
         return new Constructor($this->_class, $this->_reflect->getMethod('__construct')); 
       }
-      return NULL;
+      raise('lang.ElementNotFoundException', 'No constructor in class '.$this->name);
     }
     
     /**
@@ -227,11 +229,13 @@
      *
      * @param   string name
      * @return  lang.reflect.Field
+     * @throws  lang.ElementNotFoundException
      */
     public function getField($name) {
-      if (!$this->hasField($name)) return NULL;
-
-      return new Field($this->_class, $this->_reflect->getProperty($name));
+      if ($this->hasField($name)) {
+        return new Field($this->_class, $this->_reflect->getProperty($name));
+      }
+      raise('lang.ElementNotFoundException', 'No such field "'.$name.'" in class '.$this->name);
     }
     
     /**

@@ -58,7 +58,7 @@
      * @param   mixed* method arguments
      * @return  mixed
      * @throws  lang.IllegalArgumentException if the instance is not known
-     * @throws  lang.IllegalArgumentException if the given method does not exist or is not xsl-accessible
+     * @throws  lang.ElementNotFoundException if the given method does not exist or is not xsl-accessible
      */
     public static function invoke($name, $method) {
       if (!isset(self::$instance->instances[$name])) throw new IllegalArgumentException(
@@ -66,12 +66,12 @@
       );
 
       $instance= self::$instance->instances[$name];
-      if (
-        !($m= $instance->getClass()->getMethod($method)) ||
-        !($m->hasAnnotation('xslmethod'))
-      ) throw new IllegalArgumentException(
-        'Instance "'.$name.'" does not have (xsl-accessible) method "'.$method.'"'
-      );
+      
+      if (!($instance->getClass()->getMethod($method)->hasAnnotation('xslmethod'))) {
+        throw new ElementNotFoundException(
+          'Instance "'.$name.'" does not have method "'.$method.'"'
+        );
+      }
       
       $va= func_get_args();
       
