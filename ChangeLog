@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+RFCs
+~~~~
+- Implemented RFC #0164 - Exceptions for XPClass::get*()
+  (friebe)
+
+
 Version 5.6.9, released 2008-09-03
 ----------------------------------
 SVN version: 12451
