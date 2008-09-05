@@ -406,8 +406,7 @@
     </xsl:for-each>
     
     <xsl:text><![CDATA[  }
-?>
-]]></xsl:text>
+?>]]></xsl:text>
   </xsl:template>
 
   <!--
@@ -638,9 +637,9 @@
     /**
      * Set trace
      *
-     * @param   util.log.LogCategory default NULL
+     * @param   util.log.LogCategory
      */
-    public function setTrace($cat= NULL) {
+    public function setTrace($cat) {
       $this->client->setTrace($cat);
     }
 </xsl:text>
