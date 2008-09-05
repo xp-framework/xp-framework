@@ -12,7 +12,7 @@
   <property name="dist.dir" value="dist"/>
   <property name="dist.resourcesdir" value="resources"/>
   <property name="dist.name" value="xp-easc"/>
-  <property name="dist.version" value="1.5"/>
+  <property name="dist.version" value="1.6"/>
   
   <path id="classpath.build">
     <pathelement path="${classpath}"/>

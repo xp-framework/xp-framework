@@ -54,44 +54,22 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
      * @param   net.xp_framework.easc.server.ServerContext ctx
      */
     protected void setupEJB3Support(final ServerContext ctx) {
+
         // Try to setup EJB3.x support
         try {
-            Class jbossProxyClass= Class.forName("org.jboss.ejb3.JBossProxy");
-            System.out.println("EASC: Enabling JBoss-EJB3 support");
-            
-            // Remove default mapping and register a new one
-            if (Serializer.hasMapping(EJBObject.class)) {
-                Serializer.unregisterMapping(EJBObject.class);
-            }
-            
-            Serializer.registerMapping(EJBObject.class, new Invokeable<String, EJBObject>() {
-                public String invoke(EJBObject p, Object arg) throws Exception {
+            final Class jbossProxyClass= Class.forName("org.jboss.ejb3.JBossProxy");
+            final Invokeable inv= new Invokeable<String, Object>() {
+                public String invoke(Object p, Object arg) throws Exception {
                     ctx.objects.put(p.hashCode(), new WeakReference(p));
-                
-                    if (p instanceof org.jboss.ejb3.JBossProxy) {
-                        // Find out the correct interface
-                        Class ejbInterface= null;
-                        for (Class iface: p.getClass().getInterfaces()) {
-                            if (EJBObject.class.isAssignableFrom(iface) || org.jboss.ejb3.JBossProxy.class.isAssignableFrom(iface)) continue;
 
-                            // First interface implemented is the "real" interface
-                            ejbInterface= iface;
-                            break;
-                        }
-
-                        return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
-                            ejbInterface.getName(),
-                            (SerializerContext)arg
-                        ) + "}";
-                    } // Fall back to default EJB 2.x serialization....
-                    
                     // Find out the correct interface
                     Class ejbInterface= null;
                     for (Class iface: p.getClass().getInterfaces()) {
-                        if (EJBObject.class.isAssignableFrom(iface)) {
-                            ejbInterface= iface;
-                            break;
-                        }
+                        if (jbossProxyClass.isAssignableFrom(iface) || EJBObject.class.isAssignableFrom(iface)) continue;
+
+                        // First interface implemented is the "real" interface
+                        ejbInterface= iface;
+                        break;
                     }
 
                     return "I:" + p.hashCode() + ":{" + Serializer.representationOf(
@@ -99,8 +77,18 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
                         (SerializerContext)arg
                     ) + "}";
                 }
-            });
-        } catch(ClassNotFoundException e) {
+            };
+            System.out.println("EASC: Enabling JBoss-EJB3 support");
+
+            // Earlier versions of Jboss have proxy: $Proxy67 implements interface 
+            // BusinessRemote, interface org.jboss.ejb3.JBossProxy, interface 
+            // javax.ejb.EJBObject - while newer ones just have $Proxy67 implements 
+            // interface BusinessRemote, interface org.jboss.ejb3.JBossProxy
+            //
+            // Handle both with the same invokeable
+            Serializer.registerMapping(jbossProxyClass, inv);
+            Serializer.registerMapping(EJBObject.class, inv);
+        } catch (ClassNotFoundException e) {
             // No EJB3 support
             System.out.println("EASC: No JBoss-EJB3 support enabled.");
         }
