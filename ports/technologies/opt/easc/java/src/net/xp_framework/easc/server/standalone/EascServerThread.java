@@ -197,7 +197,7 @@ public class EascServerThread {
             
                 // A keyStore has been set through system properties, so just use that...
                 System.out.println("---> Using SSL keystore file: " + System.getProperty(envKeyStore));
-                context= SSLContext.getDefault();
+                context= SSLContext.getInstance("Default");
             }
 
             ss= context.getServerSocketFactory().createServerSocket(this.port);
