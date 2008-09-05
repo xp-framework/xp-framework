@@ -216,10 +216,23 @@ public class Serializer {
                 String arraylength= serialized.substring(2, serialized.indexOf(':', 2));
                 int parsed= Integer.parseInt(arraylength);
                 int offset= arraylength.length() + 2 + 2;
-                Object[] array= new Object[parsed];
+                Object[] array;
+                
+                if (null == clazz) {
+                    array= new Object[parsed];
+                } else if (clazz.isArray()) {
+                    array= (Object[])java.lang.reflect.Array.newInstance(clazz.getComponentType(), parsed);
+                } else {
+                    throw new SerializationException("Trying to deserialize an array to non-array type " + clazz.getName());
+                }
 
                 for (int i= 0; i < parsed; i++) {
-                    array[i]= Serializer.valueOf(serialized.substring(offset), length, context, null);
+                    Object value= Serializer.valueOf(serialized.substring(offset), length, context, null);
+                    try {                
+                        array[i]= value;
+                    } catch (java.lang.ArrayStoreException e) {
+                        throw new SerializationException(array.getClass() + "[" + i + "]= " + value.getClass());
+                    }
                     offset+= length.value;
                 }
 

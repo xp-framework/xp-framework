@@ -215,7 +215,7 @@ public class SerializerTest {
      */
     @Test public void representationOfPersonValueObject() throws Exception {
         assertEquals(
-            "O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
+            "O:32:\"net.xp_framework.unittest.Person\":3:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";s:16:\"responsibilities\";A:2:{s:6:\"Leader\";s:10:\"Programmer\";}}", 
             representationOf(new Person())
         );
     }
@@ -227,7 +227,7 @@ public class SerializerTest {
      */
     @Test public void representationOfEmployeeValueObject() throws Exception {
         assertEquals(
-            "O:34:\"net.xp_framework.unittest.Employee\":3:{s:15:\"personellNumber\";i:1375;s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
+            "O:34:\"net.xp_framework.unittest.Employee\":4:{s:15:\"personellNumber\";i:1375;s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";s:16:\"responsibilities\";A:2:{s:6:\"Leader\";s:10:\"Programmer\";}}", 
             representationOf(new Employee(1375))
         );
     }
@@ -651,7 +651,7 @@ public class SerializerTest {
     @Test public void valueOfPersonObject() throws Exception {
         assertEquals(
             new Person(), 
-            valueOf("O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
+            valueOf("O:32:\"net.xp_framework.unittest.Person\":3:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";s:16:\"responsibilities\";A:2:{s:6:\"Leader\";s:10:\"Programmer\";}}")
         );
     }
 
@@ -663,7 +663,7 @@ public class SerializerTest {
     @Test public void valueOfEmployeeObject() throws Exception {
         assertEquals(
             new Employee(1375), 
-            valueOf("O:34:\"net.xp_framework.unittest.Employee\":3:{s:15:\"personellNumber\";i:1375;s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}")
+            valueOf("O:34:\"net.xp_framework.unittest.Employee\":4:{s:15:\"personellNumber\";i:1375;s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";s:16:\"responsibilities\";A:2:{s:6:\"Leader\";s:10:\"Programmer\";}}")
         );
     }
 
@@ -720,7 +720,7 @@ public class SerializerTest {
      *
      */
     @Test public void valueOfArray() throws Exception {
-        Object[] result= (Object[])valueOf("A:2:{O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}s:5:\"World\";}");
+        Object[] result= (Object[])valueOf("A:2:{O:32:\"net.xp_framework.unittest.Person\":3:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";s:16:\"responsibilities\";A:2:{s:6:\"Leader\";s:10:\"Programmer\";}}s:5:\"World\";}");
         assertEquals(new Object[] { new Person(), new String("World") }, result);
     }
 

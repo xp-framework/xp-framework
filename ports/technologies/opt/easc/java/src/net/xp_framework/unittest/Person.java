@@ -13,6 +13,7 @@ package net.xp_framework.unittest;
 public class Person implements java.io.Serializable {
     public int id = 1549;
     public String name = "Timm Friebe";
+    public String[] responsibilities = new String[] { "Leader", "Programmer" };
     
     /**
      * Returns a string representation if this person object
@@ -21,7 +22,24 @@ public class Person implements java.io.Serializable {
      * @return  java.lang.String
      */
     @Override public String toString() {
-        return (this.getClass().getName() + "(" + id + ") [ name= '" + this.name + "']");
+        StringBuilder s= new StringBuilder()
+            .append(this.getClass().getName())
+            .append('(')
+            .append(id)
+            .append(") [ name = '")
+            .append(this.name)
+            .append(", responsibilities= ")
+        ;
+        if (null == this.responsibilities) {
+            s.append("(null)");
+        } else {
+            s.append("[ ");
+            for (String responsibility: this.responsibilities) {
+                s.append("'").append(responsibility).append("' ");
+            }
+            s.append(" ]");
+        }
+        return s.append(" ]").toString();
     }
     
     /**
@@ -36,7 +54,11 @@ public class Person implements java.io.Serializable {
         if (!(o instanceof Person)) return false;  // Short-cuircuit
         
         Person cmp= (Person)o;
-        return this.id == cmp.id && this.name.equals(cmp.name);
+        return (
+            this.id == cmp.id && 
+            this.name.equals(cmp.name) && 
+            java.util.Arrays.equals(this.responsibilities, cmp.responsibilities)
+        );
     }
     
     /**

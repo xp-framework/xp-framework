@@ -200,7 +200,7 @@ public class ServerTest {
     @Test public void lookupPerson() throws Exception {
         assertAnswer(
             MessageType.Value,
-            "O:32:\"net.xp_framework.unittest.Person\":2:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";}", 
+            "O:32:\"net.xp_framework.unittest.Person\":3:{s:2:\"id\";i:1549;s:4:\"name\";s:11:\"Timm Friebe\";s:16:\"responsibilities\";A:2:{s:6:\"Leader\";s:10:\"Programmer\";}}", 
             new Header(
                 Header.DEFAULT_MAGIC_NUMBER,
                 (byte)1,
