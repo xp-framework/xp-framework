@@ -89,8 +89,22 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
             Serializer.registerMapping(jbossProxyClass, inv);
             Serializer.registerMapping(EJBObject.class, inv);
         } catch (ClassNotFoundException e) {
-            // No EJB3 support
             System.out.println("EASC: No JBoss-EJB3 support enabled.");
+        }
+        
+        // Map lazily initialized to NULL
+        try {
+            final Invokeable inv= new Invokeable<String, Object>() {
+                public String invoke(Object p, Object arg) throws Exception {
+                    return "N;";
+                }
+            };
+            
+            System.out.println("EASC: Enabling Hibernate lazy initialization mapping.");
+            Serializer.registerMapping(Class.forName("org.hibernate.proxy.AbstractLazyInitializer"), inv);
+            Serializer.registerMapping(Class.forName("org.hibernate.collection.AbstractPersistentCollection"), inv);
+     } catch (ClassNotFoundException e) {
+            System.out.println("EASC: No Hibernate lazy initialization mapping enabled.");
         }
     }
     
