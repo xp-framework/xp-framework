@@ -497,23 +497,16 @@ public class Serializer {
         
         return list;
     }
-
-    private static String representationOf(Object o, Invokeable i, SerializerContext context) throws Exception {
-        if (null == o) return "N;";
-
-        // DEBUG System.out.println("Serializing " + o.getClass().getName() + " using " + i);
-        if (i != null) return (String)i.invoke(o, context);
-
+    
+    public static String defaultRepresentationOf(Object o, String className, SerializerContext context) throws Exception {
         if (!(o instanceof Serializable)) {
             throw new SerializationException("Trying to serialize non-serializable object " + o + " via default mechanism");
         }
 
-        // Default object serialization
         StringBuffer buffer= new StringBuffer();
-        Class c= o.getClass();
         long numFields = 0;
 
-        for (Field f : classFields(c)) {
+        for (Field f : classFields(o.getClass())) {
 
             // DEBUG System.out.println(">> field " + f);
             buffer.append("s:");
@@ -533,8 +526,19 @@ public class Serializer {
         }
 
         buffer.append("}");        
-        buffer.insert(0, "O:" + c.getName().length() + ":\"" + c.getName() + "\":" + numFields + ":{");
+        buffer.insert(0, "O:" + className.length() + ":\"" + className + "\":" + numFields + ":{");
         return buffer.toString();
+    }
+
+    private static String representationOf(Object o, Invokeable i, SerializerContext context) throws Exception {
+        if (null == o) return "N;";
+
+        // DEBUG System.out.println("Serializing " + o.getClass().getName() + " impl " + java.util.Arrays.toString(o.getClass().getInterfaces()) + " using " + i);
+        if (i != null) {
+            return (String)i.invoke(o, context);
+        } else {
+            return defaultRepresentationOf(o, o.getClass().getName(), context);
+        }
     }
 
     @Handler('s') protected static String representationOf(String s, SerializerContext context) {

@@ -94,15 +94,30 @@ public class EascService extends ServiceMBeanSupport implements EascServiceMBean
         
         // Map lazily initialized to NULL
         try {
-            final Invokeable inv= new Invokeable<String, Object>() {
+            final Invokeable nuller= new Invokeable<String, Object>() {
                 public String invoke(Object p, Object arg) throws Exception {
                     return "N;";
                 }
             };
             
             System.out.println("EASC: Enabling Hibernate lazy initialization mapping.");
-            Serializer.registerMapping(Class.forName("org.hibernate.proxy.AbstractLazyInitializer"), inv);
-            Serializer.registerMapping(Class.forName("org.hibernate.collection.AbstractPersistentCollection"), inv);
+            Serializer.registerMapping(Class.forName("org.hibernate.proxy.AbstractLazyInitializer"), nuller);
+            Serializer.registerMapping(Class.forName("org.hibernate.collection.AbstractPersistentCollection"), nuller);
+            
+            // Fix up class names hibernate proxies use
+            // fully.qualified.class.Name_$$_javassist_99
+            Serializer.registerMapping(Class.forName("org.hibernate.proxy.HibernateProxy"), new Invokeable<String, Object>() {
+                public String invoke(Object p, Object arg) throws Exception {
+                    String className= p.getClass().getName();
+                    int mangled= className.indexOf("_$$_javassist_");
+
+                    return Serializer.defaultRepresentationOf(
+                        p, 
+                        -1 == mangled ? className : className.substring(0, mangled),
+                        (SerializerContext)arg
+                    );
+                }
+            });
      } catch (ClassNotFoundException e) {
             System.out.println("EASC: No Hibernate lazy initialization mapping enabled.");
         }
