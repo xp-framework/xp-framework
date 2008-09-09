@@ -9,4 +9,5 @@ import net.xp_framework.easc.server.ServerContext;
 
 public interface Delegate {
     public Object invoke(ServerContext ctx) throws Exception;
+    public ClassLoader getClassLoader();
 }

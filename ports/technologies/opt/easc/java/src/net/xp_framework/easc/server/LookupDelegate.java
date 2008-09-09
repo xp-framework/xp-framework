@@ -37,4 +37,12 @@ public class LookupDelegate implements Delegate {
     public Object invoke(ServerContext ctx) throws Exception {
         return (new InitialContext()).lookup(this.jndiName);
     }
+
+    /**
+     * Return a classloader to be used instead of the current one
+     *
+     */
+    public ClassLoader getClassLoader() {
+        return null;
+    }
 }

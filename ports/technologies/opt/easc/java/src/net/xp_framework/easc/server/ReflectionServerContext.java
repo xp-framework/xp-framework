@@ -78,6 +78,10 @@ public class ReflectionServerContext extends ServerContext {
                 
                 throw new NameNotFoundException("Name " + jndiName + " not bound");
             }
+            
+            public ClassLoader getClassLoader() {
+                return null;
+            }
         };
     }
 }

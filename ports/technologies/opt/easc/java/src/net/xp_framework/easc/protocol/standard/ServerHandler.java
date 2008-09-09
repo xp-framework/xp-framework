@@ -67,12 +67,21 @@ abstract public class ServerHandler implements Handler {
 
                 // Execute using delegate
                 Object result= null;
-                MessageType response= null;
+                MessageType response= MessageType.Value;;
                 String buffer= null;
                 try {
-                    result= requestHeader.getMessageType().delegateFrom(in, ctx).invoke(ctx);
-                    response= MessageType.Value;
-                    buffer= Serializer.representationOf(result);
+                    Delegate delegate= requestHeader.getMessageType().delegateFrom(in, ctx);
+                    ClassLoader delegateCl = delegate.getClassLoader();
+                    
+                    if (null != delegateCl) {
+                        Thread currentThread= Thread.currentThread();
+                        ClassLoader currentCl= currentThread.getContextClassLoader();
+                        currentThread.setContextClassLoader(delegateCl);
+                        buffer= Serializer.representationOf(delegate.invoke(ctx), new SerializerContext(delegateCl));
+                        currentThread.setContextClassLoader(currentCl);
+                    } else {
+                        buffer= Serializer.representationOf(delegate.invoke(ctx));
+                    }
                 } catch (Throwable t) {
                     // DEBUG t.printStackTrace();
                     try {

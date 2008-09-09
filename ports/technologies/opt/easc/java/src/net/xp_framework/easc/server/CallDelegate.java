@@ -40,4 +40,12 @@ public class CallDelegate implements Delegate {
             "))"
         );
     }
+
+    /**
+     * Return a classloader to be used instead of the current one
+     *
+     */
+    public ClassLoader getClassLoader() {
+        return this.instance.getClass().getClassLoader();
+    }
 }

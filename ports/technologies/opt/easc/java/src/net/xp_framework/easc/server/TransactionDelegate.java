@@ -59,4 +59,12 @@ public class TransactionDelegate implements Delegate {
         
         return true;
     }
+    
+    /**
+     * Return a classloader to be used instead of the current one
+     *
+     */
+    public ClassLoader getClassLoader() {
+        return null;
+    }
 }
