@@ -501,13 +501,12 @@ public class Serializer {
     private static String representationOf(Object o, Invokeable i, SerializerContext context) throws Exception {
         if (null == o) return "N;";
 
-        if (!(o instanceof Serializable)) {
-            throw new SerializationException("Trying to serialize non-serializable object " + o + " via " + i);
-        }
-        
         // DEBUG System.out.println("Serializing " + o.getClass().getName() + " using " + i);
-
         if (i != null) return (String)i.invoke(o, context);
+
+        if (!(o instanceof Serializable)) {
+            throw new SerializationException("Trying to serialize non-serializable object " + o + " via default mechanism");
+        }
 
         // Default object serialization
         StringBuffer buffer= new StringBuffer();
@@ -709,6 +708,7 @@ public class Serializer {
 
     @Handler('A') protected static String representationOf(Collection c, SerializerContext context) throws Exception {
         if (null == c) return "N;";
+        
         return representationOf(c.toArray(), invokeableFor(Object[].class), context);
     }
 
