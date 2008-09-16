@@ -67,7 +67,7 @@
 
         $this->tests->put(
           XPClass::forName($config->readString($section, 'class')),
-          new ArrayList($config->readArray($section, 'args'))
+          ArrayList::newInstance($config->readArray($section, 'args'))
         );
       } while ($section= $config->getNextSection());
     }
