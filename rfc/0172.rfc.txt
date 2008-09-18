@@ -1,0 +1,177 @@
+RFC 0172: XP 6
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Sep 15 11:03:04     2008
+@status: draft
+@category: <strategy>
+
+Scope of Change
+---------------
+The next major XP framework release will bring a magnitude of new 
+features.
+
+
+Rationale
+---------
+This RFC gives a strategic outlook to the further development.
+
+
+Functionality
+-------------
+<summary>
+Due to its requirements on PHP 5.3, the XP 5 series will be continued 
+(not indefinitely, but for at least a year). The XP 6 series are not
+backwards compatible - code written in XP 5 will not work and will need
+to be converted.
+</summary>
+
+
+Namespaces
+~~~~~~~~~~
+All XP classes will be inside namespaces. This supersedes the functionality 
+implemented in RFC #0037 and makes all classnames always fully qualified 
+(but allows for short notation by using "use").
+
+Declaration:
+<code>
+  namespace util;
+  
+  class Date extends lang::Object {
+  
+  }
+</code>
+
+Usage:
+<code>
+  // #1: By fully qualified name
+  namespace de::thekid::dialog;
+  
+  class Album extends lang::Object {
+    public function setCreated(util::Date $d) { ... }
+  }
+  
+  // #2: By import
+  namespace de::thekid::dialog;
+  use util::Date;
+  
+  class Album extends lang::Object {
+    public function setCreated(Date $d) { ... }
+  }
+</code>
+
+
+Singleton base class
+~~~~~~~~~~~~~~~~~~~~
+There will be a new base class for all singletons.
+
+<code>
+  class Logger extends Singleton {
+    public function log($arg) {
+      // TBI
+    }
+  }
+  
+  Logger::getInstance()->log('Hello');
+  
+  // Fatal error: Call to private Singleton::__construct 
+  // new Logger();
+  
+  // Fatal error: Call to private Singleton::__clone 
+  // clone Logger::getInstance();
+</code>
+
+See http://news.xp-framework.net/article/274/2008/08/23/
+
+
+Enums
+~~~~~
+Enum declarations will become easier.
+
+Most simple use-case:
+<code>
+  class Weekday extends Enum {
+    public static $MONDAY, $TUESDAY, $WEDNESDAY, $THURSDAY, $FRIDAY, $SATURDAY, $SUNDAY;
+  }
+</code>
+
+See http://news.xp-framework.net/article/272/2008/08/12/
+
+
+Class member
+~~~~~~~~~~~~
+All classes will have a static class member pointing to a lang.XPClass
+instance.
+
+<code>
+  $class= lang::Object::$class;   // lang.XPClass<lang.Object>
+</code>
+
+
+Using
+~~~~~
+A new using() statement will be added. It will close any given arguments
+by calling their close() method after the closure given has finished 
+running.
+
+<code>
+  using(new FileReader(__FILE__), new FileWriter('php://stdout'), function($in, $out) {
+    $out->write($in->read());
+  });
+</code>
+
+
+Unicode
+~~~~~~~
+Unicode (see RFC #146) support will be added in a later release of XP 6
+and increase the minor version:
+
+Timeline:
+<pre>
+                          Unicode
+                          vvvvvv
+  ...- XP 5.7 -+--------- XP 5.8 -...
+               |
+               XP 6.0 --- XP 6.1 -...
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+Engine
+~~~~~~
+* PHP 5.3 - for namespaces, late static binding, closures
+* __getStatic() patch - for ::$class
+
+Deprecations
+~~~~~~~~~~~~
+* The uses() statement (replaced by "use")
+* RFC #0037 (superseded by namespaces)
+* Enum::values() in declaration (made unnecessary by late static binding)
+
+
+Related documents
+-----------------
+__getStatic() patch
+~~~~~~~~~~~~~~~~~~~
+http://sitten-polizei.de/php/getstatic.diff
+
+PHP 5.3 experiments
+~~~~~~~~~~~~~~~~~~~
+http://experiments.xp-forge.net/xml/browse?arena,five3
+
+Comments
+--------
+
+<EOF>

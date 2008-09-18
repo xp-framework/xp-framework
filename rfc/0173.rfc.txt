@@ -1,0 +1,55 @@
+RFC 0173: xp-tools.xar
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Sep 15 12:51:55     2008
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+Classes used by command line utilities but not in xp-rt will be added
+to a new XAR file called xp-tools.xar
+
+
+Rationale
+---------
+Separate classes currently in xp-net.xp_framework.xar and used for core
+utilities from unittests.
+
+
+Functionality
+-------------
+The classes from the following packages will be moved to the new tools
+infrastructure:
+
+* net.xp_framework.xar - xar command classes
+* net.xp_framework.db.generator - DataSet code generator
+* net.xp_framework.wsdl.cmd - WSDL code generator
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Faster, xp-net.xp_framework.xar can be dropped from core dependencies and 
+the replacing xp-tools.xar will be smaller in size
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+RFC #0166 - XP Runners
+
+Comments
+--------
+
+<EOF>
