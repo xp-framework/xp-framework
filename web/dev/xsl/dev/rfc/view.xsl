@@ -92,7 +92,6 @@
     <a href="/xml/rfc/view?{@id}">RFC #<xsl:value-of select="@id"/></a>
   </xsl:template>
 
-
   <!--
    ! Links to a PHP manual page
    !-->
@@ -112,6 +111,15 @@
    !-->
   <xsl:template match="link">
     <a href="{@rel}://{@href}"><xsl:value-of select="."/></a>
+  </xsl:template>
+
+  <!--
+   ! Summary
+   !-->
+  <xsl:template match="summary">
+    <fieldset class="summary">
+      <xsl:apply-templates/>
+    </fieldset>
   </xsl:template>
 
   <xsl:template match="content">
