@@ -31,7 +31,7 @@
      *
      */
     protected static function usage() {
-      Console::$err->writeLine('*** Usage: unittest [options] Test.class.php [tests.ini [test.class.Name]]');
+      Console::$err->writeLine('*** Usage: unittest [-v] Test.class.php [tests.ini [test.class.Name]]');
       exit(1);
     }
 
