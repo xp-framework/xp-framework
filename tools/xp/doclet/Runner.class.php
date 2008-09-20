@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  $package= 'text.doclet';
+  $package= 'xp.doclet';
 
   uses('text.doclet.RootDoc', 'util.cmd.ParamString');
 
