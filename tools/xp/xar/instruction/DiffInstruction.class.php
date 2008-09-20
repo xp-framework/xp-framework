@@ -5,7 +5,7 @@
  */
 
   uses(
-    'net.xp_framework.xar.instruction.AbstractInstruction',
+    'xp.xar.instruction.AbstractInstruction',
     'io.TempFile',
     'lang.Process'
   );
@@ -67,7 +67,7 @@
         $retval= 1;
         $this->out->writeLine($entry.' differs.');
         
-        if ($this->options & Xar::OPTION_VERBOSE) {
+        if ($this->options & Options::VERBOSE) {
           $this->out->writeLine('=== '.$entry);
           $this->diff($fl, $fr);
         }

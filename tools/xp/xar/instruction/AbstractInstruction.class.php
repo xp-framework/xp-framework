@@ -5,6 +5,7 @@
  */
 
   uses(
+    'xp.xar.Options',
     'lang.archive.Archive',
     'io.File',
     'io.FileUtil',

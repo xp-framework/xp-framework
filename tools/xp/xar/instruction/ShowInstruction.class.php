@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('net.xp_framework.xar.instruction.AbstractInstruction');
+  uses('xp.xar.instruction.AbstractInstruction');
 
   /**
    * Show Instruction

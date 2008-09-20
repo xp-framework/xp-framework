@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('net.xp_framework.xar.instruction.AbstractInstruction');
+  uses('xp.xar.instruction.AbstractInstruction');
 
   /**
    * Extract Instruction
@@ -54,7 +54,7 @@
         $f= new File($entry);
         $data= $this->archive->extract($entry);
         
-        if (!($this->options & Xar::OPTION_SIMULATE)) {
+        if (!($this->options & Options::SIMULATE)) {
         
           // Create folder on demand. Note that inside a XAR, the directory
           // separator is *ALWAYS* a forward slash, so we need to change
@@ -65,7 +65,7 @@
           FileUtil::setContents($f, $data);
         }
         
-        $this->options & Xar::OPTION_VERBOSE && $this->out->writeLinef('%10s %s', number_format(strlen($data), 0, FALSE, '.'), $entry);
+        $this->options & Options::VERBOSE && $this->out->writeLinef('%10s %s', number_format(strlen($data), 0, FALSE, '.'), $entry);
       }
       
       $this->archive->close();
