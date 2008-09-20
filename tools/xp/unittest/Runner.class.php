@@ -26,9 +26,13 @@
    */
   class xp·unittest·Runner extends Object {
 
-
-    protected static function addSource($sources, $source, $verbose) {
-      $sources->add($source);
+    /**
+     * Displays usage and exists
+     *
+     */
+    protected static function usage() {
+      Console::$err->writeLine('*** Usage: unittest [options] Test.class.php [tests.ini [test.class.Name]]');
+      exit(1);
     }
 
     /**
@@ -37,6 +41,8 @@
      * @param   string[] args
      */
     public static function main(array $args) {
+      if (!$args) self::usage();
+
       $sources= new Vector();
 
       // Parse arguments
