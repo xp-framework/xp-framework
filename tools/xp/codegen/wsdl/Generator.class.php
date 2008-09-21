@@ -17,7 +17,26 @@
   );
 
   /**
-   * Generates SOAP client classes from a WSDL
+   * WSDL
+   * ====
+   * This utility generates SOAP client classes from a given WSDL
+   *
+   * Usage:
+   * <pre>
+   *   $ cgen ... wsdl {uri} [-p {package}] [-P {prefix}] [-l {language}]
+   * </pre>
+   *
+   * Options
+   * -------
+   * <ul>
+   *   <li>package: The package name, default "soap"</li>
+   *   <li>prefix: What to prefix generated classes with, defaults to empty</li>
+   *   <li>language: Language to generate, defaults to "xp5"</li>
+   * </ul>
+   *
+   * Languages
+   * ---------
+   * The following languages are supported: xp5
    *
    * @purpose  Code generator
    */

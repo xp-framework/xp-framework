@@ -18,7 +18,26 @@
   );
 
   /**
-   * Generates DataSet classes
+   * DataSet
+   * =======
+   * Generates rdbms.DataSet classes for use in the XP framework's O/R mapper.
+   *
+   * Usage:
+   * <pre>
+   *   $ cgen ... dataset {dsn} [-p {package}] [-h {host}] [-l {language}]
+   * </pre>
+   *
+   * Options
+   * -------
+   * <ul>
+   *   <li>package: The package name, default "db"</li>
+   *   <li>host: Which connection name to use, defaults to host name from DSN</li>
+   *   <li>language: Language to generate, defaults to "xp5"</li>
+   * </ul>
+   *
+   * Languages
+   * ---------
+   * The following languages are supported: xp5, xp4
    *
    * @purpose  Code generator
    */

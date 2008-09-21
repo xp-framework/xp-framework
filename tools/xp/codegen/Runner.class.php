@@ -19,18 +19,56 @@
   );
 
   /**
-   * Code generation
+   * Code generation tool
+   * ====================
+   * This tool runs utilities that generate sourcecode from a given input 
+   * source.
+   *
+   * Usage:
+   * <pre>
+   *   $ cgen [-O {output}] {generator} [options]
+   * </pre>
+   *
+   * Output options
+   * --------------
+   * <ul>
+   *   <li>-: Output is written to standard ouput (default if omitted)</li>
+   *   <li>[name].xar: Output is written to a XAR archive</li>
+   *   <li>[directory]: Output is written to the filesystem</li>
+   * </ul>
+   *
+   * Generators
+   * ----------
+   * <ul>
+   *   <li>dataset: Creates rdbms.DataSet class from a database</li>
+   *   <li>wsdl: Creates web service client for a given WSDL uri or file</li>
+   * </ul>
    *
    * @purpose  Tool
    */
   class xp·codegen·Runner extends Object {
 
     /**
+     * Converts api-doc "markup" to plain text w/ ASCII "art"
+     *
+     * @param   string markup
+     * @return  string text
+     */
+    protected static function textOf($markup) {
+      $line= str_repeat('=', 72);
+      return strip_tags(preg_replace(array(
+        '#<pre>#', '#</pre>#', '#<li>#',
+      ), array(
+        $line, $line, '* ',
+      ), trim($markup)));
+    }
+
+    /**
      * Displays usage and exists
      *
      */
     protected static function usage() {
-      Console::$err->writeLine('*** Usage: cgen [-O output] [generator-class] [options]');
+      Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
       exit(1);
     }
     
@@ -84,6 +122,8 @@
       for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
         if ('-O' == $args[$i]) {
           $output= $args[++$i];
+        } else if ('-?' == $args[$i] || '--help' == $args[$i]) {
+          self::usage();
         } else {
           $package= $args[$i];
           break;
@@ -97,9 +137,13 @@
         Console::$err->writeLine('*** No generator named "'.$package.'"');
         exit(2);
       }
-
-      // Instantiate generator
       $params= new ParamString(array_slice($args, $i+ 1));
+      if ($params->exists('help', '?')) {
+        Console::$err->writeLine(self::textOf($class->getComment()));
+        exit(1);
+      }
+      
+      // Instantiate generator
       $generator= $class->newInstance($params);
       $generator->storage= new FileSystemStorage(System::tempDir());
       
