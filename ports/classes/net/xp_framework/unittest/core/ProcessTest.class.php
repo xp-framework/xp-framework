@@ -52,6 +52,18 @@
         throw $e;
       }
     }
+    
+    /**
+     * Tests Process::newInstance()
+     *
+     */
+    #[@test]
+    public function newInstance() {
+      $p= Runtime::getInstance()->getExecutable()->newInstance(array('-v'));
+      $version= 'PHP '.phpversion();
+      $this->assertEquals($version, $p->out->read(strlen($version)));
+      $p->close();
+    }
 
     /**
      * Test exit value
