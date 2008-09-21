@@ -430,7 +430,7 @@
      * Retrieves an iterator for all </xsl:text><xsl:value-of select="$classname"/><xsl:text> entities
      * referenced by </xsl:text><xsl:value-of select="$keys4apidoc" /><xsl:text>
      *
-     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="$fullclassname"/><xsl:text>
+     * @return  rdbms.ResultIterator&lt;</xsl:text><xsl:value-of select="$fullclassname"/><xsl:text>&gt;
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {

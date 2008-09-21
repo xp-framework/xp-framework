@@ -54,6 +54,7 @@
       // Setup generator
       $this->processor= new DomXSLProcessor();
       $this->processor->setXSLBuf($this->getClass()->getPackage()->getResource($args->value('lang', 'l', 'xp5.php').'.xsl'));
+      $this->processor->setParam('package', $this->package);
     }
     
     /**
@@ -101,20 +102,19 @@
           $table, 
           $this->adapter->conn,          
           $this->adapter->conn->dsn->getDatabase()
-        );
+        )->getTree();
         
         // Calculate classname
         $className= ucfirst($table->name);
         
         // Add extra information
-        with ($node= $gen->doc->root->children[0]); {
+        with ($node= $gen->root->children[0]); {
           $node->setAttribute('dbtype', $this->adapter->conn->dsn->getDriver());
           $node->setAttribute('class', $className);
           $node->setAttribute('package', $this->package);
-          $node->addChild($constraints->root);
         }
-
-        $xml[]= $storage->write($className, $gen->getSource());
+        
+        $xml[]= $storage->write($className, $gen->getSource(INDENT_DEFAULT));
       }
       return $xml;
     }
