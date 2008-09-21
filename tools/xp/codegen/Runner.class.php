@@ -80,6 +80,7 @@
       if (!$args) self::usage();
       
       // Parse arguments
+      $output= '-';
       for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
         if ('-O' == $args[$i]) {
           $output= $args[++$i];
