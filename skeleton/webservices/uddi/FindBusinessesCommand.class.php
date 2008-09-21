@@ -75,7 +75,7 @@
      */
     public function unmarshalFrom($node) {
       if (0 != strcasecmp($node->name, 'businessList')) {
-        throw(new FormatException('Expected "businessList", got "'.$node->name.'"'));
+        throw new FormatException('Expected "businessList", got "'.$node->name.'"');
       }
       
       // Create business list object from XML representation

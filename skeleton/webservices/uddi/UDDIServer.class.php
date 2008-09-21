@@ -19,17 +19,17 @@
    * <code>
    *   uses('webservices.uddi.UDDIServer', 'webservices.uddi.FindBusinessesCommand');
    *
-   *   $c= &new UDDIServer(
+   *   $c= new UDDIServer(
    *     'http://test.uddi.microsoft.com/inquire', 
    *     'https://test.uddi.microsoft.com/publish'
    *   );
-   *   try(); {
+   *   try {
    *     $r= $c->invoke(new FindBusinessesCommand(
    *       array('%Microsoft%'),
    *       array(SORT_BY_DATE_ASC, SORT_BY_NAME_ASC),
    *       5
    *     ));
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -93,9 +93,9 @@
       } else if (is('webservices.uddi.PublishCommand', $command)) {
         $c= $this->conn['publish'];
       } else {
-        throw(new IllegalArgumentException(
+        throw new IllegalArgumentException(
           'Unknown command type "'.xp::typeOf($command).'"'
-        ));
+        );
       }
       
       // Create message
@@ -157,6 +157,5 @@
     public function setTrace($cat) {
       $this->cat= $cat;
     }
-
   } 
 ?>
