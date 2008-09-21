@@ -56,11 +56,11 @@
     }
     
     /**
-     * Get XML source
+     * Get XML tree
      *
-     * @return  string source
-     */
-    public function getSource() {
+     * @return  xml.Tree
+     */    
+    public function getTree() {
       $indexes= array();
 
       // Attributes
@@ -121,7 +121,16 @@
         } while ($constraint= $this->table->getNextForeignKeyConstraint());
       }
       
-      return $this->doc->getSource(FALSE);
+      return $this->doc;
+    }
+
+    /**
+     * Get XML source
+     *
+     * @return  string source
+     */
+    public function getSource() {
+      return $this->getTree()->getSource(FALSE);
     }
 
     /**

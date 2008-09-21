@@ -53,11 +53,11 @@
     }
 
     /**
-     * Get XML source
+     * Get XML tree
      *
-     * @return  string xml representation
+     * @return  xml.Tree
      */    
-    public function getSource() {
+    public function getTree() {
       foreach ($this->tables as $t) {
         $constKeyList= array();
         $tn= $this->doc->root->children[0]->addChild(new Node('table', NULL, array(
@@ -86,7 +86,16 @@
 
         } while ($constraint= $t->getNextForeignKeyConstraint());
       }
-      return $this->doc->getSource(FALSE);
+      return $this->doc;
+    }
+
+    /**
+     * Get XML source
+     *
+     * @return  string xml representation
+     */    
+    public function getSource() {
+      return $this->getTree()->getSource(FALSE);
     }
 
     /**
