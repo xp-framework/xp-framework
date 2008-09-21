@@ -125,11 +125,13 @@
      */
     #[@target(input= array('generateTableXml', 'output'))]
     public function generateCode($tables, $output) {
+      $dir= strtr($this->package, '.', '/').'/';
+
       foreach ($tables as $stored) {
         $this->processor->setXMLBuf($stored->data());
         $this->processor->run();
         
-        $output->append($stored->name().xp::CLASS_FILE_EXT, $this->processor->output());
+        $output->append($dir.$stored->name().xp::CLASS_FILE_EXT, $this->processor->output());
       }
     }
 
