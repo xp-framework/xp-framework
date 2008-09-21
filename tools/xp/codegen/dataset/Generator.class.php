@@ -50,6 +50,7 @@
       );
 
       $this->package= $args->value('package', 'p', 'db');
+      $this->host= $args->value('host', 'h', $dsn->getHost());
 
       // Setup generator
       $this->processor= new DomXSLProcessor();
@@ -100,7 +101,7 @@
       foreach ($tables as $table) {
         $gen= DBXmlGenerator::createFromTable(
           $table, 
-          $this->adapter->conn,          
+          $this->host,          
           $this->adapter->conn->dsn->getDatabase()
         )->getTree();
         
