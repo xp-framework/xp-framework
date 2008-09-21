@@ -32,5 +32,11 @@
       $this->notifyObservers($name);
       $this->store($name, $data);
     }
+    
+    /**
+     * Commit output
+     *
+     */
+    public abstract function commit();
   }
 ?>

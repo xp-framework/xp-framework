@@ -7,8 +7,7 @@
   uses(
     'xp.codegen.AbstractOutput',
     'io.File',
-    'io.Folder',
-    'io.FileUtil'
+    'lang.archive.Archive'
   );
 
   /**
@@ -16,17 +15,18 @@
    *
    * @purpose  Abstract base class
    */
-  class FileSystemOutput extends AbstractOutput {
+  class ArchiveOutput extends AbstractOutput {
     protected
-      $path = NULL;
+      $archive = NULL;
       
     /**
      * Constructor
      *
-     * @param   string path
+     * @param   string file
      */
-    public function __construct($path) {
-      $this->path= new Folder($path);
+    public function __construct($file) {
+      $this->archive= new Archive(new File($file));
+      $this->archive->open(ARCHIVE_CREATE);
     }
 
     /**
@@ -36,7 +36,12 @@
      * @param   string data
      */
     protected function store($name, $data) {
-      FileUtil::setContents(new File($this->path, $name), $data);
+      $this->archive->addFileBytes(
+        $name,
+        dirname($name),
+        basename($name),
+        $data
+      );
     }
     
     /**
@@ -44,7 +49,7 @@
      *
      */
     public function commit() {
-      // NOOP
+      $this->archive->create();
     }
   }
 ?>

@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   io.streams.StringWriter path
+     * @param   io.streams.StringWriter writer
      */
     public function __construct(StringWriter $writer) {
       $this->writer= $writer;
@@ -32,6 +32,15 @@
      */
     protected function store($name, $data) {
       $this->writer->writeLine($data);
+    }
+
+    
+    /**
+     * Commit output
+     *
+     */
+    public function commit() {
+      // NOOP
     }
   }
 ?>

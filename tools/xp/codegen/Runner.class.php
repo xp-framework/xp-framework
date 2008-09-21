@@ -13,6 +13,7 @@
     'util.collections.HashTable',
     'util.collections.Vector',
     'xp.codegen.FileSystemStorage',
+    'xp.codegen.ArchiveOutput',
     'xp.codegen.ConsoleOutput',
     'xp.codegen.FileSystemOutput'
   );
@@ -95,6 +96,8 @@
       $output= $params->value('output', 'O', '-');
       if ('-' === $output) {
         $generator->output= new ConsoleOutput(Console::$err);
+      } else if (strstr($output, '.xar')) {
+        $generator->output= new ArchiveOutput($output);
       } else {
         $generator->output= new FileSystemOutput($output);
       }
@@ -133,10 +136,16 @@
       }
       
       // Invoke
-      foreach ($targets->keys() as $method) {
-        self::invoke($generator, $method, $targets);
+      try {
+        foreach ($targets->keys() as $method) {
+          self::invoke($generator, $method, $targets);
+        }
+      } catch (TargetInvocationException $e) {
+        Console::$err->writeLine('*** ', $e->getCause());
+        exit(3);
       }
-      
+
+      $generator->output->commit();
       Console::writeLine('===> Done');
     }
   }
