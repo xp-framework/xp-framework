@@ -60,6 +60,9 @@
       }
       
       // Build command line
+      if (strstr($command, ' ')) {
+        $command= escapeshellarg($command);
+      }
       $cmd= $command.' '.implode(' ', $arguments);
 
       // Open process
