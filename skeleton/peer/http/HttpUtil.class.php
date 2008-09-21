@@ -19,9 +19,9 @@
    * <code>
    *   uses('peer.http.HttpUtil');
    *
-   *   try(); {
+   *   try {
    *     $buf= HttpUtil::get(new HttpConnection('http://localhost/'));
-   *   } if (catch('UnexpectedResponseException', $e)) {
+   *   } catch(UnexpectedResponseException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -68,26 +68,26 @@
           case 301:             // 301 Moved permanently or
           case 302:             // 302 Moved temporarily - redirect
             if (!($loc= $response->getHeader('Location'))) {
-              throw(new UnexpectedResponseException(
+              throw new UnexpectedResponseException(
                 'Redirect status '.$sc.', but no location header in '.$response->toString(),
                 $sc
-              ));
+              );
             }
             if ($redirected >= REDIRECT_LIMIT) {
-              throw(new UnexpectedResponseException(
+              throw new UnexpectedResponseException(
                 'Redirection limit ('.REDIRECT_LIMIT.') reached @ '.$loc,
                 $sc
-              ));
+              );
             }
             $redirected++;
             $connection->request= HttpRequestFactory::factory(new URL($loc));
             break;
 
           default:              // Any other code
-            throw(new UnexpectedResponseException(
+            throw new UnexpectedResponseException(
               'Unexpected answer '.$response->toString(),
               $sc
-            ));
+            );
         }
       } while ($redirected < REDIRECT_LIMIT + 1);
     }

@@ -10,18 +10,18 @@
    * BSDSocket server implementation
    *
    * <code>
-   *   $s= &new ServerSocket('127.0.0.1', 80);
-   *   try(); {
+   *   $s= new ServerSocket('127.0.0.1', 80);
+   *   try {
    *     $s->create();
    *     $s->bind();
    *     $s->listen();
-   *   } if (catch('SocketException', $e)) {
+   *   } catch(SocketException $e) {
    *     $e->printStackTrace();
    *     $s->close();
    *     exit();
    *   }
    *
-   *   while ($m= &$s->accept()) {
+   *   while ($m= $s->accept()) {
    *     $buf= $m->read(2048);
    *     $m->write('You said: '.$buf);
    *     $m->close();

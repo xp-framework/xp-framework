@@ -16,18 +16,15 @@
    * a XML-RPC webservice.
    *
    * <code>
-   *   require('lang.base.php');
-   *   xp::sapi('xmlrpc.service');
+   *   $s= new XmlRpcRouter('net.xp_framework.webservices.xmlrpc');
    * 
-   *   $s= &new XmlRpcRouter('net.xp_framework.webservices.xmlrpc');
-   * 
-   *   try(); {
+   *   try {
    *     $s->init();
-   *     $response= &$s->process();
-   *   } if (catch('HttpScriptletException', $e)) {
+   *     $response= $s->process();
+   *   } catch(HttpScriptletException $e) {
    * 
    *     // Retrieve standard "Internal Server Error"-Document
-   *     $response= &$e->getResponse();
+   *     $response= $e->getResponse();
    *   }
    * 
    *   $response->sendHeaders();

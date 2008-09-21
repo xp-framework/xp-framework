@@ -18,11 +18,11 @@
    *
    * <code>
    *   uses('webservices.xmlrpc.XmlRpcClient', 'webservices.xmlrpc.transport.XmlRpcHttpTransport');
-   *   $c= &new XmlRpcClient(new XMLRPCHTTPTransport('http://xmlrpc.xp-framework.net'));
+   *   $c= new XmlRpcClient(new XMLRPCHTTPTransport('http://xmlrpc.xp-framework.net'));
    *   
-   *   try(); {
+   *   try {
    *     $res= $c->invoke('sumAndDifference', 5, 3);
-   *   } if (catch('XmlRpcFaultException', $e)) {
+   *   } catch(XmlRpcFaultException' $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }

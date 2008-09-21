@@ -19,13 +19,13 @@
    * <code>
    *   uses('webservices.soap.rpc.SoapRpcRouter');
    *
-   *   $s= &new SoapRpcRouter(new ClassLoader('info.binford6100.webservices'));
-   *   try(); {
+   *   $s= new SoapRpcRouter(new ClassLoader('info.binford6100.webservices'));
+   *   try {
    *     $s->init();
    *     $response= &$s->process();
-   *   } if (catch('HttpScriptletException', $e)) {
+   *   } catch(HttpScriptletException $e) {
    *     // Retrieve standard "Internal Server Error"-Document
-   *     $response= &$e->getResponse();
+   *     $response= $e->getResponse();
    *   }
    *   $response->sendHeaders();
    *   $response->sendContent();

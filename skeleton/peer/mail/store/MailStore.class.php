@@ -17,14 +17,14 @@
    *
    * Usage [example with IMAP]:
    * <code>
-   *   $stor= &new ImapStore();
-   *   try(); {
+   *   $stor= new ImapStore();
+   *   try {
    *     $stor->connect('imap://user:pass@imap.example.com');
-   *     if ($f= &$stor->getFolder('INBOX')) {
+   *     if ($f= $stor->getFolder('INBOX')) {
    *       $f->open();
-   *       $list= &$f->getMessages(range(1, 4), 5);
+   *       $list= $f->getMessages(range(1, 4), 5);
    *     }
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     $f->close();
    *     $stor->close();

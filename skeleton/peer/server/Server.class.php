@@ -12,13 +12,13 @@
    * <code>
    *   uses('peer.server.Server');
    *   
-   *   $server= &new Server('127.0.0.1', 6100);
+   *   $server= new Server('127.0.0.1', 6100);
    *   $server->setProtocol(new MyProtocol());
-   *   try(); {
+   *   try {
    *     $server->init();
    *     $server->service();
    *     $server->shutdown();
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }

@@ -20,10 +20,10 @@
      * Parse string into its InternetAddresses.
      *
      * <code>
-     *   $p= &new InternetAddressParser();
-     *   try(); {
+     *   $p= new InternetAddressParser();
+     *   try {
      *     $addr= $p->parse('"Kiesel, Alex" <alex.kiesel@example.com>, Christian Lang <christian.lang@example.com>');
-     *   } if (catch('FormatException', $e)) {
+     *   } catch(FormatException $e)) {
      *     $e->printStackTrace();
      *   }
      *   
@@ -58,7 +58,9 @@
         }
         
         if ($inquot) {
-          if (!$st->hasMoreTokens()) { throw(new FormatException('Cannot parse string: no ending delimiter found.')); }
+          if (!$st->hasMoreTokens()) { 
+            throw new FormatException('Cannot parse string: no ending delimiter found.');
+          }
           $tok= $tok.','.$st->nextToken();
           continue;
         }

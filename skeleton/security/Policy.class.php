@@ -54,9 +54,9 @@
      * <code>
      *   uses('security.Policy', 'io.File');
      *
-     *   try(); {
-     *     $policy= &Policy::fromFile(new File('my.policy'));
-     *   } if (catch('PolicyException', $e)) {
+     *   try {
+     *     $policy= Policy::fromFile(new File('my.policy'));
+     *   } catch(PolicyException $e) {
      *     $e->printStackTrace();
      *     exit();
      *   }
@@ -214,13 +214,13 @@
       if (PF_ST_DONE == $state) return $policy;
       
       // Errors
-      throw(new PolicyException(sprintf(
+      throw new PolicyException(sprintf(
         "%s in %s on line %d: %s",
         $errors[$state],
         $stream->uri,
         $num,
         $message
-      )));
+      ));
     }
 
   }

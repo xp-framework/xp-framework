@@ -24,13 +24,13 @@
    *     'peer.URL'
    *   );
    *   
-   *   $client= &new WebdavClient(new URL('http://kiesel:password@xp-framework.net/xp/doc'));
-   *   try(); {
-   *     $response= &$client->get('class.xslt');
+   *   $client= new WebdavClient(new URL('http://kiesel:password@xp-framework.net/xp/doc'));
+   *   try {
+   *     $response= $client->get('class.xslt');
    *     while ($r= $response->readData()) {
    *       Console::write($r);
    *     }
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }

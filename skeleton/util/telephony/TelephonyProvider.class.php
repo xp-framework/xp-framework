@@ -18,34 +18,14 @@
    * 
    * Example (using the STLI driver):
    * <code>
-   *   uses(
-   *     'ch.ecma.StliConnection', 
-   *     'peer.Socket', 
-   *     'util.log.Logger',
-   *     'util.log.FileAppender',
-   *     'util.cmd.ParamString'
-   *   );
-   * 
-   *   $p= &new ParamString();
-   *   if (4 != $p->count) {
-   *     printf("Usage: %s server:port <from> <to>\n", basename($p->value(0)));
-   *     exit();
-   *   }
-   *   list($server, $port)= explode(':', $p->value(1));
-   * 
-   *   $l= &Logger::getInstance();
-   *   $cat= &$l->getCategory();
-   *   $cat->addAppender(new FileAppender('php://stderr'));
-   * 
-   *   $c= &new StliConnection(new Socket($server, $port));
-   *   $c->setTrace($cat);
+   *   $c= new StliConnection(new Socket('csta.example.com', 2000));
    *   try(); {
    *     $c->connect();
-   *     $term= &$c->getTerminal($c->getAddress($p->value(2)));
-   *     $call= &$c->createCall($term, $c->getAddress($p->value(3)));
+   *     $term= $c->getTerminal($c->getAddress(4551));
+   *     $call= $c->createCall($term, $c->getAddress(4578));
    *     $c->releaseTerminal($term);
    *     $c->close();
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit;
    *   }
@@ -69,10 +49,6 @@
      * @throws  lang.IllegalArgumentException in case a of a type mismatch
      */
     public function setTrace($cat) {
-      if (NULL !== $cat && !is('LogCategory', $cat)) {
-        throw(new IllegalArgumentException('Argument passed is not a LogCategory'));
-      }
-      
       $this->cat= $cat;
     }
     

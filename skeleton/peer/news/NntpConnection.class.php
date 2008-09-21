@@ -20,12 +20,12 @@
    *
    * Usage [retrieve newsgroup listing]:
    * <code>
-   *   $c= &new NntpConnection('nntp://news.xp-framework.net');
-   *   try(); {
+   *   $c= new NntpConnection('nntp://news.xp-framework.net');
+   *   try {
    *     $c->connect();
-   *     $groups= &$c->getGroups();
+   *     $groups= $c->getGroups();
    *     $c->close();
-   *   } if (catch('IOException', $e)) {
+   *   } catch(IOException $e) {
    *     $e->printStackTrace();
    *     exit();
    *   }

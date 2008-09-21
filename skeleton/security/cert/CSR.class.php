@@ -13,9 +13,9 @@
    * <code>
    *   uses('security.cert.CSR');
    * 
-   *   try(); {
-   *     if ($keypair= &KeyPair::generate('md5', OPENSSL_KEYTYPE_RSA)) {
-   *       $csr= &new CSR(new Principal(array(
+   *   try {
+   *     if ($keypair= KeyPair::generate('md5', OPENSSL_KEYTYPE_RSA)) {
+   *       $csr= new CSR(new Principal(array(
    *         'C'     => 'DE',
    *         'ST'    => 'Baden-Württemberg',
    *         'L'     => 'Karlsruhe',
@@ -26,7 +26,7 @@
    *       )), $keypair);
    *       $cert= $csr->sign($keypair);
    *     }
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit();
    *   }

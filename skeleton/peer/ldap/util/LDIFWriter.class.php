@@ -17,19 +17,19 @@
    *   );
    *   
    *   // {{{ main
-   *   $dsn= &new URL('ldap://my.ldap.host:389/uid=friebe,ou=People,o=XP,c=DE');
+   *   $dsn= new URL('ldap://my.ldap.host:389/uid=friebe,ou=People,o=XP,c=DE');
    *   $dn= substr($dsn->getPath(), 1);
    *   
-   *   $l= &new LDAPClient($dsn->getHost(), $dsn->getPort(389));
-   *   $writer= &new LDIFWriter(new File('php://stdout'));
+   *   $l= new LDAPClient($dsn->getHost(), $dsn->getPort(389));
+   *   $writer= new LDIFWriter(new File('php://stdout'));
    *   
-   *   try(); {
+   *   try {
    *     $l->connect();
    *     $l->bind($dsn->getUser(NULL), $dsn->getPassword(NULL));
    *     
    *     $writer->initialize();
    *     $writer->write($l->read(new LDAPEntry($dn)));
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     fputs(STDERR, $e->getStackTrace());
    *   }
    *   
@@ -70,12 +70,7 @@
      * @param   peer.ldap.LDAPEntry entry
      * @throws  lang.IllegalArgumentException in case the parameter is not an LDAPEntry object
      */
-    public function write($entry) {
-      if (!is('LDAPEntry', $entry)) {
-        throw(new IllegalArgumentException(
-          'Parameter entry is expected to be a peer.ldap.LDAPEntry object (given: '.xp::typeOf($entry).')'
-        ));
-      }
+    public function write(LDAPEntry $entry) {
       $this->stream->write(sprintf("dn: %s\n", $entry->getDN()));
       foreach (array_keys($entry->attributes) as $key) {
         if ('dn' == $key) continue;

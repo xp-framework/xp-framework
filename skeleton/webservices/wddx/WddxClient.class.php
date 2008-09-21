@@ -12,11 +12,11 @@
    *
    * <code>
    *   uses('webservices.wddx.WddxClient');
-   *   $c= &new WddxClient(new WddxHttpTransport('http://wddx.xp-framework.net/server/'));
+   *   $c= new WddxClient(new WddxHttpTransport('http://wddx.xp-framework.net/server/'));
    *   
-   *   try(); {
+   *   try {
    *     $res= $c->invoke(5, 3);
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }

@@ -11,15 +11,11 @@
     'text.parser.DaemonMailParserAutoresponderException'
   );
   
-  define('DMP_SEARCH',   0x0000);
-  define('DMP_ORIGMSG',  0x0001);
-  define('DMP_FINISH',   0xFFFF);
-
   /**
    * Mailer-Daemon failure notification parser
    *
    * <code>
-   *   $p= &new DaemonMailParser();                           
+   *   $p= new DaemonMailParser();                           
    *
    *   // Header handling                                     
    *   $p->addHeaderFound(                                    
@@ -32,14 +28,14 @@
    *     'var_dump'                                           
    *   );                                                     
    *
-   *   try(); {                                               
+   *   try {                                               
    *     $p->parse($message);                                 
-   *   } if (catch('FormatException', $e)) {                  
+   *   } catch(FormatException $e) {                  
    *                                                          
    *     // This does not seem to be a Mailer Daemon Message  
    *     $e->printStackTrace();                               
    *     exit(-1);                                            
-   *   } if (catch('Exception', $e)) {                        
+   *   } catch(XPException $e) {                        
    *
    *     // Any other error                                   
    *     $e->printStackTrace();                               
@@ -51,6 +47,11 @@
    * @purpose  DaemonMail Parser
    */
   class DaemonMailParser extends Object {
+    const
+      DMP_SEARCH  = 0x0000,
+      DMP_ORIGMSG = 0x0001,
+      DMP_FINISH  = 0xFFFF;
+
     public
       $_hcb = array();
       
@@ -144,7 +145,7 @@
      * @throws  lang.FormatException
      * @throws  lang.IllegalArgumentException
      */
-    public function parse($message) {
+    public function parse(Message $message) {
       static $magic= array(
         '550'                    => DAEMON_GENERIC,
         '5.5.0'                  => DAEMON_GENERIC,
@@ -161,22 +162,16 @@
         'Delay'                  => DAEMON_DELAYED,
       );
       
-      if (!is('Message', $message)) {
-        throw(new IllegalArgumentException(
-          'Parameter message is not peer.mail.Message object (given: '.xp::typeOf($message).')'
-        ));
-      }
-      
       // First, look in the headers
-      $state= DMP_SEARCH;
+      $state= self::DMP_SEARCH;
       
       // "In-Reply-To": These are stupid autoresponders or people replying 
       // to an address they shouldn't be.
       if (NULL !== ($irt= $message->getHeader('In-Reply-To'))) {
-        throw(new DaemonMailParserAutoresponderException(
+        throw new DaemonMailParserAutoresponderException(
           'Message has In-Reply-To header, Mailer Daemons do not set these [hint: Lame autoresponders do]',
           $message
-        ));
+        );
       }
       
       // Set up daemon mail object
@@ -316,12 +311,12 @@
               break;
 
             case 'message/rfc822':
-              $state= DMP_ORIGMSG;
+              $state= self::DMP_ORIGMSG;
               $body= $part->parts[0]->getHeaderString()."\r\n";
               break;
               
             case 'text/rfc822-headers':
-              $state= DMP_ORIGMSG;
+              $state= self::DMP_ORIGMSG;
               $body= $part->getBody();
               break;
               
@@ -426,12 +421,12 @@
       $v= '';
       do {
         switch ($state) {
-          case DMP_ORIGMSG:
+          case self::DMP_ORIGMSG:
             if (
               ('' == chop($t)) || 
               (!strstr($t, ': ') && "\t" != $t{0})
             ) {
-              $state= DMP_FINISH;
+              $state= self::DMP_FINISH;
               break;
             }
             
@@ -455,7 +450,7 @@
             }
             break;
             
-          case DMP_SEARCH:
+          case self::DMP_SEARCH:
             // Sendmail
             //
             //    ----- The following addresses had permanent fatal errors -----
@@ -482,7 +477,7 @@
                 
               } while ($t= strtok("\n"));
   
-              $state= DMP_ORIGMSG;            
+              $state= self::DMP_ORIGMSG;            
               continue;
             }
 
@@ -520,7 +515,7 @@
             if ('This message was created automatically by mail delivery software (Exim).' == substr($t, 0, 72)) {
               $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_EXIM;
               
-              $state= DMP_FINISH;
+              $state= self::DMP_FINISH;
 
               // Find indented lines until ----- appears
               $c= FALSE;
@@ -528,7 +523,7 @@
                 if ('-----' == substr($t, 0, 5)) $c= TRUE;
                 if ($c && ('' == chop($t))) break;
                 
-                if (strstr($t, 'copy of the message')) $state= DMP_ORIGMSG;
+                if (strstr($t, 'copy of the message')) $state= self::DMP_ORIGMSG;
                 if ('  ' != substr($t, 0, 2)) continue;
                 
                 // Parse out host/IP
@@ -558,7 +553,7 @@
               strtok("\n");
 
               // Now, work on original message
-              $state= DMP_ORIGMSG;
+              $state= self::DMP_ORIGMSG;
               continue;
             }
 
@@ -586,7 +581,7 @@
               $this->_parseDeliveryStatus($str, $daemonmessage);
 
               // Now, work on original message
-              $state= DMP_ORIGMSG;              
+              $state= self::DMP_ORIGMSG;              
               continue;
             }
             
@@ -615,7 +610,7 @@
               } while ($t= strtok("\n"));
               
               // Now, work on original message
-              $state= DMP_ORIGMSG;
+              $state= self::DMP_ORIGMSG;
               continue;
             }
             
@@ -653,7 +648,7 @@
               }
               
               // Now, work on original message
-              $state= DMP_ORIGMSG;
+              $state= self::DMP_ORIGMSG;
               continue;
             }
             
@@ -706,14 +701,14 @@
               $t= strtok("\n");
               $t= strtok("\n");
               
-              $state= DMP_ORIGMSG;
+              $state= self::DMP_ORIGMSG;
               continue;
             }
             
             
             break;
           
-          case DMP_FINISH:
+          case self::DMP_FINISH:
             break 2;
           
           default: 
@@ -723,7 +718,7 @@
       } while ($t= strtok("\n"));
       
       // No reason found?
-      if (DMP_FINISH != $state) {
+      if (self::DMP_FINISH != $state) {
         trigger_error('Headers: '.var_export($message->headers, 1), E_USER_ERROR);
         trigger_error('Body: '.(is('MimeMessage', $message) 
           ? sizeof($message->parts).' parts'
@@ -731,9 +726,9 @@
         ), E_USER_ERROR);
         
         $states= array(
-          DMP_SEARCH    => 'DMP_SEARCH',
-          DMP_ORIGMSG   => 'DMP_ORIGMSG',
-          DMP_FINISH    => 'DMP_FINISH'
+          self::DMP_SEARCH    => 'self::DMP_SEARCH',
+          self::DMP_ORIGMSG   => 'self::DMP_ORIGMSG',
+          self::DMP_FINISH    => 'self::DMP_FINISH'
         );
         throw(new FormatException('Unable to parse message, state "'.$states[$state].'"'));
       }

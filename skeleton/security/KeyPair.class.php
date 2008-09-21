@@ -16,11 +16,11 @@
    * <code>
    *   uses('security.KeyPair');
    * 
-   *   try(); {
-   *     if ($keypair= &KeyPair::generate('md5', OPENSSL_KEYTYPE_RSA, 384)) {
+   *   try {
+   *     if ($keypair= KeyPair::generate('md5', OPENSSL_KEYTYPE_RSA, 384)) {
    *       $export= $keypair->export('krowemarf-px');
    *     }
-   *   } if (catch('Exception', $e)) {
+   *   } catch(XPException $e) {
    *     $e->printStackTrace();
    *     exit();
    *   }

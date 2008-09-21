@@ -42,16 +42,16 @@
       try {
         $r= $this->lc->search($this->basedn, '(uid='.$user.')');
       } catch (LDAPException $e) {
-        throw(new AuthenticatorException(sprintf(
+        throw new AuthenticatorException(sprintf(
           'Authentication failed (#%d: "%s")', 
           $e->getErrorCode(),
           $e->getMessage()
-        ), $e));
+        ), $e);
       } catch (ConnectException $e) {
-        throw(new AuthenticatorException(sprintf(
+        throw new AuthenticatorException(sprintf(
           'Authentication failed (<connect>: "%s")', 
           $e->getMessage()
-        ), $e));
+        ), $e);
       }
       
       // Check return, we must find a distinct user
@@ -60,6 +60,5 @@
       $entry= $r->getNextEntry();
       return UnixCrypt::matches($entry->getAttribute('userpassword', 0), $pass);
     }
-    
   } 
 ?>
