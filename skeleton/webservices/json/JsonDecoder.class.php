@@ -12,13 +12,6 @@
   );
 
   // Defines for the tokenizer
-  define('JSON_TOKEN_LBRACE',     0x0000);
-  define('JSON_TOKEN_RBRACE',     0x0001);
-  define('JSON_TOKEN_LBRACKET',   0x0002);
-  define('JSON_TOKEN_RBRACKET',   0x0003);
-  define('JSON_TOKEN_COMMA',      0x0004);
-  define('JSON_TOKEN_COLON',      0x0005);
-  define('JSON_TOKEN_VALUE',      0x1000);
 
   /**
    * JSON decoder and encoder
@@ -28,6 +21,15 @@
    * @purpose   JSON en- and decoder
    */
   class JsonDecoder extends Object implements IJsonDecoder {
+    const 
+      T_LBRACE    = 0x0000,
+      T_RBRACE    = 0x0001,
+      T_LBRACKET  = 0x0002,
+      T_RBRACKET  = 0x0003,
+      T_COMMA     = 0x0004,
+      T_COLON     = 0x0005,
+      T_VALUE     = 0x1000;
+
     public
       $stream     = NULL;
     
@@ -123,7 +125,7 @@
         }
         
         default: {
-          throw(new JsonException('Cannot encode data of type '.gettype($data)));
+          throw new JsonException('Cannot encode data of type '.gettype($data));
         }
       }
     }
@@ -141,15 +143,15 @@
       $this->stream->rewind();
       
       switch ($this->_getNextToken()) {
-        case JSON_TOKEN_LBRACKET: {
+        case self::T_LBRACKET: {
           return $this->_decodeArray();
         }
         
-        case JSON_TOKEN_LBRACE: {
+        case self::T_LBRACE: {
           return $this->_decodeObject();
         }
         
-        case JSON_TOKEN_VALUE: {
+        case self::T_VALUE: {
           return $this->_getTokenValue();
         }
       }
@@ -165,20 +167,20 @@
       do {
         $token= $this->_getNextToken();
         switch ($token) {
-          case JSON_TOKEN_LBRACKET: {
+          case self::T_LBRACKET: {
             $array[]= $this->_decodeArray();
             break;
           }
-          case JSON_TOKEN_LBRACE: {
+          case self::T_LBRACE: {
             $array[]= $this->_decodeObject();
             break;
           }
-          case JSON_TOKEN_VALUE: {
+          case self::T_VALUE: {
             $array[]= $this->_getTokenValue();
             break;
           }
         }
-      } while ($token != JSON_TOKEN_RBRACKET);
+      } while ($token != self::T_RBRACKET);
       return $array;
     }
     
@@ -192,17 +194,17 @@
       do {
         $token= $this->_getNextToken();
         switch ($token) {
-          case JSON_TOKEN_LBRACKET: {
+          case self::T_LBRACKET: {
             $array[$key]= $this->_decodeArray();
             unset($key);
             break;
           }
-          case JSON_TOKEN_LBRACE: {
+          case self::T_LBRACE: {
             $array[$key]= $this->_decodeObject();
             unset($key);
             break;
           }
-          case JSON_TOKEN_VALUE: {
+          case self::T_VALUE: {
             if (empty($key)) {
               $key= $this->_getTokenValue();
             } else {
@@ -212,12 +214,11 @@
             break;
           }
         }
-      } while ($token != JSON_TOKEN_RBRACE);
+      } while ($token != self::T_RBRACE);
 
       // Introspect array to check if this is actually an object
       if (!empty($array['__jsonclass__']) && !empty($array['__xpclass__'])) {
-        $class= XPClass::forName($array['__xpclass__']);
-        $inst= $class->newInstance();
+        $inst= XPClass::forName($array['__xpclass__'])->newInstance();
         
         foreach ($array as $key => $value) {
           if (in_array($key, array('__jsonclass__', '__xpclass__'))) continue;
@@ -236,38 +237,38 @@
      * @return  int
      */
     protected function _getNextToken() {
-      if ($this->stream->eof()) return JSON_TOKEN_EOF;
+      if ($this->stream->eof()) return self::T_EOF;
       $this->_trim();
       
       $token= $this->stream->read(1);
       
       switch ($token) {
-        case '{': return JSON_TOKEN_LBRACE;
-        case '}': return JSON_TOKEN_RBRACE;
-        case '[': return JSON_TOKEN_LBRACKET;
-        case ']': return JSON_TOKEN_RBRACKET;
-        case ',': return JSON_TOKEN_COMMA;
-        case ':': return JSON_TOKEN_COLON;
+        case '{': return self::T_LBRACE;
+        case '}': return self::T_RBRACE;
+        case '[': return self::T_LBRACKET;
+        case ']': return self::T_RBRACKET;
+        case ',': return self::T_COMMA;
+        case ':': return self::T_COLON;
         case 't': {
           $this->_tokenValue= TRUE;
           $this->stream->read(3); // eat "rue"
-          return JSON_TOKEN_VALUE;
+          return self::T_VALUE;
         }
         case 'f': {
           $this->_tokenValue= FALSE;
           $this->stream->read(4); // eat "alse"
-          return JSON_TOKEN_VALUE;
+          return self::T_VALUE;
         }
         
         case 'n': {
           $this->_tokenValue= NULL;
           $this->stream->read(3); // eat "ull"
-          return JSON_TOKEN_VALUE;
+          return self::T_VALUE;
         }
         
         case '"': {
           $this->_tokenValue= $this->_readString();
-          return JSON_TOKEN_VALUE;
+          return self::T_VALUE;
         }
         
         case '-':
@@ -285,7 +286,7 @@
         case '0': {
           $this->stream->seek($this->stream->tell()- 1);
           $this->_tokenValue= $this->_readNumber();
-          return JSON_TOKEN_VALUE;
+          return self::T_VALUE;
         }
         
         default: 
@@ -372,7 +373,7 @@
           }
         }
       } while (!$this->stream->eof());
-      throw(new JsonException('String not well-formed.'));
+      throw new JsonException('String not well-formed.');
     }
     
     /**

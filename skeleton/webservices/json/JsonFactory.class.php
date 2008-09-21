@@ -24,8 +24,7 @@
      * @return  webservices.json.IJsonDecoder
      */
     public static function create() {
-      $n= new JsonDecoder();
-      return $n;
+      return new JsonDecoder();
     }
   }
 ?>
