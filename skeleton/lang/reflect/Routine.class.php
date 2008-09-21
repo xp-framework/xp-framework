@@ -246,6 +246,15 @@
         $cmp->getDeclaringClass()->equals($this->getDeclaringClass())
       );
     }
+
+    /**
+     * Returns a hashcode for this routine
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'R['.$this->_reflect->getDeclaringClass().$this->_reflect->getName();
+    }
     
     /**
      * Retrieve string representation. Examples:
