@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- removed package util.io and class util.io.VirtualFileManager
+  (kiesel)
+  
 RFCs
 ~~~~
 - Implemented RFC #0164 - Exceptions for XPClass::get*()
