@@ -42,6 +42,7 @@
    * <ul>
    *   <li>dataset: Creates rdbms.DataSet class from a database</li>
    *   <li>wsdl: Creates web service client for a given WSDL uri or file</li>
+   *   <li>esdl: Creates remote interfaces for EASC services</li>
    * </ul>
    *
    * @purpose  Tool
