@@ -30,7 +30,7 @@
      *
      */
     protected static function usage() {
-      Console::$err->writeLine('*** Usage: cgen [generator-class] args');
+      Console::$err->writeLine('*** Usage: cgen [-O output] [generator-class] [options]');
       exit(1);
     }
     
@@ -78,22 +78,31 @@
      */
     public static function main(array $args) {
       if (!$args) self::usage();
+      
+      // Parse arguments
+      for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
+        if ('-O' == $args[$i]) {
+          $output= $args[++$i];
+        } else {
+          $package= $args[$i];
+          break;
+        }
+      }
     
       // Load generator class
       try {
-        $class= Package::forName('xp.codegen')->getPackage($args[0])->loadClass('Generator');
+        $class= Package::forName('xp.codegen')->getPackage($package)->loadClass('Generator');
       } catch (ElementNotFoundException $e) {
-        Console::$err->writeLine('*** No generator named "'.$args[0].'"');
+        Console::$err->writeLine('*** No generator named "'.$package.'"');
         exit(2);
       }
 
       // Instantiate generator
-      $params= new ParamString(array_slice($args, 1));
+      $params= new ParamString(array_slice($args, $i+ 1));
       $generator= $class->newInstance($params);
       $generator->storage= new FileSystemStorage(System::tempDir());
       
       // Output
-      $output= $params->value('output', 'O', '-');
       if ('-' === $output) {
         $generator->output= new ConsoleOutput(Console::$err);
       } else if (strstr($output, '.xar')) {
