@@ -9,6 +9,7 @@
     'util.PropertyManager',
     'io.FileUtil',
     'io.File',
+    'io.Folder',
     'text.doclet.markup.MarkupBuilder',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
@@ -35,16 +36,20 @@
       $path= $request->getQueryString();
 
       $prop= PropertyManager::getInstance()->getProperties('storage');
-      $base= new FileCollection($prop->readString('storage', 'base').DIRECTORY_SEPARATOR.strtr($path, array(
+      $base= new Folder($prop->readString('storage', 'base').DIRECTORY_SEPARATOR.strtr($path, array(
         ','   => DIRECTORY_SEPARATOR, 
         '..'  => ''
       )));
+      if (!$base->exists()) {
+        throw new HttpScriptletException('Path "'.$path.'" does not exist', HTTP_NOT_FOUND);
+      }
+
       $excludes= array();
       foreach ($prop->readArray('storage', 'excludes') as $pattern) {
         $excludes[]= new NameMatchesFilter('/'.$pattern.'/i');
       }
       
-      $i= new FilteredIOCollectionIterator($base, new NegationOfFilter(new AnyOfFilter($excludes)));
+      $i= new FilteredIOCollectionIterator(new FileCollection($base->getUri()), new NegationOfFilter(new AnyOfFilter($excludes)));
       $n= $response->addFormResult(new Node('list', NULL, array(
         'path' => $path
       )));
