@@ -55,10 +55,13 @@
       
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
-        if (is_dir($element)) {
-          self::registerLoader(FileSystemClassLoader::instanceFor($element, FALSE));
-        } else if (is_file($element)) {
-          self::registerLoader(ArchiveClassLoader::instanceFor($element, FALSE));
+        $resolved= realpath($element);
+        if (is_dir($resolved)) {
+          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
+        } else if (is_file($resolved)) {
+          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
+        } else {
+          xp::error('[bootstrap] Classpath element ['.$element.'] not found');
         }
       }
     }
@@ -81,10 +84,11 @@
      * @throws  lang.ElementNotFoundException if the path cannot be found
      */
     public static function registerPath($element, $before= FALSE) {
-      if (is_dir($element)) {
-        return self::registerLoader(FileSystemClassLoader::instanceFor($element, $before));
-      } else if (is_file($element)) {
-        return self::registerLoader(ArchiveClassLoader::instanceFor($element, $before));
+      $resolved= realpath($element);
+      if (is_dir($resolved)) {
+        return self::registerLoader(FileSystemClassLoader::instanceFor($resolved, $before));
+      } else if (is_file($resolved)) {
+        return self::registerLoader(ArchiveClassLoader::instanceFor($resolved, $before));
       }
       raise('lang.ElementNotFoundException', 'Element "'.$element.'" not found');
     }
