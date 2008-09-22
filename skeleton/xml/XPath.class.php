@@ -63,15 +63,15 @@
     public function __construct($arg) {
       switch (xp::typeOf($arg)) {
         case 'string':
-          $this->context= new DomXPath($this->loadXML($arg));
+          $this->context= new DOMXPath($this->loadXML($arg));
           break;
         
         case 'php.DOMDocument':
-          $this->context= new DomXPath($arg);
+          $this->context= new DOMXPath($arg);
           break;
         
         case 'xml.Tree':
-          $this->context= new DomXPath($this->loadXML($arg->getSource(INDENT_NONE)));
+          $this->context= new DOMXPath($this->loadXML($arg->getSource(INDENT_NONE)));
           break;
         
         default:
