@@ -7,6 +7,7 @@
   uses(
     'util.Date',
     'util.DateUtil',
+    'peer.BSDSocket',
     'peer.server.ConnectionListener',
     'peer.ftp.server.FtpSession',
     'peer.SocketException',
@@ -891,7 +892,7 @@
       $this->cat && $this->cat->debug('+++ Host is ', $host);
       $this->cat && $this->cat->debug('+++ Port is ', $port);
 
-      $this->datasock[$event->stream->hashCode()]= new BsdSocket($host, $port);
+      $this->datasock[$event->stream->hashCode()]= new BSDSocket($host, $port);
       $this->answer($event->stream, 200, 'PORT command successful');      
     }
 
