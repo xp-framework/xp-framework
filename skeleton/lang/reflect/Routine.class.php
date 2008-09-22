@@ -148,7 +148,7 @@
      */
     public function getExceptionTypes() {
       $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
-      return $details ? array_map(array('XPClass', 'forName'), $details[DETAIL_THROWS]) : array();
+      return $details ? array_map(array(xp::reflect('lang.XPClass'), 'forName'), $details[DETAIL_THROWS]) : array();
     }
     
     /**
