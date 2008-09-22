@@ -100,6 +100,8 @@
      */
     public function resolve($command) {
       clearstatcache();
+      
+      // PATHEXT is in form ".{EXT}[;.{EXT}[;...]]"
       $extensions= array('') + explode(PATH_SEPARATOR, getenv('PATHEXT'));
     
       // If the command is in fully qualified form and refers to a file
@@ -110,7 +112,7 @@
         (DIRECTORY_SEPARATOR === $command{0})
       ) {
         foreach ($extensions as $ext) {
-          if (file_exists($q= $command.$ext)) return realpath($command.$ext);
+          if (file_exists($q= $command.$ext)) return realpath($q);
         }
         throw new IOException('"'.$command.'" does not exist');
       }
