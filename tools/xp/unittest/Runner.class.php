@@ -50,6 +50,10 @@
       for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
         if ('-v' === $args[$i]) {
           $verbose= TRUE;
+        } else if ('-cp' === $args[$i]) {
+          foreach (explode(PATH_SEPARATOR, $args[++$i]) as $path) {
+            ClassLoader::getDefault()->registerPath($path);
+          }
         } else if (strstr($args[$i], '.ini')) {
           $sources->add(new PropertySource(new Properties($args[$i])));
         } else if (strstr($args[$i], '.class.php')) {
