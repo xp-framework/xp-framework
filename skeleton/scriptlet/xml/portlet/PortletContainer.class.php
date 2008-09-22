@@ -38,7 +38,7 @@
      * @param   scriptlet.xml.Context context
      */
     public function process($request, $response, $context) {
-      $rundata= new Rundata();
+      $rundata= new RunData();
       $rundata->request= $request;
       $rundata->context= $context;
 
