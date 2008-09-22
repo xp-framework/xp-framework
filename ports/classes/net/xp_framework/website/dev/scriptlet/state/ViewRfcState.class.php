@@ -7,6 +7,7 @@
   uses(
     'scriptlet.xml.workflow.AbstractState',
     'text.doclet.markup.MarkupBuilder',
+    'text.doclet.markup.DelegatingProcessor',
     'net.xp_framework.db.caffeine.Rfc'
   );
 
@@ -52,6 +53,12 @@
 
       // Add content
       $builder= new MarkupBuilder();
+
+      // Add <summary>...</summary>
+      $builder->registerProcessor('summary', newinstance('text.doclet.markup.DelegatingProcessor', array($builder->processors['default']), '{
+        public function tag() { return "summary"; }
+      }'));
+
       $n->addChild(new Node('scope', new PCData('<p>'.$builder->markupFor($rfc->getScope()).'</p>')));
       $n->addChild(new Node('content', new PCData('<p>'.$builder->markupFor($rfc->getContent()).'</p>')));
     }
