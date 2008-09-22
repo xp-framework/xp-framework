@@ -308,7 +308,7 @@
      * @return  string
      */
     private function fragment($conn, $types, $col) {
-      if ($col instanceof SQLRenderAble) {
+      if ($col instanceof SQLRenderable) {
         return $col->asSQL($conn);
       } else {
         if (!isset($types[$col])) throw(new SQLStateException('Field "'.$col.'" unknown'));
