@@ -131,9 +131,9 @@
       // Scan the given string for illegal characters.
       if (is_string($content)) {  
         if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
-          throw(new XMLFormatException(
+          throw new XMLFormatException(
             'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
-          ));
+          );
         }
       }
       
