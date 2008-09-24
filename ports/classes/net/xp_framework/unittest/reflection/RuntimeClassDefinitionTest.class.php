@@ -37,7 +37,7 @@
       if (class_exists(xp::reflect($name))) {
         $this->fail('Class "'.$name.'" may not exist!');
       }
-      return ClassLoader::getDefault()->defineClass($name, $parent, $interfaces, $bytes);
+      return ClassLoader::defineClass($name, $parent, $interfaces, $bytes);
     }
 
     /**
@@ -51,7 +51,7 @@
       if (interface_exists(xp::reflect($name))) {
         $this->fail('Interface "'.$name.'" may not exist!');
       }
-      return ClassLoader::getDefault()->defineInterface($name, $parents, $bytes);
+      return ClassLoader::defineInterface($name, $parents, $bytes);
     }
 
     /**
