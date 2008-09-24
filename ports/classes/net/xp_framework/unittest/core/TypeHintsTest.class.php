@@ -23,7 +23,7 @@
   class TypeHintsTest extends TestCase {
   
     static function __static() {
-      ClassLoader::getDefault()->defineClass('TypeHintedClass', 'lang.Object', array(), '{
+      ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.core.TypeHintedClass', 'lang.Object', array(), '{
         public static function passObject(Generic $o) { return $o; }
         public static function passNullable(Generic $o= NULL) { return $o; }
       }');
