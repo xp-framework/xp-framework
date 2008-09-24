@@ -167,7 +167,7 @@
       // Soap-ext SoapParam and SoapVar
       switch (TRUE) {
         case ($parameter instanceof Parameter):
-          if ($parameter->value instanceof SOAPType) {
+          if ($parameter->value instanceof SoapType) {
             return new SoapParam($this->wrapParameter($parameter->value), $parameter->name);
           }
           

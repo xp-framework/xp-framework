@@ -6,6 +6,7 @@
 
   uses(
     'webservices.wddx.transport.WddxTransport',
+    'webservices.wddx.WddxFaultException',
     'webservices.wddx.WddxMessage',
     'peer.http.HttpConnection'
   );
@@ -47,11 +48,7 @@
      * @param   webservices.wddx.WddxMessage message
      * @return  scriptlet.HttpScriptletResponse
      */
-    public function send($message) {
-      
-      if (!is('webservices.wddx.WddxMessage', $message)) throw(new IllegalArgumentException(
-        'parameter "message" must be a webservices.wddx.WddxMessage'
-      ));
+    public function send(WddxMessage $message) {
       
       // Send request
       with ($r= $this->_conn->create(new HttpRequest())); {
@@ -101,7 +98,7 @@
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
-            throw(new WddxFaultException($fault));
+            throw new WddxFaultException($fault);
           }
           
           return $answer;
@@ -112,9 +109,9 @@
           ));
         
         default:
-          throw(new IllegalStateException(
+          throw new IllegalStateException(
             'Unexpected return code: '.$response->getStatusCode()
-          ));
+          );
       }
     }    
   }
