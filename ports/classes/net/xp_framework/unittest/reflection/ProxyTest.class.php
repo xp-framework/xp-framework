@@ -45,7 +45,7 @@
      * in setUp()
      *
      * @param   lang.XPClass[] interfaces
-     * @return  &lang.reflect.Proxy
+     * @return  lang.reflect.Proxy
      */
     protected function proxyInstanceFor($interfaces) {
       return Proxy::newProxyInstance(
@@ -61,7 +61,7 @@
      * in setUp()
      *
      * @param   lang.XPClass[] interfaces
-     * @return  &lang.XPClass
+     * @return  lang.XPClass
      */
     protected function proxyClassFor($interfaces) {
       return Proxy::getProxyClass(
