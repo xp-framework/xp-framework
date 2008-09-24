@@ -8,7 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
-- removed package util.io and class util.io.VirtualFileManager
+- removed package util.io and class util.io.VirtualFileManager and
+  io.EmbeddedFile
   (kiesel)
   
 RFCs
