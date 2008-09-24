@@ -158,7 +158,7 @@
       // complementing getmypid().
       if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
         try {
-          $c= new Com('winmgmts:');
+          $c= new com('winmgmts:');
           $p= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"');
           $self->status['exe']= $p->executablePath;
           $self->status['command']= $p->commandLine;
