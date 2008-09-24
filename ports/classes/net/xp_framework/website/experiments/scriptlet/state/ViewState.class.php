@@ -49,7 +49,7 @@
     #[@xslmethod]
     public function markup() {
       $builder= new MarkupBuilder();
-      $d= new DomDocument();
+      $d= new DOMDocument();
       $markup= '<markup><p>'.$builder->markupFor(FileUtil::getContents($this->element)).'</p></markup>';
       if (FALSE === $d->loadXML(utf8_encode($markup))) {
         throw new FormatException(libxml_get_last_error()->message.' @ '.$this->element->getFileName().': '.htmlspecialchars($markup));
