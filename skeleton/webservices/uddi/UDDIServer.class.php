@@ -99,7 +99,7 @@
       }
       
       // Create message
-      with ($m= new SOAPMessage()); {
+      with ($m= new XPSoapMessage()); {
         $m->encoding= 'utf-8';
         $m->root= new Node('soap:Envelope', NULL, array(
           'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope/'
@@ -133,7 +133,7 @@
       while ($buf= $response->readData()) $xml.= $buf;
       $this->cat && $this->cat->debug('<<<', $xml);
 
-      if ($answer= SOAPMessage::fromString($xml)) {
+      if ($answer= XPSoapMessage::fromString($xml)) {
         if (NULL !== ($content_type= $response->getHeader('Content-Type'))) {
           @list($type, $charset)= explode('; charset=', $content_type);
           if (!empty($charset)) $answer->setEncoding($charset);
