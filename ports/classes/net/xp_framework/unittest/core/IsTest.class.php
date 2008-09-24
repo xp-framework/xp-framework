@@ -42,7 +42,7 @@
      */
     #[@test]
     public function undefinedClassName() {
-      $this->assertFalse(class_exists('Undefined_Class'));
+      $this->assertFalse(class_exists('Undefined_Class', FALSE));
       $this->assertFalse(is('Undefined_Class', new Object()));
     }
 
@@ -62,7 +62,7 @@
     #[@test]
     public function interfaces() {
       ClassLoader::defineClass(
-        'DestructionCallbackImpl', 
+        'net.xp_framework.unittest.core.DestructionCallbackImpl', 
         'lang.Object',
         array('net.xp_framework.unittest.core.DestructionCallback'),
         '{
@@ -72,15 +72,15 @@
         }'
       );
       ClassLoader::defineClass(
-        'DestructionCallbackImplEx', 
-        'DestructionCallbackImpl',
+        'net.xp_framework.unittest.core.DestructionCallbackImplEx', 
+        'net.xp_framework.unittest.core.DestructionCallbackImpl',
         NULL,
         '{}'
       );
       
-      $this->assertTrue(is('DestructionCallback', new DestructionCallbackImpl()));
-      $this->assertTrue(is('DestructionCallback', new DestructionCallbackImplEx()));
-      $this->assertFalse(is('DestructionCallback', new Object()));
+      $this->assertTrue(is('net.xp_framework.unittest.core.DestructionCallback', new DestructionCallbackImpl()));
+      $this->assertTrue(is('net.xp_framework.unittest.core.DestructionCallback', new DestructionCallbackImplEx()));
+      $this->assertFalse(is('net.xp_framework.unittest.core.DestructionCallback', new Object()));
     }
   }
 ?>
