@@ -23,6 +23,7 @@
    * Class to parse PHP files. Parsing tries to extract informations
    * about contained global functions, classes and its functions.
    *
+   * @deprecated Use text.doclet instead
    * @ext      tokenizer
    * @purpose  Parser
    */
@@ -151,7 +152,7 @@
                 $this->log && $this->log->info ('Function', $data, 'at line', $lineno);
                 
                 // Add new function, if currentClass exists add to that, otherwise to file
-                $f= new StdClass();
+                $f= new stdClass();
                 $f->type= 'function';
                 $f->name= $data;
                 $f->line= $lineno;
@@ -180,7 +181,7 @@
                 $this->log && $this->log->info ('Class', $data, 'at line', $lineno);
                 
                 // Add new class object, and remember this as the active
-                $c= new StdClass();
+                $c= new stdClass();
                 $c->type= 'class';
                 $c->name= $data;
                 $c->line= $lineno;
