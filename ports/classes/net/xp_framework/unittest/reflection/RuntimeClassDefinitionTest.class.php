@@ -34,7 +34,7 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function defineClass($name, $parent, $interfaces, $bytes) {
-      if (class_exists(xp::reflect($name))) {
+      if (class_exists(xp::reflect($name), FALSE)) {
         $this->fail('Class "'.$name.'" may not exist!');
       }
       return ClassLoader::defineClass($name, $parent, $interfaces, $bytes);
@@ -48,7 +48,7 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function defineInterface($name, $parents, $bytes) {
-      if (interface_exists(xp::reflect($name))) {
+      if (interface_exists(xp::reflect($name), FALSE)) {
         $this->fail('Interface "'.$name.'" may not exist!');
       }
       return ClassLoader::defineInterface($name, $parents, $bytes);
