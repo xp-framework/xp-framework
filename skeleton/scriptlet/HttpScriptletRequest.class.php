@@ -21,7 +21,7 @@
       $headers=         array(),
       $params=          array(),
       $data=            NULL,
-      $method=          HTTP_GET,
+      $method=          HttpConstants::GET,
       $session=         NULL;
     
     /**
