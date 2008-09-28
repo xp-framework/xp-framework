@@ -7,6 +7,9 @@
   uses(
     'unittest.TestCase',
     'unittest.TestSuite',
+    'util.collections.HashTable',
+    'lang.types.String', 
+    'lang.types.ArrayList',
     'net.xp_framework.unittest.tests.SimpleTestCase'
   );
 
@@ -26,7 +29,7 @@
      *
      */
     public function setUp() {
-      $this->invocations= create('new HashTable<String, ArrayList>()');
+      $this->invocations= create('new util.collections.HashTable<lang.types.String, lang.types.ArrayList>()');
       $this->suite= new TestSuite();
       $this->suite->addListener($this);
     }
