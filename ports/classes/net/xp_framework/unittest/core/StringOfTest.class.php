@@ -135,7 +135,7 @@
      */
     #[@test]
     public function builtinObjectsArgument() {
-      $this->assertEquals("php.stdClass {\n}", xp::stringOf(new StdClass()));
+      $this->assertEquals("php.stdClass {\n}", xp::stringOf(new stdClass()));
       $this->assertEquals("php.Directory {\n}", xp::stringOf(new Directory('.')));
     }
 
@@ -177,8 +177,8 @@
      */
     #[@test]
     public function objectRecursion() {
-      $o= new StdClass();
-      $o->child= new StdClass();
+      $o= new stdClass();
+      $o->child= new stdClass();
       $o->child->parent= $o;
       $this->assertEquals('php.stdClass {
   child => php.stdClass {
