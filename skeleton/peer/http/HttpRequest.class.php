@@ -25,9 +25,9 @@
   class HttpRequest extends Object {
     public
       $url        = NULL,
-      $method     = HTTP_GET,
+      $method     = HttpConstants::GET,
       $target     = '',
-      $version    = HTTP_VERSION_1_1,
+      $version    = HttpConstants::VERSION_1_1,
       $headers    = array('Connection' => 'close'),
       $parameters = array();
       
@@ -76,7 +76,7 @@
     /**
      * Set request method
      *
-     * @param   string method request method, e.g. HTTP_GET
+     * @param   string method request method, e.g. HttpConstants::GET
      */
     public function setMethod($method) {
       $this->method= $method;
@@ -143,7 +143,7 @@
       // Which HTTP method? GET and HEAD use query string, POST etc. use
       // body for passing parameters
       switch ($this->method) {
-        case HTTP_HEAD: case HTTP_GET: case HTTP_DELETE: case HTTP_OPTIONS:
+        case HttpConstants::HEAD: case HttpConstants::GET: case HttpConstants::DELETE: case HttpConstants::OPTIONS:
           if (NULL !== $this->url->getQuery()) {
             $target.= '?'.$this->url->getQuery().(empty($query) ? '' : $query);
           } else {
@@ -152,7 +152,7 @@
           $body= '';
           break;
           
-        case HTTP_POST: case HTTP_PUT: case HTTP_TRACE: default:
+        case HttpConstants::POST: case HttpConstants::PUT: case HttpConstants::TRACE: default:
           $body= substr($query, 1);
           if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
           $this->headers['Content-Length']= strlen($body);

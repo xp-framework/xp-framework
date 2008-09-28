@@ -28,7 +28,7 @@
      * @return  peer.http.HttpResponse
      */
     protected function httpResponse($status, $headers, $body= '') {
-      $response= 'HTTP/1.1 '.$status." Test\r\n";
+      $response= 'HTTP/'.HttpConstants::VERSION_1_1.' '.$status." Test\r\n";
       foreach ($headers as $key => $val) {
         $response.= $key.': '.$val."\r\n";
       }
@@ -58,10 +58,10 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function assertRead($data) {
-      with ($length= strlen($data), $r= $this->httpResponse(HTTP_OK, array('Content-Length' => $length), $data)); {
+      with ($length= strlen($data), $r= $this->httpResponse(HttpConstants::STATUS_OK, array('Content-Length' => $length), $data)); {
       
         // Self-testing
-        $this->assertEquals(HTTP_OK, $r->getStatusCode());
+        $this->assertEquals(HttpConstants::STATUS_OK, $r->getStatusCode());
         $this->assertEquals($length, (int)$r->getHeader('Content-Length'));
         
         // Check data
@@ -107,7 +107,7 @@
     #[@test]
     public function available() {
       with ($s= new HttpInputStream($this->httpResponse(
-        HTTP_OK, 
+        HttpConstants::STATUS_OK, 
         array('Content-Length' => 10), 
         'HelloWorld'
       ))); {
@@ -129,7 +129,7 @@
     #[@test]
     public function availableWithChunks() {
       with ($s= new HttpInputStream($this->httpResponse(
-        HTTP_OK, 
+        HttpConstants::STATUS_OK, 
         array('Transfer-Encoding' => 'chunked'), 
         "5\r\nHello\r\n".
         "5\r\nWorld\r\n".

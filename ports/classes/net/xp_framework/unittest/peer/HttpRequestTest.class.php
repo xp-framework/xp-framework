@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'peer.http.HttpRequest'
+    'peer.http.HttpRequest',
+    'peer.http.HttpConstants'
   );
 
   /**
@@ -24,7 +25,7 @@
     #[@test]
     public function getSimpleUrl() {
       $r= new HttpRequest(new URL('http://example.com'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $this->assertEquals(
         "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
@@ -38,7 +39,7 @@
     #[@test]
     public function portIncluded() {
       $r= new HttpRequest(new URL('http://example.com:8080'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $this->assertEquals(
         "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com:8080\r\n\r\n",
         $r->getRequestString()
@@ -52,7 +53,7 @@
     #[@test]
     public function getUrlWithPath() {
       $r= new HttpRequest(new URL('http://example.com/path/to/images/index.html'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $this->assertEquals(
         "GET /path/to/images/index.html HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
@@ -66,7 +67,7 @@
     #[@test]
     public function getSupportsBasicAuth() {
       $r= new HttpRequest(new URL('http://user:pass@example.com/'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $this->assertEquals(
         "GET / HTTP/1.1\r\nConnection: close\r\nAuthorization: Basic dXNlcjpwYXNz\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
@@ -80,7 +81,7 @@
     #[@test]
     public function getUrlWithFileOnly() {
       $r= new HttpRequest(new URL('http://example.com/index.html'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $this->assertEquals(
         "GET /index.html HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
@@ -94,7 +95,7 @@
     #[@test]
     public function getUrlWithUrlParams() {
       $r= new HttpRequest(new URL('http://example.com/?a=b'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $this->assertEquals(
         "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
@@ -108,7 +109,7 @@
     #[@test]
     public function getUrlWithArrayParams() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $r->setParameters(array('a' => 'b'));
       $this->assertEquals(
         "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -123,7 +124,7 @@
     #[@test]
     public function getUrlWithStringParams() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $r->setParameters('a=b');
       $this->assertEquals(
         "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -138,7 +139,7 @@
     #[@test]
     public function getUrlWithRequestDataParams() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $r->setParameters(new RequestData('a=b&c=d'));
       $this->assertEquals(
         "GET /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -154,7 +155,7 @@
     #[@test]
     public function getUrlWithArrayAndUrlParams() {
       $r= new HttpRequest(new URL('http://example.com/?a=b'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $r->setParameters(array('a' => 'b'));
       $this->assertEquals(
         "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -170,7 +171,7 @@
     #[@test]
     public function getUrlWithStringAndUrlParams() {
       $r= new HttpRequest(new URL('http://example.com/?a=b'));
-      $r->setMethod(HTTP_GET);
+      $r->setMethod(HttpConstants::GET);
       $r->setParameters('a=b');
       $this->assertEquals(
         "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -185,7 +186,7 @@
     #[@test]
     public function post() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_POST);
+      $r->setMethod(HttpConstants::POST);
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
@@ -202,7 +203,7 @@
     #[@test]
     public function put() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_PUT);
+      $r->setMethod(HttpConstants::PUT);
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "PUT / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
@@ -219,7 +220,7 @@
     #[@test]
     public function trace() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_TRACE);
+      $r->setMethod(HttpConstants::TRACE);
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "TRACE / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
@@ -236,7 +237,7 @@
     #[@test]
     public function head() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_HEAD);
+      $r->setMethod(HttpConstants::HEAD);
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "HEAD /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -251,7 +252,7 @@
     #[@test]
     public function delete() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_DELETE);
+      $r->setMethod(HttpConstants::DELETE);
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
@@ -266,7 +267,7 @@
     #[@test]
     public function options() {
       $r= new HttpRequest(new URL('http://example.com/'));
-      $r->setMethod(HTTP_OPTIONS);
+      $r->setMethod(HttpConstants::OPTIONS);
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "OPTIONS /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",

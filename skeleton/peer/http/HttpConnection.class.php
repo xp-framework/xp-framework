@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.http.HttpTransport', 'peer.http.HttpProxy', 'peer.URL');
+  uses('peer.http.HttpTransport', 'peer.http.HttpProxy', 'peer.http.HttpConstants', 'peer.URL');
   
   /**
    * HTTP connection
@@ -134,7 +134,7 @@
      *   $conn= new HttpConnection('http://example.com/');
      *   
      *   with ($request= $conn->create(new HttpRequest())); {
-     *     $request->setMethod(HTTP_GET);
+     *     $request->setMethod(HttpConstants::GET);
      *     $request->setParameters(array('a' => 'b'));
      *     $request->setHeader('X-Binford', '6100 (more power)');
      *
@@ -154,7 +154,7 @@
     /**
      * Perform any request
      *
-     * @param   string method request method, e.g. HTTP_GET
+     * @param   string method request method, e.g. HttpConstants::GET
      * @param   mixed parameters
      * @param   array headers default array()
      * @return  peer.http.HttpResponse response object
@@ -176,7 +176,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function get($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_GET, $arg, $headers);
+      return $this->request(HttpConstants::GET, $arg, $headers);
     }
     
     /**
@@ -187,7 +187,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function head($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_HEAD, $arg, $headers);
+      return $this->request(HttpConstants::HEAD, $arg, $headers);
     }
     
     /**
@@ -198,7 +198,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function post($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_POST, $arg, $headers);
+      return $this->request(HttpConstants::POST, $arg, $headers);
     }
     
     /**
@@ -209,7 +209,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function put($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_PUT, $arg, $headers);
+      return $this->request(HttpConstants::PUT, $arg, $headers);
     }
 
     /**
@@ -220,7 +220,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function delete($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_DELETE, $arg, $headers);
+      return $this->request(HttpConstants::DELETE, $arg, $headers);
     }
 
     /**
@@ -231,7 +231,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function options($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_OPTIONS, $arg, $headers);
+      return $this->request(HttpConstants::OPTIONS, $arg, $headers);
     }
 
     /**
@@ -242,7 +242,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function trace($arg= NULL, $headers= array()) {
-      return $this->request(HTTP_TRACE, $arg, $headers);
+      return $this->request(HttpConstants::TRACE, $arg, $headers);
     }
   }
 ?>
