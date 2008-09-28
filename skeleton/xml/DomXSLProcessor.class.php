@@ -53,6 +53,12 @@
 
     static function __static() {
       libxml_use_internal_errors(TRUE);
+      
+      // Forwards compatibility hack: In XSL, we use XSLCallback::invoke(), but
+      // the class in namespaced PHP is called xml::XSLCallback. Ensure a class
+      // called "XSLCallback" (without namespaces) exists instead of requiring 
+      // everybody to change their XSL files!
+      class_exists('XSLCallback', FALSE) || eval('class XSLCallback extends '.xp::reflect('xml.XSLCallback').' {}');
     }
       
     /**
@@ -371,7 +377,11 @@
         $message= '';
         
         foreach ($errors as $error) {
-          if (LIBXML_ERR_FATAL == $error->level) $fatal= TRUE;
+          if (
+            LIBXML_ERR_FATAL == $error->level ||              // In general: Fatals
+            1212 == $error->code ||                           // Invalid number of arguments
+            strpos($error->message, 'has not been declared')  // Undeclared variables
+          ) $fatal= TRUE;
           
           $message.= sprintf(
             "  #%d: %s\n  at %s, line %d, column %d\n",
