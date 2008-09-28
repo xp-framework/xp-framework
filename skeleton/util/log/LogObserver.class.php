@@ -25,10 +25,9 @@
     public static function instanceFor($arg) {
       static $inst= array();
       
-      if (!isset ($inst[$arg])) {
-        $log= Logger::getInstance();
-        $inst[$arg]= new LogObserver();
-        $inst[$arg]->cat= $log->getCategory($arg);
+      if (!isset($inst[$arg])) {
+        $inst[$arg]= new self();
+        $inst[$arg]->cat= Logger::getInstance()->getCategory($arg);
       }
       
       return $inst[$arg];
