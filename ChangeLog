@@ -25,6 +25,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added lang.XPClass::getSimpleName() 
+  (friebe)
 - Made multiple forward-compatibility related adjustments
   (friebe)
 
