@@ -122,9 +122,9 @@
         $tree->root->setName($prefix.':'.$qname->localpart);
         $tree->root->setAttribute('xmlns:'.$prefix, $qname->namespace);
       } else if ($class->hasAnnotation('xmlns')) {
-        $tree->root->setName(key($class->getAnnotation('xmlns')).':'.get_class($instance));
+        $tree->root->setName(key($class->getAnnotation('xmlns')).':'.$class->getSimpleName());
       } else {
-        $tree->root->setName(strtolower(get_class($instance)));
+        $tree->root->setName(strtolower($class->getSimpleName()));
       }
       
       self::recurse($instance, $class, $tree->root);
