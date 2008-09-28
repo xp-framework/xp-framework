@@ -8,6 +8,7 @@
    * Log levels
    *
    * @see      xp://util.log.Logger
+   * @test     xp://net.xp_framework.unittest.logging.LogLevelTest
    * @purpose  Constants
    */
   abstract class LogLevel extends Object {
