@@ -33,17 +33,17 @@
      */
     public function setUp() {
       if (!extension_loaded('openssl')) {
-        throw(new PrerequisitesNotMetError(
+        throw new PrerequisitesNotMetError(
           PREREQUISITE_LIBRARYMISSING, 
           $cause= NULL, 
           array('openssl')
-        ));
+        );
       }
       
       if ($this->cert && $this->publickey && $this->privatekey) return;
       
       // Generate private & public key, using a self-signed certificate
-      $keypair= Keypair::generate();
+      $keypair= KeyPair::generate();
       $privatekey= $keypair->getPrivateKey();
       
       $csr= new CSR(new Principal(array(
