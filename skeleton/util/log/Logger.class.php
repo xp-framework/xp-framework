@@ -133,14 +133,6 @@
      * @param   util.Properties prop instance of a Properties object
      */
     public function configure($prop) {
-      static $level= array(
-        'INFO'  => LogLevel::INFO,
-        'WARN'  => LogLevel::WARN,
-        'ERROR' => LogLevel::ERROR,
-        'DEBUG' => LogLevel::DEBUG,
-        'ALL'   => LogLevel::ALL,
-      );
-      
       $class= array();
       
       // Read default properties
@@ -180,7 +172,7 @@
           if (!empty($levels)) {
             $flags= 0;
             foreach ($levels as $name) {
-              $flags |= $level[strtoupper($name)];
+              $flags |= LogLevel::named($name);
             }
           } else {
             $flags= $prop->readArray($param_section, 'appender.'.$appender.'.flags', LogLevel::ALL);

@@ -10,7 +10,7 @@
    * @see      xp://util.log.Logger
    * @purpose  Constants
    */
-  class LogLevel extends Object {
+  abstract class LogLevel extends Object {
     const 
       INFO  = 0x0001,
       WARN  = 0x0002,
@@ -19,5 +19,28 @@
     
     const
       ALL   = 0x000F; // (INFO | WARN | ERROR | DEBUG)
+    
+    /**
+     * Retrieve a loglevel by its name
+     *
+     * @param   string name
+     * @return  int
+     * @throws  lang.IllegalArgumentException
+     */
+    public static function named($name) {
+      static $map= array(
+        'INFO'  => self::INFO,
+        'WARN'  => self::WARN,
+        'ERROR' => self::ERROR,
+        'DEBUG' => self::DEBUG,
+        'ALL'   => self::ALL,
+      );
+    
+      $key= strtoupper($name);
+      if (!isset($map[$key])) {
+        throw new IllegalArgumentException('No such loglevel named "'.$name.'"');
+      }
+      return $map[$key];
+    }
   }
 ?>
