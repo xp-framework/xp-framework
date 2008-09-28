@@ -99,7 +99,10 @@
         foreach ($obj->__sleep() as $var) $vars[$var]= $obj->{$var};
       }
 
-      return self::fromArray($vars, (NULL === $name) ? get_class($obj) : $name);
+      if (NULL !== $name) return self::fromArray($vars, $name);
+
+      $class= get_class($obj);
+      return self::fromArray($vars, (FALSE !== ($p= strrpos($class, '::'))) ? substr($class, $p+ 2): $class);
     }
 
     /**
