@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'peer.URL',
     'scriptlet.HttpScriptletRequest'
   );
 
