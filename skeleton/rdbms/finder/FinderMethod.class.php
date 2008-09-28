@@ -40,7 +40,7 @@
      * @return  string kind one of ENTITY | COLLECTION
      */
     public function getKind() {
-      return current($this->method->getAnnotation('finder'));
+      return $this->method->getAnnotation('finder', 'kind');
     }
  
     /**
