@@ -4,12 +4,14 @@
  * $Id$
  */
 
+  uses('util.log.LogLevel');
+
   define('LOGGER_FLAG_INFO',    0x0001);
   define('LOGGER_FLAG_WARN',    0x0002);
   define('LOGGER_FLAG_ERROR',   0x0004);
   define('LOGGER_FLAG_DEBUG',   0x0008);
   define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
-  
+
   /**
    * The log category is the interface to be used. All logging information
    * is sent to a log category via one of the info, warn, error, debug 
@@ -41,10 +43,10 @@
     public 
       $_appenders= array(),
       $_indicators= array(
-        LOGGER_FLAG_INFO        => 'info',
-        LOGGER_FLAG_WARN        => 'warn',
-        LOGGER_FLAG_ERROR       => 'error',
-        LOGGER_FLAG_DEBUG       => 'debug'
+        LogLevel::INFO        => 'info',
+        LogLevel::WARN        => 'warn',
+        LogLevel::ERROR       => 'error',
+        LogLevel::DEBUG       => 'debug'
       );
       
     public
@@ -61,7 +63,7 @@
      * @param   string dateformat
      * @param   int flags
      */
-    public function __construct($identifier, $format, $dateformat, $flags= LOGGER_FLAG_ALL) {
+    public function __construct($identifier, $format, $dateformat, $flags= LogLevel::ALL) {
       $this->identifier= $identifier;
       $this->format= $format;
       $this->dateformat= $dateformat;
@@ -74,7 +76,7 @@
      * Sets the flags (what should be logged). Note that you also
      * need to add an appender for a category you want to log.
      *
-     * @param   int flags bitfield with flags (LOGGER_FLAG_*)
+     * @param   int flags bitfield with flags (LogLevel::*)
      */
     public function setFlags($flags) {
       $this->flags= $flags;
@@ -139,14 +141,14 @@
     
     /**
      * Adds an appender for the given log categories. Use logical OR to 
-     * combine the log types or use LOGGER_FLAG_ALL (default) to log all 
+     * combine the log types or use LogLevel::ALL (default) to log all 
      * types.
      *
      * @param   util.log.LogAppender appender The appender object
-     * @param   int flag default LOGGER_FLAG_ALL
+     * @param   int flag default LogLevel::ALL
      * @return  util.log.LogAppender the appender added
      */
-    public function addAppender($appender, $flag= LOGGER_FLAG_ALL) {
+    public function addAppender($appender, $flag= LogLevel::ALL) {
       $this->_appenders[$flag][]= $appender;
       return $appender;
     }
@@ -154,14 +156,14 @@
     /**
      * Adds an appender for the given log categories and returns this
      * category - for use in a fluent interface way. Use logical OR to 
-     * combine the log types or use LOGGER_FLAG_ALL (default) to log all 
+     * combine the log types or use LogLevel::ALL (default) to log all 
      * types.
      *
      * @param   util.log.LogAppender appender The appender object
-     * @param   int flag default LOGGER_FLAG_ALL
+     * @param   int flag default LogLevel::ALL
      * @return  util.log.LogCategory this category
      */
-    public function withAppender($appender, $flag= LOGGER_FLAG_ALL) {
+    public function withAppender($appender, $flag= LogLevel::ALL) {
       $this->_appenders[$flag][]= $appender;
       return $this;
     }
@@ -171,15 +173,15 @@
      * of log category flags, see addAppender().
      * 
      * @param   util.log.LogAppender appender
-     * @param   int flag default LOGGER_FLAG_ALL
+     * @param   int flag default LogLevel::ALL
      */
-    public function removeAppender($appender, $flag= LOGGER_FLAG_ALL) {
+    public function removeAppender($appender, $flag= LogLevel::ALL) {
       foreach (array_keys($this->_appenders) as $f) {
         if (!($f & $flag)) continue;
         
         foreach (array_keys($this->_appenders[$f]) as $g) {
           if ($this->_appenders[$f][$g] === $appender) {
-            unset ($this->_appenders[$f][$g]);
+            unset($this->_appenders[$f][$g]);
           }
         }
       }
@@ -205,11 +207,8 @@
      */
     public function info() {
       $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_INFO);
-      call_user_func_array(
-        array($this, 'callAppenders'),
-        $args
-      );
+      array_unshift($args, LogLevel::INFO);
+      call_user_func_array(array($this, 'callAppenders'), $args);
     }
 
     /**
@@ -225,10 +224,7 @@
      */
     public function infof() {
       $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_INFO,
-        vsprintf($args[0], array_slice($args, 1))
-      );
+      $this->callAppenders(LogLevel::INFO, vsprintf($args[0], array_slice($args, 1)));
     }
 
     /**
@@ -238,11 +234,8 @@
      */
     public function warn() {
       $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_WARN);
-      call_user_func_array(
-        array($this, 'callAppenders'),
-        $args
-      );
+      array_unshift($args, LogLevel::WARN);
+      call_user_func_array(array($this, 'callAppenders'), $args);
     }
 
     /**
@@ -253,10 +246,7 @@
      */
     public function warnf() {
       $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_WARN,
-        vsprintf($args[0], array_slice($args, 1))
-      );
+      $this->callAppenders(LogLevel::WARN, vsprintf($args[0], array_slice($args, 1)));
     }
 
     /**
@@ -266,11 +256,8 @@
      */
     public function error() {
       $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_ERROR);
-      call_user_func_array(
-        array($this, 'callAppenders'),
-        $args
-      );
+      array_unshift($args, LogLevel::ERROR);
+      call_user_func_array(array($this, 'callAppenders'), $args);
     }
 
     /**
@@ -281,10 +268,7 @@
      */
     public function errorf() {
       $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_ERROR,
-        vsprintf($args[0], array_slice($args, 1))
-      );
+      $this->callAppenders(LogLevel::ERROR, vsprintf($args[0], array_slice($args, 1)));
     }
 
     /**
@@ -294,11 +278,8 @@
      */
     public function debug() {
       $args= func_get_args();
-      array_unshift($args, LOGGER_FLAG_DEBUG);
-      call_user_func_array(
-        array($this, 'callAppenders'),
-        $args
-      );
+      array_unshift($args, LogLevel::DEBUG);
+      call_user_func_array(array($this, 'callAppenders'), $args);
     }
  
     /**
@@ -309,10 +290,7 @@
      */
     public function debugf() {
       $args= func_get_args();
-      $this->callAppenders(
-        LOGGER_FLAG_DEBUG,
-        vsprintf($args[0], array_slice($args, 1))
-      );
+      $this->callAppenders(LogLevel::DEBUG, vsprintf($args[0], array_slice($args, 1)));
     }
    
     /**
@@ -320,10 +298,7 @@
      *
      */
     public function mark() {
-      $this->callAppenders(
-        LOGGER_FLAG_INFO, 
-        str_repeat('-', 72)
-      );
+      $this->callAppenders(LogLevel::INFO, str_repeat('-', 72));
     }
   }
 ?>

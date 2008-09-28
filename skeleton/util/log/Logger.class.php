@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.LogCategory', 'util.Configurable');
+  uses('util.log.LogCategory', 'util.Configurable', 'util.log.LogLevel');
   
   define('LOG_DEFINES_DEFAULT', 'default');
   
@@ -59,7 +59,7 @@
    * appenders="util.log.FileAppender"
    * appender.util.log.FileAppender.params="filename"
    * appender.util.log.FileAppender.param.filename="/var/log/xp/service_%Y-%m-%d.log"
-   * appender.util.log.FileAppender.flags="LOGGER_FLAG_ERROR|LOGGER_FLAG_WARN"
+   * appender.util.log.FileAppender.levels="ERROR|WARN"
    * 
    * [info.binford6100.webservices.EventHandler]
    * appenders="util.log.FileAppender"
@@ -97,7 +97,7 @@
       self::$instance->defaultIdentifier= getmypid();
       self::$instance->defaultFormat= '[%1$s %2$5s %3$5s]';
       self::$instance->defaultDateformat= 'H:i:s';
-      self::$instance->defaultFlags= LOGGER_FLAG_ALL;
+      self::$instance->defaultFlags= LogLevel::ALL;
       self::$instance->defaultAppenders= array();
       
       // Create an empty LogCategory
@@ -133,6 +133,14 @@
      * @param   util.Properties prop instance of a Properties object
      */
     public function configure($prop) {
+      static $level= array(
+        'INFO'  => LogLevel::INFO,
+        'WARN'  => LogLevel::WARN,
+        'ERROR' => LogLevel::ERROR,
+        'DEBUG' => LogLevel::DEBUG,
+        'ALL'   => LogLevel::ALL,
+      );
+      
       $class= array();
       
       // Read default properties
@@ -167,11 +175,21 @@
             $class[$appender]= XPClass::forName($appender);
           }
           
-          // Read flags string, evaluate it
-          $flags= $prop->readArray($param_section, 'appender.'.$appender.'.flags', LOGGER_FLAG_ALL);
-          if (!is_int ($flags)) {
-            $arrflags= $flags; $flags= 0;
-            foreach ($arrflags as $f) { if (defined ($f)) $flags |= constant ($f); }
+          // Read levels
+          $levels= $prop->readArray($param_section, 'appender.'.$appender.'.levels');
+          if (!empty($levels)) {
+            $flags= 0;
+            foreach ($levels as $name) {
+              $flags |= $level[strtoupper($name)];
+            }
+          } else {
+            $flags= $prop->readArray($param_section, 'appender.'.$appender.'.flags', LogLevel::ALL);
+            if (!is_int($flags)) {
+              $arrflags= $flags; $flags= 0;
+              foreach ($arrflags as $f) { 
+                if (defined($f)) $flags |= constant($f); 
+              }
+            }
           }
           
           $a= $this->category[$section]->addAppender($class[$appender]->newInstance(), $flags);
