@@ -19,15 +19,15 @@
     /**
      * Initialize this protocol handler
      *
-     * @param   &peer.URL proxy
+     * @param   peer.URL proxy
      * @throws  io.IOException in case connecting fails
      */
     public function initialize($proxy) {
       if (!$this->server['available']) {
-        throw(new IOException('Cannot connect to '.$proxy->getHost()));
+        throw new IOException('Cannot connect to '.$proxy->getHost());
       }
       if ($this->server['initialized']) {
-        throw(new IOException('Already initialized'));
+        throw new IOException('Already initialized');
       }
       $this->server['initialized']= TRUE;
     }
@@ -36,7 +36,7 @@
      * Look up an object by its name
      *
      * @param   string name
-     * @param   &lang.Object
+     * @param   lang.Object
      * @throws  remote.NameNotFoundException in case the given name could not be found
      * @throws  remote.RemoteException for any other error
      */
@@ -82,7 +82,7 @@
      * @param   int oid
      * @param   string method
      * @param   mixed[] args
-     * @return  &mixed
+     * @return  mixed
      */
     public function invoke($oid, $method, $args) {
     }
