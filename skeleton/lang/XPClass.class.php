@@ -85,6 +85,15 @@
     }
     
     /**
+     * Returns simple name
+     *
+     * @return  string
+     */
+    public function getSimpleName() {
+      return substr($this->name, strrpos($this->name, '.')+ 1);
+    }
+    
+    /**
      * Retrieves the package associated with this class
      * 
      * @return  lang.reflect.Package
