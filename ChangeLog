@@ -8,7 +8,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
-- removed package util.io and class util.io.VirtualFileManager and
+- Deprecated HTTP_* global constants in peer.http.HttpConstants in favor
+  of class constants
+  (friebe)
+- Removed package util.io and class util.io.VirtualFileManager and
   io.EmbeddedFile
   (kiesel)
   
@@ -17,6 +20,10 @@ RFCs
 - Implemented RFC #0164 - Exceptions for XPClass::get*()
   (friebe)
 
+Features
+~~~~~~~~
+- Made multiple forward-compatibility related adjustments
+  (friebe)
 
 Version 5.6.9, released 2008-09-03
 ----------------------------------
