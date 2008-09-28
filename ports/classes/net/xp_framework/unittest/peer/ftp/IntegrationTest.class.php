@@ -82,9 +82,8 @@
       ));
 
       // Start server process
-      self::$serverProcess= new Process(
-        Runtime::getInstance()->getExecutable()->getFileName(),
-        array(' -dinclude_path="'.ini_get('include_path').'"')
+      self::$serverProcess= Runtime::getInstance()->getExecutable()->newInstance(
+        array('-dinclude_path="'.ini_get('include_path').'"')
       );
       self::$serverProcess->in->write($src);
       self::$serverProcess->in->close();
@@ -92,8 +91,12 @@
       // Check if startup succeeded
       $status= self::$serverProcess->out->readLine();
       if (!strlen($status) || '+' != $status{0}) {
-        self::shutdownFtpServer();
-        throw new PrerequisitesNotMetError($status, 'Cannot start FTP server');
+        try {
+          self::shutdownFtpServer();
+        } catch (IllegalStateException $e) {
+          $status.= $e->getMessage();
+        }
+        throw new PrerequisitesNotMetError('Cannot start FTP server: '.$status, NULL);
       }
     }
     
@@ -117,6 +120,9 @@
       $status= self::$serverProcess->out->readLine();
       if (!strlen($status) || '+' != $status{0}) {
         while ($l= self::$serverProcess->out->readLine()) {
+          $status.= $l;
+        }
+        while ($l= self::$serverProcess->err->readLine()) {
           $status.= $l;
         }
         self::$serverProcess->close();
