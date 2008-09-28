@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated LOGGER_* global constants in util.log.LogCategory in favor
+  of class constants in util.log.LogLevel
+  (friebe)
 - Deprecated HTTP_* global constants in peer.http.HttpConstants in favor
   of class constants
   (friebe)
