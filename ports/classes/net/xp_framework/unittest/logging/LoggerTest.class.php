@@ -62,7 +62,7 @@
      */
     #[@test]
     public function isConfigurable() {
-      $this->assertTrue(is('Configurable', $this->logger));
+      $this->assertTrue(is('util.Configurable', $this->logger));
     }
 
     /**
