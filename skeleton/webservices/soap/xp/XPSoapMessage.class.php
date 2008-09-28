@@ -53,7 +53,7 @@
       $body         = NULL,
       $namespace    = 'ctl',
       $mapping      = NULL,
-      $nodeType     = 'XPSoapNode',
+      $nodeType     = '',
       $action       = '',
       $class        = '',
       $method       = '';
@@ -66,6 +66,16 @@
         XMLNS_SOAPENC     => 'SOAP-ENC',
         XMLNS_SOAPINTEROP => 'si'
       );
+
+    /**
+     * Constructor
+     *
+     * @param   string rootName default 'document'
+     */
+    public function __construct($rootName= 'document') {
+      parent::__construct($rootName);
+      $this->nodeType= xp::reflect('xml.soap.xp.XPSoapNode');
+    }
 
     /**
      * Create a message
@@ -423,7 +433,7 @@
      * @return  xml.Tree
      */
     public static function fromString($string) {
-      return parent::fromString($string, 'XPSoapMessage');
+      return parent::fromString($string, __CLASS__);
     }
 
     /**
@@ -437,7 +447,7 @@
      * @return  xml.Tree
      */ 
     public static function fromFile($file) {
-      return parent::fromFile($file, 'XPSoapMessage');
+      return parent::fromFile($file, __CLASS__);
     }
     
     /**
