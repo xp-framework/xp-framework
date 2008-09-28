@@ -66,7 +66,7 @@
       $cmd= $command.' '.implode(' ', $arguments);
 
       // Open process
-      if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes, $cwd, $env))) {
+      if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes, $cwd, $env, array('bypass_shell' => TRUE)))) {
         throw new IOException('Could not execute "'.$cmd.'"');
       }
 
