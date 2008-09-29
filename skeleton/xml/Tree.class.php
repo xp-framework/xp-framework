@@ -5,7 +5,6 @@
  */
  
   uses(
-    'xml.XML',
     'xml.parser.XMLParser',
     'xml.Node',
     'xml.parser.ParserCallback'

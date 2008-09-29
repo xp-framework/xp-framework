@@ -4,14 +4,12 @@
  * $Id$ 
  */
   
-  uses('xml.XML');
-
   /**
    * SOAP fault
    *
    * @purpose  XML subtree
    */
-  class CommonSoapFault extends XML {
+  class CommonSoapFault extends Object {
     public 
       $faultcode    = '', 
       $faultstring  = '', 
