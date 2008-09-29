@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed class util.profiling.ClassProfiler
+  (kiesel)
 - Deprecated LOGGER_* global constants in util.log.LogCategory in favor
   of class constants in util.log.LogLevel
   (friebe)
