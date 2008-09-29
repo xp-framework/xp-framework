@@ -610,14 +610,15 @@
      * @return  img.Image
      * @throws  lang.IllegalArgumentException if chart is not renderable
      */
-    public function render($chart) { 
+    public function render(Chart $chart) { 
     
       // Method overloading by delegation
-      if (!$chart instanceof Chart || !method_exists($this, $method= 'render'.get_class($chart))) {
-        throw(new IllegalArgumentException('Cannot render '.xp::typeOf($chart).'s'));
+      $method= 'render'.$chart->getSimpleName();
+      if (!method_exists($this, $method)) {
+        throw new IllegalArgumentException('Cannot render '.xp::typeOf($chart).'s');
       }
-      return $this->{$method}($chart);
+      
+      return call_user_func_array(array($this, $method), array($chart));
     }
-
-  } 
+  }
 ?>
