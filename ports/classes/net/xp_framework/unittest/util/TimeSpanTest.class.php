@@ -43,19 +43,19 @@
     public function addAndSubstract() {
       $this->assertEquals('0d, 2h, 1m, 5s', create(new TimeSpan(3600))
         ->add(new TimeSpan(3600), new TimeSpan(60))
-        ->add(new Timespan(5))->toString(),
+        ->add(new TimeSpan(5))->toString(),
         'add'
       );
       
       $this->assertEquals('0d, 22h, 58m, 55s', create(new TimeSpan(86400))
         ->substract(new TimeSpan(3600), new TimeSpan(60))
-        ->substract(new Timespan(5))->toString(),
+        ->substract(new TimeSpan(5))->toString(),
         'substract'
       );
 
       $this->assertEquals('1d, 1h, 0m, 55s', create(new TimeSpan(86400))
         ->add(new TimeSpan(3600), new TimeSpan(60))
-        ->substract(new Timespan(5))->toString(),
+        ->substract(new TimeSpan(5))->toString(),
         'mixed'
       );
     }

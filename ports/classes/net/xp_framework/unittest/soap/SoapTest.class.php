@@ -109,7 +109,7 @@
      */
     #[@test]
     public function testHeader() {
-      $msg= XpSoapMessage::fromString('
+      $msg= XPSoapMessage::fromString('
         <SOAP-ENV:Envelope
           xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

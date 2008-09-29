@@ -22,7 +22,7 @@
      * Helper method which parses the raw doc comment
      *
      * @param   string rawComment
-     * @return  util.HashMap
+     * @return  util.Hashmap
      */
     protected function parseDetail($rawComment) {
       $tm= TagletManager::getInstance();
@@ -43,7 +43,7 @@
         }
       } while ($t= strtok('@'));
       
-      return new HashMap($this->detail);
+      return new Hashmap($this->detail);
     }
     
     /**

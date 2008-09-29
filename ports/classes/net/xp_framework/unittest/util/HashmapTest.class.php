@@ -53,7 +53,7 @@
      */
     #[@test]
     public function equalsOtherMapWithSameContents() {
-      $other= new HashMap();
+      $other= new Hashmap();
       $this->map->put('color', 'green');
       $other->put('color', 'green');
       $this->assertTrue($this->map->equals($other));
@@ -65,7 +65,7 @@
      */
     #[@test]
     public function doesNotEqualMapWithDifferentContents() {
-      $other= new HashMap();
+      $other= new Hashmap();
       $this->map->put('color', 'green');
       $other->put('color', 'pink');
       $this->assertFalse($this->map->equals($other));

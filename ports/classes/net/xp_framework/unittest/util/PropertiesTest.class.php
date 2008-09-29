@@ -145,7 +145,7 @@ unquoted=
 hash="foo:bar|bar:foo"
       ');
       $this->assertEquals(
-        new HashMap(array('foo' => 'bar', 'bar' => 'foo')),
+        new Hashmap(array('foo' => 'bar', 'bar' => 'foo')),
         $p->readHash('section', 'hash')
       );
     }   

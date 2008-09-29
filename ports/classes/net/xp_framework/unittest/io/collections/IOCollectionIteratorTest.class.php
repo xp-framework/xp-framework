@@ -201,7 +201,7 @@
     public function extensionEqualsRecursive() {
       $this->assertEquals(
         array('sub/sec/lang.base.php', 'sub/sec/__xp__.php'), 
-        $this->filterFixtureWith(new extensionEqualsFilter('.php'), TRUE)
+        $this->filterFixtureWith(new ExtensionEqualsFilter('.php'), TRUE)
       );
     }
     

@@ -193,8 +193,8 @@
     #[@test]
     public function addOrderByColumn() {
       with ($c= new Criteria()); {
-        $c->addOrderBy(job::column('valid_from'));
-        $c->addOrderBy(job::column('expire_at'));
+        $c->addOrderBy(Job::column('valid_from'));
+        $c->addOrderBy(Job::column('expire_at'));
       }
       $this->assertSql(
         'order by valid_from asc, expire_at asc',
@@ -227,8 +227,8 @@
     #[@test]
     public function addGroupByColumn() {
       with ($c= new Criteria()); {
-        $c->addGroupBy(job::column('valid_from'));
-        $c->addGroupBy(job::column('expire_at'));
+        $c->addGroupBy(Job::column('valid_from'));
+        $c->addGroupBy(Job::column('expire_at'));
       }
       $this->assertSql(
         'group by valid_from, expire_at',
@@ -260,7 +260,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function createNonExistantColumn() {
-      job::column('not_existant');
+      Job::column('not_existant');
     }
 
     /**
