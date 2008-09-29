@@ -118,7 +118,7 @@
      */
     public function equals($cmp) {
       return (
-        is('String', $cmp) && 
+        $cmp instanceof String && 
         ($this->buffer === $cmp->buffer)
       );
     }
@@ -550,7 +550,7 @@
      * @return  text.String string
      */
     public static function valueOf($arg) {
-      if (is('Generic', $arg)) {
+      if ($arg instanceof Generic) {
         return new String($arg->toString());
       } else if (is_array($arg)) {
         return new String(implode('', $arg));

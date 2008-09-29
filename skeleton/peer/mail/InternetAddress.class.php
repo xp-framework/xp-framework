@@ -53,7 +53,7 @@
      */
     public function equals($cmp) {
       return (
-        is('InternetAddress', $cmp) and 
+        $cmp instanceof InternetAddress and 
         $this->personal.$this->localpart.$this->domain === $cmp->personal.$cmp->localpart.$cmp->domain
       );
     }

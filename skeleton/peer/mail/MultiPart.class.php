@@ -79,7 +79,7 @@
      * @throws  lang.IllegalArgumentException if part argument is not a peer.mail.MimePart
      */
     public function addPart($part) {
-      if (!is('MimePart', $part)) {
+      if (!$part instanceof MimePart) {
         throw(new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
         ));

@@ -81,7 +81,7 @@
      * @throws  lang.IllegalArgumentException 
      */
     public function setFormatter($alias, $formatter) {
-      if (!is('IFormat', $formatter)) {
+      if (!$formatter instanceof IFormat) {
         throw(new IllegalArgumentException('Formatter must be a text.format.Format'));
       }
       $this->formatters[$alias]= $formatter;

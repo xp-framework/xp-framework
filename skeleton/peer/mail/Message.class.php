@@ -210,7 +210,7 @@
       $vars= get_object_vars($this);
       foreach (array_keys($vars) as $var) {
         if ('_' == $var{0}) continue;
-        $s.= sprintf("  [%-12s] %s\n", $var, is('Generic', $vars[$var]) 
+        $s.= sprintf("  [%-12s] %s\n", $var, $vars[$var] instanceof Generic 
           ? $vars[$var]->toString() 
           : str_replace("\n", "\n  ", var_export($vars[$var], 1))
         );
@@ -260,7 +260,7 @@
      * @param   mixed arg
      */
     public function setDate($arg) {
-      if (is('Date', $arg)) $this->date= $arg; else $this->date= new Date($arg);
+      if ($arg instanceof Date) $this->date= $arg; else $this->date= new Date($arg);
     }
     
     /**
@@ -595,7 +595,7 @@
     protected function _astr($t, $addrs) {
       $l= '';
       for ($i= 0, $s= sizeof($addrs); $i < $s; $i++) {
-        if (!is('InternetAddress', $addrs[$i])) continue; // Ignore!
+        if (!$addrs[$i] instanceof InternetAddress) continue; // Ignore!
         $l.= $addrs[$i]->toString($this->getCharset()).",\n\t";
       }
       return empty($l) ? '' : $t.': '.substr($l, 0, -3)."\n";

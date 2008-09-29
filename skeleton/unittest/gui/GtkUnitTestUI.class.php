@@ -156,7 +156,7 @@
       
       // Update trace
       $this->trace->clear();
-      if (is('Throwable', $data)) {
+      if ($data instanceof Throwable) {
         $type= 'exception';
         $caption= $data->getClassName().' ('.$data->getMessage().')';
         $trace= $data->getStackTrace();

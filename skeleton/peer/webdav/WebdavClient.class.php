@@ -59,7 +59,7 @@
      * @param   mixed url either a string or a peer.URL object
      */
     public function __construct($url) {
-      if (!is('URL', $url)) $this->url= new URL($url); else $this->url= $url;
+      if (!$url instanceof URL) $this->url= new URL($url); else $this->url= $url;
     }
     
     /**

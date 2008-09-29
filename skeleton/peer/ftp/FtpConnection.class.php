@@ -254,7 +254,7 @@
      * @throws  peer.SocketException
      */
     public function put($arg, $remote= NULL, $mode= FTP_ASCII) {
-      if (is('File', $arg)) {
+      if ($arg instanceof File) {
         $local= $arg->_fd;
         if (empty($remote)) $remote= basename ($arg->getUri());
         $f= 'ftp_fput';
@@ -284,7 +284,7 @@
      * @throws  peer.SocketException
      */
     public function get($remote, $arg, $mode= FTP_ASCII) {
-      if (is('File', $arg)) {
+      if ($arg instanceof File) {
         $local= $arg->_fd;
         $f= 'ftp_fget';
       } else {

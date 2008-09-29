@@ -140,7 +140,7 @@
     public function getHeaderString() {
       if (1 == sizeof($this->parts) && $this->parts[0]->isInline()) {
         $this->setContenttype($this->parts[0]->getContenttype());
-        if (is('MultiPart', $this->parts[0]))
+        if ($this->parts[0] instanceof MultiPart)
           $this->setBoundary($this->parts[0]->getBoundary());
 
         $this->charset= $this->parts[0]->charset;

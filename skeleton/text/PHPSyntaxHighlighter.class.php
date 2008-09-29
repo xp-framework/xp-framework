@@ -23,7 +23,7 @@
      * @param   mixed input default NULL a string or a file object
      */
     public function __construct($input= NULL) {
-      if (is('File', $input)) {
+      if ($input instanceof File) {
         $this->setFile($input);
       } else {
         $this->setSource($input);

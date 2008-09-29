@@ -160,7 +160,7 @@
           if (';' == $key{0}) {
             $fd->write(sprintf("\n; %s\n", $val)); 
           } else {
-            if (is('Hashmap', $val)) {
+            if ($val instanceof Hashmap) {
               $str= '';
               foreach ($val->keys() as $k) {
                 $str.= '|'.$k.':'.$val->get($v);
@@ -451,7 +451,7 @@
     public function writeHash($section, $key, $value) {
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
-      if (is('Hashmap', $value)) {
+      if ($value instanceof Hashmap) {
         $this->_data[$section][$key]= $value;
       } else {
         $this->_data[$section][$key]= new Hashmap($value);

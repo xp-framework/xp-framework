@@ -34,7 +34,7 @@
       if (is_scalar($argument)) {
         throw(new FormatException('Argument with type '.gettype($argument).' is not an array or object'));
       }
-      if (is('Hashmap', $argument)) {
+      if ($argument instanceof Hashmap) {
         $hash= $argument->_hash;
       } else if (is_object($argument)) {
         $hash= get_object_vars($argument);

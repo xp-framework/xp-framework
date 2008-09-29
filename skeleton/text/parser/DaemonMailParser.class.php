@@ -296,7 +296,7 @@
       // MIME-Version: 1.0
       // Content-Transfer-Encoding: 8bit
       // Date: Mon, 17 Feb 2003 10:05:35 +0100
-      if (is('MimeMessage', $message)) {
+      if ($message instanceof MimeMessage) {
         $body= NULL;
         $daemonmessage->details['Daemon-Type']= DAEMON_TYPE_MULTIPART;
         
@@ -720,7 +720,7 @@
       // No reason found?
       if (self::DMP_FINISH != $state) {
         trigger_error('Headers: '.var_export($message->headers, 1), E_USER_ERROR);
-        trigger_error('Body: '.(is('MimeMessage', $message) 
+        trigger_error('Body: '.($message instanceof MimeMessage 
           ? sizeof($message->parts).' parts'
           : strlen($message->body).' bytes'
         ), E_USER_ERROR);

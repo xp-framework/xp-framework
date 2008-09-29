@@ -64,7 +64,7 @@
       
       // Add wrapper parameter representation if the handler has a wrapper
       // and this wrapper implements the IFormResultAggregate interface
-      if ($handler->hasWrapper() && is('IFormResultAggregate', $handler->wrapper)) {
+      if ($handler->hasWrapper() && $handler->wrapper instanceof IFormResultAggregate) {
         $wrapper= $node->addChild(new Node('wrapper'));
         foreach (array_keys($handler->wrapper->paraminfo) as $name) {
           $param= $wrapper->addChild(new Node('param', NULL, array(

@@ -107,7 +107,7 @@
         return NULL;        
       }
 
-      if (is('ServerSocket', $this->datasock[$event->stream->hashCode()])) {
+      if ($this->datasock[$event->stream->hashCode( instanceof ServerSocket])) {
 
         // Open socket in passive mode
         $this->cat && $this->cat->debug('+++ Opening passive connection');
@@ -635,7 +635,7 @@
         return;
       }
       $this->cat && $this->cat->debug($entry->toString());
-      if (is('StorageCollection', $entry)) {
+      if ($entry instanceof StorageCollection) {
         $this->answer($event->stream, 550, $params.': is a directory');
         $socket->close();
         return;
@@ -693,7 +693,7 @@
           $socket->close();
           return;
         }
-      } else if (is('StorageCollection', $entry)) {
+      } else if ($entry instanceof StorageCollection) {
         $this->answer($event->stream, 550, $params.': is a directory');
         $socket->close();
         return;
@@ -737,7 +737,7 @@
         $this->answer($event->stream, 550, $params.': No such file or directory');
         return;
       }
-      if (is('StorageCollection', $entry)) {
+      if ($entry instanceof StorageCollection) {
         $this->answer($event->stream, 550, $params.': is a directory');
         return;
       }
