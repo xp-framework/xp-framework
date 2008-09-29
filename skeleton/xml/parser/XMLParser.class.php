@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('xml.XML', 'xml.XMLFormatException');
+  uses('xml.XMLFormatException');
   
   /**
    * XML Parser

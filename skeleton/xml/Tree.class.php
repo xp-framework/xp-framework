@@ -21,7 +21,7 @@
   class Tree extends Object implements ParserCallback {
     public 
       $root     = NULL,
-      $nodeType = 'node';
+      $nodeType = NULL;
 
     public
       $_cnt     = NULL,
@@ -39,6 +39,7 @@
      */
     public function __construct($rootName= 'document') {
       $this->root= new Node($rootName);
+      $this->nodeType= xp::reflect('xml.Node');
     }
 
     /**
