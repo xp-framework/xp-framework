@@ -30,7 +30,7 @@ Features
 - Added lang.XPClass::getSimpleName() 
   (friebe)
 - Made multiple forward-compatibility related adjustments
-  (friebe)
+  (friebe, kiesel)
 
 Version 5.6.9, released 2008-09-03
 ----------------------------------
