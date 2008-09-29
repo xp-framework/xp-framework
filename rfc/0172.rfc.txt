@@ -149,17 +149,34 @@ n/a
 
 Dependencies
 ------------
+<summary>
 Engine
 ~~~~~~
+The XP Framework will require the newest version of PHP.
+
 * PHP 5.3 - for namespaces, late static binding, closures
 * __getStatic() patch - for ::$class
+</summary>
 
+<summary>
 Deprecations
 ~~~~~~~~~~~~
-* The uses() statement (replaced by "use")
+The following are no longer needed or required:
+
+* The uses() statement (replaced by "use" and __autoload)
 * RFC #0037 (superseded by namespaces)
 * Enum::values() in declaration (made unnecessary by late static binding)
+</summary>
 
+<summary>
+BC problems
+~~~~~~~~~~~
+These issues are to be considered problematic:
+
+* Serialization format has changed in PHP 5.3
+* All classes are now namespaced, cases where the unqualified class names
+  are used need to be changed
+</summary>
 
 Related documents
 -----------------
