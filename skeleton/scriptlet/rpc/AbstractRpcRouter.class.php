@@ -8,7 +8,8 @@
     'scriptlet.HttpScriptlet',
     'util.ServiceException',
     'scriptlet.rpc.RpcFault',
-    'util.log.Traceable'
+    'util.log.Traceable',
+    'xml.Node'
   );
 
   /**

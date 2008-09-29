@@ -36,7 +36,7 @@
      *
      */
     public function __construct() {
-      $this->name= strtolower(get_class($this));
+      $this->name= strtolower($this->getClass()->getSimpleName());
     }
     
     /**

@@ -24,7 +24,7 @@
      *
      */
     public function __construct() {
-      $this->setName(substr(get_class($this), 0, -1* strlen('Portlet')));
+      $this->setName(substr($this->getClass()->getSimpleName(), 0, -1* strlen('Portlet')));
     }
 
     /**
