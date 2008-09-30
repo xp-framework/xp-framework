@@ -176,17 +176,9 @@
     #[@test]
     public function decodeUTF8StringWithUnicodeCodepoint() {
       $this->assertEquals('Günther', $this->decoder->decode('"G\u00fcnther"'));
+      $this->assertEquals('¤uro', $this->decoder->decode('"\u20ACuro"'));
     }
     
-    /**
-     * Test string decoding
-     *
-     */
-    #[@test, @expect('webservices.json.JsonException')]
-    public function decodeUTF8StringWithNonsupportedUnicodeCodepoint() {
-      $this->decoder->decode('"G\u01fcnther"'); // cannot be deserialized to iso-8859-1
-    }
-
     /**
      * Test number decoding
      *
@@ -304,7 +296,7 @@
 
       $this->assertEquals(
         $o,
-        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.$o->getClassName().'" , "prop" : 1 }')
+        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.utf8_encode($o->getClassName()).'" , "prop" : 1 }')
       );
     }
   }
