@@ -34,6 +34,15 @@
       $this->assertEquals('"foo"', $this->decoder->encode('foo'));
       $this->assertEquals('"fo\\no"', $this->decoder->encode('fo'."\n".'o'));
     }
+    
+    /**
+     * Test string encoding
+     *
+     */
+    #[@test]
+    public function encodeUTF8String() {
+      $this->assertEquals('"fÃ¶o"', $this->decoder->encode('föo'));
+    }
   
     /**
      * Test integer encoding
@@ -150,6 +159,34 @@
       );
     }
     
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeUTF8String() {
+      $this->assertEquals('Knüper', $this->decoder->decode('"KnÃ¼per"'));
+    }
+    
+    
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeUTF8StringWithUnicodeCodepoint() {
+      $this->assertEquals('Günther', $this->decoder->decode('"G\u00fcnther"'));
+    }
+    
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test, @expect('webservices.json.JsonException')]
+    public function decodeUTF8StringWithNonsupportedUnicodeCodepoint() {
+      $this->decoder->decode('"G\u01fcnther"'); // cannot be deserialized to iso-8859-1
+    }
+
     /**
      * Test number decoding
      *
