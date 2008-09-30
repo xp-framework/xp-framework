@@ -6,7 +6,7 @@
 
   uses(
     'scriptlet.xml.workflow.Handler',
-    'scriptlet.xml.workflow.IFormResultAggregate',
+    'scriptlet.xml.workflow.IFormresultAggregate',
     'xml.Node',
     'util.log.Traceable'
   );
