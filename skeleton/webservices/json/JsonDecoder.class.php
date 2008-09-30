@@ -5,6 +5,8 @@
  */
  
   uses(
+    'lang.types.String',
+    'lang.types.Character',
     'io.Stream',
     'text.StringTokenizer',
     'webservices.json.JsonException',
@@ -88,7 +90,7 @@
             $data= array_merge(
               array(
                 '__jsonclass__' => array('__construct()'),
-                '__xpclass__'   => $data->getClassName()
+                '__xpclass__'   => utf8_encode($data->getClassName())
               ),
               $vars
             );
@@ -229,7 +231,7 @@
       }
 
       return $array;
-    }    
+    }
     
     /**
      * Fetch next token from stream
@@ -324,7 +326,7 @@
         $initpos= $this->stream->tell();
         $offset= 0;
         $str= $this->stream->read();
-        $ret= '';
+        $ret= new String();
       
         $esc= FALSE;
         $tokenizer= new StringTokenizer($str, '\"', TRUE);
@@ -341,16 +343,15 @@
             switch ($tmp) {
               case '\\':
               case '"': 
-              case '/': $ret.= $tmp;  break;
-              case 't': $ret.= "\t"; break;
-              case 'n': $ret.= "\n"; break;
-              case 'r': $ret.= "\r"; break;
-              case 'b': $ret.= "\b"; break;
+              case '/': $ret->concat($tmp);  break;
+              case 't': $ret->concat("\t"); break;
+              case 'n': $ret->concat("\n"); break;
+              case 'r': $ret->concat("\r"); break;
+              case 'b': $ret->concat("\b"); break;
               case 'u': {
 
                 // Read next 4 bytes
-                if (($hex= hexdec(substr($tok, 0, 4))) > 255) throw new JSONException('Cannot deserialize json string at offset '.$offset.', because \\u unicode sequence contains non-iso-8859-1 character.');
-                $ret.= utf8_encode(chr($hex));
+                $ret->concat(new Character(hexdec(substr($tok, 0, 4))));
                 $tok= substr($tok, 4);
                 break;
               }
@@ -363,7 +364,7 @@
           switch ($tok) {
             case '"': {
               $this->stream->seek($initpos + $offset);
-              return utf8_decode($ret);
+              return (string)$ret->getBytes('ISO-8859-15');
             }
             
             case '\\': {
@@ -373,7 +374,7 @@
             }
             
             default: {
-              $ret.= $tok;
+              $ret->concat(new String($tok, 'UTF-8'));
               $tok= '';
               break;
             }
