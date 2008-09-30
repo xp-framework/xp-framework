@@ -56,7 +56,7 @@
       );
       switch (gettype($data)) {
         case 'string': {
-          return '"'.strtr($data, $controlChars).'"';
+          return '"'.strtr(utf8_encode($data), $controlChars).'"';
         }
         case 'integer': {
           return (string)$data;
@@ -74,7 +74,7 @@
         case 'object': {
           // Convert objects to arrays and store the classname with them as
           // suggested by JSON-RPC
-          if (is('lang.Generic', $data)) {
+          if ($data instanceof Generic) {
             if (!method_exists($data, '__sleep')) {
               $vars= get_object_vars($data);
             } else {
@@ -346,7 +346,14 @@
               case 'n': $ret.= "\n"; break;
               case 'r': $ret.= "\r"; break;
               case 'b': $ret.= "\b"; break;
-              case 'u': // XXX TBI
+              case 'u': {
+
+                // Read next 4 bytes
+                if (($hex= hexdec(substr($tok, 0, 4))) > 255) throw new JSONException('Cannot deserialize json string at offset '.$offset.', because \\u unicode sequence contains non-iso-8859-1 character.');
+                $ret.= utf8_encode(chr($hex));
+                $tok= substr($tok, 4);
+                break;
+              }
             }
             
             $esc= FALSE; 
@@ -356,7 +363,7 @@
           switch ($tok) {
             case '"': {
               $this->stream->seek($initpos + $offset);
-              return $ret;
+              return utf8_decode($ret);
             }
             
             case '\\': {
