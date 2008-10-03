@@ -23,7 +23,7 @@
     }
     closedir($d);
     if ($fatal && !$inc) {
-      echo '[bootstrap] Cannot determine boot class path in ', realpath($path), "\n";
+      trigger_error('[bootstrap] Cannot determine boot class path from '.realpath($path), E_USER_ERROR);
       exit(0x3d);
     }
     return $inc;
