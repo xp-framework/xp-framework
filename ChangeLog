@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Version 5.6.10, released 2008-10-08
+-----------------------------------
+SVN version: 12581
+
 Heads up!
 ~~~~~~~~~
 - Removed class util.profiling.ClassProfiler
