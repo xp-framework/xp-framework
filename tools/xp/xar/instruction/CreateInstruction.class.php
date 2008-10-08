@@ -5,7 +5,7 @@
  */
 
   uses(
-    'xp.instruction.AbstractInstruction',
+    'xp.xar.instruction.AbstractInstruction',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.NegationOfFilter',
