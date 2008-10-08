@@ -25,6 +25,12 @@ RFCs
 - Implemented RFC #0164 - Exceptions for XPClass::get*()
   (friebe)
 
+Bugfixes
+~~~~~~~~
+- Made message part optional in HTTP status response when parsing it in
+  peer.http.HttpResponse::readHeader()
+  (hinckel)
+
 Features
 ~~~~~~~~
 - Added lang.XPClass::getSimpleName() 

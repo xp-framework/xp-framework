@@ -97,7 +97,7 @@
       // Status line
       $status= $this->scanUntil("\n");
       $r= sscanf($status, "HTTP/%[0-9.] %3d %[^\r]", $this->version, $this->statuscode, $this->message);
-      if ($r < 3) {
+      if ($r < 2) {
         throw new FormatException('"'.$status.'" is not a valid HTTP response ['.$r.']');
       }
 

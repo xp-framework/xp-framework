@@ -95,6 +95,30 @@
       $this->assertEquals('4', $response->getHeader('Content-Length'));
       $this->assertEquals('Test', $response->readData());
     }
+    
+    /**
+     * Test status code with message string
+     *
+     */
+    #[@test]
+    public function statusCodeWithMessage() {
+      $response= $this->newResponse(array('HTTP/1.1 404 Not Found'), 'File Not Found');
+      $this->assertEquals(404, $response->getStatusCode());
+      $this->assertEquals('Not Found', $response->getMessage());
+      $this->assertEquals('File Not Found', $response->readData());
+    }
+    
+    /**
+     * Test status code without message string
+     *
+     */
+    #[@test]
+    public function statusCodeWithoutMessage() {
+      $response= $this->newResponse(array('HTTP/1.1 404'), 'File Not Found');
+      $this->assertEquals(404, $response->getStatusCode());
+      $this->assertEquals('', $response->getMessage());
+      $this->assertEquals('File Not Found', $response->readData());
+    }
 
     /**
      * Test what happens when the server responds with an incorrect protocol
