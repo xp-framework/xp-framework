@@ -15,11 +15,15 @@
    * @purpose Wrap LDAP queries
    */
   class LDAPQuery extends Object {
+    const RECEIVE_TYPES=  1;
+    const RECEIVE_VALUES= 0;
+
     public
       $filter=      '',
       $scope=       0,
       $base=        '',
       $attrs=       array(),
+      $attrsOnly=   self::RECEIVE_VALUES,
       $sizelimit=   0,
       $timelimit=   0,
       $sort=        FALSE,
@@ -188,16 +192,23 @@
     public function getAttrs() {
       return $this->attrs;
     }
-    
+
     /**
-     * Check whether to return only requested attributes. If the
-     * attrs-array is empty, this returns FALSE. If one element is
-     * in it at least, it returns TRUE.
+     * Set whether to return only attribute types.
+     *
+     * @param  bool mode
+     */
+    public function setAttrsOnly($mode) {
+      $this->attrsOnly= $mode;
+    }
+
+    /**
+     * Check whether to return only requested attributes.
      *
      * @return  bool attrsonly
      */
     public function getAttrsOnly() {
-      return sizeof($this->attrs);
+      return $this->attrsOnly;
     }
 
     /**
