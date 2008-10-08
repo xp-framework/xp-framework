@@ -58,13 +58,17 @@
         $now= Date::now();
         if ($d->getMonth() > $now->getMonth()) $d->year--;
       }
-
-      $e->setPermissions(substr($permissions, 1));
-      $e->setNumlinks($numlinks);
-      $e->setUser($user);
-      $e->setGroup($group);
-      $e->setSize($size);
-      $e->setDate($d);
+        
+      try {
+        $e->setPermissions(substr($permissions, 1));
+        $e->setNumlinks($numlinks);
+        $e->setUser($user);
+        $e->setGroup($group);
+        $e->setSize($size);
+        $e->setDate($d);
+      } catch (IllegalArgumentException $e) {
+        throw new FormatException('Cannot parse "'.$raw.'": '.$e->getMessage());
+      }
       return $e;
     }
   } 
