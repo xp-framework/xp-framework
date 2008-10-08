@@ -53,15 +53,7 @@
     }
 
     /**
-     * Destructor. Ensures socket is closed.
-     *
-     */
-    public function __destruct() {
-      $this->socket->isConnected() && $this->close();
-    }
-
-    /**
-     * Creates a string representation of this socket
+     * Creates a string representation of this input stream
      *
      * @return  string
      */
