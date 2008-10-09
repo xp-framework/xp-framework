@@ -265,7 +265,7 @@
     /**
      * get SQL formatter
      *
-     * @return  rdbms.StatemantFormatter
+     * @return  rdbms.StatementFormatter
      */
     public function getFormatter() {
       if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new PostgreSQLDialect());

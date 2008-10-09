@@ -316,7 +316,7 @@
     /**
      * get SQL formatter
      *
-     * @return  rdbms.StatemantFormatter
+     * @return  rdbms.StatementFormatter
      */
     public function getFormatter() {
       return $this->formatter;
