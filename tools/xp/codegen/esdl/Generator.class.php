@@ -138,6 +138,7 @@
         }
 
         $this->processor->setXMLBuf($node->getSource(INDENT_NONE));
+        $this->processor->run();
         $output->append(strtr($wrapper->getName(), '.', '/').xp::CLASS_FILE_EXT, $this->processor->output());
       }
     }
