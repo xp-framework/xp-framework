@@ -126,7 +126,7 @@
      *
      */
     #[@target(input= array('classList', 'output'))]
-    public function writeClasses($classes) {
+    public function writeClasses($classes, $output) {
       foreach ($classes as $wrapper) {
         $node= Node::fromObject($wrapper, 'class');
         $node->setAttribute('name', $wrapper->getName());
