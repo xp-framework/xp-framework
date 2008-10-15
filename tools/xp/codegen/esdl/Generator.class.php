@@ -54,7 +54,7 @@
       $this->jndi= $args->value(1);
 
       $this->processor= new DomXSLProcessor();
-      $this->processor->setXSLBuf($this->getClass()->getPackage()->getResource($args->value('lang', 'l', 'xp5.php').'.xsl'));
+      $this->processor->setXSLBuf($this->getClass()->getPackage()->getResource($args->value('lang', 'l', 'xp5').'.xsl'));
     }
     
     /**
