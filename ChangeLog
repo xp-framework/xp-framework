@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- Added peer.ftp.collections package - bridge between peer.ftp and 
+  io.collections
+  (friebe)
+
 Version 5.7.0, released 2008-10-08
 ----------------------------------
 SVN version: 12581
