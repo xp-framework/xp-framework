@@ -1,0 +1,59 @@
+RFC 0174: io.collections interface additions / io.streams integration
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Oct 20 16:41:26     2008
+@status: draft
+@category: io.collections
+
+Scope of Change
+---------------
+New methods will be added to the io.collections.IOElement interface:
+* getOrigin() - will return the collection these elements originate from
+* getInputStream() - a stream to read from this element
+* getOutputStream() - a stream to write to this element
+
+
+Rationale
+---------
+Transparent iteration on filesystem, FTP and other implementations.
+
+
+Functionality
+-------------
+
+New methods
+~~~~~~~~~~~
+<code>
+  public io.collections.IOCollection getOrigin();
+  public io.streams.InputStream getInputStream();
+  public io.streams.OutputStream getOutputStream();
+</code>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+Dependency io.collections -> io.streams
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+
+<EOF>
