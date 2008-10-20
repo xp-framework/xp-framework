@@ -1,0 +1,47 @@
+RFC 0175: New io.zip package 
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon Oct 20 16:49:44     2008
+@status: draft
+@category: io
+
+Scope of Change
+---------------
+A new package named io.zip will be created.
+
+
+Rationale
+---------
+Reading and creating zipfiles.
+
+
+Functionality
+-------------
+TODO.
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+* ext/bz2 for working with BZIP compression
+* ext/zlib for working with GZIP compression
+
+Related documents
+-----------------
+http://experiments.xp-forge.net/xml/browse?arena,zip
+
+Comments
+--------
+
+<EOF>
