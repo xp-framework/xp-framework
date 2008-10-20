@@ -7,7 +7,7 @@
   /**
    * Visitor is an interface for classes implementing the visitor pattern.
    *
-   * @see       xp://util.Composite
+   * @see       xp://util.Component
    * @purpose   Interface
    */
   interface Visitor {
