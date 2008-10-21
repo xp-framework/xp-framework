@@ -27,7 +27,9 @@
      *
      */
     public function setUp() {
-      if (!extension_loaded('gd')) throw new PrerequisitesNotMetError('GD extension not available');
+      if (!Runtime::getInstance()->extensionAvailable('gd')) {
+        throw new PrerequisitesNotMetError('GD extension not available');
+      }
     }
         
     /**
