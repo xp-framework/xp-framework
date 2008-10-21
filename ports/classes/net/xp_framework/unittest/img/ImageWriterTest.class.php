@@ -8,6 +8,7 @@
     'unittest.TestCase',
     'io.Stream',
     'io.FileUtil',
+    'lang.Runtime',
     'img.Image',
     'img.io.GifStreamWriter',
     'img.io.JpegStreamWriter',
@@ -30,8 +31,9 @@
      *
      */
     public function setUp() {
-      if (!extension_loaded('gd')) throw new PrerequisitesNotMetError('GD extension not available');
-
+      if (!Runtime::getInstance()->extensionAvailable('gd')) {
+        throw new PrerequisitesNotMetError('GD extension not available');
+      }
       $this->image= Image::create(1, 1);
       $this->image->fill($this->image->allocate(new Color('#ffffff')));
     }
