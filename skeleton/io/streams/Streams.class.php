@@ -75,6 +75,17 @@
     }
 
     /**
+     * Open an input stream for reading and return URI
+     *
+     * @param   io.streams.InputStream s
+     * @return  string
+     */
+    public static function readableUri(InputStream $s) { 
+      self::$streams[$s->hashCode()]= $s;
+      return 'iostr+r://'.$s->hashCode();
+    }
+
+    /**
      * Open an output stream for writing
      *
      * @param   io.streams.OutputStream s
@@ -83,6 +94,17 @@
     public static function writeableFd(OutputStream $s) { 
       self::$streams[$s->hashCode()]= $s;
       return fopen('iostr+w://'.$s->hashCode(), 'wb');
+    }
+
+    /**
+     * Open an output stream for writing
+     *
+     * @param   io.streams.OutputStream s
+     * @return  resource
+     */
+    public static function writeableUri(OutputStream $s) { 
+      self::$streams[$s->hashCode()]= $s;
+      return 'iostr+w://'.$s->hashCode();
     }
 
     /**
