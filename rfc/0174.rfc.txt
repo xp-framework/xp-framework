@@ -10,9 +10,8 @@ $Id$
 Scope of Change
 ---------------
 New methods will be added to the io.collections.IOElement interface:
-* getOrigin() - will return the collection these elements originate from
-* getInputStream() - a stream to read from this element
-* getOutputStream() - a stream to write to this element
+* Origin accessors: Return / set the collection these elements originate from
+* Stream accessors: Return streams to read from / write to this element
 
 
 Rationale
@@ -22,13 +21,49 @@ Transparent iteration on filesystem, FTP and other implementations.
 
 Functionality
 -------------
+<summary>
+Discovering the origin of an IOElement returned from an iteration may 
+be used for debugging and display purposes. It will be complemented by
+a setter for iterators to inject the collection:
 
-New methods
-~~~~~~~~~~~
 <code>
   public io.collections.IOCollection getOrigin();
+  public void setOrigin(io.collections.IOCollection $origin);
+</code>
+
+To read from and write to elements returned from an iteration process,
+this API will be collected to the io.streams API:
+
+<code>
   public io.streams.InputStream getInputStream();
   public io.streams.OutputStream getOutputStream();
+</code>
+
+</summary>
+
+
+Example
+~~~~~~~
+Consider the following sourcecode:
+<code>
+  $origin= new FileCollection('documents');
+  foreach (new IOCollectionIterator($origin) as $element) {
+    Console::writeLine(file_get_contents($element->getURI())); // !!!
+  }
+</code>
+
+If we exchange <tt>$origin</tt>, which holds a FileCollection, with a 
+FtpCollection for instance, the <tt>file_get_contents()</tt> call will break.
+
+Corrected version
+~~~~~~~~~~~~~~~~~
+<code>
+  $origin= new FileCollection('documents');
+  foreach (new IOCollectionIterator($origin) as $element) {
+    for ($is= $element->getInputStream(); $is->available() > 0; ) {
+      Console::write($is->read());
+    }
+  }
 </code>
 
 
@@ -54,6 +89,9 @@ n/a
 
 Comments
 --------
-
+friebe, Tue Oct 21 10:20:38     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We could add a method readAll() to io.streams.Streams class for easy
+one-line "file_get_contents() replacement"
 
 <EOF>
