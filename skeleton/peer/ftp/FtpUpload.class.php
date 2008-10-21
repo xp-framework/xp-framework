@@ -31,10 +31,10 @@
      * Creates a new FtpDownload instance without a remote file
      *
      * @see     xp://peer.ftp.FtpFile#start
-     * @param   io.streams.OutputStream in
+     * @param   io.streams.InputStream in
      */
-    public static function from(InputStream $out) {
-      return new self(NULL, $out);
+    public static function from(InputStream $in) {
+      return new self(NULL, $in);
     }
 
     /**
