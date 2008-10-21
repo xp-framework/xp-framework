@@ -41,6 +41,7 @@ Features
 ~~~~~~~~
 - Added support for io.streams API to StreamReader and StreamWriter
   from the img.io package (keeping backwards compatibility)
+  http://news.xp-framework.net/article/279/2008/10/21
   (friebe)
 - Added peer.ftp.collections package - bridge between peer.ftp and 
   io.collections
