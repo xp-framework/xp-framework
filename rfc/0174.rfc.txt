@@ -21,7 +21,6 @@ Transparent iteration on filesystem, FTP and other implementations.
 
 Functionality
 -------------
-<summary>
 Discovering the origin of an IOElement returned from an iteration may 
 be used for debugging and display purposes. It will be complemented by
 a setter for iterators to inject the collection:
@@ -39,9 +38,6 @@ this API will be collected to the io.streams API:
   public io.streams.OutputStream getOutputStream();
 </code>
 
-</summary>
-
-
 Example
 ~~~~~~~
 Consider the following sourcecode:
@@ -53,7 +49,19 @@ Consider the following sourcecode:
 </code>
 
 If we exchange <tt>$origin</tt>, which holds a FileCollection, with a 
-FtpCollection for instance, the <tt>file_get_contents()</tt> call will break.
+FtpCollection (for instance, others see below) the <tt>file_get_contents()</tt> 
+call will break.
+
+<summary>
+More I/O Collections
+~~~~~~~~~~~~~~~~~~~~
+The following implementations exist or are drafted:
+
+* io.collections.FileCollection - filesystem
+* io.collections.XarCollection - XAR archives
+* peer.ftp.collections.FtpCollection - FTP directories
+* io.zip.collections.ZipCollection - inside ZIP archives (see RFC #0175)
+</summary>
 
 Corrected version
 ~~~~~~~~~~~~~~~~~
@@ -63,6 +71,21 @@ Corrected version
     for ($is= $element->getInputStream(); $is->available() > 0; ) {
       Console::write($is->read());
     }
+  }
+</code>
+
+Supporting additions
+~~~~~~~~~~~~~~~~~~~~
+To read an IOElements' contents completely into a buffer in a single call,
+the <tt>io.streams.Streams</tt> class will be extended:
+
+<code>
+  // Method signature
+  public lang.types.Bytes readAll(io.streams.InputStream $is);
+  
+  // Usage in above example
+  foreach (...) {
+    Console::writeLine(Streams::readAll($element->getInputStream()));
   }
 </code>
 
@@ -79,7 +102,7 @@ None.
 
 Dependencies
 ------------
-Dependency io.collections -> io.streams
+Dependency <tt>io.collections -> io.streams</tt>
 
 
 Related documents
@@ -89,9 +112,9 @@ n/a
 
 Comments
 --------
-friebe, Tue Oct 21 10:20:38     2008
+friebe, Tue Oct 21 10:41:36     2008
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-We could add a method readAll() to io.streams.Streams class for easy
-one-line "file_get_contents() replacement"
+Should <tt>io.streams.Streams::readAll()</tt> close the stream it gets
+passed or should it have a parameter <tt>boolean close= TRUE</tt>?
 
 <EOF>
