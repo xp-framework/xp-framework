@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('img.io.ImageWriter');
+  uses('img.io.ImageWriter', 'io.streams.OutputStream', 'io.Stream');
 
   /**
    * Writes to a stream
@@ -15,16 +15,23 @@
    * @purpose  Abstract base class
    */
   abstract class StreamWriter extends Object implements ImageWriter {
-    public
-      $stream   = NULL;
+    public $stream= NULL;
     
     /**
      * Constructor
      *
-     * @param   io.Stream stream
+     * @param   mixed stream either an io.streams.OutputStream or an io.Stream (BC)
+     * @throws  lang.IllegalArgumentException when types are not met
      */
     public function __construct($stream) {
       $this->stream= deref($stream);
+      if ($this->stream instanceof OutputStream) {
+        // Already open
+      } else if ($this->stream instanceof Stream) {
+        $this->stream->open(STREAM_MODE_WRITE);
+      } else {
+        throw new IllegalArgumentException('Expected either an io.streams.OutputStream or an io.Stream, have '.xp::typeOf($this->stream));
+      }
     }
 
     /**
@@ -37,15 +44,6 @@
     protected abstract function output($handle);
     
     /**
-     * Callback function for ob_start
-     *
-     * @param   string data
-     */
-    public function writeToStream($data) {
-      $this->stream->write($data);
-    }
-
-    /**
      * Sets the image resource that is to be written
      *
      * @param   resource handle
@@ -53,20 +51,18 @@
      */
     public function setResource($handle) {
       try {
-        $this->stream->open(STREAM_MODE_WRITE);
         
         // Use output buffering with a callback method to capture the 
         // image(gd|jpeg|png|...) functions' output.
-        ob_start(array($this, 'writeToStream'));
+        ob_start(array($this->stream, 'write'));
         $r= $this->output($handle);
         ob_end_clean();
         
         $this->stream->close();
-        if (!$r) throw(new IOException('Could not write image'));
+        if (!$r) throw new ImagingException('Could not write image');
       } catch (IOException $e) {
-        throw(new ImagingException($e->getMessage()));
+        throw new ImagingException($e->getMessage());
       }
     }
-    
   } 
 ?>

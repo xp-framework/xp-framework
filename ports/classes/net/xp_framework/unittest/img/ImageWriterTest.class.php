@@ -11,7 +11,8 @@
     'img.Image',
     'img.io.GifStreamWriter',
     'img.io.JpegStreamWriter',
-    'img.io.PngStreamWriter'
+    'img.io.PngStreamWriter',
+    'io.streams.MemoryOutputStream'
   );
 
   /**
@@ -42,6 +43,19 @@
     public function tearDown() {
       delete($this->image);
     }
+
+    /**
+     * Tests the situation when an exception is caused during stream writes.
+     *
+     */
+    #[@test, @expect('img.ImagingException')]
+    public function writeError() {
+      $this->image->saveTo(new GifStreamWriter(newinstance('io.streams.OutputStream', array(), '{
+        public function write($arg) { throw new IOException("Could not write: Intentional exception"); }
+        public function flush() { }
+        public function close() { }
+      }')));
+    }
     
     /**
      * Writes the image to a GIF
@@ -50,9 +64,9 @@
      */
     #[@test]
     public function writeGif() {
-      $s= new Stream();
-      $this->image->saveTo(new GifStreamWriter(ref($s)));
-      $this->assertNotEmpty(FileUtil::getContents($s));
+      $s= new MemoryOutputStream();
+      $this->image->saveTo(new GifStreamWriter($s));
+      $this->assertNotEmpty($s->getBytes());
     }
 
     /**
@@ -62,9 +76,9 @@
      */
     #[@test]
     public function writeJpeg() {
-      $s= new Stream();
-      $this->image->saveTo(new JpegStreamWriter(ref($s)));
-      $this->assertNotEmpty(FileUtil::getContents($s));
+      $s= new MemoryOutputStream();
+      $this->image->saveTo(new JpegStreamWriter($s));
+      $this->assertNotEmpty($s->getBytes());
     }
 
     /**
@@ -74,6 +88,42 @@
      */
     #[@test]
     public function writePng() {
+      $s= new MemoryOutputStream();
+      $this->image->saveTo(new PngStreamWriter($s));
+      $this->assertNotEmpty($s->getBytes());
+    }
+
+    /**
+     * Writes the image to a GIF using the backwards-compatible method
+     *
+     * @see     xp://img.io.GifStreamWriter
+     */
+    #[@test]
+    public function writeGifBC() {
+      $s= new Stream();
+      $this->image->saveTo(new GifStreamWriter(ref($s)));
+      $this->assertNotEmpty(FileUtil::getContents($s));
+    }
+
+    /**
+     * Writes the image to a JPEG using the backwards-compatible method
+     *
+     * @see     xp://img.io.GifStreamWriter
+     */
+    #[@test]
+    public function writeJpegBC() {
+      $s= new Stream();
+      $this->image->saveTo(new JpegStreamWriter(ref($s)));
+      $this->assertNotEmpty(FileUtil::getContents($s));
+    }
+
+    /**
+     * Writes the image to a GIF using the backwards-compatible method
+     *
+     * @see     xp://img.io.GifStreamWriter
+     */
+    #[@test]
+    public function writePngBC() {
       $s= new Stream();
       $this->image->saveTo(new PngStreamWriter(ref($s)));
       $this->assertNotEmpty(FileUtil::getContents($s));
