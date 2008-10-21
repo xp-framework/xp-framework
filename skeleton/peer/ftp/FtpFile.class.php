@@ -7,6 +7,8 @@
   uses(
     'peer.ftp.FtpEntry', 
     'peer.ftp.FtpTransferListener',
+    'peer.ftp.FtpInputStream',
+    'peer.ftp.FtpOutputStream',
     'peer.ftp.FtpUpload',
     'peer.ftp.FtpDownload',
     'io.streams.Streams',
@@ -31,6 +33,24 @@
       if (FALSE === ftp_delete($this->connection->handle, $this->name)) {
         throw new IOException('Could not delete file "'.$this->name.'"');
       }
+    }
+    
+    /**
+     * Returns an input stream to read from this file
+     *
+     * @return  io.streams.InputStream
+     */
+    public function getInputStream() {
+      return new FtpInputStream($this);
+    }
+
+    /**
+     * Returns an output stream to write to this file
+     *
+     * @return  io.streams.OutputStream
+     */
+    public function getOutputStream() {
+      return new FtpOutputStream($this);
     }
 
     /**
