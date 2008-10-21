@@ -39,6 +39,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for io.streams API to StreamReader and StreamWriter
+  from the img.io package (keeping backwards compatibility)
+  (friebe)
 - Added peer.ftp.collections package - bridge between peer.ftp and 
   io.collections
   (friebe)
