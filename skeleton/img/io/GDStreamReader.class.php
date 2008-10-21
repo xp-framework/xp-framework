@@ -19,11 +19,22 @@
     /**
      * Read an image
      *
+     * @deprecated
      * @return  resource
      * @throws  img.ImagingException
      */    
     public function readFromStream() {
       return imagecreatefromgd($this->stream->getURI());
+    }
+    
+    /**
+     * Read an image
+     *
+     * @return  resource
+     * @throws  img.ImagingException
+     */    
+    public function readImage() {
+      return imagecreatefromgd(Streams::readableUri($this->stream));
     }
   }
 ?>

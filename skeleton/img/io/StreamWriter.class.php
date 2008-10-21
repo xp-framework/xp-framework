@@ -10,6 +10,7 @@
    * Writes to a stream
    *
    * @ext      gd
+   * @test     xp://net.xp_framework.unittest.img.ImageWriterTest
    * @see      xp://img.io.ImageWriter
    * @see      xp://img.Image#saveTo
    * @purpose  Abstract base class
