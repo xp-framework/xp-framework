@@ -107,7 +107,7 @@
         return NULL;        
       }
 
-      if ($this->datasock[$event->stream->hashCode( instanceof ServerSocket])) {
+      if ($this->datasock[$event->stream->hashCode()] instanceof ServerSocket) {
 
         // Open socket in passive mode
         $this->cat && $this->cat->debug('+++ Opening passive connection');
