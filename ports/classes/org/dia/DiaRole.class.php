@@ -1,12 +1,10 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id$
  */
 
-  uses(
-    'org.dia.DiaComposite'
-  );
+  uses('org.dia.DiaComposite');
 
   /**
    * Represents one of two roles of an UMLAssociation

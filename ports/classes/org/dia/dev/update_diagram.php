@@ -1,9 +1,11 @@
 <?php
 /* This script updates all classes found in a diagram
  *
- * $Id:$
+ * $Id$
  */
+ 
   require('lang.base.php');
+  
   uses(
     'util.cmd.ParamString',
     'org.dia.DiaUnmarshaller',

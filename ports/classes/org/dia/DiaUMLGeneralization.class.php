@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id$
  */
 
   uses('org.dia.DiaUMLConnection');

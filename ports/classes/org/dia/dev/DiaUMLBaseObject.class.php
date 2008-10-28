@@ -1,12 +1,10 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id$
  */
 
-  uses(
-    'org.dia.DiaObject'
-  );
+  uses('org.dia.DiaObject');
 
   /**
    * Base class for all 'dia:object type="UML -' nodes
@@ -36,9 +34,5 @@
 
     public function initialize() {
     }
-
-
-
-    
   }
 ?>

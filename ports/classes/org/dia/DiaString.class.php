@@ -1,12 +1,10 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id$
  */
 
-  uses(
-    'org.dia.DiaElement'
-  ); 
+  uses('org.dia.DiaElement'); 
 
   /**
    * Represents a 'dia:string' node

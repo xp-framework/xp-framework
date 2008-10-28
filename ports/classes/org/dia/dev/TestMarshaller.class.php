@@ -1,7 +1,7 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id$
  */
 
   class TestMarshaller extends Object {
@@ -40,9 +40,7 @@
     public function recurse($Dia, $classnames, $recurse, $depend) {
       $Layer= $Dia->getLayer();
 
-
       return $Dia;
     }
-
   }
 ?>

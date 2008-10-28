@@ -1,12 +1,10 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id$
  */
 
-  uses(
-    'org.dia.DiaComposite'
-  );
+  uses('org.dia.DiaComposite');
 
   /**
    * Represents a 'dia:composite type="umlattribute"' node

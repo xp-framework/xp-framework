@@ -1,12 +1,10 @@
 <?php
 /*
  *
- * $Id:$
+ * $Id$
  */
 
-  uses(
-    'org.dia.DiaCompound'
-  );
+  uses('org.dia.DiaCompound');
 
   /**
    * Representation of a 'dia:layer' node. Every diagram may have multiple
