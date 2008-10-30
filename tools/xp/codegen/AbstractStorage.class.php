@@ -14,6 +14,13 @@
   abstract class AbstractStorage extends Object {
     
     /**
+     * get URI
+     *
+     * @return  string
+     */
+    public abstract function getUri();
+
+    /**
      * Store data
      *
      * @param   string name

@@ -31,6 +31,15 @@
     }
 
     /**
+     * get URI
+     *
+     * @return  string
+     */
+    public function getUri() {
+      return 'file://'.$this->path->uri;
+    }
+
+    /**
      * Store data
      *
      * @param   string name

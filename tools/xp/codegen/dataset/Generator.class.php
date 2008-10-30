@@ -42,6 +42,9 @@
    * @purpose  Code generator
    */
   class xp·codegen·dataset·Generator extends AbstractGenerator {
+    const
+      CONSTRAINT_FILE_NAME= '__Constraints';
+
     protected static 
       $adapters = array();
     
@@ -136,6 +139,7 @@
         
         $xml[]= $storage->write($className, $gen->getSource(INDENT_DEFAULT));
       }
+      $storage->write(self::CONSTRAINT_FILE_NAME, $constraints->getSource(INDENT_DEFAULT));
       return $xml;
     }
 
@@ -147,6 +151,8 @@
     public function generateCode($tables, $output) {
       $dir= strtr($this->package, '.', '/').'/';
 
+      $this->processor->setParam('definitionpath', $this->storage->getUri());
+      $this->processor->setParam('constraintfile', $this->storage->getUri().self::CONSTRAINT_FILE_NAME);
       foreach ($tables as $stored) {
         $this->processor->setXMLBuf($stored->data());
         $this->processor->run();

@@ -18,9 +18,6 @@
   <xsl:param name="exprefix" />
   <xsl:param name="prefixRemove" />
   
-  <xsl:variable name="absdefinitionpath" select="concat('file://', string:encode-uri($definitionpath, false()))"/>
-  <xsl:variable name="absconstraintfile" select="concat('file://', string:encode-uri($constraintfile, false()))"/>
-
   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
   <xsl:variable name="this" select="/document" />
@@ -116,7 +113,7 @@
   
   <func:function name="my:referenced">
     <xsl:param name="datasetnode" />
-    <func:result select="my:distinctRole(document($absconstraintfile)/document/database[@database = $datasetnode/table/@database]/table/constraint/reference[@table = $datasetnode/table/@name])" />
+    <func:result select="my:distinctRole(document($constraintfile)/document/database[@database = $datasetnode/table/@database]/table/constraint/reference[@table = $datasetnode/table/@name])" />
   </func:function>
   
   <func:function name="my:referencing">
@@ -369,7 +366,7 @@
 
   <!-- create referenced object getters -->
   <xsl:for-each select="my:referencing($this)">
-    <xsl:variable name="referencedTable" select="document(concat($absdefinitionpath, '/', my:ucfirst(@table), '.xml'))/document" />
+    <xsl:variable name="referencedTable" select="document(concat($definitionpath, '/', my:ucfirst(@table)))/document" />
     <xsl:variable name="isSingle"        select="my:constraintSingleTest(./key, $referencedTable/table/index[@unique = 'true'])" />
     <xsl:variable name="classname"       select="my:ucfirst(@table)" />
     <xsl:variable name="fullclassname"   select="concat($package, '.', my:prefixedClassName(@table))" />
@@ -449,7 +446,7 @@
 
   <!-- create referencing object getters -->
   <xsl:for-each select="my:referenced($this)">
-    <xsl:variable name="referencingTable" select="document(concat($absdefinitionpath, '/', my:ucfirst(../../@name), '.xml'))/document" />
+    <xsl:variable name="referencingTable" select="document(concat($definitionpath, '/', my:ucfirst(../../@name)))/document" />
     <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencingTable/table/index[@unique = 'true'])" />
     <xsl:variable name="classname"       select="my:ucfirst(../../@name)" />
     <xsl:variable name="fullclassname"   select="concat($package, '.', my:prefixedClassName(../../@name))" />
