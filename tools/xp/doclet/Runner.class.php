@@ -13,7 +13,7 @@
    *
    * @purpose  RootDoc CLI adaptor
    */
-  class text·doclet·Runner extends Object {
+  class xp·doclet·Runner extends Object {
   
     /**
      * Runner method
