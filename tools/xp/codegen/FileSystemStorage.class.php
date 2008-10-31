@@ -36,7 +36,7 @@
      * @return  string
      */
     public function getUri() {
-      return 'file://'.$this->path->uri;
+      return 'file://'.urlencode($this->path->uri);
     }
 
     /**

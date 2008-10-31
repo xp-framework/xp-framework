@@ -181,7 +181,7 @@
   <xsl:text>;
   
     protected
-      $cached= array(</xsl:text>
+      $cache= array(</xsl:text>
       <xsl:for-each select="my:referencing($this) | my:referenced($this)"><xsl:text>
         '</xsl:text><xsl:value-of select="@role" /><xsl:text>' => array(),</xsl:text>
       </xsl:for-each><xsl:text>
@@ -393,7 +393,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
-      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
+      $r= ($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
         array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
         XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
           ->getMethod('getPeer')
@@ -414,7 +414,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
-      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      if ($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke(NULL)
@@ -431,7 +431,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
-      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      if ($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke(NULL)
@@ -473,7 +473,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>() {
-      $r= ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
+      $r= ($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) ?
         array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) :
         XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
           ->getMethod('getPeer')
@@ -494,7 +494,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>List() {
-      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      if ($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return array_values($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke(NULL)
@@ -511,7 +511,7 @@
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function get</xsl:text><xsl:value-of select="@role" /><xsl:text>Iterator() {
-      if ($this->cached['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
+      if ($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']) return new HashmapIterator($this->cache['</xsl:text><xsl:value-of select="@role" /><xsl:text>']);
       return XPClass::forName('</xsl:text><xsl:value-of select="$fullclassname" /><xsl:text>')
         ->getMethod('getPeer')
         ->invoke(NULL)
