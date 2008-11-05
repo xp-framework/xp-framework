@@ -29,7 +29,7 @@
    *   try {
    *     $smtp->connect();            // Uses localhost:25 as default
    *     $smtp->send($msg);
-   *   } catch(Exception $e) {
+   *   } catch(XPException $e) {
    *     printf("Caught %s\n", $e->getClassName());
    *     $e->printStackTrace();
    *   }
@@ -229,7 +229,7 @@
         $this->_sockcmd(FALSE, 220);            // Read banner message
         $this->_hello();                        // Polite people say hello
         $this->_login();                        // Log in
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         throw(new TransportException('Connect failed', $e));
       }
       
@@ -245,7 +245,7 @@
       try {
         $this->_sock->write("QUIT\r\n"); 
         $this->_sock->close();
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         throw(new TransportException('Could not shutdown communications', $e));
       }
       
@@ -262,16 +262,16 @@
     public function send($message) {
       try {
         $this->_sockcmd(
-          'MAIL FROM: %s', 
-          $message->from->localpart.'@'.$message->from->domain, 
+          'MAIL FROM: %s',
+          $message->from->rawAddress(),
           250
         );
 
         // List all recipients, hide BCC
         foreach (array(TO, CC, BCC) as $type) while ($r= $message->getRecipient($type)) {
           $this->_sockcmd(
-            'RCPT TO: %s', 
-            $r->localpart.'@'.$r->domain, 
+            'RCPT TO: %s',
+            $r->rawAddress(),
             array(250, 251)
           );
         }
@@ -290,7 +290,7 @@
             $message->getBody()
           ), FALSE);
         }
-      } catch (Exception $e) {
+      } catch (XPException $e) {
         throw(new TransportException('Sending message failed', $e));
       }
       

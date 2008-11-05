@@ -4,7 +4,11 @@
  * $Id$
  */
  
-  uses('text.encode.QuotedPrintable', 'text.encode.Base64');
+  uses(
+    'text.encode.QuotedPrintable', 
+    'text.encode.Base64',
+    'peer.mail.MessagingAddress'
+  );
  
   /**
    * Internet address
@@ -16,7 +20,7 @@
    * @see       rfc://2822#3.4.1
    * @purpose   Represents an Internet address
    */
-  class InternetAddress extends Object {
+  class InternetAddress extends Object implements MessagingAddress {
     public 
       $personal  = '',
       $localpart = '',
@@ -35,6 +39,15 @@
       );
       $this->personal= $personal;
     }
+    
+    /**
+     * Retrieves address
+     *
+     * @return  string
+     */
+    public function getAddress() {
+      return $this->localpart.'@'.$this->domain;      
+    }    
     
     /**
      * Retrieve hashcode

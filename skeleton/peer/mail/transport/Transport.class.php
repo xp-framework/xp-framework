@@ -11,7 +11,7 @@
    *
    * @purpose  Provide an interface
    */
-  class Transport extends Object implements Traceable {
+  abstract class Transport extends Object implements Traceable {
     public
       $cat    = NULL;
 
@@ -34,7 +34,7 @@
      * @param   peer.mail.Message message the Message object to send
      * @throws  peer.mail.transport.TransportException to indicate an error occured
      */
-    public function send($message) { }
+    public abstract function send($message);
     
     /**
      * Set a LogCategory for tracing communication
