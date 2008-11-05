@@ -99,7 +99,6 @@
     public function __construct($uid= -1) {
       $this->uid= $uid;
       $this->date= new Date();
-      
     }
     
     /**
@@ -210,10 +209,7 @@
       $vars= get_object_vars($this);
       foreach (array_keys($vars) as $var) {
         if ('_' == $var{0}) continue;
-        $s.= sprintf("  [%-12s] %s\n", $var, $vars[$var] instanceof Generic 
-          ? $vars[$var]->toString() 
-          : str_replace("\n", "\n  ", var_export($vars[$var], 1))
-        );
+        $s.= sprintf("  [%-12s] %s\n", $var, xp::stringOf($vars[$var], '  '));
       }
       return $this->getClassName().'['.$this->uid."]@{\n".$s."}\n";
     }
