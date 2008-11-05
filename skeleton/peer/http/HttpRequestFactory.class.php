@@ -6,8 +6,7 @@
 
   uses(
     'peer.URL',
-    'peer.http.HttpRequest',
-    'peer.http.HttpsRequest'
+    'peer.http.HttpRequest'
   );
 
   /**
