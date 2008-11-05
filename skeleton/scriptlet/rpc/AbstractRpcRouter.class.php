@@ -101,13 +101,14 @@
       $this->cat && $request->setTrace($this->cat);
       
       $hasFault= FALSE;
+      $answer= $this->_message();
+
       try {
 
         // Get message
         $msg= $request->getMessage();
 
         // Create answer
-        $answer= $this->_message();
         $answer->create($msg);
 
         // Call handler
