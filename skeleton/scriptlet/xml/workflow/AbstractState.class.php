@@ -44,7 +44,7 @@
     
     /**
      * Helper method used by setup(). Adds information about the handler (and 
-     * about the handler's wrapper, if existant and IFormResultAggregate'd)
+     * about the handler's wrapper, if existant and IFormresultAggregate'd)
      * to the formresult
      *
      * @param   scriptlet.xml.workflow.Handler handler the handler to add
@@ -64,8 +64,8 @@
       }
       
       // Add wrapper parameter representation if the handler has a wrapper
-      // and this wrapper implements the IFormResultAggregate interface
-      if ($handler->hasWrapper() && $handler->wrapper instanceof IFormResultAggregate) {
+      // and this wrapper implements the IFormresultAggregate interface
+      if ($handler->hasWrapper() && $handler->wrapper instanceof IFormresultAggregate) {
         $wrapper= $node->addChild(new Node('wrapper'));
         foreach (array_keys($handler->wrapper->paraminfo) as $name) {
           $param= $wrapper->addChild(new Node('param', NULL, array(
