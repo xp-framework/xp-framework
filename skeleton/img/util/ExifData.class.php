@@ -103,8 +103,8 @@
         $e->setWidth(self::lookup($info['computed'], 'width'));
         $e->setHeight(self::lookup($info['computed'], 'height'));
         $e->setApertureFNumber(self::lookup($info['computed'], 'aperturefnumber'));
-        $e->setMake(self::lookup($info, 'make'));
-        $e->setModel(self::lookup($info, 'model'));
+        $e->setMake(trim(self::lookup($info, 'make')));
+        $e->setModel(trim(self::lookup($info, 'model')));
         $e->setFileName(self::lookup($info, 'filename'));
         $e->setFileSize(self::lookup($info, 'filesize'));
         $e->setMimeType(self::lookup($info, 'mimetype'));
@@ -117,8 +117,12 @@
         
         // Extract focal length. Some models store "80" as "80/1", rip off
         // the divisor "1" in this case.
-        sscanf(self::lookup($info, 'focallength'), '%d/%d', $n, $frac);
-        $e->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
+        if ($l= self::lookup($info, 'focallength')) {
+          sscanf(self::lookup($info, 'focallength'), '%d/%d', $n, $frac);
+          $e->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
+        } else {
+          $e->setFocalLength(NULL);
+        }
 
         // Calculate orientation from dimensions if not available
         if ($o= self::lookup($info, 'orientation')) {
