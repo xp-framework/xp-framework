@@ -117,7 +117,7 @@
         
         // Extract focal length. Some models store "80" as "80/1", rip off
         // the divisor "1" in this case.
-        if ($l= self::lookup($info, 'focallength')) {
+        if (NULL !== ($l= self::lookup($info, 'focallength'))) {
           sscanf(self::lookup($info, 'focallength'), '%d/%d', $n, $frac);
           $e->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
         } else {
@@ -125,7 +125,7 @@
         }
 
         // Calculate orientation from dimensions if not available
-        if ($o= self::lookup($info, 'orientation')) {
+        if (NULL !== ($o= self::lookup($info, 'orientation'))) {
           $e->setOrientation($o);
         } else {
           $e->setOrientation(($e->width / $e->height) > 1.0
@@ -135,12 +135,12 @@
         }
         
         // Check for Flash and flashUsed keys
-        if ($f= self::lookup($info, 'flash')) {
+        if (NULL !== ($f= self::lookup($info, 'flash'))) {
           $e->setFlash($f);
-        } else if ($u= self::lookup($info, 'flashused')) {
+        } else if (NULL !== ($u= self::lookup($info, 'flashused'))) {
           $e->setFlash(0 == strcasecmp('YES', $u) ? 9 : 0);
         } else {
-          $e->setFlash(0);
+          $e->setFlash(NULL);
         }
         
         // Find date and time
