@@ -69,11 +69,9 @@
     public function toString() {
       $s= $this->compoundMessage();
       
-      // Slice the first four trace elements, they contain the
-      // traces of assert() callbacks which aren't really interesting
-      //
+      // Slice first stack trace element, this is always unittest.TestCase::fail()
       // Also don't show the arguments
-      for ($i= 3, $t= sizeof($this->trace); $i < $t; $i++) {
+      for ($i= 1, $t= sizeof($this->trace); $i < $t; $i++) {
         $this->trace[$i]->args= NULL;
         $s.= $this->trace[$i]->toString();
       }
