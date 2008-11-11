@@ -187,5 +187,80 @@
       $this->assertEquals(0, $i->getFlash());
       $this->assertFalse($i->flashUsed());
     }
+
+    /**
+     * Test sample image "kodak-dc210.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleKodakDC210() {
+      $i= $this->extractFromFile($this->resourceAsFile('kodak-dc210.jpg', 'exif_org'));
+      $this->assertEquals('1/30', $i->getExposureTime());
+      $this->assertEquals('44/10', $i->getFocalLength());
+      $this->assertEquals('Eastman Kodak Company', $i->getMake());
+      $this->assertEquals('f/4.0', $i->getApertureFNumber());
+      $this->assertEquals(NULL, $i->getIsoSpeedRatings());
+      $this->assertEquals(NULL, $i->getSoftware());
+      $this->assertEquals(NULL, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('DC210 Zoom (V05.00)', $i->getModel());
+      $this->assertEquals('2000:10:26 16:46:51', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(2, $i->getMeteringMode());
+      $this->assertEquals(1, $i->getFlash());
+      $this->assertTrue($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "kodak-dc240.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleKodakDC240() {
+      $i= $this->extractFromFile($this->resourceAsFile('kodak-dc240.jpg', 'exif_org'));
+      $this->assertEquals('1/30', $i->getExposureTime());
+      $this->assertEquals('140/10', $i->getFocalLength());
+      $this->assertEquals('EASTMAN KODAK COMPANY', $i->getMake());
+      $this->assertEquals('f/4.0', $i->getApertureFNumber());
+      $this->assertEquals(NULL, $i->getIsoSpeedRatings());
+      $this->assertEquals(NULL, $i->getSoftware());
+      $this->assertEquals(NULL, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('KODAK DC240 ZOOM DIGITAL CAMERA', $i->getModel());
+      $this->assertEquals('1999:05:25 21:00:09', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(1, $i->getMeteringMode());
+      $this->assertEquals(1, $i->getFlash());
+      $this->assertTrue($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "nikon-e950.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleNikonE950() {
+      $i= $this->extractFromFile($this->resourceAsFile('nikon-e950.jpg', 'exif_org'));
+      $this->assertEquals('10/770', $i->getExposureTime());
+      $this->assertEquals('128/10', $i->getFocalLength());
+      $this->assertEquals('NIKON', $i->getMake());
+      $this->assertEquals('f/5.5', $i->getApertureFNumber());
+      $this->assertEquals(80, $i->getIsoSpeedRatings());
+      $this->assertEquals('v981-79', $i->getSoftware());
+      $this->assertEquals(2, $i->getExposureProgram());
+      $this->assertEquals(0, $i->getWhiteBalance());
+      $this->assertEquals(800, $i->getWidth());
+      $this->assertEquals(600, $i->getHeight());
+      $this->assertEquals('E950', $i->getModel());
+      $this->assertEquals('2001:04:06 11:51:40', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(5, $i->getMeteringMode());
+      $this->assertEquals(0, $i->getFlash());
+      $this->assertFalse($i->flashUsed());
+    }
   }
 ?>
