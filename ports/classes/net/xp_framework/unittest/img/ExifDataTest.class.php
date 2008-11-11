@@ -87,5 +87,105 @@
       $this->assertEquals(1, $i->getWidth());
       $this->assertEquals(1, $i->getHeight());
     }
+
+    /**
+     * Test sample image "canon-ixus.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleCanonIxus() {
+      $i= $this->extractFromFile($this->resourceAsFile('canon-ixus.jpg', 'exif_org'));
+      $this->assertEquals('1/350', $i->getExposureTime());
+      $this->assertEquals('346/32', $i->getFocalLength());
+      $this->assertEquals('Canon', $i->getMake());
+      $this->assertEquals('f/4.0', $i->getApertureFNumber());
+      $this->assertEquals(NULL, $i->getIsoSpeedRatings());
+      $this->assertEquals(NULL, $i->getSoftware());
+      $this->assertEquals(NULL, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('Canon DIGITAL IXUS', $i->getModel());
+      $this->assertEquals('2001:06:09 15:17:32', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(2, $i->getMeteringMode());
+      $this->assertEquals(0, $i->getFlash());
+      $this->assertFalse($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "fujifilm-dx10.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleFujifilmDx10() {
+      $i= $this->extractFromFile($this->resourceAsFile('fujifilm-dx10.jpg', 'exif_org'));
+      $this->assertEquals(NULL, $i->getExposureTime());
+      $this->assertEquals('58/10', $i->getFocalLength());
+      $this->assertEquals('FUJIFILM', $i->getMake());
+      $this->assertEquals('f/4.2', $i->getApertureFNumber());
+      $this->assertEquals(150, $i->getIsoSpeedRatings());
+      $this->assertEquals('Digital Camera DX-10 Ver1.00', $i->getSoftware());
+      $this->assertEquals(2, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(1024, $i->getWidth());
+      $this->assertEquals(768, $i->getHeight());
+      $this->assertEquals('DX-10', $i->getModel());
+      $this->assertEquals('2001:04:12 20:33:14', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(5, $i->getMeteringMode());
+      $this->assertEquals(1, $i->getFlash());
+      $this->assertTrue($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "fujifilm-finepix40i.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleFujifilmFinepix40i() {
+      $i= $this->extractFromFile($this->resourceAsFile('fujifilm-finepix40i.jpg', 'exif_org'));
+      $this->assertEquals(NULL, $i->getExposureTime());
+      $this->assertEquals('870/100', $i->getFocalLength());
+      $this->assertEquals('FUJIFILM', $i->getMake());
+      $this->assertEquals('f/2.8', $i->getApertureFNumber());
+      $this->assertEquals(200, $i->getIsoSpeedRatings());
+      $this->assertEquals('Digital Camera FinePix40i Ver1.39', $i->getSoftware());
+      $this->assertEquals(2, $i->getExposureProgram());
+      $this->assertEquals(0, $i->getWhiteBalance());
+      $this->assertEquals(600, $i->getWidth());
+      $this->assertEquals(450, $i->getHeight());
+      $this->assertEquals('FinePix40i', $i->getModel());
+      $this->assertEquals('2000:08:04 18:22:57', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(5, $i->getMeteringMode());
+      $this->assertEquals(1, $i->getFlash());
+      $this->assertTrue($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "fujifilm-mx1700.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleFujifilmMx1700() {
+      $i= $this->extractFromFile($this->resourceAsFile('fujifilm-mx1700.jpg', 'exif_org'));
+      $this->assertEquals(NULL, $i->getExposureTime());
+      $this->assertEquals('99/10', $i->getFocalLength());
+      $this->assertEquals('FUJIFILM', $i->getMake());
+      $this->assertEquals('f/7.0', $i->getApertureFNumber());
+      $this->assertEquals(125, $i->getIsoSpeedRatings());
+      $this->assertEquals('Digital Camera MX-1700ZOOM Ver1.00', $i->getSoftware());
+      $this->assertEquals(2, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('MX-1700ZOOM', $i->getModel());
+      $this->assertEquals('2000:09:02 14:30:10', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(5, $i->getMeteringMode());
+      $this->assertEquals(0, $i->getFlash());
+      $this->assertFalse($i->flashUsed());
+    }
   }
 ?>

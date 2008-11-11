@@ -19,12 +19,15 @@
      * Returns a file for a classloader resource
      *
      * @param   string name
+     * @param   string sub default NULL subpackage
      * @return  io.File
      */
-    protected function resourceAsFile($name) {
-      return $this->getClass()->getPackage()->getResourceAsStream($name);
+    protected function resourceAsFile($name, $sub= NULL) {
+      $package= $this->getClass()->getPackage();
+      $container= $sub ? $package->getPackage($sub) : $package;
+      return $container->getResourceAsStream($name);
     }
-    
+
     /**
      * Extract from file and return the instance
      *
