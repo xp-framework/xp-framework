@@ -262,5 +262,155 @@
       $this->assertEquals(0, $i->getFlash());
       $this->assertFalse($i->flashUsed());
     }
+
+    /**
+     * Test sample image "olympus-c960.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleOlympusC960() {
+      $i= $this->extractFromFile($this->resourceAsFile('olympus-c960.jpg', 'exif_org'));
+      $this->assertEquals('1/345', $i->getExposureTime());
+      $this->assertEquals('56/10', $i->getFocalLength());
+      $this->assertEquals('OLYMPUS OPTICAL CO.,LTD', $i->getMake());
+      $this->assertEquals('f/8.0', $i->getApertureFNumber());
+      $this->assertEquals(125, $i->getIsoSpeedRatings());
+      $this->assertEquals('OLYMPUS CAMEDIA Master', $i->getSoftware());
+      $this->assertEquals(2, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('C960Z,D460Z', $i->getModel());
+      $this->assertEquals('2000:11:07 10:41:43', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(5, $i->getMeteringMode());
+      $this->assertEquals(0, $i->getFlash());
+      $this->assertFalse($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "ricoh-rdc5300.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleRicohrdc5300() {
+      $i= $this->extractFromFile($this->resourceAsFile('ricoh-rdc5300.jpg', 'exif_org'));
+      $this->assertEquals(NULL, $i->getExposureTime());
+      $this->assertEquals('133/10', $i->getFocalLength());
+      $this->assertEquals('RICOH', $i->getMake());
+      $this->assertEquals('f/4.0', $i->getApertureFNumber());
+      $this->assertEquals(NULL, $i->getIsoSpeedRatings());
+      $this->assertEquals(NULL, $i->getSoftware());
+      $this->assertEquals(NULL, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(896, $i->getWidth());
+      $this->assertEquals(600, $i->getHeight());
+      $this->assertEquals('RDC-5300', $i->getModel());
+      $this->assertEquals('2000:05:31 21:50:40', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(NULL, $i->getMeteringMode());
+      $this->assertEquals(1, $i->getFlash());
+      $this->assertTrue($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "sanyo-vpcg250.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleSanyoVpcg250() {
+      $i= $this->extractFromFile($this->resourceAsFile('sanyo-vpcg250.jpg', 'exif_org'));
+      $this->assertEquals('1/171', $i->getExposureTime());
+      $this->assertEquals('60/10', $i->getFocalLength());
+      $this->assertEquals('SANYO Electric Co.,Ltd.', $i->getMake());
+      $this->assertEquals('f/8.0', $i->getApertureFNumber());
+      $this->assertEquals(NULL, $i->getIsoSpeedRatings());
+      $this->assertEquals('V06P-74', $i->getSoftware());
+      $this->assertEquals(NULL, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('SR6', $i->getModel());
+      $this->assertEquals('1998:01:01 00:00:00', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(2, $i->getMeteringMode());
+      $this->assertEquals(1, $i->getFlash());
+      $this->assertTrue($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "sanyo-vpcsx550.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleSanyovpcsx550() {
+      $i= $this->extractFromFile($this->resourceAsFile('sanyo-vpcsx550.jpg', 'exif_org'));
+      $this->assertEquals('10/483', $i->getExposureTime());
+      $this->assertEquals('60/10', $i->getFocalLength());
+      $this->assertEquals('SANYO Electric Co.,Ltd.', $i->getMake());
+      $this->assertEquals('f/2.4', $i->getApertureFNumber());
+      $this->assertEquals(400, $i->getIsoSpeedRatings());
+      $this->assertEquals('V113p-73', $i->getSoftware());
+      $this->assertEquals(NULL, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('SX113', $i->getModel());
+      $this->assertEquals('2000:11:18 21:14:19', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(2, $i->getMeteringMode());
+      $this->assertEquals(0, $i->getFlash());
+      $this->assertFalse($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "sony-cybershot.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleSonyCybershot() {
+      $i= $this->extractFromFile($this->resourceAsFile('sony-cybershot.jpg', 'exif_org'));
+      $this->assertEquals('1/197', $i->getExposureTime());
+      $this->assertEquals('216/10', $i->getFocalLength());
+      $this->assertEquals('SONY', $i->getMake());
+      $this->assertEquals('f/4.0', $i->getApertureFNumber());
+      $this->assertEquals(100, $i->getIsoSpeedRatings());
+      $this->assertEquals(NULL, $i->getSoftware());
+      $this->assertEquals(2, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(640, $i->getWidth());
+      $this->assertEquals(480, $i->getHeight());
+      $this->assertEquals('CYBERSHOT', $i->getModel());
+      $this->assertEquals('2000:09:30 10:59:45', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(2, $i->getMeteringMode());
+      $this->assertEquals(0, $i->getFlash());
+      $this->assertFalse($i->flashUsed());
+    }
+
+    /**
+     * Test sample image "sony-d700.jpg" from exif.org
+     *
+     * @see     http://exif.org/samples.html
+     */
+    #[@test]
+    public function exifSampleSonyD700() {
+      $i= $this->extractFromFile($this->resourceAsFile('sony-d700.jpg', 'exif_org'));
+      $this->assertEquals(NULL, $i->getExposureTime());
+      $this->assertEquals(NULL, $i->getFocalLength());
+      $this->assertEquals('SONY', $i->getMake());
+      $this->assertEquals('f/2.4', $i->getApertureFNumber());
+      $this->assertEquals(200, $i->getIsoSpeedRatings());
+      $this->assertEquals(NULL, $i->getSoftware());
+      $this->assertEquals(3, $i->getExposureProgram());
+      $this->assertEquals(NULL, $i->getWhiteBalance());
+      $this->assertEquals(672, $i->getWidth());
+      $this->assertEquals(512, $i->getHeight());
+      $this->assertEquals('DSC-D700', $i->getModel());
+      $this->assertEquals('1998:12:01 14:22:36', $i->getDateTime()->toString('Y:m:d H:i:s'));
+      $this->assertEquals(2, $i->getMeteringMode());
+      $this->assertEquals(0, $i->getFlash());
+      $this->assertFalse($i->flashUsed());
+    }
   }
 ?>
