@@ -91,41 +91,28 @@
           'Cannot get EXIF information from '.$file->getURI().' (no APP1 marker)' 
         );
       }
-      if (!($info= exif_read_data($file->getURI()))) {
+      if (!($info= exif_read_data($file->getURI(), 'COMPUTED,FILE,IFD0,EXIF,COMMENT,MAKERNOTE', TRUE, FALSE))) {
         throw new FormatException('Cannot get EXIF information from '.$file->getURI());
       }
       
       // Change key case for lookups
-      $info= array_change_key_case($info, CASE_LOWER);
-      $info['computed']= array_change_key_case($info['computed'], CASE_LOWER);
+      foreach ($info as &$val) {
+        $val= array_change_key_case($val, CASE_LOWER);
+      }
       
       with ($e= new self()); {
-        $e->setWidth(self::lookup($info['computed'], 'width'));
-        $e->setHeight(self::lookup($info['computed'], 'height'));
-        $e->setApertureFNumber(self::lookup($info['computed'], 'aperturefnumber'));
-        $e->setMake(trim(self::lookup($info, 'make')));
-        $e->setModel(trim(self::lookup($info, 'model')));
-        $e->setFileName(self::lookup($info, 'filename'));
-        $e->setFileSize(self::lookup($info, 'filesize'));
-        $e->setMimeType(self::lookup($info, 'mimetype'));
-        $e->setSoftware(self::lookup($info, 'software'));
-        $e->setExposureTime(self::lookup($info, 'exposuretime'));
-        $e->setExposureProgram(self::lookup($info, 'exposureprogram'));
-        $e->setMeteringMode(self::lookup($info, 'meteringmode'));
-        $e->setWhiteBalance(self::lookup($info, 'whitebalance'));
-        $e->setIsoSpeedRatings(self::lookup($info, 'isospeedratings'));
+      
+        // COMPUTED info
+        $e->setWidth(self::lookup($info['COMPUTED'], 'width'));
+        $e->setHeight(self::lookup($info['COMPUTED'], 'height'));
+        $e->setApertureFNumber(self::lookup($info['COMPUTED'], 'aperturefnumber'));
         
-        // Extract focal length. Some models store "80" as "80/1", rip off
-        // the divisor "1" in this case.
-        if (NULL !== ($l= self::lookup($info, 'focallength'))) {
-          sscanf(self::lookup($info, 'focallength'), '%d/%d', $n, $frac);
-          $e->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
-        } else {
-          $e->setFocalLength(NULL);
-        }
+        // IFD0 info
+        $e->setMake(trim(self::lookup($info['IFD0'], 'make')));
+        $e->setModel(trim(self::lookup($info['IFD0'], 'model')));
+        $e->setSoftware(self::lookup($info['IFD0'], 'software'));
 
-        // Calculate orientation from dimensions if not available
-        if (NULL !== ($o= self::lookup($info, 'orientation'))) {
+        if (NULL !== ($o= self::lookup($info['IFD0'], 'orientation'))) {
           $e->setOrientation($o);
         } else {
           $e->setOrientation(($e->width / $e->height) > 1.0
@@ -133,18 +120,46 @@
             : 5   // transpose
           );
         }
+
+        // FILE info
+        $e->setFileName(self::lookup($info['FILE'], 'filename'));
+        $e->setFileSize(self::lookup($info['FILE'], 'filesize'));
+        $e->setMimeType(self::lookup($info['FILE'], 'mimetype'));
+        
+        // EXIF info
+        $e->setExposureTime(self::lookup($info['EXIF'], 'exposuretime'));
+        $e->setExposureProgram(self::lookup($info['EXIF'], 'exposureprogram'));
+        $e->setMeteringMode(self::lookup($info['EXIF'], 'meteringmode'));
+        $e->setIsoSpeedRatings(self::lookup($info['EXIF'], 'isospeedratings'));
+
+        // Sometimes white balance is in MAKERNOTE - e.g. FUJIFILM's Finepix
+        if (NULL !== ($w= self::lookup($info['EXIF'], 'whitebalance'))) {
+          $e->setWhiteBalance($w);
+        } else if (NULL !== ($w= self::lookup($info['MAKERNOTE'], 'whitebalance'))) {
+          $e->setWhiteBalance($w);
+        } else {
+          $e->setWhiteBalance(NULL);
+        }
+        
+        // Extract focal length. Some models store "80" as "80/1", rip off
+        // the divisor "1" in this case.
+        if (NULL !== ($l= self::lookup($info['EXIF'], 'focallength'))) {
+          sscanf($l, '%d/%d', $n, $frac);
+          $e->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
+        } else {
+          $e->setFocalLength(NULL);
+        }
         
         // Check for Flash and flashUsed keys
-        if (NULL !== ($f= self::lookup($info, 'flash'))) {
+        if (NULL !== ($f= self::lookup($info['EXIF'], 'flash'))) {
           $e->setFlash($f);
         } else if (NULL !== ($u= self::lookup($info, 'flashused'))) {
           $e->setFlash(0 == strcasecmp('YES', $u) ? 9 : 0);
         } else {
           $e->setFlash(NULL);
         }
-        
-        // Find date and time
-        $date= self::lookup($info, 'datetimeoriginal', 'datetime');
+
+        $date= self::lookup($info['EXIF'], 'datetimeoriginal', 'datetimedigitized');
         $t= sscanf($date, '%4d:%2d:%2d %2d:%2d:%2d');
         $e->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
       }
