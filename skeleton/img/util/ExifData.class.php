@@ -55,6 +55,21 @@
     static function __static() {
       self::$EMPTY= new self();
     }
+    
+    /**
+     * Lookup helper
+     *
+     * @param   &array<string, mixed> exif
+     * @param   string* key
+     * @return  string value or NULL
+     */
+    protected static function lookup(&$exif) {
+      for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
+        $key= func_get_arg($i);
+        if (isset($exif[$key])) return $exif[$key];
+      }
+      return NULL;
+    }
 
     /**
      * Read from a file
@@ -80,45 +95,54 @@
         throw new FormatException('Cannot get EXIF information from '.$file->getURI());
       }
       
-      // Calculate orientation from dimensions if not available
-      if (!isset($info['Orientation'])) {
-        $info['Orientation']= (($info['COMPUTED']['Width'] / $info['COMPUTED']['Height']) > 1.0
-          ? 1   // normal
-          : 5   // transpose
-        );
-      }
+      // Change key case for lookups
+      $info= array_change_key_case($info, CASE_LOWER);
+      $info['computed']= array_change_key_case($info['computed'], CASE_LOWER);
       
-      with ($e= new ExifData()); {
-        $e->setWidth($info['COMPUTED']['Width']);
-        $e->setHeight($info['COMPUTED']['Height']);
-        $e->setMake(@$info['Make']);
-        $e->setModel(@$info['Model']);
-        $e->setFlash(@$info['Flash']);
-        $e->setOrientation(@$info['Orientation']);
-        $e->setFileName(@$info['FileName']);
-        $e->setFileSize(@$info['FileSize']);
-        $e->setMimeType(@$info['MimeType']);
-        $e->setApertureFNumber(@$info['COMPUTED']['ApertureFNumber']);
-        $e->setSoftware(@$info['software']);
-        $e->setExposureTime(@$info['ExposureTime']);
-        $e->setExposureProgram(@$info['ExposureProgram']);
-        $e->setMeteringMode(@$info['MeteringMode']);
-        $e->setWhiteBalance(@$info['WhiteBalance']);
-        $e->setIsoSpeedRatings(@$info['ISOSpeedRatings']);
+      with ($e= new self()); {
+        $e->setWidth(self::lookup($info['computed'], 'width'));
+        $e->setHeight(self::lookup($info['computed'], 'height'));
+        $e->setApertureFNumber(self::lookup($info['computed'], 'aperturefnumber'));
+        $e->setMake(self::lookup($info, 'make'));
+        $e->setModel(self::lookup($info, 'model'));
+        $e->setFileName(self::lookup($info, 'filename'));
+        $e->setFileSize(self::lookup($info, 'filesize'));
+        $e->setMimeType(self::lookup($info, 'mimetype'));
+        $e->setSoftware(self::lookup($info, 'software'));
+        $e->setExposureTime(self::lookup($info, 'exposuretime'));
+        $e->setExposureProgram(self::lookup($info, 'exposureprogram'));
+        $e->setMeteringMode(self::lookup($info, 'meteringmode'));
+        $e->setWhiteBalance(self::lookup($info, 'whitebalance'));
+        $e->setIsoSpeedRatings(self::lookup($info, 'isospeedratings'));
         
         // Extract focal length. Some models store "80" as "80/1", rip off
         // the divisor "1" in this case.
-        sscanf($info['FocalLength'], '%d/%d', $n, $frac);
+        sscanf(self::lookup($info, 'focallength'), '%d/%d', $n, $frac);
         $e->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
+
+        // Calculate orientation from dimensions if not available
+        if ($o= self::lookup($info, 'orientation')) {
+          $e->setOrientation($o);
+        } else {
+          $e->setOrientation(($e->width / $e->height) > 1.0
+            ? 1   // normal
+            : 5   // transpose
+          );
+        }
+        
+        // Check for Flash and flashUsed keys
+        if ($f= self::lookup($info, 'flash')) {
+          $e->setFlash($f);
+        } else if ($u= self::lookup($info, 'flashused')) {
+          $e->setFlash(0 == strcasecmp('YES', $u) ? 9 : 0);
+        } else {
+          $e->setFlash(0);
+        }
         
         // Find date and time
-        foreach (array('DateTimeOriginal', 'DateTime') as $key) {
-          if (!isset($info[$key])) continue;
-
-          $t= sscanf($info[$key], '%4d:%2d:%2d %2d:%2d:%2d');
-          $e->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
-          break;
-        }
+        $date= self::lookup($info, 'datetimeoriginal', 'datetime');
+        $t= sscanf($date, '%4d:%2d:%2d %2d:%2d:%2d');
+        $e->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
       }
       return $e;
     }
