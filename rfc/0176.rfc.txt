@@ -3,7 +3,7 @@ RFC 0174: Scriptlet URL handler classes:
 $Id$
 
 @authors: ohinckel
-@created: Wed 12. Nov 15:58:34 CET 2008
+@created: Wed Nov 12 15:58:34     2008
 @status: draft
 @category: scriptlet
 
