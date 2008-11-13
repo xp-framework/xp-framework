@@ -1,0 +1,738 @@
+Index: skeleton/scriptlet/xml/XMLScriptletResponse.class.php
+===================================================================
+--- skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(revision 12632)
++++ skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(working copy)
+@@ -242,28 +242,14 @@
+      * @param   string fraction default NULL the fraction without the leading "#"
+      */
+     public function forwardTo($state, $query= NULL, $fraction= NULL) {
+-      preg_match(
+-        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)#',
+-        getenv('REQUEST_URI'),
+-        $part
+-      );
+-      
+-      // Fetch product/language/session information
+-      $pls= array();
+-      !empty($part[3]) && $pls[]= $part[3];
+-      !empty($part[4]) && $pls[]= $part[4];
+-      !empty($part[6]) && $pls[]= 'psessionid='.$part[6];
+-      
++
+       // Construct new URL
+-      $this->sendRedirect(sprintf(
+-        '%s://%s/xml%s/%s%s%s', 
+-        ('on' == getenv('HTTPS') ? 'https' : 'http'),
+-        getenv('HTTP_HOST'),
+-        (sizeof($pls) ? '/'.implode('.', $pls) : ''),
+-        $state,
+-        ('' == (string)$query) ? '' : '?'.$query,
+-        ('' == (string)$fraction) ? '' : '#'.$fraction        
+-      ));
++      $this->uri->setStateName($state);
++      if ($query    !== NULL) $this->uri->setQuery($query);
++      if ($fraction !== NULL) $this->uri->setFraction($faction);
++      
++      // Redirect
++      $this->sendRedirect($this->uri->getURL());
+     }
+     
+     /**
+Index: skeleton/scriptlet/xml/XMLScriptlet.class.php
+===================================================================
+--- skeleton/scriptlet/xml/XMLScriptlet.class.php	(revision 12632)
++++ skeleton/scriptlet/xml/XMLScriptlet.class.php	(working copy)
+@@ -7,6 +7,7 @@
+   uses(
+     'xml.DomXSLProcessor',
+     'scriptlet.HttpScriptlet',
++    'scriptlet.xml.XMLScriptletURL',
+     'scriptlet.xml.XMLScriptletResponse',
+     'scriptlet.xml.XMLScriptletRequest'
+   );
+@@ -93,6 +94,16 @@
+     }
+     
+     /**
++     * Returns an URL object for the given URL
++     *
++     * @param string url The current requested URL
++     * @return scriptlet.XMLScriptletURL
++     */
++    protected function _url($url) {
++      return new XMLScriptletURL($url);
++    }
++    
++    /**
+      * Handle method. Calls doCreate if necessary (the environment variable
+      * "PRODUCT" is not set - which it will be if the RewriteRule has
+      * taken control).
+@@ -119,34 +130,14 @@
+      * @return  bool
+      */
+     public function doRedirect($request, $response, $sessionId= NULL) {
+-      $uri= $request->getURL();
+-      
+-      // Determine which settings we need to pass
+-      $xsr= array();
+-      if (
+-        $request->getProduct() != $request->getDefaultProduct() ||
+-        $request->getLanguage() != $request->getDefaultLanguage()
+-      ) {
+-        $xsr[]= $request->getProduct();
+-        $xsr[]= $request->getLanguage();
++      with ($redirect= $request->getURL()); {
++    
++        // Include session id in URL if available
++        if ($sessionId !== NULL) $this->url->setSessionId($sessionId);
++
++        $response->sendRedirect($this->url->getURL());
+       }
+       
+-      if (!empty($sessionId)) $xsr[]= 'psessionid='.$sessionId;
+-
+-      // Get product, language and statename from the environment if 
+-      // necessary. Their default values are "site" (product), 
+-      // "en_US" (language) and "static" (statename).
+-      // Send redirect
+-      $response->sendRedirect(sprintf(
+-        '%s://%s/xml/%s%s%s%s', 
+-        $uri->getScheme(),
+-        $uri->getHost(),
+-        (sizeof($xsr) ? implode('.', $xsr).'/' : ''),
+-        $request->getStateName(), 
+-        $uri->getQuery() ? '?'.$uri->getQuery() : '',
+-        $uri->getFragment() ? '#'.$uri->getFragment() : ''
+-      ));
+-      
+       return FALSE; // Indicate no further processing is to be done
+     }
+     
+Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
+===================================================================
+--- skeleton/scriptlet/xml/XMLScriptletURL.class.php	(revision 0)
++++ skeleton/scriptlet/xml/XMLScriptletURL.class.php	(revision 0)
+@@ -0,0 +1,231 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++ 
++  uses('scriptlet.HttpScriptletURL');
++  
++  /**
++   * Represents the XML scriptlet URLs
++   *
++   * @see      xp://scriptlet.xml.XMLScriptlet
++   * @purpose  URL representation class
++   */
++  class XMLScriptletURL extends HttpScriptletURL {
++    const
++      INFO_PROD=     'product',
++      INFO_DEFPROD=  'defProduct',
++      INFO_LANG=     'language',
++      INFO_DEFLANG=  'defLanguage',
++      INFO_STATE=    'stateName',
++      INFO_DEFSTATE= 'defStateName',
++      INFO_PAGE=     'page',
++      INFO_DEFPAGE=  'defPage';
++      
++    /**
++     * Extract information from URL
++     *
++     */
++    protected function extract() {
++      with ($this->values= new Hashmap()); {
++
++        if (preg_match(
++          '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
++          $this->getPath(),
++          $parts
++        )) {
++          !empty($parts[3]) && $this->setProduct($parts[3]);
++          !empty($parts[4]) && $this->setLanguage($parts[4]);
++          !empty($parts[6]) && $this->setSessionId($parts[6]);
++          !empty($parts[7]) && $this->setStateName($parts[7]);
++        }
++        
++        $this->getParam('__page') && $this->setPage($this->getParam('__page'));
++      }
++    }
++    
++    /**
++     * Set product
++     *
++     * @param string product The product name
++     */
++    public function setProduct($product) {
++      $this->values->put(self::INFO_PROD, $product);
++    }
++    
++    /**
++     * Set the default product which is used to figure out if we really
++     * need to specify the product component in URL
++     *
++     * @param string product
++     */
++    public function setDefaultProduct($product) {
++      $this->values->put(self::INFO_DEFPROD, $product);
++    }
++    
++    /**
++     * Get product (defaults to default product)
++     *
++     * @return string
++     */
++    public function getProduct() {
++      return $this->values->get(self::INFO_PROD) !== NULL
++        ? $this->values->get(self::INFO_PROD)
++        : $this->values->get(self::INFO_DEFPROD);
++    }
++    
++    /**
++     * Get default product
++     *
++     * @return string
++     */
++    public function getDefaultProduct() {
++      return $this->values->get(self::INFO_DEFPROD);
++    }
++    
++    /**
++     * Set language
++     *
++     * @param string language The language
++     */
++    public function setLanguage($language) {
++      $this->values->put(self::INFO_LANG, $language);
++    }
++    
++    /**
++     * Set the default language which is used to figure out if we really
++     * need to specify the language component in URL
++     *
++     * @param string language The language
++     */
++    public function setDefaultLanguage($language) {
++      $this->values->put(self::INFO_DEFLANG, $language);
++    }
++    
++    /**
++     * Get language (defaults to default language)
++     *
++     * @return string
++     */
++    public function getLanguage() {
++      return $this->values->get(self::INFO_LANG) !== NULL
++        ? $this->values->get(self::INFO_LANG)
++        : $this->values->get(self::INFO_DEFLANG);
++    }
++
++    /**
++     * Get default language
++     *
++     * @return string
++     */
++    public function getDefaultLanguage() {
++      return $this->values->get(self::INFO_DEFLANG);
++    }
++
++    /**
++     * Set state name
++     *
++     * @param string stateName The state name
++     */
++    public function setStateName($stateName) {
++      $this->values->put(self::INFO_STATE, $stateName);
++    }
++    
++    /**
++     * Set default state name
++     *
++     * @param string stateName The state name
++     */
++    public function setDefaultStateName($stateName) {
++      $this->values->put(self::INFO_DEFSTATE, $stateName);
++    }
++    
++    /**
++     * Get state name (defaults to default state name)
++     *
++     * @return string
++     */
++    public function getStateName() {
++      return $this->values->get(self::INFO_STATE) !== NULL
++        ? $this->values->get(self::INFO_STATE)
++        : $this->values->get(self::INFO_DEFSTATE);
++    }
++    
++    /**
++     * Get default state name
++     *
++     * @return string
++     */
++    public function getDefaultStateName() {
++      return $this->values->get(self::INFO_DEFSTATE);
++    }
++    
++    /**
++     * Set state name
++     *
++     * @param string stateName The state name
++     */
++    public function setPage($page) {
++      $this->values->put(self::INFO_PAGE, $page);
++    }
++    
++    /**
++     * Set default state name
++     *
++     * @param string stateName The state name
++     */
++    public function setDefaultPage($page) {
++      $this->values->put(self::INFO_DEFPAGE, $page);
++    }
++    
++    /**
++     * Get page (defaults to default page)
++     *
++     * @return string
++     */
++    public function getPage() {
++      return $this->values->get(self::INFO_PAGE) !== NULL
++        ? $this->values->get(self::INFO_PAGE)
++        : $this->values->get(self::INFO_DEFPAGE);
++    }
++    
++    /**
++     * Get default page
++     *
++     * @return string
++     */
++    public function getDefaultPage() {
++      return $this->values->get(self::INFO_DEFPAGE);
++    }
++    
++    /**
++     * Returns string representation for the URL
++     *
++     * @return string
++     */
++    public function getURL() {
++    
++      // Determine which settings we need to pass
++      $xsr= array();
++      if (
++        ($this->getProduct() != $this->getDefaultProduct()) ||
++        ($this->getLanguage() != $this->getDefaultLanguage())
++      ) {
++        $xsr[]= $this->getProduct();
++        $xsr[]= $this->getLanguage();
++      }
++      if ($this->getSessionId()) $xsr[]= 'psessionid='.$this->getSessionId();
++
++      return sprintf(
++        '%s://%s/xml/%s%s%s%s', 
++        $this->getScheme(),
++        $this->getHost(),
++        (sizeof($xsr) ? implode('.', $xsr).'/' : ''),
++        $this->getStateName(), 
++        $this->getQuery() ? '?'.$this->getQuery() : '',
++        $this->getFragment() ? '#'.$this->getFragment() : ''
++      );
++    }
++  }
++?>
+
+Property changes on: skeleton/scriptlet/xml/XMLScriptletURL.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
+===================================================================
+--- skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(revision 12632)
++++ skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(working copy)
+@@ -35,37 +35,28 @@
+       $sessionId    = '';
+ 
+     /**
+-     * Initialize this request object
++     * Sets request's URI
+      *
++     * @param   peer.URL uri a uri representated by peer.URL
+      */
+-    public function initialize() {
+-      parent::initialize();
+-      
+-      // Use default first
+-      $this->product=   $this->getEnvValue('PRODUCT', $this->getDefaultProduct());
+-      $this->stateName= $this->getEnvValue('STATE', $this->getDefaultStateName());
+-      $this->language=  $this->getEnvValue('LANGUAGE', $this->getDefaultLanguage());
+-      $this->sessionId= $this->getEnvValue('SESS');
+-      
+-      // Check cookies for session id
+-      if ($this->hasCookie('session_id')) {
+-        $this->sessionId= $this->getCookie('session_id')->getValue();
++    public function setURI($uri) {
++      with ($this->uri= $uri); {
++        $this->uri->setDefaultProduct($this->getDefaultProduct());
++        $this->uri->setDefaultLanguage($this->getDefaultLanguage());
++        $this->uri->setDefaultStateName($this->getDefaultStateName());
++        $this->uri->setDefaultPage($this->getDefaultPage());
++        
++        // Check cookies for session id
++        $this->setSessionId($this->hasCookie('session_id')
++          ? $this->getCookie('session_id')->getValue()
++          : $this->uri->getSessionId()
++        );
++        
++        $this->setProduct($this->uri->getProduct());
++        $this->setLanguage($this->uri->getLanguage());
++        $this->setStateName($this->uri->getStateName());
++        $this->setPage($this->uri->getPage());
+       }
+-
+-      // Parse path to determine current state, language and product - if not parseable,
+-      // just fall back to the defaults
+-      if (preg_match(
+-        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
+-        $this->getURL()->getPath(),
+-        $part
+-      )) {
+-        !empty($part[3]) && $this->setProduct($part[3]);
+-        !empty($part[4]) && $this->setLanguage($part[4]);
+-        !empty($part[6]) && $this->sessionId= $part[6];
+-        !empty($part[7]) && $this->setStateName($part[7]);
+-      }
+-      
+-      $this->page= isset($_REQUEST['__page']) ? $_REQUEST['__page'] : 'home';
+     }
+     
+     /**
+@@ -87,6 +78,16 @@
+     }
+ 
+     /**
++     * Gets default page (defaults to DEF_PAGE environment variable, if not
++     * set default to "home")
++     *
++     * @return  string page
++     */
++    public function getDefaultPage() {
++      return $this->getEnvValue('DEF_PAGE', 'home');
++    }
++
++    /**
+      * Gets state
+      *
+      * @return  string stateName
+@@ -96,12 +97,13 @@
+     }
+ 
+     /**
+-     * Gets default state
++     * Gets default state (defaults to DEF_STATE environment variable, if not
++     * set default to "static")
+      *
+      * @return  string stateName
+      */
+     public function getDefaultStateName() {
+-      return $this->getEnvValue('DEF_STATE');
++      return $this->getEnvValue('DEF_STATE', 'static');
+     }
+ 
+     /**
+@@ -150,12 +152,13 @@
+     }
+ 
+     /**
+-     * Gets default language
++     * Gets default language (defaults to DEF_LANG environment variable, if not
++     * set default to "en_US")
+      *
+      * @return  string language
+      */
+     public function getDefaultLanguage() {
+-      return $this->getEnvValue('DEF_LANG');
++      return $this->getEnvValue('DEF_LANG', 'en_US');
+     }
+ 
+     /**
+@@ -166,6 +169,15 @@
+     public function setLanguage($language) {
+       $this->language= $language;
+     }
++    
++    /**
++     * Sets session id
++     *
++     * @param   string session
++     */
++    public function setSessionId($session) {
++      $this->sessionId= $session;
++    }
+ 
+     /**
+      * Get session's Id. This overwrites the parent's implementation 
+Index: skeleton/scriptlet/HttpScriptletResponse.class.php
+===================================================================
+--- skeleton/scriptlet/HttpScriptletResponse.class.php	(revision 12632)
++++ skeleton/scriptlet/HttpScriptletResponse.class.php	(working copy)
+@@ -17,6 +17,9 @@
+    * @purpose  Provide a way to access the HTTP response
+    */  
+   class HttpScriptletResponse extends Object {
++    protected
++      $uri=             NULL;
++    
+     public
+       $version=         '1.1',
+       $content=         '',
+@@ -24,6 +27,15 @@
+       $headers=         array();
+     
+     /**
++     * Set URI of request which is currently answered by the response
++     *
++     * @param scriptlet.HttpScriptletURL uri The requested URL
++     */
++    public function setURI($uri) {
++      $this->uri= $uri;
++    }
++    
++    /**
+      * Redirects the client to the specified location. Most HTTP clients
+      * (such as all browsers) ignore the body if one is sent, search engines
+      * _may_ not, and of course, your favorite command line tool (such as
+Index: skeleton/scriptlet/HttpScriptlet.class.php
+===================================================================
+--- skeleton/scriptlet/HttpScriptlet.class.php	(revision 12632)
++++ skeleton/scriptlet/HttpScriptlet.class.php	(working copy)
+@@ -60,8 +60,6 @@
+    * </code>
+    */
+   class HttpScriptlet extends Object {
+-    public
+-      $sessionURIFormat = '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s';
+     
+     /**
+      * Create a request object. Override this method to define
+@@ -94,6 +92,16 @@
+     }
+     
+     /**
++     * Returns an URL object for the given URL
++     *
++     * @param string url The current requested URL
++     * @return scriptlet.HttpScriptletURL
++     */
++    protected function _url($url) {
++      return new HttpScrtiptletURL($url);
++    }
++    
++    /**
+      * Initialize session
+      *
+      * @param   scriptlet.HttpScriptletRequest request
+@@ -254,39 +262,13 @@
+      * <pre>needsSession()</pre> return TRUE and no session
+      * is available or the session is unvalid.
+      *
+-     * The member variable <pre>sessionURIFormat</pre> is used
+-     * to sprintf() the new URI:
+-     * <pre>
+-     * Ord Fill            Example
+-     * --- --------------- --------------------
+-     *   1 scheme          http
+-     *   2 host            host.foo.bar
+-     *   3 path            /foo/bar/index.html
+-     *   4 dirname(path)   /foo/bar/
+-     *   5 basename(path)  index.html
+-     *   6 query           a=b&b=c
+-     *   7 session id      cb7978876218bb7
+-     *   8 fraction        #test
+-     * </pre>
+-     *
+      * @return  bool processed
+      * @param   scriptlet.HttpScriptletRequest request 
+      * @param   scriptlet.HttpScriptletResponse response 
+      * @throws  lang.XPException to indicate failure
+      */
+     public function doCreateSession($request, $response) {
+-      $uri= $request->getURL();
+-      $response->sendRedirect(sprintf(
+-        $this->sessionURIFormat,
+-        $uri->getScheme(),
+-        $uri->getHost(),
+-        $uri->getPath(),
+-        dirname($uri->getPath()),
+-        basename($uri->getPath()),
+-        $uri->getQuery(),
+-        $request->session->getId(),
+-        $uri->getFragment()
+-      ));
++      $response->sendRedirect($request->getURL()->getURL());
+       return FALSE;
+     }
+     
+@@ -317,7 +299,7 @@
+       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
+       $request->method= $request->getEnvValue('REQUEST_METHOD');
+       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+-      $request->setURI(new URL(
++      $request->setURI($this->_url(
+         ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
+         $request->getEnvValue('HTTP_HOST').
+         $request->getEnvValue('REQUEST_URI')
+@@ -396,6 +378,7 @@
+       // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
+       // other protocol version.
+       $response= $this->_response();
++      $response->setURI($request->getURL());
+       if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
+         throw new HttpScriptletException(
+           'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
+Index: skeleton/scriptlet/HttpScriptletURL.class.php
+===================================================================
+--- skeleton/scriptlet/HttpScriptletURL.class.php	(revision 0)
++++ skeleton/scriptlet/HttpScriptletURL.class.php	(revision 0)
+@@ -0,0 +1,100 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++ 
++  uses(
++    'util.Hashmap',
++    'peer.URL'
++  );
++  
++  /**
++   * Represents a HTTP scriptlet URLs
++   *
++   * @see      xp://scriptlet.HttpScriptlet
++   * @purpose  URL representation class
++   */
++  class HttpScriptletURL extends URL {
++    const
++      INFO_SESS=     'session';
++      
++    protected
++      $values= NULL;
++  
++    /**
++     * Constructor
++     *
++     * @param string url The URL
++     */
++    public function __construct($url) {
++      parent::__construct($url);
++      
++      // Setup hashmap
++      $this->values= new Hashmap();
++      
++      // Extract information
++      $this->extract();
++    }
++    
++    /**
++     * Extract information from URL
++     *
++     */
++    protected function extract() {
++      $this->setSessionId($this->getParam('psessionid'));
++    }
++
++    /**
++     * Set session id
++     *
++     * @param string language The session
++     */
++    public function setSessionId($session) {
++      $this->values->put(self::INFO_SESS, $session);
++    }
++
++    /**
++     * Get session id
++     *
++     * @return string
++     */
++    public function getSessionId() {
++      return $this->values->get(self::INFO_SESS);
++    }
++
++    /**
++     * Returns string representation for the URL
++     *
++     * The URL is build by using sprintf() and the following
++     * parameters:
++     * <pre>
++     * Ord Fill            Example
++     * --- --------------- --------------------
++     *   1 scheme          http
++     *   2 host            host.foo.bar
++     *   3 path            /foo/bar/index.html
++     *   4 dirname(path)   /foo/bar/
++     *   5 basename(path)  index.html
++     *   6 query           a=b&b=c
++     *   7 session id      cb7978876218bb7
++     *   8 fraction        #test
++     * </pre>
++     *
++     * @return string
++     */
++    public function getURL() {
++      return sprintf(
++        '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s',
++        $this->getScheme(),
++        $this->getHost(),
++        $this->getPath(),
++        dirname($this->getPath()),
++        basename($this->getPath()),
++        $this->getQuery(),
++        $this->getSessionId(),
++        $this->getFragment()
++      );
++    }
++  }
++?>
+
+Property changes on: skeleton/scriptlet/HttpScriptletURL.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: skeleton/scriptlet/HttpScriptletRequest.class.php
+===================================================================
+--- skeleton/scriptlet/HttpScriptletRequest.class.php	(revision 12632)
++++ skeleton/scriptlet/HttpScriptletRequest.class.php	(working copy)
+@@ -166,7 +166,9 @@
+      * @param   peer.URL uri a uri representated by peer.URL
+      */
+     public function setURI($uri) {
+-      $this->uri= $uri;
++      with ($this->uri= $uri); {
++        $this->setSessionId($this->uri->getSessionId());
++      }
+     }
+     
+     /**
+@@ -189,6 +191,15 @@
+     }
+     
+     /**
++     * Set session id
++     *
++     * @param  string sessionId session's id
++     */
++    public function setSessionId($sessionId) {
++      return $this->setParam('psessionid', $sessionId);
++    }
++    
++    /**
+      * Retrieves session id from request parameters
+      *
+      * @return  string session's id

@@ -1,0 +1,323 @@
+RFC 0174: Scriptlet URL handler classes: 
+========================================================================
+$Id$
+
+@authors: ohinckel
+@created: Wed 12. Nov 15:58:34 CET 2008
+@status: draft
+@category: scriptlet
+
+Scope of Change
+---------------
+A new class will be created which is used to handle the scriptlet URL in an
+easy and flexible way.
+
+
+Rationale
+---------
+To make it easy for the scriptlet engine to deal with scriptlet URLs without
+having some preg_match() magic on different places, a new scriptlet URL class
+will be created.
+
+Since the scriptlet API contains a HttpScriptlet and a XMLScriptlet and both
+use a different URL format, we need to implement two different URL handler
+classes.
+
+The following classes will be added:
+* scriptlet.HttpScriptletURL - the class reflecting scriptlet URLs for the
+  simple HttpScriptlet engine (it's the base class for scriptlet URL classes)
+* scriptlet.xml.XMLScriptletURL - the class reflecting XML scriptlet URLs
+  used by the XMLScriptlet engine (derived from the HttpScriptletURL base
+  class)
+
+
+Functionality
+-------------
+The scriptlet URL handler classes will be derived from the URL class to have
+all the comfort of an URL object. Further it will be extended with some
+functionality to make custom URL parameters easily accessible with getters and
+setters.
+
+The scriptlet class will get a new function _url() which returns the URL
+handler class to use for the current scriptlet and request.
+
+The HttpScriptletURL class
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+The HttpScriptletURL class, which is the base URL handler class for the
+scriptlet API, looks like this:
+<code>
+  uses('util.Hashmap', 'peer.URL');
+  
+  class HttpScriptletURL extends URL {
+    const
+      INFO_SESS=     'session';
+      
+    protected
+      $values= NULL;
+  
+    public function __construct($url) {
+      parent::__construct($url);
+      
+      // Setup hashmap
+      $this->values= new Hashmap();
+      
+      // Extract information
+      $this->extract();
+    }
+    
+    protected function extract() {
+      $this->setSessionId($this->getParam('psessionid'));
+    }
+
+    public function setSessionId($session) {
+      $this->values->put(self::INFO_SESS, $session);
+    }
+
+    public function getSessionId() {
+      return $this->values->get(self::INFO_SESS);
+    }
+
+    public function getURL() {
+      return sprintf(
+        '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s',
+        $this->getScheme(),
+        $this->getHost(),
+        $this->getPath(),
+        dirname($this->getPath()),
+        basename($this->getPath()),
+        $this->getQuery(),
+        $this->getSessionId(),
+        $this->getFragment()
+      );
+    }
+  }
+</code>
+
+The extract() function is invoked in the constructor and extracts additional
+information for the given URL. The getURL() function is overloaded to generate
+an appropriate URL for the current handler; e.g. including the session id.
+
+For each parameter a getter and setter function should be implemented. To make
+it easy to access them.
+
+The XMLScriptletURL class
+~~~~~~~~~~~~~~~~~~~~~~~~~
+This class implements the XML scriptlet URL format. Beside on the session id
+parameter, it implements support for the product, language, state and page
+component of the XML scriptlet URL.
+
+The (abbreviated) code looks like this:
+<code>
+  uses('scriptlet.HttpScriptletURL');
+  
+  class XMLScriptletURL extends HttpScriptletURL {
+    const
+      INFO_PROD=     'product',
+      INFO_DEFPROD=  'defProduct',
+      INFO_LANG=     'language',
+      INFO_DEFLANG=  'defLanguage',
+      INFO_STATE=    'stateName',
+      INFO_DEFSTATE= 'defStateName',
+      INFO_PAGE=     'page',
+      INFO_DEFPAGE=  'defPage';
+
+    protected function extract() {
+      with ($this->values= new Hashmap()); {
+
+        if (preg_match(
+          '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
+          $this->getPath(),
+          $parts
+        )) {
+          !empty($parts[3]) && $this->setProduct($parts[3]);
+          !empty($parts[4]) && $this->setLanguage($parts[4]);
+          !empty($parts[6]) && $this->setSessionId($parts[6]);
+          !empty($parts[7]) && $this->setStateName($parts[7]);
+        }
+        
+        $this->getParam('__page') && $this->setPage($this->getParam('__page'));
+      }
+    }
+    
+    public function setProduct($product) {
+      $this->values->put(self::INFO_PROD, $product);
+    }
+    
+    public function setDefaultProduct($product) {
+      $this->values->put(self::INFO_DEFPROD, $product);
+    }
+    
+    public function getProduct() {
+      return $this->values->get(self::INFO_PROD) !== NULL
+        ? $this->values->get(self::INFO_PROD)
+        : $this->values->get(self::INFO_DEFPROD);
+    }
+    
+    public function getDefaultProduct() {
+      return $this->values->get(self::INFO_DEFPROD);
+    }
+    
+    public function setLanguage($language) {
+      $this->values->put(self::INFO_LANG, $language);
+    }
+    
+    public function setDefaultLanguage($language) {
+      $this->values->put(self::INFO_DEFLANG, $language);
+    }
+    
+    public function getLanguage() {
+      return $this->values->get(self::INFO_LANG) !== NULL
+        ? $this->values->get(self::INFO_LANG)
+        : $this->values->get(self::INFO_DEFLANG);
+    }
+
+    public function getDefaultLanguage() {
+      return $this->values->get(self::INFO_DEFLANG);
+    }
+    [...]
+    /**
+     * Returns string representation for the URL
+     *
+     * @return string
+     */
+    public function getURL() {
+    
+      // Determine which settings we need to pass
+      $xsr= array();
+      if (
+        ($this->getProduct() != $this->getDefaultProduct()) ||
+        ($this->getLanguage() != $this->getDefaultLanguage())
+      ) {
+        $xsr[]= $this->getProduct();
+        $xsr[]= $this->getLanguage();
+      }
+      if ($this->getSessionId()) $xsr[]= 'psessionid='.$this->getSessionId();
+
+      return sprintf(
+        '%s://%s/xml/%s%s%s%s', 
+        $this->getScheme(),
+        $this->getHost(),
+        (sizeof($xsr) ? implode('.', $xsr).'/' : ''),
+        $this->getStateName(), 
+        $this->getQuery() ? '?'.$this->getQuery() : '',
+        $this->getFragment() ? '#'.$this->getFragment() : ''
+      );
+    }
+  }
+</code>
+
+This code implements additional features like fallback to a default product
+or language in case no product or language was specified.
+
+The scriptlet
+~~~~~~~~~~~~~
+Which URL handler class should be used for the current scriptlet application
+can be defined by implementing the function _url() of the scriptlet class.
+This function simply returns an extended URL object.
+
+The HttpScriptlet's and the XMLScriptlet's _url() function looks like this:
+<code>
+    /**
+     * Returns an URL object for the given URL
+     *
+     * @param string url The current requested URL
+     * @return scriptlet.HttpScriptletURL
+     */
+    protected function _url($url) {
+      return new HttpScrtiptletURL($url);
+    }
+</code>
+<code>
+    /**
+     * Returns an URL object for the given URL
+     *
+     * @param string url The current requested URL
+     * @return scriptlet.XMLScriptletURL
+     */
+    protected function _url($url) {
+      return new XMLScriptletURL($url);
+    }
+</code>
+
+The scriptlet request and response
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To make use of the new URL objects, we need to make it available for the
+scriptlets request and response.
+
+While the scriptlet is processed and the request object is created, the
+_url() function will be invoked to get the current URL object. After the URL
+object is instantiated it will be passed to the request's setURI() function
+to make it available for the request.
+
+To make it also available to the response object, the URL will be passed to
+the response's setURI() function after the response object was created.
+
+Both, the request and response, have already a url member field which contains
+an URL object set via setURI() and retrieved via getURL(). In this
+implementation we simply use this member field to store the new overloaded URL
+handler class in it. Since this classes derive the common URL class, everything
+should be compatible with it.
+
+The abbreviated version of the HttpScriptlet class implementing the new
+feature:
+<code>
+  class HttpScriptlet extends Object {
+    [...]
+    protected function _url($url) {
+      return new HttpScrtiptletURL($url);
+    }
+    [...]
+    protected function _setupRequest($request) {
+      $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
+      $request->method= $request->getEnvValue('REQUEST_METHOD');
+      $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
+      $request->setURI($this->_url(
+        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
+        $request->getEnvValue('HTTP_HOST').
+        $request->getEnvValue('REQUEST_URI')
+      ));
+    }
+    [...]
+    public function process() {
+      $request= $this->_request();
+      $this->_setupRequest($request);
+    [...]
+      $response= $this->_response();
+      $response->setURI($request->getURL());
+    [...] 
+      // Return it
+      return $response;
+    }
+  }
+</code>
+
+The XMLScriptlet class needs only to implement the _url() function and return
+the appropiate URL handler class, XMLScriptletURL (see above), to make it work
+with the XML scriptlet URL format.
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+Maybe it's slightly slower because of the new URL object functionalities.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+Implementing patch
+http://xp-framework.net/rfc/contrib/rfc0176.diff
+
+
+Comments
+--------
+
+<EOF>
