@@ -1,4 +1,4 @@
-RFC 0174: Scriptlet URL handler classes: 
+RFC 0176: Scriptlet URL handler classes: 
 ========================================================================
 $Id$
 
