@@ -1,10 +1,10 @@
-RFC 0176: Scriptlet URL handler classes: 
+RFC 0176: Scriptlet URL handler classes
 ========================================================================
 $Id$
 
 @authors: ohinckel
 @created: Wed Nov 12 15:58:34     2008
-@status: draft
+@status: discussion, ends Thu 20. Nov 10:00:00     2008
 @category: scriptlet
 
 Scope of Change
@@ -319,5 +319,16 @@ http://xp-framework.net/rfc/contrib/rfc0176.diff
 
 Comments
 --------
+ohinckel, Fr Nov 14 16:36:49     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Since the URL handler classes stores all URL components (like product, state,
+page, ...), do we really need to still store them in the request class?
+E.g. the getLanguage() could be implemented like this (it's just a wrapper
+function to be backward compatible):
+<code>
+  public function getLanguage() {
+    return $this->url->getLanguage();
+  }
+</code>
 
 <EOF>
