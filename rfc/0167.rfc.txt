@@ -4,7 +4,7 @@ $Id$
 
 @authors: gellweiler
 @created: Thu May 15 17:16:31 CEST 2008
-@status: draft
+@status: discussion, ends at Fri Nov 21 12:00:00 CEST 2008
 @category: rdbms
 
 Scope of Change
