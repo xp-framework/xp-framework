@@ -218,5 +218,15 @@
     public function loadClassFileWithIncorrectDeclaration() {
       XPClass::forName('net.xp_framework.unittest.reflection.classes.broken.FalseClass');
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function loadClassFileWithRecusionInStaticBlock() {
+      XPClass::forName('net.xp_framework.unittest.reflection.classes.StaticRecursionTwo');
+    }
+    
   }
 ?>
