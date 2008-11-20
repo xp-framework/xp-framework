@@ -1,6 +1,6 @@
 Index: skeleton/scriptlet/xml/XMLScriptletResponse.class.php
 ===================================================================
---- skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(revision 12632)
+--- skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(revision 12639)
 +++ skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(working copy)
 @@ -242,28 +242,14 @@
       * @param   string fraction default NULL the fraction without the leading "#"
@@ -40,7 +40,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletResponse.class.php
      /**
 Index: skeleton/scriptlet/xml/XMLScriptlet.class.php
 ===================================================================
---- skeleton/scriptlet/xml/XMLScriptlet.class.php	(revision 12632)
+--- skeleton/scriptlet/xml/XMLScriptlet.class.php	(revision 12639)
 +++ skeleton/scriptlet/xml/XMLScriptlet.class.php	(working copy)
 @@ -7,6 +7,7 @@
    uses(
@@ -352,7 +352,7 @@ Name: svn:keywords
 
 Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
 ===================================================================
---- skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(revision 12632)
+--- skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(revision 12639)
 +++ skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(working copy)
 @@ -35,37 +35,28 @@
        $sessionId    = '';
@@ -478,7 +478,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
       * Get session's Id. This overwrites the parent's implementation 
 Index: skeleton/scriptlet/HttpScriptletResponse.class.php
 ===================================================================
---- skeleton/scriptlet/HttpScriptletResponse.class.php	(revision 12632)
+--- skeleton/scriptlet/HttpScriptletResponse.class.php	(revision 12639)
 +++ skeleton/scriptlet/HttpScriptletResponse.class.php	(working copy)
 @@ -17,6 +17,9 @@
     * @purpose  Provide a way to access the HTTP response
@@ -508,9 +508,17 @@ Index: skeleton/scriptlet/HttpScriptletResponse.class.php
       * _may_ not, and of course, your favorite command line tool (such as
 Index: skeleton/scriptlet/HttpScriptlet.class.php
 ===================================================================
---- skeleton/scriptlet/HttpScriptlet.class.php	(revision 12632)
+--- skeleton/scriptlet/HttpScriptlet.class.php	(revision 12639)
 +++ skeleton/scriptlet/HttpScriptlet.class.php	(working copy)
-@@ -60,8 +60,6 @@
+@@ -7,6 +7,7 @@
+   uses(
+     'peer.URL',
+     'peer.http.HttpConstants',
++    'scriptlet.HttpScriptletURL',
+     'scriptlet.HttpScriptletRequest',
+     'scriptlet.HttpScriptletResponse',
+     'scriptlet.HttpScriptletException',
+@@ -60,8 +61,6 @@
     * </code>
     */
    class HttpScriptlet extends Object {
@@ -519,7 +527,7 @@ Index: skeleton/scriptlet/HttpScriptlet.class.php
      
      /**
       * Create a request object. Override this method to define
-@@ -94,6 +92,16 @@
+@@ -94,6 +93,16 @@
      }
      
      /**
@@ -529,14 +537,14 @@ Index: skeleton/scriptlet/HttpScriptlet.class.php
 +     * @return scriptlet.HttpScriptletURL
 +     */
 +    protected function _url($url) {
-+      return new HttpScrtiptletURL($url);
++      return new HttpScriptletURL($url);
 +    }
 +    
 +    /**
       * Initialize session
       *
       * @param   scriptlet.HttpScriptletRequest request
-@@ -254,39 +262,13 @@
+@@ -254,39 +263,13 @@
       * <pre>needsSession()</pre> return TRUE and no session
       * is available or the session is unvalid.
       *
@@ -577,7 +585,7 @@ Index: skeleton/scriptlet/HttpScriptlet.class.php
        return FALSE;
      }
      
-@@ -317,7 +299,7 @@
+@@ -317,7 +300,7 @@
        $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
        $request->method= $request->getEnvValue('REQUEST_METHOD');
        $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
@@ -586,7 +594,7 @@ Index: skeleton/scriptlet/HttpScriptlet.class.php
          ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
          $request->getEnvValue('HTTP_HOST').
          $request->getEnvValue('REQUEST_URI')
-@@ -396,6 +378,7 @@
+@@ -396,6 +379,7 @@
        // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
        // other protocol version.
        $response= $this->_response();
@@ -707,7 +715,7 @@ Name: svn:keywords
 
 Index: skeleton/scriptlet/HttpScriptletRequest.class.php
 ===================================================================
---- skeleton/scriptlet/HttpScriptletRequest.class.php	(revision 12632)
+--- skeleton/scriptlet/HttpScriptletRequest.class.php	(revision 12639)
 +++ skeleton/scriptlet/HttpScriptletRequest.class.php	(working copy)
 @@ -166,7 +166,9 @@
       * @param   peer.URL uri a uri representated by peer.URL
