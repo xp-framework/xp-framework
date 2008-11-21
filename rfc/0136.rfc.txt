@@ -37,13 +37,13 @@ This is an abbreviated version of the lang.Enum class:
       }
       try {
         return array_values($class->_reflect->getStaticProperties());
-      } catch (::ReflectionException $e) {
+      } catch (\ReflectionException $e) {
         throw new IllegalArgumentException($e->getMessage());
       }
     }
 
     public final function __clone() {
-      ::raise('lang.CloneNotSupportedException', 'Enums cannot be cloned');
+      \raise('lang.CloneNotSupportedException', 'Enums cannot be cloned');
     }
   }
 </code>
@@ -62,26 +62,26 @@ What can be seen:
 Syntax example #2
 ~~~~~~~~~~~~~~~~~
 <code>
-  namespace io::collections;
+  namespace io\collections;
 
-  class FileCollection extends lang::Object implements IOCollection {
+  class FileCollection extends \lang\Object implements IOCollection {
 
     public function open() { 
       if (!($this->_hd= opendir($this->uri))) {
-        throw new io::IOException('Could not open '.$this->uri);
+        throw new \io\IOException('Could not open '.$this->uri);
       }
     }
 
     public function createdAt() {
-      return new util::Date(filectime($this->uri));
+      return new \util\Date(filectime($this->uri));
     }
   }
 </code>
 What can be seen:
 * XP packages map to PHP namespaces by replacing the dots (.) with
-  double colons (Package[io.collections] = Namespace[io::collections])
+  double colons (Package[io.collections] = Namespace[io\collections])
 * XP class names map to PHP namespaced names by replacing the dot (.) 
-  with double colons (XPClass[util.Date] = Class[util::Date]).
+  with double colons (XPClass[util.Date] = Class[util\Date]).
 * Classes from the same package are unqualified (IOCollection), while
   classes from foreign packages (IOException, Date, Object) are written
   using their fully qualified names.
@@ -90,13 +90,13 @@ What can be seen:
   language is not available due to the generic way namespaces are
   implemented in the PHP language!
 
-uses() vs. import
-~~~~~~~~~~~~~~~~~
+uses() vs. use
+~~~~~~~~~~~~~~
 We figured the following would be rather ugly:
 <code>
   uses('com.oneandone.qf.QfId');
  
-  import com::oneandone::qf::QfId;
+  use com\oneandone\qf\QfId;
  
   $id= new QfId();
 </code>
@@ -116,16 +116,16 @@ also the sexiest. Here's an idea:
 
 QfId.class.php
 <code>
-  namespace com::oneandone::qf;
+  namespace com\oneandone\qf;
  
-  class QfId extends lang::Object {
+  class QfId extends \lang\Object {
     protected $value= 0;
  
     public function __construct($value) {
       $this->value= $value;
     }
  
-    public function equals(lang::Generic $cmp) {
+    public function equals(\lang\Generic $cmp) {
       return $cmp instanceof self && $cmp->value === $this->value;
     }
   }
@@ -133,11 +133,11 @@ QfId.class.php
 
 QfIdTest.class.php
 <code>
-  namespace com::oneandone::qf::tests;
+  namespace com\oneandone\qf\tests;
 
-  import com::oneandone::qf::QfId;
+  use com\oneandone\qf\QfId;
 
-  class QfIdTest extends unittest::TestCase {
+  class QfIdTest extends \unittest\TestCase {
  
     #[@test]
     public function equality() {

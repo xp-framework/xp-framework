@@ -46,17 +46,17 @@ Declaration:
 Usage:
 <code>
   // #1: By fully qualified name
-  namespace de::thekid::dialog;
+  namespace de\thekid\dialog;
   
-  class Album extends lang::Object {
-    public function setCreated(util::Date $d) { ... }
+  class Album extends \lang\Object {
+    public function setCreated(\util\Date $d) { ... }
   }
   
   // #2: By import
-  namespace de::thekid::dialog;
-  use util::Date;
+  namespace de\thekid\dialog;
+  use util\Date;
   
-  class Album extends lang::Object {
+  class Album extends lang\Object {
     public function setCreated(Date $d) { ... }
   }
 </code>
@@ -180,6 +180,10 @@ These issues are to be considered problematic:
 
 Related documents
 -----------------
+Namespaces
+~~~~~~~~~~
+See RFC #0136
+
 __getStatic() patch
 ~~~~~~~~~~~~~~~~~~~
 http://sitten-polizei.de/php/getstatic.diff
