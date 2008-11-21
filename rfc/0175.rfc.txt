@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Oct 20 16:49:44     2008
-@status: draft
+@status: discussion, ends Mon Dec  1 12:00:00     2008
 @category: io
 
 Scope of Change
@@ -19,7 +19,39 @@ Reading and creating zipfiles.
 
 Functionality
 -------------
-TODO.
+The entry point class will be named io.zip.ZipArchive. It provides
+static methods to read and write zip files.
+
+Creating
+~~~~~~~~
+<code>
+  $archive= ZipArchive::create(new FileOutputStream(new File($filename)));
+  
+  $out= $archive->addFile(new ZipFile('title.txt', Date::now()));
+  $out->setCompression(Compression::$GZ);
+  $out->write('Title goes here');
+  
+  $archive->close();
+</code>
+
+Reading
+~~~~~~~
+<code>
+  $archive= ZipArchive::open(new FileInputStream(new File($filename)));
+  
+  // List contents
+  foreach ($archive->entries() as $entry) { 
+    Console::writeLine('- ', $entry->getName());
+  }
+  
+  // Extract a file and dump its contents to the console
+  with ($in= $archive->getEntry('title.txt')->inputStream()); {
+    while ($in->available()) {
+      Console::write($in->read());
+    }
+    $in->close();
+  }
+</code>
 
 
 Security considerations
@@ -37,9 +69,11 @@ Dependencies
 * ext/bz2 for working with BZIP compression
 * ext/zlib for working with GZIP compression
 
+
 Related documents
 -----------------
 http://experiments.xp-forge.net/xml/browse?arena,zip
+
 
 Comments
 --------
