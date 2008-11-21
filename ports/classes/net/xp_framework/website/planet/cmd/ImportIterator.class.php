@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.XPIterator', 'de.schlund.lucene.DocumentValue');
+  uses('util.XPIterator');
 
   /**
    * Returns documents to be indexed
