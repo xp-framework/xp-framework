@@ -34,6 +34,7 @@
    *   Add the path value to the class path.
    * </pre>
    *
+   * @deprecated This class has been moved to tools:xp.command - RFC #0173
    * @test     xp://net.xp_framework.unittest.util.cmd.RunnerTest
    * @see      xp://util.cmd.Command
    * @purpose  Runner
