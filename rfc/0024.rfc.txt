@@ -17,40 +17,93 @@ and remote specs.
 Rationale
 ---------
 While a efficient method exists to manage database connections there is
-currently no way 
+currently no way for other resources.
 
 Functionality
 -------------
-
 
 Resource interface
 ~~~~~~~~~~~~~~~~~~
 <code>
   /**
-   * Resource marker interface
+   * Resource interface
    *
    * @purpose  Interface  
    */
-  class Resource extends Interface {
+  interface Resource {
 
+    /**
+     * Returns the category under /xp that this resource should be
+     * bound to.
+     *
+     * @return  string
+     */
+    public function resourceCategory();
   }
 </code>
+
+
+Resource classes
+~~~~~~~~~~~~~~~~
+* rdbms.DBConnection (and its subclasses)
+* peer.ldap.LdapConnection
+* util.log.LogCategory
+* util.Properties
+* remote.Remote
+
+
+ResourceManager
+~~~~~~~~~~~~~~~
+<code>
+  class ResourceManager extends Object {
+    // ...
+    
+    /**
+     * Get an instance
+     *
+     * @return  util.ResourceManager
+     */
+    public function getInstance() {
+      // ...
+    }
+    
+    /**
+     * Bind a given resource to a given name
+     *
+     * @param   string name
+     * @param   util.Resource resource
+     */
+    public function bind($name, Resource $resource) {
+      // ...
+    }
+
+    /**
+     * Lookup a resource by a given name
+     *
+     * @param   string name
+     * @return  util.Resource
+     */
+    public function lookup($name) {
+      // ...
+    }
+  }
+</code>
+
 
 Example #1: Registering the database connection to the "orders" database
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <code>
-  $pool= &ResourceManager::getInstance();
-  $pool->bind(
-    'xp://env/rdbms/orders', 
+  ResourceManager::getInstance()->bind(
+    '/xp/rdbms/orders', 
     DriverManager::getConnection('mysql://...')
   );
 </code>
 
+
 Example #2: Get an rdbms.DBConnection instance by name "orders"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <code>
-  $pool= &ResourceManager::getInstance();
-  $conn= &$pool->lookup('xp://env/rdbms/orders');
+  $conn= ResourceManager::getInstance()->lookup('/xp/rdbms/orders');
 </code>
 
 
@@ -66,7 +119,7 @@ n/a
 
 Dependencies
 ------------
-n/a
+- RFC #0147 - LdapConnection
 
 
 Related documents
