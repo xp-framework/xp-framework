@@ -111,7 +111,7 @@
         raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
       }
       xp::$registry['class.'.$name]= $class;
-      is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+      method_exists($name, '__static') && call_user_func(array($name, '__static'));
       return $name;
     }
     
@@ -249,6 +249,24 @@
      */
     public function stream_tell() {
       return $this->position;
+    }
+    
+    /**
+     * Stream wrapper method stream_flush
+     *
+     * @return  bool
+     */
+    public function stream_flush() {
+      return TRUE;
+    }
+
+    /**
+     * Stream wrapper method stream_close
+     *
+     * @return  bool
+     */
+    public function stream_close() {
+      return TRUE;
     }
     
     /**
