@@ -1,0 +1,521 @@
+Index: skeleton/io/collections/FileElement.class.php
+===================================================================
+--- skeleton/io/collections/FileElement.class.php	(revision 12632)
++++ skeleton/io/collections/FileElement.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('io.collections.IOElement');
++  uses('io.collections.IOElement', 'io.streams.FileInputStream', 'io.streams.FileOutputStream');
+ 
+   /**
+    * Represents a file element
+@@ -15,6 +15,9 @@
+   class FileElement extends Object implements IOElement {
+     public
+       $uri= '';
++    
++    protected
++      $origin = NULL;
+ 
+     /**
+      * Constructor
+@@ -69,8 +72,44 @@
+     public function lastModified() {
+       return new Date(filemtime($this->uri));
+     }
+-    
++
+     /**
++     * Get the collection this element originates from
++     *
++     * @return  io.collections.IOCollection origin
++     */
++    public function getOrigin() {
++      return $this->origin;
++    }
++
++    /**
++     * Set the collection this element originates from
++     *
++     * @param   io.collections.IOCollection origin
++     */
++    public function setOrigin(IOCollection $origin) {
++      $this->origin= $origin;
++    }
++
++    /**
++     * Get an input stream to read from this element
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getInputStream() {
++      return new FileInputStream($this->uri);
++    }
++
++    /**
++     * Get an output stream to write to this element
++     *
++     * @return  io.streams.OutputStream
++     */
++    public function getOutputStream() {
++      return new FileOutputStream($this->uri);
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @return  string
+@@ -78,6 +117,5 @@
+     public function toString() { 
+       return $this->getClassName().'('.$this->uri.')';
+     }
+-
+   } 
+ ?>
+Index: skeleton/io/collections/FileCollection.class.php
+===================================================================
+--- skeleton/io/collections/FileCollection.class.php	(revision 12632)
++++ skeleton/io/collections/FileCollection.class.php	(working copy)
+@@ -18,6 +18,9 @@
+     
+     public
+       $_hd = NULL;
++
++    protected
++      $origin = NULL;
+       
+     /**
+      * Constructor
+@@ -70,6 +73,7 @@
+       } else {
+         $next= new FileElement($qualified);
+       }
++      $next->setOrigin($this);
+       return $next;
+     }
+ 
+@@ -118,6 +122,42 @@
+     }
+ 
+     /**
++     * Get the collection this element originates from
++     *
++     * @return  io.collections.IOCollection origin
++     */
++    public function getOrigin() {
++      return $this->origin;
++    }
++
++    /**
++     * Set the collection this element originates from
++     *
++     * @param   io.collections.IOCollection origin
++     */
++    public function setOrigin(IOCollection $origin) {
++      $this->origin= $origin;
++    }
++
++    /**
++     * Get an input stream to read from this element
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getInputStream() {
++      throw new IllegalStateException('Cannot read from directories');
++    }
++
++    /**
++     * Get an output stream to write to this element
++     *
++     * @return  io.streams.OutputStream
++     */
++    public function getOutputStream() {
++      throw new IllegalStateException('Cannot write to directories');
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @return  string
+@@ -125,6 +165,5 @@
+     public function toString() { 
+       return $this->getClassName().'('.$this->uri.')';
+     }
+-  
+   } 
+ ?>
+Index: skeleton/io/collections/IOElement.class.php
+===================================================================
+--- skeleton/io/collections/IOElement.class.php	(revision 12632)
++++ skeleton/io/collections/IOElement.class.php	(working copy)
+@@ -48,5 +48,33 @@
+      */
+     public function lastModified();
+ 
++    /**
++     * Get the collection this element originates from
++     *
++     * @return  io.collections.IOCollection origin
++     */
++    public function getOrigin();
++
++    /**
++     * Set the collection this element originates from
++     *
++     * @param   io.collections.IOCollection origin
++     */
++    public function setOrigin(IOCollection $origin);
++
++    /**
++     * Get an input stream to read from this element
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getInputStream();
++
++    /**
++     * Get an output stream to write to this element
++     *
++     * @return  io.streams.OutputStream
++     */
++    public function getOutputStream();
++
+   }
+ ?>
+Index: skeleton/io/collections/iterate/IOCollectionIterator.class.php
+===================================================================
+--- skeleton/io/collections/iterate/IOCollectionIterator.class.php	(revision 12632)
++++ skeleton/io/collections/iterate/IOCollectionIterator.class.php	(working copy)
+@@ -139,6 +139,5 @@
+         $this->recursive ? '(R)' : ''
+       );
+     }
+-
+   } 
+ ?>
+Index: skeleton/peer/ftp/collections/FtpCollection.class.php
+===================================================================
+--- skeleton/peer/ftp/collections/FtpCollection.class.php	(revision 12632)
++++ skeleton/peer/ftp/collections/FtpCollection.class.php	(working copy)
+@@ -18,6 +18,7 @@
+    */
+   class FtpCollection extends Object implements IOCollection {
+     protected $dir= NULL;
++    protected $origin= NULL;
+     private $it= NULL;
+       
+     /**
+@@ -70,6 +71,7 @@
+       } else {
+         $next= new FtpElement($entry);
+       }
++      $next->setOrigin($this);
+       return $next;
+     }
+ 
+@@ -116,8 +118,44 @@
+     public function lastModified() {
+       return $this->dir->lastModified();
+     }
++    
++    /**
++     * Get the collection this element originates from
++     *
++     * @return  io.collections.IOCollection origin
++     */
++    public function getOrigin() {
++      return $this->origin;
++    }
+ 
+     /**
++     * Set the collection this element originates from
++     *
++     * @param   io.collections.IOCollection origin
++     */
++    public function setOrigin(IOCollection $origin) {
++      $this->origin= $origin;
++    }
++
++    /**
++     * Get an input stream to read from this element
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getInputStream() {
++      throw new IllegalStateException('Cannot read from directories');
++    }
++
++    /**
++     * Get an output stream to write to this element
++     *
++     * @return  io.streams.OutputStream
++     */
++    public function getOutputStream() {
++      throw new IllegalStateException('Cannot write to directories');
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @return  string
+Index: skeleton/peer/ftp/collections/FtpElement.class.php
+===================================================================
+--- skeleton/peer/ftp/collections/FtpElement.class.php	(revision 12632)
++++ skeleton/peer/ftp/collections/FtpElement.class.php	(working copy)
+@@ -14,6 +14,7 @@
+    */
+   class FtpElement extends Object implements IOElement {
+     protected $file= NULL;
++    protected $origin= NULL;
+ 
+     /**
+      * Constructor
+@@ -70,6 +71,42 @@
+     }
+ 
+     /**
++     * Get the collection this element originates from
++     *
++     * @return  io.collections.IOCollection origin
++     */
++    public function getOrigin() {
++      return $this->origin;
++    }
++
++    /**
++     * Set the collection this element originates from
++     *
++     * @param   io.collections.IOCollection origin
++     */
++    public function setOrigin(IOCollection $origin) {
++      $this->origin= $origin;
++    }
++
++    /**
++     * Get an input stream to read from this element
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getInputStream() {
++      return $this->file->getInputStream();
++    }
++
++    /**
++     * Get an output stream to write to this element
++     *
++     * @return  io.streams.OutputStream
++     */
++    public function getOutputStream() {
++      return $this->file->getOutputStream();
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @return  string
+Index: ports/classes/net/xp_framework/unittest/io/collections/MockCollection.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/io/collections/MockCollection.class.php	(revision 12632)
++++ ports/classes/net/xp_framework/unittest/io/collections/MockCollection.class.php	(working copy)
+@@ -16,6 +16,9 @@
+     public
+       $_elements = array(),
+       $_offset   = -1;
++
++    protected
++      $origin = NULL;
+       
+     /**
+      * Constructor
+@@ -29,10 +32,11 @@
+     /**
+      * Add an element to the collection. Returns the added element.
+      *
+-     * @return  &io.collection.IOElement e
+-     * @return  &io.collection.IOElement
++     * @return  io.collection.IOElement e
++     * @return  io.collection.IOElement
+      */
+     public function addElement($e) {
++      $e->setOrigin($this);
+       $this->_elements[]= $e;
+       return $e;
+     }
+@@ -66,7 +70,7 @@
+      * Retrieve next element in collection. Return NULL if no more entries
+      * are available
+      *
+-     * @return  &io.collection.IOElement
++     * @return  io.collection.IOElement
+      */
+     public function next() {
+       if (-1 == $this->_offset) throw(new IllegalStateException('Not open'));
+@@ -95,7 +99,7 @@
+     /**
+      * Retrieve this element's created date and time
+      *
+-     * @return  &util.Date
++     * @return  util.Date
+      */
+     public function createdAt() {
+       return NULL;
+@@ -104,7 +108,7 @@
+     /**
+      * Retrieve this element's last-accessed date and time
+      *
+-     * @return  &util.Date
++     * @return  util.Date
+      */
+     public function lastAccessed() {
+       return NULL;
+@@ -113,20 +117,55 @@
+     /**
+      * Retrieve this element's last-modified date and time
+      *
+-     * @return  &util.Date
++     * @return  util.Date
+      */
+     public function lastModified() {
+       return NULL;
+     }
+ 
+     /**
++     * Get the collection this element originates from
++     *
++     * @return  io.collections.IOCollection origin
++     */
++    public function getOrigin() {
++      return $this->origin;
++    }
++
++    /**
++     * Set the collection this element originates from
++     *
++     * @param   io.collections.IOCollection origin
++     */
++    public function setOrigin(IOCollection $origin) {
++      $this->origin= $origin;
++    }
++
++    /**
++     * Get an input stream to read from this element
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getInputStream() {
++      return NULL;
++    }
++
++    /**
++     * Get an output stream to write to this element
++     *
++     * @return  io.streams.OutputStream
++     */
++    public function getOutputStream() {
++      return NULL;
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @return  string
+      */
+     public function toString() { 
+       return $this->getClassName().'('.$this->uri.')';
+-    }
+-  
++    }  
+   } 
+ ?>
+Index: ports/classes/net/xp_framework/unittest/io/collections/MockElement.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/io/collections/MockElement.class.php	(revision 12632)
++++ ports/classes/net/xp_framework/unittest/io/collections/MockElement.class.php	(working copy)
+@@ -20,6 +20,9 @@
+       $mdate  = NULL,
+       $cdate  = NULL;
+ 
++    protected
++      $origin = NULL;
++
+     /**
+      * Constructor
+      *
+@@ -58,7 +61,7 @@
+     /**
+      * Retrieve this element's created date and time
+      *
+-     * @return  &util.Date
++     * @return  util.Date
+      */
+     public function createdAt() {
+       return $this->cdate;
+@@ -67,7 +70,7 @@
+     /**
+      * Retrieve this element's last-accessed date and time
+      *
+-     * @return  &util.Date
++     * @return  util.Date
+      */
+     public function lastAccessed() {
+       return $this->adate;
+@@ -76,13 +79,49 @@
+     /**
+      * Retrieve this element's last-modified date and time
+      *
+-     * @return  &util.Date
++     * @return  util.Date
+      */
+     public function lastModified() {
+       return $this->mdate;
+     }
+ 
+     /**
++     * Get the collection this element originates from
++     *
++     * @return  io.collections.IOCollection origin
++     */
++    public function getOrigin() {
++      return $this->origin;
++    }
++
++    /**
++     * Set the collection this element originates from
++     *
++     * @param   io.collections.IOCollection origin
++     */
++    public function setOrigin(IOCollection $origin) {
++      $this->origin= $origin;
++    }
++
++    /**
++     * Get an input stream to read from this element
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getInputStream() {
++      return NULL;
++    }
++
++    /**
++     * Get an output stream to write to this element
++     *
++     * @return  io.streams.OutputStream
++     */
++    public function getOutputStream() {
++      return NULL;
++    }
++
++    /**
+      * Creates a string representation of this object
+      *
+      * @return  string
+@@ -90,6 +129,5 @@
+     public function toString() { 
+       return $this->getClassName().'('.$this->uri.')';
+     }
+-
+   } 
+ ?>

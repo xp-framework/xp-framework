@@ -107,7 +107,7 @@ Dependency <tt>io.collections -> io.streams</tt>
 
 Related documents
 -----------------
-n/a
+[http://xp-framework.net/rfc/contrib/rfc0174.diff Implementing patch]
 
 
 Comments
