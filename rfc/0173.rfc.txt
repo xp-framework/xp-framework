@@ -29,6 +29,38 @@ infrastructure:
 * net.xp_framework.wsdl.cmd - WSDL code generator
 
 
+Package contents
+~~~~~~~~~~~~~~~~
+All classes inside the tools directory reside in the "xp" package.
+
+<pre>
+  xp
+  |- codegen           # Classes for the "cgen" utility
+  |  |- dataset
+  |  |- esdl
+  |  `- wsdl
+  |- doclet            # Classes for the "doclet" utility
+  |- runtime           # Classes for the "xp" utility
+  |- unittest          # Classes for the "unittest" utility
+  |- command           # Classes for the "xpcli" utility
+  `- xar               # Classes for the "xar" utility
+</pre>
+
+The classes for the "xpcli" utility will stay in the util.cmd package
+for backwards compatibility reasons but will be deprecated and later
+removed.
+
+
+Entry point
+~~~~~~~~~~~
+As PHP always needs an entry point PHP file, the following files will
+represent them:
+
+* class.php - class runner (classes with public static main method)
+* xar.php - xar runner (xars with a META-INF/manifest.ini poiting to main-class
+* web.php - web runner
+
+
 Security considerations
 -----------------------
 n/a
@@ -48,6 +80,7 @@ None.
 Related documents
 -----------------
 RFC #0166 - XP Runners
+[http://xp-framework.net/rfc/contrib/rfc0173.diff patch for xp, xp.admin]
 
 Comments
 --------

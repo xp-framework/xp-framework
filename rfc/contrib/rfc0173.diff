@@ -1,0 +1,424 @@
+Index: xp/trunk/tools/xp/command/Runner.class.php
+===================================================================
+--- xp/trunk/tools/xp/command/Runner.class.php	(revision 0)
++++ xp/trunk/tools/xp/command/Runner.class.php	(revision 0)
+@@ -0,0 +1,357 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  $package= 'xp.command';
++
++  uses(
++    'util.cmd.ParamString',
++    'io.streams.StringWriter', 
++    'io.streams.ConsoleOutputStream',
++    'util.log.Logger',
++    'util.PropertyManager',
++    'rdbms.ConnectionManager'
++  );
++
++  /**
++   * Runs util.cmd.Command subclasses on the command line.
++   *
++   * Usage:
++   * <pre>
++   * $ xpcli [options] fully.qualified.class.Name [classoptions]
++   * </pre>
++   *
++   * Options includes one of the following:
++   * <pre>
++   * -c:
++   *   Set the path with which the PropertyManager is configured with. The
++   *   PropertyManager is used for dependency injection. If a file called
++   *   log.ini exists in this path, the Logger will be configured with. If
++   *   a database.ini is present there, the ConnectionManager will be
++   *   configured with it.
++   * 
++   * -cp:
++   *   Add the path value to the class path.
++   * </pre>
++   *
++   * @test     xp://net.xp_framework.unittest.util.cmd.RunnerTest
++   * @see      xp://util.cmd.Command
++   * @purpose  Runner
++   */
++  class xp·command·Runner extends Object {
++    private static
++      $out    = NULL,
++      $err    = NULL;
++    
++    static function __static() {
++      self::$out= new StringWriter(new ConsoleOutputStream(STDOUT));
++      self::$err= new StringWriter(new ConsoleOutputStream(STDERR));
++    }
++  
++    /**
++     * Converts api-doc "markup" to plain text w/ ASCII "art"
++     *
++     * @param   string markup
++     * @return  string text
++     */
++    protected static function textOf($markup) {
++      $line= str_repeat('=', 72);
++      return strip_tags(preg_replace(array(
++        '#<pre>#', '#</pre>#', '#<li>#',
++      ), array(
++        $line, $line, '* ',
++      ), trim($markup)));
++    }
++    
++    /**
++     * Show usage
++     *
++     * @param   lang.XPClass class
++     */
++    public static function showUsage(XPClass $class) {
++
++      // Description
++      if (NULL !== ($comment= $class->getComment())) {
++        self::$err->writeLine(self::textOf($comment));
++        self::$err->writeLine(str_repeat('=', 72));
++      }
++
++      $extra= $details= $positional= array();
++      foreach ($class->getMethods() as $method) {
++        if (!$method->hasAnnotation('arg')) continue;
++
++        $arg= $method->getAnnotation('arg');
++        $name= strtolower(preg_replace('/^set/', '', $method->getName()));;
++        $comment= self::textOf($method->getComment());
++
++        if (0 == $method->numParameters()) {
++          $optional= TRUE;
++        } else {
++          list($first, )= $method->getParameters();
++          $optional= $first->isOptional();
++        }
++
++        if (isset($arg['position'])) {
++          $details['#'.($arg['position'] + 1)]= $comment;
++          $positional[$arg['position']]= $name;
++        } else if (isset($arg['name'])) {
++          $details['--'.$arg['name'].' | -'.(isset($arg['short']) ? $arg['short'] : $arg['name']{0})]= $comment;
++          $extra[$arg['name']]= $optional;
++        } else {
++          $details['--'.$name.' | -'.(isset($arg['short']) ? $arg['short'] : $name{0})]= $comment;
++          $extra[$name]= $optional;
++        }
++      }
++
++      // Usage
++      asort($positional);
++      self::$err->write('Usage: $ xpcli ', $class->getName(), ' ');
++      foreach ($positional as $name) {
++        self::$err->write('<', $name, '> ');
++      }
++      foreach ($extra as $name => $optional) {
++        self::$err->write(($optional ? '[' : ''), '--', $name, ($optional ? '] ' : ' '));
++      }
++      self::$err->writeLine();
++
++      // Argument details
++      self::$err->writeLine('Arguments:');
++      foreach ($details as $which => $comment) {
++        self::$err->writeLine('* ', $which, "\n  ", $comment, "\n");
++      }
++    }
++  
++    /**
++     * Main method
++     *
++     * @param   string[] args
++     * @return  int
++     */
++    public static function main(array $args) {
++      return create(new self())->run(new ParamString($args));
++    }
++    
++    /**
++     * Reassigns standard output stream
++     *
++     * @param   io.streams.OutputStream out
++     * @return  io.streams.OutputStream the given output stream
++     */
++    public function setOut(OutputStream $out) {
++      self::$out= new StringWriter($out);
++      return $out;
++    }
++
++    /**
++     * Reassigns standard error stream
++     *
++     * @param   io.streams.OutputStream error
++     * @return  io.streams.OutputStream the given output stream
++     */
++    public function setErr(OutputStream $err) {
++      self::$err= new StringWriter($err);
++      return $err;
++    }
++    
++    /**
++     * Main method
++     *
++     * @param   util.cmd.ParamString params
++     * @return  int
++     */
++    public function run(ParamString $params) {
++      $pm= PropertyManager::getInstance();
++
++      // No arguments given - show our own usage
++      if ($params->count < 1) {
++        self::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
++        return 1;
++      }
++
++      // Separate runner options from class options
++      for ($offset= 0, $i= 0; $i < $params->count; $i++) {
++        if ('-c' === $params->list[$i]) {
++          $pm->configure($params->list[$i+ 1]);
++          $offset+= 2; $i++;
++        } else if ('-cp' === $params->list[$i]) {
++          foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
++            ClassLoader::registerPath($element, FALSE);
++          }
++          $offset+= 2; $i++;
++        } else {
++          break;
++        }
++      }
++      
++      // Sanity check
++      if (!$params->exists($offset)) {
++        self::$err->writeLine('*** Missing classname');
++        return 1;
++      }
++      
++      unset($params->list[-1]);
++      $classname= $params->value($offset);
++      $classparams= new ParamString(array_slice($params->list, $offset+ 1));
++
++      // Class file or class name
++      if (strstr($classname, xp::CLASS_FILE_EXT)) {
++        $file= new File($classname);
++        if (!$file->exists()) {
++          self::$err->writeLine('*** Cannot load class from non-existant file ', $classname);
++          return 1;
++        }
++        $uri= $file->getURI();
++        $path= dirname($uri);
++        $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
++        $class= NULL;
++        while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
++          if (isset($paths[$path])) {
++            $class= XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
++            break;
++          }
++
++          $path= substr($path, 0, $pos); 
++        }
++
++        if (!$class) {
++          self::$err->writeLine('*** Cannot load class from ', $file);
++          return 1;
++        }
++      } else {
++        try {
++          $class= XPClass::forName($classname);
++        } catch (ClassNotFoundException $e) {
++          self::$err->writeLine('*** ', $e->getMessage());
++          return 1;
++        }
++      }
++      
++      // Check whether class is runnable
++      if (!$class->isSubclassOf('lang.Runnable')) {
++          self::$err->writeLine('*** ', $class->getName(), ' is not runnable');
++          return 1;
++      }
++
++      // Usage
++      if ($classparams->exists('help', '?')) {
++        self::showUsage($class);
++        return 0;
++      }
++
++      // Load, instantiate and initialize
++      $l= Logger::getInstance();
++      $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
++
++      $cm= ConnectionManager::getInstance();
++      $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
++
++      $instance= $class->newInstance();
++      $instance->out= self::$out;
++      $instance->err= self::$err;
++
++      foreach ($class->getMethods() as $method) {
++        if ($method->hasAnnotation('inject')) {      // Perform injection
++          $inject= $method->getAnnotation('inject');
++          switch ($inject['type']) {
++            case 'rdbms.DBConnection': {
++              $args= array($cm->getByHost($inject['name'], 0));
++              break;
++            }
++
++            case 'util.Properties': {
++              $args= array($pm->getProperties($inject['name']));
++              break;
++            }
++
++            case 'util.log.LogCategory': {
++              $args= array($l->getCategory($inject['name']));
++              break;
++            }
++
++            default: {
++              self::$err->writeLine('*** Unknown injection type "'.$inject['type'].'"');
++              return 2;
++            }
++          }
++
++          try {
++            $method->invoke($instance, $args);
++          } catch (Throwable $e) {
++            self::$err->writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
++            return 2;
++          }
++        } else if ($method->hasAnnotation('args')) { // Pass all arguments
++          if (!$method->hasAnnotation('args', 'select')) {
++            $pass= array_slice($classparams->list, 0, $classparams->count);
++          } else {
++            $pass= array();
++            foreach (preg_split('/, ?/', $method->getAnnotation('args', 'select')) as $def) {
++              if (is_numeric($def) || '-' == $def{0}) {
++                $pass[]= $classparams->value((int)$def);
++              } else {
++                sscanf($def, '[%d..%d]', $begin, $end);
++                isset($begin) || $begin= 0;
++                isset($end) || $end= $classparams->count- 1;
++
++                while ($begin <= $end) {
++                  $pass[]= $classparams->value($begin++);
++                }
++              }
++            }
++          }
++          try {
++            $method->invoke($instance, array($pass));
++          } catch (Throwable $e) {
++            self::$err->writeLine('*** Error for arguments '.$begin.'..'.$end.': '.$e->getMessage());
++            return 2;
++          }
++        } else if ($method->hasAnnotation('arg')) {  // Pass arguments
++          $arg= $method->getAnnotation('arg');
++          if (isset($arg['position'])) {
++            $name= '#'.($arg['position']+ 1);
++            $select= intval($arg['position']);
++            $short= NULL;
++          } else if (isset($arg['name'])) {
++            $name= $select= $arg['name'];
++            $short= isset($arg['short']) ? $arg['short'] : NULL;
++          } else {
++            $name= $select= strtolower(preg_replace('/^set/', '', $method->getName()));
++            $short= isset($arg['short']) ? $arg['short'] : NULL;
++          }
++
++          if (0 == $method->numParameters()) {
++            if (!$classparams->exists($select, $short)) continue;
++            $args= array();
++          } else if (!$classparams->exists($select, $short)) {
++            list($first, )= $method->getParameters();
++            if (!$first->isOptional()) {
++              self::$err->writeLine('*** Argument '.$name.' does not exist!');
++              return 2;
++            }
++
++            $args= array();
++          } else {
++            $args= array($classparams->value($select, $short));
++          }
++
++          try {
++            $method->invoke($instance, $args);
++          } catch (TargetInvocationException $e) {
++            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getCause()->compoundMessage());
++            return 2;
++          }
++        }
++      }
++
++      try {
++        $instance->run();
++      } catch (Throwable $t) {
++        self::$err->writeLine('*** ', $t->compoundMessage());
++        return 70;    // EX_SOFTWARE according to sysexits.h
++      }
++      return 0;
++    }
++  }
++?>
+
+Property changes on: xp/trunk/tools/xp/command/Runner.class.php
+___________________________________________________________________
+Name: svn:keywords
+   + Id
+
+Index: xp/trunk/skeleton/util/cmd/Runner.class.php
+===================================================================
+--- xp/trunk/skeleton/util/cmd/Runner.class.php	(revision 12632)
++++ xp/trunk/skeleton/util/cmd/Runner.class.php	(working copy)
+@@ -34,6 +34,7 @@
+    *   Add the path value to the class path.
+    * </pre>
+    *
++   * @deprecated This class has been moved to tools:xp.command - RFC #0173
+    * @test     xp://net.xp_framework.unittest.util.cmd.RunnerTest
+    * @see      xp://util.cmd.Command
+    * @purpose  Runner
+Index: xp/trunk/ports/classes/net/xp_framework/unittest/util/cmd/RunnerTest.class.php
+===================================================================
+--- xp/trunk/ports/classes/net/xp_framework/unittest/util/cmd/RunnerTest.class.php	(revision 12632)
++++ xp/trunk/ports/classes/net/xp_framework/unittest/util/cmd/RunnerTest.class.php	(working copy)
+@@ -7,7 +7,7 @@
+   uses(
+     'unittest.TestCase',
+     'util.cmd.Command',
+-    'util.cmd.Runner',
++    'xp.command.Runner',
+     'io.streams.MemoryOutputStream'
+   );
+ 
+@@ -27,7 +27,7 @@
+      *
+      */
+     public function setUp() {
+-      $this->runner= new Runner();
++      $this->runner= new xp·command·Runner();
+     }
+     
+     /**
+Index: xp.admin/trunk/releases/bin/unix/src/xpcli.in
+===================================================================
+--- xp.admin/trunk/releases/bin/unix/src/xpcli.in	(revision 108)
++++ xp.admin/trunk/releases/bin/unix/src/xpcli.in	(working copy)
+@@ -1,3 +1,3 @@
+ #include <common.in>
+ 
+-EXEC("class", ".", util.cmd.Runner)
++EXEC("class", ".", xp.command.Runner)
+Index: xp.admin/trunk/releases/bin/windows/src/XpCli.cs
+===================================================================
+--- xp.admin/trunk/releases/bin/windows/src/XpCli.cs	(revision 108)
++++ xp.admin/trunk/releases/bin/windows/src/XpCli.cs	(working copy)
+@@ -8,7 +8,7 @@
+ 
+         static void Main(string[] args)
+         {
+-            Execute("class", "util.cmd.Runner", new string[] { }, args);
++            Execute("class", "xp.command.Runner", new string[] { }, args);
+         }
+     }
+ }
