@@ -27,7 +27,7 @@
      */
     public function __construct($aggregate, $classpath) {
       $this->aggregate= $aggregate;
-      $this->classpath= array_flip($classpath);
+      $this->classpath= array_flip(array_map('realpath', $classpath));
     }
 
     /**
