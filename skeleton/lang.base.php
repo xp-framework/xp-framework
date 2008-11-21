@@ -54,7 +54,7 @@
       // Register class name and call static initializer if available
       $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
       xp::$registry['class.'.$name]= $class;
-      is_callable(array($name, '__static')) && call_user_func(array($name, '__static'));
+      method_exists($name, '__static') && call_user_func(array($name, '__static'));
       
       return $name;
     }
@@ -500,7 +500,7 @@
     }
     
     // Call constructor if available
-    if (is_callable(array($instance, '__construct'))) {
+    if (method_exists($instance, '__construct')) {
       $a= func_get_args();
       call_user_func_array(array($instance, '__construct'), array_slice($a, 1));
     }
