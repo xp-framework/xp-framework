@@ -7,7 +7,7 @@
   uses(
     'unittest.TestCase',
     'util.cmd.Command',
-    'util.cmd.Runner',
+    'xp.command.Runner',
     'io.streams.MemoryOutputStream'
   );
 
@@ -27,7 +27,7 @@
      *
      */
     public function setUp() {
-      $this->runner= new Runner();
+      $this->runner= new xp·command·Runner();
     }
     
     /**
