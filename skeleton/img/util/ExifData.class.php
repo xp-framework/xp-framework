@@ -246,7 +246,16 @@
     }
 
     /**
-     * Get Flash
+     * Get Flash. This is a bitmask:
+     * <pre>
+     *   0 = flash fired
+     *   1 = return detected
+     *   2 = return able to be detected
+     *   3 = unknown
+     *   4 = auto used
+     *   5 = unknown
+     *   6 = red eye reduction used
+     * </pre>
      *
      * @return  int
      */
@@ -347,11 +356,12 @@
     /**
      * Retrieve whether the flash was used.
      *
-     * @see     http://jalbum.net/forum/thread.jspa?forumID=4&threadID=830&messageID=4438
+     * @see     http://www.drewnoakes.com/code/exif/
+     * @see     http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/exif/flash.html
      * @return  bool
      */
     public function flashUsed() {
-      return 1 == ($this->flash % 8);
+      return 1 == ($this->flash & 1);
     }
     
     /**
