@@ -153,8 +153,6 @@
         // Check for Flash and flashUsed keys
         if (NULL !== ($f= self::lookup($info['EXIF'], 'flash'))) {
           $e->setFlash($f);
-        } else if (NULL !== ($u= self::lookup($info, 'flashused'))) {
-          $e->setFlash(0 == strcasecmp('YES', $u) ? 9 : 0);
         } else {
           $e->setFlash(NULL);
         }
