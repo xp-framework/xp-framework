@@ -28,11 +28,10 @@
   }
   // }}}
 
-  $home= getenv('HOME');
+  list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
   set_include_path(
-    scanpath(explode(PATH_SEPARATOR, ini_get('user_dir')), $home).
-    scanpath(array('.'), $home).
-    get_include_path()
+    scanpath(explode(PATH_SEPARATOR, $use), $home).
+    $include
   );
 
   if (!include('lang.base.php')) {
