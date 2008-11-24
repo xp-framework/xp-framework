@@ -8,36 +8,26 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
-- Deprecated util.cmd.Runner class, this is now in xp.command in the 
-  tools-xar (part of RFC #0173 implementation)
-  (friebe)
 
 RFCs
 ~~~~
-- Implemented RFC #0173 - xp-tools.xar
-  (friebe)
 
 Bugfixes
 ~~~~~~~~
-- Fixed img.util.ExifData::flashUsed() method
-  (friebe)
-- Fixed unittest.AssertionFailedError not to hide the actual location
-  in the stacktrace.
-  (friebe)
 
 Features
 ~~~~~~~~
-- Switched from is_callable() to method_exists() in classloading parts 
-  of the core for performance reasons.
-  (friebe)
 
 
-Version 5.7.0, released 2008-11-04
+Version 5.7.0, released 2008-11-24
 ----------------------------------
-SVN version: 12617
+SVN version: 12656
 
 Heads up!
 ~~~~~~~~~
+- Deprecated util.cmd.Runner class, this is now in xp.command in the 
+  tools-xar (part of RFC #0173 implementation)
+  (friebe)
 - Removed class util.profiling.ClassProfiler
   (kiesel)
 - Deprecated LOGGER_* global constants in util.log.LogCategory in favor
@@ -52,11 +42,18 @@ Heads up!
   
 RFCs
 ~~~~
+- Implemented RFC #0173 - xp-tools.xar
+  (friebe)
 - Implemented RFC #0164 - Exceptions for XPClass::get*()
   (friebe)
 
 Bugfixes
 ~~~~~~~~
+- Fixed img.util.ExifData::flashUsed() method
+  (friebe)
+- Fixed unittest.AssertionFailedError not to hide the actual location
+  in the stacktrace.
+  (friebe)
 - Made message part optional in HTTP status response when parsing it in
   peer.http.HttpResponse::readHeader()
   (hinckel)
@@ -65,6 +62,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Switched from is_callable() to method_exists() in classloading parts 
+  of the core for performance reasons.
+  (friebe)
 - Added support for io.streams API to StreamReader and StreamWriter
   from the img.io package (keeping backwards compatibility)
   http://news.xp-framework.net/article/279/2008/10/21
