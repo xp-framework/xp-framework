@@ -27,7 +27,8 @@
     return $inc;
   }
   // }}}
-  
+
+  $home= getenv('HOME');
   list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
   set_include_path(
     scanpath(explode(PATH_SEPARATOR, $use), $home).
