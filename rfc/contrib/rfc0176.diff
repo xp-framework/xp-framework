@@ -1,6 +1,6 @@
 Index: skeleton/scriptlet/xml/XMLScriptletResponse.class.php
 ===================================================================
---- skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(revision 12639)
+--- skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(revision 12662)
 +++ skeleton/scriptlet/xml/XMLScriptletResponse.class.php	(working copy)
 @@ -242,28 +242,14 @@
       * @param   string fraction default NULL the fraction without the leading "#"
@@ -40,7 +40,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletResponse.class.php
      /**
 Index: skeleton/scriptlet/xml/XMLScriptlet.class.php
 ===================================================================
---- skeleton/scriptlet/xml/XMLScriptlet.class.php	(revision 12639)
+--- skeleton/scriptlet/xml/XMLScriptlet.class.php	(revision 12662)
 +++ skeleton/scriptlet/xml/XMLScriptlet.class.php	(working copy)
 @@ -7,6 +7,7 @@
    uses(
@@ -112,7 +112,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 ===================================================================
 --- skeleton/scriptlet/xml/XMLScriptletURL.class.php	(revision 0)
 +++ skeleton/scriptlet/xml/XMLScriptletURL.class.php	(revision 0)
-@@ -0,0 +1,231 @@
+@@ -0,0 +1,224 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -128,36 +128,37 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +   * @purpose  URL representation class
 +   */
 +  class XMLScriptletURL extends HttpScriptletURL {
-+    const
-+      INFO_PROD=     'product',
-+      INFO_DEFPROD=  'defProduct',
-+      INFO_LANG=     'language',
-+      INFO_DEFLANG=  'defLanguage',
-+      INFO_STATE=    'stateName',
-+      INFO_DEFSTATE= 'defStateName',
-+      INFO_PAGE=     'page',
-+      INFO_DEFPAGE=  'defPage';
 +      
 +    /**
 +     * Extract information from URL
 +     *
 +     */
 +    protected function extract() {
-+      with ($this->values= new Hashmap()); {
-+
-+        if (preg_match(
-+          '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
-+          $this->getPath(),
-+          $parts
-+        )) {
-+          !empty($parts[3]) && $this->setProduct($parts[3]);
-+          !empty($parts[4]) && $this->setLanguage($parts[4]);
-+          !empty($parts[6]) && $this->setSessionId($parts[6]);
-+          !empty($parts[7]) && $this->setStateName($parts[7]);
-+        }
-+        
-+        $this->getParam('__page') && $this->setPage($this->getParam('__page'));
++      if (preg_match(
++        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
++        $this->getPath(),
++        $parts
++      )) {
++        !empty($parts[3]) && $this->setProduct($parts[3]);
++        !empty($parts[4]) && $this->setLanguage($parts[4]);
++        !empty($parts[6]) && $this->setSessionId($parts[6]);
++        !empty($parts[7]) && $this->setStateName($parts[7]);
 +      }
++
++      $this->getParam('__page') && $this->setPage($this->getParam('__page'));
++    }
++    
++    /**
++     * Return value for given key or in case it's not defined return
++     * the default value
++     *
++     * @param string key The name of the key to return
++     * @return string
++     */
++    public function getValueOrDefault($key) {
++      return $this->values->get($key) !== NULL
++        ? $this->values->get($key)
++        : $this->values->get('Default'.$key);
 +    }
 +    
 +    /**
@@ -166,7 +167,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string product The product name
 +     */
 +    public function setProduct($product) {
-+      $this->values->put(self::INFO_PROD, $product);
++      $this->values->put('Product', $product);
 +    }
 +    
 +    /**
@@ -176,7 +177,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string product
 +     */
 +    public function setDefaultProduct($product) {
-+      $this->values->put(self::INFO_DEFPROD, $product);
++      $this->values->put('DefaultProduct', $product);
 +    }
 +    
 +    /**
@@ -185,9 +186,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getProduct() {
-+      return $this->values->get(self::INFO_PROD) !== NULL
-+        ? $this->values->get(self::INFO_PROD)
-+        : $this->values->get(self::INFO_DEFPROD);
++      return $this->getValueOrDefault('Product');
 +    }
 +    
 +    /**
@@ -196,7 +195,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getDefaultProduct() {
-+      return $this->values->get(self::INFO_DEFPROD);
++      return $this->values->get('DefaultProduct');
 +    }
 +    
 +    /**
@@ -205,7 +204,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string language The language
 +     */
 +    public function setLanguage($language) {
-+      $this->values->put(self::INFO_LANG, $language);
++      $this->values->put('Language', $language);
 +    }
 +    
 +    /**
@@ -215,7 +214,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string language The language
 +     */
 +    public function setDefaultLanguage($language) {
-+      $this->values->put(self::INFO_DEFLANG, $language);
++      $this->values->put('DefaultLanguage', $language);
 +    }
 +    
 +    /**
@@ -224,9 +223,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getLanguage() {
-+      return $this->values->get(self::INFO_LANG) !== NULL
-+        ? $this->values->get(self::INFO_LANG)
-+        : $this->values->get(self::INFO_DEFLANG);
++      return $this->getValueOrDefault('Language');
 +    }
 +
 +    /**
@@ -235,7 +232,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getDefaultLanguage() {
-+      return $this->values->get(self::INFO_DEFLANG);
++      return $this->values->get('DefaultLanguage');
 +    }
 +
 +    /**
@@ -244,7 +241,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string stateName The state name
 +     */
 +    public function setStateName($stateName) {
-+      $this->values->put(self::INFO_STATE, $stateName);
++      $this->values->put('StateName', $stateName);
 +    }
 +    
 +    /**
@@ -253,7 +250,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string stateName The state name
 +     */
 +    public function setDefaultStateName($stateName) {
-+      $this->values->put(self::INFO_DEFSTATE, $stateName);
++      $this->values->put('DefaultStateName', $stateName);
 +    }
 +    
 +    /**
@@ -262,9 +259,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getStateName() {
-+      return $this->values->get(self::INFO_STATE) !== NULL
-+        ? $this->values->get(self::INFO_STATE)
-+        : $this->values->get(self::INFO_DEFSTATE);
++      return $this->getValueOrDefault('StateName');
 +    }
 +    
 +    /**
@@ -273,7 +268,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getDefaultStateName() {
-+      return $this->values->get(self::INFO_DEFSTATE);
++      return $this->values->get('DefaultStateName');
 +    }
 +    
 +    /**
@@ -282,7 +277,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string stateName The state name
 +     */
 +    public function setPage($page) {
-+      $this->values->put(self::INFO_PAGE, $page);
++      $this->values->put('Page', $page);
 +    }
 +    
 +    /**
@@ -291,7 +286,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @param string stateName The state name
 +     */
 +    public function setDefaultPage($page) {
-+      $this->values->put(self::INFO_DEFPAGE, $page);
++      $this->values->put('DefaultPage', $page);
 +    }
 +    
 +    /**
@@ -300,9 +295,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getPage() {
-+      return $this->values->get(self::INFO_PAGE) !== NULL
-+        ? $this->values->get(self::INFO_PAGE)
-+        : $this->values->get(self::INFO_DEFPAGE);
++      return $this->getValueOrDefault('Page');
 +    }
 +    
 +    /**
@@ -311,7 +304,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getDefaultPage() {
-+      return $this->values->get(self::INFO_DEFPAGE);
++      return $this->values->get('DefaultPage');
 +    }
 +    
 +    /**
@@ -324,7 +317,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletURL.class.php
 +      // Determine which settings we need to pass
 +      $xsr= array();
 +      if (
-+        ($this->getProduct() != $this->getDefaultProduct()) ||
++        ($this->getProduct()  != $this->getDefaultProduct()) ||
 +        ($this->getLanguage() != $this->getDefaultLanguage())
 +      ) {
 +        $xsr[]= $this->getProduct();
@@ -352,7 +345,7 @@ Name: svn:keywords
 
 Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
 ===================================================================
---- skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(revision 12639)
+--- skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(revision 12662)
 +++ skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(working copy)
 @@ -35,37 +35,28 @@
        $sessionId    = '';
@@ -478,7 +471,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
       * Get session's Id. This overwrites the parent's implementation 
 Index: skeleton/scriptlet/HttpScriptletResponse.class.php
 ===================================================================
---- skeleton/scriptlet/HttpScriptletResponse.class.php	(revision 12639)
+--- skeleton/scriptlet/HttpScriptletResponse.class.php	(revision 12662)
 +++ skeleton/scriptlet/HttpScriptletResponse.class.php	(working copy)
 @@ -17,6 +17,9 @@
     * @purpose  Provide a way to access the HTTP response
@@ -508,7 +501,7 @@ Index: skeleton/scriptlet/HttpScriptletResponse.class.php
       * _may_ not, and of course, your favorite command line tool (such as
 Index: skeleton/scriptlet/HttpScriptlet.class.php
 ===================================================================
---- skeleton/scriptlet/HttpScriptlet.class.php	(revision 12639)
+--- skeleton/scriptlet/HttpScriptlet.class.php	(revision 12662)
 +++ skeleton/scriptlet/HttpScriptlet.class.php	(working copy)
 @@ -7,6 +7,7 @@
    uses(
@@ -606,7 +599,7 @@ Index: skeleton/scriptlet/HttpScriptletURL.class.php
 ===================================================================
 --- skeleton/scriptlet/HttpScriptletURL.class.php	(revision 0)
 +++ skeleton/scriptlet/HttpScriptletURL.class.php	(revision 0)
-@@ -0,0 +1,100 @@
+@@ -0,0 +1,98 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -625,8 +618,6 @@ Index: skeleton/scriptlet/HttpScriptletURL.class.php
 +   * @purpose  URL representation class
 +   */
 +  class HttpScriptletURL extends URL {
-+    const
-+      INFO_SESS=     'session';
 +      
 +    protected
 +      $values= NULL;
@@ -660,7 +651,7 @@ Index: skeleton/scriptlet/HttpScriptletURL.class.php
 +     * @param string language The session
 +     */
 +    public function setSessionId($session) {
-+      $this->values->put(self::INFO_SESS, $session);
++      $this->values->put('SessionId', $session);
 +    }
 +
 +    /**
@@ -669,7 +660,7 @@ Index: skeleton/scriptlet/HttpScriptletURL.class.php
 +     * @return string
 +     */
 +    public function getSessionId() {
-+      return $this->values->get(self::INFO_SESS);
++      return $this->values->get('SessionId');
 +    }
 +
 +    /**
@@ -715,7 +706,7 @@ Name: svn:keywords
 
 Index: skeleton/scriptlet/HttpScriptletRequest.class.php
 ===================================================================
---- skeleton/scriptlet/HttpScriptletRequest.class.php	(revision 12639)
+--- skeleton/scriptlet/HttpScriptletRequest.class.php	(revision 12662)
 +++ skeleton/scriptlet/HttpScriptletRequest.class.php	(working copy)
 @@ -166,7 +166,9 @@
       * @param   peer.URL uri a uri representated by peer.URL
