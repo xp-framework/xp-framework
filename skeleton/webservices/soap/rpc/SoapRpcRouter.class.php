@@ -64,7 +64,7 @@
      * @return  webservices.soap.rpc.SoapRpcRequest
      */
     protected function _request() {
-      return new SoapRpcRequest();
+      return new SoapRpcRequest($this->mapping);
     }
 
     /**
