@@ -17,11 +17,23 @@
    * @purpose  Provide a way to access the HTTP response
    */  
   class HttpScriptletResponse extends Object {
+    protected
+      $uri=             NULL;
+    
     public
       $version=         '1.1',
       $content=         '',
       $statusCode=      HTTP_OK,
       $headers=         array();
+    
+    /**
+     * Set URI of request which is currently answered by the response
+     *
+     * @param scriptlet.HttpScriptletURL uri The requested URL
+     */
+    public function setURI($uri) {
+      $this->uri= $uri;
+    }
     
     /**
      * Redirects the client to the specified location. Most HTTP clients

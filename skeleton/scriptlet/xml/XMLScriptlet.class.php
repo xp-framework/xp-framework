@@ -7,6 +7,7 @@
   uses(
     'xml.DomXSLProcessor',
     'scriptlet.HttpScriptlet',
+    'scriptlet.xml.XMLScriptletURL',
     'scriptlet.xml.XMLScriptletResponse',
     'scriptlet.xml.XMLScriptletRequest'
   );
@@ -93,6 +94,16 @@
     }
     
     /**
+     * Returns an URL object for the given URL
+     *
+     * @param string url The current requested URL
+     * @return scriptlet.XMLScriptletURL
+     */
+    protected function _url($url) {
+      return new XMLScriptletURL($url);
+    }
+    
+    /**
      * Handle method. Calls doCreate if necessary (the environment variable
      * "PRODUCT" is not set - which it will be if the RewriteRule has
      * taken control).
@@ -119,33 +130,13 @@
      * @return  bool
      */
     public function doRedirect($request, $response, $sessionId= NULL) {
-      $uri= $request->getURL();
-      
-      // Determine which settings we need to pass
-      $xsr= array();
-      if (
-        $request->getProduct() != $request->getDefaultProduct() ||
-        $request->getLanguage() != $request->getDefaultLanguage()
-      ) {
-        $xsr[]= $request->getProduct();
-        $xsr[]= $request->getLanguage();
-      }
-      
-      if (!empty($sessionId)) $xsr[]= 'psessionid='.$sessionId;
+      with ($redirect= $request->getURL()); {
+    
+        // Include session id in URL if available
+        if ($sessionId !== NULL) $this->url->setSessionId($sessionId);
 
-      // Get product, language and statename from the environment if 
-      // necessary. Their default values are "site" (product), 
-      // "en_US" (language) and "static" (statename).
-      // Send redirect
-      $response->sendRedirect(sprintf(
-        '%s://%s/xml/%s%s%s%s', 
-        $uri->getScheme(),
-        $uri->getHost(),
-        (sizeof($xsr) ? implode('.', $xsr).'/' : ''),
-        $request->getStateName(), 
-        $uri->getQuery() ? '?'.$uri->getQuery() : '',
-        $uri->getFragment() ? '#'.$uri->getFragment() : ''
-      ));
+        $response->sendRedirect($this->url->getURL());
+      }
       
       return FALSE; // Indicate no further processing is to be done
     }

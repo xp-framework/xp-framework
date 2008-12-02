@@ -35,37 +35,28 @@
       $sessionId    = '';
 
     /**
-     * Initialize this request object
+     * Sets request's URI
      *
+     * @param   peer.URL uri a uri representated by peer.URL
      */
-    public function initialize() {
-      parent::initialize();
-      
-      // Use default first
-      $this->product=   $this->getEnvValue('PRODUCT', $this->getDefaultProduct());
-      $this->stateName= $this->getEnvValue('STATE', $this->getDefaultStateName());
-      $this->language=  $this->getEnvValue('LANGUAGE', $this->getDefaultLanguage());
-      $this->sessionId= $this->getEnvValue('SESS');
-      
-      // Check cookies for session id
-      if ($this->hasCookie('session_id')) {
-        $this->sessionId= $this->getCookie('session_id')->getValue();
+    public function setURI($uri) {
+      with ($this->uri= $uri); {
+        $this->uri->setDefaultProduct($this->getDefaultProduct());
+        $this->uri->setDefaultLanguage($this->getDefaultLanguage());
+        $this->uri->setDefaultStateName($this->getDefaultStateName());
+        $this->uri->setDefaultPage($this->getDefaultPage());
+        
+        // Check cookies for session id
+        $this->setSessionId($this->hasCookie('session_id')
+          ? $this->getCookie('session_id')->getValue()
+          : $this->uri->getSessionId()
+        );
+        
+        $this->setProduct($this->uri->getProduct());
+        $this->setLanguage($this->uri->getLanguage());
+        $this->setStateName($this->uri->getStateName());
+        $this->setPage($this->uri->getPage());
       }
-
-      // Parse path to determine current state, language and product - if not parseable,
-      // just fall back to the defaults
-      if (preg_match(
-        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
-        $this->getURL()->getPath(),
-        $part
-      )) {
-        !empty($part[3]) && $this->setProduct($part[3]);
-        !empty($part[4]) && $this->setLanguage($part[4]);
-        !empty($part[6]) && $this->sessionId= $part[6];
-        !empty($part[7]) && $this->setStateName($part[7]);
-      }
-      
-      $this->page= isset($_REQUEST['__page']) ? $_REQUEST['__page'] : 'home';
     }
     
     /**
@@ -87,6 +78,16 @@
     }
 
     /**
+     * Gets default page (defaults to DEF_PAGE environment variable, if not
+     * set default to "home")
+     *
+     * @return  string page
+     */
+    public function getDefaultPage() {
+      return $this->getEnvValue('DEF_PAGE', 'home');
+    }
+
+    /**
      * Gets state
      *
      * @return  string stateName
@@ -96,12 +97,13 @@
     }
 
     /**
-     * Gets default state
+     * Gets default state (defaults to DEF_STATE environment variable, if not
+     * set default to "static")
      *
      * @return  string stateName
      */
     public function getDefaultStateName() {
-      return $this->getEnvValue('DEF_STATE');
+      return $this->getEnvValue('DEF_STATE', 'static');
     }
 
     /**
@@ -150,12 +152,13 @@
     }
 
     /**
-     * Gets default language
+     * Gets default language (defaults to DEF_LANG environment variable, if not
+     * set default to "en_US")
      *
      * @return  string language
      */
     public function getDefaultLanguage() {
-      return $this->getEnvValue('DEF_LANG');
+      return $this->getEnvValue('DEF_LANG', 'en_US');
     }
 
     /**
@@ -165,6 +168,15 @@
      */
     public function setLanguage($language) {
       $this->language= $language;
+    }
+    
+    /**
+     * Sets session id
+     *
+     * @param   string session
+     */
+    public function setSessionId($session) {
+      $this->sessionId= $session;
     }
 
     /**

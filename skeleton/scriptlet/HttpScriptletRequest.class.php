@@ -166,7 +166,9 @@
      * @param   peer.URL uri a uri representated by peer.URL
      */
     public function setURI($uri) {
-      $this->uri= $uri;
+      with ($this->uri= $uri); {
+        $this->setSessionId($this->uri->getSessionId());
+      }
     }
     
     /**
@@ -186,6 +188,15 @@
      */
     public function getURL() {
       return $this->uri;
+    }
+    
+    /**
+     * Set session id
+     *
+     * @param  string sessionId session's id
+     */
+    public function setSessionId($sessionId) {
+      return $this->setParam('psessionid', $sessionId);
     }
     
     /**

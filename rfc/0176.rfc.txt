@@ -4,7 +4,7 @@ $Id$
 
 @authors: ohinckel
 @created: Wed Nov 12 15:58:34     2008
-@status: discussion, ends Thu 20. Nov 10:00:00     2008
+@status: implemented, Tue Dec  2 11:05:13     2008
 @category: scriptlet
 
 Scope of Change

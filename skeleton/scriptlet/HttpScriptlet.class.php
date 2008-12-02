@@ -7,6 +7,7 @@
   uses(
     'peer.URL',
     'peer.http.HttpConstants',
+    'scriptlet.HttpScriptletURL',
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse',
     'scriptlet.HttpScriptletException',
@@ -60,8 +61,6 @@
    * </code>
    */
   class HttpScriptlet extends Object {
-    public
-      $sessionURIFormat = '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s';
     
     /**
      * Create a request object. Override this method to define
@@ -91,6 +90,16 @@
      */
     protected function _response() {
       return new HttpScriptletResponse();
+    }
+    
+    /**
+     * Returns an URL object for the given URL
+     *
+     * @param string url The current requested URL
+     * @return scriptlet.HttpScriptletURL
+     */
+    protected function _url($url) {
+      return new HttpScriptletURL($url);
     }
     
     /**
@@ -254,39 +263,13 @@
      * <pre>needsSession()</pre> return TRUE and no session
      * is available or the session is unvalid.
      *
-     * The member variable <pre>sessionURIFormat</pre> is used
-     * to sprintf() the new URI:
-     * <pre>
-     * Ord Fill            Example
-     * --- --------------- --------------------
-     *   1 scheme          http
-     *   2 host            host.foo.bar
-     *   3 path            /foo/bar/index.html
-     *   4 dirname(path)   /foo/bar/
-     *   5 basename(path)  index.html
-     *   6 query           a=b&b=c
-     *   7 session id      cb7978876218bb7
-     *   8 fraction        #test
-     * </pre>
-     *
      * @return  bool processed
      * @param   scriptlet.HttpScriptletRequest request 
      * @param   scriptlet.HttpScriptletResponse response 
      * @throws  lang.XPException to indicate failure
      */
     public function doCreateSession($request, $response) {
-      $uri= $request->getURL();
-      $response->sendRedirect(sprintf(
-        $this->sessionURIFormat,
-        $uri->getScheme(),
-        $uri->getHost(),
-        $uri->getPath(),
-        dirname($uri->getPath()),
-        basename($uri->getPath()),
-        $uri->getQuery(),
-        $request->session->getId(),
-        $uri->getFragment()
-      ));
+      $response->sendRedirect($request->getURL()->getURL());
       return FALSE;
     }
     
@@ -317,7 +300,7 @@
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= $request->getEnvValue('REQUEST_METHOD');
       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-      $request->setURI(new URL(
+      $request->setURI($this->_url(
         ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
         $request->getEnvValue('HTTP_HOST').
         $request->getEnvValue('REQUEST_URI')
@@ -396,6 +379,7 @@
       // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
       // other protocol version.
       $response= $this->_response();
+      $response->setURI($request->getURL());
       if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
         throw new HttpScriptletException(
           'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 

@@ -11,6 +11,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0176 - Scriptlet URL handler classes
+  (ohinckel)
 
 Bugfixes
 ~~~~~~~~
@@ -78,6 +80,7 @@ Features
   (friebe, kiesel)
 - Added peer.ldap.LDAPQuery::setAttrsOnly()
   (wagner)
+
 
 Version 5.6.9, released 2008-09-03
 ----------------------------------
@@ -554,6 +557,7 @@ Bugfixes
 
 Features
 ~~~~~~~~
+
 
 Version 5.6.2, released 2007-11-21
 ----------------------------------
