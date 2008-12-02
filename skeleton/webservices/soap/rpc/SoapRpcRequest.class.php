@@ -16,6 +16,16 @@
    * @see scriptlet.HttpScriptletRequest
    */
   class SoapRpcRequest extends AbstractRpcRequest {
+    private $mapping= NULL;
+
+    /**
+     * Constructor
+     *
+     * @param   webservices.soap.xp.XPSoapMapping mapping
+     */
+    public function __construct($mapping) {
+      $this->mapping= $mapping;
+    }
 
     /**
      * Retrieve SOAP message from request
@@ -31,6 +41,7 @@
       
       $m->setHandlerClass($class);
       $m->setMethod($method);
+      $m->setMapping($this->mapping);
       return $m;
     }
   }
