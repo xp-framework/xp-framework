@@ -49,8 +49,6 @@ scriptlet API, looks like this:
   uses('util.Hashmap', 'peer.URL');
   
   class HttpScriptletURL extends URL {
-    const
-      INFO_SESS=     'session';
       
     protected
       $values= NULL;
@@ -70,11 +68,11 @@ scriptlet API, looks like this:
     }
 
     public function setSessionId($session) {
-      $this->values->put(self::INFO_SESS, $session);
+      $this->values->put('SessionId', $session);
     }
 
     public function getSessionId() {
-      return $this->values->get(self::INFO_SESS);
+      return $this->values->get('SessionId');
     }
 
     public function getURL() {
@@ -111,16 +109,7 @@ The (abbreviated) code looks like this:
   uses('scriptlet.HttpScriptletURL');
   
   class XMLScriptletURL extends HttpScriptletURL {
-    const
-      INFO_PROD=     'product',
-      INFO_DEFPROD=  'defProduct',
-      INFO_LANG=     'language',
-      INFO_DEFLANG=  'defLanguage',
-      INFO_STATE=    'stateName',
-      INFO_DEFSTATE= 'defStateName',
-      INFO_PAGE=     'page',
-      INFO_DEFPAGE=  'defPage';
-
+      
     protected function extract() {
       with ($this->values= new Hashmap()); {
 
@@ -139,36 +128,38 @@ The (abbreviated) code looks like this:
       }
     }
     
+    public function getValueOrDefault($key) {
+      return $this->values->get($key) !== NULL
+        ? $this->values->get($key)
+        : $this->values->get('Default'.$key);
+    }
+
     public function setProduct($product) {
-      $this->values->put(self::INFO_PROD, $product);
+      $this->values->put('Product', $product);
     }
     
     public function setDefaultProduct($product) {
-      $this->values->put(self::INFO_DEFPROD, $product);
+      $this->values->put('DefaultProduct', $product);
     }
     
     public function getProduct() {
-      return $this->values->get(self::INFO_PROD) !== NULL
-        ? $this->values->get(self::INFO_PROD)
-        : $this->values->get(self::INFO_DEFPROD);
+      return $this->getValueOrDefault('Product');
     }
     
     public function getDefaultProduct() {
-      return $this->values->get(self::INFO_DEFPROD);
+      return $this->values->get('DefaultProduct');
     }
     
     public function setLanguage($language) {
-      $this->values->put(self::INFO_LANG, $language);
+      $this->values->put('Language', $language);
     }
     
     public function setDefaultLanguage($language) {
-      $this->values->put(self::INFO_DEFLANG, $language);
+      $this->values->put('DefaultLanguage', $language);
     }
     
     public function getLanguage() {
-      return $this->values->get(self::INFO_LANG) !== NULL
-        ? $this->values->get(self::INFO_LANG)
-        : $this->values->get(self::INFO_DEFLANG);
+      return $this->getValueOrDefault('Language');
     }
 
     public function getDefaultLanguage() {
@@ -185,7 +176,7 @@ The (abbreviated) code looks like this:
       // Determine which settings we need to pass
       $xsr= array();
       if (
-        ($this->getProduct() != $this->getDefaultProduct()) ||
+        ($this->getProduct()  != $this->getDefaultProduct()) ||
         ($this->getLanguage() != $this->getDefaultLanguage())
       ) {
         $xsr[]= $this->getProduct();
