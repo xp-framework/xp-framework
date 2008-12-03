@@ -74,7 +74,7 @@
       $this->package= $args->value('package', 'p', 'db');
       $this->host= $args->value('host', 'h', $dsn->getHost());
 
-      $this->prefix= $args->value('prefix', 'pf', NULL);
+      $this->prefix= $args->value('prefix', 'pf', '');
       $this->ptargets= explode('|', $args->value('targets', 'pi', ''));
       $this->pexclude= $args->value('pexclude', 'pe', FALSE);
 
