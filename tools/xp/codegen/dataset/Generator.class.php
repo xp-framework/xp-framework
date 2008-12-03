@@ -75,8 +75,8 @@
       $this->host= $args->value('host', 'h', $dsn->getHost());
 
       $this->prefix= $args->value('prefix', 'pf', NULL);
-      $this->ptargets= explode('|', $args->value('ptargets', 'pi', ''));
-      $this->pexclude= explode('|', $args->value('pexclude', 'pe', ''));
+      $this->ptargets= explode('|', $args->value('targets', 'pi', ''));
+      $this->pexclude= $args->value('pexclude', 'pe', FALSE);
 
       // Setup generator
       $this->processor= new DomXSLProcessor();
