@@ -24,7 +24,7 @@
    *
    * Usage:
    * <pre>
-   *   $ cgen ... dataset {dsn} [-p {package}] [-h {host}] [-l {language}]
+   *   $ cgen ... dataset {dsn} [-p {package}] [-h {host}] [-l {language}] [-pv {prefix} [-pt {ptargets}] [-pe {pexclude}]]
    * </pre>
    *
    * Options
@@ -33,6 +33,9 @@
    *   <li>package: The package name, default "db"</li>
    *   <li>host: Which connection name to use, defaults to host name from DSN</li>
    *   <li>language: Language to generate, defaults to "xp5"</li>
+   *   <li>prefix: Prefix to add to the class name, defaults to ""</li>
+   *   <li>ptargets: List of table names to use with prefix separated by the pipe symbol "|", defaults to ""</li>
+   *   <li>pexclude: Mode ptargets are treated - if pexclude is TRUE ptargets are treated as blacklist else as whitelist, defaults to FALSE</li>
    * </ul>
    *
    * Languages
@@ -74,8 +77,8 @@
       $this->package= $args->value('package', 'p', 'db');
       $this->host= $args->value('host', 'h', $dsn->getHost());
 
-      $this->prefix= $args->value('prefix', 'pf', '');
-      $this->ptargets= explode('|', $args->value('targets', 'pi', ''));
+      $this->prefix= $args->value('prefix', 'pv', '');
+      $this->ptargets= explode('|', $args->value('ptargets', 'pt', ''));
       $this->pexclude= $args->value('pexclude', 'pe', FALSE);
 
       // Setup generator
