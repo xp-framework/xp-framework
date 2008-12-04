@@ -909,7 +909,7 @@
       }
       
       // Do not recognize any opts
-      $this->answer($event->stream, 501, 'Opts: '.$option.'not understood');
+      $this->answer($event->stream, 501, 'OPTS: '.$option.' not understood');
     }
 
     /**
