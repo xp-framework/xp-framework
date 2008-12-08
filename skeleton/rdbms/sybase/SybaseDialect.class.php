@@ -16,7 +16,7 @@
       ),
       $implementations= array(
         'str_1'      => 'convert(varchar, %s)',
-        'cast_2'     => 'convert(%s, %c)',
+        'cast_2'     => 'convert(%2$c, %1$s)',
         'atan_2'     => 'atn2(%d, %d)',
         'ceil_1'     => 'ceiling(%d)',
         'degrees_1'  => 'convert(float, degrees(%d))',
