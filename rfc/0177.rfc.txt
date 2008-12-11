@@ -1,0 +1,178 @@
+RFC 0177: The web
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Dec 10 09:06:34     2008
+@status: draft
+@category: scriptlet, webservices
+
+Scope of Change
+---------------
+A new package named "web" will be created. It will supersede the scriptlet
+and webservices packages and will provide a revamped scriptlet and service
+APIs including RFC #0061 and RFC #0078.
+
+
+Rationale
+---------
+The scriptlet and webservices APIs have come of age, are fragile, hardly
+testable and often geared towards the Apache webserver environment.
+
+
+Functionality
+-------------
+The new APIs...
+<summary>
+* ...must be easily testable by unittests
+* ...must run in any webserver environment, including the XP server
+* ...must support easy development
+* ...must provide a secure and stable production environment
+* ...should adhere to the "convention over configuration" principle
+* ...should integrate well with existing APIs
+</summary>
+
+
+Package structure
+~~~~~~~~~~~~~~~~~
+<pre>
+  web                 # Top-level package
+  |- auth             # Authentication
+  |- env              # Environment (Production, Development, ...)
+  |- intf             # Server Interfaces (Apache, CGI, ...)
+  |- services         # Web services
+  |  |- soap
+  |  |- uddi
+  |  |- json
+  |  |- xmlrpc
+  |  `- wddx
+  |- impl             # Scriptlet implementations
+  `- model            # Revamped scriptlet API
+     |- view
+     |  `- xsl
+     |- routing
+     `- facade
+        |- dataset
+        `- remote
+</pre>
+
+Top-level package "web"
+~~~~~~~~~~~~~~~~~~~~~~~
+This package contains the fundamentals for the web APIs:
+* Request / Response interfaces
+* Filters
+* Dispatchers
+* Sessioning
+* The Scriptlet class
+
+Package "web.auth"
+~~~~~~~~~~~~~~~~~~
+Contains the authentication and authorization classes used for all web
+APIs.
+
+Package "web.env"
+~~~~~~~~~~~~~~~~~
+Encapsulates different environments:
+* Production
+* Development
+* Staging
+* ...
+
+The development environment will reveal complete stacktraces, for example,
+while the production environment will not show them to prevent information
+disclosure.
+
+Package "web.intf"
+~~~~~~~~~~~~~~~~~~
+Interfaces with the so-called PHP "SAPI"s:
+* PHP Apache Module
+* CGI
+* FastCGI
+* ...
+
+Package "web.services"
+~~~~~~~~~~~~~~~~~~~~~~
+Contains the classes supporting web services accessed via HTTP. Its subpackages
+implement the different payload serialization formats.
+
+Package "web.impl"
+~~~~~~~~~~~~~~~~~~
+Different scriptlet implementations:
+* Download
+* Export
+* ...
+
+Package "web.model"
+~~~~~~~~~~~~~~~~~~~
+The revamped "scriptlet API" (in quotation marks because scriptlets today 
+are usually referred to as that, meaning the "state / handler / wrapper" 
+engine implemented in scriptlet.xml.workflow).
+
+Overview:
+<summary>
+* The state / handler / wrapper part of the old API will stay.
+* The view engines will be exchangeable but will default to XSL
+* The URLs should be short and bookmarkable
+* The session should be transported by cookie if possible
+</summary>
+
+URL Conventions
+~~~~~~~~~~~~~~~
+As the entry point file should exist in xp-tools to avoid boilerplate
+code, we need /(.*) to map to it.
+
+Exceptions:
+<pre>
+  /static       : Files inside "document root", e.g. CSS, JavaScript, images
+  /favicon.ico  : Icon to be used inside browser's favorites menu / URL bar
+</pre>
+
+Sample apache configuration:
+<pre>
+  RewriteEngine on
+  RewriteRule !(static|xp-bin|favicon.ico) /xp-bin/index.php [PT,E=USE_XP:"/path/to/xp/:/path/to/extra/lib/"]
+
+  Alias /xp-bin /home/thekid/devel/xp/trunk/tools/web
+  Alias /static/common /var/www/htdocs
+  Alias /static /home/thekid/www/htdocs
+  DocumentRoot /home/thekid/www/htdocs/
+</pre>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+This RFC groups the following others:
+<summary>
+RFC #0061 - No access on raw server environment variables
+RFC #0078 - New scriptlet API
+RFC #0146 - Unicode
+RFC #0161 - Scriptlet authenticator
+RFC #0166 - XP runners
+</summary>
+
+
+Related documents
+-----------------
+None.
+
+
+Comments
+--------
+friebe, Wed Dec 10 10:03:36     2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Analogous to the peer.ftp.server package there will be a peer.http.server
+package containing a standalone server implementation, which is able to 
+serve scriptlets, services and static content.
+
+
+<EOF>
