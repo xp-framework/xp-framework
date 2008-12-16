@@ -12,12 +12,16 @@ Heads up!
 RFCs
 ~~~~
 - Implemented RFC #0176 - Scriptlet URL handler classes
-  (ohinckel)
+  (hinckel)
 
 Bugfixes
 ~~~~~~~~
 - Fix error in rdbms.sybase.SybaseDialect, the cast SQL function had flipped
   Arguments.
+  (wagner)
+- Set default encoding in JsonMessage to UTF-8 since JsonEncoder/JsonDecoder
+  always encodes stuff in UTF-8
+  (hinckel)
 
 Features
 ~~~~~~~~
