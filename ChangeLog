@@ -22,6 +22,9 @@ Bugfixes
 - Set default encoding in JsonMessage to UTF-8 since JsonEncoder/JsonDecoder
   always encodes stuff in UTF-8
   (hinckel)
+- Fix HttpConnection::put() method to always create a RequestData object
+  from argument and added HttpConnectionTest
+  (hinckel, kiesel)
 
 Features
 ~~~~~~~~

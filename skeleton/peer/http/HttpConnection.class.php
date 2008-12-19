@@ -4,7 +4,13 @@
  * $Id$
  */
 
-  uses('peer.http.HttpTransport', 'peer.http.HttpProxy', 'peer.http.HttpConstants', 'peer.URL');
+  uses(
+    'peer.URL',
+    'peer.http.HttpConstants',
+    'peer.http.HttpTransport',
+    'peer.http.HttpProxy',
+    'peer.http.RequestData'
+  );
   
   /**
    * HTTP connection
@@ -209,7 +215,7 @@
      * @return  peer.http.HttpResponse response object
      */
     public function put($arg= NULL, $headers= array()) {
-      return $this->request(HttpConstants::PUT, $arg, $headers);
+      return $this->request(HttpConstants::PUT, new RequestData($arg), $headers);
     }
 
     /**
