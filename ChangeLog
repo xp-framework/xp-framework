@@ -22,9 +22,9 @@ Bugfixes
 - Set default encoding in JsonMessage to UTF-8 since JsonEncoder/JsonDecoder
   always encodes stuff in UTF-8
   (hinckel)
-- Fix HttpConnection::put() method to always create a RequestData object
-  from argument and added HttpConnectionTest
-  (hinckel, kiesel)
+- Fix WebdavClient::put() method to explicitely pass a RequestData object
+  to HttpConnection's put() method
+  (hinckel)
 
 Features
 ~~~~~~~~
@@ -148,6 +148,10 @@ Heads up!
 - Completely refactored the peer.http API to be able to nicely 
   implement RFC #0162.
   (friebe)
+- HttpConnection::put() method explicitely required now a RequestData
+  object as argument to upload a file, instead of just passing the data
+  string
+  (hinckel)
 
 RFCs
 ~~~~

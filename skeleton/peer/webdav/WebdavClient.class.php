@@ -5,6 +5,7 @@
  */
   
   uses(
+    'peer.http.RequestData',
     'peer.webdav.WebdavConnection',
     'peer.Header',
     'util.MimeType'
@@ -69,8 +70,9 @@
      * @return  peer.webdav.WebdavConnection
      */
     public function getConnection($uri= NULL) {
-      $url= new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri));
-      return new WebdavConnection($url);
+      return new WebdavConnection(
+        new URL($this->url->getURL().$this->path.($uri === NULL ? '' : '/'.$uri))
+      );
     }
     
     /**
@@ -103,14 +105,12 @@
      * @see     rfc://2518
      */
     public function read($uri= NULL, $xml= NULL, $depth= '1') {     
-      $c= $this->getConnection($uri);
-      $response= $c->propfind(
+      return $this->getConnection($uri)->propfind(
         $xml,
         array(
           new Header('Depth', $depth)
         )
       );
-      return $response;
     }
     
     /**
@@ -129,14 +129,12 @@
       $uri= rawurlencode($uri);    
       
       if (!$file->isOpen()) $file->open(FILE_MODE_READ);
-      $c= $this->getConnection($uri);
-      $response= $c->put(
-        $file->read($file->size()),
+      return $this->getConnection($uri)->put(
+        new RequestData($file->read($file->size())),
         array(
           new Header('Content-Type', MimeType::getByFilename($uri))
         )
       );
-      return $response;
     }
     
     /**
@@ -184,8 +182,7 @@
      * @see     rfc://2518
      */
     public function copy($source, $destination, $overwrite= FALSE, $depth= 'Infinity') {        
-      $c= $this->getConnection($source);
-      return $c->copy(
+      return $this->getConnection($source)->copy(
         NULL,
         array(
           new Header('Overwrite', $overwrite ? 'T' : 'F'),
@@ -205,8 +202,7 @@
      * @see     rfc://2518
      */
     public function move($source, $destination, $overwrite= FALSE) {   
-      $c= $this->getConnection($source);
-      return $c->move(
+      return $this->getConnection($source)->move(
         NULL,
         array(
           new Header('Overwrite', $overwrite ? 'T' : 'F'),
@@ -224,8 +220,7 @@
      * @see     rfc://2518
      */
     public function lock($uri, $xml) {    
-      $c= $this->getConnection($uri);
-      return $c->lock(
+      return $this->getConnection($uri)->lock(
         $xml,
         array(
           new Header('Timeout', 'Infinity'),
@@ -244,8 +239,7 @@
      * @see     rfc://2518
      */
     public function unlock($uri, $locktoken) {    
-      $c= $this->getConnection($uri);
-      return $c->unlock(
+      return $this->getConnection($uri)->unlock(
         NULL,
         array(
           new Header('Lock-Token', $locktoken)
@@ -272,9 +266,7 @@
      * @see     rfc://2518
      */
     public function version($uri) {    
-      $c= $this->getConnection($uri);
-      $response= $c->version();
-      return $response;  
+      return $this->getConnection($uri)->version();
     }
     
     /**
@@ -285,10 +277,7 @@
      * @see     rfc://2518
      */
     public function report($uri) {    
-      $c= $this->getConnection($uri);
-      $response= $c->report();
-      return $response;  
+      return $this->getConnection($uri)->report();
     }
-    
   }
 ?>
