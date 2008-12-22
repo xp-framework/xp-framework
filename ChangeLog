@@ -8,6 +8,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated SOAP_ACTION_* global constants in 
+  webservices.soap.transport.SOAPHTTPTransport class in favor of
+  class constants in same class.
+  (kiesel)
 
 RFCs
 ~~~~
