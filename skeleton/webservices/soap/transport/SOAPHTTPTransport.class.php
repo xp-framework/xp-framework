@@ -24,6 +24,12 @@
    * @see       xp://webservices.soap.SOAPClient
    */
   class SOAPHTTPTransport extends SOAPTransport {
+    const
+      ACTION_COMUPUE    = 0x0001,
+      ACTION_HARDCODE   = 0x0002,
+      ACTION_EMPTY      = 0x0003,
+      ACTION_NULL       = 0x0004;
+
     public
       $_conn        = NULL,
       $_action      = '',
@@ -37,7 +43,7 @@
      * @param   array headers default array()
      * @param   int actiontype
      */  
-    public function __construct($url, $headers= array(), $actiontype= SOAP_ACTION_COMPUTE) {
+    public function __construct($url, $headers= array(), $actiontype= self::ACTION_COMPUTE) {
       $this->_conn= new HttpConnection($url);
       $this->_headers= array_merge(
         array('User-Agent' => 'XP-Framework SOAP Client (http://xp-framework.net)'),
@@ -113,19 +119,19 @@
       $this->action= $message->action;
 
       switch ($this->_actiontype) {
-        case SOAP_ACTION_COMPUTE:
+        case self::ACTION_COMPUTE:
           $headers['SOAPAction']= '"'.$message->action.'#'.$message->method.'"';
           break;
         
-        case SOAP_ACTION_HARDCODE:
+        case self::ACTION_HARDCODE:
           $headers['SOAPAction']= '"'.$message->action.'"';
           break;
         
-        case SOAP_ACTION_EMPTY:
+        case self::ACTION_EMPTY:
           $headers['SOAPAction']= '""';
           break;
         
-        case SOAP_ACTION_NULL:
+        case self::ACTION_NULL:
           $headers['SOAPAction']= '';
           break;
         
