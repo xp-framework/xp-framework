@@ -12,6 +12,7 @@
   );
   
   // Different modes for SOAP-Action announcement (you can use NULL to obey any SOAPAction header)
+  // Deprecated
   define('SOAP_ACTION_COMPUTE',       0x0001);
   define('SOAP_ACTION_HARDCODE',      0x0002);
   define('SOAP_ACTION_EMPTY',         0x0003);
@@ -20,7 +21,6 @@
   /**
    * HTTP transport. Also handles HTTPS.
    *
-   * @ext       openssl
    * @purpose   Transport SOAP messages
    * @see       xp://webservices.soap.SOAPClient
    */
