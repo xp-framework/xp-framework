@@ -19,10 +19,11 @@
      * Constructor
      *
      * @param   io.File file
+     * @throws  lang.IllegalArgumentException if the given file does not exist
      */
     public function __construct(File $file) {
       if (!$file->exists()) {
-        throw new IllegalArgumentException('File does not exist!');
+        throw new IllegalArgumentException('File "'.$file->getURI().'" does not exist!');
       }
       $this->file= $file;
     }
