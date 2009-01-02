@@ -133,9 +133,9 @@
       with ($redirect= $request->getURL()); {
     
         // Include session id in URL if available
-        if ($sessionId !== NULL) $this->url->setSessionId($sessionId);
+        if ($sessionId !== NULL) $redirect->setSessionId($sessionId);
 
-        $response->sendRedirect($this->url->getURL());
+        $response->sendRedirect($redirect->getURL());
       }
       
       return FALSE; // Indicate no further processing is to be done
