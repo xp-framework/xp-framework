@@ -16,6 +16,7 @@
     protected static
       $testClasses= array(
         'ClassOne', 'ClassTwo', 'RecursionOne', 'RecursionTwo',   // Filesystem
+        'StaticRecursionOne', 'StaticRecursionTwo',               // Filesystem
         'ClassThree', 'ClassFour',                                // XAR
       ),
       $testPackages= array(
