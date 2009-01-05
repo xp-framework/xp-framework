@@ -257,7 +257,7 @@
      * Returns an iterator for a select statement
      *
      * @param   rdbms.SQLExpression criteria or statement
-     * @return  util.XPIterator
+     * @return  rdbms.ResultIterator
      * @see     xp://lang.XPIterator
      */
     public function iteratorFor(SQLExpression $criteria) {

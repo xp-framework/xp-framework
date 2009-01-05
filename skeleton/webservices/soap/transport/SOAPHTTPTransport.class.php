@@ -26,7 +26,7 @@
    */
   class SOAPHTTPTransport extends SOAPTransport {
     const
-      ACTION_COMUPUE    = 0x0001,
+      ACTION_COMPUTE    = 0x0001,
       ACTION_HARDCODE   = 0x0002,
       ACTION_EMPTY      = 0x0003,
       ACTION_NULL       = 0x0004;
