@@ -8,7 +8,7 @@
    * Encapsulates the SystemException which contains an error-code
    * and the error message.
    *
-   * @see   xp://XPException
+   * @see   xp://lang.XPException
    */
   class SystemException extends XPException {
     public $code= 0;
@@ -20,8 +20,8 @@
      * @param   int code the error-code
      */
     public function __construct($message, $code) {
-      $this->code= $code;
       parent::__construct($message);
+      $this->code= $code;
     }
   }
 ?>
