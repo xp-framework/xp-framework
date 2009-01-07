@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('net.xp_framework.unittest.reflection.classes.StaticRecursionTwo');
+
   /**
    * Class that loads a class inside its static initializer
    *
@@ -11,10 +13,12 @@
    * @purpose  Fixture
    */
   class StaticRecursionOne extends Object {
+    public static $two= NULL;
+
     static function __static() {
     
       // Load a class here
-      XPClass::forName('net.xp_framework.unittest.reflection.classes.StaticRecursionTwo');
+      self::$two= XPClass::forName('net.xp_framework.unittest.reflection.classes.StaticRecursionTwo');
     }
   }
 ?>

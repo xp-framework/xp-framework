@@ -225,8 +225,11 @@
      */
     #[@test]
     public function loadClassFileWithRecusionInStaticBlock() {
-      XPClass::forName('net.xp_framework.unittest.reflection.classes.StaticRecursionTwo');
+      with ($p= Package::forName('net.xp_framework.unittest.reflection.classes')); {
+        $two= $p->loadClass('StaticRecursionTwo');
+        $one= $p->loadClass('StaticRecursionOne');
+        $this->assertEquals($two, $one->getField('two')->get(NULL));
+      }
     }
-    
   }
 ?>
