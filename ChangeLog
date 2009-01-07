@@ -29,6 +29,9 @@ Bugfixes
 - Fix WebdavClient::put() method to explicitely pass a RequestData object
   to HttpConnection's put() method
   (hinckel)
+- Fix year calculation in DefaultFtpListParser by using DateUtil instead of
+  directly accessing (obsolete) private member fields of date objects
+  (hinckel)
 
 Features
 ~~~~~~~~

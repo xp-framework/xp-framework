@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.ftp.FtpListParser');
+  uses('util.DateUtil', 'peer.ftp.FtpListParser');
 
   /**
    * Parses output from a FTP LIST command from Un*x FTP daemons.
@@ -56,7 +56,7 @@
       // of year for the last 6 month (as specified in coreutils/src/ls.c)
       if (strstr($date, ':')) {
         $now= Date::now();
-        if ($d->getMonth() > $now->getMonth()) $d->year--;
+        if ($d->getMonth() > $now->getMonth()) $d= DateUtil::addMonths($d, -12);
       }
         
       try {
