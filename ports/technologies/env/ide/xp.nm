@@ -103,6 +103,12 @@ define create_xp_testcase {
   goto_line_number(17)
 }
 
+define create_xslfile {
+  import_xp_template("xsltemplate")
+  set_language_mode("XML")
+  goto_line_number(17)
+}
+
 define add_xp_methoddoc {
   insert_string(read_file(getenv("HOME") "/.nedit/templates/xpmethoddoc.tmpl"))
 }
