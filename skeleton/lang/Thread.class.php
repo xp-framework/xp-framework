@@ -148,13 +148,13 @@
      */
     public function start() {
       if ($this->isRunning()) {
-        throw(new IllegalThreadStateException('Already running'));
+        throw new IllegalThreadStateException('Already running');
       }
 
       $parent= getmypid();
       $pid= pcntl_fork();
       if (-1 == $pid) {     // Cannot fork
-        throw(new SystemException('Cannot fork'));
+        throw new SystemException('Cannot fork');
       } else if ($pid) {     // Parent
         $this->running= TRUE;
         $this->_id= $pid;
@@ -177,9 +177,12 @@
      * @see     php://pcntl_waitpid
      */
     public function join($wait= TRUE) {
+      if (!$this->isRunning()) {
+        throw new IllegalThreadStateException('Cannot join no longer running thread.');
+      }
+
       if (0 == pcntl_waitpid($this->_id, $status, $wait ? WUNTRACED : WNOHANG)) return -1;
       $this->running= FALSE;
-      $this->_id= $this->_pid= -1;
       return $status;
     }
     
@@ -190,16 +193,15 @@
      * @throws  lang.IllegalThreadStateException
      */
     public function stop($signal= SIGINT) {
-      if ($this->_id <= 0) {
-        throw(new IllegalThreadStateException('Illegal thread id '.$this->_id));
+      if (!$this->isRunning()) {
+        throw new IllegalThreadStateException('Cannot stop no longer running thread.');
       }
       posix_kill($this->_id, $signal);
       $this->running= FALSE;
-      $this->_id= $this->_pid= -1;
     }
     
     /**
-     * Returns thread id or -1 if this thread is not running
+     * Returns thread id of running or already stopped thread
      *
      * @return  int
      */
@@ -222,7 +224,7 @@
      * @return  string
      */
     public function toString() {
-      return sprintf('%s[%d]@%s', $this->getClassName(), $this->_id, var_export($this, 1));
+      return sprintf('%s[%s%d]@%s', $this->getClassName(), $this->running() ? 'R' : 'S', $this->_id, xp::stringOf($this));
     }
     
     /**

@@ -35,6 +35,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed lang.Thread to not forget process id of forked children after
+  it has been stopped or exited
+  (kiesel, friebe)
 
 
 Version 5.7.0, released 2008-11-24
