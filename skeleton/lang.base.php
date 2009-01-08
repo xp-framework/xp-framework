@@ -19,7 +19,7 @@
     //     Loads a class by its fully qualified name
     function loadClass0($class) {
       if (isset(xp::$registry['classloader.'.$class])) {
-        return substr(array_search($class, xp::$registry), 6);
+        return substr(array_search($class, xp::$registry, TRUE), 6);
       }
 
       $package= NULL;
@@ -187,7 +187,7 @@
     // {{{ internal string reflect(string str)
     //     Retrieve PHP conformant name for fqcn
     static function reflect($str) {
-      $l= array_search($str, xp::$registry);
+      $l= array_search($str, xp::$registry, TRUE);
       return $l ? substr($l, 6) : substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1);
     }
     // }}}
