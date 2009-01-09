@@ -21,14 +21,27 @@ Rationale
 
 Functionality
 -------------
-<summary>
 The XP runners are version-unspecific and can run XP5 upwards. Thus these
 programs don't need to be versioned and can always reside in the same 
 directory. The configuration file <tt>xp.ini</tt> points the runners to
 the directory the XP framework resides in (e.g. the SVN checkout or more
 commonly, the released versions). Users may be happy with this but may 
 choose to override this and use a different version instead.
+
+The XP runners compile the <tt>include_path</tt> setting passed to PHP
+by looking at every element in the <tt>use_xp</tt> setting (can be
+determined by either <tt>USE_XP</tt> environment variable or the key
+<tt>use=</tt> configuration key), searching for <tt>*.pth</tt> files in
+these directories and concatenating the paths found inside.
+
+When one of the XP runners start up, the following sources are examined
+in the order listed:
+<summary>
+* Examine the environment variable (E)
+* Look at the user installation (U)
+* Look at the system installation (S)
 </summary>
+The first source to supply a <tt>use_xp</tt> setting prevails.
 
 Windows
 ~~~~~~~
@@ -52,6 +65,12 @@ U) User installation
   ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\
 </pre>
 
+E) Environment
+<pre>
+  # Environment variable
+  USE_XP=...
+</pre>
+
 
 Un*x
 ~~~~
@@ -73,6 +92,12 @@ U) User installation
 <pre>
   # User config { xp.ini }
   ~/.xp/
+</pre>
+
+E) Environment
+<pre>
+  # Environment variable
+  USE_XP=...
 </pre>
 
 
