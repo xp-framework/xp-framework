@@ -1,0 +1,57 @@
+RFC 0178: System-wide XP installations
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Fri Jan  9 11:56:30     2009
+@status: draft
+@category: <infrastructure>
+
+Scope of Change
+---------------
+The XP runner infrastructure created in RFC #0166 will be extended to be
+able to be installed system-wide and have user-specific overrides.
+
+
+Rationale
+---------
+TODO
+
+
+Functionality
+-------------
+
+Windows
+~~~~~~~
+TODO
+
+Un*x
+~~~~
+TODO
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+- RFC #0166 - XP Runners
+
+
+Comments
+--------
+None.
+
+
+<EOF>
