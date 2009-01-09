@@ -84,8 +84,8 @@ None.
 
 Related documents
 -----------------
-- RFC #0166 - XP Runners
-
+* RFC #0166 - XP Runners
+* http://news.xp-framework.net/article/285/2009/01/09/ - XP Runners installation
 
 Comments
 --------
