@@ -84,9 +84,9 @@ Index: skeleton/scriptlet/xml/XMLScriptlet.class.php
 +      with ($redirect= $request->getURL()); {
 +    
 +        // Include session id in URL if available
-+        if ($sessionId !== NULL) $this->url->setSessionId($sessionId);
++        if ($sessionId !== NULL) $redirect->setSessionId($sessionId);
 +
-+        $response->sendRedirect($this->url->getURL());
++        $response->sendRedirect($redirect->getURL());
        }
        
 -      if (!empty($sessionId)) $xsr[]= 'psessionid='.$sessionId;
