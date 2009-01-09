@@ -23,11 +23,49 @@ Functionality
 
 Windows
 ~~~~~~~
-TODO
+We suggest to follow the conventions as follows:
+
+S) System-wide installation
+<pre>
+  # Runners { xp xar xpcli unittest doclet cgen }
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\bin\
+  
+  # Config { xp.ini }
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\etc\
+  
+  # XARS { 5.7.0\xp-rt-5.7.0.xar }, Path { 5.7.0\boot.pth }
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\lib\
+</pre>
+
+U) User installation
+<pre>
+  # User config { xp.ini }
+  ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\
+</pre>
+
 
 Un*x
 ~~~~
-TODO
+We suggest to follow the conventions as follows:
+
+S) System-wide installation
+<pre>
+  # Runners { xp xar xpcli unittest doclet cgen }
+  /usr/local/bin/
+  
+  # Config { xp.ini }
+  /usr/local/etc/
+  
+  # XARS { 5.7.0/xp-rt-5.7.0.xar }, Path { 5.7.0/boot.pth }
+  /usr/local/lib/
+</pre>
+
+U) User installation
+<pre>
+  # User config { xp.ini }
+  ~/.xp/
+</pre>
+
 
 Security considerations
 -----------------------
