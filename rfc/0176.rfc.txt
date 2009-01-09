@@ -16,19 +16,20 @@ easy and flexible way.
 Rationale
 ---------
 To make it easy for the scriptlet engine to deal with scriptlet URLs without
-having some preg_match() magic on different places, a new scriptlet URL class
-will be created.
+having some <tt>preg_match()</tt> magic on different places, a new scriptlet
+URL class will be created.
 
-Since the scriptlet API contains a HttpScriptlet and a XMLScriptlet and both
-use a different URL format, we need to implement two different URL handler
-classes.
+Since the scriptlet API contains a <tt>HttpScriptlet</tt> and a <tt>XMLScriptlet</tt>
+and both use a different URL format, we need to implement two different URL
+handler classes.
 
 The following classes will be added:
-* scriptlet.HttpScriptletURL - the class reflecting scriptlet URLs for the
-  simple HttpScriptlet engine (it's the base class for scriptlet URL classes)
-* scriptlet.xml.XMLScriptletURL - the class reflecting XML scriptlet URLs
-  used by the XMLScriptlet engine (derived from the HttpScriptletURL base
-  class)
+* <tt>scriptlet.HttpScriptletURL</tt> - the class reflecting scriptlet URLs
+  for the simple HttpScriptlet engine (it's the base class for scriptlet URL
+  classes)
+* <tt>scriptlet.xml.XMLScriptletURL</tt> - the class reflecting XML scriptlet
+  URLs used by the XML scriptlet engine (derived from the <tt>HttpScriptletURL</tt>
+  base class)
 
 
 Functionality
@@ -38,13 +39,13 @@ all the comfort of an URL object. Further it will be extended with some
 functionality to make custom URL parameters easily accessible with getters and
 setters.
 
-The scriptlet class will get a new function _url() which returns the URL
-handler class to use for the current scriptlet and request.
+The scriptlet class will get a new function <tt>_url()</tt> which returns the
+URL handler class to use for the current scriptlet and request.
 
 The HttpScriptletURL class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-The HttpScriptletURL class, which is the base URL handler class for the
-scriptlet API, looks like this:
+The <tt>HttpScriptletURL</tt> class, which is the base URL handler class for
+the scriptlet API, looks like this:
 <code>
   uses('util.Hashmap', 'peer.URL');
   
@@ -91,9 +92,10 @@ scriptlet API, looks like this:
   }
 </code>
 
-The extract() function is invoked in the constructor and extracts additional
-information for the given URL. The getURL() function is overloaded to generate
-an appropriate URL for the current handler; e.g. including the session id.
+The <tt>extract()</tt> function is invoked in the constructor and extracts
+additional information for the given URL. The <tt>getURL()</tt> function is
+overloaded to generate an appropriate URL for the current handler; e.g.
+including the session id.
 
 For each parameter a getter and setter function should be implemented. To make
 it easy to access them.
@@ -198,13 +200,36 @@ The (abbreviated) code looks like this:
 </code>
 
 This code implements additional features like fallback to a default product
-or language in case no product or language was specified.
+or language in case no product or language was specified. And it also omits
+the product and language in case they are the default product and default
+language.
+
+<summary>
+The scriptlet rewrite rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+RFC 157 made product and language an optional part in scriptlet URLs. This
+logic was moved into the <tt>XMLScriptletURL::getURL()</tt> function. Which
+means everywhere this function is used it may happen, that the product and
+language parts are omitted in the resulting URL when they match the default
+values.
+
+Since this function is also used the get the target URL when the scriptlet
+enging is doing a redirect, you may be redirected to an URL without product
+and language. So make sure you updated the RewriteRule in your Apache
+configuration accordingly to make these URL work.
+
+Rewrite rule to use:
+~~~~~~~~~~~~~~~~~~~~
+<code>
+RewriteRule ^/xml /index.php [PT]
+</code>
+</summary>
 
 The scriptlet
 ~~~~~~~~~~~~~
 Which URL handler class should be used for the current scriptlet application
-can be defined by implementing the function _url() of the scriptlet class.
-This function simply returns an extended URL object.
+can be defined by implementing the function <tt>_url()</tt> of the scriptlet
+class. This function simply returns an extended URL object.
 
 The HttpScriptlet's and the XMLScriptlet's _url() function looks like this:
 <code>
@@ -236,21 +261,22 @@ To make use of the new URL objects, we need to make it available for the
 scriptlets request and response.
 
 While the scriptlet is processed and the request object is created, the
-_url() function will be invoked to get the current URL object. After the URL
-object is instantiated it will be passed to the request's setURI() function
-to make it available for the request.
+<tt>_url()</tt> function will be invoked to get the current URL object. After
+the URL object is instantiated it will be passed to the request's <tt>setURI()</tt>
+function to make it available for the request.
 
 To make it also available to the response object, the URL will be passed to
-the response's setURI() function after the response object was created.
+the response's <tt>setURI()</tt> function after the response object was
+created.
 
 Both, the request and response, have already a url member field which contains
-an URL object set via setURI() and retrieved via getURL(). In this
-implementation we simply use this member field to store the new overloaded URL
-handler class in it. Since this classes derive the common URL class, everything
-should be compatible with it.
+an URL object set via <tt>setURI()</tt> and retrieved via <tt>getURL()</tt>.
+In this implementation we simply use this member field to store the new
+overloaded URL handler class in it. Since this classes derive the common URL
+class, everything should be compatible with it.
 
-The abbreviated version of the HttpScriptlet class implementing the new
-feature:
+The abbreviated version of the <tt>HttpScriptlet</tt> class implementing the
+new feature:
 <code>
   class HttpScriptlet extends Object {
     [...]
@@ -282,9 +308,9 @@ feature:
   }
 </code>
 
-The XMLScriptlet class needs only to implement the _url() function and return
-the appropiate URL handler class, XMLScriptletURL (see above), to make it work
-with the XML scriptlet URL format.
+The <tt>XMLScriptlet</tt> class needs only to implement the <tt>_url()</tt>
+function and return the appropiate URL handler class, <tt>XMLScriptletURL</tt>
+(see above), to make it work with the XML scriptlet URL format.
 
 
 Security considerations
