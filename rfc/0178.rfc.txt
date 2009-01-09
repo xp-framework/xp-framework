@@ -62,7 +62,7 @@ be used.
   ------ -------------------------------------------------------------
   S      /usr/local/lib/xp/5.7.0/
   U      ~/devel/xp.public/trunk
-  E      (empty)
+  E      (empty / not set)
 </pre>
 </summary>
 
@@ -72,8 +72,8 @@ Example #3: Here, the system XP, a 5.7.0-RELEASE, is used:
   Source Value
   ------ -------------------------------------------------------------
   S      /usr/local/lib/xp/5.7.0/
-  U      (no config file in ~/xp)
-  E      (empty)
+  U      (no config file in user installation)
+  E      (empty / not set)
 </pre>
 </summary>
 
