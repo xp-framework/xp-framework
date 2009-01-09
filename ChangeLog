@@ -20,17 +20,20 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Fix error in rdbms.sybase.SybaseDialect, the cast SQL function had flipped
-  Arguments.
+- Fixed bug #30 - recursive class loading in static initializer 
+  (friebe)
+- Fixed error in rdbms.sybase.SybaseDialect, the cast SQL function had 
+  flipped arguments.
   (wagner)
-- Set default encoding in JsonMessage to UTF-8 since JsonEncoder/JsonDecoder
-  always encodes stuff in UTF-8
+- Set default encoding in JsonMessage to UTF-8 since JsonEncoder/
+  JsonDecoder always encodes stuff in UTF-8
   (hinckel)
-- Fix WebdavClient::put() method to explicitely pass a RequestData object
-  to HttpConnection's put() method
+- Fixed WebdavClient::put() method to explicitely pass a RequestData 
+  object to HttpConnection's put() method
   (hinckel)
-- Fix year calculation in DefaultFtpListParser by using DateUtil instead of
-  directly accessing (obsolete) private member fields of date objects
+- Fixed year calculation in DefaultFtpListParser by using DateUtil 
+  instead of directly accessing (obsolete) private member fields of 
+  date objects
   (hinckel)
 
 Features
