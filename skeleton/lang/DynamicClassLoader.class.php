@@ -97,21 +97,34 @@
     public function loadClass0($class) {
       if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
 
-      xp::$registry['classloader.'.$class]= 'lang.DynamicClassLoader://'.$this->context;
       if (!isset(self::$bytes[$class])) {
-        unset(xp::$registry['classloader.'.$class]);
         throw new ClassNotFoundException('Unknown class "'.$class.'"');
       }
+      
+      // Load class
       $package= NULL;
-      if (FALSE === include('dyn://'.$class)) {
+      xp::$registry['classloader.'.$class]= 'lang.DynamicClassLoader://'.$this->context;
+      xp::$registry['cl.level']++;
+      $r= include('dyn://'.$class);
+      xp::$registry['cl.level']--;
+      if (FALSE === $r) {
+        unset(xp::$registry['classloader.'.$class]);
         throw new FormatException('Cannot define class "'.$class.'"');
       }
-      $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
+
+      // Register it
+      $name= ($package ? strtr($package, '.', '·').'·' : '').substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
+        unset(xp::$registry['classloader.'.$class]);
         raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
       }
       xp::$registry['class.'.$name]= $class;
-      method_exists($name, '__static') && call_user_func(array($name, '__static'));
+      method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
+      if (0 == xp::$registry['cl.level']) {
+        $invocations= xp::$registry['cl.inv'];
+        xp::$registry['cl.inv']= array();
+        foreach ($invocations as $inv) call_user_func($inv);
+      }
       return $name;
     }
     

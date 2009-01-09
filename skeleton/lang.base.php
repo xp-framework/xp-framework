@@ -13,8 +13,10 @@
       'sapi'       => array(),
       'class.xp'   => '<xp>',
       'class.null' => '<null>',
+      'cl.level'   => 0,
+      'cl.inv'     => array()
     );
-
+    
     // {{{ public string loadClass0(string name)
     //     Loads a class by its fully qualified name
     function loadClass0($class) {
@@ -22,41 +24,42 @@
         return substr(array_search($class, xp::$registry, TRUE), 6);
       }
 
-      $package= NULL;
       foreach (xp::$registry['classpath'] as $path) {
 
         // If path is a directory and the included file exists, load it
         if (is_dir($path) && file_exists($f= $path.DIRECTORY_SEPARATOR.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT)) {
-          if (FALSE === ($r= include($f))) {
-            xp::error('Cannot bootstrap class '.$class.' (from file "'.$f.'")');
-          }
-          
-          xp::$registry['classloader.'.$class]= 'FileSystemClassLoader://'.$path;
-          break;
+          $cl= 'FileSystemClassLoader';
         } else if (is_file($path) && file_exists($f= 'xar://'.$path.'?'.strtr($class, '.', '/').xp::CLASS_FILE_EXT)) {
-
-          // To to load via bootstrap class loader, if the file cannot provide the class-to-load
-          // skip to the next include_path part
-          if (FALSE === ($r= include($f))) {
-            continue;
-          }
-
-          xp::$registry['classloader.'.$class]= 'ArchiveClassLoader://'.$path;
-          break;
+          $cl= 'ArchiveClassLoader';
+        } else {
+          continue;
         }
-      }
-      
-      // Verify the requested class could be loaded
-      if (!isset(xp::$registry['classloader.'.$class])) {
-        xp::error('Cannot bootstrap class '.$class.' (include_path= '.get_include_path().')');
-      }
 
-      // Register class name and call static initializer if available
-      $name= ($package ? strtr($package, '.', '·').'·' : '').xp::reflect($class);
-      xp::$registry['class.'.$name]= $class;
-      method_exists($name, '__static') && call_user_func(array($name, '__static'));
+        // Load class        
+        $package= NULL;
+        xp::$registry['classloader.'.$class]= $cl.'://'.$path;
+        xp::$registry['cl.level']++;
+        $r= include($f);
+        xp::$registry['cl.level']--;
+        if (FALSE === $r) {
+          unset(xp::$registry['classloader.'.$class]);
+          continue;
+        }
+
+        // Register class name and call static initializer if available
+        $name= ($package ? strtr($package, '.', '·').'·' : '').substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+        xp::$registry['class.'.$name]= $class;
+        method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
+        if (0 == xp::$registry['cl.level']) {
+          $invocations= xp::$registry['cl.inv'];
+          xp::$registry['cl.inv']= array();
+          foreach ($invocations as $inv) call_user_func($inv);
+        }
+
+        return $name;
+      }
       
-      return $name;
+      xp::error('Cannot bootstrap class '.$class.' (include_path= '.get_include_path().')');
     }
     // }}}
 
