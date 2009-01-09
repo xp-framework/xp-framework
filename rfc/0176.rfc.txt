@@ -332,6 +332,7 @@ Related documents
 -----------------
 - http://xp-framework.net/rfc/contrib/rfc0176.diff
   Implementing patch
+
 - RFC #0157: Make product, language and session optional URL parts
 
 
