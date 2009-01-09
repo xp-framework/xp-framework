@@ -207,7 +207,7 @@ language.
 <summary>
 The scriptlet rewrite rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-RFC 157 made product and language an optional part in scriptlet URLs. This
+RFC #0157 made product and language an optional part in scriptlet URLs. This
 logic was moved into the <tt>XMLScriptletURL::getURL()</tt> function. Which
 means everywhere this function is used it may happen, that the product and
 language parts are omitted in the resulting URL when they match the default
@@ -330,8 +330,9 @@ None.
 
 Related documents
 -----------------
-Implementing patch
-http://xp-framework.net/rfc/contrib/rfc0176.diff
+- http://xp-framework.net/rfc/contrib/rfc0176.diff
+  Implementing patch
+- RFC #0157: Make product, language and session optional URL parts
 
 
 Comments
