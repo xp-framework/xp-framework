@@ -48,7 +48,7 @@ Un*x
 ~~~~
 We suggest to follow the conventions as follows:
 
-S) System-wide installation (PREFIX=/usr/local or /opt for example):
+S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for example):
 <pre>
   # Runners { xp xar xpcli unittest doclet cgen }
   ${PREFIX}/bin/
