@@ -15,11 +15,20 @@ able to be installed system-wide and have user-specific overrides.
 
 Rationale
 ---------
-TODO
+* Always have XP runners available on a system.
+* Allow for user-specific overrides, though!
 
 
 Functionality
 -------------
+<summary>
+The XP runners are version-unspecific and can run XP5 upwards. Thus these
+programs don't need to be versioned and can always reside in the same 
+directory. The configuration file <tt>xp.ini</tt> points the runners to
+the directory the XP framework resides in (e.g. the SVN checkout or more
+commonly, the released versions). Users may be happy with this but may 
+choose to override this and use a different version instead.
+</summary>
 
 Windows
 ~~~~~~~
