@@ -36,7 +36,7 @@ these directories and concatenating the paths found inside.
 When one of the XP runners start up, the following sources are examined
 in the order listed:
 * Examine the environment variable (E)
-* Look at the user installation (U)
+* Look at the user configuration (U)
 * Look at the system installation (S)
 The first source to supply a <tt>use_xp</tt> setting prevails.
 
@@ -72,7 +72,7 @@ Example #3: Here, the system XP, a 5.7.0-RELEASE, is used:
   Source Value
   ------ -------------------------------------------------------------
   S      /usr/local/lib/xp/5.7.0/
-  U      (no config file in user installation)
+  U      (no config file in user configuration)
   E      (empty / not set)
 </pre>
 </summary>
@@ -93,7 +93,7 @@ S) System-wide installation
   ${System.Environment.SpecialFolder.ProgramFiles}\Xp\lib\
 </pre>
 
-U) User installation
+U) user configuration
 <pre>
   # User config { xp.ini }
   ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\
@@ -104,6 +104,11 @@ E) Environment
   # Environment variable
   USE_XP=...
 </pre>
+
+Cygwin
+~~~~~~
+Differing from the Windows defaults, the user configuration will also
+searched for in <tt>~/.xp</tt>.
 
 Un*x
 ~~~~
@@ -121,7 +126,7 @@ S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for exa
   ${PREFIX}/lib/xp/
 </pre>
 
-U) User installation
+U) user configuration
 <pre>
   # User config { xp.ini }
   ~/.xp/
