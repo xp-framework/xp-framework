@@ -33,6 +33,25 @@ needs to be flexible enough to detect omitted values.
 Apache setup will be simpler as the required rewrite rule is
 much simpler.
 
+<summary>
+The new RewriteRule
+~~~~~~~~~~~~~~~~~~~
+Since the product and language parts of the URL are optional now, you
+need to update the scriptlet RewriteRule accordingly.
+
+Old rewrite rule:
+~~~~~~~~~~~~~~~~~
+<code>
+RewriteRule ^/xml/(([a-zA-Z]+)[.:;]([a-zA-Z_]+)([.:;]psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$ /index.php [E=PRODUCT:$2,E=LANGUAGE:$3,E=SESS:$5,E=STATE:$6,PT]
+</code>
+
+New rewrite rule:
+~~~~~~~~~~~~~~~~~
+<code>
+RewriteRule ^/xml /index.php [PT]
+</code>
+</summary>
+
 Security considerations
 -----------------------
 n/a
