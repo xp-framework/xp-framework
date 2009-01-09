@@ -18,7 +18,6 @@ Rationale
 * Always have XP runners available on a system.
 * Allow for user-specific overrides, though!
 
-
 Functionality
 -------------
 The XP runners are version-unspecific and can run XP5 upwards. Thus these
@@ -36,12 +35,47 @@ these directories and concatenating the paths found inside.
 
 When one of the XP runners start up, the following sources are examined
 in the order listed:
-<summary>
 * Examine the environment variable (E)
 * Look at the user installation (U)
 * Look at the system installation (S)
-</summary>
 The first source to supply a <tt>use_xp</tt> setting prevails.
+
+Examples
+~~~~~~~~
+<summary>
+Example #1: Given these settings, use_xp would be set to the value from 
+the environment.
+<pre>
+  Source Value
+  ------ -------------------------------------------------------------
+  S      /usr/local/lib/xp/5.7.0/
+  U      ~/devel/xp.public/trunk
+  E      ~/devel/xp.forge/trunk/experiments/arena/namespaces/six
+</pre>
+</summary>
+
+<summary>
+Example #2: In this case, the SVN checkout in the ~/devel directory would 
+be used.
+<pre>
+  Source Value
+  ------ -------------------------------------------------------------
+  S      /usr/local/lib/xp/5.7.0/
+  U      ~/devel/xp.public/trunk
+  E      (empty)
+</pre>
+</summary>
+
+<summary>
+Example #3: Here, the system XP, a 5.7.0-RELEASE, is used:
+<pre>
+  Source Value
+  ------ -------------------------------------------------------------
+  S      /usr/local/lib/xp/5.7.0/
+  U      (no config file in ~/xp)
+  E      (empty)
+</pre>
+</summary>
 
 Windows
 ~~~~~~~
@@ -71,7 +105,6 @@ E) Environment
   USE_XP=...
 </pre>
 
-
 Un*x
 ~~~~
 We suggest to follow the conventions as follows:
@@ -85,7 +118,7 @@ S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for exa
   ${PREFIX}/etc/
   
   # XARS { 5.7.0/xp-rt-5.7.0.xar }, Path { 5.7.0/boot.pth }
-  ${PREFIX}/lib/
+  ${PREFIX}/lib/xp/
 </pre>
 
 U) User installation
