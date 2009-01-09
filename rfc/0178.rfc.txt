@@ -48,16 +48,16 @@ Un*x
 ~~~~
 We suggest to follow the conventions as follows:
 
-S) System-wide installation
+S) System-wide installation (PREFIX=/usr/local or /opt for example):
 <pre>
   # Runners { xp xar xpcli unittest doclet cgen }
-  /usr/local/bin/
+  ${PREFIX}/bin/
   
   # Config { xp.ini }
-  /usr/local/etc/
+  ${PREFIX}/etc/
   
   # XARS { 5.7.0/xp-rt-5.7.0.xar }, Path { 5.7.0/boot.pth }
-  /usr/local/lib/
+  ${PREFIX}/lib/
 </pre>
 
 U) User installation
