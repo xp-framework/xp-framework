@@ -41,15 +41,19 @@ need to update the scriptlet RewriteRule accordingly.
 
 Old rewrite rule:
 ~~~~~~~~~~~~~~~~~
-<code>
-RewriteRule ^/xml/(([a-zA-Z]+)[.:;]([a-zA-Z_]+)([.:;]psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$ /index.php [E=PRODUCT:$2,E=LANGUAGE:$3,E=SESS:$5,E=STATE:$6,PT]
-</code>
+<pre>
+  # Complicated regex inside apache config
+  RewriteRule ^/xml/(([a-zA-Z]+)[.:;]([a-zA-Z_]+)([.:;]psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$ /index.php [E=PRODUCT:$2,E=LANGUAGE:$3,E=SESS:$5,E=STATE:$6,PT]
+  .
+</pre>
 
 New rewrite rule:
 ~~~~~~~~~~~~~~~~~
-<code>
-RewriteRule ^/xml /index.php [PT]
-</code>
+<pre>
+  # {{{ Parsing handled by scriptlet API
+  RewriteRule ^/xml /index.php [PT]
+  .
+</pre>
 </summary>
 
 Security considerations
