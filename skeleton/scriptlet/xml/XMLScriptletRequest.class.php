@@ -52,6 +52,9 @@
           : $this->uri->getSessionId()
         );
         
+        // Overwrite page with __page parameter if given
+        if (isset($_REQUEST['__page'])) $this->uri->setPage($_REQUEST['__page']);
+        
         $this->setProduct($this->uri->getProduct());
         $this->setLanguage($this->uri->getLanguage());
         $this->setStateName($this->uri->getStateName());

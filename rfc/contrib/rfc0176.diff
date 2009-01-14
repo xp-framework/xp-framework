@@ -347,7 +347,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
 ===================================================================
 --- skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(revision 12662)
 +++ skeleton/scriptlet/xml/XMLScriptletRequest.class.php	(working copy)
-@@ -35,37 +35,28 @@
+@@ -35,37 +35,31 @@
        $sessionId    = '';
  
      /**
@@ -381,6 +381,9 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
 +          : $this->uri->getSessionId()
 +        );
 +        
++        // Overwrite page with __page parameter if given
++        if (isset($_REQUEST['__page'])) $this->uri->setPage($_REQUEST['__page']);
++        
 +        $this->setProduct($this->uri->getProduct());
 +        $this->setLanguage($this->uri->getLanguage());
 +        $this->setStateName($this->uri->getStateName());
@@ -404,7 +407,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
      }
      
      /**
-@@ -87,6 +78,16 @@
+@@ -87,6 +81,16 @@
      }
  
      /**
@@ -421,7 +424,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
       * Gets state
       *
       * @return  string stateName
-@@ -96,12 +97,13 @@
+@@ -96,12 +100,13 @@
      }
  
      /**
@@ -437,7 +440,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
      }
  
      /**
-@@ -150,12 +152,13 @@
+@@ -150,12 +155,13 @@
      }
  
      /**
@@ -453,7 +456,7 @@ Index: skeleton/scriptlet/xml/XMLScriptletRequest.class.php
      }
  
      /**
-@@ -166,6 +169,15 @@
+@@ -166,6 +172,15 @@
      public function setLanguage($language) {
        $this->language= $language;
      }
