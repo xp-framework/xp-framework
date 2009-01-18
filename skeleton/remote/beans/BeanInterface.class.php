@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  define('STATELESS', 1);
+
   /**
    * Bean Interface
    *
