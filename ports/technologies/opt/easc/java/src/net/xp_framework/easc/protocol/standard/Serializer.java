@@ -25,6 +25,8 @@ import net.xp_framework.easc.protocol.standard.Invokeable;
 import net.xp_framework.easc.protocol.standard.SerializationException;
 import net.xp_framework.easc.protocol.standard.MethodTarget;
 import net.xp_framework.easc.protocol.standard.SerializerContext;
+import net.xp_framework.easc.protocol.standard.TokenHandler;
+import net.xp_framework.easc.util.UnknownRemoteObject;
 
 /**
  * Serializer / unserializer for PHP serialized data
@@ -45,18 +47,7 @@ import net.xp_framework.easc.protocol.standard.SerializerContext;
  * @see   http://php.net/serialize
  */
 public class Serializer {
-    
-    private static class Length {
-        public int value = 0;
-
-        public Length(int initial) {
-            this.value = initial;
-        }
-        
-        @Override public String toString() {
-            return "Length(" + this.value + ")";
-        }
-    }
+    public static HashMap<Character, TokenHandler> tokenMap= new HashMap<Character, TokenHandler>();
     
     private static String getPackageName(Class cl) {
         String s = cl.getName();
@@ -128,7 +119,7 @@ public class Serializer {
         return null;
     }
     
-    private static enum Token {
+    private static enum Token implements TokenHandler {
         T_NULL {
             public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 length.value= 2;
@@ -246,18 +237,27 @@ public class Serializer {
                 String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
                 int offset= classnamelength.length() + 2 + 2;
                 int parsed= Integer.parseInt(classnamelength);
+                String classname= serialized.substring(offset, parsed+ offset);
+                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
                 Class c= null;
                 Object instance= null;
+                offset+= parsed+ 2 + objectlength.length() + 2;
 
                 // Load class
                 try {
-                    c= context.classLoader.loadClass(serialized.substring(offset, parsed+ offset)); 
+                    c = context.classLoader.loadClass(classname); 
                 } catch (ClassNotFoundException e) {
-                    throw new SerializationException(context.classLoader + ": " + e.getMessage());
+                    UnknownRemoteObject u = new UnknownRemoteObject(classname);
+                    for (int i= 0; i < Integer.parseInt(objectlength); i++) {
+                        String name= (String)Serializer.valueOf(serialized.substring(offset), length, context, null);
+                        offset+= length.value;
+                        Object value= Serializer.valueOf(serialized.substring(offset), length, context, null);
+                        offset+= length.value;
+                        u.members.put(name, value);
+                    }
+                    length.value= offset + 1;
+                    return u;
                 }
-
-                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
-                offset+= parsed+ 2 + objectlength.length() + 2;
                 
                 // Check to see if it is an enum and use Enum.valueOf() to instantiate
                 if (c.isEnum()) {
@@ -390,30 +390,28 @@ public class Serializer {
             }
         };
       
-        private static HashMap<Character, Token> map= new HashMap<Character, Token>();
-      
         static {
-            map.put('N', T_NULL);
-            map.put('b', T_BOOLEAN);
-            map.put('i', T_INTEGER);
-            map.put('l', T_LONG);
-            map.put('f', T_FLOAT);
-            map.put('d', T_DOUBLE);
-            map.put('s', T_STRING);
-            map.put('a', T_HASH);
-            map.put('A', T_ARRAY);
-            map.put('O', T_OBJECT);
-            map.put('T', T_DATE);
-            map.put('B', T_BYTE);
-            map.put('Y', T_BYTES);
-            map.put('S', T_SHORT);
+            tokenMap.put('N', T_NULL);
+            tokenMap.put('b', T_BOOLEAN);
+            tokenMap.put('i', T_INTEGER);
+            tokenMap.put('l', T_LONG);
+            tokenMap.put('f', T_FLOAT);
+            tokenMap.put('d', T_DOUBLE);
+            tokenMap.put('s', T_STRING);
+            tokenMap.put('a', T_HASH);
+            tokenMap.put('A', T_ARRAY);
+            tokenMap.put('O', T_OBJECT);
+            tokenMap.put('T', T_DATE);
+            tokenMap.put('B', T_BYTE);
+            tokenMap.put('Y', T_BYTES);
+            tokenMap.put('S', T_SHORT);
         }
       
-        public static Token valueOf(char c) throws Exception {
-            if (!map.containsKey(c)) {
+        public static TokenHandler valueOf(char c) throws Exception {
+            if (!tokenMap.containsKey(c)) {
                 throw new SerializationException("Unknown type '" + c + "'");
             }
-            return map.get(c);
+            return tokenMap.get(c);
         }
       
         abstract public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception;
@@ -852,7 +850,7 @@ public class Serializer {
     }
     
     /**
-     * Private helper method for public valueOf()
+     * Helper method for public valueOf()
      *
      * @static
      * @access  private
@@ -862,7 +860,7 @@ public class Serializer {
      * @param   java.lang.Class clazz
      * @return  java.lang.Object
      */
-    private static Object valueOf(String serialized, Length length, SerializerContext context, Class clazz) throws Exception {
+    public static Object valueOf(String serialized, Length length, SerializerContext context, Class clazz) throws Exception {
         return Token.valueOf(serialized.charAt(0)).handle(serialized, length, context, clazz);
     }
 
