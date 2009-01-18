@@ -188,7 +188,7 @@ public class XpProtocolHandler implements ProtocolHandler {
                 
                 case Exception: {
                     String serialized = ByteCountedString.readFrom(this.in);
-                    return Serializer.valueOf(serialized, new SerializerContext(this));
+                    throw (Exception)Serializer.valueOf(serialized, new SerializerContext(this));
                 }
                 
                 case Error: {
