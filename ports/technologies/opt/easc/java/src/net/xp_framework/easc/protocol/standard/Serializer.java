@@ -27,6 +27,7 @@ import net.xp_framework.easc.protocol.standard.MethodTarget;
 import net.xp_framework.easc.protocol.standard.SerializerContext;
 import net.xp_framework.easc.protocol.standard.TokenHandler;
 import net.xp_framework.easc.util.UnknownRemoteObject;
+import net.xp_framework.easc.util.ExceptionReference;
 
 /**
  * Serializer / unserializer for PHP serialized data
@@ -232,6 +233,88 @@ public class Serializer {
             }
         },
         
+        T_EXCEPTION {
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
+                String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
+                int offset= classnamelength.length() + 2 + 2;
+                int parsed= Integer.parseInt(classnamelength);
+                String classname= serialized.substring(offset, parsed+ offset);
+                String objectlength= serialized.substring(parsed+ offset+ 2, serialized.indexOf(':', parsed+ offset+ 2));
+                offset+= parsed+ 2 + objectlength.length() + 2;
+                
+                ExceptionReference instance = new ExceptionReference(classname);
+                java.util.List<StackTraceElement> trace = new java.util.ArrayList<StackTraceElement>();
+                for (StackTraceElement t : instance.getStackTrace()) {
+                    trace.add(t);
+                }
+
+                for (int i= 0; i < Integer.parseInt(objectlength); i++) {
+                    String name= (String)Serializer.valueOf(serialized.substring(offset), length, context, null);
+                    offset+= length.value;
+                    Object value= Serializer.valueOf(serialized.substring(offset), length, context, null);
+                    offset+= length.value;
+                    
+                    if (null == value) {
+                        continue;
+                    } else if ("message".equals(name)) {
+                        instance.setMessage((String)value);
+                    } else if ("trace".equals(name)) {
+                        for (Object t : ((HashMap)value).values()) {
+                            trace.add((StackTraceElement)t);
+                        }
+                    } else if ("cause".equals(name)) {
+                        instance.initCause((Throwable)value);
+                    } else {
+                        // Ignore it
+                    }
+                }
+                instance.setStackTrace(trace.toArray(new StackTraceElement[0]));
+                length.value= offset + 1;
+                
+                // TODO
+                return instance;
+            }
+        },
+        
+        T_TRACE {
+            public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
+                String tracelength= serialized.substring(2, serialized.indexOf(':', 2));
+                int parsed= Integer.parseInt(tracelength);
+                int offset= tracelength.length() + 2 + 2;
+                String declaringClass = null;
+                String methodName = null;
+                String fileName = null;
+                int lineNumber = -1;
+                
+                for (int i= 0; i < parsed; i++) {
+                    String key= (String)Serializer.valueOf(serialized.substring(offset), length, context, null);
+                    offset+= length.value;
+                    Object value= Serializer.valueOf(serialized.substring(offset), length, context, null);
+                    offset+= length.value;
+                    
+                    if ("file".equals(key)) {
+                        fileName = (String)value;
+                    } else if ("method".equals(key)) {
+                        methodName = (String)value;
+                    } else if ("line".equals(key)) {
+                        lineNumber = (Integer)value;
+                    } else if ("class".equals(key)) {
+                        declaringClass = (String)value;
+                    } else {
+                        // Ignore it
+                    }
+                }
+
+                length.value= offset + 1;
+                return new StackTraceElement(
+                    null == declaringClass ? "<main>" : declaringClass, 
+                    null == methodName ? "<main>" : methodName, 
+                    fileName, 
+                    lineNumber
+                );
+            }        
+        },
+        
         T_OBJECT {
             public Object handle(String serialized, Length length, SerializerContext context, Class clazz) throws Exception { 
                 String classnamelength= serialized.substring(2, serialized.indexOf(':', 2));
@@ -400,6 +483,8 @@ public class Serializer {
             tokenMap.put('s', T_STRING);
             tokenMap.put('a', T_HASH);
             tokenMap.put('A', T_ARRAY);
+            tokenMap.put('E', T_EXCEPTION);
+            tokenMap.put('t', T_TRACE);
             tokenMap.put('O', T_OBJECT);
             tokenMap.put('T', T_DATE);
             tokenMap.put('B', T_BYTE);
