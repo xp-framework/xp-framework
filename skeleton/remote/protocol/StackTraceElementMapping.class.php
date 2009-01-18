@@ -52,8 +52,8 @@
      */
     public function representationOf($serializer, $value, $context= array()) {
       return 't:4:{'.
-        's:4:"file";'.$serializer->representationOf(basename($value->file)).
-        's:5:"class";'.$serializer->representationOf(xp::nameOf($value->class)).
+        's:4:"file";'.$serializer->representationOf(NULL == $value->file ? NULL : basename($value->file)).
+        's:5:"class";'.$serializer->representationOf(NULL == $value->class ? NULL : xp::nameOf($value->class)).
         's:6:"method";'.$serializer->representationOf($value->method).
         's:4:"line";'.$serializer->representationOf($value->line).
       '}';
