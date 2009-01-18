@@ -132,7 +132,7 @@
       // Bug in real_path when file does not exist
       if ('' == $this->uri && $uri != $this->uri) $this->uri= $uri;
       
-      with ($pathinfo= pathinfo($uri)); {
+      with ($pathinfo= pathinfo($this->uri)); {
         $this->path= $pathinfo['dirname'];
         $this->filename= $pathinfo['basename'];
         $this->extension= isset($pathinfo['extension']) ? $pathinfo['extension'] : NULL;
