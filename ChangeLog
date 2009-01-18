@@ -20,6 +20,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed io.File's members filename, dirname and extension being set from
+  original URI instead of resolved one
+  (friebe)
 - Fixed bug #30 - recursive class loading in static initializer 
   (friebe)
 - Fixed error in rdbms.sybase.SybaseDialect, the cast SQL function had 
