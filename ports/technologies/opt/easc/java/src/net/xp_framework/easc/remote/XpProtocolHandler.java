@@ -136,7 +136,19 @@ public class XpProtocolHandler implements ProtocolHandler {
      */
     public void rollback(Transaction t) {
     }
+    
+    /**
+     * Creates a string representation of this DSN object
+     *
+     */
+    @Override public String toString() {
+        return this.getClass().getName() + "<" + this.sock.toString() + ">";
+    }
 
+    /**
+     * Takes care of the communication
+     *
+     */
     protected Object comm(MessageType t, String data, ByteCountedString... payload) {
         int length;
                 
