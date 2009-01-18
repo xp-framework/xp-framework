@@ -104,17 +104,4 @@ public class Remote {
     @Override public String toString() {
         return "Remote(handler= " + this.handler + ")";
     }
-    
-    public static void main(String... args) throws Throwable {
-        Remote remote = Remote.forName(args[0]);
-        System.out.println("Remote: " + remote);
-        Object o = remote.lookup(args[1]);
-        System.out.println("Lookup: " + o);
-        
-        beans.test.TestRunner runner = (beans.test.TestRunner) o;
-        System.out.println("Runner: " + runner);
-        
-        Object r = runner.runTestClass("net.xp_framework.unittest.core.ObjectTest");
-        System.out.println("Result: " + r);
-    }
 }
