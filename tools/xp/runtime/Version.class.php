@@ -28,7 +28,7 @@
         zend_version(),
         php_uname()
       );
-      Console::writeLine('Copyright (c) 2001-2008 the XP group');
+      Console::writeLine('Copyright (c) 2001-2009 the XP group');
       foreach (ClassLoader::getLoaders() as $delegate) {
         Console::writeLine($delegate);
       }
