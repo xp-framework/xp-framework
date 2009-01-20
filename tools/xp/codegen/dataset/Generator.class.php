@@ -14,7 +14,8 @@
     'rdbms.util.DBConstraintXmlGenerator',
     'rdbms.util.DBXMLNamingContext',
     'rdbms.util.DBXmlGenerator',
-    'xml.DomXSLProcessor'
+    'xml.DomXSLProcessor',
+    'lang.XPClass'
   );
 
   /**
@@ -24,7 +25,7 @@
    *
    * Usage:
    * <pre>
-   *   $ cgen ... dataset {dsn} [-p {package}] [-h {host}] [-l {language}] [-pv {prefix} [-pt {ptargets}] [-pe {pexclude}]]
+   *   $ cgen ... dataset {dsn} [-p {package}] [-h {host}] [-l {language}] [-n {nstrategy}] [-pv {prefix} [-pt {ptargets}] [-pe {pexclude}]]
    * </pre>
    *
    * Options
@@ -36,6 +37,7 @@
    *   <li>prefix: Prefix to add to the class name, defaults to ""</li>
    *   <li>ptargets: List of table names to use with prefix separated by the pipe symbol "|", defaults to ""</li>
    *   <li>pexclude: Mode ptargets are treated - if pexclude is TRUE ptargets are treated as blacklist else as whitelist, defaults to FALSE</li>
+   *   <li>nstrategy: strategy to name constraints, defaults to rdbms.util.DBXMLNamingStrategyDefault</li>
    * </ul>
    *
    * Languages
@@ -54,7 +56,8 @@
     protected
       $adapter  = NULL,
       $processor= NULL,
-      $package  = '';
+      $package  = '',
+      $naming  =  '';
 
     static function __static() {
       self::$adapters['mysql']= XPClass::forName('rdbms.mysql.MySQLDBAdapter');
@@ -76,6 +79,9 @@
 
       $this->package= $args->value('package', 'p', 'db');
       $this->host= $args->value('host', 'h', $dsn->getHost());
+
+      $this->naming= $args->value('nstrategy', 'n', '');
+      if ('' != $this->naming) DBXMLNamingContext::setStrategy(XPClass::forName($this->naming)->newInstance());
 
       $this->prefix= $args->value('prefix', 'pv', '');
       $this->ptargets= explode('|', $args->value('ptargets', 'pt', ''));
