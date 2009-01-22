@@ -87,13 +87,38 @@
     }
     
     /**
+     * Return an entry from a given date in its listing with a given 
+     * reference date
+     *
+     * @param   string listed
+     * @param   util.Date ref
+     * @return  peer.ftp.FtpEntry
+     */
+    protected function entryWithDate($listed, Date $ref) {
+      return $this->fixture->entryFrom(
+        'drwx---r-t 37 p159995 ftpusers 4096 '.$listed.' .', 
+        $this->connection, 
+        '/', 
+        $ref
+      );
+    }
+    
+    /**
      * Test compact date format
      *
      */
     #[@test]
     public function compactDate() {
-      $e= $this->fixture->entryFrom('drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .', $this->connection, '/');
-      $this->assertEquals(new Date('04.04.'.date('Y').' 20:16'), $e->getDate());
+      $ref= new Date('2009-01-22 20:16');
+      foreach (array(
+        'Jul 23 20:16' => '23.07.2009 20:16',   // 182 days in the future
+        'Apr 4 20:16'  => '04.04.2009 20:16',
+        'Jan 22 20:16' => '22.01.2009 20:16',   // exactly "today"
+        'Dec 1 20:16'  => '01.12.2008 20:16',
+        'Jul 24 20:16' => '24.07.2008 20:16',   // 182 days in the past
+      ) as $listed => $meaning) {
+        $this->assertEquals(new Date($meaning), $this->entryWithDate($listed, $ref)->getDate(), $listed);
+      }
     }
   }
 ?>
