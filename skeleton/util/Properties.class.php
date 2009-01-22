@@ -26,7 +26,7 @@
    * key=value
    * </pre>
    *
-   * @test      xp://net.xp_framework.unittest.PropertiesTest
+   * @test      xp://net.xp_framework.unittest.util.PropertiesTest
    * @purpose   Wrapper around parse_ini_file
    */
   class Properties extends Object {
@@ -54,7 +54,7 @@
       if (!$file->exists()) {
         throw new IOException('The file "'.$file->getURI().'" could not be read');
       }
-      return new Properties($file->getURI());
+      return new self($file->getURI());
     }
 
     /**
@@ -64,7 +64,7 @@
      * @return  util.Properties
      */
     public static function fromString($str) {
-      with ($prop= new Properties(NULL)); {
+      with ($prop= new self(NULL)); {
         $section= NULL;
         $prop->_data= array();
         if ($t= strtok($str, "\r\n")) do {
@@ -469,6 +469,15 @@
       $this->_load();
       if (!$this->hasSection($section)) $this->_data[$section]= array();
       $this->_data[$section][';'.sizeof($this->_data[$section])]= $comment;
+    }
+    
+    /**
+     * Creates a string representation of this property file
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->_file.')@{'.xp::stringOf($this->_data).'}';
     }
   }
 ?>
