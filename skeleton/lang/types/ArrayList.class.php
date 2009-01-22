@@ -15,7 +15,7 @@
       $iterator = NULL;
 
     public
-      $values   = NULL,
+      $values   = array(),
       $length   = 0;
 
     /**
