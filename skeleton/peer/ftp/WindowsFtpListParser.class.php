@@ -21,9 +21,10 @@
      * @param   string raw a single line
      * @param   peer.ftp.FtpConnection connection
      * @param   string base default "/"
+     * @param   util.Date ref default NULL
      * @return  peer.ftp.FtpEntry
      */
-    public function entryFrom($raw, FtpConnection $conn= NULL, $base= '/') {
+    public function entryFrom($raw, FtpConnection $conn= NULL, $base= '/', Date $ref= NULL) {
       preg_match(
         '/([0-9]{2})-([0-9]{2})-([0-9]{2}) +([0-9]{2}):([0-9]{2})(AM|PM) +(<DIR>)?([0-9]+)? +(.+)/',
         $raw,
