@@ -42,24 +42,24 @@
      */
     public function setURL(XMLScriptletURL $url) {
       with ($this->url= $url); {
-        $this->uri->setDefaultProduct($this->getDefaultProduct());
-        $this->uri->setDefaultLanguage($this->getDefaultLanguage());
-        $this->uri->setDefaultStateName($this->getDefaultStateName());
-        $this->uri->setDefaultPage($this->getDefaultPage());
+        $this->url->setDefaultProduct($this->getDefaultProduct());
+        $this->url->setDefaultLanguage($this->getDefaultLanguage());
+        $this->url->setDefaultStateName($this->getDefaultStateName());
+        $this->url->setDefaultPage($this->getDefaultPage());
         
         // Check cookies for session id
         $this->setSessionId($this->hasCookie('session_id')
           ? $this->getCookie('session_id')->getValue()
-          : $this->uri->getSessionId()
+          : $this->url->getSessionId()
         );
         
         // Overwrite page with __page parameter if given
-        if ($this->hasParam('__page')) $this->uri->setPage($this->getParam('__page'));
+        if ($this->hasParam('__page')) $this->url->setPage($this->getParam('__page'));
         
-        $this->setProduct($this->uri->getProduct());
-        $this->setLanguage($this->uri->getLanguage());
-        $this->setStateName($this->uri->getStateName());
-        $this->setPage($this->uri->getPage());
+        $this->setProduct($this->url->getProduct());
+        $this->setLanguage($this->url->getLanguage());
+        $this->setStateName($this->url->getStateName());
+        $this->setPage($this->url->getPage());
       }
     }
     
