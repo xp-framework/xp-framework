@@ -38,7 +38,7 @@
      */
     #[@test]
     public function dotDirectory() {
-      $e= $this->fixture->entryFrom('drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .', $this->connection, '/');
+      $e= $this->fixture->entryFrom('drwx---r-t 37 p159995 ftpusers 4096 Apr 4 2009 .', $this->connection, '/');
 
       $this->assertSubclass($e, 'peer.ftp.FtpDir');
       $this->assertEquals('/./', $e->getName());
@@ -46,7 +46,7 @@
       $this->assertEquals('p159995', $e->getUser());
       $this->assertEquals('ftpusers', $e->getGroup());
       $this->assertEquals(4096, $e->getSize());
-      $this->assertEquals(new Date('04.04.'.date('Y').' 20:16'), $e->getDate());
+      $this->assertEquals(new Date('04.04.2009'), $e->getDate());
       $this->assertEquals(704, $e->getPermissions());
     }
 
@@ -84,6 +84,16 @@
       $this->assertEquals(415, $e->getSize());
       $this->assertEquals(new Date('23.05.2000'), $e->getDate());
       $this->assertEquals(604, $e->getPermissions());
+    }
+    
+    /**
+     * Test compact date format
+     *
+     */
+    #[@test]
+    public function compactDate() {
+      $e= $this->fixture->entryFrom('drwx---r-t 37 p159995 ftpusers 4096 Apr 4 20:16 .', $this->connection, '/');
+      $this->assertEquals(new Date('04.04.'.date('Y').' 20:16'), $e->getDate());
     }
   }
 ?>
