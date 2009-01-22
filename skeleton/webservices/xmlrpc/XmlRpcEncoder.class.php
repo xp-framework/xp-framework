@@ -71,7 +71,7 @@
           } else if ($m & MODIFIER_PROTECTED) {
             $name= "\0*\0".$field->getName();
           } else if ($m & MODIFIER_PRIVATE) {
-            $name= "\0".substr(array_search($field->getDeclaringClass()->getName(), xp::$registry), 6)."\0".$field->getName();
+            $name= "\0".substr(array_search($field->getDeclaringClass()->getName(), xp::$registry, TRUE), 6)."\0".$field->getName();
           }
           $member= $n->addChild(new Node('member'));
           $member->addChild(new Node('name', $field->getName()));
