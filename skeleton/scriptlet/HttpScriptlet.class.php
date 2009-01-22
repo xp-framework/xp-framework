@@ -300,7 +300,7 @@
       $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= $request->getEnvValue('REQUEST_METHOD');
       $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-      $request->setURI($this->_url(
+      $request->setURL($this->_url(
         ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
         $request->getEnvValue('HTTP_HOST').
         $request->getEnvValue('REQUEST_URI')

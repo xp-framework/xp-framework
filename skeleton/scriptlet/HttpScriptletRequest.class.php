@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('scriptlet.Cookie', 'peer.http.HttpConstants');
+  uses('scriptlet.Cookie', 'peer.http.HttpConstants', 'scriptlet.HttpScriptletURL');
 
   /**
    * Defines the request sent by the client to the server
@@ -18,6 +18,7 @@
    */  
   class HttpScriptletRequest extends Object {
     public
+      $url=             NULL,
       $headers=         array(),
       $params=          array(),
       $data=            NULL,
@@ -161,14 +162,23 @@
     }
     
     /**
+     * Sets request's URL
+     *
+     * @param   scriptlet.HttpScriptletURL url
+     */
+    public function setURL(HttpScriptletURL $url) {
+      $this->url= $url;
+      $this->setSessionId($this->url->getSessionId());
+    }
+
+    /**
      * Sets request's URI
      *
-     * @param   peer.URL uri a uri representated by peer.URL
+     * @param   peer.URL url
      */
+    #[@deprecated]
     public function setURI($uri) {
-      with ($this->uri= $uri); {
-        $this->setSessionId($this->uri->getSessionId());
-      }
+      $this->url= new HttpScriptletURL($uri->getURL());
     }
     
     /**
@@ -178,16 +188,16 @@
      */
     #[@deprecated]
     public function getURI() {
-      return $this->uri->_info;     // HACK
+      return $this->url->_info;     // HACK
     }
 
     /**
      * Retrieves the requests absolute URI as an URL object
      *
-     * @return  peer.URL
+     * @return  scriptlet.HttpScriptletURL
      */
     public function getURL() {
-      return $this->uri;
+      return $this->url;
     }
     
     /**
