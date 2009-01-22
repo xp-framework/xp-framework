@@ -174,11 +174,11 @@
     /**
      * Sets request's URI
      *
-     * @param   peer.URL url
+     * @param   peer.URL uri
      */
     #[@deprecated]
     public function setURI($uri) {
-      $this->url= new HttpScriptletURL($uri->getURL());
+      $this->setURL(new HttpScriptletURL($uri->getURL()));
     }
     
     /**
