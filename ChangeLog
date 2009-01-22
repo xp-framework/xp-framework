@@ -40,6 +40,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Increased verbosity in unittest.TestCase's methods assertClass() and 
+  assertSubclass() in case given variable is not instanceof Generic
+  (friebe)
 - Changed lang.Thread to not forget process id of forked children after
   it has been stopped or exited
   (kiesel, friebe)
