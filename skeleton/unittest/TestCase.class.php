@@ -190,7 +190,7 @@
      */
     public function assertClass($var, $name, $error= 'notequal') {
       if (!($var instanceof Generic)) {
-        $this->fail($error, xp::stringOf($var), $error);
+        $this->fail($error, $var, $name);
       }
       if ($var->getClassName() !== $name) {
         $this->fail($error, $var->getClassName(), $name);
@@ -206,7 +206,7 @@
      */
     public function assertSubclass($var, $name, $error= 'notsubclass') {
       if (!($var instanceof Generic)) {
-        $this->fail($error, xp::stringOf($var), $error);
+        $this->fail($error, $var, $name);
       }
       if (!is($name, $var)) {
         $this->fail($error, $name, $var->getClassName());
