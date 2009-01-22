@@ -3,7 +3,8 @@
  *
  * $Id$
  */
-  uses('scriptlet.HttpScriptletRequest');
+
+  uses('scriptlet.HttpScriptletRequest', 'scriptlet.xml.XMLScriptletURL');
   
   /**
    * Wraps XML request
@@ -35,12 +36,12 @@
       $sessionId    = '';
 
     /**
-     * Sets request's URI
+     * Sets request's URL
      *
-     * @param   peer.URL uri a uri representated by peer.URL
+     * @param   scriptlet.xml.XMLScriptletURL url
      */
-    public function setURI($uri) {
-      with ($this->uri= $uri); {
+    public function setURL(XMLScriptletURL $url) {
+      with ($this->url= $url); {
         $this->uri->setDefaultProduct($this->getDefaultProduct());
         $this->uri->setDefaultLanguage($this->getDefaultLanguage());
         $this->uri->setDefaultStateName($this->getDefaultStateName());
@@ -53,13 +54,23 @@
         );
         
         // Overwrite page with __page parameter if given
-        if (isset($_REQUEST['__page'])) $this->uri->setPage($_REQUEST['__page']);
+        if ($this->hasParam('__page')) $this->uri->setPage($this->getParam('__page'));
         
         $this->setProduct($this->uri->getProduct());
         $this->setLanguage($this->uri->getLanguage());
         $this->setStateName($this->uri->getStateName());
         $this->setPage($this->uri->getPage());
       }
+    }
+    
+    /**
+     * Sets request's URI
+     *
+     * @param   peer.URL uri
+     */
+    #[@deprecated]
+    public function setURI($uri) {
+      $this->setURL(new XMLScriptletURL($uri->getURL()));
     }
     
     /**
