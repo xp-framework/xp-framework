@@ -38,7 +38,7 @@
    * Tests can one or more of:
    * <ul>
    *   <li>{tests}.ini: A configuration file</li>
-   *   <li>{package.name.*}: All classes inside a given package<li>
+   *   <li>{package.name}.*: All classes inside a given package<li>
    *   <li>{Test}.class.php: A class file</li>
    *   <li>{test.class.Name}: A fully qualified class name</li>
    *   <li>-e {test method sourcecode}: Evaluate source</li>
