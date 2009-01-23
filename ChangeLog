@@ -43,6 +43,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support to unittest command to run all non-abstract TestCase
+  classes inside a package (e.g. unittest my.package.name.*')
+  (friebe)
 - Added -e option to unittest command to evaluate assertions directly 
   from the command line (e.g. unittest -e '$this->assertTrue(TRUE);')
   (friebe)
