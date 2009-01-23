@@ -2,6 +2,17 @@ XP Framework ChangeLog
 ========================================================================
 $Id$
 
+Version ?.?.?, released ????-??-??
+----------------------------------
+SVN version: ?????
+
+Bugfixes
+~~~~~~~~
+- Fixed lang.Process thinking it would be able to execute directories 
+  which would simply fail later on.
+  (friebe)
+
+
 Version 5.7.1, released 2009-01-23
 ----------------------------------
 SVN version: 12768 
