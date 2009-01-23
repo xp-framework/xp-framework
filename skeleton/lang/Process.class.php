@@ -55,8 +55,8 @@
 
       // Check whether the given command is executable.
       $binary= $this->resolve($command);
-      if (!is_executable($binary)) {
-        throw new IOException('Command "'.$binary.'" is not executable');
+      if (!is_file($binary) || !is_executable($binary)) {
+        throw new IOException('Command "'.$binary.'" is not an executable file');
       }
       
       // Build command line
