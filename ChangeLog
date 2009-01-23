@@ -20,6 +20,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed net.xp_framework.unittest.bootstrap package to work with paths
+  with spaces inside
+  (friebe)
 - Fixed peer.ftp.DefaultFtpListParser to return correct dates for entries
   listed with compact format ("Apr 4 20:16" instead of "Apr 4 2009")
   (friebe, hinckel)
