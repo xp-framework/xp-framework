@@ -6,8 +6,6 @@
 
   uses('peer.Socket');
   
-  define('TCP_NODELAY',   1);
-
   /**
    * BSDSocket implementation
    *
@@ -23,6 +21,10 @@
       $type     = SOCK_STREAM,
       $protocol = SOL_TCP,
       $options  = array();
+    
+    static function __static() {
+      defined('TCP_NODELAY') || define('TCP_NODELAY', 1);
+    }
 
     /**
      * Set Domain
