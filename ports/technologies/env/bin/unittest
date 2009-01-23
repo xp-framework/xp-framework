@@ -1,3 +1,0 @@
-#!/bin/sh
-
-xpcli net.xp_framework.unittest.runner.cli.CliRunner "$@"
