@@ -30,7 +30,7 @@
      * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
      */
     public function testClasses() {
-      $tests= new HashTable();
+      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
       $section= $this->prop->getFirstSection();
       do {
         if ('this' == $section) continue;   // Ignore special section
@@ -42,6 +42,15 @@
       } while ($section= $this->prop->getNextSection());
       
       return $tests;
+    }
+
+    /**
+     * Creates a string representation of this source
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'['.$this->prop->toString().']';
     }
   }
 ?>
