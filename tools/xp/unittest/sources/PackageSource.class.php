@@ -62,7 +62,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'['.$this->package->toString().']';
+      return $this->getClassName().'['.$this->package->getName().($this->recursive ? '.**' : '.*').']';
     }
   }
 ?>
