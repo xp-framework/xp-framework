@@ -317,7 +317,7 @@
       } catch (Throwable $e) {
         
         // Unfortunately, try { } finally does not exist...        
-        $file->delete();
+        $file && $file->delete();
         throw $e;
       }
     }
