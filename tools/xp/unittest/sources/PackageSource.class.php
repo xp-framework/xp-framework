@@ -13,15 +13,34 @@
    */
   class PackageSource extends xp·unittest·sources·AbstractSource {
     protected
-      $package= NULL;
+      $package    = NULL,
+      $recursive  = FALSE;
     
     /**
      * Constructor
      *
      * @param   lang.reflect.Package package
+     * @param   bool recursive default FALSE
      */
-    public function __construct(Package $package) {
+    public function __construct(Package $package, $recursive= FALSE) {
       $this->package= $package;
+      $this->recursive= $recursive;
+    }
+    
+    protected static function testClassesIn(Package $package, $recursive) {
+      $r= array();
+      foreach ($package->getClasses() as $class) {
+        if (
+          !$class->isSubclassOf('unittest.TestCase') ||
+          Modifiers::isAbstract($class->getModifiers())
+        ) continue;
+        
+        $r[]= $class;
+      }
+      if ($recursive) foreach ($package->getPackages() as $package) {
+        $r= array_merge($r, self::testClassesIn($package, $recursive));
+      }
+      return $r;
     }
 
     /**
@@ -31,12 +50,7 @@
      */
     public function testClasses() {
       $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
-      foreach ($this->package->getClasses() as $class) {
-        if (
-          !$class->isSubclassOf('unittest.TestCase') ||
-          Modifiers::isAbstract($class->getModifiers())
-        ) continue;
-        
+      foreach (self::testClassesIn($this->package, $this->recursive) as $class) {
         $tests->put($class, new ArrayList());
       }
       return $tests;
