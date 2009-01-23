@@ -37,7 +37,7 @@
       $uri= $this->file->getURI();
       $path= dirname($uri);
       $paths= array_flip(array_map('realpath', xp::registry('classpath')));
-      $tests= new HashTable();
+      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
 
       while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
         if (isset($paths[$path])) {

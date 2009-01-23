@@ -30,7 +30,7 @@
      * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
      */
     public function testClasses() {
-      $tests= new HashTable();
+      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
       $tests->put($this->testClass, new ArrayList());
       return $tests;
     }
