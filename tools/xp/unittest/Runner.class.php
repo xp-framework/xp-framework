@@ -12,6 +12,7 @@
     'xp.unittest.sources.PropertySource',
     'xp.unittest.sources.ClassSource',
     'xp.unittest.sources.ClassFileSource',
+    'xp.unittest.sources.PackageSource',
     'xp.unittest.sources.EvaluationSource',
     'io.File',
     'unittest.TestSuite',
@@ -37,6 +38,7 @@
    * Tests can one or more of:
    * <ul>
    *   <li>{tests}.ini: A configuration file</li>
+   *   <li>{package.name.*}: All classes inside a given package<li>
    *   <li>{Test}.class.php: A class file</li>
    *   <li>{test.class.Name}: A fully qualified class name</li>
    *   <li>-e {test method sourcecode}: Evaluate source</li>
@@ -113,6 +115,8 @@
             $sources->add(new PropertySource(new Properties($args[$i])));
           } else if (strstr($args[$i], xp::CLASS_FILE_EXT)) {
             $sources->add(new ClassFileSource(new File($args[$i])));
+          } else if (strstr($args[$i], '.*')) {
+            $sources->add(new PackageSource(Package::forName(substr($args[$i], 0, -2))));
           } else {
             $sources->add(new ClassSource(XPClass::forName($args[$i])));
           }
