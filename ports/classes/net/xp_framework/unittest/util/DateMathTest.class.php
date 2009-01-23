@@ -102,7 +102,7 @@
     }
     
     /**
-     * Test
+     * Test day difference in a foreign timezone
      *
      */
     #[@test]
@@ -111,7 +111,31 @@
         1,
         DateMath::diff(TimeInterval::$DAY, new Date('2007-08-27 23:59:59 Australia/Sydney'), new Date('2007-08-28 00:00:00 Australia/Sydney'))
       );
-    }    
+    }
+
+    /**
+     * Test month difference in a foreign timezone
+     *
+     */
+    #[@test]
+    public function diffMonthInForeignTimezone() {
+      $this->assertEquals(
+        1,
+        DateMath::diff(TimeInterval::$MONTH, new Date('2008-11-30 23:59:59 Australia/Sydney'), new Date('2008-12-01 00:00:00 Australia/Sydney'))
+      );
+    }
+
+    /**
+     * Test year difference in a foreign timezone
+     *
+     */
+    #[@test]
+    public function diffYearInForeignTimezone() {
+      $this->assertEquals(
+        1,
+        DateMath::diff(TimeInterval::$YEAR, new Date('2008-12-31 23:59:59 Australia/Sydney'), new Date('2009-01-01 00:00:00 Australia/Sydney'))
+      );
+    }
     
     /**
      * diff over one year
