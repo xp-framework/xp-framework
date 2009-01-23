@@ -28,7 +28,7 @@
      */
     public function __construct($executable) {
       $this->setExecutable(preg_replace('#^/cygdrive/(\w)/#', '$1:/', $executable));
-      $this->setSetting('include_path', ini_get('include_path'));
+      $this->setSetting('include_path', '"'.ini_get('include_path').'"');
     }
 
     /**
