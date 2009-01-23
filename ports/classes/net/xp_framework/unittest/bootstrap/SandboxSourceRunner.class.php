@@ -28,7 +28,7 @@
      */
     public function __construct($executable) {
       $this->setExecutable(preg_replace('#^/cygdrive/(\w)/#', '$1:/', $executable));
-      $this->setSetting('include_path', '"'.ini_get('include_path').'"');
+      $this->setSetting('include_path', '.'.PATH_SEPARATOR.ini_get('include_path'));
     }
 
     /**
@@ -163,7 +163,7 @@
     public function run($source) {
       $args= array();
       foreach ($this->settings as $key => $value) {
-        $args[]= sprintf(' -d%s=%s', $key, $value);
+        $args[]= sprintf(' -d%s="%s"', $key, $value);
       }
 
       $p= new Process($this->getExecutable(), $args);
