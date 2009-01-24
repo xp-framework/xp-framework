@@ -47,7 +47,7 @@
       while ($record= $q->next()) {
         $e= $n->addChild(new Node('entry', NULL, array('id' => $record['id'], 'link' => $this->sanitizeHref($record['title']))));
         $e->addChild(new Node('title', $record['title']));
-        $e->addChild(Node::fromObject(new Date($record['timestamp']), 'date'));
+        $e->addChild(Node::fromObject(new Date($record['date']), 'date'));
         
         foreach ($this->categoriesOfEntry($record['id']) as $row) {
           $e->addChild(new Node('category', $row['category_name'], array(
