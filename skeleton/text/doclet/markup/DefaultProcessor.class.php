@@ -62,7 +62,7 @@
         '$1<u>$2</u>$3', 
         '$1<b>$2</b>$3',
         '$1<i>$2</i>$3',
-        '<image src="$3" rel="$2" format="$5">',
+        '<image src="$3" rel="$2" format="$5"/>',
         '<link href="$3" rel="$2">$4</link>',
         '<link href="$3" rel="$2"/>',
         '<mailto recipient="$1"/>',

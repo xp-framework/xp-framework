@@ -614,7 +614,7 @@
     #[@test]
     public function localImage() {
       $this->assertEquals(
-        '<image src="image/organize.png" rel="" format="">', 
+        '<image src="image/organize.png" rel="" format=""/>', 
         $this->builder->markupFor('[[image/organize.png]]')
       );
     }
@@ -626,7 +626,7 @@
     #[@test]
     public function localImageWithFormatting() {
       $this->assertEquals(
-        '<image src="image/organize.png" rel="" format="left">', 
+        '<image src="image/organize.png" rel="" format="left"/>', 
         $this->builder->markupFor('[[image/organize.png left]]')
       );
     }
@@ -638,7 +638,7 @@
     #[@test]
     public function remoteImage() {
       $this->assertEquals(
-        '<image src="example.com/image/blank.gif" rel="http" format="">', 
+        '<image src="example.com/image/blank.gif" rel="http" format=""/>', 
         $this->builder->markupFor('[[http://example.com/image/blank.gif]]')
       );
     }
@@ -650,7 +650,7 @@
     #[@test]
     public function remoteImageWithFormatting() {
       $this->assertEquals(
-        '<image src="example.com/image/blank.gif" rel="http" format="left">', 
+        '<image src="example.com/image/blank.gif" rel="http" format="left"/>', 
         $this->builder->markupFor('[[http://example.com/image/blank.gif left]]')
       );
     }
