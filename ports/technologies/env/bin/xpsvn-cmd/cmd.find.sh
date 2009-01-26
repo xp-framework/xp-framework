@@ -14,6 +14,7 @@ while getopts 'v' COMMAND_LINE_ARGUMENT ; do
 done
 shift $(($OPTIND - 1))
 
+RETCODE=1
 while [ ! -z $1 ]; do
   TARGET=$1
   if [ -z $TARGET ]; then
@@ -33,9 +34,12 @@ while [ ! -z $1 ]; do
       if [ -e "$REPOBASE"/tags/$i/$RELTARGET ]; then
         rev=`svn info "$REPOBASE"/tags/$i/$RELTARGET|grep "Last Changed Rev:"|cut -d ' ' -f 4`
         echo "$i (revision $rev)";
+        RETCODE=0
       fi
     fi
   done
   
   shift 1
 done
+
+exit $RETCODE

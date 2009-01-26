@@ -9,55 +9,52 @@ DIRNAME=$(dirname "$MYSELF")
 # Include commonly used functions:
 . "$DIRNAME"/xpsvn-cmd/common.inc.sh
 
+function exitHandler {
+  exit $?
+}
+
 COMMAND=$1
 shift 1 2>/dev/null;
 
 [ $DEBUG ] && echo "---> Command= $COMMAND $*"
 
+trap exitHandler EXIT
+
 case $COMMAND in
   find)
     . "$DIRNAME"/xpsvn-cmd/cmd.find.sh
-    exit $RETCODE;
     ;;
 
   tag)
     . "$DIRNAME"/xpsvn-cmd/cmd.tag.sh
-    exit $RETCODE;
     ;;
 
   tagstatus | tst)
     . "$DIRNAME"/xpsvn-cmd/cmd.tagstatus.sh
-    exit $RETCODE;
     ;;
   
   tagdiff | tdi)
     . "$DIRNAME"/xpsvn-cmd/cmd.tagdiff.sh
-    exit $RETCODE;
     ;;
   
   tagcommit | tci)
     . "$DIRNAME"/xpsvn-cmd/cmd.tagcommit.sh
-    exit $RETCODE;
     ;;
     
   tagupdate | tup)
     . "$DIRNAME"/xpsvn-cmd/cmd.tagupdate.sh
-    exit $RETCODE;
     ;;
   
   go)
     . "$DIRNAME"/xpsvn-cmd/cmd.go.sh
-    exit $RETCODE;
     ;;
 
   diff)
     . "$DIRNAME"/xpsvn-cmd/cmd.diff.sh
-    exit $RETCODE;
     ;;
   
   tagcreate)
     . "$DIRNAME"/xpsvn-cmd/cmd.tagcreate.sh
-    exit $RETCODE
     ;;
 
   *)
