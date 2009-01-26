@@ -19,6 +19,9 @@ Bugfixes
 - Fixed lang.Process thinking it would be able to execute directories 
   which would simply fail later on.
   (friebe)
+- Fixed leftover of refactoring of peer.mail.MessagingAddress 
+  interface in peer.mail.transport.SmtpTransport
+  (gellweiler, reuter, kiesel)
 
 
 Version 5.7.1, released 2009-01-23

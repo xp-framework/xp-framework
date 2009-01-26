@@ -263,7 +263,7 @@
       try {
         $this->_sockcmd(
           'MAIL FROM: %s',
-          $message->from->rawAddress(),
+          $message->from->getAddress(),
           250
         );
 
@@ -271,7 +271,7 @@
         foreach (array(TO, CC, BCC) as $type) while ($r= $message->getRecipient($type)) {
           $this->_sockcmd(
             'RCPT TO: %s',
-            $r->rawAddress(),
+            $r->getAddress(),
             array(250, 251)
           );
         }
