@@ -82,5 +82,17 @@
         create(new InternetAddress('kiesel@example.com', 'Alex Kiesel'))->toString()
       );
     }
+    
+    /**
+     * Test getAddress() method
+     *
+     */
+    #[@test]
+    public function addressInRawFormat() {
+      $this->assertEquals(
+        'kiesel@example.com', 
+        create(new InternetAddress('kiesel@example.com', 'Alex Kiese'))->getAddress()
+      );
+    }    
   }
 ?>
