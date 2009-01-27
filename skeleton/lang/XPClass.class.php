@@ -286,12 +286,13 @@
     /**
      * Tests whether this class is a subclass of a specified class.
      *
-     * @param   string name class name
+     * @param   * class either a string or an XPClass object
      * @return  bool
      */
-    public function isSubclassOf($name) {
-      if ($name == $this->name) return FALSE;   // Catch bordercase (ZE bug?)
-      return $this->_reflect->isSubclassOf(XPClass::forName($name)->_reflect);
+    public function isSubclassOf($class) {
+      if (!($class instanceof self)) $class= XPClass::forName($class);
+      if ($class->name == $this->name) return FALSE;   // Catch bordercase (ZE bug?)
+      return $this->_reflect->isSubclassOf($class->_reflect);
     }
 
     /**

@@ -64,6 +64,18 @@
       $this->assertFalse($this->class->isSubclassOf('util.Date'));
       $this->assertFalse($this->class->isSubclassOf('net.xp_framework.unittest.reflection.TestClass'));
     }
+
+    /**
+     * Tests subclass
+     *
+     * @see     xp://lang.XPClass#isSubclassOf
+     */
+    #[@test]
+    public function subClassOfClass() {
+      $this->assertTrue($this->class->isSubclassOf(XPClass::forName('lang.Object')));
+      $this->assertFalse($this->class->isSubclassOf(XPClass::forName('util.Date')));
+      $this->assertFalse($this->class->isSubclassOf(XPClass::forName('net.xp_framework.unittest.reflection.TestClass')));
+    }
    
     /**
      * Tests the parent class

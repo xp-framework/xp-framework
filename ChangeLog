@@ -14,6 +14,12 @@ Heads up!
   unittest -cp {VERSION}/lib/xp-net.xp_framework-{VERSION}.xar [tests]
   (friebe)
 
+Features
+~~~~~~~~
+- Made lang.XPClass::isSubclassOf() accept not only a string with the 
+  classname but also XPClass objects
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed lang.Process thinking it would be able to execute directories 
