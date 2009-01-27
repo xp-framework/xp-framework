@@ -22,6 +22,10 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed scriptlet.xml.XMLScriptletRequest not handling URLs handled
+  by rewrite rules such as RewriteRule ^/category/([0-9]+)/.*$ /index.php 
+  [E=PRODUCT:news,E=LANGUAGE:en_US,E=STATE:bycategory,E=CATID:$1,PT]
+  (friebe)
 - Fixed lang.Process thinking it would be able to execute directories 
   which would simply fail later on.
   (friebe)
