@@ -98,7 +98,7 @@
      * @return  string page
      */
     public function getDefaultPage() {
-      return $this->getEnvValue('DEF_PAGE', 'home');
+      return $this->getEnvValue('PAGE', $this->getEnvValue('DEF_PAGE', 'home'));
     }
 
     /**
@@ -117,7 +117,7 @@
      * @return  string stateName
      */
     public function getDefaultStateName() {
-      return $this->getEnvValue('DEF_STATE', 'static');
+      return $this->getEnvValue('STATE', $this->getEnvValue('DEF_STATE', 'static'));
     }
 
     /**
@@ -144,7 +144,7 @@
      * @return  string product
      */
     public function getDefaultProduct() {
-      return $this->getEnvValue('DEF_PROD');
+      return $this->getEnvValue('PRODUCT', $this->getEnvValue('DEF_PROD'));
     }
 
     /**
@@ -172,7 +172,7 @@
      * @return  string language
      */
     public function getDefaultLanguage() {
-      return $this->getEnvValue('DEF_LANG', 'en_US');
+      return $this->getEnvValue('LANGUAGE', $this->getEnvValue('DEF_LANG', 'en_US'));
     }
 
     /**
