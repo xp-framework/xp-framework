@@ -9,7 +9,7 @@ DIRNAME=$(dirname "$MYSELF")
 # Include commonly used functions:
 . "$DIRNAME"/xpsvn-cmd/common.inc.sh
 
-function exitHandler {
+exitHandler() {
   exit $?
 }
 
