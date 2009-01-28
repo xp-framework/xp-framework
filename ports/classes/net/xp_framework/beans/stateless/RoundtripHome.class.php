@@ -13,11 +13,5 @@
    */
   interface RoundtripHome extends HomeInterface {
 
-    /**
-     * Create method
-     *
-     * @return  &net.xp_framework.beans.stateless.Roundtrip
-     */
-    public function create();
   }
 ?>
