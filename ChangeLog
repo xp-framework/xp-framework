@@ -17,6 +17,7 @@ Heads up!
 Features
 ~~~~~~~~
 - Added support for enums to the Remote API (EASC)
+  See http://news.xp-framework.net/article/287/2009/01/28/
   (hinckel, friebe)
 - Made lang.XPClass::isSubclassOf() accept not only a string with the 
   classname but also XPClass objects
