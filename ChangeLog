@@ -16,6 +16,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added support for enums to the Remote API (EASC)
+  (hinckel, friebe)
 - Made lang.XPClass::isSubclassOf() accept not only a string with the 
   classname but also XPClass objects
   (friebe)
