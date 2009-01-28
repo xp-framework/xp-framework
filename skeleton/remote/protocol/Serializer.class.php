@@ -18,9 +18,11 @@
     'remote.protocol.ExceptionMapping',
     'remote.protocol.StackTraceElementMapping',
     'remote.protocol.ByteArrayMapping',
+    'remote.protocol.EnumMapping',
     'remote.UnknownRemoteObject',
     'remote.ExceptionReference',
-    'remote.ClassReference'
+    'remote.ClassReference',
+    'lang.Enum'
   );
 
   /**
@@ -307,14 +309,27 @@
             $instance->__members= $members;
             return $instance;
           }
-
-          $instance= $class->newInstance();
+          
           $size= $serialized->consumeSize();
           $serialized->offset++;  // Opening "{"
-          for ($i= 0; $i < $size; $i++) {
-            $member= $this->valueOf($serialized, $context);
-            $instance->{$member}= $this->valueOf($serialized, $context);
+
+          if ($class->isEnum()) {
+            if ($size != 1 || 'name' != $this->valueOf($serialized, $context)) {
+              throw new FormatException(sprintf(
+                'Local class %s is an enum but remote class is not serialized as one (%s)',
+                $name,
+                $serialized->toString()
+              ));
+            }
+            $instance= Enum::valueOf($class, $this->valueOf($serialized, $context));
+          } else {
+            $instance= $class->newInstance();
+            for ($i= 0; $i < $size; $i++) {
+              $member= $this->valueOf($serialized, $context);
+              $instance->{$member}= $this->valueOf($serialized, $context);
+            }
           }
+          
           $serialized->offset++; // Closing "}"
           return $instance;
         }
