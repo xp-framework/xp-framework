@@ -8,6 +8,7 @@
     'unittest.TestCase',
     'remote.protocol.Serializer',
     'net.xp_framework.unittest.remote.Person',
+    'net.xp_framework.unittest.remote.Enum',
     'util.Hashmap'
   );
 
@@ -196,6 +197,18 @@
     }
 
     /**
+     * Test serialization of a enum object
+     *
+     */
+    #[@test]
+    public function representationOfEnum() {
+      $this->assertEquals(
+        'O:37:"net.xp_framework.unittest.remote.Enum":1:{s:4:"name";s:6:"Value1";}',
+        $this->serializer->representationOf(net·xp_framework·unittest·remote·Enum::$Value1)
+      );
+    }
+    
+    /**
      * Test serialization of a Bytes object
      *
      */
@@ -290,6 +303,32 @@
         new Date(328312800),
         $this->serializer->valueOf(new SerializedData('T:328312800;'))
       );
+    }
+
+    /**
+     * Test deserialization of enum
+     *
+     */
+    #[@test]
+    public function valueOfEnum() {
+      $obj= $this->serializer->valueOf(new SerializedData('O:37:"net.xp_framework.unittest.remote.Enum":1:{s:4:"name";s:6:"Value1";};'));
+      $this->assertEquals(net·xp_framework·unittest·remote·Enum::$Value1, $obj);
+      $this->assertEquals(net·xp_framework·unittest·remote·Enum::$Value1->ordinal(), $obj->ordinal());
+      $this->assertEquals(net·xp_framework·unittest·remote·Enum::$Value1->name(), $obj->name());
+    }
+
+    /**
+     * Test deserialization of a class that does not exist will yield an UnknownRemoteObject
+     *
+     * @see   xp://net.xp_framework.unittest.remote.UnknownRemoteObjectTest
+     */
+    #[@test]
+    public function valueOfUnknownObject() {
+      $obj= $this->serializer->valueOf(new SerializedData('O:40:"net.xp_framework.unittest.remote.Unknown":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";};'));
+      $this->assertClass($obj, 'remote.UnknownRemoteObject');
+      $this->assertEquals('net.xp_framework.unittest.remote.Unknown', $obj->__name);
+      $this->assertEquals(1549, $obj->__members['id']);
+      $this->assertEquals('Timm Friebe', $obj->__members['name']);
     }
 
     /**
