@@ -416,7 +416,7 @@
    !
    ! @type   match
    !-->
-  <xsl:template match="xsd:complexType[child::*[name() = 'sequence']]">
+  <xsl:template match="xsd:complexType[child::*[local-name() = 'sequence']]">
     <xsl:call-template name="nextpart">
       <xsl:with-param name="filename" select="@name"/>
     </xsl:call-template>
@@ -437,7 +437,7 @@
   </xsl:call-template>
   <xsl:text> extends Object {
     public</xsl:text>
-    <xsl:for-each select="xsd:sequence/xsd:element">
+    <xsl:for-each select="child::*[local-name() = 'sequence']/xsd:element">
       $<xsl:value-of select="@name"/>
       <xsl:if test="position() &lt; last()">,</xsl:if>
     </xsl:for-each>
@@ -563,7 +563,7 @@
    ! @type   match
    !-->
   <xsl:template match="wsdl:definitions">
-    <xsl:variable name="types" select="wsdl:types/xsd:schema/xsd:complexType[child::*[name() = 'sequence' or name() = 'xsd:all']]"/>
+    <xsl:variable name="types" select="wsdl:types/xsd:schema/xsd:complexType[child::*[local-name() = 'sequence' or local-name() = 'all']]"/>
 
     <!-- User-defined types -->
     <xsl:apply-templates select="$types"/>
