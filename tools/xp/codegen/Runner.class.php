@@ -26,7 +26,7 @@
    *
    * Usage:
    * <pre>
-   *   $ cgen [-O {output}] {generator} [options]
+   *   $ cgen [-O {output}] {generator} [-? | --help] [options]
    * </pre>
    *
    * Output options
