@@ -9,7 +9,7 @@
    * 
    * Usage [retreiving default locale]
    * <code>
-   *   $locale= &Locale::getDefault();
+   *   $locale= Locale::getDefault();
    *   var_dump($locale);
    * </code>
    *
@@ -78,12 +78,12 @@
      */
     public static function setDefault($locale) {
       if (FALSE === setlocale(LC_ALL, $locale->toString())) {
-        throw(new IllegalArgumentException(sprintf(
+        throw new IllegalArgumentException(sprintf(
           'Locale [lang=%s,country=%s,variant=%s] not available',
-          $this->lang, 
-          $this->country, 
-          ltrim($this->variant, '.@')
-        )));
+          $locale->lang, 
+          $locale->country, 
+          ltrim($locale->variant, '.@')
+        ));
       }
     }
 
