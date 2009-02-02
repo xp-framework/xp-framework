@@ -52,9 +52,10 @@
      */
     public function toString() {
       $s= $this->compoundMessage()."\n";
-      $t= sizeof($this->trace);
+      $tt= $this->getStackTrace();
+      $t= sizeof($tt);
       for ($i= 0; $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString(); 
+        $s.= $tt[$i]->toString(); 
       }
       if (!$this->cause) return $s;
       
@@ -65,13 +66,14 @@
         $s.= 'Caused by '.$loop->compoundMessage()."\n";
 
         // Find common stack trace elements
-        for ($ct= $cc= sizeof($loop->trace)- 1, $t= sizeof($this->trace)- 1; $ct > 0, $t > 0; $cc--, $t--) {
-          if (!$loop->trace[$cc]->equals($this->trace[$t])) break;
+        $lt= $loop->getStackTrace();
+        for ($ct= $cc= sizeof($lt)- 1, $t= sizeof($tt)- 1; $ct > 0, $t > 0; $cc--, $t--) {
+          if (!$lt[$cc]->equals($tt[$t])) break;
         }
 
         // Output uncommon elements only and one line how many common elements exist!
         for ($i= 0; $i < $cc; $i++) {
-          $s.= xp::stringOf($loop->trace[$i]); 
+          $s.= xp::stringOf($lt[$i]); 
         }
         if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
         
