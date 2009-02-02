@@ -25,6 +25,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.Locale::setDefault() fatalling when the given locale does
+  not exist (and while trying to throw an exception).
+  (friebe)
 - Fixed scriptlet.xml.XMLScriptletRequest not handling URLs handled
   by rewrite rules such as RewriteRule ^/category/([0-9]+)/.*$ /index.php 
   [E=PRODUCT:news,E=LANGUAGE:en_US,E=STATE:bycategory,E=CATID:$1,PT]
