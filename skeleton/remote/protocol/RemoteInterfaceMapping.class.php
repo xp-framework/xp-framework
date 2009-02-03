@@ -37,7 +37,7 @@
 
       return Proxy::newProxyInstance(
         ClassLoader::getDefault(), 
-        array(XPClass::forName($interface)), 
+        array(XPClass::forName($serializer->packageMapping($interface))), 
         RemoteInvocationHandler::newInstance((int)$oid, $context['handler'])
       );
     }

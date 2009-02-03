@@ -25,6 +25,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed remote interface mapping when creating the remote interface in the
+  remote API
+  (hinckel)
 - Fixed util.Locale::setDefault() fatalling when the given locale does
   not exist (and while trying to throw an exception).
   (friebe)
