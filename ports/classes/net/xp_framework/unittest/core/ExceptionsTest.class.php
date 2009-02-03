@@ -78,6 +78,18 @@
     }
 
     /**
+     * Tests getStackTrace() method
+     *
+     */
+    #[@test]
+    public function firstFrame() {
+      $trace= create(new Throwable('Test'))->getStackTrace();
+      
+      $this->assertEquals(get_class($this), $trace[0]->class);
+      $this->assertEquals($this->getName(), $trace[0]->method);
+    }
+
+    /**
      * Tests equals() method
      *
      */
