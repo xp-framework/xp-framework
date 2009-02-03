@@ -647,7 +647,6 @@
     <xsl:apply-templates select="wsdl:portType"/>
     <xsl:text><![CDATA[  }
 ?>
-
 ]]></xsl:text>
     <xsl:value-of select="concat('------_=_NextPart_', $boundary, '--&#10;')"/>
   </xsl:template>
