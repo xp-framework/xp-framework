@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.collections.IOElement');
+  uses('io.collections.IOElement', 'peer.ftp.FtpInputStream', 'peer.ftp.FtpOutputStream');
 
   /**
    * Represents an FTP element
@@ -96,6 +96,26 @@
      */
     public function setOrigin(IOCollection $origin) {
       $this->origin= $origin;
+    }
+
+    /**
+     * Gets input stream to read from this element
+     *
+     * @return  io.streams.InputStream
+     * @throws  io.IOException
+     */
+    public function getInputStream() {
+      return new FtpInputStream($this->file);
+    }
+
+    /**
+     * Gets output stream to read from this element
+     *
+     * @return  io.streams.OutputStream
+     * @throws  io.IOException
+     */
+    public function getOutputStream() {
+      return new FtpOutputStream($this->file);
     }
   } 
 ?>

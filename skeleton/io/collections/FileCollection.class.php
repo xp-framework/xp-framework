@@ -23,10 +23,14 @@
     /**
      * Constructor
      *
-     * @param   string uri
+     * @param   mixed arg either a string or an io.Folder object
      */
-    public function __construct($uri) {
-      $this->uri= rtrim(realpath($uri), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+    public function __construct($arg) {
+      if (is('io.Folder', $arg)) {
+        $this->uri= $arg->getUri();
+      } else {
+        $this->uri= rtrim(realpath($uri), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      }
     }
     
     /**
@@ -143,6 +147,26 @@
      */
     public function setOrigin(IOCollection $origin) {
       $this->origin= $origin;
+    }
+
+    /**
+     * Gets input stream to read from this element
+     *
+     * @return  io.streams.InputStream
+     * @throws  io.IOException
+     */
+    public function getInputStream() {
+      throw new IOException('Cannot read from a directory');
+    }
+
+    /**
+     * Gets output stream to read from this element
+     *
+     * @return  io.streams.OutputStream
+     * @throws  io.IOException
+     */
+    public function getOutputStream() {
+      throw new IOException('Cannot write to a directory');
     }
   } 
 ?>

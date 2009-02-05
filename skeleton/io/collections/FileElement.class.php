@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.collections.IOElement');
+  uses('io.collections.IOElement', 'io.streams.FileInputStream', 'io.streams.FileOutputStream');
 
   /**
    * Represents a file element
@@ -98,6 +98,26 @@
      */
     public function setOrigin(IOCollection $origin) {
       $this->origin= $origin;
+    }
+
+    /**
+     * Gets input stream to read from this element
+     *
+     * @return  io.streams.InputStream
+     * @throws  io.IOException
+     */
+    public function getInputStream() {
+      return new FileInputStream($this->uri);
+    }
+
+    /**
+     * Gets output stream to read from this element
+     *
+     * @return  io.streams.OutputStream
+     * @throws  io.IOException
+     */
+    public function getOutputStream() {
+      return new FileOutputStream($this->uri);
     }
   } 
 ?>

@@ -71,7 +71,7 @@
      * @return  io.collection.IOElement
      */
     public function next() {
-      if (-1 == $this->_offset) throw(new IllegalStateException('Not open'));
+      if (-1 == $this->_offset) throw new IllegalStateException('Not open');
       if ($this->_offset >= sizeof($this->_elements)) return NULL;
 
       return $this->_elements[$this->_offset++];
@@ -146,6 +146,26 @@
      */
     public function setOrigin(IOCollection $origin) {
       $this->origin= $origin;
+    }
+
+    /**
+     * Gets input stream to read from this element
+     *
+     * @return  io.streams.InputStream
+     * @throws  io.IOException
+     */
+    public function getInputStream() {
+      throw new IOException('Cannot read from a directory');
+    }
+
+    /**
+     * Gets output stream to read from this element
+     *
+     * @return  io.streams.OutputStream
+     * @throws  io.IOException
+     */
+    public function getOutputStream() {
+      throw new IOException('Cannot write to a directory');
     }
   } 
 ?>

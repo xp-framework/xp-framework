@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Date');
+  uses('util.Date', 'io.streams.InputStream', 'io.streams.OutputStream');
 
   /**
    * IO Element
@@ -62,5 +62,20 @@
      */
     public function setOrigin(IOCollection $origin);
 
+    /**
+     * Gets input stream to read from this element
+     *
+     * @return  io.streams.InputStream
+     * @throws  io.IOException
+     */
+    public function getInputStream();
+
+    /**
+     * Gets output stream to read from this element
+     *
+     * @return  io.streams.OutputStream
+     * @throws  io.IOException
+     */
+    public function getOutputStream();
   }
 ?>

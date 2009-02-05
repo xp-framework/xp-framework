@@ -55,7 +55,7 @@
      * @param   io.collections.IOElement[] elements
      * @return  io.collections.IOCollection
      */
-    protected function newCollection($name, $elements) {
+    protected function newCollection($name, $elements= array()) {
       $c= new MockCollection($name);
       foreach ($elements as $element) {
         $c->addElement($element);

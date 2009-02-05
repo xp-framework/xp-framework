@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.collections.IOElement');
+  uses('io.collections.IOElement', 'io.streams.MemoryInputStream', 'io.streams.MemoryOutputStream');
 
   /**
    * Represents a Mock element
@@ -59,7 +59,7 @@
     /**
      * Retrieve this element's created date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function createdAt() {
       return $this->cdate;
@@ -68,7 +68,7 @@
     /**
      * Retrieve this element's last-accessed date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastAccessed() {
       return $this->adate;
@@ -77,7 +77,7 @@
     /**
      * Retrieve this element's last-modified date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastModified() {
       return $this->mdate;
@@ -108,6 +108,26 @@
      */
     public function setOrigin(IOCollection $origin) {
       $this->origin= $origin;
+    }
+
+    /**
+     * Gets input stream to read from this element
+     *
+     * @return  io.streams.InputStream
+     * @throws  io.IOException
+     */
+    public function getInputStream() {
+      return new MemoryInputStream('File contents of {'.$this->uri.'}');
+    }
+
+    /**
+     * Gets output stream to read from this element
+     *
+     * @return  io.streams.OutputStream
+     * @throws  io.IOException
+     */
+    public function getOutputStream() {
+      return new MemoryOutputStream();
     }
   } 
 ?>
