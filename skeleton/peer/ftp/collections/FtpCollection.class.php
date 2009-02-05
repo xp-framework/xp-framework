@@ -17,8 +17,12 @@
    * @purpose  IOCollection implementation
    */
   class FtpCollection extends Object implements IOCollection {
-    protected $dir= NULL;
-    private $it= NULL;
+    protected 
+      $dir    = NULL,
+      $origin = NULL;
+
+    private 
+      $it     = NULL;
       
     /**
      * Constructor
@@ -70,6 +74,7 @@
       } else {
         $next= new FtpElement($entry);
       }
+      $next->setOrigin($this);
       return $next;
     }
 
@@ -124,6 +129,24 @@
      */
     public function toString() { 
       return $this->getClassName().'(->'.$this->dir->toString().')';
+    }
+
+    /**
+     * Gets origin of this element
+     *
+     * @return  io.collections.IOCollection
+     */
+    public function getOrigin() {
+      return $this->origin;
+    }
+
+    /**
+     * Sets origin of this element
+     *
+     * @param   io.collections.IOCollection
+     */
+    public function setOrigin(IOCollection $origin) {
+      $this->origin= $origin;
     }
   } 
 ?>

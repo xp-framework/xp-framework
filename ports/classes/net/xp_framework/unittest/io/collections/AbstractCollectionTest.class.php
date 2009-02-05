@@ -23,6 +23,47 @@
       $total   = 0;
 
     /**
+     * Assert an origin is based on a given origin.
+     *
+     * Assume we have the following situation:
+     * <pre>
+     *   IOCollection(/)
+     *   `- IOCollection(/var)
+     *      `- IOCollection(/var/log)
+     *         `- IOElement (/var/log/messages)
+     * </pre>
+     *
+     * This asserts that IOElement (/var/log/messages)'s origin is based
+     * on IOCollection(/).
+     *
+     * @param   io.IOCollection base
+     * @param   io.IOCollection origin
+     * @throws  unittest
+     */
+    protected function assertOriginBasedOn(IOCollection $base, IOCollection $origin) {
+      $search= $origin;
+      do {
+        if ($search->equals($base)) return;
+      } while (NULL !== ($search= $search->getOrigin()));
+      throw new AssertionFailedError('Not based on', $origin, $base);
+    }
+
+    /**
+     * Returns a collection 
+     *
+     * @param   string name
+     * @param   io.collections.IOElement[] elements
+     * @return  io.collections.IOCollection
+     */
+    protected function newCollection($name, $elements) {
+      $c= new MockCollection($name);
+      foreach ($elements as $element) {
+        $c->addElement($element);
+      }
+      return $c;
+    }
+
+    /**
      * Adds an element to the given collection and increases the size counter
      *
      * @param   io.collection.IOCollection c

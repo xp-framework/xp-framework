@@ -13,9 +13,10 @@
    * @purpose  Mock object
    */
   class MockCollection extends Object implements IOCollection {
-    public
+    protected
       $_elements = array(),
-      $_offset   = -1;
+      $_offset   = -1,
+      $origin    = NULL;
       
     /**
      * Constructor
@@ -29,10 +30,11 @@
     /**
      * Add an element to the collection. Returns the added element.
      *
-     * @return  &io.collection.IOElement e
-     * @return  &io.collection.IOElement
+     * @param   io.collection.IOElement e
+     * @return  io.collection.IOElement
      */
     public function addElement($e) {
+      $e->setOrigin($this);
       $this->_elements[]= $e;
       return $e;
     }
@@ -66,7 +68,7 @@
      * Retrieve next element in collection. Return NULL if no more entries
      * are available
      *
-     * @return  &io.collection.IOElement
+     * @return  io.collection.IOElement
      */
     public function next() {
       if (-1 == $this->_offset) throw(new IllegalStateException('Not open'));
@@ -95,7 +97,7 @@
     /**
      * Retrieve this element's created date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function createdAt() {
       return NULL;
@@ -104,7 +106,7 @@
     /**
      * Retrieve this element's last-accessed date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastAccessed() {
       return NULL;
@@ -113,7 +115,7 @@
     /**
      * Retrieve this element's last-modified date and time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function lastModified() {
       return NULL;
@@ -128,5 +130,22 @@
       return $this->getClassName().'('.$this->uri.')';
     }
   
+    /**
+     * Gets origin of this element
+     *
+     * @return  io.collections.IOCollection
+     */
+    public function getOrigin() {
+      return $this->origin;
+    }
+
+    /**
+     * Sets origin of this element
+     *
+     * @param   io.collections.IOCollection
+     */
+    public function setOrigin(IOCollection $origin) {
+      $this->origin= $origin;
+    }
   } 
 ?>

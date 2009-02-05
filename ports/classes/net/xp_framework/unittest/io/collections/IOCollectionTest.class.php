@@ -34,7 +34,7 @@
     public function nextReturnsIOElements() {
       $this->fixture->open();
       for ($i= 0; $e= $this->fixture->next(); $i++) {
-        $this->assertTrue(is('io.collections.IOElement', $e));
+        $this->assertSubclass($e, 'io.collections.IOElement');
       }
       $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
       $this->fixture->close();

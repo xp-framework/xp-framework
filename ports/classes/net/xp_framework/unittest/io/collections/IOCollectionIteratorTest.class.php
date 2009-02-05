@@ -34,7 +34,7 @@
    * @purpose  Unit test
    */
   class IOCollectionIteratorTest extends AbstractCollectionTest {
-    
+
     /**
      * Test IOCollectionIterator
      *
@@ -42,7 +42,8 @@
     #[@test]
     public function iteration() {
       for ($it= new IOCollectionIterator($this->fixture), $i= 0; $it->hasNext(); $i++) {
-        $this->assertSubclass($it->next(), 'io.collections.IOElement');
+        $element= $it->next();
+        $this->assertSubclass($element, 'io.collections.IOElement');
       }
       $this->assertEquals($this->sizes[$this->fixture->getURI()], $i);
     }
@@ -54,7 +55,8 @@
     #[@test]
     public function recursiveIteration() {
       for ($it= new IOCollectionIterator($this->fixture, TRUE), $i= 0; $it->hasNext(); $i++) {
-        $this->assertSubclass($it->next(), 'io.collections.IOElement');
+        $element= $it->next();
+        $this->assertSubclass($element, 'io.collections.IOElement');
       }
       $this->assertEquals($this->total, $i);
     }
@@ -352,6 +354,61 @@
           new ExtensionEqualsFilter('txt')
         )), TRUE)
       );
+    }
+
+    /**
+     * Test getOrigin()
+     *
+     */
+    #[@test]
+    public function originBasedOn() {
+      $c= $this->newCollection('/home', array(
+        new MockElement('.nedit'),
+        $this->newCollection('/home/bin', array(
+          new MockElement('xp')
+        ))
+      ));
+      
+      foreach (new IOCollectionIterator($c, TRUE) as $i => $e) {
+        $this->assertOriginBasedOn($c, $e->getOrigin());
+      }
+    }
+
+    /**
+     * Test getOrigin()
+     *
+     */
+    #[@test]
+    public function originEqualsBase() {
+      $c= $this->newCollection('/home', array(
+        new MockElement('.nedit'),
+        $this->newCollection('/home/bin', array(
+          new MockElement('xp')
+        ))
+      ));
+      
+      foreach (new IOCollectionIterator($c) as $i => $e) {
+        $this->assertEquals($c, $e->getOrigin());
+      }
+    }
+
+    /**
+     * Test getOrigin()
+     *
+     */
+    #[@test]
+    public function originEquals() {
+      $c= $this->newCollection('/home', array(
+        new MockElement('.nedit'),
+        $bin= $this->newCollection('/home/bin', array(
+          new MockElement('xp.exe')
+        ))
+      ));
+      
+      foreach (new FilteredIOCollectionIterator($c, new ExtensionEqualsFilter('.exe'), TRUE) as $i => $e) {
+        $this->assertNotEquals($c, $e->getOrigin());
+        $this->assertEquals($bin, $e->getOrigin());
+      }
     }
   }
 ?>

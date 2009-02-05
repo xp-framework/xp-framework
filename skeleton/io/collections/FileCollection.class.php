@@ -16,8 +16,9 @@
     public
       $uri = '';
     
-    public
-      $_hd = NULL;
+    protected
+      $origin = NULL,
+      $_hd    = NULL;
       
     /**
      * Constructor
@@ -126,5 +127,22 @@
       return $this->getClassName().'('.$this->uri.')';
     }
   
+    /**
+     * Gets origin of this element
+     *
+     * @return  io.collections.IOCollection
+     */
+    public function getOrigin() {
+      return $this->origin;
+    }
+
+    /**
+     * Sets origin of this element
+     *
+     * @param   io.collections.IOCollection
+     */
+    public function setOrigin(IOCollection $origin) {
+      $this->origin= $origin;
+    }
   } 
 ?>

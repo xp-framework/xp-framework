@@ -13,7 +13,9 @@
    * @purpose  Interface
    */
   class FtpElement extends Object implements IOElement {
-    protected $file= NULL;
+    protected 
+      $file   = NULL,
+      $origin = NULL;
 
     /**
      * Constructor
@@ -76,6 +78,24 @@
      */
     public function toString() { 
       return $this->getClassName().'(->'.$this->file->toString().')';
+    }
+
+    /**
+     * Gets origin of this element
+     *
+     * @return  io.collections.IOCollection
+     */
+    public function getOrigin() {
+      return $this->origin;
+    }
+
+    /**
+     * Sets origin of this element
+     *
+     * @param   io.collections.IOCollection
+     */
+    public function setOrigin(IOCollection $origin) {
+      $this->origin= $origin;
     }
   } 
 ?>

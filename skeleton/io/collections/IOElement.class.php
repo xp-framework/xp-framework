@@ -48,5 +48,19 @@
      */
     public function lastModified();
 
+    /**
+     * Gets origin of this element
+     *
+     * @return  io.collections.IOCollection
+     */
+    public function getOrigin();
+
+    /**
+     * Sets origin of this element
+     *
+     * @param   io.collections.IOCollection
+     */
+    public function setOrigin(IOCollection $origin);
+
   }
 ?>

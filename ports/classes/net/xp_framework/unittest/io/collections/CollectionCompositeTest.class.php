@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'net.xp_framework.unittest.io.collections.MockCollection',
+    'net.xp_framework.unittest.io.collections.AbstractCollectionTest',
     'io.collections.CollectionComposite'
   );
 
@@ -16,7 +16,7 @@
    * @see      xp://io.collections.CollectionComposite
    * @purpose  Unit test
    */
-  class CollectionCompositeTest extends TestCase {
+  class CollectionCompositeTest extends AbstractCollectionTest {
   
     /**
      * Helper method that asserts a given element is an IOElement
@@ -29,21 +29,6 @@
     protected function assertElement($uri, $element) {
       $this->assertSubClass($element, 'io.collections.IOElement');
       $this->assertEquals($uri, $element->getURI());
-    }
-    
-    /**
-     * Returns a collection 
-     *
-     * @param   string name
-     * @param   io.collections.IOElement[] elements
-     * @return  io.collections.IOCollection
-     */
-    protected function newCollection($name, $elements) {
-      $c= new MockCollection($name);
-      foreach ($elements as $element) {
-        $c->addElement($element);
-      }
-      return $c;
     }
     
     /**
@@ -104,8 +89,8 @@
         $this->newCollection('/usr/local/etc', array(new MockElement('php.ini'))),
       ));
       $composite->open();
-      $this->assertElement('.nedit', $composite->next()) &&
-      $this->assertElement('php.ini', $composite->next()) &&
+      $this->assertElement('.nedit', $composite->next());
+      $this->assertElement('php.ini', $composite->next());
       $this->assertNull($composite->next());
       $composite->close();
     }
