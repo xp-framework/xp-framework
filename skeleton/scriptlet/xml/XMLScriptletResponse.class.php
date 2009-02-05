@@ -242,14 +242,17 @@
      * @param   string fraction default NULL the fraction without the leading "#"
      */
     public function forwardTo($state, $query= NULL, $fraction= NULL) {
-
+      
+      // Forward based on current URL
+      $uri= clone $this->uri;
+      
       // Construct new URL
-      $this->uri->setStateName($state);
-      if ($query    !== NULL) $this->uri->setQuery($query);
-      if ($fraction !== NULL) $this->uri->setFraction($faction);
+      $uri->setStateName($state);
+      $uri->setQuery($query);
+      $uri->setFraction($faction);
       
       // Redirect
-      $this->sendRedirect($this->uri->getURL());
+      $this->sendRedirect($uri->getURL());
     }
     
     /**
