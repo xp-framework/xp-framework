@@ -52,6 +52,7 @@
    *   }
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.scriptlet.LocaleNegotiatorTest
    * @see      http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
    * @purpose  Negotiate locales
    */
@@ -79,8 +80,8 @@
      * @param   string default default NULL
      * @return  util.Locale
      */
-    public function getLocale($supported, $default= NULL) {
-      $chosen= FALSE;
+    public function getLocale(array $supported, $default= NULL) {
+      $chosen= NULL;
       foreach ($this->languages as $lang => $q) {
         if (
           ($chosen= $this->_find($lang, $supported)) ||
@@ -97,10 +98,15 @@
      * @param   string default default NULL
      * @return  string charset or default if none matches
      */
-    public function getCharset($supported, $default= NULL) {
-      $chosen= FALSE;
+    public function getCharset(array $supported, $default= NULL) {
+      $chosen= NULL;
       foreach ($this->charsets as $charset => $q) {
-        if ($chosen= $this->_find($charset, $supported)) break;
+        if ($chosen= $this->_find($charset, $supported)) {
+          break;
+        } else if ('*' === $charset) {
+          $chosen= $supported[0];
+          break;
+        }
       }
       return $chosen ? $chosen : $default;
     }
@@ -141,14 +147,13 @@
      * @param   string value
      * @param   string[] array
      * @param   int len default -1
-     * @return  string found or FALSE to indicate it wasn't found
+     * @return  string found or NULL to indicate it wasn't found
      */
     protected function _find($value, $array, $len= -1) {
-      if (-1 == $len) $len= strlen($value);
       foreach ($array as $cmp) {
-        if (0 == strncasecmp($value, $cmp, $len)) return $cmp;
+        if (0 === strncasecmp($value, $cmp, -1 === $len ? strlen($cmp) : $len)) return $cmp;
       }
-      return FALSE;
+      return NULL;
     }
   }
 ?>
