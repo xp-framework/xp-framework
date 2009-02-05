@@ -167,7 +167,7 @@
      * @return  bool TRUE, if the file is open
      */
     public function isOpen() {
-      return $this->_fd;
+      return (bool)$this->_fd;
     }
     
     /**
