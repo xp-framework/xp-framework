@@ -25,6 +25,7 @@
      * @throws  io.FileNotFoundException
      */
     public static function getContents($file) {
+      clearstatcache();
       $file->open(FILE_MODE_READ);
       $data= $file->read($file->size());
       $file->close();
