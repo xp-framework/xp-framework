@@ -23,7 +23,7 @@
      * and that its URI equals the expected URI.
      *
      * @param   string uri
-     * @param   &io.collections.IOElement element
+     * @param   io.collections.IOElement element
      * @throws  unittest.AssertionFailedError
      */
     protected function assertElement($uri, $element) {
@@ -36,7 +36,7 @@
      *
      * @param   string name
      * @param   io.collections.IOElement[] elements
-     * @return  &io.collections.IOCollection
+     * @return  io.collections.IOCollection
      */
     protected function newCollection($name, $elements) {
       $c= new MockCollection($name);
@@ -50,7 +50,7 @@
      * Returns an empty collection.
      *
      * @param   string name
-     * @return  &io.collections.IOCollection
+     * @return  io.collections.IOCollection
      */
     protected function emptyCollection($name) {
       return $this->newCollection($name, array());
