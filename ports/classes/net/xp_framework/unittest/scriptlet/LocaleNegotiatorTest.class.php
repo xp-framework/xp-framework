@@ -18,7 +18,7 @@
     protected $fixture= NULL;
 
     /**
-     * Sets up test case
+     * Create fixture
      *
      */
     public function setUp() {
@@ -29,7 +29,30 @@
     }
 
     /**
-     * Test
+     * Test getLocale()
+     *
+     */
+    #[@test]
+    public function languageNegotiation() {
+      $supported= array('de_DE', 'en_UK', 'en_US', 'es_ES');
+      $default= 'en_US';
+      foreach (array(
+        'de_DE, en_UK'    => 'de_DE',
+        'es_ES, de_DE'    => 'es_ES',
+        'en_US'           => 'en_US',
+        'fr_FR'           => 'en_US',
+        'fr_FR, en_UK'    => 'en_UK',
+      ) as $usersetting => $result) {
+        $this->assertEquals(
+          new Locale($result),
+          create(new LocaleNegotiator($usersetting))->getLocale($supported, $default),
+          'Setting <'.$usersetting.'> should yield '.$result.' (supported: '.implode(', ', $supported).', default: '.$default.')'
+        );
+      }
+    }
+
+    /**
+     * Test getLocale()
      *
      */
     #[@test]
@@ -45,7 +68,7 @@
     }
 
     /**
-     * Test
+     * Test getLocale()
      *
      */
     #[@test]
@@ -57,7 +80,7 @@
     }
 
     /**
-     * Test
+     * Test getLocale()
      *
      */
     #[@test]
@@ -69,7 +92,7 @@
     }
 
     /**
-     * Test
+     * Test getLocale()
      *
      */
     #[@test]
@@ -81,7 +104,7 @@
     }
 
     /**
-     * Test
+     * Test getLocale()
      *
      */
     #[@test]
@@ -93,7 +116,7 @@
     }
 
     /**
-     * Test
+     * Test getCharset()
      *
      */
     #[@test]
@@ -105,7 +128,7 @@
     }
 
     /**
-     * Test
+     * Test getCharset()
      *
      */
     #[@test]
@@ -117,7 +140,7 @@
     }
 
     /**
-     * Test
+     * Test getCharset()
      *
      */
     #[@test]
