@@ -29,7 +29,7 @@
       if (is('io.Folder', $arg)) {
         $this->uri= $arg->getUri();
       } else {
-        $this->uri= rtrim(realpath($uri), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        $this->uri= rtrim(realpath($arg), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       }
     }
     
@@ -75,6 +75,7 @@
       } else {
         $next= new FileElement($qualified);
       }
+      $next->setOrigin($this);
       return $next;
     }
 
