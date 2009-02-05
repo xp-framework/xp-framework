@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Mon Oct 20 16:41:26     2008
-@status: discussion, ends Mon Feb 02 18:00:00     2009
+@status: implemented, Thu Feb  5 20:27:57     2009
 @category: io.collections
 
 Scope of Change
@@ -81,7 +81,7 @@ the <tt>io.streams.Streams</tt> class will be extended:
 
 <code>
   // Method signature
-  public lang.types.Bytes readAll(io.streams.InputStream $is);
+  public string readAll(io.streams.InputStream $is);
   
   // Usage in above example
   foreach (...) {
@@ -116,5 +116,9 @@ friebe, Tue Oct 21 10:41:36     2008
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Should <tt>io.streams.Streams::readAll()</tt> close the stream it gets
 passed or should it have a parameter <tt>boolean close= TRUE</tt>?
+
+friebe, Thu Feb  5 20:27:29     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The <tt>readAll()</tt> method will not close the stream.
 
 <EOF>
