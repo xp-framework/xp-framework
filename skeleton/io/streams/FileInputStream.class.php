@@ -9,6 +9,7 @@
   /**
    * InputStream that reads from a file
    *
+   * @test     xp://net.xp_framework.unittest.io.streams.FileInputStreamTest
    * @purpose  InputStream implementation
    */
   class FileInputStream extends Object implements InputStream, Seekable {
@@ -50,14 +51,6 @@
      */
     public function close() {
       $this->file->close();
-    }
-
-    /**
-     * Destructor. Ensures file is closed.
-     *
-     */
-    public function __destruct() {
-      $this->file->isOpen() && $this->close();
     }
 
     /**
