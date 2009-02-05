@@ -31,6 +31,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed io.streams.FileInputStream and io.streams.FileOutputStream not 
+  to close underlying file when they get garbage-collected.
+  (friebe)
 - Fixed remote interface mapping when creating the remote interface in the
   remote API
   (hinckel)
