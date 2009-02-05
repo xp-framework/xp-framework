@@ -19,6 +19,7 @@
    * @purpose  TestCase
    */
   class SerializerTest extends TestCase {
+    protected $serializer= NULL;
 
     /**
      * Setup testcase
@@ -34,7 +35,7 @@
      */
     #[@test]
     public function representationOfNull() {
-      $this->assertEquals('N;', $this->serializer->representationOf($var= NULL));
+      $this->assertEquals('N;', $this->serializer->representationOf(NULL));
     }
 
     /**
