@@ -106,6 +106,19 @@
       self::$streams[$s->hashCode()]= $s;
       return 'iostr+w://'.$s->hashCode();
     }
+    
+    /**
+     * Read an IOElements' contents completely into a buffer in a single call.
+     *
+     * @param   io.streams.InputStream s
+     * @return  string
+     * @throws  io.IOException
+     */
+    public static function readAll(InputStream $s) {
+      $r= '';
+      while ($s->available() > 0) $r.= $s->read();
+      return $r;
+    }
 
     /**
      * Callback for fopen

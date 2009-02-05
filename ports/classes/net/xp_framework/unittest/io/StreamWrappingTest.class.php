@@ -144,5 +144,36 @@
       $fd= Streams::readableFd(new MemoryInputStream(''));
       fwrite($fd, 1024);
     }
+
+    /**
+     * Test readAll()
+     *
+     */
+    #[@test]
+    public function readAll() {
+      $this->assertEquals('Hello', Streams::readAll(new MemoryInputStream('Hello')));
+    }
+
+    /**
+     * Test readAll()
+     *
+     */
+    #[@test]
+    public function readAllFromEmptyStream() {
+      $this->assertEquals('', Streams::readAll(new MemoryInputStream('')));
+    }
+
+    /**
+     * Test readAll()
+     *
+     */
+    #[@test, @expect('io.IOException')]
+    public function readAllWithException() {
+      $this->assertEquals('', Streams::readAll(newinstance('io.streams.InputStream', array(), '{
+        public function read($limit= 8192) { throw new IOException("FAIL"); }
+        public function available() { return 1; }
+        public function close() { }
+      }')));
+    }
   }
 ?>
