@@ -51,7 +51,7 @@
      * Sets the input stream. This stream must support
      * isOpen(), open(), eof(), readLine().
      *
-     * @param   Stream stream
+     * @param   io.Stream stream
      */    
     public function setInputStream($stream) {
       if (!$stream->isOpen()) $stream->open();
