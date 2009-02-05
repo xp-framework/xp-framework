@@ -16,7 +16,7 @@
    * @see      xp://io.collections.IOCollection
    * @purpose  Unit test
    */
-  class AbstractCollectionTest extends TestCase {
+  abstract class AbstractCollectionTest extends TestCase {
     public
       $fixture = NULL,
       $sizes   = array(),
