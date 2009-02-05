@@ -9,6 +9,7 @@
   /**
    * OuputStream that writes to files
    *
+   * @test     xp://net.xp_framework.unittest.io.streams.FileOutputStreamTest
    * @purpose  OuputStream implementation
    */
   class FileOutputStream extends Object implements OutputStream {
@@ -57,14 +58,6 @@
      */
     public function close() {
       $this->file->close();
-    }
-
-    /**
-     * Destructor. Ensures file is closed.
-     *
-     */
-    public function __destruct() {
-      $this->file->isOpen() && $this->close();
     }
   }
 ?>
