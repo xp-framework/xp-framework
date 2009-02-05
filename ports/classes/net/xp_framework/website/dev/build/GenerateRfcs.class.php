@@ -12,8 +12,6 @@
     'text.StreamTokenizer',
     'io.File',
     'lang.ElementNotFoundException',
-    'io.streams.FileInputStream',
-    'io.streams.FileInputStream',
     'io.collections.FileCollection',
     'io.collections.iterate.FilteredIOCollectionIterator',
     'io.collections.iterate.NameMatchesFilter'
@@ -78,7 +76,7 @@
 
       $it= new FilteredIOCollectionIterator($this->origin, $this->filter);
       foreach ($it as $element) {
-        with ($s= new FileInputStream(new File($element->getURI()))); {
+        with ($s= $element->getInputStream()); {
 
           // Parse header
           $st= new StreamTokenizer($s, "\n");
