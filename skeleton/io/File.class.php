@@ -153,10 +153,10 @@
         0 != strncmp('php://', $this->uri, 6) &&
         (FILE_MODE_READ == $mode) && 
         (!$this->exists())
-      ) throw(new FileNotFoundException($this->uri));
+      ) throw new FileNotFoundException($this->uri);
       
       $this->_fd= fopen($this->uri, $this->mode);
-      if (!$this->_fd) throw(new IOException('Cannot open '.$this->uri.' mode '.$this->mode));
+      if (!$this->_fd) throw new IOException('Cannot open '.$this->uri.' mode '.$this->mode);
       
       return TRUE;
     }
@@ -186,8 +186,9 @@
      * @throws  io.IOException in case of an error
      */
     public function size() {
-      $size= filesize($this->uri);
-      if (FALSE === $size) throw(new IOException('Cannot get filesize for '.$this->uri));
+      if (FALSE === ($size= filesize($this->uri))) {
+        throw new IOException('Cannot get filesize for '.$this->uri);
+      }
       return $size;
     }
     
@@ -198,8 +199,9 @@
      * @throws  io.IOException in case of an error
      */
     public function truncate($size= 0) {
-      $return= ftruncate($this->_fd, $size);
-      if (FALSE === $return) throw(new IOException('Cannot truncate file '.$this->uri));
+      if (FALSE === ($return= ftruncate($this->_fd, $size))) {
+        throw new IOException('Cannot truncate file '.$this->uri);
+      }
       return $return;
     }
 
@@ -218,8 +220,9 @@
      * @throws  io.IOException in case of an error
      */
     public function lastAccessed() {
-      $atime= fileatime($this->uri);
-      if (FALSE === $atime) throw(new IOException('Cannot get atime for '.$this->uri));
+      if (FALSE === ($atime= fileatime($this->uri))) {
+        throw new IOException('Cannot get atime for '.$this->uri);
+      }
       return $atime;
     }
     
@@ -230,8 +233,9 @@
      * @throws  io.IOException in case of an error
      */
     public function lastModified() {
-      $mtime= filemtime($this->uri);
-      if (FALSE === $mtime) throw(new IOException('Cannot get mtime for '.$this->uri));
+      if (FALSE === ($mtime= filemtime($this->uri))) {
+        throw new IOException('Cannot get mtime for '.$this->uri);
+      }
       return $mtime;
     }
     
@@ -245,7 +249,7 @@
     public function touch($time= -1) {
       if (-1 == $time) $time= time();
       if (FALSE === touch($this->uri, $time)) {
-        throw(new IOException('Cannot set mtime for '.$this->uri));
+        throw new IOException('Cannot set mtime for '.$this->uri);
       }
       return TRUE;
     }
@@ -258,7 +262,7 @@
      */
     public function createdAt() {
       if (FALSE === ($mtime= filectime($this->uri))) {
-        throw(new IOException('Cannot get mtime for '.$this->uri));
+        throw new IOException('Cannot get mtime for '.$this->uri);
       }
       return $mtime;
     }
@@ -286,7 +290,7 @@
      */
     public function readChar() {
       if (FALSE === ($result= fgetc($this->_fd)) && !feof($this->_fd)) {
-        throw(new IOException('Cannot read 1 byte from '.$this->uri));
+        throw new IOException('Cannot read 1 byte from '.$this->uri);
       }
       return $result;
     }
@@ -304,7 +308,7 @@
     public function gets($bytes= 4096) {
       if (0 === $bytes) return '';
       if (FALSE === ($result= fgets($this->_fd, $bytes)) && !feof($this->_fd)) {
-        throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
+        throw new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
       }
       return $result;
     }
@@ -319,7 +323,7 @@
     public function read($bytes= 4096) {
       if (0 === $bytes) return '';
       if (FALSE === ($result= fread($this->_fd, $bytes)) && !feof($this->_fd)) {
-        throw(new IOException('Cannot read '.$bytes.' bytes from '.$this->uri));
+        throw new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
       }
       return $result;
     }
@@ -332,8 +336,8 @@
      * @throws  io.IOException in case of an error
      */
     public function write($string) {
-      if (FALSE === ($result= fwrite($this->_fd, $string))) {
-        throw(new IOException('Cannot write '.strlen($string).' bytes to '.$this->uri));
+      if (!$this->_fd || FALSE === ($result= fwrite($this->_fd, $string))) {
+        throw new IOException('Cannot write '.strlen($string).' bytes to '.$this->uri);
       }
       return $result;
     }
@@ -346,8 +350,8 @@
      * @throws  io.IOException in case of an error
      */
     public function writeLine($string= '') {
-      if (FALSE === ($result= fwrite($this->_fd, $string."\n"))) {
-        throw(new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
+      if (!$this->_fd || FALSE === ($result= fwrite($this->_fd, $string."\n"))) {
+        throw new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri);
       }
       return $result;
     }
@@ -365,7 +369,7 @@
     public function eof() {
       $result= feof($this->_fd);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw(new IOException('Cannot determine eof of '.$this->uri));
+        throw new IOException('Cannot determine eof of '.$this->uri);
       }
       return $result;
     }
@@ -381,7 +385,7 @@
      */
     public function rewind() {
       if (FALSE === ($result= rewind($this->_fd))) {
-        throw(new IOException('Cannot rewind file pointer'));
+        throw new IOException('Cannot rewind file pointer');
       }
       return TRUE;
     }
@@ -397,7 +401,7 @@
      */
     public function seek($position= 0, $mode= SEEK_SET) {
       if (0 != ($result= fseek($this->_fd, $position, $mode))) {
-        throw(new IOException('Seek error, position '.$position.' in mode '.$mode));
+        throw new IOException('Seek error, position '.$position.' in mode '.$mode);
       }
       return TRUE;
     }
@@ -409,8 +413,9 @@
      * @throws  io.IOException in case of an error
      */
     public function tell() {
-      $result= ftell($this->_fd);
-      if (FALSE === $result) throw(new IOException('Cannot retrieve file pointer\'s position'));
+      if (FALSE === ($result= ftell($this->_fd))) {
+        throw new IOException('Cannot retrieve file pointer\'s position');
+      }
       return $result;
     }
 
@@ -449,7 +454,7 @@
             $mode-= $o;
           }
         }
-        throw(new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3)));
+        throw new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3));
       }
       
       return TRUE;
@@ -495,7 +500,7 @@
      */
     public function close() {
       if (FALSE === fclose($this->_fd)) {
-        throw(new IOException('Cannot close file '.$this->uri));
+        throw new IOException('Cannot close file '.$this->uri);
       }
       
       $this->_fd= NULL;
@@ -514,11 +519,10 @@
      */
     public function unlink() {
       if (is_resource($this->_fd)) {
-        throw(new IllegalStateException('File still open'));
+        throw new IllegalStateException('File still open');
       }
-      
       if (FALSE === unlink($this->uri)) {
-        throw(new IOException('Cannot delete file '.$this->uri));
+        throw new IOException('Cannot delete file '.$this->uri);
       }
       return TRUE;
     }
@@ -536,11 +540,10 @@
      */
     public function move($target) {
       if (is_resource($this->_fd)) {
-        throw(new IllegalStateException('File still open'));
+        throw new IllegalStateException('File still open');
       }
-      
       if (FALSE === rename($this->uri, $target)) {
-        throw(new IOException('Cannot move file '.$this->uri.' to '.$target));
+        throw new IOException('Cannot move file '.$this->uri.' to '.$target);
       }
       
       $this->setURI($target);
@@ -560,11 +563,11 @@
      */
     public function copy($target) {
       if (is_resource($this->_fd)) {
-        throw(new IllegalStateException('File still open'));
+        throw new IllegalStateException('File still open');
       }
       
       if (FALSE === copy($this->uri, $target)) {
-        throw(new IOException('Cannot copy file '.$this->uri.' to '.$target));
+        throw new IOException('Cannot copy file '.$this->uri.' to '.$target);
       }
       return TRUE;
     }
