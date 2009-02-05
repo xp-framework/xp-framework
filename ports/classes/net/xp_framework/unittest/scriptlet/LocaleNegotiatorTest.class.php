@@ -38,6 +38,10 @@
         new Locale('de_AT'), 
         $this->fixture->getLocale($supported= array('de_AT', 'de_DE', 'en_US'), $default= 'C')
       );
+      $this->assertEquals(
+        new Locale('de_AT'), 
+        $this->fixture->getLocale($supported= array('de_DE', 'de_AT', 'en_US'), $default= 'C')
+      );
     }
 
     /**
