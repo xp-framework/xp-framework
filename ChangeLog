@@ -22,6 +22,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added io.collections.ArchiveCollection class to work with XARs
+  (friebe)
 - Added support for enums to the Remote API (EASC)
   See http://news.xp-framework.net/article/287/2009/01/28/
   (hinckel, friebe)
