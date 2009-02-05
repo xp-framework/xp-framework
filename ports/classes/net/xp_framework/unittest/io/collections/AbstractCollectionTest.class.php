@@ -17,7 +17,7 @@
    * @purpose  Unit test
    */
   abstract class AbstractCollectionTest extends TestCase {
-    public
+    protected
       $fixture = NULL,
       $sizes   = array(),
       $total   = 0;
@@ -25,11 +25,11 @@
     /**
      * Adds an element to the given collection and increases the size counter
      *
-     * @return  &io.collection.IOCollection c
-     * @return  &io.collection.IOElement e
-     * @return  &io.collection.IOElement
+     * @param   io.collection.IOCollection c
+     * @param   io.collection.IOElement e
+     * @return  io.collection.IOElement
      */
-    public function addElement($c, $e) {
+    public function addElement(IOCollection $c, IOElement $e) {
       $c->addElement($e);
       $this->total++;
       with ($key= $c->getURI()); {
