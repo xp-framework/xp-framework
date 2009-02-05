@@ -70,7 +70,6 @@
     public function __construct($languages, $charsets) {
       $this->languages= $this->_parse($languages);
       $this->charsets= $this->_parse($charsets);
-      
     }
     
     /**
@@ -127,10 +126,10 @@
       $values= array();
       if ($t= strtok($str, ', ')) do {
         if (FALSE === ($p= strpos($t, ';'))) {
-          $value= $t;
+          $value= strtr($t, '-', '_');
           $q= 1.0;
         } else {
-          $value= substr($t, 0, $p);
+          $value= strtr(substr($t, 0, $p), '-', '_');
           $q= (float)substr($t, $p + 3);    // skip ";q="
         }
         $values[strtolower($value)]= $q;
