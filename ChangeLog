@@ -31,6 +31,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed io.File::write() and io.File::writeLine() to throw an IOException
+  if the underlying file handle has been closed
+  (friebe)
 - Fixed io.streams.FileInputStream and io.streams.FileOutputStream not 
   to close underlying file when they get garbage-collected.
   (friebe)
