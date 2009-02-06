@@ -16,7 +16,9 @@
    * @purpose  purpose
    */
   class TimeZoneTest extends TestCase {
-  
+    protected
+      $fixture = NULL;  
+
     /**
      * Setup fixture
      *
