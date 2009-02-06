@@ -20,7 +20,7 @@
    */
   class DefaultFtpListParserTest extends TestCase {
     protected
-      $parser     = NULL,
+      $fixture    = NULL,
       $connection = NULL;
 
     /**
