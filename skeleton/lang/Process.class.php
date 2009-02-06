@@ -177,7 +177,11 @@
             throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
           }
         } else if (file_exists($proc= '/proc/'.$pid)) {
-          $self->status['exe']= readlink($proc.'/exe');
+          foreach (array('/exe', '/file') as $alt) {
+            if (!file_exists($proc.$alt)) continue;
+            $self->status['exe']= readlink($proc.$alt);
+            break;
+          }
           $self->status['command']= strtr($proc.'/cmdline', "\0", ' ');
         } else if ($_= getenv('_')) {
           $self->status['exe']= realpath($_);
