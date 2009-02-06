@@ -17,6 +17,8 @@
    * @purpose  Unittest for text.doclet API
    */
   class SeeTagletTest extends TestCase {
+    protected
+      $holder  = NULL;
   
     /**
      * Sets up test case
