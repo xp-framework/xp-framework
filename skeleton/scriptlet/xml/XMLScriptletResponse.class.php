@@ -249,7 +249,7 @@
       // Construct new URL
       $uri->setStateName($state);
       $uri->setQuery($query);
-      $uri->setFraction($faction);
+      $uri->setFragment($fraction);
       
       // Redirect
       $this->sendRedirect($uri->getURL());
