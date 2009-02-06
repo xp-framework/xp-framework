@@ -17,6 +17,9 @@
    * @see      xp://io.collections.ArchiveCollection
    */
   class ArchiveCollectionTest extends TestCase {
+    protected
+      $file     = NULL,
+      $archive  = NULL;
   
     /**
      * Sets up test case (creates temporary xar archive)

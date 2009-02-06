@@ -14,6 +14,7 @@
    */
   class MockCollection extends Object implements IOCollection {
     protected
+      $uri       = '',
       $_elements = array(),
       $_offset   = -1,
       $origin    = NULL;
