@@ -19,6 +19,8 @@
    * @purpose  Unit test
    */
   class FinderTest extends TestCase {
+    protected 
+      $fixture = NULL;
 
     static function __static() {
       DriverManager::register(
