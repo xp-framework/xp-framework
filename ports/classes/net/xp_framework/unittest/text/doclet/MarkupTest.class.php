@@ -16,6 +16,8 @@
    * @purpose  purpose
    */
   class MarkupTest extends TestCase {
+    protected
+      $builder = NULL;
   
     /**
      * Sets up test case
