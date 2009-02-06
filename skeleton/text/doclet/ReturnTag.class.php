@@ -13,6 +13,8 @@
    * @purpose  Tag
    */
   class ReturnTag extends Tag {
+    public
+      $type = NULL;
    
     /**
      * Constructor
