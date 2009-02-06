@@ -18,6 +18,8 @@
    * @purpose  Unittest
    */
   class FtpEntryListTest extends TestCase {
+    protected
+      $conn          = NULL;
   
     /**
      * Sets up test case
