@@ -22,6 +22,9 @@
   class IntegrationTest extends TestCase {
     protected static
       $serverProcess = NULL;
+    
+    protected
+      $conn          = NULL;
 
     /**
      * Sets up test case
