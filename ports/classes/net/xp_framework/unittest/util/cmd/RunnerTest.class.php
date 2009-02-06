@@ -364,6 +364,7 @@
     public function optionalArgument() {
       $command= newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $name= NULL;
 
         #[@arg]
         public function setName($name= "unknown") { $this->name= $name; }
@@ -384,6 +385,7 @@
     public function optionalArgumentNotPassed() {
       $command= newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $name= NULL;
 
         #[@arg]
         public function setName($name= "unknown") { $this->name= $name; }
@@ -460,6 +462,7 @@
     public function allArgs() {
       $this->assertAllArgs('a, b, c, d, e, f, g', newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $args= array();
 
         #[@args(select= "[0..]")]
         public function setArgs($args) { $this->args= $args; }
@@ -476,6 +479,7 @@
     public function allArgsCompactNotation() {
       $this->assertAllArgs('a, b, c, d, e, f, g', newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $args= array();
 
         #[@args(select= "*")]
         public function setArgs($args) { $this->args= $args; }
@@ -492,6 +496,7 @@
     public function boundedArgs() {
       $this->assertAllArgs('a, b, c', newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $args= array();
 
         #[@args(select= "[0..2]")]
         public function setArgs($args) { $this->args= $args; }
@@ -508,6 +513,7 @@
     public function boundedArgsFromOffset() {
       $this->assertAllArgs('c, d, e', newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $args= array();
 
         #[@args(select= "[2..4]")]
         public function setArgs($args) { $this->args= $args; }
@@ -524,6 +530,7 @@
     public function positionalAndBoundedArgsFromOffset() {
       $this->assertAllArgs('a, c, d, e', newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $args= array();
 
         #[@args(select= "0, [2..4]")]
         public function setArgs($args) { $this->args= $args; }
@@ -540,6 +547,7 @@
     public function boundedAndPositionalArgsWithOverlap() {
       $this->assertAllArgs('a, b, c, b', newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $args= array();
 
         #[@args(select= "[0..2], 1")]
         public function setArgs($args) { $this->args= $args; }
@@ -556,6 +564,7 @@
     public function positionalArgs() {
       $this->assertAllArgs('a, c, e, f', newinstance('util.cmd.Command', array(), '{
         protected $verbose= FALSE;
+        protected $args= array();
 
         #[@args(select= "0, 2, 4, 5")]
         public function setArgs($args) { $this->args= $args; }
