@@ -40,6 +40,10 @@
     public
       $tree = NULL;
 
+    public
+      $class  = '',
+      $method = '';
+
     /**
      * Create a message
      *
