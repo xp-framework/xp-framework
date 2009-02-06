@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'text.doclet.TagletManager',
+    'text.doclet.RootDoc',
     'text.doclet.Doc'
   );
 
@@ -17,6 +18,8 @@
    * @purpose  Unittest for text.doclet API
    */
   class ThrowsTagletTest extends TestCase {
+    protected
+      $holder  = NULL;
   
     /**
      * Sets up test case
