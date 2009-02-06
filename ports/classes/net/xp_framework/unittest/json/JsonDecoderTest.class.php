@@ -16,7 +16,9 @@
    * @purpose  Testcase
    */
   class JsonDecoderTest extends TestCase {
-  
+    protected
+      $decoder  = NULL;
+        
     /**
      * Setup text fixture
      *
