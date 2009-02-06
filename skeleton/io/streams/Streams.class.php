@@ -16,6 +16,9 @@
   abstract class Streams extends Object {
     protected static 
       $streams = array();
+    
+    public
+      $context = NULL;
 
     protected 
       $length  = 0,
