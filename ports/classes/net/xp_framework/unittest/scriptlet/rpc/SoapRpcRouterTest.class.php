@@ -17,7 +17,9 @@
    * @purpose  Testcase
    */
   class SoapRpcRouterTest extends TestCase {
-    
+    protected
+      $router = NULL;
+
     /**
      * Setup test fixture
      *
