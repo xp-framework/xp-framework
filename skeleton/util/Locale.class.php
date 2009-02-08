@@ -124,6 +124,16 @@
     }
     
     /**
+     * Returns whether a given object is equal to this locale.
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->_str === $cmp->_str;
+    }
+    
+    /**
      * Create string representation
      *
      * Examples:
