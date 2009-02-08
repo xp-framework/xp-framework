@@ -487,21 +487,19 @@
             break;
 
           case T_COMMENT:
-
-            // Annotations
-            if (strncmp('#[@', $tokens[$i][1], 3) == 0) {
-              $annotations[0]= substr($tokens[$i][1], 2);
-            } else if (strncmp('#', $tokens[$i][1], 1) == 0) {
-              $annotations[0].= substr($tokens[$i][1], 1);
-            }
-
-            // End of annotations
-            if (']' == substr(rtrim($tokens[$i][1]), -1)) {
-              $annotations= eval('return array('.preg_replace(
-                array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-                array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
-                trim($annotations[0], "[]# \t\n\r").','
-              ).');');
+            if ('#' === $tokens[$i][1]{0}) {      // Annotations
+              if ('[' === $tokens[$i][1]{1}) {
+                $annotations[0]= substr($tokens[$i][1], 2);
+              } else {
+                $annotations[0].= substr($tokens[$i][1], 1);
+              }
+              if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+                $annotations= eval('return array('.preg_replace(
+                  array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
+                  array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
+                  trim($annotations[0], "[]# \t\n\r").','
+                ).');');
+              }
             }
             break;
 
