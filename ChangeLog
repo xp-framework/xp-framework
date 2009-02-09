@@ -22,6 +22,9 @@ RFCs
 
 Features
 ~~~~~~~~
+- Implement feature suggested in bug #31 - Allow Numbers in Scriptlet-
+  States
+  (friebe)
 - Added io.collections.ArchiveCollection class to work with XARs
   (friebe)
 - Added support for enums to the Remote API (EASC)
@@ -33,8 +36,6 @@ Features
 
 Bugfixes
 ~~~~~~~~
-- Fixed bug #31 - Allow Numbers in Scriptlet- States 
-  (friebe)
 - Fixed bug #33 - Parse error for comments having a line ending with "]" 
   (friebe)
 - Fixed io.File::write() and io.File::writeLine() to throw an IOException
