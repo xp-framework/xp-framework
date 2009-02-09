@@ -20,7 +20,7 @@
      */
     protected function extract() {
       if (preg_match(
-        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z/]+)$#',
+        '#^/xml/((([a-zA-Z]+)\.([a-zA-Z_]+))?(\.?psessionid=([0-9A-Za-z]+))?/)?([a-zA-Z0-9/]+)$#',
         $this->getPath(),
         $parts
       )) {
