@@ -36,6 +36,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Made /proc lookup inside lang.Process::getProcessById() work on 
+  FreeBSD 7 - the link is /proc/$PID/file instead of /proc/$PID/exe
+  (friebe, wagner)
 - Fixed bug #33 - Parse error for comments having a line ending with "]" 
   (friebe)
 - Fixed io.File::write() and io.File::writeLine() to throw an IOException
