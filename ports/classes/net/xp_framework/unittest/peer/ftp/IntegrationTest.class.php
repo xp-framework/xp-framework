@@ -8,6 +8,7 @@
     'unittest.TestCase',
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
+    'io.streams.Streams',
     'lang.Process',
     'lang.Runtime',
     'peer.ftp.FtpConnection'
@@ -86,7 +87,7 @@
 
       // Start server process
       self::$serverProcess= Runtime::getInstance()->getExecutable()->newInstance(
-        array('-dinclude_path="'.ini_get('include_path').'"')
+        array('-dinclude_path="'.ini_get('include_path').'" -dmagic_quotes_gpc=0')
       );
       self::$serverProcess->in->write($src);
       self::$serverProcess->in->close();
@@ -320,7 +321,11 @@
       } catch (Throwable $e) {
         
         // Unfortunately, try { } finally does not exist...        
-        $file && $file->delete();
+        try {
+          $file && $file->delete();
+        } catch (IOException $ignored) {
+          // Can't really do anything here
+        }
         throw $e;
       }
     }
@@ -341,6 +346,67 @@
       ;
       
       $this->assertEquals("<html/>\n", $m->getBytes());
+    }
+
+    /**
+     * Test FtpFile::getInputStream()
+     *
+     */
+    #[@test]
+    public function getInputStream() {
+      $this->conn->connect();
+      
+      $s= $this->conn
+        ->rootDir()
+        ->getDir('htdocs')
+        ->getFile('index.html')
+        ->getInputStream()
+      ;
+      
+      $this->assertEquals("<html/>\n", Streams::readAll($s));
+    }
+
+    /**
+     * Test FtpFile::getInputStream()
+     *
+     */
+    #[@test]
+    public function getInputStreams() {
+      $this->conn->connect();
+      $dir= $this->conn->rootDir()->getDir('htdocs');
+
+      for ($i= 0; $i < 2; $i++) {
+        $s= $dir->getFile('index.html')->getInputStream();
+        $this->assertEquals("<html/>\n", Streams::readAll($s));
+      }
+    }
+
+    /**
+     * Test FtpFile::getOutputStream()
+     *
+     */
+    #[@test]
+    public function getOutputStream() {
+      $this->conn->connect();
+      
+      $file= $this->conn->rootDir()->getDir('htdocs')->file('name.txt');
+      $s= $file->getOutputStream();
+      try {
+        $s->write($this->name);
+        $s->close();
+        
+        $this->assertTrue($file->exists());
+        $this->assertEquals(strlen($this->name), $file->getSize());
+      } catch (Throwable $e) {
+        
+        // Unfortunately, try { } finally does not exist...        
+        try {
+          $file && $file->delete();
+        } catch (IOException $ignored) {
+          // Can't really do anything here
+        }
+        throw $e;
+      }
     }
   }
 ?>
