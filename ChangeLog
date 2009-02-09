@@ -22,7 +22,7 @@ RFCs
 
 Features
 ~~~~~~~~
-- Implement feature suggested in bug #31 - Allow Numbers in Scriptlet-
+- Implemented feature suggested in bug #31 - Allow Numbers in Scriptlet
   States
   (friebe)
 - Added io.collections.ArchiveCollection class to work with XARs
