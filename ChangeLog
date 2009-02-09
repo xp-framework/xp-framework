@@ -33,6 +33,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug #31 - Allow Numbers in Scriptlet- States 
+  (friebe)
 - Fixed bug #33 - Parse error for comments having a line ending with "]" 
   (friebe)
 - Fixed io.File::write() and io.File::writeLine() to throw an IOException
