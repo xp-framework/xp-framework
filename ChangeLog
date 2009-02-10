@@ -36,6 +36,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.Date::getHash() returns timestamp now instead of object id.
+  (wagner)
 - Made /proc lookup inside lang.Process::getProcessById() work on 
   FreeBSD 7 - the link is /proc/$PID/file instead of /proc/$PID/exe
   (friebe, wagner)

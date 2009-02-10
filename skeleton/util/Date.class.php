@@ -59,7 +59,16 @@
         );
       }
     }
-    
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return (int)$this->date->format('U');
+    }
+
     /**
      * Retrieve handle of underlying DateTime object.
      *
