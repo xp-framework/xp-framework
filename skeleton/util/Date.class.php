@@ -66,7 +66,7 @@
      * @return  string
      */
     public function hashCode() {
-      return (int)$this->date->format('U');
+      return (string)$this->date->format('U');
     }
 
     /**
