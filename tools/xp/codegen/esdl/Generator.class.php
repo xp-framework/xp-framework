@@ -39,10 +39,13 @@
    * @purpose  Code generator
    */
   class xp·codegen·esdl·Generator extends AbstractGenerator {
+    const
+      ESDL_PORT   = 6449;
+      
     protected
-      $uri       = '',
-      $processor = NULL,
-      $package   = NULL;
+      $uri        = '',
+      $processor  = NULL,
+      $package    = NULL;
     
     /**
      * Constructor
@@ -50,7 +53,18 @@
      * @param   util.cmd.ParamString args
      */
     public function __construct(ParamString $args) {
-      $this->remote= Remote::forName($args->value(0));
+    
+      $url= new URL($args->value(0));
+
+      // If protocol string does not contain port number, set default.
+      if (self::ESDL_PORT === $url->getPort(self::ESDL_PORT)) $url->setPort(self::ESDL_PORT);
+      
+      // Check given URL to inform user if invalid port used.
+      if (self::ESDL_PORT !== $url->getPort()) {
+        Console::$err->writeLine('Notice: using non-standard port '.$url->getPort().', ESDL services are usually available at port 6449.');
+      }
+      
+      $this->remote= Remote::forName($url->getURL());
       $this->jndi= $args->value(1);
 
       $this->processor= new DomXSLProcessor();
