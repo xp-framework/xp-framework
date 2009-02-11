@@ -37,7 +37,7 @@
       'mediumblob' => DB_ATTRTYPE_TEXT,
       'longblob'   => DB_ATTRTYPE_TEXT
     );
-    
+
     /**
      * Get databases
      *
@@ -106,7 +106,7 @@
         0                                                         // scale
       );
     }
-    
+
 
     /**
      * Get table by name
@@ -153,6 +153,10 @@
         switch ($createTableString{$i}) {
           case '`':
           $this->parseQuoteString($createTableString, $i);
+          break;
+
+          case '"':
+          $this->parseQuoteString($createTableString, $i, '"');
           break;
 
           case '(':
@@ -206,7 +210,11 @@
       while (++$pos < strlen($string)) {
         switch ($string{$pos}) {
           case '`':
-          $quotstrings[]= $this->parseQuoteString($string, $pos);
+          $quotstrings[]= $this->parseQuoteString($string, $pos, '`');
+          break;
+
+          case '"':
+          $quotstrings[]= $this->parseQuoteString($string, $pos, '"');
           break;
 
           case '(':
@@ -232,11 +240,11 @@
      * @param   &int position where the quoted string begins
      * @return  string inner quotation
      */
-    private function parseQuoteString($string, &$pos) {
+    private function parseQuoteString($string, &$pos, $quot) {
       $quotedString= '';
       while ($pos++ < strlen($string)) {
         switch ($string{$pos}) {
-          case '`':
+          case $quot:
           return $quotedString;
 
           default:
@@ -268,7 +276,12 @@
 
           case '`':
           $braceredString.= $string{$pos};
-          $braceredString.= $this->parseQuoteString($string, $pos).'`';
+          $braceredString.= $this->parseQuoteString($string, $pos, '`').'`';
+          break;
+
+          case '"':
+          $braceredString.= $string{$pos};
+          $braceredString.= $this->parseQuoteString($string, $pos, '"').'"';
           break;
 
           default:
@@ -305,6 +318,11 @@
           $paramString.= $this->parseQuoteString($string, $pos).'`';
           break;
 
+          case '"':
+          $paramString.= $string{$pos};
+          $paramString.= $this->parseQuoteString($string, $pos, '"').'"';
+          break;
+
           default:
           $paramString.= $string{$pos};
         }
@@ -327,3 +345,4 @@
     }
   }
 ?>
+
