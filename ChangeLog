@@ -36,6 +36,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.mysql.MySQLDBAdapter did not handle '"' quotes (bug#34)
+  (wagner)
 - Fixed util.Date::hashCode() returns timestamp now instead of object id.
   (wagner)
 - Made /proc lookup inside lang.Process::getProcessById() work on 
