@@ -166,7 +166,7 @@
       //
       // The semicolon in the second will serve as indicator for the 
       // latter (';' == $ind)
-      if (3 === sscanf($r, "error_ind %s STLI%c%[^\0]", $status, $ind, $inf)) {
+      if (3 === sscanf($r, "error_ind %s STLI%c%[^\r]", $status, $ind, $inf)) {
         if ('SUCCESS' !== $status) {
           throw new TelephonyException('Response indicates failure <'.$r.'>');
         }
