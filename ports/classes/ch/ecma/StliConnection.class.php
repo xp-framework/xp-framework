@@ -51,11 +51,11 @@
      * Takes a peer.Socket object as argument, use as follows:
      * <code>
      *   // [...]
-     *   $c= &new StliClient(new Socket($stliServer, $stliPort));
+     *   $c= new StliClient(new Socket($stliServer, $stliPort));
      *   // [...]
      * </code>
      *
-     * @param   &peer.Socket sock
+     * @param   peer.Socket sock
      * @param   int version default STLI_VERSION_2
      */
     public function __construct($sock, $version= STLI_VERSION_2) {
@@ -137,9 +137,9 @@
 
       foreach ($res as $val) {
         if (is_null($val)) {
-          throw(new TelephonyException(sprintf(
+          throw new TelephonyException(sprintf(
             'Protocol error: Expecting "%s", have "%s"', $expect, $have
-          )));
+          ));
           return FALSE;
         }
       }
@@ -154,13 +154,26 @@
      * @throws  util.telephony.TelephonyException in case a protocol error occurs
      */
     public function connect() {
-      if (FALSE === ($ret= $this->sock->connect())) return FALSE;
+      $this->sock->connect();
       
       // Send initialization string and check response
-      return $this->_expect(
-        sprintf(STLI_INIT_RESPONSE, $this->version),
-        $this->_sockcmd('STLI;Version=%d', $this->version)
-      );
+      $r= $this->_sockcmd('STLI;Version=%d', $this->version);
+      
+      // Two different formats here, check for common denominator
+      //
+      // error_ind SUCCESS STLI Version "2"
+      // error_ind SUCCESS STLI;Version=2;DeviceInformation=Standard
+      //
+      // The semicolon in the second will serve as indicator for the 
+      // latter (';' == $ind)
+      if (3 === sscanf($r, "error_ind %s STLI%c%[^\0]", $status, $ind, $inf)) {
+        if ('SUCCESS' !== $status) {
+          throw new TelephonyException('Response indicates failure <'.$r.'>');
+        }
+        return $r;
+      }
+
+      throw new TelephonyException('Cannot parse connect respone <'.$r.'>');
     }
 
     /**
@@ -181,9 +194,9 @@
     /**
      * Create a call
      *
-     * @param   &util.telephony.TelephonyTerminal terminal
-     * @param   &util.telephony.TelephonyAddress destination
-     * @return  &util.telephony.TelephonyCall a call object
+     * @param   util.telephony.TelephonyTerminal terminal
+     * @param   util.telephony.TelephonyAddress destination
+     * @return  util.telephony.TelephonyCall a call object
      */
     public function createCall($terminal, $destination) {
       if (FALSE === $this->_expect(
@@ -205,8 +218,8 @@
     /**
      * Get terminal
      *
-     * @param   &util.telephony.TelephonyAddress address
-     * @return  &util.telephony.TelephonyTerminal
+     * @param   util.telephony.TelephonyAddress address
+     * @return  util.telephony.TelephonyTerminal
      */
     public function getTerminal($address) {
       return new TelephonyTerminal($address);
@@ -215,7 +228,7 @@
     /**
      * Observe a terminal
      *
-     * @param   &util.telephony.TelephonyTerminal terminal
+     * @param   util.telephony.TelephonyTerminal terminal
      * @param   bool status TRUE to start observing, FALSE top stop
      * @return  bool success
      */
@@ -239,7 +252,7 @@
     /**
      * Release terminal
      *
-     * @param   &util.telephony.TelephonyTerminal terminal
+     * @param   util.telephony.TelephonyTerminal terminal
      * @return  bool success
      */
     public function releaseTerminal($terminal) {
