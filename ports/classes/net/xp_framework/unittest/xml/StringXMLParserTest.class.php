@@ -9,7 +9,7 @@
   /**
    * TestCase
    *
-   * @see      xp://net.xp_framework.unittest.xml.XMLParserTest
+   * @see      xp://net.xp_framework.unittest.xml.AbstractXMLParserTest
    */
   class StringXMLParserTest extends AbstractXMLParserTest {
     
@@ -18,10 +18,11 @@
      * the given string and returning it.
      *
      * @param   string str
+     * @param   bool decl default TRUE
      * @return  * XML the source XML
      */
-    protected function source($str) {
-      return '<?xml version="1.0" encoding="utf-8"?>'.$str;
+    protected function source($str, $decl= TRUE) {
+      return ($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str;
     }
   }
 ?>

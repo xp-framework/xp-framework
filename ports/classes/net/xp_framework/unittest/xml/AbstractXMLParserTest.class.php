@@ -45,9 +45,10 @@
      * the given string and returning it.
      *
      * @param   string str
+     * @param   bool decl default TRUE
      * @return  * XML the source XML
      */
-    protected abstract function source($str);
+    protected abstract function source($str, $decl= TRUE);
     
     /**
      * Creates a new callback
@@ -93,7 +94,7 @@
      */
     #[@test]
     public function withoutDeclaration() {
-      $this->assertTrue($this->parser->parse('<root/>'));
+      $this->assertTrue($this->parser->parse($this->source('<root/>', TRUE)));
     }
 
     /**
@@ -102,7 +103,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function emptyString() {
-      $this->parser->parse('');
+      $this->parser->parse($this->source('', FALSE));
     }
     
     /**
