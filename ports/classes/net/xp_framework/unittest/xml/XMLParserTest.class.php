@@ -7,8 +7,7 @@
   uses(
     'unittest.TestCase',
     'xml.parser.XMLParser',
-    'xml.parser.ParserCallback',
-    'xml.parser.EntityResolver'
+    'xml.parser.ParserCallback'
   );
 
   /**
