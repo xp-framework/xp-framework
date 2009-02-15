@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
@@ -16,7 +16,7 @@
    * @see      xp://xml.parser.ParserCallback
    * @see      xp://xml.parser.XMLParser
    */
-  class XMLParserTest extends TestCase {
+  abstract class AbstractXMLParserTest extends TestCase {
     const NAME = 0;
     const ATTR = 1;
     const CHLD = 2;
@@ -39,6 +39,15 @@
     public function tearDown() {
       delete($this->parser);
     }
+    
+    /**
+     * Returns an XML document by prepending the XML declaration to 
+     * the given string and returning it.
+     *
+     * @param   string str
+     * @return  * XML the source XML
+     */
+    protected abstract function source($str);
     
     /**
      * Creates a new callback
@@ -64,29 +73,18 @@
           if (empty($this->pointer)) {
             $this->tree= $e;
           } else {
-            $this->pointer[0][XMLParserTest::CHLD][]= $e;
+            $this->pointer[0][AbstractXMLParserTest::CHLD][]= $e;
           }
         }
 
         public function onCData($parser, $cdata) {
-          $this->pointer[0][XMLParserTest::CHLD][]= trim($cdata);
+          $this->pointer[0][AbstractXMLParserTest::CHLD][]= trim($cdata);
         }
 
         public function onDefault($parser, $data) {
-          $this->pointer[0][XMLParserTest::CHLD][]= trim($data);
+          $this->pointer[0][AbstractXMLParserTest::CHLD][]= trim($data);
         }
       }');
-    }
-    
-    /**
-     * Returns an XML document as a string by prepending the XML 
-     * declaration to the given string and returning it.
-     *
-     * @param   string str
-     * @return  string XML
-     */
-    protected function xml($str) {
-      return '<?xml version="1.0" encoding="utf-8"?>'.$str;
     }
 
     /**
@@ -113,7 +111,7 @@
      */
     #[@test]
     public function withDeclaration() {
-      $this->assertTrue($this->parser->parse($this->xml('<root/>')));
+      $this->assertTrue($this->parser->parse($this->source('<root/>')));
     }
 
     /**
@@ -124,7 +122,7 @@
     public function tree() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('<book>
+      $this->parser->parse($this->source('<book>
         <author><name>Timm</name></author>
         <chapter id="1">
           <title>Introduction</title>
@@ -175,7 +173,7 @@
       for ($i= 0; $i < 4; $i++) {
         $callback= $this->newCallback();
         $this->parser->setCallback($callback);
-        $this->parser->parse($this->xml('<run id="'.$i.'"/>'));
+        $this->parser->parse($this->source('<run id="'.$i.'"/>'));
         $this->assertEquals(
           array('run', array('id' => (string)$i), array()), 
           $callback->tree, 
@@ -193,7 +191,7 @@
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
       try {
-        $this->parser->parse($this->xml('<doc><h1>Title</h1><p>Text</p><img></doc>'));
+        $this->parser->parse($this->source('<doc><h1>Title</h1><p>Text</p><img></doc>'));
         $this->fail('Parsed without problems', NULL, 'xml.XMLFormatException');
       } catch (XMLFormatException $expected) {
         $this->assertEquals(NULL, $callback->tree, 'Tree only set if entire doc parsed');
@@ -212,7 +210,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function withoutRoot() {
-      $this->parser->parse($this->xml(''));
+      $this->parser->parse($this->source(''));
     }
 
     /**
@@ -221,7 +219,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function unclosedTag() {
-      $this->parser->parse($this->xml('<a>'));
+      $this->parser->parse($this->source('<a>'));
     }
 
     /**
@@ -230,7 +228,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function unclosedAttribute() {
-      $this->parser->parse($this->xml('<a href="http://>Click</a>'));
+      $this->parser->parse($this->source('<a href="http://>Click</a>'));
     }
 
     /**
@@ -239,7 +237,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function unclosedComment() {
-      $this->parser->parse($this->xml('<doc><!-- Comment</doc>'));
+      $this->parser->parse($this->source('<doc><!-- Comment</doc>'));
     }
 
     /**
@@ -248,7 +246,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function incorrectlyClosedComment() {
-      $this->parser->parse($this->xml('<doc><!-- Comment ></doc>'));
+      $this->parser->parse($this->source('<doc><!-- Comment ></doc>'));
     }
 
     /**
@@ -257,7 +255,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function malformedComment() {
-      $this->parser->parse($this->xml('<doc><! Comment --></doc>'));
+      $this->parser->parse($this->source('<doc><! Comment --></doc>'));
     }
 
     /**
@@ -266,7 +264,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function unclosedProcessingInstruction() {
-      $this->parser->parse($this->xml('<doc><?php echo "1"; </doc>'));
+      $this->parser->parse($this->source('<doc><?php echo "1"; </doc>'));
     }
 
     /**
@@ -275,7 +273,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function attributeRedefinition() {
-      $this->parser->parse($this->xml('<a id="1" id="2"/>'));
+      $this->parser->parse($this->source('<a id="1" id="2"/>'));
     }
 
     /**
@@ -286,7 +284,7 @@
     public function quotesInsideAttributes() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('<n id="\'1\'" t=\'"_new"\' q="&apos;&quot;"/>'));
+      $this->parser->parse($this->source('<n id="\'1\'" t=\'"_new"\' q="&apos;&quot;"/>'));
       $this->assertEquals(
         array('n', array('id' => "'1'", 't' => '"_new"', 'q' => '\'"'), array()),
         $callback->tree
@@ -301,7 +299,7 @@
     public function greaterSignInAttribute() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('<a id=">"/>'));
+      $this->parser->parse($this->source('<a id=">"/>'));
       $this->assertEquals(
         array('a', array('id' => '>'), array()),
         $callback->tree
@@ -314,7 +312,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function smallerSignInAttribute() {
-      $this->parser->parse($this->xml('<a id="<"/>'));
+      $this->parser->parse($this->source('<a id="<"/>'));
     }
 
     /**
@@ -325,7 +323,7 @@
     public function cdataSection() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <doc>CDATA [<![CDATA[ <&> ]]>]</doc>
       '));
       $this->assertEquals(array(
@@ -343,7 +341,7 @@
     public function processingInstruction() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('<doc><?php echo "1"; ?></doc>'));
+      $this->parser->parse($this->source('<doc><?php echo "1"; ?></doc>'));
 
       $this->assertEquals(array(
         'doc', array(), array(
@@ -360,7 +358,7 @@
     public function comment() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('<doc><!-- Comment --></doc>'));
+      $this->parser->parse($this->source('<doc><!-- Comment --></doc>'));
 
       $this->assertEquals(array(
         'doc', array(), array(
@@ -377,7 +375,7 @@
     public function nestedCdata() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <doc><![CDATA[ <![CDATA[ ]]> ]]></doc>
       '));
     }
@@ -390,7 +388,7 @@
     public function predefinedEntities() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <doc>&quot;3 &lt; 5 &apos;&amp;&apos; 5 &gt; 3&quot;</doc>
       '));
 
@@ -409,7 +407,7 @@
     public function hexEntity() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <doc>&#169; 2001-2009 the XP team</doc>
       '));
 
@@ -429,7 +427,7 @@
       $this->parser->setEncoding('ISO-8859-1');
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <doc>The übercoder returns</doc>
       '));
 
@@ -449,7 +447,7 @@
       $this->parser->setEncoding('UTF-8');
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <doc>The übercoder returns</doc>
       '));
 
@@ -466,7 +464,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function undeclaredEntity() {
-      $this->parser->parse($this->xml('<doc>&nbsp;</doc>'));
+      $this->parser->parse($this->source('<doc>&nbsp;</doc>'));
     }
 
     /**
@@ -475,7 +473,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function undeclaredEntityInAttribute() {
-      $this->parser->parse($this->xml('<doc><a href="&nbsp;"/></doc>'));
+      $this->parser->parse($this->source('<doc><a href="&nbsp;"/></doc>'));
     }
 
     /**
@@ -484,7 +482,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function doubleRoot() {
-      $this->parser->parse($this->xml('<doc/><doc/>'));
+      $this->parser->parse($this->source('<doc/><doc/>'));
     }
 
     /**
@@ -493,7 +491,7 @@
      */
     #[@test, @expect('xml.XMLFormatException')]
     public function docTypeWithoutContent() {
-      $this->parser->parse($this->xml('<!DOCTYPE doc ]>'));
+      $this->parser->parse($this->source('<!DOCTYPE doc ]>'));
     }
 
     /**
@@ -504,7 +502,7 @@
     public function characterEntity() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <!DOCTYPE doc [ <!ENTITY copy "&#169;"> ]>
         <doc>Copyright: &copy;</doc>
       '));
@@ -524,7 +522,7 @@
     public function entity() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <!DOCTYPE doc [ <!ENTITY copyright "2009 The XP team"> ]>
         <doc>Copyright: &copyright;</doc>
       '));
@@ -544,7 +542,7 @@
     public function entityInAttribute() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <!DOCTYPE doc [ <!ENTITY copyright "2009 The XP team"> ]>
         <doc><book copyright="Copyright &copyright;"/></doc>
       '));
@@ -564,7 +562,7 @@
     public function entityExpansion() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <!DOCTYPE doc [ 
           <!ENTITY year "2009"> 
           <!ENTITY copyright "&year; The XP team"> 
@@ -587,7 +585,7 @@
     public function externalEntity() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <!DOCTYPE doc [ <!ENTITY copyright SYSTEM "http://xp-framework.net/copyright.txt" > ]>
         <doc>Copyright: &copyright;</doc>
       '));
@@ -606,7 +604,7 @@
     public function externalEntityInAttribute() {
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
-      $this->parser->parse($this->xml('
+      $this->parser->parse($this->source('
         <!DOCTYPE doc [ <!ENTITY copyright SYSTEM "http://xp-framework.net/copyright.txt" > ]>
         <doc><book copyright="Copyright &copyright;"/></doc>
       '));
