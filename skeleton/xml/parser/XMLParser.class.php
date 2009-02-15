@@ -23,6 +23,8 @@
    *   }
    * </code>
    *
+   * @ext      xml
+   * @test     xp://net.xp_framework.unittest.xml.XMLParserTest
    * @purpose  Parse XML
    */
   class XMLParser extends Object {
