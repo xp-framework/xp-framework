@@ -31,14 +31,13 @@
     public
       $encoding     = '',
       $callback     = NULL;
-    
 
     /**
      * Constructor
      *
-     * @param   string encoding default ''
+     * @param   string encoding default 'ISO-8859-1'
      */
-    public function __construct($encoding= '') {
+    public function __construct($encoding= 'ISO-8859-1') {
       $this->encoding= $encoding;
     }
 
@@ -81,11 +80,7 @@
     public function parse($data, $source= NULL) {
       if ($parser = xml_parser_create('')) {
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
-        xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, ($this->encoding
-          ? $this->encoding
-          : 'ISO-8859-1'
-        ));
-        $this->encoding= xml_parser_get_option($parser, XML_OPTION_TARGET_ENCODING);
+        xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $this->encoding);
         
         // Register callback
         if ($this->callback) {
