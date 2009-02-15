@@ -17,6 +17,10 @@
    * @see      xp://xml.parser.XMLParser
    */
   class XMLParserTest extends TestCase {
+    const NAME = 0;
+    const ATTR = 1;
+    const CHLD = 2;
+    
     protected
       $parser = NULL;
   
@@ -43,25 +47,33 @@
      */
     protected function newCallback() {
       return newinstance('xml.parser.ParserCallback', array(), '{
-        public 
-          $elements = array(),
-          $cdata    = array(),
-          $default  = array();
+        protected
+          $pointer  = array();
+          
+        public
+          $tree     = NULL,
+          $elements = array();
           
         public function onStartElement($parser, $name, $attrs) {
-          $this->elements[]= array($name, $attrs);
+          $this->elements[]= $name;
+          array_unshift($this->pointer, array($name, $attrs, array()));
         }
 
         public function onEndElement($parser, $name) {
-          // NOOP
+          $e= array_shift($this->pointer);
+          if (empty($this->pointer)) {
+            $this->tree= $e;
+          } else {
+            $this->pointer[0][XMLParserTest::CHLD][]= $e;
+          }
         }
 
         public function onCData($parser, $cdata) {
-          $this->cdata[]= $cdata;
+          $this->pointer[0][XMLParserTest::CHLD][]= trim($cdata);
         }
 
         public function onDefault($parser, $data) {
-          $this->default[]= $data;
+          $this->pointer[0][XMLParserTest::CHLD][]= trim($data);
         }
       }');
     }
@@ -105,22 +117,68 @@
     }
 
     /**
+     * Test tree parsing
+     *
+     */
+    #[@test]
+    public function tree() {
+      $callback= $this->newCallback();
+      $this->parser->setCallback($callback);
+      $this->parser->parse($this->xml('<book>
+        <author><name>Timm</name></author>
+        <chapter id="1">
+          <title>Introduction</title>
+          <paragraph>
+            This is where it all started.
+          </paragraph>
+        </chapter>
+      </book>'));
+      $this->assertEquals('book', $callback->tree[self::NAME]);
+      $this->assertEquals(array(), $callback->tree[self::ATTR]);
+      
+      with ($author= $callback->tree[self::CHLD][1]); {
+        $this->assertEquals('author', $author[self::NAME]);
+        $this->assertEquals(array(), $author[self::ATTR]);
+      
+        with ($name= $author[self::CHLD][0]); {
+          $this->assertEquals('name', $name[self::NAME]);
+          $this->assertEquals(array(), $name[self::ATTR]);
+          $this->assertEquals(array('Timm'), $name[self::CHLD]);
+        }
+      }
+
+      with ($chapter= $callback->tree[self::CHLD][3]); {
+        $this->assertEquals('chapter', $chapter[self::NAME]);
+        $this->assertEquals(array('id' => '1'), $chapter[self::ATTR]);
+
+        with ($title= $chapter[self::CHLD][1]); {
+          $this->assertEquals('title', $title[self::NAME]);
+          $this->assertEquals(array(), $title[self::ATTR]);
+          $this->assertEquals(array('Introduction'), $title[self::CHLD]);
+        }
+
+        with ($paragraph= $chapter[self::CHLD][3]); {
+          $this->assertEquals('paragraph', $paragraph[self::NAME]);
+          $this->assertEquals(array(), $paragraph[self::ATTR]);
+          $this->assertEquals(array('This is where it all started.'), $paragraph[self::CHLD]);
+        }
+      }
+    }
+
+    /**
      * Test reusability, that is, a parser can be reused after calling parse()
      * on it.
      *
      */
     #[@test]
     public function reusable() {
-      $callback= $this->newCallback();
-      $this->parser->setCallback($callback);
       for ($i= 0; $i < 4; $i++) {
+        $callback= $this->newCallback();
+        $this->parser->setCallback($callback);
         $this->parser->parse($this->xml('<run id="'.$i.'"/>'));
-      }
-      $this->assertEquals(4, sizeof($callback->elements));
-      for ($i= 0; $i < 4; $i++) {
         $this->assertEquals(
-          array('run', array('id' => (string)$i)), 
-          $callback->elements[$i], 
+          array('run', array('id' => (string)$i), array()), 
+          $callback->tree, 
           'Run #'.$i
         );
       }
@@ -138,15 +196,13 @@
         $this->parser->parse($this->xml('<doc><h1>Title</h1><p>Text</p><img></doc>'));
         $this->fail('Parsed without problems', NULL, 'xml.XMLFormatException');
       } catch (XMLFormatException $expected) {
-        $this->assertEquals(4, sizeof($callback->elements));
-        $this->assertEquals('doc', $callback->elements[0][0]);
-        $this->assertEquals('h1', $callback->elements[1][0]);
-        $this->assertEquals('p', $callback->elements[2][0]);
-        $this->assertEquals('img', $callback->elements[3][0]);
+        $this->assertEquals(NULL, $callback->tree, 'Tree only set if entire doc parsed');
 
-        $this->assertEquals(2, sizeof($callback->cdata));
-        $this->assertEquals('Title', $callback->cdata[0]);
-        $this->assertEquals('Text', $callback->cdata[1]);
+        $this->assertEquals(4, sizeof($callback->elements));
+        $this->assertEquals('doc', $callback->elements[0]);
+        $this->assertEquals('h1', $callback->elements[1]);
+        $this->assertEquals('p', $callback->elements[2]);
+        $this->assertEquals('img', $callback->elements[3]);
       }
     }
 
@@ -232,8 +288,8 @@
       $this->parser->setCallback($callback);
       $this->parser->parse($this->xml('<n id="\'1\'" t=\'"_new"\' q="&apos;&quot;"/>'));
       $this->assertEquals(
-        array('n', array('id' => "'1'", 't' => '"_new"', 'q' => '\'"')),
-        $callback->elements[0]
+        array('n', array('id' => "'1'", 't' => '"_new"', 'q' => '\'"'), array()),
+        $callback->tree
       );
     }
 
@@ -247,8 +303,8 @@
       $this->parser->setCallback($callback);
       $this->parser->parse($this->xml('<a id=">"/>'));
       $this->assertEquals(
-        array('a', array('id' => '>')),
-        $callback->elements[0]
+        array('a', array('id' => '>'), array()),
+        $callback->tree
       );
     }
 
@@ -272,7 +328,11 @@
       $this->parser->parse($this->xml('
         <doc>CDATA [<![CDATA[ <&> ]]>]</doc>
       '));
-      $this->assertEquals('CDATA [ <&> ]', implode('', $callback->cdata));
+      $this->assertEquals(array(
+        'doc', array(), array(
+          'CDATA [', '<&>', ']'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -284,7 +344,12 @@
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
       $this->parser->parse($this->xml('<doc><?php echo "1"; ?></doc>'));
-      $this->assertEquals('<?php echo "1"; ?>', $callback->default[0]);
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          '<?php echo "1"; ?>'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -296,7 +361,12 @@
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
       $this->parser->parse($this->xml('<doc><!-- Comment --></doc>'));
-      $this->assertEquals('<!-- Comment -->', $callback->default[0]);
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          '<!-- Comment -->'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -323,7 +393,12 @@
       $this->parser->parse($this->xml('
         <doc>&quot;3 &lt; 5 &apos;&amp;&apos; 5 &gt; 3&quot;</doc>
       '));
-      $this->assertEquals('"3 < 5 \'&\' 5 > 3"', implode('', $callback->cdata));
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          '"', '3', '<', '5', "'", '&', "'", '5', '>', '3', '"'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -337,7 +412,12 @@
       $this->parser->parse($this->xml('
         <doc>&#169; 2001-2009 the XP team</doc>
       '));
-      $this->assertEquals('© 2001-2009 the XP team', implode('', $callback->cdata));
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          '©', '2001-2009 the XP team'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -352,7 +432,12 @@
       $this->parser->parse($this->xml('
         <doc>The Ã¼bercoder returns</doc>
       '));
-      $this->assertEquals('The übercoder returns', implode('', $callback->cdata));
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          'The', 'übercoder returns'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -367,7 +452,12 @@
       $this->parser->parse($this->xml('
         <doc>The Ã¼bercoder returns</doc>
       '));
-      $this->assertEquals('The Ã¼bercoder returns', implode('', $callback->cdata));
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          'The', 'Ã¼bercoder returns'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -418,8 +508,12 @@
         <!DOCTYPE doc [ <!ENTITY copy "&#169;"> ]>
         <doc>Copyright: &copy;</doc>
       '));
-      $this->assertEquals('Copyright: ', $callback->cdata[0]);
-      $this->assertEquals('&copy;', $callback->default[0]);
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          'Copyright:', '&copy;'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -434,8 +528,12 @@
         <!DOCTYPE doc [ <!ENTITY copyright "2009 The XP team"> ]>
         <doc>Copyright: &copyright;</doc>
       '));
-      $this->assertEquals('Copyright: ', $callback->cdata[0]);
-      $this->assertEquals('&copyright;', $callback->default[0]);
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          'Copyright:', '&copyright;'
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -450,10 +548,12 @@
         <!DOCTYPE doc [ <!ENTITY copyright "2009 The XP team"> ]>
         <doc><book copyright="Copyright &copyright;"/></doc>
       '));
-      $this->assertEquals(
-        array('book', array('copyright' => 'Copyright 2009 The XP team')),
-        $callback->elements[1]
-      );
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          array('book', array('copyright' => 'Copyright 2009 The XP team'), array()),
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -471,10 +571,12 @@
         ]>
         <doc><book copyright="Copyright &copyright;"/></doc>
       '));
-      $this->assertEquals(
-        array('book', array('copyright' => 'Copyright 2009 The XP team')),
-        $callback->elements[1]
-      );
+
+      $this->assertEquals(array(
+        'doc', array(), array(
+          array('book', array('copyright' => 'Copyright 2009 The XP team'), array()),
+        )
+      ), $callback->tree);
     }
 
     /**
@@ -489,8 +591,10 @@
         <!DOCTYPE doc [ <!ENTITY copyright SYSTEM "http://xp-framework.net/copyright.txt" > ]>
         <doc>Copyright: &copyright;</doc>
       '));
-      $this->assertEquals('Copyright: ', $callback->cdata[0]);
-      $this->assertEquals(array(), $callback->default);
+
+      $this->assertEquals(array(
+        'doc', array(), array('Copyright:'),
+      ), $callback->tree);
     }
 
     /**
