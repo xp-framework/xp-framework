@@ -1,0 +1,54 @@
+RFC 0179: Add stream support to XML parser
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Feb 15 21:42:40     2009
+@status: draft
+@category: xml.parser
+
+Scope of Change
+---------------
+The xml.parser.XMLParser class will support parsing streams.
+
+
+Rationale
+---------
+Not having to load file contents into memory completely before being
+ablt to parse them.
+
+
+Functionality
+-------------
+The xml.parser.XMLParser::parse() method will be changed to accept 
+either strings (as it does now) or xml.parser.InputSource objects.
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+Faster for the stream case.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+http://xp-framework.net/rfc/contrib/rfc0179.diff
+
+Comments
+--------
+friebe, Sun Feb 15 21:45:00     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Not sure whether it wouldn't be more elegant if the InputSource class
+was an interface, and instead of an if/else on types in the constructor, 
+different implementations of it were shipped.
+
+<EOF>

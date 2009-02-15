@@ -1,0 +1,221 @@
+Index: skeleton/xml/parser/XMLParser.class.php
+===================================================================
+--- skeleton/xml/parser/XMLParser.class.php	(revision 12876)
++++ skeleton/xml/parser/XMLParser.class.php	(working copy)
+@@ -71,14 +71,14 @@
+     /**
+      * Parse XML data
+      *
+-     * @param   string data
++     * @param   * data either a string or an xml.parser.InputSource
+      * @param   string source default NULL optional source identifier, will show up in exception
+      * @return  bool
+      * @throws  xml.XMLFormatException in case the data could not be parsed
+      * @throws  lang.NullPointerException in case a parser could not be created
+      */
+     public function parse($data, $source= NULL) {
+-      if ($parser = xml_parser_create('')) {
++      if ($parser= xml_parser_create('')) {
+         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
+         xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $this->encoding);
+         
+@@ -89,9 +89,21 @@
+           xml_set_character_data_handler($parser, 'onCData');
+           xml_set_default_handler($parser, 'onDefault');
+         }
+-      
+-        // Parse data
+-        if (!xml_parse($parser, $data, TRUE)) {
++        
++        // Parse streams while reading data
++        if ($data instanceof InputSource) {
++          $stream= $data->getStream();
++          $source || $source= $data->toString();
++          do {
++            $avail= (bool)$stream->available();
++            $r= xml_parse($parser, $stream->read(), !$avail);
++          } while ($r && $avail);
++        } else {
++          $r= xml_parse($parser, $data, TRUE);
++        }
++        
++        // Check for errors
++        if (!$r) {
+           $type= xml_get_error_code($parser);
+           $line= xml_get_current_line_number($parser);
+           $column= xml_get_current_column_number($parser);
+Index: skeleton/xml/parser/InputSource.class.php
+===================================================================
+--- skeleton/xml/parser/InputSource.class.php	(revision 0)
++++ skeleton/xml/parser/InputSource.class.php	(revision 0)
+@@ -0,0 +1,62 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('io.streams.InputStream');
++
++  /**
++   * Input source
++   *
++   * @see      xp://xml.parser.XMLParser#parse
++   */
++  class InputSource extends Object {
++    protected
++      $stream = NULL;
++   
++    /**
++     * Constructor. Accepts the following arguments:
++     *
++     * <code>
++     *   // An io.streams.InputStream implementation
++     *   new InputSource(new MemoryInputStream('...'));
++     *   
++     *   // An io.File object
++     *   new InputSource(new File('...'));
++     *
++     *   // A string containing the XML data
++     *   new InputSource('...');
++     * </code>
++     *
++     * @param   * arg
++     */
++    public function __construct($arg) {
++      if ($arg instanceof InputStream) {
++        $this->stream= $arg;
++      } else if ($arg instanceof File) {
++        $this->stream= XPClass::forName('io.streams.FileInputStream')->newInstance($arg);
++      } else {
++        $this->stream= XPClass::forName('io.streams.MemoryInputStream')->newInstance($arg);
++      }
++    }
++
++    /**
++     * Get stream
++     *
++     * @return  io.streams.InputStream
++     */
++    public function getStream() {
++      return $this->stream;
++    }
++
++    /**
++     * Creates a string representation of this InputSource
++     *
++     * @return  string
++     */
++    public function toString() {
++      return $this->getClassName().'<'.$this->stream->toString().'>';
++    }
++  }
++?>
+
+Property changes on: skeleton/xml/parser/InputSource.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/xml/StreamXMLParserTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/StreamXMLParserTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/xml/StreamXMLParserTest.class.php	(revision 0)
+@@ -0,0 +1,28 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('net.xp_framework.unittest.xml.AbstractXMLParserTest', 'io.streams.MemoryInputStream');
++
++  /**
++   * Tests XML parser API with io.streams.InputStream source
++   *
++   * @see      xp://net.xp_framework.unittest.xml.AbstractXMLParserTest
++   */
++  class StreamXMLParserTest extends AbstractXMLParserTest {
++    
++    /**
++     * Returns an XML document by prepending the XML declaration to 
++     * the given string and returning it.
++     *
++     * @param   string str
++     * @param   bool decl default TRUE
++     * @return  xml.parser.InputSource XML the source XML
++     */
++    protected function source($str, $decl= TRUE) {
++      return new InputSource(new MemoryInputStream(($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str));
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/xml/StreamXMLParserTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/xml/AbstractXMLParserTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/AbstractXMLParserTest.class.php	(revision 12883)
++++ ports/classes/net/xp_framework/unittest/xml/AbstractXMLParserTest.class.php	(working copy)
+@@ -7,7 +7,8 @@
+   uses(
+     'unittest.TestCase',
+     'xml.parser.XMLParser',
+-    'xml.parser.ParserCallback'
++    'xml.parser.ParserCallback',
++    'xml.parser.InputSource'
+   );
+ 
+   /**
+@@ -46,7 +47,7 @@
+      *
+      * @param   string str
+      * @param   bool decl default TRUE
+-     * @return  * XML the source XML
++     * @return  xml.parser.InputSource XML the source XML
+      */
+     protected abstract function source($str, $decl= TRUE);
+     
+Index: ports/classes/net/xp_framework/unittest/xml/StringXMLParserTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/StringXMLParserTest.class.php	(revision 12883)
++++ ports/classes/net/xp_framework/unittest/xml/StringXMLParserTest.class.php	(working copy)
+@@ -7,7 +7,7 @@
+   uses('net.xp_framework.unittest.xml.AbstractXMLParserTest');
+ 
+   /**
+-   * TestCase
++   * Tests XML parser API with primitive string source
+    *
+    * @see      xp://net.xp_framework.unittest.xml.AbstractXMLParserTest
+    */
+@@ -19,10 +19,10 @@
+      *
+      * @param   string str
+      * @param   bool decl default TRUE
+-     * @return  * XML the source XML
++     * @return  xml.parser.InputSource XML the source XML
+      */
+     protected function source($str, $decl= TRUE) {
+-      return ($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str;
++      return new InputSource(($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str);
+     }
+   }
+ ?>
+Index: ports/unittest/xml.ini
+===================================================================
+--- ports/unittest/xml.ini	(revision 12882)
++++ ports/unittest/xml.ini	(working copy)
+@@ -24,6 +24,9 @@
+ [string-parser]
+ class="net.xp_framework.unittest.xml.StringXMLParserTest"
+ 
++[stream-parser]
++class="net.xp_framework.unittest.xml.StreamXMLParserTest"
++
+ [callbacks]
+ class="net.xp_framework.unittest.xml.XslCallbackTest"
+ 
