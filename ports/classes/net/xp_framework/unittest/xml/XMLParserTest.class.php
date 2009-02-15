@@ -157,6 +157,42 @@
     }
 
     /**
+     * Test an unclosed comment
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function unclosedComment() {
+      $this->parser->parse($this->xml('<doc><!-- Comment</doc>'));
+    }
+
+    /**
+     * Test an incorrectly closed comment
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function incorrectlyClosedComment() {
+      $this->parser->parse($this->xml('<doc><!-- Comment ></doc>'));
+    }
+
+    /**
+     * Test a malformed comment
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function malformedComment() {
+      $this->parser->parse($this->xml('<doc><! Comment --></doc>'));
+    }
+
+    /**
+     * Test an unclosed PI ("processing instruction")
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function unclosedProcessingInstruction() {
+      $this->parser->parse($this->xml('<doc><?php echo "1"; </doc>'));
+    }
+
+    /**
      * Test attribute redefinition
      *
      */
@@ -204,7 +240,31 @@
     }
 
     /**
-     * Test CDATA
+     * Test processing instructions
+     *
+     */
+    #[@test]
+    public function processingInstruction() {
+      $callback= $this->newCallback();
+      $this->parser->setCallback($callback);
+      $this->parser->parse($this->xml('<doc><?php echo "1"; ?></doc>'));
+      $this->assertEquals('<?php echo "1"; ?>', $callback->default[0]);
+    }
+
+    /**
+     * Test comments
+     *
+     */
+    #[@test]
+    public function comment() {
+      $callback= $this->newCallback();
+      $this->parser->setCallback($callback);
+      $this->parser->parse($this->xml('<doc><!-- Comment --></doc>'));
+      $this->assertEquals('<!-- Comment -->', $callback->default[0]);
+    }
+
+    /**
+     * Test nested CDATA is not allowed
      *
      */
     #[@test, @expect('xml.XMLFormatException')]
