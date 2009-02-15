@@ -105,6 +105,28 @@
     }
 
     /**
+     * Test reusability, that is, a parser can be reused after calling parse()
+     * on it.
+     *
+     */
+    #[@test]
+    public function reusable() {
+      $callback= $this->newCallback();
+      $this->parser->setCallback($callback);
+      for ($i= 0; $i < 4; $i++) {
+        $this->parser->parse($this->xml('<run id="'.$i.'"/>'));
+      }
+      $this->assertEquals(4, sizeof($callback->elements));
+      for ($i= 0; $i < 4; $i++) {
+        $this->assertEquals(
+          array('run', array('id' => (string)$i)), 
+          $callback->elements[$i], 
+          'Run #'.$i
+        );
+      }
+    }
+
+    /**
      * Test error is thrown late in the process
      *
      */
