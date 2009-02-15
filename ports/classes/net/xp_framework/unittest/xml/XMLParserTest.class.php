@@ -201,6 +201,21 @@
     }
 
     /**
+     * Test quotes inside attributes
+     *
+     */
+    #[@test]
+    public function quotesInsideAttributes() {
+      $callback= $this->newCallback();
+      $this->parser->setCallback($callback);
+      $this->parser->parse($this->xml('<n id="\'1\'" t=\'"_new"\' q="&apos;&quot;"/>'));
+      $this->assertEquals(
+        array('n', array('id' => "'1'", 't' => '"_new"', 'q' => '\'"')),
+        $callback->elements[0]
+      );
+    }
+
+    /**
      * Test unquoted greater sign inside an attribute
      *
      */
