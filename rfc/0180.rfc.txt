@@ -24,6 +24,8 @@ Functionality
 
 Example
 ~~~~~~~
+This has to be implemented in user code wanting to accept URLs as input 
+and then read from them using streams:
 <code>
   protected function getStream(URL $url) {
     switch ($url->getScheme()) {
@@ -46,6 +48,14 @@ Example
       }
     }
   }
+</code>
+
+
+New API
+~~~~~~~
+The new class will include the above factory sourcecode:
+<code>
+  $stream= new UrlInputStream($url);
 </code>
 
 
