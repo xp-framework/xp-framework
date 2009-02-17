@@ -20,8 +20,30 @@ ablt to parse them.
 
 Functionality
 -------------
-The xml.parser.XMLParser::parse() method will be changed to accept 
-either strings (as it does now) or xml.parser.InputSource objects.
+The <tt>xml.parser.XMLParser::parse()</tt> method will be changed to accept 
+either strings (as it does now) or <tt>xml.parser.InputSource</tt> objects.
+
+Current API
+~~~~~~~~~~~
+This shows that before parsing XML, it needs to be loaded into a string.
+This may be best for small files but will create memory problems when
+the file size increases:
+<code>
+  $xml= FileUtil::getContents(new File('example.xml'));
+  
+  $parser= new XMLParser();
+  $parser->parse($xml);
+</code>
+
+New API
+~~~~~~~
+Here, the parsing is done while loading the file from the stream. Also,
+because FileInputStream can easily be substituted for any other input
+stream, it's more flexible.
+<code>
+  $parser= new XMLParser();
+  $parser->parse(new InputSource(new FileInputStream(new File('example.xml'))));
+</code>
 
 
 Security considerations
@@ -36,7 +58,8 @@ Faster for the stream case.
 
 Dependencies
 ------------
-n/a
+None, the old behaviour of passing a string to <tt>parse()</tt> will be 
+kept.
 
 
 Related documents
