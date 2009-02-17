@@ -41,7 +41,7 @@
       $handle   = NULL;
 
     /**
-     * Constructor. Accepts a DSN of the following form:
+     * Constructor. Accepts a URL of the following form:
      * <pre>
      *   {scheme}://[{user}:{password}@]{host}[:{port}]/[?{options}]
      * </pre>
@@ -61,10 +61,10 @@
      *   <li>passive - boolean value controlling whether to use passive mode or not</li>
      * </ul>
      *
-     * @param   string dsn
+     * @param   mixed url a string or a peer.URL object
      */
-    public function __construct($dsn) {
-      $this->url= new URL($dsn);
+    public function __construct($url) {
+      $this->url= $url instanceof URL ? $url : new URL($url);
     }
     
     /**
