@@ -518,7 +518,7 @@ nedit.highlightPatterns: C:1:0{\n\
 	PHP:1:0{\n\
 		phptags:"\\<\\?php":"\\?\\>"::Plain::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment:phptags:\n\
-		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param|test)":::Text Key1:doccomment:\n\
+		doccommenttag:"@(access|return|throws|see|model|purpose|deprecated|ext|platform|param|test)":::Text Escape:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2:phptags:\n\
 		inlinecomment:"//":"$"::Comment:phptags:\n\
 		double quote strings:"""":""""::String:phptags:\n\
@@ -526,15 +526,15 @@ nedit.highlightPatterns: C:1:0{\n\
 		single quote strings:"'":"'"::String:phptags:\n\
 		sq string esc chars:"\\\\(.|\\n)":::String1:single quote strings:\n\
 		ignore escaped chars:"\\\\[#""'\\$msytq]":::Plain:phptags:\n\
-		keywords:"<(isset|use|const|with|not|enum|is_a|namespace|package|interface|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|operator|error_reporting|class|switch|include|case|default|define|array|var|global|list|c?function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword:phptags:\n\
+		keywords:"<(isset|use|const|with|raise|not|enum|is_a|namespace|package|interface|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|operator|error_reporting|class|switch|include|case|default|define|array|var|global|list|c?function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword:phptags:\n\
 		classkeywords:"<(public|private|protected|static|abstract|final|__destruct|__construct|__call|__set|__get|__invoke|parent|self|const)>":::Text Escape:phptags:\n\
-		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg:phptags:\n\
-		braces and parens:"[\\[\\]{}\\(\\)]":::Subroutine:phptags:\n\
+		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Plain:phptags:\n\
+		braces and parens:"[\\[\\]{}\\(\\)]":::Text Arg2:phptags:\n\
 		heredoc:"\\<\\<\\<__":"^__"::Text Key1:phptags:\n\
 		classname:"([A-Za-z_·\\\\:]+)?(::)([A-Za-z_]+)":::String1:phptags:\n\
 		classnameseperator:"\\2":""::Pointer:classname:C\n\
-		knownconstants:"(NULL|FALSE|TRUE)":::KnownConstant:phptags:\n\
-		constants:"(<[A-Z_0-9]+>)":::Ada Attributes:phptags:\n\
+		knownconstants:"(NULL|FALSE|TRUE)":::Text Arg1:phptags:\n\
+		constants:"(<[A-Z_0-9]+>)":::Text Arg2:phptags:\n\
 		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment:phptags:\n\
 	}\n\
 	CSS:Default\n\
@@ -554,10 +554,13 @@ nedit.highlightPatterns: C:1:0{\n\
 		cvs_header:"^(Index|RCS file|retrieving|diff|=).+":::Text Arg::\n\
 	}\n\
 	ChangeLog:1:0{\n\
-		itemheader:"^([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}|[A-Za-z]{3} [A-Za-z]{3}\\s+[0-9]+ [0-9]{2}:[0-9]{2}:[0-9]{2} [0-9]{4}).+$":::String2::\n\
-		filename:"([a-zA-Z0-9_\\.-]+/)+[a-zA-Z0-9_\\.-]+\\.[a-z0-9]+":::Text Comment::\n\
-		bug:"([bB]ug|[fF]ix).{0,5}\\s?#\\s?[0-9]+":::Pointer::\n\
-		function:"[a-zA-Z0-9_]+\\(\\)":::Keyword::\n\
+		version:"^Version (.+)\\n[-]+":::String2::\n\
+		section:"^(.+)\\n[~]+":::Text Escape::\n\
+		url:"http://([^ ]+)":::Text Comment::\n\
+		bug:"([bB]ug|[fF]ix).{0,5}\\s?#\\s?[0-9]+":::Storage Type::\n\
+		rfc:"RFC #[0-9]+":::Storage Type::\n\
+		function:"[a-zA-Z0-9_]+\\(\\)":::Identifier::\n\
+		class:"(([a-z]+)\\.)+([A-Z][a-zA-Z]+)":::Identifier::\n\
 		keywords:"<NEWS|MFP|MFB|BFN|MFH|CS|WS>":::Identifier::\n\
 	}\n\
 	XP:1:0{\n\
@@ -625,7 +628,7 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	CompactXML:.cml .cxml:::::::
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
-	Keyword:darkRed:Bold\n\
+	Keyword:SteelBlue4:Bold\n\
 	Storage Type:brown:Bold\n\
 	Storage Type1:saddle brown:Bold\n\
 	String:darkBlue:Plain\n\
@@ -652,7 +655,7 @@ nedit.styles: 	Plain:black:Plain\n\
 	Text Arg2:RoyalBlue4:Plain\n\
 	Text Escape:gray30:Bold\n\
 	LaTeX Math:darkGreen:Plain\n\
-	Pointer:#660000:Bold\n\
+	Pointer:#660000:Plain\n\
 	Regex:#009944:Bold\n\
 	Warning:brown2:Italic
 nedit.smartIndentInit: 	C:Default\n\
