@@ -22,6 +22,9 @@ RFCs
 
 Features
 ~~~~~~~~
+- Made peer.ftp.FtpConnection constructor accept not only strings but also
+  peer.URL objects - same as in peer.http.HttpConnection
+  (friebe)
 - Implemented feature suggested in bug #31 - Allow Numbers in Scriptlet
   States
   (friebe)
