@@ -1,0 +1,76 @@
+RFC 0180: UrlInputStream
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Feb 17 09:08:01     2009
+@status: draft
+@category: io.streams
+
+Scope of Change
+---------------
+A new class <tt>io.streams.UrlInputStream</tt> will be created. This class 
+will serve as a factory for other streams depending on the protocol passed
+in.
+
+
+Rationale
+---------
+Easy and unified URL handling.
+
+
+Functionality
+-------------
+
+Example
+~~~~~~~
+<code>
+  protected function getStream(URL $url) {
+    switch ($url->getScheme()) {
+      case 'file': {
+        return new FileInputStream(new File($url->getPath()));
+      }
+      
+      case 'http': case 'https': {
+        $c= new HttpConnection($url);
+        return new HttpInputStream($c->get($url->getPath(), $url->getParams()));
+      }
+      
+      case 'ftp': {
+        $c= new FtpConnection($url->getURL());
+        return $c->connect()->rootDir()->getFile($url->getPath())->getInputStream();
+      }
+      
+      default: {
+        throw new IllegalArgumentException('Cannot stream for protocol '.$url->getScheme());
+      }
+    }
+  }
+</code>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+None.
+
+
+Comments
+--------
+
+
+<EOF>
