@@ -39,7 +39,7 @@ and then read from them using streams:
       }
       
       case 'ftp': {
-        $c= new FtpConnection($url->getURL());
+        $c= new FtpConnection($url);
         return $c->connect()->rootDir()->getFile($url->getPath())->getInputStream();
       }
       
