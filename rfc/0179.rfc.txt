@@ -28,6 +28,7 @@ Current API
 This shows that before parsing XML, it needs to be loaded into a string.
 This may be best for small files but will create memory problems when
 the file size increases:
+
 <code>
   $xml= FileUtil::getContents(new File('example.xml'));
   
@@ -35,11 +36,13 @@ the file size increases:
   $parser->parse($xml);
 </code>
 
+
 New API
 ~~~~~~~
 Here, the parsing is done while loading the file from the stream. Also,
 because FileInputStream can easily be substituted for any other input
 stream, it's more flexible.
+
 <code>
   $parser= new XMLParser();
   $parser->parse(new InputSource(new FileInputStream(new File('example.xml'))));
@@ -73,5 +76,12 @@ friebe, Sun Feb 15 21:45:00     2009
 Not sure whether it wouldn't be more elegant if the InputSource class
 was an interface, and instead of an if/else on types in the constructor, 
 different implementations of it were shipped.
+
+Examples:
+<code>
+  $parser->parse(new StringInputSource($xml));
+  $parser->parse(new FileInputSource(new File('example.xml')));
+  $parser->parse(new StreamInputSource(new FileInputStream(new File('example.xml'))));
+</code>
 
 <EOF>
