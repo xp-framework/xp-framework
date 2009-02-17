@@ -22,6 +22,9 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added io.streams.ChannelInputStream and io.streams.ChannelOutputStream 
+  classes that read from / write to stdin, stdout and stderr
+  (friebe)
 - Made peer.ftp.FtpConnection constructor accept not only strings but also
   peer.URL objects - same as in peer.http.HttpConnection
   (friebe)
