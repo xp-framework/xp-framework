@@ -91,5 +91,10 @@ http://news.xp-framework.net/article/94/0000/00/00/
 
 Comments
 --------
+friebe, Wed Feb 18 09:19:46     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I'm not particularily happy with <tt>System::doExit()</tt> as method name,
+<tt>System::exit()</tt> would be better, but as exit is a keyword in PHP,
+we can't name it that. 
 
 <EOF>
