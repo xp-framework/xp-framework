@@ -2,7 +2,7 @@
 
 SELF=$(realpath $0)
 BASE=$(dirname $SELF)
-PROJECT_PATH="$2"
+PROJECT_PATH=`realpath "$2"`
 
 . $BASE/common.inc.sh
 
