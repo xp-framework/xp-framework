@@ -65,7 +65,7 @@ define syntaxcheck_sh {
 }
 
 define open_file_xpclass {
-  res= shell_command("findxpclass.sh " get_selection(), "")
+  res= shell_command("findxpclass.sh " get_selection() " " $file_path, "")
   if ($shell_cmd_status == 0) {
     filename= split(res, "\n")
     open(filename[0])
