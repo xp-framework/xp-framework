@@ -1,0 +1,95 @@
+RFC 0181: SystemExit
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Wed Feb 18 09:04:18     2009
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Calls to <tt>exit()</tt> will be replaced by a method that throws a
+<tt>lang.SystemExit</tt> exception.
+
+
+Rationale
+---------
+Be able to catch sourcecode that tries to exit.
+
+
+Functionality
+-------------
+Take into consideration the following:
+
+<code>
+  class Grep extends Command {
+  
+    public function bail($message) {
+      $this->err->writeLine('*** ', $message);
+      exit(1);
+    }
+    
+    public function run() {
+      // ...
+
+      if (!...) {
+        $this->bail('Could not ...');
+      }
+
+      // ...
+    }
+  }
+</code>
+
+The problem here is this code was run inside, say, a GUI to show all
+available Command classes and execute them by clicking on buttons, 
+the entire process would exit instead. This is of course not intended.
+
+Instead, we simply want a simple means to exit from the <tt>run()</tt>
+method.
+
+Changes to code
+~~~~~~~~~~~~~~~
+So this is what has to change in the Command class:
+<pre>
+  - exit(1);
+  + System::doExit(1);
+</pre>
+
+On the calling side, we can now do the following:
+<code>
+  $runner= xp·command·Runner();
+  try {
+    $runner->run(new ParamString(array_merge(array($class), $args)));
+  } catch (SystemExit $e) {
+    // ...
+  }
+</code>
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+Exiting will be slightly slower due to the overhead throwing an exception
+adds.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+http://news.xp-framework.net/article/94/0000/00/00/
+
+
+Comments
+--------
+
+<EOF>
