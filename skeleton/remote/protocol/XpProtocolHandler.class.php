@@ -79,6 +79,12 @@
       $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
       $this->_sock->connect();
       
+      // Set sporty timeout for connect
+      $this->_sock->setOption(SOL_SOCKET, SO_RCVTIMEO, array(
+        'sec'   => 2,
+        'usec'  => 0
+      ));
+      
       if ($user= $proxy->getUser()) {
         $this->cat && $this->cat->infof(
           '>>> %s(%s:%d) INITIALIZE %s',
@@ -100,6 +106,12 @@
         );
         $r= $this->sendPacket(REMOTE_MSG_INIT, "\0");
       }
+      
+      // Reset default socket timeout
+      $this->_sock->setOption(SOL_SOCKET, SO_RCVTIMEO, array(
+        'sec'   => 60,
+        'usec'  => 0
+      ));
       $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
     }
     
