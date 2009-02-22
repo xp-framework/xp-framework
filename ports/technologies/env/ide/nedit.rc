@@ -565,7 +565,7 @@ nedit.highlightPatterns: C:1:0{\n\
 	}\n\
 	XP:1:0{\n\
 		package_statement:"package ([^ ]+)":::Keyword::\n\
-		keywords:"<(isset|const|with|not|void|enum|instanceof|namespace|package|import|interface|package|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|operator|error_reporting|class|switch|include|case|default|throws|define|array|var|global|list|function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|const|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword::\n\
+		keywords:"<(isset|const|with|in|void|enum|instanceof|namespace|package|import|interface|package|implements|instanceof|try|catch|throw|finally|cast|unset|extends|operator|class|switch|case|default|throws|var|new|if|do|while|else|for|foreach|continue|return|\\|\\||\\&\\&|!==?|===?)>":::Keyword::\n\
 		classkeywords:"<(public|private|protected|native|inline|static|abstract|final|__destruct|__construct|__call|__set|__get|parent|self|this)>":::Text Escape::\n\
 		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_\\r/\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg::\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Subroutine::\n\
