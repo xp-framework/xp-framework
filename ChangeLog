@@ -22,6 +22,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added util.log.StreamAppender to use streams as log appender
+  (hinckel)
 - Added io.streams.ChannelInputStream and io.streams.ChannelOutputStream 
   classes that read from / write to stdin, stdout and stderr
   (friebe)
