@@ -65,9 +65,9 @@
      * Constructor
      *
      * @param   string languages
-     * @param   string charset
+     * @param   string charsets
      */
-    public function __construct($languages, $charsets) {
+    public function __construct($languages, $charsets= '') {
       $this->languages= $this->_parse($languages);
       $this->charsets= $this->_parse($charsets);
     }
