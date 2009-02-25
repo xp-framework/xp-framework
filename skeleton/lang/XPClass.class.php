@@ -467,15 +467,13 @@
      * @return  array or NULL to indicate no details are available
      */
     public static function detailsForClass($class) {
-      static $details= array();
-
       if (!$class) return NULL;        // Border case
-      if (isset($details[$class])) return $details[$class];
+      if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
 
       // Retrieve class' sourcecode
       if (!($bytes= self::_classLoaderFor($class)->loadClassBytes($class))) return NULL;
 
-      $details[$class]= array(array(), array());
+      $details= array(array(), array());
       $annotations= array();
       $comment= NULL;
       $members= TRUE;
@@ -505,7 +503,7 @@
 
           case T_CLASS:
           case T_INTERFACE:
-            $details[$class]['class']= array(
+            $details['class']= array(
               DETAIL_COMMENT      => trim(preg_replace('/\n   \* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
@@ -522,7 +520,7 @@
 
             // Have a member variable
             $name= substr($tokens[$i][1], 1);
-            $details[$class][0][$name]= array(
+            $details[0][$name]= array(
               DETAIL_ANNOTATIONS => $annotations
             );
             $annotations= array();
@@ -532,7 +530,7 @@
             $members= FALSE;
             while (T_STRING !== $tokens[$i][0]) $i++;
             $m= $tokens[$i][1];
-            $details[$class][1][$m]= array(
+            $details[1][$m]= array(
               DETAIL_ARGUMENTS    => array(),
               DETAIL_RETURNS      => 'void',
               DETAIL_THROWS       => array(),
@@ -556,15 +554,15 @@
             foreach ($matches as $match) {
               switch ($match[1]) {
                 case 'param':
-                  $details[$class][1][$m][DETAIL_ARGUMENTS][]= $match[2];
+                  $details[1][$m][DETAIL_ARGUMENTS][]= $match[2];
                   break;
 
                 case 'return':
-                  $details[$class][1][$m][DETAIL_RETURNS]= $match[2];
+                  $details[1][$m][DETAIL_RETURNS]= $match[2];
                   break;
 
                 case 'throws': 
-                  $details[$class][1][$m][DETAIL_THROWS][]= $match[2];
+                  $details[1][$m][DETAIL_THROWS][]= $match[2];
                   break;
               }
             }
@@ -576,7 +574,8 @@
       }
       
       // Return details for specified class
-      return $details[$class]; 
+      xp::$registry['details.'.$class]= $details;
+      return $details;
     }
 
     /**
