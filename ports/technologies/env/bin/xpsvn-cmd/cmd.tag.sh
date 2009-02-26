@@ -36,7 +36,7 @@ recursiveCopy() {
       REV="-r PREV:COMMITTED"
       ;;
     *)
-      REV="-r $ONLY_REVISION"
+      [ $ONLY_REVISION ] && REV="-r $ONLY_REVISION"
       ;;
   esac
 
