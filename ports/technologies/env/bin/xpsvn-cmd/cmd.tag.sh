@@ -27,10 +27,22 @@ recursiveCopy() {
 
   [ $DEBUG ] && echo "---> Checking $ITEM"
   
+  # Check for specific revision
+  case $ONLY_REVISION in
+    last)
+      REV="-r PREV:COMMITTED"
+      ;;
+    prev)
+      REV="-r PREV:COMMITTED"
+      ;;
+    *)
+      REV="-r $ONLY_REVISION"
+      ;;
+  esac
+
   if [ ! -e "$TARGETBASE"/$ITEM ]; then
   
     # New, so "svn copy" from repository (URL -> WC)
-    [ $DEBUG ] && echo "svn copy "$REPOROOT"/trunk/$ITEM "$TARGETBASE"/$ITEM";
     [ "yes" = $ONLY_EXISTING ] && {
       echo "Skipping $ITEM, because it does not exist in tag";
       return;
@@ -50,23 +62,31 @@ recursiveCopy() {
     
     # If source and target are in the same repository, svn copy the file
     if [ "$REPOURL" = $(repositoryUrl "$SOURCEBASE"/$ITEM) ]; then
-      [ $DEBUG ] && echo "svn copy $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM";
-      svn copy $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM;
+      [ $DEBUG ] && echo "svn copy $REV $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM";
+      svn copy $REV $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM;
+
+    # otherwise svn export it into the target
     else
-      [ $DEBUG ] && echo "svn export $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM";
-      svn export $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM;
+      [ $DEBUG ] && echo "svn export $REV $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM";
+      svn export $REV $(fetchFileURL "$REPOBASE"/trunk/$ITEM) "$TARGETBASE"/$ITEM;
       svn add "$TARGETBASE"/$ITEM;
     fi
     
-    # otherwise svn export it into the target
     return;
   fi
   
   if [ -f "$TARGETBASE"/$ITEM ]; then
   
     # Update by `svn cat`, which print the file without local modifications
-    [ $DEBUG ] && echo "svn cat "$SOURCEBASE"/$ITEM > "$TARGETBASE"/$ITEM";
-    svn cat "$SOURCEBASE"/$ITEM > "$TARGETBASE"/$ITEM;
+    if [ "$REV" != "" ] ; then
+      [ $DEBUG ] && echo "svn merge $REV $SOURCEBASE/$ITEM $TARGETBASE/$ITEM"
+      svn merge $REV "$SOURCEBASE/$ITEM" "$TARGETBASE/$ITEM"
+    
+    # Merge differences between revisions into working copy
+    else
+      [ $DEBUG ] && echo "svn cat $SOURCEBASE/$ITEM > $TARGETBASE/$ITEM"
+      svn cat "$SOURCEBASE/$ITEM" > "$TARGETBASE/$ITEM"
+    fi
     return;
   fi
   
@@ -82,10 +102,12 @@ recursiveCopy() {
 # Parse command line options
 ONLY_EXISTING="no"
 CREATE_EMPTY_DIR="no"
-while getopts 'uc' COMMAND_LINE_ARGUMENT ; do
+ONLY_REVISION=""
+while getopts 'ucr:' COMMAND_LINE_ARGUMENT ; do
   case "$COMMAND_LINE_ARGUMENT" in
     u)  ONLY_EXISTING="yes"     ;;
-    c)  CREATE_EMPTY_DIR="yes"  ;; 
+    c)  CREATE_EMPTY_DIR="yes"  ;;
+    r)  ONLY_REVISION="$OPTARG" ;;
     ?)  exit
   esac
 done
