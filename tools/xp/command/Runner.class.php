@@ -163,6 +163,7 @@
      */
     public function run(ParamString $params) {
       $pm= PropertyManager::getInstance();
+      $pm->configure('etc');
 
       // No arguments given - show our own usage
       if ($params->count < 1) {
