@@ -32,7 +32,7 @@ while [ ! -z $1 ]; do
   for i in `ls "$REPOBASE"/tags/`; do
     if [ -d "$REPOBASE"/tags/$i ]; then
       if [ -e "$REPOBASE"/tags/$i/$RELTARGET ]; then
-        rev=`svn info "$REPOBASE"/tags/$i/$RELTARGET|grep "Last Changed Rev:"|cut -d ' ' -f 4`
+        rev=$(fetchFileRevision "$REPOBASE"/tags/$i/$RELTARGET)
         echo "$i (revision $rev)";
         RETCODE=0
       fi

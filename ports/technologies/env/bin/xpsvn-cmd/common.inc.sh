@@ -54,6 +54,12 @@ fetchTag() {
   return 0
 }
 
+fetchFileRevision() {
+  local FILE=$1
+  
+  svn info --xml "$FILE" | grep revision | tail -n1 | cut -d '"' -f2
+}
+
 relativeTarget () {
   local TARGET=$1
   
