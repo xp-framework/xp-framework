@@ -94,7 +94,7 @@
 
       if ($this->prefix) {
         $this->processor->setParam('prefix', $this->prefix);
-        $this->processor->setParam($this->pexclude ? 'exprefix' : 'incprefix', $this->ptargets);
+        $this->processor->setParam($this->pexclude ? 'exprefix' : 'incprefix', implode(',', $this->ptargets));
       }
     }
 
