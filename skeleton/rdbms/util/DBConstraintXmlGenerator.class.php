@@ -65,7 +65,7 @@
         )));
 
         if ($constraint= $t->getFirstForeignKeyConstraint()) do {
-          if ($constKeyList[$this->constraintKey($constraint)]) {
+          if (isset($constKeyList[$this->constraintKey($constraint)])) {
             $this->cat && $this->cat->warn($t->name, 'has a double constraint'."\n".xp::stringOf($constraint));
             continue;
           }
