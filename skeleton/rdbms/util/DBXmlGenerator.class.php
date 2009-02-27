@@ -99,7 +99,7 @@
         // constraints
         $constKeyList= array();
         if ($constraint= $this->table->getFirstForeignKeyConstraint()) do {
-          if ($constKeyList[$this->constraintKey($constraint)]) {
+          if (isset($constKeyList[$this->constraintKey($constraint)])) {
             $this->cat && $this->cat->warn($this->table->name, 'has a double constraint'."\n".xp::stringOf($constraint));
             continue;
           }
