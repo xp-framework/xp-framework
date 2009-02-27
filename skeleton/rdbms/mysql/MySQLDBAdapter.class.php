@@ -149,10 +149,11 @@
       // Get foreign key constraints
       // in mysql the only way is to parse the creat statement
       $createTableString= $this->conn->query('show create table %c', $this->qualifiedTablename($table, $database))->next('Create Table');
+      
       for ($i= 0; $i < strlen($createTableString); $i++) {
         switch ($createTableString{$i}) {
           case '`':
-          $this->parseQuoteString($createTableString, $i);
+          $this->parseQuoteString($createTableString, $i, '`');
           break;
 
           case '"':
@@ -316,7 +317,7 @@
 
           case '`':
           $paramString.= $string{$pos};
-          $paramString.= $this->parseQuoteString($string, $pos).'`';
+          $paramString.= $this->parseQuoteString($string, $pos, '`').'`';
           break;
 
           case '"':
