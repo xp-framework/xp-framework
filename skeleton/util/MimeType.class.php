@@ -30,6 +30,7 @@
   define('MIME_APPLICATION_X_NETCDF',           'application/x-netcdf');
   define('MIME_APPLICATION_X_PERL',             'application/x-perl');
   define('MIME_APPLICATION_X_PHP',              'application/x-php');
+  define('MIME_APPLICATION_X_XP',               'application/x-xp');
   define('MIME_APPLICATION_X_JAVA',             'application/x-java');
   define('MIME_APPLICATION_X_JAVASCRIPT',       'application/x-javascript');
   define('MIME_APPLICATION_X_C',                'application/x-c');
@@ -134,6 +135,7 @@
         '.pl'      => MIME_APPLICATION_X_PERL,
         '.pm'      => MIME_APPLICATION_X_PERL,
         '.php'     => MIME_APPLICATION_X_PHP,
+        '.xp'      => MIME_APPLICATION_X_XP,
         '.java'    => MIME_APPLICATION_X_JAVA,
         '.js'      => MIME_APPLICATION_X_JAVASCRIPT,
         '.c'       => MIME_APPLICATION_X_C,
