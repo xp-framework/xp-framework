@@ -6,6 +6,7 @@
 package net.xp_framework.unittest;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import net.xp_framework.unittest.Person;
 import java.lang.reflect.Method;
 
@@ -152,6 +153,24 @@ public class MethodMatcherTest {
         assertEquals(
             "(null)", 
             methodString(methodFor(Person.class, "setId", new Object[] { new Long(1) }))
+        );
+    }
+    
+    @Test public void stringArray() throws Exception {
+        assertEquals(
+            "void setResponsibilities:1([Ljava.lang.String;)", 
+            methodString(methodFor(Person.class, "setResponsibilities", new Object[] { 
+                new String[] { "Hello" }
+            }))
+        );
+    }
+    
+    @Test @Ignore("Not sure how to do this ATM") public void personObjectArray() throws Exception {
+        assertEquals(
+            "void setFriends:1([Lnet.xp_framework.unittest.Person;)", 
+            methodString(methodFor(Person.class, "setFriends", new Object[] { 
+                new Object[] { new Person() { } }
+            }))
         );
     }
 
