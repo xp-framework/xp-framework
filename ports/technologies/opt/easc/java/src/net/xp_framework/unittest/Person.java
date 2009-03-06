@@ -80,6 +80,22 @@ public class Person implements java.io.Serializable {
     public void setName(String name) {
         this.name= name;
     }
+
+    /**
+     * Set responsibilities
+     *
+     */
+    public void setResponsibilities(String[] responsibilities) {
+        this.responsibilities= responsibilities;
+    }
+
+    /**
+     * Set friends
+     *
+     */
+    public void setFriends(Person[] friends) {
+        // NOOP
+    }
     
     /**
      * Retrieve id
