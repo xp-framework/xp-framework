@@ -8,50 +8,6 @@
   );
 
   /**
-   * Short reference (may be deleted after implementation):
-   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   * Preimplemented commandline arguments:
-   *   --help, -?
-   *     Show API doc of all methods with an "@arg" annotation (see below).
-   *   --config, -c
-   *     Set path to ini files, default is "./etc".
-   *     Ini files for dependency injection:
-   *     - log.ini:      Configure the Logger.
-   *     - database.ini: Configure the ConnectionManager.
-   *
-   * Dependency injection with "@inject":
-   *   Annotation "@inject" with the parameters "type" and "name".
-   *   Will pass an instance of the given type to the method.
-   *   Valid types are:
-   *   - rdbms.DBConnection:   Name will be interpreted as host name.
-   *   - util.Properties:      Name will be interpreted as ini file name (without trailing ".ini").
-   *   - util.log.LogCategory: Name will be interpreted as log category name.
-   *
-   * Passing commandline arguments with "@arg" and "@args":
-   *   Annotation "@arg" with parameter "position" or "name", "short":
-   *     Pass a commandline argument by position to the method.
-   *       e.g. #[@arg(position= 0)] will pass the first argument.
-   *     Pass a commandline argument by name to the method. A minus shortage is calculated.
-   *       e.g. #[@arg(name= 'verbose')] will pass the "-v" or "--verbose" argument.
-   *     Pass a minus argument to the method.
-   *       e.g. #[@arg(name= 'verbose', short='s')] will pass the "-s" or "--verbose" argument.
-   *     The argument name is calculated by using a lowercase version of the method name and stripping a leading "set".
-   *       e.g. #[@arg] The method "setVerbose($verbosity)" will automaticly get "-v" or --verbose argument as "$verbosity" parameter.
-   *     If the method does not accept parameters the existance of the argument will be tested.
-   *       e.g. #[@arg] The method "setDebug()" will be invoked if "-d" or "-debug" argument is set.
-   *   Annotation "@args" with parameter "select":
-   *     Comma seperated List of argument selectors:
-   *     - A digit (X) pass the argument of position X to the method.
-   *     - A minus argument (like: "-v") will pass the value of -v to the method.
-   *     - A Range (like: [2..5]) will pass arguments 2 to 5 to the method.
-   *       e.g. #[@args(select= '0,3,5..7')] will pass the arguments on position 0, 3, 5, 6, 7 to the method.
-   *
-   * @see      xp://util.cmd.Command
-   * @see      xp://util.cmd.Runner
-   * @see      xp://util.PropertyManager#getProperties
-   * @see      xp://rdbms.ConnectionManager#getByHost
-   * @see      xp://util.log.Logger#getCategory
-   *
    * (Insert class' description here)
    *
    * @ext      extension
