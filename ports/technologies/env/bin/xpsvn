@@ -3,110 +3,24 @@
 # $Id$
 #
 
-MYSELF=$(realpath "$0")
-DIRNAME=$(dirname "$MYSELF")
-
-# Include commonly used functions:
-. "$DIRNAME"/xpsvn-cmd/common.inc.sh
-
-exitHandler() {
-  exit $?
-}
-
-COMMAND=$1
-shift 1 2>/dev/null;
-
-[ $DEBUG ] && echo "---> Command= $COMMAND $*"
-
-trap exitHandler EXIT
-
-case $COMMAND in
-  find)
-    . "$DIRNAME"/xpsvn-cmd/cmd.find.sh
-    ;;
-
-  tag)
-    . "$DIRNAME"/xpsvn-cmd/cmd.tag.sh
-    ;;
-
-  tagstatus | tst)
-    . "$DIRNAME"/xpsvn-cmd/cmd.tagstatus.sh
-    ;;
-  
-  tagdiff | tdi)
-    . "$DIRNAME"/xpsvn-cmd/cmd.tagdiff.sh
-    ;;
-  
-  tagcommit | tci)
-    . "$DIRNAME"/xpsvn-cmd/cmd.tagcommit.sh
-    ;;
-    
-  tagupdate | tup)
-    . "$DIRNAME"/xpsvn-cmd/cmd.tagupdate.sh
-    ;;
-  
-  go)
-    . "$DIRNAME"/xpsvn-cmd/cmd.go.sh
-    ;;
-
-  diff)
-    . "$DIRNAME"/xpsvn-cmd/cmd.diff.sh
-    ;;
-  
-  tagcreate)
-    . "$DIRNAME"/xpsvn-cmd/cmd.tagcreate.sh
-    ;;
-
-  *)
-    echo "Usage: $0 [-v] [-d] <command> [<options> ...]";
-    echo "* Command is one of: {go|diff|find|tag|tagstatus|tagdiff|tagcommit}"
-    echo "* Global options:"
-    echo "  -v: enable verbose output"
-    echo "  -d: enable debug output"
-    echo
-    echo "* xpsvn go <tagname>"
-    echo "  Opens a sub-shell in the tag-directory for the given tag"
-    echo
-    echo "* xpsvn diff [-v] <tagname> <target> ..."
-    echo "  Diffs the target(s) against the version(s) in the <tagname> tag directory"
-    echo "  If -v is passed for verbose diffs, you'll not only get whether the files"
-    echo "  differ, but also the unified diff."
-    echo
-    echo "* xpsvn find <target> ..."
-    echo "  Prints all tag names the given target file is part of."
-    echo
-    echo "* xpsvn tag [-u] [-c] <tagname> <target> ..."
-    echo "  -u: Only update existing files, do not add new."
-    echo "  -c: If one target cannot be created, because it's parent directory has not"
-    echo "      yet been tagged, create the parent (recursively) as empty directory."
-    echo
-    echo "  Recursively copies all new or modified files from target to the given"
-    echo "  tag directory. Fetches the files from the server, so no local modifications"
-    echo "  will find their way into the repo unnoticed."
-    echo "  If a file does not yet exist in the tag directory, it will be added using"
-    echo "  the 'svn copy' command."
-    echo
-    echo
-    echo "* xpsvn tagstatus|tst <tagname>"
-    echo "  Executes a 'svn status' command in the given tags directory."
-    echo
-    echo "* xpsvn tagdiff|tdi <tagname>"
-    echo "  Executes a 'svn diff' command in the given tags directory."
-    echo
-    echo "* xpsvn tagcommit|tci <tagname>"
-    echo "  Executes a 'svn commit' command in the given tags directory. Prints out a"
-    echo "  list of actual changes and asks whether those should really be commited."
-    echo
-    echo "* xpsvn tagcreate <tagname>"
-    echo "  Creates a new tag in the tags/ directory with the common directory structure."
-    echo "  It also copies the whole XP framework base system (skeleton/ without non-"
-    echo "  common pieces."
-    echo
-    echo "* xpsvn tagupdate|tup <tagname>"
-    echo "  Updates the given tag, so changes from other developers will be synced in"
-    echo "  and enables commit functionality again."
-    echo
-    ;;
-esac
-
+echo "xpsvn has moved."
+echo "----------------"
+echo
+echo "If you're seeing this message, it means that you're using an xpsvn from an old"
+echo "location in the repository. That's probably because you have a symlink pointing"
+echo "to this file, or have the ports/technologies/env/bin directory in your PATH".
+echo
+echo "xpsvn has moved to xp.forge; you should update your environment, by either:"
+echo "  * If you had the symlink, update this to "
+echo "    xp.forge/trunk/projects/shell/xpsvn/src/xpsvn"
+echo
+echo "  * If you had the path setting, change it to include"
+echo "    xp.forge/trunk/projects/shell/xpsvn/src"
+echo
+echo "xp.forge can be obtained by this command"
+echo "  $ svn co svn://developer.xp-framework.net/xpforge xp.forge"
+echo
+echo "If you're still reading, did you know you can now choose between the xpsvn"
+echo "as you know it, or xpsvn-light? Read the README!"
+echo
 exit 1;
