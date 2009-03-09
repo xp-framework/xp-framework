@@ -1,0 +1,48 @@
+RFC 0182: 
+========================================================================
+$Id$
+
+@authors: wagner
+@created: Mon Mar  9 11:19:01 CET 2009
+@status: draft
+@category: text
+
+Scope of Change
+---------------
+the text.CSVGenerator will be extended by a flag that forces fields
+to be quoted.
+
+Rationale
+---------
+When Sybase reads data from a CSV file it trys to detect the escape
+character by looking at the first character of a datafield, as you can
+see in the attached document.
+This leads to too wrong data interpretation if a field starts with a
+single-quote while the escape character was set to doube quotes.
+
+Functionality
+-------------
+Setting the force_quotation flag to true would enclose all field
+into quotations. So the first character of a field is allways the
+actual escape character.
+
+Security considerations
+-----------------------
+none
+
+Speed impact
+------------
+Fully quotation might be a bit slower.
+
+Dependencies
+------------
+none
+
+Related documents
+-----------------
+http://manuals.sybase.com/onlinebooks/group-pbarc/conn5/sqlug/@Generic__BookTextView/46795;pt=46795;
+
+Comments
+--------
+
+<EOF>
