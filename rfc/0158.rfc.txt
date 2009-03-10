@@ -1,15 +1,15 @@
-RFC 0158: Register scriptlet, state and context as XSL callback
+RFC 0158: Register state and context as XSL callback
 ========================================================================
 $Id$
 
 @authors: kiesel
 @created: Sat Mar  8 11:47:05     2008
-@status: discussion, ends Mon Apr 21 17:32:16 CEST 2008
+@status: discussion, ends Fri Mar 20 12:00:00    2009
 @category: scriptlet
 
 Scope of Change
 ---------------
-Register instances of scriptlet objects whereever available to 
+Register instances of scriptlet API objects whereever available to 
 provide a standard basis for applications where to put XSL 
 callback methods.
 
@@ -17,16 +17,13 @@ Rationale
 ---------
 XSL callbacks should be used where implementing in XSL is re-
 implementation of thing already available in XP or just to
-difficult to implement.
+difficult to implement in plain XSL.
 A standard way of providing these callbacks need to be provided
 as access to the XSL processor is required to register a callback
 and that access is not given at all places.
 
 Functionality
 -------------
-A scriptlet instance will be registered as 'active.scriptlet'
-where a scriptlet.xml.XMLScriptlet-derived scriplet class is used.
-
 A state instance will be registered as 'active.state' where a 
 state is instanciated and used for the request.
 
@@ -39,7 +36,10 @@ n/a
 
 Speed impact
 ------------
-Slower, because more code, but neglectible.
+Because we'll have a few more function calls, overall code will be
+slower, but neglectible. For applications actually using these callbacks,
+there will be impact on performance to the extent that XSL callbacks
+usually do.
 
 Dependencies
 ------------
@@ -61,5 +61,9 @@ Comments
 
 - friebe, Tue Apr 15 13:26:19     2008
   We need some use-cases here!
+
+- kiesel, Tue Mar 10 21:32:20     2009
+  Adjusted due to "recent" concerns.
+
 
 <EOF>

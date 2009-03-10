@@ -1,17 +1,3 @@
-Index: scriptlet/xml/XMLScriptlet.class.php
-===================================================================
---- scriptlet/xml/XMLScriptlet.class.php	(revision 11780)
-+++ scriptlet/xml/XMLScriptlet.class.php	(working copy)
-@@ -187,6 +187,9 @@
-      * @param   scriptlet.xml.XMLScriptletResponse response 
-      */
-     public function processRequest($request, $response) {
-+    
-+      // Register scriptlet as XSL callback
-+      $response->getProcessor()->registerInstance('active.scriptlet', $this);
- 
-       // Define special parameters
-       $response->setParam('state',   $request->getStateName());
 Index: scriptlet/xml/workflow/AbstractXMLScriptlet.class.php
 ===================================================================
 --- scriptlet/xml/workflow/AbstractXMLScriptlet.class.php	(revision 11780)
