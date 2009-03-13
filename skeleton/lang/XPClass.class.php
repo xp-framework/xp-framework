@@ -387,10 +387,10 @@
      */
     public function hasAnnotation($name, $key= NULL) {
       $details= self::detailsForClass($this->name);
-
+      
       return $details && ($key 
-        ? array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
-        : array_key_exists($name, @$details['class'][DETAIL_ANNOTATIONS])
+        ? @array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
+        : @array_key_exists($name, @$details['class'][DETAIL_ANNOTATIONS])
       );
     }
 
@@ -406,8 +406,8 @@
       $details= self::detailsForClass($this->name);
 
       if (!$details || !($key 
-        ? array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
-        : array_key_exists($name, @$details['class'][DETAIL_ANNOTATIONS])
+        ? @array_key_exists($key, @$details['class'][DETAIL_ANNOTATIONS][$name]) 
+        : @array_key_exists($name, @$details['class'][DETAIL_ANNOTATIONS])
       )) return raise(
         'lang.ElementNotFoundException', 
         'Annotation "'.$name.($key ? '.'.$key : '').'" does not exist'
