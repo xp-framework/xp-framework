@@ -101,10 +101,14 @@
     
     <xsl:choose>
       <xsl:when test="contains($name, 'Service')">
-        <xsl:value-of select="substring-before($name, 'Service')"/>
+        <xsl:call-template name="ucfirst">
+          <xsl:with-param name="string" select="substring-before($name, 'Service')"/>
+        </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$name"/>
+        <xsl:call-template name="ucfirst">
+          <xsl:with-param name="string" select="$name"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:value-of select="$postfix"/>
