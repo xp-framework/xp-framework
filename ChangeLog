@@ -44,6 +44,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed org.fpdf.FPDF::writeCells() when writing justified cells
+  (friebe, Tobias Roth, Thomas Geiger)
 - Use "etc" directory as default configuration path for xpcli command
   (hinckel)
 - Fixed rdbms.mysql.MySQLDBAdapter did not handle '"' quotes (bug#34)
