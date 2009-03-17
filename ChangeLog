@@ -44,6 +44,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed WSDL code generator - upper case first letter in generated class names
+  (wagner)
 - Fixed org.fpdf.FPDF::writeCells() when writing justified cells
   (friebe, Tobias Roth, Thomas Geiger)
 - Use "etc" directory as default configuration path for xpcli command
