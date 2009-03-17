@@ -938,7 +938,7 @@
      * @param   int h default 5
      * @param   string txt
      * @param   int border default FPDF_BORDER_NONE one of the FPDF_BORDER_* constants
-     * @param   int align default FPDF_ALIGN_LEFT one of the FPDF_ALIGN_* constants
+     * @param   int align default FPDF_ALIGN_JUSTIFY one of the FPDF_ALIGN_* constants
      * @param   int fill default FPDF_FILL_TRANSPARENT one of the FPDF_FILL_* constants
      */
     public function writeCells(
@@ -995,7 +995,7 @@
             }
             $this->writeCell($w, $h,substr($s, $j, $i- $j), $b, FPDF_POS_BELOW, $align, $fill);
           } else {
-            if ($align == 'J') {
+            if ($align == FPDF_ALIGN_JUSTIFY) {
               $this->ws= ($ns > 1) ? round(($wmax- $ls) / 1000 * $this->FontSize / ($ns- 1), 3) : 0;
               $this->_out($this->ws.' Tw');
             }
