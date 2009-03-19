@@ -366,7 +366,7 @@
 
   <!-- create referenced object getters -->
   <xsl:for-each select="my:referencing($this)">
-    <xsl:variable name="referencedTable" select="document(concat($definitionpath, '/', my:ucfirst(@table)))/document" />
+    <xsl:variable name="referencedTable" select="document(concat($definitionpath, '/', my:prefixedClassName(@table)))/document" />
     <xsl:variable name="isSingle"        select="my:constraintSingleTest(./key, $referencedTable/table/index[@unique = 'true'])" />
     <xsl:variable name="classname"       select="my:ucfirst(@table)" />
     <xsl:variable name="fullclassname"   select="concat($package, '.', my:prefixedClassName(@table))" />
@@ -446,7 +446,7 @@
 
   <!-- create referencing object getters -->
   <xsl:for-each select="my:referenced($this)">
-    <xsl:variable name="referencingTable" select="document(concat($definitionpath, '/', my:ucfirst(../../@name)))/document" />
+    <xsl:variable name="referencingTable" select="document(concat($definitionpath, '/', my:prefixedClassName(../../@name)))/document" />
     <xsl:variable name="isSingle" select="my:constraintSingleTest(./key, $referencingTable/table/index[@unique = 'true'])" />
     <xsl:variable name="classname"       select="my:ucfirst(../../@name)" />
     <xsl:variable name="fullclassname"   select="concat($package, '.', my:prefixedClassName(../../@name))" />
