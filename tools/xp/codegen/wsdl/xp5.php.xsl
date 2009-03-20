@@ -102,15 +102,17 @@
     <xsl:param name="postfix" select="''"/>
     
     <func:result>
-      <xsl:choose>
-        <xsl:when test="contains($name, 'Service')">
-          <xsl:value-of select="func:ucfirst(substring-before($name, 'Service'))"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="func:ucfirst($name)"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="$postfix"/>
+      <xsl:variable name="className">
+        <xsl:choose>
+          <xsl:when test="contains($name, 'Service')">
+            <xsl:value-of select="func:ucfirst(substring-before($name, 'Service'))"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="func:ucfirst($name)"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+      <xsl:value-of select="concat(translate($className, '.', '_'), $postfix)"/>
     </func:result>
   </func:function>
 
