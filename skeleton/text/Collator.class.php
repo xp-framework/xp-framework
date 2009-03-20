@@ -33,7 +33,7 @@
      * @param   util.Locale locale
      * @return  text.Collator
      */
-    public static function getInstance($locale) {
+    public static function getInstance(Locale $locale) {
       $id= $locale->hashCode();
       if (!isset(self::$instance[$id])) {
         self::$instance[$id]= new self($locale->toString());
