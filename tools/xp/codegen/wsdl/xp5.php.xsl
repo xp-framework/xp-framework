@@ -9,11 +9,13 @@
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
  xmlns:exsl="http://exslt.org/common"
+ xmlns:func="http://exslt.org/functions"
  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
  xmlns:xpdoc="http://xp-framework.net/TR/apidoc/"
+ extension-element-prefixes="func"
 >
   <xsl:output method="text" indent="no"/>
   <xsl:param name="collection" select="'xml.wsdl.gen'"/>
@@ -42,77 +44,75 @@
   </xsl:variable>
 
   <!--
-   ! Template that adds a MIME boundary
+   ! Function that adds a MIME boundary
    !
    ! @type   named
    ! @param  string string
    !-->
-  <xsl:template name="nextpart">
+  <func:function name="func:nextpart">
     <xsl:param name="filename"/>
   
-    <xsl:value-of select="concat(
+    <func:result select="concat(
       '------_=_NextPart_', $boundary, '&#10;',
       'Content-Type: text/plain; name=&quot;', $collection, '.', $prefix, $filename, '&quot;&#10;',
       'Content-Transfer-Encoding: 8bit&#10;',
       '&#10;'
     )"/>
-  </xsl:template>  
+  </func:function>  
 
   <!--
-   ! Template that transforms the first character of a string into lowercase
+   ! Function that transforms the first character of a string into lowercase
    !
    ! @type   named
    ! @param  string string
    !-->
-  <xsl:template name="lcfirst">
+  <func:function name="func:lcfirst">
     <xsl:param name="string"/>
   
-    <xsl:value-of select="concat(
+    <func:result select="concat(
       translate(substring($string, 1, 1), $ucletters, $lcletters),
       substring($string, 2)
     )"/>
-  </xsl:template>  
+  </func:function>  
 
   <!--
-   ! Template that transforms the first character of a string into uppercase
+   ! Function that transforms the first character of a string into uppercase
    !
    ! @type   named
    ! @param  string string
    !-->
-  <xsl:template name="ucfirst">
+  <func:function name="func:ucfirst">
     <xsl:param name="string"/>
   
-    <xsl:value-of select="concat(
+    <func:result select="concat(
       translate(substring($string, 1, 1), $lcletters, $ucletters),
       substring($string, 2)
     )"/>
-  </xsl:template>  
+  </func:function>  
 
   <!--
-   ! Template for class name.
+   ! Function for class name.
    !
    ! @type   named
    ! @param  string name
    ! @param  string postfix default ''
    !-->
-  <xsl:template name="class">
+  <func:function name="func:class">
     <xsl:param name="name"/>
     <xsl:param name="postfix" select="''"/>
     
-    <xsl:choose>
-      <xsl:when test="contains($name, 'Service')">
-        <xsl:call-template name="ucfirst">
-          <xsl:with-param name="string" select="substring-before($name, 'Service')"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="ucfirst">
-          <xsl:with-param name="string" select="$name"/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:value-of select="$postfix"/>
-  </xsl:template>
+    <func:result>
+      <xsl:choose>
+        <xsl:when test="contains($name, 'Service')">
+          <xsl:value-of select="func:ucfirst(substring-before($name, 'Service'))"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="func:ucfirst($name)"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:value-of select="$postfix"/>
+    </func:result>
+  </func:function>
 
   <!--
    ! Template for creating API doc comments
@@ -337,9 +337,7 @@
    ! @type   match
    !-->
   <xsl:template match="xsd:complexType[child::*[name() = 'xsd:all']]">
-    <xsl:call-template name="nextpart">
-      <xsl:with-param name="filename" select="@name"/>
-    </xsl:call-template>
+    <value-of select="func:nextpart(@name)"/>
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
  *
@@ -352,9 +350,7 @@
    * @purpose  Specialized SOAP type
    */
   class ]]></xsl:text>
-  <xsl:call-template name="ucfirst">
-    <xsl:with-param name="string" select="concat($prefix, @name)"/>
-  </xsl:call-template>
+  <xsl:value-of select="func:ucfirst(concat($prefix, @name))"/>
   <xsl:text> extends Object {
     public</xsl:text>
     <xsl:for-each select="xsd:all/xsd:element">
@@ -377,9 +373,7 @@
       <xsl:text>
      */
     public function get</xsl:text>
-      <xsl:call-template name="ucfirst">
-        <xsl:with-param name="string" select="@name"/>
-      </xsl:call-template>
+      <xsl:value-of select="func:ucfirst(@name)"/>
       <xsl:text>() {
       return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
     }
@@ -398,9 +392,7 @@
       <xsl:text>
      */
     public function set</xsl:text>
-      <xsl:call-template name="ucfirst">
-        <xsl:with-param name="string" select="@name"/>
-      </xsl:call-template>
+      <xsl:value-of select="func:ucfirst(@name)"/>
       <xsl:text>($</xsl:text><xsl:value-of select="@name"/><xsl:text>) {
       $this-></xsl:text><xsl:value-of select="@name"/>
       <xsl:text>= $</xsl:text>
@@ -421,9 +413,7 @@
    ! @type   match
    !-->
   <xsl:template match="xsd:complexType[child::*[local-name() = 'sequence']]">
-    <xsl:call-template name="nextpart">
-      <xsl:with-param name="filename" select="@name"/>
-    </xsl:call-template>
+    <xsl:value-of select="func:nextpart(@name)"/>
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
  *
@@ -436,9 +426,7 @@
    * @purpose  Specialized SOAP type
    */
   class ]]></xsl:text>
-  <xsl:call-template name="ucfirst">
-    <xsl:with-param name="string" select="concat($prefix, @name)"/>
-  </xsl:call-template>
+  <xsl:value-of select="func:ucfirst(concat($prefix, @name))"/>
   <xsl:text> extends Object {
     public</xsl:text>
     <xsl:for-each select="child::*[local-name() = 'sequence']/xsd:element">
@@ -461,9 +449,7 @@
       <xsl:text>
      */
     public function get</xsl:text>
-      <xsl:call-template name="ucfirst">
-        <xsl:with-param name="string" select="@name"/>
-      </xsl:call-template>
+      <xsl:value-of select="func:ucfirst(@name)"/>
       <xsl:text>() {
       return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
     }
@@ -482,9 +468,7 @@
       <xsl:text>
      */
     public function set</xsl:text>
-      <xsl:call-template name="ucfirst">
-        <xsl:with-param name="string" select="@name"/>
-      </xsl:call-template>
+      <xsl:value-of select="func:ucfirst(@name)"/>
       <xsl:text>($</xsl:text><xsl:value-of select="@name"/><xsl:text>) {
       $this-></xsl:text><xsl:value-of select="@name"/>
       <xsl:text>= $</xsl:text>
@@ -538,9 +522,7 @@
      * @throws  xml.FormatException in case not-well-formed XML is returned
      */
     public function ]]></xsl:text>
-      <xsl:call-template name="lcfirst">
-        <xsl:with-param name="string" select="@name"/>
-      </xsl:call-template>
+      <xsl:value-of select="func:lcfirst(@name)"/>
       <xsl:text>(</xsl:text>
       <xsl:call-template name="arguments">
         <xsl:with-param name="for" select="wsdl:input/@message"/>
@@ -573,14 +555,7 @@
     <xsl:apply-templates select="$types"/>
     
     <!-- The service itself -->
-    <xsl:call-template name="nextpart">
-      <xsl:with-param name="filename">
-        <xsl:call-template name="class">
-          <xsl:with-param name="name" select="wsdl:service/@name"/>
-          <xsl:with-param name="postfix" select="'Client'"/>
-        </xsl:call-template>
-      </xsl:with-param>
-    </xsl:call-template>
+    <xsl:value-of select="func:nextpart(func:class(wsdl:service/@name, 'Client'))"/>
     <xsl:text><![CDATA[<?php
 /* This class is part of the XP framework
  *
@@ -601,9 +576,7 @@
    * @purpose  SOAP service wrapper class
    */  
   class ]]></xsl:text>
-    <xsl:call-template name="class">
-      <xsl:with-param name="name" select="concat($prefix, wsdl:service/@name)"/>
-    </xsl:call-template>
+    <xsl:value-of select="func:class(concat($prefix, wsdl:service/@name))"/>
     <xsl:text><![CDATA[Client extends Object implements Traceable {
     protected
       $client = NULL;
@@ -629,10 +602,7 @@
       <xsl:value-of select="@name"/>
       <xsl:text>'), 
         XPClass::forName('</xsl:text>
-      <xsl:value-of select="concat($collection, '.')"/>
-      <xsl:call-template name="ucfirst">
-        <xsl:with-param name="string" select="concat($prefix, @name)"/>
-      </xsl:call-template>
+      <xsl:value-of select="concat($collection, '.', func:ucfirst(concat($prefix, @name)))"/>
       <xsl:text>')
       );</xsl:text>
     </xsl:for-each>
