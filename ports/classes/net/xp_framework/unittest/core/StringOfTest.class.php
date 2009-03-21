@@ -187,6 +187,26 @@
 }',
       xp::stringOf($o));
     }
+
+    /**
+     * Tests a situation where no recursion exists
+     *
+     */
+    #[@test]
+    public function noRecursion() {
+      $test= newinstance('lang.Object', array(), '{
+        public function toString() {
+          return "Test";
+        }
+      }');
+      $this->assertEquals(
+        "[\n  a => Test\n  b => Test\n]", 
+        xp::stringOf(array(
+          'a' => $test,
+          'b' => $test
+        ))
+      );
+    }
     
     /**
      * Tests objects with very large hashcodes don't produce problems
@@ -194,7 +214,7 @@
      *
      */
     #[@test]
-    public function noRecursion() {
+    public function noRecursionWithLargeNumbers() {
       $test= newinstance('lang.Object', array(), '{
         public function hashCode() {
           return 9E100;
