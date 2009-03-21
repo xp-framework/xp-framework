@@ -4,7 +4,7 @@ $Id$
 
 @authors: gellweiler
 @created: Thu May 15 17:16:31 CEST 2008
-@status: discussion, ends at Fri Nov 21 12:00:00 CEST 2008
+@status: discussion, ends Mon Mar 23 18:00:00     2009
 @category: rdbms
 
 Scope of Change
@@ -81,13 +81,23 @@ Related documents
 
 Comments
 --------
-gellweiler (Thu May 15 17:16:31 CEST 2008)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gellweiler, Thu May 15 17:16:31 CEST 2008
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Should there be an option to auto detect the timezone of a
 database? Mysql provides options to autoconvert datetimes and timestamps
 into the clients timezone which would be an alternative to the current patch.
 Unfortunately sybase databases don't have any support for timezone handling
 other than a function called "getutcdate()" which could be used to calculate
 the timezone offset for getdate().
+
+friebe, Sat Mar 21 15:54:04     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I'm unsure whether this line:
+<code>
++      $this->tz= $tz ? $tz : new TimeZone(date_default_timezone_get());
+</code>
+...is needed inside ResultSet's constructor. Other than that, this
+looks fine.
+
 
 <EOF>
