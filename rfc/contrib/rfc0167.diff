@@ -1,8 +1,8 @@
 Index: sybase/SybaseConnection.class.php
 ===================================================================
---- sybase/SybaseConnection.class.php	(Revision 12232)
-+++ sybase/SybaseConnection.class.php	(Arbeitskopie)
-@@ -251,7 +251,7 @@
+--- sybase/SybaseConnection.class.php	(revision 12925)
++++ sybase/SybaseConnection.class.php	(working copy)
+@@ -250,7 +250,7 @@
          return $result;
        }
        
@@ -13,8 +13,8 @@ Index: sybase/SybaseConnection.class.php
        return $resultset;
 Index: sybase/SybaseResultSet.class.php
 ===================================================================
---- sybase/SybaseResultSet.class.php	(Revision 12232)
-+++ sybase/SybaseResultSet.class.php	(Arbeitskopie)
+--- sybase/SybaseResultSet.class.php	(revision 12925)
++++ sybase/SybaseResultSet.class.php	(working copy)
 @@ -19,7 +19,7 @@
       *
       * @param   resource handle
@@ -44,8 +44,8 @@ Index: sybase/SybaseResultSet.class.php
        
 Index: DBConnection.class.php
 ===================================================================
---- DBConnection.class.php	(Revision 12232)
-+++ DBConnection.class.php	(Arbeitskopie)
+--- DBConnection.class.php	(revision 12925)
++++ DBConnection.class.php	(working copy)
 @@ -14,7 +14,8 @@
      'rdbms.DSN',
      'rdbms.ResultSet',
@@ -78,9 +78,9 @@ Index: DBConnection.class.php
      /**
 Index: StatementFormatter.class.php
 ===================================================================
---- StatementFormatter.class.php	(Revision 12232)
-+++ StatementFormatter.class.php	(Arbeitskopie)
-@@ -111,6 +111,7 @@
+--- StatementFormatter.class.php	(revision 12925)
++++ StatementFormatter.class.php	(working copy)
+@@ -132,6 +132,7 @@
            continue; 
          } else if ($arg instanceof Date) {
            $type= 's';
@@ -90,8 +90,17 @@ Index: StatementFormatter.class.php
            $r.= $arg->asSql($this->conn).', ';
 Index: ResultSet.class.php
 ===================================================================
---- ResultSet.class.php	(Revision 12232)
-+++ ResultSet.class.php	(Arbeitskopie)
+--- ResultSet.class.php	(revision 12925)
++++ ResultSet.class.php	(working copy)
+@@ -12,7 +12,7 @@
+    * Usage (abbreviated example):
+    * <code>
+    *   // [...]
+-   *   $r= &$conn->query('select news_id, caption, created_at from news');
++   *   $r= $conn->query('select news_id, caption, created_at from news');
+    *   while ($row= $r->next()) {
+    *     var_dump($row);
+    *   }
 @@ -32,10 +32,12 @@
       *
       * @param   resource handle
@@ -102,14 +111,14 @@ Index: ResultSet.class.php
 +    public function __construct($handle, $fields, TimeZone $tz= NULL) {
        $this->handle= $handle;
        $this->fields= $fields;
-+      $this->tz= $tz ? $tz : new TimeZone(date_default_timezone_get());
++      $this->tz= $tz;
      }
      
      /**
 Index: pgsql/PostgreSQLResultSet.class.php
 ===================================================================
---- pgsql/PostgreSQLResultSet.class.php	(Revision 12232)
-+++ pgsql/PostgreSQLResultSet.class.php	(Arbeitskopie)
+--- pgsql/PostgreSQLResultSet.class.php	(revision 12925)
++++ pgsql/PostgreSQLResultSet.class.php	(working copy)
 @@ -19,14 +19,14 @@
       *
       * @param   resource handle
@@ -138,9 +147,9 @@ Index: pgsql/PostgreSQLResultSet.class.php
            case 'bool':
 Index: pgsql/PostgreSQLConnection.class.php
 ===================================================================
---- pgsql/PostgreSQLConnection.class.php	(Revision 12232)
-+++ pgsql/PostgreSQLConnection.class.php	(Arbeitskopie)
-@@ -213,7 +213,7 @@
+--- pgsql/PostgreSQLConnection.class.php	(revision 12925)
++++ pgsql/PostgreSQLConnection.class.php	(working copy)
+@@ -212,7 +212,7 @@
          return TRUE;
        }
  
@@ -151,8 +160,8 @@ Index: pgsql/PostgreSQLConnection.class.php
        return $resultset;
 Index: mysql/MySQLConnection.class.php
 ===================================================================
---- mysql/MySQLConnection.class.php	(Revision 12232)
-+++ mysql/MySQLConnection.class.php	(Arbeitskopie)
+--- mysql/MySQLConnection.class.php	(revision 12925)
++++ mysql/MySQLConnection.class.php	(working copy)
 @@ -275,7 +275,7 @@
          return $result;
        }
@@ -164,8 +173,8 @@ Index: mysql/MySQLConnection.class.php
        return $resultset;
 Index: mysql/MySQLResultSet.class.php
 ===================================================================
---- mysql/MySQLResultSet.class.php	(Revision 12232)
-+++ mysql/MySQLResultSet.class.php	(Arbeitskopie)
+--- mysql/MySQLResultSet.class.php	(revision 12925)
++++ mysql/MySQLResultSet.class.php	(working copy)
 @@ -19,7 +19,7 @@
       *
       * @param   resource handle
