@@ -187,6 +187,31 @@
 }',
       xp::stringOf($o));
     }
+    
+    /**
+     * Tests objects with very large hashcodes don't produce problems
+     * in the recursion detection algorithm.
+     *
+     */
+    #[@test]
+    public function noRecursion() {
+      $test= newinstance('lang.Object', array(), '{
+        public function hashCode() {
+          return 9E100;
+        }
+        
+        public function toString() {
+          return "Test";
+        }
+      }');
+      $this->assertEquals(
+        "[\n  a => Test\n  b => Test\n]", 
+        xp::stringOf(array(
+          'a' => $test,
+          'b' => $test
+        ))
+      );
+    }
 
     /**
      * Tests toString() isn't invoked recursively by sourcecode such as:
@@ -204,7 +229,7 @@
     #[@test]
     public function toStringRecursion() {
       $test= newinstance('lang.Object', array(), '{
-        function toString() {
+        public function toString() {
           return xp::stringOf($this);
         }
       }');
