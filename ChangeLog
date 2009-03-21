@@ -44,6 +44,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed xp::stringOf() to not incorrectly detect recursion with objects 
+  returning hashcodes which are very large numbers
+  (friebe)
 - Fixed dataset generator to use prefixed XML file names when accessing
   referenced tables for foreign keys
   (gellweiler, hinckel)

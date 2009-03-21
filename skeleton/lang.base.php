@@ -95,10 +95,10 @@
         return '<null>';
       } else if (is_int($arg) || is_float($arg)) {
         return (string)$arg;
-      } else if ($arg instanceof Generic && !isset($protect[$arg->hashCode()])) {
-        $protect[$arg->hashCode()]= TRUE;
+      } else if ($arg instanceof Generic && !isset($protect[(string)$arg->hashCode()])) {
+        $protect[(string)$arg->hashCode()]= TRUE;
         $s= $arg->toString();
-        unset($protect[$arg->hashCode()]);
+        unset($protect[(string)$arg->hashCode()]);
         return $s;
       } else if (is_array($arg)) {
         $ser= serialize($arg);
