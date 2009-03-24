@@ -4,16 +4,18 @@
 . *
 . * $Id$
 . */
-.  uses('text.parser.generic.AbstractParser');
 .
+.  {%PACKAGES%}
  prolog
+.
+.  uses('text.parser.generic.AbstractParser');
 .
 .  /**
 .   * Generated parser class
 .   *
 .   * @purpose  Parser implementation
 .   */
-.  class {%NAME%}Parser extends AbstractParser {
+.  class {%PACKAGEL%}{%NAME%}Parser extends AbstractParser {
  tokens var
 .
  tables

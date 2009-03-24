@@ -9,8 +9,9 @@ MYSELF=$(realpath "$0")
 # Show usage
 [ "" = "$1" ] && {
   CMD=$(basename "$0")
-  echo "Usage: $CMD [grammar] [skeleton-name] [parser-name] > [output]"
-  echo "E.g.   $CMD sql.jay php5 SQL > SQLParser.class.php"
+  echo "Usage: $CMD <grammar> <skeleton-name> [<parser-name>] [<package-name>] > [output]"
+  echo "- Simple......: $CMD sql.jay php5 SQL > SQLParser.class.php"
+  echo "- Qualified...: $CMD sql.jay php5 SQL rdbms.parser > SQLParser.class.php"
   exit 1;
 }
 
@@ -41,5 +42,16 @@ SKELETON=$2
   exit 1;
 }
 
+PACKAGEN="$4"
+if [ ! -z "$PACKAGEN" ] ; then
+  PACKAGEL="`echo $4 | sed -e 's/\./·/g'`·"
+  PACKAGES="\$package= '$PACKAGEN';"
+  PACKAGEN="$PACKAGEN."
+fi
+
 # Run
-"$DIRNAME/$JAY_BIN" -cv < "$DIRNAME/skel/$SKELETON.skl" $GRAMMAR | sed -e 's/{%NAME%}/'$3'/g'
+"$DIRNAME/$JAY_BIN" -cv < "$DIRNAME/skel/$SKELETON.skl" $GRAMMAR \
+  | sed -e 's/{%NAME%}/'$3'/g' \
+  | sed -e 's/{%PACKAGEL%}/'$PACKAGEL'/g' \
+  | sed -e 's/{%PACKAGEN%}/'$PACKAGEN'/g' \
+  | sed -e 's/{%PACKAGES%}/'"$PACKAGES"'/g'
