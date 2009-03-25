@@ -23,6 +23,16 @@
     public function getName() {
       return $this->name;
     }
+
+    /**
+     * Returns simple name
+     *
+     * @return  string
+     */
+    public function getSimpleName() {
+      return substr($this->name, strrpos($this->name, '.')+ 1);
+    }
+    
     
     /**
      * Checks if a specific class is provided by this package

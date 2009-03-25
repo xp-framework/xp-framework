@@ -22,6 +22,9 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added lang.reflect.Package::getSimpleName() which complements 
+  lang.XPClass::getSimpleName()
+  (friebe)
 - Added util.log.StreamAppender to use streams as log appender
   (hinckel)
 - Added io.streams.ChannelInputStream and io.streams.ChannelOutputStream 
