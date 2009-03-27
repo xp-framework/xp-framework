@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Nov  5 15:43:49     2006
-@status: draft
+@status: implemented, Wed Feb 25 18:43:32     2009
 @category: lang
 
 Scope of Change
@@ -80,7 +80,13 @@ Related documents
 
 Comments
 --------
-- friebe, Sun Nov  5 15:52:35     2006
-  All 136 core unittests pass.
+friebe, Sun Nov  5 15:52:35     2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+All 136 core unittests pass.
+
+friebe, Fri Mar 27 14:33:08     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Implemented in a different way than suggested here, class details
+are now stored in <tt>xp::$registry</tt>.
 
 <EOF>

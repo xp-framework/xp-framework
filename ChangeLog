@@ -16,6 +16,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0087 - Move class details information to ClassLoader
+  (friebe)
 - Implemented RFC #0174 - io.collections interface additions / io.streams 
   integration
   (friebe)
