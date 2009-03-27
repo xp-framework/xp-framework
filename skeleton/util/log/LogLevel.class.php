@@ -19,6 +19,7 @@
       DEBUG = 0x0008;
     
     const
+      NONE  = 0x0000,
       ALL   = 0x000F; // (INFO | WARN | ERROR | DEBUG)
     
     /**
@@ -35,6 +36,7 @@
         'ERROR' => self::ERROR,
         'DEBUG' => self::DEBUG,
         'ALL'   => self::ALL,
+        'NONE'  => self::NONE,
       );
     
       $key= strtoupper($name);
