@@ -29,35 +29,17 @@
     }
 
     /**
-     * Set errorcode
-     *
-     * @param   string errorcode
-     */
-    public function setErrorCode($errorcode) {
-      $this->errorcode= $errorcode;
-    }
-
-    /**
-     * Get errorcode
-     *
-     * @return  string
-     */
-    public function getErrorCode() {
-      return $this->errorcode;
-    }
-
-    /**
      * Return compound message of this exception.
      *
      * @return  string
      */
     public function compoundMessage() {
       return sprintf(
-        "%s (%s) { expected: [%s] but was: [%s] }\n",
+        "%s (%s) { expected: [%s:%s] but was: [%s:%s] }\n",
         $this->getClassName(),
         $this->message,
-        xp::stringOf($this->expect),
-        xp::stringOf($this->actual)
+        xp::typeOf($this->expect), xp::stringOf($this->expect),
+        xp::typeOf($this->actual), xp::stringOf($this->actual)
       );
     }
     
