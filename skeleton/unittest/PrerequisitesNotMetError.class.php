@@ -27,8 +27,22 @@
      */
     public function __construct($message, $cause, $prerequisites= array()) {
       $this->cause= $cause;
-      $this->prerequisites= $prerequisites;
+      $this->prerequisites= (array)$prerequisites;
       parent::__construct($message);
+    }
+
+    /**
+     * Return compound message of this exception.
+     *
+     * @return  string
+     */
+    public function compoundMessage() {
+      return sprintf(
+        "%s (%s) { prerequisites: [%s] }\n",
+        $this->getClassName(),
+        $this->message,
+        implode(', ', array_map(array('xp', 'stringOf'), $this->prerequisites))
+      );
     }
     
     /**
