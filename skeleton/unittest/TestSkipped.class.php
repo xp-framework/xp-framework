@@ -12,7 +12,7 @@
    */
   class TestSkipped extends Object {
     public
-      $result   = NULL,
+      $reason   = NULL,
       $test     = NULL,
       $elapsed  = 0.0;
       
