@@ -22,6 +22,10 @@ RFCs
 
 Features
 ~~~~~~~~
+- Included type information in unittest.AssertionFailedError's message
+  (friebe)
+- Included prerequisites in unittest.PrerequisitesNotMetError's message
+  (friebe)
 - Added lang.reflect.Package::getSimpleName() which complements 
   lang.XPClass::getSimpleName()
   (friebe)
