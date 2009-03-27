@@ -45,6 +45,22 @@
     }
     
     /**
+     * Returns the wrapper class for this primitive
+     *
+     * @see     http://en.wikipedia.org/wiki/Wrapper_class
+     * @return  lang.XPClass
+     */
+    public function wrapperClass() {
+      switch ($this) {
+        case self::$STRING: return XPClass::forName('lang.types.String');
+        case self::$INTEGER: return XPClass::forName('lang.types.Integer');
+        case self::$DOUBLE: return XPClass::forName('lang.types.Double');
+        case self::$BOOLEAN: return XPClass::forName('lang.types.Boolean');
+        case self::$ARRAY: return XPClass::forName('lang.types.ArrayList');
+      }
+    }
+    
+    /**
      * Boxes a type - that is, turns Generics into primitives
      *
      * @param   mixed in

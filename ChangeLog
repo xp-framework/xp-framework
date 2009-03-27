@@ -24,6 +24,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added lang.Primitive::wrapperClass() method
+  (friebe)
 - Included type information in unittest.AssertionFailedError's message
   (friebe)
 - Included prerequisites in unittest.PrerequisitesNotMetError's message
