@@ -376,8 +376,12 @@
       $dir= $this->conn->rootDir()->getDir('htdocs');
 
       for ($i= 0; $i < 2; $i++) {
-        $s= $dir->getFile('index.html')->getInputStream();
-        $this->assertEquals("<html/>\n", Streams::readAll($s));
+        try {
+          $s= $dir->getFile('index.html')->getInputStream();
+          $this->assertEquals("<html/>\n", Streams::readAll($s));
+        } catch (IOException $e) {
+          $this->fail('Round '.($i + 1), $e, NULL);
+        }
       }
     }
 
