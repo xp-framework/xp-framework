@@ -286,22 +286,40 @@ nedit.macroCommands: \
 		}\n\
 	}\n\
 	Create XP class@PHP:Shift+Alt+C::: {\n\
-		create_xp_class()\n\
+		create_xp("xpclass", ".class.php", 15, 4)\n\
+	}\n\
+	Create XP class@XP:Shift+Alt+C::: {\n\
+		create_xp("lang/class", ".xp", 11, 13)\n\
 	}\n\
 	Create XP CLI class@PHP:Shift+Alt+F::: {\n\
-		create_xp_cli()\n\
+		create_xp("xpcli", ".class.php", 68, 6)\n\
+	}\n\
+	Create XP CLI class@XP:Shift+Alt+F::: {\n\
+		create_xp("lang/command", ".xp", 18, 4)\n\
 	}\n\
 	Create XP testcase@PHP:Shift+Alt+T::: {\n\
-		create_xp_testcase()\n\
+		create_xp("xptestcase", ".class.php", 17, 1)\n\
 	}\n\
-	Create XP testmethod@PHP:Alt+T::: {\n\
-		add_xp_testmethod()\n\
+	Create XP testcase@XP:Shift+Alt+T::: {\n\
+		create_xp("lang/test", ".xp", 36, 14)\n\
+	}\n\
+	Insert XP testmethod@PHP:Alt+T::: {\n\
+		insert_xp("xptestmethod", "-")\n\
+	}\n\
+	Insert XP testmethod@XP:Alt+T::: {\n\
+		insert_xp("lang/testmethod", "-")\n\
 	}\n\
 	Insert method doc@PHP:Alt+D::: {\n\
-		add_xp_methoddoc()\n\
+		insert_xp("xpmethoddoc", "-")\n\
+	}\n\
+	Insert method doc@XP:Alt+D::: {\n\
+		insert_xp("lang/methoddoc", "-")\n\
 	}\n\
 	Insert class header@PHP:Shift+Alt+D::: {\n\
-		add_xp_classheader()\n\
+		insert_xp("xpclassheader", "-")\n\
+	}\n\
+	Insert class header@XP:Shift+Alt+D::: {\n\
+		insert_xp("xpclassheader", "-")\n\
 	}\n\
 	svn diff:::: {\n\
 		execute_svn_diff()\n\
