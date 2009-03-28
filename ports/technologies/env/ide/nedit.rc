@@ -28,8 +28,10 @@ nedit.shellCommands: \
 		unexpand\n\
 	Print:::IDS:\n\
 		lpr %\n\
-	Execute PHP script:F9::AD:\n\
+	Execute PHP script@PHP:F9::AD:\n\
 		php -q\n\
+	Compile@XP:F9::DS:\n\
+		cd "`dirname '%'`" && xcc "`basename '%'`"\n\
 	Make accessors:Shift+Alt+A::I:\n\
 		php -q $HOME/bin/mkaccessor.php\n\
 	Check XP Coding standards:Alt+V::ADS:\n\
