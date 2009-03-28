@@ -7,11 +7,11 @@
   uses('scriptlet.xml.workflow.AbstractState');
 
   /**
-   * Handles /xml/releases
+   * Handles /xml/home
    *
    * @purpose  State
    */
-  class ReleasesState extends AbstractState {
+  class HomeState extends AbstractState {
 
   }
 ?>
