@@ -76,49 +76,28 @@ define open_file_xpclass {
 
 define get_xp_class_name {
   classname= $file_name
-  return replace_in_string(classname, ".class.php", "")
+  return replace_in_string(classname, $1, "")
 }
 
 define import_xp_template {
   content= read_file(getenv("HOME") "/.nedit/templates/" $1 ".tmpl")
-  content= replace_in_string(content, "<Class>", get_xp_class_name(), "literal", "copy")
+  content= replace_in_string(content, "<Class>", get_xp_class_name($2), "literal", "copy")
   insert_string(content)
 }
 
-define create_xp_class {
-  import_xp_template("xpclass")
-  set_language_mode("PHP")
-  goto_line_number(15, 4)
-}
-
-define create_xp_cli {
-  import_xp_template("xpcli")
-  set_language_mode("PHP")
-  goto_line_number(68, 6)
-}
-
-define create_xp_testcase {
-  import_xp_template("xptestcase")
-  set_language_mode("PHP")
-  goto_line_number(17)
-}
-
 define create_xslfile {
-  import_xp_template("xsltemplate")
+  import_xp_template("xsltemplate", ".xsl")
   set_language_mode("XML")
   goto_line_number(17)
 }
 
-define add_xp_methoddoc {
-  insert_string(read_file(getenv("HOME") "/.nedit/templates/xpmethoddoc.tmpl"))
+define create_xp {
+  import_xp_template($1, $2)
+  goto_line_number($3, $4)
 }
 
-define add_xp_classheader {
-  insert_string(read_file(getenv("HOME") "/.nedit/templates/xpclassheader.tmpl"))
-}
-
-define add_xp_testmethod {
-  insert_string(read_file(getenv("HOME") "/.nedit/templates/xptestmethod.tmpl"))
+define insert_xp {
+  import_xp_template($1, $2)
 }
 
 define execute_svn_diff {
