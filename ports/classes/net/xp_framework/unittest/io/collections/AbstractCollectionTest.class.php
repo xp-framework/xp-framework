@@ -38,7 +38,7 @@
      *
      * @param   io.IOCollection base
      * @param   io.IOCollection origin
-     * @throws  unittest
+     * @throws  unittest.AssertionFailedError
      */
     protected function assertOriginBasedOn(IOCollection $base, IOCollection $origin) {
       $search= $origin;
