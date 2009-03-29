@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Removed net.xp_framework.website from ports (now resides in xpadmin
+  repository, web/src)
+  (friebe)
+
 
 Version 5.7.2, released 2009-03-27
 ----------------------------------
