@@ -130,7 +130,8 @@ Exceptions:
 Sample apache configuration:
 <pre>
   RewriteEngine on
-  RewriteRule !(static|xp-bin|favicon.ico) /xp-bin/index.php [PT,E=USE_XP:"/path/to/xp/:/path/to/extra/lib/"]
+  RewriteRule !(static|xp-bin|favicon.ico) /xp-bin/index.php 
+  [PT,E=USE_XP:"/path/to/xp/:/path/to/extra/lib/"]
 
   Alias /xp-bin /home/thekid/devel/xp/trunk/tools/web
   Alias /static/common /var/www/htdocs
@@ -153,11 +154,12 @@ Dependencies
 ------------
 This RFC groups the following others:
 <summary>
-RFC #0061 - No access on raw server environment variables
-RFC #0078 - New scriptlet API
-RFC #0146 - Unicode
-RFC #0161 - Scriptlet authenticator
-RFC #0166 - XP runners
+* RFC #0061 - No access on raw server environment variables
+* RFC #0078 - New scriptlet API
+* RFC #0146 - Unicode
+* RFC #0161 - Scriptlet authenticator
+* RFC #0154 - Unify scriptlet environment
+* RFC #0166 - XP runners
 </summary>
 
 
