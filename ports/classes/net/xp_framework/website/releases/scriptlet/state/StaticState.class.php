@@ -27,7 +27,7 @@
      * @param   scriptlet.xml.XMLScriptletResponse response
      */
     public function process($request, $response) {
-      sscanf($request->getQueryString(), '%[a-zA-Z_]/%[a-zA-Z_]', $base, $topic);
+      sscanf($request->getQueryString(), '%[a-zA-Z_]/%[a-zA-Z0-9._]', $base, $topic);
       $entry= $topic ? $base.DIRECTORY_SEPARATOR.$topic : $base;
 
       // Read from storage (XXX: Make exchangeable)
