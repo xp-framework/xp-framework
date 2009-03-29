@@ -2,6 +2,11 @@ XP Framework ChangeLog
 ========================================================================
 $Id$
 
+Version ?.?.?, released ????-??-??
+----------------------------------
+SVN version: ?????
+
+
 Version 5.7.2, released 2009-03-27
 ----------------------------------
 SVN version: 12947
@@ -9,9 +14,8 @@ SVN version: 12947
 Heads up!
 ~~~~~~~~~
 - Removed xp-net.xp_framework-{VERSION}.xar from boot classpath. It is
-  no longer required for runners, that`s all in xp-tools-${VERSION}.xar
-  To run unittests on a released version, use the following:
-  unittest -cp {VERSION}/lib/xp-net.xp_framework-{VERSION}.xar [tests]
+  no longer required for runners, that's all in xp-tools-${VERSION}.xar.
+  See http://news.xp-framework.net/article/290/2009/03/27/
   (friebe)
 
 RFCs
@@ -27,6 +31,7 @@ Features
 - Added lang.Primitive::wrapperClass() method
   (friebe)
 - Included type information in unittest.AssertionFailedError's message
+  See http://news.xp-framework.net/article/291/2009/03/28/
   (friebe)
 - Included prerequisites in unittest.PrerequisitesNotMetError's message
   (friebe)
@@ -68,7 +73,7 @@ Bugfixes
   (friebe, Tobias Roth, Thomas Geiger)
 - Use "etc" directory as default configuration path for xpcli command
   (hinckel)
-- Fixed rdbms.mysql.MySQLDBAdapter did not handle '"' quotes (bug#34)
+- Fixed rdbms.mysql.MySQLDBAdapter did not handle '"' quotes (bug #34)
   (wagner)
 - Fixed util.Date::hashCode() returns timestamp now instead of object id.
   (wagner)
