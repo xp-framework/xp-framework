@@ -25,7 +25,9 @@
       }
       
       $response->addFormResult(new Node('release', NULL, array(
-        'version' => $major.'.'.$minor.'.'.$patch.$mod
+        'version' => $major.'.'.$minor.'.'.$patch.$mod,
+        'series'  => $major.'.'.$minor,
+        'mod'     => $mod
       )));
     }
   }
