@@ -294,7 +294,7 @@ nedit.macroCommands: \
 		create_xp("lang/class", ".xp", 11, 13)\n\
 	}\n\
 	Create XP CLI class@PHP:Shift+Alt+F::: {\n\
-		create_xp("xpcli", ".class.php", 68, 6)\n\
+		create_xp("xpcli", ".class.php", 24, 6)\n\
 	}\n\
 	Create XP CLI class@XP:Shift+Alt+F::: {\n\
 		create_xp("lang/command", ".xp", 18, 4)\n\
