@@ -17,6 +17,9 @@ Heads up!
 - Deprecated global constants in scriptlet.xml.XMLScriptletResponse
   in favor of class constants
   (kiesel)
+- Made scriptlet.xml.workflow.checkers.ParamChecker and 
+  scriptlet.xml.workflow.casters.ParamCaster abstract.
+  (kiesel)
 
 Bugfixes
 ~~~~~~~~

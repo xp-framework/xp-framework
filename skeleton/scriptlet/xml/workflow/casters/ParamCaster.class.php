@@ -9,7 +9,7 @@
    *
    * @purpose  Abstract base class
    */
-  class ParamCaster extends Object {
+  abstract class ParamCaster extends Object {
   
     /**
      * Cast a given value
@@ -17,6 +17,6 @@
      * @param   array value
      * @return  array value
      */
-    public function castValue($value) { }
+    abstract public function castValue($value);
   }
 ?>
