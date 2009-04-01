@@ -18,6 +18,12 @@ Heads up!
   in favor of class constants
   (kiesel)
 
+Bugfixes
+~~~~~~~~
+- Added fix to catch submission of malicious request data in 
+  scriptlet.xml.XMLScriptletResponse.
+  (kiesel)
+
 
 Version 5.7.2, released 2009-03-27
 ----------------------------------

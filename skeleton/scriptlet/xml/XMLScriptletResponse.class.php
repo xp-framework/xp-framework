@@ -8,7 +8,7 @@
     'scriptlet.HttpScriptletResponse',
     'scriptlet.xml.OutputDocument',
     'xml.IXSLProcessor',
-    'per.http.HttpConstants'
+    'peer.http.HttpConstants'
   );
   
   // Deprecated
@@ -136,17 +136,32 @@
       if (!is_array($values)) $values= array($values);
 
       foreach ($values as $k => $val) {
-        if (is_array($val)) {
-          $c= Node::fromArray($val, 'param');
-        } else if (is_object($val)) {
-          $c= Node::fromObject($val, 'param');
-        } else {
-          $c= new Node('param', $val);
+        try {
+          if (is_array($val)) {
+            $c= Node::fromArray($val, 'param');
+          } else if (is_object($val)) {
+            $c= Node::fromObject($val, 'param');
+          } else {
+            $c= new Node('param', $val);
+          }
+          $c->attribute['name']= $name.(is_int($k) ? '' : '['.$k.']');
+          $c->attribute['xsi:type']= 'xsd:'.gettype($val);
+        } catch (XMLFormatException $e) {
+        
+          // An XMLFormatException indicates data we have received on-wire
+          // does not conform to XML rules - eg. contains characters that are
+          // not allowed within XML documents. As on-wire data is beyond the 
+          // classes control, this must be handled to prevent application 
+          // breakage.
+          // Passing special XML characters such as < or & will not fall into this
+          // block - they'll just be converted to their counterpart XML entities.
+          $c= new Node($name, NULL, array(
+            'xsi:type'  => 'xsd:null',
+            'error'     => 'formaterror'
+          ));
         }
-        $c->attribute['name']= $name.(is_int($k) ? '' : '['.$k.']');
-        $c->attribute['xsi:type']= 'xsd:'.gettype($val);
         $this->document->formvalues->addChild($c);
-      } 
+      }
     }
 
     /**
