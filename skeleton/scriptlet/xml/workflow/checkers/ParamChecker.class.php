@@ -9,7 +9,7 @@
    *
    * @purpose  Abstract base class
    */
-  class ParamChecker extends Object {
+  abstract class ParamChecker extends Object {
   
     /**
      * Check a given value
@@ -17,6 +17,6 @@
      * @param   array value
      * @return  string error or NULL on success
      */
-    public function check($value) { }
+    abstract public function check($value);
   }
 ?>

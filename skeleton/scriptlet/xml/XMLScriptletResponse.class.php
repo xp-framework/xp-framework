@@ -7,9 +7,11 @@
   uses(
     'scriptlet.HttpScriptletResponse',
     'scriptlet.xml.OutputDocument',
-    'xml.IXSLProcessor'
+    'xml.IXSLProcessor',
+    'per.http.HttpConstants'
   );
   
+  // Deprecated
   define('XSLT_BUFFER', 0x0000);
   define('XSLT_FILE',   0x0001);
   define('XSLT_TREE',   0x0002);
@@ -26,7 +28,12 @@
    * @purpose  Scriptlet response wrapper
    */
   class XMLScriptletResponse extends HttpScriptletResponse {
-    public 
+    const
+      XSLT_BUFFER   = 0x0000,
+      XSLT_FILE     = 0x0001,
+      XSLT_TREE     = 0x0002;
+
+    public
       $document     = NULL,
       $processor    = NULL,
       $params       = array();
@@ -125,19 +132,19 @@
      * @param   string name name
      * @param   mixed val
      */
-    public function addFormValue($name, $val) {
-      if (!is_array($val)) $val= array($val);
+    public function addFormValue($name, $values) {
+      if (!is_array($values)) $values= array($values);
 
-      foreach (array_keys($val) as $k) {
-        if (is_array($val[$k])) {
-          $c= Node::fromArray($val[$k], 'param');
-        } else if (is_object($val[$k])) {
-          $c= Node::fromObject($val[$k], 'param');
+      foreach ($values as $k => $val) {
+        if (is_array($val)) {
+          $c= Node::fromArray($val, 'param');
+        } else if (is_object($val)) {
+          $c= Node::fromObject($val, 'param');
         } else {
-          $c= new Node('param', $val[$k]);
+          $c= new Node('param', $val);
         }
         $c->attribute['name']= $name.(is_int($k) ? '' : '['.$k.']');
-        $c->attribute['xsi:type']= 'xsd:'.gettype($val[$k]);
+        $c->attribute['xsi:type']= 'xsd:'.gettype($val);
         $this->document->formvalues->addChild($c);
       } 
     }
@@ -190,7 +197,7 @@
         ('formerrors' == $node->name) ||
         ('formvalues' == $node->name)
       ) {
-        throw(new IllegalArgumentException($node->name.' not allowed here'));
+        throw new IllegalArgumentException($node->name.' not allowed here');
       }
       return $this->document->formresult->addChild($node);
     }
@@ -266,7 +273,7 @@
       if (!$this->_processed) return FALSE;
 
       switch ($this->_stylesheet[0]) {
-        case XSLT_FILE:
+        case self::XSLT_FILE:
           try {
             $this->processor->setXSLFile($this->_stylesheet[1]);
           } catch (FileNotFoundException $e) {
@@ -274,11 +281,11 @@
           }
           break;
           
-        case XSLT_BUFFER:
+        case self::XSLT_BUFFER:
           $this->processor->setXSLBuf($this->_stylesheet[1]);
           break;
 
-        case XSLT_TREE:
+        case self::XSLT_TREE:
           $this->processor->setXSLTree($this->_stylesheet[1]);
           break;
         

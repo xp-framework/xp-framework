@@ -11,6 +11,12 @@ Heads up!
 - Removed net.xp_framework.website from ports (now resides in xpadmin
   repository, web/src)
   (friebe)
+- Deprecated HTTP_* constants, use peer.http.HttpConstants class 
+  constants instead.
+  (kiesel)
+- Deprecated global constants in scriptlet.xml.XMLScriptletResponse
+  in favor of class constants
+  (kiesel)
 
 
 Version 5.7.2, released 2009-03-27

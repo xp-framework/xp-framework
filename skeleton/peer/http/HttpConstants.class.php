@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  // HTTP methods
+  // HTTP methods (deprecated)
   define('HTTP_GET',     'GET');
   define('HTTP_POST',    'POST');
   define('HTTP_HEAD',    'HEAD');
@@ -14,7 +14,7 @@
   define('HTTP_TRACE',   'TRACE');
   define('HTTP_CONNECT', 'CONNECT');
 
-  // HTTP status codes
+  // HTTP status codes (deprecated)
   define('HTTP_CONTINUE',                          100);
   define('HTTP_SWITCHING_PROTOCOLS',               101);
   define('HTTP_PROCESSING',                        102);
@@ -64,7 +64,7 @@
   define('HTTP_INSUFFICIENT_STORAGE',              507);
   define('HTTP_NOT_EXTENDED',                      510);
   
-  // HTTP versions
+  // HTTP versions (deprecated)
   define('HTTP_VERSION_0_9', '0.9');
   define('HTTP_VERSION_1_0', '1.0');
   define('HTTP_VERSION_1_1', '1.1');
