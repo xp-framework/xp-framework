@@ -55,7 +55,7 @@
     public function setProduct($product) {
       $this->tokens['product']= $product;
     }
-foo
+
     /**
      * Set Component
      *
