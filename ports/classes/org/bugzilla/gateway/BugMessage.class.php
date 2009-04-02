@@ -1,10 +1,13 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: BugMessage.class.php 
  */
 
-  uses('peer.mail.Message', 'org.bugzilla.BugConstants');
+  uses(
+    'peer.mail.MimeMessage',
+    'org.bugzilla.BugConstants'
+  );
 
   /**
    * Message to be sent to bugzilla's mailgateway
@@ -39,7 +42,7 @@
    * @see      xp://peer.mail.Message
    * @purpose  Specialized mail message
    */
-  class BugMessage extends Message {
+  class BugMessage extends MimeMessage {
     public
       $tokens= array();
 
@@ -52,7 +55,7 @@
     public function setProduct($product) {
       $this->tokens['product']= $product;
     }
-
+foo
     /**
      * Set Component
      *
@@ -115,7 +118,7 @@
     public function setVersion($version) {
       $this->tokens['version']= $version;
     }
-    
+
     /**
      * Suppress report mail when successful
      *
@@ -123,7 +126,7 @@
      */
     public function setNoReport($b= TRUE) {
       $this->tokens['nomail']= ($b ? 'yes' : 'no');
-    }    
+    }
 
     /**
      * Get message body. If this message is contained in a folder and the body
@@ -139,6 +142,6 @@
       }
 
       return $header."\n".parent::getBody();
-    }    
+    }
   }
 ?>
