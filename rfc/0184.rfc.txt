@@ -1,0 +1,161 @@
+RFC 0184: ArrayMap and ArrayList
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Apr  5 14:10:33     2009
+@status: draft
+@category: lang.types
+
+Scope of Change
+---------------
+Create a new class called <tt>ArrayMap</tt> in the <tt>lang.types</tt>
+package which will represent a map.
+
+
+Rationale
+---------
+Lists and maps need to be distinguishable. PHP arrays are one or the
+other, or even both. For a more detailled explanation, see the blog entry 
+http://news.xp-framework.net/article/293/2009/04/05/.
+
+
+Functionality
+-------------
+<summary>
+5.7.3
+~~~~~
+* A new class named "ArrayMap" will be introduced.
+* The existing class "ArrayList" will be changed for consistency.
+
+5.8.0
+~~~~~
+* APIs will be changed to return and/or accept these classes.
+</summary>
+
+Usage examples
+~~~~~~~~~~~~~~
+The array operations are overloaded to give this class the typical "array"
+usability:
+<code>
+  $m= new ArrayMap(array('one' => 1, 'two' => 2));
+  
+  // Size
+  $s= $m.size;        // := 2
+  
+  // Reading
+  $n= $m['one'];      // := 1
+  $four= $m['four']); // *** lang.IndexOutOfBoundsException
+  
+  // Writing
+  $m['one']= 10;      // Overwrites existing value
+  $m['three']= 3;     // Adds new mapping
+  $m[]= 7;            // *** lang.IllegalArgumentException
+  
+  // Removing
+  unset($m['one']);   // Map now: { "two" => 2 }
+  unset($m['four']);  // *** lang.IndexOutOfBoundsException
+  
+  // Testing
+  isset($m['one']);   // := true
+  isset($m['zero']);  // := false
+  
+  // Iteration
+  foreach ($m as $key => $value) {
+    Console::writeLine($key, ' => ', $value);
+  }
+</code>
+
+Refactoring
+~~~~~~~~~~~
+Although this class behaves like a typical PHP array, it isn't one. Keep
+this in mind when code uses <tt>sizeof</tt> or any of the array functions
+such as <tt>array_keys</tt>, <tt>asort</tt> or <tt>array_map</tt>. The 
+places where a real array is required need to be passed the ArrayMap's 
+<tt>array</tt> member.
+
+Example:
+<code>
+  // Old code
+  $a= array('name' => 'Timm', 'id' => 1549);
+  ksort($a);
+  
+  // New code
+  $a= new ArrayMap(array('name' => 'Timm', 'id' => 1549));
+  ksort($a->array);
+</code>
+Code that uses <tt>foreach()</tt> or array access syntax as shown above
+does not need to be changed.
+
+StringOf
+~~~~~~~~
+The <tt>xp::stringOf()</tt> function will be extended to produce the
+following output:
+
+<code>
+  xp::stringOf(new ArrayList(1, 2, 3));
+  // [1, 2, 3];
+  
+  xp::stringOf(new ArrayMap(array('key' => 'value', 'color' => 'green')));
+  // [
+  //   "key" : "value"
+  //   "color" : "green"
+  // ]
+</code>
+
+XP language integration
+~~~~~~~~~~~~~~~~~~~~~~~
+The XP language will use these two types as backing for the array and map 
+literals.
+
+<code>
+  // Equivalent of: $a= new ArrayList(1, 2, 3);
+  $a= [1, 2, 3];
+  
+  // Equivalent of: $m= new ArrayMap(array('one' => 1, 'two' => 2));
+  $m= [ 'one' : 1, 'two' : 2 ];
+</code>
+
+Consistency
+~~~~~~~~~~~
+The <tt>ArrayList</tt> class will be changed to adapt the <tt>array</tt>
+member (instead of <tt>values</tt>). Also, to follow the general strategy 
+of replacing native arrays by the wrapper types provided in the XP framework,
+the restriction of not being able to add elements to an ArrayList will be
+removed:
+
+<code>
+  $a= new ArrayList(1, 2, 3);
+  $a[]= 4;
+</code>
+
+This used to throw an <tt>IllegalArgumentException</tt> and will now be allowed,
+resulting in a list with four elements.
+
+
+Security considerations
+-----------------------
+None.
+
+
+Speed impact
+------------
+Slower than native array implementation.
+
+
+Dependencies
+------------
+BC break for public member "value" in ArrayList class, renamed to "array".
+
+
+Related documents
+-----------------
+* http://de3.php.net/types.array - Arrays
+* http://docs.xp-framework.net/xml/api/package?util.collections - XP Collections
+* http://msdn.microsoft.com/en-us/library/system.collections.ienumerable.aspx - IEnumerable
+
+
+Comments
+--------
+
+<EOF>
