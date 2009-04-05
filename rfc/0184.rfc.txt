@@ -153,6 +153,7 @@ Related documents
 * http://de3.php.net/types.array - Arrays
 * http://docs.xp-framework.net/xml/api/package?util.collections - XP Collections
 * http://msdn.microsoft.com/en-us/library/system.collections.ienumerable.aspx - IEnumerable
+* RFC #0168: Integrate lang.types
 
 
 Comments
