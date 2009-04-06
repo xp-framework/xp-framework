@@ -129,19 +129,27 @@
     }
 
     /**
-     * Get message body. If this message is contained in a folder and the body
-     * has'nt been fetched yet, it'll be retrieved from the storage underlying
-     * the folder.
+     * Get tokens as string
      *
      * @return  string
      */
-    public function getBody() {
+    public function getTokens() {
       $header= '';
       foreach ($this->tokens as $key => $val) {
         $header.= '@'.$key.':'.$val."\n";
       }
 
-      return $header."\n".parent::getBody();
+      return $header."\n";
+    }
+
+    /**
+     * Sets message body
+     *
+     * @param string str Message Text ('text/plain')
+     * @return peer.mail.MimePart Body Part
+     */
+    public function setBody($str) {
+      return parent::setBody($this->getTokens() . $str);
     }
   }
 ?>
