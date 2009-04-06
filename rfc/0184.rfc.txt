@@ -41,7 +41,7 @@ usability:
   $m= new ArrayMap(array('one' => 1, 'two' => 2));
   
   // Size
-  $s= $m.size;        // := 2
+  $s= $m->size;       // := 2
   
   // Reading
   $n= $m['one'];      // := 1
