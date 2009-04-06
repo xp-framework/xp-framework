@@ -1,0 +1,525 @@
+Index: ports/unittest/types.ini
+===================================================================
+--- ports/unittest/types.ini	(revision 12970)
++++ ports/unittest/types.ini	(working copy)
+@@ -12,6 +12,9 @@
+ [arraylist]
+ class="net.xp_framework.unittest.core.types.ArrayListTest"
+ 
++[arraymap]
++class="net.xp_framework.unittest.core.types.ArrayMapTest"
++
+ [string]
+ class="net.xp_framework.unittest.core.types.StringTest"
+ 
+Index: skeleton/lang/types/ArrayMap.class.php
+===================================================================
+--- skeleton/lang/types/ArrayMap.class.php	(revision 0)
++++ skeleton/lang/types/ArrayMap.class.php	(revision 0)
+@@ -0,0 +1,159 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  /**
++   * Represents an "associative" array
++   *
++   * @test     xp://net.xp_framework.unittest.core.types.ArrayMapTest
++   * @purpose  Wrapper
++   */
++  class ArrayMap extends Object implements ArrayAccess, IteratorAggregate {
++    protected
++      $iterator = NULL;
++
++    public
++      $array    = array(),
++      $size     = 0;
++  
++    /**
++     * Constructor
++     *
++     * @param   array<var, var> initial
++     */
++    public function __construct(array $initial= array()) {
++      $this->array= $initial;
++      $this->size= sizeof($initial);
++    }
++    
++    /**
++     * = list[] overloading
++     *
++     * @param   var key
++     * @return  mixed
++     */
++    public function offsetGet($key) {
++      if (!array_key_exists($key, $this->array)) {
++        raise('lang.IndexOutOfBoundsException', 'No such key '.xp::stringOf($key));
++      }
++      return $this->array[$key];
++    }
++
++    /**
++     * list[]= overloading
++     *
++     * @param   var key
++     * @param   var value
++     * @throws  lang.IllegalArgumentException if key is NULL (adding)
++     */
++    public function offsetSet($key, $value) {
++      if (NULL === $key) {
++        throw new IllegalArgumentException('Incorrect type '.gettype($key).' for index');
++      }
++      $this->array[$key]= $value;
++      $this->size= sizeof($this->array);
++    }
++
++    /**
++     * isset() overloading
++     *
++     * @param   var key
++     * @return  bool
++     */
++    public function offsetExists($key) {
++      return array_key_exists($key, $this->array);
++    }
++
++    /**
++     * unset() overloading
++     *
++     * @param   var key
++     */
++    public function offsetUnset($key) {
++      if (!array_key_exists($key, $this->array)) {
++        raise('lang.IndexOutOfBoundsException', 'No such key '.xp::stringOf($key));
++      }
++      unset($this->array[$key]);
++      $this->size--;
++    }
++
++    /**
++     * Helper method to compare two arrays recursively
++     *
++     * @param   array a1
++     * @param   array a2
++     * @return  bool
++     */
++    protected function arrayequals($a1, $a2) {
++      if (sizeof($a1) != sizeof($a2)) return FALSE;
++
++      foreach (array_keys((array)$a1) as $k) {
++        switch (TRUE) {
++          case !array_key_exists($k, $a2): 
++            return FALSE;
++
++          case is_array($a1[$k]):
++            if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
++            break;
++
++          case $a1[$k] instanceof Generic:
++            if (!$a1[$k]->equals($a2[$k])) return FALSE;
++            break;
++
++          case $a1[$k] !== $a2[$k]:
++            return FALSE;
++        }
++      }
++      return TRUE;
++    }
++    
++    /**
++     * Checks whether a given object is equal to this arraylist
++     *
++     * @param   lang.Object cmp
++     * @return  bool
++     */
++    public function equals($cmp) {
++      return $cmp instanceof self && $this->arrayequals($this->array, $cmp->array);
++    }
++    
++    /**
++     * Returns a string representation of this object
++     *
++     * @return  string
++     */
++    public function toString() {
++      return $this->getClassName().xp::stringOf($this->array);
++    }
++
++    /**
++     * Returns a hashcode for this map
++     *
++     * @return  string
++     */
++    public function hashCode() {
++      return $this->size.'{'.serialize($this->array);
++    }
++
++    /**
++     * Returns an iterator for use in foreach()
++     *
++     * @see     php://language.oop5.iterations
++     * @return  php.Iterator
++     */
++    public function getIterator() {
++      if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
++        private $k= NULL, $v;
++        public function __construct($v) { $this->v= $v; }
++        public function current() { return $this->v->array[$this->k]; }
++        public function key() { return $this->k; }
++        public function next() {  next($this->v->array); $this->k= key($this->v->array); }
++        public function rewind() { reset($this->v->array); $this->k= key($this->v->array); }
++        public function valid() { return $this->k; }
++      }');
++      return $this->iterator;
++    }
++  }
++?>
+
+Property changes on: skeleton/lang/types/ArrayMap.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/lang/types/ArrayList.class.php
+===================================================================
+--- skeleton/lang/types/ArrayList.class.php	(revision 12970)
++++ skeleton/lang/types/ArrayList.class.php	(working copy)
+@@ -15,7 +15,7 @@
+       $iterator = NULL;
+ 
+     public
+-      $values   = array(),
++      $array    = array(),
+       $length   = 0;
+ 
+     /**
+@@ -27,8 +27,8 @@
+     public static function newInstance($arg) {
+       if (is_array($arg)) {
+         $self= new self();
+-        $self->values= array_values($arg);
+-        $self->length= sizeof($self->values);
++        $self->array= array_values($arg);
++        $self->length= sizeof($self->array);
+       } else {
+         $self= new self();
+         $self->length= (int)$arg;
+@@ -37,12 +37,12 @@
+     }
+ 
+     /**
+-     * Returns a hashcode for this number
++     * Returns a hashcode for this list
+      *
+      * @return  string
+      */
+     public function hashCode() {
+-      return $this->length.'['.serialize($this->values);
++      return $this->length.'['.serialize($this->array);
+     }
+     
+     /**
+@@ -52,7 +52,7 @@
+      */
+     public function __construct() {
+       if (0 != ($this->length= func_num_args())) {
+-        $this->values= func_get_args();
++        $this->array= func_get_args();
+       }
+     }
+     
+@@ -66,7 +66,7 @@
+       if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
+         private $i= 0, $v;
+         public function __construct($v) { $this->v= $v; }
+-        public function current() { return $this->v->values[$this->i]; }
++        public function current() { return $this->v->array[$this->i]; }
+         public function key() { return $this->i; }
+         public function next() { $this->i++; }
+         public function rewind() { $this->i= 0; }
+@@ -86,7 +86,7 @@
+       if ($offset >= $this->length || $offset < 0) {
+         raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+       }
+-      return $this->values[$offset];
++      return $this->array[$offset];
+     }
+ 
+     /**
+@@ -104,7 +104,7 @@
+       if ($offset >= $this->length || $offset < 0) {
+         raise('lang.IndexOutOfBoundsException', 'Offset '.$offset.' out of bounds');
+       }
+-      $this->values[$offset]= $value;
++      $this->array[$offset]= $value;
+     }
+ 
+     /**
+@@ -163,7 +163,7 @@
+      * @return  bool
+      */
+     public function equals($cmp) {
+-      return $cmp instanceof self && $this->arrayequals($this->values, $cmp->values);
++      return $cmp instanceof self && $this->arrayequals($this->array, $cmp->array);
+     }
+     
+     /**
+@@ -173,8 +173,8 @@
+      */
+     public function toString() {
+       return (
+-        $this->getClassName().'['.sizeof($this->values)."]@{".
+-        implode(', ', array_map(array('xp', 'stringOf'), $this->values)).
++        $this->getClassName().'['.sizeof($this->array)."]@{".
++        implode(', ', array_map(array('xp', 'stringOf'), $this->array)).
+         '}'
+       );
+     }
+Index: ports/classes/net/xp_framework/unittest/core/types/ArrayMapTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/types/ArrayMapTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/types/ArrayMapTest.class.php	(revision 0)
+@@ -0,0 +1,235 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('unittest.TestCase', 'lang.types.ArrayMap');
++
++  /**
++   * Tests the ArrayMap class
++   *
++   * @see      xp://lang.types.ArrayMap
++   * @purpose  Testcase
++   */
++  class ArrayMapTest extends TestCase {
++    public static $EMPTY = NULL;
++    
++    static function __static() {
++      self::$EMPTY= new ArrayMap();
++    }
++
++    /**
++     * Ensures a newly created ArrayMap is empty
++     *
++     */
++    #[@test]
++    public function initiallyEmpty() {
++      $this->assertEquals(0, self::$EMPTY->size);
++      $this->assertEquals(0, sizeof(self::$EMPTY->array));
++    }
++
++    /**
++     * Ensures a newly created ArrayMap is equal to another newly 
++     * created ArrayMap
++     *
++     */
++    #[@test]
++    public function newListsAreEqual() {
++      $this->assertEquals(self::$EMPTY, new ArrayMap());
++    }
++
++    /**
++     * Ensures two different lists are not equal
++     *
++     */
++    #[@test]
++    public function nonEmptyListIsNotEqualToEmptyList() {
++      $this->assertNotEquals(self::$EMPTY, new ArrayMap(array('one' => 1)));
++    }
++
++    /**
++     * Ensures order is irrelevant for equality
++     *
++     */
++    #[@test]
++    public function orderIrrelevantForEquality() {
++      $this->assertEquals(
++        new ArrayMap(array('key' => 'value', 'color' => 'green', 'name' => 'example')),
++        new ArrayMap(array('color' => 'green', 'name' => 'example', 'key' => 'value'))
++      );
++    }
++
++    /**
++     * Tests equality for array maps
++     *
++     */
++    #[@test]
++    public function equalityForNestedMaps() {
++      $this->assertEquals(
++        new ArrayMap(array('key' => new ArrayMap(array('1' => 'one', '2' => 'two')))),
++        new ArrayMap(array('key' => new ArrayMap(array('1' => 'one', '2' => 'two'))))
++      );
++    }
++
++    /**
++     * Tests ArrayMap is usable in foreach()
++     *
++     */
++    #[@test]
++    public function isUsableInForeach() {
++      $keys= array('key', 'color');
++      $values= array('value', 'green');
++      $map= new ArrayMap(array('key' => 'value', 'color' => 'green'));
++      $i= 0;
++      foreach ($map as $key => $value) {
++        $this->assertEquals($keys[$i], $key);
++        $this->assertEquals($values[$i], $value);
++        $i++;
++      }
++      $this->assertEquals(2, $i);
++    }
++
++    /**
++     * Tests ArrayMap is usable in foreach() - nested
++     *
++     */
++    #[@test]
++    public function isUsableInNestedForeach() {
++      $r= '';
++      $map= new ArrayMap(array(
++        'one' => new ArrayMap(array('1a' => 'one', '2a' => 'two')),
++        'two' => new ArrayMap(array('1b' => 'one', '2b' => 'two'))
++      ));
++      foreach ($map as $key => $value) {
++        foreach ($value as $number => $word) {
++          $r.= $key.'.'.$number.':'.$word.', ';
++        }
++      }
++      $this->assertEquals(
++        'one.1a:one, one.2a:two, two.1b:one, two.2b:two', 
++        substr($r, 0, -2)
++      );
++    }
++
++    /**
++     * Tests array access operator is overloaded for reading
++     *
++     */
++    #[@test]
++    public function readElement() {
++      $c= new ArrayMap(array('one' => 1, 'two' => 2, 'three' => 3));
++      $this->assertEquals(1, $c['one']);
++      $this->assertEquals(2, $c['two']);
++      $this->assertEquals(3, $c['three']);
++    }
++
++    /**
++     * Tests reading non-existant element
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function readNonExistantElement() {
++      self::$EMPTY['@@irrelevant@@'];
++    }
++
++    /**
++     * Tests array access operator is overloaded for writing
++     *
++     */
++    #[@test]
++    public function writeElement() {
++      $c= new ArrayMap(array('one' => 1, 'two' => 2, 'three' => 3));
++      $c['four']= 4;
++      $this->assertEquals(4, $c['four']);
++    }
++
++    /**
++     * Tests array access operator is overloaded for writing
++     *
++     */
++    #[@test]
++    public function modifyElement() {
++      $c= new ArrayMap(array('one' => 1, 'two' => 2, 'three' => 3));
++      $c['two']+= 1;    // $c['two']++ does NOT work due to a bug in PHP
++      $this->assertEquals(3, $c['two']);
++    }
++
++    /**
++     * Tests array access operator is overloaded for adding
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function addElement() {
++      self::$EMPTY[]= 4;
++    }
++
++    /**
++     * Tests array access operator is overloaded for isset()
++     *
++     */
++    #[@test]
++    public function testElement() {
++      $c= new ArrayMap(array('one' => 1, 'null' => NULL));
++      $this->assertTrue(isset($c['one']));
++      $this->assertTrue(isset($c['null']));
++      $this->assertFalse(isset($c['three']));
++    }
++
++    /**
++     * Tests array access operator is overloaded for unset()
++     *
++     */
++    #[@test]
++    public function removeElement() {
++      $c= new ArrayMap(array('one' => 1, 'two' => 2));
++      unset($c['one']);
++      $this->assertEquals(new ArrayMap(array('two' => 2)), $c);
++    }
++
++    /**
++     * Tests array access operator is overloaded for unset()
++     *
++     */
++    #[@test, @expect('lang.IndexOutOfBoundsException')]
++    public function removeNonExistantElement() {
++      unset(self::$EMPTY['@@non-existant@@']);
++    }
++
++    /**
++     * Tests size is recalculated when removing
++     *
++     */
++    #[@test]
++    public function sizeRecalculatedOnRemove() {
++      $c= new ArrayMap(array('one' => 1, 'two' => 2));
++      $this->assertEquals(2, $c->size, 'before');
++      unset($c['one']);
++      $this->assertEquals(1, $c->size, 'after');
++    }
++
++    /**
++     * Tests size is recalculated when adding
++     *
++     */
++    #[@test]
++    public function sizeRecalculatedOnAdd() {
++      $c= new ArrayMap(array('one' => 1, 'two' => 2));
++      $this->assertEquals(2, $c->size, 'before');
++      $c['three']= 3;
++      $this->assertEquals(3, $c->size, 'after');
++    }
++
++    /**
++     * Tests size remains the same when overwriting an existing element
++     *
++     */
++    #[@test]
++    public function sizeRemainsSameOnOverwrite() {
++      $c= new ArrayMap(array('one' => 1, 'two' => 2));
++      $this->assertEquals(2, $c->size, 'before');
++      $c['two']= 3;
++      $this->assertEquals(2, $c->size, 'after');
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/types/ArrayMapTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
