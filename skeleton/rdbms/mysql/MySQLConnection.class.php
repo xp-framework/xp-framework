@@ -275,7 +275,7 @@
         return $result;
       }
 
-      $resultset= new MySQLResultSet($result);
+      $resultset= new MySQLResultSet($result, $this->tz);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;

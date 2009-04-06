@@ -19,14 +19,14 @@
      *
      * @param   resource handle
      */
-    public function __construct($result) {
+    public function __construct($result, TimeZone $tz= NULL) {
       $fields= array();
       if (is_resource($result)) {
         for ($i= 0, $num= pg_num_fields($result); $i < $num; $i++) {
           $fields[pg_field_name($result, $i)]= pg_field_type($result, $i);
         }
       }
-      parent::__construct($result, $fields);
+      parent::__construct($result, $fields, $tz);
     }
 
     /**
@@ -64,7 +64,7 @@
           case 'date':
           case 'time':
           case 'timestamp':
-            $row[$key]= Date::fromString($row[$key]);
+            $row[$key]= Date::fromString($row[$key], $this->tz);
             break;
 
           case 'bool':

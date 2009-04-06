@@ -19,7 +19,7 @@
      *
      * @param   resource handle
      */
-    public function __construct($result) {
+    public function __construct($result, TimeZone $tz= NULL) {
       $fields= array();
       if (is_resource($result)) {
         for ($i= 0, $num= mysql_num_fields($result); $i < $num; $i++) {
@@ -27,7 +27,7 @@
           $fields[$field->name]= $field->type;
         }
       }
-      parent::__construct($result, $fields);
+      parent::__construct($result, $fields, $tz);
     }
 
     /**
@@ -73,14 +73,14 @@
                 $time[1],
                 $time[2],
                 $time[0]
-              ));
+              ), $this->tz);
               
               break;
             }
               
           case 'datetime':
-          case 'date':          
-            $row[$key]= Date::fromString($row[$key]);
+          case 'date':
+            $row[$key]= Date::fromString($row[$key], $this->tz);
             break;
             
           case 'int':

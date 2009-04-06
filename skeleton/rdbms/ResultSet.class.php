@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses('util.Date', 'rdbms.SQLException');
@@ -26,21 +26,23 @@
     public
       $handle,
       $fields;
-      
+
     /**
      * Constructor
      *
      * @param   resource handle
      * @param   array fields
+     * @param   util.TimeZone tz default null
      */
-    public function __construct($handle, $fields) {
+    public function __construct($handle, $fields, TimeZone $tz= NULL) {
       $this->handle= $handle;
       $this->fields= $fields;
+      $this->tz= $tz;
     }
-    
+
     /**
      * Seek to a specified position within the resultset
-     * 
+     *
      * @param   int offset
      * @return  bool success
      * @throws  rdbms.SQLException
@@ -56,7 +58,7 @@
      * @return  mixed
      */
     public function next($field= NULL) { }
-    
+
     /**
      * Close resultset and free result memory
      *
@@ -69,7 +71,7 @@
      *
      * @return  string
      */
-    public function toString() { 
+    public function toString() {
       return $this->getClassName().'('.$this->handle.')@'.xp::stringOf($this->fields);
     }
   }

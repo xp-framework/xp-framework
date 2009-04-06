@@ -132,6 +132,7 @@
           continue; 
         } else if ($arg instanceof Date) {
           $type= 's';
+          $this->conn->tz && $arg= $this->conn->tz->translate($arg);
           $p= $arg->toString($this->dialect->dateFormat);
         } else if ($arg instanceof SQLRenderable) {
           $r.= $arg->asSql($this->conn).', ';

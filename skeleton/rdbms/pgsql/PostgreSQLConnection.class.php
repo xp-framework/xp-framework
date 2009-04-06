@@ -212,7 +212,7 @@
         return TRUE;
       }
 
-      $resultset= new PostgreSQLResultSet($result);
+      $resultset= new PostgreSQLResultSet($result, $this->tz);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;

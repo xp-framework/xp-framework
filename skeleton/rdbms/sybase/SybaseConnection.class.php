@@ -250,7 +250,7 @@
         return $result;
       }
       
-      $resultset= new SybaseResultSet($result);
+      $resultset= new SybaseResultSet($result, $this->tz);
       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
 
       return $resultset;

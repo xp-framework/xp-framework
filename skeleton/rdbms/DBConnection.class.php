@@ -14,7 +14,8 @@
     'rdbms.DSN',
     'rdbms.ResultSet',
     'util.log.Logger',
-    'util.Observable'
+    'util.Observable',
+    'util.TimeZone'
   );
   
   /**
@@ -27,6 +28,7 @@
     public 
       $handle  = NULL,
       $dsn     = NULL,
+      $tz      = NULL,
       $timeout = 0,
       $flags   = 0;
     
@@ -51,6 +53,11 @@
         $class= XPClass::forName($observer);
         $inst= call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
         $this->addObserver($inst);
+      }
+
+      // Time zone handling
+      if ($tz= $dsn->getProperty('timezone', FALSE)) {
+        $this->tz= new TimeZone($tz);
       }
     }
     
