@@ -59,6 +59,9 @@ RFCs
   integration
   (friebe)
 
+- Implemented RFC #0167 - RDBMS and Timezones
+  (gelli)
+
 Features
 ~~~~~~~~
 - Added lang.Primitive::wrapperClass() method
