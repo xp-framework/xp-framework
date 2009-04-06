@@ -158,5 +158,17 @@ Related documents
 
 Comments
 --------
+friebe, Mon Apr  6 08:19:04     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+What additional methods should this class provide? What comes to my mind
+would be <tt>keys()</tt> and <tt>values()</tt> methods returning ArrayLists.
+I don't think this class should be a full-featured "swiss-army knife"-style
+hashtable implementation, there's <tt>util.collections.HashTable</tt> for
+this and we could also think about extension methods.
+
+friebe, Mon Apr  6 08:23:16     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In the same course I think the <tt>util.Hashmap</tt> class could be 
+deprecated.
 
 <EOF>
