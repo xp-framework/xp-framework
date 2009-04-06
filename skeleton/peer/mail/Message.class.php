@@ -613,7 +613,7 @@
         $n= TRUE;
         break;
       }
-      
+
       return $n ? QuotedPrintable::encode($str, $this->getCharset()) : $str;
     }
     
