@@ -317,5 +317,14 @@
       return $body.'--'.$this->boundary."--\n";
     }
 
+    /**
+     * Sets message body
+     *
+     * @param string str Message Text ('text/plain')
+     * @return peer.mail.MimePart Body Part
+     */
+    public function setBody($str) {
+      return $this->addPart(new MimePart($str, 'text/plain'));
+    }
   }
 ?>
