@@ -35,7 +35,7 @@
     public function generate() {
       $uniq= str_shuffle(strtr(uniqid(microtime(), TRUE), ' .', 'gh'));
       while (strlen($uniq) > $this->length) {
-        StringUtil::delete($uniq, rand(0, strlen($uniq)));
+        $uniq= StringUtil::delete($uniq, rand(0, strlen($uniq)));
       }
       
       return $uniq;
