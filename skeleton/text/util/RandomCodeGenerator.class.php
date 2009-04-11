@@ -11,6 +11,8 @@
    * The codes are not guaranteed to be unique although they usually
    * will:)
    *
+   * @see      php://uniqid
+   * @see      php://microtime
    * @purpose  Generator
    */
   class RandomCodeGenerator extends Object {
@@ -36,7 +38,14 @@
      * @return  string
      */
     public function generate() {
-      $uniq= str_shuffle(strtr(uniqid(microtime(), TRUE), ' .', 'gh'));
+
+      // Result from generation will always be 44 characters in length, 
+      // 21 from microtime() used as prefix, plus 23 from uniqid() with 
+      // more_entropy set to TRUE.
+      $uniq= '';
+      for ($l= 0; $l < $this->length; $l+= 44) {
+        $uniq.= str_shuffle(strtr(uniqid(microtime(), TRUE), ' .', 'gh'));
+      }
       while (strlen($uniq) > $this->length) {
         $uniq= StringUtil::delete($uniq, rand(0, strlen($uniq)));
       }
