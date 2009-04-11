@@ -187,6 +187,7 @@
         $eta= $method->getAnnotation('limit', 'time');
       }
 
+      xp::gc();
       $timer= new Timer();
       $timer->start();
 
