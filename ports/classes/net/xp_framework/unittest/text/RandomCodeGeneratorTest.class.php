@@ -35,7 +35,7 @@
     }
 
     /**
-     * Test that the generated code contains only lowercase a-z
+     * Test that the generated code contains only lowercase a-z letters
      * and numbers.
      *
      */
@@ -63,7 +63,7 @@
     }
 
     /**
-     * Test onstructing a RandomCodeGenerator with a huge length
+     * Test constructing a RandomCodeGenerator with a huge length
      *
      */
     #[@test]
