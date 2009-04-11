@@ -23,6 +23,11 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed endless recursion in text.util.RandomCodeGenerator class
+  (kiesel, Tom Geiger)
+- Fixed text.util.RandomCodeGenerator not being able to generate codes
+  longer than 44 characters
+  (friebe)
 - Added fix to catch submission of malicious request data in 
   scriptlet.xml.XMLScriptletResponse.
   (kiesel)
@@ -33,7 +38,6 @@ Features
   peer.mail.MimeMessage class instead of peer.mail.Message class to
   support file attachments
   (toennishoff)
-
 - Added a setBody() method to peer.mail.MimeMessage class to add more 
   compatibility to peer.mail.Message and to support older bedavior of
   org.bugzilla.gateway.BugMessage class
