@@ -61,5 +61,14 @@
     public function negativeLength() {
       new RandomCodeGenerator(-1);
     }
+
+    /**
+     * Test onstructing a RandomCodeGenerator with a huge length
+     *
+     */
+    #[@test]
+    public function hugeLength() {
+      $this->assertEquals(10000, strlen(create(new RandomCodeGenerator(10000))->generate()));
+    }
   }
 ?>
