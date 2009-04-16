@@ -13,7 +13,8 @@
     'io.File', 
     'io.Folder',
     'peer.http.HttpUtil',
-    'peer.http.HttpConnection'
+    'peer.http.HttpConnection',
+    'lang.System'
   );
 
   /**
@@ -108,7 +109,7 @@
 
         if (0 == strncmp($nextPart, $t, strlen($nextPart))) {
           $inHeaders= TRUE;
-          $out && $output->append(strtr($name, '.', '/').xp::CLASS_FILE_EXT, $out);
+          $out && $output->append($fileName, $out);
           continue;
         }
         
@@ -116,6 +117,9 @@
         if ($inHeaders) {
           if (0 == strlen($t)) {    // End of headers
             sscanf($headers['Content-Type'], '%[^;]; name="%[^"]"', $type, $name);
+            $namer= explode('.', $name);
+            array_push($namer, ucfirst(array_pop($namer)));
+            $fileName= implode(System::getProperty('file.separator'), $namer).xp::CLASS_FILE_EXT;
             $out= '';
             $inHeaders= FALSE; 
             continue;

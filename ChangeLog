@@ -23,6 +23,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed class names for soap generator
+  (wagner)
 - Fixed endless recursion in text.util.RandomCodeGenerator class
   (kiesel, Tom Geiger)
 - Fixed text.util.RandomCodeGenerator not being able to generate codes
