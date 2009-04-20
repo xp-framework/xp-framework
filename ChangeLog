@@ -33,6 +33,8 @@ Bugfixes
 - Added fix to catch submission of malicious request data in 
   scriptlet.xml.XMLScriptletResponse.
   (kiesel)
+- Fixed typo in security.crypto.PrivateKey class
+  (Thomas Geiger, Tobias Roth, kiesel)
 
 Features
 ~~~~~~~~

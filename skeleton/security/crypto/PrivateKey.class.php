@@ -123,7 +123,7 @@
         ));
       }
       
-      return $unseal;
+      return $unsealed;
     }
   }
 
