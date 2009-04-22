@@ -9,7 +9,35 @@
   uses('util.cmd.Console', 'xp.xar.Options');
 
   /**
-   * XAR command
+   * XAR
+   * ===
+   * This tool can be used for working with XAR archives.
+   *
+   * Usage:
+   * <pre>
+   *   $ xar {options} {xarfile} [{fileset}]
+   * </pre>
+   *
+   * Creating a xar file
+   * -------------------
+   * The following creates a xar file containing all files inside the
+   * directories "src" and "lib" as well as the file "etc/config.ini".
+   *
+   * <tt>$ xar cf app.xar src/ lib/ etc/config.ini</tt>
+   *
+   * Extracting a xar file
+   * ---------------------
+   * The following extracts all files inside the "app.xar" into the 
+   * current directory. Directories and files are created if necessary,
+   * existing files are overwritten.
+   * 
+   * <tt>$ xar xf app.xar</tt>
+   *
+   * Viewing an archive's contents
+   * -----------------------------
+   * To list what's inside a xar file, use the following command:
+   *
+   * <tt>$ xar tf app.xar</tt>
    *
    * @purpose  Tool
    */
@@ -29,11 +57,26 @@
     }
     
     /**
+     * Converts api-doc "markup" to plain text w/ ASCII "art"
+     *
+     * @param   string markup
+     * @return  string text
+     */
+    protected static function textOf($markup) {
+      $line= str_repeat('=', 72);
+      return strip_tags(preg_replace(array(
+        '#<pre>#', '#</pre>#', '#<li>#',
+      ), array(
+        $line, $line, '* ',
+      ), trim($markup)));
+    }
+
+    /**
      * Displays usage and exists
      *
      */
     protected static function usage() {
-      Console::$err->writeLine('*** Usage: xar [options] [xarfile]');
+      Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
       exit(1);
     }
 
