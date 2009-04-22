@@ -161,8 +161,7 @@
     }
 
     /**
-     * Gets a method by a specified name. Returns NULL if the specified 
-     * method does not exist.
+     * Gets a method by a specified name.
      *
      * @param   string name
      * @return  lang.reflect.Method
@@ -204,8 +203,7 @@
     }
     
     /**
-     * Retrieves this class' constructor. Returns NULL if no constructor
-     * exists.
+     * Retrieves this class' constructor.
      *
      * @return  lang.reflect.Constructor
      * @see     xp://lang.reflect.Constructor
@@ -233,8 +231,7 @@
     }
     
     /**
-     * Retrieve a field by a specified name. Returns NULL if the specified
-     * field does not exist
+     * Retrieve a field by a specified name.
      *
      * @param   string name
      * @return  lang.reflect.Field
