@@ -155,7 +155,8 @@
           // breakage.
           // Passing special XML characters such as < or & will not fall into this
           // block - they'll just be converted to their counterpart XML entities.
-          $c= new Node($name, NULL, array(
+          $c= new Node('param', NULL, array(
+            'name'      => $name,
             'xsi:type'  => 'xsd:null',
             'error'     => 'formaterror'
           ));

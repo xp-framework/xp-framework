@@ -8,18 +8,18 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
-- Removed net.xp_framework.website from ports (now resides in xpadmin
-  repository, web/src)
-  (friebe)
-- Deprecated HTTP_* constants, use peer.http.HttpConstants class 
-  constants instead.
+- Made scriptlet.xml.workflow.checkers.ParamChecker and 
+  scriptlet.xml.workflow.casters.ParamCaster abstract.
   (kiesel)
 - Deprecated global constants in scriptlet.xml.XMLScriptletResponse
   in favor of class constants
   (kiesel)
-- Made scriptlet.xml.workflow.checkers.ParamChecker and 
-  scriptlet.xml.workflow.casters.ParamCaster abstract.
+- Deprecated HTTP_* constants, use peer.http.HttpConstants class 
+  constants instead.
   (kiesel)
+- Removed net.xp_framework.website from ports (now resides in xpadmin
+  repository, web/src)
+  (friebe)
 
 Bugfixes
 ~~~~~~~~
