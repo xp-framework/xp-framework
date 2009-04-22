@@ -263,6 +263,31 @@
     public function getParentclass() {
       return ($parent= $this->_reflect->getParentClass()) ? new self($parent) : NULL;
     }
+    
+    /**
+     * Checks whether this class has a constant named "$constant" or not
+     *
+     * @param   string constant
+     * @return  bool
+     */
+    public function hasConstant($constant) {
+      return $this->_reflect->hasConstant($constant);
+    }
+    
+    /**
+     * Retrieve a constant by a specified name.
+     *
+     * @param   string constant
+     * @return  mixed
+     * @throws  lang.ElementNotFoundException in case constant does not exist
+     */
+    public function getConstant($constant) {
+      if ($this->hasConstant($constant)) {
+        return $this->_reflect->getConstant($constant);
+      }
+      
+      raise('lang.ElementNotFoundException', 'No such constants "'.$constant.'" in class '.$this->name);
+    }
 
     /**
      * Cast a given object to the class represented by this object

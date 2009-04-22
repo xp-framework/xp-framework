@@ -39,6 +39,11 @@
     static function __static() {
       self::$initializerCalled= TRUE;
     }
+    
+    const
+      CONSTANT_STRING = 'XP Framework',
+      CONSTANT_INT    = 15,
+      CONSTANT_NULL   = NULL;
 
     /**
      * Constructor

@@ -258,5 +258,28 @@
         $this->assertClass($class, 'lang.XPClass');
       }
     }
+    
+    /**
+     * Retrieval of string, int & null constant
+     *
+     */
+    #[@test]
+    public function getConstantString() {
+      $this->assertEquals(TRUE, $this->class->hasConstant('CONSTANT_STRING'));
+      $this->assertEquals('XP Framework', $this->class->getConstant('CONSTANT_STRING'));
+      $this->assertEquals(TRUE, $this->class->hasConstant('CONSTANT_INT'));
+      $this->assertEquals(15, $this->class->getConstant('CONSTANT_INT'));
+      $this->assertEquals(TRUE, $this->class->hasConstant('CONSTANT_NULL'));
+      $this->assertEquals(NULL, $this->class->getConstant('CONSTANT_NULL'));
+    }
+    
+    /**
+     * Retrieval of nonexistant constant yields an exception
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function retrieveNonexistingConstant() {
+      $this->class->getConstant('DOES_NOT_EXIST');
+    }
   }
 ?>

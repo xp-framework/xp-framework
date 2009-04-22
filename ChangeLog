@@ -38,6 +38,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- made lang.XPClass support reflection for class constants
+  (kiesel)
 - org.bugzilla.gateway.BugMessage class now inhertits methods from
   peer.mail.MimeMessage class instead of peer.mail.Message class to
   support file attachments
