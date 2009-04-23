@@ -23,6 +23,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.XPClass::getSimpleName() cutting off first character when 
+  class name is unqualified
+  (friebe)
 - Fixed class names for soap generator
   (wagner)
 - Fixed endless recursion in text.util.RandomCodeGenerator class
