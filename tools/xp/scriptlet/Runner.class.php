@@ -49,7 +49,17 @@
           $args[]= strtr($value, array('{WEBROOT}' => $webroot));
         }
 
-        // HACK #1: Always make connection manager available - should be done inside scriptlet init
+        // Set environment variables
+        $env= $pr->readHash($scriptlet, 'init-envs', new HashMap());
+        foreach ($env->keys() as $key) {
+          putenv($key.'='.$env->get($key));
+        }
+        
+        // HACK #1: Always configure Logger (prior to ConnectionManager, so that one can pick up
+        // categories from Logger)
+        Logger::getInstance()->configure($pm->getProperties('log'));
+        
+        // HACK #2: Always make connection manager available - should be done inside scriptlet init
         ConnectionManager::getInstance()->configure($pm->getProperties('database'));
         
         $self= new self();
