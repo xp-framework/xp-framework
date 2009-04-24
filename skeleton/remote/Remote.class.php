@@ -65,6 +65,7 @@
       $list= explode(',', $dsn);
       shuffle($list);
       foreach ($list as $key) {
+        $key= trim($key);
         if (isset($instances[$key])) return $instances[$key];
 
         // No instance yet, so get it
@@ -86,6 +87,16 @@
 
       // No more active hosts
       throw $e;
+    }
+
+    /**
+     * Map a remote package name to a local package
+     *
+     * @param   string remote
+     * @param   lang.reflect.Package mapped
+     */
+    public function mapPackage($remote, Package $mapped) {
+      $this->_handler->serializer->mapPackage($remote, $mapped);
     }
     
     /**
