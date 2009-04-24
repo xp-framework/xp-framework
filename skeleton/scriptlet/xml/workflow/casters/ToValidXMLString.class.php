@@ -10,7 +10,7 @@
   );
 
   /**
-   * Removes illegal characters vrom given string(s)
+   * Removes illegal characters from given string(s)
    *
    *
    * @purpose  Checker
