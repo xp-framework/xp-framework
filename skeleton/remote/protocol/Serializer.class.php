@@ -35,7 +35,7 @@
   class Serializer extends Object {
     public
       $mappings   = array(),
-      $packages   = array(),
+      $packages   = array(0 => array(), 1 => array()),
       $exceptions = array();
     
     public
@@ -111,6 +111,8 @@
           
           // Default object serializing
           $props= get_object_vars($var);
+          $type= strtr($type, $this->packages[1]);
+          
           unset($props['__id']);
           $s= 'O:'.strlen($type).':"'.$type.'":'.sizeof($props).':{';
           foreach (array_keys($props) as $name) {
@@ -205,13 +207,28 @@
     /**
      * Register or retrieve a mapping for a package
      *
-     * @param   string token
-     * @param   string class fully qualified class name
-     * @return  string fully qualified class name
+     * @deprecated
+     * @param   string name
+     * @param   string replace
+     * @return  string replaced
      */
     public function packageMapping($name, $replace= NULL) {
-      if (NULL !== $replace) $this->packages[$name]= $replace;
+      if (NULL !== $replace) {
+        $this->packages[$name]= $replace;     // BC
+        $this->packages[0][$name]= $replace;
+      }
       return strtr($name, $this->packages);
+    }
+    
+    /**
+     * Map a remote package name to a local package
+     *
+     * @param   string remote
+     * @param   lang.reflect.Package mapped
+     */
+    public function mapPackage($remote, Package $mapped) {
+      $this->packages[0][$remote]= $mapped->getName();
+      $this->packages[1][$mapped->getName()]= $remote;
     }
     
     /**
@@ -296,7 +313,7 @@
         case 'O': {     // generic objects
           $name= $serialized->consumeString();
           try {
-            $class= XPClass::forName($this->packageMapping($name));
+            $class= XPClass::forName(strtr($name, $this->packages[0]));
           } catch (ClassNotFoundException $e) {
             $instance= new UnknownRemoteObject($name);
             $size= $serialized->consumeSize();
@@ -343,7 +360,7 @@
         }
         
         case 'C': {     // generic classes
-          $value= new ClassReference($this->packageMapping($serialized->consumeString()));
+          $value= new ClassReference(strtr($serialized->consumeString(), $this->packages[0]));
           return $value;
         }
 
