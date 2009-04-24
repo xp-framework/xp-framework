@@ -69,7 +69,10 @@
           $self->flags|= $self->getClass()->getConstant($lvl);
         }
         
-        $self->run($class->getConstructor()->newInstance($args));
+        $self->run($class->hasConstructor()
+          ? $class->getConstructor()->newInstance($args)
+          : $class->newInstance()
+        );
         return;
       }
       
