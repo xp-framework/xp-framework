@@ -20,6 +20,9 @@ Heads up!
 - Removed net.xp_framework.website from ports (now resides in xpadmin
   repository, web/src)
   (friebe)
+- Modified package mapping to also work from client to server in 
+  remote.protocol.Serializer
+  (gelli)
 
 Bugfixes
 ~~~~~~~~
