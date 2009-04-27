@@ -1,0 +1,20 @@
+XP runtime
+==========
+
+Usage
+-----
+Display version and classloader information:
+$ xp [options] -v
+
+Evaluate code:
+$ xp [options] -e {code}
+
+Running classes:
+$ xp [options] {qualified.class.Name} [arg [arg [...]]]
+
+Running XARs:
+$ xp [options] -xar {app.xar} [arg [arg [...]]]
+
+Options
+-------
+* -cp {path}: Add {path} to classpath
