@@ -44,6 +44,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added a new soap type caster
+  webservices.soap.types.SOAPDecimal
+  (wagner)
 - Added a new Caster that removes illegal control characters from input strings
   scriptlet.workflow.casters.ToValidXMLString
   (toennishoff)
