@@ -1,0 +1,70 @@
+RFC 0185: ClassFormatException for malformed annotations
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Apr 28 12:07:04     2009
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+Malformed annotations will lead to a <tt>lang.ClassFormatException</tt>
+being thrown instead of <tt>XPClass::(has|get)Annotation[s]</tt> silently
+returning FALSE.
+
+
+Rationale
+---------
+It is not easy to detect a malformed annotation in a production environment.
+The only sign is a <tt>"[error] PHP Parse error:  syntax error, unexpected 
+',', expecting ')' in lang/XPClass.class.php(503) : eval()'d code on line 1
+"</tt> that will appear on the screen / in a logfile.
+
+
+Functionality
+-------------
+Annotations are parsed from the class' sourcecode at runtime and then 
+converted to PHP values by using <tt>eval()</tt>. This is where the parse
+error mentioned above comes from.
+
+The error can be caught by a userland implementation:
+<pre>
+  $ php -r 'var_dump(eval("return (")); echo "Alive";'
+
+  Parse error: parse error in Command line code(1) : eval()'d code on line 1
+  bool(false)
+  Alive
+</pre>
+
+To capture the message, we can use output buffering - <tt>ob_start()</tt> and <
+tt>ob_get_contents()</tt>.
+
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+* http://xp-framework.net/rfc/contrib/rfc0185.diff
+  Implemeting patch
+
+Comments
+--------
+friebe, Tue Apr 28 12:47:57     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This will be implemented in 5.8.0 because of the impact on core 
+functionality.
+
+<EOF>

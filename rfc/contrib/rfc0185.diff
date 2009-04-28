@@ -1,0 +1,24 @@
+Index: XPClass.class.php
+===================================================================
+--- XPClass.class.php	(revision 13014)
++++ XPClass.class.php	(working copy)
+@@ -517,11 +517,18 @@
+                 $annotations[0].= substr($tokens[$i][1], 1);
+               }
+               if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+-                $annotations= eval('return array('.preg_replace(
++                ob_start();
++                $parsed= eval('return array('.preg_replace(
+                   array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/i', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
+                   array('\'$1\' => NULL,', '\'$1\' => \'$2\'', '\'$1\' => array(', '$1\'$2\' => '),
+                   trim($annotations[0], "[]# \t\n\r").','
+                 ).');');
++                $msg= ob_get_contents();
++                ob_end_clean();
++                if (FALSE === $parsed) {
++                  raise('lang.ClassFormatException', trim($msg).' of "'.addcslashes($annotations[0], "\0..\17").'"');
++                }
++                $annotations= $parsed;
+               }
+             }
+             break;
