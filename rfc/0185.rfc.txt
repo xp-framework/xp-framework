@@ -37,8 +37,8 @@ The error can be caught by a userland implementation:
   Alive
 </pre>
 
-To capture the message, we can use output buffering - <tt>ob_start()</tt> and <
-tt>ob_get_contents()</tt>.
+To capture the message, we can use output buffering - <tt>ob_start()</tt> and 
+<tt>ob_get_contents()</tt>.
 
 
 Security considerations
