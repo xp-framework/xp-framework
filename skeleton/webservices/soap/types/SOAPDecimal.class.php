@@ -11,16 +11,16 @@
    *
    */
   class SOAPDecimal extends SoapType {
-    var
+    public
       $decimal;
       
     /**
      * Constructor
      *
      * @param   int value
-     * @param   int decimals
+     * @param   int decimal
      */  
-    function __construct($value, $decimal) {
+    public function __construct($value, $decimal) {
       $this->decimal= number_format($value, $decimal, '.', FALSE);
     }
     
@@ -29,7 +29,7 @@
      *
      * @return  string 
      */    
-    function toString() {
+    public function toString() {
       return (string)$this->decimal;
     }
     
@@ -38,7 +38,7 @@
      *
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return 'xsd:decimal';
     }
   }

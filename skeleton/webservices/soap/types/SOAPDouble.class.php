@@ -11,15 +11,15 @@
    *
    */
   class SOAPDouble extends SoapType {
-    var
+    public
       $double;
       
     /**
      * Constructor
      *
-     * @param   int double
+     * @param   double double
      */  
-    function __construct($double) {
+    public function __construct($double) {
       $this->double= number_format($double, 0, FALSE, FALSE);
     }
     
@@ -28,7 +28,7 @@
      *
      * @return  string 
      */    
-    function toString() {
+    public function toString() {
       return (string)$this->double;
     }
     
@@ -37,7 +37,7 @@
      *
      * @return  string
      */
-    function getType() {
+    public function getType() {
       return 'xsd:double';
     }
   }
