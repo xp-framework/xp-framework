@@ -44,11 +44,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- Added a new soap type caster
-  webservices.soap.types.SOAPDecimal
+- Added a new soap type caster webservices.soap.types.SOAPDecimal
   (wagner)
-- Added a new Caster that removes illegal control characters from input strings
-  scriptlet.workflow.casters.ToValidXMLString
+- Added a new Caster that removes illegal control characters from input 
+  strings scriptlet.workflow.casters.ToValidXMLString
   (toennishoff)
 - made lang.XPClass support reflection for class constants
   (kiesel)
