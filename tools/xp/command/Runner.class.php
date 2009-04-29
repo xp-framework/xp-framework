@@ -119,7 +119,7 @@
       // Argument details
       self::$err->writeLine('Arguments:');
       foreach ($details as $which => $comment) {
-        self::$err->writeLine('* ', $which, "\n  ", $comment, "\n");
+        self::$err->writeLine('* ', $which, "\n  ", str_replace("\n", "\n  ", $comment), "\n");
       }
     }
   
