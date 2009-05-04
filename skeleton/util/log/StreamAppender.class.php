@@ -33,9 +33,10 @@
     public function append() {
       with ($args= func_get_args()); {
         foreach ($args as $idx => $arg) {
-          $this->stream->write($fd, $this->varSource($arg). ($idx < sizeof($args)-1 ? ' ' : ''));
+          $this->stream->write($this->varSource($arg). ($idx < sizeof($args)-1 ? ' ' : ''));
         }
       }
+      $this->stream->write("\n");
     }
   }
 ?>
