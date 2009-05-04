@@ -34,10 +34,20 @@
     /**
      * Constructor
      *
-     * @param   string dirname the directory's name
+     * @param   var base either a string or an io.Folder instance
+     * @param   string* args components
      */
-    public function __construct($dirname= NULL) {
-      if (NULL != $dirname) $this->setURI($dirname);
+    public function __construct($base= NULL) {
+      if (NULL === $base) {
+        return;
+      } else if ($base instanceof self) {
+        $composed= $base->getURI();
+      } else {
+        $composed= rtrim($base, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      }
+
+      $args= func_get_args();
+      $this->setURI($composed.implode(DIRECTORY_SEPARATOR, array_slice($args, 1)));
     }
     
     /**

@@ -44,6 +44,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed io.Folder constructor signature to (string|Folder [, string*])
+  (friebe)
 - Added a new soap type caster webservices.soap.types.SOAPDecimal
   (wagner)
 - Added a new Caster that removes illegal control characters from input 
