@@ -103,7 +103,7 @@
      * @return  string
      */
     public function toString() {
-      return sprintf('%s { %s }', $this->getClassName(), $this->_conn->request->url->_info['url']);
+      return $this->getClassName().'('.xp::stringOf($this->_conn).')';
     }
 
     /**
