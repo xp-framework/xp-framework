@@ -26,6 +26,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed com.microsoft.com.COMObject class to work with PHP5 COM
+  (friebe)
 - Fixed lang.XPClass::getSimpleName() cutting off first character when 
   class name is unqualified
   (friebe)
