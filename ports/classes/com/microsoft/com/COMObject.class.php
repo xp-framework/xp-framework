@@ -23,12 +23,11 @@
    * @see      http://www.microsoft.com/Com/resources/comdocs.asp COM specification
    * @see      http://www.developmentor.com/dbox/yacl.htm Yet Another COM Library (YACL) 
    * @ext      com
-   * @ext      overload
    * @purpose  Base class
    * @platform Windows
    */
   class COMObject extends Object {
-    public
+    protected
       $h   = NULL;
   
     /**
@@ -38,48 +37,71 @@
      * @param   string server default NULL
      */    
     public function __construct($identifier, $server= NULL) {
-      
-      $this->h= com_load($identifier, $server);
+      if ($identifier instanceof COM) {
+        $this->h= $identifier;
+      } else {
+        try {
+          $this->h= new COM($identifier, $server);
+        } catch (com_exception $e) {
+          throw new IllegalArgumentException($e->getCode().': '.$e->getMessage());
+        }
+      }
     }
     
     /**
      * Magic interceptor for member read access
      *
      * @param   string name
-     * @param   &mixed value
-     * @return  bool success
+     * @return  var value
      */
     public function __get($name) {
-      $value= com_get($this->h, $name);
-      return $value;
+      try {
+        $v= $this->h->{$name};
+        if ($v instanceof COM) {
+          return new self($v);
+        } else {
+          return $v;
+        }
+      } catch (com_exception $e) {
+        throw new IllegalArgumentException($e->getCode().': '.$e->getMessage());
+      }
     }
     
     /**
      * Magic interceptor for member write access
      *
      * @param   string name
-     * @param   &mixed value
-     * @return  bool success
+     * @param   var value
      */
     public function __set($name, $value) {
-      com_set($this->h, $name, $value);
-      return TRUE;
+      try {
+        if ($value instanceof self) {
+          $this->h->{$name}= $value->h;
+        } else {
+          $this->h->{$name}= $value;
+        }
+      } catch (com_exception $e) {
+        throw new IllegalArgumentException($e->getCode().': '.$e->getMessage());
+      }
     }
     
     /**
      * Magic interceptor for member method access
      *
      * @param   string name
-     * @param   array args
-     * @param   &mixed return
-     * @return  bool success
+     * @param   var[] args
+     * @return  var return
      */
     public function __call($name, $args) {
-      $return= call_user_func_array(
-        'com_invoke', 
-        array_merge(array($this->h, $name), $args)
-      );
-      return $return;
+      $s= '';
+      for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
+        $s.= ', $args['.$i.']';
+      }
+      try {
+        return eval('return $this->h->'.$name.'('.substr($s, 2).');');
+      } catch (com_exception $e) {
+        throw new IllegalArgumentException($e->getCode().': '.$e->getMessage());
+      }
     }
     
     /**
@@ -87,8 +109,7 @@
      *
      */
     public function __destruct() {
-      com_release($this->h);
       $this->h= NULL;
     }
-  } overload('COMObject');
+  }
 ?>
