@@ -30,7 +30,6 @@
 
   $webroot= getenv('DOCUMENT_ROOT').'/..';
   set_include_path(
-    scanpath(explode(PATH_SEPARATOR, ini_get('user_dir')), $webroot).
     scanpath(array($webroot), $webroot).
     scanpath(explode(PATH_SEPARATOR, get_include_path()), $webroot)
   );

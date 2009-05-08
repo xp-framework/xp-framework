@@ -33,24 +33,28 @@
       $pr= $pm->getProperties('web');
 
       $url= getenv('SCRIPT_URL');
-      $specific= 'app@'.getenv('SERVER_NAME');
+      $specific= getenv('SERVER_PROFILE');
 
-      // TBD: How do we find 'specifics' - environment, server name, ...?      
-      $mappings= $pr->readHash($specific, 'mappings', $pr->readHash('app', 'mappings'));
+      $mappings= $pr->readHash('app', 'mappings');
       foreach ($mappings->keys() as $pattern) {
         if (!preg_match('°'.$pattern.'°', $url)) continue;
 
         // Run first scriptlet that matches
         $scriptlet= $mappings->get($pattern);
-        $class= XPClass::forName($pr->readString($scriptlet, 'class'));
+        
+        try {
+          $class= XPClass::forName(self::readString($pr, $specific, $scriptlet, 'class'));
+        } catch (ClassNotFoundException $e) {
+          throw new IllegalArgumentException('Scriptlet "'.$scriptlet.'" misconfigured or missing: '.$e->getMessage());
+        }
         $args= array();
-        foreach ($pr->readArray($scriptlet, 'init-params') as $value) {
+        foreach (self::readArray($pr, $specific, $scriptlet, 'init-params') as $value) {
           // TBI: Inject properties?
           $args[]= strtr($value, array('{WEBROOT}' => $webroot));
         }
 
         // Set environment variables
-        $env= $pr->readHash($scriptlet, 'init-envs', new HashMap());
+        $env= self::readHash($pr, $specific, $scriptlet, 'init-envs', new HashMap());
         foreach ($env->keys() as $key) {
           putenv($key.'='.$env->get($key));
         }
@@ -65,7 +69,7 @@
         $self= new self();
         
         // Determine debug level
-        foreach ($pr->readArray($scriptlet, 'debug', array()) as $lvl) {
+        foreach (self::readArray($pr, $specific, $scriptlet, 'debug', array()) as $lvl) {
           $self->flags|= $self->getClass()->getConstant($lvl);
         }
         
@@ -77,6 +81,51 @@
       }
       
       throw new IllegalArgumentException('Could not find app responsible for request to '.$url);
+    }
+    
+    /**
+     * Read string. First tries special section "section"@"specific", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties pr
+     * @param   string specific
+     * @param   string section
+     * @param   string key
+     * @param   mixed default default NULL
+     * @return  string
+     */
+    protected static function readString(Properties $pr, $specific, $section, $key, $default= NULL) {
+      return $pr->readString($section.'@'.$specific, $key, $pr->readString($section, $key, $default));
+    }
+    
+    /**
+     * Read array. First tries special section "section"@"specific", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties pr
+     * @param   string specific
+     * @param   string section
+     * @param   string key
+     * @param   mixed default default NULL
+     * @return  string
+     */
+    protected static function readArray(Properties $pr, $specific, $section, $key, $default= NULL) {
+      return $pr->readArray($section.'@'.$specific, $key, $pr->readArray($section, $key, $default));
+    }
+    
+    /**
+     * Read hashmap. First tries special section "section"@"specific", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties pr
+     * @param   string specific
+     * @param   string section
+     * @param   string key
+     * @param   mixed default default NULL
+     * @return  string
+     */
+    protected static function readHash(Properties $pr, $specific, $section, $key, $default= NULL) {
+      return $pr->readHash($section.'@'.$specific, $key, $pr->readHash($section, $key, $default));
     }
     
     /**
