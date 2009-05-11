@@ -36,11 +36,14 @@
       $specific= getenv('SERVER_PROFILE');
 
       $mappings= $pr->readHash('app', 'mappings');
+      if (!$mappings instanceof Hashmap)
+        throw new IllegalStateException('Application misconfigured: "app" section missing or broken.');
+
       foreach ($mappings->keys() as $pattern) {
         if (!preg_match('°'.$pattern.'°', $url)) continue;
 
         // Run first scriptlet that matches
-        $scriptlet= $mappings->get($pattern);
+        $scriptlet= 'app::'.$mappings->get($pattern);
         
         try {
           $class= XPClass::forName(self::readString($pr, $specific, $scriptlet, 'class'));
@@ -61,10 +64,10 @@
         
         // HACK #1: Always configure Logger (prior to ConnectionManager, so that one can pick up
         // categories from Logger)
-        Logger::getInstance()->configure($pm->getProperties('log'));
+        $pm->hasProperties('log') && Logger::getInstance()->configure($pm->getProperties('log'));
         
         // HACK #2: Always make connection manager available - should be done inside scriptlet init
-        ConnectionManager::getInstance()->configure($pm->getProperties('database'));
+        $pm->hasProperties('database') && ConnectionManager::getInstance()->configure($pm->getProperties('database'));
         
         $self= new self();
         
@@ -73,10 +76,15 @@
           $self->flags|= $self->getClass()->getConstant($lvl);
         }
         
-        $self->run($class->hasConstructor()
-          ? $class->getConstructor()->newInstance($args)
-          : $class->newInstance()
-        );
+        try {
+          $self->run($class->hasConstructor()
+            ? $class->getConstructor()->newInstance($args)
+            : $class->newInstance()
+          );
+        } catch (TargetInvocationException $e) {
+          throw $e->getCause();
+        }
+         
         return;
       }
       
