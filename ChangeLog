@@ -26,6 +26,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed webservices.soap.xp.XPSoapNode class to not fatal when
+  serializing stdClass objects.
+  (kiesel)
 - Fixed com.microsoft.com.COMObject class to work with PHP5 COM
   (friebe)
 - Fixed lang.XPClass::getSimpleName() cutting off first character when 
