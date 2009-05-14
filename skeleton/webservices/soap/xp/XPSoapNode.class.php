@@ -174,7 +174,7 @@
         return;
       }
       
-      if (NULL !== ($qname= $mapping->qnameFor($value->getClass()))) {
+      if (($value instanceof Generic) && NULL !== ($qname= $mapping->qnameFor($value->getClass()))) {
         $ns++;
         $child->attribute['xmlns:ns'.$ns]= $qname->namespace;
         $child->attribute['xsi:type']= 'ns'.$ns.':'.$qname->localpart;
