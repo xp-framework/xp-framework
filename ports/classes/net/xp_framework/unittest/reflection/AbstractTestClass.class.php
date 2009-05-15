@@ -15,10 +15,10 @@
       $inherited= NULL;
 
     /**
-     * Child classes must have a constructor
+     * Constructor
      *
      */
-    abstract public function __construct();
+    public function __construct() {}
     
     /**
      * Retrieve date

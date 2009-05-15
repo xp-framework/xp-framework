@@ -26,6 +26,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.reflect.Constructor::newInstance() check on instantiating
+  an abstract class
+  (kiesel, friebe)
 - Fixed webservices.soap.xp.XPSoapNode class to not fatal when
   serializing stdClass objects.
   (kiesel)

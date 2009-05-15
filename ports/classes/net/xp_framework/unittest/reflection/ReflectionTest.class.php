@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'net.xp_framework.unittest.reflection.TestClass'
+    'net.xp_framework.unittest.reflection.TestClass',
+    'net.xp_framework.unittest.reflection.AbstractTestClass'
   );
 
   /**
@@ -163,6 +164,21 @@
         ->getConstructor()
         ->newInstance()
       ;
+    }
+    
+    /**
+     * Tests creation of abstract-class-derived classes does not 
+     * throw an exception
+     *
+     * @see     xp://lang.reflect.Constructor#newInstance
+     */
+    #[@test]
+    public function implementedConstructorInvocation() {
+      $i= ClassLoader::defineClass('ANonAbstractClass', 'net.xp_framework.unittest.reflection.AbstractTestClass', array(), '{
+        public function getDate() {}
+      }');
+      
+      $this->assertSubclass($i->getConstructor()->newInstance(), 'net.xp_framework.unittest.reflection.AbstractTestClass');
     }
 
     /**

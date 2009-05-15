@@ -35,13 +35,14 @@
     public function newInstance(array $args= array()) {
 
       // Check whether class is abstract
-      if ($this->_reflect->getDeclaringClass()->isAbstract()) {
+      $class= new ReflectionClass($this->_class);
+      if ($class->isAbstract()) {
         throw new IllegalAccessException('Cannot instantiate abstract class '.$this->_class);
       }
 
       // Check modifers
       $m= $this->_reflect->getModifiers();
-      if (!($m & MODIFIER_PUBLIC) || $m & MODIFIER_ABSTRACT) {
+      if (!($m & MODIFIER_PUBLIC)) {
         throw new IllegalAccessException(sprintf(
           'Cannot invoke %s constructor of class %s',
           Modifiers::stringOf($this->getModifiers()),
