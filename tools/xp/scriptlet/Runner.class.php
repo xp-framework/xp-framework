@@ -5,7 +5,6 @@
  */
 
   $package= 'xp.scriptlet';
-
   uses(
     'util.PropertyManager',
     'rdbms.ConnectionManager'
@@ -18,19 +17,37 @@
    */
   class xp·scriptlet·Runner extends Object {
     const
-      SHOW_XML        = 0x0001,
-      SHOW_ERRORS     = 0x0002,
-      SHOW_STACKTRACE = 0x0004;
+      XML         = 0x0001,
+      ERRORS      = 0x0002,
+      STACKTRACE  = 0x0004,
+      TRACE       = 0x0008;
       
     protected
-      $flags  = 0x0000;
-
+      $flags      = 0x0000,
+      $scriptlet  = NULL;
+    
     public static function main(array $args) {
+      try {
+        $self= self::setup($args);
+      } catch (Throwable $t) {
+        header('Status: 500');
+        throw $t;
+      }
+      
+      try {
+        $self->run();
+      } catch (TargetInvocationException $e) {
+        throw $e->getCause();
+      }
+    }
+
+    protected static function setup(array $args) {
       $webroot= $args[0];
       
-      $pm= PropertyManager::getInstance();
-      $pm->configure($webroot.'/etc');
-      $pr= $pm->getProperties('web');
+      // $pm= PropertyManager::getInstance();
+      // $pm->configure($webroot.'/etc');
+      // $pr= $pm->getProperties('web');
+      $pr= new Properties($webroot.'/etc/web.ini');
 
       $url= getenv('SCRIPT_URL');
       $specific= getenv('SERVER_PROFILE');
@@ -62,6 +79,10 @@
           putenv($key.'='.$env->get($key));
         }
         
+        // Configure PropertyManager
+        $pm= PropertyManager::getInstance();
+        $pm->configure(strtr(self::readString($pr, $specific, $scriptlet, 'prop-base', $webroot.'/etc'), array('{WEBROOT}' => $webroot)));
+        
         // HACK #1: Always configure Logger (prior to ConnectionManager, so that one can pick up
         // categories from Logger)
         $pm->hasProperties('log') && Logger::getInstance()->configure($pm->getProperties('log'));
@@ -69,26 +90,82 @@
         // HACK #2: Always make connection manager available - should be done inside scriptlet init
         $pm->hasProperties('database') && ConnectionManager::getInstance()->configure($pm->getProperties('database'));
         
-        $self= new self();
+        $self= new self($class->hasConstructor()
+          ? $class->getConstructor()->newInstance($args)
+          : $class->newInstance()
+        );
         
         // Determine debug level
         foreach (self::readArray($pr, $specific, $scriptlet, 'debug', array()) as $lvl) {
           $self->flags|= $self->getClass()->getConstant($lvl);
         }
         
-        try {
-          $self->run($class->hasConstructor()
-            ? $class->getConstructor()->newInstance($args)
-            : $class->newInstance()
-          );
-        } catch (TargetInvocationException $e) {
-          throw $e->getCause();
-        }
-         
-        return;
+        return $self;
       }
       
       throw new IllegalArgumentException('Could not find app responsible for request to '.$url);
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function __construct(HttpScriptlet $scriptlet) {
+      $this->scriptlet= $scriptlet;
+    }
+    
+    /**
+     * Run scriptlet instance
+     *
+     */
+    protected function run() {
+      try {
+        $this->scriptlet->init();
+        $response= $this->scriptlet->process();
+      } catch (HttpScriptletException $e) {
+        $response= $e->getResponse();
+        $this->except($response, $e);
+      }
+
+      // Send output
+      
+      // XXX HACK: Do not send headers when they've been sent before
+      headers_sent() || $response->sendHeaders();
+      $response->sendContent();
+      flush();
+
+      // Call scriptlet's finalizer
+      $this->scriptlet->finalize();
+      
+      if (
+        ($this->flags & self::XML) &&
+        ($response && isset($response->document))
+      ) {
+        echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
+      }
+      
+      if (($this->flags & self::ERRORS)) {
+        echo '<xmp>', var_export(xp::registry('errors'), 1), '</xmp>';
+      }
+    }
+    
+    /**
+     * Handle exception from scriptlet
+     *
+     * @param   scriptlet.HttpScriptletResponse response
+     * @param   lang.Throwable e
+     */
+    protected function except(HttpScriptletResponse $response, Throwable $e) {
+      $response->setContent(str_replace(
+        '<xp:value-of select="reason"/>',
+        (($this->flags & self::STACKTRACE)
+          ? $e->toString()
+          : $e->getMessage()
+        ),
+        $this->getClass()->getPackage()->getResource('error'.$response->statusCode.'.html')
+      ));
     }
     
     /**
@@ -134,59 +211,6 @@
      */
     protected static function readHash(Properties $pr, $specific, $section, $key, $default= NULL) {
       return $pr->readHash($section.'@'.$specific, $key, $pr->readHash($section, $key, $default));
-    }
-    
-    /**
-     * Run scriptlet instance
-     *
-     * @param   scriptlet.HttpScriptlet scriptlet
-     */
-    protected function run(HttpScriptlet $scriptlet) {
-      try {
-        $scriptlet->init();
-        $response= $scriptlet->process();
-      } catch (HttpScriptletException $e) {
-        $response= $e->getResponse();
-        $this->except($response, $e);
-      }
-
-      // Send output
-      
-      // XXX HACK: Do not send headers when they've been sent before
-      headers_sent() || $response->sendHeaders();
-      $response->sendContent();
-      flush();
-
-      // Call scriptlet's finalizer
-      $scriptlet->finalize();
-      
-      if (
-        ($this->flags & self::SHOW_XML) &&
-        ($response && isset($response->document))
-      ) {
-        echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
-      }
-      
-      if (($this->flags & self::SHOW_ERRORS)) {
-        echo '<xmp>', var_export(xp::registry('errors'), 1), '</xmp>';
-      }
-    }
-    
-    /**
-     * Handle exception from scriptlet
-     *
-     * @param   scriptlet.HttpScriptletResponse response
-     * @param   lang.Throwable e
-     */
-    protected function except(HttpScriptletResponse $response, Throwable $e) {
-      $response->setContent(str_replace(
-        '<xp:value-of select="reason"/>',
-        (($this->flags & self::SHOW_STACKTRACE)
-          ? $e->toString()
-          : $e->getMessage()
-        ),
-        $this->getClass()->getPackage()->getResource('error'.$response->statusCode.'.html')
-      ));
     }
   }
 ?>
