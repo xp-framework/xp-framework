@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Feb 15 21:42:40     2009
-@status: draft
+@status: discussion, ends Sat Mon 18 18:21:18     2009
 @category: xml.parser
 
 Scope of Change
