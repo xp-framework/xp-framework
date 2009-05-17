@@ -52,6 +52,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added text.spelling package and SpellChecker class based on ext/pspell
+  http://news.xp-framework.net/article/297/2009/05/17/
+  (friebe)
 - Changed io.Folder constructor signature to (string|Folder [, string*])
   (friebe)
 - Added a new soap type caster webservices.soap.types.SOAPDecimal
