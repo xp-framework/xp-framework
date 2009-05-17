@@ -12,7 +12,7 @@
    *   $spell->check('Hello');          // TRUE
    *   $spell->check('Bahnhof');        // FALSE
    *
-   *   $spell->suggestionsFor('Hallo'); //
+   *   $spell->suggestionsFor('delibrate'); //  [ "deliberate", "deliberator", ... ]
    * </code>
    *
    * @ext      pspell
