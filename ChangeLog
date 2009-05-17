@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Rewrote FTP API to no longer depend on ext/ftp
+  (friebe)
 - Made scriptlet.xml.workflow.checkers.ParamChecker and 
   scriptlet.xml.workflow.casters.ParamCaster abstract.
   (kiesel)
