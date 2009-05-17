@@ -30,9 +30,7 @@
      * @throws  io.IOException in case of an I/O error
      */
     public function delete() {
-      if (FALSE === ftp_delete($this->connection->handle, $this->name)) {
-        throw new IOException('Could not delete file "'.$this->name.'"');
-      }
+      $this->connection->expect($this->connection->sendCommand('DELE %s', $this->name), array(250));
     }
     
     /**
@@ -52,6 +50,27 @@
     public function getOutputStream() {
       return new FtpOutputStream($this);
     }
+    
+    /**
+     * Reload this file's details.
+     *
+     * @param   string state
+     * @throws  peer.SocketException in case of an I/O error
+     */
+    public function refresh($state) {
+      $list= $this->connection->listingOf($this->name);
+      if (NULL === $list || 1 != sizeof($list)) {
+        throw new ProtocolException('File '.$this->name.' not existant after '.$state);
+      }
+      with ($e= $this->connection->parser->entryFrom($list[0], $this->connection, rtrim(dirname($this->name), '/').'/')); {
+        $this->permissions= $e->permissions;
+        $this->numlinks= $e->numlinks;
+        $this->user= $e->user;
+        $this->group= $e->group;
+        $this->size= $e->size;
+        $this->date= $e->date;
+      }
+    }
 
     /**
      * Upload to this file from an input stream
@@ -63,47 +82,17 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function uploadFrom(InputStream $in, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
-      if ($listener) {
-        $transfer= create(new FtpUpload($this, $in))->withListener($listener)->start($mode);
-        while (!$transfer->complete()) {
-          $transfer->perform();
-        }
-        
-        if ($transfer->aborted()) {
-          throw new SocketException(sprintf(
-            'Transfer from %s to %s (mode %s) was aborted',
-            $in->toString(), $this->name, $mode
-          ));
-        }
-      } else {
-        $r= ftp_fput(
-          $this->connection->handle, 
-          $this->name, 
-          $sw= Streams::readableFd($in), 
-          $mode
-        );
-        fclose($sw);
-        if (TRUE !== $r) {
-          throw new SocketException(sprintf(
-            'Could not put %s to %s using mode %s',
-            $in->toString(), $this->name, $mode
-          ));
-        }
+      $transfer= create(new FtpUpload($this, $in))->withListener($listener)->start($mode);
+      while (!$transfer->complete()) $transfer->perform();
+
+      if ($transfer->aborted()) {
+        throw new SocketException(sprintf(
+          'Transfer from %s to %s (mode %s) was aborted',
+          $in->toString(), $this->name, $mode
+        ));
       }
       
-      // Reload file details
-      $f= ftp_rawlist($this->connection->handle, $this->name);
-      if (1 != sizeof($f)) {
-        throw new ProtocolException('File '.$this->name.' not existant after uploading');
-      }
-      with ($e= $this->connection->parser->entryFrom($f[0], $this->connection, rtrim(dirname($this->name), '/').'/')); {
-        $this->permissions= $e->permissions;
-        $this->numlinks= $e->numlinks;
-        $this->user= $e->user;
-        $this->group= $e->group;
-        $this->size= $e->size;
-        $this->date= $e->date;
-      }
+      $this->refresh('upload');
       return $this;
     }
     
@@ -123,7 +112,7 @@
     }
 
     /**
-     * Upload to this file from an input stream
+     * Download this file to an output stream
      *
      * @param   io.streams.OutputStream out
      * @param   int mode default FTP_ASCII
@@ -132,32 +121,14 @@
      * @throws  peer.SocketException in case of an I/O error
      */
     public function downloadTo(OutputStream $out, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
-      if ($listener) {
-        $transfer= create(new FtpDownload($this, $out))->withListener($listener)->start($mode);
-        while (!$transfer->complete()) {
-          $transfer->perform();
-        }
-        
-        if ($transfer->aborted()) {
-          throw new SocketException(sprintf(
-            'Transfer from %s to %s (mode %s) was aborted',
-            $in->toString(), $this->name, $mode
-          ));
-        }
-      } else {
-        $r= ftp_fget(
-          $this->connection->handle, 
-          $sw= Streams::writeableFd($out),
-          $this->name, 
-          $mode
-        );
-        fclose($sw);
-        if (TRUE !== $r) {
-          throw new SocketException(sprintf(
-            'Could not get %s to %s using mode %s',
-            $this->name, $out->toString(), $mode
-          )); 
-        }
+      $transfer= create(new FtpDownload($this, $out))->withListener($listener)->start($mode);
+      while (!$transfer->complete()) $transfer->perform();
+
+      if ($transfer->aborted()) {
+        throw new SocketException(sprintf(
+          'Transfer from %s to %s (mode %s) was aborted',
+          $in->toString(), $this->name, $mode
+        ));
       }
       return $out;
     }

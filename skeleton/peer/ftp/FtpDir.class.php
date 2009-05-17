@@ -33,7 +33,7 @@
       $normalized= '/'.trim($name, '/').'/';
       parent::__construct('//' === $normalized ? '/' : $normalized, $connection);
     }
-
+    
     /**
      * Returns a list of entries
      *
@@ -41,10 +41,10 @@
      * @throws  io.IOException in case of an I/O error
      */
     public function entries() {
-      if (FALSE === ($list= ftp_rawlist($this->connection->handle, $this->name))) {
+      if (NULL === ($list= $this->connection->listingOf($this->name))) {
         throw new IOException('Cannot list "'.$this->name.'"');
       }
-        
+      
       return new FtpEntryList($list, $this->connection, $this->name);
     }
 
@@ -54,9 +54,7 @@
      * @throws  io.IOException in case of an I/O error
      */
     public function delete() {
-      if (FALSE === ftp_rmdir($this->connection->handle, $this->name)) {
-        throw new IOException('Could not delete directory "'.$this->name.'"');
-      }
+      $this->connection->expect($this->connection->sendCommand('RMD %s', $this->name), array(250));
     }
     
     /**
@@ -68,23 +66,20 @@
      * @throws  peer.ProtocolException in case listing yields an unexpected result
      */
     protected function findEntry($name) {
-      if (!($f= ftp_rawlist($this->connection->handle, '-ald '.$this->name.$name))) {
-        if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-          throw new IOException('Listing "'.$this->name.$name.'" failed');
-        }
-        return NULL;
+      if (NULL === ($list= $this->connection->listingOf($this->name.$name, '-ald'))) {
+        return NULL;      // Not found
       }
 
       // If we get more than one result and the first result ends with a 
       // dot, the server ignored the "-d" option and listed the directory's 
       // contents instead. In this case, replace the "." by the directory
       // name. Otherwise, we don't expect more than one result!
-      $entry= $f[0];
-      if (($s= sizeof($f)) > 1) {
+      $entry= $list[0];
+      if (($s= sizeof($list)) > 1) {
         if ('.' === $entry{strlen($entry)- 1}) {
           $entry= substr($entry, 0, -1).basename($name);
         } else {
-          throw new ProtocolException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($f).')');
+          throw new ProtocolException('List "'.$this->name.$name.'" yielded '.$s.' result(s), expected: 1 ('.xp::stringOf($list).')');
         }
       }
       
@@ -210,9 +205,7 @@
      * @throws  peer.ProtocolException in case the created directory cannot be located or is a file
      */
     protected function makeDir($name) {
-      if (FALSE === ftp_mkdir($this->connection->handle, $this->name.$name)) {
-        throw new IOException('Could not create directory "'.$name.'"');
-      }
+      $this->connection->expect($this->connection->sendCommand('MKD %s', $this->name.$name), array(257));
       
       if (!($created= $this->findEntry($name))) {
         throw new ProtocolException('MKDIR "'.$name.'" succeeded but could not find created directory afterwards');
@@ -269,44 +262,7 @@
      * @throws  peer.SocketException in case the directory could not be read
      */
     public function getEntry() {
-      if (NULL === $this->entries) {
-        // Retrieve entries
-        if (FALSE === ($list= ftp_rawlist($this->connection->handle, $this->name))) {
-          throw new SocketException('Cannot list '.$this->name);
-        }
-        
-        $this->entries= $list;
-        $this->_offset= 0;
-        if (empty($this->entries)) return FALSE;
-      } else if (0 == $this->_offset) {
-        $this->entries= NULL;
-      }
-      
-      // Get rid of directory self-reference "." and parent directory 
-      // reference, ".."
-      do {        
-        try {
-          $entry= $this->connection->parser->entryFrom($this->entries[$this->_offset], $this->connection, $this->name);
-        } catch (XPException $e) {
-          throw new SocketException(sprintf(
-            'During listing of #%d (%s): %s',
-            $this->_offset,
-            $this->entries[$this->_offset],
-            $e->getMessage()
-          ));
-          return FALSE;
-        }
-        
-        // If we reach max, reset offset to 0 and break out of this loop
-        if (++$this->_offset >= sizeof($this->entries)) {
-          $this->_offset= 0;
-          break;
-        }
-      } while ('.' == $entry->getName() || '..' == $entry->getName());
-
-      // Inject connection and return
-      $entry->connection= $this->connection;
-      return $entry;
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpDir::getEntry');
     }
   }
 ?>

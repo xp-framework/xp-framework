@@ -13,8 +13,7 @@
    * @purpose  FtpTransfer implementation
    */
   class FtpDownload extends FtpTransfer {
-    protected
-      $out        = NULL;
+    protected $out= NULL;
 
     /**
      * Constructor
@@ -36,17 +35,57 @@
     public static function to(OutputStream $out) {
       return new self(NULL, $out);
     }
+    
+    /**
+     * Returns command to send
+     *
+     * @return  string
+     */
+    protected function getCommand() {
+      return 'RETR';
+    }
 
     /**
-     * Initiate a transfer
+     * Retrieves this transfer's total size
      *
-     * @param   int mode
-     */    
-    protected function initiate($mode) {
-      $this->h= $this->remote->getConnection()->handle;
-      $this->f= Streams::writeableFd($this->out);
-      $this->s= $this->remote->getSize();
-      $this->r= ftp_nb_fget($this->h, $this->f, $this->remote->getName(), $mode);
+     * @param   int size
+     */
+    public function size() {
+      return $this->remote->getSize();
+    }
+
+    /**
+     * Continues this transfer
+     *
+     * @throws  peer.SocketException in case this transfer fails
+     * @throws  lang.IllegalStateException in case start() has not been called before
+     */
+    protected function doTransfer() {
+      try {
+        $chunk= $this->socket->readBinary();
+      } catch (IOException $e) {
+        $this->listener && $this->listener->failed($this, $e);
+        $this->close();
+        throw $e;
+      }
+
+      if (0 == ($len= strlen($chunk))) {
+        $this->state= 2;
+        $this->close();
+        $this->listener && $this->listener->completed($this);
+        return;
+      }
+
+      try {
+        $this->out->write($chunk);
+      } catch (IOException $e) {
+        $this->listener && $this->listener->failed($this, $e);
+        $this->close();
+        throw $e;
+      }
+
+      $this->transferred+= $len;
+      $this->listener && $this->listener->transferred($this);
     }
     
     /**

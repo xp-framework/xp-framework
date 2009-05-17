@@ -13,8 +13,7 @@
    * @purpose  FtpTransfer implementation
    */
   class FtpUpload extends FtpTransfer {
-    protected
-      $in         = NULL;
+    protected $in = NULL;
 
     /**
      * Constructor
@@ -38,15 +37,48 @@
     }
 
     /**
-     * Initiate a transfer
+     * Returns command to send
      *
-     * @param   int mode
-     */    
-    protected function initiate($mode) {
-      $this->h= $this->remote->getConnection()->handle;
-      $this->f= Streams::readableFd($this->in);
-      $this->s= fstat($this->f);
-      $this->r= ftp_nb_fput($this->h, $this->remote->getName(), $this->f, $mode);
+     * @return  string
+     */
+    protected function getCommand() {
+      return 'STOR';
+    }
+
+    /**
+     * Retrieves this transfer's total size
+     *
+     * @param   int size
+     */
+    public function size() {
+      return -1;
+    }
+
+    /**
+     * Continues this transfer
+     *
+     * @throws  peer.SocketException in case this transfer fails
+     * @throws  lang.IllegalStateException in case start() has not been called before
+     */
+    protected function doTransfer() {
+      if ($this->in->available() <= 0) {
+        $this->state= 2;
+        $this->close();
+        $this->listener && $this->listener->completed($this);
+        return;
+      }
+
+      try {
+        $chunk= $this->in->read(8192);
+        $this->socket->write($chunk);
+      } catch (IOException $e) {
+        $this->listener && $this->listener->failed($this, $e);
+        $this->close();
+        throw $e;
+      }
+
+      $this->transferred+= strlen($chunk);
+      $this->listener && $this->listener->transferred($this);
     }
     
     /**

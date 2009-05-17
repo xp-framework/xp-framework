@@ -52,7 +52,15 @@
      * @throws  io.IOException in case of an I/O error
      */
     public function exists() {
-      return ftp_size($this->connection->handle, $this->name) != -1;
+      $r= $this->connection->sendCommand('SIZE %s', $this->name);
+      sscanf($r[0], "%d %[^\r\n]", $code, $message);
+      if (213 === $code) {
+        return TRUE;
+      } else if (550 === $code) {
+        return FALSE;
+      } else {
+        throw new ProtocolException('SIZE: Unexpected response '.$code.': '.$message);
+      }
     }
 
     /**
@@ -62,8 +70,11 @@
      * @throws  io.IOException in case of an I/O error
      */
     public function rename($to) {
-      if (!ftp_rename($this->connection->handle, $this->name, $to)) {
-        throw new IOException('Could not rename '.$this->name.' to '.$to);
+      try {
+        $this->connection->expect($this->connection->sendCommand('RNFR %s', $this->name), array(350));
+        $this->connection->expect($this->connection->sendCommand('RNRO %s', $rto), array(250));
+      } catch (ProtocolException $e) {
+        throw new IOException('Could not rename '.$this->name.' to '.$to.': '.$e->getMessage());
       }
     }
 
@@ -74,9 +85,7 @@
      * @throws  io.IOException in case of an I/O error
      */
     public function changePermissions($to) {
-      if (!ftp_chmod($this->connection->handle, $this->name, $to)) {
-        throw new IOException('Could not change '.$this->name.'\'s permissions to '.$to);
-      }
+      $this->connection->expect($this->connection->sendCommand('SITE CHMOD %s %d', $this->name, $to));
     }
 
     /**
@@ -220,13 +229,15 @@
      * @throws  io.IOException in case the connection is closed
      */
     public function lastModified() {
-      $t= ftp_mdtm($this->connection->handle, $this->name);
-      if (FALSE === $t || NULL === $t) {
-        throw new IOException('MDTM "'.$this->name.' "failed');
-      } else if (-1 === $t) {
-        return NULL;              // Unknown
+      $r= $this->connection->sendCommand('MDTM %s', $this->name);
+      sscanf($r[0], "%d %[^\r\n]", $code, $message);
+      
+      if (213 === $code) {
+        return new Date($message);
+      } else if (550 === $code) {
+        return NULL;
       } else {
-        return new Date($t);
+        throw new ProtocolException('MDTM: Unexpected response '.$code.': '.$message);
       }
     }
 

@@ -9,7 +9,6 @@
   /**
    * InputStream that reads from FTP files
    *
-   * @ext      ftp
    * @see      xp://peer.ftp.FtpFile#getInputStream
    * @purpose  InputStream implementation
    */
@@ -31,7 +30,15 @@
      * @return  string
      */
     public function read($limit= 8192) {
-      return $this->socket->readBinary($limit);
+      if ($this->eof) return;
+
+      $chunk= $this->socket->readBinary($limit);
+      if ($this->socket->eof()) {
+        $this->close();
+        $this->eof= TRUE;
+      }
+      
+      return $chunk;
     }
 
     /**
@@ -40,7 +47,7 @@
      *
      */
     public function available() {
-      return $this->socket->eof() ? 0 : 1;
+      return $this->eof || $this->socket->eof() ? 0 : 1;
     }
   }
 ?>

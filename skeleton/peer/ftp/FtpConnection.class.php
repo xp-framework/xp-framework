@@ -11,7 +11,8 @@
     'peer.SocketException',
     'peer.ftp.FtpDir',
     'peer.ftp.WindowsFtpListParser',
-    'peer.ftp.DefaultFtpListParser'
+    'peer.ftp.DefaultFtpListParser',
+    'util.log.Traceable'
   );
 
   /**
@@ -28,20 +29,21 @@
    * </code>
    *
    * @see      rfc://959
-   * @ext      ftp
    * @purpose  FTP protocol implementation
    */
-  class FtpConnection extends Object {
+  class FtpConnection extends Object implements Traceable {
     protected
       $url      = NULL,
-      $root     = NULL;
+      $root     = NULL,
+      $passive  = FALSE,
+      $cat      = NULL;
 
     public
       $parser   = NULL,
-      $handle   = NULL;
+      $socket   = NULL;
 
     /**
-     * Constructor. Accepts a URL of the following form:
+     * Constructor. Accepts a DSN of the following form:
      * <pre>
      *   {scheme}://[{user}:{password}@]{host}[:{port}]/[?{options}]
      * </pre>
@@ -61,10 +63,10 @@
      *   <li>passive - boolean value controlling whether to use passive mode or not</li>
      * </ul>
      *
-     * @param   mixed url a string or a peer.URL object
+     * @param   string dsn
      */
-    public function __construct($url) {
-      $this->url= $url instanceof URL ? $url : new URL($url);
+    public function __construct($dsn) {
+      $this->url= new URL($dsn);
     }
     
     /**
@@ -82,29 +84,33 @@
 
       switch ($this->url->getScheme()) {
         case 'ftp':
-          $this->handle= ftp_connect($host, $port, $timeout);
+          $this->socket= new Socket($host, $port);
           break;
 
         case 'ftps':
-          $this->handle= ftp_ssl_connect($host, $port, $timeout);
+          $this->socket= new SSLSocket($host, $port);
           break;
       }
       
-      if (!is_resource($this->handle)) {
-        throw new ConnectException(sprintf(
-          'Could not connect to %s:%d within %d seconds',
-          $host, $port, $timeout
-        ));
-      }
+      $this->socket->connect();
+      
+      // Read banner message
+      $this->expect($this->getResponse(), array(220));
       
       // User & password
       if ($this->url->getUser()) {
-        if (FALSE === ftp_login($this->handle, $this->url->getUser(), $this->url->getPassword())) {
-          ftp_close($this->handle);
+        try {
+          $this->expect($this->sendCommand('USER %s', $this->url->getUser()), array(331));
+          $this->expect($this->sendCommand('PASS %s', $this->url->getPassword()), array(230));
+        } catch (ProtocolException $e) {
+          $this->socket->close();
           throw new AuthenticationException(sprintf(
-            'Authentication failed for %s@%s (using password: %s)',
-            $this->url->getUser(), $host, $this->url->getPassword() ? 'yes' : 'no'
-          ));
+            'Authentication failed for %s@%s (using password: %s): %s',
+            $this->url->getUser(), 
+            $host, 
+            $this->url->getPassword() ? 'yes' : 'no',
+            $e->getMessage()
+          ), $this->url->getUser(), $this->url->getPassword());
         }
       }
 
@@ -117,11 +123,8 @@
       $this->setupListParser();
       
       // Retrieve root directory
-      if (FALSE === ($dir= ftp_pwd($this->handle))) {
-        ftp_close($this->handle);
-        throw new SocketException('Cannot retrieve current directory');
-      }
-      $this->root= new FtpDir($dir, $this);
+      sscanf($this->expect($this->sendCommand('PWD'), array(257)), '"%[^"]"', $dir);
+      $this->root= new FtpDir(strtr($dir, '\\', '/'), $this);
 
       return $this;
     }
@@ -131,7 +134,8 @@
      *
      */
     protected function setupListParser() {
-      if ('Windows_NT' == ftp_systype($this->handle)) {
+      $type= $this->expect($this->sendCommand('SYST'), array(215));
+      if ('Windows_NT' == $type) {
         $this->parser= new WindowsFtpListParser();
       } else {
         $this->parser= new DefaultFtpListParser();
@@ -144,7 +148,32 @@
      * @return  bool success
      */
     public function close() {
-      return ftp_close($this->handle);
+      if ($this->socket) {
+        try {
+          $this->socket->eof() || $this->socket->write("QUIT\r\n");
+        } catch (SocketException $ignored) {
+          // Simply disconnect
+        }
+        $this->socket->close();
+        $this->socket= NULL;
+      }
+      return TRUE;
+    }
+    
+    /**
+     * Retrieve transfer socket
+     *
+     * @return  peer.Socket
+     */
+    public function transferSocket() {
+      $port= $this->expect($this->sendCommand('PASV'), array(227));
+      $a= $p= array();
+      sscanf($port, '%*[^(] (%d,%d,%d,%d,%d,%d)', $a[0], $a[1], $a[2], $a[3], $p[0], $p[1]);
+        
+      // Open transfer socket
+      $transfer= new Socket(implode('.', $a), $p[0] * 256 + $p[1]);
+      $transfer->connect();
+      return $transfer;
     }
 
     /**
@@ -155,10 +184,7 @@
      * @throws  peer.SocketException
      */
     public function setPassive($enable) {
-      if (NULL === $this->handle) {
-        throw new SocketException('Cannot change passive mode flag with no open connection');
-      }
-      return ftp_pasv($this->handle, $enable);
+      $this->passive= $enable;
     }
 
     /**
@@ -169,34 +195,108 @@
     public function rootDir() {
       return $this->root;
     }
+    
+    /**
+     * Read response
+     *
+     * @return  string[]
+     */
+    public function getResponse() {
+      $response= '';
+      do {
+        $response.= $this->socket->read();
+      } while (!strstr($response, "\r\n"));
+      $this->cat && $this->cat->debug('<<<', $response);
+      return explode("\n", rtrim($response, "\r\n"));
+    }
+    
+    /**
+     * Check if return code meets expected response
+     *
+     * @param   string[] response
+     * @param   int[] codes expected
+     * @return  string message
+     * @throws  peer.ProtocolException in case expectancy is not met
+     */
+    public function expect($r, $codes) {
+      sscanf($r[0], "%d %[^\r\n]", $code, $message);
+      if (!in_array($code, $codes)) {
+        $error= sprintf(
+          'Unexpected response [%d:%s], expecting %s',
+          $code,
+          $message,
+          1 == sizeof($codes) ? $codes[0] : 'one of ('.implode(', ', $codes).')'
+        );
+        throw new ProtocolException($error);
+      }
+      return $message;
+    }
+
+    /**
+     * Retrieve a listing of a given directory
+     *
+     * @param   string name the directory's name
+     * @param   string options default NULL
+     * @return  string[] list or NULL if nothing can be found
+     * @throws  io.IOException
+     */
+    public function listingOf($name, $options= NULL) {
+      with ($transfer= $this->transferSocket()); {
+        $r= $this->sendCommand('LIST %s%s', $options ? $options.' ' : '', $name);
+        sscanf($r[0], "%d %[^\r\n]", $code, $message);
+        if (550 === $code) {          // Precondition failed
+          $transfer->close();
+          return NULL;
+        } else if (150 === $code) {   // Listing
+          $list= array();
+          while ($line= $transfer->readLine()) {
+            $list[]= $line;
+          }
+          $transfer->close();
+          $r= $this->getResponse();
+          sscanf($r[0], "%d %[^\r\n]", $code, $message);
+          if (450 === $code) {        // No such file or directory
+            return NULL;
+          } else {
+            $this->expect($r, array(226));
+            return $list;
+          }
+        } else {                      // Unexpected response
+          $transfer->close();
+          throw new IOException('Listing '.$this->name.$name.' failed ('.$code.': '.$message.')');
+        }
+      }
+    }
 
     /**
      * Sends a raw command to the FTP server and returns the server's
      * response (unparsed) as an array of strings.
      *
-     * Accepts a command which will be handled as format-string for
+     * Accepts a command which will be socketd as format-string for
      * further arbitrary arguments, e.g.:
      * <code>
      *   $c->sendCommand('CLNT %s', $clientName);
      * </code>
      *
      * @param   string command
-     * @param   string* args
+     * @param   string... args
      * @return  string[] result
      * @throws  peer.SocketException in case of an I/O error
      */
     public function sendCommand($command) {
+      if (NULL === $this->socket) {
+        throw new SocketException('Not connected');
+      }
+
       if (func_num_args() > 1) {
         $args= func_get_args();
         $cmd= vsprintf($command, array_slice($args, 1));
       } else {
         $cmd= $command;
       }
-
-      if (FALSE === ($response= ftp_raw($this->handle, $cmd))) {
-        throw new SocketException('Failed sending command '.xp::stringOf($cmd));
-      }
-      return $response;
+      $this->cat && $this->cat->debug('>>>', $cmd);
+      $this->socket->write($cmd."\r\n");
+      return $this->getResponse();
     }
 
     /**
@@ -208,13 +308,7 @@
      * @throws  peer.SocketException
      */
     public function getDir($dir= NULL) {
-      if (NULL === $dir) {
-        if (FALSE === ($dir= ftp_pwd($this->handle))) {
-          throw(new SocketException('Cannot retrieve current directory'));
-        }
-      }
-        
-      return new FtpDir($dir, $this);
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::getDir');
     }
     
     /**
@@ -226,10 +320,7 @@
      * @return  bool success
      */
     public function setDir($f) {
-      if (FALSE === ftp_chdir($this->handle, $f->getName())) {
-        throw(new SocketException('Cannot change directory to '.$f->getName()));
-      }
-      return TRUE;
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::setDir');
     }
 
     /**
@@ -240,7 +331,7 @@
      * @return  bool success
      */
     public function makeDir($f) {
-      return ftp_mkdir($this->handle, $f->name);
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::makeDir');
     }
     
     /**
@@ -254,23 +345,7 @@
      * @throws  peer.SocketException
      */
     public function put($arg, $remote= NULL, $mode= FTP_ASCII) {
-      if ($arg instanceof File) {
-        $local= $arg->_fd;
-        if (empty($remote)) $remote= basename ($arg->getUri());
-        $f= 'ftp_fput';
-      } else {
-        $local= $arg;
-        if (empty($remote)) $remote= basename($arg);
-        $f= 'ftp_put';
-      }
-      if (FALSE === $f($this->handle, $remote, $local, $mode)) {
-        throw(new SocketException(sprintf(
-          'Could not put %s to %s using mode %s',
-          $local, $remote, $mode
-        )));
-      }
-      
-      return TRUE;
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::put');
     }
 
     /**
@@ -284,21 +359,7 @@
      * @throws  peer.SocketException
      */
     public function get($remote, $arg, $mode= FTP_ASCII) {
-      if ($arg instanceof File) {
-        $local= $arg->_fd;
-        $f= 'ftp_fget';
-      } else {
-        $origin= $arg;
-        $f= 'ftp_get';
-      }
-      if (FALSE === $f($this->handle, $local, $remote, $mode)) {
-        throw(new SocketException(sprintf(
-          'Could not get %s to %s using mode %s',
-          $remote, $local, $mode
-        )));
-      }
-      
-      return TRUE;
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::get');
     }
     
     /**
@@ -309,7 +370,7 @@
      * @return  bool success
      */
     public function delete($remote) {
-      return ftp_delete ($this->handle, $remote);
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::delete');
     }    
 
     /**
@@ -321,11 +382,7 @@
      * @return  bool success
      */
     public function rename($src, $target) {
-      return ftp_rename (
-        $this->handle, 
-        $src, 
-        $target
-      );
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::rename');
     }
     
     /**
@@ -339,7 +396,16 @@
      * @return  array ServerResponse
      */
     public function quote($command) {
-      return ftp_raw($this->handle, $command);
+      raise('lang.MethodNotImplementedException', 'Deprecated', 'FtpConnection::quote');
+    }
+
+    /**
+     * Set a trace for debugging
+     *
+     * @param   util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
   }
 ?>

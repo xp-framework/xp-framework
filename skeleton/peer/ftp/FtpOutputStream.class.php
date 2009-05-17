@@ -9,7 +9,6 @@
   /**
    * OuputStream that writes to FTP files
    *
-   * @ext      ftp
    * @see      xp://peer.ftp.FtpFile#getOutputStream
    * @purpose  OutputStream implementation
    */
@@ -32,6 +31,16 @@
     public function write($arg) {
       $this->socket->write($arg);
     }
+    
+    /**
+     * Close this stream
+     *
+     */
+    public function close() {
+      parent::close();
+      $this->file->refresh('streaming');
+    }
+    
 
     /**
      * Flush this buffer. A NOOP for this implementation - data is written

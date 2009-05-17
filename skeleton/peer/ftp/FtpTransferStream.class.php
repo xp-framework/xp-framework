@@ -9,13 +9,13 @@
   /**
    * Base class for in- and output streams
    *
-   * @ext      ftp
    * @see      xp://peer.ftp.FtpOutputStream
    * @see      xp://peer.ftp.FtpIntputStream
    * @purpose  Abstract base class
    */
   abstract class FtpTransferStream extends Object {
     protected
+      $eof    = FALSE,
       $file   = NULL,
       $socket = NULL;
 
@@ -29,35 +29,15 @@
 
         // Always use binary mode
         // Check for "200 Type set to X"
-        $r= $conn->sendCommand('TYPE I');
-        sscanf($r[0], '%d %*[^(]', $code);
-        if (200 != $code) {
-          throw new SocketException('Cannot parse TYPE response '.xp::stringOf($r));
-        }
+        $conn->expect($conn->sendCommand('TYPE I'), array(200));
 
         // Always use passive mode, just to be sure
-        // Check for "Entering Passive Mode (h1,h2,h3,h4,p1,p2)."
-        $r= $conn->sendCommand('PASV');
-        $a= $p= array();
-        sscanf($r[0], '%d %*[^(] (%d,%d,%d,%d,%d,%d)', $code, $a[0], $a[1], $a[2], $a[3], $p[0], $p[1]);
-        if (227 != $code) {
-          throw new SocketException('Cannot parse PASV response '.xp::stringOf($r));
-        }
-        
-        // Open transfer socket
-        $this->socket= new Socket(implode('.', $a), $p[0] * 256 + $p[1]);
-        $this->socket->connect();
+        // Check for "227 Entering Passive Mode (h1,h2,h3,h4,p1,p2)."
+        $this->socket= $conn->transferSocket();
         
         // Begin transfer depending on the direction returned by getCommand()
-        // Check for "Opening XXX mode data connection for ..."
-        $r= $conn->sendCommand($cmd.' '.$file->getName());
-        sscanf($r[0], '%d %*[^(]', $code);
-        if (150 != $code) {
-          $this->socket->close();
-          throw new SocketException('Cannot parse '.$cmd.' response '.xp::stringOf($r));
-        }
-        
-        // Success!
+        // Check for "150 Opening XXX mode data connection for ..."
+        $conn->expect($conn->sendCommand($cmd.' '.$file->getName()), array(150));
       }
       $this->file= $file;
     }
@@ -83,7 +63,20 @@
      *
      */
     public function close() {
+      if ($this->eof) return;   // Already closed
+
       $this->socket->close();
+      
+      // Check for "226 transfer complete"
+      // Reset mode to ASCII
+      with ($conn= $this->file->getConnection()); {
+        $r= $conn->getResponse();
+        $conn->expect($conn->sendCommand('TYPE A'), array(200));
+        sscanf($r[0], "%d %[^\r\n]", $code, $message);
+        if (226 != $code) {
+          throw new ProtocolException('Transfer incomplete ('.$code.': '.$message.')');
+        }
+      }
     }
 
     /**

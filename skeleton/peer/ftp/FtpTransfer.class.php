@@ -13,13 +13,11 @@
    */
   abstract class FtpTransfer extends Object {
     protected
-      $r          = -1,
-      $s          = -1,
-      $h          = NULL,
-      $f          = NULL,
-      $aborted    = FALSE,
-      $remote     = NULL,
-      $listener   = NULL;
+      $remote      = NULL,
+      $listener    = NULL,
+      $socket      = NULL,
+      $state       = 0,
+      $transferred = 0;
 
     /**
      * Sets the remote file
@@ -55,8 +53,16 @@
      *
      */
     public function abort() {
-      $this->aborted= TRUE;
-      $this->r= -2;
+      $this->state= 3;
+    }
+
+    /**
+     * Returns whether this transfer is complete
+     *
+     * @return  bool TRUE if this transfer is complete, FALSE otherwise
+     */
+    public function complete() {
+      return 2 == $this->state;
     }
  
     /**
@@ -65,17 +71,7 @@
      * @return  bool
      */
     public function aborted() {
-      return $this->aborted;
-    }
-
-
-    /**
-     * Retrieves this transfer's total size
-     *
-     * @param   int size
-     */
-    public function size() {
-      return $this->s['size'];
+      return 3 == $this->state;
     }
 
     /**
@@ -84,62 +80,9 @@
      * @param   int size
      */
     public function transferred() {
-      return ftell($this->f);
+      return $this->transferred;
     }
 
-    /**
-     * Initiate a transfer
-     *
-     * @param   int mode
-     */    
-    protected abstract function initiate($mode);
-
-    /**
-     * Handles continuation of this transfer
-     *
-     * @throws  lang.IllegalStateException
-     */
-    protected function handleContinuation() {
-      $e= NULL;
-      switch ($this->r) {
-        case FTP_MOREDATA: {
-          $this->listener && $this->listener->transferred($this);
-          return;
-        }
-        
-        case FTP_FINISHED: {
-          $this->listener && $this->listener->completed($this);
-          break;
-        }
-    
-        case -1: {
-          $e= new IllegalStateException('Transfer has not been started yet');
-          break;
-        }
-        
-        case -2: {
-          $this->listener && $this->listener->aborted($this);
-          break;
-        }
-        
-        case FTP_FAILED: {
-          $e= new SocketException('Failed transferring');
-          $this->listener && $this->listener->failed($this, $e);
-          break;
-        }
-        
-        default:
-          $e= new IllegalStateException('Unknown return code from ftp_nb_continue: '.$this->r);
-      }
-
-      // Close file handle, reset result to initial value -1
-      $this->f && fclose($this->f);
-      $this->f= NULL;
-      $this->r= -1;
-      if ($e) throw $e;
-    }
-
-    
     /**
      * Starts this transfer
      *
@@ -147,19 +90,38 @@
      * @return  peer.ftp.FtpTransfer this
      */
     public function start($mode) {      
-      $this->initiate($mode);
+      with ($conn= $this->remote->getConnection()); {
+        $this->socket= $conn->transferSocket();
+        
+        // Issue the transfer command
+        $r= $conn->sendCommand('%s %s', $this->getCommand(), $this->remote->getName());
+        sscanf($r[0], "%d %[^\r\n]", $code, $message);
+        if (150 !== $code) {
+          throw new ProtocolException(sprintf(
+            '%s: Cannot transfer %s (%d: %s)',
+            $this->getCommand(),
+            $this->remote->getName(),
+            $code,
+            $message
+          ));
+        }
+      
+        $this->transferred= 0;
+        $this->state= 1;
+      }
       $this->listener && $this->listener->started($this);
-      $this->handleContinuation();
       return $this;
     }
-    
+
     /**
-     * Returns whether this transfer is complete
+     * Close down communication
      *
-     * @return  bool TRUE if this transfer is complete, FALSE otherwise
      */
-    public function complete() {
-      return FTP_MOREDATA !== $this->r;
+    protected function close() {
+      $this->socket->close();
+      with ($conn= $this->remote->getConnection()); {
+        $conn->expect($conn->getResponse(), array(226));
+      }
     }
 
     /**
@@ -169,8 +131,42 @@
      * @throws  lang.IllegalStateException in case start() has not been called before
      */
     public function perform() {
-      $this->r= ftp_nb_continue($this->h);
-      $this->handleContinuation();
+      if (1 === $this->state) {
+        $this->doTransfer();
+      } else if (2 === $this->state) {
+        throw new IllegalStateException('Transfer finished');
+      } else if (3 === $this->state) {
+        $this->close();
+        $this->listener && $this->listener->aborted($this);
+        return;
+      } else {
+        $this->close();
+        $e= new IllegalStateException('Transfer has not been started yet');
+        $this->listener && $this->listener->failed($this, $e);
+        throw $e;
+      }
     }
+
+    /**
+     * Returns command to send
+     *
+     * @return  string
+     */
+    protected abstract function getCommand();
+
+    /**
+     * Continues this transfer
+     *
+     * @throws  peer.SocketException in case this transfer fails
+     * @throws  lang.IllegalStateException in case start() has not been called before
+     */
+    protected abstract function doTransfer();
+
+    /**
+     * Retrieves this transfer's total size
+     *
+     * @param   int size
+     */
+    public abstract function size();
   }
 ?>
