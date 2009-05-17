@@ -9,6 +9,7 @@ SVN version: ?????
 Heads up!
 ~~~~~~~~~
 - Rewrote FTP API to no longer depend on ext/ftp
+  http://news.xp-framework.net/article/298/2009/05/17/
   (friebe)
 - Made scriptlet.xml.workflow.checkers.ParamChecker and 
   scriptlet.xml.workflow.casters.ParamCaster abstract.
