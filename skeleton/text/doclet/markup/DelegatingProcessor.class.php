@@ -34,10 +34,15 @@
     /**
      * Initializes the processor.
      *
+     * @param   var<string, string> attributes
      * @return  string
      */
-    public function initialize() {
-      return '</p><'.$this->tag().'><p>';
+    public function initialize($attributes= array()) {
+      $attrs= '';
+      foreach ($attributes as $key => $val) {
+        $attrs.= ' '.$key.'="'.$val.'"';
+      }
+      return '</p><'.$this->tag().($attributes ? $attrs : '').'><p>';
     }
 
     /**

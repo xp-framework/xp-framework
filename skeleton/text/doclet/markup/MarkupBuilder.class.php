@@ -100,11 +100,23 @@
           // state and return control to the previous processor.
           if (ctype_alnum($tag[0])) {
             $st->nextToken('>');
-            $lookup= strtolower($tag);
+            $attributes= array();
+            if (FALSE !== ($p= strpos($tag, ' '))) {
+              $at= new StringTokenizer(substr($tag, $p+ 1), ' ');
+              while ($at->hasMoreTokens()) {
+                $name= $at->nextToken('=');
+                $at->nextToken('"');
+                $attributes[$name]= $at->nextToken('"');
+                $at->nextToken(' ');
+              }
+              $lookup= strtolower(substr($tag, 0, $p));
+            } else {
+              $lookup= strtolower($tag);
+            }
 
             if (isset($this->state[$lookup])) {
               $processor= $this->pushProcessor($this->processors[$this->state[$lookup]]);
-              $out.= $processor->initialize();
+              $out.= $processor->initialize($attributes);
               continue;
             } else {
               $token= '<'.$tag.'>';

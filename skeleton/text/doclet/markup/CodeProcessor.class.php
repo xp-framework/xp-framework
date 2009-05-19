@@ -18,9 +18,10 @@
     /**
      * Initializes the processor.
      *
+     * @param   var<string, string> attributes
      * @return  string
      */
-    public function initialize() {
+    public function initialize($attributes= array()) {
       $this->buffer= '';
       return '';
     }
