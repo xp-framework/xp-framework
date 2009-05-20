@@ -45,8 +45,16 @@ stream, it's more flexible.
 
 <code>
   $parser= new XMLParser();
-  $parser->parse(new InputSource(new FileInputStream(new File('example.xml'))));
+  $parser->parse(new FileInputSource(new File('example.xml')));
 </code>
+
+More examples:
+<code>
+  $parser->parse(new StringInputSource($xml));
+  $parser->parse(new FileInputSource(new File('example.xml')));
+  $parser->parse(new StreamInputSource(new FileInputStream(new File('example.xml'))));
+</code>
+
 
 
 Security considerations
@@ -83,5 +91,9 @@ Examples:
   $parser->parse(new FileInputSource(new File('example.xml')));
   $parser->parse(new StreamInputSource(new FileInputStream(new File('example.xml'))));
 </code>
+
+friebe, Wed May 20 09:50:24     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Decided in favor of the interface approach.
 
 <EOF>
