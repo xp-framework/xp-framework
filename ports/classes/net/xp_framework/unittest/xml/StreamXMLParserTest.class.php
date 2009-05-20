@@ -4,14 +4,18 @@
  * $Id$
  */
 
-  uses('net.xp_framework.unittest.xml.AbstractXMLParserTest', 'xml.parser.StringInputSource');
+  uses(
+    'net.xp_framework.unittest.xml.AbstractXMLParserTest', 
+    'xml.parser.StreamInputSource',
+    'io.streams.MemoryInputStream'
+  );
 
   /**
-   * Tests XML parser API with primitive string source
+   * Tests XML parser API with io.streams.InputStream source
    *
    * @see      xp://net.xp_framework.unittest.xml.AbstractXMLParserTest
    */
-  class StringXMLParserTest extends AbstractXMLParserTest {
+  class StreamXMLParserTest extends AbstractXMLParserTest {
     
     /**
      * Returns an XML document by prepending the XML declaration to 
@@ -22,8 +26,8 @@
      * @return  xml.parser.InputSource XML the source XML
      */
     protected function source($str, $decl= TRUE) {
-      return new StringInputSource(
-        ($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str,
+      return new StreamInputSource(
+        new MemoryInputStream(($decl ? '<?xml version="1.0" encoding="utf-8"?>' : '').$str),
         $this->name.' test'
       );
     }

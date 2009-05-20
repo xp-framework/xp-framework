@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'xml.parser.XMLParser',
-    'xml.parser.ParserCallback'
+    'xml.parser.ParserCallback',
+    'xml.parser.InputSource'
   );
 
   /**
@@ -46,7 +47,7 @@
      *
      * @param   string str
      * @param   bool decl default TRUE
-     * @return  * XML the source XML
+     * @return  xml.parser.InputSource XML the source XML
      */
     protected abstract function source($str, $decl= TRUE);
     
