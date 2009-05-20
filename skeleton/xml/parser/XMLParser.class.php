@@ -71,14 +71,14 @@
     /**
      * Parse XML data
      *
-     * @param   string data
+     * @param   var data either a string or an xml.parser.InputSource
      * @param   string source default NULL optional source identifier, will show up in exception
      * @return  bool
      * @throws  xml.XMLFormatException in case the data could not be parsed
      * @throws  lang.NullPointerException in case a parser could not be created
      */
     public function parse($data, $source= NULL) {
-      if ($parser = xml_parser_create('')) {
+      if ($parser= xml_parser_create('')) {
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
         xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $this->encoding);
         
@@ -89,9 +89,25 @@
           xml_set_character_data_handler($parser, 'onCData');
           xml_set_default_handler($parser, 'onDefault');
         }
-      
-        // Parse data
-        if (!xml_parse($parser, $data, TRUE)) {
+        
+        // Parse streams while reading data
+        if ($data instanceof InputSource) {
+          $stream= $data->getStream();
+          $source || $source= $data->getSource();
+          do {
+            if ($stream->available()) {
+              $r= xml_parse($parser, $stream->read(), FALSE);
+            } else {
+              $r= xml_parse($parser, '', TRUE);
+              break;
+            }
+          } while ($r);
+        } else {
+          $r= xml_parse($parser, $data, TRUE);
+        }
+        
+        // Check for errors
+        if (!$r) {
           $type= xml_get_error_code($parser);
           $line= xml_get_current_line_number($parser);
           $column= xml_get_current_column_number($parser);
