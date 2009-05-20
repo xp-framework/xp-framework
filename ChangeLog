@@ -133,6 +133,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed XMLScriptletResponse::forwardTo() function to clear query and
+  fraction value when not specified
+  (kiesel)
 - Fixed xp::stringOf() to not incorrectly detect recursion with objects 
   returning hashcodes which are very large numbers
   (friebe)
