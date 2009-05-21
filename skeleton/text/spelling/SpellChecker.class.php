@@ -15,6 +15,7 @@
    *   $spell->suggestionsFor('delibrate'); //  [ "deliberate", "deliberator", ... ]
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.text.spelling.SpellCheckerTest
    * @ext      pspell
    */
   class SpellChecker extends Object {
