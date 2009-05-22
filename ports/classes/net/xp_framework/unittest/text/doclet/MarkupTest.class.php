@@ -448,6 +448,18 @@
     }
 
     /**
+     * Test link on image
+     *
+     */
+    #[@test]
+    public function imageLink() {
+      $this->assertEquals(
+        '<link href="thekid.de" rel="http"><image src="thekid.gif" rel="" format=""/></link>',
+        $this->builder->markupFor('[http://thekid.de [[thekid.gif]]]')
+      );
+    }
+
+    /**
      * Test ranges are not confused with inline links
      *
      */
