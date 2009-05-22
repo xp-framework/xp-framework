@@ -614,6 +614,18 @@
      *
      */
     #[@test]
+    public function proxyImage() {
+      $this->assertEquals(
+        '<image src="image/organize.png" rel="proxy" format=""/>', 
+        $this->builder->markupFor('[[proxy://image/organize.png]]')
+      );
+    }
+
+    /**
+     * Test images
+     *
+     */
+    #[@test]
     public function localImage() {
       $this->assertEquals(
         '<image src="image/organize.png" rel="" format=""/>', 
