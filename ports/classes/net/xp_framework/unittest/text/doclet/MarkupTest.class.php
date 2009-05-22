@@ -626,6 +626,54 @@
      *
      */
     #[@test]
+    public function localImageWithTextBefore() {
+      $this->assertEquals(
+        'This is an image: <image src="image/organize.png" rel="" format=""/>', 
+        $this->builder->markupFor('This is an image: [[image/organize.png]]')
+      );
+    }
+
+    /**
+     * Test images
+     *
+     */
+    #[@test]
+    public function localImageWithTextAfter() {
+      $this->assertEquals(
+        '<image src="image/organize.png" rel="" format=""/> Image #1', 
+        $this->builder->markupFor('[[image/organize.png]] Image #1')
+      );
+    }
+
+    /**
+     * Test images
+     *
+     */
+    #[@test]
+    public function localImageWithTextAround() {
+      $this->assertEquals(
+        'Image 1 <image src="image/person.jpg" rel="" format=""/> ...shows a person', 
+        $this->builder->markupFor('Image 1 [[image/person.jpg]] ...shows a person')
+      );
+    }
+
+    /**
+     * Test images
+     *
+     */
+    #[@test]
+    public function twoImages() {
+      $this->assertEquals(
+        '<image src="image/one.png" rel="" format=""/><image src="image/two.png" rel="" format=""/>', 
+        $this->builder->markupFor('[[image/one.png]][[image/two.png]]')
+      );
+    }
+
+    /**
+     * Test images
+     *
+     */
+    #[@test]
     public function localImageWithFormatting() {
       $this->assertEquals(
         '<image src="image/organize.png" rel="" format="left"/>', 
