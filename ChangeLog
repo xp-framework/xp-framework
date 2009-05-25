@@ -29,6 +29,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed image tags parsing in text.doclet.markup API for multiple 
+  adjacent images
+  (friebe)
 - Fixed lang.reflect.Constructor::newInstance() check on instantiating
   an abstract class
   (kiesel, friebe)
@@ -55,6 +58,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for attributes to custom markup processors in 
+  text.doclet.markup API
+  (friebe)
 - Added text.spelling package and SpellChecker class based on ext/pspell
   http://news.xp-framework.net/article/297/2009/05/17/
   (friebe)
