@@ -29,10 +29,7 @@
   // }}}
 
   $webroot= getenv('DOCUMENT_ROOT').'/..';
-  set_include_path(
-    scanpath(array($webroot), $webroot).
-    scanpath(explode(PATH_SEPARATOR, get_include_path()), $webroot)
-  );
+  set_include_path(scanpath(explode(PATH_SEPARATOR, get_include_path()), $webroot));
   
   // Bootstrap 
   if (!include('lang.base.php')) {

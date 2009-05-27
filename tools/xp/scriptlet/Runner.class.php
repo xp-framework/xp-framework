@@ -26,17 +26,18 @@
       $flags      = 0x0000,
       $scriptlet  = NULL;
     
-    public static function main(array $args) {
+    public static function main(array $args) { 
       try {
         $self= self::setup($args);
       } catch (Throwable $t) {
-        header('Status: 500');
+        header('HTTP/1.0 500 Scriptlet setup failed; very sorry.');
         throw $t;
       }
       
       try {
         $self->run();
       } catch (TargetInvocationException $e) {
+        headers_sent() || header('HTTP/1.0 500 Internal server error');
         throw $e->getCause();
       }
     }
@@ -57,7 +58,7 @@
         throw new IllegalStateException('Application misconfigured: "app" section missing or broken.');
 
       foreach ($mappings->keys() as $pattern) {
-        if (!preg_match('°'.$pattern.'°', $url)) continue;
+        if (!preg_match('#'.preg_quote($pattern, '#').'#', $url)) continue;
 
         // Run first scriptlet that matches
         $scriptlet= 'app::'.$mappings->get($pattern);
@@ -69,7 +70,6 @@
         }
         $args= array();
         foreach (self::readArray($pr, $specific, $scriptlet, 'init-params') as $value) {
-          // TBI: Inject properties?
           $args[]= strtr($value, array('{WEBROOT}' => $webroot));
         }
 
@@ -121,6 +121,10 @@
      *
      */
     protected function run() {
+      if ($this->flags & self::TRACE && $this->scriptlet instanceof Traceable) {
+        $this->scriptlet->setTrace(Logger::getInstance()->getCategory('scriptlet'));
+      }
+      
       try {
         $this->scriptlet->init();
         $response= $this->scriptlet->process();
