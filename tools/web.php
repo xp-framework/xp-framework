@@ -33,7 +33,7 @@
   $paths= array();
   foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
     $paths[]= ('~' == $path{0}
-      ? str_replace('~', $webroot, $path, 1)
+      ? str_replace('~', $webroot, $path)
       : $path
     );
   }
