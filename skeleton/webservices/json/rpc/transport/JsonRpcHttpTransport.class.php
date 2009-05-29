@@ -6,6 +6,7 @@
 
   uses(
     'scriptlet.rpc.transport.AbstractRpcTransport',
+    'scriptlet.rpc.RpcFaultException',
     'webservices.json.rpc.JsonResponseMessage',
     'peer.http.HttpConnection'
   );
