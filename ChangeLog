@@ -35,6 +35,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed JSONDecoder unserialization for objects having __wakeup() method
+  declared (e.g. util.Date)
+  (hinckel)
 - Made JSONClient work again by using JsonRequestMessage::create() instead
   of JsonMessage::createCall() function when invoking RPC
   (hinckel)

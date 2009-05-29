@@ -227,6 +227,8 @@
           $inst->{$key}= $value;
         }
         
+        if (method_exists($inst, '__wakeup')) $inst->__wakeup();
+              
         return $inst;
       }
 

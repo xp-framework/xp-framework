@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'util.Date',
     'webservices.json.JsonDecoder'
   );
 
@@ -299,6 +300,30 @@
       $this->assertEquals(
         $o,
         $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.utf8_encode($o->getClassName()).'" , "prop" : 1 }')
+      );
+    }
+    
+    /**
+     * Test date encoding
+     *
+     */
+    #[@test]
+    public function encodeDate() {
+      $this->assertEquals(
+        '{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "util.Date" , "constructor" : "__construct()" , "value" : "2009-05-18 01:02:03+0200" , "__id" : null }',
+        $this->decoder->encode(new Date('2009-05-18 01:02:03'))
+      );
+    }
+    
+    /**
+     * Test date decoding
+     *
+     */
+    #[@test]
+    public function decodeDate() {
+      $this->assertEquals(
+        new Date('2009-05-18 01:02:03'),
+        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "util.Date" , "constructor" : "__construct()" , "value" : "2009-05-18 01:02:03+0200" , "__id" : null }')
       );
     }
   }
