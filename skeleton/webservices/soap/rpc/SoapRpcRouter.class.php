@@ -19,7 +19,7 @@
    * <code>
    *   uses('webservices.soap.rpc.SoapRpcRouter');
    *
-   *   $s= new SoapRpcRouter(new ClassLoader('info.binford6100.webservices'));
+   *   $s= new SoapRpcRouter('info.binford6100.webservices');
    *   try {
    *     $s->init();
    *     $response= &$s->process();
