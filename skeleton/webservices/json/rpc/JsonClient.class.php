@@ -4,7 +4,7 @@
  * $Id: JsonClient.class.php 8651 2006-11-25 17:18:51Z kiesel $ 
  */
 
-  uses('webservices.json.rpc.JsonMessage');
+  uses('webservices.json.rpc.JsonRequestMessage');
 
   /**
    * This is a Json-RPC client
@@ -48,14 +48,14 @@
      */
     public function invoke() {
       static $serial= 1000;
-      if (!is('scriptlet.rpc.transport.GenericHttpTransport', $this->transport))
-        throw(new IllegalArgumentException('Transport must be a scriptlet.rpc.transport.GenericHttpTransport'));
+      if (!$this->transport instanceof JsonRpcHttpTransport) throw new IllegalArgumentException(
+        'Transport must be a webservices.json.transport.JsonRpcHttpTransport'
+      );
     
-      $this->transport->setMessageClass(XPClass::forName('webservices.json.rpc.JsonMessage'));
       $args= func_get_args();
       
-      $this->message= new JsonMessage();
-      $this->message->createCall(array_shift($args), time().(++$serial));
+      $this->message= new JsonRequestMessage();
+      $this->message->create(array_shift($args), time().(++$serial));
       $this->message->setData($args);
       
       // Send

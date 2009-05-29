@@ -5,7 +5,7 @@
  */
 
   uses(
-    'webservices.soap.transport.SOAPTransport',
+    'webservices.soap.transport.SOAPHTTPTransport',
     'webservices.soap.xp.XPSoapMessage'
   );
 
@@ -15,10 +15,18 @@
    * @purpose  Dummy SOAP Transport
    * @see      xp://webservices.soap.transport.SOAPHTTPTransport
    */
-  class SOAPDummyTransport extends SOAPTransport {
+  class SOAPDummyTransport extends SOAPHTTPTransport {
     public
       $answer=    '',
       $request=   NULL;
+
+    /**
+     * Constructor
+     *
+     */
+    public function __construct() {
+      parent::__construct('http://dummy/');
+    }
 
     /**
      * Set Request

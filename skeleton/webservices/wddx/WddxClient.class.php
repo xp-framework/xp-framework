@@ -61,8 +61,9 @@
      * @throws  lang.IllegalArgumentException
      */
     public function invoke() {
-      if (!is('webservices.wddx.transport.WddxTransport', $this->transport))
-        throw(new IllegalArgumentException('Transport must be a webservices.wddx.transport.WddxTransport'));
+      if (!$this->transport instanceof WddxHttpTransport) throw new IllegalArgumentException(
+        'Transport must be a webservices.wddx.transport.WddxHttpTransport'
+      );
     
       $args= func_get_args();
       

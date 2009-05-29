@@ -8,6 +8,12 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed webservices.soap.transport.SOAPHTTPSTransport - the transport
+  class SOAPHTTPTransport can handle this already
+  (hinckel)
+- Replaced all base RPC webservice transport classes with newly created
+  scriptlet.rpc.transport.AbstractRpcTransport class
+  (hinckel)
 - Rewrote FTP API to no longer depend on ext/ftp
   http://news.xp-framework.net/article/298/2009/05/17/
   (friebe)
@@ -29,6 +35,12 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Made JSONClient work again by using JsonRequestMessage::create() instead
+  of JsonMessage::createCall() function when invoking RPC
+  (hinckel)
+- Fixed GenericHttpTransport (which is not JsonRpcHttpTransport) to work
+  with "new" HttpConnection and HttpRequest object (see RFC #0162)
+  (hinckel)
 - Fixed image tags parsing in text.doclet.markup API for multiple 
   adjacent images
   (friebe)

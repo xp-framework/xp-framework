@@ -7,11 +7,11 @@
   uses('util.log.Traceable');
 
   /**
-   * Base class for WDDX transports.
+   * Base class for RPC transports.
    *
    * @purpose  Base class.
    */
-  class WddxTransport extends Object implements Traceable {
+  class AbstractRpcTransport extends Object implements Traceable {
     public
       $cat  = NULL;
       
@@ -25,19 +25,20 @@
     }
  
     /**
-     * Send WDDX message
+     * Send XML-RPC message
      *
-     * @param   webservices.wddx.WddxMessage message
+     * @param   scriptlet.rpc.AbstractRpcMessage message
      * @return  scriptlet.HttpScriptletResponse
      */
     public function send($message) { }
     
     /**
-     * Retrieve a WDDX message.
+     * Retrieve a XML-RPC message.
      *
-     * @param   scriptlet.HttpScriptletResponse response
-     * @return  webservices.wddx.WddxMessage
+     * @param   scriptlet.rpc.AbstractRpcResponse response
+     * @return  scriptlet.rpc.AbstractRpcMessage
      */
-    public function retrieve($response) { }
+    public function retrieve($response) { }    
+
   } 
 ?>

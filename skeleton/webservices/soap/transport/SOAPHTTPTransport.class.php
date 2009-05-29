@@ -5,7 +5,7 @@
  */
 
   uses(
-    'webservices.soap.transport.SOAPTransport',
+    'scriptlet.rpc.transport.AbstractRpcTransport',
     'webservices.soap.SOAPFaultException',
     'peer.http.HttpConnection',
     'peer.http.HttpConstants'
@@ -24,7 +24,7 @@
    * @purpose   Transport SOAP messages
    * @see       xp://webservices.soap.SOAPClient
    */
-  class SOAPHTTPTransport extends SOAPTransport {
+  class SOAPHTTPTransport extends AbstractRpcTransport {
     const
       ACTION_COMPUTE    = 0x0001,
       ACTION_HARDCODE   = 0x0002,

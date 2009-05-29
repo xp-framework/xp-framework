@@ -105,8 +105,7 @@
      * @return  string
      */
     public function serializeData() {
-      $decoder= JsonFactory::create();
-      return $decoder->encode($this->data);
+      return JsonFactory::create()->encode($this->data);
     }
     
     /**
@@ -150,8 +149,7 @@
      * @return  scriptlet.rpc.RpcFault
      */
     public function getFault() {
-      if (empty($this->data['error'])) return NULL;
-      return new RpcFault(
+      return empty($this->data['error']) ? NULL : new RpcFault(
         $this->data['error']['faultCode'],
         $this->data['error']['faultString']
       );

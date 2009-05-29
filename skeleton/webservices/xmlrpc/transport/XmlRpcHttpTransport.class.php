@@ -5,7 +5,8 @@
  */
 
   uses(
-    'webservices.xmlrpc.transport.XmlRpcTransport',
+    'scriptlet.rpc.transport.AbstractRpcTransport',
+    'webservices.xmlrpc.XmlRpcFaultException',
     'peer.http.HttpConnection'
   );
 
@@ -15,7 +16,7 @@
    * @see      xp://webservices.xmlrpc.XmlRpcClient
    * @purpose  HTTP Transport for XML-RPC
    */
-  class XmlRpcHttpTransport extends XmlRpcTransport {
+  class XmlRpcHttpTransport extends AbstractRpcTransport {
     public
       $_conn    = NULL,
       $_headers = array();

@@ -120,8 +120,8 @@
      * @throws  webservices.soap.SOAPFaultException
      */
     public function invoke() {
-      if (!$this->transport instanceof SOAPTransport) throw new IllegalArgumentException(
-        'Transport must be a webservices.soap.transport.SOAPTransport'
+      if (!$this->transport instanceof SOAPHTTPTransport) throw new IllegalArgumentException(
+        'Transport must be a webservices.soap.transport.SOAPHTTPTransport'
       );
       
       $args= func_get_args();

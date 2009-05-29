@@ -1,17 +1,21 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: GenericHttpTransport.class.php 7540 2006-08-04 15:23:14Z kiesel $ 
+ * $Id$ 
  */
 
-  uses('peer.http.HttpConnection', 'scriptlet.rpc.RpcFaultException');
+  uses(
+    'scriptlet.rpc.transport.AbstractRpcTransport',
+    'webservices.json.rpc.JsonResponseMessage',
+    'peer.http.HttpConnection'
+  );
 
   /**
-   * Transport for generic RPC requests over HTTP.
+   * Transport for JSON RPC requests over HTTP.
    *
    * @purpose  HTTP Transport for RPC clients
    */
-  class GenericHttpTransport extends Object {
+  class JsonRpcHttpTransport extends AbstractRpcTransport {
     public
       $_conn    = NULL,
       $_headers = array();
@@ -37,37 +41,24 @@
     }
     
     /**
-     * Sets the message class which will retrieve the answer
-     *
-     * @param   lang.XPClass c
-     */
-    public function setMessageClass($c) {
-      $this->messageClass= $c;
-    }    
-
-    /**
      * Send RPC message
      *
      * @param   scriptlet.rpc.AbstractRpcMessage message
      * @return  scriptlet.HttpScriptletResponse
      */
-    public function send($message) {
-      
-      if (!is('scriptlet.rpc.AbstractRpcMessage', $message)) throw(new IllegalArgumentException(
-        'parameter "message" must be a scriptlet.rpc.AbstractRpcMessage'
-      ));
-      
-      // Send XML
-      $this->_conn->request->setMethod(HTTP_POST);
-      $this->_conn->request->setParameters(new RequestData($message->serializeData()));
-      $this->_conn->request->setHeader('Content-Type', $message->getContentType().'; charset='.$message->getEncoding());
-      $this->_conn->request->setHeader('User-Agent', 'XP Framework Client (http://xp-framework.net)');
+    public function send(JsonMessage $message) {
+      with ($request= $this->_conn->create(new HttpRequest())); {
+        $request->setMethod(HTTP_POST);
+        $request->setParameters(new RequestData($message->serializeData()));
+        $request->setHeader('Content-Type', $message->getContentType().'; charset='.$message->getEncoding());
+        $request->setHeader('User-Agent', 'XP Framework Client (http://xp-framework.net)');
 
-      // Add custom headers
-      $this->_conn->request->addHeaders($this->_headers);
-      
-      $this->cat && $this->cat->debug('>>>', $this->_conn->request->getRequestString());
-      return $this->_conn->request->send($this->_conn->getTimeout());
+        // Add custom headers
+        $request->addHeaders($this->_headers);
+
+        $this->cat && $this->cat->debug('>>>', $request->getRequestString());
+        return $this->_conn->send($request);
+      }
     }
     
     /**
@@ -87,8 +78,7 @@
           while ($buf= $response->readData()) $xml.= $buf;
 
           $this->cat && $this->cat->debug('<<<', $xml);
-          $m= $this->messageClass->getMethod('fromString');
-          $answer= $m->invoke(NULL, array($xml));
+          $answer= JsonResponseMessage::fromString($xml);
           if ($answer) {
 
             // Check encoding

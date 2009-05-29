@@ -5,7 +5,7 @@
  */
 
   uses(
-    'webservices.wddx.transport.WddxTransport',
+    'scriptlet.rpc.transport.AbstractRpcTransport',
     'webservices.wddx.WddxFaultException',
     'webservices.wddx.WddxMessage',
     'peer.http.HttpConnection'
@@ -17,7 +17,7 @@
    * @see      xp://webservices.wddx.WddxClient
    * @purpose  HTTP Transport
    */
-  class WddxHttpTransport extends WddxTransport {
+  class WddxHttpTransport extends AbstractRpcTransport {
     public
       $_conn    = NULL,
       $_headers = array();
