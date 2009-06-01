@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed text.doclet.Doclet::start() to be abstract
+  (friebe)
 - Removed webservices.soap.transport.SOAPHTTPSTransport - the transport
   class SOAPHTTPTransport can handle this already
   (hinckel)
@@ -73,6 +75,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed text.doclet.TagletManager to process test tags via specialized 
+  taglet
+  (friebe)
 - Added support for attributes to custom markup processors in 
   text.doclet.markup API
   (friebe)
