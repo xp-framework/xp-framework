@@ -10,6 +10,7 @@
     'text.doclet.ReturnTaglet',
     'text.doclet.ThrowsTaglet',
     'text.doclet.SimpleTaglet',
+    'text.doclet.TestTaglet',
     'text.doclet.ModelTaglet'
   );
 
@@ -31,6 +32,7 @@
         self::$instance->taglets['param']= new ParamTaglet();
         self::$instance->taglets['return']= new ReturnTaglet();
         self::$instance->taglets['throws']= new ThrowsTaglet();
+        self::$instance->taglets['test']= new TestTaglet;
         
         // Simple taglets
         $s= new SimpleTaglet();
@@ -38,7 +40,6 @@
         self::$instance->taglets['deprecated']= $s;
         self::$instance->taglets['experimental']= $s;
         self::$instance->taglets['platform']= $s;
-        self::$instance->taglets['test']= $s;
         self::$instance->taglets['doc']= $s;
         self::$instance->taglets['ext']= $s;
       }
