@@ -13,7 +13,7 @@
    * <code>
    *   class NameListDoclet extends Doclet {
    * 
-   *     function start($root) {
+   *     public function start(RootDoc $root) {
    *       while ($root->classes->hasNext()) {
    *         echo $root->classes->next()->qualifiedName(), "\n";
    *       }
