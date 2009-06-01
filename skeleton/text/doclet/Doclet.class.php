@@ -24,7 +24,7 @@
    * @see      http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/
    * @purpose  Abstract base class
    */
-  class Doclet extends Object {
+  abstract class Doclet extends Object {
  
     /**
      * Generate documentation here.
@@ -32,9 +32,7 @@
      * @param   text.doclet.RootDoc root
      * @return  bool TRUE on success
      */ 
-    public function start($root) {
-      return TRUE;
-    }
+    public abstract function start(RootDoc $root);
 
     /**
      * Get class iterator
