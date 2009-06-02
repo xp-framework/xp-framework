@@ -156,7 +156,7 @@
      */
     public function qualifyName($doc, $name) {
       if (!($lookup= xp::registry('class.'.$name))) {
-        foreach (array_keys($doc->usedClasses->classes) as $class) {
+        foreach ($doc->usedClasses->classes as $class) {
           if (xp::reflect($class) == $name) return $class;
         }
       }
@@ -316,7 +316,7 @@
               if (!$this->findClass($cn)) throw new IllegalStateException(
                 'Could not find used class "'.$cn.'" for class '.$classname
               );
-              $doc->usedClasses->classes[$cn]= NULL;
+              $doc->usedClasses->classes[]= $cn;
               break;
 
             case ST_USES.')':
@@ -371,7 +371,7 @@
               break;
             
             case ST_IMPLEMENTS.T_STRING:
-              $doc->interfaces->classes[$this->qualifyName($doc, $t[1])]= TRUE;
+              $doc->interfaces->classes[]= $this->qualifyName($doc, $t[1]);
               break;
 
             case ST_CLASS.'{':
