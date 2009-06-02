@@ -9,21 +9,27 @@
   /**
    * Iterates over a collection of classes, parsing them as going along.
    *
+   * @test     xp://net.xp_framework.unittest.text.doclet.ClassIteratorTest
    * @purpose  Iterator
    */
   class ClassIterator extends Object implements XPIterator {
     public
       $classes = array(),
-      $root    = NULL,
-      $_cur    = NULL;
+      $root    = NULL;
+    
+    protected 
+      $offset  = NULL;
     
     /**
      * Constructor
      *
      * @param   string[] classes
+     * @param   text.doclet.RootDoc root
      */
-    public function __construct($classes= array()) {
-      $this->classes= array_flip($classes);
+    public function __construct($classes= array(), RootDoc $root= NULL) {
+      $this->classes= $classes;
+      $this->offset= 0;
+      $this->root= $root;
     }
     
     /**
@@ -31,7 +37,7 @@
      *
      */
     public function rewind() {
-      reset($this->classes);
+      $this->offset= 0;
     }
 
     /**
@@ -42,29 +48,20 @@
      * @return  bool
      */
     public function hasNext() {
-      if (NULL !== $this->_cur) return TRUE;
-      while (NULL !== ($name= key($this->classes))) {
-        if (NULL !== ($this->_cur= $this->root->classNamed($name))) return TRUE;
-        next($this->classes);
-      }
-      return FALSE;
+      return $this->offset < sizeof($this->classes);
     }
     
     /**
      * Returns the next element in the iteration.
      *
-     * @return  mixed
+     * @return  text.doclet.ClassDoc
      * @throws  util.NoSuchElementException when there are no more elements
      */
     public function next() {
-      if (NULL === $this->_cur) {
+      if ($this->offset >= sizeof($this->classes)) {
         throw new NoSuchElementException('No more elements');
       }
-      $return= $this->_cur;
-      next($this->classes);
-      $this->_cur= NULL;
-      return $return;
+      return $this->root->classNamed($this->classes[$this->offset++]);
     }
-
   } 
 ?>
