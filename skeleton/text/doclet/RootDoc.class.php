@@ -54,8 +54,17 @@
    */
   class RootDoc extends Object {
     public
-      $classes = NULL,
-      $options = array();
+      $classes   = NULL,
+      $options   = array(),
+      $classpath = array();
+    
+    /**
+     * Constructor
+     *
+     */
+    public function __construct() {
+      $this->classpath= xp::registry('classpath');
+    }
     
     /**
      * Start a doclet
@@ -65,7 +74,7 @@
      * @return  bool
      * @throws  lang.XPException in case doclet setup fails
      */
-    public static function start($doclet, $params) {
+    public static function start(Doclet $doclet, ParamString $params) {
       $classes= array();
       $root= new self();
       
@@ -125,7 +134,7 @@
      */
     public function findPackage($package) {
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $package).DIRECTORY_SEPARATOR.'package-info.xp';
-      foreach (xp::registry('classpath') as $dir) {
+      foreach ($this->classpath as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return $dir.DIRECTORY_SEPARATOR.$filename;
       }
@@ -140,7 +149,7 @@
      */
     public function findClass($classname) {
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $classname).'.class.php';
-      foreach (xp::registry('classpath') as $dir) {
+      foreach ($this->classpath as $dir) {
         if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
         return $dir.DIRECTORY_SEPARATOR.$filename;
       }
@@ -162,10 +171,11 @@
       }
 
       // Nothing found!
-      if (!$lookup && !$lookup= xp::nameOf($name)) throw(new IllegalStateException(sprintf(
-        'Could not find class %s',
-        xp::stringOf($name)
-      )));
+      if (!$lookup && !$lookup= xp::nameOf($name)) throw new IllegalStateException(sprintf(
+        'Could not find class %s in %s',
+        xp::stringOf($name),
+        xp::stringOf($this->classpath)
+      ));
       
       return $lookup;
     }
@@ -259,7 +269,11 @@
 
       // Find class
       if (!($filename= $this->findClass($classname))) {
-        throw new IllegalArgumentException('Could not find '.xp::stringOf($classname));
+        throw new IllegalArgumentException(sprintf(
+          'Could not find %s in %s',
+          xp::stringOf($classname),
+          xp::stringOf($this->classpath)
+        ));
       }
       
       // Tokenize contents
@@ -274,12 +288,6 @@
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           $t= $tokens[$i];
           if (is_array($t) && isset($map[$t[1]])) $t[0]= $map[$t[1]];
-
-          // if (!is_array($t)) {
-          //   printf("[ %-20s::%-30s ] %s\n", $state, 'T_NONE', rtrim($t));
-          // } else {
-          //   printf("[ %-20s::%-30s ] %s\n", $state, token_name($t[0]), rtrim($t[1]));
-          // }
 
           switch ($state.$t[0]) {
             case ST_INITIAL.T_DOC_COMMENT:
