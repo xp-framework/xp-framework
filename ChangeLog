@@ -75,6 +75,12 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added usage to the doclet command.
+  (friebe)
+- Added support for package names as arguments to doclets, where lang.*
+  will expand to all classes inside the lang package, and lang.** to all
+  classes inside lang and all subpackages
+  (friebe)
 - Changed text.doclet.TagletManager to process test tags via specialized 
   taglet
   (friebe)
