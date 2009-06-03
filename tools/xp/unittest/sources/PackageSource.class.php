@@ -27,6 +27,13 @@
       $this->recursive= $recursive;
     }
     
+    /**
+     * Returns a list of all classes inside a given package
+     *
+     * @param   lang.reflect.Package 
+     * @param   bool recursive whether to include subpackages
+     * @return  lang.XPClass[]
+     */
     protected static function testClassesIn(Package $package, $recursive) {
       $r= array();
       foreach ($package->getClasses() as $class) {
@@ -46,7 +53,7 @@
     /**
      * Get all test Packagees
      *
-     * @return  util.collections.HashTable<lang.XPPackage, lang.types.ArrayList>
+     * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
      */
     public function testClasses() {
       $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
