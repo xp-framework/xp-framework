@@ -127,6 +127,21 @@
       $this->assertEquals($this->rootDoc->classNamed('lang.Type'), $it->next());
       $this->assertFalse($it->hasNext());
     }
+
+    /**
+     * Returns all classes found by iterating the given iterator
+     *
+     * @param   text.doclet.ClassIterator it
+     * @return  string[] names sorted alphabetically
+     */
+    protected function allClasses(ClassIterator $it) {
+      $r= array();
+      while ($it->hasNext()) {
+        $r[]= $it->next()->qualifiedName();
+      }
+      sort($r);
+      return $r;
+    }
     
     /**
      * Test package syntax ".*"
@@ -134,13 +149,16 @@
      */
     #[@test]
     public function inPackage() {
-      $it= new ClassIterator(array('lang.*'), $this->rootDoc);
-      $count= 0;
-      while ($it->hasNext()) {
-        $this->assertEquals('lang', $it->next()->containingPackage()->name());
-        $count++;
-      }
-      $this->assertNotEquals(0, $count);
+      $this->assertEquals(
+        array(
+          'net.xp_framework.unittest.text.doclet.classes.A',
+          'net.xp_framework.unittest.text.doclet.classes.B'
+        ), 
+        $this->allClasses(new ClassIterator(
+          array('net.xp_framework.unittest.text.doclet.classes.*'), 
+          $this->rootDoc
+        ))
+      );
     }
 
     /**
@@ -149,18 +167,60 @@
      */
     #[@test]
     public function inPackages() {
-      $it= new ClassIterator(array('lang.**'), $this->rootDoc);
-      $count= 0;
-      $lang= $this->rootDoc->packageNamed('lang');
-      while ($it->hasNext()) {
-        $package= $it->next()->containingPackage();
-        $this->assertTrue(
-          $lang->equals($package) || $lang->contains($package), 
-          xp::stringOf($package).' not a subpackage of '.xp::stringOf($lang)
-        );
-        $count++;
-      }
-      $this->assertNotEquals(0, $count);
+      $this->assertEquals(
+        array(
+          'net.xp_framework.unittest.text.doclet.classes.A',
+          'net.xp_framework.unittest.text.doclet.classes.B',
+          'net.xp_framework.unittest.text.doclet.classes.sub.C',
+          'net.xp_framework.unittest.text.doclet.classes.sub.D'
+        ), 
+        $this->allClasses(new ClassIterator(
+          array('net.xp_framework.unittest.text.doclet.classes.**'), 
+          $this->rootDoc
+        ))
+      );
+    }
+
+    /**
+     * Test package syntax ".*" mixed with class names
+     *
+     */
+    #[@test]
+    public function packageAndClassesMixed() {
+      $this->assertEquals(
+        array(
+          'net.xp_framework.unittest.text.doclet.classes.A',
+          'net.xp_framework.unittest.text.doclet.classes.B',
+          'util.Date',
+          'util.TimeZone'
+        ), 
+        $this->allClasses(new ClassIterator(
+          array('util.Date', 'net.xp_framework.unittest.text.doclet.classes.*', 'util.TimeZone'), 
+          $this->rootDoc
+        ))
+      );
+    }
+
+    /**
+     * Test package syntax ".**" mixed with class names
+     *
+     */
+    #[@test]
+    public function packagesAndClassesMixed() {
+      $this->assertEquals(
+        array(
+          'net.xp_framework.unittest.text.doclet.classes.A',
+          'net.xp_framework.unittest.text.doclet.classes.B',
+          'net.xp_framework.unittest.text.doclet.classes.sub.C',
+          'net.xp_framework.unittest.text.doclet.classes.sub.D',
+          'util.Date',
+          'util.TimeZone'
+        ), 
+        $this->allClasses(new ClassIterator(
+          array('util.Date', 'net.xp_framework.unittest.text.doclet.classes.**', 'util.TimeZone'), 
+          $this->rootDoc
+        ))
+      );
     }
   }
 ?>
