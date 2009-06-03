@@ -18,7 +18,7 @@
    * one may use a construct as follows:
    *
    * <code>
-   *   uses (
+   *   uses(
    *     'peer.mail.MultiPart',
    *     'peer.mail.MimeMessage',
    *     'peer.mail.InternetAddress',
@@ -27,18 +27,18 @@
    *     'util.MimeType'
    *   );
    * 
-   *   $message= &new MimeMessage();
+   *   $message= new MimeMessage();
    *   $message->setFrom(new InternetAddress('alex.kiesel@xp-framework.net'));
    *   $message->addRecipient(TO, new InternetAddress('timm.friebe@xp-framework.net'));
    * 
    *   $message->setSubject('HTML Mail');
    * 
    *   // MultiPart containing the text/plain and text/html parts
-   *   $mime= &new MultiPart();
+   *   $mime= new MultiPart();
    * 
    *   // Create the image
    *   $imageUrl= 'attention.gif';
-   *   $image= &new MimePart();
+   *   $image= new MimePart();
    *   $image->setDisposition(MIME_DISPOSITION_INLINE);
    *   $image->setEncoding(MIME_ENC_BASE64);
    *   $image->setFilename(NULL);
@@ -51,14 +51,14 @@
    *   $image->generateContentId();
    * 
    *   // Create text/plain part
-   *   $text= &new MimePart(
+   *   $text= new MimePart(
    *     'Your mail client is not able to display html messages.', 
    *     'text/plain'
    *   );
    *   $text->setDisposition(MIME_DISPOSITION_INLINE);
    * 
    *   // Create text/html part (images must be referred to by their content-id)
-   *   $html= &new MimePart(sprintf (
+   *   $html= new MimePart(sprintf(
    *       '<html><body><h1>You see html.</h1><img src="%s" border="0"/></body></html>',
    *       'cid:'.$image->getContentId()
    *     ),
@@ -318,10 +318,10 @@
     }
 
     /**
-     * Sets message body
+     * Sets message body. Adds a text/plain mimepart.
      *
-     * @param string str Message Text ('text/plain')
-     * @return peer.mail.MimePart Body Part
+     * @param   string str Message Text
+     * @return  peer.mail.MimePart
      */
     public function setBody($str) {
       return $this->addPart(new MimePart($str, 'text/plain'));

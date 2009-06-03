@@ -15,7 +15,7 @@
    * <code>
    *   uses('org.bugzilla.gateway.BugMessage', 'peer.mail.transport.MailTransport');
    *
-   *   $m= &new BugMessage(); {
+   *   $m= new BugMessage(); {
    *     $m->setFrom(new InternetAddress('friebe@example.com', 'Timm Friebe'));
    *     $m->addRecipient(TO, new InternetAddress('bugzilla@example.com'));
    *     $m->setSubject('Bug');
@@ -26,12 +26,12 @@
    *     $m->setBody('This seems to be entirely broken. It shows a MySQL error.');
    *   }
    *
-   *   $t= &new MailTransport();
-   *   try(); {
+   *   $t= new MailTransport();
+   *   try {
    *     $t->connect();
    *     $t->send($m);
    *     $t->close();
-   *   } if (catch('TransportException', $e)) {
+   *   } catch (TransportException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -145,11 +145,11 @@
     /**
      * Sets message body
      *
-     * @param string str Message Text ('text/plain')
-     * @return peer.mail.MimePart Body Part
+     * @param   string str Message Text ('text/plain')
+     * @return  peer.mail.MimePart Body Part
      */
     public function setBody($str) {
-      return parent::setBody($this->getTokens() . $str);
+      return parent::setBody($this->getTokens().$str);
     }
   }
 ?>

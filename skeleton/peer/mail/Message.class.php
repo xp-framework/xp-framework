@@ -44,7 +44,7 @@
    *
    * Usage [creating a new message]:
    * <code>
-   *   $m= &new Message();
+   *   $m= new Message();
    *   $m->setFrom(new InternetAddress('friebe@example.com', 'Timm Friebe'));
    *   $m->addRecipient(TO, new InternetAddress('foo@bar.baz', 'Foo Bar'));
    *   $m->addRecipient(CC, new InternetAddress('timm@foo.bar', 'Timm Friebe'));
