@@ -27,15 +27,7 @@
      * @param   text.doclet.RootDoc root
      */
     public function __construct($classes= array(), RootDoc $root= NULL) {
-      foreach ($classes as $name) {
-        if (strstr($name, '.**')) {
-          $this->classes= array_merge($this->classes, $root->classesIn(substr($name, 0, -3), TRUE));
-        } else if (strstr($name, '.*')) {
-          $this->classes= array_merge($this->classes, $root->classesIn(substr($name, 0, -2), FALSE));
-        } else {
-          $this->classes[]= $name;
-        }
-      }
+      $this->classes= $classes;
       $this->offset= 0;
       $this->root= $root;
     }
@@ -69,7 +61,17 @@
       if ($this->offset >= sizeof($this->classes)) {
         throw new NoSuchElementException('No more elements');
       }
-      return $this->root->classNamed($this->classes[$this->offset++]);
+      $name= $this->classes[$this->offset];
+      if ($p= strstr($name, '.*')) {
+        $this->classes= array_merge(
+          array_slice($this->classes, 0, $this->offset),
+          $this->root->classesIn(substr($name, 0, -strlen($p)), '.**' == $p),
+          array_slice($this->classes, $this->offset+ 1)
+        );
+        $name= $this->classes[$this->offset];
+      }
+      $this->offset++;
+      return $this->root->classNamed($name);
     }
   } 
 ?>
