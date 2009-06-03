@@ -135,8 +135,7 @@
     public function findPackage($package) {
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $package).DIRECTORY_SEPARATOR.'package-info.xp';
       foreach ($this->classpath as $dir) {
-        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
-        return $dir.DIRECTORY_SEPARATOR.$filename;
+        if (file_exists($q= $dir.DIRECTORY_SEPARATOR.$filename)) return $q;
       }
       return NULL;
     }
@@ -150,10 +149,34 @@
     public function findClass($classname) {
       $filename= str_replace('.', DIRECTORY_SEPARATOR, $classname).'.class.php';
       foreach ($this->classpath as $dir) {
-        if (!file_exists($dir.DIRECTORY_SEPARATOR.$filename)) continue;
-        return $dir.DIRECTORY_SEPARATOR.$filename;
+        if (file_exists($q= $dir.DIRECTORY_SEPARATOR.$filename)) return $q;
       }
       return NULL;
+    }
+
+    /**
+     * Gets all classes by a given package
+     *
+     * @param   string package
+     * @param   bool recursive
+     * @return  string[] fully qualified class names
+     */
+    public function classesIn($package, $recursive) {
+      $r= array();
+      $pdir= str_replace('.', DIRECTORY_SEPARATOR, $package);
+      foreach ($this->classpath as $dir) {
+        if (!is_dir($q= $dir.DIRECTORY_SEPARATOR.$pdir)) continue;
+        $d= opendir($q);
+        while ($e= readdir($d)) {
+          if (strstr($e, xp::CLASS_FILE_EXT)) {
+            $r[]= $package.'.'.substr($e, 0, -strlen(xp::CLASS_FILE_EXT));
+          } else if ($recursive && '.' !== $e{0} && is_dir($q.DIRECTORY_SEPARATOR.$e)) {
+            $r= array_merge($r, $this->classesIn($package.'.'.$e, TRUE));
+          }
+        }
+        closedir($d);
+      }
+      return $r;
     }
 
     /**

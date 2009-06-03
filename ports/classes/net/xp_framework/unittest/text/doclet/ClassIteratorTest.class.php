@@ -127,5 +127,40 @@
       $this->assertEquals($this->rootDoc->classNamed('lang.Type'), $it->next());
       $this->assertFalse($it->hasNext());
     }
+    
+    /**
+     * Test package syntax ".*"
+     *
+     */
+    #[@test]
+    public function inPackage() {
+      $it= new ClassIterator(array('lang.*'), $this->rootDoc);
+      $count= 0;
+      while ($it->hasNext()) {
+        $this->assertEquals('lang', $it->next()->containingPackage()->name());
+        $count++;
+      }
+      $this->assertNotEquals(0, $count);
+    }
+
+    /**
+     * Test package syntax ".**"
+     *
+     */
+    #[@test]
+    public function inPackages() {
+      $it= new ClassIterator(array('lang.**'), $this->rootDoc);
+      $count= 0;
+      $lang= $this->rootDoc->packageNamed('lang');
+      while ($it->hasNext()) {
+        $package= $it->next()->containingPackage();
+        $this->assertTrue(
+          $lang->equals($package) || $lang->contains($package), 
+          xp::stringOf($package).' not a subpackage of '.xp::stringOf($lang)
+        );
+        $count++;
+      }
+      $this->assertNotEquals(0, $count);
+    }
   }
 ?>

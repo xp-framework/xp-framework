@@ -27,7 +27,15 @@
      * @param   text.doclet.RootDoc root
      */
     public function __construct($classes= array(), RootDoc $root= NULL) {
-      $this->classes= $classes;
+      foreach ($classes as $name) {
+        if (strstr($name, '.**')) {
+          $this->classes= array_merge($this->classes, $root->classesIn(substr($name, 0, -3), TRUE));
+        } else if (strstr($name, '.*')) {
+          $this->classes= array_merge($this->classes, $root->classesIn(substr($name, 0, -2), FALSE));
+        } else {
+          $this->classes[]= $name;
+        }
+      }
       $this->offset= 0;
       $this->root= $root;
     }
