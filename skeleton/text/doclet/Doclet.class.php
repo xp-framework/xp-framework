@@ -43,9 +43,7 @@
      * @throws  lang.XPException in case the iterator cannot be created.
      */ 
     public function iteratorFor($root, $classes) {
-      $iterator= new ClassIterator($classes);
-      $iterator->root= $root;
-      return $iterator;
+      return new ClassIterator($classes, $root);
     }
     
     /**
