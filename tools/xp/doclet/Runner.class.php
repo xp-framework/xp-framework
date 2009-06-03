@@ -16,6 +16,10 @@
    * <pre>
    *   doclet class [options] name [name [name...]]
    * </pre>
+   *
+   * Class is the fully qualified class name of a doclet class. Options 
+   * depend on the doclet implementation. 
+   *
    * Names can be one or more of:
    * <ul>
    *   <li>{package.name}.*: All classes inside a given package</li>
@@ -43,12 +47,14 @@
     }
 
     /**
-     * Displays usage and exits
+     * Displays usage
      *
+     * @param   lang.XPClass class
+     * @return  int
      */
-    protected static function usage() {
-      Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      exit(1);
+    protected static function usage(XPClass $class) {
+      Console::$err->writeLine(self::textOf($class->getComment()));
+      return 1;
     }
   
     /**
@@ -56,13 +62,18 @@
      *
      */
     public static function main(array $args) {
-      if (!$args) self::usage();
+    
+      // Show command usage if invoked without arguments
+      if (!$args) exit(self::usage(XPClass::forName(xp::nameOf(__CLASS__))));
 
       $class= XPClass::forName($args[0]);
       if (!$class->isSubclassOf('text.doclet.Doclet')) {
         Console::$err->writeLine('*** ', $class, ' is not a doclet');
-        return -2;
+        exit(2);
       }
+      
+      // Show doclet usage if the command line contains "-?" (at any point).
+      if (in_array('-?', $args)) exit(self::usage($class));
 
       RootDoc::start($class->newInstance(), new ParamString($args));
     }
