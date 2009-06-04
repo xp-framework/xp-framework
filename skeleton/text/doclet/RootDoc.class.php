@@ -10,7 +10,9 @@
     'text.doclet.ClassDoc',
     'text.doclet.FieldDoc',
     'text.doclet.PackageDoc',
-    'text.doclet.MethodDoc'
+    'text.doclet.MethodDoc',
+    'lang.FileSystemClassLoader',
+    'lang.archive.ArchiveClassLoader'
   );
   
   define('OPTION_ONLY', 0x0000);
@@ -63,8 +65,38 @@
      *
      */
     public function __construct() {
-      $this->classpath= xp::registry('classpath');
+      $this->setClassPath(xp::$registry['classpath']);
     }
+    
+    /**
+     * Sets class path
+     *
+     * @param   string[] paths
+     */
+    public function setClassPath(array $paths) {
+      $this->classpath= array();
+      foreach ($paths as $element) {
+        $this->addClassPath($element);
+      }
+    }
+    
+    /**
+     * Adds a class path element
+     *
+     * @param   string element
+     */
+    public function addClassPath($element) {
+      $resolved= realpath($element);
+      if (is_dir($resolved)) {
+        $l= FileSystemClassLoader::instanceFor($resolved, FALSE);
+      } else if (is_file($resolved)) {
+        $l= ArchiveClassLoader::instanceFor($resolved, FALSE);
+      } else {
+        throw new IllegalArgumentException('Classpath element ['.$element.'] not found');
+      }
+      $this->classpath[$l->hashCode()]= $l;
+    }
+    
     
     /**
      * Start a doclet
@@ -127,15 +159,27 @@
     }
 
     /**
-     * Finds a package info file by a given class name
+     * Finds a package by a given name
      *
      * @param   string package
-     * @return  string filename
+     * @return  lang.IClassLoader the classloader providing the package
      */
     public function findPackage($package) {
-      $filename= str_replace('.', DIRECTORY_SEPARATOR, $package).DIRECTORY_SEPARATOR.'package-info.xp';
-      foreach ($this->classpath as $dir) {
-        if (file_exists($q= $dir.DIRECTORY_SEPARATOR.$filename)) return $q;
+      foreach ($this->classpath as $loader) {
+        if ($loader->providesPackage($package)) return $loader;
+      }
+      return NULL;
+    }
+
+    /**
+     * Finds a resource file by a given name
+     *
+     * @param   string name
+     * @return  lang.IClassLoader the classloader providing the resource
+     */
+    public function findResource($name) {
+      foreach ($this->classpath as $loader) {
+        if ($loader->providesResource($name)) return $loader;
       }
       return NULL;
     }
@@ -144,12 +188,11 @@
      * Finds a class by a given class name
      *
      * @param   string classname
-     * @return  string filename
+     * @return  lang.IClassLoader the classloader providing the class
      */
     public function findClass($classname) {
-      $filename= str_replace('.', DIRECTORY_SEPARATOR, $classname).'.class.php';
-      foreach ($this->classpath as $dir) {
-        if (file_exists($q= $dir.DIRECTORY_SEPARATOR.$filename)) return $q;
+      foreach ($this->classpath as $loader) {
+        if ($loader->providesClass($classname)) return $loader;
       }
       return NULL;
     }
@@ -163,18 +206,15 @@
      */
     public function classesIn($package, $recursive) {
       $r= array();
-      $pdir= str_replace('.', DIRECTORY_SEPARATOR, $package);
-      foreach ($this->classpath as $dir) {
-        if (!is_dir($q= $dir.DIRECTORY_SEPARATOR.$pdir)) continue;
-        $d= opendir($q);
-        while ($e= readdir($d)) {
-          if (strstr($e, xp::CLASS_FILE_EXT)) {
-            $r[]= $package.'.'.substr($e, 0, -strlen(xp::CLASS_FILE_EXT));
-          } else if ($recursive && '.' !== $e{0} && is_dir($q.DIRECTORY_SEPARATOR.$e)) {
-            $r= array_merge($r, $this->classesIn($package.'.'.$e, TRUE));
+      $l= -strlen(xp::CLASS_FILE_EXT);
+      foreach ($this->classpath as $loader) {
+        foreach ($loader->packageContents($package) as $name) {
+          if (xp::CLASS_FILE_EXT === substr($name, $l)) {
+            $r[]= $package.'.'.substr($name, 0, $l);
+          } else if ($recursive && '/' === substr($name, -1)) {
+            $r= array_merge($r, $this->classesIn($package.'.'.substr($name, 0, -1), $recursive));
           }
         }
-        closedir($d);
       }
       return $r;
     }
@@ -204,10 +244,11 @@
     }
 
     /**
-     * Parses a package descroption file and returns a packagedoc element
+     * Parses a package description file and returns a packagedoc element
      *
-     * @param   
-     * @return  
+     * @param   string package
+     * @return  text.doclet.PackageDoc
+     * @throws  lang.IllegalArgumentException if package could not be found or parsed
      */
     public function packageNamed($package) {
       static $cache= array();
@@ -215,13 +256,23 @@
 
       if (isset($cache[$package])) return $cache[$package];
 
+      // Find package
+      if (!($loader= $this->findPackage($package))) {
+        throw new IllegalArgumentException(sprintf(
+          'Could not find %s in %s',
+          xp::stringOf($package),
+          xp::stringOf($this->classpath)
+        ));
+      }
+
       with ($doc= new PackageDoc($package), $doc->setRoot($this)); {
 
         // Find package-info file. If we cannot find one, ignore it!
-        if ($filename= $this->findPackage($package)) {
+        $packageInfo= strtr($package, '.', '/').'/package-info.xp';
+        if ($loader= $this->findResource($packageInfo)) {
 
           // Tokenize contents
-          if (!($c= file_get_contents($filename))) {
+          if (!($c= $loader->getResource($packageInfo))) {
             throw new IllegalArgumentException('Could not parse "'.$filename.'"');
           }
 
@@ -291,7 +342,7 @@
       if ('php.' == substr($classname, 0, 4)) return NULL;
 
       // Find class
-      if (!($filename= $this->findClass($classname))) {
+      if (!($loader= $this->findClass($classname))) {
         throw new IllegalArgumentException(sprintf(
           'Could not find %s in %s',
           xp::stringOf($classname),
@@ -300,8 +351,8 @@
       }
       
       // Tokenize contents
-      if (!($tokens= token_get_all(file_get_contents($filename)))) {
-        throw new IllegalArgumentException('Could not parse "'.$filename.'"');
+      if (!($tokens= token_get_all($loader->loadClassBytes($classname)))) {
+        throw new IllegalArgumentException('Could not parse "'.$classname.'"');
       }
 
       with ($doc= new ClassDoc(), $doc->setRoot($this)); {
