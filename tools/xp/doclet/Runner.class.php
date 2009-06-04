@@ -71,11 +71,22 @@
         Console::$err->writeLine('*** ', $class, ' is not a doclet');
         exit(2);
       }
+      $doclet= $class->newInstance();
       
       // Show doclet usage if the command line contains "-?" (at any point).
-      if (in_array('-?', $args)) exit(self::usage($class));
+      if (in_array('-?', $args)) {
+        self::usage($class);
+        if ($valid= $doclet->validOptions()) {
+          Console::$err->writeLine();
+          Console::$err->writeLine('Options:');
+          foreach ($valid as $name => $value) {
+            Console::$err->writeLine('  * --', $name, OPTION_ONLY == $value ? '' : '=<value>');
+          }
+        }
+        exit(3);
+      }
 
-      RootDoc::start($class->newInstance(), new ParamString($args));
+      RootDoc::start($doclet, new ParamString($args));
     }
   }
 ?>
