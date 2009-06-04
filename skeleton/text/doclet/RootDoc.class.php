@@ -58,43 +58,43 @@
     public
       $classes   = NULL,
       $options   = array(),
-      $classpath = array();
+      $sourcepath = array();
     
     /**
      * Constructor
      *
      */
     public function __construct() {
-      $this->setClassPath(xp::$registry['classpath']);
+      $this->setSourcePath(xp::$registry['classpath']);
     }
     
     /**
-     * Sets class path
+     * Sets source path
      *
      * @param   string[] paths
      */
-    public function setClassPath(array $paths) {
-      $this->classpath= array();
+    public function setSourcePath(array $paths) {
+      $this->sourcepath= array();
       foreach ($paths as $element) {
-        $this->addClassPath($element);
+        $this->addSourcePath($element);
       }
     }
     
     /**
-     * Adds a class path element
+     * Adds a source path element
      *
      * @param   string element
      */
-    public function addClassPath($element) {
+    public function addSourcePath($element) {
       $resolved= realpath($element);
       if (is_dir($resolved)) {
         $l= FileSystemClassLoader::instanceFor($resolved, FALSE);
       } else if (is_file($resolved)) {
         $l= ArchiveClassLoader::instanceFor($resolved, FALSE);
       } else {
-        throw new IllegalArgumentException('Classpath element ['.$element.'] not found');
+        throw new IllegalArgumentException('sourcepath element ['.$element.'] not found');
       }
-      $this->classpath[$l->hashCode()]= $l;
+      $this->sourcepath[$l->hashCode()]= $l;
     }
     
     
@@ -165,7 +165,7 @@
      * @return  lang.IClassLoader the classloader providing the package
      */
     public function findPackage($package) {
-      foreach ($this->classpath as $loader) {
+      foreach ($this->sourcepath as $loader) {
         if ($loader->providesPackage($package)) return $loader;
       }
       return NULL;
@@ -178,7 +178,7 @@
      * @return  lang.IClassLoader the classloader providing the resource
      */
     public function findResource($name) {
-      foreach ($this->classpath as $loader) {
+      foreach ($this->sourcepath as $loader) {
         if ($loader->providesResource($name)) return $loader;
       }
       return NULL;
@@ -191,7 +191,7 @@
      * @return  lang.IClassLoader the classloader providing the class
      */
     public function findClass($classname) {
-      foreach ($this->classpath as $loader) {
+      foreach ($this->sourcepath as $loader) {
         if ($loader->providesClass($classname)) return $loader;
       }
       return NULL;
@@ -207,7 +207,7 @@
     public function classesIn($package, $recursive) {
       $r= array();
       $l= -strlen(xp::CLASS_FILE_EXT);
-      foreach ($this->classpath as $loader) {
+      foreach ($this->sourcepath as $loader) {
         foreach ($loader->packageContents($package) as $name) {
           if (xp::CLASS_FILE_EXT === substr($name, $l)) {
             $r[]= $package.'.'.substr($name, 0, $l);
@@ -237,7 +237,7 @@
       if (!$lookup && !$lookup= xp::nameOf($name)) throw new IllegalStateException(sprintf(
         'Could not find class %s in %s',
         xp::stringOf($name),
-        xp::stringOf($this->classpath)
+        xp::stringOf($this->sourcepath)
       ));
       
       return $lookup;
@@ -261,7 +261,7 @@
         throw new IllegalArgumentException(sprintf(
           'Could not find %s in %s',
           xp::stringOf($package),
-          xp::stringOf($this->classpath)
+          xp::stringOf($this->sourcepath)
         ));
       }
 
@@ -346,7 +346,7 @@
         throw new IllegalArgumentException(sprintf(
           'Could not find %s in %s',
           xp::stringOf($classname),
-          xp::stringOf($this->classpath)
+          xp::stringOf($this->sourcepath)
         ));
       }
       
