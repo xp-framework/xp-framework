@@ -35,7 +35,7 @@
      */
     #[@test]
     public function stringArgument() {
-      $this->assertEquals('"Hello"', xp::stringOf($string= 'Hello'));
+      $this->assertEquals('"Hello"', xp::stringOf('Hello'));
     }
 
     /**
@@ -44,8 +44,8 @@
      */
     #[@test]
     public function booleanArgument() {
-      $this->assertEquals('true', xp::stringOf($bool= TRUE));
-      $this->assertEquals('false', xp::stringOf($bool= FALSE));
+      $this->assertEquals('true', xp::stringOf(TRUE));
+      $this->assertEquals('false', xp::stringOf(FALSE));
     }
 
     /**
@@ -54,7 +54,7 @@
      */
     #[@test]
     public function nullArgument() {
-      $this->assertEquals('null', xp::stringOf($null= NULL));
+      $this->assertEquals('null', xp::stringOf(NULL));
     }
 
     /**
@@ -74,10 +74,10 @@
      */
     #[@test]
     public function numericArgument() {
-      $this->assertEquals('1', xp::stringOf($int= 1));
-      $this->assertEquals('-1', xp::stringOf($negativeInt= -1));
-      $this->assertEquals('1.5', xp::stringOf($float= 1.5));
-      $this->assertEquals('-1.5', xp::stringOf($negativeFloat= -1.5));
+      $this->assertEquals('1', xp::stringOf(1));
+      $this->assertEquals('-1', xp::stringOf(-1));
+      $this->assertEquals('1.5', xp::stringOf(1.5));
+      $this->assertEquals('-1.5', xp::stringOf(-1.5));
     }
 
     /**
@@ -97,7 +97,7 @@
     public function simpleArrayArgument() {
       $this->assertEquals(
         "[\n  0 => 1\n  1 => 2\n  2 => 3\n]", 
-        xp::stringOf($a= array(1, 2, 3))
+        xp::stringOf(array(1, 2, 3))
       );
     }
 
@@ -109,7 +109,7 @@
     public function arrayOfArraysArgument() {
       $this->assertEquals(
         "[\n  0 => [\n    0 => 1\n    1 => 2\n    2 => 3\n  ]\n]", 
-        xp::stringOf($a= array(array(1, 2, 3)))
+        xp::stringOf(array(array(1, 2, 3)))
       );
     }
 
@@ -121,7 +121,7 @@
     public function hashmapArgument() {
       $this->assertEquals(
         "[\n  foo => \"bar\"\n  bar => 2\n  baz => TestString(6) { String }\n]", 
-        xp::stringOf($a= array(
+        xp::stringOf(array(
           'foo' => 'bar', 
           'bar' => 2, 
           'baz' => $this->testStringInstance()
