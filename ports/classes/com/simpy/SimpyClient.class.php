@@ -14,18 +14,12 @@
    *
    * Example:
    * <code>
-   *   $s= &new SimpyClient('username', 'password');
-   *   try(); {
-   *     $links= &$s->getLinks();
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     exit;
-   *   }
-   *   var_dump($links);
+   *   $s= new SimpyClient('username', 'password');
+   *   $links= $s->getLinks();
    * </code>
    *
-   * @purpose Provide an API to Simpy
-   * @see http://www.simpy.com/simpy/service/api/rest/
+   * @purpose  Provide an API to Simpy
+   * @see      http://www.simpy.com/simpy/service/api/rest/
    */
   class SimpyClient extends Object {
     public
@@ -38,10 +32,7 @@
      * @param   string username from simpy
      * @param   string password from simpy
      */
-    public function __construct(
-      $username,
-      $password
-    ) {
+    public function __construct($username, $password) {
       $this->username= $username;
       $this->password= $password;
     }
@@ -54,17 +45,11 @@
      * @return  string
      */
     protected function _doRequest($url, $param= array()) {
-      try {
-        $buf= HttpUtil::get(
-          new HttpConnection($url),
-          $param,
-          array(new BasicAuthorization($this->username, $this->password))
-        );
-      } catch (UnexpectedResponseException $e) {
-        throw($e);
-        exit(-1);
-      }
-      return $buf;    
+      return HttpUtil::get(
+        new HttpConnection($url),
+        $param,
+        array(new BasicAuthorization($this->username, $this->password))
+      );
     }
 
     /**
@@ -82,9 +67,9 @@
      * Get list of users links and counts
      *
      * @param   string q query-string for notes
-     * @param   &util.Date date date only show links on this date
-     * @param   &util.Date afterDate show links after this date
-     * @param   &util.Date beforeDate show links before this date
+     * @param   util.Date date date only show links on this date
+     * @param   util.Date afterDate show links after this date
+     * @param   util.Date beforeDate show links before this date
      * @return  string
      */  
     public function getLinks($q= '', $date, $afterDate, $beforeDate) {
@@ -121,6 +106,5 @@
         array('q' => $q)
       );
     }
-  
   }
 ?>

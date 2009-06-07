@@ -20,15 +20,15 @@
    *
    * Example [creating a new UUID]:
    * <code>
-   *   $uuid= &UUID::create();
+   *   $uuid= UUID::create();
    *   var_dump($uuid->toString());
    * </code>
    *
    * Example [get a UUID from a string]:
    * <code>
-   *   try(); {
-   *     $uuid= &UUID::fromString($uuidstr);
-   *   } if (catch('FormatException', $e)) {
+   *   try {
+   *     $uuid= UUID::fromString($uuidstr);
+   *   } catch (FormatException $e) {
    *     $e->printStackTrace();
    *     exit();
    *   }
@@ -50,7 +50,7 @@
     /**
      * Create a new UUID
      *
-     * @return  &org.ietf.UUID
+     * @return  org.ietf.UUID
      * @see     http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt section 4.1.4
      */
     public static function create() {
@@ -86,7 +86,7 @@
      * Create a UUID from a string
      *
      * @param   string str
-     * @return  &org.ietf.UUID
+     * @return  org.ietf.UUID
      * @throws  lang.FormatException in case str is not a valid UUID string
      */
     public static function fromString($str) {
@@ -107,7 +107,7 @@
         $uuid->node[4],
         $uuid->node[5]
       )) {
-        throw(new FormatException($str.' is not a valid UUID string'));
+        throw new FormatException($str.' is not a valid UUID string');
       }
       return $uuid;
     }

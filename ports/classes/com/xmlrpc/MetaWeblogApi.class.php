@@ -18,14 +18,8 @@
    *
    * Example:
    * <code>
-   *   $m= &new MetaWeblogApi('url', 'username', 'password');
-   *   try(); {
-   *     $links= &$m->getRecentPosts(5); // Get the 5 Recent posts
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     exit;
-   *   }
-   *   var_dump($links);
+   *   $m= new MetaWeblogApi('url', 'username', 'password');
+   *   $links= $m->getRecentPosts(5); // Get the 5 Recent posts
    * </code>
    *
    * @purpose Provide an API to Blogs with the MetaWeblog API

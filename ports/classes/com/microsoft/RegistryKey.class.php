@@ -18,12 +18,12 @@
    * <code> 
    *   uses('com.microsoft.RegistryKey');
    *   
-   *   $k= &new RegistryKey($argv[1]);
+   *   $k= new RegistryKey($argv[1]);
    *   printf('Reading key %s (exists: %d)', $argv[1], $k->exists());
    *   
-   *   try(); {
+   *   try {
    *     $value= $k->getValue();
-   *   } if (catch('RegistryException', $e)) {
+   *   } catch (RegistryException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -35,13 +35,13 @@
    * <code> 
    *   uses('com.microsoft.RegistryKey');
    *   
-   *   $k= &new RegistryKey($argv[1]);
+   *   $k= new RegistryKey($argv[1]);
    *   printf('Creating key %s and setting its value to 6100 (REG_DWORD)', $argv[1]);
    *   
-   *   try(); {
+   *   try {
    *     $k->setValue(6100, REG_DWORD);
    *     $value= $k->getValue();
-   *   } if (catch('RegistryException', $e)) {
+   *   } catch (RegistryException $e) {
    *     $e->printStackTrace();
    *     exit(-1);
    *   }
@@ -68,7 +68,6 @@
      * @param   string name e.g. HKEY_CURRENT_USER\Environment\TMP
      */    
     public function __construct($name) {
-      
       $this->name= $name;
       $this->_sh= WshShell::getInstance();
     }
@@ -102,7 +101,7 @@
      */
     public function delete() {
       if (NULL === $this->_sh->regDelete($this->name)) {
-        throw(new RegistryException('Could not delete key "'.$this->name.'"'));        
+        throw new RegistryException('Could not delete key "'.$this->name.'"');
       }
       return TRUE;
     }
@@ -115,7 +114,7 @@
      */
     public function getValue() {
       if (NULL === ($v= $this->_sh->regRead($this->name))) {
-        throw(new RegistryException('Could not read key "'.$this->name.'"'));  
+        throw new RegistryException('Could not read key "'.$this->name.'"');
       }
       return $v;
     }
@@ -130,7 +129,7 @@
      */
     public function setValue($val, $type= REG_SZ) {
       if (NULL === $this->_sh->regWrite($this->name, $val, $type)) {
-        throw(new RegistryException('Could not write key "'.$this->name.'"'));        
+        throw new RegistryException('Could not write key "'.$this->name.'"');
       }
       return TRUE;
     }

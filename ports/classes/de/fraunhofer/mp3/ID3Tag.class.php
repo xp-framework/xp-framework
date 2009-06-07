@@ -17,14 +17,9 @@
    *
    * Usage:
    * <code>
-   *   // [...]
-   *   $mp3= &new MP3File(new File($file));
-   *   try(); {
-   *     $id3= &$mp3->getID3Tag();
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
+   *   $mp3= new MP3File(new File($file));
+   *
+   *   $id3= $mp3->getID3Tag();
    *   echo $id3->toString();
    * </code>
    *
@@ -58,14 +53,14 @@
       
       return sprintf(
         "%s {\n".
-        "\t[version] %s\n".
-        "\t[tag    ] %s\n".
-        "\t[name   ] %s\n".
-        "\t[artist ] %s\n".
-        "\t[album  ] %s\n".
-        "\t[year   ] %s\n".
-        "\t[comment] %s\n".
-        "\t[genre  ] %d {%s}\n".
+        "  [version] %s\n".
+        "  [tag    ] %s\n".
+        "  [name   ] %s\n".
+        "  [artist ] %s\n".
+        "  [album  ] %s\n".
+        "  [year   ] %s\n".
+        "  [comment] %s\n".
+        "  [genre  ] %d {%s}\n".
         "}",
         $this->getClassName(),
         $ver[$this->version],
@@ -83,9 +78,9 @@
     /**
      * Creates an ID3 Tag from a string
      *
-     * @param   &string buf
+     * @param   string buf
      * @param   string version one of the ID3_VERSION_* constants
-     * @return  &de.fraunhofer.mp3.ID3Tag a tag
+     * @return  de.fraunhofer.mp3.ID3Tag a tag
      */
     public static function fromString($buf, $version) {
       $tag= new ID3Tag();
@@ -93,16 +88,16 @@
       switch ($version) {
         case ID3_VERSION_1:
           $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a30comment/C1genre', $buf);
-          if ('TAG' != $data['tag']) throw(new FormatException('Tag corrupt'));
+          if ('TAG' != $data['tag']) throw new FormatException('Tag corrupt');
           break;
           
         case ID3_VERSION_1_1:
           $data= unpack('a3tag/a30name/a30artist/a30album/a4year/a28comment/x1/C1track/C1genre', $buf);
-          if ('TAG' != $data['tag']) throw(new FormatException('Tag corrupt'));
+          if ('TAG' != $data['tag']) throw new FormatException('Tag corrupt');
           break;
         
         default:
-          throw(new IllegalArgumentException('Version '.$version.' not supported'));
+          throw new IllegalArgumentException('Version '.$version.' not supported');
       }
 
       // Copy information

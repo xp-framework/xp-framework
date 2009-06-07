@@ -41,7 +41,7 @@
    *
    * Usage:
    * <code>
-   *   $m= &new MessageBox('Hello world', 'Greeting', MB_OK | MB_ICONWARNING);
+   *   $m= new MessageBox('Hello world', 'Greeting', MB_OK | MB_ICONWARNING);
    *   $pressed= $m->show();
    * </code>
    *
@@ -173,7 +173,7 @@
     /**
      * Callback for buttons
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onButtonClicked($widget) {
       $this->pressed= constant('MB_'.$widget->get_name());

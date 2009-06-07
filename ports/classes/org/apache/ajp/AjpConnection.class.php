@@ -12,7 +12,7 @@
    * <code>
    *   uses('org.apache.ajp.AjpConnection');
    *   
-   *   $ajp= &new AjpConnection('ajpv12://localhost:8007/xml/static?', array(
+   *   $ajp= new AjpConnection('ajpv12://localhost:8007/xml/static?', array(
    *     'SERVER_NAME'       => 'example.com',
    *     'DOCUMENT_ROOT'     => '/home/httpd/',
    *     'PATH_INFO'         => '/',
@@ -26,13 +26,8 @@
    *     'SERVER_SIGNATURE'  => 'org.apache.ajp.AjpConnection',
    *     'SERVER_SOFTWARE'   => 'PHP'
    *   ));
-   *   try(); {
-   *     $r= &$ajp->get();
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
    *
+   *   $r= $ajp->get();
    *   var_dump($r->getHeaders());
    * </code>
    *

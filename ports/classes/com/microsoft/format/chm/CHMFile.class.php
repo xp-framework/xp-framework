@@ -32,11 +32,11 @@
    * <code>
    *   uses('com.microsoft.format.chm.CHMFile', 'io.File');
    *
-   *   $f= &new CHMFile(new File('file.chm'));
+   *   $f= new CHMFile(new File('file.chm'));
    *   try(); {
    *     $f->open();
-   *     $header= &$f->getHeader();
-   *     $dir= &$f->getDirectory();
+   *     $header= $f->getHeader();
+   *     $dir= $f->getDirectory();
    *     $f->close();
    *   } if (catch('Exception', $e)) {
    *     $e->printStackTrace();
@@ -64,11 +64,10 @@
     /**
      * Constructor
      *
-     * @param   &io.Stream stream
+     * @param   io.Stream stream
      */  
     public function __construct($stream) {
       $this->stream= $stream;
-      
     }
 
     /**
@@ -90,7 +89,7 @@
      * @param   int len
      * @return  string str
      */
-    protected function _substr($str, $p, $len) {
+    protected function _substr($str, &$p, $len) {
       $str= substr($str, ++$p, $len);
       $p+= $len;
       return $str;
@@ -170,7 +169,7 @@
     /**
      * Retrieve CHM header; extracts it if necessary
      *
-     * @return  &com.microsoft.format.chm.CHMHeader
+     * @return  com.microsoft.format.chm.CHMHeader
      * @throws  lang.FormatException if the identifier is not correct
      */
     public function getHeader() {
@@ -234,9 +233,9 @@
       }
 
       if (CHM_DIRECTORY_IDENTIFIER !== ($id= $this->stream->read(4))) {
-        throw(new FormatException(
+        throw new FormatException(
           '"'.addcslashes($id, "\0..\17").'" is not a correct identifier, expecting "ITSP"'
-        ));
+        );
       }
       
       // Create directory object

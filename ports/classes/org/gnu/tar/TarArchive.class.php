@@ -11,12 +11,12 @@
    *
    * Usage:
    * <code>
-   * $a= &new TarArchive(new File('foo.tar.gz'));
-   * $a->open(FILE_MODE_READ);
-   * $entry= &$a->getEntry();
-   * $a->close();
+   *   $a= new TarArchive(new File('foo.tar.gz'));
+   *   $a->open(FILE_MODE_READ);
+   *   $entry= $a->getEntry();
+   *   $a->close();
    *
-   * printf("Filesize of entry %s is %d bytes\n", $entry->name, $entry->size);
+   *   printf("Filesize of entry %s is %d bytes\n", $entry->name, $entry->size);
    * </code>
    *
    * @see http://www.gnu.org/software/tar/tar.html
@@ -28,40 +28,36 @@
     /**
      * Constructor
      *
-     * @param   io.File file File-Objekt
+     * @param   io.File file
      */  
     public function __construct($file) {
       $this->file= $file;
-      
     }
     
     /**
-     * Öffnen
+     * Open this archive
      *
-     * @param   mixed args Argumente für die open()-Method des Datei-Objekts
-     * @return  bool Das Ergebnis der open()-Method des Datei-Objekts
+     * @param   var* args arguments to io.File::open()
+     * @return  bool TRUE on success, FALSE otherwise
      */
     public function open() {
       $args= func_get_args();
-      return call_user_func_array(
-        array($this->file, 'open'), 
-        $args
-      );
+      return call_user_func_array(array($this->file, 'open'), $args);
     }
     
     /**
-     * Schließen
+     * Close this archive
      *
-     * @return  bool Das Ergebnis der close()-Method des Datei-Objekts
+     * @return  bool TRUE on success, FALSE otherwise
      */
     public function close() {
       return $this->file->close();
     }
     
     /**
-     * Holt sich den nächsten Eintrag aus dem Archiv
+     * Get next entry
      *
-     * @return  io.TarArchiveEntry Eintrag 
+     * @return  org.gnu.tar.TarArchiveEntry 
      */
     public function getEntry() {
       static $size= 0;
@@ -80,22 +76,15 @@
       );
       if ('' == trim($data['filename'])) return FALSE;
       
-      // TarArchiveEntry-Objekt erzeugen
-      $f= new TarArchiveEntry(
-        $data, 
-        $this->file->tell()
-      );
-      
-      // Größe merken, damit beim nächsten Aufruf dieser Funktion automatisch geseek()ed wird
+      $f= new TarArchiveEntry($data, $this->file->tell());
       $size= $f->size;
-      
       return $f;
     }
     
     /**
-     * Inhalt einer Datei zurückgeben
+     * Get an entry's content
      *
-     * @param   io.TarArchiveEntry e TarArchvieEntry-Objekt
+     * @param   org.gnu.tar.TarArchiveEntry e
      * @return  string content
      */
     public function getEntryData($e) {

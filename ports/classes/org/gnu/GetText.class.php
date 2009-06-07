@@ -8,7 +8,7 @@
    * GNU Gettext
    *
    * <code>
-   *   $g= &GetText::bind('greetings', './locale/');
+   *   $g= GetText::bind('greetings', './locale/');
    *   $g->setLanguage('de_DE');
    *   var_dump($g->get('str_hello'));
    *
@@ -66,9 +66,9 @@
      *
      * @param   string domain
      * @param   string directory
-     * @return  &org.gnu.GetText
+     * @return  org.gnu.GetText
      */
-    public function bind($domain, $directory) {
+    public static function bind($domain, $directory) {
       static $g= array();
       
       $idx= $domain.'@'.$directory;

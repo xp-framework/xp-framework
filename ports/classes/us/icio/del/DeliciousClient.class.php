@@ -17,17 +17,8 @@
    *
    * Example:
    * <code>
-   *   require('lang.base.php');
-   *   uses('us.icio.del.DeliciousClient');
-   *
-   *   $d= &new DeliciousClient('username', 'password');
-   *   try(); {
-   *     $posts= $d->getAllPosts('Flash');
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     exit;
-   *   }
-   *   var_dump($posts);
+   *   $d= new DeliciousClient('username', 'password');
+   *   $posts= $d->getAllPosts('Flash');
    * </code>
    *
    * @purpose Provide an API to del.icio.us
@@ -44,10 +35,7 @@
      * @param   string username from del.icio.us
      * @param   string password from del.icio.us
      */
-    public function __construct(
-      $username,
-      $password
-    ) {
+    public function __construct($username, $password) {
       $this->username= $username;
       $this->password= $password;
     }
@@ -60,17 +48,11 @@
      * @return  string
      */
     protected function _doRequest($url, $param= array()) {
-      try {
-         $buf= HttpUtil::get(
-           new HttpConnection($url),
-           $param,
-           array(new BasicAuthorization($this->username, $this->password))
-         );
-       } catch (UnexpectedResponseException $e) {
-         throw($e);
-         exit(-1);
-       }
-       return $buf;    
+      return HttpUtil::get(
+        new HttpConnection($url),
+        $param,
+        array(new BasicAuthorization($this->username, $this->password))
+      );
     }
 
     /**
@@ -166,7 +148,7 @@
      * @param   string description description for post
      * @param   string extended extended for post
      * @param   string tags space-delimited list of tags
-     * @param   &util.Date dt datestamp for post, format "CCYY-MM-DDThh:mm:ssZ"     
+     * @param   util.Date dt datestamp for post, format "CCYY-MM-DDThh:mm:ssZ"     
      * @return  string
      */
     public function addPost($url, $description, $extended, $tags, $dt) {

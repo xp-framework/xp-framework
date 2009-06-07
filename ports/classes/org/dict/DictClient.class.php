@@ -25,15 +25,11 @@
    * definitions from a set of natural language dictionary databases. 
    *
    * <code>
-   *   $dc= &new DictClient();
-   *   try(); {
-   *     $dc->connect('dict.org', 2628);
-   *     $definition= $dc->getDefinition('Dictionary', '*');
-   *     $dc->close();
-   *   } if (catch('IOException', $e)) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
+   *   $dc= new DictClient();
+   *
+   *   $dc->connect('dict.org', 2628);
+   *   $definition= $dc->getDefinition('Dictionary', '*');
+   *   $dc->close();
    *
    *   var_dump($definition);
    * </code>
@@ -188,7 +184,7 @@
      *
      * @param   string word
      * @param   strind db default '*'
-     * @return  &org.dict.DictDefinitionEntry[]
+     * @return  org.dict.DictDefinitionEntry[]
      * @throws  io.IOException
      */
     public function getDefinition($word, $db= '*') {
@@ -371,11 +367,10 @@
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) {
       $this->cat= $cat;
     }
-
   } 
 ?>

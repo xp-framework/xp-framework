@@ -79,13 +79,13 @@
    * </quote>
    *
    * <code>
-   *   $s= &new WebdavScriptlet(array(
+   *   $s= new WebdavScriptlet(array(
    *    '/webdav/' => new DavFileImpl('/path/to/files/you/want/do/provide/')
    *   ));
-   *   try(); {
+   *   try {
    *     $s->init();
-   *     $response= &$s->process();
-   *   } if (catch('HttpScriptletException', $e)) {
+   *     $response= $s->process();
+   *   } catch (HttpScriptletException $e) {
    *     // Retrieve standard "Internal Server Error"-Document
    *     $response= &$e->getResponse(); 
    *   }
@@ -139,10 +139,11 @@
       // Make sure patterns are always with trailing /
       foreach (array_keys($impl) as $pattern) {
         $path= rtrim($pattern, '/').'/';
-        if (isset($impl[$pattern]['impl']))
+        if (isset($impl[$pattern]['impl'])) {
           $this->impl[$path]= $impl[$pattern]['impl'];
-        else
+        } else {
           $this->impl[$path]= $impl[$pattern];
+        }
         if (isset($impl[$pattern]['auth'])) {
           $this->auth[$path]= $impl[$pattern]['auth'];
         }
@@ -201,8 +202,8 @@
      *
      * @see     xp://scriptlet.scriptlet.HttpScriptlet#doGet
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doOptions($request, $response) {
@@ -216,22 +217,18 @@
      *
      * @see     rfc://2518#8.6
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doDelete($request, $response) {
       try {
         $object= $this->handlingImpl->delete($request->getPath());
       } catch (ElementNotFoundException $e) {
-      
-        // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
       } catch (XPException $e) {
-      
-        // Not allowd
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
         $response->setContent($e->toString());
         return FALSE;
@@ -245,31 +242,23 @@
      *
      * @see     rfc://2518#8.4
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doGet($request, $response) {
       try {
         $object= $this->handlingImpl->get($request->getPath());
       } catch (ElementNotFoundException $e) {
-
-        // Element not found
-         $response->setStatus(HTTP_NOT_FOUND);
-         return FALSE;
+        $response->setStatus(HTTP_NOT_FOUND);
+        return FALSE;
       } catch (OperationNotAllowedException $e) {
-      
-        // Conflict
         $response->setStatus(HTTP_CONFLICT);
         return FALSE;
       } catch (IllegalArgumentException $e) {
-      
-        // Conflict       
         $response->setStatus(WEBDAV_LOCKED);       
         return FALSE;
       } catch (XPException $e) {      
-      
-        // Conflict        
         $response->setStatus(HTTP_CONFLICT);        
         return FALSE;
       } 
@@ -287,12 +276,12 @@
      *
      * @see     rfc://2518#8.5
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doPost($request, $response) {
-      throw(new MethodNotImplementedException($this->getName().'::post not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::post not implemented');
     }
 
     /**
@@ -300,22 +289,18 @@
      *
      * @see     rfc://2518#8.4
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doHead($request, $response) {
       try {
         $object= $this->handlingImpl->get($request->getPath());
       } catch (ElementNotFoundException $e) {
-      
-        // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
       } catch (XPException $e) {
-
-        // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
@@ -333,8 +318,8 @@
      *
      * @see     rfc://2518#8.7
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doPut($request, $response) {
@@ -344,14 +329,10 @@
           $request->getData()
         );
       } catch (OperationFailedException $e) {
-      
-        // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
       } catch (OperationNotAllowedException $e) {
-      
-        // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
         $response->setContent($e->toString());
         return FALSE;
@@ -368,16 +349,14 @@
      *
      * @see     rfc://2518#8.3
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doMkCol($request, $response) {
       try {
         $created= $this->handlingImpl->mkcol($request->getPath());
       } catch (OperationFailedException $e) {
-      
-        // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
@@ -391,8 +370,8 @@
      *
      * @see     rfc://2518#8.9
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doMove($request, $response) {
@@ -403,14 +382,10 @@
           WebdavBool::fromString($request->getHeader('Overwrite'))
         );
       } catch (OperationFailedException $e) {
-      
-        // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
       } catch (OperationNotAllowedException $e) {
-      
-        // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
         $response->setContent($e->toString());
         return FALSE;
@@ -424,8 +399,8 @@
      *
      * @see     rfc://2518#8.8
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doCopy($request, $response) {
@@ -440,18 +415,15 @@
           )
         );
       } catch (OperationFailedException $e) {
-      
-        // Conflict
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
       } catch (OperationNotAllowedException $e) {
-      
-        // Not allowed
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED);
         $response->setContent($e->toString());
         return FALSE;
       }
+
       $response->setStatus($created ? HTTP_CREATED : HTTP_NO_CONTENT);
       return TRUE;
     }
@@ -470,8 +442,8 @@
      *
      * @see     rfc://2518#8.10
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doLock($request, $response) {
@@ -481,12 +453,10 @@
           $response
         );
       } catch (ElementNotFoundException $e) {
-
         $response->setStatus(HTTP_PRECONDITION_FAILED);
         $response->setContent($e->toString());        
         return FALSE; 
       } catch (XPException $e) {
-
         $response->setStatus(HTTP_LOCKED);
         $response->setContent($e->toString());
         return FALSE; 
@@ -508,20 +478,16 @@
         $this->handlingImpl->unlock(
           $request,
           $response
-          );
-          
+        );
       } catch (ElementNotFoundException $e) {
-    
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE; 
       } catch (OperationFailedException $e) {
-      
         $response->setStatus(WEBDAV_PRECONDFAILED);
         $response->setContent($e->toString());
         return FALSE;
       } catch (XPException $e) {
-
         $response->setStatus(HTTP_LOCKED);
         $response->setContent($e->toString());
         return FALSE; 
@@ -541,8 +507,8 @@
      *
      * @see     rfc://2518#8.1
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doPropFind($request, $response) {
@@ -552,13 +518,10 @@
           $response
         );
       } catch (ElementNotFoundException $e) {
-      
-        // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
       } catch (OperationNotAllowedException $e) {
-
         $response->setStatus(HTTP_METHOD_NOT_ALLOWED); 
         $response->setContent($e->toString());
         return FALSE;
@@ -571,7 +534,7 @@
       } catch (XPException $e) {
         
         // Other exceptions - throw exception to indicate (complete) failure
-        throw(new HttpScriptletException($e->message));
+        throw new HttpScriptletException($e->message);
       }
       
       return TRUE;
@@ -593,10 +556,7 @@
           $request,
           $response
         );
-        
       } catch (ElementNotFoundException $e) {
-
-        // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
@@ -607,14 +567,10 @@
         $response->setContent($e->toString());
         return FALSE;
       } catch (OperationFailedException $e) {
-      
-        // Element not found
         $response->setStatus(HTTP_CONFLICT);
         $response->setContent($e->toString());
         return FALSE;
       } catch (OperationNotAllowedException $e) {
-
-        // Forbidden
         $response->setStatus(HTTP_FORBIDDEN);
         $response->setContent($e->toString());
         return FALSE;
@@ -622,7 +578,7 @@
       } catch (XPException $e) {
         
         // Other exceptions - throw exception to indicate (complete) failure
-        throw(new HttpScriptletException($e->message));
+        throw new HttpScriptletException($e->message);
       } 
       
       $rootURL= $request->getRootURL();
@@ -633,8 +589,8 @@
     /**
      * Do a Version-Control Request
      *
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response  
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response  
      */
     public function doVersionControl($request, $response) {
       try {
@@ -643,14 +599,10 @@
           new File($this->handlingImpl->base.$request->getPath())
         );
       } catch (ElementNotFoundException $e) {
-      
-        // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
       } catch (XPException $e) {        
-        
-        // Element not found
         $response->setStatus(HTTP_BAD_REQUEST);
         $response->setContent($e->toString());
         return FALSE;
@@ -668,20 +620,15 @@
       try {
         $this->handlingImpl->report($request, $response);
       } catch (ElementNotFoundException $e) {
-      
-        // Element not found
         $response->setStatus(HTTP_NOT_FOUND);
         $response->setContent($e->toString());
         return FALSE;
       } catch (XPException $e) {        
-        
-        // Element not found
         $response->setStatus(HTTP_BAD_REQUEST);
         $response->setContent($e->toString());
         return FALSE;
       } 
       $response->setStatus(HTTP_OK);
-    
     }
 
 
@@ -696,7 +643,6 @@
      */
     public function doNotFound($request, $response) {
       $response->setStatus(HTTP_NOT_FOUND);
-      
       return FALSE;
     }
     
@@ -711,7 +657,6 @@
     public function doAuthorizationRequest($request, $response) {
       $response->setStatus(HTTP_AUTHORIZATION_REQUIRED);
       $response->setHeader('WWW-Authenticate',  'Basic realm="WebDAV Authorization"');
-      
       return TRUE;
     }
     
@@ -725,7 +670,6 @@
      */
     public function doAuthorizationDeny($request, $response) {
       $response->setStatus(HTTP_FORBIDDEN);
-      
       return TRUE;
     }
     
@@ -738,9 +682,10 @@
      * @see     rfc://2518#8 Description of methods
      */
     public function handleMethod($request) {
+
       // Check if we recognize this method
       if (!isset($this->methods[$request->method])) {
-        throw(new HttpScriptletException('Cannot handle method "'.$request->method.'"'));
+        throw new HttpScriptletException('Cannot handle method "'.$request->method.'"');
       }
 
       // Select implementation
@@ -771,7 +716,7 @@
       
       // Implementation not found
       if (NULL === $this->handlingImpl) {
-        throw(new HttpScriptlet('Cannot handle requests to '.$request->uri->getPath()));
+        throw new HttpScriptletException('Cannot handle requests to '.$request->uri->getPath());
       }
 
       // determine Useragent
@@ -807,6 +752,7 @@
           }
           $request->setUser($user); 
         } else {
+
           // Create a normal WebdavUser object
           $request->setUser(new WebdavUser($auth->getUser(), $auth->getPassword()));
         }

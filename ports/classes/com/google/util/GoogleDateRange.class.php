@@ -28,7 +28,7 @@
    *   uses('com.google.util.GoogleDateRange');
    *
    *   $query= 'Google';
-   *   with ($range= &GoogleDateRange::forDates(
+   *   with ($range= GoogleDateRange::forDates(
    *     Date::fromString('Dec 14 2003'), 
    *     Date::now())
    *   ); {
@@ -49,9 +49,9 @@
     /**
      * Returns a date range for the given start and end dates
      *
-     * @param   &util.Date start
-     * @param   &util.Date end
-     * @return  &com.google.util.GoogleDateRange
+     * @param   util.Date start
+     * @param   util.Date end
+     * @return  com.google.util.GoogleDateRange
      */
     public static function forDates($start, $end) {
       $range= new GoogleDateRange();
@@ -63,7 +63,7 @@
     /**
      * Set Start
      *
-     * @param   &util.Date start
+     * @param   util.Date start
      */
     public function setStart($start) {
       $this->start= $start;
@@ -72,7 +72,7 @@
     /**
      * Get Start
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getStart() {
       return $this->start;
@@ -81,7 +81,7 @@
     /**
      * Set End
      *
-     * @param   &util.Date end
+     * @param   util.Date end
      */
     public function setEnd($end) {
       $this->end= $end;
@@ -90,7 +90,7 @@
     /**
      * Get End
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getEnd() {
       return $this->end;
@@ -104,7 +104,7 @@
      *
      * Note: Returns zero (0) on failure.
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      * @return  int
      */
     public static function dateToJulian($date) {

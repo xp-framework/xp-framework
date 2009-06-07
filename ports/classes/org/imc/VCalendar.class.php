@@ -403,7 +403,7 @@
      *
      * <code>
      *   [...]
-     *   $f= &new File('calendar.ics');
+     *   $f= new File('calendar.ics');
      *   $f->open(FILE_MODE_WRITE);
      *   $f->write($cal->export());
      *   $f->close();

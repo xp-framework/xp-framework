@@ -15,7 +15,7 @@
   /**
    * File dialog 
    * <code>
-   *   $dlg= &new FileDialog();
+   *   $dlg= new FileDialog();
    *   if ($dlg->show()) {
    *     printf("File selected: %s%s\n", $dlg->getDirectory(), $dlg->getFilename());
    *   }
@@ -46,7 +46,7 @@
     /**
      * Callback for OK and cancel buttons
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onClose($widget) {
       $this->success= ('button_ok' == $widget->get_name());
@@ -56,7 +56,7 @@
     /**
      * Callback for up button
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onUpDirClicked($widget) {
       $this->setDirectory(substr($this->dir, 0, strrpos(
@@ -69,7 +69,7 @@
     /**
      * Callback for home button
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onHomeClicked($widget) {
       $this->setDirectory(System::getProperty('user.home'));
@@ -78,7 +78,7 @@
     /**
      * Callback for favorites buttons
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onFavoriteClicked($widget) {
       $d= strtr(substr($widget->get_name(), 11), array(
@@ -93,7 +93,7 @@
     /**
      * Callback for refresh button
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      */
     public function onRefreshClicked($widget) {
       $this->setDirectory($this->dir);
@@ -114,7 +114,7 @@
     /**
      * Callback for when a row in the file list is selected
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      * @param   int row
      * @param   mixed data
      * @param   php.GtkEvent event

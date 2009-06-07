@@ -1,5 +1,5 @@
 <?php
-/*
+/* This class is part of the XP framework
  *
  * $Id: DiaMarshaller.class.php 8894 2006-12-19 11:31:53Z kiesel $
  */
@@ -18,12 +18,8 @@
    * Generator for 'dia' diagrams
    *
    * <code>
-   *   try (); {
-   *     $Dia= &DiaMarshaller::marshal(array('util.Date'));
-   *   } if (catch('Exception', $e)) {
-   *     $e->printStackTrace();
-   *     exit(-1);
-   *   }
+   *   $Dia= DiaMarshaller::marshal(array('util.Date'));
+   *
    *   $Dia->getSource(); // complete XML string
    *   $Dia->getNode();   // instance of xml.Node
    *   $Dia->saveto('filename.dia'); // write to file (gzipped)

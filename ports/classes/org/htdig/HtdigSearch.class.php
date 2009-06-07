@@ -29,19 +29,12 @@
    * the one set in this class.
    *
    * <code>
-   *   try(); {
-   *     $search= &new HtdigSearch();
-   *     $search->setConfig('/path/to/htdig-configuration');
-   *     $search->setExecutable('/usr/local/bin/htdig');
-   *     $search->setWords(array('foo', '-bar'));
-   *     $resultset= &$search->invoke();
-   *   } if (catch('IOException', $e)) {
-   *     $e->printStackTrace();
-   *     exit(1);
-   *   } if (catch('IllegalArgumentException', $e)) {
-   *     $e->printStackTrace();
-   *     exit(1);
-   *   }
+   *  $search= new HtdigSearch();
+   *  $search->setConfig('/path/to/htdig-configuration');
+   *  $search->setExecutable('/usr/local/bin/htdig');
+   *  $search->setWords(array('foo', '-bar'));
+   *
+   *  $resultset= $search->invoke();
    *
    *   Console::writeLine($result->toString());
    * </code>
@@ -327,27 +320,23 @@
     /**
      * Invoke the search.
      *
-     * @return  &org.htdig.HtdigResultset
+     * @return  org.htdig.HtdigResultset
      * @throws  io.IOException in case the invocation of htdig failed
      * @throws  lang.IllegalArgumentException in case search entry was invalid
      */
     public function invoke() {
       $cat= Logger::getInstance()->getCategory();
 
-      try {
-        $cmdline= sprintf('%s -v %s %s',
-          $this->getExecutable(),
-          strlen($this->getConfig()) ? '-c '.$this->getConfig() : '',
-          "'".$this->_getQuery()."' 2>&1"
-        );
-        $p= new Process($cmdline);
+      $cmdline= sprintf('%s -v %s %s',
+        $this->getExecutable(),
+        strlen($this->getConfig()) ? '-c '.$this->getConfig() : '',
+        "'".$this->_getQuery()."' 2>&1"
+      );
+      $p= new Process($cmdline);
 
-        // Read standard output
-        $output= array();
-        while (!$p->out->eof()) { $output[]= $p->out->readLine(); }
-      } catch (IOException $e) {
-        throw ($e);
-      }
+      // Read standard output
+      $output= array();
+      while (!$p->out->eof()) { $output[]= $p->out->readLine(); }
       
       $result= new HtdigResultset();
       $metaresult= array();

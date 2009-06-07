@@ -27,7 +27,7 @@
     /**
      * Constructor
      *
-     * @param   &util.ParamString p
+     * @param   util.ParamString p
      */
     public function __construct($p) {
 
@@ -52,12 +52,12 @@
      * Returns a widget
      *
      * @param   string name
-     * @return  &php.GtkWidget
+     * @return  php.GtkWidget
      * @throws  gui.WidgetNotFoundException
      */
     public function widget($name) {
       if (isset($this->{$name})) {
-        throw(new WidgetNotFoundException($name));
+        throw new WidgetNotFoundException($name);
       } 
       return $this->{$name};
     }
@@ -77,7 +77,7 @@
      *   function init() {
      *     $this->connect($this->widget('select'), 'clicked');
      *     $this->connect($this->widget('button'), 'clicked', 'onSelectClicked');
-     *     $button= &new GtkButton('Click me:)');
+     *     $button= new GtkButton('Click me:)');
      *     $button->set_name('click_me');
      *     $this->connect($button, 'clicked', 'onSelectClicked');
      *   }
@@ -87,11 +87,11 @@
      *   }
      * </code>
      *
-     * @param   &php.GtkWidget widget
+     * @param   php.GtkWidget widget
      * @param   string signal
      * @param   string callback default NULL
      * @param   mixed data default NULL
-     * @return  &php.GtkWidget widget
+     * @return  php.GtkWidget widget
      * @throws  gui.GuiException in case the signal connecting failed
      */
     public function connect($widget, $signal, $callback= NULL, $data= NULL) {

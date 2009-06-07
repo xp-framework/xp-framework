@@ -16,7 +16,7 @@
    *   uses('io.File', 'org.gnu.readline.ReadLine', 'TestCompleter');
    * 
    *   // {{{ main
-   *   $history= &new File('.history');
+   *   $history= new File('.history');
    *   if ($history->exists()) {
    *     ReadLine::readHistoryFile($history);
    *   }
@@ -37,13 +37,13 @@
    *
    * TestCompleter class:
    * <code>
-   *   class TestCompleter extends Object {
+   *   class TestCompleter implements Completer {
    * 
    *     function complete($string, $offset, $length) {
    *       return array('Binford', 'Biff', '6100', 'More', 'Power');
    *     }
    *   
-   *   } implements(__FILE__, 'org.gnu.readline.Completer');
+   *   }
    * </code>
    *
    * @ext      readline
@@ -56,7 +56,7 @@
      *
      * @param   string name
      * @param   mixed* arg
-     * @return  &mixed arg
+     * @return  mixed arg
      */
     public function registry() {
       static $static= array();
@@ -70,7 +70,7 @@
     /**
      * Defines a completer
      *
-     * @param   &org.gnu.readline.ReadLineCompleter completer
+     * @param   org.gnu.readline.Completer completer
      * @return  bool success
      * @throws  lang.IllegalArgumentException
      */
@@ -139,13 +139,13 @@
     /**
      * Load readline history from a file
      *
-     * @param   &io.File file
+     * @param   io.File file
      * @return  bool success
      * @throws  io.IOException
      */
     public function readHistoryFile($file) {
       if (FALSE === readline_read_history($file->getURI())) {
-        throw(new IOException('Could not read history from '.$file->getURI()));
+        throw new IOException('Could not read history from '.$file->getURI());
       }
       return TRUE;
     }
@@ -159,7 +159,7 @@
      */
     public function writeHistoryFile($file) {
       if (FALSE === readline_write_history($file->getURI())) {
-        throw(new IOException('Could not write history to '.$file->getURI()));
+        throw new IOException('Could not write history to '.$file->getURI());
       }
       return TRUE;
     }
