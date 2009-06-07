@@ -36,7 +36,7 @@
    * <code>
    *   uses('peer.sieve.SieveClient');
    *
-   *   $s= &new SieveClient('imap.example.com');
+   *   $s= new SieveClient('imap.example.com');
    *   $s->connect();
    *   $s->authenticate(SIEVE_SASL_PLAIN, 'user', 'password');
    *   var_export($s->getScripts());
@@ -47,10 +47,10 @@
    * <code>
    *   uses('peer.sieve.SieveClient', 'io.File', 'io.FileUtil');
    *
-   *   $s= &new SieveClient('imap.example.com');
+   *   $s= new SieveClient('imap.example.com');
    *   $s->connect();
    *   $s->authenticate(SIEVE_SASL_PLAIN, 'user', 'password');
-   *   with ($script= &new SieveScript('myscript')); {
+   *   with ($script= new SieveScript('myscript')); {
    *     $script->setCode(FileUtil::getContents(new File('myscript.txt')));
    *     $s->putScript($script);
    *   }
@@ -122,12 +122,12 @@
               break;
 
             default:
-              throw(new FormatException('Cannot parse banner message line >'.$line.'<'));
+              throw new FormatException('Cannot parse banner message line >'.$line.'<');
           }
           continue;
         }
 
-        throw(new FormatException('Unexpected response line >'.$line.'<'));
+        throw new FormatException('Unexpected response line >'.$line.'<');
       } while (1);
       
       $this->cat && $this->cat->debug('Server information:', $this->_sinfo);
@@ -252,7 +252,7 @@
      */
     public function authenticate($method, $user, $pass, $auth= NULL) {
       if (!$this->hasAuthenticationMethod($method)) {
-        throw(new IllegalArgumentException('Authentication method '.$method.' not supported'));
+        throw new IllegalArgumentException('Authentication method '.$method.' not supported');
       }
       
       // Check whether we want to impersonate
@@ -329,7 +329,7 @@
           break;
 
         default:
-          throw(new IllegalArgumentException('Authentication method '.$method.' not implemented'));
+          throw new IllegalArgumentException('Authentication method '.$method.' not implemented');
       }
       
       // Read the response. Examples:
@@ -475,6 +475,5 @@
     public function setTrace($cat) { 
       $this->cat= $cat;
     }
-
   } 
 ?>
