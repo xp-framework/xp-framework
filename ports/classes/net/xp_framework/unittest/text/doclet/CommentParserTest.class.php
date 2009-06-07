@@ -30,7 +30,7 @@
       $stripped= preg_replace('/[\r\n][\s\t]+\* ?/', "\n", trim($rawComment, "/*\n\r\t "));
       $tagstart= FALSE === ($p= strpos($stripped, "\n@")) ? strlen($stripped)+ 1 : $p;
 
-      $this->detail= array(
+      $detail= array(
         'text' => substr($stripped, 0, $tagstart- 1),
         'tags' => array()
       );
@@ -39,11 +39,11 @@
         list($kind, $rest)= explode(' ', trim($t), 2);
 
         if ($tag= $tm->make($this, $kind, trim($rest))) {
-          $this->detail['tags'][$kind][]= $tag;
+          $detail['tags'][$kind][]= $tag;
         }
       } while ($t= strtok('@'));
       
-      return new Hashmap($this->detail);
+      return new Hashmap($detail);
     }
     
     /**
