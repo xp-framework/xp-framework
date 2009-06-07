@@ -14,7 +14,7 @@
    *
    * Usage:
    * <pre>
-   *   doclet class [options] name [name [name...]]
+   *   doclet [-sp sourcepath] class [options] name [name [name...]]
    * </pre>
    *
    * Class is the fully qualified class name of a doclet class. Options 
@@ -65,28 +65,44 @@
     
       // Show command usage if invoked without arguments
       if (!$args) exit(self::usage(XPClass::forName(xp::nameOf(__CLASS__))));
-
-      $class= XPClass::forName($args[0]);
-      if (!$class->isSubclassOf('text.doclet.Doclet')) {
-        Console::$err->writeLine('*** ', $class, ' is not a doclet');
-        exit(2);
-      }
-      $doclet= $class->newInstance();
       
-      // Show doclet usage if the command line contains "-?" (at any point).
-      if (in_array('-?', $args)) {
-        self::usage($class);
-        if ($valid= $doclet->validOptions()) {
-          Console::$err->writeLine();
-          Console::$err->writeLine('Options:');
-          foreach ($valid as $name => $value) {
-            Console::$err->writeLine('  * --', $name, OPTION_ONLY == $value ? '' : '=<value>');
+      $root= new RootDoc();
+      for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
+        if ('-sp' === $args[$i]) {
+          $root->setSourcePath(explode(PATH_SEPARATOR, $args[++$i]));
+        } else {
+          try {
+            $class= XPClass::forName($args[$i]);
+          } catch (ClassNotFoundException $e) {
+            Console::$err->writeLine('*** ', $e->getMessage());
+            exit(2);
           }
-        }
-        exit(3);
-      }
+          if (!$class->isSubclassOf('text.doclet.Doclet')) {
+            Console::$err->writeLine('*** ', $class, ' is not a doclet');
+            exit(2);
+          }
+          $doclet= $class->newInstance();
+          $params= new ParamString(array_slice($args, $i));
+      
+          // Show doclet usage if the command line contains "-?" (at any point).
+          if ($params->exists('help', '?')) {
+            self::usage($class);
+            if ($valid= $doclet->validOptions()) {
+              Console::$err->writeLine();
+              Console::$err->writeLine('Options:');
+              foreach ($valid as $name => $value) {
+                Console::$err->writeLine('  * --', $name, OPTION_ONLY == $value ? '' : '=<value>');
+              }
+            }
+            exit(3);
+          }
 
-      RootDoc::start($doclet, new ParamString($args));
+          $root->start($doclet, $params);
+          exit(0);
+        }
+      }
+      Console::$err->writeLine('*** No doclet classname given');
+      exit(1);
     }
   }
 ?>
