@@ -19,7 +19,7 @@
      *   TestString(6) { String }
      * </pre>
      *
-     * @return  &lang.Object
+     * @return  lang.Object
      */
     protected function testStringInstance() {
       return newinstance('lang.Object', array(), '{
