@@ -8,7 +8,7 @@
    * An element in a stack trace, as returned by Throwable::getStackTrace(). 
    * Each element represents a single stack frame.
    *
-   * @see      xp://lang.Throwable#getStackTrace()
+   * @see      xp://lang.Throwable#getStackTrace
    * @purpose  Represent execution stack frame
    */
   class StackTraceElement extends Object {
