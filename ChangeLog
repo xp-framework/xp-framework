@@ -75,6 +75,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Extended doclet command to be able to work with .xar files
+  http://news.xp-framework.net/article/300/2009/06/07/
+  (friebe)
 - Added usage to the doclet command.
   (friebe)
 - Added support for package names as arguments to doclets, where lang.*
