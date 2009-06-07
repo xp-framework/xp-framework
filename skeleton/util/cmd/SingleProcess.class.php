@@ -12,7 +12,7 @@
    * 
    * Usage:
    * <code>
-   *   $sp= &new SingleProcess();
+   *   $sp= new SingleProcess();
    *   if (!$sp->lock()) {
    *     exit(-1);
    *   }

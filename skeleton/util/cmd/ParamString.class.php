@@ -82,7 +82,7 @@
      *
      * Examples:
      * <code>
-     *   $p= &new ParamString();
+     *   $p= new ParamString();
      *   if ($p->exists('help', '?')) {
      *     printf("Usage: %s %s --force-check [--pattern={pattern}]\n", $p->value(-1), $p->value(0));
      *     exit(-2);
