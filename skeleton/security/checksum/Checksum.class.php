@@ -9,19 +9,19 @@
    *
    * Usage [Getting an MD5 checksum from a string]
    * <code>
-   *   $md5= &MD5::fromString('Hello world');
+   *   $md5= MD5::fromString('Hello world');
    *   var_dump($md5->getValue());
    * </code>
    *
    * Usage [Getting an SHA1 checksum from a file]
    * <code>
-   *   $sha1= &SHA1::fromFile(new File('dummy'));
+   *   $sha1= SHA1::fromFile(new File('dummy'));
    *   var_dump($sha1->getValue());
    * </code>
    *
    * Usage [Verifying a CRC32 against a file]
    * <code>
-   *   $crc32= &new CRC32(1140816021);
+   *   $crc32= new CRC32(1140816021);
    *   if (!$crc32->verify(CRC32::fromFile(new File('verify.me')))) {
    *     echo 'Verify failed';
    *   } else {
