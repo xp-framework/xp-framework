@@ -10,9 +10,10 @@
    * Shape class representing a polygon
    *
    * <code>
-   *   $i= &new PngImage(300, 300);
+   *   $i= new PngImage(300, 300);
    *   $i->create();
-   *   $blue= &$i->allocate(new Color('#0000cc'));
+   *
+   *   $blue= $i->allocate(new Color('#0000cc'));
    *   $i->draw(new PolygonShape($blue, array(
    *     40,    // x1
    *     50,    // y1
@@ -71,6 +72,5 @@
         $this->col->handle
       );
     }
-
   } 
 ?>

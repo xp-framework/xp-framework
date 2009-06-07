@@ -22,7 +22,7 @@
    *     'img.io.JpegStreamWriter'
    *   );
    *   
-   *   $img= &Image::loadFrom(new JpegStreamReader(new File('colored.jpg')));
+   *   $img= Image::loadFrom(new JpegStreamReader(new File('colored.jpg')));
    *   $img->convertTo(new GrayscaleConverter());
    *   $img->saveTo(new JpegStreamWriter(new File('gray.jpg')));
    * </code>
@@ -73,6 +73,5 @@
         }
       }
     }
-
   } 
 ?>

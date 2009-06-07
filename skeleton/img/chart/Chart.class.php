@@ -17,16 +17,16 @@
    *
    * <code>
    *   // Construct a barchart
-   *   $chart= &new BarChart();
+   *   $chart= new BarChart();
    *   $chart->add(new Series('April', array(1, 2, 4, 10, 11, 28)));
    *
    *   // Render it with an ImageRenderer and save to chart.png
-   *   $ir= &new ImageRenderer(400, 400);
-   *   $image= &$ir->render($chart);
+   *   $ir= new ImageRenderer(400, 400);
+   *   $image= $ir->render($chart);
    *   $image->saveTo(new PngStreamWriter(new File('chart.png')));
    *
    *   // Render it with an SVG renderer and save to chart.svg
-   *   $sr= &new SVGRenderer();
+   *   $sr= new SVGRenderer();
    *   $svg= $sr->render($chart);
    *   FileUtil::setContents(new File('chart.svg'), $svg);
    * </code>

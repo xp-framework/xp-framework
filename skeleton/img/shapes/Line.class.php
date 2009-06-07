@@ -10,9 +10,10 @@
    * Shape class representing a line
    *
    * <code>
-   *   $i= &new PngImage(300, 300);
+   *   $i= new PngImage(300, 300);
    *   $i->create();
-   *   $blue= &$i->allocate(new Color('#0000cc'));
+   *
+   *   $blue= $i->allocate(new Color('#0000cc'));
    *   $i->draw(new LineShape($blue, 0, 0, 300, 300));
    *   $i->toFile(new File('out.png'));
    * </code>
@@ -61,6 +62,5 @@
         $this->col->handle
       );
     }
-
   } 
 ?>

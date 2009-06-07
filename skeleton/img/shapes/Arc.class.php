@@ -10,9 +10,10 @@
    * Shape class representing an arc
    *
    * <code>
-   *   $i= &new PngImage(300, 300);
+   *   $i= new PngImage(300, 300);
    *   $i->create();
-   *   $blue= &$i->allocate(new Color('#0000cc'));
+   *
+   *   $blue= $i->allocate(new Color('#0000cc'));
    *   $i->draw(new ArcShape($blue, 200, 100, 200, 100, 0, 320));
    *   $i->toFile(new File('out.png'));
    * </code>

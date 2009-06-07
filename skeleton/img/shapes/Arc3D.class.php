@@ -10,10 +10,11 @@
    * Shape class representing a three-dimensional arc
    *
    * <code>
-   *   $i= &new PngImage(300, 300);
+   *   $i= new PngImage(300, 300);
    *   $i->create();
-   *   $b= &$i->allocate(new Color('#0000cc'));
-   *   $d= &$i->allocate(new Color('#000066'));
+   *
+   *   $b= $i->allocate(new Color('#0000cc'));
+   *   $d= $i->allocate(new Color('#000066'));
    *   $i->draw(new Arc3DShape(array($b, $d), 200, 100, 200, 100, 0, 320));
    *   $i->toFile(new File('out.png'));
    * </code>
@@ -65,6 +66,5 @@
       $this->col= $this->colors[0];
       parent::draw($image);
     }
-
   } 
 ?>
