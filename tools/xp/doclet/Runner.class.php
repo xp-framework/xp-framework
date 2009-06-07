@@ -14,11 +14,20 @@
    *
    * Usage:
    * <pre>
-   *   doclet [-sp sourcepath] class [options] name [name [name...]]
+   *   doclet [options] class [doclet-options] name [name [name...]]
    * </pre>
    *
-   * Class is the fully qualified class name of a doclet class. Options 
-   * depend on the doclet implementation. 
+   * Class is the fully qualified class name of a doclet class.
+   *
+   * Options can be one or more of:
+   * <ul>
+   *   <li>-sp sourcepath: Sets sourcepath - paths in which the doclet
+   *     implementation will search for classes. Multiple paths are
+   *     separated by the path separator char.</li>
+   *   <li>-cp classpath: Adds classpath element in which the class
+   *     loader will search for the doclet class.</li>
+   * </ul>
+   * Doclet-Options depend on the doclet implementation. 
    *
    * Names can be one or more of:
    * <ul>
@@ -70,6 +79,8 @@
       for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
         if ('-sp' === $args[$i]) {
           $root->setSourcePath(explode(PATH_SEPARATOR, $args[++$i]));
+        } else if ('-cp' === $args[$i]) {
+          ClassLoader::registerPath($args[++$i]);
         } else {
           try {
             $class= XPClass::forName($args[$i]);
