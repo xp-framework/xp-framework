@@ -12,7 +12,7 @@
    * Usage (abbreviated example):
    * <code>
    *   // [...]
-   *   $r= &$conn->query('select news_id, caption, created_at from news');
+   *   $r= $conn->query('select news_id, caption, created_at from news');
    *   while ($row= $r->next()) {
    *     var_dump($row);
    *   }
