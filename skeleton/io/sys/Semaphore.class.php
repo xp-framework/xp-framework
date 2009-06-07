@@ -8,7 +8,7 @@
    * Semaphore
    *
    * <code>
-   *   $s= &Semaphore::get(6100);
+   *   $s= Semaphore::get(6100);
    *   $s->acquire();
    *   // [...]
    *   $s->release();
@@ -44,12 +44,12 @@
       static $semaphores= array();
       
       if (!isset($semaphores[$key])) {
-        $s= new Semaphore();
+        $s= new self();
         $s->key= $key;
         $s->maxAquire= $maxAquire;
         $s->permissions= $permissions;
         if (FALSE === ($s->_hdl= sem_get($key, $maxAquire, $permissions, TRUE))) {
-          throw(new IOException('Could not get semaphore '.$key));
+          throw new IOException('Could not get semaphore '.$key);
         }
         
         $semaphores[$key]= $s;
@@ -69,7 +69,7 @@
      */
     public function acquire() {
       if (FALSE === sem_acquire($this->_hdl)) {
-        throw(new IOException('Could not acquire semaphore '.$this->key));
+        throw new IOException('Could not acquire semaphore '.$this->key);
       }
       return TRUE;
     }
@@ -84,7 +84,7 @@
      */
     public function release() {
       if (FALSE === sem_release($this->_hdl)) {
-        throw(new IOException('Could not release semaphore '.$this->key));
+        throw new IOException('Could not release semaphore '.$this->key);
       }
       return TRUE;
     }
@@ -98,7 +98,7 @@
      */
     public function remove() {
       if (FALSE === sem_remove($this->_hdl)) {
-        throw(new IOException('Could not remove semaphore '.$this->key));
+        throw new IOException('Could not remove semaphore '.$this->key);
       }
       return TRUE;
     }

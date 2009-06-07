@@ -18,7 +18,7 @@
      * Retrieve a file object
      *
      * <code>
-     *   $stdout= &StdStream::get(STDOUT);
+     *   $stdout= StdStream::get(STDOUT);
      *   $stdout->write('Hello');
      * </code>
      *
