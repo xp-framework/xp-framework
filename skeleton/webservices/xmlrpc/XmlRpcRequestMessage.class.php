@@ -29,7 +29,7 @@
      * Construct a XML-RPC message from a string
      *
      * <code>
-     *   $msg= &XmlRpcRequestMessage::fromString('<methodCall>...</methodCall>');
+     *   $msg= XmlRpcRequestMessage::fromString('<methodCall>...</methodCall>');
      * </code>
      *
      * @param   string string
