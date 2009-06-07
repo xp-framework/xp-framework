@@ -370,9 +370,9 @@
         new SerializedData('A:2:{O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}s:5:"World";}'
       ));
       $this->assertClass($return, 'lang.types.ArrayList');
-      $this->assertEquals(2, sizeof($return->values));
-      $this->assertEquals(new net·xp_framework·unittest·remote·Person(), $return->values[0]);
-      $this->assertEquals('World', $return->values[1]);
+      $this->assertEquals(2, $return->length);
+      $this->assertEquals(new net·xp_framework·unittest·remote·Person(), $return[0]);
+      $this->assertEquals('World', $return[1]);
     }
 
     /**
