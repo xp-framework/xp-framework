@@ -14,8 +14,8 @@
    *   class NameListDoclet extends Doclet {
    * 
    *     public function start(RootDoc $root) {
-   *       while ($root->classes->hasNext()) {
-   *         echo $root->classes->next()->qualifiedName(), "\n";
+   *       while ($this->classes->hasNext()) {
+   *         echo $this->classes->next()->qualifiedName(), "\n";
    *       }
    *     }
    *   }
@@ -25,12 +25,26 @@
    * @purpose  Abstract base class
    */
   abstract class Doclet extends Object {
+    public $options= array();
+    public $classes= NULL;
+
+    /**
+     * Returns an option by a given name or the specified default value
+     * if the option does not exist.
+     *
+     * @param   string name
+     * @param   string default default NULL
+     * @return  string
+     */
+    public function option($name, $default= NULL) {
+      return isset($this->options[$name]) ? $this->options[$name] : $default;
+    }
  
     /**
      * Generate documentation here.
      *
      * @param   text.doclet.RootDoc root
-     * @return  bool TRUE on success
+     * @return  var
      */ 
     public abstract function start(RootDoc $root);
 
