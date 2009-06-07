@@ -9,7 +9,7 @@
    *
    * Example:
    * <code>
-   *   $p= &new PHPSyntaxHighlighter(new File(__FILE__));
+   *   $p= new PHPSyntaxHighlighter(new File(__FILE__));
    *   echo $p->getHighlight();
    * </code>
    *

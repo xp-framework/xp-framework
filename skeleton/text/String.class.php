@@ -220,7 +220,7 @@
      *
      * Example:
      * <code>
-     *   $s= &new String('xp@php3.de');
+     *   $s= new String('xp@php3.de');
      *   if ($portion= $s->substrAfter('@')) {
      *     echo $portion;   // php3.de
      *   }
@@ -505,10 +505,10 @@
      *
      * Examples:
      * <code>
-     *   $s= &new String('Hello');
+     *   $s= new String('Hello');
      *   $a= $s->toArray();         // array('H', 'e', 'l', 'l', 'o')
      *
-     *   $s= &new String('Friebe,Timm');
+     *   $s= new String('Friebe,Timm');
      *   $a= $s->toArray(',');      // array('Friebe', 'Timm')
      * </code>
      *
@@ -531,8 +531,8 @@
      *
      * Examples:
      * <code>
-     *   $s= &String::fromArray(array('a', 'b', 'c'));  // "abc"
-     *   $s= &String::fromArray(array(1, 2, 3), ',');   // "1,2,3"
+     *   $s= String::fromArray(array('a', 'b', 'c'));  // "abc"
+     *   $s= String::fromArray(array(1, 2, 3), ',');   // "1,2,3"
      * </code>
      *
      * @param   string delim default ''
