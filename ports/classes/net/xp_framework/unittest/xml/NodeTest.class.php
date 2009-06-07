@@ -21,7 +21,7 @@
      * Helper method which returns the XML representation of a Node object,
      * trimmed of trailing \ns.
      *
-     * @param   &xml.Node node
+     * @param   xml.Node node
      * @return  string
      */
     protected function sourceOf($node, $mode= INDENT_DEFAULT) {
