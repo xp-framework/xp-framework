@@ -6,7 +6,6 @@
 
   uses(
     'text.doclet.TagletManager',
-    'util.Hashmap',
     'unittest.TestCase'
   );
 
@@ -22,7 +21,7 @@
      * Helper method which parses the raw doc comment
      *
      * @param   string rawComment
-     * @return  util.Hashmap
+     * @return  array<string, var>
      */
     protected function parseDetail($rawComment) {
       $tm= TagletManager::getInstance();
@@ -43,16 +42,11 @@
         }
       } while ($t= strtok('@'));
       
-      return new Hashmap($detail);
+      return $detail;
     }
     
     /**
-     * Returns tags of specified kind. Also performs sanity-check. Basically 
-     * a workaround for:
-     * <code>
-     *   $tags= $detail->get('tags')[$kind];
-     * </code>
-     * ...which is unfortunately not supported by PHP.
+     * Returns tags of specified kind. Also performs sanity-check.
      *
      * @param   array<string, text.doclet.Tag[]> tags
      * @param   string kind
@@ -76,8 +70,8 @@
          * 
          */
       ');
-      $this->assertEquals('This is a comment', $detail->get('text'));
-      $this->assertEmpty($detail->get('tags'));
+      $this->assertEquals('This is a comment', $detail['text']);
+      $this->assertEmpty($detail['tags']);
     }
 
     /**
@@ -93,8 +87,8 @@
          * @see   php://preg_replace
          */
       ');
-      $this->assertEquals('Replaces text using regular expressions.', $detail->get('text'));
-      with ($t= $this->tags($detail->get('tags'), 'see')); {
+      $this->assertEquals('Replaces text using regular expressions.', $detail['text']);
+      with ($t= $this->tags($detail['tags'], 'see')); {
         $this->assertEquals(1, sizeof($t));
         $this->assertClass($t[0], 'text.doclet.SeeTag');
         $this->assertEquals('php', $t[0]->scheme);
@@ -116,14 +110,14 @@
          * @return  int number of matches
          */
       ');
-      $this->assertEquals('Replaces text using regular expressions.', $detail->get('text'));
-      with ($see= $this->tags($detail->get('tags'), 'see')); {
+      $this->assertEquals('Replaces text using regular expressions.', $detail['text']);
+      with ($see= $this->tags($detail['tags'], 'see')); {
         $this->assertEquals(1, sizeof($see));
         $this->assertClass($see[0], 'text.doclet.SeeTag');
         $this->assertEquals('php', $see[0]->scheme);
         $this->assertEquals('preg_replace', $see[0]->urn);
       }
-      with ($ret= $this->tags($detail->get('tags'), 'return')); {
+      with ($ret= $this->tags($detail['tags'], 'return')); {
         $this->assertEquals(1, sizeof($ret));
         $this->assertClass($ret[0], 'text.doclet.ReturnTag');
         $this->assertEquals('int', $ret[0]->type);
@@ -153,7 +147,7 @@
         '  $b= new Binford();'."\n".
         '  echo $b->getClass()->getName();'."\n".
         '</code>',
-        $detail->get('text')
+        $detail['text']
       );
     }
 
@@ -177,7 +171,7 @@
         '<code>'."\n".
         '  $b= new Binford(73);   // *BLAM*'."\n".
         '</code>',
-        $detail->get('text')
+        $detail['text']
       );
     }
   }
