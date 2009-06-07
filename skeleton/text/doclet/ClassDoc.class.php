@@ -126,6 +126,15 @@
     public function isEnum() {
       return ENUM_CLASS == $this->classType();
     }
+
+    /**
+     * Returns whether this class is an ordinary class
+     *
+     * @return  bool
+     */
+    public function isOrdinaryClass() {
+      return ORDINARY_CLASS == $this->classType();
+    }
     
     /**
      * Returns whether this class is a subclass of a given class.
