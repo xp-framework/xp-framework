@@ -25,13 +25,7 @@
      *
      */
     public function setUp() {
-      $this->root= newinstance('text.doclet.RootDoc', array(), '{
-        public function packageNamed($name) {
-          $p= new PackageDoc($name);
-          $p->setRoot($this);
-          return $p;
-        }
-      }');
+      $this->root= new RootDoc();
     }
 
     /**
