@@ -12,7 +12,7 @@
    * Usage code snippet:
    * <code>
    *   // ...
-   *   for ($i= &$db->iterator(); $i->hasNext(); ) {
+   *   for ($i= $db->iterator(); $i->hasNext(); ) {
    *     $key= $i->next();
    *     var_dump($key, $db->fetch($key));
    *   }
@@ -35,7 +35,6 @@
      * @see     xp://io.dba.DBAFile#iterator
      */
     public function __construct($fd) {
-      
       $this->_fd= $fd;
     }
   
@@ -63,7 +62,7 @@
      */
     public function next() {
       if (!is_string($this->_key)) {
-        throw(new NoSuchElementException('No more elements'));
+        throw new NoSuchElementException('No more elements');
       }
       return $this->_key;
     }

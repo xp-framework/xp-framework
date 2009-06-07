@@ -32,9 +32,9 @@
    * <code>
    *   uses('io.dba.DBAFile');
    *   
-   *   $db= &new DBAFile('test.gdbm', DBH_GDBM);
+   *   $db= new DBAFile('test.gdbm', DBH_GDBM);
    *   $db->open(DBO_READ);
-   *   for ($i= &$db->iterator(); $i->hasNext(); ) {
+   *   for ($i= $db->iterator(); $i->hasNext(); ) {
    *     $key= $i->next();
    *     printf("%-30s => %s\n", $key, $db->fetch($key));
    *   }
@@ -46,7 +46,7 @@
    * <code>
    *   uses('io.dba.DBAFile');
    *   
-   *   $db= &new DBAFile('test.cdb', DBH_CDB);
+   *   $db= new DBAFile('test.cdb', DBH_CDB);
    *   $db->open(DBO_CREATE);
    *   $db->store('path', ini_get('include_path'));
    *   $db->save($optimize= TRUE);
@@ -109,9 +109,9 @@
         $this->handler
       ))) {
         $this->_fd= -1;
-        throw(new IOException(
+        throw new IOException(
           'Could not open '.$this->handler.'://'.$this->filename.' mode "'.$mode.'"'
-        ));
+        );
       }
       return TRUE;
     }
@@ -139,7 +139,7 @@
     public function keys() {
       $keys= array();
       if (NULL === ($k= dba_firstkey($this->_fd))) {
-        throw(new IOException('Could not fetch first key'));
+        throw new IOException('Could not fetch first key');
       }
       while (is_string($k)) {
         $keys[]= $k;
@@ -166,7 +166,7 @@
         if (dba_exists($key, $this->_fd)) return FALSE;
         
         // dba_insert() failed to any other reason
-        throw(new IOException('Could not insert key "'.$key.'"'));
+        throw new IOException('Could not insert key "'.$key.'"');
       }
       return TRUE;
     }
@@ -183,7 +183,7 @@
      */
     public function store($key, $value) {
       if (!dba_replace($key, $value, $this->_fd)) {
-        throw(new IOException('Could not replace key "'.$key.'"'));
+        throw new IOException('Could not replace key "'.$key.'"');
       }
       return TRUE;
     }
@@ -197,7 +197,7 @@
      */
     public function delete($key) {
       if (!dba_delete($key, $this->_fd)) {
-        throw(new IOException('Could not delete key "'.$key.'"'));
+        throw new IOException('Could not delete key "'.$key.'"');
       }
       return TRUE;
     }
@@ -223,7 +223,7 @@
     public function fetch($key) {
       $r= dba_fetch($key, $this->_fd);
       if (NULL === $r) {
-        throw(new IOException('Could not fetch key "'.$key.'"'));
+        throw new IOException('Could not fetch key "'.$key.'"');
       }
       return $r;
     }
@@ -238,10 +238,10 @@
      */    
     public function save($optimize= FALSE) {
       if ($optimize) if (!dba_optimize($this->_fd)) {
-        throw(new IOException('Could not optimize database'));
+        throw new IOException('Could not optimize database');
       }
       if (!dba_sync($this->_fd)) {
-        throw(new IOException('Could not save database'));
+        throw new IOException('Could not save database');
       }
       return TRUE;
     }
