@@ -12,7 +12,7 @@
    *
    * This filter:
    * <code>
-   *   $filter= &new AllOfFilter(array(
+   *   $filter= new AllOfFilter(array(
    *     new ModifiedBeforeFilter(new Date('Dec 14  2004')),
    *     new ExtensionEqualsFilter('jpg')
    *   ));

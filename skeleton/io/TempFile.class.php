@@ -13,7 +13,7 @@
    * <code>
    *   uses('io.TempFile');
    *
-   *   $f= &new TempFile();
+   *   $f= new TempFile();
    *   $f->open(FILE_MODE_WRITE);
    *   $f->write('Hello');
    *   $f->close();

@@ -12,7 +12,7 @@
    *
    * This filter:
    * <code>
-   *   $filter= &new AnyOfFilter(array(
+   *   $filter= new AnyOfFilter(array(
    *     new SizeSmallerThanFilter(500),
    *     new ExtensionEqualsFilter('txt')
    *   ));
