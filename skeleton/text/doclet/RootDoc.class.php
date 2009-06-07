@@ -337,8 +337,14 @@
       }
       
       // Tokenize contents
-      if (!($tokens= token_get_all($loader->loadClassBytes($classname)))) {
-        throw new IllegalArgumentException('Could not parse "'.$classname.'"');
+      $tokens= @token_get_all($loader->loadClassBytes($classname));
+      if (!$tokens || T_OPEN_TAG !== $tokens[0][0]) {
+        throw new IllegalArgumentException(sprintf(
+          'Could not parse "%s" from %s, first token: %s',
+          $classname,
+          xp::stringOf($loader),
+          xp::stringOf($tokens[0])
+        ));
       }
 
       with ($doc= new ClassDoc(), $doc->setRoot($this)); {
