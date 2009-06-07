@@ -12,7 +12,7 @@
    * Example:
    * <code>
    *   // [...build messages array...]
-   *   $t= &new MailTransport();
+   *   $t= new MailTransport();
    *   $t->connect();       // use $t->connect('-odq'); for queuing
    *
    *   for ($i= 0, $size= sizeof($message); $i < $size; $i++) {

@@ -301,7 +301,7 @@
     /**
      * Get recipient (use iteratively):
      * <code>
-     *   while ($r= &$m->getRecipient(TO)) {
+     *   while ($r= $m->getRecipient(TO)) {
      *     var_dump($r);
      *   }
      * </code>
@@ -372,9 +372,9 @@
      * @throws  lang.IllegalArgumentException if one of From, To, Cc or Bcc is specfied as header
      */
     public function setHeader($header, $value) {
-      if (FALSE === $this->_setHeader($header, $value)) throw(
-        new IllegalArgumentException('You cannot use this method to set '.$header)
-      );
+      if (FALSE === $this->_setHeader($header, $value)) {
+        throw new IllegalArgumentException('You cannot use this method to set '.$header);
+      }
     }
     
     /**

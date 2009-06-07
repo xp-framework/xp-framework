@@ -152,7 +152,7 @@
      * Example:
      * <code>
      *   $f->open();                           
-     *   while ($msg= &$f->getMessage()) {     
+     *   while ($msg= $f->getMessage()) {     
      *     echo $msg->toString();
      *   }                                     
      *   $f->close();                          
