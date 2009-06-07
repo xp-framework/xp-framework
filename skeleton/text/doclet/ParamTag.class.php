@@ -14,8 +14,8 @@
    */
   class ParamTag extends Tag {
     public
-      $type= '',
-      $name= '';
+      $type      = '',
+      $parameter = '';
 
     /**
      * Constructor
@@ -25,9 +25,9 @@
      * @param   string label
      */
     public function __construct($type, $name, $label) {
-      parent::__construct('type', $label);
+      parent::__construct('param', $label);
       $this->type= $type;
-      $this->name= $name;
+      $this->parameter= $name;
     }  
   }
 ?>
