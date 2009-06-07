@@ -10,15 +10,16 @@
    * Represents an SQL statement
    *
    * <code>
-   *  with ($peer= &News::getPeer()); {
-   *    $statement= &new Statement('select * from news where news_id < 10');
+   *  with ($peer= News::getPeer()); {
+   *    $statement= new Statement('select * from news where news_id < 10');
    * 
    *    // Use doSelect()
    *    $objects= $peer->doSelect($statement);
    * 
    *    // Use iteratorFor()
-   *    for ($iterator= &$peer->iteratorFor($statement); $iterator->hasNext(); ) {
-   *      $object= &$iterator->next();
+   *    for ($iterator= $peer->iteratorFor($statement); $iterator->hasNext(); ) {
+   *      $object= $iterator->next();
+   *      // ...
    *    }
    *  }
    * </code>
