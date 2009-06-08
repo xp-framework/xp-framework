@@ -46,5 +46,14 @@
     public function getModifiers() {
       return $this->modifiers;
     }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->declaring->qualifiedName().'::$'.$this->name.'>';
+    }
   }
 ?>
