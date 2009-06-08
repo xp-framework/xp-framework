@@ -12,7 +12,7 @@
    * Represents a HTML textarea field
    *
    * @see      http://www.w3schools.com/TAGS/tag_textarea.asp
-   * @see      xp://unitform.web.Field
+   * @see      xp://unittest.web.Field
    * @purpose  Value object
    */
   class unittest·web·TextAreaField extends unittest·web·Field {

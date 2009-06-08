@@ -11,7 +11,7 @@
   /**
    * HTML field types enumeration
    *
-   * @see      xp://unitform.web.Form#getFields
+   * @see      xp://unittest.web.Form#getFields
    * @purpose  Base class
    */
   abstract class unittest·web·Fields extends Enum {

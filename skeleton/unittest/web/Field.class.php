@@ -9,7 +9,7 @@
   /**
    * Represents a HTML field
    *
-   * @see      xp://unitform.web.Form#getFields
+   * @see      xp://unittest.web.Form#getFields
    * @purpose  Base class
    */
   abstract class unittest·web·Field extends Object {

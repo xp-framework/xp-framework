@@ -12,7 +12,7 @@
    * Represents a HTML input field
    *
    * @see      http://www.w3schools.com/TAGS/tag_input.asp
-   * @see      xp://unitform.web.Field
+   * @see      xp://unittest.web.Field
    * @purpose  Value object
    */
   class unittest·web·InputField extends unittest·web·Field {

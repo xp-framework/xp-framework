@@ -13,7 +13,7 @@
    *
    * @see      http://www.w3schools.com/TAGS/tag_Select.asp
    * @see      http://www.w3schools.com/TAGS/tag_option.asp
-   * @see      xp://unitform.web.Field
+   * @see      xp://unittest.web.Field
    * @purpose  Value object
    */
   class unittest·web·SelectField extends unittest·web·Field {
