@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.doclet.ThrowsTag', 'text.doclet.Taglet');
+  uses('text.doclet.ThrowsTag', 'text.doclet.Taglet', 'lang.ElementNotFoundException');
 
   /**
    * A taglet that represents the throws tag. 
@@ -22,10 +22,16 @@
      * @param   string kind
      * @param   string text
      * @return  text.doclet.Tag
+     * @throws  lang.ElementNotFoundException if the class cannot be found
      */ 
     public function tagFrom($holder, $kind, $text) {
       sscanf($text, '%s %[^$]', $class, $condition);
-      return new ThrowsTag($holder->root->classNamed($class), (string)$condition);
+      try {
+        $classDoc= $holder->root->classNamed($class);
+      } catch (IllegalArgumentException $e) {
+        throw new ElementNotFoundException('@'.$holder->toString().': '.$e->getMessage());
+      }
+      return new ThrowsTag($classDoc, (string)$condition);
     }
   } 
 ?>
