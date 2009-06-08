@@ -44,7 +44,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'<'.$this->declaring->qualifiedName().'::'.$this->name().'>';
+      return $this->getClassName().'<'.$this->declaring->qualifiedName().'::'.$this->name.'>';
     }
   }
 ?>
