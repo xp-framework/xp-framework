@@ -13,7 +13,8 @@
   class MethodDoc extends AnnotatedDoc {
     public
       $arguments    = array(),
-      $modifiers    = array();
+      $modifiers    = array(),
+      $declaring    = NULL;
 
     /**
      * Returns method access level (one of public, private or protected)
@@ -35,6 +36,15 @@
      */
     public function getModifiers() {
       return $this->modifiers;
+    }
+
+    /**
+     * Returns a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->declaring->qualifiedName().'::'.$this->name().'>';
     }
   }
 ?>

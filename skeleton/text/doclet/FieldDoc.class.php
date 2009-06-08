@@ -7,13 +7,14 @@
   uses('text.doclet.Doc');
 
   /**
-   *
-   * @purpose  Documents a class field
+   * Documents a class field
+   * 
    */
   class FieldDoc extends Doc {
     public
       $modifiers     = array(),
-      $constantValue = NULL;
+      $constantValue = NULL,
+      $declaring     = NULL;
 
     /**
      * Retrieve initial value
