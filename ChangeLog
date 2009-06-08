@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.7.3, released 2009-06-08
+----------------------------------
+SVN version: 13125
+
 Heads up!
 ~~~~~~~~~
 - Changed text.doclet.Doclet::start() to be abstract
