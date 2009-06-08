@@ -46,7 +46,7 @@
     public function classParam() {
       $t= $this->makeParam('io.File file');
       $this->assertEquals('io.File', $t->type);
-      $this->assertEquals('file', $t->name);
+      $this->assertEquals('file', $t->parameter);
       $this->assertEquals('', $t->text);
     }
 
@@ -58,7 +58,7 @@
     public function classParamWithText() {
       $t= $this->makeParam('io.File file The file to be deleted. Must be closed!');
       $this->assertEquals('io.File', $t->type);
-      $this->assertEquals('file', $t->name);
+      $this->assertEquals('file', $t->parameter);
       $this->assertEquals('The file to be deleted. Must be closed!', $t->text);
     }
 
@@ -70,7 +70,7 @@
     public function primitiveParam() {
       $t= $this->makeParam('string filename');
       $this->assertEquals('string', $t->type);
-      $this->assertEquals('filename', $t->name);
+      $this->assertEquals('filename', $t->parameter);
       $this->assertEquals('', $t->text);
     }
 
@@ -82,7 +82,7 @@
     public function arrayParam() {
       $t= $this->makeParam('string[] names');
       $this->assertEquals('string[]', $t->type);
-      $this->assertEquals('names', $t->name);
+      $this->assertEquals('names', $t->parameter);
       $this->assertEquals('', $t->text);
     }
 
@@ -94,7 +94,7 @@
     public function varargParam() {
       $t= $this->makeParam('string* names');
       $this->assertEquals('string*', $t->type);
-      $this->assertEquals('names', $t->name);
+      $this->assertEquals('names', $t->parameter);
       $this->assertEquals('', $t->text);
     }
 
@@ -106,7 +106,7 @@
     public function genericParam() {
       $t= $this->makeParam('array<string, string> map');
       $this->assertEquals('array<string, string>', $t->type);
-      $this->assertEquals('map', $t->name);
+      $this->assertEquals('map', $t->parameter);
       $this->assertEquals('', $t->text);
     }
 
@@ -118,7 +118,7 @@
     public function qualifiedGenericParam() {
       $t= $this->makeParam('util.collection.HashTable<lang.types.Number, lang.types.String> map');
       $this->assertEquals('util.collection.HashTable<lang.types.Number, lang.types.String>', $t->type);
-      $this->assertEquals('map', $t->name);
+      $this->assertEquals('map', $t->parameter);
       $this->assertEquals('', $t->text);
     }
   }

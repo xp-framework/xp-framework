@@ -68,7 +68,7 @@
      * Test with an exception class that does not exist
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.ElementNotFoundException')]
     public function nonExistantException() {
       $this->makeThrows('@@DOES-NOT-EXIST@@');
     }

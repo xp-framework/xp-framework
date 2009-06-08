@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'text.doclet.markup.MarkupBuilder'
+    'text.doclet.markup.MarkupBuilder',
+    'text.doclet.markup.DelegatingProcessor'
   );
 
   /**
@@ -25,6 +26,9 @@
      */
     public function setUp() {
       $this->builder= new MarkupBuilder();
+      $this->builder->registerProcessor('summary', newinstance('text.doclet.markup.DelegatingProcessor', array($this->builder->processors['default']), '{
+        public function tag() { return "summary"; }
+      }'));
     }
     
     /**
@@ -726,6 +730,18 @@
       $this->assertEquals(
         '<image src="example.com/image/blank.gif" rel="http" format="left"/>', 
         $this->builder->markupFor('[[http://example.com/image/blank.gif left]]')
+      );
+    }
+
+    /**
+     * Test tags with attributes
+     *
+     */
+    #[@test]
+    public function tagWithAttributes() {
+      $this->assertEquals(
+        '</p><summary class="hint" href="#"><p>This text goes here</p></summary><p>', 
+        $this->builder->markupFor('<summary class="hint" href="#">This text goes here</summary>')
       );
     }
   }
