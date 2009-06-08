@@ -460,6 +460,7 @@
             case self::ST_CLASS_VAR.T_VARIABLE;
               unset($field);
               $field= new FieldDoc();
+              $field->declaring= $doc;
               $field->name= $t[1];
               $field->modifiers= $modifiers;
               break;
@@ -525,6 +526,7 @@
                 $method->rawComment= $comment;
                 $method->annotations= $annotations;
                 $method->modifiers= $modifiers;
+                $method->declaring= $doc;
                 
                 // Omit static initializer, it's not a real function
                 if ('__static' != $method->name) $doc->methods[]= $method;
