@@ -63,8 +63,8 @@
      */
     public function classSet() {
       $set= new HashSet();
-      foreach (array_keys($this->interfaces->values) as $kind) {
-        $set->addAll($this->interfaces->values[$kind]->classSet());
+      for ($i= 0; $i < $this->interfaces->length; $i++) {
+        $set->addAll($this->interfaces[$i]->classSet());
       }
       return $set->toArray();
     }
@@ -82,8 +82,8 @@
         "}",
         $this->getClassName(),
         $this->jndiName,
-        xp::stringOf($this->interfaces->values[HOME_INTERFACE]),
-        xp::stringOf($this->interfaces->values[REMOTE_INTERFACE])
+        xp::stringOf($this->interfaces[HOME_INTERFACE]),
+        xp::stringOf($this->interfaces[REMOTE_INTERFACE])
       );
     }
   }
