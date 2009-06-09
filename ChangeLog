@@ -6,6 +6,13 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- Made only those connections available in rdbms.DriverManager where the 
+  correct driver is loaded 
+  http://news.xp-framework.net/article/303/2009/06/09
+  (friebe)
+
 
 Version 5.7.3, released 2009-06-08
 ----------------------------------
