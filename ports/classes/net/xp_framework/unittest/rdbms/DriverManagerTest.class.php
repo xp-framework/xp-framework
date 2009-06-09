@@ -18,54 +18,6 @@
   class DriverManagerTest extends TestCase {
   
     /**
-     * Test Sybase support
-     *
-     */
-    #[@test]
-    public function sybase() {
-      $this->assertClass(
-        DriverManager::getConnection('sybase://localhost'),
-        'rdbms.sybase.SybaseConnection'
-      );
-    }
-
-    /**
-     * Test MySQL support
-     *
-     */
-    #[@test]
-    public function mysql() {
-      $this->assertClass(
-        DriverManager::getConnection('mysql://localhost'),
-        'rdbms.mysql.MySQLConnection'
-      );
-    }
-
-    /**
-     * Test PostgreSQL support
-     *
-     */
-    #[@test]
-    public function pgsql() {
-      $this->assertClass(
-        DriverManager::getConnection('pgsql://localhost'),
-        'rdbms.pgsql.PostgreSQLConnection'
-      );
-    }
-
-    /**
-     * Test sqlite support
-     *
-     */
-    #[@test]
-    public function sqlite() {
-      $this->assertClass(
-        DriverManager::getConnection('sqlite://localhost'),
-        'rdbms.sqlite.SQLiteConnection'
-      );
-    }
-
-    /**
      * Test getConnection() throws an exception in case an unsupported
      * driver is encountered
      *

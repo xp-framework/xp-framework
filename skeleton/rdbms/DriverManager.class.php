@@ -81,6 +81,18 @@
 
     static function __static() {
       self::$instance= new self();
+      if (extension_loaded('mysql')) {
+        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysql.MySQLConnection');
+      }
+      if (extension_loaded('pgsql')) {
+        self::$instance->drivers['pgsql']= XPClass::forName('rdbms.pgsql.PostgreSQLConnection');
+      }
+      if (extension_loaded('sqlite')) {
+        self::$instance->drivers['sqlite']= XPClass::forName('rdbms.sqlite.SQLiteConnection');
+      }
+      if (extension_loaded('sybase_ct')) {
+        self::$instance->drivers['sybase']= XPClass::forName('rdbms.sybase.SybaseConnection');
+      } 
     }
     
     /**
@@ -131,26 +143,14 @@
      * @throws  rdbms.DriverNotSupportedException
      */
     public static function getConnection($str) {
-      static $builtin= array(
-        'sybase'   => 'rdbms.sybase.SybaseConnection',
-        'mysql'    => 'rdbms.mysql.MySQLConnection',
-        'pgsql'    => 'rdbms.pgsql.PostgreSQLConnection',
-        'sqlite'   => 'rdbms.sqlite.SQLiteConnection',
-        // TBI: Oracle, ...
-      );
-      
       $dsn= new DSN($str);
       $id= $dsn->getDriver();
       
       // Lookup driver by identifier.
       if (!isset(self::$instance->drivers[$id])) {
-        try {
-          self::$instance->drivers[$id]= XPClass::forName($builtin[$id]);
-        } catch (ClassNotFoundException $e) {
-          throw new DriverNotSupportedException(
-            'No driver registered for '.$id.': '.$e->getMessage()
-          );
-        }
+        throw new DriverNotSupportedException(
+          'No driver registered for '.$id.' - is the library loaded?'
+        );
       }
       
       return self::$instance->drivers[$id]->newInstance($dsn);
