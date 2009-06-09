@@ -13,7 +13,7 @@
    * <code>
    *   uses('util.Hashmap');
    *
-   *   $h= &new Hashmap();
+   *   $h= new Hashmap();
    *   $h->put('color', 'red');
    *   $h->put('count', 5);
    *   if ($h->containsKey('color')) {
