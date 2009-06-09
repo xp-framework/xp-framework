@@ -27,7 +27,7 @@
       
       $serialized->offset++;  // Opening "{"
       for ($i= 0; $i < $a->length; $i++) {
-        $a->values[$i]= $serializer->valueOf($serialized, $context);
+        $a[$i]= $serializer->valueOf($serialized, $context);
       }
       $serialized->offset++;  // Closing "}"
       return $a;
@@ -42,9 +42,9 @@
      * @return  string
      */
     public function representationOf($serializer, $value, $context= array()) {
-      $s= 'A:'.sizeof($value->values).':{';
-      foreach (array_keys($value->values) as $key) {
-        $s.= $serializer->representationOf($value->values[$key], $context);
+      $s= 'A:'.$value->length.':{';
+      for ($i= 0; $i < $value->length; $i++) {
+        $s.= $serializer->representationOf($value[$i], $context);
       }
       return $s.'}';
     }

@@ -60,8 +60,8 @@
      */
     public function classSet() {
       $set= new HashSet(); 
-      for ($i= 0, $s= sizeof($this->methods->values); $i < $s; $i++) {
-        $set->addAll($this->methods->values[$i]->classSet()); 
+      for ($i= 0; $i < $this->methods->length; $i++) {
+        $set->addAll($this->methods[$i]->classSet()); 
       }
       return $set->toArray();
     }
@@ -73,8 +73,8 @@
      */
     public function toString() {
       $r= $this->getClassName().'@(class= '.$this->className.") {\n";
-      for ($i= 0, $s= sizeof($this->methods->values); $i < $s; $i++) {
-        $r.= '  - '.str_replace("\n", "\n  ", $this->methods->values[$i]->toString())."\n";
+      for ($i= 0; $i < $this->methods->length; $i++) {
+        $r.= '  - '.str_replace("\n", "\n  ", $this->methods[$i]->toString())."\n";
       }
       return $r.'}';
     }    
