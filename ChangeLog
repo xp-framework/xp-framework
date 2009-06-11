@@ -13,6 +13,12 @@ Features
   http://news.xp-framework.net/article/303/2009/06/09
   (friebe)
 
+Bugfixes
+~~~~~~~~
+- Fixed img.util.ExifData class to no longer set date to "1999-12-31" 
+  when EXIF data does not contain a date
+  (friebe)
+  
 
 Version 5.7.3, released 2009-06-08
 ----------------------------------
