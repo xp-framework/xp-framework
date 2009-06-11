@@ -55,18 +55,18 @@
     }
   
     /**
-     * Test reading Exif data from a file which contains exif-data
+     * Test reading Exif data from a file which contains iptc-data
      * only
      *
      */
     #[@test, @expect('lang.ElementNotFoundException')]
-    public function fromFileWithoutExif() {
+    public function fromFileWithIptcOnly() {
       $this->extractFromFile($this->resourceAsFile('iptc-only.jpg'));
     }
 
     /**
      * Test reading Exif data from a file which contains exif-data
-     * AND Exif-data
+     * AND iptc-data
      *
      */
     #[@test]
@@ -78,11 +78,11 @@
 
     /**
      * Test reading Exif data from a file which contains exif-data
-     * AND Exif-data
+     * only
      *
      */
     #[@test]
-    public function fromFile() {
+    public function fromFileWithExifOnly() {
       $i= $this->extractFromFile($this->resourceAsFile('exif-only.jpg'));
       $this->assertEquals(1, $i->getWidth());
       $this->assertEquals(1, $i->getHeight());
