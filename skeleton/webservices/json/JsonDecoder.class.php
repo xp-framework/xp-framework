@@ -241,7 +241,7 @@
      * @return  int
      */
     protected function _getNextToken() {
-      if ($this->stream->eof()) return self::T_EOF;
+      if ($this->stream->eof()) return -1;
       $this->_trim();
       
       $token= $this->stream->read(1);
