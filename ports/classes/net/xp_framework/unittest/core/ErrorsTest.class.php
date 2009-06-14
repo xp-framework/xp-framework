@@ -63,6 +63,34 @@
       $a.= '';    // E_NOTICE: Undefined variable:  a
       $this->assertTrue(xp::errorAt(__FILE__, __LINE__ - 1));
     }
+    
+    /**
+     * Tests error handler determines current class and/or method when
+     * a NOTICE or WARNING has been caught
+     *
+     */
+    #[@test]
+    public function errorWithClassAndMethod() {
+      $a.= '';  // E_NOTICE: Undefined variable: a
+      
+      try {
+        throw new XPException('');
+      } catch (XPException $e) {
+        foreach ($e->getStackTrace() as $element) {
+          if ($element->file !== __FILE__) continue;
+          
+          $this->assertEquals(__CLASS__, $element->class);
+          $this->assertEquals(__FUNCTION__, $element->method);
+          
+          return;
+        }
+        
+        $this->fail('Error not in stacktrace', $e->getStackTrace(), 'lang.StackTraceElement');
+        return;
+      }
+
+      $this->fail('Exception not caught', NULL, 'lang.Exception');
+    }
 
     /**
      * Tests that PHP errormessages get appended to the xp error registry

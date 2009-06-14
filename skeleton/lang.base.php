@@ -369,7 +369,19 @@
     if (E_RECOVERABLE_ERROR == $code) {
       throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
-      @xp::$registry['errors'][$file][$line][$msg]++;
+      $bt= debug_backtrace(FALSE);
+      $class= (isset($bt[1]['class']) ? $bt[1]['class'] : 0);
+      $method= (isset($bt[1]['function']) ? $bt[1]['function'] : 0);
+      
+      if (!isset(xp::$registry['errors'][$file][$line][$msg])) {
+        xp::$registry['errors'][$file][$line][$msg]= array(
+          'class' => $class,
+          'method'  => $method,
+          'cnt'     => 1
+        );
+      } else {
+        xp::$registry['errors'][$file][$line][$msg]['cnt']++;
+      }
     }
   }
   // }}}

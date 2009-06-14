@@ -69,7 +69,15 @@
      */
     protected function addStackTraceFor($file, $class, $function, $originalline, $args, $errors) {
       foreach ($errors as $line => $errormsg) {
-        foreach ($errormsg as $message => $amount) {
+        foreach ($errormsg as $message => $details) {
+          if (is_array($details)) {
+            $class= $details['class'];
+            $function= $details['method'];
+            $amount= $details['cnt'];
+          } else {
+            $amount= $details;
+          }
+          
           $this->trace[]= new StackTraceElement(
             $file,
             $class,
@@ -78,7 +86,7 @@
             $args,
             $message.($amount > 1 ? ' (... '.($amount - 1).' more)' : '')
           );
-        }   
+        }
       }
     }
 
