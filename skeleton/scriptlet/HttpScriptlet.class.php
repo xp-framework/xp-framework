@@ -36,7 +36,7 @@
    *   uses('scriptlet.HttpScriptlet');
    * 
    *   class MyScriptlet extends HttpScriptlet {
-   *     function doGet($request, $response) {
+   *     public function doGet($request, $response) {
    *       $response->write('Hello World');
    *     }
    *   }
@@ -346,10 +346,10 @@
           // (default: no). If not, throw a HttpSessionInvalidException with
           // the HTTP status code 503 ("Service temporarily unavailable").
           if (!$this->handleSessionInitializationError($request, $response)) {
-            throw(new HttpSessionInvalidException(
+            throw new HttpSessionInvalidException(
               'Session initialization failed: '.$e->getMessage(),
               HTTP_SERVICE_TEMPORARILY_UNAVAILABLE
-            ));
+            );
           }
           
           // Fall through, otherwise
@@ -360,10 +360,10 @@
         // code 400 ("Bad request").
         if (!$request->session->isValid()) {
           if (!$this->handleInvalidSession($request, $response)) {
-            throw(new HttpSessionInvalidException(
+            throw new HttpSessionInvalidException(
               'Session is invalid',
               HTTP_BAD_REQUEST
-            ));
+            );
           }
 
           // Fall through, otherwise
