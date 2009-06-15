@@ -3,7 +3,8 @@
  *
  * $Id$
  */
-  uses('scriptlet.HttpSession', 'unittest.TestCase');
+
+  uses('scriptlet.HttpSession', 'unittest.TestCase', 'util.Date');
 
   /**
    * TestCase for scriptlet.HttpSession class.
@@ -11,8 +12,7 @@
    * @purpose   TestCase
    */
   class HttpSessionTest extends TestCase {
-    public
-      $session  = NULL;
+    protected $session= NULL;
   
     /**
      * Helper method to create the testing session object.
@@ -67,7 +67,7 @@
      *
      */
     #[@test]
-    public function testReattach() {
+    public function reattach() {
       $this->session->initialize(NULL);
       
       $copy= new HttpSession();
@@ -80,7 +80,7 @@
      *
      */
     #[@test]
-    public function testInvalidate() {
+    public function invalidate() {
       $this->session->initialize(NULL);
       $this->assertTrue($this->session->isValid());
       
@@ -93,7 +93,7 @@
      *
      */
     #[@test]
-    public function testValueNames() {
+    public function valueNames() {
       $this->session->initialize(NULL);
       $this->session->putValue('foo', $f= 1);
       $this->session->putValue('bar', $f= 2);
