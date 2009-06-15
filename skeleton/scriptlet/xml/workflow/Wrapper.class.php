@@ -217,7 +217,7 @@
         // the string "multiple", the array will be preserved. Otherwise, the
         // first element will be copied to the values hash, thus making 
         // accessibility easy.
-        if (0 == strlen($value[key($value)])) {
+        if (empty($value) || 0 == strlen($value[key($value)])) {
           if (!($definitions[PARAM_OCCURRENCE] & OCCURRENCE_OPTIONAL)) {
             $handler->addError('missing', $name);
             continue;
