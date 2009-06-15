@@ -18,6 +18,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.mysql.MySQLDBAdapter class to recognize longtext and 
+  tinyblob fields
+  (Tobias Roth)
 - Fixed img.util.ExifData class to no longer set date to "1999-12-31" 
   when EXIF data does not contain a date
   (friebe)
