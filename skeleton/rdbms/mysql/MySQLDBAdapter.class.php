@@ -29,10 +29,12 @@
       'tinytext'   => DB_ATTRTYPE_TEXT,
       'mediumtext' => DB_ATTRTYPE_TEXT,
       'text'       => DB_ATTRTYPE_TEXT,
+      'longtext'   => DB_ATTRTYPE_TEXT,
       'enum'       => DB_ATTRTYPE_ENUM,
       'decimal'    => DB_ATTRTYPE_DECIMAL,
       'float'      => DB_ATTRTYPE_FLOAT,
       'double'     => DB_ATTRTYPE_FLOAT,
+      'tinyblob'   => DB_ATTRTYPE_TEXT,
       'blob'       => DB_ATTRTYPE_TEXT,
       'mediumblob' => DB_ATTRTYPE_TEXT,
       'longblob'   => DB_ATTRTYPE_TEXT
