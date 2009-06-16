@@ -25,6 +25,10 @@
     private
       $formatter= NULL;
 
+    static function __static() {
+      ini_set('sybct.deadlock_retry_count', 0);
+    }
+
     /**
      * Set Timeout
      *
