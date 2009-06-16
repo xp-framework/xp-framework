@@ -29,7 +29,8 @@ Inheritance
  lang.Throwable
  `- lang.XPException
     `- rdbms.SQLException
-       `- rdbms.SQLDeadlockException
+       `- rdbms.SQLStatementFailedException
+          `- rdbms.SQLDeadlockException
 </pre>
 Example (current usage)
 ~~~~~~~~~~~~~~~~~~~~~~~
