@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Fri Apr 11 17:38:39     2008
-@status: discussion, ends Sun Jun  29 10:00:00     2008
+@status: implemented, Tue Jun 16 19:20:49     2009
 @category: rdbms
 
 Scope of Change

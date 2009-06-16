@@ -16,6 +16,11 @@ Features
   http://news.xp-framework.net/article/303/2009/06/09
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0159 - Deadlock handling
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed rdbms.mysql.MySQLDBAdapter class to recognize longtext and 
@@ -154,7 +159,6 @@ RFCs
 - Implemented RFC #0174 - io.collections interface additions / io.streams 
   integration
   (friebe)
-
 - Implemented RFC #0167 - RDBMS and Timezones
   (gelli)
 
