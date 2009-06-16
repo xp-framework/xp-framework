@@ -237,7 +237,7 @@
       if (FALSE === $result) {
         $e= sqlite_last_error($this->handle);
         throw new SQLStatementFailedException(
-          'Statement failed: '.sqlite_error_string($e), 
+          'Statement failed: '.sqlite_error_string($e).' @ '.$this->dsn->getHost(), 
           $sql, 
           $e
         );

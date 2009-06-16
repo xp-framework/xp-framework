@@ -251,22 +251,18 @@
       }
       
       if (FALSE === $result) {
-        switch ($e= mysql_errno($this->handle)) {
+        $code= mysql_errno($this->handle);
+        $message= 'Statement failed: '.mysql_error($this->handle).' @ '.$this->dsn->getHost();
+        switch ($code) {
           case 2006: // MySQL server has gone away
           case 2013: // Lost connection to MySQL server during query
-            throw new SQLConnectionClosedException(
-              'Statement failed: '.mysql_error($this->handle).' @ '.$this->dsn->getHost(),
-              $sql, 
-              $e
-            );
-            break;
+            throw new SQLConnectionClosedException('Statement failed: '.$message, $sql, $code);
+
+          case 1213: // Deadlock
+            throw new SQLDeadlockException($message, $sql, $code);
           
-          default:  
-            throw new SQLStatementFailedException(
-              'Statement failed: '.mysql_error($this->handle), 
-              $sql, 
-              $e
-            );
+          default:   // Other error
+            throw new SQLStatementFailedException($message, $sql, $code);
         }
       }
       

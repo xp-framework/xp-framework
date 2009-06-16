@@ -223,6 +223,7 @@
       }
 
       if (FALSE === $result) {
+        $message= 'Statement failed: '.trim(sybase_get_last_message()).' @ '.$this->dsn->getHost();
         if (!is_resource($error= sybase_query('select @@error', $this->handle))) {
         
           // The only case selecting @@error should fail is if we receive a
@@ -232,17 +233,17 @@
           // Sybase:  Client message:  Read from SQL server failed. (severity 78)
           //
           // but that seems a bit errorprone. 
-          throw new SQLConnectionClosedException(
-            'Statement failed: '.trim(sybase_get_last_message()).' @ '.$this->dsn->getHost(), 
-            $sql
-          );
+          throw new SQLConnectionClosedException($message, $sql);
         }
 
-        throw new SQLStatementFailedException(
-          'Statement failed: '.trim(sybase_get_last_message()), 
-          $sql,
-          current(sybase_fetch_row($error))
-        );
+        $code= current(sybase_fetch_row($error));
+        switch ($code) {
+          case 1205:    // Deadlock
+            throw new SQLDeadlockException($message, $sql, $code);
+
+          default:      // Other error
+            throw new SQLStatementFailedException($message, $sql, $code);
+        }
       }
       
       if (TRUE === $result) {

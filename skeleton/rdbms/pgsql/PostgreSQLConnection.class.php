@@ -198,24 +198,39 @@
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 
-      $result= pg_query($this->handle, $sql);
-
-      if (empty($result)) {
-        throw new SQLStatementFailedException(
-          'Statement failed: '.rtrim(pg_last_error($this->handle)),
-          $sql
-        );
+      $success= pg_send_query($this->handle, $sql);
+      if (!$success) {
+        $message= 'Statement failed: '.rtrim(pg_last_error($this->handle)).' @ '.$this->dsn->getHost();
+        if (PGSQL_CONNECTION_OK !== pg_connection_status($this->handle)) {
+          throw new SQLConnectionClosedException($message, $sql);
+        } else {
+          throw new SQLStatementFailedException($message, $sql);
+        }
       }
       
-      if (TRUE === $result) {
-        $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
-        return TRUE;
+      $result= pg_get_result($this->handle);
+      switch ($status= pg_result_status($result, PGSQL_STATUS_LONG)) {
+        case PGSQL_FATAL_ERROR: case PGSQL_BAD_RESPONSE: {
+          $code= pg_result_error_field($result, PGSQL_DIAG_SQLSTATE);
+          $message= 'Statement failed: '.pg_result_error_field($result, PGSQL_DIAG_MESSAGE_PRIMARY).' @ '.$this->dsn->getHost();
+          if ('40P01' === $code) {
+            throw new SQLDeadlockException($message, $sql, $code);
+          } else {
+            throw new SQLStatementFailedException($message, $sql, $code);
+          }
+        }
+        
+        case PGSQL_COMMAND_OK: {
+          $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
+          return TRUE;
+        }
+        
+        default: {
+          $resultset= new PostgreSQLResultSet($result, $this->tz);
+          $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
+          return $resultset;
+        }
       }
-
-      $resultset= new PostgreSQLResultSet($result, $this->tz);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-
-      return $resultset;
     }
     
     /**
