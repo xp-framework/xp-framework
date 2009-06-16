@@ -175,7 +175,7 @@
     public function toString() {
       $s= $this->getClassName()."@{\n";
       foreach ($this->conditions as $condition) {
-        $s.= '  '.xp::stringOf($condition);
+        $s.= '  '.xp::stringOf($condition)."\n";
       }
       return $s.'}';
     }
