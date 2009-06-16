@@ -7,10 +7,10 @@
   uses('rdbms.DBAdapter');
   
   /**
-   * Adapter for sybase
+   * Adapter for mssql
    *
    * @see   xp://rdbms.DBAdapter
-   * @see   xp://rdbms.sybase.MsSQLConnection
+   * @see   xp://rdbms.mssql.MsSQLConnection
    */
   class MsSQLDBAdapter extends DBAdapter {
     public

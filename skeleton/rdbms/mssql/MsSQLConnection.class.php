@@ -6,16 +6,16 @@
 
   uses(
     'rdbms.DBConnection',
-    'rdbms.sybase.MsSQLResultSet',
+    'rdbms.mssql.MsSQLResultSet',
     'rdbms.Transaction',
     'rdbms.StatementFormatter',
-    'rdbms.sybase.MsSQLDialect'
+    'rdbms.mssql.MsSQLDialect'
   );
 
   /**
    * Connection to MsSQL databases using client libraries
    *
-   * @see      http://sybase.com/
+   * @see      http://mssql.com/
    * @ext      mssql
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
@@ -200,7 +200,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  rdbms.sybase.MsSQLResultSet or FALSE to indicate failure
+     * @return  rdbms.mssql.MsSQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() { 
