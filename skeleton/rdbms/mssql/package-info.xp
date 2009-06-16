@@ -1,0 +1,23 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * MSSQL support for RDBMS api.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>mssql</tt></li>
+ *   <li>Depends on PHP extension <tt>mssql</tt></li>
+ * </ul>
+ * 
+ * @see      php://mssql
+ * @see      http://www.microsoft.com/sqlserver
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.mssql {
+}
