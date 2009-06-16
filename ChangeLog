@@ -8,6 +8,9 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
+- Added Microsoft SQL server support to rdbms API (depending on "mssql"
+  PHP extension).
+  (friebe)
 - Added InterBase/Firebird support to rdbms API (depending on "ibase"
   PHP extension).
   (friebe)
