@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('rdbms.SQLException');
+  uses('rdbms.SQLStatementFailedException');
 
   /**
    * Indicates a deadlock occured
    * 
    * @purpose  SQL-Exception
    */
-  class SQLDeadlockException extends SQLException {
+  class SQLDeadlockException extends SQLStatementFailedException {
     protected $sql= '';
 
     /**

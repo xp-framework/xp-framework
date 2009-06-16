@@ -10,6 +10,7 @@
     'rdbms.SQLStateException',
     'rdbms.SQLStatementFailedException',
     'rdbms.SQLConnectionClosedException',
+    'rdbms.SQLDeadlockException',
     'rdbms.DBEvent',
     'rdbms.DSN',
     'rdbms.ResultSet',
