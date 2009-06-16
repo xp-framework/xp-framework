@@ -1,0 +1,24 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Firebird/Interbase support for RDBMS api.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>ibase</tt></li>
+ *   <li>Depends on PHP extension <tt>ibase</tt></li>
+ * </ul>
+ * 
+ * @see      php://ibase
+ * @see      http://www.firebirdsql.org/
+ * @see      http://www.borland.com/interbase/
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.ibase {
+}
