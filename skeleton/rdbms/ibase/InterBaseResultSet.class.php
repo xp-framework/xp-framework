@@ -23,8 +23,8 @@
       $fields= array();
       if (is_resource($result)) {
         for ($i= 0, $num= ibase_num_fields($result); $i < $num; $i++) {
-          $field= ibase_fetch_field($result, $i);
-          $fields[$field->name]= $field->type;
+          $field= ibase_field_info($result, $i);
+          $fields[$field['name']]= $field['type'];
         }
       }
       parent::__construct($result, $fields, $tz);
@@ -62,7 +62,7 @@
 
       foreach (array_keys($row) as $key) {
         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
-        if ('datetime' == $this->fields[$key]) {
+        if ('TIMESTAMP' == $this->fields[$key]) {
           $row[$key]= Date::fromString($row[$key], $this->tz);
         }
       }
