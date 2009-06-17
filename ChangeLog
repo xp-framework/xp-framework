@@ -14,8 +14,8 @@ Heads up!
 
 Features
 ~~~~~~~~
-- Added Microsoft SQL server support to rdbms API (depending on "mssql"
-  PHP extension).
+- Added Microsoft SQL server support to rdbms API (depending either on 
+  "mssql" or "sqlsrv" PHP extensions).
   (friebe)
 - Added InterBase/Firebird support to rdbms API (depending on "ibase"
   PHP extension).
