@@ -22,9 +22,8 @@
     public function __construct($result, TimeZone $tz= NULL) {
       $fields= array();
       if (is_resource($result)) {
-        for ($i= 0, $num= sqlsrv_num_fields($result); $i < $num; $i++) {
-          $field= sqlsrv_fetch_field($result, $i);
-          $fields[$field->name]= $field->type;
+        foreach (sqlsrv_field_metadata($result) as $meta) {
+          $fields[$meta['Name']]= $meta['Type'];
         }
       }
       parent::__construct($result, $fields, $tz);
@@ -62,8 +61,8 @@
 
       foreach (array_keys($row) as $key) {
         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
-        if ('datetime' == $this->fields[$key]) {
-          $row[$key]= Date::fromString($row[$key], $this->tz);
+        if ($row[$key] instanceof DateTime) {
+          $row[$key]= new Date($row[$key]);
         }
       }
       

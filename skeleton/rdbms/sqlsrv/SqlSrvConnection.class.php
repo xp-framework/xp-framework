@@ -50,7 +50,9 @@
       }
       $this->handle= sqlsrv_connect($spec, $a= array(
         'Database'     => $this->dsn->getDatabase(),
-        'LoginTimeout' => $this->timeout
+        'LoginTimeout' => $this->timeout,
+        'UID'          => $this->dsn->getUser(),
+        'PWD'          => $this->dsn->getPassword(),
       ));
 
       if (!is_resource($this->handle)) {
@@ -209,11 +211,7 @@
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
-      if ($this->flags & DB_UNBUFFERED) {
-        $result= sqlsrv_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
-      } else {
-        $result= sqlsrv_query($sql, $this->handle);
-      }
+      $result= sqlsrv_query($this->handle, $sql);
 
       if (FALSE === $result) {
         $message= 'Statement failed: '.xp::stringOf(sqlsrv_errors()).' @ '.$this->dsn->getHost();
