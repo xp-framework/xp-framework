@@ -9,7 +9,7 @@
   /**
    * Result set
    *
-   * @ext      ibase
+   * @ext      interbase
    * @purpose  Resultset wrapper
    */
   class InterbaseResultSet extends ResultSet {

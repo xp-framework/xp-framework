@@ -18,7 +18,7 @@
    * @see      http://www.firebirdsql.org/
    * @see      http://www.borland.com/interbase/
    * @see      http://www.firebirdsql.org/doc/contrib/fb_2_1_errorcodes.pdf
-   * @ext      ibase
+   * @ext      interbase
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
    * @purpose  Database connection

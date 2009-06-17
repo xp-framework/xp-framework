@@ -11,7 +11,7 @@
  * ========
  * <ul>
  *   <li>DSN scheme: <tt>ibase</tt></li>
- *   <li>Depends on PHP extension <tt>ibase</tt></li>
+ *   <li>Depends on PHP extension <tt>interbase</tt></li>
  * </ul>
  * 
  * @see      php://ibase
