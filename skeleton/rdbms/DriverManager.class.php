@@ -96,6 +96,9 @@
       if (extension_loaded('mssql')) {
         self::$instance->drivers['mssql']= XPClass::forName('rdbms.mssql.MsSQLConnection');
       } 
+      if (extension_loaded('sqlsrv')) {
+        self::$instance->drivers['mssql']= XPClass::forName('rdbms.sqlsrv.SqlSrvConnection');
+      } 
       if (extension_loaded('interbase')) {
         self::$instance->drivers['ibase']= XPClass::forName('rdbms.ibase.InterBaseConnection');
       } 
