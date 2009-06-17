@@ -30,6 +30,9 @@
       $type           = NULL,
       $qualifiedName  = '',
       $modifiers      = array();
+    
+    protected
+      $loader         = NULL;
 
     /**
      * Constructor
@@ -52,12 +55,24 @@
     }
 
     /**
+     * Set class loader this classdoc was loaded from
+     *
+     * @param   lang.IClassLoader loader
+     */
+    public function setLoader($loader) {
+      $this->loader= $loader;
+    }
+
+    /**
      * Returns the source file name this doc was parsed from.
      *
-     * @return  string
+     * @return  io.File
      */
     public function sourceFile() {
-      return $this->root->findClass($this->qualifiedName);
+      return $this->loader
+        ? $this->loader->getResourceAsStream(strtr($this->qualifiedName, '.', '/').xp::CLASS_FILE_EXT)
+        : NULL
+      ;
     }
     
     /**

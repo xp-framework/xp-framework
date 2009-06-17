@@ -251,7 +251,7 @@
         ));
       }
 
-      with ($doc= new PackageDoc($package), $doc->setRoot($this)); {
+      with ($doc= new PackageDoc($package), $doc->setLoader($loader), $doc->setRoot($this)); {
 
         // Find package-info file. If we cannot find one, ignore it!
         $packageInfo= strtr($package, '.', '/').'/package-info.xp';
@@ -259,7 +259,7 @@
 
           // Tokenize contents
           if (!($c= $loader->getResource($packageInfo))) {
-            throw new IllegalArgumentException('Could not parse "'.$filename.'"');
+            throw new IllegalArgumentException('Could not parse "'.$packageInfo.'"');
           }
 
           $tokens= token_get_all('<?php '.$c.' ?>');
@@ -347,7 +347,7 @@
         ));
       }
 
-      with ($doc= new ClassDoc(), $doc->setRoot($this)); {
+      with ($doc= new ClassDoc(), $doc->setLoader($loader), $doc->setRoot($this)); {
         $annotations= $comment= $package= NULL;
         $modifiers= array();
         $state= self::ST_INITIAL;          

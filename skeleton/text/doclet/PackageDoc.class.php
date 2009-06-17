@@ -13,6 +13,8 @@
    * @purpose  Documents a package
    */
   class PackageDoc extends Doc {
+    protected
+      $loader         = NULL;
 
     /**
      * Constructor
@@ -23,12 +25,24 @@
     }
 
     /**
+     * Set class loader this classdoc was loaded from
+     *
+     * @param   lang.IClassLoader loader
+     */
+    public function setLoader($loader) {
+      $this->loader= $loader;
+    }
+
+    /**
      * Returns the source file name this doc was parsed from.
      *
-     * @return  string
+     * @return  io.File
      */
     public function sourceFile() {
-      return $this->root->findPackage($this->qualifiedName);
+      return $this->loader
+        ? $this->loader->getResourceAsStream(strtr($this->name, '.', '/').'/package-info.xp')
+        : NULL
+      ;
     }
 
     /**
