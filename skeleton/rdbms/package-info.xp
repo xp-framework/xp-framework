@@ -14,6 +14,8 @@
  *   <li>MySQL (name: <tt>mysql</tt>)</li>
  *   <li>PostgreSQL (name: <tt>pgsql</tt>)</li>
  *   <li>SQLite (name: <tt>sqlite</tt>)</li>
+ *   <li>Interbase/FireBird (name: <tt>ibase</tt>)</li>
+ *   <li>MSSQL (name: <tt>mssql</tt>)</li>
  * </ul>
  * Note: All of the above will require corresponding PHP extensions to be
  * loaded. See the classes' apidocs for dependency details.
