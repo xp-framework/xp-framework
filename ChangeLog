@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed ClassDoc::sourceFile() and PackageDoc::sourceFile() in 
+  text.doclet to return io.File objects instead of strings
+  (friebe)
+
 Features
 ~~~~~~~~
 - Added Microsoft SQL server support to rdbms API (depending on "mssql"
