@@ -38,15 +38,16 @@
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      $db= $this->dsn->getHost().':'.$this->dsn->getDatabase();
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= ibase_pconnect(
-          $this->dsn->getHost(), 
+          $db, 
           $this->dsn->getUser(), 
           $this->dsn->getPassword()
         );
       } else {
         $this->handle= ibase_connect(
-          $this->dsn->getHost(), 
+          $db, 
           $this->dsn->getUser(), 
           $this->dsn->getPassword()
         );
@@ -57,7 +58,7 @@
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
-      return parent::connect();
+      return TRUE;
     }
     
     /**
@@ -81,14 +82,9 @@
      * @throws  rdbms.SQLStatementFailedException
      */
     public function selectdb($db) {
-      if (!ibase_select_db($db, $this->handle)) {
-        throw new SQLStatementFailedException(
-          'Cannot select database: '.trim(ibase_errmsg()),
-          'use '.$db,
-          current(ibase_fetch_row(ibase_query('select @@error', $this->handle)))
-        );
-      }
-      return TRUE;
+      throw new SQLStatementFailedException(
+        'Cannot select database, not implemented in Interbase'
+      );
     }
     
     /**
