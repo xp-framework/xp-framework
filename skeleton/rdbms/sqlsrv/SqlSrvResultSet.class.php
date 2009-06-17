@@ -75,7 +75,7 @@
      * @return  bool success
      */
     public function close() { 
-      return sqlsrv_free_result($this->handle);
+      return sqlsrv_free_stmt($this->handle);
     }
   }
 ?>
