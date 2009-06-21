@@ -369,7 +369,7 @@
     if (E_RECOVERABLE_ERROR == $code) {
       throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
-      $bt= debug_backtrace(FALSE);
+      $bt= debug_backtrace();
       $class= (isset($bt[1]['class']) ? $bt[1]['class'] : 0);
       $method= (isset($bt[1]['function']) ? $bt[1]['function'] : 0);
       
