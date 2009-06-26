@@ -5,7 +5,9 @@
  */
  
   uses(
-    'rdbms.DriverManager',
+    'rdbms.sybase.SybaseConnection',
+    'rdbms.mysql.MySQLConnection',
+    'rdbms.pgsql.PostgreSQLConnection',
     'unittest.TestCase'
   );
 
@@ -25,9 +27,9 @@
      */
     public function __construct($name) {
       parent::__construct($name);
-      $this->conn['sybase']= DriverManager::getConnection('sybase://localhost:1999/');
-      $this->conn['mysql']= DriverManager::getConnection('mysql://localhost/');
-      $this->conn['pgsql']= DriverManager::getConnection('pgsql://localhost/');
+      $this->conn['sybase']= new SybaseConnection(new DSN('sybase://localhost:1999/'));
+      $this->conn['mysql']= new MySQLConnection(new DSN('mysql://localhost/'));
+      $this->conn['pgsql']= new PostgreSQLConnection(new DSN('pgsql://localhost/'));
     }
 
     /**
@@ -319,9 +321,9 @@
         // Add other built-in rdbms engines when added to the test!
       );
       
-      foreach ($expect as $key => $value) $this->assertEquals(
-        $value,
-        $this->conn[$key]->prepare('select %s as strval', '"Hello", Tom\'s friend said'),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select %s as strval', '"Hello", Tom\'s friend said'),
         $key
       );
     }
@@ -339,9 +341,9 @@
         // Add other built-in rdbms engines when added to the test!
       );
       
-      foreach ($expect as $key => $value) $this->assertEquals(
-        $value,
-        $this->conn[$key]->prepare('select %s as strval', new String('"Hello", Tom\'s friend said')),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select %s as strval', new String('"Hello", Tom\'s friend said')),
         $key
       );
     }
@@ -359,9 +361,9 @@
         // TBD: Other built-in rdbms engines
       );
 
-      foreach ($expect as $key => $value) $this->assertEquals(
-        $value,
-        $this->conn[$key]->prepare('select * from %l', 'order'),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select * from %l', 'order'),
         $key
       );
     }
@@ -380,9 +382,9 @@
       );
 
       $t= new Date('1977-12-14');
-      foreach ($expect as $key => $value) $this->assertEquals(
-        $value,
-        $this->conn[$key]->prepare('select * from news where date= %s', $t),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select * from news where date= %s', $t),
         $key
       );
     }
@@ -401,9 +403,9 @@
       );
 
       $t= create(new Date('1977-12-14'))->getTime();
-      foreach ($expect as $key => $value) $this->assertEquals(
-        $value,
-        $this->conn[$key]->prepare('select * from news where created= %u', $t),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select * from news where created= %u', $t),
         $key
       );
     }
@@ -421,9 +423,9 @@
         // TBD: Other built-in rdbms engines
       );
       
-      foreach ($expect as $key => $value) $this->assertEquals(
-        $value,
-        $this->conn[$key]->prepare('select %s as strval', 'Hello \\ '),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('select %s as strval', 'Hello \\ '),
         $key
       );
     }
@@ -539,9 +541,9 @@
         'pgsql'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')'
       );
       
-      foreach ($expect as $key => $value) $this->assertEquals(
-        $value,
-        $this->conn[$key]->prepare('insert into table values (%s, "str%&ing", %s)', 'value', 'value'),
+      foreach ($this->conn as $key => $value) $this->assertEquals(
+        $expect[$key],
+        $value->prepare('insert into table values (%s, "str%&ing", %s)', 'value', 'value'),
         $key
       );
     }
