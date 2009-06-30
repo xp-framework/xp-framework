@@ -102,7 +102,7 @@ New methods
 peer.ftp.FtpConnection:
 <code>
   class FtpConnection extends Object {
-    /* ... */
+    // ...
 
     /**
      * Returns an FtpDir instance representing this connection's
@@ -134,14 +134,14 @@ peer.ftp.FtpConnection:
       // ...
     }
   
-    /* ... */
+    // ...
   }
 </code>
 
 peer.ftp.FtpEntry:
 <code>
   abstract class FtpEntry {
-    /* ... */
+    // ...
 
     /**
      * Checks whether this entry exists.
@@ -182,14 +182,14 @@ peer.ftp.FtpEntry:
      */
     public abstract function delete();
   
-    /* ... */
+    // ...
   }
 </code>
 
 peer.ftp.FtpDir:
 <code>
   class FtpDir extends FtpEntry {
-    /* ... */
+    // ...
 
     /**
      * Returns a list of entries
@@ -309,7 +309,7 @@ peer.ftp.FtpDir:
       // ...
     }
   
-    /* ... */
+    // ...
   }
 </code>
 
