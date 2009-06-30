@@ -55,7 +55,7 @@ FtpEntryList class
 ~~~~~~~~~~~~~~~~~~
 <code>
   class FtpEntryList extends Object implements IteratorAggregate {
-
+    
     /**
      * Returns an iterator for use in foreach()
      *
@@ -65,7 +65,7 @@ FtpEntryList class
     public function getIterator() {
       // ...
     }
-
+    
     /**
      * Returns the number of elements in this list.
      *
@@ -74,7 +74,7 @@ FtpEntryList class
     public function size() {
       // ...
     }
-
+    
     /**
      * Tests if this list has no elements.
      *
@@ -83,7 +83,7 @@ FtpEntryList class
     public function isEmpty() {
       // ...
     }
-  
+    
     /**
      * Returns all elements in this list as an array.
      *
@@ -98,12 +98,11 @@ FtpEntryList class
 
 New methods
 ~~~~~~~~~~~
-
 peer.ftp.FtpConnection:
 <code>
   class FtpConnection extends Object {
     // ...
-
+    
     /**
      * Returns an FtpDir instance representing this connection's
      * root directory
@@ -114,16 +113,15 @@ peer.ftp.FtpConnection:
     public function rootDir() {
       // ...
     }
-
+    
     /**
      * Sends a raw command to the FTP server and returns the server's
      * response (unparsed) as an array of strings.
      *
      * Accepts a command which will be handled as format-string for
      * further arbitrary arguments, e.g.:
-     * <code>
+     *
      *   $c->sendCommand('CLNT %s', $clientName);
-     * </code>
      *
      * @param   string command
      * @param   string* args
@@ -133,7 +131,7 @@ peer.ftp.FtpConnection:
     public function sendCommand($command) {
       // ...
     }
-  
+    
     // ...
   }
 </code>
@@ -142,7 +140,7 @@ peer.ftp.FtpEntry:
 <code>
   abstract class FtpEntry {
     // ...
-
+    
     /**
      * Checks whether this entry exists.
      *
@@ -152,7 +150,7 @@ peer.ftp.FtpEntry:
     public function exists() {
       // ...
     }
-
+    
     /**
      * Rename this entry
      *
@@ -163,7 +161,7 @@ peer.ftp.FtpEntry:
     public function rename($to) {
       // ...
     }
-
+    
     /**
      * Change this entry's permissions
      *
@@ -174,14 +172,14 @@ peer.ftp.FtpEntry:
     public function changePermissions($to) {
       // ...
     }
-
+    
     /**
      * Delete this entry
      *
      * @throws  peer.SocketException in case of an I/O error
      */
     public abstract function delete();
-  
+    
     // ...
   }
 </code>
@@ -190,7 +188,7 @@ peer.ftp.FtpDir:
 <code>
   class FtpDir extends FtpEntry {
     // ...
-
+    
     /**
      * Returns a list of entries
      *
@@ -200,7 +198,7 @@ peer.ftp.FtpDir:
     public function entries() {
       // ...
     }
-
+    
     /**
      * Checks whether a file by the given name exists in this
      * directory.
@@ -212,7 +210,7 @@ peer.ftp.FtpDir:
     public function hasFile($name) {
       // ...
     }
-
+    
     /**
      * Returns an FtpFile instance representing a file in this
      * directory.
@@ -225,7 +223,7 @@ peer.ftp.FtpDir:
     public function getFile($name) {
       // ...
     }
-
+    
     /**
      * Creates a file in this directory and returns an FtpFile instance
      * representing it.
@@ -238,7 +236,7 @@ peer.ftp.FtpDir:
     public function newFile($name) {
       // ...
     }
-
+    
     /**
      * Returns an FtpFile instance representing a file in this
      * directory.
@@ -253,7 +251,7 @@ peer.ftp.FtpDir:
     public function file($name) {
       // ...
     }
-
+    
     /**
      * Checks whether a subdirectory by the given name exists in this
      * directory.
@@ -265,7 +263,7 @@ peer.ftp.FtpDir:
     public function hasDir($name) {
       // ...
     }
-
+    
     /**
      * Returns an FtpDir instance representing a subdirectory in this
      * directory.
@@ -278,7 +276,7 @@ peer.ftp.FtpDir:
     public function getDir($name) {
       // ...
     }
-
+    
     /**
      * Creates a subdirectory in this directory and returns an FtpDir 
      * instance representing it.
@@ -291,7 +289,7 @@ peer.ftp.FtpDir:
     public function newDir($name) {
       // ...
     }
-
+    
     /**
      * Returns an FtpDir instance representing a subdirectory in this
      * directory.
@@ -308,7 +306,7 @@ peer.ftp.FtpDir:
     public function dir($name) {
       // ...
     }
-  
+    
     // ...
   }
 </code>
