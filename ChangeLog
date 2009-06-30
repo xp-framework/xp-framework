@@ -14,6 +14,10 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Made rdbms.ConnectionManager initialize rdbms.DBConnection lazily, so
+  that configuring with unsupported protocols only ends in exceptions
+  when that connection is actually requested.
+  (kiesel, friebe)
 - Added Microsoft SQL server support to rdbms API (depending either on 
   "mssql" or "sqlsrv" PHP extensions).
   (friebe)

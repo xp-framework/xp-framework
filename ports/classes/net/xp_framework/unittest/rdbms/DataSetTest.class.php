@@ -30,10 +30,11 @@
       IRRELEVANT_NUMBER     = -1;
 
     /**
-     * Static initializer
+     * Mock connection registration
      *
      */  
-    public static function __static() {
+    #[@beforeClass]
+    public static function registerMockConnection() {
       DriverManager::register('mock', XPClass::forName(self::MOCK_CONNECTION_CLASS));
     }
     

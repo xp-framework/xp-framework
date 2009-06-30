@@ -61,12 +61,10 @@
     public function configure($properties) {
       $section= $properties->getFirstSection();
       if ($section) do {
-        $conn= DriverManager::getConnection($properties->readString($section, 'dsn'));
-
         if (FALSE !== ($p= strpos($section, '.'))) {
-          $this->register($conn, substr($section, 0, $p), substr($section, $p+ 1));
+          $this->queue($properties->readString($section, 'dsn'), substr($section, 0, $p), substr($section, $p+ 1));
         } else {
-          $this->register($conn, $section);
+          $this->queue($properties->readString($section, 'dsn'), $section);
         }
         
       } while ($section= $properties->getNextSection());
@@ -92,7 +90,7 @@
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
      */
-    public function register($conn, $hostAlias= NULL, $userAlias= NULL) {
+    public function register(DBConnection $conn, $hostAlias= NULL, $userAlias= NULL) {
       $host= (NULL == $hostAlias) ? $conn->dsn->getHost() : $hostAlias;
       $user= (NULL == $userAlias) ? $conn->dsn->getUser() : $userAlias;
       
@@ -101,6 +99,26 @@
       }
       
       return $conn;
+    }
+    
+    /**
+     * Queue a connection string for registering on demand.
+     *
+     * @param   rdbms.DSN dsn The connection's DSN
+     * @return  rdbms.DSN
+     * @param   string hostAlias default NULL
+     * @param   string userAlias default NULL
+     */
+    public function queue($str, $hostAlias= NULL, $userAlias= NULL) {
+      $dsn= new DSN($str);
+      $host= (NULL == $hostAlias) ? $dsn->getHost() : $hostAlias;
+      $user= (NULL == $userAlias) ? $dsn->getUser() : $userAlias;
+      
+      if (!isset($this->pool[$user.'@'.$host])) {
+        $this->pool[$user.'@'.$host]= $str;
+      }
+      
+      return $dsn;
     }
     
     /**
@@ -113,11 +131,12 @@
      */
     public function get($host, $user) {
       if (!isset($this->pool[$user.'@'.$host])) {
-        throw(new ConnectionNotRegisteredException(
+        throw new ConnectionNotRegisteredException(
           'No connections registered for '.$user.'@'.$host
-        ));
+        );
       }
-      return $this->pool[$user.'@'.$host];
+      
+      return $this->conn($user.'@'.$host, $this->pool[$user.'@'.$host]);
     }
     
     /**
@@ -130,21 +149,41 @@
      */
     public function getByHost($hostName, $num= -1) {
       $results= array();
-      foreach (array_keys($this->pool) as $id) {
+      foreach ($this->pool as $id => $value) {
         list ($user, $host)= explode('@', $id);
-        if ($hostName == $host) $results[]= $this->pool[$id];
+        if ($hostName == $host) $results[]= $this->conn($id, $value);
       }
+      
       if (sizeof($results) < 1) {
-        throw(new ConnectionNotRegisteredException(
+        throw new ConnectionNotRegisteredException(
           'No connections registered for '.$hostName
-        ));
+        );
       }
       
       if ($num < 0) {
         return $results;
       }
+
       return $results[$num];
     }
+    
+    /**
+     * Replace registered DSN with DBConnection if needed
+     *
+     * @param   string name name of connection
+     * @param   mixed value either DSN or DBConnection
+     * @return  rdbms.DBConnection
+     */
+    protected function conn($name, $value) {
+      if ($value instanceof DBConnection) return $value;
+      if (is_string($value)) {
 
-  } 
+        // Resolve lazy-loading DSNs
+        $this->pool[$name]= DriverManager::getConnection($value);
+        return $this->pool[$name];
+      }
+      
+      raise('rdbms.DriverNotSupportedException', 'Neither a connection string nor a rdbms.DBConnection given.');
+    }
+  }
 ?>
