@@ -13,7 +13,8 @@
    */
   class MockResultSet extends ResultSet {
     public
-      $offset= 0;
+      $offset = 0,
+      $data   = array();
 
     /**
      * Constructor
@@ -21,7 +22,9 @@
      * @param   array<string, mixed>[] data
      */
     public function __construct($data= array()) {
-      parent::__construct($data, NULL);
+      $s= sizeof($data);
+      parent::__construct($s, $s ? array_keys($data[0]) : array());
+      $this->data= $data;
     }
 
     /**
@@ -32,8 +35,8 @@
      * @throws  rdbms.SQLException
      */
     public function seek($offset) {
-      if ($offset < 0 || $offset >= sizeof($this->handle)) {
-        throw(new SQLException('Seek to position #'.$offset.' failed'));
+      if ($offset < 0 || $offset >= sizeof($this->data)) {
+        throw new SQLException('Seek to position #'.$offset.' failed');
       }
       $this->offset= $offset;
       return TRUE;
@@ -48,13 +51,13 @@
      * @return  mixed
      */
     public function next($field= NULL) {
-      if ($this->offset >= sizeof($this->handle)) return FALSE;
+      if ($this->offset >= sizeof($this->data)) return FALSE;
       $this->offset++;
       
       if ($field) {
-        return $this->handle[$this->offset- 1][$field];
+        return $this->data[$this->offset- 1][$field];
       }
-      return $this->handle[$this->offset- 1];
+      return $this->data[$this->offset- 1];
     }
     
     /**
