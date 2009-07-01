@@ -8,7 +8,6 @@
     'rdbms.Criteria',
     'rdbms.criterion.Restrictions',
     'rdbms.DriverManager',
-    'rdbms.ConnectionManager',
     'net.xp_framework.unittest.rdbms.dataset.Job',
     'net.xp_framework.unittest.rdbms.dataset.Department',
     'net.xp_framework.unittest.rdbms.dataset.Person',
@@ -18,28 +17,34 @@
   /**
    * Test criteria class
    *
-   * Note we're relying on the connection to be a sybase connection -
-   * otherwise, quoting and date representation may change and make
-   * this testcase fail.
-   *
    * @see      xp://rdbms.Criteria
    * @purpose  Unit Test
    */
   class CriteriaTest extends TestCase {
+    const
+      MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
+
     public
       $conn = NULL,
       $peer = NULL;
-      
+
     /**
-     * Constructor
+     * Mock connection registration
      *
-     * @param   string name
+     */  
+    #[@beforeClass]
+    public static function registerMockConnection() {
+      DriverManager::register('mock', XPClass::forName(self::MOCK_CONNECTION_CLASS));
+    }
+
+    /**
+     * Setup method
+     *
      */
-    public function __construct($name) {
-      parent::__construct($name);
-      $this->conn= DriverManager::getConnection('sybase://localhost:1999/');
-      ConnectionManager::getInstance()->register($this->conn, 'jobs');
+    public function setUp() {
+      $this->conn= DriverManager::getConnection('mock://mock/JOBS?autoconnect=1');
       $this->peer= Job::getPeer();
+      $this->peer->setConnection(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'));
     }
     
     /**
@@ -98,7 +103,7 @@
       }
 
       $this->assertSql(
-        'where job_id = 1 and valid_from >= \'2006-01-01 12:00AM\' and title like \'Hello%\' order by valid_from asc', 
+        'where job_id = 1 and valid_from >= "2006-01-01 12:00AM" and title like "Hello%" order by valid_from asc', 
         $c
       );
     }
@@ -127,8 +132,8 @@
 
       $this->assertSql(
         'where (not (job_id in (1, 2, 3))'
-        .' or (title like \'Hello%\' and valid_from > \'2006-01-01 12:00AM\')'
-        .' or (title like \'Hello%\' and valid_from > \'2006-01-01 12:00AM\')'
+        .' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'
+        .' or (title like "Hello%" and valid_from > "2006-01-01 12:00AM")'
         .' or job_id between 1 and 5)',
         $c
       );
@@ -141,7 +146,7 @@
     #[@test]
     public function constructorAcceptsVarArgArrays() {
       $this->assertSql(
-        'where job_id = 1 and title = \'Hello\'', 
+        'where job_id = 1 and title = "Hello"', 
         new Criteria(array('job_id', 1, EQUAL), array('title', 'Hello', EQUAL))
       );
     }

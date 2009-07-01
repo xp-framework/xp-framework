@@ -7,7 +7,6 @@
   uses(
     'unittest.TestCase',
     'rdbms.DriverManager',
-    'rdbms.ConnectionManager',
     'net.xp_framework.unittest.rdbms.mock.MockConnection',
     'net.xp_framework.unittest.rdbms.dataset.JobFinder'
   );
@@ -19,18 +18,28 @@
    * @purpose  Unit test
    */
   class FinderTest extends TestCase {
+    const
+      MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
+
     protected 
       $fixture = NULL;
 
-    static function __static() {
-      DriverManager::register(
-        'mock', 
-        XPClass::forName('net.xp_framework.unittest.rdbms.mock.MockConnection')
-      );
-      ConnectionManager::getInstance()->register(
-        DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 
-        'jobs'
-      );
+    /**
+     * Mock connection registration
+     *
+     */  
+    #[@beforeClass]
+    public static function registerMockConnection() {
+      DriverManager::register('mock', XPClass::forName(self::MOCK_CONNECTION_CLASS));
+    }
+
+    /**
+     * Setup method
+     *
+     */
+    public function setUp() {
+      $this->fixture= new JobFinder();
+      $this->fixture->getPeer()->setConnection(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'));
     }
 
     /**
@@ -55,17 +64,9 @@
      * @return  net.xp_framework.unittest.rdbms.mock.MockConnection
      */
     protected function getConnection() {
-      return ConnectionManager::getInstance()->getByHost('jobs', 0);
+      return $this->fixture->getPeer()->getConnection();
     }
 
-    /**
-     * Sets up test case
-     *
-     */
-    public function setUp() {
-      $this->fixture= new JobFinder();
-    }
-    
     /**
      * Tests the getPeer() method
      *

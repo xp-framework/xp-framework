@@ -7,7 +7,6 @@
   uses(
     'unittest.TestCase',
     'rdbms.DriverManager',
-    'rdbms.ConnectionManager',
     'rdbms.DBObserver',
     'util.Date',
     'util.collections.Vector',
@@ -43,10 +42,7 @@
      *
      */
     public function setUp() {
-      ConnectionManager::getInstance()->register(
-        DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 
-        'jobs'
-      );
+      Job::getPeer()->setConnection(DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'));
     }
     
     /**
@@ -55,13 +51,13 @@
      * @return  net.xp_framework.unittest.rdbms.mock.MockConnection
      */
     protected function getConnection() {
-      return ConnectionManager::getInstance()->getByHost('jobs', 0);
+      return Job::getPeer()->getConnection();
     }
     
     /**
      * Helper method
      *
-     * @param   &net.xp_framework.unittest.rdbms.mock.MockResultSet r
+     * @param   net.xp_framework.unittest.rdbms.mock.MockResultSet r
      */
     protected function setResults($r) {
       $this->getConnection()->setResultSet($r);
@@ -104,7 +100,6 @@
           'expire_at'   => NULL
         )
       )));
-      
       $job= Job::getByJob_id(1);
       $this->assertClass($job, 'net.xp_framework.unittest.rdbms.dataset.Job');
       $this->assertEquals(1, $job->getJob_id());
@@ -139,6 +134,7 @@
       )));
       
       $job= Job::getByJob_id(1);
+      $this->assertNotEquals(NULL, $job);
       $this->assertFalse($job->isNew());
     }
 
@@ -236,6 +232,7 @@
       )));
       
       $job= Job::getByJob_id(1);
+      $this->assertNotEquals(NULL, $job);
       $id= $job->save();
       $this->assertEquals(1, $id);
     }
@@ -508,6 +505,7 @@
         )
       )));
       $job= Job::getByJob_id(1);
+      $this->assertNotEquals(NULL, $job);
 
       // Second, update the job. Make the next query fail on this 
       // connection to ensure that nothing is actually done.
@@ -600,6 +598,7 @@
         )
       )));
       $job= Job::getByJob_id(654);
+      $this->assertNotEquals(NULL, $job);
       $job->setTitle('PHP Unit tester');
       $job->doUpdate(new Criteria(array('job_id', $job->getJob_id(), EQUAL)));
     }
@@ -619,6 +618,7 @@
         )
       )));
       $job= Job::getByJob_id(654);
+      $this->assertNotEquals(NULL, $job);
       $job->doDelete(new Criteria(array('job_id', $job->getJob_id(), EQUAL)));
     }
 
@@ -687,6 +687,5 @@
         $this->assertEquals($i ? $i : 4, count(Job::getPeer()->doSelect(new Criteria(), $i)));
       }
     }
-
   }
 ?>
