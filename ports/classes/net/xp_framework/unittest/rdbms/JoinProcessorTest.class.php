@@ -9,6 +9,7 @@
     'rdbms.DriverManager',
     'unittest.TestCase',
     'rdbms.join.JoinProcessor',
+    'rdbms.mysql.MySQLConnection',
     'net.xp_framework.unittest.rdbms.dataset.Job'
   );
 
@@ -25,13 +26,11 @@
   class JoinProcessorTest extends TestCase {
   
     /**
-     * Constructor
+     * Make Job's peer use mysql
      *
-     * @param   string name
      */
-    public function __construct($name) {
-      parent::__construct($name);
-      ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://localhost:3306/'), 'jobs');
+    public function setUp() {
+      Job::getPeer()->setConnection(new MySQLConnection(new DSN('mysql://localhost:3306/')));
     }
     
     /**
