@@ -70,8 +70,8 @@
       $jp->setFetchModes(array('PersonJob' => 'join'));
       $jp->setFetchModes(array('PersonJob->Department' => 'join'));
       $this->assertEquals(
-        $jp->getJoinString(),
-        'JOBS.job as '.JoinProcessor::FIRST.' LEFT OUTER JOIN JOBS.Person as '.JoinProcessor::pathToKey(array('PersonJob')).' on ('.JoinProcessor::FIRST.'.job_id = '.JoinProcessor::pathToKey(array('PersonJob')).'.job_id) LEFT JOIN JOBS.Department as '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).' on ('.JoinProcessor::pathToKey(array('PersonJob')).'.department_id = '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).'.department_id) where '
+        'JOBS.job as '.JoinProcessor::FIRST.' LEFT OUTER JOIN JOBS.Person as '.JoinProcessor::pathToKey(array('PersonJob')).' on ('.JoinProcessor::FIRST.'.job_id = '.JoinProcessor::pathToKey(array('PersonJob')).'.job_id) LEFT JOIN JOBS.Department as '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).' on ('.JoinProcessor::pathToKey(array('PersonJob')).'.department_id = '.JoinProcessor::pathToKey(array('PersonJob', 'Department')).'.department_id) where ',
+        $jp->getJoinString()
       );
     }
 

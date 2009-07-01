@@ -21,12 +21,10 @@
     protected $conn= array();
       
     /**
-     * Constructor
+     * Sets up a Database Object for the test
      *
-     * @param   string name
      */
-    public function __construct($name) {
-      parent::__construct($name);
+    public function setUp() {
       $this->conn['sybase']= new SybaseConnection(new DSN('sybase://localhost:1999/'));
       $this->conn['mysql']= new MySQLConnection(new DSN('mysql://localhost/'));
       $this->conn['pgsql']= new PostgreSQLConnection(new DSN('pgsql://localhost/'));

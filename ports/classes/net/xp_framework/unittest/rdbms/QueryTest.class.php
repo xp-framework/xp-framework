@@ -16,8 +16,6 @@
     'net.xp_framework.unittest.rdbms.dataset.Person'
   );
 
-  define('MOCK_CONNECTION_CLASS', 'net.xp_framework.unittest.rdbms.mock.MockConnection');
-
   /**
    * Test query class
    *
@@ -25,6 +23,8 @@
    * @purpose  Unit Test
    */
   class QueryTest extends TestCase {
+    const
+      MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
 
     private
       $qa= NULL,
@@ -34,11 +34,12 @@
       $qu= NULL;
       
     /**
-     * Static initializer
+     * Mock connection registration
      *
      */  
-    public static function __static() {
-      DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
+    #[@beforeClass]
+    public static function registerMockConnection() {
+      DriverManager::register('mock', XPClass::forName(self::MOCK_CONNECTION_CLASS));
     }
     
     /**
@@ -46,10 +47,11 @@
      *
      */
     public function setUp() {
-      ConnectionManager::getInstance()->register(
-        DriverManager::getConnection('mock://mock/JOBS?autoconnect=1'), 
-        'jobs'
-      );
+      with ($conn= DriverManager::getConnection('mock://mock/JOBS?autoconnect=1')); {
+        Job::getPeer()->setConnection($conn);
+        Person::getPeer()->setConnection($conn);
+      }
+
       $this->qa= new SelectQuery();
       $this->qa->setPeer(Job::getPeer());
       $this->qa->setCriteria(
