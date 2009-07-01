@@ -32,6 +32,7 @@
         'weekday'     => FALSE,
         'year'        => 'Y',
       ),
+      // http://www.sqlite.org/lang_expr.html
       $implementations= array(
         'abs_1'        => 'php("abs", %d)',
         'acos_1'       => 'php("acos", %d)',
@@ -40,7 +41,7 @@
         'atan_1'       => 'php("atan", %d)',
         'atan_2'       => 'php("atan2", %d, %d)',
         'bit_length_1' => 'bit_length_not_implemented',
-        'cast_2'       => 'cast(%s, %s)',
+        'cast_2'       => 'cast(%s as %e)',
         'ceil_1'       => 'php("ceil", %d)',
         'char_1'       => 'php("chr", %d)',
         'cos_1'        => 'php("cos", %d)',

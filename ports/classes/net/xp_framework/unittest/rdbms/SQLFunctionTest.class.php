@@ -409,14 +409,14 @@
         'cast(\'345\' as decimal)',
         'convert(decimal, \'345\')',
         'cast(\'345\' as decimal)',
-        'cast(\'345\', \'decimal\')',
+        'cast(\'345\' as decimal)',
         create(new Criteria())->setProjection(SQLFunctions::cast('345', 'decimal'))
       );
       $this->assertProjection(
         'cast(job_id as char)',
         'convert(char, job_id)',
         'cast(job_id as char)',
-        'cast(job_id, \'char\')',
+        'cast(job_id as char)',
         create(new Criteria())->setProjection(SQLFunctions::cast(Job::column('job_id'), 'char'))
       );
     }
