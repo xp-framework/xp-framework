@@ -40,7 +40,7 @@
         'atan_1'       => 'php("atan", %d)',
         'atan_2'       => 'php("atan2", %d, %d)',
         'bit_length_1' => 'bit_length_not_implemented',
-        'cast_2'       => 'cast(%s, "%e")',
+        'cast_2'       => 'cast(%s, %s)',
         'ceil_1'       => 'php("ceil", %d)',
         'char_1'       => 'php("chr", %d)',
         'cos_1'        => 'php("cos", %d)',
