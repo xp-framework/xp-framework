@@ -10,7 +10,7 @@
     'rdbms.sybase.SybaseConnection',
     'rdbms.mysql.MySQLConnection',
     'rdbms.pgsql.PostgreSQLConnection',
-    'rdbms.sqlite.SqliteConnection',
+    'rdbms.sqlite.SQLiteConnection',
     'rdbms.criterion.Restrictions',
     'rdbms.SQLFunctions',
     'net.xp_framework.unittest.rdbms.dataset.Job'
