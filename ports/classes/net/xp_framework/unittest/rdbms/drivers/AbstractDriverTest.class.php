@@ -11,7 +11,7 @@
    *
    * @purpose  Unit Test
    */
-  class AbstractDriverTest extends TestCase {
+  abstract class AbstractDriverTest extends TestCase {
   
     /**
      * Returns driver name in subclasses, following the form:
@@ -25,7 +25,7 @@
      *
      * @return  string
      */
-    public function driverName() { }
+    public abstract function driverName();
     
     /**
      * Tests driver is available in current PHP setup
