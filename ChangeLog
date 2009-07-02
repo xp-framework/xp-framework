@@ -40,6 +40,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.archive.ArchiveClassLoader::packageContents() to work for the base package
+  (wagner)
+- Fixed lang.reflect.Package::getPackageNames() to work for the base package
+  (wagner)
 - Fixed lang.Process() to ignore directories when looking up the
   executable
   (hinckel)
