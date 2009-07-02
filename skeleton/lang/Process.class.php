@@ -112,7 +112,9 @@
         (DIRECTORY_SEPARATOR === $command{0})
       ) {
         foreach ($extensions as $ext) {
-          if (file_exists($q= $command.$ext)) return realpath($q);
+          $q= $command.$ext;
+          
+          if (file_exists($q) && !is_dir($q)) return realpath($q);
         }
         throw new IOException('"'.$command.'" does not exist');
       }
@@ -122,7 +124,9 @@
       $paths= explode(PATH_SEPARATOR, getenv('PATH'));
       foreach ($paths as $path) {
         foreach ($extensions as $ext) {
-          if (file_exists($q= $path.DIRECTORY_SEPARATOR.$command.$ext)) return realpath($q);
+          $q= $path.DIRECTORY_SEPARATOR.$command.$ext;
+          
+          if (file_exists($q) && !is_dir($q)) return realpath($q);
         }
       }
       

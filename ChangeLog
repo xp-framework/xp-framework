@@ -40,6 +40,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.Process() to ignore directories when looking up the
+  executable
+  (hinckel)
 - Fixed rdbms.mysql.MySQLDBAdapter class to recognize longtext and 
   tinyblob fields
   (Tobias Roth)
