@@ -174,7 +174,7 @@
      */
     public function providesPackage($package) {
       $acquired= xarloader::acquire(urldecode(substr($this->archive, 6, -1)));
-      $cmps= strtr($package, '.', '/');
+      $cmps= strtr($package, '.', '/').'/';
       $cmpl= strlen($cmps);
       
       foreach (array_keys($acquired['index']) as $e) {
