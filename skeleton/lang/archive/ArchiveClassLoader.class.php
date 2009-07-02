@@ -215,7 +215,7 @@
       
       foreach (array_keys($acquired['index']) as $e) {
         if (strncmp($cmps, $e, $cmpl) != 0) continue;
-        $entry= substr($e, $cmpl+ 1);
+        $entry= 0 != $cmpl ? substr($e, $cmpl+ 1) : $e;
         
         // Check to see if we're getting something in a subpackage. Imagine the 
         // following structure:

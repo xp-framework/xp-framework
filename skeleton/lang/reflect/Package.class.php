@@ -125,7 +125,7 @@
     public function getPackageNames() { 
       $packages= array();
       foreach (ClassLoader::getDefault()->packageContents($this->name) as $file) {
-        if ('/' == substr($file, -1)) $packages[]= $this->name.'.'.substr($file, 0, -1);
+        if ('/' == substr($file, -1)) $packages[]= ltrim($this->name.'.'.substr($file, 0, -1), '.');
       }
       return $packages;
     }
