@@ -311,7 +311,7 @@
             $data= $this->readBytes($header['length']);   // Read all left-over bytes
             $this->cat && $this->cat->debug('<<< Response:', addcslashes($data, "\0..\37!@\177..\377"));
             $this->_sock->close();
-            throw new Error('Unknown message type');
+            throw new Error('Unknown message type '.xp::stringOf($header['type']));
         }
       } catch (IOException $e) {
         throw new RemoteException($e->getMessage(), $e);
