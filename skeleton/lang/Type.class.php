@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.Primitive');
+
   /**
    * Type is the base class for the XPClass and Primitive classes.
    *

@@ -40,6 +40,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Added missing dependency lang.Primitive to lang.Type
+  (hinckel)
 - Fixed lang.archive.ArchiveClassLoader::packageContents() to work for the base package
   (wagner)
 - Fixed lang.reflect.Package::getPackageNames() to work for the base package
