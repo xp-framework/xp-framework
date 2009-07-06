@@ -43,13 +43,15 @@
         $this->handle= ibase_pconnect(
           $db, 
           $this->dsn->getUser(), 
-          $this->dsn->getPassword()
+          $this->dsn->getPassword(),
+          'ISO8859_1'
         );
       } else {
         $this->handle= ibase_connect(
           $db, 
           $this->dsn->getUser(), 
-          $this->dsn->getPassword()
+          $this->dsn->getPassword(),
+          'ISO8859_1'
         );
       }
 
