@@ -48,7 +48,7 @@
       foreach (func_get_args() as $arg) {
         $buf.= $this->varSource($arg).' ';
       }
-      syslog($buf);
+      syslog(LOG_INFO, $buf);
     }
     
     /**
