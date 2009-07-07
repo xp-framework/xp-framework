@@ -40,11 +40,16 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.log.SyslogAppender which never logged anything due to a 
+  broken syslog() call.
+  (friebe)
 - Added missing dependency lang.Primitive to lang.Type
   (hinckel)
-- Fixed lang.archive.ArchiveClassLoader::packageContents() to work for the base package
+- Fixed lang.archive.ArchiveClassLoader::packageContents() to work for 
+  the base package
   (wagner)
-- Fixed lang.reflect.Package::getPackageNames() to work for the base package
+- Fixed lang.reflect.Package::getPackageNames() to work for the base 
+  package
   (wagner)
 - Fixed lang.Process() to ignore directories when looking up the
   executable
