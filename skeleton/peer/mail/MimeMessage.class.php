@@ -171,11 +171,11 @@
     /**
      * Private helper method
      *
-     * @param   peer.mail.MimePart[] parts
+     * @param   &peer.mail.MimePart[] parts
      * @param   array p structure parts as retrieved from cclient lib
      * @param   string id default '' part id
      */
-    protected function _recurseparts($parts, $p, $id= '') {
+    protected function _recurseparts(&$parts, $p, $id= '') {
       static $types= array(
         'text',
         'multipart',
