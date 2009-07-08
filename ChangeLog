@@ -27,8 +27,8 @@ Features
 - Extended error handling mechanism to provide class and method information
   for E_NOTICE and E_WARNING stacktrace elements.
   (kiesel)
-- Made only those connections available in rdbms.DriverManager where the 
-  correct driver is loaded 
+- Made only those access implementations available in rdbms.DriverManager 
+  where the correct driver is loaded 
   http://news.xp-framework.net/article/303/2009/06/09
   (friebe)
 
