@@ -257,7 +257,7 @@
         $this->_hdl[0], 
         $uid, 
         $part, 
-        FT_UID | FT_PEEK
+        FT_UID
       );
     }
     
@@ -273,7 +273,7 @@
       return imap_fetchstructure(
         $this->_hdl[0], 
         $uid,
-        FT_UID | FT_PEEK
+        FT_UID
       );
     }
     
