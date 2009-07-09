@@ -250,11 +250,19 @@
               break;
               
             case 'DTSTART':
-              $event->starts= new Date($value);
+              if ($value instanceof stdclass) {   // DTSTART;TZID="GMT +0100 (Standard) / GMT +0200 (Daylight)":20090708T180000
+                $event->starts= new Date($value->_value);
+              } else {
+                $event->starts= new Date($value);
+              }
               break;
 
             case 'DTEND':
-              $event->ends= new Date($value);
+              if ($value instanceof stdclass) {   // DTEND;TZID="GMT +0100 (Standard) / GMT +0200 (Daylight)":20090708T183000
+                $event->ends= new Date($value->_value);
+              } else {
+                $event->ends= new Date($value);
+              }
               break;
             
             case 'SUMMARY':
