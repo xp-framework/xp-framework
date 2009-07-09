@@ -146,13 +146,13 @@ be removed.
 Scriptlets
 ~~~~~~~~~~
 Scriptlet's content-type headers will be set to 
-
+<pre>
   Content-Type: text/html; charset="utf-8"
-
+</pre>
 per default. XMLScriptlets already honour the charset given in
-
+<pre>
   <xsl:output encoding="..."/>
-
+</pre>
 
 
 Files
@@ -177,7 +177,7 @@ PHP cannot cope with this, see
 
 Because PHP's directory and filesystem functions report unicode characters 
 in filenames as question marks, file names like this:
-[[img:unicode-filenames.png]]
+[[unicode-filenames.png]]
 cannot be supported.
 
 The following Java sourcecode:
