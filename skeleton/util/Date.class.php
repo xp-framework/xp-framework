@@ -55,7 +55,7 @@
         : date_create($in)
       )) {
         throw new IllegalArgumentException(
-          'Given argument is neither a timestamp nor a well-formed timestring: "'.$in.'"'
+          'Given argument is neither a timestamp nor a well-formed timestring: '.xp::stringOf($in)
         );
       }
     }
