@@ -9,7 +9,7 @@
   /**
    * Various methods for working with arrays.
    *
-   * @test     xp://net.xp_framework.unittest.util.collection.ArraysTest
+   * @test     xp://net.xp_framework.unittest.util.collections.ArraysTest
    * @see      xp://util.collections.IList
    * @see      xp://lang.types.ArrayList
    * @purpose  Extension methods for arrays
