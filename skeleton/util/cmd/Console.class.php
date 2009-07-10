@@ -97,7 +97,7 @@
      * @param   string prompt = NULL
      * @return  string
      */    
-    public function readLine($prompt= NULL) {
+    public static function readLine($prompt= NULL) {
       $prompt && self::$out->write($prompt.' ');
       $r= '';
       while ($bytes= fgets(STDIN, 0x20)) {
@@ -113,7 +113,7 @@
      * @param   string prompt = NULL
      * @return  string
      */    
-    public function read($prompt= NULL) {
+    public static function read($prompt= NULL) {
       $prompt && self::$out->write($prompt.' ');
       return fgetc(STDIN);
     }
