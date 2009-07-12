@@ -14,6 +14,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added accessors for underlying output stream to io.streams.StringWriter
+  http://news.xp-framework.net/article/306/2009/07/12/
+  (friebe)
 - Made rdbms.ConnectionManager initialize rdbms.DBConnection lazily, so
   that configuring with unsupported protocols only ends in exceptions
   when that connection is actually requested.
