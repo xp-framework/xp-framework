@@ -24,6 +24,24 @@
     public function __construct($out) {
       $this->out= $out;
     }
+    
+    /**
+     * Return underlying output stream
+     *
+     * @return  io.streams.OutputStream
+     */
+    public function getStream() {
+      return $this->out;
+    }
+
+    /**
+     * Return underlying output stream
+     *
+     * @param   io.streams.OutputStream stream
+     */
+    public function setStream(OutputStream $stream) {
+      $this->out= $stream;
+    }
 
     /**
      * Creates a string representation of this writer
