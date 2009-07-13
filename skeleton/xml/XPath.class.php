@@ -61,21 +61,14 @@
      * @throws  xml.XMLFormatException in case the argument is a string and not valid XML
      */
     public function __construct($arg) {
-      switch (xp::typeOf($arg)) {
-        case 'string':
-          $this->context= new DOMXPath($this->loadXML($arg));
-          break;
-        
-        case 'php.DOMDocument':
-          $this->context= new DOMXPath($arg);
-          break;
-        
-        case 'xml.Tree':
-          $this->context= new DOMXPath($this->loadXML($arg->getSource(INDENT_NONE)));
-          break;
-        
-        default:
-          throw new IllegalArgumentException('Unsupported parameter type '.xp::typeOf($arg));
+      if ($arg instanceof DOMDocument) {
+        $this->context= new DOMXPath($arg);
+      } else if ($arg instanceof Tree) {
+        $this->context= new DOMXPath($this->loadXML($arg->getSource(INDENT_NONE)));
+      } else if (is_string($arg)) {
+        $this->context= new DOMXPath($this->loadXML($arg));
+      } else {
+        throw new IllegalArgumentException('Unsupported parameter type '.xp::typeOf($arg));
       }
     }
     
