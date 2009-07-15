@@ -74,6 +74,7 @@
     /**
      * Looks up service description
      *
+     * @return  lang.Object
      */
     #[@target]
     public function serviceDescription() {
@@ -84,38 +85,20 @@
      * Produces a set (a unique list) of classes.
      *
      */
-    #[@target(input= array('serviceDescription', 'output'))]
-    public function writeInterfaces($description, $output) {
-      static $purposes= array(
-        HOME_INTERFACE   => 'home',
-        REMOTE_INTERFACE => 'remote'
-      );
-
-      foreach ($description->getInterfaces() as $type => $interface) {
-        $node= Node::fromObject($interface, 'description');
-        $node->setAttribute('purpose', $purposes[$type]);
-
-        $this->processor->setXMLBuf($node->getSource(INDENT_NONE));
-        $output->append(strtr($interface->getClassName(), '.', '/').xp::CLASS_FILE_EXT, $this->processor->output());
-      }
-    }
-    
-    /**
-     * Produces a set (a unique list) of classes.
-     *
-     */
     protected function classSetOf($references) {
-      $set= new HashSet();
+      $set= array();
       foreach ($references as $classref) {
         try {
           $class= $this->remote->lookup('Class:'.$this->jndi.':'.$classref->referencedName());
+        } catch (RemoteException $e) {
+          Console::$err->writeLine('*** unable to lookup remote class: ', $classref->referencedName());
+          continue;
         } catch (Throwable $e) {
-          Console::$err->writeLine('*** ', $classref->referencedName(), ' ~ ', $e->toString());
+          Console::$err->writeLine('*** ', $classref->referencedName(), ' ~ ', $e);
           continue;
         }
-
-        $set->add($class);
-        $set->addAll($this->classSetOf($class->classSet())->toArray());
+        $set[$classref->referencedName()]= $class;
+        foreach ($this->classSetOf($class->classSet()) as $name => $class) $set[$name]= $class;
       }
 
       return $set;
@@ -129,11 +112,10 @@
     public function classList($description) {
       $set= $this->classSetOf($description->classSet());
       foreach ($description->getInterfaces() as $interface) {
-        $set->remove($interface);
+        unset($set[$interface->getClassName()]);
       }
-      return $set->toArray();
+      return $set;
     }
-
 
     /**
      * Writes all classes
@@ -153,10 +135,40 @@
 
         $this->processor->setXMLBuf($node->getSource(INDENT_NONE));
         $this->processor->run();
-        $output->append(strtr($wrapper->getName(), '.', '/').xp::CLASS_FILE_EXT, $this->processor->output());
+        try {
+          $output->append(strtr($wrapper->getName(), '.', '/').xp::CLASS_FILE_EXT, $this->processor->output());
+        } catch (IOException $e) {
+          Console::$err->writeLine('*** ', $wrapper->getName(), ' ("', $e->getMessage(), '")');
+          continue;
+        } catch (Throwable $e) {
+          Console::$err->writeLine('*** ', $wrapper->getName(), ' ~ ', $e->toString);
+          continue;
+        }
       }
     }
 
+    /**
+     * Writes all interfaces
+     *
+     */
+    #[@target(input= array('serviceDescription', 'output'))]
+    public function writeInterfaces($description, $output) {
+      static $purposes= array(
+        HOME_INTERFACE   => 'home',
+        REMOTE_INTERFACE => 'remote'
+      );
+
+      foreach ($description->getInterfaces() as $type => $interface) {
+        $node= Node::fromObject($interface, 'interface');
+        $node->setAttribute('purpose', $purposes[$type]);
+        $node->addChild(new Node('jndiName', $this->jndi));
+
+        $this->processor->setXMLBuf($node->getSource(INDENT_NONE));
+        $this->processor->run();
+        $output->append(strtr($interface->getClassName(), '.', '/').xp::CLASS_FILE_EXT, $this->processor->output());
+      }
+    }
+    
     /**
      * Creates a string representation of this generator
      *

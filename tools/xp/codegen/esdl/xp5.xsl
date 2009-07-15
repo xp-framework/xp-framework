@@ -31,6 +31,26 @@
   </func:function>
 
   <!--
+   ! Retrieves th package name from a fully qualified class name
+   !
+   ! @param   string classname
+   ! @return  string
+   !-->
+  <func:function name="func:packagename">
+    <xsl:param name="classname"/>
+    <xsl:param name="sep" select="'.'" />
+
+    <xsl:variable name="tokens" select="str:tokenize($classname, '.')"/>
+    <xsl:variable name="result">
+      <xsl:for-each select="$tokens[not(position() = count($tokens))]">
+        <xsl:value-of select="."/>
+        <xsl:if test="not(position() = last())"><xsl:value-of select="$sep"/></xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
+    <func:result><xsl:value-of select="$result"/></func:result>
+  </func:function>
+
+  <!--
    ! Function that returns a string fully in upper case
    !
    ! @param   string string
@@ -71,13 +91,19 @@
  *
  * $Id]]>&#36;<![CDATA[
  */
+]]></xsl:text><xsl:if test="func:packagename(exsl:node-set($interface)/className)"><xsl:text><![CDATA[
+  $package= ']]></xsl:text><xsl:value-of select="func:packagename(exsl:node-set($interface)/className)"/><xsl:text><![CDATA[';]]></xsl:text></xsl:if><xsl:text><![CDATA[
 
   /**
    * ]]></xsl:text><xsl:value-of select="$description"/><xsl:text><![CDATA[
    *
    * @purpose  EASC Client stub
    */
-  interface ]]></xsl:text><xsl:value-of select="func:shortname(exsl:node-set($interface)/className)"/>
+  interface ]]></xsl:text>
+    <xsl:if test="func:packagename(exsl:node-set($interface)/className)">
+      <xsl:value-of select="func:packagename(exsl:node-set($interface)/className, '·')"/><xsl:text><![CDATA[·]]></xsl:text>
+    </xsl:if>
+    <xsl:value-of select="func:shortname(exsl:node-set($interface)/className)"/>
     <xsl:text> {&#10;</xsl:text>
     <xsl:for-each select="set:distinct(exsl:node-set($interface)/methods/values/value/name/text())">
       <xsl:variable name="name" select="."/>
@@ -139,17 +165,17 @@
 ?>]]></xsl:text>
   </xsl:template>
   
-  <xsl:template match="description[@purpose= 'home']">
+  <xsl:template match="interface[@purpose= 'home']">
     <xsl:call-template name="interface">
       <xsl:with-param name="description" select="concat('Home interface for ', jndiName)"/>
-      <xsl:with-param name="interface" select="interfaces/values/value[1]"/>
+      <xsl:with-param name="interface" select="."/>
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="description[@purpose= 'remote']">
+  <xsl:template match="interface[@purpose= 'remote']">
     <xsl:call-template name="interface">
       <xsl:with-param name="description" select="concat('Remote interface for ', jndiName)"/>
-      <xsl:with-param name="interface" select="interfaces/values/value[2]"/>
+      <xsl:with-param name="interface" select="."/>
     </xsl:call-template>
   </xsl:template>
 
@@ -182,10 +208,10 @@
     /**
      * Retrieves </xsl:text><xsl:value-of select="@name"/><xsl:text>
      *
-     * @return  </xsl:text><xsl:if test="contains(@type, '.')">&amp;</xsl:if><xsl:value-of select="@type"/><xsl:text>
+     * @return  </xsl:text><xsl:if test="contains(@type, '.')"></xsl:if><xsl:value-of select="@type"/><xsl:text>
      */
     public function </xsl:text>
-    <xsl:if test="contains(@type, '.')">&amp;</xsl:if>
+    <xsl:if test="contains(@type, '.')"></xsl:if>
     <xsl:text>get</xsl:text><xsl:value-of select="func:ucfirst(@name)"/><xsl:text>() {
       return $this-></xsl:text><xsl:value-of select="@name"/><xsl:text>;
     }
@@ -195,11 +221,11 @@
     /**
      * Sets </xsl:text><xsl:value-of select="@name"/><xsl:text>
      *
-     * @param   </xsl:text><xsl:if test="contains(@type, '.')">&amp;</xsl:if><xsl:value-of select="concat(@type, ' ', @name)"/><xsl:text>
+     * @param   </xsl:text><xsl:if test="contains(@type, '.')"></xsl:if><xsl:value-of select="concat(@type, ' ', @name)"/><xsl:text>
      */
     public function set</xsl:text><xsl:value-of select="func:ucfirst(@name)"/>
-      <xsl:text>(</xsl:text><xsl:if test="contains(@type, '.')">&amp;</xsl:if>$<xsl:value-of select="@name"/><xsl:text>) {
-      $this-></xsl:text><xsl:value-of select="@name"/>= <xsl:if test="contains(@type, '.')">&amp;</xsl:if>$<xsl:value-of select="@name"/><xsl:text>;
+      <xsl:text>(</xsl:text><xsl:if test="contains(@type, '.')"></xsl:if>$<xsl:value-of select="@name"/><xsl:text>) {
+      $this-></xsl:text><xsl:value-of select="@name"/>= <xsl:if test="contains(@type, '.')"></xsl:if>$<xsl:value-of select="@name"/><xsl:text>;
     }&#10;</xsl:text>
   </xsl:for-each>
   
