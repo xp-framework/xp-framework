@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
@@ -23,7 +23,7 @@
   class IntegrationTest extends TestCase {
     protected static
       $serverProcess = NULL;
-    
+
     protected
       $conn          = NULL;
 
@@ -33,11 +33,11 @@
      */
     #[@beforeClass]
     public static function startFtpServer() {
-      
-      // Log protocol messages (specify a filename instead of NULL in 
+
+      // Log protocol messages (specify a filename instead of NULL in
       // the next line to activate)
-      $debug= NULL;
-      
+      $debug= FALSE;
+
       // Create server implementation sourcecode
       $src= trim(sprintf('
         <?php
@@ -45,7 +45,7 @@
           uses(
             "util.log.Logger",
             "util.log.FileAppender",
-            "peer.server.Server", 
+            "peer.server.Server",
             "peer.ftp.server.FtpConnectionListener",
             "peer.ftp.server.storage.FilesystemStorage"
           );
@@ -63,7 +63,7 @@
               $this->server->terminate= TRUE;
             }
           }\');
-          
+
           %d && $listener->setTrace(Logger::getInstance()
             ->getCategory()
             ->withAppender(new FileAppender(\'%s\'))
@@ -79,7 +79,7 @@
           echo "+ Service\n";
           $s->service();
           echo "+ Done\n";
-        ?>', 
+        ?>',
         addslashes(dirname(__FILE__).DIRECTORY_SEPARATOR.'ftproot'.DIRECTORY_SEPARATOR),
         isset($debug),
         addslashes($debug)
@@ -103,14 +103,14 @@
         throw new PrerequisitesNotMetError('Cannot start FTP server: '.$status, NULL);
       }
     }
-    
+
     /**
      * Shut down FTP server
      *
      */
     #[@afterClass]
     public static function shutdownFtpServer() {
-    
+
       // Tell the FTP server to shut down
       try {
         $c= new FtpConnection('ftp://test:test@127.0.0.1:2121');
@@ -134,7 +134,7 @@
       }
       self::$serverProcess->close();
     }
-    
+
     /**
      * Sets up test case
      *
@@ -150,7 +150,7 @@
     public function tearDown() {
       $this->conn->close();
     }
-    
+
     /**
      * Test connecting and logging in
      *
@@ -311,7 +311,7 @@
     #[@test]
     public function uploadFile() {
       $this->conn->connect();
-      
+
       try {
         $dir= $this->conn->rootDir()->getDir('htdocs');
         $file= $dir->file('name.txt')->uploadFrom(new MemoryInputStream($this->name));
@@ -319,8 +319,37 @@
         $this->assertEquals(strlen($this->name), $file->getSize());
         $file->delete();
       } catch (Throwable $e) {
-        
-        // Unfortunately, try { } finally does not exist...        
+
+        // Unfortunately, try { } finally does not exist...
+        try {
+          $file && $file->delete();
+        } catch (IOException $ignored) {
+          // Can't really do anything here
+        }
+        throw $e;
+      }
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function renameFile() {
+      $this->conn->connect();
+
+      try {
+        $dir= $this->conn->rootDir()->getDir('htdocs');
+        $file= $dir->file('name.txt')->uploadFrom(new MemoryInputStream($this->name));
+        $file->rename('renamed.txt');
+        $this->assertFalse($file->exists());
+
+        $file= $dir->file('renamed.txt');
+        $this->assertTrue($file->exists());
+        $file->delete();
+      } catch (Throwable $e) {
+
+        // Unfortunately, try { } finally does not exist...
         try {
           $file && $file->delete();
         } catch (IOException $ignored) {
@@ -337,14 +366,14 @@
     #[@test]
     public function downloadFile() {
       $this->conn->connect();
-      
+
       $m= $this->conn
         ->rootDir()
         ->getDir('htdocs')
         ->getFile('index.html')
         ->downloadTo(new MemoryOutputStream())
       ;
-      
+
       $this->assertEquals("<html/>\n", $m->getBytes());
     }
 
@@ -355,14 +384,14 @@
     #[@test]
     public function getInputStream() {
       $this->conn->connect();
-      
+
       $s= $this->conn
         ->rootDir()
         ->getDir('htdocs')
         ->getFile('index.html')
         ->getInputStream()
       ;
-      
+
       $this->assertEquals("<html/>\n", Streams::readAll($s));
     }
 
@@ -392,18 +421,19 @@
     #[@test]
     public function getOutputStream() {
       $this->conn->connect();
-      
+
       $file= $this->conn->rootDir()->getDir('htdocs')->file('name.txt');
       $s= $file->getOutputStream();
       try {
         $s->write($this->name);
         $s->close();
-        
+
         $this->assertTrue($file->exists());
         $this->assertEquals(strlen($this->name), $file->getSize());
+        $file->delete();
       } catch (Throwable $e) {
-        
-        // Unfortunately, try { } finally does not exist...        
+
+        // Unfortunately, try { } finally does not exist...
         try {
           $file && $file->delete();
         } catch (IOException $ignored) {
