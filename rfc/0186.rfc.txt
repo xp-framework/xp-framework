@@ -26,6 +26,27 @@ Functionality
 Functionality provided by one of the XP framework's sapi files will be
 migrated to be provided by regular classes, preferrably backwards compatible.
 
+Currently available sapis
+~~~~~~~~~~~~~~~~~~~~~~~~~
+* cgi
+  The cgi sapi will be migrated so its functionality is provided by the
+  scriptlet API, if required.
+
+* cli
+  The cli sapi will be provided by the `xp` and `xpcli` executors.
+  
+* class
+  The class sapi has been deprecated by the `xpcli` executor and will be
+  dropped.
+
+* synchronized
+  This sapi will be dropped, as there is no program reported to use it.
+
+* strict
+  Functionality of the "strict" sapi has been incorporated in standard
+  XP unittest, by checking for an "unclean error stack". This sapi will
+  therefore be dropped.
+
 Security considerations
 -----------------------
 n/a
