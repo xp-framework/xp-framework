@@ -85,7 +85,7 @@
       $target= $targets->get($method);
       if ($target->containsKey('result')) return $target['result'][0];
 
-      Console::write('---> Target ', $method->getName(), ': ');
+      Console::writeLine('---> Target ', $method->getName(), ': ');
       
       // Execute dependencies
       if ($target->containsKey('depends')) {
