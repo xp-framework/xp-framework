@@ -11,7 +11,7 @@
    *
    * @see      xp://peer.ftp.FtpDir
    * @see      xp://peer.ftp.FtpFile
-   * @test     xp://net.xp_framework.unittest.peer.FtpRawListTest
+   * @test     xp://net.xp_framework.unittest.peer.ftp.FtpEntryListTest
    * @purpose  Abstract base class
    */
   abstract class FtpEntry extends Object {
@@ -72,7 +72,7 @@
     public function rename($to) {
       try {
         $this->connection->expect($this->connection->sendCommand('RNFR %s', $this->name), array(350));
-        $this->connection->expect($this->connection->sendCommand('RNRO %s', $rto), array(250));
+        $this->connection->expect($this->connection->sendCommand('RNTO %s', $to), array(250));
       } catch (ProtocolException $e) {
         throw new IOException('Could not rename '.$this->name.' to '.$to.': '.$e->getMessage());
       }
