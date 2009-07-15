@@ -43,6 +43,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed xp.codegen.esdl.Generator so it does work now
+  (wagner)
 - Fixed util.log.SyslogAppender which never logged anything due to a 
   broken syslog() call.
   (friebe)
