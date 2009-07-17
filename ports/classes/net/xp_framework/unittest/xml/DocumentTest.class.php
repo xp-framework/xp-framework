@@ -51,6 +51,26 @@
     }
 
     /**
+     * Test getElementsByName()
+     *
+     */
+    #[@test]
+    public function elementsByName() {
+      $dom= Document::fromString('<wizard>
+        <step>
+          <form name="package">
+            <select>...</select>
+          </form>
+        </step>
+      </wizard>');
+      
+      $this->assertEquals(
+        array($dom->getDocumentElement()->children[0]->children[0]),
+        $dom->getElementsByName('package')
+      );
+    }
+
+    /**
      * Test getElementById()
      *
      */
