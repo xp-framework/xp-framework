@@ -14,6 +14,7 @@
    * Model (DOM) Level 2 Core Specification, although some of the 
    * method names correspond with those from it.
    *
+   * @test     xp://net.xp_framework.unittest.xml.DocumentTest
    * @see      xp://xml.Tree
    * @see      http://www.mozilla.org/docs/dom/domref/dom_doc_ref.html
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/org/w3c/dom/Document.html 
@@ -106,7 +107,8 @@
      * @return  xml.Node
      */
     public function getElementById($id) {
-      return $this->_getElementsByAttribute($this->root, 'id', $id, 1);
+      $e= $this->_getElementsByAttribute($this->root, 'id', $id, 1);
+      return $e ? $e[0] : NULL;
     }
     
     /**
