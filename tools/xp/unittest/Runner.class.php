@@ -159,7 +159,12 @@
       }
       
       // Run it!
-      $suite->numTests() && $suite->run();
+      if (0 == $suite->numTests()) {
+        exit(3);
+      } else {
+        $r= $suite->run();
+        exit($r->failureCount() > 0 ? 1 : 0);
+      }
     }    
   }
 ?>
