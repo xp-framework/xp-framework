@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed "unittest" command to exit with non-zero exitcode if either no
+  tests are found or any test fails
+  (friebe)
 - Changed ClassDoc::sourceFile() and PackageDoc::sourceFile() in 
   text.doclet to return io.File objects instead of strings
   (friebe)
