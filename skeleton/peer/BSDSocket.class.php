@@ -121,10 +121,11 @@
     /**
      * Connect
      *
+     * @param   float timeout default 2.0
      * @return  bool success
      * @throws  peer.ConnectException
      */
-    public function connect() {
+    public function connect($timeout= 2.0) {
       static $domains= array(
         AF_INET   => 'AF_INET',
         AF_UNIX   => 'AF_UNIX'
@@ -152,6 +153,10 @@
       }
       
       // Set options
+      $sec= floor($timeout);
+      $usec= ($timeout- $sec) * 1000;
+      $this->options[SOL_SOCKET][SO_RCVTIMEO]= array('sec' => $sec, 'usec' => $usec);
+      $this->options[SOL_SOCKET][SO_SNDTIMEO]= array('sec' => $sec, 'usec' => $usec);
       foreach ($this->options as $level => $pairs) {
         foreach ($pairs as $name => $value) {
           socket_set_option($this->_sock, $level, $name, $value);
