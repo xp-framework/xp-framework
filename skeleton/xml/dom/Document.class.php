@@ -71,7 +71,8 @@
           $r= array_merge($r, $this->_getElementsByAttribute(
             $node->children[$key], 
             $attribute, 
-            $name
+            $name,
+            $max
           ));
         }
       }
