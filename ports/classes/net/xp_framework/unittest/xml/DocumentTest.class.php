@@ -34,7 +34,7 @@
     }
 
     /**
-     * Test getElementsById()
+     * Test getElementById()
      *
      */
     #[@test]
@@ -47,6 +47,31 @@
       $this->assertEquals(
         $dom->getDocumentElement()->children[0],
         $dom->getElementById('1549')
+      );
+    }
+
+    /**
+     * Test getElementById()
+     *
+     */
+    #[@test]
+    public function nestedElementById() {
+      $dom= Document::fromString('<html>
+        <head>
+          <title>Example page</title>
+        </head>
+        <body>
+          <div id="header">
+            <ul id="menu">
+              <li id="home">Home</li>
+            </ul>
+          </div>
+        </body>
+      </html>');
+      
+      $this->assertEquals(
+        $dom->getDocumentElement()->children[1]->children[0]->children[0]->children[0],
+        $dom->getElementById('home')
       );
     }
 
