@@ -98,7 +98,7 @@
      * @return  xml.Node[]
      */
     public function getElementsByName($name, $max= -1) {
-      return $this->_getElementsByAttribute($this->root, 'name', $name);
+      return $this->_getElementsByAttribute($this->root, 'name', $name, $max);
     }
 
     /**
