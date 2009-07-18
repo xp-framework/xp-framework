@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'scriptlet.xml.workflow.casters.ToValidXMLString'
+    'scriptlet.xml.workflow.checkers.WellformedXMLChecker'
   );
 
   /**
@@ -15,7 +15,7 @@
    * @see      reference
    * @purpose  purpose
    */
-  class ToValidXMLStringTest extends TestCase {
+  class WellformedXMLCheckerTest extends TestCase {
     protected
       $fixture  = NULL;
   
@@ -24,7 +24,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new ToValidXMLString();
+      $this->fixture= new WellformedXMLChecker();
     }
     
     /**
@@ -33,7 +33,7 @@
      */
     #[@test]
     public function emptyInput() {
-      $this->assertEquals(array(''), $this->fixture->castValue(array('')));
+      $this->assertEquals(array(''), $this->fixture->check(array('')));
     }
     
     /**
@@ -44,7 +44,20 @@
     public function validXml() {
       $this->assertEquals(
         array('<document/>'),
-        $this->fixture->castValue(array('<document/>'))
+        $this->fixture->check(array('<document/>'))
+      );
+    }
+    
+    /**
+     * Test that passing a fragment of an XML document
+     * is accepted; eg. no passing a single node as root.
+     *
+     */
+    #[@test]
+    public function noRootNode() {
+      $this->assertEquals(
+        array('<node1/><node2/>'),
+        $this->fixture->check(array('<node1/><node2/>'))
       );
     }
     
@@ -56,7 +69,7 @@
     public function notWellFormedXml() {
       $this->assertEquals(
         'not_well_formed',
-        $this->fixture->castValue(array('<outer><inner></outer>'))
+        $this->fixture->check(array('<outer><inner></outer>'))
       );
     }
     
@@ -68,9 +81,8 @@
     public function invalidCharacters() {
       $this->assertEquals(
         'invalid_chars',
-        $this->fixture->castValue(array("\0"))
+        $this->fixture->check(array("\0"))
       );
     }
-    
   }
 ?>
