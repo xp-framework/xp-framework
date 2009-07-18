@@ -24,6 +24,9 @@
    * @test  xp://net.xp_framework.unittest.xml.NodeTest
    */
   class Node extends Object {
+    const
+      XML_ILLEGAL_CHARS   = XML_ILLEGAL_CHARS;
+
     public 
       $name         = '',
       $attribute    = array(),

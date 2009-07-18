@@ -6,14 +6,15 @@
 
   uses(
     'scriptlet.xml.workflow.casters.ParamCaster',
-    'xml.Node'
+    'xml.Node',
+    'xml.parser.XMLParser'
   );
 
   /**
    * Removes illegal characters from given string(s)
    *
-   *
-   * @purpose  Checker
+   * @see       xp://net.xp_framework.unittest.scriptlet.workflow.ToValidXMLStringTest
+   * @purpose  Check input for well formed XML
    */
   class ToValidXMLString extends ParamCaster {
 
@@ -25,17 +26,18 @@
      */
     public function castValue($value) { 
       $return= array();
-      $illegal_chars = str_split(XML_ILLEGAL_CHARS);
 
       foreach ($value as $v) {
         if (!is_string($v)) return 'string_expected';
-        $retstring= '';
-        foreach (str_split($v, 1) as $char) {
-          if (!in_array($char, $illegal_chars)) {
-            $retstring .= $char;
-          }
+        if (strlen($v) > strcspn($v, Node::XML_ILLEGAL_CHARS)) return 'invalid_chars';
+        try {
+          $p= new XMLParser();
+          $p->parse('<doc>'.$v.'</doc>');
+        } catch (XMLFormatException $e) {
+          return 'not_well_formed';
         }
-        $return[]= $retstring;
+
+        $return[]= $v;
       }
       return $return;
     }
