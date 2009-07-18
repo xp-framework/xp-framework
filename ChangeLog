@@ -14,9 +14,14 @@ Heads up!
 - Changed ClassDoc::sourceFile() and PackageDoc::sourceFile() in 
   text.doclet to return io.File objects instead of strings
   (friebe)
+- Refactored scriptlet.workflow.casters.ToValidXMLString into the
+  checker scriptlet.workflow.checkers.WellformedXMLChecker
+  (kiesel)
 
 Features
 ~~~~~~~~
+- Made XML_ILLEGAL_CHARS a xml.Node class constant
+  (kiesel)
 - Added accessors for underlying output stream to io.streams.StringWriter
   http://news.xp-framework.net/article/306/2009/07/12/
   (friebe)
