@@ -5,7 +5,7 @@
  */
 
   uses(
-    'scriptlet.xml.workflow.casters.ParamCaster',
+    'scriptlet.xml.workflow.checkers.ParamChecker',
     'xml.Node',
     'xml.parser.XMLParser'
   );
@@ -16,19 +16,24 @@
    * @see       xp://net.xp_framework.unittest.scriptlet.workflow.ToValidXMLStringTest
    * @purpose  Check input for well formed XML
    */
-  class ToValidXMLString extends ParamCaster {
+  class WellformedXMLChecker extends ParamChecker {
 
     /**
      * Cast a given value
      *
+     * Error codes returned are:
+     * <ul>
+     *   <li>invalid_chars - if input contains characters not allowed for XML</li>
+     *   <li>not_well_formed - if input cannot be parsed to XML</li>
+     * </ul>
+     *
      * @param   array value
      * @return  string error or array on success
      */
-    public function castValue($value) { 
+    public function check($value) { 
       $return= array();
 
       foreach ($value as $v) {
-        if (!is_string($v)) return 'string_expected';
         if (strlen($v) > strcspn($v, Node::XML_ILLEGAL_CHARS)) return 'invalid_chars';
         try {
           $p= new XMLParser();
