@@ -13,8 +13,8 @@
   /**
    * Removes illegal characters from given string(s)
    *
-   * @see       xp://net.xp_framework.unittest.scriptlet.workflow.ToValidXMLStringTest
-   * @purpose  Check input for well formed XML
+   * @see       xp://net.xp_framework.unittest.scriptlet.workflow.WellformedXMLCheckerTest
+   * @purpose   Check input for well formed XML
    */
   class WellformedXMLChecker extends ParamChecker {
 
@@ -31,8 +31,6 @@
      * @return  string error or array on success
      */
     public function check($value) { 
-      $return= array();
-
       foreach ($value as $v) {
         if (strlen($v) > strcspn($v, Node::XML_ILLEGAL_CHARS)) return 'invalid_chars';
         try {
@@ -41,10 +39,9 @@
         } catch (XMLFormatException $e) {
           return 'not_well_formed';
         }
-
-        $return[]= $v;
       }
-      return $return;
+      
+      return NULL;
     }
   }
 ?>
