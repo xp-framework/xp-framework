@@ -89,7 +89,7 @@
      */
     #[@test, @expect('io.IOException')]
     public function nonExistantFile() {
-      new FileOutputStream('::NON-EXISTANT::');
+      new FileOutputStream('');
     }
 
     /**
