@@ -51,6 +51,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed xml.dom.Document to work as advertised (getElementById() and
+  getElementsByName() methods).
+  (Rene Patzer)
 - Fixed xp.codegen.esdl.Generator so it does work now
   (wagner)
 - Fixed util.log.SyslogAppender which never logged anything due to a 
