@@ -96,7 +96,7 @@
      * @param   int size default 0
      * @return  bool
      */
-    public function truncate() {
+    public function truncate($size= 0) {
       raise('lang.MethodNotImplementedException', 'Truncation not supported');
     }
     
@@ -166,7 +166,7 @@
      * @param   string string default '' data to write
      * @return  int number of bytes written
      */
-    public function writeLine($string) {
+    public function writeLine($string= '') {
       raise('lang.MethodNotImplementedException', 'Writing not supported');
     }
     
@@ -189,7 +189,7 @@
      * @param   int mode default SEEK_SET 
      * @return  bool success
      */
-    public function seek($position, $mode= SEEK_SET) {
+    public function seek($position= 0, $mode= SEEK_SET) {
       switch ($mode) {
         case SEEK_SET: $this->offset= min($this->_size, $position); break;
         case SEEK_CUR: $this->offset= min($this->_size, $this->offset+ $position); break;
