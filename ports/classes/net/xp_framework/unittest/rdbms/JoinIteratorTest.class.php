@@ -5,8 +5,9 @@
  */
  
   uses(
+    'rdbms.DSN',
     'rdbms.Criteria',
-    'rdbms.DriverManager',
+    'rdbms.mysql.MySQLConnection',
     'unittest.TestCase',
     'rdbms.join.JoinProcessor',
     'rdbms.join.JoinIterator',
@@ -27,13 +28,12 @@
   class JoinIteratorTest extends TestCase {
     
     /**
-     * Constructor
+     * Setup test
      *
-     * @param   string name
      */
-    public function __construct($name) {
-      parent::__construct($name);
-      ConnectionManager::getInstance()->register(DriverManager::getConnection('mysql://localhost:3306/'), 'jobs');
+    #[@beforeClass]
+    public static function registerConnection() {
+      ConnectionManager::getInstance()->register(new MysqlConnection(new DSN('mysql://localhost:3306/')), 'jobs');
     }
     
     /**

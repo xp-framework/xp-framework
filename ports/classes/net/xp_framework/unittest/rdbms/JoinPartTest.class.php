@@ -5,8 +5,9 @@
  */
  
   uses(
+    'rdbms.DSN',
     'rdbms.Criteria',
-    'rdbms.DriverManager',
+    'rdbms.mysql.MySQLConnection',
     'unittest.TestCase',
     'rdbms.join.JoinPart',
     'net.xp_framework.unittest.rdbms.dataset.Job',
@@ -25,19 +26,16 @@
    * @purpose  Unit Test
    */
   class JoinPartTest extends TestCase {
-      
     public
       $conn = NULL,
       $peer = NULL;
       
     /**
-     * Constructor
+     * Setup test
      *
-     * @param   string name
      */
-    public function __construct($name) {
-      parent::__construct($name);
-      $this->conn= DriverManager::getConnection('mysql://localhost:3306/');
+    public function setUp() {
+      $this->conn= new MysqlConnection(new DSN('mysql://localhost:3306/'));
     }
     
     /**
