@@ -74,8 +74,10 @@
      * @throws  unittest.PrerequisitesNotMetError
      */
     public function setUp() {
-      if (!extension_loaded($ext= $this->neededExtension())) {
-        throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
+      foreach ((array)$this->neededExtension() as $ext) {
+        if (!extension_loaded($ext)) {
+          throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
+        }
       }
       $this->processor= $this->processorInstance();
       $this->xmlDeclaration= '<?xml version="1.0" encoding="'.$this->processorCharset().'"?>';

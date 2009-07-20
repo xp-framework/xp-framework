@@ -12,19 +12,20 @@
   /**
    * ProcessorTest implementation that tests the DomXSL processor
    *
-   * @see      xp://xml.DomXSLProcessor
-   * @ext      domxml
-   * @purpose  Unit Test
+   * @see       xp://xml.DomXSLProcessor
+   * @ext       dom
+   * @ext       xsl
+   * @purpose   Unit Test
    */
   class DomXslProcessorTest extends AbstractProcessorTest {
 
     /**
      * Returns the PHP extension needed for this processor test to work
      *
-     * @return  string
+     * @return  string[]
      */
     public function neededExtension() { 
-      return 'dom';
+      return array('dom', 'xsl');
     }
   
     /**
