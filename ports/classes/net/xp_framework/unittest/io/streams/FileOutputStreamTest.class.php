@@ -84,15 +84,6 @@
     }
 
     /**
-     * Test opening a file output stream with a non-existant file name
-     *
-     */
-    #[@test, @expect('io.IOException')]
-    public function nonExistantFile() {
-      new FileOutputStream('::NON-EXISTANT::');
-    }
-
-    /**
      * Test writing after stream has been closed
      *
      */
