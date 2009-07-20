@@ -87,7 +87,7 @@
           ($chosen= $this->_find($lang, $supported, 2))
         ) break;
       }
-      return new Locale($chosen ? $chosen : $default);
+      return new util·Locale($chosen ? $chosen : $default);
     }
     
     /**

@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Made util.Locale fully qualified, to make XP forward compatible
+  with PHP 5.3.0 with ext/intl enabled
+  (kiesel)
 - Changed "unittest" command to exit with non-zero exitcode if either no
   tests are found or any test fails
   (friebe)

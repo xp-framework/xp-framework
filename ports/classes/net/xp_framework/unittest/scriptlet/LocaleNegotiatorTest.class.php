@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'util.Locale',
     'scriptlet.LocaleNegotiator'
   );
 
@@ -44,7 +45,7 @@
         'fr_FR, en_UK'    => 'en_UK',
       ) as $usersetting => $result) {
         $this->assertEquals(
-          new Locale($result),
+          new util·Locale($result),
           create(new LocaleNegotiator($usersetting))->getLocale($supported, $default),
           'Setting <'.$usersetting.'> should yield '.$result.' (supported: '.implode(', ', $supported).', default: '.$default.')'
         );
@@ -58,12 +59,12 @@
     #[@test]
     public function languagePreference() {
       $this->assertEquals(
-        new Locale('de_AT'), 
-        $this->fixture->getLocale($supported= array('de_AT', 'de_DE', 'en_US'), $default= 'C')
+        new util·Locale('de_AT'), 
+        $this->fixture->getLocale(array('de_AT', 'de_DE', 'en_US'), 'C')
       );
       $this->assertEquals(
-        new Locale('de_AT'), 
-        $this->fixture->getLocale($supported= array('de_DE', 'de_AT', 'en_US'), $default= 'C')
+        new util·Locale('de_AT'), 
+        $this->fixture->getLocale(array('de_DE', 'de_AT', 'en_US'), 'C')
       );
     }
 
@@ -74,8 +75,8 @@
     #[@test]
     public function secondLanguagePreference() {
       $this->assertEquals(
-        new Locale('de_DE'), 
-        $this->fixture->getLocale($supported= array('de_DE', 'en_US'), $default= 'C')
+        new util·Locale('de_DE'), 
+        $this->fixture->getLocale(array('de_DE', 'en_US'), 'C')
       );
     }
 
@@ -86,8 +87,8 @@
     #[@test]
     public function thirdLanguagePreference() {
       $this->assertEquals(
-        new Locale('en_US'), 
-        $this->fixture->getLocale($supported= array('en_US'), $default= 'C')
+        new util·Locale('en_US'), 
+        $this->fixture->getLocale(array('en_US'), 'C')
       );
     }
 
@@ -98,8 +99,8 @@
     #[@test]
     public function fourthLanguagePreference() {
       $this->assertEquals(
-        new Locale('en_UK'), 
-        $this->fixture->getLocale($supported= array('en_UK'), $default= 'C')
+        new util·Locale('en_UK'), 
+        $this->fixture->getLocale(array('en_UK'), 'C')
       );
     }
 
@@ -110,8 +111,8 @@
     #[@test]
     public function defaultLanguage() {
       $this->assertEquals(
-        new Locale('C'), 
-        $this->fixture->getLocale($supported= array('es_ES'), $default= 'C')
+        new util·Locale('C'), 
+        $this->fixture->getLocale(array('es_ES'), 'C')
       );
     }
 
@@ -123,7 +124,7 @@
     public function charsetPreference() {
       $this->assertEquals(
         'ISO-8859-1', 
-        $this->fixture->getCharset($supported= array('ISO-8859-1', 'UTF-8', 'ISO-8859-15'), $default= 'ASCII')
+        $this->fixture->getCharset(array('ISO-8859-1', 'UTF-8', 'ISO-8859-15'), 'ASCII')
       );
     }
 
@@ -135,7 +136,7 @@
     public function secondCharsetPreference() {
       $this->assertEquals(
         'UTF-8', 
-        $this->fixture->getCharset($supported= array('UTF-8', 'ISO-8859-15'), $default= 'ASCII')
+        $this->fixture->getCharset(array('UTF-8', 'ISO-8859-15'), 'ASCII')
       );
     }
 
@@ -147,7 +148,7 @@
     public function anyCharsetPreference() {
       $this->assertEquals(
         'ISO-8859-15', 
-        $this->fixture->getCharset($supported= array('ISO-8859-15'), $default= 'ASCII')
+        $this->fixture->getCharset(array('ISO-8859-15'), 'ASCII')
       );
     }
   }

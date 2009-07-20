@@ -4,18 +4,20 @@
  * $Id$ 
  */
 
+  $package= 'util';
+
   /**
    * Locale
    * 
    * Usage [retreiving default locale]
    * <code>
-   *   $locale= Locale::getDefault();
+   *   $locale= util·Locale::getDefault();
    *   var_dump($locale);
    * </code>
    *
    * Usage [setting default locale]
    * <code>
-   *   Locale::setDefault(new Locale('de_DE'));
+   *   util·Locale::setDefault(new util·Locale('de_DE'));
    * </code>
    *
    * @see      http://ftp.ics.uci.edu/pub/ietf/http/related/iso639.txt
@@ -23,7 +25,7 @@
    * @see      http://groups.google.com/groups?threadm=DREPPER.96Aug8030605%40i44d2.ipd.info.uni-karlsruhe.de#link1
    * @purpose  Represent a locale
    */
-  class Locale extends Object {
+  class util·Locale extends Object {
     public
       $lang     = '',
       $country  = '',
@@ -64,7 +66,7 @@
      * @return  util.Locale
      */
     public static function getDefault() {
-      return new Locale(('C' == ($locale= setlocale(LC_ALL, NULL)) 
+      return new self(('C' == ($locale= setlocale(LC_ALL, NULL)) 
         ? 'en_US'
         : $locale
       ));
