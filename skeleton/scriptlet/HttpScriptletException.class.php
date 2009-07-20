@@ -5,6 +5,7 @@
  */
 
   uses(
+    'peer.http.HttpConstants',
     'lang.ChainedException',
     'scriptlet.HttpScriptletResponse'
   );
@@ -32,9 +33,9 @@
      * Constructor
      *
      * @param   string message
-     * @param   int statusCode default HTTP_INTERNAL_SERVER_ERROR
+     * @param   int statusCode default HttpConstants::STATUS_INTERNAL_SERVER_ERROR
      */
-    public function __construct($message, $statusCode= HTTP_INTERNAL_SERVER_ERROR, $cause= NULL) {
+    public function __construct($message, $statusCode= HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $cause= NULL) {
       parent::__construct($message, $cause);
       $this->statusCode= $statusCode;
       $this->_response($statusCode);

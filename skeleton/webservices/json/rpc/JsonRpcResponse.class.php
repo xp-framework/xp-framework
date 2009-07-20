@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('scriptlet.rpc.AbstractRpcResponse');
+  uses('scriptlet.rpc.AbstractRpcResponse', 'peer.http.HttpConstants');
   
   /**
    * Wraps JSON response
@@ -31,7 +31,7 @@
       if (!$this->message) return;
 
       if (NULL !== $this->message->getFault()) {
-        $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
+        $this->setStatus(HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
       }
       
       $this->content= $this->message->serializeData();

@@ -103,7 +103,7 @@
      * @param   string params
      * @throws  unittest.AssertionFailedError  
      */
-    public function beginAt($relative, $params= NULL, $method= HTTP_GET) {
+    public function beginAt($relative, $params= NULL, $method= HttpConstants::GET) {
       $this->dom= $this->xpath= NULL;
       $this->conn->getUrl()->setPath($relative);
       try {
@@ -121,7 +121,7 @@
      * @param   string params
      * @throws  unittest.AssertionFailedError  
      */
-    public function navigateTo($target, $params= NULL, $method= HTTP_GET) {
+    public function navigateTo($target, $params= NULL, $method= HttpConstants::GET) {
       if (strstr($target, '://')) {
         $url= new URL($target);
         $this->conn= $this->getConnection(sprintf(

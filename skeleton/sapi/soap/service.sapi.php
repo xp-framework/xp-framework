@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('webservices.soap.rpc.SoapRpcRouter');
+  uses(
+    'webservices.soap.rpc.SoapRpcRouter',
+    'peer.http.HttpConstants'
+  );
   
   define('EPREPEND_IDENTIFIER', "\6100");
   
@@ -57,7 +60,7 @@
       header('HTTP/1.1 500 Internal Server Error');
       echo self::fault(
         $e instanceof XPException ? $e : new XPException($e->getMessage()), 
-        HTTP_INTERNAL_SERVER_ERROR
+        HttpConstants::STATUS_INTERNAL_SERVER_ERROR
       );
     }
     // }}}

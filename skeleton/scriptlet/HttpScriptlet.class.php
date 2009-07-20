@@ -169,19 +169,19 @@
      */
     public function handleMethod($request) {
       switch ($request->method) {
-        case HTTP_POST:
+        case HttpConstants::POST:
           if (!empty($_FILES)) {
             $request->params= array_merge($request->params, $_FILES);
           }
           $m= 'doPost';
           break;
           
-        case HTTP_GET:
+        case HttpConstants::GET:
           $request->setData($request->getEnvValue('QUERY_STRING'));
           $m= 'doGet';
           break;
           
-        case HTTP_HEAD:
+        case HttpConstants::HEAD:
           $request->setData($request->getEnvValue('QUERY_STRING'));
           $m= 'doHead';
           break;        
@@ -326,7 +326,7 @@
       if (!($method= $this->handleMethod($request))) {
         throw(new HttpScriptletException(
           'HTTP method "'.$request->method.'" not supported',
-          HTTP_METHOD_NOT_IMPLEMENTED
+          HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED
         ));
       }
 
@@ -348,7 +348,7 @@
           if (!$this->handleSessionInitializationError($request, $response)) {
             throw new HttpSessionInvalidException(
               'Session initialization failed: '.$e->getMessage(),
-              HTTP_SERVICE_TEMPORARILY_UNAVAILABLE
+              HttpConstants::STATUS_SERVICE_TEMPORARILY_UNAVAILABLE
             );
           }
           
@@ -362,7 +362,7 @@
           if (!$this->handleInvalidSession($request, $response)) {
             throw new HttpSessionInvalidException(
               'Session is invalid',
-              HTTP_BAD_REQUEST
+              HttpConstants::STATUS_BAD_REQUEST
             );
           }
 
@@ -383,7 +383,7 @@
       if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
         throw new HttpScriptletException(
           'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
-          HTTP_HTTP_VERSION_NOT_SUPPORTED
+          HttpConstants::STATUS_HTTP_VERSION_NOT_SUPPORTED
         );
       }
       $response->version= '1.'.$minor;
@@ -405,7 +405,7 @@
       } catch (XPException $e) {
         throw new HttpScriptletException(
           'Request processing failed ['.$method.']: '.$e->getMessage(),
-          HTTP_INTERNAL_SERVER_ERROR,
+          HttpConstants::STATUS_INTERNAL_SERVER_ERROR,
           $e
         );
       }

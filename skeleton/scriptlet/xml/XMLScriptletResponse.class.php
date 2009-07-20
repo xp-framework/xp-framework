@@ -293,7 +293,7 @@
           try {
             $this->processor->setXSLFile($this->_stylesheet[1]);
           } catch (FileNotFoundException $e) {
-            throw new HttpScriptletException($e->getMessage(), HTTP_NOT_FOUND);
+            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_FOUND);
           }
           break;
           
@@ -318,7 +318,7 @@
       try {
         $this->processor->run();
       } catch (TransformerException $e) {
-        throw new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR);
+        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
       }
       
       $this->content= $this->processor->output();

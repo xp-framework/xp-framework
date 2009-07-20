@@ -63,7 +63,7 @@
  * Example:
  * <code>
  *   public function doPost($request, $response) {
- *     throw new HttpScriptletException('POST not allowed', HTTP_BAD_REQUEST);
+ *     throw new HttpScriptletException('POST not allowed', HttpConstants::STATUS_BAD_REQUEST);
  *   }
  * </code>
  *

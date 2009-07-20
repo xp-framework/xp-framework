@@ -5,8 +5,11 @@
  */
 
   $package= 'unittest.web';
-
-  uses('unittest.web.Field', 'unittest.web.Fields');
+  uses(
+    'unittest.web.Field', 
+    'unittest.web.Fields',
+    'peer.http.HttpConstants'
+  );
 
   /**
    * Represents a HTML form
@@ -57,7 +60,7 @@
      */
     public function getMethod() {
       $method= $this->node->getAttribute('method');
-      return $method ? $method : HTTP_GET;
+      return $method ? $method : HttpConstants::GET;
     }
 
     /**

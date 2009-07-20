@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('scriptlet.rpc.AbstractRpcResponse');
+  uses('scriptlet.rpc.AbstractRpcResponse', 'peer.http.HttpConstants');
   
   /**
    * Wraps XML-RPC response
@@ -22,7 +22,7 @@
       if (!$this->message) return;
 
       if (NULL !== $this->message->getFault()) {
-        $this->setStatus(HTTP_INTERNAL_SERVER_ERROR);
+        $this->setStatus(HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
       }
       $this->content= $this->message->serializeData();
       $this->cat && $this->cat->debug('>>> ', $this->content);

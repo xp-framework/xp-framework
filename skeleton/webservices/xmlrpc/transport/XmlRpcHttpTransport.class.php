@@ -7,7 +7,8 @@
   uses(
     'scriptlet.rpc.transport.AbstractRpcTransport',
     'webservices.xmlrpc.XmlRpcFaultException',
-    'peer.http.HttpConnection'
+    'peer.http.HttpConnection',
+    'peer.http.HttpConstants'
   );
 
   /**
@@ -49,7 +50,7 @@
      */
     public function send(XmlRpcMessage $message) {
       with ($r= $this->_conn->create(new HttpRequest())); {
-        $r->setMethod(HTTP_POST);
+        $r->setMethod(HttpConstants::POST);
         $r->setParameters(new RequestData($message->serializeData()));
         $r->setHeader('Content-Type', 'text/xml; charset='.$message->getEncoding());
         $r->setHeader('User-Agent', 'XP Framework XML-RPC Client (http://xp-framework.net)');
@@ -74,8 +75,8 @@
       $code= $response->getStatusCode();
       
       switch ($code) {
-        case HTTP_OK:
-        case HTTP_INTERNAL_SERVER_ERROR:
+        case HttpConstants::STATUS_OK:
+        case HttpConstants::STATUS_INTERNAL_SERVER_ERROR:
           $xml= '';
           while ($buf= $response->readData()) $xml.= $buf;
 
@@ -96,7 +97,7 @@
           
           return $answer;
         
-        case HTTP_AUTHORIZATION_REQUIRED:
+        case HttpConstants::STATUS_AUTHORIZATION_REQUIRED:
           throw new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
           );

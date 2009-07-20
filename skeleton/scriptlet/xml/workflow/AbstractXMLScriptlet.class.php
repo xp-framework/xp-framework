@@ -5,6 +5,7 @@
  */
 
   uses(
+    'peer.http.HttpConstants',
     'scriptlet.xml.XMLScriptlet',
     'scriptlet.xml.workflow.WorkflowScriptletRequest'
   );
@@ -108,11 +109,11 @@
           try {
             $context->setup($request);
           } catch (IllegalStateException $e) {
-            throw new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR, $e);
+            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
           } catch (IllegalArgumentException $e) {
-            throw new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE, $e);
+            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_ACCEPTABLE, $e);
           } catch (IllegalAccessException $e) {
-            throw new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN, $e);
+            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
           }
           $request->session->putValue($cidx, $context);
         }
@@ -121,9 +122,9 @@
         try {
           $context->process($request);
         } catch (IllegalStateException $e) {
-          throw new HttpSessionInvalidException($e->getMessage(), HTTP_BAD_REQUEST, $e);
+          throw new HttpSessionInvalidException($e->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $e);
         } catch (IllegalAccessException $e) {
-          throw new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN, $e);
+          throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
         }
 
         delete($class);
@@ -133,11 +134,11 @@
       try {
         $request->state->setup($request, $response, $context);
       } catch (IllegalStateException $e) {
-        throw new HttpScriptletException($e->getMessage(), HTTP_INTERNAL_SERVER_ERROR, $e);
+        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
       } catch (IllegalArgumentException $e) {
-        throw new HttpScriptletException($e->getMessage(), HTTP_NOT_ACCEPTABLE, $e);
+        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_ACCEPTABLE, $e);
       } catch (IllegalAccessException $e) {
-        throw new HttpScriptletException($e->getMessage(), HTTP_FORBIDDEN, $e);
+        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
       }
       
       // Call state's process() method. In case it returns FALSE, the

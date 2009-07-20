@@ -130,7 +130,7 @@
           );
         } else {
           $answer->setFault(
-            HTTP_INTERNAL_SERVER_ERROR,
+            HttpConstants::STATUS_INTERNAL_SERVER_ERROR,
             $e->getMessage(),
             $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
             $this->formatStackTrace($e->getStackTrace())
@@ -138,7 +138,7 @@
         }
       } catch (XPException $e) {
         $answer->setFault(
-          HTTP_INTERNAL_SERVER_ERROR,
+          HttpConstants::STATUS_INTERNAL_SERVER_ERROR,
           $e->getMessage(),
           $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
           $this->formatStackTrace($e->getStackTrace())

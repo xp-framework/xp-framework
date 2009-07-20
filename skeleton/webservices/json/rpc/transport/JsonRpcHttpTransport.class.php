@@ -8,7 +8,8 @@
     'scriptlet.rpc.transport.AbstractRpcTransport',
     'scriptlet.rpc.RpcFaultException',
     'webservices.json.rpc.JsonResponseMessage',
-    'peer.http.HttpConnection'
+    'peer.http.HttpConnection',
+    'peer.http.HttpConstants'
   );
 
   /**
@@ -49,7 +50,7 @@
      */
     public function send(JsonMessage $message) {
       with ($request= $this->_conn->create(new HttpRequest())); {
-        $request->setMethod(HTTP_POST);
+        $request->setMethod(HttpConstants::POST);
         $request->setParameters(new RequestData($message->serializeData()));
         $request->setHeader('Content-Type', $message->getContentType().'; charset='.$message->getEncoding());
         $request->setHeader('User-Agent', 'XP Framework Client (http://xp-framework.net)');
@@ -73,8 +74,8 @@
       
       $code= $response->getStatusCode();
       switch ($code) {
-        case HTTP_OK:
-        case HTTP_INTERNAL_SERVER_ERROR:
+        case HttpConstants::STATUS_OK:
+        case HttpConstants::STATUS_INTERNAL_SERVER_ERROR:
           $xml= '';
           while ($buf= $response->readData()) $xml.= $buf;
 
@@ -96,7 +97,7 @@
           
           return $answer;
         
-        case HTTP_AUTHORIZATION_REQUIRED:
+        case HttpConstants::STATUS_AUTHORIZATION_REQUIRED:
           throw(new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
           ));

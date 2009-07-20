@@ -9,7 +9,8 @@
     'webservices.soap.SOAPFaultException',
     'peer.http.HttpConnection',
     'webservices.uddi.UDDIConstants',
-    'util.log.Traceable'
+    'util.log.Traceable',
+    'peer.http.HttpConstants'
   );
 
   /**
@@ -113,7 +114,7 @@
       
       // Assemble request
       with ($r= $c->request->create(new HttpRequest())); {
-        $r->setMethod(HTTP_POST);
+        $r->setMethod(HttpConstants::POST);
         $r->setParameters(new RequestData(
           $m->getDeclaration()."\n".
           $m->getSource(0)

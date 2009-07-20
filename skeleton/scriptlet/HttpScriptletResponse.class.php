@@ -23,7 +23,7 @@
     public
       $version=         '1.1',
       $content=         '',
-      $statusCode=      HTTP_OK,
+      $statusCode=      HttpConstants::STATUS_OK,
       $headers=         array();
     
     /**
@@ -49,7 +49,7 @@
      * @param   string target an absolute URI
      */
     public function sendRedirect($location) {
-      $this->statusCode= HTTP_FOUND;
+      $this->statusCode= HttpConstants::STATUS_FOUND;
       $this->setHeader('Location', $location);
     }
     
@@ -62,7 +62,7 @@
      * @param   string realm default 'Restricted area'
      */
     public function sendBasicAuthenticate($realm= 'Restricted area') {
-      $this->statusCode= HTTP_AUTHORIZATION_REQUIRED;
+      $this->statusCode= HttpConstants::STATUS_AUTHORIZATION_REQUIRED;
       $this->setHeader('WWW-Authenticate', 'Basic realm="'.$realm.'"');
     }
     

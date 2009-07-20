@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('scriptlet.xml.XMLScriptletRequest');
+  uses(
+    'scriptlet.xml.XMLScriptletRequest',
+    'peer.http.HttpConstants'
+  );
   
   /**
    * Wraps request
@@ -40,7 +43,7 @@
         } catch (ClassNotFoundException $e) {
           throw new HttpScriptletException(
             $e->getMessage(),
-            HTTP_NOT_FOUND
+            HttpConstants::STATUS_NOT_FOUND
           );
         }
       }

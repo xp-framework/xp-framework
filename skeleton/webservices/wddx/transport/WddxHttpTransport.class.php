@@ -8,7 +8,8 @@
     'scriptlet.rpc.transport.AbstractRpcTransport',
     'webservices.wddx.WddxFaultException',
     'webservices.wddx.WddxMessage',
-    'peer.http.HttpConnection'
+    'peer.http.HttpConnection',
+    'peer.http.HttpConstants'
   );
 
   /**
@@ -52,7 +53,7 @@
       
       // Send request
       with ($r= $this->_conn->create(new HttpRequest())); {
-        $r->setMethod(HTTP_POST);
+        $r->setMethod(HttpConstants::POST);
         $r->setParameters(new RequestData(
           $message->getDeclaration()."\n".
           $message->getSource(0)
@@ -81,8 +82,8 @@
       $code= $response->getStatusCode();
       
       switch ($code) {
-        case HTTP_OK:
-        case HTTP_INTERNAL_SERVER_ERROR:
+        case HttpConstants::STATUS_OK:
+        case HttpConstants::STATUS_INTERNAL_SERVER_ERROR:
           $xml= '';
           while ($buf= $response->readData()) $xml.= $buf;
 
@@ -103,7 +104,7 @@
           
           return $answer;
         
-        case HTTP_AUTHORIZATION_REQUIRED:
+        case HttpConstants::STATUS_AUTHORIZATION_REQUIRED:
           throw(new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
           ));
