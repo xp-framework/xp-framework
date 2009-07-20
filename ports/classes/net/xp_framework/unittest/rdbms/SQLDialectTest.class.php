@@ -37,7 +37,7 @@
      *
      */
     public function setUp() {
-      $this->conn[self::MYSQL]=  new MysqlConnection(new DSN('mysql://localhost:3306/'));
+      $this->conn[self::MYSQL]=  new MySQLConnection(new DSN('mysql://localhost:3306/'));
       $this->dialectClass[self::MYSQL]=  'rdbms.mysql.MysqlDialect';
 
       $this->conn[self::SYBASE]= new SybaseConnection(new DSN('sybase://localhost:1999/'));
