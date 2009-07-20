@@ -33,7 +33,7 @@
      */
     #[@beforeClass]
     public static function registerConnection() {
-      ConnectionManager::getInstance()->register(new MysqlConnection(new DSN('mysql://localhost:3306/')), 'jobs');
+      ConnectionManager::getInstance()->register(new MySQLConnection(new DSN('mysql://localhost:3306/')), 'jobs');
     }
     
     /**

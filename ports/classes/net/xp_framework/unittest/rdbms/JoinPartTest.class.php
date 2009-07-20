@@ -35,7 +35,7 @@
      *
      */
     public function setUp() {
-      $this->conn= new MysqlConnection(new DSN('mysql://localhost:3306/'));
+      $this->conn= new MySQLConnection(new DSN('mysql://localhost:3306/'));
     }
     
     /**
