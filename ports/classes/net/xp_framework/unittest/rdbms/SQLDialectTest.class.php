@@ -7,10 +7,11 @@
   uses(
     'unittest.TestCase',
     'util.Date',
-    'rdbms.ConnectionManager',
     'rdbms.SQLFunction',
     'rdbms.criterion.Restrictions',
     'rdbms.SQLDialect',
+    'rdbms.mysql.MySQLConnection',
+    'rdbms.sybase.SybaseConnection',
     'rdbms.join.JoinTable',
     'rdbms.join.JoinRelation',
     'net.xp_framework.unittest.rdbms.dataset.Job'
@@ -36,10 +37,10 @@
      *
      */
     public function setUp() {
-      $this->conn[self::MYSQL]=  DriverManager::getConnection('mysql://localhost:3306/');
+      $this->conn[self::MYSQL]=  new MysqlConnection(new DSN('mysql://localhost:3306/'));
       $this->dialectClass[self::MYSQL]=  'rdbms.mysql.MysqlDialect';
 
-      $this->conn[self::SYBASE]= DriverManager::getConnection('sybase://localhost:1999/');
+      $this->conn[self::SYBASE]= new SybaseConnection(new DSN('sybase://localhost:1999/'));
       $this->dialectClass[self::SYBASE]= 'rdbms.sybase.SybaseDialect';
 
       $this->peer= Job::getPeer();
