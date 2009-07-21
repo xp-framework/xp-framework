@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('webservices.xmlrpc.XmlRpcResponseMessage', 'webservices.xmlrpc.XmlRpcRequestMessage');
+  uses(
+    'webservices.xmlrpc.XmlRpcResponseMessage', 
+    'webservices.xmlrpc.XmlRpcRequestMessage',
+    'webservices.xmlrpc.transport.XmlRpcTransport'
+  );
 
   /**
    * This is a XML-RPC client; XML-RPC is a remote procedure call
@@ -29,6 +33,7 @@
    *   echo $res;
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.scriptlet.rpc.XmlRpcClientTest
    * @ext      xml
    * @see      http://xmlrpc.com
    * @purpose  Generic XML-RPC Client base class
@@ -44,7 +49,7 @@
      *
      * @param   webservices.xmlrpc.transport.XmlRpcTransport transport
      */
-    public function __construct($transport) {
+    public function __construct(XmlRpcHttpTransport $transport) {
       $this->transport= $transport;
     }
     
@@ -67,9 +72,6 @@
      * @throws  webservices.xmlrpc.XmlRpcFaultException
      */
     public function invoke() {
-      if (!is('webservices.xmlrpc.transport.XmlRpcTransport', $this->transport))
-        throw(new IllegalArgumentException('Transport must be a webservices.xmlrpc.transport.XmlRpcTransport'));
-    
       $args= func_get_args();
       
       $this->message= new XmlRpcRequestMessage();
