@@ -57,11 +57,121 @@
      *
      */
     #[@test]
+    public function writeMultiple() {
+      Console::write('.', 'o', 'O', '0');
+      $this->assertEquals('.oO0', $this->streams[0]->getBytes());
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeInt() {
+      Console::write(1);
+      $this->assertEquals('1', $this->streams[0]->getBytes());
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeTrue() {
+      Console::write(TRUE);
+      $this->assertEquals('1', $this->streams[0]->getBytes());
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeFalse() {
+      Console::write(FALSE);
+      $this->assertEquals('', $this->streams[0]->getBytes());
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeFloat() {
+      Console::write(1.5);
+      $this->assertEquals('1.5', $this->streams[0]->getBytes());
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeArray() {
+      Console::write(array(1, 2, 3));
+      $this->assertEquals(
+        "[\n".
+        "  0 => 1\n".
+        "  1 => 2\n".
+        "  2 => 3\n".
+        "]", 
+        $this->streams[0]->getBytes()
+      );
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeMap() {
+      Console::write(array('key' => 'value', 'color' => 'blue'));
+      $this->assertEquals(
+        "[\n".
+        "  key => \"value\"\n".
+        "  color => \"blue\"\n".
+        "]", 
+        $this->streams[0]->getBytes()
+      );
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeObject() {
+      Console::write(newinstance('lang.Object', array(), '{
+        public function toString() { return "Hello"; }
+      }'));
+      $this->assertEquals('Hello', $this->streams[0]->getBytes());
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function exceptionFromToString() {
+      try {
+        Console::write(newinstance('lang.Object', array(), '{
+          public function toString() { throw new IllegalStateException("Cannot render string"); }
+        }'));
+        $this->fail('Expected exception not thrown', NULL, 'lang.IllegalStateException');
+      } catch (IllegalStateException $expected) {
+        $this->assertEquals('', $this->streams[0]->getBytes());
+      }
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
     public function writeToOut() {
       Console::$out->write('.');
       $this->assertEquals('.', $this->streams[0]->getBytes());
     }
-
     /**
      * Test write() method
      *
