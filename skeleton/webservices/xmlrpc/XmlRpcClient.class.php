@@ -11,12 +11,12 @@
   );
 
   /**
-   * This is a XML-RPC client; XML-RPC is a remote procedure call
+   * This is an XML-RPC client; XML-RPC is a remote procedure call
    * protocol that uses XML as the message format.
    *
-   * It has the same origins like SOAP, but has been developed to cure
-   * some of the problems, SOAP has: it not nearly as complex as SOAP is
-   * and does not have all those (mostly unneccessary) features SOAP does.
+   * It has the same origins as SOAP, but has been developed to cure
+   * some of the problems SOAP has: it is not nearly as complex as SOAP
+   * and doesn't have all those (mostly unneccessary) features of SOAP.
    * The spec is short and precise, unlike SOAP's - thus, the various
    * implementations really understand themselves.
    *
