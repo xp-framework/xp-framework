@@ -6,7 +6,6 @@
 
   uses(
     'util.cmd.Console',
-    'io.streams.StringWriter', 
     'io.streams.MemoryOutputStream',
     'unittest.TestCase'
   );
@@ -28,10 +27,10 @@
      *
      */
     public function setUp() {
-      $this->original= array(clone Console::$out, clone Console::$err);
+      $this->original= array(Console::$out->getStream(), clone Console::$err->getStream());
       $this->streams= array(new MemoryOutputStream(), new MemoryOutputStream());
-      Console::$out= new StringWriter($this->streams[0]);
-      Console::$err= new StringWriter($this->streams[1]);
+      Console::$out->setStream($this->streams[0]);
+      Console::$err->setStream($this->streams[1]);
     }
     
     /**
@@ -39,8 +38,8 @@
      *
      */
     public function tearDown() {
-      Console::$out= $this->original[0];
-      Console::$err= $this->original[1];
+      Console::$out->setStream($this->original[0]);
+      Console::$err->setStream($this->original[1]);
     }
     
     /**
