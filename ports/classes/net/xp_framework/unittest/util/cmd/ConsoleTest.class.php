@@ -27,7 +27,7 @@
      *
      */
     public function setUp() {
-      $this->original= array(Console::$out->getStream(), clone Console::$err->getStream());
+      $this->original= array(Console::$out->getStream(), Console::$err->getStream());
       $this->streams= array(new MemoryOutputStream(), new MemoryOutputStream());
       Console::$out->setStream($this->streams[0]);
       Console::$err->setStream($this->streams[1]);
