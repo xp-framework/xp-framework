@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('io.streams.StringWriter', 'io.streams.ConsoleOutputStream');
+  uses(
+    'io.streams.StringWriter', 
+    'io.streams.ConsoleOutputStream'
+  );
 
   /**
    * Represents system console
@@ -26,6 +29,7 @@
    *   Console::$err->writeLine('*** An error occured: ', $e->toString());
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.util.cmd.ConsoleTest
    * @see      http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpref/html/frlrfSystemConsoleClassTopic.asp
    * @purpose  I/O functions
    */
