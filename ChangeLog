@@ -23,6 +23,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Support data type "varbinary" in MySQLDBAdapter class
+  (hinckel)
 - Made XML_ILLEGAL_CHARS a xml.Node class constant
   (kiesel)
 - Added accessors for underlying output stream to io.streams.StringWriter

@@ -16,6 +16,7 @@
   class MySQLDBAdapter extends DBAdapter {
     public static $map= array(
       'varchar'    => DB_ATTRTYPE_VARCHAR,
+      'varbinary'  => DB_ATTRTYPE_VARCHAR,
       'char'       => DB_ATTRTYPE_CHAR,
       'int'        => DB_ATTRTYPE_INT,
       'bigint'     => DB_ATTRTYPE_NUMERIC,
