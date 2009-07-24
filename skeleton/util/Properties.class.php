@@ -163,7 +163,7 @@
             if ($val instanceof Hashmap) {
               $str= '';
               foreach ($val->keys() as $k) {
-                $str.= '|'.$k.':'.$val->get($v);
+                $str.= '|'.$k.':'.$val->get($k);
               }
               $val= substr($str, 1);
             }
@@ -463,7 +463,7 @@
      *
      * @param   string section
      * @param   string key
-     * @param   string value
+     * @param   string comment
      */
     public function writeComment($section, $comment) {
       $this->_load();
