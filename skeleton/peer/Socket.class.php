@@ -164,25 +164,23 @@
      */
     public function canRead($timeout= NULL) {
       if (NULL === $timeout) {
-        $tv_sec= $tv_usec= NULL;
+        $tv_sec= $tv_usec= 0;
       } else {
         $tv_sec= intval(floor($timeout));
         $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
       }
-
-      if (FALSE === socket_set_timeout($this->_sock, $tv_sec, $tv_usec)) {
+      
+      if (FALSE === ($n= stream_select(
+        $r= array($this->_sock),              // Read
+        $w= NULL,                             // Write
+        $e= NULL,                             // Except
+        $tv_sec,
+        $tv_usec
+      ))) {
         throw new SocketException('Select failed: '.$this->getLastError());
       }
       
-      if (!is_array($status= socket_get_status($this->_sock))) {
-        throw new SocketException('Get status failed: '.$this->getLastError());
-      }
-
-      if (FALSE === socket_set_timeout($this->_sock, $this->_timeout)) {
-        throw new SocketException('Select failed: '.$this->getLastError());
-      }
-
-      return $status['unread_bytes'] > 0;
+      return $n > 0;
     }
     
     /**
