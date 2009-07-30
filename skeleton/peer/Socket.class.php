@@ -12,6 +12,7 @@
   /**
    * Socket class
    *
+   * @test     xp://net.xp_framework.unittest.peer.SocketTest
    * @see      php://network
    * @purpose  Basic TCP/IP socket
    */
@@ -82,7 +83,7 @@
      * @throws  peer.ConnectException
      */
     public function connect($timeout= 2.0) {
-      if ($this->isConnected()) return 1;
+      if ($this->isConnected()) return TRUE;
       
       if (!$this->_sock= fsockopen(
         $this->_prefix.$this->host,
@@ -102,7 +103,7 @@
       }
       
       socket_set_timeout($this->_sock, $this->_timeout);
-      return 1;
+      return TRUE;
     }
 
     /**
