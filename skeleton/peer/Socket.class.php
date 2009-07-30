@@ -28,8 +28,8 @@
     /**
      * Constructor
      *
-     * Note: When specifying a numerical IPv6 address (e.g. fe80::1) 
-     * as value for the parameter "host", you must enclose the IP in 
+     * Note: When specifying a numerical IPv6 address (e.g. fe80::1)
+     * as value for the parameter "host", you must enclose the IP in
      * square brackets.
      *
      * @param   string host hostname or IP address
@@ -85,20 +85,20 @@
       if ($this->isConnected()) return 1;
       
       if (!$this->_sock= fsockopen(
-        $this->_prefix.$this->host, 
-        $this->port, 
-        $errno, 
-        $errstr, 
+        $this->_prefix.$this->host,
+        $this->port,
+        $errno,
+        $errstr,
         $timeout
       )) {
-        throw(new ConnectException(sprintf(
+        throw new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
           $this->port,
           $timeout,
           $errno,
           $errstr
-        )));
+        ));
       }
       
       socket_set_timeout($this->_sock, $this->_timeout);
@@ -110,7 +110,7 @@
      *
      * @return  bool success
      */
-    public function close() {    
+    public function close() {
       $res= fclose($this->_sock);
       $this->_sock= NULL;
       return $res;
@@ -149,7 +149,7 @@
      */
     public function setBlocking($blockMode) {
       if (FALSE === socket_set_blocking($this->_sock, $blockMode)) {
-        throw(new SocketException('Set blocking call failed: '.$this->getLastError()));
+        throw new SocketException('Set blocking call failed: '.$this->getLastError());
       }
       
       return TRUE;
@@ -171,15 +171,15 @@
       }
 
       if (FALSE === socket_set_timeout($this->_sock, $tv_sec, $tv_usec)) {
-        throw(new SocketException('Select failed: '.$this->getLastError()));
+        throw new SocketException('Select failed: '.$this->getLastError());
       }
       
       if (!is_array($status= socket_get_status($this->_sock))) {
-        throw(new SocketException('Get status failed: '.$this->getLastError()));
+        throw new SocketException('Get status failed: '.$this->getLastError());
       }
 
       if (FALSE === socket_set_timeout($this->_sock, $this->_timeout)) {
-        throw(new SocketException('Select failed: '.$this->getLastError()));
+        throw new SocketException('Select failed: '.$this->getLastError());
       }
 
       return $status['unread_bytes'] > 0;
@@ -199,7 +199,7 @@
         // looping, so check for eof() and make it "no error"
         if ($this->eof()) return NULL;
         
-        throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
+        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
       }
       
       return $r;
@@ -219,7 +219,7 @@
         // looping, so check for eof() and make it "no error"
         if ($this->eof()) return NULL;
         
-        throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
+        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
       }
       
       return chop($r);
@@ -234,7 +234,7 @@
      */
     public function readBinary($maxLen= 4096) {
       if (FALSE === ($r= fread($this->_sock, $maxLen))) {
-        throw(new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError()));
+        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
       }
       
       return $r;
@@ -258,7 +258,7 @@
      */
     public function write($str) {
       if (FALSE === ($bytesWritten= fputs($this->_sock, $str, $len= strlen($str)))) {
-        throw(new SocketException('Write of '.strlen($len).' bytes to socket failed: '.$this->getLastError()));
+        throw new SocketException('Write of '.strlen($len).' bytes to socket failed: '.$this->getLastError());
       }
       
       return $bytesWritten;
