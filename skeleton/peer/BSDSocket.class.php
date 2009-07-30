@@ -9,10 +9,10 @@
   /**
    * BSDSocket implementation
    *
-   * @purpose  Provide an interface to the BSD sockets                    
-   * @see      php://sockets                                              
-   * @see      http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ  
-   * @ext      sockets                                                    
+   * @purpose  Provide an interface to the BSD sockets
+   * @see      php://sockets
+   * @see      http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ
+   * @ext      sockets
    */
   class BSDSocket extends Socket {
     public
@@ -34,7 +34,7 @@
      */
     public function setDomain($domain) {
       if ($this->isConnected()) {
-        throw(new IllegalStateException('Cannot set domain on connected socket'));
+        throw new IllegalStateException('Cannot set domain on connected socket');
       }
       $this->domain= $domain;
     }
@@ -56,7 +56,7 @@
      */
     public function setType($type) {
       if ($this->isConnected()) {
-        throw(new IllegalStateException('Cannot set type on connected socket'));
+        throw new IllegalStateException('Cannot set type on connected socket');
       }
       $this->type= $type;
     }
@@ -79,7 +79,7 @@
      */
     public function setProtocol($protocol) {
       if ($this->isConnected()) {
-        throw(new IllegalStateException('Cannot set protocol on connected socket'));
+        throw new IllegalStateException('Cannot set protocol on connected socket');
       }
       $this->protocol= $protocol;
     }
@@ -142,14 +142,14 @@
       
       // Create socket...
       if (!($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
-        throw(new ConnectException(sprintf(
+        throw new ConnectException(sprintf(
           'Create of %s socket (type %s, protocol %s) failed: %d: %s',
           $domains[$this->domain],
           $types[$this->type],
           getprotobynumber($this->protocol),
           $e= socket_last_error(), 
           socket_strerror($e)
-        )));
+        ));
       }
       
       // Set options
@@ -177,12 +177,12 @@
       }
       
       // Check return status
-      if (FALSE === $r) throw(new ConnectException(sprintf(
+      if (FALSE === $r) throw new ConnectException(sprintf(
         'Connect to %s:%d failed: %s',
         $this->host,
         $this->port,
         $this->getLastError()
-      )));
+      ));
 
       return TRUE;
     }
@@ -212,11 +212,11 @@
         $ret= socket_set_nonblock($this->_sock);
       }
       if (FALSE === $ret) {
-        throw(new SocketException(sprintf(
+        throw new SocketException(sprintf(
           'setBlocking (%s) failed: %s',
           ($blocking ? 'blocking' : 'nonblocking'),
           $this->getLastError()
-        )));
+        ));
       }
       
       return TRUE;      
@@ -238,13 +238,13 @@
       }
       
       if (FALSE === ($n= socket_select(
-        $r= array($this->_sock),             // Read
+        $r= array($this->_sock),              // Read
         $w= NULL,                             // Write
         $e= NULL,                             // Except
         $tv_sec,
         $tv_usec
       ))) {
-        throw(new SocketException('Select failed: '.$this->getLastError()));
+        throw new SocketException('Select failed: '.$this->getLastError());
       }
       
       return $n > 0;
@@ -268,7 +268,7 @@
      */
     protected function _read($maxLen, $type, $chop= FALSE) {
       if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
-        throw(new SocketException('Read failed: '.$this->getLastError()));
+        throw new SocketException('Read failed: '.$this->getLastError());
       }
       if ('' === $res) {
         $this->_eof= TRUE;
@@ -321,7 +321,7 @@
     public function write($str) {
       $bytesWritten= socket_write($this->_sock, $str, strlen($str));
       if (FALSE === $bytesWritten) {
-        throw(new SocketException('Write failed: '.$this->getLastError()));
+        throw new SocketException('Write failed: '.$this->getLastError());
       }
       return $bytesWritten;
     }
