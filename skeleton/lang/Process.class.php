@@ -72,6 +72,7 @@
 
       $this->status= proc_get_status($this->_proc);
       $this->status['exe']= $binary;
+      $this->status['arguments']= NULL;
 
       // Assign in, out and err members
       $this->in= new File($pipes[0]);
@@ -148,6 +149,7 @@
         'running'   => TRUE,
         'exe'       => $exe,
         'command'   => '',
+        'arguments' => NULL
       );
       
       if ($exe) {
@@ -226,6 +228,64 @@
      */
     public function getCommandLine() {
       return $this->status['command'];
+    }
+    
+    /**
+     * Parse command line arguments
+     *
+     * @see     xp://lang.Process#getArguments
+     * @param   string cmd
+     * @return  string[] arguments
+     */
+    public static function parseCommandLine($cmd) {
+
+      // Remove executable from command line. If it's quoted, handle this
+      // accordingly (with either single and double quotes). If the command
+      // line exists entirely of the command, return an empty array
+      if ('"' === $cmd{0}) {
+        $cmd= substr($cmd, strpos($cmd, '"', 1)+ 2);
+      } else if ("'" === $cmd{0}) {
+        $cmd= substr($cmd, strpos($cmd, "'", 1)+ 2);
+      } else if (FALSE !== ($end= strpos($cmd, ' '))) {
+        $cmd= substr($cmd, $end+ 1);
+      } else {
+        return array();
+      }
+
+      // Parse arguments. These also may be quoted (again, either with " or '), 
+      // or even partially quoted, so handle this, too.
+      $arguments= array();
+      $o= 0;
+      while (FALSE !== ($p= strcspn($cmd, ' ', $o))) {
+        $option= substr($cmd, $o, $p);
+        if (1 === substr_count($option, '"')) {
+          $l= $o+ $p;
+          $qp= strpos($cmd, '"', $l)+ 1;
+          $option.= substr($cmd, $l, $qp- $l);
+          $o= $qp+ 1;
+        } else if (1 === substr_count($option, "'")) {
+          $l= $o+ $p;
+          $qp= strpos($cmd, "'", $l)+ 1;
+          $option.= substr($cmd, $l, $qp- $l);
+          $o= $qp+ 1;
+        } else {
+          $o+= $p+ 1;
+        }
+        $arguments[]= $option;
+      }
+      return $arguments;
+    }
+    
+    /**
+     * Get command line arguments
+     *
+     * @return  string[]
+     */
+    public function getArguments() {
+      if (NULL === $this->status['arguments']) {
+        $this->status['arguments']= self::parseCommandLine($this->status['command']);
+      }
+      return $this->status['arguments'];
     }
     
     /**
