@@ -149,5 +149,65 @@
     public function runningDirectory() {
       new Process(System::tempDir());
     }
+    
+    /**
+     * Tests command line parsing
+     *
+     */
+    #[@test]
+    public function emptyArgs() {
+      $p= Process::parseCommandLine('C:\\Windows\\Explorer.EXE');
+      $this->assertEquals(array(), $p);
+    }
+
+    /**
+     * Tests command line parsing
+     *
+     */
+    #[@test]
+    public function guidArg() {
+      $p= Process::parseCommandLine('taskeng.exe {58B7C886-2D94-4DBF-BBB9-96608B332124}');
+      $this->assertEquals(array('{58B7C886-2D94-4DBF-BBB9-96608B332124}'), $p);
+    }
+
+    /**
+     * Tests command line parsing
+     *
+     */
+    #[@test]
+    public function quotedCommand() {
+      $p= Process::parseCommandLine('"C:\\Program Files\\Windows Sidebar\\sidebar.exe" /autoRun');
+      $this->assertEquals(array('/autoRun'), $p);
+    }
+
+    /**
+     * Tests command line parsing
+     *
+     */
+    #[@test]
+    public function quotedArgumentPart() {
+      $p= Process::parseCommandLine('/usr/bin/php -q -dinclude_path=".:/usr/share" -dmagic_quotes_gpc=Off');
+      $this->assertEquals(array('-q', '-dinclude_path=".:/usr/share"', '-dmagic_quotes_gpc=Off'), $p);
+    }
+
+    /**
+     * Tests command line parsing
+     *
+     */
+    #[@test]
+    public function quotedArgument() {
+      $p= Process::parseCommandLine('nedit "/mnt/c/Users/Mr. Example/notes.txt"');
+      $this->assertEquals(array('"/mnt/c/Users/Mr. Example/notes.txt"'), $p);
+    }
+
+    /**
+     * Tests command line parsing
+     *
+     */
+    #[@test]
+    public function quotedArguments() {
+      $p= Process::parseCommandLine('nedit "/mnt/c/Users/Mr. Example/notes.txt" "../All Notes.txt"');
+      $this->assertEquals(array('"/mnt/c/Users/Mr. Example/notes.txt"', '"../All Notes.txt"'), $p);
+    }
   }
 ?>
