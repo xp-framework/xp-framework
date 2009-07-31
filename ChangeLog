@@ -23,6 +23,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added lang.Process::getArguments() which returns command line arguments
+  passed to the process as an array of strings.
+  (friebe)
 - Support data type "varbinary" in MySQLDBAdapter class
   (hinckel)
 - Made XML_ILLEGAL_CHARS a xml.Node class constant
