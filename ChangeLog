@@ -59,6 +59,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Removed superfluous newline from message string in compoundMessage()
+  of HttpScriptletException class
+  (hinckel)
 - Fixed xml.dom.Document to work as advertised (getElementById() and
   getElementsByName() methods).
   (Rene Patzer)

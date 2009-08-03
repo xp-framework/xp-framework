@@ -57,7 +57,7 @@
      */
     public function compoundMessage() {
       return sprintf(
-        "Exception %s (%d:%s)\n",
+        "Exception %s (%d:%s)",
         $this->getClassName(),
         $this->response->statusCode,
         $this->message
