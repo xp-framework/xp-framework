@@ -35,12 +35,7 @@
      */
     #[@beforeClass]
     public static function startApplicationServer() {
-      $self= Runtime::getInstance()->getExecutable();
-      $cmd= $self->getFilename();
-      
-      // Add include path (TODO: Runtime::startup options)
-      $cmd.= ' -dinclude_path="'.ini_get('include_path').'"';
-      
+
       // Log protocol messages (specify a filename instead of NULL in 
       // the next line to activate)
       $debug= NULL;
@@ -93,7 +88,9 @@
       ));
 
       // Start server process
-      self::$serverProcess= new Process($cmd);
+      with ($rt= Runtime::getInstance()); {
+        self::$serverProcess= $rt->getExecutable()->newInstance($rt->startupOptions()->asArguments());
+      }
       self::$serverProcess->in->write($src);
       self::$serverProcess->in->close();
 
