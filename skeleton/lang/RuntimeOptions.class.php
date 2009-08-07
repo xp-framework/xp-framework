@@ -32,7 +32,7 @@
           case 'd': {
             sscanf($argument, "-d%[^=]=%[^\r]", $setting, $value); 
             $key= 'd'.ltrim($setting, ' ');
-            if ('dinclude_path' === $key) {
+            if ('dinclude_path' === $key) {   // This is rewritten by entry point tools
               $self->backing[$key]= array(escapeshellarg(get_include_path()));
             } else if (!isset($self->backing[$key])) {
               $self->backing[$key]= array($value); 
