@@ -241,5 +241,19 @@
         'xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"'
       ), $this->methodAnnotation('complexXPath', 'fromXml'));
     }
+
+    /**
+     * Tests string default with "="
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#stringWithEqualSigns
+     * @see   http://bugs.xp-framework.net/show_bug.cgi?id=38
+     */
+    #[@test]
+    public function stringWithEqualSigns() {
+      $this->assertEquals(
+        'rn=login, rt=config', 
+        $this->methodAnnotation('stringWithEqualSigns', 'permission')
+      );
+    }
   }
 ?>

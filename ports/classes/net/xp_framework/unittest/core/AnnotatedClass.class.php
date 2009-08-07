@@ -72,11 +72,20 @@
      */
     #[@fromXml(xpath= '/parent/child/@attribute')]
     public function simpleXPath() { }
+
     /**
      * Method annotated with a complex xpath expression
      *
      */
     #[@fromXml(xpath= '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"')]
     public function complexXPath() { }
+
+    /**
+     * Method annotated with a string default containing "=" signs
+     *
+     * @see   http://bugs.xp-framework.net/show_bug.cgi?id=38
+     */
+    #[@permission('rn=login,rt=config')]
+    public function stringWithEqualSigns() { }
   }
 ?>
