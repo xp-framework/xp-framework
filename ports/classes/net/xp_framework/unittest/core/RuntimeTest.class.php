@@ -16,7 +16,29 @@
    * @purpose  Unittest
    */
   class RuntimeTest extends TestCase {
-  
+    protected $startupOptions= array();
+    protected static $runtimeExecutable= '';
+    
+    /**
+     * Determine runtime
+     *
+     */
+    #[@beforeClass]
+    public static function determineRuntime() {
+      self::$runtimeExecutable= Runtime::getInstance()->getExecutable()->getFilename();
+    }
+    
+    /**
+     * Initialize startup options
+     *
+     */
+    public function setUp() {
+      $this->startupOptions= Runtime::getInstance()->startupOptions()
+        ->withSwitch('n')               // Do not use any configuration file
+        ->withSetting('safe_mode', 0)   // Switch off "safe" mode
+      ;
+    }
+    
     /**
      * Test getExecutable() method
      *
@@ -45,29 +67,28 @@
     public function nonExistantExtension() {
       $this->assertFalse(Runtime::getInstance()->extensionAvailable(':DOES-NOT-EXIST"'));
     }
-    
+ 
+     /**
+     * Test startupOptions() method
+     *
+     */
+    #[@test]
+    public function startupOptions() {
+      $options= Runtime::getInstance()->startupOptions();
+      $this->assertClass($options, 'lang.RuntimeOptions');
+    }
+   
     /**
      * Runs sourcecode in a new runtime
      *
-     * @param   string[] args
+     * @param   lang.RuntimeOptions options
      * @param   string src
      * @param   int expectedExitCode default 0
      * @throws  lang.IllegalStateException if process exits with a non-zero exitcode
      * @return  string out
      */
-    protected function runInNewRuntime($args, $src, $expectedExitCode= 0) {
-      $defaultArgs= array(
-        '-n',                     // Do not use any configuration file
-        '-dsafe_mode=0',          // Switch off "safe" mode
-        '-dmagic_quotes_gpc=0',   // Get rid of magic quotes
-        '-dextension_dir="'.ini_get('extension_dir').'"',
-        '-dinclude_path="'.get_include_path().'"'
-      );
-
-      with (
-        $out= $err= '', 
-        $p= new Process(Runtime::getInstance()->getExecutable()->getFilename(), array_merge($args, $defaultArgs))
-      ); {
+    protected function runInNewRuntime(RuntimeOptions $options, $src, $expectedExitCode= 0) {
+      with ($out= $err= '', $p= new Process(self::$runtimeExecutable, $options->asArguments())); {
         $p->in->write('<?php require("lang.base.php"); uses("lang.Runtime"); '.$src.' ?>');
         $p->in->close();
 
@@ -98,7 +119,7 @@
     public function loadLoadedLibrary() {
       $this->assertEquals(
         '+OK No exception thrown', 
-        $this->runInNewRuntime(array('-denable_dl=1'), '
+        $this->runInNewRuntime($this->startupOptions->withSetting('enable_dl', 1), '
           try {
             Runtime::getInstance()->loadLibrary("standard");
             echo "+OK No exception thrown";
@@ -117,7 +138,7 @@
     public function loadNonExistantLibrary() {
       $this->assertEquals(
         '+OK lang.ElementNotFoundException', 
-        $this->runInNewRuntime(array('-denable_dl=1'), '
+        $this->runInNewRuntime($this->startupOptions->withSetting('enable_dl', 1), '
           try {
             Runtime::getInstance()->loadLibrary(":DOES-NOT-EXIST");
             echo "-ERR No exception thrown";
@@ -136,7 +157,7 @@
     public function loadLibraryWithoutEnableDl() {
       $this->assertEquals(
         '+OK lang.IllegalAccessException', 
-        $this->runInNewRuntime(array('-denable_dl=0'), '
+        $this->runInNewRuntime($this->startupOptions->withSetting('enable_dl', 0), '
           try {
             Runtime::getInstance()->loadLibrary("irrelevant");
             echo "-ERR No exception thrown";
@@ -153,7 +174,7 @@
      */
     #[@test, @ignore('Enable and edit library name to something loadable to see information')]
     public function displayInformation() {
-      echo $this->runInNewRuntime(array('-denable_dl=1'), '
+      echo $this->runInNewRuntime($this->startupOptions->withSetting('enable_dl', 1), '
         try {
           $r= Runtime::getInstance()->loadLibrary("xsl");
           echo "+OK: ", $r ? "Loaded" : "Compiled";
@@ -171,7 +192,7 @@
     public function shutdownHookRunOnScriptEnd() {
       $this->assertEquals(
         '+OK exiting, +OK Shutdown hook run', 
-        $this->runInNewRuntime(array('-denable_dl=0'), '
+        $this->runInNewRuntime($this->startupOptions, '
           Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
             public function run() {
               echo \'+OK Shutdown hook run\';
@@ -191,7 +212,7 @@
     public function shutdownHookRunOnNormalExit() {
       $this->assertEquals(
         '+OK exiting, +OK Shutdown hook run', 
-        $this->runInNewRuntime(array('-denable_dl=0'), '
+        $this->runInNewRuntime($this->startupOptions, '
           Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
             public function run() {
               echo \'+OK Shutdown hook run\';
@@ -210,7 +231,7 @@
      */
     #[@test]
     public function shutdownHookRunOnFatal() {
-      $out= $this->runInNewRuntime(array('-denable_dl=0'), '
+      $out= $this->runInNewRuntime($this->startupOptions, '
         Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
           public function run() {
             echo \'+OK Shutdown hook run\';
@@ -231,7 +252,7 @@
      */
     #[@test]
     public function shutdownHookRunOnUncaughtException() {
-      $out= $this->runInNewRuntime(array('-denable_dl=0'), '
+      $out= $this->runInNewRuntime($this->startupOptions, '
         Runtime::getInstance()->addShutdownHook(newinstance("lang.Runnable", array(), "{
           public function run() {
             echo \'+OK Shutdown hook run\';
