@@ -17,7 +17,7 @@
    */
   class RuntimeTest extends TestCase {
     protected $startupOptions= array();
-    protected static $runtimeExecutable= '';
+    protected static $runtimeExecutable= NULL;
     
     /**
      * Determine runtime
@@ -25,7 +25,7 @@
      */
     #[@beforeClass]
     public static function determineRuntime() {
-      self::$runtimeExecutable= Runtime::getInstance()->getExecutable()->getFilename();
+      self::$runtimeExecutable= Runtime::getInstance()->getExecutable();
     }
     
     /**
@@ -88,7 +88,7 @@
      * @return  string out
      */
     protected function runInNewRuntime(RuntimeOptions $options, $src, $expectedExitCode= 0) {
-      with ($out= $err= '', $p= new Process(self::$runtimeExecutable, $options->asArguments())); {
+      with ($out= $err= '', $p= self::$runtimeExecutable->newInstance($options->asArguments())); {
         $p->in->write('<?php require("lang.base.php"); uses("lang.Runtime"); '.$src.' ?>');
         $p->in->close();
 
