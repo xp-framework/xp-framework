@@ -59,6 +59,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug #38 - Annotation parsing fails for strings containing "=" 
+  (friebe)
 - Removed superfluous newline from message string in compoundMessage()
   of HttpScriptletException class
   (hinckel)
