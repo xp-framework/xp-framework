@@ -8,6 +8,7 @@
     'lang.Process', 
     'lang.Runnable', 
     'lang.RuntimeError', 
+    'lang.RuntimeOptions', 
     'lang.ElementNotFoundException'
   );
 
@@ -104,6 +105,15 @@
     public function addShutdownHook(Runnable $r) {
       register_shutdown_function(array($r, 'run'));
       return $r;
+    }
+    
+    /**
+     * Get startup options
+     *
+     * @return  lang.RuntimeOptions
+     */
+    public function startupOptions() {
+      return RuntimeOptions::parse($this->getExecutable()->getArguments());
     }
 
     /**

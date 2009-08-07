@@ -23,6 +23,10 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added lang.Runtime::startupOptions() method which returns the options
+  given to the runtime on the command line (e.g. "-dinclude_path=...", 
+  "-q" or "-denable_dl=Off")
+  (friebe)
 - Added lang.Process::getArguments() which returns command line arguments
   passed to the process as an array of strings.
   (friebe)
