@@ -86,9 +86,9 @@
       ));
 
       // Start server process
-      self::$serverProcess= Runtime::getInstance()->getExecutable()->newInstance(
-        array('-dinclude_path="'.ini_get('include_path').'" -dmagic_quotes_gpc=0')
-      );
+      with ($rt= Runtime::getInstance()); {
+        self::$serverProcess= $rt->getExecutable()->newInstance($rt->startupOptions()->asArguments());
+      }
       self::$serverProcess->in->write($src);
       self::$serverProcess->in->close();
 
