@@ -74,6 +74,36 @@
     }
 
     /**
+     * Test adding settings
+     *
+     */
+    #[@test]
+    public function addSetting() {
+      $options= new RuntimeOptions();
+      $options->withSetting('extension', 'php_xsl.dll', TRUE);
+      $options->withSetting('extension', 'php_sybase_ct.dll', TRUE);
+      $this->assertEquals(
+        array('php_xsl.dll', 'php_sybase_ct.dll'), 
+        $options->getSetting('extension')
+      );
+    }
+
+    /**
+     * Test overwriting settings
+     *
+     */
+    #[@test]
+    public function overwritingSetting() {
+      $options= new RuntimeOptions();
+      $options->withSetting('extension', 'php_xsl.dll');
+      $options->withSetting('extension', 'php_sybase_ct.dll');
+      $this->assertEquals(
+        array('php_sybase_ct.dll'), 
+        $options->getSetting('extension')
+      );
+    }
+
+    /**
      * Test withSwitch() method
      *
      */
