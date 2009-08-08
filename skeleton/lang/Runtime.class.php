@@ -24,7 +24,8 @@
       $instance   = NULL;
       
     protected
-      $executable = NULL;
+      $executable = NULL,
+      $startup    = NULL;
     
     static function __static() {
       self::$instance= new self();
@@ -106,6 +107,51 @@
       register_shutdown_function(array($r, 'run'));
       return $r;
     }
+
+    /**
+     * Parse command line, stopping at first argument without "-"
+     * or at "--" (php [options] -- [args...])
+     *
+     * @param   string[] arguments
+     * @return  array<string, var>
+     * @throws  lang.FormatException in case an unrecognized argument is encountered
+     */
+    public static function parseArguments($arguments) {
+      $return= array('options' => new RuntimeOptions(), 'bootstrap' => NULL);
+      while (NULL !== ($argument= array_shift($arguments))) {
+        if ('-' !== $argument{0}) {
+          $return['bootstrap']= $argument;
+          break;
+        } else if ('--' === $argument) {
+          $return['bootstrap']= array_shift($arguments);
+          break;
+        }
+        switch ($argument{1}) {
+          case 'q':     // quiet
+          case 'n':     // No php.ini file will be used
+          case 'C': {   // [cgi] Do not chdir to the script's directory
+            $return['options']->withSwitch($argument{1});
+            break;
+          }
+
+          case 'd': {
+            sscanf($argument, "-d%[^=]=%[^\r]", $setting, $value); 
+            $setting= ltrim($setting, ' ');
+            if ('include_path' === $setting) {   // This is rewritten by entry point tools
+              $return['options']->withSetting($setting, escapeshellarg(get_include_path()));
+            } else {
+              $return['options']->withSetting($setting, $value, TRUE);
+            }
+            break;
+          }
+
+          default: {
+            throw new FormatException('Unrecognized argument "'.$argument.'"');
+          }
+        }
+      }
+      return $return;
+    }
     
     /**
      * Get startup options
@@ -113,7 +159,22 @@
      * @return  lang.RuntimeOptions
      */
     public function startupOptions() {
-      return RuntimeOptions::parse($this->getExecutable()->getArguments());
+      if (NULL === $this->startup) {        // Lazy-init
+        $this->startup= self::parseArguments($this->getExecutable()->getArguments());
+      }
+      return $this->startup['options'];
+    }
+
+    /**
+     * Get bootstrap script's filename
+     *
+     * @return  string
+     */
+    public function bootstrapScript() {
+      if (NULL === $this->startup) {        // Lazy-init
+        $this->startup= self::parseArguments($this->getExecutable()->getArguments());
+      }
+      return $this->startup['bootstrap'];
     }
 
     /**

@@ -68,14 +68,101 @@
       $this->assertFalse(Runtime::getInstance()->extensionAvailable(':DOES-NOT-EXIST"'));
     }
  
-     /**
+    /**
      * Test startupOptions() method
      *
      */
     #[@test]
     public function startupOptions() {
-      $options= Runtime::getInstance()->startupOptions();
-      $this->assertClass($options, 'lang.RuntimeOptions');
+      $startup= Runtime::getInstance()->startupOptions();
+      $this->assertClass($startup, 'lang.RuntimeOptions');
+    }
+
+    /**
+     * Test bootstrapScript() method
+     *
+     */
+    #[@test]
+    public function bootstrapScript() {
+      $bootstrap= Runtime::getInstance()->bootstrapScript();
+      $this->assertTrue(strstr($bootstrap, 'tools') && strstr($bootstrap, '.php'), $bootstrap);
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test]
+    public function parseSetting() {
+      $startup= Runtime::parseArguments(array('-denable_dl=0'));
+      $this->assertEquals(array('0'), $startup['options']->getSetting('enable_dl'));
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test]
+    public function parseSettingToleratesWhitespace() {
+      $startup= Runtime::parseArguments(array('-d magic_quotes_gpc=0'));
+      $this->assertEquals(array('0'), $startup['options']->getSetting('magic_quotes_gpc'));
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test]
+    public function doubleDashEndsOptions() {
+      $startup= Runtime::parseArguments(array('-q', '--', 'tools/xar.php'));
+      $this->assertEquals(array('-q'), $startup['options']->asArguments());
+      $this->assertEquals('tools/xar.php', $startup['bootstrap']);
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test]
+    public function scriptEndsOptions() {
+      $startup= Runtime::parseArguments(array('-q', 'tools/xar.php'));
+      $this->assertEquals(array('-q'), $startup['options']->asArguments());
+      $this->assertEquals('tools/xar.php', $startup['bootstrap']);
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function parseUnknownSwtich() {
+      Runtime::parseArguments(array('-@'));
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test]
+    public function parseMultiSetting() {
+      $startup= Runtime::parseArguments(array(
+        '-dextension=php_xsl.dll', 
+        '-dextension=php_sybase_ct.dll'
+      ));
+      $this->assertEquals(
+        array('php_xsl.dll', 'php_sybase_ct.dll'), 
+        $startup['options']->getSetting('extension')
+      );
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test]
+    public function parseSwitch() {
+      $startup= Runtime::parseArguments(array('-q'));
+      $this->assertTrue($startup['options']->getSwitch('q'));
     }
    
     /**
@@ -87,8 +174,8 @@
      * @throws  lang.IllegalStateException if process exits with a non-zero exitcode
      * @return  string out
      */
-    protected function runInNewRuntime(RuntimeOptions $options, $src, $expectedExitCode= 0) {
-      with ($out= $err= '', $p= self::$runtimeExecutable->newInstance($options->asArguments())); {
+    protected function runInNewRuntime(RuntimeOptions $startup, $src, $expectedExitCode= 0) {
+      with ($out= $err= '', $p= self::$runtimeExecutable->newInstance($startup->asArguments())); {
         $p->in->write('<?php require("lang.base.php"); uses("lang.Runtime"); '.$src.' ?>');
         $p->in->close();
 

@@ -12,43 +12,16 @@
    */
   class RuntimeOptions extends Object {
     protected $backing= array();
-    
-    /**
-     * Parse command line, stopping at first argument without "-"
-     * or at "--" (php [options] -- [args...])
-     *
-     * @param   string[] arguments
-     * @return  lang.RuntimeOptions
-     * @throws  lang.FormatException in case an unrecognized argument is encountered
-     */
-    public static function parse($arguments) {
-      $self= new self();
-      while (NULL !== ($argument= array_shift($arguments))) {
-        if ('-' !== $argument{0} || '--' === $argument) break;
-        switch ($argument{1}) {
-          case 'q':     // quiet
-          case 'C': {   // [cgi] Do not chdir to the script's directory
-            $self->backing["\0".$argument{1}]= TRUE; 
-            break;
-          }
-          case 'd': {
-            sscanf($argument, "-d%[^=]=%[^\r]", $setting, $value); 
-            $key= 'd'.ltrim($setting, ' ');
-            if ('dinclude_path' === $key) {   // This is rewritten by entry point tools
-              $self->backing[$key]= array(escapeshellarg(get_include_path()));
-            } else if (!isset($self->backing[$key])) {
-              $self->backing[$key]= array($value); 
-            } else {
-              $self->backing[$key][]= $value;
-            }
-            break;
-          }
-          default: throw new FormatException('Unrecognized argument "'.$argument.'"');
-        }
-      }
-      return $self;
-    }
 
+    /**
+     * Constructor
+     *
+     * @param   array<string, var> backing default array()
+     */
+    public function __construct($backing= array()) {
+      $this->backing= $backing;
+    }
+    
     /**
      * Set switch (e.g. "-q")
      *
@@ -95,10 +68,16 @@
      *
      * @param   string setting
      * @param   var value either a number, a string or an array of either
+     * @param   bool add default FALSE
      * @return  lang.RuntimeOptions this object
      */
-    public function withSetting($setting, $value) {
-      $this->backing['d'.$setting]= (array)$value; 
+    public function withSetting($setting, $value, $add= FALSE) {
+      $key= 'd'.$setting;
+      if ($add && isset($this->backing[$key])) {
+        $this->backing[$key]= array_merge($this->backing[$key], (array)$value); 
+      } else {
+        $this->backing[$key]= (array)$value; 
+      }
       return $this;
     }
     
