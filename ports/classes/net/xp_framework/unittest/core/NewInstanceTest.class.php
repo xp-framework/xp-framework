@@ -109,7 +109,7 @@
       ');
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
-        (bool)strstr($r[1], 'Parse error: parse error, expecting `T_FUNCTION'),
+        (bool)strstr($r[1], 'Parse error:'),
         $r[1]
       );
     }
