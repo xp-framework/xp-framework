@@ -108,6 +108,16 @@
      *
      */
     #[@test]
+    public function parseSettingToleratesWhitespace() {
+      $options= RuntimeOptions::parse(array('-d magic_quotes_gpc=0'));
+      $this->assertEquals(array('0'), $options->getSetting('magic_quotes_gpc'));
+    }
+
+    /**
+     * Test parse() method
+     *
+     */
+    #[@test]
     public function doubleDashEndsOptions() {
       $options= RuntimeOptions::parse(array('-q', '--', 'xar.php'));
       $this->assertEquals(array('-q'), $options->asArguments());
