@@ -26,8 +26,9 @@
       while (NULL !== ($argument= array_shift($arguments))) {
         if ('-' !== $argument{0} || '--' === $argument) break;
         switch ($argument{1}) {
-          case 'q': {
-            $self->backing["\0q"]= TRUE; 
+          case 'q':     // quiet
+          case 'C': {   // [cgi] Do not chdir to the script's directory
+            $self->backing["\0".$argument{1}]= TRUE; 
             break;
           }
           case 'd': {
