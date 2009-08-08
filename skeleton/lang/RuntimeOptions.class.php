@@ -7,7 +7,8 @@
   /**
    * Represents runtime options
    *
-   * @see      xp://lang.Runtime::startupOptions
+   * @test     xp://net.xp_framework.unittest.core.RuntimeOptionsTest
+   * @see      xp://lang.Runtime#startupOptions
    */
   class RuntimeOptions extends Object {
     protected $backing= array();
