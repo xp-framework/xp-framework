@@ -23,6 +23,12 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added lang.Runtime::bootstrapScript() method which returns the boot-
+  strap script (e.g. "tools/class.php" or "tools/xar.php")
+  (friebe)
+- Added lang.Runtime::mainClass() method which returns the entry point
+  class (e.g. "tools.unittest.Runner")
+  (friebe)
 - Added lang.Runtime::startupOptions() method which returns the options
   given to the runtime on the command line (e.g. "-dinclude_path=...", 
   "-q" or "-denable_dl=Off")
