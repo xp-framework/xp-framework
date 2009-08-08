@@ -238,7 +238,7 @@
     #[@test]
     public function complexXPathAnnotation() {
       $this->assertEquals(array(
-        'xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"'
+        'xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"]'
       ), $this->methodAnnotation('complexXPath', 'fromXml'));
     }
 
