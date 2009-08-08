@@ -165,7 +165,7 @@
       if (NULL === $this->startup) {        // Lazy-init
         $this->startup= self::parseArguments($this->getExecutable()->getArguments());
       }
-      return $this->startup['options'];
+      return clone $this->startup['options'];
     }
 
     /**

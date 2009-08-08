@@ -16,7 +16,7 @@
    * @purpose  Unittest
    */
   class RuntimeTest extends TestCase {
-    protected $startupOptions= array();
+    protected $startupOptions= NULL;
     protected static $runtimeExecutable= NULL;
     
     /**
@@ -76,6 +76,18 @@
     public function startupOptions() {
       $startup= Runtime::getInstance()->startupOptions();
       $this->assertClass($startup, 'lang.RuntimeOptions');
+    }
+
+    /**
+     * Test modifications made on object returned by startupOptions()
+     * do not modify the runtime's startup options themselves.
+     *
+     */
+    #[@test]
+    public function modifiedStartupOptions() {
+      $startup= Runtime::getInstance()->startupOptions();
+      $modified= Runtime::getInstance()->startupOptions()->withSwitch('n');
+      $this->assertNotEquals($startup, $modified);
     }
 
     /**
