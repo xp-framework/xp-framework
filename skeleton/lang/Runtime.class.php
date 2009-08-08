@@ -117,7 +117,7 @@
      * @throws  lang.FormatException in case an unrecognized argument is encountered
      */
     public static function parseArguments($arguments) {
-      $return= array('options' => new RuntimeOptions(), 'bootstrap' => NULL);
+      $return= array('options' => new RuntimeOptions(), 'bootstrap' => NULL, 'main' => NULL);
       while (NULL !== ($argument= array_shift($arguments))) {
         if ('-' !== $argument{0}) {
           $return['bootstrap']= $argument;
@@ -150,6 +150,9 @@
           }
         }
       }
+      if ($main= array_shift($arguments)) {
+        $return['main']= XPClass::forName($main);
+      }
       return $return;
     }
     
@@ -175,6 +178,18 @@
         $this->startup= self::parseArguments($this->getExecutable()->getArguments());
       }
       return $this->startup['bootstrap'];
+    }
+
+    /**
+     * Get entry point class
+     *
+     * @return  lang.XPClass
+     */
+    public function mainClass() {
+      if (NULL === $this->startup) {        // Lazy-init
+        $this->startup= self::parseArguments($this->getExecutable()->getArguments());
+      }
+      return $this->startup['main'];
     }
 
     /**

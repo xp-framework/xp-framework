@@ -89,6 +89,16 @@
     }
 
     /**
+     * Test mainClass() method
+     *
+     */
+    #[@test]
+    public function mainClass() {
+      $main= Runtime::getInstance()->mainClass();
+      $this->assertClass($main, 'lang.XPClass');
+    }
+
+    /**
      * Test parse() method
      *
      */
