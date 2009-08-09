@@ -336,13 +336,13 @@
      */
     public function onSiteChmod($event, $params) {
       list($permissions, $uri)= explode(' ', trim($params), 2);
-      $this->cat->warn($permissions);
+      $this->cat && $this->cat->warn($permissions);
       if (!($entry= $this->storage->lookup($event->stream->hashCode(), $uri))) {
         $this->answer($event->stream, 550, $uri.': No such file or directory');
         return;
       }
       
-      $this->cat->debug($entry);
+      $this->cat && $this->cat->debug($entry);
       
       $entry->setPermissions($permissions);
       $this->answer($event->stream, 200, 'SITE CHMOD command successful');
@@ -789,7 +789,7 @@
 
       try {
         $entry->rename($params);
-        $this->cat->debug($params);
+        $this->cat && $this->cat->debug($params);
       } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '. $e->getMessage());
         return;
@@ -1002,6 +1002,5 @@
       // Kill associated session
       delete($this->sessions[$event->stream->hashCode()]);
     }
-
   } 
 ?>
