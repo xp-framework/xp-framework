@@ -12,7 +12,7 @@
   /**
    * Socket class
    *
-   * @test     xp://net.xp_framework.unittest.peer.SocketTest
+   * @test     xp://net.xp_framework.unittest.peer.sockets.SocketTest
    * @see      php://network
    * @purpose  Basic TCP/IP socket
    */
@@ -112,6 +112,8 @@
      * @return  bool success
      */
     public function close() {
+      if (!is_resource($this->_sock)) return FALSE;
+
       $res= fclose($this->_sock);
       $this->_sock= NULL;
       return $res;
