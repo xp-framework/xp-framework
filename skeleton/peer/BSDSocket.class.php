@@ -154,10 +154,6 @@
       }
       
       // Set options
-      $sec= floor($timeout);
-      $usec= ($timeout- $sec) * 1000;
-      $this->options[SOL_SOCKET][SO_RCVTIMEO]= array('sec' => $sec, 'usec' => $usec);
-      $this->options[SOL_SOCKET][SO_SNDTIMEO]= array('sec' => $sec, 'usec' => $usec);
       foreach ($this->options as $level => $pairs) {
         foreach ($pairs as $name => $value) {
           socket_set_option($this->_sock, $level, $name, $value);
@@ -185,6 +181,7 @@
         $this->getLastError()
       ));
 
+      $this->setTimeout($this->_timeout);
       return TRUE;
     }
     
@@ -199,6 +196,22 @@
       socket_close($this->_sock);
       $this->_sock= NULL;
       return TRUE;
+    }
+    /**
+     * Set timeout
+     *
+     * @param   mixed _timeout
+     */
+    public function setTimeout($timeout) {
+      $this->_timeout= $timeout;
+      
+      // Apply changes to already opened connection
+      if (is_resource($this->_sock)) {
+        $sec= floor($this->_timeout);
+        $usec= ($this->_timeout- $sec) * 1000;
+        socket_set_option($this->_sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $sec, 'usec' => $usec));
+        socket_set_option($this->_sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $sec, 'usec' => $usec));
+      }
     }
 
     /**
