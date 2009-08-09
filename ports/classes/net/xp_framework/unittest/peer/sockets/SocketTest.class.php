@@ -21,13 +21,24 @@
     
     protected static $serverProcess = NULL;
     protected $fixture= NULL;
+    
+    /**
+     * Creates a new client socket
+     *
+     * @param   string addr
+     * @param   int port
+     * @return  peer.Socket
+     */
+    protected static function newSocket($addr, $port) {
+      return new Socket($addr, $port);
+    }
 
     /**
      * Setup this test case
      *
      */
     public function setUp() {
-      $this->fixture= new Socket(self::SERVER_ADDR, self::SERVER_PORT);
+      $this->fixture= self::newSocket(self::SERVER_ADDR, self::SERVER_PORT);
     }
 
     /**
@@ -76,7 +87,7 @@
 
       // Tell the server to shut down
       try {
-        $c= new Socket(self::SERVER_ADDR, self::SERVER_PORT);
+        $c= self::newSocket(self::SERVER_ADDR, self::SERVER_PORT);
         $c->connect();
         $c->write("HALT\n");
         $c->close();
@@ -115,6 +126,24 @@
     public function connect() {
       $this->assertTrue($this->fixture->connect());
       $this->assertTrue($this->fixture->isConnected());
+    }
+
+    /**
+     * Test connecting
+     *
+     */
+    #[@test, @expect('peer.ConnectException')]
+    public function connectInvalidPort() {
+      $this->newSocket(self::SERVER_ADDR, -1)->connect(0.1);
+    }
+
+    /**
+     * Test connecting
+     *
+     */
+    #[@test, @expect('peer.ConnectException')]
+    public function connectInvalidHost() {
+      $this->newSocket(NULL, self::SERVER_PORT)->connect(0.1);
     }
 
     /**
