@@ -177,6 +177,17 @@
     }
 
     /**
+     * Test reading after eof w/ readLine()
+     *
+     */
+    #[@test]
+    public function readLineOnEof() {
+      $this->fixture->connect();
+      $this->fixture->write("CLOS\n");
+      $this->assertNull($this->fixture->readLine());
+    }
+
+    /**
      * Test reading data w/ read()
      *
      */
@@ -197,6 +208,17 @@
     }
 
     /**
+     * Test reading after eof w/ read()
+     *
+     */
+    #[@test]
+    public function readOnEof() {
+      $this->fixture->connect();
+      $this->fixture->write("CLOS\n");
+      $this->assertNull($this->fixture->read());
+    }
+
+    /**
      * Test reading data w/ readBinary()
      *
      */
@@ -214,6 +236,17 @@
     #[@test, @expect('peer.SocketException')]
     public function readBinaryUnConnected() {
       $this->fixture->readBinary();
+    }
+
+    /**
+     * Test reading after eof w/ readBinary()
+     *
+     */
+    #[@test]
+    public function readBinaryOnEof() {
+      $this->fixture->connect();
+      $this->fixture->write("CLOS\n");
+      $this->assertEquals('', $this->fixture->readBinary());
     }
 
     /**

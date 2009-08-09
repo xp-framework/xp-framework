@@ -18,6 +18,7 @@
    *
    * <ul>
    *   <li>ECHO: Echoes anything after the command</li>
+   *   <li>CLOS: Closes communications socket</li>
    *   <li>HALT: Shuts down the server</li>
    *   <li>On startup success, "+ Service" is written to standard out</li>
    *   <li>On shutdown, "+ Done" is written to standard out</li>
@@ -44,6 +45,7 @@
           $cmd= $socket->readLine();
           switch (substr($cmd, 0, 4)) {
             case "ECHO": $socket->write("+ECHO ".substr($cmd, 5)."\n"); break;
+            case "CLOS": $socket->close(); break;
             case "HALT": $socket->write("+HALT\n"); $this->server->terminate= TRUE; break;
           }
         }
