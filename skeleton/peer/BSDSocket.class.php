@@ -9,10 +9,11 @@
   /**
    * BSDSocket implementation
    *
-   * @purpose  Provide an interface to the BSD sockets
+   * @test     xp://net.xp_framework.unittest.peer.sockets.BSDSocketTest
    * @see      php://sockets
    * @see      http://www.developerweb.net/sock-faq/ The UNIX Socket FAQ
    * @ext      sockets
+   * @purpose  Provide an interface to the BSD sockets
    */
   class BSDSocket extends Socket {
     public
