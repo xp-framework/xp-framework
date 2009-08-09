@@ -106,7 +106,7 @@
     public function initiallyNotConnected() {
       $this->assertFalse($this->fixture->isConnected());
     }
-  
+
     /**
      * Test connecting
      *
@@ -293,6 +293,36 @@
       $this->fixture->connect();
       $this->fixture->write("ECHO data\n");
       $this->assertTrue($this->fixture->canRead(0.1));
+    }
+
+    /**
+     * Test getHandle()
+     *
+     */
+    #[@test]
+    public function getHandle() {
+      $this->fixture->connect();
+      $this->assertTrue(is_resource($this->fixture->getHandle()));
+    }
+
+    /**
+     * Test getHandle()
+     *
+     */
+    #[@test]
+    public function getHandleAfterClose() {
+      $this->fixture->connect();
+      $this->fixture->close();
+      $this->assertNull($this->fixture->getHandle());
+    }
+
+    /**
+     * Test getHandle()
+     *
+     */
+    #[@test]
+    public function getHandleUnConnected() {
+      $this->assertNull($this->fixture->getHandle());
     }
   }
 ?>
