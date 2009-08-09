@@ -173,13 +173,8 @@
         $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
       }
       
-      if (FALSE === ($n= stream_select(
-        $r= array($this->_sock),              // Read
-        $w= NULL,                             // Write
-        $e= NULL,                             // Except
-        $tv_sec,
-        $tv_usec
-      ))) {
+      $r= array($this->_sock); $w= NULL; $e= NULL;
+      if (FALSE === ($n= stream_select($r, $w, $e, $tv_sec, $tv_usec))) {
         throw new SocketException('Select failed: '.$this->getLastError());
       }
       
@@ -259,7 +254,7 @@
      */
     public function write($str) {
       if (FALSE === ($bytesWritten= fputs($this->_sock, $str, $len= strlen($str)))) {
-        throw new SocketException('Write of '.strlen($len).' bytes to socket failed: '.$this->getLastError());
+        throw new SocketException('Write of '.$len.' bytes to socket failed: '.$this->getLastError());
       }
       
       return $bytesWritten;
