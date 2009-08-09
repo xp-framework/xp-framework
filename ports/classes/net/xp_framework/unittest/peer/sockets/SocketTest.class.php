@@ -159,6 +159,15 @@
     }
 
     /**
+     * Test readLine()
+     *
+     */
+    #[@test, @expect('peer.SocketException')]
+    public function readLineUnConnected() {
+      $this->fixture->readLine();
+    }
+
+    /**
      * Test reading data w/ read()
      *
      */
@@ -170,6 +179,15 @@
     }
 
     /**
+     * Test read()
+     *
+     */
+    #[@test, @expect('peer.SocketException')]
+    public function readUnConnected() {
+      $this->fixture->read();
+    }
+
+    /**
      * Test reading data w/ readBinary()
      *
      */
@@ -178,6 +196,45 @@
       $this->fixture->connect();
       $this->fixture->write("ECHO data\n");
       $this->assertEquals("+ECHO data\n", $this->fixture->read());
+    }
+
+    /**
+     * Test readBinary()
+     *
+     */
+    #[@test, @expect('peer.SocketException')]
+    public function readBinaryUnConnected() {
+      $this->fixture->readBinary();
+    }
+
+    /**
+     * Test canRead()
+     *
+     */
+    #[@test]
+    public function canRead() {
+      $this->fixture->connect();
+      $this->assertFalse($this->fixture->canRead(0.1));
+    }
+
+    /**
+     * Test canRead()
+     *
+     */
+    #[@test, @expect('peer.SocketException')]
+    public function canReadUnConnected() {
+      $this->fixture->canRead(0.1);
+    }
+
+    /**
+     * Test canRead()
+     *
+     */
+    #[@test]
+    public function canReadWithData() {
+      $this->fixture->connect();
+      $this->fixture->write("ECHO data\n");
+      $this->assertTrue($this->fixture->canRead(0.1));
     }
   }
 ?>
