@@ -148,6 +148,15 @@
     }
 
     /**
+     * Test writing data
+     *
+     */
+    #[@test, @expect('peer.SocketException')]
+    public function writeUnConnected() {
+      $this->fixture->write('Anything');
+    }
+
+    /**
      * Test reading data w/ readLine()
      *
      */
