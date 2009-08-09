@@ -6,7 +6,9 @@
 
   uses(
     'io.streams.StringWriter', 
-    'io.streams.ConsoleOutputStream'
+    'io.streams.StringReader', 
+    'io.streams.ConsoleOutputStream', 
+    'io.streams.ConsoleInputStream'
   );
 
   /**
@@ -36,9 +38,11 @@
   class Console extends Object {
     public static 
       $out= NULL,
-      $err= NULL;
+      $err= NULL,
+      $in = NULL;
 
     static function __static() {
+      self::$in= new StringReader(new ConsoleInputStream(STDIN));
       self::$out= new StringWriter(new ConsoleOutputStream(STDOUT));
       self::$err= new StringWriter(new ConsoleOutputStream(STDERR));
     }
@@ -103,12 +107,7 @@
      */    
     public static function readLine($prompt= NULL) {
       $prompt && self::$out->write($prompt.' ');
-      $r= '';
-      while ($bytes= fgets(STDIN, 0x20)) {
-        $r.= $bytes;
-        if (FALSE !== strpos("\r\n", substr($r, -1))) break;
-      }
-      return rtrim($r, "\r\n");
+      return self::$in->readLine();
     }
 
     /**
@@ -119,7 +118,7 @@
      */    
     public static function read($prompt= NULL) {
       $prompt && self::$out->write($prompt.' ');
-      return fgetc(STDIN);
+      return self::$in->read(1);
     }
   }
 ?>

@@ -23,6 +23,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added Console input stream (Console::$in)
+  (friebe)
 - Added lang.Runtime::bootstrapScript() method which returns the boot-
   strap script (e.g. "tools/class.php" or "tools/xar.php")
   (friebe)

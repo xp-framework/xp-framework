@@ -6,6 +6,7 @@
 
   uses(
     'util.cmd.Console',
+    'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
     'unittest.TestCase'
   );
@@ -27,10 +28,14 @@
      *
      */
     public function setUp() {
-      $this->original= array(Console::$out->getStream(), Console::$err->getStream());
-      $this->streams= array(new MemoryOutputStream(), new MemoryOutputStream());
-      Console::$out->setStream($this->streams[0]);
-      Console::$err->setStream($this->streams[1]);
+      $this->original= array(
+        Console::$in->getStream(), 
+        Console::$out->getStream(), 
+        Console::$err->getStream()
+      );
+      $this->streams= array(NULL, new MemoryOutputStream(), new MemoryOutputStream());
+      Console::$out->setStream($this->streams[1]);
+      Console::$err->setStream($this->streams[2]);
     }
     
     /**
@@ -38,10 +43,76 @@
      *
      */
     public function tearDown() {
-      Console::$out->setStream($this->original[0]);
-      Console::$err->setStream($this->original[1]);
+      Console::$in->setStream($this->original[0]);
+      Console::$out->setStream($this->original[1]);
+      Console::$err->setStream($this->original[2]);
     }
-    
+
+    /**
+     * Test read() method
+     *
+     */
+    #[@test]
+    public function read() {
+      Console::$in->setStream(new MemoryInputStream('.'));
+      $this->assertEquals('.', Console::read());
+    }
+
+    /**
+     * Test readLine() method
+     *
+     */
+    #[@test]
+    public function readLineUnix() {
+      Console::$in->setStream(new MemoryInputStream("Hello\nHallo"));
+      $this->assertEquals('Hello', Console::readLine());
+      $this->assertEquals('Hallo', Console::readLine());
+    }
+
+    /**
+     * Test readLine() method
+     *
+     */
+    #[@test]
+    public function readLineMac() {
+      Console::$in->setStream(new MemoryInputStream("Hello\rHallo"));
+      $this->assertEquals('Hello', Console::readLine());
+      $this->assertEquals('Hallo', Console::readLine());
+    }
+
+    /**
+     * Test readLine() method
+     *
+     */
+    #[@test]
+    public function readLineWindows() {
+      Console::$in->setStream(new MemoryInputStream("Hello\r\nHallo"));
+      $this->assertEquals('Hello', Console::readLine());
+      $this->assertEquals('Hallo', Console::readLine());
+    }
+
+    /**
+     * Test read() method
+     *
+     */
+    #[@test]
+    public function readFromIn() {
+      Console::$in->setStream(new MemoryInputStream('.'));
+      $this->assertEquals('.', Console::$in->read(1));
+    }
+ 
+     /**
+     * Test read() method
+     *
+     */
+    #[@test]
+    public function readLineFromIn() {
+      Console::$in->setStream(new MemoryInputStream("Hello\nHallo\nOla"));
+      $this->assertEquals('Hello', Console::$in->readLine());
+      $this->assertEquals('Hallo', Console::$in->readLine());
+      $this->assertEquals('Ola', Console::$in->readLine());
+    }
+   
     /**
      * Test write() method
      *
@@ -49,7 +120,7 @@
     #[@test]
     public function write() {
       Console::write('.');
-      $this->assertEquals('.', $this->streams[0]->getBytes());
+      $this->assertEquals('.', $this->streams[1]->getBytes());
     }
 
     /**
@@ -59,7 +130,7 @@
     #[@test]
     public function writeMultiple() {
       Console::write('.', 'o', 'O', '0');
-      $this->assertEquals('.oO0', $this->streams[0]->getBytes());
+      $this->assertEquals('.oO0', $this->streams[1]->getBytes());
     }
 
     /**
@@ -69,7 +140,7 @@
     #[@test]
     public function writeInt() {
       Console::write(1);
-      $this->assertEquals('1', $this->streams[0]->getBytes());
+      $this->assertEquals('1', $this->streams[1]->getBytes());
     }
 
     /**
@@ -79,7 +150,7 @@
     #[@test]
     public function writeTrue() {
       Console::write(TRUE);
-      $this->assertEquals('1', $this->streams[0]->getBytes());
+      $this->assertEquals('1', $this->streams[1]->getBytes());
     }
 
     /**
@@ -89,7 +160,7 @@
     #[@test]
     public function writeFalse() {
       Console::write(FALSE);
-      $this->assertEquals('', $this->streams[0]->getBytes());
+      $this->assertEquals('', $this->streams[1]->getBytes());
     }
 
     /**
@@ -99,7 +170,7 @@
     #[@test]
     public function writeFloat() {
       Console::write(1.5);
-      $this->assertEquals('1.5', $this->streams[0]->getBytes());
+      $this->assertEquals('1.5', $this->streams[1]->getBytes());
     }
 
     /**
@@ -115,7 +186,7 @@
         "  1 => 2\n".
         "  2 => 3\n".
         "]", 
-        $this->streams[0]->getBytes()
+        $this->streams[1]->getBytes()
       );
     }
 
@@ -131,7 +202,7 @@
         "  key => \"value\"\n".
         "  color => \"blue\"\n".
         "]", 
-        $this->streams[0]->getBytes()
+        $this->streams[1]->getBytes()
       );
     }
 
@@ -144,7 +215,7 @@
       Console::write(newinstance('lang.Object', array(), '{
         public function toString() { return "Hello"; }
       }'));
-      $this->assertEquals('Hello', $this->streams[0]->getBytes());
+      $this->assertEquals('Hello', $this->streams[1]->getBytes());
     }
 
     /**
@@ -159,7 +230,7 @@
         }'));
         $this->fail('Expected exception not thrown', NULL, 'lang.IllegalStateException');
       } catch (IllegalStateException $expected) {
-        $this->assertEquals('', $this->streams[0]->getBytes());
+        $this->assertEquals('', $this->streams[1]->getBytes());
       }
     }
 
@@ -170,7 +241,7 @@
     #[@test]
     public function writeToOut() {
       Console::$out->write('.');
-      $this->assertEquals('.', $this->streams[0]->getBytes());
+      $this->assertEquals('.', $this->streams[1]->getBytes());
     }
     /**
      * Test write() method
@@ -179,7 +250,7 @@
     #[@test]
     public function writeToErr() {
       Console::$err->write('.');
-      $this->assertEquals('.', $this->streams[1]->getBytes());
+      $this->assertEquals('.', $this->streams[2]->getBytes());
     }
 
     /**
@@ -189,7 +260,7 @@
     #[@test]
     public function writef() {
       Console::writef('Hello "%s"', 'Timm');
-      $this->assertEquals('Hello "Timm"', $this->streams[0]->getBytes());
+      $this->assertEquals('Hello "Timm"', $this->streams[1]->getBytes());
     }
 
     /**
@@ -199,7 +270,7 @@
     #[@test]
     public function writefToOut() {
       Console::$out->writef('Hello "%s"', 'Timm');
-      $this->assertEquals('Hello "Timm"', $this->streams[0]->getBytes());
+      $this->assertEquals('Hello "Timm"', $this->streams[1]->getBytes());
     }
 
     /**
@@ -209,7 +280,7 @@
     #[@test]
     public function writefToErr() {
       Console::$err->writef('Hello "%s"', 'Timm');
-      $this->assertEquals('Hello "Timm"', $this->streams[1]->getBytes());
+      $this->assertEquals('Hello "Timm"', $this->streams[2]->getBytes());
     }
 
     /**
@@ -219,7 +290,7 @@
     #[@test]
     public function writeLine() {
       Console::writeLine('.');
-      $this->assertEquals(".\n", $this->streams[0]->getBytes());
+      $this->assertEquals(".\n", $this->streams[1]->getBytes());
     }
 
     /**
@@ -229,7 +300,7 @@
     #[@test]
     public function writeLineToOut() {
       Console::$out->writeLine('.');
-      $this->assertEquals(".\n", $this->streams[0]->getBytes());
+      $this->assertEquals(".\n", $this->streams[1]->getBytes());
     }
 
     /**
@@ -239,7 +310,7 @@
     #[@test]
     public function writeLineToErr() {
       Console::$err->writeLine('.');
-      $this->assertEquals(".\n", $this->streams[1]->getBytes());
+      $this->assertEquals(".\n", $this->streams[2]->getBytes());
     }
 
     /**
@@ -249,7 +320,7 @@
     #[@test]
     public function writeLinef() {
       Console::writeLinef('Hello %s', 'World');
-      $this->assertEquals("Hello World\n", $this->streams[0]->getBytes());
+      $this->assertEquals("Hello World\n", $this->streams[1]->getBytes());
     }
 
     /**
@@ -259,7 +330,7 @@
     #[@test]
     public function writeLinefToOut() {
       Console::$out->writeLinef('Hello %s', 'World');
-      $this->assertEquals("Hello World\n", $this->streams[0]->getBytes());
+      $this->assertEquals("Hello World\n", $this->streams[1]->getBytes());
     }
     /**
      * Test writeLine() method
@@ -268,7 +339,7 @@
     #[@test]
     public function writeLinefToErr() {
       Console::$err->writeLinef('Hello %s', 'World');
-      $this->assertEquals("Hello World\n", $this->streams[1]->getBytes());
+      $this->assertEquals("Hello World\n", $this->streams[2]->getBytes());
     }
   }
 ?>
