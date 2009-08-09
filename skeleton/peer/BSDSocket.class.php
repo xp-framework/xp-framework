@@ -193,9 +193,11 @@
      * @return  bool success
      */
     public function close() {
-      $res= socket_close($this->_sock);
+      if (!is_resource($this->_sock)) return FALSE;
+
+      socket_close($this->_sock);
       $this->_sock= NULL;
-      return $res;
+      return TRUE;
     }
 
     /**
@@ -237,13 +239,8 @@
         $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
       }
       
-      if (FALSE === ($n= socket_select(
-        $r= array($this->_sock),              // Read
-        $w= NULL,                             // Write
-        $e= NULL,                             // Except
-        $tv_sec,
-        $tv_usec
-      ))) {
+      $r= array($this->_sock); $w= NULL; $e= NULL;
+      if (FALSE === ($n= socket_select($r, $w, $e, $tv_sec, $tv_usec))) {
         throw new SocketException('Select failed: '.$this->getLastError());
       }
       
@@ -260,17 +257,18 @@
     }
 
     /**
-     * Private helper function
+     * Reading helper function
      *
      * @param   int maxLen
      * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
+     * @param   bool chop
      * @return  string data
      */
     protected function _read($maxLen, $type, $chop= FALSE) {
-      if (FALSE === ($res= socket_read($this->_sock, $maxLen, $type))) {
+      $res= socket_read($this->_sock, $maxLen, $type);
+      if (FALSE === $res || NULL === $res) {
         throw new SocketException('Read failed: '.$this->getLastError());
-      }
-      if ('' === $res) {
+      } else if ('' === $res) {
         $this->_eof= TRUE;
         return NULL;
       } else {
@@ -308,7 +306,7 @@
      * @throws  peer.SocketException
      */
     public function readBinary($maxLen= 4096) {
-      return $this->_read($maxLen, PHP_BINARY_READ);
+      return (string)$this->_read($maxLen, PHP_BINARY_READ);
     }
 
     /**
@@ -320,9 +318,10 @@
      */
     public function write($str) {
       $bytesWritten= socket_write($this->_sock, $str, strlen($str));
-      if (FALSE === $bytesWritten) {
-        throw new SocketException('Write failed: '.$this->getLastError());
+      if (FALSE === $bytesWritten || NULL === $bytesWritten) {
+        throw new SocketException('Write of '.$len.' bytes to socket failed: '.$this->getLastError());
       }
+      
       return $bytesWritten;
     }
   }
