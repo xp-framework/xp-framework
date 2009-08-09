@@ -6,15 +6,15 @@
 
   uses(
     'net.xp_framework.unittest.peer.sockets.AbstractSocketTest',
-    'peer.Socket'
+    'peer.BSDSocket'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://peer.Socket
+   * @see      xp://peer.BSDSocket
    */
-  class SocketTest extends AbstractSocketTest {
+  class BSDSocketTest extends AbstractSocketTest {
     
     /**
      * Creates a new client socket
@@ -24,7 +24,7 @@
      * @return  peer.Socket
      */
     protected function newSocket($addr, $port) {
-      return new Socket($addr, $port);
+      return new BSDSocket($addr, $port);
     }
   }
 ?>
