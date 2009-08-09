@@ -157,6 +157,22 @@
     }
 
     /**
+     * Test writing data after EOF
+     *
+     */
+    #[@test, @ignore('Writes still succeed after close - no idea why...')]
+    public function writeAfterEof() {
+      $this->fixture->connect();
+      $this->fixture->write("CLOS\n");
+      try {
+        $this->fixture->write('Anything');
+        $this->fail('No exception raised', NULL, 'peer.SocketException');
+      } catch (SocketException $expected) {
+        // OK
+      }
+    }
+
+    /**
      * Test reading data w/ readLine()
      *
      */
