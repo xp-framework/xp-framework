@@ -34,62 +34,20 @@
     #[@beforeClass]
     public static function startFtpServer() {
 
-      // Log protocol messages (specify a filename instead of NULL in
-      // the next line to activate)
-      $debug= FALSE;
-
-      // Create server implementation sourcecode
-      $src= trim(sprintf('
-        <?php
-          require("lang.base.php");
-          uses(
-            "util.log.Logger",
-            "util.log.FileAppender",
-            "peer.server.Server",
-            "peer.ftp.server.FtpConnectionListener",
-            "peer.ftp.server.storage.FilesystemStorage"
-          );
-
-          $stor= new FilesystemStorage(\'%s\');
-          $auth= newinstance("lang.Object", array(), \'{
-            public function authenticate($user, $password) {
-              return ("testtest" == $user.$password);
-            }
-          }\');
-
-          $listener= newinstance("peer.ftp.server.FtpConnectionListener", array($stor, $auth), \'{
-            public function onShutdown($event, $params) {
-              $this->answer($event->stream, 200, "Shutting down");
-              $this->server->terminate= TRUE;
-            }
-          }\');
-
-          %d && $listener->setTrace(Logger::getInstance()
-            ->getCategory()
-            ->withAppender(new FileAppender(\'%s\'))
-          );
-          try {
-            $s= new Server("127.0.0.1", 2121);
-            $s->addListener($listener);
-            $s->init();
-          } catch (Throwable $e) {
-            echo "- ", $e->getMessage(), "\n";
-            exit;
-          }
-          echo "+ Service\n";
-          $s->service();
-          echo "+ Done\n";
-        ?>',
-        addslashes(dirname(__FILE__).DIRECTORY_SEPARATOR.'ftproot'.DIRECTORY_SEPARATOR),
-        isset($debug),
-        addslashes($debug)
-      ));
+      // Arguments to server process
+      $args= array(
+        'entryPointClass'           => 'net.xp_framework.unittest.peer.ftp.TestingServer',
+        'debugServerProtocolToFile' => NULL,   
+      );
 
       // Start server process
       with ($rt= Runtime::getInstance()); {
-        self::$serverProcess= $rt->getExecutable()->newInstance($rt->startupOptions()->asArguments());
+        self::$serverProcess= $rt->getExecutable()->newInstance(array_merge(
+          $rt->startupOptions()->asArguments(),
+          array($rt->bootstrapScript()),
+          array_values($args)
+        ));
       }
-      self::$serverProcess->in->write($src);
       self::$serverProcess->in->close();
 
       // Check if startup succeeded
@@ -331,7 +289,7 @@
     }
 
     /**
-     * Test
+     * Test renaming a file
      *
      */
     #[@test]
