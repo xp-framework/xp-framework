@@ -228,6 +228,7 @@
       $this->fixture->connect();
       $this->fixture->write("CLOS\n");
       $this->assertNull($this->fixture->readLine());
+      $this->assertTrue($this->fixture->eof(), '<EOF>');
     }
 
     /**
@@ -259,6 +260,7 @@
       $this->fixture->connect();
       $this->fixture->write("CLOS\n");
       $this->assertNull($this->fixture->read());
+      $this->assertTrue($this->fixture->eof(), '<EOF>');
     }
 
     /**
@@ -290,6 +292,7 @@
       $this->fixture->connect();
       $this->fixture->write("CLOS\n");
       $this->assertEquals('', $this->fixture->readBinary());
+      $this->assertTrue($this->fixture->eof(), '<EOF>');
     }
 
     /**
