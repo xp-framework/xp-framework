@@ -145,6 +145,15 @@
     }
 
     /**
+     * Test connecting
+     *
+     */
+    #[@test, @expect('peer.ConnectException')]
+    public function connectUnConnected() {
+      $this->newSocket(self::SERVER_ADDR, self::SERVER_PORT+ 1)->connect(0.1);
+    }
+
+    /**
      * Test closing
      *
      */
