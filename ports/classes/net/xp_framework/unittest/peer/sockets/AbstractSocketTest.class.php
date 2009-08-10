@@ -232,6 +232,48 @@
     }
 
     /**
+     * Test reading multiple lines separated by \n
+     *
+     */
+    #[@test]
+    public function readLinesWithLineFeed() {
+      $this->fixture->connect();
+      $this->fixture->write("LINE 5 %0A\n");
+      for ($i= 0; $i < 5; $i++) {
+        $this->assertEquals('+LINE '.$i, $this->fixture->readLine(), 'Line #'.$i);
+      }
+      $this->assertEquals('+LINE .', $this->fixture->readLine());
+    }
+
+    /**
+     * Test reading multiple lines separated by \r
+     *
+     */
+    #[@test]
+    public function readLinesWithCarriageReturn() {
+      $this->fixture->connect();
+      $this->fixture->write("LINE 5 %0D\n");
+      for ($i= 0; $i < 5; $i++) {
+        $this->assertEquals('+LINE '.$i, $this->fixture->readLine(), 'Line #'.$i);
+      }
+      $this->assertEquals('+LINE .', $this->fixture->readLine());
+    }
+
+    /**
+     * Test reading multiple lines separated by \r\n
+     *
+     */
+    #[@test]
+    public function readLinesWithCarriageReturnLineFeed() {
+      $this->fixture->connect();
+      $this->fixture->write("LINE 5 %0D%0A\n");
+      for ($i= 0; $i < 5; $i++) {
+        $this->assertEquals('+LINE '.$i, $this->fixture->readLine(), 'Line #'.$i);
+      }
+      $this->assertEquals('+LINE .', $this->fixture->readLine());
+    }
+
+    /**
      * Test reading data w/ read()
      *
      */
