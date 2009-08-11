@@ -23,6 +23,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Made timeouts during socket reads detectable by specialized exception
+  peer.SocketTimeoutException
+  (friebe, Rene Patzer)
 - Added Console input stream (Console::$in)
   (friebe)
 - Added lang.Runtime::bootstrapScript() method which returns the boot-
