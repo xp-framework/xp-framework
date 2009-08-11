@@ -6,6 +6,7 @@
  
   uses(
     'peer.ConnectException',
+    'peer.SocketTimeoutException',
     'peer.SocketException'
   );
   
@@ -180,6 +181,33 @@
       
       return $n > 0;
     }
+
+    /**
+     * Reading helper function
+     *
+     * @param   int maxLen
+     * @param   bool chop
+     * @return  string data
+     */
+    protected function _read($maxLen, $chop= FALSE) {
+      $res= fgets($this->_sock, $maxLen);
+      if (FALSE === $res || NULL === $res) {
+
+        // fgets returns FALSE on eof, this is particularily dumb when 
+        // looping, so check for eof() and make it "no error"
+        if (feof($this->_sock)) return NULL;
+        
+        $m= stream_get_meta_data($this->_sock);
+        if ($m['timed_out']) {
+          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+        } else {
+          throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+        }
+      } else {
+        return $chop ? chop($res) : $res;
+      }
+    }
+
     
     /**
      * Read data from a socket
@@ -189,16 +217,7 @@
      * @throws  peer.SocketException
      */
     public function read($maxLen= 4096) {
-      if (FALSE === ($r= fgets($this->_sock, $maxLen))) {
-      
-        // fgets returns FALSE on eof, this is particularily dumb when 
-        // looping, so check for eof() and make it "no error"
-        if ($this->eof()) return NULL;
-        
-        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
-      }
-      
-      return $r;
+      return $this->_read($maxLen, FALSE);
     }
 
     /**
@@ -209,16 +228,7 @@
      * @throws  peer.SocketException
      */
     public function readLine($maxLen= 4096) {
-      if (FALSE === ($r= fgets($this->_sock, $maxLen))) {
-      
-        // fgets returns FALSE on eof, this is particularily dumb when 
-        // looping, so check for eof() and make it "no error"
-        if ($this->eof()) return NULL;
-        
-        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
-      }
-      
-      return chop($r);
+      return $this->_read($maxLen, TRUE);
     }
 
     /**
@@ -229,17 +239,23 @@
      * @throws  peer.SocketException
      */
     public function readBinary($maxLen= 4096) {
-      if (FALSE === ($r= fread($this->_sock, $maxLen))) {
+      $res= fread($this->_sock, $maxLen);
+      if (FALSE === $res || NULL === $res) {
         throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+      } else if ('' === $res) {
+        $m= stream_get_meta_data($this->_sock);
+        if ($m['timed_out']) {
+          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+        }
       }
       
-      return $r;
+      return $res;
     }
     
     /**
      * Checks if EOF was reached
      *
-     * @return  bool EOF erhalten
+     * @return  bool
      */
     public function eof() {
       return feof($this->_sock);

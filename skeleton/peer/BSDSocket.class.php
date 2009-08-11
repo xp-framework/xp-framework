@@ -210,7 +210,7 @@
         $sec= floor($this->_timeout);
         $usec= ($this->_timeout- $sec) * 1000;
         socket_set_option($this->_sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $sec, 'usec' => $usec));
-        socket_set_option($this->_sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $sec, 'usec' => $usec));
+        socket_set_option($this->_sock, SOL_SOCKET, SO_SNDTIMEO, array('sec' => $sec, 'usec' => $usec));
       }
     }
 
@@ -237,6 +237,25 @@
       
       return TRUE;      
     }
+
+    /**
+     * Selection helper
+     *
+     * @param   var r
+     * @param   var w
+     * @param   var w
+     * @param   float timeout
+     * @return  int
+     * @see     php://socket_select
+     */
+    protected function _select($r, $w, $e, $timeout) {
+      $tv_sec= (int)floor($timeout);
+      $tv_usec= (int)(($timeout- $tv_sec) * 1000000);
+      if (FALSE === ($n= socket_select($r, $w, $e, $tv_sec, $tv_usec))) {
+        throw new SocketException('Select failed: '.$this->getLastError());
+      }
+      return $n;
+    }
         
     /**
      * Returns whether there is data that can be read
@@ -246,19 +265,7 @@
      * @throws  peer.SocketException in case of failure
      */
     public function canRead($timeout= NULL) {
-      if (NULL === $timeout) {
-        $tv_sec= $tv_usec= 0;
-      } else {
-        $tv_sec= intval(floor($timeout));
-        $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
-      }
-      
-      $r= array($this->_sock); $w= NULL; $e= NULL;
-      if (FALSE === ($n= socket_select($r, $w, $e, $tv_sec, $tv_usec))) {
-        throw new SocketException('Select failed: '.$this->getLastError());
-      }
-      
-      return $n > 0;
+      return $this->_select(array($this->_sock), NULL, NULL, $timeout) > 0;
     }
     
     /**
@@ -269,9 +276,9 @@
     public function eof() {
       return $this->_eof;
     }
-
+    
     /**
-     * Reading helper function
+     * Reading helper
      *
      * @param   int maxLen
      * @param   int type PHP_BINARY_READ or PHP_NORMAL_READ
@@ -279,9 +286,16 @@
      * @return  string data
      */
     protected function _read($maxLen, $type, $chop= FALSE) {
-      $res= socket_read($this->_sock, $maxLen, $type);
+      if (!$this->_select(array($this->_sock), NULL, NULL, $this->_timeout)) {
+        throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+      }
+      $res= @socket_read($this->_sock, $maxLen, $type);
       if (FALSE === $res || NULL === $res) {
-        throw new SocketException('Read failed: '.$this->getLastError());
+        if (PHP_NORMAL_READ === $type && SOCKET_ECONNRESET === socket_last_error($this->_sock)) {
+          $this->_eof= TRUE;
+          return NULL;
+        }
+        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
       } else if ('' === $res) {
         $this->_eof= TRUE;
         return NULL;
