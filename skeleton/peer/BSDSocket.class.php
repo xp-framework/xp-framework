@@ -287,7 +287,7 @@
      */
     protected function _read($maxLen, $type, $chop= FALSE) {
       if (!$this->_select(array($this->_sock), NULL, NULL, $this->_timeout)) {
-        throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+        throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
       }
       $res= @socket_read($this->_sock, $maxLen, $type);
       if (FALSE === $res || NULL === $res) {

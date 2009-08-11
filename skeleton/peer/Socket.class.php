@@ -199,7 +199,7 @@
         
         $m= stream_get_meta_data($this->_sock);
         if ($m['timed_out']) {
-          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
         } else {
           throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
         }
@@ -245,7 +245,7 @@
       } else if ('' === $res) {
         $m= stream_get_meta_data($this->_sock);
         if ($m['timed_out']) {
-          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError(), $this->_timeout);
         }
       }
       
