@@ -25,6 +25,7 @@ Features
 ~~~~~~~~
 - Made timeouts during socket reads detectable by specialized exception
   peer.SocketTimeoutException
+  http://news.xp-framework.net/article/308/2009/08/11
   (friebe, Rene Patzer)
 - Added Console input stream (Console::$in)
   (friebe)
