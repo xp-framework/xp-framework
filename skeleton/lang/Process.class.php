@@ -33,6 +33,16 @@
     protected
       $_proc  = NULL,
       $status = array();
+    
+    /**
+     * Escape and argument
+     *
+     * @param   string arg
+     * @return  string escaped
+     */
+    protected function escape($arg) {
+      return strstr($arg, ' ') && !strstr($arg, '"') ? escapeshellarg($arg) : $arg;
+    }
 
     /**
      * Constructor
@@ -60,10 +70,10 @@
       }
       
       // Build command line
-      if (strstr($command, ' ')) {
-        $command= escapeshellarg($command);
+      $cmd= $this->escape($command);
+      foreach ($arguments as $arg) {
+        $cmd.= ' '.$this->escape($arg);
       }
-      $cmd= $command.' '.implode(' ', $arguments);
 
       // Open process
       if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes, $cwd, $env, array('bypass_shell' => TRUE)))) {
