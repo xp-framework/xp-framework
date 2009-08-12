@@ -85,11 +85,13 @@
      */
     protected function newProcess() {
       with ($rt= Runtime::getInstance()); {
-        return $rt->getExecutable()->newInstance(array_merge(
+        $proc= $rt->getExecutable()->newInstance(array_merge(
           $rt->startupOptions()->asArguments(),
           array($rt->bootstrapScript('class')),
           array('net.xp_framework.unittest.rdbms.integration.SQLRunner', $this->_dsn())
         ));
+        $this->assertEquals('! Started', $proc->out->readLine());
+        return $proc;
       }
     }
     
