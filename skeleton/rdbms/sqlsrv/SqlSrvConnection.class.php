@@ -25,6 +25,11 @@
     private
       $formatter= NULL;
 
+    /**
+     * Returns all errors as a string
+     *
+     * @return  string
+     */
     protected function errors() {
       $string= ''; 
       foreach (sqlsrv_errors() as $error) {
@@ -86,7 +91,7 @@
     public function selectdb($db) {
       if (!sqlsrv_select_db($db, $this->handle)) {
         throw new SQLStatementFailedException(
-          'Cannot select database: '.xp::stringOf(sqlsrv_errors()),
+          'Cannot select database: '.$this->errors(),
           'use '.$db,
           current(sqlsrv_fetch_row(sqlsrv_query('select @@error', $this->handle)))
         );
@@ -214,7 +219,7 @@
       $result= sqlsrv_query($this->handle, $sql);
 
       if (FALSE === $result) {
-        $message= 'Statement failed: '.xp::stringOf(sqlsrv_errors()).' @ '.$this->dsn->getHost();
+        $message= 'Statement failed: '.$this->errors().' @ '.$this->dsn->getHost();
         if (!is_resource($error= sqlsrv_query('select @@error', $this->handle))) {
         
           // The only case selecting @@error should fail is if we receive a
