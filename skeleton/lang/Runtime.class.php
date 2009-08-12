@@ -171,11 +171,15 @@
     /**
      * Get bootstrap script's filename
      *
+     * @param   string which default NULL
      * @return  string
      */
-    public function bootstrapScript() {
+    public function bootstrapScript($which= NULL) {
       if (NULL === $this->startup) {        // Lazy-init
         $this->startup= self::parseArguments($this->getExecutable()->getArguments());
+      }
+      if ($which) {
+        return dirname($this->startup['bootstrap']).DIRECTORY_SEPARATOR.$which.'.php';
       }
       return $this->startup['bootstrap'];
     }

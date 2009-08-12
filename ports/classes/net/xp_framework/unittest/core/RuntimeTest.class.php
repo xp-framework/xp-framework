@@ -101,6 +101,16 @@
     }
 
     /**
+     * Test bootstrapScript() method
+     *
+     */
+    #[@test]
+    public function certainBootstrapScript() {
+      $bootstrap= Runtime::getInstance()->bootstrapScript('class');
+      $this->assertTrue(strstr($bootstrap, 'tools') && strstr($bootstrap, 'class.php'), $bootstrap);
+    }
+
+    /**
      * Test mainClass() method
      *
      */
