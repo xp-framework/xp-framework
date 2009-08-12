@@ -15,7 +15,18 @@
    *
    */
   class NewInstanceTest extends TestCase {
+    protected $startupOptions= NULL;
 
+    /**
+     * Initialize startup options
+     *
+     */
+    public function setUp() {
+      $this->startupOptions= Runtime::getInstance()->startupOptions()
+        ->withSwitch('n')               // Do not use any configuration file
+        ->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())
+      ;
+    }
 
     /**
      * Issues a uses() command inside a new runtime for every class given
@@ -29,7 +40,7 @@
       with (
         $out= $err= '', 
         $rt= Runtime::getInstance(),
-        $p= $rt->getExecutable()->newInstance($rt->startupOptions()->asArguments())
+        $p= $rt->getExecutable()->newInstance($this->startupOptions->asArguments())
       ); {
         $p->in->write('<?php require("lang.base.php");');
         $uses && $p->in->write('uses("'.implode('", "', $uses).'");');

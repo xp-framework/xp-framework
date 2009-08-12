@@ -36,6 +36,7 @@
       $this->startupOptions= Runtime::getInstance()->startupOptions()
         ->withSwitch('n')               // Do not use any configuration file
         ->withSetting('safe_mode', 0)   // Switch off "safe" mode
+        ->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())
       ;
     }
     

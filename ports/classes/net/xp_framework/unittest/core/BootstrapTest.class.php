@@ -21,7 +21,10 @@
      *
      */
     public function setUp() {
-      $this->startupOptions= Runtime::getInstance()->startupOptions();
+      $this->startupOptions= Runtime::getInstance()->startupOptions()
+        ->withSwitch('n')               // Do not use any configuration file
+        ->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())
+      ;
     }
   
     /**
