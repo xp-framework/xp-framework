@@ -76,7 +76,7 @@
       }
       
       // Found library, try to load it. dl() expects given argument to not contain
-      // a path and will failt with "Temporary module name should contain only 
+      // a path and will fail with "Temporary module name should contain only 
       // filename" if it does.
       if (!dl(basename($lib))) {
         throw new RuntimeError('dl() failed for '.$lib);
@@ -120,10 +120,10 @@
       $return= array('options' => new RuntimeOptions(), 'bootstrap' => NULL, 'main' => NULL);
       while (NULL !== ($argument= array_shift($arguments))) {
         if ('-' !== $argument{0}) {
-          $return['bootstrap']= $argument;
+          $return['bootstrap']= trim($argument, '"\'');;
           break;
         } else if ('--' === $argument) {
-          $return['bootstrap']= array_shift($arguments);
+          $return['bootstrap']= trim(array_shift($arguments), '"\'');
           break;
         }
         switch ($argument{1}) {
@@ -137,11 +137,7 @@
           case 'd': {
             sscanf($argument, "-d%[^=]=%[^\r]", $setting, $value); 
             $setting= ltrim($setting, ' ');
-            if ('include_path' === $setting) {   // This is rewritten by entry point tools
-              $return['options']->withSetting($setting, escapeshellarg(get_include_path()));
-            } else {
-              $return['options']->withSetting($setting, $value, TRUE);
-            }
+            $return['options']->withSetting($setting, $value, TRUE);
             break;
           }
 
