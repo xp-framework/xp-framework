@@ -152,49 +152,47 @@
         'arguments' => NULL
       );
       
-      if ($exe) {
+      // Determine executable and command line:
+      // * On Windows, use Windows Management Instrumentation API - see
+      //   http://en.wikipedia.org/wiki/Windows_Management_Instrumentation
+      //
+      // * On systems with a /proc filesystem, use information from /proc/self
+      //   See http://en.wikipedia.org/wiki/Procfs
+      //
+      // * Fall back to use the "_" environment variable and /bin/ps to retrieve
+      //   the command line (please note unfortunately any quote signs have been 
+      //   lost and it can thus be only used for display purposes)
+      //
+      // Note: It would be really nice to have a getmyexe() function in PHP
+      // complementing getmypid().
+      if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
+        try {
+          $c= new com('winmgmts:');
+          $p= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"');
+          $self->status['exe']= $p->executablePath;
+          $self->status['command']= $p->commandLine;
+        } catch (Exception $e) {
+          throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
+        }
+      } else if (file_exists($proc= '/proc/'.$pid)) {
+        foreach (array('/exe', '/file') as $alt) {
+          if (!file_exists($proc.$alt)) continue;
+          $self->status['exe']= readlink($proc.$alt);
+          break;
+        }
+        $self->status['command']= strtr(file_get_contents($proc.'/cmdline'), "\0", ' ');
+      } else if ($exe) {
         try {
           $self->status['exe']= $self->resolve($exe);
+          $self->status['command']= exec('ps -p '.$pid.' -ocommand');
         } catch (IOException $e) {
           throw new IllegalStateException($e->getMessage());
         }
+      } else if ($_= getenv('_')) {
+        $self->status['exe']= $self->resolve($_);
+        $self->status['command']= exec('ps -p '.$pid.' -ocommand');
       } else {
-
-        // Determine executable and command line:
-        // * On Windows, use Windows Management Instrumentation API - see
-        //   http://en.wikipedia.org/wiki/Windows_Management_Instrumentation
-        //
-        // * On systems with a /proc filesystem, use information from /proc/self
-        //   See http://en.wikipedia.org/wiki/Procfs
-        //
-        // * Fall back to use the "_" environment variable and /bin/ps to retrieve
-        //   the command line (please note unfortunately any quote signs have been 
-        //   lost and it can thus be only used for display purposes)
-        //
-        // Note: It would be really nice to have a getmyexe() function in PHP
-        // complementing getmypid().
-        if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
-          try {
-            $c= new com('winmgmts:');
-            $p= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"');
-            $self->status['exe']= $p->executablePath;
-            $self->status['command']= $p->commandLine;
-          } catch (Exception $e) {
-            throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
-          }
-        } else if (file_exists($proc= '/proc/'.$pid)) {
-          foreach (array('/exe', '/file') as $alt) {
-            if (!file_exists($proc.$alt)) continue;
-            $self->status['exe']= readlink($proc.$alt);
-            break;
-          }
-          $self->status['command']= strtr($proc.'/cmdline', "\0", ' ');
-        } else if ($_= getenv('_')) {
-          $self->status['exe']= realpath($_);
-          $self->status['command']= exec('ps -p '.$pid.' -ocommand');
-        } else {
-          throw new IllegalStateException('Cannot find executable');
-        }
+        throw new IllegalStateException('Cannot find executable');
       }
       
       $self->in= xp::null();
