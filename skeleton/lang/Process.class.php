@@ -29,10 +29,17 @@
       $out    = NULL,
       $err    = NULL,
       $exitv  = -1;
-      
+    
+    protected static
+      $escape = '';
+
     protected
       $_proc  = NULL,
       $status = array();
+    
+    static function __static() {
+      self::$escape= substr(escapeshellarg(''), 1, 1);
+    }
     
     /**
      * Escape and argument
@@ -41,7 +48,7 @@
      * @return  string escaped
      */
     protected function escape($arg) {
-      return strstr($arg, ' ') && !strstr($arg, '"') ? escapeshellarg($arg) : $arg;
+      return strstr($arg, ' ') && !strstr($arg, self::$escape) ? escapeshellarg($arg) : $arg;
     }
 
     /**
