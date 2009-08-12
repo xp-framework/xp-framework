@@ -44,7 +44,7 @@
       with ($rt= Runtime::getInstance()); {
         self::$serverProcess= $rt->getExecutable()->newInstance(array_merge(
           $rt->startupOptions()->asArguments(),
-          array($rt->bootstrapScript()),
+          array($rt->bootstrapScript('class')),
           array_values($args)
         ));
       }
@@ -149,6 +149,7 @@
       $this->conn->connect();
       $entries= $this->conn->rootDir()->entries();
       $this->assertClass($entries, 'peer.ftp.FtpEntryList');
+      $this->assertFalse($entries->isEmpty());
       foreach ($entries as $entry) {
         $this->assertSubClass($entry, 'peer.ftp.FtpEntry');
       }
