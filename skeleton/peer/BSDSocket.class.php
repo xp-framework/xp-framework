@@ -23,6 +23,9 @@
       $protocol = SOL_TCP,
       $options  = array();
     
+    protected 
+      $rq       = '';
+    
     static function __static() {
       defined('TCP_NODELAY') || define('TCP_NODELAY', 1);
     }
@@ -286,21 +289,35 @@
      * @return  string data
      */
     protected function _read($maxLen, $type, $chop= FALSE) {
-      if (!$this->_select(array($this->_sock), NULL, NULL, $this->_timeout)) {
-        throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
-      }
-      $res= @socket_read($this->_sock, $maxLen, $type);
-      if (FALSE === $res || NULL === $res) {
-        if (PHP_NORMAL_READ === $type && SOCKET_ECONNRESET === socket_last_error($this->_sock)) {
-          $this->_eof= TRUE;
-          return NULL;
+      $res= '';
+      if (!$this->_eof && 0 === strlen($this->rq)) {
+        if (!$this->_select(array($this->_sock), NULL, NULL, $this->_timeout)) {
+          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
         }
-        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
-      } else if ('' === $res) {
-        $this->_eof= TRUE;
-        return NULL;
-      } else {
-        return $chop ? chop($res) : $res;
+        $res= @socket_read($this->_sock, $maxLen);
+        if (FALSE === $res || NULL === $res) {
+          $error= socket_last_error($this->_sock);
+          if (0 === $error || SOCKET_ECONNRESET === $error) {
+            $this->_eof= TRUE;
+            return NULL;
+          }
+          throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+        } else if ('' === $res) {
+          $this->_eof= TRUE;
+        }
+      }
+      
+      $read= $this->rq.$res;
+      if (PHP_NORMAL_READ === $type) {
+        if ('' === $read) return NULL;
+        $c= strcspn($read, "\n");
+        $this->rq= substr($read, $c+ 1);
+        $chunk= substr($read, 0, $c+ 1);
+        return $chop ? chop($chunk) : $chunk;
+      } else if (PHP_BINARY_READ === $type) {
+        if ('' === $read) return '';
+        $this->rq= substr($read, $maxLen);
+        return substr($read, 0, $maxLen);
       }
     }
         
@@ -334,7 +351,7 @@
      * @throws  peer.SocketException
      */
     public function readBinary($maxLen= 4096) {
-      return (string)$this->_read($maxLen, PHP_BINARY_READ);
+      return $this->_read($maxLen, PHP_BINARY_READ);
     }
 
     /**
