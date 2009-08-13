@@ -29,6 +29,13 @@
     
     static function __static() {
       self::$instance= new self();
+      
+      // PHP versions < 5.2.1 only have these memory functions if
+      // compiled with --enable-memory-limit.
+      if (!function_exists('memory_get_usage')) { 
+        function memory_get_usage($real) { return -1; } 
+        function memory_get_peak_usage($real) { return -1; } 
+      }
     }
     
     /**
@@ -82,6 +89,37 @@
         throw new RuntimeError('dl() failed for '.$lib);
       }
       return TRUE;
+    }
+
+    /**
+     * Returns the total amount of memory available to the runtime. If there
+     * is no limit zero will be returned.
+     *
+     * @return  int bytes
+     */
+    public function memoryLimit() {
+      return (int)ini_get('memory_limit');
+    }
+
+    /**
+     * Returns the amount of memory currently allocated by the runtime
+     *
+     * @see     php://memory_get_peak_usage
+     * @return  int bytes
+     */
+    public function memoryUsage() {
+      return memory_get_usage(TRUE);
+    }
+
+    /**
+     * Returns the peak of of memory that has been allocated by the
+     * runtime up until now.
+     *
+     * @see     php://memory_get_usage
+     * @return  int bytes
+     */
+    public function peakMemoryUsage() {
+      return memory_get_peak_usage(TRUE);
     }
 
     /**

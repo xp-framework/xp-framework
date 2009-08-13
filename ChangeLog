@@ -23,6 +23,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added memory reporting methods to lang.Runtime class
+  (friebe)
 - Made timeouts during socket reads detectable by specialized exception
   peer.SocketTimeoutException
   http://news.xp-framework.net/article/308/2009/08/11
