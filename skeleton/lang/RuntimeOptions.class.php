@@ -108,5 +108,15 @@
     public function toString() {
       return $this->getClassName().'@'.xp::stringOf($this->asArguments());
     }
+
+    /**
+     * Returns whether another object is equal to these options
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->backing === $cmp->backing;
+    }
   }
 ?>
