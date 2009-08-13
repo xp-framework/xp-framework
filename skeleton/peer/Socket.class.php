@@ -175,7 +175,8 @@
       }
       
       $r= array($this->_sock); $w= NULL; $e= NULL;
-      if (FALSE === ($n= stream_select($r, $w, $e, $tv_sec, $tv_usec))) {
+      $n= stream_select($r, $w, $e, $tv_sec, $tv_usec);
+      if (FALSE === $n || NULL === $n) {
         throw new SocketException('Select failed: '.$this->getLastError());
       }
       
