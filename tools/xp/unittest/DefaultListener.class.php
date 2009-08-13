@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('unittest.TestListener', 'io.streams.OutputStreamWriter');
+  uses(
+    'unittest.TestListener',
+    'io.streams.OutputStreamWriter',
+    'lang.Runtime'
+  );
 
   /**
    * Default listener - only shows details for failed tests.
