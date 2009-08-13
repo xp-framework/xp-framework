@@ -176,7 +176,7 @@
       
       $r= array($this->_sock); $w= NULL; $e= NULL;
       $n= stream_select($r, $w, $e, $tv_sec, $tv_usec);
-      if (FALSE === $n || NULL === $n) {
+      if (FALSE === $n || NULL === $n || xp::errorAt(__FILE__, __LINE__ - 1)) {
         throw new SocketException('Select failed: '.$this->getLastError());
       }
       
