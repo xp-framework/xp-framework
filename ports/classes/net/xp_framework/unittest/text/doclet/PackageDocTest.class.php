@@ -113,5 +113,15 @@
         $this->root->packageNamed('io.streams')
       ));
     }
+
+    /**
+     * Test sourceFile() method
+     *
+     */
+    #[@test]
+    public function sourceFile() {
+      $file= $this->root->packageNamed('lang')->sourceFile();
+      $this->assertEquals('package-info.xp', $file->getFilename());
+    }
   }
 ?>

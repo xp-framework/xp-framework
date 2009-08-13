@@ -70,5 +70,15 @@
         $this->root->classNamed('lang.Object')->containingPackage()
       );
     }
+
+    /**
+     * Test sourceFile() method
+     *
+     */
+    #[@test]
+    public function sourceFile() {
+      $file= $this->root->classNamed('lang.Object')->sourceFile();
+      $this->assertEquals('Object.class.php', $file->getFilename());
+    }
   }
 ?>
