@@ -186,10 +186,11 @@
      * Reading helper function
      *
      * @param   int maxLen
+     * @param   int type ignored
      * @param   bool chop
      * @return  string data
      */
-    protected function _read($maxLen, $chop= FALSE) {
+    protected function _read($maxLen, $type, $chop= FALSE) {
       $res= fgets($this->_sock, $maxLen);
       if (FALSE === $res || NULL === $res) {
 
@@ -217,7 +218,7 @@
      * @throws  peer.SocketException
      */
     public function read($maxLen= 4096) {
-      return $this->_read($maxLen, FALSE);
+      return $this->_read($maxLen, -1, FALSE);
     }
 
     /**
@@ -228,7 +229,7 @@
      * @throws  peer.SocketException
      */
     public function readLine($maxLen= 4096) {
-      return $this->_read($maxLen, TRUE);
+      return $this->_read($maxLen, -1, TRUE);
     }
 
     /**
