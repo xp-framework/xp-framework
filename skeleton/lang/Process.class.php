@@ -38,7 +38,8 @@
       $status = array();
     
     static function __static() {
-      self::$escape= substr(escapeshellarg(''), 1, 1);
+      $e= escapeshellarg('');
+      self::$escape= (0 === strlen($e) ? '"' : $e{0});
     }
     
     /**
