@@ -180,7 +180,7 @@
         throw new SocketException('Select failed: '.$this->getLastError());
       }
       
-      return $n > 0;
+      return $n > 0 ? TRUE : !empty($r);
     }
 
     /**
