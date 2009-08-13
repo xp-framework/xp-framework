@@ -280,6 +280,20 @@
       }
       $this->assertEquals('+LINE .', $this->fixture->readLine());
     }
+    
+    /**
+     * Read exactly the specific amount of bytes.
+     *
+     * @param   int num
+     * @return  string
+     */
+    protected function readBytes($num) {
+      $bytes= '';
+      do {
+        $bytes.= $this->fixture->readBinary($num- strlen($bytes));
+      } while (strlen($bytes) < $num);
+      return $bytes;
+    }
 
     /**
      * Test readLine() and readBinary() in conjunction
@@ -290,7 +304,7 @@
       $this->fixture->connect();
       $this->fixture->write("LINE 3 %0D%0A\n");
       $this->assertEquals('+LINE 0', $this->fixture->readLine());
-      $this->assertEquals("+LINE 1\r\n+LINE 2\r\n+LINE .\n", $this->fixture->readBinary(26));
+      $this->assertEquals("+LINE 1\r\n+LINE 2\r\n+LINE .\n", $this->readBytes(26));
     }
 
     /**
@@ -302,8 +316,8 @@
       $this->fixture->connect();
       $this->fixture->write("LINE 3 %0D%0A\n");
       $this->assertEquals('+LINE 0', $this->fixture->readLine());
-      $this->assertEquals("+LINE 1\r\n", $this->fixture->readBinary(9));
-      $this->assertEquals("+LINE 2\r\n", $this->fixture->readBinary(9));
+      $this->assertEquals("+LINE 1\r\n", $this->readBytes(9));
+      $this->assertEquals("+LINE 2\r\n", $this->readBytes(9));
       $this->assertEquals('+LINE .', $this->fixture->readLine());
     }
 
