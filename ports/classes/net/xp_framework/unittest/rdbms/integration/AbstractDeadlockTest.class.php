@@ -73,11 +73,11 @@
       $db->connect();
       
       try {
-        @$db->query('drop table table_a');
+        $db->query('drop table table_a');
       } catch (SQLStatementFailedException $ignored) {}
       
       try {
-        @$db->query('drop table table_b');
+        $db->query('drop table table_b');
       } catch (SQLStatementFailedException $ignored) {}
       
       $db->close();

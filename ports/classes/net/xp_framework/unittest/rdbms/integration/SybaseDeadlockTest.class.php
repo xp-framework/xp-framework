@@ -22,7 +22,7 @@
      */
     #[@beforeClass]
     public static function messageLevel() {
-      sybase_min_server_severity(11);
+      sybase_min_server_severity(12);
     }
 
 
