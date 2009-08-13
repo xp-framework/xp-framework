@@ -32,8 +32,9 @@
      * @param   
      * @return  
      */
-    public function _dsn() {
-      return 'sybase://username:password@servername/tempdb';
+    protected function createAutoIncrementTable($name) {
+      $this->removeTable($name);
+      $this->db()->query('create table %c (pk int identity, username varchar(30))', $name);
     }
   }
 ?>

@@ -96,12 +96,21 @@
      * @param   
      * @return  
      */
-    protected function createTable() {
+    protected function removeTable($name) {
       // Try to remove, if already exist...
       try {
-        $this->db()->query('drop table unittest');
+        $this->db()->query('drop table %c', $name);
       } catch (SQLStatementFailedException $ignored) {}
-
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    protected function createTable() {
+      $this->removeTable('unittest');
       $this->db()->query('create table unittest (pk int, username varchar(30))');
       $this->db()->insert('into unittest values (1, "kiesel")');
       $this->db()->insert('into unittest values (2, "kiesel")');
@@ -161,16 +170,20 @@
      * Test
      *
      */
-    #[@test]
-    public function identity() {
-      $this->createTable();
-      $this->db()->insert('into unittest values (15, "kiesel")');
-      
-      $this->assertEquals(15, $this->db()->identity());
+    protected function _identity($name) {
+      return $this->db()->identity();
     }
     
     
-    
-    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function identity() {
+      $this->createAutoIncrementTable('unittest_ai');      
+      $this->assertEquals(1, $this->db()->insert('into unittest_ai (username) values ("kiesel")'));
+      $this->assertEquals(1, $this->_identity('unittest_ai'));
+    }
   }
 ?>

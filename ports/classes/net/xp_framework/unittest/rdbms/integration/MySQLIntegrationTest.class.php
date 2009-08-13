@@ -21,8 +21,9 @@
      * @param   
      * @return  
      */
-    public function _dsn() {
-      return 'mysql://username:password@servername/tempdb';
+    protected function createAutoIncrementTable($name) {
+      $this->removeTable($name);
+      $this->db()->query('create table %c (pk int primary key auto_increment, username varchar(30))', $name);
     }
   }
 ?>
