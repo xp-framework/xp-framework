@@ -9,7 +9,7 @@
   );
 
   /**
-   * Deadlock test on mysql
+   * Deadlock test on Sybase
    *
    */
   class SybaseDeadlockTest extends AbstractDeadlockTest {
