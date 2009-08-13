@@ -110,8 +110,8 @@
       );
       $this->out->writeLinef(
         '===> Memory used: %.2f kB (%.2f kB peak)',
-        memory_get_usage(TRUE) / 1024,
-        memory_get_peak_usage(TRUE) / 1024
+        Runtime::getInstance()->memoryUsage() / 1024,
+        Runtime::getInstance()->peakMemoryUsage() / 1024
       );
     }
   }
