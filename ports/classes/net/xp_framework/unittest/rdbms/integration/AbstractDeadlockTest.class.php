@@ -32,7 +32,7 @@
         $this->dropTables();
         $this->createTables();
       } catch (Throwable $e) {
-        throw new PrerequisitedNotMetError($e->getMessage(), $e);
+        throw new PrerequisitesNotMetError($e->getMessage(), $e);
       }
     }
     
