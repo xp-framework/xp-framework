@@ -4,16 +4,17 @@
  * $Id$ 
  */
 
-  uses(
-    'net.xp_framework.unittest.rdbms.integration.AbstractDeadlockTest'
-  );
+  uses('net.xp_framework.unittest.rdbms.integration.RdbmsIntegrationTest');
 
   /**
-   * Deadlock test on Sybase
+   * (Insert class' description here)
    *
+   * @ext      extension
+   * @see      reference
+   * @purpose  purpose
    */
-  class SybaseDeadlockTest extends AbstractDeadlockTest {
-
+  class SybaseIntegrationTest extends RdbmsIntegrationTest {
+    
     /**
      * Before class method: set minimun server severity;
      * otherwise server messages end up on the error stack
@@ -26,9 +27,10 @@
     }
 
     /**
-     * Retrieve DSN
+     * (Insert method's description here)
      *
-     * @return  string
+     * @param   
+     * @return  
      */
     public function _dsn() {
       return 'sybase://username:password@servername/tempdb';
