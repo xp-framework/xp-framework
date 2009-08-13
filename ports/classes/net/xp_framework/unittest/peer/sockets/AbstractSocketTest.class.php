@@ -58,7 +58,7 @@
       with ($rt= Runtime::getInstance()); {
         self::$serverProcess= $rt->getExecutable()->newInstance(array_merge(
           $rt->startupOptions()->asArguments(),
-          array($rt->bootstrapScript()),
+          array($rt->bootstrapScript('class')),
           array('net.xp_framework.unittest.peer.sockets.TestingServer', self::SERVER_ADDR, self::SERVER_PORT)
         ));
       }
@@ -92,7 +92,6 @@
       } catch (Throwable $ignored) {
         // Fall through, below should terminate the process anyway
       }
-
       $status= self::$serverProcess->out->readLine();
       if (!strlen($status) || '+' != $status{0}) {
         while ($l= self::$serverProcess->out->readLine()) {
@@ -258,7 +257,7 @@
      * Test reading multiple lines separated by \r
      *
      */
-    #[@test, @ignore('readLine() only works for \n at the moment')]
+    #[@test, @ignore('readLine() only works for \n or \r\n at the moment')]
     public function readLinesWithCarriageReturn() {
       $this->fixture->connect();
       $this->fixture->write("LINE 5 %0D\n");
@@ -272,13 +271,39 @@
      * Test reading multiple lines separated by \r\n
      *
      */
-    #[@test, @ignore('readLine() only works for \n at the moment')]
+    #[@test]
     public function readLinesWithCarriageReturnLineFeed() {
       $this->fixture->connect();
       $this->fixture->write("LINE 5 %0D%0A\n");
       for ($i= 0; $i < 5; $i++) {
         $this->assertEquals('+LINE '.$i, $this->fixture->readLine(), 'Line #'.$i);
       }
+      $this->assertEquals('+LINE .', $this->fixture->readLine());
+    }
+
+    /**
+     * Test readLine() and readBinary() in conjunction
+     *
+     */
+    #[@test]
+    public function readLineAndBinary() {
+      $this->fixture->connect();
+      $this->fixture->write("LINE 3 %0D%0A\n");
+      $this->assertEquals('+LINE 0', $this->fixture->readLine());
+      $this->assertEquals("+LINE 1\r\n+LINE 2\r\n+LINE .\n", $this->fixture->readBinary(26));
+    }
+
+    /**
+     * Test readLine() and readBinary() in conjunction
+     *
+     */
+    #[@test]
+    public function readLineAndBinaryWithMaxLen() {
+      $this->fixture->connect();
+      $this->fixture->write("LINE 3 %0D%0A\n");
+      $this->assertEquals('+LINE 0', $this->fixture->readLine());
+      $this->assertEquals("+LINE 1\r\n", $this->fixture->readBinary(9));
+      $this->assertEquals("+LINE 2\r\n", $this->fixture->readBinary(9));
       $this->assertEquals('+LINE .', $this->fixture->readLine());
     }
 
