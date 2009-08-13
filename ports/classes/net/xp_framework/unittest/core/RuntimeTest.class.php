@@ -386,5 +386,41 @@
       $this->assertEquals('+OK exiting', substr($out, 0, 11), $out);
       $this->assertEquals('+OK Shutdown hook run', substr($out, -21), $out);
     }
+
+    /**
+     * Test memoryUsage() method
+     *
+     */
+    #[@test]
+    public function memoryUsage() {
+      $this->assertEquals(
+        Primitive::$INTEGER, 
+        Type::forName(gettype(Runtime::getInstance()->memoryUsage()))
+      );
+    }
+
+    /**
+     * Test peakMemoryUsage() method
+     *
+     */
+    #[@test]
+    public function peakMemoryUsage() {
+      $this->assertEquals(
+        Primitive::$INTEGER, 
+        Type::forName(gettype(Runtime::getInstance()->peakMemoryUsage()))
+      );
+    }
+
+    /**
+     * Test memoryLimit() method
+     *
+     */
+    #[@test]
+    public function memoryLimit() {
+      $this->assertEquals(
+        Primitive::$INTEGER, 
+        Type::forName(gettype(Runtime::getInstance()->memoryLimit()))
+      );
+    }
   }
 ?>
