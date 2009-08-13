@@ -55,11 +55,11 @@
       $db->query('create table table_a (pk int)');
       $db->query('create table table_b (pk int)');
       
-      $db->insert('table_a values (1)');
-      $db->insert('table_a values (2)');
+      $db->insert('into table_a values (1)');
+      $db->insert('into table_a values (2)');
 
-      $db->insert('table_b values (1)');
-      $db->insert('table_b values (2)');
+      $db->insert('into table_b values (1)');
+      $db->insert('into table_b values (2)');
       
       $db->close();
     }
@@ -72,8 +72,13 @@
       $db= DriverManager::getConnection($this->_dsn());
       $db->connect();
       
-      $db->query('drop table if exists table_a');
-      $db->query('drop table if exists table_b');
+      try {
+        @$db->query('drop table table_a');
+      } catch (SQLStatementFailedException $ignored) {}
+      
+      try {
+        @$db->query('drop table table_b');
+      } catch (SQLStatementFailedException $ignored) {}
       
       $db->close();
     }
