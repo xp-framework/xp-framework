@@ -48,13 +48,41 @@
      * @param   
      * @return  
      */
-    protected function db() {
+    protected function db($connect= TRUE) {
       with ($db= DriverManager::getConnection($this->_dsn())); {
-        $db->connect();
+        if ($connect) $db->connect();
+        return $db;
       }
-      
-      return $db;
-    }    
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    public function noQueryWhenNotConnected() {
+      $db= $this->db(FALSE);
+      $db->query('select 1');
+    }
+    
+    /**
+     * (Insert method's description here)
+     *
+     * @param   
+     * @return  
+     */
+    #[@test, @ignore('Does not work, yet.')]
+    public function connectFailedThrowsException() {
+      $db= $this->db(FALSE);
+
+      $dsn= clone $db->dsn;
+      $dsn->url->password= 'hopefully-wrong-password';
+
+      $other= $db->getClass()->newInstance($dsn);
+      $other->connect();
+    }
     
     /**
      * (Insert method's description here)
@@ -64,7 +92,7 @@
      */
     #[@test]
     public function connect() {
-      $this->db()->close();
+      $this->assertEquals(TRUE, $this->db(FALSE)->connect());
     }
     
     /**
@@ -88,6 +116,18 @@
       $q= $this->db()->query('select 1 as foo');
       $this->assertSubclass($q, 'rdbms.ResultSet');
       $this->assertEquals(1, $q->next('foo'));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function emptyQuery() {
+      $this->createTable();
+      $q= $this->db()->query('select * from unittest where 1=0');
+      $this->assertSubclass($q, 'rdbms.ResultSet');
+      $this->assertEquals(FALSE, $q->next());
     }
     
     /**
@@ -184,6 +224,15 @@
       $this->createAutoIncrementTable('unittest_ai');      
       $this->assertEquals(1, $this->db()->insert('into unittest_ai (username) values ("kiesel")'));
       $this->assertEquals(1, $this->_identity('unittest_ai'));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('rdbms.SQLStatementFailedException')]
+    public function malformedStatement() {
+      $this->db()->query('select insert into delete.');
     }
   }
 ?>
