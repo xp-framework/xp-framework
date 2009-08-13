@@ -103,6 +103,8 @@
       } catch (SQLStatementFailedException $ignored) {}
 
       $this->db()->query('create table unittest (pk int, username varchar(30))');
+      $this->db()->insert('into unittest values (1, "kiesel")');
+      $this->db()->insert('into unittest values (2, "kiesel")');
     }
     
     /**
@@ -118,6 +120,57 @@
       $q= $this->db()->insert('into unittest values (2, "xp")');
       $this->assertEquals(1, $q);
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function updateTable() {
+      $this->createTable();
+      $this->assertEquals(
+        TRUE,
+        $this->db()->query('update unittest set pk= pk+ 1 where pk= 2')
+      );
+
+      $this->assertEquals(
+        1, 
+        $this->db()->update('unittest set pk= pk+ 1 where pk= 1')
+      );
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function deleteFromTable() {
+      $this->createTable();
+      $this->assertEquals(
+        TRUE,
+        $this->db()->query('delete from unittest where pk= 2')
+      );
+
+      $this->assertEquals(
+        1, 
+        $this->db()->delete('from unittest where pk= 1')
+      );
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function identity() {
+      $this->createTable();
+      $this->db()->insert('into unittest values (15, "kiesel")');
+      
+      $this->assertEquals(15, $this->db()->identity());
+    }
+    
+    
+    
     
   }
 ?>
