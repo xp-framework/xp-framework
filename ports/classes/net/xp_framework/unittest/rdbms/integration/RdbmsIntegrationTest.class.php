@@ -23,30 +23,10 @@
     abstract public function _dsn();
   
     /**
-     * Sets up test case
+     * Retrieve database connection object
      *
-     */
-    public function setUp() {
-      // TODO: Fill code that gets executed before every test method
-      //       or remove this method
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function tearDown() {
-      // TODO: Fill code that gets executed after every test method
-      //       or remove this method
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
+     * @param   bool connect default TRUE
+     * @return  rdbms.DBConnection
      */
     protected function db($connect= TRUE) {
       with ($db= DriverManager::getConnection($this->_dsn())); {
@@ -56,10 +36,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Test query throws rdbms.SQLStateException when not connected
+     * to the database
      *
-     * @param   
-     * @return  
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function noQueryWhenNotConnected() {
@@ -68,10 +47,8 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Test failing to connect throws rdbms.SQLConnectException
      *
-     * @param   
-     * @return  
      */
     #[@test, @expect('rdbms.SQLConnectException')]
     public function connectFailedThrowsException() {
@@ -83,10 +60,8 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Test connect()
      *
-     * @param   
-     * @return  
      */
     #[@test]
     public function connect() {
@@ -94,11 +69,11 @@
     }
     
     /**
-     * Test
+     * Test select()
      *
      */
     #[@test]
-    public function simpleStaticQuery() {
+    public function simpleSelect() {
       $this->assertEquals(
         array(array('foo' => 1)), 
         $this->db()->select('1 as foo')
@@ -106,7 +81,7 @@
     }
     
     /**
-     * Test
+     * Test query()
      *
      */
     #[@test]
@@ -117,7 +92,8 @@
     }
     
     /**
-     * Test
+     * Test query() w/ an empty result set (empty or not - it should
+     * be a ResultSet)
      *
      */
     #[@test]
@@ -129,10 +105,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Helper method to remove table if existant
      *
-     * @param   
-     * @return  
+     * @param   string name
      */
     protected function removeTable($name) {
       // Try to remove, if already exist...
@@ -142,10 +117,8 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Helper method to create table
      *
-     * @param   
-     * @return  
      */
     protected function createTable() {
       $this->removeTable('unittest');
@@ -155,7 +128,7 @@
     }
     
     /**
-     * Test
+     * Test insert()
      *
      */
     #[@test]
@@ -169,7 +142,7 @@
     }
     
     /**
-     * Test
+     * Test update()
      *
      */
     #[@test]
@@ -187,7 +160,7 @@
     }
     
     /**
-     * Test
+     * Test delete()
      *
      */
     #[@test]
@@ -205,7 +178,7 @@
     }
     
     /**
-     * Test
+     * Test identity value retrieval through identity()
      *
      */
     #[@test]
@@ -219,7 +192,7 @@
     }
     
     /**
-     * Test
+     * Test failed query throws rdbms.SQLStatementFailedException
      *
      */
     #[@test, @expect('rdbms.SQLStatementFailedException')]
@@ -228,7 +201,7 @@
     }
     
     /**
-     * Test
+     * Test selecting integer values leads 
      *
      */
     #[@test]
@@ -237,7 +210,7 @@
     }
     
     /**
-     * Test
+     * Test selecting string values
      *
      */
     #[@test]
@@ -246,7 +219,7 @@
     }
     
     /**
-     * Test
+     * Test selecting float values
      *
      */
     #[@test]
@@ -255,7 +228,7 @@
     }
     
     /**
-     * Test
+     * Test selecting date values returns util.Date objects
      *
      */
     #[@test]

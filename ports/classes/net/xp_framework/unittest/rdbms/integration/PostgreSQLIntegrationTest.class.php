@@ -7,29 +7,25 @@
   uses('net.xp_framework.unittest.rdbms.integration.RdbmsIntegrationTest');
 
   /**
-   * (Insert class' description here)
+   * PostgreSQL integration test
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @ext       pgsql
    */
   class PostgreSQLIntegrationTest extends RdbmsIntegrationTest {
     
     /**
-     * (Insert method's description here)
+     * Retrieve dsn
      *
-     * @param   
-     * @return  
+     * @return  string
      */
     public function _dsn() {
       return 'pgsql://username:password@servername/public';
     }
     
     /**
-     * (Insert method's description here)
+     * Create autoincrement table
      *
-     * @param   
-     * @return  
+     * @param   string name
      */
     protected function createAutoIncrementTable($name) {
       $this->removeTable($name);

@@ -7,11 +7,9 @@
   uses('net.xp_framework.unittest.rdbms.integration.RdbmsIntegrationTest');
 
   /**
-   * (Insert class' description here)
+   * Sybase integration test
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @ext       sybase_ct
    */
   class SybaseIntegrationTest extends RdbmsIntegrationTest {
     
@@ -27,20 +25,18 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Retrieve dsn
      *
-     * @param   
-     * @return  
+     * @return  string
      */
     public function _dsn() {
       return 'sybase://username:password@servername/tempdb';
     }
     
     /**
-     * (Insert method's description here)
+     * Create autoincrement table
      *
-     * @param   
-     * @return  
+     * @param   string name
      */
     protected function createAutoIncrementTable($name) {
       $this->removeTable($name);
