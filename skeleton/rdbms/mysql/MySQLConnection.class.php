@@ -147,7 +147,7 @@
      * @return  mixed identity value
      */
     public function identity($field= NULL) {
-      $i= mysql_insert_id($this->handle);
+      $i= create(new MySQLResultSet(mysql_query('select last_insert_id() as xp_id', $this->handle)))->next('xp_id');
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
     }
