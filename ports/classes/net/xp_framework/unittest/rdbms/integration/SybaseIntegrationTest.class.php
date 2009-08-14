@@ -19,10 +19,10 @@
      * and will let the test fail (no error policy).
      *
      */
-    #[@beforeClass]
-    public static function messageLevel() {
+    public function setUp() {
+      parent::setUp();
       sybase_min_server_severity(12);
-    }
+    }    
 
     /**
      * Retrieve dsn

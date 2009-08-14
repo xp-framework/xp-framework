@@ -19,10 +19,11 @@
      * and will let the test fail (no error policy).
      *
      */
-    #[@beforeClass]
-    public static function messageLevel() {
+    public function setUp() {
+      parent::setUp();
       mssql_min_message_severity(12);
     }
+          
 
     /**
      * Retrieve dsn
