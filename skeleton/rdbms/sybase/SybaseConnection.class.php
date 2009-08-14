@@ -67,7 +67,7 @@
       if (!is_resource($this->handle)) {
         throw new SQLConnectException(trim(sybase_get_last_message()), $this->dsn);
       }
-      
+      xp::gc(__FILE__);
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       return parent::connect();
     }
