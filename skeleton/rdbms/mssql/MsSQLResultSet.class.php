@@ -60,10 +60,32 @@
         return FALSE;
       }
 
-      foreach (array_keys($row) as $key) {
-        if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
-        if ('datetime' == $this->fields[$key]) {
-          $row[$key]= Date::fromString($row[$key], $this->tz);
+      foreach ($row as $key => $value) {
+        if (NULL === $value || !isset($this->fields[$key])) continue;
+        
+        switch ($this->fields[$key]) {
+          case 'datetime': {
+            $row[$key]= Date::fromString($value, $this->tz);
+            break;
+          }
+          
+          case 'numeric': {
+            if (FALSE !== strpos($value, '.')) {
+              settype($row[$key], 'double');
+              break;
+            }
+            // Fallthrough intentional
+          }
+            
+          case 'int': {
+            if ($value <= LONG_MAX && $value >= LONG_MIN) {
+              settype($row[$key], 'integer');
+            } else {
+              settype($row[$key], 'double');
+            }
+            break;
+          }
+          
         }
       }
       

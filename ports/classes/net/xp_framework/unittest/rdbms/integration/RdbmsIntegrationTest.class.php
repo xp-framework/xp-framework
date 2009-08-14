@@ -243,6 +243,7 @@
     #[@test]
     public function selectFloat() {
       $this->assertEquals(0.5, $this->db()->query('select 0.5 as value')->next('value'));
+      $this->assertEquals(1.0, $this->db()->query('select 1.0 as value')->next('value'));
     }
     
     /**
