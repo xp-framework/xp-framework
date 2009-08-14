@@ -32,7 +32,7 @@
      * @return  string
      */
     public function read($limit= 8192) {
-      return $this->socket->read($limit);
+      return $this->socket->readBinary($limit);
     }
 
     /**
