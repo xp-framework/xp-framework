@@ -23,6 +23,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added optional parameter "file" to xp::gc() which will only clean up
+  errors caused inside the given file (versus all errors)
+  (friebe, kiesel)
 - Added memory reporting methods to lang.Runtime class
   (friebe)
 - Made timeouts during socket reads detectable by specialized exception

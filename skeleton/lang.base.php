@@ -127,10 +127,14 @@
     }
     // }}}
 
-    // {{{ public void gc()
+    // {{{ public void gc([string file default NULL])
     //     Runs the garbage collector
-    static function gc() {
-      xp::$registry['errors']= array();
+    static function gc($file= NULL) {
+      if ($file) {
+        unset(xp::$registry['errors'][$file]);
+      } else {
+        xp::$registry['errors']= array();
+      }
     }
     // }}}
 
