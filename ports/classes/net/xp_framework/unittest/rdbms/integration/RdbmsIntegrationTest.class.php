@@ -73,15 +73,13 @@
      * @param   
      * @return  
      */
-    #[@test, @ignore('Does not work, yet.')]
+    #[@test, @expect('rdbms.SQLConnectException')]
     public function connectFailedThrowsException() {
-      $db= $this->db(FALSE);
-
-      $dsn= clone $db->dsn;
-      $dsn->url->password= 'hopefully-wrong-password';
-
-      $other= $db->getClass()->newInstance($dsn);
-      $other->connect();
+      DriverManager::getConnection(str_replace(
+        ':'.$this->db(FALSE)->dsn->getPassword().'@', 
+        ':hopefully-wrong-password@', 
+        $this->_dsn()
+      ))->connect();
     }
     
     /**
@@ -233,6 +231,33 @@
     #[@test, @expect('rdbms.SQLStatementFailedException')]
     public function malformedStatement() {
       $this->db()->query('select insert into delete.');
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function selectInteger() {
+      $this->assertEquals(1, $this->db()->query('select 1 as value')->next('value'));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function selectString() {
+      $this->assertEquals("Hello, World!", $this->db()->query('select "Hello, World!" as value')->next('value'));
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function selectFloat() {
+      $this->assertEquals(0.5, $this->db()->query('select 0.5 as value')->next('value'));
     }
   }
 ?>

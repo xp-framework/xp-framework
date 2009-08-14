@@ -22,7 +22,7 @@
      * @return  
      */
     public function _dsn() {
-      return 'mysql://username:password@servername/tempdb';
+      return 'mysql://unittest:adkflw1aadkl@xp-framework.net/unittest_deadlock';
     }
     
     /**
