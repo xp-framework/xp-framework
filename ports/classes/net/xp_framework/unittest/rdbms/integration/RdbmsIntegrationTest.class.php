@@ -208,20 +208,14 @@
      * Test
      *
      */
-    protected function _identity($name) {
-      return $this->db()->identity();
-    }
-    
-    
-    /**
-     * Test
-     *
-     */
     #[@test]
     public function identity() {
       $this->createAutoIncrementTable('unittest_ai');      
       $this->assertEquals(1, $this->db()->insert('into unittest_ai (username) values ("kiesel")'));
-      $this->assertEquals(1, $this->_identity('unittest_ai'));
+      $first= $this->db()->identity('unittest_ai_pk_seq');
+      
+      $this->assertEquals(1, $this->db()->insert('into unittest_ai (username) values ("kiesel")'));
+      $this->assertEquals($first+ 1, $this->db()->identity('unittest_ai_pk_seq'));
     }
     
     /**
