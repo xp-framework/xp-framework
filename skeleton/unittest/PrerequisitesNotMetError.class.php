@@ -25,7 +25,7 @@
      * @param   array prerequisites default array()
      * @param   string code
      */
-    public function __construct($message, $cause, $prerequisites= array()) {
+    public function __construct($message, $cause= NULL, $prerequisites= array()) {
       $this->cause= $cause;
       $this->prerequisites= (array)$prerequisites;
       parent::__construct($message);
