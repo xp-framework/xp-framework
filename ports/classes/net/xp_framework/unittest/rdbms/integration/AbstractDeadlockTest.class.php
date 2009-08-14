@@ -32,14 +32,6 @@
      * @return  rdbms.DBConnection
      */
     protected function db($connect= TRUE) {
-      if (NULL === $this->dsn) {
-        $this->dsn= Properties::fromString($this->getClass()->getPackage()->getResource('database.ini'))->readString(
-          $this->_dsn(),
-          'dsn',
-          'dummy://user:pass@server/tempdb'
-        );
-      }
-      
       with ($db= DriverManager::getConnection($this->dsn)); {
         if ($connect) $db->connect();
         return $db;
@@ -51,6 +43,16 @@
      *
      */
     public function setUp() {
+      $this->dsn= Properties::fromString($this->getClass()->getPackage()->getResource('database.ini'))->readString(
+        $this->_dsn(),
+        'dsn',
+        NULL
+      );
+
+      if (NULL === $this->dsn) {
+        throw new PrerequisitesNotMetError('No credentials for '.$this->getClassName());
+      }
+
       try {
         $this->dropTables();
         $this->createTables();
