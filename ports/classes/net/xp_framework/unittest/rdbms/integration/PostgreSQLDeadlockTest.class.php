@@ -20,7 +20,7 @@
      * @return  string
      */
     public function _dsn() {
-      return 'pgsql://username:password@servername/database';
+      return 'pgsql';
     }
   }
 ?>

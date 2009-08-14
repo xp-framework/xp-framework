@@ -20,7 +20,7 @@
      * @return  string
      */
     public function _dsn() {
-      return 'mysql://unittest:adkflw1aadkl@xp-framework.net/unittest_deadlock';
+      return 'mysql';
     }
   }
 ?>

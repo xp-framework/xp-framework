@@ -31,7 +31,7 @@
      * @return  string
      */
     public function _dsn() {
-      return 'sybase://username:password@servername/tempdb';
+      return 'sybase';
     }
   }
 ?>

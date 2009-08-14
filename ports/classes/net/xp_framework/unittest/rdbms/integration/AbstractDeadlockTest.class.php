@@ -15,13 +15,36 @@
    *
    */
   abstract class AbstractDeadlockTest extends TestCase {
-  
+    protected
+      $dsn    = NULL;
+
     /**
      * Retrieve DSN
      *
      * @return  string
      */
     abstract public function _dsn();
+
+    /**
+     * Retrieve database connection object
+     *
+     * @param   bool connect default TRUE
+     * @return  rdbms.DBConnection
+     */
+    protected function db($connect= TRUE) {
+      if (NULL === $this->dsn) {
+        $this->dsn= Properties::fromString($this->getClass()->getPackage()->getResource('database.ini'))->readString(
+          $this->_dsn(),
+          'dsn',
+          'dummy://user:pass@server/tempdb'
+        );
+      }
+      
+      with ($db= DriverManager::getConnection($this->dsn)); {
+        if ($connect) $db->connect();
+        return $db;
+      }
+    }
     
     /**
      * Sets up test case
@@ -49,8 +72,7 @@
      *
      */
     protected function createTables() {
-      $db= DriverManager::getConnection($this->_dsn());
-      $db->connect();
+      $db= $this->db();
       
       $db->query('create table table_a (pk int)');
       $db->query('create table table_b (pk int)');
@@ -69,8 +91,7 @@
      *
      */
     protected function dropTables() {
-      $db= DriverManager::getConnection($this->_dsn());
-      $db->connect();
+      $db= $this->db();
       
       try {
         $db->query('drop table table_a');
@@ -93,7 +114,7 @@
         $proc= $rt->getExecutable()->newInstance(array_merge(
           $rt->startupOptions()->asArguments(),
           array($rt->bootstrapScript('class')),
-          array('net.xp_framework.unittest.rdbms.integration.SQLRunner', $this->_dsn())
+          array('net.xp_framework.unittest.rdbms.integration.SQLRunner', $this->dsn)
         ));
         $this->assertEquals('! Started', $proc->out->readLine());
         return $proc;

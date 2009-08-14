@@ -14,14 +14,16 @@
    *
    */
   abstract class RdbmsIntegrationTest extends TestCase {
+    protected
+      $dsn    = NULL;
 
     /**
-     * Retrieve dsn
+     * Retrieve dsn section
      *
      * @return  string
      */
     abstract public function _dsn();
-  
+
     /**
      * Retrieve database connection object
      *
@@ -29,7 +31,15 @@
      * @return  rdbms.DBConnection
      */
     protected function db($connect= TRUE) {
-      with ($db= DriverManager::getConnection($this->_dsn())); {
+      if (NULL === $this->dsn) {
+        $this->dsn= Properties::fromString($this->getClass()->getPackage()->getResource('database.ini'))->readString(
+          $this->_dsn(),
+          'dsn',
+          'dummy://user:pass@server/tempdb'
+        );
+      }
+      
+      with ($db= DriverManager::getConnection($this->dsn)); {
         if ($connect) $db->connect();
         return $db;
       }
@@ -55,7 +65,7 @@
       DriverManager::getConnection(str_replace(
         ':'.$this->db(FALSE)->dsn->getPassword().'@', 
         ':hopefully-wrong-password@', 
-        $this->_dsn()
+        $this->dsn
       ))->connect();
     }
     
