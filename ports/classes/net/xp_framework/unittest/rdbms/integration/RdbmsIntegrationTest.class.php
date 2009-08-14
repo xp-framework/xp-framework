@@ -259,5 +259,18 @@
     public function selectFloat() {
       $this->assertEquals(0.5, $this->db()->query('select 0.5 as value')->next('value'));
     }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function selectDate() {
+      $cmp= new Date('2009-08-14 12:45:00');
+      $result= $this->db()->query('select cast(%s as date) as value', $cmp)->next('value');
+      
+      $this->assertSubclass($result, 'util.Date');
+      $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
+    }
   }
 ?>
