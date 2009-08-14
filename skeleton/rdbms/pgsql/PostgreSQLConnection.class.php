@@ -21,8 +21,11 @@
    * @purpose  Database connection
    */
   class PostgreSQLConnection extends DBConnection {
-     private
-       $formatter= NULL;
+    private
+      $formatter  = NULL;
+
+    protected
+      $result     = NULL;
 
     /**
      * Connect
@@ -63,7 +66,7 @@
      *
      * @return  bool success
      */
-    public function close() { 
+    public function close() {
       if ($this->handle && $r= pg_close($this->handle)) {
         $this->handle= NULL;
         return $r;
@@ -121,7 +124,7 @@
         return FALSE;
       }
 
-      return pg_affected_rows($this->lastresult);
+      return pg_affected_rows($this->result);
     }
     
     /**
@@ -138,7 +141,7 @@
         return FALSE;
       }
       
-      return pg_affected_rows($this->lastresult);
+      return pg_affected_rows($this->result);
     }
     
     /**
@@ -155,7 +158,7 @@
         return FALSE;
       }
       
-      return pg_affected_rows($this->lastresult);
+      return pg_affected_rows($this->result);
     }
     
     /**
@@ -208,11 +211,11 @@
         }
       }
       
-      $this->lastresult= pg_get_result($this->handle);
-      switch ($status= pg_result_status($this->lastresult, PGSQL_STATUS_LONG)) {
+      $this->result= pg_get_result($this->handle);
+      switch ($status= pg_result_status($this->result, PGSQL_STATUS_LONG)) {
         case PGSQL_FATAL_ERROR: case PGSQL_BAD_RESPONSE: {
-          $code= pg_result_error_field($this->lastresult, PGSQL_DIAG_SQLSTATE);
-          $message= 'Statement failed: '.pg_result_error_field($this->lastresult, PGSQL_DIAG_MESSAGE_PRIMARY).' @ '.$this->dsn->getHost();
+          $code= pg_result_error_field($this->result, PGSQL_DIAG_SQLSTATE);
+          $message= 'Statement failed: '.pg_result_error_field($this->result, PGSQL_DIAG_MESSAGE_PRIMARY).' @ '.$this->dsn->getHost();
           if ('40P01' === $code) {
             throw new SQLDeadlockException($message, $sql, $code);
           } else {
@@ -226,7 +229,7 @@
         }
         
         default: {
-          $resultset= new PostgreSQLResultSet($this->lastresult, $this->tz);
+          $resultset= new PostgreSQLResultSet($this->result, $this->tz);
           $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
           return $resultset;
         }

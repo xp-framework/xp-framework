@@ -8,6 +8,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Refactored rdbms.pgsql.PostgreSQLConnection class so it behaves in 
+  line with other rdbms.DBConnection classes - this includes 
+  behavorial changes visible to outside
+  (kiesel)
 - Made util.Locale fully qualified, to make XP forward compatible
   with PHP 5.3.0 with ext/intl enabled
   (kiesel)
