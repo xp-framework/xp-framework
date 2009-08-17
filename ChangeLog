@@ -27,6 +27,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Refactored DBConnection classes; streamline code and remove leftovers
+  from PHP4 times
+  (kiesel)
 - Added optional parameter "file" to xp::gc() which will only clean up
   errors caused inside the given file (versus all errors)
   (friebe, kiesel)
