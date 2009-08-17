@@ -5,6 +5,7 @@
  */
 
   uses(
+    'util.Observer',
     'unittest.TestCase',
     'rdbms.DriverManager'
   );
@@ -264,5 +265,45 @@
       $this->assertSubclass($result, 'util.Date');
       $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
     }
+    
+    /**
+     * Test observers are being called
+     *
+     */
+    #[@test]
+    public function observe() {
+      $observer= newinstance('util.Observer', array(), '{
+        protected $observations= array();
+        
+        public function numberOfObservations() {
+          return sizeof($this->observations);
+        }
+        
+        public function observationAt($i) {
+          return $this->observations[$i]["arg"];
+        }
+        
+        public function update($obs, $arg= NULL) {
+          $this->observations[]= array("observable" => $obs, "arg" => $arg);
+        }
+      }');
+      
+      $db= $this->db();
+      $db->addObserver($observer);
+      
+      $db->query('select 1');
+      
+      $this->assertEquals(2, $observer->numberOfObservations());
+      
+      $o1= $observer->observationAt(0);
+      $this->assertEquals('query', $o1->getName());
+      $this->assertEquals('select 1', $o1->getArgument());
+      
+      $o1= $observer->observationAt(1);
+      $this->assertSubclass($o1, 'rdbms.DBEvent');
+      $this->assertEquals('queryend', $o1->getName());
+      $this->assertSubclass($o1->getArgument(), 'rdbms.ResultSet');
+    }
+    
   }
 ?>
