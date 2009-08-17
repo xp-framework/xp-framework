@@ -31,6 +31,12 @@
       if (NULL === $this->dsn) {
         throw new PrerequisitesNotMetError('No credentials for '.$this->getClassName());
       }
+
+      try {
+        $this->db(FALSE);
+      } catch (Throwable $t) {
+        throw new PrerequisitesNotMetError($t->getMessage(), $t);
+      }
     }
 
     /**
