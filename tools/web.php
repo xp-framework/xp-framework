@@ -37,7 +37,7 @@
       : $path
     );
   }
-  set_include_path(scanpath($paths, $webroot));
+  set_include_path(rtrim(scanpath($paths, $webroot), PATH_SEPARATOR));
   
   // Bootstrap 
   if (!include('lang.base.php')) {
