@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel
 @created: Sat Mar  8 11:47:05     2008
-@status: discussion, ends Fri Mar 20 12:00:00    2009
+@status: rejected
 @category: scriptlet
 
 Scope of Change
@@ -65,5 +65,7 @@ Comments
 - kiesel, Tue Mar 10 21:32:20     2009
   Adjusted due to "recent" concerns.
 
+- kiesel, Mon Aug 17 15:04:36 CEST 2009
+  Rejected, seems not to be needed.
 
 <EOF>
