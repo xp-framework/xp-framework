@@ -147,7 +147,7 @@
      * @return  mixed identity value
      */
     public function identity($field= NULL) {
-      $i= create(new MySQLResultSet(mysql_query('select last_insert_id() as xp_id', $this->handle)))->next('xp_id');
+      $i= $this->query('select last_insert_id() as xp_id')->next('xp_id');
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
     }
@@ -234,6 +234,21 @@
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $result= $this->query0($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      
+      return $result;
+    }
+    
+    /**
+     * Execute any statement
+     *
+     * @param   mixed* args
+     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+     * @throws  rdbms.SQLException
+     */
+    protected function query0($sql) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -242,8 +257,6 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
-
       if ($this->flags & DB_UNBUFFERED) {
         $result= mysql_unbuffered_query($sql, $this->handle);
       } else {
@@ -266,15 +279,10 @@
         }
       }
       
-      if (TRUE === $result) {
-        $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
-        return $result;
-      }
-
-      $resultset= new MySQLResultSet($result, $this->tz);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-
-      return $resultset;
+      return (TRUE === $result
+        ? $result
+        : new MySQLResultSet($result, $this->tz)
+      );
     }
 
     /**

@@ -184,13 +184,28 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  rdbms.pgsql.PostgreSQLResultSet or FALSE to indicate failure
+     * @return  rdbms.pgsql.PostgreSQLResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
     public function query() { 
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $result= $this->query0($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      
+      return $result;      
+    }
+    
+    /**
+     * Execute any statement
+     *
+     * @param   mixed* args
+     * @return  rdbms.pgsql.PostgreSQLResultSet or TRUE if no resultset was created
+     * @throws  rdbms.SQLException
+     */
+    protected function query0($sql) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -198,8 +213,6 @@
         // Check for subsequent connection errors
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
-      
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 
       $success= pg_send_query($this->handle, $sql);
       if (!$success) {
@@ -213,7 +226,8 @@
       
       $this->result= pg_get_result($this->handle);
       switch ($status= pg_result_status($this->result, PGSQL_STATUS_LONG)) {
-        case PGSQL_FATAL_ERROR: case PGSQL_BAD_RESPONSE: {
+        case PGSQL_FATAL_ERROR:
+        case PGSQL_BAD_RESPONSE: {
           $code= pg_result_error_field($this->result, PGSQL_DIAG_SQLSTATE);
           $message= 'Statement failed: '.pg_result_error_field($this->result, PGSQL_DIAG_MESSAGE_PRIMARY).' @ '.$this->dsn->getHost();
           if ('40P01' === $code) {
@@ -224,14 +238,11 @@
         }
         
         case PGSQL_COMMAND_OK: {
-          $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
           return TRUE;
         }
         
         default: {
-          $resultset= new PostgreSQLResultSet($this->result, $this->tz);
-          $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-          return $resultset;
+          return new PostgreSQLResultSet($this->result, $this->tz);
         }
       }
     }
@@ -243,9 +254,7 @@
      * @return  rdbms.Transaction
      */
     public function begin($transaction) {
-      if (FALSE === $this->query('begin transaction')) {
-        return FALSE;
-      }
+      $this->query('begin transaction');
       $transaction->db= $this;
       return $transaction;
     }

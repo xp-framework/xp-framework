@@ -116,10 +116,7 @@
      * @return  mixed identity value
      */
     public function identity($field= NULL) {
-      if (!($r= $this->query('select @@identity as i'))) {
-        return FALSE;
-      }
-      $i= $r->next('i');
+      $i= $this->query('select @@identity as i')->next('i');
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
     }
@@ -200,13 +197,27 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  rdbms.mssql.MsSQLResultSet or FALSE to indicate failure
+     * @return  rdbms.mssql.MsSQLResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
     public function query() { 
       $args= func_get_args();
       $sql= call_user_func_array(array($this, 'prepare'), $args);
 
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $result= $this->query0($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      return $result;
+    }
+    
+    /**
+     * Execute any statement
+     *
+     * @param   mixed* args
+     * @return  rdbms.mssql.MsSQLResultSet or TRUE if no resultset was created
+     * @throws  rdbms.SQLException
+     */
+    protected function query0($sql) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -215,7 +226,6 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
       if ($this->flags & DB_UNBUFFERED) {
         $result= mssql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
@@ -246,15 +256,10 @@
         }
       }
       
-      if (TRUE === $result) {
-        $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
-        return $result;
-      }
-      
-      $resultset= new MsSQLResultSet($result, $this->tz);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-
-      return $resultset;
+      return (TRUE === $result
+        ? $result
+        : new MsSQLResultSet($result, $this->tz)
+      );
     }
     
     /**
@@ -264,9 +269,7 @@
      * @return  rdbms.Transaction
      */
     public function begin($transaction) {
-      if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
-        return FALSE;
-      }
+      $this->query('begin transaction xp_%c', $transaction->name);
       $transaction->db= $this;
       return $transaction;
     }
@@ -278,10 +281,7 @@
      * @return  mixed state
      */
     public function transtate($name) { 
-      if (FALSE === ($r= $this->query('select @@transtate as transtate'))) {
-        return FALSE;
-      }
-      return $r->next('transtate');
+      return $this->query('select @@transtate as transtate')->next('transtate');
     }
     
     /**
