@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated peer.ftp.server.FtpConnectionListener class
+  http://news.xp-framework.net/article/309/2009/08/19/
+  (friebe)
 - Refactored rdbms.pgsql.PostgreSQLConnection class so it behaves in 
   line with other rdbms.DBConnection classes - this includes 
   behavorial changes visible to outside
