@@ -21,7 +21,9 @@
      */
     public function setUp() {
       parent::setUp();
-      mssql_min_message_severity(12);
+      if (function_exists('mssql_min_message_severity')) {
+        mssql_min_message_severity(12);
+      }
     }
           
 
