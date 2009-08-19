@@ -50,9 +50,6 @@
    * @purpose  Database connection
    */
   class SQLiteConnection extends DBConnection {
-     private
-       $formatter= NULL;
-
     /**
      * Connect
      *

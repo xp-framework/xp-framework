@@ -22,11 +22,19 @@
    * @purpose  Database connection
    */
   class SybaseConnection extends DBConnection {
-    private
-      $formatter= NULL;
 
     static function __static() {
       ini_set('sybct.deadlock_retry_count', 0);
+    }
+    
+    /**
+     * Constructor
+     *
+     * @param   rdbms.DSN dsn
+     */
+    public function __construct($dsn) {
+      parent::__construct($dsn);
+      $this->formatter= new StatementFormatter($this, new SybaseDialect());
     }
 
     /**
@@ -104,17 +112,6 @@
     }
     
     /**
-     * Prepare an SQL statement
-     *
-     * @param   mixed* args
-     * @return  string
-     */
-    public function prepare() {
-      $args= func_get_args();
-      return $this->getFormatter()->format(array_shift($args), $args);
-    }
-    
-    /**
      * Retrieve identity
      *
      * @return  mixed identity value
@@ -126,92 +123,12 @@
     }
 
     /**
-     * Execute an insert statement
+     * Retrieve number of affected rows for last query
      *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
+     * @return  int
      */
-    public function insert() { 
-      $args= func_get_args();
-      $args[0]= 'insert '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
+    protected function affectedRows() {
       return sybase_affected_rows($this->handle);
-    }
-    
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function update() {
-      $args= func_get_args();
-      $args[0]= 'update '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return sybase_affected_rows($this->handle);
-    }
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function delete() { 
-      $args= func_get_args();
-      $args[0]= 'delete '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return sybase_affected_rows($this->handle);
-    }
-    
-    /**
-     * Execute a select statement and return all rows as an array
-     *
-     * @param   mixed* args
-     * @return  array rowsets
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function select() { 
-      $args= func_get_args();
-      $args[0]= 'select '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      $rows= array();
-      while ($row= $r->next()) $rows[]= $row;
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, sizeof ($rows)));
-      return $rows;
-    }
-    
-    /**
-     * Execute any statement
-     *
-     * @param   mixed* args
-     * @return  rdbms.sybase.SybaseResultSet or TRUE if no resultset was created
-     * @throws  rdbms.SQLException
-     */
-    public function query() { 
-      $args= func_get_args();
-      $sql= call_user_func_array(array($this, 'prepare'), $args);
-
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
-      $result= $this->query0($sql);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
-      return $result;
     }
     
     /**
@@ -306,16 +223,6 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
-    }
-    
-    /**
-     * get SQL formatter
-     *
-     * @return  rdbms.StatementFormatter
-     */
-    public function getFormatter() {
-      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SybaseDialect());
-      return $this->formatter;
     }
   }
 ?>

@@ -22,19 +22,6 @@
    * @purpose  Database connection
    */
   class MySQLConnection extends DBConnection {
-    private
-      $formatter= NULL;
-
-    /**
-     * Set Timeout
-     *
-     * @param   int timeout
-     */
-    public function setTimeout($timeout) {
-      ini_set('mysql.connect_timeout', $timeout);
-      parent::setTimeout($timeout);
-    }
-
 
     /**
      * Constructor
@@ -44,6 +31,16 @@
     public function __construct($dsn) { 
       parent::__construct($dsn);
       $this->formatter= new StatementFormatter($this, new MysqlDialect());
+    }
+
+    /**
+     * Set Timeout
+     *
+     * @param   int timeout
+     */
+    public function setTimeout($timeout) {
+      ini_set('mysql.connect_timeout', $timeout);
+      parent::setTimeout($timeout);
     }
 
     /**
@@ -130,18 +127,6 @@
     }
 
     /**
-     * Prepare an SQL statement
-     *
-     * @param   string fmt
-     * @param   mixed* args
-     * @return  string
-     */
-    public function prepare() {
-      $args= func_get_args();
-      return $this->formatter->format(array_shift($args), $args);
-    }
-    
-    /**
      * Retrieve identity
      *
      * @return  mixed identity value
@@ -153,75 +138,13 @@
     }
 
     /**
-     * Execute an insert statement
+     * Retrieve number of affected rows for last query
      *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
+     * @return  int
      */
-    public function insert() { 
-      $args= func_get_args();
-      $args[0]= 'insert '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
+    protected function affectedRows() {
       return mysql_affected_rows($this->handle);
-    }
-    
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function update() {
-      $args= func_get_args();
-      $args[0]= 'update '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return mysql_affected_rows($this->handle);
-    }
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function delete() { 
-      $args= func_get_args();
-      $args[0]= 'delete '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return mysql_affected_rows($this->handle);
-    }
-    
-    /**
-     * Execute a select statement and return all rows as an array
-     *
-     * @param   mixed* args
-     * @return  array rowsets
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function select() { 
-      $args= func_get_args();
-      $args[0]= 'select '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      $rows= array();
-      while ($row= $r->next()) $rows[]= $row;
-      return $rows;
-    }
+    }    
     
     /**
      * Execute any statement
@@ -315,15 +238,6 @@
      */
     public function commit($name) { 
       return $this->query('commit');
-    }
-    
-    /**
-     * get SQL formatter
-     *
-     * @return  rdbms.StatementFormatter
-     */
-    public function getFormatter() {
-      return $this->formatter;
     }
   }
 ?>

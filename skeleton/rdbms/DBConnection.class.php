@@ -33,27 +33,28 @@
       $timeout = 0,
       $flags   = 0;
     
+    protected
+      $formatter= NULL;
+
     /**
      * Constructor
      *
      * @param   rdbms.DSN dsn
      */
-    public function __construct($dsn) { 
+    public function __construct($dsn) {
       $this->dsn= $dsn;
       $this->flags= $dsn->getFlags();
       $this->setTimeout($dsn->getProperty('timeout', 0));   // 0 means no timeout
       
       // Keep this for BC reasons
-      $obs= $dsn->getProperty('observer', array());
+      $observers= $dsn->getProperty('observer', array());
       if (NULL !== ($cat= $dsn->getProperty('log'))) { 
-        $obs['util.log.LogObserver']= $cat; 
+        $observers['util.log.LogObserver']= $cat; 
       }
       
       // Add observers
-      foreach (array_keys($obs) as $observer) {
-        $class= XPClass::forName($observer);
-        $inst= call_user_func(array(xp::reflect($class->getName()), 'instanceFor'), $obs[$observer]);
-        $this->addObserver($inst);
+      foreach ($observers as $observer => $param) {
+        $this->addObserver(XPClass::forName($observer)->getMethod('instanceFor')->invoke(NULL, array($param)));
       }
 
       // Time zone handling
@@ -143,18 +144,35 @@
     /**
      * Prepare an SQL statement
      *
+     * @param   string fmt
      * @param   mixed* args
      * @return  string
      */
-    abstract public function prepare();
+    public function prepare() {
+      $args= func_get_args();
+      return $this->formatter->format(array_shift($args), $args);
+    }
+    
+    /**
+     * Retrieve number of affected rows
+     *
+     * @return  int
+     */
+    protected function affectedRows() {}
     
     /**
      * Execute an insert statement
      *
      * @param   mixed* args
-     * @return  bool success
+     * @return  int number of affected rows
+     * @throws  rdbms.SQLStatementFailedException
      */
-    abstract public function insert();
+    public function insert() {
+      $args= func_get_args();
+      $args[0]= 'insert '.$args[0];
+      call_user_func_array(array($this, 'query'), $args);
+      return $this->affectedRows();
+    }
     
     /**
      * Retrieve identity
@@ -168,32 +186,71 @@
      *
      * @param   mixed* args
      * @return  int number of affected rows
+     * @throws  rdbms.SQLStatementFailedException
      */
-    public function update() { }
+    public function update() {
+      $args= func_get_args();
+      $args[0]= 'update '.$args[0];
+      call_user_func_array(array($this, 'query'), $args);
+      return $this->affectedRows();
+    }
     
     /**
      * Execute an update statement
      *
      * @param   mixed* args
      * @return  int number of affected rows
+     * @throws  rdbms.SQLStatementFailedException
      */
-    public function delete() { }
+    public function delete() {
+      $args= func_get_args();
+      $args[0]= 'delete '.$args[0];
+      call_user_func_array(array($this, 'query'), $args);
+      return $this->affectedRows();
+    }
     
     /**
-     * Execute a select statement
+     * Execute a select statement and return all rows as an array
      *
      * @param   mixed* args
      * @return  array rowsets
+     * @throws  rdbms.SQLStatementFailedException
      */
-    public function select() { }
-    
+    public function select() {
+      $args= func_get_args();
+      $args[0]= 'select '.$args[0];
+      $r= call_user_func_array(array($this, 'query'), $args);
+
+      $rows= array();
+      while ($row= $r->next()) $rows[]= $row;
+      return $rows;
+    }
+
     /**
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  rdbms.ResultSet
+     * @return  rdbms.ResultSet or TRUE if no resultset was created
+     * @throws  rdbms.SQLException
      */
-    public function query() { }
+    public function query() { 
+      $args= func_get_args();
+      $sql= call_user_func_array(array($this, 'prepare'), $args);
+
+      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
+      $result= $this->query0($sql);
+      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+      return $result;
+    }
+    
+    /**
+     * Execute any statement
+     *
+     * @param   string sql
+     * @return  rdbms.ResultSet or TRUE if no resultset was created
+     * @throws  rdbms.SQLException
+     */
+    protected function query0($sql) {}
     
     /**
      * Begin a transaction
@@ -228,10 +285,12 @@
     abstract public function commit($name);
     
     /**
-     * get SQL formatter
+     * Retrieve SQL formatter
      *
      * @return  rdbms.StatementFormatter
      */
-    abstract public function getFormatter();
+    public function getFormatter() {
+      return $this->formatter;
+    }
   }
 ?>

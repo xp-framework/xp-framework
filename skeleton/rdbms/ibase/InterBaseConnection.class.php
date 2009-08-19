@@ -24,8 +24,16 @@
    * @purpose  Database connection
    */
   class InterBaseConnection extends DBConnection {
-    private
-      $formatter= NULL;
+
+    /**
+     * Constructor
+     *
+     * @param   rdbms.DSN dsn
+     */
+    public function __construct($dsn) {
+      parent::__construct($dsn);
+      $this->formatter= new StatementFormatter($this, new InterBaseDialect());
+    }
 
     /**
      * Connect
@@ -90,100 +98,23 @@
     }
     
     /**
-     * Prepare an SQL statement
-     *
-     * @param   mixed* args
-     * @return  string
-     */
-    public function prepare() {
-      $args= func_get_args();
-      return $this->getFormatter()->format(array_shift($args), $args);
-    }
-    
-    /**
      * Retrieve identity
      *
      * @return  mixed identity value
      */
     public function identity($field= NULL) {
-      if (!($r= $this->query('select @@identity as i'))) {
-        return FALSE;
-      }
-      $i= $r->next('i');
+      $i= $this->query('select @@identity as i')->next('i');
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
     }
 
     /**
-     * Execute an insert statement
+     * Retrieve number of affected rows for last query
      *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
+     * @return  int
      */
-    public function insert() { 
-      $args= func_get_args();
-      $args[0]= 'insert '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
+    protected function affectedRows() {
       return ibase_affected_rows($this->handle);
-    }
-    
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function update() {
-      $args= func_get_args();
-      $args[0]= 'update '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return ibase_affected_rows($this->handle);
-    }
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function delete() { 
-      $args= func_get_args();
-      $args[0]= 'delete '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return ibase_affected_rows($this->handle);
-    }
-    
-    /**
-     * Execute a select statement and return all rows as an array
-     *
-     * @param   mixed* args
-     * @return  array rowsets
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function select() { 
-      $args= func_get_args();
-      $args[0]= 'select '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      $rows= array();
-      while ($row= $r->next()) $rows[]= $row;
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, sizeof ($rows)));
-      return $rows;
     }
     
     /**
@@ -193,10 +124,7 @@
      * @return  rdbms.InterBase.InterBaseResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    public function query() { 
-      $args= func_get_args();
-      $sql= call_user_func_array(array($this, 'prepare'), $args);
-
+    public function query0($sql) { 
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -205,9 +133,7 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
       $result= ibase_query($sql, $this->handle);
-
       if (FALSE === $result) {
         $message= 'Statement failed: '.trim(ibase_errmsg()).' @ '.$this->dsn->getHost();
         $code= ibase_errcode();
@@ -223,15 +149,10 @@
         }
       }
       
-      if (TRUE === $result) {
-        $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
-        return $result;
-      }
-      
-      $resultset= new InterBaseResultSet($result, $this->tz);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-
-      return $resultset;
+      return (TRUE === $result
+        ? $result
+        : new InterBaseResultSet($result, $this->tz)
+      );
     }
     
     /**
@@ -241,9 +162,7 @@
      * @return  rdbms.Transaction
      */
     public function begin($transaction) {
-      if (FALSE === $this->query('begin transaction xp_%c', $transaction->name)) {
-        return FALSE;
-      }
+      $this->query('begin transaction xp_%c', $transaction->name);
       $transaction->db= $this;
       return $transaction;
     }
@@ -255,10 +174,7 @@
      * @return  mixed state
      */
     public function transtate($name) { 
-      if (FALSE === ($r= $this->query('select @@transtate as transtate'))) {
-        return FALSE;
-      }
-      return $r->next('transtate');
+      return $this->query('select @@transtate as transtate')->next('transtate');
     }
     
     /**
@@ -279,16 +195,6 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
-    }
-    
-    /**
-     * get SQL formatter
-     *
-     * @return  rdbms.StatementFormatter
-     */
-    public function getFormatter() {
-      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new InterBaseDialect());
-      return $this->formatter;
     }
   }
 ?>
