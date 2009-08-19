@@ -59,10 +59,11 @@
      * Connect. Overwritten method from BSDSocket that will always throw
      * an exception because connect() doesn't make sense here!
      *
+     * @param   float timeout default 2.0
      * @return  bool success
      * @throws  lang.IllegalAccessException
      */
-    public function connect() {
+    public function connect($timeout= 2.0) {
       throw(new IllegalAccessException('Connect cannot be used on a ServerSocket'));
     }
     
