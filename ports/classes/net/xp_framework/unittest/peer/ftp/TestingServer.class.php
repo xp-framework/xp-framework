@@ -11,7 +11,7 @@
     'util.log.Logger',
     'util.log.FileAppender',
     'peer.server.Server',
-    'peer.ftp.server.FtpConnectionListener',
+    'peer.ftp.server.FtpProtocol',
     'peer.ftp.server.storage.FilesystemStorage'
   );
   
@@ -48,21 +48,21 @@
         }
       }');
 
-      $listener= newinstance('peer.ftp.server.FtpConnectionListener', array($stor, $auth), '{
-        public function onShutdown($event, $params) {
-          $this->answer($event->stream, 200, "Shutting down");
+      $protocol= newinstance('peer.ftp.server.FtpProtocol', array($stor, $auth), '{
+        public function onShutdown($socket, $params) {
+          $this->answer($socket, 200, "Shutting down");
           $this->server->terminate= TRUE;
         }
       }');
 
-      isset($args[0]) && $listener->setTrace(Logger::getInstance()
+      isset($args[0]) && $protocol->setTrace(Logger::getInstance()
         ->getCategory()
         ->withAppender(new FileAppender($args[0]))
       );
       
       $s= new Server('127.0.0.1', 2121);
       try {
-        $s->addListener($listener);
+        $s->setProtocol($protocol);
         $s->init();
         Console::writeLine('+ Service');
         $s->service();
