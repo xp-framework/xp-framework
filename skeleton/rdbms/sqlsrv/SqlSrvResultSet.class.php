@@ -23,7 +23,7 @@
       $fields= array();
       if (is_resource($result)) {
         foreach (sqlsrv_field_metadata($result) as $meta) {
-          $fields[$meta['Name']]= $meta['Type'];
+          $fields[$meta['Name']]= $meta;
         }
       }
       parent::__construct($result, $fields, $tz);
@@ -54,15 +54,33 @@
     public function next($field= NULL) {
       if (
         !is_resource($this->handle) ||
-        FALSE === ($row= sqlsrv_fetch_array($this->handle, SQLSRV_FETCH_ASSOC))
+        !is_array($row= sqlsrv_fetch_array($this->handle, SQLSRV_FETCH_ASSOC))
       ) {
         return FALSE;
       }
 
-      foreach (array_keys($row) as $key) {
-        if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
+      foreach ($row as $key => $value) {
+        if (NULL === $value || !isset($this->fields[$key])) continue;
+        
         if ($row[$key] instanceof DateTime) {
-          $row[$key]= new Date($row[$key]);
+          $row[$key]= new Date($value);
+        } else switch ($this->fields[$key]['Type']) {
+          case -9: // SQLSRV_SQLTYPE_DATETIME, SQLSRV_SQLTYPE_SMALLDATETIME
+            $row[$key]= new Date($row[$key]); 
+            break;
+
+          case 2:  // SQLSRV_SQLTYPE_NUMERIC
+            if ($this->fields[$key]['Scale'] > 0) {
+              settype($row[$key], 'double');
+              break;
+            }
+          
+          case 4:  // SQLSRV_SQLTYPE_INT
+            if ($value <= LONG_MAX && $value >= LONG_MIN) {
+              settype($row[$key], 'integer');
+            } else {
+              settype($row[$key], 'double');
+            }
         }
       }
       
