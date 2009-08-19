@@ -62,7 +62,7 @@
       foreach ($row as $key => $value) {
         if (NULL === $value || !isset($this->fields[$key])) continue;
         
-        if ($row[$key] instanceof DateTime) {
+        if ($value instanceof DateTime) {
           $row[$key]= new Date($value);
         } else switch ($this->fields[$key]['Type']) {
           case -9: // SQLSRV_SQLTYPE_DATETIME, SQLSRV_SQLTYPE_SMALLDATETIME
@@ -74,6 +74,7 @@
               settype($row[$key], 'double');
               break;
             }
+            // Fall through intentionally
           
           case 4:  // SQLSRV_SQLTYPE_INT
             if ($value <= LONG_MAX && $value >= LONG_MIN) {
@@ -81,6 +82,11 @@
             } else {
               settype($row[$key], 'double');
             }
+            break;
+
+          case 7: // SQLSRV_SQLTYPE_REAL
+            settype($row[$key], 'double');
+            break;
         }
       }
       
