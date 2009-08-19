@@ -26,6 +26,7 @@
   /**
    * Implement FTP server functionality
    *
+   * @deprecated  Use peer.ftp.server.FtpProtocol instead
    * @see      http://ipswitch.com/Support/WS_FTP-Server/guide/v4/A_FTPref4.html 
    * @see      xp://peer.server.ConnectionListener
    * @purpose  Connection listener
