@@ -220,7 +220,7 @@
 
       if (FALSE === $result) {
         $message= 'Statement failed: '.$this->errors().' @ '.$this->dsn->getHost();
-        if (!is_resource($error= sqlsrv_query('select @@error', $this->handle))) {
+        if (!is_resource($error= sqlsrv_query($this->handle, 'select @@error'))) {
         
           // The only case selecting @@error should fail is if we receive a
           // disconnect. We could also check on the warnings stack if we can
@@ -232,7 +232,7 @@
           throw new SQLConnectionClosedException($message, $sql);
         }
 
-        $code= current(sqlsrv_fetch_row($error));
+        $code= current(sqlsrv_fetch_array($error, SQLSRV_FETCH_NUMERIC));
         switch ($code) {
           case 1205:    // Deadlock
             throw new SQLDeadlockException($message, $sql, $code);
