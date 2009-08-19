@@ -18,7 +18,7 @@
    * Implement FTP server functionality
    *
    * @see      http://ipswitch.com/Support/WS_FTP-Server/guide/v4/A_FTPref4.html 
-   * @see      xp://peer.server.ConnectionListener
+   * @see      xp://peer.server.ServerProtocol
    * @purpose  Connection listener
    */
   class FtpProtocol extends Object implements ServerProtocol, Traceable {
