@@ -5,7 +5,7 @@ $Id$
 @authors: friebe, kiesel
 @created: Wed Jul 15 20:46:22     2009
 @status: draft
-@target: 5.8.0
+@target: 5.9.0
 @category: <core>
 
 Scope of Change
@@ -57,7 +57,7 @@ n/a
 
 Dependencies
 ------------
-- Targets XP 5.8.0
+- Deprecation in XP 5.8.0, removal in 5.9.0
 
 Related documents
 -----------------
