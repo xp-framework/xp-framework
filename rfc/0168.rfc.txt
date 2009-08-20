@@ -5,6 +5,7 @@ $Id$
 @authors: friebe
 @created: Sun Jun  1 11:38:34     2008
 @status: draft
+@target: 5.8
 @category: lang.types, rdbms, xml, webservices
 
 Scope of Change

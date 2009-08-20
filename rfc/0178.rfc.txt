@@ -5,6 +5,7 @@ $Id$
 @authors: friebe, kiesel
 @created: Fri Jan  9 11:56:30     2009
 @status: draft
+@target: 5.8
 @category: <infrastructure>
 
 Scope of Change
