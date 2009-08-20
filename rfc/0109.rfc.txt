@@ -21,9 +21,8 @@ Method invocation utilities.
 Functionality
 -------------
 
-1) Invocation chain
-~~~~~~~~~~~~~~~~~~~
-
+Invocation chain
+~~~~~~~~~~~~~~~~
 Example: Prerequisites-check:
 <code>
   class Account extends Object {
@@ -94,15 +93,15 @@ Example: Logging:
 </code>
 
 
-2) Lazy initialization
-~~~~~~~~~~~~~~~~~~~~~~
+Lazy initialization
+~~~~~~~~~~~~~~~~~~~
 The util.AbstractDeferredInvokationHandler class will be moved to invoke
 and be renamed to AbstractDeferredInvocationHandler (invocation is spelled with
 a "c", while invoke is spelled with a "k").
 
 
-3) Caller
-~~~~~~~~~
+Caller
+~~~~~~
 Finding out a method's caller:
 
 <code>
@@ -156,8 +155,8 @@ Another example of using the invocation class:
 </code>
 
 
-4) Invocation comparison
-~~~~~~~~~~~~~~~~~~~~~~~~
+Invocation comparison
+~~~~~~~~~~~~~~~~~~~~~
 Instead of manually comparing class name, method and parameter counts in
 interceptors, one can make use of the PointCutExpression class.
 <code>
