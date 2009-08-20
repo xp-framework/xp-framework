@@ -4,7 +4,8 @@ $Id$
 
 @authors: friebe
 @created: Mon Oct 20 16:49:44     2008
-@status: discussion, ends Mon Dec  1 12:00:00     2008
+@status: draft
+@target: 5.7
 @category: io
 
 Scope of Change
