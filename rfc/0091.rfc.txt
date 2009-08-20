@@ -580,5 +580,8 @@ Comments
   Adding util/ to the core but not io/ seems inconsistent. Either we should
   declare the core as what is absolutely needed to boot XP or we open
   up the core for util *and* io (and possibly more).
+
+- friebe, Thu Aug 20 09:22:14     2009
+  Added @target to RFCs
     
 <EOF>
