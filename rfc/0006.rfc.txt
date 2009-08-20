@@ -4,7 +4,8 @@ $Id$
 
 @authors: friebe
 @created: Sun Nov 16 19:51:54 CET 2003
-@status: rejected, see comments
+@status: draft
+@target: 5.8
 @category: io
 
 Scope of Change
@@ -90,5 +91,9 @@ Comments
   or SybaseConnection instance; which really doesn't happen very
   often, and if it does, it should be quite clear why it doesn't
   work as expected.
+
+- friebe, Thu Aug 20 09:21:02     2009
+  Reset to draft, we need this to prevent serialization incompatibilities
+  between XP with namespaces and XP without.
 
 <EOF>
