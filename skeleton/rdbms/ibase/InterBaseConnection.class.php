@@ -121,7 +121,7 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  rdbms.InterBase.InterBaseResultSet or FALSE to indicate failure
+     * @return  rdbms.ibase.InterBaseResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query0($sql) { 
