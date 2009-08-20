@@ -5,6 +5,7 @@ $Id$
 @authors: gellweiler
 @created: Thu May 15 17:16:31 CEST 2008
 @status: implemented, Mon Apr  6 15:29:59 CEST 2009
+@target: 5.7.3
 @category: rdbms
 
 Scope of Change
