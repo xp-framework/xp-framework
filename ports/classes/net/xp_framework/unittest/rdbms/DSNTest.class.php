@@ -79,8 +79,32 @@
      *
      */
     #[@test]
+    public function portDefault() {
+      $this->assertEquals(
+        1999, 
+        create(new DSN('sybase://TEST:1999/'))->getPort(5000)
+      );
+    }
+
+    /**
+     * Tests the getPort() method
+     *
+     */
+    #[@test]
     public function noPort() {
       $this->assertNull(create(new DSN('sybase://TEST/'))->getPort());
+    }
+
+    /**
+     * Tests the getPort() method
+     *
+     */
+    #[@test]
+    public function noPortDefault() {
+      $this->assertEquals(
+        1999, 
+        create(new DSN('sybase://TEST/'))->getPort(1999)
+      );
     }
 
     /**
@@ -100,6 +124,18 @@
      *
      */
     #[@test]
+    public function databaseDefault() {
+      $this->assertEquals(
+        'CAFFEINE', 
+        create(new DSN('sybase://TEST/CAFFEINE'))->getDatabase('master')
+      );
+    }
+
+    /**
+     * Tests the getDatabase() method
+     *
+     */
+    #[@test]
     public function noDatabase() {
       $this->assertNull(create(new DSN('mysql://root@localhost'))->getDatabase());
     }
@@ -109,8 +145,32 @@
      *
      */
     #[@test]
+    public function noDatabaseDefault() {
+      $this->assertEquals(
+        'master', 
+        create(new DSN('mysql://root@localhost'))->getDatabase('master')
+      );
+    }
+
+    /**
+     * Tests the getDatabase() method
+     *
+     */
+    #[@test]
     public function slashDatabase() {
       $this->assertNull(create(new DSN('mysql://root@localhost/'))->getDatabase());
+    }
+
+    /**
+     * Tests the getDatabase() method
+     *
+     */
+    #[@test]
+    public function slashDatabaseDefault() {
+      $this->assertEquals(
+        'master', 
+        create(new DSN('mysql://root@localhost/'))->getDatabase('master')
+      );
     }
 
     /**
@@ -142,8 +202,32 @@
      *
      */
     #[@test]
+    public function userDefault() {
+      $this->assertEquals(
+        'sa', 
+        create(new DSN('sybase://sa@TEST'))->getUser('reader')
+      );
+    }
+
+    /**
+     * Tests the getUser() method
+     *
+     */
+    #[@test]
     public function noUser() {
       $this->assertNull(create(new DSN('sybase://TEST'))->getUser());
+    }
+
+    /**
+     * Tests the getUser() method
+     *
+     */
+    #[@test]
+    public function noUserDefault() {
+      $this->assertEquals(
+        'reader', 
+        create(new DSN('sybase://TEST'))->getUser('reader')
+      );
     }
 
     /**
@@ -163,8 +247,32 @@
      *
      */
     #[@test]
+    public function passwordDefault() {
+      $this->assertEquals(
+        'password', 
+        create(new DSN('sybase://sa:password@TEST'))->getPassword('secret')
+      );
+    }
+
+    /**
+     * Tests the getPassword() method
+     *
+     */
+    #[@test]
     public function noPassword() {
       $this->assertNull(create(new DSN('sybase://sa@TEST'))->getPassword());
+    }
+
+    /**
+     * Tests the getPassword() method
+     *
+     */
+    #[@test]
+    public function noPasswordDefault() {
+      $this->assertEquals(
+        'secret', 
+        create(new DSN('sybase://sa@TEST'))->getPassword('secret')
+      );
     }
     
     /**
