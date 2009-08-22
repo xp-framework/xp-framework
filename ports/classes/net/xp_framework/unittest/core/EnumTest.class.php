@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'net.xp_framework.unittest.core.Coin',
+    'net.xp_framework.unittest.core.Profiling',
     'net.xp_framework.unittest.core.Operation'
   );
 
@@ -283,6 +284,123 @@
     #[@test]
     public function dividedByOperation() {
       $this->assertEquals(5, Operation::$divided_by->evaluate(10, 2));
+    }
+    
+    /**
+     * Test Profiling::$fixture does not appear in Enum::valuesOf()
+     *
+     */
+    #[@test]
+    public function staticMemberNotInEnumValuesOf() {
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Profiling'))
+      );
+    }
+
+    /**
+     * Test Profiling::$fixture does not appear in Profiling::values()
+     *
+     */
+    #[@test]
+    public function staticMemberNotInValues() {
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Profiling::values()
+      );
+    }
+    
+    /**
+     * Test Profiling::$fixture does not work with Enum::valueOf()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function staticMemberNotWithEnumValueOf() {
+      Enum::valueOf(XPClass::forName('net.xp_framework.unittest.core.Profiling'), 'fixture');
+    }
+
+    /**
+     * Test Profiling::$fixture does not appear in Enum::valuesOf()
+     *
+     */
+    #[@test]
+    public function staticEnumMemberNotInEnumValuesOf() {
+      Profiling::$fixture= Coin::$penny;
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Profiling'))
+      );
+      Profiling::$fixture= NULL;
+    }
+
+    /**
+     * Test Profiling::$fixture does not appear in Profiling::values()
+     *
+     */
+    #[@test]
+    public function staticEnumMemberNotInValues() {
+      Profiling::$fixture= Coin::$penny;
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Profiling::values()
+      );
+      Profiling::$fixture= NULL;
+    }
+
+    /**
+     * Test Profiling::$fixture does not appear in Enum::valuesOf()
+     *
+     */
+    #[@test]
+    public function staticObjectMemberNotInEnumValuesOf() {
+      Profiling::$fixture= $this;
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Profiling'))
+      );
+      Profiling::$fixture= NULL;
+    }
+
+    /**
+     * Test Profiling::$fixture does not appear in Profiling::values()
+     *
+     */
+    #[@test]
+    public function staticObjectMemberNotInValues() {
+      Profiling::$fixture= $this;
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Profiling::values()
+      );
+      Profiling::$fixture= NULL;
+    }
+
+    /**
+     * Test Profiling::$fixture does not appear in Enum::valuesOf()
+     *
+     */
+    #[@test]
+    public function staticPrimitiveMemberNotInEnumValuesOf() {
+      Profiling::$fixture= array($this, $this->name);
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Profiling'))
+      );
+      Profiling::$fixture= NULL;
+    }
+
+    /**
+     * Test Profiling::$fixture does not appear in Profiling::values()
+     *
+     */
+    #[@test]
+    public function staticPrimitiveMemberNotInValues() {
+      Profiling::$fixture= array($this, $this->name);
+      $this->assertEquals(
+        array(Profiling::$INSTANCE, Profiling::$EXTENSION),
+        Profiling::values()
+      );
+      Profiling::$fixture= NULL;
     }
   }
 ?>
