@@ -122,7 +122,8 @@
      * @return  string databse or default if none is set
      */
     public function getDatabase($default= NULL) {
-      return $this->url->getPath() ? substr($this->url->getPath(), 1) : $default;
+      $path= $this->url->getPath();
+      return ('/' === $path || NULL === $path) ? $default : substr($path, 1);
     }
 
     /**
