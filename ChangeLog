@@ -90,6 +90,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed valuesOf(), membersOf() and valueOf() methods in lang.Enum not
+  to return static members other than those of the enum declaration.
+  (friebe)
 - Fixed bug #38 - Annotation parsing fails for strings containing "=" 
   (friebe)
 - Removed superfluous newline from message string in compoundMessage()
