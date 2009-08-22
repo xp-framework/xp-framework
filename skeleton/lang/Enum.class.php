@@ -43,10 +43,12 @@
         throw new IllegalArgumentException('Argument class must be lang.XPClass<? extends lang.Enum>');
       }
       try {
-        return $class->_reflect->getStaticPropertyValue($name);
+        $prop= $class->_reflect->getStaticPropertyValue($name);
+        if ($prop instanceof self && $class->_reflect->isInstance($prop)) return $prop;
       } catch (ReflectionException $e) {
         throw new IllegalArgumentException($e->getMessage());
       }
+      throw new IllegalArgumentException('No such member "'.$member.'" in '.$class->getName());
     }
 
     /**
@@ -60,11 +62,11 @@
       if (!$class->isEnum()) {
         throw new IllegalArgumentException('Argument class must be lang.XPClass<? extends lang.Enum>');
       }
-      try {
-        return array_values($class->_reflect->getStaticProperties());
-      } catch (ReflectionException $e) {
-        throw new IllegalArgumentException($e->getMessage());
+      $r= array();
+      foreach ($class->_reflect->getStaticProperties() as $prop) {
+        $prop instanceof self && $class->_reflect->isInstance($prop) && $r[]= $prop;
       }
+      return $r;
     }
     
     /**
@@ -113,8 +115,12 @@
      * @return  lang.Enum[]
      */
     protected static function membersOf($class) {
+      $r= array();
       $c= new ReflectionClass($class);
-      return array_values($c->getStaticProperties());
+      foreach ($c->getStaticProperties() as $prop) {
+        $prop instanceof self && $c->isInstance($prop) && $r[]= $prop;
+      }
+      return $r;
     }
   }
 ?>
