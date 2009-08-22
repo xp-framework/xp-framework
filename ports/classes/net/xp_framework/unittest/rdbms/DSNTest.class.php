@@ -13,18 +13,6 @@
    * @purpose  Unit Test
    */
   class DSNTest extends TestCase {
-    public
-      $dsn= array();
-      
-    /**
-     * Setup method
-     *
-     */
-    public function setUp() {
-      $this->dsn['sybase']= new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1');
-      $this->dsn['mysql']= new DSN('mysql://root@localhost/?log=default');
-      $this->dsn['pgsql']= new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default');
-    }
 
     /**
      * Tests the toString() method returns passwords replaced by stars.
@@ -34,7 +22,7 @@
     public function stringRepresentationWithPassword() {
       $this->assertEquals(
         'rdbms.DSN@(sybase://sa:********@localhost:1999/CAFFEINE?autoconnect=1)',
-        $this->dsn['sybase']->toString()
+        create(new DSN('sybase://sa:password@localhost:1999/CAFFEINE?autoconnect=1'))->toString()
       );
     }
     
@@ -46,8 +34,137 @@
     public function stringRepresentationWithoutPassword() {
       $this->assertEquals(
         'rdbms.DSN@(mysql://root@localhost/?log=default)',
-        $this->dsn['mysql']->toString()
+        create(new DSN('mysql://root@localhost/?log=default'))->toString()
       );
+    }
+    
+    /**
+     * Tests the getDriver() method
+     *
+     */
+    #[@test]
+    public function driver() {
+      $this->assertEquals(
+        'sybase', 
+        create(new DSN('sybase://TEST/'))->getDriver()
+      );
+    }
+
+    /**
+     * Tests the getHost() method
+     *
+     */
+    #[@test]
+    public function host() {
+      $this->assertEquals(
+        'TEST', 
+        create(new DSN('sybase://TEST/'))->getHost()
+      );
+    }
+    
+    /**
+     * Tests the getPort() method
+     *
+     */
+    #[@test]
+    public function port() {
+      $this->assertEquals(
+        1999, 
+        create(new DSN('sybase://TEST:1999/'))->getPort()
+      );
+    }
+
+    /**
+     * Tests the getPort() method
+     *
+     */
+    #[@test]
+    public function noPort() {
+      $this->assertNull(create(new DSN('sybase://TEST/'))->getPort());
+    }
+
+    /**
+     * Tests the getDatabase() method
+     *
+     */
+    #[@test]
+    public function database() {
+      $this->assertEquals(
+        'CAFFEINE', 
+        create(new DSN('sybase://TEST/CAFFEINE'))->getDatabase()
+      );
+    }
+
+    /**
+     * Tests the getDatabase() method
+     *
+     */
+    #[@test]
+    public function noDatabase() {
+      $this->assertNull(create(new DSN('mysql://root@localhost'))->getDatabase());
+    }
+
+    /**
+     * Tests the getDatabase() method
+     *
+     */
+    #[@test]
+    public function slashDatabase() {
+      $this->assertNull(create(new DSN('mysql://root@localhost/'))->getDatabase());
+    }
+
+    /**
+     * Tests the getDatabase() method
+     *
+     */
+    #[@test]
+    public function fileDatabase() {
+      $this->assertEquals(
+        '/usr/local/fb/jobs.fdb', 
+        create(new DSN('ibase://localhost//usr/local/fb/jobs.fdb'))->getDatabase()
+      );
+    }
+
+    /**
+     * Tests the getUser() method
+     *
+     */
+    #[@test]
+    public function user() {
+      $this->assertEquals(
+        'sa', 
+        create(new DSN('sybase://sa@TEST'))->getUser()
+      );
+    }
+
+    /**
+     * Tests the getUser() method
+     *
+     */
+    #[@test]
+    public function noUser() {
+      $this->assertNull(create(new DSN('sybase://TEST'))->getUser());
+    }
+
+    /**
+     * Tests the getPassword() method
+     *
+     */
+    #[@test]
+    public function password() {
+      $this->assertEquals(
+        'password', 
+        create(new DSN('sybase://sa:password@TEST'))->getPassword()
+      );
+    }
+
+    /**
+     * Tests the getPassword() method
+     *
+     */
+    #[@test]
+    public function noPassword() {
+      $this->assertNull(create(new DSN('sybase://sa@TEST'))->getPassword());
     }
     
     /**
@@ -56,7 +173,7 @@
      */
     #[@test]
     public function noFlags() {
-      $this->assertEquals(0, $this->dsn['mysql']->getFlags());
+      $this->assertEquals(0, create(new DSN('sybase://sa@TEST'))->getFlags());
     }
 
     /**
@@ -65,7 +182,10 @@
      */
     #[@test]
     public function definedFlags() {
-      $this->assertEquals(DB_AUTOCONNECT, $this->dsn['sybase']->getFlags());
+      $this->assertEquals(
+        DB_AUTOCONNECT, 
+        create(new DSN('sybase://sa@TEST?autoconnect=1'))->getFlags()
+      );
     }
     
     /**
@@ -74,7 +194,10 @@
      */
     #[@test]
     public function stringPropertyValue() {
-      $this->assertEquals('default', $this->dsn['mysql']->getProperty('log'));
+      $this->assertEquals(
+        'default', 
+        create(new DSN('sybase://sa@TEST?log=default'))->getProperty('log')
+      );
     }
 
     /**
@@ -83,7 +206,10 @@
      */
     #[@test]
     public function arrayPropertyValue() {
-      $this->assertEquals(array('util.log.LogObserver' => 'default'), $this->dsn['pgsql']->getProperty('observer'));
+      $this->assertEquals(
+        array('util.log.LogObserver' => 'default'), 
+        create(new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default'))->getProperty('observer')
+      );
     }
   }
 ?>
