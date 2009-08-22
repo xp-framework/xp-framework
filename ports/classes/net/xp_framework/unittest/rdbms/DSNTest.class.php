@@ -37,7 +37,7 @@
         create(new DSN('mysql://root@localhost/?log=default'))->toString()
       );
     }
-    
+
     /**
      * Tests the getDriver() method
      *
@@ -48,6 +48,15 @@
         'sybase', 
         create(new DSN('sybase://TEST/'))->getDriver()
       );
+    }
+
+    /**
+     * Tests the getDriver() method
+     *
+     */
+    #[@test]
+    public function noDriver() {
+      $this->assertNull(create(new DSN(''))->getDriver());
     }
 
     /**
