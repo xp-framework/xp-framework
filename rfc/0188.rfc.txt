@@ -1,0 +1,79 @@
+RFC 0188: Test outcome
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Aug 23 18:30:28     2009
+@status: draft
+@target: 5.7
+@category: unittest
+
+Scope of Change
+---------------
+At the moment, there are three possible outcomes of a unittest: Succeeded,
+Skipped and Failed. This RFC suggests adding more kinds of outcomes: 
+Ignored, Timedout and Exception.
+
+
+Rationale
+---------
+
+Functionality
+-------------
+
+Definitions
+~~~~~~~~~~~
+These current outcomes are defined:
+<summary>
+* Succeeded (Test was successful)
+* Skipped (Test was skipped by either an error inside setUp() or by
+  an @ignore annotation)
+* Failed (Test failed due to an assertion error, an expected exception
+  not being caught or by an exception raised by the code inside).
+
+Example output:
+<pre>
+[..SSFFF]
+</pre>
+</summary>
+
+This RFC suggests to add the following new outcomes:
+<summary>
+* Ignored (Test was ignored by @ignore, as stated above, this is currently 
+  also reported as "skipped")
+* TimedOut (Test exceeded the time limit given in @limit, at the moment 
+  this is reported as "failed")
+* Exception (An exception other than AssertionFailedError was thrown when
+  executing the test and no @expected annotation existed)
+
+Example output:
+<pre>
+[..SIFTE]
+</pre>
+</summary>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+* http://msdn.microsoft.com/en-us/library/ms243180(VS.100).aspx
+
+
+Comments
+--------
+
+<EOF>
