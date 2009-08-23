@@ -17,6 +17,8 @@ Ignored, Timedout and Exception.
 
 Rationale
 ---------
+Be able to distinguish between the different non-success reasons.
+
 
 Functionality
 -------------
@@ -33,7 +35,8 @@ These current outcomes are defined:
 
 Example output:
 <pre>
-[..SSFFF]
+  [..SSFFF]
+  2 succeeded, 2 skipped, 3 failed
 </pre>
 </summary>
 
@@ -48,7 +51,8 @@ This RFC suggests to add the following new outcomes:
 
 Example output:
 <pre>
-[..SIFTE]
+  [..SIFTE]
+  2 succeeded, 1 skipped, 1 ignored, 3 failed
 </pre>
 </summary>
 
