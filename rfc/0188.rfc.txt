@@ -25,8 +25,8 @@ Functionality
 
 Definitions
 ~~~~~~~~~~~
-These current outcomes are defined:
 <summary>
+These current outcomes are defined:
 * Succeeded (Test was successful)
 * Skipped (Test was skipped by either an error inside setUp() or by
   an @ignore annotation)
@@ -40,8 +40,8 @@ Example output:
 </pre>
 </summary>
 
-This RFC suggests to add the following new outcomes:
 <summary>
+This RFC suggests to add the following new outcomes:
 * Ignored (Test was ignored by @ignore, as stated above, this is currently 
   also reported as "skipped")
 * TimedOut (Test exceeded the time limit given in @limit, at the moment 
