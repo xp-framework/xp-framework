@@ -102,15 +102,11 @@
     #[@test]
     public function equalsMethodIsInvoked() {
       $instance= newinstance('lang.Object', array(), '{
-         public $equalsInvoked= 0;
+        public $equalsInvoked= 0;
 
-        function equals($other) {
-          $r= (
-            is(get_class($this), $other) && 
-            $this->equalsInvoked == $other->equalsInvoked
-          );
+        public function equals($other) {
           $this->equalsInvoked++;
-          return $r;
+          return $other instanceof self && $this->equalsInvoked == $other->equalsInvoked;
         }
       }');
      
