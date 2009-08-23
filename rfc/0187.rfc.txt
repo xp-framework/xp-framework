@@ -1,0 +1,59 @@
+RFC 0187: @expect withMessage
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Aug 23 18:00:30     2009
+@status: draft
+@target: 5.7
+@category: unittest
+
+Scope of Change
+---------------
+The <tt>@expect</tt> annotation will be enhanced to provide a means for
+also checking the expected exception's message.
+
+
+Rationale
+---------
+Ensuring a certain exception message requires the "old-style" approach
+with <tt>try</tt>, <tt>fail();</tt> and the checking the message inside
+<tt>catch (ExpectedException $expected)</tt>, a construct we successfully
+removed the need for with <tt>@expect</tt> years ago.
+
+
+Functionality
+-------------
+Example:
+<code>
+  #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
+  public function wrongMessage() {
+    throw new IllegalArgumentException('Another message');
+  }
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Negligible
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+* http://code.google.com/p/instinct/wiki/Specifications
+* RFC #0032 - the original @expect RFC
+
+Comments
+--------
+
+<EOF>
