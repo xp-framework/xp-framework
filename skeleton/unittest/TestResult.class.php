@@ -54,6 +54,20 @@
     public function setSkipped($test, $reason, $elapsed) {
       return $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
     }
+    
+    /**
+     * Returns the outcome of a specific test
+     *
+     * @param   unittest.TestCase test
+     * @return  unittest.TestOutcome
+     */
+    public function outcomeOf(TestCase $test) {
+      $key= $test->hashCode();
+      foreach (array($this->succeeded, $this->failed, $this->skipped) as $lookup) {
+        if (isset($lookup[$key])) return $lookup[$key];
+      }
+      return xp::null();
+    }
 
     /**
      * Get number of succeeded tests
