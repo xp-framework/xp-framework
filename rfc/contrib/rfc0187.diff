@@ -1,0 +1,126 @@
+Index: skeleton/unittest/TestSuite.class.php
+===================================================================
+--- skeleton/unittest/TestSuite.class.php	(revision 13420)
++++ skeleton/unittest/TestSuite.class.php	(working copy)
+@@ -177,8 +177,16 @@
+ 
+       // Check for @expect
+       $expected= NULL;
+-      if ($method->hasAnnotation('expect')) {
+-        $expected= XPClass::forName($method->getAnnotation('expect'));
++      if ($method->hasAnnotation('expect', 'class')) {
++        $expected= array(
++          XPClass::forName($method->getAnnotation('expect', 'class')),
++          $method->getAnnotation('expect', 'withMessage')
++        );
++      } else if ($method->hasAnnotation('expect')) {
++        $expected= array(
++          XPClass::forName($method->getAnnotation('expect')),
++          NULL
++        );
+       }
+       
+       // Check for @limit
+@@ -219,21 +227,25 @@
+         $e= $t->getCause();
+ 
+         // Was that an expected exception?
+-        if ($expected && $expected->isInstance($e)) {
++        if ($expected && $expected[0]->isInstance($e)) {
+           if ($eta && $timer->elapsedTime() > $eta) {
+             $this->notifyListeners('testFailed', array(
+               $result->setFailed($test, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
+             ));
++          } else if ($expected[1] && $expected[1] !== $e->getMessage()) {
++            $this->notifyListeners('testFailed', array(
++              $result->setFailed($test, new AssertionFailedError('Expected '.$e->getClassName().'\'s message differs', $expected[1], $e->getMessage()), $timer->elapsedTime())
++            ));
+           } else {
+             $this->notifyListeners('testSucceeded', array(
+               $result->setSucceeded($test, $timer->elapsedTime())
+             ));
+           }
+-        } else if ($expected && !$expected->isInstance($e)) {
++        } else if ($expected && !$expected[0]->isInstance($e)) {
+           $this->notifyListeners('testFailed', array(
+             $result->setFailed(
+               $test, 
+-              new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected->getName()),
++              new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected[0]->getName()),
+               $timer->elapsedTime()
+             )
+           ));
+@@ -254,7 +266,7 @@
+         $this->notifyListeners('testFailed', array(
+           $result->setFailed(
+             $test, 
+-            new AssertionFailedError('Expected exception not caught', NULL, $expected->getName()),
++            new AssertionFailedError('Expected exception not caught', NULL, $expected[0]->getName()),
+             $timer->elapsedTime()
+           )
+         ));
+Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 13432)
++++ ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(working copy)
+@@ -144,6 +144,24 @@
+     }
+ 
+     /**
++     * Catches the expected exception 
++     *
++     */
++    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
++    public function catchExpectedWithMessage() {
++      throw new IllegalArgumentException('Hello');
++    }
++
++    /**
++     * Catches the expected exception
++     *
++     */
++    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
++    public function catchExpectedWithWrongMessage() {
++      throw new IllegalArgumentException('Another message');
++    }
++
++    /**
+      * A test that timeouts
+      *
+      */
+Index: ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(revision 13432)
++++ ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(working copy)
+@@ -346,5 +346,31 @@
+         cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
+       );
+     }
++
++    /**
++     * Tests catching an expected exception
++     *
++     */    
++    #[@test]
++    public function catchExpectedWithMessage() {
++      $this->suite->addTest(new SimpleTestCase('catchExpectedWithMessage'));
++      $r= $this->suite->run();
++      $this->assertEquals(1, $r->successCount());
++    }
++
++    /**
++     * Tests catching an expected exception
++     *
++     */    
++    #[@test]
++    public function catchExpectedWithMismatchingMessage() {
++      $this->suite->addTest(new SimpleTestCase('catchExpectedWithWrongMessage'));
++      $r= $this->suite->run();
++      $this->assertEquals(1, $r->failureCount());
++      $this->assertEquals(
++        'Expected lang.IllegalArgumentException\'s message differs',
++        cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
++      );
++    }
+   }
+ ?>

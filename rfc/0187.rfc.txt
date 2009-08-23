@@ -52,6 +52,8 @@ Related documents
 -----------------
 * http://code.google.com/p/instinct/wiki/Specifications
 * RFC #0032 - the original @expect RFC
+* http://xp-framework.net/rfc/contrib/rfc0187.diff
+
 
 Comments
 --------
