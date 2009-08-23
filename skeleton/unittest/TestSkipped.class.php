@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('unittest.TestOutcome');
+
   /**
    * Indicates a test was skipped
    *
    * @see      xp://unittest.TestResult
    * @purpose  Result wrapper
    */
-  class TestSkipped extends Object {
+  class TestSkipped extends Object implements TestOutcome {
     public
       $reason   = NULL,
       $test     = NULL,

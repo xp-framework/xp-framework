@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('unittest.TestOutcome');
+
   /**
    * Indicates a test failed
    *
    * @see      xp://unittest.TestResult
    * @purpose  Result wrapper
    */
-  class TestFailure extends Object {
+  class TestFailure extends Object implements TestOutcome {
     public
       $reason   = NULL,
       $test     = NULL,

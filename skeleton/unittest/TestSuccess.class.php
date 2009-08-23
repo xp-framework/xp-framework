@@ -4,13 +4,15 @@
  * $Id$ 
  */
 
+  uses('unittest.TestOutcome');
+
   /**
    * Indicates a test was successful
    *
    * @see      xp://unittest.TestResult
    * @purpose  Result wrapper
    */
-  class TestSuccess extends Object {
+  class TestSuccess extends Object implements TestOutcome {
     public
       $test     = NULL,
       $elapsed  = 0.0;
