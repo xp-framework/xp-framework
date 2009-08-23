@@ -117,6 +117,33 @@
     }
 
     /**
+     * Catches the expected exception 
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function catchExpected() {
+      throw new IllegalArgumentException('');
+    }
+
+    /**
+     * Catches the expected exception 
+     *
+     */
+    #[@test, @expect('lang.XPException')]
+    public function catchSubclassOfExpected() {
+      throw new IllegalArgumentException('');
+    }
+
+    /**
+     * Does not catch the expected exception 
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function expectedExceptionNotThrown() {
+      throw new FormatException('');
+    }
+
+    /**
      * A test that timeouts
      *
      */

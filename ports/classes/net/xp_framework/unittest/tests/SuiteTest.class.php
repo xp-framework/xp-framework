@@ -309,5 +309,42 @@
       $r= $this->suite->run();
       $this->assertEquals(1, $r->successCount());
     }
+
+    /**
+     * Tests catching an expected exception
+     *
+     */    
+    #[@test]
+    public function expectedException() {
+      $this->suite->addTest(new SimpleTestCase('catchExpected'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->successCount());
+    }
+
+    /**
+     * Tests catching an expected exception
+     *
+     */    
+    #[@test]
+    public function subclassOfExpectedException() {
+      $this->suite->addTest(new SimpleTestCase('catchSubclassOfExpected'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->successCount());
+    }
+
+    /**
+     * Tests catching an expected exception
+     *
+     */    
+    #[@test]
+    public function expectedExceptionNotThrown() {
+      $this->suite->addTest(new SimpleTestCase('expectedExceptionNotThrown'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->failureCount());
+      $this->assertEquals(
+        'Expected exception not caught', 
+        cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
+      );
+    }
   }
 ?>
