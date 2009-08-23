@@ -24,7 +24,26 @@ removed the need for with <tt>@expect</tt> years ago.
 
 Functionality
 -------------
-Example:
+<summary>
+The <tt>@expect</tt> annotation is currently written as:
+<pre>
+  @expect([CLASSNAME])
+</pre>
+Keeping the old syntax intact, the new form is defined as:
+<pre>
+  @expect(class= [CLASSNAME], withMessage= [MESSAGE])
+</pre>
+</summary>
+
+This test succeeds:
+<code>
+  #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
+  public function wrongMessage() {
+    throw new IllegalArgumentException('Hello');
+  }
+</code>
+
+This test fails:
 <code>
   #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
   public function wrongMessage() {
