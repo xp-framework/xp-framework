@@ -13,6 +13,7 @@
    *   echo $p->getHighlight();
    * </code>
    *
+   * @deprecated Use text.Tokenizer instead
    * @see php://highlight_string
    */
   class PHPSyntaxHighlighter extends Object {

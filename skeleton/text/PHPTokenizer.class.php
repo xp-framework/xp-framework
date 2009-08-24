@@ -11,6 +11,7 @@
    * PHP Tokenizer
    * Class wrapper around PHPs tokenizer extension
    * 
+   * @deprecated Use text.Tokenizer instead
    * @ext   tokenize
    * @see   php://tokenizer
    * @see   xp://text.apidoc.parser.GenericParser
