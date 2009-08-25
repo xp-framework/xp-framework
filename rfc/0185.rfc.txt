@@ -68,4 +68,8 @@ friebe, Tue Apr 28 12:47:57     2009
 This will be implemented in 5.8.0 because of the impact on core 
 functionality.
 
+friebe, Tue Aug 25 10:06:37     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Implemented in 5_8 branch
+
 <EOF>
