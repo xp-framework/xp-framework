@@ -149,26 +149,8 @@
     /**
      * Execute any statement
      *
-     * @param   mixed* args
-     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
-     * @throws  rdbms.SQLException
-     */
-    public function query() { 
-      $args= func_get_args();
-      $sql= call_user_func_array(array($this, 'prepare'), $args);
-
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
-      $result= $this->query0($sql);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
-      
-      return $result;
-    }
-    
-    /**
-     * Execute any statement
-     *
-     * @param   mixed* args
-     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+     * @param   string sql
+     * @return  rdbms.ResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
     protected function query0($sql) {
