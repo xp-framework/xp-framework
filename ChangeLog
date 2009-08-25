@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.7.4, released 2009-08-25
+----------------------------------
+SVN version: 13446
+
 Heads up!
 ~~~~~~~~~
 - Deprecated peer.ftp.server.FtpConnectionListener class
