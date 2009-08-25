@@ -50,6 +50,17 @@
    * @purpose  Database connection
    */
   class SQLiteConnection extends DBConnection {
+
+    /**
+     * Constructor
+     *
+     * @param   rdbms.DSN dsn
+     */
+    public function __construct($dsn) {
+      parent::__construct($dsn);
+      $this->formatter= new StatementFormatter($this, new SQLiteDialect());
+    }
+    
     /**
      * Connect
      *
@@ -63,13 +74,13 @@
 
       if (!($this->flags & DB_PERSISTENT)) {
         $this->handle= sqlite_open(
-          urldecode($this->dsn->getHost()), 
+          urldecode($this->dsn->getDatabase()), 
           0666,
           $err
         );
       } else {
         $this->handle= sqlite_popen(
-          urldecode($this->dsn->getHost()), 
+          urldecode($this->dsn->getDatabase()), 
           0666,
           $err
         );
@@ -112,17 +123,6 @@
     }
 
     /**
-     * Prepare an SQL statement
-     *
-     * @param   mixed* args
-     * @return  string
-     */
-    public function prepare() {
-      $args= func_get_args();
-      return $this->getFormatter()->format(array_shift($args), $args);
-    }
-    
-    /**
      * Retrieve identity
      *
      * @return  mixed identity value
@@ -134,87 +134,22 @@
     }
 
     /**
-     * Execute an insert statement
+     * Retrieve number of affected rows
      *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
+     * @return  int
      */
-    public function insert() { 
-      $args= func_get_args();
-      $args[0]= 'insert '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
+    protected function affectedRows() {
       return sqlite_changes($this->handle);
-    }
-    
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function update() {
-      $args= func_get_args();
-      $args[0]= 'update '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return sqlite_changes($this->handle);
-    }
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function delete() { 
-      $args= func_get_args();
-      $args[0]= 'delete '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return sqlite_changes($this->handle);
-    }
-    
-    /**
-     * Execute a select statement and return all rows as an array
-     *
-     * @param   mixed* args
-     * @return  array rowsets
-     * @throws  rdbms.SQLStatementFailedException
-     */
-    public function select() { 
-      $args= func_get_args();
-      $args[0]= 'select '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      $rows= array();
-      while ($row= $r->next()) $rows[]= $row;
-      return $rows;
     }
     
     /**
      * Execute any statement
      *
-     * @param   mixed* args
+     * @param   string sql
      * @return  rdbms.sqlite.SQLiteResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    public function query() { 
-      $args= func_get_args();
-      $sql= call_user_func_array(array($this, 'prepare'), $args);
-
+    protected function query0($sql) { 
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -223,8 +158,6 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
-
       if ($this->flags & DB_UNBUFFERED) {
         $result= sqlite_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
@@ -239,16 +172,7 @@
           $e
         );
       }
-
-      if (TRUE === $result) {
-        $this->_obs && $this->notifyObservers(new DBEvent('queryend', TRUE));
-        return TRUE;
-      }
-      
-      $resultset= new SQLiteResultSet($result);
-      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-
-      return $resultset;
+      return sqlite_num_fields($result) ? new SQLiteResultSet($result) : TRUE;
     }
 
     /**
@@ -296,16 +220,6 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
-    }
-
-    /**
-     * get SQL formatter
-     *
-     * @return  rdbms.StatementFormatter
-     */
-    public function getFormatter() {
-      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new SQLiteDialect());
-      return $this->formatter;
     }
   }
 ?>
