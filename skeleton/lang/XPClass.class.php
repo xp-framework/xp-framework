@@ -502,6 +502,7 @@
       $annotations= array();
       $comment= NULL;
       $members= TRUE;
+      $parsed= '';
       $tokens= token_get_all($bytes);
       for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
         switch ($tokens[$i][0]) {
@@ -512,22 +513,31 @@
           case T_COMMENT:
             if ('#' === $tokens[$i][1]{0}) {      // Annotations
               if ('[' === $tokens[$i][1]{1}) {
-                $annotations[0]= substr($tokens[$i][1], 2);
+                $parsed= substr($tokens[$i][1], 2);
               } else {
-                $annotations[0].= substr($tokens[$i][1], 1);
+                $parsed.= substr($tokens[$i][1], 1);
               }
               if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+                ob_start();
                 $annotations= eval('return array('.preg_replace(
                   array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
                   array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
-                  trim($annotations[0], "[]# \t\n\r").','
+                  trim($parsed, "[]# \t\n\r").','
                 ).');');
+                if (FALSE === $annotations) {
+                  $msg= trim(substr(ob_get_contents(), strlen(ini_get('error_prepend_string'))));
+                  ob_end_clean();
+                  raise('lang.ClassFormatException', $msg.' of "'.addcslashes($parsed, "\0..\17").'"');
+                }
+                ob_end_clean();
+                $parsed= '';
               }
             }
             break;
 
           case T_CLASS:
           case T_INTERFACE:
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'"');
             $details['class']= array(
               DETAIL_COMMENT      => trim(preg_replace('/\n   \* ?/', "\n", "\n".substr(
                 $comment, 
@@ -544,6 +554,7 @@
             if (!$members) break;
 
             // Have a member variable
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'"');
             $name= substr($tokens[$i][1], 1);
             $details[0][$name]= array(
               DETAIL_ANNOTATIONS => $annotations
@@ -552,6 +563,7 @@
             break;
 
           case T_FUNCTION:
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'"');
             $members= FALSE;
             while (T_STRING !== $tokens[$i][0]) $i++;
             $m= $tokens[$i][1];
