@@ -72,7 +72,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->handle.')@'.xp::stringOf($this->fields);
+      return $this->getClassName().'('.xp::stringOf($this->handle).')@'.xp::stringOf($this->fields);
     }
   }
 ?>
