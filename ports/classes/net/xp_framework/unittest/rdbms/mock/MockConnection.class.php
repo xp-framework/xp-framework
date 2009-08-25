@@ -30,9 +30,6 @@
     public
       $_connected       = FALSE;
 
-    private
-      $formatter= NULL;
-
     /**
      * Constructor
      *
@@ -40,6 +37,7 @@
      */
     public function __construct($dsn) { 
       parent::__construct($dsn);
+      $this->formatter= new StatementFormatter($this, new MockDialect());
       $this->clearResultSets();
     }
 
@@ -195,33 +193,7 @@
       return TRUE;
     }
 
-    /**
-     * Prepare an SQL statement
-     *
-     * @param   mixed* args
-     * @return  string
-     */
-    public function prepare() { 
-      $args= func_get_args();
-      return $this->getFormatter()->format(array_shift($args), $args);
-    }
-    
-    /**
-     * Execute an insert statement
-     *
-     * @param   mixed* args
-     * @return  bool success
-     */
-    public function insert() { 
-      $args= func_get_args();
-      $args[0]= 'insert '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return $this->affectedRows;
-    }
-    
+
     /**
      * Retrieve identity
      *
@@ -231,81 +203,31 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $this->identityValue));
       return $this->identityValue;
     }
-    
+
     /**
-     * Execute an update statement
+     * Retrieve number of affected rows for last query
      *
-     * @param   mixed* args
-     * @return  int number of affected rows
+     * @return  int
      */
-    public function update() {
-      $args= func_get_args();
-      $args[0]= 'update '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
+    protected function affectedRows() {
       return $this->affectedRows;
-    }
-    
-    /**
-     * Execute an update statement
-     *
-     * @param   mixed* args
-     * @return  int number of affected rows
-     */
-    public function delete() {
-      $args= func_get_args();
-      $args[0]= 'delete '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      return $this->affectedRows;
-    }
-    
-    /**
-     * Execute a select statement
-     *
-     * @param   mixed* args
-     * @return  array rowsets
-     */
-    public function select() { 
-      $args= func_get_args();
-      $args[0]= 'select '.$args[0];
-      if (!($r= call_user_func_array(array($this, 'query'), $args))) {
-        return FALSE;
-      }
-      
-      $rows= array();
-      while ($row= $r->next()) $rows[]= $row;
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, sizeof ($rows)));
-      return $rows;
-    }
+    }    
     
     /**
      * Execute any statement
      *
-     * @param   mixed* args
+     * @param   string sql
      * @return  rdbms.ResultSet
+     * @throws  rdbms.SQLException
      */
-    public function query() { 
-      $args= func_get_args();
-      $sql= call_user_func_array(array($this, 'prepare'), $args);
-
+    protected function query0($sql) { 
       if (!$this->_connected) {
-        if (!($this->flags & DB_AUTOCONNECT)) throw(new SQLStateException('Not connected'));
-        try {
-          $c= $this->connect();
-        } catch (SQLException $e) {
-          throw ($e);
-        }
+        if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+        $c= $this->connect();
         
         // Check for subsequent connection errors
-        if (FALSE === $c) throw(new SQLStateException('Previously failed to connect.'));
+        if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
-
-      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
 
       switch (sizeof($this->queryError)) {
         case 0: {
@@ -313,28 +235,26 @@
             return new MockResultSet();   // Empty
           }
           
-          $resultset= $this->resultSets[$this->currentResultSet++];
-          $this->_obs && $this->notifyObservers(new DBEvent('queryend', $resultset));
-          return $resultset;
+          return $this->resultSets[$this->currentResultSet++];
         }
 
         case 1: {   // letServerDisconnect() sets this
           $this->queryError= array();
           $this->_connected= FALSE;
-          throw(new SQLConnectionClosedException(
+          throw new SQLConnectionClosedException(
             'Statement failed: Read from server failed',
             $sql
-          ));
+          );
         }
         
         case 2: {   // makeQueryFail() sets this
           $error= $this->queryError;
           $this->queryError= array();       // Reset so next query succeeds again
-          throw(new SQLStatementFailedException(
+          throw new SQLStatementFailedException(
             'Statement failed: '.$error[1],
             $sql, 
             $error[0]
-          ));
+          );
         }
       }
     }
@@ -373,15 +293,5 @@
      * @return  bool success
      */
     public function commit($name) { }
-  
-    /**
-     * get SQL formatter
-     *
-     * @return  rdbms.StatemantFormatter
-     */
-    public function getFormatter() {
-      if (NULL === $this->formatter) $this->formatter= new StatementFormatter($this, new MockDialect());
-      return $this->formatter;
-    }
   }
 ?>
