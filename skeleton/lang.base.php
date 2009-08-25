@@ -452,14 +452,14 @@
   }
   // }}}
   
-  // {{{ proto mixed ref(mixed object)
+  // {{{ proto deprecated mixed ref(mixed object)
   //     Creates a "reference" to an object
   function ref(&$object) {
     return array(&$object);
   }
   // }}}
 
-  // {{{ proto &mixed deref(&mixed expr)
+  // {{{ proto deprecated &mixed deref(&mixed expr)
   //     Dereferences an expression
   function &deref(&$expr) {
     if (is_array($expr)) return $expr[0]; else return $expr;
