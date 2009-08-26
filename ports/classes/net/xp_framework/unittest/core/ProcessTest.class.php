@@ -149,6 +149,27 @@
     public function runningDirectory() {
       new Process(System::tempDir());
     }
+
+    /**
+     * Test getProcessById() method
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function nonExistantProcessId() {
+      $this->assertNull(Process::getProcessById(-1));
+    }
+
+    /**
+     * Test getProcessById() method
+     *
+     */
+    #[@test]
+    public function getByProcessId() {
+      $pid= getmypid();
+      $p= Process::getProcessById($pid);
+      $this->assertClass($p, 'lang.Process');
+      $this->assertEquals($pid, $p->getProcessId());
+    }
     
     /**
      * Tests command line parsing
