@@ -65,7 +65,7 @@
     public function getClass() {
       return new XPClass($this);
     }
-
+    
     /**
      * Creates a string representation of this object. In general, the toString 
      * method returns a string that "textually represents" this object. The result 

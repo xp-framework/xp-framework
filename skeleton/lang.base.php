@@ -528,6 +528,19 @@
   }
   // }}}
 
+  // {{{ lang.Type typeof(mixed arg)
+  //     Returns type
+  function typeof($arg) {
+    if ($arg instanceof Generic) {
+      return $arg->getClass();
+    } else if (NULL === $arg) {
+      return Type::$VOID;
+    } else {
+      return Primitive::forName(gettype($arg));
+    }
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   
