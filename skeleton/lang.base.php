@@ -73,6 +73,18 @@
     }
     // }}}
 
+    // {{{ public void extensions(string class, string impl)
+    //     Marks the impl class as extension method provider for $class
+    static function extensions($class, $impl) {
+      $r= xp::reflect($class);
+      $i= new ReflectionClass($impl);
+      foreach ($i->getMethods() as $m) {
+        if (!($p= $m->getParameters()) || (!($c= $p[0]->getClass())) || $r !== $c->getName()) continue;
+        xp::$registry[$r.'::'.$m->getName()]= $m;
+      }
+    }
+    // }}}
+
     // {{{ public string typeOf(mixed arg)
     //     Returns the fully qualified type name
     static function typeOf($arg) {

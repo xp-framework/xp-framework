@@ -25,6 +25,29 @@
     }
 
     /**
+     * Method handler
+     *
+     */
+    public function __call($name, $args) {
+      $class= get_class($this);
+      $name= '::'.$name;
+      if (!isset(xp::$registry[$k= $class.$name])) { 
+        do {
+          $c= new ReflectionClass($this);
+          do {
+            if (isset(xp::$registry[$k= $class.$name])) break 2;
+          } while ($class= get_parent_class($class));
+          foreach ($c->getInterfaceNames() as $i) {
+            if (isset(xp::$registry[$k= $i.$name])) break 2;
+          }
+          throw new Error('Call to undefined method '.$c->getName().$name);
+        } while (0);
+        xp::$registry[$c->getName().$name]= xp::$registry[$k];
+      }
+      return xp::$registry[$k]->invokeArgs(NULL, array_merge(array($this), $args));
+    }
+
+    /**
      * Returns a hashcode for this object
      *
      * @return  string
