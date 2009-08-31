@@ -12,8 +12,7 @@
    * @purpose  Time and date
    */
   class TimeSpan extends Object {
-    protected
-      $_seconds = 0;
+    protected $_seconds = 0;
     
     /**
      * Contructor
@@ -23,10 +22,7 @@
      */
     public function __construct($secs= 0) {
       if (!is_numeric($secs)) {
-        throw (new IllegalArgumentException(
-          'Given argument is not an integer: '.xp::stringOf($secs)
-        ));
-        return;
+        throw new IllegalArgumentException('Given argument is not an integer: '.xp::typeOf($secs));
       }
       $this->_seconds= (int)abs($secs);
     }
@@ -40,9 +36,7 @@
     public function add() {
       foreach (func_get_args() as $span) {
         if (!$span instanceof self) {
-          throw (new IllegalArgumentException(
-            'Given argument is not a TimeSpan: '.xp::stringOf($span)
-          ));
+          throw new IllegalArgumentException('Given argument is not a TimeSpan: '.xp::typeOf($span));
         }
 
         $this->_seconds+= $span->_seconds;
@@ -60,9 +54,7 @@
     public function substract() {
       foreach (func_get_args() as $span) {
         if (!$span instanceof self) {
-          throw (new IllegalArgumentException(
-            'Given argument is not a TimeSpan: '.xp::stringOf($span)
-          ));
+          throw new IllegalArgumentException('Given argument is not a TimeSpan: '.xp::typeOf($span));
         }
 
         $this->_seconds-= $span->_seconds;
