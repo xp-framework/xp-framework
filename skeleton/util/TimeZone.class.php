@@ -20,14 +20,12 @@
    * @purpose   Time zone calculation
    */
   class TimeZone extends Object {
-    protected
-      $tz       = NULL;
+    protected $tz= NULL;
 
     /**
-     * Constructor.
+     * Creates a new timezone from a given name.
      *
-     * @param   string offset
-     * @param   string timezone name default ''
+     * @param   string timezone name or NULL to use default timezone
      * @throws  lang.IllegalArgumentException if timezone is unknown
      */
     public function __construct($tz) {
