@@ -12,8 +12,7 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://util.TimeSpan
    */
   class TimeSpanTest extends TestCase {
     
@@ -27,12 +26,21 @@
     }
 
     /**
+     * Create new TimeSpan
+     *
+     */
+    #[@test]
+    public function newNegativeTimeSpan() {
+      $this->assertEquals('0d, 0h, 0m, 1s', create(new TimeSpan(-1))->toString());
+    }
+
+    /**
      * Test wrong arguments for constructor
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function wrongArguments() {
-      $t= new TimeSpan('2 days');
+      new TimeSpan('2 days');
     }
 
     /**
@@ -40,23 +48,34 @@
      *
      */
     #[@test]
-    public function addAndSubstract() {
+    public function add() {
       $this->assertEquals('0d, 2h, 1m, 5s', create(new TimeSpan(3600))
         ->add(new TimeSpan(3600), new TimeSpan(60))
-        ->add(new TimeSpan(5))->toString(),
-        'add'
+        ->add(new TimeSpan(5))->toString()
       );
+    }
       
+    /**
+     * Test TimeSpan::subtract()
+     *
+     */
+    #[@test]
+    public function subtract() {
       $this->assertEquals('0d, 22h, 58m, 55s', create(new TimeSpan(86400))
         ->substract(new TimeSpan(3600), new TimeSpan(60))
-        ->substract(new TimeSpan(5))->toString(),
-        'substract'
+        ->substract(new TimeSpan(5))->toString()
       );
+    }
 
+    /**
+     * Test TimeSpan::add() and TimeSpan::subtract()
+     *
+     */
+    #[@test]
+    public function addAndSubstract() {
       $this->assertEquals('1d, 1h, 0m, 55s', create(new TimeSpan(86400))
         ->add(new TimeSpan(3600), new TimeSpan(60))
-        ->substract(new TimeSpan(5))->toString(),
-        'mixed'
+        ->substract(new TimeSpan(5))->toString()
       );
     }
 
@@ -66,7 +85,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addWrongArguments() {
-      $t= create(new TimeSpan(0))->add('2 days');
+      create(new TimeSpan(0))->add('2 days');
     }
 
     /**
@@ -74,11 +93,43 @@
      *
      */
     #[@test]
-    public function staticCreation() {
+    public function fromSeconds() {
       $this->assertEquals('0d, 1h, 0m, 0s', TimeSpan::seconds(3600)->toString());
+    }
+
+    /**
+     * Test static creation
+     *
+     */
+    #[@test]
+    public function fromMinutes() {
       $this->assertEquals('0d, 2h, 7m, 0s', TimeSpan::minutes(127)->toString());
+    }
+    
+    /**
+     * Test static creation
+     *
+     */
+    #[@test]
+    public function fromHours() {
       $this->assertEquals('1d, 3h, 0m, 0s', TimeSpan::hours(27)->toString());
+    }
+
+    /**
+     * Test static creation
+     *
+     */
+    #[@test]
+    public function fromDays() {
       $this->assertEquals('40d, 0h, 0m, 0s', TimeSpan::days(40)->toString());
+    }
+    
+    /**
+     * Test static creation
+     *
+     */
+    #[@test]
+    public function fromWeeks() {
       $this->assertEquals('7d, 0h, 0m, 0s', TimeSpan::weeks(1)->toString());
     }
 
