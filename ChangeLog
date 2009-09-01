@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed util.TimeSpan to handle "%%" correctly in its format() method
+  (friebe)
+
 
 Version 5.7.4, released 2009-08-25
 ----------------------------------
