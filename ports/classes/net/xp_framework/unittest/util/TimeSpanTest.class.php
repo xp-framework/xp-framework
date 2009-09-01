@@ -83,7 +83,7 @@
      * Test TimeSpan::subtract()
      *
      */
-    #[@test, @exspect('lang.IllegalStateException')]
+    #[@test, @expect('lang.IllegalStateException')]
     public function subtractToNegative() {
       create(new TimeSpan(0))->substract(new TimeSpan(1));
     }
@@ -165,6 +165,123 @@
       $this->assertEquals(31, $t->getWholeMinutes(), 'wholeMinutes');
       $this->assertEquals(1, $t->getWholeHours(), 'wholeHours');
       $this->assertEquals(1, $t->getWholeDays(), 'wholeDays');
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatSeconds() {
+      $this->assertEquals('91865', create(new TimeSpan(91865))->format('%s'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatWholeSeconds() {
+      $this->assertEquals('5', create(new TimeSpan(91865))->format('%w'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatMinutes() {
+      $this->assertEquals('1531', create(new TimeSpan(91865))->format('%m'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatFloatMinutes() {
+      $this->assertEquals('1531.08', create(new TimeSpan(91865))->format('%M'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatWholeMinutes() {
+      $this->assertEquals('31', create(new TimeSpan(91865))->format('%j'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatHours() {
+      $this->assertEquals('25', create(new TimeSpan(91865))->format('%h'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatFloatHours() {
+      $this->assertEquals('25.52', create(new TimeSpan(91865))->format('%H'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatWholeHours() {
+      $this->assertEquals('1', create(new TimeSpan(91865))->format('%y'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatDays() {
+      $this->assertEquals('1', create(new TimeSpan(91865))->format('%d'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatFloatDays() {
+      $this->assertEquals('1.06', create(new TimeSpan(91865))->format('%D'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatWholeDays() {
+      $this->assertEquals('1', create(new TimeSpan(91865))->format('%e'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function format() {
+      $this->assertEquals('1d1h', create(new TimeSpan(91865))->format('%ed%yh'));
+    }
+
+    /**
+     * Test format() method
+     *
+     */
+    #[@test]
+    public function formatPercent() {
+      $this->assertEquals('%1d%1h%', create(new TimeSpan(91865))->format('%%%ed%%%yh%%'));
     }
   }
 ?>
