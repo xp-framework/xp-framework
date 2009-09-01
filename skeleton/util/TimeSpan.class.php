@@ -50,11 +50,15 @@
      *
      * @param   util.TimeSpan... args
      * @return  util.TimeSpan
+     * @throws  lang.IllegalStateException if the result would be a negative timespan
      */
     public function substract() {
       foreach (func_get_args() as $span) {
         if (!$span instanceof self) {
           throw new IllegalArgumentException('Given argument is not a TimeSpan: '.xp::typeOf($span));
+        }
+        if ($span->_seconds > $this->_seconds) {
+          throw new IllegalStateException('Cannot subtract '.$span->toString().' from '.$this->toString());
         }
 
         $this->_seconds-= $span->_seconds;
