@@ -50,11 +50,15 @@
      *
      * @param   util.TimeSpan... args
      * @return  util.TimeSpan
+     * @throws  lang.IllegalStateException if the result would be a negative timespan
      */
     public function substract() {
       foreach (func_get_args() as $span) {
         if (!$span instanceof self) {
           throw new IllegalArgumentException('Given argument is not a TimeSpan: '.xp::typeOf($span));
+        }
+        if ($span->_seconds > $this->_seconds) {
+          throw new IllegalStateException('Cannot subtract '.$span->toString().' from '.$this->toString());
         }
 
         $this->_seconds-= $span->_seconds;
@@ -275,49 +279,51 @@
      */
     public function format($format) {
       $return= '';
-
-      $tok= strtok($format, '%');
-      // iterate on tokens
-      while (FALSE !== $tok) {
-        switch ($tok{0}) {
-          case 's':
-            $return.= $this->getSeconds();
-            break;
-          case 'w':
-            $return.= $this->getWholeSeconds();
-            break;
-          case 'm':
-            $return.= $this->getMinutes();
-            break;
-          case 'M':
-            $return.= sprintf('%.2f', $this->getMinutesFloat());
-            break;
-          case 'j':
-            $return.= $this->getWholeMinutes();
-            break;
-          case 'h':
-            $return.= $this->getHours();
-            break;
-          case 'H':
-            $return.= sprintf('%.2f', $this->getHoursFloat());
-            break;
-          case 'y':
-            $return.= $this->getWholeHours();
-            break;
-          case 'd':
-            $return.= $this->getDays();
-            break;
-          case 'D':
-            $return.= sprintf('%.2f', $this->getDaysFloat());
-            break;
-          case 'e':
-            $return.= $this->getWholeDays();
-            break;
-          default:
-            $return.= '%'.$tok{0};
+      $o= 0; $l= strlen($format);
+      while (FALSE !== ($p= strcspn($format, '%', $o))) {
+        $return.= substr($format, $o, $p);
+        if (($o+= $p+ 2) <= $l) {
+          switch ($format{$o- 1}) {
+            case 's':
+              $return.= $this->getSeconds();
+              break;
+            case 'w':
+              $return.= $this->getWholeSeconds();
+              break;
+            case 'm':
+              $return.= $this->getMinutes();
+              break;
+            case 'M':
+              $return.= sprintf('%.2f', $this->getMinutesFloat());
+              break;
+            case 'j':
+              $return.= $this->getWholeMinutes();
+              break;
+            case 'h':
+              $return.= $this->getHours();
+              break;
+            case 'H':
+              $return.= sprintf('%.2f', $this->getHoursFloat());
+              break;
+            case 'y':
+              $return.= $this->getWholeHours();
+              break;
+            case 'd':
+              $return.= $this->getDays();
+              break;
+            case 'D':
+              $return.= sprintf('%.2f', $this->getDaysFloat());
+              break;
+            case 'e':
+              $return.= $this->getWholeDays();
+              break;
+            case '%':
+              $return.= '%';
+              break;
+            default:
+              $o--;
+          }
         }
-        $return.= substr($tok, 1);
-        $tok= strtok('%');
       }
      
       return $return;
