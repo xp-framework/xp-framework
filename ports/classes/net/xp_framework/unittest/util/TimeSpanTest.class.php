@@ -68,6 +68,27 @@
     }
 
     /**
+     * Test TimeSpan::subtract()
+     *
+     */
+    #[@test]
+    public function subtractToZero() {
+      $this->assertEquals(
+        '0d, 0h, 0m, 0s', 
+        create(new TimeSpan(6100))->substract(new TimeSpan(6100))->toString()
+      );
+    }
+
+    /**
+     * Test TimeSpan::subtract()
+     *
+     */
+    #[@test, @exspect('lang.IllegalStateException')]
+    public function subtractToNegative() {
+      create(new TimeSpan(0))->substract(new TimeSpan(1));
+    }
+
+    /**
      * Test TimeSpan::add() and TimeSpan::subtract()
      *
      */
