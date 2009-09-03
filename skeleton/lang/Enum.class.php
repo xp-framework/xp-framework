@@ -44,11 +44,11 @@
       }
       try {
         $prop= $class->_reflect->getStaticPropertyValue($name);
-        if ($prop instanceof self && $class->_reflect->isInstance($prop)) return $prop;
+        if ($prop instanceof self && $class->isInstance($prop)) return $prop;
       } catch (ReflectionException $e) {
         throw new IllegalArgumentException($e->getMessage());
       }
-      throw new IllegalArgumentException('No such member "'.$member.'" in '.$class->getName());
+      throw new IllegalArgumentException('No such member "'.$name.'" in '.$class->getName());
     }
 
     /**
@@ -64,7 +64,7 @@
       }
       $r= array();
       foreach ($class->_reflect->getStaticProperties() as $prop) {
-        $prop instanceof self && $class->_reflect->isInstance($prop) && $r[]= $prop;
+        $prop instanceof self && $class->isInstance($prop) && $r[]= $prop;
       }
       return $r;
     }
