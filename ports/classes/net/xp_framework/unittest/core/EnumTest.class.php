@@ -230,6 +230,18 @@
     }
 
     /**
+     * Test Enum::valueOf() method for an abstract enumeration
+     *
+     */
+    #[@test]
+    public function valueOfAbstractEnum() {
+      $this->assertEquals(
+        Operation::$plus, 
+        Enum::valueOf(XPClass::forName('net.xp_framework.unittest.core.Operation'), 'plus')
+      );
+    }
+
+    /**
      * Test Enum::valuesOf() method
      *
      */
@@ -238,6 +250,18 @@
       $this->assertEquals(
         array(Coin::$penny, Coin::$nickel, Coin::$dime, Coin::$quarter),
         Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Coin'))
+      );
+    }
+
+    /**
+     * Test Enum::valuesOf() method for an abstract enumeration
+     *
+     */
+    #[@test]
+    public function valuesOfAbstractEnum() {
+      $this->assertEquals(
+        array(Operation::$plus, Operation::$minus, Operation::$times, Operation::$divided_by),
+        Enum::valuesOf(XPClass::forName('net.xp_framework.unittest.core.Operation'))
       );
     }
 
