@@ -6,17 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
-Bugfixes
-~~~~~~~~
-- Fixed util.TimeSpan to handle "%%" correctly in its format() method
-  (friebe)
-- Prevented creation of negative timespans in util.TimeSpan::subtract()
-  (friebe)
 
-
-Version 5.7.4, released 2009-08-25
+Version 5.7.4, released 2009-09-05
 ----------------------------------
-SVN version: 13446
+SVN version: 13480
 
 Heads up!
 ~~~~~~~~~
@@ -102,6 +95,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.TimeSpan to handle "%%" correctly in its format() method
+  (friebe)
+- Prevented creation of negative timespans in util.TimeSpan::subtract()
+  (friebe)
 - Fixed valuesOf(), membersOf() and valueOf() methods in lang.Enum not
   to return static members other than those of the enum declaration.
   (friebe)
