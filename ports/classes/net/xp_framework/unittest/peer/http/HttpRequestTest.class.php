@@ -164,6 +164,22 @@
     }
 
     /**
+     * Test HTTP GET - parameters via setParameters(array<string, array>)
+     * in combination with parameters passed in the constructor.
+     *
+     */
+    #[@test]
+    public function getUrlWithArrayParameter() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::GET);
+      $r->setParameters(array('params' => array('target' => 'home', 'ssl' => 'true')));
+      $this->assertEquals(
+        "GET /?params[target]=home&params[ssl]=true HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
      * Test HTTP GET - parameters via setParameters(string)
      * in combination with parameters passed in the constructor.
      *
