@@ -134,8 +134,14 @@
         $query= '&'.$this->parameters->getData();
       } else {
         $query= '';
-        foreach ($this->parameters as $k => $v) {
-          $query.= '&'.$k.'='.urlencode($v);
+        foreach ($this->parameters as $name => $value) {
+          if (is_array($value)) {
+            foreach ($value as $k => $v) {
+              $query.= '&'.$name.'['.$k.']='.urlencode($v);
+            }
+          } else {
+            $query.= '&'.$name.'='.urlencode($value);
+          }
         }
       }
       $target= $this->target;
