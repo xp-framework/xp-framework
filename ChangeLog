@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- Added possibility to pass an associative array to HTTP request params
+  (friebe)
+
 
 Version 5.7.4, released 2009-09-05
 ----------------------------------
