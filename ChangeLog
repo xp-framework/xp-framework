@@ -10,7 +10,7 @@ Features
 ~~~~~~~~
 - Added getInputStream() and getOutputStream() methods to io.File
   (friebe)
-- Added getInputStream() and getOutputStream() methods to pper.Socket
+- Added getInputStream() and getOutputStream() methods to peer.Socket
   (friebe)
 - Added possibility to pass an associative array to HTTP request params
   (friebe)
