@@ -8,6 +8,10 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
+- Added getInputStream() and getOutputStream() methods to io.File
+  (friebe)
+- Added getInputStream() and getOutputStream() methods to pper.Socket
+  (friebe)
 - Added possibility to pass an associative array to HTTP request params
   (friebe)
 
