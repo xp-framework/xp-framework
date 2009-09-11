@@ -15,7 +15,9 @@
   uses(
     'io.Stream',
     'io.IOException',
-    'io.FileNotFoundException'
+    'io.FileNotFoundException',
+    'io.streams.FileInputStream', 
+    'io.streams.FileOutputStream'
   );
     
   /**
@@ -65,6 +67,24 @@
       } else {
         $this->setURI(rtrim($base, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$uri);
       }
+    }
+
+    /**
+     * Retrieve input stream
+     *
+     * @return  io.streams.InputStream
+     */
+    public function getInputStream() {
+      return new FileInputStream($this);
+    }
+
+    /**
+     * Retrieve output stream
+     *
+     * @return  io.streams.OutputStream
+     */
+    public function getOutputStream() {
+      return new FileOutputStream($this);
     }
     
     /**

@@ -7,7 +7,9 @@
   uses(
     'peer.ConnectException',
     'peer.SocketTimeoutException',
-    'peer.SocketException'
+    'peer.SocketException',
+    'peer.SocketInputStream',
+    'peer.SocketOutputStream'
   );
   
   /**
@@ -285,6 +287,24 @@
      */
     public function getHandle() {
       return $this->_sock;
+    }
+
+    /**
+     * Retrieve input stream
+     *
+     * @return  io.streams.InputStream
+     */
+    public function getInputStream() {
+      return new SocketInputStream($this);
+    }
+
+    /**
+     * Retrieve output stream
+     *
+     * @return  io.streams.OutputStream
+     */
+    public function getOutputStream() {
+      return new SocketOutputStream($this);
     }
     
     /**
