@@ -1,0 +1,92 @@
+RFC 0190: Readers and Writers
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Sep 12 12:40:49     2009
+@status: draft
+@target; 5.7.5
+@category: io.streams
+
+Scope of Change
+---------------
+To complement the input and output streams reading bytes from the underlying
+data sources, Reader and Writer classes will take care of reading formats
+defined ontop of these.
+
+
+Rationale
+---------
+Separate binary data and formatted data such as strings, as prerequisite for
+Unicode support.
+
+
+Functionality
+-------------
+The basics classes are io.streams.Reader and io.streams.Writer. These 
+classes work on input and output streams, respectively.
+
+<summary>
+While streams are named [SOURCE][DIRECTION]Stream and always work on
+binary untyped data, readers and writers are named [FORMAT][OPERATION] 
+and work on typed data.
+</summary>
+
+Reader
+~~~~~~
+TextReader - reads text
+<code>
+  $t= new TextReader(new InputStream(...)[, 'iso-8859-1']);
+  $t->read();
+  $t->readLine();
+</code>
+
+BinaryReader - reads binary data. See unpack()
+<code>
+  $t= new BinaryReader(new InputStream(...));
+  $t->read();
+  $t->readString();
+  $t->readInt32();
+</code>
+
+Writer
+~~~~~~
+TextWriter - writes text
+<code>
+  $t= new TextWriter(new OutputStream(...)[, 'iso-8859-1']);
+  $t->write($data);
+  $t->writeLine($data);
+</code>
+
+BinaryWriter - writes binary data. See pack()
+<code>
+  $t= new BinaryWriter(new OutputStream(...));
+  $t->write($data);
+  $t->writeString('...');
+  $t->writeInt32(1);
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+None.
+
+Comments
+--------
+
+<EOF>
