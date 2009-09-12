@@ -58,6 +58,13 @@ Writing
   $out->close();
 </code>
 
+Other implementations:
+* CsvObjectWriter - writes objects to a CSV file, mapping class properties
+  to columns.
+* CsvMapWriter - writes values to a CSV file, mapping hash keys to column
+  values.
+* CsvListWriter - writes string-array to CSV files 
+
 
 Security considerations
 -----------------------
