@@ -22,6 +22,8 @@ clumsy to use and almost not flexible.
 
 Functionality
 -------------
+To read data from a CSV file, CsvReader instance is created. To write data
+to a CSV file, a CsvWriter is used.
 
 Reading
 ~~~~~~~
@@ -35,6 +37,14 @@ Reading
 
   $in->close();
 </code>
+
+Other implementations:
+* CsvObjectReader - reads objects from a CSV file, mapping the header
+  columns to class properties
+* CsvMapReader - reads data from a CSV file, using the header columns
+  as map keys and the line values as values.
+* CsvListReader - reads CSV files and returns values as string-array
+
 
 Writing
 ~~~~~~~
