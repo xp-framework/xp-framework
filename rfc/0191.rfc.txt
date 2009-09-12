@@ -1,0 +1,76 @@
+RFC 0191: New CSV API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sat Sep 12 15:52:42     2009
+@status: draft
+@target: 5.7.5
+@category: text.csv
+
+Scope of Change
+---------------
+An API for processing CSV files will be created and put into a new
+package called <tt>text.csv</tt>.
+
+
+Rationale
+---------
+The current classes - text.CSVGenerator and text.parser.CSVParser - are 
+clumsy to use and almost not flexible.
+
+
+Functionality
+-------------
+
+Reading
+~~~~~~~
+<code>
+  $in= new CsvReader(new TextReader(new FileInputStream('in.csv')));
+
+  $header= $in->readHeader();
+  while ($record= $in->read()) {
+    Console::writeLine('- ', $record);
+  }
+
+  $in->close();
+</code>
+
+Writing
+~~~~~~~
+<code>
+  $out= new CsvWriter(new TextWriter(new FileOutputStream('out.csv')));
+  
+  $out->writeHeader('name', 'city', 'zip');
+  $out->write(array('Timm', 'Karlsruhe', 76137));
+  $out->write(array('Alex', 'Karlsruhe', 76131));
+  
+  $out->close();
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+The classes text.CSVGenerator and text.parser.CSVParser will be 
+deprecated.
+
+
+Related documents
+-----------------
+* RFC #0190 - for the TextReader and TextWriter classes.
+* http://supercsv.sourceforge.net/codeExamples_general.html
+
+Comments
+--------
+
+<EOF>
