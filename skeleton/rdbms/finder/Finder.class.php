@@ -169,21 +169,31 @@
      * @throws  rdbms.finder.FinderException
      */
     public function get($criteria) {
-      $list= $this->findAll($criteria);
-
-      switch ($s= sizeof($list)) {
-        case 1: return $list[0];            // OK, we expect exactly one element
-
-        case 0: throw new NoSuchEntityException(
+      try {
+        $it= $this->getPeer()->iteratorFor($criteria);
+      } catch (SQLException $e) {
+        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
+      }
+      
+      // Check for results. If we cannot find anything, throw a NSEE
+      if (!$it->hasNext()) {
+        throw new NoSuchEntityException(
           'Entity does not exist', 
           new IllegalStateException('No results for '.$criteria->toString())
         );
-
-        default: throw new FinderException(
+      }
+      
+      // Fetch first value, and if nothing is returned after that, return it,
+      // throwing an exception otherwise
+      $e= $it->next();
+      if ($it->hasNext()) {
+        throw new FinderException(
           'Query returned more than one result ('.$s.')', 
           new IllegalStateException('')
         );
       }
+      
+      return $e;
     }
 
     /**
@@ -195,11 +205,19 @@
      * @throws  rdbms.finder.FinderException
      */
     public function getAll($criteria) {
-      $list= $this->findAll($criteria);
-      if (empty($list)) throw new NoSuchEntityException(
-        'Entity does not exist', 
-        new IllegalStateException('No results for '.$criteria->toString())
-      );
+      try {
+        $list= $this->getPeer()->doSelect($criteria);
+      } catch (SQLException $e) {
+        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
+      }
+      
+      // Check for results. If we cannot find anything, throw a NSEE
+      if (empty($list)) {
+        throw new NoSuchEntityException(
+          'Entity does not exist', 
+          new IllegalStateException('No results for '.$criteria->toString())
+        );
+      }
 
       return $list;
     }
@@ -213,17 +231,28 @@
      * @throws  rdbms.finder.FinderException
      */
     public function find($criteria) {
-      $list= $this->findAll($criteria);
-
-      switch ($s= sizeof($list)) {
-        case 1: return $list[0];            // OK, we expect either one element...
-        case 0: return NULL;                // ...or none.
-
-        default: throw new FinderException(
+      try {
+        $it= $this->getPeer()->iteratorFor($criteria);
+      } catch (SQLException $e) {
+        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
+      }
+      
+      // Check for results. If we cannot find anything, throw a NSEE
+      if (!$it->hasNext()) {
+        return NULL;
+      }
+      
+      // Fetch first value, and if nothing is returned after that, return it,
+      // throwing an exception otherwise
+      $e= $it->next();
+      if ($it->hasNext()) {
+        throw new FinderException(
           'Query returned more than one result ('.$s.')', 
           new IllegalStateException('')
         );
       }
+      
+      return $e;
     }
 
     /**
