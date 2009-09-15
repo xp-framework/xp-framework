@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sat Sep 12 12:40:49     2009
-@status: draft
+@status: discussion, ends Fri Sep 18 12:00:00     2009
 @target: 5.7.5
 @category: io.streams
 
