@@ -43,7 +43,6 @@ Other implementations:
   columns to class properties
 * CsvBeanReader - like CsvObjectReader, but uses setters to access 
   properties.
-* CsvListReader - reads CSV files and returns values as string-array
 
 
 Writing
@@ -63,7 +62,63 @@ Other implementations:
   to columns.
 * CsvBeanWriter - like CsvObjectWriter, but uses getters to access
   properties.
-* CsvListWriter - writes string-array to CSV files 
+
+
+Different separators
+~~~~~~~~~~~~~~~~~~~~
+CSV files usually use the semi-colon to separate values. Depending on the 
+file we're parsing, this might be a different character. Both readers and
+writers accept an optional second parameter with which the format can be
+changed.
+
+<code>
+  $format= create(new CsvFormat())->withDelimiter(',');
+  $format= CsvFormat::$COMMAS;    // Short-hand for the above
+  
+  $writer= new CsvListWriter(..., $format);
+  $reader= new CsvListReader(..., $format);
+</code>
+
+The CsvFormat object also lets you change the quoting character:
+
+<code>
+  $format->setQuote("'");
+</code>
+
+
+Data types and constraints
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Because data inside a CSV file is untyped, and because CSV files are usually
+edited by humans, we have to take great care when reading them. The new CSV
+api proposed here adds so-called "cell processors" which take care of 
+transforming the data from and into different data types. By using one of
+the constraint processors, we can even perform value checking.
+
+Example:
+<code>
+  $writer= create(new CsvListWriter(...))->withProcessors(array(
+    NULL,
+    new FormatDate('d.m.Y')
+  ));
+  $writer->setHeader(array('order-id', 'date-placed'));
+  $writer->write(array(1234, new Date('2009-09-09')));
+</code>
+
+This will create the following CSV file:
+<code>
+  order-id;date-placed
+  1234;09.09.2009
+</code>
+
+Reading this file:
+<code>
+  $reader= create(new CsvListReader(...))->withProcessors(array(
+    new AsInteger(),
+    new AsDate()
+  ));
+  $reader->getHeader();
+  $record= $reader->read();
+</code>
 
 
 Security considerations
