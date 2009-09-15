@@ -188,7 +188,7 @@
       $e= $it->next();
       if ($it->hasNext()) {
         throw new FinderException(
-          'Query returned more than one result ('.$s.')', 
+          'Query returned more than one result after '.$e->toString(), 
           new IllegalStateException('')
         );
       }
@@ -247,7 +247,7 @@
       $e= $it->next();
       if ($it->hasNext()) {
         throw new FinderException(
-          'Query returned more than one result ('.$s.')', 
+          'Query returned more than one result after '.$e->toString(), 
           new IllegalStateException('')
         );
       }
