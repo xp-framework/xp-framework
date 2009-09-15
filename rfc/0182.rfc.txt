@@ -4,7 +4,7 @@ $Id$
 
 @authors: wagner
 @created: Mon Mar  9 11:19:01 CET 2009
-@status: draft
+@status: obsoleted (by RFC #0191)
 @category: text
 
 Scope of Change
@@ -44,5 +44,11 @@ http://manuals.sybase.com/onlinebooks/group-pbarc/conn5/sqlug/@Generic__BookText
 
 Comments
 --------
+friebe, Tue Sep 15 17:06:09     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This functionality is included in the new CSV API, by using the following:
+<code>
+  $format->setQuoting(text·csv·Quoting::$ALWAYS);
+</code>
 
 <EOF>

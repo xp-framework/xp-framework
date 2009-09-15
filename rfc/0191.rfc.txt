@@ -141,6 +141,8 @@ Related documents
 -----------------
 * RFC #0190 - for the TextReader and TextWriter classes.
 * http://supercsv.sourceforge.net/codeExamples_general.html
+* RFC #0182 - RFC obsoleted, functionality implemented herein
+
 
 Comments
 --------
