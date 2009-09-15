@@ -2,7 +2,7 @@ RFC 0191: New CSV API
 ========================================================================
 $Id$
 
-@authors: friebe
+@authors: friebe, wagner
 @created: Sat Sep 12 15:52:42     2009
 @status: discussion, ends Fri Sep 18 12:00:00     2009
 @target: 5.7.5
@@ -142,7 +142,7 @@ Related documents
 * RFC #0190 - for the TextReader and TextWriter classes.
 * http://supercsv.sourceforge.net/codeExamples_general.html
 * RFC #0182 - RFC obsoleted, functionality implemented herein
-
+* http://experiments.xp-forge.net/xml/browse?arena,rfc0191
 
 Comments
 --------
