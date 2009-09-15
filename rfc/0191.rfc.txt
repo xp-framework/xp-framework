@@ -28,9 +28,9 @@ to a CSV file, a CsvWriter is used.
 Reading
 ~~~~~~~
 <code>
-  $in= new CsvReader(new TextReader(new FileInputStream('in.csv')));
+  $in= new CsvListReader(new TextReader(new FileInputStream('in.csv')));
 
-  $header= $in->readHeader();
+  $header= $in->getHeader();
   while ($record= $in->read()) {
     Console::writeLine('- ', $record);
   }
@@ -41,17 +41,17 @@ Reading
 Other implementations:
 * CsvObjectReader - reads objects from a CSV file, mapping the header
   columns to class properties
-* CsvMapReader - reads data from a CSV file, using the header columns
-  as map keys and the line values as values.
+* CsvBeanReader - like CsvObjectReader, but uses setters to access 
+  properties.
 * CsvListReader - reads CSV files and returns values as string-array
 
 
 Writing
 ~~~~~~~
 <code>
-  $out= new CsvWriter(new TextWriter(new FileOutputStream('out.csv')));
+  $out= new CsvListWriter(new TextWriter(new FileOutputStream('out.csv')));
   
-  $out->writeHeader('name', 'city', 'zip');
+  $out->setHeader(array('name', 'city', 'zip'));
   $out->write(array('Timm', 'Karlsruhe', 76137));
   $out->write(array('Alex', 'Karlsruhe', 76131));
   
@@ -61,8 +61,8 @@ Writing
 Other implementations:
 * CsvObjectWriter - writes objects to a CSV file, mapping class properties
   to columns.
-* CsvMapWriter - writes values to a CSV file, mapping hash keys to column
-  values.
+* CsvBeanWriter - like CsvObjectWriter, but uses getters to access
+  properties.
 * CsvListWriter - writes string-array to CSV files 
 
 
