@@ -9,6 +9,7 @@
   /**
    * Adapter that makes rdbms.Peer objects usable as finders.
    *
+   * @deprecated  Use rdbms.finder.GenericFinder instead
    * @see      xp://rdbms.Peer
    * @purpose  Finder / Peer Adapter
    */
