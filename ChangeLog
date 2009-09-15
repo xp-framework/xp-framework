@@ -8,6 +8,8 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
+- Added rdbms.finder.FinderMethod::getFinder() method
+  (friebe)
 - Added getInputStream() and getOutputStream() methods to io.File
   (friebe)
 - Added getInputStream() and getOutputStream() methods to peer.Socket
