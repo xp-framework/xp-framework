@@ -51,7 +51,16 @@
     public function getName() {
       return $this->method->getName();
     }
-   
+
+    /**
+     * Get the finder instance associated with this finder method
+     *
+     * @return  rdbms.finder.Finder
+     */
+    public function getFinder() {
+      return $this->finder;
+    }
+      
     /**
      * Creates a string representation of this object
      *
