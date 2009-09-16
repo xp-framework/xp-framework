@@ -28,8 +28,19 @@
   }
   // }}}
 
-  $webroot= getenv('DOCUMENT_ROOT').'/..';
+  // Simulate getallheaders() if not existant
+  if (!function_exists('getallheaders')) {
+    function getallheaders() {
+      $headers= array();
+      foreach ($_SERVER as $name => $value) {
+        if (0 !== strncmp('HTTP_', $name, 5)) continue;
+        $headers[strtr(ucwords(strtolower(strtr(substr($name, 5), '_', ' '))), ' ', '-')]= $value;
+      }
+      return $headers;
+    }
+  }
 
+  $webroot= getenv('DOCUMENT_ROOT').'/..';
   $paths= array();
   foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
     $paths[]= ('~' == $path{0}
