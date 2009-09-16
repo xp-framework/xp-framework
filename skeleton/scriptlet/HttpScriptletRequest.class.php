@@ -19,6 +19,7 @@
   class HttpScriptletRequest extends Object {
     public
       $url=             NULL,
+      $env=             array(),
       $headers=         array(),
       $params=          array(),
       $data=            NULL,
@@ -70,7 +71,11 @@
      * @return  string
      */
     public function getEnvValue($name, $default= NULL) {
-      return (FALSE === ($e= getenv($name))) ? $default : $e;
+      if (!isset($this->env[$name])) {
+        if (FALSE === ($e= getenv($name))) return $default;
+        $this->env[$name]= $e;
+      }
+      return $this->env[$name];
     }
 
     /**
