@@ -1,28 +1,26 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses('rdbms.finder.Finder');
 
   /**
-   * Adapter that makes rdbms.Peer objects usable as finders.
+   * Generic finder that makes rdbms.Peer objects usable as finders.
    *
-   * @deprecated  Use rdbms.finder.GenericFinder instead
+   * @test     xp://net.xp_framework.unittest.rdbms.FinderTest
    * @see      xp://rdbms.Peer
-   * @purpose  Finder / Peer Adapter
    */
-  class FinderAdapter extends Finder {
-    protected 
-      $peer= NULL;
+  class GenericFinder extends Finder {
+    protected $peer= NULL;
 
     /**
-     * Constructor
+     * Creates a new GenericFinder instance with a given Peer object.
      *
      * @param   rdbms.Peer peer
      */
-    public function __construct($peer) {
+    public function __construct(Peer $peer) {
       $this->peer= $peer;
     }
 

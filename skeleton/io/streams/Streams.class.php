@@ -42,6 +42,10 @@
           return parent::$streams[$this->id]->read($count);
         }
 
+        public function stream_flush() {
+          return TRUE;
+        }
+
         public function stream_eof() {
           return 0 === parent::$streams[$this->id]->available();
         }
@@ -58,6 +62,10 @@
 
         public function stream_read($count) {
           throw new IOException("Cannot read from writeable stream");
+        }
+
+        public function stream_flush() {
+          return self::$streams[$this->id]->flush();
         }
 
         public function stream_eof() {
@@ -199,9 +207,7 @@
      *
      * @return  bool
      */
-    public function stream_flush() {
-      return TRUE;
-    }
+    public abstract function stream_flush();
 
     /**
      * Callback for fwrite

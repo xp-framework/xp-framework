@@ -1,0 +1,150 @@
+RFC 0191: New CSV API
+========================================================================
+$Id$
+
+@authors: friebe, wagner
+@created: Sat Sep 12 15:52:42     2009
+@status: discussion, ends Fri Sep 18 12:00:00     2009
+@target: 5.7.5
+@category: text.csv
+
+Scope of Change
+---------------
+An API for processing CSV files will be created and put into a new
+package called <tt>text.csv</tt>.
+
+
+Rationale
+---------
+The current classes - text.CSVGenerator and text.parser.CSVParser - are 
+clumsy to use and almost not flexible.
+
+
+Functionality
+-------------
+To read data from a CSV file, CsvReader instance is created. To write data
+to a CSV file, a CsvWriter is used.
+
+Reading
+~~~~~~~
+<code>
+  $in= new CsvListReader(new TextReader(new FileInputStream('in.csv')));
+
+  $header= $in->getHeader();
+  while ($record= $in->read()) {
+    Console::writeLine('- ', $record);
+  }
+
+  $in->close();
+</code>
+
+Other implementations:
+* CsvObjectReader - reads objects from a CSV file, mapping the header
+  columns to class properties
+* CsvBeanReader - like CsvObjectReader, but uses setters to access 
+  properties.
+
+
+Writing
+~~~~~~~
+<code>
+  $out= new CsvListWriter(new TextWriter(new FileOutputStream('out.csv')));
+  
+  $out->setHeader(array('name', 'city', 'zip'));
+  $out->write(array('Timm', 'Karlsruhe', 76137));
+  $out->write(array('Alex', 'Karlsruhe', 76131));
+  
+  $out->close();
+</code>
+
+Other implementations:
+* CsvObjectWriter - writes objects to a CSV file, mapping class properties
+  to columns.
+* CsvBeanWriter - like CsvObjectWriter, but uses getters to access
+  properties.
+
+
+Different separators
+~~~~~~~~~~~~~~~~~~~~
+CSV files usually use the semi-colon to separate values. Depending on the 
+file we're parsing, this might be a different character. Both readers and
+writers accept an optional second parameter with which the format can be
+changed.
+
+<code>
+  $format= create(new CsvFormat())->withDelimiter(',');
+  $format= CsvFormat::$COMMAS;    // Short-hand for the above
+  
+  $writer= new CsvListWriter(..., $format);
+  $reader= new CsvListReader(..., $format);
+</code>
+
+The CsvFormat object also lets you change the quoting character:
+
+<code>
+  $format->setQuote("'");
+</code>
+
+
+Data types and constraints
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Because data inside a CSV file is untyped, and because CSV files are usually
+edited by humans, we have to take great care when reading them. The new CSV
+api proposed here adds so-called "cell processors" which take care of 
+transforming the data from and into different data types. By using one of
+the constraint processors, we can even perform value checking.
+
+Example:
+<code>
+  $writer= create(new CsvListWriter(...))->withProcessors(array(
+    NULL,
+    new FormatDate('d.m.Y')
+  ));
+  $writer->setHeader(array('order-id', 'date-placed'));
+  $writer->write(array(1234, new Date('2009-09-09')));
+</code>
+
+This will create the following CSV file:
+<code>
+  order-id;date-placed
+  1234;09.09.2009
+</code>
+
+Reading this file:
+<code>
+  $reader= create(new CsvListReader(...))->withProcessors(array(
+    new AsInteger(),
+    new AsDate()
+  ));
+  $reader->getHeader();
+  $record= $reader->read();
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+The classes text.CSVGenerator and text.parser.CSVParser will be 
+deprecated.
+
+
+Related documents
+-----------------
+* RFC #0190 - for the TextReader and TextWriter classes.
+* http://supercsv.sourceforge.net/codeExamples_general.html
+* RFC #0182 - RFC obsoleted, functionality implemented herein
+* http://experiments.xp-forge.net/xml/browse?arena,rfc0191
+
+Comments
+--------
+
+<EOF>

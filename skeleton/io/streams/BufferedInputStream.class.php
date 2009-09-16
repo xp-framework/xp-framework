@@ -1,5 +1,5 @@
 <?php
-/* This file is part of the XP framework's experiments
+/* This file is part of the XP framework
  *
  * $Id$
  */

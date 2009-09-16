@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'rdbms.DriverManager',
+    'rdbms.finder.GenericFinder',
     'net.xp_framework.unittest.rdbms.mock.MockConnection',
     'net.xp_framework.unittest.rdbms.dataset.JobFinder'
   );
@@ -18,11 +19,8 @@
    * @purpose  Unit test
    */
   class FinderTest extends TestCase {
-    const
-      MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
-
-    protected 
-      $fixture = NULL;
+    const MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
+    protected $fixture = NULL;
 
     /**
      * Mock connection registration
@@ -343,6 +341,32 @@
     public function findAllWrapsSQLException() {
       $this->getConnection()->makeQueryFail(6010, 'Not enough power');
       $this->fixture->findAll(new Criteria());
+    }
+
+    /**
+     * Test GenericFinder
+     *
+     */
+    #[@test]
+    public function genericFinderGetAll() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        ),
+        1 => array(   // Second row
+          'job_id'      => 2,
+          'title'       => $this->getName().' #2',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $all= create(new GenericFinder(Job::getPeer()))->getAll(new Criteria());
+      $this->assertEquals(2, sizeof($all));
+      $this->assertClass($all[0], 'net.xp_framework.unittest.rdbms.dataset.Job');
+      $this->assertClass($all[1], 'net.xp_framework.unittest.rdbms.dataset.Job');
     }
   }
 ?>

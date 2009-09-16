@@ -13,7 +13,7 @@
    *
    * @purpose  OuputStream implementation
    */
-  class BufferedOutputStream extends Object {
+  class BufferedOutputStream extends Object implements OutputStream {
     protected 
       $out  = NULL,
       $buf  = '',
