@@ -226,16 +226,34 @@
     /**
      * Sets request parameters
      *
-     * @param   array params
+     * @param   array<string, string> params
      */
     public function setParams($params) {
-      $this->params= $params;
+      $this->params= array_change_key_case($params, CASE_LOWER);
+    }
+
+    /**
+     * Gets all request headers
+     *
+     * @return  array<string, string> headers
+     */
+    public function getHeaders() {
+      return $this->headers;
+    }
+
+    /**
+     * Sets request headers
+     *
+     * @param   array<string, string> headers
+     */
+    public function setHeaders($headers) {
+      $this->headers= array_change_key_case($headers, CASE_LOWER);
     }
 
     /**
      * Gets all request parameters
      *
-     * @return  array params
+     * @return  array<string, string> params
      */
     public function getParams() {
       return $this->params;
