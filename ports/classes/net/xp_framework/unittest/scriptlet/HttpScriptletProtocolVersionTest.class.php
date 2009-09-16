@@ -31,6 +31,9 @@
       $req->env['SERVER_PROTOCOL']= 'HTTP/1.1';
       $req->env['HTTP_HOST']= $url->getHost();
       $req->env['REQUEST_URI']= $url->getPath();
+      if ('https' === $url->getScheme()) { 
+        $req->env['HTTPS']= 'on';
+      }
       $req->params= $url->getParams();
       return $req;
     }
@@ -102,7 +105,7 @@
     #[@test, @expect('scriptlet.HttpScriptletException')]
     public function emptyProtocolRequestsUnsupported() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
-      $req->env['SERVER_PROTOCOL']= NULL;
+      $req->env['SERVER_PROTOCOL']= '';
       $res= new HttpScriptletResponse();
       
       $s= new HttpScriptlet();
