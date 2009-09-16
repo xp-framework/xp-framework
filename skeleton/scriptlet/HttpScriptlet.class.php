@@ -269,7 +269,9 @@
      * @throws  lang.XPException to indicate failure
      */
     public function doCreateSession($request, $response) {
-      $response->sendRedirect($request->getURL()->getURL());
+      $redirect= $request->getURL();
+      $redirect->setSessionId($request->session->getId());
+      $response->sendRedirect($redirect->getURL());
       return FALSE;
     }
     
