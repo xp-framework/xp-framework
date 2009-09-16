@@ -316,12 +316,11 @@
      * it to on of the do* -methods of the scriptlet. It will also
      * call the <pre>doCreateSession()</pre> method if necessary.
      *
-     * @return  scriptlet.HttpScriptletResponse the response object
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @throws  scriptlet.HttpScriptletException indicating fatal errors
      */
-    public function process() {
-      $request= $this->_request();
-      $this->_setupRequest($request);
+    public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
 
       // Check if this method can be handled. In case it can't, throw a
       // HttpScriptletException with the HTTP status code 501 ("Method not
@@ -342,7 +341,6 @@
       // getting are 1.0 (some proxies or do this) or 1.1 (any current browser).
       // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
       // other protocol version.
-      $response= $this->_response();
       $response->setURI($request->getURL());
       if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
         throw new HttpScriptletException(
@@ -413,6 +411,23 @@
           $e
         );
       }
+    }
+
+    /**
+     * This method is called to process any request and dispatches
+     * it to on of the do* -methods of the scriptlet. It will also
+     * call the <pre>doCreateSession()</pre> method if necessary.
+     *
+     * @return  scriptlet.HttpScriptletResponse the response object
+     * @throws  scriptlet.HttpScriptletException indicating fatal errors
+     */
+    public function process() {
+      $request= $this->_request();
+      $response= $this->_response();
+
+      // Call service()
+      $this->_setupRequest($request);
+      $this->service($request, $response);
       
       // Return it
       return $response;
