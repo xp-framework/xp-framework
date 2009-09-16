@@ -335,6 +335,21 @@
       // Call the request's initialization method
       $request->initialize();
 
+      // Create response object. Answer with the same protocol version that the
+      // user agent sends us with the request. The only versions we should be 
+      // getting are 1.0 (some proxies or do this) or 1.1 (any current browser).
+      // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
+      // other protocol version.
+      $response= $this->_response();
+      $response->setURI($request->getURL());
+      if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
+        throw new HttpScriptletException(
+          'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
+          HttpConstants::STATUS_HTTP_VERSION_NOT_SUPPORTED
+        );
+      }
+      $response->version= '1.'.$minor;
+
       // Check if a session is present. This is either the case when a session
       // is already in the URL or if the scriptlet explicetly states it needs 
       // one (by returning TRUE from needsSession()).
@@ -374,21 +389,6 @@
         // Call doCreateSession() in case the session is new
         if ($request->session->isNew()) $method= 'doCreateSession';
       }
-
-      // Create response object. Answer with the same protocol version that the
-      // user agent sends us with the request. The only versions we should be 
-      // getting are 1.0 (some proxies or do this) or 1.1 (any current browser).
-      // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
-      // other protocol version.
-      $response= $this->_response();
-      $response->setURI($request->getURL());
-      if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
-        throw new HttpScriptletException(
-          'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
-          HttpConstants::STATUS_HTTP_VERSION_NOT_SUPPORTED
-        );
-      }
-      $response->version= '1.'.$minor;
 
       // Call method handler and, in case the method handler returns anything
       // else than FALSE, the response processor. Exceptions thrown from any of
