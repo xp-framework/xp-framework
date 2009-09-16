@@ -59,6 +59,8 @@
    * 
    *   $s->finalize();
    * </code>
+   *
+   * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletProcessTest
    */
   class HttpScriptlet extends Object {
     
