@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Refactored scriptlet API classes to make them testable
+  (friebe)
+
 Features
 ~~~~~~~~
 - Changed scriptlet error pages to use data protocol instead of relying
