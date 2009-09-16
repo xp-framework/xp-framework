@@ -6,8 +6,16 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Refactored scriptlet API classes to make them testable
+  (friebe)
+
 Features
 ~~~~~~~~
+- Changed scriptlet error pages to use data protocol instead of relying
+  on an image named "err.gif" in the document root's /image subdirectory
+  (friebe)
 - Added rdbms.finder.FinderMethod::getFinder() method
   (friebe)
 - Added getInputStream() and getOutputStream() methods to io.File

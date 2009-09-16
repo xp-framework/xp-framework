@@ -50,6 +50,12 @@
      */
     public function setSessionId($session) {
       $this->values->put('SessionId', $session);
+      if (NULL !== ($s= $this->getParam('psessionid'))) {
+        $this->_info['query']= strtr($this->_info['query'], array(
+          'psessionid='.$s     => '',
+          '&&'                 => '',
+        ));
+      }
     }
 
     /**
@@ -83,7 +89,7 @@
      */
     public function getURL() {
       return sprintf(
-        '%1$s://%2$s%3$s/%6$s?%s&psessionid=%7$s',
+        '%1$s://%2$s%3$s?%6$s&psessionid=%7$s',
         $this->getScheme(),
         $this->getHost(),
         $this->getPath(),

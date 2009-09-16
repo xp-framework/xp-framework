@@ -59,6 +59,8 @@
    * 
    *   $s->finalize();
    * </code>
+   *
+   * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletProcessTest
    */
   class HttpScriptlet extends Object {
     
@@ -269,7 +271,9 @@
      * @throws  lang.XPException to indicate failure
      */
     public function doCreateSession($request, $response) {
-      $response->sendRedirect($request->getURL()->getURL());
+      $redirect= $request->getURL();
+      $redirect->setSessionId($request->session->getId());
+      $response->sendRedirect($redirect->getURL());
       return FALSE;
     }
     
@@ -294,17 +298,13 @@
     /**
      * Set the request from the environment.
      *
+     * @deprecated  Uses raw environment
      * @param   scriptlet.HttpRequest request
      */
     protected function _setupRequest($request) {
-      $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= $request->getEnvValue('REQUEST_METHOD');
-      $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-      $request->setURL($this->_url(
-        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
-        $request->getEnvValue('HTTP_HOST').
-        $request->getEnvValue('REQUEST_URI')
-      ));
+      $request->setHeaders(getallheaders());
+      $request->setParams($_REQUEST);
     }    
     
     /**
@@ -312,12 +312,16 @@
      * it to on of the do* -methods of the scriptlet. It will also
      * call the <pre>doCreateSession()</pre> method if necessary.
      *
-     * @return  scriptlet.HttpScriptletResponse the response object
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @param   scriptlet.HttpScriptletResponse response 
      * @throws  scriptlet.HttpScriptletException indicating fatal errors
      */
-    public function process() {
-      $request= $this->_request();
-      $this->_setupRequest($request);
+    public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
+      $request->setURL($this->_url(
+        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
+        $request->getEnvValue('HTTP_HOST').
+        $request->getEnvValue('REQUEST_URI')
+      ));
 
       // Check if this method can be handled. In case it can't, throw a
       // HttpScriptletException with the HTTP status code 501 ("Method not
@@ -332,6 +336,20 @@
 
       // Call the request's initialization method
       $request->initialize();
+
+      // Create response object. Answer with the same protocol version that the
+      // user agent sends us with the request. The only versions we should be 
+      // getting are 1.0 (some proxies or do this) or 1.1 (any current browser).
+      // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
+      // other protocol version.
+      $response->setURI($request->getURL());
+      if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
+        throw new HttpScriptletException(
+          'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
+          HttpConstants::STATUS_HTTP_VERSION_NOT_SUPPORTED
+        );
+      }
+      $response->version= '1.'.$minor;
 
       // Check if a session is present. This is either the case when a session
       // is already in the URL or if the scriptlet explicetly states it needs 
@@ -373,21 +391,6 @@
         if ($request->session->isNew()) $method= 'doCreateSession';
       }
 
-      // Create response object. Answer with the same protocol version that the
-      // user agent sends us with the request. The only versions we should be 
-      // getting are 1.0 (some proxies or do this) or 1.1 (any current browser).
-      // Answer with a "HTTP Version Not Supported" statuscode (#505) for any 
-      // other protocol version.
-      $response= $this->_response();
-      $response->setURI($request->getURL());
-      if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
-        throw new HttpScriptletException(
-          'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
-          HttpConstants::STATUS_HTTP_VERSION_NOT_SUPPORTED
-        );
-      }
-      $response->version= '1.'.$minor;
-
       // Call method handler and, in case the method handler returns anything
       // else than FALSE, the response processor. Exceptions thrown from any of
       // the two methods will result in a HttpScriptletException with the HTTP
@@ -409,6 +412,23 @@
           $e
         );
       }
+    }
+
+    /**
+     * This method is called to process any request and dispatches
+     * it to on of the do* -methods of the scriptlet. It will also
+     * call the <pre>doCreateSession()</pre> method if necessary.
+     *
+     * @return  scriptlet.HttpScriptletResponse the response object
+     * @throws  scriptlet.HttpScriptletException indicating fatal errors
+     */
+    public function process() {
+      $request= $this->_request();
+      $response= $this->_response();
+
+      // Call service()
+      $this->_setupRequest($request);
+      $this->service($request, $response);
       
       // Return it
       return $response;
