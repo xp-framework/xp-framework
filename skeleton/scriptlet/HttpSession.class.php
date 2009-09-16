@@ -84,12 +84,14 @@
       }
       
       // New Session
-      session_start();
+      @session_start(); 
+      session_regenerate_id();
       $this->isNew= TRUE;
       $this->id= session_id();
       
       // Remember when we started this session
       $_SESSION[SESS_CREATE]= time();
+      return TRUE;
     }
     
     /**
