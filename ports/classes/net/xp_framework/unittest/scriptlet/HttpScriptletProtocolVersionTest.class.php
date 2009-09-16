@@ -11,7 +11,9 @@
   );
 
   /**
-   * TestCase
+   * TestCase for protocol versioning in the scriptlet API. Scriptlets
+   * should answer with the correct protocol version (the one the user
+   * agent sent the request in!)
    *
    * @see      xp://scriptlet.HttpScriptlet
    */
