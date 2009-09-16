@@ -298,17 +298,13 @@
     /**
      * Set the request from the environment.
      *
+     * @deprecated  Uses raw environment
      * @param   scriptlet.HttpRequest request
      */
     protected function _setupRequest($request) {
-      $request->headers= array_change_key_case(getallheaders(), CASE_LOWER);
       $request->method= $request->getEnvValue('REQUEST_METHOD');
-      $request->setParams(array_change_key_case($_REQUEST, CASE_LOWER));
-      $request->setURL($this->_url(
-        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
-        $request->getEnvValue('HTTP_HOST').
-        $request->getEnvValue('REQUEST_URI')
-      ));
+      $request->setHeaders(getallheaders());
+      $request->setParams($_REQUEST);
     }    
     
     /**
@@ -321,6 +317,11 @@
      * @throws  scriptlet.HttpScriptletException indicating fatal errors
      */
     public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
+      $request->setURL($this->_url(
+        ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
+        $request->getEnvValue('HTTP_HOST').
+        $request->getEnvValue('REQUEST_URI')
+      ));
 
       // Check if this method can be handled. In case it can't, throw a
       // HttpScriptletException with the HTTP status code 501 ("Method not
