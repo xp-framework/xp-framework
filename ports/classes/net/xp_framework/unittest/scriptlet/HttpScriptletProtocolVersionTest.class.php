@@ -27,16 +27,18 @@
      * @return  scriptlet.HttpScriptletRequest
      */
     protected function newRequest($method, URL $url) {
+      $q= $url->getQuery('');
       $req= new HttpScriptletRequest();
       $req->method= $method;
-      $req->headers= array();
       $req->env['SERVER_PROTOCOL']= 'HTTP/1.1';
+      $req->env['REQUEST_URI']= $url->getPath('/').($q ? '?'.$q : '');
+      $req->env['QUERY_STRING']= $q;
       $req->env['HTTP_HOST']= $url->getHost();
-      $req->env['REQUEST_URI']= $url->getPath();
       if ('https' === $url->getScheme()) { 
         $req->env['HTTPS']= 'on';
       }
-      $req->params= $url->getParams();
+      $req->setHeaders(array());
+      $req->setParams($url->getParams());
       return $req;
     }
   
