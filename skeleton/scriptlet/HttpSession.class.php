@@ -75,7 +75,7 @@
       if (!empty($id)) {
         $this->id= $id;
         session_id($this->id);
-        session_start();
+        @session_start();
         
         if (!isset($_SESSION[SESS_CREATE])) return FALSE;
         
@@ -218,7 +218,7 @@
      */
     public function invalidate() {
       if (!$this->isValid()) throw(new IllegalStateException('Session is invalid'));
-      session_destroy();
+      @session_destroy();
       $_SESSION= array();
     }
 
