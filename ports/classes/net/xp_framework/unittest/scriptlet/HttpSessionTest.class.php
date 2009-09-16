@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('scriptlet.HttpSession', 'unittest.TestCase', 'util.Date');
+  uses('scriptlet.HttpSession', 'unittest.TestCase', 'util.Date', 'io.Folder');
 
   /**
    * TestCase for scriptlet.HttpSession class.
@@ -39,6 +39,27 @@
     public function tearDown() {
       if (is('scriptlet.HttpSession', $this->session) && $this->session->isValid()) {
         $this->session->invalidate();
+      }
+    }
+    
+    /**
+     * Session mess: Set session save path
+     *
+     */
+    #[@beforeClass]
+    public static function setSessionSavePath() {
+      session_save_path(getcwd());
+    }
+    
+    /**
+     * Session mess: Cleanup session save path
+     *
+     */
+    #[@afterClass]
+    public static function cleanupSessionSavePath() {
+      $f= new Folder(session_save_path());
+      while ($e= $f->getEntry()) {
+        if (0 === strncmp('sess_', $e, 5)) unlink($f->getURI().$e);
       }
     }
   
@@ -181,7 +202,7 @@
      * arbitrary names as session ids)
      *
      */
-    #[@test]
+    #[@test, @ignore('Creates an unremovable file sess_ILLEGALSESSIONID')]
     public function testIllegalConstruct() {
       $this->assertFalse($this->session->initialize('ILLEGALSESSIONID'));
     }
@@ -190,7 +211,7 @@
      * Test access protection on invalid sessions
      *
      */
-    #[@test, @expect('lang.IllegalStateException')]
+    #[@test, @ignore('Creates an unremovable file sess_ILLEGALSESSIONID'), @expect('lang.IllegalStateException')]
     public function testIllegalSessionAccess() {
       $this->session->initialize('ILLEGALSESSIONID');
       $this->session->putValue('foo', $f= 3);
