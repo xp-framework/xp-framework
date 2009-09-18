@@ -156,7 +156,7 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function nonExistantProcessId() {
-      $this->assertNull(Process::getProcessById(-1));
+      Process::getProcessById(-1);
     }
 
     /**

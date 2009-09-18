@@ -192,7 +192,11 @@
         } catch (Exception $e) {
           throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
         }
-      } else if (is_dir('/proc')) {
+        
+      // Try to figure out whether we can use /proc filesystem (and also check
+      // that /proc is not just an empty directory; this assumes that process 1
+      // always exists - which usually is `init`)  
+      } else if (is_dir('/proc/1')) {
         if (!file_exists($proc= '/proc/'.$pid)) {
           throw new IllegalStateException('Cannot find executable in /proc');
         }
