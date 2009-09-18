@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestListener', 'io.streams.OutputStreamWriter');
+  uses('unittest.TestListener', 'io.streams.OutputStreamWriter', 'lang.Runtime');
 
   /**
    * Verbose listener - shows details for all tests (succeeded, failed
