@@ -206,16 +206,16 @@
           break;
         }
         $self->status['command']= strtr(file_get_contents($proc.'/cmdline'), "\0", ' ');
-      } else if ($exe) {
+      } else if ($exe || ($_= getenv('_'))) {
         try {
-          $self->status['exe']= $self->resolve($exe);
-          $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand');
+          $self->status['exe']= $self->resolve($exe ? $exe : $_);
+          $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand 2>&1', $out, $exit);
         } catch (IOException $e) {
           throw new IllegalStateException($e->getMessage());
         }
-      } else if ($_= getenv('_')) {
-        $self->status['exe']= $self->resolve($_);
-        $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand');
+        if (0 !== $exit) {
+          throw new IllegalStateException('Cannot find executable: '.implode('', $out));
+        }
       } else {
         throw new IllegalStateException('Cannot find executable');
       }
