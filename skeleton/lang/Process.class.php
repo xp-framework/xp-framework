@@ -209,13 +209,13 @@
       } else if ($exe) {
         try {
           $self->status['exe']= $self->resolve($exe);
-          $self->status['command']= exec('ps -p '.$pid.' -ocommand');
+          $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand');
         } catch (IOException $e) {
           throw new IllegalStateException($e->getMessage());
         }
       } else if ($_= getenv('_')) {
         $self->status['exe']= $self->resolve($_);
-        $self->status['command']= exec('ps -p '.$pid.' -ocommand');
+        $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand');
       } else {
         throw new IllegalStateException('Cannot find executable');
       }
