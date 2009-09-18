@@ -12,13 +12,14 @@
   );
 
   /**
-   * Creates an XML file
+   * Creates an XML file suitable for importing into continuous integration
+   * systems like Hudson.
    *
    * @purpose  TestListener
    */
   class XmlTestListener extends Object implements TestListener {
     public $out= NULL;
-    protected $classes= array();
+    protected $classes= NULL;
     
     /**
      * Constructor
