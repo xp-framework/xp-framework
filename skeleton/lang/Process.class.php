@@ -192,7 +192,10 @@
         } catch (Exception $e) {
           throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
         }
-      } else if (file_exists($proc= '/proc/'.$pid)) {
+      } else if (is_dir('/proc')) {
+        if (!file_exists($proc= '/proc/'.$pid)) {
+          throw new IllegalStateException('Cannot find executable in /proc');
+        }
         foreach (array('/exe', '/file') as $alt) {
           if (!file_exists($proc.$alt)) continue;
           $self->status['exe']= readlink($proc.$alt);
