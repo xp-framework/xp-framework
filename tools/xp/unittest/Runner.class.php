@@ -14,6 +14,7 @@
     'xp.unittest.sources.ClassFileSource',
     'xp.unittest.sources.PackageSource',
     'xp.unittest.sources.EvaluationSource',
+    'io.streams.FileOutputStream',
     'io.File',
     'unittest.TestSuite',
     'util.Properties',
@@ -34,6 +35,8 @@
    * <ul>
    *   <li>-v : Be verbose</li>
    *   <li>-cp: Add classpath elements</li>
+   *   <li>-l {listener.class.Name} {output}, where output is either "-"
+   *     for console output or a file name</li>
    * </ul>
    * Tests can be one or more of:
    * <ul>
@@ -88,6 +91,20 @@
       }
       return $args[$offset];
     }
+    
+    /**
+     * Returns an output stream writer for a given file name.
+     *
+     * @param   string in
+     * @return  io.streams.OutputStreamWriter
+     */
+    protected static function streamWriter($in) {
+      if ('-' === $in) {
+        return Console::$out;
+      } else {
+        return new StringWriter(new FileOutputStream($in));
+      }
+    }
 
     /**
      * Main runner method
@@ -96,6 +113,9 @@
      */
     public static function main(array $args) {
       if (!$args) self::usage();
+
+      // Setup suite
+      $suite= new TestSuite();
 
       // Parse arguments
       $sources= new Vector();
@@ -110,6 +130,10 @@
             }
           } else if ('-e' === $args[$i]) {
             $sources->add(new EvaluationSource(self::arg($args, ++$i, 'e')));
+          } else if ('-l' === $args[$i]) {
+            $class= XPClass::forName(self::arg($args, ++$i, 'l'));
+            $output= self::streamWriter(self::arg($args, ++$i, 'l'));
+            $suite->addListener($class->newInstance($output));
           } else if ('-?' === $args[$i]) {
             self::usage();
           } else if (strstr($args[$i], '.ini')) {
@@ -134,8 +158,6 @@
         exit(1);
       }
       
-      // Setup suite
-      $suite= new TestSuite();
       $suite->addListener($verbose 
         ? new VerboseListener(Console::$out)
         : new DefaultListener(Console::$out)
