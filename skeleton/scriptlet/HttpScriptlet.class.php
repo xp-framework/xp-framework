@@ -105,6 +105,17 @@
     }
     
     /**
+     * Get authenticator for a certain request. Returns NULL in this default
+     * implementation to indicate no authentication is required.
+     *
+     * @param   scriptlet.HttpScriptletRequest request 
+     * @return  scriptlet.RequestAuthenticator
+     */
+    public function getAuthenticator($request) {
+      return NULL;
+    }
+    
+    /**
      * Initialize session
      *
      * @param   scriptlet.HttpScriptletRequest request
@@ -389,6 +400,26 @@
         
         // Call doCreateSession() in case the session is new
         if ($request->session->isNew()) $method= 'doCreateSession';
+      }
+
+      // If this scriptlet has an authenticator, run its authenticate()
+      // method. This method may return FALSE to indicate no further
+      // processing is to be done (e.g., in case it redirects to a login
+      // site). Exceptions thrown are wrapped in a HttpScriptletException
+      // with status code 403 ("Forbidden").
+      if ($auth= $this->getAuthenticator($request)) {
+        try {
+          $r= $auth->authenticate($request, $response, NULL);
+        } catch (HttpScriptletException $e) {
+          throw $e;
+        } catch (XPException $e) {
+          throw new HttpScriptletException(
+            'Authentication failed: '.$e->getMessage(),
+            HttpConstants::STATUS_FORBIDDEN,
+            $e
+          );
+        }
+        if (FALSE === $r) return;
       }
 
       // Call method handler and, in case the method handler returns anything
