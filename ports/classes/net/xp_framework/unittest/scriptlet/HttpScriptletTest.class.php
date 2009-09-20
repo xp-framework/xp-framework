@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'scriptlet.HttpScriptlet',
+    'scriptlet.RequestAuthenticator',
     'peer.URL'
   );
 
@@ -326,6 +327,87 @@
         $this->assertEquals(session_id(), $redirect->getParam('psessionid'));
         $this->assertEquals('1', $redirect->getParam('relogin'));
       }
+    }
+
+    /**
+     * Test authenticator that always throws exceptions
+     *
+     */
+    #[@test, @expect('scriptlet.HttpScriptletException')]
+    public function unconditionalDenyAuthenticator() {
+      $req= $this->newRequest('GET', new URL('http://localhost/members/profile'));
+      $res= new HttpScriptletResponse();
+
+      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
+        public function getAuthenticator($request) {
+          if (!strstr($request->getURL()->getPath(), "/members")) return NULL;
+          
+          return newinstance(\'scriptlet.RequestAuthenticator\', array(), \'{
+            public function authenticate($request, $response, $context) {
+              throw new IllegalAccessException("Valid user required");
+            }
+          }\');
+        }
+      }');
+      $s->service($req, $res);
+    }
+
+    /**
+     * Test authenticator that redirects
+     *
+     */
+    #[@test]
+    public function redirectingAuthenticator() {
+      $req= $this->newRequest('GET', new URL('http://localhost/members/profile'));
+      $res= new HttpScriptletResponse();
+
+      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
+        public function getAuthenticator($request) {
+          if (!strstr($request->getURL()->getPath(), "/members")) return NULL;
+          
+          return newinstance(\'scriptlet.RequestAuthenticator\', array(), \'{
+            public function authenticate($request, $response, $context) {
+              $response->sendRedirect("http://localhost/login");
+              return FALSE;
+            }
+          }\');
+        }
+        
+        public function doGet($request, $response) {
+          throw new IllegalAccessException("Valid user required");
+        }
+      }');
+      $s->service($req, $res);
+      $this->assertEquals(HttpConstants::STATUS_FOUND, $res->statusCode);
+      $this->assertEquals('Location: http://localhost/login', $res->headers[0]);
+    }
+
+    /**
+     * Test authenticator that always returns TRUE
+     *
+     */
+    #[@test]
+    public function unconditionalAllowAuthenticator() {
+      $req= $this->newRequest('GET', new URL('http://localhost/members/profile'));
+      $res= new HttpScriptletResponse();
+
+      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
+        public function getAuthenticator($request) {
+          if (!strstr($request->getURL()->getPath(), "/members")) return NULL;
+          
+          return newinstance(\'scriptlet.RequestAuthenticator\', array(), \'{
+            public function authenticate($request, $response, $context) {
+              return TRUE;
+            }
+          }\');
+        }
+        
+        public function doGet($request, $response) {
+          $response->write("Welcome!");
+        }
+      }');
+      $s->service($req, $res);
+      $this->assertEquals('Welcome!', $res->getContent());
     }
   }
 ?>
