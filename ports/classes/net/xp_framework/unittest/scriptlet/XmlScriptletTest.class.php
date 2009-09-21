@@ -125,6 +125,28 @@
     }
     
     /**
+     * Creates a template that will dump all special "__"-parameters
+     *
+     * @return  xml.XslTemplate
+     */
+    protected function dumpParamsTemplate() {
+      return create(new XslTemplate())->matching('/')
+        ->withChild(create(new Node('html'))
+          ->withChild(create(new Node('body'))
+            ->withChild(new Node('xsl:value-of', NULL, array('select' => 'concat(
+              "state=",   $__state, ", ",
+              "page=",    $__page, ", ",
+              "lang=",    $__lang, ", ",
+              "product=", $__product, ", ",
+              "sess=",    $__sess, ", ",
+              "query=",   $__query
+            )')))
+          )
+        )
+      ;
+    }
+    
+    /**
      * Test parameters passed to XSL
      *
      */
@@ -133,20 +155,7 @@
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= $this->newResponse(create(new Stylesheet())
         ->withOutputMethod('xml')
-        ->withTemplate(create(new XslTemplate())->matching('/')
-          ->withChild(create(new Node('html'))
-            ->withChild(create(new Node('body'))
-              ->withChild(new Node('xsl:value-of', NULL, array('select' => 'concat(
-                "state=",   $__state, ", ",
-                "page=",    $__page, ", ",
-                "lang=",    $__lang, ", ",
-                "product=", $__product, ", ",
-                "sess=",    $__sess, ", ",
-                "query=",   $__query
-              )')))
-            )
-          )
-        )
+        ->withTemplate($this->dumpParamsTemplate())
       );
       
       $s= new XMLScriptlet();
@@ -168,20 +177,7 @@
       $req= $this->newRequest('GET', new URL('http://localhost/xml/home'));
       $res= $this->newResponse(create(new Stylesheet())
         ->withOutputMethod('xml')
-        ->withTemplate(create(new XslTemplate())->matching('/')
-          ->withChild(create(new Node('html'))
-            ->withChild(create(new Node('body'))
-              ->withChild(new Node('xsl:value-of', NULL, array('select' => 'concat(
-                "state=",   $__state, ", ",
-                "page=",    $__page, ", ",
-                "lang=",    $__lang, ", ",
-                "product=", $__product, ", ",
-                "sess=",    $__sess, ", ",
-                "query=",   $__query
-              )')))
-            )
-          )
-        )
+        ->withTemplate($this->dumpParamsTemplate())
       );
       
       $s= new XMLScriptlet();
@@ -203,20 +199,7 @@
       $req= $this->newRequest('GET', new URL('http://localhost/xml/public.de_DE/home'));
       $res= $this->newResponse(create(new Stylesheet())
         ->withOutputMethod('xml')
-        ->withTemplate(create(new XslTemplate())->matching('/')
-          ->withChild(create(new Node('html'))
-            ->withChild(create(new Node('body'))
-              ->withChild(new Node('xsl:value-of', NULL, array('select' => 'concat(
-                "state=",   $__state, ", ",
-                "page=",    $__page, ", ",
-                "lang=",    $__lang, ", ",
-                "product=", $__product, ", ",
-                "sess=",    $__sess, ", ",
-                "query=",   $__query
-              )')))
-            )
-          )
-        )
+        ->withTemplate($this->dumpParamsTemplate())
       );
       
       $s= new XMLScriptlet();
@@ -238,20 +221,7 @@
       $req= $this->newRequest('GET', new URL('http://localhost/?a=b'));
       $res= $this->newResponse(create(new Stylesheet())
         ->withOutputMethod('xml')
-        ->withTemplate(create(new XslTemplate())->matching('/')
-          ->withChild(create(new Node('html'))
-            ->withChild(create(new Node('body'))
-              ->withChild(new Node('xsl:value-of', NULL, array('select' => 'concat(
-                "state=",   $__state, ", ",
-                "page=",    $__page, ", ",
-                "lang=",    $__lang, ", ",
-                "product=", $__product, ", ",
-                "sess=",    $__sess, ", ",
-                "query=",   $__query
-              )')))
-            )
-          )
-        )
+        ->withTemplate($this->dumpParamsTemplate())
       );
       
       $s= new XMLScriptlet();
