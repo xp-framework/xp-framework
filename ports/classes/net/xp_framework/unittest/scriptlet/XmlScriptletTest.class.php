@@ -182,6 +182,41 @@
         )
       ;
     }
+
+    /**
+     * Test parameters passed to XSL
+     *
+     */
+    #[@test]
+    public function requestParametersAppearInFormresult() {
+      $req= $this->newRequest('GET', new URL('http://localhost/?a=b&b=c'));
+      $res= $this->newResponse(create(new Stylesheet())
+        ->withOutputMethod('xml')
+        ->withTemplate(create(new XslTemplate())->matching('/')
+          ->withChild(create(new Node('html'))
+            ->withChild(create(new Node('body'))
+              ->withChild(new Node('xsl:copy-of', NULL, array('select' => '/formresult/formvalues')))
+            )
+          )
+        )
+      );
+      
+      $s= new XMLScriptlet();
+      $s->service($req, $res);
+      $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?>'."\n".
+        '<html>'."\n".
+        '  <body>'."\n".
+        '    <formvalues xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'."\n".
+        '      <param name="a" xsi:type="xsd:string">b</param>'."\n".
+        '      <param name="b" xsi:type="xsd:string">c</param>'."\n".
+        '    </formvalues>'."\n".
+        '  </body>'."\n".
+        '</html>'."\n",
+        $res->getContent()
+      );
+    }
     
     /**
      * Test parameters passed to XSL
