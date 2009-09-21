@@ -38,6 +38,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed newline detection in StreamReader::readLine()
+  (hinckel)
 - Fixed XPath constructor to include XML declaration when creating XPath
   object from xml.Tree
   (hinckel, Christine Karch)

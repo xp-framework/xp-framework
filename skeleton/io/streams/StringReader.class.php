@@ -10,6 +10,7 @@
    * A InputStreamReader implementation that reads string values of
    * the given arguments from the underlying input stream.
    *
+   * @test     xp://net.xp_framework.unittest.io.streams.StringReaderTest
    * @purpose  InputStreamReader implementation
    */
   class StringReader extends Object implements InputStreamReader {
@@ -87,7 +88,7 @@
           return $line;
         }
         $line.= $c;
-      } while ($c);
+      } while ($c !== FALSE);
       return $line;
     }
   }
