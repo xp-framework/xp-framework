@@ -7,7 +7,7 @@
   define('XSL_VERSION_1_0', '1.0');
   define('XSL_NAMESPACE',   'http://www.w3.org/1999/XSL/Transform');
 
-  uses('xml.Tree');
+  uses('xml.Tree', 'xml.XslTemplate');
 
   /**
    * Represents an XSL stylesheet
@@ -170,6 +170,28 @@
      */
     public function withVariable($name) {
       $this->addVariable($name);
+      return $this;
+    }
+
+    /**
+     * Add a template
+     *
+     * @param   xml.XslTemplate t
+     * @return  xml.XslTemplate the added template
+     */
+    public function addTemplate(XslTemplate $t) {
+      $this->root->addChild($t);
+      return $t;
+    }
+
+    /**
+     * Add a template and return this stylesheet.
+     *
+     * @param   xml.XslTemplate t
+     * @return  xml.Stylesheet this
+     */
+    public function withTemplate(XslTemplate $t) {
+      $this->root->addChild($t);
       return $this;
     }
     

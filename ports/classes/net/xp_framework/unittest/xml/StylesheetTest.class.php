@@ -218,5 +218,63 @@
         trim($this->getElementsByTagName($s->root, 'xsl:variable')->get(0)->getSource(INDENT_NONE))
       );
     }
+
+    /**
+     * Test addTemplate()
+     *
+     */
+    #[@test]
+    public function addMatchTemplate() {
+      $s= new Stylesheet();
+      $s->addTemplate(create(new XslTemplate())->matching('/'));
+      
+      $this->assertEquals(
+        '<xsl:template match="/"></xsl:template>',
+        trim($this->getElementsByTagName($s->root, 'xsl:template')->get(0)->getSource(INDENT_NONE))
+      );
+    }
+
+    /**
+     * Test withTemplate()
+     *
+     */
+    #[@test]
+    public function withMatchTemplate() {
+      $s= create(new Stylesheet())->withTemplate(create(new XslTemplate())->matching('/'));
+      
+      $this->assertEquals(
+        '<xsl:template match="/"></xsl:template>',
+        trim($this->getElementsByTagName($s->root, 'xsl:template')->get(0)->getSource(INDENT_NONE))
+      );
+    }
+
+    /**
+     * Test addTemplate()
+     *
+     */
+    #[@test]
+    public function addNamedTemplate() {
+      $s= new Stylesheet();
+      $s->addTemplate(create(new XslTemplate())->named('sitemap'));
+      
+      $this->assertEquals(
+        '<xsl:template name="sitemap"></xsl:template>',
+        trim($this->getElementsByTagName($s->root, 'xsl:template')->get(0)->getSource(INDENT_NONE))
+      );
+    }
+
+    /**
+     * Test withTemplate()
+     *
+     */
+    #[@test]
+    public function withNamedTemplate() {
+      $s= create(new Stylesheet())->withTemplate(create(new XslTemplate())->named('sitemap'));
+      
+      $this->assertEquals(
+        '<xsl:template name="sitemap"></xsl:template>',
+        trim($this->getElementsByTagName($s->root, 'xsl:template')->get(0)->getSource(INDENT_NONE))
+      );
+    }
   }
 ?>
