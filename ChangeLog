@@ -13,6 +13,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added xml.Node::withChild() method to complete addChild() - but instead
+  of returning the child returns the node itself.
+  (friebe)
 - Added various with*() methods to xml.Stylesheet to complement their
   add*() counterparts - but instead return the stylesheet instance to
   allow for a fluent API.
