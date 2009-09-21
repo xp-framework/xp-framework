@@ -61,7 +61,8 @@
     #[@test]
     public function doGet() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
-      $res= $this->newResponse(create(new Stylesheet())->withOutputMethod('xml')
+      $res= $this->newResponse(create(new Stylesheet())
+        ->withOutputMethod('xml')
         ->withTemplate(create(new XslTemplate())->matching('/')
           ->withChild(create(new Node('html'))
             ->withChild(create(new Node('body'))
@@ -81,6 +82,38 @@
       $this->assertEquals(
         '<?xml version="1.0" encoding="iso-8859-1"?>'."\n".
         "<html>\n  <body>GET</body>\n</html>\n",
+        $res->getContent()
+      );
+    }
+
+    /**
+     * Test doPost() is invoked method
+     *
+     */
+    #[@test]
+    public function doPost() {
+      $req= $this->newRequest('POST', new URL('http://localhost/'));
+      $res= $this->newResponse(create(new Stylesheet())
+        ->withOutputMethod('xml')
+        ->withTemplate(create(new XslTemplate())->matching('/')
+          ->withChild(create(new Node('html'))
+            ->withChild(create(new Node('body'))
+              ->withChild(new Node('xsl:value-of', NULL, array('select' => '/formresult/result')))
+            )
+          )
+        )
+      );
+      
+      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+        public function doPost($request, $response) {
+          $response->addFormResult(new Node("result", "POST"));
+        }
+      }');
+      $s->service($req, $res);
+      $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?>'."\n".
+        "<html>\n  <body>POST</body>\n</html>\n",
         $res->getContent()
       );
     }
