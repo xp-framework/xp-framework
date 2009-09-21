@@ -18,6 +18,7 @@ Features
   (friebe)
 - Added xml.Node::withChild() method to complete addChild() - but instead
   of returning the child returns the node itself.
+  http://news.xp-framework.net/article/318/2009/09/21/
   (friebe)
 - Added various with*() methods to xml.Stylesheet to complement their
   add*() counterparts - but instead return the stylesheet instance to
