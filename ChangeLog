@@ -13,6 +13,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added xml.Stylesheet::addTemplate() (and withTemplate()) which work 
+  with xml.XslTemplate instances.
+  (friebe)
 - Added xml.Node::withChild() method to complete addChild() - but instead
   of returning the child returns the node itself.
   (friebe)
