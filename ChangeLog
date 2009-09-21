@@ -13,6 +13,10 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added various with*() methods to xml.Stylesheet to complement their
+  add*() counterparts - but instead return the stylesheet instance to
+  allow for a fluent API.
+  (friebe)
 - Changed scriptlet error pages to use data protocol instead of relying
   on an image named "err.gif" in the document root's /image subdirectory
   (friebe)
