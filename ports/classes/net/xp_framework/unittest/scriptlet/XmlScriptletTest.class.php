@@ -7,7 +7,6 @@
   uses(
     'unittest.TestCase',
     'scriptlet.xml.XMLScriptlet',
-    'scriptlet.RequestAuthenticator',
     'xml.Stylesheet',
     'peer.URL'
   );
@@ -90,6 +89,44 @@
         "<html>\n  <body>GET</body>\n</html>\n",
         $res->getContent()
       );
+    }
+
+    /**
+     * Test writing to response with write() throws an exception
+     *
+     */
+    #[@test, @expect('scriptlet.HttpScriptletException')]
+    public function writeToResponseNotPermitted () {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $res= $this->newResponse(create(new Stylesheet())->withOutputMethod('xml'));
+      
+      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+        public function doGet($request, $response) {
+          $response->write("Hello");
+        }
+      }');
+      $s->service($req, $res);
+    }
+
+    /**
+     * Test writing to response with write() throws no exception if
+     * processed flag is set to FALSE.
+     *
+     */
+    #[@test]
+    public function writeToResponsePermittedIfNotProcessed () {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $res= $this->newResponse(create(new Stylesheet())->withOutputMethod('xml'));
+      
+      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+        public function doGet($request, $response) {
+          $response->setProcessed(FALSE);
+          $response->write("Hello");
+        }
+      }');
+      $s->service($req, $res);
+      $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
+      $this->assertEquals('Hello', $res->getContent());
     }
 
     /**
