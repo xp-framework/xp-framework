@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Made peer.URL throw a lang.FormatException when passed malformed URLs
+  (friebe)
 - Changed peer.URL::addParams() and peer.URL::addParam() to throw a
   lang.IllegalArgumentException if the parameter to be added already
   exists

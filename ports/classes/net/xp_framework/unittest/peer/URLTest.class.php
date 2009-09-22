@@ -799,7 +799,7 @@
      * Test URL parsing
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.FormatException')]
     public function schemeOnlyUnparseable() {
       new URL('http://');
     }
@@ -808,7 +808,7 @@
      * Test URL parsing
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.FormatException')]
     public function schemeSeparatorOnlyUnparseable() {
       new URL('://');
     }
@@ -817,7 +817,7 @@
      * Test URL parsing
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.FormatException')]
     public function missingSchemeUnparseable() {
       new URL(':///path/to/file');
     }
@@ -826,7 +826,7 @@
      * Test URL parsing
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.FormatException')]
     public function emptyUnparseable() {
       new URL('');
     }
@@ -835,7 +835,7 @@
      * Test URL parsing
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.FormatException')]
     public function withoutSchemeUnparseable() {
       new URL('/path/to/file');
     }

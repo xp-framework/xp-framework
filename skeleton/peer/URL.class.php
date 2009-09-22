@@ -27,6 +27,7 @@
      * Constructor
      *
      * @param   string str
+     * @throws  lang.FormatException if string is unparseable
      */
     public function __construct($str= NULL) {
       if (NULL !== $str) $this->setURL($str);
@@ -382,9 +383,13 @@
      * Set full URL
      *
      * @param   string str URL
+     * @throws  lang.FormatException if string is unparseable
      */
     public function setURL($str) {
-      $this->_info= parse_url($str);
+      if (!strstr($str, '://') || !($this->_info= parse_url($str))) {
+        throw new FormatException('Cannot parse "'.$str.'"');
+      }
+      
       if (isset($this->_info['user'])) $this->_info['user']= rawurldecode($this->_info['user']);
       if (isset($this->_info['pass'])) $this->_info['pass']= rawurldecode($this->_info['pass']);
       if (isset($this->_info['query'])) {
