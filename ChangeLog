@@ -8,11 +8,22 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed peer.URL::addParams() and peer.URL::addParam() to throw a
+  lang.IllegalArgumentException if the parameter to be added already
+  exists
+  (friebe)
 - Refactored scriptlet API classes to make them testable
   (friebe)
 
 Features
 ~~~~~~~~
+- Added support for array parameters to peer.URL (num[]=one&num[]=two)
+  (friebe)
+- Added peer.URL::hasParam() method to test for existance of a single
+  parameter - it complements hasParams()
+  (friebe)
+- Added peer.URL::setParams() and peer.URL::setParam() methods
+  (friebe)
 - Added xml.Stylesheet::addTemplate() (and withTemplate()) which work 
   with xml.XslTemplate instances.
   (friebe)
@@ -38,6 +49,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.URL::getQuery() and peer.URL::hashCode() not being returning
+  the correct values after the URL object has been modified
+  (friebe)
 - Fixed newline detection in StreamReader::readLine()
   (hinckel)
 - Fixed XPath constructor to include XML declaration when creating XPath
