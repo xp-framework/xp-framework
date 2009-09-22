@@ -21,8 +21,7 @@
    * @see    php://parse_url
    */
   class URL extends Object {
-    public
-      $_info = array();
+    public $_info= array();
       
     /**
      * Constructor
@@ -34,7 +33,7 @@
     }
 
     /**
-     * Create a nice string representation
+     * Creates a string representation of this URL
      *
      * @return  string
      * @see     xp://lang.Object#toString
@@ -180,7 +179,20 @@
      * @return  string query or default if none is set
      */
     public function getQuery($default= NULL) {
-      return isset($this->_info['query']) ? $this->_info['query'] : $default;
+      if (!$this->_info['params']) return $default;
+      $query= '';
+      foreach ($this->_info['params'] as $key => $value) {
+        if (is_array($value)) {
+          foreach ($value as $v) {
+            $query.= '&'.urlencode($key).'[]='.urlencode($v);
+          }
+        } else if ('' === $value) {
+          $query.= '&'.urlencode($key);
+        } else {
+          $query.= '&'.urlencode($key).'='.urlencode($value);
+        }
+      }
+      return substr($query, 1);
     }
 
     /**
@@ -190,8 +202,7 @@
      * @return  peer.URL this object
      */
     public function setQuery($query) {
-      $this->_info['query']= $query;
-      parse_str($this->_info['query'], $this->_info['params']);
+      parse_str($query, $this->_info['params']);
       unset($this->_info['url']);
       return $this;
     }
@@ -261,28 +272,45 @@
     }
     
     /**
+     * Set a parameter
+     *
+     * @param   string key
+     * @param   var value either a string or a string[]
+     * @return  peer.URL this object
+     */
+    public function setParam($key, $value= '') {
+      $this->_info['params'][$key]= $value;
+      unset($this->_info['url']);
+      return $this;
+    }
+
+    /**
+     * Set parameters
+     *
+     * @param   array<string, var> hash parameters
+     * @return  peer.URL this object
+     */
+    public function setParams($hash) {
+      foreach ($hash as $key => $value) {
+        $this->setParam($key, $value);
+      }
+      unset($this->_info['url']);
+      return $this;
+    }
+    
+    /**
      * Add a parameter
      *
      * @param   string key
-     * @param   string value
+     * @param   var value either a string or a string[]
      * @return  peer.URL this object
      */
-    public function addParam($key, $value) {
-      if (!isset($this->_info['query'])) {
-        $this->_info['query']= sprintf(
-          '%s=%s',
-          urlencode($key),
-          urlencode($value)
-        );          
-      } else {
-        $this->_info['query'].= sprintf(
-          '&%s=%s',
-          urlencode($key),
-          urlencode($value)
-        );
+    public function addParam($key, $value= '') {
+      if (isset($this->_info['params'][$key])) {
+        throw new IllegalArgumentException('A parameter named "'.$key.'" already exists');
       }
-      parse_str($this->_info['query'], $this->_info['params']); 
-      unset($this->_info['url']);   // Indicate recalculation is needed
+      $this->_info['params'][$key]= $value;
+      unset($this->_info['url']);
       return $this;
     }
 
@@ -290,26 +318,25 @@
      * Add parameters from an associative array. The key is taken as
      * parameter name and the value as parameter value.
      *
-     * @param   array hash
+     * @param   array<string, var> hash parameters
+     * @return  peer.URL this object
      */
     public function addParams($hash) {
-      if (!isset($this->_info['query'])) {
-        $this->_info['query']= '';
-      } else {
-        $this->_info['query'].= '&';
+      foreach ($hash as $key => $value) {
+        $this->addParam($key, $value);
       }
-      
-      foreach (array_keys($hash) as $key) {
-        $this->_info['query'].= sprintf(
-          '%s=%s&',
-          urlencode($key),
-          urlencode($hash[$key])
-        );
-      }
-      $this->_info['query']= substr($this->_info['query'], 0, -1);
-      parse_str($this->_info['query'], $this->_info['params']); 
-      unset($this->_info['url']);   // Indicate recalculation is needed
+      unset($this->_info['url']);
       return $this;
+    }
+
+    /**
+     * Retrieve whether a parameter with a given name exists
+     *
+     * @param   string name
+     * @return  bool
+     */
+    public function hasParam($name) {
+      return isset($this->_info['params'][$name]);
     }
 
     /**
@@ -337,7 +364,9 @@
         $this->_info['url'].= $this->_info['host'];
         isset($this->_info['port']) && $this->_info['url'].= ':'.$this->_info['port'];
         isset($this->_info['path']) && $this->_info['url'].= $this->_info['path'];
-        isset($this->_info['query']) && $this->_info['url'].= '?'.$this->_info['query'];
+        if ($this->_info['params']) {
+          $this->_info['url'].= '?'.$this->getQuery();
+        }
         isset($this->_info['fragment']) && $this->_info['url'].= '#'.$this->_info['fragment'];
       }
       return $this->_info['url'];
@@ -354,6 +383,7 @@
       if (isset($this->_info['pass'])) $this->_info['pass']= rawurldecode($this->_info['pass']);
       if (isset($this->_info['query'])) {
         parse_str($this->_info['query'], $this->_info['params']);
+        unset($this->_info['query']);
       } else {
         $this->_info['params']= array();
       }
@@ -366,7 +396,7 @@
      * @return  string
      */
     public function hashCode() {
-      return md5($this->_info['url']);
+      return md5($this->getURL());
     }
     
     /**
@@ -376,7 +406,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $this->getURL() == $cmp->getURL();
+      return $cmp instanceof self && $this->getURL() === $cmp->getURL();
     }
   }
 ?>
