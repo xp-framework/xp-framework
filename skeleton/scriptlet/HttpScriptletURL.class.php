@@ -50,12 +50,7 @@
      */
     public function setSessionId($session) {
       $this->values->put('SessionId', $session);
-      if (NULL !== ($s= $this->getParam('psessionid'))) {
-        $this->_info['query']= strtr($this->_info['query'], array(
-          'psessionid='.$s     => '',
-          '&&'                 => '',
-        ));
-      }
+      $this->setParam('psessionid', $session);
     }
 
     /**
