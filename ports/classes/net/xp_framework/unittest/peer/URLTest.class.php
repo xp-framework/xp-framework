@@ -794,5 +794,50 @@
         $u->hashCode()
       );
     }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function schemeOnlyUnparseable() {
+      new URL('http://');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function schemeSeparatorOnlyUnparseable() {
+      new URL('://');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function missingSchemeUnparseable() {
+      new URL(':///path/to/file');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function emptyUnparseable() {
+      new URL('');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function withoutSchemeUnparseable() {
+      new URL('/path/to/file');
+    }
   }
 ?>
