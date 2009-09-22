@@ -570,6 +570,21 @@
     }
 
     /**
+     * Test addParams()
+     *
+     */
+    #[@test]
+    public function addExistingParamsDoesNotPartiallyModify() {
+      $original= 'http://localhost?a=b';
+      $u= new URL($original);
+      try {
+        $u->addParams(array('c' => 'd', 'a' => 'b'));
+        $this->fail('Existing parameter "a" not detected', NULL, 'lang.IllegalArgumentException');
+      } catch (IllegalArgumentException $expected) { }
+      $this->assertEquals($original, $u->getURL());
+    }
+
+    /**
      * Test setParams()
      *
      */
