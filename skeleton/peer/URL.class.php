@@ -322,8 +322,14 @@
      * @return  peer.URL this object
      */
     public function addParams($hash) {
-      foreach ($hash as $key => $value) {
-        $this->addParam($key, $value);
+      $params= $this->_info['params'];
+      try {
+        foreach ($hash as $key => $value) {
+          $this->addParam($key, $value);
+        }
+      } catch (IllegalArgumentException $e) {
+        $this->_info['params']= $params;
+        throw $e;
       }
       unset($this->_info['url']);
       return $this;
