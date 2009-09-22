@@ -85,6 +85,7 @@
     public function testFailed(TestFailure $failure) {
       $t= $this->addTestCase($failure, 'failures');
       $t->addChild(new Node('failure', xp::stringOf($failure->reason), array(
+        'message' => trim($failure->reason->compoundMessage()),
         'type'    => xp::typeOf($failure->reason)
       )));
     }
