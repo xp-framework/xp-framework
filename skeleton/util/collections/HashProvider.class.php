@@ -34,7 +34,17 @@
 
     static function __static() {
       self::$instance= new self();
-      self::$instance->setImplementation(new MD5HashImplementation());
+      
+      // Workaround for bugs in older PHP versions, see MD5HexHashImplementation's
+      // class apidoc for an explanation. Earlier versions returned LONG_MAX for
+      // hex numbers larger than LONG_MAX. Use 2^64 + 1 as hex literal and see if
+      // it's "truncated", using the slower hexdec(md5()) implementation then.
+      if (LONG_MAX === 0x20c49ba5e35423) {
+        $impl= XPClass::forName('util.collections.MD5HexImplementation')->newInstance();
+      } else {
+        $impl= new MD5HashImplementation();
+      }
+      self::$instance->setImplementation($impl);
     }
 
     /**
