@@ -25,9 +25,13 @@
      */
     protected function _setupRequest($request) {
       System::putEnv('SERVER_PROTOCOL', 'HTTP/1.1');
+      System::putEnv('REQUEST_METHOD', $this->method);
+      System::putEnv('SERVER_PROTOCOL', 'HTTP/1.1');
       System::putEnv('HTTP_HOST', 'unittest');
-      $request->headers= array_change_key_case($this->headers, CASE_LOWER);
+      System::putEnv('REQUEST_URI', '/');
+      System::putEnv('QUERY_STRING', '');
       $request->method= $this->method;
+      $request->headers= array_change_key_case($this->headers, CASE_LOWER);
       $request->setParams(array_change_key_case($this->params, CASE_LOWER));
     }
     
