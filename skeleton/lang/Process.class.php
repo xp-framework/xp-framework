@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.File');
+  uses('io.File', 'lang.CommandLine');
 
   /**
    * Process
@@ -30,28 +30,10 @@
       $err    = NULL,
       $exitv  = -1;
     
-    protected static
-      $escape = '';
-
     protected
       $_proc  = NULL,
       $status = array();
     
-    static function __static() {
-      $e= escapeshellarg('');
-      self::$escape= (0 === strlen($e) ? '"' : $e{0});
-    }
-    
-    /**
-     * Escape and argument
-     *
-     * @param   string arg
-     * @return  string escaped
-     */
-    protected function escape($arg) {
-      return strstr($arg, ' ') && !strstr($arg, self::$escape) ? escapeshellarg($arg) : $arg;
-    }
-
     /**
      * Constructor
      *
@@ -76,21 +58,16 @@
       if (!is_file($binary) || !is_executable($binary)) {
         throw new IOException('Command "'.$binary.'" is not an executable file');
       }
-      
-      // Build command line
-      $cmd= $this->escape($command);
-      foreach ($arguments as $arg) {
-        $cmd.= ' '.$this->escape($arg);
-      }
 
       // Open process
+      $cmd= CommandLine::forName(PHP_OS)->compose($binary, $arguments);
       if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes, $cwd, $env, array('bypass_shell' => TRUE)))) {
         throw new IOException('Could not execute "'.$cmd.'"');
       }
 
       $this->status= proc_get_status($this->_proc);
       $this->status['exe']= $binary;
-      $this->status['arguments']= NULL;
+      $this->status['arguments']= $arguments;
 
       // Assign in, out and err members
       $this->in= new File($pipes[0]);
@@ -254,59 +231,14 @@
     }
     
     /**
-     * Parse command line arguments
-     *
-     * @see     xp://lang.Process#getArguments
-     * @param   string cmd
-     * @return  string[] arguments
-     */
-    public static function parseCommandLine($cmd) {
-
-      // Remove executable from command line. If it's quoted, handle this
-      // accordingly (with either single and double quotes). If the command
-      // line exists entirely of the command, return an empty array
-      if ('"' === $cmd{0}) {
-        $cmd= substr($cmd, strpos($cmd, '"', 1)+ 2);
-      } else if ("'" === $cmd{0}) {
-        $cmd= substr($cmd, strpos($cmd, "'", 1)+ 2);
-      } else if (FALSE !== ($end= strpos($cmd, ' '))) {
-        $cmd= substr($cmd, $end+ 1);
-      } else {
-        return array();
-      }
-
-      // Parse arguments. These also may be quoted (again, either with " or '), 
-      // or even partially quoted, so handle this, too.
-      $arguments= array();
-      $o= 0;
-      while (FALSE !== ($p= strcspn($cmd, ' ', $o))) {
-        $option= substr($cmd, $o, $p);
-        if (1 === substr_count($option, '"')) {
-          $l= $o+ $p;
-          $qp= strpos($cmd, '"', $l)+ 1;
-          $option.= substr($cmd, $l, $qp- $l);
-          $o= $qp+ 1;
-        } else if (1 === substr_count($option, "'")) {
-          $l= $o+ $p;
-          $qp= strpos($cmd, "'", $l)+ 1;
-          $option.= substr($cmd, $l, $qp- $l);
-          $o= $qp+ 1;
-        } else {
-          $o+= $p+ 1;
-        }
-        $arguments[]= $option;
-      }
-      return $arguments;
-    }
-    
-    /**
      * Get command line arguments
      *
      * @return  string[]
      */
     public function getArguments() {
       if (NULL === $this->status['arguments']) {
-        $this->status['arguments']= self::parseCommandLine($this->status['command']);
+        $parts= CommandLine::forName(PHP_OS)->parse($this->status['command']);
+        $this->status['arguments']= array_slice($parts, 1);
       }
       return $this->status['arguments'];
     }

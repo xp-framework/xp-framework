@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Refactored command line parsing and composition from lang.Process to
+  new lang.CommandLine class
+  (friebe)
 - Made peer.URL throw a lang.FormatException when passed malformed URLs
   (friebe)
 - Changed peer.URL::addParams() and peer.URL::addParam() to throw a
