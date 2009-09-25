@@ -839,5 +839,77 @@
     public function withoutSchemeUnparseable() {
       new URL('/path/to/file');
     }
+    
+    /**
+     * Test associative arrays in url parameters, e.g. data[key]=value gets
+     * reported correctly by getParam()
+     *
+     */
+    #[@test]
+    public function parseEncodedAssociativeArray() {
+      $u= new URL('http://example.com/ajax?load=getXML&data%5BprojectName%5D=project&data%5BlangCode%5D=en');
+      $this->assertEquals(
+        array('projectName' => 'project', 'langCode' => 'en'),
+        $u->getParam('data')
+      );
+    }
+
+    /**
+     * Test associative arrays in url parameters, e.g. data[key]=value gets
+     * reported correctly by getParam()
+     *
+     */
+    #[@test]
+    public function parseUnencodedAssociativeArray() {
+      $u= new URL('http://example.com/ajax?load=getXML&data[projectName]=project&data[langCode]=en');
+      $this->assertEquals(
+        array('projectName' => 'project', 'langCode' => 'en'),
+        $u->getParam('data')
+      );
+    }
+
+    /**
+     * Test addParam() method handles associative arrays in url parameters
+     * correctly.
+     *
+     */
+    #[@test]
+    public function addParamAssociativeAray() {
+      $u= new URL('http://example.com/ajax?load=getXML');
+      $u->addParam('data', array('projectName' => 'project', 'langCode' => 'en'));
+      $this->assertEquals(
+        'load=getXML&data[projectName]=project&data[langCode]=en',
+        $u->getQuery()
+      );
+    }
+
+    /**
+     * Test addParams() method handles associative arrays in url parameters
+     * correctly.
+     *
+     */
+    #[@test]
+    public function addParamsAssociativeAray() {
+      $u= new URL('http://example.com/ajax?load=getXML');
+      $u->addParams(array('data' => array('projectName' => 'project', 'langCode' => 'en')));
+      $this->assertEquals(
+        'load=getXML&data[projectName]=project&data[langCode]=en',
+        $u->getQuery()
+      );
+    }
+
+    /**
+     * Test getQuery() method handles associative arrays in url parameters
+     * correctly.
+     *
+     */
+    #[@test]
+    public function associativeArrayQueryCalculation() {
+      $u= new URL('http://example.com/ajax?load=getXML&data%5BprojectName%5D=project&data%5BlangCode%5D=en');
+      $this->assertEquals(
+        'load=getXML&data[projectName]=project&data[langCode]=en',
+        $u->getQuery()
+      );
+    }
   }
 ?>
