@@ -101,7 +101,11 @@
       // Check if startup succeeded
       $status= self::$serverProcess->out->readLine();
       if (!strlen($status) || '+' != $status{0}) {
-        self::shutdownApplicationServer();
+        try {
+          self::shutdownApplicationServer();
+        } catch (IllegalStateException $e) {
+          $status.= $e->getMessage();
+        }
         throw new PrerequisitesNotMetError($status, 'Cannot start application server');
       }
 
@@ -130,7 +134,6 @@
         $s->write(pack('Nc4Na*', DEFAULT_PROTOCOL_MAGIC_NUMBER, 1, 0, 61, FALSE, 0, NULL));
         $s->close();
       } catch (Throwable $e) {
-        $e->printStackTrace();
         // Fall through, below should terminate the process anyway
       }
 
@@ -139,7 +142,11 @@
         while ($l= self::$serverProcess->out->readLine()) {
           $status.= $l;
         }
-        echo $status;
+        while ($l= self::$serverProcess->err->readLine()) {
+          $status.= $l;
+        }
+        self::$serverProcess->close();
+        throw new IllegalStateException($status);
       }
 
       self::$serverProcess->close();
