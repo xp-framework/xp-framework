@@ -140,7 +140,7 @@
      */
     #[@test, @expect('peer.ConnectException')]
     public function connectInvalidHost() {
-      $this->newSocket(NULL, self::SERVER_PORT)->connect(0.1);
+      $this->newSocket('@invalid', self::SERVER_PORT)->connect(0.1);
     }
 
     /**
