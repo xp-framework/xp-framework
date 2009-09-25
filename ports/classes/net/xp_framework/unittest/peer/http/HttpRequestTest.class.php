@@ -133,6 +133,21 @@
     }
 
     /**
+     * Test HTTP GET - parameters via setParameters(string)
+     *
+     */
+    #[@test]
+    public function getUrlWithStringContainingArrayParams() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setParameters('data[color]=green&data[size]=S');
+      $r->setMethod(HttpConstants::GET);
+      $this->assertEquals(
+        "GET /?data[color]=green&data[size]=S HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
      * Test HTTP GET - parameters via setParameters(RequestData)
      *
      */
@@ -162,6 +177,21 @@
         $r->getRequestString()
       );
     }
+
+    /**
+     * Test HTTP GET - parameters via URL.
+     *
+     */
+    #[@test]
+    public function getUrlWithArrayFromUrlParams() {
+      $r= new HttpRequest(new URL('http://example.com/?data[color]=green&data[size]=S'));
+      $r->setMethod(HttpConstants::GET);
+      $this->assertEquals(
+        "GET /?data[color]=green&data[size]=S HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
 
     /**
      * Test HTTP GET - parameters via setParameters(array<string, array>)
@@ -208,6 +238,40 @@
         "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
         "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
         "a=b&c=d",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test associative arrays are handled correctly in POST requests
+     *
+     */
+    #[@test]
+    public function postUrlWithStringContainingArrayParams() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setParameters('data[color]=green&data[size]=S');
+      $r->setMethod(HttpConstants::POST);
+      $this->assertEquals(
+        "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 30\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "data[color]=green&data[size]=S",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test associative arrays are handled correctly in POST requests
+     *
+     */
+    #[@test]
+    public function postUrlWithArrayParams() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setParameters(array('data' => array('color' => 'green', 'size' => 'S')));
+      $r->setMethod(HttpConstants::POST);
+      $this->assertEquals(
+        "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 30\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "data[color]=green&data[size]=S",
         $r->getRequestString()
       );
     }
