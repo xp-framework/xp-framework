@@ -184,8 +184,14 @@
       $query= '';
       foreach ($this->_info['params'] as $key => $value) {
         if (is_array($value)) {
-          foreach ($value as $v) {
-            $query.= '&'.urlencode($key).'[]='.urlencode($v);
+          if (is_int(key($value))) {
+            foreach ($value as $v) {
+              $query.= '&'.urlencode($key).'[]='.urlencode($v);
+            }
+          } else {
+            foreach ($value as $k => $v) {
+              $query.= '&'.urlencode($key).'['.urlencode($k).']='.urlencode($v);
+            }
           }
         } else if ('' === $value) {
           $query.= '&'.urlencode($key);
