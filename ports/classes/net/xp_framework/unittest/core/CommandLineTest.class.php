@@ -36,6 +36,24 @@
      *
      */
     #[@test]
+    public function emptyArgumentQuotingWindows() {
+      $this->assertEquals('echo "" World', CommandLine::$WINDOWS->compose('echo', array('', 'World')));
+    }
+
+    /**
+     * Tests command line quoting on Un*x
+     *
+     */
+    #[@test]
+    public function emptyArgumentQuotingUnix() {
+      $this->assertEquals("echo '' World", CommandLine::$UNIX->compose('echo', array('', 'World')));
+    }
+
+    /**
+     * Tests command line quoting on Windows
+     *
+     */
+    #[@test]
     public function commandIsQuotedWindows() {
       $this->assertEquals(
         '"C:/Users/Timm Friebe/php" -v', 
