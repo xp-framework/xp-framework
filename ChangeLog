@@ -19,8 +19,9 @@ Heads up!
 
 Features
 ~~~~~~~~
-- Added support for array parameters to peer.URL (num[]=one&num[]=two)
-  (friebe)
+- Added support for array parameters (num[]=one&num[]=two) and hash
+  parameters (data[size]=S&data[color]=green) to peer.URL 
+  (friebe, Patrick Kohlmann)
 - Added peer.URL::hasParam() method to test for existance of a single
   parameter - it complements hasParams()
   (friebe)
@@ -51,6 +52,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed extraneous trailing whitespace in rdbms.mysql.MySLQDBAdapapter 
+  (Tobias Roth)
 - Fixed peer.URL::getQuery() and peer.URL::hashCode() not being returning
   the correct values after the URL object has been modified
   (friebe)
