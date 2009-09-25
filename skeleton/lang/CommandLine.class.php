@@ -55,7 +55,8 @@
         }
         
         protected static function quote($arg) {
-          if (!strstr($arg, " ") && !strstr($arg, \'"\')) return $arg;
+          $l= strlen($arg);
+          if ($l && strcspn($arg, "\" ") >= $l) return $arg;
           return \'"\'.str_replace(\'"\', \'"""\', $arg).\'"\';
         }
         
@@ -95,7 +96,8 @@
         }
         
         protected static function quote($arg) {
-          if (!strstr($arg, " ") && !strstr($arg, "\'")) return $arg;
+          $l= strlen($arg);
+          if ($l && strcspn($arg, "&;`\'\"|*?~<>^()[]{}\$ ") >= $l) return $arg;
           return "\'".str_replace("\'", "\'\\\'\'", $arg)."\'";
         }
         
