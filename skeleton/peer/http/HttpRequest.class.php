@@ -85,7 +85,7 @@
     /**
      * Set request parameters
      *
-     * @param   mixed p either a string, a PostData object or an associative array
+     * @param   mixed p either a string, a RequestData object or an associative array
      */
     public function setParameters($p) {
       if ($p instanceof RequestData) {
