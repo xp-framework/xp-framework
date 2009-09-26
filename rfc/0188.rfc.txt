@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Sun Aug 23 18:30:28     2009
 @status: draft
-@target: 5.7
+@target: 5.7.5
 @category: unittest
 
 Scope of Change
