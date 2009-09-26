@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Wed Apr 16 09:52:43     2008
 @status: draft
-@target: 5.7
+@target: 5.7.5
 @category: scriptlet.xml.workflow
 
 Scope of Change
