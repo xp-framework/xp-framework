@@ -69,7 +69,7 @@
      * @param   unittest.TestSuite suite
      */
     public function testRunStarted(TestSuite $suite) {
-      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s)');
+      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s))');
     }
     
     /**
