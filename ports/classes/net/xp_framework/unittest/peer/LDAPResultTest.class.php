@@ -17,16 +17,23 @@
    * @purpose  Unit Test
    */
   class LDAPResultTest extends TestCase {
-    public
-      $lc      = NULL;
+    protected
+      $lc               = NULL;
+      
+    protected static
+      $previouslyFailed = FALSE;
       
     /**
      * Setup method
      *
      */
     public function setUp() {
+      if (self::$previouslyFailed) {
+        throw new PrerequisitesNotMetError('Previously failed to set up.');
+      }
+      
       if (!extension_loaded('ldap')) {
-        throw new PrerequisitesNotMetError('LDAP extension not available.');
+        throw new PrerequisitesNotMetError('LDAP extension not available.'); 
       }
       
       $this->lc= new LDAPClient('ldap.openldap.org');
@@ -35,12 +42,14 @@
         $this->lc->connect();
         $this->lc->bind();
       } catch (ConnectException $e) {
+        self::$previouslyFailed= TRUE;
         throw (new PrerequisitesNotMetError(
           PREREQUISITE_INITFAILED,
           $e,
           array('connect', 'ldapv3://ldap.openldap.org')
         ));
       } catch (LDAPException $e) {
+        self::$previouslyFailed= TRUE;
         throw (new PrerequisitesNotMetError(
           PREREQUISITE_INITFAILED,
           $e,
