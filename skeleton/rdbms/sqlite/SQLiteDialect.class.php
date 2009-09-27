@@ -97,7 +97,7 @@
      *
      * @param   db handel conn
      */
-    function registerCallbackFunctions($conn) {
+    public function registerCallbackFunctions($conn) {
       sqlite_create_function($conn, 'cast', array($this, '_cast'), 2);
       sqlite_create_function($conn, 'sign', array($this, '_sign'), 1);
       sqlite_create_function($conn, 'dateadd', array($this, '_dateadd'), 3);
