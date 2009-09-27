@@ -53,8 +53,9 @@ Example output:
 
 <summary>
 This RFC suggests to add the following new outcomes:
-* "E" - Exception (An exception other than AssertionFailedError was thrown when
-  executing the test and no @expected annotation existed)
+* "E" - Error (An exception other than AssertionFailedError was thrown when
+  executing the test and no @expected annotation existed or a PHP error was
+  raised)
 * "N" - Not run (Test was ignored by @ignore, as stated above, this is currently 
   also reported as "skipped")
 
