@@ -55,7 +55,7 @@ Features
 
 Bugfixes
 ~~~~~~~~
-- Fixed extraneous trailing whitespace in rdbms.mysql.MySLQDBAdapapter 
+- Fixed extraneous trailing whitespace in rdbms.mysql.MySQLDBAdapapter 
   (Tobias Roth)
 - Fixed peer.URL::getQuery() and peer.URL::hashCode() not being returning
   the correct values after the URL object has been modified
