@@ -87,6 +87,9 @@ Related documents
 * http://www.phpunit.de/manual/current/en/textui.html
 * http://www.nunit.org/index.php?p=nunit-console&r=2.5.2
 
+Implementing patch:
+* http://xp-framework.net/rfc/contrib/rfc0185.diff
+
 Comments
 --------
 
