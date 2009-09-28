@@ -88,7 +88,7 @@ Related documents
 * http://www.nunit.org/index.php?p=nunit-console&r=2.5.2
 
 Implementing patch:
-* http://xp-framework.net/rfc/contrib/rfc0185.diff
+* http://xp-framework.net/rfc/contrib/rfc0188.diff
 
 Comments
 --------
