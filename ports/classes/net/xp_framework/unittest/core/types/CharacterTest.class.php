@@ -103,10 +103,10 @@
     }
 
     /**
-     * Test translatiom
+     * Test transliteration
      *
      */
-    #[@test]
+    #[@test, @ignore('Does not work with all iconv implementations')]
     public function transliteration() {
       $this->assertEquals('c', create(new String('č', 'UTF-8'))->toString());
     }
