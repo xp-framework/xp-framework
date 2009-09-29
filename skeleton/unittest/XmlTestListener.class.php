@@ -42,11 +42,10 @@
       if (!$this->classes->containsKey($class)) {
         $this->classes[$class]= $this->tree->addChild(new Node('testsuite', NULL, array(
           'name'       => $class->getName(),
-          'line'       => '1',
-          'file'       => $class->getSimpleName().xp::CLASS_FILE_EXT,
           'tests'      => 0,
           'failures'   => 0,
           'errors'     => 0,
+          'skipped'    => 0
         )));
       }
     }
@@ -64,16 +63,13 @@
       // Update test count
       $n= $this->classes[$testClass];
       $n->setAttribute('tests', $n->getAttribute('tests')+ 1);
-      $n->setAttribute($inc, $n->getAttribute($inc)+ 1);
+      $inc && $n->setAttribute($inc, $n->getAttribute($inc)+ 1);
       
       // Add testcase information
       return $n->addChild(new Node('testcase', NULL, array(
         'name'       => $outcome->test->getName(),
         'class'      => $testClass->getName(),
-        'time'       => sprintf('%.6f', $outcome->elapsed),
-        'assertions' => '1',
-        'line'       => '-1',    // FIXME
-        'file'       => $testClass->getSimpleName().xp::CLASS_FILE_EXT,
+        'time'       => sprintf('%.6f', $outcome->elapsed)
       )));
     }
 
@@ -107,7 +103,12 @@
      * @param   unittest.TestSkipped skipped
      */
     public function testSkipped(TestSkipped $skipped) {
-      // Not supported?
+      if ($skipped->reason instanceof Throwable) {
+        $reason= trim($skipped->reason->compoundMessage());
+      } else {
+        $reason= $skipped->reason;
+      }
+      $this->addTestCase($skipped, 'skipped')->setAttribute('skipped', $reason);
     }
 
     /**
