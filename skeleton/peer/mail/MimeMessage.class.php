@@ -77,6 +77,7 @@
    *   $message->setContentType('multipart/related; type="multipart/alternative"');
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.peer.MimeMessageTest
    * @purpose  MimeMessage class
    */
   class MimeMessage extends Message {
@@ -99,6 +100,17 @@
       $this->setBoundary('----=_Part_'.uniqid(time(), TRUE));
       $this->headers[HEADER_MIMEVER]= $this->mimever;
       parent::__construct($uid);
+    }
+    
+    /**
+     * Checks whether the mime message is simple (contains only one
+     * inline mime part) or complex (contains multiple or not inline
+     * mime parts)
+     *
+     * @return bool
+     */
+    protected function isSimpleMimePart() {
+      return (1 === ($size= sizeof($this->parts)) && $this->parts[0]->isInline());
     }
 
     /**
@@ -133,12 +145,23 @@
     }
     
     /**
+     * Get content type
+     *
+     * @return  string
+     */
+    public function getContentType() {
+      return $this->isSimpleMimePart()
+        ? $this->parts[0]->getContenttype() :
+        'multipart/mixed';
+    }
+      
+    /**
      * Return headers as string
      *
      * @return  string headers
      */
     public function getHeaderString() {
-      if (1 == sizeof($this->parts) && $this->parts[0]->isInline()) {
+      if ($this->isSimpleMimePart()) {
         $this->setContenttype($this->parts[0]->getContenttype());
         if ($this->parts[0] instanceof MultiPart)
           $this->setBoundary($this->parts[0]->getBoundary());
@@ -280,9 +303,8 @@
      * @return  string header
      */
     protected function _getContenttypeHeaderString() {
-      return $this->contenttype.(empty ($this->boundary)
-        ? ''
-        : '; boundary="'.$this->getBoundary().'"'
+      return $this->getContentType().(
+        $this->isSimpleMimePart() ? '' : '; boundary="'.$this->getBoundary().'"'
       ).(empty($this->charset) 
         ? '' 
         : ";\n\tcharset=\"".$this->charset.'"'
@@ -297,12 +319,11 @@
      */
     public function getBody() {
       $this->_parts();
+      
+      if ($this->isSimpleMimePart()) return $this->parts[0]->getBody();
+      
+      $size= sizeof($this->parts);
       $body= "This is a multi-part message in MIME format.\n\n";
-      
-      if (1 == ($size= sizeof($this->parts)) && $this->parts[0]->isInline()) {
-        return $body.$this->parts[0]->getBody();
-      }
-      
       for ($i= 0; $i < $size; $i++) {
         $body.= (
           '--'.$this->boundary."\n".
