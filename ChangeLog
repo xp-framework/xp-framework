@@ -55,6 +55,8 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed content type header in peer.mail.MimeMessage with multiple parts
+  (hinckel)
 - Fixed extraneous trailing whitespace in rdbms.mysql.MySQLDBAdapter
   (Tobias Roth)
 - Fixed peer.URL::getQuery() and peer.URL::hashCode() not being returning
