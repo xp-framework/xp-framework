@@ -343,6 +343,18 @@
     }
 
     /**
+     * Remove a parameter
+     *
+     * @param   string key
+     * @return  peer.URL this object
+     */
+    public function removeParam($key) {
+      unset($this->_info['params'][$key]);
+      unset($this->_info['url']);
+      return $this;
+    }
+
+    /**
      * Retrieve whether a parameter with a given name exists
      *
      * @param   string name

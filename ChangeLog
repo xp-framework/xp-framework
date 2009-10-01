@@ -22,6 +22,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added peer.URL::removeParam() method
+  (friebe)
 - Added support for array parameters (num[]=one&num[]=two) and hash
   parameters (data[size]=S&data[color]=green) to peer.URL 
   (friebe, Patrick Kohlmann)
