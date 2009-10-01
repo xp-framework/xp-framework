@@ -40,7 +40,14 @@
      *
      */
     protected function extract() {
+      if (!$this->hasParam('psessionid')) return;
+
+      // Get psessionid parameter and remove it from this URL, it will
+      // later be appended in getURL() again if set. If we leave it here
+      // we will run into the problem that the session ID appears twice
+      // in the URL generated.
       $this->setSessionId($this->getParam('psessionid'));
+      $this->removeParam('psessionid');
     }
 
     /**
@@ -50,7 +57,6 @@
      */
     public function setSessionId($session) {
       $this->values->put('SessionId', $session);
-      $this->setParam('psessionid', $session);
     }
 
     /**
@@ -83,15 +89,16 @@
      * @return string
      */
     public function getURL() {
+      $sessionId= $this->getSessionId();
       return sprintf(
-        '%1$s://%2$s%3$s?%6$s&psessionid=%7$s',
+        '%1$s://%2$s%3$s?%6$s%7$s',
         $this->getScheme(),
         $this->getHost(),
         $this->getPath(),
         dirname($this->getPath()),
         basename($this->getPath()),
         $this->getQuery(),
-        $this->getSessionId(),
+        $sessionId ? '&psessionid='.$sessionId : '',
         $this->getFragment()
       );
     }
