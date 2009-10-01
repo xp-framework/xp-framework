@@ -78,7 +78,7 @@
      * Create a session object. Override this method to define
      * your own session object
      *
-     * @return  scriptlet.HttpSession
+     * @return  scriptlet.Session
      */
     protected function _session() {
       return new HttpSession();

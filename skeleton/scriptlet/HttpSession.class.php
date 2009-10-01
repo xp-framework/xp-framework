@@ -4,26 +4,11 @@
  * $Id$
  */
  
-  define('SESS_CREATE',    '__PHP_SessionCreatedAt');
+  uses('scriptlet.Session');
 
+  define('SESS_CREATE',    '__PHP_SessionCreatedAt');
+  
   /**
-   * A session provides a way of identifying users across a website
-   * and having data associated to this person available on every page.
-   * Since HTTP is a stateless protocol, sessions where implemented
-   * to persist across more than one connection and request. A session
-   * usually corresponds to exactly one user, "identifying" him/her
-   * to the web pages displayed.
-   *
-   * Sessions may also be used to "cache" data from an RDBMS underlying
-   * the web site. E.g., a user logs on to his service provider's 
-   * administration site where he/she is allowed to configure a number
-   * of - say - server settings. In this case, in the login site, we
-   * read all of his/her contracts from the database and store these
-   * objects to the session. On preceding pages displayed, these objects
-   * are simply read from the session, saving time and database load.
-   * Of course, in any case the data may have changed, we must unset
-   * it from the session and reread it from the database.
-   *
    * If you are using this session class from within a HttpScriptlet
    * or a class extended from it, simply set the public variable
    * <pre>needSession</pre> to TRUE. The HttpScriptlet implementation
@@ -45,13 +30,9 @@
    * documentation page.
    *
    * @test    xp://net.xp_framework.unittest.scriptlet.HttpSessionTest
-   * @see     php://session                                                 
-   * @see     xp://scriptlet.HttpScriptlet                                  
-   * @see     http://httpd.apache.org/docs/mod/mod_rewrite.html#RewriteRule 
-   * @see     http://www.engelschall.com/pw/apache/rewriteguide/            
-   * @purpose Session                                                       
+   * @purpose Session implementation                                                    
    */
-  class HttpSession extends Object {
+  class HttpSession extends Object implements Session {
     public 
       $id    = '',
       $isNew = FALSE;
