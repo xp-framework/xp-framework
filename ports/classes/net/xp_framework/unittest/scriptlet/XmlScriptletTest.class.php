@@ -92,6 +92,31 @@
     }
 
     /**
+     * Test creating a session performs a redirect onto the scriptlet URL
+     * itself but with "psessionid=..." and the session's ID in the URL.
+     *
+     */
+    #[@test]
+    public function doCreate() {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $res= new HttpScriptletResponse();
+      
+      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+        public function needsSession($request) { return TRUE; }
+      }');
+      $s->service($req, $res);
+      $this->assertEquals(HttpConstants::STATUS_FOUND, $res->statusCode);
+      
+      // Check URL from Location: header contains the session ID
+      with ($redirect= new URL(substr($res->headers[0], strlen('Location: ')))); {
+        $this->assertEquals('http', $redirect->getScheme());
+        $this->assertEquals('localhost', $redirect->getHost());
+        $this->assertEquals(sprintf('/xml/psessionid=%s/static', session_id()), $redirect->getPath());
+        $this->assertEquals(array(), $redirect->getParams(), $redirect->getURL());
+      }
+    }
+
+    /**
      * Test writing to response with write() throws an exception
      *
      */
