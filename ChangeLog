@@ -55,6 +55,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Update org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
+  assignment character for tokens (required for Bugzilla V3)
+  (hinckel)
 - Fixed content type header in peer.mail.MimeMessage with multiple parts
   (hinckel)
 - Fixed extraneous trailing whitespace in rdbms.mysql.MySQLDBAdapter
