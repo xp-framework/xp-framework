@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: BugMessage.class.php 
+ * $Id$
  */
 
   uses(
@@ -45,7 +45,6 @@
   class BugMessage extends MimeMessage {
     public
       $tokens= array();
-
 
     /**
      * Set Product
@@ -136,7 +135,7 @@
     public function getTokens() {
       $header= '';
       foreach ($this->tokens as $key => $val) {
-        $header.= '@'.$key.':'.$val."\n";
+        $header.= '@'.$key.'='.$val."\n";
       }
 
       return $header."\n";
