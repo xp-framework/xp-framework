@@ -196,10 +196,56 @@
     #[@test]
     public function dateFormatCallback() {
       $date= Date::now();
-      $this->assertEquals($date->toString('Y-m-d H:i:s'), $this->runTransformation(
+      $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
         Node::fromObject($date)->getSource(),
         'xp.date::format',
-        array('string(/date/value)', "'Y-m-d H:i:s'")
+        array('string(/date/value)', "'Y-m-d H:i:s T'")
+      ));
+    }
+
+    /**
+     * Test xp.date::format
+     *
+     * @see      xp://xml.xslt.XSLDateCallback
+     */
+    #[@test]
+    public function dateFormatCallbackWithTZ() {
+      $date= Date::now();
+      $tz= new TimeZone('Australia/Sydney');
+      $this->assertEquals($date->toString('Y-m-d H:i:s T', $tz), $this->runTransformation(
+        Node::fromObject($date)->getSource(),
+        'xp.date::format',
+        array('string(/date/value)', "'Y-m-d H:i:s T'", "'".$tz->getName()."'")
+      ));
+    }
+
+    /**
+     * Test xp.date::format
+     *
+     * @see      xp://xml.xslt.XSLDateCallback
+     */
+    #[@test]
+    public function dateFormatCallbackWithEmptyTZ() {
+      $date= Date::now();
+      $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
+        Node::fromObject($date)->getSource(),
+        'xp.date::format',
+        array('string(/date/value)', "'Y-m-d H:i:s T'", "''")
+      ));
+    }
+
+    /**
+     * Test xp.date::format
+     *
+     * @see      xp://xml.xslt.XSLDateCallback
+     */
+    #[@test]
+    public function dateFormatCallbackWithoutTZ() {
+      $date= Date::now();
+      $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
+        Node::fromObject($date)->getSource(),
+        'xp.date::format',
+        array('string(/date/value)', "'Y-m-d H:i:s T'")
       ));
     }
 
