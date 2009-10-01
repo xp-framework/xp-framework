@@ -17,6 +17,26 @@
    * @see      xp://scriptlet.xml.XMLScriptlet
    */
   class XmlScriptletTest extends TestCase {
+
+    /**
+     * Set session path to current working directory
+     *
+     */
+    public function setUp() {
+      session_save_path(getcwd());
+    }
+
+    /**
+     * Destroy session and cleanup file
+     *
+     */
+    public function tearDown() {
+      if (session_id()) {
+        session_write_close();
+        unlink(session_save_path().DIRECTORY_SEPARATOR.'sess_'.session_id());
+        session_id(NULL);
+      }
+    }
   
     /**
      * Creates a new request object
