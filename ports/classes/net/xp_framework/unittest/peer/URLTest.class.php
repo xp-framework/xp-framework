@@ -739,6 +739,33 @@
     }
 
     /**
+     * Test removeParam() method
+     *
+     */
+    #[@test]
+    public function removeExistingParam() {
+      $this->assertEquals(new URL('http://localhost'), create(new URL('http://localhost?a=b'))->removeParam('a'));
+    }
+
+    /**
+     * Test removeParam() method
+     *
+     */
+    #[@test]
+    public function removeNonExistantParam() {
+      $this->assertEquals(new URL('http://localhost'), create(new URL('http://localhost'))->removeParam('a'));
+    }
+
+    /**
+     * Test removeParam() method
+     *
+     */
+    #[@test]
+    public function removeExistingArrayParam() {
+      $this->assertEquals(new URL('http://localhost'), create(new URL('http://localhost?a[]=b&a[]=c'))->removeParam('a'));
+    }
+
+    /**
      * Test equals() method
      *
      */
