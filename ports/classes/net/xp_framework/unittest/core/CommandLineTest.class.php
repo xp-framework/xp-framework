@@ -12,6 +12,42 @@
    * @see      xp://lang.CommandLine
    */
   class CommandLineTest extends TestCase {
+
+    /**
+     * Tests forName() method
+     *
+     */
+    #[@test]
+    public function forWindows() {
+      $this->assertEquals(CommandLine::$WINDOWS, CommandLine::forName('Windows'));
+    }
+
+    /**
+     * Tests forName() method
+     *
+     */
+    #[@test]
+    public function forWinNT() {
+      $this->assertEquals(CommandLine::$WINDOWS, CommandLine::forName('WINNT'));
+    }
+
+    /**
+     * Tests forName() method
+     *
+     */
+    #[@test]
+    public function forBSD() {
+      $this->assertEquals(CommandLine::$UNIX, CommandLine::forName('FreeBSD'));
+    }
+
+    /**
+     * Tests forName() method
+     *
+     */
+    #[@test]
+    public function forLinux() {
+      $this->assertEquals(CommandLine::$UNIX, CommandLine::forName('Linux'));
+    }
   
     /**
      * Tests command line quoting on Windows
