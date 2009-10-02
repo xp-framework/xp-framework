@@ -18,6 +18,7 @@
    *   var_dump($uptime);
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.core.ProcessResolveTest
    * @test     xp://net.xp_framework.unittest.core.ProcessTest
    * @see      xp://lang.Runtime#getExecutable
    * @see      php://proc_open
@@ -54,7 +55,7 @@
       if (NULL === $command) return;
 
       // Check whether the given command is executable.
-      $binary= $this->resolve($command);
+      $binary= self::resolve($command);
       if (!is_file($binary) || !is_executable($binary)) {
         throw new IOException('Command "'.$binary.'" is not an executable file');
       }
@@ -94,7 +95,7 @@
      * @return  string executable
      * @throws  io.IOException in case the command could not be found
      */
-    public function resolve($command) {
+    public static function resolve($command) {
       clearstatcache();
       
       // PATHEXT is in form ".{EXT}[;.{EXT}[;...]]"
@@ -103,13 +104,12 @@
       // If the command is in fully qualified form and refers to a file
       // that does not exist (e.g. "C:\DoesNotExist.exe", "\DoesNotExist.com"
       // or /usr/bin/doesnotexist), do not attempt to search for it.
-      if (
-        (strncasecmp(PHP_OS, 'Win', 3) === 0 && ':' === $command{1}) || 
-        (DIRECTORY_SEPARATOR === $command{0})
-      ) {
+      if ((DIRECTORY_SEPARATOR === $command{0}) || ((strncasecmp(PHP_OS, 'Win', 3) === 0) && 
+        (':' === $command{1} || '/' === $command{0} || '\\' === $command{0})
+      )) {
         foreach ($extensions as $ext) {
           $q= $command.$ext;
-          
+
           if (file_exists($q) && !is_dir($q)) return realpath($q);
         }
         throw new IOException('"'.$command.'" does not exist');
@@ -185,7 +185,7 @@
         $self->status['command']= strtr(file_get_contents($proc.'/cmdline'), "\0", ' ');
       } else if ($exe || ($_= getenv('_'))) {
         try {
-          $self->status['exe']= $self->resolve($exe ? $exe : $_);
+          $self->status['exe']= self::resolve($exe ? $exe : $_);
           $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand 2>&1', $out, $exit);
         } catch (IOException $e) {
           throw new IllegalStateException($e->getMessage());
