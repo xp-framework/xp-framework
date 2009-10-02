@@ -66,7 +66,6 @@
             $cmd.= " ".self::quote($arg);
           }
           return $cmd;
-        
         }
       }');
       self::$UNIX= newinstance(__CLASS__, array(1, 'UNIX'), '{
@@ -107,7 +106,6 @@
             $cmd.= " ".self::quote($arg);
           }
           return $cmd;
-        
         }
       }');
     }
