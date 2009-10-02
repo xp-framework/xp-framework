@@ -130,7 +130,7 @@
      */
     #[@test, @platform('!WIN')]
     public function resolveFullyQualified() {
-      $this->assertEquals('/bin/sh', Process::resolve('/bin/sh'));
+      $this->assertEquals('/bin/ls', Process::resolve('/bin/ls'));
     }
 
     /**
@@ -139,7 +139,7 @@
      */
     #[@test, @platform('!WIN')]
     public function resolve() {
-      $this->assertEquals('/bin/sh', Process::resolve('sh'));
+      $this->assertEquals('/bin/ls', Process::resolve('ls'));
     }
   }
 ?>
