@@ -22,6 +22,10 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added unittest.XmlTestListener class which reports results in an XML 
+  format adequate for continuous integration systems.
+  http://news.xp-framework.net/article/320/2009/10/02/
+  (friebe)
 - Added peer.URL::removeParam() method
   (friebe)
 - Added support for array parameters (num[]=one&num[]=two) and hash
