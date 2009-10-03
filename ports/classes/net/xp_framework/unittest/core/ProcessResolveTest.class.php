@@ -46,7 +46,7 @@
      */
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithDriverLetter() {
-      $this->assertEquals('C:\\AUTOEXEC.BAT', Process::resolve('C:\\AUTOEXEC.BAT'));
+      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('C:\\AUTOEXEC.BAT')));
     }
 
     /**
@@ -56,7 +56,7 @@
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithBackSlash() {
       chdir('C:');
-      $this->assertEquals('C:\\AUTOEXEC.BAT', Process::resolve('\\AUTOEXEC.BAT'));
+      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('\\AUTOEXEC.BAT')));
     }
 
     /**
@@ -66,7 +66,7 @@
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithSlash() {
       chdir('C:');
-      $this->assertEquals('C:\\AUTOEXEC.BAT', Process::resolve('/AUTOEXEC.BAT'));
+      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('/AUTOEXEC.BAT')));
     }
 
     /**
@@ -76,7 +76,7 @@
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithoutExtension() {
       chdir('C:');
-      $this->assertEquals('C:\\AUTOEXEC.BAT', Process::resolve('\\AUTOEXEC'));
+      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('\\AUTOEXEC')));
     }
 
     /**
