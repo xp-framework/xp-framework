@@ -35,7 +35,6 @@
       $chunk= $this->socket->readBinary($limit);
       if ($this->socket->eof()) {
         $this->close();
-        $this->eof= TRUE;
       }
       
       return $chunk;
@@ -47,7 +46,7 @@
      *
      */
     public function available() {
-      return $this->eof || $this->socket->eof() ? 0 : 1;
+      return $this->eof ? 0 : 1;
     }
   }
 ?>

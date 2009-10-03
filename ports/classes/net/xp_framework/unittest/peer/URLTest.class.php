@@ -214,8 +214,56 @@
      *
      */
     #[@test]
+    public function queryModifiedByParams() {
+      $this->assertEquals(
+        'a=b&c=d', 
+        create(new URL('http://localhost?a=b'))->addParam('c', 'd')->getQuery()
+      );
+    }
+
+    /**
+     * Test getQuery() method
+     *
+     */
+    #[@test]
     public function emptyQuery() {
       $this->assertEquals(NULL, create(new URL('http://localhost'))->getQuery());
+    }
+
+    /**
+     * Test getQuery() method
+     *
+     */
+    #[@test]
+    public function parameterLessQuery() {
+      $this->assertEquals('1549', create(new URL('http://localhost/?1549'))->getQuery());
+    }
+
+    /**
+     * Test getQuery() method
+     *
+     */
+    #[@test]
+    public function addToParameterLessQuery() {
+      $this->assertEquals('1549&a=b', create(new URL('http://localhost/?1549'))->addParam('a', 'b')->getQuery());
+    }
+
+    /**
+     * Test getQuery() method
+     *
+     */
+    #[@test]
+    public function createParameterLessQueryWithAdd() {
+      $this->assertEquals('1549', create(new URL('http://localhost/'))->addParam('1549')->getQuery());
+    }
+
+    /**
+     * Test getQuery() method
+     *
+     */
+    #[@test]
+    public function createParameterLessQueryWithSet() {
+      $this->assertEquals('1549', create(new URL('http://localhost/'))->setParam('1549')->getQuery());
     }
 
     /**
@@ -246,6 +294,24 @@
         'http://localhost?a=b', 
         create(new URL('http://localhost'))->setQuery('a=b')->getURL()
       );
+    }
+
+    /**
+     * Test getParam() method
+     *
+     */
+    #[@test]
+    public function getParameterLessQuery() {
+      $this->assertEquals('', create(new URL('http://localhost/?1549'))->getParam('1549'));
+    }
+
+    /**
+     * Test hasParam() method
+     *
+     */
+    #[@test]
+    public function hasParameterLessQuery() {
+      $this->assertTrue(create(new URL('http://localhost/?1549'))->hasParam('1549'));
     }
 
     /**
@@ -343,6 +409,36 @@
     public function param() {
       $this->assertEquals('b', create(new URL('http://localhost?a=b'))->getParam('a'));
     }
+
+    /**
+     * Test getParam() method with an array parameter
+     *
+     */
+    #[@test]
+    public function getArrayParameter() {
+      $this->assertEquals(array('b'), create(new URL('http://localhost?a[]=b'))->getParam('a'));
+    }
+
+    /**
+     * Test getParam() method with array parameters
+     *
+     */
+    #[@test]
+    public function getArrayParameters() {
+      $this->assertEquals(array('b', 'c'), create(new URL('http://localhost?a[]=b&a[]=c'))->getParam('a'));
+    }
+
+    /**
+     * Test getParams() method with array parameters
+     *
+     */
+    #[@test]
+    public function getArrayParams() {
+      $this->assertEquals(
+        array('a' => array('b', 'c')), 
+        create(new URL('http://localhost?a[]=b&a[]=c'))->getParams()
+      );
+    }
  
     /**
      * Test getParam() method
@@ -376,7 +472,7 @@
      *
      */
     #[@test]
-    public function newParam() {
+    public function addNewParam() {
       $this->assertEquals(
         'http://localhost?a=b', 
         create(new URL('http://localhost'))->addParam('a', 'b')->getURL()
@@ -384,11 +480,23 @@
     }
 
     /**
+     * Test setParam()
+     *
+     */
+    #[@test]
+    public function setNewParam() {
+      $this->assertEquals(
+        'http://localhost?a=b', 
+        create(new URL('http://localhost'))->setParam('a', 'b')->getURL()
+      );
+    }
+
+    /**
      * Test addParam()
      *
      */
     #[@test]
-    public function additionalParam() {
+    public function addAdditionalParam() {
       $this->assertEquals(
         'http://localhost?a=b&c=d', 
         create(new URL('http://localhost?a=b'))->addParam('c', 'd')->getURL()
@@ -396,11 +504,23 @@
     }
 
     /**
+     * Test setParam()
+     *
+     */
+    #[@test]
+    public function setAdditionalParam() {
+      $this->assertEquals(
+        'http://localhost?a=b&c=d', 
+        create(new URL('http://localhost?a=b'))->setParam('c', 'd')->getURL()
+      );
+    }
+
+    /**
      * Test addParam()
      *
      */
     #[@test]
-    public function additionalParams() {
+    public function addAdditionalParamChained() {
       $this->assertEquals(
         'http://localhost?a=b&c=d&e=f', 
         create(new URL('http://localhost?a=b'))->addParam('c', 'd')->addParam('e', 'f')->getURL()
@@ -408,19 +528,76 @@
     }
 
     /**
-     * Test addParam()
+     * Test setParam()
      *
      */
     #[@test]
-    public function existingParam() {
+    public function setAdditionalParamChained() {
       $this->assertEquals(
-        'http://localhost?a=b&a=b', 
-        create(new URL('http://localhost?a=b'))->addParam('a', 'b')->getURL()
+        'http://localhost?a=b&c=d&e=f', 
+        create(new URL('http://localhost?a=b'))->setParam('c', 'd')->setParam('e', 'f')->getURL()
       );
     }
 
     /**
      * Test addParam()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function addExistingParam() {
+      create(new URL('http://localhost?a=b'))->addParam('a', 'b');
+    }
+
+    /**
+     * Test setParam()
+     *
+     */
+    #[@test]
+    public function setExistingParam() {
+      $this->assertEquals(
+        'http://localhost?a=c', 
+        create(new URL('http://localhost?a=b'))->setParam('a', 'c')->getURL()
+      );
+    }
+
+    /**
+     * Test addParams()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function addExistingParams() {
+      create(new URL('http://localhost?a=b'))->addParams(array('a' => 'b'));
+    }
+
+    /**
+     * Test addParams()
+     *
+     */
+    #[@test]
+    public function addExistingParamsDoesNotPartiallyModify() {
+      $original= 'http://localhost?a=b';
+      $u= new URL($original);
+      try {
+        $u->addParams(array('c' => 'd', 'a' => 'b'));
+        $this->fail('Existing parameter "a" not detected', NULL, 'lang.IllegalArgumentException');
+      } catch (IllegalArgumentException $expected) { }
+      $this->assertEquals($original, $u->getURL());
+    }
+
+    /**
+     * Test setParams()
+     *
+     */
+    #[@test]
+    public function setExistingParams() {
+      $this->assertEquals(
+        'http://localhost?a=c', 
+        create(new URL('http://localhost?a=b'))->setParams(array('a' => 'c'))->getURL()
+      );
+    }
+
+    /**
+     * Test addParams()
      *
      */
     #[@test]
@@ -432,7 +609,19 @@
     }
 
     /**
-     * Test addParam()
+     * Test setParams()
+     *
+     */
+    #[@test]
+    public function setNewParams() {
+      $this->assertEquals(
+        'http://localhost?a=b&c=d', 
+        create(new URL('http://localhost'))->setParams(array('a' => 'b', 'c' => 'd'))->getURL()
+      );
+    }
+
+    /**
+     * Test addParams()
      *
      */
     #[@test]
@@ -441,6 +630,40 @@
         'http://localhost?z=x&a=b&c=d', 
         create(new URL('http://localhost?z=x'))->addParams(array('a' => 'b', 'c' => 'd'))->getURL()
       );
+    }
+
+    /**
+     * Test setParams()
+     *
+     */
+    #[@test]
+    public function setAdditionalParams() {
+      $this->assertEquals(
+        'http://localhost?z=x&a=b&c=d', 
+        create(new URL('http://localhost?z=x'))->setParams(array('a' => 'b', 'c' => 'd'))->getURL()
+      );
+    }
+
+    /**
+     * Test addParam()
+     *
+     */
+    #[@test]
+    public function addArrayParam() {
+      $u= new URL('http://localhost/');
+      $u->addParam('x', array('y', 'z'));
+      $this->assertEquals('http://localhost/?x[]=y&x[]=z', $u->getURL());
+    }
+
+    /**
+     * Test setParam()
+     *
+     */
+    #[@test]
+    public function setArrayParam() {
+      $u= new URL('http://localhost/');
+      $u->setParam('x', array('y', 'z'));
+      $this->assertEquals('http://localhost/?x[]=y&x[]=z', $u->getURL());
     }
 
     /**
@@ -466,8 +689,80 @@
      *
      */
     #[@test]
+    public function withArrayParams() {
+      $this->assertTrue(create(new URL('http://localhost?a[]=b&a[]=d'))->hasParams());
+    }
+
+    /**
+     * Test hasParams() method
+     *
+     */
+    #[@test]
     public function noParams() {
       $this->assertFalse(create(new URL('http://localhost'))->hasParams());
+    }
+
+    /**
+     * Test hasParam() method
+     *
+     */
+    #[@test]
+    public function withParam() {
+      $this->assertTrue(create(new URL('http://localhost?a=b&c=d'))->hasParam('a'));
+    }
+
+    /**
+     * Test hasParam() method
+     *
+     */
+    #[@test]
+    public function withArrayParam() {
+      $this->assertTrue(create(new URL('http://localhost?a[]=b&a[]=d'))->hasParam('a'));
+    }
+
+    /**
+     * Test hasParam() method
+     *
+     */
+    #[@test]
+    public function withNonExistantParam() {
+      $this->assertFalse(create(new URL('http://localhost?a=b&c=d'))->hasParam('d'));
+    }
+
+    /**
+     * Test hasParam() method
+     *
+     */
+    #[@test]
+    public function noParam() {
+      $this->assertFalse(create(new URL('http://localhost'))->hasParam('a'));
+    }
+
+    /**
+     * Test removeParam() method
+     *
+     */
+    #[@test]
+    public function removeExistingParam() {
+      $this->assertEquals(new URL('http://localhost'), create(new URL('http://localhost?a=b'))->removeParam('a'));
+    }
+
+    /**
+     * Test removeParam() method
+     *
+     */
+    #[@test]
+    public function removeNonExistantParam() {
+      $this->assertEquals(new URL('http://localhost'), create(new URL('http://localhost'))->removeParam('a'));
+    }
+
+    /**
+     * Test removeParam() method
+     *
+     */
+    #[@test]
+    public function removeExistingArrayParam() {
+      $this->assertEquals(new URL('http://localhost'), create(new URL('http://localhost?a[]=b&a[]=c'))->removeParam('a'));
     }
 
     /**
@@ -509,6 +804,138 @@
       $this->assertNotEquals(
         create(new URL('http://localhost'))->hashCode(), 
         create(new URL('ftp://localhost'))->hashCode()
+      );
+    }
+
+    /**
+     * Test hashCode() method
+     *
+     */
+    #[@test]
+    public function hashCodeRecalculated() {
+      $u= new URL('http://localhost');
+      $u->addParam('a', 'b');
+      
+      $this->assertNotEquals(
+        create(new URL('http://localhost'))->hashCode(), 
+        $u->hashCode()
+      );
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function schemeOnlyUnparseable() {
+      new URL('http://');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function schemeSeparatorOnlyUnparseable() {
+      new URL('://');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function missingSchemeUnparseable() {
+      new URL(':///path/to/file');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function emptyUnparseable() {
+      new URL('');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function withoutSchemeUnparseable() {
+      new URL('/path/to/file');
+    }
+    
+    /**
+     * Test associative arrays in url parameters, e.g. data[key]=value gets
+     * reported correctly by getParam()
+     *
+     */
+    #[@test]
+    public function parseEncodedAssociativeArray() {
+      $u= new URL('http://example.com/ajax?load=getXML&data%5BprojectName%5D=project&data%5BlangCode%5D=en');
+      $this->assertEquals(
+        array('projectName' => 'project', 'langCode' => 'en'),
+        $u->getParam('data')
+      );
+    }
+
+    /**
+     * Test associative arrays in url parameters, e.g. data[key]=value gets
+     * reported correctly by getParam()
+     *
+     */
+    #[@test]
+    public function parseUnencodedAssociativeArray() {
+      $u= new URL('http://example.com/ajax?load=getXML&data[projectName]=project&data[langCode]=en');
+      $this->assertEquals(
+        array('projectName' => 'project', 'langCode' => 'en'),
+        $u->getParam('data')
+      );
+    }
+
+    /**
+     * Test addParam() method handles associative arrays in url parameters
+     * correctly.
+     *
+     */
+    #[@test]
+    public function addParamAssociativeAray() {
+      $u= new URL('http://example.com/ajax?load=getXML');
+      $u->addParam('data', array('projectName' => 'project', 'langCode' => 'en'));
+      $this->assertEquals(
+        'load=getXML&data[projectName]=project&data[langCode]=en',
+        $u->getQuery()
+      );
+    }
+
+    /**
+     * Test addParams() method handles associative arrays in url parameters
+     * correctly.
+     *
+     */
+    #[@test]
+    public function addParamsAssociativeAray() {
+      $u= new URL('http://example.com/ajax?load=getXML');
+      $u->addParams(array('data' => array('projectName' => 'project', 'langCode' => 'en')));
+      $this->assertEquals(
+        'load=getXML&data[projectName]=project&data[langCode]=en',
+        $u->getQuery()
+      );
+    }
+
+    /**
+     * Test getQuery() method handles associative arrays in url parameters
+     * correctly.
+     *
+     */
+    #[@test]
+    public function associativeArrayQueryCalculation() {
+      $u= new URL('http://example.com/ajax?load=getXML&data%5BprojectName%5D=project&data%5BlangCode%5D=en');
+      $this->assertEquals(
+        'load=getXML&data[projectName]=project&data[langCode]=en',
+        $u->getQuery()
       );
     }
   }

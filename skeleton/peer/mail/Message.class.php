@@ -64,6 +64,7 @@
    * @see      rfc://2049
    * @see      xp://peer.mail.MimeMessage
    * @see      xp://peer.mail.transport.Transport
+   * @test     xp://net.xp_framework.unittest.peer.MessageTest
    * @purpose  Provide a basic e-mail message (single-part)
    */
   class Message extends Object {
@@ -98,7 +99,7 @@
      */
     public function __construct($uid= -1) {
       $this->uid= $uid;
-      $this->date= new Date();
+      $this->date= Date::now();
     }
     
     /**
@@ -135,83 +136,6 @@
      */
     public function getReturnPath() {
       return $this->returnpath;
-    }
-
-    
-    /**
-     * Create string representation. Note: This is not suitable for sending mails,
-     * use the getHeaderString() and getBody() methods!
-     *
-     * Example output:
-     * <pre>
-     * peer.mail.Message[10332605]@{
-     *   [headers     ] array (
-     *     'Received' => 'from moutvdom01.kundenserver.de by mx08.web.de with smtp
-     *         (freemail 4.2.2.3 #20) id m15snxT-008AX0A; Sun, 14 Oct 2001 18:17 +0200
-     *   from [195.20.224.209] (helo=mrvdom02.schlund.de)
-     *         by moutvdom01.kundenserver.de with esmtp (Exim 2.12 #2)
-     *         id 15snxT-0004WT-00
-     *         for timm.friebe@bar.foo; Sun, 14 Oct 2001 18:17:47 +0200
-     *   from p3e9e72f0.dip0.t-ipconnect.de ([62.158.114.240] helo=banane)
-     *         by mrvdom02.schlund.de with smtp (Exim 2.12 #2)
-     *         id 15snxK-0005Xj-00; Sun, 14 Oct 2001 18:17:38 +0200',
-     *     'Message-ID' => '<013901c154cb$c03222d0$917cfea9@banane>',
-     *     'MIME-Version' => '1.0',
-     *     'X-MSMail-Priority' => 'Normal',
-     *     'X-Mailer' => 'Microsoft Outlook Express 6.00.2505.0000',
-     *     'X-MimeOLE' => 'Produced By Microsoft MimeOLE V6.00.2505.0000',
-     *   )
-     *   [body        ] ''
-     *   [to          ] array (
-     *     0 => 
-     *     array (
-     *       'personal' => '',
-     *       'localpart' => 'timm.friebe',
-     *       'domain' => 'bar.foo',
-     *     ),
-     *   )
-     *   [from        ] =?iso-8859-1?Q?"Timm_Friebe"?= <thekid@example.foo>
-     *   [cc          ] array (
-     *     0 => 
-     *     array (
-     *       'personal' => '',
-     *       'localpart' => 'thekid',
-     *       'domain' => 'bar.baz',
-     *     ),
-     *   )
-     *   [bcc         ] array (
-     *   )
-     *   [subject     ] 'Test mit HTML'
-     *   [priority    ] 3
-     *   [contenttype ] 'multipart/mixed; boundary="DORIS009DA9BD"'
-     *   [encoding    ] '8bit'
-     *   [folder      ] peer.mail.MailFolder[INBOX]@{
-     *   name  -> peer.mail.store.ImapStore
-     *   cache -> peer.mail.store.StoreCache[5]@{
-     *     [folder/INBOX            ] object [mailfolder]
-     *     [list/message/INBOX1     ] object [message]
-     *     [list/message/INBOX2     ] object [message]
-     *     [list/message/INBOX3     ] object [message]
-     *     [list/message/INBOX5     ] object [message]
-     *   }
-     * }
-     *   [uid         ] 10332605
-     *   [flags       ] 32
-     *   [size        ] 27124
-     *   [date        ] Sun, 14 Oct 2001 18:17:38 +0200
-     * }
-     * </pre>
-     *
-     * @return  string
-     */
-    public function toString() {
-      $s= '';
-      $vars= get_object_vars($this);
-      foreach (array_keys($vars) as $var) {
-        if ('_' == $var{0}) continue;
-        $s.= sprintf("  [%-12s] %s\n", $var, xp::stringOf($vars[$var], '  '));
-      }
-      return $this->getClassName().'['.$this->uid."]@{\n".$s."}\n";
     }
 
     /**
@@ -267,6 +191,104 @@
     public function getDate() {
       return $this->date;
     }
+    
+    /**
+     * Get message subject
+     *
+     * @return  string
+     */
+    public function getSubject() {
+      return $this->subject;
+    }
+
+    /**
+     * Set message subject
+     *
+     * @param   string subject
+     */
+    public function setSubject($subject) {
+      $this->subject= $subject;
+    }
+
+    /**
+     * Get message encoding
+     *
+     * @return  string
+     */
+    public function getEncoding() {
+      return $this->encoding;
+    }
+
+    /**
+     * Set message encoding
+     *
+     * @param   string encoding
+     */
+    public function setEncoding($encoding) {
+      $this->encoding= $encoding;
+    }
+
+    /**
+     * Get message charset
+     *
+     * @return  string
+     */
+    public function getCharset() {
+      return $this->charset;
+    }
+
+    /**
+     * Set message charset
+     *
+     * @param   string charset
+     */
+    public function setCharset($charset) {
+      $this->charset= $charset;
+    }
+
+    /**
+     * Get message contenttype
+     *
+     * @return  string
+     */
+    public function getContentType() {
+      return $this->contenttype;
+    }
+
+    /**
+     * Set message contenttype
+     *
+     * @param   string contenttype
+     */
+    public function setContentType($contenttype) {
+      $this->contenttype= $contenttype;
+    }
+    
+    /**
+     * Get message body. If this message is contained in a folder and the body
+     * has'nt been fetched yet, it'll be retrieved from the storage underlying
+     * the folder.
+     *
+     * @return  string
+     */
+    public function getBody() {
+      if (
+        (NULL === $this->folder) ||
+        (NULL !== $this->body)
+      ) return $this->body;
+      
+      // We have a folder and the body is NULL (indicating we haven't fetched this message)
+      return ($this->body= $this->folder->getMessagePart($this->uid, '1'));
+    }
+
+    /**
+     * Set message body
+     *
+     * @param   string body
+     */
+    public function setBody($body) {
+      $this->body= $body;
+    }
   
     /**
      * Add recipient
@@ -310,15 +332,13 @@
      * @return  peer.mail.InternetAddress[] adr recipients of type
      */
     public function getRecipient($type) {
-      static $ofs= array();
+      static $ofs= array(TO => 0, CC => 0, BCC => 0);
       
-      if (!isset($ofs[$type])) $ofs[$type]= 0;
-      $l= $this->$type;
-      if (!isset($l[$ofs[$type]])) {
-        unset($ofs[$type]);
+      // No more elements
+      if (!isset($this->{$type}[$ofs[$type]]))
         return FALSE;
-      }
-      return $l[$ofs[$type]++];
+
+      return $this->{$type}[$ofs[$type]++];
     }
     
     /**
@@ -392,104 +412,6 @@
       }
       
       return isset($this->_headerlookup[$header]) ? $this->_headerlookup[$header] : NULL;
-    }
-    
-    /**
-     * Get message body. If this message is contained in a folder and the body
-     * has'nt been fetched yet, it'll be retrieved from the storage underlying
-     * the folder.
-     *
-     * @return  string
-     */
-    public function getBody() {
-      if (
-        (NULL === $this->folder) ||
-        (NULL !== $this->body)
-      ) return $this->body;
-      
-      // We have a folder and the body is NULL (indicating we haven't fetched this message)
-      return ($this->body= $this->folder->getMessagePart($this->uid, '1'));
-    }
-
-    /**
-     * Set message body
-     *
-     * @param   string body
-     */
-    public function setBody($body) {
-      $this->body= $body;
-    }
-
-    /**
-     * Get message subject
-     *
-     * @return  string
-     */
-    public function getSubject() {
-      return $this->subject;
-    }
-
-    /**
-     * Set message subject
-     *
-     * @param   string subject
-     */
-    public function setSubject($subject) {
-      $this->subject= $subject;
-    }
-
-    /**
-     * Get message encoding
-     *
-     * @return  string
-     */
-    public function getEncoding() {
-      return $this->encoding;
-    }
-
-    /**
-     * Set message encoding
-     *
-     * @param   string encoding
-     */
-    public function setEncoding($encoding) {
-      $this->encoding= $encoding;
-    }
-
-    /**
-     * Get message charset
-     *
-     * @return  string
-     */
-    public function getCharset() {
-      return $this->charset;
-    }
-
-    /**
-     * Set message charset
-     *
-     * @param   string charset
-     */
-    public function setCharset($charset) {
-      $this->charset= $charset;
-    }
-
-    /**
-     * Get message contenttype
-     *
-     * @return  string
-     */
-    public function getContenttype() {
-      return $this->contenttype;
-    }
-
-    /**
-     * Set message contenttype
-     *
-     * @param   string contenttype
-     */
-    public function setContenttype($contenttype) {
-      $this->contenttype= $contenttype;
     }
     
     /**
@@ -651,6 +573,82 @@
         if (!empty($val)) $h.= $key.': '.$val."\n";
       }
       return $h;
+    }
+
+    /**
+     * Create string representation. Note: This is not suitable for sending mails,
+     * use the getHeaderString() and getBody() methods!
+     *
+     * Example output:
+     * <pre>
+     * peer.mail.Message[10332605]@{
+     *   [headers     ] array (
+     *     'Received' => 'from moutvdom01.kundenserver.de by mx08.web.de with smtp
+     *         (freemail 4.2.2.3 #20) id m15snxT-008AX0A; Sun, 14 Oct 2001 18:17 +0200
+     *   from [195.20.224.209] (helo=mrvdom02.schlund.de)
+     *         by moutvdom01.kundenserver.de with esmtp (Exim 2.12 #2)
+     *         id 15snxT-0004WT-00
+     *         for timm.friebe@bar.foo; Sun, 14 Oct 2001 18:17:47 +0200
+     *   from p3e9e72f0.dip0.t-ipconnect.de ([62.158.114.240] helo=banane)
+     *         by mrvdom02.schlund.de with smtp (Exim 2.12 #2)
+     *         id 15snxK-0005Xj-00; Sun, 14 Oct 2001 18:17:38 +0200',
+     *     'Message-ID' => '<013901c154cb$c03222d0$917cfea9@banane>',
+     *     'MIME-Version' => '1.0',
+     *     'X-MSMail-Priority' => 'Normal',
+     *     'X-Mailer' => 'Microsoft Outlook Express 6.00.2505.0000',
+     *     'X-MimeOLE' => 'Produced By Microsoft MimeOLE V6.00.2505.0000',
+     *   )
+     *   [body        ] ''
+     *   [to          ] array (
+     *     0 => 
+     *     array (
+     *       'personal' => '',
+     *       'localpart' => 'timm.friebe',
+     *       'domain' => 'bar.foo',
+     *     ),
+     *   )
+     *   [from        ] =?iso-8859-1?Q?"Timm_Friebe"?= <thekid@example.foo>
+     *   [cc          ] array (
+     *     0 => 
+     *     array (
+     *       'personal' => '',
+     *       'localpart' => 'thekid',
+     *       'domain' => 'bar.baz',
+     *     ),
+     *   )
+     *   [bcc         ] array (
+     *   )
+     *   [subject     ] 'Test mit HTML'
+     *   [priority    ] 3
+     *   [contenttype ] 'multipart/mixed; boundary="DORIS009DA9BD"'
+     *   [encoding    ] '8bit'
+     *   [folder      ] peer.mail.MailFolder[INBOX]@{
+     *   name  -> peer.mail.store.ImapStore
+     *   cache -> peer.mail.store.StoreCache[5]@{
+     *     [folder/INBOX            ] object [mailfolder]
+     *     [list/message/INBOX1     ] object [message]
+     *     [list/message/INBOX2     ] object [message]
+     *     [list/message/INBOX3     ] object [message]
+     *     [list/message/INBOX5     ] object [message]
+     *   }
+     * }
+     *   [uid         ] 10332605
+     *   [flags       ] 32
+     *   [size        ] 27124
+     *   [date        ] Sun, 14 Oct 2001 18:17:38 +0200
+     * }
+     * </pre>
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= '';
+      $vars= get_object_vars($this);
+      foreach (array_keys($vars) as $var) {
+        if ('_' == $var{0}) continue;
+        $s.= sprintf("  [%-12s] %s\n", $var, xp::stringOf($vars[$var], '  '));
+      }
+      return $this->getClassName().'['.$this->uid."]@{\n".$s."}\n";
     }
   }
 ?>

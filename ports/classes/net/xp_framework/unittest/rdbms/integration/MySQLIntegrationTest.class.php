@@ -12,6 +12,17 @@
    * @ext       mysql
    */
   class MySQLIntegrationTest extends RdbmsIntegrationTest {
+
+    /**
+     * Set up testcase
+     *
+     */
+    public function setUp() {
+      parent::setUp();
+      if ('real' !== ($q= $this->db()->query('select 0.5 as value')->fields['value'])) {
+        throw new PrerequisitesNotMetError('Broken mysql library - select 0.5 yields '.$q.' as type');
+      }
+    }
     
     /**
      * Retrieve dsn

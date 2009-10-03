@@ -19,7 +19,7 @@ uses('rdbms.util.DBXMLNamingStrategy');
      * @param   rdbms.DBConstraint c
      * @return  string
      */
-    function foreignKeyConstraintName($t, $c) {
+    public function foreignKeyConstraintName($t, $c) {
       $role= '';
       foreach (array_keys($c->getKeys()) as $attribute) $role.= ucfirst('_id' == substr($attribute, -3) ? substr($attribute, 0, -3) : $attribute);
       return $role;
@@ -33,7 +33,7 @@ uses('rdbms.util.DBXMLNamingStrategy');
      * @param   rdbms.DBConstraint c
      * @return  string
      */
-    function referencingForeignKeyConstraintName($t, $c) {
+    public function referencingForeignKeyConstraintName($t, $c) {
       $role= self::foreignKeyConstraintName($t, $c);
       return trim(((ucfirst($t->name) == $role) ? $role : ucfirst($t->name).$role));
     }

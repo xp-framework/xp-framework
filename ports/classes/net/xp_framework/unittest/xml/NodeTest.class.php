@@ -105,6 +105,18 @@
       $child= new Node('node');
       $this->assertEquals($child, $n->addChild($child));
     }
+
+    /**
+     * Tests that withChild() will return the node itself
+     *
+     * @see     xp://xml.Node#withChild
+     */
+    #[@test]
+    public function withChildReturnsNode() {
+      $n= new Node('node');
+      $child= new Node('node');
+      $this->assertEquals($n, $n->withChild($child));
+    }
     
     /**
      * Tests that fromArray() will return an empty node when passed an empty array

@@ -54,9 +54,9 @@
      * Tests the getDriver() method
      *
      */
-    #[@test]
+    #[@test, @expect('lang.FormatException')]
     public function noDriver() {
-      $this->assertNull(create(new DSN(''))->getDriver());
+      new DSN('');
     }
 
     /**

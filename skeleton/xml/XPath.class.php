@@ -64,7 +64,9 @@
       if ($arg instanceof DOMDocument) {
         $this->context= new DOMXPath($arg);
       } else if ($arg instanceof Tree) {
-        $this->context= new DOMXPath($this->loadXML($arg->getSource(INDENT_NONE)));
+        $this->context= new DOMXPath($this->loadXML(
+          $arg->getDeclaration().$arg->getSource(INDENT_NONE)
+        ));
       } else if (is_string($arg)) {
         $this->context= new DOMXPath($this->loadXML($arg));
       } else {

@@ -27,6 +27,7 @@
      */
     #[@xslmethod]
     public function format($date, $format, $timezone= NULL) {
+      $timezone= empty($timezone) ? NULL : $timezone;
       return create(new Date($date))->toString($format, new TimeZone($timezone));
     }
     

@@ -30,6 +30,7 @@
      */
     #[@test]
     public function initiallyEmpty() {
+      $this->assertEquals(0, $this->list->length);
       $this->assertEquals(0, sizeof($this->list->values));
     }
 

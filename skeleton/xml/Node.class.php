@@ -313,5 +313,17 @@
       $this->children[]= $child;
       return $child;
     }
+
+    /**
+     * Add a child node and return this node
+     *
+     * @param   xml.Node child
+     * @return  xml.Node this
+     * @throws  lang.IllegalArgumentException in case the given argument is not a Node
+     */
+    public function withChild(Node $child) {
+      $this->addChild($child);
+      return $this;
+    }
   }
 ?>

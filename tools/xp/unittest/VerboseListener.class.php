@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('unittest.TestListener', 'io.streams.OutputStreamWriter');
+  uses('unittest.TestListener', 'io.streams.OutputStreamWriter', 'lang.Runtime');
 
   /**
    * Verbose listener - shows details for all tests (succeeded, failed
@@ -69,7 +69,7 @@
      * @param   unittest.TestSuite suite
      */
     public function testRunStarted(TestSuite $suite) {
-      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s)');
+      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s))');
     }
     
     /**

@@ -52,7 +52,7 @@
         throw $e;
       }
     }
-    
+
     /**
      * Tests Process::newInstance()
      *
@@ -71,7 +71,7 @@
      */
     #[@test]
     public function exitValue() {
-      $p= new Process($this->executable(), array('-r', escapeshellarg('exit(0);')));
+      $p= new Process($this->executable(), array('-r', 'exit(0);'));
       $this->assertEquals(0, $p->close());
     }
 
@@ -81,7 +81,7 @@
      */
     #[@test]
     public function nonZeroExitValue() {
-      $p= new Process($this->executable(), array('-r', escapeshellarg('exit(2);')));
+      $p= new Process($this->executable(), array('-r', 'exit(2);'));
       $this->assertEquals(2, $p->close());
     }
 
@@ -91,15 +91,12 @@
      */
     #[@test]
     public function stdIn() {
-      $p= new Process($this->executable(), array('-r', escapeshellarg('fprintf(STDOUT, fread(STDIN, 0xFF));')));
-      try {
-        $p->in->write('IN');
-        $p->in->close();
-        $this->assertEquals('IN', $p->out->read());
-      } catch (AssertionFailedError $e) {
-        $p->close();    // Ensure process is closed
-        throw $e;
-      }
+      $p= new Process($this->executable(), array('-r', 'fprintf(STDOUT, fread(STDIN, 0xFF));'));
+      $p->in->write('IN');
+      $p->in->close();
+      $out= $p->out->read();
+      $p->close();
+      $this->assertEquals('IN', $out);
     }
 
     /**
@@ -108,13 +105,10 @@
      */
     #[@test]
     public function stdOut() {
-      $p= new Process($this->executable(), array('-r', escapeshellarg('fprintf(STDOUT, "OUT");')));
-      try {
-        $this->assertEquals('OUT', $p->out->read());
-      } catch (AssertionFailedError $e) {
-        $p->close();    // Ensure process is closed
-        throw $e;
-      }
+      $p= new Process($this->executable(), array('-r', 'fprintf(STDOUT, "OUT");'));
+      $out= $p->out->read();
+      $p->close();
+      $this->assertEquals('OUT', $out);
     }
 
     /**
@@ -123,13 +117,10 @@
      */
     #[@test]
     public function stdErr() {
-      $p= new Process($this->executable(), array('-r', escapeshellarg('fprintf(STDERR, "ERR");')));
-      try {
-        $this->assertEquals('ERR', $p->err->read());
-      } catch (AssertionFailedError $e) {
-        $p->close();    // Ensure process is closed
-        throw $e;
-      }
+      $p= new Process($this->executable(), array('-r', 'fprintf(STDERR, "ERR");'));
+      $err= $p->err->read();
+      $p->close();
+      $this->assertEquals('ERR', $err);
     }
 
     /**
@@ -156,7 +147,7 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function nonExistantProcessId() {
-      $this->assertNull(Process::getProcessById(-1));
+      Process::getProcessById(-1);
     }
 
     /**
@@ -169,66 +160,6 @@
       $p= Process::getProcessById($pid);
       $this->assertClass($p, 'lang.Process');
       $this->assertEquals($pid, $p->getProcessId());
-    }
-    
-    /**
-     * Tests command line parsing
-     *
-     */
-    #[@test]
-    public function emptyArgs() {
-      $p= Process::parseCommandLine('C:\\Windows\\Explorer.EXE');
-      $this->assertEquals(array(), $p);
-    }
-
-    /**
-     * Tests command line parsing
-     *
-     */
-    #[@test]
-    public function guidArg() {
-      $p= Process::parseCommandLine('taskeng.exe {58B7C886-2D94-4DBF-BBB9-96608B332124}');
-      $this->assertEquals(array('{58B7C886-2D94-4DBF-BBB9-96608B332124}'), $p);
-    }
-
-    /**
-     * Tests command line parsing
-     *
-     */
-    #[@test]
-    public function quotedCommand() {
-      $p= Process::parseCommandLine('"C:\\Program Files\\Windows Sidebar\\sidebar.exe" /autoRun');
-      $this->assertEquals(array('/autoRun'), $p);
-    }
-
-    /**
-     * Tests command line parsing
-     *
-     */
-    #[@test]
-    public function quotedArgumentPart() {
-      $p= Process::parseCommandLine('/usr/bin/php -q -dinclude_path=".:/usr/share" -dmagic_quotes_gpc=Off');
-      $this->assertEquals(array('-q', '-dinclude_path=".:/usr/share"', '-dmagic_quotes_gpc=Off'), $p);
-    }
-
-    /**
-     * Tests command line parsing
-     *
-     */
-    #[@test]
-    public function quotedArgument() {
-      $p= Process::parseCommandLine('nedit "/mnt/c/Users/Mr. Example/notes.txt"');
-      $this->assertEquals(array('"/mnt/c/Users/Mr. Example/notes.txt"'), $p);
-    }
-
-    /**
-     * Tests command line parsing
-     *
-     */
-    #[@test]
-    public function quotedArguments() {
-      $p= Process::parseCommandLine('nedit "/mnt/c/Users/Mr. Example/notes.txt" "../All Notes.txt"');
-      $this->assertEquals(array('"/mnt/c/Users/Mr. Example/notes.txt"', '"../All Notes.txt"'), $p);
     }
   }
 ?>

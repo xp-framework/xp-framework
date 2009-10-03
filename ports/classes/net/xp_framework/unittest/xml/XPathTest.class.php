@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'xml.Tree',
-    'xml.XPath'
+    'xml.XPath',
+    'lang.types.String'
   );
 
   /**
@@ -184,6 +185,48 @@
     #[@test, @expect('xml.XPathException')]
     public function invalidQuery() {
       create(new XPath('<document/>'))->query(',INVALID,');
+    }
+    
+    /**
+     * Query XML document from xml.Tree
+     *
+     */
+    #[@test]
+    public function queryTree() {
+      $xpath= new XPath(Tree::fromString('<document><node>value</node></document>'));
+      
+      $this->assertEquals('value', $xpath->query('string(/document/node)'));
+    }
+    
+    /**
+     * Query XML document from xml.Tree with encoding given
+     *
+     */
+    #[@test]
+    public function queryTreeWithEncoding() {
+      $value= new String('value öäü', 'ISO-8859-1');
+      $xpath= new XPath(Tree::fromString(sprintf(
+        '<?xml version="1.0" encoding="iso-8859-1"?>'.
+        '<document><node>%s</node></document>',
+        $value
+      )));
+
+      $this->assertTrue($value->getBytes('UTF-8') == $xpath->query('string(/document/node)'));
+    }
+    
+    /**
+     * Query XML document from xml.Tree with default encoding
+     *
+     */
+    #[@test]
+    public function queryTreeWithDefaultEncoding() {
+      $value= new String('value Ã¶Ã¤Ã¼', 'UTF-8');
+      $xpath= new XPath($s= sprintf(
+        '<document><node>%s</node></document>',
+        $value->getBytes('UTF-8')
+      ));
+
+      $this->assertTrue($value->getBytes('UTF-8') == $xpath->query('string(/document/node)'));
     }
   }
 ?>

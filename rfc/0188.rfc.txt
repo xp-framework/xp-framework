@@ -4,15 +4,15 @@ $Id$
 
 @authors: friebe
 @created: Sun Aug 23 18:30:28     2009
-@status: draft
-@target: 5.7
+@status: discussion, ends Tue Sep 29 16:25:13     2009
+@target: 5.7.5
 @category: unittest
 
 Scope of Change
 ---------------
 At the moment, there are three possible outcomes of a unittest: Succeeded,
 Skipped and Failed. This RFC suggests adding more kinds of outcomes: 
-Ignored, Timedout and Exception.
+Error and NotRun.
 
 
 Rationale
@@ -22,15 +22,26 @@ Be able to distinguish between the different non-success reasons.
 
 Functionality
 -------------
+The new outcomes are represented by these new classes:
+
+<code>
+  class TestError extends TestFailure {
+    // ...
+  }
+  
+  class TestNotRun extends TestSkipped {
+    // ...
+  }
+</code>
 
 Definitions
 ~~~~~~~~~~~
 <summary>
 These current outcomes are defined:
-* Succeeded (Test was successful)
-* Skipped (Test was skipped by either an error inside setUp() or by
+* "." - Succeeded (Test was successful)
+* "S" - Skipped (Test was skipped by either an error inside setUp() or by
   an @ignore annotation)
-* Failed (Test failed due to an assertion error, an expected exception
+* "F" - Failed (Test failed due to an assertion error, an expected exception
   not being caught or by an exception raised by the code inside).
 
 Example output:
@@ -42,20 +53,18 @@ Example output:
 
 <summary>
 This RFC suggests to add the following new outcomes:
-* Ignored (Test was ignored by @ignore, as stated above, this is currently 
+* "E" - Error (An exception other than AssertionFailedError was thrown when
+  executing the test and no @expected annotation existed or a PHP error was
+  raised)
+* "N" - Not run (Test was ignored by @ignore, as stated above, this is currently 
   also reported as "skipped")
-* TimedOut (Test exceeded the time limit given in @limit, at the moment 
-  this is reported as "failed")
-* Exception (An exception other than AssertionFailedError was thrown when
-  executing the test and no @expected annotation existed)
 
 Example output:
 <pre>
-  [..SIFTE]
-  2 succeeded, 1 skipped, 1 ignored, 3 failed
+  [..SNFFE]
+  2 succeeded, 2 skipped, 3 failed
 </pre>
 </summary>
-
 
 Security considerations
 -----------------------
@@ -75,7 +84,11 @@ n/a
 Related documents
 -----------------
 * http://msdn.microsoft.com/en-us/library/ms243180(VS.100).aspx
+* http://www.phpunit.de/manual/current/en/textui.html
+* http://www.nunit.org/index.php?p=nunit-console&r=2.5.2
 
+Implementing patch:
+* http://xp-framework.net/rfc/contrib/rfc0188.diff
 
 Comments
 --------

@@ -173,10 +173,10 @@
     }
 
     /**
-     * Test translatiom
+     * Test transliteration
      *
      */
-    #[@test]
+    #[@test, @ignore('Does not work with all iconv implementations')]
     public function transliteration() {
       $this->assertEquals(
         'Trenciansky kraj', 

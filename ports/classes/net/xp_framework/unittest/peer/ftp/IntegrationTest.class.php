@@ -157,7 +157,7 @@
 
     /**
      * Test retrieving the ".trash" directory which is empty.(except for
-     * the ".svn" directory).
+     * the ".svn" directory, if test runs within svn checkout).
      *
      */
     #[@test]
@@ -168,7 +168,7 @@
         $dir= $r->getDir('.trash');
         $this->assertClass($dir, 'peer.ftp.FtpDir');
         $this->assertEquals('/.trash/', $dir->getName());
-        $this->assertEquals(1, $dir->entries()->size());
+        $this->assertTrue(1 >= $dir->entries()->size());
       }
     }
 

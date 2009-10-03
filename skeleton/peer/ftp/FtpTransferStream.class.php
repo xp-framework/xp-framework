@@ -64,7 +64,7 @@
      */
     public function close() {
       if ($this->eof) return;   // Already closed
-
+      $this->eof= TRUE;
       $this->socket->close();
       
       // Check for "226 transfer complete"

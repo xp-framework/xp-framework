@@ -8,11 +8,45 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Refactored command line parsing and composition from lang.Process to
+  new lang.CommandLine class
+  (friebe)
+- Made peer.URL throw a lang.FormatException when passed malformed URLs
+  (friebe)
+- Changed peer.URL::addParams() and peer.URL::addParam() to throw a
+  lang.IllegalArgumentException if the parameter to be added already
+  exists
+  (friebe)
 - Refactored scriptlet API classes to make them testable
   (friebe)
 
 Features
 ~~~~~~~~
+- Added unittest.XmlTestListener class which reports results in an XML 
+  format adequate for continuous integration systems.
+  http://news.xp-framework.net/article/320/2009/10/02/
+  (friebe)
+- Added peer.URL::removeParam() method
+  (friebe)
+- Added support for array parameters (num[]=one&num[]=two) and hash
+  parameters (data[size]=S&data[color]=green) to peer.URL 
+  (friebe, Patrick Kohlmann)
+- Added peer.URL::hasParam() method to test for existance of a single
+  parameter - it complements hasParams()
+  (friebe)
+- Added peer.URL::setParams() and peer.URL::setParam() methods
+  (friebe)
+- Added xml.Stylesheet::addTemplate() (and withTemplate()) which work 
+  with xml.XslTemplate instances.
+  (friebe)
+- Added xml.Node::withChild() method to complete addChild() - but instead
+  of returning the child returns the node itself.
+  http://news.xp-framework.net/article/318/2009/09/21/
+  (friebe)
+- Added various with*() methods to xml.Stylesheet to complement their
+  add*() counterparts - but instead return the stylesheet instance to
+  allow for a fluent API.
+  (friebe)
 - Changed scriptlet error pages to use data protocol instead of relying
   on an image named "err.gif" in the document root's /image subdirectory
   (friebe)
@@ -24,6 +58,24 @@ Features
   (friebe)
 - Added possibility to pass an associative array to HTTP request params
   (friebe)
+
+Bugfixes
+~~~~~~~~
+- Update org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
+  assignment character for tokens (required for Bugzilla V3)
+  (hinckel)
+- Fixed content type header in peer.mail.MimeMessage with multiple parts
+  (hinckel)
+- Fixed extraneous trailing whitespace in rdbms.mysql.MySQLDBAdapter
+  (Tobias Roth)
+- Fixed peer.URL::getQuery() and peer.URL::hashCode() not being returning
+  the correct values after the URL object has been modified
+  (friebe)
+- Fixed newline detection in StreamReader::readLine()
+  (hinckel)
+- Fixed XPath constructor to include XML declaration when creating XPath
+  object from xml.Tree
+  (hinckel, Christine Karch)
 
 
 Version 5.7.4, released 2009-09-05

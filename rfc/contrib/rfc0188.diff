@@ -1,0 +1,418 @@
+Index: skeleton/unittest/TestListener.class.php
+===================================================================
+--- skeleton/unittest/TestListener.class.php	(revision 13609)
++++ skeleton/unittest/TestListener.class.php	(working copy)
+@@ -8,8 +8,8 @@
+    * To intercept certain events during a test run, add a listener to
+    * the test suite before calling its run() or runTest() methods.
+    *
++   * @test     xp://net.xp_framework.unittest.tests.ListenerTest
+    * @see      xp://unittest.TestSuite#addListener
+-   * @purpose  Listen
+    */
+   interface TestListener {
+ 
+@@ -26,6 +26,13 @@
+      * @param   unittest.TestFailure failure
+      */
+     public function testFailed(TestFailure $failure);
++
++    /**
++     * Called when a test errors.
++     *
++     * @param   unittest.TestFailure error
++     */
++    public function testError(TestFailure $error);
+     
+     /**
+      * Called when a test finished successfully.
+@@ -35,15 +42,22 @@
+     public function testSucceeded(TestSuccess $success);
+ 
+     /**
+-     * Called when a test is not run - usually because it is skipped
+-     * due to a non-met prerequisite or if it has been ignored by using
+-     * the @ignore annotation.
++     * Called when a test is not run because it is skipped due to a 
++     * failed prerequisite.
+      *
+      * @param   unittest.TestSkipped skipped
+      */
+     public function testSkipped(TestSkipped $skipped);
+ 
+     /**
++     * Called when a test is not run because it has been ignored by using
++     * the @ignore annotation.
++     *
++     * @param   unittest.TestSkipped ignore
++     */
++    public function testNotRun(TestSkipped $ignore);
++
++    /**
+      * Called when a test run starts.
+      *
+      * @param   unittest.TestSuite suite
+Index: skeleton/unittest/XmlTestListener.class.php
+===================================================================
+--- skeleton/unittest/XmlTestListener.class.php	(revision 13609)
++++ skeleton/unittest/XmlTestListener.class.php	(working copy)
+@@ -89,6 +89,19 @@
+         'type'    => xp::typeOf($failure->reason)
+       )));
+     }
++
++    /**
++     * Called when a test errors.
++     *
++     * @param   unittest.TestFailure error
++     */
++    public function testError(TestFailure $error) {
++      $t= $this->addTestCase($error, 'errors');
++      $t->addChild(new Node('error', xp::stringOf($error->reason), array(
++        'message' => trim($error->reason->compoundMessage()),
++        'type'    => xp::typeOf($error->reason)
++      )));
++    }
+     
+     /**
+      * Called when a test finished successfully.
+@@ -100,9 +113,8 @@
+     }
+     
+     /**
+-     * Called when a test is not run - usually because it is skipped
+-     * due to a non-met prerequisite or if it has been ignored by using
+-     * the @ignore annotation.
++     * Called when a test is not run because it is skipped due to a 
++     * failed prerequisite.
+      *
+      * @param   unittest.TestSkipped skipped
+      */
+@@ -111,6 +123,16 @@
+     }
+ 
+     /**
++     * Called when a test is not run because it has been ignored by using
++     * the @ignore annotation.
++     *
++     * @param   unittest.TestSkipped ignore
++     */
++    public function testNotRun(TestSkipped $ignore) {
++      // Not supported?
++    }
++
++    /**
+      * Called when a test run starts.
+      *
+      * @param   unittest.TestSuite suite
+Index: skeleton/unittest/TestSuite.class.php
+===================================================================
+--- skeleton/unittest/TestSuite.class.php	(revision 13609)
++++ skeleton/unittest/TestSuite.class.php	(working copy)
+@@ -169,7 +169,7 @@
+       
+       // Check for @ignore
+       if ($method->hasAnnotation('ignore')) {
+-        $this->notifyListeners('testSkipped', array(
++        $this->notifyListeners('testNotRun', array(
+           $result->setSkipped($test, $method->getAnnotation('ignore'), 0.0)
+         ));
+         return;
+@@ -177,8 +177,16 @@
+ 
+       // Check for @expect
+       $expected= NULL;
+-      if ($method->hasAnnotation('expect')) {
+-        $expected= XPClass::forName($method->getAnnotation('expect'));
++      if ($method->hasAnnotation('expect', 'class')) {
++        $expected= array(
++          XPClass::forName($method->getAnnotation('expect', 'class')),
++          $method->getAnnotation('expect', 'withMessage')
++        );
++      } else if ($method->hasAnnotation('expect')) {
++        $expected= array(
++          XPClass::forName($method->getAnnotation('expect')),
++          NULL
++        );
+       }
+       
+       // Check for @limit
+@@ -219,28 +227,44 @@
+         $e= $t->getCause();
+ 
+         // Was that an expected exception?
+-        if ($expected && $expected->isInstance($e)) {
++        if ($expected && $expected[0]->isInstance($e)) {
+           if ($eta && $timer->elapsedTime() > $eta) {
+             $this->notifyListeners('testFailed', array(
+-              $result->setFailed($test, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
++              $result->setFailed(
++                $test, 
++                new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), 
++                $timer->elapsedTime()
++              )
+             ));
++          } else if ($expected[1] && $expected[1] !== $e->getMessage()) {
++            $this->notifyListeners('testFailed', array(
++              $result->setFailed(
++                $test, 
++                new AssertionFailedError('Expected '.$e->getClassName().'\'s message differs', $expected[1], $e->getMessage()), 
++                $timer->elapsedTime()
++              )
++            ));
+           } else {
+             $this->notifyListeners('testSucceeded', array(
+               $result->setSucceeded($test, $timer->elapsedTime())
+             ));
+           }
+-        } else if ($expected && !$expected->isInstance($e)) {
++        } else if ($expected && !$expected[0]->isInstance($e)) {
+           $this->notifyListeners('testFailed', array(
+             $result->setFailed(
+               $test, 
+-              new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected->getName()),
++              new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected[0]->getName()),
+               $timer->elapsedTime()
+             )
+           ));
+-        } else {
++        } else if ($e instanceof AssertionFailedError) {
+           $this->notifyListeners('testFailed', array(
+             $result->setFailed($test, $e, $timer->elapsedTime())
+           ));
++        } else {
++          $this->notifyListeners('testError', array(
++            $result->setFailed($test, $e, $timer->elapsedTime())
++          ));
+         }
+         xp::gc();
+         return;
+@@ -254,17 +278,25 @@
+         $this->notifyListeners('testFailed', array(
+           $result->setFailed(
+             $test, 
+-            new AssertionFailedError('Expected exception not caught', NULL, $expected->getName()),
++            new AssertionFailedError('Expected exception not caught', NULL, $expected[0]->getName()),
+             $timer->elapsedTime()
+           )
+         ));
+       } else if (sizeof(xp::registry('errors')) > 0) {
+-        $this->notifyListeners('testFailed', array(
+-          $result->setFailed($test, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime())
++        $this->notifyListeners('testError', array(
++          $result->setFailed(
++            $test, 
++            new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), 
++            $timer->elapsedTime()
++          )
+         ));
+       } else if ($eta && $timer->elapsedTime() > $eta) {
+         $this->notifyListeners('testFailed', array(
+-          $result->setFailed($test, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
++          $result->setFailed(
++            $test, 
++            new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), 
++            $timer->elapsedTime()
++          )
+         ));
+       } else {
+         $this->notifyListeners('testSucceeded', array(
+Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 13609)
++++ ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(working copy)
+@@ -77,6 +77,15 @@
+      *
+      */
+     #[@test]
++    public function throws() {
++      throw new IllegalArgumentException('');
++    }
++
++    /**
++     * Always fails
++     *
++     */
++    #[@test]
+     public function raisesAnError() {
+       $a.= '';
+     }
+@@ -144,6 +153,24 @@
+     }
+ 
+     /**
++     * Catches the expected exception 
++     *
++     */
++    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
++    public function catchExpectedWithMessage() {
++      throw new IllegalArgumentException('Hello');
++    }
++
++    /**
++     * Catches the expected exception
++     *
++     */
++    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
++    public function catchExpectedWithWrongMessage() {
++      throw new IllegalArgumentException('Another message');
++    }
++
++    /**
+      * A test that timeouts
+      *
+      */
+Index: ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php	(revision 13609)
++++ ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php	(working copy)
+@@ -61,6 +61,15 @@
+     }
+ 
+     /**
++     * Called when a test errors.
++     *
++     * @param   unittest.TestFailure error
++     */
++    public function testError(TestFailure $error) {
++      $this->invocations[__FUNCTION__]= new ArrayList($error);
++    }
++
++    /**
+      * Called when a test finished successfully.
+      *
+      * @param   unittest.TestSuccess success
+@@ -70,9 +79,8 @@
+     }
+ 
+     /**
+-     * Called when a test is not run - usually because it is skipped
+-     * due to a non-met prerequisite or if it has been ignored by using
+-     * the @ignore annotation.
++     * Called when a test is not run because it is skipped due to a 
++     * failed prerequisite.
+      *
+      * @param   unittest.TestSkipped skipped
+      */
+@@ -81,6 +89,16 @@
+     }
+ 
+     /**
++     * Called when a test is not run because it has been ignored by using
++     * the @ignore annotation.
++     *
++     * @param   unittest.TestSkipped ignore
++     */
++    public function testNotRun(TestSkipped $ignore) {
++      $this->invocations[__FUNCTION__]= new ArrayList($ignore);
++    }
++
++    /**
+      * Called when a test run starts.
+      *
+      * @param   unittest.TestSuite suite
+@@ -132,6 +150,38 @@
+     }    
+ 
+     /**
++     * Tests running a single test that throws an exception.
++     *
++     */    
++    #[@test]
++    public function notifiedOnException() {
++      with ($case= new SimpleTestCase('throws')); {
++        $this->suite->runTest($case);
++        $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
++        $this->assertEquals($case, $this->invocations['testStarted'][0]);
++        $this->assertClass($this->invocations['testError'][0], 'unittest.TestFailure');
++        $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
++        $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
++      }
++    }    
++
++    /**
++     * Tests running a single test that raises an error.
++     *
++     */    
++    #[@test]
++    public function notifiedOnError() {
++      with ($case= new SimpleTestCase('raisesAnError')); {
++        $this->suite->runTest($case);
++        $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
++        $this->assertEquals($case, $this->invocations['testStarted'][0]);
++        $this->assertClass($this->invocations['testError'][0], 'unittest.TestFailure');
++        $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
++        $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
++      }
++    }    
++
++    /**
+      * Tests running a single test that is skipped due to not-met
+      * prerequisites.
+      *
+@@ -159,7 +209,7 @@
+         $this->suite->runTest($case);
+         $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
+         $this->assertEquals($case, $this->invocations['testStarted'][0]);
+-        $this->assertClass($this->invocations['testSkipped'][0], 'unittest.TestSkipped');
++        $this->assertClass($this->invocations['testNotRun'][0], 'unittest.TestSkipped');
+         $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
+         $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
+       }
+Index: ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(revision 13609)
++++ ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(working copy)
+@@ -273,6 +273,20 @@
+     }
+ 
+     /**
++     * Tests exceptions make a test fail
++     *
++     */    
++    #[@test]
++    public function exceptionsMakeTestFail() {
++      with ($test= new SimpleTestCase('throws')); {
++        $this->assertClass(
++          $this->suite->runTest($test)->failed[$test->hashCode()]->reason,
++          'lang.IllegalArgumentException'
++        );
++      }
++    }
++    
++    /**
+      * Tests warnings do not affect succeeding tests
+      *
+      */    
+@@ -346,5 +360,31 @@
+         cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
+       );
+     }
++
++    /**
++     * Tests catching an expected exception
++     *
++     */    
++    #[@test]
++    public function catchExpectedWithMessage() {
++      $this->suite->addTest(new SimpleTestCase('catchExpectedWithMessage'));
++      $r= $this->suite->run();
++      $this->assertEquals(1, $r->successCount());
++    }
++
++    /**
++     * Tests catching an expected exception
++     *
++     */    
++    #[@test]
++    public function catchExpectedWithMismatchingMessage() {
++      $this->suite->addTest(new SimpleTestCase('catchExpectedWithWrongMessage'));
++      $r= $this->suite->run();
++      $this->assertEquals(1, $r->failureCount());
++      $this->assertEquals(
++        'Expected lang.IllegalArgumentException\'s message differs',
++        cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
++      );
++    }
+   }
+ ?>

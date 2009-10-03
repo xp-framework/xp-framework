@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.File');
+  uses('io.File', 'lang.CommandLine');
 
   /**
    * Process
@@ -18,6 +18,7 @@
    *   var_dump($uptime);
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.core.ProcessResolveTest
    * @test     xp://net.xp_framework.unittest.core.ProcessTest
    * @see      xp://lang.Runtime#getExecutable
    * @see      php://proc_open
@@ -30,28 +31,10 @@
       $err    = NULL,
       $exitv  = -1;
     
-    protected static
-      $escape = '';
-
     protected
       $_proc  = NULL,
       $status = array();
     
-    static function __static() {
-      $e= escapeshellarg('');
-      self::$escape= (0 === strlen($e) ? '"' : $e{0});
-    }
-    
-    /**
-     * Escape and argument
-     *
-     * @param   string arg
-     * @return  string escaped
-     */
-    protected function escape($arg) {
-      return strstr($arg, ' ') && !strstr($arg, self::$escape) ? escapeshellarg($arg) : $arg;
-    }
-
     /**
      * Constructor
      *
@@ -72,25 +55,20 @@
       if (NULL === $command) return;
 
       // Check whether the given command is executable.
-      $binary= $this->resolve($command);
+      $binary= self::resolve($command);
       if (!is_file($binary) || !is_executable($binary)) {
         throw new IOException('Command "'.$binary.'" is not an executable file');
       }
-      
-      // Build command line
-      $cmd= $this->escape($command);
-      foreach ($arguments as $arg) {
-        $cmd.= ' '.$this->escape($arg);
-      }
 
       // Open process
+      $cmd= CommandLine::forName(PHP_OS)->compose($binary, $arguments);
       if (!is_resource($this->_proc= proc_open($cmd, $spec, $pipes, $cwd, $env, array('bypass_shell' => TRUE)))) {
         throw new IOException('Could not execute "'.$cmd.'"');
       }
 
       $this->status= proc_get_status($this->_proc);
       $this->status['exe']= $binary;
-      $this->status['arguments']= NULL;
+      $this->status['arguments']= $arguments;
 
       // Assign in, out and err members
       $this->in= new File($pipes[0]);
@@ -117,7 +95,7 @@
      * @return  string executable
      * @throws  io.IOException in case the command could not be found
      */
-    public function resolve($command) {
+    public static function resolve($command) {
       clearstatcache();
       
       // PATHEXT is in form ".{EXT}[;.{EXT}[;...]]"
@@ -126,13 +104,12 @@
       // If the command is in fully qualified form and refers to a file
       // that does not exist (e.g. "C:\DoesNotExist.exe", "\DoesNotExist.com"
       // or /usr/bin/doesnotexist), do not attempt to search for it.
-      if (
-        (strncasecmp(PHP_OS, 'Win', 3) === 0 && ':' === $command{1}) || 
-        (DIRECTORY_SEPARATOR === $command{0})
-      ) {
+      if ((DIRECTORY_SEPARATOR === $command{0}) || ((strncasecmp(PHP_OS, 'Win', 3) === 0) && 
+        (':' === $command{1} || '/' === $command{0} || '\\' === $command{0})
+      )) {
         foreach ($extensions as $ext) {
           $q= $command.$ext;
-          
+
           if (file_exists($q) && !is_dir($q)) return realpath($q);
         }
         throw new IOException('"'.$command.'" does not exist');
@@ -192,23 +169,30 @@
         } catch (Exception $e) {
           throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
         }
-      } else if (file_exists($proc= '/proc/'.$pid)) {
+        
+      // Try to figure out whether we can use /proc filesystem (and also check
+      // that /proc is not just an empty directory; this assumes that process 1
+      // always exists - which usually is `init`)  
+      } else if (is_dir('/proc/1')) {
+        if (!file_exists($proc= '/proc/'.$pid)) {
+          throw new IllegalStateException('Cannot find executable in /proc');
+        }
         foreach (array('/exe', '/file') as $alt) {
           if (!file_exists($proc.$alt)) continue;
           $self->status['exe']= readlink($proc.$alt);
           break;
         }
         $self->status['command']= strtr(file_get_contents($proc.'/cmdline'), "\0", ' ');
-      } else if ($exe) {
+      } else if ($exe || ($_= getenv('_'))) {
         try {
-          $self->status['exe']= $self->resolve($exe);
-          $self->status['command']= exec('ps -p '.$pid.' -ocommand');
+          $self->status['exe']= self::resolve($exe ? $exe : $_);
+          $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand 2>&1', $out, $exit);
         } catch (IOException $e) {
           throw new IllegalStateException($e->getMessage());
         }
-      } else if ($_= getenv('_')) {
-        $self->status['exe']= $self->resolve($_);
-        $self->status['command']= exec('ps -p '.$pid.' -ocommand');
+        if (0 !== $exit) {
+          throw new IllegalStateException('Cannot find executable: '.implode('', $out));
+        }
       } else {
         throw new IllegalStateException('Cannot find executable');
       }
@@ -247,59 +231,14 @@
     }
     
     /**
-     * Parse command line arguments
-     *
-     * @see     xp://lang.Process#getArguments
-     * @param   string cmd
-     * @return  string[] arguments
-     */
-    public static function parseCommandLine($cmd) {
-
-      // Remove executable from command line. If it's quoted, handle this
-      // accordingly (with either single and double quotes). If the command
-      // line exists entirely of the command, return an empty array
-      if ('"' === $cmd{0}) {
-        $cmd= substr($cmd, strpos($cmd, '"', 1)+ 2);
-      } else if ("'" === $cmd{0}) {
-        $cmd= substr($cmd, strpos($cmd, "'", 1)+ 2);
-      } else if (FALSE !== ($end= strpos($cmd, ' '))) {
-        $cmd= substr($cmd, $end+ 1);
-      } else {
-        return array();
-      }
-
-      // Parse arguments. These also may be quoted (again, either with " or '), 
-      // or even partially quoted, so handle this, too.
-      $arguments= array();
-      $o= 0;
-      while (FALSE !== ($p= strcspn($cmd, ' ', $o))) {
-        $option= substr($cmd, $o, $p);
-        if (1 === substr_count($option, '"')) {
-          $l= $o+ $p;
-          $qp= strpos($cmd, '"', $l)+ 1;
-          $option.= substr($cmd, $l, $qp- $l);
-          $o= $qp+ 1;
-        } else if (1 === substr_count($option, "'")) {
-          $l= $o+ $p;
-          $qp= strpos($cmd, "'", $l)+ 1;
-          $option.= substr($cmd, $l, $qp- $l);
-          $o= $qp+ 1;
-        } else {
-          $o+= $p+ 1;
-        }
-        $arguments[]= $option;
-      }
-      return $arguments;
-    }
-    
-    /**
      * Get command line arguments
      *
      * @return  string[]
      */
     public function getArguments() {
       if (NULL === $this->status['arguments']) {
-        $this->status['arguments']= self::parseCommandLine($this->status['command']);
+        $parts= CommandLine::forName(PHP_OS)->parse($this->status['command']);
+        $this->status['arguments']= array_slice($parts, 1);
       }
       return $this->status['arguments'];
     }

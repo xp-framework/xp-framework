@@ -38,7 +38,7 @@
     /**
      * Retrieves the session or NULL if none exists
      *
-     * @return  scriptlet.HttpSession session object
+     * @return  scriptlet.Session session object
      */
     public function getSession() {
       return $this->session;
@@ -56,7 +56,7 @@
     /**
      * Sets session
      *
-     * @param   scriptlet.HttpSession session
+     * @param   scriptlet.Session session
      */
     public function setSession($s) {
       $this->session= $s;

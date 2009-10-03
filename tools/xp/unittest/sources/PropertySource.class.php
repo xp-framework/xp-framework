@@ -12,8 +12,8 @@
    * @purpose  Source implementation
    */
   class PropertySource extends xp·unittest·sources·AbstractSource {
-    protected
-      $prop= NULL;
+    protected $prop= NULL;
+    protected $descr= NULL;
     
     /**
      * Constructor
@@ -22,6 +22,7 @@
      */
     public function __construct(Properties $prop) {
       $this->prop= $prop;
+      $this->descr= $this->prop->readString('this', 'description', 'Tests');
     }
 
     /**
@@ -50,7 +51,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'['.$this->prop->toString().']';
+      return $this->getClassName().'['.$this->descr.' @ '.$this->prop->getFilename().']';
     }
   }
 ?>

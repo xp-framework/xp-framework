@@ -30,14 +30,14 @@
      *
      * @param   string cerror default '01;31' color for errors
      * @param   string cwarn default '00;31' color for warnings
-     * @param   string cinfo default '00;30' color for information
+     * @param   string cinfo default '00;00' color for information
      * @param   string cdebug default '00;34' color for debug
      * @param   string cdefault default '07;37' default color
      */
     public function __construct(
       $cerror   = '01;31', 
       $cwarn    = '00;31', 
-      $cinfo    = '00;30', 
+      $cinfo    = '00;00',
       $cdebug   = '00;34',
       $cdefault = '07;37'
     ) {

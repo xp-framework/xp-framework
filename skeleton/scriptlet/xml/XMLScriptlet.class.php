@@ -46,6 +46,7 @@
    * @see      xp://scriptlet.xml.XMLScriptletResponse#addFormValue
    * @see      xp://scriptlet.xml.XMLScriptletResponse#addFormError
    * @see      xp://scriptlet.xml.XMLScriptletResponse#addFormResult
+   * @test     xp://net.xp_framework.unittest.scriptlet.XmlScriptletTest
    * @purpose  Base class for websites using XML/XSL to render their output
    */
   class XMLScriptlet extends HttpScriptlet {
