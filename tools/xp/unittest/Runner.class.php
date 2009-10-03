@@ -48,9 +48,43 @@
    *   <li>-e {test method sourcecode}: Evaluate source</li>
    * </ul>
    *
+   * @test     xp://net.xp_framework.unittest.tests.UnittestRunnerTest
    * @purpose  Tool
    */
   class xp·unittest·Runner extends Object {
+    protected $out= NULL;
+    protected $err= NULL;
+    
+    /**
+     * Constructor. Initializes out and err members to console
+     *
+     */
+    public function __construct() {
+      $this->out= Console::$out;
+      $this->err= Console::$err;
+    }
+
+    /**
+     * Reassigns standard output stream
+     *
+     * @param   io.streams.OutputStream out
+     * @return  io.streams.OutputStream the given output stream
+     */
+    public function setOut(OutputStream $out) {
+      $this->out= new StringWriter($out);
+      return $out;
+    }
+
+    /**
+     * Reassigns standard error stream
+     *
+     * @param   io.streams.OutputStream error
+     * @return  io.streams.OutputStream the given output stream
+     */
+    public function setErr(OutputStream $err) {
+      $this->err= new StringWriter($err);
+      return $err;
+    }
 
     /**
      * Converts api-doc "markup" to plain text w/ ASCII "art"
@@ -58,7 +92,7 @@
      * @param   string markup
      * @return  string text
      */
-    protected static function textOf($markup) {
+    protected function textOf($markup) {
       $line= str_repeat('=', 72);
       return strip_tags(preg_replace(array(
         '#<pre>#', '#</pre>#', '#<li>#',
@@ -68,12 +102,13 @@
     }
 
     /**
-     * Displays usage and exits
+     * Displays usage
      *
+     * @return  int exitcode
      */
-    protected static function usage() {
-      Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      exit(1);
+    protected function usage() {
+      $this->err->writeLine($this->textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
+      return 1;
     }
 
     /**
@@ -85,7 +120,7 @@
      * @return  string
      * @throws  lang.IllegalArgumentException if no argument exists by this offset
      */
-    protected static function arg($args, $offset, $option) {
+    protected function arg($args, $offset, $option) {
       if (!isset($args[$offset])) {
         throw new IllegalArgumentException('Option -'.$option.' requires an argument');
       }
@@ -98,21 +133,22 @@
      * @param   string in
      * @return  io.streams.OutputStreamWriter
      */
-    protected static function streamWriter($in) {
+    protected function streamWriter($in) {
       if ('-' === $in) {
         return Console::$out;
       } else {
         return new StringWriter(new FileOutputStream($in));
       }
     }
-
+    
     /**
-     * Main runner method
+     * Runs suite
      *
      * @param   string[] args
+     * @return  int exitcode
      */
-    public static function main(array $args) {
-      if (!$args) self::usage();
+    public function run(array $args) {
+      if (!$args) return $this->usage();
 
       // Setup suite
       $suite= new TestSuite();
@@ -125,17 +161,17 @@
           if ('-v' === $args[$i]) {
             $verbose= TRUE;
           } else if ('-cp' === $args[$i]) {
-            foreach (explode(PATH_SEPARATOR, self::arg($args, ++$i, 'cp')) as $path) {
+            foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $path) {
               ClassLoader::getDefault()->registerPath($path);
             }
           } else if ('-e' === $args[$i]) {
-            $sources->add(new EvaluationSource(self::arg($args, ++$i, 'e')));
+            $sources->add(new EvaluationSource($this->arg($args, ++$i, 'e')));
           } else if ('-l' === $args[$i]) {
-            $class= XPClass::forName(self::arg($args, ++$i, 'l'));
-            $output= self::streamWriter(self::arg($args, ++$i, 'l'));
+            $class= XPClass::forName($this->arg($args, ++$i, 'l'));
+            $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
             $suite->addListener($class->newInstance($output));
           } else if ('-?' === $args[$i]) {
-            self::usage();
+            return $this->usage();
           } else if (strstr($args[$i], '.ini')) {
             $sources->add(new PropertySource(new Properties($args[$i])));
           } else if (strstr($args[$i], xp::CLASS_FILE_EXT)) {
@@ -148,45 +184,55 @@
             $sources->add(new ClassSource(XPClass::forName($args[$i])));
           }
         }
-      } catch (IllegalArgumentException $e) {
-        Console::$err->writeLine('*** ', $e->getMessage());
-        exit(1);
+      } catch (Throwable $e) {
+        $this->err->writeLine('*** ', $e->getMessage());
+        xp::gc();
+        return 1;
       }
       
       if ($sources->isEmpty()) {
-        Console::$err->writeLine('*** No tests specified');
-        exit(1);
+        $this->err->writeLine('*** No tests specified');
+        return 1;
       }
       
       $suite->addListener($verbose 
-        ? new VerboseListener(Console::$out)
-        : new DefaultListener(Console::$out)
+        ? new VerboseListener($this->out)
+        : new DefaultListener($this->out)
       );
       
       // Add test classes
       foreach ($sources as $source) {
-        $verbose && Console::writeLine('===> Adding test classes from ', $source);
+        $verbose && $this->out->writeLine('===> Adding test classes from ', $source);
         $classes= $source->testClasses();
         foreach ($classes->keys() as $class) {
           try {
             $suite->addTestClass($class, $classes[$class]->values);
           } catch (NoSuchElementException $e) {
-            Console::writeLine('*** Warning: ', $e->getMessage());
+            $this->err->writeLine('*** Warning: ', $e->getMessage());
             continue;
           } catch (IllegalArgumentException $e) {
-            Console::writeLine('*** Error: ', $e->getMessage());
-            return;
+            $this->err->writeLine('*** Error: ', $e->getMessage());
+            return 1;
           }
         }
       }
       
       // Run it!
       if (0 == $suite->numTests()) {
-        exit(3);
+        return 3;
       } else {
         $r= $suite->run();
-        exit($r->failureCount() > 0 ? 1 : 0);
+        return $r->failureCount() > 0 ? 1 : 0;
       }
+    }
+
+    /**
+     * Main runner method
+     *
+     * @param   string[] args
+     */
+    public static function main(array $args) {
+      return create(new self())->run($args);
     }    
   }
 ?>
