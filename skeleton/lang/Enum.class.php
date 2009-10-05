@@ -44,7 +44,7 @@
       }
       try {
         $prop= $class->_reflect->getStaticPropertyValue($name);
-        if ($prop instanceof self && $class->isInstance($prop)) return $prop;
+        if ($class->isInstance($prop)) return $prop;
       } catch (ReflectionException $e) {
         throw new IllegalArgumentException($e->getMessage());
       }
@@ -64,7 +64,7 @@
       }
       $r= array();
       foreach ($class->_reflect->getStaticProperties() as $prop) {
-        $prop instanceof self && $class->isInstance($prop) && $r[]= $prop;
+        $class->isInstance($prop) && $r[]= $prop;
       }
       return $r;
     }
@@ -118,7 +118,7 @@
       $r= array();
       $c= new ReflectionClass($class);
       foreach ($c->getStaticProperties() as $prop) {
-        $prop instanceof self && $c->isInstance($prop) && $r[]= $prop;
+        $prop instanceof $class && $r[]= $prop;
       }
       return $r;
     }
