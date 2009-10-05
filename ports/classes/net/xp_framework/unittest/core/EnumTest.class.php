@@ -146,6 +146,18 @@
     }
 
     /**
+     * Test Operation::values() method
+     *
+     */
+    #[@test]
+    public function operationValues() {
+      $this->assertEquals(
+        array(Operation::$plus, Operation::$minus, Operation::$times, Operation::$divided_by),
+        Operation::values()
+      );
+    }
+
+    /**
      * Test class of penny coin
      *
      */
@@ -226,7 +238,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function valueOfNonEnum() {
-      Enum::valueOf($tbis, 'irrelevant');
+      Enum::valueOf($this, 'irrelevant');
     }
 
     /**
