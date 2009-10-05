@@ -76,7 +76,7 @@
      * Test contains() method
      *
      */
-    #[@test
+    #[@test]
     public function containsNonExistant() {
       $a= new Archive($this->archiveBytesAsStream());
       $a->open(ARCHIVE_READ);
