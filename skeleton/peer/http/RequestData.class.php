@@ -24,10 +24,10 @@
     }
 
     /**
-     * (Insert method's description here)
+     * Return list of HTTP headers to be set on
+     * behalf of the data
      *
-     * @param
-     * @return
+     * @return  peer.Header[]
      */
     public function getHeaders() {
       return array();

@@ -22,6 +22,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added peer.http.FormRequestData and peer.http.FormData as an implementation
+  of multipart/form-data http requests
+  (kiesel)
 - Added unittest.XmlTestListener class which reports results in an XML 
   format adequate for continuous integration systems.
   http://news.xp-framework.net/article/320/2009/10/02/
