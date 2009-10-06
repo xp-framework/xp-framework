@@ -5,11 +5,11 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Form Data; represents single parts of a
+   * multipart/form-data request
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @test      xp://net.xp_framework.unittest.peer.http.FormDataRequestTest
+   * @purpose   Single form data part
    */
   class FormData extends Object {
     const
@@ -24,10 +24,12 @@
       $charset      = NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
+     * @param   string name
+     * @param   string content
+     * @param   string contentType default self::DEFAULT_CONTENTTYPE
+     * @param   string charset default self::DEFAULT_CHARSET
      */
     public function __construct($name, $content, $contentType= self::DEFAULT_CONTENTTYPE, $charset= self::DEFAULT_CHARSET) {
       $this->name= $name;
@@ -37,10 +39,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve string representation of part
      *
-     * @param   
-     * @return  
+     * @return  string
      */
     public function getData() {
       $s= 'Content-Disposition: form-data; name="'.$this->name.'"'.self::CRLF;

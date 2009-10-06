@@ -4,14 +4,13 @@
  * $Id$ 
  */
 
-  uses('peer.http.RequestData', 'peer.http.FormData');
+  uses('peer.http.RequestData', 'peer.http.FormData', 'peer.Header');
 
   /**
-   * (Insert class' description here)
+   * Build an HttpRequest w/ embedded multipart/form-data
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @test      xp://net.xp_framework.unittest.peer.http.FormRequestdataTest
+   * @purpose   Form data requests
    */
   class FormRequestData extends RequestData {
     const
@@ -22,10 +21,9 @@
       $boundary   = NULL;
 
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
+     * @param   peer.http.FormData[] parts default array()
      */
     public function __construct($parts= array()) {
       $this->boundary= '__--boundary-'.uniqid(time()).'--__';
@@ -36,20 +34,19 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve boundary
      *
-     * @param   
-     * @return  
+     * @return  string
      */
     public function getBoundary() {
       return $this->boundary;
     }    
     
     /**
-     * (Insert method's description here)
+     * Add form part
      *
-     * @param   
-     * @return  
+     * @param   peer.http.FormData item
+     * @return  peer.http.FormData
      */
     public function addPart(FormData $item) {
       $this->parts[]= $item;
@@ -57,10 +54,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve headers to be set
      *
-     * @param   
-     * @return  
+     * @return  peer.Header[]
      */
     public function getHeaders() {
       $headers= parent::getHeaders();
@@ -69,10 +65,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve data for request
      *
-     * @param   
-     * @return  
+     * @return  string
      */
     public function getData() {
       $ret= self::CRLF.'--'.$this->boundary;
