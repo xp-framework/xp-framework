@@ -6,6 +6,8 @@
 
   uses(
     'unittest.TestCase',
+    'peer.http.RequestData',
+    'peer.http.FormRequestData',
     'peer.http.HttpRequest',
     'peer.http.HttpConstants'
   );
@@ -158,6 +160,38 @@
       $r->setParameters(new RequestData('a=b&c=d'));
       $this->assertEquals(
         "GET /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function postUrlWithFormRequestDataParams() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters(new FormRequestData(
+        new FormData('key', 'value'),
+        new FormData('xml', '<foo/>', 'text/xml')
+      ));
+
+      // HACK: Fetch randomly generated boundary
+      $this->assertTrue($r->parameters instanceof FormRequestData);
+      $boundary= $r->parameters->getBoundary();
+
+      $this->assertEquals(
+        "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 335\r\n\r\n".
+        "--".$boundary."\r\nContent-Disposition: form-data; name=\"key\"\r\n".
+        "Content-Type: text/plain; charset=\"iso-8859-1\"\r\n".
+        "\r\nvalue\r\n".
+        "--".$boundary."\r\n".
+        "Content-Disposition: form-data; name=\"xml\"\r\n".
+        "Content-Type: text/xml; charset=\"iso-8859-1\"\r\n".
+        "\r\n<foo/>\r\n".
+        "--".$boundary."--\r\n",
         $r->getRequestString()
       );
     }

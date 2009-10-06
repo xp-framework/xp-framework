@@ -21,7 +21,16 @@
      */
     public function __construct($buf) {
       $this->data= $buf;
-      
+    }
+
+    /**
+     * (Insert method's description here)
+     *
+     * @param
+     * @return
+     */
+    public function getHeaders() {
+      return array();
     }
     
     /**

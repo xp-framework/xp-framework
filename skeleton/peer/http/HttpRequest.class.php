@@ -131,6 +131,7 @@
      */
     public function getRequestString() {
       if ($this->parameters instanceof RequestData) {
+        $this->addHeaders($this->parameters->getHeaders());
         $query= '&'.$this->parameters->getData();
       } else {
         $query= '';
