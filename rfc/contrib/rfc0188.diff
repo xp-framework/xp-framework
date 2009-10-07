@@ -1,6 +1,6 @@
 Index: skeleton/unittest/TestListener.class.php
 ===================================================================
---- skeleton/unittest/TestListener.class.php	(revision 13609)
+--- skeleton/unittest/TestListener.class.php	(revision 13659)
 +++ skeleton/unittest/TestListener.class.php	(working copy)
 @@ -8,8 +8,8 @@
     * To intercept certain events during a test run, add a listener to
@@ -52,73 +52,140 @@ Index: skeleton/unittest/TestListener.class.php
       * Called when a test run starts.
       *
       * @param   unittest.TestSuite suite
-Index: skeleton/unittest/XmlTestListener.class.php
+Index: skeleton/unittest/TestNotRun.class.php
 ===================================================================
---- skeleton/unittest/XmlTestListener.class.php	(revision 13609)
-+++ skeleton/unittest/XmlTestListener.class.php	(working copy)
-@@ -89,6 +89,19 @@
-         'type'    => xp::typeOf($failure->reason)
-       )));
-     }
+--- skeleton/unittest/TestNotRun.class.php	(revision 0)
++++ skeleton/unittest/TestNotRun.class.php	(revision 0)
+@@ -0,0 +1,54 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
 +
++  uses('unittest.TestSkipped');
++
++  /**
++   * Indicates a test was ignored
++   *
++   * @see      xp://unittest.TestSkipped
++   */
++  class TestNotRun extends Object implements TestSkipped {
++    public
++      $reason   = '',
++      $test     = NULL;
++      
 +    /**
-+     * Called when a test errors.
++     * Constructor
 +     *
-+     * @param   unittest.TestFailure error
++     * @param   unittest.TestCase test
++     * @param   string reason
 +     */
-+    public function testError(TestFailure $error) {
-+      $t= $this->addTestCase($error, 'errors');
-+      $t->addChild(new Node('error', xp::stringOf($error->reason), array(
-+        'message' => trim($error->reason->compoundMessage()),
-+        'type'    => xp::typeOf($error->reason)
-+      )));
-+    }
-     
-     /**
-      * Called when a test finished successfully.
-@@ -100,9 +113,8 @@
-     }
-     
-     /**
--     * Called when a test is not run - usually because it is skipped
--     * due to a non-met prerequisite or if it has been ignored by using
--     * the @ignore annotation.
-+     * Called when a test is not run because it is skipped due to a 
-+     * failed prerequisite.
-      *
-      * @param   unittest.TestSkipped skipped
-      */
-@@ -111,6 +123,16 @@
-     }
- 
-     /**
-+     * Called when a test is not run because it has been ignored by using
-+     * the @ignore annotation.
-+     *
-+     * @param   unittest.TestSkipped ignore
-+     */
-+    public function testNotRun(TestSkipped $ignore) {
-+      // Not supported?
++    public function __construct(TestCase $test, $reason) {
++      $this->test= $test;
++      $this->reason= $reason;
 +    }
 +
 +    /**
-      * Called when a test run starts.
-      *
-      * @param   unittest.TestSuite suite
++     * Returns elapsed time
++     *
++     * @return  float
++     */
++    public function elapsed() {
++      return 0.0;
++    }
++
++    /**
++     * Return a string representation of this class
++     *
++     * @return  string
++     */
++    public function toString() {
++      return (
++        $this->getClassName().
++        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
++        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
++        str_replace("\n", "\n  ", $this->reason)."\n".
++        ' }'
++      );
++    }
++  }
++?>
+Index: skeleton/unittest/TestFailure.class.php
+===================================================================
+--- skeleton/unittest/TestFailure.class.php	(revision 13659)
++++ skeleton/unittest/TestFailure.class.php	(working copy)
+@@ -9,41 +9,10 @@
+   /**
+    * Indicates a test failed
+    *
+-   * @see      xp://unittest.TestResult
+-   * @purpose  Result wrapper
++   * @see      xp://unittest.TestAssertionFailed
++   * @see      xp://unittest.TestError
+    */
+-  class TestFailure extends Object implements TestOutcome {
+-    public
+-      $reason   = NULL,
+-      $test     = NULL,
+-      $elapsed  = 0.0;
+-      
+-    /**
+-     * Constructor
+-     *
+-     * @param   unittest.TestCase test
+-     * @param   mixed reason
+-     * @param   float elapsed
+-     */
+-    public function __construct($test, $reason, $elapsed) {
+-      $this->test= $test;
+-      $this->reason= $reason;
+-      $this->elapsed= $elapsed;
+-    }
+-
+-    /**
+-     * Return a string representation of this class
+-     *
+-     * @return  string
+-     */
+-    public function toString() {
+-      return (
+-        $this->getClassName().
+-        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
+-        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
+-        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
+-        ' }'
+-      );
+-    }
++  interface TestFailure extends TestOutcome {
++    
+   }
+ ?>
 Index: skeleton/unittest/TestSuite.class.php
 ===================================================================
---- skeleton/unittest/TestSuite.class.php	(revision 13609)
+--- skeleton/unittest/TestSuite.class.php	(revision 13659)
 +++ skeleton/unittest/TestSuite.class.php	(working copy)
-@@ -169,7 +169,7 @@
+@@ -9,6 +9,9 @@
+     'unittest.TestCase',
+     'unittest.TestResult',
+     'unittest.TestListener',
++    'unittest.TestNotRun',
++    'unittest.TestError',
++    'unittest.TestWarning',
+     'util.NoSuchElementException',
+     'lang.MethodNotImplementedException'
+   );
+@@ -169,16 +172,24 @@
        
        // Check for @ignore
        if ($method->hasAnnotation('ignore')) {
 -        $this->notifyListeners('testSkipped', array(
+-          $result->setSkipped($test, $method->getAnnotation('ignore'), 0.0)
 +        $this->notifyListeners('testNotRun', array(
-           $result->setSkipped($test, $method->getAnnotation('ignore'), 0.0)
++          $result->set($test, new TestNotRun($test, $method->getAnnotation('ignore')))
          ));
          return;
-@@ -177,8 +177,16 @@
+       }
  
        // Check for @expect
        $expected= NULL;
@@ -137,7 +204,7 @@ Index: skeleton/unittest/TestSuite.class.php
        }
        
        // Check for @limit
-@@ -219,28 +227,44 @@
+@@ -219,28 +230,44 @@
          $e= $t->getCause();
  
          // Was that an expected exception?
@@ -182,12 +249,12 @@ Index: skeleton/unittest/TestSuite.class.php
            ));
 +        } else {
 +          $this->notifyListeners('testError', array(
-+            $result->setFailed($test, $e, $timer->elapsedTime())
++            $result->set($test, new TestError($test, $e, $timer->elapsedTime()))
 +          ));
          }
          xp::gc();
          return;
-@@ -254,17 +278,25 @@
+@@ -254,17 +281,37 @@
          $this->notifyListeners('testFailed', array(
            $result->setFailed(
              $test, 
@@ -199,12 +266,24 @@ Index: skeleton/unittest/TestSuite.class.php
        } else if (sizeof(xp::registry('errors')) > 0) {
 -        $this->notifyListeners('testFailed', array(
 -          $result->setFailed($test, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime())
++        $w= array();
++        foreach (xp::registry('errors') as $file => $lookup) {
++          foreach ($lookup as $line => $messages) {
++            foreach ($messages as $message => $detail) {
++              $w[]= sprintf(
++                '"%s" in %s::%s() (%s, line %d, occured %s)',
++                $message,
++                $detail['class'],
++                $detail['method'],
++                basename($file),
++                $line,
++                1 === $detail['cnt'] ? 'once' : $detail['cnt'].' times'
++              );
++            }
++          }
++        }
 +        $this->notifyListeners('testError', array(
-+          $result->setFailed(
-+            $test, 
-+            new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), 
-+            $timer->elapsedTime()
-+          )
++          $result->set($test, new TestWarning($test, $w, $timer->elapsedTime()))
          ));
        } else if ($eta && $timer->elapsedTime() > $eta) {
          $this->notifyListeners('testFailed', array(
@@ -217,9 +296,548 @@ Index: skeleton/unittest/TestSuite.class.php
          ));
        } else {
          $this->notifyListeners('testSucceeded', array(
+Index: skeleton/unittest/TestExpectationMet.class.php
+===================================================================
+--- skeleton/unittest/TestExpectationMet.class.php	(revision 0)
++++ skeleton/unittest/TestExpectationMet.class.php	(revision 0)
+@@ -0,0 +1,53 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('unittest.TestSuccess');
++
++  /**
++   * Indicates a test was successful
++   *
++   * @see      xp://unittest.TestSuccess
++   */
++  class TestExpectationMet extends Object implements TestSuccess {
++    public
++      $test     = NULL,
++      $elapsed  = 0.0;
++      
++    /**
++     * Constructor
++     *
++     * @param   unittest.TestCase test
++     * @param   float elapsed
++     */
++    public function __construct(TestCase $test, $elapsed) {
++      $this->test= $test;
++      $this->elapsed= $elapsed;
++    }
++
++    /**
++     * Returns elapsed time
++     *
++     * @return  float
++     */
++    public function elapsed() {
++      return $this->elapsed;
++    }
++    
++    /**
++     * Return a string representation of this class
++     *
++     * @return  string
++     */
++    public function toString() {
++      return (
++        $this->getClassName().
++        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
++        sprintf(', time= %.3f seconds', $this->elapsed).
++        ')'
++      );
++    }
++  }
++?>
+Index: skeleton/unittest/TestError.class.php
+===================================================================
+--- skeleton/unittest/TestError.class.php	(revision 0)
++++ skeleton/unittest/TestError.class.php	(revision 0)
+@@ -0,0 +1,57 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('unittest.TestFailure');
++
++  /**
++   * Indicates a test failed
++   *
++   * @see      xp://unittest.TestFailure
++   */
++  class TestError extends Object implements TestFailure {
++    public
++      $reason   = NULL,
++      $test     = NULL,
++      $elapsed  = 0.0;
++      
++    /**
++     * Constructor
++     *
++     * @param   unittest.TestCase test
++     * @param   lang.Throwable reason
++     * @param   float elapsed
++     */
++    public function __construct(TestCase $test, Throwable $reason, $elapsed) {
++      $this->test= $test;
++      $this->reason= $reason;
++      $this->elapsed= $elapsed;
++    }
++
++    /**
++     * Returns elapsed time
++     *
++     * @return  float
++     */
++    public function elapsed() {
++      return $this->elapsed;
++    }
++
++    /**
++     * Return a string representation of this class
++     *
++     * @return  string
++     */
++    public function toString() {
++      return (
++        $this->getClassName().
++        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
++        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
++        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
++        ' }'
++      );
++    }
++  }
++?>
+Index: skeleton/unittest/TestPrerequisitesNotMet.class.php
+===================================================================
+--- skeleton/unittest/TestPrerequisitesNotMet.class.php	(revision 0)
++++ skeleton/unittest/TestPrerequisitesNotMet.class.php	(revision 0)
+@@ -0,0 +1,57 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('unittest.TestSkipped');
++
++  /**
++   * Indicates a test was skipped
++   *
++   * @see      xp://unittest.TestSkipped
++   */
++  class TestPrerequisitesNotMet extends Object implements TestSkipped {
++    public
++      $reason   = NULL,
++      $test     = NULL,
++      $elapsed  = 0.0;
++      
++    /**
++     * Constructor
++     *
++     * @param   unittest.TestCase test
++     * @param   unittest.PrerequisitesNotMetError reason
++     * @param   float elapsed
++     */
++    public function __construct(TestCase $test, PrerequisitesNotMetError $reason, $elapsed) {
++      $this->test= $test;
++      $this->reason= $reason;
++      $this->elapsed= $elapsed;
++    }
++
++    /**
++     * Returns elapsed time
++     *
++     * @return  float
++     */
++    public function elapsed() {
++      return $this->elapsed;
++    }
++
++    /**
++     * Return a string representation of this class
++     *
++     * @return  string
++     */
++    public function toString() {
++      return (
++        $this->getClassName().
++        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
++        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
++        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
++        ' }'
++      );
++    }
++  }
++?>
+Index: skeleton/unittest/TestSkipped.class.php
+===================================================================
+--- skeleton/unittest/TestSkipped.class.php	(revision 13659)
++++ skeleton/unittest/TestSkipped.class.php	(working copy)
+@@ -9,41 +9,9 @@
+   /**
+    * Indicates a test was skipped
+    *
+-   * @see      xp://unittest.TestResult
+-   * @purpose  Result wrapper
++   * @see      xp://unittest.TestPrerequisitesNotMet
+    */
+-  class TestSkipped extends Object implements TestOutcome {
+-    public
+-      $reason   = NULL,
+-      $test     = NULL,
+-      $elapsed  = 0.0;
+-      
+-    /**
+-     * Constructor
+-     *
+-     * @param   unittest.TestCase test
+-     * @param   mixed reason
+-     * @param   float elapsed
+-     */
+-    public function __construct($test, $reason, $elapsed) {
+-      $this->test= $test;
+-      $this->reason= $reason;
+-      $this->elapsed= $elapsed;
+-    }
++  interface TestSkipped extends TestOutcome {
+ 
+-    /**
+-     * Return a string representation of this class
+-     *
+-     * @return  string
+-     */
+-    public function toString() {
+-      return (
+-        $this->getClassName().
+-        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
+-        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
+-        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
+-        ' }'
+-      );
+-    }
+   }
+ ?>
+Index: skeleton/unittest/TestWarning.class.php
+===================================================================
+--- skeleton/unittest/TestWarning.class.php	(revision 0)
++++ skeleton/unittest/TestWarning.class.php	(revision 0)
+@@ -0,0 +1,57 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('unittest.TestFailure');
++
++  /**
++   * Indicates a test failed
++   *
++   * @see      xp://unittest.TestFailure
++   */
++  class TestWarning extends Object implements TestFailure {
++    public
++      $reason   = NULL,
++      $test     = NULL,
++      $elapsed  = 0.0;
++      
++    /**
++     * Constructor
++     *
++     * @param   unittest.TestCase test
++     * @param   string[] warnings
++     * @param   float elapsed
++     */
++    public function __construct(TestCase $test, array $warnings, $elapsed) {
++      $this->test= $test;
++      $this->reason= $warnings;
++      $this->elapsed= $elapsed;
++    }
++
++    /**
++     * Returns elapsed time
++     *
++     * @return  float
++     */
++    public function elapsed() {
++      return $this->elapsed;
++    }
++
++    /**
++     * Return a string representation of this class
++     *
++     * @return  string
++     */
++    public function toString() {
++      return (
++        $this->getClassName().
++        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
++        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
++        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
++        ' }'
++      );
++    }
++  }
++?>
+Index: skeleton/unittest/XmlTestListener.class.php
+===================================================================
+--- skeleton/unittest/XmlTestListener.class.php	(revision 13659)
++++ skeleton/unittest/XmlTestListener.class.php	(working copy)
+@@ -85,6 +85,19 @@
+         'type'    => xp::typeOf($failure->reason)
+       )));
+     }
++
++    /**
++     * Called when a test errors.
++     *
++     * @param   unittest.TestFailure error
++     */
++    public function testError(TestFailure $error) {
++      $t= $this->addTestCase($error, 'errors');
++      $t->addChild(new Node('error', xp::stringOf($error->reason), array(
++        'message' => trim($error->reason->compoundMessage()),
++        'type'    => xp::typeOf($error->reason)
++      )));
++    }
+     
+     /**
+      * Called when a test finished successfully.
+@@ -96,9 +109,8 @@
+     }
+     
+     /**
+-     * Called when a test is not run - usually because it is skipped
+-     * due to a non-met prerequisite or if it has been ignored by using
+-     * the @ignore annotation.
++     * Called when a test is not run because it is skipped due to a 
++     * failed prerequisite.
+      *
+      * @param   unittest.TestSkipped skipped
+      */
+@@ -112,6 +124,16 @@
+     }
+ 
+     /**
++     * Called when a test is not run because it has been ignored by using
++     * the @ignore annotation.
++     *
++     * @param   unittest.TestSkipped ignore
++     */
++    public function testNotRun(TestSkipped $ignore) {
++      // Not supported?
++    }
++
++    /**
+      * Called when a test run starts.
+      *
+      * @param   unittest.TestSuite suite
+Index: skeleton/unittest/TestSuccess.class.php
+===================================================================
+--- skeleton/unittest/TestSuccess.class.php	(revision 13659)
++++ skeleton/unittest/TestSuccess.class.php	(working copy)
+@@ -9,38 +9,9 @@
+   /**
+    * Indicates a test was successful
+    *
+-   * @see      xp://unittest.TestResult
+-   * @purpose  Result wrapper
++   * @see      xp://unittest.TestExpectationMet
+    */
+-  class TestSuccess extends Object implements TestOutcome {
+-    public
+-      $test     = NULL,
+-      $elapsed  = 0.0;
+-      
+-    /**
+-     * Constructor
+-     *
+-     * @param   unittest.TestCase test
+-     * @param   mixed result
+-     * @param   float elapsed
+-     */
+-    public function __construct($test, $elapsed) {
+-      $this->test= $test;
+-      $this->elapsed= $elapsed;
+-    }
+-    
+-    /**
+-     * Return a string representation of this class
+-     *
+-     * @return  string
+-     */
+-    public function toString() {
+-      return (
+-        $this->getClassName().
+-        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
+-        sprintf(', time= %.3f seconds', $this->elapsed).
+-        ')'
+-      );
+-    }
++  interface TestSuccess extends TestOutcome {
++
+   }
+ ?>
+Index: skeleton/unittest/TestOutcome.class.php
+===================================================================
+--- skeleton/unittest/TestOutcome.class.php	(revision 13659)
++++ skeleton/unittest/TestOutcome.class.php	(working copy)
+@@ -9,5 +9,13 @@
+    *
+    */
+   interface TestOutcome {
++
++    /**
++     * Returns elapsed time
++     *
++     * @return  float
++     */
++    public function elapsed();
++
+   }
+ ?>
+Index: skeleton/unittest/TestAssertionFailed.class.php
+===================================================================
+--- skeleton/unittest/TestAssertionFailed.class.php	(revision 0)
++++ skeleton/unittest/TestAssertionFailed.class.php	(revision 0)
+@@ -0,0 +1,57 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('unittest.TestFailure');
++
++  /**
++   * Indicates a test failed
++   *
++   * @see      xp://unittest.TestFailure
++   */
++  class TestAssertionFailed extends Object implements TestFailure {
++    public
++      $reason   = NULL,
++      $test     = NULL,
++      $elapsed  = 0.0;
++      
++    /**
++     * Constructor
++     *
++     * @param   unittest.TestCase test
++     * @param   unittest.AssertionFailedError reason
++     * @param   float elapsed
++     */
++    public function __construct(TestCase $test, AssertionFailedError $reason, $elapsed) {
++      $this->test= $test;
++      $this->reason= $reason;
++      $this->elapsed= $elapsed;
++    }
++
++    /**
++     * Returns elapsed time
++     *
++     * @return  float
++     */
++    public function elapsed() {
++      return $this->elapsed;
++    }
++
++    /**
++     * Return a string representation of this class
++     *
++     * @return  string
++     */
++    public function toString() {
++      return (
++        $this->getClassName().
++        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
++        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
++        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
++        ' }'
++      );
++    }
++  }
++?>
+Index: skeleton/unittest/TestResult.class.php
+===================================================================
+--- skeleton/unittest/TestResult.class.php	(revision 13659)
++++ skeleton/unittest/TestResult.class.php	(working copy)
+@@ -5,9 +5,9 @@
+  */
+ 
+   uses(
+-    'unittest.TestFailure',
+-    'unittest.TestSuccess',
+-    'unittest.TestSkipped'
++    'unittest.TestExpectationMet',
++    'unittest.TestAssertionFailed',
++    'unittest.TestPrerequisitesNotMet'
+   );
+ 
+   /**
+@@ -23,13 +23,31 @@
+       $skipped      = array();
+       
+     /**
++     * Set outcome for a given test
++     *
++     * @param   unittest.TestCase test
++     * @param   unittest.TestOutcome outcome
++     * @return  unittest.TestOutcome the given outcome
++     */
++    public function set(TestCase $test, TestOutcome $outcome) {
++      if ($outcome instanceof TestSucceeded) {
++        $this->succeeded[$test->hashCode()]= $outcome;
++      } else if ($outcome instanceof TestSkipped) {
++        $this->skipped[$test->hashCode()]= $outcome;
++      } else if ($outcome instanceof TestFailure) {
++        $this->failed[$test->hashCode()]= $outcome;
++      }
++      return $outcome;
++    }
++    
++    /**
+      * Mark a test as succeeded
+      *
+      * @param   unittest.TestCase test
+      * @param   float elapsed
+      */
+     public function setSucceeded($test, $elapsed) {
+-      return $this->succeeded[$test->hashCode()]= new TestSuccess($test, $elapsed);
++      return $this->succeeded[$test->hashCode()]= new TestExpectationMet($test, $elapsed);
+     }
+     
+     /**
+@@ -40,7 +58,7 @@
+      * @param   float elapsed
+      */
+     public function setFailed($test, $reason, $elapsed) {
+-      return $this->failed[$test->hashCode()]= new TestFailure($test, $reason, $elapsed);
++      return $this->failed[$test->hashCode()]= new TestAssertionFailed($test, $reason, $elapsed);
+     }
+ 
+     /**
+@@ -52,7 +70,7 @@
+      * @return  unittest.TestSkipped s
+      */
+     public function setSkipped($test, $reason, $elapsed) {
+-      return $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
++      return $this->skipped[$test->hashCode()]= new TestPrerequisitesNotMet($test, $reason, $elapsed);
+     }
+     
+     /**
 Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 13609)
+--- ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(revision 13659)
 +++ ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php	(working copy)
 @@ -77,6 +77,15 @@
       *
@@ -264,7 +882,7 @@ Index: ports/classes/net/xp_framework/unittest/tests/SimpleTestCase.class.php
       */
 Index: ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php	(revision 13609)
+--- ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php	(revision 13659)
 +++ ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php	(working copy)
 @@ -61,6 +61,15 @@
      }
@@ -311,7 +929,24 @@ Index: ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php
       * Called when a test run starts.
       *
       * @param   unittest.TestSuite suite
-@@ -132,6 +150,38 @@
+@@ -109,7 +127,7 @@
+         $this->suite->runTest($case);
+         $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
+         $this->assertEquals($case, $this->invocations['testStarted'][0]);
+-        $this->assertClass($this->invocations['testSucceeded'][0], 'unittest.TestSuccess');
++        $this->assertSubclass($this->invocations['testSucceeded'][0], 'unittest.TestSuccess');
+         $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
+         $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
+       }
+@@ -125,13 +143,45 @@
+         $this->suite->runTest($case);
+         $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
+         $this->assertEquals($case, $this->invocations['testStarted'][0]);
+-        $this->assertClass($this->invocations['testFailed'][0], 'unittest.TestFailure');
++        $this->assertSubclass($this->invocations['testFailed'][0], 'unittest.TestFailure');
+         $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
+         $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
+       }
      }    
  
      /**
@@ -324,7 +959,7 @@ Index: ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php
 +        $this->suite->runTest($case);
 +        $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
 +        $this->assertEquals($case, $this->invocations['testStarted'][0]);
-+        $this->assertClass($this->invocations['testError'][0], 'unittest.TestFailure');
++        $this->assertSubclass($this->invocations['testError'][0], 'unittest.TestFailure');
 +        $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
 +        $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
 +      }
@@ -340,7 +975,7 @@ Index: ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php
 +        $this->suite->runTest($case);
 +        $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
 +        $this->assertEquals($case, $this->invocations['testStarted'][0]);
-+        $this->assertClass($this->invocations['testError'][0], 'unittest.TestFailure');
++        $this->assertSubclass($this->invocations['testError'][0], 'unittest.TestFailure');
 +        $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
 +        $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
 +      }
@@ -350,20 +985,38 @@ Index: ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php
       * Tests running a single test that is skipped due to not-met
       * prerequisites.
       *
+@@ -142,7 +192,7 @@
+         $this->suite->runTest($case);
+         $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
+         $this->assertEquals($case, $this->invocations['testStarted'][0]);
+-        $this->assertClass($this->invocations['testSkipped'][0], 'unittest.TestSkipped');
++        $this->assertSubclass($this->invocations['testSkipped'][0], 'unittest.TestSkipped');
+         $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
+         $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
+       }
 @@ -159,7 +209,7 @@
          $this->suite->runTest($case);
          $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
          $this->assertEquals($case, $this->invocations['testStarted'][0]);
 -        $this->assertClass($this->invocations['testSkipped'][0], 'unittest.TestSkipped');
-+        $this->assertClass($this->invocations['testNotRun'][0], 'unittest.TestSkipped');
++        $this->assertSubclass($this->invocations['testNotRun'][0], 'unittest.TestSkipped');
          $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
          $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
        }
 Index: ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(revision 13609)
+--- ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(revision 13659)
 +++ ports/classes/net/xp_framework/unittest/tests/SuiteTest.class.php	(working copy)
-@@ -273,6 +273,20 @@
+@@ -266,13 +266,27 @@
+     public function warningsMakeTestFail() {
+       with ($test= new SimpleTestCase('raisesAnError')); {
+         $this->assertEquals(
+-          '<Non-clean error stack>', 
+-          $this->suite->runTest($test)->failed[$test->hashCode()]->reason->actual
++          array('"Undefined variable: a" in SimpleTestCase::raisesAnError() (SimpleTestCase.class.php, line 90, occured once)'), 
++          $this->suite->runTest($test)->failed[$test->hashCode()]->reason
+         );
+       }
      }
  
      /**
