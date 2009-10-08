@@ -68,9 +68,7 @@
       $instance= self::$instance->instances[$name];
       
       if (!($instance->getClass()->getMethod($method)->hasAnnotation('xslmethod'))) {
-        throw new ElementNotFoundException(
-          'Instance "'.$name.'" does not have method "'.$method.'"'
-        );
+        raise('lang.ElementNotFoundException', 'Instance "'.$name.'" does not have method "'.$method.'"');
       }
       
       $va= func_get_args();
