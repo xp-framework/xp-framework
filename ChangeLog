@@ -22,6 +22,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added setLocation() method to webservices.soap.native.NativeSoapClient
+  to overwrite endpoint location if needed.
+  (gelli)
 - Added peer.http.FormRequestData and peer.http.FormData as an implementation
   of multipart/form-data http requests
   (kiesel)
