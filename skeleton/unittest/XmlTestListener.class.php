@@ -15,6 +15,7 @@
    * Creates an XML file suitable for importing into continuous integration
    * systems like Hudson.
    *
+   * @test     xp://net.xp_framework.unittests.tests.XmlListenerTest
    * @purpose  TestListener
    */
   class XmlTestListener extends Object implements TestListener {
@@ -57,7 +58,7 @@
      * @param   string inc
      * @return  xml.Node
      */
-    protected function addTestCase(TestOutcome $outcome, $inc) {
+    protected function addTestCase(TestOutcome $outcome, $inc= NULL) {
       $testClass= $outcome->test->getClass();
       
       // Update test count
@@ -105,7 +106,7 @@
      * @param   unittest.TestSuccess success
      */
     public function testSucceeded(TestSuccess $success) {
-      $this->addTestCase($success, 'assertions');
+      $this->addTestCase($success);
     }
     
     /**
