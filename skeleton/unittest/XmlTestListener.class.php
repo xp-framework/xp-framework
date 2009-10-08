@@ -85,6 +85,19 @@
         'type'    => xp::typeOf($failure->reason)
       )));
     }
+
+    /**
+     * Called when a test errors.
+     *
+     * @param   unittest.TestFailure error
+     */
+    public function testError(TestFailure $error) {
+      $t= $this->addTestCase($error, 'errors');
+      $t->addChild(new Node('error', xp::stringOf($error->reason), array(
+        'message' => trim($error->reason->compoundMessage()),
+        'type'    => xp::typeOf($error->reason)
+      )));
+    }
     
     /**
      * Called when a test finished successfully.
@@ -96,9 +109,8 @@
     }
     
     /**
-     * Called when a test is not run - usually because it is skipped
-     * due to a non-met prerequisite or if it has been ignored by using
-     * the @ignore annotation.
+     * Called when a test is not run because it is skipped due to a 
+     * failed prerequisite.
      *
      * @param   unittest.TestSkipped skipped
      */
@@ -109,6 +121,16 @@
         $reason= $skipped->reason;
       }
       $this->addTestCase($skipped, 'skipped')->setAttribute('skipped', $reason);
+    }
+
+    /**
+     * Called when a test is not run because it has been ignored by using
+     * the @ignore annotation.
+     *
+     * @param   unittest.TestSkipped ignore
+     */
+    public function testNotRun(TestSkipped $ignore) {
+      // Not supported?
     }
 
     /**

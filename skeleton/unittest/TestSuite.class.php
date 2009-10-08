@@ -9,6 +9,9 @@
     'unittest.TestCase',
     'unittest.TestResult',
     'unittest.TestListener',
+    'unittest.TestNotRun',
+    'unittest.TestError',
+    'unittest.TestWarning',
     'util.NoSuchElementException',
     'lang.MethodNotImplementedException'
   );
@@ -169,8 +172,8 @@
       
       // Check for @ignore
       if ($method->hasAnnotation('ignore')) {
-        $this->notifyListeners('testSkipped', array(
-          $result->setSkipped($test, $method->getAnnotation('ignore'), 0.0)
+        $this->notifyListeners('testNotRun', array(
+          $result->set($test, new TestNotRun($test, $method->getAnnotation('ignore')))
         ));
         return;
       }
@@ -222,7 +225,11 @@
         if ($expected && $expected->isInstance($e)) {
           if ($eta && $timer->elapsedTime() > $eta) {
             $this->notifyListeners('testFailed', array(
-              $result->setFailed($test, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
+              $result->setFailed(
+                $test, 
+                new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), 
+                $timer->elapsedTime()
+              )
             ));
           } else {
             $this->notifyListeners('testSucceeded', array(
@@ -237,9 +244,13 @@
               $timer->elapsedTime()
             )
           ));
-        } else {
+        } else if ($e instanceof AssertionFailedError) {
           $this->notifyListeners('testFailed', array(
             $result->setFailed($test, $e, $timer->elapsedTime())
+          ));
+        } else {
+          $this->notifyListeners('testError', array(
+            $result->set($test, new TestError($test, $e, $timer->elapsedTime()))
           ));
         }
         xp::gc();
@@ -259,12 +270,32 @@
           )
         ));
       } else if (sizeof(xp::registry('errors')) > 0) {
-        $this->notifyListeners('testFailed', array(
-          $result->setFailed($test, new AssertionFailedError('Errors', '<Non-clean error stack>', '<no errors>'), $timer->elapsedTime())
+        $w= array();
+        foreach (xp::registry('errors') as $file => $lookup) {
+          foreach ($lookup as $line => $messages) {
+            foreach ($messages as $message => $detail) {
+              $w[]= sprintf(
+                '"%s" in %s::%s() (%s, line %d, occured %s)',
+                $message,
+                $detail['class'],
+                $detail['method'],
+                basename($file),
+                $line,
+                1 === $detail['cnt'] ? 'once' : $detail['cnt'].' times'
+              );
+            }
+          }
+        }
+        $this->notifyListeners('testError', array(
+          $result->set($test, new TestWarning($test, $w, $timer->elapsedTime()))
         ));
       } else if ($eta && $timer->elapsedTime() > $eta) {
         $this->notifyListeners('testFailed', array(
-          $result->setFailed($test, new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), $timer->elapsedTime())
+          $result->setFailed(
+            $test, 
+            new AssertionFailedError('Timeout', sprintf('%.3f', $timer->elapsedTime()), sprintf('%.3f', $eta)), 
+            $timer->elapsedTime()
+          )
         ));
       } else {
         $this->notifyListeners('testSucceeded', array(

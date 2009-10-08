@@ -5,9 +5,9 @@
  */
 
   uses(
-    'unittest.TestFailure',
-    'unittest.TestSuccess',
-    'unittest.TestSkipped'
+    'unittest.TestExpectationMet',
+    'unittest.TestAssertionFailed',
+    'unittest.TestPrerequisitesNotMet'
   );
 
   /**
@@ -23,13 +23,31 @@
       $skipped      = array();
       
     /**
+     * Set outcome for a given test
+     *
+     * @param   unittest.TestCase test
+     * @param   unittest.TestOutcome outcome
+     * @return  unittest.TestOutcome the given outcome
+     */
+    public function set(TestCase $test, TestOutcome $outcome) {
+      if ($outcome instanceof TestSucceeded) {
+        $this->succeeded[$test->hashCode()]= $outcome;
+      } else if ($outcome instanceof TestSkipped) {
+        $this->skipped[$test->hashCode()]= $outcome;
+      } else if ($outcome instanceof TestFailure) {
+        $this->failed[$test->hashCode()]= $outcome;
+      }
+      return $outcome;
+    }
+    
+    /**
      * Mark a test as succeeded
      *
      * @param   unittest.TestCase test
      * @param   float elapsed
      */
     public function setSucceeded($test, $elapsed) {
-      return $this->succeeded[$test->hashCode()]= new TestSuccess($test, $elapsed);
+      return $this->succeeded[$test->hashCode()]= new TestExpectationMet($test, $elapsed);
     }
     
     /**
@@ -40,7 +58,7 @@
      * @param   float elapsed
      */
     public function setFailed($test, $reason, $elapsed) {
-      return $this->failed[$test->hashCode()]= new TestFailure($test, $reason, $elapsed);
+      return $this->failed[$test->hashCode()]= new TestAssertionFailed($test, $reason, $elapsed);
     }
 
     /**
@@ -52,7 +70,7 @@
      * @return  unittest.TestSkipped s
      */
     public function setSkipped($test, $reason, $elapsed) {
-      return $this->skipped[$test->hashCode()]= new TestSkipped($test, $reason, $elapsed);
+      return $this->skipped[$test->hashCode()]= new TestPrerequisitesNotMet($test, $reason, $elapsed);
     }
     
     /**
