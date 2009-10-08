@@ -45,6 +45,15 @@
     public function testFailed(TestFailure $failure) {
       $this->out->write('F');
     }
+
+    /**
+     * Called when a test errors.
+     *
+     * @param   unittest.TestFailure error
+     */
+    public function testError(TestFailure $error) {
+      $this->out->write('E');
+    }
     
     /**
      * Called when a test finished successfully.
@@ -56,14 +65,23 @@
     }
     
     /**
-     * Called when a test is not run - usually because it is skipped
-     * due to a non-met prerequisite or if it has been ignored by using
-     * the @ignore annotation.
+     * Called when a test is not run because it is skipped due to a 
+     * failed prerequisite.
      *
      * @param   unittest.TestSkipped skipped
      */
     public function testSkipped(TestSkipped $skipped) {
       $this->out->write('S');
+    }
+
+    /**
+     * Called when a test is not run because it has been ignored by using
+     * the @ignore annotation.
+     *
+     * @param   unittest.TestSkipped ignore
+     */
+    public function testNotRun(TestSkipped $ignore) {
+      $this->out->write('N');
     }
 
     /**
@@ -95,7 +113,7 @@
       $this->out->writeLinef(
         "\n%s: %d/%d run (%d skipped), %d succeeded, %d failed",
         $result->failureCount() ? 'FAIL' : 'OK',
-        $result->count() - $result->skipCount(),
+        $result->runCount(),
         $result->count(),
         $result->skipCount(),
         $result->successCount(),
