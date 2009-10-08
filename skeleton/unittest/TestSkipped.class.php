@@ -9,41 +9,9 @@
   /**
    * Indicates a test was skipped
    *
-   * @see      xp://unittest.TestResult
-   * @purpose  Result wrapper
+   * @see      xp://unittest.TestPrerequisitesNotMet
    */
-  class TestSkipped extends Object implements TestOutcome {
-    public
-      $reason   = NULL,
-      $test     = NULL,
-      $elapsed  = 0.0;
-      
-    /**
-     * Constructor
-     *
-     * @param   unittest.TestCase test
-     * @param   mixed reason
-     * @param   float elapsed
-     */
-    public function __construct($test, $reason, $elapsed) {
-      $this->test= $test;
-      $this->reason= $reason;
-      $this->elapsed= $elapsed;
-    }
+  interface TestSkipped extends TestOutcome {
 
-    /**
-     * Return a string representation of this class
-     *
-     * @return  string
-     */
-    public function toString() {
-      return (
-        $this->getClassName().
-        '(test= '.$this->test->getClassName().'::'.$this->test->getName().
-        sprintf(', time= %.3f seconds', $this->elapsed).") {\n  ".
-        str_replace("\n", "\n  ", xp::stringOf($this->reason))."\n".
-        ' }'
-      );
-    }
   }
 ?>
