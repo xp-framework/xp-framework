@@ -130,7 +130,7 @@
      * @param   unittest.TestSkipped ignore
      */
     public function testNotRun(TestSkipped $ignore) {
-      $this->addTestCase($skipped, 'skipped')->setAttribute('skipped', $ignore->reason);
+      $this->addTestCase($ignore, 'skipped')->setAttribute('skipped', $ignore->reason);
     }
 
     /**
