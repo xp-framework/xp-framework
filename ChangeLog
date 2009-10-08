@@ -62,6 +62,13 @@ Features
 - Added possibility to pass an associative array to HTTP request params
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0188 - Test outcome
+  (friebe)
+- Implemented RFC #0187 - @expect withMessage
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Update org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
