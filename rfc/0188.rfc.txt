@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Aug 23 18:30:28     2009
-@status: discussion, ends Tue Sep 29 16:25:13     2009
+@status: implemented, Thu Oct  8 11:37:55     2009
 @target: 5.7.5
 @category: unittest
 
