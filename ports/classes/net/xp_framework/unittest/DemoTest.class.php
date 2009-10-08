@@ -70,6 +70,15 @@
     }
 
     /**
+     * A test that always fails because an exception is thrown.
+     *
+     */
+    #[@test]
+    public function throwsAnException() {
+      throw new IllegalArgumentException('');
+    }
+
+    /**
      * A test that timeouts
      *
      */
