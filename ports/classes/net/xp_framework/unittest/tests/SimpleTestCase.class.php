@@ -77,6 +77,15 @@
      *
      */
     #[@test]
+    public function throws() {
+      throw new IllegalArgumentException('');
+    }
+
+    /**
+     * Always fails
+     *
+     */
+    #[@test]
     public function raisesAnError() {
       $a.= '';
     }
@@ -141,6 +150,24 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectedExceptionNotThrown() {
       throw new FormatException('');
+    }
+
+    /**
+     * Catches the expected exception 
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
+    public function catchExpectedWithMessage() {
+      throw new IllegalArgumentException('Hello');
+    }
+
+    /**
+     * Catches the expected exception
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Hello')]
+    public function catchExpectedWithWrongMessage() {
+      throw new IllegalArgumentException('Another message');
     }
 
     /**
