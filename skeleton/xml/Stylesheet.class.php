@@ -201,8 +201,8 @@
      * @param   string string
      * @return  xml.Stylesheet
      */
-    public static function fromString($string) {
-      return parent::fromString($string, __CLASS__);
+    public static function fromString($string, $c= __CLASS__) {
+      return parent::fromString($string, $c);
     }
 
 
@@ -212,8 +212,8 @@
      * @param   xml.File file
      * @return  xml.Stylesheet
      */
-    public static function fromFile($file) {
-      return parent::fromFile($file, __CLASS__);
+    public static function fromFile($file, $c= __CLASS__) {
+      return parent::fromFile($file, $c);
     }
   }
 ?>
