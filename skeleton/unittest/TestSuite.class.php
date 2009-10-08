@@ -180,8 +180,16 @@
 
       // Check for @expect
       $expected= NULL;
-      if ($method->hasAnnotation('expect')) {
-        $expected= XPClass::forName($method->getAnnotation('expect'));
+      if ($method->hasAnnotation('expect', 'class')) {
+        $expected= array(
+          XPClass::forName($method->getAnnotation('expect', 'class')),
+          $method->getAnnotation('expect', 'withMessage')
+        );
+      } else if ($method->hasAnnotation('expect')) {
+        $expected= array(
+          XPClass::forName($method->getAnnotation('expect')),
+          NULL
+        );
       }
       
       // Check for @limit
@@ -222,7 +230,7 @@
         $e= $t->getCause();
 
         // Was that an expected exception?
-        if ($expected && $expected->isInstance($e)) {
+        if ($expected && $expected[0]->isInstance($e)) {
           if ($eta && $timer->elapsedTime() > $eta) {
             $this->notifyListeners('testFailed', array(
               $result->setFailed(
@@ -231,16 +239,24 @@
                 $timer->elapsedTime()
               )
             ));
+          } else if ($expected[1] && $expected[1] !== $e->getMessage()) {
+            $this->notifyListeners('testFailed', array(
+              $result->setFailed(
+                $test, 
+                new AssertionFailedError('Expected '.$e->getClassName().'\'s message differs', $expected[1], $e->getMessage()), 
+                $timer->elapsedTime()
+              )
+            ));
           } else {
             $this->notifyListeners('testSucceeded', array(
               $result->setSucceeded($test, $timer->elapsedTime())
             ));
           }
-        } else if ($expected && !$expected->isInstance($e)) {
+        } else if ($expected && !$expected[0]->isInstance($e)) {
           $this->notifyListeners('testFailed', array(
             $result->setFailed(
               $test, 
-              new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected->getName()),
+              new AssertionFailedError('Expected exception not caught', $e->getClassName(), $expected[0]->getName()),
               $timer->elapsedTime()
             )
           ));
@@ -265,7 +281,7 @@
         $this->notifyListeners('testFailed', array(
           $result->setFailed(
             $test, 
-            new AssertionFailedError('Expected exception not caught', NULL, $expected->getName()),
+            new AssertionFailedError('Expected exception not caught', NULL, $expected[0]->getName()),
             $timer->elapsedTime()
           )
         ));
