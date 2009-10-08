@@ -25,6 +25,7 @@
       $wsdl     = FALSE,
       $cat      = NULL,
       $version  = NULL,
+      $location = NULL,
       $charset  = 'iso-8859-1',
       $style    = SOAP_RPC,
       $encoding = SOAP_ENCODED;
@@ -50,6 +51,15 @@
      */
     public function setSoapVersion($version) {
       $this->version= $version;
+    }
+
+    /**
+     * Set location url of the soap service
+     *
+     * @param   string location
+     */
+    public function setLocation($location) {
+      $this->location= $location;
     }
 
     /**
@@ -227,12 +237,15 @@
       }
       
       $this->version && $options['soap_version']= $this->version;
-      
+      $this->location && $options['location']= $this->location;
+
       if ($this->wsdl) {
         $client= new SoapClient($this->endpoint->getURL(), $options);
       } else {
-      
-        $options['location']= $this->endpoint->getURL();
+
+        // Do not overwrite location if already set from outside
+        $options['location'] || $options['location']= $this->endpoint->getURL();
+
         $options['uri']= $this->uri;
         $options['style']= $this->getStyle();
         $options['use']= $this->getEncoding();
