@@ -49,10 +49,19 @@
     /**
      * Called when a test errors.
      *
-     * @param   unittest.TestFailure error
+     * @param   unittest.TestError error
      */
-    public function testError(TestFailure $error) {
+    public function testError(TestError $error) {
       $this->out->write('E');
+    }
+
+    /**
+     * Called when a test raises warnings.
+     *
+     * @param   unittest.TestWarning warning
+     */
+    public function testWarning(TestWarning $warning) {
+      $this->out->write('W');
     }
     
     /**

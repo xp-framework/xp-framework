@@ -302,7 +302,7 @@
             }
           }
         }
-        $this->notifyListeners('testError', array(
+        $this->notifyListeners('testWarning', array(
           $result->set($test, new TestWarning($test, $w, $timer->elapsedTime()))
         ));
       } else if ($eta && $timer->elapsedTime() > $eta) {

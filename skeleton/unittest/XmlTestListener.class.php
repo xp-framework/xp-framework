@@ -90,13 +90,26 @@
     /**
      * Called when a test errors.
      *
-     * @param   unittest.TestFailure error
+     * @param   unittest.TestError error
      */
-    public function testError(TestFailure $error) {
+    public function testError(TestError $error) {
       $t= $this->addTestCase($error, 'errors');
       $t->addChild(new Node('error', xp::stringOf($error->reason), array(
         'message' => trim($error->reason->compoundMessage()),
         'type'    => xp::typeOf($error->reason)
+      )));
+    }
+
+    /**
+     * Called when a test raises warnings.
+     *
+     * @param   unittest.TestWarning warning
+     */
+    public function testWarning(TestWarning $warning) {
+      $t= $this->addTestCase($warning, 'errors');
+      $t->addChild(new Node('error', implode("\n", $warning->reason), array(
+        'message' => 'Non-clear error stack',
+        'type'    => 'warnings'
       )));
     }
     

@@ -173,6 +173,66 @@
     }
 
     /**
+     * Test running a failing test
+     *
+     */
+    #[@test]
+    public function errorTest() {
+      $t= $this->runTests(new SimpleTestCase('throws'));
+
+      $this->assertEquals('testsuites', $t->root->getName());
+      with ($suite= @$t->root->children[0]); {
+        $this->assertSuiteNode(
+          'net.xp_framework.unittest.tests.SimpleTestCase',
+          array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
+          $suite
+        );
+
+        with ($case= @$suite->children[0]); {
+          $this->assertCaseNode(array('name' => 'throws'), $case);
+          $this->assertNotEquals(NULL, $case->getAttribute('time'));
+
+          with ($failure= @$case->children[0]); {
+            $this->assertClass($failure, 'xml.Node');
+            $this->assertEquals('error', $failure->getName());
+            $this->assertNotEquals(NULL, $failure->getAttribute('message'));
+            $this->assertNotEquals(NULL, $failure->getContent());
+          }
+        }
+      }
+    }
+
+    /**
+     * Test running a failing test
+     *
+     */
+    #[@test]
+    public function warningTest() {
+      $t= $this->runTests(new SimpleTestCase('raisesAnError'));
+
+      $this->assertEquals('testsuites', $t->root->getName());
+      with ($suite= @$t->root->children[0]); {
+        $this->assertSuiteNode(
+          'net.xp_framework.unittest.tests.SimpleTestCase',
+          array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
+          $suite
+        );
+
+        with ($case= @$suite->children[0]); {
+          $this->assertCaseNode(array('name' => 'raisesAnError'), $case);
+          $this->assertNotEquals(NULL, $case->getAttribute('time'));
+
+          with ($failure= @$case->children[0]); {
+            $this->assertClass($failure, 'xml.Node');
+            $this->assertEquals('error', $failure->getName());
+            $this->assertNotEquals(NULL, $failure->getAttribute('message'));
+            $this->assertNotEquals(NULL, $failure->getContent());
+          }
+        }
+      }
+    }
+
+    /**
      * Test running multiple tests
      *
      */

@@ -32,7 +32,14 @@
      *
      * @param   unittest.TestFailure error
      */
-    public function testError(TestFailure $error);
+    public function testError(TestError $error);
+
+    /**
+     * Called when a test raises warnings.
+     *
+     * @param   unittest.TestWarning warning
+     */
+    public function testWarning(TestWarning $warning);
     
     /**
      * Called when a test finished successfully.

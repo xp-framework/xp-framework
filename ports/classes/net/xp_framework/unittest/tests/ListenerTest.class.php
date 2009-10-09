@@ -65,8 +65,17 @@
      *
      * @param   unittest.TestFailure error
      */
-    public function testError(TestFailure $error) {
+    public function testError(TestError $error) {
       $this->invocations[__FUNCTION__]= new ArrayList($error);
+    }
+
+    /**
+     * Called when a test raises warnings.
+     *
+     * @param   unittest.TestWarning warning
+     */
+    public function testWarning(TestWarning $warning) {
+      $this->invocations[__FUNCTION__]= new ArrayList($warning);
     }
 
     /**
@@ -175,7 +184,7 @@
         $this->suite->runTest($case);
         $this->assertEquals($this->suite, $this->invocations['testRunStarted'][0]);
         $this->assertEquals($case, $this->invocations['testStarted'][0]);
-        $this->assertSubclass($this->invocations['testError'][0], 'unittest.TestFailure');
+        $this->assertSubclass($this->invocations['testWarning'][0], 'unittest.TestFailure');
         $this->assertEquals($this->suite, $this->invocations['testRunFinished'][0]);
         $this->assertClass($this->invocations['testRunFinished'][1], 'unittest.TestResult');
       }
