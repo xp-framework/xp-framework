@@ -45,9 +45,9 @@
     protected static function setup(array $args) {
       $webroot= $args[0];
       
-      // $pm= PropertyManager::getInstance();
-      // $pm->configure($webroot.'/etc');
-      // $pr= $pm->getProperties('web');
+      // This is not using the PropertyManager by intention: we'll postpone the
+      // initialization of it until later, because there might be configuration
+      // that indicates to use another properties directory.
       $pr= new Properties($webroot.'/etc/web.ini');
 
       $url= getenv('SCRIPT_URL');
@@ -83,11 +83,11 @@
         $pm= PropertyManager::getInstance();
         $pm->configure(strtr(self::readString($pr, $specific, $scriptlet, 'prop-base', $webroot.'/etc'), array('{WEBROOT}' => $webroot)));
         
-        // HACK #1: Always configure Logger (prior to ConnectionManager, so that one can pick up
+        // Always configure Logger (prior to ConnectionManager, so that one can pick up
         // categories from Logger)
         $pm->hasProperties('log') && Logger::getInstance()->configure($pm->getProperties('log'));
         
-        // HACK #2: Always make connection manager available - should be done inside scriptlet init
+        // Always make connection manager available
         $pm->hasProperties('database') && ConnectionManager::getInstance()->configure($pm->getProperties('database'));
         
         $self= new self($class->hasConstructor()
@@ -107,10 +107,9 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
+     * @param   scriptlet.HttpScriptlet scriptlet
      */
     protected function __construct(HttpScriptlet $scriptlet) {
       $this->scriptlet= $scriptlet;
@@ -135,7 +134,8 @@
 
       // Send output
       
-      // XXX HACK: Do not send headers when they've been sent before
+      // HACK: Do not send headers when they've been sent before - there should
+      // be support for this scenario within the scriptlet API itself
       headers_sent() || $response->sendHeaders();
       $response->sendContent();
       flush();
