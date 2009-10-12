@@ -12,8 +12,8 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://util.TimeZone
+   * @purpose  Testcase
    */
   class TimeZoneTest extends TestCase {
     protected
@@ -119,6 +119,19 @@
       $this->assertEquals(new Date('2007-03-25 02:00:00 Europe/Berlin'), $transition->getDate());
     }
     
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function previousPreviousTransition() {
+      $transition= $this->fixture->previousTransition(new Date('2007-08-23'));
+      $transition->previous();
+      $this->assertFalse($transition->isDst());
+      $this->assertEquals('CET', $transition->abbr());
+      $this->assertEquals(new Date('2006-10-29 02:00:00 Europe/Berlin'), $transition->getDate());
+    }
+
     /**
      * Test
      *
