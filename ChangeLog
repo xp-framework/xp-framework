@@ -74,6 +74,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fix util.TimeZoneTransition::previous() implementation.
+  Fixes bug #41
+  (kiesel, Jan Walschburger)
 - Update org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
   assignment character for tokens (required for Bugzilla V3)
   (hinckel)
