@@ -77,7 +77,10 @@ Bugfixes
 - Fix util.TimeZoneTransition::previous() implementation.
   Fixes bug #41
   (kiesel, Jan Walschburger)
-- Update org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
+- Fixed lang.Enum::membersOf to return correct list of members for
+  abstract enums
+  (friebe)
+- Updated org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
   assignment character for tokens (required for Bugzilla V3)
   (hinckel)
 - Fixed content type header in peer.mail.MimeMessage with multiple parts
