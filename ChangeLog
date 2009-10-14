@@ -22,6 +22,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added support for custom error pages to the web runner
+  (kiesel)
 - Added setLocation() method to webservices.soap.native.NativeSoapClient
   to overwrite endpoint location if needed.
   (gelli)
@@ -77,7 +79,7 @@ Bugfixes
 - Fix util.TimeZoneTransition::previous() implementation.
   Fixes bug #41
   (kiesel, Jan Walschburger)
-- Fixed lang.Enum::membersOf to return correct list of members for
+- Fixed lang.Enum::membersOf() to return correct list of members for
   abstract enums
   (friebe)
 - Updated org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
