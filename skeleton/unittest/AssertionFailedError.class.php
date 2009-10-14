@@ -23,7 +23,7 @@
      * @param   mixed expect default NULL
      */
     public function __construct($message, $actual= NULL, $expect= NULL) {
-      parent::__construct($message);
+      parent::__construct((string)$message);
       $this->actual= $actual;
       $this->expect= $expect;
     }
