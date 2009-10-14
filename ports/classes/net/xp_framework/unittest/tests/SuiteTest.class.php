@@ -8,6 +8,7 @@
     'unittest.TestCase',
     'unittest.TestSuite',
     'net.xp_framework.unittest.tests.SimpleTestCase',
+    'net.xp_framework.unittest.tests.SetUpFailingTestCase',
     'net.xp_framework.unittest.tests.AnotherTestCase'
   );
 
@@ -385,6 +386,17 @@
         'Expected lang.IllegalArgumentException\'s message differs',
         cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
       );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function catchExceptionsDuringSetUpOfTestDontBringDownTestSuite() {
+      $this->suite->addTest(new SetUpFailingTestCase('emptyTest'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->failureCount());
     }
   }
 ?>

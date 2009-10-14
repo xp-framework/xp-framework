@@ -219,6 +219,13 @@
         ));
         xp::gc();
         return;
+      } catch (Throwable $t) {
+        $timer->stop();
+        $this->notifyListeners('testFailed', array(
+          $result->set($test, new TestError($test, $t, $timer->elapsedTime()))
+        ));
+        xp::gc();
+        return;
       }
 
       // Run test
