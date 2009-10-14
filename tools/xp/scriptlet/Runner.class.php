@@ -120,6 +120,7 @@
      *
      */
     protected function run() {
+      $exception= NULL;
       if ($this->flags & self::TRACE && $this->scriptlet instanceof Traceable) {
         $this->scriptlet->setTrace(Logger::getInstance()->getCategory('scriptlet'));
       }
@@ -128,8 +129,19 @@
         $this->scriptlet->init();
         $response= $this->scriptlet->process();
       } catch (HttpScriptletException $e) {
-        $response= $e->getResponse();
-        $this->except($response, $e);
+
+        // Remember this exception to show it below the error page,
+        // if this flag was set
+        $exception= $e;
+
+        // TODO: Instead of checking for a certain method, this should
+        // check if the scriptlet class implements a certain interface
+        if (is_callable(array($this->scriptlet, 'fail'))) {
+          $response= $this->scriptlet->fail($e);
+        } else {
+          $response= $e->getResponse();
+          $this->except($response, $e);
+        }
       }
 
       // Send output
@@ -151,7 +163,12 @@
       }
       
       if (($this->flags & self::ERRORS)) {
-        echo '<xmp>', var_export(xp::registry('errors'), 1), '</xmp>';
+        echo
+          '<xmp>',
+          $exception instanceof Throwable ? $exception->toString() : '',
+          var_export(xp::registry('errors'), 1),
+          '</xmp>'
+        ;
       }
     }
     
