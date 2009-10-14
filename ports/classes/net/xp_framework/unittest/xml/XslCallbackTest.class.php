@@ -21,6 +21,18 @@
   class XslCallbackTest extends TestCase {
 
     /**
+     * Set up test
+     *
+     */
+    public function setUp() {
+      foreach (array('dom', 'xsl') as $ext) {
+        if (!extension_loaded($ext)) {
+          throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
+        }
+      }
+    }
+
+    /**
      * Runs a transformation
      *
      * @param   string xml
