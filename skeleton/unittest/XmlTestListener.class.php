@@ -61,6 +61,10 @@
     protected function addTestCase(TestOutcome $outcome, $inc= NULL) {
       $testClass= $outcome->test->getClass();
       
+      // Some events (like @beforeClass) failing will lead to skipping
+      // test that have not even been started.
+      $this->testStarted($outcome->test);
+
       // Update test count
       $n= $this->classes[$testClass];
       $n->setAttribute('tests', $n->getAttribute('tests')+ 1);
