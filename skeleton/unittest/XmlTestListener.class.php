@@ -39,6 +39,16 @@
      * @param   unittest.TestCase failure
      */
     public function testStarted(TestCase $case) {
+      // NOOP
+    }
+
+    /**
+     * Add test result node, if it does not yet exist.
+     *
+     * @param   unittest.TestCase case
+     * @return  xml.Node
+     */
+    protected function testNode(TestCase $case) {
       $class= $case->getClass();
       if (!$this->classes->containsKey($class)) {
         $this->classes[$class]= $this->tree->addChild(new Node('testsuite', NULL, array(
@@ -49,6 +59,8 @@
           'skipped'    => 0
         )));
       }
+
+      return $this->classes[$class];
     }
     
     /**
@@ -61,12 +73,8 @@
     protected function addTestCase(TestOutcome $outcome, $inc= NULL) {
       $testClass= $outcome->test->getClass();
       
-      // Some events (like @beforeClass) failing will lead to skipping
-      // test that have not even been started.
-      $this->testStarted($outcome->test);
-
       // Update test count
-      $n= $this->classes[$testClass];
+      $n= $this->testNode($outcome->test);
       $n->setAttribute('tests', $n->getAttribute('tests')+ 1);
       $inc && $n->setAttribute($inc, $n->getAttribute($inc)+ 1);
       
