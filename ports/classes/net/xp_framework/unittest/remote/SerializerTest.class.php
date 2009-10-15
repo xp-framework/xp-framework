@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
@@ -9,6 +9,7 @@
     'remote.protocol.Serializer',
     'net.xp_framework.unittest.remote.Person',
     'net.xp_framework.unittest.remote.Enum',
+    'remote.protocol.RemoteInterfaceMapping',
     'util.Hashmap'
   );
 
@@ -28,7 +29,7 @@
     public function setUp() {
       $this->serializer= new Serializer();
     }
-    
+
     /**
      * Test serialization of NULL
      *
@@ -116,33 +117,33 @@
     public function representationOfString() {
       $this->assertEquals('s:11:"Hello World";', $this->serializer->representationOf($var= 'Hello World'));
     }
-    
+
     /**
-     * Test serialization of an array containing three integers 
+     * Test serialization of an array containing three integers
      * (1, 2 and 5)
      *
      */
     #[@test]
     public function representationOfIntegerArray() {
       $this->assertEquals(
-        'a:3:{i:0;i:1;i:1;i:2;i:2;i:5;}', 
+        'a:3:{i:0;i:1;i:1;i:2;i:2;i:5;}',
         $this->serializer->representationOf($var= array(1, 2, 5))
       );
     }
-    
+
     /**
-     * Test serialization of an array containing two strings 
+     * Test serialization of an array containing two strings
      * ("More" and "Power")
      *
      */
     #[@test]
     public function representationOfStringArray() {
       $this->assertEquals(
-        'a:2:{i:0;s:4:"More";i:1;s:5:"Power";}', 
+        'a:2:{i:0;s:4:"More";i:1;s:5:"Power";}',
         $this->serializer->representationOf($var= array('More', 'Power'))
       );
     }
-    
+
     /**
      * Test serialization of a date object
      *
@@ -163,7 +164,7 @@
       $h->put('number', '6100');
 
       $this->assertEquals(
-        'a:2:{s:3:"key";s:5:"value";s:6:"number";s:4:"6100";}', 
+        'a:2:{s:3:"key";s:5:"value";s:6:"number";s:4:"6100";}',
         $this->serializer->representationOf($h)
       );
     }
@@ -179,11 +180,11 @@
       $h->put('number', 6100);
 
       $this->assertEquals(
-        'a:2:{s:3:"key";s:5:"value";s:6:"number";i:6100;}', 
+        'a:2:{s:3:"key";s:5:"value";s:6:"number";i:6100;}',
         $this->serializer->representationOf($h)
       );
     }
-    
+
     /**
      * Test serialization of a generic value object
      *
@@ -193,6 +194,20 @@
     public function representationOfValueObject() {
       $this->assertEquals(
         'O:39:"net.xp_framework.unittest.remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}',
+        $this->serializer->representationOf(new net·xp_framework·unittest·remote·Person())
+      );
+    }
+
+    /**
+     * Test serialization of a mapped value object
+     *
+     * @see     xp://Person
+     */
+    #[@test]
+    public function representationOfMappedValueObject() {
+      $this->serializer->mapPackage('remote', Package::forName('net.xp_framework.unittest.remote'));
+      $this->assertEquals(
+        'O:13:"remote.Person":2:{s:2:"id";i:1549;s:4:"name";s:11:"Timm Friebe";}',
         $this->serializer->representationOf(new net·xp_framework·unittest·remote·Person())
       );
     }
@@ -208,7 +223,7 @@
         $this->serializer->representationOf(net·xp_framework·unittest·remote·Enum::$Value1)
       );
     }
-    
+
     /**
      * Test serialization of a Bytes object
      *
@@ -216,7 +231,7 @@
     #[@test]
     public function representationOfByes() {
       $this->assertEquals(
-        "Y:4:\"\0abc\";", 
+        "Y:4:\"\0abc\";",
         $this->serializer->representationOf(new Bytes(array(0, 'a', 'b', 'c')))
       );
     }
@@ -293,7 +308,7 @@
         $this->serializer->valueOf(new SerializedData('S:1;'))
       );
     }
-    
+
     /**
      * Test deserialization of a date
      *
@@ -382,7 +397,7 @@
     #[@test]
     public function valueOfBytes() {
       $this->assertEquals(
-        new Bytes(array(0, 'a', 'b', 'c')), 
+        new Bytes(array(0, 'a', 'b', 'c')),
         $this->serializer->valueOf(new SerializedData("Y:4:\"\0abc\";"))
       );
     }
@@ -406,7 +421,7 @@
         ))
       );
     }
-    
+
     /**
      * Test deserialization of a classreference
      *
@@ -417,18 +432,69 @@
       $this->assertTrue(is('remote.ClassReference', $class));
       $this->assertEquals("net.xp_framework.easc.reflect.MethodDescription", $class->referencedName());
     }
-    
+
     /**
      * Test deserialization of a package-mapped classreference
      *
      */
     #[@test]
     public function genericPackageMappedClass() {
-      $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
-      
+      $this->serializer->mapPackage('net.xp_framework.easc.reflect', Package::forName('remote.reflect'));
+
       $class= $this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
       $this->assertTrue(is('remote.ClassReference', $class));
       $this->assertEquals("remote.reflect.MethodDescription", $class->referencedName());
+    }
+
+    /**
+     * Test deserialization of a package-mapped classreference
+     *
+     * @deprecated
+     */
+    #[@test]
+    public function oneWayPackageMappedClass() {
+      $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
+
+      $class= $this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
+      $this->assertTrue(is('remote.ClassReference', $class));
+      $this->assertEquals("remote.reflect.MethodDescription", $class->referencedName());
+    }
+
+    /**
+     * Test deserialization of a package-mapped classreference
+     *
+     * @deprecated
+     */
+    #[@test]
+    public function oneWayPackageMappedInterface() {
+      $this->serializer->packageMapping('net.xp_framework.easc.beans', 'remote.beans');
+      $this->serializer->mapping('I', new RemoteInterfaceMapping());
+
+      $class= $this->serializer->valueOf(
+        new SerializedData('I:12036987:{s:41:"net.xp_framework.easc.beans.BeanInterface";}'),
+        array('handler' => 'remote.protocol.XPProtocolHandler')
+      );
+
+      $this->assertSubclass($class, 'lang.reflect.Proxy');
+      $this->assertSubclass($class, 'remote.beans.BeanInterface');
+    }
+
+    /**
+     * Test deserialization of a package-mapped classreference
+     *
+     */
+    #[@test]
+    public function remoteInterfaceMapping() {
+      $this->serializer->mapPackage('net.xp_framework.easc.beans', Package::forName('remote.beans'));
+      $this->serializer->mapping('I', new RemoteInterfaceMapping());
+
+      $class= $this->serializer->valueOf(
+        new SerializedData('I:12036987:{s:41:"net.xp_framework.easc.beans.BeanInterface";}'),
+        array('handler' => 'remote.protocol.XPProtocolHandler')
+      );
+
+      $this->assertSubclass($class, 'lang.reflect.Proxy');
+      $this->assertSubclass($class, 'remote.beans.BeanInterface');
     }
 
     /**
@@ -442,7 +508,7 @@
       $barClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BarClass', 'FooClass', NULL);
       $bazClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazClass', 'BarClass', NULL);
       $bazookaClass= ClassLoader::defineClass('net.xp_framework.unittest.remote.BazookaClass', 'BazClass', NULL);
-      
+
       // Both must be serialized with the FOO mapping, because both are Foo or Foo-derived objects.
       $this->serializer->mapping('FOO', newinstance('remote.protocol.SerializerMapping', array(), '{
         function handledClass() { return XPClass::forName("net.xp_framework.unittest.remote.FooClass"); }
@@ -452,7 +518,7 @@
       $this->assertEquals('FOO:', $this->serializer->representationOf(new FooClass()));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new BarClass()));
       $this->assertEquals('FOO:', $this->serializer->representationOf(new BazClass()));
-      
+
       // Add more concrete mapping for BAR. Foo must still be serialized with FOO, but the BarClass-object
       // has a better matching mapping.
       $this->serializer->mapping('BAR', newinstance('remote.protocol.SerializerMapping', array(), '{
