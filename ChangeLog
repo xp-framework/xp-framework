@@ -97,6 +97,8 @@ Bugfixes
 - Fixed XPath constructor to include XML declaration when creating XPath
   object from xml.Tree
   (hinckel, Christine Karch)
+- Fixed remote.protocol.Serializer to apply mappings for interfaces
+  (srogin, gelli)
 
 
 Version 5.7.4, released 2009-09-05
