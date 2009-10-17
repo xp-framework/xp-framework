@@ -19,7 +19,7 @@
     /**
      * Return the caster
      *
-     * @return  &scriptlet.xml.workflow.casters.ParamCaster
+     * @return  scriptlet.xml.workflow.casters.ParamCaster
      */
     protected abstract function caster();
 
@@ -41,7 +41,7 @@
      */
     protected function castValue($value) {
       if (!is_array($casted= call_user_func(array($this->caster, 'castValue'), array((string)$value)))) {
-        throw(new IllegalArgumentException('Cannot cast '.$value));
+        throw new IllegalArgumentException('Cannot cast '.$value);
       }
       return array_pop($casted);
     }

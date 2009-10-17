@@ -76,7 +76,7 @@
     public function setUp() {
       foreach ((array)$this->neededExtension() as $ext) {
         if (!extension_loaded($ext)) {
-          throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
+          throw new PrerequisitesNotMetError($ext.' extension not loaded');
         }
       }
       $this->processor= $this->processorInstance();

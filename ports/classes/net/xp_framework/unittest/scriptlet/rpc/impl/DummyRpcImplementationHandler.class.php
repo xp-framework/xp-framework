@@ -37,7 +37,7 @@
      */
     #[@webmethod]
     public function giveMeFault() {
-      throw(new ServiceException(403, 'This is a intentionally caused exception.'));
+      throw new ServiceException(403, 'This is a intentionally caused exception.');
     }
     
     /**
@@ -52,10 +52,10 @@
      */
     #[@webmethod]
     public function checkMultipleParameters($string, $int, $array, $struct) {
-      if (!is_string($string)) throw(new IllegalArgumentException('String not string'));
-      if (!is_int($int)) throw(new IllegalArgumentException('Int not Int'));
-      if (!is_array($array)) throw(new IllegalArgumentException('Array not array'));
-      if (!is_array($struct)) throw(new IllegalArgumentException('Struct not struct'));
+      if (!is_string($string)) throw new IllegalArgumentException('String not string');
+      if (!is_int($int)) throw new IllegalArgumentException('Int not Int');
+      if (!is_array($array)) throw new IllegalArgumentException('Array not array');
+      if (!is_array($struct)) throw new IllegalArgumentException('Struct not struct');
       
       return array(
         $string,

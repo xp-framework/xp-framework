@@ -43,11 +43,11 @@
         $remote= Remote::forName('xp://'.$this->endpoint.'/');
         $remote && $home= $remote->lookup('xp/demo/Roundtrip');
         $home && $this->instance= $home->create();
-      } catch (Exception $e) {
-        throw(new PrerequisitesNotMetError(
+      } catch (XPException $e) {
+        throw new PrerequisitesNotMetError(
           'Make sure xp/demo/Roundtrip is deployed @ '.$this->endpoint, 
           $e
-        ));
+        );
       }
     }
 
