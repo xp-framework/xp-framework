@@ -22,6 +22,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added new rdbms.finder.GenericFinder class
+  (friebe)
 - Added support for custom error pages to the web runner
   (kiesel)
 - Added setLocation() method to webservices.soap.native.NativeSoapClient
