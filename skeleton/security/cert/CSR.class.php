@@ -73,7 +73,7 @@
     public function export() {
       if (FALSE === openssl_csr_export($this->_res, $out)) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        throw(new XPException('Could not export CSR'));
+        throw new XPException('Could not export CSR');
       }
       
       return $out;
@@ -90,11 +90,11 @@
     public function sign($keypair, $days= 365, $cacert= NULL) {
       if (FALSE === ($x509= openssl_csr_sign($this->_res, $cacert, $keypair->_res, $days))) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        throw(new CertificateException('Cannot sign certificate'));
+        throw new CertificateException('Cannot sign certificate');
       }      
       if (FALSE === openssl_x509_export($x509, $str)) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        throw(new CertificateException('Cannot export certificate'));
+        throw new CertificateException('Cannot export certificate');
       }
       
       return X509Certificate::fromString($str);

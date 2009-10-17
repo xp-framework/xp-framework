@@ -57,7 +57,7 @@
      * @throws  util.NoSuchElementException when there are no more elements
      */
     public function next() {
-      if (is_null($this->_key)) throw(new NoSuchElementException('No more elements'));
+      if (is_null($this->_key)) throw new NoSuchElementException('No more elements');
       $oldkey= $this->_key;
       next($this->_hash);
       $this->_key= key($this->_hash);

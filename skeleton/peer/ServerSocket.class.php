@@ -64,7 +64,7 @@
      * @throws  lang.IllegalAccessException
      */
     public function connect($timeout= 2.0) {
-      throw(new IllegalAccessException('Connect cannot be used on a ServerSocket'));
+      throw new IllegalAccessException('Connect cannot be used on a ServerSocket');
     }
     
     /**
@@ -75,10 +75,10 @@
      */
     public function create() {
       if (!is_resource($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
-        throw(new SocketException(sprintf(
+        throw new SocketException(sprintf(
           'Creating socket failed',
           $this->getLastError()
-        )));
+        ));
       }
       
       return TRUE;
@@ -95,10 +95,10 @@
         (FALSE === socket_setopt($this->_sock, SOL_SOCKET, SO_REUSEADDR, $reuse)) ||
         (FALSE === socket_bind($this->_sock, $this->host, $this->port))
       ) {
-        throw(new SocketException(sprintf(
+        throw new SocketException(sprintf(
           'Binding socket to '.$this->host.':'.$this->port.' failed',
           $this->getLastError()
-        )));
+        ));
       }
       
       return TRUE;
@@ -121,10 +121,10 @@
      */
     public function listen($backlog= 10) {
       if (FALSE === socket_listen($this->_sock, $backlog)) {
-        throw(new SocketException(sprintf(
+        throw new SocketException(sprintf(
           'Listening on socket failed',
           $this->getLastError()
-        )));
+        ));
       }
       
       return TRUE;
@@ -148,19 +148,19 @@
      */
     public function accept() {
       if (0 > ($msgsock= socket_accept($this->_sock))) {
-        throw(new SocketException(sprintf(
+        throw new SocketException(sprintf(
           'Accept failed',
           $this->getLastError()
-        )));
+        ));
       }
       if (!is_resource($msgsock)) return FALSE;
       
       // Get peer
       if (FALSE === socket_getpeername($msgsock, $host, $port)) {
-        throw(new SocketException(sprintf(
+        throw new SocketException(sprintf(
           'Cannot get peer',
           $this->getLastError()
-        )));      
+        ));      
       }
       
       return new BSDSocket($host, $port, $msgsock);

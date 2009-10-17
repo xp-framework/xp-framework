@@ -80,9 +80,9 @@
      */
     public function addPart($part) {
       if (!$part instanceof MimePart) {
-        throw(new IllegalArgumentException(
+        throw new IllegalArgumentException(
           'Parameter part is not a peer.mail.MimePart (given: '.xp::typeOf($part).')'
-        ));
+        );
       }
       $this->parts[]= $part;
       return $part;

@@ -170,7 +170,7 @@
           // the server - this really should not happen!
           if ($handle === $accepting) {
             if (!($m= $this->socket->accept())) {
-              throw(new SocketException('Call to accept() failed'));
+              throw new SocketException('Call to accept() failed');
             }
             
             $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);

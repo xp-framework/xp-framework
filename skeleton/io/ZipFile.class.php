@@ -29,10 +29,10 @@
         ('php://' != substr($this->uri, 0, 6)) &&
         (FILE_MODE_READ == $mode) && 
         (!$this->exists())
-      ) throw(new FileNotFoundException($this->uri));
+      ) throw new FileNotFoundException($this->uri);
       
       $this->_fd= gzopen($this->uri, $this->mode.$compression);
-      if (!$this->_fd) throw(new IOException('cannot open '.$this->uri.' mode '.$this->mode));
+      if (!$this->_fd) throw new IOException('cannot open '.$this->uri.' mode '.$this->mode);
       return TRUE;
     }
     
@@ -59,7 +59,7 @@
      */
     public function readChar() {
       if (FALSE === ($result= gzgetc($this->_fd))) {
-        throw(new IOException('readChar() cannot read '.$bytes.' bytes from '.$this->uri));
+        throw new IOException('readChar() cannot read '.$bytes.' bytes from '.$this->uri);
       }
       return $result;
     }
@@ -76,7 +76,7 @@
      */
     public function gets($bytes= 4096) {
       if (FALSE === ($result= gzgets($this->_fd, $bytes))) {
-        throw(new IOException('gets() cannot read '.$bytes.' bytes from '.$this->uri));
+        throw new IOException('gets() cannot read '.$bytes.' bytes from '.$this->uri);
       }
       return $result;
     }
@@ -90,7 +90,7 @@
      */
     public function read($bytes= 4096) {
       if (FALSE === ($result= gzread($this->_fd, $bytes))) {
-        throw(new IOException('read() cannot read '.$bytes.' bytes from '.$this->uri));
+        throw new IOException('read() cannot read '.$bytes.' bytes from '.$this->uri);
       }
       return $result;
     }
@@ -104,7 +104,7 @@
      */
     public function write($string) {
       if (FALSE === ($result= gzwrite($this->_fd, $string))) {
-        throw(new IOException('cannot write '.strlen($string).' bytes to '.$this->uri));
+        throw new IOException('cannot write '.strlen($string).' bytes to '.$this->uri);
       }
       return $result;
     }
@@ -118,7 +118,7 @@
      */
     public function writeLine($string) {
       if (FALSE === ($result= gzputs($this->_fd, $string."\n"))) {
-        throw(new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri));
+        throw new IOException('cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri);
       }
       return $result;
     }
@@ -136,7 +136,7 @@
     public function eof() {
       $result= gzeof($this->_fd);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw(new IOException('cannot determine eof of '.$this->uri));
+        throw new IOException('cannot determine eof of '.$this->uri);
       }
       return $result;
     }
@@ -151,7 +151,7 @@
      */
     public function rewind() {
       if (FALSE === ($result= gzrewind($this->_fd))) {
-        throw(new IOException('cannot rewind file pointer'));
+        throw new IOException('cannot rewind file pointer');
       }
       return TRUE;
     }
@@ -167,7 +167,7 @@
      */
     public function seek($position= 0, $mode= SEEK_SET) {
       if (0 != ($result= gzseek($this->_fd, $position, $mode))) {
-        throw(new IOException('seek error, position '.$position.' in mode '.$mode));
+        throw new IOException('seek error, position '.$position.' in mode '.$mode);
       }
       return TRUE;
     }
@@ -181,7 +181,7 @@
     public function tell($position= 0, $mode= SEEK_SET) {
       $result= gztell($this->_fd);
       if ((FALSE === $result) && xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw(new IOException('retrieve file pointer\'s position '.$this->uri));
+        throw new IOException('retrieve file pointer\'s position '.$this->uri);
       }
       return $result;
     }

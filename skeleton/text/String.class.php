@@ -79,7 +79,7 @@
       if (-1 == $pos) {
         $pos= strlen($this->buffer)- 1;
       } else if ($pos < 0 || $pos >= strlen($this->buffer)) {
-        throw(new IndexOutOfBoundsException($pos.' is not a valid string offset'));
+        throw new IndexOutOfBoundsException($pos.' is not a valid string offset');
       }
 
       return $this->buffer{$pos};

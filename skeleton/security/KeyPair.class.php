@@ -62,7 +62,7 @@
         'private_key_bits'  => $bits
       )))) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        throw(new XPException('Could not generate keypair'));
+        throw new XPException('Could not generate keypair');
       }
       
       $k= new KeyPair();
@@ -79,7 +79,7 @@
     public function export($passphrase= NULL) {
       if (FALSE === openssl_pkey_export($this->_res, $out, $passphrase)) {
         trigger_error(implode("\n  @", OpenSslUtil::getErrors()), E_USER_NOTICE);
-        throw(new XPException('Could not export key'));
+        throw new XPException('Could not export key');
       }
       
       return $out;

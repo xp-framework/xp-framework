@@ -145,10 +145,10 @@
           $data= unpack('a3id/c1version/i1indexsize/a*reserved', $header);
             
           // Check header integrity
-          if ('CCA' !== $data['id']) throw(new FormatException(sprintf(
+          if ('CCA' !== $data['id']) throw new FormatException(sprintf(
             'Header malformed: "CCA" expected, have "%s"', 
             substr($header, 0, 3)
-          )));
+          ));
           
           // Copy information
           $this->version = $data['version'];

@@ -33,7 +33,7 @@
           return new HttpsRequest($url);
         
         default:
-          throw(new IllegalArgumentException('Scheme "'.$url->getScheme().'" not supported'));
+          throw new IllegalArgumentException('Scheme "'.$url->getScheme().'" not supported');
       }
     }
   }

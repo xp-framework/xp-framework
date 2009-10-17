@@ -38,7 +38,7 @@
           $this->_instance= $this->initialize();
         } catch (Throwable $e) {
           $this->_instance= NULL;
-          throw(new DeferredInitializationException($method, $e));
+          throw new DeferredInitializationException($method, $e);
         }
       }
       return call_user_func_array(array($this->_instance, $method), $args);

@@ -300,7 +300,7 @@
       
       // Sanity checks
       if ($lower > $upper) {
-        throw(new IllegalArgumentException('Lower range greater than upper range'));
+        throw new IllegalArgumentException('Lower range greater than upper range');
       }
 
       // Figure out the distance between the bars
@@ -424,7 +424,7 @@
 
       // Sanity checks
       if ($lower > $upper) {
-        throw(new IllegalArgumentException('Lower range greater than upper range'));
+        throw new IllegalArgumentException('Lower range greater than upper range');
       }
 
       // Figure out the distance between the bars

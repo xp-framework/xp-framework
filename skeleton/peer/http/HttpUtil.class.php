@@ -50,10 +50,10 @@
         try {
           $response= $connection->get($params, $headers);
         } catch (Exception $e) {
-          throw(new UnexpectedResponseException(
+          throw new UnexpectedResponseException(
             $e->getMessage(),
             -1
-          ));
+          );
         }
 
         // Check return code

@@ -69,7 +69,7 @@
      * @param   scriptlet.rpc.AbstractRpcResponse response
      */
     public function doGet($request, $response) {
-      throw(new IllegalAccessException('GET is not supported'));
+      throw new IllegalAccessException('GET is not supported');
     }
 
     /**
@@ -166,7 +166,7 @@
     
       // Check on valid params
       if (0 == strlen($msg->getMethod())) {
-        throw(new IllegalArgumentException('No method name passed.'));
+        throw new IllegalArgumentException('No method name passed.');
       }
 
       // Create message from request data

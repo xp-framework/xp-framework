@@ -44,7 +44,7 @@
      * @throws  lang.IllegalAccessException
      */
     public function apply($fmt, $argument) { 
-      throw(new IllegalAccessException('Calling apply method of base class text.format.Format'));
+      throw new IllegalAccessException('Calling apply method of base class text.format.Format');
     }
     
     /**

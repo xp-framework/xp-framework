@@ -91,9 +91,9 @@
       // Got expected data?
       $code= substr($buf, 0, 3);
       if (!in_array($code, $expect)) {
-        throw(new FormatException(
+        throw new FormatException(
           'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"]'
-        ));
+        );
       }
       
       return $buf;
@@ -161,9 +161,9 @@
           break;
           
         default:
-          throw(new IllegalArgumentException(
+          throw new IllegalArgumentException(
             'Authentication method '.$this->auth.' not supported'
-          ));
+          );
       }
     }
     
@@ -178,7 +178,7 @@
       
       $u= new URL($dsn);
       if (!$u->getHost()) {
-        throw(new IllegalArgumentException('DSN parsing failed ["'.$dsn.'"]'));
+        throw new IllegalArgumentException('DSN parsing failed ["'.$dsn.'"]');
       }
       
       // Scheme
@@ -192,7 +192,7 @@
           break;
           
         default: 
-          throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not supported'));
+          throw new IllegalArgumentException('Scheme "'.$u->getScheme().'" not supported');
       }
       
       // Copy host and port
@@ -230,7 +230,7 @@
         $this->_hello();                        // Polite people say hello
         $this->_login();                        // Log in
       } catch (XPException $e) {
-        throw(new TransportException('Connect failed', $e));
+        throw new TransportException('Connect failed', $e);
       }
       
       return TRUE;
@@ -246,7 +246,7 @@
         $this->_sock->write("QUIT\r\n"); 
         $this->_sock->close();
       } catch (XPException $e) {
-        throw(new TransportException('Could not shutdown communications', $e));
+        throw new TransportException('Could not shutdown communications', $e);
       }
       
       return TRUE;      
@@ -291,7 +291,7 @@
           ), FALSE);
         }
       } catch (XPException $e) {
-        throw(new TransportException('Sending message failed', $e));
+        throw new TransportException('Sending message failed', $e);
       }
       
       return (bool)$this->_sockcmd('.', 250);

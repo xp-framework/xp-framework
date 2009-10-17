@@ -82,7 +82,7 @@
 
       // NNTP/RFC977 only allows command up to 512 (-2) chars.
       if (strlen($cmd) > 510) {
-        throw(new ProtocolException('Command too long! Max. 510 chars'));
+        throw new ProtocolException('Command too long! Max. 510 chars');
       }
       
       $this->cat && $this->cat->debug('>>>', $cmd);
@@ -140,7 +140,7 @@
       
       // Read banner message
       if (!($response= $this->_readResponse()))
-        throw(new ConnectException('No valid response from server'));
+        throw new ConnectException('No valid response from server');
         
       $this->cat && $this->cat->debug('<<<', $this->getResponse());
       if ($auth) return $this->authenticate();
@@ -159,7 +159,7 @@
 
       $status= $this->_sendcmd('QUIT');
       if (!NntpReply::isPositiveCompletion($status)) {
-        throw(new IOException('Error during disconnect'));
+        throw new IOException('Error during disconnect');
       }
       $this->_sock->close();
       return TRUE;
@@ -186,19 +186,19 @@
           break;
         }
         case NNTP_AUTH_NEEDMODE: {
-          throw(new AuthenticatorException('Authentication uncomplete'));
+          throw new AuthenticatorException('Authentication uncomplete');
           break;
         }
         case NNTP_AUTH_REJECTED: {
-          throw(new AuthenticatorException('Authentication rejected'));
+          throw new AuthenticatorException('Authentication rejected');
           break;
         }
         case NNTP_NOPERM: {
-          throw(new AuthenticatorException('No permission'));
+          throw new AuthenticatorException('No permission');
           break;
         }
         default: {
-          throw(new AuthenticatorException('Unexpected authentication error'));
+          throw new AuthenticatorException('Unexpected authentication error');
         }
       }
     }
@@ -225,7 +225,7 @@
     public function getGroups() {
       $status= $this->_sendcmd('LIST');
       if (!NntpReply::isPositiveCompletion($status))
-        throw(new IOException('Could not get groups'));
+        throw new IOException('Could not get groups');
 
       while ($line= $this->_readData()) {
         $buf= explode(' ', $line);
@@ -245,7 +245,7 @@
     public function getArticle($id= NULL) {
       $status= $this->_sendcmd('ARTICLE', $id);
       if (!NntpReply::isPositiveCompletion($status)) 
-        throw(new IOException('Could not get article'));
+        throw new IOException('Could not get article');
         
       with($args= explode(' ', $this->getResponse())); {
         $article= new Article($args[0], $args[1]);
@@ -280,7 +280,7 @@
     public function getArticleList() {
       $status= $this->_sendcmd('LISTGROUP');
       if (!NntpReply::isPositiveCompletion($status)) 
-        throw(new IOException('Could not get article list'));
+        throw new IOException('Could not get article list');
       
       while ($line= $this->_readData()) $articles[]= $line;
       
@@ -297,7 +297,7 @@
     public function getBody($id= NULL) {
       $status= $this->_sendcmd('BODY', $id);
       if (!NntpReply::isPositiveCompletion($status)) 
-        throw(new IOException('Could not get article body'));
+        throw new IOException('Could not get article body');
 
       // retrieve body
       while (FALSE !== ($line= $this->_readData())) $body.= $line."\n";
@@ -314,7 +314,7 @@
     public function getHeaders($id= NULL) {
       $status= $this->_sendcmd('HEAD', $id);
       if (!NntpReply::isPositiveCompletion($status)) 
-        throw(new IOException('Could not get article headers'));
+        throw new IOException('Could not get article headers');
 
       // retrieve headers
       while ($line= $this->_readData()) {
@@ -334,7 +334,7 @@
     public function getNextArticle() {
       $status= $this->_sendcmd('NEXT');
       if (!NntpReply::isPositiveCompletion($status)) 
-        throw(new IOException('Could not get next article'));
+        throw new IOException('Could not get next article');
 
       return $this->getArticle(current(explode(' ', $this->getResponse())));
     }
@@ -348,7 +348,7 @@
     public function getLastArticle() {
       $status= $this->_sendcmd('LAST');
       if (!NntpReply::isPositiveCompletion($status)) 
-        throw(new IOException('Could not get last article'));
+        throw new IOException('Could not get last article');
 
       return $this->getArticle(current(explode(' ', $this->getResponse())));
     }
@@ -362,7 +362,7 @@
     public function getOverviewFormat() {
       $status= $this->_sendcmd('LIST OVERVIEW.FMT');
       if (!NntpReply::isPositiveCompletion($status))
-        throw(new IOException('Could not get overview'));
+        throw new IOException('Could not get overview');
         
       while ($line= $this->_readData()) {
         $fields[]= current(explode(':', $line, 2));
@@ -380,7 +380,7 @@
     public function getOverview($range= NULL) {
       $status= $this->_sendcmd('XOVER', $range);
       if (!NntpReply::isPositiveCompletion($status))
-        throw(new IOException('Could not get overview'));
+        throw new IOException('Could not get overview');
 
       while ($line= $this->_readData()) {
         $articles[]= current(explode("\t", $line, 9));
@@ -403,7 +403,7 @@
         $date->toString('ymd His')
       );
       if (!NntpReply::isPositiveCompletion($status))
-        throw(new IOException('Could not get new articles'));
+        throw new IOException('Could not get new articles');
         
       while ($line= $this->_readData()) $articles[]= $line;
       

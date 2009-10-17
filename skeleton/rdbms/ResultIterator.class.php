@@ -61,7 +61,7 @@
         // Fall through
       }
       if (FALSE === $this->_record) {
-        throw(new NoSuchElementException('No more elements'));
+        throw new NoSuchElementException('No more elements');
       }
       
       // Create an instance and set the _record member to NULL so that

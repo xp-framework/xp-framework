@@ -171,9 +171,9 @@
           break;
         } else if ('NO' == substr($line, 0, 2)) {
           if (!$error) return FALSE;
-          throw(new FormatException(substr($line, 3)));
+          throw new FormatException(substr($line, 3));
         } else if ('BYE' == substr($line, 0, 3)) {
-          throw(new SocketException(substr($line, 4)));
+          throw new SocketException(substr($line, 4));
         } else if (!$discard) {
           $lines[]= $line;
         }

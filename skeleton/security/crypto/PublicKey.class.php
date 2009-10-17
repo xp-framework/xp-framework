@@ -22,9 +22,9 @@
      */
     public static function fromString($string) {
       if (!is_resource($_hdl= openssl_pkey_get_public($string))) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not read public key', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       $pk= new PublicKey($_hdl);
@@ -44,9 +44,9 @@
      */
     public function verify($data, $signature) {
       if (-1 === ($res= openssl_verify($data, $signature, $this->_hdl))) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Error verifying signature', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return (1 === $res);
@@ -67,9 +67,9 @@
      */
     public function encrypt($data) {
       if (FALSE === openssl_public_encrypt($data, $out, $this->_hdl)) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Error encrypting data', OpenSslUtil::getErrors()
-        ));
+        );
       }
     
       return $out;
@@ -85,9 +85,9 @@
      */
     public function decrypt($data) {
       if (FALSE === openssl_public_decrypt($data, $decrypted, $this->_hdl)) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not decrypt data', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return $decrypted;
@@ -104,9 +104,9 @@
      */
     public function seal($data) {
       if (FALSE === openssl_seal($data, $sealed, $keys, array($this->_hdl))) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not seal data', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return array($sealed, $keys[0]);

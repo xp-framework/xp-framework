@@ -55,10 +55,10 @@
 
       // Catch bordercase in which this would result in and endless loop
       if ($length <= 0) {
-        throw(new IllegalArgumentException(sprintf(
-          'Paramater length (%s) must be greater than zero',
+        throw new IllegalArgumentException(sprintf(
+          'Parameter length (%s) must be greater than zero',
           var_export($length, 1)
-        )));
+        ));
       }
 
       $r= array();

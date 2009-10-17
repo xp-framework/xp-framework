@@ -242,7 +242,7 @@
      */
     public function setNick($nick) {
       if (!$this->sock->isConnected()) {
-        throw(new IllegalStateException('Not connected'));
+        throw new IllegalStateException('Not connected');
       }
       if (!$this->writeln('NICK %s', $nick)) return FALSE;
       $this->user->setNick($nick);
@@ -259,7 +259,7 @@
      */
     public function join($channel, $keyword= NULL) {
       if (!$this->sock->isConnected()) {
-        throw(new IllegalStateException('Not connected'));
+        throw new IllegalStateException('Not connected');
       }
       
       // Be tolerant about channel parameter and rip off leading # if necessary
@@ -275,7 +275,7 @@
      */
     public function part($channel) {
       if (!$this->sock->isConnected()) {
-        throw(new IllegalStateException('Not connected'));
+        throw new IllegalStateException('Not connected');
       }
       
       // Be tolerant about channel parameter and rip off leading # if necessary

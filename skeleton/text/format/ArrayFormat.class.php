@@ -32,7 +32,7 @@
      */
     public function apply($fmt, $argument) {
       if (!is_array($argument)) {
-        throw(new FormatException('Argument with type '.gettype($argument).' is not an array'));
+        throw new FormatException('Argument with type '.gettype($argument).' is not an array');
       }
       
       return implode($fmt, $argument);

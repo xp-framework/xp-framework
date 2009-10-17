@@ -110,7 +110,7 @@
           break;
         
         default:
-          throw(new IllegalArgumentException('Found datatype which cannot be serialized: '.xp::typeOf($data)));
+          throw new IllegalArgumentException('Found datatype which cannot be serialized: '.xp::typeOf($data));
       }
     }
     
@@ -134,7 +134,7 @@
         return $ret;
       }
       
-      throw(new IllegalStateException('No payload found.'));
+      throw new IllegalStateException('No payload found.');
     }
     
     /**
@@ -179,7 +179,7 @@
           return $struct;
       }
       
-      throw(new IllegalArgumentException('Cannot unserialize not well-formed WDDX document'));
+      throw new IllegalArgumentException('Cannot unserialize not well-formed WDDX document');
     }
   }
 ?>

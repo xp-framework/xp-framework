@@ -130,7 +130,7 @@
         return $ret;
       }
       
-      throw(new IllegalStateException('No node "params" found.'));
+      throw new IllegalStateException('No node "params" found.');
     }
     
     /**

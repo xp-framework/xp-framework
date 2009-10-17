@@ -161,7 +161,7 @@
     public function flip() {
       $h= array_flip($this->_hash);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw(new FormatException('hash contains values which are not scalar'));
+        throw new FormatException('hash contains values which are not scalar');
       }
       $this->_hash= $h;
       return TRUE;
@@ -188,7 +188,7 @@
       } else if (is_array($map)) {
         $h= $map;
       } else {
-        throw(new IllegalArgumentException('map is neither an array nor a Hashmap'));
+        throw new IllegalArgumentException('map is neither an array nor a Hashmap');
       }
       
       if ($recursive) {

@@ -139,10 +139,10 @@
       // Only one open folder at a time
       if (NULL !== $this->currentfolder) {
         trigger_error('Currently open Folder: '.$this->currentfolder, E_USER_NOTICE);
-        throw(new IllegalAccessException(
+        throw new IllegalAccessException(
           'There can only be one open folder at a time. Close the currently open folder first.',
           $f->name
-        ));      
+        );      
       }
       
       $nf= new Folder ($this->_root.DIRECTORY_SEPARATOR.$f->name);

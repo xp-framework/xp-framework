@@ -28,9 +28,9 @@
      * @throws  lang.IllegalStateException when stream is not yet opened
      */
     public function __construct($super, $offset, $size) {
-      if (!$super->isOpen()) throw(new IllegalStateException(
+      if (!$super->isOpen()) throw new IllegalStateException(
         'Super-stream must be opened in EncapsedStream'
-      ));
+      );
       
       $this->_super= $super;
       $this->_offset= $offset;
@@ -67,9 +67,9 @@
      * @param   string mode default STREAM_MODE_READ one of the STREAM_MODE_* constants
      */
     public function open($mode= STREAM_MODE_READ) {
-      if (STREAM_MODE_READ !== $mode) throw(new IllegalAccessException(
+      if (STREAM_MODE_READ !== $mode) throw new IllegalAccessException(
         'EncapsedStream only supports reading but writing operation requested.'
-      ));
+      );
     }
     
     /**

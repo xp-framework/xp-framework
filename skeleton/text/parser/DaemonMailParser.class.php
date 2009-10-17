@@ -414,7 +414,7 @@
       // Begin tokenizing
       if (!($t= strtok($body, "\n"))) {
         trigger_error('Body: '.var_export($body, 1), E_USER_NOTICE);
-        throw(new FormatException('Tokenizing failed'));
+        throw new FormatException('Tokenizing failed');
       }
       
       // Loop through tokens
@@ -672,7 +672,7 @@
 
               // Find first line starting with with an email address
               do {
-                if (FALSE === $t) { throw(new DaemonMailParserException('Cannot parse message', $message)); }
+                if (FALSE === $t) { throw new DaemonMailParserException('Cannot parse message', $message); }
                 if (FALSE !== strpos($t, '@')) break;
               } while ($t= strtok("\n"));
               
@@ -693,7 +693,7 @@
                 0 != strncmp('------ This is a copy of the message, including all the headers. ------', $t, 71) &&
                 0 != strncmp('-----------------------------------------------------------------', $t, 65)
               ) {
-                if (FALSE === $t) { throw(new DaemonMailParserException('Cannot parse message', $message)); }
+                if (FALSE === $t) { throw new DaemonMailParserException('Cannot parse message', $message); }
                 $t= strtok("\n");
               }
               
@@ -712,7 +712,7 @@
             break 2;
           
           default: 
-            throw(new DaemonMailParserException('Unknown state '.var_export($state, 1), $message));
+            throw new DaemonMailParserException('Unknown state '.var_export($state, 1), $message);
         }
         
       } while ($t= strtok("\n"));
@@ -730,7 +730,7 @@
           self::DMP_ORIGMSG   => 'self::DMP_ORIGMSG',
           self::DMP_FINISH    => 'self::DMP_FINISH'
         );
-        throw(new FormatException('Unable to parse message, state "'.$states[$state].'"'));
+        throw new FormatException('Unable to parse message, state "'.$states[$state].'"');
       }
       
       // Apply some string magic on the reason

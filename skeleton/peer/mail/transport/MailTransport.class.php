@@ -56,10 +56,10 @@
     
       // Sanity check: Is this a message?
       if (!$message instanceof Message) {
-        throw(new TransportException(
+        throw new TransportException(
           'Can only send messages (given: '.xp::typeOf($message).')',
           new IllegalArgumentException('Parameter message is not a Message object')
-        ));
+        );
       }
       
       // Sanity check: Do we have at least one recipient?
@@ -69,10 +69,10 @@
         $to.= $message->to[$i]->toString($message->getCharset()).', ';
       }
       if (empty($to)) {
-        throw(new TransportException(
+        throw new TransportException(
           'No recipients defined (recipients[0]: '.xp::typeOf($message->to[0]),
           new IllegalArgumentException('Recipient #0 is not an InternetAddress object')
-        ));
+        );
       }
       
       // Copy message and unset To / Subject. PHPs mail() function will add them
@@ -91,10 +91,10 @@
         rtrim($tmp->getHeaderString(), "\n"),
         $this->parameters
       )) {
-        throw(new TransportException(
+        throw new TransportException(
           'Could not send mail to '.xp::stringOf($message->to[0]), 
           new IOException('Call to mail() failed')
-        ));
+        );
       }
       return TRUE;
     }

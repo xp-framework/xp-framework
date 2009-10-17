@@ -41,7 +41,7 @@
           return $val;
         }
       }
-      throw(new FormatException('Value is out of bounds'));
+      throw new FormatException('Value is out of bounds');
     }
   }
 ?>
