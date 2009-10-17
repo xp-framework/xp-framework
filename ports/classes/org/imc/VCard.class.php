@@ -386,7 +386,7 @@
               break;
               
             default: 
-              throw(new FormatException($keys[1].' is not a recognized phone type'));
+              throw new FormatException($keys[1].' is not a recognized phone type');
           }
           break;
         
@@ -411,7 +411,7 @@
             case VCARD_ADR_WORK:   $loc= 'work'; break;
             case VCARD_ADR_POSTAL: $loc= 'postal'; break;
             default: 
-              throw(new FormatException($keys[1].' is not a recognized address type'));
+              throw new FormatException($keys[1].' is not a recognized address type');
           }
           
           $values= explode(';', $value);
@@ -447,12 +447,7 @@
       
       $p= new VFormatParser(VCARD_ID);
       $p->setDefaultHandler(array($card, 'addProperty'));
-      
-      try {
-        $p->parse($stream);
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $p->parse($stream);
       
       return $card;
     }
