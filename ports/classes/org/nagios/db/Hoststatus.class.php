@@ -40,51 +40,44 @@
      * Gets the service status by hostname
      *
      * @param   string hostname
-     * @return  &Hoststatus[] object
+     * @return  org.nagios.db.Hoststatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function getByHost_name($host_name) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $q= $db->query ('
-          select
-            host_name,
-            host_status,
-            last_update,
-            last_check,
-            last_state_change,
-            problem_acknowledged,
-            time_up,
-            time_down,
-            time_unreachable,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            event_handler_enabled,
-            checks_enabled,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data
-          from
-            nagios.hoststatus
-          where
-            host_name= %s',
-          $host_name);
+      $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query('
+        select
+          host_name,
+          host_status,
+          last_update,
+          last_check,
+          last_state_change,
+          problem_acknowledged,
+          time_up,
+          time_down,
+          time_unreachable,
+          last_notification,
+          current_notification,
+          notifications_enabled,
+          event_handler_enabled,
+          checks_enabled,
+          plugin_output,
+          flap_detection_enabled,
+          is_flapping,
+          percent_state_change,
+          scheduled_downtime_depth,
+          failure_prediction_enabled,
+          process_performance_data
+        from
+          nagios.hoststatus
+        where
+          host_name= %s',
+        $host_name);
 
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= new Hoststatus($r);
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $data= array();
+      if ($q) while ($r= $q->next()) {
+        $data[]= new Hoststatus($r);
       }
-
       return $data;
     }
 
@@ -92,102 +85,88 @@
      * Gets the service status by hostname
      *
      * @param   string hoststatus
-     * @return  &Hoststatus[] object
+     * @return  org.nagios.db.Hoststatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function getByHost_status($host_status) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $q= $db->query ('
-          select
-            host_name,
-            host_status,
-            last_update,
-            last_check,
-            last_state_change,
-            problem_acknowledged,
-            time_up,
-            time_down,
-            time_unreachable,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            event_handler_enabled,
-            checks_enabled,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data
-          from
-            nagios.hoststatus
-          where
-            host_status= %s',
-          $host_status);
+      $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query('
+        select
+          host_name,
+          host_status,
+          last_update,
+          last_check,
+          last_state_change,
+          problem_acknowledged,
+          time_up,
+          time_down,
+          time_unreachable,
+          last_notification,
+          current_notification,
+          notifications_enabled,
+          event_handler_enabled,
+          checks_enabled,
+          plugin_output,
+          flap_detection_enabled,
+          is_flapping,
+          percent_state_change,
+          scheduled_downtime_depth,
+          failure_prediction_enabled,
+          process_performance_data
+        from
+          nagios.hoststatus
+        where
+          host_status= %s',
+        $host_status);
 
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= new Hoststatus($r);
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $data= array();
+      if ($q) while ($r= $q->next()) {
+        $data[]= new Hoststatus($r);
       }
-
       return $data;
     }
     
     /**
      * Gets the service status by hostname
      *
-     * @return  &Hoststatus[] object
+     * @return  org.nagios.db.Hoststatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function getByNotUp() {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $q= $db->query ('
-          select
-            host_name,
-            host_status,
-            last_update,
-            last_check,
-            last_state_change,
-            problem_acknowledged,
-            time_up,
-            time_down,
-            time_unreachable,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            event_handler_enabled,
-            checks_enabled,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data
-          from
-            nagios.hoststatus
-          where
-            host_status != %s',
-          'UP');
+      $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query('
+        select
+          host_name,
+          host_status,
+          last_update,
+          last_check,
+          last_state_change,
+          problem_acknowledged,
+          time_up,
+          time_down,
+          time_unreachable,
+          last_notification,
+          current_notification,
+          notifications_enabled,
+          event_handler_enabled,
+          checks_enabled,
+          plugin_output,
+          flap_detection_enabled,
+          is_flapping,
+          percent_state_change,
+          scheduled_downtime_depth,
+          failure_prediction_enabled,
+          process_performance_data
+        from
+          nagios.hoststatus
+        where
+          host_status != %s',
+        'UP');
 
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= new Hoststatus($r);
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $data= array();
+      if ($q) while ($r= $q->next()) {
+        $data[]= new Hoststatus($r);
       }
-
       return $data;
     }
     

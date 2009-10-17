@@ -53,63 +53,56 @@
      * Gets an instance of this object by hostname
      *
      * @param   string hostname
-     * @return  &org.nagios.db.Servicestatus[] object
+     * @return  org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function getByHost_name($host_name) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $q= $db->query('
-          select
-            host_name,
-            service_description,
-            service_status,
-            last_update,
-            current_attempt,
-            max_attempts,
-            state_type,
-            last_check,
-            next_check,
-            should_be_scheduled,
-            check_type,
-            checks_enabled,
-            accept_passive_checks,
-            event_handler_enabled,
-            last_state_change,
-            problem_acknowledged,
-            last_hard_state,
-            time_ok,
-            time_warning,
-            time_unknown,
-            time_critical,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            latency,
-            execution_time,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data,
-            obsess_over_service
-          from
-            nagios.servicestatus
-          where host_name= %s',
-          $host_name);
-        
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= new Servicestatus($r);
-        }
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query('
+        select
+          host_name,
+          service_description,
+          service_status,
+          last_update,
+          current_attempt,
+          max_attempts,
+          state_type,
+          last_check,
+          next_check,
+          should_be_scheduled,
+          check_type,
+          checks_enabled,
+          accept_passive_checks,
+          event_handler_enabled,
+          last_state_change,
+          problem_acknowledged,
+          last_hard_state,
+          time_ok,
+          time_warning,
+          time_unknown,
+          time_critical,
+          last_notification,
+          current_notification,
+          notifications_enabled,
+          latency,
+          execution_time,
+          plugin_output,
+          flap_detection_enabled,
+          is_flapping,
+          percent_state_change,
+          scheduled_downtime_depth,
+          failure_prediction_enabled,
+          process_performance_data,
+          obsess_over_service
+        from
+          nagios.servicestatus
+        where host_name= %s',
+        $host_name);
 
+      $data= array();
+      if ($q) while ($r= $q->next()) {
+        $data[]= new Servicestatus($r);
+      }
       return $data;
     }
 
@@ -118,65 +111,58 @@
      *
      * @param   string hostname
      * @param   string servicedescription
-     * @return  &org.nagios.db.Servicestatus[] object
+     * @return  org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function getByHostService($host_name, $service) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $q= $db->query('
-          select
-            host_name,
-            service_description,
-            service_status,
-            last_update,
-            current_attempt,
-            max_attempts,
-            state_type,
-            last_check,
-            next_check,
-            should_be_scheduled,
-            check_type,
-            checks_enabled,
-            accept_passive_checks,
-            event_handler_enabled,
-            last_state_change,
-            problem_acknowledged,
-            last_hard_state,
-            time_ok,
-            time_warning,
-            time_unknown,
-            time_critical,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            latency,
-            execution_time,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data,
-            obsess_over_service
-          from
-            nagios.servicestatus
-          where host_name= %s
-            and service_description= %s',
-          $host_name,
-          $service);
-        
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= new Servicestatus($r);
-        }
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query('
+        select
+          host_name,
+          service_description,
+          service_status,
+          last_update,
+          current_attempt,
+          max_attempts,
+          state_type,
+          last_check,
+          next_check,
+          should_be_scheduled,
+          check_type,
+          checks_enabled,
+          accept_passive_checks,
+          event_handler_enabled,
+          last_state_change,
+          problem_acknowledged,
+          last_hard_state,
+          time_ok,
+          time_warning,
+          time_unknown,
+          time_critical,
+          last_notification,
+          current_notification,
+          notifications_enabled,
+          latency,
+          execution_time,
+          plugin_output,
+          flap_detection_enabled,
+          is_flapping,
+          percent_state_change,
+          scheduled_downtime_depth,
+          failure_prediction_enabled,
+          process_performance_data,
+          obsess_over_service
+        from
+          nagios.servicestatus
+        where host_name= %s
+          and service_description= %s',
+        $host_name,
+        $service);
 
+      $data= array();
+      if ($q) while ($r= $q->next()) {
+        $data[]= new Servicestatus($r);
+      }
       return $data;
     }
 
@@ -184,127 +170,112 @@
      * Gets an instance of this object by service status
      *
      * @param   string status
-     * @return  &org.nagios.db.Servicestatus[] object
+     * @return  org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function getByService_status($service_status) {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $q= $db->query('
-          select
-            host_name,
-            service_description,
-            service_status,
-            last_update,
-            current_attempt,
-            max_attempts,
-            state_type,
-            last_check,
-            next_check,
-            should_be_scheduled,
-            check_type,
-            checks_enabled,
-            accept_passive_checks,
-            event_handler_enabled,
-            last_state_change,
-            problem_acknowledged,
-            last_hard_state,
-            time_ok,
-            time_warning,
-            time_unknown,
-            time_critical,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            latency,
-            execution_time,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data,
-            obsess_over_service
-          from
-            nagios.servicestatus
-          where service_status= %s',
-          $service_status);
-        
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= new Servicestatus($r);
-        }
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query('
+        select
+          host_name,
+          service_description,
+          service_status,
+          last_update,
+          current_attempt,
+          max_attempts,
+          state_type,
+          last_check,
+          next_check,
+          should_be_scheduled,
+          check_type,
+          checks_enabled,
+          accept_passive_checks,
+          event_handler_enabled,
+          last_state_change,
+          problem_acknowledged,
+          last_hard_state,
+          time_ok,
+          time_warning,
+          time_unknown,
+          time_critical,
+          last_notification,
+          current_notification,
+          notifications_enabled,
+          latency,
+          execution_time,
+          plugin_output,
+          flap_detection_enabled,
+          is_flapping,
+          percent_state_change,
+          scheduled_downtime_depth,
+          failure_prediction_enabled,
+          process_performance_data,
+          obsess_over_service
+        from
+          nagios.servicestatus
+        where service_status= %s',
+        $service_status);
 
+      $data= array();
+      if ($q) while ($r= $q->next()) {
+        $data[]= new Servicestatus($r);
+      }
       return $data;
     }
 
     /**
      * Gets an instance of this object with service status of not OK
      *
-     * @return  &org.nagios.db.Servicestatus[] object
+     * @return  org.nagios.db.Servicestatus[] object
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
     public function getByNotOk() {
-      $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $q= $db->query('
-          select
-            host_name,
-            service_description,
-            service_status,
-            last_update,
-            current_attempt,
-            max_attempts,
-            state_type,
-            last_check,
-            next_check,
-            should_be_scheduled,
-            check_type,
-            checks_enabled,
-            accept_passive_checks,
-            event_handler_enabled,
-            last_state_change,
-            problem_acknowledged,
-            last_hard_state,
-            time_ok,
-            time_warning,
-            time_unknown,
-            time_critical,
-            last_notification,
-            current_notification,
-            notifications_enabled,
-            latency,
-            execution_time,
-            plugin_output,
-            flap_detection_enabled,
-            is_flapping,
-            percent_state_change,
-            scheduled_downtime_depth,
-            failure_prediction_enabled,
-            process_performance_data,
-            obsess_over_service
-          from
-            nagios.servicestatus
-          where service_status != %s',
-          'OK');
+      $q= ConnectionManager::getInstance()->getByHost('nagios', 0)->query('
+        select
+          host_name,
+          service_description,
+          service_status,
+          last_update,
+          current_attempt,
+          max_attempts,
+          state_type,
+          last_check,
+          next_check,
+          should_be_scheduled,
+          check_type,
+          checks_enabled,
+          accept_passive_checks,
+          event_handler_enabled,
+          last_state_change,
+          problem_acknowledged,
+          last_hard_state,
+          time_ok,
+          time_warning,
+          time_unknown,
+          time_critical,
+          last_notification,
+          current_notification,
+          notifications_enabled,
+          latency,
+          execution_time,
+          plugin_output,
+          flap_detection_enabled,
+          is_flapping,
+          percent_state_change,
+          scheduled_downtime_depth,
+          failure_prediction_enabled,
+          process_performance_data,
+          obsess_over_service
+        from
+          nagios.servicestatus
+        where service_status != %s',
+        'OK');
         
-        $data= array();
-        if ($q) while ($r= $q->next()) {
-          $data[]= new Servicestatus($r);
-        }
-      } catch (SQLException $e) {
-        throw($e);
+      $data= array();
+      if ($q) while ($r= $q->next()) {
+        $data[]= new Servicestatus($r);
       }
-
-      return $data;
     }
 
     /**
