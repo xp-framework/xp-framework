@@ -92,9 +92,9 @@
      * @throws  lang.IllegalStateException in case already having connected
      */
     public function setVersion($version) { 
-      if ($this->sock->isConnected()) throw(new IllegalStateException(
+      if ($this->sock->isConnected()) throw new IllegalStateException(
         'Cannot set version after already having connected'
-      ));    
+      );
       $this->version= $version;
     }
 
@@ -119,10 +119,9 @@
      */
     protected function _expect($expect, $have) {
       if ($expect !== $have) {
-        throw(new TelephonyException(sprintf(
+        throw new TelephonyException(sprintf(
           'Protocol error: Expecting "%s", have "%s"', $expect, $have
-        )));
-        return FALSE;
+        ));
       }
       
       return $have;
