@@ -21,7 +21,16 @@
      */
     public function __construct($buf) {
       $this->data= $buf;
-      
+    }
+
+    /**
+     * Return list of HTTP headers to be set on
+     * behalf of the data
+     *
+     * @return  peer.Header[]
+     */
+    public function getHeaders() {
+      return array();
     }
     
     /**

@@ -8,6 +8,7 @@
     'unittest.TestCase',
     'unittest.TestSuite',
     'net.xp_framework.unittest.tests.SimpleTestCase',
+    'net.xp_framework.unittest.tests.SetUpFailingTestCase',
     'net.xp_framework.unittest.tests.AnotherTestCase'
   );
 
@@ -266,12 +267,26 @@
     public function warningsMakeTestFail() {
       with ($test= new SimpleTestCase('raisesAnError')); {
         $this->assertEquals(
-          '<Non-clean error stack>', 
-          $this->suite->runTest($test)->failed[$test->hashCode()]->reason->actual
+          array('"Undefined variable: a" in SimpleTestCase::raisesAnError() (SimpleTestCase.class.php, line 90, occured once)'), 
+          $this->suite->runTest($test)->failed[$test->hashCode()]->reason
         );
       }
     }
 
+    /**
+     * Tests exceptions make a test fail
+     *
+     */    
+    #[@test]
+    public function exceptionsMakeTestFail() {
+      with ($test= new SimpleTestCase('throws')); {
+        $this->assertClass(
+          $this->suite->runTest($test)->failed[$test->hashCode()]->reason,
+          'lang.IllegalArgumentException'
+        );
+      }
+    }
+    
     /**
      * Tests warnings do not affect succeeding tests
      *
@@ -345,6 +360,43 @@
         'Expected exception not caught', 
         cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
       );
+    }
+
+    /**
+     * Tests catching an expected exception
+     *
+     */    
+    #[@test]
+    public function catchExpectedWithMessage() {
+      $this->suite->addTest(new SimpleTestCase('catchExpectedWithMessage'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->successCount());
+    }
+
+    /**
+     * Tests catching an expected exception
+     *
+     */    
+    #[@test]
+    public function catchExpectedWithMismatchingMessage() {
+      $this->suite->addTest(new SimpleTestCase('catchExpectedWithWrongMessage'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->failureCount());
+      $this->assertEquals(
+        'Expected lang.IllegalArgumentException\'s message differs',
+        cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function catchExceptionsDuringSetUpOfTestDontBringDownTestSuite() {
+      $this->suite->addTest(new SetUpFailingTestCase('emptyTest'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->failureCount());
     }
   }
 ?>

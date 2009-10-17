@@ -15,12 +15,16 @@
    * @see      xp://lang.Process
    */
   class ProcessResolveTest extends TestCase {
+    protected
+      $origDir  = NULL;
   
     /**
      * Setup test. Verifies this test is for a certain platform
      *
      */
     public function setUp() {
+      $this->origDir= getcwd();
+
       $m= $this->getClass()->getMethod($this->name);
       if (!$m->hasAnnotation('platform')) return;
       
@@ -40,6 +44,14 @@
       }
     }
     
+    /**
+     * Tear down test.
+     *
+     */
+    public function tearDown() {
+      chdir($this->origDir);
+    }
+
     /**
      * Test resolving a fully qualified name on Windows
      *

@@ -256,6 +256,9 @@
               try {
                 $result= Collection::forClass(XPClass::forName($childType)->getName());
               } catch (ClassNotFoundException $e) {
+
+                // TBD: Probably, unknown remote classes should we returned as
+                // UnknownRemoteObject, just like in the remote package.
                 $result= Collection::forClass('lang.Object');
                 $result->__qname= $childType;
               }

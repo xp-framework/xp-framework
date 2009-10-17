@@ -58,7 +58,7 @@
      * @param   mixed namespaces
      * @return  mixed data
      */
-    public function getContent($encoding, $namespaces) {
+    public function getContent($encoding= NULL, $namespaces= NULL) {
       $ret= $this->content;
       @list($ns, $t)= explode(':', @$this->attribute[$namespaces[XMLNS_XSI].':type']);
       
@@ -240,7 +240,7 @@
      * @param   webservices.soap.xp.XPSoapMapping mapping
      * @return  xml.Node
      */
-    public static function fromArray($arr, $name= 'array', $mapping) {
+    public static function fromArray($arr, $name= 'array', $mapping= NULL) {
       $n= new self($name);
       $n->_recurse($n, $arr, $mapping);
       return $n;  
@@ -260,7 +260,7 @@
      * @param   webservices.soap.xp.XPSoapMapping mapping
      * @return  xml.Node
      */
-    public static function fromObject($obj, $name= NULL, $mapping) {
+    public static function fromObject($obj, $name= NULL, $mapping= NULL) {
       return self::fromArray(
         get_object_vars($obj), 
         (NULL === $name) ? get_class($obj) : $name,

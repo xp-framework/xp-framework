@@ -22,6 +22,14 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added support for custom error pages to the web runner
+  (kiesel)
+- Added setLocation() method to webservices.soap.native.NativeSoapClient
+  to overwrite endpoint location if needed.
+  (gelli)
+- Added peer.http.FormRequestData and peer.http.FormData as an implementation
+  of multipart/form-data http requests
+  (kiesel)
 - Added unittest.XmlTestListener class which reports results in an XML 
   format adequate for continuous integration systems.
   http://news.xp-framework.net/article/320/2009/10/02/
@@ -59,9 +67,22 @@ Features
 - Added possibility to pass an associative array to HTTP request params
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0188 - Test outcome
+  (friebe)
+- Implemented RFC #0187 - @expect withMessage
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
-- Update org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
+- Fix util.TimeZoneTransition::previous() implementation.
+  Fixes bug #41
+  (kiesel, Jan Walschburger)
+- Fixed lang.Enum::membersOf() to return correct list of members for
+  abstract enums
+  (friebe)
+- Updated org.bugzilla.gateway.BugMessage to use "=" instead of ":" as
   assignment character for tokens (required for Bugzilla V3)
   (hinckel)
 - Fixed content type header in peer.mail.MimeMessage with multiple parts
@@ -76,6 +97,8 @@ Bugfixes
 - Fixed XPath constructor to include XML declaration when creating XPath
   object from xml.Tree
   (hinckel, Christine Karch)
+- Fixed remote.protocol.Serializer to apply mappings for interfaces
+  (srogin, gelli)
 
 
 Version 5.7.4, released 2009-09-05

@@ -78,19 +78,19 @@
     }
 
     /**
-     * Seek to the next timezone transition
+     * Seek to the previous timezone transition
      *
      * @throws  lang.IllegalArgumentException if timezone has no transitions
      */
     public function previous() {
       $ts= $this->date->getTime();
       foreach (timezone_transitions_get($this->tz->getHandle()) as $t) {
-        if ($t['ts'] > $ts) break;
+        if ($t['ts'] >= $ts) break;
         $last= $t;
       }
       if (!isset($t)) throw new IllegalArgumentException('Timezone '.$this->tz->getName().' does not have DST transitions.');
-      
-      $this->date= new Date($last['ts']);
+
+      $this->date= new Date($last['ts'], new TimeZone($last['abbr']));
       $this->isDst= $last['isdst'];
       $this->offset= $last['offset'];
       $this->abbr= $last['abbr'];

@@ -13,8 +13,16 @@
    * @purpose  Interface
    */
   class LogObserver extends Object implements DBObserver {
-    public
-      $cat=   NULL;
+    public $cat= NULL;
+    
+    /**
+     * Creates a new log observer with a given log category.
+     *
+     * @param   util.log.LogCategory cat
+     */
+    public function __construct(LogCategory $cat) {
+      $this->cat= $cat;
+    }
 
     /**
      * Retrieve instance bound to log category.
@@ -26,8 +34,7 @@
       static $inst= array();
       
       if (!isset($inst[$arg])) {
-        $inst[$arg]= new self();
-        $inst[$arg]->cat= Logger::getInstance()->getCategory($arg);
+        $inst[$arg]= new self(Logger::getInstance()->getCategory($arg));
       }
       
       return $inst[$arg];

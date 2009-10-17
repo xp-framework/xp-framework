@@ -14,21 +14,17 @@
    * @purpose   Generator
    */
   class RandomPasswordGenerator extends Object {
-
     public
       $lc= 'abcdefghijklmnopqrstuvwxyz',
       $uc= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-      // TODO: split special characters into printable/non-printable?
-      // are all special characters allowed in database?
-      // $sc= '_-=+!?#@$%^&*()[]|/{}:;.><,',
-      $sc= '_-=+!?#@$%^&*()[]{}/:;.,<>', // don't allow single, double quotes, and backslashes
+      $sc= '_-=+!?#@$%^&*()[]{}/:;.,<>',
       $nc= '0123456789',
       $chars= '',
       $length= 8;
 
     /**
      * Constructor
-     * type can contain the followin characters:
+     * type can contain the following characters:
      *  'c' to include capitals
      *  'n' to include numbers
      *  's' to include special characters

@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Aug 23 18:30:28     2009
-@status: discussion, ends Tue Sep 29 16:25:13     2009
+@status: implemented, Thu Oct  8 11:37:55     2009
 @target: 5.7.5
 @category: unittest
 
@@ -12,7 +12,7 @@ Scope of Change
 ---------------
 At the moment, there are three possible outcomes of a unittest: Succeeded,
 Skipped and Failed. This RFC suggests adding more kinds of outcomes: 
-Error and NotRun.
+Warnings, Error and NotRun.
 
 
 Rationale
@@ -25,12 +25,35 @@ Functionality
 The new outcomes are represented by these new classes:
 
 <code>
-  class TestError extends TestFailure {
-    // ...
+  // Test succeeded but PHP warnings and/or notices were raised
+  class TestWarnings implements TestFailure {
   }
   
-  class TestNotRun extends TestSkipped {
-    // ...
+  // An exception other than unittest.AssertionFailedError was raised
+  class TestError implements TestFailure {
+  }
+  
+  // The test was not run because an @ignore annotation was present
+  class TestNotRun implements TestSkipped {
+  }
+</code>
+
+The existing classes TestSuccess, TestFailure and TestSkipped are turned
+into interfaces and the concrete implementations moved to the following
+new classes:
+
+<code>
+  // Test succeeded
+  class TestExpectationMet implements TestSuccess {
+  }
+  
+  // An AssertionFailedError was thrown - e.g. because one of the 
+  // assert*() methods failed or fail() was called explicitely
+  class TestAssertionFailed implements TestFailure {
+  }
+  
+  // A PrerequisitesNotMetError was thrown in setUp() or @beforeClass
+  class TestPrerequisitesNotMet implements TestSkipped {
   }
 </code>
 
@@ -53,9 +76,9 @@ Example output:
 
 <summary>
 This RFC suggests to add the following new outcomes:
+* "W" - Warning (One or more PHP errors were raised)
 * "E" - Error (An exception other than AssertionFailedError was thrown when
-  executing the test and no @expected annotation existed or a PHP error was
-  raised)
+  executing the test and no @expected annotation existed)
 * "N" - Not run (Test was ignored by @ignore, as stated above, this is currently 
   also reported as "skipped")
 
@@ -78,7 +101,9 @@ n/a
 
 Dependencies
 ------------
-n/a
+No BC break: All instanceof checks on TestFailure, TestSuccess and 
+TestSkipped will continue to work as expected due to the classes being 
+converted to interfaces.
 
 
 Related documents

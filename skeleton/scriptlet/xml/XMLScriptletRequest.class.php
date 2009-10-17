@@ -40,7 +40,11 @@
      *
      * @param   scriptlet.xml.XMLScriptletURL url
      */
-    public function setURL(XMLScriptletURL $url) {
+    public function setURL(HttpScriptletURL $url) {
+      if (!$url instanceof XMLScriptletURL) throw new IllegalArgumentException(
+        __METHOD__.' expects instanceof scriptlet.xml.XMLScriptletURL, '.xp::typeof($url).' given.'
+      );
+
       with ($this->url= $url); {
         $this->url->setDefaultProduct($this->getDefaultProduct());
         $this->url->setDefaultLanguage($this->getDefaultLanguage());

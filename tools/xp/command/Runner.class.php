@@ -255,7 +255,7 @@
       foreach ($class->getMethods() as $method) {
         if ($method->hasAnnotation('inject')) {      // Perform injection
           $inject= $method->getAnnotation('inject');
-          switch ($inject['type']) {
+          switch (isset($inject['type']) ? $inject['type'] : $method->getParameter(0)->getType()->getName()) {
             case 'rdbms.DBConnection': {
               $args= array($cm->getByHost($inject['name'], 0));
               break;

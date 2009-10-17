@@ -23,6 +23,12 @@
      *
      */
     public function setUp() {
+      foreach (array('dom', 'xsl') as $ext) {
+        if (!extension_loaded($ext)) {
+          throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
+        }
+      }
+
       session_save_path(getcwd());
     }
 

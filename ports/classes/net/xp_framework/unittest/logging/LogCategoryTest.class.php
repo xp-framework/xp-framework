@@ -95,9 +95,12 @@
      *
      */
     #[@test]
-    public function addAppender() {
+    public function addAndRemoveAppender() {
       $appender= $this->mockAppender();
       $this->assertTrue($appender === $this->cat->addAppender($appender));
+      $this->assertTrue($this->cat->hasAppenders());
+      $this->cat->removeAppender($appender);
+      $this->assertFalse($this->cat->hasAppenders());
     }
 
     /**

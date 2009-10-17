@@ -176,12 +176,17 @@
      * @param   int flag default LogLevel::ALL
      */
     public function removeAppender($appender, $flag= LogLevel::ALL) {
-      foreach (array_keys($this->_appenders) as $f) {
+      foreach ($this->_appenders as $f => $appenders) {
         if (!($f & $flag)) continue;
         
-        foreach (array_keys($this->_appenders[$f]) as $g) {
-          if ($this->_appenders[$f][$g] === $appender) {
-            unset($this->_appenders[$f][$g]);
+        foreach ($appenders as $idx => $apndr) {
+          if ($apndr === $appender) {
+            unset($this->_appenders[$f][$idx]);
+
+            // Remove flag line, if last appender had been removed
+            if (1 == sizeof($appenders)) {
+              unset($this->_appenders[$f]);
+            }
           }
         }
       }

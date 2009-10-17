@@ -113,7 +113,10 @@
      * @return  peer.http.HttpResponse
      * @throws  lang.IllegalArgumentException in case the given parameter is not a webservices.soap.SOAPMessage
      */
-    public function send(XPSoapMessage $message) {
+    public function send($message) {
+      if (!$message instanceof XPSoapMessage) {
+        throw new IllegalArgumentException(__METHOD__.' expects webservices.soap.xp.XPSoapMessage, but got '.xp::typeOf($message));
+      }
       $headers= $this->_headers;
 
       // Action
