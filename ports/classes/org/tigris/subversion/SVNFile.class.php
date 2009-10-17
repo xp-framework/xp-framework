@@ -31,7 +31,7 @@
       $this->filename= realpath($filename);
       
       if (!file_exists ($this->filename) || !is_file ($this->filename)) {
-        throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
+        throw new FileNotFoundException('Given file must be an existing file: '.$this->filename);
       }
     }
     
@@ -67,13 +67,9 @@
      */
     public function commit($comment) {
       $f= new TempFile();
-      try {
-        $f->open (FILE_MODE_WRITE);
-        $f->writeLine($comment);
-        $f->close();
-      } catch (IOException $e) {
-        throw($e);
-      }
+      $f->open (FILE_MODE_WRITE);
+      $f->writeLine($comment);
+      $f->close();
 
       $return= $this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->filename));
       

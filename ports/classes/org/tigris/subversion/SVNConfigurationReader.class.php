@@ -17,7 +17,7 @@
     /**
      * Constructor
      *
-     * @param   &io.Steram stream
+     * @param   io.Steram stream
      */
     public function __construct($stream) {
       $this->stream= $stream;
@@ -28,11 +28,7 @@
      *
      */
     protected function _parseFile() {
-      try {
-        $this->stream->open(FILE_MODE_READ);
-      } catch (IOException $e) {
-        throw($e);
-      }
+      $this->stream->open(FILE_MODE_READ);
       
       // Read key-value pairs into hash
       $key= TRUE; $value= NULL;

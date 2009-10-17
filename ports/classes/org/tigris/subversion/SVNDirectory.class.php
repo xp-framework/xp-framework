@@ -37,14 +37,10 @@
      * @throws  org.cvshome.CVSInterfaceException
      */
     public function update($recursive= FALSE) {
-      try {
-        $results= $this->_execute(sprintf('update %s %s',
-          ($recursive ? '' : '-N'),
-          $this->path
-        ));
-      } catch (SVNInterfaceException $e) {
-        throw ($e);
-      }
+      $results= $this->_execute(sprintf('update %s %s',
+        ($recursive ? '' : '-N'),
+        $this->path
+      ));
       
       $stats= array();
       foreach ($results as $r) {
@@ -70,13 +66,9 @@
      */
     public function commit($comment) {
       $f= new TempFile();
-      try {
-        $f->open(FILE_MODE_WRITE);
-        $f->writeLine($comment);
-        $f->close();
-      } catch (IOException $e) {
-        throw($e);
-      }
+      $f->open(FILE_MODE_WRITE);
+      $f->writeLine($comment);
+      $f->close();
 
       $return= $this->_execute(sprintf('commit -F %s %s', $f->getURI(), $this->path));
       
