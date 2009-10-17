@@ -35,7 +35,7 @@
      */
     public function apply($fmt, $argument) {
       if (!is_numeric($argument)) {
-        throw(new FormatException('Argument '.$argument.' of type "'.gettype($argument).'" is not a number'));
+        throw new FormatException('Argument '.$argument.' of type "'.gettype($argument).'" is not a number');
       }
       
       list($decimals, $dec_point, $thousands_sep)= explode('#', $fmt);

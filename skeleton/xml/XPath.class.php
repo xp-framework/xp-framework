@@ -89,7 +89,7 @@
         $r= $this->context->evaluate($xpath);
       }
       if (FALSE === $r) {
-        throw(new XPathException('Cannot evaluate "'.$xpath.'"'));
+        throw new XPathException('Cannot evaluate "'.$xpath.'"');
       }
       return $r;
     }

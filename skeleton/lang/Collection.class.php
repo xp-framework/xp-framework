@@ -49,7 +49,7 @@
      */
     public static function forClass($class) {
       if (!class_exists(xp::reflect($class))) {
-        throw(new ClassNotFoundException('Class "'.$class.'" does not exist'));
+        throw new ClassNotFoundException('Class "'.$class.'" does not exist');
       }
       return new self($class);
     }
@@ -99,11 +99,11 @@
      */
     public function add($element) {
       if (!is($this->_name, $element)) {
-        throw(new IllegalArgumentException(sprintf(
+        throw new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
           xp::typeOf($element)
-        )));
+        ));
       }
       $this->list[]= $element;
       return $element;
@@ -118,11 +118,11 @@
      */
     public function prepend($element) {
       if (!is($this->_name, $element)) {
-        throw(new IllegalArgumentException(sprintf(
+        throw new IllegalArgumentException(sprintf(
           'Element is not a %s (but %s)',
           $this->class,
           xp::typeOf($element)
-        )));
+        ));
       }
       array_unshift($this->list, $element);
       return $element;
@@ -139,12 +139,12 @@
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is($this->_name, $array[$i])) {
           $this->list= $original;   // Rollback
-          throw(new IllegalArgumentException(sprintf(
+          throw new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
             $this->class,
             xp::typeOf($array[$i])
-          )));
+          ));
         }
         $this->list[]= $array[$i];
       }
@@ -161,12 +161,12 @@
       for ($i= 0, $s= sizeof($array); $i < $s; $i++) {
         if (!is($this->_name, $array[$i])) {
           $this->list= $original;   // Rollback
-          throw(new IllegalArgumentException(sprintf(
+          throw new IllegalArgumentException(sprintf(
             'Element %d is not a %s (but %s)',
             $i,
             $this->class,
             xp::typeOf($array[$i])
-          )));
+          ));
         }
         array_unshift($this->list, $array[$i]);
       }

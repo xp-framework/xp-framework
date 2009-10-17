@@ -339,10 +339,10 @@
       // implemented"). The request object will already have all headers
       // and the request method set when this method is called.
       if (!($method= $this->handleMethod($request))) {
-        throw(new HttpScriptletException(
+        throw new HttpScriptletException(
           'HTTP method "'.$request->method.'" not supported',
           HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED
-        ));
+        );
       }
 
       // Call the request's initialization method

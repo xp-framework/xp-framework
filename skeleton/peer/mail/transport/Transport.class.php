@@ -46,7 +46,7 @@
      */
     public function setTrace($cat) {
       if (NULL !== $cat && !$cat instanceof LogCategory) {
-        throw(new IllegalArgumentException('Argument passed is not a LogCategory'));
+        throw new IllegalArgumentException('Argument passed is not a LogCategory');
       }
       
       $this->cat= $cat;

@@ -87,7 +87,7 @@
      */
     public function write($s) {
       if ($this->_processed) {
-        throw(new IllegalAccessException('Cannot write directly'));
+        throw new IllegalAccessException('Cannot write directly');
       }
       parent::write($s);
     }
@@ -100,7 +100,7 @@
      */
     public function setContent($content) {
       if ($this->_processed) {
-        throw(new IllegalAccessException('Cannot write directly'));
+        throw new IllegalAccessException('Cannot write directly');
       }
       parent::setContent($content);
     }

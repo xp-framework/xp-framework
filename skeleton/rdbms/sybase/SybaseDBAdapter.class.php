@@ -253,7 +253,7 @@
         delete($t);
       } finally(); {
         $this->dropTemporaryIndexesTable();
-        if ($e) throw($e);
+        if ($e) throw $e;
       }
       
       return $t;
@@ -274,7 +274,7 @@
         delete($t);
       } finally(); {
         $this->dropTemporaryIndexesTable();
-        if ($e) throw($e);
+        if ($e) throw $e;
       }
       
       return $t;

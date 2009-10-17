@@ -49,10 +49,10 @@
           }
           $this->_file->close();
         } catch (IOException $e) {
-          throw(new AuthenticatorException(
+          throw new AuthenticatorException(
             'Failed rehashing from '.$this->_file->getURI(), 
             $e
-          ));
+          );
         }
         $this->_modified= $this->_file->lastModified();
         $this->_hash= $hash;

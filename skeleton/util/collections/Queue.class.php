@@ -148,7 +148,7 @@
      */
     public function elementAt($index) {
       if (!isset($this->_elements[$index])) {
-        throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
+        throw new IndexOutOfBoundsException('Index '.$index.' out of bounds');
       }
       return $this->_elements[$index];
     }

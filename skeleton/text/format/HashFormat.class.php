@@ -32,7 +32,7 @@
      */
     public function apply($fmt, $argument) {
       if (is_scalar($argument)) {
-        throw(new FormatException('Argument with type '.gettype($argument).' is not an array or object'));
+        throw new FormatException('Argument with type '.gettype($argument).' is not an array or object');
       }
       if ($argument instanceof Hashmap) {
         $hash= $argument->_hash;

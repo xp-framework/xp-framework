@@ -165,7 +165,7 @@
         $this->cat && $this->cat->debugf('Server #%d: Forking child %d', getmypid(), $i);
         $pid= pcntl_fork();
         if (-1 == $pid) {       // Woops?
-          throw(new RuntimeError('Could not fork'));
+          throw new RuntimeError('Could not fork');
         } else if ($pid) {      // Parent
           $this->cat && $this->cat->infof('Server #%d: Forked child #%d with pid %d', getmypid(), $i, $pid);
           $children[$pid]= $i;

@@ -37,7 +37,7 @@
         trim($this->annotations, "[]# \t\n\r").','
       );
       if (!is_array($hash= eval('return array('.$expr.');'))) {
-        throw(new FormatException('Cannot parse '.$this->annotations.' ('.$expr.')'));
+        throw new FormatException('Cannot parse '.$this->annotations.' ('.$expr.')');
       }
       
       foreach ($hash as $name => $value) {

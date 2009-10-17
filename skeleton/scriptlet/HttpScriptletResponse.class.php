@@ -150,7 +150,7 @@
      */  
     public function sendHeaders() {
       if (headers_sent($file, $line))
-        throw(new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line));
+        throw new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line);
         
       switch (php_sapi_name()) {
         case 'cgi':

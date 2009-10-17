@@ -33,7 +33,7 @@
      */
     public function apply($fmt, $argument) {
       if (!function_exists('money_format')) {
-        throw(new FormatException('money_format requires PHP >= 4.3.0'));
+        throw new FormatException('money_format requires PHP >= 4.3.0');
       }
       return money_format($fmt, $argument);
     }

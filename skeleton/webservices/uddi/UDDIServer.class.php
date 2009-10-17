@@ -143,7 +143,7 @@
       
       // Check for faults
       if (NULL !== ($fault= $answer->getFault())) {
-        throw(new SOAPFaultException($fault));
+        throw new SOAPFaultException($fault);
       }
       
       // Unmarshal response

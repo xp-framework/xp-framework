@@ -96,7 +96,7 @@
         try {
           $class= $this->getContextClass($request);;
         } catch (ClassNotFoundException $e) {
-          throw(new HttpScriptletException($e->getMessage()));
+          throw new HttpScriptletException($e->getMessage());
           return FALSE;
         }
       

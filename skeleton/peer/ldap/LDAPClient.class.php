@@ -92,7 +92,7 @@
     public function connect() {
       if ($this->isConnected()) return TRUE;  // Already connected
       if (FALSE === ($this->_hdl= ldap_connect($this->host, $this->port))) {
-        throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
+        throw new ConnectException('Cannot connect to '.$this->host.':'.$this->port);
       }
       
       return $this->_hdl;
@@ -111,10 +111,10 @@
       if (FALSE === ($res= ldap_bind($this->_hdl, $user, $pass))) {
         switch ($error= ldap_errno($this->_hdl)) {
           case LDAP_SERVER_DOWN:
-            throw(new ConnectException('Cannot connect to '.$this->host.':'.$this->port));
+            throw new ConnectException('Cannot connect to '.$this->host.':'.$this->port);
           
           default:
-            throw(new LDAPException('Cannot bind for "'.$user.'"', $error));
+            throw new LDAPException('Cannot bind for "'.$user.'"', $error);
         }
       }
       
@@ -190,7 +190,7 @@
       $args= func_get_args();
       array_unshift($args, $this->_hdl);
       if (FALSE === ($res= call_user_func_array('ldap_search', $args))) {
-        throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Search failed', ldap_errno($this->_hdl));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -210,7 +210,7 @@
       );
       
       if (empty($methods[$filter->getScope()]))
-        throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
+        throw new IllegalArgumentException('Scope '.$args[0].' not supported');
       
       if (FALSE === ($res= @call_user_func_array(
         $methods[$filter->getScope()], array(
@@ -223,7 +223,7 @@
         $filter->getTimelimit(),
         $filter->getDeref()
       )))) {
-        throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Search failed', ldap_errno($this->_hdl));
       }
 
       // Sort results by given sort attributes
@@ -254,11 +254,11 @@
         case LDAP_SCOPE_BASE: $func= 'ldap_read'; break;
         case LDAP_SCOPE_ONELEVEL: $func= 'ldap_list'; break;
         case LDAP_SCOPE_SUB: $func= 'ldap_search'; break;
-        default: throw(new IllegalArgumentException('Scope '.$args[0].' not supported'));
+        default: throw new IllegalArgumentException('Scope '.$args[0].' not supported');
       }
       $args[0]= $this->_hdl;
       if (FALSE === ($res= call_user_func_array($func, $args))) {
-        throw(new LDAPException('Search failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Search failed', ldap_errno($this->_hdl));
       }
       
       return new LDAPSearchResult($this->_hdl, $res);
@@ -275,7 +275,7 @@
     public function read(LDAPEntry $entry) {
       $res= ldap_read($this->_hdl, $entry->getDN(), 'objectClass=*', array(), FALSE, 0);
       if (0 != ldap_errno($this->_hdl)) {
-        throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
 
       return LDAPEntry::fromResource($this->_hdl, ldap_first_entry($this->_hdl, $res));
@@ -297,7 +297,7 @@
       
       // Check for other errors
       if (LDAP_SUCCESS != ldap_errno($this->_hdl)) {
-        throw(new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Read "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
       
       // No errors occurred, requested object exists
@@ -335,7 +335,7 @@
         $entry->getDN(), 
         array_map(array($this, '_encode'), $entry->getAttributes())
       ))) {
-        throw(new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Add for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
       
       return $res;
@@ -358,7 +358,7 @@
         $entry->getDN(),
         array_map(array($this, '_encode'), $entry->getAttributes())
       ))) {
-        throw(new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Modify for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
       
       return $res;
@@ -377,7 +377,7 @@
         $this->_hdl,
         $entry->getDN()
       ))) {
-        throw(new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Delete for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
       
       return $res;
@@ -397,7 +397,7 @@
         $entry->getDN(),
         array($name => $value)
       ))) {
-        throw(new LDAPException('Add attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Add attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
       
       return $res;
@@ -416,7 +416,7 @@
         $entry->getDN(),
         $name
       ))) {
-        throw(new LDAPException('Delete attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Delete attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
       
       return $res;
@@ -436,7 +436,7 @@
         $entry->getDN(),
         array($name => $value)
       ))) {
-        throw(new LDAPException('Add attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl)));
+        throw new LDAPException('Add attribute for "'.$entry->getDN().'" failed', ldap_errno($this->_hdl));
       }
       
       return $res;

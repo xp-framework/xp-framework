@@ -91,10 +91,10 @@
     public function loadImage($source) {
       $scheme= $source->getScheme('file');
       if (!isset($this->_loaders[$scheme])) {
-        throw(new MethodNotImplementedException(
+        throw new MethodNotImplementedException(
           'Unhandled scheme',
           $scheme
-        ));
+        );
       }
       
       list($data, $contentType)= $this->_loaders[$scheme]->load($source);

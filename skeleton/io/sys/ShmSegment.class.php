@@ -74,7 +74,7 @@
      */
     public function get() {
       if (FALSE === ($data= $this->_get())) {
-        throw(new IOException('Could not read segment '.$this->name));
+        throw new IOException('Could not read segment '.$this->name);
       }
       
       return $data[0];
@@ -94,7 +94,7 @@
       $ret= shm_put_var($h, $this->name, $v);
       shm_detach($h);
       if (FALSE === $ret) {
-        throw(new IOException('Could not write segment '.$this->name));
+        throw new IOException('Could not write segment '.$this->name);
       }
       
       return $ret;
@@ -112,7 +112,7 @@
       shm_detach($h);
       
       if (FALSE === $ret) {
-        throw(new IOException('Could not remove segment '.$this->name));
+        throw new IOException('Could not remove segment '.$this->name);
       }
       
       return $ret;

@@ -82,7 +82,7 @@
      */
     public function setFormatter($alias, $formatter) {
       if (!$formatter instanceof IFormat) {
-        throw(new IllegalArgumentException('Formatter must be a text.format.Format'));
+        throw new IllegalArgumentException('Formatter must be a text.format.Format');
       }
       $this->formatters[$alias]= $formatter;
       return $this->formatters[$alias];
@@ -144,7 +144,7 @@
             $p,
             $fmt
           ), E_USER_NOTICE);
-          throw(new FormatException('Parse error [level '.$level.']: closing curly bracket not found'));
+          throw new FormatException('Parse error [level '.$level.']: closing curly bracket not found');
         }
         
         // Syntax: {2} = paste argument, {2,printf,%s} use formatter
@@ -156,7 +156,7 @@
         
         // Check argument index
         if (!isset($argument[$index])) {
-          throw(new FormatException('Missing argument at index '.$index));
+          throw new FormatException('Missing argument at index '.$index);
         }
         
         // Default
@@ -170,7 +170,7 @@
         
         // No formatter registered
         if (!$this->hasFormatter($type)) {
-          throw(new FormatException('Unknown formatter "'.$type.'"'));
+          throw new FormatException('Unknown formatter "'.$type.'"');
         }
         
         // Formatters return FALSE to indicate failure

@@ -92,20 +92,20 @@
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
-            throw(new RpcFaultException($fault));
+            throw new RpcFaultException($fault);
           }
           
           return $answer;
         
         case HttpConstants::STATUS_AUTHORIZATION_REQUIRED:
-          throw(new IllegalAccessException(
+          throw new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
-          ));
+          );
         
         default:
-          throw(new IllegalStateException(
+          throw new IllegalStateException(
             'Unexpected return code: '.$response->getStatusCode()
-          ));
+          );
       }
     }    
   }

@@ -105,9 +105,9 @@
           return $answer;
         
         case HttpConstants::STATUS_AUTHORIZATION_REQUIRED:
-          throw(new IllegalAccessException(
+          throw new IllegalAccessException(
             'Authorization required: '.$response->getHeader('WWW-Authenticate')
-          ));
+          );
         
         default:
           throw new IllegalStateException(

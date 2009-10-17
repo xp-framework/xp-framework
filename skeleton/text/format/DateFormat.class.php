@@ -36,7 +36,7 @@
       switch (gettype($argument)) {
         case 'string':
           if (-1 == ($u= strtotime($argument))) {
-            throw(new FormatException('Argument "'.$argument.'" cannot be converted to a date'));
+            throw new FormatException('Argument "'.$argument.'" cannot be converted to a date');
           }
           break;
           
@@ -53,7 +53,7 @@
           // Break missing intentionally
           
         default:
-          throw(new FormatException('Argument of type "'.gettype($argument).'" cannot be converted to a date'));
+          throw new FormatException('Argument of type "'.gettype($argument).'" cannot be converted to a date');
       }
       
       return strftime($fmt, $u);

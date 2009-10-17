@@ -53,7 +53,7 @@
         case "\77\360\0\0\0\0\0\0": return BIG_ENDIAN;
       }
 
-      throw(new FormatException('Unexpected result: '.addcslashes(pack('d', 1), "\0..\17")));
+      throw new FormatException('Unexpected result: '.addcslashes(pack('d', 1), "\0..\17"));
     }
     
     /**

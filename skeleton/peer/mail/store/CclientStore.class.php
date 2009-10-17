@@ -39,7 +39,7 @@
      * @throws  lang.IllegalArgumentException
      */
     protected function _supports($u, &$attr) {
-      throw(new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized'));
+      throw new IllegalArgumentException('Scheme "'.$u->getScheme().'" not recognized');
     }
     
     /**
@@ -125,10 +125,10 @@
      */    
     public function expunge() {
       if (FALSE === imap_expunge($this->_hdl[0])) {
-        throw(new MessagingException(
+        throw new MessagingException(
           'Expunging deleted messages failed',
           $this->_errors()
-        ));      
+        );      
       }
       
       return TRUE;
@@ -145,10 +145,10 @@
       if (!$this->cache->has(SKEY_FOLDER.$name)) {
         if (FALSE === imap_list($this->_hdl[0], $this->_hdl[1], $name)) {
           trigger_error('Folder: '.$name, E_USER_NOTICE);
-          throw(new MessagingException(
+          throw new MessagingException(
             'Retrieving folder failed',
             $this->_errors()
-          ));      
+          );
         }
         
         $folder= new MailFolder($this, $name);
@@ -171,10 +171,10 @@
       
         // Retrieve list and cache it
         if (0 == ($s= sizeof($list= imap_getmailboxes($this->_hdl[0], $this->_hdl[1], '*')))) {
-          throw(new MessagingException(
+          throw new MessagingException(
             'Retrieving folder list failed',
             $this->_errors()
-          ));      
+          );
         }
         
         // Create MailFolder objects
@@ -210,10 +210,10 @@
       // Only one open folder at a time
       if (NULL !== $this->currentfolder) {
         trigger_error('Currently open Folder: '.$this->currentfolder, E_USER_NOTICE);
-        throw(new IllegalAccessException(
+        throw new IllegalAccessException(
           'There can only be one open folder at a time. Close the currently open folder first.',
           $f->name
-        ));      
+        );   
       }
       
       // Try to reopen
@@ -306,10 +306,10 @@
     public function undeleteMessage($f, $msg) {
       if (FALSE === imap_undelete($this->_hdl[0], $msg->uid, FT_UID)) {
         trigger_error('UID: '.$msg->uid, E_USER_NOTICE);
-        throw(new MessagingException(
+        throw new MessagingException(
           'Removing \Deleted-flag for message failed',
           $this->_errors()
-        ));
+        );
       }
       
       $msg->flags |= ~MAIL_FLAG_DELETED;
@@ -418,10 +418,10 @@
           SA_MESSAGES | SA_RECENT | SA_UNSEEN
         ))) {
           trigger_error('Folder: '.$f->name, E_USER_NOTICE);
-          throw(new MessagingException(
+          throw new MessagingException(
             'Retrieving message count [SA_'.strtoupper($attr).'] failed',
             $this->_errors()
-          ));
+          );
         }            
       }
       

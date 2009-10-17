@@ -65,7 +65,7 @@
         ? imagecreatetruecolor($this->width, $this->height)
         : imagecreate($this->width, $this->height)
       ))) {
-        throw(new CloneNotSupportedException('Could not clone the image'));
+        throw new CloneNotSupportedException('Could not clone the image');
       }
       imagecopy($handle, $this->handle, 0, 0, 0, 0, $this->width, $this->height);
       $this->handle= $handle;
@@ -92,11 +92,11 @@
           break;
 
         default:
-          throw(new ImagingException('Unknown type '.$type));
+          throw new ImagingException('Unknown type '.$type);
       }
 
       if (!is_resource($handle)) {
-        throw(new ImagingException('Could not create image of type '.$type));
+        throw new ImagingException('Could not create image of type '.$type);
       }
       return new $class($handle);
     }

@@ -69,9 +69,9 @@
         }
         
         if (is_array($args[$ofs])) {
-          throw(new IllegalArgumentException(
+          throw new IllegalArgumentException(
             'Non-scalar or -object given in for LDAP query.'
-          ));
+          );
         } 
         
         // Type-based conversion

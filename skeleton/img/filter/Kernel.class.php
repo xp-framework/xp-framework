@@ -29,25 +29,25 @@
     public function __construct($arg) {
       if (is_string($arg)) {
         if (!(preg_match_all('/\[[0-9, .-]+\]/', $arg, $matches, PREG_SET_ORDER))) {
-          throw(new IllegalArgumentException($arg));
+          throw new IllegalArgumentException($arg);
         }
         foreach ($matches as $i => $match) {
           $row= array_map('floatval', explode(',', trim($match[0], '[]')));
           if (3 != sizeof($row)) {
-            throw(new IllegalArgumentException('Row #'.$i.' must be of size 3, given '.sizeof($row)));
+            throw new IllegalArgumentException('Row #'.$i.' must be of size 3, given '.sizeof($row));
           }
           $this->matrix[]= $row;
         }
       } else {
         foreach ((array)$arg as $i => $row) {
           if (3 != sizeof($row)) {
-            throw(new IllegalArgumentException('Row #'.$i.' must be of size 3, given '.sizeof($row)));
+            throw new IllegalArgumentException('Row #'.$i.' must be of size 3, given '.sizeof($row));
           }
           $this->matrix[]= array_map('floatval', $row);
         }
       }
       if (3 != sizeof($this->matrix)) {
-        throw(new IllegalArgumentException('Matrix must be of size 3, given '.sizeof($this->matrix)));
+        throw new IllegalArgumentException('Matrix must be of size 3, given '.sizeof($this->matrix));
       }
     }
     

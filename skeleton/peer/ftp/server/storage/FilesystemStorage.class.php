@@ -74,7 +74,7 @@
      */
     public function setBase($clientId, $uri= NULL) {
       if (!is_dir($path= $this->realname($clientId, $uri))) {
-        throw(new IOException($uri.': not a directory'));
+        throw new IOException($uri.': not a directory');
       }
       $this->base[$clientId]= DIRECTORY_SEPARATOR.ltrim(
         str_replace($this->root, '', $path),
@@ -132,13 +132,13 @@
       switch ($type) {
         case ST_ELEMENT:
           if (FALSE === touch($path)) {
-            throw(new IOException('File '.$path.' could not be created'));
+            throw new IOException('File '.$path.' could not be created');
           }
           break;
         
         case ST_COLLECTION:
           if (FALSE === mkdir($path)) {
-            throw(new IOException($path.' could not be created'));
+            throw new IOException($path.' could not be created');
           }
           break;
       }

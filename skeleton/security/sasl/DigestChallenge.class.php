@@ -101,7 +101,7 @@
               break;
             
             default:
-              throw(new FormatException('Unrecognized key "'.$key.'"'));
+              throw new FormatException('Unrecognized key "'.$key.'"');
           }
           $s= substr($s, $t+ 1);
         }
@@ -121,7 +121,7 @@
      */
     public function responseFor($qop, $user, $pass, $authzid= NULL) {
       if (!$this->hasQop($qop)) {
-        throw(new FormatException('Challenge does not contains DC_QOP_AUTH'));
+        throw new FormatException('Challenge does not contains DC_QOP_AUTH');
       }
       
       with ($r= new DigestResponse(

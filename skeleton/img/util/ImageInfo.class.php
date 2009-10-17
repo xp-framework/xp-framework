@@ -31,9 +31,9 @@
      */
     public static function fromFile($file) {
       if (FALSE === ($data= getimagesize($file->getURI(), $segments))) {
-        throw(new ImagingException(
+        throw new ImagingException(
           'Cannot load image information from '.$file->getURI()
-        ));
+        );
       }
       
       with ($i= new ImageInfo()); {
@@ -208,9 +208,9 @@
      * @throws  img.ImagingException when the specified segment is not available
      */    
     public function getSegment($id) {
-      if (!isset($this->segments[$id])) throw(new ImagingException(
+      if (!isset($this->segments[$id])) throw new ImagingException(
         'Segment "'.$id.'" not available'
-      ));
+      );
 
       return $this->segments[$id];
     }

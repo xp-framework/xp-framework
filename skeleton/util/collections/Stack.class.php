@@ -68,7 +68,7 @@
      */    
     public function pop() {
       if (empty($this->_elements)) {
-        throw(new NoSuchElementException('Stack is empty'));
+        throw new NoSuchElementException('Stack is empty');
       }
       $element= array_shift($this->_elements);
       $this->_hash+= HashProvider::hashOf($element->hashCode());
@@ -129,7 +129,7 @@
      */
     public function elementAt($index) {
       if (!isset($this->_elements[$index])) {
-        throw(new IndexOutOfBoundsException('Index '.$index.' out of bounds'));
+        throw new IndexOutOfBoundsException('Index '.$index.' out of bounds');
       }
       return $this->_elements[$index];
     }

@@ -40,7 +40,7 @@
       if (empty($s)) {
       
         // Border case
-        throw(new FormatException('Cannot parse empty string'));
+        throw new FormatException('Cannot parse empty string');
       }
       
       try {

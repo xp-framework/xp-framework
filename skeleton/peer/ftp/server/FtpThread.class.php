@@ -182,7 +182,7 @@
         $this->server->init();
       } catch (Exception $e) {
         $this->server->shutdown();
-        throw($e);
+        throw $e;
       }
       
       // Check if we should run child processes
@@ -194,7 +194,7 @@
           $group['uid']
         );
 
-        if (!posix_setgid($group['gid'])) throw(new SystemException('Could not set GID'));
+        if (!posix_setgid($group['gid'])) throw new SystemException('Could not set GID');
       }
 
       if (isset($this->processOwner)) {
@@ -203,7 +203,7 @@
           $user['name'],
           $user['uid']
         );
-        if (!posix_setuid($user['uid'])) throw(new SystemException('Could not set UID'));
+        if (!posix_setuid($user['uid'])) throw new SystemException('Could not set UID');
       }
 
       $this->server->service();

@@ -35,7 +35,7 @@
         // Have connection, fork child
         $pid= pcntl_fork();
         if (-1 == $pid) {       // Woops?
-          throw(new RuntimeError('Could not fork'));
+          throw new RuntimeError('Could not fork');
         } else if ($pid) {      // Parent
 
           // Close own copy of message socket

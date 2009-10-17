@@ -95,9 +95,9 @@
       $stream->open(STREAM_MODE_READ);
       if (!($result= $this->_checkHeader($l= $stream->readLine()))) {
         $stream->close();
-        throw(new FormatException(
+        throw new FormatException(
           'Expecting "BEGIN:'.$this->identifier.'", have "'.$l.'"'
-        ));
+        );
       }
       
       $r= TRUE;
@@ -216,10 +216,10 @@
       try {
         call_user_func($func, $kargs, $value);
       } catch (FormatException $e) {
-        throw(new MethodNotImplementedException(
+        throw new MethodNotImplementedException(
           'Errors during invokation of callback for "'.$kargs[0].'": '.$e->getMessage(),
           (is_array($func) ? get_class($func[0]).'::'.$func[1] : $func)
-        ));
+        );
       }
       
       return TRUE;

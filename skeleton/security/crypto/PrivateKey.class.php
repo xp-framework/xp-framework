@@ -23,9 +23,9 @@
      */
     public static function fromString($str, $passphrase= NULL) {
       if (!is_resource($_hdl= openssl_pkey_get_private($str, $passphrase))) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not read private key', OpenSslUtil::getErrors()
-        ));
+        );
       }
     
       $pk= new PrivateKey($_hdl);
@@ -41,9 +41,9 @@
      */
     public function sign($data) {
       if (FALSE === openssl_sign($data, $signature, $this->_hdl)) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not sign data', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return $signature;
@@ -64,9 +64,9 @@
      */
     public function encrypt($data) {
       if (FALSE === openssl_private_encrypt($data, $crypted, $this->_hdl)) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not decrypt data', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return $crypted;
@@ -82,9 +82,9 @@
      */
     public function decrypt($data) {
       if (FALSE === openssl_private_decrypt($data, $decrypted, $this->_hdl)) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not decrypt data', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return $decrypted;
@@ -99,9 +99,9 @@
      */
     public function export($passphrase= NULL) {
       if (FALSE === openssl_pkey_export($this->_hdl, $out, $passphrase)) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not export private key', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return $out;
@@ -118,9 +118,9 @@
      */
     public function unseal($data, $key) {
       if (FALSE === openssl_open($data, $unsealed, $key, $this->_hdl)) {
-        throw(new CryptoException(
+        throw new CryptoException(
           'Could not export private key', OpenSslUtil::getErrors()
-        ));
+        );
       }
       
       return $unsealed;

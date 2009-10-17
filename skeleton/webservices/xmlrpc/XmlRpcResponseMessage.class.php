@@ -74,7 +74,7 @@
         !is('xml.Node', $this->tree->root->children[0]->children[0]->children[0]) ||
         'value' != $this->tree->root->children[0]->children[0]->children[0]->getName()
       ) {
-        throw(new IllegalStateException('No node "params" found.'));
+        throw new IllegalStateException('No node "params" found.');
       }
 
       // Process params node
