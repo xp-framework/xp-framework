@@ -132,12 +132,7 @@
         array('method'  => $method)
       ));
 
-      try {
-        $res= parent::invoke($method, $arguments);
-      } catch (XmlRpcFaultException $e) {
-        throw($e);
-      }
-
+      $res= parent::invoke($method, $arguments);
       return $this->unserialize($res[0]);
     }
     
