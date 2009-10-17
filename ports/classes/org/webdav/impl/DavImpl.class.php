@@ -62,7 +62,7 @@
      * @throws  lang.MethodNotImplementedException
      */
     public function move($filename, $destination, $overwrite) {
-      throw(new MethodNotImplementedException($this->getName().'::move not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::move not implemented');
     }
 
     /**
@@ -75,7 +75,7 @@
      * @throws  lang.MethodNotImplementedException
      */
     public function copy($filename, $destination, $overwrite) {
-      throw(new MethodNotImplementedException($this->getName().'::copy not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::copy not implemented');
     }
 
     /**
@@ -86,7 +86,7 @@
      * @throws  lang.MethodNotImplementedException
      */
     public function mkcol($colname) {
-      throw(new MethodNotImplementedException($this->getName().'::mkcol not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::mkcol not implemented');
     }
 
     /**
@@ -97,7 +97,7 @@
      * @throws  lang.MethodNotImplementedException
      */
     public function delete($filename) {
-      throw(new MethodNotImplementedException($this->getName().'::delete not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::delete not implemented');
     }
 
     /**
@@ -109,7 +109,7 @@
      * @throws  lang.MethodNotImplementedException
      */
     public function put($filename, $data) {
-      throw(new MethodNotImplementedException($this->getName().'::put not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::put not implemented');
     }
     
     /**
@@ -120,72 +120,63 @@
      * @throws  lang.MethodNotImplementedException
      */
     public function get($filename) {
-      throw(new MethodNotImplementedException($this->getName().'::get not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::get not implemented');
     }
 
     /**
      * Find properties
      *
-     * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavMultistatus response
-     * @return  &org.webdav.xml.WebdavMultistatus response
+     * @param   org.webdav.xml.WebdavPropFindRequest request
+     * @param   org.webdav.xml.WebdavMultistatus response
+     * @return  org.webdav.xml.WebdavMultistatus response
      * @throws  lang.MethodNotImplementedException
      */
     public function propfind($request, $response) {
-      throw(new MethodNotImplementedException($this->getName().'::propfind not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::propfind not implemented');
     }
 
     /**
      * Patch properties
      *
-     * @param   &org.webdav.xml.WebdavPropPatcRequest request
+     * @param   org.webdav.xml.WebdavPropPatcRequest request
      * @throws  lang.MethodNotImplementedException
      */
     public function proppatch($request) {
-      throw(new MethodNotImplementedException($this->getName().'::proppatch not implemented'));
+      throw new MethodNotImplementedException($this->getName().'::proppatch not implemented');
     }
     
     /**
      * Lock a File
      *
-     * @param   &org.webdav.xml.WebdavLockRequest       request
-     * @param   &org.webdav.xml.WebdavScriptletResponse response
+     * @param   org.webdav.xml.WebdavLockRequest       request
+     * @param   org.webdav.xml.WebdavScriptletResponse response
      * @throws  org.webdav.OperationNotAllowedException
      * @throws  org.webdav.OperationFailedException
      */
     public function lock($request, $response) {
       preg_match_all('/<[^>]*> \(<([^>]*)>\)/', $request->getHeader('If'), $ifmatches);
-      try {
-        $lock= $this->setLockInfo($request->getProperties(), $ifmatches[1]);
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $lock= $this->setLockInfo($request->getProperties(), $ifmatches[1]);
       $response->addLock($lock);
     }
     
     /**
      * Unlock a File
      *
-     * @param   &org.webdav.xml.WebdavLockRequest       request
-     * @param   &org.webdav.xml.WebdavScriptletResponse response
+     * @param   org.webdav.xml.WebdavLockRequest       request
+     * @param   org.webdav.xml.WebdavScriptletResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
     public function unlock($request, $response) {
-      try {
         
-        // Remove < and > from beginning and end of the header 
-        // e.g. <opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4> => opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4
-        $reqToken= substr($request->getHeader('Lock-Token'), 1, -1);
-        
-        // return an exception if an unlock is requested on a non-locked file
-        if (($lock= $this->getLockInfo($request->getPath())) == NULL) throw(new OperationFailedException('No Lock for File: '.$request->getPath()));
-        
-        if ($reqToken != $lock->getLockToken())
-          throw(new OperationNotAllowedException('Cant unlock '.$request->getPath()));
-       
-      } catch (Exception $e) {
-        throw($e);
-      } 
+      // Remove < and > from beginning and end of the header 
+      // e.g. <opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4> => opaquelocktoken:88516110-6110-1851-bbde-48de5b3f07f4
+      $reqToken= substr($request->getHeader('Lock-Token'), 1, -1);
+
+      // return an exception if an unlock is requested on a non-locked file
+      if (($lock= $this->getLockInfo($request->getPath())) == NULL) throw new OperationFailedException('No Lock for File: '.$request->getPath());
+
+      if ($reqToken != $lock->getLockToken())
+        throw new OperationNotAllowedException('Cant unlock '.$request->getPath());
       
       $this->propStorage->removeLock($request->getPath());
 
@@ -196,7 +187,7 @@
      * Retrieve lock information
      *
      * @param   string uri  The URI
-     * @return  &org.webdav.WebdavLock
+     * @return  org.webdav.WebdavLock
      */
     public function getLockInfo($uri) {
       $lock= $this->propStorage->getLock($uri);
@@ -218,9 +209,9 @@
     /**
      * Set lock for URI
      *
-     * @param   &org.webdav.WebdavLock lock   The lock object
+     * @param   org.webdav.WebdavLock lock   The lock object
      * @param   string[]               tokens Optional lock-tokens to overwrite lock
-     * @return  &org.webdav.WebdavLock
+     * @return  org.webdav.WebdavLock
      * @throws  org.webdav.OperationNotAllowedException
      */
     public function setLockInfo($lock, $tokens= array()) { 
@@ -231,11 +222,11 @@
         // We have s/some lock token, so check if we can overwrite the lock
         if (sizeof($tokens)) {
           if (!in_array($lockinfo->getLockToken(), $tokens)) {
-            throw(new OperationNotAllowedException('Can not refresh lock on '.$lock->getURI().' with owner '.$lock->getOwner()));
+            throw new OperationNotAllowedException('Can not refresh lock on '.$lock->getURI().' with owner '.$lock->getOwner());
           }
         } else {
           if ($lock->getLockToken() != $lockinfo->getLockToken()) {
-            throw(new OperationNotAllowedException('LOCK failed - invalid Token given '.$lock->getLockToken()));
+            throw new OperationNotAllowedException('LOCK failed - invalid Token given '.$lock->getLockToken());
           }
         }
       }
@@ -243,7 +234,7 @@
       $newOwner= $lock->getOwner();      
       // We can't set a lock where owner is empty
       if (empty($newOwner)) {
-        throw(new OperationNotAllowedException('Can not set lock with empty owner'));
+        throw new OperationNotAllowedException('Can not set lock with empty owner');
       }
       
       // Check token
@@ -263,57 +254,44 @@
      * @throws  lang.ElementNotFoundException
      */
     public function VersionControl($path, $version) {
+      $props= array();
 
-      try { 
-        $props= array();
- 
-        // Set versions as properties
-        with ($p= new WebdavProperty('version', new WebdavVersionsContainer($version))); {
-          $p->setNameSpaceName('DAV:');
-          $p->setNameSpacePrefix('D:');
-          $props[$p->getNameSpacePrefix().$p->getName()]= $p;
-        }
- 
-        // Set checked-in property
-        with ($p= new WebdavProperty('checked-in', '1.0')); {
-          $p->setNameSpaceName('DAV:');
-          $p->setNameSpacePrefix('D:');
-          $props[$p->getNameSpacePrefix().$p->getName()]= $p;
-        }
-
-        $this->propStorage->setProperties($path, $props); 
-         
-        // Copy file to versions collection
-        $this->backup(
-          $path,
-          $version->getHref()
-        );
-        
-      } catch (Exception $e) {
-        throw($e);
+      // Set versions as properties
+      with ($p= new WebdavProperty('version', new WebdavVersionsContainer($version))); {
+        $p->setNameSpaceName('DAV:');
+        $p->setNameSpacePrefix('D:');
+        $props[$p->getNameSpacePrefix().$p->getName()]= $p;
       }
 
+      // Set checked-in property
+      with ($p= new WebdavProperty('checked-in', '1.0')); {
+        $p->setNameSpaceName('DAV:');
+        $p->setNameSpacePrefix('D:');
+        $props[$p->getNameSpacePrefix().$p->getName()]= $p;
+      }
+
+      $this->propStorage->setProperties($path, $props); 
+
+      // Copy file to versions collection
+      $this->backup(
+        $path,
+        $version->getHref()
+      );
       return TRUE;
     }
     
     /**
      * Report version status
      *
-     * @param   &org.webdav.xml.WebdavLockRequest
-     * @param   &org.webdav.xml.WebdavScriptletResponse
+     * @param   org.webdav.xml.WebdavLockRequest
+     * @param   org.webdav.xml.WebdavScriptletResponse
      * @return  bool success
      */
     public function report($request, $response) {
-    
-      try {
-        $prop= $this->propStorage->getProperty(
-          $request->getPath(),
-          'D:version'
-        );
-        
-      } catch (IOException $e) {
-        throw($e);
-      }
+      $prop= $this->propStorage->getProperty(
+        $request->getPath(),
+        'D:version'
+      );
       
       $response->addWebdavVersionContainer($prop->value);
       return TRUE;

@@ -59,7 +59,7 @@
       $realpath= $this->base.$path;
 
       if (!file_exists($realpath)) {
-        throw(new ElementNotFoundException($path.' not found'));
+        throw new ElementNotFoundException($path.' not found');
       }
       $rootURL= $request->getRootURL();
       $root= $rootURL->getPath();
@@ -148,7 +148,7 @@
 
       // Copy of folders is not allowed (implemented)
       if ($docopy && is_dir($uri)) {
-        throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
+        throw new OperationNotAllowedException($uri.' cannot be copied as it is a directory');
       }
       
       // Create src and dst objects
@@ -157,19 +157,19 @@
 
       // Is overwriting permitted?
       if ($dst->exists() && !$overwrite) {
-        throw(new OperationNotAllowedException($destination.' may not be overwritten by '.$uri));
+        throw new OperationNotAllowedException($destination.' may not be overwritten by '.$uri);
       }
 
       // Throw an exception if resource is locked
       if ($this->getLockInfo($filename) !== NULL) {
-        throw(new OperationNotAllowedException($src->getURI().' is locked'));
+        throw new OperationNotAllowedException($src->getURI().' is locked');
       }
       
       // Copy/move the file to destination file/folder
       try {
         $docopy ? $src->copy($dst->getURI()) : $src->move($dst->getURI());
       } catch (IOException $e) {
-        throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
+        throw new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')');
       }
       
       $src= substr($uri, strlen($this->base));
@@ -209,7 +209,7 @@
 
       $colname= $this->_normalizePath($this->base.$col);
       if (file_exists($colname)) {
-        throw(new OperationFailedException($colname.' already exists'));
+        throw new OperationFailedException($colname.' already exists');
       }
           
       try {
@@ -220,7 +220,7 @@
         $b= new Folder($this->_normalizePath($this->base.'../versions/'.$col));
         $b->create(0755);        
       } catch (IOException $e) {
-        throw(new OperationFailedException($colname.' cannot be created ('.$e->message.')'));
+        throw new OperationFailedException($colname.' cannot be created ('.$e->message.')');
       }
       
       return TRUE;
@@ -239,25 +239,25 @@
       $uri= $this->_normalizePath($this->base.$filename);
 
       if (strlen($uri) <= strlen($this->base)) {
-        throw(new OperationNotAllowedException($uri.' root-dir can not be deleted'));
+        throw new OperationNotAllowedException($uri.' root-dir can not be deleted');
       }
       
       $f= is_dir($uri) ? new Folder($uri): new File($uri);
           
       // If the specified argument doesn't exist, throw an exception
       if (!$f->exists()) {
-        throw(new ElementNotFoundException($filename.' not found'));
+        throw new ElementNotFoundException($filename.' not found');
       }
 
       // Throw an exception if resource is locked
       if ($this->getLockInfo($filename) !== NULL) {
-        throw(new OperationNotAllowedException($filename.' is locked'));
+        throw new OperationNotAllowedException($filename.' is locked');
       }
 
       try {
         $f->unlink();
       } catch (IOException $e) {
-        throw(new OperationFailedException($filename.' cannot be deleted ('.$e->message.')'));
+        throw new OperationFailedException($filename.' cannot be deleted ('.$e->message.')');
       }
   
       // Delete backup versions
@@ -290,7 +290,7 @@
       
       $uri= $this->base.$filename;
       if (is_dir($uri)) {
-        throw(new OperationNotAllowedException($uri.' cannot be written (not a file)'));
+        throw new OperationNotAllowedException($uri.' cannot be written (not a file)');
       }
       
       // Open file and write contents
@@ -319,7 +319,7 @@
         $f->write($data);
         $f->close();
       } catch (IOException $e) {
-        throw(new OperationFailedException($filename.' cannot be written '.$e->toString()));
+        throw new OperationFailedException($filename.' cannot be written '.$e->toString());
       }
       
       // Set the resourcetype on first put
@@ -340,7 +340,7 @@
      * Get a file
      *
      * @param   string filename
-     * @return  &org.webdav.WebdavObject
+     * @return  org.webdav.WebdavObject
      * @throws  lang.ElementNotFoundException
      * @throws  org.webdav.OperationNotAllowedException
      */
@@ -358,14 +358,14 @@
         $lockinfo['type'] == 'exclusive'  and 
         'opaquelocktoken:'.$lockinfo['token'] != $token
       )
-      throw(new IllegalArgumentException($filename.' is locked exclusive'));
+      throw new IllegalArgumentException($filename.' is locked exclusive');
       
       if (is_dir($this->base.$filename)) {
         $this->c->debug(get_class($this), '::GET Dir', $filename);
 
         $f= new Folder($this->base.$filename);
         if (!$f->exists()) {
-          throw(new ElementNotFoundException($filename.' not found'));
+          throw new ElementNotFoundException($filename.' not found');
         }
 
         while ($maxdepth >= 0 && $entry= $f->getEntry()) {
@@ -419,7 +419,7 @@
       // Open file and read contents
       // contentype
       if (!file_exists($this->base.$filename))
-        throw(new ElementNotFoundException($filename.' not found'));
+        throw new ElementNotFoundException($filename.' not found');
 
 
       $f= new File($this->base.$filename);
@@ -446,7 +446,7 @@
         $o->setData($f->read($f->size()));
         $f->close();
       } catch (FileFoundException $e) {
-        throw(new ElementNotFoundException($filename.' not found'));
+        throw new ElementNotFoundException($filename.' not found');
       }
       $this->c->debug('OBJ', $o->properties);
       return $o;
@@ -455,15 +455,15 @@
     /**
      * Patch properties
      *
-     * @param   &org.webdav.xml.WebdavPropPatchRequest request
-     * @param   &org.webdav.xml.WebdavPropPatchResponse response
+     * @param   org.webdav.xml.WebdavPropPatchRequest request
+     * @param   org.webdav.xml.WebdavPropPatchResponse response
      * @throws  org.webdav.OperationFailedException
      * @throws  lang.ElementNotFoundException
      */
     public function proppatch($request, $response) {
       $realpath= $this->base.$request->getPath();
       if (!file_exists($realpath)) {
-        throw(new ElementNotFoundException($realpath.' not found'));
+        throw new ElementNotFoundException($realpath.' not found');
       }
 
       foreach (array(FALSE, TRUE) as $remove) {
@@ -477,7 +477,7 @@
             case 'isfolder':
             case 'getcontentlength':
             case 'executable':
-              throw(new OperationNotAllowedException($key.' is a standard property'));
+              throw new OperationNotAllowedException($key.' is a standard property');
               break;
 
             default:
@@ -489,11 +489,7 @@
                 $response->addProperty($property);
                 $eProps[$key]= $property;
               }
-              try {
-                $this->propStorage->setProperties($request->getPath(), $eProps);
-              } catch (Exception $e) {
-                throw($e);
-              }
+              $this->propStorage->setProperties($request->getPath(), $eProps);
           }
         }
       }
@@ -502,15 +498,15 @@
     /**
      * do unlocking
      *
-     * @param   &org.webdav.xml.WebdavScriptletRequest response
-     * @param   &org.webdav.xml.WebdavScripltetResponse response
+     * @param   org.webdav.xml.WebdavScriptletRequest response
+     * @param   org.webdav.xml.WebdavScripltetResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
     public function unlock($request, $response) {
       $realpath= $this->base.$request->getPath();
       
       if (!file_exists($realpath)) {
-        throw(new ElementNotFoundException($realpath.' not found'));
+        throw new ElementNotFoundException($realpath.' not found');
       }
       parent::unlock($request, $response);      
     }
@@ -518,8 +514,8 @@
     /**
      * do locking
      *
-     * @param   &org.webdav.xml.WebdavLockRequest request
-     * @param   &org.webdav.xml.WebdavScriptletResponse response
+     * @param   org.webdav.xml.WebdavLockRequest request
+     * @param   org.webdav.xml.WebdavScriptletResponse response
      * @throws  org.webdav.OperationNotAllowedException
      */
     public function lock($request, $response) {
@@ -534,34 +530,30 @@
     /**
      * Find properties
      *
-     * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavMultistatusResponse response
+     * @param   org.webdav.xml.WebdavPropFindRequest request
+     * @param   org.webdav.xml.WebdavMultistatusResponse response
      */
     public function propfind($request, $response, $useragent= 0) {
-      try {
-        $this->_recurse(
-          $request,
-          $response,
-          $request->getPath(),
-          $request->getDepth()
-        );
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $this->_recurse(
+        $request,
+        $response,
+        $request->getPath(),
+        $request->getDepth()
+      );
     }
     
     /**
      * Start Version-Control of file
      *
      * @param   string path
-     * @param   &io.File file
+     * @param   io.File file
      * @throws  lang.ElementNotFoundException 
      */
     public function VersionControl($path, $file) {
       $realpath= $this->base.$path;
 
       if (!file_exists($realpath)) {
-        throw(new ElementNotFoundException($realpath.' not found'));
+        throw new ElementNotFoundException($realpath.' not found');
       }
       
       // Get name of file, without extension
@@ -582,15 +574,15 @@
     /**
      * Report version status
      *
-     * @param   &org.webdav.xml.WebdavPropFindRequest
-     * @param   &org.webdav.xml.WebdavMultistatusResponse
+     * @param   org.webdav.xml.WebdavPropFindRequest
+     * @param   org.webdav.xml.WebdavMultistatusResponse
      * @throws  lang.ElementNotFoundException
      */
     public function report($request, $response) {
       $realpath= $this->base.$request->getPath();
 
       if (!file_exists($realpath)) {
-        throw(new ElementNotFoundException($realpath.' not found'));
+        throw new ElementNotFoundException($realpath.' not found');
       }
       parent::report($request, $response);
     }
@@ -612,7 +604,7 @@
 
       // Copy of folders is not allowed (implemented)
       if (is_dir($uri)) {
-        throw(new OperationNotAllowedException($uri.' cannot be copied as it is a directory'));
+        throw new OperationNotAllowedException($uri.' cannot be copied as it is a directory');
       }
       
       // Create src and dst objects
@@ -621,14 +613,14 @@
 
       // Throw an exception if resource is locked
       if ($this->getLockInfo($filename) !== NULL) {
-        throw(new OperationNotAllowedException($src->getURI().' is locked'));
+        throw new OperationNotAllowedException($src->getURI().' is locked');
       }
       
       // Copy the file to destination file
       try {
         $src->copy($dst->getURI());
       } catch (IOException $e) {
-        throw(new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')'));
+        throw new OperationFailedException($filename.' cannot be copied/moved to '.$destination.' ('.$e->message.')');
       }
       
       return !$exists;
