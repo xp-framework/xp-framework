@@ -71,7 +71,7 @@
     /**
      * Adds a standard 'Text' dia object to the layer
      *
-     * @param   &org.dia.DiaTextObject Text
+     * @param   org.dia.DiaTextObject Text
      */
     #[@fromDia(xpath= 'dia:object[@type="Standard - Text"]', class= 'org.dia.DiaTextObject')]
     public function addText($Text) {
@@ -87,7 +87,7 @@
      * HINT: objects like this, which may contain other objects, should be
      * added first, so that their child objects appear 'in front' of this object
      *
-     * @param   &org.dia.DiaUMLLargePackage Package
+     * @param   org.dia.DiaUMLLargePackage Package
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - LargePackage"]', class= 'org.dia.DiaUMLLargePackage')]
     public function addLargePackage($Package) {
@@ -97,7 +97,7 @@
     /**
      * Adds a 'UMLClass' object to the layer
      *
-     * @param   &org.dia.DiaUMLClass Class
+     * @param   org.dia.DiaUMLClass Class
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Class"]', class= 'org.dia.DiaUMLClass')]
     public function addClass($Class) {
@@ -107,7 +107,7 @@
     /**
      * Adds a 'UMLGeneralization' object to the layer
      *
-     * @param   &org.dia.DiaUMLGeneralization Gen
+     * @param   org.dia.DiaUMLGeneralization Gen
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Generalization"]', class= 'org.dia.DiaUMLGeneralization')]
     public function addGeneralization($Gen) {
@@ -117,7 +117,7 @@
     /**
      * Adds a 'UMLDependency' object to the layer
      *
-     * @param   &org.dia.DiaUMLDependency Dep
+     * @param   org.dia.DiaUMLDependency Dep
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Dependency"]', class= 'org.dia.DiaUMLDependency')]
     public function addDependency($Dep) {
@@ -127,7 +127,7 @@
     /**
      * Adds a 'UMLRealizes' object to the layer
      *
-     * @param   &org.dia.DiaUMLRealizes Real
+     * @param   org.dia.DiaUMLRealizes Real
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Realizes"]', class= 'org.dia.DiaUMLRealizes')]
     public function addRealizes($Real) {
@@ -137,7 +137,7 @@
     /**
      * Adds a 'UMLImplements' object to the layer
      *
-     * @param   &org.dia.DiaUMLImplements Impl
+     * @param   org.dia.DiaUMLImplements Impl
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Implements"]', class= 'org.dia.DiaUMLImplements')]
     public function addImplements($Impl) {
@@ -147,7 +147,7 @@
     /**
      * Adds a 'UMLAssociation' object to the layer
      *
-     * @param   &org.dia.DiaUMLAssociation Assoc
+     * @param   org.dia.DiaUMLAssociation Assoc
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Association"]', class= 'org.dia.DiaUMLAssociation')]
     public function addAssociation($Assoc) {
@@ -157,7 +157,7 @@
     /**
      * Adds a 'UMLNote' object to the layer
      *
-     * @param   &org.dia.DiaUMLNote Note
+     * @param   org.dia.DiaUMLNote Note
      */
     #[@fromDia(xpath= 'dia:object[@type="UML - Note"]', class= 'org.dia.DiaUMLNote')]
     public function addNote($Note) {
@@ -167,12 +167,12 @@
     /**
      * Returns the object with the given name
      *
-     * @return  &org.dia.DiaObject
+     * @return  org.dia.DiaObject
      */
     public function getObject($name) {
       $Child= $this->getChild($name);
       if (!is('org.dia.DiaObject', $Child))
-        throw(new IllegalArgumentException("The object with name='$name' is no DiaObject!"));
+        throw new IllegalArgumentException("The object with name='$name' is no DiaObject!");
       return $Child;
     }
 
@@ -207,7 +207,7 @@
      *
      * fromDia(xpath= 'dia:object[not(starts-with(string(@type), "UML"))]', class= 'org.dia.DiaObject')
      *
-     * @param   &org.dia.DiaObject Object
+     * @param   org.dia.DiaObject Object
      */
     public function addObject($Object) {
       $this->set($Object->getName(), $Object);
@@ -216,7 +216,7 @@
     /**
      * Return XML representation of DiaComposite
      *    
-     * @return  &xml.Node
+     * @return  xml.Node
      */ 
     public function getNode() {
       $Node= parent::getNode(); 

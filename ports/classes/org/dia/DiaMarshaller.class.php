@@ -56,7 +56,7 @@
      * @param   array classnames An array containing fully qualified class names
      * @param   int recurse default 0 How many levels of recursion
      * @param   bool depend default FALSE Include dependencies
-     * @return  &org.dia.DiaDiagram
+     * @return  org.dia.DiaDiagram
      */
     public static function marshal($classnames, $recurse= 0, $depend= FALSE) {
       $I= DiaMarshaller::getInstance();
@@ -218,14 +218,14 @@
     /**
      * Generates DiaUMLClass object for a single class - no recursion!
      *
-     * @param   &text.doclet.ClassDoc classdoc The ClassDoc instance of the class to generate
-     * @return  &org.dia.DiaUMLClass
+     * @param   text.doclet.ClassDoc classdoc The ClassDoc instance of the class to generate
+     * @return  org.dia.DiaUMLClass
      * @throws  lang.IllegalArgumentException If argument is not usable
      */
     protected function _genClass($classdoc) {
       // accept only ClassDoc
       if (!is('ClassDoc', $classdoc)) {
-        throw(new IllegalArgumentException('No ClassDoc given!'));
+        throw new IllegalArgumentException('No ClassDoc given!');
       }
       $ClassDoc= $classdoc;
         
@@ -292,7 +292,7 @@
             }
             break;
           default:
-            throw(new IllegalArgumentException("Unknown annotation type: '$type'"));
+            throw new IllegalArgumentException("Unknown annotation type: '$type'");
         }
       }
 
@@ -304,7 +304,7 @@
      *
      * @param   string from Fully qualified classname of the depending class
      * @param   string from Fully qualified classname of the depended class
-     * @return  &org.dia.DiaUMLDependecy
+     * @return  org.dia.DiaUMLDependecy
      */
     protected function _genDependency($from, $to) {
       $Dia_dep= new DiaUMLDependency();
@@ -318,7 +318,7 @@
      *
      * @param   string from Fully qualified classname of the implementing class
      * @param   string to Fully qualified classname of the interface class
-     * @return  &org.dia.DiaUMLRealizes
+     * @return  org.dia.DiaUMLRealizes
      */
     protected function _genImplemenation($from, $to) {
       $Dia_imp= new DiaUMLRealizes();
@@ -332,7 +332,7 @@
      *
      * @param   string from Fully qualified classname of the child class
      * @param   string to Fully qualified classname of the parent class
-     * @return  &org.dia.DiaUMLGeneralization
+     * @return  org.dia.DiaUMLGeneralization
      */
     protected function _genGeneralization($from, $to) {
       $Dia_gen= new DiaUMLGeneralization();

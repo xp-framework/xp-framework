@@ -50,7 +50,7 @@
      */
     public function __construct($type, $version= NULL, $id= NULL) {
       if (!isset($type)) 
-        throw(new IllegalArgumentException('Parameter "type" is required!'));
+        throw new IllegalArgumentException('Parameter "type" is required!');
 
       $this->setNodeType($type);
       if (isset($version)) $this->setVersion($version);
@@ -73,7 +73,7 @@
     public function initialize() {
       switch ($type= $this->getNodeType()) {
         default: 
-          throw(new IllegalArgumentException("Undefined object type: '$type'!"));
+          throw new IllegalArgumentException("Undefined object type: '$type'!");
       }
     }
 
@@ -257,7 +257,7 @@
     /**
      * Return the text of the object
      *
-     * @return  &org.dia.DiaText
+     * @return  org.dia.DiaText
      */
     public function getText() {
       $Text_node= $this->getChild('text');
@@ -270,7 +270,7 @@
     /**
      * Sets the text of the object
      *
-     * @param   &org.dia.DiaText Text
+     * @param   org.dia.DiaText Text
      */
     #[@fromDia(xpath= 'dia:attribute[@name="text"]/*', class= 'org.dia.DiaText')]
     public function setText($Text) {
@@ -288,7 +288,7 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function getNode() {
       $node= parent::getNode();

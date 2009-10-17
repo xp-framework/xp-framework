@@ -75,7 +75,7 @@
     /**
      * Returns the DiaData object
      *
-     * @return  &org.dia.DiaData
+     * @return  org.dia.DiaData
      */
     public function getData() {
       return $this->getChild('data');
@@ -84,7 +84,7 @@
     /**
      * Sets the DiaData object of the diagram
      *
-     * @param   &org.dia.DiaData Data
+     * @param   org.dia.DiaData Data
      */
     #[@fromDia(xpath= 'dia:diagramdata', class= 'org.dia.DiaData')]
     public function setData($Data) {
@@ -95,19 +95,19 @@
      * Returns the DiaLayer object with the given name
      *
      * @param   string name default 'Background'
-     * @return  &org.dia.DiaLayer
+     * @return  org.dia.DiaLayer
      */
     public function getLayer($name= 'Background') {
       $Child= $this->getChild($name);
       if (!is('org.dia.DiaLayer', $Child))
-        throw(new IllegalArgumentException("The object with name='$name' is no DiaLayer!"));
+        throw new IllegalArgumentException("The object with name='$name' is no DiaLayer!");
       return $Child;
     }
 
     /**
      * Adds a DiaLayer object to the diagram
      *
-     * @param   &org.dia.DiaLayer Layer
+     * @param   org.dia.DiaLayer Layer
      */
     #[@fromDia(xpath= 'dia:layer', class= 'org.dia.DiaLayer')]
     public function addLayer($Layer) {
@@ -158,7 +158,7 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function getNode() {
       $node= parent::getNode();

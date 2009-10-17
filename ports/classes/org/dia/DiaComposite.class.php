@@ -82,7 +82,7 @@
           break;
 
         default: 
-          throw(new IllegalArgumentException('Undefined type "'.$type.'"'));
+          throw new IllegalArgumentException('Undefined type "'.$type.'"');
       }
     }
 
@@ -148,7 +148,7 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function getNode() {
       $node= parent::getNode();
