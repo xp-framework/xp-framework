@@ -74,12 +74,7 @@
      * @return  bool success
      * @throws  lang.IllegalArgumentException
      */
-    public function setCompleter($completer) {
-      if (!is('org.gnu.readline.Completer', $completer)) {
-        throw(new IllegalArgumentException(
-          'Argument is expected to implement org.gnu.readline.Completer'
-        ));
-      }
+    public function setCompleter(Completer $completer) {
       ReadLine::registry('completer', $completer);
       return readline_completion_function('__complete');
     }
