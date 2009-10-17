@@ -37,7 +37,7 @@
      */
     public function setUp() {
       if (0 == strcasecmp('alwaysSkipped', $this->name)) {
-        throw(new PrerequisitesNotMetError('Skipping', $this->name));
+        throw new PrerequisitesNotMetError('Skipping', $this->name);
       }
     }
 
