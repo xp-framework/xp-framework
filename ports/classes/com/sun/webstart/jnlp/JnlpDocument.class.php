@@ -113,7 +113,7 @@
               break;
 
             default:
-              throw(new FormatException('Unknown identifier "'.$name.'" / Section "information"'));
+              throw new FormatException('Unknown identifier "'.$name.'" / Section "information"');
           }
         }
       }
@@ -165,7 +165,7 @@
               break;              
 
             default:
-              throw(new FormatException('Unknown identifier "'.$name.'" / Section "resources"'));
+              throw new FormatException('Unknown identifier "'.$name.'" / Section "resources"');
           }
         }
       }
