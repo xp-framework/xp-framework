@@ -168,7 +168,9 @@
         $dir= $r->getDir('.trash');
         $this->assertClass($dir, 'peer.ftp.FtpDir');
         $this->assertEquals('/.trash/', $dir->getName());
-        $this->assertTrue(1 >= $dir->entries()->size());
+        
+        // 2 entries exist: do-not-remove.txt & possibly .svn
+        $this->assertTrue(2 >= $dir->entries()->size());
       }
     }
 

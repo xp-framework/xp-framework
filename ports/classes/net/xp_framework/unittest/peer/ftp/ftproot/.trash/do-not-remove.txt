@@ -1,0 +1,3 @@
+Do not remove this file; it is being kept for SCMs that
+would treat empty directories as not existing and would not
+check it out.
