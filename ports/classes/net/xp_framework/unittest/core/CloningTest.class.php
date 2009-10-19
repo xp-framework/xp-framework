@@ -60,7 +60,7 @@
     public function cloneInterceptorThrowsException() {
       clone(newinstance('lang.Object', array(), '{
         function __clone() {
-          throw(new CloneNotSupportedException("I am *UN*Cloneable"));
+          throw new CloneNotSupportedException("I am *UN*Cloneable");
         }
       }'));
     }

@@ -205,7 +205,7 @@
           break;
         default:
           $type= $stereotype;
-          //return throw(new IllegalArgumentException("Unknown class type: '$type'!"));
+          // return throw new IllegalArgumentException("Unknown class type: '$type'!");
       }
       $this->setString('stereotype', $type);
     }

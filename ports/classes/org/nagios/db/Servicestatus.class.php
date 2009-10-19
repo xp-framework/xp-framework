@@ -933,16 +933,12 @@
      */
     public function update() {
       $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $db->update(
-          'nagios.servicestatus set %c where ',
-          $this->_updated($db),
-          $this->obsess_over_service
-        );
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $db= $cm->getByHost('nagios', 0);
+      $db->update(
+        'nagios.servicestatus set %c where ',
+        $this->_updated($db),
+        $this->obsess_over_service
+      );
 
       return TRUE;
     }
@@ -956,13 +952,8 @@
      */
     public function insert() {
       $cm= ConnectionManager::getInstance();  
-      try {
-        $db= $cm->getByHost('nagios', 0);
-        $db->insert('nagios.servicestatus (%c)', $this->_inserted($db));
-
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $db= $cm->getByHost('nagios', 0);
+      $db->insert('nagios.servicestatus (%c)', $this->_inserted($db));
 
       return TRUE;
     }

@@ -151,11 +151,7 @@
         array('method'  => $method)
       ));
 
-      try {
-        $res= parent::invoke($method, $arguments);
-      } catch (XmlRpcFaultException $e) {
-        throw($e);
-      }
+      $res= parent::invoke($method, $arguments);
       
       $return= Unmarshaller::unmarshal($res[0], $expect);
       $return->setClient($this);

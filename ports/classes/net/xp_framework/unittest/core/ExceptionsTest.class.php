@@ -51,7 +51,7 @@
     #[@test]
     public function multipleCatches() {
       try {
-        throw(new XPException('Test'));
+        throw new XPException('Test');
       } catch (IllegalArgumentException $caught) {
         return $this->fail('Exception should have been caught in Exception block', 'IllegalArgumentException');
       } catch (XPException $caught) {

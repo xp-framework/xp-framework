@@ -102,7 +102,7 @@
         empty($this->bug_id) or
         empty($this->user_id) or
         empty($this->comment)
-      ) throw(new IllegalArgumentException('Too few arguments given'));
+      ) throw new IllegalArgumentException('Too few arguments given');
 
       with ($desc= new BugzillaLongDescs()); {
         $desc->setBug_id($this->bug_id);
