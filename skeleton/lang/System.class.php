@@ -200,9 +200,10 @@
     public static function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
-      if (!($pd= popen($cmdLine, 'r'))) throw new XPException(
-        'cannot execute "'.$cmdLine.'"'
-      );
+      if (!($pd= popen($cmdLine, 'r'))) {
+        throw new SystemException('Cannot execute "'.$cmdLine.'"');
+      }
+      
       $buf= array();
       while (
         (!feof($pd)) && 
