@@ -53,12 +53,28 @@
     }
 
     /**
+     * Replaces backslashes in the specified path by the new separator. If $skipDrive is set
+     * to TRUE, the leading drive letter definition (e.g. 'C:') is removed from the new path.
+     *
+     * @param  string  path
+     * @param  string  newSeparator
+     * @param  boolean skipDrive
+     * @return string
+     */
+    private function replaceBackslashSeparator($path, $newSeparator, $skipDrive) {
+      $parts= explode('\\', $path);
+      if (preg_match('/[a-z]:/i', $parts[0]) != 0 && $skipDrive) array_shift($parts);
+
+      return implode($newSeparator, $parts);
+    }
+
+    /**
      * Test resolving a fully qualified name on Windows
      *
      */
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithDriverLetter() {
-      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('C:\\AUTOEXEC.BAT')));
+      $this->assertTrue(is_executable(Process::resolve(getenv('WINDIR').'\\EXPLORER.EXE')));
     }
 
     /**
@@ -67,8 +83,10 @@
      */
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithBackSlash() {
+      $path= '\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER.EXE', '\\', TRUE);
+
       chdir('C:');
-      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('\\AUTOEXEC.BAT')));
+      $this->assertTrue(is_executable(Process::resolve($path)));
     }
 
     /**
@@ -77,8 +95,10 @@
      */
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithSlash() {
+      $path= '/'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER.EXE', '/', TRUE);
+
       chdir('C:');
-      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('/AUTOEXEC.BAT')));
+      $this->assertTrue(is_executable(Process::resolve($path)));
     }
 
     /**
@@ -87,8 +107,10 @@
      */
     #[@test, @platform('WIN')]
     public function resolveFullyQualifiedWithoutExtension() {
+      $path='\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER', '\\', true);
+
       chdir('C:');
-      $this->assertEquals('C:\\AUTOEXEC.BAT', strtoupper(Process::resolve('\\AUTOEXEC')));
+      $this->assertTrue(is_executable(Process::resolve($path)));
     }
 
     /**
@@ -97,7 +119,7 @@
      */
     #[@test, @platform('WIN')]
     public function resolveCommandInPath() {
-      $this->assertEquals(getenv('WINDIR').DIRECTORY_SEPARATOR.'explorer.exe', Process::resolve('explorer.exe'));
+      $this->assertTrue(is_executable(Process::resolve('explorer.exe')));
     }
 
     /**
@@ -106,7 +128,7 @@
      */
     #[@test, @platform('WIN')]
     public function resolveCommandInPathWithoutExtension() {
-      $this->assertEquals(getenv('WINDIR').DIRECTORY_SEPARATOR.'explorer.exe', Process::resolve('explorer'));
+      $this->assertTrue(is_executable(Process::resolve('explorer')));
     }
 
     /**
