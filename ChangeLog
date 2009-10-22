@@ -71,6 +71,8 @@ Features
 
 RFCs
 ~~~~
+- Implemented RFC #0190 - Readers and Writers
+  (friebe)
 - Implemented RFC #0188 - Test outcome
   (friebe)
 - Implemented RFC #0187 - @expect withMessage
