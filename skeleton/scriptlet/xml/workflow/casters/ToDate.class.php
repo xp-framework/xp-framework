@@ -30,7 +30,9 @@
         if (
           !is_int($pv['year']) ||
           !is_int($pv['month']) ||
-          !is_int($pv['day'])
+          !is_int($pv['day']) ||
+          0 < $pv['warning_count'] ||
+          0 < $pv['error_count']
         ) {
           return 'invalid';
         }

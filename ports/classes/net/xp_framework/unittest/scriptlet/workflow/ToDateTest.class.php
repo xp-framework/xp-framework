@@ -73,5 +73,23 @@
     public function emptyInput() {
       $this->castValue('');
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function daysNotInMonth() {
+      $this->castValue('31.11.2009');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function brokenAmericanDateFormat() {
+      $this->castValue('30/11/2009'); // Should be 11/30
+    }
   }
 ?>
