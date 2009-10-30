@@ -1,0 +1,86 @@
+RFC 0192: Logging API enhancements
+========================================================================
+$Id$
+
+@authors: kiesel
+@created: Fri Oct 30 10:10:53 CET 2009
+@status: draft
+@category: util.log
+
+Scope of Change
+---------------
+The logging API util.log will be internally refactored and support new log 
+format tokens.
+At the same time, the generation of the filename of a LogAppender will become
+the appender's duty - it will be able to generate updated filenames after a
+day turnaround.
+
+Rationale
+---------
+
+Tokens
+~~~~~~
+
+The token format was changed to support more tokens, some of which require
+rather expensive calculations at runtime. As the old sprintf() approach was
+simple, it required calculating all possible values every time, regardless of
+whether they were used or not.
+The new approach implements an on-demand calculation of parameters and is
+easier from human readability perspective.
+
+
+Configuration evaluation
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Evaluation of configuration settings will be delegated on to the instance
+that actually makes use of the configuration.
+
+
+Functionality
+-------------
+
+Tokens
+~~~~~~
+
+The new tokens are:
+. {DATE}  => prints the current date in datefmt format
+  (replaces %1$s)
+  
+. {PID}   => prints process id of current process
+  (replaces %2$s)
+  
+. {LEVEL} => prints level of log message
+  (replaces %3$s)
+  
+. {CLASS} => prints caller class
+  (new)
+
+The old tokens will still be supported for BC until XP 5.8.
+
+
+Configuration
+~~~~~~~~~~~~~
+
+Eg. the FileAppender will be given the original config setting for its filename
+so it will be enabled to generate a new filename once the an external event
+(eg. midnight) will lead to a newly generated filename.
+
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+
+Dependencies
+------------
+- This RFC obsoletes RFC #0064.
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>
