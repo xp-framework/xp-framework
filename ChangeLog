@@ -11,6 +11,12 @@ RFCs
 - Implemented RFC #0191 - New CSV API
   (friebe)
 
+Bugfixes
+~~~~~~~~
+- Made scriptlet.xml.workflow.casters.ToDateCaster explicitely check for
+  errors and warnings when parsing a date and reject that value in case
+  (kiesel, Ionut Manta)
+
 
 Version 5.7.5, released 2009-10-22
 ----------------------------------
