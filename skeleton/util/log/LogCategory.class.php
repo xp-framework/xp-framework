@@ -40,15 +40,17 @@
    * @purpose  Base class
    */
   class LogCategory extends Object {
-    public 
-      $_appenders= array(),
-      $_indicators= array(
-        LogLevel::INFO        => 'info',
-        LogLevel::WARN        => 'warn',
-        LogLevel::ERROR       => 'error',
-        LogLevel::DEBUG       => 'debug'
+    protected static
+      $INDICATORS = array(
+        LogLevel::INFO  => 'info',
+        LogLevel::WARN  => 'warn',
+        LogLevel::ERROR => 'error',
+        LogLevel::DEBUG => 'debug'
       );
       
+    public
+      $_appenders= array();
+
     public
       $flags,
       $identifier,
@@ -95,27 +97,46 @@
      * Private helper function
      *
      */
-    public function callAppenders() {
-      $args= func_get_args();
-      $flag= $args[0];
+    public function callAppenders($flag, $args) {
       if (!($this->flags & $flag)) return;
       
-      $args[0]= sprintf(
+      array_unshift($args, sprintf(
         $this->format,
         date($this->dateformat),
         $this->identifier,
-        $this->_indicators[$flag]
-      );
+        self::$INDICATORS[$flag]
+      ));
       
-      foreach (array_keys($this->_appenders) as $appflag) {
+      // Remember currently active flag temporarily
+      $this->currFlag= $flag;
+
+      // Support new style log tokens
+      $args[0]= preg_replace_callback('#\{[A-Z_]+\}#', array($this, 'tokenCallback'), $args[0]);
+      unset($this->currFlag);
+
+      foreach ($this->_appenders as $appflag => $appenders) {
         if (!($flag & $appflag)) continue;
-        foreach (array_keys($this->_appenders[$appflag]) as $idx) {
-          call_user_func_array(
-            array($this->_appenders[$appflag][$idx], 'append'),
-            $args
-          );
+        foreach ($appenders as $appender) {
+          call_user_func_array(array($appender, 'append'), $args);
         }
       }
+    }
+
+    public function tokenCallback($token) {
+      switch ($token[0]) {
+        case '{DATE}': return date($this->dateformat);
+        case '{PID}': return $this->identifier;
+        case '{LEVEL}': return self::$INDICATORS[$this->currFlag];
+        case '{CLASS}': {
+          $bt= debug_backtrace();
+          // Try to find entry scope to LogCategory class; this is 4 or 5 scopes apart
+          // depending on whether it was eg. debug() or debugf()...
+          for ($i= 4; empty($bt[$i]['class']) || 'LogCategory' == $bt[$i]['class']; $i++) {}
+          return xp::nameOf($bt[$i]['class']);
+        }
+      }
+
+      return $token[0];
     }
 
     /**
@@ -133,7 +154,7 @@
      */
     public function finalize() {
       foreach ($this->_appenders as $flags => $appenders) {
-        foreach (array_keys($appenders) as $idx) {
+        foreach ($appenders as $appender) {
           $appenders[$idx]->finalize();
         }
       }
@@ -212,8 +233,7 @@
      */
     public function info() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::INFO);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::INFO, $args);
     }
 
     /**
@@ -229,7 +249,7 @@
      */
     public function infof() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::INFO, vsprintf($args[0], array_slice($args, 1)));
+      $this->info(vsprintf($args[0], array_slice($args, 1)));
     }
 
     /**
@@ -239,8 +259,7 @@
      */
     public function warn() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::WARN);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::WARN, $args);
     }
 
     /**
@@ -251,7 +270,7 @@
      */
     public function warnf() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::WARN, vsprintf($args[0], array_slice($args, 1)));
+      $this->warn(vsprintf($args[0], array_slice($args, 1)));
     }
 
     /**
@@ -261,8 +280,7 @@
      */
     public function error() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::ERROR);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::ERROR, $args);
     }
 
     /**
@@ -273,7 +291,7 @@
      */
     public function errorf() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::ERROR, vsprintf($args[0], array_slice($args, 1)));
+      $this->error(vsprintf($args[0], array_slice($args, 1)));
     }
 
     /**
@@ -283,8 +301,7 @@
      */
     public function debug() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::DEBUG);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::DEBUG, $args);
     }
  
     /**
@@ -295,7 +312,7 @@
      */
     public function debugf() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::DEBUG, vsprintf($args[0], array_slice($args, 1)));
+      $this->debug(vsprintf($args[0], array_slice($args, 1)));return;
     }
    
     /**
@@ -303,7 +320,7 @@
      *
      */
     public function mark() {
-      $this->callAppenders(LogLevel::INFO, str_repeat('-', 72));
+      $this->info(str_repeat('-', 72));
     }
   }
 ?>

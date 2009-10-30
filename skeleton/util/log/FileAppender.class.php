@@ -32,7 +32,7 @@
      * @param   mixed* args variables
      */
     public function append() {
-      $fd= fopen($this->filename, 'a');
+      $fd= fopen(strftime($this->filename), 'a');
 
       if ($this->perms) {
         chmod($this->filename, octdec($this->perms));

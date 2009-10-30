@@ -174,5 +174,20 @@
     public function errorf() {
       $this->assertLogf(__FUNCTION__, array('Hello %s', __CLASS__));
     }
+
+    /**
+     * Tests errorf() method
+     *
+     */
+    #[@test]
+    public function tokens() {
+      $this->cat->format= '{LEVEL} {CLASS}';
+      $app= $this->cat->addAppender($this->mockAppender());
+      $this->cat->errorf('Hello %s', __CLASS__);
+      $this->assertEquals(
+        array(array('error net.xp_framework.unittest.logging.LogCategoryTest', 'Hello LogCategoryTest')),
+        $app->messages
+      );
+    }
   }
 ?>

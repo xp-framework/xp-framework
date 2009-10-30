@@ -96,7 +96,7 @@
       self::$instance= new self();
       self::$instance->defaultIdentifier= getmypid();
       self::$instance->defaultFormat= '[%1$s %2$5s %3$5s]';
-      self::$instance->defaultDateformat= 'H:i:s';
+      self::$instance->defaultDateformat= 'Y-m-d\TH:i:sO';
       self::$instance->defaultFlags= LogLevel::ALL;
       self::$instance->defaultAppenders= array();
       
@@ -133,8 +133,6 @@
      * @param   util.Properties prop instance of a Properties object
      */
     public function configure($prop) {
-      $class= array();
-      
       // Read default properties
       $this->defaultIdentifier= $prop->readString(LOG_DEFINES_DEFAULT, 'identifier', $this->defaultIdentifier);
       $this->defaultFormat= $prop->readString(LOG_DEFINES_DEFAULT, 'format', $this->defaultFormat);
@@ -145,9 +143,7 @@
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
-        $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
-
-        $this->category[$section]= $catclass->newInstance(
+        $this->category[$section]= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'))->newInstance(
           $this->defaultIdentifier,
           $prop->readString($section, 'format', $this->defaultFormat),
           $prop->readString($section, 'date.format', $this->defaultDateformat),
@@ -163,9 +159,7 @@
 
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
-          if (!isset($class[$appender])) {
-            $class[$appender]= XPClass::forName($appender);
-          }
+          $class= XPClass::forName($appender);
           
           // Read levels
           $levels= $prop->readArray($param_section, 'appender.'.$appender.'.levels');
@@ -184,18 +178,14 @@
             }
           }
           
-          $a= $this->category[$section]->addAppender($class[$appender]->newInstance(), $flags);
+          $a= $this->category[$section]->addAppender($class->newInstance(), $flags);
           $params= $prop->readArray($param_section, 'appender.'.$appender.'.params', array());
           
           // Params
-          foreach ($params as $param) {
-            $a->{$param}= strftime(
-              $prop->readString(
-                $param_section, 
-                'appender.'.$appender.'.param.'.$param,
-                ''
-              )
-            );
+          foreach ($prop->readSection($param_section) as $key => $value) {
+            if (0 == strncmp('appender.'.$appender.'.param.', $key, strlen('appender.'.$appender.'.param.'))) {
+              $a->setParameter(substr($key, strrpos($key, '.')+ 1), $value);
+            }
           }
         }
       } while ($section= $prop->getNextSection());
@@ -206,8 +196,8 @@
      *
      */
     public function finalize() {
-      if (!$this->_finalized) foreach (array_keys($this->category) as $name) {
-        $this->category[$name]->finalize();
+      if (!$this->_finalized) foreach ($this->category as $cat) {
+        $cat->finalize();
       }
       $this->_finalized= TRUE;
     }
