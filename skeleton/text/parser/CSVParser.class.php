@@ -13,6 +13,7 @@
    * @purpose Interface for parsing CSV-files
    * @see     http://www.creativyst.com/Doc/Articles/CSV/CSV01.htm
    * @test    xp://net.xp_framework.unittest.text.parser.CSVParserTest
+   * @deprecated Use the text.csv package instead
    */
   class CSVParser extends Object {
     public

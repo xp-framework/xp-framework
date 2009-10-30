@@ -14,6 +14,7 @@
    * @test    xp://net.xp_framework.unittest.text.CsvGeneratorTest
    * @see     xp://text.parser.CSVParser
    * @purpose Small and simple CSV Generator
+   * @deprecated Use the text.csv package instead
    */ 
   class CSVGenerator extends Object {
     public
