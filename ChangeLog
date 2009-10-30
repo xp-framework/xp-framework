@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+RFCs
+~~~~
+- Implemented RFC #0191 - New CSV API
+  (friebe)
+
+
 Version 5.7.5, released 2009-10-22
 ----------------------------------
 SVN version: 13740
