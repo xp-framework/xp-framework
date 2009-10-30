@@ -13,22 +13,6 @@
   abstract class LogAppender extends Object {
 
     /**
-     * Set parameter of this appender. Can be overridden
-     * add extra checking
-     *
-     * @param   string key
-     * @param   string value
-     * @throws  lang.IllegalArgumentException if no such member exists
-     */
-    public function setParameter($key, $value) {
-      if (!property_exists($this, $key)) throw new IllegalArgumentException(
-        'No configurable member "'.$key.'" in '.get_class($this)
-      );
-
-      $this->{$key}= $value;
-    }
-
-    /**
      * Append data
      *
      * @param   mixed* args
