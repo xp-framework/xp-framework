@@ -31,9 +31,9 @@
      */
     public static function fromFile($file) {
       if (FALSE === ($data= getimagesize($file->getURI(), $segments))) {
-        throw new ImagingException(
-          'Cannot load image information from '.$file->getURI()
-        );
+        $e= new ImagingException('Cannot load image information from '.$file->getURI());
+        xp::gc();
+        throw $e;
       }
       
       with ($i= new ImageInfo()); {
