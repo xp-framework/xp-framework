@@ -205,7 +205,7 @@
           break;
         default:
           $type= $stereotype;
-          //return throw(new IllegalArgumentException("Unknown class type: '$type'!"));
+          // return throw new IllegalArgumentException("Unknown class type: '$type'!");
       }
       $this->setString('stereotype', $type);
     }
@@ -466,7 +466,7 @@
     /**
      * Adds an UML attribute to the UML class
      *
-     * @param   &org.dia.DiaUMLAttribute Attribute
+     * @param   org.dia.DiaUMLAttribute Attribute
      */
     // TODO? fromClass(type= 'attribute', class= 'org.dia.DiaUMLAttribute')
     #[@fromDia(xpath= 'dia:attribute[@name="attributes"]/*', class= 'org.dia.DiaUMLAttribute')]
@@ -478,7 +478,7 @@
     /**
      * Adds an UML method to the UML class
      * 
-     * @param   &org.dia.DiaUMLMethod Method
+     * @param   org.dia.DiaUMLMethod Method
      */
     #[@fromDia(xpath= 'dia:attribute[@name="operations"]/*', class= 'org.dia.DiaUMLMethod')]
     public function addUMLMethod($Method) {
@@ -489,7 +489,7 @@
     /**
      * Adds an UML formal parameter to the UML class
      *
-     * @param   &org.dia.DiaUMLFormalParameter Parameter
+     * @param   org.dia.DiaUMLFormalParameter Parameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="templates"]/*', class= 'org.dia.DiaUMLFormalParameter')]
     public function addTemplate($Parameter) {
@@ -500,7 +500,7 @@
     /**
      * Adds a 'dia:childnode' link to the parent object
      *
-     * @param   &org.dia.DiaChildnode Childnode
+     * @param   org.dia.DiaChildnode Childnode
      */
     #[@fromDia(xpath= 'dia:childnode', class= 'org.dia.DiaChildnode')]
     public function addParentLink($Childnode) {
@@ -545,7 +545,7 @@
     /**
      * Adds a method to the UML class
      * 
-     * @param   &text.doclet.MethodDoc Method
+     * @param   text.doclet.MethodDoc Method
      */
     #[@fromClass(type = 'method')]
     public function addMethod($Method) {

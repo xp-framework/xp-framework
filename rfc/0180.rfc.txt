@@ -5,6 +5,7 @@ $Id$
 @authors: friebe
 @created: Tue Feb 17 09:08:01     2009
 @status: draft
+@target: 5.7.6
 @category: io.streams
 
 Scope of Change

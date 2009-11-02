@@ -56,7 +56,7 @@
         (LOCKTOKEN_PREFIX !== $prefix) ||
         (FALSE === ($uuid= UUID::fromString($uuidstr)))
       ) {
-        throw(new FormatException($str.' is not a valid opaquelocktoken string'));
+        throw new FormatException($str.' is not a valid opaquelocktoken string');
       }
       
       return new OpaqueLockTocken($uuid);

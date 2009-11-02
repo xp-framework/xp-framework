@@ -81,7 +81,7 @@
       } catch (Throwable $e) {
       } finally(); {
         $c->close();
-        if (isset($e)) throw($e);
+        if (isset($e)) throw $e;
       }
     }
     
@@ -110,7 +110,7 @@
       } catch (Throwable $e) {
       } finally(); {
         $c->close();
-        if (isset($e)) throw($e);
+        if (isset($e)) throw $e;
       }
     }
 

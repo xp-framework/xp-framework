@@ -67,10 +67,10 @@
     /**
      * Load this font's properties from a .ini-file
      *
-     * @param   &util.Properties p
+     * @param   util.Properties p
      */
     public function configure($p) {
-      if (NULL == $this->name) throw(new IllegalStateException('no name defined'));
+      if (NULL == $this->name) throw new IllegalStateException('no name defined');
       
       $this->cw= $p->readArray($this->name, 'cw', array());
       $this->fontname= $p->readString($this->name, 'name', $this->name);

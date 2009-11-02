@@ -28,8 +28,8 @@
      * @throws  lang.IllegalArgumentException in case the ISBN is invalid
      */
     public function __construct($isbn) {
-      if (!ISBN::isValid($isbn)) {
-        throw(new IllegalArgumentException('ISBN "'.$isbn.'" is invalid'));
+      if (!self::isValid($isbn)) {
+        throw new IllegalArgumentException('ISBN "'.$isbn.'" is invalid');
       }
       $this->number= $isbn;
     }

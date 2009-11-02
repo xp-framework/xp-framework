@@ -41,7 +41,7 @@
      */
     public function __construct($name, $value= NULL, $type= NULL) {
       if (!isset($name)) 
-        throw(new IllegalArgumentException('Parameter "name" is required!'));
+        throw new IllegalArgumentException('Parameter "name" is required!');
 
       $this->setName($name);
       if (isset($value)) $this->_value= $value;
@@ -80,7 +80,7 @@
           case 'color':   $this->set('value', new DiaColor($value)); break;
   
           default:
-            throw(new IllegalArgumentException('Unkown type "'.$this->_type.'"'));
+            throw new IllegalArgumentException('Unkown type "'.$this->_type.'"');
         }
       }
     }
@@ -106,7 +106,7 @@
     /**
      * Return XML representation of DiaComposite
      *
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function getNode() {
       $node= parent::getNode();

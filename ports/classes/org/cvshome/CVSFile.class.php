@@ -31,7 +31,7 @@
       $this->filename= realpath($filename);
       
       if (!file_exists ($this->filename) || !is_file ($this->filename)) {
-        throw (new FileNotFoundException ('Given file must be an existing file: '.$this->filename));
+        throw new FileNotFoundException('Given file must be an existing file: '.$this->filename);
       }
     }
     
@@ -90,19 +90,15 @@
      *   $result->tags['STABLE']= '1.15';
      * </cde>
      *
-     * @return  &stdclass status
+     * @return  stdclass status
      */
     public function getStatus() {
-      try {
-        $output= $this->_execute ('status -v');
-      } catch (CVSInterfaceException $e) {
-        throw($e);
-      }
+      $output= $this->_execute('status -v');
       
-      if (strstr ($output[0], 'cvs server: nothing known about')) {
-        throw (new CVSInterfaceException (
+      if (strstr($output[0], 'cvs server: nothing known about')) {
+        throw new CVSInterfaceException(
           'File '.$this->filename.' is not known to CVS'
-        ));
+        );
       }
 
       $result= new stdClass(); 
@@ -154,14 +150,9 @@
      */
     public function commit($comment) {
       $f= new TempFile();
-      try {
-        $f->open (FILE_MODE_WRITE);
-        $f->writeLine ($comment);
-        $f->close();
-      } catch (IOException $e) {
-        throw($e);
-      }
-
+      $f->open (FILE_MODE_WRITE);
+      $f->writeLine ($comment);
+      $f->close();
       $return= $this->_execute(sprintf ('commit -F %s', $f->getURI()));
       
       // It seems CVS automatically removes the tmp-file after
@@ -178,12 +169,7 @@
      */
     public function remove() {
       $f= new File ($this->filename);
-      try {
-        $f->move ($this->filename.'.cvsremove');
-      } catch (IOException $e) {
-        throw($e);
-      }
-      
+      $f->move ($this->filename.'.cvsremove');
       return $this->_execute ('remove');
     }
 

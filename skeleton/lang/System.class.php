@@ -200,9 +200,10 @@
     public static function exec($cmdLine, $redirect= '2>&1', $background= FALSE) {
       $cmdLine= escapeshellcmd($cmdLine).' '.$redirect.($background ? ' &' : '');
       
-      if (!($pd= popen($cmdLine, 'r'))) throw(new XPException(
-        'cannot execute "'.$cmdLine.'"'
-      ));
+      if (!($pd= popen($cmdLine, 'r'))) {
+        throw new SystemException('Cannot execute "'.$cmdLine.'"');
+      }
+      
       $buf= array();
       while (
         (!feof($pd)) && 
@@ -212,10 +213,10 @@
       }
       $retCode= (pclose($pd) >> 8) & 0xFF;
       
-      if ($retCode != 0) throw(new SystemException(
+      if ($retCode != 0) throw new SystemException(
         'System.exec('.$cmdLine.') err #'.$retCode.' ['.implode('', $buf).']',
         $retCode
-      ));
+      );
       return $buf;
     }
   }  

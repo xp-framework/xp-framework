@@ -24,12 +24,12 @@
      * Unmarshall a XML diagram file into an object structure (DiaDiagram)
      *
      * @param   string filename The diagram filename (.dia)
-     * @return  &org.dia.DiaDiagram
+     * @return  org.dia.DiaDiagram
      */
     public static function unmarshal($diagram) {
       // suck in XML document
       if (!($dom= domxml_open_file($diagram, DOMXML_LOAD_PARSING, $error))) {
-        throw(new XMLFormatException(xp::stringOf($error)));
+        throw new XMLFormatException(xp::stringOf($error));
       }
       // initialize XPath
       $XPath= new XPath($dom);
@@ -46,19 +46,14 @@
     /**
      * Process XML with the annotated methods of the given class
      *
-     * @param   &xml.XPath XPath Instance of xml.XPath
-     * @param   &php.DomNode Context The XML node to recurse from
+     * @param   xml.XPath XPath Instance of xml.XPath
+     * @param   php.DomNode Context The XML node to recurse from
      * @param   string classname Fully qualified class name
      */
     public static function recurse($XPath, $Context, $classname) {
       if (DIA_UNM_DEBUG) Console::writeLine('recurse: '.$Context->tagname()."-> $classname");
 
-      try {
-        $Class= XPClass::forName($classname);
-      } catch (Exception $e) {
-        $e->printStackTrace();
-        exit(-1);
-      }
+      $Class= XPClass::forName($classname);
       $Instance= $Class->newInstance(); 
       if (DIA_UNM_DEBUG) Console::writeLine('Instance: '.$Instance->getClassName());
 

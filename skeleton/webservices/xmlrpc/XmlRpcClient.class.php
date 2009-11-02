@@ -7,7 +7,7 @@
   uses(
     'webservices.xmlrpc.XmlRpcResponseMessage', 
     'webservices.xmlrpc.XmlRpcRequestMessage',
-    'webservices.xmlrpc.transport.XmlRpcTransport'
+    'webservices.xmlrpc.transport.XmlRpcHttpTransport'
   );
 
   /**
@@ -47,7 +47,7 @@
     /**
      * Constructor.
      *
-     * @param   webservices.xmlrpc.transport.XmlRpcTransport transport
+     * @param   webservices.xmlrpc.transport.XmlRpcHttpTransport transport
      */
     public function __construct(XmlRpcHttpTransport $transport) {
       $this->transport= $transport;

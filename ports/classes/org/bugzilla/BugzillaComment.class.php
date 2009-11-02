@@ -102,20 +102,16 @@
         empty($this->bug_id) or
         empty($this->user_id) or
         empty($this->comment)
-      ) throw(new IllegalArgumentException('Too few arguments given'));
+      ) throw new IllegalArgumentException('Too few arguments given');
 
-      try {
-        with ($desc= new BugzillaLongDescs()); {
-          $desc->setBug_id($this->bug_id);
-          $desc->setBug_when(Date::now());
-          $desc->setThetext($this->comment);
-          $desc->setWho($this->user_id);
-        }
-        $desc->insert();
-        
-      } catch (SQLException $e) {
-        throw($e);
+      with ($desc= new BugzillaLongDescs()); {
+        $desc->setBug_id($this->bug_id);
+        $desc->setBug_when(Date::now());
+        $desc->setThetext($this->comment);
+        $desc->setWho($this->user_id);
       }
+      $desc->insert();
+        
       return TRUE;
     }
   }

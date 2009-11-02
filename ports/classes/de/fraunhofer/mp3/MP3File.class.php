@@ -17,7 +17,7 @@
     /**
      * Constructor
      *
-     * @param   &io.File file
+     * @param   io.File file
      */
     public function __construct($file) {
       $this->file= $file;
@@ -28,7 +28,7 @@
      * Extract ID3 Tags
      *
      * @param   int version default ID3_VERSION_UNKNOWN ID3 Version
-     * @return  &de.fraunhofer.mp3.ID3Tag tag object or NULL if no tag exists
+     * @return  de.fraunhofer.mp3.ID3Tag tag object or NULL if no tag exists
      * @see     http://www.id3.org/
      */
     public function getID3Tag($version= ID3_VERSION_UNKNOWN) {
@@ -83,12 +83,12 @@
 
             default:
               $done= TRUE;
-              throw(new IllegalArgumentException('Version '.$version.' not supported'));
+              throw new IllegalArgumentException('Version '.$version.' not supported');
           }
         } while (!$done);
-      } catch (Exception $e) {
+      } catch (Throwable $e) {
         $this->file->close();
-        throw($e);
+        throw $e;
       }
       $this->file->close();
       return (FALSE === $version) ? NULL : ID3Tag::fromString($buf, $version);

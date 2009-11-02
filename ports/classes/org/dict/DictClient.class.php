@@ -70,33 +70,29 @@
      */
     protected function _sockcmd() {
       if (NULL === $this->_sock) {
-        throw(new IllegalStateException('Not connected'));
+        throw new IllegalStateException('Not connected');
       }
       
       // Arguments
       $args= func_get_args();
       $expect= (array)$args[sizeof($args)- 1];
       
-      try {
-        if (FALSE !== $args[0]) {
-          $cmd= vsprintf($args[0], array_slice($args, 1, -1));
-          $this->_sock->write($cmd."\n");
-          if (FALSE === $expect[0]) return '';
-        }
-
-        // Read
-        $buf= substr($this->_sock->read(), 0, -2);
-      } catch (IOException $e) {
-        throw($e);
+      if (FALSE !== $args[0]) {
+        $cmd= vsprintf($args[0], array_slice($args, 1, -1));
+        $this->_sock->write($cmd."\n");
+        if (FALSE === $expect[0]) return '';
       }
+
+      // Read
+      $buf= substr($this->_sock->read(), 0, -2);
       
       // Got expected data?
       $code= substr($buf, 0, 3);
       if (!in_array($code, $expect)) {
-        throw(new FormatException(
+        throw new FormatException(
           'Expected '.implode(' or ', $expect).', have '.$code.' ["'.$buf.'"] '.
           '- command was '.$cmd
-        ));
+        );
       }
       
       return $buf;
@@ -122,12 +118,8 @@
      */
     public function connect($server, $port= 2628) {
       $this->_sock= new Socket($server, $port);
-      try {
-        $this->_sock->connect();
-        $this->_sockcmd(FALSE, 220); 
-      } catch (Exception $e) {
-        throw($e);
-      }
+      $this->_sock->connect();
+      $this->_sockcmd(FALSE, 220); 
       
       return TRUE;
     }
@@ -146,13 +138,9 @@
      */
     public function close() {
       if (NULL === $this->_sock) return;
-      try {
-        $this->_sockcmd('QUIT', 221); 
-        $this->_sock->close();
-      } catch (Exception $e) {
-        throw($e);
-      }
-      
+
+      $this->_sockcmd('QUIT', 221); 
+      $this->_sock->close();
       $this->_sock= NULL;
       return TRUE;      
     }
@@ -189,27 +177,23 @@
      */
     public function getDefinition($word, $db= '*') {
       $def= array();
-      try {
-        $ret= $this->_sockcmd('DEFINE %s \'%s\'', $db, $word, array(150, 552));
-        if ('150' == substr($ret, 0, 3)) {
+      $ret= $this->_sockcmd('DEFINE %s \'%s\'', $db, $word, array(150, 552));
+      if ('150' == substr($ret, 0, 3)) {
 
-          while (
-            ($ret= $this->_sockcmd(FALSE, array(151, 250))) &&
-            ('250' != substr($ret, 0, 3))
-          ) {
-          
-            // Read until we find with a "." on a line with itself
-            $definition= '';
-            while ($buf= $this->_sock->read()) {
-              if ('.' == $buf{0}) break;
-              $definition.= $buf;
-            }
-            
-            $def[]= new DictDefinitionEntry(substr($ret, 4), $definition);
+        while (
+          ($ret= $this->_sockcmd(FALSE, array(151, 250))) &&
+          ('250' != substr($ret, 0, 3))
+        ) {
+
+          // Read until we find with a "." on a line with itself
+          $definition= '';
+          while ($buf= $this->_sock->read()) {
+            if ('.' == $buf{0}) break;
+            $definition.= $buf;
           }
+
+          $def[]= new DictDefinitionEntry(substr($ret, 4), $definition);
         }
-      } catch (Exception $e) {
-        throw($e);
       }
       
       return $def;    

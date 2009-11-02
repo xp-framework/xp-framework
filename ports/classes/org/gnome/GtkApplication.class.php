@@ -108,7 +108,7 @@
         array($this, $callback ? $callback : 'on'.$widget->get_name().$signal),
         $data
       )) {
-        throw(new GuiException('Connecting "'.$widget->get_name().'.'.$signal.'" failed'));
+        throw new GuiException('Connecting "'.$widget->get_name().'.'.$signal.'" failed');
       }
       
       return $widget;

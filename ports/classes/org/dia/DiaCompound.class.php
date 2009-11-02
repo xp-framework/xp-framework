@@ -29,14 +29,14 @@
      * Set the DiaComponent object of the specified name
      *
      * @param   string name
-     * @param   &org.dia.DiaComponent Component
+     * @param   org.dia.DiaComponent Component
      * @throws  lang.IllegalArgumentException
      */
     public function set($name, $Component) {
       if (!is('org.dia.DiaComponent', $Component)) {
         $name= xp::typeOf($Component);
         if (is_object($Component)) $name= $Component->getClassName();
-        throw(new IllegalArgumentException("Wrong object type: $name"));
+        throw new IllegalArgumentException("Wrong object type: $name");
       }
       $this->_children[$name]= $Component;
     }
@@ -135,7 +135,7 @@
      * Returns DiaComponent child by the given name of the component
      *
      * @param   string name
-     * @return  &org.dia.DiaComponent
+     * @return  org.dia.DiaComponent
      */
     public function getChild($name) {
       return $this->_children[$name];
@@ -210,7 +210,7 @@
     /**
      * Returns XML representation of this DiaCompound
      *
-     * @return  &xml.Node
+     * @return  xml.Node
      */
     public function getNode() {
       $node= new Node($this->node_name);
@@ -229,7 +229,7 @@
     /**
      * Accepts a Visitor object
      * 
-     * @param   &lang.Visitor Visitor
+     * @param   lang.Visitor Visitor
      */
     public function accept($Visitor) {
       $Visitor->visit($this);
@@ -249,12 +249,12 @@
     /**
      * Adds a child component
      *
-     * @param   &org.dia.DiaComponent Comp
+     * @param   org.dia.DiaComponent Comp
      * @throws  lang.IllegalArgumentException
      */
     public function addChild($Comp) {
       if (!is('org.dia.DiaComponent', $Comp))
-        throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
+        throw new IllegalArgumentException('Given object is no "DiaComponent"!');
       // TODO: what if child exists?
       if (method_exists($Comp, 'getName')) {
         $this->_children[$Comp->getName()]= $Comp;
@@ -266,12 +266,12 @@
     /**
      * Removes the given child component if it exists
      *
-     * @param   &org.dia.DiaComponent Comp
+     * @param   org.dia.DiaComponent Comp
      * @return  bool
      */
     public function remChild($Comp) {
       if (!is('org.dia.DiaComponent', $Comp))
-        throw(new IllegalArgumentException('Given object is no "DiaComponent"!'));
+        throw new IllegalArgumentException('Given object is no "DiaComponent"!');
       // TODO: how do we uniquely identify components?
       foreach (array_keys($this->_children) as $name) {
         if ($Comp->getName() === $name) {
@@ -285,7 +285,7 @@
     /**
      * Returns an array with all child components
      *
-     * @return  &org.dia.DiaComponent[]
+     * @return  org.dia.DiaComponent[]
      */
     public function getChildren() {
       return $this->_children;

@@ -122,12 +122,12 @@
       }
       
       if (!$met) {
-        throw(new ProtocolException(sprintf(
+        throw new ProtocolException(sprintf(
           'Unexpected response "%s[...]", expecting (%s: "%s")',
           substr($line, 0, min(strlen($line), 20)),
           $expect,
           $data
-        )));
+        ));
       }
       return $return;
     }
@@ -226,15 +226,15 @@
           // Error code and detail, read, remember and continue
           continue;        
         }
-        throw(new ProtocolException('Unexpected response "'.$line.'"'));
+        throw new ProtocolException('Unexpected response "'.$line.'"');
       }
       
       // Authentication failed
-      throw(new AuthenticationException(
+      throw new AuthenticationException(
         sprintf('%d: %s (%s)', $code, $message, $error),
         $user,
         $pass
-      ));
+      );
     }
     
     /**
@@ -254,23 +254,17 @@
      *
      */
     public function close() {
-      try {
-        $this->_sock->close();
-      } catch (IOException $e) {
-        throw($e);
-      }
-      
+      $this->_sock->close();
       return TRUE;      
     }
 
     /**
      * Set a trace for debugging
      *
-     * @param   &util.log.LogCategory cat
+     * @param   util.log.LogCategory cat
      */
     public function setTrace($cat) { 
       $this->cat= $cat;
     }
-
   } 
 ?>

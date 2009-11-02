@@ -179,14 +179,14 @@
     /**
      * Adds an UMLMethodParameter to the UML method
      *
-     * @param   &org.dia.DiaUMLMethodParameter Parameter
+     * @param   org.dia.DiaUMLMethodParameter Parameter
      */
     #[@fromDia(xpath= 'dia:attribute[@name="parameters"]/dia:composite[@type="umlparameter"]', class= 'org.dia.DiaUMLMethodParameter')]
     public function addParameter($Parameter) {
       if (!is('org.dia.DiaUMLMethodParameter', $Parameter)) {
-        throw(new IllegalArgumentException(
+        throw new IllegalArgumentException(
           'Passed parameter is no "org.dia.DiaUMLMethodParameter"!'
-        ));
+        );
       }
       $Parameters= $this->getChild('parameters');
       $Parameters->set($Parameter->getName(), $Parameter);

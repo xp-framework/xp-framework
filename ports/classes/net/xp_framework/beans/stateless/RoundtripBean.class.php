@@ -103,9 +103,9 @@
      */
     #[@remote]
     public function echoArray($arg1) {
-      if (!is('lang.types.ArrayList', $arg1)) throw(new IllegalArgumentException(
+      if (!is('lang.types.ArrayList', $arg1)) throw new IllegalArgumentException(
         'arg1 is not an array.'
-      ));
+      );
       return $arg1;
     }
   } 

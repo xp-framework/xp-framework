@@ -27,10 +27,8 @@
     public static function factory($url) {
       switch ($url->getScheme()) {
         case 'http':
-          return new HttpRequest($url);
-          
         case 'https':
-          return new HttpsRequest($url);
+          return new HttpRequest($url);
         
         default:
           throw new IllegalArgumentException('Scheme "'.$url->getScheme().'" not supported');

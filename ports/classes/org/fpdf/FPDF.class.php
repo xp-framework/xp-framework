@@ -349,7 +349,7 @@
      */
     public function setCompression($compress) {
       if ($compress && !function_exists('gzcompress')) {
-        throw(new MethodNotImplementedException('Compression not available'));
+        throw new MethodNotImplementedException('Compression not available');
       }
       $this->compress= $compress;
     }
@@ -663,16 +663,12 @@
     /**
      * Set font
      *
-     * @param   &org.pdf.FPDFFont font
+     * @param   org.pdf.FPDFFont font
      * @param   float size default 0 Font size in points. 
      * @throws  lang.IllegalArgumentException
      * @return  bool TRUE if the font was changed
      */
-    public function setFont($font, $size= 0) {
-      if (!is('FPDFFont', $font)) {
-        throw(new IllegalArgumentException('Font is not a org.pdf.FPDFFont'));
-      }
-      
+    public function setFont(FPDFFont $font, $size= 0) {
       $this->underline= $font->isUnderline();
       if ($size == 0) $size= $this->FontSizePt;
       
@@ -1160,9 +1156,9 @@
         // First use of image, get info
         if ($type == '') {
           if (FALSE === ($pos= strrpos($file, '.'))) {
-            throw(new IllegalArgumentException(
+            throw new IllegalArgumentException(
               'Image file has no extension and no type was specified: '.$file
-            ));
+            );
           }
           $type= substr($file, $pos+ 1);
         }
@@ -1170,33 +1166,21 @@
         switch (strtolower($type)) {
           case 'jpg': 
           case 'jpeg':
-            try {
-              $info= $this->_parsejpg($file);
-            } catch (IllegalArgumentException $e) {
-              throw($e);
-            }
+            $info= $this->_parsejpg($file);
             break;
           
           case 'gif':
-            try {
-              $info= $this->_parsegif($file);
-            } catch (IllegalArgumentException $e) {
-              throw($e);
-            }
+            $info= $this->_parsegif($file);
             break;
 
           case 'png':
-            try {
-              $info= $this->_parsepng($file);
-            } catch (IllegalArgumentException $e) {
-              throw($e);
-            }
+            $info= $this->_parsepng($file);
             break;
           
           default:
-            throw(new IllegalArgumentException(
+            throw new IllegalArgumentException(
               'Unsupported image file type: '.$type
-            ));
+            );
         }
         
         $info['n']= sizeof($this->images)+ 1;
@@ -1367,7 +1351,7 @@
         
         // Sanity check
         if (!file_exists($file)) {
-          throw(new IOException('Font file "'.$file.'" not found'));
+          throw new IOException('Font file "'.$file.'" not found');
         }
         
         $size= filesize($file);
@@ -1672,14 +1656,14 @@
      */
     protected function _parsejpg($file) {
       if (FALSE === ($a= getimagesize($file))) {
-        throw(new IllegalArgumentException(
+        throw new IllegalArgumentException(
           'Missing or incorrect image file: '.$file
-        ));
+        );
       }
       if ($a[2] != IMG_JPEG) {
-        throw(new IllegalArgumentException(
+        throw new IllegalArgumentException(
           'Not a JPEG file: '.$file
-        ));
+        );
       }
       
       // Figure out colorspace
@@ -1716,13 +1700,13 @@
     protected function _parsegif($file) {
       $f= fopen($file, 'rb');
       if (!$f) {
-        throw(new IllegalArgumentException('Cannot open image file: '.$file));
+        throw new IllegalArgumentException('Cannot open image file: '.$file);
       }
       
       // Check signature
       $version= fread($f, 6);
       if ($version != 'GIF87a' && $version != 'GIF89a') {
-        throw(new IllegalArgumentException('Not a GIF file: '.$file));
+        throw new IllegalArgumentException('Not a GIF file: '.$file);
       }
       
       // File header
@@ -1849,25 +1833,25 @@
     protected function _parsepng($file) {
       $f= fopen($file, 'rb');
       if (!$f) {
-        throw(new IllegalArgumentException('Cannot open image file: '.$file));
+        throw new IllegalArgumentException('Cannot open image file: '.$file);
       }
 
       // Check signature
       if (fread($f, 8) != chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10)) {
-        throw(new IllegalArgumentException('Not a PNG file: '.$file));
+        throw new IllegalArgumentException('Not a PNG file: '.$file);
       }
 
       // Read header chunk
       fread($f, 4);
       if (fread($f, 4) != 'IHDR') {
-        throw(new IllegalArgumentException('Incorrect PNG file: '.$file));
+        throw new IllegalArgumentException('Incorrect PNG file: '.$file);
       }
       
       $w= $this->_freadint($f);
       $h= $this->_freadint($f);
       $bpc= ord(fread($f, 1));
       if ($bpc > 8) {
-        throw(new IllegalArgumentException('16-bit depth not supported: '.$file));
+        throw new IllegalArgumentException('16-bit depth not supported: '.$file);
       }
 
       // Figure out colorspace      
@@ -1876,17 +1860,17 @@
         case 2: $colspace= 'DeviceRGB'; break;
         case 3: $colspace= 'Indexed'; break;
         default:
-          throw(new IllegalArgumentException('Alpha channel not supported: '.$file));
+          throw new IllegalArgumentException('Alpha channel not supported: '.$file);
       }
       
       if (ord(fread($f, 1)) != 0) {
-        throw(new IllegalArgumentException('Unknown compression method: '.$file));
+        throw new IllegalArgumentException('Unknown compression method: '.$file);
       }
       if (ord(fread($f, 1)) != 0) {
-        throw(new IllegalArgumentException('Unknown filter method: '.$file));
+        throw new IllegalArgumentException('Unknown filter method: '.$file);
       }
       if (ord(fread($f, 1)) != 0) {
-        throw(new IllegalArgumentException('Interlacing not supported: '.$file));
+        throw new IllegalArgumentException('Interlacing not supported: '.$file);
       }
 
       fread($f, 4);
@@ -1931,7 +1915,7 @@
       } while ($n);
 
       if ($colspace == 'Indexed' and empty($pal)) {
-        throw(new IllegalArgumentException('Missing palette in '.$file));
+        throw new IllegalArgumentException('Missing palette in '.$file);
       }
       
       fclose($f);

@@ -27,7 +27,7 @@
     public function setUp() {
       foreach (array('dom', 'xsl') as $ext) {
         if (!extension_loaded($ext)) {
-          throw(new PrerequisitesNotMetError($ext.' extension not loaded'));
+          throw new PrerequisitesNotMetError($ext.' extension not loaded');
         }
       }
     }

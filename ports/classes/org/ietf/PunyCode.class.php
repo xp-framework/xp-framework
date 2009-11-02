@@ -152,7 +152,7 @@
       // Check for ASCII characters
       for ($b= 0; $b<$in_len; $b++) {
         if (strpos($this->getASCII(), $input[$b]) === FALSE) {
-          throw(new IllegalArgumentException('Input is not valid punycode'));
+          throw new IllegalArgumentException('Input is not valid punycode');
         }
       }
 
@@ -166,7 +166,7 @@
       for ($j= 0; $j < $b; ++$j) {
         if ($flags !== NULL) $flags[$out] = $this->_flagged($input[$j]);
         if (ord($input[$j]) >= 0x80) {
-          throw(new IllegalArgumentException('Input is not valid punycode'));
+          throw new IllegalArgumentException('Input is not valid punycode');
         }
         $output[$out++] = ord($input[$j]);
       }
@@ -184,14 +184,14 @@
         // value at the end to obtain delta.
         for ($oldi = $i, $w = 1, $k = PUNYCODE_BASE; ; $k += PUNYCODE_BASE) {
           if ($in >= $in_len) {
-            throw(new IllegalArgumentException('Input is not valid punycode'));
+            throw new IllegalArgumentException('Input is not valid punycode');
           }
           $digit = $this->_decode_digit(ord($input[$in++]));
           if ($digit >= PUNYCODE_BASE) {
-            throw(new IllegalArgumentException('Input is not valid punycode'));
+            throw new IllegalArgumentException('Input is not valid punycode');
           }
           if ($digit > (LONG_MAX - $i) / $w) {
-            throw(new SystemException('Integer overflow'));
+            throw new SystemException('Integer overflow');
           }
           $i += $digit * $w;
           $t =
@@ -199,7 +199,7 @@
             ($k >= $bias + PUNYCODE_TMAX ? PUNYCODE_TMAX : $k - $bias);
           if ($digit < $t) break;
           if ($w > LONG_MAX / (PUNYCODE_BASE - $t)) {
-            throw(new SystemException('Integer overflow'));
+            throw new SystemException('Integer overflow');
           }
           $w *= (PUNYCODE_BASE - $t);
         }
@@ -209,7 +209,7 @@
         // i was supposed to wrap around from out+1 to 0,
         // incrementing n each time, so we'll fix that now:
         if ($i / ($out + 1) > LONG_MAX - $n) {
-          throw(new SystemException('Integer overflow'));
+          throw new SystemException('Integer overflow');
         }
         $n += (int)($i / ($out + 1));
         $i %= ($out + 1);
@@ -285,7 +285,7 @@
         // <n,i> state to <m,0>, but guard against overflow:
 
         if ($m - $n > (LONG_MAX - $delta) / ($h + 1)) {
-          throw(new SystemException('Integer overflow'));
+          throw new SystemException('Integer overflow');
         }
         $delta += ($m - $n) * ($h + 1);
         $n = $m;
@@ -294,7 +294,7 @@
           // Punycode does not need to check whether input[j] is basic:
           if (ord($input[$j]) < $n) {
             if (++$delta == 0) {
-              throw(new SystemException('Integer overflow'));
+              throw new SystemException('Integer overflow');
             }
           }
 

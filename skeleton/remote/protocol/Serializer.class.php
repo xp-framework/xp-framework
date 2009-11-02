@@ -211,8 +211,9 @@
      * mappings. Registering functionality will be removed
      * in future versions.
      *
+     * @deprecated
      * @param   string name
-     * @deprecated @param   string replace
+     * @param   string replace
      * @return  string replaced
      */
     public function packageMapping($name, $replace= NULL) {

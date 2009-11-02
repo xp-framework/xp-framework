@@ -24,11 +24,10 @@
     /**
      * Constructor
      *
-     * @param   &rdbms.DSN dsn
+     * @param   rdbms.DSN dsn
      */
     public function __construct($dsn) { 
       parent::__construct($dsn);
-            
       $this->shadow= $this->dsn->getValue('shadow', FALSE);
     }
     
@@ -97,18 +96,14 @@
      * Execute any statement
      *
      * @param   mixed* args
-     * @return  &rdbms.mysql.MySQLResultSet or FALSE to indicate failure
+     * @return  rdbms.mysql.MySQLResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     public function query() {
       $args= func_get_args();
       $sql= $this->_prepare($args);
 
-      try {
-        $res= parent::query($sql);
-      } catch (SQLException $e) {
-        throw($e);
-      }
+      $res= parent::query($sql);
       
       if (TRUE !== $res || !$this->shadow) return $res;
 

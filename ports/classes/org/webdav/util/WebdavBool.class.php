@@ -30,7 +30,7 @@
           return FALSE;
           
         default:  
-          throw(new IllegalArgumentException('Value '.$s.' not recognized'));
+          throw new IllegalArgumentException('Value '.$s.' not recognized');
       }
     }
     

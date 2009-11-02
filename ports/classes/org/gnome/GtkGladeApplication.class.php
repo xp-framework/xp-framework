@@ -30,7 +30,7 @@
      */
     public function __construct($p, $gladefile, $mainwin= 'window1') {
       if (!$this->glade= new GladeXML($gladefile)) {
-        throw(new GuiException('Cannot read glade file '.$gladefile));
+        throw new GuiException('Cannot read glade file '.$gladefile);
       }
       $this->mainwin= $mainwin;
       parent::__construct($p);
@@ -44,7 +44,7 @@
      */
     public function widget($name) {
       if (!$this->glade || !$w= $this->glade->get_widget($name)) {
-        throw(new WidgetNotFoundException($name));
+        throw new WidgetNotFoundException($name);
       } 
       return $w;
     }
