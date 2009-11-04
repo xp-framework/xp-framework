@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- XPCLI: Check for injection type not only in @inject(type= ...) and in
+  in the type restriction but also in the documented type (in this order)
+  (friebe, kiesel)
+
 RFCs
 ~~~~
 - Implemented RFC #0191 - New CSV API
