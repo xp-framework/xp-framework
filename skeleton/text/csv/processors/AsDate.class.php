@@ -1,10 +1,10 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AsDate.class.php 11504 2009-09-15 13:36:13Z friebe $ 
+ * $Id$ 
  */
 
-  uses('text.csv.CellProcessor', 'util.Date');
+  uses('text.csv.CellProcessor', 'util.Date', 'util.DateFormat');
 
   /**
    * Returns cell values as a date objects
@@ -14,7 +14,8 @@
    */
   class AsDate extends CellProcessor {
     protected $default= NULL;
-
+    protected $format= NULL;
+    
     /**
      * Set default when empty columns are encountered
      *
@@ -23,6 +24,17 @@
      */
     public function withDefault(Date $default= NULL) {
       $this->default= $default;
+      return $this;
+    }
+
+    /**
+     * Set date format
+     *
+     * @param   util.DateFormat format
+     * @return  text.csv.processors.AsDate
+     */
+    public function withFormat(DateFormat $format) {
+      $this->format= $format;
       return $this;
     }
 
@@ -36,7 +48,11 @@
     public function process($in) {
       if ('' !== $in) {
         try {
-          $date= new Date($in);
+          if ($this->format) {
+            $date= $this->format->parse($in);
+          } else {
+            $date= new Date($in);
+          }
         } catch (IllegalArgumentException $e) {
           throw new FormatException($e->getMessage());
         }
