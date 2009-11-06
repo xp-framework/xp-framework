@@ -24,11 +24,12 @@
     /**
      * Add a single URI
      *
-     * @param   string uri
-     * @param   string cwd
+     * @param   string uri Absolute path to file
+     * @param   string cwd Absolute path to current working directory
+     * @param   string urn The name under which this file should be added in the archive
      */
-    protected function add($uri, $cwd) {
-      $urn= strtr(preg_replace('#^('.preg_quote($cwd, '#').'|/)#', '', $uri), DIRECTORY_SEPARATOR, '/');
+    protected function add($uri, $cwd, $urn= NULL) {
+      $urn || $urn= strtr(preg_replace('#^('.preg_quote($cwd, '#').'|/)#', '', $uri), DIRECTORY_SEPARATOR, '/');
       $this->options & Options::VERBOSE && $this->out->writeLine($urn);
       $this->archive->add(new File($uri), $urn);
     }
@@ -43,8 +44,13 @@
       $list= array();
 
       foreach ($this->getArguments() as $arg) {
+        if (FALSE !== ($p= strpos($arg, '='))) {
+          $urn= substr($arg, $p+ 1);
+          $arg= substr($arg, 0, $p);
+        }
+      
         if (is_file($arg)) {
-          $this->add(realpath($arg), $cwd);
+          $this->add(realpath($arg), $cwd, $urn);
           continue;
         }
         
