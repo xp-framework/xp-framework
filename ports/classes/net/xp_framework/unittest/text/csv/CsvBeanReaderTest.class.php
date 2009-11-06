@@ -19,6 +19,16 @@
   class CsvBeanReaderTest extends TestCase {
 
     /**
+     * Set up test
+     *
+     */
+    public function setUp() {
+      if ('s' !== iconv_substr('s', 0, 1, 'iso-8859-1')) {
+        throw new PrerequisitesNotMetError('Broken iconv library detected.');
+      }
+    }
+
+    /**
      * Creates a new object reader
      *
      * @param   string str
