@@ -418,7 +418,7 @@
         7 => 'transverse',
         8 => 'rotate_270' 
       );
-      return $string[$this->orientation];
+      return isset($string[$this->orientation]) ? $string[$this->orientation] : '(unknown)';
     }
     
     /**
