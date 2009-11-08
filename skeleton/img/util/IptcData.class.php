@@ -120,6 +120,17 @@
     }
 
     /**
+     * Set Title
+     *
+     * @param   string title
+     * @return  img.util.IptcData this
+     */
+    public function withTitle($title) {
+      $this->title= $title;
+      return $this;
+    }
+
+    /**
      * Get Title
      *
      * @return  string
@@ -128,7 +139,6 @@
       return $this->title;
     }
 
-    
     /**
      * Set Urgency
      *
@@ -136,6 +146,17 @@
      */
     public function setUrgency($urgency) {
       $this->urgency= $urgency;
+    }
+
+    /**
+     * Set Urgency
+     *
+     * @param   string urgency
+     * @return  img.util.IptcData this
+     */
+    public function withUrgency($urgency) {
+      $this->urgency= $urgency;
+      return $this;
     }
 
     /**
@@ -147,7 +168,6 @@
       return $this->urgency;
     }
 
-    
     /**
      * Set Category
      *
@@ -158,6 +178,17 @@
     }
 
     /**
+     * Set Category
+     *
+     * @param   string category
+     * @return  img.util.IptcData this
+     */
+    public function withCategory($category) {
+      $this->category= $category;
+      return $this;
+    }
+
+    /**
      * Get Category
      *
      * @return  string
@@ -165,7 +196,6 @@
     public function getCategory() {
       return $this->category;
     }
-
     
     /**
      * Set Keywords
@@ -177,6 +207,17 @@
     }
 
     /**
+     * Set Keywords
+     *
+     * @param   string[] keywords
+     * @return  img.util.IptcData this
+     */
+    public function withKeywords($keywords) {
+      $this->keywords= $keywords;
+      return $this;
+    }
+
+    /**
      * Get Keywords
      *
      * @return  string[]
@@ -184,7 +225,6 @@
     public function getKeywords() {
       return $this->keywords;
     }
-
     
     /**
      * Set DateCreated
@@ -196,6 +236,17 @@
     }
 
     /**
+     * Set DateCreated
+     *
+     * @param   util.Date dateCreated default NULL
+     * @return  img.util.IptcData this
+     */
+    public function withDateCreated(Date $dateCreated= NULL) {
+      $this->dateCreated= $dateCreated;
+      return $this;
+    }
+
+    /**
      * Get DateCreated
      *
      * @return  util.Date
@@ -203,7 +254,6 @@
     public function getDateCreated() {
       return $this->dateCreated;
     }
-
     
     /**
      * Set Author
@@ -215,6 +265,17 @@
     }
 
     /**
+     * Set Author
+     *
+     * @param   string author
+     * @return  img.util.IptcData this
+     */
+    public function withAuthor($author) {
+      $this->author= $author;
+      return $this;
+    }
+
+    /**
      * Get Author
      *
      * @return  string
@@ -222,7 +283,6 @@
     public function getAuthor() {
       return $this->author;
     }
-
     
     /**
      * Set AuthorPosition
@@ -234,6 +294,17 @@
     }
 
     /**
+     * Set AuthorPosition
+     *
+     * @param   string authorPosition
+     * @return  img.util.IptcData this
+     */
+    public function withAuthorPosition($authorPosition) {
+      $this->authorPosition= $authorPosition;
+      return $this;
+    }
+
+    /**
      * Get AuthorPosition
      *
      * @return  string
@@ -242,7 +313,6 @@
       return $this->authorPosition;
     }
 
-    
     /**
      * Set City
      *
@@ -253,6 +323,17 @@
     }
 
     /**
+     * Set City
+     *
+     * @param   string city
+     * @return  img.util.IptcData this
+     */
+    public function withCity($city) {
+      $this->city= $city;
+      return $this;
+    }
+
+    /**
      * Get City
      *
      * @return  string
@@ -260,7 +341,6 @@
     public function getCity() {
       return $this->city;
     }
-
     
     /**
      * Set State
@@ -272,6 +352,17 @@
     }
 
     /**
+     * Set State
+     *
+     * @param   string state
+     * @return  img.util.IptcData this
+     */
+    public function withState($state) {
+      $this->state= $state;
+      return $this;
+    }
+
+    /**
      * Get State
      *
      * @return  string
@@ -279,7 +370,6 @@
     public function getState() {
       return $this->state;
     }
-
     
     /**
      * Set Country
@@ -291,6 +381,17 @@
     }
 
     /**
+     * Set Country
+     *
+     * @param   string country
+     * @return  img.util.IptcData this
+     */
+    public function withCountry($country) {
+      $this->country= $country;
+      return $this;
+    }
+
+    /**
      * Get Country
      *
      * @return  string
@@ -298,7 +399,6 @@
     public function getCountry() {
       return $this->country;
     }
-
     
     /**
      * Set Headline
@@ -310,6 +410,17 @@
     }
 
     /**
+     * Set Headline
+     *
+     * @param   string headline
+     * @return  img.util.IptcData this
+     */
+    public function withHeadline($headline) {
+      $this->headline= $headline;
+      return $this;
+    }
+
+    /**
      * Get Headline
      *
      * @return  string
@@ -317,7 +428,6 @@
     public function getHeadline() {
       return $this->headline;
     }
-
     
     /**
      * Set Credit
@@ -329,6 +439,17 @@
     }
 
     /**
+     * Set Credit
+     *
+     * @param   string credit
+     * @return  img.util.IptcData this
+     */
+    public function withCredit($credit) {
+      $this->credit= $credit;
+      return $this;
+    }
+
+    /**
      * Get Credit
      *
      * @return  string
@@ -336,7 +457,6 @@
     public function getCredit() {
       return $this->credit;
     }
-
     
     /**
      * Set Source
@@ -348,6 +468,17 @@
     }
 
     /**
+     * Set Source
+     *
+     * @param   string source
+     * @return  img.util.IptcData this
+     */
+    public function withSource($source) {
+      $this->source= $source;
+      return $this;
+    }
+
+    /**
      * Get Source
      *
      * @return  string
@@ -355,7 +486,6 @@
     public function getSource() {
       return $this->source;
     }
-
     
     /**
      * Set CopyrightNotice
@@ -367,6 +497,17 @@
     }
 
     /**
+     * Set CopyrightNotice
+     *
+     * @param   string copyrightNotice
+     * @return  img.util.IptcData this
+     */
+    public function withCopyrightNotice($copyrightNotice) {
+      $this->copyrightNotice= $copyrightNotice;
+      return $this;
+    }
+
+    /**
      * Get CopyrightNotice
      *
      * @return  string
@@ -374,7 +515,6 @@
     public function getCopyrightNotice() {
       return $this->copyrightNotice;
     }
-
     
     /**
      * Set Caption
@@ -386,6 +526,17 @@
     }
 
     /**
+     * Set Caption
+     *
+     * @param   string caption
+     * @return  img.util.IptcData this
+     */
+    public function withCaption($caption) {
+      $this->caption= $caption;
+      return $this;
+    }
+
+    /**
      * Get Caption
      *
      * @return  string
@@ -393,7 +544,6 @@
     public function getCaption() {
       return $this->caption;
     }
-
     
     /**
      * Set Writer
@@ -405,6 +555,17 @@
     }
 
     /**
+     * Set Writer
+     *
+     * @param   string writer
+     * @return  img.util.IptcData this
+     */
+    public function withWriter($writer) {
+      $this->writer= $writer;
+      return $this;
+    }
+
+    /**
      * Get Writer
      *
      * @return  string
@@ -412,7 +573,6 @@
     public function getWriter() {
       return $this->writer;
     }
-
     
     /**
      * Set SupplementalCategories
@@ -424,6 +584,17 @@
     }
 
     /**
+     * Set SupplementalCategories
+     *
+     * @param   string[] supplementalCategories
+     * @return  img.util.IptcData this
+     */
+    public function withSupplementalCategories($supplementalCategories) {
+      $this->supplementalCategories= $supplementalCategories;
+      return $this;
+    }
+
+    /**
      * Get SupplementalCategories
      *
      * @return  string[]
@@ -431,7 +602,6 @@
     public function getSupplementalCategories() {
       return $this->supplementalCategories;
     }
-
     
     /**
      * Set SpecialInstructions
@@ -443,6 +613,17 @@
     }
 
     /**
+     * Set SpecialInstructions
+     *
+     * @param   string specialInstructions
+     * @return  img.util.IptcData this
+     */
+    public function withSpecialInstructions($specialInstructions) {
+      $this->specialInstructions= $specialInstructions;
+      return $this;
+    }
+
+    /**
      * Get SpecialInstructions
      *
      * @return  string
@@ -450,7 +631,6 @@
     public function getSpecialInstructions() {
       return $this->specialInstructions;
     }
-
     
     /**
      * Set OriginalTransmissionReference
@@ -459,6 +639,17 @@
      */
     public function setOriginalTransmissionReference($originalTransmissionReference) {
       $this->originalTransmissionReference= $originalTransmissionReference;
+    }
+ 
+    /**
+     * Set OriginalTransmissionReference
+     *
+     * @param   string originalTransmissionReference
+     * @return  img.util.IptcData this
+     */
+    public function withOriginalTransmissionReference($originalTransmissionReference) {
+      $this->originalTransmissionReference= $originalTransmissionReference;
+      return $this;
     }
 
     /**
