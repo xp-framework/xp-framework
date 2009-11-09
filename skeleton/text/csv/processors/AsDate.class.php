@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.csv.CellProcessor', 'util.Date', 'util.DateFormat');
+  uses('text.csv.CellProcessor', 'util.Date', 'text.DateFormat');
 
   /**
    * Returns cell values as a date objects
@@ -30,7 +30,7 @@
     /**
      * Set date format
      *
-     * @param   util.DateFormat format
+     * @param   text.DateFormat format
      * @return  text.csv.processors.AsDate
      */
     public function withFormat(DateFormat $format) {
