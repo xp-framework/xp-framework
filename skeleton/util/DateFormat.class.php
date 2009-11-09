@@ -121,6 +121,23 @@
     }
     
     /**
+     * Parses an n-digit number from the given input string and returns
+     * it as an integer. The number may be prefixed by leading zeros.
+     *
+     * @param   string in
+     * @param   int l digits
+     * @param   int o offset
+     * @return  int
+     * @throws  lang.FormatException
+     */
+    protected function parseNumber($in, $l, $o) {
+      if (!is_numeric($n= substr($in, $o, $l))) {
+        throw new FormatException('Expected a '.$l.' digit number, have "'.$n.'..." at offset '.$o);
+      }
+      return (int)$n;
+    }
+    
+    /**
      * Parses an input string
      *
      * @param   string in
@@ -132,14 +149,14 @@
       $parsed= array('year' => 0, 'month' => 0, 'day' => 0, 'hour' => 0, 'minute' => 0, 'second' => 0);
       foreach ($this->format as $token) {
         switch ($token) {
-          case '%Y': $parsed['year']= substr($in, $o, 4); $o+= 4; break;
-          case '%m': $parsed['month']= substr($in, $o, 2); $o+= 2; break;
-          case '%d': $parsed['day']= substr($in, $o, 2); $o+= 2; break;
-          case '%H': $parsed['hour']= substr($in, $o, 2); $o+= 2; break;
-          case '%M': $parsed['minute']= substr($in, $o, 2); $o+= 2; break;
-          case '%S': $parsed['second']= substr($in, $o, 2); $o+= 2; break;
+          case '%Y': $parsed['year']= $this->parseNumber($in, 4, $o); $o+= 4; break;
+          case '%m': $parsed['month']= $this->parseNumber($in, 2, $o); $o+= 2; break;
+          case '%d': $parsed['day']= $this->parseNumber($in, 2, $o); $o+= 2; break;
+          case '%H': $parsed['hour']= $this->parseNumber($in, 2, $o); $o+= 2; break;
+          case '%M': $parsed['minute']= $this->parseNumber($in, 2, $o); $o+= 2; break;
+          case '%S': $parsed['second']= $this->parseNumber($in, 2, $o); $o+= 2; break;
           case '%p': $m= substr($in, $o, 2); $o+= 2; break;
-          case '%I': $parsed['hour']= substr($in, $o, $p= strspn($in, '0123456789', $o)); $o+= $p; break;
+          case '%I': $parsed['hour']= $this->parseNumber($in, 2, $o); $o+= 2; break;
           case is_array($token): {
             foreach ($token[1] as $i => $value) {
               if ($value !== substr($in, $o, strlen($value))) continue;
@@ -159,9 +176,9 @@
       }
       
       // AM/PM calculation
-      if ('AM' === $m && '12' === $parsed['hour']) {
+      if ('AM' === $m && 12 === $parsed['hour']) {
         $parsed['hour']= 0;
-      } else if ('PM' === $m && '12' !== $parsed['hour']) {
+      } else if ('PM' === $m && 12 !== $parsed['hour']) {
         $parsed['hour']+= 12;
       }
       
