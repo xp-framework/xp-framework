@@ -107,8 +107,8 @@
     #[@test]
     public function formatEuFormat() {
       $this->assertEquals(
-        '14.12.2009',
-        create(new DateFormat('%d.%m.%Y'))->format(new Date('2009-12-14'))
+        '09.01.2009',
+        create(new DateFormat('%d.%m.%Y'))->format(new Date('2009-01-09'))
       );
     }
 
@@ -167,6 +167,43 @@
         '07-Mrz-2011',
         create(new DateFormat('%d-%[month=Jan,Feb,Mrz,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez]-%Y'))->format(new Date('2011-03-07'))
       );
+    }
+
+    /**
+     * Test illegal format token
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function illegalToken() {
+      new DateFormat('%^');
+    }
+
+    /**
+     * Test parsing errors
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function stringTooShort() {
+      create(new DateFormat('%Y-%m-%d'))->parse('2004');
+    }
+
+    /**
+     * Test parsing errors
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function formatMismatch() {
+      create(new DateFormat('%Y-%m-%d'))->parse('12.12.2004');
+    }
+
+
+    /**
+     * Test parsing errors
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function nonNumericInput() {
+      create(new DateFormat('%Y'))->parse('Hello');
     }
   }
 ?>
