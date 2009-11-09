@@ -137,6 +137,54 @@
     }
 
     /**
+     * Test timezone names
+     *
+     */
+    #[@test]
+    public function parseDateWithTimeZoneName() {
+      $this->assertEquals(
+        new Date('2009-12-14 11:45:00', new TimeZone('Europe/Berlin')),
+        create(new DateFormat('%Y-%m-%d %H:%M:%S %z'))->parse('2009-12-14 11:45:00 Europe/Berlin')
+      );
+    }
+
+    /**
+     * Test timezone names
+     *
+     */
+    #[@test]
+    public function formatDateWithTimeZoneName() {
+      $this->assertEquals(
+        '2009-12-14 11:45:00 Europe/Berlin',
+        create(new DateFormat('%Y-%m-%d %H:%M:%S %z'))->format(new Date('2009-12-14 11:45:00', new TimeZone('Europe/Berlin')))
+      );
+    }
+
+    /**
+     * Test timezone offset
+     *
+     */
+    #[@test]
+    public function parseDateWithTimeZoneOffset() {
+      $this->assertEquals(
+        new Date('2009-12-14 11:45:00-0800'),
+        create(new DateFormat('%Y-%m-%d %H:%M:%S%Z'))->parse('2009-12-14 11:45:00-0800')
+      );
+    }
+
+    /**
+     * Test timezone offset
+     *
+     */
+    #[@test]
+    public function formatDateWithTimeZoneOffset() {
+      $this->assertEquals(
+        '2009-12-14 11:45:00-0800',
+        create(new DateFormat('%Y-%m-%d %H:%M:%S%Z'))->format(new Date('2009-12-14 11:45:00-0800'))
+      );
+    }
+
+    /**
      * Test formatting a literal percent sign
      *
      */
