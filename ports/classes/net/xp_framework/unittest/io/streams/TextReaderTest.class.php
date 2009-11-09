@@ -87,6 +87,33 @@
      *
      */
     #[@test]
+    public function readingDoesNotContinueAfterBrokenCharacters() {
+      $r= $this->newReader("Hello Übercoder\n".str_repeat('*', 512), 'utf-8');
+      try {
+        $r->read(1);
+        $this->fail('No exception caught', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) {
+        // OK
+      }
+      $this->assertNull($r->read(512));
+    }
+
+    /**
+     * Test reading "'ç:ina" which contains two characters not convertible
+     * to iso-8859-1, our internal encoding.
+     *
+     * @see     http://de.wikipedia.org/wiki/China (the word in the first square brackets on this page).
+     */
+    #[@test]
+    public function readUnconvertible() {
+      $this->assertEquals('çina', $this->newReader('ËˆÃ§iËna', 'utf-8')->read());
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
     public function read() {
       $this->assertEquals('Hello', $this->newReader('Hello')->read());
     }
