@@ -11,7 +11,7 @@
    * as parsing them from it.
    *
    * Examples
-   * ---------
+   * --------
    * Formatting a date:
    * <code>
    *   $format= new DateFormat('%d.%m.%Y');
@@ -24,9 +24,11 @@
    *   $date= $format->parse('14.12.2009');
    * </code>
    *
-   * Format tokens
+   * Format string
    * -------------
-   * The following format tokens may be used:
+   * The format string consists of format tokens preceded by a percent
+   * sign (%) and any other character. The following format tokens are 
+   * supported:
    * <ul>
    *   <li>%Y - Four digit representation for the year</li>
    *   <li>%m - Two digit representation for the month (01= Jan, 12= Dec)</li>
@@ -38,20 +40,59 @@
    *   <li>%p - AM or PM - use together with %I</li>
    * </li>
    *
+   * Furthermore, a mapping may be notated as follows:
+   * <pre>
+   *   %[month=Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec]
+   *     ^^^^^ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   *     |     Values (1..n)
+   *     Variable
+   * </pre>
+   * When parsing and one of the strings is encountered, it is mapped to
+   * the position it is notated at, e.g. "Jan" inside the input string
+   * parsed would yield 1 in the date's month field. When formatting, the
+   * date's field referenced by the variable if used to look up the value
+   * in the map, concatenating it to the output string.
+   *
    * @see      php://strftime
    * @see      php://strptime
    * @test     xp://net.xp_framework.unittest.util.DateFormatTest
    */
   class DateFormat extends Object {
-    protected $format= '';
+    protected $format= array();
     
     /**
      * Constructor
      *
      * @param   string format
+     * @throws  lang.IllegalArgumentException if the format string is malformed
      */
     public function __construct($format) {
-      $this->format= $format;
+      for ($i= 0, $s= strlen($format); $i < $s; $i++) {
+        if ('%' === $format{$i}) {
+          $i++;
+          switch ($format{$i}) {
+            case '%': {   // Literal percent
+              $this->format[]= '%'; 
+              break;
+            }
+            case '[': {   // Map
+              $end= strpos($format, ']', $i);
+              list($var, $values)= explode('=', substr($format, $i+ 1, $end- $i- 1), 2);
+              $i= $end;
+              $this->format[]= array($var, explode(',', $values));
+              break;
+            }
+            default: {    // Any other character - verify it's supported
+              if (!strspn($format{$i}, 'YmdHIMSp')) {
+                throw new IllegalArgumentException('Unknown format token "'.$format{$i}.'"');
+              }
+              $this->format[]= '%'.$format{$i};
+            }
+          }
+        } else {
+          $this->format[]= $format{$i};
+        }
+      }
     }
     
     /**
@@ -62,24 +103,18 @@
      */
     public function format(Date $d) {
       $out= '';
-      for ($i= 0, $s= strlen($this->format); $i < $s; $i++) {
-        if ('%' !== $this->format{$i}) {
-          $out.= $this->format{$i};
-          continue;
-        }
-        $i++;
-        switch ($this->format{$i}) {
-          case 'Y': $out.= $d->getYear(); break;
-          case 'm': $out.= str_pad($d->getMonth(), 2, '0', STR_PAD_LEFT); break;
-          case 'd': $out.= str_pad($d->getDay(), 2, '0', STR_PAD_LEFT); break;
-          case 'H': $out.= str_pad($d->getHours(), 2, '0', STR_PAD_LEFT); break;
-          case 'M': $out.= str_pad($d->getMinutes(), 2, '0', STR_PAD_LEFT); break;
-          case 'S': $out.= str_pad($d->getSeconds(), 2, '0', STR_PAD_LEFT); break;
-          case 'p': $h= $d->getHours(); $out.= $h >= 12 ? 'PM': 'AM'; break;
-          case 'I': $out.= str_pad($d->getHours() % 12, 2, '0', STR_PAD_LEFT); break;
-          default: {
-            throw new IllegalArgumentException('Unknown format token "'.$this->format{$i}.'"');
-          }
+      foreach ($this->format as $token) {
+        switch ($token) {
+          case '%Y': $out.= $d->getYear(); break;
+          case '%m': $out.= str_pad($d->getMonth(), 2, '0', STR_PAD_LEFT); break;
+          case '%d': $out.= str_pad($d->getDay(), 2, '0', STR_PAD_LEFT); break;
+          case '%H': $out.= str_pad($d->getHours(), 2, '0', STR_PAD_LEFT); break;
+          case '%M': $out.= str_pad($d->getMinutes(), 2, '0', STR_PAD_LEFT); break;
+          case '%S': $out.= str_pad($d->getSeconds(), 2, '0', STR_PAD_LEFT); break;
+          case '%p': $h= $d->getHours(); $out.= $h >= 12 ? 'PM': 'AM'; break;
+          case '%I': $out.= str_pad($d->getHours() % 12, 2, '0', STR_PAD_LEFT); break;
+          case is_array($token): $out.= $token[1][call_user_func(array($d, 'get'.$token[0]))- 1]; break;
+          default: $out.= $token;
         }
       }
       return $out;
@@ -95,48 +130,35 @@
       $o= 0;
       $m= NULL;
       $parsed= array('year' => 0, 'month' => 0, 'day' => 0, 'hour' => 0, 'minute' => 0, 'second' => 0);
-      for ($i= 0, $s= strlen($this->format); $i < $s; $i++) {
-        if ('%' === $this->format{$i}) {
-          $i++;
-          switch ($this->format{$i}) {
-            case 'Y': $parsed['year']= substr($in, $o, 4); $o+= 4; break;
-            case 'm': $parsed['month']= substr($in, $o, 2); $o+= 2; break;
-            case 'd': $parsed['day']= substr($in, $o, 2); $o+= 2; break;
-            case 'H': $parsed['hour']= substr($in, $o, 2); $o+= 2; break;
-            case 'M': $parsed['minute']= substr($in, $o, 2); $o+= 2; break;
-            case 'S': $parsed['second']= substr($in, $o, 2); $o+= 2; break;
-            case 'p': $m= substr($in, $o, 2); $o+= 2; break;
-            case 'I': $parsed['hour']= substr($in, $o, $p= strspn($in, '0123456789', $o)); $o+= $p; break;
-            
-            // Parse only: Ignore input
-            case '*': {
-              $o+= strpos($in, $this->format{++$i}, $o)+ 1; 
-              break;
+      foreach ($this->format as $token) {
+        switch ($token) {
+          case '%Y': $parsed['year']= substr($in, $o, 4); $o+= 4; break;
+          case '%m': $parsed['month']= substr($in, $o, 2); $o+= 2; break;
+          case '%d': $parsed['day']= substr($in, $o, 2); $o+= 2; break;
+          case '%H': $parsed['hour']= substr($in, $o, 2); $o+= 2; break;
+          case '%M': $parsed['minute']= substr($in, $o, 2); $o+= 2; break;
+          case '%S': $parsed['second']= substr($in, $o, 2); $o+= 2; break;
+          case '%p': $m= substr($in, $o, 2); $o+= 2; break;
+          case '%I': $parsed['hour']= substr($in, $o, $p= strspn($in, '0123456789', $o)); $o+= $p; break;
+          case is_array($token): {
+            foreach ($token[1] as $i => $value) {
+              if ($value !== substr($in, $o, strlen($value))) continue;
+              $parsed[$token[0]]= $i+ 1;
+              $o+= strlen($value);
+              break 2;
             }
-            case '[': {
-              $end= strpos($this->format, ']', $i);
-              sscanf(substr($this->format, $i+ 1, $end- $i- 1), "%[^=]=%[^\r]", $var, $map);
-              foreach (explode(',', $map) as $j => $n) {
-                if ($n !== substr($in, $o, strlen($n))) continue;
-                $parsed[$var]= $j+ 1;
-                $o+= strlen($n);
-                $i= $end;
-                break 2;
-              }
-              throw new FormatException('Expected ['.$map.'] but have "'.substr($in, $o, 5).'[...]"');
-            }
-            default: {
-              throw new IllegalArgumentException('Unknown format token "'.$this->format{$i}.'"');
-            }
+            throw new FormatException('Expected ['.implode(', ', $token[1]).'] but have "'.substr($in, $o, 5).'..."');
           }
-        } else if ($this->format{$i} !== $in{$o}) {
-          throw new FormatException('Expected "'.$this->format{$i}.'" but have "'.$in{$o}.'" at offset '.$o);
-        } else {
-          $o++;
+          default: {
+            if ($token !== $in{$o}) {
+              throw new FormatException('Expected "'.$token.'" but have "'.$in{$o}.'" at offset '.$o);
+            }
+            $o++;
+          }
         }
       }
       
-      // 12 AM = 00:00, 12 PM= 12:00, 
+      // AM/PM calculation
       if ('AM' === $m && '12' === $parsed['hour']) {
         $parsed['hour']= 0;
       } else if ('PM' === $m && '12' !== $parsed['hour']) {
