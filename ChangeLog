@@ -6,6 +6,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- Added new text.DateFormat class
+  (friebe)
+- Added with*() methods complementing the setter to img.util.ExifData 
+  and img.util.IptcData to allow for fluent usage
+  (friebe)
+- XPCLI: Check for injection type not only in @inject(type= ...) and in
+  in the type restriction but also in the documented type (in this order)
+  (friebe, kiesel)
+
 RFCs
 ~~~~
 - Implemented RFC #0191 - New CSV API

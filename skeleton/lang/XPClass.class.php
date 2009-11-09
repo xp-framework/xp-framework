@@ -69,17 +69,22 @@
      * Constructor
      *
      * @param   mixed ref either a class name, a ReflectionClass instance or an object
+     * @throws  lang.IllegalStateException
      */
     public function __construct($ref) {
       if ($ref instanceof ReflectionClass) {
-        $this->_class= $ref->getName();
         $this->_reflect= $ref;
+        $this->_class= $ref->getName();
       } else if (is_object($ref)) {
+        $this->_reflect= new ReflectionClass($ref);
         $this->_class= get_class($ref);
-        $this->_reflect= new ReflectionClass($ref);
       } else {
+        try {
+          $this->_reflect= new ReflectionClass((string)$ref);
+        } catch (ReflectionException $e) {
+          throw new IllegalStateException($e->getMessage());
+        }
         $this->_class= $ref;
-        $this->_reflect= new ReflectionClass($ref);
       }
       parent::__construct(xp::nameOf($this->_class));
     }

@@ -18,16 +18,6 @@
   class TextReaderTest extends TestCase {
   
     /**
-     * Set up test
-     *
-     */
-    public function setUp() {
-      if ('s' !== iconv_substr('s', 0, 1, 'iso-8859-1')) {
-        throw new PrerequisitesNotMetError('Broken iconv library detected.');
-      }
-    }
-
-    /**
      * Returns a text reader for a given input string.
      *
      * @param   string str
@@ -72,6 +62,51 @@
     #[@test]
     public function readLengthUtf8() {
       $this->assertEquals('Übercoder', $this->newReader('Ãœbercoder', 'utf-8')->read(9));
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function readBrokenUtf8() {
+      $this->newReader('Hello Ã', 'utf-8')->read(0x1000);
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function readMalformedUtf8() {
+      $this->newReader('Hello Übercoder', 'utf-8')->read(0x1000);
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
+    public function readingDoesNotContinueAfterBrokenCharacters() {
+      $r= $this->newReader("Hello Übercoder\n".str_repeat('*', 512), 'utf-8');
+      try {
+        $r->read(1);
+        $this->fail('No exception caught', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) {
+        // OK
+      }
+      $this->assertNull($r->read(512));
+    }
+
+    /**
+     * Test reading "'ç:ina" which contains two characters not convertible
+     * to iso-8859-1, our internal encoding.
+     *
+     * @see     http://de.wikipedia.org/wiki/China (the word in the first square brackets on this page).
+     */
+    #[@test]
+    public function readUnconvertible() {
+      $this->assertEquals('çina', $this->newReader('ËˆÃ§iËna', 'utf-8')->read());
     }
 
     /**

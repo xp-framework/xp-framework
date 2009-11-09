@@ -6,7 +6,7 @@
 
   $package= 'xp.xar';
 
-  uses('util.cmd.Console', 'xp.xar.Options');
+  uses('util.cmd.Console', 'xp.xar.Options', 'io.File');
 
   /**
    * XAR
@@ -99,6 +99,7 @@
       
       // Parse command line
       $operation= NULL;
+      $std= 'php://stdin';
       for ($i= 0; $i < sizeof($args); $i++) {
         if ('-R' == $args[$i]) {
           chdir($args[$i++]);
@@ -111,6 +112,7 @@
             switch ($args[$i]{$o}) {
               case 'c': 
                 self::setOperation($operation, 'create'); 
+                $std= 'php://stdout';
                 break;
               case 'x': 
                 self::setOperation($operation, 'extract'); 
@@ -130,6 +132,7 @@
                 break;
               case 'f': 
                 $file= new File($args[$i+ 1]);
+                $std= NULL;
                 $offset++;
                 break;
               default: 
@@ -142,6 +145,9 @@
       }
       
       if (!$operation) self::usage();
+      
+      // Use STDOUT & STDERR if no file is given
+      if ($std) $file= new File($std);
      
       // Perform operation
       $operation->newInstance(Console::$out, Console::$err, $options, new Archive($file), $args)->perform();

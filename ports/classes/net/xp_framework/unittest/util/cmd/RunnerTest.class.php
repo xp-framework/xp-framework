@@ -8,6 +8,7 @@
     'unittest.TestCase',
     'util.cmd.Command',
     'xp.command.Runner',
+    'util.log.Logger',
     'io.streams.MemoryOutputStream'
   );
 
@@ -618,6 +619,115 @@
       $this->assertEquals(0, $return);
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('lang.XPClass<net.xp_forge.instructions.Copy>', $this->out->getBytes());
+    }
+
+    /**
+     * Test unknown injection
+     *
+     */
+    #[@test]
+    public function unknownInjectionType() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        #[@inject(type= "io.Folder", name= "output")]
+        public function setOutput($f) { 
+        }
+        
+        public function run() { 
+        }
+      }');
+      $return= $this->runWith(array($command->getClassName()));
+      $this->assertEquals(2, $return);
+      $this->assertEquals('', $this->out->getBytes());
+      $this->assertOnStream($this->err, '*** Unknown injection type "io.Folder" at method "setOutput"');
+    }
+
+    /**
+     * Test no injection type
+     *
+     */
+    #[@test]
+    public function noInjectionType() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        #[@inject(name= "output")]
+        public function setOutput($f) { 
+        }
+        
+        public function run() { 
+        }
+      }');
+      $return= $this->runWith(array($command->getClassName()));
+      $this->assertEquals(2, $return);
+      $this->assertEquals('', $this->out->getBytes());
+      $this->assertOnStream($this->err, '*** Unknown injection type "*" at method "setOutput"');
+    }
+
+    /**
+     * Test logger category injection
+     *
+     */
+    #[@test]
+    public function loggerCategoryInjection() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        protected $cat= NULL;
+        
+        #[@inject(type= "util.log.LogCategory", name= "debug")]
+        public function setTrace($cat) { 
+          $this->cat= $cat;
+        }
+        
+        public function run() { 
+          $this->out->write($this->cat ? $this->cat->getClass() : NULL); 
+        }
+      }');
+      $this->runWith(array($command->getClassName()));
+      $this->assertEquals('lang.XPClass<util.log.LogCategory>', $this->out->getBytes());
+    }
+
+    /**
+     * Test logger category injection
+     *
+     */
+    #[@test]
+    public function loggerCategoryInjectionViaTypeRestriction() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        protected $cat= NULL;
+        
+        #[@inject(name= "debug")]
+        public function setTrace(LogCategory $cat) { 
+          $this->cat= $cat;
+        }
+        
+        public function run() { 
+          $this->out->write($this->cat ? $this->cat->getClass() : NULL); 
+        }
+      }');
+      $this->runWith(array($command->getClassName()));
+      $this->assertEquals('lang.XPClass<util.log.LogCategory>', $this->out->getBytes());
+    }
+
+    /**
+     * Test logger category injection
+     *
+     */
+    #[@test]
+    public function loggerCategoryInjectionViaTypeDocumentation() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        protected $cat= NULL;
+        
+        /**
+         * @param   util.log.LogCategory cat
+         */
+        #[@inject(name= "debug")]
+        public function setTrace($cat) { 
+          $this->cat= $cat;
+        }
+        
+        public function run() { 
+          $this->out->write($this->cat ? $this->cat->getClass() : NULL); 
+        }
+      }');
+      $this->runWith(array($command->getClassName()));
+      $this->assertEquals('lang.XPClass<util.log.LogCategory>', $this->out->getBytes());
     }
   }
 ?>

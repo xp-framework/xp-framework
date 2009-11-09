@@ -175,6 +175,17 @@
     }
 
     /**
+     * Set Height
+     *
+     * @param   int height
+     * @return  img.util.ExifData this
+     */
+    public function withHeight($height) {
+      $this->height= $height;
+      return $this;
+    }
+
+    /**
      * Get Height
      *
      * @return  int
@@ -190,6 +201,17 @@
      */
     public function setWidth($width) {
       $this->width= $width;
+    }
+
+    /**
+     * Set Width
+     *
+     * @param   int width
+     * @return  img.util.ExifData this
+     */
+    public function withWidth($width) {
+      $this->width= $width;
+      return $this;
     }
 
     /**
@@ -211,6 +233,17 @@
     }
 
     /**
+     * Set Make
+     *
+     * @param   string make
+     * @return  img.util.ExifData this
+     */
+    public function withMake($make) {
+      $this->make= $make;
+      return $this;
+    }
+
+    /**
      * Get Make
      *
      * @return  string
@@ -229,6 +262,17 @@
     }
 
     /**
+     * Set Model
+     *
+     * @param   string model
+     * @return  img.util.ExifData this
+     */
+    public function withModel($model) {
+      $this->model= $model;
+      return $this;
+    }
+
+    /**
      * Get Model
      *
      * @return  string
@@ -244,6 +288,17 @@
      */
     public function setFlash($flash) {
       $this->flash= $flash;
+    }
+
+    /**
+     * Set Flash
+     *
+     * @param   int flash
+     * @return  img.util.ExifData this
+     */
+    public function withFlash($flash) {
+      $this->flash= $flash;
+      return $this;
     }
 
     /**
@@ -274,6 +329,17 @@
     }
 
     /**
+     * Set Orientation
+     *
+     * @param   int orientation
+     * @return  img.util.ExifData this
+     */
+    public function withOrientation($orientation) {
+      $this->orientation= $orientation;
+      return $this;
+    }
+
+    /**
      * Get Orientation
      *
      * @return  int
@@ -289,6 +355,17 @@
      */
     public function setFileName($fileName) {
       $this->fileName= $fileName;
+    }
+
+    /**
+     * Set FileName
+     *
+     * @param   string fileName
+     * @return  img.util.ExifData this
+     */
+    public function withFileName($fileName) {
+      $this->fileName= $fileName;
+      return $this;
     }
 
     /**
@@ -310,6 +387,17 @@
     }
 
     /**
+     * Set FileSize
+     *
+     * @param   int fileSize
+     * @return  img.util.ExifData this
+     */
+    public function withFileSize($fileSize) {
+      $this->fileSize= $fileSize;
+      return $this;
+    }
+
+    /**
      * Get FileSize
      *
      * @return  int
@@ -328,6 +416,17 @@
     }
 
     /**
+     * Set MimeType
+     *
+     * @param   string mimeType
+     * @return  img.util.ExifData this
+     */
+    public function withMimeType($mimeType) {
+      $this->mimeType= $mimeType;
+      return $this;
+    }
+
+    /**
      * Get MimeType
      *
      * @return  string
@@ -343,6 +442,17 @@
      */
     public function setDateTime($dateTime) {
       $this->dateTime= $dateTime;
+    }
+
+    /**
+     * Set DateTime
+     *
+     * @param   util.Date dateTime
+     * @return  img.util.ExifData this
+     */
+    public function withDateTime($dateTime) {
+      $this->dateTime= $dateTime;
+      return $this;
     }
 
     /**
@@ -418,7 +528,7 @@
         7 => 'transverse',
         8 => 'rotate_270' 
       );
-      return $string[$this->orientation];
+      return isset($string[$this->orientation]) ? $string[$this->orientation] : '(unknown)';
     }
     
     /**
@@ -447,6 +557,17 @@
     }
 
     /**
+     * Set ApertureFNumber
+     *
+     * @param   string apertureFNumber
+     * @return  img.util.ExifData this
+     */
+    public function withApertureFNumber($apertureFNumber) {
+      $this->apertureFNumber= $apertureFNumber;
+      return $this;
+    }
+
+    /**
      * Get ApertureFNumber
      *
      * @return  string
@@ -462,6 +583,17 @@
      */
     public function setSoftware($software) {
       $this->software= $software;
+    }
+
+    /**
+     * Set Software
+     *
+     * @param   string software
+     * @return  img.util.ExifData this
+     */
+    public function withSoftware($software) {
+      $this->software= $software;
+      return $this;
     }
 
     /**
@@ -483,6 +615,17 @@
     }
 
     /**
+     * Set ExposureTime
+     *
+     * @param   string exposureTime
+     * @return  img.util.ExifData this
+     */
+    public function withExposureTime($exposureTime) {
+      $this->exposureTime= $exposureTime;
+      return $this;
+    }
+
+    /**
      * Get ExposureTime
      *
      * @return  string
@@ -498,6 +641,17 @@
      */
     public function setExposureProgram($exposureProgram) {
       $this->exposureProgram= $exposureProgram;
+    }
+
+    /**
+     * Set ExposureProgram
+     *
+     * @param   int exposureProgram
+     * @return  img.util.ExifData this
+     */
+    public function withExposureProgram($exposureProgram) {
+      $this->exposureProgram= $exposureProgram;
+      return $this;
     }
 
     /**
@@ -543,6 +697,17 @@
     }
 
     /**
+     * Set MeteringMode
+     *
+     * @param   int meteringMode
+     * @return  img.util.ExifData this
+     */
+    public function withMeteringMode($meteringMode) {
+      $this->meteringMode= $meteringMode;
+      return $this;
+    }
+
+    /**
      * Get MeteringMode
      *
      * @return  int
@@ -584,6 +749,17 @@
     }
 
     /**
+     * Set Whitebalance
+     *
+     * @param   int whitebalance
+     * @return  img.util.ExifData this
+     */
+    public function withWhitebalance($whitebalance) {
+      $this->whitebalance= $whitebalance;
+      return $this;
+    }
+
+    /**
      * Get Whitebalance.
      * Values are 0 = auto white balance, 1 = manual white balance.
      *
@@ -603,6 +779,17 @@
     }
 
     /**
+     * Set IsoSpeedRatings
+     *
+     * @param   int isoSpeedRatings
+     * @return  img.util.ExifData this
+     */
+    public function withIsoSpeedRatings($isoSpeedRatings) {
+      $this->isoSpeedRatings= $isoSpeedRatings;
+      return $this;
+    }
+
+    /**
      * Get IsoSpeedRatings
      *
      * @return  int
@@ -618,6 +805,17 @@
      */
     public function setFocalLength($focallength) {
       $this->focalLength= $focallength;
+    }
+
+    /**
+     * Set FocalLength
+     *
+     * @param   int FocalLength
+     * @return  img.util.ExifData this
+     */
+    public function withFocalLength($focallength) {
+      $this->focalLength= $focallength;
+      return $this;
     }
 
     /**

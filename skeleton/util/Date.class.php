@@ -50,13 +50,13 @@
         // containing only digits are timestamps)
         $this->date= date_create('@'.$in, timezone_open('UTC'));
         date_timezone_set($this->date, $timezone ? $timezone->getHandle() : timezone_open(date_default_timezone_get()));
-      } else if (FALSE === ($this->date= $timezone instanceof TimeZone
-        ? date_create($in, $timezone->getHandle())
-        : date_create($in)
-      )) {
-        throw new IllegalArgumentException(
-          'Given argument is neither a timestamp nor a well-formed timestring: '.xp::stringOf($in)
-        );
+      } else {
+        $this->date= $timezone ? date_create($in, $timezone->getHandle()) : date_create($in);
+        if (FALSE === $this->date || xp::errorAt(__FILE__, __LINE__ - 1)) {
+          throw new IllegalArgumentException(
+            'Given argument is neither a timestamp nor a well-formed timestring: '.xp::stringOf($in)
+          );
+        }
       }
     }
 

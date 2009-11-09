@@ -84,6 +84,60 @@
     }
 
     /**
+     * Test 31.02.2009 is invalid
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function februaryDoesNotHave31st() {
+      $this->castValue('31.02.2009');
+    }
+    
+    /**
+     * Test 30.02.2009 is invalid
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function februaryDoesNotHave30th() {
+      $this->castValue('30.02.2009');
+    }
+    
+    /**
+     * Test 29.02.2009 is invalid
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function februaryDoesNotHave29th() {
+      $this->castValue('29.02.2009');
+    }
+
+    /**
+     * Test 29.02.2009 is valid in a leap year
+     *
+     */
+    #[@test]
+    public function february29thInLeapYear() {
+      $this->assertEquals(new Date('2008-02-29'), $this->castValue('29.02.2008'));
+    }
+    
+    /**
+     * Test with a day > 31
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function dayLargerThan31() {
+      $this->castValue('32.11.2009');
+    }
+
+    /**
+     * Test with a month > 12
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function monthLargerThan12() {
+      $this->castValue('01.13.2009');
+    }
+
+    /**
      * Test
      *
      */

@@ -255,7 +255,14 @@
       foreach ($class->getMethods() as $method) {
         if ($method->hasAnnotation('inject')) {      // Perform injection
           $inject= $method->getAnnotation('inject');
-          switch (isset($inject['type']) ? $inject['type'] : $method->getParameter(0)->getTypeRestriction()->getName()) {
+          if (isset($inject['type'])) {
+            $type= $inject['type'];
+          } else if ($restriction= $method->getParameter(0)->getTypeRestriction()) {
+            $type= $restriction->getName();
+          } else {
+            $type= $method->getParameter(0)->getType()->getName();
+          }
+          switch ($type) {
             case 'rdbms.DBConnection': {
               $args= array($cm->getByHost($inject['name'], 0));
               break;
@@ -272,7 +279,7 @@
             }
 
             default: {
-              self::$err->writeLine('*** Unknown injection type "'.$inject['type'].'" at method "'.$method->getName().'"');
+              self::$err->writeLine('*** Unknown injection type "'.$type.'" at method "'.$method->getName().'"');
               return 2;
             }
           }

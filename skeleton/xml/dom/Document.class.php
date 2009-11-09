@@ -138,8 +138,8 @@
      * @param   string string
      * @return  xml.dom.Document
      */
-    public static function fromString($string) {
-      return parent::fromString($string, __CLASS__);
+    public static function fromString($string, $class= __CLASS__) {
+      return parent::fromString($string, $class);
     }
 
 
@@ -149,8 +149,8 @@
      * @param   xml.File file
      * @return  xml.dom.Document
      */
-    public static function fromFile($file) {
-      return parent::fromFile($file, __CLASS__);
+    public static function fromFile($file, $class= __CLASS__) {
+      return parent::fromFile($file, $class);
     }
   }
 ?>
