@@ -7,7 +7,8 @@
   uses('io.streams.Reader');
 
   /**
-   * Reads text from an underlying input stream.
+   * Reads text from an underlying input stream, converting it from the
+   * given character set to our internal encoding (which is iso-8859-1).
    *
    * @test    xp://net.xp_framework.unittest.io.streams.TextReaderTest
    * @ext     iconv
@@ -83,7 +84,7 @@
       }
       
       // Ignore characters not convertible to iso-8859-1
-      return iconv($this->charset, 'iso-8859-1//IGNORE', $chunk);
+      return @iconv($this->charset, 'iso-8859-1//IGNORE', $chunk);
     }
     
     /**
