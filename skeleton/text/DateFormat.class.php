@@ -212,5 +212,22 @@
         $tz
       );
     }
+    
+    /**
+     * Creates a string representation of this date format instance
+     *
+     * @return  string
+     */
+    public function toString() {
+      $str= '';
+      foreach ($this->format as $token) {
+        if (is_array($token)) {
+          $str.= '['.$token[0].'='.implode(',', $token[1]).']';
+        } else {
+          $str.= $token;
+        }
+      }
+      return $this->getClassName().'<"'.$str.'">';
+    }
   }
 ?>
