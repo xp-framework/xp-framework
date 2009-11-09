@@ -179,13 +179,17 @@
      * @param   lang.Throwable e
      */
     protected function except(HttpScriptletResponse $response, Throwable $e) {
+      $errorPage= ($this->getClass()->getPackage()->providesResource('error'.$response->statusCode.'.html')
+        ? $this->getClass()->getPackage()->getResource('error'.$response->statusCode.'.html')
+        : $this->getClass()->getPackage()->getResource('error500.html')
+      );
       $response->setContent(str_replace(
         '<xp:value-of select="reason"/>',
         (($this->flags & self::STACKTRACE)
           ? $e->toString()
           : $e->getMessage()
         ),
-        $this->getClass()->getPackage()->getResource('error'.$response->statusCode.'.html')
+        $errorPage
       ));
     }
     
