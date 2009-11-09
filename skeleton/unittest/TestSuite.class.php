@@ -250,7 +250,7 @@
             $this->notifyListeners('testFailed', array(
               $result->setFailed(
                 $test, 
-                new AssertionFailedError('Expected '.$e->getClassName().'\'s message differs', $expected[1], $e->getMessage()), 
+                new AssertionFailedError('Expected '.$e->getClassName().'\'s message differs', $e->getMessage(), $expected[1]),
                 $timer->elapsedTime()
               )
             ));
