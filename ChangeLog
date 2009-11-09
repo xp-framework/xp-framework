@@ -8,6 +8,8 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
+- Added new text.DateFormat class
+  (friebe)
 - Added with*() methods complementing the setter to img.util.ExifData 
   and img.util.IptcData to allow for fluent usage
   (friebe)
