@@ -81,7 +81,9 @@
         $this->buf= substr($this->buf, strlen($chunk));
         $this->bl= iconv_strlen($this->buf, $this->charset);
       }
-      return iconv($this->charset, 'iso-8859-1', $chunk);
+      
+      // Ignore characters not convertible to iso-8859-1
+      return iconv($this->charset, 'iso-8859-1//IGNORE', $chunk);
     }
     
     /**
