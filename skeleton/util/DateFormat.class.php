@@ -38,6 +38,8 @@
    *   <li>%M - Four digit representation for the minute</li>
    *   <li>%S - Four digit representation for the second</li>
    *   <li>%p - AM or PM - use together with %I</li>
+   *   <li>%z - Timezone name, in the form Region/City</li>
+   *   <li>%Z - Timezone offset, e.g. -0800</li>
    * </li>
    *
    * Furthermore, a mapping may be notated as follows:
@@ -83,7 +85,7 @@
               break;
             }
             default: {    // Any other character - verify it's supported
-              if (!strspn($format{$i}, 'YmdHIMSp')) {
+              if (!strspn($format{$i}, 'YmdHIMSpzZ')) {
                 throw new IllegalArgumentException('Unknown format token "'.$format{$i}.'"');
               }
               $this->format[]= '%'.$format{$i};
@@ -113,6 +115,8 @@
           case '%S': $out.= str_pad($d->getSeconds(), 2, '0', STR_PAD_LEFT); break;
           case '%p': $h= $d->getHours(); $out.= $h >= 12 ? 'PM': 'AM'; break;
           case '%I': $out.= str_pad($d->getHours() % 12, 2, '0', STR_PAD_LEFT); break;
+          case '%z': $out.= $d->getTimeZone()->getName(); break;
+          case '%Z': $out.= $d->getOffset(); break;
           case is_array($token): $out.= $token[1][call_user_func(array($d, 'get'.$token[0]))- 1]; break;
           default: $out.= $token;
         }
@@ -145,7 +149,7 @@
      */
     public function parse($in) {
       $o= 0;
-      $m= NULL;
+      $m= $tz= $go= NULL;
       $parsed= array('year' => 0, 'month' => 0, 'day' => 0, 'hour' => 0, 'minute' => 0, 'second' => 0);
       foreach ($this->format as $token) {
         switch ($token) {
@@ -157,6 +161,15 @@
           case '%S': $parsed['second']= $this->parseNumber($in, 2, $o); $o+= 2; break;
           case '%p': $m= substr($in, $o, 2); $o+= 2; break;
           case '%I': $parsed['hour']= $this->parseNumber($in, 2, $o); $o+= 2; break;
+          case '%z': $tz= new TimeZone($n= substr($in, $o, strcspn($in, ' ', $o))); $o+= strlen($n); break;
+          case '%Z': {
+            sscanf(substr($in, $o, 5), '%c%02d%02d', $sign, $hours, $minutes); 
+            $fa= '-' === $sign ? 1 : -1;    // -0800 means 8 hours ahead of time
+            $go= array('hour' => $fa * $hours, 'minute'  => $fa * $minutes);
+            $tz= new TimeZone('GMT');
+            $o+= 5; 
+            break;
+          }
           case is_array($token): {
             foreach ($token[1] as $i => $value) {
               if ($value !== substr($in, $o, strlen($value))) continue;
@@ -182,8 +195,22 @@
         $parsed['hour']+= 12;
       }
       
+      // Timezone offset calculationn
+      if ($go) {
+        $parsed['hour']+= $go['hour'];
+        $parsed['minute']+= $go['minute'];
+      }
+      
       // echo "$in => "; var_dump($parsed);
-      return Date::create($parsed['year'], $parsed['month'], $parsed['day'], $parsed['hour'], $parsed['minute'], $parsed['second']);
+      return Date::create(
+        $parsed['year'], 
+        $parsed['month'], 
+        $parsed['day'], 
+        $parsed['hour'], 
+        $parsed['minute'], 
+        $parsed['second'],
+        $tz
+      );
     }
   }
 ?>
