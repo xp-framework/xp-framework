@@ -32,8 +32,10 @@
    *   <li>%m - Two digit representation for the month (01= Jan, 12= Dec)</li>
    *   <li>%d - Two digit representation for the day</li>
    *   <li>%H - Two digit representation for the hour in 24-hour format</li>
+   *   <li>%I - Two digit representation for the hour in 12-hour format</li>
    *   <li>%M - Four digit representation for the minute</li>
    *   <li>%S - Four digit representation for the second</li>
+   *   <li>%p - AM or PM - use together with %I</li>
    * </li>
    *
    * @see      php://strftime
@@ -59,7 +61,28 @@
      * @return  string
      */
     public function format(Date $d) {
-      return $d->format($this->format);
+      $out= '';
+      for ($i= 0, $s= strlen($this->format); $i < $s; $i++) {
+        if ('%' !== $this->format{$i}) {
+          $out.= $this->format{$i};
+          continue;
+        }
+        $i++;
+        switch ($this->format{$i}) {
+          case 'Y': $out.= $d->getYear(); break;
+          case 'm': $out.= str_pad($d->getMonth(), 2, '0', STR_PAD_LEFT); break;
+          case 'd': $out.= str_pad($d->getDay(), 2, '0', STR_PAD_LEFT); break;
+          case 'H': $out.= str_pad($d->getHours(), 2, '0', STR_PAD_LEFT); break;
+          case 'M': $out.= str_pad($d->getMinutes(), 2, '0', STR_PAD_LEFT); break;
+          case 'S': $out.= str_pad($d->getSeconds(), 2, '0', STR_PAD_LEFT); break;
+          case 'p': $h= $d->getHours(); $out.= $h >= 12 ? 'PM': 'AM'; break;
+          case 'I': $out.= str_pad($d->getHours() % 12, 2, '0', STR_PAD_LEFT); break;
+          default: {
+            throw new IllegalArgumentException('Unknown format token "'.$this->format{$i}.'"');
+          }
+        }
+      }
+      return $out;
     }
     
     /**
@@ -70,6 +93,7 @@
      */
     public function parse($in) {
       $o= 0;
+      $m= NULL;
       $parsed= array('year' => 0, 'month' => 0, 'day' => 0, 'hour' => 0, 'minute' => 0, 'second' => 0);
       for ($i= 0, $s= strlen($this->format); $i < $s; $i++) {
         if ('%' === $this->format{$i}) {
@@ -81,6 +105,10 @@
             case 'H': $parsed['hour']= substr($in, $o, 2); $o+= 2; break;
             case 'M': $parsed['minute']= substr($in, $o, 2); $o+= 2; break;
             case 'S': $parsed['second']= substr($in, $o, 2); $o+= 2; break;
+            case 'p': $m= substr($in, $o, 2); $o+= 2; break;
+            case 'I': $parsed['hour']= substr($in, $o, $p= strspn($in, '0123456789', $o)); $o+= $p; break;
+            
+            // Parse only: Ignore input
             case '*': {
               $o+= strpos($in, $this->format{++$i}, $o)+ 1; 
               break;
@@ -107,6 +135,14 @@
           $o++;
         }
       }
+      
+      // 12 AM = 00:00, 12 PM= 12:00, 
+      if ('AM' === $m && '12' === $parsed['hour']) {
+        $parsed['hour']= 0;
+      } else if ('PM' === $m && '12' !== $parsed['hour']) {
+        $parsed['hour']+= 12;
+      }
+      
       // echo "$in => "; var_dump($parsed);
       return Date::create($parsed['year'], $parsed['month'], $parsed['day'], $parsed['hour'], $parsed['minute'], $parsed['second']);
     }
