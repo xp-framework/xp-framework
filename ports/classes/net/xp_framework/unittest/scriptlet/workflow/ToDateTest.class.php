@@ -84,6 +84,24 @@
     }
 
     /**
+     * Test with a day > 31
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function dayLargerThan31() {
+      $this->castValue('32.11.2009');
+    }
+
+    /**
+     * Test with a month > 12
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function monthLargerThan12() {
+      $this->castValue('01.13.2009');
+    }
+
+    /**
      * Test
      *
      */
