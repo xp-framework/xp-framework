@@ -38,7 +38,7 @@
         }
         
         try {
-          $date= new Date($v);
+          $date= Date::create($pv['year'], $pv['month'], $pv['day'], $pv['hour'], $pv['minute'], $pv['second']);
         } catch (IllegalArgumentException $e) {
           return $e->getMessage();
         }
