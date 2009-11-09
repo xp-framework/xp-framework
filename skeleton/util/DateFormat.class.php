@@ -7,16 +7,44 @@
   uses('util.Date');
 
   /**
-   * Date format
+   * Represents a date format and allows converting dates to it as well 
+   * as parsing them from it.
+   *
+   * Examples
+   * ---------
+   * Formatting a date:
+   * <code>
+   *   $format= new DateFormat('%d.%m.%Y');
+   *   $string= $format->format(new Date('2009-12-14')); // "14.12.2009"
+   * </code>
+   *
+   * Parsing a date from a string:
+   * <code>
+   *   $format= new DateFormat('%d.%m.%Y');
+   *   $date= $format->parse('14.12.2009');
+   * </code>
+   *
+   * Format tokens
+   * -------------
+   * The following format tokens may be used:
+   * <ul>
+   *   <li>%Y - Four digit representation for the year</li>
+   *   <li>%m - Two digit representation for the month (01= Jan, 12= Dec)</li>
+   *   <li>%d - Two digit representation for the day</li>
+   *   <li>%H - Two digit representation for the hour in 24-hour format</li>
+   *   <li>%M - Four digit representation for the minute</li>
+   *   <li>%S - Four digit representation for the second</li>
+   * </li>
    *
    * @see      php://strftime
+   * @see      php://strptime
    * @test     xp://net.xp_framework.unittest.util.DateFormatTest
    */
   class DateFormat extends Object {
     protected $format= '';
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
      * @param   string format
      */
@@ -47,12 +75,12 @@
         if ('%' === $this->format{$i}) {
           $i++;
           switch ($this->format{$i}) {
-            case 'Y': $parsed['year']= substr($in, $o, 4); $o+= 4; break;     // Four digit representation for the year
-            case 'm': $parsed['month']= substr($in, $o, 2); $o+= 2; break;    // Two digit representation of the month
-            case 'd': $parsed['day']= substr($in, $o, 2); $o+= 2; break;      // Two-digit day of the day
-            case 'H': $parsed['hour']= substr($in, $o, 2); $o+= 2; break;     // Two digit representation of the hour in 24-hour format
-            case 'M': $parsed['minute']= substr($in, $o, 2); $o+= 2; break;   // Two digit representation of the minute
-            case 'S': $parsed['second']= substr($in, $o, 2); $o+= 2; break;   // Two digit representation of the second
+            case 'Y': $parsed['year']= substr($in, $o, 4); $o+= 4; break;
+            case 'm': $parsed['month']= substr($in, $o, 2); $o+= 2; break;
+            case 'd': $parsed['day']= substr($in, $o, 2); $o+= 2; break;
+            case 'H': $parsed['hour']= substr($in, $o, 2); $o+= 2; break;
+            case 'M': $parsed['minute']= substr($in, $o, 2); $o+= 2; break;
+            case 'S': $parsed['second']= substr($in, $o, 2); $o+= 2; break;
             case '*': {
               $o+= strpos($in, $this->format{++$i}, $o)+ 1; 
               break;
