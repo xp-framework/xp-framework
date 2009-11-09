@@ -135,16 +135,37 @@
         create(new DateFormat('%d.%m.%Y %H:%M:%S'))->format(new Date('2009-12-14 11:45:00'))
       );
     }
- 
+
     /**
-     * Test specialized format (Mo 07-Mrz-2011)
+     * Test formatting a literal percent sign
      *
      */
     #[@test]
-    public function dayAndMonthNamesInInput() {
+    public function formatLiteralPercent() {
+      $this->assertEquals('%', create(new DateFormat('%%'))->format(new Date()));
+    }
+
+    /**
+     * Test specialized format (07-Mrz-2011)
+     *
+     */
+    #[@test]
+    public function parseGermanMonthNamesInInput() {
       $this->assertEquals(
         new Date('2011-03-07'),
-        create(new DateFormat('%* %d-%[month=Jan,Feb,Mrz,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez]-%Y'))->parse('Mo 07-Mrz-2011')
+        create(new DateFormat('%d-%[month=Jan,Feb,Mrz,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez]-%Y'))->parse('07-Mrz-2011')
+      );
+    }
+
+    /**
+     * Test specialized format (07-Mrz-2011)
+     *
+     */
+    #[@test]
+    public function formatGermanMonthNames() {
+      $this->assertEquals(
+        '07-Mrz-2011',
+        create(new DateFormat('%d-%[month=Jan,Feb,Mrz,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez]-%Y'))->format(new Date('2011-03-07'))
       );
     }
   }
