@@ -62,6 +62,27 @@
     }
   
     /**
+     * Helper method
+     *
+     * @param   string method
+     * @param   string handlerName
+     * @param   string expect
+     */
+    protected function assertHandlerForMethodTriggered($method, $handlerName, $expect) {
+      $req= $this->newRequest($method, new URL('http://localhost/'));
+      $res= new HttpScriptletResponse();
+
+      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
+        public function '.$handlerName.'($request, $response) {
+          $response->write("Hello ".__FUNCTION__);
+        }
+      }');
+      $s->service($req, $res);
+      $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
+      $this->assertEquals($expect, $res->getContent());
+    }
+
+    /**
      * Test GET method
      *
      */
@@ -114,60 +135,93 @@
     }
 
     /**
-     * Test doGet() is invoked method
+     * Test illegal HTTP verb is not supported
+     *
+     */
+    #[@test, @expect(class= 'scriptlet.HttpScriptletException', withMessage= 'Unknown HTTP method: "LOOK"')]
+    public function illegalHttpVerb() {
+      $this->assertHandlerForMethodTriggered('LOOK', 'doLook', 'Hello doLook');
+    }
+
+    /**
+     * Test doGet() method is invoked
      *
      */
     #[@test]
     public function doGet() {
-      $req= $this->newRequest('GET', new URL('http://localhost/'));
-      $res= new HttpScriptletResponse();
-      
-      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
-        public function doGet($request, $response) {
-          $response->write("Hello GET");
-        }
-      }');
-      $s->service($req, $res);
-      $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
-      $this->assertEquals('Hello GET', $res->getContent());
+      $this->assertHandlerForMethodTriggered('GET', 'doGet', 'Hello doGet');
     }
 
     /**
-     * Test doHead() is invoked method
+     * Test doHead() method is invoked
      *
      */
     #[@test]
     public function doHead() {
-      $req= $this->newRequest('HEAD', new URL('http://localhost/'));
-      $res= new HttpScriptletResponse();
-      
-      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
-        public function doHead($request, $response) {
-          $response->write("Hello HEAD");
-        }
-      }');
-      $s->service($req, $res);
-      $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
-      $this->assertEquals('Hello HEAD', $res->getContent());
+      $this->assertHandlerForMethodTriggered('HEAD', 'doHead', 'Hello doHead');
     }
 
     /**
-     * Test doPost() is invoked method
+     * Test doPost() method is invoked
      *
      */
     #[@test]
     public function doPost() {
-      $req= $this->newRequest('POST', new URL('http://localhost/'));
-      $res= new HttpScriptletResponse();
-      
-      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
-        public function doPost($request, $response) {
-          $response->write("Hello POST");
-        }
-      }');
-      $s->service($req, $res);
-      $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
-      $this->assertEquals('Hello POST', $res->getContent());
+      $this->assertHandlerForMethodTriggered('POST', 'doPost', 'Hello doPost');
+    }
+
+    /**
+     * Test doDelete() method is invoked
+     *
+     */
+    #[@test]
+    public function doDelete() {
+      $this->assertHandlerForMethodTriggered('DELETE', 'doDelete', 'Hello doDelete');
+    }
+
+    /**
+     * Test doOptions() method is invoked
+     *
+     */
+    #[@test]
+    public function doOptions() {
+      $this->assertHandlerForMethodTriggered('OPTIONS', 'doOptions', 'Hello doOptions');
+    }
+
+    /**
+     * Test doTrace() method is invoked
+     *
+     */
+    #[@test]
+    public function doTrace() {
+      $this->assertHandlerForMethodTriggered('TRACE', 'doTrace', 'Hello doTrace');
+    }
+
+    /**
+     * Test doConnect() method is invoked
+     *
+     */
+    #[@test]
+    public function doConnect() {
+      $this->assertHandlerForMethodTriggered('CONNECT', 'doConnect', 'Hello doConnect');
+    }
+
+    /**
+     * Test non-implemented method triggers MethodNotImplementedException
+     *
+     */
+    #[@test, @expect('scriptlet.HttpScriptletException')]
+    public function requestedMethodNotImplemented() {
+      $this->assertHandlerForMethodTriggered('DELETE', 'doHead', '');
+    }
+
+    /**
+     * Test non-implemented method triggers MethodNotImplementedException
+     *
+     */
+    #[@test, @expect('scriptlet.HttpScriptletException')]
+    public function nonHttpVerbNotImplemented() {
+      $this->assertHandlerForMethodTriggered('SOMETHING', 'doSomething', '');
     }
 
     /**

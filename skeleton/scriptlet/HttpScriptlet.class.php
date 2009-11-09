@@ -167,9 +167,11 @@
     }
     
     /**
-     * Handles the different HTTP methods. Supports GET, POST and
-     * HEAD - other HTTP methods pose security risks if not handled
-     * properly and are used very uncommly anyway.
+     * Handles the different HTTP methods. Supports all HTTP verbs,
+     * if they do have a handler method in the scriptlet class.
+     *
+     * HTTP GET, HEAD and POST are always available, but are
+     * implemented as noop in the default implementation.
      *
      * If you want to support these methods, override this method - 
      * make sure you call <pre>parent::handleMethod($request)</pre>
@@ -181,29 +183,38 @@
      * @return  string class method (one of doGet, doPost, doHead)
      */
     public function handleMethod($request) {
-      switch ($request->method) {
-        case HttpConstants::POST:
+      switch (strtoupper($request->method)) {
+        case HttpConstants::PUT: {
           if (!empty($_FILES)) {
             $request->params= array_merge($request->params, $_FILES);
           }
-          $m= 'doPost';
+          
+          // Break missing intentionally
+        }
+        case HttpConstants::POST:
+        case HttpConstants::DELETE:
+        case HttpConstants::OPTIONS:
+        case HttpConstants::TRACE:
+        case HttpConstants::CONNECT: {
           break;
+        }
           
         case HttpConstants::GET:
-          $request->setData($request->getEnvValue('QUERY_STRING'));
-          $m= 'doGet';
-          break;
-          
         case HttpConstants::HEAD:
           $request->setData($request->getEnvValue('QUERY_STRING'));
-          $m= 'doHead';
-          break;        
+          break;
           
-        default:
-          $m= NULL;
+        default: {
+          throw new HttpScriptletException(
+            'Unknown HTTP method: "'.strtoupper($request->method).'"',
+            HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED
+          );
+        }
       }
-      
-      return $m;
+
+      $method= 'do'.ucfirst(strtolower($request->method));
+      if (!is_callable(array($this, $method))) return NULL;
+      return $method;
     }
     
     /**
