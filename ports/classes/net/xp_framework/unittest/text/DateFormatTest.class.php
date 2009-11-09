@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'util.DateFormat'
+    'text.DateFormat'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://util.DateFormat
+   * @see      xp://text.DateFormat
    */
   class DateFormatTest extends TestCase {
   

@@ -57,7 +57,7 @@
    *
    * @see      php://strftime
    * @see      php://strptime
-   * @test     xp://net.xp_framework.unittest.util.DateFormatTest
+   * @test     xp://net.xp_framework.unittest.text.DateFormatTest
    */
   class DateFormat extends Object {
     protected $format= array();
