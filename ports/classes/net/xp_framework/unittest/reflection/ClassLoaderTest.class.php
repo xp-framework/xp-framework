@@ -231,5 +231,25 @@
         $this->assertEquals($two, $one->getField('two')->get(NULL));
       }
     }
+
+    /**
+     * Test (mis-)using the public constructor does not lead to a 
+     * ReflectionException surfacing
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function newInstance() {
+      new XPClass('DoesNotExist');
+    }
+
+    /**
+     * Test (mis-)using the public constructor does not lead to a 
+     * ReflectionException surfacing
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function newInstance__PHP_Incomplete_Class() {
+      new XPClass(unserialize('O:12:"DoesNotExist":0:{}'));
+    }
   }
 ?>
