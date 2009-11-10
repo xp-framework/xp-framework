@@ -52,6 +52,26 @@ This has the following downsides:
 * There is no way to type-hint a generic, verifying a vector's component
   type is string would mean manually accessing its __generic member.
 
+Plan
+~~~~
+A generic instance should be created at runtime, extending the base type
+and named with unique name created of the base and component types.
+
+<code>
+  // Creates a class named:
+  // "util.collections.Vector··lang.types.String"
+  $vs= create('new Vector<lang.types.String>()');
+  
+  // Creates a class named:
+  // "util.collections.HashTable··lang.types.String··lang.Generic"
+  $vn= create('new HashTable<lang.types.String, lang.Generic>()');
+</code>
+
+<summary>
+The middle dot (·, Alt-Gr + "." in Cygwin) is used in the XP Framework
+for generated classes and in fully qualified names (see RFC #0037).
+</summary>
+
 
 Security considerations
 -----------------------
@@ -70,7 +90,7 @@ None.
 
 Related documents
 -----------------
-n/a
+* http://www.artima.com/intv/generics2.html - Generics in C#, Java, and C++
 
 
 Comments
