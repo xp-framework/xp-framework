@@ -729,5 +729,40 @@
       $this->runWith(array($command->getClassName()));
       $this->assertEquals('lang.XPClass<util.log.LogCategory>', $this->out->getBytes());
     }
+ 
+    /**
+     * Test injection
+     *
+     */
+    #[@test]
+    public function injectionOccursBeforeArguments() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        protected $cat= NULL;
+
+        /**
+         * @param   string name
+         */
+        #[@arg(position= 0)]
+        public function setName($name) { 
+          $this->out->writeLine("Arg= ", $name);
+        }
+        
+        /**
+         * @param   util.log.LogCategory cat
+         */
+        #[@inject(name= "debug")]
+        public function setTrace($cat) { 
+          $this->out->writeLine($cat ? $cat->getClass() : NULL); 
+        }
+        
+        public function run() { 
+        }
+      }');
+      $this->runWith(array($command->getClassName(), 'Test'));
+      $this->assertEquals(
+        "lang.XPClass<util.log.LogCategory>\nArg= Test\n", 
+        $this->out->getBytes()
+      );
+    }
   }
 ?>
