@@ -251,46 +251,53 @@
       $instance= $class->newInstance();
       $instance->out= self::$out;
       $instance->err= self::$err;
+      $methods= $class->getMethods();
 
-      foreach ($class->getMethods() as $method) {
-        if ($method->hasAnnotation('inject')) {      // Perform injection
-          $inject= $method->getAnnotation('inject');
-          if (isset($inject['type'])) {
-            $type= $inject['type'];
-          } else if ($restriction= $method->getParameter(0)->getTypeRestriction()) {
-            $type= $restriction->getName();
-          } else {
-            $type= $method->getParameter(0)->getType()->getName();
-          }
-          switch ($type) {
-            case 'rdbms.DBConnection': {
-              $args= array($cm->getByHost($inject['name'], 0));
-              break;
-            }
+      // Injection
+      foreach ($methods as $method) {
+        if (!$method->hasAnnotation('inject')) continue;
 
-            case 'util.Properties': {
-              $args= array($pm->getProperties($inject['name']));
-              break;
-            }
-
-            case 'util.log.LogCategory': {
-              $args= array($l->getCategory($inject['name']));
-              break;
-            }
-
-            default: {
-              self::$err->writeLine('*** Unknown injection type "'.$type.'" at method "'.$method->getName().'"');
-              return 2;
-            }
+        $inject= $method->getAnnotation('inject');
+        if (isset($inject['type'])) {
+          $type= $inject['type'];
+        } else if ($restriction= $method->getParameter(0)->getTypeRestriction()) {
+          $type= $restriction->getName();
+        } else {
+          $type= $method->getParameter(0)->getType()->getName();
+        }
+        switch ($type) {
+          case 'rdbms.DBConnection': {
+            $args= array($cm->getByHost($inject['name'], 0));
+            break;
           }
 
-          try {
-            $method->invoke($instance, $args);
-          } catch (Throwable $e) {
-            self::$err->writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
+          case 'util.Properties': {
+            $args= array($pm->getProperties($inject['name']));
+            break;
+          }
+
+          case 'util.log.LogCategory': {
+            $args= array($l->getCategory($inject['name']));
+            break;
+          }
+
+          default: {
+            self::$err->writeLine('*** Unknown injection type "'.$type.'" at method "'.$method->getName().'"');
             return 2;
           }
-        } else if ($method->hasAnnotation('args')) { // Pass all arguments
+        }
+
+        try {
+          $method->invoke($instance, $args);
+        } catch (Throwable $e) {
+          self::$err->writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
+          return 2;
+        }
+      }
+      
+      // Arguments
+      foreach ($methods as $method) {
+        if ($method->hasAnnotation('args')) { // Pass all arguments
           if (!$method->hasAnnotation('args', 'select')) {
             $pass= array_slice($classparams->list, 0, $classparams->count);
           } else {

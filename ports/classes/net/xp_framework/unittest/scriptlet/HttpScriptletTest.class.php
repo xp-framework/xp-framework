@@ -216,15 +216,6 @@
     }
 
     /**
-     * Test non-implemented method triggers MethodNotImplementedException
-     *
-     */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
-    public function nonHttpVerbNotImplemented() {
-      $this->assertHandlerForMethodTriggered('SOMETHING', 'doSomething', '');
-    }
-
-    /**
      * Test any exceptions thrown from do*() methods are wrapped inside
      * a scriptlet.HttpScriptletException
      *
