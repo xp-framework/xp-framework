@@ -744,7 +744,7 @@
          */
         #[@arg(position= 0)]
         public function setName($name) { 
-          $this->out->writeLine("Arg= ", $name);
+          $this->out->write($this->cat ? $this->cat->getClass() : NULL); 
         }
         
         /**
@@ -752,17 +752,14 @@
          */
         #[@inject(name= "debug")]
         public function setTrace($cat) { 
-          $this->out->writeLine($cat ? $cat->getClass() : NULL); 
+          $this->cat= $cat;
         }
         
         public function run() { 
         }
       }');
       $this->runWith(array($command->getClassName(), 'Test'));
-      $this->assertEquals(
-        "lang.XPClass<util.log.LogCategory>\nArg= Test\n", 
-        $this->out->getBytes()
-      );
+      $this->assertEquals('lang.XPClass<util.log.LogCategory>', $this->out->getBytes());
     }
   }
 ?>
