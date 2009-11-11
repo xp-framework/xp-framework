@@ -1,0 +1,99 @@
+RFC 0193: Generics optimization
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Nov 10 19:53:29     2009
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Generics will be optimized.
+
+
+Rationale
+---------
+Improve performance.
+
+
+Functionality
+-------------
+Currently, generics are implemented as follows:
+* A: A __generic instance member is required inside the declaration.
+  It will hold an array of the component types.
+* B: The methods working with generics are required to take care of
+  the type checks.
+* C: The create() core functionality takes care of instantiating the
+  generics, populating the __generic member with the given types' 
+  names.
+
+Example (abbreviated):
+<code>
+  class Vector extends Object {
+    public $__generic;                                  // A
+    
+    public function add($value) {
+      if (!$value instanceof $this->__generic[0]) {     // B
+        throw new IllegalArgumentException('...');
+      }
+      // ...
+    }
+  }
+  
+  $v= create('new Vector<lang.types.String>()');        // C
+</code>
+
+This has the following downsides:
+* The declaration is quite verbose and introduces a bunch of boilerplate
+  code for the manual component type verification.
+* At runtime, two generics, e.g. a vector of strings and one integers, 
+  are "instanceof"-compatible
+* There is no way to type-hint a generic, verifying a vector's component
+  type is string would mean manually accessing its __generic member.
+
+Plan
+~~~~
+A generic instance should be created at runtime, extending the base type
+and named with unique name created of the base and component types.
+
+<code>
+  // Creates a class named:
+  // "util.collections.Vector··lang.types.String"
+  $vs= create('new Vector<lang.types.String>()');
+  
+  // Creates a class named:
+  // "util.collections.HashTable··lang.types.String··lang.Generic"
+  $vn= create('new HashTable<lang.types.String, lang.Generic>()');
+</code>
+
+<summary>
+The middle dot (·, Alt-Gr + "." in Cygwin) is used in the XP Framework
+for generated classes and in fully qualified names (see RFC #0037).
+</summary>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Faster.
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+* http://www.artima.com/intv/generics2.html - Generics in C#, Java, and C++
+
+
+Comments
+--------
+
+<EOF>

@@ -224,5 +224,42 @@
         $this->allTokens('var pattern = /0?([0-9]+)\.0?([0-9]+)(\.0?([0-9]+))?/;', "/\n =;")
       );
     }
+
+    /**
+     * Test pushBack()
+     *
+     */
+    #[@test]
+    public function pushBackAfterHavingReadUntilEnd() {
+      $t= $this->tokenizerInstance('1,2,', ',');
+      $this->assertEquals('1', $t->nextToken());
+      $this->assertEquals('2', $t->nextToken());
+      $this->assertFalse($t->hasMoreTokens(), 'Should be at end');
+      $t->pushBack('6,7');
+      $this->assertTrue($t->hasMoreTokens(), 'Should have tokens after pushing back');
+      $this->assertEquals('6', $t->nextToken(), 'Should yield token pushed back');
+      $this->assertEquals('7', $t->nextToken(), 'Should yield token pushed back');
+      $this->assertFalse($t->hasMoreTokens(), 'Should be at end again');
+    }
+
+    /**
+     * Test pushBack()
+     *
+     */
+    #[@test]
+    public function pushBackWithDelimitersAfterHavingReadUntilEnd() {
+      $t= $this->tokenizerInstance('1,2,', ',', TRUE);
+      $this->assertEquals('1', $t->nextToken());
+      $this->assertEquals(',', $t->nextToken());
+      $this->assertEquals('2', $t->nextToken());
+      $this->assertEquals(',', $t->nextToken());
+      $this->assertFalse($t->hasMoreTokens(), 'Should be at end');
+      $t->pushBack('6,7');
+      $this->assertTrue($t->hasMoreTokens(), 'Should have tokens after pushing back');
+      $this->assertEquals('6', $t->nextToken(), 'Should yield token pushed back');
+      $this->assertEquals(',', $t->nextToken());
+      $this->assertEquals('7', $t->nextToken(), 'Should yield token pushed back');
+      $this->assertFalse($t->hasMoreTokens(), 'Should be at end again');
+    }
   }
 ?>

@@ -11,149 +11,486 @@ Scope of Change
 ---------------
 XP will become its own language, that is, PHP with syntax additions, some
 of which have been described in RFC #0008. (JIT-)Compilers will be created 
-to create PHP4, PHP5 and PHP6 sourcecode from the new language.
+to create PHP 5.2 and PHP 5.3 (with namespaces) sourcecode from the new 
+language.
 
 
 Rationale
 ---------
-- Independence from PHP development process and its sometimes idiotic
-  decisions (like having to extend built-in Exception for everything
-  that should be throwable or decision to throw fatal errors in places
-  it's not really required).
-- PHP5/PHP6 migration
-- Namespaces
-- No more syntax cludges
-- Rapid development
+Designing the XP programming language we had the following goals in mind:
+
+* Get rid of the oddities in PHP - alternative syntaxes like if / endif 
+  for example or "__"-magic.
+* Overcome limitations in the PHP grammar that do not allow chaining at
+  all points like method calls after new() and array access after method
+  calls.
+* Support syntactically what the XP framework has built ontop of PHP:
+  annotations, type-safe enums, return types, thrown exceptions, finallly,
+  with() blocks.
+* Integrate with the XP Framework's foundation classes.
+* Keep the "change and run" spirit and the ability for rapid development.
+
+Generally speaking, we've tried to follow the "less is more" principle and
+tried making the syntax more concise as to what it's doing.
 
 
 Functionality
 -------------
-The suggested functionality is divided into the following parts:
-<pre>
-1) Execution changes
-2) Syntax changes
-</pre>
+Like in the XP framework, the entry point is always a class. In their most
+simple form, these classes have a static <tt>main()</tt> method. An example:
 
-1) Execution changes
-~~~~~~~~~~~~~~~~~~~~
-Scripts written in the XP language can no longer be run by PHP directly
-but will require a preprocessor (the JIT-compiler):
-
-Current:
-<pre>
-$ php script.php
-</pre>
-
-New:
-<pre>
-$ php -dauto_prepend_file=xp.php script.php
-</pre>
-
-Of course, an alias could be created, so one could type:
-<pre>
-$ xp script.php
-</pre>
-
-When PHP is executed from within a webserver, the auto_prepend_file could
-be set by the virtual host's configuration or per directory.
-
-
-2) Syntax changes
-~~~~~~~~~~~~~~~~~
-
-Namespaces
-~~~~~~~~~~
-Namespaces can be simulated by string operations. This has been shown
-by our "The patch" [1] and by Jessie Hernandez' namespaces implementation
-for PHP-CVS [2].
-
-Class declaration in a package:
 <code>
-  package util·cmd {
-    class Console {
-      // ...
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      util.cmd.Console::writeLine('Hello World from ', self::class.getName(), '!');
     }
-  }  
+  }
 </code>
 
-Importing a class from a package:
-<code>
-  import util·cmd·Console;
+Now you will already start noticing things:
+* Classes may also have modifiers.
+* The "extends Object" is optional and added by the compiler if omitted.
+* The keyword "function" is gone and replaced by the return type. Because
+  the main() method does not return anything, we use "void".
+* An array type is written as component[]
+* Variables still have dollar signs. This makes it easy to spot them,
+  that's why we've decided to keep this!
+* Fully qualified classnames are written with dots.
+* The object operator is also a dot (at the same time, the string 
+  concatenation operator is now the tilde, ~).
+
+Compilation
+~~~~~~~~~~~
+To run the above example, it first needs to be compiled:
+<pre>
+  # Compile source to HelloWorld.class.php
+  $ xcc HelloWorld.xp
+  ...
   
-  Console::writeLine('Hello');
+  # Now run it, as usual
+  $ xp HelloWorld
+</pre>
+
+The compilation process may produce warnings and errors. The latter lead 
+to a failure, while warnings are only informational. Examples of errors 
+are parse errors as well as syntactical and structural errors where the 
+compiled code itself would be erroneous - like method bodies in interface 
+declarations or unresolveable types. Warnings depend on the error handler 
+installed in the compiler - in a JIT-compiler, where things have to go 
+fast, no warnings may be issued at all as their computation takes time.
+In the standard error handler, type mismatches or missing members are 
+warnings, for example. In a more pedantic version, missing api docs or
+usage of deprecated features will be reported.
+
+JIT
+~~~
+JIT - or "Just in time" compilation will occur whenever a source class
+is available. 
+
+The class loader currently performs the following steps:
+<summary>
+For each delegate:
+1. Ask whether it provide the class
+2. If it does, tell it to load the class; then return it
+3. Otherwise, ask the next delegate
+
+If no delegate provided the class raise an exception. As code, this 
+would be:
+<code>
+  foreach ($ld in self::$delegates) {
+    if ($ld.providesClass($class)) return $ld.loadClass($class);  
+  }
+  throw new ClassNotFoundException($class);
 </code>
+</summary>
 
-What happens technically:
-Names are resolved at compile time and prefixed by their namespace.
+The new functionality will be:
+<summary>
+For each delegate:
+1. Ask whether it provide the class
+2. If it does, tell it to load the class; then return it
+3. Otherwise, see if this delegate provides source in any of the syntaxes
+4. If it does, compile the first source found and return the compiled type
+5. Otherwise, ask the next delegate
 
+If no delegate provided the class raise an exception. As code, this 
+would be:
+<code>
+  foreach ($ld in self::$delegates) {
+    if ($ld.providesClass($class)) return $ld.loadClass($class);
+    
+    // {{ Check for source
+    foreach ($syntax in self::$supportedInputSyntaxes) {
+      if (!$ld.providesSource($class, $syntax.extension())) continue;
 
-For PHP4: Compile-time resolved "self" keyword
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-A self keyword that works identical to the one used in PHP5.
+      try {
+        new CompilationTask(
+          $ld.getSource($class, $syntax.extension()),
+          $nullDiagnostic,
+          $jitFileManager,
+          $sourceEmitter
+        ).run();
+      } catch (CompilationException $e) {
+        throw new ClassFormatError($class, $e);      
+      }
+      return $jitFileManager.getType($class);
+    }
+    // }}
+  }
+  throw new ClassNotFoundException($class);
+</code>
+</summary>
+
+Because this will cause quite a performance impact, the JIT class loader 
+is an optional feature that must be turned on - this is NOT recommended 
+for production systems.
+
+Typing
+~~~~~~
+The XP language knows about the following types:
+
+* Primitives
+  The following primitives exist: int, float, string, bool
+* Reference types
+  Classes, interfaces and enums, e.g. lang.Object, util.log.Traceable
+  and util.DateInterval
+* Array types
+  An array is a zero-based and continuously numbered list of any type, 
+  e.g. string[] or util.Date[].
+* The variable type
+  Marks a type that may either be a primitive or any reference type, 
+  declared with the keyword "var". The compiler will not be able to 
+  verify type correctness in this case and will warn about this -
+  checks will be deferred until runtime.
+
+The following elements need to be typed:
+* A: Member variables
+* B: Method parameters
+* C: Return type
+
+Local variables don't need to be typed or declared. Their type will be
+inferred on initialization (D).
 
 Example:
 <code>
-  class Hello {
-    public static function usage() {
-      // ...
+  public class Person {
+    public string $name;                  // A
+    
+    public void setName(string $name) {   // B
+      $this.name= $name;
     }
     
-    public static function main($args) {
-      if ('-?' == $args[1]) {
-        self::usage();
-        return;
+    public string getName() {             // C
+      return $this.name;
+    }
+    
+    public function toString() {
+      $s= $this.getClassName();           // D, typeof($s) = string
+      $s~= '<' ~ $this.name ~ '>';
+      return $s;
+    }
+  }
+</code>
+
+Namespaces
+~~~~~~~~~~
+Namespaces are called "packages" in the XP language. A package does not
+exist as its own entity, instead, classes belong to a one by declaration:
+
+<code>
+  package de.thekid.dialog;
+  
+  public class Album {
+    // ...
+  }
+</code>
+
+Imports
+~~~~~~~
+Importing is a compile-time feature to enable to use short versions
+of names but actually mean the longer ones. The "Hello World" example
+from above could be rewritten as follows:
+
+<code>
+  import util.cmd.Console;
+  
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      Console::writeLine(...);
+    }
+  }
+</code>
+
+Also available are static imports which makes writing a line to the
+console even shorter to write:
+<code>
+  import static util.cmd.Console.writeLine;
+  
+  public class HelloWorld {
+    public static void main(string[] $args) {
+      writeLine(...);
+    }
+  }
+</code>
+
+At the same time, to avoid name clashes with PHP's native functions,
+these also need to be imported:
+<code>
+  import native standard.substr;
+  import native mysql.mysql_connect;
+</code>
+
+To enable rapid prototyping, type import on demand can be used:
+<code>
+  import util.*;
+  import static util.cmd.Console.*;
+  import native sybase_ct.*;
+</code>
+
+Chaining
+~~~~~~~~
+It is now syntactically possible to continue writing after <tt>new</tt>
+and to use array offsets on method return values:
+
+<code>
+  new Date().toString();
+  XPClass::forName($name).getMethods()[0];
+</code>
+
+Varargs syntax
+~~~~~~~~~~~~~~
+To create functions that accept a variable amount of arguments - 
+<tt>printf</tt> is probably the most famous one of them, you have to
+resort to <tt>func_get_args()</tt> in PHP userland. The XP language
+supports this feature by adding <tt>...</tt> to the parameter's type:
+
+<code>
+  public class Format {
+  
+    public static string printf(string $format, var... $values) {
+      // Implementation here
+    }
+    
+    public static void main(string[] $args) {
+      self::printf('%d args passed to %s', $args.length, self::class.getName());
+    }
+  }
+</code>
+
+This will make the <tt>format</tt> variable contain the format string and 
+<tt>values</tt> consist of an array with two values (the length and the 
+class name).
+
+Changed foreach
+~~~~~~~~~~~~~~~
+The <tt>foreach</tt> loop has changed from the form you know it in PHP
+to one inspired by C#.
+
+<code>
+  foreach ($method in $class.getMethods()) {
+    Console::writeLine('- ', $method);
+  }
+</code>
+
+Ternary shortcut
+~~~~~~~~~~~~~~~~
+The ternary shortcut supported in PHP 5.3 upwards will be supported by the
+XP language:
+
+<code>
+  $a= $a ?: $b;   // Same as: $a= $a ? $a : $b;
+</code>
+
+Array syntax
+~~~~~~~~~~~~
+The <tt>array</tt> keyword from the PHP language has been replaced by
+the shorter form with square brackets. By means of an extension array
+length can be determined by using the <tt>length</tt> pseudo-member.
+
+<code>
+  $a= [1, 2, 3];           // same as $a= array(1, 2, 3);
+  $i= $a.length;           // same as $i= sizeof($a);
+</code>
+
+Arrays can also have types:
+<code>
+  // Instantiation
+  $a= new string[] { 'Hello', 'World' };
+  
+  // Type
+  public static void main(string[] $args) { ... }
+</code>
+
+Class literal
+~~~~~~~~~~~~~
+Every class has a static member called <tt>$class</tt> which will 
+retrieve the <tt>lang.XPClass</tt> object associated with it.
+
+<code>
+  // same as $c= XPClass::forName(xp::nameOf(__CLASS__));
+  $c= self::class;
+  
+  // same as $c= XPClass::forName('lang.types.String');
+  $c= lang.types.String::class;
+</code>
+
+Finally: Finally
+~~~~~~~~~~~~~~~~
+Especially for cleaning up - and yes, even in 2009 with the amount of
+memory and computing power we have available - it is still necessary to
+ensure, for example, file handles are properly closed:
+
+<code>
+  $f= new File($name);
+  try {
+    $f.open(FileMode::READ);
+    return $f.read(0xFF);
+  } finally {
+    $f.close();
+  }
+</code>
+
+Enumerations
+~~~~~~~~~~~~
+The XP framework already offers type-safe enumerations. These were
+originally introduced in RFC #0132 and are now supported with an easier-
+to-type syntax:
+
+<code>
+  public enum Weekday {
+    Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+  }
+</code>
+
+Enumerations may also have methods:
+<code>
+  public enum Coin {
+    penny(1), nickel(2), dime(10), quarter(25);
+    
+    public string color() {
+      switch ($this) {
+        case self::$penny: return 'copper';
+        case self::$nickel: return 'nickel';
+        case self::$dime: case self::$quarter: return 'silver';
       }
     }
   }
 </code>
 
-What happens technically:
-Self is resolved at compile time and replaced by the current class' name.
-For PHP5, the self keyword is left as-is.
-
-
-Annotations
-~~~~~~~~~~~
-Annotations as described in RFC #0016 but without the #-sign, see
-http://experiments.xp-framework.net/?arena,php5,syntax/metadata.php
-  
-Declaring annotations:
+Members can have methods attached, too:
 <code>
-  class CalculatorService {
-  
-    [@webmethod]
-    public function add($a, $b) {
-      return $a + $b;
-    }
+  public abstract enum Operation {
+    plus {
+      public int evaluate(int $x, int $y) { return $x + $y; }
+    },
+    minus {
+      public int evaluate(int $x, int $y) { return $x - $y; }
+    };
+    
+    public abstract int evaluate(int $x, int $y);
   }
 </code>
 
-Annotations can be retrieved via the reflection API.
+Annotations
+~~~~~~~~~~~
+Also supported for quite a while in the XP Framework are annotations.
+They use "#" one-line comments and are parsed from the class' source when 
+accessed inside the reflection API (see also RFC #0016). The XP language 
+can do without this workaround, of course!
+
+<code>
+  public class ArrayListTest extends unittest.TestCase {
+  
+    [@test] public void emptyList() {
+      $this.assertEquals([], new ArrayList().values);
+    }
+  }
+</code>
 
 What happens technically:
 Annotations are stored in the xp registry. The reflection API will 
 retrieve them from there instead of having to parse the class files
 at runtime.
 
+Anonymous instance creation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To generate "throw-away" instances the XP framework provides the 
+<tt>newinstance()</tt> functionality, originally described in RFC #0080.
+With the downside of having to declare the class body inside a string
+and the added overhead of runtime evaluation, this feature is now not
+only more elegant to write but classes created this way will also be 
+declared at compile time:
 
-Anonymous class creation
-~~~~~~~~~~~~~~~~~~~~~~~~
-See http://experiments.xp-framework.net/?arena,php5,syntax/instance_creation.php
-for details.
-  
-Usage:
 <code>
-  $list->sort(new Comparator() {
-    public function compare($a, $b) {
-      return strnatcmp($a, $b);
+  $emptyFiles= new io.collections.iterate.IterationFilter() {
+    public bool accept(io.collections.IOElement $e) {
+      return 0 == $e.size;
     }
-  });
+  };
 </code>
 
-What happens technically:
-This is recompiled to the userland version shown at "Instance creation
-expression in PHP4" (http://xp-framework.info/xml/xp.en_US/news/view?60)
+Properties
+~~~~~~~~~~
+Properties are special member variables that instead of directly
+accessing a class field may have methods attached. This way, we can
+create short syntax but still stay flexible if we need to change
+the underlying implementation.
 
+<code>
+  import native standard.strlen;
+  
+  public class String {
+    protected string $buffer;
+    
+    public __construct(string $initial= '') {
+      $this.buffer= $initial;
+    }
+  
+    public string length {
+      get { return strlen($this.buffer); }
+      set { throw new IllegalAccessException('Cannot set string length!'); }
+    }
+    
+    public static void main(string[] $args) {
+      $s= new String('Hello');
+      $l= $s.length;   // 5
+      $s.length= 1;    // *** IllegalAccessException
+    }
+  }
+</code>
+
+Internally, this is implemented by compiling <tt>__get()</tt> and 
+<tt>__set()</tt> interceptors.
+
+Indexers
+~~~~~~~~
+The PHP language allows for userland overloading of array operations
+via the <tt>ArrayAccess</tt> interface and its <tt>offset*</tt> methods.
+This is kind of different from the usual PHP approach with <tt>__</tt>
+"magic" methods - in the XP language, it's the property syntax again:
+
+<code>
+  public class ArrayList<T> {
+    protected T[] $elements;
+  
+    public __construct(T... $initial) {
+      $this.elements= $initial;
+    }
+    
+    public this[int $offset] {
+      get   { return $this.elements[$offset]; }
+      set   { $this.elements[$offset]= $value; }
+      isset { return $offset >= 0 && $offset < $this.elements.length; }
+      unset { throw new IllegalAccessException('Immutable'); }
+    }
+    
+    public static void main(string[] $args) {
+      $a= new ArrayList<string>('One', 'Two', 'Three');
+      $one= $a[0];      // 'One'
+      $a[2]= 'Drei';    // Now: One, Two, Drei
+    }
+  }
+</code>
 
 With syntactic sugar
 ~~~~~~~~~~~~~~~~~~~~
@@ -169,12 +506,11 @@ Usage:
 What happens technically:
 The with statement, essentialy a no-op, is resolved to the following 
 sourcecode:
-<code>
-  $node= &$tree->addChild(new Node('tagname')); {
-    $node->setAttribute('attribute', 'value');
-  }
-</code>
 
+<code>
+  $node= $tree->addChild(new Node('tagname');
+  $node->setAttribute('attribute', 'value');
+</code>
 
 Throws clause
 ~~~~~~~~~~~~~
@@ -196,90 +532,6 @@ The thrown exceptions will be stored in the xp registry. The reflection
 API can retrieve them from there.
 
 
-For PHP4: Dereferencing
-~~~~~~~~~~~~~~~~~~~~~~~
-Method calls will be allowed to be chained as follows:
-<code>
-  $date= XPClass::forName('util.Date')->newInstance();
-</code>
-
-What happens technically:
-See http://experiments.xp-framework.net/?people,friebe,chain
-
-For PHP4: Try/catch syntax
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-The try/catch syntax will be changed to allow the following:
-<code>
-  try {
-    $class= XPClass::forName($name);
-  } catch (ClassNotFoundException $e) {
-    // ...
-  }
-</code>
-
-What happens technically:
-For PHP4, try is rewritten to try(); and catch (...) to if (catch(...)). 
-For PHP versions with real exception support, the above sourcecode can
-remain as-is.
-
-
-For PHP4: Interfaces
-~~~~~~~~~~~~~~~~~~~~
-An interface keyword that works identical to the one used in PHP5.
-
-Interface declaration:
-<code>
-  interface Comparable {
-    public function compareTo($cmp);
-  }
-</code>
-
-Implementing an interface:
-<code>
-  class Date implements Comparable {
-    // ...
-
-    public function compareTo($cmp) {
-      return $this->utime == $cmp->utime;
-    }
-  }
-</code>
-What happens technically:
-For PHP4, the current XP sourcecode with "extends Interface" and
-"implements(__FILE__, 'Comparable'))" is generated, see
-http://xp-framework.net/content/about.html#10
-For PHP5 and above, this is essentially a no-op.
-
-
-For PHP4: instanceof
-~~~~~~~~~~~~~~~~~~~~
-An instanceof keyword that works identical to the one used in PHP5.
-  
-<code>
-  if ($instance instanceof Comparable) {
-    $instance->compareTo($cmp);
-  }
-</code>
-What happens technically:
-For PHP4, we rewrite this to is('Comparable', $instance). For PHP5 and
-above, the sourcecode is left untouched.
-
-For PHP4: Type hints
-~~~~~~~~~~~~~~~~~~~~
-The type hints that were introduced with PHP5 could be emulated, possibly even
-improved (by throwing an exception instead of a fatal error, and by allowing
-NULL values).
-
-<code>
-  public function setTrace(LogCategory &$cat) {
-    $this->cat= &$cat;
-  }
-</code>
-What happens technically:
-An is() call is being inserted right after the function has been entered
-and the passed value is being checked. If the type does not match the
-required one, throw an lang.IllegalArgumentException (for example).
-
 Security considerations
 -----------------------
 n/a
@@ -287,50 +539,52 @@ n/a
 
 Speed impact
 ------------
-Slower
+Overall development experience will be slower because of the necessary
+compilation step. The generated sourcecode will show the same runtime
+performance, in some cases even better.
 
 
 Dependencies
 ------------
-auto_prepend_file directive
+None, the compiler will emit valid PHP sourcecode using the XP framework.
+Compiled classes can even use source classes and vice versa.
+
 
 Related documents
 -----------------
-URLs
-~~~~
-- [1] http://experiments.xp-framework.net/?arena,php5,packages
-- [2] http://phpnamespaces.org/
-  
-Other resources
-~~~~~~~~~~~~~~~
-- http://experiments.xp-framework.net/?people,friebe,rfc0052
-  Experiment with auto_prepend_file
+http://experiments.xp-framework.net/xml/browse?experiments,arena,lang
+
 
 Comments
 --------
-- friebe, Sat Jan 28 18:21:05     2006
-  Experiment shows this could be done via auto_prepend_file.
+friebe, Tue Nov 10 13:20:04     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Rewrote this RFC completely - removed PHP4 and PHP6, added all features
+currently implemented.
 
-- friebe, Sun Jan 29 02:11:23     2006
-  Maybe static imports would also be a worth a try?
+kiesel, Tue Jan 31 15:40:24 CET 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+One may think about creating multiple compilers - or, one compiler with
+multiple modes: eg. debugging, release. The debug compiler would add
+more checks on type hints or return types while the release compiler
+would skip those in favor of speed.
+
+kiesel, Tue Jan 31 15:38:38 CET 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The meta-compiler should take care of keeping the current line numbers
+consistent across files. One will be able to associate an error with a
+code line.
+(My) experience shows, this is an important feature.
+
+friebe, Sun Jan 29 02:11:23     2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Maybe static imports would also be a worth a try?
 <code>
   import static util·cmd·Console·writeLine;
   
   writeLine('Hello');
 </code>
 
-- kiesel, Tue Jan 31 15:38:38 CET 2006
-  The meta-compiler should take care of keeping the current line numbers
-  consistent across files. One will be able to associate an error with a
-  code line.
-  (My) experience shows, this is an important feature.
-
-- kiesel, Tue Jan 31 15:40:24 CET 2006
-  One may think about creating multiple compilers - or, one compiler with
-  multiple modes: eg. debugging, release. The debug compiler would add
-  more checks on type hints or return types while the release compiler
-  would skip those in favor of speed.
-
-
-
-<EOF>
+friebe, Sat Jan 28 18:21:05     2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Experiment shows this could be done via auto_prepend_file.
