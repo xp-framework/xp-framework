@@ -341,7 +341,7 @@
     public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       $request->setURL($this->_url(
         ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
-        $request->getEnvValue('HTTP_HOST').
+        $request->getHeader('X-Forwarded-Host', $request->getEnvValue('HTTP_HOST')).
         $request->getEnvValue('REQUEST_URI')
       ));
 
