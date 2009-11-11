@@ -145,10 +145,7 @@
       }
 
       // Send output
-      
-      // HACK: Do not send headers when they've been sent before - there should
-      // be support for this scenario within the scriptlet API itself
-      headers_sent() || $response->sendHeaders();
+      if (!$response->headersSent()) $response->sendHeaders();
       $response->sendContent();
       flush();
 
