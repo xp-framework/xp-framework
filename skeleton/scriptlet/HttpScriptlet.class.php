@@ -326,7 +326,7 @@
     protected function _setupRequest($request) {
       $request->method= $request->getEnvValue('REQUEST_METHOD');
       $request->setHeaders(getallheaders());
-      $request->setParams($_REQUEST);
+      $request->setParams(array_merge($_GET, $_POST));
     }    
     
     /**
