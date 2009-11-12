@@ -20,6 +20,7 @@
    */
   class XmlTestListener extends Object implements TestListener {
     public $out= NULL;
+    protected $tree= NULL;
     protected $classes= NULL;
     
     /**
