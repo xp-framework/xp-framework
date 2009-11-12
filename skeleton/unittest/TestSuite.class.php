@@ -409,7 +409,11 @@
           } catch (TargetInvocationException $e) {
             foreach ($tests as $i) {
               $this->notifyListeners('testSkipped', array(
-                $result->setSkipped($this->tests[$i], $e->getCause(), 0.0)
+                $result->setSkipped(
+                  $this->tests[$i], 
+                  new PrerequisitesNotMetError('Exception in beforeClass method '.$m->getName(), $e->getCause()), 
+                  0.0
+                )
               ));
             }
             continue 2;
