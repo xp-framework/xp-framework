@@ -407,10 +407,14 @@
           try {
             $m->invoke(NULL, array());
           } catch (TargetInvocationException $e) {
+            $cause= $e->getCause();
+            if ($cause instanceof PrerequisitesNotMetError) {
+              $reason= $cause;
+            } else {
+              $reason= new PrerequisitesNotMetError('Exception in beforeClass method '.$m->getName(), $cause);
+            }
             foreach ($tests as $i) {
-              $this->notifyListeners('testSkipped', array(
-                $result->setSkipped($this->tests[$i], $e->getCause(), 0.0)
-              ));
+              $this->notifyListeners('testSkipped', array($result->setSkipped($this->tests[$i], $reason, 0.0)));
             }
             continue 2;
           }

@@ -236,6 +236,56 @@
     }    
 
     /**
+     * Tests situation when @beforeClass indicates prerequisites are not met
+     *
+     */    
+    #[@test]
+    public function beforeClassRaisesAPrerequisitesNotMet() {
+      $t= newinstance('unittest.TestCase', array('irrelevant'), '{
+        #[@beforeClass]
+        public static function raise() {
+          throw new PrerequisitesNotMetError("Cannot run");
+        }
+        
+        #[@test]
+        public function irrelevant() {
+          $this->assertEquals(1, 0);
+        }
+      }');
+      $this->suite->addTest($t);
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->skipCount(), 'skipCount');
+      $this->assertClass($r->outcomeOf($t), 'unittest.TestPrerequisitesNotMet');
+      $this->assertClass($r->outcomeOf($t)->reason, 'unittest.PrerequisitesNotMetError');
+      $this->assertEquals('Cannot run', $r->outcomeOf($t)->reason->getMessage());
+    }    
+
+    /**
+     * Tests situation when @beforeClass raises an exception
+     *
+     */    
+    #[@test]
+    public function beforeClassRaisesAnException() {
+      $t= newinstance('unittest.TestCase', array('irrelevant'), '{
+        #[@beforeClass]
+        public static function raise() {
+          throw new IllegalStateException("Skip");
+        }
+        
+        #[@test]
+        public function irrelevant() {
+          $this->assertEquals(1, 0);
+        }
+      }');
+      $this->suite->addTest($t);
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->skipCount(), 'skipCount');
+      $this->assertClass($r->outcomeOf($t), 'unittest.TestPrerequisitesNotMet');
+      $this->assertClass($r->outcomeOf($t)->reason, 'unittest.PrerequisitesNotMetError');
+      $this->assertEquals('Exception in beforeClass method raise', $r->outcomeOf($t)->reason->getMessage());
+    }    
+
+    /**
      * Tests method decorated with afterClass is executed
      *
      */    
