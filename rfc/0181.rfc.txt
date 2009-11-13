@@ -98,7 +98,7 @@ Maybe "yield" would be a name (http://www.merriam-webster.com/thesaurus/yield)
 since we are returning control to the (operating) system:
 <summary>
 [...]
-6) to give (something) over to the control or possession of another usually 
+to give (something) over to the control or possession of another usually 
 under duress [refusing to yield the city to enemy troops] - see surrender 1
 [...]
 </summary>
