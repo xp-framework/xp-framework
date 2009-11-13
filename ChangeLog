@@ -6,6 +6,16 @@ Version 5.8.0, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Deprecated ref() and deref() core functionality
+  (friebe)
+
+Features
+~~~~~~~~
+- Added typeof() core functionality
+  (friebe)
+
 RFCs
 ~~~~
 - Implemented RFC #0189 - Extension methods
