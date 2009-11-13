@@ -98,7 +98,7 @@
         $this->target= $arg;
         $this->name= $arg->getClassName();
       } else {
-        $this->target= $this;
+        $this->target= NULL;
         $this->name= $arg ? $arg : $this->getClassName();
       }
     }
@@ -130,6 +130,15 @@
       return $this->name;
     }
     
+    /**
+     * Get Target
+     *
+     * @return mixed (Runnable or Thread)
+     */
+    public function getTarget() {
+      return (NULL === $this->target) ? $this : $this->target;
+    }
+
     /**
      * Causes the currently executing thread to sleep (temporarily cease 
      * execution) for the specified number of milliseconds. 
@@ -163,7 +172,7 @@
         $this->running= TRUE;
         $this->_id= getmypid();
         $this->_pid= $parent;
-        call_user_func(array($this->target, 'run'));
+        $this->getTarget()->run();
         exit();
       }
     }
