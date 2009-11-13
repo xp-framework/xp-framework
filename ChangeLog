@@ -2,6 +2,18 @@ XP Framework ChangeLog
 ========================================================================
 $Id$
 
+Version 5.8.0, released ????-??-??
+----------------------------------
+SVN version: ?????
+
+RFCs
+~~~~
+- Implemented RFC #0189 - Extension methods
+  (friebe)
+- Implemented RFC #0185 - ClassFormatException for malformed annotations
+  (friebe)  
+
+
 Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
