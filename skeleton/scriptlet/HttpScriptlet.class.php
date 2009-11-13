@@ -213,7 +213,7 @@
       }
 
       $method= 'do'.ucfirst(strtolower($request->method));
-      if (!is_callable(array($this, $method))) return NULL;
+      if (!method_exists($this, $method)) return NULL;
       return $method;
     }
     
