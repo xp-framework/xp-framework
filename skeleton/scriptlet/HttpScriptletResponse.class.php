@@ -141,6 +141,27 @@
     }
     
     /**
+     * Looks up header and returns value, if found. Otherwise
+     * returns default value.
+     *
+     * This implementation will return the first header found,
+     * any additional ones are ignored.
+     *
+     * @param   string name
+     * @param   string default default NULL
+     * @return  string
+     */
+    public function getHeader($name, $default= NULL) {
+      foreach ($this->headers as $line) {
+        if (0 == strncasecmp($name.': ', $line, strlen($name)+ 2)) {
+          return substr($line, strlen($name)+ 2);
+        }
+      }
+
+      return $default;
+    }
+
+    /**
      * Sends headers. The statuscode will be sent prior to any headers
      * and prefixed by HTTP/ and the <pre>version</pre> attribute.
      * 
