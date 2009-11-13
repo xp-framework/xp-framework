@@ -557,24 +557,9 @@ http://experiments.xp-framework.net/xml/browse?experiments,arena,lang
 
 Comments
 --------
-friebe, Tue Nov 10 13:20:04     2009
+friebe, Sat Jan 28 18:21:05     2006
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Rewrote this RFC completely - removed PHP4 and PHP6, added all features
-currently implemented.
-
-kiesel, Tue Jan 31 15:40:24 CET 2006
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-One may think about creating multiple compilers - or, one compiler with
-multiple modes: eg. debugging, release. The debug compiler would add
-more checks on type hints or return types while the release compiler
-would skip those in favor of speed.
-
-kiesel, Tue Jan 31 15:38:38 CET 2006
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The meta-compiler should take care of keeping the current line numbers
-consistent across files. One will be able to associate an error with a
-code line.
-(My) experience shows, this is an important feature.
+Experiment shows this could be done via auto_prepend_file.
 
 friebe, Sun Jan 29 02:11:23     2006
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -585,6 +570,21 @@ Maybe static imports would also be a worth a try?
   writeLine('Hello');
 </code>
 
-friebe, Sat Jan 28 18:21:05     2006
+kiesel, Tue Jan 31 15:38:38 CET 2006
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Experiment shows this could be done via auto_prepend_file.
+The meta-compiler should take care of keeping the current line numbers
+consistent across files. One will be able to associate an error with a
+code line.
+(My) experience shows, this is an important feature.
+
+kiesel, Tue Jan 31 15:40:24 CET 2006
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+One may think about creating multiple compilers - or, one compiler with
+multiple modes: eg. debugging, release. The debug compiler would add
+more checks on type hints or return types while the release compiler
+would skip those in favor of speed.
+
+friebe, Tue Nov 10 13:20:04     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Rewrote this RFC completely - removed PHP4 and PHP6, added all features
+currently implemented.

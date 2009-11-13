@@ -92,6 +92,12 @@ http://news.xp-framework.net/article/94/0000/00/00/
 
 Comments
 --------
+friebe, Wed Feb 18 09:19:46     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I'm not particularily happy with <tt>System::doExit()</tt> as method name,
+<tt>System::exit()</tt> would be better, but as exit is a keyword in PHP,
+we can't name it that. 
+
 friebe, Fri Nov 13 19:24:42     2009
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Maybe "yield" would be a name (http://www.merriam-webster.com/thesaurus/yield)
@@ -102,11 +108,5 @@ to give (something) over to the control or possession of another usually
 under duress [refusing to yield the city to enemy troops] - see surrender 1
 [...]
 </summary>
-
-friebe, Wed Feb 18 09:19:46     2009
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-I'm not particularily happy with <tt>System::doExit()</tt> as method name,
-<tt>System::exit()</tt> would be better, but as exit is a keyword in PHP,
-we can't name it that. 
 
 <EOF>
