@@ -20,6 +20,8 @@ Improve performance.
 Functionality
 -------------
 Currently, generics are implemented as follows:
+
+<summary>
 * A: A __generic instance member is required inside the declaration.
   It will hold an array of the component types.
 * B: The methods working with generics are required to take care of
@@ -27,6 +29,7 @@ Currently, generics are implemented as follows:
 * C: The create() core functionality takes care of instantiating the
   generics, populating the __generic member with the given types' 
   names.
+</summary>
 
 Example (abbreviated):
 <code>
@@ -59,11 +62,11 @@ and named with unique name created of the base and component types.
 
 <code>
   // Creates a class named:
-  // "util.collections.Vector··lang.types.String"
+  // "util·collections·Vector··lang·types·String"
   $vs= create('new Vector<lang.types.String>()');
   
   // Creates a class named:
-  // "util.collections.HashTable··lang.types.String··lang.Generic"
+  // "util·collections·HashTable··lang·types·String··lang·Generic"
   $vn= create('new HashTable<lang.types.String, lang.Generic>()');
 </code>
 
@@ -71,6 +74,7 @@ and named with unique name created of the base and component types.
 The middle dot (·, Alt-Gr + "." in Cygwin) is used in the XP Framework
 for generated classes and in fully qualified names (see RFC #0037).
 </summary>
+
 
 
 Security considerations
