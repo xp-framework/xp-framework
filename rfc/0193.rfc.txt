@@ -125,6 +125,29 @@ to be used. The inner workings are as follows:
 6) For all methods generate delegation
 7) Instantiate and return
 
+What we will end up with is the following:
+<code>
+  interface Map··String··Object {
+    public function put(String $key, Object $value);
+    public function get(String $key);
+    public function values();
+  }
+  
+  class HashTable··String··Object extends Object implements Map··String··Object {
+    private $delegate;
+    
+    public function __construct() {
+      $this->delegate= new HashTable();
+    }
+    
+    public function put(String $key, Object $value) {
+      $this->delegate->put($key, $value);
+    }
+    
+    // ...
+  }
+</code>
+
 
 Security considerations
 -----------------------
