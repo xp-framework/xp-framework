@@ -183,6 +183,15 @@ Also, reflective creation of generic types should be possible:
   $vector= $generic->newInstance();
 </code>
 
+Type restrictions
+~~~~~~~~~~~~~~~~~
+The generic types can now be used in parameter type hints, although 
+somewhat ugly:
+
+<code>
+  public function dump(List··String $l) { ... }
+</code>
+
 
 Security considerations
 -----------------------
