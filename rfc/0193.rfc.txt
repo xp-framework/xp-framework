@@ -82,7 +82,7 @@ Declaration
 To declare a generic class using the XP framework, we will resort to
 annotations:
 <code>
-  #[@generic('K, V')]
+  #[@generic(self= 'K, V', interfaces= array('Map' => 'K, V')))]
   class HashTable extends Object implements Map {
     
     #[@generic(params= 'K, V')]
