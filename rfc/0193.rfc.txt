@@ -15,7 +15,10 @@ Generics will be optimized.
 
 Rationale
 ---------
-Improve performance.
+* Improve performance
+* Enable reflection for generics
+* Enable reflective creation of generics
+* Support primitives a generic arguments
 
 
 Functionality
@@ -212,6 +215,8 @@ Related documents
 -----------------
 * http://www.artima.com/intv/generics2.html - Generics in C#, Java, and C++
 * RFC #0106 - original generics RFC
+* http://experiments.xp-forge.net/xml/browse?arena,rfc0193 - Experiment
+
 
 Comments
 --------
