@@ -148,6 +148,41 @@ What we will end up with is the following:
   }
 </code>
 
+Reflection
+~~~~~~~~~~
+Whether a type is a generic instance should be determinable at runtime:
+<code>
+  // Will display: 
+  //   Arguments: [
+  //     0 => lang.XPClass<lang.types.String>
+  //   ]
+  $class= create('new Vector<String>()')->getClass();
+  if ($class->isGeneric()) {
+    Console::writeLine('Arguments: ', $class->genericArguments());
+  }
+</code>
+
+Reflection on generic definitions should also be possible:
+<code>
+  // Will display:
+  //   Components: [
+  //      0 => "T"
+  //   ]
+  $class= XPClass::forName('util.collections.Vector');
+  if ($class->isGenericDefinition()) {
+    Console::writeLine('Components: ', $class->genericComponents());
+  }
+</code>
+
+Also, reflective creation of generic types should be possible:
+<code>
+  $class= XPClass::forName('util.collections.Vector');
+  $generic= $class->newGenericType(array(XPClass::forName('lang.types.String')));
+  
+  // ...and then use newInstance() methods
+  $vector= $generic->newInstance();
+</code>
+
 
 Security considerations
 -----------------------
