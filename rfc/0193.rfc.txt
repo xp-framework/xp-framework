@@ -61,12 +61,10 @@ A generic instance should be created at runtime named with unique name
 created of the base and component types.
 
 <code>
-  // Creates a class named:
-  // "util·collections·Vector··lang·types·String"
+  // Creates a class named: "Vector··String"
   $vs= create('new Vector<lang.types.String>()');
   
-  // Creates a class named:
-  // "util·collections·HashTable··lang·types·String··lang·Generic"
+  // Creates a class named: "HashTable··String¸Generic"
   $vn= create('new HashTable<lang.types.String, lang.Generic>()');
 </code>
 
@@ -74,7 +72,8 @@ The base class for both generated classes is <tt>lang.Object</tt>.
 
 <summary>
 The middle dot (·, Alt-Gr + "." in Cygwin) is used in the XP Framework
-for generated classes and in fully qualified names (see RFC #0037).
+for generated classes and in fully qualified names (see RFC #0037). The
+cedil sign (¸, Alt-Gr + "´" in Cygwin) is used to separate the components.
 </summary>
 
 Declaration
@@ -127,13 +126,13 @@ to be used. The inner workings are as follows:
 
 What we will end up with is the following:
 <code>
-  interface Map··String··Object {
+  interface Map··String¸Object {
     public function put(String $key, Object $value);
     public function get(String $key);
     public function values();
   }
   
-  class HashTable··String··Object extends Object implements Map··String··Object {
+  class HashTable··String¸Object extends Object implements Map··String¸Object {
     private $delegate;
     
     public function __construct() {
