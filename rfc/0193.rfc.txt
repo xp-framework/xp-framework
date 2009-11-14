@@ -57,8 +57,8 @@ This has the following downsides:
 
 Plan
 ~~~~
-A generic instance should be created at runtime, extending the base type
-and named with unique name created of the base and component types.
+A generic instance should be created at runtime named with unique name 
+created of the base and component types.
 
 <code>
   // Creates a class named:
@@ -70,11 +70,60 @@ and named with unique name created of the base and component types.
   $vn= create('new HashTable<lang.types.String, lang.Generic>()');
 </code>
 
+The base class for both generated classes is <tt>lang.Object</tt>.
+
 <summary>
 The middle dot (·, Alt-Gr + "." in Cygwin) is used in the XP Framework
 for generated classes and in fully qualified names (see RFC #0037).
 </summary>
 
+Declaration
+~~~~~~~~~~~
+To declare a generic class using the XP framework, we will resort to
+annotations:
+<code>
+  #[@generic('K, V')]
+  class HashTable extends Object implements Map {
+    
+    #[@generic(params= 'K, V')]
+    public function put($key, $value) { ... }
+
+    #[@generic(params= 'K')]    
+    public function get($key) { ... }
+    
+    #[@generic(return= 'V[]')]
+    public function values() { ... }
+    
+    public function toString() { ... }
+  }
+</code>
+
+In XP language, this needn't be done as it syntactically supports generics:
+<code>
+  public class HashTable<K, V> implements Map<K, V> {
+    
+    public void put(K $key, V $value) { ... }
+    
+    public V get(K $key) { ... }
+    
+    public V[] values() { ... }
+    
+    public string toString() { ... }
+  }
+</code>
+
+Instantiation
+~~~~~~~~~~~~~
+To instantiate generics, the <tt>create()</tt> core functionality needs
+to be used. The inner workings are as follows:
+
+1) Parse string specifying type into class and parameters
+2) Compose unique name
+3) If this class exists, instantiate and return
+4) For all interfaces, perform generation
+5) Generate class extending lang.Object
+6) For all methods generate delegation
+7) Instantiate and return
 
 
 Security considerations
