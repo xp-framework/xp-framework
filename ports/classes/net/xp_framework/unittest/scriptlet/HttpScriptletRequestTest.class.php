@@ -119,5 +119,29 @@
         $this->assertNull($r->getParam('any'));
       }
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function headersEmpty() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertEmpty($r->getHeaders());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function headerLookupCaseInsensitive() {
+      $r= $this->newRequest('GET', 'http://localhost/', array(
+        'UPPERCASE' => 1,
+      ));
+
+      $this->assertEquals(1, $r->getHeader('uppercase'));
+      $this->assertEquals(1, $r->getHeader('UpPeRCaSe'));
+    }
   }
 ?>

@@ -251,6 +251,16 @@
     }
 
     /**
+     * Add single header - overwrites header if already set
+     *
+     * @param   string name
+     * @param   string value
+     */
+    public function addHeader($name, $value) {
+      $this->headers[strtolower($name)]= $value;
+    }
+
+    /**
      * Gets all request parameters
      *
      * @return  array<string, string> params

@@ -5,6 +5,7 @@ $Id$
 @authors: friebe
 @created: Tue Nov 10 19:53:29     2009
 @status: draft
+@target: 5.8.0
 @category: <core>
 
 Scope of Change
@@ -14,12 +15,17 @@ Generics will be optimized.
 
 Rationale
 ---------
-Improve performance.
+* Improve performance
+* Enable reflection for generics
+* Enable reflective creation of generics
+* Support primitives a generic arguments
 
 
 Functionality
 -------------
 Currently, generics are implemented as follows:
+
+<summary>
 * A: A __generic instance member is required inside the declaration.
   It will hold an array of the component types.
 * B: The methods working with generics are required to take care of
@@ -27,6 +33,7 @@ Currently, generics are implemented as follows:
 * C: The create() core functionality takes care of instantiating the
   generics, populating the __generic member with the given types' 
   names.
+</summary>
 
 Example (abbreviated):
 <code>
@@ -54,23 +61,139 @@ This has the following downsides:
 
 Plan
 ~~~~
-A generic instance should be created at runtime, extending the base type
-and named with unique name created of the base and component types.
+A generic instance should be created at runtime named with unique name 
+created of the base and component types.
 
 <code>
-  // Creates a class named:
-  // "util.collections.Vector··lang.types.String"
+  // Creates a class named: "Vector··String"
   $vs= create('new Vector<lang.types.String>()');
   
-  // Creates a class named:
-  // "util.collections.HashTable··lang.types.String··lang.Generic"
+  // Creates a class named: "HashTable··String¸Generic"
   $vn= create('new HashTable<lang.types.String, lang.Generic>()');
 </code>
 
+The base class for both generated classes is <tt>lang.Object</tt>.
+
 <summary>
 The middle dot (·, Alt-Gr + "." in Cygwin) is used in the XP Framework
-for generated classes and in fully qualified names (see RFC #0037).
+for generated classes and in fully qualified names (see RFC #0037). The
+cedil sign (¸, Alt-Gr + "´" in Cygwin) is used to separate the components.
 </summary>
+
+Declaration
+~~~~~~~~~~~
+To declare a generic class using the XP framework, we will resort to
+annotations:
+<code>
+  #[@generic(self= 'K, V', interfaces= array('Map' => 'K, V')))]
+  class HashTable extends Object implements Map {
+    
+    #[@generic(params= 'K, V')]
+    public function put($key, $value) { ... }
+
+    #[@generic(params= 'K')]    
+    public function get($key) { ... }
+    
+    #[@generic(return= 'V[]')]
+    public function values() { ... }
+    
+    public function toString() { ... }
+  }
+</code>
+
+In XP language, this needn't be done as it syntactically supports generics:
+<code>
+  public class HashTable<K, V> implements Map<K, V> {
+    
+    public void put(K $key, V $value) { ... }
+    
+    public V get(K $key) { ... }
+    
+    public V[] values() { ... }
+    
+    public string toString() { ... }
+  }
+</code>
+
+Instantiation
+~~~~~~~~~~~~~
+To instantiate generics, the <tt>create()</tt> core functionality needs
+to be used. The inner workings are as follows:
+
+1) Parse string specifying type into class and parameters
+2) Compose unique name
+3) If this class exists, instantiate and return
+4) For all interfaces, perform generation
+5) Generate class extending lang.Object
+6) For all methods generate delegation
+7) Instantiate and return
+
+What we will end up with is the following:
+<code>
+  interface Map··String¸Object {
+    public function put(String $key, Object $value);
+    public function get(String $key);
+    public function values();
+  }
+  
+  class HashTable··String¸Object extends Object implements Map··String¸Object {
+    private $delegate;
+    
+    public function __construct() {
+      $this->delegate= new HashTable();
+    }
+    
+    public function put(String $key, Object $value) {
+      $this->delegate->put($key, $value);
+    }
+    
+    // ...
+  }
+</code>
+
+Reflection
+~~~~~~~~~~
+Whether a type is a generic instance should be determinable at runtime:
+<code>
+  // Will display: 
+  //   Arguments: [
+  //     0 => lang.XPClass<lang.types.String>
+  //   ]
+  $class= create('new Vector<String>()')->getClass();
+  if ($class->isGeneric()) {
+    Console::writeLine('Arguments: ', $class->genericArguments());
+  }
+</code>
+
+Reflection on generic definitions should also be possible:
+<code>
+  // Will display:
+  //   Components: [
+  //      0 => "T"
+  //   ]
+  $class= XPClass::forName('util.collections.Vector');
+  if ($class->isGenericDefinition()) {
+    Console::writeLine('Components: ', $class->genericComponents());
+  }
+</code>
+
+Also, reflective creation of generic types should be possible:
+<code>
+  $class= XPClass::forName('util.collections.Vector');
+  $generic= $class->newGenericType(array(XPClass::forName('lang.types.String')));
+  
+  // ...and then use newInstance() methods
+  $vector= $generic->newInstance();
+</code>
+
+Type restrictions
+~~~~~~~~~~~~~~~~~
+The generic types can now be used in parameter type hints, although 
+somewhat ugly:
+
+<code>
+  public function dump(List··String $l) { ... }
+</code>
 
 
 Security considerations
@@ -92,6 +215,8 @@ Related documents
 -----------------
 * http://www.artima.com/intv/generics2.html - Generics in C#, Java, and C++
 * RFC #0106 - original generics RFC
+* http://experiments.xp-forge.net/xml/browse?arena,rfc0193 - Experiment
+
 
 Comments
 --------

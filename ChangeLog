@@ -28,8 +28,21 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Made scriptlet.HttpScriptlet use a merge of $_GET and $_POST,
+  instead of $_REQUEST, effectively not taking cookie values
+  into account when using $request->getParam().
+  (friebe, kiesel)
+
 Features
 ~~~~~~~~
+- scriptlet.HttpScriplet checks for existance of X-Forwarded-Host
+  HTTP-header when creating Location:-headers
+  (friebe, kiesel)
+- Made scriptlet.HttpScriptlet support all HTTP methods ("verbs") by
+  default
+  (kiesel)
 - Added new text.DateFormat class
   (friebe)
 - Added with*() methods complementing the setter to img.util.ExifData 
@@ -46,6 +59,14 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed memory leak caused by assigning $this as member of $this
+  (friebe, kiesel, Tobias Roth)
+- Fixed bug on uncaught exceptions in @beforeClass-method in
+  unittest-API
+  (friebe)
+- Ensured that injection occurs before argument passing in
+  util.cmd.Command classes
+  (friebe)
 - Made scriptlet.xml.workflow.casters.ToDateCaster explicitely check for
   errors and warnings when parsing a date and reject that value in case
   (kiesel, Ionut Manta)

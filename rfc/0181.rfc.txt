@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Wed Feb 18 09:04:18     2009
-@status: draft
+@status: discussion, ends Fri Nov 27 12:00:00     2009
 @target: 5.8.0
 @category: <core>
 
@@ -108,5 +108,16 @@ friebe, Wed Feb 18 09:19:46     2009
 I'm not particularily happy with <tt>System::doExit()</tt> as method name,
 <tt>System::exit()</tt> would be better, but as exit is a keyword in PHP,
 we can't name it that. 
+
+friebe, Fri Nov 13 19:24:42     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Maybe "yield" would be a name (http://www.merriam-webster.com/thesaurus/yield)
+since we are returning control to the (operating) system:
+<summary>
+[...]
+to give (something) over to the control or possession of another usually 
+under duress [refusing to yield the city to enemy troops] - see surrender 1
+[...]
+</summary>
 
 <EOF>
