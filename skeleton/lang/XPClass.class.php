@@ -666,7 +666,7 @@
     public static function getClasses() {
       $ret= array();
       foreach (get_declared_classes() as $name) {
-        if (xp::registry('class.'.$name)) $ret[]= new self($name);
+        if (isset(xp::$registry['class.'.$name])) $ret[]= new self($name);
       }
       return $ret;
     }
