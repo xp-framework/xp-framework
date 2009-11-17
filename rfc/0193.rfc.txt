@@ -75,7 +75,7 @@ is reported by <tt>XPClass::getName()</tt> (F) and one used literally (L):
   // F: "util.collections.HashTable`2[lang.types.String,lang.Generic]"
   // L: "HashTable··String¸Generic"
   $ht= create('new HashTable<lang.types.String, lang.Generic>()');
-
+  
   // Creates a class named: 
   // F: "util.collections.Stack`1[string]"
   // L: "Stack··þstring"
@@ -195,6 +195,16 @@ Also, reflective creation of generic types should be possible:
   
   // ...and then use newInstance() methods
   $vector= $generic->newInstance();
+</code>
+
+Discovering the definition type:
+<code>
+  // Will display:
+  //   Definition: lang.XPClass<util.collections.Vector>
+  $class= create('new Vector<String>()')->getClass();
+  if ($class->isGeneric()) {
+    Console::writeLine('Definition: ', $class->genericDefinition());
+  }
 </code>
 
 Type restrictions
