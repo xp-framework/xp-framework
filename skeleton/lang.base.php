@@ -66,10 +66,8 @@
     // {{{ public string nameOf(string name)
     //     Returns the fully qualified name
     static function nameOf($name) {
-      if (!($n= xp::registry('class.'.$name))) {
-        return $name ? 'php.'.$name : NULL;
-      }
-      return $n;
+      $k= 'class.'.$name;
+      return isset(xp::$registry[$k]) ? xp::$registry[$k] : 'php.'.$name;
     }
     // }}}
 
