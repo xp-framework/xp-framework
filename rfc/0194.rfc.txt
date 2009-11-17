@@ -32,7 +32,7 @@ Methods
 Current usage:
 <code>
   foreach ($class->getMethods() as $method) {
-    if ($method->getDeclaringClass()->equals($class)) continue;
+    if (!$method->getDeclaringClass()->equals($class)) continue;
     
     // ... process
   }
@@ -81,7 +81,7 @@ n/a
 
 Related documents
 -----------------
-None.
+- http://www.j2ee.me/javase/6/docs/api/java/lang/Class.html java.lang.Class
 
 
 Comments
