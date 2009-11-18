@@ -1,0 +1,73 @@
+RFC 0196: I/O Collections random access
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Nov 18 08:38:23     2009
+@status: draft
+@category: io.collections
+
+Scope of Change
+---------------
+There will be methods in the io.collections interfaces that will allow
+creating, finding, and removing children.
+
+
+Rationale
+---------
+Extend the I/O collections classes from read-only to include a full-featured
+filesystem access API.
+
+
+Functionality
+-------------
+Creating new elements:
+<code>
+  $file= $collection->newElement('file.txt');
+  $folder= $collection->newCollection('etc');
+</code>
+
+Finding elements:
+<code>
+  $file= $collection->findElement('file.txt');
+  $folder= $collection->findCollection('etc');
+</code>
+
+Retrieving elements (like finding, but will raise exceptions if elements
+specified do not exist):
+<code>
+  $file= $collection->getElement('file.txt');
+  $folder= $collection->getCollection('etc');
+</code>
+
+Removing existing elements:
+<code>
+  $collection->removeElement('file.txt');
+  $collection->removeCollection('etc');
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+n/a
+
+
+Dependencies
+------------
+io.collections interface changes
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
