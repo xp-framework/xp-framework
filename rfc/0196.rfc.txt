@@ -4,7 +4,8 @@ $Id$
 
 @authors: friebe
 @created: Wed Nov 18 08:38:23     2009
-@status: draft
+@status: discussion, ends Thu Nov 26 12:00:00     2009
+@target: 5.7.6
 @category: io.collections
 
 Scope of Change
