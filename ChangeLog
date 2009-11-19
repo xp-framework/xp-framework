@@ -10,7 +10,7 @@ Heads up!
 ~~~~~~~~~
 - Made scriptlet.HttpScriptlet use a merge of $_GET and $_POST,
   instead of $_REQUEST, effectively not taking cookie values
-  into account when using $request->getParam().
+  into account when using HttpScriptletRequest::getParam().
   (friebe, kiesel)
 
 Features
