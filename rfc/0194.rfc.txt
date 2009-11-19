@@ -1,0 +1,99 @@
+RFC 0194: Add XPClass::getDeclared*() methods
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Nov 17 09:52:19     2009
+@status: draft
+@category: lang
+
+Scope of Change
+---------------
+The lang.XPClass class will have the following new methods
+* getDeclaredMethods()
+* getDeclaredFields()
+* getDeclaredInterfaces()
+
+Rationale
+---------
+Simplify loops with filtering logic.
+
+
+Functionality
+-------------
+<summary>
+Declared methods are the methods declared inside the sourcecode of a
+class. That is, no inherited methods are reported. Same goes for fields
+or interfaces.
+</summary>
+
+Methods
+~~~~~~~
+Current usage:
+<code>
+  foreach ($class->getMethods() as $method) {
+    if (!$method->getDeclaringClass()->equals($class)) continue;
+    
+    // ... process
+  }
+</code>
+
+New functionality:
+<code>
+  foreach ($class->getDeclaredMethods() as $method) {
+    // ... process
+  }
+</code>
+
+Interfaces
+~~~~~~~~~~
+Current usage:
+<code>
+  foreach ($class->getInterfaces() as $interface) {
+    if ($class->getParentClass()->isSubclassOf($interface)) continue;
+    
+    // ... process
+  }
+</code>
+
+New functionality:
+<code>
+  foreach ($class->getDeclaredInterfaces() as $method) {
+    // ... process
+  }
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+Faster for the loop.
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+- http://www.j2ee.me/javase/6/docs/api/java/lang/Class.html java.lang.Class
+
+
+Comments
+--------
+friebe, Tue Nov 17 10:01:02     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Maybe a <tt>methods()</tt> method and then a filter would be more 
+generic, for example:
+<code>
+  $declared= $class->methods()->declared();
+  $tests= $class->methods()->annotatedWith('test');
+  $public= $class->methods()->accessible(MODIFIER_PUBLIC);
+</code>
+
+<EOF>

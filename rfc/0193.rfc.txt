@@ -62,17 +62,28 @@ This has the following downsides:
 Plan
 ~~~~
 A generic instance should be created at runtime named with unique name 
-created of the base and component types.
+created of the base and component types. A class has two names, one that
+is reported by <tt>XPClass::getName()</tt> (F) and one used literally (L):
 
 <code>
-  // Creates a class named: "Vector··String"
-  $vs= create('new Vector<lang.types.String>()');
+  // Creates a class named: 
+  // F: "util.collections.Vector`1[lang.types.String]"
+  // L: "Vector··String"
+  $ve= create('new Vector<lang.types.String>()');
   
-  // Creates a class named: "HashTable··String¸Generic"
-  $vn= create('new HashTable<lang.types.String, lang.Generic>()');
+  // Creates a class named: 
+  // F: "util.collections.HashTable`2[lang.types.String,lang.Generic]"
+  // L: "HashTable··String¸Generic"
+  $ht= create('new HashTable<lang.types.String, lang.Generic>()');
+  
+  // Creates a class named: 
+  // F: "util.collections.Stack`1[string]"
+  // L: "Stack··þstring"
+  $st= create('new Stack<string>()');
 </code>
 
-The base class for both generated classes is <tt>lang.Object</tt>.
+The same generation process happens for all generic interfaces these
+classes implement and the generic base classes they extend.
 
 <summary>
 The middle dot (·, Alt-Gr + "." in Cygwin) is used in the XP Framework
@@ -184,6 +195,16 @@ Also, reflective creation of generic types should be possible:
   
   // ...and then use newInstance() methods
   $vector= $generic->newInstance();
+</code>
+
+Discovering the definition type:
+<code>
+  // Will display:
+  //   Definition: lang.XPClass<util.collections.Vector>
+  $class= create('new Vector<String>()')->getClass();
+  if ($class->isGeneric()) {
+    Console::writeLine('Definition: ', $class->genericDefinition());
+  }
 </code>
 
 Type restrictions

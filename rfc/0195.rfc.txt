@@ -1,0 +1,90 @@
+RFC 0195: Type-dispatch methods
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Tue Nov 17 10:07:20     2009
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+Methods will be allowed to have variants of themselves with different
+type signatures.
+
+
+Rationale
+---------
+Code simplification.
+
+
+Functionality
+-------------
+Instead of having one method with a big if / else block inside, we will
+allow declaring separate methods, each with their type literals embedded.
+
+Declaration
+~~~~~~~~~~~
+Current:
+<code>
+  public function setXml($xml) {
+    if ($xml instanceof Tree) {
+      // A
+    } else if ($xml instanceof DomDocument) {
+      // B
+    } else if (is_string($xml)) {
+      // C
+    }
+  }
+</code>
+
+New:
+<code>
+  public function setXml·Tree($xml) {
+    // A
+  }
+
+  public function setXml·DomDocument($xml) {
+    // B
+  }
+
+  public function setXml·þstring($xml) {
+    // C
+  }
+</code>
+
+Dispatch
+~~~~~~~~
+Dispatch will be performed at runtime, except if a compiler / code
+preprocessor can determine exactly.
+
+Reflection
+~~~~~~~~~~
+Reflection will list one method, "setXml" in this case. A reflective
+invocation will also apply dispatch logic.
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+TODO
+
+
+Dependencies
+------------
+n/a
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
