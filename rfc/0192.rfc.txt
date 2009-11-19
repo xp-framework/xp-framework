@@ -4,7 +4,8 @@ $Id$
 
 @authors: kiesel
 @created: Fri Oct 30 10:10:53 CET 2009
-@status: draft
+@status: discussion, ends Thu Nov 26 12:00:00     2009
+@target: 5.7.6
 @category: util.log
 
 Scope of Change
