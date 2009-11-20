@@ -143,8 +143,9 @@ n/a
 
 Related documents
 -----------------
-- RFC #0064 - RollingFileAppender
-- http://logging.apache.org/log4net/release/sdk/log4net.Layout.PatternLayout.html
+* RFC #0064 - RollingFileAppender
+* http://logging.apache.org/log4net/release/sdk/log4net.Layout.PatternLayout.html
+* http://experiments.xp-forge.net/xml/browse?arena,logging
 
 
 Comments
