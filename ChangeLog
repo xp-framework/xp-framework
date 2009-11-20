@@ -59,6 +59,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed exception message for @args methods in xp.command.Runner
+  (friebe, Rene Patzer)
 - Fixed memory leak caused by assigning $this as member of $this
   (friebe, kiesel, Tobias Roth)
 - Fixed bug on uncaught exceptions in @beforeClass-method in

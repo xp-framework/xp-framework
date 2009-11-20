@@ -552,8 +552,8 @@ Compiled classes can even use source classes and vice versa.
 
 Related documents
 -----------------
-http://experiments.xp-framework.net/xml/browse?experiments,arena,lang
-
+* http://experiments.xp-framework.net/xml/browse?experiments,arena,lang Experiment
+* http://msdn.microsoft.com/en-us/library/zw39ybk8(VS.85).aspx With...End With Statement 
 
 Comments
 --------

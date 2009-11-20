@@ -299,7 +299,9 @@
       foreach ($methods as $method) {
         if ($method->hasAnnotation('args')) { // Pass all arguments
           if (!$method->hasAnnotation('args', 'select')) {
-            $pass= array_slice($classparams->list, 0, $classparams->count);
+            $begin= 0;
+            $end= $classparams->count;
+            $pass= array_slice($classparams->list, 0, $end);
           } else {
             $pass= array();
             foreach (preg_split('/, ?/', $method->getAnnotation('args', 'select')) as $def) {

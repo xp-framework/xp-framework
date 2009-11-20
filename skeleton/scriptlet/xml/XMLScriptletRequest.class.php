@@ -52,8 +52,8 @@
         $this->url->setDefaultPage($this->getDefaultPage());
         
         // Check cookies for session id
-        $this->setSessionId($this->hasCookie('session_id')
-          ? $this->getCookie('session_id')->getValue()
+        $this->setSessionId($this->hasCookie('psessionid')
+          ? $this->getCookie('psessionid')->getValue()
           : $this->url->getSessionId()
         );
         
