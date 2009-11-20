@@ -22,21 +22,27 @@ if the day changes. It should be recalculated transparently.
 
 Functionality
 -------------
-Subclass of util.log.FileAppender.
-
-Logfile names
-~~~~~~~~~~~~~
-Given we use a filepattern of /var/log/xp/sql-%%Y-%%m-%%d.log, we'd get 
-the following:
-<pre>
-  Date       Logfile's name
-  ---------- ------------------------------
-  14.12.2006 /var/log/xp/sql-2006-12-14.log
-  15.12.2006 /var/log/xp/sql-2006-12-15.log
-</pre>
-
-With FileAppender only, the logfile name would still be sql-2006-12-14.log
-in December 15th.
+Public API in <tt>util.log.rolling</tt>:
+<code>
+  class RollingFileAppender extends LogAppender {
+  
+    public function __construct(RollingPolicy $r) { ... }
+  
+    public function append() { ... }
+  }
+  
+  abstract class RollingPolicy extends Object {
+    
+  }
+  
+  class DateBased extends RollingPolicy {
+    
+  }
+  
+  class SizeBased extends RollingPolicy {
+    
+  }
+</code>
 
 
 Security considerations
