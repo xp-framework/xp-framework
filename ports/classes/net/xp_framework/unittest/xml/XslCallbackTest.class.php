@@ -207,9 +207,9 @@
      */
     #[@test]
     public function dateFormatCallback() {
-      $date= Date::now();
+      $date= new Date('2009-09-20 21:33:00');
       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
-        Node::fromObject($date)->getSource(),
+        Node::fromObject($date, 'date')->getSource(),
         'xp.date::format',
         array('string(/date/value)', "'Y-m-d H:i:s T'")
       ));
@@ -222,10 +222,10 @@
      */
     #[@test]
     public function dateFormatCallbackWithTZ() {
-      $date= Date::now();
+      $date= new Date('2009-09-20 21:33:00');
       $tz= new TimeZone('Australia/Sydney');
       $this->assertEquals($date->toString('Y-m-d H:i:s T', $tz), $this->runTransformation(
-        Node::fromObject($date)->getSource(),
+        Node::fromObject($date, 'date')->getSource(),
         'xp.date::format',
         array('string(/date/value)', "'Y-m-d H:i:s T'", "'".$tz->getName()."'")
       ));
@@ -238,9 +238,9 @@
      */
     #[@test]
     public function dateFormatCallbackWithEmptyTZ() {
-      $date= Date::now();
+      $date= new Date('2009-09-20 21:33:00');
       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
-        Node::fromObject($date)->getSource(),
+        Node::fromObject($date, 'date')->getSource(),
         'xp.date::format',
         array('string(/date/value)', "'Y-m-d H:i:s T'", "''")
       ));
@@ -253,9 +253,9 @@
      */
     #[@test]
     public function dateFormatCallbackWithoutTZ() {
-      $date= Date::now();
+      $date= new Date('2009-09-20 21:33:00');
       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
-        Node::fromObject($date)->getSource(),
+        Node::fromObject($date, 'date')->getSource(),
         'xp.date::format',
         array('string(/date/value)', "'Y-m-d H:i:s T'")
       ));
