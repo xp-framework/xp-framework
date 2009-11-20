@@ -73,13 +73,18 @@ n/a
 
 Speed impact
 ------------
+n/a
+
 
 Dependencies
 ------------
-- This RFC obsoletes RFC #0064.
+n/a
+
 
 Related documents
 -----------------
+- RFC #0064 - RollingFileAppender
+
 
 Comments
 --------
