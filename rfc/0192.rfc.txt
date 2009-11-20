@@ -2,7 +2,7 @@ RFC 0192: Logging API enhancements
 ========================================================================
 $Id$
 
-@authors: kiesel
+@authors: kiesel, friebe
 @created: Fri Oct 30 10:10:53 CET 2009
 @status: discussion, ends Thu Nov 26 12:00:00     2009
 @target: 5.7.6
@@ -39,22 +39,82 @@ that actually makes use of the configuration.
 
 Functionality
 -------------
+The refactoring is composed of the following:
+<summary>
+- Creating a new LoggingEvent class which will carry information about 
+  the date, level, pid, category and message.
+- Changing the LogAppender::append() method's signature from varargs
+  to this new class
+- Creating a new LogLayout object that will take care of formatting 
+  this event.
 
-Tokens
-~~~~~~
+</summary>
 
-The new tokens are:
-. {DATE}  => prints the current date in datefmt format
-  (replaces %1$s)
+LoggingEvent
+~~~~~~~~~~~~
+The event class is a value object which captures a single log entry:
+<code>
+  class LoggingEvent extends Object {
+
+    /**
+     * Creates a new logging event
+     *
+     * @param   util.log.LogCategory category
+     * @param   int timestamp
+     * @param   int pid
+     * @param   int level one debug, info, warn or error
+     * @param   string message
+     */
+    public function __construct($category, $timestamp, $pid, $level, $message) {
+      // ...
+    }
+  }
+</code>
+
+LogLayout
+~~~~~~~~~
+The layout class 
+<code>
+  abstract class Layout extends Object {
   
-. {PID}   => prints process id of current process
-  (replaces %2$s)
+    /**
+     * Formats a logging event according to this layout
+     *
+     * @param   util.log.LoggingEvent event
+     * @return  string
+     */
+    public abstract function format(LoggingEvent $event);
+  }
   
-. {LEVEL} => prints level of log message
-  (replaces %3$s)
-  
-. {CLASS} => prints caller class
-  (new)
+  class PatternLayout extends Layout {
+
+    /**
+     * Creates a new pattern layout
+     *
+     * @param   string pattern a pattern containing placeholder tokens
+     */
+    public function __construct($pattern) {
+      // ...
+    }
+    
+    /**
+     * Formats a logging event according to this layout
+     *
+     * @param   util.log.LoggingEvent event
+     * @return  string
+     */
+    public function format(LoggingEvent $event) {
+      // ...
+    }
+  }
+</code>
+
+The placeholder tokens used for <tt>util.log.PatternLayout</tt> are:
+. {DATE}     => prints the current date in datefmt format
+. {PID}      => prints process id of current process
+. {LEVEL}    => prints level of log message
+. {CATEGORY} => prints category
+. {MESSAGE}  => prints message
 
 The old tokens will still be supported for BC until XP 5.8.
 
@@ -84,6 +144,7 @@ n/a
 Related documents
 -----------------
 - RFC #0064 - RollingFileAppender
+- http://logging.apache.org/log4net/release/sdk/log4net.Layout.PatternLayout.html
 
 
 Comments
