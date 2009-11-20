@@ -1,4 +1,4 @@
-RFC 0064: DailyFileAppender
+RFC 0064: RollingFileAppender
 ========================================================================
 $Id$
 
