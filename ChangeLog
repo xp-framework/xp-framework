@@ -15,7 +15,9 @@ Heads up!
 
 Features
 ~~~~~~~~
-- scriptlet.HttpScriplet checks for existance of X-Forwarded-Host
+- Added util.Currency and util.Money classes
+  (friebe)
+- Made scriptlet.HttpScriplet check for existance of X-Forwarded-Host
   HTTP-header when creating Location:-headers
   (friebe, kiesel)
 - Made scriptlet.HttpScriptlet support all HTTP methods ("verbs") by
