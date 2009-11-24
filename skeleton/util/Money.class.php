@@ -123,7 +123,7 @@
      *
      * @return  string
      */
-    public function toString($) {
+    public function toString() {
       return number_format($this->amount, 2).' '.$this->currency->name();
     }
 
