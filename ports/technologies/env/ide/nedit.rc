@@ -591,7 +591,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Subroutine::\n\
 		single quote strings:"'":"'"::String::\n\
 		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment::\n\
-		constants:"(NULL|FALSE|TRUE|<[A-Z_]+>)":::Ada Attributes::\n\
+		constants:"(<[A-Z_]+>)":::Ada Attributes::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment::\n\
 		doccommenttag:"@(throws|see|return|param)":::Plain:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2::\n\
