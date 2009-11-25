@@ -593,7 +593,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment::\n\
 		constants:"(<[A-Z_]+>)":::Ada Attributes::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment::\n\
-		doccommenttag:"@(throws|see|return|param)":::Plain:doccomment:\n\
+		doccommenttag:"@(throws|see|return|param|test)":::Plain:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2::\n\
 		inlinecomment:"//":"$"::Comment::\n\
 		number:"<-?[0-9]+>":::Preprocessor1::\n\
