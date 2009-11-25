@@ -595,7 +595,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment::\n\
 		doccommenttag:"@(throws|see|return|param)":::Plain:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2::\n\
-		inlinecomment:"//	":"$"::Comment::\n\
+		inlinecomment:"//":"$"::Comment::\n\
 		number:"<-?[0-9]+>":::Preprocessor1::\n\
 		double quote strings:"""":""""::String::\n\
 		dq string esc chars:"\\\\(.|\\n)":::Plain:double quote strings:\n\
