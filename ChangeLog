@@ -52,6 +52,8 @@ Bugfixes
 - Made scriptlet.xml.workflow.casters.ToDateCaster explicitely check for
   errors and warnings when parsing a date and reject that value in case
   (kiesel, Ionut Manta)
+- Fixed WSDL code generation for functions with no arguments
+  (hinckel, Christine Karch)
 
 
 Version 5.7.5, released 2009-10-22
