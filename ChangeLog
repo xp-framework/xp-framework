@@ -34,6 +34,8 @@ Features
 
 RFCs
 ~~~~
+- Implemented RFC #0192 - Logging API enhancements
+  (friebe)
 - Implemented RFC #0191 - New CSV API
   (friebe)
 

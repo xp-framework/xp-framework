@@ -4,7 +4,7 @@ $Id$
 
 @authors: kiesel, friebe
 @created: Fri Oct 30 10:10:53 CET 2009
-@status: discussion, ends Thu Nov 26 12:00:00     2009
+@status: implemented, Fri Dec  4 17:53:37     2009
 @target: 5.7.6
 @category: util.log
 
