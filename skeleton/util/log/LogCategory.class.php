@@ -4,13 +4,12 @@
  * $Id$
  */
 
-  uses('util.log.LogLevel');
-
-  define('LOGGER_FLAG_INFO',    0x0001);
-  define('LOGGER_FLAG_WARN',    0x0002);
-  define('LOGGER_FLAG_ERROR',   0x0004);
-  define('LOGGER_FLAG_DEBUG',   0x0008);
-  define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
+  uses(
+    'util.log.LogLevel', 
+    'util.log.Appender', 
+    'util.log.LoggingEvent', 
+    'util.log.DefaultLayout'
+  );
 
   /**
    * The log category is the interface to be used. All logging information
@@ -37,39 +36,28 @@
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.logging.LogCategoryTest
-   * @purpose  Base class
    */
   class LogCategory extends Object {
-    public 
-      $_appenders= array(),
-      $_indicators= array(
-        LogLevel::INFO        => 'info',
-        LogLevel::WARN        => 'warn',
-        LogLevel::ERROR       => 'error',
-        LogLevel::DEBUG       => 'debug'
-      );
+    protected static $DEFAULT_LAYOUT= NULL;
+    protected $_appenders= array();
+
+    public $flags= 0;
+    public $identifier= '';
       
-    public
-      $flags,
-      $identifier,
-      $dateformat,
-      $format;
+    static function __static() {
+      self::$DEFAULT_LAYOUT= new DefaultLayout();
+    }
 
     /**
      * Constructor
      *
      * @param   string identifier
-     * @param   string format 
-     * @param   string dateformat
-     * @param   int flags
+     * @param   int flags (defaults to all)
      */
-    public function __construct($identifier, $format, $dateformat, $flags= LogLevel::ALL) {
-      $this->identifier= $identifier;
-      $this->format= $format;
-      $this->dateformat= $dateformat;
+    public function __construct($identifier, $flags= LogLevel::ALL) {
       $this->flags= $flags;
+      $this->identifier= $identifier;
       $this->_appenders= array();
-      
     }
 
     /**
@@ -92,28 +80,18 @@
     }
     
     /**
-     * Private helper function
+     * Calls all appenders
      *
+     * @param   int level
+     * @param   var[] args
      */
-    public function callAppenders() {
-      $args= func_get_args();
-      $flag= $args[0];
-      if (!($this->flags & $flag)) return;
-      
-      $args[0]= sprintf(
-        $this->format,
-        date($this->dateformat),
-        $this->identifier,
-        $this->_indicators[$flag]
-      );
-      
-      foreach (array_keys($this->_appenders) as $appflag) {
-        if (!($flag & $appflag)) continue;
-        foreach (array_keys($this->_appenders[$appflag]) as $idx) {
-          call_user_func_array(
-            array($this->_appenders[$appflag][$idx], 'append'),
-            $args
-          );
+    protected function callAppenders($level, $args) {
+      if (!($this->flags & $level)) return;
+      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
+      foreach ($this->_appenders as $appflag => $appenders) {
+        if (!($level & $appflag)) continue;
+        foreach ($appenders as $appender) {
+          $appender->append($event);
         }
       }
     }
@@ -133,8 +111,8 @@
      */
     public function finalize() {
       foreach ($this->_appenders as $flags => $appenders) {
-        foreach (array_keys($appenders) as $idx) {
-          $appenders[$idx]->finalize();
+        foreach ($this->_appenders[$appflag] as $appender) {
+          $appender->finalize();
         }
       }
     }
@@ -144,12 +122,21 @@
      * combine the log types or use LogLevel::ALL (default) to log all 
      * types.
      *
-     * @param   util.log.LogAppender appender The appender object
+     * @param   util.log.Appender appender The appender object
      * @param   int flag default LogLevel::ALL
-     * @return  util.log.LogAppender the appender added
+     * @return  util.log.Appender the appender added
      */
     public function addAppender($appender, $flag= LogLevel::ALL) {
-      $this->_appenders[$flag][]= $appender;
+      if ($appender instanceof Appender) {
+        // NOOP
+      } else if ($appender instanceof LogAppender) {
+        $appender= XPClass::forName('util.log.LogAppenderAdapter')->newInstance($appender);
+      } else {
+        throw new IllegalArgumentException('Expected an util.log.Appender, have '.xp::typeOf($appender));
+      }
+      
+      $appender->getLayout() || $appender->setLayout(self::$DEFAULT_LAYOUT);
+      $this->_appenders[$flag][$appender->hashCode()]= $appender;
       return $appender;
     }
 
@@ -159,12 +146,13 @@
      * combine the log types or use LogLevel::ALL (default) to log all 
      * types.
      *
-     * @param   util.log.LogAppender appender The appender object
+     * @param   util.log.Appender appender The appender object
      * @param   int flag default LogLevel::ALL
      * @return  util.log.LogCategory this category
      */
-    public function withAppender($appender, $flag= LogLevel::ALL) {
-      $this->_appenders[$flag][]= $appender;
+    public function withAppender(Appender $appender, $flag= LogLevel::ALL) {
+      $appender->getLayout() || $appender->setLayout(self::$DEFAULT_LAYOUT);
+      $this->_appenders[$flag][$appender->hashCode()]= $appender;
       return $this;
     }
     
@@ -172,22 +160,17 @@
      * Remove the specified appender from the given log categories. For usage
      * of log category flags, see addAppender().
      * 
-     * @param   util.log.LogAppender appender
+     * @param   util.log.Appender appender
      * @param   int flag default LogLevel::ALL
      */
-    public function removeAppender($appender, $flag= LogLevel::ALL) {
+    public function removeAppender(Appender $appender, $flag= LogLevel::ALL) {
       foreach ($this->_appenders as $f => $appenders) {
         if (!($f & $flag)) continue;
+        unset($this->_appenders[$f][$appender->hashCode()]);
         
-        foreach ($appenders as $idx => $apndr) {
-          if ($apndr === $appender) {
-            unset($this->_appenders[$f][$idx]);
-
-            // Remove flag line, if last appender had been removed
-            if (1 == sizeof($appenders)) {
-              unset($this->_appenders[$f]);
-            }
-          }
+        // Last appender for this flag removed - remove flag alltogether
+        if (0 === sizeof($this->_appenders[$f])) {
+          unset($this->_appenders[$f]);
         }
       }
     }
@@ -212,8 +195,7 @@
      */
     public function info() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::INFO);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::INFO, $args);
     }
 
     /**
@@ -229,7 +211,7 @@
      */
     public function infof() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::INFO, vsprintf($args[0], array_slice($args, 1)));
+      $this->callAppenders(LogLevel::INFO, array(vsprintf($args[0], array_slice($args, 1))));
     }
 
     /**
@@ -239,8 +221,7 @@
      */
     public function warn() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::WARN);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::WARN, $args);
     }
 
     /**
@@ -251,7 +232,7 @@
      */
     public function warnf() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::WARN, vsprintf($args[0], array_slice($args, 1)));
+      $this->callAppenders(LogLevel::WARN, array(vsprintf($args[0], array_slice($args, 1))));
     }
 
     /**
@@ -261,8 +242,7 @@
      */
     public function error() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::ERROR);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::ERROR, $args);
     }
 
     /**
@@ -273,7 +253,7 @@
      */
     public function errorf() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::ERROR, vsprintf($args[0], array_slice($args, 1)));
+      $this->callAppenders(LogLevel::ERROR, array(vsprintf($args[0], array_slice($args, 1))));
     }
 
     /**
@@ -283,8 +263,7 @@
      */
     public function debug() {
       $args= func_get_args();
-      array_unshift($args, LogLevel::DEBUG);
-      call_user_func_array(array($this, 'callAppenders'), $args);
+      $this->callAppenders(LogLevel::DEBUG, $args);
     }
  
     /**
@@ -295,7 +274,7 @@
      */
     public function debugf() {
       $args= func_get_args();
-      $this->callAppenders(LogLevel::DEBUG, vsprintf($args[0], array_slice($args, 1)));
+      $this->callAppenders(LogLevel::DEBUG, array(vsprintf($args[0], array_slice($args, 1))));
     }
    
     /**
@@ -303,7 +282,58 @@
      *
      */
     public function mark() {
-      $this->callAppenders(LogLevel::INFO, str_repeat('-', 72));
+      $this->callAppenders(LogLevel::INFO, array(str_repeat('-', 72)));
+    }
+    
+    /**
+     * Helper method for equals
+     *
+     * @param   array c1
+     * @param   array c2
+     * @return  bool
+     */
+    protected static function appendersAreEqual($c1, $c2) {
+      if (sizeof($c1) != sizeof($c2)) return FALSE;
+      foreach ($c1 as $f => $appenders) {
+        if (!isset($c2[$f])) return FALSE;
+        if (sizeof($appenders) != sizeof($c2[$f])) return FALSE;
+        foreach ($appenders as $hash => $appender) {
+          if (!isset($c2[$f][$hash])) return FALSE;
+        }
+      }
+      return TRUE;
+    }
+
+    /**
+     * Returns whether another object is equal to this
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $cmp->identifier === $this->identifier &&
+        $cmp->flags === $this->flags &&
+        self::appendersAreEqual($cmp->_appenders, $this->_appenders)
+      );
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'(name='.$this->identifier.' flags='.$this->flags.")@{\n";
+      foreach ($this->_appenders as $flags => $appenders) {
+        $s.= '  '.$flags.": [\n";
+        foreach ($appenders as $appender) {
+          $s.= '  - '.$appender->toString()."\n"; 
+        }
+        $s.= "  ]\n";
+      }
+      return $s.'}';
     }
   }
 ?>
