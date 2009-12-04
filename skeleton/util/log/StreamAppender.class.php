@@ -4,39 +4,34 @@
  * $Id$
  */
 
-  uses('util.log.LogAppender');
+  uses('util.log.Appender');
 
   /**
    * StreamAppender which appends data to a stream
    *
-   * @see      xp://util.log.LogAppender
+   * @see      xp://util.log.Appender
+   * @test     xp://net.xp_framework.unittest.logging.StreamAppenderTest
    * @purpose  Appender
    */  
-  class StreamAppender extends LogAppender {
-    public 
-      $stream = NULL;
+  class StreamAppender extends Appender {
+    public $stream= NULL;
     
     /**
      * Constructor
      *
      * @param   io.streams.OutputStream stream
      */
-    public function __construct($stream) {
+    public function __construct(OutputStream $stream) {
       $this->stream= $stream;
     }
     
     /**
-     * Appends log data to the file
+     * Append data
      *
-     * @param   mixed* args variables
-     */
-    public function append() {
-      with ($args= func_get_args()); {
-        foreach ($args as $idx => $arg) {
-          $this->stream->write($this->varSource($arg). ($idx < sizeof($args)-1 ? ' ' : ''));
-        }
-      }
-      $this->stream->write("\n");
+     * @param   util.log.LoggingEvent event
+     */ 
+    public function append(LoggingEvent $event) {
+      $this->stream->write($this->layout->format($event));
     }
   }
 ?>

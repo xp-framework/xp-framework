@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  uses('util.log.LogAppender');
+  uses('util.log.Appender');
 
   /**
-   * LogAppender which appends data to a file
+   * Appender which appends data to a file
    *
-   * @see      xp://util.log.LogAppender
+   * @see      xp://util.log.Appender
    * @purpose  Appender
    */  
-  class FileAppender extends LogAppender {
+  class FileAppender extends Appender {
     public 
       $filename = '',
       $perms    = NULL;
@@ -27,11 +27,12 @@
     }
     
     /**
-     * Appends log data to the file
+     * Append data
      *
-     * @param   mixed* args variables
-     */
-    public function append() {
+     * @param   util.log.LoggingEvent event
+     */ 
+    public function append(LoggingEvent $event) {
+      $line= $this->layout->format($event);
       $fd= fopen($this->filename, 'a');
 
       if ($this->perms) {
@@ -39,13 +40,7 @@
         $this->perms= NULL;
       }
       
-      with ($args= func_get_args()); {
-        foreach ($args as $idx => $arg) {
-          fputs($fd, $this->varSource($arg). ($idx < sizeof($args)-1 ? ' ' : ''));
-        }
-      }
-
-      fputs($fd, "\n");
+      fputs($fd, $line);
       fclose($fd);
     }
   }

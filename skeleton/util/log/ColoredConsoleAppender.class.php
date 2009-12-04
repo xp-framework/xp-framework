@@ -18,12 +18,7 @@
    * @purpose  Appender
    */  
   class ColoredConsoleAppender extends ConsoleAppender {
-    public
-      $cerror    = '',
-      $cwarn     = '', 
-      $cinfo     = '', 
-      $cdebug    = '',
-      $cdefault  = '';
+    protected $colors= array();
 
     /**
      * Constructor
@@ -41,37 +36,25 @@
       $cdebug   = '00;34',
       $cdefault = '07;37'
     ) {
-      $this->cerror     = $cerror; 
-      $this->cwarn      = $cwarn;
-      $this->cinfo      = $cinfo;
-      $this->cdebug     = $cdebug;
-      $this->cdefault   = $cdefault;
+      $this->colors= array(
+        LogLevel::INFO    => $cinfo,
+        LogLevel::WARN    => $cwarn,
+        LogLevel::ERROR   => $cerror,
+        LogLevel::DEBUG   => $cdebug,
+        LogLevel::NONE    => $cdefault
+      );
     }
     
     /**
-     * Appends log data to STDERR
+     * Append data
      *
-     * @param  mixed args variables
-     */
-    public function append() {
-      $a= func_get_args();
-      
-      // Colorize depending on the flag
-      if (strstr($a[0], 'error')) {
-        fwrite(STDERR, "\x1b[".$this->cerror."m");
-      } else if (strstr($a[0], 'warn')) {
-        fwrite(STDERR, "\x1b[".$this->cwarn."m");
-      } else if (strstr($a[0], 'info')) {
-        fwrite(STDERR, "\x1b[".$this->cinfo."m");      
-      } else if (strstr($a[0], 'debug')) {
-        fwrite(STDERR, "\x1b[".$this->cdebug."m");      
-      } else {
-        fwrite(STDERR, "\x1b[".$this->cdefault."m");
-      }
-      foreach ($a as $arg) {
-        fwrite(STDERR, $this->varSource($arg).' ');
-      }
-      fwrite(STDERR, "\x1b[0m\n");
+     * @param   util.log.LoggingEvent event
+     */ 
+    public function append(LoggingEvent $event) {
+      $l= $event->getLevel();
+      fwrite(STDERR, "\x1b[".$this->colors[isset($this->colors[$l]) ? $l : LogLevel::NONE]."m");
+      fwrite(STDERR, $this->layout->format($event));
+      fwrite(STDERR, "\x1b[0m");
     }
   }
 ?>

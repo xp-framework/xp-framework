@@ -4,28 +4,24 @@
  * $Id$
  */
 
-  uses('util.log.LogAppender');
+  uses('util.log.Appender');
 
   /**
    * Appender which appends all data to a buffer
    *
-   * @see      xp://util.log.LogAppender
+   * @see      xp://util.log.Appender
    * @purpose  Appender
    */  
-  class BufferedAppender extends LogAppender {
-    public 
-      $buffer = '';
+  class BufferedAppender extends Appender {
+    public $buffer= '';
 
     /**
-     * Appends log data to the buffer
+     * Append data
      *
-     * @param  mixed* args variables
-     */
-    public function append() {
-      foreach (func_get_args() as $arg) {
-        $this->buffer.= $this->varSource($arg).' ';
-      }
-      $this->buffer.= "\n";
+     * @param   util.log.LoggingEvent event
+     */ 
+    public function append(LoggingEvent $event) {
+      $this->buffer.= $this->layout->format($event);
     }
     
     /**

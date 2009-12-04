@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  uses('util.log.LogAppender');
+  uses('util.log.Appender');
 
   /**
-   * LogAppender which sends log to an email address
+   * Appender which sends log to an email address
    *
-   * @see      xp://util.log.LogAppender
+   * @see      xp://util.log.Appender
    * @purpose  Appender
    */  
-  class SmtpAppender extends LogAppender {
+  class SmtpAppender extends Appender {
     public 
       $email    = '',
       $prefix   = '',
@@ -43,24 +43,18 @@
     }
     
     /**
-     * Sends log data to the specified email address
+     * Append data
      *
-     * @param   mixed args variables
-     */
-    public function append() {
-      $body= '';
-      
-      with ($args= func_get_args()); {
-        foreach ($args as $idx => $arg) {
-          $body.= $this->varSource($arg).($idx < sizeof($args)-1 ? ' ' : '');
-        }
-      }
-      
+     * @param   util.log.LoggingEvent event
+     */ 
+    public function append(LoggingEvent $event) {
+      $body= $this->layout->format($event);
       if ($this->sync) {
         mail($this->email, $this->prefix, $body);
       } else {
         $this->_data[]= $body;
       }
+
     }
     
     /**
