@@ -8,7 +8,7 @@
     'util.log.LogLevel', 
     'util.log.Appender', 
     'util.log.LoggingEvent', 
-    'util.log.DefaultLayout'
+    'util.log.layout.DefaultLayout'
   );
 
   /**

@@ -8,7 +8,7 @@
     'unittest.TestCase',
     'util.log.Appender',
     'util.log.LogCategory',
-    'util.log.PatternLayout',
+    'util.log.layout.PatternLayout',
     'util.collections.Vector'
   );
 

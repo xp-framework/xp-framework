@@ -9,7 +9,7 @@
     'util.log.Logger',
     'util.log.Appender',
     'util.log.LogAppender',
-    'util.log.PatternLayout'
+    'util.log.layout.PatternLayout'
   );
 
   /**
@@ -163,7 +163,7 @@
         public function append(LoggingEvent $event) { }
       }');
       $this->cat->addAppender($appender);
-      $this->assertClass($appender->getLayout(), 'util.log.DefaultLayout');
+      $this->assertClass($appender->getLayout(), 'util.log.layout.DefaultLayout');
     }
 
     /**
@@ -176,7 +176,7 @@
         public function append(LoggingEvent $event) { }
       }');
       $this->cat->addAppender($appender->withLayout(new PatternLayout('%m')));
-      $this->assertClass($appender->getLayout(), 'util.log.PatternLayout');
+      $this->assertClass($appender->getLayout(), 'util.log.layout.PatternLayout');
     }
 
     /**
@@ -190,7 +190,7 @@
         public function append(LoggingEvent $event) { }
       }');
       $this->cat->withAppender($appender);
-      $this->assertClass($appender->getLayout(), 'util.log.DefaultLayout');
+      $this->assertClass($appender->getLayout(), 'util.log.layout.DefaultLayout');
     }
 
     /**
@@ -203,7 +203,7 @@
         public function append(LoggingEvent $event) { }
       }');
       $this->cat->withAppender($appender->withLayout(new PatternLayout('%m')));
-      $this->assertClass($appender->getLayout(), 'util.log.PatternLayout');
+      $this->assertClass($appender->getLayout(), 'util.log.layout.PatternLayout');
     }
 
     /**
