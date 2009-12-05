@@ -87,6 +87,22 @@
     }
 
     /**
+     * Tests ArrayList is usable in foreach() - nested
+     *
+     */
+    #[@test]
+    public function innerIteration() {
+      $a= new ArrayList(1, 2, 3);
+      $r= array();
+      foreach ($a as $vo) {
+        foreach ($a as $vi) {
+          $r[]= $vi;
+        }
+      }
+      $this->assertEquals(array(1, 2, 3, 1, 2, 3, 1, 2, 3), $r);
+    }
+
+    /**
      * Tests array access operator is overloaded for reading
      *
      */
