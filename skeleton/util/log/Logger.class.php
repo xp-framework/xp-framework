@@ -76,37 +76,12 @@
    * @purpose  Singleton logger
    */
   class Logger extends Object implements Configurable {
-    protected static 
-      $instance     = NULL;
-    
-    public 
-      $category     = array();
-    
-    public
-      $defaultIdentifier,
-      $defaultDateformat,
-      $defaultFormat,
-      $defaultFlags,
-      $defaultAppenders;
-  
-    public
-      $_finalized   = FALSE;
+    protected static $instance= NULL;
+    protected $category= array();
+    protected $_finalized= FALSE;
 
     static function __static() {
       self::$instance= new self();
-      self::$instance->defaultIdentifier= getmypid();
-      self::$instance->defaultFormat= '[%1$s %2$5s %3$5s]';
-      self::$instance->defaultDateformat= 'H:i:s';
-      self::$instance->defaultFlags= LogLevel::ALL;
-      self::$instance->defaultAppenders= array();
-      
-      // Create an empty LogCategory
-      self::$instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
-        self::$instance->defaultIdentifier,
-        self::$instance->defaultFormat,
-        self::$instance->defaultDateformat,
-        self::$instance->defaultFlags
-      );
     }
 
     /**
@@ -114,6 +89,7 @@
      *
      */
     protected function __construct() {
+      $this->category[LOG_DEFINES_DEFAULT]= new LogCategory(LOG_DEFINES_DEFAULT);
     }
 
     /**
@@ -135,23 +111,13 @@
     public function configure($prop) {
       $class= array();
       
-      // Read default properties
-      $this->defaultIdentifier= $prop->readString(LOG_DEFINES_DEFAULT, 'identifier', $this->defaultIdentifier);
-      $this->defaultFormat= $prop->readString(LOG_DEFINES_DEFAULT, 'format', $this->defaultFormat);
-      $this->defaultDateformat= $prop->readString(LOG_DEFINES_DEFAULT, 'date.format', $this->defaultDateformat);
-      $this->defaultFlags= $prop->readInteger(LOG_DEFINES_DEFAULT, 'flags', $this->defaultFlags);
-      $this->defaultAppenders= $prop->readArray(LOG_DEFINES_DEFAULT, 'appenders', $this->defaultAppenders);
-      
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
         $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
-
         $this->category[$section]= $catclass->newInstance(
-          $this->defaultIdentifier,
-          $prop->readString($section, 'format', $this->defaultFormat),
-          $prop->readString($section, 'date.format', $this->defaultDateformat),
-          $prop->readInteger($section, 'flags', $this->defaultFlags)
+          $section,
+          $prop->readInteger($section, 'flags', LogLevel::ALL)
         );
         
         // Has an appender?

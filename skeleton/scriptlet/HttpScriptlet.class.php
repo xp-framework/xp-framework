@@ -184,6 +184,7 @@
      */
     public function handleMethod($request) {
       switch (strtoupper($request->method)) {
+        case HttpConstants::POST:
         case HttpConstants::PUT: {
           if (!empty($_FILES)) {
             $request->params= array_merge($request->params, $_FILES);
@@ -191,7 +192,6 @@
           
           // Break missing intentionally
         }
-        case HttpConstants::POST:
         case HttpConstants::DELETE:
         case HttpConstants::OPTIONS:
         case HttpConstants::TRACE:

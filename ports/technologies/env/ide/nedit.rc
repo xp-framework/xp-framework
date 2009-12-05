@@ -584,23 +584,23 @@ nedit.highlightPatterns: C:1:0{\n\
 		keywords:"<NEWS|MFP|MFB|BFN|MFH|CS|WS>":::Identifier::\n\
 	}\n\
 	XP:1:0{\n\
-		package_statement:"package ([^ ]+)":::Keyword::\n\
-		keywords:"<(isset|const|with|in|void|enum|instanceof|namespace|package|import|interface|package|implements|instanceof|try|catch|throw|finally|cast|unset|extends|operator|class|switch|case|default|throws|var|new|if|do|while|else|for|foreach|continue|return|\\|\\||\\&\\&|!==?|===?)>":::Keyword::\n\
+		packageandimport:"(package|import) ([^ ]+)":::Keyword::\n\
+		keywords:"<(const|with|in|as|void|enum|instanceof|package|import|interface|package|implements|clone|instanceof|try|catch|throw|finally|extends|operator|class|switch|case|default|throws|var|new|if|do|while|else|for|foreach|continue|return|true|false|null|\\|\\||\\&\\&|!==?|===?)>":::Keyword::\n\
 		classkeywords:"<(public|private|protected|native|inline|static|abstract|final|__destruct|__construct|__call|__set|__get|parent|self|this)>":::Text Escape::\n\
 		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_\\r/\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Text Arg::\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Subroutine::\n\
 		single quote strings:"'":"'"::String::\n\
 		annotation:"@([a-zA-Z]+)(\\('[^']+'\\))?":::Text Comment::\n\
-		constants:"(NULL|FALSE|TRUE|<[A-Z_]+>)":::Ada Attributes::\n\
+		constants:"(<[A-Z_]+>)":::Ada Attributes::\n\
 		doccomment:"/\\*\\*":"\\*/"::Comment::\n\
-		doccommenttag:"@(throws|see|return|param)":::Plain:doccomment:\n\
+		doccommenttag:"@(throws|see|return|param|test)":::Plain:doccomment:\n\
 		comment:"/\\*":"\\*/"::Text Arg2::\n\
-		inlinecomment:"//	":"$"::Comment::\n\
+		inlinecomment:"//":"$"::Comment::\n\
 		number:"<-?[0-9]+>":::Preprocessor1::\n\
 		double quote strings:"""":""""::String::\n\
 		dq string esc chars:"\\\\(.|\\n)":::Plain:double quote strings:\n\
 		sq string esc chars:"\\\\(.|\\n)":::String:single quote strings:\n\
-		package_name:"\\1":""::Preprocessor:package_statement:C\n\
+		qname:"\\2":""::Identifier2:packageandimport:C\n\
 	}\n\
 	CompactXML:1:0{\n\
 		Attributes:"[a-zA-Z]+\\s*=\\s*((""[^""]+"")|([^ ,\\)]+))":::String2:Node:\n\

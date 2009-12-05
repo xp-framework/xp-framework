@@ -37,7 +37,9 @@ Heads up!
 
 Features
 ~~~~~~~~
-- scriptlet.HttpScriplet checks for existance of X-Forwarded-Host
+- Added util.Currency and util.Money classes
+  (friebe)
+- Made scriptlet.HttpScriplet check for existance of X-Forwarded-Host
   HTTP-header when creating Location:-headers
   (friebe, kiesel)
 - Made scriptlet.HttpScriptlet support all HTTP methods ("verbs") by
@@ -54,6 +56,8 @@ Features
 
 RFCs
 ~~~~
+- Implemented RFC #0192 - Logging API enhancements
+  (friebe)
 - Implemented RFC #0191 - New CSV API
   (friebe)
 
@@ -72,6 +76,8 @@ Bugfixes
 - Made scriptlet.xml.workflow.casters.ToDateCaster explicitely check for
   errors and warnings when parsing a date and reject that value in case
   (kiesel, Ionut Manta)
+- Fixed WSDL code generation for functions with no arguments
+  (hinckel, Christine Karch)
 
 
 Version 5.7.5, released 2009-10-22

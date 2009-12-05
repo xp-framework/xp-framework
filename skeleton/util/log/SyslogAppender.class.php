@@ -4,25 +4,17 @@
  * $Id$
  */
 
-  uses('util.log.LogAppender');
+  uses('util.log.Appender');
 
   /**
-   * LogAppender which appends data to syslog
+   * Appender which appends data to syslog
    *
-   * @see      xp://util.log.LogAppender
+   * @see      xp://util.log.Appender
    * @see      php://syslog
    * @purpose  Appender
    */  
-  class SyslogAppender extends LogAppender {
+  class SyslogAppender extends Appender {
 
-    /**
-     * Destructor.
-     *
-     */
-    public function __destruct() {
-      $this->finalize();
-    }
-        
     /**
      * Constructor
      *
@@ -39,16 +31,21 @@
     }
     
     /**
-     * Appends log data to the syslog
+     * Append data
      *
-     * @param   mixed args variables
-     */
-    public function append() {
-      $buf= '';
-      foreach (func_get_args() as $arg) {
-        $buf.= $this->varSource($arg).' ';
-      }
-      syslog(LOG_INFO, $buf);
+     * @param   util.log.LoggingEvent event
+     */ 
+    public function append(LoggingEvent $event) {
+      static $map= array(
+        LogLevel::INFO    => LOG_INFO,
+        LogLevel::WARN    => LOG_WARNING,
+        LogLevel::ERROR   => LOG_ERR,
+        LogLevel::DEBUG   => LOG_DEBUG,
+        LogLevel::NONE    => LOG_NOTICE
+      );
+
+      $l= $event->getLevel();
+      syslog($map[isset($map[$l]) ? $l : LogLevel::NONE], $this->layout->format($event));
     }
     
     /**
@@ -58,6 +55,14 @@
      */
     public function finalize() {
       closelog();
+    }
+
+    /**
+     * Destructor.
+     *
+     */
+    public function __destruct() {
+      $this->finalize();
     }
   }
 ?>

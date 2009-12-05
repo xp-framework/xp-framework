@@ -7,6 +7,7 @@
   /**
    * Abstract base class for appenders
    *
+   * @deprecated  Use util.log.Appender instead
    * @see      xp://util.log.LogCategory#addAppender
    * @purpose  Base class
    */

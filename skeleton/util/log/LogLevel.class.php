@@ -4,6 +4,12 @@
  * $Id$ 
  */
 
+  define('LOGGER_FLAG_INFO',    0x0001);
+  define('LOGGER_FLAG_WARN',    0x0002);
+  define('LOGGER_FLAG_ERROR',   0x0004);
+  define('LOGGER_FLAG_DEBUG',   0x0008);
+  define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
+
   /**
    * Log levels
    *
@@ -44,6 +50,27 @@
         throw new IllegalArgumentException('No such loglevel named "'.$name.'"');
       }
       return $map[$key];
+    }
+
+    /**
+     * Retrieve a loglevel name for a given level
+     *
+     * @param   int level
+     * @return  string
+     * @throws  lang.IllegalArgumentException
+     */
+    public static function nameOf($level) {
+      static $map= array(
+        self::INFO  => 'INFO',
+        self::WARN  => 'WARN',
+        self::ERROR => 'ERROR',
+        self::DEBUG => 'DEBUG',
+      );
+    
+      if (!isset($map[$level])) {
+        throw new IllegalArgumentException('No such loglevel '.$level);
+      }
+      return $map[$level];
     }
   }
 ?>

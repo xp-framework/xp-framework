@@ -284,31 +284,21 @@
   <xsl:template name="argumentnames">
     <xsl:param name="for"/>
     <xsl:param name="indent" select="'        '"/>
-    
-    <xsl:choose>
-      <xsl:when test="contains($for, ':')">
-        <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = substring-after($for, ':')]/wsdl:part">
-          <xsl:value-of select="$indent"/>
-          <xsl:text>new Parameter('</xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text>', $</xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text>)</xsl:text>
-          <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
-        </xsl:for-each>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:for-each select="/wsdl:definitions/wsdl:message[@name = $for]/wsdl:part">
-          <xsl:value-of select="$indent"/>
-          <xsl:text>new Parameter('</xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text>', $</xsl:text>
-          <xsl:value-of select="@name"/>
-          <xsl:text>)</xsl:text>          
-          <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
-        </xsl:for-each>
-      </xsl:otherwise>
-    </xsl:choose>
+
+    <xsl:variable name="args" select="/wsdl:definitions/wsdl:message[@name = $for or @name = substring-after($for, ':')]/wsdl:part"/>
+
+    <xsl:if test="count($args) &gt; 0">
+      <xsl:value-of select="',&#xa;'"/>
+      <xsl:for-each select="$args">
+        <xsl:value-of select="$indent"/>
+        <xsl:text>new Parameter('</xsl:text>
+        <xsl:value-of select="@name"/>
+        <xsl:text>', $</xsl:text>
+        <xsl:value-of select="@name"/>
+        <xsl:text>)</xsl:text>
+        <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
 
   <!--
@@ -533,8 +523,7 @@
       return $this->client->invoke(
         ']]></xsl:text>
       <xsl:value-of select="@name"/>
-      <xsl:text>',
-</xsl:text>
+      <xsl:text>'</xsl:text>
       <xsl:call-template name="argumentnames">
         <xsl:with-param name="for" select="wsdl:input/@message"/>
       </xsl:call-template>

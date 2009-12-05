@@ -1,0 +1,1719 @@
+Index: skeleton/util/log/LoggingEvent.class.php
+===================================================================
+--- skeleton/util/log/LoggingEvent.class.php	(revision 0)
++++ skeleton/util/log/LoggingEvent.class.php	(revision 0)
+@@ -0,0 +1,100 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('util.log.LogCategory', 'util.log.LogLevel');
++
++  /**
++   * A single log event
++   *
++   * @test    xp://net.xp_framework.unittest.logging.LoggingEventTest
++   */
++  class LoggingEvent extends Object {
++    protected $category= NULL;
++    protected $timestamp= 0;
++    protected $processId= 0;
++    protected $level= 0;
++    protected $arguments= array();
++    
++    /**
++     * Creates a new logging event
++     *
++     * @param   util.log.LogCategory category
++     * @param   int timestamp
++     * @param   int processId
++     * @param   int level one debug, info, warn or error
++     * @param   var[] arguments
++     */
++    public function __construct($category, $timestamp, $processId, $level, array $arguments) {
++      $this->category= $category;
++      $this->timestamp= $timestamp;
++      $this->processId= $processId;
++      $this->level= $level;
++      $this->arguments= $arguments;
++    }
++    
++    /**
++     * Gets category
++     *
++     * @return  util.log.LogCategory
++     */
++    public function getCategory() {
++      return $this->category;
++    }
++
++    /**
++     * Gets timestamp
++     *
++     * @return  int
++     */
++    public function getTimestamp() {
++      return $this->timestamp;
++    }
++
++    /**
++     * Gets processId
++     *
++     * @return  int
++     */
++    public function getProcessId() {
++      return $this->processId;
++    }
++
++    /**
++     * Gets level
++     *
++     * @see     xp://util.log.LogLevel
++     * @return  int
++     */
++    public function getLevel() {
++      return $this->level;
++    }
++
++    /**
++     * Gets arguments
++     *
++     * @return  var[]
++     */
++    public function getArguments() {
++      return $this->arguments;
++    }
++
++    /**
++     * Creates a string representation
++     *
++     * @return  string
++     */
++    public function toString() {
++      return sprintf(
++        '%s(%s @ %s, PID %d) {%s}',
++        $this->getClassName(),
++        LogLevel::named($this->level),
++        date('r', $this->timestamp),
++        $this->processId,
++        xp::stringOf($this->arguments)
++      );
++    }
++  }
++?>
+
+Property changes on: skeleton/util/log/LoggingEvent.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/util/log/ColoredConsoleAppender.class.php
+===================================================================
+--- skeleton/util/log/ColoredConsoleAppender.class.php	(revision 13884)
++++ skeleton/util/log/ColoredConsoleAppender.class.php	(working copy)
+@@ -18,12 +18,7 @@
+    * @purpose  Appender
+    */  
+   class ColoredConsoleAppender extends ConsoleAppender {
+-    public
+-      $cerror    = '',
+-      $cwarn     = '', 
+-      $cinfo     = '', 
+-      $cdebug    = '',
+-      $cdefault  = '';
++    protected $colors= array();
+ 
+     /**
+      * Constructor
+@@ -41,36 +36,24 @@
+       $cdebug   = '00;34',
+       $cdefault = '07;37'
+     ) {
+-      $this->cerror     = $cerror; 
+-      $this->cwarn      = $cwarn;
+-      $this->cinfo      = $cinfo;
+-      $this->cdebug     = $cdebug;
+-      $this->cdefault   = $cdefault;
++      $this->colors= array(
++        LogLevel::INFO    => $cinfo,
++        LogLevel::WARN    => $cwarn,
++        LogLevel::ERROR   => $cerror,
++        LogLevel::DEBUG   => $cdebug,
++        LogLevel::NONE    => $cdefault
++      );
+     }
+     
+     /**
+-     * Appends log data to STDERR
++     * Append data
+      *
+-     * @param  mixed args variables
+-     */
+-    public function append() {
+-      $a= func_get_args();
+-      
+-      // Colorize depending on the flag
+-      if (strstr($a[0], 'error')) {
+-        fwrite(STDERR, "\x1b[".$this->cerror."m");
+-      } else if (strstr($a[0], 'warn')) {
+-        fwrite(STDERR, "\x1b[".$this->cwarn."m");
+-      } else if (strstr($a[0], 'info')) {
+-        fwrite(STDERR, "\x1b[".$this->cinfo."m");      
+-      } else if (strstr($a[0], 'debug')) {
+-        fwrite(STDERR, "\x1b[".$this->cdebug."m");      
+-      } else {
+-        fwrite(STDERR, "\x1b[".$this->cdefault."m");
+-      }
+-      foreach ($a as $arg) {
+-        fwrite(STDERR, $this->varSource($arg).' ');
+-      }
++     * @param   util.log.LoggingEvent event
++     */ 
++    public function append(LoggingEvent $event) {
++      $l= $event->getLevel();
++      fwrite(STDERR, "\x1b[".$this->colors[isset($this->colors[$l]) ? $l : LogLevel::NONE]."m");
++      fwrite(STDERR, $this->layout->format($event));
+       fwrite(STDERR, "\x1b[0m\n");
+     }
+   }
+Index: skeleton/util/log/FileAppender.class.php
+===================================================================
+--- skeleton/util/log/FileAppender.class.php	(revision 13884)
++++ skeleton/util/log/FileAppender.class.php	(working copy)
+@@ -27,11 +27,12 @@
+     }
+     
+     /**
+-     * Appends log data to the file
++     * Append data
+      *
+-     * @param   mixed* args variables
+-     */
+-    public function append() {
++     * @param   util.log.LoggingEvent event
++     */ 
++    public function append(LoggingEvent $event) {
++      $line= $this->layout->format($event);
+       $fd= fopen($this->filename, 'a');
+ 
+       if ($this->perms) {
+@@ -39,13 +40,7 @@
+         $this->perms= NULL;
+       }
+       
+-      with ($args= func_get_args()); {
+-        foreach ($args as $idx => $arg) {
+-          fputs($fd, $this->varSource($arg). ($idx < sizeof($args)-1 ? ' ' : ''));
+-        }
+-      }
+-
+-      fputs($fd, "\n");
++      fputs($fd, $line);
+       fclose($fd);
+     }
+   }
+Index: skeleton/util/log/SyslogAppender.class.php
+===================================================================
+--- skeleton/util/log/SyslogAppender.class.php	(revision 13884)
++++ skeleton/util/log/SyslogAppender.class.php	(working copy)
+@@ -16,14 +16,6 @@
+   class SyslogAppender extends LogAppender {
+ 
+     /**
+-     * Destructor.
+-     *
+-     */
+-    public function __destruct() {
+-      $this->finalize();
+-    }
+-        
+-    /**
+      * Constructor
+      *
+      * @param   string identifier default NULL if omitted, defaults to script's filename
+@@ -39,16 +31,21 @@
+     }
+     
+     /**
+-     * Appends log data to the syslog
++     * Append data
+      *
+-     * @param   mixed args variables
+-     */
+-    public function append() {
+-      $buf= '';
+-      foreach (func_get_args() as $arg) {
+-        $buf.= $this->varSource($arg).' ';
+-      }
+-      syslog(LOG_INFO, $buf);
++     * @param   util.log.LoggingEvent event
++     */ 
++    public function append(LoggingEvent $event) {
++      static $map= array(
++        LogLevel::INFO    => LOG_INFO,
++        LogLevel::WARN    => LOG_WARNING,
++        LogLevel::ERROR   => LOG_ERR,
++        LogLevel::DEBUG   => LOG_DEBUG,
++        LogLevel::NONE    => LOG_NOTICE
++      );
++
++      $l= $event->getLevel();
++      syslog($map[isset($map[$l]) ? $l : LogLevel::NONE], $this->layout->format($event));
+     }
+     
+     /**
+@@ -59,5 +56,13 @@
+     public function finalize() {
+       closelog();
+     }
++
++    /**
++     * Destructor.
++     *
++     */
++    public function __destruct() {
++      $this->finalize();
++    }
+   }
+ ?>
+Index: skeleton/util/log/LogAppender.class.php
+===================================================================
+--- skeleton/util/log/LogAppender.class.php	(revision 13884)
++++ skeleton/util/log/LogAppender.class.php	(working copy)
+@@ -11,29 +11,58 @@
+    * @purpose  Base class
+    */
+   abstract class LogAppender extends Object {
++    protected $layout= NULL;
+ 
+     /**
++     * Sets layout
++     *
++     * @param   util.log.Layout layout
++     */
++    public function setLayout(util·log·Layout $layout) {
++      $this->layout= $layout;
++    }
++    
++    /**
++     * Sets layout and returns this appender
++     *
++     * @param   util.log.Layout layout
++     * @return  util.log.LogAppender
++     */
++    public function withLayout(util·log·Layout $layout) {
++      $this->layout= $layout;
++      return $this;
++    }
++
++    /**
++     * Gets layout
++     *
++     * @return  util.log.Layout
++     */
++    public function getLayout() {
++      return $this->layout;
++    }
++
++    /**
+      * Append data
+      *
+-     * @param   mixed* args
++     * @param   util.log.LoggingEvent event
+      */ 
+-    public abstract function append();
+- 
++    public abstract function append(LoggingEvent $event);
++    
+     /**
+      * Finalize this appender. This method is called when the logger
+      * is shut down. Does nothing in this default implementation.
+      *
+      */   
+     public function finalize() { }
+-    
++
+     /**
+-     * Retrieve a readable representation of a variable
++     * Creates a string representation of this object
+      *
+-     * @param   mixed var
+      * @return  string
+      */
+-    protected function varSource($var) {
+-      return is_string($var) ? $var : xp::stringOf($var);
++    public function toString() {
++      return $this->getClassName().'(layout= '.xp::stringOf($this->layout).')';
+     }
+   }
+ ?>
+Index: skeleton/util/log/BufferedAppender.class.php
+===================================================================
+--- skeleton/util/log/BufferedAppender.class.php	(revision 13884)
++++ skeleton/util/log/BufferedAppender.class.php	(working copy)
+@@ -13,19 +13,15 @@
+    * @purpose  Appender
+    */  
+   class BufferedAppender extends LogAppender {
+-    public 
+-      $buffer = '';
++    public $buffer= '';
+ 
+     /**
+-     * Appends log data to the buffer
++     * Append data
+      *
+-     * @param  mixed* args variables
+-     */
+-    public function append() {
+-      foreach (func_get_args() as $arg) {
+-        $this->buffer.= $this->varSource($arg).' ';
+-      }
+-      $this->buffer.= "\n";
++     * @param   util.log.LoggingEvent event
++     */ 
++    public function append(LoggingEvent $event) {
++      $this->buffer.= $this->layout->format($event);
+     }
+     
+     /**
+Index: skeleton/util/log/SmtpAppender.class.php
+===================================================================
+--- skeleton/util/log/SmtpAppender.class.php	(revision 13884)
++++ skeleton/util/log/SmtpAppender.class.php	(working copy)
+@@ -43,24 +43,18 @@
+     }
+     
+     /**
+-     * Sends log data to the specified email address
++     * Append data
+      *
+-     * @param   mixed args variables
+-     */
+-    public function append() {
+-      $body= '';
+-      
+-      with ($args= func_get_args()); {
+-        foreach ($args as $idx => $arg) {
+-          $body.= $this->varSource($arg).($idx < sizeof($args)-1 ? ' ' : '');
+-        }
+-      }
+-      
++     * @param   util.log.LoggingEvent event
++     */ 
++    public function append(LoggingEvent $event) {
++      $body= $this->layout->format($event);
+       if ($this->sync) {
+         mail($this->email, $this->prefix, $body);
+       } else {
+         $this->_data[]= $body;
+       }
++
+     }
+     
+     /**
+Index: skeleton/util/log/LogLevel.class.php
+===================================================================
+--- skeleton/util/log/LogLevel.class.php	(revision 13884)
++++ skeleton/util/log/LogLevel.class.php	(working copy)
+@@ -4,6 +4,12 @@
+  * $Id$ 
+  */
+ 
++  define('LOGGER_FLAG_INFO',    0x0001);
++  define('LOGGER_FLAG_WARN',    0x0002);
++  define('LOGGER_FLAG_ERROR',   0x0004);
++  define('LOGGER_FLAG_DEBUG',   0x0008);
++  define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
++
+   /**
+    * Log levels
+    *
+@@ -45,5 +51,26 @@
+       }
+       return $map[$key];
+     }
++
++    /**
++     * Retrieve a loglevel name for a given level
++     *
++     * @param   int level
++     * @return  string
++     * @throws  lang.IllegalArgumentException
++     */
++    public static function nameOf($level) {
++      static $map= array(
++        self::INFO  => 'INFO',
++        self::WARN  => 'WARN',
++        self::ERROR => 'ERROR',
++        self::DEBUG => 'DEBUG',
++      );
++    
++      if (!isset($map[$level])) {
++        throw new IllegalArgumentException('No such loglevel '.$level);
++      }
++      return $map[$level];
++    }
+   }
+ ?>
+Index: skeleton/util/log/StreamAppender.class.php
+===================================================================
+--- skeleton/util/log/StreamAppender.class.php	(revision 13884)
++++ skeleton/util/log/StreamAppender.class.php	(working copy)
+@@ -13,30 +13,24 @@
+    * @purpose  Appender
+    */  
+   class StreamAppender extends LogAppender {
+-    public 
+-      $stream = NULL;
++    public $stream= NULL;
+     
+     /**
+      * Constructor
+      *
+      * @param   io.streams.OutputStream stream
+      */
+-    public function __construct($stream) {
++    public function __construct(OutputStream $stream) {
+       $this->stream= $stream;
+     }
+     
+     /**
+-     * Appends log data to the file
++     * Append data
+      *
+-     * @param   mixed* args variables
+-     */
+-    public function append() {
+-      with ($args= func_get_args()); {
+-        foreach ($args as $idx => $arg) {
+-          $this->stream->write($this->varSource($arg). ($idx < sizeof($args)-1 ? ' ' : ''));
+-        }
+-      }
+-      $this->stream->write("\n");
++     * @param   util.log.LoggingEvent event
++     */ 
++    public function append(LoggingEvent $event) {
++      $this->stream->write($this->layout->format($event));
+     }
+   }
+ ?>
+Index: skeleton/util/log/PatternLayout.class.php
+===================================================================
+--- skeleton/util/log/PatternLayout.class.php	(revision 0)
++++ skeleton/util/log/PatternLayout.class.php	(revision 0)
+@@ -0,0 +1,102 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('util.log.Layout');
++
++  /**
++   * Pattern layout
++   *
++   * Format string
++   * -------------
++   * The format string consists of format tokens preceded by a percent
++   * sign (%) and any other character. The following format tokens are 
++   * supported:
++   * <ul>
++   *   <li>%m - Message</li>
++   *   <li>%c - Category name</li>
++   *   <li>%l - Log level - lowercase</li>
++   *   <li>%L - Log level - uppercase</li>
++   *   <li>%t - Time in HH:MM:SS</li>
++   *   <li>%p - Process ID</li>
++   *   <li>%% - A literal percent sign (%)</li>
++   * </li>
++   *
++   * @test    xp://net.xp_framework.unittest.logging.PatternLayoutTest
++   */
++  class PatternLayout extends util·log·Layout {
++    protected $format= array();
++  
++    /**
++     * Creates a new pattern layout
++     *
++     * @param   string format
++     */
++    public function __construct($format) {
++      for ($i= 0, $s= strlen($format); $i < $s; $i++) {
++        if ('%' === $format{$i}) {
++          $i++;
++          switch ($format{$i}) {
++            case '%': {   // Literal percent
++              $this->format[]= '%'; 
++              break;
++            }
++            default: {    // Any other character - verify it's supported
++              if (!strspn($format{$i}, 'mclLtp')) {
++                throw new IllegalArgumentException('Unknown format token "'.$format{$i}.'"');
++              }
++              $this->format[]= '%'.$format{$i};
++            }
++          }
++        } else {
++          $this->format[]= $format{$i};
++        }
++      }
++    }
++
++    /**
++     * Creates a string representation of the given argument. For any 
++     * string given, the result is the string itself, for any other type,
++     * the result is the xp::stringOf() output.
++     *
++     * @param   var arg
++     * @return  string
++     */
++    protected function stringOf($arg) {
++      return is_string($arg) ? $arg : xp::stringOf($arg);
++    }
++
++    /**
++     * Formats a logging event according to this layout
++     *
++     * @param   util.log.LoggingEvent event
++     * @return  string
++     */
++    public function format(LoggingEvent $event) {
++      $out= '';
++      foreach ($this->format as $token) {
++        switch ($token) {
++          case '%m': $out.= implode(' ', array_map(array($this, 'stringOf'), $event->getArguments())); break;
++          case '%t': $out.= gmdate('H:i:s', $event->getTimestamp()); break;
++          case '%c': $out.= $event->getCategory()->identifier; break;
++          case '%l': $out.= strtolower(LogLevel::nameOf($event->getLevel())); break;
++          case '%L': $out.= strtoupper(LogLevel::nameOf($event->getLevel())); break;
++          case '%p': $out.= $event->getProcessId(); break;
++          default: $out.= $token;
++        }
++      }
++      return $out;
++    }
++
++    /**
++     * Creates a string representation of this object
++     *
++     * @return  string
++     */
++    public function toString() {
++      return $this->getClassName().'("'.implode('', $this->format).'")';
++    }
++  }
++?>
+
+Property changes on: skeleton/util/log/PatternLayout.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/util/log/Layout.class.php
+===================================================================
+--- skeleton/util/log/Layout.class.php	(revision 0)
++++ skeleton/util/log/Layout.class.php	(revision 0)
+@@ -0,0 +1,25 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  $package= 'util.log';
++
++  uses('util.log.LoggingEvent');
++
++  /**
++   * Takes care of formatting log entries
++   *
++   */
++  abstract class util·log·Layout extends Object {
++    
++    /**
++     * Formats a logging event according to this layout
++     *
++     * @param   util.log.LoggingEvent event
++     * @return  string
++     */
++    public abstract function format(LoggingEvent $event);
++  }
++?>
+
+Property changes on: skeleton/util/log/Layout.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/util/log/LogCategory.class.php
+===================================================================
+--- skeleton/util/log/LogCategory.class.php	(revision 13884)
++++ skeleton/util/log/LogCategory.class.php	(working copy)
+@@ -4,14 +4,8 @@
+  * $Id$
+  */
+ 
+-  uses('util.log.LogLevel');
++  uses('util.log.LogLevel', 'util.log.LoggingEvent', 'util.log.DefaultLayout');
+ 
+-  define('LOGGER_FLAG_INFO',    0x0001);
+-  define('LOGGER_FLAG_WARN',    0x0002);
+-  define('LOGGER_FLAG_ERROR',   0x0004);
+-  define('LOGGER_FLAG_DEBUG',   0x0008);
+-  define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
+-
+   /**
+    * The log category is the interface to be used. All logging information
+    * is sent to a log category via one of the info, warn, error, debug 
+@@ -40,36 +34,26 @@
+    * @purpose  Base class
+    */
+   class LogCategory extends Object {
+-    public 
+-      $_appenders= array(),
+-      $_indicators= array(
+-        LogLevel::INFO        => 'info',
+-        LogLevel::WARN        => 'warn',
+-        LogLevel::ERROR       => 'error',
+-        LogLevel::DEBUG       => 'debug'
+-      );
++    protected static $DEFAULT_LAYOUT= NULL;
++    protected $_appenders= array();
++
++    public $flags= 0;
++    public $identifier= '';
+       
+-    public
+-      $flags,
+-      $identifier,
+-      $dateformat,
+-      $format;
++    static function __static() {
++      self::$DEFAULT_LAYOUT= new DefaultLayout();
++    }
+ 
+     /**
+      * Constructor
+      *
+      * @param   string identifier
+-     * @param   string format 
+-     * @param   string dateformat
+-     * @param   int flags
++     * @param   int flags (defaults to all)
+      */
+-    public function __construct($identifier, $format, $dateformat, $flags= LogLevel::ALL) {
++    public function __construct($identifier, $flags= LogLevel::ALL) {
++      $this->flags= $flags;
+       $this->identifier= $identifier;
+-      $this->format= $format;
+-      $this->dateformat= $dateformat;
+-      $this->flags= $flags;
+       $this->_appenders= array();
+-      
+     }
+ 
+     /**
+@@ -92,28 +76,17 @@
+     }
+     
+     /**
+-     * Private helper function
++     * Calls all appenders
+      *
++     * @param   int level
++     * @param   var[] args
+      */
+-    public function callAppenders() {
+-      $args= func_get_args();
+-      $flag= $args[0];
+-      if (!($this->flags & $flag)) return;
+-      
+-      $args[0]= sprintf(
+-        $this->format,
+-        date($this->dateformat),
+-        $this->identifier,
+-        $this->_indicators[$flag]
+-      );
+-      
+-      foreach (array_keys($this->_appenders) as $appflag) {
+-        if (!($flag & $appflag)) continue;
+-        foreach (array_keys($this->_appenders[$appflag]) as $idx) {
+-          call_user_func_array(
+-            array($this->_appenders[$appflag][$idx], 'append'),
+-            $args
+-          );
++    protected function callAppenders($level, $args) {
++      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
++      foreach ($this->_appenders as $appflag => $appenders) {
++        if (!($level & $appflag)) continue;
++        foreach ($appenders as $appender) {
++          $appender->append($event);
+         }
+       }
+     }
+@@ -133,8 +106,8 @@
+      */
+     public function finalize() {
+       foreach ($this->_appenders as $flags => $appenders) {
+-        foreach (array_keys($appenders) as $idx) {
+-          $appenders[$idx]->finalize();
++        foreach ($this->_appenders[$appflag] as $appender) {
++          $appender->finalize();
+         }
+       }
+     }
+@@ -148,8 +121,9 @@
+      * @param   int flag default LogLevel::ALL
+      * @return  util.log.LogAppender the appender added
+      */
+-    public function addAppender($appender, $flag= LogLevel::ALL) {
+-      $this->_appenders[$flag][]= $appender;
++    public function addAppender(LogAppender $appender, $flag= LogLevel::ALL) {
++      $appender->getLayout() || $appender->setLayout(self::$DEFAULT_LAYOUT);
++      $this->_appenders[$flag][$appender->hashCode()]= $appender;
+       return $appender;
+     }
+ 
+@@ -163,8 +137,9 @@
+      * @param   int flag default LogLevel::ALL
+      * @return  util.log.LogCategory this category
+      */
+-    public function withAppender($appender, $flag= LogLevel::ALL) {
+-      $this->_appenders[$flag][]= $appender;
++    public function withAppender(LogAppender $appender, $flag= LogLevel::ALL) {
++      $appender->getLayout() || $appender->setLayout(self::$DEFAULT_LAYOUT);
++      $this->_appenders[$flag][$appender->hashCode()]= $appender;
+       return $this;
+     }
+     
+@@ -175,19 +150,14 @@
+      * @param   util.log.LogAppender appender
+      * @param   int flag default LogLevel::ALL
+      */
+-    public function removeAppender($appender, $flag= LogLevel::ALL) {
++    public function removeAppender(LogAppender $appender, $flag= LogLevel::ALL) {
+       foreach ($this->_appenders as $f => $appenders) {
+         if (!($f & $flag)) continue;
++        unset($this->_appenders[$f][$appender->hashCode()]);
+         
+-        foreach ($appenders as $idx => $apndr) {
+-          if ($apndr === $appender) {
+-            unset($this->_appenders[$f][$idx]);
+-
+-            // Remove flag line, if last appender had been removed
+-            if (1 == sizeof($appenders)) {
+-              unset($this->_appenders[$f]);
+-            }
+-          }
++        // Last appender for this flag removed - remove flag alltogether
++        if (0 === sizeof($this->_appenders[$f])) {
++          unset($this->_appenders[$f]);
+         }
+       }
+     }
+@@ -211,9 +181,9 @@
+      * @param   mixed* args
+      */
+     public function info() {
++      if (!($this->flags & LogLevel::INFO)) return;
+       $args= func_get_args();
+-      array_unshift($args, LogLevel::INFO);
+-      call_user_func_array(array($this, 'callAppenders'), $args);
++      $this->callAppenders(LogLevel::INFO, $args);
+     }
+ 
+     /**
+@@ -228,8 +198,9 @@
+      * @param   mixed* args
+      */
+     public function infof() {
++      if (!($this->flags & LogLevel::INFO)) return;
+       $args= func_get_args();
+-      $this->callAppenders(LogLevel::INFO, vsprintf($args[0], array_slice($args, 1)));
++      $this->callAppenders(LogLevel::INFO, array(vsprintf($args[0], array_slice($args, 1))));
+     }
+ 
+     /**
+@@ -238,9 +209,9 @@
+      * @param   mixed* args
+      */
+     public function warn() {
++      if (!($this->flags & LogLevel::WARN)) return;
+       $args= func_get_args();
+-      array_unshift($args, LogLevel::WARN);
+-      call_user_func_array(array($this, 'callAppenders'), $args);
++      $this->callAppenders(LogLevel::WARN, $args);
+     }
+ 
+     /**
+@@ -250,8 +221,9 @@
+      * @param   mixed* args
+      */
+     public function warnf() {
++      if (!($this->flags & LogLevel::WARN)) return;
+       $args= func_get_args();
+-      $this->callAppenders(LogLevel::WARN, vsprintf($args[0], array_slice($args, 1)));
++      $this->callAppenders(LogLevel::WARN, array(vsprintf($args[0], array_slice($args, 1))));
+     }
+ 
+     /**
+@@ -260,9 +232,9 @@
+      * @param   mixed* args
+      */
+     public function error() {
++      if (!($this->flags & LogLevel::ERROR)) return;
+       $args= func_get_args();
+-      array_unshift($args, LogLevel::ERROR);
+-      call_user_func_array(array($this, 'callAppenders'), $args);
++      $this->callAppenders(LogLevel::ERROR, $args);
+     }
+ 
+     /**
+@@ -272,8 +244,9 @@
+      * @param   mixed* args
+      */
+     public function errorf() {
++      if (!($this->flags & LogLevel::ERROR)) return;
+       $args= func_get_args();
+-      $this->callAppenders(LogLevel::ERROR, vsprintf($args[0], array_slice($args, 1)));
++      $this->callAppenders(LogLevel::ERROR, array(vsprintf($args[0], array_slice($args, 1))));
+     }
+ 
+     /**
+@@ -282,9 +255,9 @@
+      * @param   mixed* args
+      */
+     public function debug() {
++      if (!($this->flags & LogLevel::DEBUG)) return;
+       $args= func_get_args();
+-      array_unshift($args, LogLevel::DEBUG);
+-      call_user_func_array(array($this, 'callAppenders'), $args);
++      $this->callAppenders(LogLevel::DEBUG, $args);
+     }
+  
+     /**
+@@ -294,8 +267,9 @@
+      * @param   mixed* args
+      */
+     public function debugf() {
++      if (!($this->flags & LogLevel::DEBUG)) return;
+       $args= func_get_args();
+-      $this->callAppenders(LogLevel::DEBUG, vsprintf($args[0], array_slice($args, 1)));
++      $this->callAppenders(LogLevel::DEBUG, array(vsprintf($args[0], array_slice($args, 1))));
+     }
+    
+     /**
+@@ -303,7 +277,59 @@
+      *
+      */
+     public function mark() {
+-      $this->callAppenders(LogLevel::INFO, str_repeat('-', 72));
++      if (!($this->flags & LogLevel::INFO)) return;
++      $this->callAppenders(LogLevel::INFO, array(str_repeat('-', 72)));
+     }
++    
++    /**
++     * Helper method for equals
++     *
++     * @param   array c1
++     * @param   array c2
++     * @return  bool
++     */
++    protected static function appendersEquals($c1, $c2) {
++      if (sizeof($c1) != sizeof($c2)) return FALSE;
++      foreach ($c1 as $f => $appenders) {
++        if (!isset($c2[$f])) return FALSE;
++        if (sizeof($appenders) != sizeof($c2[$f])) return FALSE;
++        foreach ($appenders as $hash => $appender) {
++          if (!isset($c2[$f][$hash])) return FALSE;
++        }
++      }
++      return TRUE;
++    }
++
++    /**
++     * Returns whether another object is equal to this
++     *
++     * @param   lang.Generic cmp
++     * @return  bool
++     */
++    public function equals($cmp) {
++      return (
++        $cmp instanceof self &&
++        $cmp->identifier === $this->identifier &&
++        $cmp->flags === $this->flags &&
++        self::appendersEquals($cmp->_appenders, $this->_appenders)
++      );
++    }
++
++    /**
++     * Creates a string representation of this object
++     *
++     * @return  string
++     */
++    public function toString() {
++      $s= $this->getClassName().'(name='.$this->identifier.' flags='.$this->flags.")@{\n";
++      foreach ($this->_appenders as $flags => $appenders) {
++        $s.= '  '.$flags.": [\n";
++        foreach ($appenders as $appender) {
++          $s.= '  - '.$appender->toString()."\n"; 
++        }
++        $s.= "  ]\n";
++      }
++      return $s.'}';
++    }
+   }
+ ?>
+Index: skeleton/util/log/Logger.class.php
+===================================================================
+--- skeleton/util/log/Logger.class.php	(revision 13884)
++++ skeleton/util/log/Logger.class.php	(working copy)
+@@ -76,37 +76,12 @@
+    * @purpose  Singleton logger
+    */
+   class Logger extends Object implements Configurable {
+-    protected static 
+-      $instance     = NULL;
+-    
+-    public 
+-      $category     = array();
+-    
+-    public
+-      $defaultIdentifier,
+-      $defaultDateformat,
+-      $defaultFormat,
+-      $defaultFlags,
+-      $defaultAppenders;
+-  
+-    public
+-      $_finalized   = FALSE;
++    protected static $instance= NULL;
++    protected $category= array();
++    protected $_finalized= FALSE;
+ 
+     static function __static() {
+       self::$instance= new self();
+-      self::$instance->defaultIdentifier= getmypid();
+-      self::$instance->defaultFormat= '[%1$s %2$5s %3$5s]';
+-      self::$instance->defaultDateformat= 'H:i:s';
+-      self::$instance->defaultFlags= LogLevel::ALL;
+-      self::$instance->defaultAppenders= array();
+-      
+-      // Create an empty LogCategory
+-      self::$instance->category[LOG_DEFINES_DEFAULT]= new LogCategory(
+-        self::$instance->defaultIdentifier,
+-        self::$instance->defaultFormat,
+-        self::$instance->defaultDateformat,
+-        self::$instance->defaultFlags
+-      );
+     }
+ 
+     /**
+@@ -114,6 +89,7 @@
+      *
+      */
+     protected function __construct() {
++      $this->category[LOG_DEFINES_DEFAULT]= new LogCategory(LOG_DEFINES_DEFAULT);
+     }
+ 
+     /**
+@@ -135,23 +111,13 @@
+     public function configure($prop) {
+       $class= array();
+       
+-      // Read default properties
+-      $this->defaultIdentifier= $prop->readString(LOG_DEFINES_DEFAULT, 'identifier', $this->defaultIdentifier);
+-      $this->defaultFormat= $prop->readString(LOG_DEFINES_DEFAULT, 'format', $this->defaultFormat);
+-      $this->defaultDateformat= $prop->readString(LOG_DEFINES_DEFAULT, 'date.format', $this->defaultDateformat);
+-      $this->defaultFlags= $prop->readInteger(LOG_DEFINES_DEFAULT, 'flags', $this->defaultFlags);
+-      $this->defaultAppenders= $prop->readArray(LOG_DEFINES_DEFAULT, 'appenders', $this->defaultAppenders);
+-      
+       // Read all other properties
+       $section= $prop->getFirstSection();
+       do {
+         $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
+-
+         $this->category[$section]= $catclass->newInstance(
+-          $this->defaultIdentifier,
+-          $prop->readString($section, 'format', $this->defaultFormat),
+-          $prop->readString($section, 'date.format', $this->defaultDateformat),
+-          $prop->readInteger($section, 'flags', $this->defaultFlags)
++          $section,
++          $prop->readInteger($section, 'flags', LogLevel::ALL)
+         );
+         
+         // Has an appender?
+Index: skeleton/util/log/ConsoleAppender.class.php
+===================================================================
+--- skeleton/util/log/ConsoleAppender.class.php	(revision 13884)
++++ skeleton/util/log/ConsoleAppender.class.php	(working copy)
+@@ -19,15 +19,12 @@
+   class ConsoleAppender extends LogAppender {
+     
+     /**
+-     * Appends log data to STDERR
++     * Append data
+      *
+-     * @param  mixed args variables
+-     */
+-    public function append() {
+-      foreach (func_get_args() as $arg) {
+-        fwrite(STDERR, $this->varSource($arg).' ');
+-      }
+-      fwrite(STDERR, "\n");
++     * @param   util.log.LoggingEvent event
++     */ 
++    public function append(LoggingEvent $event) {
++      fwrite(STDERR, $this->layout->format($event));
+     }
+   }
+ ?>
+Index: skeleton/util/log/DefaultLayout.class.php
+===================================================================
+--- skeleton/util/log/DefaultLayout.class.php	(revision 0)
++++ skeleton/util/log/DefaultLayout.class.php	(revision 0)
+@@ -0,0 +1,43 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('util.log.Layout');
++
++  /**
++   * Default layout
++   *
++   */
++  class DefaultLayout extends util·log·Layout {
++  
++    /**
++     * Creates a string representation of the given argument. For any 
++     * string given, the result is the string itself, for any other type,
++     * the result is the xp::stringOf() output.
++     *
++     * @param   var arg
++     * @return  string
++     */
++    protected function stringOf($arg) {
++      return is_string($arg) ? $arg : xp::stringOf($arg);
++    }
++
++    /**
++     * Formats a logging event according to this layout
++     *
++     * @param   util.log.LoggingEvent event
++     * @return  string
++     */
++    public function format(LoggingEvent $event) {
++      return sprintf(
++        '[%s %5d %5s] %s', 
++        date('H:i:s', $event->getTimestamp()),
++        $event->getProcessId(),
++        strtolower(LogLevel::nameOf($event->getLevel())),
++        implode(' ', array_map(array($this, 'stringOf'), $event->getArguments()))
++      );
++    }
++  }
++?>
+
+Property changes on: skeleton/util/log/DefaultLayout.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/logging/LoggingEventTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/logging/LoggingEventTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/logging/LoggingEventTest.class.php	(revision 0)
+@@ -0,0 +1,79 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'util.log.LoggingEvent'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://util.log.LoggingEvent
++   */
++  class LoggingEventTest extends TestCase {
++    protected $fixture= NULL;
++  
++    /**
++     * Creates fixture
++     *
++     */
++    public function setUp() {
++      $this->fixture= new LoggingEvent(
++        new LogCategory('default', NULL, NULL, 0), 
++        1258733284, 
++        1, 
++        LogLevel::INFO, 
++        array('Hello')
++      );
++    }
++  
++    /**
++     * Test getCategory() method
++     *
++     */
++    #[@test]
++    public function getCategory() {
++      $this->assertEquals(new LogCategory('default', NULL, NULL, 0), $this->fixture->getCategory());
++    }
++ 
++    /**
++     * Test getTimestamp() method
++     *
++     */
++    #[@test]
++    public function getTimestamp() {
++      $this->assertEquals(1258733284, $this->fixture->getTimestamp());
++    }
++
++    /**
++     * Test getProcessId() method
++     *
++     */
++    #[@test]
++    public function getProcessId() {
++      $this->assertEquals(1, $this->fixture->getProcessId());
++    }
++
++    /**
++     * Test getLevel() method
++     *
++     */
++    #[@test]
++    public function getLevel() {
++      $this->assertEquals(LogLevel::INFO, $this->fixture->getLevel());
++    }
++
++    /**
++     * Test getArguments() method
++     *
++     */
++    #[@test]
++    public function getArguments() {
++      $this->assertEquals(array('Hello'), $this->fixture->getArguments());
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/logging/LoggingEventTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/logging/PatternLayoutTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/logging/PatternLayoutTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/logging/PatternLayoutTest.class.php	(revision 0)
+@@ -0,0 +1,92 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'util.log.PatternLayout'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://util.log.PatternLayout
++   */
++  class PatternLayoutTest extends TestCase {
++
++    /**
++     * Test illegal format token %Q
++     * 
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function illegalFormatToken() {
++      new PatternLayout('%Q');
++    }
++ 
++    /**
++     * Test unterminated format token
++     * 
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function unterminatedFormatToken() {
++      new PatternLayout('%');
++    }
++    
++    /**
++     * Creates a new logging event
++     *
++     * @return  util.log.LoggingEvent
++     */
++    protected function newLoggingEvent() {
++      return new LoggingEvent(
++        new LogCategory('default'), 
++        1258733284, 
++        1214, 
++        LogLevel::WARN, 
++        array('Hello')
++      );   
++    }
++
++    /**
++     * Test literal percent
++     * 
++     */
++    #[@test]
++    public function literalPercent() {
++      $this->assertEquals(
++        '100%',
++        create(new PatternLayout('100%%'))->format($this->newLoggingEvent())
++      );
++    }
++
++    /**
++     * Test simple format:
++     * <pre>
++     *   INFO [default] Hello
++     * </pre>
++     */
++    #[@test]
++    public function simpleFormat() {
++      $this->assertEquals(
++        'WARN [default] Hello',
++        create(new PatternLayout('%L [%c] %m'))->format($this->newLoggingEvent())
++      );
++    }
++
++    /**
++     * Test default format:
++     * <pre>
++     *   [16:08:04 1214 warn] Hello
++     * </pre>
++     */
++    #[@test]
++    public function defaultFormat() {
++      $this->assertEquals(
++        '[16:08:04 1214 warn] Hello',
++        create(new PatternLayout('[%t %p %l] %m'))->format($this->newLoggingEvent())
++      );
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/logging/PatternLayoutTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/logging/LogCategoryTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/logging/LogCategoryTest.class.php	(revision 13884)
++++ ports/classes/net/xp_framework/unittest/logging/LogCategoryTest.class.php	(working copy)
+@@ -7,7 +7,8 @@
+   uses(
+     'unittest.TestCase',
+     'util.log.Logger',
+-    'util.log.LogAppender'
++    'util.log.LogAppender',
++    'util.log.PatternLayout'
+   );
+ 
+   /**
+@@ -16,9 +17,7 @@
+    * @purpose  Unit Test
+    */
+   class LogCategoryTest extends TestCase {
+-    public
+-      $logger= NULL,
+-      $cat   = NULL;
++    public $cat= NULL;
+     
+     /**
+      * Setup method. Creates logger and cat member for easier access to
+@@ -26,33 +25,27 @@
+      *
+      */
+     public function setUp() {
+-      $this->logger= Logger::getInstance();
+-      $this->cat= $this->logger->getCategory();
+-      $this->cat->format= '%3$s';
++      $this->cat= new LogCategory('test');
+     }
+     
+     /**
+-     * Teardown method. Finalizes the logger.
+-     *
+-     */
+-    public function tearDown() {
+-      $this->logger->finalize();
+-    }
+-    
+-    /**
+      * Create a mock appender which simply stores all messages passed to 
+      * its append() method.
+      *
+-     * @return  &util.log.LogAppender
++     * @return  util.log.LogAppender
+      */
+     protected function mockAppender() {
+-      return newinstance('util.log.LogAppender', array(), '{
++      $appender= newinstance('util.log.LogAppender', array(), '{
+         public $messages= array();
+         
+-        public function append() { 
+-          $this->messages[]= func_get_args();
++        public function append(LoggingEvent $event) {
++          $this->messages[]= array(
++            strtolower(LogLevel::nameOf($event->getLevel())), 
++            $this->layout->format($event)
++          );
+         }
+       }');
++      return $appender->withLayout(new PatternLayout('%m'));
+     }
+     
+     /**
+@@ -95,15 +88,171 @@
+      *
+      */
+     #[@test]
+-    public function addAndRemoveAppender() {
++    public function addAppenderReturnsAddedAppender() {
+       $appender= $this->mockAppender();
+-      $this->assertTrue($appender === $this->cat->addAppender($appender));
++      $this->assertEquals($appender, $this->cat->addAppender($appender));
++    }
++
++    /**
++     * Tests adding an appender returns the log category
++     *
++     */
++    #[@test]
++    public function withAppenderReturnsCategory() {
++      $this->assertEquals($this->cat, $this->cat->withAppender($this->mockAppender()));
++    }
++
++    /**
++     * Tests hasAppenders() and addAppender() methods
++     *
++     */
++    #[@test]
++    public function hasAppendersAfterAdding() {
++      $this->cat->addAppender($this->mockAppender());
+       $this->assertTrue($this->cat->hasAppenders());
+-      $this->cat->removeAppender($appender);
++    }
++
++    /**
++     * Tests hasAppenders() and removeAppender() methods
++     *
++     */
++    #[@test]
++    public function hasNoMoreAppendersAfterRemoving() {
++      $a= $this->cat->addAppender($this->mockAppender());
++      $this->cat->removeAppender($a);
+       $this->assertFalse($this->cat->hasAppenders());
+     }
+ 
+     /**
++     * Tests addAppender() method
++     *
++     */
++    #[@test]
++    public function addAppenderTwice() {
++      $a= $this->mockAppender();
++      $this->cat->addAppender($a);
++      $this->cat->addAppender($a);
++      $this->cat->removeAppender($a);
++      $this->assertFalse($this->cat->hasAppenders());
++    }
++
++    /**
++     * Tests addAppender() and removeAppender() methods
++     *
++     */
++    #[@test]
++    public function addAppenderTwiceWithDifferentFlags() {
++      $a= $this->mockAppender();
++      $this->cat->addAppender($a, LogLevel::INFO);
++      $this->cat->addAppender($a, LogLevel::WARN);
++      $this->cat->removeAppender($a, LogLevel::INFO);
++      $this->assertTrue($this->cat->hasAppenders());
++      $this->cat->removeAppender($a, LogLevel::WARN);
++      $this->assertFalse($this->cat->hasAppenders());
++    }
++
++    /**
++     * Tests adding an appender sets default layout if appender does not
++     * have a layout.
++     *
++     */
++    #[@test]
++    public function addAppenderSetsDefaultLayout() {
++      $appender= newinstance('util.log.LogAppender', array(), '{
++        public function append(LoggingEvent $event) { }
++      }');
++      $this->cat->addAppender($appender);
++      $this->assertClass($appender->getLayout(), 'util.log.DefaultLayout');
++    }
++
++    /**
++     * Tests adding an appender does not overwrite layout
++     *
++     */
++    #[@test]
++    public function addAppenderDoesNotOverwriteLayout() {
++      $appender= newinstance('util.log.LogAppender', array(), '{
++        public function append(LoggingEvent $event) { }
++      }');
++      $this->cat->addAppender($appender->withLayout(new PatternLayout('%m')));
++      $this->assertClass($appender->getLayout(), 'util.log.PatternLayout');
++    }
++
++    /**
++     * Tests adding an appender sets default layout if appender does not
++     * have a layout.
++     *
++     */
++    #[@test]
++    public function withAppenderSetsLayout() {
++      $appender= newinstance('util.log.LogAppender', array(), '{
++        public function append(LoggingEvent $event) { }
++      }');
++      $this->cat->withAppender($appender);
++      $this->assertClass($appender->getLayout(), 'util.log.DefaultLayout');
++    }
++
++    /**
++     * Tests adding an appender does not overwrite layout
++     *
++     */
++    #[@test]
++    public function withAppenderDoesNotOverwriteLayout() {
++      $appender= newinstance('util.log.LogAppender', array(), '{
++        public function append(LoggingEvent $event) { }
++      }');
++      $this->cat->withAppender($appender->withLayout(new PatternLayout('%m')));
++      $this->assertClass($appender->getLayout(), 'util.log.PatternLayout');
++    }
++
++    /**
++     * Tests equals() method
++     *
++     */
++    #[@test]
++    public function logCategoriesWithSameIdentifierAreEqual() {
++      $this->assertEquals(new LogCategory('test'), $this->cat);
++    }
++
++    /**
++     * Tests equals() method
++     *
++     */
++    #[@test]
++    public function logCategoriesDifferingAppendersNotEqual() {
++      $this->assertNotEquals(
++        new LogCategory('test'), 
++        $this->cat->withAppender($this->mockAppender())
++      );
++    }
++
++    /**
++     * Tests equals() method
++     *
++     */
++    #[@test]
++    public function logCategoriesAppendersDifferingInFlagsNotEqual() {
++      $appender= $this->mockAppender();
++      $this->assertNotEquals(
++        create(new LogCategory('test'))->withAppender($appender, LogLevel::WARN), 
++        $this->cat->withAppender($appender)
++      );
++    }
++
++    /**
++     * Tests equals() method
++     *
++     */
++    #[@test]
++    public function logCategoriesSameAppendersEqual() {
++      $appender= $this->mockAppender();
++      $this->assertEquals(
++        create(new LogCategory('test'))->withAppender($appender), 
++        $this->cat->withAppender($appender)
++      );
++    }
++
++    /**
+      * Tests debug() method
+      *
+      */
+@@ -174,5 +323,29 @@
+     public function errorf() {
+       $this->assertLogf(__FUNCTION__, array('Hello %s', __CLASS__));
+     }
++
++    /**
++     * Tests mark() method
++     *
++     */
++    #[@test]
++    public function mark() {
++      $app= $this->cat->addAppender($this->mockAppender());
++      $this->cat->mark();
++      $this->assertEquals(array(array('info', str_repeat('-', 72))), $app->messages); 
++    }
++
++    /**
++     * Tests flags
++     *
++     */
++    #[@test]
++    public function warningMessageOnlyGetsAppendedToWarnAppender() {
++      $app1= $this->cat->addAppender($this->mockAppender(), LogLevel::INFO);
++      $app2= $this->cat->addAppender($this->mockAppender(), LogLevel::WARN);
++      $this->cat->warn('Test');
++      $this->assertEquals(array(), $app1->messages);
++      $this->assertEquals(array(array('warn', 'Test')), $app2->messages); 
++    }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/logging/LogAppenderTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/logging/LogAppenderTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/logging/LogAppenderTest.class.php	(revision 0)
+@@ -0,0 +1,97 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'util.log.LogAppender',
++    'util.log.LogCategory',
++    'util.log.PatternLayout',
++    'util.collections.Vector'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      reference
++   * @purpose  purpose
++   */
++  class LogAppenderTest extends TestCase {
++    protected $fixture= NULL;
++    protected $events= NULL;
++  
++    /**
++     * Sets up test case
++     *
++     */
++    public function setUp() {
++      $this->events= create('new Vector<String>()');
++      $appender= newinstance('util.log.LogAppender', array($this->events), '{
++        private $events= NULL;
++
++        public function __construct($events) {
++          $this->events= $events;
++        }
++
++        public function append(LoggingEvent $event) {
++          $this->events[]= new String($this->layout->format($event));
++        }
++      }');
++      $this->fixture= create(new LogCategory('default'))
++        ->withAppender($appender->withLayout(new PatternLayout('[%l] %m')))
++      ;
++    }
++    
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function info() {
++      $this->fixture->info('Hello');
++      $this->assertEquals(new String('[info] Hello'), $this->events[0]);
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function infoWithMultipleArguments() {
++      $this->fixture->info('Hello', 'World');
++      $this->assertEquals(new String('[info] Hello World'), $this->events[0]);
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function warn() {
++      $this->fixture->warn('Hello');
++      $this->assertEquals(new String('[warn] Hello'), $this->events[0]);
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function debug() {
++      $this->fixture->debug('Hello');
++      $this->assertEquals(new String('[debug] Hello'), $this->events[0]);
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function error() {
++      $this->fixture->error('Hello');
++      $this->assertEquals(new String('[error] Hello'), $this->events[0]);
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/logging/LogAppenderTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/unittest/logging.ini
+===================================================================
+--- ports/unittest/logging.ini	(revision 13884)
++++ ports/unittest/logging.ini	(working copy)
+@@ -14,3 +14,12 @@
+ 
+ [levels]
+ class="net.xp_framework.unittest.logging.LogLevelTest"
++
++[patternlayout]
++class="net.xp_framework.unittest.logging.PatternLayoutTest"
++
++[event]
++class="net.xp_framework.unittest.logging.LoggingEventTest"
++
++[appender]
++class="net.xp_framework.unittest.logging.LogAppenderTest"
