@@ -1,0 +1,638 @@
+Index: skeleton/io/collections/FileCollection.class.php
+===================================================================
+--- skeleton/io/collections/FileCollection.class.php	(revision 13900)
++++ skeleton/io/collections/FileCollection.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('io.collections.FileElement', 'io.collections.IOCollection');
++  uses('io.collections.FileElement', 'io.collections.IOCollection', 'io.collections.RandomCollectionAccess');
+ 
+   /**
+    * File collection
+@@ -12,7 +12,7 @@
+    * @see      xp://io.collections.IOCollection
+    * @purpose  IOCollection implementation
+    */
+-  class FileCollection extends Object implements IOCollection {
++  class FileCollection extends Object implements IOCollection, RandomCollectionAccess {
+     public
+       $uri = '';
+     
+@@ -57,6 +57,16 @@
+     public function rewind() { 
+       rewinddir($this->_hd);
+     }
++    
++    /**
++     * Creates a qualified name
++     *
++     * @param   string
++     * @return  string
++     */
++    protected function qualifiedName($name) {
++      return $this->uri.basename($name);
++    }
+   
+     /**
+      * Retrieve next element in collection. Return NULL if no more entries
+@@ -169,5 +179,119 @@
+     public function getOutputStream() {
+       throw new IOException('Cannot write to a directory');
+     }
++
++    /**
++     * Creates a new element in this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     */
++    public function newElement($name) {
++      $qualified= $this->qualifiedName($name);
++      if (!touch($qualified)) {
++        throw new IOException('Cannot create '.$qualified);
++      }
++      $created= new FileElement($qualified);
++      $created->setOrigin($this);
++      return $created;
++    }
++
++    /**
++     * Creates a new collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     */
++    public function newCollection($name) {
++      $qualified= $this->qualifiedName($name);
++      if (!mkdir($qualified)) {
++        throw new IOException('Cannot create '.$qualified);
++      }
++      $created= new FileCollection($qualified);
++      $created->setOrigin($this);
++      return $created;
++    }
++
++    /**
++     * Finds an element inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     */
++    public function findElement($name) {
++      $qualified= $this->qualifiedName($name);
++      if (!is_file($qualified)) return NULL;
++
++      $found= new FileElement($qualified);
++      $found->setOrigin($this);
++      return $found;
++    }
++    
++    /**
++     * Finds a collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     */
++    public function findCollection($name) {
++      $qualified= $this->qualifiedName($name);
++      if (!is_file($qualified)) return NULL;
++
++      $found= new FileCollection($qualified);
++      $found->setOrigin($this);
++      return $found;
++    }
++
++    /**
++     * Gets an element inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     * @throws  util.NoSuchElementException
++     */
++    public function getElement($name) {
++      if (!($found= $this->findElement($name))) {
++        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
++      }
++      return $found;
++    }
++    
++    /**
++     * Get a collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     * @throws  util.NoSuchElementException
++     */
++    public function getCollection($name) {
++      if (!($found= $this->findCollection($name))) {
++        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
++      }
++      return $found;
++    }
++
++    /**
++     * Removes an element from this collection
++     *
++     * @param   string name
++     */
++    public function removeElement($name) {
++      $qualified= $this->qualifiedName($name);
++      if (!unlink($qualified)) {
++        throw new IOException('Cannot remove '.$qualified);
++      }
++    }
++
++    /**
++     * Removes a collection from this collection
++     *
++     * @param   string name
++     */
++    public function removeCollection($name) {
++      $qualified= $this->qualifiedName($name);
++      if (!rmdir($qualified)) {
++        throw new IOException('Cannot remove '.$qualified);
++      }
++    }
+   } 
+ ?>
+Index: skeleton/io/collections/RandomCollectionAccess.class.php
+===================================================================
+--- skeleton/io/collections/RandomCollectionAccess.class.php	(revision 0)
++++ skeleton/io/collections/RandomCollectionAccess.class.php	(revision 0)
+@@ -0,0 +1,77 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Random access to an I/O collection
++   *
++   */
++  interface RandomCollectionAccess {
++
++    /**
++     * Creates a new element in this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     */
++    public function newElement($name);
++
++    /**
++     * Creates a new collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     */
++    public function newCollection($name);
++
++    /**
++     * Finds an element inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     */
++    public function findElement($name);
++    
++    /**
++     * Finds a collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     */
++    public function findCollection($name);
++
++    /**
++     * Gets an element inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     * @throws  util.NoSuchElementException
++     */
++    public function getElement($name);
++    
++    /**
++     * Get a collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     * @throws  util.NoSuchElementException
++     */
++    public function getCollection($name);
++
++    /**
++     * Removes an element in this collection
++     *
++     * @param   string name
++     */
++    public function removeElement($name);
++
++    /**
++     * Removes a collection from this collection
++     *
++     * @param   string name
++     */
++    public function removeCollection($name);
++  }
++?>
+
+Property changes on: skeleton/io/collections/RandomCollectionAccess.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/io/collections/MockCollection.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/io/collections/MockCollection.class.php	(revision 13900)
++++ ports/classes/net/xp_framework/unittest/io/collections/MockCollection.class.php	(working copy)
+@@ -4,7 +4,11 @@
+  * $Id$
+  */
+ 
+-  uses('net.xp_framework.unittest.io.collections.MockElement', 'io.collections.IOCollection');
++  uses(
++    'net.xp_framework.unittest.io.collections.MockElement', 
++    'io.collections.IOCollection', 
++    'io.collections.RandomCollectionAccess'
++  );
+ 
+   /**
+    * IOCollection implementation
+@@ -25,7 +29,7 @@
+      * @param   string uri
+      */
+     public function __construct($uri) {
+-      $this->uri= $uri;
++      $this->uri= rtrim($uri, '/').'/';
+     }
+ 
+     /**
+@@ -168,5 +172,147 @@
+     public function getOutputStream() {
+       throw new IOException('Cannot write to a directory');
+     }
++
++    /**
++     * Creates a qualified name
++     *
++     * @param   string
++     * @return  string
++     */
++    protected function qualifiedName($name) {
++      return $this->uri.basename($name);
++    }
++
++    /**
++     * Creates a new element in this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     */
++    public function newElement($name) {
++      $qualified= $this->qualifiedName($name);
++      foreach ($this->_elements as $element) {
++        if ($element instanceof IOElement && $qualified === $element->getURI()) {
++          throw new IllegalArgumentException('Element already exists');
++        }
++      }
++      $created= new MockElement($qualified);
++      $created->setOrigin($this);
++      $this->_elements[]= $created;
++      return $created;
++    }
++
++    /**
++     * Creates a new collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     */
++    public function newCollection($name) {
++      $qualified= rtrim($this->qualifiedName($name), '/').'/';
++      foreach ($this->_elements as $element) {
++        if ($element instanceof IOCollection && $qualified === $element->getURI()) {
++          throw new IllegalArgumentException('Collection already exists');
++        }
++      }
++
++      return $this->addElement(new MockCollection($qualified));
++    }
++
++    /**
++     * Finds an element inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     */
++    public function findElement($name) {
++      $qualified= $this->qualifiedName($name);
++      foreach ($this->_elements as $element) {
++        if ($element instanceof IOElement && $qualified === $element->getURI()) return $element;
++      }
++      return NULL;
++    }
++    
++    /**
++     * Finds a collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     */
++    public function findCollection($name) {
++      $qualified= rtrim($this->qualifiedName($name), '/').'/';
++      foreach ($this->_elements as $element) {
++        if ($element instanceof IOCollection && $qualified === $element->getURI()) return $element;
++      }
++      return NULL;
++    }
++
++    /**
++     * Gets an element inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOElement
++     * @throws  util.NoSuchElementException
++     */
++    public function getElement($name) {
++      if (!($found= $this->findElement($name))) {
++        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
++      }
++      return $found;
++    }
++    
++    /**
++     * Get a collection inside this collection
++     *
++     * @param   string name
++     * @return  io.collections.IOCollection
++     * @throws  util.NoSuchElementException
++     */
++    public function getCollection($name) {
++      if (!($found= $this->findCollection($name))) {
++        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
++      }
++      return $found;
++    }
++
++    /**
++     * Removes an element from this collection
++     *
++     * @param   string name
++     */
++    public function removeElement($name) {
++      $qualified= $this->qualifiedName($name);
++      foreach ($this->_elements as $i => $element) {
++        if ($element instanceof IOElement && $qualified === $element->getURI()) {
++          unset($this->_elements[$i]);
++          break;
++        }
++      }
++    }
++
++    /**
++     * Removes a collection from this collection
++     *
++     * @param   string name
++     */
++    public function removeCollection($name) {
++      $qualified= rtrim($this->qualifiedName($name), '/').'/';
++      foreach ($this->_elements as $i => $element) {
++        if ($element instanceof IOCollection && $qualified === $element->getURI()) {
++          unset($this->_elements[$i]);
++          break;
++        }
++      }
++    }
++
++    /**
++     * Returns whether another object is equal to this element
++     *
++     * @param   lang.Generic cmp
++     * @return  bool
++     */
++    public function equals($cmp) {
++      return $cmp instanceof self && $cmp->getURI() === $this->getURI();
++    }
+   } 
+ ?>
+Index: ports/classes/net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php	(revision 13900)
++++ ports/classes/net/xp_framework/unittest/io/collections/AbstractCollectionTest.class.php	(working copy)
+@@ -88,60 +88,60 @@
+       
+       // Warning: Changing this list will make some tests fail!
+       $this->addElement($this->fixture, new MockElement(
+-        'first.txt', 
++        './first.txt', 
+         1200, 
+         Date::fromString('Oct 10  2006'), // accessed
+         Date::fromString('Dec 14  2005'), // modified
+         Date::fromString('Oct 30  2005')  // created
+       ));
+       $this->addElement($this->fixture, new MockElement(
+-        'second.txt', 
++        './second.txt', 
+         333, 
+         Date::fromString('Oct 10  2006'), // accessed
+         Date::fromString('Dec 24  2005'), // modified
+         Date::fromString('Oct 30  2005')  // created
+       ));
+       $this->addElement($this->fixture, new MockElement(
+-        'third.jpg', 
++        './third.jpg', 
+         18882, 
+         Date::fromString('Dec 11  2003'), // accessed
+         Date::fromString('Dec 10  2003'), // modified
+         Date::fromString('Dec 10  2003')  // created
+       ));
+       $this->addElement($this->fixture, new MockElement(
+-        'zerobytes.png', 
++        './zerobytes.png', 
+         0, 
+         Date::fromString('Dec 11  2003'), // accessed
+         Date::fromString('Dec 10  2003'), // modified
+         Date::fromString('Dec 10  2003')  // created
+       ));
+ 
+-      with ($sub= $this->addElement($this->fixture, new MockCollection('sub'))); {
++      with ($sub= $this->addElement($this->fixture, new MockCollection('./sub'))); {
+         $this->addElement($sub, new MockElement(
+-          'sub/IMG_6100.jpg', 
++          './sub/IMG_6100.jpg', 
+           531718, 
+           Date::fromString('Mar  9  2006'), // accessed
+           Date::fromString('Mar  9  2006'), // modified
+           Date::fromString('Mar  9  2006')  // created
+         ));
+         $this->addElement($sub, new MockElement(
+-          'sub/IMG_6100.txt', 
++          './sub/IMG_6100.txt', 
+           5932, 
+           Date::fromString('Mar 13  2006'), // accessed
+           Date::fromString('Mar 13  2006'), // modified
+           Date::fromString('Mar 13  2006')  // created
+         ));
+ 
+-        with ($sec= $this->addElement($this->fixture, new MockCollection('sub/sec'))); {
++        with ($sec= $this->addElement($this->fixture, new MockCollection('./sub/sec'))); {
+           $this->addElement($sec, new MockElement(
+-            'sub/sec/lang.base.php', 
++            './sub/sec/lang.base.php', 
+             16739, 
+             Date::fromString('Oct 11  2006'), // accessed
+             Date::fromString('Oct 11  2006'), // modified
+             Date::fromString('Feb 21  2002')  // created
+           ));
+           $this->addElement($sec, new MockElement(
+-            'sub/sec/__xp__.php', 
++            './sub/sec/__xp__.php', 
+             8589, 
+             Date::fromString('Oct  8  2006'), // accessed
+             Date::fromString('Oct  8  2006'), // modified
+Index: ports/classes/net/xp_framework/unittest/io/collections/IOCollectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/io/collections/IOCollectionTest.class.php	(revision 13900)
++++ ports/classes/net/xp_framework/unittest/io/collections/IOCollectionTest.class.php	(working copy)
+@@ -170,5 +170,117 @@
+     public function collectionOutputStream() {
+       $this->firstElement($this->newCollection('/', array($this->newCollection('/root'))))->getOutputStream();
+     }
++ 
++    /**
++     * Test findElement()
++     *
++     */
++    #[@test]
++    public function findExistingElement() {
++      $this->assertEquals(new MockElement('./first.txt'), $this->fixture->findElement('first.txt'));
++    }
++
++    /**
++     * Test findElement()
++     *
++     */
++    #[@test]
++    public function findNonExistantElement() {
++      $this->assertEquals(NULL, $this->fixture->findElement('doesnotexist.txt'));
++    }
++
++    /**
++     * Test newElement()
++     *
++     */
++    #[@test]
++    public function newNonExistantElement() {
++      $created= $this->fixture->newElement('new.txt');
++      $this->assertEquals(new MockElement('./new.txt'), $created);
++      $this->assertEquals($created, $this->fixture->getElement('new.txt'));
++    }
++
++    /**
++     * Test newElement()
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function newExistingElement() {
++      $this->fixture->newElement('first.txt');
++    }
++
++    /**
++     * Test getElement()
++     *
++     */
++    #[@test]
++    public function getExistingElement() {
++      $this->assertEquals(new MockElement('./first.txt'), $this->fixture->getElement('first.txt'));
++    }
++
++    /**
++     * Test getElement()
++     *
++     */
++    #[@test, @expect('util.NoSuchElementException')]
++    public function getNonExistantElement() {
++      $this->fixture->getElement('doesnotexist.txt');
++    }
++
++    /**
++     * Test findCollection()
++     *
++     */
++    #[@test]
++    public function findExistingCollection() {
++      $this->assertEquals(new MockCollection('./sub'), $this->fixture->findCollection('sub'));
++    }
++
++    /**
++     * Test findCollection()
++     *
++     */
++    #[@test]
++    public function findNonExistantCollection() {
++      $this->assertEquals(NULL, $this->fixture->findCollection('doesnotexist'));
++    }
++ 
++    /**
++     * Test getCollection()
++     *
++     */
++    #[@test]
++    public function getExistingCollection() {
++      $this->assertEquals(new MockCollection('./sub'), $this->fixture->getCollection('sub'));
++    }
++
++    /**
++     * Test getCollection()
++     *
++     */
++    #[@test, @expect('util.NoSuchElementException')]
++    public function getNonExistantCollection() {
++      $this->fixture->getCollection('doesnotexist');
++    }
++
++    /**
++     * Test newCollection()
++     *
++     */
++    #[@test]
++    public function newNonExistantCollection() {
++      $created= $this->fixture->newCollection('newdir');
++      $this->assertEquals(new MockCollection('./newdir'), $created);
++      $this->assertEquals($created, $this->fixture->getCollection('newdir'));
++    }
++
++    /**
++     * Test newCollection()
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function newExistingCollection() {
++      $this->fixture->newCollection('sub');
++    }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/io/collections/MockElement.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/io/collections/MockElement.class.php	(revision 13900)
++++ ports/classes/net/xp_framework/unittest/io/collections/MockElement.class.php	(working copy)
+@@ -129,5 +129,15 @@
+     public function getOutputStream() {
+       return new MemoryOutputStream();
+     }
++    
++    /**
++     * Returns whether another object is equal to this element
++     *
++     * @param   lang.Generic cmp
++     * @return  bool
++     */
++    public function equals($cmp) {
++      return $cmp instanceof self && $cmp->getURI() === $this->getURI();
++    }
+   } 
+ ?>
