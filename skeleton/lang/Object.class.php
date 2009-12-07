@@ -10,6 +10,7 @@
    * Class Object is the root of the class hierarchy. Every class has 
    * Object as a superclass. 
    *
+   * @test     xp://net.xp_framework.unittest.core.ObjectTest
    * @purpose  Base class for all others
    */
   class Object implements Generic {
@@ -60,10 +61,11 @@
     /**
      * Indicates whether some other object is "equal to" this one.
      *
-     * @param   lang.Object cmp
+     * @param   lang.Generic cmp
      * @return  bool TRUE if the compared object is equal to this object
      */
     public function equals($cmp) {
+      if (!$cmp instanceof Generic) return FALSE;
       if (!$this->__id) $this->__id= microtime();
       if (!$cmp->__id) $cmp->__id= microtime();
       return $this === $cmp;

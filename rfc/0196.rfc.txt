@@ -65,8 +65,8 @@ io.collections interface changes
 
 Related documents
 -----------------
-n/a
-
+- http://xp-framework.net/rfc/contrib/rfc0196.diff
+  Implementing patch
 
 Comments
 --------

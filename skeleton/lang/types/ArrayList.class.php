@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.types.ArrayListIterator');
+
   /**
    * Represents a "numeric" array
    *
@@ -11,9 +13,6 @@
    * @purpose  Wrapper
    */
   class ArrayList extends Object implements ArrayAccess, IteratorAggregate {
-    protected
-      $iterator = NULL;
-
     public
       $values   = array(),
       $length   = 0;
@@ -63,16 +62,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      if (!$this->iterator) $this->iterator= newinstance('Iterator', array($this), '{
-        private $i= 0, $v;
-        public function __construct($v) { $this->v= $v; }
-        public function current() { return $this->v->values[$this->i]; }
-        public function key() { return $this->i; }
-        public function next() { $this->i++; }
-        public function rewind() { $this->i= 0; }
-        public function valid() { return $this->i < $this->v->length; }
-      }');
-      return $this->iterator;
+      return new ArrayListIterator($this);
     }
 
     /**

@@ -5,7 +5,7 @@ $Id$
 @authors: friebe, gellweiler
 @created: Wed Jun 28 11:39:08 CEST 2006
 @status: draft
-@target: 5.7.6
+@target: 5.7
 @category: util.log
 
 Scope of Change

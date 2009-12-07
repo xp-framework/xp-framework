@@ -8,7 +8,7 @@
     'unittest.TestCase',
     'util.log.StreamAppender',
     'util.log.LogCategory',
-    'util.log.PatternLayout',
+    'util.log.layout.PatternLayout',
     'io.streams.MemoryOutputStream'
   );
 

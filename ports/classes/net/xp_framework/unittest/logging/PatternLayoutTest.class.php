@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'util.log.PatternLayout'
+    'util.log.layout.PatternLayout'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://util.log.PatternLayout
+   * @see      xp://util.log.layout.PatternLayout
    */
   class PatternLayoutTest extends TestCase {
 

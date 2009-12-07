@@ -71,10 +71,31 @@
      * @see     xp://lang.Object#equals
      */
     #[@test]
-    public function equalsMethod() {
+    public function objectIsEqualToSelf() {
       $o= new Object();
       $this->assertTrue($o->equals($o));
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     * @see     xp://lang.Object#equals
+     */
+    #[@test]
+    public function objectIsNotEqualToOtherObject() {
+      $o= new Object();
       $this->assertFalse($o->equals(new Object()));
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     * @see     xp://lang.Object#equals
+     */
+    #[@test]
+    public function objectIsNotEqualToPrimitive() {
+      $o= new Object();
+      $this->assertFalse($o->equals(0));
     }
     
     /**
