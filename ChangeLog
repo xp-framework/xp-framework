@@ -8,6 +8,11 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed io.File to no longer to accept filenames containing a NUL byte
+  (friebe)
+- Changed io.File to accept only scheme URLs beginning with xar:// as well 
+  as php://stderr, php://stdout and php://stdin.
+  (friebe)
 - Made scriptlet.HttpScriptlet use a merge of $_GET and $_POST,
   instead of $_REQUEST, effectively not taking cookie values
   into account when using HttpScriptletRequest::getParam().
