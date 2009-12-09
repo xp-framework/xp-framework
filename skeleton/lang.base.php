@@ -75,10 +75,10 @@
     //     Marks the impl class as extension method provider for $class
     static function extensions($class, $impl) {
       $r= xp::reflect($class);
-      $i= new ReflectionClass($impl);
-      foreach ($i->getMethods() as $m) {
-        if (!($p= $m->getParameters()) || (!($c= $p[0]->getClass())) || $r !== $c->getName()) continue;
-        xp::$registry[$r.'::'.$m->getName()]= $m;
+      $c= new XPClass($impl);
+      foreach ($c->getMethods() as $m) {
+        if (!($m->getModifiers() & MODIFIER_STATIC) || !$m->hasAnnotation('extension')) continue;
+        xp::$registry[$r.'::'.$m->getName()]= $m->_reflect;
       }
     }
     // }}}
