@@ -24,6 +24,7 @@
    * Instances of the file class serve as an opaque handle to the underlying machine-
    * specific structure representing an open file.
    * 
+   * @test     xp://net.xp_framework.unittest.io.FileTest
    * @purpose  Represent a file
    */
   class File extends Stream {
@@ -136,26 +137,32 @@
      * Set this file's URI
      *
      * @param   string uri
+     * @throws  lang.IllegalArgumentException in case an invalid file name was given
      */
     public function setURI($uri) {
-    
-      // PHP-Scheme
-      if (0 == strncmp('php://', $uri, 6)) {
+      static $allowed= array('xar://*', 'php://stderr', 'php://stdout', 'php://stdin');
+
+      $uri= (string)$uri;
+      if (0 === strlen($uri) || FALSE !== strpos($uri, "\0")) {
+        throw new IllegalArgumentException('Invalid filename "'.addcslashes($uri, "\0..\17").'"');
+      } else if (FALSE !== strpos($uri, '://')) {
+        if (!in_array($uri, $allowed) && !in_array(substr($uri, 0, 6).'*', $allowed)) {
+          throw new IllegalArgumentException('Invalid scheme URI "'.$uri.'"');
+        }
         $this->path= NULL;
         $this->extension= NULL;
         $this->filename= $this->uri= $uri;
-        return;
-      }
-      
-      $this->uri= realpath($uri);
-      
-      // Bug in real_path when file does not exist
-      if ('' == $this->uri && $uri != $this->uri) $this->uri= $uri;
-      
-      with ($pathinfo= pathinfo($this->uri)); {
-        $this->path= $pathinfo['dirname'];
-        $this->filename= $pathinfo['basename'];
-        $this->extension= isset($pathinfo['extension']) ? $pathinfo['extension'] : NULL;
+      } else {
+        $this->uri= realpath($uri);
+
+        // Bug in real_path when file does not exist
+        if ('' == $this->uri && $uri != $this->uri) $this->uri= $uri;
+
+        with ($pathinfo= pathinfo($this->uri)); {
+          $this->path= $pathinfo['dirname'];
+          $this->filename= $pathinfo['basename'];
+          $this->extension= isset($pathinfo['extension']) ? $pathinfo['extension'] : NULL;
+        }
       }
     }
 
