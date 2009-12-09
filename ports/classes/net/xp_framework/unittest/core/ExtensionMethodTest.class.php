@@ -113,5 +113,44 @@
 
       create('new Vector<String>()')->isEmpty();
     }
+
+    /**
+     * Test extension methods must be static
+     *
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method Vector::nonStaticExtensionMethod')]
+    public function extensionMethodMustBeStatic() {
+      newinstance('lang.Object', array(), '{
+        static function __static() {
+          xp::extensions("util.collections.IList", __CLASS__);
+        }
+        
+        #[@extension]
+        public function nonStaticExtensionMethod(IList $l) {
+          throw new IllegalStateException("Unreachable");
+        }
+      }');
+
+      create('new Vector<String>()')->nonStaticExtensionMethod();
+    }
+
+    /**
+     * Test extension methods must be static
+     *
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method Vector::notAnnotatedExtensionMethod')]
+    public function extensionMethodMustBeAnnotated() {
+      newinstance('lang.Object', array(), '{
+        static function __static() {
+          xp::extensions("util.collections.IList", __CLASS__);
+        }
+        
+        public static function notAnnotatedExtensionMethod(IList $l) {
+          throw new IllegalStateException("Unreachable");
+        }
+      }');
+
+      create('new Vector<String>()')->notAnnotatedExtensionMethod();
+    }
   }
 ?>
