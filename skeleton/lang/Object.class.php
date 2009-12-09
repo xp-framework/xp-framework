@@ -45,7 +45,8 @@
         } while (0);
         xp::$registry[$c->getName().$name]= xp::$registry[$k];
       }
-      return xp::$registry[$k]->invokeArgs(NULL, array_merge(array($this), $args));
+      array_unshift($args, $this);
+      return xp::$registry[$k]->invokeArgs(NULL, $args);
     }
 
     /**
