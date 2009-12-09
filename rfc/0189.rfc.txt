@@ -42,6 +42,7 @@ declare the following:
       xp::extensions('lang.types.ArrayList', __CLASS__);
     }
     
+    #[@extension]
     public static function sorted(ArrayList $self) {
       // Implementation here
     }
@@ -126,7 +127,8 @@ Related documents
 * http://www.codeproject.com/KB/cs/ExtensionUnitTests.aspx
 * http://blog.getpaint.net/2008/07/03/c-extension-methods-portability-aid/
 * http://www.zorched.net/2008/01/03/implementing-mixins-with-c-extension-methods/
-
+* http://stackoverflow.com/questions/299515/c-reflection-to-identify-extension-methods
+* http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.extensionattribute.aspx
 
 Comments
 --------
