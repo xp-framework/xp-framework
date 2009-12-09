@@ -9,7 +9,8 @@
     'lang.types.ArrayList',
     'util.collections.Vector',
     'net.xp_framework.unittest.core.ArrayListExtensions',
-    'net.xp_framework.unittest.core.IListExtensions'
+    'net.xp_framework.unittest.core.IListExtensions',
+    'net.xp_framework.unittest.core.UsesStringExtensions'
   );
 
   /**
@@ -151,6 +152,19 @@
       }');
 
       create('new Vector<String>()')->notAnnotatedExtensionMethod();
+    }
+
+    /**
+     * Test extension methods apply to all scopes - that is, even though
+     * this class doesn't really import the StringExtensions class, the 
+     * extension methods therein are available because a class using this
+     * StringExtension class is loaded. This is a limitation of the runtime 
+     * implementation.
+     *
+     */
+    #[@test]
+    public function applyToAllScopes() {
+      $this->assertTrue(create(new String('Hello'))->matches(Pattern::compile('H[ae]llo')));
     }
   }
 ?>
