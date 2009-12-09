@@ -93,5 +93,25 @@
         $v->findAll(create_function('$e', 'return $e->length() < 5;'))
       );
     }
+
+    /**
+     * Test extension methods cannot overwrite real methods
+     *
+     */
+    #[@test]
+    public function extensionMethodCannotOverwriteExisting() {
+      newinstance('lang.Object', array(), '{
+        static function __static() {
+          xp::extensions("util.collections.IList", __CLASS__);
+        }
+        
+        #[@extension]
+        public static function isEmpty(IList $l) {
+          throw new IllegalStateException("Unreachable");
+        }
+      }');
+
+      create('new Vector<String>()')->isEmpty();
+    }
   }
 ?>
