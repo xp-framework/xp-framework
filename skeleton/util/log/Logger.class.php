@@ -6,6 +6,7 @@
 
   uses('util.log.LogCategory', 'util.Configurable', 'util.log.LogLevel');
   
+  // Deprecated
   define('LOG_DEFINES_DEFAULT', 'default');
   
   /**
@@ -76,6 +77,8 @@
    * @purpose  Singleton logger
    */
   class Logger extends Object implements Configurable {
+    const DEFAULT= 'default';
+
     protected static $instance= NULL;
     protected $category= array();
     protected $_finalized= FALSE;
@@ -89,17 +92,17 @@
      *
      */
     protected function __construct() {
-      $this->category[LOG_DEFINES_DEFAULT]= new LogCategory(LOG_DEFINES_DEFAULT);
+      $this->category[self::DEFAULT]= new LogCategory(self::DEFAULT);
     }
 
     /**
      * Get a category
      *
-     * @param   string name default LOG_DEFINES_DEFAULT
+     * @param   string name default self::DEFAULT
      * @return  util.log.LogCategory
      */ 
-    public function getCategory($name= LOG_DEFINES_DEFAULT) {
-      if (!isset($this->category[$name])) $name= LOG_DEFINES_DEFAULT;
+    public function getCategory($name= self::DEFAULT) {
+      if (!isset($this->category[$name])) $name= self::DEFAULT;
       return $this->category[$name];
     }
     
@@ -124,7 +127,7 @@
         $param_section= $section;
         if (NULL === ($appenders= $prop->readArray($section, 'appenders', NULL))) {
           $appenders= $this->defaultAppenders;
-          $param_section= LOG_DEFINES_DEFAULT;
+          $param_section= self::DEFAULT;
         }
 
         // Go through all of the appenders, loading classes as necessary
@@ -172,8 +175,8 @@
      *
      */
     public function finalize() {
-      if (!$this->_finalized) foreach (array_keys($this->category) as $name) {
-        $this->category[$name]->finalize();
+      if (!$this->_finalized) foreach ($this->category as $category) {
+        $category->finalize();
       }
       $this->_finalized= TRUE;
     }
