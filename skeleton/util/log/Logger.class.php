@@ -112,39 +112,32 @@
      * @param   util.Properties prop instance of a Properties object
      */
     public function configure($prop) {
-      $class= array();
       
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
-        $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
-        $this->category[$section]= $catclass->newInstance(
+        $this->category[$section]= XPClass::forName(
+          $prop->readString($section, 'category', 'util.log.LogCategory')
+        )->newInstance(
           $section,
           $prop->readInteger($section, 'flags', LogLevel::ALL)
         );
         
-        // Has an appender?
-        $param_section= $section;
-        if (NULL === ($appenders= $prop->readArray($section, 'appenders', NULL))) {
-          $appenders= $this->defaultAppenders;
-          $param_section= self::DEFAULT;
-        }
+        // Configure appenders
+        $appenders= $prop->readArray($section, 'appenders', array());
 
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
-          if (!isset($class[$appender])) {
-            $class[$appender]= XPClass::forName($appender);
-          }
           
           // Read levels
-          $levels= $prop->readArray($param_section, 'appender.'.$appender.'.levels');
+          $levels= $prop->readArray($section, 'appender.'.$appender.'.levels');
           if (!empty($levels)) {
             $flags= 0;
             foreach ($levels as $name) {
               $flags |= LogLevel::named($name);
             }
           } else {
-            $flags= $prop->readArray($param_section, 'appender.'.$appender.'.flags', LogLevel::ALL);
+            $flags= $prop->readArray($section, 'appender.'.$appender.'.flags', LogLevel::ALL);
             if (!is_int($flags)) {
               $arrflags= $flags; $flags= 0;
               foreach ($arrflags as $f) { 
@@ -153,14 +146,17 @@
             }
           }
           
-          $a= $this->category[$section]->addAppender($class[$appender]->newInstance(), $flags);
-          $params= $prop->readArray($param_section, 'appender.'.$appender.'.params', array());
+          $a= $this->category[$section]->addAppender(
+            XPClass::forName($appender)->newInstance(),
+            $flags
+          );
+          $params= $prop->readArray($section, 'appender.'.$appender.'.params', array());
           
           // Params
           foreach ($params as $param) {
             $a->{$param}= strftime(
               $prop->readString(
-                $param_section, 
+                $section,
                 'appender.'.$appender.'.param.'.$param,
                 ''
               )
