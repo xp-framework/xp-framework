@@ -77,7 +77,7 @@
    * @purpose  Singleton logger
    */
   class Logger extends Object implements Configurable {
-    const DEFAULT= 'default';
+    const DFLT= "default";
 
     protected static $instance= NULL;
     protected $category= array();
@@ -92,17 +92,17 @@
      *
      */
     protected function __construct() {
-      $this->category[self::DEFAULT]= new LogCategory(self::DEFAULT);
+      $this->category[self::DFLT]= new LogCategory(self::DFLT);
     }
 
     /**
      * Get a category
      *
-     * @param   string name default self::DEFAULT
+     * @param   string name default self::DFLT
      * @return  util.log.LogCategory
      */ 
-    public function getCategory($name= self::DEFAULT) {
-      if (!isset($this->category[$name])) $name= self::DEFAULT;
+    public function getCategory($name= self::DFLT) {
+      if (!isset($this->category[$name])) $name= self::DFLT;
       return $this->category[$name];
     }
     
