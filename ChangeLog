@@ -20,6 +20,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added lang.types.ArrayList::contains() method 
+  (friebe)
 - Made WorkflowScriptletRequest give a less information-leaking error message
   (friebe, kiesel)
 - Made ClassNotFoundException constructor take an optional, second argument
