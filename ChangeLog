@@ -20,6 +20,11 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Made WorkflowScriptletRequest give a less information-leaking error message
+  (friebe, kiesel)
+- Made ClassNotFoundException constructor take an optional, second argument
+  to separate information on available loaders from actual error message
+  (kiesel, friebe)
 - Added util.Currency and util.Money classes
   (friebe)
 - Made scriptlet.HttpScriplet check for existance of X-Forwarded-Host
