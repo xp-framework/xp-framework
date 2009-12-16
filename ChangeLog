@@ -6,6 +6,10 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Version 5.7.6, released 2009-12-16
+----------------------------------
+SVN version: 13941
+
 Heads up!
 ~~~~~~~~~
 - Changed io.File to no longer to accept filenames containing a NUL byte
