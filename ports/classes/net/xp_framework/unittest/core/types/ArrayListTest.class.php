@@ -264,5 +264,72 @@
 
       $this->assertEquals(3, $c->length);
     }
+
+
+    /**
+     * Tests contains() method
+     *
+     */
+    #[@test]
+    public function listOfIntsContainsInt() {
+      $this->assertTrue(create(new ArrayList(1, 2, 3))->contains(1));
+    }
+
+
+    /**
+     * Tests contains() method
+     *
+     */
+    #[@test]
+    public function listOfIntsDoesNotContainString() {
+      $this->assertFalse(create(new ArrayList(1, 2, 3))->contains('1'));
+    }
+
+    /**
+     * Tests contains() method
+     *
+     */
+    #[@test]
+    public function listOfZeroDoesNotContainNull() {
+      $this->assertFalse(create(new ArrayList(0))->contains(NULL));
+    }
+
+    /**
+     * Tests contains() method
+     *
+     */
+    #[@test]
+    public function emptyListDoesNotContainAnything() {
+      $this->assertFalse(create(new ArrayList())->contains(NULL));
+    }
+
+
+    /**
+     * Tests contains() method
+     *
+     */
+    #[@test]
+    public function listOfObjectsContainsTheObject() {
+      $o= new Object();
+      $this->assertTrue(create(new ArrayList($o))->contains($o));
+    }
+
+    /**
+     * Tests contains() method
+     *
+     */
+    #[@test]
+    public function listOfObjectsDoesNotContainNull() {
+      $this->assertFalse(create(new ArrayList(new Object()))->contains(NULL));
+    }
+
+    /**
+     * Tests contains() method
+     *
+     */
+    #[@test]
+    public function listOfStringsDoesNotContainObject() {
+      $this->assertFalse(create(new ArrayList('o'))->contains(new Object()));
+    }
   }
 ?>
