@@ -85,7 +85,7 @@
         if (SIGHUP == $signal) continue;
 
         pcntl_waitpid($pid, $status, WUNTRACED);
-        $this->cat->warnf('Server #%d: Child %d died with exitcode %d', getmypid(), $pid, $status);
+        $this->cat && $this->cat->warnf('Server #%d: Child %d died with exitcode %d', getmypid(), $pid, $status);
       }
       
       $this->restart= FALSE;
