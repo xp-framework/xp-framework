@@ -46,6 +46,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed fatals in peer.server.PreforkingServer if logging was disabled
+  (gellweiler)
 - Fixed exception message for @args methods in xp.command.Runner
   (friebe, Rene Patzer)
 - Fixed memory leak caused by assigning $this as member of $this
