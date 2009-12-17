@@ -51,12 +51,34 @@
     }
 
     /**
+     * Set callback
+     *
+     * @param   xml.parser.ParserCallback callback
+     * @return  xml.parser.XMLParser this
+     */
+    public function withCallback($callback) {
+      $this->callback= $callback;
+      return $this;
+    }
+
+    /**
      * Set Encoding
      *
      * @param   string encoding
      */
     public function setEncoding($encoding) {
       $this->encoding= $encoding;
+    }
+
+    /**
+     * Set Encoding
+     *
+     * @param   string encoding
+     * @return  xml.parser.XMLParser this
+     */
+    public function withEncoding($encoding) {
+      $this->encoding= $encoding;
+      return $this;
     }
 
     /**
