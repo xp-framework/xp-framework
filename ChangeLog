@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- Added withCallback() and withEncoding() methods to XMLParser class
+  http://news.xp-framework.net/article/331/2009/12/17/
+  (friebe) 
+
 Version 5.7.6, released 2009-12-16
 ----------------------------------
 SVN version: 13941
