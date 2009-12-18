@@ -35,6 +35,8 @@
    * <ul>
    *   <li>-v : Be verbose</li>
    *   <li>-cp: Add classpath elements</li>
+   *   <li>-a {argument}: Define argument to pass to tests (may be used
+   *     multiple times)</li>
    *   <li>-l {listener.class.Name} {output}, where output is either "-"
    *     for console output or a file name</li>
    * </ul>
@@ -156,6 +158,7 @@
       // Parse arguments
       $sources= new Vector();
       $verbose= FALSE;
+      $arguments= array();
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
           if ('-v' === $args[$i]) {
@@ -172,6 +175,8 @@
             $suite->addListener($class->newInstance($output));
           } else if ('-?' === $args[$i]) {
             return $this->usage();
+          } else if ('-a' === $args[$i]) {
+            $arguments[]= $this->arg($args, ++$i, 'a');
           } else if (strstr($args[$i], '.ini')) {
             $sources->add(new PropertySource(new Properties($args[$i])));
           } else if (strstr($args[$i], xp::CLASS_FILE_EXT)) {
@@ -206,7 +211,7 @@
         $classes= $source->testClasses();
         foreach ($classes->keys() as $class) {
           try {
-            $suite->addTestClass($class, $classes[$class]->values);
+            $suite->addTestClass($class, $arguments ? $arguments : $classes[$class]->values);
           } catch (NoSuchElementException $e) {
             $this->err->writeLine('*** Warning: ', $e->getMessage());
             continue;
