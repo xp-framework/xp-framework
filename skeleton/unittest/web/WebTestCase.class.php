@@ -136,12 +136,12 @@
           $url->getHost(),
           -1 === $url->getPort(-1) ? '' : ':'.$url->getPort()
         ));
-        $this->beginAt($url->getPath(), $url->getQuery($params));
+        $this->beginAt($url->getPath(), $url->getQuery($params), $method);
       } else if ('' !== $target && '/' === $target{0}) {
-        $this->beginAt($target, $params);
+        $this->beginAt($target, $params, $method);
       } else {
         $base= $this->getBase();
-        $this->beginAt(substr($base, 0, strrpos($base, '/')).'/'.$target, $params);
+        $this->beginAt(substr($base, 0, strrpos($base, '/')).'/'.$target, $params, $method);
       }
     }
 
@@ -189,6 +189,20 @@
      */
     public function assertStatus($status, $message= 'not_equals') {
       $this->assertEquals($status, $this->response->getStatusCode(), $message);
+    }
+
+    /**
+     * Assert a HTTP status code
+     *
+     * @param   int[] status
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertStatusIn($list, $message= 'not_equals') {
+      $sc= $this->response->getStatusCode();
+      if (!in_array($sc, $list)) {
+        $this->fail($message, $sc, '['.implode(', ', $list).']');
+      }
     }
 
     /**
