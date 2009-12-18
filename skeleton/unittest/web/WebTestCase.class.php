@@ -34,7 +34,12 @@
      * @param   string url
      * @return  peer.http.HttpConnection
      */
-    protected abstract function getConnection($url= NULL);
+    protected function getConnection($url= NULL) {
+      if (NULL === $url) {
+        throw new IllegalArgumentException($this->getClassName().' requires a URL as its argument');
+      }
+      return new HttpConnection($url);
+    }
 
     /**
      * Set up this test case. Creates connection.
@@ -162,6 +167,17 @@
       $node= $this->getXPath()->query('//a[text() = "'.$text.'"]')->item(0);
       $this->assertNotEquals(NULL, $node);
       $this->navigateTo($node->getAttribute('href'));
+    }
+    
+    /**
+     * Fail this test case
+     *
+     * @param   string reason
+     * @param   mixed actual
+     * @param   mixed expect
+     */
+    public function fail($reason, $actual, $expect) {
+      parent::fail('@'.$this->conn->getUrl()->getURL().': '.$reason, $actual, $expect);
     }
 
     /**
