@@ -9,6 +9,7 @@
     'unittest.web.Form',
     'peer.http.HttpConnection',
     'peer.http.HttpConstants',
+    'text.regex.Pattern',
     'xml.XPath'
   );
 
@@ -131,7 +132,7 @@
           -1 === $url->getPort(-1) ? '' : ':'.$url->getPort()
         ));
         $this->beginAt($url->getPath(), $url->getQuery($params));
-      } else if ('/' === $target{0}) {
+      } else if ('' !== $target && '/' === $target{0}) {
         $this->beginAt($target, $params);
       } else {
         $base= $this->getBase();
@@ -240,8 +241,8 @@
      * @throws  unittest.AssertionFailedError  
      */
     public function assertTextPresent($text, $message= 'not_present') {
-      $node= $this->getXPath()->query('//*[text() = "'.$text.'"]')->item(0);
-      $this->assertNotEquals(NULL, $node, $message);
+      $node= $this->getXPath()->query('//*[contains(text(), "'.$text.'")]')->item(0);
+      $this->assertNotEquals(NULL, $node->textContent, $message);
     }
 
     /**
@@ -252,8 +253,38 @@
      * @throws  unittest.AssertionFailedError  
      */
     public function assertTextNotPresent($text, $message= 'present') {
-      $node= $this->getXPath()->query('//*[text() = "'.$text.'"]')->item(0);
-      $this->assertEquals(NULL, $node, $message);
+      $node= $this->getXPath()->query('//*[contains(text(), "'.$text.'")]')->item(0);
+      $this->assertEquals(NULL, $node->textContent, $message);
+    }
+
+    /**
+     * Assert a text is present
+     *
+     * @param   text.regex.Pattern pattern
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertTextPatternPresent(Pattern $pattern, $message= 'not_present') {
+      $this->assertNotEquals(
+        MatchResult::$EMPTY, 
+        $pattern->match($this->getDom()->documentElement->textContent), 
+        $message
+      );
+    }
+
+    /**
+     * Assert a text is not present
+     *
+     * @param   text.regex.Pattern pattern
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertTextPatternNotPresent(Pattern $pattern, $message= 'matched') {
+      $this->assertEquals(
+        MatchResult::$EMPTY, 
+        $pattern->match($this->getDom()->documentElement->textContent), 
+        $message
+      );
     }
 
     /**
