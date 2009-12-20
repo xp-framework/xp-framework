@@ -8,9 +8,28 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
+- Always include current URL in web testcase failure messages
+  (friebe)
+- Added new methods to unittest.web.WebTestCase: assertStatusIn(),
+  assertTextPatternNotPresent() and assertTextPatternPresent()
+  (friebe)
+- Added "-a" commandline option to unittest command
+  (friebe)
+- Added text.regex.MatchResult::$EMPTY static member holding an empty
+  match - can be used for MatchResult::$EMPTY->equals(...) e.g.
+  (friebe)
 - Added withCallback() and withEncoding() methods to XMLParser class
   http://news.xp-framework.net/article/331/2009/12/17/
   (friebe) 
+
+Bugfixes
+~~~~~~~~
+- Fixed unittest.web.WebTestCase::navigateTo() not handling the request
+  method but instead always using HTTP GET
+  (friebe)
+- Fixed unittest.web.WebTestCase::assertTextPresent() method to check
+  for substring matches instead of for text nodes with exact string
+  (friebe)
 
 Version 5.7.6, released 2009-12-16
 ----------------------------------
