@@ -129,7 +129,7 @@
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
           
-          // Read levels
+          // Read levels (alternatively, for BC, read "flags" setting)
           $levels= $prop->readArray($section, 'appender.'.$appender.'.levels');
           if (!empty($levels)) {
             $flags= 0;
@@ -140,8 +140,12 @@
             $flags= $prop->readArray($section, 'appender.'.$appender.'.flags', LogLevel::ALL);
             if (!is_int($flags)) {
               $arrflags= $flags; $flags= 0;
-              foreach ($arrflags as $f) { 
-                if (defined($f)) $flags |= constant($f); 
+              foreach ($arrflags as $f) {
+                try {
+                  $flags |= LogLevel::named(substr($f, 12)); // 12 = strlen('LOGGER_FLAG_')
+                } catch (IllegalArgumentException $ignore) {
+                  // ...
+                }
               }
             }
           }
