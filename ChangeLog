@@ -8,6 +8,12 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
+- Changed util.log.Logger::configure() to refrain from using global
+  and deprecated LOGGER_FLAG_* constants (soon to be removed).
+  (friebe)
+- Added util.log.LogCategory::getAppenders() to make adding appenders
+  more testable
+  (friebe)
 - Always include current URL in web testcase failure messages
   (friebe)
 - Added new methods to unittest.web.WebTestCase: assertStatusIn(),
