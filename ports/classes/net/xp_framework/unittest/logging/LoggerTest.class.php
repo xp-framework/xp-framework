@@ -15,8 +15,7 @@
    * @purpose  Unit Test
    */
   class LoggerTest extends TestCase {
-    public
-      $logger= NULL;
+    protected $logger= NULL;
     
     /**
      * Setup method. Creates logger member for easier access to the
@@ -62,7 +61,62 @@
      */
     #[@test]
     public function isConfigurable() {
-      $this->assertTrue(is('util.Configurable', $this->logger));
+      $this->assertSubclass($this->logger, 'util.Configurable');
+    }
+
+    /**
+     * Test configuring the logger
+     *
+     */
+    #[@test]
+    public function configureMultipleCategories() {
+      $this->logger->configure(Properties::fromString(trim('
+[sql]
+appenders="util.log.FileAppender"
+appender.util.log.FileAppender.params="filename"
+appender.util.log.FileAppender.param.filename="/var/log/xp/sql.log"
+
+[remote]
+appenders="util.log.FileAppender"
+appender.util.log.FileAppender.params="filename"
+appender.util.log.FileAppender.param.filename="/var/log/xp/remote.log"
+      ')));
+      
+      with ($sql= $this->logger->getCategory('sql')); {
+        $appenders= $sql->getAppenders();
+        $this->assertClass($appenders[0], 'util.log.FileAppender');
+        $this->assertEquals('/var/log/xp/sql.log', $appenders[0]->filename);
+      }
+      
+      with ($sql= $this->logger->getCategory('remote')); {
+        $appenders= $sql->getAppenders();
+        $this->assertClass($appenders[0], 'util.log.FileAppender');
+        $this->assertEquals('/var/log/xp/remote.log', $appenders[0]->filename);
+      }
+    }
+
+    /**
+     * Test configuring the logger
+     *
+     */
+    #[@test]
+    public function configureMultipleAppenders() {
+      $this->logger->configure(Properties::fromString(trim('
+[sql]
+appenders="util.log.FileAppender|util.log.SmtpAppender"
+appender.util.log.FileAppender.params="filename"
+appender.util.log.FileAppender.param.filename="/var/log/xp/sql.log"
+appender.util.log.SmtpAppender.params="email"
+appender.util.log.SmtpAppender.param.email="xp@example.com"
+      ')));
+      
+      with ($sql= $this->logger->getCategory('sql')); {
+        $appenders= $sql->getAppenders();
+        $this->assertClass($appenders[0], 'util.log.FileAppender');
+        $this->assertEquals('/var/log/xp/sql.log', $appenders[0]->filename);
+        $this->assertClass($appenders[1], 'util.log.SmtpAppender');
+        $this->assertEquals('xp@example.com', $appenders[1]->email);
+      }
     }
 
     /**
@@ -83,6 +137,9 @@ appender.util.log.FileAppender.flags="LOGGER_FLAG_ERROR|LOGGER_FLAG_WARN"
         $this->assertFalse($cat === $this->logger->getCategory());
         $this->assertClass($cat, 'util.log.LogCategory');
         $this->assertTrue($cat->hasAppenders());
+        with ($appenders= $cat->getAppenders(LogLevel::ERROR | LogLevel::WARN)); {
+          $this->assertClass($appenders[0], 'util.log.FileAppender');
+        }
       }
     }
 
@@ -104,6 +161,9 @@ appender.util.log.FileAppender.levels="ERROR|WARN"
         $this->assertFalse($cat === $this->logger->getCategory());
         $this->assertClass($cat, 'util.log.LogCategory');
         $this->assertTrue($cat->hasAppenders());
+        with ($appenders= $cat->getAppenders(LogLevel::ERROR | LogLevel::WARN)); {
+          $this->assertClass($appenders[0], 'util.log.FileAppender');
+        }
       }
     }
   }
