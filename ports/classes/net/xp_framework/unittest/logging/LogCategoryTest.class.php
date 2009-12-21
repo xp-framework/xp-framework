@@ -362,5 +362,78 @@
       }'));
       $this->assertClass($added, 'util.log.LogAppenderAdapter');
     }
+
+    /**
+     * Tests getAppenders()
+     *
+     */
+    #[@test]
+    public function getAppenders() {
+      $appender= $this->mockAppender();
+      $this->cat->addAppender($appender);
+      $this->assertEquals(array($appender), $this->cat->getAppenders());
+    }
+
+    /**
+     * Tests getAppenders()
+     *
+     */
+    #[@test]
+    public function getAppendersWithoutAppendersAdded() {
+      $this->assertEquals(array(), $this->cat->getAppenders());
+    }
+
+    /**
+     * Tests getAppenders()
+     *
+     */
+    #[@test]
+    public function getAllAppendersWhenErrorLevelAppenderExists() {
+      $appender= $this->cat->addAppender($this->mockAppender(), LogLevel::ERROR);
+      $this->assertEquals(array($appender), $this->cat->getAppenders());
+    }
+
+    /**
+     * Tests getAppenders()
+     *
+     */
+    #[@test]
+    public function getErrorLevelAppendersWhenErrorLevelAppendersExist() {
+      $appender= $this->cat->addAppender($this->mockAppender(), LogLevel::ERROR);
+      $this->assertEquals(array($appender), $this->cat->getAppenders(LogLevel::ERROR));
+    }
+
+    /**
+     * Tests getAppenders()
+     *
+     */
+    #[@test]
+    public function getInfoLevelAppendersWhenOnlyErrorLevelAppendersExist() {
+      $appender= $this->cat->addAppender($this->mockAppender(), LogLevel::ERROR);
+      $this->assertEquals(array(), $this->cat->getAppenders(LogLevel::INFO));
+    }
+
+    /**
+     * Tests getAppenders()
+     *
+     */
+    #[@test]
+    public function getInfoLevelAppendersWhenErrorAndInfoLevelAppenderExists() {
+      $appender= $this->cat->addAppender($this->mockAppender(), LogLevel::ERROR | LogLevel::INFO);
+      $this->assertEquals(array($appender), $this->cat->getAppenders(LogLevel::INFO));
+    }
+
+    /**
+     * Tests getAppenders()
+     *
+     */
+    #[@test]
+    public function getAllAppenders() {
+      $app1= $this->cat->addAppender($this->mockAppender(), LogLevel::ERROR);
+      $app2= $this->cat->addAppender($this->mockAppender(), LogLevel::WARN);
+      $app3= $this->cat->addAppender($this->mockAppender(), LogLevel::INFO);
+      $app4= $this->cat->addAppender($this->mockAppender(), LogLevel::DEBUG);
+      $this->assertEquals(array($app1, $app2, $app3, $app4), $this->cat->getAppenders());
+    }
   }
 ?>
