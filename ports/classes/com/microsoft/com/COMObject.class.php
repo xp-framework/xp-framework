@@ -37,7 +37,7 @@
      * @param   string server default NULL
      */    
     public function __construct($identifier, $server= NULL) {
-      if ($identifier instanceof COM) {
+      if ($identifier instanceof COM || $identifier instanceof Variant) {
         $this->h= $identifier;
       } else {
         try {
@@ -57,7 +57,7 @@
     public function __get($name) {
       try {
         $v= $this->h->{$name};
-        if ($v instanceof COM) {
+        if ($v instanceof COM || $v instanceof Variant) {
           return new self($v);
         } else {
           return $v;
@@ -75,7 +75,7 @@
      */
     public function __set($name, $value) {
       try {
-        if ($value instanceof self) {
+        if ($value instanceof COM || $value instanceof Variant) {
           $this->h->{$name}= $value->h;
         } else {
           $this->h->{$name}= $value;
@@ -98,7 +98,12 @@
         $s.= ', $args['.$i.']';
       }
       try {
-        return eval('return $this->h->'.$name.'('.substr($s, 2).');');
+        $v= eval('return $this->h->'.$name.'('.substr($s, 2).');');
+        if ($v instanceof COM || $v instanceof Variant) {
+          return new self($v);
+        } else {
+          return $v;
+        }
       } catch (com_exception $e) {
         throw new IllegalArgumentException($e->getCode().': '.$e->getMessage());
       }
