@@ -174,6 +174,20 @@
         }
       }
     }
+    
+    /**
+     * Gets appenders
+     *
+     * @param   int flag
+     * @return  util.log.Appender[]
+     */
+    public function getAppenders($flag= LogLevel::ALL) {
+      $r= array();
+      foreach ($this->_appenders as $f => $appenders) {
+        if ($f & $flag) $r= array_merge($r, array_values($appenders));
+      }
+      return $r;
+    }
 
     /**
      * Appends a log of type info. Accepts any number of arguments of

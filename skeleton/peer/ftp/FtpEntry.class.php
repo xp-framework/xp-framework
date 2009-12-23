@@ -223,7 +223,7 @@
     }
 
     /**
-     * Get last modified date
+     * Get last modified date. Uses the "MDTM" command internally.
      *
      * @return  util.Date or NULL if the server does not support this
      * @throws  io.IOException in case the connection is closed
@@ -231,9 +231,10 @@
     public function lastModified() {
       $r= $this->connection->sendCommand('MDTM %s', $this->name);
       sscanf($r[0], "%d %[^\r\n]", $code, $message);
-      
+
       if (213 === $code) {
-        return new Date($message);
+        sscanf($message, '%4d%02d%02d%02d%02d%02d', $y, $m, $d, $h, $i, $s);  // YYYYMMDDhhmmss
+        return Date::create($y, $m, $d, $h, $i, $s);
       } else if (550 === $code) {
         return NULL;
       } else {

@@ -115,6 +115,21 @@
     public function offsetUnset($offset) {
       throw new IllegalArgumentException('Cannot remove from immutable list');
     }
+
+    /**
+     * Returns whether a given value exists in this list
+     *
+     * @param   var value
+     * @return  bool
+     */
+    public function contains($value) {
+      if (!$value instanceof Generic) {
+        return in_array($value, $this->values, TRUE);
+      } else foreach ($this->values as $v) {
+        if ($value->equals($v)) return TRUE;
+      }
+      return FALSE;
+    }
     
     /**
      * Helper method to compare two arrays recursively

@@ -20,7 +20,11 @@
    * @see   xp://net.xp_framework.unittest.core.ClassExtensions
    */
   class ExtensionMethodTest extends TestCase {
-
+  
+    static function __static() {
+      xp::import(__CLASS__, 'ext://lang.types.ArrayList', 'ext://util.collections.IList');
+    }
+  
     /**
      * Test ArrayListExtensions::find() method for an instance of ArrayList
      *
@@ -62,7 +66,7 @@
      * Test call to non-existant method in ArrayList class
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method ArrayList::nonExistant')]
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method ArrayList::nonExistant from scope ExtensionMethodTest')]
     public function callNonExistantArrayListMethod() {
       ArrayList::newInstance(0)->nonExistant();
     }
@@ -119,7 +123,7 @@
      * Test extension methods must be static
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method Vector::nonStaticExtensionMethod')]
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method Vector::nonStaticExtensionMethod from scope ExtensionMethodTest')]
     public function extensionMethodMustBeStatic() {
       newinstance('lang.Object', array(), '{
         static function __static() {
@@ -139,7 +143,7 @@
      * Test extension methods must be static
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method Vector::notAnnotatedExtensionMethod')]
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method Vector::notAnnotatedExtensionMethod from scope ExtensionMethodTest')]
     public function extensionMethodMustBeAnnotated() {
       newinstance('lang.Object', array(), '{
         static function __static() {
@@ -162,9 +166,9 @@
      * implementation.
      *
      */
-    #[@test]
+    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method String::matches from scope ExtensionMethodTest')]
     public function applyToAllScopes() {
-      $this->assertTrue(create(new String('Hello'))->matches(Pattern::compile('H[ae]llo')));
+      create(new String('Hello'))->matches(Pattern::compile('H[ae]llo'));
     }
   }
 ?>

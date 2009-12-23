@@ -9,6 +9,7 @@
     'unittest.web.Form',
     'peer.http.HttpConnection',
     'peer.http.HttpConstants',
+    'text.regex.Pattern',
     'xml.XPath'
   );
 
@@ -33,7 +34,12 @@
      * @param   string url
      * @return  peer.http.HttpConnection
      */
-    protected abstract function getConnection($url= NULL);
+    protected function getConnection($url= NULL) {
+      if (NULL === $url) {
+        throw new IllegalArgumentException($this->getClassName().' requires a URL as its argument');
+      }
+      return new HttpConnection($url);
+    }
 
     /**
      * Set up this test case. Creates connection.
@@ -130,12 +136,12 @@
           $url->getHost(),
           -1 === $url->getPort(-1) ? '' : ':'.$url->getPort()
         ));
-        $this->beginAt($url->getPath(), $url->getQuery($params));
-      } else if ('/' === $target{0}) {
-        $this->beginAt($target, $params);
+        $this->beginAt($url->getPath(), $url->getQuery($params), $method);
+      } else if ('' !== $target && '/' === $target{0}) {
+        $this->beginAt($target, $params, $method);
       } else {
         $base= $this->getBase();
-        $this->beginAt(substr($base, 0, strrpos($base, '/')).'/'.$target, $params);
+        $this->beginAt(substr($base, 0, strrpos($base, '/')).'/'.$target, $params, $method);
       }
     }
 
@@ -162,6 +168,17 @@
       $this->assertNotEquals(NULL, $node);
       $this->navigateTo($node->getAttribute('href'));
     }
+    
+    /**
+     * Fail this test case
+     *
+     * @param   string reason
+     * @param   mixed actual
+     * @param   mixed expect
+     */
+    public function fail($reason, $actual, $expect) {
+      parent::fail('@'.$this->conn->getUrl()->getURL().': '.$reason, $actual, $expect);
+    }
 
     /**
      * Assert a HTTP status code
@@ -172,6 +189,20 @@
      */
     public function assertStatus($status, $message= 'not_equals') {
       $this->assertEquals($status, $this->response->getStatusCode(), $message);
+    }
+
+    /**
+     * Assert a HTTP status code
+     *
+     * @param   int[] status
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertStatusIn($list, $message= 'not_equals') {
+      $sc= $this->response->getStatusCode();
+      if (!in_array($sc, $list)) {
+        $this->fail($message, $sc, '['.implode(', ', $list).']');
+      }
     }
 
     /**
@@ -240,8 +271,8 @@
      * @throws  unittest.AssertionFailedError  
      */
     public function assertTextPresent($text, $message= 'not_present') {
-      $node= $this->getXPath()->query('//*[text() = "'.$text.'"]')->item(0);
-      $this->assertNotEquals(NULL, $node, $message);
+      $node= $this->getXPath()->query('//*[contains(text(), "'.$text.'")]')->item(0);
+      $this->assertNotEquals(NULL, $node->textContent, $message);
     }
 
     /**
@@ -252,8 +283,38 @@
      * @throws  unittest.AssertionFailedError  
      */
     public function assertTextNotPresent($text, $message= 'present') {
-      $node= $this->getXPath()->query('//*[text() = "'.$text.'"]')->item(0);
-      $this->assertEquals(NULL, $node, $message);
+      $node= $this->getXPath()->query('//*[contains(text(), "'.$text.'")]')->item(0);
+      $this->assertEquals(NULL, $node->textContent, $message);
+    }
+
+    /**
+     * Assert a text is present
+     *
+     * @param   text.regex.Pattern pattern
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertTextPatternPresent(Pattern $pattern, $message= 'not_present') {
+      $this->assertNotEquals(
+        MatchResult::$EMPTY, 
+        $pattern->match($this->getDom()->documentElement->textContent), 
+        $message
+      );
+    }
+
+    /**
+     * Assert a text is not present
+     *
+     * @param   text.regex.Pattern pattern
+     * @param   string message
+     * @throws  unittest.AssertionFailedError  
+     */
+    public function assertTextPatternNotPresent(Pattern $pattern, $message= 'matched') {
+      $this->assertEquals(
+        MatchResult::$EMPTY, 
+        $pattern->match($this->getDom()->documentElement->textContent), 
+        $message
+      );
     }
 
     /**

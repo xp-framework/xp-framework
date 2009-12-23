@@ -30,20 +30,25 @@
      *
      */
     public function __call($name, $args) {
+      $t= debug_backtrace();
+      $scope= '<main>::ext://';
+      for ($i= 2; $i < sizeof($t); $i++) {
+        if (isset($t[$i]['class'])) { $scope= $t[$i]['class'].'::ext://'; break; }
+      }
       $class= get_class($this);
       $name= '::'.$name;
-      if (!isset(xp::$registry[$k= $class.$name])) { 
+      if (!isset(xp::$registry[$k= $scope.xp::nameOf($class).$name])) { 
         do {
           $c= new ReflectionClass($this);
           do {
-            if (isset(xp::$registry[$k= $class.$name])) break 2;
+            if (isset(xp::$registry[$k= $scope.xp::nameOf($class).$name])) break 2;
           } while ($class= get_parent_class($class));
           foreach ($c->getInterfaceNames() as $i) {
-            if (isset(xp::$registry[$k= $i.$name])) break 2;
+            if (isset(xp::$registry[$k= $scope.xp::nameOf($i).$name])) break 2;
           }
-          throw new Error('Call to undefined method '.$c->getName().$name);
+          throw new Error('Call to undefined method '.$c->getName().$name.' from scope '.substr($scope, 0, -8));
         } while (0);
-        xp::$registry[$c->getName().$name]= xp::$registry[$k];
+        xp::$registry[$scope.xp::nameOf($c->getName()).$name]= xp::$registry[$k];
       }
       array_unshift($args, $this);
       return xp::$registry[$k]->invokeArgs(NULL, $args);

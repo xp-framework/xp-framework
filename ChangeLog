@@ -28,8 +28,48 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- Changed util.log.Logger::configure() to refrain from using global
+  and deprecated LOGGER_FLAG_* constants (soon to be removed).
+  (friebe)
+- Added util.log.LogCategory::getAppenders() to make adding appenders
+  more testable
+  (friebe)
+- Always include current URL in web testcase failure messages
+  (friebe)
+- Added new methods to unittest.web.WebTestCase: assertStatusIn(),
+  assertTextPatternNotPresent() and assertTextPatternPresent()
+  (friebe)
+- Added "-a" commandline option to unittest command
+  (friebe)
+- Added text.regex.MatchResult::$EMPTY static member holding an empty
+  match - can be used for MatchResult::$EMPTY->equals(...) e.g.
+  (friebe)
+- Added withCallback() and withEncoding() methods to XMLParser class
+  http://news.xp-framework.net/article/331/2009/12/17/
+  (friebe) 
+
+Bugfixes
+~~~~~~~~
+- Fixed unittest.web.WebTestCase::navigateTo() not handling the request
+  method but instead always using HTTP GET
+  (friebe)
+- Fixed unittest.web.WebTestCase::assertTextPresent() method to check
+  for substring matches instead of for text nodes with exact string
+  (friebe)
+
+Version 5.7.6, released 2009-12-16
+----------------------------------
+SVN version: 13941
+
 Heads up!
 ~~~~~~~~~
+- Changed io.File to no longer to accept filenames containing a NUL byte
+  (friebe)
+- Changed io.File to accept only scheme URLs beginning with xar:// as well 
+  as php://stderr, php://stdout and php://stdin.
+  (friebe)
 - Made scriptlet.HttpScriptlet use a merge of $_GET and $_POST,
   instead of $_REQUEST, effectively not taking cookie values
   into account when using HttpScriptletRequest::getParam().
@@ -37,6 +77,13 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added lang.types.ArrayList::contains() method 
+  (friebe)
+- Made WorkflowScriptletRequest give a less information-leaking error message
+  (friebe, kiesel)
+- Made ClassNotFoundException constructor take an optional, second argument
+  to separate information on available loaders from actual error message
+  (kiesel, friebe)
 - Added util.Currency and util.Money classes
   (friebe)
 - Made scriptlet.HttpScriplet check for existance of X-Forwarded-Host
@@ -63,6 +110,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed fatals in peer.server.PreforkingServer if logging was disabled
+  (gellweiler)
 - Fixed exception message for @args methods in xp.command.Runner
   (friebe, Rene Patzer)
 - Fixed memory leak caused by assigning $this as member of $this

@@ -6,6 +6,7 @@
 
   uses('util.log.LogCategory', 'util.Configurable', 'util.log.LogLevel');
   
+  // Deprecated
   define('LOG_DEFINES_DEFAULT', 'default');
   
   /**
@@ -76,6 +77,8 @@
    * @purpose  Singleton logger
    */
   class Logger extends Object implements Configurable {
+    const DFLT= "default";
+
     protected static $instance= NULL;
     protected $category= array();
     protected $_finalized= FALSE;
@@ -89,17 +92,17 @@
      *
      */
     protected function __construct() {
-      $this->category[LOG_DEFINES_DEFAULT]= new LogCategory(LOG_DEFINES_DEFAULT);
+      $this->category[self::DFLT]= new LogCategory(self::DFLT);
     }
 
     /**
      * Get a category
      *
-     * @param   string name default LOG_DEFINES_DEFAULT
+     * @param   string name default self::DFLT
      * @return  util.log.LogCategory
      */ 
-    public function getCategory($name= LOG_DEFINES_DEFAULT) {
-      if (!isset($this->category[$name])) $name= LOG_DEFINES_DEFAULT;
+    public function getCategory($name= self::DFLT) {
+      if (!isset($this->category[$name])) $name= self::DFLT;
       return $this->category[$name];
     }
     
@@ -109,55 +112,55 @@
      * @param   util.Properties prop instance of a Properties object
      */
     public function configure($prop) {
-      $class= array();
       
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
-        $catclass= XPClass::forName($prop->readString($section, 'category', 'util.log.LogCategory'));
-        $this->category[$section]= $catclass->newInstance(
+        $this->category[$section]= XPClass::forName(
+          $prop->readString($section, 'category', 'util.log.LogCategory')
+        )->newInstance(
           $section,
           $prop->readInteger($section, 'flags', LogLevel::ALL)
         );
         
-        // Has an appender?
-        $param_section= $section;
-        if (NULL === ($appenders= $prop->readArray($section, 'appenders', NULL))) {
-          $appenders= $this->defaultAppenders;
-          $param_section= LOG_DEFINES_DEFAULT;
-        }
+        // Configure appenders
+        $appenders= $prop->readArray($section, 'appenders', array());
 
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
-          if (!isset($class[$appender])) {
-            $class[$appender]= XPClass::forName($appender);
-          }
           
-          // Read levels
-          $levels= $prop->readArray($param_section, 'appender.'.$appender.'.levels');
+          // Read levels (alternatively, for BC, read "flags" setting)
+          $levels= $prop->readArray($section, 'appender.'.$appender.'.levels');
           if (!empty($levels)) {
             $flags= 0;
             foreach ($levels as $name) {
               $flags |= LogLevel::named($name);
             }
           } else {
-            $flags= $prop->readArray($param_section, 'appender.'.$appender.'.flags', LogLevel::ALL);
+            $flags= $prop->readArray($section, 'appender.'.$appender.'.flags', LogLevel::ALL);
             if (!is_int($flags)) {
               $arrflags= $flags; $flags= 0;
-              foreach ($arrflags as $f) { 
-                if (defined($f)) $flags |= constant($f); 
+              foreach ($arrflags as $f) {
+                try {
+                  $flags |= LogLevel::named(substr($f, 12)); // 12 = strlen('LOGGER_FLAG_')
+                } catch (IllegalArgumentException $ignore) {
+                  // ...
+                }
               }
             }
           }
           
-          $a= $this->category[$section]->addAppender($class[$appender]->newInstance(), $flags);
-          $params= $prop->readArray($param_section, 'appender.'.$appender.'.params', array());
+          $a= $this->category[$section]->addAppender(
+            XPClass::forName($appender)->newInstance(),
+            $flags
+          );
+          $params= $prop->readArray($section, 'appender.'.$appender.'.params', array());
           
           // Params
           foreach ($params as $param) {
             $a->{$param}= strftime(
               $prop->readString(
-                $param_section, 
+                $section,
                 'appender.'.$appender.'.param.'.$param,
                 ''
               )
@@ -172,8 +175,8 @@
      *
      */
     public function finalize() {
-      if (!$this->_finalized) foreach (array_keys($this->category) as $name) {
-        $this->category[$name]->finalize();
+      if (!$this->_finalized) foreach ($this->category as $category) {
+        $category->finalize();
       }
       $this->_finalized= TRUE;
     }

@@ -84,11 +84,11 @@
     }
 
     /**
-     * Test opening a file output stream with a non-existant file name
+     * Test opening a file output stream with an invalid file name
      *
      */
-    #[@test, @expect('io.IOException')]
-    public function nonExistantFile() {
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function invalidFile() {
       new FileOutputStream('');
     }
 

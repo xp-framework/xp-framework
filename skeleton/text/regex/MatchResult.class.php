@@ -13,9 +13,14 @@
    * @purpose  Result
    */
   class MatchResult extends Object {
-    protected
-      $length     = 0,
-      $matches    = array();
+    protected $length  = 0;
+    protected $matches = array();
+    
+    public static $EMPTY;
+    
+    static function __static() {
+      self::$EMPTY= new self(0, array());
+    }
     
     /**
      * Constructor
@@ -52,7 +57,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->length.') '.xp::stringOf($this->matches);
+      return $this->getClassName().'('.$this->length.') '.($this->matches ? xp::stringOf($this->matches) : '<EMPTY>');
     }
 
     /**
@@ -67,6 +72,20 @@
         throw new IndexOutOfBoundsException('No such group '.$offset);
       }
       return $this->matches[$offset];
+    }
+    
+    /**
+     * Returns whether an object is equal to this match result.
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $cmp->length === $this->length && 
+        $cmp->matches === $this->matches
+      );
     }
   }
 ?>

@@ -226,11 +226,7 @@
       foreach (self::$delegates as $delegate) {
         if ($delegate->providesClass($class)) return $delegate->loadClass0($class);
       }
-      throw new ClassNotFoundException(sprintf(
-        'No classloader provides class "%s" {%s}',
-        $class,
-        xp::stringOf(self::getLoaders())
-      ));
+      throw new ClassNotFoundException('No classloader provides class "'.$class.'"', self::getLoaders());
     }
 
     /**
