@@ -75,7 +75,7 @@
      */
     public function __set($name, $value) {
       try {
-        if ($value instanceof COM || $value instanceof Variant) {
+        if ($value instanceof self) {
           $this->h->{$name}= $value->h;
         } else {
           $this->h->{$name}= $value;
@@ -94,8 +94,12 @@
      */
     public function __call($name, $args) {
       $s= '';
-      for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
-        $s.= ', $args['.$i.']';
+      foreach ($args as $i => $value) {
+        if ($value instanceof self) {
+          $s.= ', $args['.$i.']->h';
+        } else {
+          $s.= ', $args['.$i.']';
+        }
       }
       try {
         $v= eval('return $this->h->'.$name.'('.substr($s, 2).');');
