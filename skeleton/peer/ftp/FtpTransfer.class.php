@@ -12,6 +12,9 @@
    * @purpose  Abstract base class
    */
   abstract class FtpTransfer extends Object {
+    const ASCII  = 1;
+    const BINARY = 2;
+    
     protected
       $remote      = NULL,
       $listener    = NULL,

@@ -16,7 +16,7 @@
  *     // Upload index.txt to the connection's root directory
  *     $c->rootDir()->file('index.txt')->uploadFrom(
  *       new FileInputStream(new File('index.txt')),
- *       FTP_ASCII
+ *       FtpTransfer::ASCII
  *     );
  *     
  *     $c->close();
