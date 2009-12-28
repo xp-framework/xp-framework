@@ -12,6 +12,7 @@
    */
   abstract class AbstractTestClass extends Object {
     protected
+      #[@type('lang.Object')]
       $inherited= NULL;
 
     /**

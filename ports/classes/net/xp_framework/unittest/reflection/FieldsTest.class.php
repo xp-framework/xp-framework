@@ -351,5 +351,14 @@
     public function cacheFieldType() {
       $this->assertEquals(NULL, $this->fixture->getField('cache')->getType());
     }
+
+    /**
+     * Tests field details for inherited field
+     *
+     */
+    #[@test]
+    public function fieldDetailsForInheritedField() {
+      $this->assertEquals('lang.Object', $this->fixture->getField('inherited')->getType());
+    }
   }
 ?>
