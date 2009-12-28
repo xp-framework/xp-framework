@@ -614,14 +614,11 @@
      *
      * @param   string class unqualified class name
      * @param   string method
-     * @return  array
+     * @return  array or NULL if not available
      */
     public static function detailsForMethod($class, $method) {
-      while ($details= self::detailsForClass(xp::nameOf($class))) {
-        if (isset($details[1][$method])) return $details[1][$method];
-        $class= get_parent_class($class);
-      }
-      return NULL;
+      $details= self::detailsForClass(xp::nameOf($class));
+      return $details ? (isset($details[1][$method]) ? $details[1][$method] : NULL) : NULL;
     }
 
     /**
@@ -630,14 +627,11 @@
      *
      * @param   string class unqualified class name
      * @param   string method
-     * @return  array
+     * @return  array or NULL if not available
      */
     public static function detailsForField($class, $field) {
-      while ($details= self::detailsForClass(xp::nameOf($class))) {
-        if (isset($details[0][$field])) return $details[0][$field];
-        $class= get_parent_class($class);
-      }
-      return NULL;
+      $details= self::detailsForClass(xp::nameOf($class));
+      return $details ? (isset($details[0][$field]) ? $details[0][$field] : NULL) : NULL;
     }
     
     /**

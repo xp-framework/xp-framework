@@ -117,7 +117,7 @@
      * @return  string
      */
     public function getReturnType() {
-      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return Type::$ANY;
+      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$ANY;
       return Type::forName(ltrim($details[DETAIL_RETURNS], '&'));
     }
 
@@ -127,7 +127,7 @@
      * @return  string
      */
     public function getReturnTypeName() {
-      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
+      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return NULL;
       return ltrim($details[DETAIL_RETURNS], '&');
     }
 
@@ -137,7 +137,7 @@
      * @return  string[]
      */
     public function getExceptionNames() {
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
       return $details ? $details[DETAIL_THROWS] : array();
     }
 
@@ -147,7 +147,7 @@
      * @return  lang.XPClass[]
      */
     public function getExceptionTypes() {
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
       return $details ? array_map(array(xp::reflect('lang.XPClass'), 'forName'), $details[DETAIL_THROWS]) : array();
     }
     
@@ -168,7 +168,7 @@
      * @return  string
      */
     public function getComment() {
-      if (!($details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName()))) return NULL;
+      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return NULL;
       return $details[DETAIL_COMMENT];
     }
     
@@ -180,7 +180,7 @@
      * @return  bool
      */
     public function hasAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
 
       return $details && ($key 
         ? array_key_exists($key, (array)@$details[DETAIL_ANNOTATIONS][$name]) 
@@ -197,7 +197,7 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
 
       if (!$details || !($key 
         ? array_key_exists($key, @$details[DETAIL_ANNOTATIONS][$name]) 
@@ -219,7 +219,7 @@
      * @return  bool
      */
     public function hasAnnotations() {
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
       return $details ? !empty($details[DETAIL_ANNOTATIONS]) : FALSE;
     }
 
@@ -229,7 +229,7 @@
      * @return  array annotations
      */
     public function getAnnotations() {
-      $details= XPClass::detailsForMethod($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
       return $details ? $details[DETAIL_ANNOTATIONS] : array();
     }
     
