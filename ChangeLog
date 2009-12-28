@@ -30,6 +30,8 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
+- Improved performance of reflection on class members (fields, methods)
+  (friebe)
 - Changed util.log.Logger::configure() to refrain from using global
   and deprecated LOGGER_FLAG_* constants (soon to be removed).
   (friebe)
@@ -52,6 +54,9 @@ Features
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.reflect.Routine methods dealing with class details when
+  working with inherited interface methods
+  (friebe)
 - Fixed unittest.web.WebTestCase::navigateTo() not handling the request
   method but instead always using HTTP GET
   (friebe)

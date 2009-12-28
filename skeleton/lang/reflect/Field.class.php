@@ -44,7 +44,7 @@
      * @return  string
      */
     public function getType() {
-      if ($details= XPClass::detailsForField($this->_class, $this->_reflect->getName())) {
+      if ($details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName())) {
         if (isset($details[DETAIL_ANNOTATIONS]['type'])) return $details[DETAIL_ANNOTATIONS]['type'];
       }
       return NULL;
@@ -58,7 +58,7 @@
      * @return  bool
      */
     public function hasAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
 
       return $details && ($key 
         ? array_key_exists($key, (array)@$details[DETAIL_ANNOTATIONS][$name]) 
@@ -75,7 +75,7 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
-      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
 
       if (!$details || !($key 
         ? array_key_exists($key, @$details[DETAIL_ANNOTATIONS][$name]) 
@@ -97,7 +97,7 @@
      * @return  bool
      */
     public function hasAnnotations() {
-      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
       return $details ? !empty($details[DETAIL_ANNOTATIONS]) : FALSE;
     }
 
@@ -107,7 +107,7 @@
      * @return  array annotations
      */
     public function getAnnotations() {
-      $details= XPClass::detailsForField($this->_class, $this->_reflect->getName());
+      $details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
       return $details ? $details[DETAIL_ANNOTATIONS] : array();
     }
 

@@ -538,5 +538,19 @@
         $this->fixture->getParentClass()->getMethod('getDate')
       );
     }
+
+    /**
+     * Tests method details for inherited interface methods
+     *
+     * @see     xp://io.collections.IOCollection
+     * @see     xp://io.collections.IOElement#getOrigin
+     */
+    #[@test]
+    public function methodDetailsForInheritedInterfaceMethod() {
+      $this->assertEquals(
+        'io.collections.IOCollection', 
+        XPClass::forName('io.collections.IOCollection')->getMethod('getOrigin')->getReturnTypeName()
+      );
+    }
   }
 ?>

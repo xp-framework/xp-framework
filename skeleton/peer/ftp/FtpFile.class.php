@@ -76,12 +76,12 @@
      * Upload to this file from an input stream
      *
      * @param   io.streams.InputStream in
-     * @param   int mode default FTP_ASCII
+     * @param   int mode default FtpTransfer::ASCII
      * @param   peer.ftp.FtpTransferListener listener default NULL
      * @return  peer.ftp.FtpFile this file
      * @throws  peer.SocketException in case of an I/O error
      */
-    public function uploadFrom(InputStream $in, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
+    public function uploadFrom(InputStream $in, $mode= FtpTransfer::ASCII, FtpTransferListener $listener= NULL) {
       $transfer= create(new FtpUpload($this, $in))->withListener($listener)->start($mode);
       while (!$transfer->complete()) $transfer->perform();
 
@@ -102,10 +102,10 @@
      * @see     xp://peer.ftp.FtpDownload#to
      * @see     xp://peer.ftp.FtpUpload#from
      * @param   peer.ftp.FtpTransfer transfer
-     * @param   int mode default FTP_ASCII
+     * @param   int mode default FtpTransfer::ASCII
      * @return  peer.ftp.FtpTransfer 
      */
-    public function start(FtpTransfer $transfer, $mode= FTP_ASCII) {
+    public function start(FtpTransfer $transfer, $mode= FtpTransfer::ASCII) {
       $transfer->setRemote($this);
       $transfer->start($mode);
       return $transfer;
@@ -115,12 +115,12 @@
      * Download this file to an output stream
      *
      * @param   io.streams.OutputStream out
-     * @param   int mode default FTP_ASCII
+     * @param   int mode default FtpTransfer::ASCII
      * @param   peer.ftp.FtpTransferListener listener default NULL
      * @return  io.streams.OutputStream the output stream passed
      * @throws  peer.SocketException in case of an I/O error
      */
-    public function downloadTo(OutputStream $out, $mode= FTP_ASCII, FtpTransferListener $listener= NULL) {
+    public function downloadTo(OutputStream $out, $mode= FtpTransfer::ASCII, FtpTransferListener $listener= NULL) {
       $transfer= create(new FtpDownload($this, $out))->withListener($listener)->start($mode);
       while (!$transfer->complete()) $transfer->perform();
 
