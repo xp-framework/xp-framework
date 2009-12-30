@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.streams.InputStream');
+  uses('io.streams.InputStream', 'peer.http.HttpInputStream');
 
   /**
    * HTTP response
@@ -159,6 +159,15 @@
     public function closeStream() {
       $this->stream->close();
       return FALSE;
+    }
+
+    /**
+     * Returns an input stream to read data
+     *
+     * @return  io.streams.InputStream
+     */
+    public function getInputStream() {
+      return new HttpInputStream($this);
     }
     
     /**
