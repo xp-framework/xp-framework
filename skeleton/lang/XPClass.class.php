@@ -530,7 +530,7 @@
                   trim($parsed, "[]# \t\n\r").','
                 ).');');
                 if (FALSE === $annotations) {
-                  $msg= trim(substr(ob_get_contents(), strlen(ini_get('error_prepend_string'))));
+                  $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
                   ob_end_clean();
                   raise('lang.ClassFormatException', $msg.' of "'.addcslashes($parsed, "\0..\17").'"');
                 }
