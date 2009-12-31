@@ -72,7 +72,7 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_resource($this->handle)) {
-        throw new SQLConnectException(mysql_error(), $this->dsn);
+        throw new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
       }
 
       // Figure out sql_mode and update formatter's escaperules accordingly

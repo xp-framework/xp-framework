@@ -28,6 +28,13 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed FTP_ASCII / FTP_BINARY constants in peer.ftp package to class
+  constants FtpTransfer::ASCII and FtpTransfer::BINARY.
+  http://news.xp-framework.net/article/334/2009/12/28/
+  (friebe)
+
 Features
 ~~~~~~~~
 - Improved performance of reflection on class members (fields, methods)
