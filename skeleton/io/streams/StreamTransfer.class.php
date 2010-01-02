@@ -18,6 +18,8 @@
    *   $t->transferAll();
    *   $t->close();
    * </code>
+   *
+   * @test    xp://net.xp_framework.unittest.io.streams.StreamTransferTest
    */
   class StreamTransfer extends Object {
     protected $in= NULL;
