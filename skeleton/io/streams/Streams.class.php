@@ -132,22 +132,6 @@
     }
 
     /**
-     * Copy an input stream to an output stream
-     *
-     * @param   io.streams.InputStream in
-     * @param   io.streams.OutputStream out
-     * @return  int number of bytes copied
-     * @throws  io.IOException
-     */
-    public static function transferTo(InputStream $in, OutputStream $out) {
-      $r= 0;
-      while ($in->available() > 0) {
-        $r+= $out->write($in->read());
-      }
-      return $r;
-    }
-
-    /**
      * Callback for fopen
      *
      * @param   string path
