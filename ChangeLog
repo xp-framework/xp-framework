@@ -65,6 +65,11 @@ Features
   http://news.xp-framework.net/article/331/2009/12/17/
   (friebe) 
 
+RFCs
+~~~~
+- Implemented RFC #0175 - ZIP File support
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed lang.reflect.Routine methods dealing with class details when
