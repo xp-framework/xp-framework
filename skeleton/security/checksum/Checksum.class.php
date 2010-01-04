@@ -32,8 +32,7 @@
    * @purpose  Abstract base class to all other checksums
    */
   class Checksum extends Object {
-    public
-      $value = '';
+    public $value = '';
       
     /**
      * Constructor
