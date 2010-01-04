@@ -19,6 +19,8 @@ Features
   deflate / inflate (depending on ext/zlib), bz2compress / bz2decompress
   (depending on ext/bz2)
   (friebe)
+- Added io.streams.StreamTransfer class to copy one stream to another
+  (friebe)
 - Improved performance of reflection on class members (fields, methods)
   (friebe)
 - Changed util.log.Logger::configure() to refrain from using global
