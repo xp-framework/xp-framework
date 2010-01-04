@@ -21,8 +21,12 @@
      *
      * @param   io.streams.OutputStream out
      * @param   int level default 6
+     * @throws  lang.IllegalArgumentException if the level is not between 0 and 9
      */
     public function __construct(OutputStream $out, $level= 6) {
+      if ($level < 0 || $level > 9) {
+        throw new IllegalArgumentException('Level '.$level.' out of range [0..9]');
+      }
       $this->out= Streams::writeableFd($out);
       if (!stream_filter_append($this->out, 'bzip2.compress', STREAM_FILTER_WRITE, array('blocks' => $level))) {
         throw new IOException('Could not append stream filter');
