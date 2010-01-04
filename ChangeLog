@@ -15,6 +15,10 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added compressing input and decompressing output streams to io.streams:
+  deflate / inflate (depending on ext/zlib), bz2compress / bz2decompress
+  (depending on ext/bz2)
+  (friebe)
 - Improved performance of reflection on class members (fields, methods)
   (friebe)
 - Changed util.log.Logger::configure() to refrain from using global
