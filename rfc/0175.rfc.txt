@@ -20,7 +20,7 @@ Reading and creating zip files.
 
 Functionality
 -------------
-The entry point class will be named io.zip.ZipFile. It provides
+The entry point class will be named io.archive.zip.ZipFile. It provides
 static methods to read and write zip files.
 
 Creating
@@ -82,10 +82,10 @@ friebe, Thu Dec 24 13:45:38     2009
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 The class name <tt>ZipArchive</tt> is already taken, see the PHP manual
 at http://de3.php.net/ZipArchive. We also cannot use the name "Archive"
-which together with io.zip would form a meaningful name because of our
-own lang.archive.Archive class. Because ZipArchive is used only as a
-factory class to create <tt>ZipArchiveWriter</tt> and <tt>ZipArchiveReader</tt>
-instances, we could either:
+which together with io.archive.zip would form a meaningful name because 
+of our own lang.archive.Archive class. Because ZipArchive is used only 
+as a factory class to create <tt>ZipArchiveWriter</tt> and 
+<tt>ZipArchiveReader</tt> instances, we could either:
 
 * Omit it entirely 
 * Fully qualify it (io·zip·Archive)
