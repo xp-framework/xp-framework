@@ -17,6 +17,16 @@
    * @see      xp://io.streams.InflatingInputStream
    */
   class InflatingInputStreamTest extends TestCase {
+
+    /**
+     * Setup method. Ensure ext/zlib is available
+     *
+     */
+    public function setUp() {
+      if (!Runtime::getInstance()->extensionAvailable('zlib')) {
+        throw new PrerequisitesNotMetError('ZLib support not available', NULL, array('ext/bz2'));
+      }
+    }
   
     /**
      * Test single read
