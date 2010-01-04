@@ -15,20 +15,20 @@ A new package named io.zip will be created.
 
 Rationale
 ---------
-Reading and creating zipfiles.
+Reading and creating zip files.
 
 
 Functionality
 -------------
-The entry point class will be named io.zip.ZipArchive. It provides
+The entry point class will be named io.zip.ZipFile. It provides
 static methods to read and write zip files.
 
 Creating
 ~~~~~~~~
 <code>
-  $archive= ZipArchive::create(new FileOutputStream(new File($filename)));
+  $archive= ZipFile::create(new FileOutputStream(new File($filename)));
   
-  $out= $archive->addFile(new ZipFile('title.txt', Date::now()));
+  $out= $archive->addFile(new ZipFileEntry('title.txt', Date::now()));
   $out->setCompression(Compression::$GZ);
   $out->write('Title goes here');
   
@@ -38,7 +38,7 @@ Creating
 Reading
 ~~~~~~~
 <code>
-  $archive= ZipArchive::open(new FileInputStream(new File($filename)));
+  $archive= ZipFile::open(new FileInputStream(new File($filename)));
   
   // List contents
   foreach ($archive->entries() as $entry) { 
@@ -93,5 +93,22 @@ instances, we could either:
   or ZipArchives (or any other name, these are just suggestions)
 * Rename ZipFile to ZipFileEntry (and ZipDir to ZipDirEntry) and
   then rename ZipArchive to ZipFile.
+
+friebe, Thu Dec 31 17:51:57     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Went for the last option above:
+<pre>
+  $ svn ci -m '- Rename to work around naming clash:
+  >   . ZipFile -> ZipFileEntry
+  >   . ZipDir -> ZipDirEntry
+  >   . ZipArchive -> ZipFile'
+  Deleting       zip/io/zip/ZipArchive.class.php
+  Deleting       zip/io/zip/ZipDir.class.php
+  Adding         zip/io/zip/ZipDirEntry.class.php
+  Replacing      zip/io/zip/ZipFile.class.php
+  Adding         zip/io/zip/ZipFileEntry.class.php
+  Transmitting file data ..
+  Committed revision 11800.
+</pre>
 
 <EOF>

@@ -73,6 +73,7 @@
      * @param   string uri the complete path name
      */
     public function setURI($uri) {
+      $uri= str_replace('/', DIRECTORY_SEPARATOR, $uri);
       if (FALSE === ($this->uri= realpath($uri))) {
 
         // realpath returns FALSE if the URI does not exist
