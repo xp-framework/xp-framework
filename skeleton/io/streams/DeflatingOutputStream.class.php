@@ -28,7 +28,7 @@
         throw new IllegalArgumentException('Level '.$level.' out of range [0..9]');
       }
       $this->out= Streams::writeableFd($out);
-      if (!stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE, array('level' => $level))) {
+      if (!stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE, $level)) {
         throw new IOException('Could not append stream filter');
       }
     }
