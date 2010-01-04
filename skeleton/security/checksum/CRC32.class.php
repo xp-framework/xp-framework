@@ -22,7 +22,7 @@
      * @return  security.checksum.CRC32
      */
     public static function fromString($str) {
-      return new CRC32(crc32($str));
+      return new CRC32(sprintf('%u', crc32($str)));
     }
 
     /**

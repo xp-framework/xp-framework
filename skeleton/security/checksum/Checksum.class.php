@@ -32,8 +32,7 @@
    * @purpose  Abstract base class to all other checksums
    */
   class Checksum extends Object {
-    public
-      $value = '';
+    public $value = '';
       
     /**
      * Constructor
@@ -41,7 +40,7 @@
      * @param   mixed value
      */
     public function __construct($value) {
-      $this->value= $value;
+      $this->value= (string)$value;
     }
   
     /**
@@ -79,6 +78,34 @@
      */
     public function verify($sum) {
       return $this->value === $sum->value;
+    }
+
+    /**
+     * Check whether another object is equal to this
+     *
+     * @param   lang.Generic cmp
+     * @return  bool TRUE if these checksums match
+     */
+    public function equals($cmp) {
+      return $cmp instanceof $this && $this->verify($cmp);
+    }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return $this->value;
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->value.')';
     }
   }
 ?>
