@@ -1,16 +1,16 @@
-RFC 0175: New io.zip package 
+RFC 0175: ZIP File support
 ========================================================================
 $Id$
 
 @authors: friebe
 @created: Mon Oct 20 16:49:44     2008
-@status: discussion, ends Mon Dec 28 12:00:00     2009
+@status: implemented, Mon Jan  4 20:23:39     2010
 @target: 5.7.7
 @category: io
 
 Scope of Change
 ---------------
-A new package named io.zip will be created.
+A new package named io.archive.zip will be created.
 
 
 Rationale
