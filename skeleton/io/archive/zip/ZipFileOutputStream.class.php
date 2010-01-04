@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('io.streams.OutputStream', 'io.archive.zip.Compression', 'io.streams.MemoryOutputStream');
+  uses(
+    'io.streams.OutputStream', 
+    'io.archive.zip.Compression', 
+    'io.streams.MemoryOutputStream',
+    'security.checksum.CRC32Digest'
+  );
 
   /**
    * Output stream for files
@@ -18,7 +23,7 @@
       $compression = NULL,
       $data        = NULL,
       $size        = 0,
-      $crc32       = 0;
+      $crc32       = NULL;
     
     /**
      * Constructor
@@ -30,7 +35,7 @@
       $this->writer= $writer;
       $this->file= $file;
       $this->data= NULL;
-      $this->original= '';
+      $this->crc32= new CRC32Digest();
     }
     
     /**
@@ -52,10 +57,8 @@
      */
     public function write($arg) {
       $this->size+= strlen($arg);
+      $this->crc32->update($arg);
       $this->compression->write($arg);
-      
-      // HACK: Needed because we cannot calculate crc32 incrementally atm
-      $this->original.= $arg;
     }
 
     /**
@@ -72,14 +75,19 @@
      */
     public function close() {
       if (NULL === $this->data) return;     // Already written
-
+      
+      $crc= $this->crc32->digest()->getValue();
+      if ($crc > 2147483647) {              // Convert from uin32 to int32
+        $crc= intval($crc - 4294967296);
+      }
+      
       $this->compression->close();
       $bytes= $this->data->getBytes();
       $this->writer->writeFile(
         $this->file,
         $this->size, 
         strlen($bytes),
-        crc32($this->original), // $this->crc32,  HACK
+        $crc,
         $bytes
       );
       delete($this->data);
