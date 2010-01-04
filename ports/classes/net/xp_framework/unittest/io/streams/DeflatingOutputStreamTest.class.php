@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'lang.types.Bytes',
     'io.streams.DeflatingOutputStream',
     'io.streams.MemoryOutputStream'
   );
@@ -17,6 +18,16 @@
    * @see      xp://io.streams.DeflatingOutputStream
    */
   class DeflatingOutputStreamTest extends TestCase {
+
+    /**
+     * Setup method. Ensure ext/zlib is available
+     *
+     */
+    public function setUp() {
+      if (!Runtime::getInstance()->extensionAvailable('zlib')) {
+        throw new PrerequisitesNotMetError('ZLib support not available', NULL, array('ext/bz2'));
+      }
+    }
   
     /**
      * Test single write
@@ -28,7 +39,7 @@
       $deflater= new DeflatingOutputStream($out, 6);
       $deflater->write('Hello');
       $deflater->close();
-      $this->assertEquals(gzdeflate('Hello', 6), $out->getBytes());
+      $this->assertEquals(new Bytes(gzdeflate('Hello', 6)), new Bytes($out->getBytes()));
     }
 
     /**
@@ -43,7 +54,7 @@
       $deflater->write(' ');
       $deflater->write('World');
       $deflater->close();
-      $this->assertEquals(gzdeflate('Hello World', 6), $out->getBytes());
+      $this->assertEquals(new Bytes(gzdeflate('Hello World', 6)), new Bytes($out->getBytes()));
     }
   }
 ?>
