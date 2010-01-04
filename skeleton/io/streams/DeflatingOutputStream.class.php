@@ -14,9 +14,7 @@
    * @purpose  OuputStream implementation
    */
   class DeflatingOutputStream extends Object implements OutputStream {
-    protected 
-      $out   = NULL,
-      $level = 0;
+    protected $out= NULL;
     
     /**
      * Constructor
@@ -26,7 +24,7 @@
      */
     public function __construct(OutputStream $out, $level= 6) {
       $this->out= Streams::writeableFd($out);
-      if (!stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE)) {
+      if (!stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE, $level)) {
         throw new IOException('Could not append stream filter');
       }
     }
