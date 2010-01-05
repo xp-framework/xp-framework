@@ -52,6 +52,17 @@
      * Tests adding a test
      *
      */    
+    #[@test]
+    public function addingATestTwice() {
+      $this->suite->addTest($this);
+      $this->suite->addTest($this);
+      $this->assertEquals(2, $this->suite->numTests());
+    }    
+
+    /**
+     * Tests adding a test
+     *
+     */    
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addNonTest() {
       $this->suite->addTest(new Object());
