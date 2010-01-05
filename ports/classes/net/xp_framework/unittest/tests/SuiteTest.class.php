@@ -197,13 +197,27 @@
      *
      */    
     #[@test]
-    public function runInvokesBeforeClass() {
+    public function runInvokesBeforeClassOneClass() {
       SimpleTestCase::$init= 0;
       $this->suite->addTest(new SimpleTestCase('fails'));
       $this->suite->addTest(new SimpleTestCase('succeeds'));
       $this->suite->run();
       $this->assertEquals(1, SimpleTestCase::$init);
-    }    
+    }
+
+    /**
+     * Tests method decorated with beforeClass is executed
+     *
+     */    
+    #[@test]
+    public function runInvokesBeforeClassMultipleClasses() {
+      SimpleTestCase::$init= 0;
+      $this->suite->addTest(new SimpleTestCase('fails'));
+      $this->suite->addTest(new AnotherTestCase('succeeds'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $this->suite->run();
+      $this->assertEquals(1, SimpleTestCase::$init);
+    }
 
     /**
      * Tests method decorated with beforeClass is executed
