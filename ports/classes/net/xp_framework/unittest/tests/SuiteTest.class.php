@@ -95,7 +95,20 @@
       for ($i= 0, $s= $this->suite->numTests(); $i < $s; $i++) {
         $this->assertSubclass($this->suite->testAt($i), 'unittest.TestCase');
       }
-    }    
+    }
+
+    /**
+     * Tests adding a test class
+     *
+     */    
+    #[@test]
+    public function addingATestClassTwice() {
+      $class= XPClass::forName('net.xp_framework.unittest.tests.SimpleTestCase');
+      $this->suite->addTestClass($class);
+      $n= $this->suite->numTests();
+      $this->suite->addTestClass($class);
+      $this->assertEquals($n * 2, $this->suite->numTests());
+    }
 
     /**
      * Tests adding a test class without tests inside
