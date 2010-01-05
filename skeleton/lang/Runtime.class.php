@@ -238,6 +238,13 @@
     public function getExecutable() {
       if (NULL === $this->executable) {     // Lazy-init
         $this->executable= Process::getProcessById(getmypid(), getenv('XP_RT'));
+        
+        // Workaround for systems where args can only be unreliably be
+        // parsed from "ps" output. This is detected by the runners and
+        // the XP_CMDLINE environment variable will hold the command line.
+        if ($cmdline= getenv('XP_CMDLINE')) {
+          $this->startup= self::parseArguments(explode('|', $cmdline));
+        }
       }
       return $this->executable;
     }
