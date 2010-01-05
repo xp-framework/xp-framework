@@ -439,5 +439,18 @@
       $this->notifyListeners('testRunFinished', array($this, $result));
       return $result;
     }
+    
+    /**
+     * Creates a string representation of this test suite
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'['.sizeof($this->tests)."]@{\n";
+      foreach ($this->tests as $test) {
+        $s.= '  '.$test->toString()."\n";
+      }
+      return $s.'}';
+    }
   }
 ?>
