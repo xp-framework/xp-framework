@@ -19,8 +19,7 @@
    * @purpose  Unit Test
    */
   class SuiteTest extends TestCase {
-    public
-      $suite= NULL;
+    protected $suite= NULL;
       
     /**
      * Setup method. Creates a new test suite.
