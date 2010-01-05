@@ -60,7 +60,7 @@
       }
       $className= $test->getClassName();
       if (!isset($this->order[$className])) $this->order[$className]= array();
-      $this->order[$className][$test->name]= sizeof($this->tests);
+      $this->order[$className][]= sizeof($this->tests);
       $this->tests[]= $test;
       return $test;
     }
@@ -82,20 +82,20 @@
       $ignored= array();
       $numBefore= $this->numTests();
       $className= $class->getName();
-      $this->order[$className]= array();
+      if (!isset($this->order[$className])) $this->order[$className]= array();
       foreach ($class->getMethods() as $m) {
         if (!$m->hasAnnotation('test')) continue;
         if ($m->hasAnnotation('ignore')) $ignored[]= $m;
 
-        $this->order[$className][$m->getName()]= sizeof($this->tests);
         $this->tests[]= call_user_func_array(array($class, 'newInstance'), array_merge(
           (array)$m->getName(TRUE),
           $arguments
         ));
+        $this->order[$className][]= sizeof($this->tests)- 1;
       }
 
       if ($numBefore === $this->numTests()) {
-        unset($this->order[$className]);
+        if (empty($this->order[$className])) unset($this->order[$className]);
         throw new NoSuchElementException('No tests found in '.$class->getName());
       }
 
