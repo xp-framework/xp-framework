@@ -9,6 +9,7 @@
     'util.cmd.Command',
     'xp.command.Runner',
     'util.log.Logger',
+    'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream'
   );
 
@@ -20,6 +21,7 @@
   class RunnerTest extends TestCase {
     protected
       $runner = NULL,
+      $in     = NULL,
       $out    = NULL,
       $err    = NULL;
 
@@ -37,7 +39,8 @@
      * @param   string[] args
      * @return  int
      */
-    protected function runWith(array $args) {
+    protected function runWith(array $args, $in= '') {
+      $this->in= $this->runner->setIn(new MemoryInputStream($in));
       $this->out= $this->runner->setOut(new MemoryOutputStream());
       $this->err= $this->runner->setErr(new MemoryOutputStream());
       return $this->runner->run(new ParamString($args));
@@ -192,6 +195,26 @@
       $this->assertEquals(0, $return);
       $this->assertEquals('UNITTEST', $this->err->getBytes());
       $this->assertEquals('', $this->out->getBytes());
+    }
+
+    /**
+     * Test a command that echoes the input it receives via standard input
+     *
+     */
+    #[@test]
+    public function runEchoInput() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        public function run() { 
+          while ($chunk= $this->in->read()) {
+            $this->out->write($chunk); 
+          }
+        }
+      }');
+
+      $return= $this->runWith(array($command->getClassName()), 'UNITTEST');
+      $this->assertEquals(0, $return);
+      $this->assertEquals('', $this->err->getBytes());
+      $this->assertEquals('UNITTEST', $this->out->getBytes());
     }
 
     /**
