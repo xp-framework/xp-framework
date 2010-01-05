@@ -233,7 +233,7 @@
     /**
      * Retrieve the executable associated with this runtime.
      *
-     * @return  string
+     * @return  lang.Process
      */
     public function getExecutable() {
       if (NULL === $this->executable) {     // Lazy-init
