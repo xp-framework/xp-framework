@@ -52,6 +52,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed adding a testcase class twice (or a test twice) to a TestSuite
+  would result in the tests (or the test, respectively) only being run 
+  once - especially makes sense with tests with different arguments.
+  (friebe)
 - Fixed lang.reflect.Routine methods dealing with class details when
   working with inherited interface methods
   (friebe)
@@ -61,6 +65,7 @@ Bugfixes
 - Fixed unittest.web.WebTestCase::assertTextPresent() method to check
   for substring matches instead of for text nodes with exact string
   (friebe)
+
 
 Version 5.7.6, released 2009-12-16
 ----------------------------------
