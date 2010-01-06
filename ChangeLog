@@ -20,8 +20,8 @@ Features
 - Added member "in" to command line classes to read from standard input
   (friebe, srogin)
 - Added compressing input and decompressing output streams to io.streams:
-  deflate / inflate (depending on ext/zlib), bz2compress / bz2decompress
-  (depending on ext/bz2)
+  deflate / inflate, gzcompress / gzdecompress, bz2compress / bz2decompress
+  http://news.xp-framework.net/article/335/2010/01/06/
   (friebe)
 - Added io.streams.StreamTransfer class to copy one stream to another
   (friebe)
