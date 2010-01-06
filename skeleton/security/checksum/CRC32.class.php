@@ -37,5 +37,19 @@
       $file->close();
       return CRC32::fromString($data);
     }
+    
+    /**
+     * Returns a signed int32 of this checksum's value for use
+     * with pack('V')
+     *
+     * @see     php://pack
+     * @return  int
+     */
+    public function asInt32() {
+      if ($this->value > 2147483647) {      // Convert from uint32 to int32
+        return intval($this->value - 4294967296);
+      }
+      return $this->value;
+    }
   }
 ?>
