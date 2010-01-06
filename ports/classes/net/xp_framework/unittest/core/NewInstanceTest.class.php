@@ -89,7 +89,7 @@
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1], 'Fatal error: Class Runnable·'),
-        $r[1]
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
     }
 
@@ -105,7 +105,7 @@
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1], 'Parse error:'),
-        $r[1]
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
     }
 
@@ -122,7 +122,7 @@
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1], 'Class "lang.Runnable" does not exist'),
-        $r[1]
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
     }
   }
