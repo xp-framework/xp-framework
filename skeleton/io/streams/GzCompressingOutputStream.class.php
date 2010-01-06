@@ -32,8 +32,7 @@
       if ($level < 0 || $level > 9) {
         throw new IllegalArgumentException('Level '.$level.' out of range [0..9]');
       }
-      $this->out= Streams::writeableFd($out);
-      
+
       // Write GZIP format header:
       // * ID1, ID2 (Identification, \x1F, \x8B)
       // * CM       (Compression Method, 8 = deflate)
@@ -41,9 +40,10 @@
       // * MTIME    (Modification time, Un*x timestamp)
       // * XFL      (Extra flags, 2 = compressor used maximum compression)
       // * OS       (Operating system, 255 = unknown)
-      fwrite($this->out, pack('CCCCVCC', 0x1F, 0x8B, 8, 0, time(), 2, 255));
+      $out->write(pack('CCCCVCC', 0x1F, 0x8B, 8, 0, time(), 2, 255));
       
-      // Append deflating filter
+      // Now, convert stream to file handle and append deflating filter
+      $this->out= Streams::writeableFd($out);
       if (!($this->filter= stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE, $level))) {
         throw new IOException('Could not append stream filter');
       }
