@@ -65,8 +65,8 @@
       $r= $this->runWith(Runtime::getInstance()->startupOptions()->withSetting('magic_quotes_gpc', 1));
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
-        (bool)strstr($r[1], 'Fatal error: [xp::core] magic_quotes_gpc enabled'),
-        $r[1]
+        (bool)strstr($r[1].$r[2], '[xp::core] magic_quotes_gpc enabled'),
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
 
       // In PHP 5.3+, magic_quotes_gpc = On raises a "PHP Warning:  Directive 
@@ -85,10 +85,9 @@
       $r= $this->runWith(Runtime::getInstance()->startupOptions());
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
-        (bool)strstr($r[1], 'Fatal error: [bootstrap] Classpath element [/does-not-exist] not found'),
-        $r[1]
+        (bool)strstr($r[1].$r[2], '[bootstrap] Classpath element [/does-not-exist] not found'),
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
-      $this->assertEquals('', $r[2]);
     }
 
     /**
@@ -101,10 +100,9 @@
       $r= $this->runWith(Runtime::getInstance()->startupOptions());
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
-        (bool)strstr($r[1], 'Fatal error: [bootstrap] Classpath element [/does-not-exist.xar] not found'),
-        $r[1]
+        (bool)strstr($r[1].$r[2], '[bootstrap] Classpath element [/does-not-exist.xar] not found'),
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
-      $this->assertEquals('', $r[2]);
     }
   }
 ?>
