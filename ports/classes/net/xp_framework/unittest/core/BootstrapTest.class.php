@@ -31,8 +31,6 @@
     public function tearDown() {
       set_include_path($this->includePath);
     }
-    
-  
   
     /**
      * Create a new runtime
