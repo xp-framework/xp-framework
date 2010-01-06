@@ -88,7 +88,7 @@
       ');
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
-        (bool)strstr($r[1].$r[2], 'Fatal error: Class Runnable·'),
+        (bool)strstr($r[1].$r[2], 'Fatal error:'),
         xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
       );
     }
