@@ -15,18 +15,6 @@
    *
    */
   class NewInstanceTest extends TestCase {
-    protected $startupOptions= NULL;
-
-    /**
-     * Initialize startup options
-     *
-     */
-    public function setUp() {
-      $this->startupOptions= Runtime::getInstance()->startupOptions()
-        ->withSwitch('n')               // Do not use any configuration file
-        ->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())
-      ;
-    }
 
     /**
      * Issues a uses() command inside a new runtime for every class given
@@ -37,11 +25,7 @@
      * @return  var[] an array with three elements: exitcode, stdout and stderr contents
      */
     protected function runInNewRuntime($uses, $src) {
-      with (
-        $out= $err= '', 
-        $rt= Runtime::getInstance(),
-        $p= $rt->getExecutable()->newInstance($this->startupOptions->asArguments())
-      ); {
+      with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, NULL)); {
         $p->in->write('<?php require("lang.base.php");');
         $uses && $p->in->write('uses("'.implode('", "', $uses).'");');
         $p->in->write($src);
