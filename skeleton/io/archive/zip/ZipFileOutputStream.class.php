@@ -76,18 +76,13 @@
     public function close() {
       if (NULL === $this->data) return;     // Already written
       
-      $crc= $this->crc32->digest()->getValue();
-      if ($crc > 2147483647) {              // Convert from uin32 to int32
-        $crc= intval($crc - 4294967296);
-      }
-      
       $this->compression->close();
       $bytes= $this->data->getBytes();
       $this->writer->writeFile(
         $this->file,
         $this->size, 
         strlen($bytes),
-        $crc,
+        $this->crc32->digest()->asInt32(),
         $bytes
       );
       delete($this->data);
