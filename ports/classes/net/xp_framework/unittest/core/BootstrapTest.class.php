@@ -14,18 +14,25 @@
    *
    */
   class BootstrapTest extends TestCase {
-    protected $startupOptions= NULL;
-
+    protected $includePath;
+    
     /**
-     * Initialize startup options
+     * Saves include_path
      *
      */
     public function setUp() {
-      $this->startupOptions= Runtime::getInstance()->startupOptions()
-        ->withSwitch('n')               // Do not use any configuration file
-        ->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())
-      ;
+      $this->includePath= get_include_path();
     }
+    
+    /**
+     * Restores include_path
+     *
+     */
+    public function tearDown() {
+      set_include_path($this->includePath);
+    }
+    
+  
   
     /**
      * Create a new runtime
@@ -35,10 +42,7 @@
      * @return  var[] an array with three elements: exitcode, stdout and stderr contents
      */
     protected function runWith(RuntimeOptions $options) {
-      with (
-        $out= $err= '', 
-        $p= Runtime::getInstance()->getExecutable()->newInstance($options->asArguments())
-      ); {
+      with ($out= $err= '', $p= Runtime::getInstance()->newInstance($options, NULL)); {
         $p->in->write('<?php require("lang.base.php"); ?>');
         $p->in->close();
 
@@ -58,7 +62,7 @@
      */
     #[@test]
     public function fatalsForMagicQuotesGPC() {
-      $r= $this->runWith($this->startupOptions->withSetting('magic_quotes_gpc', 1));
+      $r= $this->runWith(Runtime::getInstance()->startupOptions()->withSetting('magic_quotes_gpc', 1));
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1], 'Fatal error: [xp::core] magic_quotes_gpc enabled'),
@@ -77,10 +81,8 @@
      */
     #[@test]
     public function fatalsForNonExistingPaths() {
-      $r= $this->runWith($this->startupOptions->withSetting('include_path', implode(
-        PATH_SEPARATOR, 
-        array_merge($this->startupOptions->getSetting('include_path'), array('/does-not-exist'))
-      )));
+      set_include_path($this->includePath.PATH_SEPARATOR.'/does-not-exist');
+      $r= $this->runWith(Runtime::getInstance()->startupOptions());
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1], 'Fatal error: [bootstrap] Classpath element [/does-not-exist] not found'),
@@ -95,10 +97,8 @@
      */
     #[@test]
     public function fatalsForNonExistingXars() {
-      $r= $this->runWith($this->startupOptions->withSetting('include_path', implode(
-        PATH_SEPARATOR, 
-        array_merge($this->startupOptions->getSetting('include_path'), array('/does-not-exist.xar'))
-      )));
+      set_include_path($this->includePath.PATH_SEPARATOR.'/does-not-exist.xar');
+      $r= $this->runWith(Runtime::getInstance()->startupOptions());
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1], 'Fatal error: [bootstrap] Classpath element [/does-not-exist.xar] not found'),
