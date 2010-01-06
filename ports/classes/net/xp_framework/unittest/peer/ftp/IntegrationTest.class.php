@@ -36,18 +36,16 @@
 
       // Arguments to server process
       $args= array(
-        'entryPointClass'           => 'net.xp_framework.unittest.peer.ftp.TestingServer',
         'debugServerProtocolToFile' => NULL,   
       );
 
       // Start server process
-      with ($rt= Runtime::getInstance()); {
-        self::$serverProcess= $rt->getExecutable()->newInstance(array_merge(
-          $rt->startupOptions()->asArguments(),
-          array($rt->bootstrapScript('class')),
-          array_values($args)
-        ));
-      }
+      self::$serverProcess= Runtime::getInstance()->newInstance(
+        NULL, 
+        'class', 
+        'net.xp_framework.unittest.peer.ftp.TestingServer',
+        array_values($args)
+      );
       self::$serverProcess->in->close();
 
       // Check if startup succeeded
