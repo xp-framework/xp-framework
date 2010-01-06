@@ -15,6 +15,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added new lang.Runtime::newInstance() method
+  (friebe)
 - Added member "in" to command line classes to read from standard input
   (friebe, srogin)
 - Added compressing input and decompressing output streams to io.streams:
@@ -39,7 +41,7 @@ Features
 - Added "-a" commandline option to unittest command
   (friebe)
 - Added text.regex.MatchResult::$EMPTY static member holding an empty
-  match - can be used for MatchResult::$EMPTY->equals(...) e.g.
+  match - can be used for MatchResult::$EMPTY.equals(...) e.g.
   (friebe)
 - Added withCallback() and withEncoding() methods to XMLParser class
   http://news.xp-framework.net/article/331/2009/12/17/
