@@ -58,5 +58,13 @@
     public function close() {
       fclose($this->out);
     }
+
+    /**
+     * Destructor. Ensures output stream is closed.
+     *
+     */
+    public function __destruct() {
+      fclose($this->out);
+    }
   }
 ?>

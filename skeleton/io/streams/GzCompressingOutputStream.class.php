@@ -85,5 +85,13 @@
       fwrite($this->out, pack('VV', $this->digest->digest()->asInt32(), $this->length));
       fclose($this->out);
     }
+    
+    /**
+     * Destructor. Ensures output stream is closed.
+     *
+     */
+    public function __destruct() {
+      fclose($this->out);
+    }
   }
 ?>
