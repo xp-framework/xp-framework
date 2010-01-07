@@ -84,6 +84,7 @@
       // * ISIZE    (Input size)
       fwrite($this->out, pack('VV', $this->digest->digest()->asInt32(), $this->length));
       fclose($this->out);
+      $this->out= NULL;
     }
     
     /**
@@ -91,7 +92,9 @@
      *
      */
     public function __destruct() {
+      if (!$this->out) return;
       fclose($this->out);
+      $this->out= NULL;
     }
   }
 ?>
