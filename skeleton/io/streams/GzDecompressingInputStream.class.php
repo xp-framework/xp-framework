@@ -16,10 +16,48 @@
    */
   class GzDecompressingInputStream extends Object implements InputStream {
     protected $in= NULL;
-    protected static $workaround= FALSE;
-    
+    public static $wrapped= array();
+
     static function __static() {
-      self::$workaround= version_compare(phpversion(), '5.2.1', 'lt');
+      stream_wrapper_register('zlib.bounded', get_class(newinstance('lang.Object', array(), '{
+        protected $id, $st= NULL;
+        protected $buffer= "";
+        
+        public function stream_open($path, $mode, $options, $opened_path) {
+          $this->st= GzDecompressingInputStream::$wrapped[$path];
+          $this->id= $path;
+          return TRUE;
+        }
+
+        public function stream_read($count) {
+
+          // Ensure we have at least 9 bytes
+          $l= strlen($this->buffer);
+          while ($l < 9 && $this->st->available() > 0) {
+            $chunk= $this->st->read($count);
+            $l+= strlen($chunk);
+            $this->buffer.= $chunk;
+          }
+          
+          // Now return the everything except the last 8 bytes
+          $read= substr($this->buffer, 0, -8);
+          $this->buffer= substr($this->buffer, -8);
+          return $read;
+        }
+
+        public function stream_eof() {
+          return 0 === $this->st->available();
+        }
+
+        public function stream_flush() {
+          return TRUE;
+        }
+        
+        public function stream_close() {
+          $this->st->close();
+          unset(GzDecompressingInputStream::$wrapped[$this->id]);
+        }
+      }')));
     }
     
     /**
@@ -44,17 +82,10 @@
         throw new IOException('Unknown compression method #'.$header['method']);
       }
 
-      // Workaround endless loop in zlib filter - PHP Bug #40189 - by
-      // reading the entire content into memory. This bug occurs in PHP
-      // 5.2.0 only (not in 5.2.1, for example).
-      if (self::$workaround) {
-        $mem= XPClass::forName('io.streams.MemoryInputStream');
-        $this->in= Streams::readableFd($mem->newInstance(gzinflate(Streams::readAll($in))));
-        return;
-      }
-      
       // Now, convert stream to file handle and append inflating filter
-      $this->in= Streams::readableFd($in);
+      $wri= 'zlib.bounded://'.$in->hashCode();
+      self::$wrapped[$wri]= $in;
+      $this->in= fopen($wri, 'r');
       if (!stream_filter_append($this->in, 'zlib.inflate', STREAM_FILTER_READ)) {
         throw new IOException('Could not append stream filter');
       }
