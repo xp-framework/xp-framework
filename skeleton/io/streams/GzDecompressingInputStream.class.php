@@ -15,7 +15,12 @@
    * @purpose  InputStream implementation
    */
   class GzDecompressingInputStream extends Object implements InputStream {
-    protected $in = NULL;
+    protected $in= NULL;
+    protected static $workaround= FALSE;
+    
+    static function __static() {
+      self::$workaround= version_compare(phpversion(), '5.2.1', 'lt');
+    }
     
     /**
      * Constructor
@@ -23,7 +28,7 @@
      * @param   io.streams.InputStream in
      */
     public function __construct(InputStream $in) {
-    
+      
       // Read GZIP format header
       // * ID1, ID2 (Identification, \x1F, \x8B)
       // * CM       (Compression Method, 8 = deflate)
@@ -39,6 +44,15 @@
         throw new IOException('Unknown compression method #'.$header['method']);
       }
 
+      // Workaround endless loop in zlib filter - PHP Bug #40189 - by
+      // reading the entire content into memory. This bug occurs in PHP
+      // 5.2.0 only (not in 5.2.1, for example).
+      if (self::$workaround) {
+        $mem= XPClass::forName('io.streams.MemoryInputStream');
+        $this->in= Streams::readableFd($mem->newInstance(gzinflate(Streams::readAll($in))));
+        return;
+      }
+      
       // Now, convert stream to file handle and append inflating filter
       $this->in= Streams::readableFd($in);
       if (!stream_filter_append($this->in, 'zlib.inflate', STREAM_FILTER_READ)) {
