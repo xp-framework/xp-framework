@@ -3,6 +3,7 @@
  *
  * $Id$
  */
+
   uses(
     'rdbms.join.JoinTable',
     'rdbms.join.JoinTableAttribute',
@@ -106,7 +107,7 @@
      * @param   string[] record
      * @param   string role
      */
-    public function extract(JoinExtractable $caller, Array $record, $role) {
+    public function extract(JoinExtractable $caller, array $record, $role) {
       $key= $this->key($record);
       if (FALSE === $key) return;
       if (!$caller->hasCachedObj($role, $key)) $caller->setCachedObj($role, $key, $this->peer->objectFor($this->attributes($record)));
@@ -134,7 +135,7 @@
      * @param   string[] record
      * @return  string
      */
-    private function key(Array $record) {
+    private function key(array $record) {
       $key= '';
       foreach ($this->pkeys as $pKey) {
         if (!isset($record[$pKey->getAlias()])) return FALSE;
@@ -149,11 +150,10 @@
      * @param   string[] record
      * @return  string[]
      */
-    private function attributes(Array $record) {
+    private function attributes(array $record) {
       $recordchunk= array();
       foreach ($this->attrs as $attr) $recordchunk[$attr->getAlias()]= $record[$attr->getAlias()];
       return array_combine(array_keys($this->peer->types), $recordchunk);
     }
-
   }
 ?>
