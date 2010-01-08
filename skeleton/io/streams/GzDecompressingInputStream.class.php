@@ -116,6 +116,17 @@
      */
     public function close() {
       fclose($this->in);
+      $this->in= NULL;
+    }
+    
+    /**
+     * Destructor. Ensures output stream is closed.
+     *
+     */
+    public function __destruct() {
+      if (!$this->in) return;
+      fclose($this->in);
+      $this->in= NULL;
     }
   }
 ?>
