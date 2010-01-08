@@ -5,57 +5,47 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'io.streams.GzDecompressingInputStream',
-    'io.streams.MemoryInputStream'
+    'net.xp_framework.unittest.io.streams.AbstractDecompressingInputStreamTest',
+    'io.streams.GzDecompressingInputStream'
   );
 
   /**
    * TestCase
    *
-   * @ext      Gz
+   * @ext      zlib
    * @see      xp://io.streams.GzDecompressingInputStream
    */
-  class GzDecompressingInputStreamTest extends TestCase {
+  class GzDecompressingInputStreamTest extends AbstractDecompressingInputStreamTest {
 
     /**
-     * Setup method. Ensure ext/zlib is available
+     * Get extension we depend on
      *
+     * @return  string
      */
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('zlib')) {
-        throw new PrerequisitesNotMetError('ZLIB support not available', NULL, array('ext/zlib'));
-      }
-    }
-  
-    /**
-     * Test single read
-     *
-     */
-    #[@test]
-    public function singleRead() {
-      $in= new MemoryInputStream(gzencode('Hello', 6));
-      $decompressor= new GzDecompressingInputStream($in);
-      $chunk= $decompressor->read();
-      $decompressor->close();
-      $this->assertEquals('Hello', $chunk);
+    protected function extension() {
+      return 'zlib';
     }
 
     /**
-     * Test single read
+     * Get stream
      *
+     * @param   io.streams.InputStream wrapped
+     * @return  int level
+     * @return  io.streams.InputStream
      */
-    #[@test]
-    public function multipleReads() {
-      $in= new MemoryInputStream(gzencode('Hello World', 6));
-      $decompressor= new GzDecompressingInputStream($in);
-      $chunk1= $decompressor->read(5);
-      $chunk2= $decompressor->read(1);
-      $chunk3= $decompressor->read(5);
-      $decompressor->close();
-      $this->assertEquals('Hello', $chunk1);
-      $this->assertEquals(' ', $chunk2);
-      $this->assertEquals('World', $chunk3);
+    protected function newStream(InputStream $wrapped) {
+      return new GzDecompressingInputStream($wrapped);
+    }
+
+    /**
+     * Compress data
+     *
+     * @param   string in
+     * @return  int level
+     * @return  string
+     */
+    protected function compress($in, $level) {
+      return gzencode($in, $level);
     }
   }
 ?>

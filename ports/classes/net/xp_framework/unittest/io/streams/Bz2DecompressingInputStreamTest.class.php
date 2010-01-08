@@ -5,9 +5,8 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'io.streams.Bz2DecompressingInputStream',
-    'io.streams.MemoryInputStream'
+    'net.xp_framework.unittest.io.streams.AbstractDecompressingInputStreamTest',
+    'io.streams.Bz2DecompressingInputStream'
   );
 
   /**
@@ -16,46 +15,38 @@
    * @ext      bz2
    * @see      xp://io.streams.Bz2DecompressingInputStream
    */
-  class Bz2DecompressingInputStreamTest extends TestCase {
+  class Bz2DecompressingInputStreamTest extends AbstractDecompressingInputStreamTest {
 
     /**
-     * Setup method. Ensure ext/bz2 is available
+     * Get extension we depend on
      *
+     * @return  string
      */
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('bz2')) {
-        throw new PrerequisitesNotMetError('BZip2 support not available', NULL, array('ext/bz2'));
-      }
-    }
-  
-    /**
-     * Test single read
-     *
-     */
-    #[@test]
-    public function singleRead() {
-      $in= new MemoryInputStream(bzcompress('Hello', 6));
-      $deflater= new Bz2DecompressingInputStream($in, 6);
-      $chunk= $deflater->read();
-      $deflater->close();
-      $this->assertEquals('Hello', $chunk);
+    protected function extension() {
+      return 'bz2';
     }
 
     /**
-     * Test single read
+     * Get stream
      *
+     * @param   io.streams.InputStream wrapped
+     * @return  int level
+     * @return  io.streams.InputStream
      */
-    #[@test]
-    public function multipleReads() {
-      $in= new MemoryInputStream(bzcompress('Hello World', 6));
-      $deflater= new Bz2DecompressingInputStream($in, 6);
-      $chunk1= $deflater->read(5);
-      $chunk2= $deflater->read(1);
-      $chunk3= $deflater->read(5);
-      $deflater->close();
-      $this->assertEquals('Hello', $chunk1);
-      $this->assertEquals(' ', $chunk2);
-      $this->assertEquals('World', $chunk3);
+    protected function newStream(InputStream $wrapped) {
+      return new Bz2DecompressingInputStream($wrapped);
     }
+
+    /**
+     * Compress data
+     *
+     * @param   string in
+     * @return  int level
+     * @return  string
+     */
+    protected function compress($in, $level) {
+      return bzcompress($in, $level);
+    }
+
   }
 ?>
