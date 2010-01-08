@@ -5,30 +5,49 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'lang.types.Bytes',
-    'io.streams.GzCompressingOutputStream',
-    'io.streams.MemoryOutputStream'
+    'net.xp_framework.unittest.io.streams.AbstractCompressingOutputStreamTest',
+    'io.streams.GzCompressingOutputStream'
   );
 
   /**
    * TestCase
    *
    * @ext      zlib
-   * @see      xp://io.streams.Bz2CompressingOutputStream
+   * @see      xp://io.streams.GzCompressingOutputStream
    */
-  class GzCompressingOutputStreamTest extends TestCase {
-  
+  class GzCompressingOutputStreamTest extends AbstractCompressingOutputStreamTest {
+
     /**
-     * Setup method. Ensure ext/zlib is available
+     * Get extension we depend on
      *
+     * @return  string
      */
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('zlib')) {
-        throw new PrerequisitesNotMetError('ZLIB support not available', NULL, array('ext/zlib'));
-      }
+    protected function extension() {
+      return 'zlib';
     }
-    
+
+    /**
+     * Get stream
+     *
+     * @param   io.streams.OutputStream wrapped
+     * @return  int level
+     * @return  io.streams.OutputStream
+     */
+    protected function newStream(OutputStream $wrapped, $level) {
+      return new GzCompressingOutputStream($wrapped, $level);
+    }
+
+    /**
+     * Compress data
+     *
+     * @param   string in
+     * @return  int level
+     * @return  string
+     */
+    protected function compress($in, $level) {
+      return gzencode($in, $level);
+    }
+  
     /**
      * Asserts GZ-encoded data equals. Ignores the first 10 bytes - the
      * GZIP header, which will change every time due to current Un*x 
@@ -38,36 +57,8 @@
      * @param   string actual
      * @throws  unittest.AssertionFailedErrot
      */
-    protected function assertGzDataEquals($expected, $actual) {
-      $this->assertEquals(new Bytes(substr($expected, 10)), new Bytes(substr($actual, 10)));
-    }
-  
-    /**
-     * Test single write
-     *
-     */
-    #[@test]
-    public function singleWrite() {
-      $out= new MemoryOutputStream();
-      $compressor= new GzCompressingOutputStream($out, 6);
-      $compressor->write('Hello');
-      $compressor->close();
-      $this->assertGzDataEquals(gzencode('Hello', 6), $out->getBytes());
-    }
-
-    /**
-     * Test multiple consecutice writes
-     *
-     */
-    #[@test]
-    public function multipeWrites() {
-      $out= new MemoryOutputStream();
-      $compressor= new GzCompressingOutputStream($out, 6);
-      $compressor->write('Hello');
-      $compressor->write(' ');
-      $compressor->write('World');
-      $compressor->close();
-      $this->assertGzDataEquals(gzencode('Hello World', 6), $out->getBytes());
+    protected function assertCompressedDataEquals($expected, $actual) {
+      parent::assertCompressedDataEquals(substr($expected, 10), substr($actual, 10));
     }
   }
 ?>
