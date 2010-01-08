@@ -13,6 +13,7 @@
    *
    * @ext      zlib
    * @see      rfc://1952
+   * @test     xp://net.xp_framework.unittest.io.streams.GzCompressingOutputStreamTest
    * @purpose  OuputStream implementation
    */
   class GzCompressingOutputStream extends Object implements OutputStream {

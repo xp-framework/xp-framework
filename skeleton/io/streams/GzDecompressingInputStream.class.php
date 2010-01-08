@@ -11,6 +11,7 @@
    *
    * @ext      zlib
    * @see      rfc://1952
+   * @test     xp://net.xp_framework.unittest.io.streams.GzDecompressingInputStreamTest
    * @purpose  InputStream implementation
    */
   class GzDecompressingInputStream extends Object implements InputStream {
