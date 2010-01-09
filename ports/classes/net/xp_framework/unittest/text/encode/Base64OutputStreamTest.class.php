@@ -31,6 +31,20 @@
     }
 
     /**
+     * Test single write
+     *
+     */
+    #[@test]
+    public function lineWrappedAt76Characters() {
+      $data= str_repeat('1', 75).str_repeat('2', 75);
+      $out= new MemoryOutputStream();
+      $stream= new Base64OutputStream($out, 76);
+      $stream->write($data);
+      $stream->close();
+      $this->assertEquals(rtrim(chunk_split(base64_encode($data), 76, "\n"), "\n"), $out->getBytes());
+    }
+
+    /**
      * Test multiple consecutive writes
      *
      */
