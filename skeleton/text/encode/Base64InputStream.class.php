@@ -7,13 +7,13 @@
   uses('io.streams.InputStream', 'io.streams.Streams');
 
   /**
-   * InputStream that inflates 
+   * InputStream that decodes from a base64-encoded source 
    *
-   * @ext      zlib
-   * @test     xp://net.xp_framework.unittest.io.streams.InflatingInputStreamTest
+   * @see      rfc://2045 section 6.8 
+   * @test     xp://net.xp_framework.unittest.text.encode.Base64InputStreamTest
    * @purpose  InputStream implementation
    */
-  class InflatingInputStream extends Object implements InputStream {
+  class Base64InputStream extends Object implements InputStream {
     protected $in = NULL;
     
     /**
@@ -23,7 +23,7 @@
      */
     public function __construct(InputStream $in) {
       $this->in= Streams::readableFd($in);
-      if (!stream_filter_append($this->in, 'zlib.inflate', STREAM_FILTER_READ)) {
+      if (!stream_filter_append($this->in, 'convert.base64-decode', STREAM_FILTER_READ)) {
         throw new IOException('Could not append stream filter');
       }
     }

@@ -6,16 +6,16 @@
 
   uses(
     'net.xp_framework.unittest.io.streams.AbstractDecompressingInputStreamTest',
-    'io.streams.InflatingInputStream'
+    'io.streams.GzDecompressingInputStream'
   );
 
   /**
    * TestCase
    *
    * @ext      zlib
-   * @see      xp://io.streams.InflatingInputStream
+   * @see      xp://io.streams.GzDecompressingInputStream
    */
-  class InflatingInputStreamTest extends AbstractDecompressingInputStreamTest {
+  class GzDecompressingInputStreamTest extends AbstractDecompressingInputStreamTest {
 
     /**
      * Get extension we depend on
@@ -34,7 +34,7 @@
      * @return  io.streams.InputStream
      */
     protected function newStream(InputStream $wrapped) {
-      return new InflatingInputStream($wrapped);
+      return new GzDecompressingInputStream($wrapped);
     }
 
     /**
@@ -45,7 +45,7 @@
      * @return  string
      */
     protected function compress($in, $level) {
-      return gzdeflate($in, $level);
+      return gzencode($in, $level);
     }
   }
 ?>

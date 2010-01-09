@@ -37,9 +37,13 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added new lang.Runtime::newInstance() method
+  (friebe)
+- Added member "in" to command line classes to read from standard input
+  (friebe, srogin)
 - Added compressing input and decompressing output streams to io.streams:
-  deflate / inflate (depending on ext/zlib), bz2compress / bz2decompress
-  (depending on ext/bz2)
+  deflate / inflate, gzcompress / gzdecompress, bz2compress / bz2decompress
+  http://news.xp-framework.net/article/335/2010/01/06/
   (friebe)
 - Added io.streams.StreamTransfer class to copy one stream to another
   (friebe)
@@ -59,7 +63,7 @@ Features
 - Added "-a" commandline option to unittest command
   (friebe)
 - Added text.regex.MatchResult::$EMPTY static member holding an empty
-  match - can be used for MatchResult::$EMPTY->equals(...) e.g.
+  match - can be used for MatchResult::$EMPTY.equals(...) e.g.
   (friebe)
 - Added withCallback() and withEncoding() methods to XMLParser class
   http://news.xp-framework.net/article/331/2009/12/17/
@@ -72,6 +76,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed adding a testcase class twice (or a test twice) to a TestSuite
+  would result in the tests (or the test, respectively) only being run 
+  once - especially makes sense with tests with different arguments.
+  (friebe)
 - Fixed lang.reflect.Routine methods dealing with class details when
   working with inherited interface methods
   (friebe)
@@ -81,6 +89,7 @@ Bugfixes
 - Fixed unittest.web.WebTestCase::assertTextPresent() method to check
   for substring matches instead of for text nodes with exact string
   (friebe)
+
 
 Version 5.7.6, released 2009-12-16
 ----------------------------------

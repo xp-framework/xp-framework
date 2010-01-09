@@ -191,15 +191,36 @@
     }
     
     /**
+     * Returns startup information
+     *
+     * @param   string selector
+     * @return  var
+     */
+    protected function startup($selector) {
+      if (NULL === $this->startup) {        // Lazy-init
+
+        // Workaround for systems where args can only be unreliably be
+        // parsed from "ps" output. This is detected by the runners and
+        // the XP_CMDLINE environment variable will hold the command line.
+        if ($cmdline= getenv('XP_CMDLINE')) {
+          $this->startup= self::parseArguments(explode('|', $cmdline));
+          $this->startup['env']= TRUE;
+        } else {
+          $this->startup= self::parseArguments($this->getExecutable()->getArguments());
+          $this->startup['env']= FALSE;
+        }
+      }
+    
+      return $this->startup[$selector];
+    }
+    
+    /**
      * Get startup options
      *
      * @return  lang.RuntimeOptions
      */
     public function startupOptions() {
-      if (NULL === $this->startup) {        // Lazy-init
-        $this->startup= self::parseArguments($this->getExecutable()->getArguments());
-      }
-      return clone $this->startup['options'];
+      return clone $this->startup('options');
     }
 
     /**
@@ -209,13 +230,11 @@
      * @return  string
      */
     public function bootstrapScript($which= NULL) {
-      if (NULL === $this->startup) {        // Lazy-init
-        $this->startup= self::parseArguments($this->getExecutable()->getArguments());
-      }
       if ($which) {
-        return dirname($this->startup['bootstrap']).DIRECTORY_SEPARATOR.$which.'.php';
+        return dirname($this->startup('bootstrap')).DIRECTORY_SEPARATOR.$which.'.php';
+      } else {
+        return $this->startup('bootstrap');
       }
-      return $this->startup['bootstrap'];
     }
 
     /**
@@ -224,22 +243,64 @@
      * @return  lang.XPClass
      */
     public function mainClass() {
-      if (NULL === $this->startup) {        // Lazy-init
-        $this->startup= self::parseArguments($this->getExecutable()->getArguments());
-      }
-      return $this->startup['main'];
+      return $this->startup('main');
     }
 
     /**
      * Retrieve the executable associated with this runtime.
      *
-     * @return  string
+     * @return  lang.Process
      */
     public function getExecutable() {
       if (NULL === $this->executable) {     // Lazy-init
-        $this->executable= Process::getProcessById(getmypid(), getenv('XP_RT'));
+        $this->executable= Process::getProcessById(getmypid(), getenv('XP_RT'));        
       }
       return $this->executable;
+    }
+
+    /**
+     * Create a new runtime instance.
+     *
+     * @param   lang.RuntimeOptions options default NULL
+     * @param   string bootstrap default 'class'
+     * @param   string class default NULL entry point class
+     * @param   string[] arguments default []
+     * @param   string cwd default NULL the working directory
+     * @param   array<string, string> default NULL the environment
+     * @return  lang.Process
+     */
+    public function newInstance(
+      RuntimeOptions $options= NULL, 
+      $bootstrap= 'class', 
+      $class= NULL, 
+      $arguments= array(), 
+      $cwd= NULL, 
+      $env= NULL
+    ) {
+    
+      // Use unmodified startup options if none are passed
+      if (NULL === $options) {
+        $options= $this->startupOptions();
+      }
+      
+      // Merge together options (overwriting include_path which is misused
+      // by the XP runners to transport scan_path, but since we're invoking
+      // PHP directly here, expand it), and, if present, the bootstrap 
+      // script and entry point class.
+      $cmdline= array_merge(
+        $options->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())->asArguments(),
+        $bootstrap ? array($this->bootstrapScript($bootstrap)) : array(),
+        $class ? array($class) : array()
+      );
+      
+      // Pass XP_CMDLINE via environment - part 2 of workaround from above,
+      // see inline comment in startup() method for details
+      if ($this->startup('env')) {
+        putenv('XP_CMDLINE='.implode('|', $cmdline));
+      }
+      
+      // Finally, fork executable
+      return $this->getExecutable()->newInstance(array_merge($cmdline, $arguments), $cwd, $env);
     }
   }
 ?>

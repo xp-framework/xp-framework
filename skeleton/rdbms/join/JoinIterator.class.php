@@ -104,7 +104,7 @@
     }
 
     /**
-     * mark a role as chached
+     * mark a role as cached
      *
      * @param   string role
      */

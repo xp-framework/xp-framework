@@ -3,6 +3,7 @@
  *
  * $Id$ 
  */
+
   uses(
     'rdbms.SQLDialect',
     'rdbms.join.JoinIterator',
@@ -16,7 +17,7 @@
    * fetchmodes (setFetchmodes). With this information it calculates
    * the attribute, location and criteria parts of a query.
    *
-   * @test net.xp_framework.unittest.rdbms.JoinProcessorTest
+   * @test    xp://net.xp_framework.unittest.rdbms.JoinProcessorTest
    * @see     xp://rdbms.join.Fetchmode
    * @purpose rdbms.join
    */
@@ -79,7 +80,7 @@
      * @param   rdbms.join.Fetchmode[] fetchmodes
      * @throws  lang.IllegalArgumentException
      */
-    public function setFetchmodes(Array $fetchmodes) {
+    public function setFetchmodes(array $fetchmodes) {
       if (0 == sizeof(array_keys($fetchmodes, 'join'))) throw new IllegalArgumentException('fetchmodes must contain at least one join element');
       foreach ($fetchmodes as $path => $fetchmode) {
         if ('join' != $fetchmode) continue;
@@ -93,7 +94,7 @@
      * @param   string[] path
      * @return  string
      */
-    public static function pathToKey(Array $path) {
+    public static function pathToKey(array $path) {
       if (0 == sizeof($path)) return  self::FIRST;
       return implode('_', $path);
     }
@@ -133,7 +134,7 @@
      * @param   string[] curpath
      * @throws  lang.IllegalArgumentException
      */
-    private function transformFetchmode(Array $path, JoinPart $sjp, $curpath= array()) {
+    private function transformFetchmode(array $path, JoinPart $sjp, $curpath= array()) {
       if (0 == sizeof($path)) return;
       $role= array_shift($path);
 
@@ -148,6 +149,5 @@
 
       $this->transformFetchmode($path, $this->joinparts[$key], $curpath);
     }
-    
   }
 ?>

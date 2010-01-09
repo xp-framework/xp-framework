@@ -5,10 +5,8 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'lang.types.Bytes',
-    'io.streams.Bz2CompressingOutputStream',
-    'io.streams.MemoryOutputStream'
+    'net.xp_framework.unittest.io.streams.AbstractCompressingOutputStreamTest',
+    'io.streams.Bz2CompressingOutputStream'
   );
 
   /**
@@ -17,44 +15,37 @@
    * @ext      bz2
    * @see      xp://io.streams.Bz2CompressingOutputStream
    */
-  class Bz2CompressingOutputStreamTest extends TestCase {
+  class Bz2CompressingOutputStreamTest extends AbstractCompressingOutputStreamTest {
   
     /**
-     * Setup method. Ensure ext/bz2 is available
+     * Get extension we depend on
      *
+     * @return  string
      */
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('bz2')) {
-        throw new PrerequisitesNotMetError('BZip2 support not available', NULL, array('ext/bz2'));
-      }
-    }
-  
-    /**
-     * Test single write
-     *
-     */
-    #[@test]
-    public function singleWrite() {
-      $out= new MemoryOutputStream();
-      $compressor= new Bz2CompressingOutputStream($out, 6);
-      $compressor->write('Hello');
-      $compressor->close();
-      $this->assertEquals(new Bytes(bzcompress('Hello', 6)), new Bytes($out->getBytes()));
+    protected function extension() {
+      return 'bz2';
     }
 
     /**
-     * Test multiple consecutice writes
+     * Get stream
      *
+     * @param   io.streams.OutputStream wrapped
+     * @return  int level
+     * @return  io.streams.OutputStream
      */
-    #[@test]
-    public function multipeWrites() {
-      $out= new MemoryOutputStream();
-      $compressor= new Bz2CompressingOutputStream($out, 6);
-      $compressor->write('Hello');
-      $compressor->write(' ');
-      $compressor->write('World');
-      $compressor->close();
-      $this->assertEquals(new Bytes(bzcompress('Hello World', 6)), new Bytes($out->getBytes()));
+    protected function newStream(OutputStream $wrapped, $level) {
+      return new Bz2CompressingOutputStream($wrapped, $level);
+    }
+
+    /**
+     * Compress data
+     *
+     * @param   string in
+     * @return  int level
+     * @return  string
+     */
+    protected function compress($in, $level) {
+      return bzcompress($in, $level);
     }
   }
 ?>

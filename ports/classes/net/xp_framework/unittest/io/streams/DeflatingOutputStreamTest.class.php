@@ -5,10 +5,8 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'lang.types.Bytes',
-    'io.streams.DeflatingOutputStream',
-    'io.streams.MemoryOutputStream'
+    'net.xp_framework.unittest.io.streams.AbstractCompressingOutputStreamTest',
+    'io.streams.DeflatingOutputStream'
   );
 
   /**
@@ -17,44 +15,37 @@
    * @ext      zlib
    * @see      xp://io.streams.DeflatingOutputStream
    */
-  class DeflatingOutputStreamTest extends TestCase {
+  class DeflatingOutputStreamTest extends AbstractCompressingOutputStreamTest {
 
     /**
-     * Setup method. Ensure ext/zlib is available
+     * Get extension we depend on
      *
+     * @return  string
      */
-    public function setUp() {
-      if (!Runtime::getInstance()->extensionAvailable('zlib')) {
-        throw new PrerequisitesNotMetError('ZLib support not available', NULL, array('ext/bz2'));
-      }
-    }
-  
-    /**
-     * Test single write
-     *
-     */
-    #[@test]
-    public function singleWrite() {
-      $out= new MemoryOutputStream();
-      $deflater= new DeflatingOutputStream($out, 6);
-      $deflater->write('Hello');
-      $deflater->close();
-      $this->assertEquals(new Bytes(gzdeflate('Hello', 6)), new Bytes($out->getBytes()));
+    protected function extension() {
+      return 'zlib';
     }
 
     /**
-     * Test multiple consecutice writes
+     * Get stream
      *
+     * @param   io.streams.OutputStream wrapped
+     * @return  int level
+     * @return  io.streams.OutputStream
      */
-    #[@test]
-    public function multipeWrites() {
-      $out= new MemoryOutputStream();
-      $deflater= new DeflatingOutputStream($out, 6);
-      $deflater->write('Hello');
-      $deflater->write(' ');
-      $deflater->write('World');
-      $deflater->close();
-      $this->assertEquals(new Bytes(gzdeflate('Hello World', 6)), new Bytes($out->getBytes()));
+    protected function newStream(OutputStream $wrapped, $level) {
+      return new DeflatingOutputStream($wrapped, $level);
+    }
+
+    /**
+     * Compress data
+     *
+     * @param   string in
+     * @return  int level
+     * @return  string
+     */
+    protected function compress($in, $level) {
+      return gzdeflate($in, $level);
     }
   }
 ?>

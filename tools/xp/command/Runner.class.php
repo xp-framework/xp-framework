@@ -8,7 +8,9 @@
 
   uses(
     'util.cmd.ParamString',
+    'io.streams.StringReader', 
     'io.streams.StringWriter', 
+    'io.streams.ConsoleInputStream',
     'io.streams.ConsoleOutputStream',
     'util.log.Logger',
     'util.PropertyManager',
@@ -42,10 +44,12 @@
    */
   class xp·command·Runner extends Object {
     private static
+      $in     = NULL,
       $out    = NULL,
       $err    = NULL;
     
     static function __static() {
+      self::$in= new StringReader(new ConsoleInputStream(STDIN));
       self::$out= new StringWriter(new ConsoleOutputStream(STDOUT));
       self::$err= new StringWriter(new ConsoleOutputStream(STDERR));
     }
@@ -131,6 +135,17 @@
      */
     public static function main(array $args) {
       return create(new self())->run(new ParamString($args));
+    }
+
+    /**
+     * Reassigns standard input stream
+     *
+     * @param   io.streams.InputStream in
+     * @return  io.streams.InputStream the given output stream
+     */
+    public function setIn(InputStream $in) {
+      self::$in= new StringReader($in);
+      return $in;
     }
     
     /**
@@ -249,6 +264,7 @@
       $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
 
       $instance= $class->newInstance();
+      $instance->in= self::$in;
       $instance->out= self::$out;
       $instance->err= self::$err;
       $methods= $class->getMethods();

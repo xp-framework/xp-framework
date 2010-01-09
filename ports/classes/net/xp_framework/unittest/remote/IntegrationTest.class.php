@@ -88,13 +88,7 @@
       ));
 
       // Start server process
-      with ($rt= Runtime::getInstance()); {
-        $startupOptions= Runtime::getInstance()->startupOptions()
-          ->withSwitch('n')               // Do not use any configuration file
-          ->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())
-        ;
-        self::$serverProcess= $rt->getExecutable()->newInstance($startupOptions->asArguments());
-      }
+      self::$serverProcess= Runtime::getInstance()->newInstance(NULL, NULL);
       self::$serverProcess->in->write($src);
       self::$serverProcess->in->close();
 

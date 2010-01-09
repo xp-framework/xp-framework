@@ -13,6 +13,7 @@
    */
   abstract class Command extends Object implements Runnable {
     public
+      $in  = NULL,
       $out = NULL,
       $err = NULL;
     

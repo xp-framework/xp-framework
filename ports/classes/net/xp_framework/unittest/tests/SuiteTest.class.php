@@ -19,8 +19,7 @@
    * @purpose  Unit Test
    */
   class SuiteTest extends TestCase {
-    public
-      $suite= NULL;
+    protected $suite= NULL;
       
     /**
      * Setup method. Creates a new test suite.
@@ -47,6 +46,17 @@
     public function addingATest() {
       $this->suite->addTest($this);
       $this->assertEquals(1, $this->suite->numTests());
+    }    
+
+    /**
+     * Tests adding a test
+     *
+     */    
+    #[@test]
+    public function addingATestTwice() {
+      $this->suite->addTest($this);
+      $this->suite->addTest($this);
+      $this->assertEquals(2, $this->suite->numTests());
     }    
 
     /**
@@ -96,7 +106,20 @@
       for ($i= 0, $s= $this->suite->numTests(); $i < $s; $i++) {
         $this->assertSubclass($this->suite->testAt($i), 'unittest.TestCase');
       }
-    }    
+    }
+
+    /**
+     * Tests adding a test class
+     *
+     */    
+    #[@test]
+    public function addingATestClassTwice() {
+      $class= XPClass::forName('net.xp_framework.unittest.tests.SimpleTestCase');
+      $this->suite->addTestClass($class);
+      $n= $this->suite->numTests();
+      $this->suite->addTestClass($class);
+      $this->assertEquals($n * 2, $this->suite->numTests());
+    }
 
     /**
      * Tests adding a test class without tests inside
@@ -198,13 +221,27 @@
      *
      */    
     #[@test]
-    public function runInvokesBeforeClass() {
+    public function runInvokesBeforeClassOneClass() {
       SimpleTestCase::$init= 0;
       $this->suite->addTest(new SimpleTestCase('fails'));
       $this->suite->addTest(new SimpleTestCase('succeeds'));
       $this->suite->run();
       $this->assertEquals(1, SimpleTestCase::$init);
-    }    
+    }
+
+    /**
+     * Tests method decorated with beforeClass is executed
+     *
+     */    
+    #[@test]
+    public function runInvokesBeforeClassMultipleClasses() {
+      SimpleTestCase::$init= 0;
+      $this->suite->addTest(new SimpleTestCase('fails'));
+      $this->suite->addTest(new AnotherTestCase('succeeds'));
+      $this->suite->addTest(new SimpleTestCase('succeeds'));
+      $this->suite->run();
+      $this->assertEquals(1, SimpleTestCase::$init);
+    }
 
     /**
      * Tests method decorated with beforeClass is executed
