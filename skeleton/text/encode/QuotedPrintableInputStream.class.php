@@ -46,8 +46,8 @@
           $p= strcspn($read, '=', $o);
           $this->buffer.= substr($read, $o, $p);
           if (($o+= $p+ 1) <= $s) {
-            while ($this->in->available() > 0 && $o > $s- 3) {
-              $read.= $this->in->read(3);
+            while ($this->in->available() > 0 && $o > $s- 2) {
+              $read.= $this->in->read(2);
               $s= strlen($read);
             }
             if ("\n" === $read{$o}) {
