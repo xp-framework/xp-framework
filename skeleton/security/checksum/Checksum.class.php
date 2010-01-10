@@ -76,7 +76,7 @@
      * @param   security.checksum.Checksum sum
      * @return  bool TRUE if these checksums match
      */
-    public function verify($sum) {
+    public function verify(self $sum) {
       return $this->value === $sum->value;
     }
 
