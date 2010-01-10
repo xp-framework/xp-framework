@@ -15,6 +15,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added new security.checksum.MessageDigest API supporting incrementally
+  creating checksums (md5, sha1, crc32, whirlpool, adler32 and more)
+  (friebe)
 - Added new lang.Runtime::newInstance() method
   (friebe)
 - Added member "in" to command line classes to read from standard input
