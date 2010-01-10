@@ -12,7 +12,7 @@
    * Creating a message digest incrementally
    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    * <code>
-   *   $digest= mew MD5Digest();
+   *   $digest= new MD5Digest();
    *   while ($in->available() > 0) {
    *     $digest->update($in->read());
    *   }
