@@ -22,13 +22,10 @@
      */
     public static function fromString($str) {
       $sum= 0xFFFF;
-      for ($x= 0, $s= strlen ($str); $x < $s; $x++) {
+      for ($x= 0, $s= strlen($str); $x < $s; $x++) {
         $sum= $sum ^ ord($str{$x});
         for ($i= 0; $i < 8; $i++) {
-          $sum= (0x0001 == ($sum & 0x0001)
-            ? ($sum >> 1) ^ 0xA001
-            : $sum >> 1
-          );
+          $sum= (1 === ($sum & 1) ? ($sum >> 1) ^ 0xA001 : $sum >> 1);
         }
       }
       return new CRC16($sum);
