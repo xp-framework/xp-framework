@@ -43,9 +43,11 @@
       if (!self::$invert) {
         return new CRC32($crc);
       } else {
-        return new CRC32(sprintf(
-          '%u', 
-          (($crc & 0xFF) << 24) + (($crc & 0xFF00) << 8) + (($crc & 0xFF0000) >> 8) + (($crc >> 24) & 0xFF)
+        return new CRC32(sprintf('%u', 
+          (($crc & 0xFF) << 24) + 
+          (($crc & 0xFF00) << 8) + 
+          (($crc & 0xFF0000) >> 8) + 
+          (($crc >> 24) & 0xFF)
         ));
       }
     }
