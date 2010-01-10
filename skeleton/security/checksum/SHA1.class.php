@@ -10,7 +10,7 @@
    * SHA1 checksum
    *
    * @see      xp://security.checksum.Checksum
-   * @see      php://SHA1
+   * @see      php://sha1
    * @purpose  Provide an API to check SHA1 checksums
    */
   class SHA1 extends Checksum {
