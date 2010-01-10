@@ -8,7 +8,7 @@
     'io.streams.OutputStream', 
     'io.archive.zip.Compression', 
     'io.streams.MemoryOutputStream',
-    'security.checksum.CRC32Digest'
+    'security.checksum.CRC32'
   );
 
   /**
@@ -23,7 +23,7 @@
       $compression = NULL,
       $data        = NULL,
       $size        = 0,
-      $crc32       = NULL;
+      $md          = NULL;
     
     /**
      * Constructor
@@ -35,7 +35,7 @@
       $this->writer= $writer;
       $this->file= $file;
       $this->data= NULL;
-      $this->crc32= new CRC32Digest();
+      $this->md= CRC32::digest();
     }
     
     /**
@@ -57,7 +57,7 @@
      */
     public function write($arg) {
       $this->size+= strlen($arg);
-      $this->crc32->update($arg);
+      $this->md->update($arg);
       $this->compression->write($arg);
     }
 
@@ -82,7 +82,7 @@
         $this->file,
         $this->size, 
         strlen($bytes),
-        $this->crc32->digest()->asInt32(),
+        create(new CRC32($this->md->digest()))->asInt32(),
         $bytes
       );
       delete($this->data);
