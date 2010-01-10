@@ -9,12 +9,22 @@
   /**
    * Base class for message digests
    *
+   * Creating a message digest incrementally
+   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    * <code>
    *   $digest= mew MD5Digest();
    *   while ($in->available() > 0) {
    *     $digest->update($in->read());
    *   }
    *   $md5= $digest->final();
+   * </code>
+   *
+   * Verifying
+   * ~~~~~~~~~
+   * <code>
+   *   if ($md5->verify(new MD5('...'))) {
+   *     // Checksums match
+   *   }
    * </code>
    *
    * @ext      hash
