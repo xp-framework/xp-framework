@@ -6,7 +6,7 @@
 
   uses(
     'net.xp_framework.unittest.security.checksum.AbstractDigestTest',
-    'security.checksum.SHA1Digest'
+    'security.checksum.SHA1'
   );
 
   /**
@@ -22,7 +22,7 @@
      * @return  security.checksum.MessageDigest
      */
     protected function newDigest() {
-      return new SHA1Digest();
+      return SHA1::digest();
     }
     
     /**
@@ -32,7 +32,7 @@
      * @return  security.checksum.Checksum
      */
     protected function checksumOf($data) {
-      return SHA1::fromString($data);
+      return SHA1::fromString($data)->getValue();
     }
   }
 ?>
