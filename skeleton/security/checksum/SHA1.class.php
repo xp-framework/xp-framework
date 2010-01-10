@@ -26,6 +26,15 @@
     }
 
     /**
+     * Returns message digest
+     *
+     * @return  security.checksum.MessageDigestImpl
+     */
+    public static function digest() {
+      return MessageDigest::newInstance('sha1');
+    }
+
+    /**
      * Create a new checksum from a file object
      *
      * @param   io.File file

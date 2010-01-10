@@ -7,12 +7,26 @@
   uses('security.checksum.Checksum');
   
   /**
-   * CRC16 checksum
+   * CRC16 checksum [CRC-16 (Modbus)]
    *
    * @see      xp://security.checksum.Checksum
    * @purpose  Provide an API to check CRC16 checksums
+   * @see      http://en.wikipedia.org/wiki/Cyclic_redundancy_check
    */
   class CRC16 extends Checksum {
+
+    /**
+     * Constructor
+     *
+     * @param   mixed value
+     */
+    public function __construct($value) {
+      if (is_int($value)) {
+        parent::__construct(sprintf('%04x', $value)); 
+      } else {
+        parent::__construct($value);
+      }
+    }
   
     /**
      * Create a new checksum from a string
@@ -29,6 +43,15 @@
         }
       }
       return new CRC16($sum);
+    }
+
+    /**
+     * Returns message digest
+     *
+     * @return  security.checksum.MessageDigestImpl
+     */
+    public static function digest() {
+      return MessageDigest::newInstance('crc16');
     }
 
     /**
