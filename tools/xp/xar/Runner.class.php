@@ -127,6 +127,10 @@
                 self::setOperation($operation, 'extract');
                 $options |= Options::SIMULATE | Options::VERBOSE;
                 break;
+              case 'm':
+                self::setOperation($operation, 'merge');
+                $std= 'php://stdout';
+                break;
               case 'v': 
                 $options |= Options::VERBOSE; 
                 break;
