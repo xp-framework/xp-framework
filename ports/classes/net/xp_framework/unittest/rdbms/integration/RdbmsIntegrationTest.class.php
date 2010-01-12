@@ -34,7 +34,7 @@
       }
 
       try {
-        $this->db(FALSE);
+        $this->db();
       } catch (Throwable $t) {
         throw new PrerequisitesNotMetError($t->getMessage(), $t);
       }
