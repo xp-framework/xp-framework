@@ -4,80 +4,74 @@
  * $Id$ 
  */
 
-  uses('security.NoSuchAlgorithmException');
+  uses(
+    'security.NoSuchAlgorithmException', 
+    'security.checksum.DefaultDigestImpl',
+    'security.checksum.CRC16DigestImpl'
+  );
 
   /**
-   * Base class for message digests
+   * Factor class for message digests
    *
+   * Creating a message digest incrementally
+   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    * <code>
-   *   $digest= mew MD5Digest();
+   *   $digest= MessageDigest::newInstance('md5');
    *   while ($in->available() > 0) {
    *     $digest->update($in->read());
    *   }
-   *   $md5= $digest->final();
+   *   $md5= new MD5($digest->final());
    * </code>
    *
-   * @ext      hash
+   * Verifying
+   * ~~~~~~~~~
+   * <code>
+   *   if ($md5->verify(new MD5('...'))) {
+   *     // Checksums match
+   *   }
+   * </code>
+   *
    * @test     xp://net.xp_framework.unittest.security.checksum.MessageDigestTest
-   * @see      xp://security.checksum.MD5Digest
-   * @see      xp://security.checksum.SHA1Digest
-   * @see      xp://security.checksum.CRC32Digest
+   * @see      xp://security.checksum.DefaultDigestImpl
    */
-  abstract class MessageDigest extends Object {
-    protected $handle= NULL;
+  class MessageDigest extends Object {
+    protected static $implementations= array();
     
     /**
-     * Constructor
+     * Register an implementation
      *
-     * @throws  security.NoSuchAlgorithmException if algorithm is not supported
+     * @param   string algorithm
+     * @param   lang.XPClass<security.checksum.MessageDigestImpl> class
+     * @throws  lang.IllegalArgumentException
      */
-    public function __construct() {
-      if (!($this->handle= hash_init($algo= $this->algorithm()))) {
-        throw new NoSuchAlgorithmException('Could not initialize algorithm "'.$algo.'"');
+    public static function register($algorithm, XPClass $impl) {
+      if (!$impl->isSubclassOf('security.checksum.MessageDigestImpl')) {
+        throw new IllegalArgumentException('Implementation class must be a security.checksum.MessageDigestImpl');
       }
+      self::$implementations[$algorithm]= $impl;
     }
-    
-    /**
-     * Returns algorithm
-     *
-     * @return  string
-     */
-    protected abstract function algorithm();
 
     /**
-     * Returns checksum instance
+     * Returns a list of names of supported algorithms
      *
-     * @param   string final
-     * @return  security.checksum.Checksum
+     * @return  string[] algorithms
      */
-    protected abstract function instance($final);
-    
-    /**
-     * Update hash with data
-     *
-     * @param   string data
-     * @throws  lang.IllegalStateException if digest already finalized
-     */
-    public function update($data) {
-      if (NULL === hash_update($this->handle, $data)) {
-        throw new IllegalStateException('Digest already finalized');
-      }
+    public static function supportedAlgorithms() {
+      return array_keys(self::$implementations);
     }
     
     /**
-     * Finalizes digest and returns a checksum object
+     * Creates a new instance given an algorithm name
      *
-     * @param   string data default NULL
-     * @return  security.checksum.Checksum
-     * @throws  lang.IllegalStateException if digest already finalized
+     * @param   string algorithm
+     * @return  security.checksum.MessageDigestImpl
+     * @throws  security.NoSuchAlgorithmException
      */
-    public function digest($data= NULL) {
-      if (NULL !== $data) $this->update($data);
-      if (NULL === ($final= hash_final($this->handle))) {
-        throw new IllegalStateException('Digest already finalized');
+    public static function newInstance($algorithm) {
+      if (!isset(self::$implementations[$algorithm])) {
+        throw new NoSuchAlgorithmException('Unsupported algorithm "'.$algorithm.'"');
       }
-      $this->handle= NULL;
-      return $this->instance($final);
+      return self::$implementations[$algorithm]->newInstance($algorithm);
     }
   }
 ?>

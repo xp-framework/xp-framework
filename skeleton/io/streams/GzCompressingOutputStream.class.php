@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.streams.OutputStream', 'io.streams.Streams', 'security.checksum.CRC32Digest');
+  uses('io.streams.OutputStream', 'io.streams.Streams', 'security.checksum.CRC32');
 
   /**
    * OuputStream that compresses content using GZIP encoding. Data
@@ -18,7 +18,7 @@
    */
   class GzCompressingOutputStream extends Object implements OutputStream {
     protected $out= NULL;
-    protected $digest= NULL;
+    protected $md= NULL;
     protected $length= NULL;
     protected $filter= NULL;
     
@@ -48,7 +48,7 @@
       if (!($this->filter= stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE, $level))) {
         throw new IOException('Could not append stream filter');
       }
-      $this->digest= new CRC32Digest();
+      $this->md= CRC32::digest();
     }
     
     /**
@@ -59,7 +59,7 @@
     public function write($arg) {
       fwrite($this->out, $arg);
       $this->length+= strlen($arg);
-      $this->digest->update($arg);
+      $this->md->update($arg);
     }
 
     /**
@@ -83,7 +83,7 @@
       // Write GZIP footer:
       // * CRC32    (CRC-32 checksum)
       // * ISIZE    (Input size)
-      fwrite($this->out, pack('VV', $this->digest->digest()->asInt32(), $this->length));
+      fwrite($this->out, pack('VV', create(new CRC32($this->md->digest()))->asInt32(), $this->length));
       fclose($this->out);
       $this->out= NULL;
     }

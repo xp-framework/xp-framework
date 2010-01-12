@@ -1,28 +1,28 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
     'net.xp_framework.unittest.security.checksum.AbstractDigestTest',
-    'security.checksum.SHA1'
+    'security.checksum.CRC16'
   );
 
   /**
-   * TestCase for SHA1 digest
+   * TestCase for CRC16 digest
    *
-   * @see      xp://security.checksum.SHA1Digest
+   * @see      xp://security.checksum.CRC16Digest
    */
-  class SHA1DigestTest extends AbstractDigestTest {
+  class CRC16DigestTest extends AbstractDigestTest {
   
     /**
      * Creates a new message digest object
      *
-     * @return  security.checksum.MessageDigest
+     * @return  security.checksum.MessageDigestImpl
      */
     protected function newDigest() {
-      return SHA1::digest();
+      return CRC16::digest();
     }
     
     /**
@@ -32,7 +32,7 @@
      * @return  security.checksum.Checksum
      */
     protected function checksumOf($data) {
-      return SHA1::fromString($data)->getValue();
+      return CRC16::fromString($data)->getValue();
     }
   }
 ?>

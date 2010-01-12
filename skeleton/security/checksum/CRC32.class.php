@@ -9,11 +9,25 @@
   /**
    * CRC32 checksum
    *
+   * @test     xp://net.xp_framework.unittest.security.checksum.CRC32Test
    * @see      xp://security.checksum.Checksum
    * @see      php://crc32
    * @purpose  Provide an API to check CRC32 checksums
    */
   class CRC32 extends Checksum {
+
+    /**
+     * Constructor
+     *
+     * @param   mixed value
+     */
+    public function __construct($value) {
+      if (is_int($value)) {
+        parent::__construct(sprintf('%08x', $value)); 
+      } else {
+        parent::__construct($value);
+      }
+    }
   
     /**
      * Create a new checksum from a string
@@ -22,7 +36,16 @@
      * @return  security.checksum.CRC32
      */
     public static function fromString($str) {
-      return new CRC32(sprintf('%u', crc32($str)));
+      return new CRC32(crc32($str));
+    }
+    
+    /**
+     * Returns message digest
+     *
+     * @return  security.checksum.MessageDigestImpl
+     */
+    public static function digest() {
+      return MessageDigest::newInstance('crc32b');
     }
 
     /**
@@ -46,10 +69,11 @@
      * @return  int
      */
     public function asInt32() {
-      if ($this->value > 2147483647) {      // Convert from uint32 to int32
-        return intval($this->value - 4294967296);
+      $v= hexdec($this->value);
+      if ($v > 2147483647) {      // Convert from uint32 to int32
+        return intval($v - 4294967296);
       }
-      return $this->value;
+      return $v;
     }
   }
 ?>

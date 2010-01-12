@@ -70,7 +70,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function readBrokenUtf8() {
-      $this->newReader('Hello Ã', 'utf-8')->read(0x1000);
+      $this->newReader('Hello Ã|', 'utf-8')->read(0x1000);
     }
 
     /**
@@ -104,9 +104,9 @@
      *
      * @see     http://de.wikipedia.org/wiki/China (the word in the first square brackets on this page).
      */
-    #[@test]
+    #[@test, @expect('lang.FormatException')]
     public function readUnconvertible() {
-      $this->assertEquals('çina', $this->newReader('ËˆÃ§iËna', 'utf-8')->read());
+      $this->newReader('ËˆÃ§iËna', 'utf-8')->read();
     }
 
     /**
@@ -116,16 +116,6 @@
     #[@test]
     public function read() {
       $this->assertEquals('Hello', $this->newReader('Hello')->read());
-    }
-
-    /**
-     * Test reading. Warning: This test "knows" the internal chunk size is 512 bytes.
-     *
-     */
-    #[@test]
-    public function chunkLengthWithUtf8() {
-      $chunk= str_repeat('x', 511);
-      $this->assertEquals($chunk.'Ü', $this->newReader($chunk.'Ãœ', 'utf-8')->read(512));
     }
 
     /**

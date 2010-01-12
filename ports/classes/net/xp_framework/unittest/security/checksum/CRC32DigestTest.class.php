@@ -6,7 +6,7 @@
 
   uses(
     'net.xp_framework.unittest.security.checksum.AbstractDigestTest',
-    'security.checksum.CRC32Digest'
+    'security.checksum.CRC32'
   );
 
   /**
@@ -19,10 +19,10 @@
     /**
      * Creates a new message digest object
      *
-     * @return  security.checksum.MessageDigest
+     * @return  security.checksum.MessageDigestImpl
      */
     protected function newDigest() {
-      return new CRC32Digest();
+      return CRC32::digest();
     }
     
     /**
@@ -32,7 +32,7 @@
      * @return  security.checksum.Checksum
      */
     protected function checksumOf($data) {
-      return CRC32::fromString($data);
+      return CRC32::fromString($data)->getValue();
     }
   }
 ?>

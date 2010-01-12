@@ -6,7 +6,7 @@
 
   uses(
     'net.xp_framework.unittest.security.checksum.AbstractDigestTest',
-    'security.checksum.MD5Digest'
+    'security.checksum.MD5'
   );
 
   /**
@@ -22,7 +22,7 @@
      * @return  security.checksum.MessageDigest
      */
     protected function newDigest() {
-      return new MD5Digest();
+      return MD5::digest();
     }
     
     /**
@@ -32,7 +32,7 @@
      * @return  security.checksum.Checksum
      */
     protected function checksumOf($data) {
-      return MD5::fromString($data);
+      return MD5::fromString($data)->getValue();
     }
   }
 ?>

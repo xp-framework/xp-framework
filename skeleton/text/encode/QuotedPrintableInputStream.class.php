@@ -1,4 +1,4 @@
-<?php
+  <?php
 /* This class is part of the XP framework
  *
  * $Id$
@@ -40,23 +40,25 @@
     public function read($limit= 8192) {
       while ($this->in->available() > 0 && strlen($this->buffer) < $limit) {
         $read= $this->in->read($limit);
-        for ($i= 0, $s= strlen($read); $i < $s; $i++) {
-          if ('=' === $read{$i}) {
-            while ($this->in->available() > 0 && $i > $s- 3) {
-              $read.= $this->in->read(3);
+        $o= 0;
+        $s= strlen($read);
+        while ($o < $s) {
+          $p= strcspn($read, '=', $o);
+          $this->buffer.= substr($read, $o, $p);
+          if (($o+= $p+ 1) <= $s) {
+            while ($this->in->available() > 0 && $o > $s- 2) {
+              $read.= $this->in->read(2);
               $s= strlen($read);
             }
-            if ("\n" === $read{$i+ 1}) {
-              $i+= 1;
+            if ("\n" === $read{$o}) {
+              $o+= 1;
             } else {
-              if (1 !== sscanf($h= substr($read, $i+ 1, 2), '%x', $c)) {
+              if (1 !== sscanf($h= substr($read, $o, 2), '%x', $c)) {
                 throw new IOException('Invalid byte sequence "='.$h.'"');
               }
               $this->buffer.= chr($c);
-              $i+= 2;
+              $o+= 2;
             }
-          } else {
-            $this->buffer.= $read{$i};
           }
         }
       }

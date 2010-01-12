@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('security.checksum.MessageDigest');
+
   /**
    * Checksum
    *
@@ -53,6 +55,13 @@
     public static function fromString($str) { }
 
     /**
+     * Returns message digest. Override this method in child classes!
+     *
+     * @return  security.checksum.MessageDigestImpl
+     */
+    public static function digest() { }
+
+    /**
      * Create a new checksum from a file object. Override this
      * method in child classes!
      *
@@ -76,7 +85,7 @@
      * @param   security.checksum.Checksum sum
      * @return  bool TRUE if these checksums match
      */
-    public function verify($sum) {
+    public function verify(self $sum) {
       return $this->value === $sum->value;
     }
 
