@@ -102,7 +102,7 @@
       $std= 'php://stdin';
       for ($i= 0; $i < sizeof($args); $i++) {
         if ('-R' == $args[$i]) {
-          chdir($args[$i++]);
+          chdir($args[++$i]);
         } else if ('-?' == $args[$i]) {
           self::usage();
         } else {
