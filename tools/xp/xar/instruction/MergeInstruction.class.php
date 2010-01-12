@@ -30,7 +30,7 @@
 
           // Prevent overwriting earlier additions
           if ($this->archive->contains($entry)) {
-            $this->err->writeLine('Warning: Duplicate entry "', $entry, '" in ', $this->archive->getURI(), ' - skipping.');
+            $this->err->writeLine('Warning: Duplicate entry "', $entry, '" from ', $archive->getURI(), ' - skipping.');
             continue;
           }
 
