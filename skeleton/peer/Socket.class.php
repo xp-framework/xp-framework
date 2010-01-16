@@ -21,6 +21,7 @@
    */
   class Socket extends Object {
     public
+      $_eof     = FALSE,
       $host     = '',
       $port     = 0;
       
@@ -199,7 +200,10 @@
 
         // fgets returns FALSE on eof, this is particularily dumb when 
         // looping, so check for eof() and make it "no error"
-        if (feof($this->_sock)) return NULL;
+        if (feof($this->_sock)) {
+          $this->_eof= TRUE;
+          return NULL;
+        }
         
         $m= stream_get_meta_data($this->_sock);
         if ($m['timed_out']) {
@@ -251,6 +255,7 @@
         if ($m['timed_out']) {
           throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError(), $this->_timeout);
         }
+        $this->_eof= TRUE;
       }
       
       return $res;
@@ -262,7 +267,7 @@
      * @return  bool
      */
     public function eof() {
-      return feof($this->_sock);
+      return $this->_eof;
     }
     
     /**
