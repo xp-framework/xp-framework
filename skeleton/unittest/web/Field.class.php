@@ -20,7 +20,7 @@
     /**
      * Constructor
      *
-     * @param   unittest.web.Form form
+     * @param   unittest.web.Form form owner form
      * @param   php.DOMNode node
      */
     public function __construct(unittest·web·Form $form, DOMNode $node) {

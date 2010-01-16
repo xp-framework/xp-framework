@@ -23,7 +23,7 @@
      * @return  string
      */
     public function getValue() {
-      return $this->node->hasAttribute('value') ? $this->node->getAttribute('value') : NULL;
+      return $this->node->hasAttribute('value') ? utf8_decode($this->node->getAttribute('value')) : NULL;
     }
 
     /**
@@ -32,7 +32,7 @@
      * @param   string value
      */
     public function setValue($value) {
-      $this->node->setAttribute('value', $value);
+      $this->node->setAttribute('value', utf8_encode($value));
     }
   }
 ?>
