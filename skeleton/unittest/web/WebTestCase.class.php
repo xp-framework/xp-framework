@@ -309,7 +309,7 @@
      */
     public function assertTextNotPresent($text, $message= 'present') {
       $node= $this->getXPath()->query('//*[contains(text(), "'.$text.'")]')->item(0);
-      $this->assertEquals(NULL, $node->textContent, $message);
+      $this->assertEquals(NULL, $node, $message);
     }
 
     /**
