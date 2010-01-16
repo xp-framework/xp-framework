@@ -24,9 +24,21 @@
       $conn     = NULL,
       $response = NULL;
     
+    protected static 
+      $cookies  = array();
+    
     private
       $dom      = NULL,
       $xpath    = NULL;
+    
+    /**
+     * Before this class is entered: Clear cookies
+     *
+     */
+    #[@beforeClass]
+    public static function clearCookies() {
+      self::$cookies= array();
+    }
     
     /**
      * Get connection
@@ -99,6 +111,12 @@
       $request= $this->conn->create(new HttpRequest());
       $request->setMethod($method);
       $request->setParameters($params);
+      
+      // Check if we have cookies for this domain
+      $host= $this->conn->getUrl()->getHost();
+      if (isset(self::$cookies[$host])) {
+        $request->setHeader('Cookie', self::$cookies[$host]);
+      }
       return $this->conn->send($request);
     }
   
@@ -114,6 +132,13 @@
       $this->conn->getUrl()->setPath($relative);
       try {
         $this->response= $this->doRequest($method, $params);
+        
+        // If we get a cookie, store it for this domain and reuse it in 
+        // subsequent requests. If cookies are used for sessioning, we 
+        // would be creating new sessions with every request otherwise!
+        if (1 == sscanf($this->response->getHeader('Set-Cookie'), '%[^;];', $cookie)) {
+          self::$cookies[$this->conn->getUrl()->getHost()]= $cookie;
+        }
       } catch (XPException $e) {
         $this->response= xp::null();
         $this->fail($relative, $e, NULL);
@@ -422,7 +447,9 @@
      */
     public function getForm($name= NULL) {
       $node= $this->getXPath()->query($name ? '//form[@name = "'.$name.'"]' : '//form')->item(0);
-      $this->assertNotEquals(NULL, $node);
+      if (NULL === $node) {
+        $this->fail('Failed to locate a form named "'.$name.'"', NULL, '[form]');
+      }
       return new unittest·web·Form($this, $node);
     }
 
