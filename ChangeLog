@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated unittest.TestCase::assertClass() and assertSubclass() -
+  replaced by new method assertInstanceOf().
+  (friebe)
 - Changed FTP_ASCII / FTP_BINARY constants in peer.ftp package to class
   constants FtpTransfer::ASCII and FtpTransfer::BINARY.
   http://news.xp-framework.net/article/334/2009/12/28/
@@ -15,6 +18,10 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added getOptions() and getSelectedOptions() to unittest.web.SelectField 
+  (friebe)
+- Added support for cookies to web test API
+  (friebe)
 - Added new security.checksum.MessageDigest API supporting incrementally
   creating checksums (md5, sha1, crc32, whirlpool, adler32 and more)
   (friebe)
@@ -57,6 +64,11 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed web test API always returning UTF-8 encoded strings
+  (friebe)
+- Fixed peer.http API not to choke on consecutive requests if data isn't
+  completely read
+  (friebe)
 - Fixed XP runners not terminating PHP runtime on Windows
   http://news.xp-framework.net/article/338/2010/01/15
   (friebe)
