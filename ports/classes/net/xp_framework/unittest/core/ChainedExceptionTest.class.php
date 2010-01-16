@@ -37,7 +37,7 @@
     public function withCause() {
       $e= new ChainedException('Message', new IllegalArgumentException('Arg'));
       $this->assertEquals('Message', $e->getMessage()) &&
-      $this->assertClass($e->getCause(), 'lang.IllegalArgumentException') &&
+      $this->assertInstanceOf('lang.IllegalArgumentException', $e->getCause()) &&
       $this->assertEquals('Arg', $e->cause->getMessage()) &&
       $this->assertFalse(!strstr($e->toString(), 'Caused by Exception lang.IllegalArgumentException (Arg)'));
     }

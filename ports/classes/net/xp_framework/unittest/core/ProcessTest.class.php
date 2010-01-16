@@ -158,7 +158,7 @@
     public function getByProcessId() {
       $pid= getmypid();
       $p= Process::getProcessById($pid);
-      $this->assertClass($p, 'lang.Process');
+      $this->assertInstanceOf('lang.Process', $p);
       $this->assertEquals($pid, $p->getProcessId());
     }
   }

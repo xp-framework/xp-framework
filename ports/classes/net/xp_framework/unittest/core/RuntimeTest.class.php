@@ -24,7 +24,7 @@
     #[@test]
     public function getExecutable() {
       $exe= Runtime::getInstance()->getExecutable();
-      $this->assertClass($exe, 'lang.Process');
+      $this->assertInstanceOf('lang.Process', $exe);
       $this->assertEquals(getmypid(), $exe->getProcessId());
     }
 
@@ -53,7 +53,7 @@
     #[@test]
     public function startupOptions() {
       $startup= Runtime::getInstance()->startupOptions();
-      $this->assertClass($startup, 'lang.RuntimeOptions');
+      $this->assertInstanceOf('lang.RuntimeOptions', $startup);
     }
 
     /**
@@ -95,7 +95,7 @@
     #[@test]
     public function mainClass() {
       $main= Runtime::getInstance()->mainClass();
-      $this->assertClass($main, 'lang.XPClass');
+      $this->assertInstanceOf('lang.XPClass', $main);
     }
 
     /**

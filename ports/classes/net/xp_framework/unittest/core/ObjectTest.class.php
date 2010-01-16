@@ -40,7 +40,7 @@
     public function genericInterface() {
       $interfaces= XPClass::forName('lang.Object')->getInterfaces();
       $this->assertEquals(1, sizeof($interfaces));
-      $this->assertClass($interfaces[0], 'lang.XPClass');
+      $this->assertInstanceOf('lang.XPClass', $interfaces[0]);
       $this->assertEquals('lang.Generic', $interfaces[0]->getName());
     }
 
@@ -120,7 +120,7 @@
     public function getClassMethod() {
       $o= new Object();
       $class= $o->getClass();
-      $this->assertClass($class, 'lang.XPClass');
+      $this->assertInstanceOf('lang.XPClass', $class);
       $this->assertEquals('lang.Object', $class->getName());
     }
 

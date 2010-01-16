@@ -111,7 +111,7 @@
      */
     #[@test]
     public function coinMemberAreSameClass() {
-      $this->assertClass(Coin::$penny, 'net.xp_framework.unittest.core.Coin');
+      $this->assertInstanceOf('net.xp_framework.unittest.core.Coin', Coin::$penny);
     }
 
     /**
@@ -120,7 +120,7 @@
      */
     #[@test]
     public function operationMembersAreSubclasses() {
-      $this->assertSubclass(Operation::$plus, 'net.xp_framework.unittest.core.Operation');
+      $this->assertInstanceOf('net.xp_framework.unittest.core.Operation', Operation::$plus);
     }
 
     /**
@@ -163,7 +163,7 @@
      */
     #[@test]
     public function pennyCoinClass() {
-      $this->assertClass(Coin::$penny, 'net.xp_framework.unittest.core.Coin');
+      $this->assertInstanceOf('net.xp_framework.unittest.core.Coin', Coin::$penny);
     }
 
     /**
