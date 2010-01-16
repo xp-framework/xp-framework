@@ -64,6 +64,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed incorrect EOF detection in peer.Socket class
+  (friebe)
 - Fixed web test API always returning UTF-8 encoded strings
   (friebe)
 - Fixed peer.http API not to choke on consecutive requests if data isn't
