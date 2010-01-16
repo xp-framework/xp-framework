@@ -312,7 +312,7 @@
      *
      */
     public function __destruct() {
-      if ($this->isConnected()) $this->close();
+      $this->close();
     }
   }
 ?>
