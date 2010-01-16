@@ -72,6 +72,11 @@
       } else {
         $s= $this->socket;
       }
+      
+      // Socket still open from last request. This is the case when unread
+      // data is left on the socket (by not reading the body, e.g.), so do
+      // it the quick & dirty way: Close and reopen!
+      $s->isConnected() && $s->close();
     
       $s->setTimeout($timeout);
       $s->connect($connecttimeout);
