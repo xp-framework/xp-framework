@@ -169,11 +169,27 @@
      */
     #[@test, @expect('io.IOException')]
     public function readAllWithException() {
-      $this->assertEquals('', Streams::readAll(newinstance('io.streams.InputStream', array(), '{
+      Streams::readAll(newinstance('io.streams.InputStream', array(), '{
         public function read($limit= 8192) { throw new IOException("FAIL"); }
         public function available() { return 1; }
         public function close() { }
-      }')));
+      }'));
+    }
+
+    /**
+     * Test feof() / fread()
+     *
+     */
+    #[@test]
+    public function whileNotEof() {
+      $fd= Streams::readableFd(new MemoryInputStream(str_repeat('x', 1024)));
+      $l= array();
+      while (!feof($fd)) {
+        $c= fread($fd, 128);
+        $l[]= strlen($c);
+      }
+      fclose($fd);
+      $this->assertEquals(array(128, 128, 128, 128, 128, 128, 128, 128), $l);
     }
   }
 ?>
