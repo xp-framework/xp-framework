@@ -25,7 +25,7 @@
       $id      = NULL;
       
     static function __static() {
-      stream_wrapper_register('iostr+r', get_class(newinstance(__CLASS__, array(), '{
+      stream_wrapper_register('iostrr', get_class(newinstance(__CLASS__, array(), '{
         static function __static() { }
 
         public function stream_open($path, $mode, $options, $opened_path) {
@@ -50,7 +50,7 @@
           return 0 === parent::$streams[$this->id]->available();
         }
       }')));
-      stream_wrapper_register('iostr+w', get_class(newinstance(__CLASS__, array(), '{
+      stream_wrapper_register('iostrw', get_class(newinstance(__CLASS__, array(), '{
         static function __static() { }
 
         public function stream_write($data) {
@@ -82,7 +82,7 @@
      */
     public static function readableFd(InputStream $s) { 
       self::$streams[$s->hashCode()]= $s;
-      return fopen('iostr+r://'.$s->hashCode(), 'rb');
+      return fopen('iostrr://'.$s->hashCode(), 'rb');
     }
 
     /**
@@ -93,7 +93,7 @@
      */
     public static function readableUri(InputStream $s) { 
       self::$streams[$s->hashCode()]= $s;
-      return 'iostr+r://'.$s->hashCode();
+      return 'iostrr://'.$s->hashCode();
     }
 
     /**
@@ -104,7 +104,7 @@
      */
     public static function writeableFd(OutputStream $s) { 
       self::$streams[$s->hashCode()]= $s;
-      return fopen('iostr+w://'.$s->hashCode(), 'wb');
+      return fopen('iostrw://'.$s->hashCode(), 'wb');
     }
 
     /**
@@ -115,7 +115,7 @@
      */
     public static function writeableUri(OutputStream $s) { 
       self::$streams[$s->hashCode()]= $s;
-      return 'iostr+w://'.$s->hashCode();
+      return 'iostrw://'.$s->hashCode();
     }
     
     /**
@@ -141,7 +141,7 @@
      * @throws  io.FileNotFoundException in case the given file cannot be found
      */
     public function stream_open($path, $mode, $options, $opened_path) {
-      sscanf($path, "iostr+%c://%[^$]", $m, $this->id);
+      sscanf(urldecode($path), "iostr%c://%[^$]", $m, $this->id);
       if (!isset(self::$streams[$this->id])) {
         throw new FileNotFoundException('Cannot open stream "'.$this->id.'" mode '.$mode);
       }
@@ -211,7 +211,7 @@
      * @return  array<string, mixed> stat
      */
     public function url_stat($path, $flags) {
-      sscanf($path, "iostr+%c://%[^$]", $m, $id);
+      sscanf(urldecode($path), "iostr%c://%[^$]", $m, $id);
       if (!isset(self::$streams[$id])) {
         return FALSE;
       } else if ('r' === $m) {
