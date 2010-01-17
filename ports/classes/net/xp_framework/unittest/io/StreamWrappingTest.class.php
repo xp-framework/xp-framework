@@ -58,7 +58,7 @@
      *
      */
     #[@test]
-    public function stat() {
+    public function fstat() {
       $fd= Streams::readableFd(new MemoryInputStream(str_repeat('x', 10)));
       $stat= fstat($fd);
       $this->assertEquals(10, $stat['size']);
@@ -69,6 +69,51 @@
       
       fclose($fd);
     }
+
+    /**
+     * Test stat callbacks
+     *
+     */
+    #[@test]
+    public function statExistingReadableUri() {
+      $uri= Streams::readableUri(new MemoryInputStream(str_repeat('x', 10)));
+      $stat= stat($uri);
+      $this->assertEquals(0, $stat['size']);
+    }
+
+    /**
+     * Test stat callbacks
+     *
+     */
+    #[@test]
+    public function statExistingWriteableUri() {
+      $uri= Streams::writeableUri(new MemoryOutputStream());
+      $stat= stat($uri);
+      $this->assertEquals(0, $stat['size']);
+    }
+
+    /**
+     * Test stat callbacks
+     *
+     */
+    #[@test]
+    public function statNonExistingReadableUri() {
+      $uri= Streams::readableUri(new MemoryInputStream(str_repeat('x', 10)));
+      fclose(fopen($uri, 'r'));
+      $this->assertFalse(@stat($uri));
+    }
+
+    /**
+     * Test stat callbacks
+     *
+     */
+    #[@test]
+    public function statNonExistingWriteableUri() {
+      $uri= Streams::writeableUri(new MemoryOutputStream());
+      fclose(fopen($uri, 'w'));
+      $this->assertFalse(@stat($uri));
+    }
+
 
     /**
      * Test ftell callbacks
