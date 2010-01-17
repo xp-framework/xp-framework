@@ -75,5 +75,41 @@
         trim($out->getBytes())
       );
     }
+
+    /**
+     * Test DOMDocument::load()
+     *
+     */
+    #[@test]
+    public function usableInLoad() {
+      $dom= new DOMDocument();
+      $this->assertTrue($dom->load(Streams::readableUri(new MemoryInputStream(trim('
+        <?xml version="1.0" encoding="utf-8"?>
+        <root>
+          <child>übercoder</child>
+        </root>
+      ')))));
+      $this->assertEquals('übercoder', $dom->getElementsByTagName('child')->item(0)->nodeValue);
+    } 
+    /**
+     * Test DOMDocument::save()
+     *
+     */
+    #[@test]
+    public function usableInSave() {
+      $out= new MemoryOutputStream();
+
+      // Create DOM and save it to stream
+      $dom= new DOMDocument();
+      $dom->appendChild($dom->createElement('root'))->appendChild($dom->createElement('child', 'übercoder'));
+      $dom->save(Streams::writeableUri($out));
+      
+      // Check file contents
+      $this->assertEquals(
+        '<?xml version="1.0"?>'."\n".
+        '<root><child>&#xFC;bercoder</child></root>',
+        trim($out->getBytes())
+      );
+    }
   }
 ?>
