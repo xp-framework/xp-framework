@@ -203,6 +203,20 @@
     }
 
     /**
+     * Callback for stat
+     *
+     * @param   string path
+     * @return  array<string, mixed> stat
+     */
+    public function url_stat($path) {
+      sscanf($path, "iostr+%c://%[^$]", $m, $id);
+      if (isset(self::$streams[$id])) {
+        return array('size' => self::$streams[$id]->available());
+      }
+      return FALSE;
+    }
+
+    /**
      * Stream wrapper method stream_flush
      *
      * @return  bool
