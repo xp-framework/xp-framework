@@ -205,15 +205,20 @@
     /**
      * Callback for stat
      *
+     * @see     php://streamwrapper.url-stat
      * @param   string path
+     * @param   int flags
      * @return  array<string, mixed> stat
      */
-    public function url_stat($path) {
+    public function url_stat($path, $flags) {
       sscanf($path, "iostr+%c://%[^$]", $m, $id);
-      if (isset(self::$streams[$id])) {
-        return array('size' => self::$streams[$id]->available());
+      if (!isset(self::$streams[$id])) {
+        return FALSE;
+      } else if ('r' === $m) {
+        return array('size' => 0);
+      } else if ('w' === $m) {
+        return array('size' => 0);
       }
-      return FALSE;
     }
 
     /**
