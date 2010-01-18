@@ -72,7 +72,7 @@
      * Test resolving a fully qualified name on Windows
      *
      */
-    #[@test, @platform('WIN')]
+    #[@test, @platform('^WIN')]
     public function resolveFullyQualifiedWithDriverLetter() {
       $this->assertTrue(is_executable(Process::resolve(getenv('WINDIR').'\\EXPLORER.EXE')));
     }
@@ -81,7 +81,7 @@
      * Test resolving a fully qualified name on Windows
      *
      */
-    #[@test, @platform('WIN')]
+    #[@test, @platform('^WIN')]
     public function resolveFullyQualifiedWithBackSlash() {
       $path= '\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER.EXE', '\\', TRUE);
 
@@ -93,7 +93,7 @@
      * Test resolving a fully qualified name on Windows
      *
      */
-    #[@test, @platform('WIN')]
+    #[@test, @platform('^WIN')]
     public function resolveFullyQualifiedWithSlash() {
       $path= '/'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER.EXE', '/', TRUE);
 
@@ -105,7 +105,7 @@
      * Test resolving a fully qualified name on Windows
      *
      */
-    #[@test, @platform('WIN')]
+    #[@test, @platform('^WIN')]
     public function resolveFullyQualifiedWithoutExtension() {
       $path='\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER', '\\', true);
 
@@ -117,7 +117,7 @@
      * Test resolving a fully qualified name on Windows
      *
      */
-    #[@test, @platform('WIN')]
+    #[@test, @platform('^WIN')]
     public function resolveCommandInPath() {
       $this->assertTrue(is_executable(Process::resolve('explorer.exe')));
     }
@@ -126,7 +126,7 @@
      * Test resolving a fully qualified name on Windows
      *
      */
-    #[@test, @platform('WIN')]
+    #[@test, @platform('^WIN')]
     public function resolveCommandInPathWithoutExtension() {
       $this->assertTrue(is_executable(Process::resolve('explorer')));
     }
@@ -162,7 +162,7 @@
      * Test resolving a fully qualified name on Posix systems
      *
      */
-    #[@test, @platform('!WIN')]
+    #[@test, @platform('!^WIN')]
     public function resolveFullyQualified() {
       $this->assertEquals('/bin/ls', Process::resolve('/bin/ls'));
     }
@@ -171,7 +171,7 @@
      * Test resolving a fully qualified name on Posix systems
      *
      */
-    #[@test, @platform('!WIN')]
+    #[@test, @platform('!^WIN')]
     public function resolve() {
       $this->assertEquals('/bin/ls', Process::resolve('ls'));
     }
