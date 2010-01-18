@@ -236,5 +236,17 @@
       fclose($fd);
       $this->assertEquals(array(128, 128, 128, 128, 128, 128, 128, 128), $l);
     }
+
+    /**
+     * Test file_get_contents()
+     *
+     */
+    #[@test]
+    public function fileGetContents() {
+      $this->assertEquals(
+        'Hello',
+        file_get_contents(Streams::readableUri(new MemoryInputStream('Hello')))
+      );
+    }
   }
 ?>
