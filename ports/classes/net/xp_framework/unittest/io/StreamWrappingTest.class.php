@@ -248,5 +248,18 @@
         file_get_contents(Streams::readableUri(new MemoryInputStream('Hello')))
       );
     }
+
+    /**
+     * Test file_get_contents()
+     *
+     */
+    #[@test]
+    public function largefileGetContents() {
+      $data= str_repeat('x', 16384);
+      $this->assertEquals(
+        $data,
+        file_get_contents(Streams::readableUri(new MemoryInputStream($data)))
+      );
+    }
   }
 ?>
