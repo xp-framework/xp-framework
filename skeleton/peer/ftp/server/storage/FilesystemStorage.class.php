@@ -35,7 +35,7 @@
      * @param   string uri
      * @return  string
      */
-    protected function realname($clientId, $uri) {
+    public function realname($clientId, $uri) {
       $uri= strtr($uri, '/', DIRECTORY_SEPARATOR);    // External uris use "/"
       $path= (DIRECTORY_SEPARATOR == $uri{0}
         ? $uri
