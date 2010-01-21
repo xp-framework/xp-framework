@@ -91,6 +91,9 @@ Bugfixes
 - Fixed unittest.web.WebTestCase::assertTextPresent() method to check
   for substring matches instead of for text nodes with exact string
   (friebe)
+- Reset EOF status in peer.Socket::close() to get correct EOF status
+  after reconnecting
+  (ohinckel, Christine Karch, kiesel)
 
 
 Version 5.7.6, released 2009-12-16
