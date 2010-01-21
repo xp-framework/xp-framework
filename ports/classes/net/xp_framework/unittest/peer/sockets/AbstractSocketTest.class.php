@@ -171,6 +171,25 @@
     public function closingNotConnected() {
       $this->assertFalse($this->fixture->close());
     }
+    
+    /**
+     * Test EOF after closing
+     *
+     */
+    #[@test]
+    public function eofAfterClosing() {
+      $this->assertTrue($this->fixture->connect());
+      
+      $this->fixture->write("ECHO EOF\n");
+      $this->assertEquals("+ECHO EOF\n", $this->fixture->readBinary());
+      
+      $this->fixture->write("CLOS\n");
+      $this->assertEquals('', $this->fixture->readBinary());
+
+      $this->assertTrue($this->fixture->eof());
+      $this->fixture->close();
+      $this->assertFalse($this->fixture->eof());
+    }
 
     /**
      * Test writing data
