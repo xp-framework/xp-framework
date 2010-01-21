@@ -66,15 +66,46 @@
     /**
      * Rename this entry
      *
+     * Notes on the new name:
+     * <ul>
+     *   <li>If the new name is fully qualified (starts with a "/"), 
+     *       the file will be moved there.
+     *   </li>
+     *   <li>If the name is not qualified, the directory *this* file
+     *       resides in will be prepended.
+     *   </li>
+     * </ul>
+     *
      * @param   string to the new name
      * @throws  io.IOException in case of an I/O error
      */
     public function rename($to) {
+      $target= ('/' === $to{0} ? $to : dirname($this->name).'/'.$to);
       try {
         $this->connection->expect($this->connection->sendCommand('RNFR %s', $this->name), array(350));
-        $this->connection->expect($this->connection->sendCommand('RNTO %s', $to), array(250));
+        $this->connection->expect($this->connection->sendCommand('RNTO %s', $target), array(250));
       } catch (ProtocolException $e) {
         throw new IOException('Could not rename '.$this->name.' to '.$to.': '.$e->getMessage());
+      }
+    }
+
+    /**
+     * Move this entry to a new folder (without necessarily renaming it)
+     *
+     * @param   peer.ftp.FtpDir to the new location
+     * @param   string name default NULL the new name - if omitted, will stay the same
+     * @throws  io.IOException in case of an I/O error
+     */
+    public function moveTo(FtpDir $to, $name= NULL) {
+      try {
+        $this->connection->expect($this->connection->sendCommand('RNFR %s', $this->name), array(350));
+        $this->connection->expect($this->connection->sendCommand(
+          'RNTO %s%s', 
+          $to->getName(), 
+          $name ? $name : basename($this->name)
+        ), array(250));
+      } catch (ProtocolException $e) {
+        throw new IOException('Could not rename '.$this->name.' to '.$to->getName().': '.$e->getMessage());
       }
     }
 

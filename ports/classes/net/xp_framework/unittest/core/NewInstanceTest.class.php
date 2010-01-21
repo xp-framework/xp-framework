@@ -48,7 +48,7 @@
     #[@test]
     public function newObject() {
       $o= newinstance('lang.Object', array(), '{}');
-      $this->assertSubclass($o, 'lang.Object');
+      $this->assertInstanceOf('lang.Object', $o);
     }
 
     /**
@@ -58,7 +58,7 @@
     #[@test]
     public function newRunnable() {
       $o= newinstance('lang.Runnable', array(), '{ public function run() { } }');
-      $this->assertSubclass($o, 'lang.Runnable');
+      $this->assertInstanceOf('lang.Runnable', $o);
     }
 
     /**

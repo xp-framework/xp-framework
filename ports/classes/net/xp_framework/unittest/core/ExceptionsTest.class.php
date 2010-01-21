@@ -35,7 +35,7 @@
       try {
         throw new XPException('Test');
       } catch (XPException $caught) {
-        $this->assertSubclass($caught, 'Exception');
+        $this->assertInstanceOf('Exception', $caught);
         delete($caught);
         return TRUE;
       }
@@ -73,7 +73,7 @@
       $this->assertArray($trace);
       $this->assertNotEmpty($trace);
       foreach ($trace as $element) {
-        $this->assertClass($element, 'lang.StackTraceElement');
+        $this->assertInstanceOf('lang.StackTraceElement', $element);
       }
     }
 

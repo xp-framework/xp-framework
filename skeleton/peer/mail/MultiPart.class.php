@@ -112,16 +112,17 @@
      * Get message body.
      *
      * @see     xp://peer.mail.Message#getBody
+     * @param   decode default FALSE
      * @return  string
      */
-    public function getBody() {
+    public function getBody($decode= FALSE) {
       $body= '';
       
       if (1 == ($size= sizeof($this->parts)) && $this->parts[0]->isInline()) {
         return (
           $this->parts[0]->getHeaderString().
           "\n".
-          $this->parts[0]->getBody()
+          $this->parts[0]->getBody($decode)
         );
       }
 
@@ -130,7 +131,7 @@
           '--'.trim($this->boundary)."\n".
           $this->parts[$i]->getHeaderString().
           "\n".
-          $this->parts[$i]->getBody().
+          $this->parts[$i]->getBody($decode).
           "\n\n"
         );
       }

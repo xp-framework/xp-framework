@@ -120,5 +120,14 @@
     public function __destruct() {
       $this->h= NULL;
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(->'.xp::stringOf($this->h).')';
+    }
   }
 ?>

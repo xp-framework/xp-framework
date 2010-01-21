@@ -49,21 +49,10 @@
     }
     
     /**
-     * Assert that a value's type is null
-     *
-     * @param   mixed var
-     * @param   string error default 'notnull'
-     */
-    public function assertNull($var, $error= 'notnull') {
-      if (NULL !== $var) {
-        $this->fail($error, $var, NULL);
-      }
-    }
-    
-    /**
      * Assert that a value is an array. This is TRUE if the given value 
      * is either an array type itself or the wrapper type lang.types.ArrayList
      *
+     * @deprecated
      * @param   mixed var
      * @param   string error default 'notarray'
      */
@@ -76,6 +65,7 @@
     /**
      * Assert that a value is an object
      *
+     * @deprecated
      * @param   mixed var
      * @param   string error default 'notobject'
      */
@@ -88,6 +78,7 @@
     /**
      * Assert that a value is empty
      *
+     * @deprecated
      * @param   mixed var
      * @param   string error default 'notempty'
      * @see     php://empty
@@ -101,6 +92,7 @@
     /**
      * Assert that a value is not empty
      *
+     * @deprecated
      * @param   mixed var
      * @param   string error default 'empty'
      * @see     php://empty
@@ -110,6 +102,41 @@
         $this->fail($error, $var, '<not empty>');
       }
     }
+
+    /**
+     * Assert that a given object is of a specified class
+     *
+     * @deprecated Use assertInstance() instead
+     * @param   lang.Generic var
+     * @param   string name
+     * @param   string error default 'notequal'
+     */
+    public function assertClass($var, $name, $error= 'notequal') {
+      if (!($var instanceof Generic)) {
+        $this->fail($error, $var, $name);
+      }
+      if ($var->getClassName() !== $name) {
+        $this->fail($error, $var->getClassName(), $name);
+      }
+    }
+
+    /**
+     * Assert that a given object is a subclass of a specified class
+     *
+     * @deprecated Use assertInstance() instead
+     * @param   lang.Generic var
+     * @param   string name
+     * @param   string error default 'notsubclass'
+     */
+    public function assertSubclass($var, $name, $error= 'notsubclass') {
+      if (!($var instanceof Generic)) {
+        $this->fail($error, $var, $name);
+      }
+      if (!is($name, $var)) {
+        $this->fail($error, $name, $var->getClassName());
+      }
+    }
+    
     
     /**
      * Compare two values
@@ -180,35 +207,30 @@
         $this->fail($error, $var, FALSE);
       }
     }
-    
+
     /**
-     * Assert that a given object is of a specified class
+     * Assert that a value's type is null
      *
-     * @param   lang.Generic var
-     * @param   string name
-     * @param   string error default 'notequal'
+     * @param   mixed var
+     * @param   string error default 'notnull'
      */
-    public function assertClass($var, $name, $error= 'notequal') {
-      if (!($var instanceof Generic)) {
-        $this->fail($error, $var, $name);
-      }
-      if ($var->getClassName() !== $name) {
-        $this->fail($error, $var->getClassName(), $name);
+    public function assertNull($var, $error= 'notnull') {
+      if (NULL !== $var) {
+        $this->fail($error, $var, NULL);
       }
     }
 
     /**
      * Assert that a given object is a subclass of a specified class
      *
-     * @param   lang.Generic var
      * @param   string name
-     * @param   string error default 'notsubclass'
+     * @param   lang.Generic var
+     * @param   string error default 'notaninstance'
      */
-    public function assertSubclass($var, $name, $error= 'notsubclass') {
-      if (!($var instanceof Generic)) {
-        $this->fail($error, $var, $name);
-      }
-      if (!is($name, $var)) {
+    public function assertInstanceOf($name, $var, $error= 'notaninstance') {
+      if (!$var instanceof Generic) {
+        $this->fail($error, $name, xp::typeOf($var));
+      } else if (!is($name, $var)) {
         $this->fail($error, $name, $var->getClassName());
       }
     }

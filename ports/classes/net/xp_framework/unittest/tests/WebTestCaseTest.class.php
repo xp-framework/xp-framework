@@ -333,12 +333,14 @@
               <input type="text" name="first"/>
               <input type="text" name="initial" value=""/>
               <input type="text" name="last" value="Tester"/>
+              <input type="text" name="uber" value="Übercoder"/>
 
               <hr/>
               <select name="gender">
                 <option value="-">(select one)</option>
                 <option value="M">male</option>
                 <option value="F">female</option>
+                <option value="U">überwoman</option>
               </select>
 
               <hr/>
@@ -349,8 +351,10 @@
               </select>
               
               <hr/>
-              
               <textarea name="comments">(Comments)</textarea>
+
+              <hr/>
+              <textarea name="umlauts">Übercoder</textarea>
             </form>
           </body>
         </html>
@@ -422,6 +426,22 @@
      *
      */
     #[@test]
+    public function textFieldWithUmlautInValue() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('uber')); {
+        $this->assertClass($f, 'unittest.web.InputField');
+        $this->assertEquals('uber', $f->getName());
+        $this->assertEquals('Übercoder', $f->getValue());
+      }
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
     public function selectFieldWithoutSelected() {
       $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
@@ -454,6 +474,66 @@
      *
      */
     #[@test]
+    public function selectFieldOptions() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($options= $this->fixture->getForm()->getField('gender')->getOptions()); {
+        $this->assertEquals(4, sizeof($options));
+
+        $this->assertEquals('-', $options[0]->getValue());
+        $this->assertEquals('(select one)', $options[0]->getText());
+        $this->assertFalse($options[0]->isSelected());
+
+        $this->assertEquals('M', $options[1]->getValue());
+        $this->assertEquals('male', $options[1]->getText());
+        $this->assertFalse($options[1]->isSelected());
+
+        $this->assertEquals('F', $options[2]->getValue());
+        $this->assertEquals('female', $options[2]->getText());
+        $this->assertFalse($options[2]->isSelected());
+
+        $this->assertEquals('U', $options[3]->getValue());
+        $this->assertEquals('überwoman', $options[3]->getText());
+        $this->assertFalse($options[3]->isSelected());
+      }
+    }
+
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function selectFieldNoSelectedOptions() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      $this->assertEquals(array(), $this->fixture->getForm()->getField('gender')->getSelectedOptions());
+    }
+    
+    /**
+     * Test fields
+     *
+     */
+    #[@test]
+    public function selectFieldSelectedOptions() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($options= $this->fixture->getForm()->getField('payment')->getSelectedOptions()); {
+        $this->assertEquals(1, sizeof($options));
+
+        $this->assertEquals('C', $options[0]->getValue());
+        $this->assertEquals('Cheque', $options[0]->getText());
+        $this->assertTrue($options[0]->isSelected());
+      }
+    }
+
+    /**
+     * Test textarea
+     *
+     */
+    #[@test]
     public function textArea() {
       $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
@@ -462,6 +542,22 @@
         $this->assertClass($f, 'unittest.web.TextAreaField');
         $this->assertEquals('comments', $f->getName());
         $this->assertEquals('(Comments)', $f->getValue());
+      }
+
+    }
+    /**
+     * Test textarea
+     *
+     */
+    #[@test]
+    public function textAreaWithUmlautInValue() {
+      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->beginAt('/');
+
+      with ($f= $this->fixture->getForm()->getField('umlauts')); {
+        $this->assertClass($f, 'unittest.web.TextAreaField');
+        $this->assertEquals('umlauts', $f->getName());
+        $this->assertEquals('Übercoder', $f->getValue());
       }
     }
   }

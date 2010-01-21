@@ -794,8 +794,10 @@
       // Invoke interceptor
       if (!$this->checkInterceptors($socket, $entry, 'onRename')) return;
 
+      // Actually rename file
+      $target= $this->storage->realname($socket->hashCode(), $params);
       try {
-        $entry->rename($params);
+        $entry->rename($target);
         $this->cat && $this->cat->debug($params);
       } catch (XPException $e) {
         $this->answer($socket, 550, $params.': '. $e->getMessage());

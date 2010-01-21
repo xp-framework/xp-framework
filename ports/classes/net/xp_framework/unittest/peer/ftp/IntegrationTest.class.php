@@ -301,9 +301,40 @@
         $dir= $this->conn->rootDir()->getDir('htdocs');
         $file= $dir->file('name.txt')->uploadFrom(new MemoryInputStream($this->name));
         $file->rename('renamed.txt');
-        $this->assertFalse($file->exists());
+        $this->assertFalse($file->exists(), 'Origin file still exists');
 
         $file= $dir->file('renamed.txt');
+        $this->assertTrue($file->exists(), 'Renamed file does not exist');
+        $file->delete();
+      } catch (Throwable $e) {
+
+        // Unfortunately, try { } finally does not exist...
+        try {
+          $file && $file->delete();
+        } catch (IOException $ignored) {
+          // Can't really do anything here
+        }
+        throw $e;
+      }
+    }
+
+    /**
+     * Test moving a file
+     *
+     */
+    #[@test]
+    public function moveFile() {
+      $this->conn->connect();
+
+      try {
+        $dir= $this->conn->rootDir()->getDir('htdocs');
+        $trash= $this->conn->rootDir()->getDir('.trash');
+
+        $file= $dir->file('name.txt')->uploadFrom(new MemoryInputStream($this->name));
+        $file->moveTo($trash);
+        $this->assertFalse($file->exists());
+
+        $file= $trash->file('name.txt');
         $this->assertTrue($file->exists());
         $file->delete();
       } catch (Throwable $e) {

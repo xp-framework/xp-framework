@@ -65,16 +65,11 @@
     /**
      * Renames an entry
      *
-     * @param   string target
+     * @param   string target fully qualified file name
      * @return  bool TRUE to indicate success
      */
     public function rename($target) { 
-      $path= (DIRECTORY_SEPARATOR == $target{0}
-        ? substr($this->f->getURI(), 0, strpos($this->f->getURI(), dirname($target)))
-        : dirname($this->f->getURI()).DIRECTORY_SEPARATOR
-      ).$target;
-    
-      $r= $this->f->move($path);
+      $r= $this->f->move($target);
       clearstatcache();
       return $r;
     }
