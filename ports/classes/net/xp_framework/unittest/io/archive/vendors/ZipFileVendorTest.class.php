@@ -38,7 +38,7 @@
     }
 
     /**
-     * Tests reading an zipfile with one entry called "hello.txt" in its 
+     * Tests reading a zipfile with one entry called "hello.txt" in its 
      * root directory.
      *
      */
@@ -48,6 +48,20 @@
       $this->assertEquals(1, sizeof($entries));
       $this->assertEquals('hello.txt', $entries[0]->getName());
       $this->assertEquals(5, $entries[0]->getSize());
+      $this->assertFalse($entries[0]->isDirectory());
+
+    }
+    /**
+     * Tests reading an zipfile with one entry called "הצü.txt" in its 
+     * root directory.
+     *
+     */
+    #[@test]
+    public function umlautZip() {
+      $entries= $this->entriesIn($this->archiveReaderFor($this->vendor, 'umlaut'));
+      $this->assertEquals(1, sizeof($entries));
+      $this->assertEquals('הצü.txt', $entries[0]->getName());
+      $this->assertEquals(0, $entries[0]->getSize());
       $this->assertFalse($entries[0]->isDirectory());
     }
   }
