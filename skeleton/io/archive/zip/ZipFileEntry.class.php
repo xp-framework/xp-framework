@@ -137,7 +137,7 @@
         $this->getClassName(),
         $this->name,
         xp::stringOf($this->mod),
-        $this->mod->name(),
+        $this->compression->name(),
         $this->size
       );
     }
