@@ -194,7 +194,7 @@
      * @return  bool TRUE, if the file is open
      */
     public function isOpen() {
-      return (bool)$this->_fd;
+      return is_resource($this->_fd);
     }
     
     /**
@@ -526,6 +526,9 @@
      * @throws  io.IOException if close fails
      */
     public function close() {
+      if (!is_resource($this->_fd)) {
+        throw new IOException('Cannot close non-opened file '.$this->uri);
+      }
       if (FALSE === fclose($this->_fd)) {
         throw new IOException('Cannot close file '.$this->uri);
       }
