@@ -92,7 +92,7 @@
      * @param   int size
      */
     public function setSize($size) {
-      $this->size= size;
+      $this->size= $size;
     }
 
     /**
