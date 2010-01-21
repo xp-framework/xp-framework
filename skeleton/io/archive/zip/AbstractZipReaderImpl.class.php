@@ -100,16 +100,29 @@
             'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
             $this->stream->read(26)
           );
-          $name= iconv('cp437', 'iso-8859-1', $this->stream->read($header['namelen']));
+          
+          if (0 === $header['namelen']) {
+          
+            // Prevent 0-length read.
+            $decoded= '';
+          } else {
+            $name= $this->stream->read($header['namelen']);
+
+            // Decode name from zipfile. If it cannot be decoded from cp437 
+            // we will use it as-is.
+            if ('' === ($decoded= @iconv('cp437', 'iso-8859-1', $name))) {
+              $decoded= $name;
+            }
+          }
           $extra= $this->stream->read($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
           $this->skip= $header['compressed'];
           
           // Create ZipEntry object and return it
           if ('/' === substr($name, -1)) {
-            return new ZipDirEntry($name, $date, $header['uncompressed']);
+            return new ZipDirEntry($decoded, $date, $header['uncompressed']);
           } else {
-            $e= new ZipFileEntry($name);
+            $e= new ZipFileEntry($decoded);
             $e->setLastModified($date);
             $e->setSize($header['uncompressed']);
             $e->setCompression(Compression::getInstance($header['compression']));
