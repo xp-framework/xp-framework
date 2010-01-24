@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'io.archive.zip.ZipFile'
+    'io.archive.zip.ZipFile',
+    'lang.Runtime'
   );
 
   /**
@@ -16,6 +17,16 @@
    * @see   xp://net.xp_framework.unittest.io.archive.vendors.ZipFileVendorTest
    */
   abstract class ZipFileTest extends TestCase {
+
+    /**
+     * Sets up test case
+     *
+     */
+    public function setUp() {
+      if (!Runtime::getInstance()->extensionAvailable('zlib')) {
+        throw new PrerequisitesNotMetError('ZLib support not available', NULL, array('ext/zlib'));
+      }
+    }
   
     /**
      * Returns an archive reader for a given zip file

@@ -18,6 +18,7 @@
      *
      */
     public function setUp() {
+      parent::setUp();
       $this->vendor= $this->vendorName();
     }
     
