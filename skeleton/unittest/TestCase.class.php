@@ -106,7 +106,7 @@
     /**
      * Assert that a given object is of a specified class
      *
-     * @deprecated Use assertInstance() instead
+     * @deprecated Use assertInstanceOf() instead
      * @param   lang.Generic var
      * @param   string name
      * @param   string error default 'notequal'
@@ -123,7 +123,7 @@
     /**
      * Assert that a given object is a subclass of a specified class
      *
-     * @deprecated Use assertInstance() instead
+     * @deprecated Use assertInstanceOf() instead
      * @param   lang.Generic var
      * @param   string name
      * @param   string error default 'notsubclass'
