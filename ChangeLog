@@ -64,6 +64,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed core unittests to correctly recognize "Darwin" (Mac OS X) not
+  as Windows but as a Un*x system
+  http://news.xp-framework.net/article/340/2010/01/24/
+  (friebe, gellweiler)
 - Fixed incorrect EOF detection in peer.Socket class
   (friebe)
 - Fixed web test API always returning UTF-8 encoded strings
