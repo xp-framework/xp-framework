@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.7.7, released 2010-01-26
+----------------------------------
+SVN version: 14139
+
 Heads up!
 ~~~~~~~~~
 - Deprecated unittest.TestCase::assertClass() and assertSubclass() -
