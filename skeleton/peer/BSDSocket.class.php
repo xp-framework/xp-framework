@@ -198,6 +198,7 @@
 
       socket_close($this->_sock);
       $this->_sock= NULL;
+      $this->_eof= FALSE;
       return TRUE;
     }
     /**

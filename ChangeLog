@@ -28,6 +28,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.7.7, released 2010-01-26
+----------------------------------
+SVN version: 14139
+
 Heads up!
 ~~~~~~~~~
 - Deprecated unittest.TestCase::assertClass() and assertSubclass() -
@@ -86,6 +91,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed core unittests to correctly recognize "Darwin" (Mac OS X) not
+  as Windows but as a Un*x system
+  http://news.xp-framework.net/article/340/2010/01/24/
+  (friebe, gellweiler)
 - Fixed incorrect EOF detection in peer.Socket class
   (friebe)
 - Fixed web test API always returning UTF-8 encoded strings
@@ -113,6 +122,9 @@ Bugfixes
 - Fixed unittest.web.WebTestCase::assertTextPresent() method to check
   for substring matches instead of for text nodes with exact string
   (friebe)
+- Reset EOF status in peer.Socket::close() to get correct EOF status
+  after reconnecting
+  (ohinckel, Christine Karch, kiesel)
 
 
 Version 5.7.6, released 2009-12-16

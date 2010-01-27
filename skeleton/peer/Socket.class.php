@@ -120,6 +120,7 @@
 
       $res= fclose($this->_sock);
       $this->_sock= NULL;
+      $this->_eof= FALSE;
       return $res;
     }
 

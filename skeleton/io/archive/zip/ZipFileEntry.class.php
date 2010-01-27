@@ -92,7 +92,7 @@
      * @param   int size
      */
     public function setSize($size) {
-      $this->size= size;
+      $this->size= $size;
     }
 
     /**
@@ -137,7 +137,7 @@
         $this->getClassName(),
         $this->name,
         xp::stringOf($this->mod),
-        $this->mod->name(),
+        $this->compression->name(),
         $this->size
       );
     }

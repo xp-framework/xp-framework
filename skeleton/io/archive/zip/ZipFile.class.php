@@ -38,6 +38,9 @@
    *   }
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.InfoZipZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.WindowsZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.MalformedZipFileTest
    * @see      http://www.pkware.com/documents/casestudies/APPNOTE.TXT
    * @purpose  Entry point class
    */

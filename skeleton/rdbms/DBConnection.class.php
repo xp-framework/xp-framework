@@ -76,6 +76,25 @@
     public function hashCode() {
       return get_resource_type($this->handle).' #'.(int)$this->handle;
     }
+    
+    /**
+     * Creates a string representation of this connection
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(->%s://%s%s@%s%s%s%s)',
+        $this->getClassName(),
+        $this->dsn->getDriver(),
+        $this->dsn->getUser(),
+        $this->dsn->getPassword() ? ':********' : '',
+        $this->dsn->getHost(),
+        $this->dsn->getPort() ? ':'.$this->dsn->getPort() : '',
+        $this->tz ? ', tz='.$this->tz->toString() : '',
+        $this->handle ? ', conn='.get_resource_type($this->handle).' #'.(int)$this->handle : ''
+      );
+    }
 
     /**
      * Set Timeout
