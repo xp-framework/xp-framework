@@ -136,7 +136,7 @@
     public function nonExistantProperties() {
       $return= $this->runner->run(array('@@NON-EXISTANT@@.ini'));
       $this->assertEquals(1, $return);
-      $this->assertOnStream($this->err, '@@NON-EXISTANT@@.ini could not be read');
+      $this->assertOnStream($this->err, '@@NON-EXISTANT@@.ini" could not be read');
       $this->assertEquals('', $this->out->getBytes());
     }
 
