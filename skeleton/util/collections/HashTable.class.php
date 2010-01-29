@@ -16,7 +16,7 @@
    * @see      xp://util.collections.Map
    * @purpose  Map interface implementation
    */
-  class HashTable extends Object implements Map, ArrayAccess {
+  class HashTable extends Object implements Map {
     protected
       $_buckets  = array(),
       $_hash     = 0;

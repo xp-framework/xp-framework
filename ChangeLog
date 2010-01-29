@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed util.collections.Map interface to ensure array access works.
+  Any implementation must now adhere to http://de3.php.net/arrayaccess
+  (friebe)
+
 
 Version 5.7.7, released 2010-01-26
 ----------------------------------

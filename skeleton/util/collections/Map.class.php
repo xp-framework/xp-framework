@@ -13,7 +13,7 @@
    * @see      xp://util.collections.HashProvider
    * @purpose  Interface
    */
-  interface Map {
+  interface Map extends ArrayAccess {
     
     /**
      * Associates the specified value with the specified key in this map.
