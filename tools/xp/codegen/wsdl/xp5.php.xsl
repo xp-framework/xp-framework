@@ -34,6 +34,7 @@
     <mapping for="xsd:string">string</mapping>
     <mapping for="string">string</mapping>
     <mapping for="xsd:long">webservices.soap.types.SOAPLong</mapping>
+    <mapping for="long">webservices.soap.types.SOAPLong</mapping>
     <mapping for="xsd:int">int</mapping>
     <mapping for="xsd:float">float</mapping>
     <mapping for="xsd:double">float</mapping>
@@ -205,6 +206,7 @@
           </xsl:call-template>
           <xsl:text> </xsl:text>
           <xsl:value-of select="@name"/>
+          <xsl:text> (generated from wsdl "</xsl:text><xsl:value-of select="@type"/><xsl:text>")</xsl:text>
           <xsl:if test="position() != last()"><xsl:text>&#10;</xsl:text></xsl:if>
         </xsl:for-each>
       </xsl:when>
@@ -313,6 +315,9 @@
     <xsl:choose>
       <xsl:when test="exsl:node-set($typemap)/mapping[@for = $node/@type]">
         <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = $node/@type]"/>
+      </xsl:when>
+      <xsl:when test="exsl:node-set($typemap)/mapping[@for = substring-after($node/@type, ':')]">
+        <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = substring-after($node/@type, ':')]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>mixed (</xsl:text>
