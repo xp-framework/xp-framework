@@ -24,7 +24,7 @@
 
   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
-
+  <xsl:variable name="quot">'</xsl:variable>
   <!--
    ! Type mapping for what the SOAP API maps automatically
    !
@@ -295,8 +295,20 @@
         <xsl:value-of select="$indent"/>
         <xsl:text>new Parameter('</xsl:text>
         <xsl:value-of select="@name"/>
-        <xsl:text>', $</xsl:text>
-        <xsl:value-of select="@name"/>
+        <xsl:text>', </xsl:text>
+        <xsl:variable name="parttype">
+          <xsl:call-template name="parttype">
+            <xsl:with-param name="node" select="."/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="contains($parttype, '.')">
+            <xsl:value-of select="concat('XPClass::forName(', $quot, $parttype, $quot, ')-&gt;newInstance($', @name, ')')"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat('$', @name)"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:text>)</xsl:text>
         <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
       </xsl:for-each>
