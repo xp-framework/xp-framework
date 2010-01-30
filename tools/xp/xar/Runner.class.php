@@ -103,7 +103,7 @@
       for ($i= 0; $i < sizeof($args); $i++) {
         if ('-R' == $args[$i]) {
           chdir($args[++$i]);
-        } else if ('-?' == $args[$i]) {
+        } else if (in_array($args[$i], array('-?', '-h', '--help'))) {
           self::usage();
         } else {
           $options= 0;
