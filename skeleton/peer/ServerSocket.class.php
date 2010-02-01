@@ -101,6 +101,8 @@
         ));
       }
       
+      // Update socket host and port
+      socket_getsockname($this->_sock, $this->host, $this->port);
       return TRUE;
     }      
     
