@@ -16,7 +16,7 @@
   );
   
   /**
-   * FTP Server used by IntegrationTest. 
+   * EASC Server used by IntegrationTest. 
    *
    * Specifics
    * ~~~~~~~~~
