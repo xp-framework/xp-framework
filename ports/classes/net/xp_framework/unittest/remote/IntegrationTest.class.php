@@ -55,7 +55,7 @@
       $status= self::$serverProcess->out->readLine();
       if (2 != sscanf($status, '+ Service %[0-9.]:%d', self::$bindAddress[0], self::$bindAddress[1])) {
         try {
-          self::shutdownFtpServer();
+          self::shutdownApplicationServer();
         } catch (IllegalStateException $e) {
           $status.= $e->getMessage();
         }
