@@ -16,6 +16,7 @@ Features
 ~~~~~~~~
 - Enabled discovery of port used in bind() when setting to port to 0 -
   - which indicates to use any free port - in peer.ServerSocket
+  http://news.xp-framework.net/article/343/2010/02/01/ 
   (friebe)
 
 Version 5.7.7, released 2010-01-26
