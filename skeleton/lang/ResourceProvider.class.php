@@ -7,8 +7,9 @@
   /**
    * Provides a resource through a scheme.
    *
-   * @see      lang.ClassLoader
-   * @purpose  Provide schemes that resolve resources
+   * @see       lang.ClassLoader
+   * @test      xp://net.xp_framework.unittest.core.ResourceProviderTest
+   * @purpose   Provide schemes that resolve resources
    */
   class ResourceProvider extends Object {
     protected static
