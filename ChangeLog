@@ -12,6 +12,11 @@ Heads up!
   Any implementation must now adhere to http://de3.php.net/arrayaccess
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0183 - lang.ResourceProvider
+  (kiesel)
+
 Features
 ~~~~~~~~
 - Enabled discovery of port used in bind() when setting to port to 0 -
