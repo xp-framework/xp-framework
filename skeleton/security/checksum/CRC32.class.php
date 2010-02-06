@@ -23,7 +23,7 @@
      */
     public function __construct($value) {
       if (is_int($value)) {
-        parent::__construct(sprintf('%08x', $value)); 
+        parent::__construct(sprintf('%08x', $value & 0xFFFFFFFF)); 
       } else {
         parent::__construct($value);
       }

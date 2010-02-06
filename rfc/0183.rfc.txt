@@ -2,68 +2,42 @@ RFC 0183: Provide additional XSL file loader
 ========================================================================
 $Id$
 
-@authors: kiesel
+@authors: kiesel, friebe
 @created: Tue Mar 24 23:32:11     2009
-@status: draft
-@target: 5.8
-@category: xml
+@status: implemented, Tue Feb  2 14:01:52 CET 2010
+@target: 5.7.8
+@category: <core>
+
 
 Scope of Change
 ---------------
-A new class will be introduced that registeres a new PHP userland streme
-scheme xsl://. This scheme will then be used to reference XSL stylesheets.
+A new scheme handler for res:// will be added as lang.ResourceProvider. This
+scheme provides access to files provided by the classloader infrastructure.
 
-XML scriptlet applications can then use that new stream wrapper to reference
-their XSL files instead of pointing to them via a standard filesystem relation.
 
 Rationale
 ---------
-Today, xsl files are shipped mostly to use the stylesheets in a XP scriptet
-application. To use them, a XSL processor would be set up and given the path
-to the main xsl directory (usually this is xsl/ on the same level as doc_root/).
+Some PHP APIs can use data from streams, but not from classloaders directly.
+The newly added file will provide a bridge for that gap.
 
-Now, this setup call would be replaced by a call to the newly introduced 
-template loading class - XSLTemplateLoader. Any XSL file could then be referenced
-by the new scheme and a local path, eg.: xsl://my/template.xsl. This path
-is an absolute path, no longer a relative path dependend on where the processor
-is called from.
-
-XSLTemplateLoader will then use the ClassLoader chain to search and load the
-referenced files; this adds the ability to add XSL locations to the classpath
-and to ship XSL templates within XAR-archives, just as classes.
+For example, XSL files used by libxml through xml.DomXSLProcessor can be
+loaded from a .xar file or a filesystem path equivalently now.
 
 Functionality
 -------------
-A new stream wrapper class will be added and register xsl://. When passing a
-stylesheet to an XSL processor instance, its path needs to use that sheme.
+The class lang.ResourceProvider will register the scheme res:// and will
+delegate access requests to the default classloader.
 
-The XSLTemplateLoader will then be used to look up the location and load that
-template by using the ClassLoader chain and adding the prefix XSL-INF as a
-path element.
-
-Thus, when the file xsl://xsl/file/to/load.xsl is requested, the following
-happens;
-1. the path expression will be converted into a translated corresponding path:
-   "XSL-INF/xsl/file/to/load/xsl"
-2. The ClassLoader chain will be asked for the ClassLoader delegate that
-   can deliver that file.
-3. If a ClassLoader declares it can deliver this file, it will be used to
-   actually load that file.
-
-If - within the XSL translation process - there are more stylesheets that need
-to be loaded (implied by xsl:include or xsl:import), these can use relative
-path expressions to load XSL files from the same scope (eg. same project) or
-use an absolute path expression, but omitting the scheme xsl://. The subsequent
-calls to load files will then be dispatched to the XSLTemplateLoader auto-
-matically.
 
 Security considerations
 -----------------------
-TBD
+- It is considered to be more secure, as access to files outside the
+  paths provided by the classloader infrastructure are no longer accessible
+  by calls like <xsl:include href="../../../../../../../etc/passwd"/>
 
 Speed impact
 ------------
-TBD
+n/a
 
 Dependencies
 ------------
@@ -75,5 +49,14 @@ http://experiments.xp-forge.net/xml/browse?people,kiesel,xslt,templateloader
 
 Comments
 --------
+- As there is no BC break and major functionality change, include this into
+  the 5.7-series of the XP framework.
+  (kiesel, Wed Jan 27 11:39:13 CET 2010)
+
+- Strip down functionality of lang.ResourceProvider so it just serves the
+  purpose of bridging the gap between classloaders and native PHP functions /
+  extensions
+  (kiesel, Wed Jan 27 11:38:23 CET 2010)
+
 
 <EOF>

@@ -140,7 +140,7 @@
      * @throws  lang.IllegalArgumentException in case an invalid file name was given
      */
     public function setURI($uri) {
-      static $allowed= array('xar://*', 'php://stderr', 'php://stdout', 'php://stdin');
+      static $allowed= array('xar://*', 'php://stderr', 'php://stdout', 'php://stdin', 'res://*');
 
       $uri= (string)$uri;
       if (0 === strlen($uri) || FALSE !== strpos($uri, "\0")) {

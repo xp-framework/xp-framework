@@ -28,6 +28,29 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed util.collections.Map interface to ensure array access works.
+  Any implementation must now adhere to http://de3.php.net/arrayaccess
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0183 - lang.ResourceProvider
+  (kiesel)
+
+Bugfixes
+~~~~~~~~
+- Fixed reflection on lang.Throwable class in certain cases when builtin
+  Exception class is queried for non-existant details
+  (friebe)
+
+Features
+~~~~~~~~
+- Enabled discovery of port used in bind() when setting to port to 0 -
+  - which indicates to use any free port - in peer.ServerSocket
+  http://news.xp-framework.net/article/343/2010/02/01/ 
+  (friebe)
 
 Version 5.7.7, released 2010-01-26
 ----------------------------------

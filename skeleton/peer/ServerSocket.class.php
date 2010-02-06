@@ -76,7 +76,7 @@
     public function create() {
       if (!is_resource($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
         throw new SocketException(sprintf(
-          'Creating socket failed',
+          'Creating socket failed: %s',
           $this->getLastError()
         ));
       }
@@ -96,11 +96,13 @@
         (FALSE === socket_bind($this->_sock, $this->host, $this->port))
       ) {
         throw new SocketException(sprintf(
-          'Binding socket to '.$this->host.':'.$this->port.' failed',
+          'Binding socket to '.$this->host.':'.$this->port.' failed: %s',
           $this->getLastError()
         ));
       }
       
+      // Update socket host and port
+      socket_getsockname($this->_sock, $this->host, $this->port);
       return TRUE;
     }      
     
@@ -122,7 +124,7 @@
     public function listen($backlog= 10) {
       if (FALSE === socket_listen($this->_sock, $backlog)) {
         throw new SocketException(sprintf(
-          'Listening on socket failed',
+          'Listening on socket failed: %s',
           $this->getLastError()
         ));
       }
@@ -149,7 +151,7 @@
     public function accept() {
       if (0 > ($msgsock= socket_accept($this->_sock))) {
         throw new SocketException(sprintf(
-          'Accept failed',
+          'Accept failed: %s',
           $this->getLastError()
         ));
       }
@@ -158,7 +160,7 @@
       // Get peer
       if (FALSE === socket_getpeername($msgsock, $host, $port)) {
         throw new SocketException(sprintf(
-          'Cannot get peer',
+          'Cannot get peer: %s',
           $this->getLastError()
         ));      
       }

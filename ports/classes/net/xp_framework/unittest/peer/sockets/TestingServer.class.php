@@ -40,7 +40,8 @@
    * Process interaction is performed by messages this server prints to
    * standard out:
    * <ul>
-   *   <li>On startup success, "+ Service" is written</li>
+   *   <li>Server listens on a free port @ 127.0.0.1</li>
+   *   <li>On startup success, "+ Service (IP):(PORT)" is written</li>
    *   <li>On shutdown, "+ Done" is written</li>
    *   <li>On errors during any phase, "- " and the exception message are written</li>
    * </ul>
@@ -89,11 +90,11 @@
         }
       }');
       
-      $s= new Server($args[0], $args[1]);
+      $s= new Server('127.0.0.1', 0);
       try {
         $s->setProtocol($protocol);
         $s->init();
-        Console::writeLine('+ Service');
+        Console::writeLinef('+ Service %s:%d', $s->socket->host, $s->socket->port);
         $s->service();
         Console::writeLine('+ Done');
       } catch (Throwable $e) {

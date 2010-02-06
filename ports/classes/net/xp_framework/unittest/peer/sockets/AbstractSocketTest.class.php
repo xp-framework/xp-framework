@@ -16,10 +16,10 @@
    * @see      xp://peer.Socket
    */
   abstract class AbstractSocketTest extends TestCase {
-    const SERVER_ADDR= '127.0.0.1';
-    const SERVER_PORT= 2122;
-    
-    protected static $serverProcess = NULL;
+    protected static 
+      $serverProcess = NULL,
+      $bindAddress   = array(NULL, -1);
+
     protected $fixture= NULL;
     
     /**
@@ -36,7 +36,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= $this->newSocket(self::SERVER_ADDR, self::SERVER_PORT);
+      $this->fixture= $this->newSocket(self::$bindAddress[0], self::$bindAddress[1]);
     }
 
     /**
@@ -59,14 +59,14 @@
         self::$serverProcess= $rt->getExecutable()->newInstance(array_merge(
           $rt->startupOptions()->asArguments(),
           array($rt->bootstrapScript('class')),
-          array('net.xp_framework.unittest.peer.sockets.TestingServer', self::SERVER_ADDR, self::SERVER_PORT)
+          array('net.xp_framework.unittest.peer.sockets.TestingServer')
         ));
       }
       self::$serverProcess->in->close();
 
       // Check if startup succeeded
       $status= self::$serverProcess->out->readLine();
-      if (!strlen($status) || '+' != $status{0}) {
+      if (2 != sscanf($status, '+ Service %[0-9.]:%d', self::$bindAddress[0], self::$bindAddress[1])) {
         try {
           self::shutdownServer();
         } catch (IllegalStateException $e) {
@@ -85,7 +85,7 @@
 
       // Tell the server to shut down
       try {
-        $c= new Socket(self::SERVER_ADDR, self::SERVER_PORT);
+        $c= new Socket(self::$bindAddress[0], self::$bindAddress[1]);
         $c->connect();
         $c->write("HALT\n");
         $c->close();
@@ -131,7 +131,7 @@
      */
     #[@test, @expect('peer.ConnectException')]
     public function connectInvalidPort() {
-      $this->newSocket(self::SERVER_ADDR, -1)->connect(0.1);
+      $this->newSocket(self::$bindAddress[0], -1)->connect(0.1);
     }
 
     /**
@@ -140,7 +140,7 @@
      */
     #[@test, @expect('peer.ConnectException')]
     public function connectInvalidHost() {
-      $this->newSocket('@invalid', self::SERVER_PORT)->connect(0.1);
+      $this->newSocket('@invalid', self::$bindAddress[1])->connect(0.1);
     }
 
     /**
@@ -149,7 +149,7 @@
      */
     #[@test, @expect('peer.ConnectException')]
     public function connectUnConnected() {
-      $this->newSocket(self::SERVER_ADDR, self::SERVER_PORT+ 1)->connect(0.1);
+      $this->newSocket(self::$bindAddress[0], self::$bindAddress[1]+ 1)->connect(0.1);
     }
 
     /**

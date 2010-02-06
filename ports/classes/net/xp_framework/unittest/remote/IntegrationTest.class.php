@@ -24,6 +24,7 @@
   class net·xp_framework·unittest·remote·IntegrationTest extends TestCase {
     protected static
       $serverProcess        = NULL,
+      $bindAddress          = array(NULL, -1),
       $clientClassesLoader  = NULL;
 
     protected
@@ -36,71 +37,29 @@
     #[@beforeClass]
     public static function startApplicationServer() {
 
-      // Log protocol messages (specify a filename instead of NULL in 
-      // the next line to activate)
-      $debug= NULL;
-      
-      // Create server implementation sourcecode
-      $src= trim(sprintf('
-        <?php
-          require("lang.base.php");
-          uses(
-            "util.log.Logger",
-            "util.log.FileAppender",
-            "peer.server.Server", 
-            "remote.server.EascProtocol",
-            "remote.server.deploy.scan.FileSystemScanner"
-          );
-
-          // Add shutdown message handler
-          EascMessageFactory::setHandler(61, newinstance("remote.server.message.EascMessage", array(), \'{
-            public function getType() { 
-              return 61; 
-            }
-            public function handle($protocol, $data) {
-              Logger::getInstance()->getCategory()->debug("Shutting down");
-              $protocol->server->terminate= TRUE; 
-            }
-          }\')->getClass());
-
-          %2$d && Logger::getInstance()->getCategory()->withAppender(new FileAppender(\'%3$s\'));
-          
-          // Fire up server
-          try {
-            $proto= new EascProtocol(new FileSystemScanner(\'%1$s\'));
-            $proto->initialize();
-
-            $s= new Server("127.0.0.1", 2121);
-            $s->setProtocol($proto);
-            $s->setTcpNodelay(TRUE);
-            $s->init();
-          } catch (Throwable $e) {
-            echo "- ", $e->getMessage(), "\n";
-            exit;
-          }
-          echo "+ Service\n";
-          $s->service();
-          echo "+ Done\n";
-        ?>', 
-        addslashes(dirname(__FILE__).DIRECTORY_SEPARATOR.'deploy'.DIRECTORY_SEPARATOR),
-        isset($debug),
-        addslashes($debug)
-      ));
+      // Arguments to server process
+      $args= array(
+        'debugServerProtocolToFile' => NULL,   
+      );
 
       // Start server process
-      self::$serverProcess= Runtime::getInstance()->newInstance(NULL, NULL);
-      self::$serverProcess->in->write($src);
+      self::$serverProcess= Runtime::getInstance()->newInstance(
+        NULL, 
+        'class', 
+        'net.xp_framework.unittest.remote.TestingServer',
+        array_values($args)
+      );
       self::$serverProcess->in->close();
 
       // Check if startup succeeded
       $status= self::$serverProcess->out->readLine();
-      if (!strlen($status) || '+' != $status{0}) {
+      if (2 != sscanf($status, '+ Service %[0-9.]:%d', self::$bindAddress[0], self::$bindAddress[1])) {
         try {
           self::shutdownApplicationServer();
         } catch (IllegalStateException $e) {
           $status.= $e->getMessage();
         }
-        throw new PrerequisitesNotMetError($status, 'Cannot start application server');
+        throw new PrerequisitesNotMetError('Cannot start EASC server: '.$status, NULL);
       }
 
       // Add classloader with CalculatorBean client classes
@@ -123,7 +82,7 @@
       // Send shutdown message (this is not supported by live servers
       // but functionality added via EascMessageFactory::setHandler())
       try {
-        $s= new Socket('127.0.0.1', 2121);
+        $s= new Socket(self::$bindAddress[0], self::$bindAddress[1]);
         $s->connect();
         $s->write(pack('Nc4Na*', DEFAULT_PROTOCOL_MAGIC_NUMBER, 1, 0, 61, FALSE, 0, NULL));
         $s->close();
@@ -152,7 +111,7 @@
      */
     public function setUp() {
       try {
-        $this->remote= Remote::forName('xp://127.0.0.1:2121');
+        $this->remote= Remote::forName('xp://'.self::$bindAddress[0].':'.self::$bindAddress[1]);
       } catch (RemoteException $e) {
         throw new PrerequisitesNotMetError('Cannot setup client/server communication', $e);
       }

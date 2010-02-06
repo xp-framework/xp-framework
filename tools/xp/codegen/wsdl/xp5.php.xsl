@@ -24,7 +24,7 @@
 
   <xsl:variable name="lcletters">abcdefghijklmnopqrstuvwxyz</xsl:variable>
   <xsl:variable name="ucletters">ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:variable>
-
+  <xsl:variable name="quot">'</xsl:variable>
   <!--
    ! Type mapping for what the SOAP API maps automatically
    !
@@ -34,6 +34,7 @@
     <mapping for="xsd:string">string</mapping>
     <mapping for="string">string</mapping>
     <mapping for="xsd:long">webservices.soap.types.SOAPLong</mapping>
+    <mapping for="long">webservices.soap.types.SOAPLong</mapping>
     <mapping for="xsd:int">int</mapping>
     <mapping for="xsd:float">float</mapping>
     <mapping for="xsd:double">float</mapping>
@@ -205,6 +206,7 @@
           </xsl:call-template>
           <xsl:text> </xsl:text>
           <xsl:value-of select="@name"/>
+          <xsl:text> (generated from wsdl "</xsl:text><xsl:value-of select="@type"/><xsl:text>")</xsl:text>
           <xsl:if test="position() != last()"><xsl:text>&#10;</xsl:text></xsl:if>
         </xsl:for-each>
       </xsl:when>
@@ -293,8 +295,20 @@
         <xsl:value-of select="$indent"/>
         <xsl:text>new Parameter('</xsl:text>
         <xsl:value-of select="@name"/>
-        <xsl:text>', $</xsl:text>
-        <xsl:value-of select="@name"/>
+        <xsl:text>', </xsl:text>
+        <xsl:variable name="parttype">
+          <xsl:call-template name="parttype">
+            <xsl:with-param name="node" select="."/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="contains($parttype, '.')">
+            <xsl:value-of select="concat('XPClass::forName(', $quot, $parttype, $quot, ')-&gt;newInstance($', @name, ')')"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat('$', @name)"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:text>)</xsl:text>
         <xsl:if test="position() &lt; last()"><xsl:text>,&#10;</xsl:text></xsl:if>
       </xsl:for-each>
@@ -313,6 +327,9 @@
     <xsl:choose>
       <xsl:when test="exsl:node-set($typemap)/mapping[@for = $node/@type]">
         <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = $node/@type]"/>
+      </xsl:when>
+      <xsl:when test="exsl:node-set($typemap)/mapping[@for = substring-after($node/@type, ':')]">
+        <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = substring-after($node/@type, ':')]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>mixed (</xsl:text>

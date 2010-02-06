@@ -22,7 +22,8 @@
    */
   class IntegrationTest extends TestCase {
     protected static
-      $serverProcess = NULL;
+      $serverProcess = NULL,
+      $bindAddress   = NULL;
 
     protected
       $conn          = NULL;
@@ -50,7 +51,7 @@
 
       // Check if startup succeeded
       $status= self::$serverProcess->out->readLine();
-      if (!strlen($status) || '+' != $status{0}) {
+      if (1 != sscanf($status, '+ Service %[0-9.:]', self::$bindAddress)) {
         try {
           self::shutdownFtpServer();
         } catch (IllegalStateException $e) {
@@ -69,7 +70,7 @@
 
       // Tell the FTP server to shut down
       try {
-        $c= new FtpConnection('ftp://test:test@127.0.0.1:2121');
+        $c= new FtpConnection('ftp://test:test@'.self::$bindAddress);
         $c->connect();
         $c->sendCommand('SHUTDOWN');
         $c->close();
@@ -96,7 +97,7 @@
      *
      */
     public function setUp() {
-      $this->conn= new FtpConnection('ftp://test:test@127.0.0.1:2121?passive=1&timeout=1');
+      $this->conn= new FtpConnection('ftp://test:test@'.self::$bindAddress.'?passive=1&timeout=1');
     }
 
     /**
@@ -122,7 +123,7 @@
      */
     #[@test, @expect('peer.AuthenticationException')]
     public function incorrectCredentials() {
-      create(new FtpConnection('ftp://test:INCORRECT@127.0.0.1:2121?timeout=1'))->connect();
+      create(new FtpConnection('ftp://test:INCORRECT@'.self::$bindAddress.'?timeout=1'))->connect();
     }
 
     /**

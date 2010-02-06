@@ -21,11 +21,11 @@
    * Specifics
    * ~~~~~~~~~
    * <ul>
-   *   <li>Server listens on 127.0.0.1:2121</li>
+   *   <li>Server listens on a free port @ 127.0.0.1</li>
    *   <li>Authentication requires "test" / "test" as credentials</li>
    *   <li>Storage is inside an "ftproot" subdirectory of this directory</li>
    *   <li>Server can be shut down by issuing the "SHUTDOWN" command</li>
-   *   <li>On startup success, "+ Service" is written to standard out</li>
+   *   <li>On startup success, "+ Service (IP):(PORT)" is written to standard out</li>
    *   <li>On shutdown, "+ Done" is written to standard out</li>
    *   <li>On errors during any phase, "- " and the exception message are written</li>
    * </ul>
@@ -60,11 +60,11 @@
         ->withAppender(new FileAppender($args[0]))
       );
       
-      $s= new Server('127.0.0.1', 2121);
+      $s= new Server('127.0.0.1', 0);
       try {
         $s->setProtocol($protocol);
         $s->init();
-        Console::writeLine('+ Service');
+        Console::writeLinef('+ Service %s:%d', $s->socket->host, $s->socket->port);
         $s->service();
         Console::writeLine('+ Done');
       } catch (Throwable $e) {

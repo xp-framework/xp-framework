@@ -18,12 +18,26 @@
    *   $ xar {options} {xarfile} [{fileset}]
    * </pre>
    *
+   * Option synopsis
+   * ===============
+   *  -c        Create archive
+   *  -x        Extract archive
+   *  -t        List archive contents
+   *  -s        See file`s contents
+   *  -d        Diff archives
+   *  -m        Merge archives
+   *
+   *
+   * Command details
+   * ===============
+   *
    * Creating a xar file
    * -------------------
    * The following creates a xar file containing all files inside the
    * directories "src" and "lib" as well as the file "etc/config.ini".
    *
    * <tt>$ xar cf app.xar src/ lib/ etc/config.ini</tt>
+   *
    *
    * Extracting a xar file
    * ---------------------
@@ -33,11 +47,33 @@
    * 
    * <tt>$ xar xf app.xar</tt>
    *
+   *
    * Viewing an archive's contents
    * -----------------------------
    * To list what's inside a xar file, use the following command:
    *
    * <tt>$ xar tf app.xar</tt>
+   *
+   *
+   * Viewing the contents of a contained file
+   * ----------------------------------------
+   * To view a single file from a given archive, use the following command:
+   *
+   * <tt>$ xar sf archive.xar path/to/file/in/archive
+   *
+   *
+   * Merging multiple archives
+   * -------------------------
+   * To merge archives into a single new one, use the following command:
+   *
+   * <tt>$ xar mf new.xar old-archive-1.xar old-archive-2.xar</tt>
+   *
+   *
+   * Comparing two archives
+   * ----------------------
+   * To compare two archives, use the following command:
+   *
+   * <tt>$ xar df one.xar two.xar
    *
    * @purpose  Tool
    */
@@ -103,7 +139,7 @@
       for ($i= 0; $i < sizeof($args); $i++) {
         if ('-R' == $args[$i]) {
           chdir($args[++$i]);
-        } else if ('-?' == $args[$i]) {
+        } else if (in_array($args[$i], array('-?', '-h', '--help'))) {
           self::usage();
         } else {
           $options= 0;
