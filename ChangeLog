@@ -17,6 +17,12 @@ RFCs
 - Implemented RFC #0183 - lang.ResourceProvider
   (kiesel)
 
+Bugfixes
+~~~~~~~~
+- Fixed reflection on lang.Throwable class in certain cases when builtin
+  Exception class is queried for non-existant details
+  (friebe)
+
 Features
 ~~~~~~~~
 - Enabled discovery of port used in bind() when setting to port to 0 -
