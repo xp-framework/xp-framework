@@ -40,6 +40,10 @@
     }
   }
 
+  ini_set('error_prepend_string', '<xmp>');
+  ini_set('error_append_string', '</xmp>');
+  ini_set('html_errors', 0);
+
   $webroot= getenv('DOCUMENT_ROOT').'/..';
   $paths= array();
   foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
