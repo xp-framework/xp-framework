@@ -22,9 +22,10 @@
      *
      * Example:
      * <code>
-     *   $constructor= XPClass::forName('utl.Binford')->getConstructor();
+     *   $constructor= XPClass::forName('util.Binford')->getConstructor();
      *
-     *   var_dump($constructor->newInstance());
+     *   $instance= $constructor->newInstance();
+     *   $instance= $constructor->newInstance(array(6100));
      * </code>
      *
      * @param   var[] args
