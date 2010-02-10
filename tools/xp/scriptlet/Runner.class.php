@@ -26,8 +26,7 @@
       $flags      = 0x0000,
       $scriptlet  = NULL;
     
-    public static function main(array $args) { 
-      set_exception_handler(array(__CLASS__, 'uncaughtException'));
+    public static function main(array $args) {
       try {
         $self= self::setup($args);
       } catch (Throwable $t) {
@@ -191,28 +190,6 @@
       ));
     }
 
-    public static function uncaughtException($exception) {
-      if (!headers_sent()) {
-        header('HTTP/1.1 500 Internal Server Error');
-      }
-
-      error_log($exception->toString());
-
-      if (ini_get('display_errors') == 1) {
-        if (!headers_sent()) {
-          header('Content-type: text/plain');
-        } else {
-          echo '<xmp>';
-        }
-
-        if ($exception instanceof Generic) {
-          echo $exception->toString();
-        } else {
-          echo $exception->__toString();
-        }
-      }
-    }
-    
     /**
      * Read string. First tries special section "section"@"specific", then defaults 
      * to "section"
