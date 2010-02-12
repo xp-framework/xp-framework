@@ -63,7 +63,7 @@
     /**
      * Retrieve an instance of the class
      *
-     * @return  object self::$instance
+     * @return  webservices.soap.SoapDriver self::$instance
      */
     public static function getInstance() {
       if (NULL === self::$instance) {
