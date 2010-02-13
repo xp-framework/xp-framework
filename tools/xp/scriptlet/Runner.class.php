@@ -26,7 +26,7 @@
       $flags      = 0x0000,
       $scriptlet  = NULL;
     
-    public static function main(array $args) { 
+    public static function main(array $args) {
       try {
         $self= self::setup($args);
       } catch (Throwable $t) {
@@ -189,7 +189,7 @@
         $errorPage
       ));
     }
-    
+
     /**
      * Read string. First tries special section "section"@"specific", then defaults 
      * to "section"

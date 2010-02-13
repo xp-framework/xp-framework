@@ -19,6 +19,7 @@
    * @ext      bz2
    * @ext      zlib
    * @see      xp://io.archive.zip.ZipArchive
+   * @test     xp://net.xp_framework.unittest.io.archive.CompressionTest
    * @purpose  Compressions
    */
   abstract class Compression extends Enum {

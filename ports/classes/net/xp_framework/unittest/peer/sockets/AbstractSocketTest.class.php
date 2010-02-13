@@ -144,12 +144,13 @@
     }
 
     /**
-     * Test connecting
+     * Test connecting to port 49151 (IANA Reserved)
      *
+     * @see   http://www.iana.org/assignments/port-numbers
      */
     #[@test, @expect('peer.ConnectException')]
     public function connectUnConnected() {
-      $this->newSocket(self::$bindAddress[0], self::$bindAddress[1]+ 1)->connect(0.1);
+      $this->newSocket(self::$bindAddress[0], 49151)->connect(0.1);
     }
 
     /**

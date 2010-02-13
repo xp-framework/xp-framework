@@ -22,13 +22,15 @@
      *
      * Example:
      * <code>
-     *   $constructor= XPClass::forName('utl.Binford')->getConstructor();
+     *   $constructor= XPClass::forName('util.Binford')->getConstructor();
      *
-     *   var_dump($constructor->newInstance());
+     *   $instance= $constructor->newInstance();
+     *   $instance= $constructor->newInstance(array(6100));
      * </code>
      *
-     * @param   mixed[] args
+     * @param   var[] args
      * @return  lang.Generic
+     * @throws  lang.reflect.TargetInvocationException
      * @throws  lang.IllegalAccessException in case the constructor is not public or if it is abstract
      * @throws  lang.reflect.TargetInvocationException in case the constructor throws an exception
      */

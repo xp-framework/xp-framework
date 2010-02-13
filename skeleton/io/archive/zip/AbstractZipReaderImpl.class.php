@@ -116,6 +116,15 @@
           }
           $extra= $this->stream->read($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
+          
+          // Bit 3: If this bit is set, the fields crc-32, compressed 
+          // size and uncompressed size are set to zero in the local 
+          // header.  The correct values are put in the data descriptor 
+          // immediately following the compressed data.
+          if ($header['flags'] & 8) {
+            raise('lang.MethodNotImplementedException', 'Data descriptors not yet implemented', 8);
+          }
+          
           $this->skip= $header['compressed'];
           
           // Create ZipEntry object and return it
