@@ -109,7 +109,7 @@
      * Removes a value from the session. If no value is found for
      * the specified name, nothing happens
      *
-     * @param   name The name of the value to delete
+     * @param   string name The name of the value to delete
      */
     public function removeValue($name);
     
