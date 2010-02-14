@@ -19,6 +19,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Cleaned up various apidoc spelling issues in @param / @return
+  (friebe)
 - Fixed reflection on lang.Throwable class in certain cases when builtin
   Exception class is queried for non-existant details
   (friebe)
@@ -29,6 +31,7 @@ Features
   - which indicates to use any free port - in peer.ServerSocket
   http://news.xp-framework.net/article/343/2010/02/01/ 
   (friebe)
+
 
 Version 5.7.7, released 2010-01-26
 ----------------------------------
