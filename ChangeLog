@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Renamed io.dba package to edu.berkeley.dba and moved it to ports
+  (friebe)
 - Removed deprecated classes:
   * text.String (use lang.types.String instead)
   * lang.Collection (use util.collections.IList implementation instead)
