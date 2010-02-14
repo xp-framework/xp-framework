@@ -40,8 +40,8 @@
      *
      * @param   lang.reflect.Proxy proxy
      * @param   string method the method name
-     * @param   mixed* args an array of arguments
-     * @return  mixed
+     * @param   var[] args an array of arguments
+     * @return  var
      */
     public function invoke($proxy, $method, $args) { 
       return $this->handler->invoke($this->oid, $method, $args);
