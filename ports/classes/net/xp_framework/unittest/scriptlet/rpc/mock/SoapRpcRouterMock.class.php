@@ -43,17 +43,17 @@
      */
     public function handleMethod($request) {
       switch ($request->method) {
-        case HTTP_POST:
+        case HttpConstants::POST:
           $request->setData($this->data);
           $m= 'doPost';
           break;
           
-        case HTTP_GET:
+        case HttpConstants::GET:
           $request->setData($this->data);
           $m= 'doGet';
           break;
           
-        case HTTP_HEAD:
+        case HttpConstants::HEAD:
           $request->setData($this->data);
           $m= 'doHead';
           break;        
