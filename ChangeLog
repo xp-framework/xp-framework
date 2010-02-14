@@ -8,6 +8,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated LOGGER_FLAG_* constants
+  (friebe)
+- Removed deprecated HTTP_* constants
+  (friebe)
 - Renamed io.dba package to edu.berkeley.dba and moved it to ports
   (friebe)
 - Removed deprecated classes:
