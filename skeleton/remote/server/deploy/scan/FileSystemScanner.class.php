@@ -63,7 +63,7 @@
         try {
           $ear->open(ARCHIVE_READ) &&
           $meta= $ear->extract('META-INF/bean.properties');
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
           $this->deployments[$entry]= new IncompleteDeployment($entry, $e);
           continue;
         }
