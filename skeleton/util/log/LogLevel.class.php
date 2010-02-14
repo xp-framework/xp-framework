@@ -4,12 +4,6 @@
  * $Id$ 
  */
 
-  define('LOGGER_FLAG_INFO',    0x0001);
-  define('LOGGER_FLAG_WARN',    0x0002);
-  define('LOGGER_FLAG_ERROR',   0x0004);
-  define('LOGGER_FLAG_DEBUG',   0x0008);
-  define('LOGGER_FLAG_ALL',     LOGGER_FLAG_INFO | LOGGER_FLAG_WARN | LOGGER_FLAG_ERROR | LOGGER_FLAG_DEBUG);
-
   /**
    * Log levels
    *
