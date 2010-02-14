@@ -32,7 +32,7 @@
     /**
      * Initializes the processor.
      *
-     * @param   var<string, string> attributes
+     * @param   array<string, string> attributes
      * @return  string
      */
     public function initialize($attributes= array()) {
