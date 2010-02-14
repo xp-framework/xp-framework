@@ -138,7 +138,7 @@
     /**
      * Returns end of line identifier depending on the given type
      *
-     * @param   char type
+     * @param   string type
      * @return  string
      */
     public function eol($type) {

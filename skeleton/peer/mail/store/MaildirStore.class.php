@@ -40,7 +40,7 @@
      * the users default mailbox located in $HOME/Maildir/.
      *
      * @param   string folder default NULL
-     * @return  boolean success
+     * @return  bool success
      */    
     public function open($folder= NULL) {
       if (NULL === $folder)

@@ -36,7 +36,7 @@
      * Set the output stream. The stream must be writeable. If the
      * stream is not open, it will be opened.
      *
-     * @param   stream stream
+     * @param   io.Stream stream
      * @return  bool success
      */    
     public function setOutputStream($stream) {
@@ -48,7 +48,7 @@
     /**
      * Sets another column delimiter (standard is pipe "|").
      *
-     * @param   char delim
+     * @param   string delim
      */
     public function setColDelimiter($delim) {
       $this->colDelim= $delim{0};
