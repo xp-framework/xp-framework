@@ -9,6 +9,9 @@ $ xp [options] -v
 Evaluate code:
 $ xp [options] -e {code}
 
+Reflect a class:
+$ xp [options] -r {qualified.class.Name}
+
 Running classes:
 $ xp [options] {qualified.class.Name} [arg [arg [...]]]
 
