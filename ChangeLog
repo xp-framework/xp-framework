@@ -8,6 +8,17 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated classes:
+  * text.String (use lang.types.String instead)
+  * lang.Collection (use util.collections.IList implementation instead)
+  * text.PHPParser (superseded by text.doclet package)
+  * text.PHPTokenizer (-"-)
+  * text.PHPSyntaxHighlighter (-"-)
+  * util.ChainedException (replaced by lang.ChainedException)
+  * util.DateInterval (renamed to TimeInterval to avoid name clash)
+  * util.cmd.Runner (moved to xp.command.Runner)
+  * xml.XML (functionality moved to xml.Tree)
+  (friebe)
 - Deprecated ref() and deref() core functionality
   (friebe)
 
