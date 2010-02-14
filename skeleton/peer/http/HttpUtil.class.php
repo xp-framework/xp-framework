@@ -49,7 +49,7 @@
       do {
         try {
           $response= $connection->get($params, $headers);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
           throw new UnexpectedResponseException(
             $e->getMessage(),
             -1
