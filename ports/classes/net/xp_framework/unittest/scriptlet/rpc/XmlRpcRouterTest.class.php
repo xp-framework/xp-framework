@@ -25,7 +25,7 @@
      */
     public function setUp() {
       $this->router= new XmlRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
-      $this->router->setMockMethod(HTTP_POST);
+      $this->router->setMockMethod(HttpConstants::POST);
       $this->router->setMockData('<?xml version="1.0" encoding="iso-8859-1"?>
         <methodCall>
           <methodName>DummyRpcImplementation.getImplementationName</methodName>
@@ -55,7 +55,7 @@
      */
     #[@test, @expect('scriptlet.HttpScriptletException')]
     public function basicGetRequest() {
-      $this->router->setMockMethod(HTTP_GET);
+      $this->router->setMockMethod(HttpConstants::GET);
       $this->router->init();
       $response= $this->router->process();
     }
