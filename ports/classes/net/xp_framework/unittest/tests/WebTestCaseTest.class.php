@@ -52,10 +52,10 @@
      */
     #[@test]
     public function emptyDocument() {
-      $this->fixture->respondWith(HTTP_OK);
+      $this->fixture->respondWith(HttpConstants::STATUS_OK);
 
       $this->fixture->beginAt('/');
-      $this->fixture->assertStatus(HTTP_OK);
+      $this->fixture->assertStatus(HttpConstants::STATUS_OK);
       $this->fixture->assertHeader('Content-Length', '0');
     }
 
@@ -65,7 +65,7 @@
      */
     #[@test]
     public function contentType() {
-      $this->fixture->respondWith(HTTP_OK, array('Content-Type: text/html'));
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array('Content-Type: text/html'));
 
       $this->fixture->beginAt('/');
       $this->fixture->assertContentType('text/html');
@@ -77,7 +77,7 @@
      */
     #[@test]
     public function contentTypeWithCharset() {
-      $this->fixture->respondWith(HTTP_OK, array('Content-Type: text/xml; charset=utf-8'));
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array('Content-Type: text/xml; charset=utf-8'));
 
       $this->fixture->beginAt('/');
       $this->fixture->assertContentType('text/xml; charset=utf-8');
@@ -89,7 +89,7 @@
      */
     #[@test]
     public function errorDocument() {
-      $this->fixture->respondWith(HTTP_NOT_FOUND, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_NOT_FOUND, array(), trim('
         <html>
           <head>
             <title>Not found</title>
@@ -101,7 +101,7 @@
       '));
 
       $this->fixture->beginAt('/');
-      $this->fixture->assertStatus(HTTP_NOT_FOUND);
+      $this->fixture->assertStatus(HttpConstants::STATUS_NOT_FOUND);
       $this->fixture->assertTitleEquals('Not found');
       $this->fixture->assertTextPresent('404: The file you requested was not found');
       $this->fixture->assertTextNotPresent('I found it');
@@ -113,7 +113,7 @@
      */
     #[@test]
     public function elements() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Elements</title>
@@ -139,7 +139,7 @@
      */
     #[@test]
     public function images() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Images</title>
@@ -165,7 +165,7 @@
      */
     #[@test]
     public function links() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Links</title>
@@ -191,7 +191,7 @@
      */
     #[@test]
     public function linksWithText() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Links</title>
@@ -217,7 +217,7 @@
      */
     #[@test]
     public function unnamedForm() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Enter your name</title>
@@ -238,7 +238,7 @@
      */
     #[@test]
     public function noForm() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Enter your name</title>
@@ -259,7 +259,7 @@
      */
     #[@test]
     public function namedForms() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Blue or red pill?</title>
@@ -297,7 +297,7 @@
      */
     #[@test]
     public function getForm() {
-      $this->fixture->respondWith(HTTP_OK, array(), trim('
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), trim('
         <html>
           <head>
             <title>Form-Mania!</title>
@@ -312,9 +312,9 @@
 
       $this->fixture->beginAt('/');
 
-      $this->assertForm('http://example.com/one', HTTP_GET, $this->fixture->getForm('one'));
-      $this->assertForm('http://example.com/two', HTTP_POST, $this->fixture->getForm('two'));
-      $this->assertForm('/', HTTP_GET, $this->fixture->getForm('three'));
+      $this->assertForm('http://example.com/one', HttpConstants::GET, $this->fixture->getForm('one'));
+      $this->assertForm('http://example.com/two', HttpConstants::POST, $this->fixture->getForm('two'));
+      $this->assertForm('/', HttpConstants::GET, $this->fixture->getForm('three'));
     }
 
     /**
@@ -367,7 +367,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function nonExistantField() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       $this->fixture->getForm()->getField('does-not-exist');
@@ -379,7 +379,7 @@
      */
     #[@test]
     public function textFieldWithoutValue() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('first')); {
@@ -395,7 +395,7 @@
      */
     #[@test]
     public function textFieldWithEmptyValue() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('initial')); {
@@ -411,7 +411,7 @@
      */
     #[@test]
     public function textFieldWithValue() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('last')); {
@@ -427,7 +427,7 @@
      */
     #[@test]
     public function textFieldWithUmlautInValue() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('uber')); {
@@ -443,7 +443,7 @@
      */
     #[@test]
     public function selectFieldWithoutSelected() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('gender')); {
@@ -459,7 +459,7 @@
      */
     #[@test]
     public function selectFieldWithSelected() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('payment')); {
@@ -475,7 +475,7 @@
      */
     #[@test]
     public function selectFieldOptions() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($options= $this->fixture->getForm()->getField('gender')->getOptions()); {
@@ -505,7 +505,7 @@
      */
     #[@test]
     public function selectFieldNoSelectedOptions() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       $this->assertEquals(array(), $this->fixture->getForm()->getField('gender')->getSelectedOptions());
@@ -517,7 +517,7 @@
      */
     #[@test]
     public function selectFieldSelectedOptions() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($options= $this->fixture->getForm()->getField('payment')->getSelectedOptions()); {
@@ -535,7 +535,7 @@
      */
     #[@test]
     public function textArea() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('comments')); {
@@ -551,7 +551,7 @@
      */
     #[@test]
     public function textAreaWithUmlautInValue() {
-      $this->fixture->respondWith(HTTP_OK, array(), $this->formFixture());
+      $this->fixture->respondWith(HttpConstants::STATUS_OK, array(), $this->formFixture());
       $this->fixture->beginAt('/');
 
       with ($f= $this->fixture->getForm()->getField('umlauts')); {
