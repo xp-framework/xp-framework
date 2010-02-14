@@ -59,11 +59,11 @@
     /**
      * Lookup helper
      *
-     * @param   &array<string, mixed> exif
+     * @param   array<string, mixed> exif
      * @param   string* key
      * @return  string value or NULL
      */
-    protected static function lookup(&$exif) {
+    protected static function lookup($exif) {
       for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
         $key= func_get_arg($i);
         if (isset($exif[$key])) return $exif[$key];
@@ -135,7 +135,7 @@
         // Sometimes white balance is in MAKERNOTE - e.g. FUJIFILM's Finepix
         if (NULL !== ($w= self::lookup($info['EXIF'], 'whitebalance'))) {
           $e->setWhiteBalance($w);
-        } else if (NULL !== ($w= self::lookup($info['MAKERNOTE'], 'whitebalance'))) {
+        } else if (isset($info['MAKERNOTE']) && NULL !== ($w= self::lookup($info['MAKERNOTE'], 'whitebalance'))) {
           $e->setWhiteBalance($w);
         } else {
           $e->setWhiteBalance(NULL);
