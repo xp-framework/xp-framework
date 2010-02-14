@@ -38,7 +38,7 @@
      *
      * @see     php://sort
      * @param   lang.types.ArrayList array
-     * @param   * method
+     * @param   var method
      */
     public static function sort(ArrayList $array, $method= SORT_REGULAR) {
       if ($method instanceof Comparator) {
@@ -53,7 +53,7 @@
      *
      * @see     php://sort
      * @param   lang.types.ArrayList array
-     * @param   * method
+     * @param   var method
      * @return  lang.types.ArrayList the sorted array
      */
     public static function sorted(ArrayList $array, $method= SORT_REGULAR) {
