@@ -90,7 +90,7 @@
      *   $n= Node::fromObject($object);
      * </code>
      *
-     * @param   object obj
+     * @param   lang.Generic obj
      * @param   string name default NULL
      * @return  xml.Node
      */

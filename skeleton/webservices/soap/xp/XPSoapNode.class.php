@@ -255,7 +255,7 @@
      *   $n= Node::fromObject($object);
      * </code>
      *
-     * @param   object obj
+     * @param   lang.Generic obj
      * @param   string name default NULL
      * @param   webservices.soap.xp.XPSoapMapping mapping
      * @return  xml.Node

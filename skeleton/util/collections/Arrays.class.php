@@ -70,7 +70,7 @@
      * Checks whether a certain value is contained in an array
      *
      * @param   lang.types.ArrayList array
-     * @param   * search
+     * @param   var search
      * @return  bool
      */
     public static function contains(ArrayList $array, $search) {

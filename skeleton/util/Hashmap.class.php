@@ -33,7 +33,7 @@
     /**
      * Constructor
      *
-     * @param   map default NULL an array
+     * @param   array<var, var> default NULL an array
      */
     public function __construct($map= NULL) {
       if (is_array($map)) $this->_hash= $map;
