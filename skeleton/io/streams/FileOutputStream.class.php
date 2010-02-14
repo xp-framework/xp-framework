@@ -19,7 +19,7 @@
     /**
      * Constructor
      *
-     * @param   * file either an io.File object or a string
+     * @param   var file either an io.File object or a string
      * @param   bool append default FALSE whether to append
      */
     public function __construct($file, $append= FALSE) {
