@@ -316,7 +316,7 @@
     /**
      * Tests whether this class is a subclass of a specified class.
      *
-     * @param   * class either a string or an XPClass object
+     * @param   var class either a string or an XPClass object
      * @return  bool
      */
     public function isSubclassOf($class) {
