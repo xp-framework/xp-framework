@@ -11,6 +11,7 @@
    *
    * @see      xp://lang.XPClass
    * @see      xp://lang.Primitive
+   * @test     xp://net.xp_framework.unittest.reflection.TypeTest 
    * @purpose  Base class
    */
   class Type extends Object {
@@ -106,6 +107,7 @@
         case 'bool': 
           return Primitive::$BOOLEAN;
 
+        case 'var': 
         case '*': 
         case 'mixed': 
           return self::$ANY;

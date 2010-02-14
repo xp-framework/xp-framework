@@ -33,7 +33,7 @@
      *
      * @param   string string
      * @param   int pos
-     * @param   char char
+     * @param   string char
      * @return  string
      */
     public static function insert($string, $pos, $char) {

@@ -242,7 +242,7 @@
      *
      * @param   string parsestring
      * @param   &int position where the quoted string begins
-     * @param   char quotation character
+     * @param   string quotation character
      * @return  string inner quotation
      */
     private function parseQuoteString($string, &$pos, $quot) {

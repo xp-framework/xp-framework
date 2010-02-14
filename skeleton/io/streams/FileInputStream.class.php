@@ -19,7 +19,7 @@
     /**
      * Constructor
      *
-     * @param   * file either an io.File object or a string
+     * @param   var file either an io.File object or a string
      */
     public function __construct($file) {
       $this->file= $file instanceof File ? $file : new File($file);
