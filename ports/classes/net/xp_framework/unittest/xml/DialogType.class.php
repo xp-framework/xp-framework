@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('net.xp_framework.unittest.xml.ButtonType', 'lang.Collection');
+  uses('net.xp_framework.unittest.xml.ButtonType', 'util.collections.Vector');
 
   /**
    * Test class for Marshaller / Unmarshaller tests
@@ -27,7 +27,7 @@
      *
      */
     public function __construct() {
-      $this->buttons= Collection::forClass('net.xp_framework.unittest.xml.ButtonType');
+      $this->buttons= create('new util.collections.Vector<net.xp_framework.unittest.xml.ButtonType>()');
     }
 
     /**

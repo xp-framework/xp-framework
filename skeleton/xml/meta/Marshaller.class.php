@@ -75,7 +75,7 @@
         // - For arrays we iterate over keys and values (FIXME: we assume the 
         //   array is a string => scalar map!)
         //
-        // - For collections, add a node with the element's name and invoke
+        // - For lists, add a node with the element's name and invoke
         //   the recurse() method for each value in the collection.
         //
         // - For objects, add a new node and invoke the recurse() method
@@ -88,16 +88,15 @@
           foreach ($result as $key => $val) {
             $child->addChild(new Node($key, $val));
           }
-        } else if (is('lang.Collection', $result)) {
-          $elementClass= $result->getElementClass();
-          foreach ($result->values() as $value) {
-            self::recurse($value, $elementClass, $node->addChild(new Node($element)));
+        } else if ($result instanceof Traversable) {
+          foreach ($result as $value) {
+            if ($value instanceof Generic) {
+              self::recurse($value, $value->getClass(), $node->addChild(new Node($element)));
+            } else {
+              $node->addChild(new Node($element, $value));
+            }
           }
-        } else if (is('lang.types.ArrayList', $result)) {
-          foreach ($result->values as $value) {
-            $node->addChild(new Node($element, $value));
-          }
-        } else if (is('lang.Generic', $result)) {
+        } else if ($result instanceof Generic) {
           self::recurse($result, $result->getClass(), $node->addChild(new Node($element)));
         }
       }
