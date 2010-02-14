@@ -26,7 +26,7 @@
      */
     public function setUp() {
       $this->router= new SoapRpcRouterMock('net.xp_framework.unittest.scriptlet.rpc.impl');
-      $this->router->setMockMethod(HTTP_POST);
+      $this->router->setMockMethod(HttpConstants::POST);
       $this->router->setMockHeaders(array(
         'SOAPAction'    => 'DummyRpcImplementation#getImplementationName',
         'Content-Type'  => 'text/xml; charset=iso-8859-1'
@@ -66,7 +66,7 @@
      */
     #[@test, @expect('scriptlet.HttpScriptletException')]
     public function basicGetRequest() {
-      $this->router->setMockMethod(HTTP_GET);
+      $this->router->setMockMethod(HttpConstants::GET);
       $this->router->init();
       $response= $this->router->process();
     }
