@@ -34,6 +34,14 @@
       if ($parent= $class->getParentClass()) {
         Console::write(' extends ', $parent->getName());
       }
+      if ($interfaces= $class->getInterfaces()) {
+        Console::write(' implements ');
+        $s= sizeof($interfaces)- 1;
+        foreach ($interfaces as $i => $iface) {
+          Console::write($iface->getName());
+          $i < $s && Console::write(', ');
+        }
+      }
       
       // Fields
       Console::writeLine(' {');
