@@ -28,6 +28,7 @@
         exit(1);
       }
       
+      Console::writeLine('@', $class->getClassLoader());
       $mask= $class->isInterface() ? MODIFIER_ABSTRACT : 0;
       Console::write(implode(' ', Modifiers::namesOf($class->getModifiers() ^ $mask)));
       Console::write($class->isInterface() ? ' interface ' : ' class ', $class->getName());
