@@ -40,6 +40,16 @@
     }
   }
 
+  // Set error status to 500 by default - if a fatal error occurs,
+  // this guarantees to at least send an error code.
+  switch (php_sapi_name()) {
+    case 'cgi':
+      header('Status: 500 Internal Server Error');
+      break;
+
+    default:
+      header('HTTP/1.0 500 Internal Server Error');
+  }
   ini_set('error_prepend_string', '<xmp>');
   ini_set('error_append_string', '</xmp>');
   ini_set('html_errors', 0);
