@@ -182,7 +182,11 @@
       try {
         $class= XPClass::forName($args[0]);
       } catch (ClassNotFoundException $e) {
-        Console::$err->writeLine('*** ', $e);
+        Console::$err->writeLine('*** ', $e->getMessage(), ', tried all of {');
+        foreach ($e->getLoaders() as $loader) {
+          Console::$err->writeLine('  ', $loader);
+        }
+        Console::$err->writeLine('}');
         exit(1);
       }
       
