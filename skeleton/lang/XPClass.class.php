@@ -485,7 +485,7 @@
      * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
-      sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $cl, $argument);
+      if (sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $cl, $argument) < 1) return xp::null();
       return call_user_func(array(xp::reflect($cl), 'instanceFor'), $argument);
     }
 
