@@ -241,7 +241,7 @@
         <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = $type]"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>mixed (</xsl:text>
+        <xsl:text>var (</xsl:text>
         <xsl:value-of select="$type"/>
         <xsl:text>)</xsl:text>
       </xsl:otherwise>
@@ -332,7 +332,7 @@
         <xsl:value-of select="exsl:node-set($typemap)/mapping[@for = substring-after($node/@type, ':')]"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:text>mixed (</xsl:text>
+        <xsl:text>var (</xsl:text>
         <xsl:value-of select="$node/@type"/>
         <xsl:text>)</xsl:text>
       </xsl:otherwise>

@@ -117,8 +117,8 @@
      * ]]></xsl:text><xsl:value-of select="func:ucfirst($name)"/><xsl:text><![CDATA[ method
      *
      * @access  public
-     * @param   mixed*
-     * @return  mixed
+     * @param   var...
+     * @return  var
      */
     #[@overloaded(signatures= array(]]>&#10;</xsl:text>
         <xsl:for-each select="$methods">
