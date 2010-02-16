@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated lang.Type::$ANY in favor of lang.Type::$VAR
+  (friebe)
 - Changed util.collections.Map interface to ensure array access works.
   Any implementation must now adhere to http://de3.php.net/arrayaccess
   (friebe)

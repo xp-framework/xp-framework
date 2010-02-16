@@ -117,7 +117,7 @@
      * @return  string
      */
     public function getReturnType() {
-      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$ANY;
+      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$VAR;
       return Type::forName(ltrim($details[DETAIL_RETURNS], '&'));
     }
 

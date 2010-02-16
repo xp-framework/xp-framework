@@ -67,7 +67,7 @@
      */
     #[@test]
     public function varType() {
-      $this->assertEquals(Type::$ANY, Type::forName('var'));
+      $this->assertEquals(Type::$VAR, Type::forName('var'));
     }
 
     /**

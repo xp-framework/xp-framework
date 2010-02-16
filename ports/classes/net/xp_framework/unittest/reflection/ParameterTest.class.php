@@ -208,7 +208,7 @@
      */
     #[@test]
     public function anyType() {
-      $this->assertEquals(Type::$ANY, $this->methodParameter('serialize', 0)->getType());
+      $this->assertEquals(Type::$VAR, $this->methodParameter('serialize', 0)->getType());
     }
 
     /**
