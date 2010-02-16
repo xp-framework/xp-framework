@@ -23,7 +23,7 @@
       $name= '';
 
     static function __static() {
-      self::$ANY= new self('*');
+      self::$ANY= new self('var');
       self::$VOID= new self('void');
     }
 

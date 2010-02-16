@@ -64,7 +64,7 @@
         !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
         !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
       ) {   // Unknown or unparseable, return ANYTYPE
-        return '*';
+        return 'var';
       }
       return ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&');
     }
