@@ -111,7 +111,7 @@
      * Get messages in a folder
      *
      * @param   peer.mail.MailFolder f
-     * @param   mixed* msgnums
+     * @param   var* msgnums
      * @return  peer.mail.Message[]
      */
     public function getMessages($f) { }

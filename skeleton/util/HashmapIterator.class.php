@@ -53,7 +53,7 @@
     /**
      * Returns the next element in the iteration.
      *
-     * @return  mixed
+     * @return  var
      * @throws  util.NoSuchElementException when there are no more elements
      */
     public function next() {

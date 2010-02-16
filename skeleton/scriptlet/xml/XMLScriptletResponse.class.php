@@ -130,7 +130,7 @@
      * </xmp>     
      *
      * @param   string name name
-     * @param   mixed val
+     * @param   var val
      */
     public function addFormValue($name, $values) {
       if (!is_array($values)) $values= array($values);
@@ -178,7 +178,7 @@
      * @param   string checker The class checking the input
      * @param   string type The error type
      * @param   string field default '*' The form field corresponding
-     * @param   mixed info default NULL 
+     * @param   var info default NULL 
      * @return  bool FALSE
      */
     public function addFormError($checker, $type, $field= '*', $info= NULL) {

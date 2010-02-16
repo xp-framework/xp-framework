@@ -84,7 +84,7 @@
      *
      * @param   security.KeyPair keypair
      * @param   int days default 365
-     * @param   mixed cacert default NULL
+     * @param   var cacert default NULL
      * @return  security.cert.X509Certificate
      */
     public function sign($keypair, $days= 365, $cacert= NULL) {

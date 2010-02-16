@@ -35,7 +35,7 @@
      * Get a  beancontainer
      *
      * @param   int oid
-     * @return mixed
+     * @return var
      */
     public function getContainerByOID($oid) {
 

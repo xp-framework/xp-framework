@@ -45,7 +45,7 @@
     /**
      * Constructor
      *
-     * @param   mixed url a string or a peer.URL object
+     * @param   var url a string or a peer.URL object
      */
     public function __construct($url) {
       $this->url= $url instanceof URL ? $url : new URL($url);
@@ -160,7 +160,7 @@
      * Perform any request
      *
      * @param   string method request method, e.g. HttpConstants::GET
-     * @param   mixed parameters
+     * @param   var parameters
      * @param   array headers default array()
      * @return  peer.http.HttpResponse response object
      * @throws  io.IOException
@@ -176,7 +176,7 @@
     /**
      * Perform a GET request
      *
-     * @param   mixed arg default NULL
+     * @param   var arg default NULL
      * @param   array headers default array()
      * @return  peer.http.HttpResponse response object
      */
@@ -187,7 +187,7 @@
     /**
      * Perform a HEAD request
      *
-     * @param   mixed arg default NULL
+     * @param   var arg default NULL
      * @param   array headers default array()
      * @return  peer.http.HttpResponse response object
      */
@@ -198,7 +198,7 @@
     /**
      * Perform a POST request
      *
-     * @param   mixed arg default NULL
+     * @param   var arg default NULL
      * @param   array headers default array()
      * @return  peer.http.HttpResponse response object
      */

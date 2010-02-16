@@ -55,7 +55,7 @@
     /**
      * Trace function
      *
-     * @param   mixed* arguments
+     * @param   var* arguments
      */
     protected function trace() {
       if (NULL == $this->cat) return;

@@ -39,7 +39,7 @@
      *
      * @param   string name cookie name
      * @param   string value default ''
-     * @param   mixed expires default 0 the UNIX timestamp on which this cookie expires de
+     * @param   var expires default 0 the UNIX timestamp on which this cookie expires de
      * @param   string path default ''
      * @param   string domain default ''
      * @param   bool secure default FALSE

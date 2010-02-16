@@ -68,7 +68,7 @@
     /**
      * Constructor
      *
-     * @param   mixed ref either a class name, a ReflectionClass instance or an object
+     * @param   var ref either a class name, a ReflectionClass instance or an object
      * @throws  lang.IllegalStateException
      */
     public function __construct($ref) {
@@ -134,7 +134,7 @@
      *   }
      * </code>
      *
-     * @param   mixed* args
+     * @param   var* args
      * @return  lang.Object 
      * @throws  lang.IllegalAccessException in case this class cannot be instantiated
      */
@@ -286,7 +286,7 @@
      * Retrieve a constant by a specified name.
      *
      * @param   string constant
-     * @return  mixed
+     * @return  var
      * @throws  lang.ElementNotFoundException in case constant does not exist
      */
     public function getConstant($constant) {
@@ -429,7 +429,7 @@
      *
      * @param   string name
      * @param   string key default NULL
-     * @return  mixed
+     * @return  var
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {

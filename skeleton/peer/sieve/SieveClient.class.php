@@ -138,7 +138,7 @@
      * Wrapper that sends a command to the remote host.
      *
      * @param   string format
-     * @param   mixed* args
+     * @param   var* args
      * @return  bool success
      */
     protected function _sendcmd() {

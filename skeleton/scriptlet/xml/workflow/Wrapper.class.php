@@ -115,7 +115,7 @@
      *
      * @param   string name
      * @param   int occurrence default OCCURRENCE_UNDEFINED
-     * @param   mixed default default NULL
+     * @param   var default default NULL
      * @param   string[] caster default NULL
      * @param   string[] precheck default NULL
      * @param   string[] postcheck default NULL
@@ -157,7 +157,7 @@
      *
      * @param   string name
      * @param   string type one of of the PARAM_* constants
-     * @return  mixed
+     * @return  var
      */
     public function getParamInfo($name, $type) {
       return $this->paraminfo[$name][$type];
@@ -167,8 +167,8 @@
      * Retrieve a value by its name
      *
      * @param   string name
-     * @param   mixed default default NULL
-     * @return  mixed value
+     * @param   var default default NULL
+     * @return  var value
      */
     public function getValue($name, $default= NULL) {
       return isset($this->values[$name]) ? $this->values[$name] : $default;
@@ -178,7 +178,7 @@
      * Set a value by its name
      *
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      */
     public function setValue($name, $value) {
       $this->values[$name]= $value;

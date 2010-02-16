@@ -38,7 +38,7 @@
      * Fetch a qname for a class.
      *
      * @param   lang.XPClass class
-     * @return  mixed xml.QName or NULL if no mapping exists
+     * @return  var xml.QName or NULL if no mapping exists
      */
     public function qnameFor(XPClass $class) {
       if (!isset($this->_c2q[$class->getName()])) return NULL;
@@ -49,7 +49,7 @@
      * Fetch a class for a qname
      *
      * @param   xml.QName qname
-     * @return  mixed lang.XPClass or NULL if no mapping exists
+     * @return  var lang.XPClass or NULL if no mapping exists
      */
     public function classFor(QName $qname) {
       if (!isset($this->_q2c[$qname->toString()])) return NULL;

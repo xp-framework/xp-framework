@@ -31,7 +31,7 @@
      * This is the last Sunday of March for Europe, the first Sunday of 
      * April in the U.S.
      *
-     * @param   mixed year default -1 Year, defaults to current year
+     * @param   var year default -1 Year, defaults to current year
      * @param   int method default CAL_DST_EU Method to calculate (CAL_DST_EU|CAL_DST_US)
      * @return  util.Date
      */

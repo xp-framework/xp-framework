@@ -229,7 +229,7 @@
     /**
      * Set Qop
      *
-     * @param   mixed[] qop
+     * @param   var[] qop
      */
     public function setQop($qop) {
       $this->qop= $qop;
@@ -241,7 +241,7 @@
      * authentication with integrity protection; the value "auth-conf"
      * indicates authentication with integrity protection and encryption.
      *
-     * @return  mixed[]
+     * @return  var[]
      */
     public function getQop() {
       return $this->qop;
@@ -260,7 +260,7 @@
     /**
      * Set Cipher
      *
-     * @param   mixed[] cipher
+     * @param   var[] cipher
      */
     public function setCipher($cipher) {
       $this->cipher= $cipher;
@@ -269,7 +269,7 @@
     /**
      * Get Cipher
      *
-     * @return  mixed[]
+     * @return  var[]
      */
     public function getCipher() {
       return $this->cipher;

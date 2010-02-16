@@ -22,7 +22,7 @@
     /**
      * Constructor
      *
-     * @param   mixed a string containing the hexadecimal format or
+     * @param   var a string containing the hexadecimal format or
      *          three ints (red, green blue)
      */
     public function __construct() {

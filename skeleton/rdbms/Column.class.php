@@ -86,7 +86,7 @@
     /**
      * Apply an "in" constraint to this property
      *
-     * @param   mixed[] values
+     * @param   var[] values
      * @return  rdbms.criterion.SimpleExpression
      */
     public function in($values) {
@@ -96,7 +96,7 @@
     /**
      * Apply an "not in" constraint to this property
      *
-     * @param   mixed[] values
+     * @param   var[] values
      * @return  rdbms.criterion.SimpleExpression
      */
     public function notIn($values) {
@@ -106,7 +106,7 @@
     /**
      * Apply a "like" constraint to this property
      *
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function like($value) {
@@ -117,7 +117,7 @@
      * Apply a case-insensitive "like" constraint to this property
      *
      * @see     php://sql_regcase
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function ilike($value) {
@@ -127,7 +127,7 @@
     /**
      * Apply an "equal" constraint to this property
      *
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function equal($value) {
@@ -137,7 +137,7 @@
     /**
      * Apply a "not equal" constraint to this property
      *
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function notEqual($value) {
@@ -147,7 +147,7 @@
     /**
      * Apply a "less than" constraint to this property
      *
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function lessThan($value) {
@@ -157,7 +157,7 @@
     /**
      * Apply a "greater than" constraint to this property
      *
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function greaterThan($value) {
@@ -167,7 +167,7 @@
     /**
      * Apply a "less than or equal to" constraint to this property
      *
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function lessThanOrEqualTo($value) {
@@ -177,7 +177,7 @@
     /**
      * Apply a "greater than or equal to" constraint to this property
      *
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.SimpleExpression
      */
     public function greaterThanOrEqualTo($value) {
@@ -187,8 +187,8 @@
     /**
      * Apply a "between" constraint to this property
      *
-     * @param   mixed lo
-     * @param   mixed hi
+     * @param   var lo
+     * @param   var hi
      * @return  rdbms.criterion.SimpleExpression
      */
     public function between($lo, $hi) {

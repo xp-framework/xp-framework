@@ -67,7 +67,7 @@
      * specified environment value cannot be found
      *
      * @param   string name
-     * @param   mixed default default NULL
+     * @param   var default default NULL
      * @return  string
      */
     public function getEnvValue($name, $default= NULL) {
@@ -112,7 +112,7 @@
     /**
      * Retrieve cookie by it's name
      *
-     * @param   mixed default default NULL the default value if cookie is non-existant
+     * @param   var default default NULL the default value if cookie is non-existant
      * @return  peer.http.Cookie
      */
     public function getCookie($name, $default= NULL) {
@@ -125,7 +125,7 @@
      * Accept-Language, Connection, Host, Keep-Alive, Referer, User-Agent
      *
      * @param   string name Header
-     * @param   mixed default default NULL the default value if header is non-existant
+     * @param   var default default NULL the default value if header is non-existant
      * @return  string Header value
      */
     public function getHeader($name, $default= NULL) {
@@ -138,7 +138,7 @@
      * request variable
      *
      * @param   string name Parameter name
-     * @param   mixed default default NULL the default value if parameter is non-existant
+     * @param   var default default NULL the default value if parameter is non-existant
      * @return  string Parameter value
      */
     public function getParam($name, $default= NULL) {
@@ -160,7 +160,7 @@
      * Sets a request parameter
      *
      * @param   string name Parameter name
-     * @param   mixed value
+     * @param   var value
      */
     public function setParam($name, $value) {
       $this->params[$name]= $value;

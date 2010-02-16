@@ -56,7 +56,7 @@
      *   <li>An xml.Tree object</li>
      * </ul>
      *
-     * @param   mixed arg
+     * @param   var arg
      * @throws  lang.IllegalArgumentException
      * @throws  xml.XMLFormatException in case the argument is a string and not valid XML
      */

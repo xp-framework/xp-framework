@@ -21,7 +21,7 @@
     /**
      * Constructor
      *
-     * @param   mixed arg
+     * @param   var arg
      */
     public function __construct($arg) {
       $this->value= new Date($arg);

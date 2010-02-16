@@ -95,14 +95,14 @@
     }
     // }}}
 
-    // {{{ public string typeOf(mixed arg)
+    // {{{ public string typeOf(var arg)
     //     Returns the fully qualified type name
     static function typeOf($arg) {
       return is_object($arg) ? xp::nameOf(get_class($arg)) : gettype($arg);
     }
     // }}}
 
-    // {{{ public string stringOf(mixed arg [, string indent default ''])
+    // {{{ public string stringOf(var arg [, string indent default ''])
     //     Returns a string representation of the given argument
     static function stringOf($arg, $indent= '') {
       static $protect= array();
@@ -180,7 +180,7 @@
     }
     // }}}
     
-    // {{{ public mixed sapi(string* sapis)
+    // {{{ public var sapi(string* sapis)
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
@@ -201,7 +201,7 @@
     }
     // }}}
     
-    // {{{ internal mixed registry(mixed args*)
+    // {{{ internal var registry(var args*)
     //     Stores static data
     static function registry() {
       switch (func_num_args()) {
@@ -249,21 +249,21 @@
     }
     // }}}
     
-    // {{{ magic mixed __call(string name, mixed[] args)
+    // {{{ magic var __call(string name, var[] args)
     //     Call proxy
     function __call($name, $args) {
       throw new NullPointerException('Method.invokation('.$name.')');
     }
     // }}}
 
-    // {{{ magic void __set(string name, mixed value)
+    // {{{ magic void __set(string name, var value)
     //     Set proxy
     function __set($name, $value) {
       throw new NullPointerException('Property.write('.$name.')');
     }
     // }}}
 
-    // {{{ magic mixed __get(string name)
+    // {{{ magic var __get(string name)
     //     Set proxy
     function __get($name) {
       throw new NullPointerException('Property.read('.$name.')');
@@ -278,7 +278,7 @@
       $archive      = '',
       $filename     = '';
       
-    // {{{ static mixed[] acquire(string archive)
+    // {{{ static var[] acquire(string archive)
     //     Archive instance handling pool function, opens an archive and reads header only once
     static function acquire($archive) {
       static $archives= array();
@@ -419,7 +419,7 @@
   }
   // }}}
   
-  // {{{ void raise (string classname, mixed* args)
+  // {{{ void raise (string classname, var* args)
   //     throws an exception by a given class name
   function raise($classname) {
     try {
@@ -474,21 +474,21 @@
   }
   // }}}
   
-  // {{{ proto deprecated mixed ref(mixed object)
+  // {{{ proto deprecated var ref(var object)
   //     Creates a "reference" to an object
   function ref(&$object) {
     return array(&$object);
   }
   // }}}
 
-  // {{{ proto deprecated &mixed deref(&mixed expr)
+  // {{{ proto deprecated &var deref(&mixed expr)
   //     Dereferences an expression
   function &deref(&$expr) {
     if (is_array($expr)) return $expr[0]; else return $expr;
   }
   // }}}
 
-  // {{{ proto lang.Object newinstance(string classname, mixed[] args, string bytes)
+  // {{{ proto lang.Object newinstance(string classname, var[] args, string bytes)
   //     Anonymous instance creation
   function newinstance($classname, $args, $bytes) {
     static $u= 0;
@@ -519,7 +519,7 @@
   }
   // }}}
 
-  // {{{ lang.Generic create(mixed spec)
+  // {{{ lang.Generic create(var spec)
   //     Creates a generic object
   function create($spec) {
     if ($spec instanceof Generic) return $spec;

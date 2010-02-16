@@ -129,7 +129,7 @@
     /**
      * Returns a string representation of a type argument
      *
-     * @param   mixed arg
+     * @param   var arg
      * @return  string
      */
     protected function typeString($arg) {

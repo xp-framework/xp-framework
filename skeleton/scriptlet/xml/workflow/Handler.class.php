@@ -92,7 +92,7 @@
      * Set a value by a specified name
      *
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      */
     public function setValue($name, $value) {
       $this->values[HVAL_PERSISTENT][$name]= $value;
@@ -102,7 +102,7 @@
      * Set a form value by a specified name
      *
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      */
     public function setFormValue($name, $value) {
       $this->values[HVAL_FORMPARAM][$name]= $value;
@@ -130,8 +130,8 @@
      * Retrieve a value by its name
      *
      * @param   string name
-     * @param   mixed default default NULL
-     * @return  mixed value
+     * @param   var default default NULL
+     * @return  var value
      */
     public function getValue($name, $default= NULL) {
       return (isset($this->values[HVAL_PERSISTENT][$name]) 
@@ -144,8 +144,8 @@
      * Retrieve a form value by its name
      *
      * @param   string name
-     * @param   mixed default default NULL
-     * @return  mixed value
+     * @param   var default default NULL
+     * @return  var value
      */
     public function getFormValue($name, $default= NULL) {
       return (isset($this->values[HVAL_FORMPARAM][$name]) 
@@ -180,7 +180,7 @@
      *
      * @param   string code
      * @param   string field default '*'
-     * @param   mixed info default NULL
+     * @param   var info default NULL
      */
     public function addError($code, $field= '*', $info= NULL) {
       $this->errors[]= array($code, $field, $info);

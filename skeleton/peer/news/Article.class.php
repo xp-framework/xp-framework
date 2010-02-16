@@ -65,7 +65,7 @@
     /**
      * Set Header
      *
-     * @param   mixed[] header
+     * @param   var[] header
      */
     public function setHeader($name, $value) {
       $this->header[$name]= $value;
@@ -74,7 +74,7 @@
     /**
      * Get Headers
      *
-     * @return  mixed[]
+     * @return  var[]
      */
     public function getHeaders() {
       return $this->header;

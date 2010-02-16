@@ -88,7 +88,7 @@
     /**
      * Retrieve driver
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string driver or default if none is set
      */
     public function getDriver($default= NULL) {
@@ -98,7 +98,7 @@
     /**
      * Retrieve host
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string host or default if none is set
      */
     public function getHost($default= NULL) {
@@ -108,7 +108,7 @@
     /**
      * Retrieve port
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string host or default if none is set
      */
     public function getPort($default= NULL) {
@@ -118,7 +118,7 @@
     /**
      * Retrieve database
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string databse or default if none is set
      */
     public function getDatabase($default= NULL) {
@@ -129,7 +129,7 @@
     /**
      * Retrieve user
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string user or default if none is set
      */
     public function getUser($default= NULL) {
@@ -139,7 +139,7 @@
     /**
      * Retrieve password
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string password or default if none is set
      */
     public function getPassword($default= NULL) {

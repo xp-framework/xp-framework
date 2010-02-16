@@ -59,7 +59,7 @@
      * list[]= overloading
      *
      * @param   int offset
-     * @param   mixed value
+     * @param   var value
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      */
     public function offsetSet($offset, $value) {

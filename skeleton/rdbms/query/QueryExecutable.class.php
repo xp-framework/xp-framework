@@ -15,8 +15,8 @@
     /**
      * execute query
      *
-     * @param  mixed[] values
-     * @return mixed
+     * @param  var[] values
+     * @return var
      * @throws lang.IllegalStateException
      */
     public function execute($values= NULL);

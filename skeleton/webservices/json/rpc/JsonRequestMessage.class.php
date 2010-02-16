@@ -50,7 +50,7 @@
     /**
      * Set the data for the message
      *
-     * @param   mixed data
+     * @param   var data
      */
     public function setData($data) {
       $this->data= array(
@@ -63,7 +63,7 @@
     /**
      * Get data
      *
-     * @return  mixed
+     * @return  var
      */
     public function getData() {
       return $this->data['params'];

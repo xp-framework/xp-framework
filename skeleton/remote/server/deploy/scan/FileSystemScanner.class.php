@@ -108,7 +108,7 @@
     /**
      * Get deployments
      *
-     * @return  mixed[] deployments
+     * @return  var[] deployments
      */
     public function getDeployments() {
       return $this->deployments;

@@ -166,8 +166,8 @@
      * Changes a value by a specified key and returns the previous value.
      *
      * @param   string key
-     * @param   mixed value
-     * @return  mixed previous value
+     * @param   var value
+     * @return  var previous value
      */
     protected function _change($key, $value) {
       $this->_changed[$key]= $value;
@@ -180,8 +180,8 @@
      * Sets a field's value by the field's name and returns the previous value.
      *
      * @param   string field name
-     * @param   mixed value
-     * @return  mixed previous value
+     * @param   var value
+     * @return  var previous value
      * @throws  lang.IllegalArgumentException in case the field does not exist
      */
     public function set($field, $value) {
@@ -272,7 +272,7 @@
     /**
      * Update this object in the database by specified criteria
      *
-     * @return  mixed identity value if applicable, else NULL
+     * @return  var identity value if applicable, else NULL
      * @throws  rdbms.SQLException in case an error occurs
      */  
     public function doInsert() {
@@ -317,7 +317,7 @@
     /**
      * Insert this dataset (create a new row in the table).
      *
-     * @return  mixed identity value if applicable, else NULL
+     * @return  var identity value if applicable, else NULL
      * @throws  rdbms.SQLException
      */
     public function insert() {
@@ -354,7 +354,7 @@
      * created by new DataSetName()) and updates if it has been retrieved by
      * the database (by means of doSelect(), getBy...() or iterators).
      *
-     * @return  mixed identity value if applicable, else NULL
+     * @return  var identity value if applicable, else NULL
      * @throws  rdbms.SQLException
      */
     public function save() {

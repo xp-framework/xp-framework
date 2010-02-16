@@ -30,7 +30,7 @@
      * Handle message
      *
      * @param   remote.server.EASCProtocol protocol
-     * @return  mixed data
+     * @return  var data
      */
     public function handle($protocol, $data) {
       $oid= unpack('Nzero/Noid', substr($data, 0, 8));

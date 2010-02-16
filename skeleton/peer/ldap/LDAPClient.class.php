@@ -125,7 +125,7 @@
      * Sets an ldap option value
      *
      * @param   int option
-     * @param   mixed value
+     * @param   var value
      * @return  boolean success
      */
     public function setOption($option, $value) {
@@ -140,7 +140,7 @@
      * Retrieve ldap option value
      *
      * @param   int option
-     * @return  mixed value
+     * @return  var value
      */    
     public function getOption($option) {
       if (FALSE === ($res= ldap_get_option ($this->_hdl, $option, $value))) {
@@ -308,7 +308,7 @@
     /**
      * Encode entries (recursively, if needed)
      *
-     * @param   mixed v
+     * @param   var v
      * @return  string encoded entry
      */
     protected function _encode($v) {
@@ -388,7 +388,7 @@
      *
      * @param   peer.ldap.LDAPEntry entry
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      * @return  bool
      */
     public function addAttribute(LDAPEntry $entry, $name, $value) {
@@ -427,7 +427,7 @@
      *
      * @param   peer.ldap.LDAPEntry entry
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      * @return  bool
      */
     public function replaceAttribute(LDAPEntry $entry, $name, $value) {

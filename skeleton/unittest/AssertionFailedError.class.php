@@ -19,8 +19,8 @@
      *
      * @param   string message
      * @param   string errorcode
-     * @param   mixed actual default NULL
-     * @param   mixed expect default NULL
+     * @param   var actual default NULL
+     * @param   var expect default NULL
      */
     public function __construct($message, $actual= NULL, $expect= NULL) {
       parent::__construct((string)$message);

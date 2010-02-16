@@ -34,7 +34,7 @@
      *
      * @param  &img.chart.Chart chart The chart
      * @param  int font The font size
-     * @return mixed[]
+     * @return var[]
      */
     protected function _prepare($chart, $font) {
       list($lower, $upper, $step)= $chart->getRange();
@@ -99,7 +99,7 @@
     /**
      * Renders the skelton of a chart (e.g. axis)
      *
-     * @param  mixed[] params The axis parameters
+     * @param  var[] params The axis parameters
      * @param  &img.Image img The image
      * @return &img.Image
      */
@@ -212,7 +212,7 @@
     /**
      * Renders the legend box
      *
-     * @param  mixed[] params The axis parameters
+     * @param  var[] params The axis parameters
      * @param  &img.Image img The image
      * @return &img.Image
      */

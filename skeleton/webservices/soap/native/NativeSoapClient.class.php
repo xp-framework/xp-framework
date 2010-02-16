@@ -150,8 +150,8 @@
      * Iterate over all arguments to wrap them into ext/soap
      * value objects, if needed
      *
-     * @param   mixed[]
-     * @return  mixed[]
+     * @param   var[]
+     * @return  var[]
      */
     protected function checkParams($args) {
       foreach ($args as $i => $a) {
@@ -166,8 +166,8 @@
     /**
      * Wrap single argument to ext/soap value object
      *
-     * @param   mixed parameter
-     * @return  mixed
+     * @param   var parameter
+     * @return  var
      * @throws  lang.IllegalArgumentException if parameter type cannot be converted
      */
     protected function wrapParameter($parameter) {
@@ -210,8 +210,8 @@
      * Invoke method call
      *
      * @param   string method name
-     * @param   mixed vars
-     * @return  mixed answer
+     * @param   var vars
+     * @return  var answer
      * @throws  webservices.soap.SOAPFaultException
      */
     public function invoke() {

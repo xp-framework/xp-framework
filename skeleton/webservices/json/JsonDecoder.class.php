@@ -41,7 +41,7 @@
     /**
      * Encode PHP data into 
      *
-     * @param   mixed data
+     * @param   var data
      * @return  string
      * @throws  webservices.json.JsonException if the data could not be serialized
      */
@@ -136,7 +136,7 @@
      * Decode a string into a PHP data structure
      *
      * @param   string string
-     * @return  mixed
+     * @return  var
      */
     public function decode($string) {
       $this->stream= new Stream();
@@ -301,7 +301,7 @@
     /**
      * Fetch token value
      *
-     * @return  mixed
+     * @return  var
      */
     protected function _getTokenValue() {
       return $this->_tokenValue;
@@ -389,7 +389,7 @@
     /**
      * Decode number from wire
      *
-     * @return  mixed
+     * @return  var
      */
     protected function _readNumber() {
       $initpos= $this->stream->tell();

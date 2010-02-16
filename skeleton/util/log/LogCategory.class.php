@@ -205,7 +205,7 @@
      *
      * Note: This also applies to warn(), error() and debug().
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public function info() {
       $args= func_get_args();
@@ -221,7 +221,7 @@
      *
      * @see     php://sprintf
      * @param   string format 
-     * @param   mixed* args
+     * @param   var* args
      */
     public function infof() {
       $args= func_get_args();
@@ -231,7 +231,7 @@
     /**
      * Appends a log of type warn
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public function warn() {
       $args= func_get_args();
@@ -242,7 +242,7 @@
      * Appends a log of type info in printf-style
      *
      * @param   string format 
-     * @param   mixed* args
+     * @param   var* args
      */
     public function warnf() {
       $args= func_get_args();
@@ -252,7 +252,7 @@
     /**
      * Appends a log of type error
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public function error() {
       $args= func_get_args();
@@ -263,7 +263,7 @@
      * Appends a log of type info in printf-style
      *
      * @param   string format 
-     * @param   mixed* args
+     * @param   var* args
      */
     public function errorf() {
       $args= func_get_args();
@@ -273,7 +273,7 @@
     /**
      * Appends a log of type debug
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public function debug() {
       $args= func_get_args();
@@ -284,7 +284,7 @@
      * Appends a log of type info in printf-style
      *
      * @param   string format format string
-     * @param   mixed* args
+     * @param   var* args
      */
     public function debugf() {
       $args= func_get_args();

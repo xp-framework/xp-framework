@@ -39,7 +39,7 @@
     /**
      * Constructor
      *
-     * @param   mixed value
+     * @param   var value
      */
     public function __construct($value) {
       $this->value= (string)$value;
@@ -73,7 +73,7 @@
     /**
      * Retrieve the checksum's value
      *
-     * @return  mixed value
+     * @return  var value
      */
     public function getValue() {
       return $this->value;

@@ -39,7 +39,7 @@
      * Fetch
      *
      * @param   string hashcode
-     * @return  mixed
+     * @return  var
      */
     public function fetch($hashCode) {
       return $this->_pool->get($hashCode);

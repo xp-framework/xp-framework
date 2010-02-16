@@ -108,9 +108,9 @@
     /**
      * Callback function to cast data
      *
-     * @param   mixed s
-     * @param   mixed type
-     * @return  mixed
+     * @param   var s
+     * @param   var type
+     * @return  var
      */
     public function _cast($s, $type) {
       static $identifiers= array(

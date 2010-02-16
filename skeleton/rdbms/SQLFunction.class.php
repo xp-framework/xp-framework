@@ -24,7 +24,7 @@
      *
      * @param   string function
      * @param   string type one of the %-tokens
-     * @param   mixed[] arguments
+     * @param   var[] arguments
      */
     public function __construct($function, $type, $arguments= array()) {
       $this->func= $function;
@@ -66,7 +66,7 @@
     /**
      * Set args
      *
-     * @param   mixed[] args
+     * @param   var[] args
      */
     public function setArgs($args) {
       $this->args= $args;
@@ -75,7 +75,7 @@
     /**
      * Get args
      *
-     * @return  mixed[]
+     * @return  var[]
      */
     public function getArgs() {
       return $this->args;

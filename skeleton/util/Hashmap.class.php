@@ -116,7 +116,7 @@
      * Filters elements from this hashmap using a callback
      * function
      *
-     * @param   mixed function an existing function or method
+     * @param   var function an existing function or method
      */
     public function filter($function) {
       $this->_hash= array_filter($this->_hash, $function);
@@ -126,8 +126,8 @@
      * Swaps the values with the specified keys. If one of the
      * keys does not exist, the function returns FALSE
      *
-     * @param   mixed k
-     * @param   mixed j
+     * @param   var k
+     * @param   var j
      * @return  bool success
      */
     public function swap($k, $j) {
@@ -178,7 +178,7 @@
      * In case the given map contains identical keys the values for
      * these keys are merged together into an array (recursively)
      *
-     * @param  mixed map an array or another Hashmap
+     * @param  var map an array or another Hashmap
      * @param   bool recursive default FALSE Merge hashmaps recursively
      * @throws  lang.IllegalArgumentException in case the parameter is neither an array nor a Hashmap
      */
@@ -209,7 +209,7 @@
     /**
      * Check whether the given key exists in this hashmap
      *
-     * @param   mixed key key to check for
+     * @param   var key key to check for
      * @return  bool key exists
      */
     public function containsKey($key) {
@@ -221,7 +221,7 @@
      * checking off (which is the default), the type won't be checked,
      * i.e. a value of 0 is also found when searching for FALSE.
      *
-     * @param  mixed val
+     * @param  var val
      * @param  bool strict default FALSE use strict checking.
      * @return bool TRUE if value exists, FALSE otherwise
      */     
@@ -232,8 +232,8 @@
     /**
      * Put a value into this hashmap by reference.
      *
-     * @param   mixed key
-     * @param  mixed value
+     * @param   var key
+     * @param  var value
      */
     public function putref($key, $value) {
       $this->_hash[$key]= $value;
@@ -242,8 +242,8 @@
     /**
      * Put a value into this hashmap
      *
-     * @param   mixed key
-     * @param   mixed value
+     * @param   var key
+     * @param   var value
      */
     public function put($key, $value) {
       $this->_hash[$key]= $value;
@@ -252,8 +252,8 @@
     /**
      * Retrieve a value by its key. Returns NULL if there is no such key
      *
-     * @param   mixed key
-     * @return  mixed value
+     * @param   var key
+     * @return  var value
      */
     public function get($key) {
       if (isset($this->_hash[$key])) return $this->_hash[$key]; else return NULL;
@@ -262,7 +262,7 @@
     /**
      * Remove a value from the hashmap
      *
-     * @param   mixed key
+     * @param   var key
      */
     public function remove($key) {
       unset($this->_hash[$key]);
@@ -290,7 +290,7 @@
     /**
      * Returns all keys in this hashmap.
      *
-     * @return  mixed[] keys
+     * @return  var[] keys
      */
     public function keys() {
       return array_keys($this->_hash);
@@ -299,7 +299,7 @@
     /**
      * Returns all values in this hashmap
      *
-     * @return  mixed[] values
+     * @return  var[] values
      */
     public function values() {
       return array_values($this->_hash);
@@ -308,7 +308,7 @@
     /**
      * Compares two hashmaps and returns TRUE when equal.
      *
-     * @param   mixed object to compare with
+     * @param   var object to compare with
      * @return  boolean
      */
     public function equals($cmp) {
@@ -318,7 +318,7 @@
     /**
      * Returns an array representation of this hashmap
      *
-     * @return  array<mixed, mixed>
+     * @return  array<var, var>
      */
     public function toArray() {
       return $this->_hash;

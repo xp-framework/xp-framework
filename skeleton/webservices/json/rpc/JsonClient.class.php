@@ -41,8 +41,8 @@
      * Invoke a method on a XML-RPC server
      *
      * @param   string method
-     * @param   mixed vars
-     * @return  mixed answer
+     * @param   var vars
+     * @return  var answer
      * @throws  lang.IllegalArgumentException
      * @throws  webservices.xmlrpc.XmlRpcFaultException
      */

@@ -20,9 +20,9 @@
     /**
      * Constructor
      *
-     * @param   mixed lhs either a string or an SQLFragment
-     * @param   mixed lo
-     * @param   mixed hi
+     * @param   var lhs either a string or an SQLFragment
+     * @param   var lo
+     * @param   var hi
      */
     public function __construct($lhs, $lo, $hi) {
       $this->lhs= $lhs;

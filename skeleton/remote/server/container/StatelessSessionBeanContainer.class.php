@@ -67,8 +67,8 @@
      *
      * @param   lang.Object proxy
      * @param   string method
-     * @param   mixed args
-     * @return  mixed
+     * @param   var args
+     * @return  var
      */
     public function invoke($proxy, $method, $args) {
       $this->prepare();

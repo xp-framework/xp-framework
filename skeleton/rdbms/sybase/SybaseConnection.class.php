@@ -114,7 +114,7 @@
     /**
      * Retrieve identity
      *
-     * @return  mixed identity value
+     * @return  var identity value
      */
     public function identity($field= NULL) {
       $i= $this->query('select @@identity as i')->next('i');
@@ -199,7 +199,7 @@
      * Retrieve transaction state
      *
      * @param   string name
-     * @return  mixed state
+     * @return  var state
      */
     public function transtate($name) { 
       return $this->query('select @@transtate as transtate')->next('transtate');

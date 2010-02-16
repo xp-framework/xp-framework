@@ -20,7 +20,7 @@
      * Constructor
      *
      * @param   string name
-     * @param   array<string, mixed> members default array()
+     * @param   array<string, var> members default array()
      */
     public function __construct($name, $members= array()) {
       $this->__name= $name;
@@ -44,7 +44,7 @@
      * Member set interceptor
      *
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      * @throws  lang.IllegalAccessException
      */
     public function __set($name, $value) {
@@ -65,7 +65,7 @@
      * Method call interceptor
      *
      * @param   string name
-     * @param   mixed[] args
+     * @param   var[] args
      * @throws  lang.IllegalAccessException
      */
     public function __call($name, $args) {

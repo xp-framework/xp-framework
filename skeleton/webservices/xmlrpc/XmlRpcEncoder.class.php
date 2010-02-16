@@ -18,7 +18,7 @@
     /**
      * Encode given data into XML-RPC format
      *
-     * @param   mixed data
+     * @param   var data
      * @return  xml.Node
      */
     public function encode($data) {
@@ -37,7 +37,7 @@
      * __xp_class.
      *
      * @param   xml.Node node
-     * @param   mixed data
+     * @param   var data
      * @throws  lang.IllegalArgumentException in case the data could not be serialized.
      */
     protected function _marshall($data) {

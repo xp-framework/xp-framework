@@ -24,7 +24,7 @@
      * Constructor
      *
      * @param   string dn default NULL "distinct name"
-     * @param   mixed[] attrs default array()
+     * @param   var[] attrs default array()
      */
     public function __construct($dn= NULL, $attrs= array()) {
       $this->dn= $dn;
@@ -37,7 +37,7 @@
     /**
      * Decode entries (recursively, if needed)
      *
-     * @param   mixed v
+     * @param   var v
      * @return  string decoded entry
      */
     protected function _decode($v) {
@@ -94,7 +94,7 @@
      * Creates an LDAP from the raw return data of PHP's ldap_* functions
      * Also performs decoding on the attributes.
      *
-     * @param   mixed data return value from ldap_* functions
+     * @param   var data return value from ldap_* functions
      * @return  peer.ldap.LDAPEntry object
      */
     public static function fromData($data) {
@@ -124,7 +124,7 @@
      * Set attribute
      *
      * @param   string key
-     * @param   mixed value
+     * @param   var value
      */
     public function setAttribute($key, $value) {
       $this->_ans[strtolower($key)]= $key;
@@ -140,7 +140,7 @@
      *
      * @param   string key
      * @param   int idx default -1
-     * @return  mixed attribute
+     * @return  var attribute
      */
     public function getAttribute($key, $idx= -1) {
       $lkey= strtolower($key);

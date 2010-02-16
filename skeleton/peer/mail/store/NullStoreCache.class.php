@@ -27,7 +27,7 @@
      * Get a value from cache by key
      *
      * @param   string key
-     * @return  mixed value or NULL to indicate the value doesn't exist
+     * @return  var value or NULL to indicate the value doesn't exist
      */    
     public function get($key) {
       return NULL;
@@ -37,7 +37,7 @@
      * Insert into / update in cache
      *
      * @param   string key
-     * @param   mixed val
+     * @param   var val
      */
     public function put($key, $val) { }
     

@@ -114,8 +114,8 @@
      * Invoke method call
      *
      * @param   string method name
-     * @param   mixed vars
-     * @return  mixed answer
+     * @param   var vars
+     * @return  var answer
      * @throws  lang.IllegalArgumentException
      * @throws  webservices.soap.SOAPFaultException
      */

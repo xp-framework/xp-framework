@@ -45,7 +45,7 @@
      * 
      * @param   string long long parameter (w/o --)
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
-     * @return  mixed position on which the parameter is placed or FALSE if nonexistant
+     * @return  var position on which the parameter is placed or FALSE if nonexistant
      */ 
     protected function _find($long, $short= NULL) {
       if (is_null($short)) $short= $long{0};

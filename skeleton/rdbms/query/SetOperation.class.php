@@ -110,7 +110,7 @@
     /**
      * execute query
      *
-     * @param  mixed[] values
+     * @param  var[] values
      * @return rdbms.ResultSet
      * @throws lang.IllegalStateException
      */

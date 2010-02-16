@@ -16,7 +16,7 @@
     /**
      * Retrieves an instance.
      *
-     * @param   mixed argument
+     * @param   var argument
      * @return  rdbms.DBObserver
      */
     public static function instanceFor($arg);

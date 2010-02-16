@@ -79,7 +79,7 @@
      * @param   xp.codegen.AbstractGenerator generator
      * @param   lang.reflect.Method method
      * @param   util.collections.HashTable targets
-     * @return  mixed result
+     * @return  var result
      */
     protected static function invoke(AbstractGenerator $generator, Method $method, HashTable $targets) {
       $target= $targets->get($method);

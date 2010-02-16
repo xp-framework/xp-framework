@@ -91,7 +91,7 @@
      * @param   string user
      * @param   string pass
      * @param   int flags
-     * @return  mixed resource or FALSE on failure
+     * @return  var resource or FALSE on failure
      */
     protected function _connect($mbx, $user, $pass, $flags) {
       return imap_open($mbx, $user, $pass, $flags);
@@ -335,7 +335,7 @@
      * Proxy method for MailFolder: Get messages in a folder
      *
      * @param   peer.mail.MailFolder f
-     * @param   mixed* msgnums
+     * @param   var* msgnums
      * @return  peer.mail.Message[]
      * @throws  peer.mail.MessagingException
      */

@@ -144,7 +144,7 @@
      *
      * @param   string hostName
      * @param   int num default -1 offset, -1 for all
-     * @return  mixed
+     * @return  var
      * @throws  rdbms.ConnectionNotRegisteredException in case there's no connection for these names
      */
     public function getByHost($hostName, $num= -1) {
@@ -171,7 +171,7 @@
      * Replace registered DSN with DBConnection if needed
      *
      * @param   string name name of connection
-     * @param   mixed value either DSN or DBConnection
+     * @param   var value either DSN or DBConnection
      * @return  rdbms.DBConnection
      */
     protected function conn($name, $value) {

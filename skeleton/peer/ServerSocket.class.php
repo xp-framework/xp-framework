@@ -145,7 +145,7 @@
      *
      * Note: If this socket has been made non-blocking, FALSE will be returned.
      *
-     * @return  mixed a peer.BSDSocket object or FALSE
+     * @return  var a peer.BSDSocket object or FALSE
      * @throws  peer.SocketException in case of an error
      */
     public function accept() {

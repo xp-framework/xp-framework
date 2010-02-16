@@ -22,7 +22,7 @@
      * Constructor
      *
      * @param   float value
-     * @param   mixed colors either an array of two colors, the second
+     * @param   var colors either an array of two colors, the second
      *          representing the shadow, or one color, for both lid and shadow
      */
     public function __construct($value, $colors) {

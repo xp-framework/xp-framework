@@ -41,8 +41,8 @@
      * Fail this test case
      *
      * @param   string reason
-     * @param   mixed actual
-     * @param   mixed expect
+     * @param   var actual
+     * @param   var expect
      */
     public function fail($reason, $actual, $expect) {
       throw new AssertionFailedError($reason, $actual, $expect);
@@ -53,7 +53,7 @@
      * is either an array type itself or the wrapper type lang.types.ArrayList
      *
      * @deprecated
-     * @param   mixed var
+     * @param   var var
      * @param   string error default 'notarray'
      */
     public function assertArray($var, $error= 'notarray') {
@@ -66,7 +66,7 @@
      * Assert that a value is an object
      *
      * @deprecated
-     * @param   mixed var
+     * @param   var var
      * @param   string error default 'notobject'
      */
     public function assertObject($var, $error= 'notobject') {
@@ -79,7 +79,7 @@
      * Assert that a value is empty
      *
      * @deprecated
-     * @param   mixed var
+     * @param   var var
      * @param   string error default 'notempty'
      * @see     php://empty
      */
@@ -93,7 +93,7 @@
      * Assert that a value is not empty
      *
      * @deprecated
-     * @param   mixed var
+     * @param   var var
      * @param   string error default 'empty'
      * @see     php://empty
      */
@@ -141,8 +141,8 @@
     /**
      * Compare two values
      *
-     * @param   mixed a
-     * @param   mixed b
+     * @param   var a
+     * @param   var b
      * @return  bool TRUE if the two values are equal, FALSE otherwise
      */
     protected function _compare($a, $b) {
@@ -161,8 +161,8 @@
     /**
      * Assert that two values are equal
      *
-     * @param   mixed expected
-     * @param   mixed actual
+     * @param   var expected
+     * @param   var actual
      * @param   string error default 'notequal'
      */
     public function assertEquals($expected, $actual, $error= 'notequal') {
@@ -174,8 +174,8 @@
     /**
      * Assert that two values are not equal
      *
-     * @param   mixed expected
-     * @param   mixed actual
+     * @param   var expected
+     * @param   var actual
      * @param   string error default 'equal'
      */
     public function assertNotEquals($expected, $actual, $error= 'equal') {
@@ -187,7 +187,7 @@
     /**
      * Assert that a value is true
      *
-     * @param   mixed var
+     * @param   var var
      * @param   string error default 'nottrue'
      */
     public function assertTrue($var, $error= 'nottrue') {
@@ -199,7 +199,7 @@
     /**
      * Assert that a value is false
      *
-     * @param   mixed var
+     * @param   var var
      * @param   string error default 'notfalse'
      */
     public function assertFalse($var, $error= 'notfalse') {
@@ -211,7 +211,7 @@
     /**
      * Assert that a value's type is null
      *
-     * @param   mixed var
+     * @param   var var
      * @param   string error default 'notnull'
      */
     public function assertNull($var, $error= 'notnull') {

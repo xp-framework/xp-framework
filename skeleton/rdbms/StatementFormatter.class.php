@@ -40,7 +40,7 @@
      * Embed the given arguments into the format string.
      *
      * @param   string fmt
-     * @param   mixed[] args
+     * @param   var[] args
      * @return  string
      * @throws  rdbms.SQLStateException if an error is encountered
      */
@@ -120,7 +120,7 @@
      * Prepare a value for insertion with a given type.
      *
      * @param   string type
-     * @param   mixed var
+     * @param   var var
      * @return  string
      */
     public function prepare($type, $var) {
@@ -171,7 +171,7 @@
     /**
      * Format a number
      *
-     * @param   mixed arg
+     * @param   var arg
      * @return  string
      */
     public function numval($arg) {

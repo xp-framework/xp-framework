@@ -78,7 +78,7 @@
      * list[]= overloading
      *
      * @param   int offset
-     * @param   mixed value
+     * @param   var value
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      */
     public function offsetSet($offset, $value) {
@@ -156,7 +156,7 @@
      * Returns the index within this string of the first occurrence of 
      * the specified substring.
      *
-     * @param   mixed arg either a string or a String
+     * @param   var arg either a string or a String
      * @param   int start default 0
      * @return  bool
      */
@@ -169,7 +169,7 @@
      * Returns the index within this string of the last occurrence of 
      * the specified substring.
      *
-     * @param   mixed arg either a string or a String
+     * @param   var arg either a string or a String
      * @return  bool
      */
     public function lastIndexOf($arg) {
@@ -192,7 +192,7 @@
     /**
      * Returns whether a given substring is contained in this string
      *
-     * @param   mixed arg
+     * @param   var arg
      * @return  bool
      */
     public function contains($arg) {
@@ -202,8 +202,8 @@
     /**
      * Returns whether a given substring is contained in this string
      *
-     * @param   mixed old
-     * @param   mixed new default ''
+     * @param   var old
+     * @param   var new default ''
      * @return  lang.types.String this string
      */
     public function replace($old, $new= '') {
@@ -221,7 +221,7 @@
      *   $s->concat(' ')->concat('World');
      * </code>
      *
-     * @param   mixed arg
+     * @param   var arg
      * @return  lang.types.String this string
      */
     public function concat($arg) {
@@ -233,7 +233,7 @@
     /**
      * Returns whether this string starts with a given argument.
      *
-     * @param   mixed arg either a string or a String
+     * @param   var arg either a string or a String
      * @return  bool
      */
     public function startsWith($arg) {
@@ -243,7 +243,7 @@
     /**
      * Returns whether this string starts with a given argument.
      *
-     * @param   mixed arg either a string or a String
+     * @param   var arg either a string or a String
      * @return  bool
      */
     public function endsWith($arg) {

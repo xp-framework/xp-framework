@@ -135,7 +135,7 @@
      *   rw-r--r--  # 644
      * </pre>
      *
-     * @param   mixed perm
+     * @param   var perm
      * @throws  lang.IllegalArgumentException
      */
     public function setPermissions($perm) {
@@ -276,7 +276,7 @@
     /**
      * Set Name
      *
-     * @param   mixed name
+     * @param   var name
      */
     public function setName($name) {
       $this->name= $name;

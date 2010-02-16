@@ -273,7 +273,7 @@
      * argument
      *
      * @param   peer.mail.MailFolder folder
-     * @param   mixed* msgnums
+     * @param   var* msgnums
      * @return  array messages
      */    
     public function getMessages($f) {

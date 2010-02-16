@@ -16,7 +16,7 @@
      * Update method
      *
      * @param   util.Observable obs
-     * @param   mixed arg default NULL
+     * @param   var arg default NULL
      */
     public function update($obs, $arg= NULL);
   

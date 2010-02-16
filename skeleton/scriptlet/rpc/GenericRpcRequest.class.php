@@ -24,7 +24,7 @@
     /**
      * Set callback object.
      *
-     * @param   mixed object
+     * @param   var object
      */
     public function setCallback($object) {
       $this->_cb= $object;

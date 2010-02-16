@@ -33,7 +33,7 @@
      * Constructor.
      *
      * @param   string base
-     * @param   mixed[] args
+     * @param   var[] args
      */
     public function __construct() {
       $args= func_get_args();
@@ -46,7 +46,7 @@
      * Format the query as requested by the format identifiers. Values are escaped
      * approriately, so they're safe to use in the query.
      *
-     * @param   mixed[] args
+     * @param   var[] args
      * @return  string filter
      */
     protected function _prepare($args) {
@@ -102,7 +102,7 @@
     /**
      * Prepare a query statement.
      *
-     * @param   mixed[] args
+     * @param   var[] args
      * @return  string
      */
     public function prepare() {
@@ -150,7 +150,7 @@
     /**
      * Set Base
      *
-     * @param   mixed[] args
+     * @param   var[] args
      */
     public function setBase() {
       $args= func_get_args();
@@ -178,7 +178,7 @@
     /**
      * Set Attrs
      *
-     * @param   mixed[] attrs
+     * @param   var[] attrs
      */
     public function setAttrs($attrs) {
       $this->attrs= $attrs;
@@ -187,7 +187,7 @@
     /**
      * Get Attrs
      *
-     * @return  mixed[]
+     * @return  var[]
      */
     public function getAttrs() {
       return $this->attrs;

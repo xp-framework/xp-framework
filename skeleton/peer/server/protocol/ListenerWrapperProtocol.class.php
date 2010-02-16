@@ -69,7 +69,7 @@
      * Handle client data
      *
      * @param   peer.Socket
-     * @return  mixed
+     * @return  var
      */
     public function handleData($socket) { 
       if (NULL === ($data= $socket->readBinary())) throw new IOException('EOF');

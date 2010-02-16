@@ -71,7 +71,7 @@
      *
      * @param   string name
      * @param   string key default NULL
-     * @return  mixed
+     * @return  var
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
@@ -126,7 +126,7 @@
      * specified object.
      *
      * @param   lang.Object instance
-     * @return  mixed  
+     * @return  var  
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      * @throws  lang.IllegalAccessException in case this field is not public
      */
@@ -161,7 +161,7 @@
      * specified object.
      *
      * @param   lang.Object instance
-     * @param   mixed value
+     * @param   var value
      * @throws  lang.IllegalArgumentException in case the passed object is not an instance of the declaring class
      * @throws  lang.IllegalAccessException in case this field is not public
      */

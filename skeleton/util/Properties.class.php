@@ -204,7 +204,7 @@
      * </code>
      *
      * @see     xp://util.Properties#getFirstSection
-     * @return  mixed string section or FALSE if this was the last section
+     * @return  var string section or FALSE if this was the last section
      */
     public function getNextSection() {
       $this->_load();
@@ -217,7 +217,7 @@
      * Read an entire section into an array
      *
      * @param   string name
-     * @param   mixed[] default default array() what to return in case the section does not exist
+     * @param   var[] default default array() what to return in case the section does not exist
      * @return  array
      */
     public function readSection($name, $default= array()) {
@@ -249,7 +249,7 @@
      *
      * @param   string section
      * @param   string key
-     * @param   mixed[] default default NULL what to return in case the section or key does not exist
+     * @param   var[] default default NULL what to return in case the section or key does not exist
      * @return  array
      */
     public function readArray($section, $key, $default= array()) {
@@ -446,7 +446,7 @@
      *
      * @param   string section
      * @param   string key
-     * @param   mixed value either a util.Hashmap or an array
+     * @param   var value either a util.Hashmap or an array
      */
     public function writeHash($section, $key, $value) {
       $this->_load();

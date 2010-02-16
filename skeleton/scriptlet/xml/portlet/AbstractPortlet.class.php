@@ -76,7 +76,7 @@
      * Set an attribut by name
      *
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      * @param   scriptlet.xml.portlet.RunData rundata
      */
     public function setAttribute($name, $value, $rundata) {
@@ -88,9 +88,9 @@
      * value is non-existant.
      *
      * @param   string name
-     * @param   mixed default
+     * @param   var default
      * @param   scriptlet.xml.portlet.RunData rundata
-     * @return  mixed
+     * @return  var
      */
     public function getAttribute($name, $default, $rundata) {
       if (!array_key_exists($name, $this->attributes)) return $default;

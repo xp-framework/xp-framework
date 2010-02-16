@@ -22,7 +22,7 @@
     </xs:simpleContent>
   </xs:complexType>
   
-  <xs:complexType name="cparamType" mixed="true">
+  <xs:complexType name="cparamType" var="true">
     <xs:sequence minOccurs="0" maxOccurs="1">
       <xs:element name="value" type="valueType"/>
     </xs:sequence>

@@ -70,7 +70,7 @@
      * Wrapper that sends a command to the remote host.
      *
      * @param   string format
-     * @param   mixed* args
+     * @param   var* args
      * @return  bool success
      * @throws  peer.ProtocolException in case the command is too long
      */
@@ -238,7 +238,7 @@
     /**
      * Get Article
      *
-     * @param   mixed Id eighter a messageId or an articleId
+     * @param   var Id eighter a messageId or an articleId
      * @return  peer.news.Article
      * @throws  io.IOException in case article could not be retrieved
      */
@@ -290,7 +290,7 @@
     /**
      * Retrieve body of an article
      *
-     * @param   mixed Id eighter a messageId or an articleId default NULL 
+     * @param   var Id eighter a messageId or an articleId default NULL 
      * @return  string body
      * @throws  io.IOException in case body could not be retrieved
      */
@@ -307,7 +307,7 @@
     /**
      * Retrieve header of an article
      *
-     * @param   mixed Id eighter a messageId or an articleId default NULL
+     * @param   var Id eighter a messageId or an articleId default NULL
      * @return  array headers
      * @throws  io.IOException in case headers could not be retrieved
      */

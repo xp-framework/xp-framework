@@ -79,8 +79,8 @@
     /**
      * Invokes this method
      *
-     * @param   mixed[] args default array()
-     * @return  mixed
+     * @param   var[] args default array()
+     * @return  var
      */
     public function invoke($args= array()) {
       try {

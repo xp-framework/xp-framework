@@ -196,7 +196,7 @@
     /**
      * Callback for fstat
      *
-     * @return  array<string, mixed> stat
+     * @return  array<string, var> stat
      */
     public function stream_stat() {
       return array('size' => $this->length);
@@ -208,7 +208,7 @@
      * @see     php://streamwrapper.url-stat
      * @param   string path
      * @param   int flags
-     * @return  array<string, mixed> stat
+     * @return  array<string, var> stat
      */
     public function url_stat($path, $flags) {
       sscanf(urldecode($path), "iostr%c://%[^$]", $m, $id);

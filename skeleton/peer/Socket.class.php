@@ -127,7 +127,7 @@
     /**
      * Set timeout
      *
-     * @param   mixed _timeout
+     * @param   var _timeout
      */
     public function setTimeout($timeout) {
       $this->_timeout= $timeout;
@@ -141,7 +141,7 @@
     /**
      * Get timeout
      *
-     * @return  mixed
+     * @return  var
      */
     public function getTimeout() {
       return $this->_timeout;

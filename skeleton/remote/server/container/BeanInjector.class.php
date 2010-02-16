@@ -45,7 +45,7 @@
      *
      * @param   string type
      * @param   string name
-     * @return  mixed
+     * @return  var
      */
     function injectFor($type, $name) {
       $typemethods= array(

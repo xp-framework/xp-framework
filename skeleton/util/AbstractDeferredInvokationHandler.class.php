@@ -28,8 +28,8 @@
      *
      * @param   lang.reflect.Proxy proxy
      * @param   string method the method name
-     * @param   mixed* args an array of arguments
-     * @return  mixed
+     * @param   var* args an array of arguments
+     * @return  var
      * @throws  util.DeferredInitializationException
      */
     public function invoke($proxy, $method, $args) {

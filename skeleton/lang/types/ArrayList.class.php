@@ -20,7 +20,7 @@
     /**
      * Create a new instance of an ArrayList
      *
-     * @param   mixed arg either mixed[] => values or an int => size
+     * @param   var arg either var[] => values or an int => size
      * @return  lang.types.ArrayList
      */
     public static function newInstance($arg) {
@@ -47,7 +47,7 @@
     /**
      * Constructor
      *
-     * @param   mixed* values
+     * @param   var* values
      */
     public function __construct() {
       if (0 != ($this->length= func_num_args())) {
@@ -69,7 +69,7 @@
      * = list[] overloading
      *
      * @param   int offset
-     * @return  mixed
+     * @return  var
      * @throws  lang.IndexOutOfBoundsException if key does not exist
      */
     public function offsetGet($offset) {
@@ -83,7 +83,7 @@
      * list[]= overloading
      *
      * @param   int offset
-     * @param   mixed value
+     * @param   var value
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      */
     public function offsetSet($offset, $value) {

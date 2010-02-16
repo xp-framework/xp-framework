@@ -16,7 +16,7 @@
      * Renders a chart
      *
      * @param   img.chart.Chart chart
-     * @return  mixed
+     * @return  var
      */
     public function render($chart);
   }

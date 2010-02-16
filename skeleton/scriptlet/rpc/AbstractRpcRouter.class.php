@@ -158,7 +158,7 @@
      * Calls the handler that the action reflects to
      *
      * @param   scriptlet.rpc.AbstractRpcMessage message object (from request)
-     * @return  mixed result of method call
+     * @return  var result of method call
      * @throws  lang.IllegalArgumentException if there is no such method
      * @throws  lang.IllegalAccessException for non-public methods
      */

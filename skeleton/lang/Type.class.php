@@ -82,7 +82,7 @@
      *   <li>Primitive types (string, integer, double, boolean, array)</li>
      *   <li>Array notations (string[] or string*)</li>
      *   <li>Resources</li>
-     *   <li>Any type (mixed or *)</li>
+     *   <li>Any type (var or *)</li>
      *   <li>Generic notations (util.collections.HashTable<lang.types.String, lang.Generic>)</li>
      *   <li>Anything else will be passed to XPClass::forName()</li>
      * </ul>

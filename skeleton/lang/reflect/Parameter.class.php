@@ -97,7 +97,7 @@
      * Get default value.
      *
      * @throws  lang.IllegalStateException in case this argument is not optional
-     * @return  mixed
+     * @return  var
      */
     public function getDefaultValue() {
       if ($this->_reflect->isOptional()) {

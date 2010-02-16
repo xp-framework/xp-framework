@@ -25,8 +25,8 @@
     /**
      * Construct
      *
-     * @param   mixed min either an integer or a float
-     * @param   mixed max either an integer or a float
+     * @param   var min either an integer or a float
+     * @param   var max either an integer or a float
      */
     public function __construct($min, $max) {
       $this->minValue= $min;
