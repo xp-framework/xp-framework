@@ -271,7 +271,7 @@
       $signature= '';
       foreach ($this->getParameters() as $param) {
         if ($param->isOptional()) {
-          $signature.= ', ['.$param->getTypeName().' $'.$param->getName().'= '.xp::stringOf($param->getDefaultValue()).']';
+          $signature.= ', ['.$param->getTypeName().' $'.$param->getName().'= '.str_replace("\n", ' ', xp::stringOf($param->getDefaultValue())).']';
         } else {
           $signature.= ', '.$param->getTypeName().' $'.$param->getName();
         }
