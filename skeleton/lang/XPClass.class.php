@@ -470,7 +470,7 @@
     }
     
     /**
-     * Retrieve the class loader a class was loaded with
+     * Retrieve the class loader a class was loaded with.
      *
      * @return  lang.IClassLoader
      */
@@ -485,8 +485,11 @@
      * @return  lang.IClassLoader
      */
     protected static function _classLoaderFor($name) {
-      sscanf(xp::$registry['classloader.'.$name], '%[^:]://%[^$]', $cl, $argument);
-      return call_user_func(array(xp::reflect($cl), 'instanceFor'), $argument);
+      if (isset(xp::$registry[$l= 'classloader.'.$name])) {
+        sscanf(xp::$registry[$l], '%[^:]://%[^$]', $cl, $argument);
+        return call_user_func(array(xp::reflect($cl), 'instanceFor'), $argument);
+      }
+      return NULL;    // Internal class, e.g.
     }
 
     /**
@@ -501,7 +504,8 @@
       if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
 
       // Retrieve class' sourcecode
-      if (!($bytes= self::_classLoaderFor($class)->loadClassBytes($class))) return NULL;
+      $cl= self::_classLoaderFor($class);
+      if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
 
       $details= array(array(), array());
       $annotations= array();

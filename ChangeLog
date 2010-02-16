@@ -47,6 +47,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated lang.Type::$ANY in favor of lang.Type::$VAR
+  (friebe)
 - Changed util.collections.Map interface to ensure array access works.
   Any implementation must now adhere to http://de3.php.net/arrayaccess
   (friebe)
@@ -66,8 +68,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added "-r" command line switch to xp runner
+  http://news.xp-framework.net/article/345/2010/02/16/
+  (friebe)
 - Enabled discovery of port used in bind() when setting to port to 0 -
-  - which indicates to use any free port - in peer.ServerSocket
+  which indicates to use any free port - in peer.ServerSocket
   http://news.xp-framework.net/article/343/2010/02/01/ 
   (friebe)
 

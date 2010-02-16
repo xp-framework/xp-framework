@@ -208,7 +208,7 @@
      */
     #[@test]
     public function anyType() {
-      $this->assertEquals(Type::$ANY, $this->methodParameter('serialize', 0)->getType());
+      $this->assertEquals(Type::$VAR, $this->methodParameter('serialize', 0)->getType());
     }
 
     /**
@@ -321,7 +321,7 @@
     #[@test]
     public function stringOfAnyTyped() {
       $this->assertEquals(
-        'lang.reflect.Parameter<lang.Type<*> value>', 
+        'lang.reflect.Parameter<lang.Type<var> value>', 
         $this->methodParameter('serialize', 0)->toString()
       );
     }

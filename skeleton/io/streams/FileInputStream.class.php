@@ -40,6 +40,7 @@
      * Returns the number of bytes that can be read from this stream 
      * without blocking.
      *
+     * @return  int
      */
     public function available() {
       return $this->file->size() - $this->file->tell();

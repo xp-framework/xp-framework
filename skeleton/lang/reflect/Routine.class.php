@@ -117,7 +117,7 @@
      * @return  string
      */
     public function getReturnType() {
-      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$ANY;
+      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$VAR;
       return Type::forName(ltrim($details[DETAIL_RETURNS], '&'));
     }
 
@@ -127,7 +127,7 @@
      * @return  string
      */
     public function getReturnTypeName() {
-      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return NULL;
+      if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return 'var';
       return ltrim($details[DETAIL_RETURNS], '&');
     }
 
@@ -271,7 +271,7 @@
       $signature= '';
       foreach ($this->getParameters() as $param) {
         if ($param->isOptional()) {
-          $signature.= ', ['.$param->getTypeName().' $'.$param->getName().'= '.xp::stringOf($param->getDefaultValue()).']';
+          $signature.= ', ['.$param->getTypeName().' $'.$param->getName().'= '.str_replace("\n", ' ', xp::stringOf($param->getDefaultValue())).']';
         } else {
           $signature.= ', '.$param->getTypeName().' $'.$param->getName();
         }

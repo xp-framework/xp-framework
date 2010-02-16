@@ -16,14 +16,15 @@
    */
   class Type extends Object {
     public static
-      $ANY,
+      $ANY,           // deprecated
+      $VAR,
       $VOID;
 
     public
       $name= '';
 
     static function __static() {
-      self::$ANY= new self('*');
+      self::$ANY= self::$VAR= new self('var');
       self::$VOID= new self('void');
     }
 
@@ -110,7 +111,7 @@
         case 'var': 
         case '*': 
         case 'mixed': 
-          return self::$ANY;
+          return self::$VAR;
 
         case 'array': 
         case '*' == substr($name, -1): 

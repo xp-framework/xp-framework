@@ -681,7 +681,7 @@
       $return= $this->runWith(array($command->getClassName()));
       $this->assertEquals(2, $return);
       $this->assertEquals('', $this->out->getBytes());
-      $this->assertOnStream($this->err, '*** Unknown injection type "*" at method "setOutput"');
+      $this->assertOnStream($this->err, '*** Unknown injection type "var" at method "setOutput"');
     }
 
     /**

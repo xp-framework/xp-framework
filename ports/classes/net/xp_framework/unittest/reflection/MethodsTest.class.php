@@ -552,5 +552,20 @@
         XPClass::forName('io.collections.IOCollection')->getMethod('getOrigin')->getReturnTypeName()
       );
     }
+
+    /**
+     * Tests util.collections.Map's method offsetGet() - which it
+     * inherites from PHP's ArrayAccess interface - correctly
+     * invokes its toString() method.
+     *
+     * @see     xp://util.collections.Map
+     */
+    #[@test]
+    public function arrayAccessMethod() {
+      $this->assertEquals(
+        'public abstract var offsetGet(var $offset)', 
+        XPClass::forName('util.collections.Map')->getMethod('offsetGet')->toString()
+      );
+    }
   }
 ?>
