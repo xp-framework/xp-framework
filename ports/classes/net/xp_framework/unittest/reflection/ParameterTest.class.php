@@ -321,7 +321,7 @@
     #[@test]
     public function stringOfAnyTyped() {
       $this->assertEquals(
-        'lang.reflect.Parameter<lang.Type<*> value>', 
+        'lang.reflect.Parameter<lang.Type<var> value>', 
         $this->methodParameter('serialize', 0)->toString()
       );
     }
