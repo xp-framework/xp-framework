@@ -25,6 +25,15 @@
       parent::__construct($message);
       $this->loaders= $loaders;
     }
+    
+    /**
+     * Returns the classloaders that were asked
+     *
+     * @return  lang.IClassLoader[]
+     */
+    public function getLoaders() {
+      return $this->loaders;
+    }
 
     /**
      * Retrieve compound representation
