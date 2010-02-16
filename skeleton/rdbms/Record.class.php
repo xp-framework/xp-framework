@@ -27,8 +27,8 @@
      * Sets a field's value by the field's name and returns the previous value.
      *
      * @param   string field name
-     * @param   mixed value
-     * @return  mixed previous value
+     * @param   var value
+     * @return  var previous value
      */
     public function set($field, $value) {
       $prev= $this->{$field};

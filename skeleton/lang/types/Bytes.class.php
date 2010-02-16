@@ -23,7 +23,7 @@
     /**
      * Returns input as byte
      *
-     * @param   mixed in
+     * @param   var in
      * @return  string
      */
     protected function asByte($in) {
@@ -36,7 +36,7 @@
     /**
      * Constructor
      *
-     * @param   mixed initial default NULL
+     * @param   var initial default NULL
      * @throws  lang.IllegalArgumentException in case argument is of incorrect type.
      */
     public function __construct($initial= NULL) {
@@ -90,7 +90,7 @@
      * list[]= overloading
      *
      * @param   int offset
-     * @param   mixed value
+     * @param   var value
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      * @throws  lang.IndexOutOfBoundsException if key does not exist
      */

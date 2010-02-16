@@ -53,8 +53,8 @@
      * Should be used internally to correctly calculate the offset
      * for subsequent reads.
      *
-     * @param   mixed arg
-     * @return  mixed arg
+     * @param   var arg
+     * @return  var arg
      */
     protected function _track($arg) {
       $this->offset+= ($this->_super->tell()- ($this->_offset+ $this->offset));

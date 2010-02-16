@@ -55,8 +55,8 @@
      *
      * @param   string instancename
      * @param   string methodname
-     * @param   mixed* method arguments
-     * @return  mixed
+     * @param   var* method arguments
+     * @return  var
      * @throws  lang.IllegalArgumentException if the instance is not known
      * @throws  lang.ElementNotFoundException if the given method does not exist or is not xsl-accessible
      */

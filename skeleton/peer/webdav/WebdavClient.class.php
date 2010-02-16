@@ -57,7 +57,7 @@
     /**
      * Constructor.
      *
-     * @param   mixed url either a string or a peer.URL object
+     * @param   var url either a string or a peer.URL object
      */
     public function __construct($url) {
       if (!$url instanceof URL) $this->url= new URL($url); else $this->url= $url;
@@ -177,7 +177,7 @@
      * @param   string source
      * @param   string destination
      * @param   bool overwrite, default FALSE
-     * @param   mixed depth, default Infinity
+     * @param   var depth, default Infinity
      * @return  peer.http.HttpResponse response object
      * @see     rfc://2518
      */

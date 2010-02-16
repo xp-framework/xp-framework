@@ -97,7 +97,7 @@
     /**
      * Retrieve identity
      *
-     * @return  mixed identity value
+     * @return  var identity value
      */
     public function identity($field= NULL) {
       $q= $this->query('select currval(%s) as id', $field);
@@ -118,7 +118,7 @@
     /**
      * Execute any statement
      *
-     * @param   mixed* args
+     * @param   var* args
      * @return  rdbms.pgsql.PostgreSQLResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
@@ -180,7 +180,7 @@
      * Retrieve transaction state
      *
      * @param   string name
-     * @return  mixed state
+     * @return  var state
      */
     public function transtate($name) { 
       return -1;

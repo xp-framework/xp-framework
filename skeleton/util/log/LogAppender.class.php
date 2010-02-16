@@ -16,7 +16,7 @@
     /**
      * Append data
      *
-     * @param   mixed* args
+     * @param   var* args
      */ 
     public abstract function append();
  
@@ -30,7 +30,7 @@
     /**
      * Retrieve a readable representation of a variable
      *
-     * @param   mixed var
+     * @param   var var
      * @return  string
      */
     protected function varSource($var) {

@@ -59,7 +59,7 @@
     /**
      * Lookup helper
      *
-     * @param   array<string, mixed> exif
+     * @param   array<string, var> exif
      * @param   string* key
      * @return  string value or NULL
      */
@@ -75,7 +75,7 @@
      * Read from a file
      *
      * @param   io.File file
-     * @param   mixed default default void what should be returned in case no data is found
+     * @param   var default default void what should be returned in case no data is found
      * @return  img.util.ExifData
      * @throws  lang.FormatException in case malformed meta data is encountered
      * @throws  lang.ElementNotFoundException in case no meta data is available

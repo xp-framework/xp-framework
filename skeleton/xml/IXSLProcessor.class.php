@@ -21,7 +21,7 @@
     /**
      * Set a scheme handler
      *
-     * @param   mixed callback
+     * @param   var callback
      * @see     php://xslt_set_scheme_handlers
      */
     public function setSchemeHandler($cb);

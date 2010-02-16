@@ -39,7 +39,7 @@
     /**
      * constructor
      *
-     * @param  mixed string('*') or rdbms.SQLRenderable field optional default is string('*')
+     * @param  var string('*') or rdbms.SQLRenderable field optional default is string('*')
      * @throws lang.IllegalArgumentException
      */
     public function __construct($field= '*') {

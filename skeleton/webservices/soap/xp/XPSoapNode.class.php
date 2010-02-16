@@ -24,7 +24,7 @@
     /**
      * Get type name by content
      *
-     * @param   mixed content
+     * @param   var content
      * @return  string typename, e.g. "xsd:string"
      */
     protected function _typeName($content) {
@@ -41,8 +41,8 @@
     /**
      * Format content
      *
-     * @param   mixed content
-     * @return  mixed content, formatted, if necessary
+     * @param   var content
+     * @return  var content, formatted, if necessary
      */
     protected function _contentFormat($content) {
       if (is_bool($content)) {
@@ -55,8 +55,8 @@
      * Get content in iso-8859-1 encoding (the default).
      *
      * @param   string encoding
-     * @param   mixed namespaces
-     * @return  mixed data
+     * @param   var namespaces
+     * @return  var data
      */
     public function getContent($encoding= NULL, $namespaces= NULL) {
       $ret= $this->content;
@@ -114,7 +114,7 @@
      * Marshaller
      *
      * @param   webservices.soap.xp.XPSoapNode child
-     * @param   mixed value
+     * @param   var value
      * @param   webservices.soap.xp.XPSoapMapping mapping
      */
     protected function _marshall($child, $value, $mapping) {

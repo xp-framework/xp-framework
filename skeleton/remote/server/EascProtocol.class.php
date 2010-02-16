@@ -65,7 +65,7 @@
      *
      * @param   io.Stream stream
      * @param   int type
-     * @param   mixed data
+     * @param   var data
      */
     protected function answer($stream, $type, $data) {
       $length= strlen($data);
@@ -173,7 +173,7 @@
      * Handle client data
      *
      * @param   peer.Socket socket
-     * @return  mixed
+     * @return  var
      */
     public function handleData($socket) {
 

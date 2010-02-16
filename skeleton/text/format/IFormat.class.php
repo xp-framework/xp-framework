@@ -38,8 +38,8 @@
     /**
      * Apply format to argument
      *
-     * @param   mixed fmt
-     * @param   mixed argument
+     * @param   var fmt
+     * @param   var argument
      * @return  string
      * @throws  lang.IllegalAccessException
      */
@@ -50,7 +50,7 @@
     /**
      * Formats this message with the given arguments
      *
-     * @param   mixed* args
+     * @param   var* args
      * @throws  lang.FormatException
      */
     public function format() {

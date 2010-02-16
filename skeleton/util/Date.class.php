@@ -37,7 +37,7 @@
      * . If no timezone has been given as second parameter, the system's default
      *   timezone is used.
      *
-     * @param   mixed in default NULL either a string or a Unix timestamp or DateTime object, defaulting to now
+     * @param   var in default NULL either a string or a Unix timestamp or DateTime object, defaulting to now
      * @param   string timezone default NULL string of timezone
      * @throws  lang.IllegalArgumentException in case the date is unparseable
      */

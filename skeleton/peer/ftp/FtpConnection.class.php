@@ -338,7 +338,7 @@
      * Upload a file
      *
      * @deprecated Use FtpFile::uploadFrom() instead!
-     * @param   mixed arg either a filename or an open File object
+     * @param   var arg either a filename or an open File object
      * @param   string remote default NULL remote filename, will default to basename of arg
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
@@ -353,7 +353,7 @@
      *
      * @deprecated Use FtpFile::downloadTo() instead!
      * @param   string remote remote filename
-     * @param   mixed arg either a filename or an open File object
+     * @param   var arg either a filename or an open File object
      * @param   string mode default FTP_ASCII (either FTP_ASCII or FTP_BINARY)
      * @return  bool success
      * @throws  peer.SocketException

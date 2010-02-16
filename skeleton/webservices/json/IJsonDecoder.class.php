@@ -16,7 +16,7 @@
     /**
      * Encode data into string
      *
-     * @param   mixed data
+     * @param   var data
      * @return  string
      */
     public function encode($data);
@@ -25,7 +25,7 @@
      * Decode string into data
      *
      * @param   string string
-     * @return  mixed
+     * @return  var
      */
     public function decode($string);      
   

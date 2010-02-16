@@ -55,7 +55,7 @@
     /**
      * Write a string
      *
-     * @param   mixed arg
+     * @param   var arg
      */
     public function write($arg) {
       $arg= $this->buffer.$arg;

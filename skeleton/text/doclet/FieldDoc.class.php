@@ -19,7 +19,7 @@
     /**
      * Retrieve initial value
      *
-     * @return  mixed
+     * @return  var
      */
     public function constantValue() {
       return $this->constantValue;

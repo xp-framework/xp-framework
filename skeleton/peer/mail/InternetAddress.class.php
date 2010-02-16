@@ -29,7 +29,7 @@
     /**
      * Constructor
      *
-     * @param   mixed mail
+     * @param   var mail
      * @param   string personal default ''
      */
     public function __construct($mail, $personal= '') {

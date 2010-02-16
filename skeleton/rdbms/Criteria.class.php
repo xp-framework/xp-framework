@@ -304,7 +304,7 @@
      *
      * @param   rdbms.DBConnection conn
      * @param   array types
-     * @param   mixed col either an rdbms.Column object or a string containing the column's name
+     * @param   var col either an rdbms.Column object or a string containing the column's name
      * @return  string
      */
     private function fragment($conn, $types, $col) {

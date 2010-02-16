@@ -16,7 +16,7 @@
     /**
      * execute query without set operation
      *
-     * @param  mixed[] values
+     * @param  var[] values
      * @return int number of affected rows
      * @throws lang.IllegalStateException
      */

@@ -29,7 +29,7 @@
      * Handle message
      *
      * @param   remote.server.EASCProtocol protocol
-     * @return  mixed data
+     * @return  var data
      */
     public function handle($protocol, $data) {
       $offset= 0;

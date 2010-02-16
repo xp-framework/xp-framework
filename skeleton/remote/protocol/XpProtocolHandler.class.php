@@ -49,7 +49,7 @@
     /**
      * Create a string representation of a given value
      *
-     * @param   mixed value
+     * @param   var value
      * @return  string
      */
     protected function stringOf($value) {
@@ -206,8 +206,8 @@
      *
      * @param   int oid
      * @param   string method
-     * @param   mixed[] args
-     * @return  mixed
+     * @param   var[] args
+     * @return  var
      */
     public function invoke($oid, $method, $args) {
       $this->cat && $this->cat->infof(
@@ -236,7 +236,7 @@
      *
      * @param   int type
      * @param   string data default ''
-     * @return  mixed
+     * @return  var
      * @throws  remote.RemoteException for server errors
      * @throws  lang.Error for unrecoverable errors
      */

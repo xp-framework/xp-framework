@@ -18,7 +18,7 @@
     /**
      * Constructor
      *
-     * @param   mixed value
+     * @param   var value
      */
     public function __construct($value) {
       if (is_int($value)) {

@@ -34,7 +34,7 @@
      * Constructor
      *
      * @param   string format
-     * @param   mixed* args
+     * @param   var* args
      */
     public function __construct() {
       $this->arguments= func_get_args();

@@ -31,7 +31,7 @@
     /**
      * execute query
      *
-     * @param  mixed[] values optional
+     * @param  var[] values optional
      * @return int number of affected rows
      * @throws lang.IllegalStateException
      */

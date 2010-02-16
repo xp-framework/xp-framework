@@ -73,7 +73,7 @@
     /**
      * Retrieve serialized representation of a variable
      *
-     * @param   mixed var
+     * @param   var var
      * @return  string
      * @throws  lang.FormatException if an error is encountered in the format 
      */  
@@ -130,7 +130,7 @@
      * Fetch best fitted mapper for the given object
      *
      * @param   lang.Object var
-     * @return  mixed FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
+     * @return  var FALSE in case no mapper could be found, &remote.protocol.SerializerMapping otherwise
      */
     public function mappingFor($var) {
       if (!($var instanceof Generic)) return FALSE;  // Safeguard
@@ -244,7 +244,7 @@
      *
      * @param   remote.protocol.SerializedData serialized
      * @param   array context default array()
-     * @return  mixed
+     * @return  var
      * @throws  lang.ClassNotFoundException if a class cannot be found
      * @throws  lang.FormatException if an error is encountered in the format 
      */  

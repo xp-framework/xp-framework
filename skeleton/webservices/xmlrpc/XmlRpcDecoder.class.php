@@ -19,7 +19,7 @@
      * Decode XML node-set into the data structures they represent
      *
      * @param   xml.Node node
-     * @return  mixed
+     * @return  var
      */
     public function decode(Node $node) {
       return $this->_unmarshall($node);
@@ -29,7 +29,7 @@
      * Recursively deserialize data for the given node.
      *
      * @param   xml.Node node
-     * @return  mixed
+     * @return  var
      * @throws  lang.IllegalArgumentException if the data cannot be deserialized
      * @throws  lang.ClassNotFoundException in case a XP object's class could not be loaded
      * @throws  xml.XMLFormatException

@@ -18,9 +18,9 @@
      * return a substring from col1, that start at
      * position given by col2 and is col3 chars long
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
-     * @param   mixed col2 string or rdbms.SQLFunction
-     * @param   mixed col3 string or rdbms.SQLFunction
+     * @param   var col1 string or rdbms.SQLFunction
+     * @param   var col2 string or rdbms.SQLFunction
+     * @param   var col3 string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function substring() {
@@ -35,9 +35,9 @@
      * indicates the character position in col2 at which the
      * search is to begin. If col1 is not found within col2, the value 0 is returned.
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
-     * @param   mixed col2 string or rdbms.SQLFunction
-     * @param   mixed col3 string or rdbms.SQLFunction optional
+     * @param   var col1 string or rdbms.SQLFunction
+     * @param   var col2 string or rdbms.SQLFunction
+     * @param   var col3 string or rdbms.SQLFunction optional
      * @return  rdbms.SQLFunction
      */
     public static function locate() {
@@ -50,7 +50,7 @@
      * cut off leading and trailing chars given ba col2
      * if col2 is omitted, whitespaces are cutted off
      * 
-     * @param   mixed* args string or rdbms.SQLFunction
+     * @param   var* args string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function trim() {
@@ -63,7 +63,7 @@
      * cut off leading chars given ba col2
      * if col2 is omitted, whitespaces are cutted off
      *
-     * @param   mixed* args string or rdbms.SQLFunction
+     * @param   var* args string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function ltrim() {
@@ -76,7 +76,7 @@
      * cut off trailing chars given ba col2
      * if col2 is omitted, whitespaces are cutted off
      *
-     * @param   mixed* args string or rdbms.SQLFunction
+     * @param   var* args string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function rtrim() {
@@ -88,7 +88,7 @@
     /**
      * get the length of col1
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function length($col) {
@@ -98,7 +98,7 @@
     /**
      * get the length of col1 in bit
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function bitLength($col) {
@@ -108,7 +108,7 @@
     /**
      * get col1 in upper case
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function upper($col) {
@@ -118,7 +118,7 @@
     /**
      * get col1 in lower case
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function lower($col) {
@@ -128,7 +128,7 @@
     /**
      * get the ascii value for a char
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
+     * @param   var col1 string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function ascii($col1) {
@@ -138,7 +138,7 @@
     /**
      * get the char for an ascii value
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
+     * @param   var col1 string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function char($col1) {
@@ -148,7 +148,7 @@
     /**
      * get the length of a string
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
+     * @param   var col1 string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function len($col1) {
@@ -158,7 +158,7 @@
     /**
      * turn a string backwards
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
+     * @param   var col1 string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function reverse($col1) {
@@ -168,7 +168,7 @@
     /**
      * get col1 whitespaces
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
+     * @param   var col1 string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function space($col1) {
@@ -179,7 +179,7 @@
      * concatinates all parameters
      * two arguments or more
      *
-     * @param   mixed* args string or rdbms.SQLFunction
+     * @param   var* args string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function concat() {
@@ -192,7 +192,7 @@
      * Returns a four-character soundex code for
      * character strings
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function soundex($val) {
@@ -202,7 +202,7 @@
     /**
      * extract seconds from a date field
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function second($col) {
@@ -212,7 +212,7 @@
     /**
      * extract minutes from a date field
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function minute($col) {
@@ -222,7 +222,7 @@
     /**
      * extract hours from a date field
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function hour($col) {
@@ -232,7 +232,7 @@
     /**
      * extract days from a date field
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function day($col) {
@@ -242,7 +242,7 @@
     /**
      * extract months from a date field
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function month($col) {
@@ -252,7 +252,7 @@
     /**
      * extract years from a date field
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function year($col) {
@@ -262,7 +262,7 @@
     /**
      * extract weeks from a date field
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function week($col) {
@@ -282,9 +282,9 @@
      * add the $offset to a certain $datepart of $date
      * e.g. dateadd('month', 4, getdate()) will return a date 4 months in the future
      *
-     * @param   mixed datepart string or rdbms.SQLFunction
-     * @param   mixed offset string or rdbms.SQLFunction
-     * @param   mixed date string or rdbms.SQLFunction
+     * @param   var datepart string or rdbms.SQLFunction
+     * @param   var offset string or rdbms.SQLFunction
+     * @param   var date string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function dateadd($datepart, $offset, $date) {
@@ -294,9 +294,9 @@
     /**
      * get the difference of date1 and date2 in "type"
      *
-     * @param   mixed type string or rdbms.SQLFunction
-     * @param   mixed date1 string or rdbms.SQLFunction
-     * @param   mixed date2 string or rdbms.SQLFunction
+     * @param   var type string or rdbms.SQLFunction
+     * @param   var date1 string or rdbms.SQLFunction
+     * @param   var date2 string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function datediff($type, $date1, $date2) {
@@ -307,8 +307,8 @@
      * produces the specified datepart of
      * the specified date as a character string.
      *
-     * @param   mixed type string or rdbms.SQLFunction
-     * @param   mixed date string or rdbms.SQLFunction
+     * @param   var type string or rdbms.SQLFunction
+     * @param   var date string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function datename($type, $date) {
@@ -319,8 +319,8 @@
      * produces the specified datepart of
      * the specified date as an integer
      *
-     * @param   mixed type string or rdbms.SQLFunction
-     * @param   mixed date string or rdbms.SQLFunction
+     * @param   var type string or rdbms.SQLFunction
+     * @param   var date string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function datepart($type, $date) {
@@ -330,7 +330,7 @@
     /**
      * get the absolut amount of col1
      * 
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function abs($col) {
@@ -341,7 +341,7 @@
      * get the angle (in radians) whose cosine
      * is the specified value.
      * 
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function acos($col) {
@@ -352,7 +352,7 @@
      * get the angle (in radians) whose sine
      * is the specified value.
      * 
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function asin($col) {
@@ -363,7 +363,7 @@
      * get the angle (in radians) whose tangent
      * is the specified value.
      * 
-     * @param   mixed* args string or rdbms.SQLFunction
+     * @param   var* args string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function atan() {
@@ -376,7 +376,7 @@
      * get the smallest integer greater than or
      * equal to the specified value.
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function ceil($val) {
@@ -386,7 +386,7 @@
     /**
      * Returns the cosine of the specified angle
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function cos($val) {
@@ -396,7 +396,7 @@
     /**
      * Returns the cotangent of the specified angle
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function cot($val) {
@@ -406,7 +406,7 @@
     /**
      * Converts radians to degrees.
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function degrees($val) {
@@ -417,7 +417,7 @@
      * Returns the exponential value of the
      * specified value..
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function exp($val) {
@@ -428,7 +428,7 @@
      * Returns the largest integer less than or equal
      * to the specified value.
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function floor($val) {
@@ -439,7 +439,7 @@
      * Returns the natural logarithm of the
      * specified value.
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function log($val) {
@@ -450,7 +450,7 @@
      * Returns the base 10 logarithm of the
      * specified value.
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function log10($val) {
@@ -469,8 +469,8 @@
     /**
      * return $val in the power of $power
      * 
-     * @param   mixed val string or rdbms.SQLFunction
-     * @param   mixed power string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
+     * @param   var power string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function power($val, $power) {
@@ -481,7 +481,7 @@
      * Converts degrees to radians. Results are of
      * the same type as numeric.
      * 
-     * @param   mixed val string or rdbms.SQLFunction
+     * @param   var val string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function radians($val) {
@@ -502,8 +502,8 @@
      * significant digits. A positive integer
      * determines the number of significant digits
      * 
-     * @param   mixed val string or rdbms.SQLFunction
-     * @param   mixed precision string or rdbms.SQLFunction optional default 0
+     * @param   var val string or rdbms.SQLFunction
+     * @param   var precision string or rdbms.SQLFunction optional default 0
      * @return  rdbms.SQLFunction
      */
     public static function round($val, $precision= 0) {
@@ -514,7 +514,7 @@
      * Returns the positive (+1), zero (0), or
      * negative (-1).
      * 
-     * @param   mixed val string or rdbms.SQLFunction optional default 0
+     * @param   var val string or rdbms.SQLFunction optional default 0
      * @return  rdbms.SQLFunction
      */
     public static function sign($val) {
@@ -524,7 +524,7 @@
     /**
      * Returns the sine of the specified angle
      * 
-     * @param   mixed val string or rdbms.SQLFunction optional default 0
+     * @param   var val string or rdbms.SQLFunction optional default 0
      * @return  rdbms.SQLFunction
      */
     public static function sin($val) {
@@ -534,7 +534,7 @@
     /**
      * get the square root of col1
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function sqrt($col) {
@@ -544,7 +544,7 @@
     /**
      * Returns the tangent of the specified angle
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function tan($col) {
@@ -554,7 +554,7 @@
     /**
      * cast col1 to the datatype typename
      *
-     * @param   mixed col1 string or rdbms.SQLFunction
+     * @param   var col1 string or rdbms.SQLFunction
      * @param   string typename
      * @return  rdbms.SQLFunction
      * @throws  lang.IllegalArgumentException
@@ -589,7 +589,7 @@
     /**
      * cast col1 to string
      *
-     * @param   mixed col string or rdbms.SQLFunction
+     * @param   var col string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function str($col) {
@@ -600,7 +600,7 @@
      * get the first argument, that is not NULL
      * two arguments or more
      *
-     * @param   mixed* args string or rdbms.SQLFunction
+     * @param   var* args string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function coalesce() {
@@ -611,8 +611,8 @@
     /**
      * return null if col1 equals col2, else col1
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function nullif($col1, $col2) {
@@ -622,7 +622,7 @@
     /**
      * get the type token for a value
      *
-     * @param   mixed obj
+     * @param   var obj
      * @return  string typetoken for prepare
      * @throws  lang.IllegalArgumentException
      */
@@ -636,8 +636,8 @@
     /**
      * sum two didits up
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function add($col1, $col2) {
@@ -647,8 +647,8 @@
     /**
      * sbtrakt the second parameter from the first
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function sub($col1, $col2) {
@@ -658,8 +658,8 @@
     /**
      * multiplies two digits
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function mul($col1, $col2) {
@@ -669,8 +669,8 @@
     /**
      * division
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function div($col1, $col2) {
@@ -680,8 +680,8 @@
     /**
      * bitwise and
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function bitAnd($col1, $col2) {
@@ -691,8 +691,8 @@
     /**
      * bitwise or
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function bitOr($col1, $col2) {
@@ -702,7 +702,7 @@
     /**
      * bitwise not
      *
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function bitNot($col1) {
@@ -712,8 +712,8 @@
     /**
      * bitwise XOr
      *
-     * @param   mixed string or rdbms.SQLFunction
-     * @param   mixed string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
+     * @param   var string or rdbms.SQLFunction
      * @return  rdbms.SQLFunction
      */
     public static function bitXor($col1, $col2) {

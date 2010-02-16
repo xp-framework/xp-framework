@@ -99,7 +99,7 @@
      *   $f->getMessages(3, 7, range(10, 14));
      * </code>
      *
-     * @param   mixed* msgnums
+     * @param   var* msgnums
      * @return  peer.mail.Message[]
      */
     public function getMessages() { 

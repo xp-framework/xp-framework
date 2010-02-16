@@ -47,7 +47,7 @@
     /**
      * Set Type
      *
-     * @param   mixed type
+     * @param   var type
      */
     public function setType($type) {
       $this->type= $type;
@@ -56,7 +56,7 @@
     /**
      * Get Type
      *
-     * @return  mixed
+     * @return  var
      */
     public function getType() {
       return $this->type;

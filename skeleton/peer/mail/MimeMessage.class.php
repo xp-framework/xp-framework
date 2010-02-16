@@ -177,7 +177,7 @@
      *
      * @param   array parameters
      * @param   string val
-     * @return  mixed value or FALSE if not found
+     * @return  var value or FALSE if not found
      */
     protected function _lookupattr($parameters, $val) {
       if (!is_array($parameters)) return FALSE;

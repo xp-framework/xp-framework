@@ -101,8 +101,8 @@
     /**
      * Apply format to argument
      *
-     * @param   mixed fmt
-     * @param   mixed argument
+     * @param   var fmt
+     * @param   var argument
      * @return  string
      */
     public function apply($fmt, $argument) {

@@ -79,7 +79,7 @@
     /**
      * Set Connection
      *
-     * @param   mixed connection either a name or a DBConnection instance
+     * @param   var connection either a name or a DBConnection instance
      */
     public function setConnection($connection) {
       // If we are passed a DBConnection, set the conn member directly,
@@ -129,7 +129,7 @@
     /**
      * Set Types
      *
-     * @param   mixed[] types
+     * @param   var[] types
      */
     public function setTypes($types) {
       $this->types= $types;
@@ -138,7 +138,7 @@
     /**
      * Set Primary
      *
-     * @param   mixed[] primary
+     * @param   var[] primary
      */
     public function setPrimary($primary) {
       $this->primary= $primary;
@@ -147,7 +147,7 @@
     /**
      * Set relations
      *
-     * @param   mixed[] relations
+     * @param   var[] relations
      */
     public function setRelations($relations) {
       $this->relations= $relations;
@@ -310,7 +310,7 @@
      * Inserts this object into the database
      *
      * @param   array values
-     * @return  mixed identity value or NULL if not applicable
+     * @return  var identity value or NULL if not applicable
      * @throws  rdbms.SQLException in case an error occurs
      */
     public function doInsert($values) {

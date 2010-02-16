@@ -164,7 +164,7 @@
      * Prepare an SQL statement
      *
      * @param   string fmt
-     * @param   mixed* args
+     * @param   var* args
      * @return  string
      */
     public function prepare() {
@@ -182,7 +182,7 @@
     /**
      * Execute an insert statement
      *
-     * @param   mixed* args
+     * @param   var* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
@@ -196,14 +196,14 @@
     /**
      * Retrieve identity
      *
-     * @return  mixed identity value
+     * @return  var identity value
      */
     abstract public function identity($field= NULL);
 
     /**
      * Execute an update statement
      *
-     * @param   mixed* args
+     * @param   var* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
@@ -217,7 +217,7 @@
     /**
      * Execute an update statement
      *
-     * @param   mixed* args
+     * @param   var* args
      * @return  int number of affected rows
      * @throws  rdbms.SQLStatementFailedException
      */
@@ -231,7 +231,7 @@
     /**
      * Execute a select statement and return all rows as an array
      *
-     * @param   mixed* args
+     * @param   var* args
      * @return  array rowsets
      * @throws  rdbms.SQLStatementFailedException
      */
@@ -248,7 +248,7 @@
     /**
      * Execute any statement
      *
-     * @param   mixed* args
+     * @param   var* args
      * @return  rdbms.ResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
@@ -283,7 +283,7 @@
      * Retrieve transaction state
      *
      * @param   string name
-     * @return  mixed state
+     * @return  var state
      */
     public function transtate($name) { }
     

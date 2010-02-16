@@ -21,7 +21,7 @@
     /**
      * Constructor
      *
-     * @param   mixed stream either an io.streams.OutputStream or an io.Stream (BC)
+     * @param   var stream either an io.streams.OutputStream or an io.Stream (BC)
      * @throws  lang.IllegalArgumentException when types are not met
      */
     public function __construct($stream) {

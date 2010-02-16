@@ -170,7 +170,7 @@
      * attribute is non-existant
      *
      * @param   string name
-     * @param   mixed default default NULL
+     * @param   var default default NULL
      * @return  string
      */
     public function getAttribute($name, $default= NULL) {

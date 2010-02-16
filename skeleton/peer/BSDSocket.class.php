@@ -111,7 +111,7 @@
      *
      * @param   int level
      * @param   int name
-     * @param   mixed value
+     * @param   var value
      * @see     php://socket_set_option
      */
     public function setOption($level, $name, $value) {
@@ -204,7 +204,7 @@
     /**
      * Set timeout
      *
-     * @param   mixed _timeout
+     * @param   var _timeout
      */
     public function setTimeout($timeout) {
       $this->_timeout= $timeout;

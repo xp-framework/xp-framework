@@ -34,7 +34,7 @@
     /**
      * Constructor
      *
-     * @param   mixed arg either a string or an int
+     * @param   var arg either a string or an int
      * @param   string charset default NULL
      */
     public function __construct($arg, $charset= NULL) {

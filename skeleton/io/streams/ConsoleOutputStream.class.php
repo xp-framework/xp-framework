@@ -42,7 +42,7 @@
     /**
      * Write a string
      *
-     * @param   mixed arg
+     * @param   var arg
      */
     public function write($arg) { 
       fwrite($this->descriptor, $arg);

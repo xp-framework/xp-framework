@@ -198,8 +198,8 @@
      * Fail this test case
      *
      * @param   string reason
-     * @param   mixed actual
-     * @param   mixed expect
+     * @param   var actual
+     * @param   var expect
      */
     public function fail($reason, $actual, $expect) {
       parent::fail('@'.$this->conn->getUrl()->getURL().': '.$reason, $actual, $expect);

@@ -183,7 +183,7 @@
      * @param   xml.Node child
      * @param   string context default NULL
      * @param   webservices.soap.xp.XPSoapMapping mapping
-     * @return  mixed result
+     * @return  var result
      */
     public function unmarshall($child, $context= NULL) {
       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
@@ -361,7 +361,7 @@
      * @param   bool names default FALSE
      * @param   string context default NULL
      * @param   array mapping
-     * @return  mixed data
+     * @return  var data
      */    
     protected function _recurseData($node, $names= FALSE, $context= NULL) {
       if (empty($node->children)) {
@@ -413,7 +413,7 @@
      * @param   int faultcode
      * @param   string faultstring
      * @param   string faultactor default NULL
-     * @param   mixed detail default NULL
+     * @param   var detail default NULL
      */    
     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
       $this->root->children[0]->children[0]= XPSoapNode::fromObject(new CommonSoapFault(
@@ -540,7 +540,7 @@
      *
      * @param   string context default 'ENUM'
      * @param   webservices.soap.xp.XPSoapMapping mapping
-     * @return  mixed data
+     * @return  var data
      * @throws  lang.FormatException in case no XMLNS_SOAPENV:Body was found
      */
     public function getData($context= 'ENUM') {

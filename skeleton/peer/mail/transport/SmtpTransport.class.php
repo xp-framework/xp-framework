@@ -62,7 +62,7 @@
      *
      * @param   string fmt or FALSE to indicate not to write any data
      * @param   string* args arguments for sprintf-string fmt
-     * @param   mixed expect int for one possible returncode, int[] for multiple
+     * @param   var expect int for one possible returncode, int[] for multiple
      *          or FALSE to indicate not to read any data
      * @return  string buf
      */

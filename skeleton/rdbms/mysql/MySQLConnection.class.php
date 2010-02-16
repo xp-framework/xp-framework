@@ -129,7 +129,7 @@
     /**
      * Retrieve identity
      *
-     * @return  mixed identity value
+     * @return  var identity value
      */
     public function identity($field= NULL) {
       $i= $this->query('select last_insert_id() as xp_id')->next('xp_id');

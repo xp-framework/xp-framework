@@ -54,7 +54,7 @@
      *   $f->new File(new Folder('lang'), 'Type.class.php');
      * </code>
      *
-     * @param   mixed base either a resource or a filename
+     * @param   var base either a resource or a filename
      * @param   string uri
      */
     public function __construct($base, $uri= NULL) {
@@ -606,7 +606,7 @@
      * Change permissions for the file
      *
      * @see     php://chmod
-     * @param   mixed mode
+     * @param   var mode
      * @return  bool success
      */
     public function setPermissions($mode) {

@@ -193,7 +193,7 @@
      *
      * @param   string name
      * @param   string key default NULL
-     * @return  mixed
+     * @return  var
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {

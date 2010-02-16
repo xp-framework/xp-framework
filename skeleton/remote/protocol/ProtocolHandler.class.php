@@ -37,8 +37,8 @@
      *
      * @param   int oid
      * @param   string method
-     * @param   mixed[] args
-     * @return  mixed
+     * @param   var[] args
+     * @return  var
      * @throws  remote.RemoteException
      */
     public function invoke($oid, $method, $args);

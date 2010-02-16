@@ -21,7 +21,7 @@
     /**
      * Constructor
      *
-     * @param   mixed input default NULL a string or a file object
+     * @param   var input default NULL a string or a file object
      */
     public function __construct($input= NULL) {
       if ($input instanceof File) {

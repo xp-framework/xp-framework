@@ -25,7 +25,7 @@
     /**
      * Constructor
      *
-     * @param   mixed faultcode faultcode (can be int or string)
+     * @param   var faultcode faultcode (can be int or string)
      * @param   string message
      * @param   lang.Throwable default NULL cause causing exception
      */
@@ -37,7 +37,7 @@
     /**
      * Set Faultcode
      *
-     * @param   mixed faultcode
+     * @param   var faultcode
      */
     public function setFaultcode($faultcode) {
       $this->faultcode= $faultcode;
@@ -46,7 +46,7 @@
     /**
      * Get Faultcode
      *
-     * @return  mixed
+     * @return  var
      */
     public function getFaultcode() {
       return $this->faultcode;

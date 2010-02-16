@@ -32,7 +32,7 @@
     /**
      * Return a string representation for use in SOAP
      *
-     * @return  mixed
+     * @return  var
      */
     public function toString() {
       return $this->_vector;

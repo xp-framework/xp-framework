@@ -91,8 +91,8 @@
      * or the default value in case this name does not exist
      *
      * @param   string name
-     * @param   mixed default default NULL 
-     * @return  mixed value
+     * @param   var default default NULL 
+     * @return  var value
      * @throws  lang.IllegalStateException when session is invalid
      */
     public function getValue($name, $default= NULL);

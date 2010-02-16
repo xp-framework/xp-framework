@@ -198,7 +198,7 @@
      * @param   string specific
      * @param   string section
      * @param   string key
-     * @param   mixed default default NULL
+     * @param   var default default NULL
      * @return  string
      */
     protected static function readString(Properties $pr, $specific, $section, $key, $default= NULL) {
@@ -213,7 +213,7 @@
      * @param   string specific
      * @param   string section
      * @param   string key
-     * @param   mixed default default NULL
+     * @param   var default default NULL
      * @return  string
      */
     protected static function readArray(Properties $pr, $specific, $section, $key, $default= NULL) {
@@ -228,7 +228,7 @@
      * @param   string specific
      * @param   string section
      * @param   string key
-     * @param   mixed default default NULL
+     * @param   var default default NULL
      * @return  string
      */
     protected static function readHash(Properties $pr, $specific, $section, $key, $default= NULL) {

@@ -101,7 +101,7 @@
      * Set temporary variable
      *
      * @param   string name
-     * @param   mixed value
+     * @param   var value
      */
     public function setTempVar($name, $value) {
       $this->tempVar[$name]= $value;
@@ -111,7 +111,7 @@
      * Get value of a temporary variable
      *
      * @param   string name
-     * @return  mixed value
+     * @return  var value
      */    
     public function getTempVar($name) {
       return $this->tempVar[$name];

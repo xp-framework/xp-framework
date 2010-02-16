@@ -304,8 +304,8 @@
     /**
      * Replaces search value(s) with replacement value(s) in this string
      *
-     * @param   mixed search
-     * @param   mixed replace
+     * @param   var search
+     * @param   var replace
      * @see     php://str_replace
      */
     public function replace($search, $replace) {
@@ -546,7 +546,7 @@
      * Returns the string representation of the given argument. Calls the
      * toString() method on objects and implode() on arrays.
      *
-     * @param   mixed arg
+     * @param   var arg
      * @return  text.String string
      */
     public static function valueOf($arg) {

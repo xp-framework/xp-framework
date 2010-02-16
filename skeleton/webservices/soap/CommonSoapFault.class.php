@@ -22,7 +22,7 @@
      * @param   string faultcode
      * @param   string faultstring
      * @param   string faultactor default NULL
-     * @param   mixed detail default NULL
+     * @param   var detail default NULL
      */  
     public function __construct(
       $faultcode, 
@@ -93,7 +93,7 @@
     /**
      * Set Detail
      *
-     * @param   mixed detail
+     * @param   var detail
      */
     public function setDetail($detail) {
       $this->detail= $detail;
@@ -102,7 +102,7 @@
     /**
      * Get Detail
      *
-     * @return  mixed
+     * @return  var
      */
     public function getDetail() {
       return $this->detail;

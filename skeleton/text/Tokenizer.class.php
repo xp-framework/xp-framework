@@ -25,7 +25,7 @@
     /**
      * Constructor
      *
-     * @param   mixed source
+     * @param   var source
      * @param   string delimiters default ' '
      * @param   bool returnDelims default FALSE
      */

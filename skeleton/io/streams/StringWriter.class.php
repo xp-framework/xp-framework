@@ -63,7 +63,7 @@
     /**
      * Print arguments
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public function write() {
       $a= func_get_args();
@@ -81,7 +81,7 @@
     /**
      * Print arguments and append a newline
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public function writeLine() {
       $a= func_get_args();
@@ -101,7 +101,7 @@
      * Print a formatted string
      *
      * @param   string format
-     * @param   mixed* args
+     * @param   var* args
      * @see     php://writef
      */
     public function writef() {
@@ -113,7 +113,7 @@
      * Print a formatted string and append a newline
      *
      * @param   string format
-     * @param   mixed* args
+     * @param   var* args
      */
     public function writeLinef() {
       $a= func_get_args();

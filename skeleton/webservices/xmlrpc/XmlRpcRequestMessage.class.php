@@ -49,7 +49,7 @@
     /**
      * Set the data for the message.
      *
-     * @param   mixed arr
+     * @param   var arr
      */
     public function setData($arr) {
       $encoder= new XmlRpcEncoder();
@@ -64,7 +64,7 @@
     /**
      * Return the data from the message.
      *
-     * @return  mixed
+     * @return  var
      */
     public function getData() {
       $ret= array();

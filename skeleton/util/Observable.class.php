@@ -80,7 +80,7 @@
     /**
      * Notify observers
      *
-     * @param   mixed arg default NULL
+     * @param   var arg default NULL
      */
     public function notifyObservers($arg= NULL) {
       if (!$this->hasChanged()) return;

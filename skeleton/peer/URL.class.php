@@ -66,7 +66,7 @@
     /**
      * Retrieve scheme
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string scheme or default if none is set
      */
     public function getScheme($default= NULL) {
@@ -88,7 +88,7 @@
     /**
      * Retrieve host
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string host or default if none is set
      */
     public function getHost($default= NULL) {
@@ -110,7 +110,7 @@
     /**
      * Retrieve path
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string path or default if none is set
      */
     public function getPath($default= NULL) {
@@ -132,7 +132,7 @@
     /**
      * Retrieve user
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string user or default if none is set
      */
     public function getUser($default= NULL) {
@@ -154,7 +154,7 @@
     /**
      * Retrieve password
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string password or default if none is set
      */
     public function getPassword($default= NULL) {
@@ -176,7 +176,7 @@
     /**
      * Retrieve query
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string query or default if none is set
      */
     public function getQuery($default= NULL) {
@@ -217,7 +217,7 @@
     /**
      * Retrieve fragment
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string fragment or default if none is set
      */
     public function getFragment($default= NULL) {
@@ -239,7 +239,7 @@
     /**
      * Retrieve port
      *
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  int port or default if none is set
      */
     public function getPort($default= NULL) {
@@ -262,7 +262,7 @@
      * Retrieve parameter by a specified name
      *
      * @param   string name
-     * @param   mixed default default NULL  
+     * @param   var default default NULL  
      * @return  string url-decoded parameter value or default if none is set
      */
     public function getParam($name, $default= NULL) {

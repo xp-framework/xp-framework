@@ -83,7 +83,7 @@
      * @see     xp://text.PHPTokenizer#applyRules
      * @param   string name rule name
      * @param   array match list of tokens to match
-     * @param   mixed callback either a string or array(&$obj, 'function') syntax
+     * @param   var callback either a string or array(&$obj, 'function') syntax
      * @param   array params parameters for callback
      */
     public function addRule($name, $match, $callback, $params) {

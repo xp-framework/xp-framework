@@ -177,7 +177,7 @@
     /**
      * Sets message date
      *
-     * @param   mixed arg
+     * @param   var arg
      */
     public function setDate($arg) {
       if ($arg instanceof Date) $this->date= $arg; else $this->date= new Date($arg);
@@ -364,7 +364,7 @@
      *
      * @param   string header
      * @param   string value
-     * @param   mixed add default FALSE
+     * @param   var add default FALSE
      * @return  bool TRUE if operation was successfull
      */
     protected function _setHeader($header, $value, $add= FALSE) {

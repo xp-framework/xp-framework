@@ -102,7 +102,7 @@
      * Notify all listeners
      *
      * @param   string event
-     * @param   mixed* parameters
+     * @param   var* parameters
      */
     protected function notify() {
       $a= func_get_args();
@@ -287,7 +287,7 @@
      *
      * @param   string dest either a nick or a channel (beginning with "#")
      * @param   string format
-     * @param   mixed* format_arguments
+     * @param   var* format_arguments
      * @return  bool success TRUE in case the command could be sent
      */
     public function sendMessage() {
@@ -301,7 +301,7 @@
      *
      * @param   string dest either a nick or a channel (beginning with "#")
      * @param   string format
-     * @param   mixed* format_arguments
+     * @param   var* format_arguments
      * @return  bool success TRUE in case the command could be sent
      */
     public function sendAction() {
@@ -396,7 +396,7 @@
      *
      * @see     xp://peer.Socket#write
      * @param   string format
-     * @param   mixed* formatargs
+     * @param   var* formatargs
      * @return  bool success
      */
     public function writeln() {

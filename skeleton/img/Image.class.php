@@ -423,7 +423,7 @@
      * Fills the image with a specified color at the coordinates
      * defined by x and y
      *
-     * @param   mixed col (either an img.Color[] consisting of the flood color and the
+     * @param   var col (either an img.Color[] consisting of the flood color and the
      *          border color) or a simple img.Color defining the flood color
      * @param   int x default 0
      * @param   int y default 0
@@ -479,7 +479,7 @@
      * Draws a drawable object onto this image
      *
      * @param   img.Drawable obj
-     * @return  mixed the return value of obj's draw function
+     * @return  var the return value of obj's draw function
      */
     public function draw($drawable) {
       return $drawable->draw($this);

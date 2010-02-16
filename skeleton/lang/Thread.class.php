@@ -91,7 +91,7 @@
      *   $thread->start();
      * </code>
      *
-     * @param   mixed arg default NULL
+     * @param   var arg default NULL
      */
     public function __construct($arg= NULL) {
       if ($arg instanceof Runnable) {
@@ -133,7 +133,7 @@
     /**
      * Get Target
      *
-     * @return mixed (Runnable or Thread)
+     * @return var (Runnable or Thread)
      */
     public function getTarget() {
       return (NULL === $this->target) ? $this : $this->target;

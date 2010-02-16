@@ -23,7 +23,7 @@
      * Apply an "in" constraint to the named property
      *
      * @param   string field
-     * @param   mixed[] values
+     * @param   var[] values
      * @return  rdbms.criterion.Criterion
      */
     public static function in($field, $values) {
@@ -34,7 +34,7 @@
      * Apply an "not in" constraint to the named property
      *
      * @param   string field
-     * @param   mixed[] values
+     * @param   var[] values
      * @return  rdbms.criterion.Criterion
      */
     public static function notIn($field, $values) {
@@ -45,7 +45,7 @@
      * Apply a "like" constraint to the named property
      *
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function like($field, $value) {
@@ -57,7 +57,7 @@
      *
      * @see     php://sql_regcase
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function ilike($field, $value) {
@@ -68,7 +68,7 @@
      * Apply an "equal" constraint to the named property
      *
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function equal($field, $value) {
@@ -79,7 +79,7 @@
      * Apply a "not equal" constraint to the named property
      *
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function notEqual($field, $value) {
@@ -90,7 +90,7 @@
      * Apply a "less than" constraint to the named property
      *
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function lessThan($field, $value) {
@@ -101,7 +101,7 @@
      * Apply a "greater than" constraint to the named property
      *
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function greaterThan($field, $value) {
@@ -112,7 +112,7 @@
      * Apply a "less than or equal to" constraint to the named property
      *
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function lessThanOrEqualTo($field, $value) {
@@ -123,7 +123,7 @@
      * Apply a "greater than or equal to" constraint to the named property
      *
      * @param   string field
-     * @param   mixed value
+     * @param   var value
      * @return  rdbms.criterion.Criterion
      */
     public static function greaterThanOrEqualTo($field, $value) {
@@ -134,8 +134,8 @@
      * Apply a "between" constraint to the named property
      *
      * @param   string field
-     * @param   mixed lo
-     * @param   mixed hi
+     * @param   var lo
+     * @param   var hi
      * @return  rdbms.criterion.Criterion
      */
     public static function between($field, $lo, $hi) {

@@ -967,7 +967,7 @@
      * Handle client data
      *
      * @param   peer.Socket socket
-     * @return  mixed
+     * @return  var
      */
     public function handleData($socket)  {
       static $public= array('onhelp', 'onuser', 'onpass', 'onquit');

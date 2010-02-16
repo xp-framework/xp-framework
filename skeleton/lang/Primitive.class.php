@@ -63,8 +63,8 @@
     /**
      * Boxes a type - that is, turns Generics into primitives
      *
-     * @param   mixed in
-     * @return  mixed the primitive if not already primitive
+     * @param   var in
+     * @return  var the primitive if not already primitive
      * @throws  lang.IllegalArgumentException in case in cannot be unboxed.
      */
     public static function unboxed($in) {
@@ -82,7 +82,7 @@
     /**
      * Boxes a type - that is, turns primitives into Generics
      *
-     * @param   mixed in
+     * @param   var in
      * @return  lang.Generic the Generic if not already generic
      * @throws  lang.IllegalArgumentException in case in cannot be boxed.
      */

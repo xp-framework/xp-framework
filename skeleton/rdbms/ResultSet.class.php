@@ -55,7 +55,7 @@
      * no more rows are available.
      *
      * @param   string field default NULL
-     * @return  mixed
+     * @return  var
      */
     public function next($field= NULL) { }
 

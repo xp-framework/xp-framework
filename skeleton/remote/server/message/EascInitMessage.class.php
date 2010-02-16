@@ -26,7 +26,7 @@
      * Handle message
      *
      * @param   remote.server.EASCProtocol protocol
-     * @return  mixed data
+     * @return  var data
      */
     public function handle($protocol, $data) {
       $this->setValue($b= TRUE);

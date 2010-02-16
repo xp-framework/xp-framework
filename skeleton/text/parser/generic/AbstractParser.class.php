@@ -106,7 +106,7 @@
      * Parse
      *
      * @param   text.parser.generic.AbstractLexer lexer
-     * @return  mixed result of the last reduction, if any.
+     * @return  var result of the last reduction, if any.
      * @throws  text.parser.generic.ParseException if an exception occurs during parsing.
      */
     public function parse(AbstractLexer $lexer) {
@@ -137,7 +137,7 @@
      * currently with fixed maximum size.
      *
      * @param   text.parser.generic.AbstractLexer lexer
-.    * @return  mixed result of the last reduction, if any.
+.    * @return  var result of the last reduction, if any.
      */
     public abstract function yyparse($lexer);
     

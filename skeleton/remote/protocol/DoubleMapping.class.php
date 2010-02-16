@@ -20,8 +20,8 @@
      * @param   server.protocol.Serializer serializer
      * @param   string serialized
      * @param   int length
-     * @param   array<string, mixed> context default array()
-     * @return  mixed
+     * @param   array<string, var> context default array()
+     * @return  var
      */
     public function valueOf($serializer, $serialized, $context= array()) {
       // No implementation
@@ -32,7 +32,7 @@
      *
      * @param   server.protocol.Serializer serializer
      * @param   lang.Object value
-     * @param   array<string, mixed> context default array()
+     * @param   array<string, var> context default array()
      * @return  string
      */
     public function representationOf($serializer, $value, $context= array()) {

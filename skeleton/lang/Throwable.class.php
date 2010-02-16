@@ -83,8 +83,8 @@
      * @param   string class
      * @param   string function
      * @param   int originalline
-     * @param   mixed[] args
-     * @param   mixed[] errors
+     * @param   var[] args
+     * @param   var[] errors
      */
     protected function addStackTraceFor($file, $class, $function, $originalline, $args, $errors) {
       foreach ($errors as $line => $errormsg) {

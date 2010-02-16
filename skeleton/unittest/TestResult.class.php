@@ -54,7 +54,7 @@
      * Mark a test as failed
      *
      * @param   unittest.TestCase test
-     * @param   mixed reason
+     * @param   var reason
      * @param   float elapsed
      */
     public function setFailed($test, $reason, $elapsed) {
@@ -65,7 +65,7 @@
      * Mark a test as been skipped
      *
      * @param   unittest.TestCase test
-     * @param   mixed reason
+     * @param   var reason
      * @param   float elapsed
      * @return  unittest.TestSkipped s
      */

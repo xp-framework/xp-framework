@@ -46,7 +46,7 @@
     /**
      * Private helper function
      *
-     * @return  mixed data
+     * @return  var data
      */
     protected function _get() {
       $h= shm_attach($this->spot);
@@ -69,7 +69,7 @@
     /**
      * Get this segment's contents
      *
-     * @return  mixed data
+     * @return  var data
      * @throws  io.IOException in case an error occurs
      */
     public function get() {
@@ -83,7 +83,7 @@
     /**
      * Put this segment's contents
      *
-     * @param   mixed data
+     * @param   var data
      * @param   int permissions default 0666 permissions
      * @return  bool success
      * @throws  io.IOException in case an error occurs

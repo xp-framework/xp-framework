@@ -35,7 +35,7 @@
     /**
      * Constructor
      * 
-     * @param   mixed archive either a string or a lang.archive.Archive instance
+     * @param   var archive either a string or a lang.archive.Archive instance
      */
     public function __construct($archive) {
       $uri= $archive instanceof Archive ? $archive->getURI() : $archive;

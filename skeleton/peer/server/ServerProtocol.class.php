@@ -37,7 +37,7 @@
      * Handle client data
      *
      * @param   peer.Socket socket
-     * @return  mixed
+     * @return  var
      */
     public function handleData($socket);
 

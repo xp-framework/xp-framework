@@ -125,7 +125,7 @@
     /**
      * Retrieve identity
      *
-     * @return  mixed identity value
+     * @return  var identity value
      */
     public function identity($field= NULL) {
       $i= sqlite_last_insert_rowid($this->handle);
@@ -193,7 +193,7 @@
      * Retrieve transaction state
      *
      * @param   string name
-     * @return  mixed state
+     * @return  var state
      */
     public function transtate($name) { 
       if (FALSE === ($r= $this->query('@@transtate as transtate'))) {

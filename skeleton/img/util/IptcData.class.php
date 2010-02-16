@@ -59,7 +59,7 @@
      * Read from a file
      *
      * @param   io.File file
-     * @param   mixed default default void what should be returned in case no data is found
+     * @param   var default default void what should be returned in case no data is found
      * @return  img.util.IptcData
      * @throws  lang.FormatException in case malformed meta data is encountered
      * @throws  lang.ElementNotFoundException in case no meta data is available

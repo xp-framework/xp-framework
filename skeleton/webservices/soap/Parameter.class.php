@@ -18,7 +18,7 @@
      * Constructor
      *
      * @param   string name
-     * @param   mixed value default NULL
+     * @param   var value default NULL
      */
     public function __construct($name, $value= NULL) {
       $this->name= $name;

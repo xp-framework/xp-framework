@@ -58,7 +58,7 @@
     /**
      * Write a string to standard output
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public static function write() {
       $a= func_get_args();
@@ -68,7 +68,7 @@
     /**
      * Write a string to standard output and append a newline
      *
-     * @param   mixed* args
+     * @param   var* args
      */
     public static function writeLine() {
       $a= func_get_args();
@@ -79,7 +79,7 @@
      * Write a formatted string to standard output
      *
      * @param   string format
-     * @param   mixed* args
+     * @param   var* args
      * @see     php://printf
      */
     public static function writef() {
@@ -91,7 +91,7 @@
      * Write a formatted string to standard output and append a newline
      *
      * @param   string format
-     * @param   mixed* args
+     * @param   var* args
      */
     public static function writeLinef() {
       $a= func_get_args();

@@ -46,8 +46,8 @@
      *   <li>GREATER_EQUAL</li>
      * </ul>
      *
-     * @param   mixed lhs either a string or an SQLFragment
-     * @param   mixed value
+     * @param   var lhs either a string or an SQLFragment
+     * @param   var value
      * @param   string op default EQUAL
      */
     public function __construct($lhs, $value, $op= EQUAL) {

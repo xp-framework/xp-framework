@@ -23,7 +23,7 @@
     /**
      * Constructor
      *
-     * @param   mixed arg either a string or an io.Folder object
+     * @param   var arg either a string or an io.Folder object
      */
     public function __construct($arg) {
       if (is('io.Folder', $arg)) {

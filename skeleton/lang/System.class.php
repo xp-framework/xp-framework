@@ -51,7 +51,7 @@
      * </pre>
      *
      * @param   string name
-     * @return  mixed
+     * @return  var
      */
     public static function getProperty($name) {
       static $prop= array();
@@ -121,7 +121,7 @@
      * Sets an environment variable
      *
      * @param   string name
-     * @param   mixed var
+     * @param   var var
      * @return  bool success
      */
     public static function putEnv($name, $var) {
@@ -133,7 +133,7 @@
      * not exist, FALSE.
      *
      * @param   string name
-     * @return  mixed var
+     * @return  var var
      */
     public static function getEnv($name) {
       return getenv($name);

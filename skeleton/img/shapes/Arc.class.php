@@ -62,7 +62,7 @@
      * Draws this object onto an image
      *
      * @param   img.Image image
-     * @return  mixed
+     * @return  var
      */
     public function draw($image) {
       if (FALSE !== $this->fill) return imagefilledarc(
