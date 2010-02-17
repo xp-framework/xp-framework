@@ -415,7 +415,9 @@
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
-    foreach (func_get_args() as $str) xp::$registry['loader']->loadClass0($str);
+    foreach (func_get_args() as $str) {
+      xp::$registry['loader']->loadClass0($str);
+    }
   }
   // }}}
   
