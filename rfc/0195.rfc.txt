@@ -30,10 +30,8 @@ Current:
   public function setXml($xml) {
     if ($xml instanceof Tree) {
       // A
-    } else if ($xml instanceof DomDocument) {
-      // B
     } else if (is_string($xml)) {
-      // C
+      // B
     }
   }
 </code>
@@ -44,12 +42,8 @@ New:
     // A
   }
 
-  public function setXml·DomDocument($xml) {
-    // B
-  }
-
   public function setXml·þstring($xml) {
-    // C
+    // B
   }
 </code>
 
@@ -57,6 +51,38 @@ Dispatch
 ~~~~~~~~
 Dispatch will be performed at runtime, except if a compiler / code
 preprocessor can determine exactly.
+
+Here's an example of a generated dispatcher method:
+<code>
+  #[@dispatch]
+  public final function setXml() {
+    static $overloads= array(
+      1 => array(
+        'setXml·Tree'    => array('!Tree'),
+        'setXml·þstring' => array('!string'),
+      ),
+    );
+
+    $args= func_get_args();
+    foreach (@$overloads[sizeof($args)] as $method => $signature) {
+      foreach ($signature as $i => $literal) {
+        if (NULL === $args[$i]) {
+          if ('!' === $literal{0} || !strstr($literal, '.')) continue 2;
+        } else {
+          if (!Type::forName(substr($literal, 1))->isInstance($args[$i])) continue 2;
+        }
+      }
+      return call_user_func_array(array($this, $method), $args);
+    }
+
+    raise(
+      'lang.MethodNotImplementedException', 
+      'No overload for ['.implode(', ', array_map(array('xp', 'typeOf'), $args)).']',
+      'setXml'
+    );
+  }
+</code>
+
 
 Reflection
 ~~~~~~~~~~
