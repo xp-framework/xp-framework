@@ -56,6 +56,7 @@
    * @see      xp://lang.XPClass#forName
    * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @test     xp://net.xp_framework.unittest.reflection.ClassDetailsTest
+   * @test     xp://net.xp_framework.unittest.reflection.IsInstanceTest
    * @purpose  Reflection
    */
   class XPClass extends Type {
