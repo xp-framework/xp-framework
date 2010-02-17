@@ -114,5 +114,19 @@
         default: throw new IllegalArgumentException('Not a primitive: '.$name);
       }
     }
+
+    /**
+     * Determines whether the specified object is an instance of this
+     * type. 
+     *
+     * @param   var obj
+     * @return  bool
+     */
+    public function isInstance($obj) {
+      return $obj === NULL || $obj instanceof Generic 
+        ? FALSE 
+        : $this === self::forName(gettype($obj))
+      ;
+    }
   }
 ?>

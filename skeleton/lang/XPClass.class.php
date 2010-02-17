@@ -56,6 +56,7 @@
    * @see      xp://lang.XPClass#forName
    * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @test     xp://net.xp_framework.unittest.reflection.ClassDetailsTest
+   * @test     xp://net.xp_framework.unittest.reflection.IsInstanceTest
    * @purpose  Reflection
    */
   class XPClass extends Type {
@@ -340,7 +341,7 @@
      *   var_dump($class->isInstance(new Object()));    // FALSE
      * </code>
      *
-     * @param   lang.Object obj
+     * @param   var obj
      * @return  bool
      */
     public function isInstance($obj) {

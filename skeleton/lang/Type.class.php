@@ -135,5 +135,16 @@
           return XPClass::forName($name);
       }
     }
+
+    /**
+     * Determines whether the specified object is an instance of this
+     * type. 
+     *
+     * @param   var obj
+     * @return  bool
+     */
+    public function isInstance($obj) {
+      return self::$VAR === $this;      // VAR is always true, VOID never
+    }
   }
 ?>

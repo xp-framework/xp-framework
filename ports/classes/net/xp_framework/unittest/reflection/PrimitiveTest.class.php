@@ -240,5 +240,77 @@
     public function unboxPrimitive() {
       $this->assertEquals(1, Primitive::unboxed(1));
     }
+
+    /**
+     * Test isInstance() method for strings
+     *
+     */
+    #[@test]
+    public function emptyStringInstance() {
+      $this->assertTrue(Primitive::$STRING->isInstance(''));
+    }
+    
+    /**
+     * Test isInstance() method for strings
+     *
+     */
+    #[@test]
+    public function stringInstance() {
+      $this->assertTrue(Primitive::$STRING->isInstance('Hello'));
+    }
+    
+    /**
+     * Test isInstance() method for strings
+     *
+     */
+    #[@test]
+    public function stringObjectIsNotInstanceOfStringPrimitive() {
+      $this->assertFalse(Primitive::$STRING->isInstance(new String('Hello')));
+    }
+
+    /**
+     * Test isInstance() method for strings
+     *
+     */
+    #[@test]
+    public function thisIsNotInstanceOfStringPrimitive() {
+      $this->assertFalse(Primitive::$STRING->isInstance($this));
+    }
+
+    /**
+     * Test isInstance() method for strings
+     *
+     */
+    #[@test]
+    public function nullIsNotInstanceOfStringPrimitive() {
+      $this->assertFalse(Primitive::$STRING->isInstance(NULL));
+    }
+
+    /**
+     * Test isInstance() method for integers
+     *
+     */
+    #[@test]
+    public function intInstance() {
+      $this->assertTrue(Primitive::$INTEGER->isInstance(0));
+    }
+
+    /**
+     * Test isInstance() method for integers
+     *
+     */
+    #[@test]
+    public function doubleIsNotAnInstanceOfInt() {
+      $this->assertFalse(Primitive::$INTEGER->isInstance(0.0));
+    }
+
+    /**
+     * Test isInstance() method for integers
+     *
+     */
+    #[@test]
+    public function falseIsNotAnInstanceOfInt() {
+      $this->assertFalse(Primitive::$INTEGER->isInstance(FALSE));
+    }
   }
 ?>
