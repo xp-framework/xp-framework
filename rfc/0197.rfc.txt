@@ -43,6 +43,7 @@ Special types (lang.Type):
 * void (only for use in return types, PHP doesn't support this)
 </summary>
 
+
 Requirements
 ~~~~~~~~~~~~
 The following issues must be addressed:
@@ -55,6 +56,7 @@ The following issues must be addressed:
 * Fully qualified class names (using the middle-dot) must be supported.
 * There must be a way to distinguish generated tokens from those a 
   user has written, for reflection.
+
 
 Definitions
 ~~~~~~~~~~~
@@ -72,6 +74,7 @@ Type and method names containing these tokens include two
 middle-dots (<tt>··</tt>, Alt-Gr+.) and the tokens thereafter.
 Tokens are separated by a <tt>¸</tt>, Alt-Gr+´).
 </summary>
+
 
 Example: Method generation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -91,6 +94,7 @@ Generated:
     // Dispatching code
   }
 </code>
+
 
 Example: Class generation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,7 +132,7 @@ n/a
 
 Dependencies
 ------------
-n/a
+Changes to core functionality, thus 5.8-SERIES.
 
 
 Related documents
