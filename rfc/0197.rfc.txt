@@ -17,8 +17,8 @@ introduced.
 Rationale
 ---------
 An example of where this is used is the type dispatching methods 
-described in RFC #0193. Another example are generics generation, 
-as described in RFC #0195.
+described in RFC #0195. Another example is generics generation, 
+as described in RFC #0193.
 
 
 Functionality
