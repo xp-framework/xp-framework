@@ -5,6 +5,7 @@ $Id$
 @authors: friebe
 @created: Tue Nov 17 10:07:20     2009
 @status: draft
+@target: 5.8.0
 @category: <core>
 
 Scope of Change
@@ -102,7 +103,7 @@ TODO
 
 Dependencies
 ------------
-n/a
+RFC #0197
 
 
 Related documents

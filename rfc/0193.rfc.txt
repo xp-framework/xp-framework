@@ -229,7 +229,7 @@ Faster.
 
 Dependencies
 ------------
-None.
+RFC #0197
 
 
 Related documents
