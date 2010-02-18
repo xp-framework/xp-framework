@@ -1,0 +1,1147 @@
+Index: skeleton/lang.base.php
+===================================================================
+--- skeleton/lang.base.php	(revision 14265)
++++ skeleton/lang.base.php	(working copy)
+@@ -526,29 +526,49 @@
+   function create($spec) {
+     if ($spec instanceof Generic) return $spec;
+ 
++    // Parse type specification
+     sscanf($spec, 'new %[^<]<%[^>]>', $classname, $types);
+-    $class= xp::reflect($classname);
+-    
+-    // Check whether class is generic
+-    if (!property_exists($class, '__generic')) {
+-      throw new IllegalArgumentException('Class '.$classname.' is not generic');
++
++    $typeargs= array();
++    foreach (explode(',', $types) as $type) {
++      $typeargs[]= Type::forName(ltrim($type));
+     }
+     
+-    // Instanciate without invoking the constructor and pass type information. 
+-    // This is done so that the constructur can already use generic types.
+-    $__id= microtime();
+-    $instance= unserialize('O:'.strlen($class).':"'.$class.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
+-    foreach (explode(',', $types) as $type) {
+-      $instance->__generic[]= xp::reflect(trim($type));
++    // BC check: For classes with __generic field, instanciate without 
++    // invoking the constructor and pass type information. This is done 
++    // so that the constructur can already use generic types.
++    $class= XPClass::forName(strstr($classname, '.') ? $classname : xp::nameOf($classname));
++    if ($class->hasField('__generic')) {
++      $__id= microtime();
++      $name= xp::reflect($classname);
++      $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
++      foreach ($typeargs as $type) {
++        $instance->__generic[]= xp::reflect($type->getName());
++      }
++
++      // Call constructor if available
++      if (method_exists($instance, '__construct')) {
++        $a= func_get_args();
++        call_user_func_array(array($instance, '__construct'), array_slice($a, 1));
++      }
++
++      return $instance;
+     }
+     
+-    // Call constructor if available
+-    if (method_exists($instance, '__construct')) {
+-      $a= func_get_args();
+-      call_user_func_array(array($instance, '__construct'), array_slice($a, 1));
++    // BC: Wrap IllegalStateExceptions into IllegalArgumentExceptions
++    try {
++      $type= $class->newGenericType($typeargs);
++    } catch (IllegalStateException $e) {
++      throw new IllegalArgumentException($e->getMessage());
+     }
+ 
+-    return $instance;
++    // Instantiate
++    if ($type->hasConstructor()) {
++      $args= func_get_args();
++      return $type->getConstructor()->newInstance(array_slice($args, 1));
++    } else {
++      return $type->newInstance();
++    }
+   }
+   // }}}
+ 
+Index: skeleton/lang/XPClass.class.php
+===================================================================
+--- skeleton/lang/XPClass.class.php	(revision 14265)
++++ skeleton/lang/XPClass.class.php	(working copy)
+@@ -19,6 +19,7 @@
+   define('DETAIL_COMMENT',        4);
+   define('DETAIL_ANNOTATIONS',    5);
+   define('DETAIL_NAME',           6);
++  define('DETAIL_GENERIC',        7);
+  
+   /**
+    * Represents classes. Every instance of an XP class has an method
+@@ -650,8 +651,275 @@
+       $details= self::detailsForClass(xp::nameOf($class));
+       return $details ? (isset($details[0][$field]) ? $details[0][$field] : NULL) : NULL;
+     }
++
++    /**
++     * Creates a delegating routine implementation
++     *
++     * @param   lang.XPClass self
++     * @param   lang.reflect.Routine routine
++     * @param   int modifiers
++     * @param   array<string, string> placeholders
++     * @param   var meta
++     * @param   string block
++     * @return  src
++     */
++    public static function createDelegate($self, $routine, $modifiers, $placeholders, &$meta, $block) {
++      $src= '';
++      
++      $details= self::detailsForMethod($self->_class, $routine->getName());
++      $self->isInterface() || $src.= implode(' ', Modifiers::namesOf($modifiers));
++      $src.= ' function '.$routine->getName().'(';
++
++      // Replace parameter placeholders. Given [lang.types.String] as type arguments, 
++      // "T" will become "String".
++      $generic= array();
++      if ($routine->hasAnnotation('generic', 'params')) {
++        foreach (explode(',', $routine->getAnnotation('generic', 'params')) as $i => $placeholder) {
++          $replaced= strtr(ltrim($placeholder), $placeholders);
++          $details[DETAIL_ARGUMENTS][$i]= $replaced;
++          $generic[$i]= Type::forName($replaced);
++        }
++      }
++      if ($routine->hasAnnotation('generic', 'return')) {
++        $details[DETAIL_RETURNS]= strtr($routine->getAnnotation('generic', 'return'), $placeholders);
++      }
++
++      // Create argument signature
++      $sig= $pass= array();
++      $verify= '';
++      foreach ($routine->getParameters() as $i => $param) {
++        if ($t= $param->getTypeRestriction()) {
++          $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
++        } else if (isset($generic[$i])) {
++          if ($generic[$i] instanceof XPClass) {
++            $sig[$i]= $generic[$i]->getSimpleName().' ';
++          } else if ($generic[$i] instanceof Primitive) {
++            $sig[$i]= '';
++            $p= $generic[$i]->getName();
++            $verify.= (
++              ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
++              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
++              ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
++              ');'
++            );
++          }
++          $sig[$i].= '$·'.$i;
++        } else {
++          $sig[$i]= '$·'.$i;
++        }
++        $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
++        $pass[$i]= '$·'.$i;
++      }
++      $src.= implode(',', $sig);
++
++      if (Modifiers::isAbstract($modifiers)) {
++        $src.= ');';
++      } else {
++        $src.= ') {'.$verify.sprintf($block, implode(',', $pass)).'}';
++      }
++      $src.= "\n";
++
++      // Register meta information
++      $meta[1][$routine->getName()]= $details;
++      return $src;
++    }
+     
+     /**
++     * Creates a generic type
++     *
++     * @param   lang.XPClass self
++     * @param   lang.Type[] arguments
++     * @return  lang.XPClass
++     */
++    public static function createGenericType(XPClass $self, array $arguments) {
++
++      // Verify
++      if (!$self->isGenericDefinition()) {
++        throw new IllegalStateException('Class '.$self->name.' is not a generic definition');
++      }
++      $components= $self->genericComponents();
++      $cs= sizeof($components);
++      if ($cs != sizeof($arguments)) {
++        throw new IllegalArgumentException(sprintf(
++          'Class %s expects %d component(s) <%s>, %d argument(s) given',
++          $self->name,
++          $cs,
++          implode(', ', $components),
++          sizeof($arguments)
++        ));
++      }
++    
++      // Compose names
++      $cn= $qc= '';
++      foreach ($arguments as $typearg) {
++        $cn.= '¸'.($typearg instanceof Primitive ? 'þ' : '').xp::reflect($typearg->getName());
++        $qc.= ','.$typearg->getName();
++      }
++      $name= xp::reflect($self->name).'··'.substr($cn, 1);
++      $qname= $self->name.'`'.$cs.'['.substr($qc, 1).']';
++
++      // Create class if it doesn't exist yet
++      if (!class_exists($name, FALSE)) {
++        $meta= array(
++          'class' => array(DETAIL_GENERIC => $arguments),
++          0       => array(),
++          1       => array()
++        );
++      
++        // Parse placeholders into a lookup map
++        $placeholders= array();
++        foreach ($components as $i => $component) {
++          $placeholders[$component]= $arguments[$i]->getName();
++        }
++      
++        // Generate public constructor
++        $src= '';
++        if (!$self->isInterface()) {
++          $src.= 'private $delegate; ';
++          $meta[0]['delegate']= array(DETAIL_ANNOTATIONS => array('type' => $self->name));
++          $block= '$this->delegate= new '.xp::reflect($self->name).'(%s);';
++          if ($self->hasConstructor()) {
++            $src.= self::createDelegate(
++              $self,
++              $self->getConstructor(),
++              MODIFIER_PUBLIC, 
++              $placeholders,
++              $meta,
++              $block
++            );
++          } else {
++            $src.= 'public function __construct() {'.sprintf($block, '').'}';       
++          }
++        }
++        
++        // Generate delegating methods declared in this class
++        foreach ($self->getMethods() as $method) {
++          if (!$method->getDeclaringClass()->equals($self)) continue;
++          $src.= self::createDelegate(
++            $self, 
++            $method, 
++            $method->getModifiers(),
++            $placeholders,
++            $meta,
++            'return $this->delegate->'.$method->getName().'(%s);'
++          );
++        }
++        
++        // Handle parent class and interfaces
++        if ($self->isInterface()) {
++          $decl= 'interface '.$name;
++        } else {
++          $parent= $self->getParentClass();
++          $impl= array();
++          foreach ($self->getInterfaces() as $iface) {
++            if ($parent->isSubclassOf($iface)) continue;
++            
++            $declared= $iface->getSimpleName();
++            if ($self->hasAnnotation('generic', $declared)) {
++              $impl[]= xp::reflect(self::createGenericType($iface, $arguments)->getName());
++            } else {
++              $impl[]= $declared;
++            }
++          }
++
++          $decl= '';
++          Modifiers::isAbstract($self->getModifiers()) && $decl.= 'abstract ';
++          $decl.= 'class '.$name.' extends ';
++          if ($self->hasAnnotation('generic', 'parent')) {
++            $decl.= xp::reflect(self::createGenericType($parent, $arguments)->getName());
++          } else {
++            $decl.= $parent->getSimpleName();
++          }
++          $impl && $decl.= ' implements '.implode(', ', $impl);
++        }
++      
++        // Create class
++        // DEBUG echo '> ', $decl, "\n  ", $src, "\n";
++        eval($decl.' {'.$src.'}');
++        xp::$registry['details.'.$qname]= $meta;
++        xp::$registry['class.'.$name]= $qname;
++      }
++      
++      return new XPClass(new ReflectionClass($name));
++    }
++    
++    /**
++     * Reflectively creates a new type
++     *
++     * @param   lang.Type[] arguments
++     * @return  lang.XPClass
++     * @throws  lang.IllegalStateException if this class is not a generic definition
++     * @throws  lang.IllegalArgumentException if number of arguments does not match components
++     */
++    public function newGenericType(array $arguments) {
++      return self::createGenericType($this, $arguments);
++    }
++
++    /**
++     * Returns generic type components
++     *
++     * @return  string[]
++     * @throws  lang.IllegalStateException if this class is not a generic definition
++     */
++    public function genericComponents() {
++      if (!$this->isGenericDefinition()) {
++        throw new IllegalStateException('Class '.$this->name.' is not a generic definition');
++      }
++      $components= array();
++      foreach (explode(',', $this->getAnnotation('generic', 'self')) as $name) {
++        $components[]= ltrim($name);
++      }
++      return $components;
++    }
++
++    /**
++     * Returns whether this class is a generic definition
++     *
++     * @return  bool
++     */
++    public function isGenericDefinition() {
++      return $this->hasAnnotation('generic', 'self');
++    }
++
++    /**
++     * Returns generic type definition
++     *
++     * @return  lang.XPClass
++     * @throws  lang.IllegalStateException if this class is not a generic
++     */
++    public function genericDefinition() {
++      if (!($details= self::detailsForClass($this->name))) return NULL;
++      if (!isset($details['class'][DETAIL_GENERIC])) {
++        throw new IllegalStateException('Class '.$this->name.' is not generic');
++      }
++      return XPClass::forName($details[0]['delegate'][DETAIL_ANNOTATIONS]['type']);
++    }
++
++    /**
++     * Returns generic type arguments
++     *
++     * @return  lang.Type[]
++     * @throws  lang.IllegalStateException if this class is not a generic
++     */
++    public function genericArguments() {
++      if (!($details= self::detailsForClass($this->name))) return NULL;
++      if (!isset($details['class'][DETAIL_GENERIC])) {
++        throw new IllegalStateException('Class '.$this->name.' is not generic');
++      }
++      return @$details['class'][DETAIL_GENERIC];
++    }
++        
++    /**
++     * Returns whether this class is generic
++     *
++     * @return  bool
++     */
++    public function isGeneric() {
++      if (!($details= self::detailsForClass($this->name))) return FALSE;
++      return isset($details['class'][DETAIL_GENERIC]);
++    }
++    
++    /**
+      * Returns the XPClass object associated with the class with the given 
+      * string name. Uses the default classloader if none is specified.
+      *
+Index: ports/unittest/core.ini
+===================================================================
+--- ports/unittest/core.ini	(revision 14265)
++++ ports/unittest/core.ini	(working copy)
+@@ -131,3 +131,19 @@
+ 
+ [isinstance]
+ class="net.xp_framework.unittest.reflection.IsInstanceTest"
++
++[generics.definition]
++class="net.xp_framework.unittest.core.generics.DefinitionReflectionTest"
++
++[generics.instance]
++class="net.xp_framework.unittest.core.generics.InstanceReflectionTest"
++
++[generics.notgeneric]
++class="net.xp_framework.unittest.core.generics.NotGenericTest"
++
++[generics.primitives]
++class="net.xp_framework.unittest.core.generics.PrimitivesTest"
++
++[generics.runtime]
++class="net.xp_framework.unittest.core.generics.RuntimeTest"
++
+Index: ports/classes/net/xp_framework/unittest/core/generics/AbstractDictionary.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/AbstractDictionary.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/AbstractDictionary.class.php	(revision 0)
+@@ -0,0 +1,29 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  $package= 'net.xp_framework.unittest.core.generics';
++
++  uses('net.xp_framework.unittest.core.generics.IDictionary');
++
++  /**
++   * Lookup map
++   *
++   */
++  #[@generic(self= 'K, V', IDictionary= 'K, V')]
++  abstract class net·xp_framework·unittest·core·generics·AbstractDictionary extends Object implements net·xp_framework·unittest·core·generics·IDictionary {
++    
++    /**
++     * Constructor
++     *
++     * @param   array<string, var> initial
++     */
++    public function __construct($initial= array()) {
++      foreach ($initial as $key => $value) {
++        $this->put($key, $value);
++      }
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/AbstractDictionary.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/generics/Lookup.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/Lookup.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/Lookup.class.php	(revision 0)
+@@ -0,0 +1,60 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  $package= 'net.xp_framework.unittest.core.generics';
++
++  uses(
++    'util.NoSuchElementException', 
++    'net.xp_framework.unittest.core.generics.AbstractDictionary'
++  );
++
++  /**
++   * Lookup map
++   *
++   */
++  #[@generic(self= 'K, V', parent= 'K, V')]
++  class net·xp_framework·unittest·core·generics·Lookup extends net·xp_framework·unittest·core·generics·AbstractDictionary {
++    protected $elements= array();
++    
++    /**
++     * Put a key/value pairt
++     *
++     * @param   K key
++     * @param   V value
++     */
++    #[@generic(params= 'K, V')]
++    public function put($key, $value) {
++      $offset= $key instanceof Generic ? $key->hashCode() : $key;
++      $this->elements[$offset]= $value;
++    } 
++
++    /**
++     * Returns a value associated with a given key
++     *
++     * @param   K key
++     * @return  V value
++     * @throws  util.NoSuchElementException
++     */
++    #[@generic(params= 'K', return= 'V')]
++    public function get($key) {
++      $offset= $key instanceof Generic ? $key->hashCode() : $key;
++      if (!isset($this->elements[$offset])) {
++        throw new NoSuchElementException('No such key '.xp::stringOf($key));
++      }
++      return $this->elements[$offset];
++    }
++
++    /**
++     * Returns all values
++     *
++     * @return  V[] values
++     */
++    #[@generic(return= 'V[]')]
++    public function values() {
++      return array_values($this->elements);
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/Lookup.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/generics/PrimitivesTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/PrimitivesTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/PrimitivesTest.class.php	(revision 0)
+@@ -0,0 +1,88 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'net.xp_framework.unittest.core.generics.Lookup',
++    'lang.types.String'
++  );
++
++  /**
++   * TestCase for generic behaviour at runtime.
++   *
++   * @see   xp://net.xp_framework.unittest.core.generics.Lookup
++   */
++  class PrimitivesTest extends TestCase {
++  
++    /**
++     * Test put() and get() methods with a primitive string as key
++     *
++     */
++    #[@test]
++    public function primitiveStringKey() {
++      $l= create('new net.xp_framework.unittest.core.generics.Lookup<string, TestCase>', array(
++        'this' => $this
++      ));
++      $this->assertEquals($this, $l->get('this'));
++    }
++
++    /**
++     * Test put() and get() methods with a primitive string as key
++     *
++     */
++    #[@test]
++    public function primitiveStringValue() {
++      $l= create('new net.xp_framework.unittest.core.generics.Lookup<TestCase, string>()');
++      $l->put($this, 'this');
++      $this->assertEquals('this', $l->get($this));
++    }
++
++    /**
++     * Test put() does not accept another primitive
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function primitiveVerification() {
++      $l= create('new net.xp_framework.unittest.core.generics.Lookup<string, TestCase>()');
++      $l->put(1, $this);
++    }
++
++    /**
++     * Test put() does not accept instance
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function instanceVerification() {
++      $l= create('new net.xp_framework.unittest.core.generics.Lookup<string, TestCase>()');
++      $l->put(new String('Hello'), $this);
++    }
++
++    /**
++     * Test getClass()
++     *
++     */
++    #[@test]
++    public function nameOfClass() {
++      $type= XPClass::forName('net.xp_framework.unittest.core.generics.Lookup')->newGenericType(array(
++        Primitive::$STRING,
++        XPClass::forName('unittest.TestCase')
++      ));
++      $this->assertEquals('net.xp_framework.unittest.core.generics.Lookup`2[string,unittest.TestCase]', $type->getName());
++    }
++
++    /**
++     * Test genericArguments()
++     *
++     */
++    #[@test]
++    public function typeArguments() {
++      $this->assertEquals(
++        array(Primitive::$STRING, XPClass::forName('unittest.TestCase')),
++        create('new net.xp_framework.unittest.core.generics.Lookup<string, TestCase>()')->getClass()->genericArguments()
++      );
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/PrimitivesTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/generics/NotGenericTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/NotGenericTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/NotGenericTest.class.php	(revision 0)
+@@ -0,0 +1,63 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'lang.types.String'
++  );
++
++  /**
++   * TestCase for reflection on a non-generic
++   *
++   */
++  class NotGenericTest extends TestCase {
++    
++    /**
++     * Test isGeneric()
++     *
++     */
++    #[@test]
++    public function thisIsNotAGeneric() {
++      $this->assertFalse($this->getClass()->isGeneric());
++    }
++
++    /**
++     * Test isGenericDefinition()
++     *
++     */
++    #[@test]
++    public function thisIsNotAGenericDefinition() {
++      $this->assertFalse($this->getClass()->isGenericDefinition());
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test, @expect('lang.IllegalStateException')]
++    public function cannotCreateGenericTypeFromThis() {
++      $this->getClass()->newGenericType(array());
++    }
++
++    /**
++     * Test genericArguments()
++     *
++     */
++    #[@test, @expect('lang.IllegalStateException')]
++    public function cannotGetGenericArgumentsForThis() {
++      $this->getClass()->genericArguments();
++    }
++
++    /**
++     * Test genericComponents()
++     *
++     */
++    #[@test, @expect('lang.IllegalStateException')]
++    public function cannotGetGenericComponentsForThis() {
++      $this->getClass()->genericComponents();
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/NotGenericTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/generics/IDictionary.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/IDictionary.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/IDictionary.class.php	(revision 0)
+@@ -0,0 +1,45 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  $package= 'net.xp_framework.unittest.core.generics';
++
++  uses('util.NoSuchElementException');
++
++  /**
++   * Lookup map
++   *
++   */
++  #[@generic(self= 'K, V')]
++  interface net·xp_framework·unittest·core·generics·IDictionary {
++   
++    /**
++     * Put a key/value pairt
++     *
++     * @param   K key
++     * @param   V value
++     */
++    #[@generic(params= 'K, V')]
++    public function put($key, $value);
++
++    /**
++     * Returns a value associated with a given key
++     *
++     * @param   K key
++     * @return  V value
++     * @throws  util.NoSuchElementException
++     */
++    #[@generic(params= 'K', return= 'V')]
++    public function get($key);
++
++    /**
++     * Returns all values
++     *
++     * @return  V[] values
++     */
++    #[@generic(return= 'V[]')]
++    public function values();
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/IDictionary.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/generics/InstanceReflectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/InstanceReflectionTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/InstanceReflectionTest.class.php	(revision 0)
+@@ -0,0 +1,158 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'net.xp_framework.unittest.core.generics.Lookup',
++    'lang.types.String'
++  );
++
++  /**
++   * TestCase for instance reflection
++   *
++   * @see   xp://net.xp_framework.unittest.core.generics.Lookup
++   */
++  class InstanceReflectionTest extends TestCase {
++    protected $fixture= NULL;
++    
++    /**
++     * Creates fixture, a Lookup with String and TestCase as component
++     * types.
++     *
++     */  
++    public function setUp() {
++      $this->fixture= create('new net.xp_framework.unittest.core.generics.Lookup<String, TestCase>()');
++    }
++  
++    /**
++     * Test getClassName() on generic instance
++     *
++     */
++    #[@test]
++    public function getClassNameMethod() {
++      $this->assertEquals(
++        'net.xp_framework.unittest.core.generics.Lookup`2[lang.types.String,unittest.TestCase]', 
++        $this->fixture->getClassName()
++      );
++    }
++
++    /**
++     * Test getClass()
++     *
++     */
++    #[@test]
++    public function nameOfClass() {
++      $class= $this->fixture->getClass();
++      $this->assertEquals(
++        'net.xp_framework.unittest.core.generics.Lookup`2[lang.types.String,unittest.TestCase]', 
++        $class->getName()
++      );
++    }
++
++    /**
++     * Test reflected name
++     *
++     */
++    #[@test]
++    public function simpleNameOfClass() {
++      $class= $this->fixture->getClass();
++      $this->assertEquals(
++        'net·xp_framework·unittest·core·generics·Lookup··String¸TestCase', 
++        xp::reflect($class->getName())
++      );
++    }
++
++    /**
++     * Test isGeneric()
++     *
++     */
++    #[@test]
++    public function instanceIsGeneric() {
++      $this->assertTrue($this->fixture->getClass()->isGeneric());
++    }
++
++    /**
++     * Test isGenericDefinition()
++     *
++     */
++    #[@test]
++    public function instanceIsNoGenericDefinition() {
++      $this->assertFalse($this->fixture->getClass()->isGenericDefinition());
++    }
++
++    /**
++     * Test genericDefinition()
++     *
++     */
++    #[@test]
++    public function genericDefinition() {
++      $this->assertEquals(
++        XPClass::forName('net.xp_framework.unittest.core.generics.Lookup'),
++        $this->fixture->getClass()->genericDefinition()
++      );
++    }
++
++    /**
++     * Test isGenericDefinition()
++     *
++     */
++    #[@test]
++    public function genericArguments() {
++      $this->assertEquals(
++        array(XPClass::forName('lang.types.String'), XPClass::forName('unittest.TestCase')),
++        $this->fixture->getClass()->genericArguments()
++      );
++    }
++
++    /**
++     * Test parameter reflection
++     *
++     */
++    #[@test]
++    public function delegateFieldType() {
++      $this->assertEquals(
++        'net.xp_framework.unittest.core.generics.Lookup',
++        $this->fixture->getClass()->getField('delegate')->getType()
++      );
++    }
++
++    /**
++     * Test parameter reflection
++     *
++     */
++    #[@test]
++    public function putParameters() {
++      $params= $this->fixture->getClass()->getMethod('put')->getParameters();
++      $this->assertEquals(2, sizeof($params));
++      $this->assertEquals(XPClass::forName('lang.types.String'), $params[0]->getType());
++      $this->assertEquals(XPClass::forName('unittest.TestCase'), $params[1]->getType());
++    }
++
++    /**
++     * Test return type reflection
++     *
++     */
++    #[@test]
++    public function getReturnType() {
++      $this->assertEquals(
++        'unittest.TestCase',
++        $this->fixture->getClass()->getMethod('get')->getReturnTypeName()
++      );
++    }
++
++    /**
++     * Test return type reflection
++     *
++     */
++    #[@test]
++    public function valuesReturnType() {
++      $this->assertEquals(
++        'unittest.TestCase[]',
++        $this->fixture->getClass()->getMethod('values')->getReturnTypeName()
++      );
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/InstanceReflectionTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/generics/DefinitionReflectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/DefinitionReflectionTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/DefinitionReflectionTest.class.php	(revision 0)
+@@ -0,0 +1,163 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'net.xp_framework.unittest.core.generics.Lookup',
++    'lang.types.String'
++  );
++
++  /**
++   * TestCase for definition reflection
++   *
++   * @see   xp://net.xp_framework.unittest.core.generics.Lookup
++   */
++  class DefinitionReflectionTest extends TestCase {
++    protected $fixture= NULL;
++    
++    /**
++     * Creates fixture, a Lookup class
++     *
++     */  
++    public function setUp() {
++      $this->fixture= XPClass::forName('net.xp_framework.unittest.core.generics.Lookup');
++    }
++  
++    /**
++     * Test isGenericDefinition()
++     *
++     */
++    #[@test]
++    public function isAGenericDefinition() {
++      $this->assertTrue($this->fixture->isGenericDefinition());
++    }
++
++    /**
++     * Test isGenericDefinition()
++     *
++     */
++    #[@test]
++    public function isNotAGeneric() {
++      $this->assertFalse($this->fixture->isGeneric());
++    }
++
++    /**
++     * Test genericComponents()
++     *
++     */
++    #[@test]
++    public function components() {
++      $this->assertEquals(array('K', 'V'), $this->fixture->genericComponents());
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test]
++    public function newGenericTypeIsGeneric() {
++      $t= $this->fixture->newGenericType(array(
++        XPClass::forName('lang.types.String'), 
++        XPClass::forName('unittest.TestCase')
++      ));
++      $this->assertTrue($t->isGeneric());
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test]
++    public function newLookupWithStringAndTestCase() {
++      $arguments= array(
++        XPClass::forName('lang.types.String'), 
++        XPClass::forName('unittest.TestCase')
++      );
++      $this->assertEquals(
++        $arguments, 
++        $this->fixture->newGenericType($arguments)->genericArguments()
++      );
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test]
++    public function newLookupWithStringAndObject() {
++      $arguments= array(
++        XPClass::forName('lang.types.String'), 
++        XPClass::forName('lang.Object')
++      );
++      $this->assertEquals(
++        $arguments, 
++        $this->fixture->newGenericType($arguments)->genericArguments()
++      );
++    }
++
++    /**
++     * Test classes created via newGenericType() and from an instance
++     * instantiated via create() are equal.
++     *
++     */
++    #[@test]
++    public function classesFromReflectionAndCreateAreEqual() {
++      $this->assertEquals(
++        create('new net.xp_framework.unittest.core.generics.Lookup<String, TestCase>()')->getClass(),
++        $this->fixture->newGenericType(array(
++          XPClass::forName('lang.types.String'), 
++          XPClass::forName('unittest.TestCase')
++        ))
++      );
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test]
++    public function classesCreatedWithDifferentTypesAreNotEqual() {
++      $this->assertNotEquals(
++        $this->fixture->newGenericType(array(
++          XPClass::forName('lang.types.String'), 
++          XPClass::forName('lang.Object')
++        )),
++        $this->fixture->newGenericType(array(
++          XPClass::forName('lang.types.String'), 
++          XPClass::forName('unittest.TestCase')
++        ))
++      );
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function missingArguments() {
++      $this->fixture->newGenericType(array());
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function missingArgument() {
++      $this->fixture->newGenericType(array($this->getClass()));
++    }
++
++    /**
++     * Test newGenericType()
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function tooManyArguments() {
++      $c= $this->getClass();
++      $this->fixture->newGenericType(array($c, $c, $c));
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/DefinitionReflectionTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/generics/RuntimeTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/generics/RuntimeTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/generics/RuntimeTest.class.php	(revision 0)
+@@ -0,0 +1,71 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  $package= 'net.xp_framework.unittest.core.generics';
++
++  uses(
++    'unittest.TestCase',
++    'net.xp_framework.unittest.core.generics.Lookup',
++    'lang.types.String',
++    'lang.types.Integer'
++  );
++
++  /**
++   * TestCase for generic behaviour at runtime.
++   *
++   * @see   xp://collections.Lookup
++   */
++  class net·xp_framework·unittest·core·generics·RuntimeTest extends TestCase {
++    protected $fixture= NULL;
++    
++    /**
++     * Creates fixture, a Lookup with String and TestCase as component
++     * types.
++     *
++     */  
++    public function setUp() {
++      $this->fixture= create('new net.xp_framework.unittest.core.generics.Lookup<String, TestCase>()');
++    }
++  
++    /**
++     * Test put() method succeeds with correct types
++     *
++     */
++    #[@test]
++    public function putStringAndThis() {
++      $this->fixture->put(new String($this->name), $this);
++    }
++
++    /**
++     * Test put() and get() roundtrip
++     *
++     */
++    #[@test]
++    public function putAndGetRoundTrip() {
++      $key= new String($this->name);
++      $this->fixture->put($key, $this);
++      $this->assertEquals($this, $this->fixture->get($key));
++    }
++
++    /**
++     * Test put() method raises an error with incorrect key type
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function keyTypeIncorrect() {
++      $this->fixture->put(new Integer(1), $this);
++    }
++
++    /**
++     * Test put() method raises an error with incorrect v aluetype
++     *
++     */
++    #[@test, @expect('lang.IllegalArgumentException')]
++    public function valueTypeIncorrect() {
++      $this->fixture->put(new String($this->name), new Object());
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/generics/RuntimeTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
