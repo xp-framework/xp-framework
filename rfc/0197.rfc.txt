@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Thu Feb 18 14:46:09     2010
-@status: draft
+@status: discussion, ends Thu Feb 25 16:40:45     2010
 @target: 5.8.0
 @category: <core>
 
