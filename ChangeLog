@@ -62,7 +62,11 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Cleaned up various apidoc spelling issues in @param / @return
+- Cleaned up various apidoc spelling issues in @param / @return, and
+  exchanged "mixed" with "var" throughout the entire repository.
+  (friebe)
+- Fixed lang.XPClass raising fatals when methods inherited / implemented
+  from builtin classes
   (friebe)
 - Fixed reflection on lang.Throwable class in certain cases when builtin
   Exception class is queried for non-existant details
