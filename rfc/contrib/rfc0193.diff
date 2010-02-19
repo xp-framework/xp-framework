@@ -2,7 +2,7 @@ Index: skeleton/lang.base.php
 ===================================================================
 --- skeleton/lang.base.php	(revision 14265)
 +++ skeleton/lang.base.php	(working copy)
-@@ -526,29 +526,49 @@
+@@ -526,29 +526,53 @@
    function create($spec) {
      if ($spec instanceof Generic) return $spec;
  
@@ -61,7 +61,11 @@ Index: skeleton/lang.base.php
 +    // Instantiate
 +    if ($type->hasConstructor()) {
 +      $args= func_get_args();
-+      return $type->getConstructor()->newInstance(array_slice($args, 1));
++      try {
++        return $type->getConstructor()->newInstance(array_slice($args, 1));
++      } catch (TargetInvocationException $e) {
++        throw $e->getCause();
++      }
 +    } else {
 +      return $type->newInstance();
 +    }
@@ -80,7 +84,7 @@ Index: skeleton/lang/XPClass.class.php
   
    /**
     * Represents classes. Every instance of an XP class has an method
-@@ -650,8 +651,275 @@
+@@ -650,8 +651,330 @@
        $details= self::detailsForClass(xp::nameOf($class));
        return $details ? (isset($details[0][$field]) ? $details[0][$field] : NULL) : NULL;
      }
@@ -108,9 +112,12 @@ Index: skeleton/lang/XPClass.class.php
 +      $generic= array();
 +      if ($routine->hasAnnotation('generic', 'params')) {
 +        foreach (explode(',', $routine->getAnnotation('generic', 'params')) as $i => $placeholder) {
-+          $replaced= strtr(ltrim($placeholder), $placeholders);
-+          $details[DETAIL_ARGUMENTS][$i]= $replaced;
-+          $generic[$i]= Type::forName($replaced);
++          if ('' === ($replaced= strtr(ltrim($placeholder), $placeholders))) {
++            $generic[$i]= NULL;
++          } else {
++            $details[DETAIL_ARGUMENTS][$i]= $replaced;
++            $generic[$i]= Type::forName($replaced);
++          }
 +        }
 +      }
 +      if ($routine->hasAnnotation('generic', 'return')) {
@@ -125,9 +132,28 @@ Index: skeleton/lang/XPClass.class.php
 +          $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
 +        } else if (isset($generic[$i])) {
 +          if ($generic[$i] instanceof XPClass) {
-+            $sig[$i]= $generic[$i]->getSimpleName().' ';
++            $p= $generic[$i]->getName();
++            $verify.= (
++              ' if (!($·'.$i.' instanceof '.xp::reflect($p).')) throw new IllegalArgumentException('.
++              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
++              ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
++              ');'
++            );
++          } else if (Primitive::$ARRAY === $generic[$i]) {
++            $component= Type::forName(substr($details[DETAIL_ARGUMENTS][$i], 0, -2));
++            $p= $component->getName();
++            if ($component instanceof XPClass) {
++              $test= '($·element instanceof '.xp::reflect($p).')'; 
++            } else {
++              $test= 'is_'.$p.'($·element)';
++            }
++            $verify.= 'foreach ($·'.$i.' as $·i => $·element) {'.
++              ' if (!'.$test.') throw new IllegalArgumentException('.
++              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
++              ' must be of '.$p.'[], ".xp::typeOf($·element)." encountered at offset ".$·i'.
++              ');
++            }';
 +          } else if ($generic[$i] instanceof Primitive) {
-+            $sig[$i]= '';
 +            $p= $generic[$i]->getName();
 +            $verify.= (
 +              ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
@@ -136,7 +162,7 @@ Index: skeleton/lang/XPClass.class.php
 +              ');'
 +            );
 +          }
-+          $sig[$i].= '$·'.$i;
++          $sig[$i]= '$·'.$i;
 +        } else {
 +          $sig[$i]= '$·'.$i;
 +        }
@@ -157,6 +183,32 @@ Index: skeleton/lang/XPClass.class.php
 +      return $src;
 +    }
      
++    public function getDeclaredInterfaces() {
++      $is= $this->_reflect->getInterfaces();
++      if ($parent= $this->_reflect->getParentclass()) {
++        $ip= $parent->getInterfaces();
++      } else {
++        $ip= array();
++      }
++      $filter= array();
++      foreach ($is as $iname => $i) {
++
++        // Parent class implements this interface
++        if (isset($ip[$iname])) continue;
++
++        // Interface is implemented because it's the parent of another interface
++        foreach ($i->getInterfaces() as $pname => $p) {
++          if (isset($is[$pname])) $filter[$pname]= TRUE;
++        }
++      }
++      
++      $r= array();
++      foreach ($is as $iname => $i) {
++        if (!isset($filter[$iname])) $r[]= new self($i);
++      }
++      return $r;
++    }
++    
      /**
 +     * Creates a generic type
 +     *
@@ -241,33 +293,40 @@ Index: skeleton/lang/XPClass.class.php
 +        // Handle parent class and interfaces
 +        if ($self->isInterface()) {
 +          $decl= 'interface '.$name;
++          $extends= array();
++          foreach ($self->getDeclaredInterfaces() as $iface) {
++            $declared= xp::reflect($iface->getName());
++            if ($self->hasAnnotation('generic', $declared)) {
++              $extends[]= xp::reflect(self::createGenericType($iface, $arguments)->getName());
++            } else {
++              $extends[]= $declared;
++            }
++          }
++          $extends && $decl.= ' extends '.implode(', ', $extends);
 +        } else {
 +          $parent= $self->getParentClass();
 +          $impl= array();
-+          foreach ($self->getInterfaces() as $iface) {
-+            if ($parent->isSubclassOf($iface)) continue;
-+            
-+            $declared= $iface->getSimpleName();
++          foreach ($self->getDeclaredInterfaces() as $iface) {
++            $declared= xp::reflect($iface->getName());
 +            if ($self->hasAnnotation('generic', $declared)) {
 +              $impl[]= xp::reflect(self::createGenericType($iface, $arguments)->getName());
 +            } else {
 +              $impl[]= $declared;
 +            }
 +          }
-+
 +          $decl= '';
 +          Modifiers::isAbstract($self->getModifiers()) && $decl.= 'abstract ';
 +          $decl.= 'class '.$name.' extends ';
 +          if ($self->hasAnnotation('generic', 'parent')) {
 +            $decl.= xp::reflect(self::createGenericType($parent, $arguments)->getName());
 +          } else {
-+            $decl.= $parent->getSimpleName();
++            $decl.= xp::reflect($parent->getName());
 +          }
 +          $impl && $decl.= ' implements '.implode(', ', $impl);
 +        }
 +      
 +        // Create class
-+        // DEBUG echo '> ', $decl, "\n  ", $src, "\n";
++        //  DEBUG echo '> ', $decl, "\n  ", $src, "\n";
 +        eval($decl.' {'.$src.'}');
 +        xp::$registry['details.'.$qname]= $meta;
 +        xp::$registry['class.'.$name]= $qname;
@@ -356,6 +415,669 @@ Index: skeleton/lang/XPClass.class.php
       * Returns the XPClass object associated with the class with the given 
       * string name. Uses the default classloader if none is specified.
       *
+Index: skeleton/util/collections/HashTable.class.php
+===================================================================
+--- skeleton/util/collections/HashTable.class.php	(revision 14265)
++++ skeleton/util/collections/HashTable.class.php	(working copy)
+@@ -16,20 +16,19 @@
+    * @see      xp://util.collections.Map
+    * @purpose  Map interface implementation
+    */
++  #[@generic(self= 'K, V', Map= 'K, V')]
+   class HashTable extends Object implements Map {
+     protected
+       $_buckets  = array(),
+       $_hash     = 0;
+     
+-    public
+-      $__generic = array();
+-
+     /**
+      * = list[] overloading
+      *
+-     * @param   lang.Generic offset
+-     * @return  lang.Generic
++     * @param   K offset
++     * @return  V
+      */
++    #[@generic(params= 'K', return= 'V')]
+     public function offsetGet($offset) {
+       return $this->get($offset);
+     }
+@@ -37,9 +36,10 @@
+     /**
+      * list[]= overloading
+      *
+-     * @param   lang.Generic offset
+-     * @param   lang.Generic value
++     * @param   K offset
++     * @param   V value
+      */
++    #[@generic(params= 'K, V')]
+     public function offsetSet($offset, $value) {
+       $this->put($offset, $value);
+     }
+@@ -47,9 +47,10 @@
+     /**
+      * isset() overloading
+      *
+-     * @param   lang.Generic offset
++     * @param   K offset
+      * @return  bool
+      */
++    #[@generic(params= 'K')]
+     public function offsetExists($offset) {
+       return $this->containsKey($offset);
+     }
+@@ -57,8 +58,9 @@
+     /**
+      * unset() overloading
+      *
+-     * @param   lang.Generic offset
++     * @param   K offset
+      */
++    #[@generic(params= 'K')]
+     public function offsetUnset($offset) {
+       $this->remove($offset);
+     }
+@@ -70,30 +72,21 @@
+      * Returns previous value associated with specified key, or NULL if 
+      * there was no mapping for the specified key.
+      *
+-     * @param   lang.Generic key
+-     * @param   lang.Generic value
+-     * @return  lang.Generic the previous value associated with the key
++     * @param   K key
++     * @param   V value
++     * @return  V the previous value associated with the key
+      */
+-    public function put($key, Generic $value) {
+-      $k= Primitive::boxed($key);
+-      
+-      if ($this->__generic) {
+-        if (!$k instanceof $this->__generic[0]) {
+-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
+-        } else if (!$value instanceof $this->__generic[1]) {
+-          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
+-        }
+-      }
+-      
+-      $h= $k->hashCode();
++    #[@generic(params= 'K, V', return= 'V')]
++    public function put($key, $value) {
++      $h= $key instanceof Generic ? $key->hashCode() : $key;
+       if (!isset($this->_buckets[$h])) {
+         $previous= NULL;
+       } else {
+         $previous= $this->_buckets[$h][1];
+       }
+ 
+-      $this->_buckets[$h]= array($k, $value);
+-      $this->_hash+= HashProvider::hashOf($h.$value->hashCode());
++      $this->_buckets[$h]= array($key, $value);
++      $this->_hash+= HashProvider::hashOf($h.($value instanceof Generic ? $value->hashCode() : $value));
+       return $previous;
+     }
+ 
+@@ -101,22 +94,13 @@
+      * Returns the value to which this map maps the specified key. 
+      * Returns NULL if the map contains no mapping for this key.
+      *
+-     * @param   lang.Generic key
+-     * @return  lang.Generic the value associated with the key
++     * @param   K key
++     * @return  V the value associated with the key
+      */
++    #[@generic(params= 'K', return= 'V')]
+     public function get($key) {
+-      $k= Primitive::boxed($key);
+-
+-      if ($this->__generic) {
+-        if (!$k instanceof $this->__generic[0]) {
+-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
+-        }
+-      }
+-
+-      $h= $k->hashCode();
+-      if (!isset($this->_buckets[$h])) return NULL; 
+-
+-      return $this->_buckets[$h][1];
++      $h= $key instanceof Generic ? $key->hashCode() : $key;
++      return isset($this->_buckets[$h]) ? $this->_buckets[$h][1] : NULL; 
+     }
+     
+     /**
+@@ -124,28 +108,21 @@
+      * Returns the value to which the map previously associated the key, 
+      * or null if the map contained no mapping for this key.
+      *
+-     * @param   lang.Generic key
+-     * @return  lang.Generic the previous value associated with the key
++     * @param   K key
++     * @return  V the previous value associated with the key
+      */
++    #[@generic(params= 'K', return= 'V')]
+     public function remove($key) {
+-      $k= Primitive::boxed($key);
+-
+-      if ($this->__generic) {
+-        if (!$k instanceof $this->__generic[0]) {
+-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
+-        }
+-      }
+-
+-      $h= $k->hashCode();
++      $h= $key instanceof Generic ? $key->hashCode() : $key;
+       if (!isset($this->_buckets[$h])) {
+-        $previous= NULL;
++        $prev= NULL;
+       } else {
+-        $previous= $this->_buckets[$h][1];
+-        $this->_hash-= HashProvider::hashOf($h.$previous->hashCode());
++        $prev= $this->_buckets[$h][1];
++        $this->_hash-= HashProvider::hashOf($h.($prev instanceof Generic ? $prev->hashCode() : $prev));
+         unset($this->_buckets[$h]);
+       }
+ 
+-      return $previous;
++      return $prev;
+     }
+     
+     /**
+@@ -176,34 +153,32 @@
+     /**
+      * Returns true if this map contains a mapping for the specified key.
+      *
+-     * @param   lang.Generic key
++     * @param   K key
+      * @return  bool
+      */
++    #[@generic(params= 'K')]
+     public function containsKey($key) {
+-      $k= Primitive::boxed($key);
+-      if ($this->__generic) {
+-        if (!$k instanceof $this->__generic[0]) {
+-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
+-        }
+-      }
+-      return isset($this->_buckets[$k->hashCode()]);
++      $h= $key instanceof Generic ? $key->hashCode() : $key;
++      return isset($this->_buckets[$h]);
+     }
+ 
+     /**
+      * Returns true if this map maps one or more keys to the specified value. 
+      *
+-     * @param   lang.Generic value
++     * @param   V value
+      * @return  bool
+      */
+-    public function containsValue(Generic $value) {
+-      if ($this->__generic) {
+-        if (!$value instanceof $this->__generic[1]) {
+-          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
++    #[@generic(params= 'V')]
++    public function containsValue($value) {
++      if ($value instanceof Generic) {
++        foreach (array_keys($this->_buckets) as $key) {
++          if ($value->equals($this->_buckets[$key][1])) return TRUE;
+         }
++      } else {
++        foreach (array_keys($this->_buckets) as $key) {
++          if ($value === $this->_buckets[$key][1]) return TRUE;
++        }
+       }
+-      foreach (array_keys($this->_buckets) as $key) {
+-        if ($this->_buckets[$key][1]->equals($value)) return TRUE;
+-      }
+       return FALSE;
+     }
+ 
+@@ -232,8 +207,9 @@
+     /**
+      * Returns an array of keys
+      *
+-     * @return  lang.Generic[]
++     * @return  K[]
+      */
++    #[@generic(return= 'K[]')]
+     public function keys() {
+       $keys= array();
+       foreach (array_keys($this->_buckets) as $key) {
+@@ -253,7 +229,7 @@
+ 
+       $s.= "\n";
+       foreach (array_keys($this->_buckets) as $key) {
+-        $s.= '  '.$this->_buckets[$key][0]->toString().' => '.$this->_buckets[$key][1]->toString().",\n";
++        $s.= '  '.xp::stringOf($this->_buckets[$key][0]).' => '.xp::stringOf($this->_buckets[$key][1]).",\n";
+       }
+       return substr($s, 0, -2)."\n}";
+     }
+Index: skeleton/util/collections/Vector.class.php
+===================================================================
+--- skeleton/util/collections/Vector.class.php	(revision 14265)
++++ skeleton/util/collections/Vector.class.php	(working copy)
+@@ -13,6 +13,7 @@
+    * @see      xp://lang.types.ArrayList
+    * @purpose  IList implementation
+    */
++  #[@generic(self= 'T', IList= 'T')]
+   class Vector extends Object implements IList {
+     protected static
+       $iterate   = NULL;
+@@ -21,9 +22,6 @@
+       $elements  = array(),
+       $size      = 0;
+ 
+-    public
+-      $__generic = array();
+-
+     static function __static() {
+       self::$iterate= newinstance('Iterator', array(), '{
+         private $i= 0, $v;
+@@ -39,17 +37,11 @@
+     /**
+      * Constructor
+      *
+-     * @param   lang.Generic[] elements default array()
++     * @param   T[] elements default array()
+      */
+-    public function __construct(array $elements= array()) {
+-      foreach ($elements as $element) {
+-        if ($this->__generic) {
+-          if (!$element instanceof $this->__generic[0]) {
+-            throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+-          }
+-        }
+-        $this->elements[]= $element;
+-      }
++    #[@generic(params= 'T[]')]
++    public function __construct($elements= array()) {
++      $this->elements= $elements;
+       $this->size= sizeof($this->elements);
+     }
+ 
+@@ -67,8 +59,9 @@
+      * = list[] overloading
+      *
+      * @param   int offset
+-     * @return  lang.Generic
++     * @return  T
+      */
++    #[@generic(return= 'T')]
+     public function offsetGet($offset) {
+       return $this->get($offset);
+     }
+@@ -77,14 +70,15 @@
+      * list[]= overloading
+      *
+      * @param   int offset
+-     * @param   var value
++     * @param   T value
+      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
+      */
+-    public function offsetSet($offset, $value) {
++    #[@generic(params= ', T')]
++    public function offsetSet($offset, $prev) {
+       if (is_int($offset)) {
+-        $this->set($offset, $value);
++        $this->set($offset, $prev);
+       } else if (NULL === $offset) {
+-        $this->add($value);
++        $this->add($prev);
+       } else {
+         throw new IllegalArgumentException('Incorrect type '.gettype($offset).' for index');
+       }
+@@ -130,15 +124,11 @@
+     /**
+      * Adds an element to this list
+      *
+-     * @param   lang.Generic element
+-     * @return  lang.Generic the added element
+-     * @throws  lang.IllegalArgumentException
++     * @param   T element
++     * @return  T the added element
+      */
+-    public function add(Generic $element) {
+-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+-      }
+-
++    #[@generic(params= 'T', return= 'T')]
++    public function add($element) {
+       $this->elements[]= $element;
+       $this->size++;
+       return $element;
+@@ -147,30 +137,19 @@
+     /**
+      * Adds an element to this list
+      *
+-     * @param   * elements either an array or an Traversable
++     * @param   T[] elements
+      * @return  bool TRUE if the vector was changed as a result of this operation, FALSE if not
+      * @throws  lang.IllegalArgumentException
+      */
++    #[@generic(params= 'T[]')]
+     public function addAll($elements) {
+-      if (!is_array($elements) && !$elements instanceof Traversable) {
+-        throw new IllegalArgumentException(sprintf(
+-          'Expected either an array or an Traversable',
+-          xp::typeOf($elements)
+-        ));
+-      }
+-
+-      $e= array();
+-      $type= $this->__generic ? $this->__generic[0] : xp::reflect('lang.Generic');
++      $added= 0;
+       foreach ($elements as $element) {
+-        if (!$element instanceof $type) {
+-          throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$type);
+-        }
+-        $e[]= $element;
++        $this->elements[]= $element;
++        $added++;
+       }
+-      $size= sizeof($e);
+-      $this->elements= array_merge($this->elements, $e);
+-      $this->size+= $size;
+-      return $size > 0;
++      $this->size+= $added;
++      return $added > 0;
+     }
+ 
+     /**
+@@ -178,19 +157,16 @@
+      * the specified element.
+      *
+      * @param   int index
+-     * @param   lang.Generic element
+-     * @return  lang.Generic the element previously at the specified position.
++     * @param   T element
++     * @return  T the element previously at the specified position.
+      * @throws  lang.IndexOutOfBoundsException
+      */
+-    public function set($index, Generic $element) {
++    #[@generic(params= ', T', return= 'T')]
++    public function set($index, $element) {
+       if ($index < 0 || $index >= $this->size) {
+         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
+       }
+ 
+-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+-      }
+-
+       $orig= $this->elements[$index];
+       $this->elements[$index]= $element;
+       return $orig;
+@@ -200,9 +176,10 @@
+      * Returns the element at the specified position in this list.
+      *
+      * @param   int index
+-     * @return  lang.Generic
++     * @return  T
+      * @throws  lang.IndexOutOfBoundsException if key does not exist
+      */
++    #[@generic(return= 'T')]
+     public function get($index) {
+       if ($index < 0 || $index >= $this->size) {
+         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
+@@ -216,8 +193,9 @@
+      * from their indices).
+      *
+      * @param   int index
+-     * @return  lang.Generic the element that was removed from the list
++     * @return  T the element that was removed from the list
+      */
++    #[@generic(return= 'T')]
+     public function remove($index) {
+       if ($index < 0 || $index >= $this->size) {
+         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
+@@ -243,8 +221,9 @@
+     /**
+      * Returns an array of this list's elements
+      *
+-     * @return  lang.Generic[]
++     * @return  T[]
+      */
++    #[@generic(return= 'T[]')]
+     public function elements() {
+       return $this->elements;
+     }
+@@ -252,14 +231,11 @@
+     /**
+      * Checks if a value exists in this array
+      *
+-     * @param   lang.Generic element
++     * @param   T element
+      * @return  bool
+      */
+-    public function contains(Generic $element) {
+-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+-      }
+-
++    #[@generic(params= 'T')]
++    public function contains($element) {
+       for ($i= 0; $i < $this->size; $i++) {
+         if ($this->elements[$i]->equals($element)) return TRUE;
+       }
+@@ -269,14 +245,11 @@
+     /**
+      * Searches for the first occurence of the given argument
+      *
+-     * @param   lang.Generic element
++     * @param   T element
+      * @return  int offset where the element was found or FALSE
+      */
+-    public function indexOf(Generic $element) {
+-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+-      }
+-
++    #[@generic(params= 'T')]
++    public function indexOf($element) {
+       for ($i= 0; $i < $this->size; $i++) {
+         if ($this->elements[$i]->equals($element)) return $i;
+       }
+@@ -286,14 +259,11 @@
+     /**
+      * Searches for the last occurence of the given argument
+      *
+-     * @param   lang.Generic element
++     * @param   T element
+      * @return  int offset where the element was found or FALSE
+      */
++    #[@generic(params= 'T')]
+     public function lastIndexOf(Generic $element) {
+-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
+-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
+-      }
+-
+       for ($i= $this->size- 1; $i > -1; $i--) {
+         if ($this->elements[$i]->equals($element)) return $i;
+       }
+Index: skeleton/util/collections/Map.class.php
+===================================================================
+--- skeleton/util/collections/Map.class.php	(revision 14265)
++++ skeleton/util/collections/Map.class.php	(working copy)
+@@ -13,6 +13,7 @@
+    * @see      xp://util.collections.HashProvider
+    * @purpose  Interface
+    */
++  #[@generic(self= 'K, V')]
+   interface Map extends ArrayAccess {
+     
+     /**
+@@ -22,19 +23,21 @@
+      * Returns previous value associated with specified key, or NULL if 
+      * there was no mapping for the specified key.
+      *
+-     * @param   lang.Generic key
+-     * @param   lang.Generic value
+-     * @return  lang.Generic the previous value associated with the key
++     * @param   K key
++     * @param   V value
++     * @return  V the previous value associated with the key
+      */
+-    public function put($key, Generic $value);
++    #[@generic(params= 'K, V', return= 'V')]
++    public function put($key, $value);
+ 
+     /**
+      * Returns the value to which this map maps the specified key. 
+      * Returns NULL if the map contains no mapping for this key.
+      *
+-     * @param   lang.Generic key
+-     * @return  lang.Generic the value associated with the key
++     * @param   K key
++     * @return  V the value associated with the key
+      */
++    #[@generic(params= 'K', return= 'V')]
+     public function get($key);
+     
+     /**
+@@ -42,9 +45,10 @@
+      * Returns the value to which the map previously associated the key, 
+      * or null if the map contained no mapping for this key.
+      *
+-     * @param   lang.Generic key
+-     * @return  lang.Generic the previous value associated with the key
++     * @param   K key
++     * @return  V the previous value associated with the key
+      */
++    #[@generic(params= 'K', return= 'V')]
+     public function remove($key);
+     
+     /**
+@@ -68,18 +72,20 @@
+     /**
+      * Returns true if this map contains a mapping for the specified key.
+      *
+-     * @param   lang.Generic key
++     * @param   K key
+      * @return  bool
+      */
++    #[@generic(params= 'K')]
+     public function containsKey($key);
+ 
+     /**
+      * Returns true if this map maps one or more keys to the specified value. 
+      *
+-     * @param   lang.Generic value
++     * @param   V value
+      * @return  bool
+      */
+-    public function containsValue(Generic $value);
++    #[@generic(params= 'V')]
++    public function containsValue($value);
+ 
+     /**
+      * Returns a hashcode for this map
+@@ -95,6 +101,5 @@
+      * @return  bool
+      */
+     public function equals($cmp);
+-
+   }
+ ?>
+Index: skeleton/util/collections/IList.class.php
+===================================================================
+--- skeleton/util/collections/IList.class.php	(revision 14265)
++++ skeleton/util/collections/IList.class.php	(working copy)
+@@ -11,6 +11,7 @@
+    *
+    * @purpose  Interface
+    */
++  #[@generic(self= 'T')]
+   interface IList extends ArrayAccess, IteratorAggregate {
+ 
+     /**
+@@ -30,29 +31,31 @@
+     /**
+      * Adds an element to this list
+      *
+-     * @param   lang.Generic element
+-     * @return  lang.Generic the added element
+-     * @throws  lang.IllegalArgumentException
++     * @param   T element
++     * @return  T the added element
+      */
+-    public function add(Generic $element);
++    #[@generic(params= 'T', return= 'T')]
++    public function add($element);
+ 
+     /**
+      * Replaces the element at the specified position in this list with 
+      * the specified element.
+      *
+      * @param   int index
+-     * @param   lang.Generic element
+-     * @return  lang.Generic the element previously at the specified position.
++     * @param   T element
++     * @return  T the element previously at the specified position.
+      */
+-    public function set($index, Generic $element);
++    #[@generic(params= ', T', return= 'T')]
++    public function set($index, $element);
+ 
+     /**
+      * Returns the element at the specified position in this list.
+      *
+      * @param   int index
+-     * @return  lang.Generic
++     * @return  T
+      * @throws  lang.IndexOutOfBoundsException if key does not exist
+      */
++    #[@generic(return= 'T')]
+     public function get($index);
+  
+     /**
+@@ -61,17 +64,19 @@
+      * from their indices).
+      *
+      * @param   int index
+-     * @return  lang.Generic the element that was removed from the list
++     * @return  T the element that was removed from the list
+      */
++    #[@generic(return= 'T')]
+     public function remove($index);
+ 
+     /**
+      * Checks if a value exists in this list
+      *
+-     * @param   lang.Generic element
++     * @param   T element
+      * @return  bool
+      */
+-    public function contains(Generic $element);
++    #[@generic(params= 'T')]
++    public function contains($element);
+ 
+     /**
+      * Removes all of the elements from this list. The list will be empty 
+@@ -79,7 +84,6 @@
+      *
+      */
+     public function clear();
+- 
+ 
+   }
+ ?>
+Index: ports/unittest/collections.ini
+===================================================================
+--- ports/unittest/collections.ini	(revision 14265)
++++ ports/unittest/collections.ini	(working copy)
+@@ -24,9 +24,6 @@
+ [vector]
+ class="net.xp_framework.unittest.util.collections.VectorTest"
+ 
+-[boxing]
+-class="net.xp_framework.unittest.util.collections.BoxingTest"
+-
+ [generics]
+ class="net.xp_framework.unittest.util.collections.GenericsTest"
+ 
 Index: ports/unittest/core.ini
 ===================================================================
 --- ports/unittest/core.ini	(revision 14265)
@@ -1145,3 +1867,308 @@ ___________________________________________________________________
 Added: svn:keywords
    + Id
 
+Index: ports/classes/net/xp_framework/unittest/core/CreateTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/CreateTest.class.php	(revision 14265)
++++ ports/classes/net/xp_framework/unittest/core/CreateTest.class.php	(working copy)
+@@ -40,7 +40,10 @@
+     #[@test]
+     public function createWithShortNames() {
+       $h= create('new HashTable<String, String>');
+-      $this->assertEquals(array('String', 'String'), $h->__generic);
++      $this->assertEquals(
++        array(XPClass::forName('lang.types.String'), XPClass::forName('lang.types.String')), 
++        $h->getClass()->genericArguments()
++      );
+     }
+ 
+     /**
+@@ -63,8 +66,8 @@
+     public function createWithQualifiedNames() {
+       $h= create('new util.collections.HashTable<lang.types.String, lang.types.String>');
+       $this->assertEquals(
+-        array(xp::reflect('lang.types.String'), xp::reflect('lang.types.String')), 
+-        $h->__generic
++        array(XPClass::forName('lang.types.String'), XPClass::forName('lang.types.String')), 
++        $h->getClass()->genericArguments()
+       );
+     }
+ 
+Index: ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php	(revision 14265)
++++ ports/classes/net/xp_framework/unittest/tests/ListenerTest.class.php	(working copy)
+@@ -29,7 +29,7 @@
+      *
+      */
+     public function setUp() {
+-      $this->invocations= create('new util.collections.HashTable<lang.types.String, lang.types.ArrayList>()');
++      $this->invocations= create('new util.collections.HashTable<string, lang.types.ArrayList>()');
+       $this->suite= new TestSuite();
+       $this->suite->addListener($this);
+     }
+Index: ports/classes/net/xp_framework/unittest/util/collections/BoxingTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/util/collections/BoxingTest.class.php	(revision 14266)
++++ ports/classes/net/xp_framework/unittest/util/collections/BoxingTest.class.php	(working copy)
+@@ -1,93 +0,0 @@
+-<?php
+-/* This class is part of the XP framework
+- *
+- * $Id$ 
+- */
+-
+-  uses(
+-    'lang.Primitive',
+-    'lang.types.ArrayList',
+-    'util.collections.HashTable',
+-    'util.collections.Vector'
+-  );
+-
+-  /**
+-   * TestCase
+-   *
+-   * @see      reference
+-   * @purpose  purpose
+-   */
+-  class BoxingTest extends TestCase {
+-  
+-    /**
+-     * Test hash table operations
+-     *
+-     * @param   mixed primitive
+-     * @throws  unittest.AssertionFailedError
+-     */
+-    protected function assertHashTableOperation($primitive) {
+-      with (
+-        $boxed= Primitive::boxed($primitive),
+-        $value= new String($this->name),
+-        $hash= new HashTable()
+-      ); {
+-      
+-        try {
+-          $hash[$primitive]= $value;
+-          $this->assertEquals(array($boxed), $hash->keys());
+-          $this->assertTrue($hash->containsKey($primitive), 'Key '.$primitive.' not contained');
+-          $this->assertTrue($hash->containsKey($boxed), 'Key '.xp::stringOf($boxed).' not contained');
+-          $this->assertEquals($value, $hash[$primitive]);
+-          $this->assertEquals($value, $hash[$boxed]);
+-        } catch (AssertionFailedError $e) {
+-          $this->fail($e->getMessage().' in {'.xp::stringOf($hash).'}', $e->actual, $e->expect);
+-        }
+-      }
+-    }
+-
+-    /**
+-     * Tests HashTable
+-     *
+-     */
+-    #[@test]
+-    public function hashTableString() {
+-      $this->assertHashTableOperation('string');
+-    }
+-  
+-    /**
+-     * Tests HashTable
+-     *
+-     */
+-    #[@test]
+-    public function hashTableInteger() {
+-      $this->assertHashTableOperation(1);
+-    }
+-
+-    /**
+-     * Tests HashTable
+-     *
+-     */
+-    #[@test]
+-    public function hashTableDouble() {
+-      $this->assertHashTableOperation(1.0);
+-    }
+-
+-    /**
+-     * Tests HashTable
+-     *
+-     */
+-    #[@test]
+-    public function hashTableBoolean() {
+-      $this->assertHashTableOperation(TRUE);
+-    }
+-
+-    /**
+-     * Tests HashTable
+-     *
+-     */
+-    #[@test]
+-    public function hashTableArray() {
+-      $this->assertHashTableOperation(array(1, 2, 3));
+-    }
+-  }
+-?>
+Index: ports/classes/net/xp_framework/unittest/util/collections/GenericsTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/util/collections/GenericsTest.class.php	(revision 14265)
++++ ports/classes/net/xp_framework/unittest/util/collections/GenericsTest.class.php	(working copy)
+@@ -36,33 +36,33 @@
+     }
+   
+     /**
+-     * Tests HashTable<lang.types.String, lang.types.String>
++     * Tests HashTable<string, lang.types.String>
+      *
+      */
+     #[@test]
+     public function stringStringHash() {
+-      create('new util.collections.HashTable<lang.types.String, lang.types.String>')->put('hello', new String('World'));
++      create('new util.collections.HashTable<string, lang.types.String>')->put('hello', new String('World'));
+     }
+ 
+     /**
+-     * Tests HashTable<lang.types.String, lang.types.String>
++     * Tests HashTable<string, lang.types.String>
+      *
+      */
+     #[@test]
+     public function getFromStringStringHash() {
+-      with ($h= create('new util.collections.HashTable<lang.types.String, lang.types.String>')); {
++      with ($h= create('new util.collections.HashTable<string, lang.types.String>')); {
+         $h->put('hello', new String('World'));
+         $this->assertEquals(new String('World'), $h->get('hello'));
+       }
+     }
+ 
+     /**
+-     * Tests HashTable<lang.types.String, lang.types.String>
++     * Tests HashTable<string, lang.types.String>
+      *
+      */
+     #[@test]
+     public function removeFromStringStringHash() {
+-      with ($h= create('new util.collections.HashTable<lang.types.String, lang.types.String>')); {
++      with ($h= create('new util.collections.HashTable<string, lang.types.String>')); {
+         $h->put('hello', new String('World'));
+         $this->assertEquals(new String('World'), $h->remove('hello'));
+       }
+@@ -74,7 +74,7 @@
+      */
+     #[@test]
+     public function testStringStringHash() {
+-      with ($h= create('new util.collections.HashTable<lang.types.String, lang.types.String>')); {
++      with ($h= create('new util.collections.HashTable<string, lang.types.String>')); {
+         $h->put('hello', new String('World'));
+         $this->assertTrue($h->containsKey('hello'));
+       }
+@@ -86,7 +86,7 @@
+      */
+     #[@test, @expect('lang.IllegalArgumentException')]
+     public function stringStringHashPutIllegalValue() {
+-      create('new util.collections.HashTable<lang.types.String, lang.types.String>')->put('hello', new Integer(1));
++      create('new util.collections.HashTable<string, lang.types.String>')->put('hello', new Integer(1));
+     }
+ 
+     /**
+Index: ports/classes/net/xp_framework/unittest/util/collections/ArrayAccessTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/util/collections/ArrayAccessTest.class.php	(revision 14265)
++++ ports/classes/net/xp_framework/unittest/util/collections/ArrayAccessTest.class.php	(working copy)
+@@ -48,7 +48,7 @@
+      */
+     #[@test, @expect('lang.IllegalArgumentException')]
+     public function hashTableReadIllegalElement() {
+-      $c= new HashTable();
++      $c= create('new HashTable<string, Object>()');
+       $c[STDIN];
+     }
+ 
+@@ -70,7 +70,7 @@
+      */
+     #[@test, @expect('lang.IllegalArgumentException')]
+     public function hashTableWriteIllegalKey() {
+-      $c= new HashTable();
++      $c= create('new HashTable<string, Object>()');
+       $c[STDIN]= new String('Hello');
+     }
+ 
+@@ -80,8 +80,8 @@
+      */
+     #[@test, @expect('lang.IllegalArgumentException')]
+     public function hashTableWriteIllegalValue() {
+-      $c= new HashTable();
+-      $c[new String('hello')]= 'scalar';
++      $c= create('new HashTable<string, Object>()');
++      $c['hello']= 'scalar';
+     }
+ 
+     /**
+Index: ports/classes/net/xp_framework/unittest/util/collections/ArraysTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/util/collections/ArraysTest.class.php	(revision 14265)
++++ ports/classes/net/xp_framework/unittest/util/collections/ArraysTest.class.php	(working copy)
+@@ -37,9 +37,14 @@
+      * Test asList() method
+      *
+      */
+-    #[@test, @expect('lang.IllegalArgumentException')]
++    #[@test]
+     public function asListWithPrimitives() {
+-      Arrays::asList(new ArrayList('one', 'two', 'three'));
++      $list= Arrays::asList(new ArrayList('one', 'two', 'three'));
++      $this->assertSubclass($list, 'util.collections.IList');
++      $this->assertEquals(3, $list->size());
++      $this->assertEquals('one', $list->get(0));
++      $this->assertEquals('two', $list->get(1));
++      $this->assertEquals('three', $list->get(2));
+     }
+ 
+     /**
+Index: ports/classes/net/xp_framework/unittest/util/collections/VectorTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/util/collections/VectorTest.class.php	(revision 14265)
++++ ports/classes/net/xp_framework/unittest/util/collections/VectorTest.class.php	(working copy)
+@@ -128,7 +128,7 @@
+      */
+     #[@test]
+     public function unchangedAfterNullInAddAll() {
+-      $v= new Vector();
++      $v= create('new Vector<Object>()');
+       try {
+         $v->addAll(array(new Object(), NULL));
+         $this->fail('addAll() did not throw an exception', NULL, 'lang.IllegalArgumentException');
+@@ -138,12 +138,27 @@
+     }
+ 
+     /**
++     * Test adding elements via addAll
++     *
++     */
++    #[@test]
++    public function unchangedAfterIntInAddAll() {
++      $v= create('new Vector<string>()');
++      try {
++        $v->addAll(array('hello', 5));
++        $this->fail('addAll() did not throw an exception', NULL, 'lang.IllegalArgumentException');
++      } catch (IllegalArgumentException $expected) {
++      }
++      $this->assertTrue($v->isEmpty());
++    }
++
++    /**
+      * Test adding NULL does not work
+      *
+      */
+     #[@test, @expect('lang.IllegalArgumentException')]
+     public function addingNull() {
+-      create(new Vector())->add(NULL);
++      create('new Vector<Object>()')->add(NULL);
+     }
+ 
+     /**
+@@ -166,7 +181,7 @@
+      */
+     #[@test, @expect('lang.IllegalArgumentException')]
+     public function replacingWithNull() {
+-      create(new Vector(array(new Object())))->set(0, NULL);
++      create('new Vector<Object>', array(new Object()))->set(0, NULL);
+     }
+ 
+     /**
