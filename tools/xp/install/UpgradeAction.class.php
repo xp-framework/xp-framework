@@ -181,7 +181,7 @@
               return 2;
             }
             
-            Console::writeLine('===> Done');
+            Console::writeLine('===> Done, installed @ ', $target);
             return 0;
           }
 
