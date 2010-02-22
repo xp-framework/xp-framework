@@ -86,6 +86,8 @@
       
         // Calculate target file
         $file= new File($target, $filename);
+        $folder= new Folder($file->getPath());
+        $folder->exists() || $folder->create();
         Console::writef(
           '     >> [%-10s] %s (%.2f kB) [%s]%s', 
           $ar,
@@ -150,6 +152,7 @@
             
             // Download base, tools, libraries and meta information
             $target= new Folder($installation->getBase(), $upgrade);
+            $target->exists() || $target->create();
             $this->extract($base, 'base', $target);
             $this->extract($base, 'tools', $target);
             $this->extract($base, 'lib', $target);
