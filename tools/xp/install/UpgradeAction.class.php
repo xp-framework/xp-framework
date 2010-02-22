@@ -12,7 +12,8 @@
     'peer.http.HttpConnection',
     'peer.http.RequestData',
     'io.streams.InputStream',
-    'io.streams.BufferedInputStream'
+    'io.streams.BufferedInputStream',
+    'util.Properties'
   );
 
   /**
@@ -21,14 +22,17 @@
    * Usage:
    * <pre>
    *   # Upgrade XP Framework release currently in use
-   *   $ xpi upgrade
+   *   $ xpi upgrade [-f]
    *
    *   # Upgrade XP Framework release in a certain directory
-   *   $ xpi upgrade /path/to/xp/5.7.6/
+   *   $ xpi upgrade /path/to/xp/5.7.6/ [-f]
    * </pre>
    *
    * In both case, the previous version will be retained; the newer
    * version will be installed in parallel.
+   *
+   * The option "-f" will force installation even if prerequisites
+   * fail (e.g. PHP version, extensions).
    */
   class UpgradeAction extends Object {
     const UPGRADE_URL = 'http://releases.xp-framework.net/upgrade/';
@@ -120,6 +124,11 @@
       $in->close();
     }
     
+    public function error($message) {
+      Console::$err->writeLine('*** ', $message);
+      return 0;
+    }
+    
     /**
      * Perform this action
      *
@@ -128,6 +137,7 @@
     public function perform(array $args) {
       $installation= new Installation();
       $installation->setBase(new Folder(isset($args[0]) ? $args[0] : dirname(Runtime::getInstance()->bootstrapScript()).'/..'));
+      $force= in_array('-f', $args);
       with ($version= $installation->getVersion()); {
         Console::writeLine('===> Local version ', $version, ' @ ', $installation->getBase());
         if (strstr($version, '-dev')) {
@@ -150,9 +160,51 @@
             $base= $r->getHeader('Location');
             Console::writeLine('---> Upgrading to ', $upgrade, ' (', $base, ')');
             
-            // Download base, tools, libraries and meta information
             $target= new Folder($installation->getBase(), $upgrade);
             $target->exists() || $target->create();
+            
+            // Verify dependencies
+            $this->extract($base, 'depend', $target);
+            with ($p= new Properties($target->getURI().'depend.ini')); {
+              $verify= 1;
+              $rtversion= phpversion();
+              $extensions= array_flip(array_map('strtolower', get_loaded_extensions()));
+              foreach ($p->readSection('php') as $op => $compare) {
+                if (!version_compare(phpversion(), $compare, $op)) {
+                  $verify &= $this->error('PHP version '.$op.' '.$compare.' required, have '.$rtversion);
+                }
+              }
+              foreach ($p->readSection('ext.required') as $ext => $usage) {
+                if (!isset($extensions[$ext])) {
+                  $verify &= $this->error('PHP Extension '.$ext.' required for '.$usage);  
+                }
+              }
+              foreach ($p->readSection('ext.conflict') as $ext => $usage) {
+                if (isset($extensions[$ext])) {
+                  $verify &= $this->error('PHP Extension '.$ext.' conflicts ('.$usage.')');
+                }
+              }
+              foreach ($p->readSection('ext.optional') as $ext => $usage) {
+                if (!isset($extensions[$ext])) {
+                  $verify &= $this->error('PHP Extension '.$ext.' not found, needed for '.$usage.' (ignoring)');
+                }
+              }
+              foreach ($p->readSection('ini') as $setting => $match) {
+                $value= ini_get($setting);
+                if (!preg_match($match, $value)) {
+                  $verify &= $this->error('PHP .ini setting '.$setting.' needs to match '.$match.' (but is '.$value.')');
+                }
+              }
+
+              // Remove depend.ini, finally check if we should continue
+              create(new File($p->getFilename()))->unlink();
+              if (!$verify) {
+                if (!$force) return 3;
+                Console::writeLine('!!! Ignoring errors because -f was passed');
+              }
+            }
+            
+            // Download base, tools, libraries and meta information
             $this->extract($base, 'base', $target);
             $this->extract($base, 'tools', $target);
             $this->extract($base, 'lib', $target);
