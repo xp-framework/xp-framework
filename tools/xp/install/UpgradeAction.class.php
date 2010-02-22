@@ -158,7 +158,8 @@
             $this->extract($base, 'lib', $target);
             $this->extract($base, 'meta-inf', $target);
             
-            // Verify it works vby running the XP Framework core unittests
+            // Verify it works by running the XP Framework core unittests
+            $tests= array('net.xp_framework.unittest.core.**');
             Console::writeLine('---> Running tests with [USE_XP=', $upgrade, ']:');
             $rt= Runtime::getInstance();
             set_include_path(implode(PATH_SEPARATOR, array(
@@ -166,7 +167,6 @@
               '',
               $target->getURI().'lib'.DIRECTORY_SEPARATOR.'xp-net.xp_framework-'.$upgrade.'.xar'
             )));
-            $tests= array('net.xp_framework.unittest.core.**');
             with ($p= $rt->newInstance($rt->startupOptions(), 'class', 'xp.unittest.Runner', $tests)); {
               $p->in->close();
               while (!$p->out->eof()) { Console::writeLine($p->out->readLine()); }
