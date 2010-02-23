@@ -41,11 +41,7 @@
         try {
           $this->state= XPClass::forName($this->package.'.'.('state.'.$name.'State'))->newInstance();
         } catch (ClassNotFoundException $e) {
-          throw new HttpScriptletException(
-	    'Cannot find '.$this->stateName,
-            HttpConstants::STATUS_NOT_FOUND,
-	    $e
-          );
+          throw new HttpScriptletException('Cannot find '.$this->stateName, HttpConstants::STATUS_NOT_FOUND, $e);
         }
       }
     }

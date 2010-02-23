@@ -96,8 +96,7 @@
         try {
           $class= $this->getContextClass($request);;
         } catch (ClassNotFoundException $e) {
-          throw new HttpScriptletException($e->getMessage());
-          return FALSE;
+          throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
         }
       
         // Get context from session. If it is not available there, set up the 
