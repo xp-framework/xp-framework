@@ -33,6 +33,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added new scriptlet.DirectOutputHttpScriptletResponse class
+  (kiesel)
 - Added "-r" command line switch to xp runner
   http://news.xp-framework.net/article/345/2010/02/16/
   (friebe)
