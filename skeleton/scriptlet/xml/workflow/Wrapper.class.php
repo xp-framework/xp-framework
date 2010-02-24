@@ -21,6 +21,7 @@
    * Wrapper
    *
    * @see      xp://scriptlet.xml.workflow.Handler#setWrapper
+   * @test     xp://net.xp_framework.unittest.scriptlet.workflow.WrapperTest
    * @purpose  Base class
    */
   class Wrapper extends Object {
@@ -224,7 +225,13 @@
           }
           
           // Set it to the default value
-          if ($definitions[PARAM_DEFAULT]) $value[key($value)]= $definitions[PARAM_DEFAULT];
+          if ($definitions[PARAM_DEFAULT]) {
+            if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_MULTIPLE) {
+              $value= $definitions[PARAM_DEFAULT];
+            } else {
+              $value[key($value)]= $definitions[PARAM_DEFAULT];
+            }
+          }
         } else {
  
           // Run the precheck. This can be utilized for assertion-style checks
