@@ -30,6 +30,9 @@ Bugfixes
 - Fixed reflection on lang.Throwable class in certain cases when builtin
   Exception class is queried for non-existant details
   (friebe)
+- Fixed Wrapper::load() not executing casters and checkers when array
+  values were submitted and first value is empty
+  (ohinckel, Sebastian Kusnier)
 
 Features
 ~~~~~~~~

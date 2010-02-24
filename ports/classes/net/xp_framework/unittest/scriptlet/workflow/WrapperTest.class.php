@@ -65,6 +65,12 @@
         'core:string',
         array('process', 'send')
       );
+      $this->wrapper->registerParamInfo(
+        'options',
+        OCCURRENCE_OPTIONAL | OCCURRENCE_MULTIPLE,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToInteger')
+      );
     }
     
     /**
@@ -74,7 +80,7 @@
     #[@test]
     public function getParamNames() {
       $this->assertEquals(
-        array('orderdate', 'shirt_size', 'shirt_qty', 'notify_me'), 
+        array('orderdate', 'shirt_size', 'shirt_qty', 'notify_me', 'options'), 
         $this->wrapper->getParamNames()
       );
     }
@@ -351,6 +357,40 @@
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(array('send', 'process'), $this->wrapper->getValue('notify_me'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleField() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array('0010', '0020')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(10, 20), $this->wrapper->getValue('options'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleFieldFirstEmpty() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array(NULL, '0020')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(0, 20), $this->wrapper->getValue('options'));
     }
   }
 ?>
