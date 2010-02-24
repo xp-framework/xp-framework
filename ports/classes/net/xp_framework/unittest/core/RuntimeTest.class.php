@@ -406,7 +406,7 @@
     #[@test]
     public function memoryLimit() {
       $this->assertEquals(
-        Primitive::$$INT, 
+        Primitive::$INT,
         Type::forName(gettype(Runtime::getInstance()->memoryLimit()))
       );
     }
