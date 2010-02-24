@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated lang.Primitive::$INTEGER in favor of lang.Primitive::$INT
+  (friebe)
 - Deprecated lang.Type::$ANY in favor of lang.Type::$VAR
   (friebe)
 - Changed util.collections.Map interface to ensure array access works.

@@ -24,12 +24,22 @@
     }
   
     /**
-     * Test integer primitive
+     * Test int primitive
      *
      */
     #[@test]
+    public function intPrimitive() {
+      $this->assertEquals(Primitive::$INT, Primitive::forName('int'));
+    }
+
+    /**
+     * Test integer primitive
+     *
+     * @deprecated    The name "integer" is deprecated
+     */
+    #[@test]
     public function integerPrimitive() {
-      $this->assertEquals(Primitive::$INTEGER, Primitive::forName('integer'));
+      $this->assertEquals(Primitive::$INT, Primitive::forName('integer'));
     }
 
     /**

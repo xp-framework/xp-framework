@@ -18,7 +18,7 @@
    * 
    * <ul>
    *   <li>string</li>
-   *   <li>integer</li>
+   *   <li>int</li>
    *   <li>double</li>
    *   <li>boolean</li>
    *   <li>array</li>
@@ -31,14 +31,15 @@
   class Primitive extends Type {
     public static
       $STRING  = NULL,
-      $INTEGER = NULL,
+      $INT     = NULL,
       $DOUBLE  = NULL,
       $BOOLEAN = NULL,
-      $ARRAY   = NULL;
+      $ARRAY   = NULL,
+      $INTEGER = NULL;    // deprecated
     
     static function __static() {
       self::$STRING= new self('string');
-      self::$INTEGER= new self('integer');
+      self::$INTEGER= self::$INT= new self('int');
       self::$DOUBLE= new self('double');
       self::$BOOLEAN= new self('boolean');
       self::$ARRAY= new self('array');
@@ -53,7 +54,7 @@
     public function wrapperClass() {
       switch ($this) {
         case self::$STRING: return XPClass::forName('lang.types.String');
-        case self::$INTEGER: return XPClass::forName('lang.types.Integer');
+        case self::$INT: return XPClass::forName('lang.types.Integer');
         case self::$DOUBLE: return XPClass::forName('lang.types.Double');
         case self::$BOOLEAN: return XPClass::forName('lang.types.Boolean');
         case self::$ARRAY: return XPClass::forName('lang.types.ArrayList');
@@ -107,10 +108,11 @@
     public static function forName($name) {
       switch ($name) {
         case 'string': return self::$STRING;
-        case 'integer': return self::$INTEGER;
+        case 'int': return self::$INT;
         case 'double': return self::$DOUBLE;
         case 'boolean': return self::$BOOLEAN;
         case 'array': return self::$ARRAY;
+        case 'integer': return self::$INT;    // deprecated
         default: throw new IllegalArgumentException('Not a primitive: '.$name);
       }
     }

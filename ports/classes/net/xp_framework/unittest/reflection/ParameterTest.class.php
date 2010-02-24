@@ -188,9 +188,9 @@
      *
      */
     #[@test]
-    public function integerType() {
-      $this->assertEquals(Primitive::$INTEGER, $this->methodParameter('inc', 0)->getType(), 'inc$a');
-      $this->assertEquals(Primitive::$INTEGER, $this->methodParameter('inc', 1)->getType(), 'inc$b');
+    public function intType() {
+      $this->assertEquals(Primitive::$INT, $this->methodParameter('inc', 0)->getType(), 'inc$a');
+      $this->assertEquals(Primitive::$INT, $this->methodParameter('inc', 1)->getType(), 'inc$b');
     }
 
     /**
@@ -280,7 +280,7 @@
      *
      */
     #[@test]
-    public function integerDefaultValue() {
+    public function intDefaultValue() {
       $this->assertEquals(1, $this->methodParameter('inc', 1)->getDefaultValue());
     }
 

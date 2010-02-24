@@ -98,7 +98,7 @@
 
         case 'integer': 
         case 'int': 
-          return Primitive::$INTEGER;
+          return Primitive::$INT;
 
         case 'double': 
         case 'float': 
@@ -119,7 +119,7 @@
           return Primitive::$ARRAY;
 
         case 'resource':    // XXX FIXME
-          return Primitive::$INTEGER;
+          return Primitive::$INT;
         
         case 'void':
           return self::$VOID;
