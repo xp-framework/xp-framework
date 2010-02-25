@@ -98,7 +98,7 @@
       if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
 
       if (!isset(self::$bytes[$class])) {
-        throw new ClassNotFoundException('Unknown class "'.$class.'"');
+        throw new ClassNotFoundException('Unknown class "'.$class.'"', array($this));
       }
       
       // Load class

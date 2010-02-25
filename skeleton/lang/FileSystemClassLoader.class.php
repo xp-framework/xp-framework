@@ -117,7 +117,7 @@
       xp::$registry['cl.level']--;
       if (FALSE === $r) {
         unset(xp::$registry['classloader.'.$class]);
-        throw new ClassNotFoundException('Class "'.$class.'" not found');
+        throw new ClassNotFoundException('Class "'.$class.'" not found', array($this));
       }
       
       // Register it

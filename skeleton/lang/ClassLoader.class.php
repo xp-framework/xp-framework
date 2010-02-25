@@ -148,14 +148,14 @@
 
         // Test for existance        
         if (!class_exists($super)) {
-          throw new ClassNotFoundException('Parent class "'.$parent.'" does not exist.');
+          throw new ClassNotFoundException('Parent class "'.$parent.'" does not exist.', self::getLoaders());
         }
         
         if (!empty($interfaces)) {
           $if= array_map(array('xp', 'reflect'), $interfaces);
           foreach ($if as $implemented) {
             if (interface_exists($implemented)) continue;
-            throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.');
+            throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.', self::getLoaders());
           }
         }
 
@@ -192,7 +192,7 @@
           $if= array_map(array('xp', 'reflect'), (array)$parents);
           foreach ($if as $super) {
             if (interface_exists($super)) continue;
-            throw new ClassNotFoundException('Superinterface "'.$super.'" does not exist.');
+            throw new ClassNotFoundException('Superinterface "'.$super.'" does not exist.', self::getLoaders());
           }
         }
 
