@@ -16,9 +16,14 @@
    * @purpose  TestListener
    */
   class DefaultListener extends Object implements TestListener {
+    const OUTPUT_WIDTH  = 72;
+
     public
       $out= NULL;
     
+    protected
+      $column= 0;
+
     /**
      * Constructor
      *
@@ -28,6 +33,22 @@
       $this->out= $out;
     }
     
+    /**
+     * Output method; takes care of wrapping output if output line
+     * exceeds maximum length
+     *
+     * @param   string string
+     */
+    protected function write($string) {
+      if ($this->column > self::OUTPUT_WIDTH) {
+        $this->out->writeLine();
+        $this->column= 0;
+      }
+
+      $this->column++;
+      $this->out->write($string);
+    }
+
     /**
      * Called when a test case starts.
      *
@@ -43,7 +64,7 @@
      * @param   unittest.TestFailure failure
      */
     public function testFailed(TestFailure $failure) {
-      $this->out->write('F');
+      $this->write('F');
     }
 
     /**
@@ -52,7 +73,7 @@
      * @param   unittest.TestError error
      */
     public function testError(TestError $error) {
-      $this->out->write('E');
+      $this->write('E');
     }
 
     /**
@@ -61,7 +82,7 @@
      * @param   unittest.TestWarning warning
      */
     public function testWarning(TestWarning $warning) {
-      $this->out->write('W');
+      $this->write('W');
     }
     
     /**
@@ -70,7 +91,7 @@
      * @param   unittest.TestSuccess success
      */
     public function testSucceeded(TestSuccess $success) {
-      $this->out->write('.');
+      $this->write('.');
     }
     
     /**
@@ -80,7 +101,7 @@
      * @param   unittest.TestSkipped skipped
      */
     public function testSkipped(TestSkipped $skipped) {
-      $this->out->write('S');
+      $this->write('S');
     }
 
     /**
@@ -90,7 +111,7 @@
      * @param   unittest.TestSkipped ignore
      */
     public function testNotRun(TestSkipped $ignore) {
-      $this->out->write('N');
+      $this->write('N');
     }
 
     /**
@@ -99,7 +120,7 @@
      * @param   unittest.TestSuite suite
      */
     public function testRunStarted(TestSuite $suite) {
-      $this->out->write('[');
+      $this->write('[');
     }
     
     /**
