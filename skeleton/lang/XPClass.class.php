@@ -171,6 +171,20 @@
     }
 
     /**
+     * Gets class methods declared by this class
+     *
+     * @return  lang.reflect.Method[]
+     */
+    public function getDeclaredMethods() {
+      $list= array();
+      foreach ($this->_reflect->getMethods() as $m) {
+        if (0 == strncmp('__', $m->getName(), 2) || $m->class !== $this->_reflect->name) continue;
+        $list[]= new Method($this->_class, $m);
+      }
+      return $list;
+    }
+
+    /**
      * Gets a method by a specified name.
      *
      * @param   string name
@@ -234,12 +248,26 @@
     public function getFields() {
       $f= array();
       foreach ($this->_reflect->getProperties() as $p) {
-        if ('__id' === $p->getName()) continue;
+        if ('__id' === $p->name) continue;
         $f[]= new Field($this->_class, $p);
       }
       return $f;
     }
-    
+
+    /**
+     * Retrieve a list of member variables declared in this class
+     *
+     * @return  lang.reflect.Field[] array of field objects
+     */
+    public function getDeclaredFields() {
+      $f= array();
+      foreach ($this->_reflect->getProperties() as $p) {
+        if ('__id' === $p->name || $p->class !== $this->_reflect->name) continue;
+        $f[]= new Field($this->_class, $p);
+      }
+      return $f;
+    }
+
     /**
      * Retrieve a field by a specified name.
      *
@@ -825,8 +853,7 @@
         }
         
         // Generate delegating methods declared in this class
-        foreach ($self->getMethods() as $method) {
-          if (!$method->getDeclaringClass()->equals($self)) continue;
+        foreach ($self->getDeclaredMethods() as $method) {
           $modifiers= $method->getModifiers();
           $src.= self::createDelegate(
             $self, 

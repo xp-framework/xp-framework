@@ -39,6 +39,8 @@ Features
 
 RFCs
 ~~~~
+- Implemented RFC #0194 - Add XPClass::getDeclared*() methods
+  (friebe)
 - Implemented RFC #0193 - Generics optimization
   (friebe)
 - Implemented RFC #0197 - Type literals in tokens

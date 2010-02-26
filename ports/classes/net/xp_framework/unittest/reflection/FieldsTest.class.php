@@ -26,6 +26,33 @@
     public function setUp() {
       $this->fixture= XPClass::forName('net.xp_framework.unittest.reflection.TestClass');
     }
+
+    /**
+     * Assertion helper
+     *
+     * @param   lang.Generic var
+     * @param   lang.Generic[] list
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertNotContained($var, $list) {
+      foreach ($list as $i => $element) {
+        if ($element->equals($var)) $this->fail('Element contained', 'Found at offset '.$i, NULL);
+      }
+    }
+
+    /**
+     * Assertion helper
+     *
+     * @param   lang.Generic var
+     * @param   lang.Generic[] list
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertContained($var, $list) {
+      foreach ($list as $i => $element) {
+        if ($element->equals($var)) return;
+      }
+      $this->fail('Element not contained in list', NULL, $var);
+    }
     
     /**
      * Tests the field reflection
@@ -35,10 +62,20 @@
     #[@test]
     public function fields() {
       $fields= $this->fixture->getFields();
-      $this->assertArray($fields);
-      foreach ($fields as $field) {
-        $this->assertClass($field, 'lang.reflect.Field');
-      }
+      $this->assertInstanceOf('lang.reflect.Field[]', $fields);
+      $this->assertContained($this->fixture->getField('inherited'), $fields);
+    }
+
+    /**
+     * Tests the field reflection
+     *
+     * @see     xp://lang.XPClass#getDeclaredFields
+     */
+    #[@test]
+    public function declaredFields() {
+      $fields= $this->fixture->getDeclaredFields();
+      $this->assertInstanceOf('lang.reflect.Field[]', $fields);
+      $this->assertNotContained($this->fixture->getField('inherited'), $fields);
     }
 
     /**
