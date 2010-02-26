@@ -68,8 +68,7 @@
         $class= $member->getClass();
         if ($class->isSubclassOf($enum)) {
           Console::writeLine(' {');
-          foreach ($class->getMethods() as $method) {
-            if (!$class->equals($method->getDeclaringClass())) continue;
+          foreach ($class->getDeclaredMethods() as $method) {
             Console::writeLine('    ', $method);
             $i++;
           }
