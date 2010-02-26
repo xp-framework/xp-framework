@@ -6,9 +6,7 @@
 
   $package= 'xp.install';
 
-  uses(
-    'util.cmd.Console'
-  );
+  uses('util.cmd.Console');
 
   /**
    * XP Installer
@@ -67,6 +65,22 @@
      */
     public static function main(array $args) {
       if (!$args) self::usage();
+      
+      try {
+        $class= Package::forName('xp.install')->loadClass(ucfirst($args[0]).'Action');
+      } catch (ClassNotFoundException $e) {
+        Console::$err->writeLine('*** No such action '.$args[0].': ', $e);
+        exit(2);
+      }
+      
+      // Show help
+      if (in_array('-?', $args)) {
+        Console::$out->writeLine(self::textOf($class->getComment()));
+        exit(3);
+      }
+      
+      // Perform action
+      $class->newInstance()->perform(array_slice($args, 1));
     }    
   }
 ?>

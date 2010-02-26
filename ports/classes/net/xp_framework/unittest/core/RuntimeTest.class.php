@@ -382,7 +382,7 @@
     #[@test]
     public function memoryUsage() {
       $this->assertEquals(
-        Primitive::$INTEGER, 
+        Primitive::$INT, 
         Type::forName(gettype(Runtime::getInstance()->memoryUsage()))
       );
     }
@@ -394,7 +394,7 @@
     #[@test]
     public function peakMemoryUsage() {
       $this->assertEquals(
-        Primitive::$INTEGER, 
+        Primitive::$INT, 
         Type::forName(gettype(Runtime::getInstance()->peakMemoryUsage()))
       );
     }
@@ -406,7 +406,7 @@
     #[@test]
     public function memoryLimit() {
       $this->assertEquals(
-        Primitive::$INTEGER, 
+        Primitive::$INT,
         Type::forName(gettype(Runtime::getInstance()->memoryLimit()))
       );
     }

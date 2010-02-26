@@ -34,7 +34,8 @@
       $categories   = '',
       $class        = '',
       $transparency = VCAL_TRANSP_OPAQUE,
-      $sequence     = '';
+      $sequence     = '',
+      $url;
 
     /**
      * Set UID for Event
@@ -303,8 +304,26 @@
      * @return string
      */
      public function getPriority() {
-       return $this->priority;     
-     }    
+       return $this->priority;
+     }
+
+    /**
+     * Set URL for Event
+     *
+     * @param string url
+     */
+     public function setURL($url) {
+       $this->url= $url;
+     }
+
+    /**
+     * Get URL for Event
+     *
+     * @return string url
+     */
+     public function getURL() {
+       return $this->url;
+     }
 
     /**
      * Export function helper
@@ -349,6 +368,8 @@
      * @return  string event
      */    
     public function export() {
+
+      // TODO: URL must be exported
       $ret= (
         $this->_export('BEGIN',       'VEVENT').
         $this->_export('LOCATION',    $this->getLocation()).

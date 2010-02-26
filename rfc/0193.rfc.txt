@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Tue Nov 10 19:53:29     2009
-@status: draft
+@status: implemented, Fri Feb 26 11:23:44     2010
 @target: 5.8.0
 @category: <core>
 
@@ -236,7 +236,8 @@ Related documents
 -----------------
 * http://www.artima.com/intv/generics2.html - Generics in C#, Java, and C++
 * RFC #0106 - original generics RFC
-* http://experiments.xp-forge.net/xml/browse?arena,rfc0193 - Experiment
+* http://xp-framework.net/rfc/contrib/rfc0193.diff - Implementing patch
+  (applies in xp5_8 branch only)
 
 
 Comments

@@ -31,7 +31,7 @@
      */
     #[@test]
     public function intType() {
-      $this->assertEquals(Primitive::$INTEGER, Type::forName('int'));
+      $this->assertEquals(Primitive::$INT, Type::forName('int'));
     }
 
     /**
@@ -112,7 +112,7 @@
      */
     #[@test]
     public function intTypeVariant() {
-      $this->assertEquals(Primitive::$INTEGER, Type::forName('integer'));
+      $this->assertEquals(Primitive::$INT, Type::forName('integer'));
     }
 
     /**

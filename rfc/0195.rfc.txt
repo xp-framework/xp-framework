@@ -108,8 +108,8 @@ RFC #0197
 
 Related documents
 -----------------
-n/a
-
+* http://experiments.xp-forge.net/xml/browse?arena,rfc0195
+  Experiment
 
 Comments
 --------

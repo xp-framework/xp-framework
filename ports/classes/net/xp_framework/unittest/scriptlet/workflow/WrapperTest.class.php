@@ -9,7 +9,8 @@
     'scriptlet.xml.workflow.Wrapper',
     'scriptlet.xml.workflow.Handler',
     'scriptlet.xml.workflow.Context',
-    'scriptlet.xml.XMLScriptletRequest'
+    'scriptlet.xml.XMLScriptletRequest',
+    'util.Date'
   );
 
   /**
@@ -65,6 +66,18 @@
         'core:string',
         array('process', 'send')
       );
+      $this->wrapper->registerParamInfo(
+        'options',
+        OCCURRENCE_OPTIONAL | OCCURRENCE_MULTIPLE,
+        array(0, 0),
+        array('scriptlet.xml.workflow.casters.ToInteger')
+      );
+      $this->wrapper->registerParamInfo(
+        'person_ids',
+        OCCURRENCE_MULTIPLE,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToInteger')
+      );
     }
     
     /**
@@ -74,7 +87,7 @@
     #[@test]
     public function getParamNames() {
       $this->assertEquals(
-        array('orderdate', 'shirt_size', 'shirt_qty', 'notify_me'), 
+        array('orderdate', 'shirt_size', 'shirt_qty', 'notify_me', 'options', 'person_ids'), 
         $this->wrapper->getParamNames()
       );
     }
@@ -176,7 +189,8 @@
     public function defaultValueUsedForMissingValue() {
       $this->loadFromRequest(array(
         'shirt_size' => 'S',
-        'shirt_qty'  => 1
+        'shirt_qty'  => 1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(
@@ -194,7 +208,8 @@
       $this->loadFromRequest(array(
         'orderdate'  => '',
         'shirt_size' => 'S',
-        'shirt_qty'  => 1
+        'shirt_qty'  => 1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(
@@ -212,7 +227,8 @@
       $this->loadFromRequest(array(
         'orderdate'  => '1977-12-14',
         'shirt_size' => 'S',
-        'shirt_qty'  => 1
+        'shirt_qty'  => 1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(
@@ -229,7 +245,8 @@
     public function missingSizeValue() {
       $this->loadFromRequest(array(
         'orderdate'  => '',
-        'shirt_qty'  => 1
+        'shirt_qty'  => 1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFormError('shirt_size', 'missing');
     }
@@ -243,6 +260,7 @@
       $this->loadFromRequest(array(
         'orderdate'  => '',
         'shirt_size' => 'S',
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFormError('shirt_qty', 'missing');
     }
@@ -256,7 +274,8 @@
       $this->loadFromRequest(array(
         'orderdate'  => '',
         'shirt_size' => '@',
-        'shirt_qty'  => 1
+        'shirt_qty'  => 1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFormError('shirt_size', 'scriptlet.xml.workflow.checkers.OptionChecker.invalidoption');
     }
@@ -270,7 +289,8 @@
       $this->loadFromRequest(array(
         'orderdate'  => '',
         'shirt_size' => 'S',
-        'shirt_qty'  => -1
+        'shirt_qty'  => -1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFormError('shirt_qty', 'scriptlet.xml.workflow.checkers.IntegerRangeChecker.toosmall');
     }
@@ -284,7 +304,8 @@
       $this->loadFromRequest(array(
         'orderdate'  => '',
         'shirt_size' => '@',
-        'shirt_qty'  => -1
+        'shirt_qty'  => -1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFormError('shirt_size', 'scriptlet.xml.workflow.checkers.OptionChecker.invalidoption');
       $this->assertFormError('shirt_qty', 'scriptlet.xml.workflow.checkers.IntegerRangeChecker.toosmall');
@@ -300,6 +321,7 @@
         'orderdate'  => '',
         'shirt_size' => 'S',
         'shirt_qty'  => 1,
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(array(), $this->wrapper->getValue('notify_me'));
@@ -315,7 +337,8 @@
         'orderdate'  => '',
         'shirt_size' => 'S',
         'shirt_qty'  => 1,
-        'notify_me'  => array()
+        'notify_me'  => array(),
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(array(), $this->wrapper->getValue('notify_me'));
@@ -331,7 +354,8 @@
         'orderdate'  => '',
         'shirt_size' => 'S',
         'shirt_qty'  => 1,
-        'notify_me'  => array('send')
+        'notify_me'  => array('send'),
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(array('send'), $this->wrapper->getValue('notify_me'));
@@ -347,10 +371,151 @@
         'orderdate'  => '',
         'shirt_size' => 'S',
         'shirt_qty'  => 1,
-        'notify_me'  => array('send', 'process')
+        'notify_me'  => array('send', 'process'),
+        'person_ids' => array('1549', '1552')
       ));
       $this->assertFalse($this->handler->errorsOccured());
       $this->assertEquals(array('send', 'process'), $this->wrapper->getValue('notify_me'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleOptionalField() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array('0010', '0020'),
+        'person_ids' => array('1549', '1552')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(10, 20), $this->wrapper->getValue('options'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleOptionalFieldFirstEmpty() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array(NULL, '0020'),
+        'person_ids' => array('1549', '1552')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(0, 20), $this->wrapper->getValue('options'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleOptionalAllEmpty() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array('', ''),
+        'person_ids' => array('1549', '1552')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(0, 0), $this->wrapper->getValue('options'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleOptionalParameterMissing() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'person_ids' => array('1549', '1552')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(0, 0), $this->wrapper->getValue('options'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleField() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array('0010', '0020'),
+        'person_ids' => array('1549', '1552')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(1549, 1552), $this->wrapper->getValue('person_ids'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleFieldFirstEmpty() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array(NULL, '0020'),
+        'person_ids' => array('', '1552')
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+      $this->assertEquals(array(0, 1552), $this->wrapper->getValue('person_ids'));
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleFieldAllEmpty() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array(NULL, '0020'),
+        'person_ids' => array()
+      ));
+      $this->assertTrue($this->handler->errorsOccured());
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function castMultipleFieldParameterMissing() {
+      $this->loadFromRequest(array(
+        'orderdate'  => '',
+        'shirt_size' => 'S',
+        'shirt_qty'  => 1,
+        'notify_me'  => array('send'),
+        'options'    => array(NULL, '0020')
+      ));
+      $this->assertTrue($this->handler->errorsOccured());
     }
   }
 ?>

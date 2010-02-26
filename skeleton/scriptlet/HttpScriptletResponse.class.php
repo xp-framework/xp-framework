@@ -89,7 +89,7 @@
      * @param   int len
      */
     public function setContentLength($len) {
-      $this->headers[]= 'Content-Length: '.$len;
+      $this->setHeader('Content-Length', $len);
     }
 
     /**
@@ -101,7 +101,7 @@
      * @param   string type
      */
     public function setContentType($type) {
-      $this->headers[]= 'Content-Type: '.$type;
+      $this->setHeader('Content-Type', $type);
     }
     
     /**
@@ -116,7 +116,7 @@
      * @param   scriptlet.Cookie cookie
      */
     public function setCookie($cookie) {
-      $this->headers[]= 'Set-Cookie: '.$cookie->getHeaderValue();
+      $this->setHeader('Set-Cookie', $cookie->getHeaderValue());
     }
     
     /**

@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Thu Feb 18 14:46:09     2010
-@status: draft
+@status: implemented, Fri Feb 26 11:24:08     2010
 @target: 5.8.0
 @category: <core>
 
@@ -17,8 +17,8 @@ introduced.
 Rationale
 ---------
 An example of where this is used is the type dispatching methods 
-described in RFC #0193. Another example are generics generation, 
-as described in RFC #0195.
+described in RFC #0195. Another example is generics generation, 
+as described in RFC #0193.
 
 
 Functionality

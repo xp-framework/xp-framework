@@ -21,6 +21,7 @@
    * Wrapper
    *
    * @see      xp://scriptlet.xml.workflow.Handler#setWrapper
+   * @test     xp://net.xp_framework.unittest.scriptlet.workflow.WrapperTest
    * @purpose  Base class
    */
   class Wrapper extends Object {
@@ -217,14 +218,20 @@
         // the string "multiple", the array will be preserved. Otherwise, the
         // first element will be copied to the values hash, thus making 
         // accessibility easy.
-        if (empty($value) || 0 == strlen($value[key($value)])) {
+        if (empty($value) || 0 == strlen(implode($value))) {
           if (!($definitions[PARAM_OCCURRENCE] & OCCURRENCE_OPTIONAL)) {
             $handler->addError('missing', $name);
             continue;
           }
           
           // Set it to the default value
-          if ($definitions[PARAM_DEFAULT]) $value[key($value)]= $definitions[PARAM_DEFAULT];
+          if ($definitions[PARAM_DEFAULT]) {
+            if ($definitions[PARAM_OCCURRENCE] & OCCURRENCE_MULTIPLE) {
+              $value= $definitions[PARAM_DEFAULT];
+            } else {
+              $value[key($value)]= $definitions[PARAM_DEFAULT];
+            }
+          }
         } else {
  
           // Run the precheck. This can be utilized for assertion-style checks
