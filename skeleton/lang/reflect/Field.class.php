@@ -200,6 +200,29 @@
     public function getModifiers() {
       return $this->_reflect->getModifiers();
     }
+
+    /**
+     * Returns whether an object is equal to this routine
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $cmp->_reflect->getName() === $this->_reflect->getName() &&
+        $cmp->getDeclaringClass()->equals($this->getDeclaringClass())
+      );
+    }
+
+    /**
+     * Returns a hashcode for this routine
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'F['.$this->_reflect->getDeclaringClass().$this->_reflect->getName();
+    }
     
     /**
      * Creates a string representation of this field
