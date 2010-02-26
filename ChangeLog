@@ -38,6 +38,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made unittest.TestCase::assertInstanceOf() accept lang.Type instances
+  as first parameter as well as strings with type names
+  (friebe)
 - Added new scriptlet.DirectOutputHttpScriptletResponse class
   (kiesel)
 - Added "-r" command line switch to xp runner

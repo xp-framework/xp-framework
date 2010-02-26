@@ -240,8 +240,198 @@
     }    
 
     /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function thisIsAnInstanceOfTestCase() {
+      $this->assertInstanceOf('unittest.TestCase', $this);
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function thisIsAnInstanceOfTestCaseClass() {
+      $this->assertInstanceOf(XPClass::forName('unittest.TestCase'), $this);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function thisIsAnInstanceOfObject() {
+      $this->assertInstanceOf('lang.Object', $this);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function objectIsAnInstanceOfObject() {
+      $this->assertInstanceOf('lang.Object', new Object());
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function objectIsNotAnInstanceOfString() {
+      $this->assertInstanceOf('lang.types.String', new Object());
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function zeroIsNotAnInstanceOfGeneric() {
+      $this->assertInstanceOf('lang.Generic', 0);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotAnInstanceOfGeneric() {
+      $this->assertInstanceOf('lang.Generic', NULL);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function xpNullIsNotAnInstanceOfGeneric() {
+      $this->assertInstanceOf('lang.Generic', xp::null());
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function thisIsNotAnInstanceOfString() {
+      $this->assertInstanceOf('lang.types.String', $this);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function thisIsAnInstanceOfGeneric() {
+      $this->assertInstanceOf('lang.Generic', $this);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function zeroIsInstanceOfInt() {
+      $this->assertInstanceOf('int', 0);
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function zeroPointZeroIsNotInstanceOfInt() {
+      $this->assertInstanceOf('int', 0.0);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function nullIsInstanceOfVar() {
+      $this->assertInstanceOf(Type::$VAR, NULL);
+    }    
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotInstanceOfVoidType() {
+      $this->assertInstanceOf(Type::$VOID, NULL);
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotInstanceOfVoid() {
+      $this->assertInstanceOf('void', NULL);
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function emptyArrayIsInstanceOfArray() {
+      $this->assertInstanceOf('array', array());
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function intArrayIsInstanceOfArray() {
+      $this->assertInstanceOf('array', array(1, 2, 3));
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test]
+    public function hashIsInstanceOfArray() {
+      $this->assertInstanceOf('array', array('color' => 'green'));
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function nullIsNotInstanceOfArray() {
+      $this->assertInstanceOf('array', NULL);
+    }
+
+    /**
+     * Test assertInstanceOf()
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function arrayListIsNotInstanceOfArray() {
+      $this->assertInstanceOf('array', new ArrayList(1, 2, 3));
+    }
+
+    /**
+     * Test assertInstanceOf() for strings
+     *
+     */    
+    #[@test, @expect('unittest.AssertionFailedError')]
+    public function primitiveIsNotAnInstanceOfStringClass() {
+      $this->assertInstanceOf('string', new String());
+    }    
+
+    /**
      * Test assertEmpty() for an empty array
      *
+     * @deprecated
      */    
     #[@test]
     public function emptyArrayEmpty() {
@@ -251,6 +441,7 @@
     /**
      * Test assertEmpty() for a non-empty array
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function nonEmptyArrayEmpty() {
@@ -260,6 +451,7 @@
     /**
      * Test assertNotEmpty() for a non-empty array
      *
+     * @deprecated
      */    
     #[@test]
     public function nonEmptyArrayNotEmpty() {
@@ -269,6 +461,7 @@
     /**
      * Test assertNotEmpty() for an empty array
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function emptyArrayNotEmpty() {
@@ -278,6 +471,7 @@
     /**
      * Test assertClass() for NULLs
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function nullIsNotAClass() {
@@ -287,6 +481,7 @@
     /**
      * Test assertClass() for strings
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function primitiveIsNotOfStringClass() {
@@ -296,6 +491,7 @@
     /**
      * Test assertClass() for lang.Object
      *
+     * @deprecated
      */    
     #[@test]
     public function objectIsOfObjectClass() {
@@ -305,6 +501,7 @@
     /**
      * Test assertClass() for this
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function thisIsOfNotObjectClass() {
@@ -314,6 +511,7 @@
     /**
      * Test assertSubclass() for NULLs
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function nullIsNotASubClass() {
@@ -323,6 +521,7 @@
     /**
      * Test assertSubclass() for lang.Object
      *
+     * @deprecated
      */    
     #[@test]
     public function objectIsOfObjectSubclass() {
@@ -332,6 +531,7 @@
     /**
      * Test assertSubclass() for this
      *
+     * @deprecated
      */    
     #[@test]
     public function thisIsOfObjectSubclass() {
@@ -341,6 +541,7 @@
     /**
      * Test assertSubclass() for strings
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function primitiveIsNotOfStringSubclass() {
@@ -350,6 +551,7 @@
     /**
      * Test assertObject() for this
      *
+     * @deprecated
      */    
     #[@test]
     public function thisIsAnObject() {
@@ -359,6 +561,7 @@
     /**
      * Test assertObject() for NULL
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function nullIsNotAnObject() {
@@ -368,6 +571,7 @@
     /**
      * Test assertObject() for primitives
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function primitiveIsNotAnObject() {
@@ -377,6 +581,7 @@
     /**
      * Test assertArray() for an empty array
      *
+     * @deprecated
      */    
     #[@test]
     public function emptyArrayIsAnArray() {
@@ -386,6 +591,7 @@
     /**
      * Test assertArray() for a non-empty array
      *
+     * @deprecated
      */    
     #[@test]
     public function arrayIsAnArray() {
@@ -395,6 +601,7 @@
     /**
      * Test assertArray() for an associative array
      *
+     * @deprecated
      */    
     #[@test]
     public function hashIsAnArray() {
@@ -404,6 +611,7 @@
     /**
      * Test assertArray() for a lang.types.ArrayList
      *
+     * @deprecated
      */    
     #[@test]
     public function arrayListIsAnArray() {
@@ -413,6 +621,7 @@
     /**
      * Test assertArray() for a lang.Object
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function objectIsNotAnArray() {
@@ -422,6 +631,7 @@
     /**
      * Test assertArray() for NULL
      *
+     * @deprecated
      */    
     #[@test, @expect('unittest.AssertionFailedError')]
     public function nullIsNotAnArray() {

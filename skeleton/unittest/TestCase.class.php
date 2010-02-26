@@ -223,16 +223,25 @@
     /**
      * Assert that a given object is a subclass of a specified class
      *
-     * @param   string name
-     * @param   lang.Generic var
+     * @param   var type either a type name or a lang.Type instance
+     * @param   var var
      * @param   string error default 'notaninstance'
      */
-    public function assertInstanceOf($name, $var, $error= 'notaninstance') {
-      if (!$var instanceof Generic) {
-        $this->fail($error, $name, xp::typeOf($var));
-      } else if (!is($name, $var)) {
-        $this->fail($error, $name, $var->getClassName());
+    public function assertInstanceOf($type, $var, $error= 'notaninstance') {
+      if (!($type instanceof Type)) {
+        $type= Type::forName($type);
       }
+      
+      if ($type instanceof XPClass) {
+        $verify= $type->isInstance($var);
+      } else if ($type instanceof Primitive) {
+        $verify= $type->equals(Type::forName(xp::typeOf($var)));
+      } else if (Type::$VAR->equals($type)) {
+        $verify= TRUE;
+      } else if (Type::$VOID->equals($type)) {
+        $verify= FALSE;
+      }
+      $verify || $this->fail($error, $type->getName(), xp::typeOf($var));
     }
     
     /**
