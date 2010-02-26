@@ -48,7 +48,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function hashTableReadIllegalElement() {
-      $c= new HashTable();
+      $c= create('new HashTable<string, Object>()');
       $c[STDIN];
     }
 
@@ -70,7 +70,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function hashTableWriteIllegalKey() {
-      $c= new HashTable();
+      $c= create('new HashTable<string, Object>()');
       $c[STDIN]= new String('Hello');
     }
 
@@ -80,8 +80,8 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function hashTableWriteIllegalValue() {
-      $c= new HashTable();
-      $c[new String('hello')]= 'scalar';
+      $c= create('new HashTable<string, Object>()');
+      $c['hello']= 'scalar';
     }
 
     /**

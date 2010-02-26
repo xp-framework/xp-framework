@@ -13,6 +13,7 @@
    * @see      xp://lang.types.ArrayList
    * @purpose  IList implementation
    */
+  #[@generic(self= 'T', IList= 'T')]
   class Vector extends Object implements IList {
     protected static
       $iterate   = NULL;
@@ -20,9 +21,6 @@
     protected
       $elements  = array(),
       $size      = 0;
-
-    public
-      $__generic = array();
 
     static function __static() {
       self::$iterate= newinstance('Iterator', array(), '{
@@ -39,17 +37,11 @@
     /**
      * Constructor
      *
-     * @param   lang.Generic[] elements default array()
+     * @param   T[] elements default array()
      */
-    public function __construct(array $elements= array()) {
-      foreach ($elements as $element) {
-        if ($this->__generic) {
-          if (!$element instanceof $this->__generic[0]) {
-            throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
-          }
-        }
-        $this->elements[]= $element;
-      }
+    #[@generic(params= 'T[]')]
+    public function __construct($elements= array()) {
+      $this->elements= $elements;
       $this->size= sizeof($this->elements);
     }
 
@@ -67,8 +59,9 @@
      * = list[] overloading
      *
      * @param   int offset
-     * @return  lang.Generic
+     * @return  T
      */
+    #[@generic(return= 'T')]
     public function offsetGet($offset) {
       return $this->get($offset);
     }
@@ -77,14 +70,15 @@
      * list[]= overloading
      *
      * @param   int offset
-     * @param   var value
+     * @param   T value
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      */
-    public function offsetSet($offset, $value) {
+    #[@generic(params= ', T')]
+    public function offsetSet($offset, $prev) {
       if (is_int($offset)) {
-        $this->set($offset, $value);
+        $this->set($offset, $prev);
       } else if (NULL === $offset) {
-        $this->add($value);
+        $this->add($prev);
       } else {
         throw new IllegalArgumentException('Incorrect type '.gettype($offset).' for index');
       }
@@ -130,15 +124,11 @@
     /**
      * Adds an element to this list
      *
-     * @param   lang.Generic element
-     * @return  lang.Generic the added element
-     * @throws  lang.IllegalArgumentException
+     * @param   T element
+     * @return  T the added element
      */
-    public function add(Generic $element) {
-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
-      }
-
+    #[@generic(params= 'T', return= 'T')]
+    public function add($element) {
       $this->elements[]= $element;
       $this->size++;
       return $element;
@@ -147,30 +137,19 @@
     /**
      * Adds an element to this list
      *
-     * @param   * elements either an array or an Traversable
+     * @param   T[] elements
      * @return  bool TRUE if the vector was changed as a result of this operation, FALSE if not
      * @throws  lang.IllegalArgumentException
      */
+    #[@generic(params= 'T[]')]
     public function addAll($elements) {
-      if (!is_array($elements) && !$elements instanceof Traversable) {
-        throw new IllegalArgumentException(sprintf(
-          'Expected either an array or an Traversable',
-          xp::typeOf($elements)
-        ));
-      }
-
-      $e= array();
-      $type= $this->__generic ? $this->__generic[0] : xp::reflect('lang.Generic');
+      $added= 0;
       foreach ($elements as $element) {
-        if (!$element instanceof $type) {
-          throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$type);
-        }
-        $e[]= $element;
+        $this->elements[]= $element;
+        $added++;
       }
-      $size= sizeof($e);
-      $this->elements= array_merge($this->elements, $e);
-      $this->size+= $size;
-      return $size > 0;
+      $this->size+= $added;
+      return $added > 0;
     }
 
     /**
@@ -178,17 +157,14 @@
      * the specified element.
      *
      * @param   int index
-     * @param   lang.Generic element
-     * @return  lang.Generic the element previously at the specified position.
+     * @param   T element
+     * @return  T the element previously at the specified position.
      * @throws  lang.IndexOutOfBoundsException
      */
-    public function set($index, Generic $element) {
+    #[@generic(params= ', T', return= 'T')]
+    public function set($index, $element) {
       if ($index < 0 || $index >= $this->size) {
         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
-      }
-
-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
       }
 
       $orig= $this->elements[$index];
@@ -200,9 +176,10 @@
      * Returns the element at the specified position in this list.
      *
      * @param   int index
-     * @return  lang.Generic
+     * @return  T
      * @throws  lang.IndexOutOfBoundsException if key does not exist
      */
+    #[@generic(return= 'T')]
     public function get($index) {
       if ($index < 0 || $index >= $this->size) {
         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
@@ -216,8 +193,9 @@
      * from their indices).
      *
      * @param   int index
-     * @return  lang.Generic the element that was removed from the list
+     * @return  T the element that was removed from the list
      */
+    #[@generic(return= 'T')]
     public function remove($index) {
       if ($index < 0 || $index >= $this->size) {
         throw new IndexOutOfBoundsException('Offset '.$index.' out of bounds');
@@ -243,8 +221,9 @@
     /**
      * Returns an array of this list's elements
      *
-     * @return  lang.Generic[]
+     * @return  T[]
      */
+    #[@generic(return= 'T[]')]
     public function elements() {
       return $this->elements;
     }
@@ -252,14 +231,11 @@
     /**
      * Checks if a value exists in this array
      *
-     * @param   lang.Generic element
+     * @param   T element
      * @return  bool
      */
-    public function contains(Generic $element) {
-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
-      }
-
+    #[@generic(params= 'T')]
+    public function contains($element) {
       for ($i= 0; $i < $this->size; $i++) {
         if ($this->elements[$i]->equals($element)) return TRUE;
       }
@@ -269,14 +245,11 @@
     /**
      * Searches for the first occurence of the given argument
      *
-     * @param   lang.Generic element
+     * @param   T element
      * @return  int offset where the element was found or FALSE
      */
-    public function indexOf(Generic $element) {
-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
-      }
-
+    #[@generic(params= 'T')]
+    public function indexOf($element) {
       for ($i= 0; $i < $this->size; $i++) {
         if ($this->elements[$i]->equals($element)) return $i;
       }
@@ -286,14 +259,11 @@
     /**
      * Searches for the last occurence of the given argument
      *
-     * @param   lang.Generic element
+     * @param   T element
      * @return  int offset where the element was found or FALSE
      */
+    #[@generic(params= 'T')]
     public function lastIndexOf(Generic $element) {
-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
-      }
-
       for ($i= $this->size- 1; $i > -1; $i--) {
         if ($this->elements[$i]->equals($element)) return $i;
       }

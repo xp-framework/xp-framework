@@ -37,9 +37,14 @@
      * Test asList() method
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test]
     public function asListWithPrimitives() {
-      Arrays::asList(new ArrayList('one', 'two', 'three'));
+      $list= Arrays::asList(new ArrayList('one', 'two', 'three'));
+      $this->assertSubclass($list, 'util.collections.IList');
+      $this->assertEquals(3, $list->size());
+      $this->assertEquals('one', $list->get(0));
+      $this->assertEquals('two', $list->get(1));
+      $this->assertEquals('three', $list->get(2));
     }
 
     /**

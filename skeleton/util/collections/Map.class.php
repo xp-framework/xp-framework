@@ -13,6 +13,7 @@
    * @see      xp://util.collections.HashProvider
    * @purpose  Interface
    */
+  #[@generic(self= 'K, V')]
   interface Map extends ArrayAccess {
     
     /**
@@ -22,19 +23,21 @@
      * Returns previous value associated with specified key, or NULL if 
      * there was no mapping for the specified key.
      *
-     * @param   lang.Generic key
-     * @param   lang.Generic value
-     * @return  lang.Generic the previous value associated with the key
+     * @param   K key
+     * @param   V value
+     * @return  V the previous value associated with the key
      */
-    public function put($key, Generic $value);
+    #[@generic(params= 'K, V', return= 'V')]
+    public function put($key, $value);
 
     /**
      * Returns the value to which this map maps the specified key. 
      * Returns NULL if the map contains no mapping for this key.
      *
-     * @param   lang.Generic key
-     * @return  lang.Generic the value associated with the key
+     * @param   K key
+     * @return  V the value associated with the key
      */
+    #[@generic(params= 'K', return= 'V')]
     public function get($key);
     
     /**
@@ -42,9 +45,10 @@
      * Returns the value to which the map previously associated the key, 
      * or null if the map contained no mapping for this key.
      *
-     * @param   lang.Generic key
-     * @return  lang.Generic the previous value associated with the key
+     * @param   K key
+     * @return  V the previous value associated with the key
      */
+    #[@generic(params= 'K', return= 'V')]
     public function remove($key);
     
     /**
@@ -68,18 +72,20 @@
     /**
      * Returns true if this map contains a mapping for the specified key.
      *
-     * @param   lang.Generic key
+     * @param   K key
      * @return  bool
      */
+    #[@generic(params= 'K')]
     public function containsKey($key);
 
     /**
      * Returns true if this map maps one or more keys to the specified value. 
      *
-     * @param   lang.Generic value
+     * @param   V value
      * @return  bool
      */
-    public function containsValue(Generic $value);
+    #[@generic(params= 'V')]
+    public function containsValue($value);
 
     /**
      * Returns a hashcode for this map
@@ -95,6 +101,5 @@
      * @return  bool
      */
     public function equals($cmp);
-
   }
 ?>

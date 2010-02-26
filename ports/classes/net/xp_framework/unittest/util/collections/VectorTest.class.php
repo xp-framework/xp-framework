@@ -128,9 +128,24 @@
      */
     #[@test]
     public function unchangedAfterNullInAddAll() {
-      $v= new Vector();
+      $v= create('new Vector<Object>()');
       try {
         $v->addAll(array(new Object(), NULL));
+        $this->fail('addAll() did not throw an exception', NULL, 'lang.IllegalArgumentException');
+      } catch (IllegalArgumentException $expected) {
+      }
+      $this->assertTrue($v->isEmpty());
+    }
+
+    /**
+     * Test adding elements via addAll
+     *
+     */
+    #[@test]
+    public function unchangedAfterIntInAddAll() {
+      $v= create('new Vector<string>()');
+      try {
+        $v->addAll(array('hello', 5));
         $this->fail('addAll() did not throw an exception', NULL, 'lang.IllegalArgumentException');
       } catch (IllegalArgumentException $expected) {
       }
@@ -143,7 +158,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function addingNull() {
-      create(new Vector())->add(NULL);
+      create('new Vector<Object>()')->add(NULL);
     }
 
     /**
@@ -166,7 +181,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function replacingWithNull() {
-      create(new Vector(array(new Object())))->set(0, NULL);
+      create('new Vector<Object>', array(new Object()))->set(0, NULL);
     }
 
     /**

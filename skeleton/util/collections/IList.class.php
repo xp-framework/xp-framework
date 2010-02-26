@@ -11,6 +11,7 @@
    *
    * @purpose  Interface
    */
+  #[@generic(self= 'T')]
   interface IList extends ArrayAccess, IteratorAggregate {
 
     /**
@@ -30,29 +31,31 @@
     /**
      * Adds an element to this list
      *
-     * @param   lang.Generic element
-     * @return  lang.Generic the added element
-     * @throws  lang.IllegalArgumentException
+     * @param   T element
+     * @return  T the added element
      */
-    public function add(Generic $element);
+    #[@generic(params= 'T', return= 'T')]
+    public function add($element);
 
     /**
      * Replaces the element at the specified position in this list with 
      * the specified element.
      *
      * @param   int index
-     * @param   lang.Generic element
-     * @return  lang.Generic the element previously at the specified position.
+     * @param   T element
+     * @return  T the element previously at the specified position.
      */
-    public function set($index, Generic $element);
+    #[@generic(params= ', T', return= 'T')]
+    public function set($index, $element);
 
     /**
      * Returns the element at the specified position in this list.
      *
      * @param   int index
-     * @return  lang.Generic
+     * @return  T
      * @throws  lang.IndexOutOfBoundsException if key does not exist
      */
+    #[@generic(return= 'T')]
     public function get($index);
  
     /**
@@ -61,17 +64,19 @@
      * from their indices).
      *
      * @param   int index
-     * @return  lang.Generic the element that was removed from the list
+     * @return  T the element that was removed from the list
      */
+    #[@generic(return= 'T')]
     public function remove($index);
 
     /**
      * Checks if a value exists in this list
      *
-     * @param   lang.Generic element
+     * @param   T element
      * @return  bool
      */
-    public function contains(Generic $element);
+    #[@generic(params= 'T')]
+    public function contains($element);
 
     /**
      * Removes all of the elements from this list. The list will be empty 
@@ -79,7 +84,6 @@
      *
      */
     public function clear();
- 
 
   }
 ?>

@@ -19,6 +19,7 @@
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
   define('DETAIL_NAME',           6);
+  define('DETAIL_GENERIC',        7);
  
   /**
    * Represents classes. Every instance of an XP class has an method
@@ -649,6 +650,328 @@
     public static function detailsForField($class, $field) {
       $details= self::detailsForClass(xp::nameOf($class));
       return $details ? (isset($details[0][$field]) ? $details[0][$field] : NULL) : NULL;
+    }
+
+    /**
+     * Creates a delegating routine implementation
+     *
+     * @param   lang.XPClass self
+     * @param   lang.reflect.Routine routine
+     * @param   int modifiers
+     * @param   array<string, string> placeholders
+     * @param   var meta
+     * @param   string block
+     * @return  src
+     */
+    public static function createDelegate($self, $routine, $modifiers, $placeholders, &$meta, $block) {
+      $src= '';
+      
+      $details= self::detailsForMethod($self->_class, $routine->getName());
+      $self->isInterface() || $src.= implode(' ', Modifiers::namesOf($modifiers));
+      $src.= ' function '.$routine->getName().'(';
+
+      // Replace parameter placeholders. Given [lang.types.String] as type arguments, 
+      // "T" will become "String".
+      $generic= array();
+      if ($routine->hasAnnotation('generic', 'params')) {
+        foreach (explode(',', $routine->getAnnotation('generic', 'params')) as $i => $placeholder) {
+          if ('' === ($replaced= strtr(ltrim($placeholder), $placeholders))) {
+            $generic[$i]= NULL;
+          } else {
+            $details[DETAIL_ARGUMENTS][$i]= $replaced;
+            $generic[$i]= Type::forName($replaced);
+          }
+        }
+      }
+      if ($routine->hasAnnotation('generic', 'return')) {
+        $details[DETAIL_RETURNS]= strtr($routine->getAnnotation('generic', 'return'), $placeholders);
+      }
+
+      // Create argument signature
+      $sig= $pass= array();
+      $verify= '';
+      foreach ($routine->getParameters() as $i => $param) {
+        if ($t= $param->getTypeRestriction()) {
+          $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
+        } else if (isset($generic[$i])) {
+          if ($generic[$i] instanceof XPClass) {
+            $p= $generic[$i]->getName();
+            $verify.= (
+              ' if (!($·'.$i.' instanceof '.xp::reflect($p).')) throw new IllegalArgumentException('.
+              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
+              ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
+              ');'
+            );
+          } else if (Primitive::$ARRAY === $generic[$i]) {
+            $component= Type::forName(substr($details[DETAIL_ARGUMENTS][$i], 0, -2));
+            $p= $component->getName();
+            if ($component instanceof XPClass) {
+              $test= '($·element instanceof '.xp::reflect($p).')'; 
+            } else {
+              $test= 'is_'.$p.'($·element)';
+            }
+            $verify.= 'foreach ($·'.$i.' as $·i => $·element) {'.
+              ' if (!'.$test.') throw new IllegalArgumentException('.
+              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
+              ' must be of '.$p.'[], ".xp::typeOf($·element)." encountered at offset ".$·i'.
+              ');
+            }';
+          } else if ($generic[$i] instanceof Primitive) {
+            $p= $generic[$i]->getName();
+            $verify.= (
+              ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
+              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
+              ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
+              ');'
+            );
+          }
+          $sig[$i]= '$·'.$i;
+        } else {
+          $sig[$i]= '$·'.$i;
+        }
+        $param->isOptional() && $sig[$i].= '= '.var_export($param->getDefaultValue(), TRUE);
+        $pass[$i]= '$·'.$i;
+      }
+      $src.= implode(',', $sig);
+
+      if (Modifiers::isAbstract($modifiers)) {
+        $src.= ');';
+      } else {
+        $src.= ') {'.$verify.sprintf($block, implode(',', $pass)).'}';
+      }
+      $src.= "\n";
+
+      // Register meta information
+      $meta[1][$routine->getName()]= $details;
+      return $src;
+    }
+    
+    public function getDeclaredInterfaces() {
+      $is= $this->_reflect->getInterfaces();
+      if ($parent= $this->_reflect->getParentclass()) {
+        $ip= $parent->getInterfaces();
+      } else {
+        $ip= array();
+      }
+      $filter= array();
+      foreach ($is as $iname => $i) {
+
+        // Parent class implements this interface
+        if (isset($ip[$iname])) continue;
+
+        // Interface is implemented because it's the parent of another interface
+        foreach ($i->getInterfaces() as $pname => $p) {
+          if (isset($is[$pname])) $filter[$pname]= TRUE;
+        }
+      }
+      
+      $r= array();
+      foreach ($is as $iname => $i) {
+        if (!isset($filter[$iname])) $r[]= new self($i);
+      }
+      return $r;
+    }
+    
+    /**
+     * Creates a generic type
+     *
+     * @param   lang.XPClass self
+     * @param   lang.Type[] arguments
+     * @return  lang.XPClass
+     */
+    public static function createGenericType(XPClass $self, array $arguments) {
+
+      // Verify
+      if (!$self->isGenericDefinition()) {
+        throw new IllegalStateException('Class '.$self->name.' is not a generic definition');
+      }
+      $components= $self->genericComponents();
+      $cs= sizeof($components);
+      if ($cs != sizeof($arguments)) {
+        throw new IllegalArgumentException(sprintf(
+          'Class %s expects %d component(s) <%s>, %d argument(s) given',
+          $self->name,
+          $cs,
+          implode(', ', $components),
+          sizeof($arguments)
+        ));
+      }
+    
+      // Compose names
+      $cn= $qc= '';
+      foreach ($arguments as $typearg) {
+        $cn.= '¸'.($typearg instanceof Primitive ? 'þ' : '').xp::reflect($typearg->getName());
+        $qc.= ','.$typearg->getName();
+      }
+      $name= xp::reflect($self->name).'··'.substr($cn, 1);
+      $qname= $self->name.'`'.$cs.'['.substr($qc, 1).']';
+
+      // Create class if it doesn't exist yet
+      if (!class_exists($name, FALSE)) {
+        $meta= array(
+          'class' => array(DETAIL_GENERIC => $arguments),
+          0       => array(),
+          1       => array()
+        );
+      
+        // Parse placeholders into a lookup map
+        $placeholders= array();
+        foreach ($components as $i => $component) {
+          $placeholders[$component]= $arguments[$i]->getName();
+        }
+      
+        // Generate public constructor
+        $src= '';
+        if (!$self->isInterface()) {
+          $src.= 'private $delegate; ';
+          $meta[0]['delegate']= array(DETAIL_ANNOTATIONS => array('type' => $self->name));
+          $block= '$this->delegate= new '.xp::reflect($self->name).'(%s);';
+          if ($self->hasConstructor()) {
+            $src.= self::createDelegate(
+              $self,
+              $self->getConstructor(),
+              MODIFIER_PUBLIC, 
+              $placeholders,
+              $meta,
+              $block
+            );
+          } else {
+            $src.= 'public function __construct() {'.sprintf($block, '').'}';       
+          }
+        }
+        
+        // Generate delegating methods declared in this class
+        foreach ($self->getMethods() as $method) {
+          if (!$method->getDeclaringClass()->equals($self)) continue;
+          $src.= self::createDelegate(
+            $self, 
+            $method, 
+            $method->getModifiers(),
+            $placeholders,
+            $meta,
+            'return $this->delegate->'.$method->getName().'(%s);'
+          );
+        }
+        
+        // Handle parent class and interfaces
+        if ($self->isInterface()) {
+          $decl= 'interface '.$name;
+          $extends= array();
+          foreach ($self->getDeclaredInterfaces() as $iface) {
+            $declared= xp::reflect($iface->getName());
+            if ($self->hasAnnotation('generic', $declared)) {
+              $extends[]= xp::reflect(self::createGenericType($iface, $arguments)->getName());
+            } else {
+              $extends[]= $declared;
+            }
+          }
+          $extends && $decl.= ' extends '.implode(', ', $extends);
+        } else {
+          $parent= $self->getParentClass();
+          $impl= array();
+          foreach ($self->getDeclaredInterfaces() as $iface) {
+            $declared= xp::reflect($iface->getName());
+            if ($self->hasAnnotation('generic', $declared)) {
+              $impl[]= xp::reflect(self::createGenericType($iface, $arguments)->getName());
+            } else {
+              $impl[]= $declared;
+            }
+          }
+          $decl= '';
+          Modifiers::isAbstract($self->getModifiers()) && $decl.= 'abstract ';
+          $decl.= 'class '.$name.' extends ';
+          if ($self->hasAnnotation('generic', 'parent')) {
+            $decl.= xp::reflect(self::createGenericType($parent, $arguments)->getName());
+          } else {
+            $decl.= xp::reflect($parent->getName());
+          }
+          $impl && $decl.= ' implements '.implode(', ', $impl);
+        }
+      
+        // Create class
+        //  DEBUG echo '> ', $decl, "\n  ", $src, "\n";
+        eval($decl.' {'.$src.'}');
+        xp::$registry['details.'.$qname]= $meta;
+        xp::$registry['class.'.$name]= $qname;
+      }
+      
+      return new XPClass(new ReflectionClass($name));
+    }
+    
+    /**
+     * Reflectively creates a new type
+     *
+     * @param   lang.Type[] arguments
+     * @return  lang.XPClass
+     * @throws  lang.IllegalStateException if this class is not a generic definition
+     * @throws  lang.IllegalArgumentException if number of arguments does not match components
+     */
+    public function newGenericType(array $arguments) {
+      return self::createGenericType($this, $arguments);
+    }
+
+    /**
+     * Returns generic type components
+     *
+     * @return  string[]
+     * @throws  lang.IllegalStateException if this class is not a generic definition
+     */
+    public function genericComponents() {
+      if (!$this->isGenericDefinition()) {
+        throw new IllegalStateException('Class '.$this->name.' is not a generic definition');
+      }
+      $components= array();
+      foreach (explode(',', $this->getAnnotation('generic', 'self')) as $name) {
+        $components[]= ltrim($name);
+      }
+      return $components;
+    }
+
+    /**
+     * Returns whether this class is a generic definition
+     *
+     * @return  bool
+     */
+    public function isGenericDefinition() {
+      return $this->hasAnnotation('generic', 'self');
+    }
+
+    /**
+     * Returns generic type definition
+     *
+     * @return  lang.XPClass
+     * @throws  lang.IllegalStateException if this class is not a generic
+     */
+    public function genericDefinition() {
+      if (!($details= self::detailsForClass($this->name))) return NULL;
+      if (!isset($details['class'][DETAIL_GENERIC])) {
+        throw new IllegalStateException('Class '.$this->name.' is not generic');
+      }
+      return XPClass::forName($details[0]['delegate'][DETAIL_ANNOTATIONS]['type']);
+    }
+
+    /**
+     * Returns generic type arguments
+     *
+     * @return  lang.Type[]
+     * @throws  lang.IllegalStateException if this class is not a generic
+     */
+    public function genericArguments() {
+      if (!($details= self::detailsForClass($this->name))) return NULL;
+      if (!isset($details['class'][DETAIL_GENERIC])) {
+        throw new IllegalStateException('Class '.$this->name.' is not generic');
+      }
+      return @$details['class'][DETAIL_GENERIC];
+    }
+        
+    /**
+     * Returns whether this class is generic
+     *
+     * @return  bool
+     */
+    public function isGeneric() {
+      if (!($details= self::detailsForClass($this->name))) return FALSE;
+      return isset($details['class'][DETAIL_GENERIC]);
     }
     
     /**

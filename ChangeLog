@@ -37,6 +37,10 @@ Features
 
 RFCs
 ~~~~
+- Implemented RFC #0193 - Generics optimization
+  (friebe)
+- Implemented RFC #0197 - Type literals in tokens
+  (friebe)
 - Implemented RFC #0189 - Extension methods
   (friebe)
 - Implemented RFC #0185 - ClassFormatException for malformed annotations
@@ -49,6 +53,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated lang.Primitive::$INTEGER in favor of lang.Primitive::$INT
+  (friebe)
 - Deprecated lang.Type::$ANY in favor of lang.Type::$VAR
   (friebe)
 - Changed util.collections.Map interface to ensure array access works.
@@ -71,9 +77,14 @@ Bugfixes
 - Fixed reflection on lang.Throwable class in certain cases when builtin
   Exception class is queried for non-existant details
   (friebe)
+- Fixed Wrapper::load() not executing casters and checkers when array
+  values were submitted and first value is empty
+  (ohinckel, Sebastian Kusnier)
 
 Features
 ~~~~~~~~
+- Added new scriptlet.DirectOutputHttpScriptletResponse class
+  (kiesel)
 - Added "-r" command line switch to xp runner
   http://news.xp-framework.net/article/345/2010/02/16/
   (friebe)
