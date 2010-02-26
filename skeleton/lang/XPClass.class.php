@@ -714,7 +714,7 @@
             $generic[$i]= NULL;
           } else {
             $details[DETAIL_ARGUMENTS][$i]= $replaced;
-            $generic[$i]= Type::forName($replaced);
+            $generic[$i]= $replaced;
           }
         }
       }
@@ -729,37 +729,12 @@
         if ($t= $param->getTypeRestriction()) {
           $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
         } else if (isset($generic[$i])) {
-          if ($generic[$i] instanceof XPClass) {
-            $p= $generic[$i]->getName();
-            $verify.= (
-              ' if (!($·'.$i.' instanceof '.xp::reflect($p).')) throw new IllegalArgumentException('.
-              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
-              ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
-              ');'
-            );
-          } else if (Primitive::$ARRAY === $generic[$i]) {
-            $component= Type::forName(substr($details[DETAIL_ARGUMENTS][$i], 0, -2));
-            $p= $component->getName();
-            if ($component instanceof XPClass) {
-              $test= '($·element instanceof '.xp::reflect($p).')'; 
-            } else {
-              $test= 'is_'.$p.'($·element)';
-            }
-            $verify.= 'foreach ($·'.$i.' as $·i => $·element) {'.
-              ' if (!'.$test.') throw new IllegalArgumentException('.
-              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
-              ' must be of '.$p.'[], ".xp::typeOf($·element)." encountered at offset ".$·i'.
-              ');
-            }';
-          } else if ($generic[$i] instanceof Primitive) {
-            $p= $generic[$i]->getName();
-            $verify.= (
-              ' if (!is_'.$p.'($·'.$i.')) throw new IllegalArgumentException('.
-              '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
-              ' must be of '.$p.', ".xp::typeOf($·'.$i.')." given"'.
-              ');'
-            );
-          }
+          $verify.= (
+            ' if (!is(\''.$generic[$i].'\', $·'.$i.')) throw new IllegalArgumentException('.
+            '"Argument '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
+            ' must be of '.$generic[$i].', ".xp::typeOf($·'.$i.')." given"'.
+            ');'
+          );
           $sig[$i]= '$·'.$i;
         } else {
           $sig[$i]= '$·'.$i;
