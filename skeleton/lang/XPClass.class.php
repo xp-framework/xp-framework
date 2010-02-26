@@ -827,13 +827,14 @@
         // Generate delegating methods declared in this class
         foreach ($self->getMethods() as $method) {
           if (!$method->getDeclaringClass()->equals($self)) continue;
+          $modifiers= $method->getModifiers();
           $src.= self::createDelegate(
             $self, 
             $method, 
-            $method->getModifiers(),
+            $modifiers,
             $placeholders,
             $meta,
-            'return $this->delegate->'.$method->getName().'(%s);'
+            'return '.(Modifiers::isStatic($modifiers) ? xp::reflect($self->name).'::' : '$this->delegate->').$method->getName().'(%s);'
           );
         }
         
