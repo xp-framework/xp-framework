@@ -110,6 +110,45 @@
     }
 
     /**
+     * Tests interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function testClassDeclaredInterfaces() {
+      $this->assertEquals(
+        array(XPClass::forName('util.log.Traceable')), 
+        $this->class->getDeclaredInterfaces()
+      );
+    }
+
+    /**
+     * Tests declared interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function objectClassDeclaredInterfaces() {
+      $this->assertEquals(
+        array(XPClass::forName('lang.Generic')), 
+        XPClass::forName('lang.Object')->getDeclaredInterfaces()
+      );
+    }
+
+    /**
+     * Tests declared interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function thisClassDeclaredInterfaces() {
+      $this->assertEquals(
+        array(), 
+        $this->getClass()->getDeclaredInterfaces()
+      );
+    }
+
+    /**
      * Tests this class has a constructor
      *
      * @see     xp://lang.XPClass#hasConstructor

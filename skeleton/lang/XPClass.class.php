@@ -382,6 +382,41 @@
     }
 
     /**
+     * Retrieve interfaces this class implements in its declaration
+     *
+     * @return  lang.XPClass[]
+     */
+    public function getDeclaredInterfaces() {
+      $is= $this->_reflect->getInterfaces();
+      if ($parent= $this->_reflect->getParentclass()) {
+        $ip= $parent->getInterfaces();
+      } else {
+        $ip= array();
+      }
+      $filter= array();
+      foreach ($is as $iname => $i) {
+
+        // Parent class implements this interface
+        if (isset($ip[$iname])) {
+          $filter[$iname]= TRUE;
+          continue;
+        }
+
+        // Interface is implemented because it's the parent of another interface
+        foreach ($i->getInterfaces() as $pname => $p) {
+          if (isset($is[$pname])) $filter[$pname]= TRUE;
+        }
+      }
+      
+      $r= array();
+      foreach ($is as $iname => $i) {
+        if (!isset($filter[$iname])) $r[]= new self($i);
+      }
+      return $r;
+    }
+    
+
+    /**
      * Retrieves the api doc comment for this class. Returns NULL if
      * no documentation is present.
      *
@@ -744,32 +779,6 @@
       // Register meta information
       $meta[1][$routine->getName()]= $details;
       return $src;
-    }
-    
-    public function getDeclaredInterfaces() {
-      $is= $this->_reflect->getInterfaces();
-      if ($parent= $this->_reflect->getParentclass()) {
-        $ip= $parent->getInterfaces();
-      } else {
-        $ip= array();
-      }
-      $filter= array();
-      foreach ($is as $iname => $i) {
-
-        // Parent class implements this interface
-        if (isset($ip[$iname])) continue;
-
-        // Interface is implemented because it's the parent of another interface
-        foreach ($i->getInterfaces() as $pname => $p) {
-          if (isset($is[$pname])) $filter[$pname]= TRUE;
-        }
-      }
-      
-      $r= array();
-      foreach ($is as $iname => $i) {
-        if (!isset($filter[$iname])) $r[]= new self($i);
-      }
-      return $r;
     }
     
     /**
