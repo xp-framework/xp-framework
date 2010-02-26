@@ -30,6 +30,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Extended is() core functionality to accept primitive and array types
+  (friebe)
 - Added isInstance() method to lang.Type and lang.Primitive classes
   (friebe)
 - Added typeof() core functionality

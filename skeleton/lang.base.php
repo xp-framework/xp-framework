@@ -453,13 +453,29 @@
     raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($expression).' to '.$type);
    }
 
-  // {{{ proto bool is(string class, lang.Object object)
-  //     Checks whether a given object is of the class, a subclass or implements an interface
-  function is($class, $object) {
-    if (NULL === $class) return $object instanceof null;
-
-    $class= xp::reflect($class);
-    return $object instanceof $class;
+  // {{{ proto bool is(string type, var object)
+  //     Checks whether a given object is an instance of the type given
+  function is($type, $object) {
+    if (NULL === $type) {
+      return $object instanceof null;
+    } else if ('int' === $type) {
+      return is_int($object);
+    } else if ('double' === $type) {
+      return is_double($object);
+    } else if ('string' === $type) {
+      return is_string($object);
+    } else if ('bool' === $type) {
+      return is_bool($object);
+    } else if ('[]' === substr($type, -2)) {
+      $type= substr($type, 0, -2);
+      foreach ($object as $element) {
+        if (!is($type, $element)) return FALSE;
+      }
+      return TRUE;
+    } else {
+      $type= xp::reflect($type);
+      return $object instanceof $type;
+    }
   }
   // }}}
 

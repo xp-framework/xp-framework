@@ -28,6 +28,132 @@
     }
 
     /**
+     * Tests the is() core function with NULL
+     *
+     */
+    #[@test]
+    public function intIsNotIsNull() {
+      $this->assertFalse(is(NULL, 1));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function stringArray() {
+      $this->assertTrue(is('string[]', array('Hello')));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function varArray() {
+      $this->assertFalse(is('string[]', array('Hello', 1, TRUE)));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function intArray() {
+      $this->assertTrue(is('int[]', array(1, 2, 3)));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function objectArray() {
+      $this->assertTrue(is('lang.Object[]', array(new Object(), new Object(), new Object())));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function objectArrayWithNull() {
+      $this->assertFalse(is('lang.Object[]', array(new Object(), new Object(), NULL)));
+    }
+
+    /**
+     * Tests the is() core function with string
+     *
+     */
+    #[@test]
+    public function stringPrimitive() {
+      $this->assertTrue(is('string', 'Hello'));
+    }
+
+    /**
+     * Tests the is() core function with string
+     *
+     */
+    #[@test]
+    public function nullNotAStringPrimitive() {
+      $this->assertFalse(is('string', NULL));
+    }
+
+    /**
+     * Tests the is() core function with bool
+     *
+     */
+    #[@test]
+    public function boolPrimitive() {
+      $this->assertTrue(is('bool', TRUE));
+    }
+
+    /**
+     * Tests the is() core function with bool
+     *
+     */
+    #[@test]
+    public function nullNotABoolPrimitive() {
+      $this->assertFalse(is('bool', NULL));
+    }
+
+    /**
+     * Tests the is() core function with double
+     *
+     */
+    #[@test]
+    public function doublePrimitive() {
+      $this->assertTrue(is('double', 0.0));
+    }
+
+    /**
+     * Tests the is() core function with double
+     *
+     */
+    #[@test]
+    public function nullNotADoublePrimitive() {
+      $this->assertFalse(is('double', NULL));
+    }
+
+    /**
+     * Tests the is() core function with int
+     *
+     */
+    #[@test]
+    public function intPrimitive() {
+      $this->assertTrue(is('int', 0));
+    }
+
+    /**
+     * Tests the is() core function with int
+     *
+     */
+    #[@test]
+    public function nullNotAnIntPrimitive() {
+      $this->assertFalse(is('int', NULL));
+    }
+
+    /**
      * Ensures is() works with short class names
      *
      */
@@ -66,7 +192,7 @@
         'lang.Object',
         array('net.xp_framework.unittest.core.DestructionCallback'),
         '{
-          function onDestruction($object) { 
+          public function onDestruction($object) { 
             // ... Implementation here
           }
         }'
