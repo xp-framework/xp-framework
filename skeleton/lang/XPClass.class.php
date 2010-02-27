@@ -97,7 +97,7 @@
      * @return  string
      */
     public function getSimpleName() {
-      return FALSE === ($p= strrpos($this->name, '.')) 
+      return FALSE === ($p= strrpos(substr($this->name, 0, strcspn($this->name, '[')), '.')) 
         ? $this->name                   // Already unqualified
         : substr($this->name, $p+ 1)    // Full name
       ;
