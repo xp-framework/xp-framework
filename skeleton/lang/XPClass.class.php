@@ -724,9 +724,10 @@
      * @param   array<string, string> placeholders
      * @param   var meta
      * @param   string block
+     * @param   string var
      * @return  src
      */
-    public static function createDelegate($self, $routine, $modifiers, $placeholders, &$meta, $block) {
+    public static function createDelegate($self, $routine, $modifiers, $placeholders, &$meta, $block, $va) {
       $src= '';
       
       $details= self::detailsForMethod($self->_class, $routine->getName());
@@ -753,6 +754,7 @@
       // Create argument signature
       $sig= $pass= array();
       $verify= '';
+      $i= 0;
       foreach ($routine->getParameters() as $i => $param) {
         if ($t= $param->getTypeRestriction()) {
           $sig[$i]= xp::reflect($t->getName()).' $·'.$i;
@@ -771,9 +773,18 @@
         $pass[$i]= '$·'.$i;
       }
       $src.= implode(',', $sig);
-
+      
       if (Modifiers::isAbstract($modifiers)) {
         $src.= ');';
+      } else if (isset($generic[$i]) && '...' === substr($generic[$i], -3)) {
+        $verify.= $i ? '$·args= array_slice(func_get_args(), '.$i.');' : '$·args= func_get_args();';
+        $verify.= (
+          ' if (!is(\''.substr($generic[$i], 0, -3).'[]\', $·args)) throw new IllegalArgumentException('.
+          '"Vararg '.($i + 1).' passed to '.$self->getSimpleName().'::'.$routine->getName().
+          ' must be of '.$generic[$i].', ".xp::stringOf($·args)." given"'.
+          ');'
+        );
+        $src.= ') {'.$verify.sprintf($va, implode(',', $pass)).'}';
       } else {
         $src.= ') {'.$verify.sprintf($block, implode(',', $pass)).'}';
       }
@@ -845,7 +856,8 @@
               MODIFIER_PUBLIC, 
               $placeholders,
               $meta,
-              $block
+              $block,
+              '$·p= \'%s\'; $·o= strlen($·p) > 0 ? 0 : 1; foreach ($·args as $·i => $·arg) { $·p.= \',$·args[\'.$·i.\']\'; } eval(\'$this->delegate= new '.xp::reflect($self->name).'(\'.substr($·p, $·o).\');\');'
             );
           } else {
             $src.= 'public function __construct() {'.sprintf($block, '').'}';       
@@ -861,7 +873,8 @@
             $modifiers,
             $placeholders,
             $meta,
-            'return '.(Modifiers::isStatic($modifiers) ? xp::reflect($self->name).'::' : '$this->delegate->').$method->getName().'(%s);'
+            'return '.(Modifiers::isStatic($modifiers) ? xp::reflect($self->name).'::' : '$this->delegate->').$method->getName().'(%s);',
+            'return call_user_func_array(array('.(Modifiers::isStatic($modifiers) ? '\''.xp::reflect($self->name).'\'' : '$this->delegate').', \''.$method->getName().'\'), array_merge(array(%s), $·args));'
           );
         }
         
