@@ -911,8 +911,10 @@
             $decl.= xp::reflect($parent->getName());
           }
           $impl && $decl.= ' implements '.implode(', ', $impl);
+          $src.= 'function __get($name) { return $this->delegate->{$name}; }';
+          $src.= 'function __set($name, $value) { $this->delegate->{$name}= $value; }';
         }
-      
+     
         // Create class
         //  DEBUG echo '> ', $decl, "\n  ", $src, "\n";
         eval($decl.' {'.$src.'}');
