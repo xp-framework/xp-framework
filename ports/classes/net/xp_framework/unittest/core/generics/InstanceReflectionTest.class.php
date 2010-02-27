@@ -53,11 +53,24 @@
     }
 
     /**
-     * Test reflected name
+     * Test getClass()
      *
      */
     #[@test]
     public function simpleNameOfClass() {
+      $class= $this->fixture->getClass();
+      $this->assertEquals(
+        'Lookup`2[lang.types.String,unittest.TestCase]', 
+        $class->getSimpleName()
+      );
+    }
+
+    /**
+     * Test reflected name
+     *
+     */
+    #[@test]
+    public function reflectedNameOfClass() {
       $class= $this->fixture->getClass();
       $this->assertEquals(
         'net·xp_framework·unittest·core·generics·Lookup··String¸TestCase', 
