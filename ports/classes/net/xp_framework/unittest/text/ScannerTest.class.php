@@ -170,6 +170,28 @@
     }
 
     /**
+     * Test "SN/%d"
+     *
+     * @see   php://sscanf
+     */
+    #[@test]
+    public function serialNumberExampleNotMatching() {
+      $scanner= new Scanner('SN/%d');
+      $this->assertEquals(0, $scanner->match('/NS2350001')->length());
+    }
+
+    /**
+     * Test "%d\t%s %s"
+     *
+     * @see   php://sscanf
+     */
+    #[@test]
+    public function authorParsingExample() {
+      $scanner= new Scanner("%d\t%s %s");
+      $this->assertEquals(array('24', "\t", 'Lewis', ' ', 'Carroll'), $scanner->match("24\tLewis Carroll")->group(0));
+    }
+
+    /**
      * Test unclosed brackets
      *
      */

@@ -27,7 +27,7 @@
         if ('%' === $pattern{$i}) {
           $i++;
           switch ($pattern{$i}) {
-            case '%': $this->pattern[]= '1%'; break; 
+            case '%': $this->pattern[]= '2%'; break; 
             case 'd': $this->pattern[]= '1+-0123456789'; break;
             case 'x': $this->pattern[]= '1x0123456789abcdefABCDEF'; break;
             case 'f': $this->pattern[]= '1+-0123456789.'; break;
@@ -61,7 +61,7 @@
           }
         } else {
           $p= strcspn($pattern, '%', $i);
-          $this->pattern[].= '1'.substr($pattern, $i, $p);
+          $this->pattern[].= '2'.substr($pattern, $i, $p);
           $i+= $p- 1;
         }
       }
@@ -77,7 +77,11 @@
       $o= 0;
       $matches= 0;
       foreach ($this->pattern as $match) {
-        $l= $match[0] ? strspn($input, substr($match, 1), $o) : strcspn($input, substr($match, 1), $o);
+        switch ($match[0]) {
+          case '0': $l= strcspn($input, substr($match, 1), $o); break;
+          case '1': $l= strspn($input, substr($match, 1), $o); break;
+          case '2': $s= strlen($match)- 1; $l= substr($match, 1) === substr($input, $o, $s) ? $s : 0; break;
+        }
         if (0 === $l) break;
         $matches++;
         $o+= $l;
@@ -95,7 +99,11 @@
       $matches= array();
       $o= 0;
       foreach ($this->pattern as $match) {
-        $l= $match[0] ? strspn($input, substr($match, 1), $o) : strcspn($input, substr($match, 1), $o);
+        switch ($match[0]) {
+          case '0': $l= strcspn($input, substr($match, 1), $o); break;
+          case '1': $l= strspn($input, substr($match, 1), $o); break;
+          case '2': $s= strlen($match)- 1; $l= substr($match, 1) === substr($input, $o, $s) ? $s : 0; break;
+        }
         if (0 === $l) break;
         $matches[]= substr($input, $o, $l);
         $o+= $l;
