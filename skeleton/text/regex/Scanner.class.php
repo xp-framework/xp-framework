@@ -22,6 +22,7 @@
      * @throws  lang.FormatException
      */
     public function __construct($pattern) {
+      $this->pattern= array();
       for ($i= 0, $s= strlen($pattern); $i < $s; $i++) {
         if ('%' === $pattern{$i}) {
           $i++;
@@ -59,11 +60,9 @@
             }
           }
         } else {
-          $o= sizeof($pattern);
-          if (!isset($this->pattern[$o])) {
-            $this->pattern[$o]= '1';
-          }
-          $this->pattern[$o].= $pattern{$i};
+          $p= strcspn($pattern, '%', $i);
+          $this->pattern[].= '1'.substr($pattern, $i, $p);
+          $i+= $p- 1;
         }
       }
     }
