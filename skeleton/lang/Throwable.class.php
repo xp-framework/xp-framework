@@ -53,7 +53,7 @@
       $this->message= is_string($message) ? $message : xp::stringOf($message);
 
       $errors= xp::$registry['errors'];
-      foreach ($this->getTrace() as $trace) {
+      foreach (debug_backtrace() as $trace) {
         if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
         if (isset($trace['object']) && '__construct' == $trace['function'] && $trace['object'] instanceof self) continue;
 
