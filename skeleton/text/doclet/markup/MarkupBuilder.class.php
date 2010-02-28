@@ -6,6 +6,7 @@
 
   uses(
     'text.StringTokenizer',
+    'text.regex.CharacterClass',
     'text.doclet.markup.DefaultProcessor',
     'text.doclet.markup.CopyProcessor',
     'text.doclet.markup.CodeProcessor'
@@ -98,7 +99,7 @@
           // states and pass control to the processor.
           // If this is a closing tag and behaviour is defined for it, switch back
           // state and return control to the previous processor.
-          if (ctype_alnum($tag[0])) {
+          if (CharacterClass::$ALNUM->matches($tag[0])) {
             $st->nextToken('>');
             $attributes= array();
             if (FALSE !== ($p= strpos($tag, ' '))) {
@@ -121,7 +122,7 @@
             } else {
               $token= '<'.$tag.'>';
             }
-          } else if ('/' == $tag[0] && ctype_alnum($tag[1])) {
+          } else if ('/' == $tag[0] && CharacterClass::$ALNUM->matches($tag[1])) {
             $st->nextToken('>');
             $lookup= ltrim(strtolower($tag), '/');
 
