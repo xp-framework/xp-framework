@@ -254,7 +254,7 @@
           : $this->content->cdata
         ).']]>';
       } else if ($this->content instanceof String) {
-        $content= $this->content->getBytes($encoding);
+        $content= htmlspecialchars($this->content->getBytes($encoding));
       } else {
         $content= $this->content; 
       }
