@@ -195,6 +195,15 @@
     }
 
     /**
+     * Tests the MatchResult::groups() method
+     *
+     */
+    #[@test]
+    public function matchEmptyString() {
+      $this->assertEquals(array(), Pattern::compile('.')->match('')->groups());
+    }
+
+    /**
      * Tests the Pattern::equals() method
      *
      */

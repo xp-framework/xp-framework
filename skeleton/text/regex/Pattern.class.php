@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('text.regex.MatchResult');
+  uses('text.regex.Matcher');
 
   /**
    * Represents a regular expression pattern
@@ -13,7 +13,7 @@
    * @see      php://preg
    * @purpose  Regular Expression
    */
-  class Pattern extends Object {
+  class Pattern extends Object implements Matcher {
     const 
       CASE_INSENSITIVE = 0x0001,
       MULTILINE        = 0x0002,

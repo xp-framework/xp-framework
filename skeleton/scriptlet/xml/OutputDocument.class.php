@@ -64,5 +64,13 @@
       $this->formerrors= $this->formresult->addChild(new Node('formerrors'));
     }
 
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'@('.$this->root->getSource(INDENT_DEFAULT).')';
+    }
   }
 ?>

@@ -6,6 +6,7 @@
 
   uses(
     'text.StringTokenizer',
+    'text.regex.CharacterClass',
     'net.xp_framework.util.markup.DefaultProcessor',
     'net.xp_framework.util.markup.CopyProcessor',
     'net.xp_framework.util.markup.CodeProcessor'
@@ -70,7 +71,7 @@
           
           // If this is an opening tag and a behaviour is defined for it, switch
           // states and pass control to the processor.
-          if (ctype_alnum($tag[0])) {
+          if (CharacterClass::$ALNUM->matches($tag[0])) {
             $st->nextToken('>');
             $lookup= strtolower($tag);
 
