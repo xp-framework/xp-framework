@@ -6,6 +6,7 @@
  
   uses(
     'unittest.TestCase',
+    'lang.types.String',
     'xml.Node'
   );
 
@@ -227,6 +228,18 @@
       $this->assertEquals(
         '<text>A <a href="http://xp-framework.net/">link</a> to click on</text>', 
         $this->sourceOf(new Node('text', new PCData('A <a href="http://xp-framework.net/">link</a> to click on')))
+      );
+    }
+    
+    /**
+     * Tests a node with two attributes
+     *
+     */
+    #[@test]
+    public function sourceOfNodeWithStringContent() {
+      $this->assertEquals(
+        '<node>XP &amp; APC</node>',
+        $this->sourceOf(new Node('node', new String('XP & APC'))) 
       );
     }
   }
