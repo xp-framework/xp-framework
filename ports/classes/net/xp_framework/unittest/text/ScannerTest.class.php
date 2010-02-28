@@ -157,5 +157,16 @@
       $scanner= new Scanner('%[][0-9.]');
       $this->assertEquals(array('[0..9]'), $scanner->match('[0..9]')->group(0));
     }
+
+    /**
+     * Test "SN/%d"
+     *
+     * @see   php://sscanf
+     */
+    #[@test]
+    public function serialNumberExample() {
+      $scanner= new Scanner('SN/%d');
+      $this->assertEquals(array('SN/', '2350001'), $scanner->match('SN/2350001')->group(0));
+    }
   }
 ?>
