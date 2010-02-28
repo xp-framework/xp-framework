@@ -19,6 +19,7 @@
      * Creates a new character class instance
      *
      * @param   string pattern
+     * @throws  lang.FormatException
      */
     public function __construct($pattern) {
       for ($i= 0, $s= strlen($pattern); $i < $s; $i++) {
@@ -37,7 +38,9 @@
               } else {
                 $match= '1';
               }
-              $p= strpos($pattern, ']', $i + (']' === $pattern{$i+ 1} ? 2 : 0));
+              if (FALSE === ($p= strpos($pattern, ']', $i + (']' === $pattern{$i+ 1} ? 2 : 0)))) {
+                throw new FormatException('Unmatched "]" in format string');
+              }
               $seq= substr($pattern, $i+ 1, $p- $i- 1);
               for ($j= 0, $t= strlen($seq); $j < $t; $j++) {
                 if ($j < $t- 1 && '-' === $seq{$j+ 1}) {
@@ -50,6 +53,9 @@
               $this->pattern[]= $match;
               $i+= $t+ 1;
               break;
+            }
+            default: {
+              throw new FormatException('Bad scan character "'.$pattern{$i}.'"');
             }
           }
         } else {

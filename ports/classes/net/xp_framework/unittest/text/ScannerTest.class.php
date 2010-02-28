@@ -168,5 +168,23 @@
       $scanner= new Scanner('SN/%d');
       $this->assertEquals(array('SN/', '2350001'), $scanner->match('SN/2350001')->group(0));
     }
+
+    /**
+     * Test unclosed brackets
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unclosedBrackets() {
+      new Scanner('%[');
+    }
+
+    /**
+     * Test unclosed brackets
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unknownScanCharacter() {
+      new Scanner('%Ü');
+    }
   }
 ?>
