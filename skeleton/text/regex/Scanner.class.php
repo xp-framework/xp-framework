@@ -52,6 +52,12 @@
               break;
             }
           }
+        } else {
+          $o= sizeof($pattern);
+          if (!isset($this->pattern[$o])) {
+            $this->pattern[$o]= '1';
+          }
+          $this->pattern[$o].= $pattern{$i};
         }
       }
     }
