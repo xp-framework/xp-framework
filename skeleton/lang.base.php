@@ -466,6 +466,8 @@
       return is_string($object);
     } else if ('bool' === $type) {
       return is_bool($object);
+    } else if ('var' === $type) {
+      return TRUE;
     } else if ('[]' === substr($type, -2)) {
       $type= substr($type, 0, -2);
       foreach ($object as $element) {
