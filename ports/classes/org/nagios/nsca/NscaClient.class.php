@@ -254,7 +254,7 @@
       // Calculate CRC32 checksum, then build the final packet with the sig
       // and encrypt it using defined crypt method
       $data= $this->encrypt(
-        $this->pack(CRC32::fromString($this->pack(0, $message))->getValue(), $message)
+        $this->pack(CRC32::fromString($this->pack(0, $message))->asInt32(), $message)
       );
       
       // Finally, send data to the socket

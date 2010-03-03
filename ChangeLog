@@ -23,6 +23,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed org.nagios.NscaClient's handling of CRC32 checksums
+  and thus fixes passive nagios checks since security.checksum
+  refactoring
+  (kiesel)
 - Cleaned up various apidoc spelling issues in @param / @return, and
   exchanged "mixed" with "var" throughout the entire repository.
   (friebe)
