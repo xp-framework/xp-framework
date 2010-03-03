@@ -61,11 +61,13 @@
    * @purpose  Reflection
    */
   class XPClass extends Type {
-    protected
-      $_class   = NULL;
-
-    public 
-      $_reflect = NULL;
+    protected $_class= NULL;
+    public $_reflect= NULL;
+    
+    private static $DECLARING_CLASS_BUG= FALSE;
+    static function __static() {
+      self::$DECLARING_CLASS_BUG= version_compare(PHP_VERSION, '5.2.10', 'lt');
+    }
       
     /**
      * Constructor
@@ -177,9 +179,16 @@
      */
     public function getDeclaredMethods() {
       $list= array();
-      foreach ($this->_reflect->getMethods() as $m) {
-        if (0 == strncmp('__', $m->getName(), 2) || $m->class !== $this->_reflect->name) continue;
-        $list[]= new Method($this->_class, $m);
+      if (self::$DECLARING_CLASS_BUG) {
+        foreach ($this->_reflect->getMethods() as $m) {
+          if (0 == strncmp('__', $m->getName(), 2) || $m->getDeclaringClass()->getName() !== $this->_reflect->name) continue;
+          $list[]= new Method($this->_class, $m);
+        }
+      } else {
+        foreach ($this->_reflect->getMethods() as $m) {
+          if (0 == strncmp('__', $m->getName(), 2) || $m->class !== $this->_reflect->name) continue;
+          $list[]= new Method($this->_class, $m);
+        }
       }
       return $list;
     }
@@ -260,12 +269,19 @@
      * @return  lang.reflect.Field[] array of field objects
      */
     public function getDeclaredFields() {
-      $f= array();
-      foreach ($this->_reflect->getProperties() as $p) {
-        if ('__id' === $p->name || $p->class !== $this->_reflect->name) continue;
-        $f[]= new Field($this->_class, $p);
+      $list= array();
+      if (self::$DECLARING_CLASS_BUG) {
+        foreach ($this->_reflect->getProperties() as $p) {
+          if ('__id' === $p->name || $p->getDeclaringClass()->getName() !== $this->_reflect->name) continue;
+          $list[]= new Field($this->_class, $p);
+        }
+      } else {
+        foreach ($this->_reflect->getProperties() as $p) {
+          if ('__id' === $p->name || $p->class !== $this->_reflect->name) continue;
+          $list[]= new Field($this->_class, $p);
+        }
       }
-      return $f;
+      return $list;
     }
 
     /**
@@ -598,10 +614,11 @@
                   array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
                   trim($parsed, "[]# \t\n\r").','
                 ).');');
-                if (FALSE === $annotations) {
-                  $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
+                $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
+                if (FALSE === $annotations || $msg) {
                   ob_end_clean();
-                  raise('lang.ClassFormatException', $msg.' of "'.addcslashes($parsed, "\0..\17").'"');
+                  xp::gc();
+                  raise('lang.ClassFormatException', 'Parse error: '.$msg.' of "'.addcslashes($parsed, "\0..\17").'"');
                 }
                 ob_end_clean();
                 $parsed= '';
