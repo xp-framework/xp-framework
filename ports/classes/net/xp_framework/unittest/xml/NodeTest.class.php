@@ -242,5 +242,30 @@
         $this->sourceOf(new Node('node', new String('XP & APC'))) 
       );
     }
+
+    /**
+     * Tests fromObject() 
+     *
+     */
+    #[@test]
+    public function fromObject() { 
+      $this->assertEquals(
+        "<node>\n".
+        "  <id>1549</id>\n".
+        "  <color>green</color>\n".
+        "  <name>Name goes here</name>\n".
+        "  <__id/>\n".
+        "</node>",
+        $this->sourceOf(Node::fromObject(newinstance('lang.Object', array(), '{
+          public $id= 1549;
+          public $color= "green";
+          public $name;
+
+          public function __construct() {
+            $this->name= new String("Name goes here");
+          } 
+        }'), 'node'))
+      );
+    }
   }
 ?>

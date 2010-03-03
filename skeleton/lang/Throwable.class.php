@@ -51,7 +51,7 @@
       );
       $this->__id= microtime();
       $this->message= is_string($message) ? $message : xp::stringOf($message);
-      
+
       $errors= xp::$registry['errors'];
       foreach (debug_backtrace() as $trace) {
         if (!isset($trace['function']) || isset($except[$trace['function']])) continue;

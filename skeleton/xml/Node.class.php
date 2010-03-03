@@ -72,6 +72,8 @@
         $nname= is_numeric($field) || '' == $field ? $sname : $field;
         if (is_array($a[$field])) {
           $n->addChild(self::fromArray($a[$field], $nname));
+        } else if ($a[$field] instanceof String) {
+          $n->addChild(new self($nname, $a[$field]));
         } else if (is_object($a[$field])) {
           $n->addChild(self::fromObject($a[$field], $nname));
         } else {

@@ -48,7 +48,7 @@
      * @param   int flags default 0 bitfield of pattern flags
      * @throws  lang.FormatException
      */
-    protected function __construct($regex, $flags= 0) {
+    public function __construct($regex, $flags= 0) {
       $modifiers= '';
       foreach (self::$flags as $bit => $str) {
         if ($bit == $flags & $bit) $modifiers.= $str;
