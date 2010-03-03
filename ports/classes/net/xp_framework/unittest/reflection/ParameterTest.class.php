@@ -235,7 +235,7 @@
      */
     #[@test]
     public function arrayType() {
-      $this->assertEquals(Primitive::$ARRAY, $this->methodParameter('setArray', 0)->getType());
+      $this->assertEquals(ArrayType::forName('string[]'), $this->methodParameter('setArray', 0)->getType());
     }
 
     /**
@@ -244,7 +244,7 @@
      */
     #[@test]
     public function varArgsArrayType() {
-      $this->assertEquals(Primitive::$ARRAY, $this->methodParameter('printf', 1)->getType());
+      $this->assertEquals(ArrayType::forName('string[]'), $this->methodParameter('printf', 1)->getType());
     }
 
     /**

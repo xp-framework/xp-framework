@@ -76,7 +76,7 @@
      */
     #[@test]
     public function arrayOfString() {
-      $this->assertEquals(Primitive::$ARRAY, Type::forName('string[]'));
+      $this->assertEquals(ArrayType::forName('string[]'), Type::forName('string[]'));
     }
 
     /**
@@ -94,7 +94,7 @@
      */
     #[@test]
     public function arrayKeyword() {
-      $this->assertEquals(Primitive::$ARRAY, Type::forName('array'));
+      $this->assertEquals(ArrayType::forName('var[]'), Type::forName('array'));
     }
 
     /**

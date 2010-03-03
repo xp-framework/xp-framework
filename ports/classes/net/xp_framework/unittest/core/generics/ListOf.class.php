@@ -32,7 +32,8 @@
      */
     #[@generic(params= 'T...')]
     public function withAll() {
-      $this->elements= array_merge($this->elements, func_get_args());
+      $args= func_get_args();
+      $this->elements= array_merge($this->elements, $args);
       return $this;
     }
 

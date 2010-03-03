@@ -823,7 +823,7 @@
       // Compose names
       $cn= $qc= '';
       foreach ($arguments as $typearg) {
-        $cn.= '¸'.($typearg instanceof Primitive ? 'þ' : '').xp::reflect($typearg->getName());
+        $cn.= '¸'.$typearg->literal();
         $qc.= ','.$typearg->getName();
       }
       $name= xp::reflect($self->name).'··'.substr($cn, 1);
@@ -916,7 +916,7 @@
         }
      
         // Create class
-        //  DEBUG echo '> ', $decl, "\n  ", $src, "\n";
+        // DEBUG echo '> ', $decl, "\n  ", $src, "\n";
         eval($decl.' {'.$src.'}');
         xp::$registry['details.'.$qname]= $meta;
         xp::$registry['class.'.$name]= $qname;
@@ -1016,6 +1016,15 @@
       }
 
       return $classloader->loadClass($name);
+    }
+
+    /**
+     * Returns type literal
+     *
+     * @return  string
+     */
+    public function literal() {
+      return xp::reflect($this->name);
     }
     
     /**

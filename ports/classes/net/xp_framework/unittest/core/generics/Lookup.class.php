@@ -27,7 +27,7 @@
      */
     #[@generic(params= 'K, V')]
     public function put($key, $value) {
-      $offset= $key instanceof Generic ? $key->hashCode() : $key;
+      $offset= $key instanceof Generic ? $key->hashCode() : serialize($key);
       $this->elements[$offset]= $value;
     } 
 
@@ -40,7 +40,7 @@
      */
     #[@generic(params= 'K', return= 'V')]
     public function get($key) {
-      $offset= $key instanceof Generic ? $key->hashCode() : $key;
+      $offset= $key instanceof Generic ? $key->hashCode() : serialize($key);
       if (!isset($this->elements[$offset])) {
         throw new NoSuchElementException('No such key '.xp::stringOf($key));
       }

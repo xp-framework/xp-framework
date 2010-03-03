@@ -34,7 +34,7 @@
       $INT     = NULL,
       $DOUBLE  = NULL,
       $BOOLEAN = NULL,
-      $ARRAY   = NULL,
+      $ARRAY   = NULL,    // deprecated
       $INTEGER = NULL;    // deprecated
     
     static function __static() {
@@ -57,7 +57,7 @@
         case self::$INT: return XPClass::forName('lang.types.Integer');
         case self::$DOUBLE: return XPClass::forName('lang.types.Double');
         case self::$BOOLEAN: return XPClass::forName('lang.types.Boolean');
-        case self::$ARRAY: return XPClass::forName('lang.types.ArrayList');
+        case self::$ARRAY: return XPClass::forName('lang.types.ArrayList'); // deprecated
       }
     }
     
@@ -73,7 +73,7 @@
       if ($in instanceof Double) return $in->floatValue();
       if ($in instanceof Integer) return $in->intValue();
       if ($in instanceof Boolean) return $in->value;
-      if ($in instanceof ArrayList) return $in->values;
+      if ($in instanceof ArrayList) return $in->values;   // deprecated
       if ($in instanceof Generic) {
         throw new IllegalArgumentException('Cannot unbox '.xp::typeOf($in));
       }
@@ -94,7 +94,7 @@
       if ('integer' === $t) return new Integer($in);
       if ('double' === $t) return new Double($in);
       if ('boolean' === $t) return new Boolean($in);
-      if ('array' === $t) return ArrayList::newInstance($in);
+      if ('array' === $t) return ArrayList::newInstance($in);   // deprecated
       throw new IllegalArgumentException('Cannot box '.xp::typeOf($in));
     }
     
@@ -111,10 +111,19 @@
         case 'int': return self::$INT;
         case 'double': return self::$DOUBLE;
         case 'boolean': return self::$BOOLEAN;
-        case 'array': return self::$ARRAY;
+        case 'array': return self::$ARRAY;    // deprecated
         case 'integer': return self::$INT;    // deprecated
         default: throw new IllegalArgumentException('Not a primitive: '.$name);
       }
+    }
+
+    /**
+     * Returns type literal
+     *
+     * @return  string
+     */
+    public function literal() {
+      return 'þ'.$this->name;
     }
 
     /**
@@ -127,7 +136,7 @@
     public function isInstance($obj) {
       return $obj === NULL || $obj instanceof Generic 
         ? FALSE 
-        : $this === self::forName(gettype($obj))
+        : $this === Type::forName(gettype($obj))
       ;
     }
   }
