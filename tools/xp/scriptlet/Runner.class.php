@@ -31,12 +31,13 @@
     
     public static function main(array $args) {
       try {
-        $this->webroot= $args[0];
+        $webroot= $args[0];
 
         // This is not using the PropertyManager by intention: we'll postpone the
         // initialization of it until later, because there might be configuration
         // that indicates to use another properties directory.
-        $self= new self(new Properties($this->webroot.'/etc/web.ini'));
+        $self= new self(new Properties($webroot.'/etc/web.ini'));
+        $self->webroot= $webroot;
 
         $self->setup();
       } catch (Throwable $t) {
