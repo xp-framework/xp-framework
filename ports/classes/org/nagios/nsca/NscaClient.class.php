@@ -146,11 +146,33 @@
       $this->sock->setTimeout($this->getTimeout());
 
       // Get 128bit xor key and 4bit timestamp
-      $this->_xorkey= $this->sock->readBinary(0x0080);
-      $this->_timestamp= $this->sock->readBinary(0x0004);
+      $this->setXorKey($this->sock->readBinary(0x0080));
+      $this->setTimestamp($this->sock->readBinary(0x0004));
       return TRUE;
     }
     
+    /**
+     * Set timestamp
+     *
+     * @param   string key
+     * @throws  lang.IllegalArgumentException if length of data is invalid
+     */
+    public function setTimestamp($key) {
+      if (4 !== strlen($key)) throw new IllegalArgumentException('Timestamp must be 4 bytes, exactly; '.strlen($key).' given.');
+      $this->_timestamp= $key;
+    }
+
+    /**
+     * Set XOR key
+     *
+     * @param   string key
+     * @throws  lang.IllegalArgumentException if length of data is invalid
+     */
+    public function setXorKey($key) {
+      if (128 !== strlen($key)) throw new IllegalArgumentException('Xorkey must be 128 bytes, exactly; '.strlen($key).' given.');
+      $this->_xorkey= $key;
+    }
+
     /**
      * Returns a string representation of this object
      *
@@ -177,9 +199,9 @@
         $this->cryptmethod,
         $cryptname[$this->cryptmethod],
         strlen($this->_timestamp),
-        addcslashes($this->_timestamp, "\0..\37!@\177..\377"),
+        base64_encode($this->_timestamp),
         strlen($this->_xorkey),
-        addcslashes($this->_xorkey, "\0..\37!@\177..\377")
+        base64_encode($this->_xorkey)
       );
     }
     
@@ -196,7 +218,7 @@
      * Helper method which packs the message 
      *
      * @param   string crc
-     * @param   &org.nagios.nsca.NscaMessage message
+     * @param   org.nagios.nsca.NscaMessage message
      * @return  string packed data
      */
     public function pack($crc, $message) {
@@ -238,6 +260,18 @@
           );
       }
     }
+
+    /**
+     * Prepare data to be sent
+     *
+     * @param   org.nagios.nsca.NscaMessage message
+     * @return  string
+     */
+    public function prepare(NscaMessage $message) {
+      // Calculate CRC32 checksum, then build the final packet with the sig
+      // and encrypt it using defined crypt method
+      return $this->encrypt($this->pack(CRC32::fromString($this->pack(0, $message))->asInt32(), $message));
+    }
   
     /**
      * Send a NSCA message to the server
@@ -246,19 +280,13 @@
      * @return  bool
      * @throws  lang.IllegalStateException
      */
-    public function send($message) {
+    public function send(NscaMessage $message) {
       if (!$this->sock->isConnected()) {
         throw new IllegalStateException('Not connected');
       }
       
-      // Calculate CRC32 checksum, then build the final packet with the sig
-      // and encrypt it using defined crypt method
-      $data= $this->encrypt(
-        $this->pack(CRC32::fromString($this->pack(0, $message))->asInt32(), $message)
-      );
-      
       // Finally, send data to the socket
-      return $this->sock->write($data);
+      return $this->sock->write($this->prepare($message));
     }
   }
 ?>
