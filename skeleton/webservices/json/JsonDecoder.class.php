@@ -223,7 +223,10 @@
         $inst= XPClass::forName($array['__xpclass__'])->newInstance();
         
         foreach ($array as $key => $value) {
-          if (in_array($key, array('__jsonclass__', '__xpclass__'))) continue;
+
+          // TBD: A member like "constructor" should probably not be serialized
+          // at all. It should be ignored at this point...
+          if (in_array($key, array('__jsonclass__', '__xpclass__', 'constructor'))) continue;
           $inst->{$key}= $value;
         }
         
