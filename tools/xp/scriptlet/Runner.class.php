@@ -25,19 +25,19 @@
       
     protected
       $flags      = 0x0000,
-      $webroot    = NULL;
-      $conf       = NULL;
+      $webroot    = NULL,
+      $conf       = NULL,
       $scriptlet  = NULL;
     
     public static function main(array $args) {
-      $this->webroot= $args[0];
-
-      // This is not using the PropertyManager by intention: we'll postpone the
-      // initialization of it until later, because there might be configuration
-      // that indicates to use another properties directory.
-      $self= new self(new Properties($this->webroot.'/etc/web.ini'));
-
       try {
+        $this->webroot= $args[0];
+
+        // This is not using the PropertyManager by intention: we'll postpone the
+        // initialization of it until later, because there might be configuration
+        // that indicates to use another properties directory.
+        $self= new self(new Properties($this->webroot.'/etc/web.ini'));
+
         $self->setup();
       } catch (Throwable $t) {
         header('HTTP/1.0 500 Scriptlet setup failed; very sorry.');
