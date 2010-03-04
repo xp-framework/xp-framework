@@ -28,6 +28,8 @@
       $SPACE,
       $UPPER, 
       $XDIGIT;
+
+    protected $matcher = NULL;
     
     static function __static() {
       self::$ALNUM= new self(new Scanner('%[a-zA-Z0-9]'));

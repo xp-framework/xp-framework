@@ -30,6 +30,8 @@
    * @test     xp://net.xp_framework.unittest.text.csv.CsvBeanReaderTest
    */
   class CsvBeanReader extends CsvReader {
+    protected
+      $class  = NULL;
 
     /**
      * Creates a new CSV reader reading data from a given TextReader

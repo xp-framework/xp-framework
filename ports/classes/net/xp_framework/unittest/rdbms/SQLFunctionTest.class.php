@@ -27,6 +27,7 @@
       $syconn = NULL,
       $myconn = NULL,
       $sqconn = NULL,
+      $pgconn = NULL,
       $peer   = NULL;
       
     /**

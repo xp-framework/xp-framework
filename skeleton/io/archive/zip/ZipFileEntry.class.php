@@ -14,8 +14,10 @@
    */
   class ZipFileEntry extends Object implements ZipEntry {
     protected 
-      $name = '', 
-      $mod  = NULL;
+      $name         = '',
+      $size         = 0,
+      $mod          = NULL,
+      $compression  = NULL;
     
     public
       $is   = NULL,

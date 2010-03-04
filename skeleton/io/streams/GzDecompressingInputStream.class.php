@@ -17,11 +17,13 @@
   class GzDecompressingInputStream extends Object implements InputStream {
     protected $in= NULL;
     public static $wrapped= array();
+    public $context = NULL;
 
     static function __static() {
       stream_wrapper_register('zlib.bounded', get_class(newinstance('lang.Object', array(), '{
         protected $id, $st= NULL;
         protected $buffer= "";
+        public $context = NULL;
         
         public function stream_open($path, $mode, $options, $opened_path) {
           $this->st= GzDecompressingInputStream::$wrapped[$path];

@@ -26,6 +26,8 @@
    * @test     xp://net.xp_framework.unittest.text.csv.CsvObjectReaderTest
    */
   class CsvObjectReader extends CsvReader {
+    protected
+      $class  = NULL;
 
     /**
      * Creates a new CSV reader reading data from a given TextReader

@@ -25,7 +25,8 @@
   class ResultSet extends Object {
     public
       $handle,
-      $fields;
+      $fields,
+      $tz;
 
     /**
      * Constructor

@@ -13,6 +13,8 @@
    * @purpose  Write to a zip archive
    */
   class ZipArchiveReader extends Object {
+    protected
+      $impl = NULL;
 
     /**
      * Creation constructor
