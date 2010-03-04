@@ -13,7 +13,8 @@
   /**
    * Scriptlet runner
    *
-   * @purpose  Tool
+   * @test      xp://net.xp_framework.unittest.scriptlet.RunnerTest
+   * @purpose   Scriptlet runner
    */
   class xp·scriptlet·Runner extends Object {
     const
@@ -42,6 +43,21 @@
       }
     }
 
+    /**
+     * Find application name that has a mapping given which fits
+     *
+     * @param   util.Hashmap map
+     * @param   string url
+     * @return  mixed string or NULL if no match was found
+     */
+    public static function findApplication(Hashmap $map, $url) {
+      foreach ($map->keys() as $pattern) {
+        if (preg_match('#'.preg_quote($pattern, '#').'#', $url)) return $map->get($pattern);
+      }
+
+      return NULL;
+    }
+
     protected static function setup(array $args) {
       $webroot= $args[0];
       
@@ -57,53 +73,51 @@
       if (!$mappings instanceof Hashmap)
         throw new IllegalStateException('Application misconfigured: "app" section missing or broken.');
 
-      foreach ($mappings->keys() as $pattern) {
-        if (!preg_match('#'.preg_quote($pattern, '#').'#', $url)) continue;
+      if (NULL === ($app= self::findApplication($mappings, $url))) {
+        throw new IllegalArgumentException('Could not find app responsible for request to '.$url);
+      }
 
-        // Run first scriptlet that matches
-        $scriptlet= 'app::'.$mappings->get($pattern);
-        
-        try {
-          $class= XPClass::forName(self::readString($pr, $specific, $scriptlet, 'class'));
-        } catch (ClassNotFoundException $e) {
-          throw new IllegalArgumentException('Scriptlet "'.$scriptlet.'" misconfigured or missing: '.$e->getMessage());
-        }
-        $args= array();
-        foreach (self::readArray($pr, $specific, $scriptlet, 'init-params') as $value) {
-          $args[]= strtr($value, array('{WEBROOT}' => $webroot));
-        }
+      // Load and configure scriptlet
+      $scriptlet= 'app::'.$app;
 
-        // Set environment variables
-        $env= self::readHash($pr, $specific, $scriptlet, 'init-envs', new HashMap());
-        foreach ($env->keys() as $key) {
-          putenv($key.'='.$env->get($key));
-        }
-        
-        // Configure PropertyManager
-        $pm= PropertyManager::getInstance();
-        $pm->configure(strtr(self::readString($pr, $specific, $scriptlet, 'prop-base', $webroot.'/etc'), array('{WEBROOT}' => $webroot)));
-        
-        // Always configure Logger (prior to ConnectionManager, so that one can pick up
-        // categories from Logger)
-        $pm->hasProperties('log') && Logger::getInstance()->configure($pm->getProperties('log'));
-        
-        // Always make connection manager available
-        $pm->hasProperties('database') && ConnectionManager::getInstance()->configure($pm->getProperties('database'));
-        
-        $self= new self($class->hasConstructor()
-          ? $class->getConstructor()->newInstance($args)
-          : $class->newInstance()
-        );
-        
-        // Determine debug level
-        foreach (self::readArray($pr, $specific, $scriptlet, 'debug', array()) as $lvl) {
-          $self->flags|= $self->getClass()->getConstant($lvl);
-        }
-        
-        return $self;
+      try {
+        $class= XPClass::forName(self::readString($pr, $specific, $scriptlet, 'class'));
+      } catch (ClassNotFoundException $e) {
+        throw new IllegalArgumentException('Scriptlet "'.$scriptlet.'" misconfigured or missing: '.$e->getMessage());
+      }
+      $args= array();
+      foreach (self::readArray($pr, $specific, $scriptlet, 'init-params') as $value) {
+        $args[]= strtr($value, array('{WEBROOT}' => $webroot));
+      }
+
+      // Set environment variables
+      $env= self::readHash($pr, $specific, $scriptlet, 'init-envs', new HashMap());
+      foreach ($env->keys() as $key) {
+        putenv($key.'='.$env->get($key));
+      }
+
+      // Configure PropertyManager
+      $pm= PropertyManager::getInstance();
+      $pm->configure(strtr(self::readString($pr, $specific, $scriptlet, 'prop-base', $webroot.'/etc'), array('{WEBROOT}' => $webroot)));
+
+      // Always configure Logger (prior to ConnectionManager, so that one can pick up
+      // categories from Logger)
+      $pm->hasProperties('log') && Logger::getInstance()->configure($pm->getProperties('log'));
+
+      // Always make connection manager available
+      $pm->hasProperties('database') && ConnectionManager::getInstance()->configure($pm->getProperties('database'));
+
+      $self= new self($class->hasConstructor()
+        ? $class->getConstructor()->newInstance($args)
+        : $class->newInstance()
+      );
+
+      // Determine debug level
+      foreach (self::readArray($pr, $specific, $scriptlet, 'debug', array()) as $lvl) {
+        $self->flags|= $self->getClass()->getConstant($lvl);
       }
       
-      throw new IllegalArgumentException('Could not find app responsible for request to '.$url);
+      return $self;
     }
     
     /**
