@@ -25,11 +25,20 @@
       
     protected
       $flags      = 0x0000,
+      $webroot    = NULL;
+      $conf       = NULL;
       $scriptlet  = NULL;
     
     public static function main(array $args) {
+      $this->webroot= $args[0];
+
+      // This is not using the PropertyManager by intention: we'll postpone the
+      // initialization of it until later, because there might be configuration
+      // that indicates to use another properties directory.
+      $self= new self(new Properties($this->webroot.'/etc/web.ini'));
+
       try {
-        $self= self::setup($args);
+        $self->setup();
       } catch (Throwable $t) {
         header('HTTP/1.0 500 Scriptlet setup failed; very sorry.');
         throw $t;
@@ -41,6 +50,15 @@
         headers_sent() || header('HTTP/1.0 500 Internal server error');
         throw $e->getCause();
       }
+    }
+
+    /**
+     * Constructor
+     *
+     * @param   scriptlet.HttpScriptlet scriptlet
+     */
+    public function __construct(Properties $conf) {
+      $this->conf= $conf;
     }
 
     /**
@@ -58,18 +76,11 @@
       return NULL;
     }
 
-    protected static function setup(array $args) {
-      $webroot= $args[0];
-      
-      // This is not using the PropertyManager by intention: we'll postpone the
-      // initialization of it until later, because there might be configuration
-      // that indicates to use another properties directory.
-      $pr= new Properties($webroot.'/etc/web.ini');
-
+    protected function setup() {
       $url= getenv('SCRIPT_URL');
       $specific= getenv('SERVER_PROFILE');
 
-      $mappings= $pr->readHash('app', 'mappings');
+      $mappings= $this->conf->readHash('app', 'mappings');
       if (!$mappings instanceof Hashmap)
         throw new IllegalStateException('Application misconfigured: "app" section missing or broken.');
 
@@ -81,24 +92,24 @@
       $scriptlet= 'app::'.$app;
 
       try {
-        $class= XPClass::forName(self::readString($pr, $specific, $scriptlet, 'class'));
+        $class= XPClass::forName($this->readString($specific, $scriptlet, 'class'));
       } catch (ClassNotFoundException $e) {
         throw new IllegalArgumentException('Scriptlet "'.$scriptlet.'" misconfigured or missing: '.$e->getMessage());
       }
       $args= array();
-      foreach (self::readArray($pr, $specific, $scriptlet, 'init-params') as $value) {
-        $args[]= strtr($value, array('{WEBROOT}' => $webroot));
+      foreach ($this->readArray($specific, $scriptlet, 'init-params') as $value) {
+        $args[]= strtr($value, array('{WEBROOT}' => $this->webroot));
       }
 
       // Set environment variables
-      $env= self::readHash($pr, $specific, $scriptlet, 'init-envs', new HashMap());
+      $env= $this->readHash($specific, $scriptlet, 'init-envs', new HashMap());
       foreach ($env->keys() as $key) {
         putenv($key.'='.$env->get($key));
       }
 
       // Configure PropertyManager
       $pm= PropertyManager::getInstance();
-      $pm->configure(strtr(self::readString($pr, $specific, $scriptlet, 'prop-base', $webroot.'/etc'), array('{WEBROOT}' => $webroot)));
+      $pm->configure(strtr($this->readString($specific, $scriptlet, 'prop-base', $this->webroot.'/etc'), array('{WEBROOT}' => $this->webroot)));
 
       // Always configure Logger (prior to ConnectionManager, so that one can pick up
       // categories from Logger)
@@ -107,25 +118,23 @@
       // Always make connection manager available
       $pm->hasProperties('database') && ConnectionManager::getInstance()->configure($pm->getProperties('database'));
 
-      $self= new self($class->hasConstructor()
+      $this->setScriptlet($class->hasConstructor()
         ? $class->getConstructor()->newInstance($args)
         : $class->newInstance()
       );
 
       // Determine debug level
-      foreach (self::readArray($pr, $specific, $scriptlet, 'debug', array()) as $lvl) {
-        $self->flags|= $self->getClass()->getConstant($lvl);
+      foreach ($this->readArray($specific, $scriptlet, 'debug', array()) as $lvl) {
+        $this->flags|= $this->getClass()->getConstant($lvl);
       }
-      
-      return $self;
     }
     
     /**
-     * Constructor
+     * Set scriptlet to run
      *
      * @param   scriptlet.HttpScriptlet scriptlet
      */
-    protected function __construct(HttpScriptlet $scriptlet) {
+    public function setScriptlet(HttpScriptlet $scriptlet) {
       $this->scriptlet= $scriptlet;
     }
     
@@ -208,15 +217,14 @@
      * Read string. First tries special section "section"@"specific", then defaults 
      * to "section"
      *
-     * @param   util.Properties pr
      * @param   string specific
      * @param   string section
      * @param   string key
      * @param   var default default NULL
      * @return  string
      */
-    protected static function readString(Properties $pr, $specific, $section, $key, $default= NULL) {
-      return $pr->readString($section.'@'.$specific, $key, $pr->readString($section, $key, $default));
+    protected function readString($specific, $section, $key, $default= NULL) {
+      return $this->conf->readString($section.'@'.$specific, $key, $this->conf->readString($section, $key, $default));
     }
     
     /**
@@ -230,8 +238,8 @@
      * @param   var default default NULL
      * @return  string
      */
-    protected static function readArray(Properties $pr, $specific, $section, $key, $default= NULL) {
-      return $pr->readArray($section.'@'.$specific, $key, $pr->readArray($section, $key, $default));
+    protected function readArray($specific, $section, $key, $default= NULL) {
+      return $this->conf->readArray($section.'@'.$specific, $key, $this->conf->readArray($section, $key, $default));
     }
     
     /**
@@ -245,8 +253,8 @@
      * @param   var default default NULL
      * @return  string
      */
-    protected static function readHash(Properties $pr, $specific, $section, $key, $default= NULL) {
-      return $pr->readHash($section.'@'.$specific, $key, $pr->readHash($section, $key, $default));
+    protected function readHash($specific, $section, $key, $default= NULL) {
+      return $this->conf->readHash($section.'@'.$specific, $key, $this->conf->readHash($section, $key, $default));
     }
   }
 ?>
