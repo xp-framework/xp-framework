@@ -23,6 +23,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.StatementFormatter handling of booleans in %d token
+  (friebe)
 - Fixed org.nagios.NscaClient's handling of CRC32 checksums
   and thus fixes passive nagios checks since security.checksum
   refactoring
