@@ -634,13 +634,9 @@
      *
      */
     #[@test]
-    public function testEmptyStringAsNumber() {
+    public function emptyStringAsNumber() {
       foreach ($this->conn as $key => $value) {
-        $this->assertEquals(
-          'NULL',
-          $value->prepare('%d', ''),
-          $key
-        );
+        $this->assertEquals('NULL', $value->prepare('%d', ''), $key);
       }
     }
 
@@ -649,7 +645,7 @@
      *
      */
     #[@test]
-    public function testDashAsNumber() {
+    public function dashAsNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals('NULL', $value->prepare('%d', '-'), $key);
       }
@@ -660,7 +656,7 @@
      *
      */
     #[@test]
-    public function testDotAsNumber() {
+    public function dotAsNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals('NULL', $value->prepare('%d', '.'), $key);
       }
@@ -671,9 +667,31 @@
      *
      */
     #[@test]
-    public function testPlusAsNumber() {
+    public function plusAsNumber() {
       foreach ($this->conn as $key => $value) {
         $this->assertEquals('NULL', $value->prepare('%d', '+'), $key);
+      }
+    } 
+
+    /**
+     * Tests TRUE as number
+     *
+     */
+    #[@test]
+    public function trueAsNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals('1', $value->prepare('%d', TRUE), $key);
+      }
+    } 
+
+    /**
+     * Tests FALSE as number
+     *
+     */
+    #[@test]
+    public function falseAsNumber() {
+      foreach ($this->conn as $key => $value) {
+        $this->assertEquals('0', $value->prepare('%d', FALSE), $key);
       }
     } 
   }

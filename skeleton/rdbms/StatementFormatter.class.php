@@ -175,11 +175,16 @@
      * @return  string
      */
     public function numval($arg) {
-      if (
-        (0 >= sscanf($arg, '%[0-9.+-]%[eE]%[0-9-]', $n, $s, $e)) ||
-        !is_numeric($n)
-      ) return 'NULL';
-        
+      if (is_int($arg) || is_float($arg)) {
+        return $arg;
+      } else if (is_bool($arg)) {
+        return (int)$arg;
+      } else if (!is_numeric($arg)) {
+        return 'NULL';
+      }
+      
+      // Parse number
+      if (0 >= sscanf($arg, '%[0-9.+-]%[eE]%[0-9-]', $n, $s, $e)) return 'NULL';
       return $n.($e ? $s.$e : '');
     }
   }
