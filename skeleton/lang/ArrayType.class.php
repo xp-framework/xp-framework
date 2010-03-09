@@ -10,6 +10,7 @@
    * Represents array types
    *
    * @see      xp://lang.Type
+   * @test     xp://net.xp_framework.unittest.core.ArrayTypeTest
    * @purpose  Type implementation
    */
   class ArrayType extends Type {
