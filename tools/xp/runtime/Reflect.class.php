@@ -16,6 +16,19 @@
   class xp·runtime·Reflect extends Object {
   
     /**
+     * Prints class name (and generic components if this class is a 
+     * generic definition)
+     *
+     * @param   lang.XPClass class
+     */
+    protected static function printName(XPClass $class) {
+      Console::write($class->getName());
+      if ($class->isGenericDefinition()) {
+        Console::write('<', implode(', ', $class->genericComponents()), '>');
+      }
+    }
+  
+    /**
      * Prints methods - static first, rest then
      *
      * @param   lang.reflect.Method[] methods
@@ -44,11 +57,13 @@
      */
     protected static function printEnum(XPClass $enum) {
       Console::write(implode(' ', Modifiers::namesOf($enum->getModifiers())));
-      Console::write(' enum ', $enum->getName());
+      Console::write(' enum ');
+      self::printName($enum);
 
       // Parent class, if not lang.Enum
       if (!XPClass::forName('lang.Enum')->equals($parent= $enum->getParentClass())) {
-        Console::write(' extends ', $parent->getName());
+        Console::write(' extends ');
+        self::printName($parent);
       }
 
       // Interfaces
@@ -56,7 +71,7 @@
         Console::write(' implements ');
         $s= sizeof($interfaces)- 1;
         foreach ($interfaces as $i => $iface) {
-          Console::write($iface->getName());
+          self::printName($iface);
           $i < $s && Console::write(', ');
         }
       }
@@ -93,14 +108,15 @@
      */
     protected static function printInterface(XPClass $iface) {
       Console::write(implode(' ', Modifiers::namesOf($iface->getModifiers() ^ MODIFIER_ABSTRACT)));
-      Console::write(' interface ', $iface->getName());
+      Console::write(' interface ');
+      self::printName($iface);
 
       // Interfaces are this interface's parents
       if ($interfaces= $iface->getInterfaces()) {
         Console::write(' extends ');
         $s= sizeof($interfaces)- 1;
         foreach ($interfaces as $i => $parent) {
-          Console::write($parent->getName());
+          self::printName($parent);
           $i < $s && Console::write(', ');
         }
       }
@@ -136,16 +152,18 @@
      */
     protected static function printClass(XPClass $class) {
       Console::write(implode(' ', Modifiers::namesOf($class->getModifiers())));
-      Console::write(' class ', $class->getName());
-
+      Console::write(' class ');
+      self::printName($class);
+      
       if ($parent= $class->getParentClass()) {
-        Console::write(' extends ', $parent->getName());
+        Console::write(' extends ');
+        self::printName($parent);
       }
-      if ($interfaces= $class->getInterfaces()) {
+      if ($interfaces= $class->getDeclaredInterfaces()) {
         Console::write(' implements ');
         $s= sizeof($interfaces)- 1;
         foreach ($interfaces as $i => $iface) {
-          Console::write($iface->getName());
+          self::printName($iface);
           $i < $s && Console::write(', ');
         }
       }
