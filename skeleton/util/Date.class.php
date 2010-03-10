@@ -192,7 +192,7 @@
      * Compare this date to another date
      *
      * @param   util.Date date A date object
-     * @return  int equal: 0, date before $this: < 0, date after $this: > 0
+     * @return  int equal: 0, date before $this: less than 0, date after $this: greater than zero
      */
     public function compareTo(Date $date) {
       return $date->getTime()- $this->getTime();
