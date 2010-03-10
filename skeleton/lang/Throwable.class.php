@@ -15,6 +15,8 @@
    * @purpose  Base class
    */
   class Throwable extends Exception implements Generic {
+    public
+      $__id;
     public 
       $message  = '',
       $trace    = array();

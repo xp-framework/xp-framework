@@ -24,6 +24,9 @@
       $classname       = '',
       $interfacename   = '';
 
+    protected
+      $tempfile       = NULL;
+
     /**
      * Adds sourcecode to a given XAR archive
      *

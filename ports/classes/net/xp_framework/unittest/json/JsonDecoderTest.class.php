@@ -274,12 +274,15 @@
      */
     #[@test]
     public function encodeObject() {
-      $o= new Object();
+      $o= ClassLoader::defineClass('JsonTestValueClass', 'lang.Object', array(), '{
+        public $prop  = NULL;
+      }')->newInstance();
+
       $o->__id= '<bogusid>';
       $o->prop= 'prop';
 
       $this->assertEquals(
-        '{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "lang.Object" , "__id" : "<bogusid>" , "prop" : "prop" }',
+        '{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "JsonTestValueClass" , "prop" : "prop" , "__id" : "<bogusid>" }',
         $this->decoder->encode($o)
       );
     }    

@@ -19,6 +19,8 @@
    * @purpose   Unit test
    */
   class WorkflowApiTest extends TestCase {
+    protected
+      $scriptlet  = NULL;
   
     /**
      * Setup method.

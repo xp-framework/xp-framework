@@ -124,6 +124,12 @@
       $in->close();
     }
     
+    /**
+     * Writes an error message to standad error
+     *
+     * @param   string message
+     * @return  int always returns 0
+     */
     public function error($message) {
       Console::$err->writeLine('*** ', $message);
       return 0;

@@ -21,6 +21,9 @@
       $offset  = 0,
       $channel = NULL;
     
+    public
+      $context  = NULL;
+
     /**
      * Capture output
      *

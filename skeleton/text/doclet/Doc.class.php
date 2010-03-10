@@ -21,6 +21,7 @@
     public
       $name         = '',
       $rawComment   = '',
+      $annotations  = NULL,
       $detail       = NULL,
       $root         = NULL;
 

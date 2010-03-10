@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: CsvObjectReader.class.php 11477 2009-09-15 10:28:46Z friebe $ 
+ * $Id$ 
  */
 
   uses('text.csv.CsvReader');
@@ -26,6 +26,8 @@
    * @test     xp://net.xp_framework.unittest.text.csv.CsvObjectReaderTest
    */
   class CsvObjectReader extends CsvReader {
+    protected
+      $class  = NULL;
 
     /**
      * Creates a new CSV reader reading data from a given TextReader

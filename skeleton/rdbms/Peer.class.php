@@ -40,6 +40,9 @@
       $types      = array(),
       $relations  = array();
 
+    protected
+      $conn       = NULL;
+
     /**
      * Constructor
      *

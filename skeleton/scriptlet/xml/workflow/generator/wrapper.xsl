@@ -26,9 +26,9 @@
   <xsl:template name="occurrence">
     <xsl:param name="value"/>
     <xsl:param name="names">
-      <name for="optional">OCCURRENCE_OPTIONAL</name>
-      <name for="multiple">OCCURRENCE_MULTIPLE</name>
-      <name for="passbehind">OCCURRENCE_PASSBEHIND</name>
+      <name for="optional">Wrapper::OCCURRENCE_OPTIONAL</name>
+      <name for="multiple">Wrapper::OCCURRENCE_MULTIPLE</name>
+      <name for="passbehind">Wrapper::OCCURRENCE_PASSBEHIND</name>
     </xsl:param>
 
     <xsl:choose>
@@ -224,7 +224,7 @@
         ']]></xsl:text><xsl:value-of select="@name"/><xsl:text><![CDATA[',
         ]]></xsl:text>
         <xsl:choose>
-          <xsl:when test="not(@occurrence)">OCCURRENCE_UNDEFINED</xsl:when>
+          <xsl:when test="not(@occurrence)">Wrapper::OCCURRENCE_UNDEFINED</xsl:when>
           <xsl:otherwise>
             <xsl:call-template name="occurrence">
               <xsl:with-param name="value" select="@occurrence"/>

@@ -18,6 +18,9 @@
     protected
       $resource   = NULL;
 
+    public
+      $context    = NULL;
+
     static function __static() {
       stream_wrapper_register('res', __CLASS__);
       self::$instance= new self();
