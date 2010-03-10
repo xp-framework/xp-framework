@@ -99,6 +99,22 @@
     }
 
     /**
+     * Test newGenericType()
+     *
+     */
+    #[@test]
+    public function newLookupWithPrimitiveStringAndObject() {
+      $arguments= array(
+        Primitive::$STRING,
+        XPClass::forName('lang.Object')
+      );
+      $this->assertEquals(
+        $arguments, 
+        $this->fixture->newGenericType($arguments)->genericArguments()
+      );
+    }
+
+    /**
      * Test classes created via newGenericType() and from an instance
      * instantiated via create() are equal.
      *
