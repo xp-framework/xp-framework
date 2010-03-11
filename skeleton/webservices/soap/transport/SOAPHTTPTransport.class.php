@@ -120,7 +120,7 @@
       $headers= $this->_headers;
 
       // Action
-      $this->action= $message->action;
+      $this->_action= $message->action;
 
       switch ($this->_actiontype) {
         case self::ACTION_COMPUTE:
@@ -180,7 +180,7 @@
 
           $this->cat && $this->cat->debug('<<<', $xml);
           $answer= XPSoapMessage::fromString($xml);
-          $answer->action= $this->action;
+          $answer->action= $this->_action;
 
           // Fault?
           if (NULL !== ($fault= $answer->getFault())) {
