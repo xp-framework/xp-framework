@@ -80,7 +80,12 @@
       }
       
       // Perform action
-      $class->newInstance()->perform(array_slice($args, 1));
+      try {
+        $class->newInstance()->perform(array_slice($args, 1));
+      } catch (Throwable $e) {
+        Console::$err->writeLine('*** Error performing action ~ ', $e);
+        exit(1);
+      }
     }    
   }
 ?>

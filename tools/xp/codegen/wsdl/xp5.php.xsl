@@ -360,13 +360,10 @@
    */
   class ]]></xsl:text>
   <xsl:value-of select="func:ucfirst(concat($prefix, @name))"/>
-  <xsl:text> extends Object {
-    public</xsl:text>
+  <xsl:text> extends Object {&#10;</xsl:text>
     <xsl:for-each select="xsd:all/xsd:element">
-      $<xsl:value-of select="@name"/>
-      <xsl:if test="position() &lt; last()">,</xsl:if>
+      <xsl:text>    public $</xsl:text><xsl:value-of select="@name"/><xsl:text>&#10;</xsl:text>
     </xsl:for-each>
-    <xsl:text>;&#10;</xsl:text>
     
     <xsl:for-each select="xsd:all/xsd:element">
 
@@ -436,13 +433,10 @@
    */
   class ]]></xsl:text>
   <xsl:value-of select="func:ucfirst(concat($prefix, @name))"/>
-  <xsl:text> extends Object {
-    public</xsl:text>
+  <xsl:text> extends Object {&#10;</xsl:text>
     <xsl:for-each select="child::*[local-name() = 'sequence']/xsd:element">
-      $<xsl:value-of select="@name"/>
-      <xsl:if test="position() &lt; last()">,</xsl:if>
+      <xsl:text>    public $</xsl:text><xsl:value-of select="@name"/><xsl:text>;&#10;</xsl:text>
     </xsl:for-each>
-    <xsl:text>;&#10;</xsl:text>
     
     <xsl:for-each select="xsd:sequence/xsd:element">
 
