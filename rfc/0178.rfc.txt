@@ -89,6 +89,9 @@ S) System-wide installation
   
   # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
   ${System.Environment.SpecialFolder.ProgramFiles}\Xp\5.7.7\
+
+  # Shortcut to the former
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\5.7-latest.lnk
 </pre>
 
 U) User configuration
@@ -119,6 +122,9 @@ S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for exa
   
   # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
   ${PREFIX}/lib/xp/5.7.7/
+  
+  # Symlink to the former
+  ${PREFIX}/lib/xp/5.7-latest
 </pre>
 
 U) User configuration
