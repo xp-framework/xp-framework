@@ -37,6 +37,7 @@ these directories and concatenating the paths found inside.
 When one of the XP runners start up, the following sources are examined
 in the order listed:
 * Examine the environment variable (E)
+* Look at the per-directory configuration (P)
 * Look at the user configuration (U)
 * Look at the system installation (S)
 The first source to supply a <tt>use_xp</tt> setting prevails.
@@ -51,29 +52,45 @@ the environment.
   ------ -------------------------------------------------------------
   S      /usr/local/lib/xp/5.7.7/
   U      ~/devel/xp.public/trunk
+  P      ~/devel/xp.public/branches/xp5_8
   E      ~/devel/xp.forge/trunk/experiments/arena/namespaces/six
 </pre>
 </summary>
 
 <summary>
-Example #2: In this case, the SVN checkout in the ~/devel directory would 
-be used.
+Example #2: In this case, the SVN checkout of the 5_8 branch in the 
+~/devel directory would be used.
 <pre>
   Source Value
   ------ -------------------------------------------------------------
   S      /usr/local/lib/xp/5.7.7/
   U      ~/devel/xp.public/trunk
+  P      ~/devel/xp.public/branches/xp5_8
   E      (empty / not set)
 </pre>
 </summary>
 
 <summary>
-Example #3: Here, the system XP, a 5.7.7-RELEASE, is used:
+Example #3: In this case, the SVN trunk checkout in the ~/devel 
+directory would be used.
+<pre>
+  Source Value
+  ------ -------------------------------------------------------------
+  S      /usr/local/lib/xp/5.7.7/
+  U      ~/devel/xp.public/trunk
+  P      (no config file in per-directory configuration)
+  E      (empty / not set)
+</pre>
+</summary>
+
+<summary>
+Example #4: Here, the system XP, a 5.7.7-RELEASE, is used:
 <pre>
   Source Value
   ------ -------------------------------------------------------------
   S      /usr/local/lib/xp/5.7.7/
   U      (no config file in user configuration)
+  P      (no config file in per-directory configuration)
   E      (empty / not set)
 </pre>
 </summary>
@@ -94,10 +111,16 @@ S) System-wide installation
   ${System.Environment.SpecialFolder.ProgramFiles}\Xp\5.7-latest.lnk
 </pre>
 
+P) Per-directory configuration
+<pre>
+  # Dir config { xp.ini }
+  .\xp.ini
+</pre>
+
 U) User configuration
 <pre>
   # User config { xp.ini }
-  ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\
+  ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\xp.ini
 </pre>
 
 E) Environment
@@ -127,10 +150,16 @@ S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for exa
   ${PREFIX}/lib/xp/5.7-latest
 </pre>
 
+P) Per-directory configuration
+<pre>
+  # Dir config { xp.ini }
+  ./xp.ini
+</pre>
+
 U) User configuration
 <pre>
   # User config { xp.ini }
-  ~/.xp/
+  ~/.xp/xp.ini
 </pre>
 
 E) Environment
