@@ -240,7 +240,16 @@
      */
     #[@test]
     public function selectString() {
-      $this->assertEquals("Hello, World!", $this->db()->query('select "Hello, World!" as value')->next('value'));
+      $this->assertEquals('Hello, World!', $this->db()->query('select "Hello, World!" as value')->next('value'));
+    }
+
+    /**
+     * Test selecting string values
+     *
+     */
+    #[@test]
+    public function selectUnicodeString() {
+      $this->assertEquals(utf8_encode('Übercoder'), $this->db()->query('select %s as value', new String('Übercoder'))->next('value'));
     }
     
     /**
