@@ -1,11 +1,11 @@
-RFC 0178: System-wide XP installations
+RFC 0178: XP installations
 ========================================================================
 $Id$
 
 @authors: friebe, kiesel
 @created: Fri Jan  9 11:56:30     2009
 @status: draft
-@target: 5.8
+@target: 5.7.8
 @category: <infrastructure>
 
 Scope of Change
@@ -39,7 +39,7 @@ in the order listed:
 * Examine the environment variable (E)
 * Look at the per-directory configuration (P)
 * Look at the user configuration (U)
-* Look at the system installation (S)
+* Look at the XP installation (I)
 The first source to supply a <tt>use_xp</tt> setting prevails.
 
 Examples
@@ -99,7 +99,7 @@ Windows
 ~~~~~~~
 We suggest to follow the conventions as follows:
 
-S) System-wide installation
+I) System-wide installation
 <pre>
   # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
   ${System.Environment.SpecialFolder.ProgramFiles}\Xp\
@@ -109,6 +109,18 @@ S) System-wide installation
 
   # Shortcut to the former
   ${System.Environment.SpecialFolder.ProgramFiles}\Xp\5.7-latest.lnk
+</pre>
+
+I) User installation
+<pre>
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
+  ${USERPROFILE}\Xp\
+  
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ${USERPROFILE}\Xp\5.7.7\
+
+  # Shortcut to the former
+  ${USERPROFILE}\Xp\5.7-latest.lnk
 </pre>
 
 P) Per-directory configuration
@@ -138,7 +150,7 @@ Un*x
 ~~~~
 We suggest to follow the conventions as follows:
 
-S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for example):
+I) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for example):
 <pre>
   # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
   ${PREFIX}/bin/
@@ -148,6 +160,18 @@ S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for exa
   
   # Symlink to the former
   ${PREFIX}/lib/xp/5.7-latest
+</pre>
+
+I) User installation (where <tt>~</tt> represents the user's home dir):
+<pre>
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
+  ~/bin/
+  
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ~/xp/5.7.7/
+
+  # Symlink to the former
+  ~/xp/5.7-latest
 </pre>
 
 P) Per-directory configuration
