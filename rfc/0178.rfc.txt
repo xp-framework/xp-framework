@@ -49,7 +49,7 @@ the environment.
 <pre>
   Source Value
   ------ -------------------------------------------------------------
-  S      /usr/local/lib/xp/5.7.0/
+  S      /usr/local/lib/xp/5.7.7/
   U      ~/devel/xp.public/trunk
   E      ~/devel/xp.forge/trunk/experiments/arena/namespaces/six
 </pre>
@@ -61,18 +61,18 @@ be used.
 <pre>
   Source Value
   ------ -------------------------------------------------------------
-  S      /usr/local/lib/xp/5.7.0/
+  S      /usr/local/lib/xp/5.7.7/
   U      ~/devel/xp.public/trunk
   E      (empty / not set)
 </pre>
 </summary>
 
 <summary>
-Example #3: Here, the system XP, a 5.7.0-RELEASE, is used:
+Example #3: Here, the system XP, a 5.7.7-RELEASE, is used:
 <pre>
   Source Value
   ------ -------------------------------------------------------------
-  S      /usr/local/lib/xp/5.7.0/
+  S      /usr/local/lib/xp/5.7.7/
   U      (no config file in user configuration)
   E      (empty / not set)
 </pre>
@@ -84,17 +84,14 @@ We suggest to follow the conventions as follows:
 
 S) System-wide installation
 <pre>
-  # Runners { xp xar xpcli unittest doclet cgen }
-  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\bin\
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\
   
-  # Config { xp.ini }
-  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\etc\
-  
-  # XARS { 5.7.0\xp-rt-5.7.0.xar }, Path { 5.7.0\boot.pth }
-  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\lib\
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\5.7.7\
 </pre>
 
-U) user configuration
+U) User configuration
 <pre>
   # User config { xp.ini }
   ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\
@@ -117,17 +114,14 @@ We suggest to follow the conventions as follows:
 
 S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for example):
 <pre>
-  # Runners { xp xar xpcli unittest doclet cgen }
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
   ${PREFIX}/bin/
   
-  # Config { xp.ini }
-  ${PREFIX}/etc/
-  
-  # XARS { 5.7.0/xp-rt-5.7.0.xar }, Path { 5.7.0/boot.pth }
-  ${PREFIX}/lib/xp/
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ${PREFIX}/lib/xp/5.7.7/
 </pre>
 
-U) user configuration
+U) User configuration
 <pre>
   # User config { xp.ini }
   ~/.xp/
