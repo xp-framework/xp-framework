@@ -188,6 +188,7 @@ Related documents
 -----------------
 * RFC #0166 - XP Runners
 * http://news.xp-framework.net/article/285/2009/01/09/ - XP Runners installation
+* http://news.xp-framework.net/article/294/0009/04/23/ - New features in XP runners
 * http://news.xp-framework.net/article/349/2010/03/12/ - Update script included with runner distributions
 
 Comments
