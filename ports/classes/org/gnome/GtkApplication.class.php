@@ -21,6 +21,7 @@
   class GtkApplication extends Object {
     public 
       $window   = NULL,
+      $param    = NULL,
       $cat      = NULL,
       $rcfile   = '';
 
