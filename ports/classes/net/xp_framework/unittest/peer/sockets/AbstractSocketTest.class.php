@@ -77,7 +77,7 @@
     }
 
     /**
-     * Shut down FTP server
+     * Shut down socket server
      *
      */
     #[@afterClass]
@@ -486,6 +486,7 @@
       $this->fixture->setTimeout(0.1);
       $this->fixture->readBinary();
     }
+
     /**
      * Test setTimeout()
      *
