@@ -59,6 +59,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed xpcli runner to display exceptions raised in run() block of  
+  the run command class including stacktrace
+  (friebe)
 - Deprecated lang.Primitive::$INTEGER in favor of lang.Primitive::$INT
   (friebe)
 - Deprecated lang.Type::$ANY in favor of lang.Type::$VAR

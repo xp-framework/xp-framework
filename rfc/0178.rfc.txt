@@ -1,11 +1,11 @@
-RFC 0178: System-wide XP installations
+RFC 0178: XP installations
 ========================================================================
 $Id$
 
 @authors: friebe, kiesel
 @created: Fri Jan  9 11:56:30     2009
 @status: draft
-@target: 5.8
+@target: 5.7.8
 @category: <infrastructure>
 
 Scope of Change
@@ -37,8 +37,9 @@ these directories and concatenating the paths found inside.
 When one of the XP runners start up, the following sources are examined
 in the order listed:
 * Examine the environment variable (E)
+* Look at the per-directory configuration (P)
 * Look at the user configuration (U)
-* Look at the system installation (S)
+* Look at the XP installation (I)
 The first source to supply a <tt>use_xp</tt> setting prevails.
 
 Examples
@@ -49,31 +50,47 @@ the environment.
 <pre>
   Source Value
   ------ -------------------------------------------------------------
-  S      /usr/local/lib/xp/5.7.0/
+  S      /usr/local/lib/xp/5.7.7/
   U      ~/devel/xp.public/trunk
+  P      ~/devel/xp.public/branches/xp5_8
   E      ~/devel/xp.forge/trunk/experiments/arena/namespaces/six
 </pre>
 </summary>
 
 <summary>
-Example #2: In this case, the SVN checkout in the ~/devel directory would 
-be used.
+Example #2: In this case, the SVN checkout of the 5_8 branch in the 
+~/devel directory would be used.
 <pre>
   Source Value
   ------ -------------------------------------------------------------
-  S      /usr/local/lib/xp/5.7.0/
+  S      /usr/local/lib/xp/5.7.7/
   U      ~/devel/xp.public/trunk
+  P      ~/devel/xp.public/branches/xp5_8
   E      (empty / not set)
 </pre>
 </summary>
 
 <summary>
-Example #3: Here, the system XP, a 5.7.0-RELEASE, is used:
+Example #3: In this case, the SVN trunk checkout in the ~/devel 
+directory would be used.
 <pre>
   Source Value
   ------ -------------------------------------------------------------
-  S      /usr/local/lib/xp/5.7.0/
+  S      /usr/local/lib/xp/5.7.7/
+  U      ~/devel/xp.public/trunk
+  P      (no config file in per-directory configuration)
+  E      (empty / not set)
+</pre>
+</summary>
+
+<summary>
+Example #4: Here, the system XP, a 5.7.7-RELEASE, is used:
+<pre>
+  Source Value
+  ------ -------------------------------------------------------------
+  S      /usr/local/lib/xp/5.7.7/
   U      (no config file in user configuration)
+  P      (no config file in per-directory configuration)
   E      (empty / not set)
 </pre>
 </summary>
@@ -82,22 +99,40 @@ Windows
 ~~~~~~~
 We suggest to follow the conventions as follows:
 
-S) System-wide installation
+I) System-wide installation
 <pre>
-  # Runners { xp xar xpcli unittest doclet cgen }
-  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\bin\
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\
   
-  # Config { xp.ini }
-  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\etc\
-  
-  # XARS { 5.7.0\xp-rt-5.7.0.xar }, Path { 5.7.0\boot.pth }
-  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\lib\
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\5.7.7\
+
+  # Shortcut to the former
+  ${System.Environment.SpecialFolder.ProgramFiles}\Xp\5.7-latest.lnk
 </pre>
 
-U) user configuration
+I) User installation
+<pre>
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
+  ${USERPROFILE}\Xp\
+  
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ${USERPROFILE}\Xp\5.7.7\
+
+  # Shortcut to the former
+  ${USERPROFILE}\Xp\5.7-latest.lnk
+</pre>
+
+P) Per-directory configuration
+<pre>
+  # Dir config { xp.ini }
+  .\xp.ini
+</pre>
+
+U) User configuration
 <pre>
   # User config { xp.ini }
-  ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\
+  ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\xp.ini
 </pre>
 
 E) Environment
@@ -115,22 +150,40 @@ Un*x
 ~~~~
 We suggest to follow the conventions as follows:
 
-S) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for example):
+I) System-wide installation (PREFIX=<tt>/usr/local</tt> or <tt>/opt</tt> for example):
 <pre>
-  # Runners { xp xar xpcli unittest doclet cgen }
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
   ${PREFIX}/bin/
   
-  # Config { xp.ini }
-  ${PREFIX}/etc/
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ${PREFIX}/lib/xp/5.7.7/
   
-  # XARS { 5.7.0/xp-rt-5.7.0.xar }, Path { 5.7.0/boot.pth }
-  ${PREFIX}/lib/xp/
+  # Symlink to the former
+  ${PREFIX}/lib/xp/5.7-latest
 </pre>
 
-U) user configuration
+I) User installation (where <tt>~</tt> represents the user's home dir):
+<pre>
+  # Runners { xp xar xpcli unittest doclet cgen } and { xp.ini }
+  ~/bin/
+  
+  # XARS { xp-rt-5.7.7.xar }, Path { boot.pth }
+  ~/xp/5.7.7/
+
+  # Symlink to the former
+  ~/xp/5.7-latest
+</pre>
+
+P) Per-directory configuration
+<pre>
+  # Dir config { xp.ini }
+  ./xp.ini
+</pre>
+
+U) User configuration
 <pre>
   # User config { xp.ini }
-  ~/.xp/
+  ~/.xp/xp.ini
 </pre>
 
 E) Environment
@@ -159,6 +212,8 @@ Related documents
 -----------------
 * RFC #0166 - XP Runners
 * http://news.xp-framework.net/article/285/2009/01/09/ - XP Runners installation
+* http://news.xp-framework.net/article/294/0009/04/23/ - New features in XP runners
+* http://news.xp-framework.net/article/349/2010/03/12/ - Update script included with runner distributions
 
 Comments
 --------

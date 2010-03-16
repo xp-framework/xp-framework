@@ -381,7 +381,7 @@
       try {
         $instance->run();
       } catch (Throwable $t) {
-        self::$err->writeLine('*** ', $t->compoundMessage());
+        self::$err->writeLine('*** ', $t->toString());
         return 70;    // EX_SOFTWARE according to sysexits.h
       }
       return 0;
