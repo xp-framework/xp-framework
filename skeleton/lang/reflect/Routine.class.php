@@ -209,7 +209,7 @@
 
       return ($key 
         ? $details[DETAIL_ANNOTATIONS][$name][$key] 
-        : Annotation::forName($name)->newInstance($details[DETAIL_ANNOTATIONS][$name])
+        : $details[DETAIL_ANNOTATIONS][$name]
       );
     }
 
