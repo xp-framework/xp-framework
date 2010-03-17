@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Fri Jan  9 11:56:30     2009
-@status: draft
+@status: implemented, Wed Mar 17 10:11:57     2010
 @target: 5.7.8
 @category: <infrastructure>
 

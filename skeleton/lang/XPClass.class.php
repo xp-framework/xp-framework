@@ -10,7 +10,8 @@
     'lang.reflect.Field',
     'lang.reflect.Constructor',
     'lang.reflect.Modifiers',
-    'lang.reflect.Package'
+    'lang.reflect.Package',
+    'lang.reflect.Annotation'
   );
 
   define('DETAIL_ARGUMENTS',      1);

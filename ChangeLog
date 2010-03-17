@@ -72,6 +72,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0178 - XP installations (runner part)
+  (friebe)
 - Implemented RFC #0183 - lang.ResourceProvider
   (kiesel)
 

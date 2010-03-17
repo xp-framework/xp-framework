@@ -77,7 +77,7 @@
     }
 
     /**
-     * Shut down FTP server
+     * Shut down socket server
      *
      */
     #[@afterClass]
@@ -486,6 +486,7 @@
       $this->fixture->setTimeout(0.1);
       $this->fixture->readBinary();
     }
+
     /**
      * Test setTimeout()
      *
@@ -495,6 +496,21 @@
       $this->fixture->connect();
       $this->fixture->setTimeout(0.1);
       $this->fixture->readLine();
+    }
+
+    /**
+     * Test getInputStream() class
+     *
+     */
+    #[@test]
+    public function inputStream() {
+      $expect= '<response><type>status</type><payload><bool>true</bool></payload></response>';
+      $this->fixture->connect();
+      $this->fixture->write('ECHO '.$expect."\n");
+      
+      $si= $this->fixture->getInputStream();
+      $this->assertTrue($si->available() > 0, 'available() > 0');
+      $this->assertEquals('+ECHO '.$expect, $si->read(strlen($expect)+ strlen('+ECHO ')));
     }
   }
 ?>
