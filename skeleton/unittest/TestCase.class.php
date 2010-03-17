@@ -5,8 +5,6 @@
  */
 
   uses(
-    'unittest.Expect',
-    'unittest.Limit',
     'unittest.AssertionFailedError',
     'unittest.PrerequisitesNotMetError'
   );
