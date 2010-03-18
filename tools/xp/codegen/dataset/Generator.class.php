@@ -54,6 +54,10 @@
       $adapters = array();
 
     protected
+      $host     = NULL,
+      $prefix   = NULL,
+      $ptargets = NULL,
+      $pexclude = NULL,
       $adapter  = NULL,
       $processor= NULL,
       $package  = '',
