@@ -29,6 +29,8 @@
       }
       $this->out= Streams::writeableFd($out);
       if (!stream_filter_append($this->out, 'bzip2.compress', STREAM_FILTER_WRITE, array('blocks' => $level))) {
+        fclose($this->out);
+        $this->out= NULL;
         throw new IOException('Could not append stream filter');
       }
     }
