@@ -71,11 +71,11 @@
       try {
         return $this->_reflect->invokeArgs($obj, (array)$args);
       } catch (Throwable $e) {
-        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() ~ '.$e->getMessage(), $e);
+        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() invocation failed', $e);
       } catch (ReflectionException $e) {
 
         // This should never occur, we checked everything beforehand...
-        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() ~ '.$e->getMessage(), new XPException($e->getMessage()));
+        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() invocation failed', new XPException($e->getMessage()));
       }
     }
   }
