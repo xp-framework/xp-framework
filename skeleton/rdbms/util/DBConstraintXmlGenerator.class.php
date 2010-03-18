@@ -19,7 +19,8 @@
    */
   class DBConstraintXmlGenerator extends Object implements Traceable {
     protected
-      $cat= NULL;
+      $cat= NULL,
+      $tables= NULL;
 
     public
       $doc= NULL;
