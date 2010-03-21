@@ -1,0 +1,38 @@
+RFC 0197: Assertions
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: friebe
+@created: Tue Dec 22 20:15:04     2009
+@status: draft
+@category: unittest
+
+Scope of Change
+---------------
+
+Rationale
+---------
+
+Functionality
+-------------
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+* http://joe.truemesh.com/blog/000511.html
+  Flexible JUnit assertions with assertThat()
+
+Comments
+--------
+
+<EOF>
+
+
