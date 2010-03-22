@@ -2,10 +2,10 @@ RFC 0198: Joins with criteria
 ========================================================================
 $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
-@authors: 
-@created: 
+@authors: friebe
+@created: Mon Mar 22 09:07:17     2010
 @status: draft
-@category: 
+@category: rdbms
 
 Scope of Change
 ---------------
