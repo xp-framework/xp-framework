@@ -193,7 +193,7 @@
       
       if ($value instanceof Generic) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
-        $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
+        $child->attribute['xsi:type']= 'xp:'.$value->getClass()->getSimpleName();
         $this->_recurse($child, get_object_vars($value), $mapping);
         return;
       }
