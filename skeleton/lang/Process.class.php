@@ -289,6 +289,13 @@
       $this->out->isOpen() && $this->out->close();
       $this->err->isOpen() && $this->err->close();
       $this->exitv= proc_close($this->_proc);
+      
+      // If the process wasn't running when we entered this method,
+      // determine the exitcode from the previous proc_get_status()
+      // call.
+      if (!$this->status['running']) {
+        $this->exitv= $this->status['exitcode'];
+      }
       return $this->exitv;
     }
   }
