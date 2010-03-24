@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.7.8, released 2010-03-24
+----------------------------------
+SVN version: 14410
+
 Heads up!
 ~~~~~~~~~
 - Changed xpcli runner to display exceptions raised in run() block of  
