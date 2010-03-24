@@ -77,6 +77,17 @@
     }
 
     /**
+     * Set Name
+     *
+     * @param   string name
+     * @return  scriptlet.Cookie this
+     */
+    public function withName($name) {
+      $this->name= $name;
+      return $this;
+    }
+
+    /**
      * Get Name
      *
      * @return  string
@@ -92,6 +103,17 @@
      */
     public function setValue($value) {
       $this->value= $value;
+    }
+
+    /**
+     * Set Value
+     *
+     * @param   string value
+     * @return  scriptlet.Cookie this
+     */
+    public function withValue($value) {
+      $this->value= $value;
+      return $this;
     }
 
     /**
@@ -111,6 +133,18 @@
      */
     public function setSecure($secure) {
       $this->secure= $secure;
+    }
+
+    /**
+     * Set Secure. Indicates that the cookie should only be transmitted 
+     * over a secure HTTPS connection from the client. 
+     *
+     * @param   bool secure
+     * @return  scriptlet.Cookie this
+     */
+    public function withSecure($secure) {
+      $this->secure= $secure;
+      return $this;
     }
 
     /**
@@ -135,6 +169,18 @@
     }
 
     /**
+     * Set HttpOnly. When TRUE the cookie will be made accessible only 
+     * through the HTTP protocol, not by JavaScript.
+     *
+     * @param   bool httpOnly
+     * @return  scriptlet.Cookie this
+     */
+    public function withHttpOnly($httpOnly) {
+      $this->httpOnly= $httpOnly;
+      return $this;
+    }
+
+    /**
      * Get HttpOnly. Note: This value is not available for cookies retrieved
      * from HttpScriptletRequest, as the browser does not submit this in
      * subsequent requests.
@@ -152,6 +198,17 @@
      */
     public function setDomain($domain) {
       $this->domain= $domain;
+    }
+
+    /**
+     * Set Domain
+     *
+     * @param   string domain
+     * @return  scriptlet.Cookie this
+     */
+    public function withDomain($domain) {
+      $this->domain= $domain;
+      return $this;
     }
 
     /**
@@ -175,6 +232,17 @@
     }
 
     /**
+     * Set Path
+     *
+     * @param   string path
+     * @return  scriptlet.Cookie this
+     */
+    public function withPath($path) {
+      $this->path= $path;
+      return $this;
+    }
+
+    /**
      * Get Path. Note: This value is not available for cookies retrieved
      * from HttpScriptletRequest, as the browser does not submit this in
      * subsequent requests.
@@ -192,6 +260,17 @@
      */
     public function setExpires($expires) {
       $this->expires= is('util.Date', $expires) ? $expires->getTime() : $expires;
+    }
+
+    /**
+     * Set Expires
+     *
+     * @param   int expires
+     * @return  scriptlet.Cookie this
+     */
+    public function withExpires($expires) {
+      $this->expires= is('util.Date', $expires) ? $expires->getTime() : $expires;
+      return $this;
     }
 
     /**
