@@ -49,6 +49,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Implemented HTTPOnly support in scriptlet.Cookie
+  (friebe)
 - Made unittest.TestCase::assertInstanceOf() accept lang.Type instances
   as first parameter as well as strings with type names
   (friebe)
