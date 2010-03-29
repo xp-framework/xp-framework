@@ -507,26 +507,36 @@
     if (is_array($expr)) return $expr[0]; else return $expr;
   }
   // }}}
-
-  // {{{ proto lang.Object newinstance(string classname, var[] args, string bytes)
+  
+  // {{{ proto lang.Object newinstance(string spec, var[] args, string bytes)
   //     Anonymous instance creation
-  function newinstance($classname, $args, $bytes) {
+  function newinstance($spec, $args, $bytes) {
     static $u= 0;
 
-    $class= xp::reflect($classname);
-    if (!class_exists($class) && !interface_exists($class)) {
-      xp::error(xp::stringOf(new Error('Class "'.$classname.'" does not exist')));
-      // Bails
+    // Check for an anonymous generic 
+    if (strstr($spec, '<')) {
+      sscanf($spec, '%[^<]<%[^>]>', $classname, $types);
+      $typeargs= array();
+      foreach (explode(',', $types) as $type) {
+        $typeargs[]= Type::forName(ltrim($type));
+      }
+      $type= XPClass::forName(strstr($classname, '.') ? $classname : xp::nameOf($classname))->newGenericType($typeargs)->literal();
+    } else {
+      $type= xp::reflect(strstr($spec, '.') ? $spec : xp::nameOf($spec));
+      if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
+        xp::error(xp::stringOf(new Error('Class "'.$classname.'" does not exist')));
+        // Bails
+      }
     }
 
-    $name= $class.'·'.(++$u);
+    $name= $type.'·'.(++$u);
     
     // Checks whether an interface or a class was given
     $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
-    if (interface_exists($class)) {
-      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$class.' '.$bytes);
+    if (interface_exists($type)) {
+      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$type.' '.$bytes);
     } else {
-      $cl->setClassBytes($name, 'class '.$name.' extends '.$class.' '.$bytes);
+      $cl->setClassBytes($name, 'class '.$name.' extends '.$type.' '.$bytes);
     }
 
     $cl->loadClass0($name);
