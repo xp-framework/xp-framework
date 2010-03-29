@@ -15,7 +15,7 @@
   define('GREATER_THAN',    '> ?');
   define('LESS_EQUAL',      '<= ?');
   define('GREATER_EQUAL',   '>= ?');
-  define('BIT_AND',         ' & ? = ?');
+  define('BIT_AND',         '& ? != 0');
 
   uses('rdbms.criterion.Criterion');
 

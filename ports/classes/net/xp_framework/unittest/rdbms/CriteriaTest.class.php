@@ -107,6 +107,126 @@
         $c
       );
     }
+
+    /**
+     * Test IN operator
+     *
+     */
+    #[@test]
+    public function inCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', array(1, 2), IN);
+      
+      $this->assertSql('where job_id in (1, 2)', $c);
+    }
+    
+    /**
+     * Test NOT_IN operator
+     *
+     */
+    #[@test]
+    public function notInCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', array(1, 2), NOT_IN);
+      
+      $this->assertSql('where job_id not in (1, 2)', $c);
+    }
+    
+    /**
+     * Test LIKE operator
+     *
+     */
+    #[@test]
+    public function likeCriteria() {
+      $c= new Criteria();
+      $c->add('title', '%keyword%', LIKE);
+      
+      $this->assertSql('where title like "%keyword%"', $c);
+    }
+    
+    /**
+     * Test EQUAL operator
+     *
+     */
+    #[@test]
+    public function equalCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', 1, EQUAL);
+      
+      $this->assertSql('where job_id = 1', $c);
+    }
+    
+    /**
+     * Test NOT_EQUAL operator
+     *
+     */
+    #[@test]
+    public function notEqualCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', 1, NOT_EQUAL);
+      
+      $this->assertSql('where job_id != 1', $c);
+    }
+    
+    /**
+     * Test LESS_THAN operator
+     *
+     */
+    #[@test]
+    public function lessThanCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', 100, LESS_THAN);
+      
+      $this->assertSql('where job_id < 100', $c);
+    }
+    
+    /**
+     * Test GREATER_THAN operator
+     *
+     */
+    #[@test]
+    public function greaterThanCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', 100, GREATER_THAN);
+      
+      $this->assertSql('where job_id > 100', $c);
+    }
+    
+    /**
+     * Test LESS_EQUAL operator
+     *
+     */
+    #[@test]
+    public function lessEqualCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', 100, LESS_EQUAL);
+      
+      $this->assertSql('where job_id <= 100', $c);
+    }
+    
+    /**
+     * Test GREATER_EQUAL operator
+     *
+     */
+    #[@test]
+    public function greaterEqualCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', 100, GREATER_EQUAL);
+      
+      $this->assertSql('where job_id >= 100', $c);
+    }
+    
+    /**
+     * Test BIT_AND operator
+     *
+     */
+    #[@test]
+    public function bitAndCriteria() {
+      $c= new Criteria();
+      $c->add('job_id', 100, BIT_AND);
+      
+      $this->assertSql('where job_id & 100 != 0', $c);
+    }
     
     /**
      * Tests the rdbms.criterion API

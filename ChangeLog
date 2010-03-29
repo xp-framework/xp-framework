@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed format string BIT_AND operator to only use one placeholder
+  (ohinckel)
+
 
 Version 5.7.8, released 2010-03-24
 ----------------------------------
