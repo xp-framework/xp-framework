@@ -524,7 +524,7 @@
     } else {
       $type= xp::reflect(strstr($spec, '.') ? $spec : xp::nameOf($spec));
       if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
-        xp::error(xp::stringOf(new Error('Class "'.$classname.'" does not exist')));
+        xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
         // Bails
       }
     }
