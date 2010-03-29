@@ -124,7 +124,7 @@
      * Test parameter reflection
      *
      */
-    #[@test]
+    #[@test, @ignore('No longer existant in new implementation')]
     public function delegateFieldType() {
       $this->assertEquals(
         'net.xp_framework.unittest.core.generics.Lookup',
