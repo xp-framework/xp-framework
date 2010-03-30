@@ -824,7 +824,11 @@
                 DETAIL_ANNOTATIONS  => $annotations
               );
               $src.= $tokens[$i][1].' '.$name;
-            } else if (T_EXTENDS === $tokens[$i][0]) {
+              array_unshift($state, $tokens[$i][0]);
+            }
+            continue;
+          } else if (T_CLASS === $state[0]) {
+            if (T_EXTENDS === $tokens[$i][0]) {
               if (isset($annotations['generic']['parent'])) {
                 $src.= ' extends '.self::createGenericType($self->getParentClass(), $arguments)->literal();
               } else {
@@ -834,6 +838,17 @@
               $src.= ' implements';
               array_unshift($state, 5);
             } else if ('{' === $tokens[$i][0]) {
+              array_shift($state);
+              array_unshift($state, 1);
+              $src.= ' {';
+            }
+            continue;
+          } else if (T_INTERFACE === $state[0]) {
+            if (T_EXTENDS === $tokens[$i][0]) {
+              $src.= ' extends';
+              array_unshift($state, 5);
+            } else if ('{' === $tokens[$i][0]) {
+              array_shift($state);
               array_unshift($state, 1);
               $src.= ' {';
             }
@@ -949,6 +964,7 @@
 
         // Create class
         eval($src);
+        method_exists($name, '__static') && call_user_func(array($name, '__static'));
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);
         xp::$registry['details.'.$qname]= $meta;
         xp::$registry['class.'.$name]= $qname;
