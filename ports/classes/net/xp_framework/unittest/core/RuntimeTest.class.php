@@ -347,6 +347,7 @@
         }"));
 
         echo "+OK exiting";
+        $fatal= NULL;
         $fatal->error();
       ', 255);
 
