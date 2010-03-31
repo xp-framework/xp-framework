@@ -5,21 +5,48 @@
  */
 
   $package= 'org.codehaus.stomp.frame';
+
+  /**
+   * Abstract frame base class
+   *
+   */
   abstract class org·codehaus·stomp·frame·Frame extends Object {
     protected
       $headers  = array(),
       $body     = NULL;
 
+    /**
+     * Retrieve frame command. Override this in derived implementations
+     *
+     * @return  string
+     */
     public abstract function command();
 
+    /**
+     * Retrieve whether message requires immediate response
+     *
+     * @return  bool
+     */
     public function requiresImmediateResponse() {
       return $this->hasHeader('receipt');
     }
 
+    /**
+     * Retrieve headers
+     *
+     * @return  <string,string>[]
+     */
     public function getHeaders() {
       return $this->headers;
     }
 
+    /**
+     * Get header
+     *
+     * @string  key
+     * @return  string
+     * @throws  lang.IllegalArgumentException if header does not exist
+     */
     public function getHeader($key) {
       if (!isset($this->headers[$key])) throw new IllegalArgumentException(
         'No such header "'.$key.'"'
@@ -27,22 +54,49 @@
       return $this->headers[$key];
     }
 
+    /**
+     * Add header
+     *
+     * @param   string key
+     * @param   string value
+     */
     public function addHeader($key, $value) {
       $this->headers[$key]= $value;
     }
 
+    /**
+     * Check for header
+     *
+     * @param   string key
+     * @return  bool
+     */
     public function hasHeader($key) {
       return isset($this->headers[$key]);
     }
 
+    /**
+     * Retrieve body
+     *
+     * @return  string
+     */
     public function getBody() {
       return $this->body;
     }
 
+    /**
+     * Set body
+     *
+     * @param   string data
+     */
     public function setBody($data) {
       $this->body= $data;
     }
 
+    /**
+     * Read frame from wire
+     *
+     * @param   io.streams.InputStreamReader in
+     */
     public function fromWire(InputStreamReader $in) {
 
       // Read headers
@@ -82,6 +136,11 @@
       $this->setBody(rtrim($data, "\n\0"));
     }
 
+    /**
+     * Write frame to stream
+     *
+     * @param   io.streams.OutputStreamWriter out
+     */
     public function write(OutputStreamWriter $out) {
       $out->write($this->command()."\n");
 
@@ -92,6 +151,11 @@
       $out->write("\n".$this->getBody().chr(0));
     }
 
+    /**
+     * Retrieve string representation
+     *
+     * @return  string
+     */
     public function toString() {
       $s= $this->getClassName().'@('.$this->hashCode().") {\n";
       $s.= '  Stomp command=    "'.$this->command()."\"\n";

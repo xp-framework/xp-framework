@@ -37,15 +37,30 @@
     protected
       $cat    = NULL;
 
+    /**
+     * Constructor
+     *
+     * @param   string server
+     * @param   int port
+     */
     public function __construct($server, $port) {
       $this->server= $server;
       $this->port= $port;
     }
 
+    /**
+     * Set trace
+     *
+     * @param   util.log.LogCategory cat
+     */
     public function setTrace($cat) {
       $this->cat= $cat;
     }
 
+    /**
+     * Connect to server
+     *
+     */
     protected function _connect() {
       $this->socket= new Socket($this->server, $this->port);
       $this->socket->connect();
@@ -54,12 +69,21 @@
       $this->out= new StringWriter(new SocketOutputStream($this->socket));
     }
 
+    /**
+     * Disconnect from server
+     *
+     */
     protected function _disconnect() {
       $this->out= NULL;
       $this->in= NULL;
       $this->socket->close();
     }
 
+    /**
+     * Receive next frame, nonblocking
+     *
+     * @return  org.codehaus.stomp.frame.Frame or NULL
+     */
     public function recvFrame() {
 
       // Check whether we can read, before we actually read...
@@ -81,6 +105,10 @@
       return $frame;
     }
 
+    /**
+     * Send a frame to server
+     *
+     */
     public function sendFrame(org·codehaus·stomp·frame·Frame $frame) {
 
       // Trace
@@ -100,6 +128,14 @@
       return NULL;
     }
 
+    /**
+     * Connect to server with given username and password
+     *
+     * @param   string user
+     * @param   string pass
+     * @return  bool
+     * @throws  peer.AuthenticationException if login failed
+     */
     public function connect($user, $pass) {
       $this->_connect();
 
@@ -118,6 +154,10 @@
       return TRUE;
     }
 
+    /**
+     * Disconnect by sending disconnect frame
+     *
+     */
     public function disconnect() {
 
       // Bail out if not connected
@@ -128,27 +168,58 @@
       $this->_disconnect();
     }
 
+    /**
+     * Begin server transaction
+     *
+     * @param   string transaction
+     */
     public function begin($transaction) {
       return $this->sendFrame(new org·codehaus·stomp·frame·BeginFrame($transaction));
     }
 
+    /**
+     * Abort transaction
+     *
+     * @param   string transaction
+     */
     public function abort($transaction) {
       return $this->sendFrame(new org·codehaus·stomp·frame·AbortFrame($transaction));
     }
 
+    /**
+     * Commit transaction
+     *
+     * @param   string transaction
+     */
     public function commit($transaction) {
       return $this->sendFrame(new org·codehaus·stomp·frame·CommitFrame($transaction));
     }
 
+    /**
+     * Send new message to destination
+     *
+     * @param   string destination
+     * @param   string body
+     */
     public function send($destination, $body) {
       return $this->sendFrame(new org·codehaus·stomp·frame·SendFrame($destination, $body));
     }
 
+    /**
+     * Subscribe to destination
+     *
+     * @param   string destination
+     * @param   string ackMode
+     */
     public function subscribe($destination, $ackMode= org·codehaus·stomp·frame·SubscribeFrame::ACK_AUTO) {
       return $this->sendFrame(new org·codehaus·stomp·frame·SubscribeFrame($destination, $ackMode));
     }
 
-    // TBI
+    /**
+     * Acknowledge a message
+     *
+     * @param   string messageId
+     */
     public function ack($messageId) {
       return $this->sendFrame(new org·codehaus·stomp·frame·AckFrame($messageId));
 
