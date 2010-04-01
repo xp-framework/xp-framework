@@ -43,7 +43,7 @@
     /**
      * Get header
      *
-     * @string  key
+     * @param   string key
      * @return  string
      * @throws  lang.IllegalArgumentException if header does not exist
      */
