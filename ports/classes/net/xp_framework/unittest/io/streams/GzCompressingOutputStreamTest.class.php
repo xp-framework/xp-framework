@@ -55,7 +55,7 @@
      *
      * @param   string expected
      * @param   string actual
-     * @throws  unittest.AssertionFailedErrot
+     * @throws  unittest.AssertionFailedError
      */
     protected function assertCompressedDataEquals($expected, $actual) {
       parent::assertCompressedDataEquals(substr($expected, 10), substr($actual, 10));
