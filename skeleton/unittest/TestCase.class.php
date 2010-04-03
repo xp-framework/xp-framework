@@ -241,7 +241,7 @@
       } else if (Type::$VOID->equals($type)) {
         $verify= FALSE;
       }
-      $verify || $this->fail($error, $type->getName(), xp::typeOf($var));
+      $verify || $this->fail($error, xp::typeOf($var), $type->getName());
     }
     
     /**
