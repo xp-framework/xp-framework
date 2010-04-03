@@ -134,7 +134,19 @@
     
       // Verify the field is public
       if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
-        throw new IllegalAccessException('Cannot read '.$this->toString());
+        $t= debug_backtrace();
+        if ($t[1]['class'] !== $this->_class) {
+          $scope= new ReflectionClass($t[1]['class']);
+          if (!$scope->isSubclassOf($this->_class)) {        
+            throw new IllegalAccessException('Cannot read '.$this->toString());
+          }
+        }
+        
+        if ($this->_reflect->isStatic()) {
+          return call_user_func(array($this->_class, '__getStatic'), "\7".$this->_reflect->getName());
+        } else {
+          return $instance->{"\7".$this->_reflect->getName()};
+        }
       }
 
       // Short-circuit further checks for static members
@@ -169,7 +181,20 @@
     
       // Verify the field is public
       if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
-        throw new IllegalAccessException('Cannot write '.$this->toString());
+        $t= debug_backtrace();
+        if ($t[1]['class'] !== $this->_class) {
+          $scope= new ReflectionClass($t[1]['class']);
+          if (!$scope->isSubclassOf($this->_class)) {        
+            throw new IllegalAccessException('Cannot write '.$this->toString());
+          }
+        }
+
+        if ($this->_reflect->isStatic()) {
+          call_user_func(array($this->_class, '__setStatic'), "\7".$this->_reflect->getName(), $value);
+        } else {
+          $instance->{"\7".$this->_reflect->getName()}= $value;
+        }
+        return;
       }
 
       // Short-circuit further checks for static members

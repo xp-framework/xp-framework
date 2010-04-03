@@ -26,10 +26,71 @@
     }
 
     /**
+     * Static field read handler
+     *
+     */
+    public static function __getStatic($name) {
+      if ("\7" === $name{0}) {
+        $t= debug_backtrace();
+        return eval('return '.$t[1]['args'][0][0].'::$'.substr($name, 1).';');
+      }
+      return NULL;
+    }
+
+    /**
+     * Static field read handler
+     *
+     */
+    public static function __setStatic($name, $value) {
+      if ("\7" === $name{0}) {
+        $t= debug_backtrace();
+        eval($t[1]['args'][0][0].'::$'.substr($name, 1).'= $value;');
+        return;
+      }
+    }
+
+    /**
+     * Static method handler
+     *
+     */
+    public static function __callStatic($name, $args) {
+      if ("\7" === $name{0}) {
+        $t= debug_backtrace();
+        return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
+      }
+      $t= debug_backtrace();
+      throw new Error('Call to undefined method '.$t[1]['class'].'::'.$name);
+    }
+
+    /**
+     * Field read handler
+     *
+     */
+    public function __get($name) {
+      if ("\7" === $name{0}) {
+        return $this->{substr($name, 1)};
+      }
+      return NULL;
+    }
+
+    /**
+     * Field write handler
+     *
+     */
+    public function __set($name, $value) {
+      if ("\7" === $name{0}) {
+        $this->{substr($name, 1)}= $value;
+        return;
+      }
+    }
+    
+    /**
      * Method handler
      *
      */
     public function __call($name, $args) {
+      if ("\7" === $name{0}) return call_user_func_array(array($this, substr($name, 1)), $args);
+
       $t= debug_backtrace();
       $scope= '<main>::ext://';
       for ($i= 2; $i < sizeof($t); $i++) {

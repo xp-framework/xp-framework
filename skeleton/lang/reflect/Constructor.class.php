@@ -42,23 +42,37 @@
         throw new IllegalAccessException('Cannot instantiate abstract class '.$this->_class);
       }
 
-      // Check modifers
+      // Check modifiers. If caller is an instance of this class, allow
+      // protected constructor invocation (which the PHP reflection API
+      // does not).
       $m= $this->_reflect->getModifiers();
       if (!($m & MODIFIER_PUBLIC)) {
-        throw new IllegalAccessException(sprintf(
-          'Cannot invoke %s constructor of class %s',
-          Modifiers::stringOf($this->getModifiers()),
-          $this->_class
-        ));
+        $t= debug_backtrace();
+        if ($t[1]['class'] !== $this->_class) {
+          $scope= new ReflectionClass($t[1]['class']);
+          if (!$scope->isSubclassOf($this->_class)) {
+            throw new IllegalAccessException(sprintf(
+              'Cannot invoke %s constructor of class %s from scope %s',
+              Modifiers::stringOf($this->getModifiers()),
+              $this->_class,
+              $t[1]['class']
+            ));
+          }
+        }
+        
+        // Create instance without invoking constructor
+        $instance= unserialize('O:'.strlen($this->_class).':"'.$this->_class.'":0:{}');
+        $inv= '$instance->{"\7__construct"}(%s); return $instance;';
+      } else {
+        $inv= 'return new '.$this->_class.'(%s);';
       }
       
       $paramstr= '';
       for ($i= 0, $m= sizeof($args); $i < $m; $i++) {
         $paramstr.= ', $args['.$i.']';
       }
-      
       try {
-        return eval('return new '.$this->_class.'('.substr($paramstr, 2).');');
+        return eval(sprintf($inv, substr($paramstr, 2)));
       } catch (Throwable $e) {
         throw new TargetInvocationException($this->_class.'::<init>', $e);
       }
