@@ -232,7 +232,7 @@
         $type= Type::forName($type);
       }
       
-      $type->isInstance($var) || $this->fail($error, $type->getName(), xp::typeOf($var));
+      $type->isInstance($var) || $this->fail($error, xp::typeOf($var), $type->getName());
     }
     
     /**
