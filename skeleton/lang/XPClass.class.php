@@ -768,8 +768,8 @@
 
       // Create class if it doesn't exist yet
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        $meta= array(
-          'class' => array(),
+        $meta= isset(xp::$registry['details.'.$self->name]) ? xp::$registry['details.'.$self->name] : array(
+          'class' => NULL,
           0       => array(),
           1       => array()
         );
@@ -788,7 +788,9 @@
 
         // Replace source
         $src= '';
-        $class= FALSE;
+        $comment= NULL;
+        $annotations= array();
+        $matches= array();
         $state= array(0);
         $tokens= token_get_all($bytes);
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
@@ -818,11 +820,10 @@
             if (T_ABSTRACT === $tokens[$i][0] || T_FINAL === $tokens[$i][0]) {
               $src.= $tokens[$i][1].' ';
             } else if (T_CLASS === $tokens[$i][0] || T_INTERFACE === $tokens[$i][0]) {
-              $meta['class']= array(
-                DETAIL_GENERIC      => array($self->name, $arguments), 
-                DETAIL_COMMENT      => $comment, 
-                DETAIL_ANNOTATIONS  => $annotations
-              );
+              if (NULL === $meta['class']) {
+                $meta['class']= array(DETAIL_COMMENT => $comment, DETAIL_ANNOTATIONS  => $annotations);
+              }
+              $meta['class'][DETAIL_GENERIC]= array($self->name, $arguments);
               $src.= $tokens[$i][1].' '.$name;
               array_unshift($state, $tokens[$i][0]);
             }
@@ -860,19 +861,23 @@
               array_unshift($state, 3);
               array_unshift($state, 2);
               $m= $tokens[$i+ 2][1];
-              $meta[1][$m]= array(
-                DETAIL_ARGUMENTS    => array(),
-                DETAIL_RETURNS      => 'void',
-                DETAIL_THROWS       => array(),
-                DETAIL_COMMENT      => $comment,
-                DETAIL_ANNOTATIONS  => $annotations,
-                DETAIL_NAME         => $m
-              );
-              foreach ($matches as $match) {
-                switch ($match[1]) {
-                  case 'param': $meta[1][$m][DETAIL_ARGUMENTS][]= $match[2]; break;
-                  case 'return': $meta[1][$m][DETAIL_RETURNS]= $match[2]; break;
-                  case 'throws': $meta[1][$m][DETAIL_THROWS][]= $match[2]; break;
+              if (isset($meta[1][$m])) {
+                $annotations= $meta[1][$m][DETAIL_ANNOTATIONS];
+              } else {
+                $meta[1][$m]= array(
+                  DETAIL_ARGUMENTS    => array(),
+                  DETAIL_RETURNS      => 'void',
+                  DETAIL_THROWS       => array(),
+                  DETAIL_COMMENT      => $comment,
+                  DETAIL_ANNOTATIONS  => $annotations,
+                  DETAIL_NAME         => $m
+                );
+                foreach ($matches as $match) {
+                  switch ($match[1]) {
+                    case 'param': $meta[1][$m][DETAIL_ARGUMENTS][]= $match[2]; break;
+                    case 'return': $meta[1][$m][DETAIL_RETURNS]= $match[2]; break;
+                    case 'throws': $meta[1][$m][DETAIL_THROWS][]= $match[2]; break;
+                  }
                 }
               }
             } else if (T_CLOSE_TAG === $tokens[$i][0]) {
