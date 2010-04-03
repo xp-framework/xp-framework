@@ -88,6 +88,18 @@
         DateMath::diff(TimeInterval::$DAY, new Date('2004-02-28 23:59:59'), new Date('2004-03-01 00:00:00'))
       );
     }
+
+    /**
+     * Check timezone independence
+     *
+     */
+    #[@test]
+    public function diffWithTimezoneOffsets() {
+      $this->assertEquals(
+        0,
+        DateMath::diff(TimeInterval::$DAY, new Date('2000-01-01 00:00:00+0000'), new Date('2000-01-01 00:00:00+0000'))
+      );
+    }
     
     /**
      * Check timezone independence

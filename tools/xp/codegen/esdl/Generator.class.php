@@ -43,6 +43,8 @@
       ESDL_PORT   = 6449;
       
     protected
+      $remote     = NULL,
+      $jndi       = NULL,
       $uri        = '',
       $processor  = NULL,
       $package    = NULL;

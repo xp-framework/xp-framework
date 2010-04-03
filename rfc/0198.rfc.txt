@@ -1,0 +1,56 @@
+RFC 0198: Joins with criteria
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: friebe
+@created: Mon Mar 22 09:07:17     2010
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+
+Rationale
+---------
+
+Functionality
+-------------
+
+SQL:
+<pre>
+  select
+    e.event_id as id,
+    e.title,
+    e.description,
+    l.name as location
+  from
+    event e,
+    location l
+  where l.location_id = e.location_id
+    and e.bz_id= 20000
+</pre>
+
+<code>
+  $c= create(new Criteria())
+    ->on(Event::getPeer())
+    ->join(Location::getPeer(), 'location_id')
+    ->add('bz_id', 20000, EQUAL)
+  ;
+</code>
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+
+Comments
+--------
+
+<EOF>

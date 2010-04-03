@@ -172,6 +172,34 @@
       unset($this->_info['url']);
       return $this;
     }    
+    
+    /**
+     * Private helper function to calculate query string
+     *
+     * @param string key The key of value
+     * @param mixed value The value
+     * @param string prefix The postfix to use for each variable (defaults to '')
+     * @return string
+     */
+    protected function _getQuery($key, $value, $postfix= '') {
+      $query= '';
+      if (is_array($value)) {
+        if (is_int(key($value))) {
+          foreach ($value as $i => $v) {
+            $query.= $this->_getQuery(NULL, $v, $postfix.$key.'[]');
+          }
+        } else {
+          foreach ($value as $k => $v) {
+            $query.= $this->_getQuery(NULL, $v, $postfix.$key.'['.$k.']');
+          }
+        }
+      } else if ('' === $value) {
+        $query.= '&'.urlencode($key).$postfix;
+      } else {
+        $query.= '&'.urlencode($key).$postfix.'='.urlencode($value);
+      }
+      return $query;
+    }
 
     /**
      * Retrieve query
@@ -183,21 +211,7 @@
       if (!$this->_info['params']) return $default;
       $query= '';
       foreach ($this->_info['params'] as $key => $value) {
-        if (is_array($value)) {
-          if (is_int(key($value))) {
-            foreach ($value as $v) {
-              $query.= '&'.urlencode($key).'[]='.urlencode($v);
-            }
-          } else {
-            foreach ($value as $k => $v) {
-              $query.= '&'.urlencode($key).'['.urlencode($k).']='.urlencode($v);
-            }
-          }
-        } else if ('' === $value) {
-          $query.= '&'.urlencode($key);
-        } else {
-          $query.= '&'.urlencode($key).'='.urlencode($value);
-        }
+        $query.= $this->_getQuery($key, $value);
       }
       return substr($query, 1);
     }

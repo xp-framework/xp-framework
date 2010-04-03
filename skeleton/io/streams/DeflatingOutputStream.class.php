@@ -29,6 +29,8 @@
       }
       $this->out= Streams::writeableFd($out);
       if (!stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE, $level)) {
+        fclose($this->out);
+        $this->out= NULL;
         throw new IOException('Could not append stream filter');
       }
     }

@@ -19,6 +19,8 @@
    */
   abstract class AbstractInstruction extends Object {
     protected
+      $out        = NULL,
+      $err        = NULL,
       $options    = 0,
       $archive    = NULL,
       $args       = array();

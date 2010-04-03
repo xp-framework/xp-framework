@@ -48,7 +48,7 @@
      *
      * @param   string expected
      * @param   string actual
-     * @throws  unittest.AssertionFailedErrot
+     * @throws  unittest.AssertionFailedError
      */
     protected function assertCompressedDataEquals($expected, $actual) {
       $this->assertEquals(new Bytes($expected), new Bytes($actual));

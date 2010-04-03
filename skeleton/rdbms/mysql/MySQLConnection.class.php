@@ -75,6 +75,8 @@
         throw new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
       }
 
+      mysql_query('set names LATIN1', $this->handle);
+
       // Figure out sql_mode and update formatter's escaperules accordingly
       // - See: http://bugs.mysql.com/bug.php?id=10214
       // - Possible values: http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html

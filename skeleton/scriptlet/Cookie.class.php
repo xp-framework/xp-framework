@@ -18,11 +18,13 @@
    *
    * @see      http://jakarta.apache.org/tomcat/tomcat-5.0-doc/servletapi/javax/servlet/http/Cookie.html
    * @see      http://home.netscape.com/newsref/std/cookie_spec.html
+   * @see      http://www.owasp.org/index.php/HTTPOnly 
    * @see      rfc://2109
    * @see      php://setcookie
    * @see      xp://scriptlet.HttpScriptletResponse#setCookie
    * @see      xp://scriptlet.HttpScriptletRequest#getCookie
    * @see      xp://scriptlet.HttpScriptletRequest#getCookies
+   * @test     xp://net.xp_framework.unittest.scriptlet.CookieTest
    * @purpose  Cookie header
    */
   class Cookie extends Object {
@@ -30,6 +32,7 @@
       $name         = '',
       $value        = '',
       $secure       = FALSE,
+      $httpOnly     = FALSE,
       $domain       = '',
       $path         = '',
       $expires      = 0;
@@ -43,19 +46,25 @@
      * @param   string path default ''
      * @param   string domain default ''
      * @param   bool secure default FALSE
+     * @param   bool httpOnly default FALSE
      */
-    public function __construct($name, $value= '', $expires= 0, $path= '', $domain= '', $secure= FALSE) {
-      
+    public function __construct(
+      $name, 
+      $value= '', 
+      $expires= 0, 
+      $path= '', 
+      $domain= '', 
+      $secure= FALSE,
+      $httpOnly= FALSE
+    ) {
       $this->name= $name;
       $this->value= $value;
       $this->expires= $expires;
-      $this->expires= (is('util.Date', $expires)
-        ? $expires->getTime()
-        : $expires
-      );
+      $this->expires= is('util.Date', $expires) ? $expires->getTime() : $expires;
       $this->path= $path;
       $this->domain= $domain;
       $this->secure= $secure;
+      $this->httpOnly= $httpOnly;
     }
 
     /**
@@ -65,6 +74,17 @@
      */
     public function setName($name) {
       $this->name= $name;
+    }
+
+    /**
+     * Set Name
+     *
+     * @param   string name
+     * @return  scriptlet.Cookie this
+     */
+    public function withName($name) {
+      $this->name= $name;
+      return $this;
     }
 
     /**
@@ -86,6 +106,17 @@
     }
 
     /**
+     * Set Value
+     *
+     * @param   string value
+     * @return  scriptlet.Cookie this
+     */
+    public function withValue($value) {
+      $this->value= $value;
+      return $this;
+    }
+
+    /**
      * Get Value
      *
      * @return  string
@@ -95,12 +126,25 @@
     }
 
     /**
-     * Set Secure
+     * Set Secure. Indicates that the cookie should only be transmitted 
+     * over a secure HTTPS connection from the client. 
      *
      * @param   bool secure
      */
     public function setSecure($secure) {
       $this->secure= $secure;
+    }
+
+    /**
+     * Set Secure. Indicates that the cookie should only be transmitted 
+     * over a secure HTTPS connection from the client. 
+     *
+     * @param   bool secure
+     * @return  scriptlet.Cookie this
+     */
+    public function withSecure($secure) {
+      $this->secure= $secure;
+      return $this;
     }
 
     /**
@@ -115,12 +159,56 @@
     }
 
     /**
+     * Set HttpOnly. When TRUE the cookie will be made accessible only 
+     * through the HTTP protocol, not by JavaScript.
+     *
+     * @param   bool httpOnly
+     */
+    public function setHttpOnly($httpOnly) {
+      $this->httpOnly= $httpOnly;
+    }
+
+    /**
+     * Set HttpOnly. When TRUE the cookie will be made accessible only 
+     * through the HTTP protocol, not by JavaScript.
+     *
+     * @param   bool httpOnly
+     * @return  scriptlet.Cookie this
+     */
+    public function withHttpOnly($httpOnly) {
+      $this->httpOnly= $httpOnly;
+      return $this;
+    }
+
+    /**
+     * Get HttpOnly. Note: This value is not available for cookies retrieved
+     * from HttpScriptletRequest, as the browser does not submit this in
+     * subsequent requests.
+     *
+     * @return  bool
+     */
+    public function getHttpOnly() {
+      return $this->HttpOnly;
+    }
+
+    /**
      * Set Domain
      *
      * @param   string domain
      */
     public function setDomain($domain) {
       $this->domain= $domain;
+    }
+
+    /**
+     * Set Domain
+     *
+     * @param   string domain
+     * @return  scriptlet.Cookie this
+     */
+    public function withDomain($domain) {
+      $this->domain= $domain;
+      return $this;
     }
 
     /**
@@ -144,6 +232,17 @@
     }
 
     /**
+     * Set Path
+     *
+     * @param   string path
+     * @return  scriptlet.Cookie this
+     */
+    public function withPath($path) {
+      $this->path= $path;
+      return $this;
+    }
+
+    /**
      * Get Path. Note: This value is not available for cookies retrieved
      * from HttpScriptletRequest, as the browser does not submit this in
      * subsequent requests.
@@ -160,10 +259,18 @@
      * @param   int expires
      */
     public function setExpires($expires) {
-      $this->expires= (is('util.Date', $expires)
-        ? $expires->getTime()
-        : $expires
-      );
+      $this->expires= is('util.Date', $expires) ? $expires->getTime() : $expires;
+    }
+
+    /**
+     * Set Expires
+     *
+     * @param   int expires
+     * @return  scriptlet.Cookie this
+     */
+    public function withExpires($expires) {
+      $this->expires= is('util.Date', $expires) ? $expires->getTime() : $expires;
+      return $this;
     }
 
     /**
@@ -189,7 +296,8 @@
         ($this->expires !== 0 ? '; expires='.gmdate('D, d-M-Y H:i:s \G\M\T', $this->expires) : '').
         ($this->path !== '' ? '; path='.$this->path : '').
         ($this->domain !== '' ? '; domain='.$this->domain : '').
-        ($this->secure ? '; secure' : '')
+        ($this->secure ? '; secure' : '').
+        ($this->httpOnly ? '; HTTPOnly' : '')
       );
     }
     
@@ -200,13 +308,12 @@
      */
     public function toString() {
       return sprintf(
-        "%s@{\n".
-        "  [name    ] %s\n".
-        "  [value   ] %s\n".
+        "%s<%s=%s>@{\n".
         "  [domain  ] %s\n".
         "  [path    ] %s\n".
         "  [expires ] %s\n".
         "  [secure  ] %s\n".
+        "  [HTTPOnly] %s\n".
         "}",
         $this->getClassName(),
         $this->name,
@@ -214,7 +321,8 @@
         $this->domain,
         $this->path,
         date('r', $this->expires),
-        $this->secure ? 'TRUE' : 'FALSE'
+        $this->secure ? 'TRUE' : 'FALSE',
+        $this->httpOnly ? 'TRUE' : 'FALSE'
       );
     }
   }

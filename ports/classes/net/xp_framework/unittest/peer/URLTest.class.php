@@ -938,5 +938,33 @@
         $u->getQuery()
       );
     }
+    
+    /**
+     * Test getQuery() method handles two-dimensional associative arrays in
+     * url parameters correctly.
+     *
+     */
+    #[@test]
+    public function associativeArrayTwoDimensionalQueryCalculation() {
+      $u= new URL('http://example.com/ajax?load=getXML&data%5Bproject%5D%5BName%5D=project&data%5Bproject%5D%5BID%5D=1337&data%5BlangCode%5D=en');
+      $this->assertEquals(
+        'load=getXML&data[project][Name]=project&data[project][ID]=1337&data[langCode]=en',
+        $u->getQuery()
+      );
+    }
+    
+    /**
+     * Test getQuery() method handles more-dimensional associative arrays in
+     * url parameters correctly.
+     *
+     */
+    #[@test]
+    public function associativeArrayMoreDimensionalQueryCalculation() {
+      $u= new URL('http://example.com/ajax?load=getXML&data%5Bproject%5D%5BName%5D%5BValue%5D=project&data%5Bproject%5D%5BID%5D%5BValue%5D=1337&data%5BlangCode%5D=en');
+      $this->assertEquals(
+        'load=getXML&data[project][Name][Value]=project&data[project][ID][Value]=1337&data[langCode]=en',
+        $u->getQuery()
+      );
+    }
   }
 ?>

@@ -59,6 +59,16 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed format string BIT_AND operator to only use one placeholder
+  (ohinckel)
+
+
+Version 5.7.8, released 2010-03-24
+----------------------------------
+SVN version: 14410
+
 Heads up!
 ~~~~~~~~~
 - Changed xpcli runner to display exceptions raised in run() block of  
@@ -102,6 +112,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Implemented HTTPOnly support in scriptlet.Cookie
+  (friebe)
 - Made unittest.TestCase::assertInstanceOf() accept lang.Type instances
   as first parameter as well as strings with type names
   (friebe)

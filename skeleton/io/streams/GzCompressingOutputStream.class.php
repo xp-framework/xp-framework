@@ -46,6 +46,8 @@
       // Now, convert stream to file handle and append deflating filter
       $this->out= Streams::writeableFd($out);
       if (!($this->filter= stream_filter_append($this->out, 'zlib.deflate', STREAM_FILTER_WRITE, $level))) {
+        fclose($this->out);
+        $this->out= NULL;
         throw new IOException('Could not append stream filter');
       }
       $this->md= CRC32::digest();

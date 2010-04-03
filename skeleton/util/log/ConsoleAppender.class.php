@@ -11,7 +11,7 @@
    *
    * Note: STDERR will not be defined in a web server's environment,
    * so using this class will have no effect - have a look at the
-   * SysAppender or FileAppender classes instead.
+   * SyslogAppender or FileAppender classes instead.
    *
    * @see      xp://util.log.Appender
    * @purpose  Appender

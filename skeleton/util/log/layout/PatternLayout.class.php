@@ -23,7 +23,7 @@
    *   <li>%p - Process ID</li>
    *   <li>%% - A literal percent sign (%)</li>
    *   <li>%n - A line break</li>
-   * </li>
+   * </ul>
    *
    * @test    xp://net.xp_framework.unittest.logging.PatternLayoutTest
    */
