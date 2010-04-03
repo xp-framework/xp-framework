@@ -880,6 +880,9 @@
                   }
                 }
               }
+            } else if ('}' === $tokens[$i][0]) {
+              $src.= '}';
+              break;
             } else if (T_CLOSE_TAG === $tokens[$i][0]) {
               break;
             }
