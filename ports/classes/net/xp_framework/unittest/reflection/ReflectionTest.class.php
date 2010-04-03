@@ -142,7 +142,7 @@
     }
 
     /**
-     * Tests constructor incovation
+     * Tests constructor invocation
      *
      * @see     xp://lang.reflect.Constructor#newInstance
      */
@@ -154,7 +154,7 @@
     }
 
     /**
-     * Tests abstract constructor incovation throws an exception
+     * Tests abstract constructor invocation throws an exception
      *
      * @see     xp://lang.reflect.Constructor#newInstance
      */
@@ -182,7 +182,7 @@
     }
 
     /**
-     * Tests abstract constructor incovation throws an exception
+     * Tests abstract constructor invocation throws an exception
      *
      * @see     xp://lang.reflect.Constructor#newInstance
      */
