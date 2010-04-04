@@ -69,17 +69,19 @@
         ));
       }
       if (!($m & MODIFIER_PUBLIC)) {
-        $t= debug_backtrace();
-        if ($t[1]['class'] !== $this->_class) {
-          $scope= new ReflectionClass($t[1]['class']);
-          if (!$scope->isSubclassOf($this->_class)) {
-            throw new IllegalAccessException(sprintf(
-              'Cannot invoke %s %s::%s from scope %s',
-              Modifiers::stringOf($this->getModifiers()),
-              $this->_class,
-              $this->_reflect->getName(),
-              $t[1]['class']
-            ));
+        if (!$this->accessible) {
+          $t= debug_backtrace();
+          if ($t[1]['class'] !== $this->_class) {
+            $scope= new ReflectionClass($t[1]['class']);
+            if (!$scope->isSubclassOf($this->_class)) {
+              throw new IllegalAccessException(sprintf(
+                'Cannot invoke %s %s::%s from scope %s',
+                Modifiers::stringOf($this->getModifiers()),
+                $this->_class,
+                $this->_reflect->getName(),
+                $t[1]['class']
+              ));
+            }
           }
         }
         

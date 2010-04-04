@@ -13,10 +13,11 @@
    */
   class Field extends Object {
     protected
-      $_class   = NULL;
+      $accessible = FALSE,
+      $_class     = NULL;
 
     public
-      $_reflect = NULL;
+      $_reflect   = NULL;
 
     /**
      * Constructor
@@ -134,14 +135,16 @@
     
       // Verify the field is public
       if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
-        $t= debug_backtrace();
-        if ($t[1]['class'] !== $this->_class) {
-          $scope= new ReflectionClass($t[1]['class']);
-          if (!$scope->isSubclassOf($this->_class)) {        
-            throw new IllegalAccessException('Cannot read '.$this->toString());
+        if (!$this->accessible) {
+          $t= debug_backtrace();
+          if ($t[1]['class'] !== $this->_class) {
+            $scope= new ReflectionClass($t[1]['class']);
+            if (!$scope->isSubclassOf($this->_class)) {        
+              throw new IllegalAccessException('Cannot read '.$this->toString());
+            }
           }
         }
-        
+
         if ($this->_reflect->isStatic()) {
           return call_user_func(array($this->_class, '__getStatic'), "\7".$this->_reflect->getName());
         } else {
@@ -178,14 +181,23 @@
      * @throws  lang.IllegalAccessException in case this field is not public
      */
     public function set($instance, $value) {
+      if (NULL !== $instance && !($instance instanceof $this->_class)) {
+        throw new IllegalArgumentException(sprintf(
+          'Passed argument is not a %s class (%s)',
+          xp::nameOf($this->_class),
+          xp::typeOf($instance)
+        ));
+      }
     
       // Verify the field is public
       if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
-        $t= debug_backtrace();
-        if ($t[1]['class'] !== $this->_class) {
-          $scope= new ReflectionClass($t[1]['class']);
-          if (!$scope->isSubclassOf($this->_class)) {        
-            throw new IllegalAccessException('Cannot write '.$this->toString());
+        if (!$this->accessible) {
+          $t= debug_backtrace();
+          if ($t[1]['class'] !== $this->_class) {
+            $scope= new ReflectionClass($t[1]['class']);
+            if (!$scope->isSubclassOf($this->_class)) {        
+              throw new IllegalAccessException('Cannot write '.$this->toString());
+            }
           }
         }
 
@@ -197,23 +209,11 @@
         return;
       }
 
-      // Short-circuit further checks for static members
       if ($this->_reflect->isStatic()) {
         return $this->_reflect->setValue(NULL, $value);
+      } else {
+        $this->_reflect->setValue($instance, $value);
       }
-
-      // Verify given instance is instance of the class declaring this 
-      // property
-      if (!($instance instanceof $this->_class)) {
-        throw new IllegalArgumentException(sprintf(
-          'Passed argument is not a %s class (%s)',
-          xp::nameOf($this->_class),
-          xp::typeOf($instance)
-        ));
-      }
-
-
-      $this->_reflect->setValue($instance, $value);
     }
 
     /**
@@ -224,6 +224,18 @@
      */    
     public function getModifiers() {
       return $this->_reflect->getModifiers();
+    }
+
+    /**
+     * Sets whether this routine should be accessible from anywhere, 
+     * regardless of its visibility level.
+     *
+     * @param   bool flag
+     * @return  lang.reflect.Routine this
+     */
+    public function setAccessible($flag) {
+      $this->accessible= $flag;
+      return $this;
     }
 
     /**

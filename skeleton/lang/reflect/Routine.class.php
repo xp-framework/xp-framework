@@ -22,10 +22,11 @@
    */
   class Routine extends Object {
     protected
-      $_class   = NULL;
+      $accessible = FALSE,
+      $_class     = NULL;
 
     public 
-      $_reflect = NULL;
+      $_reflect   = NULL;
 
     /**
      * Constructor
@@ -231,6 +232,18 @@
     public function getAnnotations() {
       $details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName());
       return $details ? $details[DETAIL_ANNOTATIONS] : array();
+    }
+    
+    /**
+     * Sets whether this routine should be accessible from anywhere, 
+     * regardless of its visibility level.
+     *
+     * @param   bool flag
+     * @return  lang.reflect.Routine this
+     */
+    public function setAccessible($flag) {
+      $this->accessible= $flag;
+      return $this;
     }
     
     /**

@@ -47,16 +47,18 @@
       // does not).
       $m= $this->_reflect->getModifiers();
       if (!($m & MODIFIER_PUBLIC)) {
-        $t= debug_backtrace();
-        if ($t[1]['class'] !== $this->_class) {
-          $scope= new ReflectionClass($t[1]['class']);
-          if (!$scope->isSubclassOf($this->_class)) {
-            throw new IllegalAccessException(sprintf(
-              'Cannot invoke %s constructor of class %s from scope %s',
-              Modifiers::stringOf($this->getModifiers()),
-              $this->_class,
-              $t[1]['class']
-            ));
+        if (!$this->accessible) {
+          $t= debug_backtrace();
+          if ($t[1]['class'] !== $this->_class) {
+            $scope= new ReflectionClass($t[1]['class']);
+            if (!$scope->isSubclassOf($this->_class)) {
+              throw new IllegalAccessException(sprintf(
+                'Cannot invoke %s constructor of class %s from scope %s',
+                Modifiers::stringOf($this->getModifiers()),
+                $this->_class,
+                $t[1]['class']
+              ));
+            }
           }
         }
         
