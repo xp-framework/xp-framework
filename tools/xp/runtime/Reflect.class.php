@@ -112,7 +112,7 @@
       self::printName($iface);
 
       // Interfaces are this interface's parents
-      if ($interfaces= $iface->getInterfaces()) {
+      if ($interfaces= $iface->getDeclaredInterfaces()) {
         Console::write(' extends ');
         $s= sizeof($interfaces)- 1;
         foreach ($interfaces as $i => $parent) {
