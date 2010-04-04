@@ -82,6 +82,7 @@
         $this->{substr($name, 1)}= $value;
         return;
       }
+      $this->{$name}= $value;
     }
     
     /**
