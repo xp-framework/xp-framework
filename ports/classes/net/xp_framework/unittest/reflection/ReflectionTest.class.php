@@ -310,7 +310,7 @@
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function nonExistantforName() {
-      $class= XPClass::forName('class.does.not.Exist');
+      XPClass::forName('class.does.not.Exist');
     }
 
     /**
@@ -320,11 +320,7 @@
      */
     #[@test]
     public function getClasses() {
-      $classes= XPClass::getClasses();
-      $this->assertArray($classes);
-      foreach ($classes as $class) {
-        $this->assertClass($class, 'lang.XPClass');
-      }
+      $this->assertInstanceOf('lang.XPClass[]', XPClass::getClasses());
     }
     
     /**
