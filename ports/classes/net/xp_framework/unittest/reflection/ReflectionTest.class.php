@@ -149,6 +149,19 @@
     }
 
     /**
+     * Tests declared interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function ilistInterfaceDeclaredInterfaces() {
+      $this->assertEquals(
+        array(new XPClass('ArrayAccess'), new XPClass('IteratorAggregate')), 
+        XPClass::forName('util.collections.IList')->getDeclaredInterfaces()
+      );
+    }
+
+    /**
      * Tests this class has a constructor
      *
      * @see     xp://lang.XPClass#hasConstructor
