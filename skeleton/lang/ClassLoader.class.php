@@ -148,14 +148,14 @@
 
         // Test for existance        
         if (!class_exists($super)) {
-          throw new ClassNotFoundException('Parent class "'.$parent.'" does not exist.', self::getLoaders());
+          throw new ClassLinkageException($parent, self::getLoaders());
         }
         
         if (!empty($interfaces)) {
           $if= array_map(array('xp', 'reflect'), $interfaces);
           foreach ($if as $implemented) {
             if (interface_exists($implemented)) continue;
-            throw new ClassNotFoundException('Implemented interface "'.$implemented.'" does not exist.', self::getLoaders());
+            throw new ClassLinkageException($implemented, self::getLoaders());
           }
         }
 
@@ -192,7 +192,7 @@
           $if= array_map(array('xp', 'reflect'), (array)$parents);
           foreach ($if as $super) {
             if (interface_exists($super)) continue;
-            throw new ClassNotFoundException('Superinterface "'.$super.'" does not exist.', self::getLoaders());
+            throw new ClassLinkageException($super, self::getLoaders());
           }
         }
 
@@ -226,7 +226,7 @@
       foreach (self::$delegates as $delegate) {
         if ($delegate->providesClass($class)) return $delegate->loadClass0($class);
       }
-      throw new ClassNotFoundException('No classloader provides class "'.$class.'"', self::getLoaders());
+      throw new ClassNotFoundException($class, self::getLoaders());
     }
 
     /**

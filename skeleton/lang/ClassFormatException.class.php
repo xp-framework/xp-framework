@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('lang.ClassLoadingException');
+
   /**
    * Indicates a class format error - for example:
    * <ul>
@@ -14,7 +16,7 @@
    * @see      xp://lang.ClassLoader#loadClass
    * @purpose  Exception
    */
-  class ClassFormatException extends XPException {
+  class ClassFormatException extends XPException implements ClassLoadingException {
     
   }
 ?>

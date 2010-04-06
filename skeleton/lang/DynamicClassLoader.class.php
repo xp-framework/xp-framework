@@ -98,18 +98,41 @@
       if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
 
       if (!isset(self::$bytes[$class])) {
-        throw new ClassNotFoundException('Unknown class "'.$class.'"', array($this));
+        throw new ClassNotFoundException($class, array($this));
       }
       
       // Load class
       $package= NULL;
       xp::$registry['classloader.'.$class]= 'lang.DynamicClassLoader://'.$this->context;
       xp::$registry['cl.level']++;
-      $r= include('dyn://'.$class);
+      try {
+        $r= include('dyn://'.$class);
+      } catch (ClassLoadingException $e) {
+        xp::$registry['cl.level']--;
+
+        // Determine PHP's name of the class
+        $decl= (NULL === $package
+          ? substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1))
+          : strtr($class, '.', '·')
+        );
+
+        // If class was declared, but loading threw an exception it means
+        // a "soft" dependency, one that is only required at runtime, was
+        // not loaded, the class itself has been declared.
+        if (class_exists($decl, FALSE) || interface_exists($decl, FALSE)) {
+          raise('lang.ClassDependencyException', $class, array($this), $e);
+        }
+
+        // If otherwise, a "hard" dependency could not be loaded, eg. the
+        // base class or a required interface and thus the class could not
+        // be declared.
+        raise('lang.ClassLinkageException', $class, array($this), $e);
+      }
+
       xp::$registry['cl.level']--;
       if (FALSE === $r) {
         unset(xp::$registry['classloader.'.$class]);
-        throw new ClassNotFoundException('Class "'.$class.'" not found');
+        throw new ClassNotFoundException($class, array($this));
       }
 
       // Register it
