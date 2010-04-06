@@ -218,7 +218,26 @@
     public function loadClassFileWithIncorrectDeclaration() {
       XPClass::forName('net.xp_framework.unittest.reflection.classes.broken.FalseClass');
     }
-    
+
+    /**
+     * Loads a class file that loads a file that is broken
+     *
+     */
+    #[@test, @expect('lang.ClassDependencyException')]
+    public function loadClassWithBrokenDependency() {
+      XPClass::forName('net.xp_framework.unittest.reflection.classes.broken.BrokenDependencyClass');
+    }
+
+    /**
+     * Loads a class file whose class extends a class that cannot be
+     * loaded and the class cannot be declared.
+     *
+     */
+    #[@test, @expect('lang.ClassLinkageException')]
+    public function loadClassWithMissingDefinition() {
+      XPClass::forName('net.xp_framework.unittest.reflection.classes.broken.MissingDefinitionClass');
+    }
+
     /**
      * Test
      *

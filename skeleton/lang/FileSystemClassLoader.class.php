@@ -113,11 +113,32 @@
       $package= NULL;
       xp::$registry['classloader.'.$class]= 'lang.FileSystemClassLoader://'.$this->path;
       xp::$registry['cl.level']++;
-      $r= include($this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT);
+      try {
+        $r= include($this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT);
+      } catch (ClassLoadingException $e) {
+        xp::$registry['cl.level']--;
+
+        $decl= (NULL === $package
+          ? substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1))
+          : strtr($class, '.', '·')
+        );
+
+        // If class was declared, but loading threw an exception it means
+        // a "soft" dependency, one that is only required at runtime, was
+        // not loaded, the class itself has been declared.
+        if (class_exists($decl, FALSE) || interface_exists($decl, FALSE)) {
+          raise('lang.ClassDependencyException', $class, array($this), $e);
+        }
+
+        // If otherwise, a "hard" dependency could not be loaded, eg. the
+        // base class or a required interface and thus the class could not
+        // be declared.
+        raise('lang.ClassLinkageException', $class, array($this), $e);
+      }
       xp::$registry['cl.level']--;
       if (FALSE === $r) {
         unset(xp::$registry['classloader.'.$class]);
-        throw new ClassNotFoundException('Class "'.$class.'" not found', array($this));
+        throw new ClassNotFoundException($class, array($this));
       }
       
       // Register it
