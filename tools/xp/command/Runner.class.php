@@ -246,8 +246,8 @@
       
       // Check whether class is runnable
       if (!$class->isSubclassOf('lang.Runnable')) {
-          self::$err->writeLine('*** ', $class->getName(), ' is not runnable');
-          return 1;
+        self::$err->writeLine('*** ', $class->getName(), ' is not runnable');
+        return 1;
       }
 
       // Usage
