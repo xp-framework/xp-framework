@@ -21,7 +21,7 @@
      * @return  string
      */
     protected function message() {
-      return 'Exception %s (Class "%s" could not be found)';
+      return 'Class "%s" could not be found';
     }
 
   }

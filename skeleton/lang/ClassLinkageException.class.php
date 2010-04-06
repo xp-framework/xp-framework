@@ -21,7 +21,7 @@
      * @return  string
      */
     protected function message() {
-      return 'Exception %s (Class definition for "%s" is not complete)';
+      return 'Class definition for "%s" is not complete';
     }
   }
 ?>

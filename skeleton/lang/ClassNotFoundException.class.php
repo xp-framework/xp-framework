@@ -18,16 +18,19 @@
    */
   class ClassNotFoundException extends ChainedException implements ClassLoadingException {
     protected
-      $loaders= array();
+      $failedClass  = NULL,
+      $loaders      = array();
 
     /**
      * Constructor
      *
-     * @param  string message
-     * @param  lang.IClassLoader[] loaders default array()
+     * @param   string failedClass
+     * @param   lang.IClassLoader[] loaders default array()
+     * @param   lang.Throwable cause default NULL
      */
-    public function __construct($message, $loaders= array(), $cause= NULL) {
-      parent::__construct($message, $cause);
+    public function __construct($failedClass, $loaders= array(), $cause= NULL) {
+      parent::__construct(sprintf($this->message(), $failedClass), $cause);
+      $this->failedClass= $failedClass;
       $this->loaders= $loaders;
     }
     
@@ -47,7 +50,16 @@
      * @return  string
      */
     protected function message() {
-      return 'Exception %s (Class "%s" could not be found)';
+      return 'Class "%s" could not be found';
+    }
+
+    /**
+     * Retrieve name of class which could not be loaded
+     *
+     * @return  string
+     */
+    public function getFailedClassName() {
+      return $this->failedClass;
     }
 
     /**
@@ -57,10 +69,7 @@
      */
     public function compoundMessage() {
       return
-        sprintf($this->message()." {\n  ",
-          $this->getClassName(),
-          $this->getMessage()
-        ).
+        'Exception '.$this->getClassName().' ('.$this->message.") {\n  ".
         implode("\n    ", array_map(array('xp', 'stringOf'), $this->loaders))."\n  }"
       ;
     }

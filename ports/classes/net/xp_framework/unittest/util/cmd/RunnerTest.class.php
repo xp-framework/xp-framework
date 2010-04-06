@@ -92,7 +92,7 @@
     public function nonExistantClass() {
       $return= $this->runWith(array('@@NON-EXISTANT@@'));
       $this->assertEquals(1, $return);
-      $this->assertOnStream($this->err, '*** No classloader provides class');
+      $this->assertOnStream($this->err, '*** Class "@@NON-EXISTANT@@" could not be found');
       $this->assertEquals('', $this->out->getBytes());
     }
 
