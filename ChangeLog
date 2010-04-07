@@ -20,6 +20,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support to peer.Socket::canRead() to block forever when NULL
+  is passed as value for the timeout parameter.
+  (friebe)
 - Changed unittest.web.WebTestCase to load HTML from a stream instead
   of buffering it all into memory first
   (friebe)

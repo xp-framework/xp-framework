@@ -253,8 +253,13 @@
      * @see     php://socket_select
      */
     protected function _select($r, $w, $e, $timeout) {
-      $tv_sec= (int)floor($timeout);
-      $tv_usec= (int)(($timeout- $tv_sec) * 1000000);
+      if (NULL === $timeout) {
+        $tv_sec= $tv_usec= NULL;
+      } else {
+        $tv_sec= (int)floor($timeout);
+        $tv_usec= (int)(($timeout- $tv_sec) * 1000000);
+      }
+
       if (FALSE === ($n= socket_select($r, $w, $e, $tv_sec, $tv_usec))) {
         throw new SocketException('Select failed: '.$this->getLastError());
       }
