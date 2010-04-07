@@ -18,6 +18,12 @@ Bugfixes
 - Fixed format string BIT_AND operator to only use one placeholder
   (ohinckel)
 
+Features
+~~~~~~~~
+- Changed unittest.web.WebTestCase to load HTML from a stream instead
+  of buffering it all into memory first
+  (friebe)
+  
 
 Version 5.7.8, released 2010-03-24
 ----------------------------------
