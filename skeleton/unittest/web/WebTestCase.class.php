@@ -10,6 +10,7 @@
     'peer.http.HttpConnection',
     'peer.http.HttpConstants',
     'text.regex.Pattern',
+    'io.streams.Streams',
     'xml.XPath'
   );
 
@@ -69,12 +70,8 @@
      */
     public function getDom() {
       if (NULL === $this->dom) {
-        $contents= '';
-        while ($chunk= $this->response->readData()) {
-          $contents.= $chunk;
-        }
         $this->dom= new DOMDocument();
-        @$this->dom->loadHTML($contents);
+        @$this->dom->loadHTMLFile(Streams::readableUri($this->response->getInputStream()));
       }
       return $this->dom;
     }

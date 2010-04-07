@@ -62,9 +62,22 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed common stack trace element calculation in lang.ChainedException
+  if chained exception is a chained exception itself.
+  (friebe)
+- Fixed peer.ftp.FtpConnection to be able to cope with FTP servers
+  sending an empty directory listing (without "." and "..") for 
+  nonexistant directories
+  (friebe)
 - Fixed format string BIT_AND operator to only use one placeholder
   (ohinckel)
 
+Features
+~~~~~~~~
+- Changed unittest.web.WebTestCase to load HTML from a stream instead
+  of buffering it all into memory first
+  (friebe)
+  
 
 Version 5.7.8, released 2010-03-24
 ----------------------------------

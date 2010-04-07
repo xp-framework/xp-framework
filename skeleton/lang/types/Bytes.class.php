@@ -47,7 +47,7 @@
       } else if (is_string($initial)) {
         $this->buffer= $initial;
       } else {
-        throw new IllegalArgumentException('Expected either Byte[], char[], int[] or string');
+        throw new IllegalArgumentException('Expected either Byte[], char[], int[] or string but was '.xp::typeOf($initial));
       }
       $this->size= strlen($this->buffer);
     }

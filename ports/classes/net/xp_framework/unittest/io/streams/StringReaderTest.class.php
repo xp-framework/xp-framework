@@ -39,8 +39,23 @@
      */
     #[@test]
     public function readLineWithEmptyLine() {
-      $stream= new StringReader(new MemoryInputStream(''));
+      $stream= new StringReader(new MemoryInputStream("\n"));
 
+      $this->assertEquals('', $stream->readLine());
+    }
+
+    /**
+     * Test readLine() with empty string
+     *
+     */
+    #[@test]
+    public function readLineWithEmptyLines() {
+      $stream= new StringReader(new MemoryInputStream("\n\n\nHello\n\n"));
+
+      $this->assertEquals('', $stream->readLine());
+      $this->assertEquals('', $stream->readLine());
+      $this->assertEquals('', $stream->readLine());
+      $this->assertEquals('Hello', $stream->readLine());
       $this->assertEquals('', $stream->readLine());
     }
     
@@ -65,6 +80,66 @@
       $stream= new StringReader(new MemoryInputStream($line= 'Line containing 0 characters'));
       
       $this->assertEquals($line, $stream->readLine());
+    }
+
+    /**
+     * Test read()
+     *
+     */
+    #[@test]
+    public function read() {
+      $stream= new StringReader(new MemoryInputStream($line= 'Hello World'));
+      
+      $this->assertEquals('Hello', $stream->read(5));
+      $this->assertEquals(' ', $stream->read(1));
+      $this->assertEquals('World', $stream->read(5));
+    }
+
+    /**
+     * Test read()
+     *
+     */
+    #[@test]
+    public function readAll() {
+      $stream= new StringReader(new MemoryInputStream($line= 'Hello World'));
+      
+      $this->assertEquals('Hello World', $stream->read());
+    }
+
+    /**
+     * Test read()
+     *
+     */
+    #[@test]
+    public function readAfterReadingAll() {
+      $stream= new StringReader(new MemoryInputStream($line= 'Hello World'));
+      
+      $this->assertEquals('Hello World', $stream->read());
+      $this->assertEquals(NULL, $stream->read());
+    }
+
+    /**
+     * Test readLine()
+     *
+     */
+    #[@test]
+    public function readLineAfterReadingAllLines() {
+      $stream= new StringReader(new MemoryInputStream($line= 'Hello World'."\n"));
+      
+      $this->assertEquals('Hello World', $stream->readLine());
+      $this->assertEquals(NULL, $stream->readLine());
+    }
+
+    /**
+     * Test readLine()
+     *
+     */
+    #[@test]
+    public function readAfterReadingAllLines() {
+      $stream= new StringReader(new MemoryInputStream($line= 'Hello World'."\n"));
+      
+      $this->assertEquals('Hello World', $stream->readLine());
+      $this->assertEquals(NULL, $stream->read());
     }
   }
 ?>
