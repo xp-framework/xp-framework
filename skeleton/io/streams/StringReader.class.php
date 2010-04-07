@@ -54,41 +54,51 @@
     public function toString() {
       return $this->getClassName()."@{\n  ".$this->in->toString()."\n}";
     }
+    
+    /**
+     * Read
+     *
+     * @param   int size
+     * @return  string
+     */
+    protected function read0($size) {
+      while (strlen($this->buf) < $size && $this->in->available() > 0) {
+        if (NULL === ($read= $this->in->read($size))) break;
+        $this->buf.= $read;
+      }
+      if (FALSE === ($chunk= substr($this->buf, 0, $size))) return NULL;
+      $this->buf= substr($this->buf, $size);
+      return $chunk;
+    }
 
     /**
-     * Read a number of bytes
+     * Read a number of bytes. Returns NULL if no more data is available.
      *
      * @param   int size default 8192
      * @return  string
      */
     public function read($size= 8192) {
-      while (strlen($this->buf) < $size && $this->in->available()) {
-        if (NULL === ($read= $this->in->read(512))) break;
-        $this->buf.= $read;
-      }
-      $chunk= substr($this->buf, 0, $size);
-      $this->buf= substr($this->buf, $size);
-      return $chunk;
+      return $this->read0($size);
     }
     
     /**
-     * Read an entire line
+     * Read an entire line. Returns NULL if no more lines are available.
      *
      * @return  string
      */
     public function readLine() {
+      if (NULL === ($c= $this->read0(1))) return NULL;
       $line= '';
       do {
-        $c= $this->read(1);
         if ("\r" === $c) {
-          $n= $this->read(1);
+          $n= $this->read0(1);
           if ("\n" !== $n) $this->buf= $n.$this->buf;
           return $line;
         } else if ("\n" === $c) {
           return $line;
         }
         $line.= $c;
-      } while ($c !== FALSE);
+      } while (NULL !== ($c= $this->read0(1)));
       return $line;
     }
   }
