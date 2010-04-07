@@ -499,7 +499,7 @@
     }
 
     /**
-     * Test getInputStream() class
+     * Test getInputStream() method
      *
      */
     #[@test]
