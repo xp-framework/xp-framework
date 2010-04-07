@@ -225,6 +225,11 @@
 
     }
 
+    /**
+     * Receive a message
+     *
+     * @return  org.codehaus.stomp.frame.Frame
+     */
     public function receive() {
       return $this->recvFrame();
     }
