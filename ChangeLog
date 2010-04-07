@@ -8,6 +8,9 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed common stack trace element calculation in lang.ChainedException
+  if chained exception is a chained exception itself.
+  (friebe)
 - Fixed peer.ftp.FtpConnection to be able to cope with FTP servers
   sending an empty directory listing (without "." and "..") for 
   nonexistant directories
