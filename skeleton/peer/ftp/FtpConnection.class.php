@@ -28,6 +28,7 @@
    *   $c->close();
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.peer.ftp.IntegrationTest
    * @see      rfc://959
    * @purpose  FTP protocol implementation
    */
@@ -257,9 +258,9 @@
           sscanf($r[0], "%d %[^\r\n]", $code, $message);
           if (450 === $code) {        // No such file or directory
             return NULL;
-          } else {
+          } else {                    // Some FTP servers send an empty directory listing
             $this->expect($r, array(226));
-            return $list;
+            return $list ? $list : NULL;
           }
         } else {                      // Unexpected response
           $transfer->close();

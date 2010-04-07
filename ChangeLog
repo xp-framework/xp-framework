@@ -8,6 +8,10 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.ftp.FtpConnection to be able to cope with FTP servers
+  sending an empty directory listing (without "." and "..") for 
+  nonexistant directories
+  (friebe)
 - Fixed format string BIT_AND operator to only use one placeholder
   (ohinckel)
 
