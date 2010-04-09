@@ -82,12 +82,13 @@
     /**
      * Receive next frame, nonblocking
      *
+     * @param   double timeout default 0.2
      * @return  org.codehaus.stomp.frame.Frame or NULL
      */
-    public function recvFrame() {
+    public function recvFrame($timeout= 0.2) {
 
       // Check whether we can read, before we actually read...
-      if ($this->socket instanceof Socket && !$this->socket->canRead(0.2)) {
+      if ($this->socket instanceof Socket && !$this->socket->canRead($timeout)) {
         $this->cat && $this->cat->debug($this->getClassName(), '<<<', '0 bytes - reading no frame.');
         return NULL;
       }
@@ -225,8 +226,14 @@
 
     }
 
-    public function receive() {
-      return $this->recvFrame();
+    /**
+     * Receive a message
+     *
+     * @param   double timeout default 0.2 pass NULL for no timeout
+     * @return  org.codehaus.stomp.frame.Frame
+     */
+    public function receive($timeout= 0.2) {
+      return $this->recvFrame($timeout);
     }
   }
 ?>

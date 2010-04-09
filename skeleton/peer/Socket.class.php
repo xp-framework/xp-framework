@@ -172,7 +172,7 @@
      */
     public function canRead($timeout= NULL) {
       if (NULL === $timeout) {
-        $tv_sec= $tv_usec= 0;
+        $tv_sec= $tv_usec= NULL;
       } else {
         $tv_sec= intval(floor($timeout));
         $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
