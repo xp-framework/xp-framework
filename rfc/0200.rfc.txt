@@ -1,0 +1,80 @@
+RFC 0200: XML API
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Apr 11 11:18:34     2010
+@status: draft
+@target: 5.7.9
+@category: xml
+
+Scope of Change
+---------------
+The XML API will be extended to fully support markup-style XML documents.
+
+
+Rationale
+---------
+At the moment, certain information will be lost when loading and then
+emitting an XML tree:
+
+<code>
+  $xml= Tree::fromString('<html>Hello<br/>World</html>')->getSource();
+  
+  // <html>
+  //   World
+  //   <br/>
+  // </html>
+</code>
+
+
+Functionality
+-------------
+Several new node classes will be added to the xml package. They will all
+implement the <tt>xml.Element</tt> interface:
+
+<pre>
+  * xml.TextNode
+  * xml.CommentNode
+  * xml.ProcessingInstructionNode
+</pre>
+
+The <tt>xml.Node</tt> and <tt>xml.Tree</tt> class' <tt>addChild()</tt> 
+methods will be changed to accept any <tt>xml.Element</tt> implementation.
+
+Finally, the parser will turn markup as seen before into the following
+internal structure:
+
+<pre>
+  Node(name = 'html') {
+    TextNode(content = 'Hello'),
+    Node(name = 'br'),
+    TextNode(content = 'World')
+  }
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+(TODO: Test)
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+n/a
+
+
+Comments
+--------
+
+<EOF>
