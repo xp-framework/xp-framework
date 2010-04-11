@@ -108,6 +108,37 @@ The <tt>xml.PCData</tt> class will also implement the <tt>Element</tt>
 interface. It will be deprecated though, and replaced with a new class
 called <tt>xml.Fragment</tt>.
 
+I/O
+~~~
+The <tt>xml.Tree</tt>'s <tt>fromFile()</tt> and <tt>fromString()</tt>
+methods will be deprecated in favor of the <tt>xml.parser.TreeParser</tt>
+class.
+
+<code>
+  // Deprecated
+  $t= Tree::fromFile('payload.xml');
+  
+  // New
+  $parser= new TreeParser();
+  $t= $parser->parse(new StreamInputSource(new FileInputStream('payload.xml')));
+</code>
+
+The <tt>getSource()</tt> method will be deprecated in favor of the 
+<tt>asXml()</tt> method which will accept an <tt>xml.io.OutputFormat</tt>
+instance.
+
+<code>
+  // Deprecated
+  $xml= $tree->getSource(INDENT_DEFAULT);
+  
+  // New
+  $xml= $tree->asXml(OutputFormat::$DEFAULT);
+  
+  // Writing to any stream
+  $writer= new TreeWriter(new ...OutputStream(), OutputFormat::$DEFAULT);
+  $writer->write($tree);
+</code>
+
 
 Security considerations
 -----------------------
@@ -126,6 +157,9 @@ None.
 
 Related documents
 -----------------
+Inspiration:
+* http://dom4j.sourceforge.net/dom4j-1.6.1/index.html
+
 Implementing patch:
 * http://xp-framework.net/rfc/contrib/rfc0200.diff
 
