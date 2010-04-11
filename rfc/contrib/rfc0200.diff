@@ -1,0 +1,441 @@
+Index: skeleton/xml/Node.class.php
+===================================================================
+--- skeleton/xml/Node.class.php	(revision 14454)
++++ skeleton/xml/Node.class.php	(working copy)
+@@ -6,6 +6,7 @@
+  */
+ 
+   uses(
++    'xml.Element',
+     'xml.PCData',
+     'xml.CData',
+     'xml.XMLFormatException'
+@@ -23,7 +24,7 @@
+    * @see   xp://xml.Tree#addChild
+    * @test  xp://net.xp_framework.unittest.xml.NodeTest
+    */
+-  class Node extends Object {
++  class Node extends Object implements Element {
+     const
+       XML_ILLEGAL_CHARS   = XML_ILLEGAL_CHARS;
+ 
+@@ -45,12 +46,14 @@
+      * @param   string name
+      * @param   string content default NULL
+      * @param   array<string, string> attribute default array() attributes
+-     * @throws  lang.IllegalArgumentException
++     * @throws  xml.XMLFormatException
+      */
+     public function __construct($name, $content= NULL, $attribute= array()) {
+       $this->name= $name;
+       $this->attribute= $attribute;
+-      $this->setContent($content);
++      if (NULL !== $content) {
++        $this->children= array(new Text($content));
++      }
+     }
+ 
+     /**
+@@ -131,6 +134,7 @@
+     /**
+      * Set content
+      *
++     * @deprecated  Use addChild(new Text(...)) instead
+      * @param   string content
+      * @throws  xml.XMLFormatException in case content contains illegal characters
+      */
+@@ -307,23 +311,33 @@
+     /**
+      * Add a child node
+      *
+-     * @param   xml.Node child
+-     * @return  xml.Node added child
++     * @param   xml.Element child
++     * @return  xml.Element added child
+      * @throws  lang.IllegalArgumentException in case the given argument is not a Node
+      */
+-    public function addChild(Node $child) {
++    public function addChild(Element $child) {
+       $this->children[]= $child;
+       return $child;
+     }
++    
++    /**
++     * Returns whether another object is equal to this node
++     *
++     * @param   lang.Generic cmp
++     * @return  bool
++     */
++    public function equals($cmp) {
++      return $cmp instanceof self && $this->getSource(INDENT_NONE) === $cmp->getSource(INDENT_NONE);
++    }
+ 
+     /**
+      * Add a child node and return this node
+      *
+-     * @param   xml.Node child
++     * @param   xml.Element child
+      * @return  xml.Node this
+      * @throws  lang.IllegalArgumentException in case the given argument is not a Node
+      */
+-    public function withChild(Node $child) {
++    public function withChild(Element $child) {
+       $this->addChild($child);
+       return $this;
+     }
+Index: skeleton/xml/Element.class.php
+===================================================================
+--- skeleton/xml/Element.class.php	(revision 0)
++++ skeleton/xml/Element.class.php	(revision 0)
+@@ -0,0 +1,23 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  /**
++   * Represents an element in an XML tree. An element will be one of the 
++   * following:
++   * <ul>
++   *   <li>A node (optionally with attributes)</li>
++   *   <li>Text</li>
++   *   <li>A comment</li>
++   *   <li>A processing instruction</li>
++   * </ul>
++   *
++   * @see   xp://xml.Tree#addChild
++   * @see   xp://xml.Node#addChild
++   */
++  interface Element {
++    
++  }
++?>
+
+Property changes on: skeleton/xml/Element.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/xml/Tree.class.php
+===================================================================
+--- skeleton/xml/Tree.class.php	(revision 14454)
++++ skeleton/xml/Tree.class.php	(working copy)
+@@ -97,11 +97,11 @@
+     /**
+      * Add a child to this tree
+      *
+-     * @param   xml.Node child 
+-     * @return  xml.Node the added child
++     * @param   xml.Element child 
++     * @return  xml.Element the added child
+      * @throws  lang.IllegalArgumentException in case the given argument is not a Node
+      */   
+-    public function addChild(Node $child) {
++    public function addChild(Element $child) {
+       return $this->root->addChild($child);
+     }
+ 
+Index: skeleton/xml/parser/XMLParser.class.php
+===================================================================
+--- skeleton/xml/parser/XMLParser.class.php	(revision 14454)
++++ skeleton/xml/parser/XMLParser.class.php	(working copy)
+@@ -110,6 +110,7 @@
+           xml_set_element_handler($parser, 'onStartElement', 'onEndElement');
+           xml_set_character_data_handler($parser, 'onCData');
+           xml_set_default_handler($parser, 'onDefault');
++          method_exists($this->callback, 'onProcessing') && xml_set_processing_instruction_handler($parser, 'onProcessing');
+         }
+         
+         // Parse streams while reading data
+Index: skeleton/xml/Comment.class.php
+===================================================================
+--- skeleton/xml/Comment.class.php	(revision 0)
++++ skeleton/xml/Comment.class.php	(revision 0)
+@@ -0,0 +1,79 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ *
++ */
++
++  uses(
++    'xml.Element',
++    'xml.XMLFormatException'
++  );
++
++  /**
++   * Represents a comment
++   *
++   */
++  class Comment extends Object implements Element {
++    protected $content = NULL;
++
++    /**
++     * Constructor
++     *
++     * <code>
++     *   $n= new Comment('Hello World');
++     * </code>
++     *
++     * @param   string content default NULL
++     * @throws  xml.XMLFormatException
++     */
++    public function __construct($content= NULL) {
++      $this->setContent($content);
++    }
++
++    /**
++     * Set content
++     *
++     * @param   string content
++     * @throws  xml.XMLFormatException in case content contains illegal characters
++     */
++    public function setContent($content) {
++
++      // Scan the given string for illegal characters.
++      if (is_string($content)) {  
++        if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
++          throw new XMLFormatException(
++            'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
++          );
++        }
++      }
++      
++      $this->content= $content;
++    }
++    
++    /**
++     * Get content (all CDATA)
++     *
++     * @return  string content
++     */
++    public function getContent() {
++      return $this->content;
++    }
++    
++    /**
++     * Retrieve XML representation
++     *
++     * @param   int indent default INDENT_WRAPPED
++     * @param   string encoding default 'iso-8859-1'
++     * @param   string inset default ''
++     * @return  string XML
++     */
++    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
++      $conv= 'iso-8859-1' != $encoding;
++      return '<!--'.($conv
++        ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
++        : htmlspecialchars($this->content)
++      ).'-->';
++    }
++  }
++?>
+
+Property changes on: skeleton/xml/Comment.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/xml/ProcessingInstruction.class.php
+===================================================================
+--- skeleton/xml/ProcessingInstruction.class.php	(revision 0)
++++ skeleton/xml/ProcessingInstruction.class.php	(revision 0)
+@@ -0,0 +1,100 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ *
++ */
++
++  uses(
++    'xml.Element',
++    'xml.XMLFormatException'
++  );
++
++  /**
++   * Represents a processing instruction
++   *
++   */
++  class ProcessingInstruction extends Object implements Element {
++    protected $name = NULL;
++    protected $content = NULL;
++
++    /**
++     * Constructor
++     *
++     * <code>
++     *   $n= new ProcessingInstruction('php', 'echo "Hello";');
++     * </code>
++     *
++     * @param   string name
++     * @param   string content default NULL
++     * @throws  xml.XMLFormatException
++     */
++    public function __construct($name, $content= NULL) {
++      $this->name= $name;
++      $this->setContent($content);
++    }
++
++    /**
++     * Sets name
++     *
++     * @param   string name
++     */
++    public function setName($name) {
++      $this->name= $name;
++    }
++    
++    /**
++     * Gets name
++     *
++     * @return  string
++     */
++    public function getName() {
++      return $this->name;
++    }
++
++    /**
++     * Set content
++     *
++     * @param   string content
++     * @throws  xml.XMLFormatException in case content contains illegal characters
++     */
++    public function setContent($content) {
++
++      // Scan the given string for illegal characters.
++      if (is_string($content)) {  
++        if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
++          throw new XMLFormatException(
++            'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
++          );
++        }
++      }
++      
++      $this->content= $content;
++    }
++    
++    /**
++     * Get content (all CDATA)
++     *
++     * @return  string content
++     */
++    public function getContent() {
++      return $this->content;
++    }
++    
++    /**
++     * Retrieve XML representation
++     *
++     * @param   int indent default INDENT_WRAPPED
++     * @param   string encoding default 'iso-8859-1'
++     * @param   string inset default ''
++     * @return  string XML
++     */
++    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
++      $conv= 'iso-8859-1' != $encoding;
++      return '<?'.$this->name.' '.($conv
++        ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
++        : htmlspecialchars($this->content)
++      ).'?>';
++    }
++  }
++?>
+
+Property changes on: skeleton/xml/ProcessingInstruction.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/xml/Text.class.php
+===================================================================
+--- skeleton/xml/Text.class.php	(revision 0)
++++ skeleton/xml/Text.class.php	(revision 0)
+@@ -0,0 +1,79 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ *
++ */
++
++  uses(
++    'xml.Element',
++    'xml.XMLFormatException'
++  );
++
++  /**
++   * Represents a text element
++   *
++   */
++  class Text extends Object implements Element {
++    protected $content = NULL;
++
++    /**
++     * Constructor
++     *
++     * <code>
++     *   $n= new Text('Hello World');
++     * </code>
++     *
++     * @param   string content default NULL
++     * @throws  xml.XMLFormatException
++     */
++    public function __construct($content= NULL) {
++      $this->setContent($content);
++    }
++
++    /**
++     * Set content
++     *
++     * @param   string content
++     * @throws  xml.XMLFormatException in case content contains illegal characters
++     */
++    public function setContent($content) {
++
++      // Scan the given string for illegal characters.
++      if (is_string($content)) {  
++        if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
++          throw new XMLFormatException(
++            'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
++          );
++        }
++      }
++      
++      $this->content= $content;
++    }
++    
++    /**
++     * Get content (all CDATA)
++     *
++     * @return  string content
++     */
++    public function getContent() {
++      return $this->content;
++    }
++    
++    /**
++     * Retrieve XML representation
++     *
++     * @param   int indent default INDENT_WRAPPED
++     * @param   string encoding default 'iso-8859-1'
++     * @param   string inset default ''
++     * @return  string XML
++     */
++    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
++      $conv= 'iso-8859-1' != $encoding;
++      return $conv
++        ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
++        : htmlspecialchars($this->content)
++      ;
++    }
++  }
++?>
+
+Property changes on: skeleton/xml/Text.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+

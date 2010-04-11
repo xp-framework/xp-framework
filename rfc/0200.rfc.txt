@@ -115,7 +115,8 @@ None.
 
 Related documents
 -----------------
-n/a
+Implementing patch:
+* http://xp-framework.net/rfc/contrib/rfc0200.diff
 
 
 Comments
