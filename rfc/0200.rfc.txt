@@ -30,13 +30,29 @@ emitting an XML tree:
 
 Functionality
 -------------
-Several new node classes will be added to the xml package. They will all
+This loss of information is due to the fact that the above is transformed
+to the following internal structure by the parser:
+
+<pre>
+  Node(name = 'html', content= 'World') {
+    Node(name = 'br')
+  }
+</pre>
+
+The "Hello" is lost because any text encountered during parsing will be
+set as the enclosing node's content, while any node will be added as
+a child element. Then, when outputting the document again, the content
+is appended first and after that any existing child.
+
+Addressing this issue
+~~~~~~~~~~~~~~~~~~~~~
+Several new classes will be added to the xml package. They will all
 implement the <tt>xml.Element</tt> interface:
 
 <pre>
-  * xml.TextNode
-  * xml.CommentNode
-  * xml.ProcessingInstructionNode
+  * xml.Text
+  * xml.Comment
+  * xml.ProcessingInstruction
 </pre>
 
 The <tt>xml.Node</tt> and <tt>xml.Tree</tt> class' <tt>addChild()</tt> 
@@ -47,11 +63,16 @@ internal structure:
 
 <pre>
   Node(name = 'html') {
-    TextNode(content = 'Hello'),
+    Text(content = 'Hello'),
     Node(name = 'br'),
-    TextNode(content = 'World')
+    Text(content = 'World')
   }
 </pre>
+
+The existing model with children will be used for the new implementation,
+whereas the "content" member in a <tt>xml.Node</tt> and its accessors,
+the <tt>getContent()</tt> and <tt>setContent()</tt> methods will be 
+deprecated.
 
 
 Security considerations
