@@ -2,15 +2,18 @@ Index: skeleton/xml/Node.class.php
 ===================================================================
 --- skeleton/xml/Node.class.php	(revision 14454)
 +++ skeleton/xml/Node.class.php	(working copy)
-@@ -6,6 +6,7 @@
+@@ -6,8 +6,10 @@
   */
  
    uses(
 +    'xml.Element',
      'xml.PCData',
      'xml.CData',
++    'xml.Text',
      'xml.XMLFormatException'
-@@ -23,7 +24,7 @@
+   );
+   
+@@ -23,7 +25,7 @@
     * @see   xp://xml.Tree#addChild
     * @test  xp://net.xp_framework.unittest.xml.NodeTest
     */
@@ -19,7 +22,7 @@ Index: skeleton/xml/Node.class.php
      const
        XML_ILLEGAL_CHARS   = XML_ILLEGAL_CHARS;
  
-@@ -45,12 +46,14 @@
+@@ -45,12 +47,18 @@
       * @param   string name
       * @param   string content default NULL
       * @param   array<string, string> attribute default array() attributes
@@ -31,12 +34,16 @@ Index: skeleton/xml/Node.class.php
        $this->attribute= $attribute;
 -      $this->setContent($content);
 +      if (NULL !== $content) {
-+        $this->children= array(new Text($content));
++        if ($content instanceof Element) {
++          $this->children= array($content);
++        } else if ('' !== $content) {
++          $this->children= array(new Text($content));
++        }
 +      }
      }
  
      /**
-@@ -131,6 +134,7 @@
+@@ -131,6 +139,7 @@
      /**
       * Set content
       *
@@ -44,7 +51,94 @@ Index: skeleton/xml/Node.class.php
       * @param   string content
       * @throws  xml.XMLFormatException in case content contains illegal characters
       */
-@@ -307,23 +311,33 @@
+@@ -151,6 +160,7 @@
+     /**
+      * Get content (all CDATA)
+      *
++     * @deprecated  Use textContent() instead
+      * @return  string content
+      */
+     public function getContent() {
+@@ -158,6 +168,23 @@
+     }
+ 
+     /**
++     * Get content
++     *
++     * @return  string content
++     */
++    public function textContent() {
++      $c= '';
++      foreach ($this->children as $child) {
++        if ($child instanceof Text) {
++          $c.= $child->getContent();
++        } else if ($child instanceof self) {
++          $c.= $child->textContent();
++        }
++      }
++      return $c;
++    }
++
++    /**
+      * Set an attribute
+      *
+      * @param   string name
+@@ -234,7 +261,7 @@
+     public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
+       $xml= $inset.'<'.$this->name;
+       $conv= 'iso-8859-1' != $encoding;
+-      
++      $children= $this->children;
+       if ('string' == ($type= gettype($this->content))) {
+         $content= $conv
+           ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
+@@ -257,6 +284,12 @@
+         ).']]>';
+       } else if ($this->content instanceof String) {
+         $content= htmlspecialchars($this->content->getBytes($encoding));
++      } else if (NULL === $this->content && 1 === sizeof($this->children) && $this->children[0] instanceof Text) {
++        $children= array();
++        $content= $conv
++          ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->children[0]->getContent()))
++          : htmlspecialchars($this->children[0]->getContent())
++        ;
+       } else {
+         $content= $this->content; 
+       }
+@@ -268,8 +301,12 @@
+             : $value
+           ).'"';
+         }
++
++        // No content and no children => close tag
++        if (0 == strlen($content) && !$children) return $xml.'/>';
++        
+         $xml.= '>'.$content;
+-        foreach ($this->children as $child) {
++        foreach ($children as $child) {
+           $xml.= $child->getSource($indent, $encoding, $inset);
+         }
+         return $xml.'</'.$this->name.'>';
+@@ -287,15 +324,15 @@
+ 
+         // No content and no children => close tag
+         if (0 == strlen($content)) {
+-          if (!$this->children) return $xml."/>\n";
++          if (!$children) return $xml."/>\n";
+           $xml.= '>';
+         } else {
+           $xml.= '>'.($indent ? "\n  ".$inset.$content : trim($content));
+         }
+ 
+-        if ($this->children) {
++        if ($children) {
+           $xml.= ($indent ? '' : $inset)."\n";
+-          foreach ($this->children as $child) {
++          foreach ($children as $child) {
+             $xml.= $child->getSource($indent, $encoding, $inset.'  ');
+           }
+           $xml= ($indent ? substr($xml, 0, -1) : $xml).$inset;
+@@ -307,23 +344,33 @@
      /**
       * Add a child node
       *
@@ -117,6 +211,55 @@ ___________________________________________________________________
 Added: svn:keywords
    + Id
 
+Index: skeleton/xml/PCData.class.php
+===================================================================
+--- skeleton/xml/PCData.class.php	(revision 14454)
++++ skeleton/xml/PCData.class.php	(working copy)
+@@ -4,6 +4,8 @@
+  * $Id$
+  */
+ 
++  uses('xml.Element');
++
+   /**
+    * PCData allows to insert literal XML into a nodes contents.
+    *
+@@ -26,9 +28,8 @@
+    *
+    * @purpose  Wrapper
+    */
+-  class PCData extends Object {
+-    public
+-      $pcdata= '';
++  class PCData extends Object implements Element {
++    public $pcdata= '';
+       
+     /**
+      * Constructor
+@@ -37,7 +38,22 @@
+      */
+     public function __construct($pcdata) {
+       $this->pcdata= $pcdata;
+-      
+     }
++
++    /**
++     * Retrieve XML representation
++     *
++     * @param   int indent default INDENT_WRAPPED
++     * @param   string encoding default 'iso-8859-1'
++     * @param   string inset default ''
++     * @return  string XML
++     */
++    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
++      $conv= 'iso-8859-1' != $encoding;
++      return $conv
++        ? iconv('iso-8859-1', $encoding, $this->pcdata)
++        : $this->pcdata
++      ;
++    }
+   }
+ ?>
 Index: skeleton/xml/Tree.class.php
 ===================================================================
 --- skeleton/xml/Tree.class.php	(revision 14454)
@@ -238,6 +381,53 @@ ___________________________________________________________________
 Added: svn:keywords
    + Id
 
+Index: skeleton/xml/CData.class.php
+===================================================================
+--- skeleton/xml/CData.class.php	(revision 14454)
++++ skeleton/xml/CData.class.php	(working copy)
+@@ -4,6 +4,8 @@
+  * $Id$
+  */
+ 
++  uses('xml.Element');
++
+   /**
+    * CData allows to insert a CDATA section:
+    *
+@@ -22,9 +24,8 @@
+    *
+    * @purpose  Wrapper
+    */
+-  class CData extends Object {
+-    public
+-      $cdata= '';
++  class CData extends Object implements Element {
++    public $cdata= '';
+       
+     /**
+      * Constructor
+@@ -34,5 +35,21 @@
+     public function __construct($cdata) {
+       $this->cdata= $cdata;
+     }
++
++    /**
++     * Retrieve XML representation
++     *
++     * @param   int indent default INDENT_WRAPPED
++     * @param   string encoding default 'iso-8859-1'
++     * @param   string inset default ''
++     * @return  string XML
++     */
++    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
++      $conv= 'iso-8859-1' != $encoding;
++      return '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $conv
++        ? iconv('iso-8859-1', $encoding, $this->cdata)
++        : $this->cdata
++      ).']]>';
++    }
+   }
+ ?>
 Index: skeleton/xml/ProcessingInstruction.class.php
 ===================================================================
 --- skeleton/xml/ProcessingInstruction.class.php	(revision 0)
@@ -439,3 +629,106 @@ ___________________________________________________________________
 Added: svn:keywords
    + Id
 
+Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(revision 14454)
++++ ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(working copy)
+@@ -203,7 +203,7 @@
+     public function sourceOfNodeWithContent() {
+       $this->assertEquals(
+         '<expr>eval(\'1 &lt;&gt; 2 &amp;&amp; \') == &quot;Parse Error&quot;</expr>', 
+-        $this->sourceOf(new Node('expr', 'eval(\'1 <> 2 && \') == "Parse Error"'))
++        $this->sourceOf(new Node('expr', 'eval(\'1 <> 2 && \') == "Parse Error"'), INDENT_NONE)
+       );
+     }
+ 
+@@ -215,7 +215,7 @@
+     public function sourceOfNodeWithCData() {
+       $this->assertEquals(
+         '<text><![CDATA[Special characters: <>"\'&]]></text>', 
+-        $this->sourceOf(new Node('text', new CData('Special characters: <>"\'&')))
++        $this->sourceOf(new Node('text', new CData('Special characters: <>"\'&')), INDENT_NONE)
+       );
+     }
+ 
+@@ -227,7 +227,7 @@
+     public function sourceOfNodeWithPCData() {
+       $this->assertEquals(
+         '<text>A <a href="http://xp-framework.net/">link</a> to click on</text>', 
+-        $this->sourceOf(new Node('text', new PCData('A <a href="http://xp-framework.net/">link</a> to click on')))
++        $this->sourceOf(new Node('text', new PCData('A <a href="http://xp-framework.net/">link</a> to click on')), INDENT_NONE)
+       );
+     }
+     
+@@ -239,7 +239,7 @@
+     public function sourceOfNodeWithStringContent() {
+       $this->assertEquals(
+         '<node>XP &amp; APC</node>',
+-        $this->sourceOf(new Node('node', new String('XP & APC'))) 
++        $this->sourceOf(new Node('node', new String('XP & APC')), INDENT_NONE) 
+       );
+     }
+ 
+@@ -250,12 +250,7 @@
+     #[@test]
+     public function fromObject() { 
+       $this->assertEquals(
+-        "<node>\n".
+-        "  <id>1549</id>\n".
+-        "  <color>green</color>\n".
+-        "  <name>Name goes here</name>\n".
+-        "  <__id/>\n".
+-        "</node>",
++        '<node><id>1549</id><color>green</color><name>Name goes here</name><__id/></node>',
+         $this->sourceOf(Node::fromObject(newinstance('lang.Object', array(), '{
+           public $id= 1549;
+           public $color= "green";
+@@ -264,7 +259,7 @@
+           public function __construct() {
+             $this->name= new String("Name goes here");
+           } 
+-        }'), 'node'))
++        }'), 'node'), INDENT_NONE)
+       );
+     }
+   }
+Index: ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php	(revision 14454)
++++ ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php	(working copy)
+@@ -209,7 +209,7 @@
+     public function dateFormatCallback() {
+       $date= new Date('2009-09-20 21:33:00');
+       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
+-        Node::fromObject($date, 'date')->getSource(),
++        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
+         'xp.date::format',
+         array('string(/date/value)', "'Y-m-d H:i:s T'")
+       ));
+@@ -225,7 +225,7 @@
+       $date= new Date('2009-09-20 21:33:00');
+       $tz= new TimeZone('Australia/Sydney');
+       $this->assertEquals($date->toString('Y-m-d H:i:s T', $tz), $this->runTransformation(
+-        Node::fromObject($date, 'date')->getSource(),
++        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
+         'xp.date::format',
+         array('string(/date/value)', "'Y-m-d H:i:s T'", "'".$tz->getName()."'")
+       ));
+@@ -240,7 +240,7 @@
+     public function dateFormatCallbackWithEmptyTZ() {
+       $date= new Date('2009-09-20 21:33:00');
+       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
+-        Node::fromObject($date, 'date')->getSource(),
++        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
+         'xp.date::format',
+         array('string(/date/value)', "'Y-m-d H:i:s T'", "''")
+       ));
+@@ -255,7 +255,7 @@
+     public function dateFormatCallbackWithoutTZ() {
+       $date= new Date('2009-09-20 21:33:00');
+       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
+-        Node::fromObject($date, 'date')->getSource(),
++        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
+         'xp.date::format',
+         array('string(/date/value)', "'Y-m-d H:i:s T'")
+       ));
