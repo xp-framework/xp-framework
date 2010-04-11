@@ -398,7 +398,31 @@ Index: skeleton/xml/Tree.class.php
 ===================================================================
 --- skeleton/xml/Tree.class.php	(revision 14454)
 +++ skeleton/xml/Tree.class.php	(working copy)
-@@ -23,10 +23,8 @@
+@@ -5,9 +5,10 @@
+  */
+  
+   uses(
+-    'xml.parser.XMLParser',
+-    'xml.Node',
+-    'xml.parser.ParserCallback'
++    'xml.parser.TreeParser',
++    'xml.parser.StreamInputSource',
++    'xml.parser.StringInputSource',
++    'xml.Node'
+   );
+  
+   /**
+@@ -15,19 +16,14 @@
+    * to and imported from an XML document.
+    *
+    * @test     xp://net.xp_framework.unittest.xml.TreeTest
+-   * @see      xp://xml.parser.XMLParser
++   * @see      xp://xml.parser.TreeParser
+    * @purpose  Tree
+    */
+-  class Tree extends Object implements ParserCallback {
++  class Tree extends Object {
+     public 
        $root     = NULL,
        $nodeType = NULL;
  
@@ -406,12 +430,11 @@ Index: skeleton/xml/Tree.class.php
 -      $_cnt     = NULL,
 -      $_cdata   = NULL,
 -      $_objs    = NULL;
-+    private 
-+      $stack    = array();
- 
+-
      protected 
        $version  = '1.0',
-@@ -97,11 +95,11 @@
+       $encoding = 'iso-8859-1';
+@@ -97,11 +93,11 @@
      /**
       * Add a child to this tree
       *
@@ -426,7 +449,7 @@ Index: skeleton/xml/Tree.class.php
        return $this->root->addChild($child);
      }
  
-@@ -112,6 +110,7 @@
+@@ -112,23 +108,14 @@
       *   $tree= Tree::fromString('<document>...</document>');
       * </code>
       *
@@ -434,7 +457,25 @@ Index: skeleton/xml/Tree.class.php
       * @param   string string
       * @param   string c default __CLASS__ class name
       * @return  xml.Tree
-@@ -138,6 +137,7 @@
+      * @throws  xml.XMLFormatException in case of a parser error
+      */
+     public static function fromString($string, $c= __CLASS__) {
+-      $parser= new XMLParser();
+-      $tree= new $c();
+-
+-      $parser->setCallback($tree);
+-      $parser->parse($string, 1);
+-
+-      // Fetch actual encoding from parser
+-      $tree->setEncoding($parser->getEncoding());
+-
+-      delete($parser);
+-      return $tree;
++      return create(new TreeParser(new XPClass($c)))->parse(new StringInputSource($string));
+     }
+     
+     /**
+@@ -138,6 +125,7 @@
       *   $tree= Tree::fromFile(new File('foo.xml'));
       * </code>
       *
@@ -442,19 +483,42 @@ Index: skeleton/xml/Tree.class.php
       * @param   io.File file
       * @param   string c default __CLASS__ class name
       * @return  xml.Tree
-@@ -165,70 +165,73 @@
-     /**
-      * Callback function for XMLParser
-      *
-+     * @deprecated Use xml.parser.TreeParser instead
-      * @param   resource parser
-      * @param   string name
-      * @param   string attrs
-      * @see     xp://xml.parser.XMLParser
-      */
-     public function onStartElement($parser, $name, $attrs) {
--      $this->_cdata= '';
+@@ -145,90 +133,25 @@
+      * @throws  io.IOException in case reading the file fails
+      */ 
+     public static function fromFile($file, $c= __CLASS__) {
+-      $parser= new XMLParser();
+-      $tree= new $c();
+-      
+-      $parser->setCallback($tree);
+-      $parser->dataSource= $file->uri;
+-      $file->open(FILE_MODE_READ);
+-      $string= $file->read($file->size());
+-      $file->close();
+-      $parser->parse($string);
 -
+-      // Fetch actual encoding from parser
+-      $tree->setEncoding($parser->getEncoding());
+-
+-      delete($parser);
+-      return $tree;
++      return create(new TreeParser(new XPClass($c)))->parse(new StreamInputSource(
++        $file->getInputStream(), 
++        $file->getURI()
++      ));
+     }
+-    
+-    /**
+-     * Callback function for XMLParser
+-     *
+-     * @param   resource parser
+-     * @param   string name
+-     * @param   string attrs
+-     * @see     xp://xml.parser.XMLParser
+-     */
+-    public function onStartElement($parser, $name, $attrs) {
+-      $this->_cdata= '';
+ 
 -      $element= new $this->nodeType($name, NULL, $attrs);
 -      if (!isset($this->_cnt)) {
 -        $this->root= $element;
@@ -464,73 +528,34 @@ Index: skeleton/xml/Tree.class.php
 -        $this->_cnt++;
 -        $this->_objs[$this->_cnt]= $element;
 -      }
-+      array_unshift($this->stack, new $this->nodeType($name, NULL, $attrs));
-     }
-    
+-    }
+-   
      /**
-      * Callback function for XMLParser
+-     * Callback function for XMLParser
++     * Creates a string representation of this object
       *
-+     * @deprecated Use xml.parser.TreeParser instead
-      * @param   resource parser
-      * @param   string name
-      * @see     xp://xml.parser.XMLParser
+-     * @param   resource parser
+-     * @param   string name
+-     * @see     xp://xml.parser.XMLParser
++     * @return  string
       */
-     public function onEndElement($parser, $name) {
+-    public function onEndElement($parser, $name) {
 -      if ($this->_cnt > 1) {
 -        $node= $this->_objs[$this->_cnt];
 -        $node->content= $this->_cdata;
 -        $parent= $this->_objs[$this->_cnt- 1];
 -        $parent->addChild($node);
 -        $this->_cdata= '';
-+      $c= array_shift($this->stack);
-+      if ($this->stack) {
-+        $this->stack[0]->addChild($c);
-       } else {
+-      } else {
 -        $this->root->content= $this->_cdata;
 -        $this->_cdata= '';
-+        $this->root= $c;
-       }
+-      }
 -      $this->_cnt--;
 -      
 -      // Clean up upon last element
 -      if (0 === $this->_cnt) {
 -        unset($this->_cnt, $this->_cdata, $this->_objs);
 -      }
-     }
- 
-     /**
-      * Callback function for XMLParser
-      *
-+     * @deprecated Use xml.parser.TreeParser instead
-      * @param   resource parser
-      * @param   string cdata
-      * @see     xp://xml.parser.XMLParser
-      */
-     public function onCData($parser, $cdata) {
--      $this->_cdata.= $cdata;
-+    
-+      // Ignore tokens consisting entirely of whitespace
-+      if (strlen($cdata) !== strspn($cdata, " \r\n\t")) {
-+        $this->stack[0]->addChild(new Text($cdata));
-+      }
-     }
- 
-     /**
-      * Callback function for XMLParser
-      *
-+     * @deprecated Use xml.parser.TreeParser instead
-      * @param   resource parser
-      * @param   string data
-      * @see     xp://xml.parser.XMLParser
-      */
-     public function onDefault($parser, $data) {
-     }
-+
-+    /**
-+     * Creates a string representation of this object
-+     *
-+     * @return  string
-+     */
 +    public function toString() {
 +      return sprintf(
 +        "%s(version= %s encoding=%s) {\n  %s\n}",
@@ -539,14 +564,35 @@ Index: skeleton/xml/Tree.class.php
 +        $this->encoding,
 +        str_replace("\n", "\n  ", xp::stringOf($this->root))
 +      );
-+    }
+     }
+-
+-    /**
+-     * Callback function for XMLParser
+-     *
+-     * @param   resource parser
+-     * @param   string cdata
+-     * @see     xp://xml.parser.XMLParser
+-     */
+-    public function onCData($parser, $cdata) {
+-      $this->_cdata.= $cdata;
+-    }
+-
+-    /**
+-     * Callback function for XMLParser
+-     *
+-     * @param   resource parser
+-     * @param   string data
+-     * @see     xp://xml.parser.XMLParser
+-     */
+-    public function onDefault($parser, $data) {
+-    }
    } 
  ?>
 Index: skeleton/xml/parser/TreeParser.class.php
 ===================================================================
 --- skeleton/xml/parser/TreeParser.class.php	(revision 0)
 +++ skeleton/xml/parser/TreeParser.class.php	(revision 0)
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,132 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -557,9 +603,9 @@ Index: skeleton/xml/parser/TreeParser.class.php
 +    'xml.parser.XMLParser', 
 +    'xml.Tree', 
 +    'xml.Node', 
-+    'xml.TextNode', 
-+    'xml.CommentNode',
-+    'xml.ProcessingInstructionNode'
++    'xml.Node', 
++    'xml.Comment',
++    'xml.ProcessingInstruction'
 +  );
 +
 +  /**
@@ -577,7 +623,21 @@ Index: skeleton/xml/parser/TreeParser.class.php
 +   * @test    xp://net.xp_framework.unittest.xml.TreeParserTest
 +   */
 +  class TreeParser extends XMLParser {
-+    private $tree= NULL, $stack= array();
++    private $stack= array();
++    
++    /**
++     * Construct a new tree parser
++     *
++     * @param   lang.XPClass class
++     */
++    public function __construct(XPClass $class= NULL, $encoding= 'iso-8859-1') {
++      parent::__construct($encoding);
++      if (NULL === $class) {
++        $this->class= XPClass::forName('xml.Tree');
++      } else {
++        $this->class= $class;
++      }
++    }
 +    
 +    /**
 +     * Parse XML data
@@ -587,13 +647,15 @@ Index: skeleton/xml/parser/TreeParser.class.php
 +     * @return  xml.Tree
 +     * @throws  xml.XMLFormatException in case the data could not be parsed
 +     */
-+    public function parse(InputSource $data, $source= NULL) {
-+      $this->tree= new Tree();
-+      $this->tree->setEncoding($this->encoding);
-+      $this->callback= $this;
-+      $this->stack= array();
-+      parent::parse($data, $source);
-+      return $this->tree;
++    public function parse($data, $source= NULL) {
++      with ($tree= $this->class->newInstance()); {
++        $this->callback= $this;
++        $this->stack= array(0 => NULL);
++        parent::parse($data, $source);
++        $tree->root= $this->stack[0];
++        $tree->setEncoding($this->encoding);
++        return $tree;
++      }
 +    }
 +
 +    /**
@@ -617,10 +679,10 @@ Index: skeleton/xml/parser/TreeParser.class.php
 +     */
 +    public function onEndElement($parser, $name) {
 +      $c= array_shift($this->stack);
-+      if ($this->stack) {
++      if ($this->stack[0]) {
 +        $this->stack[0]->addChild($c);
 +      } else {
-+        $this->tree->root= $c;
++        $this->stack[0]= $c;
 +      }
 +    }
 +
@@ -632,7 +694,11 @@ Index: skeleton/xml/parser/TreeParser.class.php
 +     * @see     xp://xml.parser.XMLParser
 +     */
 +    public function onCData($parser, $cdata) {
-+      $this->stack[0]->addChild(new Text($cdata));
++
++      // Ignore tokens consisting entirely of whitespace
++      if (strlen($cdata) !== strspn($cdata, " \r\n\t")) {
++        $this->stack[0]->addChild(new Text($cdata));
++      }
 +    }
 +
 +    /**
@@ -669,6 +735,18 @@ Index: skeleton/xml/parser/XMLParser.class.php
 ===================================================================
 --- skeleton/xml/parser/XMLParser.class.php	(revision 14454)
 +++ skeleton/xml/parser/XMLParser.class.php	(working copy)
+@@ -35,9 +35,9 @@
+     /**
+      * Constructor
+      *
+-     * @param   string encoding default 'ISO-8859-1'
++     * @param   string encoding default 'iso-8859-1'
+      */
+-    public function __construct($encoding= 'ISO-8859-1') {
++    public function __construct($encoding= 'iso-8859-1') {
+       $this->encoding= $encoding;
+     }
+ 
 @@ -110,6 +110,7 @@
            xml_set_element_handler($parser, 'onStartElement', 'onEndElement');
            xml_set_character_data_handler($parser, 'onCData');
@@ -1216,6 +1294,24 @@ Index: ports/classes/net/xp_framework/unittest/xml/TreeTest.class.php
          $this->assertEquals('value', $c->getContent());
        }
      }
+@@ -104,7 +102,7 @@
+         <document><node>Some umlauts: öäü</node></document>
+       ');
+       
+-      $this->assertEquals('ISO-8859-1', $tree->getEncoding());
++      $this->assertEquals('iso-8859-1', $tree->getEncoding());
+       $this->assertEquals(1, sizeof($tree->root->children));
+       $this->assertEquals('document', $tree->root->getName());
+       $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
+@@ -120,7 +118,7 @@
+         <document><node>Some umlauts: Ã¶Ã¤Ã¼</node></document>
+       ');
+       
+-      $this->assertEquals('ISO-8859-1', $tree->getEncoding());
++      $this->assertEquals('iso-8859-1', $tree->getEncoding());
+       $this->assertEquals(1, sizeof($tree->root->children));
+       $this->assertEquals('document', $tree->root->getName());
+       $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
 @@ -133,7 +131,7 @@
      #[@test]
      public function singleElement() {
@@ -1225,6 +1321,45 @@ Index: ports/classes/net/xp_framework/unittest/xml/TreeTest.class.php
        $this->assertEquals('Content', $tree->root->getContent());
        $this->assertEquals('false', $tree->root->getAttribute('empty'));
      }
+@@ -166,10 +164,10 @@
+      */
+     #[@test]
+     public function iso88591Encoding() {
+-      $t= create(new Tree('unicode'))->withEncoding('ISO-8859-1');
++      $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
+       $t->root->setContent('Hällo');
+ 
+-      $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
++      $this->assertEquals('<?xml version="1.0" encoding="iso-8859-1"?>', $t->getDeclaration());
+       $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
+     }
+ 
+@@ -192,10 +190,10 @@
+      */
+     #[@test]
+     public function iso88591EncodingWithIso88591StringObject() {
+-      $t= create(new Tree('unicode'))->withEncoding('ISO-8859-1');
++      $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
+       $t->root->setContent(new String('Hällo', 'iso-8859-1'));
+ 
+-      $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
++      $this->assertEquals('<?xml version="1.0" encoding="iso-8859-1"?>', $t->getDeclaration());
+       $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
+     }
+ 
+@@ -218,10 +216,10 @@
+      */
+     #[@test]
+     public function iso88591EncodingWithUtf8StringObject() {
+-      $t= create(new Tree('unicode'))->withEncoding('ISO-8859-1');
++      $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
+       $t->root->setContent(new String('HÃ¤llo', 'UTF-8'));
+ 
+-      $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
++      $this->assertEquals('<?xml version="1.0" encoding="iso-8859-1"?>', $t->getDeclaration());
+       $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
+     }
+ 
 Index: ports/classes/net/xp_framework/unittest/xml/DocumentTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/xml/DocumentTest.class.php	(revision 14454)
