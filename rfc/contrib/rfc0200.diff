@@ -442,7 +442,7 @@ Index: skeleton/xml/Tree.class.php
       * @param   io.File file
       * @param   string c default __CLASS__ class name
       * @return  xml.Tree
-@@ -165,65 +165,49 @@
+@@ -165,70 +165,73 @@
      /**
       * Callback function for XMLParser
       *
@@ -508,7 +508,11 @@ Index: skeleton/xml/Tree.class.php
       */
      public function onCData($parser, $cdata) {
 -      $this->_cdata.= $cdata;
-+      $this->stack[0]->addChild(new Text($cdata));
++    
++      // Ignore tokens consisting entirely of whitespace
++      if (strlen($cdata) !== strspn($cdata, " \r\n\t")) {
++        $this->stack[0]->addChild(new Text($cdata));
++      }
      }
  
      /**
@@ -518,6 +522,26 @@ Index: skeleton/xml/Tree.class.php
       * @param   resource parser
       * @param   string data
       * @see     xp://xml.parser.XMLParser
+      */
+     public function onDefault($parser, $data) {
+     }
++
++    /**
++     * Creates a string representation of this object
++     *
++     * @return  string
++     */
++    public function toString() {
++      return sprintf(
++        "%s(version= %s encoding=%s) {\n  %s\n}",
++        $this->getClassName(),
++        $this->version,
++        $this->encoding,
++        str_replace("\n", "\n  ", xp::stringOf($this->root))
++      );
++    }
+   } 
+ ?>
 Index: skeleton/xml/parser/TreeParser.class.php
 ===================================================================
 --- skeleton/xml/parser/TreeParser.class.php	(revision 0)
