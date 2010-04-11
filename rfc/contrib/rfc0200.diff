@@ -181,7 +181,7 @@ Index: skeleton/xml/Element.class.php
 ===================================================================
 --- skeleton/xml/Element.class.php	(revision 0)
 +++ skeleton/xml/Element.class.php	(revision 0)
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,25 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -194,8 +194,10 @@ Index: skeleton/xml/Element.class.php
 +   * <ul>
 +   *   <li>A node (optionally with attributes)</li>
 +   *   <li>Text</li>
++   *   <li>CDATA</li>
 +   *   <li>A comment</li>
 +   *   <li>A processing instruction</li>
++   *   <li>A document fragment</li>
 +   * </ul>
 +   *
 +   * @see   xp://xml.Tree#addChild
