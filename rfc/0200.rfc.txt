@@ -1,4 +1,4 @@
-RFC 0200: XML API
+RFC 0200: XML API Rework
 ========================================================================
 $Id$
 
@@ -73,6 +73,29 @@ The existing model with children will be used for the new implementation,
 whereas the "content" member in a <tt>xml.Node</tt> and its accessors,
 the <tt>getContent()</tt> and <tt>setContent()</tt> methods will be 
 deprecated.
+
+BC: Constructor parameter "content"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A <tt>Node</tt> can be constructed with the content passed in its second
+parameter:
+
+<code>
+  $n= new Node('a', 'Click', array('href' => 'http://example.com/'));
+</code>
+
+The old behaviour would set the content member:
+<pre>
+  Node(name = 'a', content = 'Click', @{href = 'http://example.com/'})
+</pre>
+
+The constructor will be changed to add a <tt>Text</tt> child node:
+<pre>
+  Node(name = 'a', @{href = 'http://example.com/'}) {
+    Text(content = 'Click')   
+  }
+</code>
+
+This will yield the same XML when <tt>getSource()</tt> is called.
 
 
 Security considerations
