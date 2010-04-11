@@ -633,15 +633,6 @@ Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(revision 14454)
 +++ ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(working copy)
-@@ -203,7 +203,7 @@
-     public function sourceOfNodeWithContent() {
-       $this->assertEquals(
-         '<expr>eval(\'1 &lt;&gt; 2 &amp;&amp; \') == &quot;Parse Error&quot;</expr>', 
--        $this->sourceOf(new Node('expr', 'eval(\'1 <> 2 && \') == "Parse Error"'))
-+        $this->sourceOf(new Node('expr', 'eval(\'1 <> 2 && \') == "Parse Error"'), INDENT_NONE)
-       );
-     }
- 
 @@ -215,7 +215,7 @@
      public function sourceOfNodeWithCData() {
        $this->assertEquals(
@@ -660,75 +651,3 @@ Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
        );
      }
      
-@@ -239,7 +239,7 @@
-     public function sourceOfNodeWithStringContent() {
-       $this->assertEquals(
-         '<node>XP &amp; APC</node>',
--        $this->sourceOf(new Node('node', new String('XP & APC'))) 
-+        $this->sourceOf(new Node('node', new String('XP & APC')), INDENT_NONE) 
-       );
-     }
- 
-@@ -250,12 +250,7 @@
-     #[@test]
-     public function fromObject() { 
-       $this->assertEquals(
--        "<node>\n".
--        "  <id>1549</id>\n".
--        "  <color>green</color>\n".
--        "  <name>Name goes here</name>\n".
--        "  <__id/>\n".
--        "</node>",
-+        '<node><id>1549</id><color>green</color><name>Name goes here</name><__id/></node>',
-         $this->sourceOf(Node::fromObject(newinstance('lang.Object', array(), '{
-           public $id= 1549;
-           public $color= "green";
-@@ -264,7 +259,7 @@
-           public function __construct() {
-             $this->name= new String("Name goes here");
-           } 
--        }'), 'node'))
-+        }'), 'node'), INDENT_NONE)
-       );
-     }
-   }
-Index: ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php
-===================================================================
---- ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php	(revision 14454)
-+++ ports/classes/net/xp_framework/unittest/xml/XslCallbackTest.class.php	(working copy)
-@@ -209,7 +209,7 @@
-     public function dateFormatCallback() {
-       $date= new Date('2009-09-20 21:33:00');
-       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
--        Node::fromObject($date, 'date')->getSource(),
-+        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
-         'xp.date::format',
-         array('string(/date/value)', "'Y-m-d H:i:s T'")
-       ));
-@@ -225,7 +225,7 @@
-       $date= new Date('2009-09-20 21:33:00');
-       $tz= new TimeZone('Australia/Sydney');
-       $this->assertEquals($date->toString('Y-m-d H:i:s T', $tz), $this->runTransformation(
--        Node::fromObject($date, 'date')->getSource(),
-+        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
-         'xp.date::format',
-         array('string(/date/value)', "'Y-m-d H:i:s T'", "'".$tz->getName()."'")
-       ));
-@@ -240,7 +240,7 @@
-     public function dateFormatCallbackWithEmptyTZ() {
-       $date= new Date('2009-09-20 21:33:00');
-       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
--        Node::fromObject($date, 'date')->getSource(),
-+        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
-         'xp.date::format',
-         array('string(/date/value)', "'Y-m-d H:i:s T'", "''")
-       ));
-@@ -255,7 +255,7 @@
-     public function dateFormatCallbackWithoutTZ() {
-       $date= new Date('2009-09-20 21:33:00');
-       $this->assertEquals($date->toString('Y-m-d H:i:s T'), $this->runTransformation(
--        Node::fromObject($date, 'date')->getSource(),
-+        Node::fromObject($date, 'date')->getSource(INDENT_NONE),
-         'xp.date::format',
-         array('string(/date/value)', "'Y-m-d H:i:s T'")
-       ));
