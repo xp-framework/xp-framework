@@ -224,8 +224,11 @@ Index: skeleton/xml/PCData.class.php
    /**
     * PCData allows to insert literal XML into a nodes contents.
     *
-@@ -26,9 +28,8 @@
+@@ -24,11 +26,11 @@
+    * Passing incorrect XML to this class will result in a not-
+    * wellformed output document.
     *
++   * @deprecated  Use xml.Fragment instead
     * @purpose  Wrapper
     */
 -  class PCData extends Object {
@@ -236,7 +239,7 @@ Index: skeleton/xml/PCData.class.php
        
      /**
       * Constructor
-@@ -37,7 +38,22 @@
+@@ -37,7 +39,22 @@
       */
      public function __construct($pcdata) {
        $this->pcdata= $pcdata;
@@ -377,6 +380,85 @@ Index: skeleton/xml/Comment.class.php
 +?>
 
 Property changes on: skeleton/xml/Comment.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/xml/Fragment.class.php
+===================================================================
+--- skeleton/xml/Fragment.class.php	(revision 0)
++++ skeleton/xml/Fragment.class.php	(revision 0)
+@@ -0,0 +1,68 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ */
++
++  uses('xml.Element');
++
++  /**
++   * Fragment allows to insert literal XML into a node's contents.
++   *
++   * Example:
++   * <code>
++   *   $tree= new Tree();
++   *   $tree->addChild(new Node('text', new Fragment('Hello<br/>World')));
++   * </code>
++   *
++   * The output will then be:
++   * <pre>
++   *   <document>
++   *     <text>Hello<br/>World</text>
++   *   </document>
++   * </pre>
++   *
++   * Note: The XML passed to Fragment's constructor is not validated!
++   * Passing incorrect XML to this class will result in a not-
++   * wellformed output document.
++   */
++  class Fragment extends Object implements Element {
++    public $pcdata= '';
++      
++    /**
++     * Constructor
++     *
++     * @param   string pcdata
++     */
++    public function __construct($pcdata) {
++      $this->pcdata= $pcdata;
++    }
++    
++    /**
++     * Append XML and return this fragment
++     *
++     * @param   string pcdata
++     * @return  xml.Fragment this
++     */
++    public function append($pcdata) {
++      $this->pcdata.= $pcdata;
++      return $this;
++    }
++
++    /**
++     * Retrieve XML representation
++     *
++     * @param   int indent default INDENT_WRAPPED
++     * @param   string encoding default 'iso-8859-1'
++     * @param   string inset default ''
++     * @return  string XML
++     */
++    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
++      $conv= 'iso-8859-1' != $encoding;
++      return $conv
++        ? iconv('iso-8859-1', $encoding, $this->pcdata)
++        : $this->pcdata
++      ;
++    }
++  }
++?>
+
+Property changes on: skeleton/xml/Fragment.class.php
 ___________________________________________________________________
 Added: svn:keywords
    + Id

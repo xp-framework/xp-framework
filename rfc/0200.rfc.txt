@@ -97,6 +97,17 @@ The constructor will be changed to add a <tt>Text</tt> child node:
 
 This will yield the same XML when <tt>getSource()</tt> is called.
 
+CData
+~~~~~
+The <tt>xml.CData</tt> class will also implement the <tt>Element</tt> 
+interface. 
+
+PCData vs. Fragment
+~~~~~~~~~~~~~~~~~~~
+The <tt>xml.PCData</tt> class will also implement the <tt>Element</tt> 
+interface. It will be deprecated though, and replaced with a new class
+called <tt>xml.Fragment</tt>.
+
 
 Security considerations
 -----------------------
