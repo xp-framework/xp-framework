@@ -984,7 +984,7 @@ Index: skeleton/xml/Text.class.php
 ===================================================================
 --- skeleton/xml/Text.class.php	(revision 0)
 +++ skeleton/xml/Text.class.php	(revision 0)
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,94 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -1033,9 +1033,15 @@ Index: skeleton/xml/Text.class.php
 +            'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
 +          );
 +        }
++        $this->content= $content;
++      } else if (is_float($content)) {
++        $this->content= ($content - floor($content) == 0)
++          ? number_format($content, 0, '', '')
++          : $this->content
++        ;
++      } else {
++        $this->content= $content;
 +      }
-+      
-+      $this->content= $content;
 +    }
 +    
 +    /**
@@ -1057,10 +1063,10 @@ Index: skeleton/xml/Text.class.php
 +     */
 +    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
 +      $conv= 'iso-8859-1' != $encoding;
-+      return $conv
-+        ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
-+        : htmlspecialchars($this->content)
-+      ;
++      return htmlspecialchars($conv
++        ? iconv('iso-8859-1', $encoding, $this->content)
++        : $this->content
++      );
 +    }
 +    
 +    /**
@@ -1083,7 +1089,62 @@ Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(revision 14454)
 +++ ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(working copy)
-@@ -215,7 +215,7 @@
+@@ -208,6 +208,54 @@
+     }
+ 
+     /**
++     * Tests a node with numbers
++     *
++     */
++    #[@test]
++    public function sourceOfNodeWithZero() {
++      $this->assertEquals(
++        '<number>0</number>', 
++        $this->sourceOf(new Node('number', 0))
++      );
++    }
++
++    /**
++     * Tests a node with numbers
++     *
++     */
++    #[@test]
++    public function sourceOfNodeWithNegativeNumber() {
++      $this->assertEquals(
++        '<number>-1</number>', 
++        $this->sourceOf(new Node('number', -1))
++      );
++    }
++
++    /**
++     * Tests a node with numbers
++     *
++     */
++    #[@test]
++    public function sourceOfNodeWithHugeDoubleNumber() {
++      $this->assertEquals(
++        '<number>214748364821474</number>', 
++        $this->sourceOf(new Node('number', (double)214748364821474))
++      );
++    }
++
++    /**
++     * Tests a node with numbers
++     *
++     */
++    #[@test]
++    public function sourceOfNodeWithHugeNegativeDoubleNumber() {
++      $this->assertEquals(
++        '<number>-214748364821474</number>', 
++        $this->sourceOf(new Node('number', (double)-214748364821474))
++      );
++    }
++
++    /**
+      * Tests a node with CDATA content. 
+      *
+      */
+@@ -215,7 +263,7 @@
      public function sourceOfNodeWithCData() {
        $this->assertEquals(
          '<text><![CDATA[Special characters: <>"\'&]]></text>', 
@@ -1092,7 +1153,7 @@ Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
        );
      }
  
-@@ -227,7 +227,7 @@
+@@ -227,7 +275,7 @@
      public function sourceOfNodeWithPCData() {
        $this->assertEquals(
          '<text>A <a href="http://xp-framework.net/">link</a> to click on</text>', 
