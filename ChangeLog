@@ -26,6 +26,8 @@ Features
 - Changed unittest.web.WebTestCase to load HTML from a stream instead
   of buffering it all into memory first
   (friebe)
+- Log exceptions caught by web runner to scriptlet log
+  (ohinckel)
   
 
 Version 5.7.8, released 2010-03-24
@@ -72,6 +74,9 @@ Bugfixes
 - Fixed Wrapper::load() not executing casters and checkers when array
   values were submitted and first value is empty
   (ohinckel, Sebastian Kusnier)
+- Fixed peer.URL::getQuery() to build query string correctly when using
+  multi-dimensional arrays in query string
+  (ohinckel)
 
 Features
 ~~~~~~~~

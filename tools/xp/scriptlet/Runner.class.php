@@ -145,14 +145,16 @@
      */
     protected function run() {
       $exception= NULL;
+      $cat= Logger::getInstance()->getCategory('scriptlet');
       if ($this->flags & self::TRACE && $this->scriptlet instanceof Traceable) {
-        $this->scriptlet->setTrace(Logger::getInstance()->getCategory('scriptlet'));
+        $this->scriptlet->setTrace($cat);
       }
       
       try {
         $this->scriptlet->init();
         $response= $this->scriptlet->process();
       } catch (HttpScriptletException $e) {
+        $cat->error('Web runner caught', $e);
 
         // Remember this exception to show it below the error page,
         // if this flag was set
