@@ -99,6 +99,7 @@
     public function __construct($uid= -1) {
       $this->setBoundary('----=_Part_'.uniqid(time(), TRUE));
       $this->headers[HEADER_MIMEVER]= $this->mimever;
+      $this->contenttype= 'multipart/mixed';
       parent::__construct($uid);
     }
     
@@ -152,7 +153,7 @@
     public function getContentType() {
       return $this->isSimpleMimePart()
         ? $this->parts[0]->getContenttype() :
-        'multipart/mixed';
+        parent::getContentType();
     }
       
     /**
