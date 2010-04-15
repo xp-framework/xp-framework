@@ -41,7 +41,8 @@
       $server   = '',
       $port     = 5667,
       $version  = NSCA_VERSION_2,
-      $service  = NULL;
+      $service  = NULL,
+      $host     = '';
 
     protected static
       $instance   = NULL;
