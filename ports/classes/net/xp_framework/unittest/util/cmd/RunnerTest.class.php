@@ -463,6 +463,50 @@
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('true', $this->out->getBytes());
     }
+
+    /**
+     * Test exceptions raised from argument handling
+     *
+     */
+    #[@test]
+    public function positionalArgumentException() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        
+        #[@arg(position= 0)]
+        public function setHost($host) { 
+          throw new IllegalArgumentException("Connecting to ".$host." disallowed by policy");
+        }
+        
+        public function run() { 
+          // Not reached
+        }
+      }');
+      $this->runWith(array($command->getClassName(), 'insecure.example.com'));
+      $this->assertOnStream($this->err, '*** Error for argument #1');
+      $this->assertOnStream($this->err, 'Connecting to insecure.example.com disallowed by policy');
+    }
+
+    /**
+     * Test exceptions raised from argument handling
+     *
+     */
+    #[@test]
+    public function namedArgumentException() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        
+        #[@arg]
+        public function setHost($host) { 
+          throw new IllegalArgumentException("Connecting to ".$host." disallowed by policy");
+        }
+        
+        public function run() { 
+          // Not reached
+        }
+      }');
+      $this->runWith(array($command->getClassName(), '--host=insecure.example.com'));
+      $this->assertOnStream($this->err, '*** Error for argument host');
+      $this->assertOnStream($this->err, 'Connecting to insecure.example.com disallowed by policy');
+    }
     
     /**
      * Assertion helper for "args" annotation tests
