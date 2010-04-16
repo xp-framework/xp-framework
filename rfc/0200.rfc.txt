@@ -1,0 +1,170 @@
+RFC 0200: XML API Rework
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Apr 11 11:18:34     2010
+@status: draft
+@target: 5.7.9
+@category: xml
+
+Scope of Change
+---------------
+The XML API will be extended to fully support markup-style XML documents.
+
+
+Rationale
+---------
+At the moment, certain information will be lost when loading and then
+emitting an XML tree:
+
+<code>
+  $xml= Tree::fromString('<html>Hello<br/>World</html>')->getSource();
+  
+  // <html>
+  //   World
+  //   <br/>
+  // </html>
+</code>
+
+
+Functionality
+-------------
+This loss of information is due to the fact that the above is transformed
+to the following internal structure by the parser:
+
+<pre>
+  Node(name = 'html', content= 'World') {
+    Node(name = 'br')
+  }
+</pre>
+
+The "Hello" is lost because any text encountered during parsing will be
+set as the enclosing node's content, while any node will be added as
+a child element. Then, when outputting the document again, the content
+is appended first and after that any existing child.
+
+Addressing this issue
+~~~~~~~~~~~~~~~~~~~~~
+Several new classes will be added to the xml package. They will all
+implement the <tt>xml.Element</tt> interface:
+
+<pre>
+  * xml.Text
+  * xml.Comment
+  * xml.ProcessingInstruction
+</pre>
+
+The <tt>xml.Node</tt> and <tt>xml.Tree</tt> class' <tt>addChild()</tt> 
+methods will be changed to accept any <tt>xml.Element</tt> implementation.
+
+Finally, the parser will turn markup as seen before into the following
+internal structure:
+
+<pre>
+  Node(name = 'html') {
+    Text(content = 'Hello'),
+    Node(name = 'br'),
+    Text(content = 'World')
+  }
+</pre>
+
+The existing model with children will be used for the new implementation,
+whereas the "content" member in a <tt>xml.Node</tt> and its accessors,
+the <tt>getContent()</tt> and <tt>setContent()</tt> methods will be 
+deprecated.
+
+BC: Constructor parameter "content"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A <tt>Node</tt> can be constructed with the content passed in its second
+parameter:
+
+<code>
+  $n= new Node('a', 'Click', array('href' => 'http://example.com/'));
+</code>
+
+The old behaviour would set the content member:
+<pre>
+  Node(name = 'a', content = 'Click', @{href = 'http://example.com/'})
+</pre>
+
+The constructor will be changed to add a <tt>Text</tt> child node:
+<pre>
+  Node(name = 'a', @{href = 'http://example.com/'}) {
+    Text(content = 'Click')   
+  }
+</code>
+
+This will yield the same XML when <tt>getSource()</tt> is called.
+
+CData
+~~~~~
+The <tt>xml.CData</tt> class will also implement the <tt>Element</tt> 
+interface. 
+
+PCData vs. Fragment
+~~~~~~~~~~~~~~~~~~~
+The <tt>xml.PCData</tt> class will also implement the <tt>Element</tt> 
+interface. It will be deprecated though, and replaced with a new class
+called <tt>xml.Fragment</tt>.
+
+I/O
+~~~
+The <tt>xml.Tree</tt>'s <tt>fromFile()</tt> and <tt>fromString()</tt>
+methods will be deprecated in favor of the <tt>xml.parser.TreeParser</tt>
+class.
+
+<code>
+  // Deprecated
+  $t= Tree::fromFile('payload.xml');
+  
+  // New
+  $parser= new TreeParser();
+  $t= $parser->parse(new StreamInputSource(new FileInputStream('payload.xml')));
+</code>
+
+The <tt>getSource()</tt> method will be deprecated in favor of the 
+<tt>asXml()</tt> method which will accept an <tt>xml.io.OutputFormat</tt>
+instance.
+
+<code>
+  // Deprecated
+  $xml= $tree->getSource(INDENT_DEFAULT);
+  
+  // New
+  $xml= $tree->asXml(OutputFormat::$DEFAULT);
+  
+  // Writing to any stream
+  $writer= new TreeWriter(new ...OutputStream(), OutputFormat::$DEFAULT);
+  $writer->write($tree);
+</code>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+(TODO: Test)
+
+
+Dependencies
+------------
+None.
+
+
+Related documents
+-----------------
+Inspiration:
+* http://dom4j.sourceforge.net/dom4j-1.6.1/index.html
+
+Implementing patch:
+* http://xp-framework.net/rfc/contrib/rfc0200.diff
+
+
+Comments
+--------
+
+<EOF>

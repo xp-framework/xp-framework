@@ -54,6 +54,7 @@
    */
   class NscaClient extends Object {
     public
+      $sock         = NULL,
       $version      = 0,
       $cryptmethod  = 0,
       $timeout      = 10;

@@ -35,7 +35,8 @@
       $class        = '',
       $transparency = VCAL_TRANSP_OPAQUE,
       $sequence     = '',
-      $url;
+      $url          = '',
+      $ctype        = NULL;
 
     /**
      * Set UID for Event
@@ -337,7 +338,7 @@
       if (!$empty && '' == $value) return '';
       
       if ($value instanceof Date) {   // Convert date into string
-        $representation= $value->format('%Y%m%dT%H%M%SZ');
+        $representation= $value->format('%Y%m%dT%H%M%SZ', new TimeZone('UTC'));
       } else if (is_object($value)) {
         foreach (get_object_vars($value) as $pkey => $pvalue) {
           if ('_value' == $pkey) continue;
