@@ -104,7 +104,7 @@
     public function nonExistantFile() {
       $return= $this->runWith(array('@@NON-EXISTANT@@.'.xp::CLASS_FILE_EXT));
       $this->assertEquals(1, $return);
-      $this->assertTrue((bool)strstr($this->err->getBytes(), '*** Cannot load class from non-existant file'));
+      $this->assertOnStream($this->err, '*** Cannot load class from non-existant file');
       $this->assertEquals('', $this->out->getBytes());
     }
 
