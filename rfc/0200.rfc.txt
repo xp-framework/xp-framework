@@ -163,6 +163,8 @@ Inspiration:
 Implementing patch:
 * http://xp-framework.net/rfc/contrib/rfc0200.diff
 
+Overlay:
+* http://xp-framework.net/rfc/contrib/rfc0200.xar
 
 Comments
 --------
