@@ -24,6 +24,7 @@
   class ClassLoaderTest extends TestCase {
     protected
       $libraryLoader   = NULL,
+      $brokenLoader    = NULL,
       $containedLoader = NULL;  
       
     /**
@@ -36,6 +37,11 @@
         ->getPackage()
         ->getPackage('lib')
         ->getResourceAsStream('three-and-four.xar')
+      )));
+      $this->brokenLoader= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive(XPClass::forName(xp::nameOf(__CLASS__))
+        ->getPackage()
+        ->getPackage('lib')
+        ->getResourceAsStream('broken.xar')
       )));
       $this->containedLoader= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive($this
         ->libraryLoader
@@ -51,6 +57,7 @@
     public function tearDown() {
       ClassLoader::removeLoader($this->libraryLoader);
       ClassLoader::removeLoader($this->containedLoader);
+      ClassLoader::removeLoader($this->brokenLoader);
     }
 
     /**
