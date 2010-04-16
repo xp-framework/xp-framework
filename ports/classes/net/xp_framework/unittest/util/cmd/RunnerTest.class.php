@@ -104,7 +104,7 @@
     public function nonExistantFile() {
       $return= $this->runWith(array('@@NON-EXISTANT@@.'.xp::CLASS_FILE_EXT));
       $this->assertEquals(1, $return);
-      $this->assertTrue((bool)strstr($this->err->getBytes(), '*** Cannot load class from non-existant file'));
+      $this->assertOnStream($this->err, '*** Cannot load class from non-existant file');
       $this->assertEquals('', $this->out->getBytes());
     }
 
@@ -463,6 +463,50 @@
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('true', $this->out->getBytes());
     }
+
+    /**
+     * Test exceptions raised from argument handling
+     *
+     */
+    #[@test]
+    public function positionalArgumentException() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        
+        #[@arg(position= 0)]
+        public function setHost($host) { 
+          throw new IllegalArgumentException("Connecting to ".$host." disallowed by policy");
+        }
+        
+        public function run() { 
+          // Not reached
+        }
+      }');
+      $this->runWith(array($command->getClassName(), 'insecure.example.com'));
+      $this->assertOnStream($this->err, '*** Error for argument #1');
+      $this->assertOnStream($this->err, 'Connecting to insecure.example.com disallowed by policy');
+    }
+
+    /**
+     * Test exceptions raised from argument handling
+     *
+     */
+    #[@test]
+    public function namedArgumentException() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        
+        #[@arg]
+        public function setHost($host) { 
+          throw new IllegalArgumentException("Connecting to ".$host." disallowed by policy");
+        }
+        
+        public function run() { 
+          // Not reached
+        }
+      }');
+      $this->runWith(array($command->getClassName(), '--host=insecure.example.com'));
+      $this->assertOnStream($this->err, '*** Error for argument host');
+      $this->assertOnStream($this->err, 'Connecting to insecure.example.com disallowed by policy');
+    }
     
     /**
      * Assertion helper for "args" annotation tests
@@ -783,6 +827,28 @@
       }');
       $this->runWith(array($command->getClassName(), 'Test'));
       $this->assertEquals('lang.XPClass<util.log.LogCategory>', $this->out->getBytes());
+    }
+
+    /**
+     * Test logger category injection
+     *
+     */
+    #[@test]
+    public function injectionException() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        
+        #[@inject(name= "debug")]
+        public function setTrace(LogCategory $cat) { 
+          throw new IllegalArgumentException("Logging disabled by policy");
+        }
+        
+        public function run() { 
+          // Not reached
+        }
+      }');
+      $this->runWith(array($command->getClassName()));
+      $this->assertOnStream($this->err, '*** Error injecting util.log.LogCategory debug');
+      $this->assertOnStream($this->err, 'Logging disabled by policy');
     }
   }
 ?>

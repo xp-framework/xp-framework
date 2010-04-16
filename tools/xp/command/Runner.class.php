@@ -305,8 +305,8 @@
 
         try {
           $method->invoke($instance, $args);
-        } catch (Throwable $e) {
-          self::$err->writeLine('*** Error injecting '.$inject['name'].': '.$e->getMessage());
+        } catch (TargetInvocationException $e) {
+          self::$err->writeLine('*** Error injecting '.$type.' '.$inject['name'].': '.$e->getCause()->compoundMessage());
           return 2;
         }
       }

@@ -74,6 +74,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made exception messages raised from injection more verbose in XPCLIs
+  (friebe)
 - Added support to peer.Socket::canRead() to block forever when NULL
   is passed as value for the timeout parameter.
   (friebe)
