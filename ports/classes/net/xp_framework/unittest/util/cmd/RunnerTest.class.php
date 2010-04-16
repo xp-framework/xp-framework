@@ -784,5 +784,27 @@
       $this->runWith(array($command->getClassName(), 'Test'));
       $this->assertEquals('lang.XPClass<util.log.LogCategory>', $this->out->getBytes());
     }
+
+    /**
+     * Test logger category injection
+     *
+     */
+    #[@test]
+    public function injectionException() {
+      $command= newinstance('util.cmd.Command', array(), '{
+        
+        #[@inject(name= "debug")]
+        public function setTrace(LogCategory $cat) { 
+          throw new IllegalArgumentException("Logging disabled by policy");
+        }
+        
+        public function run() { 
+          // Not reached
+        }
+      }');
+      $this->runWith(array($command->getClassName()));
+      $this->assertOnStream($this->err, '*** Error injecting util.log.LogCategory debug');
+      $this->assertOnStream($this->err, 'Logging disabled by policy');
+    }
   }
 ?>
