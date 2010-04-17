@@ -9,8 +9,8 @@
   /**
    * Dynamic class loader to define classes at runtime
    *
-   * @see      xp://lang.ClassLoader::defineClass
-   * @purpose  Dynamuc loading of classes
+   * @see   xp://lang.ClassLoader::defineClass
+   * @test  xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
    */
   class DynamicClassLoader extends Object implements IClassLoader {
     protected

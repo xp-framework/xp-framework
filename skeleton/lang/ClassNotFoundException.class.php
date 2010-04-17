@@ -15,6 +15,9 @@
    *
    * @see   xp://lang.IClassLoader#loadClass
    * @see   xp://lang.XPClass#forName
+   * @test  xp://net.xp_framework.unittest.reflection.ClassLoaderTest
+   * @test  xp://net.xp_framework.unittest.reflection.ReflectionTest
+   * @test  xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
    */
   class ClassNotFoundException extends ChainedException implements ClassLoadingException {
     protected

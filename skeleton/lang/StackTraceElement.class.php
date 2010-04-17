@@ -9,7 +9,7 @@
    * Each element represents a single stack frame.
    *
    * @see      xp://lang.Throwable#getStackTrace
-   * @purpose  Represent execution stack frame
+   * @test     xp://net.xp_framework.unittest.core.ExceptionsTest
    */
   class StackTraceElement extends Object {
     public

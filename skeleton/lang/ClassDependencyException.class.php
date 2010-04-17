@@ -11,6 +11,7 @@
    *
    * @see   xp://lang.IClassLoader#loadClass
    * @see   xp://lang.XPClass#forName
+   * @test  xp://net.xp_framework.unittest.reflection.ClassLoaderTest
    */
   class ClassDependencyException extends ClassNotFoundException {
 
@@ -23,6 +24,5 @@
     protected function message() {
       return 'Class "%s" could not be found';
     }
-
   }
 ?>
