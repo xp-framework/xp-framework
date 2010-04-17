@@ -29,9 +29,9 @@
      */
     public function setUp() {
       $this->handler= newinstance('lang.reflect.InvocationHandler', array(), '{
-        var $invocations= array();
+        public $invocations= array();
 
-        function invoke($proxy, $method, $args) { 
+        public function invoke($proxy, $method, $args) { 
           $this->invocations[$method."_".sizeof($args)]= $args;
         }
       }');
