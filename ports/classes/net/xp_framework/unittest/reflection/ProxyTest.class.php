@@ -29,9 +29,9 @@
      */
     public function setUp() {
       $this->handler= newinstance('lang.reflect.InvocationHandler', array(), '{
-        var $invocations= array();
+        public $invocations= array();
 
-        function invoke($proxy, $method, $args) { 
+        public function invoke($proxy, $method, $args) { 
           $this->invocations[$method."_".sizeof($args)]= $args;
         }
       }');
@@ -69,6 +69,33 @@
         $interfaces,
         $this->handler
       );
+    }
+
+    /**
+     * Tests passing NULL for classloader
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nullClassLoader() {
+      Proxy::getProxyClass(NULL, array($this->iteratorClass));
+    }
+
+    /**
+     * Tests passing a list of empty interfaces
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function emptyInterfaces() {
+      Proxy::getProxyClass(ClassLoader::getDefault(), array());
+    }
+
+    /**
+     * Tests passing NULL for interfaces
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nullInterfaces() {
+      Proxy::getProxyClass(ClassLoader::getDefault(), NULL);
     }
 
     /**

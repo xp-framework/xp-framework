@@ -176,6 +176,15 @@
     }
 
     /**
+     * Test name of nickel coin
+     *
+     */
+    #[@test]
+    public function nickelCoinValue() {
+      $this->assertEquals(2, Coin::$nickel->value());
+    }
+
+    /**
      * Test an enum member's string representation
      *
      */
