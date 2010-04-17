@@ -72,6 +72,33 @@
     }
 
     /**
+     * Tests passing NULL for classloader
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nullClassLoader() {
+      Proxy::getProxyClass(NULL, array($this->iteratorClass));
+    }
+
+    /**
+     * Tests passing a list of empty interfaces
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function emptyInterfaces() {
+      Proxy::getProxyClass(ClassLoader::getDefault(), array());
+    }
+
+    /**
+     * Tests passing NULL for interfaces
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function nullInterfaces() {
+      Proxy::getProxyClass(ClassLoader::getDefault(), NULL);
+    }
+
+    /**
      * Tests Proxy classes are prefixed to make them unique. The prefix
      * is a constant defined in the Proxy class.
      *

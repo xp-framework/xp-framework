@@ -34,14 +34,19 @@
      * specified class loader and will implement all of the supplied 
      * interfaces (also loaded by the classloader).
      *
-     * @param   lang.ClassLoader classloader
+     * @param   lang.IClassLoader classloader
      * @param   lang.XPClass[] interfaces names of the interfaces to implement
      * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public static function getProxyClass($classloader, $interfaces) {
+    public static function getProxyClass(IClassLoader $classloader, array $interfaces) {
       static $num= 0;
       static $cache= array();
+      
+      $t= sizeof($interfaces);
+      if (0 === $t) {
+        throw new IllegalArgumentException('Interfaces may not be empty');
+      }
       
       // Calculate cache key (composed of the names of all interfaces)
       $key= $classloader->hashCode().':'.implode(';', array_map(
@@ -55,12 +60,12 @@
       $bytes= 'class '.$name.' extends '.xp::reflect('lang.reflect.Proxy').' implements ';
       $added= array();
       
-      for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
+      for ($j= 0; $j < $t; $j++) {
         $bytes.= xp::reflect($interfaces[$j]->getName()).', ';
       }
       $bytes= substr($bytes, 0, -2)." {\n";
 
-      for ($j= 0, $t= sizeof($interfaces); $j < $t; $j++) {
+      for ($j= 0; $j < $t; $j++) {
         $if= $interfaces[$j];
         
         // Verify that the Class object actually represents an interface
