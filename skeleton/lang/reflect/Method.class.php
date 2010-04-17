@@ -9,10 +9,10 @@
   /**
    * Represents a class method
    *
-   * @test     xp://net.xp_framework.unittest.reflection.MethodsTest
-   * @see      xp://lang.XPClass
-   * @see      xp://lang.reflect.Routine
-   * @purpose  Reflection
+   * @see   xp://lang.XPClass
+   * @see   xp://lang.reflect.Routine
+   * @test  xp://net.xp_framework.unittest.reflection.MethodsTest
+   * @test  xp://net.xp_framework.unittest.reflection.ReflectionTest
    */
   class Method extends Routine {
 

@@ -9,10 +9,10 @@
   /**
    * Represents a method's parameter
    *
-   * @see      xp://lang.reflect.Method#getParameter
-   * @see      xp://lang.reflect.Method#getParameters
-   * @see      xp://lang.reflect.Method#numParameters
-   * @purpose  purpose
+   * @see   xp://lang.reflect.Method#getParameter
+   * @see   xp://lang.reflect.Method#getParameters
+   * @see   xp://lang.reflect.Method#numParameters
+   * @test  xp://net.xp_framework.unittest.reflection.ReflectionTest
    */
   class lang·reflect·Parameter extends Object {
     protected
