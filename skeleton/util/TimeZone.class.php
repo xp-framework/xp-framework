@@ -14,6 +14,7 @@
    *   printf("Offset is %s\n", $tz->getOffset());  // -0600
    * </code>
    *
+   * @test      xp://net.xp_framework.unittest.util.TimeZoneTest
    * @ext       datetime
    * @see       php://datetime
    * @see       php://timezones
