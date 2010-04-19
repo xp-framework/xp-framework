@@ -143,5 +143,14 @@
       $this->assertEquals('CET', $transition->abbr());
       $this->assertEquals(new Date('2007-10-28 02:00:00 Europe/Berlin'), $transition->getDate());
     }
+
+    /**
+     * Test an unknown timezone name
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function unknownTimeZone() {
+      new TimeZone('UNKNOWN');
+    }
   }
 ?>
