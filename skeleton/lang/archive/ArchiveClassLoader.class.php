@@ -22,7 +22,7 @@
    *   $obj= $class->newInstance();
    * </code>
    *
-   * @test     xp://net.xp_framework.unittest.io.ArchiveClassLoaderTest
+   * @test     xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
    * @purpose  Load classes from an archive
    * @see      xp://lang.ClassLoader
    * @see      xp://lang.archive.Archive

@@ -31,7 +31,7 @@
    *   $bytes= $a->extract('webservices/soap/SOAPMessage.class.php');
    * </code>
    * 
-   * @test     xp://net.xp_framework.unittest.archive.ArchiveTest
+   * @test     xp://net.xp_framework.unittest.core.ArchiveClassLoaderTest
    * @purpose  Provide archiving
    * @see      http://java.sun.com/j2se/1.4/docs/api/java/util/jar/package-summary.html
    */
