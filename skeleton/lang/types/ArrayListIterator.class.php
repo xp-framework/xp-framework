@@ -7,7 +7,8 @@
   /**
    * ArrayList iterator
    *
-   * @see      php://language.oop5.iterations
+   * @test  xp://net.xp_framework.unittest.core.types.ArrayListTest
+   * @see   php://language.oop5.iterations
    */
   class ArrayListIterator extends Object implements Iterator {
     protected $iterator = 0;
