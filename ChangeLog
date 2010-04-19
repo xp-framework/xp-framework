@@ -8,6 +8,9 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.reflect.Proxy class to not produce fatal errors when passed
+  an empty array of interfaces to implement
+  (friebe)
 - Fixed common stack trace element calculation in lang.ChainedException
   if chained exception is a chained exception itself.
   (friebe)
