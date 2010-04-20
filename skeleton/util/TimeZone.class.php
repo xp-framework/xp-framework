@@ -7,18 +7,17 @@
   uses('util.Date');
 
   /**
-   * Time zone
+   * Time zone calculation
    *
    * <code>
    *   $tz= new TimeZone('Europe/Berlin');
    *   printf("Offset is %s\n", $tz->getOffset());  // -0600
    * </code>
    *
-   * @test      xp://net.xp_framework.unittest.util.TimeZoneTest
-   * @ext       datetime
-   * @see       php://datetime
-   * @see       php://timezones
-   * @purpose   Time zone calculation
+   * @test    xp://net.xp_framework.unittest.util.TimeZoneTest
+   * @ext     datetime
+   * @see     php://datetime
+   * @see     php://timezones
    */
   class TimeZone extends Object {
     protected $tz= NULL;
