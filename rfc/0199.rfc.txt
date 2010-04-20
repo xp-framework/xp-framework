@@ -1,6 +1,6 @@
-RFC 0197: Assertions
+RFC 0199: Assertions
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: friebe
 @created: Tue Dec 22 20:15:04     2009
