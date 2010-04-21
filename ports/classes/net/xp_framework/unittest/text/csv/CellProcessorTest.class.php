@@ -16,6 +16,7 @@
     'text.csv.processors.FormatBool',
     'text.csv.processors.AsEnum',
     'text.csv.processors.FormatEnum',
+    'text.csv.processors.FormatNumber',
     'text.csv.processors.constraint.Optional',
     'text.csv.processors.constraint.Required',
     'text.csv.processors.constraint.Unique',
@@ -451,6 +452,44 @@
         NULL,
         new FormatEnum()
       ))->write(array('200', new Object()));
+    }
+
+    /**
+     * Test FormatNumber processor
+     *
+     */
+    #[@test]
+    public function formatNumber() {
+      $writer= $this->newWriter()->withProcessors(array(
+        create(new FormatNumber())->withFormat(5, '.'),
+        create(new FormatNumber())->withFormat(2, ',', "'")
+      ));
+      $writer->write(array(3.75, 10000000.5));
+      $this->assertEquals("3.75000;10'000'000,50\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test FormatNumber processor
+     *
+     */
+    #[@test]
+    public function formatNumberNull() {
+      $writer= $this->newWriter()->withProcessors(array(
+        create(new FormatNumber())->withFormat(2, '.')
+      ));
+      $writer->write(array(NULL));
+      $this->assertEquals("0.00\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test FormatNumber processor
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function formatNotANumber() {
+      $this->newWriter()->withProcessors(array(
+        create(new FormatNumber())->withFormat(2, '.')
+      ))->write(array('Hello'));
     }
 
     /**
