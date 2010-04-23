@@ -26,6 +26,7 @@
     protected
       $flags      = 0x0000,
       $webroot    = NULL,
+      $profile    = NULL,
       $conf       = NULL,
       $scriptlet  = NULL;
     
