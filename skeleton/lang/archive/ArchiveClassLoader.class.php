@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('lang.IClassLoader');
+  uses('lang.AbstractClassLoader');
 
   /** 
    * Loads XP classes from a XAR (XP Archive)
@@ -28,9 +28,8 @@
    * @see      xp://lang.archive.Archive
    * @ext      tokenize
    */
-  class ArchiveClassLoader extends Object implements IClassLoader {
-    protected
-      $archive  = NULL;
+  class ArchiveClassLoader extends AbstractClassLoader {
+    protected $archive= NULL;
     
     /**
      * Constructor
@@ -38,25 +37,15 @@
      * @param   var archive either a string or a lang.archive.Archive instance
      */
     public function __construct($archive) {
-      $uri= $archive instanceof Archive ? $archive->getURI() : $archive;
+      $this->path= $archive instanceof Archive ? $archive->getURI() : $archive;
 
       // Archive within an archive
-      if (0 === strncmp('xar://', $uri, 6)) {
-        $this->archive= 'xar://'.urlencode($uri).'?';
-      } else {
-        $this->archive= 'xar://'.$uri.'?';
+      if (0 === strncmp('xar://', $this->path, 6)) {
+        $this->path= urlencode($this->path);
       }
+      $this->archive= 'xar://'.$this->path.'?';
     }
 
-    /**
-     * Creates a string representation
-     *
-     * @return  string
-     */
-    public function toString() {
-      return $this->getClassName(). '<'.$this->archive.'>';
-    }
-    
     /**
      * Load class bytes
      *
@@ -68,77 +57,15 @@
     }
     
     /**
-     * Load the class by the specified name
+     * Returns URI suitable for include() given a class name
      *
-     * @param   string class fully qualified class name io.File
-     * @return  lang.XPClass
-     * @throws  lang.ClassNotFoundException in case the class can not be found
-     * @throws  lang.FormatException in case the class file is malformed
+     * @param   string class
+     * @return  string
      */
-    public function loadClass($class) {
-      return new XPClass($this->loadClass0($class));
+    protected function classUri($class) {
+      return $this->archive.strtr($class, '.', '/').xp::CLASS_FILE_EXT;
     }
 
-    /**
-     * Loads a class
-     *
-     * @param   string class fully qualified class name
-     * @return  string class name of class loaded
-     * @throws  lang.ClassNotFoundException in case the class can not be found
-     * @throws  lang.ClassFormatException in case the class format is invalid
-     */
-    public function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
-
-      // Load class
-      $package= NULL;
-      xp::$registry['classloader.'.$class]= 'lang.archive.ArchiveClassLoader://'.substr($this->archive, 6, -1);
-      xp::$registry['cl.level']++;
-      try {
-        $r= include($this->archive.strtr($class, '.', '/').xp::CLASS_FILE_EXT);
-      } catch (ClassLoadingException $e) {
-        xp::$registry['cl.level']--;
-
-        $decl= (NULL === $package
-          ? substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1))
-          : strtr($class, '.', '·')
-        );
-
-        // If class was declared, but loading threw an exception it means
-        // a "soft" dependency, one that is only required at runtime, was
-        // not loaded, the class itself has been declared.
-        if (class_exists($decl, FALSE) || interface_exists($decl, FALSE)) {
-          raise('lang.ClassDependencyException', $class, array($this), $e);
-        }
-
-        // If otherwise, a "hard" dependency could not be loaded, eg. the
-        // base class or a required interface and thus the class could not
-        // be declared.
-        raise('lang.ClassLinkageException', $class, array($this), $e);
-      }
-
-      xp::$registry['cl.level']--;
-      if (FALSE === $r) {
-        unset(xp::$registry['classloader.'.$class]);
-        throw new ClassNotFoundException($class, array($this));
-      }
-
-      // Register it
-      $name= ($package ? strtr($package, '.', '·').'·' : '').substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
-      if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        unset(xp::$registry['classloader.'.$class]);
-        raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
-      }
-      xp::$registry['class.'.$name]= $class;
-      method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-      if (0 == xp::$registry['cl.level']) {
-        $invocations= xp::$registry['cl.inv'];
-        xp::$registry['cl.inv']= array();
-        foreach ($invocations as $inv) call_user_func($inv);
-      }
-      return $name;
-    }
-    
     /**
      * Loads a resource.
      *
