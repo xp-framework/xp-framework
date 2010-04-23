@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Deprecated com.google.soap.search package, it's been discontinued 
+  by Google
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed lang.reflect.Proxy class to not produce fatal errors when passed

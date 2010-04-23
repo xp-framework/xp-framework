@@ -35,6 +35,7 @@
    *
    * Note: You need a valid license key to run the search. 
    * 
+   * @deprecated  http://googlecode.blogspot.com/2009/08/well-earned-retirement-for-soap-search.html
    * @see      http://www.google.com/apis/api_faq.html#tech5 Why do I need a license key?
    * @see      http://api.google.com/GoogleSearch.wsdl The WSDL this was generated from
    * @see      http://www.google.com/apis/reference.html API reference
