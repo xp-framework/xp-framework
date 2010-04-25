@@ -8,7 +8,7 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
-- Deprecated com.google.soap.search package, it's been discontinued 
+- Ports: Deprecated com.google.soap.search package, it's been discontinued 
   by Google
   (friebe)
 
@@ -32,6 +32,8 @@ Features
 - Refactored class loader implementations and extracted common code in
   all three implementations into an abstract base class
   (friebe)
+- Ports: Added package org.codehaus.stomp
+  (kiesel)
 - Introduced new class loading exceptions, lang.ClassDependencyException 
   and lang.ClassLinkageException which inherit the the existing 
   lang.ClassNotFoundException class.
