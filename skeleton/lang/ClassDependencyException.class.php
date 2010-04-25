@@ -22,7 +22,7 @@
      * @return  string
      */
     protected function message() {
-      return 'Class "%s" could not be found';
+      return 'Dependencies for class "%s" could not be loaded';
     }
   }
 ?>
