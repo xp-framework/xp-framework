@@ -1,0 +1,93 @@
+RFC 0201: XP Overlays
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Apr 25 12:42:42     2010
+@status: draft
+@target: 5.7.9
+@category: <core>
+
+Scope of Change
+---------------
+Path files will support prepending elements to the class path via special
+syntax. 
+
+
+Rationale
+---------
+Sometimes it's necessary to overwrite certain parts of the XP framework's
+classes (the ones distributed in xp-rt xar files). One of the usecases is
+to keep using deprecated APIs in conjunction with a release in which they
+were removed, but being able to use new APIs provided with this release
+in other parts of the program. Another example is the ability to production-
+test new functionality (e.g., from SVN head, or even from the experiments
+in xp forge) together with the latest release.
+
+
+Functionality
+-------------
+Lines in path files starting with an exclamation mark will be prepended
+to the class path rather than being appended, which is the default mode
+of operations.
+
+Example (~/projects/hub/class.pth)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+  !lib/ftp-bc-2010-04-30.xar
+  src
+  lib/sqlproxy-1.0.16.xar
+</pre>
+
+Assuming an XP release from /opt/xp/lib is used, this would lead to the 
+following class path:
+
+<pre>
+  ~/projects/hub/lib/ftp-bc-2010-04-30.xar
+  /opt/xp/lib/5.7.8/
+  /opt/xp/lib/5.7.8/xp-rt-5.7.8.xar
+  /opt/xp/lib/5.7.8/xp-tools-5.7.8.xar
+  ~/projects/hub/src
+  ~/projects/hub/lib/sqlproxy-1.0.16.xar
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+The class loading mechanism searches for classes and resources in the 
+order of appearance in the class path, that is, even if only small parts
+of the XP Framework are overwritten, the prepended elements are asked
+for all XP Framework classes, including "Object" and others. That's why
+overlaying the XP Framework will make the class loading process slower,
+depending on the size of the overlay.
+
+
+Dependencies
+------------
+If relative path names starting with an exclamation mark were used in
+path files, they must now be written as <tt>./!path</tt>. Path entries
+containg the exclamation mark at the end or anywhere inbetween do not 
+need to be changed.
+
+
+Related documents
+-----------------
+None.
+
+
+Comments
+--------
+friebe, Sun Apr 25 13:02:21     2010
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We generally continue to support deprecated features at least for one 
+year - and will always announce deprecation in the "Heads up!" section 
+in the ChangeLog. Instead of continuing the use deprecated APIs the XP 
+team suggests to migrate to the new API, but we also recognize their
+might be situations in which this is not possible.
+
+<EOF>
