@@ -35,7 +35,7 @@ Features
 - Ports: Added package org.codehaus.stomp
   (kiesel)
 - Introduced new class loading exceptions, lang.ClassDependencyException 
-  and lang.ClassLinkageException which inherit the the existing 
+  and lang.ClassLinkageException which inherit the existing 
   lang.ClassNotFoundException class.
   (kiesel)
 - Made exception messages raised from injection more verbose in XPCLIs
