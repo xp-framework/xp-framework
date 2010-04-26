@@ -15,7 +15,8 @@
   class DynamicClassLoader extends AbstractClassLoader {
     protected
       $position = 0,
-      $current  = '';
+      $current  = '',
+      $context  = NULL;   // Used by PHP internally for stream support
 
     protected static
       $bytes    = array();
@@ -30,7 +31,7 @@
      * @param   string context
      */
     public function __construct($context= NULL) {
-      $this->path= $context;
+      $this->path= $this->context= $context;
     }
     
     /**
