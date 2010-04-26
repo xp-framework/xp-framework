@@ -124,9 +124,13 @@ side conversions necessary.
   string "utf-8"
 
 * PostgreSQL:
-  TODO
-
+  After connecting, the SQL query 'set names "utf8";' will be sent.
+  
 * SQLite:
+  The encoding can only be set once for the main database by using
+  'PRAGMA encoding = "UTF-8";'. Once it's set, it can not be changed.
+
+* MS-SQL:
   TODO
 
 <pre>
