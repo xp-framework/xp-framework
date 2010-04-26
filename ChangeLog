@@ -29,6 +29,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Allowed changing contenttype to use others than multipart/mixed in
+  peer.mail.MimeMessage
+  (gellweiler)
 - Refactored class loader implementations and extracted common code in
   all three implementations into an abstract base class
   (friebe)
