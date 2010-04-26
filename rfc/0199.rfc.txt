@@ -1,34 +1,77 @@
-RFC 0197: Assertions
+RFC 0199: Assertions
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: friebe
 @created: Tue Dec 22 20:15:04     2009
 @status: draft
+@target:  5.7.10
 @category: unittest
 
 Scope of Change
 ---------------
+A new API for assertions will be added: <tt>Assert::that()</tt>.
+
 
 Rationale
 ---------
+More verbose error messages for the failure case.
+
 
 Functionality
 -------------
+Instead of using the <tt>unittest.TestCase</tt> class' methods such as 
+<tt>assertEquals()</tt> and friends the static <tt>Assert::that()</tt>
+method is used in conjunction with constraint objects created by the
+<tt>Is</tt> factor class:
+
+<code>
+  Assert::that('Hello', Is::equalTo('Hello'));
+</code>
+
+The "Is" factory
+~~~~~~~~~~~~~~~~
+<code>
+  class Is extends Object {
+    public static function equalTo($value) { ... }
+    public static function theSameAs($value) { ... }
+    public static function not() { ... }
+    public static function either() { ... }
+    public static function between($lo, $hi) { ... }
+    public static function greaterThan($lo) { ... }
+    public static function lessThan($hi) { ... }
+    public static function null() { ... }
+    public static function false() { ... }
+    public static function true() { ... }
+    public static function anInstanceOf($type) { ... }
+  }
+</code>
 
 Security considerations
 -----------------------
+None
+
 
 Speed impact
 ------------
+None, optional API
+
 
 Dependencies
 ------------
+None
+
 
 Related documents
 -----------------
+Flexible JUnit assertions with assertThat()
 * http://joe.truemesh.com/blog/000511.html
-  Flexible JUnit assertions with assertThat()
+
+Overlay:
+* http://xp-framework.net/rfc/contrib/rfc0199.xar
+
+JMock constraints:
+* http://jmock.org/docs/javadoc/org/jmock/core/Constraint.html
 
 Comments
 --------

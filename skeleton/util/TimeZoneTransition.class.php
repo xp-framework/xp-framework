@@ -7,8 +7,8 @@
   /**
    * Represent a timezone transition.
    *
-   * @see      xp://util.TimeZone
-   * @purpose  Reflection on timezone transitions
+   * @see   xp://util.TimeZone
+   * @test  xp://net.xp_framework.unittest.util.TimeZoneTest
    */
   class TimeZoneTransition extends Object {
     protected

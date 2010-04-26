@@ -4,22 +4,19 @@
  * $Id$
  */
 
-  uses('lang.IClassLoader');
+  uses('lang.AbstractClassLoader');
 
   /**
    * Dynamic class loader to define classes at runtime
    *
-   * @see      xp://lang.ClassLoader::defineClass
-   * @purpose  Dynamuc loading of classes
+   * @see   xp://lang.ClassLoader::defineClass
+   * @test  xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
    */
-  class DynamicClassLoader extends Object implements IClassLoader {
+  class DynamicClassLoader extends AbstractClassLoader {
     protected
       $position = 0,
       $current  = '';
 
-    public
-      $context  = '';
-    
     protected static
       $bytes    = array();
     
@@ -33,7 +30,7 @@
      * @param   string context
      */
     public function __construct($context= NULL) {
-      $this->context= $context;
+      $this->path= $context;
     }
     
     /**
@@ -87,81 +84,15 @@
     }
     
     /**
-     * Loads a class
+     * Returns URI suitable for include() given a class name
      *
-     * @param   string class fully qualified class name
-     * @return  string class name of class loaded
-     * @throws  lang.ClassNotFoundException in case the class can not be found
-     * @throws  lang.ClassFormatException in case the class format is invalid
+     * @param   string class
+     * @return  string
      */
-    public function loadClass0($class) {
-      if (isset(xp::$registry['classloader.'.$class])) return xp::reflect($class);
-
-      if (!isset(self::$bytes[$class])) {
-        throw new ClassNotFoundException($class, array($this));
-      }
-      
-      // Load class
-      $package= NULL;
-      xp::$registry['classloader.'.$class]= 'lang.DynamicClassLoader://'.$this->context;
-      xp::$registry['cl.level']++;
-      try {
-        $r= include('dyn://'.$class);
-      } catch (ClassLoadingException $e) {
-        xp::$registry['cl.level']--;
-
-        // Determine PHP's name of the class
-        $decl= (NULL === $package
-          ? substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1))
-          : strtr($class, '.', '·')
-        );
-
-        // If class was declared, but loading threw an exception it means
-        // a "soft" dependency, one that is only required at runtime, was
-        // not loaded, the class itself has been declared.
-        if (class_exists($decl, FALSE) || interface_exists($decl, FALSE)) {
-          raise('lang.ClassDependencyException', $class, array($this), $e);
-        }
-
-        // If otherwise, a "hard" dependency could not be loaded, eg. the
-        // base class or a required interface and thus the class could not
-        // be declared.
-        raise('lang.ClassLinkageException', $class, array($this), $e);
-      }
-
-      xp::$registry['cl.level']--;
-      if (FALSE === $r) {
-        unset(xp::$registry['classloader.'.$class]);
-        throw new ClassNotFoundException($class, array($this));
-      }
-
-      // Register it
-      $name= ($package ? strtr($package, '.', '·').'·' : '').substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
-      if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        unset(xp::$registry['classloader.'.$class]);
-        raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
-      }
-      xp::$registry['class.'.$name]= $class;
-      method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
-      if (0 == xp::$registry['cl.level']) {
-        $invocations= xp::$registry['cl.inv'];
-        xp::$registry['cl.inv']= array();
-        foreach ($invocations as $inv) call_user_func($inv);
-      }
-      return $name;
+    protected function classUri($class) {
+      return 'dyn://'.$class;
     }
     
-    /**
-     * Load the class by the specified name
-     *
-     * @param   string class fully qualified class name io.File
-     * @return  lang.XPClass
-     * @throws  lang.ClassNotFoundException in case the class can not be found
-     */
-    public function loadClass($class) {
-      return new XPClass($this->loadClass0($class));
-    }
-
     /**
      * Fetch instance of classloader by path
      *
@@ -257,9 +188,7 @@
      * @return  array<string, string>
      */
     public function stream_stat() {
-      return array(
-        'size'  => strlen(self::$bytes[$this->current])
-      );
+      return array('size' => strlen(self::$bytes[$this->current]));
     }
 
     /**
@@ -313,9 +242,7 @@
      */
     public function url_stat($path) {
       list($name)= sscanf($path, 'dyn://%s');
-      return array(
-        'size'  => strlen(self::$bytes[$name])
-      );
+      return array('size'  => strlen(self::$bytes[$name]));
     }
   }
 ?>

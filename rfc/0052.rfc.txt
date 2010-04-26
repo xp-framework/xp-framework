@@ -552,9 +552,15 @@ Compiled classes can even use source classes and vice versa.
 
 Related documents
 -----------------
-* http://experiments.xp-framework.net/xml/browse?experiments,arena,lang Experiment
-* http://msdn.microsoft.com/en-us/library/zw39ybk8(VS.85).aspx With...End With Statement 
-
+* http://experiments.xp-framework.net/xml/browse?experiments,arena,lang 
+  Experiment
+* http://msdn.microsoft.com/en-us/library/zw39ybk8(VS.85).aspx 
+  With...End With Statement 
+* http://www.javaworld.com/javaworld/jw-06-2006/jw-0612-dynamic.html 
+  Add dynamic Java code to your application
+* http://www.freejavaguide.com/jcl.pdf
+  Understanding the Java ClassLoader
+  
 Comments
 --------
 friebe, Sat Jan 28 18:21:05     2006

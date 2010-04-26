@@ -10,7 +10,7 @@
    *
    * It supports short and long options, e.g. -h or --help
    *
-   * @test     xp://net.xp_framework.unittest.ParamStringTest
+   * @test     xp://net.xp_framework.unittest.util.cmd.ParamStringTest
    * @purpose  Easy access to commandline arguments
    */
   class ParamString extends Object {

@@ -16,9 +16,9 @@
    * access modifiers (public, private, protected, final, abstract, 
    * static) are encoded in (as a bitfield) into strings.
    *
-   * @see      xp://lang.reflect.Routine#getModifiers
-   * @see      xp://lang.reflect.Field#getModifiers
-   * @purpose  Reflection utility
+   * @see   xp://lang.reflect.Routine#getModifiers
+   * @see   xp://lang.reflect.Field#getModifiers
+   * @test  xp://net.xp_framework.unittest.reflection.ModifiersTest
    */
   class Modifiers extends Object {
 

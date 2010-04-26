@@ -58,6 +58,7 @@
    * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @test     xp://net.xp_framework.unittest.reflection.ClassDetailsTest
    * @test     xp://net.xp_framework.unittest.reflection.IsInstanceTest
+   * @test     xp://net.xp_framework.unittest.reflection.ClassCastingTest
    * @purpose  Reflection
    */
   class XPClass extends Type {

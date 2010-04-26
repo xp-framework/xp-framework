@@ -1,0 +1,61 @@
+RFC 0202: XP Installer
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Sun Apr 25 15:20:53     2010
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+A new command line utility will be created and distributed with the XP
+Framework. It will provide a shell to manage XP software packages and
+libraries.
+
+
+Rationale
+---------
+Installing software built for the XP Framework currently is a manual
+process.
+
+
+Functionality
+-------------
+Installing classes from ports:
+<pre>
+  $ xpi install org.nagios
+</pre>
+
+Actions performed:
+* Connect to XP Framework website
+* Query for org.nagios package
+* Download XAR file to XP installation directory
+* Show META-INF/README from inside XAR if contained
+* Print line suitable for adding to path files
+
+
+Security considerations
+-----------------------
+Some kind of signing / checksum verification should take place.
+
+
+Speed impact
+------------
+None at runtime.
+
+
+Dependencies
+------------
+
+
+Related documents
+-----------------
+PEAR installer
+* http://pear.php.net/manual/en/guide.users.commandline.installing.php
+
+
+Comments
+--------
+
+<EOF>

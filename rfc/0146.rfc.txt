@@ -280,6 +280,9 @@ Related documents
 - http://www.amk.ca/python/howto/unicode
   Unicode HOWTO (Python-specific, also discusses unicode in general)
 
+- http://www.rooftopsolutions.nl/blog/filesystem-encoding-and-php
+  Filesystem encoding and PHP
+
 Comments
 --------
 - friebe, Sun Dec 16 16:36:25     2007

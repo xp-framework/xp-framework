@@ -13,8 +13,8 @@
    *   <li>Class file does not declare class by file name</li>
    * </ul>
    *
-   * @see      xp://lang.ClassLoader#loadClass
-   * @purpose  Exception
+   * @see   xp://lang.ClassLoader#loadClass
+   * @test  xp://net.xp_framework.unittest.reflection.ClassLoaderTest
    */
   class ClassFormatException extends XPException implements ClassLoadingException {
     

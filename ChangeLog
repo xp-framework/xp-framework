@@ -60,8 +60,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Ports: Deprecated com.google.soap.search package, it's been discontinued 
+  by Google
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
+- Fixed lang.reflect.Proxy class to not produce fatal errors when passed
+  an empty array of interfaces to implement
+  (friebe)
 - Fixed common stack trace element calculation in lang.ChainedException
   if chained exception is a chained exception itself.
   (friebe)
@@ -74,6 +83,15 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Refactored class loader implementations and extracted common code in
+  all three implementations into an abstract base class
+  (friebe)
+- Ports: Added package org.codehaus.stomp
+  (kiesel)
+- Introduced new class loading exceptions, lang.ClassDependencyException 
+  and lang.ClassLinkageException which inherit the existing 
+  lang.ClassNotFoundException class.
+  (kiesel)
 - Made exception messages raised from injection more verbose in XPCLIs
   (friebe)
 - Added support to peer.Socket::canRead() to block forever when NULL

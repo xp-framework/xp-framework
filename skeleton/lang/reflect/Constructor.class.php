@@ -9,9 +9,9 @@
   /**
    * Represents a class' constructor
    *
-   * @see      xp://lang.XPClass
-   * @see      xp://lang.reflect.Routine
-   * @purpose  Reflection
+   * @see   xp://lang.XPClass
+   * @see   xp://lang.reflect.Routine
+   * @test  xp://net.xp_framework.unittest.reflection.ReflectionTest
    */
   class Constructor extends Routine {
 

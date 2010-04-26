@@ -48,7 +48,7 @@
     /**
      * Retrieves a list of all annotations
      *
-     * @return  array
+     * @return  text.doclet.AnnotationDoc[]
      */ 
     public function annotations() {
       $this->parse();
