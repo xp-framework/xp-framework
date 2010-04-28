@@ -154,6 +154,16 @@
     }
 
     /**
+     * Tests constructor invocation
+     *
+     * @see     xp://lang.reflect.Constructor#newInstance
+     */
+    #[@test, @expect('lang.reflect.TargetInvocationException')]
+    public function constructorInvocationFailure() {
+      $this->class->getConstructor()->newInstance(array('@@not-a-valid-date-string@@'));
+    }
+
+    /**
      * Tests abstract constructor invocation throws an exception
      *
      * @see     xp://lang.reflect.Constructor#newInstance
