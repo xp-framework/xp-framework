@@ -13,6 +13,7 @@
    * An instance of this object is passed to the do* methods by
    * the <pre>process</pre> method.
    *
+   * @test     xp://net.xp_framework.unittest.scriptlet.HttpScriptletResponseTest
    * @see      xp://scriptlet.HttpScriptlet
    * @purpose  Provide a way to access the HTTP response
    */  
