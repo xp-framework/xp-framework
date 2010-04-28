@@ -438,10 +438,7 @@
       // the two methods will result in a HttpScriptletException with the HTTP
       // status code 500 ("Internal Server Error") being thrown.
       try {
-        $r= call_user_func_array(
-          array($this, $method), 
-          array($request, $response)
-        );
+        $r= call_user_func(array($this, $method), $request, $response);
         if (FALSE !== $r && !is(NULL, $r)) {
           $response->process();
         }
