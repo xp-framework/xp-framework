@@ -22,18 +22,40 @@ process.
 
 Functionality
 -------------
-Installing classes from ports:
+
+Using a library
+~~~~~~~~~~~~~~~
 <pre>
-  $ xpi install org.nagios
+  $ xpi use org.nagios@packages.xp-forge.net
 </pre>
 
 Actions performed:
-* Connect to XP Framework website
+* Connect to XP Forge website
 * Query for org.nagios package
-* Download XAR file to XP installation directory
+* Verify version compatibility
+* Download XAR file to ./lib directory
+* Run tests inside package (if any)
+* Add line to lib.pth
 * Show META-INF/README from inside XAR if contained
-* Print line suitable for adding to path files
 
+This library will only be available inside the project.
+
+Installing classes from ports
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<pre>
+  $ xpi install org.nagios@packages.xp-forge.net
+</pre>
+
+Actions performed:
+* Connect to XP Forge website
+* Query for org.nagios package
+* Verify version compatibility
+* Download XAR file to XP installation directory
+* Run tests inside package (if any)
+* Add library to lib.pth
+* Show META-INF/README from inside XAR if contained
+
+This library will be available globally.
 
 Security considerations
 -----------------------
