@@ -56,7 +56,7 @@
      */
     public function addTest(TestCase $test) {
       if (!$test->getClass()->hasMethod($test->name)) {
-        throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
+        throw new MethodNotImplementedException('Test method does not exist', $test->name);
       }
       $className= $test->getClassName();
       if (!isset($this->order[$className])) $this->order[$className]= array();
@@ -350,7 +350,7 @@
      */
     public function runTest(TestCase $test) {
       if (!$test->getClass()->hasMethod($test->name)) {
-        throw new MethodNotImplementedException('Test method '.$test->name.'() does not exist');
+        throw new MethodNotImplementedException('Test method does not exist', $test->name);
       }
       $this->notifyListeners('testRunStarted', array($this));
       $result= new TestResult();
