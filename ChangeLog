@@ -12,6 +12,11 @@ Heads up!
   by Google
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0201 - XP Overlays
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed lang.reflect.Proxy class to not produce fatal errors when passed
