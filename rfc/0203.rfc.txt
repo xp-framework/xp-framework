@@ -1,0 +1,97 @@
+RFC 0203: Unbuffered queries
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Mon May  3 13:28:13     2010
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+Unbuffered queries will be supported by a dedicated API. Instead of using
+<tt>rdbms.DBConnection::query()</tt> (or any of the insert, update, delete
+or select methods), the result-only <tt>rdbms.DBConnection::open()</tt>
+method will support unbuffered queries.
+
+
+Rationale
+---------
+Incremental row processing to save memory.
+
+
+Functionality
+-------------
+A note on unbuffered queries from http://de3.php.net/mysql_unbuffered_query:
+<summary>
+mysql_unbuffered_query() sends the SQL query query to MySQL without 
+automatically fetching and buffering the result rows as mysql_query() 
+does. This saves a considerable amount of memory with SQL queries that 
+produce large result sets, and you can start working on the result set 
+immediately after the first row has been retrieved as you don't have 
+to wait until the complete SQL query has been performed.
+</summary>
+
+Functionality
+~~~~~~~~~~~~~
+<code>
+  $q= $conn->open('select ...');    // Instead of query()
+  while ($r= $q->next()) {
+
+    // [...process record...]
+    
+  }
+  $q->close();
+</code>
+
+Showcase
+~~~~~~~~
+Memory usage with the <tt>query()</tt> method:
+<pre>
+  Before query()    : 2752.148kB
+  After query()     : 7606.969kB
+  During iteration  : 7608.867kB
+  After iteration   : 2754.344kB
+</pre>
+Memory usage with the new <tt>open()</tt> method:
+<pre>
+  Before query()    : 2752.148kB
+  After query()     : 2762.641kB
+  During iteration  : 2764.898kB
+  After iteration   : 2754.344kB
+</pre>
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+It's faster to use unbuffered queries. Unfortunately, the benefits of 
+unbuffered queries come at a cost: you cannot open another query on the 
+same connection before you haven't read the complete number of rows from 
+the existing query.
+
+
+Dependencies
+------------
+Changes to <tt>rdbms.DBConnection::query0()</tt> method, an optional 
+boolean parameter "buffered" will be added (defaulting to FALSE).
+
+
+Related documents
+-----------------
+Unbuffered query implementations in PHP:
+* http://de3.php.net/mysql_unbuffered_query
+* http://de3.php.net/sybase_unbuffered_query
+* http://de3.php.net/sqlite_unbuffered_query
+
+Implementing patch:
+* http://xp-framework.net/rfc/contrib/rfc0203.diff
+
+Comments
+--------
+
+<EOF>
