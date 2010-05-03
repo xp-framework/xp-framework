@@ -32,6 +32,7 @@ immediately after the first row has been retrieved as you don't have
 to wait until the complete SQL query has been performed.
 </summary>
 
+
 Functionality
 ~~~~~~~~~~~~~
 <code>
@@ -43,6 +44,7 @@ Functionality
   }
   $q->close();
 </code>
+
 
 Showcase
 ~~~~~~~~
