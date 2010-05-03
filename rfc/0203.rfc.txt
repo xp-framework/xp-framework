@@ -32,9 +32,26 @@ immediately after the first row has been retrieved as you don't have
 to wait until the complete SQL query has been performed.
 </summary>
 
+Current situation
+~~~~~~~~~~~~~~~~~
+The XP Framework offers unbuffered queries as a connection attribute, which
+is more than unusable (and mostly unknown): It will run ALL queries on this
+connection unbuffered.
 
-Functionality
-~~~~~~~~~~~~~
+<code>
+  $conn= DriverManager::getConnection('sybase://...@.../?unbuffered=1');
+</code>
+
+Unfortunately, the benefits of unbuffered queries come at a cost: you cannot 
+open another query on the same connection before you haven't read the complete 
+number of rows from the existing query.
+
+New functionality
+~~~~~~~~~~~~~~~~~
+This RFC proposes a new method for running an unbuffered query, <tt>open()</tt>.
+It will work the same as <tt>query()</tt> but by using another verb it will 
+be distinguishable from the default usage.
+
 <code>
   $q= $conn->open('select ...');    // Instead of query()
   while ($r= $q->next()) {
@@ -45,6 +62,8 @@ Functionality
   $q->close();
 </code>
 
+The verb "open" also suggests something is created and should be closed again,
+and that this cannot be done twice.
 
 Showcase
 ~~~~~~~~
@@ -71,10 +90,7 @@ n/a
 
 Speed impact
 ------------
-It's faster to use unbuffered queries. Unfortunately, the benefits of 
-unbuffered queries come at a cost: you cannot open another query on the 
-same connection before you haven't read the complete number of rows from 
-the existing query.
+It's faster to use unbuffered queries. 
 
 
 Dependencies
