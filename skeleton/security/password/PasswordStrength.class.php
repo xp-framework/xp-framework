@@ -46,7 +46,7 @@
      */
     public static function setAlgorithm($name, XPClass $impl) {
       if (!$impl->isSubclassOf('security.password.Algorithm')) {
-        throw new IllegalArgumentException('Given argument is not an Algorithm class ('.xp::stringOf($class).')');
+        throw new IllegalArgumentException('Given argument is not an Algorithm class ('.xp::stringOf($impl).')');
       }
       self::$algorithms[$name]= $impl;
     }

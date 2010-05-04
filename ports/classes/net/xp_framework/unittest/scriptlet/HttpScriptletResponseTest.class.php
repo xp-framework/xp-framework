@@ -5,18 +5,17 @@
  */
 
   uses(
-    'unittest.TestCase'
+    'unittest.TestCase',
+    'scriptlet.HttpScriptletResponse'
   );
 
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://scriptlet.HttpScriptletResponse
    */
   class HttpScriptletResponseTest extends TestCase {
-    protected
-      $r  = NULL;
+    protected $r= NULL;
 
     /**
      * Set up this testcase
@@ -42,7 +41,6 @@
     #[@test]
     public function addHeader() {
       $this->r->setHeader('header', 'value');
-
       $this->assertEquals('value', $this->r->getHeader('header'));
     }
 
@@ -54,7 +52,6 @@
     public function addHeaderTwice() {
       $this->r->setHeader('header', 'value');
       $this->r->setHeader('header', 'shadow');
-
       $this->assertEquals('value', $this->r->getHeader('header'));
       $this->assertEquals(2, sizeof($this->r->headers));
     }
@@ -66,7 +63,6 @@
     #[@test]
     public function lookupCaseInsensitive() {
       $this->r->setHeader('header', 'value');
-
       $this->assertEquals('value', $this->r->getHeader('HEADER'));
     }
 
@@ -78,7 +74,5 @@
     public function nonexistingHeaderReturnsDefault() {
       $this->assertEquals('default', $this->r->getHeader('does_not_exist', 'default'));
     }
-
-
   }
 ?>

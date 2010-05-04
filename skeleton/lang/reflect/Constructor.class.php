@@ -30,7 +30,6 @@
      *
      * @param   var[] args
      * @return  lang.Generic
-     * @throws  lang.reflect.TargetInvocationException
      * @throws  lang.IllegalAccessException in case the constructor is not public or if it is abstract
      * @throws  lang.reflect.TargetInvocationException in case the constructor throws an exception
      */

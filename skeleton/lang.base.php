@@ -396,12 +396,12 @@
       throw new IllegalArgumentException($msg.' @ '.$file.':'.$line);
     } else {
       $bt= debug_backtrace();
-      $class= (isset($bt[1]['class']) ? $bt[1]['class'] : 0);
-      $method= (isset($bt[1]['function']) ? $bt[1]['function'] : 0);
+      $class= (isset($bt[1]['class']) ? $bt[1]['class'] : NULL);
+      $method= (isset($bt[1]['function']) ? $bt[1]['function'] : NULL);
       
       if (!isset(xp::$registry['errors'][$file][$line][$msg])) {
         xp::$registry['errors'][$file][$line][$msg]= array(
-          'class' => $class,
+          'class'   => $class,
           'method'  => $method,
           'cnt'     => 1
         );

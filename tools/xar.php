@@ -13,7 +13,14 @@
         foreach (file($path.DIRECTORY_SEPARATOR.$e) as $line) {
           if ('#' === $line{0}) {
             continue;
-          } else if ('~' === $line{0}) {
+          } else if ('!' === $line{0}) {
+            $pre= TRUE;
+            $line= substr($line, 1);
+          } else {
+            $pre= FALSE;
+          }
+          
+          if ('~' === $line{0}) {
             $base= $home; $line= substr($line, 1);
           } else if ('/' === $line{0} || (':' === $line{1} && '\\' === $line{2})) {
             $base= '';
@@ -21,7 +28,8 @@
             $base= $path; 
           }
 
-          $inc.= $base.DIRECTORY_SEPARATOR.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
+          $qn= $base.DIRECTORY_SEPARATOR.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
+          $pre ? $inc= $qn.$inc : $inc.= $qn;
         }
       }
       closedir($d);
@@ -63,7 +71,7 @@
   $home= getenv('HOME');
   list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
   set_include_path(
-    scanpath(explode(PATH_SEPARATOR, $use), $home).
+    scanpath(explode(PATH_SEPARATOR, substr($use, 2).PATH_SEPARATOR.'.'), $home).
     $include
   );
 

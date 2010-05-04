@@ -1,0 +1,224 @@
+Index: skeleton/rdbms/sybase/SybaseConnection.class.php
+===================================================================
+--- skeleton/rdbms/sybase/SybaseConnection.class.php	(revision 14538)
++++ skeleton/rdbms/sybase/SybaseConnection.class.php	(working copy)
+@@ -73,7 +73,9 @@
+       }
+ 
+       if (!is_resource($this->handle)) {
+-        throw new SQLConnectException(trim(sybase_get_last_message()), $this->dsn);
++        $e= new SQLConnectException(trim(sybase_get_last_message()), $this->dsn);
++        xp::gc(__FILE__);
++        throw $e;
+       }
+       xp::gc(__FILE__);
+       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
+@@ -135,10 +137,11 @@
+      * Execute any statement
+      *
+      * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.sybase.SybaseResultSet or TRUE if no resultset was created
+      * @throws  rdbms.SQLException
+      */
+-    protected function query0($sql) {
++    protected function query0($sql, $buffered= TRUE) {
+       if (!is_resource($this->handle)) {
+         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+@@ -147,7 +150,9 @@
+         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
+       }
+       
+-      if ($this->flags & DB_UNBUFFERED) {
++      if (!$buffered) {
++        $result= sybase_unbuffered_query($sql, $this->handle, FALSE);
++      } else if ($this->flags & DB_UNBUFFERED) {
+         $result= sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
+       } else {
+         $result= sybase_query($sql, $this->handle);
+Index: skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php
+===================================================================
+--- skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php	(revision 14538)
++++ skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php	(working copy)
+@@ -130,11 +130,12 @@
+     /**
+      * Execute any statement
+      *
+-     * @param   var* args
++     * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.mssql.SqlSrvResultSet or FALSE to indicate failure
+      * @throws  rdbms.SQLException
+      */
+-    public function query0($sql) { 
++    protected function query0($sql, $buffered= TRUE) {
+       if (!is_resource($this->handle)) {
+         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+Index: skeleton/rdbms/DBConnection.class.php
+===================================================================
+--- skeleton/rdbms/DBConnection.class.php	(revision 14538)
++++ skeleton/rdbms/DBConnection.class.php	(working copy)
+@@ -261,15 +261,33 @@
+       $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
+       return $result;
+     }
++
++    /**
++     * Execute any statement
++     *
++     * @param   var* args
++     * @return  rdbms.ResultSet or TRUE if no resultset was created
++     * @throws  rdbms.SQLException
++     */
++    public function open() { 
++      $args= func_get_args();
++      $sql= call_user_func_array(array($this, 'prepare'), $args);
++
++      $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $sql));
++      $result= $this->query0($sql, FALSE);
++      $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
++      return $result;
++    }
+     
+     /**
+      * Execute any statement
+      *
+      * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.ResultSet or TRUE if no resultset was created
+      * @throws  rdbms.SQLException
+      */
+-    protected function query0($sql) {}
++    protected function query0($sql, $buffered= TRUE) {}
+     
+     /**
+      * Begin a transaction
+Index: skeleton/rdbms/ibase/InterBaseConnection.class.php
+===================================================================
+--- skeleton/rdbms/ibase/InterBaseConnection.class.php	(revision 14538)
++++ skeleton/rdbms/ibase/InterBaseConnection.class.php	(working copy)
+@@ -120,11 +120,12 @@
+     /**
+      * Execute any statement
+      *
+-     * @param   var* args
++     * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.ibase.InterBaseResultSet or FALSE to indicate failure
+      * @throws  rdbms.SQLException
+      */
+-    public function query0($sql) { 
++    protected function query0($sql, $buffered= TRUE) {
+       if (!is_resource($this->handle)) {
+         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
+===================================================================
+--- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(revision 14538)
++++ skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(working copy)
+@@ -118,11 +118,12 @@
+     /**
+      * Execute any statement
+      *
+-     * @param   var* args
++     * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.pgsql.PostgreSQLResultSet or TRUE if no resultset was created
+      * @throws  rdbms.SQLException
+      */
+-    protected function query0($sql) {
++    protected function query0($sql, $buffered= TRUE) {
+       if (!is_resource($this->handle)) {
+         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+Index: skeleton/rdbms/mssql/MsSQLConnection.class.php
+===================================================================
+--- skeleton/rdbms/mssql/MsSQLConnection.class.php	(revision 14538)
++++ skeleton/rdbms/mssql/MsSQLConnection.class.php	(working copy)
+@@ -130,11 +130,12 @@
+     /**
+      * Execute any statement
+      *
+-     * @param   var* args
++     * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.mssql.MsSQLResultSet or TRUE if no resultset was created
+      * @throws  rdbms.SQLException
+      */
+-    protected function query0($sql) {
++    protected function query0($sql, $buffered= TRUE) {
+       if (!is_resource($this->handle)) {
+         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+@@ -143,11 +144,7 @@
+         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
+       }
+       
+-      if ($this->flags & DB_UNBUFFERED) {
+-        $result= mssql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
+-      } else {
+-        $result= mssql_query($sql, $this->handle);
+-      }
++      $result= mssql_query($sql, $this->handle);
+ 
+       if (FALSE === $result) {
+         $message= 'Statement failed: '.trim(mssql_get_last_message()).' @ '.$this->dsn->getHost();
+Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
+===================================================================
+--- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(revision 14538)
++++ skeleton/rdbms/sqlite/SQLiteConnection.class.php	(working copy)
+@@ -146,10 +146,11 @@
+      * Execute any statement
+      *
+      * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.sqlite.SQLiteResultSet or FALSE to indicate failure
+      * @throws  rdbms.SQLException
+      */
+-    protected function query0($sql) { 
++    protected function query0($sql, $buffered= TRUE) {
+       if (!is_resource($this->handle)) {
+         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+@@ -158,10 +159,10 @@
+         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
+       }
+       
+-      if ($this->flags & DB_UNBUFFERED) {
+-        $result= sqlite_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
++      if (!$buffered || $this->flags & DB_UNBUFFERED) {
++        $result= sqlite_unbuffered_query($sql, $this->handle, SQLITE_ASSOC);
+       } else {
+-        $result= sqlite_query($sql, $this->handle);
++        $result= sqlite_query($sql, $this->handle, SQLITE_ASSOC);
+       }
+       
+       if (FALSE === $result) {
+Index: skeleton/rdbms/mysql/MySQLConnection.class.php
+===================================================================
+--- skeleton/rdbms/mysql/MySQLConnection.class.php	(revision 14538)
++++ skeleton/rdbms/mysql/MySQLConnection.class.php	(working copy)
+@@ -152,10 +152,11 @@
+      * Execute any statement
+      *
+      * @param   string sql
++     * @param   bool buffered default TRUE
+      * @return  rdbms.ResultSet or TRUE if no resultset was created
+      * @throws  rdbms.SQLException
+      */
+-    protected function query0($sql) {
++    protected function query0($sql, $buffered= TRUE) {
+       if (!is_resource($this->handle)) {
+         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
+         $c= $this->connect();
+@@ -164,7 +165,7 @@
+         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
+       }
+       
+-      if ($this->flags & DB_UNBUFFERED) {
++      if (!$buffered || $this->flags & DB_UNBUFFERED) {
+         $result= mysql_unbuffered_query($sql, $this->handle);
+       } else {
+         $result= mysql_query($sql, $this->handle);

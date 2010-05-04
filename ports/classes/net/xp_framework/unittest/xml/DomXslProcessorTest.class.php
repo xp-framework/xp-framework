@@ -123,7 +123,7 @@
          xmlns:php="http://php.net/xsl"
         >
           <xsl:template match="/">
-            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'notregistered\')"/>
+            <xsl:value-of select="php:function(\'XSLCallback::invoke\', \'notregistered\', \'irrelevant\')"/>
           </xsl:template>
         </xsl:stylesheet>
       ');
