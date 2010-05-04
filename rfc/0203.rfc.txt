@@ -117,7 +117,13 @@ It's faster to use unbuffered queries.
 Dependencies
 ------------
 Changes to <tt>rdbms.DBConnection::query0()</tt> method, an optional 
-boolean parameter "buffered" will be added (defaulting to FALSE).
+boolean parameter "buffered" will be added (defaulting to TRUE). It 
+is suggested although not required that all database classes extending 
+from this base class change their signature as follows:
+<pre>
+  -protected function query0($sql) { ... }
+  +protected function query0($sql, $buffered= TRUE) { ... }
+</pre>
 
 The old functionality will continue to work but will be deprecated,
 and removed in the over-next major release, 5.9.0
