@@ -62,8 +62,8 @@ be distinguishable from the default usage.
   $q->close();
 </code>
 
-The verb "open" also suggests something is created and should be closed again,
-and that this cannot be done twice.
+The verb "open" also suggests something is created and should be closed 
+again, and that this cannot be done twice.
 
 Showcase
 ~~~~~~~~
@@ -76,11 +76,32 @@ Memory usage with the <tt>query()</tt> method:
 </pre>
 Memory usage with the new <tt>open()</tt> method:
 <pre>
-  Before query()    : 2752.148kB
-  After query()     : 2762.641kB
+  Before open()     : 2752.148kB
+  After open()      : 2762.641kB
   During iteration  : 2764.898kB
   After iteration   : 2754.344kB
 </pre>
+
+DataSets
+~~~~~~~~
+Using unbuffered queries in conjunction with <tt>rdbms.DataSet</tt> 
+classes is supported in the <tt>rdbms.Peer::iteratorFor()</tt> method
+by passing <tt>FALSE</tt> to its new <tt>buffered</tt> parameter which
+defaults to <tt>TRUE</tt>.
+
+<code>
+  $it= Person::getPeer()->iteratorFor(new Criteria(...), FALSE);
+  while ($it->hasNext()) {
+    $person= $it->next();
+    
+    // Do something with $person
+  }
+</code>
+
+Again, inside the while loop, no other queries on the same connection 
+may be issued. Even existing relation queries on the <tt>Person</tt> 
+class may cause further SQL statements to be sent (e.g., 
+<tt>Person::getDepartment()</tt>) and will break the iteration.
 
 
 Security considerations
