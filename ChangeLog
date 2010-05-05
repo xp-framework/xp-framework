@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.7.9, released 2010-05-05
+----------------------------------
+SVN version: 14546
+
 Heads up!
 ~~~~~~~~~
 - Ports: Deprecated com.google.soap.search package, it's been discontinued 
