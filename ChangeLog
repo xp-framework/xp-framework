@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Removed unused member field xml.Tree::$dataSource
+  (hinckel)
+
 
 Version 5.7.9, released 2010-05-05
 ----------------------------------
@@ -35,7 +40,7 @@ Bugfixes
   nonexistant directories
   (friebe)
 - Fixed format string BIT_AND operator to only use one placeholder
-  (ohinckel)
+  (hinckel)
 
 Features
 ~~~~~~~~
@@ -60,7 +65,7 @@ Features
   of buffering it all into memory first
   (friebe)
 - Log exceptions caught by web runner to scriptlet log
-  (ohinckel)
+  (hinckel)
   
 
 Version 5.7.8, released 2010-03-24
@@ -106,10 +111,10 @@ Bugfixes
   (friebe)
 - Fixed Wrapper::load() not executing casters and checkers when array
   values were submitted and first value is empty
-  (ohinckel, Sebastian Kusnier)
+  (hinckel, Sebastian Kusnier)
 - Fixed peer.URL::getQuery() to build query string correctly when using
   multi-dimensional arrays in query string
-  (ohinckel)
+  (hinckel)
 
 Features
 ~~~~~~~~
@@ -224,7 +229,7 @@ Bugfixes
   (friebe)
 - Reset EOF status in peer.Socket::close() to get correct EOF status
   after reconnecting
-  (ohinckel, Christine Karch, kiesel)
+  (hinckel, Christine Karch, kiesel)
 
 
 Version 5.7.6, released 2009-12-16
