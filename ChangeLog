@@ -11,6 +11,11 @@ Bugfixes
 - Removed unused member field xml.Tree::$dataSource
   (hinckel)
 
+Features
+~~~~~~~~
+- Added support for rewriting {PROFILE} literals in web.ini
+  (kiesel)
+
 
 Version 5.7.9, released 2010-05-05
 ----------------------------------
