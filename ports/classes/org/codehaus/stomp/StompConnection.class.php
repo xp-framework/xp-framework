@@ -223,7 +223,6 @@
      */
     public function ack($messageId) {
       return $this->sendFrame(new org·codehaus·stomp·frame·AckFrame($messageId));
-
     }
 
     /**
