@@ -14,7 +14,7 @@
    * @deprecated Use text.Tokenizer instead
    * @ext   tokenize
    * @see   php://tokenizer
-   * @see   xp://text.apidoc.parser.GenericParser
+   * @see   xp://text.parser.generic.AbstractParser
    */ 
   class PHPTokenizer extends Object {
     public 
