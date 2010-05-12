@@ -18,8 +18,10 @@
      *
      * @param   string destination
      * @param   string data default NULL
+     * @param   array<string, string> headers default array
      */
-    public function __construct($destination, $data= NULL) {
+    public function __construct($destination, $data= NULL, $headers= array()) {
+      $this->headers= array_change_key_case($headers, CASE_LOWER);
       $this->setDestination($destination);
       $this->setBody($data);
     }
