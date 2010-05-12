@@ -89,7 +89,10 @@
      * @return  string
      */
     public function replaceVariables($value) {
-      return strtr($value, array('{WEBROOT}' => $this->webroot));
+      return strtr($value, array(
+        '{WEBROOT}' => $this->webroot,
+        '{PROFILE}' => $this->profile
+      ));
     }
 
     /**
