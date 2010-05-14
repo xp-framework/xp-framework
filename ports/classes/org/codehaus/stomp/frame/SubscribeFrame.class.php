@@ -20,11 +20,13 @@
      * Constructor
      *
      * @param   string queue
-     * @param   string id default NULL
+     * @param   string ack default 'auto'
+     * @param   string selector default NULL
      */
-    public function __construct($queue, $ack= self::ACK_AUTO) {
+    public function __construct($queue, $ack= self::ACK_AUTO, $selector= NULL) {
       $this->setDestination($queue);
       $this->setAck($ack);
+      if (NULL !== $selector) $this->setSelector($selector);
     }
 
     /**
@@ -50,6 +52,23 @@
      */
     public function getDestination() {
       return $this->getHeader('destination');
+    }
+
+    /**
+     * Set selector
+     *
+     * @param   string selector
+     */
+    public function setSelector($selector) {
+      $this->addHeader('selector', $selector);
+    }
+
+    /**
+     * Get selector
+     *
+     */
+    public function getSelector() {
+      return $this->getHeader('selector');
     }
 
     /**

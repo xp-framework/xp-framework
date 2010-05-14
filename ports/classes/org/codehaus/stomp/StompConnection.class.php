@@ -211,10 +211,11 @@
      * Subscribe to destination
      *
      * @param   string destination
-     * @param   string ackMode
+     * @param   string ackMode default 'auto'
+     * @param   string selector default NULL
      */
-    public function subscribe($destination, $ackMode= org·codehaus·stomp·frame·SubscribeFrame::ACK_AUTO) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·SubscribeFrame($destination, $ackMode));
+    public function subscribe($destination, $ackMode= org·codehaus·stomp·frame·SubscribeFrame::ACK_AUTO, $selector= NULL) {
+      return $this->sendFrame(new org·codehaus·stomp·frame·SubscribeFrame($destination, $ackMode, $selector));
     }
 
     /**
