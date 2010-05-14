@@ -8,11 +8,16 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Ports: Fixed protocol messup when reading messages without content length 
+  from STOMP endpoints.
+  (friebe)
 - Removed unused member field xml.Tree::$dataSource
   (hinckel)
 
 Features
 ~~~~~~~~
+- Ports: Added optional headers parameter to StompConnection::send()
+  (friebe)
 - Added support for rewriting {PROFILE} literals in web.ini
   (kiesel)
 
