@@ -16,6 +16,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Ports: Added support for selectors to StompConnection::subscribe()
+  (friebe)
 - Ports: Added optional headers parameter to StompConnection::send()
   (friebe)
 - Added support for rewriting {PROFILE} literals in web.ini
