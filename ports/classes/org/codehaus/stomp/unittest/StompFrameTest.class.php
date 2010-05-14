@@ -12,6 +12,7 @@
   /**
    * Tests STOMP frame class
    *
+   * @see   xp://org.codehaus.stomp.unittest.StompSendFrameTest
    * @see   xp://org.codehaus.stomp.frame.Frame
    */
   class StompFrameTest extends TestCase {
