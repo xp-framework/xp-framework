@@ -8,6 +8,11 @@
     'io.streams.MemoryOutputStream'
   );
 
+  /**
+   * Tests STOMP protocol
+   *
+   * @see   xp://org.codehaus.stomp.StompConnection
+   */
   class StompTest extends TestCase {
     protected $fixture= NULL;
 
