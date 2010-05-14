@@ -18,6 +18,6 @@
      * @param   img.chart.Chart chart
      * @return  var
      */
-    public function render($chart);
+    public function render(Chart $chart);
   }
 ?>

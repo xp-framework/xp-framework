@@ -149,7 +149,6 @@
       $tree= new $c();
       
       $parser->setCallback($tree);
-      $parser->dataSource= $file->uri;
       $file->open(FILE_MODE_READ);
       $string= $file->read($file->size());
       $file->close();

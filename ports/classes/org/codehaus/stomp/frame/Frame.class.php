@@ -121,16 +121,15 @@
         );
 
       } else {
+      
+        // Read line-wise as we know that \0\n marks the end
         $data= '';
-
-        // HACK: Readline of StringReader does not return the newline char
-        // itself, so re-add it. At the end of data, newline and chr(0)
-        // must be removed, though.
-        $line= $in->readLine();
-        while (0 != strlen($line) && "\0" != $line) {
+        do {
+          if (NULL === ($line= $in->readLine())) throw new ProtocolException(
+            'Received EOF before payload end delimiter \0\n'
+          );
           $data.= $line."\n";
-          $line= $in->readLine();
-        }
+        } while ("\0" !== $line{strlen($line)- 1});
       }
 
       $this->setBody(rtrim($data, "\n\0"));

@@ -62,8 +62,8 @@ be distinguishable from the default usage.
   $q->close();
 </code>
 
-The verb "open" also suggests something is created and should be closed again,
-and that this cannot be done twice.
+The verb "open" also suggests something is created and should be closed 
+again, and that this cannot be done twice.
 
 Showcase
 ~~~~~~~~
@@ -76,11 +76,32 @@ Memory usage with the <tt>query()</tt> method:
 </pre>
 Memory usage with the new <tt>open()</tt> method:
 <pre>
-  Before query()    : 2752.148kB
-  After query()     : 2762.641kB
+  Before open()     : 2752.148kB
+  After open()      : 2762.641kB
   During iteration  : 2764.898kB
   After iteration   : 2754.344kB
 </pre>
+
+DataSets
+~~~~~~~~
+Using unbuffered queries in conjunction with <tt>rdbms.DataSet</tt> 
+classes is supported in the <tt>rdbms.Peer::iteratorFor()</tt> method
+by passing <tt>FALSE</tt> to its new <tt>buffered</tt> parameter which
+defaults to <tt>TRUE</tt>.
+
+<code>
+  $it= Person::getPeer()->iteratorFor(new Criteria(...), FALSE);
+  while ($it->hasNext()) {
+    $person= $it->next();
+    
+    // Do something with $person
+  }
+</code>
+
+Again, inside the while loop, no other queries on the same connection 
+may be issued. Even existing relation queries on the <tt>Person</tt> 
+class may cause further SQL statements to be sent (e.g., 
+<tt>Person::getDepartment()</tt>) and will break the iteration.
 
 
 Security considerations
@@ -96,7 +117,13 @@ It's faster to use unbuffered queries.
 Dependencies
 ------------
 Changes to <tt>rdbms.DBConnection::query0()</tt> method, an optional 
-boolean parameter "buffered" will be added (defaulting to FALSE).
+boolean parameter "buffered" will be added (defaulting to TRUE). It 
+is suggested although not required that all database classes extending 
+from this base class change their signature as follows:
+<pre>
+  -protected function query0($sql) { ... }
+  +protected function query0($sql, $buffered= TRUE) { ... }
+</pre>
 
 The old functionality will continue to work but will be deprecated,
 and removed in the over-next major release, 5.9.0

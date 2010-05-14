@@ -89,7 +89,7 @@ prop-base="etc/dev/"
      * Test "{PROFILE}" literal is being replaced
      *
      */
-    #[@test, @ignore('Not implemented yet')]
+    #[@test]
     public function variableProfileReplacement() {
       $this->assertEquals('etc/dev/', $this->_runner()->replaceVariables('etc/{PROFILE}/'));
     }

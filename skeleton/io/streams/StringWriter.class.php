@@ -10,6 +10,7 @@
    * A OutputStreamWriter implementation that writes the string values of
    * the given arguments to the underlying output stream.
    *
+   * @test     xp://net.xp_framework.unittest.io.streams.StringWriterTest
    * @purpose  OutputStreamWriter implementation
    */
   class StringWriter extends Object implements OutputStreamWriter {
