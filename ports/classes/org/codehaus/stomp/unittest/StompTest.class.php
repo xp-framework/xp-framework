@@ -114,13 +114,12 @@
       $this->fixture->sendFrame(new org·codehaus·stomp·frame·SendFrame('/queue/a', 'my-data'));
       $this->assertEquals("SEND\n".
         "destination:/queue/a\n".
-        "content-length:7\n".
         "\nmy-data\0",
         $this->fixture->readSentBytes()
       );
       $response= $this->fixture->receive();
 
-      $this->assertTrue($response instanceof org·codehaus·stomp·frame·ReceiptFrame);
+      $this->assertInstanceOf('org.codehaus.stomp.frame.ReceiptFrame', $response);
     }
 
     /**
