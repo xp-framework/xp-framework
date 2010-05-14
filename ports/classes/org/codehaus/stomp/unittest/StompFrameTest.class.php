@@ -60,6 +60,24 @@
     }
 
     /**
+     * Tests getHeader()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function getNonExistantHeader() {
+      $this->fixture->getHeader('non-existant');
+    }
+
+    /**
+     * Tests hasHeader()
+     *
+     */
+    #[@test]
+    public function hasNonExistantHeader() {
+      $this->assertFalse($this->fixture->hasHeader('non-existant'));
+    }
+
+    /**
      * Tests addHeader() and getHeaders()
      *
      */
