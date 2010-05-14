@@ -10,6 +10,7 @@
   /**
    * Send frame
    *
+   * @test  xp://org.codehaus.stomp.unittest.StompSendFrameTest
    */
   class org·codehaus·stomp·frame·SendFrame extends org·codehaus·stomp·frame·Frame {
 
@@ -21,7 +22,7 @@
      * @param   array<string, string> headers default array
      */
     public function __construct($destination, $data= NULL, $headers= array()) {
-      $this->headers= array_change_key_case($headers, CASE_LOWER);
+      $this->headers= $headers;
       $this->setDestination($destination);
       $this->setBody($data);
     }
@@ -68,7 +69,9 @@
      */
     public function setBody($data) {
       parent::setBody($data);
-      $this->addHeader('content-length', strlen($this->body));
+      if ($this->hasHeader('content-length')) {
+        $this->addHeader('content-length', strlen($this->body));
+      }
     }
 
     /**
