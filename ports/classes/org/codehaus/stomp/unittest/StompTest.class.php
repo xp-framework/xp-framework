@@ -9,7 +9,12 @@
   );
 
   class StompTest extends TestCase {
+    protected $fixture= NULL;
 
+    /**
+     * Sets up unittest and creates fixture
+     *
+     */
     public function setUp() {
       $this->fixture= newinstance('org.codehaus.stomp.StompConnection', array('localhost', 61616), '{
         protected $response= "";
@@ -52,6 +57,10 @@
       }');
     }
 
+    /**
+     * Tests connect message
+     *
+     */
     #[@test]
     public function connect() {
       $this->fixture->setResponseBytes("CONNECTED\n".
@@ -68,6 +77,10 @@
       );
     }
 
+    /**
+     * Tests connect message when login fails
+     *
+     */
     #[@test, @expect('peer.AuthenticationException')]
     public function loginFailed() {
       $this->fixture->setResponseBytes("ERROR\n".
@@ -76,7 +89,11 @@
       );
       $this->fixture->connect('user', 'pass');
     }
-
+    
+    /**
+     * Tests send message
+     *
+     */
     #[@test]
     public function sendFrame() {
       $this->fixture->setResponseBytes("RECEIPT\n".
@@ -96,6 +113,10 @@
       $this->assertTrue($response instanceof org·codehaus·stomp·frame·ReceiptFrame);
     }
 
+    /**
+     * Tests error message
+     *
+     */
     #[@test]
     public function receiveError() {
       $this->fixture->setResponseBytes("ERROR\n".
@@ -108,6 +129,10 @@
       $this->assertEquals("Line1\nLine2", $response->getBody());
     }
 
+    /**
+     * Tests error message w/ content-length
+     *
+     */
     #[@test]
     public function receiveErrorWithContentLengthGiven() {
       $this->fixture->setResponseBytes("ERROR\n".
@@ -123,6 +148,10 @@
       $this->assertEquals("Line1\nLine2", $response->getBody());
     }
 
+    /**
+     * Tests message with invalid content-length
+     *
+     */
     #[@test, @expect('peer.ProtocolException')]
     public function catchInvalidContentLength() {
       $this->fixture->setResponseBytes("ERROR\n".
@@ -134,6 +163,11 @@
       $response= $this->fixture->recvFrame();
     }
 
+    /**
+     * Helper
+     *
+     * @param   org.codehaus.stomp.frame.Frame fram
+     */
     protected function sendWithReceiptFrame(org·codehaus·stomp·frame·Frame $frame) {
       $this->fixture->setResponseBytes("RECEIPT\n".
         "receipt-id:message-id\n".
@@ -143,6 +177,10 @@
       return $this->fixture->sendFrame($frame);
     }
 
+    /**
+     * Tests subscription
+     *
+     */
     #[@test]
     public function subscribe() {
       $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·SubscribeFrame('/queue/a'));
@@ -155,6 +193,10 @@
       );
     }
 
+    /**
+     * Tests subscription
+     *
+     */
     #[@test]
     public function unsubscribe() {
       $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·UnsubscribeFrame('/queue/a'));
@@ -166,6 +208,10 @@
       );
     }
 
+    /**
+     * Tests beginning a transaction
+     *
+     */
     #[@test]
     public function beginTransaction() {
       $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·BeginFrame('my-transaction'));
@@ -175,6 +221,10 @@
       );
     }
 
+    /**
+     * Tests aborting a transaction
+     *
+     */
     #[@test]
     public function abortTransaction() {
       $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·AbortFrame('my-transaction'));
@@ -184,6 +234,10 @@
       );
     }
 
+    /**
+     * Tests committing a transaction
+     *
+     */
     #[@test]
     public function commitTransaction() {
       $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·CommitFrame('my-transaction'));
@@ -193,6 +247,10 @@
       );
     }
 
+    /**
+     * Tests ack message
+     *
+     */
     #[@test]
     public function ack() {
       $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·AckFrame('0xefefef'));
@@ -203,6 +261,10 @@
       );
     }
 
+    /**
+     * Tests ack message
+     *
+     */
     #[@test]
     public function ackWithinTransaction() {
       $this->sendWithReceiptFrame(new org·codehaus·stomp·frame·AckFrame('0xefefef', "some-transaction"));
@@ -214,12 +276,15 @@
       );
     }
 
+    /**
+     * Tests disconnect
+     *
+     */
     #[@test]
     public function disconnect() {
       $this->fixture->disconnect();
 
       $this->assertEquals("DISCONNECT\n\n\0", $this->fixture->readSentBytes());
     }
-
   }
 ?>
