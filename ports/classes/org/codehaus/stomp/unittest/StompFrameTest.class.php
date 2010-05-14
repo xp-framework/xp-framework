@@ -68,7 +68,7 @@
       $this->assertEquals(array('content-length' => 200), $this->fixture->getHeaders());
     }
  
-     /**
+    /**
      * Tests requiresImmediateResponse()
      *
      */
@@ -77,5 +77,5 @@
       $this->fixture->addHeader('receipt', 'message-12345');
       $this->assertTrue($this->fixture->requiresImmediateResponse());
     }
- }
+  }
 ?>
