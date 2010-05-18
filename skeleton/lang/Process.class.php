@@ -105,7 +105,7 @@
       // that does not exist (e.g. "C:\DoesNotExist.exe", "\DoesNotExist.com"
       // or /usr/bin/doesnotexist), do not attempt to search for it.
       if ((DIRECTORY_SEPARATOR === $command{0}) || ((strncasecmp(PHP_OS, 'Win', 3) === 0) && 
-        (':' === $command{1} || '/' === $command{0} || '\\' === $command{0})
+        strlen($command) > 1 && (':' === $command{1} || '/' === $command{0} || '\\' === $command{0})
       )) {
         foreach ($extensions as $ext) {
           $q= $command.$ext;
