@@ -93,23 +93,25 @@
      *
      * @param   string command
      * @return  string executable
-     * @throws  io.IOException in case the command could not be found
+     * @throws  io.IOException in case the command could not be found or is not an executable
      */
     public static function resolve($command) {
-      clearstatcache();
+    
+      // Short-circuit this
+      if ('' === $command) throw new IOException('Empty command not resolveable');
       
       // PATHEXT is in form ".{EXT}[;.{EXT}[;...]]"
       $extensions= array('') + explode(PATH_SEPARATOR, getenv('PATHEXT'));
+      clearstatcache();
     
       // If the command is in fully qualified form and refers to a file
       // that does not exist (e.g. "C:\DoesNotExist.exe", "\DoesNotExist.com"
       // or /usr/bin/doesnotexist), do not attempt to search for it.
       if ((DIRECTORY_SEPARATOR === $command{0}) || ((strncasecmp(PHP_OS, 'Win', 3) === 0) && 
-        strlen($command) > 1 && (':' === $command{1} || '/' === $command{0} || '\\' === $command{0})
+        strlen($command) > 1 && (':' === $command{1} || '/' === $command{0})
       )) {
         foreach ($extensions as $ext) {
           $q= $command.$ext;
-
           if (file_exists($q) && !is_dir($q)) return realpath($q);
         }
         throw new IOException('"'.$command.'" does not exist');
@@ -121,7 +123,6 @@
       foreach ($paths as $path) {
         foreach ($extensions as $ext) {
           $q= $path.DIRECTORY_SEPARATOR.$command.$ext;
-          
           if (file_exists($q) && !is_dir($q)) return realpath($q);
         }
       }
