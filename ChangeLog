@@ -445,6 +445,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added initial support for web runner
+  http://news.xp-framework.net/article/296/2009/08/11/Unified_runners_in_the_web
+  (kiesel, friebe)
 - Refactored DBConnection classes; streamline code and remove leftovers
   from PHP4 times
   (kiesel)
