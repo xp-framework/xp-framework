@@ -59,7 +59,9 @@
       // Compile and test pattern
       $n= preg_match($this->regex, '');
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
-        throw new FormatException('Pattern "'.$regex.'" not well-formed');
+        $e= new FormatException('Pattern "'.$regex.'" not well-formed');
+        xp::gc(__FILE__);
+        throw $e;
       }
     }
     
