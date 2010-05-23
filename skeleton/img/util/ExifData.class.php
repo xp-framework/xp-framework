@@ -83,7 +83,9 @@
      */
     public static function fromFile(File $file) {
       if (FALSE === getimagesize($file->getURI(), $info)) {
-        throw new ImagingException('Cannot read image information from '.$file->getURI());
+        $e= new ImagingException('Cannot read image information from '.$file->getURI());
+        xp::gc(__FILE__);
+        throw $e;
       }
       if (!isset($info['APP1'])) {
         if (func_num_args() > 1) return func_get_arg(1);
