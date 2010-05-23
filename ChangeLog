@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed unittests with @expect to fail if the expected exception is 
+  caught but a warning is raised
+  (friebe, kiesel, ilankin)
+
 Bugfixes
 ~~~~~~~~
 - Ports: Fixed protocol messup when reading messages without content length 
