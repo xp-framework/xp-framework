@@ -284,7 +284,7 @@
      */
     #[@test, @expect('lang.IllegalAccessException')]
     public function writingProtectedMember() {
-      self::$fixture->getField('target')->set(AccessibilityFixture::construct(self::$fixture));
+      self::$fixture->getField('target')->set(AccessibilityFixture::construct(self::$fixture), NULL);
     }
 
     /**
