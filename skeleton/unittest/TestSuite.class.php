@@ -87,7 +87,7 @@
         if (!$m->hasAnnotation('test')) continue;
         if ($m->hasAnnotation('ignore')) $ignored[]= $m;
 
-        $this->tests[]= call_user_func_array(array($class, 'newInstance'), array_merge(
+        $this->tests[]= $class->getConstructor()->newInstance(array_merge(
           (array)$m->getName(TRUE),
           $arguments
         ));
@@ -254,6 +254,10 @@
                 $timer->elapsedTime()
               )
             ));
+          } else if (sizeof(xp::registry('errors')) > 0) {
+            $this->notifyListeners('testWarning', array(
+              $result->set($test, new TestWarning($test, $this->formatErrors(xp::registry('errors')), $timer->elapsedTime()))
+            ));
           } else {
             $this->notifyListeners('testSucceeded', array(
               $result->setSucceeded($test, $timer->elapsedTime())
@@ -293,24 +297,8 @@
           )
         ));
       } else if (sizeof(xp::registry('errors')) > 0) {
-        $w= array();
-        foreach (xp::registry('errors') as $file => $lookup) {
-          foreach ($lookup as $line => $messages) {
-            foreach ($messages as $message => $detail) {
-              $w[]= sprintf(
-                '"%s" in %s::%s() (%s, line %d, occured %s)',
-                $message,
-                $detail['class'],
-                $detail['method'],
-                basename($file),
-                $line,
-                1 === $detail['cnt'] ? 'once' : $detail['cnt'].' times'
-              );
-            }
-          }
-        }
         $this->notifyListeners('testWarning', array(
-          $result->set($test, new TestWarning($test, $w, $timer->elapsedTime()))
+          $result->set($test, new TestWarning($test, $this->formatErrors(xp::registry('errors')), $timer->elapsedTime()))
         ));
       } else if ($eta && $timer->elapsedTime() > $eta) {
         $this->notifyListeners('testFailed', array(
@@ -326,6 +314,32 @@
         ));
       }
       xp::gc();
+    }
+    
+    /**
+     * Format errors from xp registry
+     *
+     * @param   array<string, array<int, string[]>> registry
+     * @return  string[]
+     */
+    protected function formatErrors($registry) {
+      $w= array();
+      foreach ($registry as $file => $lookup) {
+        foreach ($lookup as $line => $messages) {
+          foreach ($messages as $message => $detail) {
+            $w[]= sprintf(
+              '"%s" in %s::%s() (%s, line %d, occured %s)',
+              $message,
+              $detail['class'],
+              $detail['method'],
+              basename($file),
+              $line,
+              1 === $detail['cnt'] ? 'once' : $detail['cnt'].' times'
+            );
+          }
+        }
+      }
+      return $w;
     }
     
     /**

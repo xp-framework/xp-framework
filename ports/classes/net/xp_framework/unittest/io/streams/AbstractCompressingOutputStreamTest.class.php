@@ -125,7 +125,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function levelTooHigh() {
-      $this->newStream($out, 10);
+      $this->newStream(new MemoryOutputStream() , 10);
     }
  
      /**
@@ -134,7 +134,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function levelTooLow() {
-      $this->newStream($out, -1);
+      $this->newStream(new MemoryOutputStream(), -1);
     }
  }
 ?>

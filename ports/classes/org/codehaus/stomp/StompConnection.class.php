@@ -3,6 +3,7 @@
  *
  * $Id$
  */
+
   uses(
     'util.log.Traceable',
     'peer.Socket',
@@ -13,6 +14,7 @@
     'io.streams.TextWriter',
     'peer.AuthenticationException',
     'peer.ProtocolException',
+    'org.codehaus.stomp.AckMode',
     'org.codehaus.stomp.frame.LoginFrame',
     'org.codehaus.stomp.frame.SendFrame',
     'org.codehaus.stomp.frame.SubscribeFrame',
@@ -24,6 +26,12 @@
     'org.codehaus.stomp.frame.DisconnectFrame'
   );
 
+  /**
+   * Low level API to the STOMP protocol
+   *
+   * @see   http://stomp.codehaus.org/Protocol
+   * @test  xp://org.codehaus.stomp.unittest.StompTest
+   */
   class StompConnection extends Object implements Traceable {
     protected
       $server = NULL,
@@ -210,11 +218,13 @@
     /**
      * Subscribe to destination
      *
+     * @see     xp://org.codehaus.stomp.AckMode
      * @param   string destination
-     * @param   string ackMode
+     * @param   string ackMode default 'auto'
+     * @param   string selector default NULL
      */
-    public function subscribe($destination, $ackMode= org·codehaus·stomp·frame·SubscribeFrame::ACK_AUTO) {
-      return $this->sendFrame(new org·codehaus·stomp·frame·SubscribeFrame($destination, $ackMode));
+    public function subscribe($destination, $ackMode= AckMode::AUTO, $selector= NULL) {
+      return $this->sendFrame(new org·codehaus·stomp·frame·SubscribeFrame($destination, $ackMode, $selector));
     }
 
     /**

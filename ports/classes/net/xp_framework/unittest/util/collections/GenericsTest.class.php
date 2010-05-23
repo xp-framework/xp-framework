@@ -187,15 +187,6 @@
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function stringVectorRemoveIllegalValue() {
-      create('new util.collections.Vector<lang.types.String>')->remove(new Integer(1));
-    }
-
-    /**
-     * Tests Vector<lang.types.String>
-     *
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
     public function createStringVectorWithIllegalValue() {
       create('new util.collections.Vector<lang.types.String>', array(new Integer(1)));
     }

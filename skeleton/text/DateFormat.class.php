@@ -149,7 +149,7 @@
      */
     public function parse($in) {
       $o= 0;
-      $m= $tz= $go= NULL;
+      $m= $tz= $go= NULL; $il= strlen($in);
       $parsed= array('year' => 0, 'month' => 0, 'day' => 0, 'hour' => 0, 'minute' => 0, 'second' => 0);
       foreach ($this->format as $token) {
         switch ($token) {
@@ -180,6 +180,9 @@
             throw new FormatException('Expected ['.implode(', ', $token[1]).'] but have "'.substr($in, $o, 5).'..."');
           }
           default: {
+            if ($o >= $il) {
+              throw new FormatException('Not enough input at offset '.$o);
+            }
             if ($token !== $in{$o}) {
               throw new FormatException('Expected "'.$token.'" but have "'.$in{$o}.'" at offset '.$o);
             }

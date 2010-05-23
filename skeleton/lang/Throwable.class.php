@@ -54,7 +54,11 @@
       $this->__id= microtime();
       $this->message= is_string($message) ? $message : xp::stringOf($message);
 
-      $errors= xp::$registry['errors'];
+      // Error messages
+      foreach (xp::$registry['errors'] as $file => $list) {
+        $this->addStackTraceFor($file, NULL, NULL, NULL, array(), $list);
+      }
+
       foreach (debug_backtrace() as $trace) {
         if (!isset($trace['function']) || isset($except[$trace['function']])) continue;
         if (isset($trace['object']) && '__construct' == $trace['function'] && $trace['object'] instanceof self) continue;
@@ -69,11 +73,6 @@
           isset($trace['args']) ? $trace['args'] : NULL,
           array(array('' => 1))
         );
-      }
-      
-      // Remaining error messages
-      foreach ($errors as $file => $list) {
-        $this->addStackTraceFor($file, NULL, NULL, NULL, array(), $list);
       }
     }
     

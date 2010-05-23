@@ -9,6 +9,7 @@
   /**
    * Abstract frame base class
    *
+   * @test  xp://org.codehaus.stomp.unittest.StompFrameTest
    */
   abstract class org·codehaus·stomp·frame·Frame extends Object {
     protected

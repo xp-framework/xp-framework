@@ -60,6 +60,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed unittests with @expect to fail if the expected exception is 
+  caught but a warning is raised
+  (friebe, kiesel, ilankin)
+
 Bugfixes
 ~~~~~~~~
 - Ports: Fixed protocol messup when reading messages without content length 
@@ -70,6 +76,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Ports: Added support for selectors to StompConnection::subscribe()
+  (friebe)
 - Ports: Added optional headers parameter to StompConnection::send()
   (friebe)
 - Added support for rewriting {PROFILE} literals in web.ini
@@ -497,6 +505,9 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added initial support for web runner
+  http://news.xp-framework.net/article/296/2009/08/11/Unified_runners_in_the_web
+  (kiesel, friebe)
 - Refactored DBConnection classes; streamline code and remove leftovers
   from PHP4 times
   (kiesel)

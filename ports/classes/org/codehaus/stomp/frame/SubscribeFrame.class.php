@@ -3,28 +3,29 @@
  *
  * $Id$
  */
-  uses('org.codehaus.stomp.frame.Frame');
 
   $package= 'org.codehaus.stomp.frame';
+
+  uses('org.codehaus.stomp.frame.Frame', 'org.codehaus.stomp.AckMode');
 
   /**
    * Subscribe frame
    *
    */
   class org·codehaus·stomp·frame·SubscribeFrame extends org·codehaus·stomp·frame·Frame {
-    const
-      ACK_CLIENT  = 'client',
-      ACK_AUTO    = 'auto';
 
     /**
      * Constructor
      *
+     * @see     xp://org.codehaus.stomp.AckMode
      * @param   string queue
-     * @param   string id default NULL
+     * @param   string ack default 'auto'
+     * @param   string selector default NULL
      */
-    public function __construct($queue, $ack= self::ACK_AUTO) {
+    public function __construct($queue, $ack= AckMode::AUTO, $selector= NULL) {
       $this->setDestination($queue);
       $this->setAck($ack);
+      if (NULL !== $selector) $this->setSelector($selector);
     }
 
     /**
@@ -53,8 +54,26 @@
     }
 
     /**
+     * Set selector
+     *
+     * @param   string selector
+     */
+    public function setSelector($selector) {
+      $this->addHeader('selector', $selector);
+    }
+
+    /**
+     * Get selector
+     *
+     */
+    public function getSelector() {
+      return $this->getHeader('selector');
+    }
+
+    /**
      * Set ack
      *
+     * @see     xp://org.codehaus.stomp.AckMode
      * @param   string ack
      */
     public function setAck($ack) {

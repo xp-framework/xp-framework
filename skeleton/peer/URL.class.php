@@ -419,7 +419,9 @@
      */
     public function setURL($str) {
       if (!strstr($str, '://') || !($this->_info= parse_url($str))) {
-        throw new FormatException('Cannot parse "'.$str.'"');
+        $e= new FormatException('Cannot parse "'.$str.'"');
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       if (isset($this->_info['user'])) $this->_info['user']= rawurldecode($this->_info['user']);

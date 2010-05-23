@@ -17,6 +17,22 @@
   class GDStreamReader extends StreamReader {
 
     /**
+     * Read image via imagecreatefromgd()
+     *
+     * @param   string uri
+     * @return  resource
+     * @throws  img.ImagingException
+     */
+    protected function readImage0($uri) {
+      if (FALSE === ($r= imagecreatefromgd($uri))) {
+        $e= new ImagingException('Cannot read image');
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      return $r;
+    }
+
+    /**
      * Read an image
      *
      * @deprecated
@@ -24,7 +40,7 @@
      * @throws  img.ImagingException
      */    
     public function readFromStream() {
-      return imagecreatefromgd($this->stream->getURI());
+      return $this->readImage0($this->stream->getURI());
     }
     
     /**
@@ -34,7 +50,7 @@
      * @throws  img.ImagingException
      */    
     public function readImage() {
-      return imagecreatefromgd(Streams::readableUri($this->stream));
+      return $this->readImage0(Streams::readableUri($this->stream));
     }
   }
 ?>

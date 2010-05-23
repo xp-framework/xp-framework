@@ -146,7 +146,7 @@
       
       // Create socket...
       if (!($this->_sock= socket_create($this->domain, $this->type, $this->protocol))) {
-        throw new ConnectException(sprintf(
+        $e= new ConnectException(sprintf(
           'Create of %s socket (type %s, protocol %s) failed: %d: %s',
           $domains[$this->domain],
           $types[$this->type],
@@ -154,6 +154,8 @@
           $e= socket_last_error(), 
           socket_strerror($e)
         ));
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       // Set options
@@ -177,13 +179,17 @@
       }
       
       // Check return status
-      if (FALSE === $r) throw new ConnectException(sprintf(
-        'Connect to %s:%d failed: %s',
-        $this->host,
-        $this->port,
-        $this->getLastError()
-      ));
-
+      if (FALSE === $r) {
+        $e= new ConnectException(sprintf(
+          'Connect to %s:%d failed: %s',
+          $this->host,
+          $this->port,
+          $this->getLastError()
+        ));
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      
       $this->setTimeout($this->_timeout);
       return TRUE;
     }
@@ -232,11 +238,13 @@
         $ret= socket_set_nonblock($this->_sock);
       }
       if (FALSE === $ret) {
-        throw new SocketException(sprintf(
+        $e= new SocketException(sprintf(
           'setBlocking (%s) failed: %s',
           ($blocking ? 'blocking' : 'nonblocking'),
           $this->getLastError()
         ));
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       return TRUE;      
@@ -261,7 +269,9 @@
       }
 
       if (FALSE === ($n= socket_select($r, $w, $e, $tv_sec, $tv_usec))) {
-        throw new SocketException('Select failed: '.$this->getLastError());
+        $e= new SocketException('Select failed: '.$this->getLastError());
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $n;
     }
@@ -298,7 +308,9 @@
       $res= '';
       if (!$this->_eof && 0 === strlen($this->rq)) {
         if (!$this->_select(array($this->_sock), NULL, NULL, $this->_timeout)) {
-          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
+          $e= new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
+          xp::gc(__FILE__);
+          throw $e;
         }
         $res= @socket_read($this->_sock, $maxLen);
         if (FALSE === $res || NULL === $res) {
@@ -307,7 +319,9 @@
             $this->_eof= TRUE;
             return NULL;
           }
-          throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+          $e= new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+          xp::gc(__FILE__);
+          throw $e;
         } else if ('' === $res) {
           $this->_eof= TRUE;
         }
@@ -370,7 +384,9 @@
     public function write($str) {
       $bytesWritten= socket_write($this->_sock, $str, strlen($str));
       if (FALSE === $bytesWritten || NULL === $bytesWritten) {
-        throw new SocketException('Write of '.$len.' bytes to socket failed: '.$this->getLastError());
+        $e= new SocketException('Write of '.$len.' bytes to socket failed: '.$this->getLastError());
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       return $bytesWritten;

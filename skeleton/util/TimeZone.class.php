@@ -46,7 +46,9 @@
       }
       
       if (!$this->tz instanceof DateTimeZone) {
-        throw new IllegalArgumentException('Invalid timezone identifier given: "'.$tz.'"');
+        $e= new IllegalArgumentException('Invalid timezone identifier given: "'.$tz.'"');
+        xp::gc(__FILE__);
+        throw $e;
       }
     }
     

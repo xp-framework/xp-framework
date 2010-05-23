@@ -82,6 +82,15 @@
      *
      */
     #[@test, @platform('^WIN')]
+    public function resolveFullyQualifiedWithDriverLetterWithoutExtension() {
+      $this->assertTrue(is_executable(Process::resolve(getenv('WINDIR').'\\EXPLORER')));
+    }
+
+    /**
+     * Test resolving a fully qualified name on Windows
+     *
+     */
+    #[@test, @platform('^WIN')]
     public function resolveFullyQualifiedWithBackSlash() {
       $path= '\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER.EXE', '\\', TRUE);
 
@@ -107,7 +116,7 @@
      */
     #[@test, @platform('^WIN')]
     public function resolveFullyQualifiedWithoutExtension() {
-      $path='\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER', '\\', true);
+      $path='\\'.$this->replaceBackslashSeparator(getenv('WINDIR').'\\EXPLORER', '\\', TRUE);
 
       chdir('C:');
       $this->assertTrue(is_executable(Process::resolve($path)));
@@ -136,8 +145,26 @@
      *
      */
     #[@test, @expect('io.IOException')]
-    public function resolveDirectory() {
+    public function resolveSlashDirectory() {
       Process::resolve('/');
+    }
+
+    /**
+     * Test resolving a non-existant command
+     *
+     */
+    #[@test, @platform('^WIN'), @expect('io.IOException')]
+    public function resolveBackslashDirectory() {
+      Process::resolve('\\');
+    }
+
+    /**
+     * Test resolving a non-existant command
+     *
+     */
+    #[@test, @expect('io.IOException')]
+    public function resolveEmpty() {
+      Process::resolve('');
     }
 
     /**

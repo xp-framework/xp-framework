@@ -41,7 +41,9 @@
      */
     public function write($arg) { 
       if (FALSE === fwrite($this->fd, $arg)) {
-        throw new IOException('Could not write '.strlen($arg).' bytes to '.$this->name.' channel');
+        $e= new IOException('Could not write '.strlen($arg).' bytes to '.$this->name.' channel');
+        xp::gc(__FILE__);
+        throw $e;
       }
     }
 
