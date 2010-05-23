@@ -87,7 +87,7 @@
         if (!$m->hasAnnotation('test')) continue;
         if ($m->hasAnnotation('ignore')) $ignored[]= $m;
 
-        $this->tests[]= call_user_func_array(array($class, 'newInstance'), array_merge(
+        $this->tests[]= $class->getConstructor()->newInstance(array_merge(
           (array)$m->getName(TRUE),
           $arguments
         ));
