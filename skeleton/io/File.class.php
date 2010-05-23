@@ -183,8 +183,12 @@
       ) throw new FileNotFoundException($this->uri);
       
       $this->_fd= fopen($this->uri, $this->mode);
-      if (!$this->_fd) throw new IOException('Cannot open '.$this->uri.' mode '.$this->mode);
-      
+      if (!$this->_fd) {
+        $e= new IOException('Cannot open '.$this->uri.' mode '.$this->mode);
+        xp::gc(__FILE__);
+        throw $e;
+      }
+            
       return TRUE;
     }
     
@@ -214,7 +218,9 @@
      */
     public function size() {
       if (FALSE === ($size= filesize($this->uri))) {
-        throw new IOException('Cannot get filesize for '.$this->uri);
+        $e= new IOException('Cannot get filesize for '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $size;
     }
@@ -227,7 +233,9 @@
      */
     public function truncate($size= 0) {
       if (FALSE === ($return= ftruncate($this->_fd, $size))) {
-        throw new IOException('Cannot truncate file '.$this->uri);
+        $e= new IOException('Cannot truncate file '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $return;
     }
@@ -248,7 +256,9 @@
      */
     public function lastAccessed() {
       if (FALSE === ($atime= fileatime($this->uri))) {
-        throw new IOException('Cannot get atime for '.$this->uri);
+        $e= new IOException('Cannot get atime for '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $atime;
     }
@@ -261,7 +271,9 @@
      */
     public function lastModified() {
       if (FALSE === ($mtime= filemtime($this->uri))) {
-        throw new IOException('Cannot get mtime for '.$this->uri);
+        $e= new IOException('Cannot get mtime for '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $mtime;
     }
@@ -276,7 +288,9 @@
     public function touch($time= -1) {
       if (-1 == $time) $time= time();
       if (FALSE === touch($this->uri, $time)) {
-        throw new IOException('Cannot set mtime for '.$this->uri);
+        $e= new IOException('Cannot set mtime for '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return TRUE;
     }
@@ -289,7 +303,9 @@
      */
     public function createdAt() {
       if (FALSE === ($mtime= filectime($this->uri))) {
-        throw new IOException('Cannot get mtime for '.$this->uri);
+        $e= new IOException('Cannot get mtime for '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $mtime;
     }
@@ -317,7 +333,9 @@
      */
     public function readChar() {
       if (FALSE === ($result= fgetc($this->_fd)) && !feof($this->_fd)) {
-        throw new IOException('Cannot read 1 byte from '.$this->uri);
+        $e= new IOException('Cannot read 1 byte from '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
@@ -335,7 +353,9 @@
     public function gets($bytes= 4096) {
       if (0 === $bytes) return '';
       if (FALSE === ($result= fgets($this->_fd, $bytes)) && !feof($this->_fd)) {
-        throw new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
+        $e= new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
@@ -350,7 +370,9 @@
     public function read($bytes= 4096) {
       if (0 === $bytes) return '';
       if (FALSE === ($result= fread($this->_fd, $bytes)) && !feof($this->_fd)) {
-        throw new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
+        $e= new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
@@ -364,7 +386,9 @@
      */
     public function write($string) {
       if (!$this->_fd || FALSE === ($result= fwrite($this->_fd, $string))) {
-        throw new IOException('Cannot write '.strlen($string).' bytes to '.$this->uri);
+        $e= new IOException('Cannot write '.strlen($string).' bytes to '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
@@ -378,7 +402,9 @@
      */
     public function writeLine($string= '') {
       if (!$this->_fd || FALSE === ($result= fwrite($this->_fd, $string."\n"))) {
-        throw new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri);
+        $e= new IOException('Cannot write '.(strlen($string)+ 1).' bytes to '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
@@ -396,7 +422,9 @@
     public function eof() {
       $result= feof($this->_fd);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw new IOException('Cannot determine eof of '.$this->uri);
+        $e= new IOException('Cannot determine eof of '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
@@ -412,7 +440,9 @@
      */
     public function rewind() {
       if (FALSE === ($result= rewind($this->_fd))) {
-        throw new IOException('Cannot rewind file pointer');
+        $e= new IOException('Cannot rewind file pointer');
+        xp::gc(__FILE__);
+        throw $e;
       }
       return TRUE;
     }
@@ -428,7 +458,9 @@
      */
     public function seek($position= 0, $mode= SEEK_SET) {
       if (0 != ($result= fseek($this->_fd, $position, $mode))) {
-        throw new IOException('Seek error, position '.$position.' in mode '.$mode);
+        $e= new IOException('Seek error, position '.$position.' in mode '.$mode);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return TRUE;
     }
@@ -441,7 +473,9 @@
      */
     public function tell() {
       if (FALSE === ($result= ftell($this->_fd))) {
-        throw new IOException('Cannot retrieve file pointer\'s position');
+        $e= new IOException('Cannot retrieve file pointer\'s position');
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
@@ -481,7 +515,9 @@
             $mode-= $o;
           }
         }
-        throw new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3));
+        $e= new IOException('Cannot lock file '.$this->uri.' w/ '.substr($os, 3));
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       return TRUE;
@@ -530,7 +566,9 @@
         throw new IOException('Cannot close non-opened file '.$this->uri);
       }
       if (FALSE === fclose($this->_fd)) {
-        throw new IOException('Cannot close file '.$this->uri);
+        $e= new IOException('Cannot close file '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       $this->_fd= NULL;
@@ -552,7 +590,9 @@
         throw new IllegalStateException('File still open');
       }
       if (FALSE === unlink($this->uri)) {
-        throw new IOException('Cannot delete file '.$this->uri);
+        $e= new IOException('Cannot delete file '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return TRUE;
     }
@@ -573,7 +613,9 @@
         throw new IllegalStateException('File still open');
       }
       if (FALSE === rename($this->uri, $target)) {
-        throw new IOException('Cannot move file '.$this->uri.' to '.$target);
+        $e= new IOException('Cannot move file '.$this->uri.' to '.$target);
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       $this->setURI($target);
@@ -597,7 +639,9 @@
       }
       
       if (FALSE === copy($this->uri, $target)) {
-        throw new IOException('Cannot copy file '.$this->uri.' to '.$target);
+        $e= new IOException('Cannot copy file '.$this->uri.' to '.$target);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return TRUE;
     }
