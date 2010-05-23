@@ -34,7 +34,9 @@
      */
     public function __construct($language, $spelling= NULL, $jargon= NULL, $encoding= NULL, $mode= PSPELL_NORMAL) {
       if (FALSE === ($this->handle= pspell_new($language, $spelling, $jargon, $encoding, $mode))) {
-        throw new IllegalArgumentException('Could not create spell checker');
+        $e= new IllegalArgumentException('Could not create spell checker');
+        xp::gc(__FILE__);
+        throw $e;
       }
     }
     
