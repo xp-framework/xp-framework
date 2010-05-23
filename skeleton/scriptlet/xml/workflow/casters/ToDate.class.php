@@ -36,8 +36,8 @@
      */
     protected static function parse($v) {
       static $dim= array(
-        FALSE => array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31), 
-        TRUE  => array(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
+        FALSE => array(-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31), 
+        TRUE  => array(-1, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
       );
 
       $p= date_parse($v);
@@ -46,7 +46,7 @@
       // Date parser says it's OK, now verify # of days by looking
       // at days in month table (take leap years into consideration!)
       $l= $p['year'] % 400 == 0 || ($p['year'] > 1582 && $p['year'] % 100 == 0 ? FALSE : $p['year'] % 4 == 0);
-      if ($p['day'] > $dim[$l][$p['month']- 1]) $p['warning_count']++;
+      if ($p['day'] > $dim[$l][$p['month']]) $p['warning_count']++;
       return $p;
     }
 
