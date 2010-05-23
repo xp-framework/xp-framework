@@ -96,7 +96,7 @@
         $errstr,
         $timeout
       )) {
-        throw new ConnectException(sprintf(
+        $e= new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
           $this->host,
           $this->port,
@@ -104,6 +104,8 @@
           $errno,
           $errstr
         ));
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       socket_set_timeout($this->_sock, $this->_timeout);
@@ -157,7 +159,9 @@
      */
     public function setBlocking($blockMode) {
       if (FALSE === socket_set_blocking($this->_sock, $blockMode)) {
-        throw new SocketException('Set blocking call failed: '.$this->getLastError());
+        $e= new SocketException('Set blocking call failed: '.$this->getLastError());
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       return TRUE;
@@ -181,7 +185,9 @@
       $r= array($this->_sock); $w= NULL; $e= NULL;
       $n= stream_select($r, $w, $e, $tv_sec, $tv_usec);
       if (FALSE === $n || NULL === $n || xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw new SocketException('Select failed: '.$this->getLastError());
+        $e= new SocketException('Select failed: '.$this->getLastError());
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       return $n > 0 ? TRUE : !empty($r);
@@ -208,9 +214,13 @@
         
         $m= stream_get_meta_data($this->_sock);
         if ($m['timed_out']) {
-          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
+          $e= new SocketTimeoutException('Read of '.$maxLen.' bytes failed', $this->_timeout);
+          xp::gc(__FILE__);
+          throw $e;
         } else {
-          throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+          $e= new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+          xp::gc(__FILE__);
+          throw $e;
         }
       } else {
         return $chop ? chop($res) : $res;
@@ -250,11 +260,15 @@
     public function readBinary($maxLen= 4096) {
       $res= fread($this->_sock, $maxLen);
       if (FALSE === $res || NULL === $res) {
-        throw new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+        $e= new SocketException('Read of '.$maxLen.' bytes failed: '.$this->getLastError());
+        xp::gc(__FILE__);
+        throw $e;
       } else if ('' === $res) {
         $m= stream_get_meta_data($this->_sock);
         if ($m['timed_out']) {
-          throw new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError(), $this->_timeout);
+          $e= new SocketTimeoutException('Read of '.$maxLen.' bytes failed: '.$this->getLastError(), $this->_timeout);
+          xp::gc(__FILE__);
+          throw $e;
         }
         $this->_eof= TRUE;
       }
@@ -280,7 +294,9 @@
      */
     public function write($str) {
       if (FALSE === ($bytesWritten= fputs($this->_sock, $str, $len= strlen($str)))) {
-        throw new SocketException('Write of '.$len.' bytes to socket failed: '.$this->getLastError());
+        $e= new SocketException('Write of '.$len.' bytes to socket failed: '.$this->getLastError());
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       return $bytesWritten;
