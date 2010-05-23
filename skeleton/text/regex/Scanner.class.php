@@ -25,7 +25,9 @@
       $this->pattern= array();
       for ($i= 0, $s= strlen($pattern); $i < $s; $i++) {
         if ('%' === $pattern{$i}) {
-          $i++;
+          if (++$i >= $s) {
+            throw new IllegalArgumentException('Not enough input at position '.($i - 1));
+          }
           switch ($pattern{$i}) {
             case '%': $this->pattern[]= '20%'; break; 
             case 'd': $this->pattern[]= '11+-0123456789'; break;
@@ -33,7 +35,9 @@
             case 'f': $this->pattern[]= '11+-0123456789.'; break;
             case 's': $this->pattern[]= "01\1\2\3\4\5\6\7\10\11\12\13\14\15\16\17\20\21\22\23\24\25\26\27\30\31\32\33\34\35\36\37\40"; break;
             case '[': {   // [^a-z]: everything except a-z, [a-z]: only a-z, []01]: only "[", "0" and "1"
-              if ('^' === $pattern{$i+ 1}) {
+              if ($i+ 1 >= $s) {
+                throw new FormatException('Unmatched "]" in format string');
+              } else if ('^' === $pattern{$i+ 1}) {
                 $match= '01';
                 $i++;
               } else {
