@@ -254,6 +254,10 @@
                 $timer->elapsedTime()
               )
             ));
+          } else if (sizeof(xp::registry('errors')) > 0) {
+            $this->notifyListeners('testWarning', array(
+              $result->set($test, new TestWarning($test, $this->formatErrors(xp::registry('errors')), $timer->elapsedTime()))
+            ));
           } else {
             $this->notifyListeners('testSucceeded', array(
               $result->setSucceeded($test, $timer->elapsedTime())
