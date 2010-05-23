@@ -38,7 +38,9 @@
     public function __construct($format) {
       for ($i= 0, $s= strlen($format); $i < $s; $i++) {
         if ('%' === $format{$i}) {
-          $i++;
+          if (++$i >= $s) {
+            throw new IllegalArgumentException('Not enough input at position '.($i - 1));
+          }
           switch ($format{$i}) {
             case '%': {   // Literal percent
               $this->format[]= '%'; 
