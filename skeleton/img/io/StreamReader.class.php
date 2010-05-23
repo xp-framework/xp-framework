@@ -36,22 +36,40 @@
     }
 
     /**
+     * Read image via imagecreatefromstring()
+     *
+     * @param   string bytes
+     * @return  resource
+     * @throws  img.ImagingException
+     */
+    protected function readImage0($bytes) {
+      if (FALSE === ($r= imagecreatefromstring($bytes))) {
+        $e= new ImagingException('Cannot read image');
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      return $r;
+    }
+
+    /**
      * Read an image from an io.Stream object
      *
      * @deprecated
      * @return  resource
+     * @throws  img.ImagingException
      */    
     public function readFromStream() {
-      $buf= $this->stream->read($this->stream->size());
+      $bytes= $this->stream->read($this->stream->size());
       $this->stream->close();
 
-      return imagecreatefromstring($buf);
+      return $this->readImage0($bytes);
     }
 
     /**
      * Read an image
      *
      * @return  resource
+     * @throws  img.ImagingException
      */    
     public function readImage() {
       $bytes= '';
@@ -60,7 +78,7 @@
       }
       $this->stream->close();
 
-      return imagecreatefromstring($bytes);
+      return $this->readImage0($bytes);
     }
     
     /**
@@ -72,16 +90,13 @@
     public function getResource() {
       try {
         if ($this->stream instanceof InputStream) {
-          $handle= $this->readImage();
+          return $this->readImage();
         } else {
-          $handle= $this->readFromStream();
+          return $this->readFromStream();
         }
-        if (!$handle) throw new ImagingException('Cannot read image');
       } catch (IOException $e) {
         throw new ImagingException($e->getMessage());
       }
-
-      return $handle;
     }
   } 
 ?>
