@@ -417,5 +417,23 @@
     public function dayExceeded() {
       new Date('99.30.2010');
     }
+
+    /**
+     * Test unknown timezone within string
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function unknownTimeZoneNameInString() {
+      new Date('14.12.2010 11:55:00 Europe/Karlsruhe');
+    }
+
+    /**
+     * Test unknown timezone within string
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function unknownTimeZoneOffsetInString() {
+      new Date('14.12.2010 11:55:00+9999');
+    }
   }
 ?>
