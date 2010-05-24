@@ -53,9 +53,9 @@
       } else {
         $this->date= $timezone ? date_create($in, $timezone->getHandle()) : date_create($in);
         if (FALSE === $this->date || xp::errorAt(__FILE__, __LINE__ - 1)) {
-          throw new IllegalArgumentException(
-            'Given argument is neither a timestamp nor a well-formed timestring: '.xp::stringOf($in)
-          );
+          $e= new IllegalArgumentException('Given argument is neither a timestamp nor a well-formed timestring: '.xp::stringOf($in));
+          xp::gc(__FILE__);
+          throw $e;
         }
       }
     }

@@ -171,6 +171,16 @@
     }
 
     /**
+     * Catches the expected exception
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function catchExpectedWithWarning() {
+      $a.= '';
+      throw new IllegalArgumentException('');
+    }
+
+    /**
      * A test that timeouts
      *
      */
