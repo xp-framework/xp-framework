@@ -373,6 +373,20 @@
         );
       }
     }
+
+    /**
+     * Tests warnings inside tests with expect make a test fail
+     *
+     */    
+    #[@test]
+    public function expectedExceptionsWithWarningsMakeTestFail() {
+      with ($test= new SimpleTestCase('catchExpectedWithWarning')); {
+        $this->assertEquals(
+          array('"Undefined variable: a" in SimpleTestCase::catchExpectedWithWarning() (SimpleTestCase.class.php, line 179, occured once)'), 
+          $this->suite->runTest($test)->failed[$test->hashCode()]->reason
+        );
+      }
+    }
     
     /**
      * Tests warnings do not affect succeeding tests
