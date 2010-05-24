@@ -37,26 +37,26 @@ API
     public static Constraint startWith($slice) { ... }
     public static Constraint endWith($slice) { ... }
     public static Constraint match($pattern) { ... }
-
+    
     public static BeConstraint be() { ... }
     public static ShouldConstraint not() { ... }
     public static ShouldConstraint either() { ... }
     public static ShouldConstraint neither() { ... }
   }
-    
+  
   class Constraint extends Object {
     public ShouldConstraint $and;
     public ShouldConstraint $or;
     public ShouldConstraint $nor;
   }
-
+  
   class ShouldConstraint extends Constraint {
     public Constraint equal($value) { ... }
     public Constraint contain($value) { ... }
     public Constraint startWith($slice) { ... }
     public Constraint endWith($slice) { ... }
     public Constraint match($pattern) { ... }
-
+    
     public BeConstraint $be;
   }
   
@@ -65,7 +65,7 @@ API
     public Constraint $null;
     public Constraint $false;
     public Constraint $true;
-
+    
     public Constraint theSameAs($value) { ... }
     public Constraint equalTo($value) { ... }
     public Constraint greaterThan($lo) { ... }
@@ -73,7 +73,7 @@ API
     public Constraint between($lo, $hi) { ... }
     public Constraint anyOf($values...) { ... }
     public Constraint oneOf($values...) { ... }
-
+    
     public Constraint ofType($type) { ... }
     public Constraint anInstanceOf($type) { ... }
   }
