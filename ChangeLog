@@ -14,6 +14,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Changed HttpSession to regenerate session ID before starting a session
+  in order to prevent duplicate session creation
+  (friebe)
 - Ports: Fixed protocol messup when reading messages without content length 
   from STOMP endpoints.
   (friebe)
