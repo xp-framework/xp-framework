@@ -28,23 +28,26 @@
    * @purpose  Provide XPath functionality
    */
   class XPath extends Object {
-    public
-      $context= NULL;
+    public $context= NULL;
 
+    static function __static() {
+      libxml_use_internal_errors(TRUE);
+    }
+    
     /**
      * Helper method
      *
      * @param   string xml
      * @return  php.DOMDocument
+     * @throws  xml.XMLFormatException if the given XML is not well-formed or unparseable
      */
     protected function loadXML($xml) {
-      try {
-        $doc= new DOMDocument();
-        $doc->loadXML($xml);
-      } catch (DOMException $e) {
-        throw new XMLFormatException($e->getMessage());
+      $doc= new DOMDocument();
+      if (!$doc->loadXML($xml)) {
+        $e= new XMLFormatException('Cannot load XML');    // TODO: Capture error details
+        xp::gc(__FILE__);
+        throw $e;
       }
-      
       return $doc;
     }
     
