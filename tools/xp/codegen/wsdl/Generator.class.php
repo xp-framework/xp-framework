@@ -119,7 +119,7 @@
             sscanf($headers['Content-Type'], '%[^;]; name="%[^"]"', $type, $name);
             $namer= explode('.', $name);
             array_push($namer, ucfirst(array_pop($namer)));
-            $fileName= implode(System::getProperty('file.separator'), $namer).xp::CLASS_FILE_EXT;
+            $fileName= implode('/', $namer).xp::CLASS_FILE_EXT;
             $out= '';
             $inHeaders= FALSE; 
             continue;
