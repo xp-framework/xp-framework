@@ -96,19 +96,43 @@
     }
 
     /**
-     * Set up scriptlet
+     * Find active section by [app] mappings
      *
-     * @throws  lang.IllegalStateException if application is misconfigured
-     * @throws  lang.IllegalArgumentException if no app could be found
+     * @param   string URL
+     * @return  string
      */
-    protected function setup($url) {
+    public function activeSectionByMappings($url) {
       $mappings= $this->conf->readHash('app', 'mappings');
-      if (!$mappings instanceof Hashmap)
+
+      if (!$mappings instanceof Hashmap) {
+        $mappings= new Hashmap();
+
+        foreach ($this->conf->readSection('app') as $key => $value) {
+          if (0 == strncmp('map.', $key, 4)) {
+            $mappings->put($value, substr($key, 4));
+          }
+        }
+      }
+
+      if (!$mappings instanceof Hashmap || $mappings->size() == 0)
         throw new IllegalStateException('Application misconfigured: "app" section missing or broken.');
 
       if (NULL === ($app= self::findApplication($mappings, $url))) {
         throw new IllegalArgumentException('Could not find app responsible for request to "'.$url.'"');
       }
+
+      return $app;
+    }
+
+    /**
+     * Set up scriptlet
+     *
+     * @param   string url
+     * @throws  lang.IllegalStateException if application is misconfigured
+     * @throws  lang.IllegalArgumentException if no app could be found
+     */
+    protected function setup($url) {
+      $app= $this->activeSectionByMappings($url);
 
       // Load and configure scriptlet
       $scriptlet= 'app::'.$app;
