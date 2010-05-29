@@ -1837,6 +1837,35 @@ Index: skeleton/webservices/soap/xp/XPSoapNode.class.php
 -    }
 -  }
 -?>
+Index: skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php
+===================================================================
+--- skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php	(revision 14616)
++++ skeleton/webservices/xmlrpc/XmlRpcEncoder.class.php	(working copy)
+@@ -95,7 +95,9 @@
+           break;
+         
+         case 'array':
+-          if ($this->_isVector($data)) {
++          if (empty($data)) {
++            $value->addChild(new Node('array'))->addChild(new Node('data'))->setContent('');
++          } else if ($this->_isVector($data)) {
+             $n= $value->addChild(new Node('array'))->addChild(new Node('data'));
+             for ($i= 0, $s= sizeof($data); $i < $s; $i++) {
+               $n->addChild($this->_marshall($data[$i]));
+@@ -111,11 +113,11 @@
+           break;
+         
+         case 'string':
+-          $value->addChild(new Node('string', $data));
++          $value->addChild(new Node('string'))->setContent($data);
+           break;
+           
+         case 'NULL':
+-          $value->addChild(new Node('nil'));
++          $value->addChild(new Node('nil'))->setContent('');
+           break;
+         
+         default:
 Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(revision 14616)
