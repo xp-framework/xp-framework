@@ -58,6 +58,26 @@
     }
 
     /**
+     * Test constructor throws an XMLFormatException when given invalid 
+     * XML inside a string
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function constructWithUnclosedTag() {
+      new XPath('<unclosed-tag>');
+    }
+
+    /**
+     * Test constructor throws an XMLFormatException when given invalid 
+     * XML inside a string
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function constructWithSyntaxErrorInAttribute() {
+      new XPath('<hello attribute="/>');
+    }
+    
+    /**
      * Test query for "/" returns the document
      *
      */
@@ -194,7 +214,6 @@
     #[@test]
     public function queryTree() {
       $xpath= new XPath(Tree::fromString('<document><node>value</node></document>'));
-      
       $this->assertEquals('value', $xpath->query('string(/document/node)'));
     }
     
