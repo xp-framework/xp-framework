@@ -22,30 +22,75 @@ Functionality
 -------------
 Instead of using the <tt>unittest.TestCase</tt> class' methods such as 
 <tt>assertEquals()</tt> and friends the static <tt>Assert::that()</tt>
-method is used in conjunction with constraint objects created by the
-<tt>Is</tt> factor class:
+method is used in conjunction with constraint objects:
 
+API
+~~~
 <code>
-  Assert::that('Hello', Is::equalTo('Hello'));
-</code>
-
-The "Is" factory
-~~~~~~~~~~~~~~~~
-<code>
-  class Is extends Object {
-    public static function equalTo($value) { ... }
-    public static function theSameAs($value) { ... }
-    public static function not() { ... }
-    public static function either() { ... }
-    public static function between($lo, $hi) { ... }
-    public static function greaterThan($lo) { ... }
-    public static function lessThan($hi) { ... }
-    public static function null() { ... }
-    public static function false() { ... }
-    public static function true() { ... }
-    public static function anInstanceOf($type) { ... }
+  class Assert extends Object {
+    public static void that($value, Constraint $constraints);
+  }
+  
+  class Should extends Object {
+    public static Constraint equal($value) { ... }
+    public static Constraint contain($value) { ... }
+    public static Constraint startWith($slice) { ... }
+    public static Constraint endWith($slice) { ... }
+    public static Constraint match($pattern) { ... }
+    
+    public static BeConstraint be() { ... }
+    public static ShouldConstraint not() { ... }
+    public static ShouldConstraint either() { ... }
+    public static ShouldConstraint neither() { ... }
+  }
+  
+  class Constraint extends Object {
+    public ShouldConstraint $and;
+    public ShouldConstraint $or;
+    public ShouldConstraint $nor;
+  }
+  
+  class ShouldConstraint extends Constraint {
+    public Constraint equal($value) { ... }
+    public Constraint contain($value) { ... }
+    public Constraint startWith($slice) { ... }
+    public Constraint endWith($slice) { ... }
+    public Constraint match($pattern) { ... }
+    
+    public BeConstraint $be;
+  }
+  
+  class BeConstraint extends Constraint {
+    public Constraint $empty;
+    public Constraint $null;
+    public Constraint $false;
+    public Constraint $true;
+    
+    public Constraint theSameAs($value) { ... }
+    public Constraint equalTo($value) { ... }
+    public Constraint greaterThan($lo) { ... }
+    public Constraint lessThan($hi) { ... }
+    public Constraint between($lo, $hi) { ... }
+    public Constraint anyOf($values...) { ... }
+    public Constraint oneOf($values...) { ... }
+    
+    public Constraint ofType($type) { ... }
+    public Constraint anInstanceOf($type) { ... }
   }
 </code>
+
+Examples
+~~~~~~~~
+<code>
+  Assert::that(3, Should::equal(3));
+  Assert::that($recipients, Should::contain(new InternetAddress('xp@example.com')));
+  Assert::that('Hello', Should::startWith('H')->and->endWith('o'));
+  Assert::that($name, Should::match('/[a-z]/i'));
+  Assert::that(NULL, Should::be()->null);
+  Assert::that($class->getMethods(), Should::not()->be->empty);
+  Assert::that($expr, Should::neither()->equal(2)->nor->be->lessThan(0));
+</code>
+
 
 Security considerations
 -----------------------
@@ -72,6 +117,9 @@ Overlay:
 
 JMock constraints:
 * http://jmock.org/docs/javadoc/org/jmock/core/Constraint.html
+
+NUnit 2.4 Assert Syntax - the Latest Developments
+* http://nunit.net/blogs/?p=44
 
 Comments
 --------

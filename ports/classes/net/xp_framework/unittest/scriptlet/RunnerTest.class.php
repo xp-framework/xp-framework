@@ -67,6 +67,53 @@ prop-base="etc/dev/"
       $this->assertEquals('app3', xp新criptlet愛unner::findApplication($map, '/just/anything/falls/back'));
     }
 
+    #[@test]
+    public function mappingStyleHashmap() {
+      $prop= Properties::fromString('
+[app]
+ mappings="/service/:service|/:global"
+      ');
+
+      $this->mappingTester(new xp新criptlet愛unner($prop, '/webroot/doc_root/..', 'dev'));
+    }
+
+    #[@test]
+    public function mappingStyleSection() {
+      $prop= Properties::fromString('
+[app]
+ map.service="/service/"
+ map.global="/"
+      ');
+
+      $this->mappingTester(new xp新criptlet愛unner($prop, '/webroot/doc_root/..', 'dev'));
+    }
+
+    /**
+     * Helper method to test mapping styles for
+     * same results
+     *
+     * @param   xp新criptlet愛unner runner
+     */
+    protected function mappingTester($runner) {
+      $this->assertEquals('service', $runner->activeSectionByMappings('/service/foo/bar'));
+      $this->assertEquals('global', $runner->activeSectionByMappings('/whatever'));
+      $this->assertEquals('global', $runner->activeSectionByMappings('/'));
+    }
+
+    /**
+     * Verifies that empty mappings produce correct result
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function emptyMappings() {
+      $prop= Properties::fromString('
+[app]
+no.mappings="TRUE"
+      ');
+
+      $this->mappingTester(new xp新criptlet愛unner($prop, '/webroot/doc_root/..', 'dev'));
+    }
+
     /**
      * Creation
      *

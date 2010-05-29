@@ -355,7 +355,6 @@
       $this->assertEquals('Australia/Sydney', $d->getTimeZone()->getName());
     }
     
-    
     /**
      * Test PHP Bug #42910 - timezone should not fallback to default
      * timezone if it actually is unknown.
@@ -390,6 +389,51 @@
       $date= unserialize(serialize(new Date('2007-11-10 20:15+0100')));
       $this->assertEquals('2007-11-10 20:15:00+0100', $date->toString());
       $this->assertEquals('2007-11-10 19:15:00+0000', $date->toString(Date::DEFAULT_FORMAT, new TimeZone(NULL)));
+    }
+
+    /**
+     * Test malformed input string
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function malformedInputString() {
+      new Date('@@not-a-date@@');
+    }
+
+    /**
+     * Test 30.99.2010
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function monthExceeded() {
+      new Date('30.99.2010');
+    }
+
+    /**
+     * Test 30.99.2010
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function dayExceeded() {
+      new Date('99.30.2010');
+    }
+
+    /**
+     * Test unknown timezone within string
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function unknownTimeZoneNameInString() {
+      new Date('14.12.2010 11:55:00 Europe/Karlsruhe');
+    }
+
+    /**
+     * Test unknown timezone within string
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function unknownTimeZoneOffsetInString() {
+      new Date('14.12.2010 11:55:00+9999');
     }
   }
 ?>

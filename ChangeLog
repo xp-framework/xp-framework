@@ -68,6 +68,12 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug to always use forward slashes as directory separator in
+  cgen's wsdl subcommand
+  (kiesel)
+- Changed HttpSession to regenerate session ID before starting a session
+  in order to prevent duplicate session creation
+  (friebe)
 - Ports: Fixed protocol messup when reading messages without content length 
   from STOMP endpoints.
   (friebe)
@@ -76,6 +82,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for alternative syntax in web.ini's [app] section
+  (kiesel)
 - Ports: Added support for selectors to StompConnection::subscribe()
   (friebe)
 - Ports: Added optional headers parameter to StompConnection::send()

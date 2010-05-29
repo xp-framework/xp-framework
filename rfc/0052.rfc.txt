@@ -145,6 +145,13 @@ Because this will cause quite a performance impact, the JIT class loader
 is an optional feature that must be turned on - this is NOT recommended 
 for production systems.
 
+Installing the JIT classloader:
+
+* Must be done via xp.ini, the only user-specific file
+* use_xp=~/devel/xp/trunk
+
+
+
 Typing
 ~~~~~~
 The XP language knows about the following types:
