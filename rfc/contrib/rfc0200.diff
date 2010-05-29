@@ -1493,6 +1493,15 @@ Index: skeleton/webservices/soap/xp/XPSoapMessage.class.php
       * Deserialize a single node
       *
       * @param   xml.Node child
+@@ -186,7 +373,7 @@
+      * @return  var result
+      */
+     public function unmarshall($child, $context= NULL) {
+-      // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
++      // DEBUG Console::writeLine('Unmarshalling ', $child->toString());
+       if (
+         isset($child->attribute[$this->namespaces[XMLNS_XSI].':null']) or       // Java
+         isset($child->attribute[$this->namespaces[XMLNS_XSI].':nil'])           // SOAP::Lite
 @@ -290,9 +477,9 @@
            // <item>
            if (empty($child->children)) break;
@@ -1505,27 +1514,30 @@ Index: skeleton/webservices/soap/xp/XPSoapMessage.class.php
                : $this->unmarshall($item->children[1], 'MAP')
              );
            }
-@@ -305,7 +492,18 @@
+@@ -305,7 +492,21 @@
            break;
            
          default:
 -          if (!empty($child->children)) {
 +          $s= sizeof($child->children);
-+          if (0 === $s) {
-+          
-+            // Empty node, e.g. <null xsi:nil="true"/>
-+            $result= NULL;
-+          } else if (1 === $s && $child->children[0] instanceof Text) {
-+          
-+            // Text-only contents, e.g. <item xsi:type="xsd:int">5</item>
++          if (0 === $s) return NULL;    // Empty node, e.g. <null xsi:nil="true"/>
++
++          // Text-only contents, e.g. <item xsi:type="xsd:int">5</item> versus
++          // Complex node, e.g. <array><string>one</string><string>two</string></array>
++          $text= TRUE;
++          foreach ($child->children as $c) {
++            if ($c instanceof Text) continue;
++            $text= FALSE;
++            break;
++          }
++          if ($text) {
 +            $result= $this->childContent($child);
 +          } else {
 +          
-+            // Complex node, e.g. <array><string>one</string><string>two</string></array>
              if ($this->namespaces[XMLNS_XSD] == $regs[1]) {
                $result= $this->_recurseData($child, TRUE, 'STRUCT');
                break;
-@@ -347,8 +545,6 @@
+@@ -347,8 +548,6 @@
              }
              break;
            }
@@ -1534,7 +1546,7 @@ Index: skeleton/webservices/soap/xp/XPSoapMessage.class.php
        }
  
        return $result;
-@@ -416,12 +612,12 @@
+@@ -416,12 +615,12 @@
       * @param   var detail default NULL
       */    
      public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
