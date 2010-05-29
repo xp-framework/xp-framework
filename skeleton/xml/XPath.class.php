@@ -44,7 +44,15 @@
     protected function loadXML($xml) {
       $doc= new DOMDocument();
       if (!$doc->loadXML($xml)) {
-        $e= new XMLFormatException('Cannot load XML');    // TODO: Capture error details
+        $errors= libxml_get_errors();
+        libxml_clear_errors();
+        $e= new XMLFormatException(
+          rtrim($errors[0]->message), 
+          $errors[0]->code, 
+          $errors[0]->file, 
+          $errors[0]->line, 
+          $errors[0]->column
+        );
         xp::gc(__FILE__);
         throw $e;
       }
