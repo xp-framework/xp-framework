@@ -1,6 +1,64 @@
+Index: skeleton/xml/dom/Document.class.php
+===================================================================
+--- skeleton/xml/dom/Document.class.php	(revision 14616)
++++ skeleton/xml/dom/Document.class.php	(working copy)
+@@ -33,15 +33,18 @@
+      */
+     protected function _getElementsByTagName($node, $tagname, $max= -1) {
+       $r= array();
+-      foreach (array_keys($node->children) as $key) {
+-        if ($tagname == $node->children[$key]->getName()) {
+-          $r[]= $node->children[$key];
++      foreach ($node->children as $child) {
++        if (!$child instanceof Node) continue;
++        
++        if ($tagname === $child->getName()) {
++          $r[]= $child;
+           if ($max > 0 && sizeof($r) >= $max) return $r;
+         }
+-        if (!empty($node->children[$key]->children)) {
++        if (!empty($child->children)) {
+           $r= array_merge($r, $this->_getElementsByTagName(
+-            $node->children[$key], 
+-            $tagname
++            $child, 
++            $tagname, 
++            $max- sizeof($r)
+           ));
+         }
+       }
+@@ -59,20 +62,19 @@
+      */
+     protected function _getElementsByAttribute($node, $attribute, $name, $max) {
+       $r= array();
+-      foreach (array_keys($node->children) as $key) {
+-        if (
+-          ($node->children[$key]->hasAttribute($attribute)) &&
+-          ($name == $node->children[$key]->getAttribute($attribute))
+-        ) {
+-          $r[]= $node->children[$key];
++      foreach ($node->children as $child) {
++        if (!$child instanceof Node) continue;
++
++        if ($child->hasAttribute($attribute) && ($name === $child->getAttribute($attribute))) {
++          $r[]= $child;
+           if ($max > 0 && sizeof($r) >= $max) return $r;
+         }
+-        if (!empty($node->children[$key]->children)) {
++        if (!empty($child->children)) {
+           $r= array_merge($r, $this->_getElementsByAttribute(
+-            $node->children[$key], 
++            $child, 
+             $attribute, 
+             $name,
+-            $max
++            $max- sizeof($r)
+           ));
+         }
+       }
 Index: skeleton/xml/Node.class.php
 ===================================================================
---- skeleton/xml/Node.class.php	(revision 14454)
+--- skeleton/xml/Node.class.php	(revision 14616)
 +++ skeleton/xml/Node.class.php	(working copy)
 @@ -6,8 +6,10 @@
   */
@@ -235,64 +293,6 @@ Index: skeleton/xml/Node.class.php
 +    }
    }
  ?>
-Index: skeleton/xml/dom/Document.class.php
-===================================================================
---- skeleton/xml/dom/Document.class.php	(revision 14454)
-+++ skeleton/xml/dom/Document.class.php	(working copy)
-@@ -33,15 +33,18 @@
-      */
-     protected function _getElementsByTagName($node, $tagname, $max= -1) {
-       $r= array();
--      foreach (array_keys($node->children) as $key) {
--        if ($tagname == $node->children[$key]->getName()) {
--          $r[]= $node->children[$key];
-+      foreach ($node->children as $child) {
-+        if (!$child instanceof Node) continue;
-+        
-+        if ($tagname === $child->getName()) {
-+          $r[]= $child;
-           if ($max > 0 && sizeof($r) >= $max) return $r;
-         }
--        if (!empty($node->children[$key]->children)) {
-+        if (!empty($child->children)) {
-           $r= array_merge($r, $this->_getElementsByTagName(
--            $node->children[$key], 
--            $tagname
-+            $child, 
-+            $tagname, 
-+            $max- sizeof($r)
-           ));
-         }
-       }
-@@ -59,20 +62,19 @@
-      */
-     protected function _getElementsByAttribute($node, $attribute, $name, $max) {
-       $r= array();
--      foreach (array_keys($node->children) as $key) {
--        if (
--          ($node->children[$key]->hasAttribute($attribute)) &&
--          ($name == $node->children[$key]->getAttribute($attribute))
--        ) {
--          $r[]= $node->children[$key];
-+      foreach ($node->children as $child) {
-+        if (!$child instanceof Node) continue;
-+
-+        if ($child->hasAttribute($attribute) && ($name === $child->getAttribute($attribute))) {
-+          $r[]= $child;
-           if ($max > 0 && sizeof($r) >= $max) return $r;
-         }
--        if (!empty($node->children[$key]->children)) {
-+        if (!empty($child->children)) {
-           $r= array_merge($r, $this->_getElementsByAttribute(
--            $node->children[$key], 
-+            $child, 
-             $attribute, 
-             $name,
--            $max
-+            $max- sizeof($r)
-           ));
-         }
-       }
 Index: skeleton/xml/Element.class.php
 ===================================================================
 --- skeleton/xml/Element.class.php	(revision 0)
@@ -329,9 +329,22 @@ ___________________________________________________________________
 Added: svn:keywords
    + Id
 
+Index: skeleton/xml/meta/Marshaller.class.php
+===================================================================
+--- skeleton/xml/meta/Marshaller.class.php	(revision 14616)
++++ skeleton/xml/meta/Marshaller.class.php	(working copy)
+@@ -63,7 +63,7 @@
+         
+         // Node content
+         if ('.' == $element) {
+-          $node->setContent($method->invoke($instance));
++          $node->addChild(new Text($method->invoke($instance)));
+           continue;
+         }
+         
 Index: skeleton/xml/PCData.class.php
 ===================================================================
---- skeleton/xml/PCData.class.php	(revision 14454)
+--- skeleton/xml/PCData.class.php	(revision 14616)
 +++ skeleton/xml/PCData.class.php	(working copy)
 @@ -4,6 +4,8 @@
   * $Id$
@@ -381,43 +394,23 @@ Index: skeleton/xml/PCData.class.php
 +    }
    }
  ?>
-Index: skeleton/xml/meta/Marshaller.class.php
-===================================================================
---- skeleton/xml/meta/Marshaller.class.php	(revision 14454)
-+++ skeleton/xml/meta/Marshaller.class.php	(working copy)
-@@ -63,7 +63,7 @@
-         
-         // Node content
-         if ('.' == $element) {
--          $node->setContent($method->invoke($instance));
-+          $node->addChild(new Text($method->invoke($instance)));
-           continue;
-         }
-         
 Index: skeleton/xml/Tree.class.php
 ===================================================================
---- skeleton/xml/Tree.class.php	(revision 14454)
+--- skeleton/xml/Tree.class.php	(revision 14616)
 +++ skeleton/xml/Tree.class.php	(working copy)
-@@ -5,9 +5,10 @@
-  */
-  
+@@ -7,7 +7,9 @@
    uses(
--    'xml.parser.XMLParser',
--    'xml.Node',
+     'xml.parser.XMLParser',
+     'xml.Node',
 -    'xml.parser.ParserCallback'
 +    'xml.parser.TreeParser',
-+    'xml.parser.StreamInputSource',
 +    'xml.parser.StringInputSource',
-+    'xml.Node'
++    'xml.parser.FileInputSource'
    );
   
    /**
-@@ -15,19 +16,14 @@
-    * to and imported from an XML document.
-    *
-    * @test     xp://net.xp_framework.unittest.xml.TreeTest
--   * @see      xp://xml.parser.XMLParser
-+   * @see      xp://xml.parser.TreeParser
+@@ -18,16 +20,11 @@
+    * @see      xp://xml.parser.XMLParser
     * @purpose  Tree
     */
 -  class Tree extends Object implements ParserCallback {
@@ -434,22 +427,7 @@ Index: skeleton/xml/Tree.class.php
      protected 
        $version  = '1.0',
        $encoding = 'iso-8859-1';
-@@ -97,11 +93,11 @@
-     /**
-      * Add a child to this tree
-      *
--     * @param   xml.Node child 
--     * @return  xml.Node the added child
-+     * @param   xml.Element child 
-+     * @return  xml.Element the added child
-      * @throws  lang.IllegalArgumentException in case the given argument is not a Node
-      */   
--    public function addChild(Node $child) {
-+    public function addChild(Element $child) {
-       return $this->root->addChild($child);
-     }
- 
-@@ -112,23 +108,14 @@
+@@ -112,23 +109,14 @@
       *   $tree= Tree::fromString('<document>...</document>');
       * </code>
       *
@@ -475,7 +453,7 @@ Index: skeleton/xml/Tree.class.php
      }
      
      /**
-@@ -138,6 +125,7 @@
+@@ -138,6 +126,7 @@
       *   $tree= Tree::fromFile(new File('foo.xml'));
       * </code>
       *
@@ -483,7 +461,7 @@ Index: skeleton/xml/Tree.class.php
       * @param   io.File file
       * @param   string c default __CLASS__ class name
       * @return  xml.Tree
-@@ -145,90 +133,25 @@
+@@ -145,89 +134,22 @@
       * @throws  io.IOException in case reading the file fails
       */ 
      public static function fromFile($file, $c= __CLASS__) {
@@ -491,7 +469,6 @@ Index: skeleton/xml/Tree.class.php
 -      $tree= new $c();
 -      
 -      $parser->setCallback($tree);
--      $parser->dataSource= $file->uri;
 -      $file->open(FILE_MODE_READ);
 -      $string= $file->read($file->size());
 -      $file->close();
@@ -502,10 +479,7 @@ Index: skeleton/xml/Tree.class.php
 -
 -      delete($parser);
 -      return $tree;
-+      return create(new TreeParser(new XPClass($c)))->parse(new StreamInputSource(
-+        $file->getInputStream(), 
-+        $file->getURI()
-+      ));
++      return create(new TreeParser(new XPClass($c)))->parse(new FileInputSource($file));
      }
 -    
 -    /**
@@ -558,7 +532,7 @@ Index: skeleton/xml/Tree.class.php
 -      }
 +    public function toString() {
 +      return sprintf(
-+        "%s(version= %s encoding=%s) {\n  %s\n}",
++        "%s(version=%s encoding=%s)@{\n  %s\n}",
 +        $this->getClassName(),
 +        $this->version,
 +        $this->encoding,
@@ -588,6 +562,96 @@ Index: skeleton/xml/Tree.class.php
 -    }
    } 
  ?>
+Index: skeleton/xml/Comment.class.php
+===================================================================
+--- skeleton/xml/Comment.class.php	(revision 0)
++++ skeleton/xml/Comment.class.php	(revision 0)
+@@ -0,0 +1,79 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$
++ *
++ */
++
++  uses(
++    'xml.Element',
++    'xml.XMLFormatException'
++  );
++
++  /**
++   * Represents a comment
++   *
++   */
++  class Comment extends Object implements Element {
++    protected $content = NULL;
++
++    /**
++     * Constructor
++     *
++     * <code>
++     *   $n= new Comment('Hello World');
++     * </code>
++     *
++     * @param   string content default NULL
++     * @throws  xml.XMLFormatException
++     */
++    public function __construct($content= NULL) {
++      $this->setContent($content);
++    }
++
++    /**
++     * Set content
++     *
++     * @param   string content
++     * @throws  xml.XMLFormatException in case content contains illegal characters
++     */
++    public function setContent($content) {
++
++      // Scan the given string for illegal characters.
++      if (is_string($content)) {  
++        if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
++          throw new XMLFormatException(
++            'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
++          );
++        }
++      }
++      
++      $this->content= $content;
++    }
++    
++    /**
++     * Get content (all CDATA)
++     *
++     * @return  string content
++     */
++    public function getContent() {
++      return $this->content;
++    }
++    
++    /**
++     * Retrieve XML representation
++     *
++     * @param   int indent default INDENT_WRAPPED
++     * @param   string encoding default 'iso-8859-1'
++     * @param   string inset default ''
++     * @return  string XML
++     */
++    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
++      $conv= 'iso-8859-1' != $encoding;
++      return '<!--'.($conv
++        ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
++        : htmlspecialchars($this->content)
++      ).'-->';
++    }
++  }
++?>
+
+Property changes on: skeleton/xml/Comment.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
 Index: skeleton/xml/parser/TreeParser.class.php
 ===================================================================
 --- skeleton/xml/parser/TreeParser.class.php	(revision 0)
@@ -733,7 +797,7 @@ Added: svn:keywords
 
 Index: skeleton/xml/parser/XMLParser.class.php
 ===================================================================
---- skeleton/xml/parser/XMLParser.class.php	(revision 14454)
+--- skeleton/xml/parser/XMLParser.class.php	(revision 14616)
 +++ skeleton/xml/parser/XMLParser.class.php	(working copy)
 @@ -35,9 +35,9 @@
      /**
@@ -755,96 +819,6 @@ Index: skeleton/xml/parser/XMLParser.class.php
          }
          
          // Parse streams while reading data
-Index: skeleton/xml/Comment.class.php
-===================================================================
---- skeleton/xml/Comment.class.php	(revision 0)
-+++ skeleton/xml/Comment.class.php	(revision 0)
-@@ -0,0 +1,79 @@
-+<?php
-+/* This class is part of the XP framework
-+ *
-+ * $Id$
-+ *
-+ */
-+
-+  uses(
-+    'xml.Element',
-+    'xml.XMLFormatException'
-+  );
-+
-+  /**
-+   * Represents a comment
-+   *
-+   */
-+  class Comment extends Object implements Element {
-+    protected $content = NULL;
-+
-+    /**
-+     * Constructor
-+     *
-+     * <code>
-+     *   $n= new Comment('Hello World');
-+     * </code>
-+     *
-+     * @param   string content default NULL
-+     * @throws  xml.XMLFormatException
-+     */
-+    public function __construct($content= NULL) {
-+      $this->setContent($content);
-+    }
-+
-+    /**
-+     * Set content
-+     *
-+     * @param   string content
-+     * @throws  xml.XMLFormatException in case content contains illegal characters
-+     */
-+    public function setContent($content) {
-+
-+      // Scan the given string for illegal characters.
-+      if (is_string($content)) {  
-+        if (strlen($content) > ($p= strcspn($content, XML_ILLEGAL_CHARS))) {
-+          throw new XMLFormatException(
-+            'Content contains illegal character at position '.$p. ' / chr('.ord($content{$p}).')'
-+          );
-+        }
-+      }
-+      
-+      $this->content= $content;
-+    }
-+    
-+    /**
-+     * Get content (all CDATA)
-+     *
-+     * @return  string content
-+     */
-+    public function getContent() {
-+      return $this->content;
-+    }
-+    
-+    /**
-+     * Retrieve XML representation
-+     *
-+     * @param   int indent default INDENT_WRAPPED
-+     * @param   string encoding default 'iso-8859-1'
-+     * @param   string inset default ''
-+     * @return  string XML
-+     */
-+    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
-+      $conv= 'iso-8859-1' != $encoding;
-+      return '<!--'.($conv
-+        ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
-+        : htmlspecialchars($this->content)
-+      ).'-->';
-+    }
-+  }
-+?>
-
-Property changes on: skeleton/xml/Comment.class.php
-___________________________________________________________________
-Added: svn:keywords
-   + Id
-
 Index: skeleton/xml/Fragment.class.php
 ===================================================================
 --- skeleton/xml/Fragment.class.php	(revision 0)
@@ -926,7 +900,7 @@ Added: svn:keywords
 
 Index: skeleton/xml/CData.class.php
 ===================================================================
---- skeleton/xml/CData.class.php	(revision 14454)
+--- skeleton/xml/CData.class.php	(revision 14616)
 +++ skeleton/xml/CData.class.php	(working copy)
 @@ -4,6 +4,8 @@
   * $Id$
@@ -1189,7 +1163,7 @@ Added: svn:keywords
 
 Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(revision 14454)
+--- ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(revision 14616)
 +++ ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php	(working copy)
 @@ -208,6 +208,54 @@
      }
@@ -1266,7 +1240,7 @@ Index: ports/classes/net/xp_framework/unittest/xml/NodeTest.class.php
      
 Index: ports/classes/net/xp_framework/unittest/xml/TreeTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/xml/TreeTest.class.php	(revision 14454)
+--- ports/classes/net/xp_framework/unittest/xml/TreeTest.class.php	(revision 14616)
 +++ ports/classes/net/xp_framework/unittest/xml/TreeTest.class.php	(working copy)
 @@ -72,12 +72,10 @@
       */
@@ -1362,7 +1336,7 @@ Index: ports/classes/net/xp_framework/unittest/xml/TreeTest.class.php
  
 Index: ports/classes/net/xp_framework/unittest/xml/DocumentTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/xml/DocumentTest.class.php	(revision 14454)
+--- ports/classes/net/xp_framework/unittest/xml/DocumentTest.class.php	(revision 14616)
 +++ ports/classes/net/xp_framework/unittest/xml/DocumentTest.class.php	(working copy)
 @@ -28,7 +28,10 @@
        </list>');
@@ -1413,7 +1387,7 @@ Index: ports/classes/net/xp_framework/unittest/xml/DocumentTest.class.php
      }
 Index: ports/classes/net/xp_framework/unittest/xml/XPathTest.class.php
 ===================================================================
---- ports/classes/net/xp_framework/unittest/xml/XPathTest.class.php	(revision 14454)
+--- ports/classes/net/xp_framework/unittest/xml/XPathTest.class.php	(revision 14616)
 +++ ports/classes/net/xp_framework/unittest/xml/XPathTest.class.php	(working copy)
 @@ -194,7 +194,6 @@
      #[@test]
