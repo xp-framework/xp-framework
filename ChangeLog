@@ -14,6 +14,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Changed xml.XPath to throw an exception inside the constructor instead
+  of later on when given invalid XML
+  (friebe, ilankin)
 - Fixed bug to always use forward slashes as directory separator in
   cgen's wsdl subcommand
   (kiesel)
