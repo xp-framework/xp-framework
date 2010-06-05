@@ -5,6 +5,7 @@
  */
 
   $package= 'xp.scriptlet';
+
   uses(
     'util.PropertyManager',
     'rdbms.ConnectionManager'
@@ -210,8 +211,7 @@
         if (is_callable(array($this->scriptlet, 'fail'))) {
           $response= $this->scriptlet->fail($e);
         } else {
-          $response= $e->getResponse();
-          $this->except($response, $e);
+          $response= $this->fail($e);
         }
       }
 
@@ -222,7 +222,7 @@
 
       // Call scriptlet's finalizer
       $this->scriptlet->finalize();
-      
+
       if (
         ($this->flags & self::XML) &&
         ($response && isset($response->document))
@@ -239,10 +239,37 @@
         ;
       }
     }
+
+    /**
+     * Handle exception from scriptlet
+     *
+     * @param   scriptlet.HttpScriptletException e
+     * @return  scriptlet.HttpScriptletResponse
+     */
+    protected function fail(HttpScriptletException $e) {
+      $package= XPClass::forName('xp.scriptlet.Runner')->getPackage();
+      $status= $e->statusCode;
+      $errorPage= ($package->providesResource('error'.$status.'.html')
+        ? $package->getResource('error'.$status.'.html')
+        : $package->getResource('error500.html')
+      );
+      $response= new HttpScriptletResponse();
+      $response->setStatus($status);
+      $response->setContent(str_replace(
+        '<xp:value-of select="reason"/>',
+        (($this->flags & self::STACKTRACE)
+          ? $e->toString()
+          : $e->getMessage()
+        ),
+        $errorPage
+      ));
+      return $response;
+    }
     
     /**
      * Handle exception from scriptlet
      *
+     * @deprecated  Replaced by fail()
      * @param   scriptlet.HttpScriptletResponse response
      * @param   lang.Throwable e
      */
