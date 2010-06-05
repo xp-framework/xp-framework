@@ -8,7 +8,9 @@
 
   uses(
     'util.PropertyManager',
-    'rdbms.ConnectionManager'
+    'util.log.Logger',
+    'rdbms.ConnectionManager',
+    'scriptlet.HttpScriptlet'
   );
   
   /**
