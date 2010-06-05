@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'util.cmd.Command',
-    'xp.scriptlet.Runner'
+    'xp.scriptlet.Runner',
+    'scriptlet.HttpScriptlet'
   );
 
   $package= 'net.xp_framework.unittest.scriptlet';
@@ -18,13 +19,55 @@
    * @purpose  Unittest
    */
   class net暖p_framework暉nittest新criptlet愛unnerTest extends TestCase {
+    protected static $welcomeScriptlet= NULL;
+    protected static $errorScriptlet= NULL;
+    
+    static function __static() {
+      self::$errorScriptlet= newinstance('scriptlet.HttpScriptlet', array(), '{
+        protected function _request() {
+          $req= new HttpScriptletRequest();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/members";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
+        public function doGet($request, $response) {
+          throw new IllegalAccessException("No shoes, no shorts, no service");
+        }
+      }');
+      self::$welcomeScriptlet= newinstance('scriptlet.HttpScriptlet', array(), '{
+        protected function _request() {
+          $req= new HttpScriptletRequest();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/public";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
+        public function doGet($request, $response) {
+          $response->write("<h1>Welcome, we are open</h1>");
+        }
+      }');
+    }    
 
     /**
      * Creates a runner
      *
+     * @param   string profile
      * @return  xp.scriptlet.Runner
      */
-    protected function _runner() {
+    protected function _runner($profile= 'dev') {
       $prop= Properties::fromString('
 [app]
 mappings="/xml/:xml|/:global"
@@ -39,12 +82,28 @@ debug="XML|ERRORS|STACKTRACE"
 prop-base="etc/dev/"
       ');
 
-      return newinstance('xp.scriptlet.Runner', array($prop, '/webroot/doc_root/..', 'dev'), '{
+      return newinstance('xp.scriptlet.Runner', array($prop, '/webroot/doc_root/..', $profile), '{
         public function innerInvoke() {
           $args= func_get_args();
           $m= array_shift($args);
           return call_user_func_array(array($this, $m), $args);
         }
+
+         public function getContent() {
+           foreach ($this->readArray("app::xml", "debug", array()) as $lvl) {
+             $this->flags |= $this->getClass()->getConstant($lvl);
+           }
+           ob_start();
+           $this->run();
+           $content= ob_get_contents();
+           ob_end_clean();
+           return $content;
+         }
+
+         public function withScriptlet($scriptlet) {
+           $this->scriptlet= $scriptlet;
+           return $this;
+         }
       }');
     }
 
@@ -99,7 +158,7 @@ prop-base="etc/dev/"
      * Helper method to test mapping styles for
      * same results
      *
-     * @param   xp新criptlet愛unner runner
+     * @param   xp.scriptlet.Runner runner
      */
     protected function mappingTester($runner) {
       $this->assertEquals('service', $runner->activeSectionByMappings('/service/foo/bar'));
@@ -155,6 +214,87 @@ no.mappings="TRUE"
     #[@test]
     public function profileSettingsOverwriteGlobalSettings() {
       $this->assertEquals('etc/dev/', $this->_runner()->innerInvoke('readString', 'app::xml', 'prop-base'));
+    }
+    
+    /**
+     * Test normal page display
+     *
+     */
+    #[@test]
+    public function page() {
+      $this->assertEquals(
+        '<h1>Welcome, we are open</h1>', 
+        $this->_runner('prod')->withScriptlet(self::$welcomeScriptlet)->getContent()
+      );
+    }
+
+    /**
+     * Test normal page display
+     *
+     */
+    #[@test]
+    public function pageWithWarningsInProdMode() {
+      $this->assertEquals(
+        '<h1>Welcome, we are open</h1>', 
+        $this->_runner('prod')->withScriptlet(self::$welcomeScriptlet)->getContent()
+      );
+    }
+
+    /**
+     * Test normal page display with warnings
+     *
+     */
+    #[@test]
+    public function pageWithWarningsInDevMode() {
+      $warning= 'Warning! Do not read if you have work to do!';
+      with (trigger_error($warning)); {
+        preg_match(
+          '#'.preg_quote($warning).'#', 
+          $this->_runner('dev')->withScriptlet(self::$welcomeScriptlet)->getContent(), 
+          $matches
+        );
+        xp::gc(__FILE__);
+      }
+      $this->assertEquals($warning, $matches[0]);
+    }
+
+    /**
+     * Test error page display
+     *
+     */
+    #[@test]
+    public function errorPageInProdMode() {
+      preg_match(
+        '#<xmp>(.+)</xmp>#', 
+        $this->_runner('prod')->withScriptlet(self::$errorScriptlet)->getContent(),
+        $matches
+      );
+      $this->assertEquals(
+        'Request processing failed [doGet]: No shoes, no shorts, no service', 
+        $matches[1]
+      );
+    }
+
+    /**
+     * Test error page display
+     *
+     */
+    #[@test]
+    public function errorPageInDevMode() {
+      $content= $this->_runner('dev')->withScriptlet(self::$errorScriptlet)->getContent();
+      preg_match('#<xmp>(.+)#', $content, $compound);
+      preg_match('#Caused by (.+)#', $content, $cause);
+
+      $this->assertEquals(
+        'Exception scriptlet.HttpScriptletException (500:Request processing failed [doGet]: No shoes, no shorts, no service)', 
+        $compound[1],
+        'exception compound message'
+      );
+      $this->assertEquals(
+        'Exception lang.IllegalAccessException (No shoes, no shorts, no service)',
+        $cause[1],
+        'exception cause'
+      );
     }
   }
 ?>
