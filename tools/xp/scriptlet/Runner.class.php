@@ -31,6 +31,11 @@
       $conf       = NULL,
       $scriptlet  = NULL;
     
+    /**
+     * Entry point method
+     *
+     * @param   string[] args
+     */
     public static function main(array $args) {
       try {
         $webroot= $args[0];
