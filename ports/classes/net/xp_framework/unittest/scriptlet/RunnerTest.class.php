@@ -31,7 +31,7 @@
           $req= new HttpScriptletRequest();
           $req->method= "GET";
           $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
-          $req->env["REQUEST_URI"]= "/members";
+          $req->env["REQUEST_URI"]= "/error";
           $req->env["HTTP_HOST"]= "localhost";
           return $req;
         }
@@ -53,7 +53,7 @@
           $req= new HttpScriptletRequest();
           $req->method= "GET";
           $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
-          $req->env["REQUEST_URI"]= "/public";
+          $req->env["REQUEST_URI"]= "/welcome";
           $req->env["HTTP_HOST"]= "localhost";
           return $req;
         }
@@ -78,7 +78,7 @@
           $req= new HttpScriptletRequest();
           $req->method= "GET";
           $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
-          $req->env["REQUEST_URI"]= "/public";
+          $req->env["REQUEST_URI"]= "/debug";
           $req->env["HTTP_HOST"]= "localhost";
           return $req;
         }
