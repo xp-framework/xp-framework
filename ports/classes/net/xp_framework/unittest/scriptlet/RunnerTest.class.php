@@ -6,8 +6,9 @@
 
   uses(
     'unittest.TestCase',
-    'util.cmd.Command',
     'xp.scriptlet.Runner',
+    'util.log.Traceable',
+    'util.log.BufferedAppender',
     'scriptlet.HttpScriptlet'
   );
 
@@ -21,9 +22,11 @@
   class net暖p_framework暉nittest新criptlet愛unnerTest extends TestCase {
     protected static $welcomeScriptlet= NULL;
     protected static $errorScriptlet= NULL;
+    protected static $debugScriptlet= NULL;
+    protected $runner = NULL;
     
     static function __static() {
-      self::$errorScriptlet= newinstance('scriptlet.HttpScriptlet', array(), '{
+      self::$errorScriptlet= ClassLoader::defineClass('ErrorScriptlet', 'scriptlet.HttpScriptlet', array('util.log.Traceable'), '{
         protected function _request() {
           $req= new HttpScriptletRequest();
           $req->method= "GET";
@@ -31,6 +34,10 @@
           $req->env["REQUEST_URI"]= "/members";
           $req->env["HTTP_HOST"]= "localhost";
           return $req;
+        }
+        
+        public function setTrace($cat) {
+          $cat->debug("Injected", $cat->getClassName());
         }
         
         protected function _setupRequest($request) {
@@ -41,7 +48,7 @@
           throw new IllegalAccessException("No shoes, no shorts, no service");
         }
       }');
-      self::$welcomeScriptlet= newinstance('scriptlet.HttpScriptlet', array(), '{
+      self::$welcomeScriptlet= ClassLoader::defineClass('WelcomeScriptlet', 'scriptlet.HttpScriptlet', array(), '{
         protected function _request() {
           $req= new HttpScriptletRequest();
           $req->method= "GET";
@@ -59,52 +66,216 @@
           $response->write("<h1>Welcome, we are open</h1>");
         }
       }');
-    }    
+      self::$debugScriptlet= ClassLoader::defineClass('DebugScriptlet', 'scriptlet.HttpScriptlet', array(), '{
+        protected $title, $date;
+
+        public function __construct($title, $date) {
+          $this->title= $title;
+          $this->date= $date;
+        }
+        
+        protected function _request() {
+          $req= new HttpScriptletRequest();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/public";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
+        public function doGet($request, $response) {
+          $response->write("<h1>".$this->title." @ ".$this->date."</h1>");
+
+          $response->write("<ul>");
+          $response->write("  <li>ENV.DOMAIN = ".$request->getEnvValue("DOMAIN")."</li>");
+          $response->write("  <li>ENV.ADMINS = ".$request->getEnvValue("ADMINS")."</li>");
+          $response->write("</ul>");
+
+          $config= PropertyManager::getInstance()->getProperties("debug")->getFileName();
+          $response->write("<h2>".strtr($config, DIRECTORY_SEPARATOR, "/")."</h2>");
+        }
+      }');
+    }
 
     /**
-     * Creates a runner
+     * Verifies that empty configured mappings produce correct result
      *
-     * @param   string profile
-     * @return  xp.scriptlet.Runner
      */
-    protected function _runner($profile= 'dev') {
-      $prop= Properties::fromString('
-[app]
-mappings="/xml/:xml|/:global"
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: "app" section missing or broken')]
+    public function emptyMappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        new xp新criptlet愛unner('/htdocs', $p);
+      }
+    }
 
-[app::xml]
-class="scriptlet.xml.XMLScriptlet"
-init-params="some.package|{WEBROOT}/xsl"
-prop-base="etc/"
+    /**
+     * Verifies that empty configured mappings produce correct result
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: "app" section missing or broken')]
+    public function appSectionWithoutValidMappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'not.a.mapping', 1);
+        new xp新criptlet愛unner('/htdocs', $p);
+      }
+    }
 
-[app::xml@dev]
-debug="XML|ERRORS|STACKTRACE"
-prop-base="etc/dev/"
-      ');
+    /**
+     * Verifies that old-style configured mappings produce correct result
+     *
+     */
+    #[@test]
+    public function oldStyleMappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'mappings', '/service:service|/:global');
 
-      return newinstance('xp.scriptlet.Runner', array($prop, '/webroot/doc_root/..', $profile), '{
-        public function innerInvoke() {
-          $args= func_get_args();
-          $m= array_shift($args);
-          return call_user_func_array(array($this, $m), $args);
-        }
+        $p->writeSection('app::service');
+        $p->writeSection('app::global');
 
-         public function getContent() {
-           foreach ($this->readArray("app::xml", "debug", array()) as $lvl) {
-             $this->flags |= $this->getClass()->getConstant($lvl);
-           }
-           ob_start();
-           $this->run();
-           $content= ob_get_contents();
-           ob_end_clean();
-           return $content;
-         }
+        $this->assertEquals(
+          array('/service' => 'app::service', '/' => 'app::global'),
+          create(new xp新criptlet愛unner('/htdocs', $p))->mappedApplications()
+        );
+      }
+    }
 
-         public function withScriptlet($scriptlet) {
-           $this->scriptlet= $scriptlet;
-           return $this;
-         }
-      }');
+    /**
+     * Verifies that old-style configured mappings produce correct result
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: Section app::service mapped by /service missing')]
+    public function oldStyleMappingWithoutCorrespondingSection() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'mappings', '/service:service');
+        new xp新criptlet愛unner('/htdocs', $p);
+      }
+    }
+
+    /**
+     * Verifies that configured mappings produce correct result
+     *
+     */
+    #[@test]
+    public function mappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+        $p->writeString('app', 'map.global', '/');
+
+        $p->writeSection('app::service');
+        $p->writeSection('app::global');
+
+        $this->assertEquals(
+          array('/service' => 'app::service', '/' => 'app::global'),
+          create(new xp新criptlet愛unner('/htdocs', $p))->mappedApplications()
+        );
+      }
+    }
+
+    /**
+     * Verifies that old-style configured mappings produce correct result
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: Section app::service mapped by /service missing')]
+    public function mappingWithoutCorrespondingSection() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+        new xp新criptlet愛unner('/htdocs', $p);
+      }
+    }
+
+    /**
+     * Creates a new runner
+     *
+     */
+    protected function newRunner($profile= NULL) {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.debug', '/debug');
+        $p->writeString('app', 'map.error', '/error');
+        $p->writeString('app', 'map.welcome', '/');
+
+        // The debug app
+        $p->writeSection('app::debug');
+        $p->writeString('app::debug', 'class', self::$debugScriptlet->getName());
+        $p->writeString('app::debug', 'prop-base', '{WEBROOT}/etc/{PROFILE}');
+        $p->writeString('app::debug', 'init-envs', 'DOMAIN:example.com|ADMINS:admin@example.com,root@localhost');
+        $p->writeString('app::debug', 'init-params', 'Debugging|today');
+
+        // The error app
+        $p->writeSection('app::error');
+        $p->writeString('app::error', 'class', self::$errorScriptlet->getName());
+        $p->writeSection('app::error@dev');
+        $p->writeString('app::error@dev', 'debug', 'XML|ERRORS|STACKTRACE|TRACE');
+
+        // The welcome app
+        $p->writeSection('app::welcome');
+        $p->writeString('app::welcome', 'class', self::$welcomeScriptlet->getName());
+        $p->writeSection('app::welcome@dev');
+        $p->writeArray('app::welcome@dev', 'debug', 'XML|ERRORS|STACKTRACE');
+
+        
+        return new xp新criptlet愛unner('/var/www', $p, $profile);
+      }
+    }
+
+    /**
+     * Test expand() method
+     *
+     */
+    #[@test]
+    public function expandServerProfile() {
+      $this->assertEquals('etc/dev/', $this->newRunner('dev')->expand('etc/{PROFILE}/'));
+    }
+
+    /**
+     * Test expand() method
+     *
+     */
+    #[@test]
+    public function expandWebRoot() {
+      $this->assertEquals('/var/www/htdocs', $this->newRunner('dev')->expand('{WEBROOT}/htdocs'));
+    }
+
+    /**
+     * Test expand() method
+     *
+     */
+    #[@test]
+    public function expandWebRootAndServerProfile() {
+      $this->assertEquals('/var/www/etc/prod/', $this->newRunner('prod')->expand('{WEBROOT}/etc/{PROFILE}/'));
+    }
+
+    /**
+     * Test expand() method
+     *
+     */
+    #[@test]
+    public function expandUnknownVariable() {
+      $this->assertEquals('{ROOT}', $this->newRunner('prod')->expand('{ROOT}'));
+    }
+
+    /**
+     * Test matching of URL against configuration works
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Could not find app responsible for request to /')]
+    public function noApplication() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+        $p->writeSection('app::service');
+        create(new xp新criptlet愛unner('/htdocs', $p))->applicationAt('/');
+      }
     }
 
     /**
@@ -112,108 +283,77 @@ prop-base="etc/dev/"
      *
      */
     #[@test]
-    public function findApplication() {
-      $map= new Hashmap(array(
-        '/some/url/' => 'app1',
-        '/other/url' => 'app2',
-        '/'          => 'app3'
-      ));
-      
-      $this->assertEquals('app2', xp新criptlet愛unner::findApplication($map, '/other/url/with/appended.html'));
-      $this->assertEquals('app1', xp新criptlet愛unner::findApplication($map, '/some/url/'));
-      $this->assertEquals('app1', xp新criptlet愛unner::findApplication($map, '/some/url/below/'));
-      $this->assertEquals('app3', xp新criptlet愛unner::findApplication($map, '/just/anything/falls/back'));
+    public function welcomeApplication() {
+      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('/'));
     }
 
     /**
-     * Tests mapping with hashmap
+     * Test matching of URL against configuration works
      *
      */
     #[@test]
-    public function mappingStyleHashmap() {
-      $prop= Properties::fromString('
-[app]
- mappings="/service/:service|/:global"
-      ');
-
-      $this->mappingTester(new xp新criptlet愛unner($prop, '/webroot/doc_root/..', 'dev'));
+    public function welcomeApplicationAtEmptyUrl() {
+      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt(''));
     }
 
     /**
-     * Tests mapping with "." in keys
+     * Test matching of URL against configuration works
      *
      */
     #[@test]
-    public function mappingStyleSection() {
-      $prop= Properties::fromString('
-[app]
- map.service="/service/"
- map.global="/"
-      ');
-
-      $this->mappingTester(new xp新criptlet愛unner($prop, '/webroot/doc_root/..', 'dev'));
+    public function welcomeApplicationAtDoubleSlash() {
+      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('//'));
     }
 
     /**
-     * Helper method to test mapping styles for
-     * same results
-     *
-     * @param   xp.scriptlet.Runner runner
-     */
-    protected function mappingTester($runner) {
-      $this->assertEquals('service', $runner->activeSectionByMappings('/service/foo/bar'));
-      $this->assertEquals('global', $runner->activeSectionByMappings('/whatever'));
-      $this->assertEquals('global', $runner->activeSectionByMappings('/'));
-    }
-
-    /**
-     * Verifies that empty mappings produce correct result
-     *
-     */
-    #[@test, @expect('lang.IllegalStateException')]
-    public function emptyMappings() {
-      $prop= Properties::fromString('
-[app]
-no.mappings="TRUE"
-      ');
-
-      $this->mappingTester(new xp新criptlet愛unner($prop, '/webroot/doc_root/..', 'dev'));
-    }
-
-    /**
-     * Creation
+     * Test matching of URL against configuration works
      *
      */
     #[@test]
-    public function create() {
-      $this->_runner();
+    public function errorApplication() {
+      $this->assertEquals('app::error', $this->newRunner()->applicationAt('/error'));
     }
 
     /**
-     * Test "{WEBROOT}" literal is being replaced
+     * Test matching of URL against configuration works
      *
      */
     #[@test]
-    public function variableWebrootReplacement() {
-      $this->assertEquals('/webroot/doc_root/../xsl/', $this->_runner()->replaceVariables('{WEBROOT}/xsl/'));
+    public function welcomeApplicationAtUrlEvenWithErrorInside() {
+      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('/url/with/error/inside'));
     }
-    
+
     /**
-     * Test "{PROFILE}" literal is being replaced
+     * Test matching of URL against configuration works
      *
      */
     #[@test]
-    public function variableProfileReplacement() {
-      $this->assertEquals('etc/dev/', $this->_runner()->replaceVariables('etc/{PROFILE}/'));
+    public function welcomeApplicationAtUrlBeginningWithErrors() {
+      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('/errors'));
     }
-    
+
     /**
-     * Test profile-section values overwrite global value
+     * Test matching of URL against configuration works
      *
      */
     #[@test]
-    public function profileSettingsOverwriteGlobalSettings() {
-      $this->assertEquals('etc/dev/', $this->_runner()->innerInvoke('readString', 'app::xml', 'prop-base'));
+    public function errorApplicationAtErrorPath() {
+      $this->assertEquals('app::error', $this->newRunner()->applicationAt('/error/happened'));
+    }
+
+    /**
+     * Runs a scriptlet
+     *
+     * @param   string profile
+     * @param   string url
+     * @return  string content
+     */
+    protected function runWith($profile, $url) {
+      ob_start();
+      $this->newRunner($profile)->run($url);
+      $content= ob_get_contents();
+      ob_end_clean();
+      return $content;
     }
     
     /**
@@ -221,10 +361,10 @@ no.mappings="TRUE"
      *
      */
     #[@test]
-    public function page() {
+    public function pageInProdMode() {
       $this->assertEquals(
         '<h1>Welcome, we are open</h1>', 
-        $this->_runner('prod')->withScriptlet(self::$welcomeScriptlet)->getContent()
+        $this->runWith('prod', '/')
       );
     }
 
@@ -234,10 +374,16 @@ no.mappings="TRUE"
      */
     #[@test]
     public function pageWithWarningsInProdMode() {
-      $this->assertEquals(
-        '<h1>Welcome, we are open</h1>', 
-        $this->_runner('prod')->withScriptlet(self::$welcomeScriptlet)->getContent()
-      );
+      $warning= 'Warning! Do not read if you have work to do!';
+      with (trigger_error($warning)); {
+        preg_match(
+          '#'.preg_quote($warning).'#', 
+          $this->runWith('prod', '/'),
+          $matches
+        );
+        xp::gc(__FILE__);
+      }
+      $this->assertEquals(array(), $matches);
     }
 
     /**
@@ -250,7 +396,7 @@ no.mappings="TRUE"
       with (trigger_error($warning)); {
         preg_match(
           '#'.preg_quote($warning).'#', 
-          $this->_runner('dev')->withScriptlet(self::$welcomeScriptlet)->getContent(), 
+          $this->runWith('dev', '/'),
           $matches
         );
         xp::gc(__FILE__);
@@ -264,15 +410,79 @@ no.mappings="TRUE"
      */
     #[@test]
     public function errorPageInProdMode() {
-      preg_match(
-        '#<xmp>(.+)</xmp>#', 
-        $this->_runner('prod')->withScriptlet(self::$errorScriptlet)->getContent(),
-        $matches
-      );
+      preg_match('#<xmp>(.+)</xmp>#', $this->runWith('prod', '/error'), $matches);
       $this->assertEquals(
         'Request processing failed [doGet]: No shoes, no shorts, no service', 
         $matches[1]
       );
+    }
+
+    /**
+     * Asserts a given buffer contains the given bytes       
+     *
+     * @param   string bytes
+     * @param   string buffer
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertContained($bytes, $buffer, $message= 'Not contained') {
+      strstr($buffer, $bytes) || $this->fail($message, $buffer, $bytes);
+    }
+
+    /**
+     * Asserts a given buffer does not contain the given bytes       
+     *
+     * @param   string bytes
+     * @param   string buffer
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertNotContained($bytes, $buffer, $message= 'Contained') {
+      strstr($buffer, $bytes) && $this->fail($message, $buffer, $bytes);
+    }
+
+    /**
+     * Test error page display
+     *
+     */
+    #[@test]
+    public function errorPageLoggingInProdMode() {
+      with ($cat= Logger::getInstance()->getCategory('scriptlet')); {
+        $appender= $cat->addAppender(new BufferedAppender());
+        $this->runWith('prod', '/error');
+        $buffer= $appender->getBuffer();
+        $cat->removeAppender($appender);
+        
+        $this->assertNotContained(
+          'Injected util.log.LogCategory',
+          $buffer
+        );
+        $this->assertContained(
+          'Exception scriptlet.ScriptletException (500:Request processing failed [doGet]: No shoes, no shorts, no service)', 
+          $buffer
+        );
+      }
+    }
+
+    /**
+     * Test error page display
+     *
+     */
+    #[@test]
+    public function errorPageLoggingInDevMode() {
+      with ($cat= Logger::getInstance()->getCategory('scriptlet')); {
+        $appender= $cat->addAppender(new BufferedAppender());
+        $this->runWith('dev', '/error');
+        $buffer= $appender->getBuffer();
+        $cat->removeAppender($appender);
+        
+        $this->assertContained(
+          'Injected util.log.LogCategory',
+          $buffer
+        );
+        $this->assertContained(
+          'Exception scriptlet.ScriptletException (500:Request processing failed [doGet]: No shoes, no shorts, no service)', 
+          $buffer
+        );
+      }
     }
 
     /**
@@ -281,7 +491,7 @@ no.mappings="TRUE"
      */
     #[@test]
     public function errorPageInDevMode() {
-      $content= $this->_runner('dev')->withScriptlet(self::$errorScriptlet)->getContent();
+      $content= $this->runWith('dev', '/error');
       preg_match('#<xmp>(.+)#', $content, $compound);
       preg_match('#Caused by (.+)#', $content, $cause);
 
@@ -294,6 +504,26 @@ no.mappings="TRUE"
         'Exception lang.IllegalAccessException (No shoes, no shorts, no service)',
         $cause[1],
         'exception cause'
+      );
+    }
+
+    /**
+     * Test debug page display
+     *
+     */
+    #[@test]
+    public function debugPage() {
+      $content= $this->runWith('dev', '/debug');
+      preg_match('#<h1>(.+)</h1>#', $content, $params);
+      preg_match('#<h2>(.+)</h2>#', $content, $config);
+      preg_match_all('#<li>(ENV\..+)</li>#U', $content, $env);
+
+      $this->assertEquals('Debugging @ today', $params[1], 'params');
+      $this->assertEquals('/var/www/etc/dev/debug.ini', $config[1], 'config');
+      $this->assertEquals(
+        array('ENV.DOMAIN = example.com', 'ENV.ADMINS = admin@example.com,root@localhost'),
+        $env[1],
+        'environment'
       );
     }
   }
