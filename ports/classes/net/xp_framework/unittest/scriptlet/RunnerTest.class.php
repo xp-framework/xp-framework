@@ -20,10 +20,9 @@
   class net暖p_framework暉nittest新criptlet愛unnerTest extends TestCase {
 
     /**
-     * (Insert method's description here)
+     * Creates a runner
      *
-     * @param
-     * @return
+     * @return  xp.scriptlet.Runner
      */
     protected function _runner() {
       $prop= Properties::fromString('
@@ -67,6 +66,10 @@ prop-base="etc/dev/"
       $this->assertEquals('app3', xp新criptlet愛unner::findApplication($map, '/just/anything/falls/back'));
     }
 
+    /**
+     * Tests mapping with hashmap
+     *
+     */
     #[@test]
     public function mappingStyleHashmap() {
       $prop= Properties::fromString('
@@ -77,6 +80,10 @@ prop-base="etc/dev/"
       $this->mappingTester(new xp新criptlet愛unner($prop, '/webroot/doc_root/..', 'dev'));
     }
 
+    /**
+     * Tests mapping with "." in keys
+     *
+     */
     #[@test]
     public function mappingStyleSection() {
       $prop= Properties::fromString('
