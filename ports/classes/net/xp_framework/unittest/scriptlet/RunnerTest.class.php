@@ -23,7 +23,6 @@
     protected static $welcomeScriptlet= NULL;
     protected static $errorScriptlet= NULL;
     protected static $debugScriptlet= NULL;
-    protected $runner = NULL;
     
     static function __static() {
       self::$errorScriptlet= ClassLoader::defineClass('ErrorScriptlet', 'scriptlet.HttpScriptlet', array('util.log.Traceable'), '{
