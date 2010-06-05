@@ -146,7 +146,7 @@
      * Test writing to response with write() throws an exception
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function writeToResponseNotPermitted () {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= $this->newResponse(create(new Stylesheet())->withOutputMethod('xml'));

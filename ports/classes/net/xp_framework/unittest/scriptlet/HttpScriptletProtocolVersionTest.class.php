@@ -78,7 +78,7 @@
      * Test HTTP/0.9 Requests are unsupported
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function http09RequestsUnsupported() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $req->env['SERVER_PROTOCOL']= 'HTTP/0.9';
@@ -92,7 +92,7 @@
      * Test HTTP/1.2 Requests are unsupported
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function http12RequestsUnsupported() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $req->env['SERVER_PROTOCOL']= 'HTTP/1.2';
@@ -106,7 +106,7 @@
      * Test requests without a a valid protocol version are unsupported
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function emptyProtocolRequestsUnsupported() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $req->env['SERVER_PROTOCOL']= '';
@@ -120,7 +120,7 @@
      * Test requests without a a valid protocol version are unsupported
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function invalidProtocolRequestsUnsupported() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $req->env['SERVER_PROTOCOL']= 'INVALID/1.0';

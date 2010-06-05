@@ -286,7 +286,7 @@ no.mappings="TRUE"
       preg_match('#Caused by (.+)#', $content, $cause);
 
       $this->assertEquals(
-        'Exception scriptlet.HttpScriptletException (500:Request processing failed [doGet]: No shoes, no shorts, no service)', 
+        'Exception scriptlet.ScriptletException (500:Request processing failed [doGet]: No shoes, no shorts, no service)', 
         $compound[1],
         'exception compound message'
       );

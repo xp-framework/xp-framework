@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('peer.http.HttpConstants');
+  uses('scriptlet.Response', 'peer.http.HttpConstants');
  
   /**
    * Defines the response sent from the webserver to the client,
@@ -17,7 +17,7 @@
    * @see      xp://scriptlet.HttpScriptlet
    * @purpose  Provide a way to access the HTTP response
    */  
-  class HttpScriptletResponse extends Object {
+  class HttpScriptletResponse extends Object implements Response {
     protected
       $uri=             NULL;
     
@@ -104,6 +104,38 @@
     public function setContentType($type) {
       $this->setHeader('Content-Type', $type);
     }
+
+    /**
+     * Returns whether the response has been comitted yet.
+     *
+     * @return  bool
+     */
+    public function isCommitted() {
+      return headers_sent();
+    }
+
+    /**
+     * Gets the output stream
+     *
+     * @param   io.streams.OutputStream
+     */
+    public function getOutputStream() {
+      return newinstance('io.streams.OutputStream', array($this), '{
+        protected $response;
+        public function __construct($r) {
+          $this->response= $r;
+        }
+        public function write($arg) {
+          $this->response->write($arg);
+        }
+        public function flush() {
+          $this->response->flush();
+        }
+        public function close() {
+          $this->response->flush();
+        }
+      }');
+    }
     
     /**
      * Set a cookie. May be called multiple times with different cookies
@@ -135,10 +167,11 @@
      * to the client. In that case, one cannot trigger sending
      * of any header again.
      *
+     * @deprecated  Use isComitted() instead
      * @return  bool
      */
     public function headersSent() {
-      return headers_sent();
+      return $this->isCommitted();
     }
     
     /**
@@ -163,14 +196,10 @@
     }
 
     /**
-     * Sends headers. The statuscode will be sent prior to any headers
-     * and prefixed by HTTP/ and the <pre>version</pre> attribute.
-     * 
-     * Headers spanning multiple lines will be transformed to confirm
+     * Flushes this response, that is, writes all headers to the outputstream
      *
-     * @throws  lang.IllegalStateException if headers have already been sent
-     */  
-    public function sendHeaders() {
+     */
+    public function flush() {
       if (headers_sent($file, $line))
         throw new IllegalStateException('Headers have already been sent at: '.$file.', line '.$line);
         
@@ -185,6 +214,19 @@
       foreach ($this->headers as $header) {
         header(strtr($header, array("\r" => '', "\n" => "\n\t")), FALSE);
       }
+    }
+
+    /**
+     * Sends headers. The statuscode will be sent prior to any headers
+     * and prefixed by HTTP/ and the <pre>version</pre> attribute.
+     * 
+     * Headers spanning multiple lines will be transformed to confirm
+     *
+     * @deprecated  Use flush() instead
+     * @throws  lang.IllegalStateException if headers have already been sent
+     */  
+    public function sendHeaders() {
+      $this->flush();
     }
 
     /**

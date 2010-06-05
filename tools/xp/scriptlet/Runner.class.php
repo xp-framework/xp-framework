@@ -199,7 +199,7 @@
       try {
         $this->scriptlet->init();
         $response= $this->scriptlet->process();
-      } catch (HttpScriptletException $e) {
+      } catch (ScriptletException $e) {
         $cat->error('Web runner caught', $e);
 
         // Remember this exception to show it below the error page,
@@ -243,10 +243,10 @@
     /**
      * Handle exception from scriptlet
      *
-     * @param   scriptlet.HttpScriptletException e
+     * @param   scriptlet.ScriptletException e
      * @return  scriptlet.HttpScriptletResponse
      */
-    protected function fail(HttpScriptletException $e) {
+    protected function fail(ScriptletException $e) {
       $package= XPClass::forName('xp.scriptlet.Runner')->getPackage();
       $status= $e->statusCode;
       $errorPage= ($package->providesResource('error'.$status.'.html')

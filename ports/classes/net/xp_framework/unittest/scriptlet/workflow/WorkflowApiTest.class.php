@@ -89,8 +89,8 @@
       }');
       try {
         $this->process($request);
-        $this->fail('Expected exception not caught', NULL, 'HttpScriptletException');
-      } catch (HttpScriptletException $expected) {
+        $this->fail('Expected exception not caught', NULL, 'ScriptletException');
+      } catch (ScriptletException $expected) {
         $this->assertEquals(403, $expected->statusCode);
         $this->assertClass($expected->getCause(), 'lang.IllegalAccessException');
       }
@@ -110,8 +110,8 @@
       }');
       try {
         $this->process($request);
-        $this->fail('Expected exception not caught', NULL, 'HttpScriptletException');
-      } catch (HttpScriptletException $expected) {
+        $this->fail('Expected exception not caught', NULL, 'ScriptletException');
+      } catch (ScriptletException $expected) {
         $this->assertEquals(500, $expected->statusCode);
         $this->assertClass($expected->getCause(), 'lang.IllegalStateException');
       }
@@ -131,8 +131,8 @@
       }');
       try {
         $this->process($request);
-        $this->fail('Expected exception not caught', NULL, 'HttpScriptletException');
-      } catch (HttpScriptletException $expected) {
+        $this->fail('Expected exception not caught', NULL, 'ScriptletException');
+      } catch (ScriptletException $expected) {
         $this->assertEquals(406, $expected->statusCode);
         $this->assertClass($expected->getCause(), 'lang.IllegalArgumentException');
       }

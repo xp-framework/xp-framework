@@ -146,7 +146,7 @@
      * Test illegal HTTP verb is not supported
      *
      */
-    #[@test, @expect(class= 'scriptlet.HttpScriptletException', withMessage= 'Unknown HTTP method: "LOOK"')]
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'Unknown HTTP method: "LOOK"')]
     public function illegalHttpVerb() {
       $req= $this->newRequest('LOOK', new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
@@ -222,7 +222,7 @@
      * Test non-implemented method triggers MethodNotImplementedException
      *
      */
-    #[@test, @expect(class= 'scriptlet.HttpScriptletException', withMessage= 'HTTP method "DELETE" not supported')]
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'HTTP method "DELETE" not supported')]
     public function requestedMethodNotImplemented() {
       $req= $this->newRequest('DELETE', new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
@@ -237,10 +237,10 @@
 
     /**
      * Test any exceptions thrown from do*() methods are wrapped inside
-     * a scriptlet.HttpScriptletException
+     * a scriptlet.ScriptletException
      *
      */
-    #[@test, @expect(class= 'scriptlet.HttpScriptletException', withMessage= 'Request processing failed [doGet]: TEST')]
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'Request processing failed [doGet]: TEST')]
     public function exceptionInDoWrapped() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
@@ -258,14 +258,14 @@
      * a scriptlet.HttpScriptletException
      *
      */
-    #[@test, @expect(class= 'scriptlet.HttpScriptletException', withMessage= 'TEST')]
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'TEST')]
     public function scriptletExceptionInDo() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
       
       $s= newinstance('scriptlet.HttpScriptlet', array(), '{
         public function doGet($request, $response) {
-          throw new HttpScriptletException("TEST");
+          throw new ScriptletException("TEST");
         }
       }');
       $s->service($req, $res);
@@ -416,7 +416,7 @@
      * Test authenticator that always throws exceptions
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function unconditionalDenyAuthenticator() {
       $req= $this->newRequest('GET', new URL('http://localhost/members/profile'));
       $res= new HttpScriptletResponse();

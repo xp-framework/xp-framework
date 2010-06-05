@@ -5,8 +5,7 @@
  */
 
   uses(
-    'peer.http.HttpConstants',
-    'lang.ChainedException',
+    'scriptlet.ScriptletException',
     'scriptlet.HttpScriptletResponse'
   );
 
@@ -21,13 +20,11 @@
    *   <li>Request processing fails with an Exception</li>
    * </ul>
    *
-   * @see      xp://scriptlet.HttpScriptlet#process
-   * @purpose  Exception
+   * @deprecated  Use ScriptletException instead
+   * @see      xp://scriptlet.ScriptletException
    */  
-  class HttpScriptletException extends ChainedException {
-    public
-      $response     = NULL,
-      $statusCode   = 0;
+  class HttpScriptletException extends ScriptletException {
+    public $response= NULL;
       
     /**
      * Constructor
@@ -36,8 +33,7 @@
      * @param   int statusCode default HttpConstants::STATUS_INTERNAL_SERVER_ERROR
      */
     public function __construct($message, $statusCode= HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $cause= NULL) {
-      parent::__construct($message, $cause);
-      $this->statusCode= $statusCode;
+      parent::__construct($message, $statusCode, $cause);
       $this->_response($statusCode);
     }
     
@@ -50,20 +46,6 @@
       return $this->response;
     }
 
-    /**
-     * Return compound message of this exception.
-     *
-     * @return  string
-     */
-    public function compoundMessage() {
-      return sprintf(
-        "Exception %s (%d:%s)",
-        $this->getClassName(),
-        $this->response->statusCode,
-        $this->message
-      );
-    }
-    
     /**
      * Create the response object
      *
