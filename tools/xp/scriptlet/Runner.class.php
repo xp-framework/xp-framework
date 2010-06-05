@@ -10,7 +10,8 @@
     'util.PropertyManager',
     'util.log.Logger',
     'rdbms.ConnectionManager',
-    'scriptlet.HttpScriptlet'
+    'scriptlet.HttpScriptlet',
+    'peer.http.HttpConstants'
   );
   
   /**
@@ -213,26 +214,27 @@
       }
 
       // Instantiate and initialize
-      $class= XPClass::forName($this->readString($application, 'class'));
-      if (!$class->hasConstructor()) {
-        $instance= $class->newInstance();
-      } else {
-        $args= array();
-        foreach ($this->readArray($application, 'init-params') as $value) {
-          $args[]= $this->expand($value);
-        }
-        $instance= $class->getConstructor()->newInstance($args);
-      }
       $cat= Logger::getInstance()->getCategory('scriptlet');
-      if ($flags & self::TRACE && $instance instanceof Traceable) {
-        $instance->setTrace($cat);
-      }
-      $instance->init();
-
-      // Service
-      $e= NULL;
       try {
+        $class= XPClass::forName($this->readString($application, 'class'));
+        if (!$class->hasConstructor()) {
+          $instance= $class->newInstance();
+        } else {
+          $args= array();
+          foreach ($this->readArray($application, 'init-params') as $value) {
+            $args[]= $this->expand($value);
+          }
+          $instance= $class->getConstructor()->newInstance($args);
+        }
+        
+        if ($flags & self::TRACE && $instance instanceof Traceable) {
+          $instance->setTrace($cat);
+        }
+        $instance->init();
+      
+        // Service
         $response= $instance->process();
+        $e= NULL;
       } catch (ScriptletException $e) {
         $cat->error($e);
 
@@ -243,6 +245,11 @@
         } else {
           $response= $this->fail($e, $e->getStatus(), $flags & self::STACKTRACE);
         }
+      } catch (Throwable $e) {
+        $cat->error($e);
+
+        // Here, we might not have a scriptlet
+        $response= $this->fail($e, HttpConstants::STATUS_PRECONDITION_FAILED, $flags & self::STACKTRACE);
       }
 
       // Send output
@@ -250,7 +257,7 @@
       $response->sendContent();
 
       // Call scriptlet's finalizer
-      $instance->finalize();
+      $instance && $instance->finalize();
 
       // Debugging
       if (($flags & self::XML) && isset($response->document)) {

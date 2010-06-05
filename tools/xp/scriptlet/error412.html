@@ -1,0 +1,37 @@
+<!-- 
+ ! Error page for scriptlet setup errors
+ !
+ ! $Id$
+ !-->
+<html xmlns:xp="http://xp-framework.net/xmlns/xp/web">
+  <head>
+    <title>Error 412 [Precondition failed]</title>
+    <style><!--
+      h2        { font: 18pt Verdana,Lucida,Arial,Helvetica; }
+      p         { font: 10pt Verdana,Lucida,Arial,Helvetica; }
+    //--></style>
+  </head>
+  <body bgcolor="#ffffff" text="#000000">
+    <table cellpadding="0" cellspacing="0" border="0" width="570">
+      <tr>
+        <td valign="top" width="1%">
+          <img vspace="0" hspace="4" width="59" height="48" src="data:image/gif;base64,R0lGODlhOwAwAJEAAP///8wAAAAAAAAAACwAAAAAOwAwAAAC/ISPqWvBD6OctNrl7nUc9O+FWTJqmKmUiIqibMu8sAzPYR3jq8iDPhUICofEjq5BShWXweQR0oxEaaYSKwq9Ph9YbmbEZHJ3JGrjGi62mmnPt/qyKt3i7g1ojlmFK+M5PRVH1idhBzh0Blfod8exlJgyeGCHocLG9+imKMUIRkcE6YRU5qXZd/iVV1k6NYkaKom2WPZqupHX+gcIOynJS2iImrq5mis8HNlLykl7+DtBOSdy/Cy3nHVaG70ofHd7opztHI63Bf7ZnUM+c7xtTuU+5usijfNzz+MqVqEKt28O5B1ARgA19LNwUJ0TfAy9PUlYMGDEiRQrWqxYAAA7" alt="Error"/>
+        </td>
+        <td valign="top"width="99%">
+          <table cellpadding="3" cellspacing="0" border="0">
+            <tr>
+              <td bgcolor="#cc0000"><h2 style="color: white">&nbsp;ERROR 412:&nbsp;</h2></td>
+              <td bgcolor="#e5e5e5"><h2 style="color: #cc0000">&nbsp;Precondition failed&nbsp;</h2></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <p><b>Problems occured during setting up the web on the server-side</b></p>
+                <xmp><xp:value-of select="reason"/></xmp>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
