@@ -7,9 +7,12 @@
   uses(
     'unittest.TestCase',
     'xp.scriptlet.Runner',
+    'xml.Stylesheet',
+    'xml.Node',
     'util.log.Traceable',
     'util.log.BufferedAppender',
-    'scriptlet.HttpScriptlet'
+    'scriptlet.HttpScriptlet',
+    'scriptlet.xml.XMLScriptlet'
   );
 
   $package= 'net.xp_framework.unittest.scriptlet';
@@ -23,11 +26,12 @@
     protected static $welcomeScriptlet= NULL;
     protected static $errorScriptlet= NULL;
     protected static $debugScriptlet= NULL;
+    protected static $xmlScriptlet= NULL;
     
     static function __static() {
       self::$errorScriptlet= ClassLoader::defineClass('ErrorScriptlet', 'scriptlet.HttpScriptlet', array('util.log.Traceable'), '{
         protected function _request() {
-          $req= new HttpScriptletRequest();
+          $req= parent::_request();
           $req->method= "GET";
           $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
           $req->env["REQUEST_URI"]= "/error";
@@ -49,7 +53,7 @@
       }');
       self::$welcomeScriptlet= ClassLoader::defineClass('WelcomeScriptlet', 'scriptlet.HttpScriptlet', array(), '{
         protected function _request() {
-          $req= new HttpScriptletRequest();
+          $req= parent::_request();
           $req->method= "GET";
           $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
           $req->env["REQUEST_URI"]= "/welcome";
@@ -65,6 +69,38 @@
           $response->write("<h1>Welcome, we are open</h1>");
         }
       }');
+      self::$xmlScriptlet= ClassLoader::defineClass('XmlScriptletImpl', 'scriptlet.xml.XMLScriptlet', array(), '{
+        protected function _request() {
+          $req= parent::_request();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/welcome";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+
+        protected function _response() {
+          $res= parent::_response();
+          $stylesheet= create(new Stylesheet())
+            ->withOutputMethod("xml")
+            ->withTemplate(create(new XslTemplate())->matching("/")
+              ->withChild(create(new Node("h1"))
+                ->withChild(new Node("xsl:value-of", NULL, array("select" => "/formresult/result")))
+              )
+            )
+          ;
+          $res->setStylesheet($stylesheet, XSLT_TREE);
+          return $res;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
+        public function doGet($request, $response) {
+          $response->addFormresult(new Node("result", "Welcome, we are open"));
+        }
+      }');
       self::$debugScriptlet= ClassLoader::defineClass('DebugScriptlet', 'scriptlet.HttpScriptlet', array(), '{
         protected $title, $date;
 
@@ -74,7 +110,7 @@
         }
         
         protected function _request() {
-          $req= new HttpScriptletRequest();
+          $req= parent::_request();
           $req->method= "GET";
           $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
           $req->env["REQUEST_URI"]= "/debug";
@@ -284,6 +320,15 @@
       $r->mapApplication('/incomplete', create(new WebApplication('incomplete'))
         ->withScriptlet(NULL)
         ->withDebug(WebDebug::STACKTRACE)
+      );
+
+      // The XML application
+      $r->mapApplication('/xml', create(new WebApplication('xml'))
+        ->withScriptlet(self::$xmlScriptlet->getName())
+        ->withDebug('dev' === $profile 
+          ? WebDebug::XML 
+          : WebDebug::NONE
+        )
       );
       
       // The welcome application
@@ -644,6 +689,36 @@
         $compound[1],
         'exception compound message'
       );
+    }
+
+    /**
+     * Test XML app display
+     *
+     */
+    #[@test]
+    public function xmlScriptletAppInProdMode() {
+      $content= $this->runWith('prod', '/xml');
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="iso-8859-1"?><h1>Welcome, we are open</h1>',
+        str_replace("\n", '', $content)
+      );
+    }
+
+    /**
+     * Test XML app display
+     *
+     */
+    #[@test]
+    public function xmlScriptletAppInDevMode() {
+      $content= $this->runWith('dev', '/xml');
+      preg_match('#<h1>(.+)</h1>#', $content, $output);
+      preg_match('#<result>(.+)</result>#', $content, $source);
+      
+      $this->assertEquals('Welcome, we are open', $output[1], 'output');
+      $this->assertEquals('Welcome, we are open', $source[1], 'source');
+      $this->assertContained('<formresult', $content, 'formresult');
+      $this->assertContained('<formvalues', $content, 'formvalues');
+      $this->assertContained('<formerrors', $content, 'formerrors');
     }
   }
 ?>
