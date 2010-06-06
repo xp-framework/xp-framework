@@ -214,7 +214,7 @@
       }
 
       // Instantiate and initialize
-      $cat= Logger::getInstance()->getCategory('scriptlet');
+      $cat= $l->getCategory('scriptlet');
       try {
         $class= XPClass::forName($this->readString($application, 'class'));
         if (!$class->hasConstructor()) {
