@@ -302,7 +302,7 @@
         $cat->error($e);
 
         // Here, we might not have a scriptlet
-        $response= $this->fail($e, HttpConstants::STATUS_PRECONDITION_FAILED, $flags & self::STACKTRACE);
+        $response= $this->fail($e, HttpConstants::STATUS_PRECONDITION_FAILED, $flags & WebDebug::STACKTRACE);
       }
 
       // Send output
