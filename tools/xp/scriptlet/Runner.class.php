@@ -124,7 +124,7 @@
       $app->setConfig($this->expand($this->readString($conf, $section, 'prop-base', $this->webroot.'/etc')));
 
       // Determine debug level
-      $flags= 0x0000;
+      $flags= WebDebug::NONE;
       foreach ($this->readArray($conf, $section, 'debug', array()) as $lvl) {
         $flags |= WebDebug::flagNamed($lvl);
       }
