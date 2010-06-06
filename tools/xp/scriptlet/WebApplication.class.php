@@ -4,9 +4,12 @@
  * $Id$ 
  */
 
+  uses('xp.scriptlet.WebDebug');
+
   /**
    * Represents a web application
    *
+   * @see      xp://xp.scriptlet.WebDebug
    * @see      xp://xp.scriptlet.Runner
    */
   class WebApplication extends Object {
@@ -16,7 +19,7 @@
     protected $arguments = array();
     protected $environment = array();
     protected $debug = 0;
-    
+
     /**
      * Creates a new web application named by the given name
      *
@@ -218,7 +221,7 @@
         $this->name,
         $this->config,
         $this->scriptlet,
-        $this->debug,
+        implode(' | ', WebDebug::namesOf($this->debug)),
         implode(', ', $this->arguments),
         xp::stringOf($this->environment, '  ')
       );

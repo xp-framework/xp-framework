@@ -101,6 +101,56 @@
     }
 
     /**
+     * Verifies configure() method with all possible settings
+     *
+     */
+    #[@test]
+    public function configure() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+
+        $p->writeSection('app::service');
+        $p->writeString('app::service', 'class', 'ServiceScriptlet');
+        $p->writeString('app::service', 'prop-base', '{WEBROOT}/etc/{PROFILE}');
+        $p->writeString('app::service', 'init-envs', 'ROLE:admin|CLUSTER:a');
+        $p->writeString('app::service', 'init-params', 'a|b');
+
+        $p->writeSection('app::service@dev');
+        $p->writeString('app::service@dev', 'debug', 'STACKTRACE|ERRORS');
+
+        $r= new xp新criptlet愛unner('/htdocs', 'dev');
+        $r->configure($p);
+
+        $this->assertEquals(
+          create(new WebApplication('service'))
+            ->withConfig('/htdocs/etc/dev')
+            ->withScriptlet('ServiceScriptlet')
+            ->withEnvironment(array('ROLE' => 'admin', 'CLUSTER' => 'a'))
+            ->withDebug(WebDebug::STACKTRACE | WebDebug::ERRORS)
+            ->withArguments(array('a', 'b'))
+          ,
+          $r->applicationAt('/service')
+        );
+      }
+    }
+
+    /**
+     * Verifies unknown debug flag in configuration raises an exception
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'No flag named WebDebug::UNKNOWN')]
+    public function configureWithUnknownDebugFlag() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+        $p->writeSection('app::service');
+        $p->writeString('app::service', 'debug', 'UNKNOWN');
+        create(new xp新criptlet愛unner('/htdocs'))->configure($p);
+      }
+    }
+
+    /**
      * Verifies that empty configured mappings produce correct result
      *
      */
@@ -210,35 +260,37 @@
      *
      */
     protected function newRunner($profile= NULL) {
-      with ($p= Properties::fromString('')); {
-        $p->writeSection('app');
-        $p->writeString('app', 'map.debug', '/debug');
-        $p->writeString('app', 'map.error', '/error');
-        $p->writeString('app', 'map.welcome', '/');
+      $r= new xp新criptlet愛unner('/var/www', $profile);
+      
+      // The debug application
+      $r->mapApplication('/debug', create(new WebApplication('debug'))
+        ->withScriptlet(self::$debugScriptlet->getName())
+        ->withConfig($r->expand('{WEBROOT}/etc/{PROFILE}'))
+        ->withEnvironment(array('DOMAIN' => 'example.com', 'ADMINS' => 'admin@example.com,root@localhost'))
+        ->withArguments(array('Debugging', 'today'))
+      );
 
-        // The debug app
-        $p->writeSection('app::debug');
-        $p->writeString('app::debug', 'class', self::$debugScriptlet->getName());
-        $p->writeString('app::debug', 'prop-base', '{WEBROOT}/etc/{PROFILE}');
-        $p->writeString('app::debug', 'init-envs', 'DOMAIN:example.com|ADMINS:admin@example.com,root@localhost');
-        $p->writeString('app::debug', 'init-params', 'Debugging|today');
+      // The error application
+      $r->mapApplication('/error', create(new WebApplication('error'))
+        ->withScriptlet(self::$errorScriptlet->getName())
+        ->withConfig($r->expand('{WEBROOT}/etc'))
+        ->withDebug('dev' === $profile 
+          ? WebDebug::XML | WebDebug::ERRORS | WebDebug::STACKTRACE | WebDebug::TRACE
+          : WebDebug::NONE
+        )
+      );
 
-        // The error app
-        $p->writeSection('app::error');
-        $p->writeString('app::error', 'class', self::$errorScriptlet->getName());
-        $p->writeSection('app::error@dev');
-        $p->writeString('app::error@dev', 'debug', 'XML|ERRORS|STACKTRACE|TRACE');
-
-        // The welcome app
-        $p->writeSection('app::welcome');
-        $p->writeString('app::welcome', 'class', self::$welcomeScriptlet->getName());
-        $p->writeSection('app::welcome@dev');
-        $p->writeArray('app::welcome@dev', 'debug', 'XML|ERRORS|STACKTRACE');
-
-        $r= new xp新criptlet愛unner('/var/www', $profile);
-        $r->configure($p);
-        return $r;
-      }
+      // The welcome application
+      $r->mapApplication('/', create(new WebApplication('welcome'))
+        ->withScriptlet(self::$welcomeScriptlet->getName())
+        ->withConfig($r->expand('{WEBROOT}/etc'))
+        ->withDebug('dev' === $profile 
+          ? WebDebug::XML | WebDebug::ERRORS | WebDebug::STACKTRACE
+          : WebDebug::NONE
+        )
+      );
+      
+      return $r;
     }
 
     /**

@@ -22,12 +22,6 @@
    * @purpose   Scriptlet runner
    */
   class xp·scriptlet·Runner extends Object {
-    const
-      XML         = 0x0001,
-      ERRORS      = 0x0002,
-      STACKTRACE  = 0x0004,
-      TRACE       = 0x0008;
-    
     protected
       $webroot    = NULL,
       $profile    = NULL,
@@ -132,7 +126,7 @@
       // Determine debug level
       $flags= 0x0000;
       foreach ($this->readArray($conf, $section, 'debug', array()) as $lvl) {
-        $flags |= $this->getClass()->getConstant($lvl);
+        $flags |= WebDebug::flagNamed($lvl);
       }
       $app->setDebug($flags);
       
@@ -160,7 +154,6 @@
 
       // Verify configuration
       if (NULL === $mappings) {
-        $this->mappings= array();
         foreach ($conf->readSection('app') as $key => $url) {
           if (0 !== strncmp('map.', $key, 4)) continue;
           $this->mappings[$url]= $this->configuredApp($conf, substr($key, 4), $url);
@@ -218,6 +211,17 @@
       return $this->mappings;
     }
 
+    /**
+     * Adds an application
+     *
+     * @param   string url
+     * @param   xp.scriptlet.WebApplication application
+     * @return  xp.scriptlet.WebApplication the added application
+     */
+    public function mapApplication($url, WebApplication $application) {
+      $this->mappings[$url]= $application;
+      return $application;
+    }
 
     /**
      * Expand variables in string. Handles the following placeholders:
@@ -277,7 +281,7 @@
           $instance= $class->getConstructor()->newInstance($application->getArguments());
         }
         
-        if ($flags & self::TRACE && $instance instanceof Traceable) {
+        if ($flags & WebDebug::TRACE && $instance instanceof Traceable) {
           $instance->setTrace($cat);
         }
         $instance->init();
@@ -292,7 +296,7 @@
         if (is_callable(array($instance, 'fail'))) {
           $response= $instance->fail($e);
         } else {
-          $response= $this->fail($e, $e->getStatus(), $flags & self::STACKTRACE);
+          $response= $this->fail($e, $e->getStatus(), $flags & WebDebug::STACKTRACE);
         }
       } catch (Throwable $e) {
         $cat->error($e);
@@ -309,12 +313,12 @@
       $instance && $instance->finalize();
 
       // Debugging
-      if (($flags & self::XML) && isset($response->document)) {
+      if (($flags & WebDebug::XML) && isset($response->document)) {
         flush();
         echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
       }
       
-      if (($flags & self::ERRORS)) {
+      if (($flags & WebDebug::ERRORS)) {
         flush();
         echo '<xmp>', $e ? $e->toString() : '', xp::stringOf(xp::registry('errors')), '</xmp>';
       }
