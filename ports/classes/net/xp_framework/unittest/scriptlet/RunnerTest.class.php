@@ -280,6 +280,12 @@
         )
       );
 
+      // The incomplete app (missing a scriptlet)
+      $r->mapApplication('/incomplete', create(new WebApplication('incomplete'))
+        ->withScriptlet(NULL)
+        ->withDebug(WebDebug::STACKTRACE)
+      );
+      
       // The welcome application
       $r->mapApplication('/', create(new WebApplication('welcome'))
         ->withScriptlet(self::$welcomeScriptlet->getName())
@@ -499,7 +505,11 @@
      */
     #[@test]
     public function errorPageInProdMode() {
-      preg_match('#<xmp>(.+)</xmp>#', $this->runWith('prod', '/error'), $matches);
+      $content= $this->runWith('prod', '/error');
+      preg_match('#<xmp>(.+)</xmp>#', $content, $matches);
+      preg_match('#ERROR ([0-9]+)#', $content, $error);
+
+      $this->assertEquals('500', $error[1], 'error message');
       $this->assertEquals(
         'Request processing failed [doGet]: No shoes, no shorts, no service', 
         $matches[1]
@@ -581,9 +591,11 @@
     #[@test]
     public function errorPageInDevMode() {
       $content= $this->runWith('dev', '/error');
+      preg_match('#ERROR ([0-9]+)#', $content, $error);
       preg_match('#<xmp>(.+)#', $content, $compound);
       preg_match('#Caused by (.+)#', $content, $cause);
 
+      $this->assertEquals('500', $error[1], 'error message');
       $this->assertEquals(
         'Exception scriptlet.ScriptletException (500:Request processing failed [doGet]: No shoes, no shorts, no service)', 
         $compound[1],
@@ -613,6 +625,24 @@
         array('ENV.DOMAIN = example.com', 'ENV.ADMINS = admin@example.com,root@localhost'),
         $env[1],
         'environment'
+      );
+    }
+
+    /**
+     * Test error page display
+     *
+     */
+    #[@test]
+    public function incompleteApp() {
+      $content= $this->runWith(NULL, '/incomplete');
+      preg_match('#ERROR ([0-9]+)#', $content, $error);
+      preg_match('#<xmp>(.+)#', $content, $compound);
+
+      $this->assertEquals('412', $error[1], 'error message');
+      $this->assertEquals(
+        'Exception lang.ClassNotFoundException (Class "" could not be found) {', 
+        $compound[1],
+        'exception compound message'
       );
     }
   }
