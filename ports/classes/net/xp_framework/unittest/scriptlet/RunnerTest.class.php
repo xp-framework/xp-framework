@@ -108,7 +108,7 @@
     public function emptyMappings() {
       with ($p= Properties::fromString('')); {
         $p->writeSection('app');
-        new xp新criptlet愛unner('/htdocs', $p);
+        create(new xp新criptlet愛unner('/htdocs'))->configure($p);
       }
     }
 
@@ -121,7 +121,7 @@
       with ($p= Properties::fromString('')); {
         $p->writeSection('app');
         $p->writeString('app', 'not.a.mapping', 1);
-        new xp新criptlet愛unner('/htdocs', $p);
+        create(new xp新criptlet愛unner('/htdocs'))->configure($p);
       }
     }
 
@@ -138,9 +138,12 @@
         $p->writeSection('app::service');
         $p->writeSection('app::global');
 
+        $r= new xp新criptlet愛unner('/htdocs');
+        $r->configure($p);
+
         $this->assertEquals(
           array('/service' => 'app::service', '/' => 'app::global'),
-          create(new xp新criptlet愛unner('/htdocs', $p))->mappedApplications()
+          $r->mappedApplications()
         );
       }
     }
@@ -154,7 +157,8 @@
       with ($p= Properties::fromString('')); {
         $p->writeSection('app');
         $p->writeString('app', 'mappings', '/service:service');
-        new xp新criptlet愛unner('/htdocs', $p);
+
+        create(new xp新criptlet愛unner('/htdocs'))->configure($p);
       }
     }
 
@@ -172,9 +176,12 @@
         $p->writeSection('app::service');
         $p->writeSection('app::global');
 
+        $r= new xp新criptlet愛unner('/htdocs');
+        $r->configure($p);
+
         $this->assertEquals(
           array('/service' => 'app::service', '/' => 'app::global'),
-          create(new xp新criptlet愛unner('/htdocs', $p))->mappedApplications()
+          $r->mappedApplications()
         );
       }
     }
@@ -188,7 +195,7 @@
       with ($p= Properties::fromString('')); {
         $p->writeSection('app');
         $p->writeString('app', 'map.service', '/service');
-        new xp新criptlet愛unner('/htdocs', $p);
+        create(new xp新criptlet愛unner('/htdocs'))->configure($p);
       }
     }
 
@@ -222,8 +229,9 @@
         $p->writeSection('app::welcome@dev');
         $p->writeArray('app::welcome@dev', 'debug', 'XML|ERRORS|STACKTRACE');
 
-        
-        return new xp新criptlet愛unner('/var/www', $p, $profile);
+        $r= new xp新criptlet愛unner('/var/www', $profile);
+        $r->configure($p);
+        return $r;
       }
     }
 
@@ -273,7 +281,10 @@
         $p->writeSection('app');
         $p->writeString('app', 'map.service', '/service');
         $p->writeSection('app::service');
-        create(new xp新criptlet愛unner('/htdocs', $p))->applicationAt('/');
+
+        $r= new xp新criptlet愛unner('/htdocs');
+        $r->configure($p);
+        $r->applicationAt('/');
       }
     }
 

@@ -36,18 +36,6 @@
   }
   // }}}
 
-  // Simulate getallheaders() if not existant
-  if (!function_exists('getallheaders')) {
-    function getallheaders() {
-      $headers= array();
-      foreach ($_SERVER as $name => $value) {
-        if (0 !== strncmp('HTTP_', $name, 5)) continue;
-        $headers[strtr(ucwords(strtolower(strtr(substr($name, 5), '_', ' '))), ' ', '-')]= $value;
-      }
-      return $headers;
-    }
-  }
-
   // Set error status to 500 by default - if a fatal error occurs,
   // this guarantees to at least send an error code.
   switch (php_sapi_name()) {

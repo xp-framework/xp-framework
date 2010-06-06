@@ -32,16 +32,38 @@
       $profile    = NULL,
       $conf       = NULL,
       $mappings   = NULL;
+
+    static function __static() {
+      if (!function_exists('getallheaders')) {
+        function getallheaders() {
+          $headers= array();
+          foreach ($_SERVER as $name => $value) {
+            if (0 !== strncmp('HTTP_', $name, 5)) continue;
+            $headers[strtr(ucwords(strtolower(strtr(substr($name, 5), '_', ' '))), ' ', '-')]= $value;
+          }
+          return $headers;
+        }
+      }
+    }
     
     /**
      * Creates a new scriptlet runner
      *
      * @param   string webroot
-     * @param   util.Properties conf
      * @param   string profile
+     */
+    public function __construct($webroot, $profile= NULL) {
+      $this->webroot= $webroot;
+      $this->profile= $profile;
+    }
+    
+    /**
+     * Configure this runner with a web.ini
+     *
+     * @param   util.Properties conf
      * @throws  lang.IllegalStateException if the web is misconfigured
      */
-    public function __construct($webroot, Properties $conf, $profile= NULL) {
+    public function configure(Properties $conf) {
       $mappings= $conf->readHash('app', 'mappings', NULL);
 
       // Verify configuration
@@ -68,10 +90,7 @@
       if (0 === sizeof($this->mappings)) {
         throw new IllegalStateException('Web misconfigured: "app" section missing or broken');
       }
-
-      $this->webroot= $webroot;
       $this->conf= $conf;
-      $this->profile= $profile;
     }
     
     /**
@@ -85,7 +104,9 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      create(new self($args[0], new Properties($args[0].'/etc/web.ini'), $args[1]))->run($args[2]);
+      $r= new self($args[0], $args[1]);
+      $r->configure(new Properties($args[0].'/etc/web.ini'));
+      $r->run($args[2]);
     }
     
     /**
