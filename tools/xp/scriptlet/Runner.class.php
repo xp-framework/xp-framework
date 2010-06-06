@@ -7,6 +7,7 @@
   $package= 'xp.scriptlet';
 
   uses(
+    'xp.scriptlet.WebApplication',
     'util.PropertyManager',
     'util.log.Logger',
     'rdbms.ConnectionManager',
@@ -30,7 +31,6 @@
     protected
       $webroot    = NULL,
       $profile    = NULL,
-      $conf       = NULL,
       $mappings   = NULL;
 
     static function __static() {
@@ -56,6 +56,98 @@
       $this->webroot= $webroot;
       $this->profile= $profile;
     }
+
+    /**
+     * Read string. First tries special section "section"@"profile", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties conf
+     * @param   string section
+     * @param   string key
+     * @param   var default default NULL
+     * @return  string
+     */
+    protected function readString($conf, $section, $key, $default= NULL) {
+      if (NULL === ($s= $conf->readString($section.'@'.$this->profile, $key, NULL))) {
+        return $conf->readString($section, $key, $default);
+      }
+      return $s;
+    }
+    
+    /**
+     * Read array. First tries special section "section"@"profile", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties conf
+     * @param   string section
+     * @param   string key
+     * @param   var default default NULL
+     * @return  string[]
+     */
+    protected function readArray($conf, $section, $key, $default= NULL) {
+      if (NULL === ($a= $conf->readArray($section.'@'.$this->profile, $key, NULL))) {
+        return $conf->readArray($section, $key, $default);
+      }
+      return $a;
+    }
+    
+    /**
+     * Read hashmap. First tries special section "section"@"profile", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties conf
+     * @param   string section
+     * @param   string key
+     * @param   var default default NULL
+     * @return  util.Hashmap
+     */
+    protected function readHash($conf, $section, $key, $default= NULL) {
+      if (NULL === ($h= $conf->readHash($section.'@'.$this->profile, $key, NULL))) {
+        return $conf->readHash($section, $key, $default);
+      }
+      return $h;
+    }
+    
+    /**
+     * Creates a web application object from a given configuration section
+     *
+     * @param   util.Properties conf
+     * @param   string application app name
+     * @param   string url
+     * @return  xp.scriptlet.WebApplication
+     * @throws  lang.IllegalStateException if the web is misconfigured
+     */
+    protected function configuredApp($conf, $application, $url) {
+      $section= 'app::'.$application;
+      if (!$conf->hasSection($section)) {
+        throw new IllegalStateException('Web misconfigured: Section '.$section.' mapped by '.$url.' missing');
+      }
+
+      $app= new WebApplication($application);
+      $app->setScriptlet($this->readString($conf, $section, 'class', ''));
+      
+      // Configuration base
+      $app->setConfig($this->expand($this->readString($conf, $section, 'prop-base', $this->webroot.'/etc')));
+
+      // Determine debug level
+      $flags= 0x0000;
+      foreach ($this->readArray($conf, $section, 'debug', array()) as $lvl) {
+        $flags |= $this->getClass()->getConstant($lvl);
+      }
+      $app->setDebug($flags);
+      
+      // Initialization arguments
+      $args= array();
+      foreach ($this->readArray($conf, $section, 'init-params', array()) as $value) {
+        $args[]= $this->expand($value);
+      }
+      $app->setArguments($args);
+ 
+      // Environment
+      $app->setEnvironment($this->readHash($conf, $section, 'init-envs', new Hashmap())->toArray());
+     
+      return $app;
+    }
     
     /**
      * Configure this runner with a web.ini
@@ -71,26 +163,17 @@
         $this->mappings= array();
         foreach ($conf->readSection('app') as $key => $url) {
           if (0 !== strncmp('map.', $key, 4)) continue;
-          $application= 'app::'.substr($key, 4);
-          if (!$conf->hasSection($application)) {
-            throw new IllegalStateException('Web misconfigured: Section '.$application.' mapped by '.$url.' missing');
-          }
-          $this->mappings[$url]= $application;
+          $this->mappings[$url]= $this->configuredApp($conf, substr($key, 4), $url);
         }
       } else {
         foreach ($mappings->keys() as $url) {
-          $application= 'app::'.$mappings->get($url);
-          if (!$conf->hasSection($application)) {
-            throw new IllegalStateException('Web misconfigured: Section '.$application.' mapped by '.$url.' missing');
-          }
-          $this->mappings[$url]= $application;
+          $this->mappings[$url]= $this->configuredApp($conf, $mappings->get($url), $url);
         }
       }
 
       if (0 === sizeof($this->mappings)) {
         throw new IllegalStateException('Web misconfigured: "app" section missing or broken');
       }
-      $this->conf= $conf;
     }
     
     /**
@@ -110,58 +193,10 @@
     }
     
     /**
-     * Read string. First tries special section "section"@"profile", then defaults 
-     * to "section"
-     *
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  string
-     */
-    protected function readString($section, $key, $default= NULL) {
-      if (NULL === ($s= $this->conf->readString($section.'@'.$this->profile, $key, NULL))) {
-        return $this->conf->readString($section, $key, $default);
-      }
-      return $s;
-    }
-    
-    /**
-     * Read array. First tries special section "section"@"profile", then defaults 
-     * to "section"
-     *
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  string[]
-     */
-    protected function readArray($section, $key, $default= NULL) {
-      if (NULL === ($a= $this->conf->readArray($section.'@'.$this->profile, $key, NULL))) {
-        return $this->conf->readArray($section, $key, $default);
-      }
-      return $a;
-    }
-    
-    /**
-     * Read hashmap. First tries special section "section"@"profile", then defaults 
-     * to "section"
-     *
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  util.Hashmap
-     */
-    protected function readHash($section, $key, $default= NULL) {
-      if (NULL === ($h= $this->conf->readHash($section.'@'.$this->profile, $key, NULL))) {
-        return $this->conf->readHash($section, $key, $default);
-      }
-      return $h;
-    }
-
-    /**
      * Find which application the given url maps to
      *
      * @param   string url
-     * @return  string
+     * @return  xp.scriptlet.WebApplication
      * @throws  lang.IllegalArgumentException if no app can be found
      */
     public function applicationAt($url) {
@@ -177,7 +212,7 @@
     /**
      * Return mappings
      *
-     * @return  [string:string]
+     * @return  [string:xp.scriptlet.WebApplication]
      */
     public function mappedApplications() {
       return $this->mappings;
@@ -212,15 +247,12 @@
       $application= $this->applicationAt($url);
 
       // Determine debug level
-      $flags= 0x0000;
-      foreach ($this->readArray($application, 'debug', array()) as $lvl) {
-        $flags |= $this->getClass()->getConstant($lvl);
-      }
+      $flags= $application->getDebug();
       
       // Initializer logger, properties and connections to property base, 
       // defaulting to the same directory the web.ini resides in
       $pm= PropertyManager::getInstance();
-      $pm->configure($this->expand($this->readString($application, 'prop-base', $this->webroot.'/etc')));
+      $pm->configure($application->getConfig());
       
       $l= Logger::getInstance();
       $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
@@ -229,23 +261,20 @@
       $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
       
       // Set environment variables
-      $env= $this->readHash($application, 'init-envs', new Hashmap());
-      foreach ($env->keys() as $key) {
-        putenv($key.'='.$env->get($key));
+      foreach ($application->getEnvironment() as $key => $value) {
+        putenv($key.'='.$value);
       }
 
       // Instantiate and initialize
       $cat= $l->getCategory('scriptlet');
+      $instance= NULL;
+      $e= NULL;
       try {
-        $class= XPClass::forName($this->readString($application, 'class'));
+        $class= XPClass::forName($application->getScriptlet());
         if (!$class->hasConstructor()) {
           $instance= $class->newInstance();
         } else {
-          $args= array();
-          foreach ($this->readArray($application, 'init-params') as $value) {
-            $args[]= $this->expand($value);
-          }
-          $instance= $class->getConstructor()->newInstance($args);
+          $instance= $class->getConstructor()->newInstance($application->getArguments());
         }
         
         if ($flags & self::TRACE && $instance instanceof Traceable) {
@@ -255,7 +284,6 @@
       
         // Service
         $response= $instance->process();
-        $e= NULL;
       } catch (ScriptletException $e) {
         $cat->error($e);
 

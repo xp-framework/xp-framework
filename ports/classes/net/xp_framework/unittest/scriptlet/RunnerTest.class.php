@@ -142,7 +142,10 @@
         $r->configure($p);
 
         $this->assertEquals(
-          array('/service' => 'app::service', '/' => 'app::global'),
+          array(
+            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+          ),
           $r->mappedApplications()
         );
       }
@@ -180,7 +183,10 @@
         $r->configure($p);
 
         $this->assertEquals(
-          array('/service' => 'app::service', '/' => 'app::global'),
+          array(
+            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+          ),
           $r->mappedApplications()
         );
       }
@@ -294,7 +300,10 @@
      */
     #[@test]
     public function welcomeApplication() {
-      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('/'));
+      $this->assertEquals(
+        create(new WebApplication('welcome'))->withConfig('/var/www/etc')->withScriptlet('WelcomeScriptlet'),
+        $this->newRunner()->applicationAt('/')
+      );
     }
 
     /**
@@ -303,7 +312,10 @@
      */
     #[@test]
     public function welcomeApplicationAtEmptyUrl() {
-      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt(''));
+      $this->assertEquals(
+        create(new WebApplication('welcome'))->withConfig('/var/www/etc')->withScriptlet('WelcomeScriptlet'),
+        $this->newRunner()->applicationAt('')
+      );
     }
 
     /**
@@ -312,7 +324,10 @@
      */
     #[@test]
     public function welcomeApplicationAtDoubleSlash() {
-      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('//'));
+      $this->assertEquals(
+        create(new WebApplication('welcome'))->withConfig('/var/www/etc')->withScriptlet('WelcomeScriptlet'),
+        $this->newRunner()->applicationAt('//')
+      );
     }
 
     /**
@@ -321,7 +336,10 @@
      */
     #[@test]
     public function errorApplication() {
-      $this->assertEquals('app::error', $this->newRunner()->applicationAt('/error'));
+      $this->assertEquals(
+        create(new WebApplication('error'))->withConfig('/var/www/etc')->withScriptlet('ErrorScriptlet'),
+        $this->newRunner()->applicationAt('/error')
+      );
     }
 
     /**
@@ -330,7 +348,10 @@
      */
     #[@test]
     public function welcomeApplicationAtUrlEvenWithErrorInside() {
-      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('/url/with/error/inside'));
+      $this->assertEquals(
+        create(new WebApplication('welcome'))->withConfig('/var/www/etc')->withScriptlet('WelcomeScriptlet'),
+        $this->newRunner()->applicationAt('/url/with/error/inside')
+      );
     }
 
     /**
@@ -339,7 +360,10 @@
      */
     #[@test]
     public function welcomeApplicationAtUrlBeginningWithErrors() {
-      $this->assertEquals('app::welcome', $this->newRunner()->applicationAt('/errors'));
+      $this->assertEquals(
+        create(new WebApplication('welcome'))->withConfig('/var/www/etc')->withScriptlet('WelcomeScriptlet'),
+        $this->newRunner()->applicationAt('/errors')
+      );
     }
 
     /**
@@ -348,7 +372,10 @@
      */
     #[@test]
     public function errorApplicationAtErrorPath() {
-      $this->assertEquals('app::error', $this->newRunner()->applicationAt('/error/happened'));
+      $this->assertEquals(
+        create(new WebApplication('error'))->withConfig('/var/www/etc')->withScriptlet('ErrorScriptlet'),
+        $this->newRunner()->applicationAt('/error/happened')
+      );
     }
 
     /**
