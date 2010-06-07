@@ -66,5 +66,5 @@
     exit(0x3d);
   }
   uses('xp.scriptlet.Runner');
-  exit(xp新criptlet愛unner::main(array($webroot, getenv('SERVER_PROFILE'), getenv('SCRIPT_URL');)));
+  exit(xp新criptlet愛unner::main(array($webroot, getenv('SERVER_PROFILE'), getenv('SCRIPT_URL'))));
 ?>
