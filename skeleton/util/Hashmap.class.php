@@ -161,7 +161,9 @@
     public function flip() {
       $h= array_flip($this->_hash);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw new FormatException('hash contains values which are not scalar');
+        $e= new FormatException('hash contains values which are not scalar');
+        xp::gc(__FILE__);
+        throw $e;
       }
       $this->_hash= $h;
       return TRUE;
