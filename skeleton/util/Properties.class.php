@@ -131,8 +131,10 @@
       if (!$force && NULL !== $this->_data) return;
       $this->_data= parse_ini_file($this->_file, TRUE);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+        $e= new IOException('The file "'.$this->_file.'" could not be read');
+        xp::gc(__FILE__);
         $this->_data= NULL;
-        throw new IOException('The file "'.$this->_file.'" could not be read');
+        throw $e;
       }
     }
     
