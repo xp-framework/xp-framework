@@ -275,10 +275,11 @@
      * @param   rdbms.DBConnection conn
      * @param   rdbms.Peer peer
      * @param   rdbms.join.Joinprocessor jp optional
+     * @param   bool buffered default TRUE
      * @return  rdbms.ResultSet
      */
-    public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL) {
-      return $conn->query('%c', $this->getSelectQueryString($conn, $peer, $jp));
+    public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL, $buffered= TRUE) {
+      return $conn->query('%c', $this->getSelectQueryString($conn, $peer, $jp), $buffered);
     }
     
     /**

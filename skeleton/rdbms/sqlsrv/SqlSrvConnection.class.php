@@ -130,11 +130,12 @@
     /**
      * Execute any statement
      *
-     * @param   var* args
+     * @param   string sql
+     * @param   bool buffered default TRUE
      * @return  rdbms.mssql.SqlSrvResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    public function query0($sql) { 
+    protected function query0($sql, $buffered= TRUE) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();

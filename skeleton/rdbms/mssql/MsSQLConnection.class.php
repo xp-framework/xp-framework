@@ -130,11 +130,12 @@
     /**
      * Execute any statement
      *
-     * @param   var* args
+     * @param   string sql
+     * @param   bool buffered default TRUE
      * @return  rdbms.mssql.MsSQLResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
-    protected function query0($sql) {
+    protected function query0($sql, $buffered= TRUE) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -143,11 +144,7 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
       }
       
-      if ($this->flags & DB_UNBUFFERED) {
-        $result= mssql_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
-      } else {
-        $result= mssql_query($sql, $this->handle);
-      }
+      $result= mssql_query($sql, $this->handle);
 
       if (FALSE === $result) {
         $message= 'Statement failed: '.trim(mssql_get_last_message()).' @ '.$this->dsn->getHost();

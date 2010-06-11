@@ -250,7 +250,7 @@
      */
     public function doSelect(SQLExpression $criteria, $max= 0) {
       $r= array();
-      for ($i= 1, $it= $this->iteratorFor($criteria); $it->hasNext() && (!$max || $i <= $max); $i++) {
+      for ($i= 1, $it= $this->iteratorFor($criteria, FALSE); $it->hasNext() && (!$max || $i <= $max); $i++) {
         $r[]= $it->next();
       }
       return $r;
@@ -260,12 +260,13 @@
      * Returns an iterator for a select statement
      *
      * @param   rdbms.SQLExpression criteria or statement
+     * @param   bool buffered default TRUE
      * @return  rdbms.ResultIterator
      * @see     xp://lang.XPIterator
      */
-    public function iteratorFor(SQLExpression $criteria) {
+    public function iteratorFor(SQLExpression $criteria, $buffered= TRUE) {
       $jp= $criteria->isJoin() ? new JoinProcessor($this) : NULL;
-      $rs= $criteria->executeSelect($this->getConnection(), $this, $jp);
+      $rs= $criteria->executeSelect($this->getConnection(), $this, $jp, $buffered);
 
       // if this is a projection, it does no matter if it's a join or not
       if ($criteria->isProjection()) return new ResultIterator($rs, 'Record');

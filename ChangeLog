@@ -12,6 +12,11 @@ Heads up!
   caught but a warning is raised
   (friebe, kiesel, ilankin)
 
+RFCs
+~~~~
+- Implemented RFC #0203 - Unbuffered queries
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Changed xml.XPath to throw an exception inside the constructor instead
