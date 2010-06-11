@@ -24,6 +24,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.Date's constructor not to throw exceptions if a previous 
+  call to it lead to an error in PHP versions before 5.2.6.
+  (friebe, Gabriel Mihai Ghigea)
 - Changed xml.XPath to throw an exception inside the constructor instead
   of later on when given invalid XML
   (friebe, ilankin)
