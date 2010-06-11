@@ -85,7 +85,9 @@
       // Tokenize buffer
       $tokens= token_get_all('<?php '.trim($this->buffer, "\r\n").'?>');
       if (!is_array($tokens) || xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw new FormatException('Cannot parse "'.$this->buffer.'"');
+        $e= new FormatException('Cannot parse "'.$this->buffer.'"');
+        xp::gc(__FILE__);
+        throw $e;
       }
       
       // Create HTML
