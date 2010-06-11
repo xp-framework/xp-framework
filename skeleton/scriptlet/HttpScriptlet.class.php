@@ -40,7 +40,7 @@
    *   }
    * </code>
    *
-   * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletServiceTest
+   * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletTest
    * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletProcessTest
    */
   class HttpScriptlet extends Object {
@@ -359,8 +359,10 @@
       // one (by returning TRUE from needsSession()).
       if ($this->needsSession($request) || $request->getSessionId()) {
         $request->setSession($this->_session());
+        $valid= FALSE;
         try {
           $this->handleSessionInitialization($request);
+          $valid= $request->session->isValid();
         } catch (XPException $e) {
         
           // Check if session initialization errors can be handled gracefully
@@ -379,7 +381,7 @@
         // Check if invalid sessions can be handled gracefully (default: no).
         // If not, throw a HttpSessionInvalidException with the HTTP status
         // code 400 ("Bad request").
-        if (!$request->session->isValid()) {
+        if (!$valid) {
           if (!$this->handleInvalidSession($request, $response)) {
             throw new HttpSessionInvalidException(
               'Session is invalid',
