@@ -1,8 +1,37 @@
+Index: skeleton/rdbms/Peer.class.php
+===================================================================
+--- skeleton/rdbms/Peer.class.php	(revision 14627)
++++ skeleton/rdbms/Peer.class.php	(working copy)
+@@ -250,7 +250,7 @@
+      */
+     public function doSelect(SQLExpression $criteria, $max= 0) {
+       $r= array();
+-      for ($i= 1, $it= $this->iteratorFor($criteria); $it->hasNext() && (!$max || $i <= $max); $i++) {
++      for ($i= 1, $it= $this->iteratorFor($criteria, FALSE); $it->hasNext() && (!$max || $i <= $max); $i++) {
+         $r[]= $it->next();
+       }
+       return $r;
+@@ -260,12 +260,13 @@
+      * Returns an iterator for a select statement
+      *
+      * @param   rdbms.SQLExpression criteria or statement
++     * @param   bool buffered default TRUE
+      * @return  rdbms.ResultIterator
+      * @see     xp://lang.XPIterator
+      */
+-    public function iteratorFor(SQLExpression $criteria) {
++    public function iteratorFor(SQLExpression $criteria, $buffered= TRUE) {
+       $jp= $criteria->isJoin() ? new JoinProcessor($this) : NULL;
+-      $rs= $criteria->executeSelect($this->getConnection(), $this, $jp);
++      $rs= $criteria->executeSelect($this->getConnection(), $this, $jp, $buffered);
+ 
+       // if this is a projection, it does no matter if it's a join or not
+       if ($criteria->isProjection()) return new ResultIterator($rs, 'Record');
 Index: skeleton/rdbms/sybase/SybaseConnection.class.php
 ===================================================================
---- skeleton/rdbms/sybase/SybaseConnection.class.php	(revision 14538)
+--- skeleton/rdbms/sybase/SybaseConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/sybase/SybaseConnection.class.php	(working copy)
-@@ -73,7 +73,9 @@
+@@ -73,9 +73,12 @@
        }
  
        if (!is_resource($this->handle)) {
@@ -12,8 +41,11 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
 +        throw $e;
        }
        xp::gc(__FILE__);
++
        $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
-@@ -135,10 +137,11 @@
+       return parent::connect();
+     }
+@@ -135,10 +138,11 @@
       * Execute any statement
       *
       * @param   string sql
@@ -26,7 +58,7 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
        if (!is_resource($this->handle)) {
          if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
          $c= $this->connect();
-@@ -147,7 +150,9 @@
+@@ -147,7 +151,9 @@
          if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
        }
        
@@ -37,9 +69,22 @@ Index: skeleton/rdbms/sybase/SybaseConnection.class.php
          $result= sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
        } else {
          $result= sybase_query($sql, $this->handle);
+Index: skeleton/rdbms/sybase/SybaseResultSet.class.php
+===================================================================
+--- skeleton/rdbms/sybase/SybaseResultSet.class.php	(revision 14627)
++++ skeleton/rdbms/sybase/SybaseResultSet.class.php	(working copy)
+@@ -62,7 +62,7 @@
+ 
+       foreach (array_keys($row) as $key) {
+         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
+-        if ('datetime' == $this->fields[$key]) {
++        if ('datetime' === $this->fields[$key]) {
+           $row[$key]= Date::fromString($row[$key], $this->tz);
+         }
+       }
 Index: skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php
 ===================================================================
---- skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php	(revision 14538)
+--- skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php	(working copy)
 @@ -130,11 +130,12 @@
      /**
@@ -56,9 +101,27 @@ Index: skeleton/rdbms/sqlsrv/SqlSrvConnection.class.php
        if (!is_resource($this->handle)) {
          if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
          $c= $this->connect();
+Index: skeleton/rdbms/Criteria.class.php
+===================================================================
+--- skeleton/rdbms/Criteria.class.php	(revision 14627)
++++ skeleton/rdbms/Criteria.class.php	(working copy)
+@@ -275,10 +275,11 @@
+      * @param   rdbms.DBConnection conn
+      * @param   rdbms.Peer peer
+      * @param   rdbms.join.Joinprocessor jp optional
++     * @param   bool buffered default TRUE
+      * @return  rdbms.ResultSet
+      */
+-    public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL) {
+-      return $conn->query('%c', $this->getSelectQueryString($conn, $peer, $jp));
++    public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL, $buffered= TRUE) {
++      return $conn->query('%c', $this->getSelectQueryString($conn, $peer, $jp), $buffered);
+     }
+     
+     /**
 Index: skeleton/rdbms/DBConnection.class.php
 ===================================================================
---- skeleton/rdbms/DBConnection.class.php	(revision 14538)
+--- skeleton/rdbms/DBConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/DBConnection.class.php	(working copy)
 @@ -261,15 +261,33 @@
        $this->_obs && $this->notifyObservers(new DBEvent('queryend', $result));
@@ -97,7 +160,7 @@ Index: skeleton/rdbms/DBConnection.class.php
       * Begin a transaction
 Index: skeleton/rdbms/ibase/InterBaseConnection.class.php
 ===================================================================
---- skeleton/rdbms/ibase/InterBaseConnection.class.php	(revision 14538)
+--- skeleton/rdbms/ibase/InterBaseConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/ibase/InterBaseConnection.class.php	(working copy)
 @@ -120,11 +120,12 @@
      /**
@@ -116,7 +179,7 @@ Index: skeleton/rdbms/ibase/InterBaseConnection.class.php
          $c= $this->connect();
 Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(revision 14538)
+--- skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/pgsql/PostgreSQLConnection.class.php	(working copy)
 @@ -118,11 +118,12 @@
      /**
@@ -135,7 +198,7 @@ Index: skeleton/rdbms/pgsql/PostgreSQLConnection.class.php
          $c= $this->connect();
 Index: skeleton/rdbms/mssql/MsSQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/mssql/MsSQLConnection.class.php	(revision 14538)
+--- skeleton/rdbms/mssql/MsSQLConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/mssql/MsSQLConnection.class.php	(working copy)
 @@ -130,11 +130,12 @@
      /**
@@ -167,7 +230,7 @@ Index: skeleton/rdbms/mssql/MsSQLConnection.class.php
          $message= 'Statement failed: '.trim(mssql_get_last_message()).' @ '.$this->dsn->getHost();
 Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
 ===================================================================
---- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(revision 14538)
+--- skeleton/rdbms/sqlite/SQLiteConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/sqlite/SQLiteConnection.class.php	(working copy)
 @@ -146,10 +146,11 @@
       * Execute any statement
@@ -198,7 +261,7 @@ Index: skeleton/rdbms/sqlite/SQLiteConnection.class.php
        if (FALSE === $result) {
 Index: skeleton/rdbms/mysql/MySQLConnection.class.php
 ===================================================================
---- skeleton/rdbms/mysql/MySQLConnection.class.php	(revision 14538)
+--- skeleton/rdbms/mysql/MySQLConnection.class.php	(revision 14627)
 +++ skeleton/rdbms/mysql/MySQLConnection.class.php	(working copy)
 @@ -152,10 +152,11 @@
       * Execute any statement

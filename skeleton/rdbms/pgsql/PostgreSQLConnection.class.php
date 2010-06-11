@@ -118,11 +118,12 @@
     /**
      * Execute any statement
      *
-     * @param   var* args
+     * @param   string sql
+     * @param   bool buffered default TRUE
      * @return  rdbms.pgsql.PostgreSQLResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
-    protected function query0($sql) {
+    protected function query0($sql, $buffered= TRUE) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();

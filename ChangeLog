@@ -65,6 +65,16 @@ Heads up!
 - Changed unittests with @expect to fail if the expected exception is 
   caught but a warning is raised
   (friebe, kiesel, ilankin)
+- Changed URL to service mapping in web runners - a mapping on the URL 
+  /service will no longer catch the URL /services (note the trailing "s"),
+  while it will catch any of /service, /service/json or /service/ws/soap.
+  http://news.xp-framework.net/article/355/2010/06/10/
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0203 - Unbuffered queries
+  (friebe)
 
 Bugfixes
 ~~~~~~~~

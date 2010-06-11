@@ -49,7 +49,7 @@
      *
      * @param   string method
      * @param   peer.URL url
-     * @return  scriptlet.XMLScriptletRequest
+     * @return  scriptlet.xml.XMLScriptletRequest
      */
     protected function newRequest($method, URL $url) {
       $q= $url->getQuery('');
@@ -70,7 +70,7 @@
     /**
      * Creates a new response object
      *
-     * @return  scriptlet.XMLScriptletResponse
+     * @return  scriptlet.xml.XMLScriptletResponse
      */
     protected function newResponse(Stylesheet $stylesheet) {
       $res= new XMLScriptletResponse();
@@ -103,7 +103,7 @@
         )
       );
       
-      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+      $s= newinstance('scriptlet.xml.XMLScriptlet', array(), '{
         public function doGet($request, $response) {
           $response->addFormResult(new Node("result", "GET"));
         }
@@ -127,7 +127,7 @@
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
       
-      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+      $s= newinstance('scriptlet.xml.XMLScriptlet', array(), '{
         public function needsSession($request) { return TRUE; }
       }');
       $s->service($req, $res);
@@ -146,12 +146,12 @@
      * Test writing to response with write() throws an exception
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function writeToResponseNotPermitted () {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= $this->newResponse(create(new Stylesheet())->withOutputMethod('xml'));
       
-      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+      $s= newinstance('scriptlet.xml.XMLScriptlet', array(), '{
         public function doGet($request, $response) {
           $response->write("Hello");
         }
@@ -169,7 +169,7 @@
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= $this->newResponse(create(new Stylesheet())->withOutputMethod('xml'));
       
-      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+      $s= newinstance('scriptlet.xml.XMLScriptlet', array(), '{
         public function doGet($request, $response) {
           $response->setProcessed(FALSE);
           $response->write("Hello");
@@ -198,7 +198,7 @@
         )
       );
       
-      $s= newinstance('scriptlet.XMLScriptlet', array(), '{
+      $s= newinstance('scriptlet.xml.XMLScriptlet', array(), '{
         public function doPost($request, $response) {
           $response->addFormResult(new Node("result", "POST"));
         }

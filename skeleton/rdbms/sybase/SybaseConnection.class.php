@@ -73,9 +73,12 @@
       }
 
       if (!is_resource($this->handle)) {
-        throw new SQLConnectException(trim(sybase_get_last_message()), $this->dsn);
+        $e= new SQLConnectException(trim(sybase_get_last_message()), $this->dsn);
+        xp::gc(__FILE__);
+        throw $e;
       }
       xp::gc(__FILE__);
+
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       return parent::connect();
     }
@@ -135,10 +138,11 @@
      * Execute any statement
      *
      * @param   string sql
+     * @param   bool buffered default TRUE
      * @return  rdbms.sybase.SybaseResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
-    protected function query0($sql) {
+    protected function query0($sql, $buffered= TRUE) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -147,7 +151,9 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
       }
       
-      if ($this->flags & DB_UNBUFFERED) {
+      if (!$buffered) {
+        $result= sybase_unbuffered_query($sql, $this->handle, FALSE);
+      } else if ($this->flags & DB_UNBUFFERED) {
         $result= sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
         $result= sybase_query($sql, $this->handle);

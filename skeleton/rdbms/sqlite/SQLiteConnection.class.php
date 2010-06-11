@@ -146,10 +146,11 @@
      * Execute any statement
      *
      * @param   string sql
+     * @param   bool buffered default TRUE
      * @return  rdbms.sqlite.SQLiteResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
-    protected function query0($sql) { 
+    protected function query0($sql, $buffered= TRUE) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -158,10 +159,10 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
-      if ($this->flags & DB_UNBUFFERED) {
-        $result= sqlite_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
+      if (!$buffered || $this->flags & DB_UNBUFFERED) {
+        $result= sqlite_unbuffered_query($sql, $this->handle, SQLITE_ASSOC);
       } else {
-        $result= sqlite_query($sql, $this->handle);
+        $result= sqlite_query($sql, $this->handle, SQLITE_ASSOC);
       }
       
       if (FALSE === $result) {

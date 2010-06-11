@@ -33,8 +33,6 @@
    *
    * Example:
    * <code>
-   *   uses('scriptlet.HttpScriptlet');
-   * 
    *   class MyScriptlet extends HttpScriptlet {
    *     public function doGet($request, $response) {
    *       $response->write('Hello World');
@@ -42,24 +40,7 @@
    *   }
    * </code>
    *
-   * <code>
-   *   uses('foo.bar.MyScriptlet');
-   *
-   *   $s= new MyScriptlet();
-   *   try {
-   *     $s->init();
-   *     $response= $s->process();
-   *   } catch(HttpScriptletException $e)) {
-   *     // Retrieve standard "Internal Server Error"-Document
-   *     $response= $e->getResponse(); 
-   *   }
-   * 
-   *   $response->sendHeaders();
-   *   $response->sendContent();
-   * 
-   *   $s->finalize();
-   * </code>
-   *
+   * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletTest
    * @test    xp://net.xp_framework.unittest.scriptlet.HttpScriptletProcessTest
    */
   class HttpScriptlet extends Object {
@@ -205,7 +186,7 @@
           break;
           
         default: {
-          throw new HttpScriptletException(
+          throw new ScriptletException(
             'Unknown HTTP method: "'.strtoupper($request->method).'"',
             HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED
           );
@@ -336,7 +317,7 @@
      *
      * @param   scriptlet.HttpScriptletRequest request 
      * @param   scriptlet.HttpScriptletResponse response 
-     * @throws  scriptlet.HttpScriptletException indicating fatal errors
+     * @throws  scriptlet.ScriptletException indicating fatal errors
      */
     public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       $request->setURL($this->_url(
@@ -346,11 +327,11 @@
       ));
 
       // Check if this method can be handled. In case it can't, throw a
-      // HttpScriptletException with the HTTP status code 501 ("Method not
+      // ScriptletException with the HTTP status code 501 ("Method not
       // implemented"). The request object will already have all headers
       // and the request method set when this method is called.
       if (!($method= $this->handleMethod($request))) {
-        throw new HttpScriptletException(
+        throw new ScriptletException(
           'HTTP method "'.$request->method.'" not supported',
           HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED
         );
@@ -366,7 +347,7 @@
       // other protocol version.
       $response->setURI($request->getURL());
       if (2 != sscanf($proto= $request->getEnvValue('SERVER_PROTOCOL'), 'HTTP/%*[1].%[01]', $minor)) {
-        throw new HttpScriptletException(
+        throw new ScriptletException(
           'Unsupported HTTP protocol version "'.$proto.'" - expected HTTP/1.0 or HTTP/1.1', 
           HttpConstants::STATUS_HTTP_VERSION_NOT_SUPPORTED
         );
@@ -378,8 +359,10 @@
       // one (by returning TRUE from needsSession()).
       if ($this->needsSession($request) || $request->getSessionId()) {
         $request->setSession($this->_session());
+        $valid= FALSE;
         try {
           $this->handleSessionInitialization($request);
+          $valid= $request->session->isValid();
         } catch (XPException $e) {
         
           // Check if session initialization errors can be handled gracefully
@@ -398,7 +381,7 @@
         // Check if invalid sessions can be handled gracefully (default: no).
         // If not, throw a HttpSessionInvalidException with the HTTP status
         // code 400 ("Bad request").
-        if (!$request->session->isValid()) {
+        if (!$valid) {
           if (!$this->handleInvalidSession($request, $response)) {
             throw new HttpSessionInvalidException(
               'Session is invalid',
@@ -416,15 +399,15 @@
       // If this scriptlet has an authenticator, run its authenticate()
       // method. This method may return FALSE to indicate no further
       // processing is to be done (e.g., in case it redirects to a login
-      // site). Exceptions thrown are wrapped in a HttpScriptletException
+      // site). Exceptions thrown are wrapped in a ScriptletException
       // with status code 403 ("Forbidden").
       if ($auth= $this->getAuthenticator($request)) {
         try {
           $r= $auth->authenticate($request, $response, NULL);
-        } catch (HttpScriptletException $e) {
+        } catch (ScriptletException $e) {
           throw $e;
         } catch (XPException $e) {
-          throw new HttpScriptletException(
+          throw new ScriptletException(
             'Authentication failed: '.$e->getMessage(),
             HttpConstants::STATUS_FORBIDDEN,
             $e
@@ -435,17 +418,17 @@
 
       // Call method handler and, in case the method handler returns anything
       // else than FALSE, the response processor. Exceptions thrown from any of
-      // the two methods will result in a HttpScriptletException with the HTTP
+      // the two methods will result in a ScriptletException with the HTTP
       // status code 500 ("Internal Server Error") being thrown.
       try {
         $r= call_user_func(array($this, $method), $request, $response);
         if (FALSE !== $r && !is(NULL, $r)) {
           $response->process();
         }
-      } catch (HttpScriptletException $e) {
+      } catch (ScriptletException $e) {
         throw $e;
       } catch (XPException $e) {
-        throw new HttpScriptletException(
+        throw new ScriptletException(
           'Request processing failed ['.$method.']: '.$e->getMessage(),
           HttpConstants::STATUS_INTERNAL_SERVER_ERROR,
           $e
@@ -459,7 +442,7 @@
      * call the <pre>doCreateSession()</pre> method if necessary.
      *
      * @return  scriptlet.HttpScriptletResponse the response object
-     * @throws  scriptlet.HttpScriptletException indicating fatal errors
+     * @throws  scriptlet.ScriptletException indicating fatal errors
      */
     public function process() {
       $request= $this->_request();

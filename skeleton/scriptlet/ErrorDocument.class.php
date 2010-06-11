@@ -16,12 +16,12 @@
    *   try {
    *     $s->init();
    *     $response= $s->process();
-   *   } catch (HttpScriptletException $e) {
-   *     $response= $e->getResponse(); 
+   *   } catch (ScriptletException $e) {
+   *     $response= new HttpScriptletResponse();
    *
    *     // Make a nicer errordocument and hide the real message
    *     $d= new ErrorDocument(
-   *       $response->statusCode, 
+   *       $e->statusCode, 
    *       'en_US'
    *     );
    *     $response->setContent($d->getContent());
@@ -43,6 +43,7 @@
    * idea to display the full contents of errormessages as they might
    * contain details not intended for the outside world.
    *
+   * @deprecated  Now handled by scriptlet runner
    * @see scriptlet.HttpScriptlet
    */
   class ErrorDocument extends Object {

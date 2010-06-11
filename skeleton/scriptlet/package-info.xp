@@ -58,12 +58,12 @@
  * Signalling errors
  * =================
  * An non-OK statuscode may be produced by throwing a 
- * <tt>HttpScriptletException</tt> from any of the <tt>do*()</tt> methods.
+ * <tt>ScriptletException</tt> from any of the <tt>do*()</tt> methods.
  *
  * Example:
  * <code>
  *   public function doPost($request, $response) {
- *     throw new HttpScriptletException('POST not allowed', HttpConstants::STATUS_BAD_REQUEST);
+ *     throw new ScriptletException('POST not allowed', HttpConstants::STATUS_BAD_REQUEST);
  *   }
  * </code>
  *

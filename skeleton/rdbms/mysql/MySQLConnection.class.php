@@ -152,10 +152,11 @@
      * Execute any statement
      *
      * @param   string sql
+     * @param   bool buffered default TRUE
      * @return  rdbms.ResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
-    protected function query0($sql) {
+    protected function query0($sql, $buffered= TRUE) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -164,7 +165,7 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
-      if ($this->flags & DB_UNBUFFERED) {
+      if (!$buffered || $this->flags & DB_UNBUFFERED) {
         $result= mysql_unbuffered_query($sql, $this->handle);
       } else {
         $result= mysql_query($sql, $this->handle);

@@ -74,5 +74,15 @@
     public function nonexistingHeaderReturnsDefault() {
       $this->assertEquals('default', $this->r->getHeader('does_not_exist', 'default'));
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function writeToOutputStream() {
+      $this->r->getOutputStream()->write('Hello');
+      $this->assertEquals('Hello', $this->r->getContent());
+    }
   }
 ?>

@@ -5,9 +5,14 @@
  */
 
   $package= 'xp.scriptlet';
+
   uses(
+    'xp.scriptlet.WebApplication',
     'util.PropertyManager',
-    'rdbms.ConnectionManager'
+    'util.log.Logger',
+    'rdbms.ConnectionManager',
+    'scriptlet.HttpScriptlet',
+    'peer.http.HttpConstants'
   );
   
   /**
@@ -17,287 +22,331 @@
    * @purpose   Scriptlet runner
    */
   class xp·scriptlet·Runner extends Object {
-    const
-      XML         = 0x0001,
-      ERRORS      = 0x0002,
-      STACKTRACE  = 0x0004,
-      TRACE       = 0x0008;
-      
     protected
-      $flags      = 0x0000,
       $webroot    = NULL,
       $profile    = NULL,
-      $conf       = NULL,
-      $scriptlet  = NULL;
-    
-    public static function main(array $args) {
-      try {
-        $webroot= $args[0];
+      $mappings   = NULL;
 
-        $url= getenv('SCRIPT_URL');
-        $profile= getenv('SERVER_PROFILE');
-
-        // This is not using the PropertyManager by intention: we'll postpone the
-        // initialization of it until later, because there might be configuration
-        // that indicates to use another properties directory.
-        $self= new self(new Properties($webroot.'/etc/web.ini'), $webroot, $profile);
-
-        $self->setup($url);
-      } catch (Throwable $t) {
-        header('HTTP/1.0 500 Scriptlet setup failed; very sorry.');
-        throw $t;
-      }
-      
-      try {
-        $self->run();
-      } catch (TargetInvocationException $e) {
-        headers_sent() || header('HTTP/1.0 500 Internal server error');
-        throw $e->getCause();
+    static function __static() {
+      if (!function_exists('getallheaders')) {
+        function getallheaders() {
+          $headers= array();
+          foreach ($_SERVER as $name => $value) {
+            if (0 !== strncmp('HTTP_', $name, 5)) continue;
+            $headers[strtr(ucwords(strtolower(strtr(substr($name, 5), '_', ' '))), ' ', '-')]= $value;
+          }
+          return $headers;
+        }
       }
     }
-
+    
     /**
-     * Constructor
+     * Creates a new scriptlet runner
      *
-     * @param   scriptlet.HttpScriptlet scriptlet
+     * @param   string webroot
+     * @param   string profile
      */
-    public function __construct(Properties $conf, $webroot, $profile) {
-      $this->conf= $conf;
+    public function __construct($webroot, $profile= NULL) {
       $this->webroot= $webroot;
       $this->profile= $profile;
     }
 
     /**
-     * Find application name that has a mapping given which fits
+     * Read string. First tries special section "section"@"profile", then defaults 
+     * to "section"
      *
-     * @param   util.Hashmap map
-     * @param   string url
-     * @return  mixed string or NULL if no match was found
+     * @param   util.Properties conf
+     * @param   string section
+     * @param   string key
+     * @param   var default default NULL
+     * @return  string
      */
-    public static function findApplication(Hashmap $map, $url) {
-      foreach ($map->keys() as $pattern) {
-        if (preg_match('#'.preg_quote($pattern, '#').'#', $url)) return $map->get($pattern);
+    protected function readString($conf, $section, $key, $default= NULL) {
+      if (NULL === ($s= $conf->readString($section.'@'.$this->profile, $key, NULL))) {
+        return $conf->readString($section, $key, $default);
+      }
+      return $s;
+    }
+    
+    /**
+     * Read array. First tries special section "section"@"profile", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties conf
+     * @param   string section
+     * @param   string key
+     * @param   var default default NULL
+     * @return  string[]
+     */
+    protected function readArray($conf, $section, $key, $default= NULL) {
+      if (NULL === ($a= $conf->readArray($section.'@'.$this->profile, $key, NULL))) {
+        return $conf->readArray($section, $key, $default);
+      }
+      return $a;
+    }
+    
+    /**
+     * Read hashmap. First tries special section "section"@"profile", then defaults 
+     * to "section"
+     *
+     * @param   util.Properties conf
+     * @param   string section
+     * @param   string key
+     * @param   var default default NULL
+     * @return  util.Hashmap
+     */
+    protected function readHash($conf, $section, $key, $default= NULL) {
+      if (NULL === ($h= $conf->readHash($section.'@'.$this->profile, $key, NULL))) {
+        return $conf->readHash($section, $key, $default);
+      }
+      return $h;
+    }
+    
+    /**
+     * Creates a web application object from a given configuration section
+     *
+     * @param   util.Properties conf
+     * @param   string application app name
+     * @param   string url
+     * @return  xp.scriptlet.WebApplication
+     * @throws  lang.IllegalStateException if the web is misconfigured
+     */
+    protected function configuredApp($conf, $application, $url) {
+      $section= 'app::'.$application;
+      if (!$conf->hasSection($section)) {
+        throw new IllegalStateException('Web misconfigured: Section '.$section.' mapped by '.$url.' missing');
       }
 
-      return NULL;
+      $app= new WebApplication($application);
+      $app->setScriptlet($this->readString($conf, $section, 'class', ''));
+      
+      // Configuration base
+      $app->setConfig($this->expand($this->readString($conf, $section, 'prop-base', $this->webroot.'/etc')));
+
+      // Determine debug level
+      $flags= WebDebug::NONE;
+      foreach ($this->readArray($conf, $section, 'debug', array()) as $lvl) {
+        $flags |= WebDebug::flagNamed($lvl);
+      }
+      $app->setDebug($flags);
+      
+      // Initialization arguments
+      $args= array();
+      foreach ($this->readArray($conf, $section, 'init-params', array()) as $value) {
+        $args[]= $this->expand($value);
+      }
+      $app->setArguments($args);
+ 
+      // Environment
+      $app->setEnvironment($this->readHash($conf, $section, 'init-envs', new Hashmap())->toArray());
+     
+      return $app;
+    }
+    
+    /**
+     * Configure this runner with a web.ini
+     *
+     * @param   util.Properties conf
+     * @throws  lang.IllegalStateException if the web is misconfigured
+     */
+    public function configure(Properties $conf) {
+      $mappings= $conf->readHash('app', 'mappings', NULL);
+
+      // Verify configuration
+      if (NULL === $mappings) {
+        foreach ($conf->readSection('app') as $key => $url) {
+          if (0 !== strncmp('map.', $key, 4)) continue;
+          $this->mappings[$url]= $this->configuredApp($conf, substr($key, 4), $url);
+        }
+      } else {
+        foreach ($mappings->keys() as $url) {
+          $this->mappings[$url]= $this->configuredApp($conf, $mappings->get($url), $url);
+        }
+      }
+
+      if (0 === sizeof($this->mappings)) {
+        throw new IllegalStateException('Web misconfigured: "app" section missing or broken');
+      }
+    }
+    
+    /**
+     * Entry point method. Receives the following arguments from web.php:
+     * <ol>
+     *   <li>The web root</li>
+     *   <li>The server profile</li>
+     *   <li>The script URL</li>
+     * </ol>
+     *
+     * @param   string[] args
+     */
+    public static function main(array $args) {
+      $r= new self($args[0], $args[1]);
+      $r->configure(new Properties($args[0].'/etc/web.ini'));
+      $r->run($args[2]);
+    }
+    
+    /**
+     * Find which application the given url maps to
+     *
+     * @param   string url
+     * @return  xp.scriptlet.WebApplication
+     * @throws  lang.IllegalArgumentException if no app can be found
+     */
+    public function applicationAt($url) {
+      $url= '/'.ltrim($url, '/');
+      foreach ($this->mappings as $pattern => $application) {
+        if ('/' !== $pattern && !preg_match('#^('.preg_quote($pattern, '#').')($|/.+)#', $url)) continue;
+        return $application;
+      }
+
+      throw new IllegalArgumentException('Could not find app responsible for request to '.$url);
     }
 
     /**
-     * Replace variables in string
+     * Return mappings
+     *
+     * @return  [string:xp.scriptlet.WebApplication]
+     */
+    public function mappedApplications() {
+      return $this->mappings;
+    }
+
+    /**
+     * Adds an application
+     *
+     * @param   string url
+     * @param   xp.scriptlet.WebApplication application
+     * @return  xp.scriptlet.WebApplication the added application
+     */
+    public function mapApplication($url, WebApplication $application) {
+      $this->mappings[$url]= $application;
+      return $application;
+    }
+
+    /**
+     * Expand variables in string. Handles the following placeholders:
+     * <ul>
+     *   <li>WEBROOT</li>
+     *   <li>PROFILE</li>
+     * </ul>
      *
      * @param   string value
      * @return  string
      */
-    public function replaceVariables($value) {
+    public function expand($value) {
       return strtr($value, array(
         '{WEBROOT}' => $this->webroot,
-        '{PROFILE}' => $this->profile
+        '{PROFILE}' => $this->profile,
       ));
     }
-
+    
     /**
-     * Find active section by [app] mappings
+     * Creates the scriptlet instance for the given URL and runs it
      *
-     * @param   string URL
-     * @return  string
+     * @param   string url default '/'
      */
-    public function activeSectionByMappings($url) {
-      $mappings= $this->conf->readHash('app', 'mappings');
-
-      if (!$mappings instanceof Hashmap) {
-        $mappings= new Hashmap();
-
-        foreach ($this->conf->readSection('app') as $key => $value) {
-          if (0 == strncmp('map.', $key, 4)) {
-            $mappings->put($value, substr($key, 4));
-          }
-        }
-      }
-
-      if (!$mappings instanceof Hashmap || $mappings->size() == 0)
-        throw new IllegalStateException('Application misconfigured: "app" section missing or broken.');
-
-      if (NULL === ($app= self::findApplication($mappings, $url))) {
-        throw new IllegalArgumentException('Could not find app responsible for request to "'.$url.'"');
-      }
-
-      return $app;
-    }
-
-    /**
-     * Set up scriptlet
-     *
-     * @param   string url
-     * @throws  lang.IllegalStateException if application is misconfigured
-     * @throws  lang.IllegalArgumentException if no app could be found
-     */
-    protected function setup($url) {
-      $app= $this->activeSectionByMappings($url);
-
-      // Load and configure scriptlet
-      $scriptlet= 'app::'.$app;
-
-      try {
-        $class= XPClass::forName($this->readString($scriptlet, 'class'));
-      } catch (ClassNotFoundException $e) {
-        throw new IllegalArgumentException('Scriptlet "'.$scriptlet.'" misconfigured or missing: '.$e->getMessage());
-      }
-      $args= array();
-      foreach ($this->readArray($scriptlet, 'init-params') as $value) {
-        $args[]= $this->replaceVariables($value);
-      }
-
-      // Set environment variables
-      $env= $this->readHash($scriptlet, 'init-envs', new HashMap());
-      foreach ($env->keys() as $key) {
-        putenv($key.'='.$env->get($key));
-      }
-
-      // Configure PropertyManager
-      $pm= PropertyManager::getInstance();
-      $pm->configure($this->replaceVariables($this->readString($scriptlet, 'prop-base', $this->webroot.'/etc')));
-
-      // Always configure Logger (prior to ConnectionManager, so that one can pick up
-      // categories from Logger)
-      $pm->hasProperties('log') && Logger::getInstance()->configure($pm->getProperties('log'));
-
-      // Always make connection manager available
-      $pm->hasProperties('database') && ConnectionManager::getInstance()->configure($pm->getProperties('database'));
-
-      $this->setScriptlet($class->hasConstructor()
-        ? $class->getConstructor()->newInstance($args)
-        : $class->newInstance()
-      );
+    public function run($url= '/') {
+    
+      // Determine which scriptlet should be run
+      $application= $this->applicationAt($url);
 
       // Determine debug level
-      foreach ($this->readArray($scriptlet, 'debug', array()) as $lvl) {
-        $this->flags|= $this->getClass()->getConstant($lvl);
-      }
-    }
-    
-    /**
-     * Set scriptlet to run
-     *
-     * @param   scriptlet.HttpScriptlet scriptlet
-     */
-    public function setScriptlet(HttpScriptlet $scriptlet) {
-      $this->scriptlet= $scriptlet;
-    }
-    
-    /**
-     * Run scriptlet instance
-     *
-     */
-    protected function run() {
-      $exception= NULL;
-      $cat= Logger::getInstance()->getCategory('scriptlet');
-      if ($this->flags & self::TRACE && $this->scriptlet instanceof Traceable) {
-        $this->scriptlet->setTrace($cat);
-      }
+      $flags= $application->getDebug();
       
-      try {
-        $this->scriptlet->init();
-        $response= $this->scriptlet->process();
-      } catch (HttpScriptletException $e) {
-        $cat->error('Web runner caught', $e);
+      // Initializer logger, properties and connections to property base, 
+      // defaulting to the same directory the web.ini resides in
+      $pm= PropertyManager::getInstance();
+      $pm->configure($application->getConfig());
+      
+      $l= Logger::getInstance();
+      $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
 
-        // Remember this exception to show it below the error page,
-        // if this flag was set
-        $exception= $e;
+      $cm= ConnectionManager::getInstance();
+      $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
+      
+      // Set environment variables
+      foreach ($application->getEnvironment() as $key => $value) {
+        putenv($key.'='.$value);
+      }
+
+      // Instantiate and initialize
+      $cat= $l->getCategory('scriptlet');
+      $instance= NULL;
+      $e= NULL;
+      try {
+        $class= XPClass::forName($application->getScriptlet());
+        if (!$class->hasConstructor()) {
+          $instance= $class->newInstance();
+        } else {
+          $instance= $class->getConstructor()->newInstance($application->getArguments());
+        }
+        
+        if ($flags & WebDebug::TRACE && $instance instanceof Traceable) {
+          $instance->setTrace($cat);
+        }
+        $instance->init();
+      
+        // Service
+        $response= $instance->process();
+      } catch (ScriptletException $e) {
+        $cat->error($e);
 
         // TODO: Instead of checking for a certain method, this should
         // check if the scriptlet class implements a certain interface
-        if (is_callable(array($this->scriptlet, 'fail'))) {
-          $response= $this->scriptlet->fail($e);
+        if (is_callable(array($instance, 'fail'))) {
+          $response= $instance->fail($e);
         } else {
-          $response= $e->getResponse();
-          $this->except($response, $e);
+          $response= $this->fail($e, $e->getStatus(), $flags & WebDebug::STACKTRACE);
         }
+      } catch (Throwable $e) {
+        $cat->error($e);
+
+        // Here, we might not have a scriptlet
+        $response= $this->fail($e, HttpConstants::STATUS_PRECONDITION_FAILED, $flags & WebDebug::STACKTRACE);
       }
 
       // Send output
-      if (!$response->headersSent()) $response->sendHeaders();
+      $response->isCommitted() || $response->flush();
       $response->sendContent();
-      flush();
 
       // Call scriptlet's finalizer
-      $this->scriptlet->finalize();
-      
-      if (
-        ($this->flags & self::XML) &&
-        ($response && isset($response->document))
-      ) {
+      $instance && $instance->finalize();
+
+      // Debugging
+      if (($flags & WebDebug::XML) && isset($response->document)) {
+        flush();
         echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
       }
       
-      if (($this->flags & self::ERRORS)) {
-        echo
-          '<xmp>',
-          $exception instanceof Throwable ? $exception->toString() : '',
-          var_export(xp::registry('errors'), 1),
-          '</xmp>'
-        ;
+      if (($flags & WebDebug::ERRORS)) {
+        flush();
+        echo '<xmp>', $e ? $e->toString() : '', xp::stringOf(xp::registry('errors')), '</xmp>';
       }
-    }
-    
-    /**
-     * Handle exception from scriptlet
-     *
-     * @param   scriptlet.HttpScriptletResponse response
-     * @param   lang.Throwable e
-     */
-    protected function except(HttpScriptletResponse $response, Throwable $e) {
-      $errorPage= ($this->getClass()->getPackage()->providesResource('error'.$response->statusCode.'.html')
-        ? $this->getClass()->getPackage()->getResource('error'.$response->statusCode.'.html')
-        : $this->getClass()->getPackage()->getResource('error500.html')
-      );
-      $response->setContent(str_replace(
-        '<xp:value-of select="reason"/>',
-        (($this->flags & self::STACKTRACE)
-          ? $e->toString()
-          : $e->getMessage()
-        ),
-        $errorPage
-      ));
     }
 
     /**
-     * Read string. First tries special section "section"@"specific", then defaults 
-     * to "section"
+     * Handle exception from scriptlet
      *
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  string
+     * @param   lang.Throwable t
+     * @param   int status
+     * @param   bool trace whether to show stacktrace
+     * @return  scriptlet.HttpScriptletResponse
      */
-    protected function readString($section, $key, $default= NULL) {
-      return $this->conf->readString($section.'@'.$this->profile, $key, $this->conf->readString($section, $key, $default));
-    }
-    
-    /**
-     * Read array. First tries special section "section"@"specific", then defaults 
-     * to "section"
-     *
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  string
-     */
-    protected function readArray($section, $key, $default= NULL) {
-      return $this->conf->readArray($section.'@'.$this->profile, $key, $this->conf->readArray($section, $key, $default));
-    }
-    
-    /**
-     * Read hashmap. First tries special section "section"@"specific", then defaults 
-     * to "section"
-     *
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  string
-     */
-    protected function readHash($section, $key, $default= NULL) {
-      return $this->conf->readHash($section.'@'.$this->profile, $key, $this->conf->readHash($section, $key, $default));
+    protected function fail(Throwable $t, $status, $trace) {
+      $package= create(new XPClass(__CLASS__))->getPackage();
+      $errorPage= ($package->providesResource('error'.$status.'.html')
+        ? $package->getResource('error'.$status.'.html')
+        : $package->getResource('error500.html')
+      );
+
+      $response= new HttpScriptletResponse();
+      $response->setStatus($status);
+      $response->setContent(str_replace(
+        '<xp:value-of select="reason"/>',
+        $trace ? $t->toString() : $t->getMessage(),
+        $errorPage
+      ));
+      return $response;
     }
   }
 ?>

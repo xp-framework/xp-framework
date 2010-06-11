@@ -17,6 +17,33 @@
    * @see      xp://scriptlet.HttpScriptlet
    */
   class HttpScriptletTest extends TestCase {
+    protected static $helloScriptlet= NULL;
+    
+    static function __static() {
+      self::$helloScriptlet= newinstance('scriptlet.HttpScriptlet', array(), '{
+        public function doGet($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doPost($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doHead($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doTrace($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doConnect($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doOptions($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doDelete($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+      }');
+    }
   
     /**
      * Set session path to current working directory
@@ -65,21 +92,15 @@
      * Helper method
      *
      * @param   string method
-     * @param   string handlerName
      * @param   string expect
      */
-    protected function assertHandlerForMethodTriggered($method, $handlerName, $expect) {
+    protected function assertHandlerForMethodTriggered($method) {
       $req= $this->newRequest($method, new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
 
-      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
-        public function '.$handlerName.'($request, $response) {
-          $response->write("Hello ".__FUNCTION__);
-        }
-      }');
-      $s->service($req, $res);
+      self::$helloScriptlet->service($req, $res);
       $this->assertEquals(HttpConstants::STATUS_OK, $res->statusCode);
-      $this->assertEquals($expect, $res->getContent());
+      $this->assertEquals('Hello '.$method, $res->getContent());
     }
 
     /**
@@ -122,25 +143,16 @@
     }
 
     /**
-     * Test TRACE method
+     * Test illegal HTTP verb is not supported
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
-    public function traceUnSupported() {
-      $req= $this->newRequest('TRACE', new URL('http://localhost/'));
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'Unknown HTTP method: "LOOK"')]
+    public function illegalHttpVerb() {
+      $req= $this->newRequest('LOOK', new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
       
       $s= new HttpScriptlet();
       $s->service($req, $res);
-    }
-
-    /**
-     * Test illegal HTTP verb is not supported
-     *
-     */
-    #[@test, @expect(class= 'scriptlet.HttpScriptletException', withMessage= 'Unknown HTTP method: "LOOK"')]
-    public function illegalHttpVerb() {
-      $this->assertHandlerForMethodTriggered('LOOK', 'doLook', 'Hello doLook');
     }
 
     /**
@@ -149,7 +161,7 @@
      */
     #[@test]
     public function doGet() {
-      $this->assertHandlerForMethodTriggered('GET', 'doGet', 'Hello doGet');
+      $this->assertHandlerForMethodTriggered('GET');
     }
 
     /**
@@ -158,7 +170,7 @@
      */
     #[@test]
     public function doHead() {
-      $this->assertHandlerForMethodTriggered('HEAD', 'doHead', 'Hello doHead');
+      $this->assertHandlerForMethodTriggered('HEAD');
     }
 
     /**
@@ -167,7 +179,7 @@
      */
     #[@test]
     public function doPost() {
-      $this->assertHandlerForMethodTriggered('POST', 'doPost', 'Hello doPost');
+      $this->assertHandlerForMethodTriggered('POST');
     }
 
     /**
@@ -176,7 +188,7 @@
      */
     #[@test]
     public function doDelete() {
-      $this->assertHandlerForMethodTriggered('DELETE', 'doDelete', 'Hello doDelete');
+      $this->assertHandlerForMethodTriggered('DELETE');
     }
 
     /**
@@ -185,7 +197,7 @@
      */
     #[@test]
     public function doOptions() {
-      $this->assertHandlerForMethodTriggered('OPTIONS', 'doOptions', 'Hello doOptions');
+      $this->assertHandlerForMethodTriggered('OPTIONS');
     }
 
     /**
@@ -194,7 +206,7 @@
      */
     #[@test]
     public function doTrace() {
-      $this->assertHandlerForMethodTriggered('TRACE', 'doTrace', 'Hello doTrace');
+      $this->assertHandlerForMethodTriggered('TRACE');
     }
 
     /**
@@ -203,24 +215,32 @@
      */
     #[@test]
     public function doConnect() {
-      $this->assertHandlerForMethodTriggered('CONNECT', 'doConnect', 'Hello doConnect');
+      $this->assertHandlerForMethodTriggered('CONNECT');
     }
 
     /**
      * Test non-implemented method triggers MethodNotImplementedException
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'HTTP method "DELETE" not supported')]
     public function requestedMethodNotImplemented() {
-      $this->assertHandlerForMethodTriggered('DELETE', 'doHead', '');
+      $req= $this->newRequest('DELETE', new URL('http://localhost/'));
+      $res= new HttpScriptletResponse();
+      
+      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
+        public function doGet($request, $response) {
+          throw new IllegalStateException("Should not be reached");
+        }
+      }');
+      $s->service($req, $res);
     }
 
     /**
      * Test any exceptions thrown from do*() methods are wrapped inside
-     * a scriptlet.HttpScriptletException
+     * a scriptlet.ScriptletException
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'Request processing failed [doGet]: TEST')]
     public function exceptionInDoWrapped() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= new HttpScriptletResponse();
@@ -228,6 +248,24 @@
       $s= newinstance('scriptlet.HttpScriptlet', array(), '{
         public function doGet($request, $response) {
           throw new IllegalArgumentException("TEST");
+        }
+      }');
+      $s->service($req, $res);
+    }
+
+    /**
+     * Test any exceptions thrown from do*() methods are wrapped inside
+     * a scriptlet.HttpScriptletException
+     *
+     */
+    #[@test, @expect(class= 'scriptlet.ScriptletException', withMessage= 'TEST')]
+    public function scriptletExceptionInDo() {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $res= new HttpScriptletResponse();
+      
+      $s= newinstance('scriptlet.HttpScriptlet', array(), '{
+        public function doGet($request, $response) {
+          throw new ScriptletException("TEST");
         }
       }');
       $s->service($req, $res);
@@ -378,7 +416,7 @@
      * Test authenticator that always throws exceptions
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function unconditionalDenyAuthenticator() {
       $req= $this->newRequest('GET', new URL('http://localhost/members/profile'));
       $res= new HttpScriptletResponse();

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('scriptlet.Cookie', 'peer.http.HttpConstants', 'scriptlet.HttpScriptletURL');
+  uses('scriptlet.Request', 'scriptlet.Cookie', 'peer.http.HttpConstants', 'scriptlet.HttpScriptletURL');
 
   /**
    * Defines the request sent by the client to the server
@@ -16,7 +16,7 @@
    * @see      xp://scriptlet.HttpScriptlet
    * @purpose  Wrap request
    */  
-  class HttpScriptletRequest extends Object {
+  class HttpScriptletRequest extends Object implements Request {
     public
       $url=             NULL,
       $env=             array(),
@@ -33,6 +33,15 @@
      *
      */
     public function initialize() {
+    }
+
+    /**
+     * Returns this request's method
+     *
+     * @return  string
+     */
+    public function getMethod() {
+      return $this->method;
     }
     
     /**

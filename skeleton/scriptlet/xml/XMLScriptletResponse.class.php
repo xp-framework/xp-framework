@@ -282,7 +282,7 @@
      * Transforms the OutputDocument's XML and the stylesheet
      *
      * @throws  lang.IllegalStateException if no stylesheet is set
-     * @throws  scriptlet.HttpScriptletException if the transformation fails
+     * @throws  scriptlet.ScriptletException if the transformation fails
      * @see     xp://scriptlet.HttpScriptletResponse#process
      */
     public function process() {
@@ -293,7 +293,7 @@
           try {
             $this->processor->setXSLFile($this->_stylesheet[1]);
           } catch (FileNotFoundException $e) {
-            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_FOUND);
+            throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_FOUND);
           }
           break;
           
@@ -318,7 +318,7 @@
       try {
         $this->processor->run();
       } catch (TransformerException $e) {
-        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
+        throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
       }
       
       $this->content= $this->processor->output();

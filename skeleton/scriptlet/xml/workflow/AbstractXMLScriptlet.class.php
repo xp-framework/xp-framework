@@ -96,7 +96,7 @@
         try {
           $class= $this->getContextClass($request);;
         } catch (ClassNotFoundException $e) {
-          throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
+          throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
         }
       
         // Get context from session. If it is not available there, set up the 
@@ -108,11 +108,11 @@
           try {
             $context->setup($request);
           } catch (IllegalStateException $e) {
-            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
+            throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
           } catch (IllegalArgumentException $e) {
-            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_ACCEPTABLE, $e);
+            throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_ACCEPTABLE, $e);
           } catch (IllegalAccessException $e) {
-            throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
+            throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
           }
           $request->session->putValue($cidx, $context);
         }
@@ -123,7 +123,7 @@
         } catch (IllegalStateException $e) {
           throw new HttpSessionInvalidException($e->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $e);
         } catch (IllegalAccessException $e) {
-          throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
+          throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
         }
 
         delete($class);
@@ -133,11 +133,11 @@
       try {
         $request->state->setup($request, $response, $context);
       } catch (IllegalStateException $e) {
-        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
+        throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
       } catch (IllegalArgumentException $e) {
-        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_ACCEPTABLE, $e);
+        throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_NOT_ACCEPTABLE, $e);
       } catch (IllegalAccessException $e) {
-        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
+        throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_FORBIDDEN, $e);
       }
       
       // Call state's process() method. In case it returns FALSE, the

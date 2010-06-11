@@ -103,7 +103,7 @@
      * Test TRACE method
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function traceUnSupported() {
       $this->newRequest('TRACE', new URL('http://localhost/'));
       
@@ -170,7 +170,7 @@
      * a scriptlet.HttpScriptletException
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function exceptionInDoWrapped() {
       $this->newRequest('GET', new URL('http://localhost/'));
       

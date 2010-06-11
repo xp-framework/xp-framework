@@ -53,7 +53,7 @@
      * Test
      *
      */
-    #[@test, @expect('scriptlet.HttpScriptletException')]
+    #[@test, @expect('scriptlet.ScriptletException')]
     public function basicGetRequest() {
       $this->router->setMockMethod(HttpConstants::GET);
       $this->router->init();

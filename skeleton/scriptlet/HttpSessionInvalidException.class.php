@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('scriptlet.HttpScriptletException');
+  uses('scriptlet.ScriptletException');
 
   /**
    * Indicates the session is invalid
    *
-   * @see      xp://scriptlet.HttpScriptletException
+   * @see      xp://scriptlet.ScriptletException
    * @purpose  Exception
    */  
-  class HttpSessionInvalidException extends HttpScriptletException {
+  class HttpSessionInvalidException extends ScriptletException {
   }
 ?>
