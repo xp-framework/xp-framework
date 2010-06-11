@@ -22,7 +22,10 @@
       $name         = '',
       $rawComment   = '',
       $annotations  = NULL,
-      $detail       = NULL,
+      $detail       = NULL;
+    
+    public
+      #[@type('text.doclet.RootDoc')]
       $root         = NULL;
 
     /**
