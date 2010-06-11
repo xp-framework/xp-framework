@@ -137,7 +137,9 @@
     public function eof() {
       $result= gzeof($this->_fd);
       if (xp::errorAt(__FILE__, __LINE__ - 1)) {
-        throw new IOException('cannot determine eof of '.$this->uri);
+        $e= new IOException('cannot determine eof of '.$this->uri);
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $result;
     }
