@@ -40,7 +40,7 @@
         $buffer= iconv($charset, STR_ENC, $arg);
         if (xp::errorAt(__FILE__, __LINE__ - 1)) {
           $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 2]);
-          xp::gc();
+          xp::gc(__FILE__);
           throw new FormatException($message.($charset == STR_ENC  
             ? ' with charset '.$charset
             : $message.' while converting input from '.$charset.' to '.STR_ENC
