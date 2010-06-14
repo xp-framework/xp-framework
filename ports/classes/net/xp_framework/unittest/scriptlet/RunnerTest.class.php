@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  $package= 'net.xp_framework.unittest.scriptlet';
+  
   uses(
     'unittest.TestCase',
     'xp.scriptlet.Runner',
@@ -15,12 +17,10 @@
     'scriptlet.xml.XMLScriptlet'
   );
 
-  $package= 'net.xp_framework.unittest.scriptlet';
-  
   /**
    * TestCase
    *
-   * @purpose  Unittest
+   * @see   xp://xp.scriptlet.Runner
    */
   class net·xp_framework·unittest·scriptlet·RunnerTest extends TestCase {
     protected static $welcomeScriptlet= NULL;
