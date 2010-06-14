@@ -293,7 +293,7 @@
 
         // TODO: Instead of checking for a certain method, this should
         // check if the scriptlet class implements a certain interface
-        if (is_callable(array($instance, 'fail'))) {
+        if (method_exists($instance, 'fail')) {
           $response= $instance->fail($e);
         } else {
           $response= $this->fail($e, $e->getStatus(), $flags & WebDebug::STACKTRACE);
