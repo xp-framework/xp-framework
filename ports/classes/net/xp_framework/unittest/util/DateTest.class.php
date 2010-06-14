@@ -435,5 +435,19 @@
     public function unknownTimeZoneOffsetInString() {
       new Date('14.12.2010 11:55:00+9999');
     }
+
+    /**
+     * Test unknown timezone within string
+     *
+     */
+    #[@test]
+    public function constructorBrokenAfterException() {
+      Date::now();
+      try {
+        new Date('bogus');
+        $this->fail('No exception raised', NULL, 'lang.IllegalArgumentException');
+      } catch (IllegalArgumentException $expected) { }
+      Date::now();
+    }
   }
 ?>
