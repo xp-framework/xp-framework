@@ -1045,7 +1045,14 @@
       if (!isset($details['class'][DETAIL_GENERIC])) {
         throw new IllegalStateException('Class '.$this->name.' is not generic');
       }
-      return @$details['class'][DETAIL_GENERIC][1];
+      if (!isset($details['class'][DETAIL_GENERIC][1])) {
+        $details['class'][DETAIL_GENERIC][1]= array_map(
+          array(xp::reflect('lang.Type'), 'forName'), 
+          $details['class'][DETAIL_GENERIC][2]
+        );
+        unset($details['class'][DETAIL_GENERIC][2]);
+      }
+      return $details['class'][DETAIL_GENERIC][1];
     }
         
     /**
