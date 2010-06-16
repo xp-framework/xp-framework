@@ -182,33 +182,92 @@
       $this->assertEquals('Günther', $this->decoder->decode('"G\u00fcnther"'));
       $this->assertEquals('¤uro', $this->decoder->decode('"\u20ACuro"'));
     }
+
+    /**
+     * Test number decoding
+     *
+     */
+    #[@test]
+    public function decodeLargeNumber() {
+      $this->assertEquals(
+        (float)'9999999999999999999999999999999999999',
+        $this->decoder->decode('9999999999999999999999999999999999999')
+      );
+    }
+
+    /**
+     * Test number decoding
+     *
+     */
+    #[@test]
+    public function decodeLargeNegativeNumber() {
+      $this->assertEquals(
+        (float)'-9999999999999999999999999999999999999',
+        $this->decoder->decode('-9999999999999999999999999999999999999')
+      );
+    }
+
+    /**
+     * Test number decoding (LONG_MAX)
+     *
+     */
+    #[@test]
+    public function decodeLongMax() {
+      $this->assertEquals(LONG_MAX, $this->decoder->decode((string)LONG_MAX));
+    }
+
+    /**
+     * Test number decoding (LONG_MIN)
+     *
+     */
+    #[@test]
+    public function decodeLongMin() {
+      $this->assertEquals(LONG_MIN, $this->decoder->decode((string)LONG_MIN));
+    }
+
+    /**
+     * Test number decoding
+     *
+     */
+    #[@test]
+    public function decodeIntNumber() {
+      $this->assertEquals(1, $this->decoder->decode('1'));
+    }
+
+    /**
+     * Test number decoding
+     *
+     */
+    #[@test]
+    public function decodeFloatNumber() {
+      $this->assertEquals(1.1, $this->decoder->decode('1.1'));
+    }
     
     /**
      * Test number decoding
      *
      */
     #[@test]
-    public function decodeNumber() {
-      $this->assertEquals(
-        1,
-        $this->decoder->decode('1')
-      );
-      $this->assertEquals(
-        1.1,
-        $this->decoder->decode('1.1')
-      );
-      $this->assertEquals(
-        -1.1,
-        $this->decoder->decode('-1.1')
-      );
-      $this->assertEquals(
-        0.1,
-        $this->decoder->decode('1E-1')
-      );
-      $this->assertEquals(
-        -0.1,
-        $this->decoder->decode('-1E-1')
-      );
+    public function decodeNegativeFloatNumber() {
+      $this->assertEquals(-1.1, $this->decoder->decode('-1.1'));
+    }
+    
+    /**
+     * Test number decoding
+     *
+     */
+    #[@test]
+    public function decodeFloatNumberWithExponent() {
+      $this->assertEquals(0.1, $this->decoder->decode('1E-1'));
+    }
+    
+    /**
+     * Test number decoding
+     *
+     */
+    #[@test]
+    public function decodeNegativeFloatNumberWithExponent() {
+      $this->assertEquals(-0.1, $this->decoder->decode('-1E-1'));
     }
     
     /**

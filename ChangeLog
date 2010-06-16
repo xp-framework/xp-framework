@@ -24,6 +24,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed webservices.json.JsonDecoder not to convert integers on stream
+  larger than LONG_MAX to LONG_MAX (or LONG_MIN, respectively)
+  (friebe, treuter, robert)
 - Fixed util.Date's constructor not to throw exceptions if a previous 
   call to it lead to an error in PHP versions before 5.2.6.
   (friebe, Gabriel Mihai Ghigea)

@@ -402,11 +402,10 @@
       $this->stream->seek($initpos + $endpos);
       $nstr= substr($str, 0, $endpos);
       
-      if (FALSE !== (strpos($nstr, '.')) || strpos(strtolower($nstr), 'e')) {
-        return floatval($nstr);
-      }
-      
-      return intval($nstr);
+      return (FALSE !== (strpos($nstr, '.')) || strpos(strtolower($nstr), 'e') || $nstr > LONG_MAX || $nstr < LONG_MIN)
+        ? floatval($nstr) 
+        : intval($nstr)
+      ;
     }
     
     /**
