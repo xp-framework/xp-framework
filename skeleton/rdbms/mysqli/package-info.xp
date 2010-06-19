@@ -1,0 +1,23 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id: package-info.xp 11986 2008-03-30 12:58:13Z friebe $
+ */
+
+/**
+ * MySQL support for RDBMS api.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>mysql</tt></li>
+ *   <li>Depends on PHP extension <tt>mysqli</tt></li>
+ * </ul>
+ * 
+ * @see      php://mysqli
+ * @see      http://mysql.com/
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.mysqli {
+}
