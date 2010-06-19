@@ -47,6 +47,12 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for MySQL connectivity through PHP's mysqli extension if 
+  the mysql extension is not available
+  (friebe)
+- Added support for Sybase connectivity through PHP's mssql extension if 
+  the sybase_ct extension is not available
+  (friebe)
 - Added support for alternative syntax in web.ini's [app] section
   (kiesel)
 - Ports: Added support for selectors to StompConnection::subscribe()

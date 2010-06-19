@@ -81,24 +81,39 @@
 
     static function __static() {
       self::$instance= new self();
+
+      // MySQL support: Use mysql extension by default, mysqli otherwise
       if (extension_loaded('mysql')) {
         self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysql.MySQLConnection');
+      } else if (extension_loaded('mysqli')) {
+        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqli.MySQLiConnection');
       }
+
+      // PostgreSQL support
       if (extension_loaded('pgsql')) {
         self::$instance->drivers['pgsql']= XPClass::forName('rdbms.pgsql.PostgreSQLConnection');
       }
+      
+      // SQLite support
       if (extension_loaded('sqlite')) {
         self::$instance->drivers['sqlite']= XPClass::forName('rdbms.sqlite.SQLiteConnection');
       }
+      
+      // Sybase support: Prefer sybase_ct over mssql
       if (extension_loaded('sybase_ct')) {
         self::$instance->drivers['sybase']= XPClass::forName('rdbms.sybase.SybaseConnection');
-      } 
-      if (extension_loaded('mssql')) {
-        self::$instance->drivers['mssql']= XPClass::forName('rdbms.mssql.MsSQLConnection');
-      } 
+      } else if (extension_loaded('mssql')) {
+        self::$instance->drivers['sybase']= XPClass::forName('rdbms.mssql.MsSQLConnection');
+      }
+      
+      // MSSQL support: Prefer SQLsrv from Microsoft over mssql 
       if (extension_loaded('sqlsrv')) {
         self::$instance->drivers['mssql']= XPClass::forName('rdbms.sqlsrv.SqlSrvConnection');
-      } 
+      } else if (extension_loaded('mssql')) {
+        self::$instance->drivers['mssql']= XPClass::forName('rdbms.mssql.MsSQLConnection');
+      }
+      
+      // Interbase support
       if (extension_loaded('interbase')) {
         self::$instance->drivers['ibase']= XPClass::forName('rdbms.ibase.InterBaseConnection');
       } 
@@ -157,9 +172,7 @@
       
       // Lookup driver by identifier.
       if (!isset(self::$instance->drivers[$id])) {
-        throw new DriverNotSupportedException(
-          'No driver registered for '.$id.' - is the library loaded?'
-        );
+        throw new DriverNotSupportedException('No driver registered for '.$id.' - is the library loaded?');
       }
       
       return self::$instance->drivers[$id]->newInstance($dsn);
