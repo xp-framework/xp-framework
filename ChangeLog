@@ -47,6 +47,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Created string representations for xml.Tree, xml.Node, xml.PCData and 
+  xml.CData instances
+  (friebe)
+- Added xml.Tree::withRoot() method for use in fluent interfaces
+  (friebe)
 - Added support for MySQL connectivity through PHP's mysqli extension if 
   the mysql extension is not available
   (friebe)
