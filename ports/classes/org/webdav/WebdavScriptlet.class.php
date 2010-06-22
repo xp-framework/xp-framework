@@ -469,8 +469,8 @@
      *
      * @see     rfc://2518#8.11
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doUnlock($request, $response) {
@@ -546,8 +546,8 @@
      *
      * @see     rfc://2518#8.2
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doPropPatch($request, $response) {
@@ -613,8 +613,8 @@
     /**
      * Do a REPORT Request
      *
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response  
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response  
      */
     public function doReport($request, $response) {
       try {
@@ -637,8 +637,8 @@
      *
      * @see     rfc://2518#8.2
      * @return  bool processed
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @throws  lang.XPException to indicate failure
      */
     public function doNotFound($request, $response) {
@@ -649,8 +649,8 @@
     /**
      * Called when a authorization is required
      *
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @return  bool processed
      * @throws  lang.XPException to indicate failure
      */
@@ -663,8 +663,8 @@
     /**
      * Called when user hasn't permissions to do something
      *
-     * @param   &scriptlet.HttpScriptletRequest request
-     * @param   &scriptlet.HttpScriptletResponse response
+     * @param   scriptlet.HttpScriptletRequest request
+     * @param   scriptlet.HttpScriptletResponse response
      * @return  bool processed
      * @throws  lang.XPException to indicate failure
      */

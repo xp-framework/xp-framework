@@ -16,9 +16,9 @@
     /**
      * Creates new version object relating on latest version
      *
-     * @param   &org.webdav.version.Webdav*Version
-     * @param   &io.File file
-     * @return  &org.webdav.version.Webdav*Version
+     * @param   org.webdav.version.Webdav*Version
+     * @param   io.File file
+     * @return  org.webdav.version.Webdav*Version
      */
     public function getNextVersion($actVersion, $file) {
       // Load same type of version as before

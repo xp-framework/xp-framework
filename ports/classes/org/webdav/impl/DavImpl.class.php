@@ -104,7 +104,7 @@
      * Put a file
      *
      * @param   string filename
-     * @param   &string data
+     * @param   string data
      * @return  bool new
      * @throws  lang.MethodNotImplementedException
      */

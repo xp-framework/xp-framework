@@ -54,8 +54,8 @@
     /**
      * Add a webdav object
      *
-     * @param   &org.webdav.WebdavObject object The webdav object
-     * @param   &org.webdav.WebdavProperty[] reqprops The requested properties
+     * @param   org.webdav.WebdavObject object The webdav object
+     * @param   org.webdav.WebdavProperty[] reqprops The requested properties
      */
     public function addWebdavObject($object, $reqprops) {
 

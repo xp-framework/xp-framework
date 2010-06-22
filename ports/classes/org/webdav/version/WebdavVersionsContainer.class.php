@@ -44,7 +44,7 @@
     /**
      * Returns the last added version object
      *
-     * @return  &org.webdav.version.Webdav*Version
+     * @return  org.webdav.version.Webdav*Version
      */
     public function getLatestVersion() {
       return end($this->versions);

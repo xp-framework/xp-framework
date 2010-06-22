@@ -70,7 +70,7 @@
      * Sets a property for a specific URI
      *
      * @param   string uri The URI
-     * @param   &org.webdav.WebdavProperty property The WebDav property (use NULL to remove property)
+     * @param   org.webdav.WebdavProperty property The WebDav property (use NULL to remove property)
      */
     public function setProperty($uri, $property) {
       $name= $property->getName();
@@ -89,7 +89,7 @@
      *
      * @param   string uri  The URI
      * @param   string name The property's name
-     * @return  &org.webdav.WebdavProperty
+     * @return  org.webdav.WebdavProperty
      */
     public function getProperty($uri, $name) {
       $properties= $this->getProperties($uri);
@@ -126,7 +126,7 @@
      * Retrieve lock for specific URI
      *
      * @param   string uri  The URI
-     * @return  &org.webdav.WebdavLock
+     * @return  org.webdav.WebdavLock
      */
     public function getLock($uri) {
       $uri= 'LOCK:'.$uri;

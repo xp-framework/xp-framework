@@ -42,8 +42,8 @@
     /**
      * Constructor
      *
-     * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavMultistatus response
+     * @param   org.webdav.xml.WebdavPropFindRequest request
+     * @param   org.webdav.xml.WebdavMultistatus response
      */
     public function __construct() {
       $this->setRootNode(new Node(

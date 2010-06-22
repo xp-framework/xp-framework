@@ -111,7 +111,7 @@
     /**
      * Get all properties
      *
-     * @return  &org.webdav.WebdavProperty[]
+     * @return  org.webdav.WebdavProperty[]
      */
     public function getProperties() {
       return $this->properties;
