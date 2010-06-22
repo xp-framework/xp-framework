@@ -93,6 +93,18 @@
     public function getSource($indent= TRUE) {
       return $this->root->getSource($indent, strtolower($this->encoding), '');
     }
+
+    /**
+     * Sets root node and returns this tree
+     *
+     * @param   xml.Node child 
+     * @return  xml.Tree this
+     * @throws  lang.IllegalArgumentException in case the given argument is not a Node
+     */   
+    public function withRoot(Node $root) {
+      $this->root= $root;
+      return $this;
+    }
     
     /**
      * Add a child to this tree
@@ -228,6 +240,21 @@
      * @see     xp://xml.parser.XMLParser
      */
     public function onDefault($parser, $data) {
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        "%s(version=%s encoding=%s)@{\n  %s\n}",
+        $this->getClassName(),
+        $this->version,
+        $this->encoding,
+        str_replace("\n", "\n  ", xp::stringOf($this->root))
+      );
     }
   } 
 ?>
