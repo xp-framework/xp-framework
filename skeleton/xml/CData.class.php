@@ -23,8 +23,7 @@
    * @purpose  Wrapper
    */
   class CData extends Object {
-    public
-      $cdata= '';
+    public $cdata= '';
       
     /**
      * Constructor
@@ -33,6 +32,15 @@
      */
     public function __construct($cdata) {
       $this->cdata= $cdata;
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->cdata.')';
     }
   }
 ?>

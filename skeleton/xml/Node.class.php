@@ -327,5 +327,27 @@
       $this->addChild($child);
       return $this;
     }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      $a= '';
+      foreach ($this->attribute as $name => $value) {
+        $a.= ' @'.$name.'= '.xp::stringOf($value);
+      }
+      $s= $this->getClassName().'('.$this->name.$a.') {';
+      if (!$this->children) {
+        $s.= NULL === $this->content ? ' ' : ' '.xp::stringOf($this->content).' ';
+      } else {
+        $s.= NULL === $this->content ? "\n" : "\n  ".xp::stringOf($this->content)."\n";
+        foreach ($this->children as $child) {
+          $s.= '  '.str_replace("\n", "\n  ", xp::stringOf($child))."\n";
+        }
+      }
+      return $s.'}';
+    }
   }
 ?>
