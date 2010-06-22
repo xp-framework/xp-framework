@@ -51,6 +51,7 @@ Features
   xml.CData instances
   (friebe)
 - Added xml.Tree::withRoot() method for use in fluent interfaces
+  http://news.xp-framework.net/article/359/2010/06/22/
   (friebe)
 - Added support for MySQL connectivity through PHP's mysqli extension if 
   the mysql extension is not available
