@@ -1,6 +1,6 @@
 RFC 0204: Arbitrary classloader syntax in USE_XP 
 ========================================================================
-$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+$Id$
 
 @authors: friebe, kiesel
 @created: Fri Jun 25 13:30:57     2010
