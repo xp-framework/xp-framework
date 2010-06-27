@@ -59,7 +59,7 @@
      * Returns an iterator for use in foreach()
      *
      * @see     php://language.oop5.iterations
-     * @return  php.Iterator
+     * @return  php.Iterator<int, var>
      */
     public function getIterator() {
       return new ArrayListIterator($this);
