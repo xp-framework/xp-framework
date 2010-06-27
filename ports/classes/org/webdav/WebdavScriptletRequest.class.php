@@ -42,7 +42,7 @@
     /**
      * Get user
      *
-     * @return  &string
+     * @return  string
      */
     public function getUser() {
       return $this->user;

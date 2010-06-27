@@ -49,8 +49,8 @@
     /**
      * Constructor
      *
-     * @param   &org.webdav.xml.WebdavPropFindRequest request
-     * @param   &org.webdav.xml.WebdavMultistatus response
+     * @param   org.webdav.xml.WebdavPropFindRequest request
+     * @param   org.webdav.xml.WebdavMultistatus response
      */
     public function __construct($request, $response) {
       $this->setStatus(WEBDAV_MULTISTATUS);
@@ -64,7 +64,7 @@
     /**
      * Apply an WebdavObject
      *
-     * @param   &org.webdav.version.WebdavVersionContainer container
+     * @param   org.webdav.version.WebdavVersionContainer container
      */
     public function addWebdavVersionContainer($container) {
 

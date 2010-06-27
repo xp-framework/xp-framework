@@ -36,7 +36,7 @@
     /**
      * Constructor
      *
-     * @param   &org.ietf.UUID uuid
+     * @param   org.ietf.UUID uuid
      */
     public function __construct($uuid) {
       $this->uuid= $uuid;
@@ -47,7 +47,7 @@
      * Create a LockTocken from a string
      *
      * @param   string str
-     * @return  &util.webdav.LockTocken
+     * @return  util.webdav.LockTocken
      * @throws  lang.FormatException in case the string is not a valid opaquelocktoken
      */
     public static function fromString($str) {

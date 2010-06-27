@@ -1,0 +1,28 @@
+Index: unix/src/common.in
+===================================================================
+--- unix/src/common.in	(revision 477)
++++ unix/src/common.in	(working copy)
+@@ -25,6 +25,7 @@
+     \\*) ;;                                # \\filesrv\shares
+     /*) ;;                                 # /usr/local/lib */
+     ~*) path=$HOME$DIRSEP${path#"~"} ;;    # ~/lib
++    @*) echo $path ; exit ;;               # @xp.compiler.Jit(...)
+     *) path=$base$DIRSEP$path ;;           # lib, ../lib, ./classes
+   esac
+ 
+Index: windows/src/Paths.cs
+===================================================================
+--- windows/src/Paths.cs	(revision 477)
++++ windows/src/Paths.cs	(working copy)
+@@ -253,6 +253,11 @@
+                     // Path in home directory
+                     yield return Resolve(Compose(HOME, normalized.Substring(1)));
+                 } 
++                else if (normalized.StartsWith("@"))
++                {
++                    // Special notation
++                    yield return normalized;
++                }
+                 else if (normalized.Substring(1).StartsWith(":\\") || normalized.StartsWith("\\\\")) 
+                 {
+                     // Fully qualified path

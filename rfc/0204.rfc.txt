@@ -1,0 +1,46 @@
+RFC 0204: Arbitrary classloader syntax in USE_XP 
+========================================================================
+$Id$
+
+@authors: friebe, kiesel
+@created: Fri Jun 25 13:30:57     2010
+@status: draft
+@category: <core>
+
+Scope of Change
+---------------
+The <tt>USE_XP</tt> directive (whether via environment variable or via
+<tt>xp.ini</tt>) will be changed to syntactically support instantiating
+arbitrary classloaders.
+
+
+Rationale
+---------
+Currently, the <tt>USE_XP</tt> directive supports a list of directories 
+in which path files (<tt>*.pth</tt>) will be searched for. 
+
+
+Functionality
+-------------
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+
+Dependencies
+------------
+
+Related documents
+-----------------
+* http://xp-framework.net/rfc/contrib/rfc0204-runners.diff
+  Runners implementation
+
+* http://xp-framework.net/rfc/contrib/rfc0204-framework.diff
+  Framework implementation
+
+Comments
+--------
+
+<EOF>

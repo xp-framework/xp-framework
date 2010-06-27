@@ -163,7 +163,7 @@
     /**
      * Set the time of creation
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */
     public function setCreationDate($date) {
       $this->date= $date;
@@ -172,7 +172,7 @@
     /**
      * Get the time
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getCreationDate() {
       return $this->date;

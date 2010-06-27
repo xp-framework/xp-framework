@@ -1,0 +1,80 @@
+Index: tools/class.php
+===================================================================
+--- tools/class.php	(revision 14682)
++++ tools/class.php	(working copy)
+@@ -6,7 +6,10 @@
+   function scanpath($paths, $home) {
+     $inc= '';
+     foreach ($paths as $path) {
+-      if (!($d= @opendir($path))) continue;
++      if (!($d= @opendir($path))) { 
++        $inc.= $path.PATH_SEPARATOR; 
++        continue; 
++      }
+       while ($e= readdir($d)) {
+         if ('.pth' !== substr($e, -4)) continue;
+ 
+Index: tools/web.php
+===================================================================
+--- tools/web.php	(revision 14682)
++++ tools/web.php	(working copy)
+@@ -4,7 +4,10 @@
+   function scanpath($paths, $home) {
+     $inc= '';
+     foreach ($paths as $path) {
+-      if (!($d= @opendir($path))) continue;
++      if (!($d= @opendir($path))) { 
++        $inc.= $path.PATH_SEPARATOR; 
++        continue; 
++      }
+       while ($e= readdir($d)) {
+         if ('.pth' !== substr($e, -4)) continue;
+ 
+Index: tools/xar.php
+===================================================================
+--- tools/xar.php	(revision 14682)
++++ tools/xar.php	(working copy)
+@@ -6,7 +6,10 @@
+   function scanpath($paths, $home) {
+     $inc= '';
+     foreach ($paths as $path) {
+-      if (!($d= @opendir($path))) continue;
++      if (!($d= @opendir($path))) { 
++        $inc.= $path.PATH_SEPARATOR; 
++        continue; 
++      }
+       while ($e= readdir($d)) {
+         if ('.pth' !== substr($e, -4)) continue;
+ 
+Index: skeleton/lang/ClassLoader.class.php
+===================================================================
+--- skeleton/lang/ClassLoader.class.php	(revision 14682)
++++ skeleton/lang/ClassLoader.class.php	(working copy)
+@@ -54,16 +54,26 @@
+       xp::$registry['loader']= new self();
+       
+       // Scan include-path, setting up classloaders for each element
+-      foreach (xp::$registry['classpath'] as $element) {
++      $deferred= array();
++      foreach (xp::$registry['classpath'] as $i => $element) {
+         $resolved= realpath($element);
+         if (is_dir($resolved)) {
+           self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
+         } else if (is_file($resolved)) {
+           self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
++        } else if ('@' === $element{0}) {
++          $deferred[$i]= sscanf($element, '@%[^(][%[^)]');
+         } else {
+           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
+         }
+       }
++      
++      // Set up deferred class loaders, removing their paths from the 
++      // classpath registry as this will be used by other tools
++      foreach ($deferred as $i => $def) {
++        unset(xp::$registry['classpath'][$i]);
++        self::registerLoader(XPClass::forName($def[0].'ClassLoader')->newInstance($def[1]));
++      }
+     }
+     
+     /**

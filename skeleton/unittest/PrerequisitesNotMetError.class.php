@@ -12,23 +12,19 @@
    *
    * @purpose  Exception
    */
-  class PrerequisitesNotMetError extends XPException {
-    public
-      $cause           = NULL,
-      $prerequisites   = array();
+  class PrerequisitesNotMetError extends ChainedException {
+    public $prerequisites= array();
       
     /**
      * Constructor
      *
      * @param   string message
-     * @param   lang.XPException cause 
+     * @param   lang.Throwable cause 
      * @param   array prerequisites default array()
-     * @param   string code
      */
     public function __construct($message, $cause= NULL, $prerequisites= array()) {
-      $this->cause= $cause;
+      parent::__construct($message, $cause);
       $this->prerequisites= (array)$prerequisites;
-      parent::__construct($message);
     }
 
     /**
@@ -38,20 +34,11 @@
      */
     public function compoundMessage() {
       return sprintf(
-        "%s (%s) { prerequisites: [%s] }\n",
+        '%s (%s) { prerequisites: [%s] }',
         $this->getClassName(),
         $this->message,
         implode(', ', array_map(array('xp', 'stringOf'), $this->prerequisites))
       );
-    }
-    
-    /**
-     * Get Trace
-     *
-     * @return  string
-     */
-    public function getStackTrace() {
-      return $this->cause ? $this->cause->getStackTrace() : $this->getStackTrace();
     }
   }
 ?>

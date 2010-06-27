@@ -97,7 +97,7 @@
     /**
      * Get all properties
      *
-     * @return  &org.webdav.WebdavProperty[]
+     * @return  org.webdav.WebdavProperty[]
      */
     public function getProperties($remove= FALSE) {
       return $this->properties[$remove];

@@ -78,7 +78,7 @@
     /**
      * Get all properties
      *
-     * @return  &string[] properties
+     * @return  string[] properties
      */
     public function getProperties() {
       return $this->properties;

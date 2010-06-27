@@ -139,7 +139,7 @@
     /**
      * Set date of last modification
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */
     public function setLastModified($date) {
       $this->lastmodified= $date;
@@ -148,7 +148,7 @@
     /**
      * Get the date of last modification
      *
-     * @return  &util.Date
+     * @return  util.Date
      */
     public function getLastModified() {
       return $this->lastmodified;

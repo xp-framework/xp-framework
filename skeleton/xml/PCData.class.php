@@ -27,8 +27,7 @@
    * @purpose  Wrapper
    */
   class PCData extends Object {
-    public
-      $pcdata= '';
+    public $pcdata= '';
       
     /**
      * Constructor
@@ -37,7 +36,15 @@
      */
     public function __construct($pcdata) {
       $this->pcdata= $pcdata;
-      
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->pcdata.')';
     }
   }
 ?>

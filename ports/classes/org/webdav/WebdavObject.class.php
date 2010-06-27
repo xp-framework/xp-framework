@@ -31,8 +31,8 @@
      * @param   string resourceType
      * @param   string contentLength default 0
      * @param   string contentType default NULL
-     * @param   &util.Date creationDate
-     * @param   &util.Date lastModified
+     * @param   util.Date creationDate
+     * @param   util.Date lastModified
      * @param   array properties default array()
      */
     public function __construct(
@@ -131,7 +131,7 @@
     /**
      * Set the creation date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */
     public function setCreationDate($date) {
       $this->creationDate= $data;
@@ -140,7 +140,7 @@
     /**
      * Get the creation date
      *
-     * @return  &util.Date date
+     * @return  util.Date date
      */
     public function getCreationDate() {
       return $this->creationDate;
@@ -149,7 +149,7 @@
     /**
      * Set the last modified Date
      *
-     * @param   &util.Date date
+     * @param   util.Date date
      */
     public function setModifiedDate($date) {
       $this->modifiedDate= $date;
@@ -158,7 +158,7 @@
     /**
      * Get the last modified date
      *
-     * @return  &util.Date date
+     * @return  util.Date date
      */
     public function getModifiedDate() {
       return $this->modifiedDate;
@@ -230,7 +230,7 @@
     /**
      * Set data
      *
-     * @param   &string data
+     * @param   string data
      */
     public function setData($data) {
       $this->_data= $data;
@@ -239,7 +239,7 @@
     /**
      * Set encoding
      *
-     * @param   &string data
+     * @param   string data
      */
     public function setEncoding($data) {
       $this->contentEncoding= $data;
@@ -248,7 +248,7 @@
     /**
      * Get data
      *
-     * @return  &string data
+     * @return  string data
      */
     public function getData() {
       return $this->_data;
