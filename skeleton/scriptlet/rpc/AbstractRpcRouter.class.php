@@ -9,6 +9,7 @@
     'util.ServiceException',
     'scriptlet.rpc.RpcFault',
     'util.log.Traceable',
+    'util.log.Logger',
     'xml.Node'
   );
 
