@@ -82,9 +82,9 @@
      */
     public function formatStackTrace($elements) {
       $stacktrace= array();
-      $replace= str_repeat('¿', strlen(XML_ILLEGAL_CHARS));
+      $replace= str_repeat('¿', strlen(Node::XML_ILLEGAL_CHARS));
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
-        $stacktrace[]= strtr($elements[$i]->toString(), XML_ILLEGAL_CHARS, $replace); 
+        $stacktrace[]= strtr($elements[$i]->toString(), Node::XML_ILLEGAL_CHARS, $replace);
       }
       return $stacktrace;
     }
