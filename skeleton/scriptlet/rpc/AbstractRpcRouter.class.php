@@ -117,6 +117,13 @@
       } catch (TargetInvocationException $e) {
         $hasFault= TRUE;
         
+        // Log exception
+        Logger::getInstance()->getCategory($this->getClassName())->error(
+          $this->getClassName(),
+          '~ invocation returned exception',
+          $e
+        );
+
         if ($e->getCause() instanceof ServiceException) {
           $cause= $e->getCause();
           
@@ -137,6 +144,13 @@
           );
         }
       } catch (XPException $e) {
+        // Log exception
+        Logger::getInstance()->getCategory($this->getClassName())->error(
+          $this->getClassName(),
+          '~ invocation returned exception',
+          $e
+        );
+
         $answer->setFault(
           HttpConstants::STATUS_INTERNAL_SERVER_ERROR,
           $e->getMessage(),
