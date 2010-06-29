@@ -47,6 +47,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- webservices.rpc.AbstractRpcRouter now logs all exceptions transmitted
+  to the client (for SOAP, XMLRPC, JSON)
+  (kiesel)
 - Created string representations for xml.Tree, xml.Node, xml.PCData and 
   xml.CData instances
   (friebe)
