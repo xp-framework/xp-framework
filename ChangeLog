@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.7.10, released 2010-07-04
+-----------------------------------
+SVN version: 14692
+
 Heads up!
 ~~~~~~~~~
 - Changed unittests with @expect to fail if the expected exception is 
