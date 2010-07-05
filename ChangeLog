@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed string quotation and comment handling in Properties::fromString()
+  (hinckel)
+
 
 Version 5.7.10, released 2010-07-04
 -----------------------------------

@@ -89,6 +89,52 @@ bool=0
     }
     
     /**
+     * Test reading values with comments
+     *
+     */
+    #[@test]
+    public function valuesCommented() {
+      $p= Properties::fromString('
+[section]
+notQuotedComment=value1  ; A comment
+quotedComment="value1"  ; A comment
+quotedWithComment="value1 ; With comment"
+      ');
+      
+      $this->assertEquals('value1', $p->readString('section', 'notQuotedComment'), 'not-quoted-with-comment');
+      $this->assertEquals('value1', $p->readString('section', 'quotedComment'), 'quoted-comment');
+      $this->assertEquals('value1 ; With comment', $p->readString('section', 'quotedWithComment'), 'quoted-with-comment');
+    }
+    
+    /**
+     * Test reading values are trimmed
+     *
+     */
+    #[@test]
+    public function valuesTrimmed() {
+      $p= Properties::fromString('
+[section]
+trim=  value1  
+      ');
+      
+      $this->assertEquals('value1', $p->readString('section', 'trim'));
+    }
+    
+    /**
+     * Test reading quoted values, which are also trimmed
+     *
+     */
+    #[@test]
+    public function valuesQuoted() {
+      $p= Properties::fromString('
+[section]
+quoted="  value1  "
+      ');
+      
+      $this->assertEquals('value1', $p->readString('section', 'quoted'));
+    }
+    
+    /**
      * Test string reading
      *
      */
