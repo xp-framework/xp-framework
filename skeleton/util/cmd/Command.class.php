@@ -13,8 +13,11 @@
    */
   abstract class Command extends Object implements Runnable {
     public
+      #[@type('io.streams.StringReader')]
       $in  = NULL,
+      #[@type('io.streams.StringWriter')]
       $out = NULL,
+      #[@type('io.streams.StringWriter')]
       $err = NULL;
     
   }
