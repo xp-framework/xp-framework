@@ -79,5 +79,19 @@
     public function nl2br($string) {
       return nl2br($string);
     }
+
+    /**
+     * Break wrap words in long texts by given column
+     *
+     * @param   string string The input string
+     * @param   int width Break at this column
+     * @param   string break The string to insert when doing a break (defaults to "\n")
+     * @param   bool cut Do word wrapping within words (defaults to TRUE)
+     * @return  string
+     */
+    #[@xslmethod]
+    public function wordwrap($string, $width, $break= "\n", $cut= TRUE) {
+      return wordwrap($string, $width, $break, $cut);
+    }
   }
 ?>

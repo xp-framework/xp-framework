@@ -11,6 +11,11 @@ Bugfixes
 - Fixed string quotation and comment handling in Properties::fromString()
   (hinckel)
 
+Features
+~~~~~~~~
+- Added XSLStringCallback::wordwrap() to wrap long texts at given column
+  (hinckel, toennishoff)
+
 
 Version 5.7.10, released 2010-07-04
 -----------------------------------
