@@ -82,7 +82,19 @@
             default:
               if (FALSE === ($p= strpos($t, '='))) break;
               $key= trim(substr($t, 0, $p));
-              $value= trim(substr($t, $p+ 1), ' "');
+              $value= trim(substr($t, $p+ 1), ' ');
+              
+              // Check for string quotations
+              if (strlen($value) && ('"' == ($quote= $value{0}))) {
+                $value= trim($value, $quote);
+                $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
+                  ? $p : strlen($value)
+                ));
+              
+              // Check for comment
+              } else if (FALSE !== ($p= strpos($value, ';'))) {
+                $value= trim(substr($value, 0, $p));
+              }
 
               $prop->_data[$section][$key]= $value;
               break;

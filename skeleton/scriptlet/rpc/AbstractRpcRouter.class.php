@@ -9,6 +9,7 @@
     'util.ServiceException',
     'scriptlet.rpc.RpcFault',
     'util.log.Traceable',
+    'util.log.Logger',
     'xml.Node'
   );
 
@@ -82,9 +83,9 @@
      */
     public function formatStackTrace($elements) {
       $stacktrace= array();
-      $replace= str_repeat('¿', strlen(XML_ILLEGAL_CHARS));
+      $replace= str_repeat('¿', strlen(Node::XML_ILLEGAL_CHARS));
       for ($i= 0, $s= sizeof($elements); $i < $s; $i++) {
-        $stacktrace[]= strtr($elements[$i]->toString(), XML_ILLEGAL_CHARS, $replace); 
+        $stacktrace[]= strtr($elements[$i]->toString(), Node::XML_ILLEGAL_CHARS, $replace);
       }
       return $stacktrace;
     }
@@ -117,6 +118,13 @@
       } catch (TargetInvocationException $e) {
         $hasFault= TRUE;
         
+        // Log exception
+        Logger::getInstance()->getCategory($this->getClassName())->error(
+          $this->getClassName(),
+          '~ invocation returned exception',
+          $e
+        );
+
         if ($e->getCause() instanceof ServiceException) {
           $cause= $e->getCause();
           
@@ -137,6 +145,13 @@
           );
         }
       } catch (XPException $e) {
+        // Log exception
+        Logger::getInstance()->getCategory($this->getClassName())->error(
+          $this->getClassName(),
+          '~ invocation returned exception',
+          $e
+        );
+
         $answer->setFault(
           HttpConstants::STATUS_INTERNAL_SERVER_ERROR,
           $e->getMessage(),

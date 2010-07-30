@@ -218,9 +218,10 @@
      *
      * @param   string sql
      * @return  rdbms.ResultSet
+     * @return  rdbms.ResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
-    protected function query0($sql) { 
+    protected function query0($sql, $buffered= TRUE) { 
       if (!$this->_connected) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
