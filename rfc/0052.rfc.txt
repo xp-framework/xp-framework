@@ -191,7 +191,7 @@ Example:
       return $this.name;
     }
     
-    public function toString() {
+    public string toString() {
       $s= $this.getClassName();           // D, typeof($s) = string
       $s~= '<' ~ $this.name ~ '>';
       return $s;
