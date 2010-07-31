@@ -30,6 +30,8 @@ Heads up!
 
 Features
 ~~~~~~~~
+- Added indexer access functionality, this(): this(array(1, 2, 3), 1)= 2
+  (friebe)
 - Enabled protected member access via reflection
   http://news.xp-framework.net/article/351/2010/04/04/
   (friebe)
