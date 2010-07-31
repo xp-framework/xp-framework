@@ -52,8 +52,6 @@ RFCs
   (friebe)
 - Implemented RFC #0197 - Type literals in tokens
   (friebe)
-- Implemented RFC #0189 - Extension methods
-  (friebe)
 - Implemented RFC #0185 - ClassFormatException for malformed annotations
   (friebe)  
 
