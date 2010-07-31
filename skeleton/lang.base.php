@@ -71,30 +71,6 @@
     }
     // }}}
 
-    // {{{ public void extensions(string class, string impl)
-    //     Marks the impl class as extension method provider for $class
-    static function extensions($class, $impl) {
-      $extensions= array();
-      $c= new XPClass($impl);
-      foreach ($c->getMethods() as $m) {
-        if (!($m->getModifiers() & MODIFIER_STATIC) || !$m->hasAnnotation('extension')) continue;
-        $extensions[$m->getName()]= $m->_reflect;
-      }
-      xp::$registry['ext://'.$class]= $extensions;
-    }
-    // }}}
-
-    static function import($scope) {
-      $args= func_get_args();
-      array_shift($args);
-      foreach ($args as $import) {
-        foreach (xp::$registry[$import] as $name => $method) {
-          xp::$registry[$scope.'::'.$import.'::'.$name]= $method;
-        }
-      }
-    }
-    // }}}
-
     // {{{ public string typeOf(var arg)
     //     Returns the fully qualified type name
     static function typeOf($arg) {
