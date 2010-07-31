@@ -177,7 +177,7 @@
     /**
      * Sets this application's environment
      *
-     * @param   [string:string] environment
+     * @param   [:string] environment
      */
     public function setEnvironment($environment) {
       $this->environment= $environment;
@@ -186,7 +186,7 @@
     /**
      * Sets this application's environment
      *
-     * @param   [string:string] environment
+     * @param   [:string] environment
      * @return  xp.scriptlet.WebApplication this
      */
     public function withEnvironment($environment) {
@@ -197,7 +197,7 @@
     /**
      * Returns this application's environment
      *
-     * @return  [string:string]
+     * @return  [:string]
      */
     public function getEnvironment() {
       return $this->environment;

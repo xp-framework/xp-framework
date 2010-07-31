@@ -164,6 +164,9 @@ The XP language knows about the following types:
 * Array types
   An array is a zero-based and continuously numbered list of any type, 
   e.g. string[] or util.Date[].
+* Map types
+  A map is a hashtable mapping string keys to any type, e.g. [:string] 
+  or [:lang.XPClass]
 * The variable type
   Marks a type that may either be a primitive or any reference type, 
   declared with the keyword "var". The compiler will not be able to 
@@ -191,7 +194,7 @@ Example:
       return $this.name;
     }
     
-    public function toString() {
+    public string toString() {
       $s= $this.getClassName();           // D, typeof($s) = string
       $s~= '<' ~ $this.name ~ '>';
       return $s;
