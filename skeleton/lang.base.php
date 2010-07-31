@@ -483,6 +483,13 @@
     if (is_array($expr)) return $expr[0]; else return $expr;
   }
   // }}}
+
+  // {{{ proto var this(var expr, var offset)
+  //     Indexer access for a given expression
+  function this($expr, $offset) {
+    return $expr[$offset];
+  }
+  // }}}
   
   // {{{ proto lang.Object newinstance(string spec, var[] args, string bytes)
   //     Anonymous instance creation
