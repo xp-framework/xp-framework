@@ -5,7 +5,6 @@ $Id$
 @authors: friebe
 @created: Sat Aug 29 13:49:46     2009
 @status: draft
-@target: 5.8.0
 @category: <core>
 
 Scope of Change
