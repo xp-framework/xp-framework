@@ -233,7 +233,7 @@
      * @return  string
      */
     public function toString() {
-      return sprintf('%s[%s%d]@%s', $this->getClassName(), $this->running() ? 'R' : 'S', $this->_id, xp::stringOf($this));
+      return sprintf('%s[%s%d]@%s', $this->getClassName(), $this->isRunning() ? 'R' : 'S', $this->_id, xp::stringOf($this));
     }
     
     /**
