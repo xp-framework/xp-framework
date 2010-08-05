@@ -13,7 +13,7 @@
   define('LISTENER_CLASS',  'peer.ftp.server.FtpConnectionListener');
 
   /**
-   * Server thread wich does all of the accept()ing on the sockets.
+   * Server thread which does all of the accept()ing on the sockets.
    *
    * @purpose   Thread
    */
@@ -175,7 +175,7 @@
         // Enable debugging      
         if ($this->cat) {
           $listener->setTrace($this->cat);
-          $this->server->setTrace($this->cat);
+          $this->server instanceof Traceable && $this->server->setTrace($this->cat);
         }
 
         // Try to start the server

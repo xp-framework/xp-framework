@@ -40,6 +40,9 @@
       $datasock         = array(),
       $interceptors     = array();
 
+    protected
+      $mode             = array();
+
     /**
      * Constructor
      *
@@ -195,10 +198,12 @@
         // Did the authentication succeed?
         if (!$r) {
           $this->answer($event->stream, 530, 'Authentication failed for '.$user);
+          $this->cat && $this->cat->warn('User', $user, 'supplied wrong credentials.');
           return;
         }
         $this->answer($event->stream, 230, 'User '.$user.' logged in');
         $this->sessions[$event->stream->hashCode()]->setAuthenticated(TRUE);
+        $this->cat && $this->cat->info('User', $user, 'has successfully logged in.');
       }
     }
     
@@ -290,6 +295,7 @@
     public function onHelp($event, $params) {
       $methods= array();
       $i= 0;
+      $offset= 0;
       foreach (get_class_methods($this) as $name) {
         if (0 != strncmp('on', $name, 2) || strlen($name) > 6) continue;
 

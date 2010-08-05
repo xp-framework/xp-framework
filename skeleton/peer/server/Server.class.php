@@ -32,9 +32,9 @@
     public
       $protocol   = NULL,
       $socket     = NULL,
+      $server     = NULL,
       $terminate  = FALSE,
       $tcpnodelay = FALSE;
-      
     /**
      * Constructor
      *
