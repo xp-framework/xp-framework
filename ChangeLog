@@ -60,7 +60,6 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
-=======
 Heads up!
 ~~~~~~~~~
 - Deprecated getMessage() and getStatusCode() in peer.http.HttpResponse 
