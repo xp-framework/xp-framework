@@ -13,6 +13,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added possibility to explicitely pass SSL version to peer.http APIs
+  by using "https+v2://" or "https+v3://" in the URL's scheme
+  (friebe, Gabriel Mihai Ghigea)
 - Added XSLStringCallback::wordwrap() to wrap long texts at given column
   (hinckel, toennishoff)
 
