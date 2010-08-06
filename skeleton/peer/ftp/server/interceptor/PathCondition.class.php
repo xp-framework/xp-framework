@@ -12,7 +12,9 @@
    * @purpose  Path condition
    */
   class PathCondition extends Object implements InterceptorCondition {
-  
+    protected
+      $path = NULL;
+
     /**
      * Constructor
      *

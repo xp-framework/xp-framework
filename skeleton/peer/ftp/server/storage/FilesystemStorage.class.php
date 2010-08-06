@@ -37,9 +37,9 @@
      */
     public function realname($clientId, $uri) {
       $uri= strtr($uri, '/', DIRECTORY_SEPARATOR);    // External uris use "/"
-      $path= (DIRECTORY_SEPARATOR == $uri{0}
-        ? $uri
-        : $this->base[$clientId].DIRECTORY_SEPARATOR.$uri
+      $path= (DIRECTORY_SEPARATOR === $uri{0} && isset($this->base[$clientId])
+        ? $this->base[$clientId].DIRECTORY_SEPARATOR.$uri
+        : $uri
       );
       
       with (
@@ -91,7 +91,7 @@
      * @return  string
      */
     public function getBase($clientId) {
-      if (NULL == $this->base[$clientId]) { $this->setBase($clientId); }
+      if (!isset($this->base[$clientId])) { $this->setBase($clientId); }
       
       // Return base directory for a given client - all
       // directories returned should use forward slashes!

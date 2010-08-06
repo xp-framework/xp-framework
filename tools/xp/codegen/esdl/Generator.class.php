@@ -12,6 +12,7 @@
     'xml.Node',
     'remote.Remote',
     'remote.ClassReference',
+    'remote.reflect.BeanDescription',
     'util.collections.HashSet'
   );
 
