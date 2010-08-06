@@ -6,6 +6,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Deprecated getMessage() and getStatusCode() in peer.http.HttpResponse 
+  in favor of message() and statusCode().
+  (friebe, Gabriel Mihai Ghigea)
+- Deprecated getHeaders() and getHeader() in peer.http.HttpResponse and
+  replaced by headers() and header(), respectively. The new methods have
+  changed return types to be able to support multiple headers
+  (friebe, Gabriel Mihai Ghigea)
+  
+
 Bugfixes
 ~~~~~~~~
 - Fixed string quotation and comment handling in Properties::fromString()

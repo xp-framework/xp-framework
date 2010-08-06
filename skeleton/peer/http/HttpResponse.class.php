@@ -9,8 +9,9 @@
   /**
    * HTTP response
    *
-   * @see      xp://peer.http.HttpConnection
-   * @purpose  Represents a HTTP response
+   * @see     xp://peer.http.HttpConnection
+   * @test    xp://net.xp_framework.unittest.peer.http.HttpResponseTest
+   * @test    xp://net.xp_framework.unittest.peer.http.HttpInputStreamTest
    */
   class HttpResponse extends Object {
     public
@@ -104,7 +105,18 @@
       // Headers
       while ($line= $this->scanUntil("\n")) {
         if (2 != sscanf($line, "%[^:]: %[^\r\n]", $k, $v)) break;
-        $this->headers[$k]= $v;      
+        
+        $l= strtolower($k);
+        if (!isset($this->_headerlookup[$l])) {
+          $this->_headerlookup[$l]= $k;
+        } else {
+          $k= $this->_headerlookup[$l];
+        }
+        if (!isset($this->headers[$k])) {
+          $this->headers[$k]= array($v);
+        } else {
+          $this->headers[$k][]= $v;
+        }
       }
     }
 
@@ -189,7 +201,7 @@
     public function toString() {
       $h= '';
       foreach ($this->headers as $k => $v) {
-        $h.= sprintf("  [%-20s] %s\n", $k, $v);
+        $h.= sprintf("  [%-20s] { %s }\n", $k, implode(', ', $v));
       }
       return sprintf(
         "%s (HTTP/%s %3d %s) {\n%s}",
@@ -204,6 +216,7 @@
     /**
      * Get HTTP statuscode
      *
+     * @deprecated Use statusCode() instead
      * @return  int status code
      */
     public function getStatusCode() {
@@ -211,20 +224,53 @@
     }
 
     /**
+     * Get HTTP statuscode
+     *
+     * @return  int status code
+     */
+    public function statusCode() {
+      return $this->statuscode;
+    }
+
+    /**
+     * Get HTTP message
+     *
+     * @deprecated Use message() instead
+     * @return  string
+     */
+    public function getMessage() {
+      return $this->message;
+    }
+
+    /**
      * Get HTTP message
      *
      * @return  string
      */
-    public function getMessage() {
+    public function message() {
       return $this->message;
     }
     
     /**
      * Get response headers as an associative array
      *
-     * @return  array headers
+     * @deprecated Use headers() instead
+     * @return  [:string] headers
      */
     public function getHeaders() {
+      $headers= array();
+      foreach ($this->headers as $name => $values) {
+        $headers[$name]= end($values);
+      }
+      return $headers;
+    }
+
+    /**
+     * Get response headers as an associative array
+     *
+     * @return  [:string[]] headers
+     */
+    public function headers() {
       return $this->headers;
     }
 
@@ -232,14 +278,23 @@
      * Get response header by name
      * Note: The lookup is performed case-insensitive
      *
+     * @deprecated Use header() instead
      * @return  string value or NULL if this header does not exist
      */
     public function getHeader($name) {
-      if (empty($this->_headerlookup)) {
-        $this->_headerlookup= array_change_key_case($this->headers, CASE_LOWER);
-      }
-      $name= strtolower($name);
-      return isset($this->_headerlookup[$name]) ? $this->_headerlookup[$name] : NULL;
+      $l= strtolower($name);
+      return isset($this->_headerlookup[$l]) ? end($this->headers[$this->_headerlookup[$l]]) : NULL;
+    }
+
+    /**
+     * Get response header by name
+     * Note: The lookup is performed case-insensitive
+     *
+     * @return  string[] value or NULL if this header does not exist
+     */
+    public function header($name) {
+      $l= strtolower($name);
+      return isset($this->_headerlookup[$l]) ? $this->headers[$this->_headerlookup[$l]] : NULL;
     }
   }
 ?>
