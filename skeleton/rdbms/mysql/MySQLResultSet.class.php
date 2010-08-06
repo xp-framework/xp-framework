@@ -24,7 +24,7 @@
       if (is_resource($result)) {
         for ($i= 0, $num= mysql_num_fields($result); $i < $num; $i++) {
           $field= mysql_fetch_field($result, $i);
-          $fields[$field->name]= $field->type;
+          $fields[$field->name]= $field;
         }
       }
       parent::__construct($result, $fields, $tz);
@@ -62,7 +62,7 @@
       
       foreach (array_keys($row) as $key) {
         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
-        switch ($this->fields[$key]) {
+        switch ($this->fields[$key]->type) {
           case 'timestamp':
             if (strlen($row[$key]) == 14) {
               $time= sscanf ((string)$row[$key], '%04s%02s%02s%02s%02s%02s');

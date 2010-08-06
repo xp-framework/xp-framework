@@ -22,18 +22,20 @@
      * Constructor
      *
      * @param   peer.URL url
+     * @param   string arg
      */
-    public function __construct(URL $url) {
-      $this->socket= $this->newSocket($url);
+    public function __construct(URL $url, $arg) {
+      $this->socket= $this->newSocket($url, $arg);
     }
 
     /**
      * Creates a socket
      *
      * @param   peer.URL url
+     * @param   string arg
      * @return  peer.Socket
      */
-    protected function newSocket(URL $url) {
+    protected function newSocket(URL $url, $arg) {
       return new Socket($url->getHost(), $url->getPort(80));
     }
 

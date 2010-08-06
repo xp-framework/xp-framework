@@ -12,10 +12,10 @@
   );
 
   /**
-   * Transport via sockets
+   * HTTP Transports base class
    *
-   * @see      xp://peer.http.HttpConnection
-   * @purpose  Transport
+   * @see     xp://peer.http.HttpConnection
+   * @test    xp://net.xp_framework.unittest.peer.http.HttpTransportTest
    */
   abstract class HttpTransport extends Object {
     protected static
@@ -40,8 +40,9 @@
      * Constructor
      *
      * @param   peer.URL url
+     * @param   string arg
      */
-    abstract public function __construct(URL $url);
+    abstract public function __construct(URL $url, $arg);
 
     /**
      * Set proxy
@@ -95,11 +96,11 @@
      * @throws  lang.IllegalArgumentException in case the scheme is not supported
      */
     public static function transportFor(URL $url) {
-      $scheme= $url->getScheme();
+      sscanf($url->getScheme(), '%[^+]+%s', $scheme, $arg);
       if (!isset(self::$transports[$scheme])) {
         throw new IllegalArgumentException('Scheme "'.$scheme.'" unsupported');
       }
-      return self::$transports[$scheme]->newInstance($url);
+      return self::$transports[$scheme]->newInstance($url, $arg);
     }
   }
 ?>

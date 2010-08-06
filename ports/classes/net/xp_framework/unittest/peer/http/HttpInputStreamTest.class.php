@@ -61,8 +61,8 @@
       with ($length= strlen($data), $r= $this->httpResponse(HttpConstants::STATUS_OK, array('Content-Length' => $length), $data)); {
       
         // Self-testing
-        $this->assertEquals(HttpConstants::STATUS_OK, $r->getStatusCode());
-        $this->assertEquals($length, (int)$r->getHeader('Content-Length'));
+        $this->assertEquals(HttpConstants::STATUS_OK, $r->statusCode());
+        $this->assertEquals($length, (int)current($r->header('Content-Length')));
         
         // Check data
         $this->assertEquals($data, $this->readAll(new HttpInputStream($r)));

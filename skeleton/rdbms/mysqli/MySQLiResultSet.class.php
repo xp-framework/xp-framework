@@ -23,7 +23,7 @@
       $fields= array();
       if (is_object($result)) {
         while ($field= $result->fetch_field()) {
-          $fields[$field->name]= $field->type;
+          $fields[$field->name]= $field;
         }
       }
       parent::__construct($result, $fields, $tz);
@@ -61,7 +61,7 @@
       
       foreach (array_keys($row) as $key) {
         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
-        switch ($this->fields[$key]) {
+        switch ($this->fields[$key]->type) {
           case MYSQLI_TYPE_DATETIME:
           case MYSQLI_TYPE_DATE:
           case MYSQLI_TYPE_TIMESTAMP:

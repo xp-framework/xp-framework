@@ -9,9 +9,8 @@
   /**
    * Transport via curl functions
    *
-   * @ext      curl
-   * @see      xp://peer.http.HttpConnection
-   * @purpose  Transport
+   * @ext     curl
+   * @see     xp://peer.http.HttpConnection
    */
   class CurlHttpTransport extends HttpTransport {
     protected
@@ -21,13 +20,17 @@
      * Constructor
      *
      * @param   peer.URL url
+     * @param   string arg
      */
-    public function __construct(URL $url) {
+    public function __construct(URL $url, $arg) {
       $this->handle= curl_init();
       curl_setopt($this->handle, CURLOPT_HEADER, 1);
       curl_setopt($this->handle, CURLOPT_RETURNTRANSFER, 1); 
       curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, 0);
       curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, 0);
+      if (1 === sscanf($arg, 'v%d', $version)) {
+        curl_setopt($curl, CURLOPT_SSLVERSION, $version);
+      }
     }
   
     /**
