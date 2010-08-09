@@ -59,6 +59,7 @@
       $req->env['REQUEST_URI']= $url->getPath('/').($q ? '?'.$q : '');
       $req->env['QUERY_STRING']= $q;
       $req->env['HTTP_HOST']= $url->getHost();
+      $req->env['LANGUAGE']= 'en_US';
       if ('https' === $url->getScheme()) { 
         $req->env['HTTPS']= 'on';
       }
