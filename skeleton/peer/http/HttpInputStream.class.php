@@ -9,7 +9,7 @@
   /**
    * InputStream that reads from a HTTP Response
    *
-   * @test     xp://net.xp_framework.unittest.peer.HttpInputStreamTest
+   * @test     xp://net.xp_framework.unittest.peer.http.HttpInputStreamTest
    * @purpose  InputStream implementation
    */
   class HttpInputStream extends Object implements InputStream {
@@ -30,14 +30,17 @@
     /**
      * Buffer a chunk if necessary
      *
+     * @return  int available
      */
     protected function buffer() {
       if (strlen($this->buffer) > 0) return;
       if (FALSE === ($chunk= $this->response->readData(8192, TRUE))) {
-        $this->available= 0;
+        $this->available= -1;
+        return 0;
       } else {
         $this->buffer.= $chunk;
         $this->available= strlen($this->buffer);
+        return $this->available;
       }
     }
 
@@ -48,6 +51,7 @@
      * @return  string
      */
     public function read($limit= 8192) {
+      if (-1 === $this->available) return NULL;   // At end
       $this->buffer();
       $b= substr($this->buffer, 0, $limit);
       $this->buffer= substr($this->buffer, $limit);
@@ -60,8 +64,7 @@
      *
      */
     public function available() {
-      $this->buffer();
-      return $this->available;
+      return (-1 === $this->available) ? 0 : $this->buffer();
     }
 
     /**

@@ -1,0 +1,246 @@
+Index: skeleton/xml/meta/Marshaller.class.php
+===================================================================
+--- skeleton/xml/meta/Marshaller.class.php	(revision 14721)
++++ skeleton/xml/meta/Marshaller.class.php	(working copy)
+@@ -113,6 +113,7 @@
+      * @param   lang.Object instance
+      * @param   xml.QName qname default NULL
+      * @return  string xml
++     * @deprecated  Use marshalTo() instead
+      */
+     public static function marshal($instance, $qname= NULL) {
+       $class= $instance->getClass();
+@@ -134,5 +135,24 @@
+       self::recurse($instance, $class, $tree->root);
+       return $tree->getSource(INDENT_DEFAULT);
+     }
++ 
++    /**
++     * Marshal an object to xml
++     *
++     * @param   xml.Node target
++     * @param   lang.Object instance
++     * @return  xml.Node the given target
++     */
++    public function marshalTo(Node $target, Generic $instance) {
++      $class= $instance->getClass();
++
++      // Add XML namespace from class' "xmlns" annotation if present
++      if ($class->hasAnnotation('xmlns')) {
++        $target->setName(key($class->getAnnotation('xmlns')).':'.$target->getName());
++      }
++      
++      self::recurse($instance, $class, $target);
++      return $target;
++    }
+   }
+ ?>
+Index: skeleton/xml/meta/Unmarshaller.class.php
+===================================================================
+--- skeleton/xml/meta/Unmarshaller.class.php	(revision 14721)
++++ skeleton/xml/meta/Unmarshaller.class.php	(working copy)
+@@ -4,7 +4,7 @@
+  * $Id$ 
+  */
+ 
+-  uses('xml.XPath', 'xml.XMLFormatException');
++  uses('xml.XPath', 'xml.XMLFormatException', 'io.streams.Streams');
+ 
+   /**
+    * Creates objects from XML by using annotations.
+@@ -29,6 +29,10 @@
+    * @purpose  XML databinding
+    */
+   class Unmarshaller extends Object {
++  
++    static function __static() {
++      libxml_use_internal_errors(TRUE);
++    }
+ 
+     /**
+      * Retrieve content of a DomElement
+@@ -158,15 +162,39 @@
+      * @return  lang.Object
+      * @throws  lang.ClassNotFoundException
+      * @throws  xml.XMLFormatException
++     * @deprecated  Use unmarshalFrom() instead
+      */
+     public static function unmarshal($xml, $classname) {
+-      try {
+-        $doc= new DOMDocument();
+-        $doc->loadXML($xml);
+-      } catch (DOMException $e) {
+-        throw new XMLFormatException($e->getMessage());
++      libxml_clear_errors();
++      $doc= new DOMDocument();
++      $source= '(string)';
++      if ('' === (string)$xml) {    // Handle empty string, raise XML_IO_NO_INPUT
++        throw new XMLFormatException('Empty string supplied as input', 1547, $source, 0, 0);
+       }
++      if (!$doc->loadXML($xml)) {
++        $e= libxml_get_last_error();
++        throw new XMLFormatException(trim($e->message), $e->code, $source, $e->line, $e->column);
++      }
+       return self::recurse(new XPath($doc), $doc->documentElement, $classname);
+     }
++
++    /**
++     * Unmarshal XML to an object
++     *
++     * @param   xml.parser.InputSource source
++     * @param   string classname
++     * @return  lang.Object
++     * @throws  lang.ClassNotFoundException
++     * @throws  xml.XMLFormatException
++     */
++    public function unmarshalFrom(InputSource $input, $classname) {
++      libxml_clear_errors();
++      $doc= new DOMDocument();
++      if (!$doc->load(Streams::readableUri($input->getStream()))) {
++        $e= libxml_get_last_error();
++        throw new XMLFormatException(trim($e->message), $e->code, $input->getSource(), $e->line, $e->column);
++      }
++      return self::recurse(new XPath($doc), $doc->documentElement, $classname);
++    }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/xml/MarshallerTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/MarshallerTest.class.php	(revision 14721)
++++ ports/classes/net/xp_framework/unittest/xml/MarshallerTest.class.php	(working copy)
+@@ -17,6 +17,15 @@
+    * @purpose  Unit Test
+    */
+   class MarshallerTest extends TestCase {
++    protected $fixture= NULL;
++  
++    /**
++     * Creates fixture
++     *
++     */
++    public function setUp() {
++      $this->fixture= new Marshaller();
++    }
+ 
+     /**
+      * Compares XML after stripping all whitespace between tags of both 
+@@ -118,5 +127,20 @@
+         Marshaller::marshal($dialog)
+       );
+     }
++
++    /**
++     * Tests the dialog's id member gets serialized as an id attribute
++     *
++     */
++    #[@test]
++    public function asTree() {
++      $dialog= new DialogType();
++      $dialog->setId('file.open');
++
++      $node= $this->fixture->marshalTo(new Node('dialog'), $dialog);
++      $this->assertInstanceOf('xml.Node', $node);
++      $this->assertEquals('dialog', $node->getName());
++      $this->assertEquals('file.open', $node->getAttribute('id'));
++    }
+   }
+ ?>
+Index: ports/classes/net/xp_framework/unittest/xml/UnmarshallerTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/xml/UnmarshallerTest.class.php	(revision 14721)
++++ ports/classes/net/xp_framework/unittest/xml/UnmarshallerTest.class.php	(working copy)
+@@ -7,7 +7,9 @@
+   uses(
+     'unittest.TestCase',
+     'net.xp_framework.unittest.xml.DialogType',
+-    'xml.meta.Unmarshaller'
++    'xml.meta.Unmarshaller',
++    'io.streams.MemoryInputStream',
++    'xml.parser.StreamInputSource'
+   );
+ 
+   /**
+@@ -17,6 +19,15 @@
+    * @purpose  Unit Test
+    */
+   class UnmarshallerTest extends TestCase {
++    protected $fixture= NULL;
++  
++    /**
++     * Creates fixture
++     *
++     */
++    public function setUp() {
++      $this->fixture= new Unmarshaller();
++    }
+ 
+     /**
+      * Tests the id attribute gets unserialized as the dialog's id member
+@@ -117,5 +128,67 @@
+         'height' => '100'
+       ), $dialog->getOptions());
+     }
++
++    /**
++     * Test unmarshalling from a stream
++     *
++     */
++    #[@test]
++    public function unmarshallingAnInputStream() {
++      $dialog= $this->fixture->unmarshalFrom(
++        new StreamInputSource(new MemoryInputStream('<dialogtype id="stream.select"/>'), 'memory'),
++        'net.xp_framework.unittest.xml.DialogType'
++      );
++      $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType');
++      $this->assertEquals('stream.select', $dialog->getId());
++    }
++
++    /**
++     * Test unmarshalling malformed data
++     *
++     */
++    #[@test, @expect('xml.XMLFormatException')]
++    public function malformedString() {
++      Unmarshaller::unmarshal(
++        '<not-valid-xml', 
++        'net.xp_framework.unittest.xml.DialogType'
++      );
++    }
++
++    /**
++     * Test unmarshalling empty data
++     *
++     */
++    #[@test, @expect('xml.XMLFormatException')]
++    public function emptyString() {
++      Unmarshaller::unmarshal(
++        '', 
++        'net.xp_framework.unittest.xml.DialogType'
++      );
++    }
++
++    /**
++     * Test unmarshalling malformed data
++     *
++     */
++    #[@test, @expect('xml.XMLFormatException')]
++    public function malformedStream() {
++      $this->fixture->unmarshalFrom(
++        new StreamInputSource(new MemoryInputStream('<not-valid-xml'), 'memory'), 
++        'net.xp_framework.unittest.xml.DialogType'
++      );
++    }
++
++    /**
++     * Test unmarshalling empty data
++     *
++     */
++    #[@test, @expect('xml.XMLFormatException')]
++    public function emptyStream() {
++      $this->fixture->unmarshalFrom(
++        new StreamInputSource(new MemoryInputStream(''), 'memory'), 
++        'net.xp_framework.unittest.xml.DialogType'
++      );
++    }
+   }
+ ?>
