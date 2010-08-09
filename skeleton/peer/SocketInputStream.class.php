@@ -41,7 +41,7 @@
      *
      */
     public function available() {
-      return $this->socket->eof() ? -1 : 1;
+      return $this->socket->eof() ? 0 : 1;
     }
 
     /**
