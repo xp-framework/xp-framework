@@ -263,9 +263,9 @@
       $date= unserialize($serialized);
       $this->assertDateEquals('2007-07-24T20:51:51+00:00', $date);
 
-      // Only __id may be set, all the other "old" public members
-      // should have been removed here
-      $this->assertEquals(1, sizeof(get_object_vars($date)));
+      // Only __id and value may be set, all the other "old" public
+      // members should have been removed here
+      $this->assertEquals(2, sizeof(get_object_vars($date)));
     }
 
     /**
