@@ -1,23 +1,24 @@
-RFC 0093: Make xml.meta.Marshaller useable within xml.Trees
+RFC 0093: xml.meta 
 ========================================================================
 $Id$
 
 @authors: friebe
 @created: Sun Dec 17 17:06:16     2006
-@status: draft
+@status: discussion, ends Wed Aug  11 17:20:01     2010
+@target: 5.7.11
 @category: xml.meta
 
 Scope of Change
 ---------------
 The xml.meta API will be extended to include a way to marshal objects 
-to trees instead of only to strings.
+to trees instead of only to strings, and unmarshal XML from streams.
 
 
 Rationale
 ---------
-- Performance improvement over Tree::fromString(Marshaller::marshal())
-- Include the tree in formresult
-- Use the tree / node objects for further modification
+* Performance improvement over Tree::fromString(Marshaller::marshal())
+* Use the tree / node objects for further modification
+* Performance improvement over Unmarshaller::unmarshal(Streams::readAll())
 
 
 Functionality
@@ -25,38 +26,46 @@ Functionality
 
 Current
 ~~~~~~~
+Marshaller returns XML as a string
 <code>
-  $dialog= new DialogType();
- 
-  // Marshaller returns XML as a string
-  $xml= Marshaller::marshal($dialog);
- 
-  // ...which can be parsed into a Tree using the following:
-  $tree= Tree::fromString($xml);
+  $xml= Marshaller::marshal(new DialogType());
+</code>
 
-  // Unmarshalling
+Unmarshaller takes a string and creates an object:
+<code>
   $dialog= Unmarshaller::unmarshal($xml, 'de.thekid.dialog.DialogType');
 </code>
 
 
 New functionality
 ~~~~~~~~~~~~~~~~~
+Marshaller returns the node
 <code>
-  $dialog= new DialogType();
- 
-  // XmlBinding is the entry point
-  $m= XmlBinding::newInstance('de.thekid.dialog')->createMarshaller();
- 
-  // The marshal() method is overloaded
-  $tree= $m->marshal($dialog, new Tree());
-  $xml= $m->marshal($dialog);
+  $m= new Marshaller();
   
-  // Unmarshalling
-  $u= XmlBinding::newInstance('de.thekid.dialog')->createUnmarshaller();
-  $dialog= $u->unmarshal($xml, 'DialogType');
-  $dialog= $u->unmarshal($tree, 'DialogType');
+  // New node
+  $n= $m->marshalTo(new Node('dialog'), new DialogType());
+  
+  // Integration with formresult (scriptlet API)
+  $m->marshalTo($response->addFormResult(new Node('dialog')), new DialogType());
 </code>
 
+Unmarshaller parses from an input source
+<code>
+  $u= new Unmarshaller();
+  
+  // From any stream
+  $dialog= $u->unmarshalFrom(
+    new StreamInputSource($stream, '(stream)'), 
+    'de.thekid.dialog.DialogType'
+  );
+
+  // From a string
+  $dialog= $u->unmarshalFrom(
+    new StringInputSource('<dialog/>')
+    'de.thekid.dialog.DialogType'
+  );
+</code>
 
 Security considerations
 -----------------------
@@ -70,7 +79,7 @@ n/a
 
 Dependencies
 ------------
-n/a
+The old methods including the static usage will be deprecated.
 
 
 Related documents
