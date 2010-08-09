@@ -84,9 +84,10 @@ The old methods including the static usage will be deprecated.
 
 Related documents
 -----------------
-- http://java.sun.com/webservices/docs/1.5/api/javax/xml/bind/package-summary.html
+* http://java.sun.com/webservices/docs/1.5/api/javax/xml/bind/package-summary.html
   Package javax.xml.bind 
-
+* http://xp-framework.net/rfc/contrib/rfc0093.diff
+  Implementing patch
 
 Comments
 --------
