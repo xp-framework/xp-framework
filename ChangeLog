@@ -69,7 +69,6 @@ Heads up!
   replaced by headers() and header(), respectively. The new methods have
   changed return types to be able to support multiple headers
   (friebe, Gabriel Mihai Ghigea)
-  
 Bugfixes
 ~~~~~~~~
 - Fixed string quotation and comment handling in Properties::fromString()
@@ -77,6 +76,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Ports: Added com.google.search.custom package (Google Custom Search
+  implementation, for use e.g. with the GSA)
+  (friebe)
 - Added possibility to explicitely pass SSL version to peer.http APIs
   by using "https+v2://" or "https+v3://" in the URL's scheme
   (friebe, Gabriel Mihai Ghigea)
