@@ -145,5 +145,37 @@
         $this->assertEquals(0, $s->available(), 'after read #3');
       }
     }
+ 
+    /**
+     * Test available() method
+     *
+     */
+    #[@test]
+    public function availableAfterReadingAll() {
+      with ($s= new HttpInputStream($this->httpResponse(
+        HttpConstants::STATUS_OK, 
+        array('Content-Length' => 10), 
+        'HelloWorld'
+      ))); {
+        $this->readAll($s);
+        $this->assertEquals(0, $s->available(), 'after read all');
+      }
+    }
+ 
+    /**
+     * Test available() method
+     *
+     */
+    #[@test]
+    public function readAfterReadingAll() {
+      with ($s= new HttpInputStream($this->httpResponse(
+        HttpConstants::STATUS_OK, 
+        array('Content-Length' => 10), 
+        'HelloWorld'
+      ))); {
+        $this->readAll($s);
+        $this->assertEquals(NULL, $s->read(), 'after read all');
+      }
+    }
   }
 ?>

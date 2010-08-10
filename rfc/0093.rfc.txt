@@ -23,48 +23,49 @@ Rationale
 
 Functionality
 -------------
+The current API is used statically, marshalling to strings and 
+unmarshalling from strings.
 
-Current
+Example
 ~~~~~~~
-Marshaller returns XML as a string
 <code>
+  // Marshaller returns XML as a string
   $xml= Marshaller::marshal(new DialogType());
-</code>
-
-Unmarshaller takes a string and creates an object:
-<code>
+  
+  // Unmarshaller takes a string and creates an object:
   $dialog= Unmarshaller::unmarshal($xml, 'de.thekid.dialog.DialogType');
 </code>
 
+The new functionality will no longer work statically and will use
+different method names, <tt>marshalTo()</tt> instead of <tt>marshal()</tt>
+and <tt>unmarshalFrom()</tt> instead of <tt>unmarshal()</tt>.
 
-New functionality
-~~~~~~~~~~~~~~~~~
-Marshaller returns the node
+Examples
+~~~~~~~~
 <code>
-  $m= new Marshaller();
+  with ($m= new Marshaller()); {
   
-  // New node
-  $n= $m->marshalTo(new Node('dialog'), new DialogType());
+    // Marshaller returns the node
+    $n= $m->marshalTo(new Node('dialog'), new DialogType());
+    
+    // Integration with formresult (scriptlet API)
+    $m->marshalTo($response->addFormResult(new Node('dialog')), new DialogType());
+  }
   
-  // Integration with formresult (scriptlet API)
-  $m->marshalTo($response->addFormResult(new Node('dialog')), new DialogType());
-</code>
-
-Unmarshaller parses from an input source
-<code>
-  $u= new Unmarshaller();
-  
-  // From any stream
-  $dialog= $u->unmarshalFrom(
-    new StreamInputSource($stream, '(stream)'), 
-    'de.thekid.dialog.DialogType'
-  );
-
-  // From a string
-  $dialog= $u->unmarshalFrom(
-    new StringInputSource('<dialog/>')
-    'de.thekid.dialog.DialogType'
-  );
+  with ($u= new Unmarshaller()); {
+    
+    // Unmarshaller parses from an input source
+    $dialog= $u->unmarshalFrom(
+      new StreamInputSource($stream, '(stream)'), 
+      'de.thekid.dialog.DialogType'
+    );
+    
+    // From a string
+    $dialog= $u->unmarshalFrom(
+      new StringInputSource('<dialog/>')
+      'de.thekid.dialog.DialogType'
+    );
+  }
 </code>
 
 Security considerations
@@ -79,7 +80,8 @@ n/a
 
 Dependencies
 ------------
-The old methods including the static usage will be deprecated.
+The old methods including the static usage will be deprecated but will
+continue to work.
 
 
 Related documents
@@ -87,7 +89,9 @@ Related documents
 * http://java.sun.com/webservices/docs/1.5/api/javax/xml/bind/package-summary.html
   Package javax.xml.bind 
 * http://xp-framework.net/rfc/contrib/rfc0093.diff
-  Implementing patch
+  Implementing patch (skeleton)
+* http://xp-framework.net/rfc/contrib/rfc0093-ports.diff
+  Implementing patch (ports)
 
 Comments
 --------
