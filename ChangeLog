@@ -18,6 +18,11 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.http.HttpInputStream to no longer read beyond EOF in certain
+  situations
+  (friebe)
+- Fixed peer.SocketInputStream to return 0 from available() on EOF
+  (friebe)
 - Fixed string quotation and comment handling in Properties::fromString()
   (hinckel)
 
