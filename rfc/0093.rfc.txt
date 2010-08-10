@@ -36,26 +36,30 @@ Example
   $dialog= Unmarshaller::unmarshal($xml, 'de.thekid.dialog.DialogType');
 </code>
 
-New functionality
-~~~~~~~~~~~~~~~~~
+The new functionality will no longer work statically and will use
+different method names, <tt>marshalTo()</tt> instead of <tt>marshal()</tt>
+and <tt>unmarshalFrom()</tt> instead of <tt>unmarshal()</tt>.
+
+Examples
+~~~~~~~~
 <code>
   with ($m= new Marshaller()); {
   
     // Marshaller returns the node
     $n= $m->marshalTo(new Node('dialog'), new DialogType());
-
+    
     // Integration with formresult (scriptlet API)
     $m->marshalTo($response->addFormResult(new Node('dialog')), new DialogType());
   }
   
   with ($u= new Unmarshaller()); {
-
+    
     // Unmarshaller parses from an input source
     $dialog= $u->unmarshalFrom(
       new StreamInputSource($stream, '(stream)'), 
       'de.thekid.dialog.DialogType'
     );
-
+    
     // From a string
     $dialog= $u->unmarshalFrom(
       new StringInputSource('<dialog/>')
@@ -76,7 +80,8 @@ n/a
 
 Dependencies
 ------------
-The old methods including the static usage will be deprecated.
+The old methods including the static usage will be deprecated but will
+continue to work.
 
 
 Related documents
