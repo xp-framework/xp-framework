@@ -18,6 +18,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed unbuffered queries using datasets using rdbms.Statement instances
+  as criteria not actually being unbuffered
+  (friebe)
 - Fixed peer.http.HttpInputStream to no longer read beyond EOF in certain
   situations
   (friebe)
