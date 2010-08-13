@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe
 @created: Sun Dec 17 17:06:16     2006
-@status: discussion, ends Wed Aug  11 17:20:01     2010
+@status: implemented, Fri Aug 13 17:51:46     2010
 @target: 5.7.11
 @category: xml.meta
 

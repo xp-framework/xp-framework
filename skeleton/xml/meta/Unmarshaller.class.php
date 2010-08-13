@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xml.XPath', 'xml.XMLFormatException');
+  uses('xml.XPath', 'xml.XMLFormatException', 'io.streams.Streams');
 
   /**
    * Creates objects from XML by using annotations.
@@ -29,6 +29,10 @@
    * @purpose  XML databinding
    */
   class Unmarshaller extends Object {
+  
+    static function __static() {
+      libxml_use_internal_errors(TRUE);
+    }
 
     /**
      * Retrieve content of a DomElement
@@ -158,13 +162,37 @@
      * @return  lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XMLFormatException
+     * @deprecated  Use unmarshalFrom() instead
      */
     public static function unmarshal($xml, $classname) {
-      try {
-        $doc= new DOMDocument();
-        $doc->loadXML($xml);
-      } catch (DOMException $e) {
-        throw new XMLFormatException($e->getMessage());
+      libxml_clear_errors();
+      $doc= new DOMDocument();
+      $source= '(string)';
+      if ('' === (string)$xml) {    // Handle empty string, raise XML_IO_NO_INPUT
+        throw new XMLFormatException('Empty string supplied as input', 1547, $source, 0, 0);
+      }
+      if (!$doc->loadXML($xml)) {
+        $e= libxml_get_last_error();
+        throw new XMLFormatException(trim($e->message), $e->code, $source, $e->line, $e->column);
+      }
+      return self::recurse(new XPath($doc), $doc->documentElement, $classname);
+    }
+
+    /**
+     * Unmarshal XML to an object
+     *
+     * @param   xml.parser.InputSource source
+     * @param   string classname
+     * @return  lang.Object
+     * @throws  lang.ClassNotFoundException
+     * @throws  xml.XMLFormatException
+     */
+    public function unmarshalFrom(InputSource $input, $classname) {
+      libxml_clear_errors();
+      $doc= new DOMDocument();
+      if (!$doc->load(Streams::readableUri($input->getStream()))) {
+        $e= libxml_get_last_error();
+        throw new XMLFormatException(trim($e->message), $e->code, $input->getSource(), $e->line, $e->column);
       }
       return self::recurse(new XPath($doc), $doc->documentElement, $classname);
     }

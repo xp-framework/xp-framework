@@ -16,6 +16,11 @@ Heads up!
   changed return types to be able to support multiple headers
   (friebe, Gabriel Mihai Ghigea)
 
+RFCs
+~~~~
+- Implemented RFC #0093 - xml.meta
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed unbuffered queries using datasets using rdbms.Statement instances

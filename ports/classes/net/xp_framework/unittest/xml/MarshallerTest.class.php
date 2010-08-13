@@ -17,6 +17,15 @@
    * @purpose  Unit Test
    */
   class MarshallerTest extends TestCase {
+    protected $fixture= NULL;
+  
+    /**
+     * Creates fixture
+     *
+     */
+    public function setUp() {
+      $this->fixture= new Marshaller();
+    }
 
     /**
      * Compares XML after stripping all whitespace between tags of both 
@@ -117,6 +126,21 @@
         </dialogtype>', 
         Marshaller::marshal($dialog)
       );
+    }
+
+    /**
+     * Tests the dialog's id member gets serialized as an id attribute
+     *
+     */
+    #[@test]
+    public function asTree() {
+      $dialog= new DialogType();
+      $dialog->setId('file.open');
+
+      $node= $this->fixture->marshalTo(new Node('dialog'), $dialog);
+      $this->assertInstanceOf('xml.Node', $node);
+      $this->assertEquals('dialog', $node->getName());
+      $this->assertEquals('file.open', $node->getAttribute('id'));
     }
   }
 ?>
