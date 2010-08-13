@@ -113,6 +113,7 @@
      * @param   lang.Object instance
      * @param   xml.QName qname default NULL
      * @return  string xml
+     * @deprecated  Use marshalTo() instead
      */
     public static function marshal($instance, $qname= NULL) {
       $class= $instance->getClass();
@@ -133,6 +134,25 @@
       
       self::recurse($instance, $class, $tree->root);
       return $tree->getSource(INDENT_DEFAULT);
+    }
+ 
+    /**
+     * Marshal an object to xml
+     *
+     * @param   xml.Node target
+     * @param   lang.Object instance
+     * @return  xml.Node the given target
+     */
+    public function marshalTo(Node $target, Generic $instance) {
+      $class= $instance->getClass();
+
+      // Add XML namespace from class' "xmlns" annotation if present
+      if ($class->hasAnnotation('xmlns')) {
+        $target->setName(key($class->getAnnotation('xmlns')).':'.$target->getName());
+      }
+      
+      self::recurse($instance, $class, $target);
+      return $target;
     }
   }
 ?>

@@ -7,7 +7,9 @@
   uses(
     'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
-    'xml.meta.Unmarshaller'
+    'xml.meta.Unmarshaller',
+    'io.streams.MemoryInputStream',
+    'xml.parser.StreamInputSource'
   );
 
   /**
@@ -17,6 +19,15 @@
    * @purpose  Unit Test
    */
   class UnmarshallerTest extends TestCase {
+    protected $fixture= NULL;
+  
+    /**
+     * Creates fixture
+     *
+     */
+    public function setUp() {
+      $this->fixture= new Unmarshaller();
+    }
 
     /**
      * Tests the id attribute gets unserialized as the dialog's id member
@@ -116,6 +127,68 @@
         'width' => '100',
         'height' => '100'
       ), $dialog->getOptions());
+    }
+
+    /**
+     * Test unmarshalling from a stream
+     *
+     */
+    #[@test]
+    public function unmarshallingAnInputStream() {
+      $dialog= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<dialogtype id="stream.select"/>'), 'memory'),
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+      $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType');
+      $this->assertEquals('stream.select', $dialog->getId());
+    }
+
+    /**
+     * Test unmarshalling malformed data
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function malformedString() {
+      Unmarshaller::unmarshal(
+        '<not-valid-xml', 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+    }
+
+    /**
+     * Test unmarshalling empty data
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function emptyString() {
+      Unmarshaller::unmarshal(
+        '', 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+    }
+
+    /**
+     * Test unmarshalling malformed data
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function malformedStream() {
+      $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<not-valid-xml'), 'memory'), 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+    }
+
+    /**
+     * Test unmarshalling empty data
+     *
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function emptyStream() {
+      $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream(''), 'memory'), 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
     }
   }
 ?>

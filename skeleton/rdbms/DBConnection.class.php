@@ -292,8 +292,8 @@
     /**
      * Begin a transaction
      *
-     * @param   rdbms.DBTransaction transaction
-     * @return  rdbms.DBTransaction
+     * @param   rdbms.Transaction transaction
+     * @return  rdbms.Transaction
      */
     abstract public function begin($transaction);
     
