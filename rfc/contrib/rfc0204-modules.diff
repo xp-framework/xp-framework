@@ -1,0 +1,32 @@
+Index: skeleton/lang/ClassLoader.class.php
+===================================================================
+--- skeleton/lang/ClassLoader.class.php	(revision 14743)
++++ skeleton/lang/ClassLoader.class.php	(working copy)
+@@ -57,15 +57,25 @@
+       foreach (xp::$registry['classpath'] as $element) {
+         $resolved= realpath($element);
+         if (is_dir($resolved)) {
+-          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
++          $l= self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
+         } else if (is_file($resolved)) {
+-          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
++          $l= self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
+         } else {
+           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
+         }
++        $l->providesResource('module.xp') && self::loadModule($l);
+       }
+     }
+     
++    protected static function loadModule(IClassLoader $l) {
++      $src= preg_replace(
++        array('/module ([^ ]+)/', '/static {/'),
++        array('', '{'),
++        $l->getResource('module.xp')
++      );
++      eval('?>'.$src);
++    }
++    
+     /**
+      * Retrieve the default class loader
+      *

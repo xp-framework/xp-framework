@@ -40,6 +40,9 @@ Related documents
 * http://xp-framework.net/rfc/contrib/rfc0204-framework.diff
   Framework implementation
 
+* http://xp-framework.net/rfc/contrib/rfc0204-modules.diff
+  Alternative implementation
+
 Comments
 --------
 
