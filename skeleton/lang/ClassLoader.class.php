@@ -57,23 +57,13 @@
       foreach (xp::$registry['classpath'] as $element) {
         $resolved= realpath($element);
         if (is_dir($resolved)) {
-          $l= self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
+          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
         } else if (is_file($resolved)) {
-          $l= self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
+          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
         } else {
           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
         }
-        $l->providesResource('module.xp') && self::loadModule($l);
       }
-    }
-    
-    protected static function loadModule(IClassLoader $l) {
-      $src= preg_replace(
-        array('/module ([^ ]+)/', '/static {/'),
-        array('', '{'),
-        $l->getResource('module.xp')
-      );
-      eval('?>'.$src);
     }
     
     /**
