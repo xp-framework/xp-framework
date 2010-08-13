@@ -33,7 +33,7 @@
      * @return  int available
      */
     protected function buffer() {
-      if (strlen($this->buffer) > 0) return;
+      if (($l= strlen($this->buffer)) > 0) return $l;
       if (FALSE === ($chunk= $this->response->readData(8192, TRUE))) {
         $this->available= -1;
         return 0;
