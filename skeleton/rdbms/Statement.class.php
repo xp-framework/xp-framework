@@ -72,15 +72,17 @@
      *
      * @param   rdbms.DBConnection conn
      * @param   rdbms.Peer peer
+     * @param   rdbms.join.Joinprocessor jp optional
+     * @param   bool buffered default TRUE
      * @return  rdbms.ResultSet
      */
-    public function executeSelect(DBConnection $conn, Peer $peer) {
+    public function executeSelect(DBConnection $conn, Peer $peer, $jp= NULL, $buffered= TRUE) {
       $this->arguments[0]= preg_replace(
         '/object\(([^\)]+)\)/i', 
         '$1.'.implode(', $1.', array_keys($peer->types)),
         $this->arguments[0]
       );
-      return call_user_func_array(array($conn, 'query'), $this->arguments);
+      return call_user_func_array(array($conn, $buffered ? 'query' : 'open'), $this->arguments);
     }
 
   } 

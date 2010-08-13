@@ -177,5 +177,21 @@
         $this->assertEquals(NULL, $s->read(), 'after read all');
       }
     }
+
+    /**
+     * Test available() method
+     *
+     */
+    #[@test]
+    public function availableWhenBuffered() {
+      with ($s= new HttpInputStream($this->httpResponse(
+        HttpConstants::STATUS_OK, 
+        array('Content-Length' => 10), 
+        'HelloWorld'
+      ))); {
+        $s->read(5);
+        $this->assertEquals(5, $s->available());
+      }
+    }
   }
 ?>

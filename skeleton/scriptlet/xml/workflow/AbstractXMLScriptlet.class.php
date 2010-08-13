@@ -94,7 +94,7 @@
         // Set up context. The context contains - so to say - the "autoglobals",
         // in other words, the omnipresent data such as the user
         try {
-          $class= $this->getContextClass($request);;
+          $class= $this->getContextClass($request);
         } catch (ClassNotFoundException $e) {
           throw new ScriptletException($e->getMessage(), HttpConstants::STATUS_INTERNAL_SERVER_ERROR, $e);
         }
