@@ -1,4 +1,4 @@
-RFC 0204: Arbitrary classloader syntax in USE_XP 
+RFC 0204: Modules
 ========================================================================
 $Id$
 
@@ -9,19 +9,136 @@ $Id$
 
 Scope of Change
 ---------------
-The <tt>USE_XP</tt> directive (whether via environment variable or via
-<tt>xp.ini</tt>) will be changed to syntactically support instantiating
-arbitrary classloaders.
-
+Module support will be added to the XP Framework. Modules are a groups
+of types and resources with added metadata: Versions, dependencies, main
+class, initialization code.
 
 Rationale
 ---------
-Currently, the <tt>USE_XP</tt> directive supports a list of directories 
-in which path files (<tt>*.pth</tt>) will be searched for. 
 
 
 Functionality
 -------------
+
+module-info.xp
+~~~~~~~~~~~~~~
+Most simple version:
+<code>
+  module parallels('0.1.1') {
+  }
+</code>
+
+An application:
+<code>
+  #[@main('de.thekid.dialog.cmd.AddAlbum')]
+  module dialog.addalbum('2.5.0') requires parallels('0.1.1'), xp('5.7+') {
+  }
+</code>
+
+A library:
+<code>
+  uses('rdbms.DriverManager');
+  
+  module mysqlx('1.0.0') {
+    static function __static() {
+      $driver= XPClass::forName('rdbms.mysqlx.MySqlxConnection');
+      $instance= DriverManager::getInstance();
+      $instance->register('mysqlx', $driver);
+      
+      // Snap-in replacement if no MySQL support loaded
+      if (!isset($instance->drivers['mysql'])) {
+        $instance->register('mysql', $driver);
+      }
+    }
+  }
+</code>
+
+Execution
+~~~~~~~~~
+A module with a main class can be executed as follows:
+<pre>
+  $ xp -module dialog.addalbum [arg1 [arg2 [...]]]
+</pre>
+
+Inclusion
+~~~~~~~~~
+Command line:
+<pre>
+  $ xp -cp mysqlx-0.1.1 [class.Name]
+</pre>
+
+Path file:
+<pre>
+  src/              # A directory
+  lib/utils.xar     # An archive
+  mysqlx-0.1.1      # A module reference
+</pre>
+
+Configuration
+~~~~~~~~~~~~~
+In xp.ini:
+<pre>
+  repository=/opt/xp/modules/
+</pre>
+
+Reflection
+~~~~~~~~~~
+<code>
+  $modules= Repository::findAll('dialog');
+  
+  // Core information
+  $modules[0]->getName();             // 'dialog'
+  $modules[0]->getVersion();          // '2.5.0'
+  
+  // Requirements
+  $requirements= $modules[0]->getRequirements();
+  $requirements[0]->getModule();      // 'parallels'
+  $requirements[0]->getConstraint();  // '0.1.1'
+  $requirements[1]->getModule();      // 'xp'
+  $requirements[1]->getConstraint();  // '5.7+'
+  
+  // Annotations
+  $modules[0]->getAnnotations();      // main => 'de.thekid.dialog.cmd.AddAlbum'
+  $modules[0]->getAnnotation('main'); // 'de.thekid.dialog.cmd.AddAlbum'
+  $modules[0]->hasAnnotation('main'); // TRUEs
+</code>
+
+Repository
+~~~~~~~~~~
+<pre>
+/opt/xp/modules/
+  |- parallels-0.1.1.xar
+  |  |- module-info.xp
+  |  |- de/
+  |     |- thekid/
+  |        |- parallels/
+  |           |- package-info.xp
+  |           |- Process.class.php
+  |
+  |- dialog.addalbum -> dialog.addalbum-2.5.0/
+  |
+  |- dialog.addalbum-2.5.0/
+  |  |- module-info.xp
+  |  |- de/
+  |     |- thekid/
+  |        |- dialog/
+  |           |- cmd
+  |              |- AddAlbum.class.php
+  |              |- ...
+  |  
+  |- dialog-2.5.0.xar
+  |  |- module-info.xp
+  |  |- de/
+  |     |- thekid/
+  |        |- dialog/
+  |           |- Album.class.php
+  |           |- IEntry.class.php
+  |           |- ...
+  |
+  |- dialog-2.4.2.xar
+     |- module-info.xp
+     |- ...
+</pre>
 
 Security considerations
 -----------------------
@@ -34,16 +151,27 @@ Dependencies
 
 Related documents
 -----------------
-* http://xp-framework.net/rfc/contrib/rfc0204-runners.diff
-  Runners implementation
-
-* http://xp-framework.net/rfc/contrib/rfc0204-framework.diff
-  Framework implementation
-
 * http://xp-framework.net/rfc/contrib/rfc0204-modules.diff
   Alternative implementation
+* http://openjdk.java.net/projects/modules/
+  Java Modules @ OpenJDK
+* http://openjdk.java.net/projects/modules/samplerepo/
+  Online repository
+* http://www.javabeat.net/articles/print.php?article_id=101  
+  Introduction to Java Module System in Java 7.0
+* http://mediacast.sun.com/users/sundelabassee/media/J1Ag_Modularity.pdf
+  Modularity in Java OSGi and/or JSR 277
+* http://blogs.sun.com/abuckley/resource/Devoxx2008-ModularityInJava.pdf
+  Modularity in Java - Devoxx 2008
+
 
 Comments
 --------
+friebe, Sat Aug 14 14:23:30     2010
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Revamped completely, originally this RFC suggested add arbitrary classloader 
+syntax in <tt>USE_XP</tt> to add custom class loaders, but by using modules, 
+we can achieve the same (via static initializers) *and* at the same time have
+versioning and dependencies questions addressed.
 
 <EOF>
