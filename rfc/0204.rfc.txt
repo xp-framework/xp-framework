@@ -24,14 +24,14 @@ module-info.xp
 ~~~~~~~~~~~~~~
 Most simple version:
 <code>
-  module parallels('0.1.1') {
+  module parallels(0.1.1) {
   }
 </code>
 
 An application:
 <code>
   #[@main('de.thekid.dialog.cmd.AddAlbum')]
-  module dialog.addalbum('2.5.0') requires parallels('0.1.1'), xp('5.7+') {
+  module dialog.addalbum(2.5.0) requires parallels(0.1.1), xp(5.7+) {
   }
 </code>
 
@@ -39,7 +39,7 @@ A library:
 <code>
   uses('rdbms.DriverManager');
   
-  module mysqlx('1.0.0') {
+  module mysqlx(1.0.0) {
     static function __static() {
       $driver= XPClass::forName('rdbms.mysqlx.MySqlxConnection');
       $instance= DriverManager::getInstance();
@@ -57,7 +57,7 @@ Execution
 ~~~~~~~~~
 A module with a main class can be executed as follows:
 <pre>
-  $ xp -module dialog.addalbum [arg1 [arg2 [...]]]
+  $ xp -cp dialog.addalbum [arg1 [arg2 [...]]]
 </pre>
 
 Inclusion
