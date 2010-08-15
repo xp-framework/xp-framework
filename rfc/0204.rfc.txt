@@ -13,12 +13,56 @@ Module support will be added to the XP Framework. Modules are a groups
 of types and resources with added metadata: Versions, dependencies, main
 class, initialization code.
 
+
 Rationale
 ---------
-
+Take for example an application that someone has written using the XP
+Framework and wants to make it available for the public to use. This
+application uses a certain version of the framework (or a range, such
+as "5.7-SERIES"), but also depends on a certain library which is not
+part of the framework but the app's author himself has written and made 
+available as a separate download. The following questions arise: 
+* Where is the software installed to?
+* How is the dependency on the library tracked?
+* How is the framework version verified?
 
 Functionality
 -------------
+At the moment, the procedure would probably be as follows:
+* Bundle the library into the application's <tt>lib</tt> directory
+  and add that to the class path via <tt>.pth</tt> files.
+* Zip that all up into a file, posting that for download.
+* Tell the users to unzip that to an arbitrary directory.
+* Add startup code to the main class verifying the framework version.
+
+<summary>
+Directory layout:
+<pre>
+~/apps/sloccount
+  |- lib/lang-parsers-1.0.0.xar
+  |- src/
+  |  ^- de/
+  |     ^- thekid/
+  |        ^- sloccount/
+  |           ^- SlocCount.class.php
+  |- app.pth
+  ^- README
+</pre>
+The app.pth file contains the lines <tt>src</tt> and <tt>lib/lang-parsers-1.0.0.xar</tt>.
+
+Usage:
+<pre>
+  $ cd ~/apps/sloccount
+  $ xpcli de.thekid.sloccount.SlocCount ~/devel/xp/trunk
+</pre>
+</summary>
+
+This approach has the following downsides:
+* There is no defined installation place
+* The user has to "cd" to the application's directory
+* The dependency could already be available on the target system.
+* The version verification has to be performed manually.
+
 
 module-info.xp
 ~~~~~~~~~~~~~~
@@ -167,6 +211,13 @@ Related documents
 
 Comments
 --------
+friebe, Sun Aug 15 13:08:28     2010
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To determine the XP Framework's version, one can use the following:
+<code>
+  $v= XPClass::forName('lang.Object')->getClassLoader()->getResource('VERSION');
+</code>
+
 friebe, Sat Aug 14 14:23:30     2010
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Revamped completely, originally this RFC suggested add arbitrary classloader 
