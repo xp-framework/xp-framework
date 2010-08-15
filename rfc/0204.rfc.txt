@@ -39,7 +39,7 @@ At the moment, the procedure would probably be as follows:
 <summary>
 Directory layout:
 <pre>
-  ~/apps/sloccount
+  ~/apps/sloccount-2.0.1
   |- lib/lang-parsers-1.0.0.xar
   |- src/
   |  ^- de/
@@ -51,19 +51,26 @@ Directory layout:
 </pre>
 The app.pth file contains the lines <tt>src</tt> and <tt>lib/lang-parsers-1.0.0.xar</tt>.
 
-Usage:
+To use the application, the following is necessary:
 <pre>
-  $ cd ~/apps/sloccount
+  $ cd ~/apps/sloccount-2.0.1
   $ xpcli de.thekid.sloccount.SlocCount ~/devel/xp/trunk
 </pre>
 </summary>
 
 This approach has the following downsides:
 * The user has to "cd" to the application's directory to use the app.
-* The dependency could already be available on the target system and
-  needs to be bundled by the app's author.
-* The version verification has to be performed manually.
+* The user has to know the fully qualified (and thus: long) classname
+  to execute the app.
+* The dependency needs to be bundled by the app's author manually.
+* The app has to be re-released if the bundled library is updated.
+* The version verifications have to be performed manually.
 
+What we would want to do would be something along the lines of:
+<pre>
+  $ xpcli sloccount-2.0.1 ~/devel/xp/trunk    # Use a certain version
+  $ xpcli sloccount ~/devel/xp/trunk          # Use newest version
+</pre>
 
 module-info.xp
 ~~~~~~~~~~~~~~
