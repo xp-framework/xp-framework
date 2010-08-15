@@ -2,7 +2,15 @@ Index: skeleton/lang/ClassLoader.class.php
 ===================================================================
 --- skeleton/lang/ClassLoader.class.php	(revision 14750)
 +++ skeleton/lang/ClassLoader.class.php	(working copy)
-@@ -106,6 +106,30 @@
+@@ -64,6 +64,7 @@
+           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
+         }
+       }
++      xp::$registry['modules']['xp']= array(NULL, array('module' => 'xp', 'version' => '5.7.11-dev', 'requirements' => array()));
+     }
+     
+     /**
+@@ -106,6 +107,54 @@
        } else {
          self::$delegates[$l->hashCode()]= $l;
        }
@@ -19,6 +27,30 @@ Index: skeleton/lang/ClassLoader.class.php
 +        if (isset($m[3])) {
 +          preg_match_all('/([^\(]+)\(([^\)]+)\)(, )?/', $m[4], $r, PREG_SET_ORDER);
 +          foreach ($r as $match) {
++            if (!isset(xp::$registry['modules'][$match[1]])) {
++              // TODO: Load module
++              raise('lang.ElementNotFoundException', 'Dependency of '.$m[1].', '.$match[1].' not found');
++            }
++            $module= xp::$registry['modules'][$match[1]][1];
++            
++            // 5.7+   => must be greater than 5.7.0
++            // 5.7*   => must be greater than or equal to 5.7.0
++            // 5.7.0  => must be equal to 5.7.0
++            if ('+' === substr($match[2], -1, 1)) {
++              $cmp= substr($match[2], 0, -1);
++              $op= 'gt';
++            } else if ('*' === substr($match[2], -1, 1)) {
++              $cmp= substr($match[2], 0, -1);
++              $op= 'ge';
++            } else {
++              $cmp= $match[2];
++              $op= 'eq';
++            }
++            
++            if (!version_compare($module['version'], $cmp, $op)) {
++              raise('lang.ElementNotFoundException', 'Dependency of '.$m[1].', '.$match[1].' '.$match[2].' not met, have '.$module['version']);
++            }
++            
 +            $meta['requirements'][]= array('module' => $match[1], 'constraint' => $match[2]);
 +          }
 +        }
@@ -26,7 +58,7 @@ Index: skeleton/lang/ClassLoader.class.php
 +        with ($dyn= DynamicClassLoader::instanceFor('modules')); {
 +          $dyn->setClassBytes($class, '?>'.str_replace($m[0], 'class '.$class.' extends Object ', $declaration));
 +          $t= $dyn->loadClass($class);
-+          xp::$registry['modules'][$m[1].'-'.$m[2]]= array($t, $meta);
++          xp::$registry['modules'][$m[1]]= array($t, $meta);
 +        }
 +      }
 +      
@@ -68,7 +100,7 @@ Index: tools/xp/command/Runner.class.php
 +        foreach (explode(PATH_SEPARATOR, rtrim(scanpath(array($dir), getenv('HOME')), PATH_SEPARATOR)) as $path) {
 +          ClassLoader::registerPath($path);
          }
-+        $classname= xp::$registry['modules'][$classname][0]->getAnnotation('main');
++        $classname= xp::$registry['modules'][strtok($classname, '-')][0]->getAnnotation('main');
        }
 +
 +      try {
