@@ -1,32 +1,82 @@
 Index: skeleton/lang/ClassLoader.class.php
 ===================================================================
---- skeleton/lang/ClassLoader.class.php	(revision 14743)
+--- skeleton/lang/ClassLoader.class.php	(revision 14750)
 +++ skeleton/lang/ClassLoader.class.php	(working copy)
-@@ -57,15 +57,25 @@
-       foreach (xp::$registry['classpath'] as $element) {
-         $resolved= realpath($element);
-         if (is_dir($resolved)) {
--          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
-+          $l= self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
-         } else if (is_file($resolved)) {
--          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
-+          $l= self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
-         } else {
-           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
-         }
-+        $l->providesResource('module.xp') && self::loadModule($l);
+@@ -106,6 +106,30 @@
+       } else {
+         self::$delegates[$l->hashCode()]= $l;
        }
++      
++      // Modules
++      if ($l->providesResource('module-info.xp')) {
++        $declaration= $l->getResource('module-info.xp');
++        preg_match('/module ([^\(]+)\(([^\)]+)\)( requires ([^{]+))?/', $declaration, $m);
++        $meta= array(
++          'module'       => $m[1],
++          'version'      => $m[2],
++          'requirements' => array()
++        );
++        if (isset($m[3])) {
++          preg_match_all('/([^\(]+)\(([^\)]+)\)(, )?/', $m[4], $r, PREG_SET_ORDER);
++          foreach ($r as $match) {
++            $meta['requirements'][]= array('module' => $match[1], 'constraint' => $match[2]);
++          }
++        }
++        $class= ucfirst($m[1]).'Module';
++        with ($dyn= DynamicClassLoader::instanceFor('modules')); {
++          $dyn->setClassBytes($class, '?>'.str_replace($m[0], 'class '.$class.' extends Object ', $declaration));
++          $t= $dyn->loadClass($class);
++          xp::$registry['modules'][$m[1].'-'.$m[2]]= array($t, $meta);
++        }
++      }
++      
+       return $l;
      }
-     
-+    protected static function loadModule(IClassLoader $l) {
-+      $src= preg_replace(
-+        array('/module ([^ ]+)/', '/static {/'),
-+        array('', '{'),
-+        $l->getResource('module.xp')
-+      );
-+      eval('?>'.$src);
-+    }
-+    
-     /**
-      * Retrieve the default class loader
-      *
+ 
+Index: tools/xp/command/Runner.class.php
+===================================================================
+--- tools/xp/command/Runner.class.php	(revision 14750)
++++ tools/xp/command/Runner.class.php	(working copy)
+@@ -221,28 +221,31 @@
+         $uri= $file->getURI();
+         $path= dirname($uri);
+         $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
+-        $class= NULL;
++        $classname= NULL;
+         while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
+           if (isset($paths[$path])) {
+-            $class= XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
++            $classname= strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.');
+             break;
+           }
+-
+           $path= substr($path, 0, $pos); 
+         }
+-
+-        if (!$class) {
++        if (!$classname) {
+           self::$err->writeLine('*** Cannot load class from ', $file);
+           return 1;
+         }
+-      } else {
+-        try {
+-          $class= XPClass::forName($classname);
+-        } catch (ClassNotFoundException $e) {
+-          self::$err->writeLine('*** ', $e->getMessage());
+-          return 1;
++      } else if (is_dir($dir= getenv('HOME').'/.xp/apps/'.$classname)) {
++        foreach (explode(PATH_SEPARATOR, rtrim(scanpath(array($dir), getenv('HOME')), PATH_SEPARATOR)) as $path) {
++          ClassLoader::registerPath($path);
+         }
++        $classname= XPClass::forName(xp::$registry['modules'][$classname][0]->getAnnotation('main'));
+       }
++
++      try {
++        $class= XPClass::forName($classname);
++      } catch (ClassNotFoundException $e) {
++        self::$err->writeLine('*** ', $e->getMessage());
++        return 1;
++      }
+       
+       // Check whether class is runnable
+       if (!$class->isSubclassOf('lang.Runnable')) {
