@@ -39,15 +39,16 @@ At the moment, the procedure would probably be as follows:
 <summary>
 Directory layout:
 <pre>
-  ~/apps/sloccount-2.0.1
-  |- lib/lang-parsers-1.0.0.xar
-  |- src/
-  |  ^- de/
-  |     ^- thekid/
-  |        ^- sloccount/
-  |           ^- SlocCount.class.php
-  |- app.pth
-  ^- README
+  ~/apps/
+  ^- sloccount-2.0.1
+     |- lib/lang-parsers-1.0.0.xar
+     |- src/
+     |  ^- de/
+     |     ^- thekid/
+     |        ^- sloccount/
+     |           ^- SlocCount.class.php
+     |- app.pth
+     ^- README
 </pre>
 The app.pth file contains the lines <tt>src</tt> and <tt>lib/lang-parsers-1.0.0.xar</tt>.
 
@@ -67,10 +68,36 @@ This approach has the following downsides:
 * The version verifications have to be performed manually.
 
 What we would want to do would be something along the lines of:
+<summary>
+Usage:
 <pre>
   $ xpcli sloccount-2.0.1 ~/devel/xp/trunk    # Use a certain version
   $ xpcli sloccount ~/devel/xp/trunk          # Use newest version
 </pre>
+
+The app would still be installed in a certain place (but this would
+have to be known to the xp runners), and would somehow indicate it
+required the <tt>lang-parsers</tt> library in a certain version as
+well as the XP Framework's 5.7-SERIES to run.
+
+So the directory layout would be something like this:
+<pre>
+  /???/
+  |- sloccount -> sloccount-2.0.1
+  ^- sloccount-2.0.1
+     |- src/
+     |  |- ???
+     |  ^- de/
+     |     ^- thekid/
+     |        ^- sloccount/
+     |           ^- SlocCount.class.php
+     |- app.pth
+     ^- README
+</pre>
+The app.pth file contains the line <tt>src</tt> and some information
+stored in some kind of a file inside that directory indicating its
+dependencies.
+</summary>
 
 module-info.xp
 ~~~~~~~~~~~~~~
