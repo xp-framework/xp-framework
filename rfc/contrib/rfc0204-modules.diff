@@ -68,7 +68,7 @@ Index: tools/xp/command/Runner.class.php
 +        foreach (explode(PATH_SEPARATOR, rtrim(scanpath(array($dir), getenv('HOME')), PATH_SEPARATOR)) as $path) {
 +          ClassLoader::registerPath($path);
          }
-+        $classname= XPClass::forName(xp::$registry['modules'][$classname][0]->getAnnotation('main'));
++        $classname= xp::$registry['modules'][$classname][0]->getAnnotation('main');
        }
 +
 +      try {
