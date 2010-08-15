@@ -26,11 +26,12 @@ available as a separate download. The following questions arise:
 * How is the dependency on the library tracked?
 * How is the framework version verified?
 
+
 Functionality
 -------------
 At the moment, the procedure would probably be as follows:
-* Bundle the library into the application's <tt>lib</tt> directory
-  and add that to the class path via <tt>.pth</tt> files.
+* Bundle the library into the application's lib directory
+  and add that to the class path via path files.
 * Zip that all up into a file, posting that for download.
 * Tell the users to unzip that to an arbitrary directory.
 * Add startup code to the main class verifying the framework version.
@@ -38,7 +39,7 @@ At the moment, the procedure would probably be as follows:
 <summary>
 Directory layout:
 <pre>
-~/apps/sloccount
+  ~/apps/sloccount
   |- lib/lang-parsers-1.0.0.xar
   |- src/
   |  ^- de/
@@ -58,9 +59,9 @@ Usage:
 </summary>
 
 This approach has the following downsides:
-* There is no defined installation place
-* The user has to "cd" to the application's directory
-* The dependency could already be available on the target system.
+* The user has to "cd" to the application's directory to use the app.
+* The dependency could already be available on the target system and
+  needs to be bundled by the app's author.
 * The version verification has to be performed manually.
 
 
@@ -150,38 +151,38 @@ Reflection
 Repository
 ~~~~~~~~~~
 <pre>
-/opt/xp/modules/
+  /opt/xp/modules/
   |- parallels-0.1.1.xar
   |  |- module-info.xp
-  |  |- de/
-  |     |- thekid/
-  |        |- parallels/
+  |  ^- de/
+  |     ^- thekid/
+  |        ^- parallels/
   |           |- package-info.xp
-  |           |- Process.class.php
+  |           ^- Process.class.php
   |
   |- dialog.addalbum -> dialog.addalbum-2.5.0/
   |
   |- dialog.addalbum-2.5.0/
   |  |- module-info.xp
-  |  |- de/
-  |     |- thekid/
-  |        |- dialog/
-  |           |- cmd
+  |  ^- de/
+  |     ^- thekid/
+  |        ^- dialog/
+  |           ^- cmd
   |              |- AddAlbum.class.php
-  |              |- ...
+  |              ^- ...
   |  
   |- dialog-2.5.0.xar
   |  |- module-info.xp
-  |  |- de/
-  |     |- thekid/
-  |        |- dialog/
+  |  ^- de/
+  |     ^- thekid/
+  |        ^- dialog/
   |           |- Album.class.php
   |           |- IEntry.class.php
-  |           |- ...
+  |           ^- ...
   |
-  |- dialog-2.4.2.xar
+  ^- dialog-2.4.2.xar
      |- module-info.xp
-     |- ...
+     ^- ...
 </pre>
 
 Security considerations
