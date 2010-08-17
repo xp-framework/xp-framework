@@ -53,7 +53,11 @@
       }
 
       // Run main()
-      return XPClass::forName($class, $cl)->getMethod('main')->invoke(NULL, array($args));
+      try {
+        return XPClass::forName($class, $cl)->getMethod('main')->invoke(NULL, array($args));
+      } catch (TargetInvocationException $e) {
+        throw $e->getCause();
+      }
     }
   }
 ?>
