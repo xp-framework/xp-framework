@@ -33,13 +33,13 @@
      *
      * @see     xp://unittest.TestCase#assertEquals
      * @param   string expect
-     * @param   string actual
+     * @param   xml.Node node
      * @return  bool
      */
-    public function assertXmlEquals($expect, $actual) {
+    public function assertMarshalled($expect, $node) {
       return $this->assertEquals(
         preg_replace('#>[\s\r\n]+<#', '><', trim($expect)),
-        preg_replace('#>[\s\r\n]+<#', '><', trim($actual))
+        preg_replace('#>[\s\r\n]+<#', '><', trim($node->getSource(INDENT_DEFAULT)))
       );
     }
 
@@ -52,13 +52,13 @@
       $dialog= new DialogType();
       $dialog->setId('file.open');
       
-      $this->assertXmlEquals('
+      $this->assertMarshalled('
         <dialogtype id="file.open">
           <caption/>
           <flags/>
           <options/>
         </dialogtype>', 
-        Marshaller::marshal($dialog)
+        $this->fixture->marshalTo(new Node('dialogtype'), $dialog)
       );
     }
     
@@ -71,13 +71,13 @@
       $dialog= new DialogType();
       $dialog->setCaption('Open a file > Choose');
       
-      $this->assertXmlEquals('
+      $this->assertMarshalled('
         <dialogtype id="">
           <caption>Open a file &gt; Choose</caption>
           <flags/>
           <options/>
         </dialogtype>', 
-        Marshaller::marshal($dialog)
+        $this->fixture->marshalTo(new Node('dialogtype'), $dialog)
       );
     }
 
@@ -99,7 +99,7 @@
         $cancel->setCaption('No, please don\'t!');
       }
 
-      $this->assertXmlEquals('
+      $this->assertMarshalled('
         <dialogtype id="">
           <caption>Really delete the file &quot;Ü&quot;?</caption>
           <button id="ok">Yes, go ahead</button>
@@ -107,7 +107,7 @@
           <flags/>
           <options/>
         </dialogtype>', 
-        Marshaller::marshal($dialog)
+        $this->fixture->marshalTo(new Node('dialogtype'), $dialog)
       );
     }
     
@@ -118,13 +118,13 @@
     #[@test]
     public function emptyMembers() {
       $dialog= new DialogType();
-      $this->assertXmlEquals('
+      $this->assertMarshalled('
         <dialogtype id="">
           <caption/>
           <flags/>
           <options/>
         </dialogtype>', 
-        Marshaller::marshal($dialog)
+        $this->fixture->marshalTo(new Node('dialogtype'), $dialog)
       );
     }
 
@@ -141,6 +141,19 @@
       $this->assertInstanceOf('xml.Node', $node);
       $this->assertEquals('dialog', $node->getName());
       $this->assertEquals('file.open', $node->getAttribute('id'));
+    }
+
+    /**
+     * Tests the deprecated usage
+     *
+     */
+    #[@test]
+    public function deprecatedUsage() {
+      $dialog= new DialogType();
+      $this->assertEquals(
+        Marshaller::marshal($dialog),
+        $this->fixture->marshalTo(new Node('dialogtype'), $dialog)->getSource(INDENT_DEFAULT)
+      );
     }
   }
 ?>

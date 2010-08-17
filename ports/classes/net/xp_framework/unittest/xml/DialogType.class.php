@@ -157,5 +157,22 @@
     public function getOptions() {
       return $this->options;
     }
+    
+    /**
+     * Returns whether another object is equal to this value object
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $this->id === $cmp->id &&
+        $this->caption === $cmp->caption &&
+        $this->options === $cmp->options &&
+        $this->flags === $cmp->flags &&
+        $this->buttons->equals($cmp->buttons)
+      );
+    }
   }
 ?>
