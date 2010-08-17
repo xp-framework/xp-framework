@@ -1,4 +1,4 @@
-RFC 0204: Arbitrary classloader syntax in USE_XP 
+RFC 0204: Modules
 ========================================================================
 $Id$
 
@@ -9,19 +9,215 @@ $Id$
 
 Scope of Change
 ---------------
-The <tt>USE_XP</tt> directive (whether via environment variable or via
-<tt>xp.ini</tt>) will be changed to syntactically support instantiating
-arbitrary classloaders.
+Module support will be added to the XP Framework. Modules are a groups
+of types and resources with added metadata: Versions, dependencies, main
+class, initialization code.
 
 
 Rationale
 ---------
-Currently, the <tt>USE_XP</tt> directive supports a list of directories 
-in which path files (<tt>*.pth</tt>) will be searched for. 
+Take for example an application that someone has written using the XP
+Framework and wants to make it available for the public to use. This
+application uses a certain version of the framework (or a range, such
+as "5.7-SERIES"), but also depends on a certain library which is not
+part of the framework but the app's author himself has written and made 
+available as a separate download. The following questions arise: 
+* Where is the software installed to?
+* How is the dependency on the library tracked?
+* How is the framework version verified?
 
 
 Functionality
 -------------
+At the moment, the procedure would probably be as follows:
+* Bundle the library into the application's lib directory
+  and add that to the class path via path files.
+* Zip that all up into a file, posting that for download.
+* Tell the users to unzip that to an arbitrary directory.
+* Add startup code to the main class verifying the framework version.
+
+<summary>
+Directory layout:
+<pre>
+  ~/apps/
+  ^- sloccount-2.0.1
+     |- lib/lang-parsers-1.0.0.xar
+     |- src/
+     |  ^- de/
+     |     ^- thekid/
+     |        ^- sloccount/
+     |           ^- SlocCount.class.php
+     |- app.pth
+     ^- README
+</pre>
+The app.pth file contains the lines <tt>src</tt> and <tt>lib/lang-parsers-1.0.0.xar</tt>.
+
+To use the application, the following is necessary:
+<pre>
+  $ cd ~/apps/sloccount-2.0.1
+  $ xpcli de.thekid.sloccount.SlocCount ~/devel/xp/trunk
+</pre>
+</summary>
+
+This approach has the following downsides:
+* The user has to "cd" to the application's directory to use the app.
+* The user has to know the fully qualified (and thus: long) classname
+  to execute the app.
+* The dependency needs to be bundled by the app's author manually.
+* The app has to be re-released if the bundled library is updated.
+* The version verifications have to be performed manually.
+
+What we would want to do would be something along the lines of:
+<summary>
+Usage:
+<pre>
+  $ xpcli sloccount-2.0.1 ~/devel/xp/trunk    # Use a certain version
+  $ xpcli sloccount ~/devel/xp/trunk          # Use newest version
+</pre>
+
+The app would still be installed in a certain place (but this would
+have to be known to the xp runners), and would somehow indicate it
+required the <tt>lang-parsers</tt> library in a certain version as
+well as the XP Framework's 5.7-SERIES to run.
+
+So the directory layout would be something like this:
+<pre>
+  /???/
+  |- sloccount -> sloccount-2.0.1
+  ^- sloccount-2.0.1
+     |- src/
+     |  |- ???
+     |  ^- de/
+     |     ^- thekid/
+     |        ^- sloccount/
+     |           ^- SlocCount.class.php
+     |- app.pth
+     ^- README
+</pre>
+The app.pth file contains the line <tt>src</tt> and some information
+stored in some kind of a file inside that directory indicating its
+dependencies.
+</summary>
+
+module-info.xp
+~~~~~~~~~~~~~~
+Most simple version:
+<code>
+  module parallels(0.1.1) {
+  }
+</code>
+
+An application:
+<code>
+  #[@main('de.thekid.dialog.cmd.AddAlbum')]
+  module dialog.addalbum(2.5.0) requires parallels(0.1.1), xp(5.7+) {
+  }
+</code>
+
+A library:
+<code>
+  uses('rdbms.DriverManager');
+  
+  module mysqlx(1.0.0) {
+    static function __static() {
+      $driver= XPClass::forName('rdbms.mysqlx.MySqlxConnection');
+      $instance= DriverManager::getInstance();
+      $instance->register('mysqlx', $driver);
+      
+      // Snap-in replacement if no MySQL support loaded
+      if (!isset($instance->drivers['mysql'])) {
+        $instance->register('mysql', $driver);
+      }
+    }
+  }
+</code>
+
+Execution
+~~~~~~~~~
+A module with a main class can be executed as follows:
+<pre>
+  $ xp -cp dialog.addalbum [arg1 [arg2 [...]]]
+</pre>
+
+Inclusion
+~~~~~~~~~
+Command line:
+<pre>
+  $ xp -cp mysqlx-0.1.1 [class.Name]
+</pre>
+
+Path file:
+<pre>
+  src/              # A directory
+  lib/utils.xar     # An archive
+  mysqlx-0.1.1      # A module reference
+</pre>
+
+Configuration
+~~~~~~~~~~~~~
+In xp.ini:
+<pre>
+  repository=/opt/xp/modules/
+</pre>
+
+Reflection
+~~~~~~~~~~
+<code>
+  $modules= Repository::findAll('dialog');
+  
+  // Core information
+  $modules[0]->getName();             // 'dialog'
+  $modules[0]->getVersion();          // '2.5.0'
+  
+  // Requirements
+  $requirements= $modules[0]->getRequirements();
+  $requirements[0]->getModule();      // 'parallels'
+  $requirements[0]->getConstraint();  // '0.1.1'
+  $requirements[1]->getModule();      // 'xp'
+  $requirements[1]->getConstraint();  // '5.7+'
+  
+  // Annotations
+  $modules[0]->getAnnotations();      // main => 'de.thekid.dialog.cmd.AddAlbum'
+  $modules[0]->getAnnotation('main'); // 'de.thekid.dialog.cmd.AddAlbum'
+  $modules[0]->hasAnnotation('main'); // TRUEs
+</code>
+
+Repository
+~~~~~~~~~~
+<pre>
+  /opt/xp/modules/
+  |- parallels-0.1.1.xar
+  |  |- module-info.xp
+  |  ^- de/
+  |     ^- thekid/
+  |        ^- parallels/
+  |           |- package-info.xp
+  |           ^- Process.class.php
+  |
+  |- dialog.addalbum -> dialog.addalbum-2.5.0/
+  |
+  |- dialog.addalbum-2.5.0/
+  |  |- module-info.xp
+  |  ^- de/
+  |     ^- thekid/
+  |        ^- dialog/
+  |           ^- cmd
+  |              |- AddAlbum.class.php
+  |              ^- ...
+  |  
+  |- dialog-2.5.0.xar
+  |  |- module-info.xp
+  |  ^- de/
+  |     ^- thekid/
+  |        ^- dialog/
+  |           |- Album.class.php
+  |           |- IEntry.class.php
+  |           ^- ...
+  |
+  ^- dialog-2.4.2.xar
+     |- module-info.xp
+     ^- ...
+</pre>
 
 Security considerations
 -----------------------
@@ -34,16 +230,34 @@ Dependencies
 
 Related documents
 -----------------
-* http://xp-framework.net/rfc/contrib/rfc0204-runners.diff
-  Runners implementation
-
-* http://xp-framework.net/rfc/contrib/rfc0204-framework.diff
-  Framework implementation
-
 * http://xp-framework.net/rfc/contrib/rfc0204-modules.diff
   Alternative implementation
+* http://openjdk.java.net/projects/modules/
+  Java Modules @ OpenJDK
+* http://openjdk.java.net/projects/modules/samplerepo/
+  Online repository
+* http://www.javabeat.net/articles/print.php?article_id=101  
+  Introduction to Java Module System in Java 7.0
+* http://mediacast.sun.com/users/sundelabassee/media/J1Ag_Modularity.pdf
+  Modularity in Java OSGi and/or JSR 277
+* http://blogs.sun.com/abuckley/resource/Devoxx2008-ModularityInJava.pdf
+  Modularity in Java - Devoxx 2008
+
 
 Comments
 --------
+friebe, Sun Aug 15 13:08:28     2010
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To determine the XP Framework's version, one can use the following:
+<code>
+  $v= XPClass::forName('lang.Object')->getClassLoader()->getResource('VERSION');
+</code>
+
+friebe, Sat Aug 14 14:23:30     2010
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Revamped completely, originally this RFC suggested add arbitrary classloader 
+syntax in <tt>USE_XP</tt> to add custom class loaders, but by using modules, 
+we can achieve the same (via static initializers) *and* at the same time have
+versioning and dependencies questions addressed.
 
 <EOF>

@@ -76,6 +76,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed modifiers to text.regex.Pattern::compile() not being recognized
+  (friebe)
 - Fixed unbuffered queries using datasets using rdbms.Statement instances
   as criteria not actually being unbuffered
   (friebe)

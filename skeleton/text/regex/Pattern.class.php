@@ -51,7 +51,7 @@
     public function __construct($regex, $flags= 0) {
       $modifiers= '';
       foreach (self::$flags as $bit => $str) {
-        if ($bit == $flags & $bit) $modifiers.= $str;
+        if ($flags & $bit) $modifiers.= $str;
       }
       $this->utf8= (bool)($flags & self::UTF8);
       $this->regex= '/'.str_replace('/', '\/', $regex).'/'.$modifiers;
