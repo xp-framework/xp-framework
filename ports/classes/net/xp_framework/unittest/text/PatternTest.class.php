@@ -247,5 +247,19 @@
     public function illegalPattern() {
       Pattern::compile('(');
     }
+
+    /**
+     * Test Pattern::MULTILINE | Pattern::DOTALL example
+     *
+     */
+    #[@test]
+    public function multilineDotAll() {
+      $m= Pattern::compile('BEGIN {(.+)}', Pattern::MULTILINE | Pattern::DOTALL)->match('BEGIN {
+        print "Hello World";
+      }');
+      $this->assertEquals(1, $m->length());
+      $group= $m->group(0);
+      $this->assertEquals('print "Hello World";', trim($group[1]));
+    }
   }
 ?>
