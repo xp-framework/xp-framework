@@ -4,7 +4,8 @@ $Id$
 
 @authors: friebe
 @created: Sat Aug 29 13:49:46     2009
-@status: draft
+@status: discussion, ends Wed Aug 25 12:00:00     2010
+@target: 5.8.0
 @category: <core>
 
 Scope of Change
@@ -35,13 +36,12 @@ class so that it can be used as in the example from the beginning, we
 declare the following:
 
 <code>
-  class ArraySortingExtension extends Object {
+  class ArraySortingExtension extends Extensions {
   
-    static function __static() {
-      xp::extensions('lang.types.ArrayList', __CLASS__);
+    static function __import($scope) {
+      parent::importExtensions(__CLASS__, $scope);
     }
     
-    #[@extension]
     public static function sorted(ArrayList $self) {
       // Implementation here
     }
@@ -112,7 +112,8 @@ used, they don't impose a performance implication.
 
 Dependencies
 ------------
-n/a
+A general hook for classes that gets called for scope-"import" via uses(),
+<tt>static void __import(string $scope)</tt>
 
 
 Related documents
@@ -131,8 +132,12 @@ Related documents
 
 Comments
 --------
+friebe, Wed Aug 18 16:12:33     2010
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Rewrote original implementation from scratch
+
 friebe, Sat Aug 29 13:52:34     2009
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Extension methods have been implement in the 5_8 branch.
+Extension methods have been implemented in the 5_8 branch.
 
 <EOF>
