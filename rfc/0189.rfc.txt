@@ -118,17 +118,35 @@ A general hook for classes that gets called for scope-"import" via uses(),
 
 Related documents
 -----------------
+Internal sources:
+* http://xp-framework.net/rfc/contrib/rfc0189.diff
+  Implementing patch
 * http://news.xp-framework.net/article/313/2009/08/29/
+  Extension methods: Swiss army knives without the anti-pattern
+
+Other sources:
+* http://cr.openjdk.java.net/~briangoetz/lambda/Defender%20Methods%20v3.pdf
+  Interface evolution via "public defender" methods
 * http://msdn.microsoft.com/en-us/library/bb383977.aspx
+  Extension Methods (C# Programming Guide)
 * http://groovy.codehaus.org/Pimp+my+Library+Pattern
+  Pimp my Library Pattern
 * http://www.oreillynet.com/onjava/blog/2007/12/extension_methods_proposals.html
+  Extension methods proposals
 * http://weblogs.java.net/blog/forax/archive/2007/11/java_7_extensio.html
+  Java 7 - Extension methods
 * http://journal.stuffwithstuff.com/2008/02/09/c-extension-methods-not-just-for-breakfast/
-* http://www.codeproject.com/KB/cs/ExtensionUnitTests.aspx
+  C# Extension Methods: Not Just for Breakfast
+* http://www.codeproject.com/KB/dotnet/ExtensionUnitTests.aspx
+  Extension Methods and Unit Testing in VS2008
 * http://blog.getpaint.net/2008/07/03/c-extension-methods-portability-aid/
+  C# Extension Methods ? Portability Aid?
 * http://www.zorched.net/2008/01/03/implementing-mixins-with-c-extension-methods/
+  Implementing Mixins with C# Extension Methods
 * http://stackoverflow.com/questions/299515/c-reflection-to-identify-extension-methods
+  C# Reflection to Identify Extension Methods
 * http://msdn.microsoft.com/en-us/library/system.runtime.compilerservices.extensionattribute.aspx
+  ExtensionAttribute Class
 
 Comments
 --------
