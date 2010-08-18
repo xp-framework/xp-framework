@@ -547,7 +547,7 @@ nedit.highlightPatterns: C:1:0{\n\
 		sq string esc chars:"\\\\(.|\\n)":::String1:single quote strings:\n\
 		ignore escaped chars:"\\\\[#""'\\$msytq]":::Plain:phptags:\n\
 		keywords:"<(isset|use|const|with|raise|not|enum|is_a|namespace|package|interface|implements|instanceof|try|catch|throw|finally|cast|unset|extends|uses|operator|error_reporting|class|switch|include|case|default|define|array|var|global|list|c?function|new|if|until|while|elseif|else|eval|for|foreach|continue|exit|die|return|require|not|\\|\\||\\&\\&|and|or|!==?|===?)>":::Keyword:phptags:\n\
-		classkeywords:"<(public|private|protected|static|abstract|final|__destruct|__construct|__call|__set|__get|__invoke|parent|self|const)>":::Text Escape:phptags:\n\
+		classkeywords:"<(public|private|protected|static|abstract|final|__destruct|__construct|__call|__set|__get|__invoke|__import|__static|parent|self|const)>":::Text Escape:phptags:\n\
 		variables:"(::)?[$](\\{[^}]*}|[^a-zA-Z0-9_ /\\t\\n\\.,\\\\[\\\\{\\\\(]|[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*)?":::Plain:phptags:\n\
 		braces and parens:"[\\[\\]{}\\(\\)]":::Text Arg2:phptags:\n\
 		heredoc:"\\<\\<\\<__":"^__"::Text Key1:phptags:\n\
