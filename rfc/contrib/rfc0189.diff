@@ -68,6 +68,23 @@ Index: skeleton/lang/Object.class.php
      }
  
      /**
+Index: ports/unittest/core.ini
+===================================================================
+--- ports/unittest/core.ini	(revision 14768)
++++ ports/unittest/core.ini	(working copy)
+@@ -167,3 +167,12 @@
+ 
+ [types]
+ class="net.xp_framework.unittest.core.ArrayTypeTest"
++
++[extension.invoke]
++class="net.xp_framework.unittest.core.extensions.ExtensionInvocationTest"
++
++[extension.notimported]
++class="net.xp_framework.unittest.core.extensions.NotImportedTest"
++
++[extension.notimportedhere]
++class="net.xp_framework.unittest.core.extensions.NotImportedHereTest"
 Index: ports/classes/net/xp_framework/unittest/core/extensions/ExtensionInvocationTest.class.php
 ===================================================================
 --- ports/classes/net/xp_framework/unittest/core/extensions/ExtensionInvocationTest.class.php	(revision 0)
