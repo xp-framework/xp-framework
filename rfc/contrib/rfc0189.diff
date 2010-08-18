@@ -1,0 +1,330 @@
+Index: skeleton/lang.base.php
+===================================================================
+--- skeleton/lang.base.php	(revision 14768)
++++ skeleton/lang.base.php	(working copy)
+@@ -125,6 +125,20 @@
+     }
+     // }}}
+ 
++    // {{{ public static void extensions(string class, string scope)
++    //     Registers extension methods for a certain scope
++    static function extensions($class, $scope) {
++      foreach (create(new XPClass($class))->getMethods() as $method) {
++        if (MODIFIER_STATIC & $method->getModifiers() && $method->numParameters() > 0) {
++          $param= $method->getParameter(0);
++          if ('self' === $param->getName()) {
++            self::$registry['ext'][$scope][xp::reflect($param->getTypeName())]= $class;
++          }
++        }
++      }
++    }
++    // }}}
++
+     // {{{ public void gc([string file default NULL])
+     //     Runs the garbage collector
+     static function gc($file= NULL) {
+@@ -391,12 +405,20 @@
+   // {{{ void uses (string* args)
+   //     Uses one or more classes
+   function uses() {
++    $scope= NULL;
+     foreach (func_get_args() as $str) {
+-      xp::$registry['loader']->loadClass0($str);
++      $class= xp::$registry['loader']->loadClass0($str);
++      if (method_exists($class, '__import')) {
++        if (NULL === $scope) {
++          $trace= debug_backtrace(FALSE);
++          $scope= xp::reflect($trace[2]['args'][0]);
++        }
++        call_user_func(array($class, '__import'), $scope);
++      }
+     }
+   }
+   // }}}
+-  
++
+   // {{{ void raise (string classname, var* args)
+   //     throws an exception by a given class name
+   function raise($classname) {
+Index: skeleton/lang/Object.class.php
+===================================================================
+--- skeleton/lang/Object.class.php	(revision 14768)
++++ skeleton/lang/Object.class.php	(working copy)
+@@ -93,7 +93,16 @@
+       if ("\7" === $name{0}) {
+         return call_user_func_array(array($this, substr($name, 1)), $args);
+       }
+-      throw new Error('Call to undefined method '.get_class($this).'::'.$name);
++      $t= debug_backtrace(FALSE);
++      $scope= $t[2]['class'];
++      if (isset(xp::$registry['ext'][$scope])) {
++        foreach (xp::$registry['ext'][$scope] as $type => $class) {
++          if (!$this instanceof $type) continue;
++          array_unshift($args, $this);
++          return call_user_func_array(array($class, $name), $args);
++        }
++      }
++      throw new Error('Call to undefined method '.$this->getClassName().'::'.$name.'() from scope '.xp::nameOf($scope));
+     }
+ 
+     /**
+Index: ports/unittest/core.ini
+===================================================================
+--- ports/unittest/core.ini	(revision 14768)
++++ ports/unittest/core.ini	(working copy)
+@@ -167,3 +167,12 @@
+ 
+ [types]
+ class="net.xp_framework.unittest.core.ArrayTypeTest"
++
++[extension.invoke]
++class="net.xp_framework.unittest.core.extensions.ExtensionInvocationTest"
++
++[extension.notimported]
++class="net.xp_framework.unittest.core.extensions.NotImportedTest"
++
++[extension.notimportedhere]
++class="net.xp_framework.unittest.core.extensions.NotImportedHereTest"
+Index: ports/classes/net/xp_framework/unittest/core/extensions/ExtensionInvocationTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/extensions/ExtensionInvocationTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/extensions/ExtensionInvocationTest.class.php	(revision 0)
+@@ -0,0 +1,53 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase', 
++    'lang.types.ArrayList',
++    'net.xp_framework.unittest.core.extensions.ArrayListExtensions'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see   xp://net.xp_framework.unittest.core.extensions.ArrayListExtensions
++   */
++  class ExtensionInvocationTest extends TestCase {
++  
++    /**
++     * Test map() extension method
++     *
++     */
++    #[@test]
++    public function mapMethod() {
++      $this->assertEquals(
++        new ArrayList(2, 4, 6),
++        create(new ArrayList(1, 2, 3))->map(create_function('$e', 'return $e * 2;'))
++      );
++    }
++
++    /**
++     * Test sorted() extension method
++     *
++     */
++    #[@test]
++    public function sortedMethod() {
++      $this->assertEquals(
++        new ArrayList(-1, 0, 1, 7, 10),
++        create(new ArrayList(7, 0, 10, 1, -1))->sorted(SORT_NUMERIC)
++      );
++    }
++
++    /**
++     * Test invoking a non-existant extension method
++     *
++     */
++    #[@test, @expect('lang.Error')]
++    public function nonExistantExtensionMethod() {
++      create(new ArrayList(1, 2, 3))->nonExistant();
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/extensions/ExtensionInvocationTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/extensions/NotImportedHereTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/extensions/NotImportedHereTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/extensions/NotImportedHereTest.class.php	(revision 0)
+@@ -0,0 +1,31 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase', 
++    'lang.types.ArrayList',
++    'net.xp_framework.unittest.core.extensions.ArrayListDemo'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see   xp://net.xp_framework.unittest.core.extensions.ArrayListExtensions
++   * @see   xp://net.xp_framework.unittest.core.extensions.ArrayListDemo
++   */
++  class NotImportedHereTest extends TestCase {
++  
++    /**
++     * Tests situation when ArrayListExtensions hasn't been imported here
++     * but inside another class which is imported here.
++     *
++     */
++    #[@test, @expect('lang.Error')]
++    public function test() {
++      create(new ArrayList(7, 0, 10, 1, -1))->sorted();
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/extensions/NotImportedHereTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/extensions/ArrayListExtensions.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/extensions/ArrayListExtensions.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/extensions/ArrayListExtensions.class.php	(revision 0)
+@@ -0,0 +1,49 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('lang.types.ArrayList');
++
++  /**
++   * ArrayList extension methods
++   *
++   * @see   xp://lang.types.ArrayList
++   * @see   xp://net.xp_framework.unittest.core.extensions.ExtensionInvocationTest
++   */
++  class ArrayListExtensions extends Object {
++
++    static function __import($scope) {
++      xp::extensions(__CLASS__, $scope);
++    }
++
++    /**
++     * ArrayList::map() extension
++     *
++     * @param   lang.types.ArrayList self
++     * @return  lang.types.ArrayList mapped
++     */
++    public static function map(ArrayList $self, $block) {
++      $mapped= ArrayList::newInstance($self->length);
++      foreach ($self->values as $i => $value) {
++        $mapped[$i]= $block($value);
++      }
++      return $mapped;
++    }
++
++    /**
++     * ArrayList::sorted() extension
++     *
++     * @see     php://sort
++     * @param   lang.types.ArrayList self
++     * @param   int flags SORT_REGULAR, SORT_NUMERIC or SORT_STRING 
++     * @return  lang.types.ArrayList sorted
++     */
++    public static function sorted(ArrayList $self, $flags= SORT_REGULAR) {
++      $sorted= clone $self;
++      sort($sorted->values, $flags);
++      return $sorted;
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/extensions/ArrayListExtensions.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/extensions/ArrayListDemo.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/extensions/ArrayListDemo.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/extensions/ArrayListDemo.class.php	(revision 0)
+@@ -0,0 +1,26 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('net.xp_framework.unittest.core.extensions.ArrayListExtensions');
++
++  /**
++   * Demo class that uses the ArrayList extension methods
++   *
++   * @see   xp://net.xp_framework.unittest.core.extensions.ArrayListExtensions
++   */
++  class ArrayListDemo extends Object {
++    
++    /**
++     * Main method
++     *
++     * @param   string[] args
++     */
++    public static function main($args) {
++      $sorted= ArrayList::newInstance($args)->sorted();
++      Console::writeLine('create(new ArrayList(array(', implode(', ', $args), ')))->sorted()= ', $sorted);
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/extensions/ArrayListDemo.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/extensions/NotImportedTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/extensions/NotImportedTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/extensions/NotImportedTest.class.php	(revision 0)
+@@ -0,0 +1,29 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase', 
++    'lang.types.ArrayList',
++    'net.xp_framework.unittest.core.extensions.ExtensionInvocationTest'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see   xp://net.xp_framework.unittest.core.extensions.ArrayListExtensions
++   */
++  class NotImportedTest extends TestCase {
++  
++    /**
++     * Tests situation when ArrayListExtensions hasn't been imported
++     *
++     */
++    #[@test, @expect('lang.Error')]
++    public function test() {
++      create(new ArrayList(7, 0, 10, 1, -1))->sorted();
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/extensions/NotImportedTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
