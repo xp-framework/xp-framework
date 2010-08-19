@@ -245,5 +245,14 @@
     public function receive($timeout= 0.2) {
       return $this->recvFrame($timeout);
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(->'.$this->server.':'.$this->port.')';
+    }
   }
 ?>
