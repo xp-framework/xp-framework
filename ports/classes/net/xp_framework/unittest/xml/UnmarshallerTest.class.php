@@ -35,10 +35,10 @@
      */
     #[@test]
     public function idAttribute() {
-      $dialog= Unmarshaller::unmarshal('
+      $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
         <dialogtype id="file.open">
           <caption/>
-        </dialogtype>',
+        </dialogtype>')),
         'net.xp_framework.unittest.xml.DialogType'
       );
       $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType');
@@ -51,10 +51,10 @@
      */
     #[@test]
     public function captionNode() {
-      $dialog= Unmarshaller::unmarshal('
+      $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
         <dialogtype id="">
           <caption>Open a file &gt; Choose</caption>
-        </dialogtype>',
+        </dialogtype>')),
         'net.xp_framework.unittest.xml.DialogType'
       );
       $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType');
@@ -67,12 +67,12 @@
      */
     #[@test]
     public function buttonsNodeSet() {
-      $dialog= Unmarshaller::unmarshal('
+      $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
         <dialogtype id="">
           <caption>Really delete the file &quot;Ü&quot;?</caption>
           <button id="ok">Yes, go ahead</button>
           <button id="cancel">No, please don\'t!</button>
-        </dialogtype>', 
+        </dialogtype>')), 
         'net.xp_framework.unittest.xml.DialogType'
       );
       $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType');
@@ -96,10 +96,10 @@
      */
     #[@test]
     public function usingPassWithScalars() {
-      $dialog= Unmarshaller::unmarshal('
+      $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
         <dialogtype id="">
           <flags>ON_TOP|MODAL</flags>
-        </dialogtype>', 
+        </dialogtype>')), 
         'net.xp_framework.unittest.xml.DialogType'
       );
       $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType');
@@ -113,13 +113,13 @@
      */
     #[@test]
     public function usingPassWithNodes() {
-      $dialog= Unmarshaller::unmarshal('
+      $dialog= $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream('
         <dialogtype id="">
           <options>
             <option name="width" value="100"/>
             <option name="height" value="100"/>
           </options>
-        </dialogtype>', 
+        </dialogtype>')), 
         'net.xp_framework.unittest.xml.DialogType'
       );
       $this->assertClass($dialog, 'net.xp_framework.unittest.xml.DialogType');
@@ -148,30 +148,6 @@
      *
      */
     #[@test, @expect('xml.XMLFormatException')]
-    public function malformedString() {
-      Unmarshaller::unmarshal(
-        '<not-valid-xml', 
-        'net.xp_framework.unittest.xml.DialogType'
-      );
-    }
-
-    /**
-     * Test unmarshalling empty data
-     *
-     */
-    #[@test, @expect('xml.XMLFormatException')]
-    public function emptyString() {
-      Unmarshaller::unmarshal(
-        '', 
-        'net.xp_framework.unittest.xml.DialogType'
-      );
-    }
-
-    /**
-     * Test unmarshalling malformed data
-     *
-     */
-    #[@test, @expect('xml.XMLFormatException')]
     public function malformedStream() {
       $this->fixture->unmarshalFrom(
         new StreamInputSource(new MemoryInputStream('<not-valid-xml'), 'memory'), 
@@ -187,6 +163,47 @@
     public function emptyStream() {
       $this->fixture->unmarshalFrom(
         new StreamInputSource(new MemoryInputStream(''), 'memory'), 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+    }
+
+    /**
+     * Tests the deprecated usage
+     *
+     * @deprecated
+     */
+    #[@test]
+    public function deprecatedUsage() {
+      $xml= '<dialogtype id="file.open"/>';
+      $type= 'net.xp_framework.unittest.xml.DialogType';
+      $this->assertEquals(
+        Unmarshaller::unmarshal($xml, $type),
+        $this->fixture->unmarshalFrom(new StreamInputSource(new MemoryInputStream($xml)), $type)
+      );
+    }
+
+    /**
+     * Test unmarshalling malformed data
+     *
+     * @deprecated
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function malformedString() {
+      Unmarshaller::unmarshal(
+        '<not-valid-xml', 
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+    }
+
+    /**
+     * Test unmarshalling empty data
+     *
+     * @deprecated
+     */
+    #[@test, @expect('xml.XMLFormatException')]
+    public function emptyString() {
+      Unmarshaller::unmarshal(
+        '', 
         'net.xp_framework.unittest.xml.DialogType'
       );
     }
