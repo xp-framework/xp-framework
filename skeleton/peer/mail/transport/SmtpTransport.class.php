@@ -261,35 +261,22 @@
      */
     public function send($message) {
       try {
-        $this->_sockcmd(
-          'MAIL FROM: %s',
-          $message->from->getAddress(),
-          250
-        );
-
-        // List all recipients, hide BCC
-        foreach (array(TO, CC, BCC) as $type) while ($r= $message->getRecipient($type)) {
-          $this->_sockcmd(
-            'RCPT TO: %s',
-            $r->getAddress(),
-            array(250, 251)
-          );
+        $this->_sockcmd('MAIL FROM: %s', $message->from->getAddress(), 250);
+        foreach (array(TO, CC, BCC) as $type) {
+          foreach ($message->getRecipients($type) as $r) {
+            $this->_sockcmd('RCPT TO: %s', $r->getAddress(), array(250, 251));
+          }
         }
-        $message->bcc= array();
 
-        if ($this->_sockcmd('DATA', 354)) {
-
-          // Write headers
-          $this->_sockcmd('%s', $message->getHeaderString(), FALSE);
-
-          // Write mail contents. Make sure lines containing a dot by itself are
-          // properly escaped.
-          $this->_sockcmd('%s', preg_replace(
-            '/(^|[\r\n])([\.]+)([\r\n]|$)/', 
-            '$1.$2$3', 
-            $message->getBody()
-          ), FALSE);
-        }
+        // Content: Headers and body. Make sure lines containing a dot by itself are
+        // properly escaped.
+        $this->_sockcmd('DATA', 354);
+        $this->_sockcmd('%s', $message->getHeaderString(), FALSE);
+        $this->_sockcmd('%s', preg_replace(
+          '/(^|[\r\n])([\.]+)([\r\n]|$)/', 
+          '$1.$2$3', 
+          $message->getBody()
+        ), FALSE);
       } catch (XPException $e) {
         throw new TransportException('Sending message failed', $e);
       }

@@ -91,6 +91,9 @@
       
     public
       $_headerlookup    = NULL;
+
+    protected
+      $ofs= array(TO => 0, CC => 0, BCC => 0);
       
     /**
      * Constructor
@@ -328,17 +331,19 @@
      *   }
      * </code>
      *
+     * @deprecated  Use getRecipients() instead
      * @param   string type one of the constants TO, CC, BCC
      * @return  peer.mail.InternetAddress[] adr recipients of type
      */
     public function getRecipient($type) {
-      static $ofs= array(TO => 0, CC => 0, BCC => 0);
       
       // No more elements
-      if (!isset($this->{$type}[$ofs[$type]]))
+      if (!isset($this->{$type}[$this->ofs[$type]])) {
+        $this->ofs[$type]= 0;
         return FALSE;
+      }
 
-      return $this->{$type}[$ofs[$type]++];
+      return $this->{$type}[$this->ofs[$type]++];
     }
     
     /**
