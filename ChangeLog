@@ -8,6 +8,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated peer.mail.Message::getRecipient() - the iterative use of
+  fetching the recipients with "while" in favor of getRecipients()
+  (friebe)
 - Deprecated getMessage() and getStatusCode() in peer.http.HttpResponse 
   in favor of message() and statusCode().
   (friebe, Gabriel Mihai Ghigea)
@@ -23,6 +26,12 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.mail.SmtpTransport not sending an "RCPT TO:" after the 
+  first message passed to send()
+  (friebe)
+- Fixed util.collections classes' equals() implementations for generic
+  versions (Vector<String> should never equal Vector<Object>, i.e.)
+  (friebe)
 - Fixed modifiers to text.regex.Pattern::compile() not being recognized
   (friebe)
 - Fixed unbuffered queries using datasets using rdbms.Statement instances
