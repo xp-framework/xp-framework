@@ -10,6 +10,8 @@
    * A set of objects
    *
    * @test     xp://net.xp_framework.unittest.util.collections.HashSetTest
+   * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
+   * @test     xp://net.xp_framework.unittest.util.collections.ArrayAccessTest
    * @purpose  Set implemenentation
    */
   class HashSet extends Object implements Set {
@@ -219,7 +221,11 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $this->hashCode() === $cmp->hashCode();
+      return (
+        $cmp instanceof self && 
+        $this->__generic === $cmp->__generic &&
+        $this->_hash === $cmp->_hash
+      );
     }
 
     /**

@@ -10,6 +10,8 @@
    * The last recently used (that is, the longest time unchanged) 
    * element will be deleted when calling add().
    *
+   * @test     xp://net.xp_framework.unittest.util.collections.LRUBufferTest
+   * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
    * @purpose  Abstract data type
    */
   class LRUBuffer extends Object {
@@ -107,6 +109,21 @@
      */
     public function getSize() {
       return $this->size;
+    }
+
+    /**
+     * Checks if a specified object is equal to this object.
+     *
+     * @param   lang.Generic collection
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $this->size === $cmp->size &&
+        $this->__generic === $cmp->__generic &&
+        $this->_access === $cmp->_access
+      );
     }
   }
 ?>

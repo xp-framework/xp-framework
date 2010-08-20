@@ -33,6 +33,8 @@
    *
    * @purpose  LIFO
    * @see      xp://util.collections.Queue
+   * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
+   * @test     xp://net.xp_framework.unittest.util.collections.StackTest
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/java/util/Stack.html 
    */
@@ -150,7 +152,11 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $this->hashCode() === $cmp->hashCode();
+      return (
+        $cmp instanceof self && 
+        $this->__generic === $cmp->__generic &&
+        $this->_hash === $cmp->_hash
+      );
     }
   }
 ?>

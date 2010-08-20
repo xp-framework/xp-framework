@@ -224,8 +224,9 @@
      */
     public function equals($cmp) {
       return (
-        ($cmp instanceof Map) && 
-        ($this->hashCode() === $cmp->hashCode())
+        $cmp instanceof self && 
+        $this->__generic === $cmp->__generic &&
+        $this->_hash === $cmp->_hash
       );
     }
     

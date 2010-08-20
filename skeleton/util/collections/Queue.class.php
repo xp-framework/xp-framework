@@ -32,6 +32,8 @@
    * </code>
    *
    * @purpose  FIFO
+   * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
+   * @test     xp://net.xp_framework.unittest.util.collections.QueueTest
    * @see      xp://util.collections.Stack
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    */
@@ -170,8 +172,9 @@
      */
     public function equals($cmp) {
       return (
-        is('util.collections.Queue', $cmp) && 
-        ($this->hashCode() === $cmp->hashCode())
+        $cmp instanceof self && 
+        $this->__generic === $cmp->__generic &&
+        $this->_hash === $cmp->_hash
       );
     }
   }

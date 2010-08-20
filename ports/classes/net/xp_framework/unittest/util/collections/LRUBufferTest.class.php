@@ -146,5 +146,37 @@
     public function illegalSize() {
       $this->buffer->setSize(0);
     }
+
+    /**
+     * Tests equals()
+     *
+     */
+    #[@test]
+    public function equalsClone() {
+      $this->assertTrue($this->buffer->equals(clone $this->buffer));
+    }
+
+    /**
+     * Tests equals()
+     *
+     */
+    #[@test]
+    public function doesNotEqualWithDifferentSize() {
+      $this->assertFalse($this->buffer->equals(new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE - 1)));
+    }
+ 
+    /**
+     * Tests equals()
+     *
+     */
+    #[@test]
+    public function doesNotEqualWithSameElements() {
+      $other= new LRUBuffer(LRUTEST_BUFFER_DEAULT_SIZE);
+      with ($string= new String('Hello')); {
+        $other->add($string);
+        $this->buffer->add($string);
+      }
+      $this->assertFalse($this->buffer->equals($other));
+    }
   }
 ?>
