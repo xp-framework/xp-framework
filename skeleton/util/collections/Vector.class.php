@@ -10,6 +10,8 @@
    * Resizable array list
    *
    * @test     xp://net.xp_framework.unittest.util.collections.VectorTest
+   * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
+   * @test     xp://net.xp_framework.unittest.util.collections.ArrayAccessTest
    * @see      xp://lang.types.ArrayList
    * @purpose  IList implementation
    */
@@ -290,11 +292,14 @@
      * @return  bool
      */
     public function equals($cmp) {
-      if (!($cmp instanceof IList) || $this->size != $cmp->size) return FALSE;
+      if (!($cmp instanceof self) || $this->size !== $cmp->size || $this->__generic !== $cmp->__generic) return FALSE;
       
       // Compare element by element
       for ($i= 0; $i < $this->size; $i++) {
-        if ($this->elements[$i]->equals($cmp->elements[$i])) continue;
+        if ($this->elements[$i] instanceof Generic 
+          ? $this->elements[$i]->equals($cmp->elements[$i])
+          : $this->elements[$i] === $cmp->elements[$i]
+        ) continue;
         return FALSE;
       }
       return TRUE;

@@ -15,8 +15,9 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see   xp://util.collections.HashTable
+   * @see   xp://util.collections.HashSet
+   * @see   xp://util.collections.Vector
    */
   class ArrayAccessTest extends TestCase {
 

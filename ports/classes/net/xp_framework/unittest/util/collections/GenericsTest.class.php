@@ -27,6 +27,150 @@
   class GenericsTest extends TestCase {
 
     /**
+     * Tests HashTable::equals()
+     *
+     */
+    #[@test]
+    public function differingGenericHashTablesNotEquals() {
+      $this->assertNotEquals(
+        create('new HashTable<lang.Object, lang.Object>'),
+        create('new HashTable<lang.types.String, lang.Object>')
+      );
+    }
+
+    /**
+     * Tests HashTable::equals()
+     *
+     */
+    #[@test]
+    public function sameGenericHashTablesAreEqual() {
+      $this->assertEquals(
+        create('new HashTable<lang.types.String, lang.Object>'),
+        create('new HashTable<lang.types.String, lang.Object>')
+      );
+    }
+
+    /**
+     * Tests HashSet::equals()
+     *
+     */
+    #[@test]
+    public function differingGenericHashSetsNotEquals() {
+      $this->assertNotEquals(
+        create('new HashSet<lang.Object>'),
+        create('new HashSet<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests HashSet::equals()
+     *
+     */
+    #[@test]
+    public function sameGenericHashSetsAreEqual() {
+      $this->assertEquals(
+        create('new HashSet<lang.types.String>'),
+        create('new HashSet<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests Vector::equals()
+     *
+     */
+    #[@test]
+    public function differingGenericVectorsNotEquals() {
+      $this->assertNotEquals(
+        create('new Vector<lang.Object>'),
+        create('new Vector<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests Vector::equals()
+     *
+     */
+    #[@test]
+    public function sameGenericVectorsAreEqual() {
+      $this->assertEquals(
+        create('new Vector<lang.types.String>'),
+        create('new Vector<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests Queue::equals()
+     *
+     */
+    #[@test]
+    public function differingGenericQueuesNotEquals() {
+      $this->assertNotEquals(
+        create('new Queue<lang.Object>'),
+        create('new Queue<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests Queue::equals()
+     *
+     */
+    #[@test]
+    public function sameGenericQueuesAreEqual() {
+      $this->assertEquals(
+        create('new Queue<lang.types.String>'),
+        create('new Queue<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests Stack::equals()
+     *
+     */
+    #[@test]
+    public function differingGenericStacksNotEquals() {
+      $this->assertNotEquals(
+        create('new Stack<lang.Object>'),
+        create('new Stack<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests Stack::equals()
+     *
+     */
+    #[@test]
+    public function sameGenericStacksAreEqual() {
+      $this->assertEquals(
+        create('new Stack<lang.types.String>'),
+        create('new Stack<lang.types.String>')
+      );
+    }
+
+    /**
+     * Tests LRUBuffer::equals()
+     *
+     */
+    #[@test]
+    public function differingGenericLRUBuffersNotEquals() {
+      $this->assertNotEquals(
+        create('new LRUBuffer<lang.Object>', array(10)),
+        create('new LRUBuffer<lang.types.String>', array(10))
+      );
+    }
+
+    /**
+     * Tests LRUBuffer::equals()
+     *
+     */
+    #[@test]
+    public function sameGenericLRUBuffersAreEqual() {
+      $this->assertEquals(
+        create('new LRUBuffer<lang.types.String>', array(10)),
+        create('new LRUBuffer<lang.types.String>', array(10))
+      );
+    }
+
+    /**
      * Tests non-generic objects
      *
      */
