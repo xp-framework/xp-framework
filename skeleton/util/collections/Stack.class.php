@@ -38,42 +38,41 @@
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    * @see      http://java.sun.com/j2se/1.4.2/docs/api/java/util/Stack.html 
    */
+  #[@generic(self= 'T')]
   class Stack extends Object {
     protected
       $_elements = array(),
       $_hash     = 0;
 
-    public
-      $__generic = array();
-  
     /**
      * Pushes an item onto the top of the stack. Returns the element that 
      * was added.
      *
-     * @param   lang.Generic object
-     * @return  lang.Generic object
+     * @param   T element
+     * @return  T
      */
-    public function push(Generic $object) {
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      array_unshift($this->_elements, $object);
-      $this->_hash+= HashProvider::hashOf($object->hashCode());
-      return $object;
+    #[@generic(params= 'T', return= 'T')]
+    public function push($element) {
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      array_unshift($this->_elements, $element);
+      $this->_hash+= HashProvider::hashOf($h);
+      return $element;
     }
 
     /**
      * Gets an item from the top of the stack
      *
-     * @return  lang.Generic
+     * @return  T
      * @throws  util.NoSuchElementException
      */    
+    #[@generic(return= 'T')]
     public function pop() {
       if (empty($this->_elements)) {
         throw new NoSuchElementException('Stack is empty');
       }
       $element= array_shift($this->_elements);
-      $this->_hash+= HashProvider::hashOf($element->hashCode());
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $this->_hash+= HashProvider::hashOf($h);
       return $element;
     }
 
@@ -83,8 +82,9 @@
      *
      * Returns NULL in case the stack is empty.
      *
-     * @return  lang.Generic object
+     * @return  T element
      */        
+    #[@generic(return= 'T')]
     public function peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
     }
@@ -112,23 +112,22 @@
      * Sees if an object is in the stack and returns its position.
      * Returns -1 if the object is not found.
      *
-     * @param   lang.Generic object
+     * @param   T object
      * @return  int position
      */
-    public function search(Generic $object) {
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
+    #[@generic(params= 'T')]
+    public function search($element) {
+      return ($keys= array_keys($this->_elements, $element)) ? $keys[0] : -1;
     }
     
     /**
      * Retrieves an element by its index.
      *
      * @param   int index
-     * @return  lang.Generic
+     * @return  T
      * @throws  lang.IndexOutOfBoundsException
      */
+    #[@generic(return= 'T')]
     public function elementAt($index) {
       if (!isset($this->_elements[$index])) {
         throw new IndexOutOfBoundsException('Index '.$index.' out of bounds');
