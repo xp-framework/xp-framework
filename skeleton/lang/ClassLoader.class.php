@@ -148,14 +148,14 @@
 
         // Test for existance        
         if (!class_exists($super)) {
-          throw new ClassLinkageException($parent, self::getLoaders());
+          raise('lang.ClassLinkageException', $super, self::getLoaders()); 
         }
         
         if (!empty($interfaces)) {
           $if= array_map(array('xp', 'reflect'), $interfaces);
-          foreach ($if as $implemented) {
+          foreach ($if as $i => $implemented) {
             if (interface_exists($implemented)) continue;
-            throw new ClassLinkageException($implemented, self::getLoaders());
+            raise('lang.ClassLinkageException', $interfaces[$i], self::getLoaders()); 
           }
         }
 
@@ -190,9 +190,9 @@
       if (!isset(xp::$registry['classloader.'.$class])) {
         if (!empty($parents)) {
           $if= array_map(array('xp', 'reflect'), (array)$parents);
-          foreach ($if as $super) {
+          foreach ($if as $i => $super) {
             if (interface_exists($super)) continue;
-            throw new ClassLinkageException($super, self::getLoaders());
+            raise('lang.ClassLinkageException', $parents[$i], self::getLoaders()); 
           }
         }
 
