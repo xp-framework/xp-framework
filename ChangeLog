@@ -26,6 +26,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed command line parsing on Windows when parsing triple quotes
+  (friebe)
 - Fixed peer.mail.SmtpTransport not sending an "RCPT TO:" after the 
   first message passed to send()
   (friebe)

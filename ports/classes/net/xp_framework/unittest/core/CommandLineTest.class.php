@@ -248,7 +248,7 @@
     #[@test]
     public function quotedArgumentPartWindows() {
       $this->assertEquals(
-        array('C:/usr/bin/php', '-q', '-dinclude_path=".:/usr/share"', '-dmagic_quotes_gpc=Off'),
+        array('C:/usr/bin/php', '-q', '-dinclude_path=.:/usr/share', '-dmagic_quotes_gpc=Off'),
         CommandLine::$WINDOWS->parse('C:/usr/bin/php -q -dinclude_path=".:/usr/share" -dmagic_quotes_gpc=Off')
       );        
     }
@@ -272,7 +272,7 @@
     #[@test]
     public function quotedCommandAndArgumentPartWindows() {
       $this->assertEquals(
-        array('C:/usr/bin/php', '-q', '-dinclude_path=".:/usr/share"', '-dmagic_quotes_gpc=Off'),
+        array('C:/usr/bin/php', '-q', '-dinclude_path=.:/usr/share', '-dmagic_quotes_gpc=Off'),
         CommandLine::$WINDOWS->parse('"C:/usr/bin/php" -q -dinclude_path=".:/usr/share" -dmagic_quotes_gpc=Off')
       );
     }
@@ -358,6 +358,58 @@
       $this->assertEquals(
         array('nedit', '/mnt/c/Users/Mr. Example/notes.txt', '../All Notes.txt'),
         CommandLine::$UNIX->parse('nedit "/mnt/c/Users/Mr. Example/notes.txt" "../All Notes.txt"')
+      );
+    }
+
+    /**
+     * Tests command line parsing on Windows
+     *
+     */
+    #[@test]
+    public function evalCommandLineWindows() {
+      $cmd= 'xp xp.runtime.Evaluate "echo """Hello World""";"';
+      $this->assertEquals(
+        array('xp', 'xp.runtime.Evaluate', 'echo "Hello World";'),
+        CommandLine::$WINDOWS->parse($cmd)
+      );
+    }
+
+    /**
+     * Tests command line parsing on Windows
+     *
+     */
+    #[@test]
+    public function evalCommandLineWindowsUnclosed() {
+      $cmd= 'xp xp.runtime.Evaluate "1+ 2';
+      $this->assertEquals(
+        array('xp', 'xp.runtime.Evaluate', '1+ 2'),
+        CommandLine::$WINDOWS->parse($cmd)
+      );
+    }
+
+    /**
+     * Tests command line parsing on Windows
+     *
+     */
+    #[@test]
+    public function evalCommandLineWindowsUnclosedTriple() {
+      $cmd= 'xp xp.runtime.Evaluate "echo """Hello World';
+      $this->assertEquals(
+        array('xp', 'xp.runtime.Evaluate', 'echo "Hello World'),
+        CommandLine::$WINDOWS->parse($cmd)
+      );
+    }
+
+    /**
+     * Tests command line parsing on Windows
+     *
+     */
+    #[@test]
+    public function evalCommandLineWindowsTripleClosedBySingle() {
+      $cmd= 'xp xp.runtime.Evaluate "echo """Hello World" a';
+      $this->assertEquals(
+        array('xp', 'xp.runtime.Evaluate', 'echo "Hello World', 'a'),
+        CommandLine::$WINDOWS->parse($cmd)
       );
     }
   }
