@@ -9,31 +9,35 @@
    *
    * @purpose  Interface
    */
+  #[@generic(self= 'T')]
   interface Set extends ArrayAccess, IteratorAggregate {
   
     /**
      * Adds an object
      *
-     * @param   lang.Generic object
+     * @param   T object
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    public function add(Generic $object);
+    #[@generic(params= 'T')]
+    public function add($element);
 
     /**
      * Removes an object from this set
      *
-     * @param   lang.Generic object
+     * @param   T element
      * @return  bool TRUE if this set contained the specified element. 
      */
-    public function remove(Generic $object);
+    #[@generic(params= 'T')]
+    public function remove($element);
 
     /**
      * Removes an object from this set
      *
-     * @param   lang.Generic object
+     * @param   T element
      * @return  bool TRUE if the set contains the specified element. 
      */
-    public function contains(Generic $object);
+    #[@generic(params= 'T')]
+    public function contains($element);
 
     /**
      * Returns this set's size
@@ -58,16 +62,18 @@
     /**
      * Adds an array of objects
      *
-     * @param   lang.Object[] objects
+     * @param   T[] elements
      * @return  bool TRUE if this set changed as a result of the call. 
      */
-    public function addAll($objects);
+    #[@generic(params= 'T[]')]
+    public function addAll($elements);
 
     /**
      * Returns an array containing all of the elements in this set. 
      *
-     * @return  lang.Object[] objects
+     * @return  T[] elements
      */
+    #[@generic(return= 'T[]')]
     public function toArray();
 
     /**

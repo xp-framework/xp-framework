@@ -14,6 +14,7 @@
    * @test     xp://net.xp_framework.unittest.util.collections.ArrayAccessTest
    * @purpose  Set implemenentation
    */
+  #[@generic(self= 'T', Set= 'T')]
   class HashSet extends Object implements Set {
     protected static
       $iterate   = NULL;
@@ -21,9 +22,6 @@
     protected
       $_elements = array(),
       $_hash     = 0;
-
-    public
-      $__generic = array();
 
     static function __static() {
       self::$iterate= newinstance('Iterator', array(), '{
@@ -94,32 +92,28 @@
     /**
      * Adds an object
      *
-     * @param   lang.Generic object
+     * @param   T element
      * @return  bool TRUE if this set did not already contain the specified element. 
      */
-    public function add(Generic $object) { 
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      $h= $object->hashCode();
+    #[@generic(params= 'T')]
+    public function add($element) { 
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
       if (isset($this->_elements[$h])) return FALSE;
       
       $this->_hash+= HashProvider::hashOf($h);
-      $this->_elements[$h]= $object;
+      $this->_elements[$h]= $element;
       return TRUE;
     }
 
     /**
      * Removes an object from this set
      *
-     * @param   lang.Generic object
+     * @param   T element
      * @return  bool TRUE if this set contained the specified element. 
      */
-    public function remove(Generic $object) { 
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      $h= $object->hashCode();
+    #[@generic(params= 'T')]
+    public function remove($element) { 
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
       if (!isset($this->_elements[$h])) return FALSE;
 
       $this->_hash-= HashProvider::hashOf($h);
@@ -130,14 +124,13 @@
     /**
      * Removes an object from this set
      *
-     * @param   lang.Generic object
+     * @param   T element
      * @return  bool TRUE if the set contains the specified element. 
      */
-    public function contains(Generic $object) { 
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      return isset($this->_elements[$object->hashCode()]);
+    #[@generic(params= 'T')]
+    public function contains($element) { 
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      return isset($this->_elements[$h]);
     }
 
     /**
@@ -170,37 +163,29 @@
     /**
      * Adds an array of objects
      *
-     * @param   lang.Generic[] objects
+     * @param   T[] elements
      * @return  bool TRUE if this set changed as a result of the call. 
      */
-    public function addAll($objects) { 
-      $result= FALSE;
-      $hash= $this->_hash;
-      $elements= $this->_elements;
-      
-      for ($i= 0, $s= sizeof($objects); $i < $s; $i++) {
-        if ($this->__generic && !$objects[$i] instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Object #'.$i.' '.xp::stringOf($objects[$i]).' must be of '.$this->__generic[0]);
-        }
-        $h= $objects[$i]->hashCode();
+    #[@generic(params= 'T[]')]
+    public function addAll($elements) { 
+      $changed= FALSE;
+      foreach ($elements as $element) {
+        $h= $element instanceof Generic ? $element->hashCode() : $element;
         if (isset($this->_elements[$h])) continue;
-        
-        $result= TRUE;
-        $hash+= HashProvider::hashOf($h);
-        $elements[$h]= $objects[$i];
+
+        $this->_hash+= HashProvider::hashOf($h);
+        $this->_elements[$h]= $element;
+        $changed= TRUE;
       }
-      
-      $this->_hash= $hash;
-      $this->_elements= $elements;
-      
-      return $result;
+      return $changed;
     }
 
     /**
      * Returns an array containing all of the elements in this set. 
      *
-     * @return  lang.Generic[] objects
+     * @return  T[] objects
      */
+    #[@generic(return= 'T[]')]
     public function toArray() { 
       return array_values($this->_elements);
     }
