@@ -9,7 +9,7 @@
     'com.google.search.custom.types.Response', 
     'peer.http.HttpConnection',
     'xml.meta.Unmarshaller',
-    'io.streams.Streams'
+    'xml.parser.StreamInputSource'
   );
 
   /**
@@ -28,6 +28,7 @@
    */
   class GoogleSearchClient extends Object {
     protected $conn= NULL;
+    protected $unmarshaller= NULL;
     
     /**
      * Constructor
@@ -36,6 +37,7 @@
      */
     public function __construct($conn) {
       $this->conn= $conn instanceof HttpConnection ? $conn : new HttpConnection($conn);
+      $this->unmarshaller= new Unmarshaller();
     }
     
     /**
@@ -56,8 +58,12 @@
       ($s= $query->getStart()) && $params['start']= $s;
 
       // Retrieve result as XML
-      return Unmarshaller::unmarshal(
-        Streams::readAll($this->conn->get($params)->getInputStream()),
+      $r= $this->conn->get($params);
+      if (HttpConstants::STATUS_OK !== $r->statusCode()) {
+        throw new IOException('Non-OK response code '.$r->statusCode().': '.$r->message());
+      }
+      return $this->unmarshaller->unmarshalFrom(
+        new StreamInputSource($r->getInputStream(), $this->conn->toString()),
         'com.google.search.custom.types.Response'
       );
     }
