@@ -82,6 +82,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed errors when raising ClassLinkageExceptions in the classloader
+  (friebe)
 - Fixed peer.Socket::canRead() on Windows when using PHP's VC9 binaries 
   (friebe)
 - Fixed command line parsing on Windows when parsing triple quotes
