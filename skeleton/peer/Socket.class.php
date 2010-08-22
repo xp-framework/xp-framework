@@ -181,11 +181,26 @@
         $tv_sec= intval(floor($timeout));
         $tv_usec= intval(($timeout - floor($timeout)) * 1000000);
       }
-      
       $r= array($this->_sock); $w= NULL; $e= NULL;
       $n= stream_select($r, $w, $e, $tv_sec, $tv_usec);
-      if (FALSE === $n || NULL === $n || xp::errorAt(__FILE__, __LINE__ - 1)) {
-        $e= new SocketException('Select failed: '.$this->getLastError());
+      $l= __LINE__ -1;
+      
+      // Implementation vagaries:
+      // * For Windows, when using the VC9 binatries, get rid of "Invalid CRT 
+      //   parameters detected" warning which is no error, see PHP bug #49948
+      // * On Un*x OS flavors, when select() raises a warning, this *is* an 
+      //   error (regardless of the return value)
+      if (isset(xp::$registry['errors'][__FILE__])) {
+        if (isset(xp::$registry['errors'][__FILE__][$l]['Invalid CRT parameters detected'])) {
+          xp::gc(__FILE__);
+        } else {
+          $n= FALSE;
+        }
+      }
+      
+      // OK, real error here now.
+      if (FALSE === $n || NULL === $n) {
+        $e= new SocketException('Select('.$this->_sock.', '.$tv_sec.', '.$tv_usec.')= failed: '.$this->getLastError());
         xp::gc(__FILE__);
         throw $e;
       }

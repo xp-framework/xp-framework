@@ -36,21 +36,38 @@
       self::$WINDOWS= newinstance(__CLASS__, array(0, 'WINDOWS'), '{
         static function __static() { }
         public function parse($cmd) {
+          static $triple= "\"\"\"";
           $parts= array();
-          $o= 0;
-          while (FALSE !== ($p= strcspn($cmd, " ", $o))) {
-            $option= substr($cmd, $o, $p);
-            if (1 === substr_count($option, \'"\')) {
-              $l= $o+ $p;
-              $qp= strpos($cmd, \'"\', $l)+ 1;
-              $option.= substr($cmd, $l, $qp- $l);
-              $o= $qp+ 1;
+          $r= "";
+          for ($i= 0, $s= strlen($cmd); $i < $s; $i++) {
+            if (" " === $cmd{$i}) {
+              $parts[]= $r;
+              $r= "";
+            } else if ("\"" === $cmd{$i}) {
+              $q= $i+ 1;
+              do {
+                if (FALSE === ($p= strpos($cmd, "\"", $q))) {
+                  $q= $s;
+                  break;
+                }
+                $q= $p;
+                if ($triple === substr($cmd, $q, 3)) {
+                  if (FALSE === ($p= strpos($cmd, $triple, $q+ 3))) {
+                    $q= $q+ 3;
+                    continue;
+                  }
+                  $q= $p+ 3;
+                  continue;
+                }
+                break;
+              } while ($q < $s);
+              $r.= str_replace($triple, "\"", substr($cmd, $i+ 1, $q- $i- 1));
+              $i= $q;
             } else {
-              $o+= $p+ 1;
+              $r.= $cmd{$i};
             }
-            if (\'"\' === $option{0}) $option= substr($option, 1, -1);
-            $parts[]= $option;
           }
+          $parts[]= $r;
           return $parts;
         }
         
