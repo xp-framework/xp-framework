@@ -14,15 +14,13 @@
    * @test     xp://net.xp_framework.unittest.util.collections.GenericsTest
    * @purpose  Abstract data type
    */
+  #[@generic(self= 'T')]
   class LRUBuffer extends Object {
     protected
       $size      = 0,
       $_access   = array(),
       $_elements = array();
 
-    public
-      $__generic = array();
-    
     /**
      * Constructor
      *
@@ -43,14 +41,12 @@
      *   $deleted= $buf->add($key);
      * </code>
      *
-     * @param   lang.Generic element
-     * @return  lang.Generic victim
+     * @param   T element
+     * @return  T victim
      */
-    public function add(Generic $element) {
-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
-      }
-      $h= $element->hashCode();
+    #[@generic(params= 'T', return= 'T')]
+    public function add($element) {
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
       $this->_access[$h]= microtime(TRUE);
       $this->_elements[$h]= $element;
 
@@ -70,13 +66,12 @@
     /**
      * Update an element
      *
-     * @param   lang.Generic element
+     * @param   T element
      */
-    public function update(Generic $element) {
-      if ($this->__generic && !$element instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Element '.xp::stringOf($element).' must be of '.$this->__generic[0]);
-      }
-      $this->_access[$element->hashCode()]= microtime(TRUE);
+    #[@generic(params= 'T')]
+    public function update($element) {
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $this->_access[$h]= microtime(TRUE);
     }
     
     /**
