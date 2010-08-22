@@ -148,7 +148,7 @@
 
         // Test for existance        
         if (!class_exists($super)) {
-          raise('lang.ClassLinkageException', $super, self::getLoaders()); 
+          raise('lang.ClassLinkageException', $parent, self::getLoaders()); 
         }
         
         if (!empty($interfaces)) {
