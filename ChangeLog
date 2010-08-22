@@ -26,6 +26,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.Socket::canRead() on Windows when using PHP's VC9 binaries 
+  (friebe)
 - Fixed command line parsing on Windows when parsing triple quotes
   (friebe)
 - Fixed peer.mail.SmtpTransport not sending an "RCPT TO:" after the 
