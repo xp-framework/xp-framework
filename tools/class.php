@@ -86,5 +86,10 @@
   ob_start('__output');
 
   array_shift($_SERVER['argv']);
-  exit(XPClass::forName($argv[1])->getMethod('main')->invoke(NULL, array(array_slice($argv, 2)))); 
+  try {
+    exit(XPClass::forName($argv[1])->getMethod('main')->invoke(NULL, array(array_slice($argv, 2)))); 
+  } catch (SystemExit $e) {
+    if ($message= $e->getMessage()) echo $message, "\n";
+    exit($e->getCode());
+  }
 ?>

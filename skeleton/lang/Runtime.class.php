@@ -16,6 +16,7 @@
    * Represents the runtime - that is, the PHP binary executing the
    * current process.
    *
+   * @test     xp://net.xp_framework.unittest.core.SystemExitTest
    * @test     xp://net.xp_framework.unittest.core.RuntimeTest
    * @purpose  Access to PHP runtime
    */
@@ -144,6 +145,17 @@
     public function addShutdownHook(Runnable $r) {
       register_shutdown_function(array($r, 'run'));
       return $r;
+    }
+    
+    /**
+     * Stops execution by raising a SystemExit
+     *
+     * @see     xp://lang.SystemExit
+     * @param   int code default 0
+     * @param   string message default NULL
+     */
+    public static function halt($code= 0, $message= NULL) {
+      raise('lang.SystemExit', $code, $message);
     }
 
     /**

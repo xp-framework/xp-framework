@@ -298,6 +298,15 @@
         } else {
           $response= $this->fail($e, $e->getStatus(), $flags & WebDebug::STACKTRACE);
         }
+      } catch (SystemExit $e) {
+        if (0 === $e->getCode()) {
+          $response= new HttpScriptletResponse();
+          $response->setStatus(HttpConstants::STATUS_OK);
+          if ($message= $e->getMessage()) $response->setContent($message);
+        } else {
+          $cat->error($e);
+          $response= $this->fail($e, HttpConstants::STATUS_INTERNAL_SERVER_ERROR, FALSE);
+        }
       } catch (Throwable $e) {
         $cat->error($e);
 

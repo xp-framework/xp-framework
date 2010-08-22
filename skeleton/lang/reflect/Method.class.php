@@ -91,6 +91,8 @@
           } else {
             return call_user_func_array(array($obj, "\7".$this->_reflect->getName()), (array)$args);
           }
+        } catch (SystemExit $e) {
+          throw $e;
         } catch (Throwable $e) {
           throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() ~ '.$e->getMessage(), $e);
         }
@@ -98,6 +100,8 @@
 
       try {
         return $this->_reflect->invokeArgs($obj, (array)$args);
+      } catch (SystemExit $e) {
+        throw $e;
       } catch (Throwable $e) {
         throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() invocation failed', $e);
       } catch (ReflectionException $e) {

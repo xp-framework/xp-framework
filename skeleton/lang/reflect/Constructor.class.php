@@ -74,6 +74,8 @@
       }
       try {
         return eval(sprintf($inv, substr($paramstr, 2)));
+      } catch (SystemExit $e) {
+        throw $e;
       } catch (Throwable $e) {
         throw new TargetInvocationException($this->_class.'::<init>', $e);
       }
