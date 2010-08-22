@@ -59,9 +59,10 @@
      * list[]= overloading
      *
      * @param   int offset
-     * @param   var value
+     * @param   T value
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      */
+    #[@generic(params= ', T')]
     public function offsetSet($offset, $value) {
        if (NULL === $offset) {
         $this->add($value);
@@ -73,9 +74,10 @@
     /**
      * isset() overloading
      *
-     * @param   int offset
+     * @param   T offset
      * @return  bool
      */
+    #[@generic(params= 'T')]
     public function offsetExists($offset) {
       return $this->contains($offset);
     }
@@ -83,8 +85,9 @@
     /**
      * unset() overloading
      *
-     * @param   int offset
+     * @param   T offset
      */
+    #[@generic(params= 'T')]
     public function offsetUnset($offset) {
       $this->remove($offset);
     }
