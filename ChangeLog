@@ -29,6 +29,7 @@ Bugfixes
 - Fixed errors when raising ClassLinkageExceptions in the classloader
   (friebe)
 - Fixed peer.Socket::canRead() on Windows when using PHP's VC9 binaries 
+  http://news.xp-framework.net/article/368/2010/08/23/
   (friebe)
 - Fixed command line parsing on Windows when parsing triple quotes
   (friebe)
