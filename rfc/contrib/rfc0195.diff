@@ -1,0 +1,574 @@
+Index: skeleton/lang/XPClass.class.php
+===================================================================
+--- skeleton/lang/XPClass.class.php	(revision 14803)
++++ skeleton/lang/XPClass.class.php	(working copy)
+@@ -198,13 +198,24 @@
+      * Gets a method by a specified name.
+      *
+      * @param   string name
++     * @param   lang.Type[] types default NULL
+      * @return  lang.reflect.Method
+      * @see     xp://lang.reflect.Method
+      * @throws  lang.ElementNotFoundException
+      */
+-    public function getMethod($name) {
++    public function getMethod($name, $types= NULL) {
+       if ($this->hasMethod($name)) {
+-        return new Method($this->_class, $this->_reflect->getMethod($name));
++        $m= $this->_reflect->getMethod($name);
++        if (NULL === $types) return new Method($this->_class, $m);
++        
++        $statics= $m->getStaticVariables();
++        $s= sizeof($types);
++        if (isset($statics['overloads'][$s])) foreach ($statics['overloads'][$s] as $o => $signature) { 
++          foreach ($signature as $i => $literal) {
++            if (!Type::forName(substr($literal, 1))->equals($types[$i])) continue 2;
++          }
++          return new Method($this->_class, $this->_reflect->getMethod($o), $name);
++        }
+       }
+       raise('lang.ElementNotFoundException', 'No such method "'.$name.'" in class '.$this->name);
+     }
+@@ -217,14 +228,27 @@
+      * Since in PHP, methods are case-insensitive, calling hasMethod('toString') 
+      * will provide the same result as hasMethod('tostring')
+      *
+-     * @param   string method the method's name
++     * @param   string name the method's name
++     * @param   lang.Type[] types default NULL
+      * @return  bool TRUE if method exists
+      */
+-    public function hasMethod($method) {
+-      return ((0 === strncmp('__', $method, 2))
+-        ? FALSE
+-        : $this->_reflect->hasMethod($method)
+-      );
++    public function hasMethod($name, $types= NULL) {
++      if (0 === strncmp('__', $name, 2)) return FALSE;
++      
++      if ($this->_reflect->hasMethod($name)) {
++        if (NULL === $types) return TRUE;
++        $m= $this->_reflect->getMethod($name);
++        
++        $statics= $m->getStaticVariables();
++        $s= sizeof($types);
++        if (isset($statics['overloads'][$s])) foreach ($statics['overloads'][$s] as $o => $signature) { 
++          foreach ($signature as $i => $literal) {
++            if (!Type::forName(substr($literal, 1))->equals($types[$i])) continue 2;
++          }
++          return TRUE;
++        }
++      }
++      return FALSE;
+     }
+     
+     /**
+Index: skeleton/lang/reflect/Routine.class.php
+===================================================================
+--- skeleton/lang/reflect/Routine.class.php	(revision 14803)
++++ skeleton/lang/reflect/Routine.class.php	(working copy)
+@@ -23,6 +23,7 @@
+   class Routine extends Object {
+     protected
+       $accessible = FALSE,
++      $name       = '',
+       $_class     = NULL;
+ 
+     public 
+@@ -33,10 +34,12 @@
+      *
+      * @param   string class
+      * @param   php.ReflectionMethod reflect
++     * @param   string name default NULL
+      */    
+-    public function __construct($class, $reflect) {
++    public function __construct($class, $reflect, $name= NULL) {
+       $this->_class= $class;
+       $this->_reflect= $reflect;
++      $this->name= $name ? $name : $reflect->getName();
+     }
+     
+     /**
+@@ -45,7 +48,7 @@
+      * @return  string
+      */
+     public function getName() {
+-      return $this->_reflect->getName();
++      return $this->name;
+     }
+     
+     /**
+@@ -298,7 +301,7 @@
+         '%s %s %s(%s)%s',
+         Modifiers::stringOf($this->getModifiers()),
+         $this->getReturnTypeName(),
+-        $this->getName(),
++        $this->name,
+         substr($signature, 2),
+         $throws
+       );
+Index: ports/classes/net/xp_framework/unittest/core/dispatch/TypeDispatchFixture.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/dispatch/TypeDispatchFixture.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/dispatch/TypeDispatchFixture.class.php	(revision 0)
+@@ -0,0 +1,92 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses('util.Date');
++
++  /**
++   * Fixture class for TypeDispatchTest
++   *
++   * @see      xp://net.xp_framework.unittest.core.dispatch.RuntimeDispatchingTest
++   * @see      xp://net.xp_framework.unittest.core.dispatch.ReflectionTest
++   */
++  class TypeDispatchFixture extends Object {
++   
++    /**
++     * Serializes strings
++     *
++     * @param   string in
++     * @param   string enc default iso-8859-1
++     * @return  string
++     */
++    public function __serialize··þstring¸þstring($in, $enc= 'iso-8859-1') {
++      return 's:'.strlen($in).'@'.$enc.':'.$in.';';
++    }
++
++    /**
++     * Serializes integers
++     *
++     * @param   int in
++     * @return  string
++     */
++    public function __serialize··þint($in) {
++      return 'i:'.$in.';';
++    }
++
++    /**
++     * Serializes dates
++     *
++     * @param   util.Date in
++     * @return  string
++     */
++    public function __serialize··Date($in) {
++      return 'T:'.$in->getTime().';';
++    }
++
++    /**
++     * Serializes objects
++     *
++     * @param   lang.Generic in
++     * @return  string
++     */
++    public function __serialize··Generic($in= NULL) {
++      return ($in ? 'O:'.$in->getClassName().';' : 'N;');
++    }
++    
++    /** (Generated) **/
++    public final function serialize() {
++      static $overloads= array(
++        1 => array(
++          '__serialize··þstring¸þstring'  => array('!string'),
++          '__serialize··þint'             => array('!int'),
++          '__serialize··Date'             => array('!util.Date'),    // The order is 
++          '__serialize··Generic'          => array('[lang.Generic')  // relevant here!
++        ),
++        2 => array(
++          '__serialize··þstring¸þstring'  => array('!string', '!string')
++        )
++      );
++      
++      $args= func_get_args();
++      $s= sizeof($args);
++      if (isset($overloads[$s])) foreach ($overloads[$s] as $method => $signature) {
++        foreach ($signature as $i => $literal) {
++          if (NULL === $args[$i]) {
++            if ('!' === $literal{0} || !strstr($literal, '.')) continue 2;
++          } else {
++            if (!Type::forName(substr($literal, 1))->isInstance($args[$i])) continue 2;
++          }
++        }
++        return call_user_func_array(array($this, $method), $args);
++      }
++
++      raise(
++        'lang.MethodNotImplementedException', 
++        'No overload for ['.implode(', ', array_map(array('xp', 'typeOf'), $args)).']',
++        __FUNCTION__
++      );
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/dispatch/TypeDispatchFixture.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/dispatch/ReflectionTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/dispatch/ReflectionTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/dispatch/ReflectionTest.class.php	(revision 0)
+@@ -0,0 +1,222 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++ 
++  $package= 'net.xp_framework.unittest.core.dispatch';
++
++  uses(
++    'unittest.TestCase',
++    'net.xp_framework.unittest.core.dispatch.TypeDispatchFixture',
++    'util.Date'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://net.xp_framework.unittest.core.overloading.TypeDispatchFixture
++   */
++  class net·xp_framework·unittest·core·dispatch·ReflectionTest extends TestCase {
++    protected $fixture= NULL;
++  
++    /**
++     * Sets up test case
++     *
++     */
++    public function setUp() {
++      $this->fixture= XPClass::forName('net.xp_framework.unittest.core.dispatch.TypeDispatchFixture');
++    }
++    
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function withoutSignature() {
++      $this->assertEquals(
++        'serialize', 
++        $this->fixture->getMethod('serialize')->getName()
++      );
++    }
++    
++    /**
++     * Assertion helper
++     *
++     * @param   lang.Type[]
++     * @param   lang.reflect.Routine
++     * @throws  unittest.AssertionFailedError
++     */
++    protected function assertSignatureEquals($types, Routine $method) {
++      foreach ($types as $i => $type) {
++        $this->assertEquals($type, $i < $method->numParameters() ? $method->getParameter($i)->getType() : NULL, 'parameter #'.$i);
++      }
++    }
++
++    /**
++     * Test hasMethod()
++     *
++     */
++    #[@test]
++    public function withStringSignatureExists() {
++      $this->assertTrue(
++        $this->fixture->hasMethod('serialize', array(Primitive::$STRING))
++      );
++    }
++ 
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test]
++    public function withStringSignature() {
++      $this->assertSignatureEquals(
++        array(Primitive::$STRING, Primitive::$STRING), 
++        $this->fixture->getMethod('serialize', array(Primitive::$STRING))
++      );
++    }
++
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test]
++    public function withStringStringSignature() {
++      $this->assertSignatureEquals(
++        array(Primitive::$STRING, Primitive::$STRING), 
++        $this->fixture->getMethod('serialize', array(Primitive::$STRING, Primitive::$STRING))
++      );
++    }
++
++    /**
++     * Test hasMethod()
++     *
++     */
++    #[@test]
++    public function withIntSignatureExists() {
++      $this->assertTrue(
++        $this->fixture->hasMethod('serialize', array(Primitive::$INTEGER))
++      );
++    }
++
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test]
++    public function withIntSignature() {
++      $this->assertSignatureEquals(
++        array(Primitive::$INTEGER), 
++        $this->fixture->getMethod('serialize', array(Primitive::$INTEGER))
++      );
++    }
++
++    /**
++     * Test hasMethod()
++     *
++     */
++    #[@test]
++    public function withGenericSignatureExists() {
++      $this->assertTrue(
++        $this->fixture->hasMethod('serialize', array(XPClass::forName('lang.Generic')))
++      );
++    }
++
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test]
++    public function withGenericSignature() {
++      $this->assertSignatureEquals(
++        array(XPClass::forName('lang.Generic')), 
++        $this->fixture->getMethod('serialize', array(XPClass::forName('lang.Generic')))
++      );
++    }
++
++    /**
++     * Test hasMethod()
++     *
++     */
++    #[@test]
++    public function withObjectSignatureExists() {
++      $this->assertFalse(
++        $this->fixture->hasMethod('serialize', array(XPClass::forName('lang.Object')))
++      );
++    }
++
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function withObjectSignature() {
++      $this->fixture->getMethod('serialize', array(XPClass::forName('lang.Object')));
++    }
++
++    /**
++     * Test hasMethod()
++     *
++     */
++    #[@test]
++    public function withDateSignatureExists() {
++      $this->assertTrue(
++        $this->fixture->hasMethod('serialize', array(XPClass::forName('util.Date')))
++      );
++    }
++
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test]
++    public function withDateSignature() {
++      $this->assertSignatureEquals(
++        array(XPClass::forName('util.Date')), 
++        $this->fixture->getMethod('serialize', array(XPClass::forName('util.Date')))
++      );
++    }
++
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test]
++    public function hasNonExistantOverload() {
++      $this->assertFalse($this->fixture->hasMethod('serialize', array(Primitive::$DOUBLE)));
++    }
++
++    /**
++     * Test getMethod()
++     *
++     */
++    #[@test, @expect('lang.ElementNotFoundException')]
++    public function nonExistantOverload() {
++      $this->fixture->getMethod('serialize', array(Primitive::$DOUBLE));
++    }
++
++    /**
++     * Test getDeclaredMethods() does not list overloads
++     *
++     */
++    #[@test]
++    public function listMethods() {
++      $this->assertEquals(
++        array($this->fixture->getMethod('serialize')), 
++        $this->fixture->getDeclaredMethods()
++      );
++    }
++
++    /**
++     * Test Method::getName() on an overloaded method
++     *
++     */
++    #[@test]
++    public function nameOfOverloaded() {
++      $this->assertEquals(
++        'serialize', 
++        $this->fixture->getMethod('serialize', array(Primitive::$INTEGER))->getName()
++      );
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/dispatch/ReflectionTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: ports/classes/net/xp_framework/unittest/core/dispatch/RuntimeDispatchingTest.class.php
+===================================================================
+--- ports/classes/net/xp_framework/unittest/core/dispatch/RuntimeDispatchingTest.class.php	(revision 0)
++++ ports/classes/net/xp_framework/unittest/core/dispatch/RuntimeDispatchingTest.class.php	(revision 0)
+@@ -0,0 +1,118 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'unittest.TestCase',
++    'net.xp_framework.unittest.core.dispatch.TypeDispatchFixture',
++    'util.Date'
++  );
++
++  /**
++   * TestCase
++   *
++   * @see      xp://net.xp_framework.unittest.core.dispatch.TypeDispatchFixture
++   */
++  class RuntimeDispatchingTest extends TestCase {
++  
++    /**
++     * Sets up test case
++     *
++     */
++    public function setUp() {
++      $this->fixture= new TypeDispatchFixture();
++    }
++    
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function stringVariant() {
++      $this->assertEquals('s:5@iso-8859-1:Hello;', $this->fixture->serialize('Hello'));
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function stringVariantWithOptionalArg() {
++      $this->assertEquals('s:5@utf-8:Hello;', $this->fixture->serialize('Hello', 'utf-8'));
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function intVariant() {
++      $this->assertEquals('i:5;', $this->fixture->serialize(5));
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function objectVariant() {
++      $this->assertEquals('O:lang.Object;', $this->fixture->serialize(new Object()));
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function testVariant() {
++      $this->assertEquals('O:net.xp_framework.unittest.core.dispatch.RuntimeDispatchingTest;', $this->fixture->serialize($this));
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function dateVariant() {
++      $this->assertEquals('T:250944900;', $this->fixture->serialize(new Date('1977-12-14 11:55:00')));
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test, @expect('lang.MethodNotImplementedException')]
++    public function doubleVariant() {
++      $this->fixture->serialize(1.0);
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test, @expect('lang.MethodNotImplementedException')]
++    public function twoArgsVariant() {
++      $this->fixture->serialize(5, TRUE);
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test, @expect('lang.MethodNotImplementedException')]
++    public function noArgsVariant() {
++      $this->fixture->serialize();
++    }
++
++    /**
++     * Test
++     *
++     */
++    #[@test]
++    public function nullVariant() {
++      $this->assertEquals('N;', $this->fixture->serialize(NULL));
++    }
++  }
++?>
+
+Property changes on: ports/classes/net/xp_framework/unittest/core/dispatch/RuntimeDispatchingTest.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+

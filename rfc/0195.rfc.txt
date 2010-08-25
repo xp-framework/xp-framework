@@ -108,6 +108,8 @@ RFC #0197
 
 Related documents
 -----------------
+* http://xp-framework.net/rfc/contrib/rfc0195.diff
+  Implementing patch
 * http://experiments.xp-forge.net/xml/browse?arena,rfc0195
   Experiment
 
