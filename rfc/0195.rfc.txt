@@ -5,7 +5,7 @@ $Id$
 @authors: friebe
 @created: Tue Nov 17 10:07:20     2009
 @status: draft
-@target: 5.8.0
+@target: 5.9.0
 @category: <core>
 
 Scope of Change
@@ -108,6 +108,8 @@ RFC #0197
 
 Related documents
 -----------------
+* http://xp-framework.net/rfc/contrib/rfc0195.diff
+  Implementing patch
 * http://experiments.xp-forge.net/xml/browse?arena,rfc0195
   Experiment
 
