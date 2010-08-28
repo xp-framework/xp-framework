@@ -55,6 +55,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed ClassNotFoundException's message to contain the cause's message
+  (friebe, kiesel)
 - Ports: Added com.google.search.custom package (Google Custom Search
   implementation, for use e.g. with the GSA)
   (friebe)
