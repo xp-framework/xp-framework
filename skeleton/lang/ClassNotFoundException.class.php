@@ -32,7 +32,7 @@
      * @param   lang.Throwable cause default NULL
      */
     public function __construct($failedClass, $loaders= array(), $cause= NULL) {
-      parent::__construct(sprintf($this->message(), $failedClass), $cause);
+      parent::__construct(sprintf($this->message(), $failedClass).($cause ? ': '.$cause->getMessage() : ''), $cause);
       $this->failedClass= $failedClass;
       $this->loaders= $loaders;
     }
