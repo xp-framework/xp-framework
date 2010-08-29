@@ -125,6 +125,20 @@
     }
     // }}}
 
+    // {{{ public static void extensions(string class, string scope)
+    //     Registers extension methods for a certain scope
+    static function extensions($class, $scope) {
+      foreach (create(new XPClass($class))->getMethods() as $method) {
+        if (MODIFIER_STATIC & $method->getModifiers() && $method->numParameters() > 0) {
+          $param= $method->getParameter(0);
+          if ('self' === $param->getName()) {
+            self::$registry['ext'][$scope][xp::reflect($param->getTypeName())]= $class;
+          }
+        }
+      }
+    }
+    // }}}
+
     // {{{ public void gc([string file default NULL])
     //     Runs the garbage collector
     static function gc($file= NULL) {
@@ -391,12 +405,20 @@
   // {{{ void uses (string* args)
   //     Uses one or more classes
   function uses() {
+    $scope= NULL;
     foreach (func_get_args() as $str) {
-      xp::$registry['loader']->loadClass0($str);
+      $class= xp::$registry['loader']->loadClass0($str);
+      if (method_exists($class, '__import')) {
+        if (NULL === $scope) {
+          $trace= debug_backtrace(FALSE);
+          $scope= xp::reflect($trace[2]['args'][0]);
+        }
+        call_user_func(array($class, '__import'), $scope);
+      }
     }
   }
   // }}}
-  
+
   // {{{ void raise (string classname, var* args)
   //     throws an exception by a given class name
   function raise($classname) {

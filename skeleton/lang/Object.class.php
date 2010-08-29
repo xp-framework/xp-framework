@@ -93,7 +93,16 @@
       if ("\7" === $name{0}) {
         return call_user_func_array(array($this, substr($name, 1)), $args);
       }
-      throw new Error('Call to undefined method '.get_class($this).'::'.$name);
+      $t= debug_backtrace(FALSE);
+      $scope= $t[2]['class'];
+      if (isset(xp::$registry['ext'][$scope])) {
+        foreach (xp::$registry['ext'][$scope] as $type => $class) {
+          if (!$this instanceof $type) continue;
+          array_unshift($args, $this);
+          return call_user_func_array(array($class, $name), $args);
+        }
+      }
+      throw new Error('Call to undefined method '.$this->getClassName().'::'.$name.'() from scope '.xp::nameOf($scope));
     }
 
     /**

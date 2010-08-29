@@ -46,6 +46,8 @@ Features
 
 RFCs
 ~~~~
+- Implemented RFC #0189 - Extension methods
+  (friebe)
 - Implemented RFC #0181 - SystemExit
   (friebe)
 - Implemented RFC #0194 - Add XPClass::getDeclared*() methods
