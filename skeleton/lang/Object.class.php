@@ -93,7 +93,7 @@
       if ("\7" === $name{0}) {
         return call_user_func_array(array($this, substr($name, 1)), $args);
       }
-      $t= debug_backtrace(FALSE);
+      $t= debug_backtrace();
       $scope= $t[2]['class'];
       if (isset(xp::$registry['ext'][$scope])) {
         foreach (xp::$registry['ext'][$scope] as $type => $class) {

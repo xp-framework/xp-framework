@@ -410,7 +410,7 @@
       $class= xp::$registry['loader']->loadClass0($str);
       if (method_exists($class, '__import')) {
         if (NULL === $scope) {
-          $trace= debug_backtrace(FALSE);
+          $trace= debug_backtrace();
           $scope= xp::reflect($trace[2]['args'][0]);
         }
         call_user_func(array($class, '__import'), $scope);
