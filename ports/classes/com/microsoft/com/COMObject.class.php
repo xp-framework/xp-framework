@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('com.microsoft.com.COMObjectIterator');
+
   /**
    * COM object
    * 
@@ -23,12 +25,11 @@
    * @see      http://www.microsoft.com/Com/resources/comdocs.asp COM specification
    * @see      http://www.developmentor.com/dbox/yacl.htm Yet Another COM Library (YACL) 
    * @ext      com
-   * @purpose  Base class
+   * @test     xp://com.microsoft.unittest.COMObjectTest
    * @platform Windows
    */
-  class COMObject extends Object {
-    protected
-      $h   = NULL;
+  class COMObject extends Object implements IteratorAggregate, ArrayAccess {
+    protected $h= NULL;
   
     /**
      * Constructor
@@ -93,24 +94,92 @@
      * @return  var return
      */
     public function __call($name, $args) {
-      $s= '';
+      $pass= array();
       foreach ($args as $i => $value) {
         if ($value instanceof self) {
-          $s.= ', $args['.$i.']->h';
+          $pass[]= $value->h;
         } else {
-          $s.= ', $args['.$i.']';
+          $pass[]= $value;
         }
       }
+      
+      // call_user_func_array() will raise an error here if:
+      // a) The method doesn't exists
+      // b) The argument doesn't match the signature
       try {
-        $v= eval('return $this->h->'.$name.'('.substr($s, 2).');');
-        if ($v instanceof COM || $v instanceof Variant) {
-          return new self($v);
-        } else {
-          return $v;
+        $l= __LINE__; $v= call_user_func_array(array($this->h, $name), $pass);
+        if (isset(xp::$registry['errors'][__FILE__][$l])) {
+          $error= key(xp::$registry['errors'][__FILE__][$l]);
+          xp::gc(__FILE__);
+          throw new IllegalArgumentException($error);
         }
       } catch (com_exception $e) {
         throw new IllegalArgumentException($e->getCode().': '.$e->getMessage());
       }
+      
+      if ($v instanceof COM || $v instanceof Variant) {
+        return new self($v);
+      } else {
+        return $v;
+      }
+    }
+
+    /**
+     * Returns an iterator for use in foreach()
+     *
+     * @return  var
+     */
+    public function getIterator() {
+      $iteration= array();
+      foreach ($this->h as $i => $value) {
+        $iteration[$i]= $value;
+      }
+      return new COMObjectIterator($iteration);
+    }
+
+    /**
+     * = list[] overloading
+     *
+     * @param   var offset
+     * @return  var
+     * @throws  lang.IndexOutOfBoundsException if key does not exist
+     */
+    public function offsetGet($offset) {
+      try {
+        return $this->h[$offset];
+      } catch (com_exception $e) {
+        throw new IllegalArgumentException($e->getCode().': '.$e->getMessage());
+      }
+    }
+
+    /**
+     * list[]= overloading
+     *
+     * @param   var offset
+     * @param   var value
+     * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
+     */
+    public function offsetSet($offset, $value) {
+      $this->h[$offset]= $value;
+    }
+
+    /**
+     * isset() overloading
+     *
+     * @param   var offset
+     * @return  bool
+     */
+    public function offsetExists($offset) {
+      return isset($this->h[$offset]);
+    }
+
+    /**
+     * unset() overloading
+     *
+     * @param   var offset
+     */
+    public function offsetUnset($offset) {
+      unset($this->h[$offset]);
     }
     
     /**
@@ -127,7 +196,11 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'(->'.xp::stringOf($this->h).')';
+      ob_start();
+      com_print_typeinfo($this->h);
+      preg_match('/class ([^ ]+) \{ \/\* GUID=([^ ]+) \*\//', ob_get_contents(), $matches);
+      ob_end_clean();
+      return $this->getClassName().'(->'.get_class($this->h).'<'.$matches[1].'>@'.$matches[2].')';
     }
   }
 ?>
