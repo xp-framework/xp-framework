@@ -7,10 +7,6 @@ Version ?.?.?, released ????-??-??
 SVN version: ?????
 
 
-Version 5.7.11, released 2010-09-14 
------------------------------------
-SVN version: 14818  
-
 Heads up!
 ~~~~~~~~~
 - Removed deprecated LOGGER_FLAG_* constants
@@ -65,9 +61,9 @@ RFCs
   (friebe)  
 
 
-Version ?.?.?, released ????-??-??
-----------------------------------
-SVN version: ?????
+Version 5.7.11, released 2010-09-14
+-----------------------------------
+SVN version: 14818
 
 Heads up!
 ~~~~~~~~~
