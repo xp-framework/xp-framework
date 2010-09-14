@@ -40,7 +40,10 @@
     #[@test]
     public function createWithShortNames() {
       $h= create('new HashTable<String, String>');
-      $this->assertEquals(array('String', 'String'), $h->__generic);
+      $this->assertEquals(
+        array(XPClass::forName('lang.types.String'), XPClass::forName('lang.types.String')), 
+        $h->getClass()->genericArguments()
+      );
     }
 
     /**
@@ -63,8 +66,8 @@
     public function createWithQualifiedNames() {
       $h= create('new util.collections.HashTable<lang.types.String, lang.types.String>');
       $this->assertEquals(
-        array(xp::reflect('lang.types.String'), xp::reflect('lang.types.String')), 
-        $h->__generic
+        array(XPClass::forName('lang.types.String'), XPClass::forName('lang.types.String')), 
+        $h->getClass()->genericArguments()
       );
     }
 

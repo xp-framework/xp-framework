@@ -16,20 +16,19 @@
    * @see      xp://util.collections.Map
    * @purpose  Map interface implementation
    */
+  #[@generic(self= 'K, V', Map= 'K, V')]
   class HashTable extends Object implements Map {
     protected
       $_buckets  = array(),
       $_hash     = 0;
     
-    public
-      $__generic = array();
-
     /**
      * = list[] overloading
      *
-     * @param   lang.Generic offset
-     * @return  lang.Generic
+     * @param   K offset
+     * @return  V
      */
+    #[@generic(params= 'K', return= 'V')]
     public function offsetGet($offset) {
       return $this->get($offset);
     }
@@ -37,9 +36,10 @@
     /**
      * list[]= overloading
      *
-     * @param   lang.Generic offset
-     * @param   lang.Generic value
+     * @param   K offset
+     * @param   V value
      */
+    #[@generic(params= 'K, V')]
     public function offsetSet($offset, $value) {
       $this->put($offset, $value);
     }
@@ -47,9 +47,10 @@
     /**
      * isset() overloading
      *
-     * @param   lang.Generic offset
+     * @param   K offset
      * @return  bool
      */
+    #[@generic(params= 'K')]
     public function offsetExists($offset) {
       return $this->containsKey($offset);
     }
@@ -57,8 +58,9 @@
     /**
      * unset() overloading
      *
-     * @param   lang.Generic offset
+     * @param   K offset
      */
+    #[@generic(params= 'K')]
     public function offsetUnset($offset) {
       $this->remove($offset);
     }
@@ -70,30 +72,21 @@
      * Returns previous value associated with specified key, or NULL if 
      * there was no mapping for the specified key.
      *
-     * @param   lang.Generic key
-     * @param   lang.Generic value
-     * @return  lang.Generic the previous value associated with the key
+     * @param   K key
+     * @param   V value
+     * @return  V the previous value associated with the key
      */
-    public function put($key, Generic $value) {
-      $k= Primitive::boxed($key);
-      
-      if ($this->__generic) {
-        if (!$k instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
-        } else if (!$value instanceof $this->__generic[1]) {
-          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
-        }
-      }
-      
-      $h= $k->hashCode();
+    #[@generic(params= 'K, V', return= 'V')]
+    public function put($key, $value) {
+      $h= $key instanceof Generic ? $key->hashCode() : $key;
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
         $previous= $this->_buckets[$h][1];
       }
 
-      $this->_buckets[$h]= array($k, $value);
-      $this->_hash+= HashProvider::hashOf($h.$value->hashCode());
+      $this->_buckets[$h]= array($key, $value);
+      $this->_hash+= HashProvider::hashOf($h.($value instanceof Generic ? $value->hashCode() : $value));
       return $previous;
     }
 
@@ -101,22 +94,13 @@
      * Returns the value to which this map maps the specified key. 
      * Returns NULL if the map contains no mapping for this key.
      *
-     * @param   lang.Generic key
-     * @return  lang.Generic the value associated with the key
+     * @param   K key
+     * @return  V the value associated with the key
      */
+    #[@generic(params= 'K', return= 'V')]
     public function get($key) {
-      $k= Primitive::boxed($key);
-
-      if ($this->__generic) {
-        if (!$k instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
-        }
-      }
-
-      $h= $k->hashCode();
-      if (!isset($this->_buckets[$h])) return NULL; 
-
-      return $this->_buckets[$h][1];
+      $h= $key instanceof Generic ? $key->hashCode() : $key;
+      return isset($this->_buckets[$h]) ? $this->_buckets[$h][1] : NULL; 
     }
     
     /**
@@ -124,28 +108,21 @@
      * Returns the value to which the map previously associated the key, 
      * or null if the map contained no mapping for this key.
      *
-     * @param   lang.Generic key
-     * @return  lang.Generic the previous value associated with the key
+     * @param   K key
+     * @return  V the previous value associated with the key
      */
+    #[@generic(params= 'K', return= 'V')]
     public function remove($key) {
-      $k= Primitive::boxed($key);
-
-      if ($this->__generic) {
-        if (!$k instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
-        }
-      }
-
-      $h= $k->hashCode();
+      $h= $key instanceof Generic ? $key->hashCode() : $key;
       if (!isset($this->_buckets[$h])) {
-        $previous= NULL;
+        $prev= NULL;
       } else {
-        $previous= $this->_buckets[$h][1];
-        $this->_hash-= HashProvider::hashOf($h.$previous->hashCode());
+        $prev= $this->_buckets[$h][1];
+        $this->_hash-= HashProvider::hashOf($h.($prev instanceof Generic ? $prev->hashCode() : $prev));
         unset($this->_buckets[$h]);
       }
 
-      return $previous;
+      return $prev;
     }
     
     /**
@@ -176,33 +153,31 @@
     /**
      * Returns true if this map contains a mapping for the specified key.
      *
-     * @param   lang.Generic key
+     * @param   K key
      * @return  bool
      */
+    #[@generic(params= 'K')]
     public function containsKey($key) {
-      $k= Primitive::boxed($key);
-      if ($this->__generic) {
-        if (!$k instanceof $this->__generic[0]) {
-          throw new IllegalArgumentException('Key '.xp::stringOf($k).' must be of '.$this->__generic[0]);
-        }
-      }
-      return isset($this->_buckets[$k->hashCode()]);
+      $h= $key instanceof Generic ? $key->hashCode() : $key;
+      return isset($this->_buckets[$h]);
     }
 
     /**
      * Returns true if this map maps one or more keys to the specified value. 
      *
-     * @param   lang.Generic value
+     * @param   V value
      * @return  bool
      */
-    public function containsValue(Generic $value) {
-      if ($this->__generic) {
-        if (!$value instanceof $this->__generic[1]) {
-          throw new IllegalArgumentException('Value '.xp::stringOf($value).' must be of '.$this->__generic[1]);
+    #[@generic(params= 'V')]
+    public function containsValue($value) {
+      if ($value instanceof Generic) {
+        foreach (array_keys($this->_buckets) as $key) {
+          if ($value->equals($this->_buckets[$key][1])) return TRUE;
         }
-      }
-      foreach (array_keys($this->_buckets) as $key) {
-        if ($this->_buckets[$key][1]->equals($value)) return TRUE;
+      } else {
+        foreach (array_keys($this->_buckets) as $key) {
+          if ($value === $this->_buckets[$key][1]) return TRUE;
+        }
       }
       return FALSE;
     }
@@ -233,8 +208,9 @@
     /**
      * Returns an array of keys
      *
-     * @return  lang.Generic[]
+     * @return  K[]
      */
+    #[@generic(return= 'K[]')]
     public function keys() {
       $keys= array();
       foreach (array_keys($this->_buckets) as $key) {
@@ -254,7 +230,7 @@
 
       $s.= "\n";
       foreach (array_keys($this->_buckets) as $key) {
-        $s.= '  '.$this->_buckets[$key][0]->toString().' => '.$this->_buckets[$key][1]->toString().",\n";
+        $s.= '  '.xp::stringOf($this->_buckets[$key][0]).' => '.xp::stringOf($this->_buckets[$key][1]).",\n";
       }
       return substr($s, 0, -2)."\n}";
     }

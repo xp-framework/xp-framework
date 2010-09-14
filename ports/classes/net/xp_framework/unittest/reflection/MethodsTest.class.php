@@ -26,6 +26,33 @@
     public function setUp() {
       $this->fixture= XPClass::forName('net.xp_framework.unittest.reflection.TestClass');
     }
+    
+    /**
+     * Assertion helper
+     *
+     * @param   lang.Generic var
+     * @param   lang.Generic[] list
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertNotContained($var, $list) {
+      foreach ($list as $i => $element) {
+        if ($element->equals($var)) $this->fail('Element contained', 'Found at offset '.$i, NULL);
+      }
+    }
+
+    /**
+     * Assertion helper
+     *
+     * @param   lang.Generic var
+     * @param   lang.Generic[] list
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertContained($var, $list) {
+      foreach ($list as $i => $element) {
+        if ($element->equals($var)) return;
+      }
+      $this->fail('Element not contained in list', NULL, $var);
+    }
 
     /**
      * Tests the method reflection
@@ -35,10 +62,20 @@
     #[@test]
     public function methods() {
       $methods= $this->fixture->getMethods();
-      $this->assertArray($methods);
-      foreach ($methods as $method) {
-        $this->assertClass($method, 'lang.reflect.Method');
-      }
+      $this->assertInstanceOf('lang.reflect.Method[]', $methods);
+      $this->assertContained($this->fixture->getMethod('equals'), $methods);
+    }
+
+    /**
+     * Tests the method reflection
+     *
+     * @see     xp://lang.XPClass#getDeclaredMethods
+     */
+    #[@test]
+    public function declaredMethods() {
+      $methods= $this->fixture->getDeclaredMethods();
+      $this->assertInstanceOf('lang.reflect.Method[]', $methods);
+      $this->assertNotContained($this->fixture->getMethod('equals'), $methods);
     }
     
     /**

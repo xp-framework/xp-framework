@@ -57,19 +57,51 @@
         ));
       }
       
-      // Check modifers
+      // Check modifiers. If caller is an instance of this class, allow
+      // protected method invocation (which the PHP reflection API does 
+      // not).
       $m= $this->_reflect->getModifiers();
-      if (!($m & MODIFIER_PUBLIC) || $m & MODIFIER_ABSTRACT) {
+      if ($m & MODIFIER_ABSTRACT) {
         throw new IllegalAccessException(sprintf(
-          'Cannot invoke %s %s::%s',
-          Modifiers::stringOf($this->getModifiers()),
+          'Cannot invoke abstract %s::%s',
           $this->_class,
           $this->_reflect->getName()
         ));
       }
+      if (!($m & MODIFIER_PUBLIC)) {
+        if (!$this->accessible) {
+          $t= debug_backtrace();
+          if ($t[1]['class'] !== $this->_class) {
+            $scope= new ReflectionClass($t[1]['class']);
+            if (!$scope->isSubclassOf($this->_class)) {
+              throw new IllegalAccessException(sprintf(
+                'Cannot invoke %s %s::%s from scope %s',
+                Modifiers::stringOf($this->getModifiers()),
+                $this->_class,
+                $this->_reflect->getName(),
+                $t[1]['class']
+              ));
+            }
+          }
+        }
+        
+        try {
+          if ($this->_reflect->isStatic()) {
+            return call_user_func(array($this->_class, '__callStatic'), "\7".$this->_reflect->getName(), (array)$args);
+          } else {
+            return call_user_func_array(array($obj, "\7".$this->_reflect->getName()), (array)$args);
+          }
+        } catch (SystemExit $e) {
+          throw $e;
+        } catch (Throwable $e) {
+          throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() ~ '.$e->getMessage(), $e);
+        }
+      }
 
       try {
         return $this->_reflect->invokeArgs($obj, (array)$args);
+      } catch (SystemExit $e) {
+        throw $e;
       } catch (Throwable $e) {
         throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() invocation failed', $e);
       } catch (ReflectionException $e) {

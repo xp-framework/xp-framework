@@ -14,7 +14,8 @@
     'util.log.Traceable',
     'util.log.BufferedAppender',
     'scriptlet.HttpScriptlet',
-    'scriptlet.xml.XMLScriptlet'
+    'scriptlet.xml.XMLScriptlet',
+    'lang.Runtime'
   );
 
   /**
@@ -27,6 +28,7 @@
     protected static $errorScriptlet= NULL;
     protected static $debugScriptlet= NULL;
     protected static $xmlScriptlet= NULL;
+    protected static $exitScriptlet= NULL;
     
     static function __static() {
       self::$errorScriptlet= ClassLoader::defineClass('ErrorScriptlet', 'scriptlet.HttpScriptlet', array('util.log.Traceable'), '{
@@ -132,6 +134,25 @@
 
           $config= PropertyManager::getInstance()->getProperties("debug")->getFileName();
           $response->write("<h2>".strtr($config, DIRECTORY_SEPARATOR, "/")."</h2>");
+        }
+      }');
+      self::$exitScriptlet= ClassLoader::defineClass('ExitScriptlet', 'scriptlet.HttpScriptlet', array(), '{
+        protected function _request() {
+          $req= parent::_request();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/exit";
+          $req->env["HTTP_HOST"]= "localhost";
+          $req->setParams($_REQUEST);
+          return $req;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
+        public function doGet($request, $response) {
+          Runtime::halt($request->getParam("code"), $request->getParam("message"));
         }
       }');
     }
@@ -331,6 +352,11 @@
         )
       );
       
+      // The exit scriptlet
+      $r->mapApplication('/exit', create(new WebApplication('exit'))
+        ->withScriptlet(self::$exitScriptlet->getName())
+      );
+
       // The welcome application
       $r->mapApplication('/', create(new WebApplication('welcome'))
         ->withScriptlet(self::$welcomeScriptlet->getName())
@@ -486,11 +512,14 @@
      *
      * @param   string profile
      * @param   string url
+     * @param   [:string] params
      * @return  string content
      */
-    protected function runWith($profile, $url) {
+    protected function runWith($profile, $url, $params= array()) {
       ob_start();
+      $_REQUEST= $params;
       $this->newRunner($profile)->run($url);
+      $_REQUEST= array();
       $content= ob_get_contents();
       ob_end_clean();
       return $content;
@@ -719,6 +748,54 @@
       $this->assertContained('<formresult', $content, 'formresult');
       $this->assertContained('<formvalues', $content, 'formvalues');
       $this->assertContained('<formerrors', $content, 'formerrors');
+    }
+
+    /**
+     * Test exit app
+     *
+     */
+    #[@test]
+    public function exitScriptletWithZeroExitCode() {
+      $content= $this->runWith('dev', '/exit', array('code' => '0'));
+      $this->assertEquals('', $content);
+    }
+
+    /**
+     * Test exit app
+     *
+     */
+    #[@test]
+    public function exitScriptletWithZeroExitCodeAndMessage() {
+      $content= $this->runWith('dev', '/exit', array('code' => '0', 'message' => 'Sorry'));
+      $this->assertEquals('Sorry', $content);
+    }
+
+    /**
+     * Test exit app
+     *
+     */
+    #[@test]
+    public function exitScriptletWithNonZeroExitCode() {
+      $content= $this->runWith('dev', '/exit', array('code' => '1'));
+      preg_match('#ERROR ([0-9]+)#', $content, $error);
+      preg_match('#<xmp>(.+)</xmp>#', $content, $compound);
+
+      $this->assertEquals('500', $error[1], 'error message');
+      $this->assertEquals(array(), $compound, 'exception compound message');
+    }
+
+    /**
+     * Test exit app
+     *
+     */
+    #[@test]
+    public function exitScriptletWithNonZeroExitCodeAndMessage() {
+      $content= $this->runWith('dev', '/exit', array('code' => '1', 'message' => 'Sorry'));
+      preg_match('#ERROR ([0-9]+)#', $content, $error);
+      preg_match('#<xmp>(.+)</xmp>#', $content, $compound);
+
+      $this->assertEquals('500', $error[1], 'error message');
+      $this->assertEquals('Sorry', $compound[1], 'exception compound message');
     }
   }
 ?>

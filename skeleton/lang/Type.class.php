@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.Primitive');
+  uses('lang.Primitive', 'lang.ArrayType');
 
   /**
    * Type is the base class for the XPClass and Primitive classes.
@@ -114,9 +114,13 @@
           return self::$VAR;
 
         case 'array': 
+          return ArrayType::forName('var[]');
+          
         case '*' == substr($name, -1): 
+          return ArrayType::forName(substr($name, 0, -1).'[]');
+
         case '[]' === substr($name, -2): 
-          return Primitive::$ARRAY;
+          return ArrayType::forName($name);
 
         case 'resource':    // XXX FIXME
           return Primitive::$INT;
@@ -134,6 +138,26 @@
         default:
           return XPClass::forName($name);
       }
+    }
+    
+    /**
+     * Returns type literal
+     *
+     * @return  string
+     */
+    public function literal() {
+      return $this->name;
+    }
+
+    /**
+     * Determines whether the specified object is an instance of this
+     * type. 
+     *
+     * @param   var obj
+     * @return  bool
+     */
+    public function isInstance($obj) {
+      return self::$VAR === $this;      // VAR is always true, VOID never
     }
   }
 ?>

@@ -110,6 +110,58 @@
     }
 
     /**
+     * Tests interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function testClassDeclaredInterfaces() {
+      $this->assertEquals(
+        array(XPClass::forName('util.log.Traceable')), 
+        $this->class->getDeclaredInterfaces()
+      );
+    }
+
+    /**
+     * Tests declared interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function objectClassDeclaredInterfaces() {
+      $this->assertEquals(
+        array(XPClass::forName('lang.Generic')), 
+        XPClass::forName('lang.Object')->getDeclaredInterfaces()
+      );
+    }
+
+    /**
+     * Tests declared interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function thisClassDeclaredInterfaces() {
+      $this->assertEquals(
+        array(), 
+        $this->getClass()->getDeclaredInterfaces()
+      );
+    }
+
+    /**
+     * Tests declared interfaces
+     *
+     * @see     xp://lang.XPClass#getDeclaredInterfaces
+     */
+    #[@test]
+    public function ilistInterfaceDeclaredInterfaces() {
+      $this->assertEquals(
+        array(new XPClass('ArrayAccess'), new XPClass('IteratorAggregate')), 
+        XPClass::forName('util.collections.IList')->getDeclaredInterfaces()
+      );
+    }
+
+    /**
      * Tests this class has a constructor
      *
      * @see     xp://lang.XPClass#hasConstructor
@@ -268,7 +320,7 @@
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function nonExistantforName() {
-      $class= XPClass::forName('class.does.not.Exist');
+      XPClass::forName('class.does.not.Exist');
     }
 
     /**
@@ -278,11 +330,7 @@
      */
     #[@test]
     public function getClasses() {
-      $classes= XPClass::getClasses();
-      $this->assertArray($classes);
-      foreach ($classes as $class) {
-        $this->assertClass($class, 'lang.XPClass');
-      }
+      $this->assertInstanceOf('lang.XPClass[]', XPClass::getClasses());
     }
     
     /**

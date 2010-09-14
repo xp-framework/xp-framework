@@ -37,27 +37,24 @@
    * @see      xp://util.collections.Stack
    * @see      http://www.faqs.org/docs/javap/c12/ex-12-1-answer.html
    */
+  #[@generic(self= 'T')]
   class Queue extends Object {
     protected
       $_elements = array(),
       $_hash     = 0;
 
-    public
-      $__generic = array();
-  
     /**
      * Puts an item into the queue. Returns the element that was added.
      *
-     * @param   lang.Generic object
-     * @return  lang.Generic object
+     * @param   T element
+     * @return  T element
      */
-    public function put(Generic $object) {
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      $this->_elements[]= $object;
-      $this->_hash+= HashProvider::hashOf($object->hashCode());
-      return $object;
+    #[@generic(params= 'T', return= 'T')]
+    public function put($element) {
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $this->_elements[]= $element;
+      $this->_hash+= HashProvider::hashOf($h);
+      return $element;
     }
 
     /**
@@ -66,15 +63,17 @@
      * @return  lang.Generic
      * @throws  util.NoSuchElementException
      */    
+    #[@generic(return= 'T')]
     public function get() {
       if (empty($this->_elements)) {
         throw new NoSuchElementException('Queue is empty');
       }
 
-      $e= $this->_elements[0];
-      $this->_hash-= HashProvider::hashOf($e->hashCode());
+      $element= $this->_elements[0];
+      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $this->_hash-= HashProvider::hashOf($h);
       $this->_elements= array_slice($this->_elements, 1);
-      return $e;
+      return $element;
     }
     
     /**
@@ -83,8 +82,9 @@
      *
      * Returns NULL in case the queue is empty.
      *
-     * @return  lang.Generic object
+     * @return  T element
      */        
+    #[@generic(return= 'T')]
     public function peek() {
       if (empty($this->_elements)) return NULL; else return $this->_elements[0];
     }
@@ -112,14 +112,12 @@
      * Sees if an object is in the queue and returns its position.
      * Returns -1 if the object is not found.
      *
-     * @param   lang.Generic object
+     * @param   T element
      * @return  int position
      */
-    public function search(Generic $object) {
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      return ($keys= array_keys($this->_elements, $object)) ? $keys[0] : -1;
+    #[@generic(params= 'T')]
+    public function search($element) {
+      return ($keys= array_keys($this->_elements, $element)) ? $keys[0] : -1;
     }
 
     /**
@@ -129,13 +127,12 @@
      * @return  lang.Generic
      * @return  bool
      */
-    public function remove(Generic $object) {
-      if ($this->__generic && !$object instanceof $this->__generic[0]) {
-        throw new IllegalArgumentException('Object '.xp::stringOf($object).' must be of '.$this->__generic[0]);
-      }
-      if (-1 == ($pos= $this->search($object))) return FALSE;
+    #[@generic(params= 'T')]
+    public function remove($element) {
+      if (-1 == ($pos= $this->search($element))) return FALSE;
       
-      $this->_hash-= HashProvider::hashOf($this->_elements[$pos]->hashCode());
+      $h= $this->_elements[$pos] instanceof Generic ? $this->_elements[$pos]->hashCode() : $this->_elements[$pos];
+      $this->_hash-= HashProvider::hashOf($h);
       unset($this->_elements[$pos]);
       $this->_elements= array_values($this->_elements);   // Re-index
       return TRUE;
@@ -145,9 +142,10 @@
      * Retrieves an element by its index.
      *
      * @param   int index
-     * @return  lang.Generic
+     * @return  T
      * @throws  lang.IndexOutOfBoundsException
      */
+    #[@generic(return= 'T')]
     public function elementAt($index) {
       if (!isset($this->_elements[$index])) {
         throw new IndexOutOfBoundsException('Index '.$index.' out of bounds');

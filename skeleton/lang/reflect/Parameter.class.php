@@ -101,7 +101,7 @@
      */
     public function getDefaultValue() {
       if ($this->_reflect->isOptional()) {
-        return $this->_reflect->getDefaultValue();
+        return $this->_reflect->isDefaultValueAvailable() ? $this->_reflect->getDefaultValue() : NULL;
       }
 
       throw new IllegalStateException('Parameter "'.$this->_reflect->getName().'" has no default value');

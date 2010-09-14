@@ -180,33 +180,33 @@
     }
   
     /**
-     * Tests HashTable<lang.types.String, lang.types.String>
+     * Tests HashTable<string, lang.types.String>
      *
      */
     #[@test]
     public function stringStringHash() {
-      create('new util.collections.HashTable<lang.types.String, lang.types.String>')->put('hello', new String('World'));
+      create('new util.collections.HashTable<string, lang.types.String>')->put('hello', new String('World'));
     }
 
     /**
-     * Tests HashTable<lang.types.String, lang.types.String>
+     * Tests HashTable<string, lang.types.String>
      *
      */
     #[@test]
     public function getFromStringStringHash() {
-      with ($h= create('new util.collections.HashTable<lang.types.String, lang.types.String>')); {
+      with ($h= create('new util.collections.HashTable<string, lang.types.String>')); {
         $h->put('hello', new String('World'));
         $this->assertEquals(new String('World'), $h->get('hello'));
       }
     }
 
     /**
-     * Tests HashTable<lang.types.String, lang.types.String>
+     * Tests HashTable<string, lang.types.String>
      *
      */
     #[@test]
     public function removeFromStringStringHash() {
-      with ($h= create('new util.collections.HashTable<lang.types.String, lang.types.String>')); {
+      with ($h= create('new util.collections.HashTable<string, lang.types.String>')); {
         $h->put('hello', new String('World'));
         $this->assertEquals(new String('World'), $h->remove('hello'));
       }
@@ -218,7 +218,7 @@
      */
     #[@test]
     public function testStringStringHash() {
-      with ($h= create('new util.collections.HashTable<lang.types.String, lang.types.String>')); {
+      with ($h= create('new util.collections.HashTable<string, lang.types.String>')); {
         $h->put('hello', new String('World'));
         $this->assertTrue($h->containsKey('hello'));
       }
@@ -230,7 +230,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function stringStringHashPutIllegalValue() {
-      create('new util.collections.HashTable<lang.types.String, lang.types.String>')->put('hello', new Integer(1));
+      create('new util.collections.HashTable<string, lang.types.String>')->put('hello', new Integer(1));
     }
 
     /**

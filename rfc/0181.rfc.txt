@@ -4,7 +4,7 @@ $Id$
 
 @authors: friebe, kiesel
 @created: Wed Feb 18 09:04:18     2009
-@status: implemented, Sun Aug 22 14:34:37     2010
+@status: discussion, ends Fri Nov 27 12:00:00     2009
 @target: 5.8.0
 @category: <core>
 
@@ -55,7 +55,7 @@ Changes to code
 So this is what has to change in the Command class:
 <pre>
   - exit(1);
-  + Runtime::halt(1);
+  + System::doExit(1);
 </pre>
 
 On the calling side, we can now do the following:
@@ -92,10 +92,22 @@ http://news.xp-framework.net/article/94/0000/00/00/
 
 Comments
 --------
-friebe, Sun Aug 22 12:52:38     2010
+friebe, Fri Nov 13 19:24:42     2009
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Use <tt>Runtime::halt(int $code, string $message= NULL)</tt> instead of 
-<tt>System::doExit()</tt>.
+Maybe "yield" would be a name (http://www.merriam-webster.com/thesaurus/yield)
+since we are returning control to the (operating) system:
+<summary>
+[...]
+6) to give (something) over to the control or possession of another usually 
+under duress [refusing to yield the city to enemy troops] - see surrender 1
+[...]
+</summary>
+
+friebe, Wed Feb 18 09:19:46     2009
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I'm not particularily happy with <tt>System::doExit()</tt> as method name,
+<tt>System::exit()</tt> would be better, but as exit is a keyword in PHP,
+we can't name it that. 
 
 friebe, Fri Nov 13 19:24:42     2009
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -107,11 +119,5 @@ to give (something) over to the control or possession of another usually
 under duress [refusing to yield the city to enemy troops] - see surrender 1
 [...]
 </summary>
-
-friebe, Wed Feb 18 09:19:46     2009
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-I'm not particularily happy with <tt>System::doExit()</tt> as method name,
-<tt>System::exit()</tt> would be better, but as exit is a keyword in PHP,
-we can't name it that. 
 
 <EOF>

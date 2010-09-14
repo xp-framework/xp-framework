@@ -7,7 +7,7 @@
   uses(
     'xml.Tree',
     'xml.Node',
-    'lang.Collection',
+    'lang.types.ArrayList',
     'webservices.soap.CommonSoapFault',
     'webservices.soap.xp.XPSoapNode',
     'webservices.soap.xp.XPSoapHeaderElement',
@@ -253,18 +253,9 @@
             // ~~~~~~~~~~~~~~~~~~~~~
             // <item SOAP-ENC:arrayType="xsd:int[4]"/>
             if ($this->namespaces[XMLNS_XP] == $ns) {
-              try {
-                $result= Collection::forClass(XPClass::forName($childType)->getName());
-              } catch (ClassNotFoundException $e) {
-
-                // TBD: Probably, unknown remote classes should we returned as
-                // UnknownRemoteObject, just like in the remote package.
-                $result= Collection::forClass('lang.Object');
-                $result->__qname= $childType;
-              }
-              
-              foreach ($this->_recurseData($child, FALSE, 'ARRAY') as $val) {
-                $result->add($val);
+              $result= ArrayList::newInstance($length);              
+              foreach ($this->_recurseData($child, FALSE, 'ARRAY') as $i => $val) {
+                $result[$i]= $val;
               }
               break;
             } else for ($i= 0; $i < $length; ++$i) {

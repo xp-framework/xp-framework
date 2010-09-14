@@ -232,16 +232,7 @@
         $type= Type::forName($type);
       }
       
-      if ($type instanceof XPClass) {
-        $verify= $type->isInstance($var);
-      } else if ($type instanceof Primitive) {
-        $verify= $type->equals(Type::forName(xp::typeOf($var)));
-      } else if (Type::$VAR->equals($type)) {
-        $verify= TRUE;
-      } else if (Type::$VOID->equals($type)) {
-        $verify= FALSE;
-      }
-      $verify || $this->fail($error, xp::typeOf($var), $type->getName());
+      $type->isInstance($var) || $this->fail($error, xp::typeOf($var), $type->getName());
     }
     
     /**

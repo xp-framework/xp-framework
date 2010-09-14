@@ -76,7 +76,7 @@
      */
     #[@test]
     public function arrayOfString() {
-      $this->assertEquals(Primitive::$ARRAY, Type::forName('string[]'));
+      $this->assertEquals(ArrayType::forName('string[]'), Type::forName('string[]'));
     }
 
     /**
@@ -94,7 +94,7 @@
      */
     #[@test]
     public function arrayKeyword() {
-      $this->assertEquals(Primitive::$ARRAY, Type::forName('array'));
+      $this->assertEquals(ArrayType::forName('var[]'), Type::forName('array'));
     }
 
     /**
@@ -167,6 +167,78 @@
     #[@test]
     public function genericObjectType() {
       $this->assertEquals(XPClass::forName('util.collections.HashTable'), Type::forName('util.collections.HashTable<String, Object>'));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VAR
+     *
+     */
+    #[@test]
+    public function thisIsInstanceOfVar() {
+      $this->assertTrue(Type::$VAR->isInstance($this));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VAR
+     *
+     */
+    #[@test]
+    public function nullIsInstanceOfVar() {
+      $this->assertTrue(Type::$VAR->isInstance(NULL));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VAR
+     *
+     */
+    #[@test]
+    public function stringIsInstanceOfVar() {
+      $this->assertTrue(Type::$VAR->isInstance(''));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VAR
+     *
+     */
+    #[@test]
+    public function intIsInstanceOfVar() {
+      $this->assertTrue(Type::$VAR->isInstance(0));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VOID
+     *
+     */
+    #[@test]
+    public function thisIsNotInstanceOfVoid() {
+      $this->assertFalse(Type::$VOID->isInstance($this));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VOID
+     *
+     */
+    #[@test]
+    public function nullIsNotInstanceOfVoid() {
+      $this->assertFalse(Type::$VOID->isInstance(NULL));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VOID
+     *
+     */
+    #[@test]
+    public function stringIsNotInstanceOfVoid() {
+      $this->assertFalse(Type::$VOID->isInstance(''));
+    }
+
+    /**
+     * Test isInstance() method on Type::$VOID
+     *
+     */
+    #[@test]
+    public function intIsNotInstanceOfVoid() {
+      $this->assertFalse(Type::$VOID->isInstance(0));
     }
   }
 ?>

@@ -9,7 +9,7 @@
   /**
    * Tests ref() and deref() core functionality
    *
-   * @purpose  Testcase
+   * @deprecated ref() and deref() have been deprecated from core
    */
   class RefTest extends TestCase {
 
