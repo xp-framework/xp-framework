@@ -129,8 +129,11 @@
           return self::$VOID;
         
         case FALSE !== ($p= strpos($name, '<')):
-          $base= substr($name, 0, $p);
-          return 'array' == $base ? Primitive::$ARRAY : XPClass::forName($base);
+          if ('array' === ($base= substr($name, 0, $p))) return Primitive::$ARRAY;
+          foreach (explode(',', substr($name, $p+ 1, -1)) as $type) {
+            $typeargs[]= self::forName(ltrim($type));
+          }
+          return XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base))->newGenericType($typeargs);
 
         case FALSE === strpos($name, '.'): 
           return new XPClass(new ReflectionClass($name));

@@ -520,12 +520,7 @@
 
     // Check for an anonymous generic 
     if (strstr($spec, '<')) {
-      sscanf($spec, '%[^<]<%[^>]>', $classname, $types);
-      $typeargs= array();
-      foreach (explode(',', $types) as $type) {
-        $typeargs[]= Type::forName(ltrim($type));
-      }
-      $type= XPClass::forName(strstr($classname, '.') ? $classname : xp::nameOf($classname))->newGenericType($typeargs)->literal();
+      $type= Type::forName($spec)->literal();
     } else {
       $type= xp::reflect(strstr($spec, '.') ? $spec : xp::nameOf($spec));
       if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
@@ -560,17 +555,16 @@
     if ($spec instanceof Generic) return $spec;
 
     // Parse type specification
-    sscanf($spec, 'new %[^<]<%[^>]>', $classname, $types);
-
+    preg_match('/new ([^<]+)<(.+)>(\(\))?$/', $spec, $matches);
     $typeargs= array();
-    foreach (explode(',', $types) as $type) {
+    foreach (explode(',', $matches[2]) as $type) {
       $typeargs[]= Type::forName(ltrim($type));
     }
     
     // BC check: For classes with __generic field, instanciate without 
     // invoking the constructor and pass type information. This is done 
     // so that the constructur can already use generic types.
-    $class= XPClass::forName(strstr($classname, '.') ? $classname : xp::nameOf($classname));
+    $class= XPClass::forName(strstr($matches[1], '.') ? $matches[1] : xp::nameOf($matches[1]));
     if ($class->hasField('__generic')) {
       $__id= microtime();
       $name= xp::reflect($classname);
