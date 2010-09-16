@@ -75,6 +75,27 @@
     }
     
     /**
+     * Creates a type list from a given string
+     *
+     * @param   string names
+     * @return  lang.Type[] list
+     */
+    public static function forNames($names) {
+      $types= array();
+      for ($args= $names.',', $o= 0, $brackets= 0, $i= 0, $s= strlen($args); $i < $s; $i++) {
+        if (',' === $args{$i} && 0 === $brackets) {
+          $types[]= self::forName(ltrim(substr($args, $o, $i- $o)));
+          $o= $i+ 1;
+        } else if ('<' === $args{$i}) {
+          $brackets++;
+        } else if ('>' === $args{$i}) {
+          $brackets--;
+        }
+      }
+      return $types;
+    }
+    
+    /**
      * Gets a type for a given name
      *
      * Checks for:
@@ -130,10 +151,7 @@
         
         case FALSE !== ($p= strpos($name, '<')):
           if ('array' === ($base= substr($name, 0, $p))) return Primitive::$ARRAY;
-          foreach (explode(',', substr($name, $p+ 1, -1)) as $type) {
-            $typeargs[]= self::forName(ltrim($type));
-          }
-          return XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base))->newGenericType($typeargs);
+          return XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base))->newGenericType(self::forNames(substr($name, $p+ 1, -1)));
 
         case FALSE === strpos($name, '.'): 
           return new XPClass(new ReflectionClass($name));

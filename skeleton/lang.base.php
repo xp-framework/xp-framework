@@ -554,17 +554,17 @@
   function create($spec) {
     if ($spec instanceof Generic) return $spec;
 
-    // Parse type specification
-    preg_match('/new ([^<]+)<(.+)>(\(\))?$/', $spec, $matches);
-    $typeargs= array();
-    foreach (explode(',', $matches[2]) as $type) {
-      $typeargs[]= Type::forName(ltrim($type));
-    }
+    // Parse type specification: "new " TYPE "()"?
+    // TYPE:= B "<" ARGS ">"
+    // ARGS:= TYPE [ "," TYPE [ "," ... ]]
+    $b= strpos($spec, '<');
+    $base= substr($spec, 4, $b- 4);
+    $typeargs= Type::forNames(substr($spec, $b+ 1, strrpos($spec, '>')- $b- 1));
     
     // BC check: For classes with __generic field, instanciate without 
     // invoking the constructor and pass type information. This is done 
     // so that the constructur can already use generic types.
-    $class= XPClass::forName(strstr($matches[1], '.') ? $matches[1] : xp::nameOf($matches[1]));
+    $class= XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base));
     if ($class->hasField('__generic')) {
       $__id= microtime();
       $name= xp::reflect($classname);
