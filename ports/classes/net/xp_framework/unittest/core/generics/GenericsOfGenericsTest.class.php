@@ -8,7 +8,8 @@
 
   uses(
     'unittest.TestCase',
-    'net.xp_framework.unittest.core.generics.ListOf'
+    'net.xp_framework.unittest.core.generics.ListOf',
+    'net.xp_framework.unittest.core.generics.Lookup'
   );
 
   /**
@@ -34,6 +35,32 @@
         with ($cclass= $arguments[0]); {
           $this->assertTrue($cclass->isGeneric());
           $arguments= $cclass->genericArguments();
+          $this->assertEquals(1, sizeof($arguments));
+          $this->assertEquals(Primitive::$STRING, $arguments[0]);
+        }
+      }
+    }
+
+    /**
+     * Test a lookup of list of strings
+     *
+     */
+    #[@test]
+    public function lookupOfListOfStringsReflection() {
+      $l= create('new net.xp_framework.unittest.core.generics.Lookup<string, net.xp_framework.unittest.core.generics.ListOf<string>>');
+      
+      with ($class= $l->getClass()); {
+        $this->assertTrue($class->isGeneric());
+        $arguments= $class->genericArguments();
+        $this->assertEquals(2, sizeof($arguments));
+        
+        with ($kclass= $arguments[0]); {
+          $this->assertEquals(Primitive::$STRING, $kclass);
+        }
+        
+        with ($vclass= $arguments[1]); {
+          $this->assertTrue($vclass->isGeneric());
+          $arguments= $vclass->genericArguments();
           $this->assertEquals(1, sizeof($arguments));
           $this->assertEquals(Primitive::$STRING, $arguments[0]);
         }
