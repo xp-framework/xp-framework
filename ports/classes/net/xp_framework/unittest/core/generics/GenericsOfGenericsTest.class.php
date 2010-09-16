@@ -54,15 +54,36 @@
         $arguments= $class->genericArguments();
         $this->assertEquals(2, sizeof($arguments));
         
-        with ($kclass= $arguments[0]); {
-          $this->assertEquals(Primitive::$STRING, $kclass);
-        }
-        
+        $this->assertEquals(Primitive::$STRING, $arguments[0]);
         with ($vclass= $arguments[1]); {
           $this->assertTrue($vclass->isGeneric());
           $arguments= $vclass->genericArguments();
           $this->assertEquals(1, sizeof($arguments));
           $this->assertEquals(Primitive::$STRING, $arguments[0]);
+        }
+      }
+    }
+
+    /**
+     * Test a lookup of lookup of strings
+     *
+     */
+    #[@test]
+    public function lookupOfLookupOfStringsReflection() {
+      $l= create('new net.xp_framework.unittest.core.generics.Lookup<string, net.xp_framework.unittest.core.generics.Lookup<string, lang.Generic>>');
+      
+      with ($class= $l->getClass()); {
+        $this->assertTrue($class->isGeneric());
+        $arguments= $class->genericArguments();
+        $this->assertEquals(2, sizeof($arguments));
+        
+        $this->assertEquals(Primitive::$STRING, $arguments[0]);
+        with ($vclass= $arguments[1]); {
+          $this->assertTrue($vclass->isGeneric());
+          $arguments= $vclass->genericArguments();
+          $this->assertEquals(2, sizeof($arguments));
+          $this->assertEquals(Primitive::$STRING, $arguments[0]);
+          $this->assertEquals(XPClass::forName('lang.Generic'), $arguments[1]);
         }
       }
     }
