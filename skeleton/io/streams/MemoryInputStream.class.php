@@ -29,12 +29,12 @@
      * Read a string
      *
      * @param   int limit default 8192
-     * @return  string
+     * @return  lang.types.Bytes
      */
     public function read($limit= 8192) {
-      $chunk= substr($this->bytes, $this->pos, $limit);
+      if (FALSE === ($chunk= substr($this->bytes, $this->pos, $limit))) return NULL;
       $this->pos+= strlen($chunk);
-      return $chunk;
+      return new Bytes($chunk);
     }
 
     /**

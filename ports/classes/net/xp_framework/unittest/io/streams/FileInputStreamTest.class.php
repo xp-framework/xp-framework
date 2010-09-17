@@ -53,9 +53,9 @@
     #[@test]
     public function reading() {
       with ($stream= new FileInputStream($this->file)); {
-        $this->assertEquals('Created by ', $stream->read(11));
-        $this->assertEquals('FileInputStreamTest', $stream->read());
-        $this->assertEquals('', $stream->read());
+        $this->assertEquals(new Bytes('Created by '), $stream->read(11));
+        $this->assertEquals(new Bytes('FileInputStreamTest'), $stream->read());
+        $this->assertEquals(NULL, $stream->read());
       }
     }
 
@@ -69,7 +69,7 @@
         $this->assertEquals(0, $stream->tell());
         $stream->seek(20);
         $this->assertEquals(20, $stream->tell());
-        $this->assertEquals('StreamTest', $stream->read());
+        $this->assertEquals(new Bytes('StreamTest'), $stream->read());
       }
     }
 

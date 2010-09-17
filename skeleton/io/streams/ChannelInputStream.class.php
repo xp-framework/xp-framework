@@ -38,15 +38,15 @@
      * Read a string
      *
      * @param   int limit default 8192
-     * @return  string
+     * @return  lang.types.Bytes
      */
     public function read($limit= 8192) {
       if (FALSE === ($bytes= fread($this->fd, $limit))) {
-        $e= new IOException('Could not read '.$limit.' bytes from '.$this->name.' channel');
-        xp::gc(__FILE__);
-        throw $e;
+        throw new IOException('Could not read '.$limit.' bytes from '.$this->name.' channel');
+      } else if ('' !== $bytes) {
+        return new Bytes($bytes);
       }
-      return $bytes;
+      return NULL;
     }
 
     /**

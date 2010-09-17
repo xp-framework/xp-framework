@@ -383,7 +383,7 @@
         ->getInputStream()
       ;
 
-      $this->assertEquals("<html/>\n", Streams::readAll($s));
+      $this->assertEquals(new Bytes("<html/>\n"), Streams::readAll($s));
     }
 
     /**
@@ -398,7 +398,7 @@
       for ($i= 0; $i < 2; $i++) {
         try {
           $s= $dir->getFile('index.html')->getInputStream();
-          $this->assertEquals("<html/>\n", Streams::readAll($s));
+          $this->assertEquals(new Bytes("<html/>\n"), Streams::readAll($s));
         } catch (IOException $e) {
           $this->fail('Round '.($i + 1), $e, NULL);
         }

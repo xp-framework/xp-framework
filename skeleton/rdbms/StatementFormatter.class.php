@@ -137,6 +137,8 @@
         } else if ($arg instanceof SQLRenderable) {
           $r.= $arg->asSql($this->conn).', ';
           continue;
+        } else if ($arg instanceof String) {
+          $p= $arg->getBytes('utf-8')->buffer;
         } else if ($arg instanceof Generic) {
           $p= $arg->toString();
         } else {

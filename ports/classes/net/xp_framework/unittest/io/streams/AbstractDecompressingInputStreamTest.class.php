@@ -61,7 +61,7 @@
       $decompressor= $this->newStream($in);
       $chunk= $decompressor->read();
       $decompressor->close();
-      $this->assertEquals('Hello', $chunk);
+      $this->assertEquals(new Bytes('Hello'), $chunk);
     }
 
     /**
@@ -76,9 +76,9 @@
       $chunk2= $decompressor->read(1);
       $chunk3= $decompressor->read(5);
       $decompressor->close();
-      $this->assertEquals('Hello', $chunk1);
-      $this->assertEquals(' ', $chunk2);
-      $this->assertEquals('World', $chunk3);
+      $this->assertEquals(new Bytes('Hello'), $chunk1);
+      $this->assertEquals(new Bytes(' '), $chunk2);
+      $this->assertEquals(new Bytes('World'), $chunk3);
     }
 
     /**
@@ -91,7 +91,7 @@
       $decompressor= $this->newStream($in);
       $chunk= $decompressor->read();
       $decompressor->close();
-      $this->assertEquals('Hello', $chunk);
+      $this->assertEquals(new Bytes('Hello'), $chunk);
     }
 
     /**
@@ -104,7 +104,7 @@
       $decompressor= $this->newStream($in);
       $chunk= $decompressor->read();
       $decompressor->close();
-      $this->assertEquals('Hello', $chunk);
+      $this->assertEquals(new Bytes('Hello'), $chunk);
     }
   }
 ?>

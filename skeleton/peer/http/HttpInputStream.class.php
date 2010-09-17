@@ -55,7 +55,7 @@
       $this->buffer();
       $b= substr($this->buffer, 0, $limit);
       $this->buffer= substr($this->buffer, $limit);
-      return $b;
+      return FALSE === $b ? NULL : new Bytes($b);
     }
 
     /**

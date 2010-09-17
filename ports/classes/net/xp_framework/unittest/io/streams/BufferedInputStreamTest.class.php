@@ -39,7 +39,7 @@
      */
     #[@test]
     public function readAll() {
-      $this->assertEquals(self::BUFFER, $this->in->read(strlen(self::BUFFER)));
+      $this->assertEquals(new Bytes(self::BUFFER), $this->in->read(strlen(self::BUFFER)));
       $this->assertEquals(0, $this->in->available());
     }
 
@@ -49,7 +49,7 @@
      */
     #[@test]
     public function readChunk() {
-      $this->assertEquals('Hello', $this->in->read(5));
+      $this->assertEquals(new Bytes('Hello'), $this->in->read(5));
       $this->assertEquals(5, $this->in->available());   // Five buffered bytes
     }
     
@@ -59,9 +59,9 @@
      */
     #[@test]
     public function readChunks() {
-      $this->assertEquals('Hello', $this->in->read(5));
+      $this->assertEquals(new Bytes('Hello'), $this->in->read(5));
       $this->assertEquals(5, $this->in->available());   // Five buffered bytes
-      $this->assertEquals(' Worl', $this->in->read(5));
+      $this->assertEquals(new Bytes(' Worl'), $this->in->read(5));
       $this->assertEquals(0, $this->in->available());   // Buffer completely empty
     }
   }

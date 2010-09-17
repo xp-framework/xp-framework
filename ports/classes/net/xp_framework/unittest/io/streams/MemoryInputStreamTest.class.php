@@ -34,7 +34,7 @@
      */
     #[@test]
     public function readAll() {
-      $this->assertEquals(self::BUFFER, $this->in->read(strlen(self::BUFFER)));
+      $this->assertEquals(new Bytes(self::BUFFER), $this->in->read(strlen(self::BUFFER)));
       $this->assertEquals(0, $this->in->available());
     }
 
@@ -44,7 +44,7 @@
      */
     #[@test]
     public function readChunk() {
-      $this->assertEquals('Hello', $this->in->read(5));
+      $this->assertEquals(new Bytes('Hello'), $this->in->read(5));
       $this->assertEquals(strlen(self::BUFFER)- 5, $this->in->available());
     }
     

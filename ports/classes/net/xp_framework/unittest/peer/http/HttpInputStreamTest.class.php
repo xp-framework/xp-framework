@@ -113,10 +113,10 @@
       ))); {
 
         $this->assertNotEquals(0, $s->available(), 'before read #1');
-        $this->assertEquals('Hello', $s->read(5));
+        $this->assertEquals(new Bytes('Hello'), $s->read(5));
 
         $this->assertNotEquals(0, $s->available(), 'before read #2');
-        $this->assertEquals('World', $s->read(5));
+        $this->assertEquals(new Bytes('World'), $s->read(5));
 
         $this->assertEquals(0, $s->available(), 'after read #3');
       }
@@ -137,10 +137,10 @@
       ))); {
 
         $this->assertNotEquals(0, $s->available(), 'before read #1');
-        $this->assertEquals('Hello', $s->read(5));
+        $this->assertEquals(new Bytes('Hello'), $s->read(5));
 
         $this->assertNotEquals(0, $s->available(), 'before read #2');
-        $this->assertEquals('World', $s->read(5));
+        $this->assertEquals(new Bytes('World'), $s->read(5));
 
         $this->assertEquals(0, $s->available(), 'after read #3');
       }

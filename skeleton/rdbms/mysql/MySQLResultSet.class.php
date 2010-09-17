@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.ResultSet');
+  uses('rdbms.ResultSet', 'lang.types.String');
 
   /**
    * Result set
@@ -97,6 +97,10 @@
             
           case 'real':
             settype($row[$key], 'double'); 
+            break;
+          
+          case 'string': default:
+            $row[$key]= new String($row[$key], 'utf-8');
             break;
         }
       }

@@ -26,7 +26,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('Hello'));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals('Hello', $chunk);
+      $this->assertEquals(new Bytes('Hello'), $chunk);
     }
 
     /**
@@ -40,9 +40,9 @@
       $chunk2= $stream->read(1);
       $chunk3= $stream->read(5);
       $stream->close();
-      $this->assertEquals('Hello', $chunk1);
-      $this->assertEquals(' ', $chunk2);
-      $this->assertEquals('World', $chunk3);
+      $this->assertEquals(new Bytes('Hello'), $chunk1);
+      $this->assertEquals(new Bytes(' '), $chunk2);
+      $this->assertEquals(new Bytes('World'), $chunk3);
     }
 
     /**
@@ -54,7 +54,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('=DCbercoder'));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals('Übercoder', $chunk);
+      $this->assertEquals(new Bytes('Übercoder'), $chunk);
     }
 
     /**
@@ -66,7 +66,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('Space between'));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals('Space between', $chunk);
+      $this->assertEquals(new Bytes('Space between'), $chunk);
     }
 
     /**
@@ -78,7 +78,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('Space=20between'));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals('Space between', $chunk);
+      $this->assertEquals(new Bytes('Space between'), $chunk);
     }
 
     /**
@@ -90,7 +90,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream("Tab\tbetween"));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals("Tab\tbetween", $chunk);
+      $this->assertEquals(new Bytes("Tab\tbetween"), $chunk);
     }
 
     /**
@@ -102,7 +102,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('Tab=09between'));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals("Tab\tbetween", $chunk);
+      $this->assertEquals(new Bytes("Tab\tbetween"), $chunk);
     }
 
     /**
@@ -114,7 +114,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream(str_repeat('1', 75)."=\n".str_repeat('2', 75)));
       $chunk= $stream->read(150);
       $stream->close();
-      $this->assertEquals(str_repeat('1', 75).str_repeat('2', 75), $chunk);
+      $this->assertEquals(new Bytes(str_repeat('1', 75).str_repeat('2', 75)), $chunk);
     }
 
     /**
@@ -127,7 +127,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('Hello '));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals('Hello ', $chunk);
+      $this->assertEquals(new Bytes('Hello '), $chunk);
     }
 
     /**
@@ -158,7 +158,7 @@
       }'));
       $chunk= $stream->read(strlen($expected));
       $stream->close();
-      $this->assertEquals($expected, $chunk);
+      $this->assertEquals(new Bytes($expected), $chunk);
     }
 
     /**
@@ -170,7 +170,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('A=3D1'));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals('A=1', $chunk);
+      $this->assertEquals(new Bytes('A=1'), $chunk);
     }
 
     /**
@@ -182,7 +182,7 @@
       $stream= new QuotedPrintableInputStream(new MemoryInputStream('=3d'));
       $chunk= $stream->read();
       $stream->close();
-      $this->assertEquals('=', $chunk);
+      $this->assertEquals(new Bytes('='), $chunk);
     }
     
     /**

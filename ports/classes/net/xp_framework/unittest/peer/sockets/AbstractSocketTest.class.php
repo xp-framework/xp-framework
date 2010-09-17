@@ -510,7 +510,7 @@
       
       $si= $this->fixture->getInputStream();
       $this->assertTrue($si->available() > 0, 'available() > 0');
-      $this->assertEquals('+ECHO '.$expect, $si->read(strlen($expect)+ strlen('+ECHO ')));
+      $this->assertEquals(new Bytes('+ECHO '.$expect), $si->read(strlen($expect)+ strlen('+ECHO ')));
     }
   }
 ?>

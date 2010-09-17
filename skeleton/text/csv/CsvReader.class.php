@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: CsvReader.class.php 11505 2009-09-15 14:01:01Z friebe $ 
+ * $Id$ 
  */
 
   uses('io.streams.TextReader', 'text.csv.AbstractCsvProcessor', 'text.csv.CsvFormat');
@@ -63,8 +63,9 @@
      * @throws  lang.FormatException if a formatting error is detected
      */
     protected function readValues($raw= FALSE) {
-      if (NULL === ($line= $this->reader->readLine())) return NULL;
+      if (NULL === ($ln= $this->reader->readLine())) return NULL;
 
+      $line= (string)$ln;
       // Parse line. 
       // * In the easiest form, we have values separated by the delimiter 
       //   character, e.g. "A,B,C".

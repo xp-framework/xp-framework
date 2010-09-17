@@ -62,23 +62,22 @@
         $this->handle= sybase_pconnect(
           $this->dsn->getHost(), 
           $this->dsn->getUser(), 
-          $this->dsn->getPassword()
+          $this->dsn->getPassword(),
+          'utf8'
         );
       } else {
         $this->handle= sybase_connect(
           $this->dsn->getHost(), 
           $this->dsn->getUser(), 
-          $this->dsn->getPassword()
+          $this->dsn->getPassword(),
+          'utf8'
         );
       }
 
       if (!is_resource($this->handle)) {
-        $e= new SQLConnectException(trim(sybase_get_last_message()), $this->dsn);
-        xp::gc(__FILE__);
-        throw $e;
+        throw new SQLConnectException(trim(sybase_get_last_message()), $this->dsn);
       }
       xp::gc(__FILE__);
-
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       return parent::connect();
     }
@@ -138,11 +137,10 @@
      * Execute any statement
      *
      * @param   string sql
-     * @param   bool buffered default TRUE
      * @return  rdbms.sybase.SybaseResultSet or TRUE if no resultset was created
      * @throws  rdbms.SQLException
      */
-    protected function query0($sql, $buffered= TRUE) {
+    protected function query0($sql) {
       if (!is_resource($this->handle)) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
@@ -151,9 +149,7 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
       }
       
-      if (!$buffered) {
-        $result= sybase_unbuffered_query($sql, $this->handle, FALSE);
-      } else if ($this->flags & DB_UNBUFFERED) {
+      if ($this->flags & DB_UNBUFFERED) {
         $result= sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
         $result= sybase_query($sql, $this->handle);

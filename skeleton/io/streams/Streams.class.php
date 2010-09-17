@@ -128,7 +128,7 @@
     public static function readAll(InputStream $s) {
       $r= '';
       while ($s->available() > 0) $r.= $s->read();
-      return $r;
+      return new Bytes($r);
     }
 
     /**

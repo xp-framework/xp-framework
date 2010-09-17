@@ -34,7 +34,7 @@
      */
     #[@test]
     public function readOne() {
-      $this->assertEquals('H', $this->newReader('Hello')->read(1));
+      $this->assertEquals(new String('H'), $this->newReader('Hello')->read(1));
     }
 
     /**
@@ -43,7 +43,18 @@
      */
     #[@test]
     public function readOneUtf8() {
-      $this->assertEquals('Ü', $this->newReader('Ãœbercoder', 'utf-8')->read(1));
+      $this->assertEquals(new String('Ü', 'iso-8859-1'), $this->newReader('Ãœbercoder', 'utf-8')->read(1));
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
+    public function readOneUtf8ThenRest() {
+      $r= $this->newReader('Ãœbercoder', 'utf-8');
+      $this->assertEquals(new String('Ü', 'iso-8859-1'), $r->read(1));
+      $this->assertEquals(new String('bercoder'), $r->read(8));
     }
 
     /**
@@ -52,7 +63,7 @@
      */
     #[@test]
     public function readLength() {
-      $this->assertEquals('Hello', $this->newReader('Hello')->read(5));
+      $this->assertEquals(new String('Hello'), $this->newReader('Hello')->read(5));
     }
 
     /**
@@ -61,7 +72,7 @@
      */
     #[@test]
     public function readLengthUtf8() {
-      $this->assertEquals('Übercoder', $this->newReader('Ãœbercoder', 'utf-8')->read(9));
+      $this->assertEquals(new String('Übercoder', 'iso-8859-1'), $this->newReader('Ãœbercoder', 'utf-8')->read(9));
     }
 
     /**
@@ -104,7 +115,7 @@
      *
      * @see     http://de.wikipedia.org/wiki/China (the word in the first square brackets on this page).
      */
-    #[@test, @expect('lang.FormatException')]
+    #[@test, @ignore('Supported now with Unicode'), @expect('lang.FormatException')]
     public function readUnconvertible() {
       $this->newReader('ËˆÃ§iËna', 'utf-8')->read();
     }
@@ -115,7 +126,7 @@
      */
     #[@test]
     public function read() {
-      $this->assertEquals('Hello', $this->newReader('Hello')->read());
+      $this->assertEquals(new String('Hello'), $this->newReader('Hello')->read());
     }
 
     /**
@@ -125,7 +136,7 @@
     #[@test]
     public function encodedBytesOnly() {
       $this->assertEquals(
-        str_repeat('Ü', 1024), 
+        new String(str_repeat('Ü', 1024), 'iso-8859-1'), 
         $this->newReader(str_repeat('Ãœ', 1024), 'utf-8')->read(1024)
       );
     }
@@ -137,7 +148,7 @@
     #[@test]
     public function readAfterEnd() {
       $r= $this->newReader('Hello');
-      $this->assertEquals('Hello', $r->read(5));
+      $this->assertEquals(new String('Hello'), $r->read(5));
       $this->assertNull($r->read());
     }
 
@@ -148,7 +159,7 @@
     #[@test]
     public function readMultipleAfterEnd() {
       $r= $this->newReader('Hello');
-      $this->assertEquals('Hello', $r->read(5));
+      $this->assertEquals(new String('Hello'), $r->read(5));
       $this->assertNull($r->read());
       $this->assertNull($r->read());
     }
@@ -160,7 +171,7 @@
     #[@test]
     public function readLineAfterEnd() {
       $r= $this->newReader('Hello');
-      $this->assertEquals('Hello', $r->read(5));
+      $this->assertEquals(new String('Hello'), $r->read(5));
       $this->assertNull($r->readLine());
     }
 
@@ -171,7 +182,7 @@
     #[@test]
     public function readLineMultipleAfterEnd() {
       $r= $this->newReader('Hello');
-      $this->assertEquals('Hello', $r->read(5));
+      $this->assertEquals(new String('Hello'), $r->read(5));
       $this->assertNull($r->readLine());
       $this->assertNull($r->readLine());
     }
@@ -182,7 +193,7 @@
      */
     #[@test]
     public function readZero() {
-      $this->assertEquals('', $this->newReader('Hello')->read(0));
+      $this->assertEquals(new String(''), $this->newReader('Hello')->read(0));
     }
         
     /**
@@ -192,8 +203,8 @@
     #[@test]
     public function readLinesSeparatedByLineFeed() {
       $r= $this->newReader("Hello\nWorld");
-      $this->assertEquals('Hello', $r->readLine());
-      $this->assertEquals('World', $r->readLine());
+      $this->assertEquals(new String('Hello'), $r->readLine());
+      $this->assertEquals(new String('World'), $r->readLine());
       $this->assertNull($r->readLine());
     }
         
@@ -204,8 +215,8 @@
     #[@test]
     public function readLinesSeparatedByCarriageReturn() {
       $r= $this->newReader("Hello\rWorld");
-      $this->assertEquals('Hello', $r->readLine());
-      $this->assertEquals('World', $r->readLine());
+      $this->assertEquals(new String('Hello'), $r->readLine());
+      $this->assertEquals(new String('World'), $r->readLine());
       $this->assertNull($r->readLine());
     }
         
@@ -216,8 +227,8 @@
     #[@test]
     public function readLinesSeparatedByCRLF() {
       $r= $this->newReader("Hello\r\nWorld");
-      $this->assertEquals('Hello', $r->readLine());
-      $this->assertEquals('World', $r->readLine());
+      $this->assertEquals(new String('Hello'), $r->readLine());
+      $this->assertEquals(new String('World'), $r->readLine());
       $this->assertNull($r->readLine());
     }
 
@@ -228,9 +239,9 @@
     #[@test]
     public function readEmptyLine() {
       $r= $this->newReader("Hello\n\nWorld");
-      $this->assertEquals('Hello', $r->readLine());
-      $this->assertEquals('', $r->readLine());
-      $this->assertEquals('World', $r->readLine());
+      $this->assertEquals(new String('Hello'), $r->readLine());
+      $this->assertEquals(new String(''), $r->readLine());
+      $this->assertEquals(new String('World'), $r->readLine());
       $this->assertNull($r->readLine());
     }
 
@@ -241,8 +252,8 @@
     #[@test]
     public function readLinesUtf8() {
       $r= $this->newReader("Ãœber\nCoder", 'utf-8');
-      $this->assertEquals('Über', $r->readLine());
-      $this->assertEquals('Coder', $r->readLine());
+      $this->assertEquals(new String('Über', 'iso-8859-1'), $r->readLine());
+      $this->assertEquals(new String('Coder'), $r->readLine());
       $this->assertNull($r->readLine());
     }
   }

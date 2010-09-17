@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.ResultSet');
+  uses('rdbms.ResultSet', 'lang.types.String');
 
   /**
    * Result set
@@ -62,8 +62,10 @@
 
       foreach (array_keys($row) as $key) {
         if (NULL === $row[$key] || !isset($this->fields[$key])) continue;
-        if ('datetime' === $this->fields[$key]) {
+        if ('datetime' == $this->fields[$key]) {
           $row[$key]= Date::fromString($row[$key], $this->tz);
+        } else if (is_string($row[$key])) {
+          $row[$key]= new String($row[$key], 'utf-8');
         }
       }
       

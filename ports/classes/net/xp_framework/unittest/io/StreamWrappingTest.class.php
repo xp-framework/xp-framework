@@ -196,7 +196,7 @@
      */
     #[@test]
     public function readAll() {
-      $this->assertEquals('Hello', Streams::readAll(new MemoryInputStream('Hello')));
+      $this->assertEquals(new Bytes('Hello'), Streams::readAll(new MemoryInputStream('Hello')));
     }
 
     /**
@@ -205,7 +205,7 @@
      */
     #[@test]
     public function readAllFromEmptyStream() {
-      $this->assertEquals('', Streams::readAll(new MemoryInputStream('')));
+      $this->assertEquals(new Bytes(''), Streams::readAll(new MemoryInputStream('')));
     }
 
     /**

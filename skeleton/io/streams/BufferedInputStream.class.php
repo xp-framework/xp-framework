@@ -32,7 +32,7 @@
      * Read a string
      *
      * @param   int limit default 8192
-     * @return  string
+     * @return  lang.types.Bytes
      */
     public function read($limit= 8192) {
       while (strlen($this->buf) < $limit) {
@@ -41,7 +41,7 @@
       }
       $chunk= substr($this->buf, 0, $limit);
       $this->buf= substr($this->buf, $limit);
-      return $chunk;
+      return new Bytes($chunk);
     }
 
     /**

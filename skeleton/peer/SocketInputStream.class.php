@@ -29,10 +29,11 @@
      * Read a string
      *
      * @param   int limit default 8192
-     * @return  string
+     * @return  lang.types.Bytes
      */
     public function read($limit= 8192) {
-      return $this->socket->readBinary($limit);
+      if ('' === ($c= $this->socket->readBinary($limit))) return NULL;
+      return new Bytes($c);
     }
 
     /**
@@ -41,7 +42,7 @@
      *
      */
     public function available() {
-      return $this->socket->eof() ? 0 : 1;
+      return $this->socket->eof() ? -1 : 1;
     }
 
     /**

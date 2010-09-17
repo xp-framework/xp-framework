@@ -67,6 +67,21 @@
     trigger_error('[bootstrap] Cannot be run under '.PHP_SAPI.' SAPI', E_USER_ERROR);
     exit(0x3d);
   }
+
+  // Unicode
+  if (($ctype= getenv('LC_CTYPE')) || ($ctype= setlocale(LC_CTYPE, 0))) {
+    sscanf($ctype, '%[^.].%s', $language, $charset);
+    is_numeric($charset) && $charset= 'CP'.$charset;
+  }
+  if (($con= getenv('LC_CONSOLE'))) {
+    sscanf($con, '%[^,],%s', $ie, $oe);
+    stream_filter_append(STDIN, 'convert.iconv.'.$ie.'/'.$charset.'//IGNORE', STREAM_FILTER_READ);
+    stream_filter_append(STDOUT, 'convert.iconv.'.$charset.'/'.$oe.'//IGNORE', STREAM_FILTER_WRITE);
+    stream_filter_append(STDERR, 'convert.iconv.'.$charset.'/'.$oe.'//IGNORE', STREAM_FILTER_WRITE);
+  }
+  iconv_set_encoding('internal_encoding', 'UTF-8');
+  iconv_set_encoding('output_encoding', $charset);
+  iconv_set_encoding('input_encoding', $charset);
   
   $home= getenv('HOME');
   list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
