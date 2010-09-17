@@ -29,6 +29,26 @@ Heads up!
 - Deprecated ref() and deref() core functionality
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0189 - Extension methods
+  (friebe)
+- Implemented RFC #0181 - SystemExit
+  (friebe)
+- Implemented RFC #0194 - Add XPClass::getDeclared*() methods
+  (friebe)
+- Implemented RFC #0193 - Generics optimization
+  (friebe)
+- Implemented RFC #0197 - Type literals in tokens
+  (friebe)
+- Implemented RFC #0185 - ClassFormatException for malformed annotations
+  (friebe)  
+
+Bugfixes
+~~~~~~~~
+- Fixed generics declaration parsing in create()
+  (friebe)
+
 Features
 ~~~~~~~~
 - Added indexer access functionality, this(): this(array(1, 2, 3), 1)= 2
@@ -44,21 +64,6 @@ Features
   (friebe)
 - Added typeof() core functionality
   (friebe)
-
-RFCs
-~~~~
-- Implemented RFC #0189 - Extension methods
-  (friebe)
-- Implemented RFC #0181 - SystemExit
-  (friebe)
-- Implemented RFC #0194 - Add XPClass::getDeclared*() methods
-  (friebe)
-- Implemented RFC #0193 - Generics optimization
-  (friebe)
-- Implemented RFC #0197 - Type literals in tokens
-  (friebe)
-- Implemented RFC #0185 - ClassFormatException for malformed annotations
-  (friebe)  
 
 
 Version 5.7.11, released 2010-09-14
