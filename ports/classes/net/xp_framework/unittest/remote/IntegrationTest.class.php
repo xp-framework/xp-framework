@@ -185,7 +185,7 @@
      * Test calling a method
      *
      */
-    #[@test, @ignore('Fatals')]
+    #[@test, @expect(class = 'lang.Error', withMessage= 'Call to undefined method Proxy·1::doesNotExist() from scope net.xp_framework.unittest.remote.IntegrationTest')]
     public function callNonExistantMethod() {
       $this->remote->lookup('xp/test/Calculator')->doesNotExist();
     }
