@@ -382,7 +382,7 @@
     public function expectedExceptionsWithWarningsMakeTestFail() {
       with ($test= new SimpleTestCase('catchExpectedWithWarning')); {
         $this->assertEquals(
-          array('"Undefined variable: a" in SimpleTestCase::catchExpectedWithWarning() (SimpleTestCase.class.php, line 179, occured once)'), 
+          array('"Undefined variable: a" in SimpleTestCase::catchExpectedWithWarning() (SimpleTestCase.class.php, line 188, occured once)'), 
           $this->suite->runTest($test)->failed[$test->hashCode()]->reason
         );
       }
@@ -487,6 +487,17 @@
         'Expected lang.IllegalArgumentException\'s message differs',
         cast($r->outcomeOf($this->suite->testAt(0)), 'unittest.TestFailure')->reason->getMessage()
       );
+    }
+
+    /**
+     * Tests catching an expected exception
+     *
+     */    
+    #[@test]
+    public function catchExpectedWithPatternMessage() {
+      $this->suite->addTest(new SimpleTestCase('catchExpectedWithPatternMessage'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->successCount());
     }
 
     /**
