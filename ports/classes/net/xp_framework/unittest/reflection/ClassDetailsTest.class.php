@@ -21,7 +21,7 @@
      * Helper method that parses an apidoc comment and returns the matches
      *
      * @param   string comment
-     * @return  array<string[]> matches
+     * @return  [:string[]] matches
      * @throws  unittest.AssertionFailedError
      */
     protected function parseComment($comment) {
@@ -107,7 +107,6 @@
          *
          * Note: Not compatible with PHP 4.1.2!
          *
-         * @access  protected
          * @param   string param1
          */
       ');
@@ -125,7 +124,7 @@
     public function noCommentString() {
       $details= $this->parseComment('
         /**
-         * @access  protected
+         * @see   php://comment
          */
       ');
       $this->assertEquals(
@@ -144,7 +143,6 @@
         /**
          * A protected method
          *
-         * @access  protected
          * @param   string param1
          */
       ');
@@ -161,7 +159,6 @@
         /**
          * Another protected method
          *
-         * @access  protected
          * @param   string[] param1
          */
       ');
@@ -178,7 +175,6 @@
         /**
          * Yet another protected method
          *
-         * @access  protected
          * @param   util.Date param1
          */
       ');
@@ -195,7 +191,6 @@
         /**
          * A private method
          *
-         * @access  private
          * @param   int param1 default 1
          */
       ');
@@ -203,35 +198,47 @@
     }
     
     /**
-     * Tests parsing of the "param" tag with an generic parameter
+     * Tests parsing of the "param" tag with a map parameter
      *
      */
     #[@test]
-    public function genericArrayParameter() {
+    public function mapParameter() {
       $details= $this->parseComment('
         /**
          * Final protected method
          *
-         * @model   final
-         * @access  protected
-         * @param   array<string, string> map
+         * @param   [:string] map
          */
       ');
-      $this->assertEquals('array<string, string>', $details[DETAIL_ARGUMENTS][0]);
+      $this->assertEquals('[:string]', $details[DETAIL_ARGUMENTS][0]);
     }
 
     /**
-     * Tests parsing of the "param" tag with an generic parameter
+     * Tests parsing of the "param" tag with a generic parameter
      *
      */
     #[@test]
-    public function genericObjectParameter() {
+    public function genericParameterWithTwoComponents() {
+      $details= $this->parseComment('
+        /**
+         * Final protected method
+         *
+         * @param   util.collection.HashTable<string, util.Traceable> map
+         */
+      ');
+      $this->assertEquals('util.collection.HashTable<string, util.Traceable>', $details[DETAIL_ARGUMENTS][0]);
+    }
+
+    /**
+     * Tests parsing of the "param" tag with a generic parameter
+     *
+     */
+    #[@test]
+    public function genericParameterWithOneComponent() {
       $details= $this->parseComment('
         /**
          * Abstract protected method
          *
-         * @model   abstract
-         * @access  protected
          * @param   lang.Collection<lang.Object> param1
          */
       ');

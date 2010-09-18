@@ -94,7 +94,7 @@
      * 8 rows in set (0.00 sec)
      * </pre>
      *
-     * @param   array<string, string> record
+     * @param   [:string] record
      * @return  rdbms.DBTableAttribute
      */
     public static function tableAttributeFrom($record) {

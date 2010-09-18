@@ -16,7 +16,7 @@
     /**
      * Constructor
      *
-     * @param   array<string, var> backing default array()
+     * @param   [:var] backing default array()
      */
     public function __construct($backing= array()) {
       $this->backing= $backing;

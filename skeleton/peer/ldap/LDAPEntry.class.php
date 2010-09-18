@@ -53,7 +53,7 @@
      * array
      *
      * @param   string dn
-     * @param   array<string, string> data
+     * @param   [:string] data
      * @return  peer.ldap.LDAPEntry
      */
     protected static function _create($dn, array $data) {

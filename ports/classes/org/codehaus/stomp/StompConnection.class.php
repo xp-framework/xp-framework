@@ -209,7 +209,7 @@
      *
      * @param   string destination
      * @param   string body
-     * @param   array<string, string> headers
+     * @param   [:string] headers
      */
     public function send($destination, $body, $headers= array()) {
       return $this->sendFrame(new org·codehaus·stomp·frame·SendFrame($destination, $body, $headers));

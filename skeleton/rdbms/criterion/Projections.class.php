@@ -68,7 +68,7 @@
     /**
      * manufactor a new ProjectionList
      *
-     * @param   array<rdbms.SQLRenderable> properties
+     * @param   rdbms.SQLRenderable[] properties
      * @return  rdbms.criterion.ProjectionList
      */
     public static function projectionList($properties= array()) {

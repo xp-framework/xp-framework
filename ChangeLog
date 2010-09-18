@@ -51,6 +51,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.ArrayType and lang.MapType classes to represent zero-based
+  indexed lists of elements and key/value-pairs, respectively
+  http://news.xp-framework.net/article/376/2010/09/18/
+  (friebe)
 - Added indexer access functionality, this(): this(array(1, 2, 3), 1)= 2
   (friebe)
 - Enabled protected member access via reflection

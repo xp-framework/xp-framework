@@ -33,7 +33,7 @@
     /**
      * Constructor
      *
-     * @param   array<var, var> default NULL an array
+     * @param   [:var] default NULL an array
      */
     public function __construct($map= NULL) {
       if (is_array($map)) $this->_hash= $map;
@@ -320,7 +320,7 @@
     /**
      * Returns an array representation of this hashmap
      *
-     * @return  array<var, var>
+     * @return  [:var]
      */
     public function toArray() {
       return $this->_hash;

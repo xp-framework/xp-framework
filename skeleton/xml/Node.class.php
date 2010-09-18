@@ -44,7 +44,7 @@
      *
      * @param   string name
      * @param   string content default NULL
-     * @param   array<string, string> attribute default array() attributes
+     * @param   [:string] attribute default array() attributes
      * @throws  lang.IllegalArgumentException
      */
     public function __construct($name, $content= NULL, $attribute= array()) {

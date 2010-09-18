@@ -80,12 +80,21 @@
     }
 
     /**
-     * Test "array<string, string>"
+     * Test "array<string, string>" (deprecated syntax)
+     *
+     */
+    #[@test]
+    public function mapOfStringToStringDeprecatedSyntax() {
+      $this->assertEquals(MapType::forName('[:string]'), Type::forName('array<string, string>'));
+    }
+
+    /**
+     * Test "[:string]"
      *
      */
     #[@test]
     public function mapOfStringToString() {
-      $this->assertEquals(Primitive::$ARRAY, Type::forName('array<string, string>'));
+      $this->assertEquals(MapType::forName('[:string]'), Type::forName('[:string]'));
     }
 
     /**
@@ -161,12 +170,16 @@
     }
 
     /**
-     * Test lang.Object
+     * Test util.collections.HashTable<String, Object>
      *
      */
     #[@test]
     public function genericObjectType() {
-      $this->assertEquals(XPClass::forName('util.collections.HashTable'), Type::forName('util.collections.HashTable<String, Object>'));
+      with ($t= Type::forName('util.collections.HashTable<String, Object>')); {
+        $this->assertInstanceOf('lang.XPClass', $t);
+        $this->assertTrue($t->isGeneric());
+        $this->assertEquals(XPClass::forName('util.collections.HashTable'), $t->genericDefinition());
+      }
     }
 
     /**

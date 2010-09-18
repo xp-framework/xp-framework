@@ -20,7 +20,7 @@
      * Constructor
      *
      * @param   string name
-     * @param   array<string, var> members default array()
+     * @param   [:var] members default array()
      */
     public function __construct($name, $members= array()) {
       $this->__name= $name;

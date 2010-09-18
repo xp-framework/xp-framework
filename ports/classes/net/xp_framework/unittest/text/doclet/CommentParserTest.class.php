@@ -21,7 +21,7 @@
      * Helper method which parses the raw doc comment
      *
      * @param   string rawComment
-     * @return  array<string, var>
+     * @return  [:var]
      */
     protected function parseDetail($rawComment) {
       $tm= TagletManager::getInstance();
@@ -48,7 +48,7 @@
     /**
      * Returns tags of specified kind. Also performs sanity-check.
      *
-     * @param   array<string, text.doclet.Tag[]> tags
+     * @param   [:text.doclet.Tag[]] tags
      * @param   string kind
      * @return  text.doclet.Tag[] tags of specified kind 
      * @throws  unittest.AssertionFailedError in case tags does not have a key "kind"

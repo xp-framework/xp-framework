@@ -128,8 +128,8 @@
      * Helper method for merge* test methods
      *
      * @param   bool recursive default FALSE Merge hashmaps recursively
-     * @param   array<mixed, mixed> toMerge
-     * @param   array<mixed, mixed> expect
+     * @param   [:var] toMerge
+     * @param   [:var] expect
      */
     protected function testMerge($recursive, $toMerge, $expect) {
       $this->map->put('color', 'red');

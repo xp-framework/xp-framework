@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: CsvObjectWriter.class.php 11481 2009-09-15 10:45:51Z friebe $
+ * $Id$
  */
 
   uses('text.csv.CsvWriter');
@@ -16,7 +16,7 @@
     /**
      * Returns field value
      *
-     * @param   array<string, var> array
+     * @param   [:var] array
      * @param   lang.reflect.Field f
      * @return  var
      */

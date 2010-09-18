@@ -24,7 +24,7 @@
      * @see     xp://scriptlet.HttpScriptlet#_setupRequest
      * @param   string method
      * @param   string url
-     * @param   array<string, string> headers
+     * @param   [:string] headers
      * @return  scriptlet.HttpScriptletRequest
      */
     protected function newRequest($method, $url, array $headers) {

@@ -99,7 +99,7 @@
      * be passed to the recipient, too.
      *
      * @param   string data
-     * @return  array<string,string>[1] first element is data, second is the key
+     * @return  string[] first element is data, second is the key
      * @throws  security.crypto.CryptoException if the operation fails
      */
     public function seal($data) {

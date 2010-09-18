@@ -24,8 +24,16 @@
      * @return  text.doclet.Tag
      */ 
     public function tagFrom($holder, $kind, $text) {
-      preg_match('/([a-z_\.]+((\[\])|<([^>]+>))?) ?(.*)/i', $text, $matches);
-      return new ReturnTag($matches[1], $matches[5]);
+      for ($parse= $text.' ', $i= 0, $s= strlen($parse), $brackets= 0; $i < $s; $i++) {
+        if (' ' === $parse{$i} && 0 === $brackets) {
+          return new ReturnTag(substr($parse, 0, $i), (string)substr($parse, $i+ 1, -1));
+        } else if ('<' === $parse{$i}) {
+          $brackets++;
+        } else if ('>' === $parse{$i}) {
+          $brackets--;
+        }
+      }
+      return new ReturnTag('void', $text);
     }
   } 
 ?>
