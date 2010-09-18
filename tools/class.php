@@ -95,14 +95,16 @@
     exit(0x3d);
   }
   uses('util.cmd.ParamString', 'util.cmd.Console');
-  
+
   ini_set('error_prepend_string', EPREPEND_IDENTIFIER);
   set_exception_handler('__except');
   ob_start('__output');
 
   array_shift($_SERVER['argv']);
   try {
-    exit(XPClass::forName($argv[1])->getMethod('main')->invoke(NULL, array(array_slice($argv, 2)))); 
+    exit(XPClass::forName($argv[1])->getMethod('main')->invoke(NULL, array(
+      array_map(create_function('$in', 'return new String($in);'), array_slice($argv, 2))
+    ))); 
   } catch (SystemExit $e) {
     if ($message= $e->getMessage()) echo $message, "\n";
     exit($e->getCode());
