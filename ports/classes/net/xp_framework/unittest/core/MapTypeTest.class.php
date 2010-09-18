@@ -114,5 +114,14 @@
     public function intMapIsNotAnInstanceOfStringMap() {
       $this->assertFalse(MapType::forName('[:string]')->isInstance(array('one' => 1, 'two' => 2)));
     }
+
+    /**
+     * Test isInstance() method
+     *
+     */
+    #[@test]
+    public function varMap() {
+      $this->assertTrue(MapType::forName('[:var]')->isInstance(array('one' => 1, 'two' => 'Zwei', 'three' => new Integer(3))));
+    }
   }
 ?>
