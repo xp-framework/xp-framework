@@ -197,7 +197,7 @@
      * Returns modifiers as a hashmap (modifier names as keys for easy
      * O(1) lookup).
      *
-     * @return  array<string, TRUE> 
+     * @return  [:bool]
      */
     public function getModifiers() {
       return $this->modifiers;

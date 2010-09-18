@@ -23,7 +23,7 @@
      * @param   string package
      * @param   string stateName
      * @param   string functionality
-     * @param   array<string, mixed> params default array()
+     * @param   [:var] params default array()
      */
     public function __construct($package, $stateName, $functionality, $params= array()) {
       static $i= 0;

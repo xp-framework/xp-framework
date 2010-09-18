@@ -472,6 +472,12 @@
         if (!is($type, $element)) return FALSE;
       }
       return TRUE;
+    } else if ('[:' === substr($type, 0, 2)) {
+      $type= substr($type, 2, -1);
+      foreach ($object as $element) {
+        if (!is($type, $element)) return FALSE;
+      }
+      return TRUE;
     } else {
       $type= xp::reflect($type);
       return $object instanceof $type;
@@ -610,6 +616,8 @@
       return $arg->getClass();
     } else if (NULL === $arg) {
       return Type::$VOID;
+    } else if (is_array($arg)) {
+      return 0 === key($arg) ? ArrayType::forName('var[]') : MapType::forName('[:var]');
     } else {
       return Primitive::forName(gettype($arg));
     }

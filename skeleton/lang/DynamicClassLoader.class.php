@@ -186,7 +186,7 @@
     /**
      * Stream wrapper method stream_stat
      *
-     * @return  array<string, string>
+     * @return  [:string]
      */
     public function stream_stat() {
       return array('size' => strlen(self::$bytes[$this->current]));
@@ -239,7 +239,7 @@
      * Stream wrapper method url_stat
      *
      * @param   string path
-     * @return  array<string, string>
+     * @return  [:var]
      */
     public function url_stat($path) {
       list($name)= sscanf($path, 'dyn://%s');

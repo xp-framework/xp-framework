@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.Primitive', 'lang.ArrayType');
+  uses('lang.Primitive', 'lang.ArrayType', 'lang.MapType');
 
   /**
    * Type is the base class for the XPClass and Primitive classes.
@@ -142,15 +142,20 @@
 
         case '[]' === substr($name, -2): 
           return ArrayType::forName($name);
+        
+        case '[:' === substr($name, 0, 2):
+          return MapType::forName($name);
 
-        case 'resource':    // XXX FIXME
+        case 'resource':
           return Primitive::$INT;
         
         case 'void':
           return self::$VOID;
         
         case FALSE !== ($p= strpos($name, '<')):
-          if ('array' === ($base= substr($name, 0, $p))) return Primitive::$ARRAY;
+          if ('array' === ($base= substr($name, 0, $p))) {
+            return MapType::forName('[:'.substr($name, strpos($name, ', ', $p)+ 2, -1).']');
+          }
           return XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base))->newGenericType(self::forNames(substr($name, $p+ 1, -1)));
 
         case FALSE === strpos($name, '.'): 

@@ -82,6 +82,24 @@
     }
 
     /**
+     * Tests the is() core function with [:]
+     *
+     */
+    #[@test]
+    public function stringMap() {
+      $this->assertTrue(is('[:string]', array('greet' => 'Hello', 'whom' => 'World')));
+    }
+
+    /**
+     * Tests the is() core function with [:]
+     *
+     */
+    #[@test]
+    public function intMap() {
+      $this->assertTrue(is('[:int]', array('greet' => 1, 'whom' => 2)));
+    }
+
+    /**
      * Tests the is() core function with string
      *
      */

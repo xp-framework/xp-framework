@@ -103,9 +103,9 @@
      *
      */
     #[@test]
-    public function genericParam() {
-      $t= $this->makeParam('array<string, string> map');
-      $this->assertEquals('array<string, string>', $t->type);
+    public function mapParam() {
+      $t= $this->makeParam('[:string] map');
+      $this->assertEquals('[:string]', $t->type);
       $this->assertEquals('map', $t->parameter);
       $this->assertEquals('', $t->text);
     }
@@ -118,6 +118,18 @@
     public function qualifiedGenericParam() {
       $t= $this->makeParam('util.collection.HashTable<lang.types.Number, lang.types.String> map');
       $this->assertEquals('util.collection.HashTable<lang.types.Number, lang.types.String>', $t->type);
+      $this->assertEquals('map', $t->parameter);
+      $this->assertEquals('', $t->text);
+    }
+
+    /**
+     * Test generic parameter with fully qualified class names
+     *
+     */
+    #[@test]
+    public function genericsOfGenericsParam() {
+      $t= $this->makeParam('HashTable<string, Vector<int>> map');
+      $this->assertEquals('HashTable<string, Vector<int>>', $t->type);
       $this->assertEquals('map', $t->parameter);
       $this->assertEquals('', $t->text);
     }

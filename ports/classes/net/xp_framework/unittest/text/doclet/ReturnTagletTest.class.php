@@ -66,9 +66,9 @@
      */
     #[@test]
     public function primitiveReturn() {
-      $t= $this->makeReturn('string');
+      $t= $this->makeReturn('string parameter');
       $this->assertEquals('string', $t->type);
-      $this->assertEquals('', $t->text);
+      $this->assertEquals('parameter', $t->text);
     }
 
     /**
@@ -77,9 +77,9 @@
      */
     #[@test]
     public function arrayReturn() {
-      $t= $this->makeReturn('string[]');
+      $t= $this->makeReturn('string[] parameter');
       $this->assertEquals('string[]', $t->type);
-      $this->assertEquals('', $t->text);
+      $this->assertEquals('parameter', $t->text);
     }
 
     /**
@@ -87,10 +87,10 @@
      *
      */
     #[@test]
-    public function genericReturn() {
-      $t= $this->makeReturn('array<string, string>');
-      $this->assertEquals('array<string, string>', $t->type);
-      $this->assertEquals('', $t->text);
+    public function mapReturn() {
+      $t= $this->makeReturn('[:string] parameter');
+      $this->assertEquals('[:string]', $t->type);
+      $this->assertEquals('parameter', $t->text);
     }
 
     /**
@@ -99,9 +99,20 @@
      */
     #[@test]
     public function qualifiedGenericReturn() {
-      $t= $this->makeReturn('util.collection.HashTable<lang.types.Number, lang.types.String>');
+      $t= $this->makeReturn('util.collection.HashTable<lang.types.Number, lang.types.String> parameter');
       $this->assertEquals('util.collection.HashTable<lang.types.Number, lang.types.String>', $t->type);
-      $this->assertEquals('', $t->text);
+      $this->assertEquals('parameter', $t->text);
+    }
+
+    /**
+     * Test generic return with fully qualified class names
+     *
+     */
+    #[@test]
+    public function genericOfGenericsReturn() {
+      $t= $this->makeReturn('HashTable<string, Vector<int>> parameter');
+      $this->assertEquals('HashTable<string, Vector<int>>', $t->type);
+      $this->assertEquals('parameter', $t->text);
     }
     
     /**

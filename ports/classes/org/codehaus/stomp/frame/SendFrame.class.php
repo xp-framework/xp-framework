@@ -19,7 +19,7 @@
      *
      * @param   string destination
      * @param   string data default NULL
-     * @param   array<string, string> headers default array
+     * @param   [:string] headers default array
      */
     public function __construct($destination, $data= NULL, $headers= array()) {
       $this->headers= $headers;

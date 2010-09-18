@@ -319,7 +319,7 @@
     /**
      * Format errors from xp registry
      *
-     * @param   array<string, array<int, string[]>> registry
+     * @param   [:string[]] registry
      * @return  string[]
      */
     protected function formatErrors($registry) {

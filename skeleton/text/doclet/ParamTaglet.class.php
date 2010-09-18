@@ -24,8 +24,17 @@
      * @return  text.doclet.Tag
      */ 
     public function tagFrom($holder, $kind, $text) {
-      preg_match('/([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(.*)/', $text, $matches);
-      return new ParamTag($matches[1], $matches[2], $matches[3]);
+      for ($parse= $text.' ', $i= 0, $s= strlen($parse), $brackets= 0; $i < $s; $i++) {
+        if (' ' === $parse{$i} && 0 === $brackets) {
+          $m= explode(' ', (string)substr($parse, $i+ 1, -1), 2);
+          return new ParamTag(substr($parse, 0, $i), $m[0], isset($m[1]) ? $m[1] : '');
+        } else if ('<' === $parse{$i}) {
+          $brackets++;
+        } else if ('>' === $parse{$i}) {
+          $brackets--;
+        }
+      }
+      return new ParamTag('void', 'arg', $text);
     }
   } 
 ?>

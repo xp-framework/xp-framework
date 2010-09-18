@@ -308,7 +308,7 @@
     /**
      * Set parameters
      *
-     * @param   array<string, var> hash parameters
+     * @param   [:var] hash parameters
      * @return  peer.URL this object
      */
     public function setParams($hash) {
@@ -339,7 +339,7 @@
      * Add parameters from an associative array. The key is taken as
      * parameter name and the value as parameter value.
      *
-     * @param   array<string, var> hash parameters
+     * @param   [:var] hash parameters
      * @return  peer.URL this object
      */
     public function addParams($hash) {

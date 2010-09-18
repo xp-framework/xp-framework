@@ -163,7 +163,7 @@
      * or at "--" (php [options] -- [args...])
      *
      * @param   string[] arguments
-     * @return  array<string, var>
+     * @return  [:var]
      * @throws  lang.FormatException in case an unrecognized argument is encountered
      */
     public static function parseArguments($arguments) {
@@ -278,7 +278,7 @@
      * @param   string class default NULL entry point class
      * @param   string[] arguments default []
      * @param   string cwd default NULL the working directory
-     * @param   array<string, string> default NULL the environment
+     * @param   [:string] default NULL the environment
      * @return  lang.Process
      */
     public function newInstance(

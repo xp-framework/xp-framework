@@ -19,7 +19,7 @@
      *
      * @param   string name default 'xsl:template'
      * @param   string content default NULL
-     * @param   array<string, string> attribute default array() attributes
+     * @param   [:string] attribute default array() attributes
      */
     public function __construct($name= 'xsl:template', $content= NULL, $attributes= array()) {
       parent::__construct($name, $content, $attributes); 

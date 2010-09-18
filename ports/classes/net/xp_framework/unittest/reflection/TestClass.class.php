@@ -111,7 +111,7 @@
     /**
      * Retrieve map as a PHP hashmap
      *
-     * @return  array<string, lang.Object>
+     * @return  [:lang.Object]
      */
     public function getMap() {
       return $this->map;
@@ -138,7 +138,7 @@
     /**
      * Initialize map to default values
      *
-     * @param   array<string, lang.Object> map
+     * @param   [:lang.Object] map
      */
     final public function setMap($map) {
       $this->map= $map;
@@ -156,7 +156,7 @@
     /**
      * Create a new instance statically
      *
-     * @param   array<string, lang.Object> map
+     * @param   [:lang.Object] map
      * @return  net.xp_framework.unittest.reflection.TestClass
      */
     public static function fromMap(array $map) {

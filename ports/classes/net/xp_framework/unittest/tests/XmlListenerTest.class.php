@@ -66,7 +66,7 @@
      * Assertion helper testing for a testsuite node
      *
      * @param   string name
-     * @param   array<string, string> attr
+     * @param   [:string] attr
      * @param   xml.Node n
      * @throws  unittest.AssertionFailedError
      */
@@ -83,7 +83,7 @@
     /**
      * Assertion helper testing for a testcase node
      *
-     * @param   array<string, string> attr
+     * @param   [:string] attr
      * @param   xml.Node n
      * @throws  unittest.AssertionFailedError
      */

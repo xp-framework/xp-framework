@@ -59,7 +59,7 @@
     /**
      * Lookup helper
      *
-     * @param   array<string, var> exif
+     * @param   [:var] exif
      * @param   string* key
      * @return  string value or NULL
      */

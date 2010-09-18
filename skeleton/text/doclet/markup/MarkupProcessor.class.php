@@ -16,7 +16,7 @@
      * Initializes the processor. Returns an empty string in this default
      * implementation.
      *
-     * @param   array<string, string> attributes
+     * @param   [:string] attributes
      * @return  string
      */
     public function initialize($attributes= array()) {

@@ -60,7 +60,7 @@
     /**
      * Method without functionality to be used by tests.
      *
-     * @param   array<string, *> map
+     * @param   [:var] map
      */
     private function setHash(array $map) { }
 

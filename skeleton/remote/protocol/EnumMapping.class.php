@@ -19,7 +19,7 @@
      *
      * @param   server.protocol.Serializer serializer
      * @param   remote.protocol.SerializedData serialized
-     * @param   array<string, var> context default array()
+     * @param   [:var] context default array()
      * @return  var
      */
     public function valueOf($serializer, $serialized, $context= array()) {
@@ -31,7 +31,7 @@
      *
      * @param   server.protocol.Serializer serializer
      * @param   lang.Object value
-     * @param   array<string, var> context default array()
+     * @param   [:var] context default array()
      * @return  string
      */
     public function representationOf($serializer, $value, $context= array()) {

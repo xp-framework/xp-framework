@@ -165,7 +165,7 @@
     /**
      * Gets a boolean array representing bits of the KeyUsage extension
      *
-     * @return  array<string, bool>
+     * @return  [:bool]
      */
     public function getKeyUsage() {
       $usage= array();

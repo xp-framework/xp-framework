@@ -399,8 +399,8 @@
      */
     #[@test]
     public function genericReturnValue() {
-      $this->assertEquals('array<string, lang.Object>', $this->fixture->getMethod('getMap')->getReturnTypeName());
-      $this->assertEquals(Primitive::$ARRAY, $this->fixture->getMethod('getMap')->getReturnType());
+      $this->assertEquals('[:lang.Object]', $this->fixture->getMethod('getMap')->getReturnTypeName());
+      $this->assertEquals(MapType::forName('[:lang.Object]'), $this->fixture->getMethod('getMap')->getReturnType());
     }
 
     /**
@@ -412,7 +412,7 @@
     #[@test]
     public function getMapString() {
       $this->assertEquals(
-        'public array<string, lang.Object> getMap()', 
+        'public [:lang.Object] getMap()', 
         $this->fixture->getMethod('getMap')->toString()
       );
     }
@@ -468,7 +468,7 @@
     #[@test]
     public function fromMapString() {
       $this->assertEquals(
-        'public static net.xp_framework.unittest.reflection.TestClass fromMap(array<string, lang.Object> $map)', 
+        'public static net.xp_framework.unittest.reflection.TestClass fromMap([:lang.Object] $map)', 
         $this->fixture->getMethod('fromMap')->toString()
       );
     }
