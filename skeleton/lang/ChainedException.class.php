@@ -22,7 +22,7 @@
      * @param   string message
      * @param   lang.Throwable cause
      */
-    public function __construct($message, $cause) {
+    public function __construct($message, $cause= NULL) {
       parent::__construct($message);
       $this->cause= $cause;
     }
