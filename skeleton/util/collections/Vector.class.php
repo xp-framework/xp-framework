@@ -76,11 +76,11 @@
      * @throws  lang.IllegalArgumentException if key is neither numeric (set) nor NULL (add)
      */
     #[@generic(params= ', T')]
-    public function offsetSet($offset, $prev) {
+    public function offsetSet($offset, $value) {
       if (is_int($offset)) {
-        $this->set($offset, $prev);
+        $this->set($offset, $value);
       } else if (NULL === $offset) {
-        $this->add($prev);
+        $this->add($value);
       } else {
         throw new IllegalArgumentException('Incorrect type '.gettype($offset).' for index');
       }
