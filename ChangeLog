@@ -60,6 +60,7 @@ Features
   http://news.xp-framework.net/article/376/2010/09/18/
   (friebe)
 - Added indexer access functionality, this(): this(array(1, 2, 3), 1)= 2
+  http://news.xp-framework.net/article/379/2010/09/22/
   (friebe)
 - Enabled protected member access via reflection
   http://news.xp-framework.net/article/351/2010/04/04/
