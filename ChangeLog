@@ -51,11 +51,16 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added ability to define regular expressions in @expect(withMessage)
+  by using a forward slash as its first character.
+  http://news.xp-framework.net/article/378/2010/09/18/
+  (friebe)
 - Added lang.ArrayType and lang.MapType classes to represent zero-based
   indexed lists of elements and key/value-pairs, respectively
   http://news.xp-framework.net/article/376/2010/09/18/
   (friebe)
 - Added indexer access functionality, this(): this(array(1, 2, 3), 1)= 2
+  http://news.xp-framework.net/article/379/2010/09/22/
   (friebe)
 - Enabled protected member access via reflection
   http://news.xp-framework.net/article/351/2010/04/04/

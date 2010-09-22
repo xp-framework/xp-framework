@@ -174,6 +174,15 @@
      * Catches the expected exception
      *
      */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/message/')]
+    public function catchExpectedWithPatternMessage() {
+      throw new IllegalArgumentException('Another message');
+    }
+
+    /**
+     * Catches the expected exception
+     *
+     */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function catchExpectedWithWarning() {
       $a.= '';

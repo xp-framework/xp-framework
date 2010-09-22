@@ -185,7 +185,7 @@
      * Test calling a method
      *
      */
-    #[@test, @ignore('Fatals')]
+    #[@test, @expect(class = 'lang.Error', withMessage= '/Call to undefined method .+::doesNotExist()/')]
     public function callNonExistantMethod() {
       $this->remote->lookup('xp/test/Calculator')->doesNotExist();
     }

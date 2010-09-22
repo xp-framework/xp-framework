@@ -181,9 +181,15 @@
       // Check for @expect
       $expected= NULL;
       if ($method->hasAnnotation('expect', 'class')) {
+        $message= $method->getAnnotation('expect', 'withMessage');
+        if ('/' === $message{0}) {
+          $pattern= $message;
+        } else {
+          $pattern= '/'.preg_quote($message, '/').'/';
+        }
         $expected= array(
           XPClass::forName($method->getAnnotation('expect', 'class')),
-          $method->getAnnotation('expect', 'withMessage')
+          $pattern
         );
       } else if ($method->hasAnnotation('expect')) {
         $expected= array(
@@ -246,7 +252,7 @@
                 $timer->elapsedTime()
               )
             ));
-          } else if ($expected[1] && $expected[1] !== $e->getMessage()) {
+          } else if ($expected[1] && !preg_match($expected[1], $e->getMessage())) {
             $this->notifyListeners('testFailed', array(
               $result->setFailed(
                 $test, 
