@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  $package= 'net.xp_lang.tests.syntax.xp';
+
   uses('net.xp_lang.tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class AnnotationTest extends ParserTestCase {
+  class net·xp_lang·tests·syntax·xp·AnnotationTest extends ParserTestCase {
   
     /**
      * Parse method annotations and return annotations
