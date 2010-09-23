@@ -4,13 +4,15 @@
  * $Id$
  */
 
+  $package= 'net.xp_lang.tests.syntax.xp';
+
   uses('net.xp_lang.tests.syntax.xp.ParserTestCase');
 
   /**
    * TestCase
    *
    */
-  class StringTest extends ParserTestCase {
+  class net·xp_lang·tests·syntax·xp·StringTest extends ParserTestCase {
   
     /**
      * Test unterminated string
