@@ -32,6 +32,24 @@
       }
       return array(0 => array($extension => TRUE));
     }
+    
+    /**
+     * Returns a PHP function's extension
+     *
+     * @param   php.ReflectionFunction func
+     * @return  php.ReflectionExtension
+     */
+    protected function functionsExtension($func) {
+      if (method_exists($func, 'getExtension')) return $func->getExtension();
+      
+      // BC with older PHP versions
+      foreach (get_loaded_extensions() as $name) {
+        $r= new ReflectionExtension($name);
+        $f= $r->getFunctions(); 
+        if (isset($f[$func->getName()])) return $r;
+      }
+      return NULL;
+    }
 
     /**
      * Import a single function
@@ -56,8 +74,8 @@
       } catch (ReflectionException $e) {
         throw new IllegalArgumentException('Function '.$function.' does not exist');
       }
-      if ($e != $f->getExtension()) {
-        throw new IllegalArgumentException('Function '.$function.' is not inside extension '.$extension.' (but '.$f->getExtension()->getName().')');
+      if ($e != ($fe= $this->functionsExtension($f))) {
+        throw new IllegalArgumentException('Function '.$function.' is not inside extension '.$extension.' (but '.($fe ? $fe->getName() : '(n/a)').')');
       }
       return array($function => TRUE);
     }
