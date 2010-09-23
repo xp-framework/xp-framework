@@ -290,7 +290,7 @@
      */
     #[@test]
     public function bitWiseComplement() {
-      $this->assertEquals(0x00000111, $this->run('$a= 0xFFFFFEEE; return ~$a;'));
+      $this->assertEquals(-65263, $this->run('$a= 0xFEEE; return ~$a;'));
     }
  
     /**
