@@ -41,15 +41,15 @@
         if ($offset >= $s || '\\' == $in{$offset}) {
           $out.= '\\';
         } else if ('r' === $in{$offset}) {
-          $out.= "\r";
+          $out.= "\015";
         } else if ('b' === $in{$offset}) {
-          $out.= chr(8);    // Not all PHP versions have "\b"
+          $out.= "\010";
         } else if ('n' === $in{$offset}) {
-          $out.= "\n";
+          $out.= "\012";
         } else if ('t' === $in{$offset}) {
-          $out.= "\t";
+          $out.= "\011";
         } else if ('f' === $in{$offset}) {
-          $out.= chr(12);   // Not all PHP versions have "\f"
+          $out.= "\014";
         } else if ($p= strspn($in, '01234567', $offset)) {
           if (($n= octdec(substr($in, $offset, $p))) > 0xFF) {
             throw new FormatException('Octal number out of range (\0 .. \377) in '.$in);
