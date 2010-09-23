@@ -3,6 +3,8 @@
  *
  * $Id$ 
  */
+ 
+  $package= 'net.xp_lang.tests.compilation';
 
   uses(
     'unittest.TestCase',
@@ -19,7 +21,7 @@
    *
    * @see   xp://xp.compiler.types.CompiledType
    */
-  class TypeTest extends TestCase {
+  class net·xp_lang·tests·compilation·TypeTest extends TestCase {
     protected $scope;
     protected $emitter;
   
