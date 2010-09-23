@@ -62,7 +62,7 @@
      */
     #[@test]
     public function carriageReturn() {
-      $this->assertEquals("Hello\rWorld", Strings::expandEscapesIn('Hello\rWorld'));
+      $this->assertEquals("Hello\015World", Strings::expandEscapesIn('Hello\rWorld'));
     }
 
     /**
@@ -71,7 +71,7 @@
      */
     #[@test]
     public function tab() {
-      $this->assertEquals("Hello\tWorld", Strings::expandEscapesIn('Hello\tWorld'));
+      $this->assertEquals("Hello\011World", Strings::expandEscapesIn('Hello\tWorld'));
     }
 
     /**
@@ -80,7 +80,7 @@
      */
     #[@test]
     public function backspace() {
-      $this->assertEquals("Hello\bWorld", Strings::expandEscapesIn('Hello\bWorld'));
+      $this->assertEquals("Hello\010World", Strings::expandEscapesIn('Hello\bWorld'));
     }
 
     /**
@@ -89,7 +89,7 @@
      */
     #[@test]
     public function formFeed() {
-      $this->assertEquals("Hello\fWorld", Strings::expandEscapesIn('Hello\fWorld'));
+      $this->assertEquals("Hello\014World", Strings::expandEscapesIn('Hello\fWorld'));
     }
 
     /**
@@ -98,7 +98,7 @@
      */
     #[@test]
     public function nul() {
-      $this->assertEquals("Hello\0World", Strings::expandEscapesIn('Hello\0World'));
+      $this->assertEquals("Hello\000World", Strings::expandEscapesIn('Hello\0World'));
     }
 
     /**
