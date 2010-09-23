@@ -1,0 +1,6 @@
+public class A extends B {
+
+  public B getB() {
+    return new B();
+  }
+}

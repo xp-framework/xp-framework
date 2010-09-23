@@ -31,6 +31,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0052 - Make XP its own (compiled) language
+  (friebe)
 - Implemented RFC #0189 - Extension methods
   (friebe)
 - Implemented RFC #0181 - SystemExit

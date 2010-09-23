@@ -1,0 +1,6 @@
+public class B {
+
+  public A getA() {
+    return new A();
+  }
+}
