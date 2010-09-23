@@ -43,7 +43,7 @@
         } else if ('r' === $in{$offset}) {
           $out.= "\r";
         } else if ('b' === $in{$offset}) {
-          $out.= "\b";
+          $out.= chr(8);    // Not all PHP versions have "\b"
         } else if ('n' === $in{$offset}) {
           $out.= "\n";
         } else if ('t' === $in{$offset}) {
