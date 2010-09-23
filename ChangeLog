@@ -48,6 +48,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed Runtime::memoryUsage() and Runtime::peakMemoryUsage()
+  (friebe)
 - Fixed generics declaration parsing in create()
   (friebe)
 
