@@ -183,6 +183,24 @@
     }
 
     /**
+     * Tests find()->byPrimary()
+     *
+     */
+    #[@test]
+    public function findByExistingPrimaryFluent() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $entity= $this->fixture->find()->byPrimary(1);
+      $this->assertClass($entity, 'net.xp_framework.unittest.rdbms.dataset.Job');
+    }
+
+    /**
      * Tests find(byPrimary()) for the situation when nothing is returned.
      *
      */
@@ -216,7 +234,7 @@
     }
 
     /**
-     * Tests find(byPrimary())
+     * Tests get(byPrimary())
      *
      */
     #[@test]
@@ -230,6 +248,24 @@
         )
       )));
       $entity= $this->fixture->get($this->fixture->byPrimary(1));
+      $this->assertClass($entity, 'net.xp_framework.unittest.rdbms.dataset.Job');
+    }
+
+    /**
+     * Tests get()->byPrimary()
+     *
+     */
+    #[@test]
+    public function getByExistingPrimaryFluent() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $entity= $this->fixture->get()->byPrimary(1);
       $this->assertClass($entity, 'net.xp_framework.unittest.rdbms.dataset.Job');
     }
 
@@ -291,6 +327,30 @@
     }
 
     /**
+     * Tests findAll()->newestJobs()
+     *
+     */
+    #[@test]
+    public function findNewestJobsFluent() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        ),
+        1 => array(   // Second row
+          'job_id'      => 2,
+          'title'       => $this->getName().' #2',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $collection= $this->fixture->findAll()->newestJobs();
+      $this->assertEquals(2, sizeof($collection));
+    }
+
+    /**
      * Tests getAll(newestJobs())
      *
      */
@@ -311,6 +371,30 @@
         )
       )));
       $collection= $this->fixture->getAll($this->fixture->newestJobs());
+      $this->assertEquals(2, sizeof($collection));
+    }
+
+    /**
+     * Tests getAll()->newestJobs()
+     *
+     */
+    #[@test]
+    public function getNewestJobsFluent() {
+      $this->getConnection()->setResultSet(new MockResultSet(array(
+        0 => array(   // First row
+          'job_id'      => 1,
+          'title'       => $this->getName(),
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        ),
+        1 => array(   // Second row
+          'job_id'      => 2,
+          'title'       => $this->getName().' #2',
+          'valid_from'  => Date::now(),
+          'expire_at'   => NULL
+        )
+      )));
+      $collection= $this->fixture->getAll()->newestJobs();
       $this->assertEquals(2, sizeof($collection));
     }
 
@@ -341,6 +425,15 @@
     public function findAllWrapsSQLException() {
       $this->getConnection()->makeQueryFail(6010, 'Not enough power');
       $this->fixture->findAll(new Criteria());
+    }
+
+    /**
+     * Tests findAll() wraps SQLExceptions into FinderExceptions
+     *
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined method .+JobFinder::nonExistantMethod/')]
+    public function fluentNonExistantFinder() {
+      $this->fixture->findAll()->nonExistantMethod(new Criteria());
     }
 
     /**

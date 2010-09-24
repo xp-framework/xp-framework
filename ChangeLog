@@ -55,6 +55,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Implemented fluent interface for rdbms.finder API
+  (friebe)
 - Added ability to define regular expressions in @expect(withMessage)
   by using a forward slash as its first character.
   http://news.xp-framework.net/article/378/2010/09/18/
