@@ -94,7 +94,9 @@
         return call_user_func_array(array($this, substr($name, 1)), $args);
       }
       $t= debug_backtrace();
-      $scope= $t[2]['class'];
+      $i= 1; $s= sizeof($t);
+      while ($i++ < $s && !isset($t[$i]['class'])) { }
+      $scope= $t[$i]['class'];
       if (isset(xp::$registry['ext'][$scope])) {
         foreach (xp::$registry['ext'][$scope] as $type => $class) {
           if (!$this instanceof $type || !method_exists($class, $name)) continue;

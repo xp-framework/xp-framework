@@ -31,6 +31,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0052 - Make XP its own (compiled) language
+  (friebe)
 - Implemented RFC #0189 - Extension methods
   (friebe)
 - Implemented RFC #0181 - SystemExit
@@ -46,11 +48,18 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Changed img.fonts.TrueTypeFont's constructor to throw an exception if
+  the font cannot be found
+  (friebe)
+- Fixed Runtime::memoryUsage() and Runtime::peakMemoryUsage()
+  (friebe)
 - Fixed generics declaration parsing in create()
   (friebe)
 
 Features
 ~~~~~~~~
+- Implemented fluent interface for rdbms.finder API
+  (friebe)
 - Added ability to define regular expressions in @expect(withMessage)
   by using a forward slash as its first character.
   http://news.xp-framework.net/article/378/2010/09/18/

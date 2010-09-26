@@ -10,6 +10,10 @@
   uses(
     'rdbms.finder.FinderException',
     'rdbms.finder.FinderMethod',
+    'rdbms.finder.FindDelegate',
+    'rdbms.finder.FindAllDelegate',
+    'rdbms.finder.GetDelegate',
+    'rdbms.finder.GetAllDelegate',
     'rdbms.finder.NoSuchEntityException',
     'lang.MethodNotImplementedException'
   );
@@ -168,32 +172,9 @@
      * @throws  rdbms.finder.NoSuchEntityException
      * @throws  rdbms.finder.FinderException
      */
-    public function get($criteria) {
-      try {
-        $it= $this->getPeer()->iteratorFor($criteria);
-      } catch (SQLException $e) {
-        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
-      }
-      
-      // Check for results. If we cannot find anything, throw a NSEE
-      if (!$it->hasNext()) {
-        throw new NoSuchEntityException(
-          'Entity does not exist', 
-          new IllegalStateException('No results for '.$criteria->toString())
-        );
-      }
-      
-      // Fetch first value, and if nothing is returned after that, return it,
-      // throwing an exception otherwise
-      $e= $it->next();
-      if ($it->hasNext()) {
-        throw new FinderException(
-          'Query returned more than one result after '.$e->toString(), 
-          new IllegalStateException('')
-        );
-      }
-      
-      return $e;
+    public function get($criteria= NULL) {
+      $delegate= new rdbms·finder·GetDelegate($this);
+      return NULL === $criteria ? $delegate : $delegate->select($criteria);
     }
 
     /**
@@ -204,22 +185,9 @@
      * @throws  rdbms.finder.NoSuchEntityException
      * @throws  rdbms.finder.FinderException
      */
-    public function getAll($criteria) {
-      try {
-        $list= $this->getPeer()->doSelect($criteria);
-      } catch (SQLException $e) {
-        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
-      }
-      
-      // Check for results. If we cannot find anything, throw a NSEE
-      if (empty($list)) {
-        throw new NoSuchEntityException(
-          'Entity does not exist', 
-          new IllegalStateException('No results for '.$criteria->toString())
-        );
-      }
-
-      return $list;
+    public function getAll($criteria= NULL) {
+      $delegate= new rdbms·finder·GetAllDelegate($this);
+      return NULL === $criteria ? $delegate : $delegate->select($criteria);
     }
    
     /**
@@ -230,29 +198,9 @@
      * @return  rdbms.DataSet
      * @throws  rdbms.finder.FinderException
      */
-    public function find($criteria) {
-      try {
-        $it= $this->getPeer()->iteratorFor($criteria);
-      } catch (SQLException $e) {
-        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
-      }
-      
-      // Check for results. If we cannot find anything, throw a NSEE
-      if (!$it->hasNext()) {
-        return NULL;
-      }
-      
-      // Fetch first value, and if nothing is returned after that, return it,
-      // throwing an exception otherwise
-      $e= $it->next();
-      if ($it->hasNext()) {
-        throw new FinderException(
-          'Query returned more than one result after '.$e->toString(), 
-          new IllegalStateException('')
-        );
-      }
-      
-      return $e;
+    public function find($criteria= NULL) {
+      $delegate= new rdbms·finder·FindDelegate($this);
+      return NULL === $criteria ? $delegate : $delegate->select($criteria);
     }
 
     /**
@@ -262,12 +210,9 @@
      * @return  rdbms.DataSet[]
      * @throws  rdbms.finder.FinderException
      */
-    public function findAll($criteria) {
-      try {
-        return $this->getPeer()->doSelect($criteria);
-      } catch (SQLException $e) {
-        throw new FinderException('Failed finding '.$this->getPeer()->identifier, $e);
-      }
+    public function findAll($criteria= NULL) {
+      $delegate= new rdbms·finder·FindAllDelegate($this);
+      return NULL === $criteria ? $delegate : $delegate->select($criteria);
     }
 
     /**
