@@ -157,7 +157,7 @@
     public function readObjectEntry() {
       with ($first= $this->firstElement(new ArchiveCollection($this->archive, 'lang'))); {
         $this->assertEquals(
-          'class Object { }', 
+          new Bytes('class Object { }'), 
           $first->getInputStream()->read($first->getSize())
         );
       }

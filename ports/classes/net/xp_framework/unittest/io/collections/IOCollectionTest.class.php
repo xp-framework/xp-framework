@@ -137,7 +137,7 @@
       with ($stream= $this->firstElement($this->fixture)->getInputStream()); {
         $this->assertSubclass($stream, 'io.streams.InputStream');
         $this->assertNotEquals(0, $stream->available());
-        $this->assertEquals('File contents', $stream->read(13));
+        $this->assertEquals(new Bytes('File contents'), $stream->read(13));
       }
     }
 
