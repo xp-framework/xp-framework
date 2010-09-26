@@ -42,7 +42,9 @@
      */
     public function read($limit= 8192) {
       if (FALSE === ($bytes= fread($this->fd, $limit))) {
-        throw new IOException('Could not read '.$limit.' bytes from '.$this->name.' channel');
+        $e= new IOException('Could not read '.$limit.' bytes from '.$this->name.' channel');
+        xp::gc(__FILE__);
+        throw $e;
       } else if ('' !== $bytes) {
         return new Bytes($bytes);
       }
