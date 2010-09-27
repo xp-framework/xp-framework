@@ -230,7 +230,7 @@
         $value
       )));
 
-      $this->assertTrue($value->getBytes('UTF-8') == $xpath->query('string(/document/node)'));
+      $this->assertEquals((string)$value->getBytes('UTF-8'), $xpath->query('string(/document/node)'));
     }
     
     /**
@@ -245,7 +245,7 @@
         $value->getBytes('UTF-8')
       ));
 
-      $this->assertTrue($value->getBytes('UTF-8') == $xpath->query('string(/document/node)'));
+      $this->assertEquals((string)$value->getBytes('UTF-8'), $xpath->query('string(/document/node)'));
     }
   }
 ?>
