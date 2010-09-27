@@ -227,10 +227,10 @@
       $xpath= new XPath(Tree::fromString(sprintf(
         '<?xml version="1.0" encoding="iso-8859-1"?>'.
         '<document><node>%s</node></document>',
-        $value
+        $value->getBytes('ISO-8859-1')
       )));
 
-      $this->assertEquals((string)$value->getBytes('UTF-8'), $xpath->query('string(/document/node)'));
+      $this->assertEquals($value, new String($xpath->query('string(/document/node)'), 'utf-8'));
     }
     
     /**
@@ -245,7 +245,7 @@
         $value->getBytes('UTF-8')
       ));
 
-      $this->assertEquals((string)$value->getBytes('UTF-8'), $xpath->query('string(/document/node)'));
+      $this->assertEquals($value, new String($xpath->query('string(/document/node)'), 'utf-8'));
     }
   }
 ?>
