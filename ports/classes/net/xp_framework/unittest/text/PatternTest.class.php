@@ -77,7 +77,7 @@
     public function unicodePattern() {
       $this->assertEquals(
         array('GÃ¼n'), 
-        Pattern::compile('.Ã¼.', Pattern::UTF8)->match(new String('Günter'))->group(0)
+        Pattern::compile('.Ã¼.', Pattern::UTF8)->match(new String('Günter', 'iso-8859-1'))->group(0)
       );
     }
 
@@ -89,7 +89,7 @@
     public function nonUnicodePattern() {
       $this->assertEquals(
         array('Gün'), 
-        Pattern::compile('.ü.')->match(new String('Günter'))->group(0)
+        Pattern::compile('.ü.')->match(new String('Günter', 'iso-8859-1'))->group(0)
       );
     }
 
