@@ -1079,7 +1079,7 @@
         $classloader= ClassLoader::getDefault();
       }
 
-      return $classloader->loadClass($name);
+      return $classloader->loadClass((string)$name);
     }
 
     /**
