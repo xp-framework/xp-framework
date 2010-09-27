@@ -136,7 +136,7 @@
      * @return  io.streams.OutputStreamWriter
      */
     protected function streamWriter($in) {
-      if ('-' === $in) {
+      if ('-' == $in) {
         return Console::$out;
       } else {
         return new StringWriter(new FileOutputStream($in));
@@ -161,21 +161,21 @@
       $arguments= array();
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
-          if ('-v' === $args[$i]) {
+          if ('-v' == $args[$i]) {
             $verbose= TRUE;
-          } else if ('-cp' === $args[$i]) {
+          } else if ('-cp' == $args[$i]) {
             foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $path) {
               ClassLoader::getDefault()->registerPath($path);
             }
-          } else if ('-e' === $args[$i]) {
+          } else if ('-e' == $args[$i]) {
             $sources->add(new EvaluationSource($this->arg($args, ++$i, 'e')));
-          } else if ('-l' === $args[$i]) {
+          } else if ('-l' == $args[$i]) {
             $class= XPClass::forName($this->arg($args, ++$i, 'l'));
             $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
             $suite->addListener($class->newInstance($output));
-          } else if ('-?' === $args[$i]) {
+          } else if ('-?' == $args[$i]) {
             return $this->usage();
-          } else if ('-a' === $args[$i]) {
+          } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');
           } else if (strstr($args[$i], '.ini')) {
             $sources->add(new PropertySource(new Properties($args[$i])));
