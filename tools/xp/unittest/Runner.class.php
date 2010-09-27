@@ -136,7 +136,7 @@
      * @return  io.streams.OutputStreamWriter
      */
     protected function streamWriter($in) {
-      if ('-' === $in) {
+      if ('-' == $in) {
         return Console::$out;
       } else {
         return new StringWriter(new FileOutputStream($in));
