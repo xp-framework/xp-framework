@@ -183,7 +183,7 @@
      */    
     #[@test]
     public function stringObjectsAreEqual() {
-      foreach (array(new String(''), new String('Hello'), new String('äöüß')) as $str) {
+      foreach (array(new String(''), new String('Hello'), new String('äöüß', 'iso-8859-1')) as $str) {
         $this->assertEquals($str, $str, xp::stringOf($str));
       }
     }
