@@ -619,7 +619,7 @@
                 if (FALSE === $annotations || $msg) {
                   ob_end_clean();
                   xp::gc();
-                  raise('lang.ClassFormatException', 'Parse error: '.$msg.' of "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.$tokens[$i][2]);
+                  raise('lang.ClassFormatException', 'Parse error: '.$msg.' of "'.addcslashes($parsed, "\0..\17").'" in '.$class.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
                 }
                 ob_end_clean();
                 $parsed= '';
@@ -629,7 +629,7 @@
 
           case T_CLASS:
           case T_INTERFACE:
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.$tokens[$i][2]);
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $details['class']= array(
               DETAIL_COMMENT      => trim(preg_replace('/\n   \* ?/', "\n", "\n".substr(
                 $comment, 
@@ -646,7 +646,7 @@
             if (!$members) break;
 
             // Have a member variable
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.$tokens[$i][2]);
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $name= substr($tokens[$i][1], 1);
             $details[0][$name]= array(
               DETAIL_ANNOTATIONS => $annotations
@@ -655,7 +655,7 @@
             break;
 
           case T_FUNCTION:
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.$tokens[$i][2]);
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $members= FALSE;
             while (T_STRING !== $tokens[$i][0]) $i++;
             $m= $tokens[$i][1];
