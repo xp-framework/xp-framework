@@ -254,8 +254,8 @@
      */
     #[@test]
     public function stringReadUtfChar() {
-      $s= new String('Übercoder');
-      $this->assertEquals(new Character('Ü'), $s[0]);
+      $s= new String('Übercoder', 'iso-8859-1');
+      $this->assertEquals(new Character('Ü', 'iso-8859-1'), $s[0]);
     }
 
     /**
@@ -264,7 +264,7 @@
      */
     #[@test]
     public function stringWriteChar() {
-      $s= new String('Übercoder');
+      $s= new String('Übercoder', 'iso-8859-1');
       $s[0]= 'U';
       $this->assertEquals(new String('Ubercoder'), $s);
     }
@@ -276,8 +276,8 @@
     #[@test]
     public function stringWriteUtfChar() {
       $s= new String('Ubercoder');
-      $s[0]= 'Ü';
-      $this->assertEquals(new String('Übercoder'), $s);
+      $s[0]= new Character('Ü', 'iso-8859-1');
+      $this->assertEquals(new String('Übercoder', 'iso-8859-1'), $s);
     }
 
     /**
@@ -326,7 +326,7 @@
      */
     #[@test]
     public function stringTestChar() {
-      $s= new String('Übercoder');
+      $s= new String('Übercoder', 'iso-8859-1');
       $this->assertTrue(isset($s[0]));
       $this->assertTrue(isset($s[$s->length()- 1]));
       $this->assertFalse(isset($s[$s->length()]));
@@ -339,7 +339,7 @@
      */
     #[@test]
     public function stringRemoveChar() {
-      $s= new String('Übercoder');
+      $s= new String('Übercoder', 'iso-8859-1');
       unset($s[0]);
       $this->assertEquals(new String('bercoder'), $s);
     }
