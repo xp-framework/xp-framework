@@ -25,6 +25,8 @@
    * @purpose  Provide transport via mail()
    */
   class MailTransport extends Transport {
+    protected
+      $parameters= array();
   
     /**
      * Connect to this transport

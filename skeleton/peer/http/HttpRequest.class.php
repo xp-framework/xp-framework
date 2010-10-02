@@ -28,7 +28,7 @@
       $method     = HttpConstants::GET,
       $target     = '',
       $version    = HttpConstants::VERSION_1_1,
-      $headers    = array('Connection' => 'close'),
+      $headers    = array('Connection' => array('close')),
       $parameters = array();
       
     /**
@@ -48,10 +48,10 @@
     public function setUrl(URL $url) {
       $this->url= $url;
       if ($url->getUser() && $url->getPassword()) {
-        $this->headers['Authorization']= 'Basic '.base64_encode($url->getUser().':'.$url->getPassword());
+        $this->headers['Authorization']= array('Basic '.base64_encode($url->getUser().':'.$url->getPassword()));
       }
       $port= $this->url->getPort(-1);
-      $this->headers['Host']= $this->url->getHost().(-1 == $port ? '' : ':'.$port);
+      $this->headers['Host']= array($this->url->getHost().(-1 == $port ? '' : ':'.$port));
       $this->target= $this->url->getPath('/');
     }
 
@@ -107,20 +107,24 @@
      * Set header
      *
      * @param   string k header name
-     * @param   string v header value
+     * @param   var v header value either a string, string[] or peer.Header
      */
     public function setHeader($k, $v) {
-      $this->headers[$k]= $v;
+      if (is_array($v)) {
+        $this->headers[$k]= $v;
+      } else {
+        $this->headers[$k]= array($v);
+      }
     }
 
     /**
      * Add headers
      *
-     * @param   array headers
+     * @param   [:var] headers
      */
     public function addHeaders($headers) {
       foreach ($headers as $key => $header) {
-        $this->headers[$header instanceof Header ? $header->getName() : $key] = $header;
+        $this->setHeader($header instanceof Header ? $header->getName() : $key, $header);
       }
     }
     
@@ -162,9 +166,9 @@
         case HttpConstants::POST: case HttpConstants::PUT: case HttpConstants::TRACE: default:
           $body= substr($query, 1);
           if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
-          $this->headers['Content-Length']= strlen($body);
+          $this->headers['Content-Length']= array(strlen($body));
           if (empty($this->headers['Content-Type'])) {
-            $this->headers['Content-Type']= 'application/x-www-form-urlencoded';
+            $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
           }
           break;
       }
@@ -178,7 +182,9 @@
       
       // Add request headers
       foreach ($this->headers as $k => $v) {
-        $request.= ($v instanceof Header ? $v->toString() : $k.': '.$v)."\r\n";
+        foreach ($v as $value) {
+          $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value)."\r\n";
+        }
       }
       
       return $request."\r\n".$body;

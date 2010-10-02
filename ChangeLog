@@ -58,6 +58,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for multiple header values to peer.http.HttpRequest
+  (friebe)
 - Implemented fluent interface for rdbms.finder API
   (friebe)
 - Added ability to define regular expressions in @expect(withMessage)

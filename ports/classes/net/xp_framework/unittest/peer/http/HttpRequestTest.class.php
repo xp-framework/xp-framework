@@ -403,6 +403,34 @@
     }
 
     /**
+     * Test setHeader() method
+     *
+     */
+    #[@test]
+    public function customHeaderObject() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setHeader('X-Binford', new Header('X-Binford', 6100));
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test setHeader() method
+     *
+     */
+    #[@test]
+    public function customHeaderList() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setHeader('X-Binford', array(6100, 'More Power'));
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\nX-Binford: More Power\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
      * Test addHeaders() method
      *
      */
@@ -412,6 +440,48 @@
       $r->addHeaders(array('X-Binford' => 6100));
       $this->assertEquals(
         "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test addHeaders() method
+     *
+     */
+    #[@test]
+    public function customHeadersObject() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->addHeaders(array('X-Binford' => new Header('X-Binford', 6100)));
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test addHeaders() method
+     *
+     */
+    #[@test]
+    public function customHeadersObjectList() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->addHeaders(array(new Header('X-Binford', 6100)));
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test addHeaders() method
+     *
+     */
+    #[@test]
+    public function customHeadersList() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->addHeaders(array('X-Binford' => array(6100, 'Even more power')));
+      $this->assertEquals(
+        "GET / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nX-Binford: 6100\r\nX-Binford: Even more power\r\n\r\n",
         $r->getRequestString()
       );
     }

@@ -80,6 +80,22 @@
      *
      */
     #[@test]
+    public function classWithMultilineComment() {
+      $class= $this->compile('
+        /**
+         * Defines a class with a long comment
+         * spanning multiple lines.
+         */
+        class ClassWithMultilineComment { }'
+      );
+      $this->assertEquals("Defines a class with a long comment\nspanning multiple lines.", $class->getComment());
+    }
+
+    /**
+     * Test XPClass::getComment() on compiled type
+     *
+     */
+    #[@test]
     public function classWithCommentWithDocTags() {
       $class= $this->compile('
         /**
@@ -122,6 +138,26 @@
         }'
       );
       $this->assertEquals('Entry point method', $class->getMethod('main')->getComment());
+    }
+
+    /**
+     * Test Method::getComment() on compiled type
+     *
+     */
+    #[@test]
+    public function methodWithMultilineComment() {
+      $class= $this->compile('
+        class MethodWithMultilineComment {
+
+          /**
+           * Entry point method.
+           *
+           * Called when run from the command line.
+           */
+          public static void main(string[] $args) { }
+        }'
+      );
+      $this->assertEquals("Entry point method.\n\nCalled when run from the command line.", $class->getMethod('main')->getComment());
     }
 
     /**
