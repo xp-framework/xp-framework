@@ -404,6 +404,7 @@
         } catch (TargetInvocationException $ignored) { }
         break;
       }
+      unset(xp::$registry['details.'.$test->getClassName()]); // TODO: xp::gc();
       return $result;
     }
     
@@ -454,6 +455,7 @@
           } catch (TargetInvocationException $ignored) { }
           break;
         }
+        unset(xp::$registry['details.'.$class->getName()]);  // TODO: xp::gc();
       }
 
       $this->notifyListeners('testRunFinished', array($this, $result));

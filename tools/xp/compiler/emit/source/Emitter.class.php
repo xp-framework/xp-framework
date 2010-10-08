@@ -499,24 +499,8 @@
       $mark= $op->mark();
       $this->emitOne($op, $access->target);
       
-      $type= $this->scope[0]->typeOf($access->target);
-      $result= TypeName::$VAR;
-      if ($type->isArray()) {
-        $result= $type->arrayComponentType();
-      } else if ($type->isMap()) {
-        $result= $type->mapComponentType();
-      } else if ($type->isClass()) {
-        $ptr= new TypeInstance($this->resolveType($type));
-        if ($ptr->hasIndexer()) {
-          $result= $ptr->getIndexer()->type;
-        } else {
-          $this->warn('T305', 'Type '.$ptr->name().' does not support offset access', $access);
-        }
-      } else if ($type->isVariable()) {
-        $this->warn('T203', 'Array access (var)'.$access->hashCode().' verification deferred until runtime', $access);
-      } else {
-        $this->warn('T305', 'Using array-access on unsupported type '.$type->toString(), $access);
-      }
+      // Manually verify as we can then rely on call target type being available
+      if (!$this->checks->verify($access, $this->scope[0], $this, TRUE)) return;
       
       // Rewrite for unsupported syntax
       // - $a.getMethods()[2] to this($a.getMethods(), 2)
@@ -537,7 +521,6 @@
         $access->offset && $this->emitOne($op, $access->offset);
         $op->append(']');
       }
-      $this->scope[0]->setType($access, $result);
     }
 
     /**
@@ -1666,7 +1649,7 @@
      */
     protected function emitProperty($op, PropertyNode $property) {
       foreach ($property->handlers as $name => $statements) {
-        $this->properties[0][$name][$property->name]= $statements;
+        $this->properties[0][$name][$property->name]= array($property->type, $statements);
       }
 
       // Register type information
@@ -1702,13 +1685,13 @@
         $op->append('function __get($'.$mangled.') {');
         $this->enter(new MethodScope());
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-        foreach ($properties['get'] as $name => $statements) {
+        foreach ($properties['get'] as $name => $definition) {
           $op->append('if (\''.$name.'\' === $'.$mangled.') {');
-          if (NULL === $statements) {
+          if (NULL === $definition[1]) {
             $op->append('return $this->__·'.$name.';');
             $auto[$name]= TRUE;
           } else {
-            $this->emitAll($op, $statements);
+            $this->emitAll($op, $definition[1]);
           }
           $op->append('} else ');
         }
@@ -1719,13 +1702,14 @@
         $op->append('function __set($'.$mangled.', $value) {');
         $this->enter(new MethodScope());
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
-        foreach ($properties['set'] as $name => $statements) {
+        foreach ($properties['set'] as $name => $definition) {
+          $this->scope[0]->setType(new VariableNode('value'), $definition[0]);
           $op->append('if (\''.$name.'\' === $'.$mangled.') {');
-          if (NULL === $statements) {
+          if (NULL === $definition[1]) {
             $op->append('$this->__·'.$name.'= $value;');
             $auto[$name]= TRUE;
           } else {
-            $this->emitAll($op, $statements);
+            $this->emitAll($op, $definition[1]);
           }
           $op->append('} else ');
         }
