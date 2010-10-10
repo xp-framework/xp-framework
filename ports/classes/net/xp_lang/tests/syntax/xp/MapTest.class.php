@@ -107,21 +107,21 @@
         array(new MapNode(array(
           'elements'      => array(
             array(
-              new IntegerNode('1'),
               new StringNode('one'),
+              new IntegerNode('1'),
             ),
             array(
-              new IntegerNode('2'),
               new StringNode('two'),
+              new IntegerNode('2'),
             ),
             array(
-              new IntegerNode('3'),
               new StringNode('three'),
+              new IntegerNode('3'),
             ),
           ),
           'type'          => NULL,
         ))), 
-        $this->parse('[ 1 : "one", 2 : "two", 3 : "three" ];')
+        $this->parse('[ one : 1, two : 2,  three : 3 ];')
       );
     }
 
@@ -135,21 +135,21 @@
         array(new MapNode(array(
           'elements'      => array(
             array(
-              new IntegerNode('1'),
               new StringNode('one'),
+              new IntegerNode('1'),
             ),
             array(
-              new IntegerNode('2'),
               new StringNode('two'),
+              new IntegerNode('2'),
             ),
             array(
-              new IntegerNode('3'),
               new StringNode('three'),
+              new IntegerNode('3'),
             ),
           ),
-        'type'          => new TypeName('[:string]'),
+        'type'          => new TypeName('[:int]'),
         ))), 
-        $this->parse('new [:string] { 1 : "one", 2 : "two", 3 : "three" };')
+        $this->parse('new [:int] { one : 1, two : 2,  three : 3 };')
       );
     }
 
@@ -163,21 +163,21 @@
         array(new MapNode(array(
           'elements'      => array(
             array(
-              new IntegerNode('1'),
               new StringNode('one'),
+              new IntegerNode('1'),
             ),
             array(
-              new IntegerNode('2'),
               new StringNode('two'),
+              new IntegerNode('2'),
             ),
             array(
-              new IntegerNode('3'),
               new StringNode('three'),
+              new IntegerNode('3'),
             ),
           ),
           'type'          => NULL,
         ))), 
-        $this->parse('[ 1 : "one", 2 : "two", 3 : "three", ];')
+        $this->parse('[ one : 1, two : 2,  three : 3, ];')
       );
     }
   }
