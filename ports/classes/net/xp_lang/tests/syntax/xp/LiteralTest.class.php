@@ -218,7 +218,7 @@
         )),
         'type'          => NULL
       ))), $this->parse("
-        [ 'one' : 1 ];
+        [ one : 1 ];
       "));
     }
 

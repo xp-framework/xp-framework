@@ -331,6 +331,24 @@ Arrays can also have types:
   public static void main(string[] $args) { ... }
 </code>
 
+Map syntax
+~~~~~~~~~~
+The <tt>array</tt> keyword in PHP can also declare maps. In XP language,
+this has been changed:
+
+<code>
+  $a= [one: 1, two: 2];    // same as $a= array('one' => 1, 'two' => 2);
+</code>
+
+Maps can also have types:
+<code>
+  // Instantiation
+  $a= new [:string] { greeting: 'Hello', whom: 'World' };
+  
+  // Type
+  public static [:string] map(string[] $args, Closure $block) { ... }
+</code>
+
 Class literal
 ~~~~~~~~~~~~~
 Every class has a static member called <tt>$class</tt> which will 

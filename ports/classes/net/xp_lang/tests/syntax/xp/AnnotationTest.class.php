@@ -159,7 +159,7 @@
     }
 
     /**
-     * Test annotation with default value (Restrict(["Role" : "Root"]))
+     * Test annotation with default value (Restrict([Role : "Root"]))
      *
      */
     #[@test]
@@ -173,7 +173,7 @@
           )),
           'type'          => NULL
         )))
-      ))), $this->parseMethodWithAnnotations('[@Restrict(["Role" : "Root"])]'));
+      ))), $this->parseMethodWithAnnotations('[@Restrict([Role : "Root"])]'));
     }
 
     /**

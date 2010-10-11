@@ -6,7 +6,10 @@
 
   $package= 'net.xp_lang.tests.execution.source';
 
-  uses('net.xp_lang.tests.execution.source.ExecutionTest');
+  uses(
+    'net.xp_lang.tests.execution.source.ExecutionTest',
+    'xp.compiler.checks.UninitializedVariables'
+  );
 
   /**
    * Tests properties
@@ -21,6 +24,7 @@
      */
     public function setUp() {
       parent::setUp();
+      $this->check(new UninitializedVariables(), TRUE);
       if (NULL !== self::$fixture) return;
 
       try {

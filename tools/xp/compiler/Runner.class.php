@@ -177,6 +177,7 @@
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.UninitializedVariables')->newInstance(), FALSE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.MethodCallVerification')->newInstance(), FALSE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.MemberAccessVerification')->newInstance(), FALSE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.ArrayAccessVerification')->newInstance(), FALSE);
       
       // Compile files
       $success= $compiler->compile($files, $listener, $manager, $emitter);

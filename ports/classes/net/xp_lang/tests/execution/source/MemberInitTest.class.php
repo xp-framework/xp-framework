@@ -48,7 +48,7 @@
      */
     #[@test]
     public function toNonEmptyMap() {
-      $this->assertEquals(array('one' => 'two'), $this->newInstance('{ public [:string] $map= ["one" : "two"]; }')->map);
+      $this->assertEquals(array('one' => 'two'), $this->newInstance('{ public [:string] $map= [ one : "two"]; }')->map);
     }
 
     /**
