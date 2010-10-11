@@ -174,23 +174,23 @@
     }    
     
     /**
-     * Private helper function to calculate query string
+     * Calculates query string
      *
-     * @param string key The key of value
-     * @param mixed value The value
-     * @param string prefix The postfix to use for each variable (defaults to '')
-     * @return string
+     * @param   string key
+     * @param   var value
+     * @param   string prefix The postfix to use for each variable (defaults to '')
+     * @return  string
      */
-    protected function _getQuery($key, $value, $postfix= '') {
+    protected function buildQuery($key, $value, $postfix= '') {
       $query= '';
       if (is_array($value)) {
         if (is_int(key($value))) {
           foreach ($value as $i => $v) {
-            $query.= $this->_getQuery(NULL, $v, $postfix.$key.'[]');
+            $query.= $this->buildQuery(NULL, $v, $postfix.$key.'[]');
           }
         } else {
           foreach ($value as $k => $v) {
-            $query.= $this->_getQuery(NULL, $v, $postfix.$key.'['.$k.']');
+            $query.= $this->buildQuery(NULL, $v, $postfix.$key.'['.$k.']');
           }
         }
       } else if ('' === $value) {
@@ -199,6 +199,45 @@
         $query.= '&'.urlencode($key).$postfix.'='.urlencode($value);
       }
       return $query;
+    }
+
+    /**
+     * Parses a query string. Replaces builtin string parsing as that 
+     * breaks (by design) on query parameters with dots inside, e.g.
+     *
+     * @see     php://parse_str
+     * @param   string query
+     * @return  [:var] parsed parameters
+     */
+    protected function parseQuery($query) {
+      $params= array();
+      foreach (explode('&', $query) as $pair) {
+        sscanf($pair, "%[^=]=%[^\r]", $key, $value);
+        $key= urldecode($key);
+        if (substr_count($key, '[') !== substr_count($key, ']')) {
+          throw new FormatException('Unbalanced [] in query string');
+        }
+        if ($start= strpos($key, '[')) {    // Array notation
+          $base= substr($key, 0, $start);
+          isset($params[$base]) || $params[$base]= array();
+          $ptr= &$params[$base];
+          $offset= 0;
+          do {
+            $end= strpos($key, ']', $offset);
+            if ($start === $end- 1) {
+              $ptr= &$ptr[];
+            } else {
+              $end+= substr_count($key, '[', $start+ 1, $end- $start- 1);
+              $ptr= &$ptr[substr($key, $start+ 1, $end- $start- 1)];
+            }
+            $offset= $end+ 1;
+          } while ($start= strpos($key, '[', $offset));
+          $ptr= urldecode($value);
+        } else {
+          $params[$key]= urldecode($value);
+        }
+      }
+      return $params;
     }
 
     /**
@@ -211,7 +250,7 @@
       if (!$this->_info['params']) return $default;
       $query= '';
       foreach ($this->_info['params'] as $key => $value) {
-        $query.= $this->_getQuery($key, $value);
+        $query.= $this->buildQuery($key, $value);
       }
       return substr($query, 1);
     }
@@ -223,7 +262,7 @@
      * @return  peer.URL this object
      */
     public function setQuery($query) {
-      parse_str($query, $this->_info['params']);
+      $this->_info['params']= $this->parseQuery($query);
       unset($this->_info['url']);
       return $this;
     }
@@ -308,7 +347,7 @@
     /**
      * Set parameters
      *
-     * @param   [:var] hash parameters
+     * @param   array<string, var> hash parameters
      * @return  peer.URL this object
      */
     public function setParams($hash) {
@@ -339,7 +378,7 @@
      * Add parameters from an associative array. The key is taken as
      * parameter name and the value as parameter value.
      *
-     * @param   [:var] hash parameters
+     * @param   array<string, var> hash parameters
      * @return  peer.URL this object
      */
     public function addParams($hash) {
@@ -427,7 +466,7 @@
       if (isset($this->_info['user'])) $this->_info['user']= rawurldecode($this->_info['user']);
       if (isset($this->_info['pass'])) $this->_info['pass']= rawurldecode($this->_info['pass']);
       if (isset($this->_info['query'])) {
-        parse_str($this->_info['query'], $this->_info['params']);
+        $this->_info['params']= $this->parseQuery($this->_info['query']);
         unset($this->_info['query']);
       } else {
         $this->_info['params']= array();
