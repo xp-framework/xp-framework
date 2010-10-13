@@ -11,7 +11,8 @@
     'peer.http.HttpConstants',
     'text.regex.Pattern',
     'io.streams.Streams',
-    'xml.XPath'
+    'xml.XPath',
+    'scriptlet.Cookie'
   );
 
   /**
@@ -111,8 +112,12 @@
       
       // Check if we have cookies for this domain
       $host= $this->conn->getUrl()->getHost();
-      if (isset(self::$cookies[$host])) {
-        $request->setHeader('Cookie', self::$cookies[$host]);
+      if (isset(self::$cookies[$host]) && 0 < sizeof(self::$cookies[$host])) {
+        $cookies= '';
+        foreach (self::$cookies[$host] as $cookie) {
+          $cookies.= $cookie->getHeadervalue().'; ';
+        }
+        $request->setHeader('Cookie', substr($cookies, 0, -2));
       }
       return $this->conn->send($request);
     }
@@ -133,8 +138,9 @@
         // If we get a cookie, store it for this domain and reuse it in 
         // subsequent requests. If cookies are used for sessioning, we 
         // would be creating new sessions with every request otherwise!
-        if (1 == sscanf($this->response->getHeader('Set-Cookie'), '%[^;];', $cookie)) {
-          self::$cookies[$this->conn->getUrl()->getHost()]= $cookie;
+        foreach ((array)$this->response->header('Set-Cookie') as $str) {
+          $cookie= Cookie::parse($str);
+          self::$cookies[$this->conn->getUrl()->getHost()][$cookie->getName()]= $cookie;
         }
       } catch (XPException $e) {
         $this->response= xp::null();
