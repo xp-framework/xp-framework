@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.Date');
+
   /**
    * HTTP Cookie
    *
@@ -59,13 +61,70 @@
     ) {
       $this->name= $name;
       $this->value= $value;
-      $this->expires= $expires;
-      $this->expires= is('util.Date', $expires) ? $expires->getTime() : $expires;
+      $this->expires= ($expires instanceof Date) ? $expires->getTime() : $expires;
       $this->path= $path;
       $this->domain= $domain;
       $this->secure= $secure;
       $this->httpOnly= $httpOnly;
     }
+    
+    /**
+     * Parse cookie from Set-Cookie header line
+     *
+     * @param   string line
+     * @return  scriptlet.Cookie
+     * @throws  lang.FormatException
+     */
+    public static function parse($line) {
+      if (!preg_match_all('!([^=;]+)=?([^;]*)!', $line, $matches) || $matches[2][0] == '') {
+        throw new FormatException('Cannot parse cookie header.');
+      }
+      
+      $name= $matches[1][0];
+      $value= $matches[2][0];
+      $params= array(
+        'path'      => '',
+        'domain'    => '',
+        'secure'    => FALSE,
+        'httponly'  => FALSE,
+        'expires'   => 0
+      );
+      
+      for ($i= 1; $i < count($matches[0]); $i++) {
+        $val= trim($matches[2][$i]);
+        $key= strtolower(trim($matches[1][$i]));
+        
+        // Don't set unknown values:
+        if (!array_key_exists($key, $params)) continue;
+
+        switch ($key) {
+          case 'secure':
+            $params['secure']= TRUE;
+            break;
+            
+          case 'httponly':
+            $params['httponly']= TRUE;
+            break;
+            
+          case 'expires':
+            $params['expires']= new Date($val);
+            break;
+          
+          default:
+            $params[$key]= $val;
+        }
+      }
+      
+      return new self(
+        $name, 
+        $value,
+        $params['expires'],
+        $params['path'],
+        $params['domain'],
+        $params['secure'],
+        $params['httponly']
+      );
+    }    
 
     /**
      * Set Name
@@ -300,7 +359,7 @@
         ($this->httpOnly ? '; HTTPOnly' : '')
       );
     }
-    
+
     /**
      * Create string representation
      *
