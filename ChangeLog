@@ -48,6 +48,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Added check for correct configuration of timezone at bootstrap time
+  (kiesel)
 - Fixed absolute path calculation in io.Folder
   (friebe)
 - Fixed URL parsing of parameters containing square brackets or dots in

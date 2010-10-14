@@ -72,7 +72,39 @@
       // error. This cannot be suppressed by display_startup_errors = Off, so
       // not checking STDERR at all.
     }
-  
+    
+    /**
+     * Helper to run bootstrapping with given tz
+     *
+     * @param   string tz
+     */
+    protected function runWithTz($tz) {
+      $r= $this->runWith(Runtime::getInstance()->startupOptions()->withSetting('date.timezone', $tz));
+      $this->assertEquals(255, $r[0], 'exitcode');
+      $this->assertTrue(
+        (bool)strstr($r[1].$r[2], '[xp::core] date.timezone not configured properly.'),
+        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
+      );
+    }    
+    
+    /**
+     * Test XP fatals when no timezone is set
+     *
+     */
+    #[@test]
+    public function fatalsForEmptyTimezone() {
+      $this->runWithTz('');
+    }
+    
+    /**
+     * Test XP fatals when invalid timezone is set
+     *
+     */
+    #[@test]
+    public function fatalsForInvalidTimezone() {
+      $this->runWithTz('Foo/bar');
+    }
+    
     /**
      * Test non-existant classpath elements raise a fatal error
      *

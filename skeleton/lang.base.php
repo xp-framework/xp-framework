@@ -627,16 +627,17 @@
   // {{{ initialization
   error_reporting(E_ALL);
   
-  // Get rid of magic quotes 
-  get_magic_quotes_gpc() && xp::error('[xp::core] magic_quotes_gpc enabled');
-  ini_set('magic_quotes_runtime', FALSE);
-  
   // Constants
   define('LONG_MAX', PHP_INT_MAX);
   define('LONG_MIN', -PHP_INT_MAX - 1);
 
   // Hooks
   set_error_handler('__error');
+  
+  // Get rid of magic quotes 
+  get_magic_quotes_gpc() && xp::error('[xp::core] magic_quotes_gpc enabled');
+  date_default_timezone_set(ini_get('date.timezone')) || xp::error('[xp::core] date.timezone not configured properly.');
+  ini_set('magic_quotes_runtime', FALSE);
   
   // Registry initialization
   xp::$registry['null']= new null();
