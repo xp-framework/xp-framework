@@ -141,6 +141,15 @@
     }
 
     /**
+     * Test setUser() method
+     *
+     */
+    #[@test]
+    public function setUrlEncodedUser() {
+      $this->assertEquals('http://user%3F@localhost', create(new URL('http://localhost'))->setUser('user?')->getURL());
+    }
+
+    /**
      * Test setUser()
      *
      */
@@ -168,6 +177,15 @@
     #[@test]
     public function urlEncodedPassword() {
       $this->assertEquals('pass?word', create(new URL('http://user:pass%3Fword@localhost'))->getPassword());
+    }
+
+    /**
+     * Test setPassword() method
+     *
+     */
+    #[@test]
+    public function setUrlEncodedPassword() {
+      $this->assertEquals('http://user:pass%3Fword@localhost', create(new URL('http://user@localhost'))->setPassword('pass?word')->getURL());
     }
 
     /**
@@ -1286,6 +1304,51 @@
         'load=getXML&data[project][Name][Value]=project&data[project][ID][Value]=1337&data[langCode]=en',
         $u->getQuery()
       );
+    }
+
+    /**
+     * Test getURL() with an empty parameter in query string
+     *
+     */
+    #[@test]
+    public function getURLWithEmptyParameter() {
+      $this->assertEquals('http://example.com/test?a=v1&b&c=v2', create(new URL('http://example.com/test?a=v1&b=&c=v2'))->getURL());
+    }
+
+    /**
+     * Test getURL() with an empty parameter in query string
+     *
+     */
+    #[@test]
+    public function getURLWithParameterWithoutValue() {
+      $this->assertEquals('http://example.com/test?a=v1&b&c=v2', create(new URL('http://example.com/test?a=v1&b&c=v2'))->getURL());
+    }
+
+    /**
+     * Test getURL() after setQuery('')
+     *
+     */
+    #[@test]
+    public function getURLAfterSettingEmptyQueryString() {
+      $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test'))->setQuery('')->getURL());
+    }
+
+    /**
+     * Test getURL() after setQuery(NULL)
+     *
+     */
+    #[@test]
+    public function getURLAfterSettingNullQueryString() {
+      $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test'))->setQuery(NULL)->getURL());
+    }
+
+    /**
+     * Test getURL() with empty query string in constructor
+     *
+     */
+    #[@test]
+    public function getURLWithEmptyQueryStringConstructor() {
+      $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test?'))->getURL());
     }
   }
 ?>

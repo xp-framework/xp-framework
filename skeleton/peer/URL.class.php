@@ -210,8 +210,11 @@
      * @return  [:var] parsed parameters
      */
     protected function parseQuery($query) {
+      if ('' === $query) return array();
+
       $params= array();
       foreach (explode('&', $query) as $pair) {
+        $key= $value= NULL;
         sscanf($pair, "%[^=]=%[^\r]", $key, $value);
         $key= urldecode($key);
         if (substr_count($key, '[') !== substr_count($key, ']')) {
@@ -262,7 +265,7 @@
      * @return  peer.URL this object
      */
     public function setQuery($query) {
-      $this->_info['params']= $this->parseQuery($query);
+      $this->_info['params']= $this->parseQuery((string)$query);
       unset($this->_info['url']);
       return $this;
     }
@@ -436,8 +439,8 @@
         $this->_info['url']= $this->_info['scheme'].'://';
         if (isset($this->_info['user'])) $this->_info['url'].= sprintf(
           '%s%s@',
-          $this->_info['user'],
-          (isset($this->_info['pass']) ? ':'.$this->_info['pass'] : '')
+          rawurlencode($this->_info['user']),
+          (isset($this->_info['pass']) ? ':'.rawurlencode($this->_info['pass']) : '')
         );
         $this->_info['url'].= $this->_info['host'];
         isset($this->_info['port']) && $this->_info['url'].= ':'.$this->_info['port'];
@@ -471,7 +474,6 @@
       } else {
         $this->_info['params']= array();
       }
-      $this->_info['url']= $str;
     }
 
     /**
