@@ -54,7 +54,7 @@ Bugfixes
   (friebe)
 - Fixed URL parsing of parameters containing square brackets or dots in
   the peer.URL class by replacing parse_str() by a handcrafted parser
-  (friebe)
+  (friebe, Marius Rosoiu)
 - Changed img.fonts.TrueTypeFont's constructor to throw an exception if
   the font cannot be found
   (friebe)
