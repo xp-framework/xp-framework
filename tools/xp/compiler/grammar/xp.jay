@@ -80,7 +80,7 @@
 %left '&'
 %nonassoc T_EQUALS T_NOT_EQUALS
 %nonassoc '<' T_SE '>' T_GE
-%right T_DOUBLE_ARROW
+%right T_ARROW
 %left '+' '-'
 %left '*' '/' '%'
 %right '!'
@@ -798,8 +798,8 @@ expression:
       $$->expression= $1; 
       $$->type= $3; 
     }
-  | '{' lambda_input T_DOUBLE_ARROW lambda_body '}' {
-      $$= $yyLex->create(new LambdaNode($2, $4));
+  | '#' '{' lambda_input T_ARROW lambda_body '}' {
+      $$= $yyLex->create(new LambdaNode($3, $5));
     }
   | '(' expression ')' chain_opt { 
       if ($4) {
