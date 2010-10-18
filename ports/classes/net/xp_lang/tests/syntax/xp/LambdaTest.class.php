@@ -162,5 +162,24 @@
         $this->parse('#{ -> Console::write("Hello") };')
       );
     }
+
+    /**
+     * Test invocation
+     *
+     */
+    #[@test]
+    public function invocation() {
+      $this->assertEquals(
+        array(new InstanceCallNode(new LambdaNode(
+          array(),
+          array(new ReturnNode(new StaticMethodCallNode(
+            new TypeName('Console'),
+            'write', 
+            array(new StringNode('Hello'))
+          )))
+        ))), 
+        $this->parse('#{ -> Console::write("Hello") }.();')
+      );
+    }
   }
 ?>

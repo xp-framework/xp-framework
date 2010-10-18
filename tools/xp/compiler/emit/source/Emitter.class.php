@@ -383,6 +383,20 @@
     }
 
     /**
+     * Emit instance call
+     *
+     * @param   resource op
+     * @param   xp.compiler.ast.InstanceCallNode call
+     */
+    public function emitInstanceCall($op, InstanceCallNode $call) {
+      $op->append('call_user_func(');
+      $this->emitOne($op, $call->target);
+      $op->append(', ');
+      $this->emitInvocationArguments($op, (array)$call->arguments, FALSE);
+      $op->append(')');
+    }
+
+    /**
      * Emit method call
      *
      * @param   resource op

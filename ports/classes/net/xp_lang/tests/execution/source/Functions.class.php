@@ -23,5 +23,16 @@
     public static function apply($in, $func) {
       return array_map($func, $in);
     }
+
+    /**
+     * Filer each element in an array with a given function
+     *
+     * @param   var[] in
+     * @param   var func
+     * @return  var[]
+     */
+    public static function filter($in, $func) {
+      return array_values(array_filter($in, $func));
+    }
   }
 ?>

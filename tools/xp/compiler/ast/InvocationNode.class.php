@@ -7,7 +7,12 @@
   uses('xp.compiler.ast.Node');
 
   /**
-   * Represents an invocation
+   * Represents an invocation:
+   *
+   * <code>
+   *   writeLine();   // via import static = Console::writeLine()
+   *   exec();        // via import native = php.standard.exec()
+   * </code>
    *
    * @see   xp://xp.compiler.ast.MethodCallNode
    */

@@ -33,6 +33,7 @@
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
     'xp.compiler.ast.MethodCallNode',
+    'xp.compiler.ast.InstanceCallNode',
     'xp.compiler.ast.StaticMethodCallNode',
     'xp.compiler.ast.MemberAccessNode',
     'xp.compiler.ast.StaticMemberAccessNode',
@@ -798,8 +799,11 @@ expression:
       $$->expression= $1; 
       $$->type= $3; 
     }
-  | '#' '{' lambda_input T_ARROW lambda_body '}' {
-      $$= $yyLex->create(new LambdaNode($3, $5));
+  | '#' '{' lambda_input T_ARROW lambda_body '}' { $1= $yyLex->create(new LambdaNode($3, $5)); } chain_opt {
+      if ($8) {
+        $$= $8[0];
+        $8[1]->target= $1;
+      }
     }
   | '(' expression ')' chain_opt { 
       if ($4) {
@@ -951,6 +955,9 @@ chain:
     }
   | '.' member '(' { $1= $yyLex->create(new MethodCallNode(NULL, $2)); } expressionlist_opt ')' { 
       $1->arguments= $5;
+    }
+  | '.' '(' { $1= $yyLex->create(new InstanceCallNode(NULL)); } expressionlist_opt ')' { 
+      $1->arguments= $4;
     }
 ;
 
