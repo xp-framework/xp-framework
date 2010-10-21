@@ -81,7 +81,7 @@
      * @param   util.collections.HashTable targets
      * @return  var result
      */
-    protected static function invoke(AbstractGenerator $generator, Method $method, HashTable $targets) {
+    protected static function invoke(AbstractGenerator $generator, Method $method, Object $targets) {
       $target= $targets->get($method);
       if ($target->containsKey('result')) return $target['result'][0];
 
@@ -163,11 +163,11 @@
       
       // Compile target chain
       $empty= new ArrayList();
-      $targets= create('new util.collections.HashTable<lang.reflect.Method, util.collections.HashTable>()');
+      $targets= create('new util.collections.HashTable<lang.reflect.Method, util.collections.HashTable<string, lang.Generic>>()');
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('target')) continue;
         
-        $target= create('new util.collections.HashTable<lang.types.String, lang.Generic>()');
+        $target= create('new util.collections.HashTable<string, lang.Generic>()');
 
         // Fetch dependencies
         if ($method->hasAnnotation('target', 'depends')) {
