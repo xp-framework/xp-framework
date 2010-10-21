@@ -218,7 +218,7 @@
         $l= xp::reflect(substr($type, 0, $p)).'··';
         for ($args= substr($type, $p+ 1, -1).',', $o= 0, $brackets= 0, $i= 0, $s= strlen($args); $i < $s; $i++) {
           if (',' === $args{$i} && 0 === $brackets) {
-            $l.= xp::reflect(substr($args, $o, $i- $o)).'¸';
+            $l.= xp::reflect(ltrim(substr($args, $o, $i- $o))).'¸';
             $o= $i+ 1;
           } else if ('<' === $args{$i}) {
             $brackets++;
