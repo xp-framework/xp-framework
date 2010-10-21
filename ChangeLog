@@ -61,7 +61,7 @@ Bugfixes
   (friebe)
 - Fixed Runtime::memoryUsage() and Runtime::peakMemoryUsage()
   (friebe)
-- Fixed generics declaration parsing in create()
+- Fixed generics declaration parsing in create() and is()
   (friebe)
 
 Features
