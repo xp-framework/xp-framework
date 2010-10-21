@@ -203,11 +203,34 @@
     }
     // }}}
     
-    // {{{ internal string reflect(string str)
-    //     Retrieve PHP conformant name for fqcn
-    static function reflect($str) {
-      $l= array_search($str, xp::$registry, TRUE);
-      return $l ? substr($l, 6) : substr($str, (FALSE === $p= strrpos($str, '.')) ? 0 : $p+ 1);
+    // {{{ internal string reflect(string type)
+    //     Retrieve type literal for a given type name
+    static function reflect($type) {
+      if ('string' === $type || 'int' === $type || 'double' === $type || 'boolean' == $type) {
+        return 'þ'.$type;
+      } else if ('var' === $type) {
+        return $type;
+      } else if ('[]' === substr($type, -2)) {
+        return '¦'.xp::reflect(substr($type, 0, -2));
+      } else if ('[:' === substr($type, 0, 2)) {
+        return '»'.xp::reflect(substr($type, 2, -1));
+      } else if (FALSE !== ($p= strpos($type, '<'))) {
+        $l= xp::reflect(substr($type, 0, $p)).'··';
+        for ($args= substr($type, $p+ 1, -1).',', $o= 0, $brackets= 0, $i= 0, $s= strlen($args); $i < $s; $i++) {
+          if (',' === $args{$i} && 0 === $brackets) {
+            $l.= xp::reflect(substr($args, $o, $i- $o)).'¸';
+            $o= $i+ 1;
+          } else if ('<' === $args{$i}) {
+            $brackets++;
+          } else if ('>' === $args{$i}) {
+            $brackets--;
+          }
+        }
+        return substr($l, 0, -1);
+      } else {      
+        $l= array_search($type, xp::$registry, TRUE);
+        return $l ? substr($l, 6) : substr($type, (FALSE === $p= strrpos($type, '.')) ? 0 : $p+ 1);
+      }
     }
     // }}}
 
@@ -462,7 +485,7 @@
       return is_double($object);
     } else if ('string' === $type) {
       return is_string($object);
-    } else if ('bool' === $type) {
+    } else if ('boolean' === $type) {
       return is_bool($object);
     } else if ('var' === $type) {
       return TRUE;
