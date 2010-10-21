@@ -1,16 +1,17 @@
 ! Preferences file for NEdit
+! (User settings in X "application defaults" format)
 !
-! This file is overwritten by the "Save Defaults..." command in NEdit 
+! This file is overwritten by the "Save Defaults..." command in NEdit
 ! and serves only the interactively settable options presented in the NEdit
-! "Preferences" menu.  To modify other options, such as key bindings, use 
-! the .Xdefaults file in your home directory (or the X resource 
-! specification method appropriate to your system).  The contents of this 
+! "Preferences" menu.  To modify other options, such as key bindings, use
+! the .Xdefaults file in your home directory (or the X resource
+! specification method appropriate to your system).  The contents of this
 ! file can be moved into an X resource file, but since resources in this file
 ! override their corresponding X resources, either this file should be 
 ! deleted or individual resource lines in the file should be deleted for the
 ! moved lines to take effect.
 
-nedit.fileVersion: 5.5
+nedit.fileVersion: 5.6
 nedit.shellCommands: \
 	spell:Alt+B:s:EX:\n\
 		cat>spellTmp; xterm -e ispell -x spellTmp; cat spellTmp; rm spellTmp\n\
@@ -82,55 +83,124 @@ nedit.macroCommands: \
 		replace_range(startScan + keyStart, $cursor, completedWord)\n\
 	}\n\
 	Fill Sel. w/Char:::R: {\n\
+		# This macro replaces each character position in\n\
+		# the selection with the string typed into the dialog\n\
+		# it displays.\n\
 		if ($selection_start == -1) {\n\
 		    beep()\n\
 		    return\n\
 		}\n\
 		\n\
 		# Ask the user what character to fill with\n\
-		fillChar = string_dialog("Fill selection with what character?", "OK", "Cancel")\n\
+		fillChar = string_dialog("Fill selection with what character?", \\\n\
+		                         "OK", "Cancel")\n\
 		if ($string_dialog_button == 2 || $string_dialog_button == 0)\n\
 		    return\n\
 		\n\
-		# Count the number of lines in the selection\n\
-		nLines = 0\n\
-		for (i=$selection_start; i<$selection_end; i++)\n\
-		    if (get_character(i) == "\\n")\n\
-		    	nLines++\n\
+		# Count the number of lines (NL characters) in the selection\n\
+		# (by removing all non-NLs in selection and counting the remainder)\n\
+		nLines = length(replace_in_string(get_selection(), \\\n\
+		                                  "^.*$", "", "regex"))\n\
 		\n\
-		# Create the fill text\n\
 		rectangular = $selection_left != -1\n\
-		line = ""\n\
-		fillText = ""\n\
+		\n\
+		# work out the pieces of required of the replacement text\n\
+		# this will be top mid bot where top is empty or ends in NL,\n\
+		# mid is 0 or more lines of repeats ending with NL, and\n\
+		# bot is 0 or more repeats of the fillChar\n\
+		\n\
+		toplen = -1 # top piece by default empty (no NL)\n\
+		midlen = 0\n\
+		botlen = 0\n\
+		\n\
 		if (rectangular) {\n\
-		    for (i=0; i<$selection_right-$selection_left; i++)\n\
-			line = line fillChar\n\
-		    for (i=0; i<nLines; i++)\n\
-			fillText = fillText line "\\n"\n\
-		    fillText = fillText line\n\
+		    # just fill the rectangle:  mid\\n \\ nLines\n\
+		    #                           mid\\n /\n\
+		    #                           bot   - last line with no nl\n\
+		    midlen = $selection_right -  $selection_left\n\
+		    botlen = $selection_right -  $selection_left\n\
 		} else {\n\
+		    #                  |col[0]\n\
+		    #         .........toptoptop\\n                      |col[0]\n\
+		    # either  midmidmidmidmidmid\\n \\ nLines - 1   or ...botbot...\n\
+		    #         midmidmidmidmidmid\\n /                          |col[1]\n\
+		    #         botbot...         |\n\
+		    #                 |col[1]   |wrap margin\n\
+		    # we need column positions col[0], col[1] of selection start and\n\
+		    # end (use a loop and arrays to do the two positions)\n\
+		    sel[0] = $selection_start\n\
+		    sel[1] = $selection_end\n\
+		\n\
+		    # col[0] = pos_to_column($selection_start)\n\
+		    # col[1] = pos_to_column($selection_end)\n\
+		\n\
+		    for (i = 0; i < 2; ++i) {\n\
+		        end = sel[i]\n\
+		        pos = search("^", end, "regex", "backward")\n\
+		        thisCol = 0\n\
+		        while (pos < end) {\n\
+		            nexttab = search("\\t", pos)\n\
+		            if (nexttab < 0 || nexttab >= end) {\n\
+		                thisCol += end - pos # count remaining non-tabs\n\
+		                nexttab = end\n\
+		            } else {\n\
+		                thisCol += nexttab - pos + $tab_dist\n\
+		                thisCol -= (thisCol % $tab_dist)\n\
+		            }\n\
+		            pos = nexttab + 1 # skip past the tab or end\n\
+		        }\n\
+		        col[i] = thisCol\n\
+		    }\n\
+		    toplen = max($wrap_margin - col[0], 0)\n\
+		    botlen = min(col[1], $wrap_margin)\n\
+		\n\
 		    if (nLines == 0) {\n\
-		    	for (i=$selection_start; i<$selection_end; i++)\n\
-		    	    fillText = fillText fillChar\n\
+		        toplen = -1\n\
+		        botlen = max(botlen - col[0], 0)\n\
 		    } else {\n\
-		    	startIndent = 0\n\
-		    	for (i=$selection_start-1; i>=0 && get_character(i)!="\\n"; i--)\n\
-		    	    startIndent++\n\
-		    	for (i=0; i<$wrap_margin-startIndent; i++)\n\
-		    	    fillText = fillText fillChar\n\
-		    	fillText = fillText "\\n"\n\
-			for (i=0; i<$wrap_margin; i++)\n\
-			    line = line fillChar\n\
-			for (i=0; i<nLines-1; i++)\n\
-			    fillText = fillText line "\\n"\n\
-			for (i=$selection_end-1; i>=$selection_start && get_character(i)!="\\n"; \\\n\
-			    	i--)\n\
-			    fillText = fillText fillChar\n\
+		        midlen = $wrap_margin\n\
+		        if (toplen < 0)\n\
+		            toplen = 0\n\
+		        nLines-- # top piece will end in a NL\n\
 		    }\n\
 		}\n\
 		\n\
-		# Replace the selection with the fill text\n\
-		replace_selection(fillText)\n\
+		# Create the fill text\n\
+		# which is the longest piece? make a line of that length\n\
+		# (use string doubling - this allows the piece to be\n\
+		# appended to double in size at each iteration)\n\
+		\n\
+		len = max(toplen, midlen, botlen)\n\
+		charlen = length(fillChar) # maybe more than one char given!\n\
+		\n\
+		line = ""\n\
+		while (len > 0) {\n\
+		    if (len % 2)\n\
+		        line = line fillChar\n\
+		    len /= 2\n\
+		    if (len > 0)\n\
+		        fillChar = fillChar fillChar\n\
+		}\n\
+		# assemble our pieces\n\
+		toppiece = ""\n\
+		midpiece = ""\n\
+		botpiece = ""\n\
+		if (toplen >= 0)\n\
+		    toppiece = substring(line, 0, toplen * charlen) "\\n"\n\
+		if (botlen > 0)\n\
+		    botpiece = substring(line, 0, botlen * charlen)\n\
+		\n\
+		# assemble midpiece (use doubling again)\n\
+		line = substring(line, 0, midlen * charlen) "\\n"\n\
+		while (nLines > 0) {\n\
+		    if (nLines % 2)\n\
+		        midpiece = midpiece line\n\
+		    nLines /= 2\n\
+		    if (nLines > 0)\n\
+		        line = line line\n\
+		}\n\
+		# Replace the selection with the complete fill text\n\
+		replace_selection(toppiece midpiece botpiece)\n\
 	}\n\
 	Quote Mail Reply:::: {\n\
 		if ($selection_start == -1)\n\
@@ -151,22 +221,13 @@ nedit.macroCommands: \
 		select(selStart, selEnd + 6)\n\
 	}\n\
 	Comments>/* Uncomment */@C@C++@Java@CSS@JavaScript@Lex:::R: {\n\
-		sel = get_selection()\n\
-		selStart = $selection_start\n\
-		selEnd = $selection_end\n\
-		commentStart = search_string(sel, "/*", 0)\n\
-		if (substring(sel, commentStart + 2, commentStart + 3) == " ")\n\
-		    keepStart = commentStart + 3\n\
-		else\n\
-		    keepStart = commentStart + 2\n\
-		keepEnd = search_string(sel, "*/", length(sel), "backward")\n\
-		commentEnd = keepEnd + 2\n\
-		if (substring(sel, keepEnd - 1, keepEnd) == " ")\n\
-		    keepEnd = keepEnd - 1\n\
-		replace_range(selStart + commentStart, selStart + commentEnd, \\\n\
-			substring(sel, keepStart, keepEnd))\n\
-		select(selStart, selEnd - (keepStart-commentStart) - \\\n\
-			(commentEnd - keepEnd))\n\
+		pos = search("(?n\\\\s*/\\\\*\\\\s*)", $selection_start, "regex")\n\
+		start = $search_end\n\
+		end = search("(?n\\\\*/\\\\s*)", $selection_end, "regex", "backward")\n\
+		if (pos != $selection_start || end == -1 )\n\
+		    return\n\
+		replace_selection(get_range(start, end))\n\
+		select(pos, $cursor)\n\
 	}\n\
 	Comments>// Comment@C@C++@Java@JavaScript:::R: {\n\
 		replace_in_selection("^.*$", "// &", "regex")\n\
@@ -216,12 +277,19 @@ nedit.macroCommands: \
 	Comments>Bar Uncomment@C:::R: {\n\
 		selStart = $selection_start\n\
 		selEnd = $selection_end\n\
-		newText = get_range(selStart+3, selEnd-4)\n\
-		newText = replace_in_string(newText, "^ \\\\* ", "", "regex")\n\
+		pos = search("/\\\\*\\\\s*\\\\n", selStart, "regex")\n\
+		if (pos != selStart) return\n\
+		start = $search_end\n\
+		end = search("\\\\n\\\\s*\\\\*/\\\\s*\\\\n?", selEnd, "regex", "backward")\n\
+		if (end == -1 || $search_end < selEnd) return\n\
+		newText = get_range(start, end)\n\
+		newText = replace_in_string(newText,"^ *\\\\* ?", "", "regex", "copy")\n\
+		if (get_range(selEnd, selEnd - 1) == "\\n") selEnd -= 1\n\
 		replace_range(selStart, selEnd, newText)\n\
 		select(selStart, selStart + length(newText))\n\
 	}\n\
 	Make C Prototypes@C@C++:::: {\n\
+		# simplistic extraction of C function prototypes, usually good enough\n\
 		if ($selection_start == -1) {\n\
 		    start = 0\n\
 		    end = $text_length\n\
@@ -230,6 +298,10 @@ nedit.macroCommands: \
 		    end = $selection_end\n\
 		}\n\
 		string = get_range(start, end)\n\
+		# remove all C++ and C comments, then all blank lines in the extracted range\n\
+		string = replace_in_string(string, "//.*$", "", "regex", "copy")\n\
+		string = replace_in_string(string, "(?n/\\\\*.*?\\\\*/)", "", "regex", "copy")\n\
+		string = replace_in_string(string, "^\\\\s*\\n", "", "regex", "copy")\n\
 		nDefs = 0\n\
 		searchPos = 0\n\
 		prototypes = ""\n\
@@ -625,7 +697,7 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 	Tcl:.tcl .tk .itcl .itk::Smart:None::::\n\
 	Awk:.awk:::::::\n\
 	Sh Ksh Bash:.sh .bash .ksh .profile .bashrc .bash_logout .bash_login .bash_profile:"^[ \\t]*#[ \\t]*![ \\t]*/.*bin/(sh|ksh|bash)"::::::\n\
-	Csh:.csh .cshrc .login .logout:"^[ \\t]*#[ \\t]*![ \\t]*/bin/csh"::::::\n\
+	Csh:.csh .cshrc .tcshrc .login .logout:"^[ \\t]*#[ \\t]*![ \\t]*/bin/t?csh"::::::\n\
 	Makefile:Makefile makefile .mk:::::::\n\
 	SGML HTML:.sgml .sgm .html .htm .xslt .xsl .xml:::::::\n\
 	LaTeX:.tex .sty .cls .dtx .ins:::::::\n\
@@ -649,6 +721,8 @@ nedit.languageModes: 	C:.c .h::::::".,/\\`'!|@#%^&*()-=+{}[]"":;<>?~":\n\
 nedit.styles: 	Plain:black:Plain\n\
 	Comment:gray40:Plain\n\
 	Keyword:SteelBlue4:Bold\n\
+	Operator:dark blue:Bold\n\
+	Bracket:dark blue:Bold\n\
 	Storage Type:brown:Bold\n\
 	Storage Type1:saddle brown:Bold\n\
 	String:darkBlue:Plain\n\
@@ -732,6 +806,7 @@ nedit.hiliteFgColor: white
 nedit.hiliteBgColor: red
 nedit.lineNoFgColor: black
 nedit.cursorFgColor: black
+nedit.shell: /bin/bash
 nedit.smartTags: True
 nedit.prefFileRead: True
 nedit.titleFormat: {%c} [%s] %f (%S) - %d
