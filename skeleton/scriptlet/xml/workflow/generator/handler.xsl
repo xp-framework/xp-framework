@@ -84,7 +84,7 @@
      * @access  public
      * @param   scriptlet.xml.XMLScriptletRequest request
      * @param   scriptlet.xml.workflow.Context context
-     * @return  boolean
+     * @return  bool
      */
     function setup(&$request, &$context) {
     
