@@ -126,8 +126,8 @@
      * Opens a folder.
      *
      * @param   peer.mail.MailFolder folder
-     * @param   boolean readonly default FALSE
-     * @return  boolean success
+     * @param   bool readonly default FALSE
+     * @return  bool success
      * @throws  lang.IllegalAccessException if another folder is still open
      * @throws  io.IOException if folder cannot be opened
      */
@@ -158,7 +158,7 @@
      * Closes an open folder.
      *
      * @param   peer.mail.MailFolder folder
-     * @return  boolean success
+     * @return  bool success
      * @throws  lang.IllegalArgumentException if folder is not opened folder
      */    
     public function closeFolder($f) {

@@ -58,7 +58,7 @@
      *
      * @param  string  path
      * @param  string  newSeparator
-     * @param  boolean skipDrive
+     * @param  bool skipDrive
      * @return string
      */
     private function replaceBackslashSeparator($path, $newSeparator, $skipDrive) {

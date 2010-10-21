@@ -54,8 +54,8 @@
     /**
      * EchoBool method
      *
-     * @param   boolean arg1
-     * @return  boolean
+     * @param   bool arg1
+     * @return  bool
      */
     #[@remote]
     public function echoBool($arg1) {

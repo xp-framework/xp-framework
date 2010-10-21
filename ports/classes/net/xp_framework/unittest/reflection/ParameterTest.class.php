@@ -82,7 +82,7 @@
     /**
      * Method without functionality to be used by tests.
      *
-     * @param   boolean new
+     * @param   bool new
      */
     private function setStatus($new= FALSE) { }
   

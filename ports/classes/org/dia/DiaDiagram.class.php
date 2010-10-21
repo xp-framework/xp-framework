@@ -130,7 +130,7 @@
      * Writes the XML representation of this DiaDiagram to the given filename
      *
      * @param   string filename Filename to save the DIAgramm to
-     * @param   boolean zip default TRUE Gzip the DIAgram file?
+     * @param   bool zip default TRUE Gzip the DIAgram file?
      */
     public function saveTo($filename, $zip= TRUE) {
       // open $File according to $zip

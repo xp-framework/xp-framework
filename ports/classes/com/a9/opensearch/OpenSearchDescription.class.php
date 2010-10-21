@@ -317,7 +317,7 @@
     /**
      * Set adultContent
      *
-     * @param   mixed adultContent either a string or a boolean
+     * @param   mixed adultContent either a string or a bool
      */
     #[@xmlmapping(element= 's:AdultContent')]
     public function setAdultContent($adultContent) {
