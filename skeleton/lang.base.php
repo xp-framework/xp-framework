@@ -206,7 +206,7 @@
     // {{{ internal string reflect(string type)
     //     Retrieve type literal for a given type name
     static function reflect($type) {
-      if ('string' === $type || 'int' === $type || 'double' === $type || 'boolean' == $type) {
+      if ('string' === $type || 'int' === $type || 'double' === $type || 'bool' == $type) {
         return 'þ'.$type;
       } else if ('var' === $type) {
         return $type;

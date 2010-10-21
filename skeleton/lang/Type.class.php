@@ -115,7 +115,7 @@
       static $deprecated= array(
         'char'      => 'string',
         'integer'   => 'int',
-        'bool'      => 'boolean',
+        'boolean'   => 'bool',
         'float'     => 'double',
         'mixed'     => 'var',
         '*'         => 'var',
@@ -132,7 +132,7 @@
       // * T* is a vararg
       // * T<K, V> is a generic
       // * Anything else is a qualified or unqualified class name
-      if ('string' === $type || 'int' === $type || 'double' === $type || 'boolean' == $type) {
+      if ('string' === $type || 'int' === $type || 'double' === $type || 'bool' == $type) {
         return Primitive::forName($type);
       } else if ('var' === $type) {
         return self::$VAR;

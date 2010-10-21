@@ -57,7 +57,7 @@
      */
     #[@test]
     public function booleanPrimitive() {
-      $this->assertEquals(Primitive::$BOOLEAN, Primitive::forName('boolean'));
+      $this->assertEquals(Primitive::$BOOL, Primitive::forName('bool'));
     }
 
     /**
