@@ -21,7 +21,6 @@
    *   <li>int</li>
    *   <li>double</li>
    *   <li>boolean</li>
-   *   <li>array</li>
    * </ul>
    *
    * @test     xp://net.xp_framework.unittest.reflection.PrimitiveTest 
