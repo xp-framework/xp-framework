@@ -103,7 +103,7 @@
      * test if join context is set
      * hack is necessary, because of the first tables elements in a join
      *
-     * @return  boolean
+     * @return  bool
      */
     public static function isJoinContext() {
       return (bool)self::$isJoinContext;

@@ -126,7 +126,7 @@
      *
      * @param   int option
      * @param   var value
-     * @return  boolean success
+     * @return  bool success
      */
     public function setOption($option, $value) {
       if (FALSE === ($res= ldap_set_option ($this->_hdl, $option, $value))) {

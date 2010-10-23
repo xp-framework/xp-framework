@@ -36,6 +36,7 @@
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.InvocationNode',
     'xp.compiler.ast.MethodCallNode',
+    'xp.compiler.ast.InstanceCallNode',
     'xp.compiler.ast.StaticMethodCallNode',
     'xp.compiler.ast.MemberAccessNode',
     'xp.compiler.ast.StaticMemberAccessNode',
@@ -66,7 +67,8 @@
     'xp.compiler.ast.ElseNode',
     'xp.compiler.ast.StaticInitializerNode',
     'xp.compiler.ast.LambdaNode',
-    'xp.compiler.ast.WithNode'
+    'xp.compiler.ast.WithNode',
+    'xp.compiler.ast.BracedExpressionNode'
   );
 
   /**
@@ -193,16 +195,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitMemberAccess(MemberAccessNode $node) {
-      $node->elements= $this->visitOne($node->target);
-      return $node;
-    }
-
-    /**
-     * Visit member access
-     *
-     * @param   xp.compiler.ast.Node node
-     */
-    protected function visitStaticMemberAccess(StaticMemberAccessNode $node) {
+      $node->target= $this->visitOne($node->target);
       return $node;
     }
 
@@ -212,12 +205,31 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitMethodCall(MethodCallNode $node) {
-      $node->elements= $this->visitOne($node->target);
+      $node->target= $this->visitOne($node->target);
       return $node;
     }
 
     /**
-     * Visit method call
+     * Visit instance call
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitInstanceCall(InstanceCallNode $node) {
+      $node->target= $this->visitOne($node->target);
+      return $node;
+    }
+
+    /**
+     * Visit static member access
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitStaticMemberAccess(StaticMemberAccessNode $node) {
+      return $node;
+    }
+
+    /**
+     * Visit static method call
      *
      * @param   xp.compiler.ast.Node node
      */
@@ -368,7 +380,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitField(FieldNode $node) {
-      $node->initialization && $this->emitOne($node->initialization);
+      $node->initialization && $this->visitOne($node->initialization);
       return $node;
     }
 
@@ -715,6 +727,16 @@
     protected function visitWith(WithNode $node) {
       $node->assignments= $this->visitAll($node->assignments);
       $node->statements= $this->visitAll($node->statements);
+      return $node;
+    }
+
+    /**
+     * Visit a () statement
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitBracedExpression(BracedExpressionNode $node) {
+      $node->expression= $this->visitOne($node->expression);
       return $node;
     }
     

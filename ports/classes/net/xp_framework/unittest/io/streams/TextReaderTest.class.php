@@ -24,7 +24,7 @@
      * @param   string charset
      * @return  io.streams.TextReader
      */
-    protected function newReader($str, $charset= NULL) {
+    protected function newReader($str, $charset= 'iso-8859-1') {
       return new TextReader(new MemoryInputStream($str), $charset);
     }
 

@@ -21,6 +21,8 @@
    *     $e->printStackTrace();
    *   }
    * </code>
+   *
+   * @test  xp://net.xp_framework.unittest.io.FolderTest
    */
   class Folder extends Object {
     public 
@@ -73,20 +75,43 @@
      * @param   string uri the complete path name
      */
     public function setURI($uri) {
-      $uri= str_replace('/', DIRECTORY_SEPARATOR, $uri);
-      if (FALSE === ($this->uri= realpath($uri))) {
 
-        // realpath returns FALSE if the URI does not exist
-        $this->uri= $uri;
+      // Add trailing / (or \, or whatever else DIRECTORY_SEPARATOR is defined to) if necessary
+      $uri= rtrim(str_replace('/', DIRECTORY_SEPARATOR, $uri), DIRECTORY_SEPARATOR);
+
+      // Calculate absolute path. Use own implementation as realpath returns FALSE in some
+      // implementations if the underlying directory does not exist.
+      $components= explode(DIRECTORY_SEPARATOR, $uri);
+      $i= 1;
+      if ('' === $components[0]) {
+        $this->uri= rtrim(realpath(DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
+      } else if ((strncasecmp(PHP_OS, 'Win', 3) === 0) && strlen($components[0]) > 1 && ':' === $components[0]{1}) {
+        $this->uri= rtrim(realpath($components[0]), DIRECTORY_SEPARATOR);
+      } else if ('..' === $components[0]) {
+        $this->uri= rtrim(realpath('..'), DIRECTORY_SEPARATOR);
+      } else {
+        $this->uri= rtrim(realpath('.'), DIRECTORY_SEPARATOR);
+        $i= ('.' === $components[0]) ? 1 : 0;
+      }
+      for ($s= sizeof($components); $i < $s; $i++) {
+        if ('.' === $components[$i]) {
+          continue;
+        } else if ('..' === $components[$i]) {
+          if ($p= strrpos($this->uri, DIRECTORY_SEPARATOR)) {
+            $this->uri= substr($this->uri, 0, $p);
+          }
+        } else {
+          $this->uri.= DIRECTORY_SEPARATOR.$components[$i];
+          if (is_link($this->uri)) {
+            $this->uri= readlink($this->uri);
+          }
+        }
       }
       
-      // Add trailing / (or \, or whatever else DIRECTORY_SEPARATOR is defined to)
-      // if necessary
-      $this->uri= rtrim($this->uri, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-
       // Calculate path and name
-      $this->path= dirname($uri);
-      $this->dirname= basename($uri);
+      $this->uri.= DIRECTORY_SEPARATOR;
+      $this->path= dirname($this->uri);
+      $this->dirname= basename($this->uri);
     }
     
     /**
@@ -123,6 +148,7 @@
         }
       }
       umask($umask);
+      
       return TRUE;
     }
     

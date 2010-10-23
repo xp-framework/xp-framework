@@ -141,6 +141,15 @@
     }
 
     /**
+     * Test setUser() method
+     *
+     */
+    #[@test]
+    public function setUrlEncodedUser() {
+      $this->assertEquals('http://user%3F@localhost', create(new URL('http://localhost'))->setUser('user?')->getURL());
+    }
+
+    /**
      * Test setUser()
      *
      */
@@ -168,6 +177,15 @@
     #[@test]
     public function urlEncodedPassword() {
       $this->assertEquals('pass?word', create(new URL('http://user:pass%3Fword@localhost'))->getPassword());
+    }
+
+    /**
+     * Test setPassword() method
+     *
+     */
+    #[@test]
+    public function setUrlEncodedPassword() {
+      $this->assertEquals('http://user:pass%3Fword@localhost', create(new URL('http://user@localhost'))->setPassword('pass?word')->getURL());
     }
 
     /**
@@ -420,12 +438,165 @@
     }
 
     /**
+     * Test getParam() method with an array parameter
+     *
+     */
+    #[@test]
+    public function getEncodedArrayParameter() {
+      $this->assertEquals(array('='), create(new URL('http://localhost?a[]=%3D'))->getParam('a'));
+    }
+
+    /**
      * Test getParam() method with array parameters
      *
      */
     #[@test]
     public function getArrayParameters() {
       $this->assertEquals(array('b', 'c'), create(new URL('http://localhost?a[]=b&a[]=c'))->getParam('a'));
+    }
+
+    /**
+     * Test getParam() method with array parameters
+     *
+     */
+    #[@test]
+    public function getArrayParametersAsHash() {
+      $this->assertEquals(
+        array('name' => 'b', 'color' => 'c'), 
+        create(new URL('http://localhost?a[name]=b&a[color]=c'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() method with array parameters
+     *
+     */
+    #[@test]
+    public function getArrayParametersAsHashWithEncodedNames() {
+      $this->assertEquals(
+        array('=name=' => 'b', '=color=' => 'c'), 
+        create(new URL('http://localhost?a[%3Dname%3D]=b&a[%3Dcolor%3D]=c'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test]
+    public function arrayOffsetsInDifferentArrays() {
+      $this->assertEquals(
+        array('a' => array('c'), 'b' => array('d')), 
+        create(new URL('http://localhost/?a[]=c&b[]=d'))->getParams()
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function duplicateOffsetsOverwriteEachother() {
+      $this->assertEquals(
+        array('c'), 
+        create(new URL('http://localhost/?a[0]=b&a[0]=c'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function duplicateNamesOverwriteEachother() {
+      $this->assertEquals(
+        array('name' => 'c'), 
+        create(new URL('http://localhost/?a[name]=b&a[name]=c'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function twoDimensionalArray() {
+      $this->assertEquals(
+        array(array('b')), 
+        create(new URL('http://localhost/?a[][]=b'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function threeDimensionalArray() {
+      $this->assertEquals(
+        array(array(array('b'))), 
+        create(new URL('http://localhost/?a[][][]=b'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function arrayOfHash() {
+      $this->assertEquals(
+        array(array(array('name' => 'b'))), 
+        create(new URL('http://localhost/?a[][][name]=b'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function hashOfArray() {
+      $this->assertEquals(
+        array('name' => array(array('b'))), 
+        create(new URL('http://localhost/?a[name][][]=b'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function hashOfArrayOfHash() {
+      $this->assertEquals(
+        array('name' => array(array('key' => 'b'))), 
+        create(new URL('http://localhost/?a[name][][key]=b'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function hashNotationWithoutValues() {
+      $this->assertEquals(
+        array('name' => '', 'color' => ''), 
+        create(new URL('http://localhost/?a[name]&a[color]'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function arrayNotationWithoutValues() {
+      $this->assertEquals(
+        array('', ''), 
+        create(new URL('http://localhost/?a[]&a[]'))->getParam('a')
+      );
     }
 
     /**
@@ -439,7 +610,67 @@
         create(new URL('http://localhost?a[]=b&a[]=c'))->getParams()
       );
     }
+
+    /**
+     * Test getParam() with array parameters
+     *
+     */
+    #[@test]
+    public function mixedOffsetsAndKeys() {
+      $this->assertEquals(
+        array(0 => 'b', 'name' => 'c', 1 => 'd'), 
+        create(new URL('http://localhost/?a[]=b&a[name]=c&a[]=d'))->getParam('a')
+      );
+    }
+
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test]
+    public function nestedBraces() {
+      $this->assertEquals(
+        array('a' => array('nested[]' => 'b')), 
+        create(new URL('http://localhost/?a[nested[]]=b'))->getParams()
+      );
+    }
  
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test]
+    public function nestedBracesTwice() {
+      $this->assertEquals(
+        array('a' => array('nested[a]' => 'b', 'nested[b]' => 'c')), 
+        create(new URL('http://localhost/?a[nested[a]]=b&a[nested[b]]=c'))->getParams()
+      );
+    }
+
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test]
+    public function nestedBracesChained() {
+      $this->assertEquals(
+        array('a' => array('nested[a]' => array('c'))), 
+        create(new URL('http://localhost/?a[nested[a]][]=c'))->getParams()
+      );
+    }
+
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test]
+    public function unnamedArrayParameterDoesNotCreateArray() {
+      $this->assertEquals(
+        array('[]' => 'c'), 
+        create(new URL('http://localhost/?[]=c'))->getParams()
+      );
+    }
+
     /**
      * Test getParam() method
      *
@@ -739,6 +970,42 @@
     }
 
     /**
+     * Test hasParam() method
+     *
+     */
+    #[@test]
+    public function hasDotParam() {
+      $this->assertTrue(create(new URL('http://localhost/?a.b=c'))->hasParam('a.b'));
+    }
+
+    /**
+     * Test getParam() method
+     *
+     */
+    #[@test]
+    public function getDotParam() {
+      $this->assertEquals('c', create(new URL('http://localhost/?a.b=c'))->getParam('a.b'));
+    }
+
+    /**
+     * Test getParams() method
+     *
+     */
+    #[@test]
+    public function getDotParams() {
+      $this->assertEquals(array('a.b' => 'c'), create(new URL('http://localhost/?a.b=c'))->getParams());
+    }
+
+    /**
+     * Test addParam() method
+     *
+     */
+    #[@test]
+    public function addDotParam() {
+      $this->assertEquals('a.b=c', create(new URL('http://localhost/'))->addParam('a.b', 'c')->getQuery());
+    }
+
+    /**
      * Test removeParam() method
      *
      */
@@ -866,6 +1133,78 @@
     public function withoutSchemeUnparseable() {
       new URL('/path/to/file');
     }
+
+    /**
+     * Test malformed query string parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function missingClosingBracket() {
+      new URL('http://example.com/?a[=c');
+    }
+
+    /**
+     * Test malformed query string parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function missingOpeningBracket() {
+      new URL('http://example.com/?a]=c');
+    }
+
+    /**
+     * Test malformed query string parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unbalancedOpeningBrackets() {
+      new URL('http://example.com/?a[[[]]=c');
+    }
+
+    /**
+     * Test malformed query string parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unbalancedClosingBrackets() {
+      new URL('http://example.com/?a[[]]]=c');
+    }
+
+    /**
+     * Test malformed query string parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function missingClosingBracketAfterClosed() {
+      new URL('http://example.com/?a[][=c');
+    }
+
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function missingClosingBracketInNested() {
+      new URL('http://localhost/?a[nested[a]=c');
+    }
+
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function missingClosingBracketInNestedAfterClosed() {
+      new URL('http://localhost/?a[][nested[a]=c');
+    }
+
+    /**
+     * Test getParams() with array parameters
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function missingClosingBracketInNestedBeforeClosed() {
+      new URL('http://localhost/?a[nested[a][]=c');
+    }
     
     /**
      * Test associative arrays in url parameters, e.g. data[key]=value gets
@@ -965,6 +1304,51 @@
         'load=getXML&data[project][Name][Value]=project&data[project][ID][Value]=1337&data[langCode]=en',
         $u->getQuery()
       );
+    }
+
+    /**
+     * Test getURL() with an empty parameter in query string
+     *
+     */
+    #[@test]
+    public function getURLWithEmptyParameter() {
+      $this->assertEquals('http://example.com/test?a=v1&b&c=v2', create(new URL('http://example.com/test?a=v1&b=&c=v2'))->getURL());
+    }
+
+    /**
+     * Test getURL() with an empty parameter in query string
+     *
+     */
+    #[@test]
+    public function getURLWithParameterWithoutValue() {
+      $this->assertEquals('http://example.com/test?a=v1&b&c=v2', create(new URL('http://example.com/test?a=v1&b&c=v2'))->getURL());
+    }
+
+    /**
+     * Test getURL() after setQuery('')
+     *
+     */
+    #[@test]
+    public function getURLAfterSettingEmptyQueryString() {
+      $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test'))->setQuery('')->getURL());
+    }
+
+    /**
+     * Test getURL() after setQuery(NULL)
+     *
+     */
+    #[@test]
+    public function getURLAfterSettingNullQueryString() {
+      $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test'))->setQuery(NULL)->getURL());
+    }
+
+    /**
+     * Test getURL() with empty query string in constructor
+     *
+     */
+    #[@test]
+    public function getURLWithEmptyQueryStringConstructor() {
+      $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test?'))->getURL());
     }
   }
 ?>

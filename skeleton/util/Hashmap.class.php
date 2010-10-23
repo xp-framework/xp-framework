@@ -311,7 +311,7 @@
      * Compares two hashmaps and returns TRUE when equal.
      *
      * @param   var object to compare with
-     * @return  boolean
+     * @return  bool
      */
     public function equals($cmp) {
       return is('util.Hashmap', $cmp) && ($this->_hash === $cmp->_hash);

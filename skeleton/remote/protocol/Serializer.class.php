@@ -320,6 +320,7 @@
         
         case 'O': {     // generic objects
           $name= $serialized->consumeString();
+          $members= array();
           try {
             $class= XPClass::forName(strtr($name, $this->packages[0]));
           } catch (ClassNotFoundException $e) {

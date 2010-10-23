@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'util.collections.Vector',
     'net.xp_framework.unittest.core.DestructionCallback'
   );
 
@@ -123,7 +124,7 @@
      */
     #[@test]
     public function boolPrimitive() {
-      $this->assertTrue(is('bool', TRUE));
+      $this->assertTrue(is('boolean', TRUE));
     }
 
     /**
@@ -132,7 +133,7 @@
      */
     #[@test]
     public function nullNotABoolPrimitive() {
-      $this->assertFalse(is('bool', NULL));
+      $this->assertFalse(is('boolean', NULL));
     }
 
     /**
@@ -225,6 +226,78 @@
       $this->assertTrue(is('net.xp_framework.unittest.core.DestructionCallback', new DestructionCallbackImpl()));
       $this->assertTrue(is('net.xp_framework.unittest.core.DestructionCallback', new DestructionCallbackImplEx()));
       $this->assertFalse(is('net.xp_framework.unittest.core.DestructionCallback', new Object()));
+    }
+
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function aStringVectorIsIsItself() {
+      $this->assertTrue(is('Vector<string>', create('new Vector<string>')));
+    }
+
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function aStringVectorIsIsItselfQualified() {
+      $this->assertTrue(is('util.collections.Vector<string>', create('new Vector<string>')));
+    }
+
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function aVectorIsNotAStringVector() {
+      $this->assertFalse(is('Vector<string>', new Vector()));
+    }
+
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function aStringVectorIsNotAVector() {
+      $this->assertFalse(is('Vector', create('new Vector<string>')));
+    }
+
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function anIntVectorIsNotAStringVector() {
+      $this->assertFalse(is('Vector<string>', create('new Vector<int>')));
+    }
+
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function aVectorOfIntVectorsIsItself() {
+      $this->assertTrue(is('Vector<Vector<int>>', create('new Vector<Vector<int>>')));
+    }
+
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function aVectorOfIntVectorsIsNotAVectorOfStringVectors() {
+      $this->assertFalse(is('Vector<Vector<string>>', create('new Vector<Vector<int>>')));
+    }
+ 
+    /**
+     * Ensures is() works with generics
+     *
+     */
+    #[@test]
+    public function anIntVectorIsNotAnUndefinedGeneric() {
+      $this->assertFalse(is('Undefined_Class<string>', create('new Vector<int>')));
     }
   }
 ?>

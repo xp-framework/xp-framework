@@ -70,7 +70,7 @@
      * @see     xp://util.Properties#value
      * @param   string long long parameter (w/o --)
      * @param   string short default NULL Short parameter (w/o -), defaults to the first char of the long param
-     * @return  boolean
+     * @return  bool
      */  
     public function exists($long, $short= NULL) {
       if (is_int($long)) return isset($this->list[$long]);

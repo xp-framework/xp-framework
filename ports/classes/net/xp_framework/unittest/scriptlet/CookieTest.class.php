@@ -111,5 +111,19 @@
         new Cookie('name', 'value', 0, '', '', FALSE, TRUE)
       );
     }
+    
+    /**
+     * Test parseing header line works
+     *
+     */
+    #[@test]
+    public function parseCookie() {
+      $cookie= Cookie::parse('Bugzilla_logincookie=e9hR2sFvjX; path=/; expires=Fri, 01-Jan-2038 00:00:00 GMT; secure; HttpOnly');
+      
+      $this->assertHeaderEquals(
+        'Bugzilla_logincookie=e9hR2sFvjX; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; secure; HTTPOnly',
+        $cookie
+      );
+    }    
   }
 ?>

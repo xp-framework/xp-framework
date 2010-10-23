@@ -217,8 +217,8 @@
     /**
      * Echoes a boolean
      *
-     * @param   boolean inputBoolean
-     * @return  boolean
+     * @param   bool inputBoolean
+     * @return  bool
      */
     #[@webmethod]
     public function echoBoolean($inputBoolean) {

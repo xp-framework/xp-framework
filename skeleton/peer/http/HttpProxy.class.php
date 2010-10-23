@@ -52,7 +52,7 @@
      * Check whether a given URL is excluded
      *
      * @param   peer.URL url
-     * @return  boolean
+     * @return  bool
      */
     public function isExcluded(URL $url) {
       foreach ($this->excludes as $pattern) {

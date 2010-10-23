@@ -27,7 +27,7 @@
             'op'  => '+'
           ))))
         )), 
-        $this->parse('{ $a => $a + 1 };')
+        $this->parse('#{ $a -> $a + 1 };')
       );
     }
 
@@ -46,7 +46,7 @@
             'op'  => '+'
           ))))
         )), 
-        $this->parse('{ $a => { return $a + 1; } };')
+        $this->parse('#{ $a -> { return $a + 1; } };')
       );
     }
 
@@ -68,7 +68,7 @@
             new ReturnNode(new VariableNode('a'))
           )
         )), 
-        $this->parse('{ $a => { $a+= 1; return $a; } };')
+        $this->parse('#{ $a -> { $a+= 1; return $a; } };')
       );
     }
 
@@ -83,7 +83,7 @@
           array(new VariableNode('a')),
           array()
         )), 
-        $this->parse('{ $a => { } };')
+        $this->parse('#{ $a -> { } };')
       );
     }
 
@@ -102,7 +102,7 @@
             'op'  => '+'
           ))))
         )), 
-        $this->parse('{ int $a => { return $a + 1; } };')
+        $this->parse('#{ int $a -> { return $a + 1; } };')
       );
     }
 
@@ -121,7 +121,7 @@
             'op'  => '+'
           ))))
         )), 
-        $this->parse('{ $a, $b => { return $a + $b; } };')
+        $this->parse('#{ $a, $b -> { return $a + $b; } };')
       );
     }
 
@@ -140,7 +140,7 @@
             'op'  => '+'
           ))))
         )), 
-        $this->parse('{ int $a, int $b => { return $a + $b; } };')
+        $this->parse('#{ int $a, int $b -> { return $a + $b; } };')
       );
     }
 
@@ -159,7 +159,26 @@
             array(new StringNode('Hello'))
           )))
         )), 
-        $this->parse('{ => Console::write("Hello") };')
+        $this->parse('#{ -> Console::write("Hello") };')
+      );
+    }
+
+    /**
+     * Test invocation
+     *
+     */
+    #[@test]
+    public function invocation() {
+      $this->assertEquals(
+        array(new InstanceCallNode(new LambdaNode(
+          array(),
+          array(new ReturnNode(new StaticMethodCallNode(
+            new TypeName('Console'),
+            'write', 
+            array(new StringNode('Hello'))
+          )))
+        ))), 
+        $this->parse('#{ -> Console::write("Hello") }.();')
       );
     }
   }

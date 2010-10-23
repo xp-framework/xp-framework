@@ -20,8 +20,7 @@
    *   <li>string</li>
    *   <li>int</li>
    *   <li>double</li>
-   *   <li>boolean</li>
-   *   <li>array</li>
+   *   <li>bool</li>
    * </ul>
    *
    * @test     xp://net.xp_framework.unittest.reflection.PrimitiveTest 
@@ -33,7 +32,8 @@
       $STRING  = NULL,
       $INT     = NULL,
       $DOUBLE  = NULL,
-      $BOOLEAN = NULL,
+      $BOOL    = NULL,
+      $BOOLEAN = NULL,    // deprecated
       $ARRAY   = NULL,    // deprecated
       $INTEGER = NULL;    // deprecated
     
@@ -41,7 +41,7 @@
       self::$STRING= new self('string');
       self::$INTEGER= self::$INT= new self('int');
       self::$DOUBLE= new self('double');
-      self::$BOOLEAN= new self('boolean');
+      self::$BOOLEAN= self::$BOOL= new self('bool');
       self::$ARRAY= new self('array');
     }
     
@@ -56,7 +56,7 @@
         case self::$STRING: return XPClass::forName('lang.types.String');
         case self::$INT: return XPClass::forName('lang.types.Integer');
         case self::$DOUBLE: return XPClass::forName('lang.types.Double');
-        case self::$BOOLEAN: return XPClass::forName('lang.types.Boolean');
+        case self::$BOOL: return XPClass::forName('lang.types.Boolean');
         case self::$ARRAY: return XPClass::forName('lang.types.ArrayList'); // deprecated
       }
     }
@@ -110,7 +110,7 @@
         case 'string': return self::$STRING;
         case 'int': return self::$INT;
         case 'double': return self::$DOUBLE;
-        case 'boolean': return self::$BOOLEAN;
+        case 'bool': return self::$BOOL;
         case 'array': return self::$ARRAY;    // deprecated
         case 'integer': return self::$INT;    // deprecated
         default: throw new IllegalArgumentException('Not a primitive: '.$name);

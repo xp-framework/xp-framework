@@ -82,14 +82,14 @@
     protected static
       $lookahead= array(
         '.' => array('..' => xp搾ompiler新yntax暖p感arser::T_DOTS),
-        '-' => array('-=' => xp搾ompiler新yntax暖p感arser::T_SUB_EQUAL, '--' => xp搾ompiler新yntax暖p感arser::T_DEC),
+        '-' => array('-=' => xp搾ompiler新yntax暖p感arser::T_SUB_EQUAL, '--' => xp搾ompiler新yntax暖p感arser::T_DEC, '->' => xp搾ompiler新yntax暖p感arser::T_ARROW),
         '>' => array('>=' => xp搾ompiler新yntax暖p感arser::T_GE, '>>' => xp搾ompiler新yntax暖p感arser::T_SHR),
         '<' => array('<=' => xp搾ompiler新yntax暖p感arser::T_SE, '<<' => xp搾ompiler新yntax暖p感arser::T_SHL),
         '~' => array('~=' => xp搾ompiler新yntax暖p感arser::T_CONCAT_EQUAL),
         '+' => array('+=' => xp搾ompiler新yntax暖p感arser::T_ADD_EQUAL, '++' => xp搾ompiler新yntax暖p感arser::T_INC),
         '*' => array('*=' => xp搾ompiler新yntax暖p感arser::T_MUL_EQUAL),
         '%' => array('%=' => xp搾ompiler新yntax暖p感arser::T_MOD_EQUAL),
-        '=' => array('==' => xp搾ompiler新yntax暖p感arser::T_EQUALS, '=>' => xp搾ompiler新yntax暖p感arser::T_DOUBLE_ARROW),
+        '=' => array('==' => xp搾ompiler新yntax暖p感arser::T_EQUALS),
         '!' => array('!=' => xp搾ompiler新yntax暖p感arser::T_NOT_EQUALS),
         ':' => array('::' => xp搾ompiler新yntax暖p感arser::T_DOUBLE_COLON),
         '|' => array('||' => xp搾ompiler新yntax暖p感arser::T_BOOLEAN_OR, '|=' => xp搾ompiler新yntax暖p感arser::T_OR_EQUAL),

@@ -572,7 +572,7 @@
     /**
      * Update this object in the database
      *
-     * @return  boolean success
+     * @return  boolsuccess
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */
@@ -591,7 +591,7 @@
     /**
      * Write this object to the database
      *
-     * @return  boolean success
+     * @return  bool success
      * @throws  rdbms.SQLException in case an error occurs
      * @throws  lang.IllegalAccessException in case there is no suitable database connection available
      */

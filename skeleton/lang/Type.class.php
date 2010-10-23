@@ -112,58 +112,60 @@
      * @return  lang.Type
      */
     public static function forName($name) {
-      switch ($name) {
-        case 'string': 
-        case 'char': 
-          return Primitive::$STRING;
-
-        case 'integer': 
-        case 'int': 
-          return Primitive::$INT;
-
-        case 'double': 
-        case 'float': 
-          return Primitive::$DOUBLE;
-
-        case 'boolean': 
-        case 'bool': 
-          return Primitive::$BOOLEAN;
-
-        case 'var': 
-        case '*': 
-        case 'mixed': 
-          return self::$VAR;
-
-        case 'array': 
-          return ArrayType::forName('var[]');
-          
-        case '*' == substr($name, -1): 
-          return ArrayType::forName(substr($name, 0, -1).'[]');
-
-        case '[]' === substr($name, -2): 
-          return ArrayType::forName($name);
-        
-        case '[:' === substr($name, 0, 2):
-          return MapType::forName($name);
-
-        case 'resource':
-          return Primitive::$INT;
-        
-        case 'void':
-          return self::$VOID;
-        
-        case FALSE !== ($p= strpos($name, '<')):
-          if ('array' === ($base= substr($name, 0, $p))) {
-            return MapType::forName('[:'.substr($name, strpos($name, ', ', $p)+ 2, -1).']');
-          }
-          return XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base))->newGenericType(self::forNames(substr($name, $p+ 1, -1)));
-
-        case FALSE === strpos($name, '.'): 
-          return new XPClass(new ReflectionClass($name));
-        
-        default:
-          return XPClass::forName($name);
+      static $deprecated= array(
+        'char'      => 'string',
+        'integer'   => 'int',
+        'boolean'   => 'bool',
+        'float'     => 'double',
+        'mixed'     => 'var',
+        '*'         => 'var',
+        'array'     => 'var[]',
+        'resource'  => 'var'
+      );
+      
+      // Map deprecated type names
+      $type= isset($deprecated[$name]) ? $deprecated[$name] : $name;
+      
+      // Map well-known primitives, var and void, handle rest syntactically:
+      // * T[] is an array
+      // * [:T] is a map 
+      // * T* is a vararg
+      // * T<K, V> is a generic
+      // * Anything else is a qualified or unqualified class name
+      if ('string' === $type || 'int' === $type || 'double' === $type || 'bool' == $type) {
+        return Primitive::forName($type);
+      } else if ('var' === $type) {
+        return self::$VAR;
+      } else if ('void' === $type) {
+        return self::$VOID;
+        return $type;
+      } else if ('[]' === substr($type, -2)) {
+        return ArrayType::forName($type);
+      } else if ('[:' === substr($type, 0, 2)) {
+        return MapType::forName($type);
+      } else if ('*' === substr($type, -1)) {
+        return ArrayType::forName(substr($type, 0, -1).'[]');
+      } else if (FALSE === ($p= strpos($type, '<'))) {
+        return strstr($type, '.') ? XPClass::forName($type) : new XPClass($type);
       }
+      
+      // Generics
+      // * D<K, V> is a generic type definition D with K and V componenty
+      // * Deprecated: array<T> is T[], array<K, V> is [:T]
+      $base= substr($type, 0, $p);
+      $components= self::forNames(substr($type, $p+ 1, -1));
+      if ('array' !== $base) {
+        return cast(self::forName($base), 'lang.XPClass')->newGenericType($components);
+      }
+      
+      $s= sizeof($components);
+      if (2 === $s) {
+        return MapType::forName('[:'.$components[1]->name.']');
+      } else if (1 === $s) {
+        return ArrayType::forName($components[0]->name.'[]');
+      }
+
+      throw new IllegalArgumentException('Unparseable name '.$name);
     }
     
     /**

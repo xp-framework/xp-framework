@@ -45,7 +45,7 @@
      *
      * @param   string method
      * @param   webservices.soap.Parameter argument
-     * @return  boolean
+     * @return  bool
      * @throws  webservices.soap.SOAPFaultException
      */
     public function identity($method, $argument) {
@@ -71,7 +71,7 @@
     /**
      * echoString
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoString() {
       return $this->identity('echoString', new Parameter('inputString', 'Hello World!'));
@@ -80,7 +80,7 @@
     /**
      * echoStringArray
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoStringArray() {
       return $this->identity(
@@ -92,7 +92,7 @@
     /**
      * echoInteger
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoInteger() {
       return $this->identity('echoInteger', new Parameter('inputInteger', 42));
@@ -101,7 +101,7 @@
     /**
      * echoIntegerArray
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoIntegerArray() {
       return $this->identity('echoIntegerArray', new Parameter('inputIntegerArray', array(42, 23)));
@@ -110,7 +110,7 @@
     /**
      * echoFloat
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoFloat() {
       return $this->identity('echoFloat', new Parameter('inputFloat', 0.5));
@@ -119,7 +119,7 @@
     /**
      * echoFloatArray
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoFloatArray() {
       return $this->identity('echoFloatArray', new Parameter('inputFloatArray', array(0.5, 1.5, 45789234.45)));
@@ -128,7 +128,7 @@
     /**
      * echoStruct
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoStruct() {
       return $this->identity(
@@ -143,7 +143,7 @@
     /**
      * echoStructArray
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoStructArray() {
       $s= array(
@@ -157,7 +157,7 @@
     /**
      * echoVoid
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoVoid() {
       return $this->identity('echoVoid', new Parameter('inputVoid', NULL));
@@ -166,7 +166,7 @@
     /**
      * echoBase64
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoBase64() {
       return $this->identity('echoBase64', 
@@ -177,7 +177,7 @@
     /**
      * echoHexBinary
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoHexBinary() {
       return $this->identity('echoHexBinary',
@@ -188,7 +188,7 @@
     /**
      * echoDate
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoDate() {
       return $this->identity('echoDate', new Parameter('inputDate', Date::now()));
@@ -197,7 +197,7 @@
     /**
      * echoDecimal
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoDecimal() {
       return $this->identity('echoDecimal', new Parameter('inputDecimal', 0.5005));
@@ -206,7 +206,7 @@
     /**
      * echoBoolean
      *
-     * @return  boolean match
+     * @return  bool match
      */
     public function echoBoolean() {
       return $this->identity('echoBoolean', new Parameter('inputBoolean', TRUE));
