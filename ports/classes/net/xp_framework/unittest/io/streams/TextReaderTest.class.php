@@ -245,6 +245,38 @@
       $this->assertEquals('Coder', $r->readLine());
       $this->assertNull($r->readLine());
     }
+    
+    /**
+     * Test reading lines w/ autodetected encoding at iso-8859-1
+     *
+     */
+    #[@test]
+    public function readLinesAutodetectIso88591() {
+      $r= $this->newReader('Übercoder', NULL);
+      $this->assertEquals('Übercoder', $r->readLine());
+    }
+    
+    /**
+     * Test reading from an encoding-autodetected stream when length of
+     * data does is insufficient for autodetection.
+     *
+     */
+    #[@test]
+    public function readShortLinesAutodetectIso88591() {
+      $r= $this->newReader('Ü', NULL);
+      $this->assertEquals('Ü', $r->readLine());
+    }
+    
+    
+    /**
+     * Test reading lines w/ autodetected encoding at utf-8
+     *
+     */
+    #[@test]
+    public function readLinesAutodetectUtf8() {
+      $r= $this->newReader('ï»¿Ãœbercoder', NULL);
+      $this->assertEquals('Übercoder', $r->readLine());
+    }
 
     /**
      * Test reading

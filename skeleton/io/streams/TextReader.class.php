@@ -22,14 +22,39 @@
      * stream with a given charset.
      *
      * @param   io.streams.InputStream stream
-     * @param   string charset the charset the stream is encoded in.
+     * @param   string charset the charset the stream is encoded in or NULL to trigger autodetection by BOM
      */
     public function __construct(InputStream $stream, $charset= 'iso-8859-1') {
       parent::__construct($stream);
       $this->in= Streams::readableFd($stream);
+      
+      if (NULL === $charset) {
+        $charset= $this->detectCharset();
+      }
+      
       if (!stream_filter_append($this->in, 'convert.iconv.'.$charset.'/iso-8859-1', STREAM_FILTER_READ)) {
         throw new IOException('Could not append stream filter');
       }
+    }
+    
+    /**
+     * Detect charset of stream
+     *
+     * @see     http://de.wikipedia.org/wiki/Byte_Order_Mark
+     * @see     http://unicode.org/faq/utf_bom.html
+     * @return  string
+     */
+    protected function detectCharset() {
+      $c= $this->read(3);
+      
+      // Check for UTF-8 BOM
+      if ('﻿' === $c) {
+        return 'utf-8';
+      }
+      
+      // Fall back to ISO-8859-1
+      $this->buf= $c;
+      return 'iso-8859-1';
     }
   
     /**
