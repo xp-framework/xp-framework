@@ -41,17 +41,24 @@
     public function read($size= 8192) {
       if (0 === $size) return '';
 
-      $c= fread($this->in, $size);
-      if ('' === $c) {
-        if (xp::errorAt(__FILE__, __LINE__ - 2)) {
-          $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 3]);
-          xp::gc(__FILE__);
-          throw new FormatException($message); 
+      while (strlen($this->buf) < $size) {
+        $c= fread($this->in, $size- strlen($this->buf));
+        if ('' === $c) {
+          if (xp::errorAt(__FILE__, __LINE__ - 2)) {
+            $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 3]);
+            xp::gc(__FILE__);
+            throw new FormatException($message);
+          }
+
+          break;
         }
-        return NULL;
+
+        $this->buf.= $c;
       }
-      
-      $chunk= $this->buf.$c;
+
+      if ('' === $this->buf) return NULL;
+
+      $chunk= $this->buf;
       $this->buf= '';
       return $chunk;
     }
