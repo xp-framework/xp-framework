@@ -245,5 +245,17 @@
       $this->assertEquals('Coder', $r->readLine());
       $this->assertNull($r->readLine());
     }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
+    public function bufferProblem() {
+      $r= $this->newReader("Hello\rX");
+      $this->assertEquals('Hello', $r->readLine());
+      $this->assertEquals('X', $r->readLine());
+      $this->assertNull($r->readLine());
+    }
   }
 ?>
