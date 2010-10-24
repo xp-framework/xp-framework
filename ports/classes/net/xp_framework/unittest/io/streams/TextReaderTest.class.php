@@ -261,10 +261,10 @@
      * Test reading lines w/ autodetected encoding at iso-8859-1
      *
      */
-    #[@test, @ignore('Broken - push back to stream required')]
+    #[@test]
     public function readLinesAutodetectIso88591() {
       $r= $this->newReader('Übercoder', NULL);
-      $this->assertEquals('Übercoder', $r->readLine());
+      $this->assertEquals(new String('Übercoder', 'iso-8859-1'), $r->readLine());
     }
     
     /**
@@ -272,7 +272,7 @@
      * data does is insufficient for autodetection.
      *
      */
-    #[@test, @ignore('Broken - push back to stream required')]
+    #[@test]
     public function readShortLinesAutodetectIso88591() {
       $r= $this->newReader('Ü', NULL);
       $this->assertEquals(new String('Ü', 'iso-8859-1'), $r->readLine());

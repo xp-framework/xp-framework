@@ -63,7 +63,7 @@
       }
       
       // Fall back to ISO-8859-1
-      $this->buf= $c;
+      $this->buf= iconv('iso-8859-1', 'utf-8', $c);
       return 'iso-8859-1';
     }
     
