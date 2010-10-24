@@ -25,6 +25,25 @@ Rationale
 Functionality
 -------------
 
+Storage
+~~~~~~~
+Windows: 
+* Local storage: .\etc\[preferences].ini
+* User storage: ${System.Environment.SpecialFolder.LocalApplicationData}\Xp\[preferences].ini
+* Per virtualhost: ${WEBROOT}\etc\[preferences.ini]
+* System storage: \Path\To\Where\Xp\Is\Installed\etc\[preferences].ini
+
+Un*x:
+* Local storage: ./etc/[preferences].ini
+* User storage: ~/.xp/[preferences.ini]
+* Per virtualhost: ${WEBROOT}/etc/[preferences.ini]
+* System storage: /path/to/where/xp/is/installed/etc/[preferences.ini]
+
+<code>
+  $u= new Preferences('name');
+  $u= new Preferences($this->getClass());
+</code>
+
 File format
 ~~~~~~~~~~~
 The file format is basically modeled after .ini files:
@@ -87,6 +106,7 @@ Variables start with a dollar sign and are surrounded by curly braces:
   
   [v2 : default]
   path="${parent:path}/v2"            ; Reference to parent section
+  extra="${this:path}/extra"          ; Reference to this section
 </pre>
 
 Programmatic access
@@ -143,6 +163,7 @@ Related documents
 * http://search.cpan.org/~jvbsoft/Config-IniFiles-Import-1.100/Import_DE.pod
 * http://ini4j.sourceforge.net/
 * http://www.codeproject.com/KB/cs/cs_ini.aspx
+* http://commons.apache.org/configuration/userguide/user_guide.html
 
 
 Comments
