@@ -52,6 +52,15 @@ The file format is basically modeled after .ini files:
   category=util.log.LogCategory("default")
 </pre>
 
+Encoding
+~~~~~~~~
+File encoding is defined to be <tt>iso-8859-1</tt>. Unicode encodings may
+be indicated by placing a Unicode BOM at the beginning of the file.
+
+See also:
+* http://de.wikipedia.org/wiki/Byte_Order_Mark
+* http://unicode.org/faq/utf_bom.html
+
 Inheritance
 ~~~~~~~~~~~
 Sections may inherit other sections:
