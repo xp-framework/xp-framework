@@ -274,7 +274,7 @@
      */
     #[@test]
     public function readLinesAutodetectUtf8() {
-      $r= $this->newReader('ï»¿Ãœbercoder', NULL);
+      $r= $this->newReader("\357\273\277\303\234bercoder", NULL);
       $this->assertEquals('Übercoder', $r->readLine());
     }
 
@@ -284,7 +284,7 @@
      */
     #[@test]
     public function readLinesAutodetectUtf16BE() {
-      $r= $this->newReader("şÿ\0Ü\0b\0e\0r\0c\0o\0d\0e\0r", NULL);
+      $r= $this->newReader("\376\377\000\334\000b\000e\000r\000c\000o\000d\000e\000r", NULL);
       $this->assertEquals('Übercoder', $r->readLine());
     }
     
@@ -294,7 +294,7 @@
      */
     #[@test]
     public function readLinesAutodetectUtf16LE() {
-      $r= $this->newReader("ÿşÜ\0b\0e\0r\0c\0o\0d\0e\0r\0", NULL);
+      $r= $this->newReader("\377\376\334\000b\000e\000r\000c\000o\000d\000e\000r\000", NULL);
       $this->assertEquals('Übercoder', $r->readLine());
     }
 

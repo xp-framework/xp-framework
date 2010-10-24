@@ -48,17 +48,17 @@
       $c= $this->read(2);
       
       // Check for UTF-16 (BE)
-      if ('şÿ' === $c) {
+      if ("\376\377" === $c) {
         return 'utf-16be';
       }
       
       // Check for UTF-16 (LE)
-      if ('ÿş' === $c) {
+      if ("\377\376" === $c) {
         return 'utf-16le';
       }
       
       // Check for UTF-8 BOM
-      if ('ï»' === $c && 'ï»¿' === ($c.= $this->read(1))) {
+      if ("\357\273" === $c && "\357\273\277" === ($c.= $this->read(1))) {
         return 'utf-8';
       }
       
