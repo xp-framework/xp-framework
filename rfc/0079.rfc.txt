@@ -24,7 +24,91 @@ Rationale
 
 Functionality
 -------------
-TODO
+
+File format
+~~~~~~~~~~~
+The file format is basically modeled after .ini files:
+<pre>
+  ; Comment
+  [section]
+  string1="value"
+  string2='value'
+  int=1
+  double=0.5
+  bool1=true   ; Comment
+  bool2=false
+  class=lang.types.String::class
+
+  [lists]
+  list[]="string"
+  list[]="string"
+  list[]="string"
+  
+  [maps]
+  map[color]="green"
+  map[price]=12.99
+  
+  [object]
+  category=util.log.LogCategory("default")
+</pre>
+
+Inheritance
+~~~~~~~~~~~
+Sections may inherit other sections:
+<pre>
+  [web]
+  route[/]=com.example.scriptlet.DefaultRoute::class
+  route[/rss]=com.example.scriptlet.RssRoute::class
+  
+  [myweb : web]
+  route[/pdf]=com.example.my.scriptlet.PdfRoute::class
+</pre>
+
+Variables
+~~~~~~~~~
+Variables start with a dollar sign and are surrounded by curly braces:
+<pre>
+  [default]
+  path="${DOCUMENT_ROOT}/../lib"      ; Environment variable
+  coin=${com.example.Coin::$penny}    ; Static class member
+  level=${util.log.LogLevel::INFO}    ; Class constant
+  
+  [v1]
+  path="${default:path}/v1"           ; Reference to other section
+  
+  [v2 : default]
+  path="${parent:path}/v2"            ; Reference to parent section
+</pre>
+
+Programmatic access
+~~~~~~~~~~~~~~~~~~~
+Modeled after util.Properties with slight improvements
+<code>
+  $p= new Preferences('my.ini');
+  
+  // Different vocabulary for different usecases:
+  // * get<T>() raises exception if the entry cannot be found
+  // * read<T>() returns default value if non-existant, default NULL
+  $string= $p->getString('section', 'string');
+  $string= $p->readString('section', 'string', 'green');
+  
+  // Accessors per type
+  $int= $p->getInt('section', 'int');
+  $double= $p->getDouble('section', 'double');
+  $bool= $p->getBool('section', 'bool1');
+  $class= $p->getXPClass('section', 'class');
+  $list= $p->getArray('lists', 'list');
+  $map= $p->getMap('maps', 'map');
+  $cat= $p->getObject('object', 'category', XPClass::forName('util.log.LogCategory'));;
+  
+  // Variable expansion
+  $path= $p->getString('default', 'path');
+  $penny= $p->getObject('default', 'coin', XPClass::forName('com.example.Coin'));
+  $level= $p->getInt('default', 'level');
+  
+  // Accessing by section, saving repetition
+  $string= $p->getSection('section')->getString('string');
+</code>
 
 
 Security considerations
