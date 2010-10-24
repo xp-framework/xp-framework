@@ -15,9 +15,9 @@ as a new API.
 
 Rationale
 ---------
-- util.Properties is not type-safe and not checked. Mistakes can easily 
+* util.Properties is not type-safe and not checked. Mistakes can easily 
   go unnoticed.
-- Because util.Properties does not provide information about the values
+* Because util.Properties does not provide information about the values
   we cannot easily create a generic property editor (without having to
   have properties defining the layout of each and every property file).
 
@@ -137,7 +137,12 @@ n/a
 
 Related documents
 -----------------
-n/a
+* http://en.wikipedia.org/wiki/INI_file
+* http://www.cloanto.com/specs/ini/
+* http://www.chaoslizard.org/devel/bohr/wiki/Docs/Ni/FileFormat
+* http://search.cpan.org/~jvbsoft/Config-IniFiles-Import-1.100/Import_DE.pod
+* http://ini4j.sourceforge.net/
+* http://www.codeproject.com/KB/cs/cs_ini.aspx
 
 
 Comments
