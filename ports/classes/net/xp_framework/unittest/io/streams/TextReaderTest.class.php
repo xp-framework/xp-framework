@@ -256,5 +256,69 @@
       $this->assertEquals(new String('Coder'), $r->readLine());
       $this->assertNull($r->readLine());
     }
+    
+    /**
+     * Test reading lines w/ autodetected encoding at iso-8859-1
+     *
+     */
+    #[@test, @ignore('Broken - push back to stream required')]
+    public function readLinesAutodetectIso88591() {
+      $r= $this->newReader('Übercoder', NULL);
+      $this->assertEquals('Übercoder', $r->readLine());
+    }
+    
+    /**
+     * Test reading from an encoding-autodetected stream when length of
+     * data does is insufficient for autodetection.
+     *
+     */
+    #[@test, @ignore('Broken - push back to stream required')]
+    public function readShortLinesAutodetectIso88591() {
+      $r= $this->newReader('Ü', NULL);
+      $this->assertEquals(new String('Ü', 'iso-8859-1'), $r->readLine());
+    }
+    
+    
+    /**
+     * Test reading lines w/ autodetected encoding at utf-8
+     *
+     */
+    #[@test]
+    public function readLinesAutodetectUtf8() {
+      $r= $this->newReader("\357\273\277\303\234bercoder", NULL);
+      $this->assertEquals(new String('Übercoder', 'iso-8859-1'), $r->readLine());
+    }
+
+    /**
+     * Test reading lines w/ autodetected encoding at utf-8
+     *
+     */
+    #[@test]
+    public function readLinesAutodetectUtf16BE() {
+      $r= $this->newReader("\376\377\000\334\000b\000e\000r\000c\000o\000d\000e\000r", NULL);
+      $this->assertEquals(new String('Übercoder', 'iso-8859-1'), $r->readLine());
+    }
+    
+    /**
+     * Test reading lines w/ autodetected encoding at utf-8
+     *
+     */
+    #[@test]
+    public function readLinesAutodetectUtf16LE() {
+      $r= $this->newReader("\377\376\334\000b\000e\000r\000c\000o\000d\000e\000r\000", NULL);
+      $this->assertEquals(new String('Übercoder', 'iso-8859-1'), $r->readLine());
+    }
+
+    /**
+     * Test reading
+     *
+     */
+    #[@test]
+    public function bufferProblem() {
+      $r= $this->newReader("Hello\rX");
+      $this->assertEquals(new String('Hello'), $r->readLine());
+      $this->assertEquals(new String('X'), $r->readLine());
+      $this->assertNull($r->readLine());
+    }
   }
 ?>

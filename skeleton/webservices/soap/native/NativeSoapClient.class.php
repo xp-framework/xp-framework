@@ -29,6 +29,9 @@
       $charset  = 'iso-8859-1',
       $style    = SOAP_RPC,
       $encoding = SOAP_ENCODED;
+    
+    protected
+      $map      = array();
 
     /**
      * Constructor

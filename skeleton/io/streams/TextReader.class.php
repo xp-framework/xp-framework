@@ -5,10 +5,10 @@
  */
 
   uses('io.streams.Reader', 'io.streams.Streams');
-
+  
   /**
    * Reads text from an underlying input stream, converting it from the
-   * given character set to our internal encoding (which is iso-8859-1).
+   * given character set to our internal encoding (which is utf-8).
    *
    * @test    xp://net.xp_framework.unittest.io.streams.TextReaderTest
    * @ext     iconv
@@ -22,14 +22,49 @@
      * stream with a given charset.
      *
      * @param   io.streams.InputStream stream
-     * @param   string charset the charset the stream is encoded in.
+     * @param   string charset the charset the stream is encoded in or NULL to trigger autodetection by BOM
      */
-    public function __construct(InputStream $stream, $charset= 'iso-8859-1') {
+    public function __construct(InputStream $stream, $charset= NULL) {
       parent::__construct($stream);
       $this->in= Streams::readableFd($stream);
-      if (!stream_filter_append($this->in, 'convert.iconv.'.$charset.'/utf-8', STREAM_FILTER_READ)) {
+
+      if (NULL === $charset) {
+        $charset= $this->detectCharset();
+      }
+
+      if (!stream_filter_append($this->in, 'convert.iconv.'.$charset.'/utf-8', STREAM_FILTER_READ | STREAM_FILTER_WRITE)) {
         throw new IOException('Could not append stream filter');
       }
+    }
+
+    /**
+     * Detect charset of stream
+     *
+     * @see     http://de.wikipedia.org/wiki/Byte_Order_Mark
+     * @see     http://unicode.org/faq/utf_bom.html
+     * @return  string
+     */
+    protected function detectCharset() {
+      $c= $this->read0(2);
+      
+      // Check for UTF-16 (BE)
+      if ("\376\377" === $c) {
+        return 'utf-16be';
+      }
+      
+      // Check for UTF-16 (LE)
+      if ("\377\376" === $c) {
+        return 'utf-16le';
+      }
+      
+      // Check for UTF-8 BOM
+      if ("\357\273" === $c && "\357\273\277" === ($c.= $this->read0(1))) {
+        return 'utf-8';
+      }
+      
+      // Fall back to ISO-8859-1
+      $this->buf= $c;
+      return 'iso-8859-1';
     }
     
     /**
@@ -41,16 +76,24 @@
     protected function read0($size= 8192) {
       if (0 === $size) return '';
 
-      $c= fread($this->in, $size);
-      if ('' === $c) {
-        if (xp::errorAt(__FILE__, __LINE__ - 2)) {
-          $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 3]);
-          xp::gc(__FILE__);
-          throw new FormatException($message); 
+      while (strlen($this->buf) < $size) {
+        $c= fread($this->in, $size- strlen($this->buf));
+        if ('' === $c) {
+          if (xp::errorAt(__FILE__, __LINE__ - 2)) {
+            $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 3]);
+            xp::gc(__FILE__);
+            throw new FormatException($message);
+          }
+
+          break;
         }
-        return NULL;
+
+        $this->buf.= $c;
       }
-      $chunk= $this->buf.$c;
+
+      if ('' === $this->buf) return NULL;
+
+      $chunk= $this->buf;
       $this->buf= '';
       return $chunk;
     }
