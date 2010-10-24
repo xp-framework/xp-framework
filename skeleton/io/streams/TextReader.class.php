@@ -24,7 +24,7 @@
      * @param   io.streams.InputStream stream
      * @param   string charset the charset the stream is encoded in or NULL to trigger autodetection by BOM
      */
-    public function __construct(InputStream $stream, $charset= 'iso-8859-1') {
+    public function __construct(InputStream $stream, $charset= NULL) {
       parent::__construct($stream);
       $this->in= Streams::readableFd($stream);
       
