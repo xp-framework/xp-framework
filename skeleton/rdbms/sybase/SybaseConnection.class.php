@@ -62,13 +62,15 @@
         $this->handle= sybase_pconnect(
           $this->dsn->getHost(), 
           $this->dsn->getUser(), 
-          $this->dsn->getPassword()
+          $this->dsn->getPassword(),
+          'iso_1'
         );
       } else {
         $this->handle= sybase_connect(
           $this->dsn->getHost(), 
           $this->dsn->getUser(), 
-          $this->dsn->getPassword()
+          $this->dsn->getPassword(),
+          'iso_1'
         );
       }
 
