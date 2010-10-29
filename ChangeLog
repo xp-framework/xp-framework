@@ -9,6 +9,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Set client charset in rdbms.sybase.SybaseConnection to iso_1
+  (friebe, kiesel)
 - Added check for correct configuration of timezone at bootstrap time
   http://news.planet-xp.net/article/389/2010/10/16/
   (kiesel)
