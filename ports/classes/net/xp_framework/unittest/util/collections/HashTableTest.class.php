@@ -179,6 +179,16 @@
     }
 
     /**
+     * Tests values() method
+     *
+     */
+    #[@test]
+    public function values() {
+      $this->map->put(new String('key'), new String('value'));
+      $this->assertEquals(array(new String('value')), $this->map->values());
+    }
+
+    /**
      * Tests toString() method
      *
      */
