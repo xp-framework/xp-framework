@@ -69,6 +69,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added text.regex.Pattern::replaceWith() method
+  (friebe)
 - Changed text.regex.Pattern not to throw exceptions on malformed 
   patterns like Pattern::compile(), and instead defer pattern validation 
   until actually matching the pattern - performance improvement

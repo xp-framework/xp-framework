@@ -125,6 +125,28 @@
       }
       return new MatchResult($n, $m);
     }
+
+    /**
+     * Performs a replacement
+     *
+     * @param   string replacement
+     * @param   string input
+     * @return  text.regex.MatchResult
+     * @throws  lang.FormatException
+     */  
+    public function replaceWith($replacement, $input) {
+      if ($input instanceof String) {
+        $r= preg_replace($this->regex, $replacement, (string)$input->getBytes($this->utf8 ? 'utf-8' : 'iso-8859-1'));
+      } else {
+        $r= preg_replace($this->regex, $replacement, (string)$input);
+      }
+      if (FALSE === $r || PREG_NO_ERROR != preg_last_error()) {
+        $e= new FormatException('Pattern "'.$this->regex.'" matching error');
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      return $r;
+    }
     
     /**
      * Compiles a pattern and returns the object
