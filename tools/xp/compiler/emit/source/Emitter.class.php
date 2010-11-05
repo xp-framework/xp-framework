@@ -1514,6 +1514,13 @@
             'op'         => '=',
           )));
           $op->append(';');
+          
+          // Update var type now that we have emitted the initialization expression
+          if ($field->type->isVariable()) {
+            $type= $this->resolveType($this->scope[0]->typeOf($field->initialization));
+            $this->types[0]->getField($field->name)->type= new TypeName($type->name());
+            $this->metadata[0][0][$field->name][DETAIL_ANNOTATIONS]['type']= $type->name();
+          }
         }
         unset($this->inits[0][TRUE]);
       }
@@ -1556,6 +1563,13 @@
               'op'         => '=',
             )));
             $op->append(';');
+
+            // Update var type now that we have emitted the initialization expression
+            if ($field->type->isVariable()) {
+              $type= $this->resolveType($this->scope[0]->typeOf($field->initialization));
+              $this->types[0]->getField($field->name)->type= new TypeName($type->name());
+              $this->metadata[0][0][$field->name][DETAIL_ANNOTATIONS]['type']= $type->name();
+            }
           }
           unset($this->inits[0][FALSE]);
         }
@@ -1795,6 +1809,9 @@
           try {
             $init= $field->initialization->resolve();
             $initializable= TRUE;
+            if ($field->type->isVariable()) {
+              $field->type= $this->scope[0]->typeOf($field->initialization);
+            }
           } catch (IllegalStateException $e) {
             $this->warn('R100', $e->getMessage(), $field->initialization);
           }
@@ -1817,9 +1834,6 @@
       // lang.reflect.Field and lang.XPClass::detailsForField()). If
       // the field is "var" and we have an initialization, determine
       // the type from that
-      if ($field->type->isVariable() && $field->initialization) {
-        $field->type= $this->scope[0]->typeOf($field->initialization);
-      }
       $type= $this->resolveType($field->type);
       $this->metadata[0][0][$field->name]= array(
         DETAIL_ANNOTATIONS  => array('type' => $type->name())
@@ -2089,9 +2103,9 @@
       // Generate a constructor if initializations are available.
       // They will have already been emitted if a constructor exists!
       if ($this->inits[0][FALSE]) {
+        $arguments= array();
+        $parameters= array();
         if ($parentType->hasConstructor()) {
-          $arguments= array();
-          $parameters= array();
           foreach ($parentType->getConstructor()->parameters as $i => $type) {
             $parameters[]= array('name' => '··a'.$i, 'type' => $type);    // TODO: default
             $arguments[]= new VariableNode('··a'.$i);
@@ -2099,7 +2113,6 @@
           $body= array(new StaticMethodCallNode(new TypeName('parent'), '__construct', $arguments));
         } else {
           $body= array();
-          $arguments= array();
         }
         $this->emitOne($op, new ConstructorNode(array(
           'modifiers'    => MODIFIER_PUBLIC,

@@ -172,6 +172,30 @@
       $this->assertEquals(new TypeName('Logger'), $f->type);
       $this->assertEquals(MODIFIER_STATIC | MODIFIER_PUBLIC, $f->modifiers);
     }
+
+    /**
+     * Test getField() on compiled type
+     *
+     */
+    #[@test]
+    public function classStaticFieldWithNonStaticInitialization() {
+      $f= $this->compile('class Convert { public static var $headline= text.regex.Pattern::compile("==(.+)=="); }')->getField('headline');
+      $this->assertEquals('headline', $f->name);
+      $this->assertEquals(new TypeName('text.regex.Pattern'), $f->type);
+      $this->assertEquals(MODIFIER_STATIC | MODIFIER_PUBLIC, $f->modifiers);
+    }
+
+    /**
+     * Test getField() on compiled type
+     *
+     */
+    #[@test]
+    public function classFieldWithNonStaticInitialization() {
+      $f= $this->compile('class Convert { public var $headline= text.regex.Pattern::compile("==(.+)=="); }')->getField('headline');
+      $this->assertEquals('headline', $f->name);
+      $this->assertEquals(new TypeName('text.regex.Pattern'), $f->type);
+      $this->assertEquals(MODIFIER_PUBLIC, $f->modifiers);
+    }
     
     /**
      * Test hasField() on compiled type
