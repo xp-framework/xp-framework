@@ -69,6 +69,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed text.regex.Pattern not to throw exceptions on malformed 
+  patterns like Pattern::compile(), and instead defer pattern validation 
+  until actually matching the pattern - performance improvement
+  (friebe)
 - Made io.File::copy() and io.File::move() accept io.File and io.Folder 
   instances in addition to strings.
   (friebe)

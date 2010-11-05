@@ -249,6 +249,22 @@
     }
 
     /**
+     * Test a pattern with a missing ")" at the end does not throws a 
+     * FormatException when the object is constructed (but later on).
+     *
+     */
+    #[@test]
+    public function lazyCompilation() {
+      $p= new Pattern('(');
+      try {
+        $p->matches('irrelevant');
+        $this->fail('Expected exception not thrown', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) {
+        // OK
+      }
+    }
+
+    /**
      * Test Pattern::MULTILINE | Pattern::DOTALL example
      *
      */
