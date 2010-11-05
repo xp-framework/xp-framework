@@ -29,9 +29,9 @@
       if (!is_writeable(self::$temp)) {
         throw new PrerequisitesNotMetError('$TEMP is not writeable', NULL, array(self::$temp.' +w'));
       }
-      if (($df= disk_free_space(self::$temp)) < 1024) {
+      if (($df= disk_free_space(self::$temp)) < 10240) {
         throw new PrerequisitesNotMetError('Not enough space available in $TEMP', NULL, array(sprintf(
-          'df %s = %.0fk > 1k',
+          'df %s = %.0fk > 10k',
           self::$temp,
           $df / 1024
         )));
