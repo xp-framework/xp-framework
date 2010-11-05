@@ -25,6 +25,7 @@
    * specific structure representing an open file.
    * 
    * @test     xp://net.xp_framework.unittest.io.FileTest
+   * @test     xp://net.xp_framework.unittest.io.FileIntegrationTest
    * @purpose  Represent a file
    */
   class File extends Stream {
