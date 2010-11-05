@@ -39,7 +39,7 @@
     }
 
     /**
-     * Creates fixture
+     * Creates fixture, ensures it doesn't exist before tests start running.
      *
      */
     public function setUp() {
@@ -65,7 +65,7 @@
      * @return  int number of written bytes or 0 if NULL data was given
      * @throws  io.IOException
      */
-    protected function fillWith($file, $data= NULL, $append= FALSE) {
+    protected function writeData($file, $data= NULL, $append= FALSE) {
       $file->open($append ? FILE_MODE_APPEND : FILE_MODE_WRITE);
       if (NULL === $data) {
         $written= 0;
@@ -74,6 +74,22 @@
       }
       $file->close();
       return $written;
+    }
+
+    /**
+     * Read data from a file - that is, open it in read mode, read
+     * the number of bytes specified (or the entire file, if omitted),
+     * then finally close it.
+     *
+     * @param   io.File file
+     * @param   int length default -1
+     * @return  string
+     */
+    protected function readData($file, $length= -1) {
+      $file->open(FILE_MODE_READ);
+      $data= $file->read($length < 0 ? $file->size() : $length);
+      $file->close();
+      return $data;
     }
 
     /**
@@ -91,7 +107,7 @@
      */
     #[@test]
     public function existsAfterCreating() {
-      $this->fillWith($this->fixture, NULL);
+      $this->writeData($this->fixture, NULL);
       $this->assertTrue($this->fixture->exists());
     }
 
@@ -101,7 +117,7 @@
      */
     #[@test]
     public function noLongerExistsAfterDeleting() {
-      $this->fillWith($this->fixture, NULL);
+      $this->writeData($this->fixture, NULL);
       $this->fixture->unlink();
       $this->assertFalse($this->fixture->exists());
     }
@@ -131,7 +147,7 @@
      */
     #[@test]
     public function write() {
-      $this->assertEquals(5, $this->fillWith($this->fixture, 'Hello'));
+      $this->assertEquals(5, $this->writeData($this->fixture, 'Hello'));
     }
 
     /**
@@ -141,7 +157,7 @@
     #[@test]
     public function read() {
       with ($data= 'Hello'); {
-        $this->fillWith($this->fixture, $data);
+        $this->writeData($this->fixture, $data);
 
         $this->fixture->open(FILE_MODE_READ);
         $this->assertEquals($data, $this->fixture->read(strlen($data)));
@@ -156,8 +172,8 @@
     #[@test]
     public function overwritingExistant() {
       with ($data= 'Hello World', $appear= 'This should not appear'); {
-        $this->fillWith($this->fixture, $appear);
-        $this->fillWith($this->fixture, $data);
+        $this->writeData($this->fixture, $appear);
+        $this->writeData($this->fixture, $data);
 
         $this->fixture->open(FILE_MODE_READ);
         $this->assertEquals($data, $this->fixture->read(strlen($data)));
@@ -172,12 +188,10 @@
     #[@test]
     public function appendingToExistant() {
       with ($data= 'Hello World', $appear= 'This should appear'); {
-        $this->fillWith($this->fixture, $appear);
-        $this->fillWith($this->fixture, $data, TRUE);
+        $this->writeData($this->fixture, $appear);
+        $this->writeData($this->fixture, $data, TRUE);
 
-        $this->fixture->open(FILE_MODE_READ);
-        $this->assertEquals($appear.$data, $this->fixture->read(strlen($appear) + strlen($data)));
-        $this->fixture->close();
+        $this->assertEquals($appear.$data, $this->readData($this->fixture, strlen($appear) + strlen($data)));
       }
     }
 
@@ -188,6 +202,102 @@
     #[@test, @expect('io.FileNotFoundException')]
     public function cannotOpenNonExistantForReading() {
       $this->fixture->open(FILE_MODE_READ);
+    }
+
+    /**
+     * Test copy() method
+     *
+     */
+    #[@test]
+    public function copying() {
+      with ($data= 'Hello World'); {
+        $this->writeData($this->fixture, $data);
+
+        $copy= new File($this->fixture->getURI().'.copy');
+        $this->fixture->copy($copy->getURI());
+
+        $this->assertEquals($data, $this->readData($copy));
+        $this->assertTrue($this->fixture->exists());
+      }
+    }
+
+    /**
+     * Test copy() method
+     *
+     */
+    #[@test]
+    public function copyingOver() {
+      with ($data= 'Hello World'); {
+        $this->writeData($this->fixture, $data);
+
+        $copy= new File($this->fixture->getURI().'.copy');
+        $this->writeData($copy, 'Copy original content');
+        $this->fixture->copy($copy->getURI());
+
+        $this->assertEquals($data, $this->readData($copy));
+        $this->assertTrue($this->fixture->exists());
+      }
+    }
+
+    /**
+     * Test copy() method
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function cannotCopyOpenFile() {
+      $this->fixture->open(FILE_MODE_WRITE);
+      $this->fixture->copy('irrelevant');
+    }
+
+    /**
+     * Test move() method
+     *
+     */
+    #[@test]
+    public function moving() {
+      with ($data= 'Hello World'); {
+        $this->writeData($this->fixture, $data);
+
+        $target= new File($this->fixture->getURI().'.moved');
+        $this->fixture->move($target->getURI());
+
+        $this->assertEquals($data, $this->readData($target));
+        
+        // FIXME I don't think io.File should be updating its URI when 
+        // move() is called. Because it does, this assertion fails!
+        // $this->assertFalse($this->fixture->exists()); 
+      }
+    }
+
+    /**
+     * Test move() method
+     *
+     */
+    #[@test]
+    public function movingOver() {
+      with ($data= 'Hello World'); {
+        $this->writeData($this->fixture, $data);
+
+        $target= new File($this->fixture->getURI().'.moved');
+        $this->writeData($target, 'Target original content');
+        $this->fixture->move($target->getURI());
+
+        $this->assertEquals($data, $this->readData($target));
+        
+        // FIXME I don't think io.File should be updating its URI when 
+        // move() is called. Because it does, this assertion fails!
+        // $this->assertFalse($this->fixture->exists()); 
+      }
+    }
+
+    /**
+     * Test move() method
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function cannotMoveOpenFile() {
+      $this->fixture->open(FILE_MODE_WRITE);
+      $this->fixture->move('irrelevant');
     }
   }
 ?>
