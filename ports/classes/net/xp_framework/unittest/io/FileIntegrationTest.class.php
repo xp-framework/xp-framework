@@ -142,6 +142,15 @@
     }
 
     /**
+     * Test close() method
+     *
+     */
+    #[@test, @expect('io.IOException')]
+    public function cannotCloseUnopenedFile() {
+      $this->fixture->close();
+    }
+
+    /**
      * Test writing to a file
      *
      */
