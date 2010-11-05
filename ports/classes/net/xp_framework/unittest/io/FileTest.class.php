@@ -70,7 +70,10 @@
     public function getExtension() {
       $fn= $this->fileKnownToExist();
       $info= pathinfo($fn);
-      $this->assertEquals($info['extension'], create(new File($fn))->getExtension());
+      $this->assertEquals(
+        isset($info['extension']) ? $info['extension'] : NULL, 
+        create(new File($fn))->getExtension()
+      );
     }
   
     /**
