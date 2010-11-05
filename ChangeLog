@@ -10,6 +10,7 @@ SVN version: ?????
 Heads up!
 ~~~~~~~~~
 - Added keys() and values() methods to util.collections.Map
+  (friebe)
 - Set client charset in rdbms.sybase.SybaseConnection to iso_1
   (friebe, kiesel)
 - Added check for correct configuration of timezone at bootstrap time
