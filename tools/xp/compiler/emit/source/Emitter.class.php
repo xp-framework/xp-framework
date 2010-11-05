@@ -1507,20 +1507,8 @@
       
       // Static initializations outside of initializer
       if ($this->inits[0][TRUE]) {
-        foreach ($this->inits[0][TRUE] as $field) {
-          $this->emitOne($op, new AssignmentNode(array(
-            'variable'   => new StaticMemberAccessNode(new TypeName('self'), $field->name),
-            'expression' => $field->initialization,
-            'op'         => '=',
-          )));
-          $op->append(';');
-          
-          // Update var type now that we have emitted the initialization expression
-          if ($field->type->isVariable()) {
-            $type= $this->resolveType($this->scope[0]->typeOf($field->initialization));
-            $this->types[0]->getField($field->name)->type= new TypeName($type->name());
-            $this->metadata[0][0][$field->name][DETAIL_ANNOTATIONS]['type']= $type->name();
-          }
+        foreach ($this->inits[0][TRUE] as $init) {
+          $op->append($init);
         }
         unset($this->inits[0][TRUE]);
       }
@@ -1556,20 +1544,8 @@
       if (NULL !== $constructor->body) {
         $signature= $this->emitParameters($op, (array)$constructor->parameters, '{');
         if ($this->inits[0][FALSE]) {
-          foreach ($this->inits[0][FALSE] as $field) {
-            $this->emitOne($op, new AssignmentNode(array(
-              'variable'   => new MemberAccessNode(new VariableNode('this'), $field->name),
-              'expression' => $field->initialization,
-              'op'         => '=',
-            )));
-            $op->append(';');
-
-            // Update var type now that we have emitted the initialization expression
-            if ($field->type->isVariable()) {
-              $type= $this->resolveType($this->scope[0]->typeOf($field->initialization));
-              $this->types[0]->getField($field->name)->type= new TypeName($type->name());
-              $this->metadata[0][0][$field->name][DETAIL_ANNOTATIONS]['type']= $type->name();
-            }
+          foreach ($this->inits[0][FALSE] as $init) {
+            $op->append($init);
           }
           unset($this->inits[0][FALSE]);
         }
@@ -1809,14 +1785,27 @@
           try {
             $init= $field->initialization->resolve();
             $initializable= TRUE;
-            if ($field->type->isVariable()) {
-              $field->type= $this->scope[0]->typeOf($field->initialization);
-            }
           } catch (IllegalStateException $e) {
             $this->warn('R100', $e->getMessage(), $field->initialization);
           }
-        } else {    // Need to initialize these later
-          $this->inits[0][$static][]= $field;
+        } else {    // Need to emit initialization of these later
+          $init= new xp·compiler·emit·source·Buffer('', $op->line);
+          $this->emitOne($init, new AssignmentNode(array(
+            'variable'   => $static 
+              ? new StaticMemberAccessNode(new TypeName('self'), $field->name)
+              : new MemberAccessNode(new VariableNode('this'), $field->name)
+            ,
+            'expression' => $field->initialization,
+            'op'         => '=',
+          )));
+          $init->append(';');
+          $this->inits[0][$static][]= $init;
+        }
+
+        // If the field is "var" and we have an initialization, determine
+        // the type from there
+        if ($field->type->isVariable()) {
+          $field->type= $this->scope[0]->typeOf($field->initialization);
         }
       }
 
@@ -1831,9 +1820,7 @@
       $op->append(';');
 
       // Add field metadata (type, stored in @type annotation, see
-      // lang.reflect.Field and lang.XPClass::detailsForField()). If
-      // the field is "var" and we have an initialization, determine
-      // the type from that
+      // lang.reflect.Field and lang.XPClass::detailsForField()). 
       $type= $this->resolveType($field->type);
       $this->metadata[0][0][$field->name]= array(
         DETAIL_ANNOTATIONS  => array('type' => $type->name())
