@@ -68,6 +68,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added values() method to util.collections.HashTable
+  (friebe)
 - Added support for multiple cookies in unittest.web.WebTestCase
   (kiesel, Felix Stahlberg)
 - Added support for multiple header values to peer.http.HttpRequest
