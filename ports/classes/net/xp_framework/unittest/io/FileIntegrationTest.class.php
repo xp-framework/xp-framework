@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'io.File',
+    'io.Folder',
     'lang.System'
   );
 
@@ -17,7 +18,8 @@
    */
   class FileIntegrationTest extends TestCase {
     protected static $temp= NULL;
-    protected $fixture= NULL;
+    protected $file= NULL;
+    protected $folder= NULL;
 
     /**
      * Verifies TEMP directory is usable and there is enough space
@@ -39,20 +41,46 @@
     }
 
     /**
-     * Creates fixture, ensures it doesn't exist before tests start running.
+     * Creates file fixture, ensures it doesn't exist before tests start 
+     * running, then creates folder fixture, ensuring it exists and is
+     * empty.
      *
      */
     public function setUp() {
-      $this->fixture= new File(self::$temp, $this->getName());
-      file_exists($this->fixture->getURI()) && unlink($this->fixture->getURI());
+      $this->file= new File(self::$temp, '.xp-'.$this->getName().'file');
+      if (file_exists($this->file->getURI())) {
+        unlink($this->file->getURI());
+      }
+
+      $this->folder= new Folder($this->file->getPath(), '.xp-'.$this->getName().'folder');
+      if (!file_exists($this->folder->getURI())) {
+        mkdir($this->folder->getURI());
+      } else {
+        foreach (scandir($this->folder->getURI()) as $file) {
+          if ('.' === $file || '..' === $file) continue;
+          unlink($this->folder->getURI().$file);
+        }
+      }
     }
     
     /**
-     * Deletes fixture
+     * Deletes file and folder fixtures.
      *
      */
     public function tearDown() {
-      $this->fixture->isOpen() && $this->fixture->close();
+      $this->file->isOpen() && $this->file->close();
+
+      if (file_exists($this->file->getURI())) {
+        unlink($this->file->getURI());
+      }
+
+      if (file_exists($this->folder->getURI())) {
+        foreach (scandir($this->folder->getURI()) as $file) {
+          if ('.' === $file || '..' === $file) continue;
+          unlink($this->folder->getURI().$file);
+        }
+        rmdir($this->folder->getURI());
+      }
     }
  
     /**
@@ -98,7 +126,7 @@
      */
     #[@test]
     public function doesNotExistYet() {
-      $this->assertFalse($this->fixture->exists());
+      $this->assertFalse($this->file->exists());
     }
 
     /**
@@ -107,8 +135,8 @@
      */
     #[@test]
     public function existsAfterCreating() {
-      $this->writeData($this->fixture, NULL);
-      $this->assertTrue($this->fixture->exists());
+      $this->writeData($this->file, NULL);
+      $this->assertTrue($this->file->exists());
     }
 
     /**
@@ -117,9 +145,9 @@
      */
     #[@test]
     public function noLongerExistsAfterDeleting() {
-      $this->writeData($this->fixture, NULL);
-      $this->fixture->unlink();
-      $this->assertFalse($this->fixture->exists());
+      $this->writeData($this->file, NULL);
+      $this->file->unlink();
+      $this->assertFalse($this->file->exists());
     }
     
     /**
@@ -128,7 +156,7 @@
      */
     #[@test, @expect('io.IOException')]
     public function cannotDeleteNonExistant() {
-      $this->fixture->unlink();
+      $this->file->unlink();
     }
 
     /**
@@ -137,8 +165,8 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function cannotDeleteOpenFile() {
-      $this->fixture->open(FILE_MODE_WRITE);
-      $this->fixture->unlink();
+      $this->file->open(FILE_MODE_WRITE);
+      $this->file->unlink();
     }
 
     /**
@@ -147,7 +175,7 @@
      */
     #[@test, @expect('io.IOException')]
     public function cannotCloseUnopenedFile() {
-      $this->fixture->close();
+      $this->file->close();
     }
 
     /**
@@ -156,7 +184,7 @@
      */
     #[@test]
     public function write() {
-      $this->assertEquals(5, $this->writeData($this->fixture, 'Hello'));
+      $this->assertEquals(5, $this->writeData($this->file, 'Hello'));
     }
 
     /**
@@ -166,11 +194,11 @@
     #[@test]
     public function read() {
       with ($data= 'Hello'); {
-        $this->writeData($this->fixture, $data);
+        $this->writeData($this->file, $data);
 
-        $this->fixture->open(FILE_MODE_READ);
-        $this->assertEquals($data, $this->fixture->read(strlen($data)));
-        $this->fixture->close();
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals($data, $this->file->read(strlen($data)));
+        $this->file->close();
       }
     }
 
@@ -181,12 +209,12 @@
     #[@test]
     public function overwritingExistant() {
       with ($data= 'Hello World', $appear= 'This should not appear'); {
-        $this->writeData($this->fixture, $appear);
-        $this->writeData($this->fixture, $data);
+        $this->writeData($this->file, $appear);
+        $this->writeData($this->file, $data);
 
-        $this->fixture->open(FILE_MODE_READ);
-        $this->assertEquals($data, $this->fixture->read(strlen($data)));
-        $this->fixture->close();
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals($data, $this->file->read(strlen($data)));
+        $this->file->close();
       }
     }
 
@@ -197,10 +225,10 @@
     #[@test]
     public function appendingToExistant() {
       with ($data= 'Hello World', $appear= 'This should appear'); {
-        $this->writeData($this->fixture, $appear);
-        $this->writeData($this->fixture, $data, TRUE);
+        $this->writeData($this->file, $appear);
+        $this->writeData($this->file, $data, TRUE);
 
-        $this->assertEquals($appear.$data, $this->readData($this->fixture, strlen($appear) + strlen($data)));
+        $this->assertEquals($appear.$data, $this->readData($this->file, strlen($appear) + strlen($data)));
       }
     }
 
@@ -210,7 +238,7 @@
      */
     #[@test, @expect('io.FileNotFoundException')]
     public function cannotOpenNonExistantForReading() {
-      $this->fixture->open(FILE_MODE_READ);
+      $this->file->open(FILE_MODE_READ);
     }
 
     /**
@@ -220,13 +248,13 @@
     #[@test]
     public function copying() {
       with ($data= 'Hello World'); {
-        $this->writeData($this->fixture, $data);
+        $this->writeData($this->file, $data);
 
-        $copy= new File($this->fixture->getURI().'.copy');
-        $this->fixture->copy($copy->getURI());
+        $copy= new File($this->file->getURI().'.copy');
+        $this->file->copy($copy->getURI());
 
         $this->assertEquals($data, $this->readData($copy));
-        $this->assertTrue($this->fixture->exists());
+        $this->assertTrue($this->file->exists());
       }
     }
 
@@ -237,14 +265,14 @@
     #[@test]
     public function copyingOver() {
       with ($data= 'Hello World'); {
-        $this->writeData($this->fixture, $data);
+        $this->writeData($this->file, $data);
 
-        $copy= new File($this->fixture->getURI().'.copy');
+        $copy= new File($this->file->getURI().'.copy');
         $this->writeData($copy, 'Copy original content');
-        $this->fixture->copy($copy->getURI());
+        $this->file->copy($copy->getURI());
 
         $this->assertEquals($data, $this->readData($copy));
-        $this->assertTrue($this->fixture->exists());
+        $this->assertTrue($this->file->exists());
       }
     }
 
@@ -254,8 +282,8 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function cannotCopyOpenFile() {
-      $this->fixture->open(FILE_MODE_WRITE);
-      $this->fixture->copy('irrelevant');
+      $this->file->open(FILE_MODE_WRITE);
+      $this->file->copy('irrelevant');
     }
 
     /**
@@ -265,16 +293,16 @@
     #[@test]
     public function moving() {
       with ($data= 'Hello World'); {
-        $this->writeData($this->fixture, $data);
+        $this->writeData($this->file, $data);
 
-        $target= new File($this->fixture->getURI().'.moved');
-        $this->fixture->move($target->getURI());
+        $target= new File($this->file->getURI().'.moved');
+        $this->file->move($target->getURI());
 
         $this->assertEquals($data, $this->readData($target));
         
         // FIXME I don't think io.File should be updating its URI when 
         // move() is called. Because it does, this assertion fails!
-        // $this->assertFalse($this->fixture->exists()); 
+        // $this->assertFalse($this->file->exists()); 
       }
     }
 
@@ -285,17 +313,17 @@
     #[@test]
     public function movingOver() {
       with ($data= 'Hello World'); {
-        $this->writeData($this->fixture, $data);
+        $this->writeData($this->file, $data);
 
-        $target= new File($this->fixture->getURI().'.moved');
+        $target= new File($this->file->getURI().'.moved');
         $this->writeData($target, 'Target original content');
-        $this->fixture->move($target->getURI());
+        $this->file->move($target->getURI());
 
         $this->assertEquals($data, $this->readData($target));
         
         // FIXME I don't think io.File should be updating its URI when 
         // move() is called. Because it does, this assertion fails!
-        // $this->assertFalse($this->fixture->exists()); 
+        // $this->assertFalse($this->file->exists()); 
       }
     }
 
@@ -305,8 +333,56 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function cannotMoveOpenFile() {
-      $this->fixture->open(FILE_MODE_WRITE);
-      $this->fixture->move('irrelevant');
+      $this->file->open(FILE_MODE_WRITE);
+      $this->file->move('irrelevant');
+    }
+
+    /**
+     * Test copy() method
+     *
+     */
+    #[@test]
+    public function copyingToAnotherFile() {
+      $this->writeData($this->file, NULL);
+      $target= new File($this->file->getURI().'.moved');
+      $this->file->copy($target);
+      $this->assertTrue($target->exists());
+    }
+
+    /**
+     * Test copy() method
+     *
+     */
+    #[@test]
+    public function copyingToAnotherFolder() {
+      $this->writeData($this->file, NULL);
+      $target= new File($this->folder, $this->file->getFilename());
+      $this->file->copy($this->folder);
+      $this->assertTrue($target->exists());
+    }
+
+    /**
+     * Test move() method
+     *
+     */
+    #[@test]
+    public function movingToAnotherFile() {
+      $this->writeData($this->file, NULL);
+      $target= new File($this->file->getURI().'.moved');
+      $this->file->move($target);
+      $this->assertTrue($target->exists());
+    }
+
+    /**
+     * Test move() method
+     *
+     */
+    #[@test]
+    public function movingToAnotherFolder() {
+      $this->writeData($this->file, NULL);
+      $target= new File($this->folder, $this->file->getFilename());
+      $this->file->move($this->folder);
+      $this->assertTrue($target->exists());
     }
   }
 ?>
