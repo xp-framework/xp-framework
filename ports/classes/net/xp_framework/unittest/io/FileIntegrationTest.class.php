@@ -253,8 +253,10 @@
         $copy= new File($this->file->getURI().'.copy');
         $this->file->copy($copy->getURI());
 
-        $this->assertEquals($data, $this->readData($copy));
-        $this->assertTrue($this->file->exists());
+        $read= $this->readData($copy);
+        $copy->unlink();
+        
+        $this->assertEquals($data, $read);
       }
     }
 
@@ -271,8 +273,10 @@
         $this->writeData($copy, 'Copy original content');
         $this->file->copy($copy->getURI());
 
-        $this->assertEquals($data, $this->readData($copy));
-        $this->assertTrue($this->file->exists());
+        $read= $this->readData($copy);
+        $copy->unlink();
+        
+        $this->assertEquals($data, $read);
       }
     }
 
@@ -298,7 +302,10 @@
         $target= new File($this->file->getURI().'.moved');
         $this->file->move($target->getURI());
 
-        $this->assertEquals($data, $this->readData($target));
+        $read= $this->readData($target);
+        $target->unlink();
+        
+        $this->assertEquals($data, $read);
         
         // FIXME I don't think io.File should be updating its URI when 
         // move() is called. Because it does, this assertion fails!
@@ -319,7 +326,10 @@
         $this->writeData($target, 'Target original content');
         $this->file->move($target->getURI());
 
-        $this->assertEquals($data, $this->readData($target));
+        $read= $this->readData($target);
+        $target->unlink();
+
+        $this->assertEquals($data, $read);
         
         // FIXME I don't think io.File should be updating its URI when 
         // move() is called. Because it does, this assertion fails!
@@ -346,7 +356,9 @@
       $this->writeData($this->file, NULL);
       $target= new File($this->file->getURI().'.moved');
       $this->file->copy($target);
-      $this->assertTrue($target->exists());
+      $exists= $target->exists();
+      $target->unlink();
+      $this->assertTrue($exists);
     }
 
     /**
@@ -358,7 +370,9 @@
       $this->writeData($this->file, NULL);
       $target= new File($this->folder, $this->file->getFilename());
       $this->file->copy($this->folder);
-      $this->assertTrue($target->exists());
+      $exists= $target->exists();
+      $target->unlink();
+      $this->assertTrue($exists);
     }
 
     /**
@@ -370,7 +384,9 @@
       $this->writeData($this->file, NULL);
       $target= new File($this->file->getURI().'.moved');
       $this->file->move($target);
-      $this->assertTrue($target->exists());
+      $exists= $target->exists();
+      $target->unlink();
+      $this->assertTrue($exists);
     }
 
     /**
@@ -382,7 +398,9 @@
       $this->writeData($this->file, NULL);
       $target= new File($this->folder, $this->file->getFilename());
       $this->file->move($this->folder);
-      $this->assertTrue($target->exists());
+      $exists= $target->exists();
+      $target->unlink();
+      $this->assertTrue($exists);
     }
   }
 ?>
