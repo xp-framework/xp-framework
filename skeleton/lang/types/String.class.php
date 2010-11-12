@@ -302,11 +302,16 @@
      */
     public function getBytes($charset= NULL) {
       $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
-
-      return new Bytes(STR_ENC === $charset 
-        ? $this->buffer 
-        : iconv(STR_ENC, $charset, $this->buffer)
-      );
+      if (STR_ENC === $charset) {
+        return new Bytes($this->buffer);
+      }
+      $bytes= iconv(STR_ENC, $charset, $this->buffer);
+      if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+        $message= key(xp::$registry['errors'][__FILE__][__LINE__ - 2]);
+        xp::gc(__FILE__);
+        throw new FormatException($message.' while converting input from '.STR_ENC.' to '.$charset);
+      }
+      return new Bytes($bytes);
     }
   }
 ?>
