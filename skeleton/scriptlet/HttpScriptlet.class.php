@@ -371,7 +371,8 @@
           if (!$this->handleSessionInitializationError($request, $response)) {
             throw new HttpSessionInvalidException(
               'Session initialization failed: '.$e->getMessage(),
-              HttpConstants::STATUS_SERVICE_TEMPORARILY_UNAVAILABLE
+              HttpConstants::STATUS_SERVICE_TEMPORARILY_UNAVAILABLE,
+              $e
             );
           }
           
