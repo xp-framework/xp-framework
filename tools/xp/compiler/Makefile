@@ -7,6 +7,9 @@ GEN=../../../ports/technologies/opt/jay
 
 all: syntax/xp/Parser.class.php syntax/php/Parser.class.php
 
+clean:
+	-rm y.output
+
 syntax/xp/Parser.class.php: grammar/xp.jay $(GEN)/skel/php5.skl
 	sh $(GEN)/generate.sh grammar/xp.jay php5 "" xp.compiler.syntax.xp > $@
 
