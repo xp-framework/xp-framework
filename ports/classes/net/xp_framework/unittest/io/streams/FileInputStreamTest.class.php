@@ -136,7 +136,7 @@
      * Test closig an already closed stream
      *
      */
-    #[@test, @expect('io.IOException')]
+    #[@test]
     public function doubleClose() {
       with ($stream= new FileInputStream($this->file)); {
         $stream->close();

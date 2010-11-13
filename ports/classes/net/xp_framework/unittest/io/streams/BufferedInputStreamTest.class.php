@@ -64,5 +64,16 @@
       $this->assertEquals(' Worl', $this->in->read(5));
       $this->assertEquals(0, $this->in->available());   // Buffer completely empty
     }
+
+    /**
+     * Test closing a stream twice has no effect.
+     *
+     * @see   xp://lang.Closeable#close
+     */
+    #[@test]
+    public function closingTwice() {
+      $this->in->close();
+      $this->in->close();
+    }
   }
 ?>

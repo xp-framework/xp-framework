@@ -45,5 +45,16 @@
       $this->out->write(5);
       $this->assertEquals('5', $this->out->getBytes());
     }
+
+    /**
+     * Test closing a stream twice has no effect.
+     *
+     * @see   xp://lang.Closeable#close
+     */
+    #[@test]
+    public function closingTwice() {
+      $this->out->close();
+      $this->out->close();
+    }
   }
 ?>

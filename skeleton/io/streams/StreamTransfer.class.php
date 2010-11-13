@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.InputStream', 'io.streams.OutputStream');
+  uses('io.streams.InputStream', 'io.streams.OutputStream', 'lang.Closeable');
 
   /**
    * A stream transfer copies from an input stream to an output stream
@@ -21,7 +21,7 @@
    *
    * @test    xp://net.xp_framework.unittest.io.streams.StreamTransferTest
    */
-  class StreamTransfer extends Object {
+  class StreamTransfer extends Object implements Closeable {
     protected $in= NULL;
     protected $out= NULL;
     
@@ -57,19 +57,19 @@
      * @throws  io.IOException
      */
     public function close() {
-      $errors= array();
+      $errors= '';
       try {
         $this->in->close();
       } catch (IOException $e) {
-        $errors[]= 'Could not close input stream: '.$e->getMessage();
+        $errors.= 'Could not close input stream: '.$e->getMessage().', ';
       }
       try {
         $this->out->close();
       } catch (IOException $e) {
-        $errors[]= 'Could not close output stream'.$e->getMessage();
+        $errors.= 'Could not close output stream: '.$e->getMessage().', ';
       }
       if ($errors) {
-        throw new IOException(xp::stringOf($errors));
+        throw new IOException(rtrim($errors, ', '));
       }
     }
   }

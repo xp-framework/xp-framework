@@ -106,5 +106,27 @@
       $decompressor->close();
       $this->assertEquals('Hello', $chunk);
     }
+
+    /**
+     * Test closing a stream right after creation
+     *
+     */
+    #[@test]
+    public function closingRightAfterCreation() {
+      $decompressor= $this->newStream(new MemoryInputStream($this->compress('Hello', 1)));
+      $decompressor->close();
+    }
+
+    /**
+     * Test closing a stream twice has no effect.
+     *
+     * @see   xp://lang.Closeable#close
+     */
+    #[@test]
+    public function closingTwice() {
+      $decompressor= $this->newStream(new MemoryInputStream($this->compress('Hello', 1)));
+      $decompressor->close();
+      $decompressor->close();
+    }
   }
 ?>

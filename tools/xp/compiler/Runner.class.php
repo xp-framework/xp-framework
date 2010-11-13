@@ -169,6 +169,7 @@
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.MemberRedeclarationCheck')->newInstance(), TRUE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.RoutinesVerification')->newInstance(), TRUE);
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.FieldsVerification')->newInstance(), TRUE);
+      $emitter->addCheck(XPClass::forName('xp.compiler.checks.ArmTypesAreCloseable')->newInstance(), TRUE);
       
       // Add warnings
       $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeHasDocumentation')->newInstance(), FALSE);

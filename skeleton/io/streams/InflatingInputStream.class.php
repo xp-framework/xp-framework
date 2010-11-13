@@ -52,6 +52,7 @@
      *
      */
     public function close() {
+      if (!$this->in) return;
       fclose($this->in);
       $this->in= NULL;
     }
@@ -61,9 +62,7 @@
      *
      */
     public function __destruct() {
-      if (!$this->in) return;
-      fclose($this->in);
-      $this->in= NULL;
+      $this->close();
     }
   }
 ?>

@@ -48,5 +48,15 @@
       $this->assertEquals(strlen(self::BUFFER)- 5, $this->in->available());
     }
     
+    /**
+     * Test closing a stream twice has no effect.
+     *
+     * @see   xp://lang.Closeable#close
+     */
+    #[@test]
+    public function closingTwice() {
+      $this->in->close();
+      $this->in->close();
+    }
   }
 ?>

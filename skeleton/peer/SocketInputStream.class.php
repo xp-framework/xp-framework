@@ -49,7 +49,7 @@
      *
      */
     public function close() {
-      $this->socket->close();
+      $this->socket->isConnected() && $this->socket->close();
     }
 
     /**

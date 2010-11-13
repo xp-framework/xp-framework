@@ -1031,6 +1031,10 @@
       static $ignored= '··i';
 
       $this->emitAll($op, $arm->initializations);
+
+      // Manually verify as we can then rely on call target type being available
+      if (!$this->checks->verify($arm, $this->scope[0], $this, TRUE)) return;
+
       $op->append('$'.$mangled.'= NULL; try {');
       $this->emitAll($op, (array)$arm->statements);
       $op->append('} catch (Exception $'.$mangled.') {}');

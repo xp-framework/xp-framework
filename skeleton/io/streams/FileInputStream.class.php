@@ -51,7 +51,7 @@
      *
      */
     public function close() {
-      $this->file->close();
+      $this->file->isOpen() && $this->file->close();
     }
 
     /**

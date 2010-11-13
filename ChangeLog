@@ -73,6 +73,14 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed InputStream, OutputStream, Reader and StreamTransfer in 
+  io.streams as well as their implementations to be closeable
+  (friebe)
+- Changed rdbms.ResultSet and all its implementations to be closeable
+  (friebe)
+- Implemented ARM blocks in XP language, supported by lang.Closeable 
+  interface in framework.
+  (friebe)
 - Added text.regex.Pattern::replaceWith() method
   (friebe)
 - Changed text.regex.Pattern not to throw exceptions on malformed 

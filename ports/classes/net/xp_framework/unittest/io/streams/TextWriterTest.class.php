@@ -158,5 +158,17 @@
       $this->newWriter('utf-8')->writeLine('Übercoder');
       $this->assertEquals("Ãœbercoder\n", $this->out->getBytes());
     }
+
+    /**
+     * Test closing a reader twice has no effect.
+     *
+     * @see   xp://lang.Closeable#close
+     */
+    #[@test]
+    public function closingTwice() {
+      $w= $this->newWriter('');
+      $w->close();
+      $w->close();
+    }
   }
 ?>

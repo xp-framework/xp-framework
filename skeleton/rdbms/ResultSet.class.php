@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.Date', 'rdbms.SQLException');
+  uses('util.Date', 'rdbms.SQLException', 'lang.Closeable');
 
   /**
    * Result set as returned from the DBConnection::query method
@@ -22,7 +22,7 @@
    *
    * @purpose  Resultset wrapper
    */
-  class ResultSet extends Object {
+  class ResultSet extends Object implements Closeable {
     public
       $handle,
       $fields,

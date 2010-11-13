@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.InputStream');
+  uses('io.streams.InputStream', 'lang.Closeable');
 
   /**
    * Servers as an bstract base class for all other readers. A reader 
@@ -13,7 +13,7 @@
    * sets, there is no difference, obviously).
    *
    */
-  abstract class Reader extends Object {
+  abstract class Reader extends Object implements Closeable {
     protected $stream= NULL;
     
     /**

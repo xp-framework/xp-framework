@@ -363,6 +363,8 @@
         return new TypeName('bool');
       } else if ($node instanceof ComparisonNode) {
         return new TypeName('bool');
+      } else if ($node instanceof AssignmentNode) {
+        return $this->typeOf($node->variable);
       } else if ($node instanceof InstanceCreationNode) {
         return $node->type;
       } else if ($node instanceof BracedExpressionNode) {
