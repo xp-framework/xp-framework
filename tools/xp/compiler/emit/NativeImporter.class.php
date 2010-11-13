@@ -7,7 +7,7 @@
   /**
    * Imports native functions
    *
-   * @test    xp://tests.NativeImporterTest
+   * @test    xp://net.xp_lang.tests.NativeImporterTest
    */
   class NativeImporter extends Object {
     protected static $coreExtAvailable= FALSE;
