@@ -8,7 +8,7 @@
 
   uses(
     'xp.compiler.emit.Emitter', 
-    'xp.compiler.emit.NativeImporter',
+    'xp.compiler.emit.source.NativeImporter',
     'xp.compiler.emit.source.Buffer', 
     'xp.compiler.emit.source.Result', 
     'xp.compiler.syntax.php.Lexer',
@@ -2345,7 +2345,7 @@
       
       array_unshift($this->local, array());
       array_unshift($this->scope, $scope->enter(new CompilationUnitScope()));
-      $this->scope[0]->importer= new NativeImporter();
+      $this->scope[0]->importer= new xp·compiler·emit·source·NativeImporter();
       $this->scope[0]->declarations= array($tree->declaration);
       $this->scope[0]->package= $tree->package;
       

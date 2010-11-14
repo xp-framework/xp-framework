@@ -6,15 +6,15 @@
 
   uses(
     'unittest.TestCase',
-    'xp.compiler.emit.NativeImporter'
+    'xp.compiler.emit.source.NativeImporter'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://xp.compiler.emit.NativeImporter
+   * @see      xp://xp.compiler.emit.source.NativeImporter
    */
-  class NativeImporterTest extends TestCase {
+  class SourceNativeImporterTest extends TestCase {
     protected $fixture= NULL;
   
     /**
@@ -22,7 +22,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new NativeImporter();
+      $this->fixture= new xp·compiler·emit·source·NativeImporter();
     }
 
     /**
