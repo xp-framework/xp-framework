@@ -327,6 +327,16 @@
       $this->addChild($child);
       return $this;
     }
+    
+    /**
+     * Returns whether another object is equal to this node
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->toString() === $cmp->toString();
+    }
 
     /**
      * Creates a string representation of this object
