@@ -878,7 +878,8 @@ mapentry_opt:
 ;
 
 mapentry:
-    T_WORD ':' expression { $$= array(new StringNode($1), $3); }
+    T_WORD   ':' expression { $$= array(new StringNode($1), $3); }
+  | T_STRING ':' expression { $$= array(new StringNode($1), $3); }
 ;
 
 assignment:
