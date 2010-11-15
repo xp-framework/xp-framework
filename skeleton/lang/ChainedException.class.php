@@ -67,7 +67,7 @@
 
         // Find common stack trace elements
         $lt= $loop->getStackTrace();
-        for ($ct= $cc= sizeof($lt)- 1, $t= sizeof($tt)- 1; $ct > 0, $t > 0; $cc--, $t--) {
+        for ($ct= $cc= sizeof($lt)- 1, $t= sizeof($tt)- 1; $ct > 0 && $cc > 0 && $t > 0; $cc--, $t--) {
           if (!$lt[$cc]->equals($tt[$t])) break;
         }
 
