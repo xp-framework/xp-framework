@@ -9,6 +9,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Added keys() and values() methods to util.collections.Map
+  (friebe)
+- Set client charset in rdbms.sybase.SybaseConnection to iso_1
+  (friebe, kiesel)
 - Added check for correct configuration of timezone at bootstrap time
   http://news.planet-xp.net/article/389/2010/10/16/
   (kiesel)
@@ -51,6 +55,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.types.String::getBytes() to throw an exception instead of
+  cutting off the returned bytes at the position of an encoding error
+  (friebe)
 - Fixed absolute path calculation in io.Folder
   (friebe)
 - Fixed URL parsing of parameters containing square brackets or dots in
@@ -66,6 +73,27 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Implemented equals() method in xml.Node
+  (friebe)
+- Changed InputStream, OutputStream, Reader and StreamTransfer in 
+  io.streams as well as their implementations to be closeable
+  (friebe)
+- Changed rdbms.ResultSet and all its implementations to be closeable
+  (friebe)
+- Implemented ARM blocks in XP language, supported by lang.Closeable 
+  interface in framework.
+  (friebe)
+- Added text.regex.Pattern::replaceWith() method
+  (friebe)
+- Changed text.regex.Pattern not to throw exceptions on malformed 
+  patterns like Pattern::compile(), and instead defer pattern validation 
+  until actually matching the pattern - performance improvement
+  (friebe)
+- Made io.File::copy() and io.File::move() accept io.File and io.Folder 
+  instances in addition to strings.
+  (friebe)
+- Added values() method to util.collections.HashTable
+  (friebe)
 - Added support for multiple cookies in unittest.web.WebTestCase
   (kiesel, Felix Stahlberg)
 - Added support for multiple header values to peer.http.HttpRequest

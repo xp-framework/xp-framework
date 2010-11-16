@@ -320,5 +320,17 @@
       $this->assertEquals(new String('X'), $r->readLine());
       $this->assertNull($r->readLine());
     }
+
+    /**
+     * Test closing a reader twice has no effect.
+     *
+     * @see   xp://lang.Closeable#close
+     */
+    #[@test]
+    public function closingTwice() {
+      $r= $this->newReader('');
+      $r->close();
+      $r->close();
+    }
   }
 ?>

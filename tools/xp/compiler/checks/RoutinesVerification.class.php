@@ -9,7 +9,7 @@
   /**
    * Verifies routines
    *
-   * @test    xp://tests.checks.RoutinesVerificationTest
+   * @test    xp://net.xp_lang.tests.checks.RoutinesVerificationTest
    */
   class RoutinesVerification extends Object implements Check {
 
@@ -54,6 +54,9 @@
           return array('R403', 'Abstract methods may not have a body '.$qname);
         } else if (!Modifiers::isAbstract($routine->modifiers) && $empty) {
           return array('R401', 'Non-abstract methods must have a body '.$qname);
+        }
+        if ($routine->extension && !Modifiers::isStatic($routine->modifiers)) {
+          return array('E403', 'Extension methods must be static '.$qname);
         }
       }
     }

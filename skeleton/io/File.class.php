@@ -25,6 +25,7 @@
    * specific structure representing an open file.
    * 
    * @test     xp://net.xp_framework.unittest.io.FileTest
+   * @test     xp://net.xp_framework.unittest.io.FileIntegrationTest
    * @purpose  Represent a file
    */
   class File extends Stream {
@@ -603,7 +604,7 @@
      * Warning: Open files cannot be moved. Use the close() method to
      * close the file first
      *
-     * @param   string target where to move the file to
+     * @param   var target where to move the file to, either a string, a File or a Folder
      * @return  bool success
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the file is still open
@@ -612,13 +613,22 @@
       if (is_resource($this->_fd)) {
         throw new IllegalStateException('File still open');
       }
-      if (FALSE === rename($this->uri, $target)) {
-        $e= new IOException('Cannot move file '.$this->uri.' to '.$target);
+      
+      if ($target instanceof self) {
+        $uri= $target->getURI();
+      } else if ($target instanceof Folder) {
+        $uri= $target->getURI().$this->getFilename();
+      } else {
+        $uri= $target;
+      }
+      
+      if (FALSE === rename($this->uri, $uri)) {
+        $e= new IOException('Cannot move file '.$this->uri.' to '.$uri);
         xp::gc(__FILE__);
         throw $e;
       }
       
-      $this->setURI($target);
+      $this->setURI($uri);
       return TRUE;
     }
     
@@ -628,7 +638,7 @@
      * Warning: Open files cannot be copied. Use the close() method to
      * close the file first
      *
-     * @param   string target where to copy the file to
+     * @param   var target where to copy the file to, either a string, a File or a Folder
      * @return  bool success
      * @throws  io.IOException in case of an error (e.g., lack of permissions)
      * @throws  lang.IllegalStateException in case the file is still open
@@ -637,9 +647,17 @@
       if (is_resource($this->_fd)) {
         throw new IllegalStateException('File still open');
       }
+
+      if ($target instanceof self) {
+        $uri= $target->getURI();
+      } else if ($target instanceof Folder) {
+        $uri= $target->getURI().$this->getFilename();
+      } else {
+        $uri= $target;
+      }
       
-      if (FALSE === copy($this->uri, $target)) {
-        $e= new IOException('Cannot copy file '.$this->uri.' to '.$target);
+      if (FALSE === copy($this->uri, $uri)) {
+        $e= new IOException('Cannot copy file '.$this->uri.' to '.$uri);
         xp::gc(__FILE__);
         throw $e;
       }

@@ -4,12 +4,13 @@
  * $Id$
  */
 
+  uses('lang.Closeable');
+
   /**
    * An OuputStream can be written to
    *
-   * @purpose  Interface
    */
-  interface OutputStream {
+  interface OutputStream extends Closeable {
 
     /**
      * Write a string
@@ -23,11 +24,5 @@
      *
      */
     public function flush();
-
-    /**
-     * Close this buffer
-     *
-     */
-    public function close();
   }
 ?>

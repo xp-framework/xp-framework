@@ -249,6 +249,22 @@
     }
 
     /**
+     * Test a pattern with a missing ")" at the end does not throws a 
+     * FormatException when the object is constructed (but later on).
+     *
+     */
+    #[@test]
+    public function lazyCompilation() {
+      $p= new Pattern('(');
+      try {
+        $p->matches('irrelevant');
+        $this->fail('Expected exception not thrown', NULL, 'lang.FormatException');
+      } catch (FormatException $expected) {
+        // OK
+      }
+    }
+
+    /**
      * Test Pattern::MULTILINE | Pattern::DOTALL example
      *
      */
@@ -260,6 +276,59 @@
       $this->assertEquals(1, $m->length());
       $group= $m->group(0);
       $this->assertEquals('print "Hello World";', trim($group[1]));
+    }
+
+    /**
+     * Tests the Pattern::replaceWith() method
+     *
+     */
+    #[@test]
+    public function replaceWhitespace() {
+      $pattern= Pattern::compile('\s+');
+      $this->assertEquals(
+        'Hello World with far too much whitespace',
+        $pattern->replaceWith(' ', 'Hello  World     with   far too    much whitespace')
+      );
+    }
+
+    /**
+     * Tests the Pattern::replaceWith() method
+     *
+     * @see   http://www.regular-expressions.info/unicode.html
+     */
+    #[@test]
+    public function unicodeReplacement() {
+      $pattern= Pattern::compile('<[\p{L}]>', Pattern::UTF8);
+      $this->assertEquals(
+        'G.nter',
+        $pattern->replaceWith('.', new String('G<ü>nter', 'iso-8859-1'))
+      );
+    }
+
+    /**
+     * Tests the Pattern::replaceWith() method
+     *
+     */
+    #[@test]
+    public function replaceWithDollarBackReference() {
+      $pattern= Pattern::compile('H[ae]ll[oO0]');
+      $this->assertEquals(
+        '[Hello] [Hall0]',
+        $pattern->replaceWith('[$0]', 'Hello Hall0')
+      );
+    }
+
+    /**
+     * Tests the Pattern::replaceWith() method
+     *
+     */
+    #[@test]
+    public function replaceWithDollarBackReferences() {
+      $quoter= Pattern::compile('([^=]+)=([^ >]+)([ >]*)');
+      $this->assertEquals(
+        '<a href="http://example.com" title="Link">...</a>',
+        $quoter->replaceWith('$1="$2"$3', '<a href=http://example.com title=Link>...</a>')
+      );
     }
   }
 ?>

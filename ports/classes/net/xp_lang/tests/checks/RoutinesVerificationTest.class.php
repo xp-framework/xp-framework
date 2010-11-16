@@ -174,5 +174,50 @@
         $this->verify($m, new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner')))
       );
     }
+
+    /**
+     * Test extension methods
+     *
+     */
+    #[@test]
+    public function extensionMethodsMustBeStatic() {
+      $m= new MethodNode(array(
+        'name'        => 'equal',
+        'modifiers'   => MODIFIER_PUBLIC,
+        'returns'     => TypeName::$VOID,
+        'parameters'  => array(
+          array('name' => 'in', 'type' => new TypeName('string')),
+          array('name' => 'cmp', 'type' => new TypeName('string')),
+        ),
+        'extension'   => TRUE,
+        'body'        => array()
+      ));
+      $this->assertEquals(
+        array('E403', 'Extension methods must be static Runner::equal'), 
+        $this->verify($m, new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner')))
+      );
+    }
+
+    /**
+     * Test extension methods
+     *
+     */
+    #[@test]
+    public function extensionMethods() {
+      $m= new MethodNode(array(
+        'name'        => 'equal',
+        'modifiers'   => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'returns'     => TypeName::$VOID,
+        'parameters'  => array(
+          array('name' => 'in', 'type' => new TypeName('string')),
+          array('name' => 'cmp', 'type' => new TypeName('string')),
+        ),
+        'extension'   => TRUE,
+        'body'        => array()
+      ));
+      $this->assertNull(
+        $this->verify($m, new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Runner')))
+      );
+    }
   }
 ?>

@@ -94,7 +94,10 @@
      * @return  bool success
      */
     public function close() { 
-      return pg_free_result($this->handle);
+      if (!$this->handle) return;
+      $r= pg_free_result($this->handle);
+      $this->handle= NULL;
+      return $r;
     }
   }
 ?>

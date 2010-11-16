@@ -46,7 +46,6 @@
      *
      * @param   string regex
      * @param   int flags default 0 bitfield of pattern flags
-     * @throws  lang.FormatException
      */
     public function __construct($regex, $flags= 0) {
       $modifiers= '';
@@ -55,14 +54,6 @@
       }
       $this->utf8= (bool)($flags & self::UTF8);
       $this->regex= '/'.str_replace('/', '\/', $regex).'/'.$modifiers;
-
-      // Compile and test pattern
-      $n= preg_match($this->regex, '');
-      if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
-        $e= new FormatException('Pattern "'.$regex.'" not well-formed');
-        xp::gc(__FILE__);
-        throw $e;
-      }
     }
     
     /**
@@ -107,7 +98,9 @@
         $n= preg_match($this->regex, (string)$input);
       }
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
-        throw new FormatException('Pattern "'.$this->regex.'" matching error');
+        $e= new FormatException('Pattern "'.$this->regex.'" matching error');
+        xp::gc(__FILE__);
+        throw $e;
       }
       return $n != 0;
     }
@@ -126,9 +119,33 @@
         $n= preg_match_all($this->regex, (string)$input, $m, PREG_SET_ORDER );
       }
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
-        throw new FormatException('Pattern "'.$this->regex.'" matching error');
+        $e= new FormatException('Pattern "'.$this->regex.'" matching error');
+        xp::gc(__FILE__);
+        throw $e;
       }
       return new MatchResult($n, $m);
+    }
+
+    /**
+     * Performs a replacement
+     *
+     * @param   string replacement
+     * @param   string input
+     * @return  text.regex.MatchResult
+     * @throws  lang.FormatException
+     */  
+    public function replaceWith($replacement, $input) {
+      if ($input instanceof String) {
+        $r= preg_replace($this->regex, $replacement, (string)$input->getBytes($this->utf8 ? 'utf-8' : 'iso-8859-1'));
+      } else {
+        $r= preg_replace($this->regex, $replacement, (string)$input);
+      }
+      if (FALSE === $r || PREG_NO_ERROR != preg_last_error()) {
+        $e= new FormatException('Pattern "'.$this->regex.'" matching error');
+        xp::gc(__FILE__);
+        throw $e;
+      }
+      return $r;
     }
     
     /**
@@ -140,7 +157,17 @@
      * @throws  lang.FormatException
      */
     public static function compile($regex, $flags= 0) {
-      return new self($regex, $flags);
+      $self= new self($regex, $flags);
+
+      // Compile and test pattern
+      $n= preg_match($self->regex, '');
+      if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
+        $e= new FormatException('Pattern "'.$regex.'" not well-formed');
+        xp::gc(__FILE__);
+        throw $e;
+      }
+
+      return $self;
     }
   }
 ?>

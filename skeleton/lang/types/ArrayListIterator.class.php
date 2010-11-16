@@ -42,7 +42,7 @@
     }
 
     /**
-     * Returns current value of iteration
+     * Forwards iteration
      *
      */
     public function next() { 
@@ -50,7 +50,7 @@
     }
 
     /**
-     * Returns current value of iteration
+     * Rewinds iteration
      *
      */
     public function rewind() { 

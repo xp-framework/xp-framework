@@ -26,6 +26,55 @@
     protected function fileKnownToExist() {
       return realpath(Runtime::getInstance()->getExecutable()->getFilename());
     }
+    
+    /**
+     * Test getURI() method
+     *
+     */
+    #[@test]
+    public function getURI() {
+      $fn= $this->fileKnownToExist();
+      $this->assertEquals($fn, create(new File($fn))->getURI());
+    }
+
+    /**
+     * Test getPath() method
+     *
+     * @see   php://pathinfo
+     */
+    #[@test]
+    public function getPath() {
+      $fn= $this->fileKnownToExist();
+      $info= pathinfo($fn);
+      $this->assertEquals($info['dirname'], create(new File($fn))->getPath());
+    }
+
+    /**
+     * Test getFileName() method
+     *
+     * @see   php://pathinfo
+     */
+    #[@test]
+    public function getFileName() {
+      $fn= $this->fileKnownToExist();
+      $info= pathinfo($fn);
+      $this->assertEquals($info['basename'], create(new File($fn))->getFileName());
+    }
+
+    /**
+     * Test getExtension() method
+     *
+     * @see   php://pathinfo
+     */
+    #[@test]
+    public function getExtension() {
+      $fn= $this->fileKnownToExist();
+      $info= pathinfo($fn);
+      $this->assertEquals(
+        isset($info['extension']) ? $info['extension'] : NULL, 
+        create(new File($fn))->getExtension()
+      );
+    }
   
     /**
      * Test NUL character is not allowed

@@ -61,5 +61,67 @@
       $e= new ChainedException('Message', new ChainedException('Message2', new IllegalArgumentException('Arg')));
       $this->assertEquals(2, preg_match_all('/  ... [0-9]+ more/', $e->toString(), $matches));
     }
+
+    /**
+     * Tests completely common stack trace
+     *
+     */
+    #[@test]
+    public function completelyCommonStackTrace() {
+      $trace = array(
+        new StackTraceElement('Test.class.php', 'Test', 'test', 0, array(), NULL),
+        new StackTraceElement('TestSuite.class.php', 'TestSuite', '__construct', 0, array('Test::test'), NULL),
+      );
+      $e= new XPException('Test');
+      $e->trace= $trace;
+      $c= new ChainedException($e->getMessage(), $e);
+      $c->trace= $trace;
+      
+      $this->assertEquals(1, preg_match_all('/  ... [0-9]+ more/', $c->toString(), $matches), $c->toString());
+    }
+
+    /**
+     * Tests completely common stack trace
+     *
+     */
+    #[@test]
+    public function causeWithUncommonElements() {
+      $trace = array(
+        new StackTraceElement('Test.class.php', 'Test', 'test', 0, array(), NULL),
+        new StackTraceElement('TestSuite.class.php', 'TestSuite', '__construct', 0, array('Test::test'), NULL),
+      );
+      $e= new XPException('Test');
+      $e->trace= array_merge(
+        array(new StackTraceElement(NULL, 'ReflectionMethod', 'invokeArgs', 0, array(), NULL)),
+        array(new StackTraceElement('Method.class.php', 'Method', 'invoke', 0, array(), NULL)),
+        $trace
+      );
+      $c= new ChainedException($e->getMessage(), $e);
+      $c->trace= $trace;
+      
+      $this->assertEquals(1, preg_match_all('/  ... [0-9]+ more/', $c->toString(), $matches), $c->toString());
+    }
+
+    /**
+     * Tests completely common stack trace
+     *
+     */
+    #[@test]
+    public function chainedWithUncommonElements() {
+      $trace = array(
+        new StackTraceElement('Test.class.php', 'Test', 'test', 0, array(), NULL),
+        new StackTraceElement('TestSuite.class.php', 'TestSuite', '__construct', 0, array('Test::test'), NULL),
+      );
+      $e= new XPException('Test');
+      $e->trace= $trace;
+      $c= new ChainedException($e->getMessage(), $e);
+      $c->trace= array_merge(
+        array(new StackTraceElement(NULL, 'ReflectionMethod', 'invokeArgs', 0, array(), NULL)),
+        array(new StackTraceElement('Method.class.php', 'Method', 'invoke', 0, array(), NULL)),
+        $trace
+      );
+      
+      $this->assertEquals(1, preg_match_all('/  ... [0-9]+ more/', $c->toString(), $matches), $c->toString());
+    }
   }
 ?>

@@ -136,5 +136,27 @@
     public function levelTooLow() {
       $this->newStream(new MemoryOutputStream(), -1);
     }
- }
+
+    /**
+     * Test closing a stream right after creation
+     *
+     */
+    #[@test]
+    public function closingRightAfterCreation() {
+      $compressor= $this->newStream(new MemoryOutputStream(), 1);
+      $compressor->close();
+    }
+
+    /**
+     * Test closing a stream twice has no effect.
+     *
+     * @see   xp://lang.Closeable#close
+     */
+    #[@test]
+    public function closingTwice() {
+      $compressor= $this->newStream(new MemoryOutputStream(), 1);
+      $compressor->close();
+      $compressor->close();
+    }
+  }
 ?>

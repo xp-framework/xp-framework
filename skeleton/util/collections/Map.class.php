@@ -88,6 +88,22 @@
     public function containsValue($value);
 
     /**
+     * Returns an array of keys
+     *
+     * @return  K[]
+     */
+    #[@generic(return= 'K[]')]
+    public function keys();
+
+    /**
+     * Returns an array of values
+     *
+     * @return  V[]
+     */
+    #[@generic(return= 'V[]')]
+    public function values();
+
+    /**
      * Returns a hashcode for this map
      *
      * @return  string

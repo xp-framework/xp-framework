@@ -4,14 +4,13 @@
  * $Id$
  */
 
-  uses('lang.types.Bytes');
+  uses('lang.types.Bytes', 'lang.Closeable');
 
   /**
    * An InputStream can be read from
    *
-   * @purpose  Interface
    */
-  interface InputStream {
+  interface InputStream extends Closeable {
 
     /**
      * Read a string
@@ -27,11 +26,5 @@
      *
      */
     public function available();
-
-    /**
-     * Close this buffer
-     *
-     */
-    public function close();
   }
 ?>

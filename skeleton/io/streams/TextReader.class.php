@@ -155,6 +155,7 @@
      *
      */
     public function close() {
+      if (!$this->in) return;
       fclose($this->in);
       $this->in= NULL;
       // No call to parent::close() as fclose() will already close underlying stream
@@ -165,9 +166,7 @@
      *
      */
     public function __destruct() {
-      if (!$this->in) return;
-      fclose($this->in);
-      $this->in= NULL;
+      $this->close();
     }
   }
 ?>

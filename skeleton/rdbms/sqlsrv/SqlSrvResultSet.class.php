@@ -99,7 +99,10 @@
      * @return  bool success
      */
     public function close() { 
-      return sqlsrv_free_stmt($this->handle);
+      if (!$this->handle) return;
+      $r= sqlsrv_free_stmt($this->handle);
+      $this->handle= NULL;
+      return $r;
     }
   }
 ?>

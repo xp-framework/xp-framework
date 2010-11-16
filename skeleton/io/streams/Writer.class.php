@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.streams.OutputStream');
+  uses('io.streams.OutputStream', 'lang.Closeable');
 
   /**
    * Serves as an bstract base class for all other writers. A writer

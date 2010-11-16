@@ -6,13 +6,22 @@
 
   $package= 'net.xp_lang.tests.execution.source';
 
-  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'lang.Enum');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'lang.Enum', 'xp.compiler.checks.RoutinesVerification');
 
   /**
    * Tests class declarations
    *
    */
   class net·xp_lang·tests·execution·source·ExtensionMethodsTest extends ExecutionTest {
+
+    /**
+     * Sets up test case and adds IsAsssignale check
+     *
+     */
+    public function setUp() {
+      parent::setUp();
+      $this->check(new RoutinesVerification(), TRUE);
+    }
 
     /**
      * Test extending a class
@@ -206,6 +215,23 @@
         'return '.$class->getName().'::class.fieldsNamed(text.regex.Pattern::compile("_.*"));', 
         array('import '.$class->getName().';')
       );
+    }
+
+    /**
+     * Test extension methods must be static
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function nonStaticMethod() {
+      $this->define('class', 'StringIncorrectExtension', NULL, '{
+        public bool equal(this string $in, string $cmp, bool $strict) {
+          return $strict ? $in === $cmp : $in == $cmp;
+        }
+        
+        public bool run(string $cmp) {
+          return "hello".equal($cmp, true);
+        }
+      }');
     }
   }
 ?>

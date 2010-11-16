@@ -79,15 +79,17 @@
       
       if ($field) return $row[$field]; else return $row;
     }
-    
+
     /**
      * Close resultset and free result memory
      *
      * @return  bool success
      */
     public function close() { 
-      return sqlite_free_result($this->handle);
+      if (!$this->handle) return;
+      $r= sqlite_free_result($this->handle);
+      $this->handle= NULL;
+      return $r;
     }
-
   }
 ?>

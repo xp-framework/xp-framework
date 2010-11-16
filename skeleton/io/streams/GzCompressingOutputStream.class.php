@@ -78,6 +78,7 @@
      *
      */
     public function close() {
+      if (!$this->out) return;
     
       // Remove deflating filter so we can continue writing "raw"
       stream_filter_remove($this->filter);

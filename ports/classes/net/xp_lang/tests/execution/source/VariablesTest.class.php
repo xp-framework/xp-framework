@@ -64,9 +64,51 @@
      * Tests $a++; where $a is undefined
      *
      */
-    #[@test, @expect('lang.FormatException')]
+    #[@test, @expect(class= 'lang.FormatException', withMessage= '/Uninitialized variable a/')]
     public function uninitialized() {
-      $this->run('$a++;');
+      $this->compile('$a++;');
+    }
+
+    /**
+     * Tests $this inside a static method
+     *
+     */
+    #[@test, @expect(class= 'lang.FormatException', withMessage= '/Uninitialized variable this/')]
+    public function thisInStaticMethods() {
+      $this->define(
+        'class', 
+        ucfirst($this->name).'·'.($this->counter++), 
+        NULL,
+        '{ public static void main(string[] $args) { $this; } }'
+      );
+    }
+
+    /**
+     * Tests $this inside a static method
+     *
+     */
+    #[@test, @expect(class= 'lang.FormatException', withMessage= '/Uninitialized variable this/')]
+    public function thisMemberReferenceInStaticMethods() {
+      $this->define(
+        'class', 
+        ucfirst($this->name).'·'.($this->counter++), 
+        NULL,
+        '{ public static void main(string[] $args) { $this.member; } }'
+      );
+    }
+
+    /**
+     * Tests $this inside a static method
+     *
+     */
+    #[@test, @expect(class= 'lang.FormatException', withMessage= '/Uninitialized variable this/')]
+    public function thisMemberCallInStaticMethods() {
+      $this->define(
+        'class', 
+        ucfirst($this->name).'·'.($this->counter++), 
+        NULL,
+        '{ public static void main(string[] $args) { $this.member(); } }'
+      );
     }
   }
 ?>

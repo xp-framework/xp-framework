@@ -78,7 +78,10 @@
      * @return  bool success
      */
     public function close() { 
-      return sybase_free_result($this->handle);
+      if (!$this->handle) return;
+      $r= sybase_free_result($this->handle);
+      $this->handle= NULL;
+      return $r;
     }
   }
 ?>

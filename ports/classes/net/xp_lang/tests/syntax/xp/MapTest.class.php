@@ -180,5 +180,29 @@
         $this->parse('[ one : 1, two : 2,  three : 3, ];')
       );
     }
+ 
+    /**
+     * Test map keys can be quoted
+     *
+     */
+    #[@test]
+    public function optionalQuoting() {
+      $this->assertEquals(
+        array(new MapNode(array(
+          'elements'      => array(
+            array(
+              new StringNode('content-type'),
+              new IntegerNode('text/html'),
+            ),
+            array(
+              new StringNode('server'),
+              new IntegerNode('Apache'),
+            ),
+          ),
+          'type'          => NULL,
+        ))), 
+        $this->parse("[ 'content-type' : 'text/html', server : 'Apache' ];")
+      );
+    }
   }
 ?>

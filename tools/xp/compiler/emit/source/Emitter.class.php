@@ -8,7 +8,7 @@
 
   uses(
     'xp.compiler.emit.Emitter', 
-    'xp.compiler.emit.NativeImporter',
+    'xp.compiler.emit.source.NativeImporter',
     'xp.compiler.emit.source.Buffer', 
     'xp.compiler.emit.source.Result', 
     'xp.compiler.syntax.php.Lexer',
@@ -1031,6 +1031,10 @@
       static $ignored= '··i';
 
       $this->emitAll($op, $arm->initializations);
+
+      // Manually verify as we can then rely on call target type being available
+      if (!$this->checks->verify($arm, $this->scope[0], $this, TRUE)) return;
+
       $op->append('$'.$mangled.'= NULL; try {');
       $this->emitAll($op, (array)$arm->statements);
       $op->append('} catch (Exception $'.$mangled.') {}');
@@ -1507,13 +1511,8 @@
       
       // Static initializations outside of initializer
       if ($this->inits[0][TRUE]) {
-        foreach ($this->inits[0][TRUE] as $field) {
-          $this->emitOne($op, new AssignmentNode(array(
-            'variable'   => new StaticMemberAccessNode(new TypeName('self'), $field->name),
-            'expression' => $field->initialization,
-            'op'         => '=',
-          )));
-          $op->append(';');
+        foreach ($this->inits[0][TRUE] as $init) {
+          $op->append($init);
         }
         unset($this->inits[0][TRUE]);
       }
@@ -1549,13 +1548,8 @@
       if (NULL !== $constructor->body) {
         $signature= $this->emitParameters($op, (array)$constructor->parameters, '{');
         if ($this->inits[0][FALSE]) {
-          foreach ($this->inits[0][FALSE] as $field) {
-            $this->emitOne($op, new AssignmentNode(array(
-              'variable'   => new MemberAccessNode(new VariableNode('this'), $field->name),
-              'expression' => $field->initialization,
-              'op'         => '=',
-            )));
-            $op->append(';');
+          foreach ($this->inits[0][FALSE] as $init) {
+            $op->append($init);
           }
           unset($this->inits[0][FALSE]);
         }
@@ -1798,8 +1792,24 @@
           } catch (IllegalStateException $e) {
             $this->warn('R100', $e->getMessage(), $field->initialization);
           }
-        } else {    // Need to initialize these later
-          $this->inits[0][$static][]= $field;
+        } else {    // Need to emit initialization of these later
+          $init= new xp·compiler·emit·source·Buffer('', $op->line);
+          $this->emitOne($init, new AssignmentNode(array(
+            'variable'   => $static 
+              ? new StaticMemberAccessNode(new TypeName('self'), $field->name)
+              : new MemberAccessNode(new VariableNode('this'), $field->name)
+            ,
+            'expression' => $field->initialization,
+            'op'         => '=',
+          )));
+          $init->append(';');
+          $this->inits[0][$static][]= $init;
+        }
+
+        // If the field is "var" and we have an initialization, determine
+        // the type from there
+        if ($field->type->isVariable()) {
+          $field->type= $this->scope[0]->typeOf($field->initialization);
         }
       }
 
@@ -1814,12 +1824,7 @@
       $op->append(';');
 
       // Add field metadata (type, stored in @type annotation, see
-      // lang.reflect.Field and lang.XPClass::detailsForField()). If
-      // the field is "var" and we have an initialization, determine
-      // the type from that
-      if ($field->type->isVariable() && $field->initialization) {
-        $field->type= $this->scope[0]->typeOf($field->initialization);
-      }
+      // lang.reflect.Field and lang.XPClass::detailsForField()). 
       $type= $this->resolveType($field->type);
       $this->metadata[0][0][$field->name]= array(
         DETAIL_ANNOTATIONS  => array('type' => $type->name())
@@ -2089,9 +2094,9 @@
       // Generate a constructor if initializations are available.
       // They will have already been emitted if a constructor exists!
       if ($this->inits[0][FALSE]) {
+        $arguments= array();
+        $parameters= array();
         if ($parentType->hasConstructor()) {
-          $arguments= array();
-          $parameters= array();
           foreach ($parentType->getConstructor()->parameters as $i => $type) {
             $parameters[]= array('name' => '··a'.$i, 'type' => $type);    // TODO: default
             $arguments[]= new VariableNode('··a'.$i);
@@ -2099,7 +2104,6 @@
           $body= array(new StaticMethodCallNode(new TypeName('parent'), '__construct', $arguments));
         } else {
           $body= array();
-          $arguments= array();
         }
         $this->emitOne($op, new ConstructorNode(array(
           'modifiers'    => MODIFIER_PUBLIC,
@@ -2341,7 +2345,7 @@
       
       array_unshift($this->local, array());
       array_unshift($this->scope, $scope->enter(new CompilationUnitScope()));
-      $this->scope[0]->importer= new NativeImporter();
+      $this->scope[0]->importer= new xp·compiler·emit·source·NativeImporter();
       $this->scope[0]->declarations= array($tree->declaration);
       $this->scope[0]->package= $tree->package;
       

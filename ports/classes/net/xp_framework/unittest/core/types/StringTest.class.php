@@ -506,5 +506,26 @@
         str_replace('www', 'ftp', new String('www.müller.com')
       ));
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function getUmlautsAsAsciiBytes() {
+      create(new String('äöü', 'iso-8859-1'))->getBytes('ASCII');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getAsciiAsAsciiBytes() {
+      $this->assertEquals(
+        new Bytes('aou'), 
+        create(new String('aou', 'iso-8859-1'))->getBytes('ASCII')
+      );
+    }
   }
 ?>
