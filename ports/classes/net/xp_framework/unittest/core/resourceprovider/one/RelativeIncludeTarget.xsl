@@ -4,5 +4,5 @@
 
   <xsl:template name="call-me-third">
     Third has been called.
-  </xsl:templat
+  </xsl:template>
 </xsl:stylesheet>
