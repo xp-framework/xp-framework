@@ -54,11 +54,10 @@
      * will be properly resolved.
      *
      */
-    #[@test]
+    #[@test, @ignore('Currently broken.')]
     public function fileAsXslFile() {
-      if (!extension_loaded('foobar')) return;
       $added= ClassLoader::registerPath(dirname(__FILE__).'/resourceprovider');
-	  
+
       $proc= new DOMXslProcessor();
       $proc->setXslFile('res://two/ModuleOne.xsl');
       $proc->setXmlBuf('<document/>');
