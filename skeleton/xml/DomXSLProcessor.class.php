@@ -116,6 +116,15 @@
 
       $this->_checkErrors($file);
     }
+
+    /**
+     * Set XSL document
+     *
+     * @param   php.DOMDocument doc
+     */
+    public function setXSLDoc(DOMDocument $doc) {
+      $this->stylesheet= $doc;
+    }
     
     /**
      * Set XSL buffer
@@ -193,6 +202,15 @@
       $this->document->loadXML($xml->getDeclaration().$xml->getSource(INDENT_NONE));
 
       $this->_checkErrors($xml);
+    }
+    
+    /**
+     * Set XML document
+     *
+     * @param   php.DOMDocument doc
+     */
+    public function setXMLDoc(DOMDocument $doc) {
+      $this->document= $doc;
     }
 
     /**

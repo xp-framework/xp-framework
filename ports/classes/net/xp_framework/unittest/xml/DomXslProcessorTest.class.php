@@ -249,5 +249,46 @@
       $this->assertXmlEquals('<i>LOWER STRING</i>', $this->processor->output());
     }
     
+    /**
+     * Tests setXSLDoc() method
+     *
+     */
+    #[@test]
+    public function setXSLDoc() {
+      $doc= new DOMDocument();
+      $doc->loadXML('
+        <xsl:stylesheet 
+         version="1.0" 
+         xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+          <xsl:output method="text"/>
+          <xsl:template match="/*"><xsl:value-of select="name(.)"/></xsl:template>
+        </xsl:stylesheet>
+      ');
+      $this->processor->setXSLDoc($doc);
+    }
+    
+    /**
+     * Tests setXMLDoc() method
+     *
+     */
+    #[@test]
+    public function setXMLDoc() {
+      $doc= new DOMDocument();
+      $doc->loadXML('<document/>');
+      $this->processor->setXMLDoc($doc);
+    }
+    
+    /**
+     * Test a trivial processor run with DOMDocuments 
+     * as stylesheet and XML document
+     *
+     */
+    #[@test]
+    public function processDocuments() {
+      $this->setXSLDoc();
+      $this->setXMLDoc();
+      $this->processor->run();
+      $this->assertEquals('document', $this->processor->output());
+    }
   }
 ?>

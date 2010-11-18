@@ -73,6 +73,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added setXSLDoc(), setXMLDoc() to xml.DomXSLProcessor
+  (kiesel)
 - Implemented equals() method in xml.Node
   (friebe)
 - Changed InputStream, OutputStream, Reader and StreamTransfer in 
