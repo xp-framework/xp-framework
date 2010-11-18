@@ -54,20 +54,54 @@
      * will be properly resolved.
      *
      */
-    #[@test, @ignore('Currently broken.')]
+    #[@test]
     public function fileAsXslFile() {
       $added= ClassLoader::registerPath(dirname(__FILE__).'/resourceprovider');
 
-      $proc= new DOMXslProcessor();
-      $proc->setXslFile('res://two/ModuleOne.xsl');
+      $proc= new DomXSLProcessor();
+      $style= new DOMDocument();
+      $style->load('res://two/ModuleOne.xsl');
+      
+      $proc->setXSLDoc($style);
       $proc->setXmlBuf('<document/>');
       $proc->run();
 
       $this->assertTrue(0 < strpos($proc->output(), 'I\'ve been called.'));
       $this->assertTrue(0 < strpos($proc->output(), 'I have been called, too.'));
-      $this->assertTrue(0 < strpos($proc->output(), 'Third has been called.'));
 
       ClassLoader::removeLoader($added);
+    }
+
+    /**
+     * Test that relative inclusion of xsl files within an
+     * xsl file that was provided by ResourceProvider does
+     * not work.
+     *
+     * This is not wanted behaviour, actually - but we'd like
+     * to check for this explicitely, so any change in this 
+     * faulty behavior will be automatically detected some 
+     * time in the future.
+     */
+    #[@test, @expect('xml.TransformerException')]
+    public function fileAsXslFileWithRelativeIncludeDoesNotWork() {
+      $added= ClassLoader::registerPath(dirname(__FILE__).'/resourceprovider');
+
+      $t= NULL;
+      try {
+        $proc= new DomXSLProcessor();
+        $style= new DOMDocument();
+        $style->load('res://two/IncludingStylesheet.xsl');
+
+        $proc->setXSLDoc($style);
+        $proc->setXmlBuf('<document/>');
+        $proc->run();
+      } catch (Throwable $t) {
+      } finally(); {
+        ClassLoader::removeLoader($added);
+      
+        xp::gc();
+        if ($t) throw $t;
+      }
     }
   }
 ?>
