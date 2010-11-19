@@ -17,8 +17,7 @@
    * @purpose  Testcase
    */
   class JsonDecoderTest extends TestCase {
-    protected
-      $decoder  = NULL;
+    protected $decoder= NULL;
         
     /**
      * Setup text fixture
@@ -135,32 +134,90 @@
         'foobar',
         $this->decoder->decode('"foobar"')
       );
+    }
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeStringWithQuotes() {
       $this->assertEquals(
         'foo\\bar',
         $this->decoder->decode('"foo\\\\bar"')
       );
+    }
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeStringWithQuotedDelimiter() {
       $this->assertEquals(
         'foo"bar',
         $this->decoder->decode('"foo\\"bar"')
       );
+    }
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeStringWithQuotedQuotes() {
       $this->assertEquals(
         'foobar\"',
         $this->decoder->decode('"foobar\\\\\""')
       );
+
+    }
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeStringWithTabEscape() {
       $this->assertEquals(
         "foobar\t",
         $this->decoder->decode('"foobar\\t"')
       );
+    }
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeStringWithTabsAndQuotes() {
       $this->assertEquals(
         'foobar'."\t".'\"',
         $this->decoder->decode('"foobar\\t\\\\\""')
       );
-      
-      // Real life example
+    }
+
+    /**
+     * Test string decoding - Real life example
+     *
+     */
+    #[@test]
+    public function decodeStringWithHTML() {
       $this->assertEquals(
         "\nbbb ".'<span style="font-weight: bold;">tes</span>t " test'."\n",
         $this->decoder->decode('"\nbbb <span style=\"font-weight: bold;\">tes</span>t \" test\n"')
       );
+    }
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeLongString() {
+      with ($data= str_repeat('*', 6100)); {
+        $this->assertEquals(strlen($data), strlen($this->decoder->decode('"'.$data.'"')), 'Decoded length mismatch');
+      }
     }
     
     /**

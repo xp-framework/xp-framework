@@ -55,6 +55,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed webservices.json.JsonDecoder when decoding overly long strings
+  (friebe, Mihai Ghigea)
 - Fixed possible fatal error in lang.ChainedException common stack trace
   elements' calculation
   (friebe)
