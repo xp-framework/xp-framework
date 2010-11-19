@@ -327,11 +327,11 @@
      * @throws  webservices.json.JsonException if the string could not be parsed
      */
     protected function _readString() {
+      $ret= new String();
       do {
         $initpos= $this->stream->tell();
         $offset= 0;
         $str= $this->stream->read();
-        $ret= new String();
       
         $esc= FALSE;
         $tokenizer= new StringTokenizer($str, '\"', TRUE);
