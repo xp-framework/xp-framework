@@ -9,6 +9,7 @@
   /**
    * Optimizer API
    *
+   * @test    xp://net.xp_lang.tests.optimization.OptimizationsTest
    */
   class Optimizations extends Object {
     protected $impl= NULL;
@@ -28,6 +29,14 @@
      */
     public function add(Optimization $impl) {
       $this->impl[$impl->node()]= $impl;
+    }
+
+    /**
+     * Clear all implementations
+     *
+     */
+    public function clear() {
+      $this->impl->clear();
     }
     
     /**
