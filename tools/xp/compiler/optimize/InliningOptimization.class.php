@@ -24,6 +24,7 @@
         public function __construct($replacements) {
           $this->replacements= $replacements;
         }
+
         protected function visitVariable(VariableNode $node) {
           return isset($this->replacements[$node->name])
             ? $this->replacements[$node->name]
@@ -71,6 +72,7 @@
         }
       }
       
+      // Not inlineable
       return $call;
     }
   }
