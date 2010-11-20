@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'xp.compiler.ast.StringNode',
-    'xp.compiler.optimize.Optimizations'
+    'xp.compiler.optimize.Optimizations',
+    'xp.compiler.types.MethodScope'
   );
 
   /**
@@ -24,7 +25,7 @@
           return XPClass::forName("xp.compiler.ast.StringNode"); 
         }
 
-        public function optimize(xp·compiler·ast·Node $in, Optimizations $optimizations) {
+        public function optimize(xp·compiler·ast·Node $in, Scope $scope, Optimizations $optimizations) {
           return new StringNode("Optimized: ".$in->value);
         }
       }');
@@ -36,6 +37,7 @@
      */
     public function setUp() {
       $this->fixture= new Optimizations();
+      $this->scope= new MethodScope();
     }
     
     /**
@@ -46,7 +48,7 @@
     public function withoutOptimization() {
       $this->assertEquals(
         new StringNode('Test'), 
-        $this->fixture->optimize(new StringNode('Test'))
+        $this->fixture->optimize(new StringNode('Test'), $this->scope)
       );
     }
     
@@ -59,7 +61,7 @@
       $this->fixture->add(self::$optimization);
       $this->assertEquals(
         new StringNode('Optimized: Test'), 
-        $this->fixture->optimize(new StringNode('Test'))
+        $this->fixture->optimize(new StringNode('Test'), $this->scope)
       );
     }
 
@@ -73,7 +75,7 @@
       $this->fixture->clear();
       $this->assertEquals(
         new StringNode('Test'), 
-        $this->fixture->optimize(new StringNode('Test'))
+        $this->fixture->optimize(new StringNode('Test'), $this->scope)
       );
     }
   }

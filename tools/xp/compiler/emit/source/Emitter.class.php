@@ -2268,7 +2268,7 @@
      * @return  int
      */
     protected function emitOne($op, $in) {
-      $node= $this->optimizations->optimize($in);
+      $node= $this->optimizations->optimize($in, $this->scope[0]);
 
       $op->position($node->position);
       $this->cat && $this->cat->debugf(

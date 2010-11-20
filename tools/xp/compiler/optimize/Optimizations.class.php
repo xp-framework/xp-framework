@@ -43,14 +43,15 @@
      * Optimize a given node
      *
      * @param   xp.compiler.ast.Node in
+     * @param   xp.compiler.types.Scope scope
      * @param   xp.compiler.ast.Node optimized
      */
-    public function optimize(xp·compiler·ast·Node $in) {
+    public function optimize(xp·compiler·ast·Node $in, Scope $scope) {
       $key= $in->getClass();
       if (!$this->impl->containsKey($key)) {
         return $in;
       } else {
-        return $this->impl[$key]->optimize($in, $this);
+        return $this->impl[$key]->optimize($in, $scope, $this);
       }
     }
     

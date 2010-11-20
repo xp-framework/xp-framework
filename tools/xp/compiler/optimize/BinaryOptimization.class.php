@@ -226,13 +226,14 @@
      * Optimize a given node
      *
      * @param   xp.compiler.ast.Node in
+     * @param   xp.compiler.types.Scope scope
      * @param   xp.compiler.optimize.Optimizations optimizations
      * @param   xp.compiler.ast.Node optimized
      */
-    public function optimize(xp·compiler·ast·Node $in, Optimizations $optimizations) {
+    public function optimize(xp·compiler·ast·Node $in, Scope $scope, Optimizations $optimizations) {
       if (isset(self::$optimizable[$in->op])) {
-        $lhs= $optimizations->optimize($this->unwrap($in->lhs));
-        $rhs= $optimizations->optimize($this->unwrap($in->rhs));
+        $lhs= $optimizations->optimize($this->unwrap($in->lhs), $scope);
+        $rhs= $optimizations->optimize($this->unwrap($in->rhs), $scope);
 
         if ($lhs instanceof Resolveable && $rhs instanceof Resolveable) {
           try {
