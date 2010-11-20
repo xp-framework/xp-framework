@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('util.log.Appender');
+  uses('util.log.Appender', 'util.cmd.Console');
 
   /**
    * Appender which appends data to console. The data goes to STDERR.
@@ -13,10 +13,19 @@
    * so using this class will have no effect - have a look at the
    * SyslogAppender or FileAppender classes instead.
    *
-   * @see      xp://util.log.Appender
-   * @purpose  Appender
+   * @test    xp://net.xp_framework.unittest.logging.ConsoleAppenderTest
+   * @see     xp://util.log.Appender
    */  
   class ConsoleAppender extends Appender {
+    protected $writer= NULL;
+  
+    /**
+     * Constructor
+     *
+     */
+    public function __construct() {
+      $this->writer= Console::$err;
+    }
     
     /**
      * Append data
@@ -24,7 +33,7 @@
      * @param   util.log.LoggingEvent event
      */ 
     public function append(LoggingEvent $event) {
-      fwrite(STDERR, $this->layout->format($event));
+      $this->writer->write($this->layout->format($event));
     }
   }
 ?>

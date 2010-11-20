@@ -9,6 +9,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed util.log.ConsoleAppender to use util.cmd.Console class instead
+  of directly writing to STDERR
+  (friebe)
 - Added keys() and values() methods to util.collections.Map
   (friebe)
 - Set client charset in rdbms.sybase.SybaseConnection to iso_1
