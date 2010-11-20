@@ -14,7 +14,7 @@
    *
    * @see   xp://xp.compiler.optimize.InliningOptimization
    */
-  class InlineMethodCallsOptimization extends InliningOptimization {
+  class InlineMethodCalls extends InliningOptimization {
     
     /**
      * Return node this optimization works on
