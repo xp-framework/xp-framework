@@ -38,7 +38,7 @@
    *     Adds path to source path (source path will equal classpath initially)
    *   </li>
    *   <li>-e [emitter]: 
-   *     Use emitter, one of "oel" or "source", defaults to "source"
+   *     Use emitter, defaults to "source"
    *   </li>
    *   <li>-o [outputdir]: 
    *     Writed compiled files to outputdir (will be created if not existant)
