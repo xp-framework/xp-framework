@@ -69,7 +69,6 @@
       $this->scope= new MethodScope();
       $this->scope->declarations[0]= $class;
       $this->scope->setType(new VariableNode('this'), $class->name);
-      $this->scope->addResolved($class->name->name, $declaration);
       $this->scope->addResolved('self', $declaration);
     }
     
