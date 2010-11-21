@@ -1228,9 +1228,9 @@
         '%'   => 'mod',
       );
       
-      $this->enter(new MethodScope());
-      $return= $this->resolveType($operator->returns);
       $name= 'operator··'.$ovl[$operator->symbol];
+      $this->enter(new MethodScope($name));
+      $return= $this->resolveType($operator->returns);
       $this->metadata[0][1][$name]= array(
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $return->name(),
@@ -1455,7 +1455,7 @@
       $op->append(' function '.$method->name);
       
       // Begin
-      $this->enter(new MethodScope());
+      $this->enter(new MethodScope($method->name));
       if (!Modifiers::isStatic($method->modifiers)) {
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
       }
@@ -1531,7 +1531,7 @@
       $op->append(' function __construct');
       
       // Begin
-      $this->enter(new MethodScope());
+      $this->enter(new MethodScope('__construct'));
       $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
 
       $this->metadata[0][1]['__construct']= array(
@@ -1691,7 +1691,7 @@
       $auto= array();
       if (!empty($properties['get'])) {
         $op->append('function __get($'.$mangled.') {');
-        $this->enter(new MethodScope());
+        $this->enter(new MethodScope('__get'));
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         foreach ($properties['get'] as $name => $definition) {
           $op->append('if (\''.$name.'\' === $'.$mangled.') {');
@@ -1708,7 +1708,7 @@
       }
       if (!empty($properties['set'])) {
         $op->append('function __set($'.$mangled.', $value) {');
-        $this->enter(new MethodScope());
+        $this->enter(new MethodScope('__set'));
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         foreach ($properties['set'] as $name => $definition) {
           $this->scope[0]->setType(new VariableNode('value'), $definition[0]);
