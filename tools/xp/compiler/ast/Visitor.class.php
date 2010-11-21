@@ -654,7 +654,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitSwitch(SwitchNode $node) {
-      $this->vistOne($node->expression);
+      $this->visitOne($node->expression);
       $node->cases= $this->visitAll($node->cases);
       return $node;
     }
@@ -665,9 +665,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitTernary(TernaryNode $node) {
-      $this->vistOne($node->condition);
-      $this->vistOne($node->expression ? $node->expression : $node->condition);
-      $this->vistOne($node->conditional);
+      $this->visitOne($node->condition);
+      $this->visitOne($node->expression ? $node->expression : $node->condition);
+      $this->visitOne($node->conditional);
       return $node;
     }
 
