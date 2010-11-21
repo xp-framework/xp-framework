@@ -199,5 +199,56 @@
         ))))
       );
     }
+
+    /**
+     * Test recursion is not optimized
+     * <code>
+     *   inline T inc(T $x) { return $this.inc($x); }
+     * </code>
+     */
+    #[@test]
+    public function recursionsNotOptimized() {
+      $call= new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a')));
+      $this->assertEquals(
+        $call,
+        $this->optimize($call, array(new MethodNode(array(
+          'modifiers'   => MODIFIER_INLINE,
+          'name'        => 'inc',
+          'parameters'  => array(array('name' => 'x')),
+          'body'        => array(
+            new ReturnNode(
+              new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('x')))
+            )
+          )
+        ))))
+      );
+    }
+
+    /**
+     * Test recursion is optimized recursively
+     * <code>
+     *   inline T inc(T $x) { return $x + $this.inc($x); }
+     *
+     *   $a= $this.inc($a);       // Original
+     *   $a= $a + $this.inc($a);  // Optimized
+     * </code>
+     */
+    #[@test]
+    public function recursionsNotOptimizedRecursively() {
+      $call= new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a')));
+      $this->assertEquals(
+        new BinaryOpNode(array('lhs' => new VariableNode('a'), 'rhs' => $call, 'op' => '+')),
+        $this->optimize($call, array(new MethodNode(array(
+          'modifiers'   => MODIFIER_INLINE,
+          'name'        => 'inc',
+          'parameters'  => array(array('name' => 'x')),
+          'body'        => array(
+            new ReturnNode(
+              new BinaryOpNode(array('lhs' => new VariableNode('x'), 'rhs' => new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('x'))), 'op' => '+'))
+            )
+          )
+        ))))
+      );
+    }
   }
 ?>

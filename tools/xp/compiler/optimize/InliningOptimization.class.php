@@ -20,6 +20,7 @@
    */
   abstract class InliningOptimization extends Object implements Optimization {
     protected static $rewriter= NULL;
+    protected $protect= array();
     
     static function __static() {
       self::$rewriter= ClassLoader::defineClass('InliningOptimization··Rewriter', 'xp.compiler.ast.Visitor', array(), '{
@@ -58,6 +59,11 @@
      * @return  xp.compiler.ast.Node inlined
      */
     public function inline($call, $scope, $optimizations) {
+      $key= $scope->declarations[0]->name->compoundName().$call->name;
+      if (isset($this->protect[$key])) {
+        // DEBUG Console::writeLine('**Recursion** Not inlining ', $key, ' from inside ', $scope->getClassName().'::'.$scope->name, ': ', $this->protect);
+        return $call;
+      }
       
       // Find candidate and rewrite body. 
       foreach ($scope->declarations[0]->body as $member) {
@@ -72,7 +78,11 @@
           foreach ($member->parameters as $i => $parameter) {
             $replacements[$parameter['name']]= $call->arguments[$i];
           }
-          return $optimizations->optimize(self::$rewriter->newInstance($replacements)->visitOne($member->body[0]->expression), $scope);
+          
+          // DEBUG Console::writeLine('Inlining ', $key, ' from inside ', $scope->getClassName().'::'.$scope->name);
+          $this->protect[$key]= TRUE;
+          $call= $optimizations->optimize(self::$rewriter->newInstance($replacements)->visitOne($member->body[0]->expression), $scope);
+          unset($this->protect[$key]);
         }
       }
       
