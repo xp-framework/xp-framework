@@ -38,34 +38,10 @@
       $this->fixture->add(new InlineStaticMethodCalls());
       
       // Declare class
-      $class= new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Test'), NULL, array(), array(
-      
-        // inline T tinc(T $in) { return ++$in; }
-        new MethodNode(array(
-          'modifiers'   => MODIFIER_INLINE,
-          'name'        => 'tinc',
-          'parameters'  => array(array('name' => 'in')),
-          'body'        => array(
-            new ReturnNode(
-              new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
-            )
-          )
-        )),
-
-        // static inline T sinc(T $in) { return ++$in; }
-        new MethodNode(array(
-          'modifiers'   => MODIFIER_INLINE | MODIFIER_STATIC,
-          'name'        => 'sinc',
-          'parameters'  => array(array('name' => 'in')),
-          'body'        => array(
-            new ReturnNode(
-              new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
-            )
-          )
-        ))
-      ));
+      $class= new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Test'), NULL, array(), array());
       $declaration= new TypeDeclaration(new ParseTree('', array(), $class));
       
+      // Declare scope and inject resolved types
       $this->scope= new MethodScope();
       $this->scope->declarations[0]= $class;
       $this->scope->setType(new VariableNode('this'), $class->name);
@@ -73,28 +49,102 @@
     }
     
     /**
-     * Test 
+     * Wrapper around fixture's optimize() method
+     *
+     * @param   xp.compiler.ast.Node call
+     * @param   xp.compiler.ast.MethodNode declaration
+     * @return  xp.compiler.ast.Node
+     */
+    public function optimize($call, MethodNode $declaration) {
+      $this->scope->declarations[0]->body= array($declaration);
+      return $this->fixture->optimize($call, $this->scope);
+    }
+    
+    /**
+     * Test instance methods
      *
      */
     #[@test]
     public function oneLineInstanceMethod() {
-      $call= new MethodCallNode(new VariableNode('this'), 'tinc', array(new VariableNode('a')));
+      $call= new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a')));
       $this->assertEquals(
         new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('a'))), 
-        $this->fixture->optimize($call, $this->scope)
+        $this->optimize($call, new MethodNode(array(
+          'modifiers'   => MODIFIER_INLINE,
+          'name'        => 'inc',
+          'parameters'  => array(array('name' => 'in')),
+          'body'        => array(
+            new ReturnNode(
+              new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
+            )
+          )
+        )))
       );
     }
 
     /**
-     * Test 
+     * Test instance methods
+     *
+     */
+    #[@test]
+    public function noInstanceMethodOptimizationWithoutInlineFlag() {
+      $call= new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a')));
+      $this->assertEquals(
+        $call, 
+        $this->optimize($call, new MethodNode(array(
+          'modifiers'   => 0,
+          'name'        => 'inc',
+          'parameters'  => array(array('name' => 'in')),
+          'body'        => array(
+            new ReturnNode(
+              new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
+            )
+          )
+        )))
+      );
+    }
+
+    /**
+     * Test static methods
      *
      */
     #[@test]
     public function oneLineStaticMethod() {
-      $call= new StaticMethodCallNode(new TypeName('self'), 'sinc', array(new VariableNode('a')));
+      $call= new StaticMethodCallNode(new TypeName('self'), 'inc', array(new VariableNode('a')));
       $this->assertEquals(
         new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('a'))), 
-        $this->fixture->optimize($call, $this->scope)
+        $this->optimize($call, new MethodNode(array(
+          'modifiers'   => MODIFIER_INLINE | MODIFIER_STATIC,
+          'name'        => 'inc',
+          'parameters'  => array(array('name' => 'in')),
+          'body'        => array(
+            new ReturnNode(
+              new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
+            )
+          )
+        )))
+      );
+    }
+
+    /**
+     * Test instance methods
+     *
+     */
+    #[@test]
+    public function noStaticMethodOptimizationWithoutInlineFlag() {
+      $call= new StaticMethodCallNode(new TypeName('self'), 'inc', array(new VariableNode('a')));
+      $this->assertEquals(
+        $call, 
+        $this->optimize($call, new MethodNode(array(
+          'modifiers'   => MODIFIER_STATIC,
+          'name'        => 'inc',
+          'parameters'  => array(array('name' => 'in')),
+          'body'        => array(
+            new ReturnNode(
+              new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
+            )
+          )
+        )))
       );
     }
   }
