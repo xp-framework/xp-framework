@@ -15,6 +15,7 @@
    * </code>
    *
    * @see   http://en.wikipedia.org/wiki/Inline_expansion
+   * @see   xp://xp.compiler.checks.IsInlineable
    * @test  xp://net.xp_lang.tests.optimization.InliningOptimizationTest
    */
   abstract class InliningOptimization extends Object implements Optimization {
