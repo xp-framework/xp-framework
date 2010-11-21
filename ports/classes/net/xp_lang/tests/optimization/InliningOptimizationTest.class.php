@@ -27,6 +27,7 @@
    */
   class InliningOptimizationTest extends TestCase {
     protected $fixture = NULL;
+    protected $scope = NULL;
   
     /**
      * Sets up test case
