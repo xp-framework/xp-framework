@@ -56,11 +56,11 @@
      * Wrapper around fixture's optimize() method
      *
      * @param   xp.compiler.ast.Node call
-     * @param   xp.compiler.ast.MethodNode declaration
+     * @param   xp.compiler.ast.MethodNode[] declarations
      * @return  xp.compiler.ast.Node
      */
-    public function optimize($call, MethodNode $declaration) {
-      $this->scope->declarations[0]->body= array($declaration);
+    protected function optimize($call, $declarations) {
+      $this->scope->declarations[0]->body= $declarations;
       return $this->fixture->optimize($call, $this->scope);
     }
     
@@ -73,7 +73,7 @@
       $call= new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a')));
       $this->assertEquals(
         new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('a'))), 
-        $this->optimize($call, new MethodNode(array(
+        $this->optimize($call, array(new MethodNode(array(
           'modifiers'   => MODIFIER_INLINE,
           'name'        => 'inc',
           'parameters'  => array(array('name' => 'in')),
@@ -82,7 +82,7 @@
               new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
             )
           )
-        )))
+        ))))
       );
     }
 
@@ -95,7 +95,7 @@
       $call= new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a')));
       $this->assertEquals(
         $call, 
-        $this->optimize($call, new MethodNode(array(
+        $this->optimize($call, array(new MethodNode(array(
           'modifiers'   => 0,
           'name'        => 'inc',
           'parameters'  => array(array('name' => 'in')),
@@ -104,7 +104,7 @@
               new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
             )
           )
-        )))
+        ))))
       );
     }
 
@@ -117,7 +117,7 @@
       $call= new StaticMethodCallNode(new TypeName('self'), 'inc', array(new VariableNode('a')));
       $this->assertEquals(
         new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('a'))), 
-        $this->optimize($call, new MethodNode(array(
+        $this->optimize($call, array(new MethodNode(array(
           'modifiers'   => MODIFIER_INLINE | MODIFIER_STATIC,
           'name'        => 'inc',
           'parameters'  => array(array('name' => 'in')),
@@ -126,7 +126,7 @@
               new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
             )
           )
-        )))
+        ))))
       );
     }
 
@@ -139,7 +139,7 @@
       $call= new StaticMethodCallNode(new TypeName('self'), 'inc', array(new VariableNode('a')));
       $this->assertEquals(
         $call, 
-        $this->optimize($call, new MethodNode(array(
+        $this->optimize($call, array(new MethodNode(array(
           'modifiers'   => MODIFIER_STATIC,
           'name'        => 'inc',
           'parameters'  => array(array('name' => 'in')),
@@ -148,7 +148,7 @@
               new UnaryOpNode(array('op' => '++', 'postfix' => FALSE, 'expression' => new VariableNode('in')))
             )
           )
-        )))
+        ))))
       );
     }
 
@@ -163,7 +163,7 @@
       $call= new MethodCallNode(new VariableNode('this'), 'add', array(new VariableNode('a'), new VariableNode('b')));
       $this->assertEquals(
         new BinaryOpNode(array('lhs' => new VariableNode('a'), 'rhs' => new VariableNode('b'), 'op' => '+')), 
-        $this->optimize($call, new MethodNode(array(
+        $this->optimize($call, array(new MethodNode(array(
           'modifiers'   => MODIFIER_INLINE,
           'name'        => 'add',
           'parameters'  => array(array('name' => 'x'), array('name' => 'y')),
@@ -172,7 +172,7 @@
               new BinaryOpNode(array('lhs' => new VariableNode('x'), 'rhs' => new VariableNode('y'), 'op' => '+'))
             )
           )
-        )))
+        ))))
       );
     }
 
@@ -187,7 +187,7 @@
       $call= new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a')));
       $this->assertEquals(
         new BinaryOpNode(array('lhs' => new VariableNode('a'), 'rhs' => new MemberAccessNode(new VariableNode('this'), 'step'), 'op' => '+')), 
-        $this->optimize($call, new MethodNode(array(
+        $this->optimize($call, array(new MethodNode(array(
           'modifiers'   => MODIFIER_INLINE,
           'name'        => 'inc',
           'parameters'  => array(array('name' => 'x')),
@@ -196,7 +196,7 @@
               new BinaryOpNode(array('lhs' => new VariableNode('x'), 'rhs' => new MemberAccessNode(new VariableNode('this'), 'step'), 'op' => '+'))
             )
           )
-        )))
+        ))))
       );
     }
   }
