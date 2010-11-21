@@ -104,6 +104,9 @@ Features
   (friebe)
 - Added values() method to util.collections.HashTable
   (friebe)
+- Implemented automatic encoding detection in io.stream.TextReader when
+  NULL was given as encoding, based on BOM of stream
+  (friebe, kiesel)
 - Added support for multiple cookies in unittest.web.WebTestCase
   (kiesel, Felix Stahlberg)
 - Added support for multiple header values to peer.http.HttpRequest
