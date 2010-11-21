@@ -12,6 +12,16 @@
    * @see     xp://xp.compiler.Scope
    */
   class MethodScope extends Scope {
+    public $name= NULL;
   
+    /**
+     * Constructor
+     *
+     * @param   string name
+     */
+    public function __construct($name= NULL) {
+      $this->name= $name;
+      parent::__construct();
+    }
   }
 ?>
