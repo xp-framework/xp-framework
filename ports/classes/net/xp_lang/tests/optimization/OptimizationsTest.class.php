@@ -18,6 +18,8 @@
    */
   class OptimizationsTest extends TestCase {
     protected static $optimization;
+    protected $fixture= NULL;
+    protected $scope= NULL;
     
     static function __static() {
       self::$optimization= newinstance('xp.compiler.optimize.Optimization', array(), '{
