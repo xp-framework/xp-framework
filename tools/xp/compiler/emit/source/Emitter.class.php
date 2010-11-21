@@ -2281,7 +2281,7 @@
       try {
         $this->checks->verify($node, $this->scope[0], $this) && call_user_func(array($this, 'emit'.substr(get_class($node), 0, -4)), $op, $node);
       } catch (Error $e) {
-        $this->error('0422', 'Cannot emit '.$node->getClassName(), $node);
+        $this->error('0422', 'Cannot emit '.$node->getClassName().': '.$e->getMessage(), $node);
         return 0;
       } catch (Throwable $e) {
         $this->error('0500', $e->toString(), $node);
