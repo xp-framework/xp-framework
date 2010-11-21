@@ -187,6 +187,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitCatch(CatchNode $node) {
+      $node->variable= $this->visitOne($node->variable);
       $node->statements= $this->visitAll($node->statements);
       return $node;
     }

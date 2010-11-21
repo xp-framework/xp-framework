@@ -105,20 +105,6 @@
     }
 
     /**
-     * Test visitTernary()
-     *
-     */
-    #[@test]
-    public function visitTernary() {
-      $node= new TernaryNode(array(
-        'condition'   => new VariableNode('a'), 
-        'expression'  => new VariableNode('a'), 
-        'conditional' => new VariableNode('b')
-      ));
-      $this->assertVisited(array($node, $node->condition, $node->expression, $node->conditional), $node);
-    }
-
-    /**
      * Test visitAssignment()
      *
      */
@@ -191,6 +177,62 @@
         'statements' => array(new VariableNode('a'), new BreakNode())
       ));
       $this->assertVisited(array($node, $node->expression, $node->statements[0], $node->statements[1]), $node);
+    }
+
+    /**
+     * Test visitCast()
+     *
+     */
+    #[@test]
+    public function visitCast() {
+      $node= new CastNode(array(
+        'expression' => new VariableNode('a'), 
+        'type'       => new TypeName('int'),
+        'check'      => TRUE
+      ));
+      $this->assertVisited(array($node, $node->expression), $node);
+    }
+
+    /**
+     * Test visitCatch()
+     *
+     */
+    #[@test]
+    public function visitCatch() {
+      $node= new CatchNode(array(
+        'type'       => new TypeName('int'),
+        'variable'   => new VariableNode('a'), 
+        'statements' => array(new VariableNode('a'), new BreakNode())
+      ));
+      $this->assertVisited(array($node, $node->variable, $node->statements[0], $node->statements[1]), $node);
+    }
+
+    /**
+     * Test visitCatch()
+     *
+     */
+    #[@test]
+    public function visitCatchWithEmptyStatements() {
+      $node= new CatchNode(array(
+        'type'       => new TypeName('int'),
+        'variable'   => new VariableNode('a'), 
+        'statements' => array()
+      ));
+      $this->assertVisited(array($node, $node->variable), $node);
+    }
+
+    /**
+     * Test visitTernary()
+     *
+     */
+    #[@test]
+    public function visitTernary() {
+      $node= new TernaryNode(array(
+        'condition'   => new VariableNode('a'), 
+        'expression'  => new VariableNode('a'), 
+        'conditional' => new VariableNode('b')
+      ));
+      $this->assertVisited(array($node, $node->condition, $node->expression, $node->conditional), $node);
     }
 
     /**
