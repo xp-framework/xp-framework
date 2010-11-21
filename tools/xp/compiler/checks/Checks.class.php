@@ -10,6 +10,7 @@
    * Compiler checks
    *
    * @see   xp://xp.compiler.checks.Check
+   * @test  xp://net.xp_lang.tests.checks.ChecksTest
    */
   class Checks extends Object {
     protected $impl= NULL;
