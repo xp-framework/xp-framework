@@ -13,6 +13,9 @@
    * <code>
    *   T() { return [EXPR]; } 
    * </code>
+   *
+   * @see   http://en.wikipedia.org/wiki/Inline_expansion
+   * @test  xp://net.xp_lang.tests.optimization.InliningOptimizationTest
    */
   abstract class InliningOptimization extends Object implements Optimization {
     protected static $rewriter= NULL;
