@@ -13,6 +13,7 @@
     'xp.compiler.ast.MemberAccessNode',
     'xp.compiler.ast.StaticMemberAccessNode',
     'xp.compiler.ast.BinaryOpNode',
+    'xp.compiler.ast.UnaryOpNode',
     'xp.compiler.types.MethodScope'
   );
 
@@ -331,6 +332,60 @@
         'variable'   => new VariableNode('a'), 
         'op'         => '=', 
         'expression' => new BinaryOpNode(array('lhs' => new VariableNode('b'), 'op' => '+', 'rhs' => new VariableNode('a')))
+      ));
+      $this->assertEquals($assignment, $this->optimize($assignment));
+    }
+
+    /**
+     * Test $a-= -$b; is optimized to $a+= $b;
+     *
+     */
+    #[@test]
+    public function minusAssignAndUnaryMinus() {
+      $this->assertEquals(
+        new AssignmentNode(array(
+          'variable'   => new VariableNode('a'), 
+          'op'         => '+=', 
+          'expression' => new VariableNode('b')
+        )),
+        $this->optimize(new AssignmentNode(array(
+          'variable'   => new VariableNode('a'), 
+          'op'         => '-=', 
+          'expression' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new VariableNode('b')))
+        )))
+      );
+    }
+
+    /**
+     * Test $a+= -$b; is optimized to $a-= $b;
+     *
+     */
+    #[@test]
+    public function plusAssignAndUnaryMinus() {
+      $this->assertEquals(
+        new AssignmentNode(array(
+          'variable'   => new VariableNode('a'), 
+          'op'         => '-=', 
+          'expression' => new VariableNode('b')
+        )),
+        $this->optimize(new AssignmentNode(array(
+          'variable'   => new VariableNode('a'), 
+          'op'         => '+=', 
+          'expression' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new VariableNode('b')))
+        )))
+      );
+    }
+
+    /**
+     * Test $a+= -$b; is optimized to $a-= $b;
+     *
+     */
+    #[@test]
+    public function timesAssignAndUnaryMinusNotOptimized() {
+      $assignment= new AssignmentNode(array(
+        'variable'   => new VariableNode('a'), 
+        'op'         => '*=', 
+        'expression' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new VariableNode('b')))
       ));
       $this->assertEquals($assignment, $this->optimize($assignment));
     }

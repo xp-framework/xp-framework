@@ -11,6 +11,7 @@
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.DecimalNode',
     'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.VariableNode',
     'xp.compiler.types.MethodScope'
   );
 
@@ -367,6 +368,78 @@
         'rhs' => new IntegerNode('3'), 
         'op'  => '*'
       )), $this->scope));
+    }
+
+    /**
+     * Test a + -b
+     *
+     */
+    #[@test]
+    public function plusMinus() {
+      $this->assertEquals(
+        new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new VariableNode('b'),
+          'op'  => '-'
+        )),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new VariableNode('b'))),
+          'op'  => '+'
+        )), $this->scope)
+      );
+    }
+
+    /**
+     * Test 1 + -2
+     *
+     */
+    #[@test]
+    public function plusMinusEvaluated() {
+      $this->assertEquals(
+        new IntegerNode(-1),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new IntegerNode('1'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new IntegerNode('2'))),
+          'op'  => '+'
+        )), $this->scope)
+      );
+    }
+
+    /**
+     * Test a - -b
+     *
+     */
+    #[@test]
+    public function minusMinus() {
+      $this->assertEquals(
+        new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new VariableNode('b'),
+          'op'  => '+'
+        )),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new VariableNode('b'))),
+          'op'  => '-'
+        )), $this->scope)
+      );
+    }
+
+    /**
+     * Test 1 - -2
+     *
+     */
+    #[@test]
+    public function minusMinusEvaluated() {
+      $this->assertEquals(
+        new IntegerNode(3),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new IntegerNode('1'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new IntegerNode('2'))),
+          'op'  => '-'
+        )), $this->scope)
+      );
     }
   }
 ?>

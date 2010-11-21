@@ -7,11 +7,12 @@
   uses(
     'xp.compiler.ast.AssignmentNode',
     'xp.compiler.ast.BinaryOpNode',
+    'xp.compiler.ast.UnaryOpNode',
     'xp.compiler.optimize.Optimization'
   );
 
   /**
-   * Optimizes assignments to binary operations where the lef-hand side
+   * Optimizes assignments to binary operations where the left-hand side
    * is the variable to be assigned to to assignment shorthands, e.g.
    * 
    * <code>
@@ -35,6 +36,10 @@
       '|'   => '|=',
       '^'   => '^='
     );      
+    protected static $switch= array(
+      '-='  => '+=',
+      '+='  => '-='
+    );
 
     /**
      * Return node this optimization works on
@@ -57,17 +62,30 @@
       $assign= cast($in, 'xp.compiler.ast.AssignmentNode');
       $assign->expression= $optimizations->optimize($assign->expression, $scope);
 
-      // Optimize $a= $a+ <expr> to $a+= <expr> and 
-      // $this.a= $this.a+ <expr> to $this.a+= <expr>
+      // Optimize "<var>= <var>+ <expr>" to "<var>+= <expr>"
       if (
         $assign->expression instanceof BinaryOpNode && 
         isset(self::$optimizable[$assign->expression->op]) &&
         $assign->variable->equals($assign->expression->lhs)
       ) {
-        return new AssignmentNode(array(
+        $assign= new AssignmentNode(array(
           'variable'   => $assign->variable,
           'expression' => $assign->expression->rhs,
           'op'         => self::$optimizable[$assign->expression->op]
+        ));
+      }
+      
+      // Optimize "<var>-= -<expr>" to "<var>+= <expr>"
+      // Optimize "<var>+= -<expr>" to "<var>-= <expr>"
+      if (
+        $assign->expression instanceof UnaryOpNode &&
+        '-' === $assign->expression->op &&
+        isset(self::$switch[$assign->op])
+      ) {
+        $assign= new AssignmentNode(array(
+          'variable'   => $assign->variable,
+          'expression' => $assign->expression->expression,
+          'op'         => self::$switch[$assign->op]
         ));
       }
 
