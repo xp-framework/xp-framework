@@ -119,6 +119,81 @@
     }
 
     /**
+     * Test visitAssignment()
+     *
+     */
+    #[@test]
+    public function visitAssignment() {
+      $node= new AssignmentNode(array(
+        'variable'   => new VariableNode('a'), 
+        'expression' => new IntegerNode(0), 
+        'op'         => '='
+      ));
+      $this->assertVisited(array($node, $node->variable, $node->expression), $node);
+    }
+
+    /**
+     * Test visitBinaryOp()
+     *
+     */
+    #[@test]
+    public function visitBinaryOp() {
+      $node= new BinaryOpNode(array(
+        'lhs' => new VariableNode('a'), 
+        'rhs' => new IntegerNode(0), 
+        'op'  => '+'
+      ));
+      $this->assertVisited(array($node, $node->lhs, $node->rhs), $node);
+    }
+
+    /**
+     * Test visitBoolean()
+     *
+     */
+    #[@test]
+    public function visitBoolean() {
+      $node= new BooleanNode(TRUE);
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitBooleanOp()
+     *
+     */
+    #[@test]
+    public function visitBooleanOp() {
+      $node= new BooleanOpNode(array(
+        'lhs' => new VariableNode('a'), 
+        'rhs' => new IntegerNode(0), 
+        'op'  => '&&'
+      ));
+      $this->assertVisited(array($node, $node->lhs, $node->rhs), $node);
+    }
+
+    /**
+     * Test visitBreak()
+     *
+     */
+    #[@test]
+    public function visitBreak() {
+      $node= new BreakNode();
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitCase()
+     *
+     */
+    #[@test]
+    public function visitCase() {
+      $node= new CaseNode(array(
+        'expression' => new IntegerNode(0), 
+        'statements' => array(new VariableNode('a'), new BreakNode())
+      ));
+      $this->assertVisited(array($node, $node->expression, $node->statements[0], $node->statements[1]), $node);
+    }
+
+    /**
      * Test visitTernary()
      *
      */
