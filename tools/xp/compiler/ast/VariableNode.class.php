@@ -11,8 +11,7 @@
    *
    */
   class VariableNode extends xp·compiler·ast·Node {
-    public
-      $name    = '';
+    public $name= '';
     
     /**
      * Constructor
@@ -30,6 +29,16 @@
      */
     public function hashCode() {
       return '$'.$this->name;
+    }
+
+    /**
+     * Returns whether another object equals this.
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->name === $cmp->name;
     }
   }
 ?>
