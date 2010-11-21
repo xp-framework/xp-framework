@@ -100,6 +100,51 @@
     }
 
     /**
+     * Test add() and verify()
+     *
+     */
+    #[@test]
+    public function withWarningAndErrorChecks() {
+      $this->fixture->add(self::$check, FALSE);
+      $this->fixture->add(self::$check, TRUE);
+      $this->assertFalse($this->fixture->verify(new StringNode('Test'), $this->scope, $this));
+      $this->assertEquals(
+        array(array('warning', 'C100', 'Test'), array('error', 'C100', 'Test')), 
+        $this->messages
+      );
+    }
+
+    /**
+     * Test add() and verify()
+     *
+     */
+    #[@test]
+    public function withTwoWarningChecks() {
+      $this->fixture->add(self::$check, FALSE);
+      $this->fixture->add(self::$check, FALSE);
+      $this->assertTrue($this->fixture->verify(new StringNode('Test'), $this->scope, $this));
+      $this->assertEquals(
+        array(array('warning', 'C100', 'Test'), array('warning', 'C100', 'Test')), 
+        $this->messages
+      );
+    }
+
+    /**
+     * Test add() and verify()
+     *
+     */
+    #[@test]
+    public function withTwoErrorsChecks() {
+      $this->fixture->add(self::$check, TRUE);
+      $this->fixture->add(self::$check, TRUE);
+      $this->assertFalse($this->fixture->verify(new StringNode('Test'), $this->scope, $this));
+      $this->assertEquals(
+        array(array('error', 'C100', 'Test'), array('error', 'C100', 'Test')), 
+        $this->messages
+      );
+    }
+    
+    /**
      * Test clear() and verify()
      *
      */
