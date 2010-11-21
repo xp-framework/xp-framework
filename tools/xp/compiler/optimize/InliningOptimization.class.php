@@ -83,6 +83,7 @@
           $this->protect[$key]= TRUE;
           $call= $optimizations->optimize(self::$rewriter->newInstance($replacements)->visitOne(clone $member->body[0]->expression), $scope);
           unset($this->protect[$key]);
+          break;
         }
       }
       
