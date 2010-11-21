@@ -74,6 +74,7 @@
   /**
    * Visits a parse tree
    *
+   * @test    xp://net.xp_lang.tests.VisitorTest
    */
   abstract class Visitor extends Object {
 
@@ -93,7 +94,8 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitArrayAccess(ArrayAccessNode $node) {
-      $node->offset= $this->visitOne($node->offset);
+      $node->target= $this->visitOne($node->target);
+      $node->offset && $node->offset= $this->visitOne($node->offset);
       return $node;
     }
 
@@ -654,7 +656,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitSwitch(SwitchNode $node) {
-      $this->visitOne($node->expression);
+      $node->expression= $this->visitOne($node->expression);
       $node->cases= $this->visitAll($node->cases);
       return $node;
     }
@@ -665,9 +667,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitTernary(TernaryNode $node) {
-      $this->visitOne($node->condition);
-      $this->visitOne($node->expression ? $node->expression : $node->condition);
-      $this->visitOne($node->conditional);
+      $node->condition= $this->visitOne($node->condition);
+      $node->expression && $node->expression= $this->visitOne($node->expression);
+      $node->conditional= $this->visitOne($node->conditional);
       return $node;
     }
 
