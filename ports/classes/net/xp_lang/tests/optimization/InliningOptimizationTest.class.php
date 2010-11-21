@@ -40,13 +40,12 @@
       
       // Declare class
       $class= new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('Test'), NULL, array(), array());
-      $declaration= new TypeDeclaration(new ParseTree('', array(), $class));
       
       // Declare scope and inject resolved types
       $this->scope= new MethodScope();
       $this->scope->declarations[0]= $class;
       $this->scope->setType(new VariableNode('this'), $class->name);
-      $this->scope->addResolved('self', $declaration);
+      $this->scope->addResolved('self', new TypeDeclaration(new ParseTree('', array(), $class)));
     }
     
     /**
