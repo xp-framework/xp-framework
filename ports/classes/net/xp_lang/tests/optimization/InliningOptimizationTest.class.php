@@ -128,7 +128,7 @@
     }
 
     /**
-     * Test instance methods
+     * Test static methods
      *
      */
     #[@test]
