@@ -250,5 +250,67 @@
         ))))
       );
     }
+ 
+    /**
+     * Test recursion is optimized recursively
+     * <code>
+     *   inline T add(T $x, T $y) { return $x + $y; }
+     *   inline T inc(T $m) { return $this.add($m, $this.step); }
+     *   inline T dec(T $m) { return $this.add($m, -$this.step); }
+     *
+     *   $a= $this.inc($a);       // Original
+     *   $a= $a + $this.step;     // Optimized
+     * </code>
+     */
+    #[@test]
+    public function cascadedInlining() {
+      $member= new MemberAccessNode(new VariableNode('this'), 'step');
+      $unary= new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => $member));
+      $decl= array(
+        new MethodNode(array(
+          'modifiers'   => MODIFIER_INLINE,
+          'name'        => 'add',
+          'parameters'  => array(array('name' => 'x'), array('name' => 'y')),
+          'body'        => array(
+            new ReturnNode(
+              new BinaryOpNode(array('lhs' => new VariableNode('x'), 'rhs' => new VariableNode('y'), 'op' => '+'))
+            )
+          )
+        )),   
+        new MethodNode(array(
+          'modifiers'   => MODIFIER_INLINE,
+          'name'        => 'inc',
+          'parameters'  => array(array('name' => 'm')),
+          'body'        => array(
+            new ReturnNode(new MethodCallNode(new VariableNode('this'), 'add', array(
+              new VariableNode('m'), 
+              $member
+            )))
+          )
+        )),   
+        new MethodNode(array(
+          'modifiers'   => MODIFIER_INLINE,
+          'name'        => 'dec',
+          'parameters'  => array(array('name' => 'm')),
+          'body'        => array(
+            new ReturnNode(new MethodCallNode(new VariableNode('this'), 'add', array(
+              new VariableNode('m'), 
+              $unary
+            )))
+          )
+        )),   
+      );
+
+      $this->assertEquals(
+        new BinaryOpNode(array('lhs' => new VariableNode('a'), 'rhs' => $member, 'op' => '+')),
+        $this->optimize(new MethodCallNode(new VariableNode('this'), 'inc', array(new VariableNode('a'))), $decl),
+        'inc'
+      );
+      $this->assertEquals(
+        new BinaryOpNode(array('lhs' => new VariableNode('a'), 'rhs' => $unary, 'op' => '+')),
+        $this->optimize(new MethodCallNode(new VariableNode('this'), 'dec', array(new VariableNode('a'))), $decl),
+        'dec'
+      );
+    }
   }
 ?>
