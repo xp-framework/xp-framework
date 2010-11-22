@@ -1300,24 +1300,40 @@
     #[@test]
     public function renameVariables() {
       $visitor= newinstance('xp.compiler.ast.Visitor', array(), '{
-        public $rename= array();
-        protected function visitVariable(VariableNode $var) {
-          return isset($this->rename[$var->name]) ? $this->rename[$var->name] : $var;
+        protected $replacements;
+
+        public function __construct() {
+          $this->replacements= array("number" => new VariableNode("n"));
+        }
+        
+        protected function visitMethod(MethodNode $node) {
+          foreach ($node->parameters as $i => $parameter) {
+            if (isset($this->replacements[$parameter["name"]])) {
+              $node->parameters[$i]["name"]= $this->replacements[$parameter["name"]]->name;
+            }
+          }
+          return parent::visitMethod($node);
+        }
+
+        protected function visitVariable(VariableNode $node) {
+          return isset($this->replacements[$node->name])
+            ? $this->replacements[$node->name]
+            : $node
+          ;
         }
       }');
-      $visitor->rename['b']= new MemberAccessNode(new VariableNode('this'), 'b');
       
       $this->assertEquals(
-        new BinaryOpNode(array(
-          'lhs' => new VariableNode('a'), 
-          'rhs' => $visitor->rename['b'], 
-          'op'  => '+'
-        )),
-        $visitor->visitOne(new BinaryOpNode(array(
-          'lhs' => new VariableNode('a'), 
-          'rhs' => new VariableNode('b'), 
-          'op'  => '+'
-        )))
+        $this->parse('class Fibonacci {
+          public int fib(int $n) {
+            return $n < 2 ? 1 : self::fib($n - 2) + self::fib($n - 1);
+          }
+        }'),
+        $visitor->visitOne($this->parse('class Fibonacci {
+          public int fib(int $number) {
+            return $number < 2 ? 1 : self::fib($number - 2) + self::fib($number - 1);
+          }
+        }'))
       );
     }
   }
