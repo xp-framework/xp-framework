@@ -24,6 +24,7 @@
     'xp.compiler.ast.InstanceCreationNode',
     'xp.compiler.ast.VariableNode',
     'xp.compiler.ast.ArrayAccessNode',
+    'xp.compiler.ast.ArmNode',
     'xp.compiler.ast.CastNode',
     'xp.compiler.ast.TryNode',
     'xp.compiler.ast.CatchNode',
@@ -86,6 +87,18 @@
      */
     protected function visitAnnotation(AnnotationNode $node) {
       $node->parameters= $this->visitAll($node->parameters);
+      return $node;
+    }
+
+    /**
+     * Visit an ARM block
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitArm(ArmNode $node) {
+      $node->initializations= $this->visitAll($node->initializations);
+      $node->variables= $this->visitAll($node->variables);
+      $node->statements= $this->visitAll($node->statements);
       return $node;
     }
 

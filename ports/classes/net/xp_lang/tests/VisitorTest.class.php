@@ -65,6 +65,23 @@
     }
 
     /**
+     * Test visitArm()
+     *
+     */
+    #[@test]
+    public function visitArm() {
+      $node= new ArmNode(
+        array(),
+        array(new VariableNode('in'), new VariableNode('out')),
+        array(new ReturnNode())
+      );
+      $this->assertVisited(
+        array($node, $node->variables[0], $node->variables[1], $node->statements[0]), 
+        $node
+      );
+    }
+
+    /**
      * Test visitArrayAccess()
      *
      */
