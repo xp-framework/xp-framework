@@ -10,6 +10,8 @@
    * Optimizer API
    *
    * @test    xp://net.xp_lang.tests.optimization.OptimizationsTest
+   * @see     http://www.compileroptimizations.com/
+   * @see     http://en.wikipedia.org/wiki/Compiler_optimization
    */
   class Optimizations extends Object {
     protected $impl= NULL;
