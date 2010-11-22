@@ -1275,5 +1275,33 @@
       
       $this->assertEquals(array('a', 'b'), array_keys($visitor->variables));
     }
+
+    /**
+     * Test renaming variables
+     *
+     */
+    #[@test]
+    public function renameVariables() {
+      $visitor= newinstance('xp.compiler.ast.Visitor', array(), '{
+        public $rename= array();
+        protected function visitVariable(VariableNode $var) {
+          return isset($this->rename[$var->name]) ? $this->rename[$var->name] : $var;
+        }
+      }');
+      $visitor->rename['b']= new MemberAccessNode(new VariableNode('this'), 'b');
+      
+      $this->assertEquals(
+        new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'), 
+          'rhs' => $visitor->rename['b'], 
+          'op'  => '+'
+        )),
+        $visitor->visitOne(new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'), 
+          'rhs' => new VariableNode('b'), 
+          'op'  => '+'
+        )))
+      );
+    }
   }
 ?>
