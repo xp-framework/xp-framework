@@ -615,7 +615,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitProperty(PropertyNode $node) {
-      $node->handlers= $this->visitAll($node->handlers);
+      foreach ($node->handlers as $name => $statements) {
+        $statements && $node->handlers[$name]= $this->visitAll($statements);
+      }
       return $node;
     }
 

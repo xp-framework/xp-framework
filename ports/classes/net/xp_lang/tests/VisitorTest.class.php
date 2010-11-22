@@ -852,6 +852,154 @@
         $node
       );
     }
+
+    /**
+     * Test visitMethod()
+     *
+     */
+    #[@test]
+    public function visitMethod() {
+      $node= new MethodNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'name'       => 'equals',
+        'returns'    => new TypeName('bool'),
+        'parameters' => array(array(
+          'name'  => 'cmp',
+          'type'  => new TypeName('Generic'),
+          'check' => FALSE
+        )),
+        'throws'     => NULL,
+        'body'       => array(new ReturnNode()),
+        'extension'  => NULL
+      ));
+      $this->assertVisited(array($node, $node->body[0]), $node);
+    }
+
+    /**
+     * Test visitMethod()
+     *
+     */
+    #[@test]
+    public function visitMethodWithEmptyBody() {
+      $node= new MethodNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'name'       => 'equals',
+        'returns'    => new TypeName('bool'),
+        'parameters' => array(array(
+          'name'  => 'cmp',
+          'type'  => new TypeName('Generic'),
+          'check' => FALSE
+        )),
+        'throws'     => NULL,
+        'body'       => array(),
+        'extension'  => NULL
+      ));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitNativeImport()
+     *
+     */
+    #[@test]
+    public function visitNativeImport() {
+      $node= new NativeImportNode(array('name' => 'pcre.*'));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitNoop()
+     *
+     */
+    #[@test]
+    public function visitNoop() {
+      $node= new NoopNode();
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitNull()
+     *
+     */
+    #[@test]
+    public function visitNull() {
+      $node= new NullNode();
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitOperator()
+     *
+     */
+    #[@test]
+    public function visitOperator() {
+      $node= new OperatorNode(array(
+        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations'=> NULL,
+        'name'       => '',
+        'symbol'     => '~',
+        'returns'    => new TypeName('self'),
+        'parameters' => array(
+          array('name' => 'self', 'type' => new TypeName('self'), 'check' => TRUE),
+          array('name' => 'arg', 'type' => TypeName::$VAR, 'check' => TRUE),
+        ),
+        'throws'     => NULL,
+        'body'       => array(new ReturnNode()),
+      ));
+      $this->assertVisited(array($node, $node->body[0]), $node);
+    }
+
+    /**
+     * Test visitOperator()
+     *
+     */
+    #[@test]
+    public function visitOperatorWithEmptyBody() {
+      $node= new OperatorNode(array(
+        'modifiers'  => MODIFIER_PUBLIC | MODIFIER_STATIC,
+        'annotations'=> NULL,
+        'name'       => '',
+        'symbol'     => '~',
+        'returns'    => new TypeName('self'),
+        'parameters' => array(
+          array('name' => 'self', 'type' => new TypeName('self'), 'check' => TRUE),
+          array('name' => 'arg', 'type' => TypeName::$VAR, 'check' => TRUE),
+        ),
+        'throws'     => NULL,
+        'body'       => array()
+      ));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitPackage()
+     *
+     */
+    #[@test]
+    public function visitPackage() {
+      $node= new PackageNode(array('name' => 'com.example.*'));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitProperty()
+     *
+     */
+    #[@test]
+    public function visitProperty() {
+      $node= new PropertyNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'type'       => new TypeName('string'),
+        'name'       => 'name',
+        'handlers'   => array(
+          'get' => array(new ReturnNode())
+        )
+      ));
+      $this->assertVisited(array($node, $node->handlers['get'][0]), $node);
+    }
    
     /**
      * Test visitTernary()
