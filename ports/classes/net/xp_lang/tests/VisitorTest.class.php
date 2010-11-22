@@ -269,6 +269,16 @@
     }
 
     /**
+     * Test visitMethodCall()
+     *
+     */
+    #[@test]
+    public function visitMethodCallWithNullArgumentList() {
+      $node= new MethodCallNode(new VariableNode('this'), 'method', NULL); 
+      $this->assertVisited(array($node, $node->target), $node);
+    }
+
+    /**
      * Test visitInstanceCall()
      *
      */
@@ -285,6 +295,16 @@
     #[@test]
     public function visitInstanceCallWithEmptyArgumentList() {
       $node= new InstanceCallNode(new VariableNode('this'), array()); 
+      $this->assertVisited(array($node, $node->target), $node);
+    }
+
+    /**
+     * Test visitInstanceCall()
+     *
+     */
+    #[@test]
+    public function visitInstanceCallWithNullArgumentList() {
+      $node= new InstanceCallNode(new VariableNode('this'), NULL); 
       $this->assertVisited(array($node, $node->target), $node);
     }
 
@@ -315,6 +335,16 @@
     #[@test]
     public function visitStaticMethodCallWithEmptyArgumentList() {
       $node= new StaticMethodCallNode(new TypeName('self'), 'method', array()); 
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitStaticMethodCall()
+     *
+     */
+    #[@test]
+    public function visitStaticMethodCallWithNullArgumentList() {
+      $node= new StaticMethodCallNode(new TypeName('self'), 'method', NULL); 
       $this->assertVisited(array($node), $node);
     }
 

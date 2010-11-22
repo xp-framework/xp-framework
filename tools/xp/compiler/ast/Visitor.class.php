@@ -223,7 +223,7 @@
      */
     protected function visitMethodCall(MethodCallNode $node) {
       $node->target= $this->visitOne($node->target);
-      $node->arguments= $this->visitAll($node->arguments);
+      $node->arguments && $node->arguments= $this->visitAll($node->arguments);
       return $node;
     }
 
@@ -234,7 +234,7 @@
      */
     protected function visitInstanceCall(InstanceCallNode $node) {
       $node->target= $this->visitOne($node->target);
-      $node->arguments= $this->visitAll($node->arguments);
+      $node->arguments && $node->arguments= $this->visitAll($node->arguments);
       return $node;
     }
 
@@ -253,7 +253,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitStaticMethodCall(StaticMethodCallNode $node) {
-      $node->arguments= $this->visitAll($node->arguments);
+      $node->arguments && $node->arguments= $this->visitAll($node->arguments);
       return $node;
     }
 
