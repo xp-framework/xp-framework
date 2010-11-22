@@ -188,10 +188,10 @@
 
       // Separate runner options from class options
       for ($offset= 0, $i= 0; $i < $params->count; $i++) {
-        if ('-c' === $params->list[$i]) {
+        if ('-c' == $params->list[$i]) {
           $pm->configure($params->list[$i+ 1]);
           $offset+= 2; $i++;
-        } else if ('-cp' === $params->list[$i]) {
+        } else if ('-cp' == $params->list[$i]) {
           foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
             ClassLoader::registerPath($element, FALSE);
           }
