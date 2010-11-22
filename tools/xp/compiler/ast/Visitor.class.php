@@ -24,6 +24,7 @@
     'xp.compiler.ast.InstanceCreationNode',
     'xp.compiler.ast.VariableNode',
     'xp.compiler.ast.ArrayAccessNode',
+    'xp.compiler.ast.ArmNode',
     'xp.compiler.ast.CastNode',
     'xp.compiler.ast.TryNode',
     'xp.compiler.ast.CatchNode',
@@ -68,12 +69,14 @@
     'xp.compiler.ast.StaticInitializerNode',
     'xp.compiler.ast.LambdaNode',
     'xp.compiler.ast.WithNode',
+    'xp.compiler.ast.StatementsNode',
     'xp.compiler.ast.BracedExpressionNode'
   );
 
   /**
    * Visits a parse tree
    *
+   * @test    xp://net.xp_lang.tests.VisitorTest
    */
   abstract class Visitor extends Object {
 
@@ -88,12 +91,25 @@
     }
 
     /**
+     * Visit an ARM block
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitArm(ArmNode $node) {
+      $node->initializations= $this->visitAll($node->initializations);
+      $node->variables= $this->visitAll($node->variables);
+      $node->statements= $this->visitAll($node->statements);
+      return $node;
+    }
+
+    /**
      * Visit an array access
      *
      * @param   xp.compiler.ast.Node node
      */
     protected function visitArrayAccess(ArrayAccessNode $node) {
-      $node->offset= $this->visitOne($node->offset);
+      $node->target= $this->visitOne($node->target);
+      $node->offset && $node->offset= $this->visitOne($node->offset);
       return $node;
     }
 
@@ -185,6 +201,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitCatch(CatchNode $node) {
+      $node->variable= $this->visitOne($node->variable);
       $node->statements= $this->visitAll($node->statements);
       return $node;
     }
@@ -206,6 +223,7 @@
      */
     protected function visitMethodCall(MethodCallNode $node) {
       $node->target= $this->visitOne($node->target);
+      $node->arguments && $node->arguments= $this->visitAll($node->arguments);
       return $node;
     }
 
@@ -216,6 +234,7 @@
      */
     protected function visitInstanceCall(InstanceCallNode $node) {
       $node->target= $this->visitOne($node->target);
+      $node->arguments && $node->arguments= $this->visitAll($node->arguments);
       return $node;
     }
 
@@ -234,11 +253,12 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitStaticMethodCall(StaticMethodCallNode $node) {
+      $node->arguments && $node->arguments= $this->visitAll($node->arguments);
       return $node;
     }
 
     /**
-     * Visit member access
+     * Visit constant access
      *
      * @param   xp.compiler.ast.Node node
      */
@@ -247,11 +267,21 @@
     }
 
     /**
-     * Visit member access
+     * Visit class access
      *
      * @param   xp.compiler.ast.Node node
      */
     protected function visitClassAccess(ClassAccessNode $node) {
+      return $node;
+    }
+
+    /**
+     * Visit class constants
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitClassConstant(ClassConstantNode $node) {
+      $node->value= $this->visitOne($node->value);
       return $node;
     }
 
@@ -301,7 +331,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitConstructor(ConstructorNode $node) {
-      $this->visitAll((array)$declaration->body);
+      $this->visitAll((array)$node->body);
       return $node;
     }
 
@@ -360,7 +390,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitEnumMember(EnumMemberNode $node) {
-      $node->body= $this->visitAll($node->body);
+      $node->body && $node->body= $this->visitAll($node->body);
       return $node;
     }
 
@@ -403,7 +433,7 @@
       $node->initialization= $this->visitAll($node->initialization);
       $node->condition= $this->visitAll($node->condition);
       $node->loop= $this->visitAll($node->loop);
-      $node->statements= $this->visitAll($node->statements);
+      $node->statements && $node->statements= $this->visitAll($node->statements);
       return $node;
     }
 
@@ -413,11 +443,12 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitForeach(ForeachNode $node) {
+      $this->visitOne($node->expression);
       if (isset($node->assignment['key'])) {
         $node->assignment['key']= $this->visitOne(new VariableNode($node->assignment['key']))->name;
       }
       $node->assignment['value']= $this->visitOne(new VariableNode($node->assignment['value']))->name;
-      $node->statements= $this->visitAll($node->statements);
+      $node->statements && $node->statements= $this->visitAll($node->statements);
       return $node;
     }
 
@@ -437,7 +468,7 @@
      */
     protected function visitIf(IfNode $node) {
       $node->condition= $this->visitOne($node->condition);
-      $node->statements= $this->visitAll($node->statements);
+      $node->statements && $node->statements= $this->visitAll($node->statements);
       $node->otherwise && $node->otherwise= $this->visitOne($node->otherwise);
       return $node;
     }
@@ -457,7 +488,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitIndexer(IndexerNode $node) {
-      $node->handlers= $this->visitAll((array)$node->handlers);
+      foreach ($node->handlers as $name => $statements) {
+        $statements && $node->handlers[$name]= $this->visitAll($statements);
+      }
       return $node;
     }
 
@@ -468,6 +501,7 @@
      */
     protected function visitInstanceCreation(InstanceCreationNode $node) {
       $node->parameters= $this->visitAll((array)$node->parameters);
+      $node->body && $node->body= $this->visitAll((array)$node->body);
       return $node;
     }
 
@@ -506,7 +540,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitInvocation(InvocationNode $node) {
-      $node->parameters= $this->visitAll((array)$node->parameters);
+      $node->arguments= $this->visitAll((array)$node->arguments);
       return $node;
     }
 
@@ -527,7 +561,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitMap(MapNode $node) {
-      $node->elements= $this->visitAll($node->elements);
+      if ($node->elements) foreach ($node->elements as $i => $pair) {
+        $node->elements[$i]= $this->visitAll($pair);
+      }
       return $node;
     }
 
@@ -593,7 +629,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitProperty(PropertyNode $node) {
-      $node->handlers= $this->visitAll($node->handlers);
+      foreach ($node->handlers as $name => $statements) {
+        $statements && $node->handlers[$name]= $this->visitAll($statements);
+      }
       return $node;
     }
 
@@ -627,7 +665,7 @@
     }
 
     /**
-     * Visit a statements list
+     * Visit a static initializer
      *
      * @param   xp.compiler.ast.Node node
      */
@@ -651,7 +689,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitSwitch(SwitchNode $node) {
-      $this->vistOne($node->expression);
+      $node->expression= $this->visitOne($node->expression);
       $node->cases= $this->visitAll($node->cases);
       return $node;
     }
@@ -662,14 +700,14 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitTernary(TernaryNode $node) {
-      $this->vistOne($node->condition);
-      $this->vistOne($node->expression ? $node->expression : $node->condition);
-      $this->vistOne($node->conditional);
+      $node->condition= $this->visitOne($node->condition);
+      $node->expression && $node->expression= $this->visitOne($node->expression);
+      $node->conditional= $this->visitOne($node->conditional);
       return $node;
     }
 
     /**
-     * Visit a ternary operator
+     * Visit a throw statement
      *
      * @param   xp.compiler.ast.Node node
      */

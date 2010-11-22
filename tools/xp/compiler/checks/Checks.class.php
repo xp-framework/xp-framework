@@ -10,9 +10,18 @@
    * Compiler checks
    *
    * @see   xp://xp.compiler.checks.Check
+   * @test  xp://net.xp_lang.tests.checks.ChecksTest
    */
   class Checks extends Object {
-    protected $impl= array(FALSE => array(), TRUE => array());
+    protected $impl= NULL;
+    
+    /**
+     * Constructor.
+     *
+     */
+    public function __construct() {
+      $this->clear();
+    }
     
     /**
      * Add a check
@@ -22,6 +31,14 @@
      */
     public function add(Check $impl, $error) {
       $this->impl[$impl->defer()][]= array($impl->node(), $impl, $error);
+    }
+
+    /**
+     * Clear all implementations
+     *
+     */
+    public function clear() {
+      $this->impl= array(FALSE => array(), TRUE => array());
     }
 
     /**

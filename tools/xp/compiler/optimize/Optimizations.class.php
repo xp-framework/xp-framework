@@ -9,6 +9,9 @@
   /**
    * Optimizer API
    *
+   * @test    xp://net.xp_lang.tests.optimization.OptimizationsTest
+   * @see     http://www.compileroptimizations.com/
+   * @see     http://en.wikipedia.org/wiki/Compiler_optimization
    */
   class Optimizations extends Object {
     protected $impl= NULL;
@@ -29,19 +32,28 @@
     public function add(Optimization $impl) {
       $this->impl[$impl->node()]= $impl;
     }
+
+    /**
+     * Clear all implementations
+     *
+     */
+    public function clear() {
+      $this->impl->clear();
+    }
     
     /**
      * Optimize a given node
      *
      * @param   xp.compiler.ast.Node in
+     * @param   xp.compiler.types.Scope scope
      * @param   xp.compiler.ast.Node optimized
      */
-    public function optimize(xp·compiler·ast·Node $in) {
+    public function optimize(xp·compiler·ast·Node $in, Scope $scope) {
       $key= $in->getClass();
       if (!$this->impl->containsKey($key)) {
         return $in;
       } else {
-        return $this->impl[$key]->optimize($in, $this);
+        return $this->impl[$key]->optimize($in, $scope, $this);
       }
     }
     

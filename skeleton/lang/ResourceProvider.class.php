@@ -138,6 +138,27 @@
     public function stream_flush() {
       // NOOP
     }
+
+    /**
+     * Callback for fstat() requests
+     *
+     * @return  [:int]
+     */
+    public function stream_stat($path) {
+      return array(
+        'dev'   => 0,
+        'ino'   => 0,
+        'mode'  => 0444,
+        'nlink' => 0,
+        'uid'   => 1,
+        'gid'   => 1,
+        'rdev'  => 0,
+        'size'  => $this->resource->size(),
+        'atime' => 0,
+        'mtime' => 0,
+        'ctime' => 0,
+      );
+    }
     
     /**
      * Callback for stat() requests

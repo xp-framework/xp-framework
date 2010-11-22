@@ -34,6 +34,25 @@
       $this->optimizations= new Optimizations();
       $this->checks= new Checks();
     }
+    
+    /**
+     * Set profile
+     *
+     * @param   xp.compiler.CompilationProfile
+     */
+    public function setProfile(CompilationProfile $profile) {
+      $this->optimizations->clear();
+      $this->checks->clear();
+      foreach ($profile->warnings as $impl) {
+        $this->checks->add($impl);
+      }
+      foreach ($profile->errors as $impl) {
+        $this->checks->add($impl, TRUE);
+      }
+      foreach ($profile->optimizations as $impl) {
+        $this->optimizations->add($impl);
+      }
+    }
 
     /**
      * Adds an optimization

@@ -15,7 +15,8 @@
     'xp.compiler.ast.CatchNode',
     'xp.compiler.ast.ThrowNode',
     'xp.compiler.ast.FinallyNode',
-    'xp.compiler.types.TypeName'
+    'xp.compiler.types.TypeName',
+    'xp.compiler.types.MethodScope'
   );
 
   /**
@@ -33,6 +34,7 @@
     public function setUp() {
       $this->fixture= new Optimizations();
       $this->fixture->add(new TryOptimization());
+      $this->scope= new MethodScope();
     }
     
     /**
@@ -55,7 +57,7 @@
 
       $this->assertEquals(
         new StatementsNode($try->statements), 
-        $this->fixture->optimize($try)
+        $this->fixture->optimize($try, $this->scope)
       );
     }
 
@@ -78,7 +80,7 @@
 
       $this->assertEquals(
         new NoopNode(), 
-        $this->fixture->optimize($try)
+        $this->fixture->optimize($try, $this->scope)
       );
     }
 
@@ -100,7 +102,7 @@
 
       $this->assertEquals(
         new StatementsNode($try->handling[0]->statements), 
-        $this->fixture->optimize($try)
+        $this->fixture->optimize($try, $this->scope)
       );
     }
   }

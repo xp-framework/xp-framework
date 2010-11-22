@@ -10,7 +10,9 @@
     'xp.compiler.optimize.BinaryOptimization',
     'xp.compiler.ast.IntegerNode',
     'xp.compiler.ast.DecimalNode',
-    'xp.compiler.ast.StringNode'
+    'xp.compiler.ast.StringNode',
+    'xp.compiler.ast.VariableNode',
+    'xp.compiler.types.MethodScope'
   );
 
   /**
@@ -28,6 +30,7 @@
     public function setUp() {
       $this->fixture= new Optimizations();
       $this->fixture->add(new BinaryOptimization());
+      $this->scope= new MethodScope();
     }
     
     /**
@@ -40,7 +43,7 @@
         'lhs' => new IntegerNode('1'), 
         'rhs' => new IntegerNode('0'), 
         'op'  => '+'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -53,7 +56,7 @@
         'lhs' => new IntegerNode('1'), 
         'rhs' => new IntegerNode('2'), 
         'op'  => '-'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -66,7 +69,7 @@
         'lhs' => new IntegerNode('1'), 
         'rhs' => new IntegerNode('2'), 
         'op'  => '*'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -79,7 +82,7 @@
         'lhs' => new IntegerNode('4'), 
         'rhs' => new IntegerNode('2'), 
         'op'  => '/'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -92,7 +95,7 @@
         'lhs' => new IntegerNode('4'), 
         'rhs' => new IntegerNode('3'), 
         'op'  => '%'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -105,7 +108,7 @@
         'lhs' => new IntegerNode('4'), 
         'rhs' => new IntegerNode('1'), 
         'op'  => '>>'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -118,7 +121,7 @@
         'lhs' => new IntegerNode('4'), 
         'rhs' => new IntegerNode('3'), 
         'op'  => '<<'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -131,7 +134,7 @@
         'lhs' => new IntegerNode('4'), 
         'rhs' => new IntegerNode('1'), 
         'op'  => '|'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -144,7 +147,7 @@
         'lhs' => new IntegerNode('4'), 
         'rhs' => new IntegerNode('1'), 
         'op'  => '^'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -157,7 +160,7 @@
         'lhs' => new IntegerNode('4'), 
         'rhs' => new IntegerNode('1'), 
         'op'  => '&'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -170,7 +173,7 @@
         'lhs' => new DecimalNode(1.0), 
         'rhs' => new DecimalNode(0.0), 
         'op'  => '+'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -183,7 +186,7 @@
         'lhs' => new DecimalNode(1.0), 
         'rhs' => new DecimalNode(2.0), 
         'op'  => '-'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -196,7 +199,7 @@
         'lhs' => new DecimalNode(1.0), 
         'rhs' => new DecimalNode(2.0), 
         'op'  => '*'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -209,7 +212,7 @@
         'lhs' => new DecimalNode(4.0), 
         'rhs' => new DecimalNode(2.0), 
         'op'  => '/'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -222,7 +225,7 @@
         'lhs' => new IntegerNode('1'), 
         'rhs' => new DecimalNode(0.0), 
         'op'  => '+'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -235,7 +238,7 @@
         'lhs' => new IntegerNode('1'), 
         'rhs' => new DecimalNode(2.0), 
         'op'  => '-'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -248,7 +251,7 @@
         'lhs' => new IntegerNode('1'), 
         'rhs' => new DecimalNode(2.0), 
         'op'  => '*'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -261,7 +264,7 @@
         'lhs' => new IntegerNode(4), 
         'rhs' => new DecimalNode(2.0), 
         'op'  => '/'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -275,7 +278,7 @@
         'rhs' => new StringNode('b'), 
         'op'  => '+'
       ));
-      $this->assertEquals($o, $this->fixture->optimize($o));
+      $this->assertEquals($o, $this->fixture->optimize($o, $this->scope));
     }
 
     /**
@@ -289,7 +292,7 @@
         'rhs' => new StringNode('b'), 
         'op'  => '-'
       ));
-      $this->assertEquals($o, $this->fixture->optimize($o));
+      $this->assertEquals($o, $this->fixture->optimize($o, $this->scope));
     }
 
     /**
@@ -303,7 +306,7 @@
         'rhs' => new StringNode('b'), 
         'op'  => '*'
       ));
-      $this->assertEquals($o, $this->fixture->optimize($o));
+      $this->assertEquals($o, $this->fixture->optimize($o, $this->scope));
     }
 
     /**
@@ -317,7 +320,7 @@
         'rhs' => new StringNode('b'), 
         'op'  => '/'
       ));
-      $this->assertEquals($o, $this->fixture->optimize($o));
+      $this->assertEquals($o, $this->fixture->optimize($o, $this->scope));
     }
 
     /**
@@ -330,7 +333,7 @@
         'lhs' => new StringNode('Hello'), 
         'rhs' => new StringNode(' World'), 
         'op'  => '~'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -347,7 +350,7 @@
           'op'  => '*'
         )),
         'op'  => '+'
-      ))));
+      )), $this->scope));
     }
 
     /**
@@ -364,7 +367,79 @@
         ))),
         'rhs' => new IntegerNode('3'), 
         'op'  => '*'
-      ))));
+      )), $this->scope));
+    }
+
+    /**
+     * Test a + -b
+     *
+     */
+    #[@test]
+    public function plusMinus() {
+      $this->assertEquals(
+        new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new VariableNode('b'),
+          'op'  => '-'
+        )),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new VariableNode('b'))),
+          'op'  => '+'
+        )), $this->scope)
+      );
+    }
+
+    /**
+     * Test 1 + -2
+     *
+     */
+    #[@test]
+    public function plusMinusEvaluated() {
+      $this->assertEquals(
+        new IntegerNode(-1),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new IntegerNode('1'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new IntegerNode('2'))),
+          'op'  => '+'
+        )), $this->scope)
+      );
+    }
+
+    /**
+     * Test a - -b
+     *
+     */
+    #[@test]
+    public function minusMinus() {
+      $this->assertEquals(
+        new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new VariableNode('b'),
+          'op'  => '+'
+        )),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new VariableNode('a'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new VariableNode('b'))),
+          'op'  => '-'
+        )), $this->scope)
+      );
+    }
+
+    /**
+     * Test 1 - -2
+     *
+     */
+    #[@test]
+    public function minusMinusEvaluated() {
+      $this->assertEquals(
+        new IntegerNode(3),
+        $this->fixture->optimize(new BinaryOpNode(array(
+          'lhs' => new IntegerNode('1'),
+          'rhs' => new UnaryOpNode(array('op' => '-', 'postfix' => FALSE, 'expression' => new IntegerNode('2'))),
+          'op'  => '-'
+        )), $this->scope)
+      );
     }
   }
 ?>

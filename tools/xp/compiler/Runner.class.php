@@ -8,14 +8,17 @@
 
   uses(
     'io.File',
+    'util.Properties',
+    'lang.ResourceProvider',
     'xp.compiler.Compiler',
+    'xp.compiler.CompilationProfileReader',
     'xp.compiler.emit.source.Emitter',
     'xp.compiler.diagnostic.DefaultDiagnosticListener',
     'xp.compiler.diagnostic.VerboseDiagnosticListener',
     'xp.compiler.io.FileSource',
     'xp.compiler.io.FileManager',
     'util.log.Logger',
-    'util.log.LogAppender'
+    'util.log.ConsoleAppender'
   );
 
   /**
@@ -38,15 +41,13 @@
    *     Adds path to source path (source path will equal classpath initially)
    *   </li>
    *   <li>-e [emitter]: 
-   *     Use emitter, one of "oel" or "source", defaults to "source"
+   *     Use emitter, defaults to "source"
+   *   </li>
+   *   <li>-p [profile[,profile[,...]]]:
+   *     Use compiler profiles (defaults to ["default"]) - xp/compiler/{profile}.xcp.ini
    *   </li>
    *   <li>-o [outputdir]: 
    *     Writed compiled files to outputdir (will be created if not existant)
-   *   </li>
-   *   <li>-O [optimization[,optimization[...]]]: 
-   *     Load and install the given optimizations (each optimization may
-   *     be either a fully qualified class name or a package reference,
-   *     e.g. "xp.compiler.optimize.*")
    *   </li>
    *   <li>-t [level[,level[...]]]:
    *     Set trace level (all, none, info, warn, error, debug)
@@ -92,9 +93,8 @@
       $compiler= new Compiler();
       $manager= new FileManager();
       $manager->setSourcePaths(xp::$registry['classpath']);
+      $profiles= array('default');
       $emitter= 'source';
-      $optimization= 'xp.compiler.optimize.Optimization';
-      $optimizations= array();
       
       // Handle arguments
       $files= array();
@@ -113,34 +113,11 @@
           foreach (explode(',', $args[++$i]) as $level) {
             $levels |= LogLevel::named($level);
           }
-          $appender= newinstance('util.log.Appender', array(), '{
-            public function append(LoggingEvent $event) {
-              Console::$err->write($this->layout->format($event));
-            }
-          }');
-          $compiler->setTrace(Logger::getInstance()->getCategory()->withAppender($appender, $levels));
+          $compiler->setTrace(create(new LogCategory('xcc'))->withAppender(new ConsoleAppender(), $levels));
         } else if ('-e' === $args[$i]) {
           $emitter= $args[++$i];
-        } else if ('-O' === $args[$i]) {
-          foreach (explode(',', $args[++$i]) as $reference) {
-            if ($p= strpos($reference, '.*')) {
-              foreach (Package::forName(substr($reference, 0, $p))->getClasses() as $class) {
-                if (
-                  $class->isInterface() || 
-                  MODIFIER_PUBLIC != $class->getModifiers() || 
-                  !$class->isSubclassOf($optimization)
-                ) continue;
-                $optimizations[]= $class->newInstance();
-              }
-            } else {
-              $class= XPClass::forName($reference);
-              if (!$class->isSubclassOf($optimization)) {
-                Console::$err->writeLine('*** Class ', $class, ' is not an optimization, ignoring');
-              } else {
-                $optimizations[]= $class->newInstance();
-              }
-            }
-          }
+        } else if ('-p' === $args[$i]) {
+          $profiles= explode(',', $args[++$i]);
         } else if ('-o' === $args[$i]) {
           $output= $args[++$i];
           $folder= new Folder($output);
@@ -158,27 +135,18 @@
         exit(2);
       }
       
-      // Setup emitter and optimizations
+      // Setup emitter and load compiler profile configurations
       $emitter= Package::forName('xp.compiler.emit')->getPackage($emitter)->loadClass('Emitter')->newInstance();
-      foreach ($optimizations as $optimization) {
-        $emitter->addOptimization($optimization);
+      try {
+        $reader= new CompilationProfileReader();
+        foreach ($profiles as $configuration) {
+          $reader->addSource(new Properties('res://xp/compiler/'.$configuration.'.xcp.ini'));
+        }
+        $emitter->setProfile($reader->getProfile());
+      } catch (Throwable $e) {
+        Console::$err->writeLine('*** Cannot load profile configuration(s) '.implode(',', $profiles).': '.$e->getMessage());
+        exit(3);
       }
-
-      // Add errors
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.IsAssignable')->newInstance(), TRUE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.MemberRedeclarationCheck')->newInstance(), TRUE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.RoutinesVerification')->newInstance(), TRUE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.FieldsVerification')->newInstance(), TRUE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.ArmTypesAreCloseable')->newInstance(), TRUE);
-      
-      // Add warnings
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeHasDocumentation')->newInstance(), FALSE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.TypeMemberHasDocumentation')->newInstance(), FALSE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.ConstantsAreDiscouraged')->newInstance(), FALSE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.UninitializedVariables')->newInstance(), FALSE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.MethodCallVerification')->newInstance(), FALSE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.MemberAccessVerification')->newInstance(), FALSE);
-      $emitter->addCheck(XPClass::forName('xp.compiler.checks.ArrayAccessVerification')->newInstance(), FALSE);
       
       // Compile files
       $success= $compiler->compile($files, $listener, $manager, $emitter);

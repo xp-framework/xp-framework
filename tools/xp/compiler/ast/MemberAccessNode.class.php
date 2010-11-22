@@ -27,5 +27,28 @@
       $this->target= $target;
       $this->name= $name;
     }
+
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return '$'.$this->target->hashCode().'->'.$this->name;
+    }
+    
+    /**
+     * Returns whether another object equals this.
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return 
+        $cmp instanceof self && 
+        $this->target->equals($cmp->target) &&
+        $this->name === $cmp->name
+      ;
+    }
   }
 ?>

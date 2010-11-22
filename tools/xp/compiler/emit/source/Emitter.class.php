@@ -408,8 +408,7 @@
       
       // Check for extension methods
       $ptr= new TypeInstance($this->resolveType($this->scope[0]->typeOf($call->target)));
-      if ($this->scope[0]->hasExtension($ptr, $call->name)) {
-        $ext= $this->scope[0]->getExtension($ptr, $call->name);
+      if (NULL !== ($ext= $this->scope[0]->getExtension($ptr, $call->name))) {
         $op->insert($ext->holder->literal().'::'.$call->name.'(', $mark);
         if ($call->arguments) {
           $op->append(', ');
@@ -427,8 +426,12 @@
       // - new Date().toString() to create(new Date()).toString()
       // - (<expr>).toString to create(<expr>).toString()
       if (
-        $call->target instanceof InstanceCreationNode ||
-        $call->target instanceof BracedExpressionNode
+        !$call->target instanceof ArrayAccessNode && 
+        !$call->target instanceof MethodCallNode &&
+        !$call->target instanceof MemberAccessNode &&
+        !$call->target instanceof VariableNode &&
+        !$call->target instanceof StaticMemberAccessNode &&
+        !$call->target instanceof StaticMethodCallNode
       ) {
         $op->insert('create(', $mark);
         $op->append(')');
@@ -482,8 +485,12 @@
       // - new Person().name to create(new Person()).name
       // - (<expr>).name to create(<expr>).name
       if (
-        $access->target instanceof InstanceCreationNode ||
-        $access->target instanceof BracedExpressionNode
+        !$access->target instanceof ArrayAccessNode && 
+        !$access->target instanceof MethodCallNode &&
+        !$access->target instanceof MemberAccessNode &&
+        !$access->target instanceof VariableNode &&
+        !$access->target instanceof StaticMemberAccessNode &&
+        !$access->target instanceof StaticMethodCallNode
       ) {
         $op->insert('create(', $mark);
         $op->append(')');
@@ -1228,9 +1235,9 @@
         '%'   => 'mod',
       );
       
-      $this->enter(new MethodScope());
-      $return= $this->resolveType($operator->returns);
       $name= 'operator··'.$ovl[$operator->symbol];
+      $this->enter(new MethodScope($name));
+      $return= $this->resolveType($operator->returns);
       $this->metadata[0][1][$name]= array(
         DETAIL_ARGUMENTS    => array(),
         DETAIL_RETURNS      => $return->name(),
@@ -1455,7 +1462,7 @@
       $op->append(' function '.$method->name);
       
       // Begin
-      $this->enter(new MethodScope());
+      $this->enter(new MethodScope($method->name));
       if (!Modifiers::isStatic($method->modifiers)) {
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
       }
@@ -1531,7 +1538,7 @@
       $op->append(' function __construct');
       
       // Begin
-      $this->enter(new MethodScope());
+      $this->enter(new MethodScope('__construct'));
       $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
 
       $this->metadata[0][1]['__construct']= array(
@@ -1691,7 +1698,7 @@
       $auto= array();
       if (!empty($properties['get'])) {
         $op->append('function __get($'.$mangled.') {');
-        $this->enter(new MethodScope());
+        $this->enter(new MethodScope('__get'));
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         foreach ($properties['get'] as $name => $definition) {
           $op->append('if (\''.$name.'\' === $'.$mangled.') {');
@@ -1708,7 +1715,7 @@
       }
       if (!empty($properties['set'])) {
         $op->append('function __set($'.$mangled.', $value) {');
-        $this->enter(new MethodScope());
+        $this->enter(new MethodScope('__set'));
         $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
         foreach ($properties['set'] as $name => $definition) {
           $this->scope[0]->setType(new VariableNode('value'), $definition[0]);
@@ -2268,7 +2275,7 @@
      * @return  int
      */
     protected function emitOne($op, $in) {
-      $node= $this->optimizations->optimize($in);
+      $node= $this->optimizations->optimize($in, $this->scope[0]);
 
       $op->position($node->position);
       $this->cat && $this->cat->debugf(
@@ -2281,7 +2288,7 @@
       try {
         $this->checks->verify($node, $this->scope[0], $this) && call_user_func(array($this, 'emit'.substr(get_class($node), 0, -4)), $op, $node);
       } catch (Error $e) {
-        $this->error('0422', 'Cannot emit '.$node->getClassName(), $node);
+        $this->error('0422', 'Cannot emit '.$node->getClassName().': '.$e->getMessage(), $node);
         return 0;
       } catch (Throwable $e) {
         $this->error('0500', $e->toString(), $node);

@@ -12,6 +12,7 @@
     'xp.compiler.ast.NaturalNode',
     'xp.compiler.ast.Resolveable',
     'xp.compiler.ast.BinaryOpNode',
+    'xp.compiler.ast.UnaryOpNode',
     'xp.compiler.optimize.Optimization'
   );
 
@@ -35,6 +36,10 @@
       '|'   => 'or',
       '^'   => 'xor'
     );      
+    protected static $switch= array(
+      '-'   => '+',
+      '+'   => '-'
+    );
     
     /**
      * Evaluate concatenation
@@ -226,22 +231,29 @@
      * Optimize a given node
      *
      * @param   xp.compiler.ast.Node in
+     * @param   xp.compiler.types.Scope scope
      * @param   xp.compiler.optimize.Optimizations optimizations
      * @param   xp.compiler.ast.Node optimized
      */
-    public function optimize(xp·compiler·ast·Node $in, Optimizations $optimizations) {
-      if (isset(self::$optimizable[$in->op])) {
-        $lhs= $optimizations->optimize($this->unwrap($in->lhs));
-        $rhs= $optimizations->optimize($this->unwrap($in->rhs));
+    public function optimize(xp·compiler·ast·Node $in, Scope $scope, Optimizations $optimizations) {
+      if (!isset(self::$optimizable[$in->op])) return $in;
+      
+      $in->lhs= $optimizations->optimize($this->unwrap($in->lhs), $scope);
+      $in->rhs= $optimizations->optimize($this->unwrap($in->rhs), $scope);
 
-        if ($lhs instanceof Resolveable && $rhs instanceof Resolveable) {
-          try {
-            $r= call_user_func_array(array($this, 'eval'.self::$optimizable[$in->op]), array($lhs, $rhs));
-          } catch (XPException $e) {
-            $r= NULL;
-          }
-          if (NULL !== $r) return $r;
-        }
+      // Optimize "a + -b" to "a - b" and "a - -b" to "a + b"
+      if ($in->rhs instanceof UnaryOpNode && '-' === $in->rhs->op && isset(self::$switch[$in->op])) {
+        $in= new BinaryOpNode(array(
+          'lhs' => $in->lhs, 
+          'rhs' => $in->rhs->expression,
+          'op'  => self::$switch[$in->op]
+        ));
+      }
+
+      // Constant folding
+      if ($in->lhs instanceof Resolveable && $in->rhs instanceof Resolveable) {
+        $r= call_user_func_array(array($this, 'eval'.self::$optimizable[$in->op]), array($in->lhs, $in->rhs));
+        if (NULL !== $r) $in= $r;
       }
 
       return $in;
