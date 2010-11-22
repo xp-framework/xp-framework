@@ -103,16 +103,6 @@
     }
     
     /**
-     * Add an extension method
-     *
-     * @param   xp.compiler.types.Types type
-     * @param   xp.compiler.types.Method method
-     */
-    public function addExtension(Types $type, xp·compiler·types·Method $method) {
-      $this->extensions[$type->name().$method->name]= $method;
-    }
-    
-    /**
      * Add a type import
      *
      * @param   string import fully qualified class name
@@ -137,6 +127,16 @@
     }
 
     /**
+     * Add an extension method
+     *
+     * @param   xp.compiler.types.Types type
+     * @param   xp.compiler.types.Method method
+     */
+    public function addExtension(Types $type, xp·compiler·types·Method $method) {
+      $this->extensions[$type->name().$method->name]= $method;
+    }
+
+    /**
      * Add a package import
      *
      * @param   string import fully qualified package name
@@ -151,25 +151,6 @@
     }
     
     /**
-     * Helper method for hasExtension() and getExtension()
-     *
-     * @param   xp.compiler.types.Types type
-     * @param   string name method name
-     * @return  string
-     */
-    protected function lookupExtension(Types $type, $name) {
-
-      // Check parent chain
-      do {
-        $k= $type->name().$name;
-        if (isset($this->extensions[$k])) return $k;
-      } while ($type= $type->parent());
-      
-      // Nothing found
-      return NULL;
-    }
-    
-    /**
      * Return whether an extension method is available
      *
      * @param   xp.compiler.types.Types type
@@ -177,7 +158,7 @@
      * @return  bool
      */
     public function hasExtension(Types $type, $name) {
-      return NULL !== $this->lookupExtension($type, $name);
+      return NULL !== $this->getExtension($type, $name);
     }
 
     /**
@@ -188,11 +169,15 @@
      * @return  xp.compiler.types.Method
      */
     public function getExtension(Types $type, $name) {
-      if ($k= $this->lookupExtension($type, $name)) {
-        return $this->extensions[$k];
-      } else {
-        return NULL;
-      }
+
+      // Check parent chain
+      do {
+        $k= $type->name().$name;
+        if (isset($this->extensions[$k])) return $this->extensions[$k];
+      } while ($type= $type->parent());
+      
+      // Nothing found
+      return NULL;
     }
 
     /**

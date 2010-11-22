@@ -408,8 +408,7 @@
       
       // Check for extension methods
       $ptr= new TypeInstance($this->resolveType($this->scope[0]->typeOf($call->target)));
-      if ($this->scope[0]->hasExtension($ptr, $call->name)) {
-        $ext= $this->scope[0]->getExtension($ptr, $call->name);
+      if (NULL !== ($ext= $this->scope[0]->getExtension($ptr, $call->name))) {
         $op->insert($ext->holder->literal().'::'.$call->name.'(', $mark);
         if ($call->arguments) {
           $op->append(', ');
@@ -427,8 +426,12 @@
       // - new Date().toString() to create(new Date()).toString()
       // - (<expr>).toString to create(<expr>).toString()
       if (
-        $call->target instanceof InstanceCreationNode ||
-        $call->target instanceof BracedExpressionNode
+        !$call->target instanceof ArrayAccessNode && 
+        !$call->target instanceof MethodCallNode &&
+        !$call->target instanceof MemberAccessNode &&
+        !$call->target instanceof VariableNode &&
+        !$call->target instanceof StaticMemberAccessNode &&
+        !$call->target instanceof StaticMethodCallNode
       ) {
         $op->insert('create(', $mark);
         $op->append(')');
@@ -482,8 +485,12 @@
       // - new Person().name to create(new Person()).name
       // - (<expr>).name to create(<expr>).name
       if (
-        $access->target instanceof InstanceCreationNode ||
-        $access->target instanceof BracedExpressionNode
+        !$access->target instanceof ArrayAccessNode && 
+        !$access->target instanceof MethodCallNode &&
+        !$access->target instanceof MemberAccessNode &&
+        !$access->target instanceof VariableNode &&
+        !$access->target instanceof StaticMemberAccessNode &&
+        !$access->target instanceof StaticMethodCallNode
       ) {
         $op->insert('create(', $mark);
         $op->append(')');
