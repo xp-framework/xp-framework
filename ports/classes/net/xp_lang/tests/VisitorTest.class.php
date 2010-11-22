@@ -679,6 +679,52 @@
       $node= new ImportNode(array('name' => 'lang.types.String'));
       $this->assertVisited(array($node), $node);
     }
+
+    /**
+     * Test visitIndexer()
+     *
+     */
+    #[@test]
+    public function visitIndexer() {
+      $node= new IndexerNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'type'       => new TypeName('T'),
+        'parameter'  => array(
+          'name'  => 'offset',
+          'type'  => new TypeName('int'),
+          'check' => TRUE
+        ),
+        'handlers'   => array(
+          'get'   => array(new VariableNode('this')),
+          'set'   => array(new ReturnNode()),
+        )
+      ));
+      $this->assertVisited(array($node, $node->handlers['get'][0], $node->handlers['set'][0]), $node);
+    }
+
+    /**
+     * Test visitIndexer()
+     *
+     */
+    #[@test]
+    public function visitIndexerWithEmptyHandlerBodies() {
+      $node= new IndexerNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'type'       => new TypeName('T'),
+        'parameter'  => array(
+          'name'  => 'offset',
+          'type'  => new TypeName('int'),
+          'check' => TRUE
+        ),
+        'handlers'   => array(
+          'get'   => NULL,
+          'set'   => NULL
+        )
+      ));
+      $this->assertVisited(array($node), $node);
+    }
     
     /**
      * Test visitTernary()
