@@ -222,6 +222,190 @@
     }
 
     /**
+     * Test visitMemberAccess()
+     *
+     */
+    #[@test]
+    public function visitMemberAccess() {
+      $node= new MemberAccessNode(new VariableNode('this'), 'member'); 
+      $this->assertVisited(array($node, $node->target), $node);
+    }
+
+    /**
+     * Test visitMethodCall()
+     *
+     */
+    #[@test]
+    public function visitMethodCall() {
+      $node= new MethodCallNode(new VariableNode('this'), 'method', array(new VariableNode('a'))); 
+      $this->assertVisited(array($node, $node->target, $node->arguments[0]), $node);
+    }
+
+    /**
+     * Test visitMethodCall()
+     *
+     */
+    #[@test]
+    public function visitMethodCallWithEmptyArgumentList() {
+      $node= new MethodCallNode(new VariableNode('this'), 'method', array()); 
+      $this->assertVisited(array($node, $node->target), $node);
+    }
+
+    /**
+     * Test visitInstanceCall()
+     *
+     */
+    #[@test]
+    public function visitInstanceCall() {
+      $node= new InstanceCallNode(new VariableNode('this'), array(new VariableNode('a'))); 
+      $this->assertVisited(array($node, $node->target, $node->arguments[0]), $node);
+    }
+
+    /**
+     * Test visitInstanceCall()
+     *
+     */
+    #[@test]
+    public function visitInstanceCallWithEmptyArgumentList() {
+      $node= new InstanceCallNode(new VariableNode('this'), array()); 
+      $this->assertVisited(array($node, $node->target), $node);
+    }
+
+    /**
+     * Test visitStaticMemberAccess()
+     *
+     */
+    #[@test]
+    public function visitStaticMemberAccess() {
+      $node= new StaticMemberAccessNode(new TypeName('self'), 'member'); 
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitStaticMethodCall()
+     *
+     */
+    #[@test]
+    public function visitStaticMethodCall() {
+      $node= new StaticMethodCallNode(new TypeName('self'), 'method', array(new VariableNode('a'))); 
+      $this->assertVisited(array($node, $node->arguments[0]), $node);
+    }
+
+    /**
+     * Test visitStaticMethodCall()
+     *
+     */
+    #[@test]
+    public function visitStaticMethodCallWithEmptyArgumentList() {
+      $node= new StaticMethodCallNode(new TypeName('self'), 'method', array()); 
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitConstantAccess()
+     *
+     */
+    #[@test]
+    public function visitConstantAccess() {
+      $node= new ConstantAccessNode(new TypeName('self'), 'CONSTANT');
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitClassAccess()
+     *
+     */
+    #[@test]
+    public function visitClassAccess() {
+      $node= new ClassAccessNode(new TypeName('self'));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitClass()
+     *
+     */
+    #[@test]
+    public function visitClass() {
+      $node= new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('self'), NULL, array(), array(
+        new FieldNode(array('name' => 'type', 'modifiers' => MODIFIER_PUBLIC)),
+        new FieldNode(array('name' => 'name', 'modifiers' => MODIFIER_PUBLIC)),
+      ));
+      $this->assertVisited(array($node, $node->body[0], $node->body[1]), $node);
+    }
+
+    /**
+     * Test visitClass()
+     *
+     */
+    #[@test]
+    public function visitClassWithEmptyBody() {
+      $node= new ClassNode(MODIFIER_PUBLIC, array(), new TypeName('self'), NULL, array());
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitClone()
+     *
+     */
+    #[@test]
+    public function visitClone() {
+      $node= new CloneNode(new VariableNode('this')); 
+      $this->assertVisited(array($node, $node->expression), $node);
+    }
+
+    /**
+     * Test visitComparison()
+     *
+     */
+    #[@test]
+    public function visitComparison() {
+      $node= new ComparisonNode(array(
+        'lhs' => new VariableNode('a'), 
+        'rhs' => new IntegerNode(0), 
+        'op'  => '=='
+      ));
+      $this->assertVisited(array($node, $node->lhs, $node->rhs), $node);
+    }
+
+    /**
+     * Test visitConstant()
+     *
+     */
+    #[@test]
+    public function visitConstant() {
+      $node= new ConstantNode('STDERR');
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitConstructor()
+     *
+     */
+    #[@test]
+    public function visitConstructor() {
+      $node= new ConstructorNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'parameters' => NULL,
+        'throws'     => NULL,
+        'body'       => array(new VariableNode('a'), new ReturnNode()),
+        'extension'  => NULL
+      ));
+      $this->assertVisited(array($node, $node->body[0], $node->body[1]), $node);
+    }
+
+    /**
+     * Test visitContinue()
+     *
+     */
+    #[@test]
+    public function visitContinue() {
+      $node= new ContinueNode();
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
      * Test visitTernary()
      *
      */

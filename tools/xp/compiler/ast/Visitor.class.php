@@ -307,7 +307,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitConstructor(ConstructorNode $node) {
-      $this->visitAll((array)$declaration->body);
+      $this->visitAll((array)$node->body);
       return $node;
     }
 
