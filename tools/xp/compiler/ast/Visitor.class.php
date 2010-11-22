@@ -526,7 +526,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitInvocation(InvocationNode $node) {
-      $node->parameters= $this->visitAll((array)$node->parameters);
+      $node->arguments= $this->visitAll((array)$node->arguments);
       return $node;
     }
 

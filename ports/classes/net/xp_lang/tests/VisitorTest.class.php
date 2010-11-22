@@ -788,6 +788,16 @@
       ));
       $this->assertVisited(array($node, $node->parameters[0], $node->body[0]), $node);
     }
+
+    /**
+     * Test visitInvocation()
+     *
+     */
+    #[@test]
+    public function visitInvocation() {
+      $node= new InvocationNode('create', array(new StringNode('new HashTable<string, string>')));
+      $this->assertVisited(array($node, $node->arguments[0]), $node);
+    }
     
     /**
      * Test visitTernary()
