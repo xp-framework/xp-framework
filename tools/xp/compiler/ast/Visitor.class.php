@@ -477,6 +477,7 @@
      */
     protected function visitInstanceCreation(InstanceCreationNode $node) {
       $node->parameters= $this->visitAll((array)$node->parameters);
+      $node->body && $node->body= $this->visitAll((array)$node->body);
       return $node;
     }
 

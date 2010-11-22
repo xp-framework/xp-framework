@@ -725,6 +725,33 @@
       ));
       $this->assertVisited(array($node), $node);
     }
+
+    /**
+     * Test visitInstanceCreation()
+     *
+     */
+    #[@test]
+    public function visitInstanceCreation() {
+      $node= new InstanceCreationNode(array(
+        'type'       => new TypeName('self'), 
+        'parameters' => array(new VariableNode('a'))
+      ));
+      $this->assertVisited(array($node, $node->parameters[0]), $node);
+    }
+
+    /**
+     * Test visitInstanceCreation()
+     *
+     */
+    #[@test]
+    public function visitInstanceCreationWithBody() {
+      $node= new InstanceCreationNode(array(
+        'type'       => new TypeName('self'), 
+        'parameters' => array(new VariableNode('a')),
+        'body'       => array(new ReturnNode()),
+      ));
+      $this->assertVisited(array($node, $node->parameters[0], $node->body[0]), $node);
+    }
     
     /**
      * Test visitTernary()
