@@ -68,6 +68,7 @@
     'xp.compiler.ast.StaticInitializerNode',
     'xp.compiler.ast.LambdaNode',
     'xp.compiler.ast.WithNode',
+    'xp.compiler.ast.StatementsNode',
     'xp.compiler.ast.BracedExpressionNode'
   );
 
@@ -651,7 +652,7 @@
     }
 
     /**
-     * Visit a statements list
+     * Visit a static initializer
      *
      * @param   xp.compiler.ast.Node node
      */
@@ -693,7 +694,7 @@
     }
 
     /**
-     * Visit a ternary operator
+     * Visit a throw statement
      *
      * @param   xp.compiler.ast.Node node
      */

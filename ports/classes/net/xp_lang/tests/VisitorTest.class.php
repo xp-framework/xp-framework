@@ -1000,6 +1000,94 @@
       ));
       $this->assertVisited(array($node, $node->handlers['get'][0]), $node);
     }
+
+    /**
+     * Test visitProperty()
+     *
+     */
+    #[@test]
+    public function visitPropertyWithEmptyHandlerBody() {
+      $node= new PropertyNode(array(
+        'modifiers'  => MODIFIER_PUBLIC,
+        'annotations'=> NULL,
+        'type'       => new TypeName('string'),
+        'name'       => 'name',
+        'handlers'   => array(
+          'get' => NULL
+        )
+      ));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitReturn()
+     *
+     */
+    #[@test]
+    public function visitReturn() {
+      $node= new ReturnNode();
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitReturn()
+     *
+     */
+    #[@test]
+    public function visitReturnWithExpression() {
+      $node= new ReturnNode(new VariableNode('a'));
+      $this->assertVisited(array($node, $node->expression), $node);
+    }
+
+    /**
+     * Test visitStatements()
+     *
+     */
+    #[@test]
+    public function visitStatements() {
+      $node= new StatementsNode(array(new VariableNode('a'), new ReturnNode()));
+      $this->assertVisited(array($node, $node->list[0], $node->list[1]), $node);
+    }
+   
+    /**
+     * Test visitStatements()
+     *
+     */
+    #[@test]
+    public function visitStatementsWithEmptyList() {
+      $node= new StatementsNode();
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitStaticImport()
+     *
+     */
+    #[@test]
+    public function visitStaticImport() {
+      $node= new StaticImportNode(array('name' => 'util.cmd.Console.*'));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitStaticInitializer()
+     *
+     */
+    #[@test]
+    public function visitStaticInitializer() {
+      $node= new StaticInitializerNode(array(new VariableNode('a'), new ReturnNode()));
+      $this->assertVisited(array($node, $node->statements[0], $node->statements[1]), $node);
+    }
+
+    /**
+     * Test visitStaticInitializer()
+     *
+     */
+    #[@test]
+    public function visitStaticInitializerWithEmptyStatements() {
+      $node= new StaticInitializerNode(array());
+      $this->assertVisited(array($node), $node);
+    }
    
     /**
      * Test visitTernary()
@@ -1019,6 +1107,34 @@
     }
 
     /**
+     * Test visitString()
+     *
+     */
+    #[@test]
+    public function visitString() {
+      $node= new StringNode('Hello World');
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitSwitch()
+     *
+     */
+    #[@test]
+    public function visitSwitch() {
+      $node= new SwitchNode(array(
+        'expression'     => new VariableNode('i'),
+        'cases'          => array(
+          new DefaultNode(array('statements' => array(new BreakNode())))
+        )
+      ));
+      $this->assertVisited(
+        array($node, $node->expression, $node->cases[0], $node->cases[0]->statements[0]), 
+        $node
+      );
+    }
+
+    /**
      * Test visitTernary()
      *
      */
@@ -1032,6 +1148,96 @@
         array($node, $node->condition, $node->conditional), 
         $node
       );
+    }
+
+    /**
+     * Test visitThrow()
+     *
+     */
+    #[@test]
+    public function visitThrow() {
+      $node= new ThrowNode(array('expression' => new VariableNode('i')));
+      $this->assertVisited(array($node, $node->expression), $node);
+    }
+
+    /**
+     * Test visitTry()
+     *
+     */
+    #[@test]
+    public function visitTry() {
+      $node= new TryNode(array(
+        'statements' => array(new ReturnNode()), 
+        'handling'   => array(new FinallyNode(array('statements' => array(new ReturnNode()))))
+      ));
+      $this->assertVisited(
+        array($node, $node->statements[0], $node->handling[0], $node->handling[0]->statements[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitUnaryOp()
+     *
+     */
+    #[@test]
+    public function visitUnaryOp() {
+      $node= new UnaryOpNode(array(
+        'expression'    => new VariableNode('i'),
+        'op'            => '++',
+        'postfix'       => TRUE
+      ));
+      $this->assertVisited(array($node, $node->expression), $node);
+    }
+
+    /**
+     * Test visitVariable()
+     *
+     */
+    #[@test]
+    public function visitVariable() {
+      $node= new VariableNode('i');
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitWhile()
+     *
+     */
+    #[@test]
+    public function visitWhile() {
+      $node= new WhileNode(new VariableNode('continue'), array(new VariableNode('a'), new ReturnNode()));
+      $this->assertVisited(array($node, $node->expression, $node->statements[0], $node->statements[1]), $node);
+    }
+    
+    /**
+     * Test visitWith()
+     *
+     */
+    #[@test]
+    public function visitWith() {
+      $node= new WithNode(array(new VariableNode('o')), array(new ReturnNode()));
+      $this->assertVisited(array($node, $node->assignments[0], $node->statements[0]), $node);
+    }
+
+    /**
+     * Test visitWith()
+     *
+     */
+    #[@test]
+    public function visitWithWithEmptyStatements() {
+      $node= new WithNode(array(new VariableNode('o')), array());
+      $this->assertVisited(array($node, $node->assignments[0]), $node);
+    }
+
+    /**
+     * Test visitBracedExpression()
+     *
+     */
+    #[@test]
+    public function visitBracedExpression() {
+      $node= new BracedExpressionNode(new VariableNode('o'));
+      $this->assertVisited(array($node, $node->expression), $node);
     }
 
     /**
