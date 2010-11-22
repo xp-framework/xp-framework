@@ -406,6 +406,66 @@
     }
 
     /**
+     * Test visitDefault()
+     *
+     */
+    #[@test]
+    public function visitDefault() {
+      $node= new DefaultNode(array('statements' => array(new ReturnNode())));
+      $this->assertVisited(array($node, $node->statements[0]), $node);
+    }
+
+    /**
+     * Test visitDecimal()
+     *
+     */
+    #[@test]
+    public function visitDecimal() {
+      $node= new DecimalNode(1.0);
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitDo()
+     *
+     */
+    #[@test]
+    public function visitDo() {
+      $node= new DoNode(new VariableNode('continue'), array(new VariableNode('a'), new ReturnNode()));
+      $this->assertVisited(array($node, $node->statements[0], $node->statements[1], $node->expression), $node);
+    }
+
+    /**
+     * Test visitElse()
+     *
+     */
+    #[@test]
+    public function visitElse() {
+      $node= new ElseNode(array('statements' => array(new VariableNode('a'), new ReturnNode())));
+      $this->assertVisited(array($node, $node->statements[0], $node->statements[1]), $node);
+    }
+
+    /**
+     * Test visitEnumMember()
+     *
+     */
+    #[@test]
+    public function visitEnumMember() {
+      $node= new EnumMemberNode(array('name' => 'penny', 'body' => array(new VariableNode('a'), new ReturnNode())));
+      $this->assertVisited(array($node, $node->body[0], $node->body[1]), $node);
+    }
+
+    /**
+     * Test visitEnumMember()
+     *
+     */
+    #[@test]
+    public function visitEnumMemberWithEmptyBody() {
+      $node= new EnumMemberNode(array('name' => 'penny'));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
      * Test visitTernary()
      *
      */

@@ -366,7 +366,7 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitEnumMember(EnumMemberNode $node) {
-      $node->body= $this->visitAll($node->body);
+      $node->body && $node->body= $this->visitAll($node->body);
       return $node;
     }
 
