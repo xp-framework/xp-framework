@@ -409,7 +409,7 @@
       $node->initialization= $this->visitAll($node->initialization);
       $node->condition= $this->visitAll($node->condition);
       $node->loop= $this->visitAll($node->loop);
-      $node->statements= $this->visitAll($node->statements);
+      $node->statements && $node->statements= $this->visitAll($node->statements);
       return $node;
     }
 
@@ -419,11 +419,12 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitForeach(ForeachNode $node) {
+      $this->visitOne($node->expression);
       if (isset($node->assignment['key'])) {
         $node->assignment['key']= $this->visitOne(new VariableNode($node->assignment['key']))->name;
       }
       $node->assignment['value']= $this->visitOne(new VariableNode($node->assignment['value']))->name;
-      $node->statements= $this->visitAll($node->statements);
+      $node->statements && $node->statements= $this->visitAll($node->statements);
       return $node;
     }
 
@@ -443,7 +444,7 @@
      */
     protected function visitIf(IfNode $node) {
       $node->condition= $this->visitOne($node->condition);
-      $node->statements= $this->visitAll($node->statements);
+      $node->statements && $node->statements= $this->visitAll($node->statements);
       $node->otherwise && $node->otherwise= $this->visitOne($node->otherwise);
       return $node;
     }

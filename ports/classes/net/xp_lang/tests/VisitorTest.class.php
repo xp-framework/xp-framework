@@ -466,6 +466,221 @@
     }
 
     /**
+     * Test visitEnum()
+     *
+     */
+    #[@test]
+    public function visitEnum() {
+      $node= new EnumNode(MODIFIER_PUBLIC, array(), new TypeName('Coin'), NULL, array(), array(
+        new EnumMemberNode(array('name' => 'penny')),
+        new EnumMemberNode(array('name' => 'dime')),
+      ));
+      $this->assertVisited(array($node, $node->body[0], $node->body[1]), $node);
+    }
+
+    /**
+     * Test visitField()
+     *
+     */
+    #[@test]
+    public function visitField() {
+      $node= new FieldNode(array('name' => 'type', 'modifiers' => MODIFIER_PUBLIC));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitField()
+     *
+     */
+    #[@test]
+    public function visitFieldWithInitialization() {
+      $node= new FieldNode(array(
+        'name'           => 'type', 
+        'modifiers'      => MODIFIER_PUBLIC,
+        'initialization' => new IntegerNode(0)
+      ));
+      $this->assertVisited(array($node, $node->initialization), $node);
+    }
+
+    /**
+     * Test visitFinally()
+     *
+     */
+    #[@test]
+    public function visitFinally() {
+      $node= new FinallyNode(array('statements' => array(new ReturnNode())));
+      $this->assertVisited(array($node, $node->statements[0]), $node);
+    }
+
+    /**
+     * Test visitFinally()
+     *
+     */
+    #[@test]
+    public function visitFinallyWithEmptyStatements() {
+      $node= new FinallyNode(array('statements' => array()));
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitFor()
+     *
+     */
+    #[@test]
+    public function visitFor() {
+      $node= new ForNode(array(
+        'initialization' => array(new VariableNode('a')),
+        'condition'      => array(new VariableNode('b')),
+        'loop'           => array(new VariableNode('c')),
+        'statements'     => array(new VariableNode('d')), 
+      ));
+      $this->assertVisited(
+        array($node, $node->initialization[0], $node->condition[0], $node->loop[0], $node->statements[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitFor()
+     *
+     */
+    #[@test]
+    public function visitForWithEmptyStatements() {
+      $node= new ForNode(array(
+        'initialization' => array(new VariableNode('a')),
+        'condition'      => array(new VariableNode('b')),
+        'loop'           => array(new VariableNode('c')),
+        'statements'     => NULL, 
+      ));
+      $this->assertVisited(
+        array($node, $node->initialization[0], $node->condition[0], $node->loop[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitForeach()
+     *
+     */
+    #[@test]
+    public function visitForeachWithKey() {
+      $node= new ForeachNode(array(
+        'expression'    => new VariableNode('list'),
+        'assignment'    => array('value' => 'value'),
+        'statements'    => array(new VariableNode('c')), 
+      ));
+      $this->assertVisited(
+        array($node, $node->expression, new VariableNode('value'), $node->statements[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitForeach()
+     *
+     */
+    #[@test]
+    public function visitForeachWithKeyAndValue() {
+      $node= new ForeachNode(array(
+        'expression'    => new VariableNode('map'),
+        'assignment'    => array('key' => 'key', 'value' => 'value'),
+        'statements'    => array(new VariableNode('c')), 
+      ));
+      $this->assertVisited(
+        array($node, $node->expression, new VariableNode('key'), new VariableNode('value'), $node->statements[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitForeach()
+     *
+     */
+    #[@test]
+    public function visitForeachWithEmptyStatements() {
+      $node= new ForeachNode(array(
+        'expression'    => new VariableNode('list'),
+        'assignment'    => array('value' => 'value'),
+        'statements'    => NULL, 
+      ));
+      $this->assertVisited(
+        array($node, $node->expression, new VariableNode('value')), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitHex()
+     *
+     */
+    #[@test]
+    public function visitHex() {
+      $node= new HexNode('0xFFFF');
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitIf()
+     *
+     */
+    #[@test]
+    public function visitIf() {
+      $node= new IfNode(array(
+        'condition'      => new VariableNode('i'),
+        'statements'     => array(new ReturnNode()),
+        'otherwise'      => NULL, 
+      ));
+      $this->assertVisited(
+        array($node, $node->condition, $node->statements[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitIf()
+     *
+     */
+    #[@test]
+    public function visitIfWithElse() {
+      $node= new IfNode(array(
+        'condition'      => new VariableNode('i'),
+        'statements'     => array(new ReturnNode()),
+        'otherwise'      => new ElseNode(array('statements' => array(new ReturnNode()))), 
+      ));
+      $this->assertVisited(
+        array($node, $node->condition, $node->statements[0], $node->otherwise, $node->otherwise->statements[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitIf()
+     *
+     */
+    #[@test]
+    public function visitIfWithEmptyStatements() {
+      $node= new IfNode(array(
+        'condition'      => new VariableNode('i'),
+        'statements'     => NULL,
+        'otherwise'      => NULL, 
+      ));
+      $this->assertVisited(
+        array($node, $node->condition), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitImport()
+     *
+     */
+    #[@test]
+    public function visitImport() {
+      $node= new ImportNode(array('name' => 'lang.types.String'));
+      $this->assertVisited(array($node), $node);
+    }
+    
+    /**
      * Test visitTernary()
      *
      */
@@ -476,7 +691,10 @@
         'expression'  => new VariableNode('a'), 
         'conditional' => new VariableNode('b')
       ));
-      $this->assertVisited(array($node, $node->condition, $node->expression, $node->conditional), $node);
+      $this->assertVisited(
+        array($node, $node->condition, $node->expression, $node->conditional), 
+        $node
+      );
     }
 
     /**
@@ -489,7 +707,10 @@
         'condition'   => new VariableNode('a'), 
         'conditional' => new VariableNode('b')
       ));
-      $this->assertVisited(array($node, $node->condition, $node->conditional), $node);
+      $this->assertVisited(
+        array($node, $node->condition, $node->conditional), 
+        $node
+      );
     }
 
     /**
