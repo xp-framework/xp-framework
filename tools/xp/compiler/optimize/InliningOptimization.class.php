@@ -20,22 +20,33 @@
    */
   abstract class InliningOptimization extends Object implements Optimization {
     protected static $rewriter= NULL;
-    protected $protect= array();
     
     static function __static() {
       self::$rewriter= ClassLoader::defineClass('InliningOptimization··Rewriter', 'xp.compiler.ast.Visitor', array(), '{
         protected $replacements;
+        protected $protect;
 
-        public function __construct($replacements) {
+        public function __construct($replacements, $protect) {
           $this->replacements= $replacements;
+          $this->protect= $protect;
+        }
+
+        protected function visitMethodCall(MethodCallNode $node) {
+          if ($node->name === $this->protect) $node->inlined= TRUE;
+          return parent::visitMethodCall($node);
+        }
+
+        protected function visitStaticMethodCall(StaticMethodCallNode $node) {
+          if ($node->name === $this->protect) $node->inlined= TRUE;
+          return parent::visitStaticMethodCall($node);
         }
 
         protected function visitVariable(VariableNode $node) {
           return isset($this->replacements[$node->name])
-            ? $this->replacements[$node->name]
+            ? clone $this->replacements[$node->name]
             : $node
           ;
-        }
+        } 
       }');
     }
     
@@ -59,9 +70,8 @@
      * @return  xp.compiler.ast.Node inlined
      */
     public function inline($call, $scope, $optimizations) {
-      $key= $scope->declarations[0]->name->compoundName().$call->name;
-      if (isset($this->protect[$key])) {
-        // DEBUG Console::writeLine('**Recursion** Not inlining ', $key, ' from inside ', $scope->getClassName().'::'.$scope->name, ': ', $this->protect);
+      if (isset($call->inlined)) {
+        // DEBUG Console::writeLine('**Recursion** Not inlining ', $call->name, ' from inside ', $scope->getClassName().'::'.$scope->name);
         return $call;
       }
       
@@ -79,10 +89,8 @@
             $replacements[$parameter['name']]= $call->arguments[$i];
           }
           
-          // DEBUG Console::writeLine('Inlining ', $key, ' from inside ', $scope->getClassName().'::'.$scope->name);
-          $this->protect[$key]= TRUE;
-          $call= $optimizations->optimize(self::$rewriter->newInstance($replacements)->visitOne(clone $member->body[0]->expression), $scope);
-          unset($this->protect[$key]);
+          // DEBUG Console::writeLine('Inlining ', $call->name, ' from inside ', $scope->getClassName().'::'.$scope->name);
+          $call= $optimizations->optimize(self::$rewriter->newInstance($replacements, $call->name)->visitOne(clone $member->body[0]->expression), $scope);
           break;
         }
       }
