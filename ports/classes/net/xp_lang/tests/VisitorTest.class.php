@@ -798,7 +798,61 @@
       $node= new InvocationNode('create', array(new StringNode('new HashTable<string, string>')));
       $this->assertVisited(array($node, $node->arguments[0]), $node);
     }
-    
+
+    /**
+     * Test visitLambda()
+     *
+     */
+    #[@test]
+    public function visitLambda() {
+      $node= new LambdaNode(array(new VariableNode('a')), array(new ReturnNode()));
+      $this->assertVisited(
+        array($node, $node->parameters[0], $node->statements[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitLambda()
+     *
+     */
+    #[@test]
+    public function visitLambdaWithEmptyStatements() {
+      $node= new LambdaNode(array(new VariableNode('a')), array());
+      $this->assertVisited(
+        array($node, $node->parameters[0]), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitMap()
+     *
+     */
+    #[@test]
+    public function visitEmptyMap() {
+      $node= new MapNode(array('elements' => NULL));
+      $this->assertVisited(array($node), $node);
+    }
+ 
+    /**
+     * Test visitMap()
+     *
+     */
+    #[@test]
+    public function visitMap() {
+      $node= new MapNode(array('elements' => array(
+        array(
+          new StringNode('one'),
+          new IntegerNode('1'),
+        ),
+      )));
+      $this->assertVisited(
+        array($node, $node->elements[0][0], $node->elements[0][1]), 
+        $node
+      );
+    }
+   
     /**
      * Test visitTernary()
      *

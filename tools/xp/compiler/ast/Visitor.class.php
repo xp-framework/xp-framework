@@ -547,7 +547,9 @@
      * @param   xp.compiler.ast.Node node
      */
     protected function visitMap(MapNode $node) {
-      $node->elements= $this->visitAll($node->elements);
+      if ($node->elements) foreach ($node->elements as $i => $pair) {
+        $node->elements[$i]= $this->visitAll($pair);
+      }
       return $node;
     }
 
