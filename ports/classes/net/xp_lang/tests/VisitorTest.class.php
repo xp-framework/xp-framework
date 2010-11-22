@@ -740,6 +740,42 @@
     }
 
     /**
+     * Test visitInteger()
+     *
+     */
+    #[@test]
+    public function visitInteger() {
+      $node= new IntegerNode(1);
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
+     * Test visitInterface()
+     *
+     */
+    #[@test]
+    public function visitInterface() {
+      $node= new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Strings'), array(), array(
+        new ClassConstantNode('LF', new TypeName('string'), new StringNode('\n')),
+        new ClassConstantNode('CR', new TypeName('string'), new StringNode('\r'))
+      ));
+      $this->assertVisited(
+        array($node, $node->body[0], $node->body[0]->value, $node->body[1], $node->body[1]->value), 
+        $node
+      );
+    }
+
+    /**
+     * Test visitInterface()
+     *
+     */
+    #[@test]
+    public function visitInterfaceWithEmptyBody() {
+      $node= new InterfaceNode(MODIFIER_PUBLIC, array(), new TypeName('Strings'), array());
+      $this->assertVisited(array($node), $node);
+    }
+
+    /**
      * Test visitInstanceCreation()
      *
      */

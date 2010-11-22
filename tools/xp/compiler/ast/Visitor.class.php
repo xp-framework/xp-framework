@@ -244,7 +244,7 @@
     }
 
     /**
-     * Visit member access
+     * Visit constant access
      *
      * @param   xp.compiler.ast.Node node
      */
@@ -253,11 +253,21 @@
     }
 
     /**
-     * Visit member access
+     * Visit class access
      *
      * @param   xp.compiler.ast.Node node
      */
     protected function visitClassAccess(ClassAccessNode $node) {
+      return $node;
+    }
+
+    /**
+     * Visit class constants
+     *
+     * @param   xp.compiler.ast.Node node
+     */
+    protected function visitClassConstant(ClassConstantNode $node) {
+      $node->value= $this->visitOne($node->value);
       return $node;
     }
 
