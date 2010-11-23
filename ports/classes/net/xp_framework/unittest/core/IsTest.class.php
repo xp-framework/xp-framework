@@ -124,7 +124,7 @@
      */
     #[@test]
     public function boolPrimitive() {
-      $this->assertTrue(is('boolean', TRUE));
+      $this->assertTrue(is('bool', TRUE));
     }
 
     /**
@@ -133,7 +133,7 @@
      */
     #[@test]
     public function nullNotABoolPrimitive() {
-      $this->assertFalse(is('boolean', NULL));
+      $this->assertFalse(is('bool', NULL));
     }
 
     /**
