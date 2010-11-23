@@ -91,14 +91,46 @@
     public function parent() {
       return $this->definition->parent();
     }
+    
+    /**
+     * Returns the literal for a given TypeName instance
+     *
+     * @param   xp.compiler.types.TypeName type
+     * @return  string
+     */
+    protected function typeLiteral($type) {
+      if ($type->isArray()) {
+        return '¦'.$type->name;
+      } else if ($type->isMap()) {
+        return '»'.$type->name;
+      } else if ($type->isPrimitive()) {
+        return 'þ'.$type->name;
+      } else if ($type->isGeneric()) {
+        $literal= $type->name.'··';
+        foreach ($type->components as $component) {
+          $literal.= $this->typeLiteral($component).'¸';
+        }
+        return substr($literal, 0, -1);
+      } else {
+        return  $type->name;
+      }
+    }
 
     /**
      * Returns literal for use in code
      *
+     * @param   bool base
      * @return  string
      */
-    public function literal() {
-      return $this->definition->literal();
+    public function literal($base= FALSE) {
+      if ($base) {    // Only base type, for e.g. extends and implements
+        return $this->definition->literal();
+      }
+      $literal= $this->definition->literal().'··';
+      foreach ($this->components as $component) {
+        $literal.= $this->typeLiteral($component).'¸';
+      }
+      return substr($literal, 0, -1);
     }
 
     /**

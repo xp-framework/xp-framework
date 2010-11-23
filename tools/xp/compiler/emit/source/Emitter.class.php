@@ -1296,8 +1296,20 @@
             $op->append('array ');
           } else if ($t->isClass() && !$this->scope[0]->declarations[0]->name->isPlaceHolder($t)) {
             $op->append($ptr->literal())->append(' ');
+          } else if ('{' === $delim) {
+            $defer[]= create(new xp·compiler·emit·source·Buffer('', $op->line))
+              ->append('if (NULL !== $')->append($param['name'])->append(' && !is("'.$t->name.'", $')
+              ->append($param['name'])
+              ->append(')) throw new IllegalArgumentException("Argument ')
+              ->append($i + 1)
+              ->append(' passed to ".__METHOD__." must be of ')
+              ->append($t->name)
+              ->append(', ".xp::typeOf($')
+              ->append($param['name'])
+              ->append(')." given");')
+            ;
           } else {
-            // No restriction on primitives possible in PHP
+            // No checks in interfaces
           }
         }
 
@@ -1926,7 +1938,7 @@
         array($parent), 
         (array)$declaration->implements
       ));
-      $op->append(' extends '.$parentType->literal());
+      $op->append(' extends '.$parentType->literal(TRUE));
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array('get' => array(), 'set' => array()));
       $abstract= Modifiers::isAbstract($declaration->modifiers);
@@ -1936,7 +1948,7 @@
         $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
-          $op->append($this->resolveType($type, FALSE)->literal());
+          $op->append($this->resolveType($type, FALSE)->literal(TRUE));
           $i < $s && $op->append(', ');
         }
       }
@@ -2030,7 +2042,7 @@
         $op->append(' extends ');
         $s= sizeof($declaration->parents)- 1;
         foreach ((array)$declaration->parents as $i => $type) {
-          $op->append($this->resolveType($type, FALSE)->literal());
+          $op->append($this->resolveType($type, FALSE)->literal(TRUE));
           $i < $s && $op->append(', ');
         }
       }
@@ -2069,7 +2081,7 @@
         $declaration->parent ? array($parent) : array(),
         (array)$declaration->implements
       ));
-      $op->append(' extends '.$parentType->literal());
+      $op->append(' extends '.$parentType->literal(TRUE));
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array());
       array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
@@ -2086,7 +2098,7 @@
         $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
-          $op->append($type instanceof TypeName ? $this->resolveType($type, FALSE)->literal() : $type);
+          $op->append($type instanceof TypeName ? $this->resolveType($type, FALSE)->literal(TRUE) : $type);
           $i < $s && $op->append(', ');
         }
       }
