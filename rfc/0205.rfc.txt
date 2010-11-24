@@ -1,0 +1,55 @@
+RFC 0205: All exceptions can be chained optionally
+========================================================================
+$Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
+
+@authors: kiesel
+@created: Wed Nov 24 08:08:26     2010
+@status: draft
+@category: <core>
+@target: 5.8
+
+Scope of Change
+---------------
+Existing functionality of the lang.ChainedException will be moved into
+the XP framework's base exception class lang.Throwable.
+
+As result, all exceptions can have an optional causing exception
+attached to them.
+
+Rationale
+---------
+Only when every exception can have a causing exception attached to it,
+one can easily make use of it in all circumstances. By now, when such
+funcionality is required, the exception class in question must be modified
+to inherit lang.ChainedException. Most of the time, it cannot be fore-
+seen whether this is required or not at the time of writing the
+exception class.
+
+
+Functionality
+-------------
++ Move code from lang.ChainedException into lang.Throwable
++ Make lang.ChainedException be empty
++ Deprecate lang.ChainedException for XP 5.9
+
+Security considerations
+-----------------------
+
+Speed impact
+------------
+A new member "cause" will be added to lang.Throwable, so this will consume
+more memory, and thus be slower. The impact is expected to be negligible,
+though.
+
+Dependencies
+------------
+n/a
+
+Related documents
+-----------------
+n/a
+
+Comments
+--------
+
+<EOF>
