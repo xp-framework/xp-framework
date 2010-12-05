@@ -140,7 +140,7 @@
      */
     #[@test]
     public function genericOfGenericsVsGenericOfGenericsHashTable() {
-      $this->assertTrue($this->signature('HashTable<string, Vector<int> > $arg')->accept(create('new HashTable<string, Vector<int>>')));
+      $this->assertTrue($this->signature('HashTable<string, Vector<int>> $arg')->accept(create('new HashTable<string, Vector<int>>')));
     }
 
     /**

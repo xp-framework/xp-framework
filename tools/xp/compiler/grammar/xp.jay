@@ -74,7 +74,7 @@
 %left ','
 %left T_BOOLEAN_OR
 %left T_BOOLEAN_AND
-%right '=' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_CONCAT_EQUAL T_MOD_EQUAL T_SHR T_SHL T_AND_EQUAL T_OR_EQUAL T_XOR_EQUAL
+%right '=' T_ADD_EQUAL T_SUB_EQUAL T_MUL_EQUAL T_DIV_EQUAL T_CONCAT_EQUAL T_MOD_EQUAL T_AND_EQUAL T_OR_EQUAL T_XOR_EQUAL
 %left '?' ':'
 %left '|'
 %left '^'
@@ -166,8 +166,6 @@
 %token T_OR_EQUAL 417
 %token T_AND_EQUAL 418
 %token T_XOR_EQUAL 419
-%token T_SHR 420
-%token T_SHL 421
 
 %token T_WITH 430
 
@@ -893,8 +891,8 @@ assignment:
   | expression T_AND_EQUAL expression     /* &= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_OR_EQUAL expression      /* |= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
   | expression T_XOR_EQUAL expression     /* ^= */  { $$= array('variable' => $1, 'expression' => $3, 'op' => $2); }
-  | expression T_SHR '=' expression       /* >>= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
-  | expression T_SHL '=' expression       /* <<= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
+  | expression '>' T_GE expression        /* >>= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
+  | expression '<' T_SE expression        /* <<= */ { $$= array('variable' => $1, 'expression' => $4, 'op' => $2.$3); }
 ;
 
 comparison:
@@ -918,8 +916,8 @@ binary_operation:
   | expression '|' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '&' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
   | expression '^' expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
-  | expression T_SHR expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
-  | expression T_SHL expression { $$= array('lhs' => $1, 'rhs' => $3, 'op' => $2); }
+  | expression '>' '>' expression { $$= array('lhs' => $1, 'rhs' => $4, 'op' => $2.$3); }
+  | expression '<' '<' expression { $$= array('lhs' => $1, 'rhs' => $4, 'op' => $2.$3); }
 ;
 
 unary_prefix_operation:
