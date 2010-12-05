@@ -185,7 +185,11 @@
      * Test extension methods do not apply if not imported
      *
      */
-    #[@test, @expect(class= 'lang.Error', withMessage= 'Call to undefined method lang.XPClass::fieldsNamed() from scope SourceExtensionDoesNotApplyIfOnlyUsed·0')]
+    #[
+    #  @test, 
+    #  @ignore('Now runs in userland because ClassFieldExtension1 is added to uses()'), 
+    #  @expect(class= 'lang.Error', withMessage= 'Call to undefined method lang.XPClass::fieldsNamed() from scope SourceExtensionDoesNotApplyIfOnlyUsed·0')
+    #]
     public function extensionDoesNotApplyIfOnlyUsed() {
       $class= $this->define('class', 'ClassFieldExtension1', NULL, '{
         public static lang.reflect.Field[] fieldsNamed(this lang.XPClass $class, text.regex.Pattern $pattern) {

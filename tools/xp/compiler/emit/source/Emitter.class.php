@@ -1602,11 +1602,6 @@
      * @param   string qualified
      */
     protected function registerClass($op, $declaration, $qualified) {
-      if (isset($this->metadata[0]['EXT'])) {     // HACK, this should be accessible in scope
-        foreach ($this->metadata[0]['EXT'] as $method => $for) {
-          $op->append('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$declaration->literal.'\', \''.$method.'\');');
-        }
-      }
       unset($this->metadata[0]['EXT']);
 
       // Retain comment
@@ -2139,14 +2134,23 @@
       if ($this->inits[0][TRUE]) {
         $this->emitOne($op, new StaticInitializerNode(NULL));
       }
-      $op->append('}');
       
+      // Create __import
+      if (isset($this->metadata[0]['EXT'])) {
+        $op->append('static function __import($scope) {');
+        foreach ($this->metadata[0]['EXT'] as $method => $type) {
+          $op->append('xp::$registry["ext"][$scope]["')->append($type)->append('"]= "')->append($thisType->literal())->append('";');
+        }
+        $op->append('}');
+      }
+
       // Generic instances have {definition-type, null, [argument-type[0..n]]} 
       // stored  as type names in their details
       if (isset($declaration->generic)) {
         $this->metadata[0]['class'][DETAIL_GENERIC]= $declaration->generic;
       }
 
+      $op->append('}');
       $this->leave();
       $this->registerClass($op, $declaration, $thisType->name());
       array_shift($this->properties);
