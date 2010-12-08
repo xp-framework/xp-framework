@@ -16,6 +16,9 @@
     protected $query= '';
     protected $params= array();
     protected $res= NULL;
+    protected $spellings= NULL;
+    protected $synonyms= NULL;
+    protected $keymatches= array();
     
     /**
      * Set time in seconds
@@ -97,6 +100,81 @@
     }
 
     /**
+     * Adds a keymatch
+     *
+     * @param   com.google.search.custom.types.KeyMatch keymatch
+     */
+    #[@xmlmapping(element= 'GM', class= 'com.google.search.custom.types.KeyMatch')]
+    public function addKeyMatch($keymatch) {
+      $this->keymatches[]= $keymatch;
+    }
+
+    /**
+     * Returns keymatches
+     *
+     * @return  com.google.search.custom.types.KeyMatch[]
+     */
+    public function getKeyMatches() {
+      return $this->keymatches;
+    }
+
+    /**
+     * Sets spellings
+     *
+     * @param   com.google.search.custom.types.Spellings spellings
+     */
+    #[@xmlmapping(element= 'Spelling', class= 'com.google.search.custom.types.Spellings')]
+    public function setSpellings($spellings) {
+      $this->spellings= $spellings;
+    }
+
+    /**
+     * Returns whether spellings are available
+     *
+     * @return  bool
+     */
+    public function hasSpellings() {
+      return NULL !== $this->spellings;
+    }
+
+    /**
+     * Returns spellings
+     *
+     * @return  com.google.search.custom.types.Spellings
+     */
+    public function getSpellings() {
+      return $this->spellings;
+    }
+
+    /**
+     * Sets synonyms
+     *
+     * @param   com.google.search.custom.types.synonyms synonyms
+     */
+    #[@xmlmapping(element= 'Synonyms', class= 'com.google.search.custom.types.Synonyms')]
+    public function setSynonyms($synonyms) {
+      $this->synonyms= $synonyms;
+    }
+
+    /**
+     * Returns whether synonyms are available
+     *
+     * @return  bool
+     */
+    public function hasSynonyms() {
+      return NULL !== $this->synonyms;
+    }
+
+    /**
+     * Returns synonyms
+     *
+     * @return  com.google.search.custom.types.Synonyms
+     */
+    public function getSynonyms() {
+      return $this->synonyms;
+    }
+
+    /**
      * Creates a string representation of this result set
      *
      * @return  string
@@ -104,13 +182,19 @@
     public function toString() {
       return sprintf(
         "%s('%s', took %.3f seconds)@{\n".
-        "  [params]  %s\n".
-        "  [results] %s\n".
+        "  [params]     %s\n".
+        "  [spellings]  %s\n".
+        "  [synonyms]   %s\n".
+        "  [keymatches] %s\n".
+        "  [results]    %s\n".
         "}",
         $this->getClassName(),
         $this->query,
         $this->time,
         str_replace("\n", "\n  ", xp::stringOf($this->params)),
+        str_replace("\n", "\n  ", xp::stringOf($this->spellings)),
+        str_replace("\n", "\n  ", xp::stringOf($this->synonyms)),
+        str_replace("\n", "\n  ", xp::stringOf($this->keymatches)),
         str_replace("\n", "\n  ", xp::stringOf($this->res))
       );
     }
