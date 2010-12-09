@@ -56,9 +56,9 @@
     #[@test]
     public function settingAccessors() {
       $options= new RuntimeOptions();
-      $this->assertNull($options->getSetting('include_path'));
-      $options->withSetting('include_path', array('/usr/local/php'));
-      $this->assertEquals(array('/usr/local/php'), $options->getSetting('include_path'));
+      $this->assertNull($options->getSetting('memory_limit'));
+      $options->withSetting('memory_limit', array('128M'));
+      $this->assertEquals(array('128M'), $options->getSetting('memory_limit'));
     }
 
     /**
@@ -68,9 +68,9 @@
     #[@test]
     public function settingAccessorsStringOverload() {
       $options= new RuntimeOptions();
-      $this->assertNull($options->getSetting('include_path'));
-      $options->withSetting('include_path', '/usr/local/php');
-      $this->assertEquals(array('/usr/local/php'), $options->getSetting('include_path'));
+      $this->assertNull($options->getSetting('memory_limit'));
+      $options->withSetting('memory_limit', '128M');
+      $this->assertEquals(array('128M'), $options->getSetting('memory_limit'));
     }
 
     /**
