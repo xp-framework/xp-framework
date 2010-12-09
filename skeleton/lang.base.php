@@ -485,7 +485,7 @@
       return is_double($object);
     } else if ('string' === $type) {
       return is_string($object);
-    } else if ('boolean' === $type) {
+    } else if ('bool' === $type) {
       return is_bool($object);
     } else if ('var' === $type) {
       return TRUE;

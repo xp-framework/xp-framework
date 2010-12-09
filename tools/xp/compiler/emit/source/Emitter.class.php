@@ -1296,8 +1296,20 @@
             $op->append('array ');
           } else if ($t->isClass() && !$this->scope[0]->declarations[0]->name->isPlaceHolder($t)) {
             $op->append($ptr->literal())->append(' ');
+          } else if ('{' === $delim) {
+            $defer[]= create(new xp·compiler·emit·source·Buffer('', $op->line))
+              ->append('if (NULL !== $')->append($param['name'])->append(' && !is("'.$t->name.'", $')
+              ->append($param['name'])
+              ->append(')) throw new IllegalArgumentException("Argument ')
+              ->append($i + 1)
+              ->append(' passed to ".__METHOD__." must be of ')
+              ->append($t->name)
+              ->append(', ".xp::typeOf($')
+              ->append($param['name'])
+              ->append(')." given");')
+            ;
           } else {
-            // No restriction on primitives possible in PHP
+            // No checks in interfaces
           }
         }
 
@@ -1590,11 +1602,6 @@
      * @param   string qualified
      */
     protected function registerClass($op, $declaration, $qualified) {
-      if (isset($this->metadata[0]['EXT'])) {     // HACK, this should be accessible in scope
-        foreach ($this->metadata[0]['EXT'] as $method => $for) {
-          $op->append('xp::$registry[\''.$for.'::'.$method.'\']= new ReflectionMethod(\''.$declaration->literal.'\', \''.$method.'\');');
-        }
-      }
       unset($this->metadata[0]['EXT']);
 
       // Retain comment
@@ -1926,7 +1933,7 @@
         array($parent), 
         (array)$declaration->implements
       ));
-      $op->append(' extends '.$parentType->literal());
+      $op->append(' extends '.$parentType->literal(TRUE));
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array('get' => array(), 'set' => array()));
       $abstract= Modifiers::isAbstract($declaration->modifiers);
@@ -1936,7 +1943,7 @@
         $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
-          $op->append($this->resolveType($type, FALSE)->literal());
+          $op->append($this->resolveType($type, FALSE)->literal(TRUE));
           $i < $s && $op->append(', ');
         }
       }
@@ -2030,7 +2037,7 @@
         $op->append(' extends ');
         $s= sizeof($declaration->parents)- 1;
         foreach ((array)$declaration->parents as $i => $type) {
-          $op->append($this->resolveType($type, FALSE)->literal());
+          $op->append($this->resolveType($type, FALSE)->literal(TRUE));
           $i < $s && $op->append(', ');
         }
       }
@@ -2069,7 +2076,7 @@
         $declaration->parent ? array($parent) : array(),
         (array)$declaration->implements
       ));
-      $op->append(' extends '.$parentType->literal());
+      $op->append(' extends '.$parentType->literal(TRUE));
       array_unshift($this->metadata, array(array(), array()));
       array_unshift($this->properties, array());
       array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
@@ -2086,7 +2093,7 @@
         $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
-          $op->append($type instanceof TypeName ? $this->resolveType($type, FALSE)->literal() : $type);
+          $op->append($type instanceof TypeName ? $this->resolveType($type, FALSE)->literal(TRUE) : $type);
           $i < $s && $op->append(', ');
         }
       }
@@ -2127,14 +2134,23 @@
       if ($this->inits[0][TRUE]) {
         $this->emitOne($op, new StaticInitializerNode(NULL));
       }
-      $op->append('}');
       
+      // Create __import
+      if (isset($this->metadata[0]['EXT'])) {
+        $op->append('static function __import($scope) {');
+        foreach ($this->metadata[0]['EXT'] as $method => $type) {
+          $op->append('xp::$registry["ext"][$scope]["')->append($type)->append('"]= "')->append($thisType->literal())->append('";');
+        }
+        $op->append('}');
+      }
+
       // Generic instances have {definition-type, null, [argument-type[0..n]]} 
       // stored  as type names in their details
       if (isset($declaration->generic)) {
         $this->metadata[0]['class'][DETAIL_GENERIC]= $declaration->generic;
       }
 
+      $op->append('}');
       $this->leave();
       $this->registerClass($op, $declaration, $thisType->name());
       array_shift($this->properties);

@@ -44,15 +44,16 @@
      * Executes a search and return the results
      *
      * @param   com.google.search.custom.GoogleSearchQuery query
+     * @param   [:string] params extra parameters to pass
      * @return  com.google.search.custom.types.Response
+     * @see     http://www.google.com/cse/docs/resultsxml.html#WebSearch_Query_Parameter_Definitions
      */
-    public function searchFor(GoogleSearchQuery $query) {
+    public function searchFor(GoogleSearchQuery $query, $params= array()) {
     
       // Build query parameter list
-      $params= array(
-        'q'      => $query->getTerm(),
-        'output' => 'xml_no_dtd'
-      );
+      $params['output']= 'xml_no_dtd';
+      $params['q']= $query->getTerm();
+      $params['num']= $query->getNumResults();
       
       // Optional: Start (0- based)
       ($s= $query->getStart()) && $params['start']= $s;
@@ -62,10 +63,21 @@
       if (HttpConstants::STATUS_OK !== $r->statusCode()) {
         throw new IOException('Non-OK response code '.$r->statusCode().': '.$r->message());
       }
+      
+      // Unmarshal result
       return $this->unmarshaller->unmarshalFrom(
         new StreamInputSource($r->getInputStream(), $this->conn->toString()),
         'com.google.search.custom.types.Response'
       );
+    }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->conn->toString().'>';
     }
   }
 ?>

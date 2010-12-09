@@ -92,24 +92,36 @@
      *
      * @param   string type
      * @param   string class
-     * @param   string parent
+     * @param   var parent either a string or a lang.XPClass
      * @param   string src
      * @param   string[] imports
      * @return  lang.XPClass
      */
     protected function define($type, $class, $parent, $src, array $imports= array()) {
       $class= 'Source'.$class;
+      $scope= new TaskScope(new CompilationTask(
+        new FileSource(new File(__FILE__), self::$syntax),
+        new NullDiagnosticListener(),
+        new FileManager(),
+        $this->emitter
+      ));
+      
+      // Parent class
+      if ($parent instanceof XPClass) {
+        $extends= $this->getClass()->getPackage()->getName().'.'.$parent->getName();
+        $scope->addResolved($extends, new TypeReflection($parent));
+        $scope->addTypeImport($extends);
+      } else {
+        $extends= $parent;
+      }
+      
+      // Emit
       $r= $this->emitter->emit(
         self::$syntax->parse(new MemoryInputStream(
           implode("\n", $imports).
-          ' public '.$type.' '.$class.' '.($parent ? ' extends '.$parent : '').$src
+          ' public '.$type.' '.$class.' '.($extends ? ' extends '.$extends : '').$src
         ), $this->name), 
-        new TaskScope(new CompilationTask(
-          new FileSource(new File(__FILE__), self::$syntax),
-          new NullDiagnosticListener(),
-          new FileManager(),
-          $this->emitter
-        ))
+        $scope
       );
       xp::gc();
 

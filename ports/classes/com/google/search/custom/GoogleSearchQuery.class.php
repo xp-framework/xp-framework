@@ -12,6 +12,7 @@
   class GoogleSearchQuery extends Object {
     protected $term= NULL;
     protected $start= 0;
+    protected $num= 10;
     
     /**
      * Constructor
@@ -60,6 +61,35 @@
      */
     public function getStart() {
       return $this->start;
+    }
+
+    /**
+     * Sets how many results to return
+     *
+     * @param   int num
+     * @return  com.google.search.custom.GoogleSearchQuery this
+     */
+    public function yieldNumResults($num) {
+      $this->num= $num;
+      return $this;
+    }
+    
+    /**
+     * Gets how many results to return
+     *
+     * @return  int
+     */
+    public function getNumResults() {
+      return $this->num;
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(term= "'.$this->term.'", start= '.$this->start.', num= '.$this->num.')';
     }
   }
 ?>

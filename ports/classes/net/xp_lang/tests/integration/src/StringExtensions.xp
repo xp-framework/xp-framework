@@ -1,0 +1,10 @@
+import lang.types.String;
+import native standard.trim;
+
+public class StringExtensions {
+
+  public static String trim(this String $self, string $characters) {
+    return new String(trim($self.getBytes('utf-8'), $characters));
+  }
+
+}

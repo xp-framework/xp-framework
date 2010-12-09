@@ -28,6 +28,36 @@
     }
 
     /**
+     * Test new with generics
+     *
+     */
+    #[@test]
+    public function genericInstanceCreation() {
+      $this->assertEquals(
+        array(new InstanceCreationNode(array(
+          'type'       => new TypeName('Filter', array(new TypeName('String'))),
+          'parameters' => NULL
+        ))),
+        $this->parse('new Filter<String>();')
+      );
+    }
+
+    /**
+     * Test new with generics
+     *
+     */
+    #[@test]
+    public function genericOfGenericInstanceCreation() {
+      $this->assertEquals(
+        array(new InstanceCreationNode(array(
+          'type'       => new TypeName('Filter', array(new TypeName('Vector', array(new TypeName('string'))))),
+          'parameters' => NULL
+        ))),
+        $this->parse('new Filter<Vector<string>>();')
+      );
+    }
+
+    /**
      * Test new
      *
      */

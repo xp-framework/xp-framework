@@ -69,7 +69,7 @@
      *
      * @return  int
      */
-    public function getEtries() {
+    public function getEntries() {
       return $this->entries;
     }
     

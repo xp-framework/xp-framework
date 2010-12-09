@@ -81,6 +81,13 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Ports: Added support to Google custom search for Spelling suggestions 
+  ("Did you mean"), Synonyms ("You could also try") and Key matches 
+  (~ Adwords)
+  (friebe)
+ - Ports: Allowed passing arbitrary parameters in Google custom search
+  implementatiom, com.google.search.custom.GoogleSearchClient::searchFor()
+  (friebe)
 - Added setXSLDoc(), setXMLDoc() to xml.DomXSLProcessor
   (kiesel)
 - Implemented equals() method in xml.Node
