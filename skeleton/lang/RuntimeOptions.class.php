@@ -90,7 +90,7 @@
     public function withClassPath($element) {
       $this->backing["\0cp"]= array();
       foreach (is_array($element) ? $element : array($element) as $path) {
-        $this->backing["\0cp"][]= rtrim($element, DIRECTORY_SEPARATOR);
+        $this->backing["\0cp"][]= rtrim($path, DIRECTORY_SEPARATOR);
       }
       return $this;
     }
