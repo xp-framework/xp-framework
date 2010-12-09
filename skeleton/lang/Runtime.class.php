@@ -299,8 +299,9 @@
       // by the XP runners to transport scan_path, but since we're invoking
       // PHP directly here, expand it), and, if present, the bootstrap 
       // script and entry point class.
+      $include= '.'.PATH_SEPARATOR.PATH_SEPARATOR.get_include_path().PATH_SEPARATOR.implode(PATH_SEPARATOR, $options->getClassPath());
       $cmdline= array_merge(
-        $options->withSetting('include_path', '.'.PATH_SEPARATOR.get_include_path())->asArguments(),
+        $options->withSetting('include_path', $include)->asArguments(),
         $bootstrap ? array($this->bootstrapScript($bootstrap)) : array(),
         $class ? array($class) : array()
       );
@@ -310,7 +311,7 @@
       if ($this->startup('env')) {
         putenv('XP_CMDLINE='.implode('|', $cmdline));
       }
-      
+
       // Finally, fork executable
       return $this->getExecutable()->newInstance(array_merge($cmdline, $arguments), $cwd, $env);
     }
