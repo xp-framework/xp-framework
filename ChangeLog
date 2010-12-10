@@ -58,6 +58,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug #43 - peer.mail.store.Pop3Store connection error
+  (friebe)
 - Fixed bug #45 - Setting Properties on a LogAppender fails
   (friebe)
 - Fixed webservices.json.JsonDecoder when decoding overly long strings
