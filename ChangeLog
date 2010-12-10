@@ -81,6 +81,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.RuntimeOptions::withClassPath() method
+  (friebe)
 - Ports: Added support to Google custom search for Spelling suggestions 
   ("Did you mean"), Synonyms ("You could also try") and Key matches 
   (~ Adwords)

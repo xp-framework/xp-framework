@@ -43,9 +43,6 @@
         $emitter
       );
       $task->run();
-      
-      // Hack to add to include_path - should be done via Runtime::getInstance()->withClassPath() or so
-      set_include_path(get_include_path().PATH_SEPARATOR.PATH_SEPARATOR.rtrim(self::$temp->getURI(), DIRECTORY_SEPARATOR));
     }
 
     /**
@@ -57,7 +54,7 @@
      */
     protected function run($source) {
       $p= Runtime::getInstance()->newInstance(
-        NULL,
+        Runtime::getInstance()->startupOptions()->withClassPath(self::$temp->getURI()),
         'class', 
         'net.xp_lang.tests.integration.ExtensionMethodsIntegrationTestFixture',
         array()

@@ -29,7 +29,7 @@
      * @return  lang.RuntimeOptions this object
      */
     public function withSwitch($name) {
-      $this->backing["\0".$name]= TRUE; 
+      $this->backing["\1".$name]= TRUE; 
       return $this;
     }
 
@@ -41,7 +41,7 @@
      * @return  bool
      */
     public function getSwitch($name, $default= FALSE) {
-      $key= "\0".$name;
+      $key= "\1".$name;
       return isset($this->backing[$key])
         ? $this->backing[$key]
         : $default
@@ -49,7 +49,7 @@
     }
     
     /**
-     * Get setting (e.g. "include_path")
+     * Get setting (e.g. "memory_limit")
      *
      * @param   string name
      * @param   string[] default default NULL
@@ -64,7 +64,7 @@
     }
 
     /**
-     * Set setting (e.g. "include_path")
+     * Set setting (e.g. "memory_limit")
      *
      * @param   string setting
      * @param   var value either a number, a string or an array of either
@@ -82,6 +82,29 @@
     }
     
     /**
+     * Sets classpath
+     *
+     * @param   var element either an array of paths or a single path
+     * @return  lang.RuntimeOptions this object
+     */
+    public function withClassPath($element) {
+      $this->backing["\0cp"]= array();
+      foreach (is_array($element) ? $element : array($element) as $path) {
+        $this->backing["\0cp"][]= rtrim($path, DIRECTORY_SEPARATOR);
+      }
+      return $this;
+    }
+    
+    /**
+     * Gets classpath
+     *
+     * @return  string[]
+     */
+    public function getClassPath() {
+      return isset($this->backing["\0cp"]) ? $this->backing["\0cp"] : array();
+    }
+
+    /**
      * Return an array suitable for passing to lang.Process' constructor
      *
      * @return  string[]
@@ -89,9 +112,9 @@
     public function asArguments() {
       $s= array();
       foreach ($this->backing as $key => $value) {
-        if ("\0" === $key{0}) {
+        if ("\1" === $key{0}) {
           $s[]= '-'.substr($key, 1);
-        } else {
+        } else if ("\0" !== $key{0}) {
           foreach ($value as $v) {
             $s[]= '-'.$key.'='.$v;
           }
