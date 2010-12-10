@@ -27,7 +27,7 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    protected function _supports($u, $attr) {
+    protected function _supports($u, &$attr) {
       switch (strtolower($u->getScheme())) {
         case 'mbox': 
           $attr['mbx']= '/'.$u->getHost().$u->getPath();
