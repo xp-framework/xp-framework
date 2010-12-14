@@ -141,19 +141,26 @@
     
     /**
      * Retrieve location of temporary directory. This method looks at the 
-     * environment variables TEMP and TMP, and, if these cannot be found,
-     * uses '/tmp' as location on Un*x systems, c:\ on Windows.
+     * environment variables TEMP, TMP, TMPDIR and TEMPDIR and, if these 
+     * cannot be found, uses '/tmp' as location on Un*x systems, on Windows
+     * %LOCALAPPDATA%\Temp, %WINDIR%\Temp, %SYSTEMDRIVE%\Temp or C:\ (as 
+     * fallbacks in that order).
      * 
      * @see     php://tempnam
      * @return  string
      */
     public static function tempDir() {
-      if (getenv('TEMP')) {
-        $dir= getenv('TEMP');
-      } else if (getenv('TMP')) {
-        $dir= getenv('TMP');
-      } else {
-        $dir= (0 == strcasecmp(substr(PHP_OS, 0, 3), 'WIN')) ? 'c:\\' : '/tmp';
+      if (!($dir= self::_env('TEMP', 'TMP', 'TMPDIR', 'TEMPDIR'))) {
+        if (0 === strcasecmp(substr(PHP_OS, 0, 3), 'WIN')) {
+          $dir= 'C:';
+          foreach (array(getenv('LOCALAPPDATA'), getenv('WINDIR'), getenv('SYSTEMDRIVE')) as $base) {
+            if (!$base || !is_dir($t= $base.DIRECTORY_SEPARATOR.'Temp')) continue;
+            $dir= $t;
+            break;
+          }
+        } else {
+          $dir= '/tmp';
+        }
       }
 
       return rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
