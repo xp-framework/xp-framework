@@ -14,23 +14,6 @@
    *
    */
   class BootstrapTest extends TestCase {
-    protected $includePath;
-    
-    /**
-     * Saves include_path
-     *
-     */
-    public function setUp() {
-      $this->includePath= get_include_path();
-    }
-    
-    /**
-     * Restores include_path
-     *
-     */
-    public function tearDown() {
-      set_include_path($this->includePath);
-    }
   
     /**
      * Create a new runtime
@@ -111,8 +94,7 @@
      */
     #[@test]
     public function fatalsForNonExistingPaths() {
-      set_include_path($this->includePath.PATH_SEPARATOR.'/does-not-exist');
-      $r= $this->runWith(Runtime::getInstance()->startupOptions());
+      $r= $this->runWith(Runtime::getInstance()->startupOptions()->withClassPath('/does-not-exist'));
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1].$r[2], '[bootstrap] Classpath element [/does-not-exist] not found'),
@@ -126,8 +108,7 @@
      */
     #[@test]
     public function fatalsForNonExistingXars() {
-      set_include_path($this->includePath.PATH_SEPARATOR.'/does-not-exist.xar');
-      $r= $this->runWith(Runtime::getInstance()->startupOptions());
+      $r= $this->runWith(Runtime::getInstance()->startupOptions()->withClassPath('/does-not-exist.xar'));
       $this->assertEquals(255, $r[0], 'exitcode');
       $this->assertTrue(
         (bool)strstr($r[1].$r[2], '[bootstrap] Classpath element [/does-not-exist.xar] not found'),
