@@ -89,10 +89,10 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($string) {
-      if (!file_exists($this->archive.$string)) {
+      if (!file_exists($fn= $this->archive.$string)) {
         return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
       }
-      return new File($this->archive.$string);
+      return new File($fn);
     }
     
     /**
