@@ -299,7 +299,7 @@
       // by the XP runners to transport scan_path, but since we're invoking
       // PHP directly here, expand it), and, if present, the bootstrap 
       // script and entry point class.
-      $include= get_include_path();
+      $include= '.'.PATH_SEPARATOR.get_include_path();
       
       // If invocation uses a bootstrap mode, add the scanpath separator
       // in front of the includes - this will be stripped off by the
