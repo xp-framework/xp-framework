@@ -224,7 +224,7 @@
     #[@test]
     public function queryTreeWithEncoding() {
       $value= new String('value öäü', 'ISO-8859-1');
-      $xpath= new XPath(Tree::fromString(sprintf(
+      $xpath= new XPath($t= Tree::fromString(sprintf(
         '<?xml version="1.0" encoding="iso-8859-1"?>'.
         '<document><node>%s</node></document>',
         $value->getBytes('ISO-8859-1')

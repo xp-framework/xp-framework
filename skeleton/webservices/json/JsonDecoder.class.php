@@ -369,7 +369,7 @@
           switch ($tok) {
             case '"': {
               $this->stream->seek($initpos + $offset);
-              return (string)$ret->getBytes('ISO-8859-15');
+              return (string)$ret->getBytes('UTF-8');
             }
             
             case '\\': {

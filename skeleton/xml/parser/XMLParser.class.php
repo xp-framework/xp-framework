@@ -35,9 +35,9 @@
     /**
      * Constructor
      *
-     * @param   string encoding default 'ISO-8859-1'
+     * @param   string encoding default 'utf-8'
      */
-    public function __construct($encoding= 'ISO-8859-1') {
+    public function __construct($encoding= 'utf-8') {
       $this->encoding= $encoding;
     }
 

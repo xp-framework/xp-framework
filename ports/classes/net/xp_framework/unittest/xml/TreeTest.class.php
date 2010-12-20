@@ -154,7 +154,7 @@
     #[@test]
     public function utf8Encoding() {
       $t= create(new Tree('unicode'))->withEncoding('UTF-8');
-      $t->root->setContent('Hällo');
+      $t->root->setContent('HÃ¤llo');
 
       $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>HÃ¤llo</unicode>', $this->sourceOf($t));
@@ -167,7 +167,7 @@
     #[@test]
     public function iso88591Encoding() {
       $t= create(new Tree('unicode'))->withEncoding('ISO-8859-1');
-      $t->root->setContent('Hällo');
+      $t->root->setContent('HÃ¤llo');
 
       $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
