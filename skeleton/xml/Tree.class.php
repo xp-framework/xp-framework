@@ -30,7 +30,7 @@
 
     protected 
       $version  = '1.0',
-      $encoding = 'utf-8';
+      $encoding = 'iso-8859-1';
     
     /**
      * Constructor

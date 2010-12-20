@@ -227,17 +227,17 @@
      * </pre>
      *
      * @param   int indent default INDENT_WRAPPED
-     * @param   string encoding default 'utf-8'
+     * @param   string encoding default 'iso-8859-1'
      * @param   string inset default ''
      * @return  string XML
      */
-    public function getSource($indent= INDENT_WRAPPED, $encoding= 'utf-8', $inset= '') {
+    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
       $xml= $inset.'<'.$this->name;
-      $conv= 'utf-8' != $encoding;
+      $conv= 'iso-8859-1' != $encoding;
       
       if ('string' == ($type= gettype($this->content))) {
         $content= $conv
-          ? iconv('utf-8', $encoding, htmlspecialchars($this->content))
+          ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
           : htmlspecialchars($this->content)
         ;
       } else if ('float' == $type) {
@@ -247,12 +247,12 @@
         ;
       } else if ($this->content instanceof PCData) {
         $content= $conv
-          ? iconv('utf-8', $encoding, $this->content->pcdata)
+          ? iconv('iso-8859-1', $encoding, $this->content->pcdata)
           : $this->content->pcdata
         ;
       } else if ($this->content instanceof CData) {
         $content= '<![CDATA['.str_replace(']]>', ']]]]><![CDATA[>', $conv
-          ? iconv('utf-8', $encoding, $this->content->cdata)
+          ? iconv('iso-8859-1', $encoding, $this->content->cdata)
           : $this->content->cdata
         ).']]>';
       } else if ($this->content instanceof String) {
@@ -264,7 +264,7 @@
       if (INDENT_NONE === $indent) {
         foreach ($this->attribute as $key => $value) {
           $xml.= ' '.$key.'="'.htmlspecialchars($conv
-            ? iconv('utf-8', $encoding, $value) 
+            ? iconv('iso-8859-1', $encoding, $value) 
             : $value
           ).'"';
         }
@@ -278,7 +278,7 @@
           $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
           foreach ($this->attribute as $key => $value) {
             $xml.= $sep.' '.$key.'="'.htmlspecialchars($conv
-              ? iconv('utf-8', $encoding, $value) 
+              ? iconv('iso-8859-1', $encoding, $value) 
               : $value
             ).'"';
           }
