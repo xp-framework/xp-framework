@@ -307,9 +307,8 @@
       if (NULL !== $bootstrap) {
         $include= '.'.PATH_SEPARATOR.PATH_SEPARATOR.$include;
       }
-      
       if ($cp= $options->getClassPath()) {
-        $include.= PATH_SEPARATOR.implode(PATH_SEPARATOR, $options->getClassPath());
+        $include.= PATH_SEPARATOR.implode(PATH_SEPARATOR, $cp); 
       }
       $cmdline= array_merge(
         $options->withSetting('include_path', $include)->asArguments(),
