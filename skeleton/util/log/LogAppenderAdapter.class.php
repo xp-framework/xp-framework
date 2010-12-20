@@ -45,6 +45,27 @@
     }
 
     /**
+     * Allow setting of delegate-properties
+     * 
+     * @see     xp://util.log.Logger::configure
+     * @param   string name
+     * @param   var value
+     */
+    public function __set($name, $value) {
+      $this->delegate->{$name}= $value;
+    }
+
+    /**
+     * Allow retrieval of delegate-properties
+     *
+     * @param   string name
+     * @return  var
+     */
+    public function __get($name) {
+      return $this->delegate->{$name};
+    }
+
+    /**
      * Creates a string representation of this object
      *
      * @return  string

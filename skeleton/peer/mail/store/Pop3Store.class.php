@@ -29,7 +29,7 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException
      */
-    protected function _supports($u, $attr) {
+    protected function _supports($u, &$attr) {
       switch (strtolower($u->getScheme())) {
         case 'pop3': 
           $attr['proto']= 'pop3'; 
