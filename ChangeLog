@@ -89,6 +89,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added setProcessor(int, CellProcessor) and withProcessor() equivalent
+  to text.csv.CsvWriter and text.csv.CsvReader
+  (friebe)
 - Added lang.RuntimeOptions::withClassPath() method
   (friebe)
 - Ports: Added support to Google custom search for Spelling suggestions 
