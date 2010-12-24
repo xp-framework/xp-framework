@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: AbstractCsvProcessor.class.php 11505 2009-09-15 14:01:01Z friebe $ 
+ * $Id$ 
  */
 
   uses('text.csv.CellProcessor');
@@ -44,6 +44,28 @@
      */
     public function setProcessors(array $processors) {
       $this->processors= $processors;
+    }
+
+    /**
+     * Sets processor for a specific column
+     *
+     * @param   int offset
+     * @param   text.csv.CellProcessor[] processors
+     * @return  text.csv.AbstractCsvProcessor this processor
+     */
+    public function withProcessor($offset, CellProcessor $processor) {
+      $this->processors[$offset]= $processor;
+      return $this;
+    }
+
+    /**
+     * Sets processor for a specific column
+     *
+     * @param   int offset
+     * @param   text.csv.CellProcessor[] processors
+     */
+    public function setProcessor($offset, CellProcessor $processor) {
+      $this->processors[$offset]= $processor;
     }
 
     /**
