@@ -89,6 +89,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made unittest default and verbose output include the elapsed time
+  (friebe)
+- Added unittest.TestResult::elapsed() method
+  (friebe)
 - Added setProcessor(int, CellProcessor) and withProcessor() equivalent
   to text.csv.CsvWriter and text.csv.CsvReader
   (friebe)
