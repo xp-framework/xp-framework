@@ -15,7 +15,7 @@
    * @see      xp://lang.types.ArrayList
    * @purpose  IList implementation
    */
-  #[@generic(self= 'T', IList= 'T')]
+  #[@generic(self= 'T', implements= array('T'))]
   class Vector extends Object implements IList {
     protected static
       $iterate   = NULL;

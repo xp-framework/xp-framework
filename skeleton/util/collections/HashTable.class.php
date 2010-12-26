@@ -16,7 +16,7 @@
    * @see      xp://util.collections.Map
    * @purpose  Map interface implementation
    */
-  #[@generic(self= 'K, V', Map= 'K, V')]
+  #[@generic(self= 'K, V', implements= array('K, V'))]
   class HashTable extends Object implements Map {
     protected
       $_buckets  = array(),

@@ -16,7 +16,7 @@
   interface net·xp_framework·unittest·core·generics·IDictionary {
    
     /**
-     * Put a key/value pairt
+     * Put a key/value pair
      *
      * @param   K key
      * @param   V value

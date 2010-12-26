@@ -12,7 +12,7 @@
    * Lookup map
    *
    */
-  #[@generic(self= 'K, V', IDictionary= 'K, V')]
+  #[@generic(self= 'K, V', implements= array('K, V'))]
   abstract class net·xp_framework·unittest·core·generics·AbstractDictionary extends Object implements net·xp_framework·unittest·core·generics·IDictionary {
     
     /**

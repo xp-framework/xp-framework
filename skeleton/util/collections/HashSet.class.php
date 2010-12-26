@@ -14,7 +14,7 @@
    * @test     xp://net.xp_framework.unittest.util.collections.ArrayAccessTest
    * @purpose  Set implemenentation
    */
-  #[@generic(self= 'T', Set= 'T')]
+  #[@generic(self= 'T', implements= array('T'))]
   class HashSet extends Object implements Set {
     protected static
       $iterate   = NULL;
