@@ -69,6 +69,7 @@
       $this->status= proc_get_status($this->_proc);
       $this->status['exe']= $binary;
       $this->status['arguments']= $arguments;
+      $this->status['owner']= TRUE;
 
       // Assign in, out and err members
       $this->in= new File($pipes[0]);
@@ -145,7 +146,8 @@
         'running'   => TRUE,
         'exe'       => $exe,
         'command'   => '',
-        'arguments' => NULL
+        'arguments' => NULL,
+        'owner'     => FALSE
       );
       
       // Determine executable and command line:
@@ -284,12 +286,19 @@
      * Close this process
      *
      * @return  int exit value of process
+     * @throws  lang.IllegalStateException if process is not owned
      */
     public function close() {
-      $this->in->isOpen() && $this->in->close();
-      $this->out->isOpen() && $this->out->close();
-      $this->err->isOpen() && $this->err->close();
-      $this->exitv= proc_close($this->_proc);
+      if (!$this->status['owner']) {
+        throw new IllegalStateException('Cannot close not-owned process #'.$this->status['pid']);
+      }
+      if (NULL !== $this->_proc) {
+        $this->in->isOpen() && $this->in->close();
+        $this->out->isOpen() && $this->out->close();
+        $this->err->isOpen() && $this->err->close();
+        $this->exitv= proc_close($this->_proc);
+        $this->_proc= NULL;
+      }
       
       // If the process wasn't running when we entered this method,
       // determine the exitcode from the previous proc_get_status()

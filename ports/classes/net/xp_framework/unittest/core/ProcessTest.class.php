@@ -70,7 +70,7 @@
      *
      */
     #[@test]
-    public function exitValue() {
+    public function exitValueReturnedFromClose() {
       $p= new Process($this->executable(), array('-r', 'exit(0);'));
       $this->assertEquals(0, $p->close());
     }
@@ -80,9 +80,31 @@
      *
      */
     #[@test]
-    public function nonZeroExitValue() {
+    public function nonZeroExitValueReturnedFromClose() {
       $p= new Process($this->executable(), array('-r', 'exit(2);'));
       $this->assertEquals(2, $p->close());
+    }
+
+    /**
+     * Test exit value
+     *
+     */
+    #[@test]
+    public function exitValue() {
+      $p= new Process($this->executable(), array('-r', 'exit(0);'));
+      $p->close();
+      $this->assertEquals(0, $p->exitValue());
+    }
+
+    /**
+     * Test non-zero exit value
+     *
+     */
+    #[@test]
+    public function nonZeroExitValue() {
+      $p= new Process($this->executable(), array('-r', 'exit(2);'));
+      $p->close();
+      $this->assertEquals(2, $p->exitValue());
     }
 
     /**
@@ -142,6 +164,15 @@
     }
 
     /**
+     * Test running an empty command ("")
+     *
+     */
+    #[@test, @expect('io.IOException')]
+    public function runningEmpty() {
+      new Process('');
+    }
+
+    /**
      * Test getProcessById() method
      *
      */
@@ -160,6 +191,26 @@
       $p= Process::getProcessById($pid);
       $this->assertInstanceOf('lang.Process', $p);
       $this->assertEquals($pid, $p->getProcessId());
+    }
+
+    /**
+     * Test invoking close() method twice
+     *
+     */
+    #[@test]
+    public function doubleClose() {
+      $p= new Process($this->executable(), array('-r', 'exit(222);'));
+      $this->assertEquals(222, $p->close());
+      $this->assertEquals(222, $p->close());
+    }
+
+    /**
+     * Test close() method on a process retrieved by getProcessById()
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= '/Cannot close not-owned/')]
+    public function closingProcessByProcessId() {
+      Process::getProcessById(getmypid())->close();
     }
   }
 ?>

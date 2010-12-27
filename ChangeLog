@@ -58,6 +58,11 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed lang.Process::close() not to raise warnings when called twice
+  (friebe)
+- Fixed lang.Process::close() to raise a specialized exception if the 
+  process was retrieved by getByProcessId() instead of a NullPointer
+  (friebe)
 - Fixed lang.System::tempDir() to check on TMPDIR and TEMPDIR environment
   variables besides TEMP and TMP and to check several traditional locations
   when none of these are set
