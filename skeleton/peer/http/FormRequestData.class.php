@@ -11,9 +11,11 @@
    *
    * Example:
    * <code>
+   *   $request= $conn->create(new HttpRequest());
+   *   $request->setMethod(HttpConstants::POST);
    *   $request->setParameters(create(new FormRequestData())
-   *     ->withPart(new FormPart(...))
-   *     ->withPart(new FormPart(...))
+   *     ->withPart(new FormData('key', 'value'))
+   *     ->withPart(new FormData('comment.txt', $contents, 'text/plain', 'utf-8'))
    *   );
    * </code>
    *
