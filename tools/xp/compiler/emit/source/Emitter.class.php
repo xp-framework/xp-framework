@@ -1806,18 +1806,25 @@
           } catch (IllegalStateException $e) {
             $this->warn('R100', $e->getMessage(), $field->initialization);
           }
-        } else {    // Need to emit initialization of these later
+        } else {
           $init= new xp·compiler·emit·source·Buffer('', $op->line);
+          $this->enter(new MethodScope('<init>'));
+          if ($static) {
+            $variable= new StaticMemberAccessNode(new TypeName('self'), $field->name);
+          } else {
+            $variable= new MemberAccessNode(new VariableNode('this'), $field->name);
+            $this->scope[0]->setType(new VariableNode('this'), $this->scope[0]->declarations[0]->name);
+          }
           $this->emitOne($init, new AssignmentNode(array(
-            'variable'   => $static 
-              ? new StaticMemberAccessNode(new TypeName('self'), $field->name)
-              : new MemberAccessNode(new VariableNode('this'), $field->name)
-            ,
+            'variable'   => $variable,
             'expression' => $field->initialization,
             'op'         => '=',
           )));
           $init->append(';');
+          $type= $this->scope[0]->typeOf($variable);
+          $this->leave();
           $this->inits[0][$static][]= $init;
+          $this->scope[0]->setType($field->initialization, $type);
         }
 
         // If the field is "var" and we have an initialization, determine
