@@ -9,6 +9,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Made unittest default and verbose output include the elapsed time
+  (friebe)
 - Changed util.log.ConsoleAppender to use util.cmd.Console class instead
   of directly writing to STDERR
   (friebe)
@@ -95,8 +97,6 @@ Bugfixes
 Features
 ~~~~~~~~
 - Added fluent interface peer.http.FormRequestData::withPart() 
-  (friebe)
-- Made unittest default and verbose output include the elapsed time
   (friebe)
 - Added unittest.TestResult::elapsed() method
   (friebe)
