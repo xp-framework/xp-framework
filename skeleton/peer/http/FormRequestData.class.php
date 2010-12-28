@@ -9,8 +9,18 @@
   /**
    * Build an HttpRequest w/ embedded multipart/form-data
    *
-   * @test      xp://net.xp_framework.unittest.peer.http.FormRequestdataTest
-   * @purpose   Form data requests
+   * Example:
+   * <code>
+   *   $request->setParameters(create(new FormRequestData())
+   *     ->withPart(new FormPart(...))
+   *     ->withPart(new FormPart(...))
+   *   );
+   * </code>
+   *
+   * @see   xp://peer.http.HttpConnection
+   * @see   xp://peer.http.HttpRequest
+   * @see   xp://peer.http.FormData
+   * @test  xp://net.xp_framework.unittest.peer.http.FormRequestdataTest
    */
   class FormRequestData extends RequestData {
     const
