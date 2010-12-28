@@ -9,6 +9,7 @@
   /**
    * Reads compilation profiles from one or more property file
    *
+   * @test    xp://net.xp_lang.tests.CompilationProfileReaderTest
    */
   class CompilationProfileReader extends Object {
     protected $sources= array();
