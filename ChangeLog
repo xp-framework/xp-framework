@@ -9,10 +9,6 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
-- Changed separator character for alternative file names in xar command
-  from "=" to ":", which is not an allowable character neither on Un*x
-  nor on Windows operating systems.
-  (friebe)
 - Made unittest default and verbose output include the elapsed time
   (friebe)
 - Changed util.log.ConsoleAppender to use util.cmd.Console class instead
