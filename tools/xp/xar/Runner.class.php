@@ -59,7 +59,7 @@
    * ----------------------------------------
    * To view a single file from a given archive, use the following command:
    *
-   * <tt>$ xar sf archive.xar path/to/file/in/archive
+   * <tt>$ xar sf archive.xar path/to/file/in/archive</tt>
    *
    *
    * Merging multiple archives
@@ -73,7 +73,7 @@
    * ----------------------
    * To compare two archives, use the following command:
    *
-   * <tt>$ xar df one.xar two.xar
+   * <tt>$ xar df one.xar two.xar</tt>
    *
    * @purpose  Tool
    */

@@ -9,6 +9,10 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed separator character for alternative file names in xar command
+  from "=" to ":", which is not an allowable character neither on Un*x
+  nor on Windows operating systems.
+  (friebe)
 - Made unittest default and verbose output include the elapsed time
   (friebe)
 - Changed util.log.ConsoleAppender to use util.cmd.Console class instead
@@ -60,6 +64,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed xar command when files are passed with alternative names creating
+  archives with all files named after the alternative name.
+  (friebe)
 - Fixed lang.Process::close() not to raise warnings when called twice
   (friebe)
 - Fixed lang.Process::close() to raise a specialized exception if the 
