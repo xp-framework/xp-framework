@@ -94,6 +94,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added fluent interface peer.http.FormRequestData::withPart() 
+  (friebe)
 - Made unittest default and verbose output include the elapsed time
   (friebe)
 - Added unittest.TestResult::elapsed() method

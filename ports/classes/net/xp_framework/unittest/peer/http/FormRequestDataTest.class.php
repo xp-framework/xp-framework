@@ -33,9 +33,19 @@
      *
      */
     #[@test]
-    public function add() {
+    public function addPart() {
       $data= new FormData('key', 'value');
       $this->assertEquals($data, $this->fixture->addPart($data));
+    }
+
+    /**
+     * Test adding new parameters
+     *
+     */
+    #[@test]
+    public function withPart() {
+      $data= new FormData('key', 'value');
+      $this->assertEquals($this->fixture, $this->fixture->withPart($data));
     }
 
     /**
