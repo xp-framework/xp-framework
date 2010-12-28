@@ -144,7 +144,7 @@
      *
      * @return  [:int]
      */
-    public function stream_stat($path) {
+    public function stream_stat() {
       return array(
         'dev'   => 0,
         'ino'   => 0,
