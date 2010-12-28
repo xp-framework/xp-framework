@@ -44,11 +44,7 @@
       $list= array();
 
       foreach ($this->getArguments() as $arg) {
-        if (FALSE !== ($p= strpos($arg, ':'))) {
-          $urn= substr($arg, $p+ 1);
-          $arg= substr($arg, 0, $p);
-        } else if (FALSE !== ($p= strpos($arg, '=')) && !file_exists($arg)) {   // BC
-          $this->err->writeLine('Using "=" as separator between filename and archive name is deprecated, please use ":"');
+        if (FALSE !== ($p= strrpos($arg, '='))) {
           $urn= substr($arg, $p+ 1);
           $arg= substr($arg, 0, $p);
         } else {
