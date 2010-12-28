@@ -44,7 +44,7 @@
       $this->optimizations->clear();
       $this->checks->clear();
       foreach ($profile->warnings as $impl) {
-        $this->checks->add($impl);
+        $this->checks->add($impl, FALSE);
       }
       foreach ($profile->errors as $impl) {
         $this->checks->add($impl, TRUE);
