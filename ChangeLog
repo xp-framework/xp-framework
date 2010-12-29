@@ -60,6 +60,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Added support for array and hash keys (key[], key[name]) in ini files 
+  to Properties::fromString() - parse_ini_file() already supports this.
+  (friebe)
 - Fixed xar command when files are passed with alternative names creating
   archives with all files named after the alternative name.
   (friebe)

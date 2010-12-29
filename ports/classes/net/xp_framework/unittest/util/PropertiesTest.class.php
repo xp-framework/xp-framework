@@ -314,5 +314,59 @@ foo=bar
       $this->assertEquals('empty', $p->getNextSection());     
       $this->assertEquals('final', $p->getNextSection());
     }
+
+    /**
+     * Test keys with a array keys
+     *
+     */
+    #[@test]
+    public function arrayKeys() {
+     $p= Properties::fromString('
+[section]
+class[0]=util.Properties
+class[1]=util.PropertyManager
+      ');
+      
+      $this->assertEquals(
+        array('class' => array('util.Properties', 'util.PropertyManager')),
+        $p->readSection('section')
+      );
+    }
+
+    /**
+     * Test keys with a hash keys
+     *
+     */
+    #[@test]
+    public function arrayKeysEmptyOffset() {
+     $p= Properties::fromString('
+[section]
+class[]=util.Properties
+class[]=util.PropertyManager
+      ');
+      
+      $this->assertEquals(
+        array('class' => array('util.Properties', 'util.PropertyManager')),
+        $p->readSection('section')
+      );
+    }
+
+    /**
+     * Test keys with a hash keys
+     *
+     */
+    #[@test]
+    public function hashKeys() {
+     $p= Properties::fromString('
+[section]
+class[one]=util.Properties
+class[two]=util.PropertyManager
+      ');
+      
+      $this->assertEquals(
+        array('class' => array('one' => 'util.Properties', 'two' => 'util.PropertyManager')),
+        $p->readSection('section')
+      );
+    }
   }
 ?>
