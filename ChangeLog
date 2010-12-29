@@ -102,6 +102,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added ability to select unmarshalling target class based on root
+  tag to xml.meta.Unmarshaller
+  (friebe)
 - Added fluent interface peer.http.FormRequestData::withPart() 
   (friebe)
 - Added unittest.TestResult::elapsed() method

@@ -7,6 +7,9 @@
   uses(
     'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
+    'net.xp_framework.unittest.xml.ButtonType',
+    'net.xp_framework.unittest.xml.NameBasedTypeFactory',
+    'net.xp_framework.unittest.xml.IdBasedTypeFactory',
     'xml.meta.Unmarshaller',
     'io.streams.MemoryInputStream',
     'xml.parser.StreamInputSource'
@@ -205,6 +208,82 @@
       Unmarshaller::unmarshal(
         '', 
         'net.xp_framework.unittest.xml.DialogType'
+      );
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function nameBasedFactoryToDialog() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<dialog/>')),
+        'net.xp_framework.unittest.xml.NameBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.DialogType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function nameBasedFactoryToButton() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<button/>')),
+        'net.xp_framework.unittest.xml.NameBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.ButtonType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test, @expect('lang.reflect.TargetInvocationException')]
+    public function nameBasedFactoryToUnknown() {
+      $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<unknown/>')),
+        'net.xp_framework.unittest.xml.NameBasedTypeFactory'
+      );
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function idBasedFactoryToDialog() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<object id="dialog"/>')),
+        'net.xp_framework.unittest.xml.IdBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.DialogType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function idBasedFactoryToButton() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<object id="button"/>')),
+        'net.xp_framework.unittest.xml.IdBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.ButtonType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test, @expect('lang.reflect.TargetInvocationException')]
+    public function idBasedFactoryToUnknown() {
+      $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<object id="unknown"/>')),
+        'net.xp_framework.unittest.xml.IdBasedTypeFactory'
       );
     }
   }

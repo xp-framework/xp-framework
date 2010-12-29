@@ -67,14 +67,12 @@
      *
      * @param   xml.XPath xpath
      * @param   php.DomElement context
-     * @param   string classname
+     * @param   lang.XPClass classname
      * @return  lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XPathException
      */
-    protected static function recurse($xpath, $context, $classname) {
-      $class= XPClass::forName($classname);
-      $instance= $class->newInstance();
+    protected static function recurse($xpath, $context, $class) {
 
       // Namespace handling
       if ($class->hasAnnotation('xmlns')) {
@@ -82,7 +80,8 @@
           $xpath->context->registerNamespace($prefix, $url);
         }
       }
-
+      
+      $instance= $class->newInstance();
       foreach ($class->getMethods() as $method) {
         if (!$method->hasAnnotation('xmlmapping', 'element')) continue;
 
@@ -99,7 +98,7 @@
             $arguments= array(self::recurse(
               $xpath, 
               $node, 
-              $method->getAnnotation('xmlmapping', 'class')
+              XPClass::forName($method->getAnnotation('xmlmapping', 'class'))
             ));
           } else if ($method->hasAnnotation('xmlmapping', 'factory')) {
 
@@ -120,10 +119,10 @@
             $arguments= array(self::recurse(
               $xpath, 
               $node, 
-              call_user_func_array(
+              XPClass::forName(call_user_func_array(
                 array($instance, $method->getAnnotation('xmlmapping', 'factory')), 
                 $factoryArgs
-              )
+              ))
             ));
           } else if ($method->hasAnnotation('xmlmapping', 'pass')) {
           
@@ -175,7 +174,7 @@
         $e= libxml_get_last_error();
         throw new XMLFormatException(trim($e->message), $e->code, $source, $e->line, $e->column);
       }
-      return self::recurse(new XPath($doc), $doc->documentElement, $classname);
+      return self::recurse(new XPath($doc), $doc->documentElement, XPClass::forName($classname));
     }
 
     /**
@@ -186,6 +185,7 @@
      * @return  lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XMLFormatException
+     * @throws  lang.reflect.TargetInvocationException
      */
     public function unmarshalFrom(InputSource $input, $classname) {
       libxml_clear_errors();
@@ -194,7 +194,25 @@
         $e= libxml_get_last_error();
         throw new XMLFormatException(trim($e->message), $e->code, $input->getSource(), $e->line, $e->column);
       }
-      return self::recurse(new XPath($doc), $doc->documentElement, $classname);
+
+      $xpath= new XPath($doc);
+
+      // Class factory based on tag name, reference to a static method which is called with 
+      // the class name and returns an XPClass instance.
+      $class= XPClass::forName($classname);
+      if ($class->hasAnnotation('xmlmapping', 'factory')) {
+        if ($class->hasAnnotation('xmlmapping', 'pass')) {
+          $factoryArgs= array();
+          foreach ($class->getAnnotation('xmlmapping', 'pass') as $pass) {
+            $factoryArgs[]= self::contentOf($xpath->query($pass, $doc->documentElement));
+          }
+        } else {
+          $factoryArgs= array($doc->documentElement->nodeName);
+        }
+        $class= $class->getMethod($class->getAnnotation('xmlmapping', 'factory'))->invoke(NULL, $factoryArgs);
+      }
+
+      return self::recurse($xpath, $doc->documentElement, $class);
     }
   }
 ?>
