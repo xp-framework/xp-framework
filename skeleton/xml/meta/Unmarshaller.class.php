@@ -66,13 +66,14 @@
      * Recursively unmarshal
      *
      * @param   xml.XPath xpath
-     * @param   php.DomElement context
+     * @param   php.DomElement element
      * @param   lang.XPClass classname
+     * @param   [:var] inject
      * @return  lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XPathException
      */
-    protected static function recurse($xpath, $context, $class) {
+    protected static function recurse($xpath, $element, $class, $inject) {
 
       // Namespace handling
       if ($class->hasAnnotation('xmlns')) {
@@ -86,7 +87,7 @@
         if (!$method->hasAnnotation('xmlmapping', 'element')) continue;
 
         // Perform XPath query
-        $result= $xpath->query($method->getAnnotation('xmlmapping', 'element'), $context);
+        $result= $xpath->query($method->getAnnotation('xmlmapping', 'element'), $element);
 
         // Iterate over results, invoking the method for each node.
         foreach ($result as $node) {
@@ -98,7 +99,8 @@
             $arguments= array(self::recurse(
               $xpath, 
               $node, 
-              XPClass::forName($method->getAnnotation('xmlmapping', 'class'))
+              XPClass::forName($method->getAnnotation('xmlmapping', 'class')),
+              $inject
             ));
           } else if ($method->hasAnnotation('xmlmapping', 'factory')) {
 
@@ -122,7 +124,8 @@
               XPClass::forName(call_user_func_array(
                 array($instance, $method->getAnnotation('xmlmapping', 'factory')), 
                 $factoryArgs
-              ))
+              )),
+              $inject
             ));
           } else if ($method->hasAnnotation('xmlmapping', 'pass')) {
           
@@ -144,6 +147,13 @@
 
             // * Otherwise, pass the node's content to the method
             $arguments= array(utf8_decode($node->textContent));
+          }
+          
+          // Pass injection parameters at end of list
+          if ($method->hasAnnotation('xmlmapping', 'inject')) {
+            foreach ($method->getAnnotation('xmlmapping', 'inject') as $name) {
+              $arguments[]= $inject[$name];
+            }
           }
           
           $method->invoke($instance, $arguments);
@@ -174,7 +184,7 @@
         $e= libxml_get_last_error();
         throw new XMLFormatException(trim($e->message), $e->code, $source, $e->line, $e->column);
       }
-      return self::recurse(new XPath($doc), $doc->documentElement, XPClass::forName($classname));
+      return self::recurse(new XPath($doc), $doc->documentElement, XPClass::forName($classname), array());
     }
 
     /**
@@ -182,12 +192,13 @@
      *
      * @param   xml.parser.InputSource source
      * @param   string classname
+     * @param   [:var] inject
      * @return  lang.Object
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XMLFormatException
      * @throws  lang.reflect.TargetInvocationException
      */
-    public function unmarshalFrom(InputSource $input, $classname) {
+    public function unmarshalFrom(InputSource $input, $classname, $inject= array()) {
       libxml_clear_errors();
       $doc= new DOMDocument();
       if (!$doc->load(Streams::readableUri($input->getStream()))) {
@@ -212,7 +223,7 @@
         $class= $class->getMethod($class->getAnnotation('xmlmapping', 'factory'))->invoke(NULL, $factoryArgs);
       }
 
-      return self::recurse($xpath, $doc->documentElement, $class);
+      return self::recurse($xpath, $doc->documentElement, $class, $inject);
     }
   }
 ?>
