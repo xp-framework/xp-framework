@@ -40,6 +40,8 @@
      */
     public function verify(xp·compiler·ast·Node $node, Scope $scope) {
       $type= cast($node, 'xp.compiler.ast.TypeDeclarationNode');
+      if (!$type->body) return;   // Short-circuit
+
       $index= array();
       $qname= $type->name->compoundName();
       foreach ($type->body as $member) {
