@@ -35,7 +35,7 @@
      * @return  util.Properties
      */
     protected function newProperties($source) {
-      return new Properties(Streams::readableUri(new MemoryInputStream($source)));
+      return Properties::fromString(preg_replace('/^\s*/', '', $source));
     }
 
     /**
