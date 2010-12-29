@@ -41,6 +41,16 @@
      *
      */
     #[@test]
+    public function literalWithoutPackageAndPackageModifier() {
+      $decl= new TypeReference(new TypeName('TestCase'), Types::PARTIAL_KIND, MODIFIER_PACKAGE);
+      $this->assertEquals('TestCase', $decl->literal());
+    }
+
+    /**
+     * Test name() method
+     *
+     */
+    #[@test]
     public function nameWithPackage() {
       $decl= new TypeReference(new TypeName('unittest.TestCase'));
       $this->assertEquals('unittest.TestCase', $decl->name());
@@ -54,6 +64,16 @@
     public function literalWithPackage() {
       $decl= new TypeReference(new TypeName('unittest.TestCase'));
       $this->assertEquals('TestCase', $decl->literal());
+    }
+
+    /**
+     * Test name() method
+     *
+     */
+    #[@test]
+    public function literalWithPackageAndPackageModifier() {
+      $decl= new TypeReference(new TypeName('unittest.TestCase'), Types::PARTIAL_KIND, MODIFIER_PACKAGE);
+      $this->assertEquals('unittest·TestCase', $decl->literal());
     }
 
     /**

@@ -120,7 +120,8 @@
     protected function partialType(ParseTree $tree) {
       return new TypeReference(
         $tree->package ? new TypeName($tree->package->name.'.'.$tree->declaration->name->name) : $tree->declaration->name,
-        Types::PARTIAL_KIND
+        Types::PARTIAL_KIND,
+        $tree->declaration->modifiers
       );
     }
     

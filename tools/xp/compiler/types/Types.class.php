@@ -15,6 +15,10 @@
     'xp.compiler.types.Operator'
   );
 
+  define('MODIFIER_PACKAGE',  2048);
+  define('MODIFIER_INLINE',   4096);
+  define('MODIFIER_NATIVE',   8192);
+
   /**
    * Abstract base class
    *
