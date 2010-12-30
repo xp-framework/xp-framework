@@ -95,7 +95,9 @@
     /**
      * Test pass attribute when used with scalar results, e.g.
      *
-     * #[@xmlmapping(element= 'flags', pass= array(count(.)))]
+     * <code>
+     *   #[@xmlmapping(element= 'flags', pass= array('count(.)'))]
+     * </code>
      */
     #[@test]
     public function usingPassWithScalars() {
@@ -112,7 +114,9 @@
     /**
      * Test pass attribute when used with nodeset results, e.g.
      *
-     * #[@xmlmapping(element= 'option', pass= array('@name'))]
+     * <code>
+     *   #[@xmlmapping(element= 'option', pass= array('@name'))]
+     * </code>
      */
     #[@test]
     public function usingPassWithNodes() {
@@ -285,6 +289,41 @@
         new StreamInputSource(new MemoryInputStream('<object id="unknown"/>')),
         'net.xp_framework.unittest.xml.IdBasedTypeFactory'
       );
+    }
+
+    /**
+     * Test injection
+     *
+     * <code>
+     *   #[@inject(element= '@owner-window', inject= array('window'))]
+     * </code>
+     *
+     * @see   xp://net.xp_framework.unittest.xml.DialogType#setOwnerWindowNamed
+     */
+    #[@test]
+    public function inject() {
+      $dialog= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<dialog owner-window="main"/>')),
+        'net.xp_framework.unittest.xml.DialogType',
+        array('windows' => array(
+          'main'     => 1,
+          'desktop'  => 0
+        ))
+      );
+      $this->assertEquals(1, $dialog->getOwnerWindow());
+    }
+
+    /**
+     * Test injection
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function injectionFails() {
+      $dialog= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<dialog owner-window="main"/>')),
+        'net.xp_framework.unittest.xml.DialogType'
+      );
+      $this->assertEquals(1, $dialog->getOwnerWindow());
     }
   }
 ?>

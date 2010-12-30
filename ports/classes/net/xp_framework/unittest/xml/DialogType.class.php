@@ -16,6 +16,7 @@
    */
   class DialogType extends Object {
     public
+      $window   = NULL,
       $id       = '',
       $caption  = '',
       $buttons  = NULL,
@@ -28,6 +29,26 @@
      */
     public function __construct() {
       $this->buttons= create('new util.collections.Vector<net.xp_framework.unittest.xml.ButtonType>()');
+    }
+
+    /**
+     * Inject a window
+     *
+     * @param   string name
+     * @param   [:int] windows handle lookup
+     */
+    #[@xmlmapping(element= '@owner-window', inject= array('windows'))]
+    public function setOwnerWindowNamed($name, array $windows) {
+      $this->window= $windows[$name];
+    }
+
+    /**
+     * Gets window
+     *
+     * @param   int id
+     */
+    public function getOwnerWindow() {
+      return $this->window;
     }
 
     /**
