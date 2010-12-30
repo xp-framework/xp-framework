@@ -212,5 +212,35 @@
     public function closingProcessByProcessId() {
       Process::getProcessById(getmypid())->close();
     }
+
+    /**
+     * Test huge STDOUT output
+     *
+     */
+    #[@test]
+    public function hugeStdout() {
+      $p= new Process($this->executable(), array('-r', 'fputs(STDOUT, str_repeat("*", 65536));'));
+      $out= '';
+      while (!$p->out->eof()) {
+        $out.= $p->out->read();
+      }
+      $p->close();
+      $this->assertEquals(65536, strlen($out));
+    }
+
+    /**
+     * Test huge STDERR output
+     *
+     */
+    #[@test]
+    public function hugeStderr() {
+      $p= new Process($this->executable(), array('-r', 'fputs(STDERR, str_repeat("*", 65536));'));
+      $err= '';
+      while (!$p->err->eof()) {
+        $err.= $p->err->read();
+      }
+      $p->close();
+      $this->assertEquals(65536, strlen($err));
+    }
   }
 ?>
