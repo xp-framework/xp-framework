@@ -9,6 +9,7 @@
     'net.xp_framework.unittest.xml.DialogType',
     'net.xp_framework.unittest.xml.ButtonType',
     'net.xp_framework.unittest.xml.WindowType',
+    'net.xp_framework.unittest.xml.ApplicationType',
     'net.xp_framework.unittest.xml.NameBasedTypeFactory',
     'net.xp_framework.unittest.xml.IdBasedTypeFactory',
     'xml.meta.Unmarshaller',
@@ -324,6 +325,24 @@
         new StreamInputSource(new MemoryInputStream('<window owner-window="main"/>')),
         'net.xp_framework.unittest.xml.WindowType'
       );
+    }
+
+    /**
+     * Test namespaces
+     *
+     * <code>
+     *   #[@xmlns(app = 'http://projects.xp-framework.net/xmlns/app')]
+     * </code>
+     *
+     * @see   xp://net.xp_framework.unittest.xml.ApplicationType
+     */
+    #[@test]
+    public function namespaces() {
+      $app= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<app:application xmlns:app="http://projects.xp-framework.net/xmlns/app"/>')),
+        'net.xp_framework.unittest.xml.ApplicationType'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.ApplicationType', $app);
     }
   }
 ?>
