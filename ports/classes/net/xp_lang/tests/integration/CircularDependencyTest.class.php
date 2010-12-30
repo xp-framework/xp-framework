@@ -66,8 +66,26 @@
      *
      */
     #[@test]
-    public function aba() {
+    public function compileA() {
       $this->compileSource('A.xp')->name();
+    }
+
+    /**
+     * Test class B which requires class A
+     *
+     */
+    #[@test]
+    public function compileB() {
+      $this->compileSource('B.xp')->name();
+    }
+
+    /**
+     * Test class C which requires class B and class A
+     *
+     */
+    #[@test]
+    public function compileC() {
+      $this->compileSource('C.xp')->name();
     }
   }
 ?>

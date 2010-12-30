@@ -7,6 +7,11 @@
   uses(
     'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
+    'net.xp_framework.unittest.xml.ButtonType',
+    'net.xp_framework.unittest.xml.WindowType',
+    'net.xp_framework.unittest.xml.ApplicationType',
+    'net.xp_framework.unittest.xml.NameBasedTypeFactory',
+    'net.xp_framework.unittest.xml.IdBasedTypeFactory',
     'xml.meta.Unmarshaller',
     'io.streams.MemoryInputStream',
     'xml.parser.StreamInputSource'
@@ -92,7 +97,9 @@
     /**
      * Test pass attribute when used with scalar results, e.g.
      *
-     * #[@xmlmapping(element= 'flags', pass= array(count(.)))]
+     * <code>
+     *   #[@xmlmapping(element= 'flags', pass= array('count(.)'))]
+     * </code>
      */
     #[@test]
     public function usingPassWithScalars() {
@@ -109,7 +116,9 @@
     /**
      * Test pass attribute when used with nodeset results, e.g.
      *
-     * #[@xmlmapping(element= 'option', pass= array('@name'))]
+     * <code>
+     *   #[@xmlmapping(element= 'option', pass= array('@name'))]
+     * </code>
      */
     #[@test]
     public function usingPassWithNodes() {
@@ -206,6 +215,152 @@
         '', 
         'net.xp_framework.unittest.xml.DialogType'
       );
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function nameBasedFactoryToDialog() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<dialog/>')),
+        'net.xp_framework.unittest.xml.NameBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.DialogType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function nameBasedFactoryToButton() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<button/>')),
+        'net.xp_framework.unittest.xml.NameBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.ButtonType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test, @expect('lang.reflect.TargetInvocationException')]
+    public function nameBasedFactoryToUnknown() {
+      $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<unknown/>')),
+        'net.xp_framework.unittest.xml.NameBasedTypeFactory'
+      );
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function idBasedFactoryToDialog() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<object id="dialog"/>')),
+        'net.xp_framework.unittest.xml.IdBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.DialogType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test]
+    public function idBasedFactoryToButton() {
+      $object= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<object id="button"/>')),
+        'net.xp_framework.unittest.xml.IdBasedTypeFactory'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.ButtonType', $object);
+    }
+
+    /**
+     * Test unmarshalling to a factory
+     *
+     */
+    #[@test, @expect('lang.reflect.TargetInvocationException')]
+    public function idBasedFactoryToUnknown() {
+      $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<object id="unknown"/>')),
+        'net.xp_framework.unittest.xml.IdBasedTypeFactory'
+      );
+    }
+
+    /**
+     * Test injection
+     *
+     * <code>
+     *   #[@xmlmapping(element= '@owner-window', inject= array('window'))]
+     * </code>
+     *
+     * @see   xp://net.xp_framework.unittest.xml.WindowType#setOwnerWindowNamed
+     */
+    #[@test]
+    public function inject() {
+      $window= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<window owner-window="main"/>')),
+        'net.xp_framework.unittest.xml.WindowType',
+        array('windows' => array(
+          'main'     => 1,
+          'desktop'  => 0
+        ))
+      );
+      $this->assertEquals(1, $window->getOwnerWindow());
+    }
+
+    /**
+     * Test injection
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function injectionFails() {
+      $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<window owner-window="main"/>')),
+        'net.xp_framework.unittest.xml.WindowType'
+      );
+    }
+
+    /**
+     * Test namespaces
+     *
+     * <code>
+     *   #[@xmlns(app = 'http://projects.xp-framework.net/xmlns/app')]
+     * </code>
+     *
+     * @see   xp://net.xp_framework.unittest.xml.ApplicationType
+     */
+    #[@test]
+    public function namespaces() {
+      $app= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<app:application xmlns:app="http://projects.xp-framework.net/xmlns/app"/>')),
+        'net.xp_framework.unittest.xml.ApplicationType'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.ApplicationType', $app);
+    }
+
+
+    /**
+     * Tests casting
+     *
+     * <code>
+     *   #[@xmlmapping(element = '@disabled', cast = 'asBool')]
+     * </code>
+     */
+    #[@test]
+    public function casting() {
+      $t= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<input id="name" disabled="true"/>')),
+        'net.xp_framework.unittest.xml.TextInputType'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.TextInputType', $t);
+      $this->assertTrue($t->getDisabled());
     }
   }
 ?>

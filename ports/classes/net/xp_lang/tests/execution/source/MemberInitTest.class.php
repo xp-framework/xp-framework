@@ -6,13 +6,22 @@
 
   $package= 'net.xp_lang.tests.execution.source';
 
-  uses('net.xp_lang.tests.execution.source.ExecutionTest');
+  uses('net.xp_lang.tests.execution.source.ExecutionTest', 'xp.compiler.checks.UninitializedVariables');
 
   /**
    * Tests member initialization
    *
    */
   class net·xp_lang·tests·execution·source·MemberInitTest extends ExecutionTest {
+
+    /**
+     * Sets up test case and adds IsAsssignale check
+     *
+     */
+    public function setUp() {
+      parent::setUp();
+      $this->check(new UninitializedVariables(), TRUE);
+    }
   
     /**
      * Creates a new instance

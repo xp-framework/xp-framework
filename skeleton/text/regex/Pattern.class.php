@@ -114,9 +114,9 @@
      */  
     public function match($input) {
       if ($input instanceof String) {
-        $n= preg_match_all($this->regex, (string)$input->getBytes($this->utf8 ? 'utf-8' : 'iso-8859-1'), $m, PREG_SET_ORDER );
+        $n= preg_match_all($this->regex, (string)$input->getBytes($this->utf8 ? 'utf-8' : 'iso-8859-1'), $m, PREG_SET_ORDER);
       } else {
-        $n= preg_match_all($this->regex, (string)$input, $m, PREG_SET_ORDER );
+        $n= preg_match_all($this->regex, (string)$input, $m, PREG_SET_ORDER);
       }
       if (FALSE === $n || PREG_NO_ERROR != preg_last_error()) {
         $e= new FormatException('Pattern "'.$this->regex.'" matching error');

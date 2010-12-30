@@ -133,6 +133,25 @@
     }
     
     /**
+     * Returns elapsed time
+     *
+     * @return  float
+     */
+    public function elapsed() {
+      $total= 0.0;
+      foreach ($this->succeeded as $outcome) {
+        $total+= $outcome->elapsed();
+      }
+      foreach ($this->failed as $outcome) {
+        $total+= $outcome->elapsed();
+      }
+      foreach ($this->skipped as $outcome) {
+        $total+= $outcome->elapsed();
+      }
+      return $total;
+    }
+    
+    /**
      * Create a nice string representation
      *
      * @return  string

@@ -70,7 +70,7 @@
         Primitive::$STRING,
         XPClass::forName('unittest.TestCase')
       ));
-      $this->assertEquals('net.xp_framework.unittest.core.generics.Lookup`2[string,unittest.TestCase]', $type->getName());
+      $this->assertEquals('net.xp_framework.unittest.core.generics.Lookup<string,unittest.TestCase>', $type->getName());
     }
 
     /**

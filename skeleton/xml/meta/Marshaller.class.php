@@ -40,8 +40,9 @@
      * @param   lang.Object instance
      * @param   lang.XPClass class
      * @param   xml.Node node
+     * @param   [:var] inject
      */
-    protected static function recurse($instance, $class, $node) {
+    protected static function recurse($instance, $class, $node, $inject) {
     
       // Namespace handling
       if ($class->hasAnnotation('xmlns')) {
@@ -55,15 +56,39 @@
         
         $element= $method->getAnnotation('xmlfactory', 'element');
         
-        // Attributes
-        if ('@' == $element{0}) {
-          $node->setAttribute(substr($element, 1), $method->invoke($instance));
-          continue;
+        // Pass injection parameters at end of list
+        $arguments= array();
+        if ($method->hasAnnotation('xmlfactory', 'inject')) {
+          foreach ($method->getAnnotation('xmlfactory', 'inject') as $name) {
+            if (!isset($inject[$name])) throw new IllegalArgumentException(
+              'Injection parameter "'.$name.'" not found for '.$method->toString()
+            );
+            $arguments[]= $inject[$name];
+          }
         }
         
-        // Node content
-        if ('.' == $element) {
-          $node->setContent($method->invoke($instance));
+        $result= $method->invoke($instance, $arguments);
+
+        // Cast result if specified
+        if ($method->hasAnnotation('xmlfactory', 'cast')) {
+          $cast= $method->getAnnotation('xmlfactory', 'cast');
+          switch (sscanf($cast, '%[^:]::%s', $c, $m)) {
+            case 1: $target= array($instance, $c); break;
+            case 2: $target= array($c, $m); break;
+            default: throw new IllegalArgumentException('Unparseable cast "'.$cast.'"');
+          }
+          $result= call_user_func(array($instance, $method->getAnnotation('xmlfactory', 'cast')), $result);
+        }
+        
+        // Attributes = "@<name>", Node content= ".", Name = "name()"
+        if ('@' === $element{0}) {
+          $node->setAttribute(substr($element, 1), $result);
+          continue;
+        } else if ('.' === $element) {
+          $node->setContent($result);
+          continue;
+        } else if ('name()' === $element) {
+          $node->setName($result);
           continue;
         }
         
@@ -80,7 +105,6 @@
         //
         // - For objects, add a new node and invoke the recurse() method
         //   on it.
-        $result= $method->invoke($instance);
         if (is_scalar($result) || NULL === $result) {
           $node->addChild(new Node($element, $result));
         } else if (is_array($result)) {
@@ -91,18 +115,18 @@
         } else if (is('lang.Collection', $result)) {
           $elementClass= $result->getElementClass();
           foreach ($result->values() as $value) {
-            self::recurse($value, $elementClass, $node->addChild(new Node($element)));
+            self::recurse($value, $elementClass, $node->addChild(new Node($element)), $inject);
           }
         } else if ($result instanceof Traversable) {
           foreach ($result as $value) {
             if ($value instanceof Generic) {
-              self::recurse($value, $value->getClass(), $node->addChild(new Node($element)));
+              self::recurse($value, $value->getClass(), $node->addChild(new Node($element)), $inject);
             } else {
               $node->addChild(new Node($element, $value));
             }
           }
         } else if ($result instanceof Generic) {
-          self::recurse($result, $result->getClass(), $node->addChild(new Node($element)));
+          self::recurse($result, $result->getClass(), $node->addChild(new Node($element)), $inject);
         }
       }
     }
@@ -132,7 +156,7 @@
         $tree->root->setName(strtolower($class->getSimpleName()));
       }
       
-      self::recurse($instance, $class, $tree->root);
+      self::recurse($instance, $class, $tree->root, array());
       return $tree->getSource(INDENT_DEFAULT);
     }
  
@@ -141,9 +165,10 @@
      *
      * @param   xml.Node target
      * @param   lang.Object instance
+     * @param   [:var] inject
      * @return  xml.Node the given target
      */
-    public function marshalTo(Node $target, Generic $instance) {
+    public function marshalTo(Node $target, Generic $instance, $inject= array()) {
       $class= $instance->getClass();
 
       // Add XML namespace from class' "xmlns" annotation if present
@@ -151,7 +176,7 @@
         $target->setName(key($class->getAnnotation('xmlns')).':'.$target->getName());
       }
       
-      self::recurse($instance, $class, $target);
+      self::recurse($instance, $class, $target, $inject);
       return $target;
     }
   }

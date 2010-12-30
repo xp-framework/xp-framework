@@ -100,7 +100,7 @@
      * @return  string
      */
     public function getSimpleName() {
-      return FALSE === ($p= strrpos(substr($this->name, 0, strcspn($this->name, '[')), '.')) 
+      return FALSE === ($p= strrpos(substr($this->name, 0, strcspn($this->name, '<')), '.')) 
         ? $this->name                   // Already unqualified
         : substr($this->name, $p+ 1)    // Full name
       ;
@@ -765,7 +765,7 @@
         $qc.= ','.$typearg->getName();
       }
       $name= xp::reflect($self->name).'··'.substr($cn, 1);
-      $qname= $self->name.'`'.$cs.'['.substr($qc, 1).']';
+      $qname= $self->name.'<'.substr($qc, 1).'>';
 
       // Create class if it doesn't exist yet
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
@@ -791,8 +791,10 @@
         $src= '';
         $comment= NULL;
         $annotations= array();
+        $annotation= NULL;
         $matches= array();
         $state= array(0);
+        $counter= 0;
         $tokens= token_get_all($bytes);
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
           if (T_COMMENT === $tokens[$i][0] && '#' === $tokens[$i][1]{0}) {
@@ -832,12 +834,18 @@
           } else if (T_CLASS === $state[0]) {
             if (T_EXTENDS === $tokens[$i][0]) {
               if (isset($annotations['generic']['parent'])) {
-                $src.= ' extends '.self::createGenericType($self->getParentClass(), $arguments)->literal();
+                $xargs= array();
+                foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
+                  $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
+                }
+                $src.= ' extends '.self::createGenericType($self->getParentClass(), $xargs)->literal();
               } else {
                 $src.= ' extends '.$tokens[$i+ 2][1];
               }
             } else if (T_IMPLEMENTS === $tokens[$i][0]) {
               $src.= ' implements';
+              $counter= 0;
+              $annotation= @$annotations['generic']['implements'];
               array_unshift($state, 5);
             } else if ('{' === $tokens[$i][0]) {
               array_shift($state);
@@ -848,6 +856,8 @@
           } else if (T_INTERFACE === $state[0]) {
             if (T_EXTENDS === $tokens[$i][0]) {
               $src.= ' extends';
+              $counter= 0;
+              $annotation= @$annotations['generic']['extends'];
               array_unshift($state, 5);
             } else if ('{' === $tokens[$i][0]) {
               array_shift($state);
@@ -954,13 +964,18 @@
               $braces--;
               if (0 === $braces) array_shift($state);
             }
-          } else if (5 === $state[0]) {             // Implements
+          } else if (5 === $state[0]) {             // Implements (class), Extends (interface)
             if (T_STRING === $tokens[$i][0]) {
-              if (isset($annotations['generic'][$tokens[$i][1]])) {
-                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $arguments)->literal();
+              if (isset($annotation[$counter])) {
+                $iargs= array();
+                foreach (explode(',', $annotation[$counter]) as $j => $placeholder) {
+                  $iargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
+                }
+                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs)->literal();
               } else {
                 $src.= $tokens[$i][1];
               }
+              $counter++;
               continue;
             } else if ('{' === $tokens[$i][0]) {
               array_shift($state);
@@ -972,6 +987,7 @@
         }
 
         // Create class
+        // DEBUG fputs(STDERR, "@* ".substr($src, 0, strpos($src, '{'))." -> $qname\n");
         eval($src);
         method_exists($name, '__static') && call_user_func(array($name, '__static'));
         unset($meta['class'][DETAIL_ANNOTATIONS]['generic']);

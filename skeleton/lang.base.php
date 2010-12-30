@@ -642,7 +642,7 @@
     } else if (is_array($arg)) {
       return 0 === key($arg) ? ArrayType::forName('var[]') : MapType::forName('[:var]');
     } else {
-      return Primitive::forName(gettype($arg));
+      return Type::forName(gettype($arg));
     }
   }
   // }}}

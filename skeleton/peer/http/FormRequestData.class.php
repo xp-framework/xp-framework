@@ -9,8 +9,20 @@
   /**
    * Build an HttpRequest w/ embedded multipart/form-data
    *
-   * @test      xp://net.xp_framework.unittest.peer.http.FormRequestdataTest
-   * @purpose   Form data requests
+   * Example:
+   * <code>
+   *   $request= $conn->create(new HttpRequest());
+   *   $request->setMethod(HttpConstants::POST);
+   *   $request->setParameters(create(new FormRequestData())
+   *     ->withPart(new FormData('key', 'value'))
+   *     ->withPart(new FormData('comment.txt', $contents, 'text/plain', 'utf-8'))
+   *   );
+   * </code>
+   *
+   * @see   xp://peer.http.HttpConnection
+   * @see   xp://peer.http.HttpRequest
+   * @see   xp://peer.http.FormData
+   * @test  xp://net.xp_framework.unittest.peer.http.FormRequestdataTest
    */
   class FormRequestData extends RequestData {
     const
@@ -51,6 +63,17 @@
     public function addPart(FormData $item) {
       $this->parts[]= $item;
       return $item;
+    }
+
+    /**
+     * Add form part - fluent interface
+     *
+     * @param   peer.http.FormData item
+     * @return  peer.http.FormRequestData this
+     */
+    public function withPart(FormData $item) {
+      $this->parts[]= $item;
+      return $this;
     }
     
     /**

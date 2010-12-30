@@ -7,6 +7,9 @@
   uses(
     'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
+    'net.xp_framework.unittest.xml.WindowType',
+    'net.xp_framework.unittest.xml.ApplicationType',
+    'net.xp_framework.unittest.xml.TextInputType',
     'xml.meta.Marshaller'
   );
 
@@ -146,6 +149,7 @@
     /**
      * Tests the deprecated usage
      *
+     * @deprecated
      */
     #[@test]
     public function deprecatedUsage() {
@@ -153,6 +157,73 @@
       $this->assertEquals(
         Marshaller::marshal($dialog),
         $this->fixture->marshalTo(new Node('dialogtype'), $dialog)->getSource(INDENT_DEFAULT)
+      );
+    }
+
+    /**
+     * Test injection
+     *
+     * <code>
+     *   #[@xmlfactory(element= '@owner-window', inject= array('window'))]
+     * </code>
+     *
+     * @see   xp://net.xp_framework.unittest.xml.WindowType#getOwnerWindowName
+     */
+    #[@test]
+    public function inject() {
+      $window= create(new WindowType())->withOwnerWindow(1);
+      $this->assertMarshalled(
+        '<window owner-window="main"/>',
+        $this->fixture->marshalTo(new Node('window'), $window, array('windows' => array(
+          'main'     => 1,
+          'desktop'  => 0
+        )))
+      );
+    }
+
+    /**
+     * Test injection
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function injectionFails() {
+      $window= create(new WindowType())->withOwnerWindow(1);
+      $this->fixture->marshalTo(new Node('window'), $window);
+    }
+
+    /**
+     * Test namespaces
+     *
+     * <code>
+     *   #[@xmlns(app = 'http://projects.xp-framework.net/xmlns/app')]
+     * </code>
+     *
+     * @see   xp://net.xp_framework.unittest.xml.ApplicationType
+     */
+    #[@test]
+    public function namespaces() {
+      $this->assertMarshalled(
+        '<app:application xmlns:app="http://projects.xp-framework.net/xmlns/app"/>',
+        $this->fixture->marshalTo(new Node('application'), new ApplicationType())
+      );
+    }
+
+    /**
+     * Tests casting
+     *
+     * <code>
+     *   #[@xmlfactory(element = '@disabled', cast = 'toBool')]
+     * </code>
+     */
+    #[@test]
+    public function casting() {
+      $t= new TextInputType();
+      $t->setId('name');
+      $t->setDisabled(TRUE);
+
+      $this->assertMarshalled(
+        '<input id="name" disabled="true"/>',
+        $this->fixture->marshalTo(new Node('input'), $t)
       );
     }
   }

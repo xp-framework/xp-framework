@@ -25,6 +25,7 @@
     );
     protected $optimizations= NULL;
     protected $checks= NULL;
+    protected $scope= array(NULL);
 
     /**
      * Constructor.
@@ -44,7 +45,7 @@
       $this->optimizations->clear();
       $this->checks->clear();
       foreach ($profile->warnings as $impl) {
-        $this->checks->add($impl);
+        $this->checks->add($impl, FALSE);
       }
       foreach ($profile->errors as $impl) {
         $this->checks->add($impl, TRUE);
@@ -99,6 +100,24 @@
       $this->checks->add($c, $error);
       return $this;
     }
+
+    /**
+     * Enter the given scope
+     *
+     * @param   xp.compiler.types.Scope
+     */
+    protected function enter(Scope $s) {
+      array_unshift($this->scope, $this->scope[0]->enter($s));
+    }
+
+    /**
+     * Leave the current scope, returning to the previous
+     *
+     */
+    protected function leave() {
+      array_shift($this->scope);
+    }
+    
     
     /**
      * Entry point

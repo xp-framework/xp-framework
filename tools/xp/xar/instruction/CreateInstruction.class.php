@@ -44,9 +44,11 @@
       $list= array();
 
       foreach ($this->getArguments() as $arg) {
-        if (FALSE !== ($p= strpos($arg, '='))) {
+        if (FALSE !== ($p= strrpos($arg, '='))) {
           $urn= substr($arg, $p+ 1);
           $arg= substr($arg, 0, $p);
+        } else {
+          $urn= NULL;
         }
       
         if (is_file($arg)) {

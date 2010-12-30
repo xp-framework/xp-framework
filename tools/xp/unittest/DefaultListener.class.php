@@ -154,6 +154,10 @@
         Runtime::getInstance()->memoryUsage() / 1024,
         Runtime::getInstance()->peakMemoryUsage() / 1024
       );
+      $this->out->writeLinef(
+        'Time taken: %.3f seconds',
+        $result->elapsed()
+      );
     }
   }
 ?>

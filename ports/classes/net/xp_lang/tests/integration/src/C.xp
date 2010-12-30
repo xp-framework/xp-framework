@@ -1,0 +1,10 @@
+public class C {
+
+  public A getA() {
+    return new A();
+  }
+
+  public B getB() {
+    return new B();
+  }
+}

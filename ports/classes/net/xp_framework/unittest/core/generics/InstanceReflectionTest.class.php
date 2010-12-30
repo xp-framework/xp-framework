@@ -34,7 +34,7 @@
     #[@test]
     public function getClassNameMethod() {
       $this->assertEquals(
-        'net.xp_framework.unittest.core.generics.Lookup`2[lang.types.String,unittest.TestCase]', 
+        'net.xp_framework.unittest.core.generics.Lookup<lang.types.String,unittest.TestCase>', 
         $this->fixture->getClassName()
       );
     }
@@ -47,7 +47,7 @@
     public function nameOfClass() {
       $class= $this->fixture->getClass();
       $this->assertEquals(
-        'net.xp_framework.unittest.core.generics.Lookup`2[lang.types.String,unittest.TestCase]', 
+        'net.xp_framework.unittest.core.generics.Lookup<lang.types.String,unittest.TestCase>', 
         $class->getName()
       );
     }
@@ -60,7 +60,7 @@
     public function simpleNameOfClass() {
       $class= $this->fixture->getClass();
       $this->assertEquals(
-        'Lookup`2[lang.types.String,unittest.TestCase]', 
+        'Lookup<lang.types.String,unittest.TestCase>', 
         $class->getSimpleName()
       );
     }

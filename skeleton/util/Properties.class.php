@@ -96,7 +96,22 @@
                 $value= trim(substr($value, 0, $p));
               }
 
-              $prop->_data[$section][$key]= $value;
+              // Arrays and maps: key[], key[0], key[assoc]
+              if (']' === substr($key, -1)) {
+                $p= strpos($key, '[');
+                $offset= substr($key, $p+ 1, -1);
+                $key= substr($key, 0, $p);
+                if (!isset($prop->_data[$section][$key])) {
+                  $prop->_data[$section][$key]= array();
+                }
+                if ('' === $offset) {
+                  $prop->_data[$section][$key][]= $value;
+                } else {
+                  $prop->_data[$section][$key][$offset]= $value;
+                }
+              } else {
+                $prop->_data[$section][$key]= $value;
+              }
               break;
           }
         } while ($t= strtok("\r\n"));

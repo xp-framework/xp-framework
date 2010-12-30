@@ -13,6 +13,7 @@
    */
   class TypeReference extends Types {
     protected $type= NULL;
+    protected $literal= '';
     protected $kind= 0;
     
     /**
@@ -20,10 +21,20 @@
      *
      * @param   xp.compiler.types.TypeName
      * @param   int kind
+     * @param   int modifiers
      */
-    public function __construct(TypeName $type, $kind= parent::CLASS_KIND) {
+    public function __construct(TypeName $type, $kind= parent::CLASS_KIND, $modifiers= 0) {
       $this->type= $type;
       $this->kind= $kind;
+      
+      // Calculate type literal, using the RFC #0037 fully qualified
+      // form for package types
+      if ($modifiers & MODIFIER_PACKAGE) {
+        $this->literal= strtr($this->type->name, '.', '·');
+      } else {
+        $p= strrpos($this->type->name, '.');
+        $this->literal= FALSE === $p ? $this->type->name : substr($this->type->name, $p+ 1);
+      }
     }
 
     /**
@@ -50,8 +61,7 @@
      * @return  string
      */
     public function literal() {
-      $p= strrpos($this->type->name, '.');
-      return FALSE === $p ? $this->type->name : substr($this->type->name, $p+ 1);
+      return $this->literal;
     }
 
     /**

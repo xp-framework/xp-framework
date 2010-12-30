@@ -90,6 +90,49 @@
      *
      */
     #[@test]
+    public function genericClassExtendingHashTable() {
+      $class= $this->define('class', 'MapOf<K, V>', 'util.collections.HashTable<K, V>', '{ }');
+      $this->assertEquals(array('self' => 'K, V', 'parent' => 'K, V'), $class->getAnnotation('generic'));
+    }
+
+    /**
+     * Test declaring a class
+     *
+     */
+    #[@test]
+    public function genericClassImplementingMap() {
+      $class= $this->define('abstract class', 'AbstractMapOf<K, V>', 'Object implements util.collections.Map<K, V>', '{ 
+        public string hashCode() { }
+        public bool equals(Generic? $cmp) { }
+      }');
+      $this->assertEquals(array('self' => 'K, V', 'implements' => array('K, V')), $class->getAnnotation('generic'));
+    }
+
+    /**
+     * Test declaring a class
+     *
+     */
+    #[@test]
+    public function genericInterfaceExtendingMap() {
+      $class= $this->define('interface', 'IMapOf<K, V>', 'util.collections.Map<K, V>', '{ }');
+      $this->assertEquals(array('self' => 'K, V', 'extends' => array('K, V')), $class->getAnnotation('generic'));
+    }
+
+    /**
+     * Test declaring a class
+     *
+     */
+    #[@test]
+    public function genericInterfaceExtendingMapPartially() {
+      $class= $this->define('interface', 'ITypeMapOf<V>', 'util.collections.Map<lang.Type, V>', '{ }');
+      $this->assertEquals(array('self' => 'V', 'extends' => array('lang.Type, V')), $class->getAnnotation('generic'));
+    }
+
+    /**
+     * Test declaring a class
+     *
+     */
+    #[@test]
     public function classInsidePackage() {
       $class= $this->define('class', 'ClassInPackage', NULL, '{ }', array('package demo;'));
       $this->assertEquals('demo.SourceClassInPackage', $class->getName());

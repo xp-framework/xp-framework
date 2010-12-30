@@ -91,12 +91,10 @@
     public function getURL() {
       $sessionId= $this->getSessionId();
       return sprintf(
-        '%1$s://%2$s%3$s?%6$s%7$s',
+        '%1$s://%2$s%3$s?%4$s%5$s',
         $this->getScheme(),
         $this->getHost(),
         $this->getPath(),
-        dirname($this->getPath()),
-        basename($this->getPath()),
         $this->getQuery(),
         $sessionId ? '&psessionid='.$sessionId : '',
         $this->getFragment()

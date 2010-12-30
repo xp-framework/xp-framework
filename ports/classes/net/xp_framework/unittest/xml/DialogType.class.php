@@ -73,8 +73,8 @@
     /**
      * Add a button
      *
-     * @param   &net.xp_framework.unittest.xml.ButtonType button
-     * @return  &net.xp_framework.unittest.xml.ButtonType the added button
+     * @param   net.xp_framework.unittest.xml.ButtonType button
+     * @return  net.xp_framework.unittest.xml.ButtonType the added button
      */
     #[@xmlmapping(element= 'button', class= 'net.xp_framework.unittest.xml.ButtonType')]
     public function addButton($button) {
@@ -95,7 +95,7 @@
      * Returns button at a given position
      *
      * @param   int
-     * @return  &net.xp_framework.unittest.xml.ButtonType 
+     * @return  net.xp_framework.unittest.xml.ButtonType 
      */
     public function buttonAt($offset) {
       return $this->buttons->get($offset);
@@ -113,7 +113,7 @@
     /**
      * Retrieve this dialog's buttons
      *
-     * @return  &lang.Collection<net.xp_framework.unittest.xml.ButtonType>
+     * @return  util.collections.Vector<net.xp_framework.unittest.xml.ButtonType>
      */
     #[@xmlfactory(element= 'button')]
     public function getButtons() {
