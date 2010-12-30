@@ -136,6 +136,17 @@
             foreach ($method->getAnnotation('xmlmapping', 'pass') as $pass) {
               $arguments[]= self::contentOf($xpath->query($pass, $node));
             }
+          } else if ($method->hasAnnotation('xmlmapping', 'cast')) {
+            $cast= $method->getAnnotation('xmlmapping', 'cast');
+            switch (sscanf($cast, '%[^:]::%s', $c, $m)) {
+              case 1: $target= array($instance, $c); break;
+              case 2: $target= array($c, $m); break;
+              default: throw new IllegalArgumentException('Unparseable cast "'.$cast.'"');
+            }
+
+            // * If the xmlmapping annotation contains a key "convert", cast the node's
+            //   contents using the given callback method before passing it to the method.
+            $arguments= call_user_func($target, utf8_decode($node->textContent));
           } else if ($method->hasAnnotation('xmlmapping', 'type')) {
 
             // * If the xmlmapping annotation contains a key "type", cast the node's

@@ -16,7 +16,6 @@
       $id       = '',
       $caption  = '';
 
-
     /**
      * Set ID
      *

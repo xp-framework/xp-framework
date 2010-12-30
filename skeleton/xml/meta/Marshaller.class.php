@@ -67,15 +67,28 @@
           }
         }
         
+        $result= $method->invoke($instance, $arguments);
+
+        // Cast result if specified
+        if ($method->hasAnnotation('xmlfactory', 'cast')) {
+          $cast= $method->getAnnotation('xmlfactory', 'cast');
+          switch (sscanf($cast, '%[^:]::%s', $c, $m)) {
+            case 1: $target= array($instance, $c); break;
+            case 2: $target= array($c, $m); break;
+            default: throw new IllegalArgumentException('Unparseable cast "'.$cast.'"');
+          }
+          $result= call_user_func(array($instance, $method->getAnnotation('xmlfactory', 'cast')), $result);
+        }
+        
         // Attributes
         if ('@' == $element{0}) {
-          $node->setAttribute(substr($element, 1), $method->invoke($instance, $arguments));
+          $node->setAttribute(substr($element, 1), $result);
           continue;
         }
         
         // Node content
         if ('.' == $element) {
-          $node->setContent($method->invoke($instance, $arguments));
+          $node->setContent($result);
           continue;
         }
         
@@ -92,7 +105,6 @@
         //
         // - For objects, add a new node and invoke the recurse() method
         //   on it.
-        $result= $method->invoke($instance, $arguments);
         if (is_scalar($result) || NULL === $result) {
           $node->addChild(new Node($element, $result));
         } else if (is_array($result)) {

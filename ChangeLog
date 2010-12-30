@@ -102,6 +102,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added casting support to xml.meta.Marshaller and xml.meta.Unmarshaller
+  (friebe)
 - Added injection support to xml.meta.Marshaller and xml.meta.Unmarshaller
   (friebe)
 - Added ability to select unmarshalling target class based on root

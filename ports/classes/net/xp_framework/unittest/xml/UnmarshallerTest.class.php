@@ -344,5 +344,23 @@
       );
       $this->assertInstanceOf('net.xp_framework.unittest.xml.ApplicationType', $app);
     }
+
+
+    /**
+     * Tests casting
+     *
+     * <code>
+     *   #[@xmlmapping(element = '@disabled', cast = 'asBool')]
+     * </code>
+     */
+    #[@test]
+    public function casting() {
+      $t= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<input id="name" disabled="true"/>')),
+        'net.xp_framework.unittest.xml.TextInputType'
+      );
+      $this->assertInstanceOf('net.xp_framework.unittest.xml.TextInputType', $t);
+      $this->assertTrue($t->getDisabled());
+    }
   }
 ?>
