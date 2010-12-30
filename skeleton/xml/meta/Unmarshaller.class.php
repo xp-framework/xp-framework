@@ -152,6 +152,9 @@
           // Pass injection parameters at end of list
           if ($method->hasAnnotation('xmlmapping', 'inject')) {
             foreach ($method->getAnnotation('xmlmapping', 'inject') as $name) {
+              if (!isset($inject[$name])) throw new IllegalArgumentException(
+                'Injection parameter "'.$name.'" not found for '.$method->toString()
+              );
               $arguments[]= $inject[$name];
             }
           }
@@ -197,6 +200,7 @@
      * @throws  lang.ClassNotFoundException
      * @throws  xml.XMLFormatException
      * @throws  lang.reflect.TargetInvocationException
+     * @throws  lang.IllegalArgumentException
      */
     public function unmarshalFrom(InputSource $input, $classname, $inject= array()) {
       libxml_clear_errors();
