@@ -80,15 +80,15 @@
           $result= call_user_func(array($instance, $method->getAnnotation('xmlfactory', 'cast')), $result);
         }
         
-        // Attributes
-        if ('@' == $element{0}) {
+        // Attributes = "@<name>", Node content= ".", Name = "name()"
+        if ('@' === $element{0}) {
           $node->setAttribute(substr($element, 1), $result);
           continue;
-        }
-        
-        // Node content
-        if ('.' == $element) {
+        } else if ('.' === $element) {
           $node->setContent($result);
+          continue;
+        } else if ('name()' === $element) {
+          $node->setName($result);
           continue;
         }
         
