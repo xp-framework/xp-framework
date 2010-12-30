@@ -319,11 +319,10 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function injectionFails() {
-      $dialog= $this->fixture->unmarshalFrom(
+      $this->fixture->unmarshalFrom(
         new StreamInputSource(new MemoryInputStream('<dialog owner-window="main"/>')),
         'net.xp_framework.unittest.xml.DialogType'
       );
-      $this->assertEquals(1, $dialog->getOwnerWindow());
     }
   }
 ?>
