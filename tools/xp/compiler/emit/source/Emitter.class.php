@@ -117,23 +117,27 @@
     protected function emitUses($op, array $types) {
       if (!$types) return;
       
-      $n= 0;
       $this->cat && $this->cat->debug('uses(', $types, ')');
-      $op->append('uses(');
-      $s= sizeof($types)- 1;
-      foreach ($types as $i => $type) {
+      $uses= array();
+      foreach ($types as $type) {
         
-        // Do not add uses() elements for types emitted inside the same sourcefile
-        if (isset($this->local[0][$type->name])) continue;
+        // Do not add uses() entries for:
+        // * Types emitted inside the same sourcefile
+        // * Native classes
+        if (
+          isset($this->local[0][$type->name]) || 
+          'php.' === substr($type->name, 0, 4)
+        ) {
+          continue;
+        }
 
         try {
-          $op->append("'")->append($this->resolveType($type, FALSE)->name())->append("'");
-          $i < $s && $op->append(',');
+          $uses[]= $this->resolveType($type, FALSE)->name();
         } catch (Throwable $e) {
           $this->error('0424', $e->toString());
-        }      
+        }
       }
-      $op->append(');');
+      $uses && $op->append('uses(\'')->append(implode("', '", $uses))->append('\');');
     }
     
     /**
