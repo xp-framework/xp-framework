@@ -75,26 +75,8 @@
       $metadata     = array(NULL),
       $properties   = array(NULL),
       $inits        = array(NULL),
-      $scope        = array(NULL),
       $local        = array(NULL),
       $types        = array(NULL);
-    
-    /**
-     * Enter the given scope
-     *
-     * @param   xp.compiler.types.Scope
-     */
-    protected function enter(Scope $s) {
-      array_unshift($this->scope, $this->scope[0]->enter($s));
-    }
-
-    /**
-     * Leave the current scope, returning to the previous
-     *
-     */
-    protected function leave() {
-      array_shift($this->scope);
-    }
     
     /**
      * Check whether a node is writeable - that is: can be the left-hand
@@ -110,6 +92,20 @@
         return TRUE;    // TODO: Check for private, protected
       }
       return FALSE;
+    }
+    
+    /**
+     * Creates a generic component string for use in meta data
+     *
+     * @param   xp.compiler.types.TypeName type
+     * @return  string
+     */
+    protected function genericComponentAsMetadata($type) {
+      $s= '';
+      foreach ($type->components as $component) {
+        $s.= ', '.$component->name;
+      }
+      return substr($s, 2);
     }
     
     /**
@@ -1611,16 +1607,10 @@
       ;
 
       // Copy annotations
-      $this->metadata[0]['class'][DETAIL_ANNOTATIONS]= $this->annotationsAsMetadata((array)$declaration->annotations);
-
-      // Generics
-      if ($declaration->name->isGeneric()) {
-        $components= '';
-        foreach ($declaration->name->components as $component) {
-          $components.= ', '.$component->name;
-        }
-        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']= array('self' => substr($components, 2));
-      }
+      $this->metadata[0]['class'][DETAIL_ANNOTATIONS]= array_merge(
+        isset($this->metadata[0]['class'][DETAIL_ANNOTATIONS]) ? $this->metadata[0]['class'][DETAIL_ANNOTATIONS] : array(),
+        $this->annotationsAsMetadata((array)$declaration->annotations)
+      );
 
       $op->append('xp::$registry[\'class.'.$declaration->literal.'\']= \''.$qualified.'\';');
       $op->append('xp::$registry[\'details.'.$qualified.'\']= '.var_export($this->metadata[0], TRUE).';');
@@ -1942,14 +1932,26 @@
       ));
       $op->append(' extends '.$parentType->literal(TRUE));
       array_unshift($this->metadata, array(array(), array()));
+      $this->metadata[0]['class'][DETAIL_ANNOTATIONS]= array();
       array_unshift($this->properties, array('get' => array(), 'set' => array()));
       $abstract= Modifiers::isAbstract($declaration->modifiers);
+
+      // Generics
+      if ($declaration->name->isGeneric()) {
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['self']= $this->genericComponentAsMetadata($declaration->name);
+      }
+      if ($parent->isGeneric()) {
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['parent']= $this->genericComponentAsMetadata($parent);
+      }
 
       // Interfaces
       if ($declaration->implements) {
         $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
+          if ($type->isGeneric()) {
+            $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['implements'][$i]= $this->genericComponentAsMetadata($type);
+          }
           $op->append($this->resolveType($type, FALSE)->literal(TRUE));
           $i < $s && $op->append(', ');
         }
@@ -2040,10 +2042,20 @@
       $this->enter(new TypeDeclarationScope());    
       $this->emitTypeName($op, 'interface', $declaration, (array)$declaration->parents);
       array_unshift($this->metadata, array(array(), array()));
+      $this->metadata[0]['class'][DETAIL_ANNOTATIONS]= array();
+
+      // Generics
+      if ($declaration->name->isGeneric()) {
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['self']= $this->genericComponentAsMetadata($declaration->name);
+      }
+
       if ($declaration->parents) {
         $op->append(' extends ');
         $s= sizeof($declaration->parents)- 1;
         foreach ((array)$declaration->parents as $i => $type) {
+          if ($type->isGeneric()) {
+            $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['extends'][$i]= $this->genericComponentAsMetadata($type);
+          }
           $op->append($this->resolveType($type, FALSE)->literal(TRUE));
           $i < $s && $op->append(', ');
         }
@@ -2085,9 +2097,18 @@
       ));
       $op->append(' extends '.$parentType->literal(TRUE));
       array_unshift($this->metadata, array(array(), array()));
+      $this->metadata[0]['class'][DETAIL_ANNOTATIONS]= array();
       array_unshift($this->properties, array());
       array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
-      
+
+      // Generics
+      if ($declaration->name->isGeneric()) {
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['self']= $this->genericComponentAsMetadata($declaration->name);
+      }
+      if ($parent->isGeneric()) {
+        $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['parent']= $this->genericComponentAsMetadata($parent);
+      }
+
       // Check if we need to implement ArrayAccess
       foreach ((array)$declaration->body as $node) {
         if ($node instanceof IndexerNode) {
@@ -2100,7 +2121,14 @@
         $op->append(' implements ');
         $s= sizeof($declaration->implements)- 1;
         foreach ($declaration->implements as $i => $type) {
-          $op->append($type instanceof TypeName ? $this->resolveType($type, FALSE)->literal(TRUE) : $type);
+          if ($type instanceof TypeName) {
+            if ($type->isGeneric()) {
+              $this->metadata[0]['class'][DETAIL_ANNOTATIONS]['generic']['implements'][$i]= $this->genericComponentAsMetadata($type);
+            }
+            $op->append($this->resolveType($type, FALSE)->literal(TRUE));
+          } else {
+            $op->append($type);
+          }
           $i < $s && $op->append(', ');
         }
       }
