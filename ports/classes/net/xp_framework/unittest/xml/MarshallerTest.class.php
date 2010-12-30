@@ -146,6 +146,7 @@
     /**
      * Tests the deprecated usage
      *
+     * @deprecated
      */
     #[@test]
     public function deprecatedUsage() {
@@ -154,6 +155,37 @@
         Marshaller::marshal($dialog),
         $this->fixture->marshalTo(new Node('dialogtype'), $dialog)->getSource(INDENT_DEFAULT)
       );
+    }
+
+    /**
+     * Test injection
+     *
+     * <code>
+     *   #[@xmlfactory(element= '@owner-window', inject= array('window'))]
+     * </code>
+     *
+     * @see   xp://net.xp_framework.unittest.xml.WindowType#getOwnerWindowName
+     */
+    #[@test]
+    public function inject() {
+      $window= create(new WindowType())->withOwnerWindow(1);
+      $this->assertMarshalled(
+        '<window owner-window="main"/>',
+        $this->fixture->marshalTo(new Node('window'), $window, array('windows' => array(
+          'main'     => 1,
+          'desktop'  => 0
+        )))
+      );
+    }
+
+    /**
+     * Test injection
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function injectionFails() {
+      $window= create(new WindowType())->withOwnerWindow(1);
+      $this->fixture->marshalTo(new Node('window'), $window);
     }
   }
 ?>

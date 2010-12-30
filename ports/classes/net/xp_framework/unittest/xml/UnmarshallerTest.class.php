@@ -8,6 +8,7 @@
     'unittest.TestCase',
     'net.xp_framework.unittest.xml.DialogType',
     'net.xp_framework.unittest.xml.ButtonType',
+    'net.xp_framework.unittest.xml.WindowType',
     'net.xp_framework.unittest.xml.NameBasedTypeFactory',
     'net.xp_framework.unittest.xml.IdBasedTypeFactory',
     'xml.meta.Unmarshaller',
@@ -295,22 +296,22 @@
      * Test injection
      *
      * <code>
-     *   #[@inject(element= '@owner-window', inject= array('window'))]
+     *   #[@xmlmapping(element= '@owner-window', inject= array('window'))]
      * </code>
      *
-     * @see   xp://net.xp_framework.unittest.xml.DialogType#setOwnerWindowNamed
+     * @see   xp://net.xp_framework.unittest.xml.WindowType#setOwnerWindowNamed
      */
     #[@test]
     public function inject() {
-      $dialog= $this->fixture->unmarshalFrom(
-        new StreamInputSource(new MemoryInputStream('<dialog owner-window="main"/>')),
-        'net.xp_framework.unittest.xml.DialogType',
+      $window= $this->fixture->unmarshalFrom(
+        new StreamInputSource(new MemoryInputStream('<window owner-window="main"/>')),
+        'net.xp_framework.unittest.xml.WindowType',
         array('windows' => array(
           'main'     => 1,
           'desktop'  => 0
         ))
       );
-      $this->assertEquals(1, $dialog->getOwnerWindow());
+      $this->assertEquals(1, $window->getOwnerWindow());
     }
 
     /**
@@ -320,8 +321,8 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function injectionFails() {
       $this->fixture->unmarshalFrom(
-        new StreamInputSource(new MemoryInputStream('<dialog owner-window="main"/>')),
-        'net.xp_framework.unittest.xml.DialogType'
+        new StreamInputSource(new MemoryInputStream('<window owner-window="main"/>')),
+        'net.xp_framework.unittest.xml.WindowType'
       );
     }
   }
