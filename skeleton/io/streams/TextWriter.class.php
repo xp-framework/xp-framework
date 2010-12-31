@@ -31,6 +31,22 @@
     }
 
     /**
+     * Writes a BOM
+     *
+     * @see     http://de.wikipedia.org/wiki/Byte_Order_Mark
+     * @see     http://unicode.org/faq/utf_bom.html
+     * @return  io.streams.TextWriter this
+     */
+    public function withBom() {
+      switch (strtolower($this->charset)) {
+        case 'utf-16be': $this->stream->write("\376\377"); break;
+        case 'utf-16le': $this->stream->write("\377\376"); break;
+        case 'utf-8': $this->stream->write("\357\273\277"); break;
+      }
+      return $this;
+    }
+
+    /**
      * Sets newLine property's bytes
      *
      * @param   string newLine
@@ -65,7 +81,10 @@
      * @param   string text
      */
     public function write($text) {
-      $this->stream->write(iconv('iso-8859-1', $this->charset, $text));
+      $this->stream->write($text instanceof String || $text instanceof Character
+        ? $text->getBytes($this->charset)
+        : iconv('iso-8859-1', $this->charset, $text)
+      );
     }
     
     /**
@@ -74,7 +93,10 @@
      * @param   string text
      */
     public function writeLine($text= '') {
-      $this->stream->write(iconv('iso-8859-1', $this->charset, $text).$this->newLine);
+      $this->stream->write(($text instanceof String || $text instanceof Character
+        ? $text->getBytes($this->charset)
+        : iconv('iso-8859-1', $this->charset, $text)
+      ).$this->newLine);
     }
   }
 ?>

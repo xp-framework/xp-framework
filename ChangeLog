@@ -103,6 +103,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support to write Strings and Characters to io.stream.TextWriter
+  (friebe)
+- Added withBom() method to io.stream.TextWriter to write the respective 
+  BOM depending on the character set (utf-16be, utf-16le, utf-8)
+  (friebe)
 - Added casting support to xml.meta.Marshaller and xml.meta.Unmarshaller
   (friebe)
 - Added injection support to xml.meta.Marshaller and xml.meta.Unmarshaller

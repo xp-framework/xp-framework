@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'lang.types.Character',
     'io.streams.TextWriter',
     'io.streams.MemoryOutputStream'
   );
@@ -160,6 +161,46 @@
     }
 
     /**
+     * Test text written is encoded in character set
+     *
+     */
+    #[@test]
+    public function writeUtf8StringInstance() {
+      $this->newWriter('utf-8')->write(new String('Übercoder', 'iso-8859-1'));
+      $this->assertEquals('Ãœbercoder', $this->out->getBytes());
+    }
+
+    /**
+     * Test text written is encoded in character set
+     *
+     */
+    #[@test]
+    public function writeLineUtf8StringInstance() {
+      $this->newWriter('utf-8')->writeLine(new String('Übercoder', 'iso-8859-1'));
+      $this->assertEquals("Ãœbercoder\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test text written is encoded in character set
+     *
+     */
+    #[@test]
+    public function writeUtf8CharacterInstance() {
+      $this->newWriter('utf-8')->write(new Character('Ü', 'iso-8859-1'));
+      $this->assertEquals('Ãœ', $this->out->getBytes());
+    }
+
+    /**
+     * Test text written is encoded in character set
+     *
+     */
+    #[@test]
+    public function writeLineUtf8CharacterInstance() {
+      $this->newWriter('utf-8')->writeLine(new Character('Ü', 'iso-8859-1'));
+      $this->assertEquals("Ãœ\n", $this->out->getBytes());
+    }
+
+    /**
      * Test closing a reader twice has no effect.
      *
      * @see   xp://lang.Closeable#close
@@ -169,6 +210,46 @@
       $w= $this->newWriter('');
       $w->close();
       $w->close();
+    }
+
+    /**
+     * Test withBom() method
+     *
+     */
+    #[@test]
+    public function isoHasNoBom() {
+      $this->newWriter('iso-8859-1')->withBom()->write('Hello');
+      $this->assertEquals('Hello', $this->out->getBytes());
+    }
+ 
+    /**
+     * Test withBom() method
+     *
+     */
+    #[@test]
+    public function utf8Bom() {
+      $this->newWriter('utf-8')->withBom()->write('Hello');
+      $this->assertEquals("\357\273\277Hello", $this->out->getBytes());
+    }
+
+    /**
+     * Test withBom() method
+     *
+     */
+    #[@test]
+    public function utf16beBom() {
+      $this->newWriter('utf-16be')->withBom()->write('Hello');
+      $this->assertEquals("\376\377\0H\0e\0l\0l\0o", $this->out->getBytes());
+    }
+
+    /**
+     * Test withBom() method
+     *
+     */
+    #[@test]
+    public function utf16leBom() {
+      $this->newWriter('utf-16le')->withBom()->write('Hello');
+      $this->assertEquals("\377\376H\0e\0l\0l\0o\0", $this->out->getBytes());
     }
   }
 ?>
