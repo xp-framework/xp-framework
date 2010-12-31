@@ -12,7 +12,7 @@
    * @purpose  Interface
    */
   interface ParserCallback {
-  
+
     /**
      * Callback function for XMLParser
      *
@@ -45,5 +45,27 @@
      * @param   string data
      */
     public function onDefault($parser, $data);
+
+    /**
+     * Callback function for XMLParser
+     *
+     * @param   xml.parser.XMLParser instance
+     */
+    public function onBegin($instance);
+
+    /**
+     * Callback function for XMLParser
+     *
+     * @param   xml.parser.XMLParser instance
+     * @param   xml.XMLFormatException exception
+     */
+    public function onError($instance, $exception);
+
+    /**
+     * Callback function for XMLParser
+     *
+     * @param   xml.parser.XMLParser instance
+     */
+    public function onFinish($instance);
   }
 ?>

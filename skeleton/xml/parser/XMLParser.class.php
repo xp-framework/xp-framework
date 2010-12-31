@@ -107,6 +107,7 @@
         // Register callback
         if ($this->callback) {
           xml_set_object($parser, $this->callback);
+          $this->callback->onBegin($this);
           xml_set_element_handler($parser, 'onStartElement', 'onEndElement');
           xml_set_character_data_handler($parser, 'onCData');
           xml_set_default_handler($parser, 'onDefault');
@@ -133,17 +134,16 @@
           $type= xml_get_error_code($parser);
           $line= xml_get_current_line_number($parser);
           $column= xml_get_current_column_number($parser);
+          $message= xml_error_string($type);
           xml_parser_free($parser);
           libxml_clear_errors();
-          throw new XMLFormatException(
-            xml_error_string($type),
-            $type,
-            $source,
-            $line,
-            $column
-          );
+
+          $e= new XMLFormatException($message, $type, $source, $line, $column);
+          $this->callback && $this->callback->onError($this, $e);
+          throw $e;
         }
         xml_parser_free($parser);
+        $this->callback && $this->callback->onFinish($this);
         return TRUE;
       }
 
