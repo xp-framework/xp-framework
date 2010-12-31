@@ -10,6 +10,7 @@ SVN version: ?????
 Heads up!
 ~~~~~~~~~
 - Made unittest default and verbose output include the elapsed time
+  http://news.planet-xp.net/article/398/2010/12/31/
   (friebe)
 - Changed util.log.ConsoleAppender to use util.cmd.Console class instead
   of directly writing to STDERR
