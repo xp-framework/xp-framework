@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'util.Date',
+    'lang.types.Character',
     'webservices.json.JsonDecoder'
   );
 
@@ -35,6 +36,14 @@
     #[@test]
     public function encodeString() {
       $this->assertEquals('"foo"', $this->decoder->encode('foo'));
+    }
+
+    /**
+     * Test string encoding
+     *
+     */
+    #[@test]
+    public function encodeStringWithControlChars() {
       $this->assertEquals('"fo\\no"', $this->decoder->encode('fo'."\n".'o'));
     }
     
@@ -45,6 +54,51 @@
     #[@test]
     public function encodeUTF8String() {
       $this->assertEquals('"fÃ¶o"', $this->decoder->encode('föo'));
+    }
+
+    /**
+     * Test string encoding
+     *
+     */
+    #[@test]
+    public function encodeStringInstance() {
+      $this->assertEquals('"foo"', $this->decoder->encode(new String('foo')));
+    }
+
+    /**
+     * Test string encoding
+     *
+     */
+    #[@test]
+    public function encodeStringInstanceWithControlChars() {
+      $this->assertEquals('"fo\\no"', $this->decoder->encode(new String('fo'."\n".'o')));
+    }
+
+    /**
+     * Test string encoding
+     *
+     */
+    #[@test]
+    public function encodeUTF8StringInstance() {
+      $this->assertEquals('"fÃ¶o"', $this->decoder->encode(new String('föo', 'iso-8859-1')));
+    }
+
+    /**
+     * Test string encoding
+     *
+     */
+    #[@test]
+    public function encodeCharacterInstance() {
+      $this->assertEquals('"f"', $this->decoder->encode(new Character('f')));
+    }
+
+    /**
+     * Test string encoding
+     *
+     */
+    #[@test]
+    public function encodeUTF8CharacterInstance() {
+      $this->assertEquals('"Ã¶"', $this->decoder->encode(new Character('ö', 'iso-8859-1')));
     }
   
     /**
@@ -131,7 +185,7 @@
     #[@test]
     public function decodeString() {
       $this->assertEquals(
-        'foobar',
+        new String('foobar'),
         $this->decoder->decode('"foobar"')
       );
     }
@@ -143,7 +197,7 @@
     #[@test]
     public function decodeStringWithQuotes() {
       $this->assertEquals(
-        'foo\\bar',
+        new String('foo\\bar'),
         $this->decoder->decode('"foo\\\\bar"')
       );
     }
@@ -155,7 +209,7 @@
     #[@test]
     public function decodeStringWithQuotedDelimiter() {
       $this->assertEquals(
-        'foo"bar',
+        new String('foo"bar'),
         $this->decoder->decode('"foo\\"bar"')
       );
     }
@@ -167,10 +221,9 @@
     #[@test]
     public function decodeStringWithQuotedQuotes() {
       $this->assertEquals(
-        'foobar\"',
+        new String('foobar\"'),
         $this->decoder->decode('"foobar\\\\\""')
       );
-
     }
 
     /**
@@ -180,7 +233,7 @@
     #[@test]
     public function decodeStringWithTabEscape() {
       $this->assertEquals(
-        "foobar\t",
+        new String("foobar\t"),
         $this->decoder->decode('"foobar\\t"')
       );
     }
@@ -192,7 +245,7 @@
     #[@test]
     public function decodeStringWithTabsAndQuotes() {
       $this->assertEquals(
-        'foobar'."\t".'\"',
+        new String('foobar'."\t".'\"'),
         $this->decoder->decode('"foobar\\t\\\\\""')
       );
     }
@@ -204,7 +257,7 @@
     #[@test]
     public function decodeStringWithHTML() {
       $this->assertEquals(
-        "\nbbb ".'<span style="font-weight: bold;">tes</span>t " test'."\n",
+        new String("\nbbb ".'<span style="font-weight: bold;">tes</span>t " test'."\n"),
         $this->decoder->decode('"\nbbb <span style=\"font-weight: bold;\">tes</span>t \" test\n"')
       );
     }
@@ -216,7 +269,7 @@
     #[@test]
     public function decodeLongString() {
       with ($data= str_repeat('*', 6100)); {
-        $this->assertEquals(strlen($data), strlen($this->decoder->decode('"'.$data.'"')), 'Decoded length mismatch');
+        $this->assertEquals(6100, $this->decoder->decode('"'.$data.'"')->length(), 'Decoded length mismatch');
       }
     }
     
@@ -226,7 +279,7 @@
      */
     #[@test]
     public function decodeUTF8String() {
-      $this->assertEquals('Knüper', $this->decoder->decode('"KnÃ¼per"'));
+      $this->assertEquals(new String('Knüper', 'iso-8859-1'), $this->decoder->decode('"KnÃ¼per"'));
     }
     
     
@@ -236,8 +289,8 @@
      */
     #[@test]
     public function decodeUTF8StringWithUnicodeCodepoint() {
-      $this->assertEquals('Günther', $this->decoder->decode('"G\u00fcnther"'));
-      $this->assertEquals('¤uro', $this->decoder->decode('"\u20ACuro"'));
+      $this->assertEquals(new String('Günther', 'iso-8859-1'), $this->decoder->decode('"G\u00fcnther"'));
+      $this->assertEquals(new String('¤uro', 'iso-8859-15'), $this->decoder->decode('"\u20ACuro"'));
     }
 
     /**
@@ -334,7 +387,7 @@
     #[@test]
     public function decodeStringArray() {
       $this->assertEquals(
-        array('foo', 'bar'),
+        array(new String('foo'), new String('bar')),
         $this->decoder->decode('[ "foo" , "bar" ]')
       );
     }
@@ -346,7 +399,7 @@
     #[@test]
     public function decodeHashmap() {
       $this->assertEquals(
-        array('foo' => 'bar', 'bar' => 'baz'),
+        array('foo' => new String('bar'), 'bar' => new String('baz')),
         $this->decoder->decode('{ "foo" : "bar", "bar" : "baz" }')
       );
     }
@@ -358,7 +411,7 @@
     #[@test]
     public function decodeObjectArray() {
       $this->assertEquals(
-        array(array('foo' => 1), array('bar' => 'baz')),
+        array(array('foo' => 1), array('bar' => new String('baz'))),
         $this->decoder->decode('[ { "foo" : 1 } , { "bar" : "baz" } ]')
       );
     }
@@ -370,7 +423,7 @@
     #[@test]
     public function decodeNestedObject() {
       $this->assertEquals(
-        array('ref' => array('foo' => 'bar')),
+        array('ref' => array('foo' => new String('bar'))),
         $this->decoder->decode('{ "ref" : { "foo" : "bar" } }')
       );
     }

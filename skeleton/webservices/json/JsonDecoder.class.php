@@ -74,15 +74,17 @@
         }
         
         case 'object': {
+          if ($data instanceof String || $data instanceof Character) {
+            return '"'.strtr($data->getBytes('utf-8'), $controlChars).'"';
+          }
+        
           // Convert objects to arrays and store the classname with them as
           // suggested by JSON-RPC
           if ($data instanceof Generic) {
             if (!method_exists($data, '__sleep')) {
               $vars= get_object_vars($data);
             } else {
-              $vars= array(
-                'constructor' => '__construct()'
-              );
+              $vars= array('constructor' => '__construct()');
               foreach ($data->__sleep() as $var) $vars[$var]= $data->{$var};
             }
             
@@ -113,11 +115,10 @@
 
             return substr($ret, 0, -2).']';
           } else {
-            $ret= '{ ';
-
             // Bail out early on bordercase
             if (0 == sizeof($data)) return '{ }';
 
+            $ret= '{ ';
             foreach ($data as $key => $value) {
               $ret.= $this->encode((string)$key).' : '.$this->encode($value).' , ';
             }
@@ -197,12 +198,12 @@
         $token= $this->_getNextToken();
         switch ($token) {
           case self::T_LBRACKET: {
-            $array[$key]= $this->_decodeArray();
+            $array[(string)$key]= $this->_decodeArray();
             unset($key);
             break;
           }
           case self::T_LBRACE: {
-            $array[$key]= $this->_decodeObject();
+            $array[(string)$key]= $this->_decodeObject();
             unset($key);
             break;
           }
@@ -210,7 +211,7 @@
             if (empty($key)) {
               $key= $this->_getTokenValue();
             } else {
-              $array[$key]= $this->_getTokenValue();
+              $array[(string)$key]= $this->_getTokenValue();
               unset($key);
             }
             break;
@@ -218,9 +219,11 @@
         }
       } while ($token != self::T_RBRACE);
 
-      // Introspect array to check if this is actually an object
+      // Introspect array to check if this is actually an object. We store the 
+      // classname in a special __xpclass__ member. Class names are always 
+      // stored in iso-8859-1!
       if (!empty($array['__jsonclass__']) && !empty($array['__xpclass__'])) {
-        $inst= XPClass::forName($array['__xpclass__'])->newInstance();
+        $inst= XPClass::forName($array['__xpclass__']->getBytes('iso-8859-1'))->newInstance();
         
         foreach ($array as $key => $value) {
 
@@ -369,7 +372,7 @@
           switch ($tok) {
             case '"': {
               $this->stream->seek($initpos + $offset);
-              return (string)$ret->getBytes('ISO-8859-15');
+              return $ret;
             }
             
             case '\\': {
