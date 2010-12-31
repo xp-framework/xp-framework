@@ -249,7 +249,7 @@
      */
     #[@test]
     public function parseIntoUtf8() {
-      $tree= create(new Tree())->withEncoding('utf-8');
+      $tree= new Tree();
       create(new XMLParser('utf-8'))->withCallback($tree)->parse(trim('
         <?xml version="1.0" encoding="UTF-8"?>
         <document><node>Some umlauts: öäü</node></document>
@@ -267,7 +267,7 @@
      */
     #[@test]
     public function parseIntoIso() {
-      $tree= create(new Tree())->withEncoding('iso-8859-1');
+      $tree= new Tree();
       create(new XMLParser('iso-8859-1'))->withCallback($tree)->parse(trim('
         <?xml version="1.0" encoding="UTF-8"?>
         <document><node>Some umlauts: öäü</node></document>
