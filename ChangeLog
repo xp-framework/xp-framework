@@ -136,6 +136,7 @@ Features
   (friebe)
 - Implemented ARM blocks in XP language, supported by lang.Closeable 
   interface in framework.
+  http://news.planet-xp.net/article/397/2010/12/31/
   (friebe)
 - Added text.regex.Pattern::replaceWith() method
   (friebe)
