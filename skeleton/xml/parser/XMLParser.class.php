@@ -102,7 +102,11 @@
     public function parse($data, $source= NULL) {
       if ($parser= xml_parser_create('')) {
         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, FALSE);
-        xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $this->encoding);
+        if (NULL === $this->encoding) {
+          $this->encoding= xml_parser_get_option($parser, XML_OPTION_TARGET_ENCODING);
+        } else {
+          xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, $this->encoding);
+        }
         
         // Register callback
         if ($this->callback) {
