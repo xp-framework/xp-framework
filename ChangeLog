@@ -10,6 +10,7 @@ SVN version: ?????
 Heads up!
 ~~~~~~~~~
 - Made unittest default and verbose output include the elapsed time
+  http://news.planet-xp.net/article/398/2010/12/31/
   (friebe)
 - Changed util.log.ConsoleAppender to use util.cmd.Console class instead
   of directly writing to STDERR
@@ -102,6 +103,11 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support to write Strings and Characters to io.stream.TextWriter
+  (friebe)
+- Added withBom() method to io.stream.TextWriter to write the respective 
+  BOM depending on the character set (utf-16be, utf-16le, utf-8)
+  (friebe)
 - Added casting support to xml.meta.Marshaller and xml.meta.Unmarshaller
   (friebe)
 - Added injection support to xml.meta.Marshaller and xml.meta.Unmarshaller
@@ -136,6 +142,7 @@ Features
   (friebe)
 - Implemented ARM blocks in XP language, supported by lang.Closeable 
   interface in framework.
+  http://news.planet-xp.net/article/397/2010/12/31/
   (friebe)
 - Added text.regex.Pattern::replaceWith() method
   (friebe)
