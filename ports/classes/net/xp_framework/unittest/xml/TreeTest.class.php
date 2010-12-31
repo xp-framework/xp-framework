@@ -242,5 +242,41 @@
       $l= strlen($t->getSource(INDENT_NONE));
       printf('%d bytes, %.3f seconds', $l, microtime(TRUE) - $s);
     }
+
+    /**
+     * Tests parsing into a utf-8 tree
+     *
+     */
+    #[@test]
+    public function parseIntoUtf8() {
+      $tree= create(new Tree())->withEncoding('utf-8');
+      create(new XMLParser('utf-8'))->withCallback($tree)->parse(trim('
+        <?xml version="1.0" encoding="UTF-8"?>
+        <document><node>Some umlauts: öäü</node></document>
+      '));
+      
+      $this->assertEquals('utf-8', $tree->getEncoding());
+      $this->assertEquals(1, sizeof($tree->root->children));
+      $this->assertEquals('document', $tree->root->getName());
+      $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
+    }
+
+    /**
+     * Tests parsing into a utf-8 tree
+     *
+     */
+    #[@test]
+    public function parseIntoIso() {
+      $tree= create(new Tree())->withEncoding('iso-8859-1');
+      create(new XMLParser('iso-8859-1'))->withCallback($tree)->parse(trim('
+        <?xml version="1.0" encoding="UTF-8"?>
+        <document><node>Some umlauts: öäü</node></document>
+      '));
+      
+      $this->assertEquals('iso-8859-1', $tree->getEncoding());
+      $this->assertEquals(1, sizeof($tree->root->children));
+      $this->assertEquals('document', $tree->root->getName());
+      $this->assertEquals('Some umlauts: ���', $tree->root->children[0]->getContent());
+    }
   }
 ?>
