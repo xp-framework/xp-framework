@@ -9,6 +9,9 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Added onBegin(), onError() and onFinish() methods to ParserCallback
+  interface in xml.parser
+  (friebe)
 - Made unittest default and verbose output include the elapsed time
   http://news.planet-xp.net/article/398/2010/12/31/
   (friebe)

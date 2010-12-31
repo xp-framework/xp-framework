@@ -214,11 +214,6 @@
         $this->_cdata= '';
       }
       $this->_cnt--;
-      
-      // Clean up upon last element
-      if (0 === $this->_cnt) {
-        unset($this->_cnt, $this->_cdata, $this->_objs);
-      }
     }
 
     /**
@@ -240,6 +235,35 @@
      * @see     xp://xml.parser.XMLParser
      */
     public function onDefault($parser, $data) {
+      // NOOP
+    }
+
+    /**
+     * Callback function for XMLParser
+     *
+     * @param   xml.parser.XMLParser instance
+     */
+    public function onBegin($instance) {
+      $this->encoding= $instance->getEncoding();
+    }
+
+    /**
+     * Callback function for XMLParser
+     *
+     * @param   xml.parser.XMLParser instance
+     * @param   xml.XMLFormatException exception
+     */
+    public function onError($instance, $exception) {
+      unset($this->_cnt, $this->_cdata, $this->_objs);
+    }
+
+    /**
+     * Callback function for XMLParser
+     *
+     * @param   xml.parser.XMLParser instance
+     */
+    public function onFinish($instance) {
+      unset($this->_cnt, $this->_cdata, $this->_objs);
     }
 
     /**

@@ -63,7 +63,8 @@
           
         public
           $tree     = NULL,
-          $elements = array();
+          $elements = array(),
+          $encoding = NULL;
           
         public function onStartElement($parser, $name, $attrs) {
           $this->elements[]= $name;
@@ -85,6 +86,16 @@
 
         public function onDefault($parser, $data) {
           $this->pointer[0][AbstractXMLParserTest::CHLD][]= trim($data);
+        }
+
+        public function onBegin($instance) {
+          $this->encoding= $instance->getEncoding();
+        }
+
+        public function onError($instance, $exception) {
+        }
+
+        public function onFinish($instance) {
         }
       }');
     }
@@ -433,6 +444,7 @@
         <doc>The übercoder returns</doc>
       '));
 
+      $this->assertEquals('ISO-8859-1', $callback->encoding);
       $this->assertEquals(array(
         'doc', array(), array(
           'The', '�bercoder returns'
@@ -452,7 +464,8 @@
       $this->parser->parse($this->source('
         <doc>The übercoder returns</doc>
       '));
-
+      
+      $this->assertEquals('UTF-8', $callback->encoding);
       $this->assertEquals(array(
         'doc', array(), array(
           'The', 'übercoder returns'
