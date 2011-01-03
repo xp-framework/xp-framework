@@ -69,9 +69,12 @@
       }
 
       if (!is_resource($this->handle)) {
-        throw new SQLConnectException(trim(mssql_get_last_message()), $this->dsn);
+        $e= new SQLConnectException(trim(mssql_get_last_message()), $this->dsn);
+        xp::gc(__FILE__);
+        throw $e;
       }
-      
+      xp::gc(__FILE__);
+
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
       return parent::connect();
     }
