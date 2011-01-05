@@ -123,7 +123,6 @@
           $folder= new Folder($output);
           $folder->exists() || $folder->create();
           $manager->setOutput($folder);
-          ClassLoader::registerPath($output);
         } else {
           $files[]= new FileSource(new File($args[$i]));
         }
