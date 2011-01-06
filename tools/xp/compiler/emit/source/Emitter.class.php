@@ -1526,6 +1526,7 @@
      * @param   xp.compiler.ast.StaticInitializerNode initializer
      */
     protected function emitStaticInitializer($op, StaticInitializerNode $initializer) {
+      $this->inits[0][2]= TRUE;
       $op->append('static function __static() {');
       
       // Static initializations outside of initializer
@@ -1618,6 +1619,11 @@
 
       $op->append('xp::$registry[\'class.'.$declaration->literal.'\']= \''.$qualified.'\';');
       $op->append('xp::$registry[\'details.'.$qualified.'\']= '.var_export($this->metadata[0], TRUE).';');
+      
+      // Run static initializer if existant on synthetic types
+      if ($declaration->synthetic && $this->inits[0][2]) {
+        $op->append($declaration->literal)->append('::__static();');
+      }
     }
 
     /**
@@ -2103,7 +2109,7 @@
       array_unshift($this->metadata, array(array(), array()));
       $this->metadata[0]['class'][DETAIL_ANNOTATIONS]= array();
       array_unshift($this->properties, array());
-      array_unshift($this->inits, array(FALSE => array(), TRUE => array()));
+      array_unshift($this->inits, array(FALSE => array(), TRUE => array(), 2 => FALSE));
 
       // Generics
       if ($declaration->name->isGeneric()) {
