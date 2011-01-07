@@ -89,7 +89,7 @@
                 $value= trim($value, $quote);
                 $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
                   ? $p : strlen($value)
-                ));
+                ), $quote);
               
               // Check for comment
               } else if (FALSE !== ($p= strpos($value, ';'))) {

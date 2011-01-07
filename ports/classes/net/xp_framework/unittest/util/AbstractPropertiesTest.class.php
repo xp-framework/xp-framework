@@ -86,7 +86,7 @@ trim=  value1
     }
     
     /**
-     * Test reading quoted values, which are also trimmed
+     * Test reading quoted values, which are not trimmed
      *
      */
     #[@test]
@@ -96,7 +96,7 @@ trim=  value1
 quoted="  value1  "
       ');
       
-      $this->assertEquals('value1', $p->readString('section', 'quoted'));
+      $this->assertEquals('  value1  ', $p->readString('section', 'quoted'));
     }
     
     /**
@@ -141,7 +141,7 @@ spaces=" "
 unquoted= 
       ');
       $this->assertEquals(array(), $p->readArray('section', 'empty'));
-      $this->assertEquals(array(), $p->readArray('section', 'spaces'));
+      $this->assertEquals(array(' '), $p->readArray('section', 'spaces'));
       $this->assertEquals(array(), $p->readArray('section', 'unquoted'));
     }
     
