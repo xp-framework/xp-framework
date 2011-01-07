@@ -283,10 +283,16 @@
      */
     public function readArray($section, $key, $default= array()) {
       $this->_load();
-      return isset($this->_data[$section][$key])
-        ? '' == $this->_data[$section][$key] ? array() : explode('|', $this->_data[$section][$key])
-        : $default
-      ;
+
+      // New: key[]="a" or key[0]="a"
+      // Old: key="" (an empty array) or key="a|b|c"
+      if (!isset($this->_data[$section][$key])) {
+        return $default;
+      } else if (is_array($this->_data[$section][$key])) {
+        return $this->_data[$section][$key];
+      } else {
+        return '' == $this->_data[$section][$key] ? array() : explode('|', $this->_data[$section][$key]);
+      }
     }
     
     /**
@@ -299,19 +305,25 @@
      */
     public function readHash($section, $key, $default= NULL) {
       $this->_load();
-      if (!isset($this->_data[$section][$key])) return $default;
-      
-      $return= array();
-      foreach (explode('|', $this->_data[$section][$key]) as $val) {
-        if (strstr($val, ':')) {
-          list($k, $v)= explode(':', $val, 2);
-          $return[$k]= $v;
-        } else {
-          $return[]= $val;
-        } 
+
+      // New: key[color]="green" and key[make]="model"
+      // Old: key="color:green|make:model"
+      if (!isset($this->_data[$section][$key])) {
+        return $default;
+      } else if (is_array($this->_data[$section][$key])) {
+        return new Hashmap($this->_data[$section][$key]);
+      } else {
+        $return= array();
+        foreach (explode('|', $this->_data[$section][$key]) as $val) {
+          if (strstr($val, ':')) {
+            list($k, $v)= explode(':', $val, 2);
+            $return[$k]= $v;
+          } else {
+            $return[]= $val;
+          } 
+        }
+        return new Hashmap($return);
       }
-      
-      return new Hashmap($return);
     }
 
     /**

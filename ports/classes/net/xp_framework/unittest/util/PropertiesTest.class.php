@@ -334,7 +334,7 @@ class[1]=util.PropertyManager
     }
 
     /**
-     * Test keys with a hash keys
+     * Test keys with array keys
      *
      */
     #[@test]
@@ -348,6 +348,24 @@ class[]=util.PropertyManager
       $this->assertEquals(
         array('class' => array('util.Properties', 'util.PropertyManager')),
         $p->readSection('section')
+      );
+    }
+
+    /**
+     * Test keys with array keys
+     *
+     */
+    #[@test]
+    public function readArrayFromArrayKeys() {
+     $p= Properties::fromString('
+[section]
+class[]=util.Properties
+class[]=util.PropertyManager
+      ');
+      
+      $this->assertEquals(
+        array('util.Properties', 'util.PropertyManager'),
+        $p->readArray('section', 'class')
       );
     }
 
@@ -366,6 +384,24 @@ class[two]=util.PropertyManager
       $this->assertEquals(
         array('class' => array('one' => 'util.Properties', 'two' => 'util.PropertyManager')),
         $p->readSection('section')
+      );
+    }
+
+    /**
+     * Test keys with a hash keys
+     *
+     */
+    #[@test]
+    public function readHashFromHashKeys() {
+     $p= Properties::fromString('
+[section]
+class[one]=util.Properties
+class[two]=util.PropertyManager
+      ');
+      
+      $this->assertEquals(
+        new Hashmap(array('one' => 'util.Properties', 'two' => 'util.PropertyManager')),
+        $p->readHash('section', 'class')
       );
     }
   }
