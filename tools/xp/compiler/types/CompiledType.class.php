@@ -137,7 +137,7 @@
      * @return  bool
      */
     public function hasMethod($name) {
-      return isset($this->methods[$name]);
+      return isset($this->methods[$name]) || ($this->parent && $this->parent->hasMethod($name));
     }
 
     /**
@@ -147,7 +147,10 @@
      * @return  xp.compiler.types.Method
      */
     public function getMethod($name) {
-      return isset($this->methods[$name]) ? $this->methods[$name] : NULL;
+      return isset($this->methods[$name]) 
+        ? $this->methods[$name] 
+        : ($this->parent ? $this->parent->getMethod($name) : NULL)
+      ;
     }
 
     /**
@@ -169,7 +172,7 @@
      * @return  bool
      */
     public function hasOperator($symbol) {
-      return isset($this->operators[$symbol]);
+      return isset($this->operators[$symbol]) || ($this->parent && $this->parent->hasOperator($name));
     }
     
     /**
@@ -179,7 +182,10 @@
      * @return  xp.compiler.types.Operator
      */
     public function getOperator($symbol) {
-      return isset($this->operators[$symbol]) ? $this->operators[$symbol] : NULL;
+      return isset($this->operators[$symbol]) 
+        ? $this->operators[$symbol] 
+        : ($this->parent ? $this->parent->getOperator($symbol) : NULL)
+      ;
     }
 
     /**
@@ -201,7 +207,7 @@
      * @return  bool
      */
     public function hasField($name) {
-      return isset($this->fields[$name]);
+      return isset($this->fields[$name]) || ($this->parent && $this->parent->hasField($name));
     }
     
     /**
@@ -211,7 +217,10 @@
      * @return  xp.compiler.types.Field
      */
     public function getField($name) {
-      return isset($this->fields[$name]) ? $this->fields[$name] : NULL;
+      return isset($this->fields[$name]) 
+        ? $this->fields[$name] 
+        : ($this->parent ? $this->parent->getField($name) : NULL)
+      ;
     }
 
     /**
@@ -233,7 +242,7 @@
      * @return  bool
      */
     public function hasProperty($name) {
-      return isset($this->properties[$name]);
+      return isset($this->properties[$name]) || ($this->parent && $this->parent->hasProperty($name));
     }
     
     /**
@@ -243,7 +252,10 @@
      * @return  xp.compiler.types.Property
      */
     public function getProperty($name) {
-      return isset($this->properties[$name]) ? $this->properties[$name] : NULL;
+      return isset($this->properties[$name]) 
+        ? $this->properties[$name] 
+        : ($this->parent ? $this->parent->getProperty($name) : NULL)
+      ;
     }
     
     /**
@@ -265,7 +277,7 @@
      * @return  bool
      */
     public function hasConstant($name) {
-      return isset($this->constants[$name]); 
+      return isset($this->constants[$name]) || $this->parent && $this->parent->hasConstant($name);
     }
     
     /**
@@ -275,7 +287,10 @@
      * @return  xp.compiler.types.Constant
      */
     public function getConstant($name) {
-      return isset($this->constants[$name]) ? $this->constants[$name] : NULL;
+      return isset($this->constants[$name]) 
+        ? $this->constants[$name] 
+        : ($this->parent ? $this->parent->getConstant($name) : NULL)
+      ;
     }
 
     /**
