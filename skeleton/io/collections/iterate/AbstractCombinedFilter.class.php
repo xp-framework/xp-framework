@@ -7,35 +7,37 @@
   uses('io.collections.iterate.IterationFilter');
 
   /**
-   * Combined filter
+   * Abstract base class for combined filters
    *
-   * @purpose  Iteration Filter
+   * @see   xp://io.collections.iterate.AnyOfFilter
+   * @see   xp://io.collections.iterate.AllOfFilter
    */
-  class AbstractCombinedFilter extends Object implements IterationFilter {
-    public
-      $list  = array();
-
-    public
-      $_size = 0;
+  abstract class AbstractCombinedFilter extends Object implements IterationFilter {
+    public $list;
+    protected $_size;
       
     /**
      * Constructor
      *
      * @param   io.collections.iterate.IterationFilter[] list
      */
-    public function __construct($list) {
+    public function __construct($list= array()) {
       $this->list= $list;
       $this->_size= sizeof($list);
     }
     
     /**
-     * Accepts an element
+     * Adds a filter
      *
-     * @param   io.collections.IOElement element
-     * @return  bool
+     * @param   io.collections.iterate.IterationFilter filter
+     * @return  io.collections.iterate.IterationFilter the added filter
      */
-    public function accept($element) { }
-
+    public function add(IterationFilter $filter) {
+      $this->list[]= $filter;
+      $this->_size++;
+      return $filter;
+    }
+    
     /**
      * Creates a string representation of this iterator
      *
