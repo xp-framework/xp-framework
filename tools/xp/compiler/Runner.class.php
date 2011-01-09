@@ -8,6 +8,10 @@
 
   uses(
     'io.File',
+    'io.collections.FileCollection',
+    'io.collections.iterate.FilteredIOCollectionIterator',
+    'io.collections.iterate.ExtensionEqualsFilter',
+    'io.collections.iterate.AnyOfFilter',
     'util.Properties',
     'lang.ResourceProvider',
     'xp.compiler.Compiler',
@@ -26,7 +30,7 @@
    *
    * Usage:
    * <pre>
-   * $ xcc [options] [file [file [... ]]]
+   * $ xcc [options] [path [path [... ]]]
    * </pre>
    *
    * Options is one of:
@@ -53,10 +57,27 @@
    *     Set trace level (all, none, info, warn, error, debug)
    *   </li>
    * </ul>
+   * Path may be:
+   * <ul>
+   *   <li>[file.ext]:
+   *     This file will be compiled
+   *   </li>
+   *   <li>[folder]:
+   *     All files in this folder with all supported syntaxes will be compiled
+   *   </li>
+   *   <li>-N [folder]:
+   *     Same as above, but not performed recursively
+   *   </li>
+   * </ul>
    *
    * @purpose  Runner
    */
   class xp·compiler·Runner extends Object {
+    protected static $line;
+    
+    static function __static() {
+      self::$line= str_repeat('=', 72);
+    }
   
     /**
      * Converts api-doc "markup" to plain text w/ ASCII "art"
@@ -65,22 +86,52 @@
      * @return  string text
      */
     protected static function textOf($markup) {
-      $line= str_repeat('=', 72);
-      return strip_tags(preg_replace(array(
-        '#<pre>#', '#</pre>#', '#<li>#',
-      ), array(
-        $line, $line, '* ',
-      ), trim($markup)));
+      return strip_tags(preg_replace(
+        array('#<pre>#', '#</pre>#', '#<li>#'),
+        array(self::$line, self::$line, '* '),
+        trim($markup)
+      ));
     }
 
     /**
-     * Shows usage and exits
+     * Shows usage
      *
      */
-    protected function showUsage() {
+    protected static function showUsage() {
       Console::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      exit(2);
+      
+      // List supported syntaxes
+      Console::$err->writeLine(self::$line);
+      Console::$err->writeLine('Syntax support:');
+      foreach (Syntax::available() as $ext => $syntax) {
+        Console::$err->writeLinef('  * [%-5s] %s', $ext, $syntax->getClass()->getComment());
+      }
     }
+    
+    /**
+     * Returns file targets from a folder
+     *
+     * @param   string uri
+     * @param   bool recursive
+     * @return  xp.compiler.io.FileSource[]
+     */
+    protected static function fromFolder($uri, $recursive) {
+      static $filter= NULL;
+
+      if (NULL === $filter) {
+        $filter= new AnyOfFilter();
+        foreach (Syntax::available() as $ext => $syntax) {
+          $filter->add(new ExtensionEqualsFilter($ext));
+        }
+      }
+      
+      $files= array();
+      $it= new FilteredIOCollectionIterator(new FileCollection($uri), $filter, $recursive);
+      foreach ($it as $element) {
+        $files[]= new FileSource(new File($element->getURI()));
+      }
+      return $files;
+    } 
     
     /**
      * Entry point method
@@ -88,7 +139,10 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      if (empty($args)) self::showUsage();
+      if (empty($args)) {
+        self::showUsage();
+        return 2;
+      }
       
       $compiler= new Compiler();
       $manager= new FileManager();
@@ -100,29 +154,34 @@
       $files= array();
       $listener= new DefaultDiagnosticListener(Console::$out);
       for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
-        if ('-?' === $args[$i] || '--help' === $args[$i]) {
+        if ('-?' == $args[$i] || '--help' == $args[$i]) {
           self::showUsage();
-        } else if ('-cp' === $args[$i]) {
+          return 2;
+        } else if ('-cp' == $args[$i]) {
           ClassLoader::registerPath($args[++$i]);
-        } else if ('-sp' === $args[$i]) {
+        } else if ('-sp' == $args[$i]) {
           $manager->addSourcePath($args[++$i]);
-        } else if ('-v' === $args[$i]) {
+        } else if ('-v' == $args[$i]) {
           $listener= new VerboseDiagnosticListener(Console::$out);
-        } else if ('-t' === $args[$i]) {
+        } else if ('-t' == $args[$i]) {
           $levels= LogLevel::NONE;
           foreach (explode(',', $args[++$i]) as $level) {
             $levels |= LogLevel::named($level);
           }
           $compiler->setTrace(create(new LogCategory('xcc'))->withAppender(new ConsoleAppender(), $levels));
-        } else if ('-e' === $args[$i]) {
+        } else if ('-e' == $args[$i]) {
           $emitter= $args[++$i];
-        } else if ('-p' === $args[$i]) {
+        } else if ('-p' == $args[$i]) {
           $profiles= explode(',', $args[++$i]);
-        } else if ('-o' === $args[$i]) {
+        } else if ('-o' == $args[$i]) {
           $output= $args[++$i];
           $folder= new Folder($output);
           $folder->exists() || $folder->create();
           $manager->setOutput($folder);
+        } else if ('-N' == $args[$i]) {
+          $files= array_merge($files, self::fromFolder($args[++$i], FALSE));
+        } else if (is_dir($args[$i])) {
+          $files= array_merge($files, self::fromFolder($args[$i], TRUE));
         } else {
           $files[]= new FileSource(new File($args[$i]));
         }
@@ -131,7 +190,7 @@
       // Check
       if (empty($files)) {
         Console::$err->writeLine('*** No files given (-? will show usage)');
-        exit(2);
+        return 2;
       }
       
       // Setup emitter and load compiler profile configurations
@@ -144,12 +203,12 @@
         $emitter->setProfile($reader->getProfile());
       } catch (Throwable $e) {
         Console::$err->writeLine('*** Cannot load profile configuration(s) '.implode(',', $profiles).': '.$e->getMessage());
-        exit(3);
+        return 3;
       }
       
       // Compile files
       $success= $compiler->compile($files, $listener, $manager, $emitter);
-      exit($success ? 0 : 1);
+      return $success ? 0 : 1;
     }
   }
 ?>
