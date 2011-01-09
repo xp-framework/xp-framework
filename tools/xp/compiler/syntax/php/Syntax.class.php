@@ -9,9 +9,8 @@
   uses('xp.compiler.Syntax', 'xp.compiler.syntax.php.Parser', 'xp.compiler.syntax.php.Lexer');
 
   /**
-   * PHP Syntax
+   * PHP 5.3 Syntax (no alternative syntax)
    *
-   * @purpose  Syntax implementation
    */
   class xp·compiler·syntax·php·Syntax extends Syntax {
 

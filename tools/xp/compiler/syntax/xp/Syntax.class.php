@@ -11,7 +11,6 @@
   /**
    * XP Language Syntax
    *
-   * @purpose  Syntax implementation
    */
   class xp·compiler·syntax·xp·Syntax extends Syntax {
 
