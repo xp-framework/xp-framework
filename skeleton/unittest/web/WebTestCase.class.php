@@ -19,28 +19,18 @@
    * TestCase for web sites
    *
    * @see      xp://unittest.TestCase
+   * @test     xp://net.xp_framework.unittest.tests.WebTestCaseTest
    * @purpose  Integration tests
    */
   abstract class WebTestCase extends TestCase {
     protected
       $conn     = NULL,
-      $response = NULL;
-    
-    protected static 
+      $response = NULL,
       $cookies  = array();
     
     private
       $dom      = NULL,
       $xpath    = NULL;
-    
-    /**
-     * Before this class is entered: Clear cookies
-     *
-     */
-    #[@beforeClass]
-    public static function clearCookies() {
-      self::$cookies= array();
-    }
     
     /**
      * Get connection
@@ -112,9 +102,9 @@
       
       // Check if we have cookies for this domain
       $host= $this->conn->getUrl()->getHost();
-      if (isset(self::$cookies[$host]) && 0 < sizeof(self::$cookies[$host])) {
+      if (isset($this->cookies[$host]) && 0 < sizeof($this->cookies[$host])) {
         $cookies= '';
-        foreach (self::$cookies[$host] as $cookie) {
+        foreach ($this->cookies[$host] as $cookie) {
           $cookies.= $cookie->getHeadervalue().'; ';
         }
         $request->setHeader('Cookie', substr($cookies, 0, -2));
@@ -140,7 +130,7 @@
         // would be creating new sessions with every request otherwise!
         foreach ((array)$this->response->header('Set-Cookie') as $str) {
           $cookie= Cookie::parse($str);
-          self::$cookies[$this->conn->getUrl()->getHost()][$cookie->getName()]= $cookie;
+          $this->cookies[$this->conn->getUrl()->getHost()][$cookie->getName()]= $cookie;
         }
       } catch (XPException $e) {
         $this->response= xp::null();
@@ -466,6 +456,31 @@
     public function assertTitleEquals($title, $message= 'not_equals') {
       $text= $this->getXPath()->query('//title/text()')->item(0);
       $this->assertEquals($title, trim($text->data), $message);
+    }
+
+    /**
+     * Assert a cookie is present
+     *
+     * @param   string name
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertCookiePresent($name) {
+      $domain= $this->conn->getUrl()->getHost();
+      $this->assertTrue(isset($this->cookies[$domain][$name]), xp::stringOf($this->cookies));
+    }
+
+    /**
+     * Gets a cookie
+     *
+     * @param   string name
+     * @return  scriptlet.Cookie
+     */
+    protected function getCookie($name) {
+      $domain= $this->conn->getUrl()->getHost();
+      if (!isset($this->cookies[$domain][$name])) {
+        $this->fail('Failed to locate a cookie named "'.$name.'"', NULL, '[cookie]');
+      }
+      return $this->cookies[$domain][$name];
     }
   }
 ?>

@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
@@ -14,69 +14,34 @@
    * Testcase for util.Properties class.
    *
    * @see      xp://util.Properties
-   * @purpose  Testcase
    */
-  class PropertiesTest extends TestCase {
+  abstract class AbstractPropertiesTest extends TestCase {
   
     /**
-     * Test construction via fromFile() method for a non-existant file
+     * Create a new properties object from a string source
      *
+     * @param   string source
+     * @return  util.Properties
      */
-    #[@test, @expect('io.IOException')]
-    public function fromNonExistantFile() {
-      Properties::fromFile(new File('@@does-not-exist.ini@@'));
-    }
+    protected abstract function newPropertiesFrom($source);
 
-    /**
-     * Test construction via fromFile() method for an existant file.
-     * Relies on a file "example.ini" existing parallel to this class.
-     *
-     */
-    #[@test]
-    public function fromFile() {
-      $p= Properties::fromFile($this
-        ->getClass()
-        ->getPackage()
-        ->getResourceAsStream('example.ini')
-      );
-      $this->assertEquals('value', $p->readString('section', 'key'));
-    }
 
-    /**
-     * Test exceptions are not thrown until first read
-     *
-     */
-    #[@test]
-    public function lazyRead() {
-      $p= new Properties('@@does-not-exist.ini@@');
-      
-      // This cannot be done via @expect because it would also catch if an
-      // exception was thrown from util.Properties' constructor. We explicitely
-      // want the exception to be thrown later on
-      try {
-        $p->readString('section', 'key');
-        $this->fail('Expected exception not thrown', NULL, 'io.IOException');
-      } catch (IOException $expected) {
-        xp::gc();
-      }
-    }
-  
     /**
      * Test construction via fromString() when given an empty string
      *
      */
     #[@test]
-    public function fromEmptyString() {
-      Properties::fromString('');
+    public function fromEmptySource() {
+      $this->newPropertiesFrom('');
     }
-    
+  
     /**
      * Test simple reading of values.
      *
      */
     #[@test]
     public function basicTest() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 string="value1"
 int=2
@@ -94,7 +59,7 @@ bool=0
      */
     #[@test]
     public function valuesCommented() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 notQuotedComment=value1  ; A comment
 quotedComment="value1"  ; A comment
@@ -112,7 +77,7 @@ quotedWithComment="value1 ; With comment"
      */
     #[@test]
     public function valuesTrimmed() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 trim=  value1  
       ');
@@ -121,17 +86,17 @@ trim=  value1
     }
     
     /**
-     * Test reading quoted values, which are also trimmed
+     * Test reading quoted values, which are not trimmed
      *
      */
     #[@test]
     public function valuesQuoted() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 quoted="  value1  "
       ');
       
-      $this->assertEquals('value1', $p->readString('section', 'quoted'));
+      $this->assertEquals('  value1  ', $p->readString('section', 'quoted'));
     }
     
     /**
@@ -140,7 +105,7 @@ quoted="  value1  "
      */
     #[@test]
     public function readString() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 string1=string
 string2="string"
@@ -156,7 +121,7 @@ string2="string"
      */
     #[@test]
     public function readArray() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 array="foo|bar|baz"
       ');
@@ -169,14 +134,14 @@ array="foo|bar|baz"
      */
     #[@test]
     public function readEmptyArray() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 empty=""
 spaces=" "
 unquoted= 
       ');
       $this->assertEquals(array(), $p->readArray('section', 'empty'));
-      $this->assertEquals(array(), $p->readArray('section', 'spaces'));
+      $this->assertEquals(array(' '), $p->readArray('section', 'spaces'));
       $this->assertEquals(array(), $p->readArray('section', 'unquoted'));
     }
     
@@ -186,7 +151,7 @@ unquoted=
      */
     #[@test]
     public function readHash() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 hash="foo:bar|bar:foo"
       ');
@@ -202,7 +167,7 @@ hash="foo:bar|bar:foo"
      */
     #[@test]
     public function readRange() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 range="1..5"
       ');
@@ -218,7 +183,7 @@ range="1..5"
      */
     #[@test]
     public function readInteger() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 int1=1
 int2=0
@@ -235,7 +200,7 @@ int3=-5
      */
     #[@test]
     public function readFloat() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 float1=1
 float2=0
@@ -254,7 +219,7 @@ float4=-5.0
      */
     #[@test]
     public function readBool() {
-     $p= Properties::fromString('
+     $p= $this->newPropertiesFrom('
 [section]
 bool1=1
 bool2=yes
@@ -281,7 +246,7 @@ bool8=false
      */
     #[@test]
     public function hasSection() {
-      $p= Properties::fromString('
+      $p= $this->newPropertiesFrom('
 [section]
 foo=bar
       ');
@@ -296,7 +261,7 @@ foo=bar
      */
     #[@test]
     public function iterateSections() {
-     $p= Properties::fromString('
+     $p= $this->newPropertiesFrom('
 [section]
 foo=bar
 
@@ -321,7 +286,7 @@ foo=bar
      */
     #[@test]
     public function arrayKeys() {
-     $p= Properties::fromString('
+     $p= $this->newPropertiesFrom('
 [section]
 class[0]=util.Properties
 class[1]=util.PropertyManager
@@ -334,12 +299,12 @@ class[1]=util.PropertyManager
     }
 
     /**
-     * Test keys with a hash keys
+     * Test keys with array keys
      *
      */
     #[@test]
     public function arrayKeysEmptyOffset() {
-     $p= Properties::fromString('
+     $p= $this->newPropertiesFrom('
 [section]
 class[]=util.Properties
 class[]=util.PropertyManager
@@ -352,12 +317,30 @@ class[]=util.PropertyManager
     }
 
     /**
+     * Test keys with array keys
+     *
+     */
+    #[@test]
+    public function readArrayFromArrayKeys() {
+     $p= $this->newPropertiesFrom('
+[section]
+class[]=util.Properties
+class[]=util.PropertyManager
+      ');
+      
+      $this->assertEquals(
+        array('util.Properties', 'util.PropertyManager'),
+        $p->readArray('section', 'class')
+      );
+    }
+
+    /**
      * Test keys with a hash keys
      *
      */
     #[@test]
     public function hashKeys() {
-     $p= Properties::fromString('
+     $p= $this->newPropertiesFrom('
 [section]
 class[one]=util.Properties
 class[two]=util.PropertyManager
@@ -366,6 +349,24 @@ class[two]=util.PropertyManager
       $this->assertEquals(
         array('class' => array('one' => 'util.Properties', 'two' => 'util.PropertyManager')),
         $p->readSection('section')
+      );
+    }
+
+    /**
+     * Test keys with a hash keys
+     *
+     */
+    #[@test]
+    public function readHashFromHashKeys() {
+     $p= $this->newPropertiesFrom('
+[section]
+class[one]=util.Properties
+class[two]=util.PropertyManager
+      ');
+      
+      $this->assertEquals(
+        new Hashmap(array('one' => 'util.Properties', 'two' => 'util.PropertyManager')),
+        $p->readHash('section', 'class')
       );
     }
   }

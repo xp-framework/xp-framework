@@ -17,6 +17,11 @@
    */
   class CompiledTypeTest extends TestCase {
     protected $fixture= NULL;
+    protected static $objectType;
+    
+    static function __static() {
+      self::$objectType= new TypeReflection(XPClass::forName('lang.Object'));
+    }
     
     /**
      * Set up test case - creates fixture
@@ -114,6 +119,81 @@
     public function isSubclassOfParentsParent() {
       $this->fixture->parent= new TypeReflection(XPClass::forName('unittest.TestCase'));
       $this->assertTrue($this->fixture->isSubclassOf(new TypeReflection(XPClass::forName('lang.Object'))));
+    }
+    
+    /**
+     * Returns fixture with a given parent class
+     *
+     * @param   xp.compiler.types.Types parent
+     * @return  xp.compiler.types.Types fixture
+     */
+    protected function fixtureWithParent($parent) {
+      $this->fixture->parent= $parent;
+      return $this->fixture;
+    }
+
+    /**
+     * Test hasMethod() returning parent class' method
+     *
+     */
+    #[@test]
+    public function hasParentMethod() {
+      $this->assertTrue($this->fixtureWithParent(self::$objectType)->hasMethod('getClassName'));
+    }
+
+    /**
+     * Test getMethod() returning parent class' method
+     *
+     */
+    #[@test]
+    public function getParentMethod() {
+      $m= $this->fixtureWithParent(self::$objectType)->getMethod('getClassName');
+      $this->assertInstanceOf('xp.compiler.types.Method', $m);
+      $this->assertEquals($this->fixture->parent(), $m->holder);
+    }
+
+    /**
+     * Test hasMethod() returning this class' method
+     *
+     */
+    #[@test]
+    public function hasOverwrittenMethod() {
+      $m= new xp·compiler·types·Method('getClassName');
+      $m->returns= new TypeName('string');
+      $this->fixtureWithParent(self::$objectType)->addMethod($m);
+      $this->assertTrue($this->fixture->hasMethod('getClassName'));
+    }
+
+    /**
+     * Test getMethod() returning parent class' method
+     *
+     */
+    #[@test]
+    public function getOverwrittenMethod() {
+      $m= new xp·compiler·types·Method('getClassName');
+      $m->returns= new TypeName('string');
+      $this->fixtureWithParent(self::$objectType)->addMethod($m);
+      $m= $this->fixture->getMethod('getClassName');
+      $this->assertInstanceOf('xp.compiler.types.Method', $m);
+      $this->assertEquals($this->fixture, $m->holder);
+    }
+
+    /**
+     * Test hasMethod() when no parent is set
+     *
+     */
+    #[@test]
+    public function noParentHasMethod() {
+      $this->assertFalse($this->fixtureWithParent(NULL)->hasMethod('getClassName'));
+    }
+
+    /**
+     * Test getMethod() when no parent is set
+     *
+     */
+    #[@test]
+    public function noParentParentMethod() {
+      $this->assertNull($this->fixtureWithParent(NULL)->getMethod('getClassName'));
     }
   }
 ?>

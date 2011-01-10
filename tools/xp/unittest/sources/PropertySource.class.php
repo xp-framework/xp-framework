@@ -38,7 +38,7 @@
 
         $tests->put(
           XPClass::forName($this->prop->readString($section, 'class')),
-          new ArrayList($this->prop->readArray($section, 'args'))
+          ArrayList::newInstance($this->prop->readArray($section, 'args'))
         );
       } while ($section= $this->prop->getNextSection());
       

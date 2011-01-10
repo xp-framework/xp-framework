@@ -145,9 +145,9 @@
      */
     public function newInstance() {
       if ($this->_reflect->isInterface()) {
-        throw new IllegalAccessException('Cannot instantiate interfaces');
+        throw new IllegalAccessException('Cannot instantiate interfaces ('.$this->name.')');
       } else if ($this->_reflect->isAbstract()) {
-        throw new IllegalAccessException('Cannot instantiate abstract classes');
+        throw new IllegalAccessException('Cannot instantiate abstract classes ('.$this->name.')');
       }
       
       try {

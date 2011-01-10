@@ -33,6 +33,11 @@
     public
       $_file    = '',
       $_data    = NULL;
+
+    private static $INI_PARSE_BUG= FALSE;
+    static function __static() {
+      self::$INI_PARSE_BUG= version_compare(PHP_VERSION, '5.3.0', 'lt');
+    }
       
     /**
      * Constructor
@@ -64,59 +69,69 @@
      * @return  util.Properties
      */
     public static function fromString($str) {
-      with ($prop= new self(NULL)); {
-        $section= NULL;
-        $prop->_data= array();
-        if ($t= strtok($str, "\r\n")) do {
-          switch ($t{0}) {
-            case ';':
-            case '#':
-              break;
+      $self= new self(NULL);
+      $self->_data= self::parse($str);
+      return $self;
+    }
+    
+    /**
+     * Parse from a string
+     *
+     * @param   string str
+     * @return  [:var] data
+     */
+    protected static function parse($str) {
+      $section= NULL;
+      $data= array();
+      if ($t= strtok($str, "\r\n")) do {
+        switch ($t{0}) {
+          case ';':
+          case '#':
+            break;
 
-            case '[':
-              $p= strpos($t, '[');
-              $section= substr($t, $p+ 1, strpos($t, ']', $p)- 1);
-              $prop->_data[$section]= array();
-              break;
+          case '[':
+            $p= strpos($t, '[');
+            $section= substr($t, $p+ 1, strpos($t, ']', $p)- 1);
+            $data[$section]= array();
+            break;
 
-            default:
-              if (FALSE === ($p= strpos($t, '='))) break;
-              $key= trim(substr($t, 0, $p));
-              $value= trim(substr($t, $p+ 1), ' ');
-              
-              // Check for string quotations
-              if (strlen($value) && ('"' == ($quote= $value{0}))) {
-                $value= trim($value, $quote);
-                $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
-                  ? $p : strlen($value)
-                ));
-              
-              // Check for comment
-              } else if (FALSE !== ($p= strpos($value, ';'))) {
-                $value= trim(substr($value, 0, $p));
+          default:
+            if (FALSE === ($p= strpos($t, '='))) break;
+            $key= trim(substr($t, 0, $p));
+            $value= trim(substr($t, $p+ 1), ' ');
+
+            // Check for string quotations
+            if (strlen($value) && ('"' == ($quote= $value{0}))) {
+              $value= trim($value, $quote);
+              $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
+                ? $p : strlen($value)
+              ), $quote);
+
+            // Check for comment
+            } else if (FALSE !== ($p= strpos($value, ';'))) {
+              $value= trim(substr($value, 0, $p));
+            }
+
+            // Arrays and maps: key[], key[0], key[assoc]
+            if (']' === substr($key, -1)) {
+              $p= strpos($key, '[');
+              $offset= substr($key, $p+ 1, -1);
+              $key= substr($key, 0, $p);
+              if (!isset($data[$section][$key])) {
+                $data[$section][$key]= array();
               }
-
-              // Arrays and maps: key[], key[0], key[assoc]
-              if (']' === substr($key, -1)) {
-                $p= strpos($key, '[');
-                $offset= substr($key, $p+ 1, -1);
-                $key= substr($key, 0, $p);
-                if (!isset($prop->_data[$section][$key])) {
-                  $prop->_data[$section][$key]= array();
-                }
-                if ('' === $offset) {
-                  $prop->_data[$section][$key][]= $value;
-                } else {
-                  $prop->_data[$section][$key][$offset]= $value;
-                }
+              if ('' === $offset) {
+                $data[$section][$key][]= $value;
               } else {
-                $prop->_data[$section][$key]= $value;
+                $data[$section][$key][$offset]= $value;
               }
-              break;
-          }
-        } while ($t= strtok("\r\n"));
-      }
-      return $prop;
+            } else {
+              $data[$section][$key]= $value;
+            }
+            break;
+        }
+      } while ($t= strtok("\r\n"));
+      return $data;
     }
     
     /**
@@ -156,8 +171,15 @@
      */
     protected function _load($force= FALSE) {
       if (!$force && NULL !== $this->_data) return;
-      $this->_data= parse_ini_file($this->_file, TRUE);
-      if (xp::errorAt(__FILE__, __LINE__ - 1)) {
+      
+      if (self::$INI_PARSE_BUG) {
+        $this->_data= $this->parse(file_get_contents($this->_file));
+        $error= xp::errorAt(__FILE__, __LINE__ - 1);
+      } else {
+        $this->_data= parse_ini_file($this->_file, TRUE);
+        $error= xp::errorAt(__FILE__, __LINE__ - 1);
+      }
+      if ($error) {
         $e= new IOException('The file "'.$this->_file.'" could not be read');
         xp::gc(__FILE__);
         $this->_data= NULL;
@@ -283,10 +305,16 @@
      */
     public function readArray($section, $key, $default= array()) {
       $this->_load();
-      return isset($this->_data[$section][$key])
-        ? '' == $this->_data[$section][$key] ? array() : explode('|', $this->_data[$section][$key])
-        : $default
-      ;
+
+      // New: key[]="a" or key[0]="a"
+      // Old: key="" (an empty array) or key="a|b|c"
+      if (!isset($this->_data[$section][$key])) {
+        return $default;
+      } else if (is_array($this->_data[$section][$key])) {
+        return $this->_data[$section][$key];
+      } else {
+        return '' == $this->_data[$section][$key] ? array() : explode('|', $this->_data[$section][$key]);
+      }
     }
     
     /**
@@ -299,19 +327,25 @@
      */
     public function readHash($section, $key, $default= NULL) {
       $this->_load();
-      if (!isset($this->_data[$section][$key])) return $default;
-      
-      $return= array();
-      foreach (explode('|', $this->_data[$section][$key]) as $val) {
-        if (strstr($val, ':')) {
-          list($k, $v)= explode(':', $val, 2);
-          $return[$k]= $v;
-        } else {
-          $return[]= $val;
-        } 
+
+      // New: key[color]="green" and key[make]="model"
+      // Old: key="color:green|make:model"
+      if (!isset($this->_data[$section][$key])) {
+        return $default;
+      } else if (is_array($this->_data[$section][$key])) {
+        return new Hashmap($this->_data[$section][$key]);
+      } else {
+        $return= array();
+        foreach (explode('|', $this->_data[$section][$key]) as $val) {
+          if (strstr($val, ':')) {
+            list($k, $v)= explode(':', $val, 2);
+            $return[$k]= $v;
+          } else {
+            $return[]= $val;
+          } 
+        }
+        return new Hashmap($return);
       }
-      
-      return new Hashmap($return);
     }
 
     /**

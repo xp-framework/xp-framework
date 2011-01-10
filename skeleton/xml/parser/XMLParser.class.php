@@ -147,8 +147,9 @@
           throw $e;
         }
         xml_parser_free($parser);
-        $this->callback && $this->callback->onFinish($this);
-        return TRUE;
+        $r= TRUE;
+        $this->callback && $r= $this->callback->onFinish($this);
+        return $r;
       }
 
       throw new NullPointerException('Could not create parser');

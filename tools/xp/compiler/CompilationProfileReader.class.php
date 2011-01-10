@@ -24,18 +24,6 @@
     }
     
     /**
-     * Get class names from a section
-     *
-     * @param   util.Properties source
-     * @param   string section
-     * @return  string[] class names
-     */
-    protected function getClasses($source, $section) {
-      $list= $source->readSection($section);
-      return isset($list['class']) ? $list['class'] : array();
-    }
-    
-    /**
      * Get profile
      *
      * @return  xp.compiler.CompilationProfile
@@ -43,13 +31,13 @@
     public function getProfile() {
       $profile= new CompilationProfile();
       foreach ($this->sources as $source) {
-        foreach ($this->getClasses($source, 'warnings') as $class) {
+        foreach ($source->readArray('warnings', 'class') as $class) {
           $profile->addWarning(XPClass::forName($class)->newInstance());
         }
-        foreach ($this->getClasses($source, 'errors') as $class) {
+        foreach ($source->readArray('errors', 'class') as $class) {
           $profile->addError(XPClass::forName($class)->newInstance(), TRUE);
         }
-        foreach ($this->getClasses($source, 'optimizations') as $class) {
+        foreach ($source->readArray('optimizations', 'class') as $class) {
           $profile->addOptimization(XPClass::forName($class)->newInstance());
         }
       }

@@ -152,5 +152,26 @@
         public int[] $elements= self::$arrayClass.newInstance(1, 2, 3).values;
       }')->elements);
     }
+
+    /**
+     * Test complex example also found in demo package
+     *
+     */
+    #[@test]
+    public function anonymousClasses() {
+      $i= $this->newInstance('{ 
+        public Object newAnonymousInstance() {
+          return new Object() {
+            public static XPClass $arrayClass= lang.types.ArrayList::class;
+
+            public XPClass getMember() { return self::$arrayClass; }
+          };
+        }
+      }');
+      $this->assertEquals(
+        XPClass::forName('lang.types.ArrayList'), 
+        $i->newAnonymousInstance()->getMember()
+      );
+    }
   }
 ?>
