@@ -48,9 +48,11 @@
         'sysname'       => DB_ATTRTYPE_SYSNAME,    
         'text'          => DB_ATTRTYPE_TEXT,     
         'timestamp'     => DB_ATTRTYPE_TIMESTAMP,  
-        'tinyint'       => DB_ATTRTYPE_TINYINT,    
+        'tinyint'       => DB_ATTRTYPE_TINYINT,
+        'unichar'       => DB_ATTRTYPE_CHAR,    
+        'univarchar'    => DB_ATTRTYPE_VARCHAR,
         'varbinary'     => DB_ATTRTYPE_VARBINARY,  
-        'varchar'       => DB_ATTRTYPE_VARCHAR 
+        'varchar'       => DB_ATTRTYPE_VARCHAR,
       );
       parent::__construct($conn);
     }
