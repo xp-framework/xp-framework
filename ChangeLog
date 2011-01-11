@@ -7,6 +7,10 @@ Version ?.?.?, released ????-??-??
 SVN version: ?????
 
 
+Version 5.8.0, released 2011-01-11
+----------------------------------
+SVN version: 15183 
+
 Heads up!
 ~~~~~~~~~
 - Made cookie handling in unittest.web.WebTestCase non-persistent
