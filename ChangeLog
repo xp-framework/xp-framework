@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Features
+~~~~~~~~
+- Implemented reading central directory from a .zip
+  archive in io.archive.zip
+  (kiesel)
+
 
 Version 5.8.0, released 2011-01-11
 ----------------------------------
