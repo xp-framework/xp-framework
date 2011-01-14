@@ -52,6 +52,7 @@
       $this->assertFalse($entries[0]->isDirectory());
 
     }
+
     /**
      * Tests reading an zipfile with one entry called "הצü.txt" in its 
      * root directory.
