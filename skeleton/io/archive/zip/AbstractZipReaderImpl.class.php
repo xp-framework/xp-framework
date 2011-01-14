@@ -21,10 +21,12 @@
   abstract class AbstractZipReaderImpl extends Object {
     protected $stream= NULL;
     public $skip= 0;
+    protected $index= array();
 
-    const EOCD = "\x50\x4b\x05\x06";
-    const FHDR = "\x50\x4b\x03\x04";
-    const DHDR = "\x50\x4b\x01\x02";
+    // Signatures
+    const EOCD = "\x50\x4b\x05\x06";  // End-Of-Central-Directory
+    const FHDR = "\x50\x4b\x03\x04";  // File header
+    const DHDR = "\x50\x4b\x01\x02";  // Zip central directory
 
     /**
      * Creation constructor
@@ -116,16 +118,38 @@
           }
           $extra= $this->stream->read($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
+
+          $this->skip= $header['compressed'];
           
           // Bit 3: If this bit is set, the fields crc-32, compressed 
           // size and uncompressed size are set to zero in the local 
           // header.  The correct values are put in the data descriptor 
           // immediately following the compressed data.
           if ($header['flags'] & 8) {
-            raise('lang.MethodNotImplementedException', 'Data descriptors not yet implemented', 8);
+            if (!isset($this->index[$name])) {
+              $position= $this->stream->tell();
+              $offset= $this->readCentralDirectory();
+              $this->stream->seek($position, SEEK_SET);
+            }
+            
+            if (!isset($this->index[$name])) throw new FormatException('.zip archive broken: cannot find "'.$name.'" in central directory.');
+            $header= $this->index[$name];
+
+            // In case we're here, we can be sure to have a 
+            // RandomAccessStream - otherwise the central directory
+            // could not have been read in the first place. So,
+            // we may seek.
+            // If we had strict type checking this would not be
+            // possible, though.
+            // The offset is relative to the file begin - but also skip over the usual parts:
+            // * file header signature (4 bytes)
+            // * file header (26 bytes)
+            // * file extra + file name (variable size)
+            $this->stream->seek($header['offset']+ 30 + $header['extralen'] + $header['namelen'], SEEK_SET);
+            
+            // Set skip accordingly: 4 bytes data descriptor signature + 12 bytes data descriptor
+            $this->skip= $header['compressed']+ 16;
           }
-          
-          $this->skip= $header['compressed'];
           
           // Create ZipEntry object and return it
           if ('/' === substr($name, -1)) {
@@ -147,6 +171,20 @@
         }
       }
       throw new FormatException('Unknown byte sequence '.addcslashes($type, "\0..\17"));
+    }
+    
+    protected function addToIndex($filename, $header) {
+      $this->index[$filename]= $header;
+    }
+    
+    /**
+     * Read central directory; not supported in this abstract
+     * implementation.
+     *
+     * @return  void
+     */
+    protected function readCentralDirectory() {
+      raise('lang.MethodNotImplementedException', 'Seeking central directory is only supported by RandomAccessZipReaderImpl.');
     }
   }
 ?>

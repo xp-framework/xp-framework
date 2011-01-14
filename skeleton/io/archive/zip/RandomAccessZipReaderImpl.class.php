@@ -40,5 +40,65 @@
       $this->skip && $this->stream->seek($this->skip, SEEK_CUR);
       return $this->currentEntry();
     }
+
+    /**
+     * Read central directory
+     *
+     */
+    protected function readCentralDirectory() {
+      $entries= $this->seekCentralDirectory();
+
+      // File pointer is positioned at start of the central directory
+      while (self::EOCD !== ($sig= $this->stream->read(4))) {
+        if (self::DHDR != $sig) 
+          throw new FormatException('No central directory header signature found, have: '.addcslashes($sig, "\0..\17"));
+
+        $header= unpack(
+          'vmade/vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen/vcommentlen/vdiskno/vattr/Vextattr/Voffset', 
+          $this->stream->read(42)
+        );
+        
+        $filename= $this->stream->read($header['namelen']);
+        $extra= $this->stream->read($header['extralen']);
+        $comment= $this->stream->read($header['commentlen']);
+
+        $this->addToIndex($filename, $header);
+      }
+    }
+    
+    protected function seekCentralDirectory() {
+
+      // Seek to start of file, so we can determine filesize
+      $this->stream->seek(0, SEEK_SET);
+      $fileSize= $this->stream->available();
+      
+      // Seek to "first" position where EOCD can occur (Note: a file
+      // comment may be embedded in the EOCD header - with variable size;
+      // this code currently does not support this and just assumes the
+      // comment has 0 byte length.)
+      $offset= $fileSize- 22;
+      if ($offset < 0) throw new FormatException('File too short for a .zip');
+      $this->stream->seek($offset, SEEK_SET);
+      
+      // By reading one byte at a time, try to find the magic marker sequence
+      // which indicates the start of the EOCD section
+      $marker= $this->stream->read(3);
+      while ($this->stream->available()) {
+        $marker.= $this->stream->read(1);
+        
+        if ($marker == parent::EOCD) {
+          break;
+        }
+        
+        $marker= substr($marker, -3);
+      }
+      
+      if (0 == $this->stream->available()) 
+        throw new FormatException('Could not find central directory; currently not supporting archives w/ file comments.');
+      
+      // Read offset of central directory from end-of-central-directory "header"
+      $offset= unpack('vdisk/vstart/vtotal/ventries/Vsize/Voffset', $this->stream->read(16));
+      $this->stream->seek($offset['offset'], SEEK_SET);
+    }
   }
 ?>

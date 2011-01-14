@@ -10,7 +10,7 @@
    * Read from a zip file
    *
    * @see      xp://io.archive.zip.ZipArchive#open
-   * @purpose  Write to a zip archive
+   * @purpose  Read zip archive
    */
   class ZipArchiveReader extends Object {
     protected
