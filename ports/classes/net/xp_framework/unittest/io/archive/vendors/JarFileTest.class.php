@@ -9,8 +9,8 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see   http://en.wikipedia.org/wiki/JAR_(file_format)
+   * @see   http://download.oracle.com/javase/6/docs/technotes/guides/jar/jar.html
    */
   class JarFileTest extends ZipFileVendorTest {
   
@@ -29,16 +29,6 @@
     #[@test, @ignore('Cannot create empty zipfiles with `jar`')]
     public function emptyZipFile() {
       parent::emptyZipFile();
-    }
-    
-    /**
-     * Tests reading an zipfile with one entry called "הצü.txt" in its 
-     * root directory.
-     *
-     */
-    #[@test]
-    public function umlautZip() {
-      parent::umlautZip();
     }
   }
 ?>
