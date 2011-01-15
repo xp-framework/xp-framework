@@ -109,11 +109,18 @@
             $decoded= '';
           } else {
             $name= $this->stream->read($header['namelen']);
-
-            // Decode name from zipfile. If it cannot be decoded from cp437 
-            // we will use it as-is.
-            if ('' === ($decoded= @iconv('cp437', 'iso-8859-1', $name))) {
-              $decoded= $name;
+            
+            // Decode name from zipfile. If we find general purpose flag bit 11 
+            // (EFS), the name is encoded in UTF-8, if not, we try the following: 
+            // Decode from utf-8, then try cp437, and if that fails, we will use 
+            // it as-is. Do this as certain vendors (Java e.g.) always use utf-8 
+            // but do not indicate this via EFS.
+            if ($header['flags'] & 2048) {
+              $decoded= iconv('utf-8', 'iso-8859-1', $name);
+            } else if ('' === ($decoded= @iconv('utf-8', 'iso-8859-1', $name))) {
+              if ('' === ($decoded= @iconv('cp437', 'iso-8859-1', $name))) {
+                $decoded= $name;
+              }
             }
           }
           $extra= $this->stream->read($header['extralen']);
