@@ -18,8 +18,8 @@
    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    * <code>
    *   $z= ZipFile::create(new FileOutputStream(new File('dist.zip')));
-   *   $z->addEntry(new ZipDirEntry('META-INF'));
-   *   $e= $z->addEntry(new ZipFileEntry('META-INF/version.txt'));
+   *   $z->addDir(new ZipDirEntry('META-INF'));
+   *   $e= $z->addFile(new ZipFileEntry('META-INF/version.txt'));
    *   $e->getOutputStream()->write($contents);
    *   $z->close();
    * </code>
