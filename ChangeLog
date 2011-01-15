@@ -8,8 +8,9 @@ SVN version: ?????
 
 Features
 ~~~~~~~~
-- Implemented reading central directory from a .zip
-  archive in io.archive.zip
+- Added io.archive.zip.ZipIterator class
+  (friebe)
+- Implemented reading central directory from zip archives in io.archive.zip
   (kiesel)
 
 
