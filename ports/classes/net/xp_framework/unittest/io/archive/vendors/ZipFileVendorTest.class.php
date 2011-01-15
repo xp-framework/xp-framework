@@ -50,7 +50,6 @@
       $this->assertEquals('hello.txt', $entries[0]->getName());
       $this->assertEquals(5, $entries[0]->getSize());
       $this->assertFalse($entries[0]->isDirectory());
-
     }
 
     /**
