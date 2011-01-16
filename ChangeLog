@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed DriverManager to use userland MySQL in favor of ext/mysqlnd
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - When writing zip files, convert names from iso-8859-1 to CP437
@@ -13,7 +18,7 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- Added userland mysql implementation in case neither "mysql" nor 
+- Added userland MySQL implementation in case neither "mysql" nor 
   "mysqli" PHP extensions are loaded
   (friebe)
 - Implemented extracting from password-protected ZIP files
