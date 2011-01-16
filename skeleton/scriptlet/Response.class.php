@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('scriptlet.ScriptletOutputStream');
-
   /**
    * Defines the response sent by the server to the client
    *
@@ -73,22 +71,9 @@
     /**
      * Gets the output stream
      *
-     * @return  scriptlet.ScriptletOutputStream
+     * @param   io.streams.OutputStream
      */
     public function getOutputStream();
-
-    /**
-     * Writes headers directly to the output
-     *
-     */
-    #public function writeHeaders();
-    
-    /**
-     * Writes bytes directly to the output
-     *
-     * @param   string buffer
-     */
-    #public function writeBytes($buffer);
 
     /**
      * Flushes this response, that is, writes all headers to the outputstream
@@ -96,10 +81,5 @@
      */
     public function flush();
     
-    /**
-     * Resets this response
-     *
-     */
-    #public function reset();
   }
 ?>

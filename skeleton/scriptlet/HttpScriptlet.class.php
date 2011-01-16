@@ -164,7 +164,7 @@
      * @return  string class method (one of doGet, doPost, doHead)
      */
     public function handleMethod($request) {
-      switch (strtoupper($request->getMethod())) {
+      switch (strtoupper($request->method)) {
         case HttpConstants::POST:
         case HttpConstants::PUT: {
           if (!empty($_FILES)) {
@@ -193,7 +193,7 @@
         }
       }
 
-      $method= 'do'.ucfirst(strtolower($request->getMethod()));
+      $method= 'do'.ucfirst(strtolower($request->method));
       if (!method_exists($this, $method)) return NULL;
       return $method;
     }
@@ -319,7 +319,7 @@
      * @param   scriptlet.HttpScriptletResponse response 
      * @throws  scriptlet.ScriptletException indicating fatal errors
      */
-    public function service(Request $request, Response $response) {
+    public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
       $request->setURL($this->_url(
         ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
         $request->getHeader('X-Forwarded-Host', $request->getEnvValue('HTTP_HOST')).

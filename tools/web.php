@@ -38,12 +38,13 @@
 
   // Set error status to 500 by default - if a fatal error occurs,
   // this guarantees to at least send an error code.
-  if ('cgi' === PHP_SAPI || 'cgi-fcgi' === PHP_SAPI) {
-    header('Status: 500 Internal Server Error');
-    $impl= 'Cgi';
-  } else {
-    header('HTTP/1.0 500 Internal Server Error');
-    $impl= 'Module';
+  switch (php_sapi_name()) {
+    case 'cgi':
+      header('Status: 500 Internal Server Error');
+      break;
+
+    default:
+      header('HTTP/1.0 500 Internal Server Error');
   }
   ini_set('error_prepend_string', '<xmp>');
   ini_set('error_append_string', '</xmp>');
@@ -64,11 +65,6 @@
     trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
     exit(0x3d);
   }
-  uses('xp.scriptlet.Runner', 'util.Properties');
-  $r= new xp新criptlet愛unner($webroot, getenv('SERVER_PROFILE'));
-  $r->configure(new Properties($webroot.'/etc/web.ini'));
-  $r->run(
-    XPClass::forName('xp.scriptlet.sapi.'.$impl.'Request')->newInstance(),
-    XPClass::forName('xp.scriptlet.sapi.'.$impl.'Response')->newInstance()
-  );
+  uses('xp.scriptlet.Runner');
+  exit(xp新criptlet愛unner::main(array($webroot, getenv('SERVER_PROFILE'), getenv('SCRIPT_URL'))));
 ?>

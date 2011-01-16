@@ -32,8 +32,21 @@
     
     static function __static() {
       self::$errorScriptlet= ClassLoader::defineClass('ErrorScriptlet', 'scriptlet.HttpScriptlet', array('util.log.Traceable'), '{
+        protected function _request() {
+          $req= parent::_request();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/error";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+        
         public function setTrace($cat) {
           $cat->debug("Injected", $cat->getClassName());
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
         }
         
         public function doGet($request, $response) {
@@ -41,11 +54,33 @@
         }
       }');
       self::$welcomeScriptlet= ClassLoader::defineClass('WelcomeScriptlet', 'scriptlet.HttpScriptlet', array(), '{
+        protected function _request() {
+          $req= parent::_request();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/welcome";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
         public function doGet($request, $response) {
           $response->write("<h1>Welcome, we are open</h1>");
         }
       }');
       self::$xmlScriptlet= ClassLoader::defineClass('XmlScriptletImpl', 'scriptlet.xml.XMLScriptlet', array(), '{
+        protected function _request() {
+          $req= parent::_request();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/welcome";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+
         protected function _response() {
           $res= parent::_response();
           $stylesheet= create(new Stylesheet())
@@ -76,6 +111,19 @@
           $this->date= $date;
         }
         
+        protected function _request() {
+          $req= parent::_request();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/debug";
+          $req->env["HTTP_HOST"]= "localhost";
+          return $req;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
         public function doGet($request, $response) {
           $response->write("<h1>".$this->title." @ ".$this->date."</h1>");
 
@@ -89,6 +137,20 @@
         }
       }');
       self::$exitScriptlet= ClassLoader::defineClass('ExitScriptlet', 'scriptlet.HttpScriptlet', array(), '{
+        protected function _request() {
+          $req= parent::_request();
+          $req->method= "GET";
+          $req->env["SERVER_PROTOCOL"]= "HTTP/1.1";
+          $req->env["REQUEST_URI"]= "/exit";
+          $req->env["HTTP_HOST"]= "localhost";
+          $req->setParams($_REQUEST);
+          return $req;
+        }
+        
+        protected function _setupRequest($request) {
+          // Intentionally empty
+        }
+        
         public function doGet($request, $response) {
           Runtime::halt($request->getParam("code"), $request->getParam("message"));
         }
@@ -454,17 +516,13 @@
      * @return  string content
      */
     protected function runWith($profile, $url, $params= array()) {
-      with ($req= new HttpScriptletRequest(), $res= new HttpScriptletResponse()); {
-        $req->method= 'GET';
-        $req->env['SERVER_PROTOCOL']= 'HTTP/1.1';
-        $req->env['REQUEST_URI']= $url;
-        $req->env['HTTP_HOST']= 'localhost';
-        $req->url= new URL('http://localhost'.$url);
-        $req->setParams($params);
-
-        $this->newRunner($profile)->run($req, $res);
-        return $res->getContent();
-      }
+      ob_start();
+      $_REQUEST= $params;
+      $this->newRunner($profile)->run($url);
+      $_REQUEST= array();
+      $content= ob_get_contents();
+      ob_end_clean();
+      return $content;
     }
     
     /**
