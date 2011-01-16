@@ -18,19 +18,37 @@
       $stream   = NULL,
       $dir      = array(), 
       $pointer  = 0,
-      $out      = NULL;
+      $out      = NULL,
+      $unicode  = FALSE;
 
     const EOCD = "\x50\x4b\x05\x06\x00\x00\x00\x00";
-    const FHDR = "\x50\x4b\x03\x04\x0a\x00\x00\x00";
-    const DHDR = "\x50\x4b\x01\x02\x14\x0b\x0a\x00";
+    const FHDR = "\x50\x4b\x03\x04";
+    const DHDR = "\x50\x4b\x01\x02";
 
     /**
      * Creation constructor
      *
      * @param   io.streams.OutputStream stream
+     * @param   bool unicode whether to use unicode for entry names
      */
-    public function __construct(OutputStream $stream) {
+    public function __construct(OutputStream $stream, $unicode= FALSE) {
       $this->stream= $stream;
+      $this->unicode= $unicode;
+    }
+    
+    /**
+     * Set whether to use unicode for entry names. Note this is not supported 
+     * by for example Windows explorer or the "unzip" command line utility,
+     * although the Language Encoding (EFS) bit is set - 7-zip, on the other
+     * side, as also this implementation, will handle the name correctly. 
+     * Java's jar utility will even expect utf-8, and choke on any other names!
+     *
+     * @param   bool unicode TRUE to use unicode, false otherwise
+     * @return  io.archive.zip.ZipArchiveWriter
+     */
+    public function usingUnicodeNames($unicode= TRUE) {
+      $this->unicode= $unicode;
+      return $this;
     }
 
     /**
@@ -49,13 +67,15 @@
       $this->out= NULL;
       
       $mod= $entry->getLastModified();
-      $name= iconv('iso-8859-1', 'cp437', str_replace('\\', '/', $entry->getName()));
+      $name= iconv('iso-8859-1', $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $entry->getName()));
       $nameLength= strlen($name);
       $extraLength= 0;
       $extra= '';
       
       $info= pack(
-        'vvvVVVvv',
+        'vvvvvVVVvv',
+        10,                       // version
+        $this->unicode ? 2048 : 0,// flags
         0,                        // compression method
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
@@ -136,14 +156,16 @@
      */
     public function writeFile($file, $size, $compressed, $crc32, $data) {
       $mod= $file->getLastModified();
-      $name= iconv('iso-8859-1', 'cp437', str_replace('\\', '/', $file->getName()));
+      $name= iconv('iso-8859-1', $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $file->getName()));
       $nameLength= strlen($name);
       $method= $file->getCompression()->ordinal();
       $extraLength= 0;
       $extra= '';
 
       $info= pack(
-        'vvvVVVvv',
+        'vvvvvVVVvv',
+        10,                       // version
+        $this->unicode ? 2048 : 0,// flags
         $method,                  // compression method, 0 = none, 8 = gz, 12 = bz
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
@@ -182,7 +204,7 @@
       foreach ($this->dir as $name => $entry) {
         $s= (
           self::DHDR.
-          "\x00\x00".           // general purpose bit flag
+          "\x14\x0b".           // version made by
           $entry['info'].       // { see writeFile() }
           "\x00\x00".           // file comment length
           "\x00\x00".           // disk number start

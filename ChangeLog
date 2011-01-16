@@ -13,6 +13,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added io.archive.zip.ZipArchiveWriter::usingUnicodeNames() method
+  (friebe)
 - Added io.archive.zip.ZipIterator class
   (friebe)
 - Implemented reading central directory from zip archives in io.archive.zip
