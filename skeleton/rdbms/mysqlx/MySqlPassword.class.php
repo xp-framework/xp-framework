@@ -7,9 +7,10 @@
   uses('lang.Enum', 'math.BigInt');
 
   /**
-   * (Insert class' description here)
+   * MySQL password functions
    *
    * @see   php://sha1
+   * @test  xp://net.xp_framework.unittest.rdbms.mysql.MySqlPasswordTest
    * @see   http://forge.mysql.com/wiki/MySQL_Internals_ClientServer_Protocol
    */
   abstract class MySqlPassword extends Enum {
