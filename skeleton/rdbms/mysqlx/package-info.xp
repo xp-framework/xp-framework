@@ -17,6 +17,7 @@
  * @see      http://mysql.com/
  * @see      http://news.planet-xp.net/article/404/2011/01/16/
  * @see      http://stackoverflow.com/questions/1575807/cannot-connect-to-mysql-4-1-using-old-authentication
+ * @see      http://bugs.mysql.com/bug.php?id=37552
  * @see      xp://rdbms.DriverManager - the entry point
  * @purpose  Databases
  */
