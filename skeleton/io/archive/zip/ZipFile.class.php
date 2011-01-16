@@ -39,7 +39,14 @@
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.io.archive.vendors.InfoZipZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.JarFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.JavaZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.Java7ZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.PHPZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.SevenZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.WinRARZipFileTest
    * @test     xp://net.xp_framework.unittest.io.archive.vendors.WindowsZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.XpZipFileTest
    * @test     xp://net.xp_framework.unittest.io.archive.MalformedZipFileTest
    * @see      http://www.pkware.com/documents/casestudies/APPNOTE.TXT
    * @purpose  Entry point class
