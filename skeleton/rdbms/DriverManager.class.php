@@ -87,6 +87,8 @@
         self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysql.MySQLConnection');
       } else if (extension_loaded('mysqli')) {
         self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqli.MySQLiConnection');
+      } else {
+        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqlx.MySqlxConnection');
       }
 
       // PostgreSQL support

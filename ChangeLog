@@ -13,6 +13,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added userland mysql implementation in case neither "mysql" nor 
+  "mysqli" PHP extensions are loaded
+  (friebe)
 - Implemented extracting from password-protected ZIP files
   (friebe)
 - Added new package "math" which contains BigNum, BigInt and BigFloat
