@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- When writing zip files, convert names from iso-8859-1 to CP437
+  (friebe)
+
 Features
 ~~~~~~~~
 - Added io.archive.zip.ZipIterator class
