@@ -43,20 +43,20 @@
 
           $hp= self::hash($password);
           $hm= self::hash($message);
-          $SEED_MAX= new BigInt(0x3FFFFFFF);
+          $SEED_MAX= 0x3FFFFFFF;
 
           $seed1= $hp[0]->bitwiseXor($hm[0])->modulo($SEED_MAX);
           $seed2= $hp[1]->bitwiseXor($hm[1])->modulo($SEED_MAX);
           $to= "";
           for ($i= 0, $s= strlen($message); $i < $s; $i++) {
-            $seed1= $seed1->multiply(new BigInt(3))->add($seed2)->modulo($SEED_MAX);
-            $seed2= $seed1->add($seed2)->add(new BigInt(33))->modulo($SEED_MAX);
-            $rnd= $seed1->divide($SEED_MAX)->multiply(new BigInt(31));
+            $seed1= $seed1->multiply(3)->add($seed2)->modulo($SEED_MAX);
+            $seed2= $seed1->add($seed2)->add(33)->modulo($SEED_MAX);
+            $rnd= $seed1->divide($SEED_MAX)->multiply(31);
             $to.= chr($rnd->intValue() + 64);
           }
-          $seed1= $seed1->multiply(new BigInt(3))->add($seed2)->modulo($SEED_MAX);
-          $seed2= $seed1->add($seed2)->add(new BigInt(33))->modulo($SEED_MAX);
-          $rnd= $seed1->divide($SEED_MAX)->multiply(new BigInt(31));
+          $seed1= $seed1->multiply(3)->add($seed2)->modulo($SEED_MAX);
+          $seed2= $seed1->add($seed2)->add(33)->modulo($SEED_MAX);
+          $rnd= $seed1->divide($SEED_MAX)->multiply(31);
 
           return $to ^ str_repeat(chr($rnd->intValue()), strlen($message));
         }
