@@ -39,6 +39,21 @@
         }
       }
     }
+
+    /**
+     * Converts api-doc "markup" to plain text w/ ASCII "art"
+     *
+     * @param   string markup
+     * @return  string text
+     */
+    protected static function textOf($markup) {
+      $line= str_repeat('=', 72);
+      return strip_tags(preg_replace(array(
+        '#<pre>#', '#</pre>#', '#<li>#',
+      ), array(
+        $line, $line, '* ',
+      ), trim($markup)));
+    }
     
     /**
      * Creates a new scriptlet runner
@@ -170,19 +185,28 @@
     }
     
     /**
-     * Entry point method. Receives the following arguments from web.php:
-     * <ol>
-     *   <li>The web root</li>
-     *   <li>The server profile</li>
-     *   <li>The script URL</li>
-     * </ol>
+     * CLI Entry point method. Uses lazy initialization to load CLI request
+     * and response implementations as this class is primarily used inside
+     * CGI requests (via mod_php / CGI-php / PHP-FCGI / ...)
      *
      * @param   string[] args
      */
     public static function main(array $args) {
-      $r= new self($args[0], $args[1]);
-      $r->configure(new Properties($args[0].'/etc/web.ini'));
-      $r->run($args[2]);
+      $req= XPClass::forName('xp.scriptlet.sapi.CliRequest');
+      $res= XPClass::forName('xp.scriptlet.sapi.CliResponse');
+
+      // Show usage if called with no command line args
+      if (empty($args)) {
+        Console::$err->writeLine(self::textOf($req->getComment()));
+        return 2;
+      }
+
+      $webroot= getcwd();
+      $self= new self($webroot, getenv('PROFILE'));
+      $self->configure(new Properties($webroot.'/etc/web.ini'));
+      $self->run($req->newInstance($args), $res->newInstance());
+      
+      return 0;
     }
     
     /**
@@ -243,12 +267,13 @@
     /**
      * Creates the scriptlet instance for the given URL and runs it
      *
-     * @param   string url default '/'
+     * @param   scriptlet.Request request
+     * @param   scriptlet.Response response
      */
-    public function run($url= '/') {
+    public function run(Request $request, Response $response) {
     
       // Determine which scriptlet should be run
-      $application= $this->applicationAt($url);
+      $application= $this->applicationAt($request->getURL()->getPath());
 
       // Determine debug level
       $flags= $application->getDebug();
@@ -287,7 +312,7 @@
         $instance->init();
       
         // Service
-        $response= $instance->process();
+        $instance->service($request, $response);
       } catch (ScriptletException $e) {
         $cat->error($e);
 
@@ -296,26 +321,26 @@
         if (method_exists($instance, 'fail')) {
           $response= $instance->fail($e);
         } else {
-          $response= $this->fail($e, $e->getStatus(), $flags & WebDebug::STACKTRACE);
+          $this->fail($response, $e, $e->getStatus(), $flags & WebDebug::STACKTRACE);
         }
       } catch (SystemExit $e) {
         if (0 === $e->getCode()) {
-          $response= new HttpScriptletResponse();
           $response->setStatus(HttpConstants::STATUS_OK);
           if ($message= $e->getMessage()) $response->setContent($message);
         } else {
           $cat->error($e);
-          $response= $this->fail($e, HttpConstants::STATUS_INTERNAL_SERVER_ERROR, FALSE);
+          $this->fail($response, $e, HttpConstants::STATUS_INTERNAL_SERVER_ERROR, FALSE);
         }
       } catch (Throwable $e) {
         $cat->error($e);
 
         // Here, we might not have a scriptlet
-        $response= $this->fail($e, HttpConstants::STATUS_PRECONDITION_FAILED, $flags & WebDebug::STACKTRACE);
+        $this->fail($response, $e, HttpConstants::STATUS_PRECONDITION_FAILED, $flags & WebDebug::STACKTRACE);
       }
 
       // Send output
       $response->isCommitted() || $response->flush();
+      return;
       $response->sendContent();
 
       // Call scriptlet's finalizer
@@ -341,16 +366,15 @@
      * @param   bool trace whether to show stacktrace
      * @return  scriptlet.HttpScriptletResponse
      */
-    protected function fail(Throwable $t, $status, $trace) {
+    protected function fail(Response $response, Throwable $t, $status, $trace) {
       $package= create(new XPClass(__CLASS__))->getPackage();
       $errorPage= ($package->providesResource('error'.$status.'.html')
         ? $package->getResource('error'.$status.'.html')
         : $package->getResource('error500.html')
       );
 
-      $response= new HttpScriptletResponse();
       $response->setStatus($status);
-      $response->setContent(str_replace(
+      $response->getOutputStream()->write(str_replace(
         '<xp:value-of select="reason"/>',
         $trace ? $t->toString() : $t->getMessage(),
         $errorPage

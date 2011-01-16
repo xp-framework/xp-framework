@@ -14,7 +14,30 @@
   );
 
   /**
-   * Compression algorithm enumeration
+   * Compression algorithm enumeration.
+   *
+   * The following compression algorithms are defined by the standard:
+   * <pre>
+   *    0 - The file is stored (no compression)
+   *    1 - The file is Shrunk
+   *    2 - The file is Reduced with compression factor 1
+   *    3 - The file is Reduced with compression factor 2
+   *    4 - The file is Reduced with compression factor 3
+   *    5 - The file is Reduced with compression factor 4
+   *    6 - The file is Imploded
+   *    7 - Reserved for Tokenizing compression algorithm
+   *    8 - The file is Deflated
+   *    9 - Enhanced Deflating using Deflate64(tm)
+   *   10 - PKWARE Data Compression Library Imploding (old IBM TERSE)
+   *   12 - File is compressed using BZIP2 algorithm
+   *   14 - LZMA (EFS)
+   *   18 - File is compressed using IBM TERSE (new)
+   *   19 - IBM LZ77 z Architecture (PFS)
+   *   97 - WavPack compressed data
+   *   98 - PPMd version I, Rev 1
+   * </pre>
+   *
+   * This implementation supports 0 (NONE), 8 (GZ) and 12 (BZIP2).
    *
    * @ext      bz2
    * @ext      zlib
