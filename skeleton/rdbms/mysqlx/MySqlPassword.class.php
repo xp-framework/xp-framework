@@ -30,12 +30,12 @@
           for ($i= 0, $s= strlen($in); $i < $s; $i++) {
             $ord= ord($in{$i});
             if (0x20 === $ord || 0x09 === $ord) continue;
-            $value= $nr->bitwiseAnd(new BigInt(63))->add($add)->multiply(new BigInt($ord))->add($nr->multiply(new BigInt(0x100)));
+            $value= $nr->bitwiseAnd(63)->add($add)->multiply($ord)->add($nr->multiply(0x100));
             $nr= $nr->bitwiseXor($value);
-            $nr2= $nr2->multiply(new BigInt(0x100))->bitwiseXor($nr)->add($nr2);
-            $add= $add->add(new BigInt($ord));
+            $nr2= $nr2->multiply(0x100)->bitwiseXor($nr)->add($nr2);
+            $add= $add->add($ord);
           }
-          return array($nr->bitwiseAnd(new BigInt(0x7FFFFFFF)), $nr2->bitwiseAnd(new BigInt(0x7FFFFFFF)));
+          return array($nr->bitwiseAnd(0x7FFFFFFF), $nr2->bitwiseAnd(0x7FFFFFFF));
         }
         
         public function scramble($password, $message) {
