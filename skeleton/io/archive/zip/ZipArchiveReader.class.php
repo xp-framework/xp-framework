@@ -56,6 +56,17 @@
     }
 
     /**
+     * Set password to use when extracting 
+     *
+     * @param   string password
+     * @return  io.archive.zip.ZipArchiveReader this
+     */
+    public function usingPassword($password) {
+      $this->impl->setPassword($password);
+      return $this;
+    }
+
+    /**
      * Returns a list of all entries in this zip file
      *
      * @return  io.archive.zip.ZipEntries

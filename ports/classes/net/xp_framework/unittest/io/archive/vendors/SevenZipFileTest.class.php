@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('net.xp_framework.unittest.io.archive.vendors.ZipFileVendorTest', 'io.streams.Streams');
+  uses(
+    'net.xp_framework.unittest.io.archive.vendors.ZipFileVendorTest', 
+    'io.streams.Streams'
+  );
 
   /**
    * Tests 7-ZIP archives
@@ -83,6 +86,44 @@
     #[@test, @ignore('Not yet supported')]
     public function ppmd() {
       $this->assertCompressedEntryIn($this->archiveReaderFor($this->vendor, 'ppmd'));
+    }
+
+    /**
+     * Assertion helper
+     *
+     * @param   io.archive.zip.ZipArchiveReader reader
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertSecuredEntriesIn($reader) {
+      with ($it= $reader->usingPassword('secret')->iterator()); {
+        $entry= $it->next();
+        $this->assertEquals('password.txt', $entry->getName());
+        $this->assertEquals(15, $entry->getSize());
+        $this->assertEquals('Secret contents', Streams::readAll($entry->getInputStream()));
+
+        $entry= $it->next();
+        $this->assertEquals('very.txt', $entry->getName());
+        $this->assertEquals(20, $entry->getSize());
+        $this->assertEquals('Very secret contents', Streams::readAll($entry->getInputStream()));
+      }
+    }
+
+    /**
+     * Tests password protection
+     *
+     */
+    #[@test]
+    public function zipCryptoPasswordProtected() {
+      $this->assertSecuredEntriesIn($this->archiveReaderFor($this->vendor, 'zip-crypto'));
+    }
+
+    /**
+     * Tests password protection
+     *
+     */
+    #[@test, @ignore('Uses unsupported encryption mechansim #99?!')]
+    public function aes256PasswordProtected() {
+      $this->assertSecuredEntriesIn($this->archiveReaderFor($this->vendor, 'aes-256'));
     }
   }
 ?>

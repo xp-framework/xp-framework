@@ -13,6 +13,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Implemented extracting from password-protected ZIP files
+  (friebe)
 - Added new package "math" which contains BigNum, BigInt and BigFloat
   (friebe)
 - Made io.archive.zip.ZipEntry implementations' constructors accept

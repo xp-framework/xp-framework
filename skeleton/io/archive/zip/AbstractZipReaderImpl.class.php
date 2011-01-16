@@ -10,6 +10,8 @@
     'io.archive.zip.Compression',
     'io.archive.zip.ZipDirEntry',
     'io.archive.zip.ZipFileEntry',
+    'io.archive.zip.DecipheringInputStream',
+    'io.archive.zip.ZipCipher',
     'util.Date'
   );
 
@@ -19,9 +21,11 @@
    * @ext   iconv
    */
   abstract class AbstractZipReaderImpl extends Object {
-    protected $stream= NULL;
     public $skip= 0;
+
+    protected $stream= NULL;
     protected $index= array();
+    protected $password= NULL;
 
     // Signatures
     const EOCD = "\x50\x4b\x05\x06";  // End-Of-Central-Directory
@@ -35,6 +39,16 @@
      */
     public function __construct(InputStream $stream) {
       $this->stream= $stream;
+    }
+
+    /**
+     * Set password to use when extracting 
+     *
+     * @param   string password
+     */
+    public function setPassword($password) {
+      $this->password= new ZipCipher();
+      $this->password->initialize(iconv('iso-8859-1', 'cp437', $password));
     }
 
     /**
@@ -102,7 +116,6 @@
             'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
             $this->stream->read(26)
           );
-          
           if (0 === $header['namelen']) {
           
             // Prevent 0-length read.
@@ -125,8 +138,15 @@
           }
           $extra= $this->stream->read($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
-
           $this->skip= $header['compressed'];
+
+          // Short-circuit here for directories
+          if ('/' === substr($name, -1)) {
+            $e= new ZipDirEntry($decoded);
+            $e->setLastModified($date);
+            $e->setSize($header['uncompressed']);
+            return $e;
+          }
           
           // Bit 3: If this bit is set, the fields crc-32, compressed 
           // size and uncompressed size are set to zero in the local 
@@ -157,21 +177,32 @@
             // Set skip accordingly: 4 bytes data descriptor signature + 12 bytes data descriptor
             $this->skip= $header['compressed']+ 16;
           }
+
+          // Bit 1: The file is encrypted
+          if ($header['flags'] & 1) {
+            $cipher= new ZipCipher($this->password);
+            $plain= $cipher->decipher($this->stream->read(12));
+            
+            // Verify            
+            if (ord($plain{11}) !== (($header['crc'] >> 24) & 0xFF)) {
+              throw new IllegalArgumentException('The password did not match');
+            }
+            
+            // Password matches.
+            $this->skip-= 12; 
+            $header['compressed']-= 12;
+            $is= new DecipheringInputStream(new ZipFileInputStream($this, $header['compressed']), $cipher);
+          } else {
+            $is= new ZipFileInputStream($this, $header['compressed']);
+          }
           
           // Create ZipEntry object and return it
-          if ('/' === substr($name, -1)) {
-            $e= new ZipDirEntry($decoded);
-            $e->setLastModified($date);
-            $e->setSize($header['uncompressed']);
-            return $e;
-          } else {
-            $e= new ZipFileEntry($decoded);
-            $e->setLastModified($date);
-            $e->setSize($header['uncompressed']);
-            $e->setCompression(Compression::getInstance($header['compression']));
-            $e->is= new ZipFileInputStream($this, $header['compressed']);
-            return $e;
-          }
+          $e= new ZipFileEntry($decoded);
+          $e->setLastModified($date);
+          $e->setSize($header['uncompressed']);
+          $e->setCompression(Compression::getInstance($header['compression']));
+          $e->is= $is;
+          return $e;
         }
         case self::DHDR: {      // Zip directory
           return NULL;          // XXX: For the moment, ignore directory and stop here
