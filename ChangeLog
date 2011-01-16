@@ -9,6 +9,7 @@ SVN version: ?????
 Heads up!
 ~~~~~~~~~
 - Changed DriverManager to use userland MySQL in favor of ext/mysqlnd
+  http://news.planet-xp.net/article/404/2011/01/16/
   (friebe)
 
 Bugfixes
