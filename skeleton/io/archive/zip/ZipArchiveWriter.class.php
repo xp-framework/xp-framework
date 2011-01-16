@@ -49,7 +49,7 @@
       $this->out= NULL;
       
       $mod= $entry->getLastModified();
-      $name= $entry->getName();
+      $name= iconv('iso-8859-1', 'cp437', str_replace('\\', '/', $entry->getName()));
       $nameLength= strlen($name);
       $extraLength= 0;
       $extra= '';
@@ -66,7 +66,8 @@
         $extraLength              // extra field length
       );
 
-      $this->stream->write(self::FHDR.$info.$name.$extra);
+      $this->stream->write(self::FHDR.$info.$name);
+      $extraLength && $this->stream->write($extra);
       
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x10);
       $this->pointer+= (
@@ -135,7 +136,7 @@
      */
     public function writeFile($file, $size, $compressed, $crc32, $data) {
       $mod= $file->getLastModified();
-      $name= str_replace('\\', '/', $file->getName());
+      $name= iconv('iso-8859-1', 'cp437', str_replace('\\', '/', $file->getName()));
       $nameLength= strlen($name);
       $method= $file->getCompression()->ordinal();
       $extraLength= 0;
@@ -153,7 +154,9 @@
         $extraLength              // extra field length
       );
 
-      $this->stream->write(self::FHDR.$info.$name.$extra);
+      $this->stream->write(self::FHDR.$info);
+      $this->stream->write($name);
+      $extraLength && $this->stream->write($extra);
       $this->stream->write($data);
       
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x20);
