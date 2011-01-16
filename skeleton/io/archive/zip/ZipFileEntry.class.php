@@ -31,7 +31,7 @@
     public function __construct($name) {
       $this->name= str_replace('\\', '/', $name);
       $this->mod= Date::now();
-      $this->compression= Compression::$NONE;
+      $this->compression= array(Compression::$NONE, 6);
     }
     
     /**
@@ -67,16 +67,17 @@
      * @return  io.archive.zip.Compression
      */
     public function getCompression() {
-      return $this->compression;
+      return $this->compression[0];
     }
 
     /**
      * Use a given compression
      *
+     * @param   int level default 6
      * @param   io.archive.zip.Compression compression
      */
-    public function setCompression(Compression $compression) {
-      $this->compression= $compression;
+    public function setCompression(Compression $compression, $level= 6) {
+      $this->compression= array($compression, $level);
     }
 
     /**
@@ -112,7 +113,7 @@
      * @return  io.streams.InputStream
      */
     public function getInputStream() {
-      return $this->compression->getDecompressionStream($this->is);
+      return $this->compression[0]->getDecompressionStream($this->is);
     }
 
     /**
@@ -121,7 +122,7 @@
      * @return  io.streams.OutputStream
      */
     public function getOutputStream() {
-      return $this->os->withCompression($this->compression);
+      return $this->os->withCompression($this->compression[0],  $this->compression[1]);
     }
     
     /**

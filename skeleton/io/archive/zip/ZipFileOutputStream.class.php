@@ -42,11 +42,12 @@
      * Sets compression method
      *
      * @param   io.archive.zip.Compression compression
+     * @param   int level default 6
      * @return  io.archive.zip.ZipFileOutputStream this
      */
-    public function withCompression(Compression $compression) {
+    public function withCompression(Compression $compression, $level= 6) {
       $this->data= new MemoryOutputStream();
-      $this->compression= $compression->getCompressionStream($this->data);
+      $this->compression= $compression->getCompressionStream($this->data, $level);
       return $this;
     }
     

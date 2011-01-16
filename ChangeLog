@@ -13,6 +13,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added optional level parameter to io.archive.zip.ZipFileEntry's 
+  setCompression() method, defaulting to 6
+  (friebe)
 - Added io.archive.zip.ZipArchiveWriter::usingUnicodeNames() method
   (friebe)
 - Added io.archive.zip.ZipIterator class
