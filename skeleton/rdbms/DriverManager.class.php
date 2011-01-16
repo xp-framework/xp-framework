@@ -82,8 +82,10 @@
     static function __static() {
       self::$instance= new self();
 
-      // MySQL support: Use mysql extension by default, mysqli otherwise
-      if (extension_loaded('mysql')) {
+      // MySQL support: Use mysql extension by default, mysqli otherwise. Never use mysqlnd!
+      if (extension_loaded('mysqlnd')) {
+        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqlx.MySqlxConnection');
+      } else if (extension_loaded('mysql')) {
         self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysql.MySQLConnection');
       } else if (extension_loaded('mysqli')) {
         self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqli.MySQLiConnection');
