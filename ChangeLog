@@ -13,6 +13,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added new package "math" which contains BigNum, BigInt and BigFloat
+  (friebe)
 - Made io.archive.zip.ZipEntry implementations' constructors accept
   var args from which to compose a qualified name
   (friebe)
