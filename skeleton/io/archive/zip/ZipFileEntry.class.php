@@ -9,6 +9,7 @@
   /**
    * Represents a file entry in a zip archive
    *
+   * @test     xp://net.xp_framework.unittest.io.archive.ZipEntryTest
    * @see      xp://io.archive.zip.ZipEntry
    * @purpose  Interface
    */
@@ -26,10 +27,19 @@
     /**
      * Constructor
      *
-     * @param   string name
+     * @param   var... parts
      */
-    public function __construct($name) {
-      $this->name= str_replace('\\', '/', $name);
+    public function __construct() {
+      $this->name= '';
+      $args= func_get_args();
+      foreach ($args as $part) {
+        if ($part instanceof ZipDirEntry) {
+          $this->name.= $part->getName();
+        } else {
+          $this->name.= strtr($part, '\\', '/').'/';
+        }
+      }
+      $this->name= rtrim($this->name, '/');
       $this->mod= Date::now();
       $this->compression= array(Compression::$NONE, 6);
     }

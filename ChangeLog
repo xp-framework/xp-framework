@@ -13,6 +13,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made io.archive.zip.ZipEntry implementations' constructors accept
+  var args from which to compose a qualified name
+  (friebe)
 - Added optional level parameter to io.archive.zip.ZipFileEntry's 
   setCompression() method, defaulting to 6
   (friebe)

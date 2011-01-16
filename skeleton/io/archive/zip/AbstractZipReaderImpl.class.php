@@ -160,7 +160,10 @@
           
           // Create ZipEntry object and return it
           if ('/' === substr($name, -1)) {
-            return new ZipDirEntry($decoded, $date, $header['uncompressed']);
+            $e= new ZipDirEntry($decoded);
+            $e->setLastModified($date);
+            $e->setSize($header['uncompressed']);
+            return $e;
           } else {
             $e= new ZipFileEntry($decoded);
             $e->setLastModified($date);
