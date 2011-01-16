@@ -181,11 +181,11 @@
           // Bit 1: The file is encrypted
           if ($header['flags'] & 1) {
             $cipher= new ZipCipher($this->password);
-            $plain= $cipher->decipher($this->stream->read(12));
+            $preamble= $cipher->decipher($this->stream->read(12));
             
             // Verify            
-            if (ord($plain{11}) !== (($header['crc'] >> 24) & 0xFF)) {
-              throw new IllegalArgumentException('The password did not match');
+            if (ord($preamble{11}) !== (($header['crc'] >> 24) & 0xFF)) {
+              throw new IllegalArgumentException('The password did not match ('.ord($preamble{11}).' vs. '.(($header['crc'] >> 24) & 0xFF).')');
             }
             
             // Password matches.

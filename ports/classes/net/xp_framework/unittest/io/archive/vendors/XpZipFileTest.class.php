@@ -35,5 +35,34 @@
       $this->assertEquals(0, $entries[0]->getSize());
       $this->assertFalse($entries[0]->isDirectory());
     }
+
+    /**
+     * Assertion helper
+     *
+     * @param   io.archive.zip.ZipArchiveReader reader
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertSecuredEntriesIn($reader) {
+      with ($it= $reader->usingPassword('secret')->iterator()); {
+        $entry= $it->next();
+        $this->assertEquals('password.txt', $entry->getName());
+        $this->assertEquals(15, $entry->getSize());
+        $this->assertEquals('Secret contents', Streams::readAll($entry->getInputStream()));
+
+        $entry= $it->next();
+        $this->assertEquals('very.txt', $entry->getName());
+        $this->assertEquals(20, $entry->getSize());
+        $this->assertEquals('Very secret contents', Streams::readAll($entry->getInputStream()));
+      }
+    }
+
+    /**
+     * Tests password protection
+     *
+     */
+    #[@test]
+    public function zipCryptoPasswordProtected() {
+      $this->assertSecuredEntriesIn($this->archiveReaderFor($this->vendor, 'zip-crypto'));
+    }
   }
 ?>

@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('io.archive.zip.ZipEntry', 'io.archive.zip.Compression', 'io.archive.zip.ZipFileOutputStream');
+  uses(
+    'io.archive.zip.ZipEntry', 
+    'io.archive.zip.Compression', 
+    'io.archive.zip.ZipFileOutputStream',
+    'io.archive.zip.CipheringZipFileOutputStream',
+    'io.archive.zip.ZipCipher'
+  );
 
 
   /**
@@ -19,7 +25,8 @@
       $dir      = array(), 
       $pointer  = 0,
       $out      = NULL,
-      $unicode  = FALSE;
+      $unicode  = FALSE,
+      $password = NULL;
 
     const EOCD = "\x50\x4b\x05\x06\x00\x00\x00\x00";
     const FHDR = "\x50\x4b\x03\x04";
@@ -48,6 +55,18 @@
      */
     public function usingUnicodeNames($unicode= TRUE) {
       $this->unicode= $unicode;
+      return $this;
+    }
+
+    /**
+     * Set password to use when adding entries 
+     *
+     * @param   string password
+     * @return  io.archive.zip.ZipArchiveWriter this
+     */
+    public function usingPassword($password) {
+      $this->password= new ZipCipher();
+      $this->password->initialize(iconv('iso-8859-1', 'cp437', $password));
       return $this;
     }
 
@@ -112,7 +131,14 @@
       }
 
       $this->out && $this->out->close();
-      $this->out= new ZipFileOutputStream($this, $entry);
+
+      if ($this->password) {
+        $cipher= new ZipCipher($this->password);
+        $this->out= new CipheringZipFileOutputStream($this, $entry, $cipher);
+      } else {
+        $this->out= new ZipFileOutputStream($this, $entry);
+      }
+      
       $entry->os= $this->out;
       return $entry;
     }
@@ -144,6 +170,15 @@
         ($date->getDay() & 0x1F)
       ;
     }
+
+    /**
+     * Writes to a stream
+     *
+     * @param   string arg
+     */
+    public function streamWrite($arg) {
+      $this->stream->write($arg);
+    }
     
     /**
      * Write a file entry
@@ -152,9 +187,9 @@
      * @param   int size
      * @param   int compressed
      * @param   int crc32
-     * @param   string data
+     * @param   int flags
      */
-    public function writeFile($file, $size, $compressed, $crc32, $data) {
+    public function writeFile($file, $size, $compressed, $crc32, $flags) {
       $mod= $file->getLastModified();
       $name= iconv('iso-8859-1', $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $file->getName()));
       $nameLength= strlen($name);
@@ -165,7 +200,7 @@
       $info= pack(
         'vvvvvVVVvv',
         10,                       // version
-        $this->unicode ? 2048 : 0,// flags
+        $this->unicode ? 2048 : $flags,
         $method,                  // compression method, 0 = none, 8 = gz, 12 = bz
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
@@ -179,8 +214,7 @@
       $this->stream->write(self::FHDR.$info);
       $this->stream->write($name);
       $extraLength && $this->stream->write($extra);
-      $this->stream->write($data);
-      
+
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x20);
       $this->pointer+= (
         strlen(self::FHDR) + 

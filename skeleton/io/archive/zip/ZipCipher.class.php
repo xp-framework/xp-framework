@@ -130,6 +130,22 @@
       }
       return $plain;
     }
+
+    /**
+     * Cipher a chunk
+     *
+     * @param   string plain
+     * @return  string ciphered
+     */
+    public function cipher($plain) {
+      $result= '';
+      for ($i= 0, $s= strlen($plain); $i < $s; $i++) {
+        $c= ord($plain{$i});
+        $result.= chr($c ^ $this->magicByte());
+        $this->updateKeys($c);
+      }
+      return $result;
+    }
     
     /**
      * CRC32
