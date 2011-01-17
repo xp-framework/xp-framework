@@ -14,12 +14,12 @@
   class BigFloat extends BigNum {
 
     /**
-     * Creates a new bigfloat instance
+     * Creates a new BigFloat instance
      *
      * @param   string in
      */
     public function __construct($in) {
-      parent::__construct(FALSE !== strpos($in, '.') ? rtrim(rtrim($in, '0'), '.') : $in);
+      $this->num= FALSE !== strpos($in, '.') ? rtrim(rtrim($in, '0'), '.') : (string)$in;
     }
 
     /**

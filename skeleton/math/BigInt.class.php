@@ -14,6 +14,15 @@
   class BigInt extends BigNum {
 
     /**
+     * Creates a new BigInt instance
+     *
+     * @param   string in
+     */
+    public function __construct($in) {
+      $this->num= substr($in, 0, strcspn($in, '.'));
+    }
+
+    /**
      * /
      *
      * @param   var other
@@ -141,7 +150,7 @@
      * @return  string
      */
     public function __toString() {
-      return substr($this->num, 0, strcspn($this->num, '.'));
+      return $this->num;
     }
 
     /**

@@ -17,6 +17,33 @@
   class BigIntTest extends TestCase {
 
     /**
+     * Test constructor cuts off ".00000000000000000"
+     *
+     */
+    #[@test]
+    public function lotsOfZeroesFractionCut() {
+      $this->assertEquals(new BigInt(4), create(new BigInt('4.00000000000000000')));
+    }
+
+    /**
+     * Test constructor cuts off ".1"
+     *
+     */
+    #[@test]
+    public function dotOneFraction() {
+      $this->assertEquals(new BigInt(4), create(new BigInt('4.1')));
+    }
+
+    /**
+     * Test constructor cuts off ".9"
+     *
+     */
+    #[@test]
+    public function dotNineFraction() {
+      $this->assertEquals(new BigInt(4), create(new BigInt('4.9')));
+    }
+
+    /**
      * Test string casting
      *
      */

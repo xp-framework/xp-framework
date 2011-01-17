@@ -20,15 +20,6 @@
     }
     
     /**
-     * Creates a new bignum instance
-     *
-     * @param   string in
-     */
-    public function __construct($in) {
-      $this->num= (string)$in;
-    }
-    
-    /**
      * +
      *
      * @param   var other
