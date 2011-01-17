@@ -465,8 +465,26 @@
      *
      */
     #[@test]
+    public function roundNegative() {
+      $this->assertEquals(new BigFloat(-4.0), create(new BigFloat(-4.4))->round());
+    }
+
+    /**
+     * Test round()
+     *
+     */
+    #[@test]
     public function roundHalf() {
       $this->assertEquals(new BigFloat(5.0), create(new BigFloat(4.5))->round());
+    }
+
+    /**
+     * Test round()
+     *
+     */
+    #[@test]
+    public function roundNegativeHalf() {
+      $this->assertEquals(new BigFloat(-5.0), create(new BigFloat(-4.5))->round());
     }
 
     /**
