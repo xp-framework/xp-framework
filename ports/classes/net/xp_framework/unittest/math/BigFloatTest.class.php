@@ -515,6 +515,24 @@
     }
 
     /**
+     * Test round()
+     *
+     */
+    #[@test]
+    public function roundSample1() {
+      $this->assertEquals(new BigFloat(323.35), create(new BigFloat(323.346))->round(2));
+    }
+
+    /**
+     * Test round()
+     *
+     */
+    #[@test]
+    public function roundSample2() {
+      $this->assertEquals(new BigFloat(323.01), create(new BigFloat(323.006))->round(2));
+    }
+
+    /**
      * Test ceil()
      *
      */
