@@ -74,21 +74,6 @@
     }
 
     /**
-     * %
-     *
-     * @param   var other
-     * @return  math.BigNum
-     */
-    public function modulo($other) {
-      if (NULL === ($r= bcmod($this->num, $other instanceof self ? $other->num : $other))) {
-        $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
-        xp::gc(__FILE__);
-        throw new IllegalArgumentException($e);
-      }
-      return new $this($r);
-    }
-
-    /**
      * ^
      *
      * @see     http://en.wikipedia.org/wiki/Exponentiation
@@ -116,6 +101,15 @@
      */
     public function intValue() {
       return (int)substr($this->num, 0, strcspn($this->num, '.'));
+    }
+
+    /**
+     * Returns a double representing this bignum
+     *
+     * @return  int
+     */
+    public function doubleValue() {
+      return (double)$this->num;
     }
   }
 ?>
