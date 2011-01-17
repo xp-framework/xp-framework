@@ -178,8 +178,8 @@
      */
     protected function updateKeys($c) {
       $this->keys[0]= $this->crc32($this->keys[0], $c);
-      $this->keys[1]= $this->keys[1]->add($this->keys[0]->bitwiseAnd(0xFF))->bitwiseAnd(0xFFFFFFFF);
-      $this->keys[1]= $this->keys[1]->multiply(0x08088405)->add(1)->bitwiseAnd(0xFFFFFFFF);
+      $this->keys[1]= $this->keys[1]->add0($this->keys[0]->bitwiseAnd(0xFF))->bitwiseAnd(0xFFFFFFFF);
+      $this->keys[1]= $this->keys[1]->multiply0(0x08088405)->add(1)->bitwiseAnd(0xFFFFFFFF);
       $this->keys[2]= $this->crc32($this->keys[2], $this->keys[1]->shiftRight(24)->byteValue());
     }
     
