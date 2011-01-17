@@ -222,7 +222,7 @@
      * @return  math.BigNum
      */
     public function shiftRight($shift) {
-      return new $this(bcdiv($this->num, bcpow(2, $shift instanceof self ? $shift->num : $shift), 0));
+      return new self(bcdiv($this->num, bcpow(2, $shift instanceof self ? $shift->num : $shift), 0));
     }
     
     /**
@@ -232,7 +232,7 @@
      * @return  math.BigNum
      */
     public function shiftLeft($shift) {
-      return new $this(bcmul($this->num, bcpow(2, $shift instanceof self ? $shift->num : $shift), 0));
+      return new self(bcmul($this->num, bcpow(2, $shift instanceof self ? $shift->num : $shift), 0));
     }
     
     /**
