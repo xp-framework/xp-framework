@@ -6,15 +6,25 @@
 
   uses(
     'unittest.TestCase',
-    'math.BigFloat'
+    'math.BigFloat',
+    'math.BigInt'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://math.BigFloat
+   * @see     xp://math.BigFloat
    */
   class BigFloatTest extends TestCase {
+
+    /**
+     * Test creating a float from an int
+     *
+     */
+    #[@test]
+    public function floatFromInt() {
+      $this->assertEquals(new BigFloat(2.0), new BigFloat(new BigInt(2)));
+    }
     
     /**
      * Test string casting

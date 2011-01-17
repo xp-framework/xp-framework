@@ -13,8 +13,8 @@
   /**
    * TestCase
    *
-   * @see      xp://math.BigFloat
-   * @see      xp://math.BigInt
+   * @see     xp://math.BigFloat
+   * @see     xp://math.BigInt
    */
   class BigIntAndFloatTest extends TestCase {
     
