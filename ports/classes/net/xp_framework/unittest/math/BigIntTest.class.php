@@ -5,7 +5,7 @@
  */
 
   uses(
-    'net.xp_framework.unittest.math.BigNumTest',
+    'unittest.TestCase',
     'math.BigInt'
   );
 
@@ -14,7 +14,25 @@
    *
    * @see      xp://math.BigInt
    */
-  class BigIntTest extends BigNumTest {
+  class BigIntTest extends TestCase {
+
+    /**
+     * Test string casting
+     *
+     */
+    #[@test]
+    public function castableToString() {
+      $this->assertEquals('6100', (string)new BigInt(6100));
+    }
+
+    /**
+     * Test string casting
+     *
+     */
+    #[@test]
+    public function castableToStringNegative() {
+      $this->assertEquals('-6100', (string)new BigInt(-6100));
+    }
   
     /**
      * Test intValue()
@@ -32,6 +50,42 @@
     #[@test]
     public function intValueNegative() {
       $this->assertEquals(-6100, create(new BigInt(-6100))->intValue());
+    }
+
+    /**
+     * Test byteValue()
+     *
+     */
+    #[@test]
+    public function byteValue() {
+      $this->assertEquals(16, create(new BigInt(16))->byteValue());
+    }
+
+    /**
+     * Test byteValue()
+     *
+     */
+    #[@test]
+    public function byteValueLarge() {
+      $this->assertEquals(222, create(new BigInt(2546003422))->byteValue());
+    }
+
+    /**
+     * Test doubleValue()
+     *
+     */
+    #[@test]
+    public function doubleValue() {
+      $this->assertEquals(6100.0, create(new BigInt(6100))->doubleValue());
+    }
+
+    /**
+     * Test doubleValue()
+     *
+     */
+    #[@test]
+    public function doubleValueNegative() {
+      $this->assertEquals(-6100.0, create(new BigInt(-6100))->doubleValue());
     }
   
     /**
