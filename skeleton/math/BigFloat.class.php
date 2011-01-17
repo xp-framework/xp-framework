@@ -9,7 +9,9 @@
   /**
    * A big float
    *
-   * @see   xp://math.BigNum
+   * @see     xp://math.BigNum
+   * @test    xp://net.xp_framework.unittest.math.BigFloatTest
+   * @test    xp://net.xp_framework.unittest.math.BigIntAndFloatTest
    */
   class BigFloat extends BigNum {
 
@@ -20,6 +22,36 @@
      */
     public function __construct($in) {
       $this->num= FALSE !== strpos($in, '.') ? rtrim(rtrim($in, '0'), '.') : (string)$in;
+    }
+
+    /**
+     * +
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function add($other) {
+      return new self(bcadd($this->num, $other instanceof self ? $other->num : $other));
+    }
+
+    /**
+     * -
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function subtract($other) {
+      return new self(bcsub($this->num, $other instanceof self ? $other->num : $other));
+    }
+
+    /**
+     * *
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function multiply($other) {
+      return new self(bcmul($this->num, $other instanceof self ? $other->num : $other));
     }
 
     /**
@@ -34,7 +66,7 @@
         xp::gc(__FILE__);
         throw new IllegalArgumentException($e);
       }
-      return new $this($r);
+      return new self($r);
     }
   
     /**

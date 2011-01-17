@@ -4,12 +4,14 @@
  * $Id$ 
  */
 
-  uses('math.BigNum');
+  uses('math.BigNum', 'math.BigFloat');
 
   /**
    * A big integer
    *
-   * @see   xp://math.BigNum
+   * @see     xp://math.BigNum
+   * @test    xp://net.xp_framework.unittest.math.BigIntTest
+   * @test    xp://net.xp_framework.unittest.math.BigIntAndFloatTest
    */
   class BigInt extends BigNum {
 
@@ -23,18 +25,140 @@
     }
 
     /**
+     * +
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function add($other) {
+      if ($other instanceof self) {
+        return new self(bcadd($this->num, $other->num));
+      } else if (is_int($other)) {
+        return new self(bcadd($this->num, $other));
+      } else if ($other instanceof BigFloat) {
+        return new BigFloat(bcadd($this->num, $other->num));
+      } else {
+        return new BigFloat(bcadd($this->num, $other));
+      }
+    }
+
+    /**
+     * -
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function subtract($other) {
+      if ($other instanceof self) {
+        return new self(bcsub($this->num, $other->num));
+      } else if (is_int($other)) {
+        return new self(bcsub($this->num, $other));
+      } else if ($other instanceof BigFloat) {
+        return new BigFloat(bcsub($this->num, $other->num));
+      } else {
+        return new BigFloat(bcsub($this->num, $other));
+      }
+    }
+
+    /**
+     * *
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function multiply($other) {
+      if ($other instanceof self) {
+        return new self(bcmul($this->num, $other->num));
+      } else if (is_int($other)) {
+        return new self(bcmul($this->num, $other));
+      } else if ($other instanceof BigFloat) {
+        return new BigFloat(bcmul($this->num, $other->num));
+      } else {
+        return new BigFloat(bcmul($this->num, $other));
+      }
+    }
+
+    /**
      * /
      *
      * @param   var other
      * @return  math.BigNum
      */
     public function divide($other) {
+      if ($other instanceof self) {
+        if (NULL === ($r= bcdiv($this->num, $other->num, 0))) {     // inlined
+          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          xp::gc(__FILE__);
+          throw new IllegalArgumentException($e);
+        }
+        return new self($r);
+      } else if (is_int($other)) {
+        if (NULL === ($r= bcdiv($this->num, $other, 0))) {          // inlined
+          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          xp::gc(__FILE__);
+          throw new IllegalArgumentException($e);
+        }
+        return new self($r);
+      } else if ($other instanceof BigFloat) {
+        if (NULL === ($r= bcdiv($this->num, $other->num))) {        // inlined
+          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          xp::gc(__FILE__);
+          throw new IllegalArgumentException($e);
+        }
+        return new BigFloat($r);
+      } else {
+        if (NULL === ($r= bcdiv($this->num, $other))) {             // inlined
+          $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+          xp::gc(__FILE__);
+          throw new IllegalArgumentException($e);
+        }
+        return new BigFloat($r);
+      }
+    }
+
+    /**
+     * +(0), strictly integer addition
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function add0($other) {
+      return new self(bcadd($this->num, $other instanceof parent ? $other->num : $other, 0));
+    }
+
+    /**
+     * -(0), strictly integer subtraction
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function subtract0($other) {
+      return new self(bcsub($this->num, $other instanceof parent ? $other->num : $other, 0));
+    }
+
+    /**
+     * *(0), strictly integer multiplication
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function multiply0($other) {
+      return new self(bcmul($this->num, $other instanceof self ? $other->num : $other, 0));
+    }
+
+    /**
+     * /
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function divide0($other) {
       if (NULL === ($r= bcdiv($this->num, $other instanceof self ? $other->num : $other, 0))) {
         $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
         xp::gc(__FILE__);
         throw new IllegalArgumentException($e);
       }
-      return new $this($r);
+      return new self($r);
     }
 
     /**

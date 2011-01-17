@@ -75,7 +75,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && 0 === bccomp($cmp->num, $this->num);
+      return $cmp instanceof $this && 0 === bccomp($cmp->num, $this->num);
     }
     
     /**
