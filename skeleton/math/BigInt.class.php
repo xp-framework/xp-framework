@@ -162,6 +162,31 @@
     }
 
     /**
+     * ^
+     *
+     * @see     http://en.wikipedia.org/wiki/Exponentiation
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function power($other) {
+      if ($other instanceof self) {
+        return new self(bcpow($this->num, $other->num));
+      } else if (is_int($other)) {
+        return new self(bcpow($this->num, $other));
+      } else if ($other instanceof BigFloat) {
+        if (strpos($other->num, '.')) {             // inlined
+          throw new IllegalArgumentException('Decimal exponents not supported');
+        }
+        return new BigFloat(bcpow($this->num, $other->num));
+      } else {
+        if (strpos($other, '.')) {                 // inlined
+          throw new IllegalArgumentException('Decimal exponents not supported');
+        }
+        return new BigFloat(bcpow($this->num, $other));
+      }
+    }
+
+    /**
      * %
      *
      * @param   var other

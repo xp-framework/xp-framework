@@ -58,17 +58,6 @@
     public abstract function divide($other);
 
     /**
-     * ^
-     *
-     * @see     http://en.wikipedia.org/wiki/Exponentiation
-     * @param   var other
-     * @return  math.BigNum
-     */
-    public function power($other) {
-      return new $this(bcpow($this->num, $other instanceof self ? $other->num : $other));
-    }
-
-    /**
      * Returns whether another object is equal to this
      *
      * @param   lang.Generic cmp

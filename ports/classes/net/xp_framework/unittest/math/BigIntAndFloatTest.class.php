@@ -107,5 +107,23 @@
     public function divideIntByFloatZero0() {
       create(new BigInt(2))->divide0(new BigFloat(0.0));
     }
+
+    /**
+     * Test ** -1
+     *
+     */
+    #[@test]
+    public function powerNegativeOne() {
+      $this->assertEquals(new BigFloat(0.5), create(new BigInt(2))->power(new BigFloat(-1)));
+    }
+
+    /**
+     * Test ** 0.5
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function powerOneHalf() {
+      create(new BigInt(2))->power(new BigFloat(0.5));
+    }
   }
 ?>

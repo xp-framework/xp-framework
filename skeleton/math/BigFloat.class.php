@@ -68,6 +68,17 @@
       }
       return new self($r);
     }
+
+    /**
+     * ^
+     *
+     * @see     http://en.wikipedia.org/wiki/Exponentiation
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function power($other) {
+      return new self(bcpow($this->num, $other instanceof self ? $other->num : $other));
+    }
   
     /**
      * Returns the next lowest "integer" value by rounding down value if necessary. 

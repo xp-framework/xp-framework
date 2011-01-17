@@ -404,7 +404,7 @@
      */
     #[@test]
     public function powerNegativeOne() {
-      $this->assertEquals(new BigInt('0.5'), create(new BigInt(2))->power(new BigInt(-1)));
+      $this->assertEquals(new BigInt(0), create(new BigInt(2))->power(new BigInt(-1)));
     }
 
     /**
