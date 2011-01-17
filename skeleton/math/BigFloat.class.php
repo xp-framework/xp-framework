@@ -21,6 +21,21 @@
     public function __construct($in) {
       parent::__construct(FALSE !== strpos($in, '.') ? rtrim(rtrim($in, '0'), '.') : $in);
     }
+
+    /**
+     * /
+     *
+     * @param   var other
+     * @return  math.BigNum
+     */
+    public function divide($other) {
+      if (NULL === ($r= bcdiv($this->num, $other instanceof self ? $other->num : $other))) {
+        $e= key(xp::$registry['errors'][__FILE__][__LINE__- 1]);
+        xp::gc(__FILE__);
+        throw new IllegalArgumentException($e);
+      }
+      return new $this($r);
+    }
   
     /**
      * Returns the next lowest "integer" value by rounding down value if necessary. 

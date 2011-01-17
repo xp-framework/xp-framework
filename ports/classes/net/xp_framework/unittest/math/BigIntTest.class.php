@@ -272,6 +272,33 @@
     }
 
     /**
+     * Test 1 / 2
+     *
+     */
+    #[@test]
+    public function integerDivision1() {
+      $this->assertEquals(new BigInt(0), create(new BigInt(1))->divide(new BigInt(2)));
+    }
+
+    /**
+     * Test 8 / 3
+     *
+     */
+    #[@test]
+    public function integerDivision2() {
+      $this->assertEquals(new BigInt(2), create(new BigInt(8))->divide(new BigInt(3)));
+    }
+
+    /**
+     * Test -8 / 3
+     *
+     */
+    #[@test]
+    public function integerDivision3() {
+      $this->assertEquals(new BigInt(-2), create(new BigInt(-8))->divide(new BigInt(3)));
+    }
+
+    /**
      * Test /
      *
      */
