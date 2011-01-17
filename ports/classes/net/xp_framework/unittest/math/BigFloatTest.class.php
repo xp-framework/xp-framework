@@ -501,6 +501,15 @@
      *
      */
     #[@test]
+    public function roundNegativeAlmostHalf() {
+      $this->assertEquals(new BigFloat(-4.0), create(new BigFloat(-4.499999))->round());
+    }
+
+    /**
+     * Test round()
+     *
+     */
+    #[@test]
     public function roundEuroToDeutscheMarkExchangeRateToTwoDigits() {
       $this->assertEquals(new BigFloat(1.96), create(new BigFloat(1.95583))->round(2));
     }
