@@ -47,7 +47,8 @@
     }
 
     /**
-     * Returns the next highest "integer" value by rounding up value if necessary
+     * Returns the rounded value of val to specified precision (number of digits 
+     * after the decimal point).
      *
      * @param   int precision
      * @return  math.BigFloat
