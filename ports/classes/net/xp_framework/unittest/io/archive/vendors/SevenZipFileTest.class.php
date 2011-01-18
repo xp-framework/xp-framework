@@ -121,7 +121,7 @@
      * Tests password protection
      *
      */
-    #[@test, @ignore('Uses unsupported encryption mechansim #99?!')]
+    #[@test, @ignore('Not yet supported')]
     public function aes256PasswordProtected() {
       $this->assertSecuredEntriesIn($this->archiveReaderFor($this->vendor, 'aes-256'));
     }
