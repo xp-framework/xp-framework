@@ -47,7 +47,7 @@
      * Tests deflate algorithm
      *
      */
-    #[@test]
+    #[@test, @ext('zlib')]
     public function deflate() {
       $this->assertCompressedEntryIn($this->archiveReaderFor($this->vendor, 'deflate'));
     }
@@ -56,7 +56,7 @@
      * Tests bzip2 algorithm
      *
      */
-    #[@test]
+    #[@test, @ext('bz2')]
     public function bzip2() {
       $this->assertCompressedEntryIn($this->archiveReaderFor($this->vendor, 'bzip2'));
     }
