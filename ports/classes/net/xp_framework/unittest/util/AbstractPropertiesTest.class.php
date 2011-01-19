@@ -383,7 +383,8 @@ first line
 second line
 third line"
       ');
-      $expected= 'first line
+      $expected= '
+first line
 second line
 third line';
 
