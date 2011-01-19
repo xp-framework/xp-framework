@@ -14,6 +14,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Changed FileInputStream and FileOutputStream classes to only open files
+  if not already open
+  (friebe)
 - Implemented static method call verification in the compiler
   (friebe)
 - When writing zip files, convert names from iso-8859-1 to CP437
