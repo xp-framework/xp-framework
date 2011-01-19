@@ -21,6 +21,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for multi-line strings inside .ini files
+  (gghigea)
 - Added userland MySQL implementation in case neither "mysql" nor 
   "mysqli" PHP extensions are loaded
   (friebe)
