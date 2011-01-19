@@ -151,10 +151,6 @@
     /**
      * Callback for fclose
      *
-     * @param   string path
-     * @param   string mode
-     * @param   int options
-     * @param   string opened_path
      * @return  bool
      */
     public function stream_close() {
