@@ -14,6 +14,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Implemented static method call verification in the compiler
+  (friebe)
 - When writing zip files, convert names from iso-8859-1 to CP437
   (friebe)
 
