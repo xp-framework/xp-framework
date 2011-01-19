@@ -22,11 +22,10 @@
    * @see   xp://peer.http.HttpConnection
    * @see   xp://peer.http.HttpRequest
    * @see   xp://peer.http.FormData
-   * @test  xp://net.xp_framework.unittest.peer.http.FormRequestdataTest
+   * @test  xp://net.xp_framework.unittest.peer.http.FormRequestDataTest
    */
   class FormRequestData extends RequestData {
-    const
-      CRLF  = "\r\n";
+    const CRLF    = "\r\n";
 
     protected
       $parts      = array(),
@@ -39,11 +38,21 @@
      */
     public function __construct($parts= array()) {
       $this->boundary= '__--boundary-'.uniqid(time()).'--__';
-
       foreach ($parts as $part) {
         $this->addPart($part);
       }
     }
+
+    /**
+     * Set boundary
+     *
+     * @param   string boundary
+     * @return  string
+     */
+    public function withBoundary($boundary) {
+      $this->boundary= $boundary;
+      return $this;
+    }    
     
     /**
      * Retrieve boundary
@@ -93,15 +102,10 @@
      * @return  string
      */
     public function getData() {
-      $ret= self::CRLF.'--'.$this->boundary;
-      
+      $ret= '--'.$this->boundary;
       foreach ($this->parts as $part) {
-        $ret.= 
-          self::CRLF.$part->getData().
-          self::CRLF.'--'.$this->boundary
-        ;
+        $ret.=  self::CRLF.$part->getData().self::CRLF.'--'.$this->boundary;
       }
-      
       return $ret.'--'.self::CRLF;
     }
   }
