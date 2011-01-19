@@ -369,5 +369,25 @@ class[two]=util.PropertyManager
         $p->readHash('section', 'class')
       );
     }
+    
+    /**
+     * Test multiline value
+     *
+     */
+    #[@test]
+    public function verifyMultilineValuesEquals() {
+      $p= $this->newPropertiesFrom('
+[section]
+key="
+first line
+second line
+third line"
+      ');
+      $expected= 'first line
+second line
+third line';
+
+      $this->assertEquals($expected, $p->readString('section', 'key'));
+    }
   }
 ?>
