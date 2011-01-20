@@ -176,6 +176,18 @@
       }
     }
 
+    public function followRedirect($assertStatus= NULL, $assertBase= NULL) {
+      $this->navigateTo(this($this->response->header('Location'), 0));
+
+      if (NULL !== $assertStatus) {
+        $this->assertStatus($assertStatus);
+      }
+
+      if (NULL !== $assertBase) {
+        $this->assertEquals($assertBase, $this->getBase(), 'Redirected to unexpected base.');
+      }
+    }
+
     /**
      * Navigate to the page a link with a specified id points to
      *

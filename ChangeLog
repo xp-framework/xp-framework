@@ -45,7 +45,12 @@ Features
   (friebe)
 - Implemented reading central directory from zip archives in io.archive.zip
   (kiesel)
-
+- Added function to set persistent headers to web test cases, which are sent with each
+  request.
+  (ilankin)
+- Added function to follow redirects in web test cases and check http status codes and
+  url base afterwards.
+  (robert, ilankin)
 
 Version 5.8.0, released 2011-01-11
 ----------------------------------
