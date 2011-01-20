@@ -156,6 +156,7 @@
      *
      * @param   string target
      * @param   string params
+     * @param   string method
      * @throws  unittest.AssertionFailedError  
      */
     public function navigateTo($target, $params= NULL, $method= HttpConstants::GET) {
@@ -176,6 +177,13 @@
       }
     }
 
+    /**
+     * Follow redirect from location header
+     *
+     * @param   int assertStatus
+     * @param   string assertBase
+     * @throws  unittest.AssertionFailedError
+     */
     public function followRedirect($assertStatus= NULL, $assertBase= NULL) {
       $this->navigateTo(this($this->response->header('Location'), 0));
 
