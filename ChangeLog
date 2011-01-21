@@ -6,6 +6,55 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed DriverManager to use userland MySQL in favor of ext/mysqlnd
+  http://news.planet-xp.net/article/404/2011/01/16/
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Changed FileInputStream and FileOutputStream classes to only open files
+  if not already open
+  (friebe)
+- Implemented static method call verification in the compiler
+  (friebe)
+- When writing zip files, convert names from iso-8859-1 to CP437
+  (friebe)
+
+Features
+~~~~~~~~
+- Added support for multi-line strings inside .ini files
+  (gghigea)
+- Added userland MySQL implementation in case neither "mysql" nor 
+  "mysqli" PHP extensions are loaded
+  (friebe)
+- Implemented creating and extracting password-protected ZIP files
+  (friebe)
+- Added new package "math" which contains BigNum, BigInt and BigFloat
+  (friebe)
+- Made io.archive.zip.ZipEntry implementations' constructors accept
+  var args from which to compose a qualified name
+  (friebe)
+- Added optional level parameter to io.archive.zip.ZipFileEntry's 
+  setCompression() method, defaulting to 6
+  (friebe)
+- Added io.archive.zip.ZipArchiveWriter::usingUnicodeNames() method
+  (friebe)
+- Added io.archive.zip.ZipIterator class
+  (friebe)
+- Implemented reading central directory from zip archives in io.archive.zip
+  (kiesel)
+- Added function to set persistent headers to web test cases, which are sent with each
+  request.
+  (ilankin)
+- Added function to follow redirects in web test cases and check http status codes and
+  url base afterwards.
+  (robert, ilankin)
+
+Version 5.8.0, released 2011-01-11
+----------------------------------
+SVN version: 15183 
 
 Heads up!
 ~~~~~~~~~
@@ -190,6 +239,57 @@ Features
 - Added isInstance() method to lang.Type and lang.Primitive classes
   (friebe)
 - Added typeof() core functionality
+  (friebe)
+
+
+Version 5.7.13, released 2011-01-11
+-----------------------------------
+SVN version: 15181
+
+Heads up!
+~~~~~~~~~
+- Changed util.log.ConsoleAppender to use util.cmd.Console class instead
+  of directly writing to STDERR
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Fixed xar command when files are passed with alternative names creating
+  archives with all files named after the alternative name.
+  (friebe)
+- Fixed lang.Process::close() not to raise warnings when called twice
+  (friebe)
+- Fixed lang.Process::close() to raise a specialized exception if the 
+  process was retrieved by getByProcessId() instead of a NullPointer
+  (friebe)
+- Fixed bug #43 - peer.mail.store.Pop3Store connection error
+  (friebe)
+- Fixed bug #45 - Setting Properties on a LogAppender fails
+  (friebe)
+- Fixed webservices.json.JsonDecoder when decoding overly long strings
+  (friebe, Mihai Ghigea)
+
+Features
+~~~~~~~~
+- Added xml.parser.TreeInputSource class
+  (friebe)
+- Added casting support to xml.meta.Marshaller and xml.meta.Unmarshaller
+  (friebe)
+- Added injection support to xml.meta.Marshaller and xml.meta.Unmarshaller
+  (friebe)
+- Added ability to select unmarshalling target class based on root
+  tag to xml.meta.Unmarshaller
+  (friebe)
+- Added fluent interface peer.http.FormRequestData::withPart() 
+  (friebe)
+- Added lang.RuntimeOptions::withClassPath() method
+  (friebe)
+- Ports: Added support to Google custom search for Spelling suggestions 
+  ("Did you mean"), Synonyms ("You could also try") and Key matches 
+  (~ Adwords)
+  (friebe)
+- Ports: Allowed passing arbitrary parameters in Google custom search
+  implementatiom, com.google.search.custom.GoogleSearchClient::searchFor()
   (friebe)
 
 

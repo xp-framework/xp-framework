@@ -183,8 +183,8 @@
 
       $this->assertEquals(
         "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-        "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 267\r\n\r\n".
-        "\r\n--".$boundary."\r\nContent-Disposition: form-data; name=\"key\"\r\n".
+        "Content-Type: multipart/form-data; boundary=".$boundary."\r\nContent-Length: 265\r\n\r\n".
+        "--".$boundary."\r\nContent-Disposition: form-data; name=\"key\"\r\n".
         "\r\nvalue\r\n".
         "--".$boundary."\r\n".
         "Content-Disposition: form-data; name=\"xml\"\r\n".

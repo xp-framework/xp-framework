@@ -57,7 +57,7 @@
       $this->fixture->addPart(new FormData('key', 'value'));
 
       $this->assertEquals(
-        "\r\n--".$this->fixture->getBoundary()."\r\n".
+        "--".$this->fixture->getBoundary()."\r\n".
         "Content-Disposition: form-data; name=\"key\"\r\n\r\n".
         "value\r\n--".$this->fixture->getBoundary()."--\r\n",
 
@@ -74,7 +74,7 @@
       $this->fixture->addPart(new FormData('key', 'value', 'text/html'));
 
       $this->assertEquals(
-        "\r\n--".$this->fixture->getBoundary()."\r\n".
+        "--".$this->fixture->getBoundary()."\r\n".
         "Content-Disposition: form-data; name=\"key\"\r\n".
         "Content-Type: text/html\r\n\r\n".
         "value\r\n--".$this->fixture->getBoundary()."--\r\n",
@@ -93,7 +93,7 @@
       $this->fixture->addPart(new FormData('key', 'value', 'text/plain', 'UTF-8'));
 
       $this->assertEquals(
-        "\r\n--".$this->fixture->getBoundary()."\r\n".
+        "--".$this->fixture->getBoundary()."\r\n".
         "Content-Disposition: form-data; name=\"key\"\r\n".
         "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n".
         "value\r\n--".$this->fixture->getBoundary()."--\r\n",

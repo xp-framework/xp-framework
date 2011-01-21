@@ -14,7 +14,7 @@
   /**
    * Output stream for files
    *
-   * @see      xp://io.archive.zip.ZipArchiveWriter#addEntry
+   * @see      xp://io.archive.zip.ZipArchiveWriter#addFile
    * @purpose  Stream
    */
   class ZipFileOutputStream extends Object implements OutputStream {
@@ -42,11 +42,12 @@
      * Sets compression method
      *
      * @param   io.archive.zip.Compression compression
+     * @param   int level default 6
      * @return  io.archive.zip.ZipFileOutputStream this
      */
-    public function withCompression(Compression $compression) {
+    public function withCompression(Compression $compression, $level= 6) {
       $this->data= new MemoryOutputStream();
-      $this->compression= $compression->getCompressionStream($this->data);
+      $this->compression= $compression->getCompressionStream($this->data, $level);
       return $this;
     }
     
@@ -83,8 +84,9 @@
         $this->size, 
         strlen($bytes),
         create(new CRC32($this->md->digest()))->asInt32(),
-        $bytes
+        0
       );
+      $this->writer->streamWrite($bytes);
       delete($this->data);
     }
   }

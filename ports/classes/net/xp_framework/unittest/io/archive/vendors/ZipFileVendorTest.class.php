@@ -20,6 +20,14 @@
     public function setUp() {
       parent::setUp();
       $this->vendor= $this->vendorName();
+
+      // Check whether any PHP extensions are required by a specific test,
+      // and skip if this extension is not loaded. This is done by checking
+      // for an @ext annotation.
+      $m= $this->getClass()->getMethod($this->name);
+      if ($m->hasAnnotation('ext') && !Runtime::getInstance()->extensionAvailable($ext= $m->getAnnotation('ext'))) {
+        throw new PrerequisitesNotMetError('Extension not available', NULL, array($ext));
+      }
     }
     
     /**
@@ -50,8 +58,8 @@
       $this->assertEquals('hello.txt', $entries[0]->getName());
       $this->assertEquals(5, $entries[0]->getSize());
       $this->assertFalse($entries[0]->isDirectory());
-
     }
+
     /**
      * Tests reading an zipfile with one entry called "הצü.txt" in its 
      * root directory.

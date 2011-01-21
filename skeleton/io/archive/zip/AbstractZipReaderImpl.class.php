@@ -10,6 +10,8 @@
     'io.archive.zip.Compression',
     'io.archive.zip.ZipDirEntry',
     'io.archive.zip.ZipFileEntry',
+    'io.archive.zip.DecipheringInputStream',
+    'io.archive.zip.ZipCipher',
     'util.Date'
   );
 
@@ -19,12 +21,16 @@
    * @ext   iconv
    */
   abstract class AbstractZipReaderImpl extends Object {
-    protected $stream= NULL;
     public $skip= 0;
 
-    const EOCD = "\x50\x4b\x05\x06";
-    const FHDR = "\x50\x4b\x03\x04";
-    const DHDR = "\x50\x4b\x01\x02";
+    protected $stream= NULL;
+    protected $index= array();
+    protected $password= NULL;
+
+    // Signatures
+    const EOCD = "\x50\x4b\x05\x06";  // End-Of-Central-Directory
+    const FHDR = "\x50\x4b\x03\x04";  // File header
+    const DHDR = "\x50\x4b\x01\x02";  // Zip central directory
 
     /**
      * Creation constructor
@@ -33,6 +39,16 @@
      */
     public function __construct(InputStream $stream) {
       $this->stream= $stream;
+    }
+
+    /**
+     * Set password to use when extracting 
+     *
+     * @param   string password
+     */
+    public function setPassword($password) {
+      $this->password= new ZipCipher();
+      $this->password->initialize(iconv('iso-8859-1', 'cp437', $password));
     }
 
     /**
@@ -100,44 +116,93 @@
             'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
             $this->stream->read(26)
           );
-          
           if (0 === $header['namelen']) {
           
             // Prevent 0-length read.
             $decoded= '';
           } else {
             $name= $this->stream->read($header['namelen']);
-
-            // Decode name from zipfile. If it cannot be decoded from cp437 
-            // we will use it as-is.
-            if ('' === ($decoded= @iconv('cp437', 'iso-8859-1', $name))) {
-              $decoded= $name;
+            
+            // Decode name from zipfile. If we find general purpose flag bit 11 
+            // (EFS), the name is encoded in UTF-8, if not, we try the following: 
+            // Decode from utf-8, then try cp437, and if that fails, we will use 
+            // it as-is. Do this as certain vendors (Java e.g.) always use utf-8 
+            // but do not indicate this via EFS.
+            if ($header['flags'] & 2048) {
+              $decoded= iconv('utf-8', 'iso-8859-1', $name);
+            } else if ('' === ($decoded= @iconv('utf-8', 'iso-8859-1', $name))) {
+              if ('' === ($decoded= @iconv('cp437', 'iso-8859-1', $name))) {
+                $decoded= $name;
+              }
             }
           }
           $extra= $this->stream->read($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
+          $this->skip= $header['compressed'];
+
+          // Short-circuit here for directories
+          if ('/' === substr($name, -1)) {
+            $e= new ZipDirEntry($decoded);
+            $e->setLastModified($date);
+            $e->setSize($header['uncompressed']);
+            return $e;
+          }
           
           // Bit 3: If this bit is set, the fields crc-32, compressed 
           // size and uncompressed size are set to zero in the local 
           // header.  The correct values are put in the data descriptor 
           // immediately following the compressed data.
           if ($header['flags'] & 8) {
-            raise('lang.MethodNotImplementedException', 'Data descriptors not yet implemented', 8);
+            if (!isset($this->index[$name])) {
+              $position= $this->stream->tell();
+              $offset= $this->readCentralDirectory();
+              $this->stream->seek($position, SEEK_SET);
+            }
+            
+            if (!isset($this->index[$name])) throw new FormatException('.zip archive broken: cannot find "'.$name.'" in central directory.');
+            $header= $this->index[$name];
+
+            // In case we're here, we can be sure to have a 
+            // RandomAccessStream - otherwise the central directory
+            // could not have been read in the first place. So,
+            // we may seek.
+            // If we had strict type checking this would not be
+            // possible, though.
+            // The offset is relative to the file begin - but also skip over the usual parts:
+            // * file header signature (4 bytes)
+            // * file header (26 bytes)
+            // * file extra + file name (variable size)
+            $this->stream->seek($header['offset']+ 30 + $header['extralen'] + $header['namelen'], SEEK_SET);
+            
+            // Set skip accordingly: 4 bytes data descriptor signature + 12 bytes data descriptor
+            $this->skip= $header['compressed']+ 16;
           }
-          
-          $this->skip= $header['compressed'];
+
+          // Bit 1: The file is encrypted
+          if ($header['flags'] & 1) {
+            $cipher= new ZipCipher($this->password);
+            $preamble= $cipher->decipher($this->stream->read(12));
+            
+            // Verify            
+            if (ord($preamble{11}) !== (($header['crc'] >> 24) & 0xFF)) {
+              throw new IllegalArgumentException('The password did not match ('.ord($preamble{11}).' vs. '.(($header['crc'] >> 24) & 0xFF).')');
+            }
+            
+            // Password matches.
+            $this->skip-= 12; 
+            $header['compressed']-= 12;
+            $is= new DecipheringInputStream(new ZipFileInputStream($this, $header['compressed']), $cipher);
+          } else {
+            $is= new ZipFileInputStream($this, $header['compressed']);
+          }
           
           // Create ZipEntry object and return it
-          if ('/' === substr($name, -1)) {
-            return new ZipDirEntry($decoded, $date, $header['uncompressed']);
-          } else {
-            $e= new ZipFileEntry($decoded);
-            $e->setLastModified($date);
-            $e->setSize($header['uncompressed']);
-            $e->setCompression(Compression::getInstance($header['compression']));
-            $e->is= new ZipFileInputStream($this, $header['compressed']);
-            return $e;
-          }
+          $e= new ZipFileEntry($decoded);
+          $e->setLastModified($date);
+          $e->setSize($header['uncompressed']);
+          $e->setCompression(Compression::getInstance($header['compression']));
+          $e->is= $is;
+          return $e;
         }
         case self::DHDR: {      // Zip directory
           return NULL;          // XXX: For the moment, ignore directory and stop here
@@ -147,6 +212,20 @@
         }
       }
       throw new FormatException('Unknown byte sequence '.addcslashes($type, "\0..\17"));
+    }
+    
+    protected function addToIndex($filename, $header) {
+      $this->index[$filename]= $header;
+    }
+    
+    /**
+     * Read central directory; not supported in this abstract
+     * implementation.
+     *
+     * @return  void
+     */
+    protected function readCentralDirectory() {
+      raise('lang.MethodNotImplementedException', 'Seeking central directory is only supported by RandomAccessZipReaderImpl.');
     }
   }
 ?>

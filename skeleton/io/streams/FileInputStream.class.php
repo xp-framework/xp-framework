@@ -23,7 +23,7 @@
      */
     public function __construct($file) {
       $this->file= $file instanceof File ? $file : new File($file);
-      $this->file->open(FILE_MODE_READ);
+      $this->file->isOpen() || $this->file->open(FILE_MODE_READ);
     }
 
     /**

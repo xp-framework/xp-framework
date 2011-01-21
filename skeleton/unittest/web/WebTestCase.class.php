@@ -24,14 +24,15 @@
    */
   abstract class WebTestCase extends TestCase {
     protected
-      $conn     = NULL,
-      $response = NULL,
-      $cookies  = array();
-    
+      $conn              = NULL,
+      $response          = NULL,
+      $cookies           = array(),
+      $persistentHeaders = array();
+
     private
       $dom      = NULL,
       $xpath    = NULL;
-    
+      
     /**
      * Get connection
      *
@@ -52,6 +53,13 @@
     public function __construct($name, $url= NULL) {
       parent::__construct($name);
       $this->conn= $this->getConnection($url);
+    }
+    
+    /**
+     * Sets a header which is sent on every request.
+     */
+    public function setPersistentHeader($name, $value) {
+      $this->persistentHeaders[$name]= $value;
     }
     
     /**
@@ -100,6 +108,11 @@
       $request->setMethod($method);
       $request->setParameters($params);
       
+      //set headers specified for this web test
+      foreach ($this->persistentHeaders as $name => $value) {
+       $request->setHeader($name, $value);
+      }
+
       // Check if we have cookies for this domain
       $host= $this->conn->getUrl()->getHost();
       if (isset($this->cookies[$host]) && 0 < sizeof($this->cookies[$host])) {
@@ -143,6 +156,7 @@
      *
      * @param   string target
      * @param   string params
+     * @param   string method
      * @throws  unittest.AssertionFailedError  
      */
     public function navigateTo($target, $params= NULL, $method= HttpConstants::GET) {
@@ -160,6 +174,25 @@
       } else {
         $base= $this->getBase();
         $this->beginAt(substr($base, 0, strrpos($base, '/')).'/'.$target, $params, $method);
+      }
+    }
+
+    /**
+     * Follow redirect from location header
+     *
+     * @param   int assertStatus
+     * @param   string assertBase
+     * @throws  unittest.AssertionFailedError
+     */
+    public function followRedirect($assertStatus= NULL, $assertBase= NULL) {
+      $this->navigateTo(this($this->response->header('Location'), 0));
+
+      if (NULL !== $assertStatus) {
+        $this->assertStatus($assertStatus);
+      }
+
+      if (NULL !== $assertBase) {
+        $this->assertEquals($assertBase, $this->getBase(), 'Redirected to unexpected base.');
       }
     }
 

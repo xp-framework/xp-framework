@@ -102,6 +102,11 @@
 
             // Check for string quotations
             if (strlen($value) && ('"' == ($quote= $value{0}))) {
+
+              // For multiline values, get next token by quote
+              if (FALSE === strrpos($value, $quote, 1))
+                $value.= "\n".strtok($quote);
+
               $value= trim($value, $quote);
               $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
                 ? $p : strlen($value)

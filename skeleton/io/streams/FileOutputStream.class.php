@@ -24,7 +24,7 @@
      */
     public function __construct($file, $append= FALSE) {
       $this->file= $file instanceof File ? $file : new File($file);
-      $this->file->open($append ? FILE_MODE_APPEND : FILE_MODE_WRITE);
+      $this->file->isOpen() || $this->file->open($append ? FILE_MODE_APPEND : FILE_MODE_WRITE);
     }
 
     /**

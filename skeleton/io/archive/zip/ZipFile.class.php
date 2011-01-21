@@ -18,8 +18,8 @@
    * ~~~~~~~~~~~~~~~~~~~~~~~~~~~
    * <code>
    *   $z= ZipFile::create(new FileOutputStream(new File('dist.zip')));
-   *   $z->addEntry(new ZipDirEntry('META-INF'));
-   *   $e= $z->addEntry(new ZipFileEntry('META-INF/version.txt'));
+   *   $z->addDir(new ZipDirEntry('META-INF'));
+   *   $e= $z->addFile(new ZipFileEntry('META-INF/version.txt'));
    *   $e->getOutputStream()->write($contents);
    *   $z->close();
    * </code>
@@ -39,7 +39,14 @@
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.io.archive.vendors.InfoZipZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.JarFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.JavaZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.Java7ZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.PHPZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.SevenZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.WinRARZipFileTest
    * @test     xp://net.xp_framework.unittest.io.archive.vendors.WindowsZipFileTest
+   * @test     xp://net.xp_framework.unittest.io.archive.vendors.XpZipFileTest
    * @test     xp://net.xp_framework.unittest.io.archive.MalformedZipFileTest
    * @see      http://www.pkware.com/documents/casestudies/APPNOTE.TXT
    * @purpose  Entry point class

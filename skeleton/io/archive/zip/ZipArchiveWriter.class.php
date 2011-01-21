@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('io.archive.zip.ZipEntry', 'io.archive.zip.Compression', 'io.archive.zip.ZipFileOutputStream');
+  uses(
+    'io.archive.zip.ZipEntry', 
+    'io.archive.zip.Compression', 
+    'io.archive.zip.ZipFileOutputStream',
+    'io.archive.zip.CipheringZipFileOutputStream',
+    'io.archive.zip.ZipCipher'
+  );
 
 
   /**
@@ -18,19 +24,50 @@
       $stream   = NULL,
       $dir      = array(), 
       $pointer  = 0,
-      $out      = NULL;
+      $out      = NULL,
+      $unicode  = FALSE,
+      $password = NULL;
 
     const EOCD = "\x50\x4b\x05\x06\x00\x00\x00\x00";
-    const FHDR = "\x50\x4b\x03\x04\x0a\x00\x00\x00";
-    const DHDR = "\x50\x4b\x01\x02\x14\x0b\x0a\x00";
+    const FHDR = "\x50\x4b\x03\x04";
+    const DHDR = "\x50\x4b\x01\x02";
 
     /**
      * Creation constructor
      *
      * @param   io.streams.OutputStream stream
+     * @param   bool unicode whether to use unicode for entry names
      */
-    public function __construct(OutputStream $stream) {
+    public function __construct(OutputStream $stream, $unicode= FALSE) {
       $this->stream= $stream;
+      $this->unicode= $unicode;
+    }
+    
+    /**
+     * Set whether to use unicode for entry names. Note this is not supported 
+     * by for example Windows explorer or the "unzip" command line utility,
+     * although the Language Encoding (EFS) bit is set - 7-zip, on the other
+     * side, as also this implementation, will handle the name correctly. 
+     * Java's jar utility will even expect utf-8, and choke on any other names!
+     *
+     * @param   bool unicode TRUE to use unicode, false otherwise
+     * @return  io.archive.zip.ZipArchiveWriter
+     */
+    public function usingUnicodeNames($unicode= TRUE) {
+      $this->unicode= $unicode;
+      return $this;
+    }
+
+    /**
+     * Set password to use when adding entries 
+     *
+     * @param   string password
+     * @return  io.archive.zip.ZipArchiveWriter this
+     */
+    public function usingPassword($password) {
+      $this->password= new ZipCipher();
+      $this->password->initialize(iconv('iso-8859-1', 'cp437', $password));
+      return $this;
     }
 
     /**
@@ -49,13 +86,15 @@
       $this->out= NULL;
       
       $mod= $entry->getLastModified();
-      $name= $entry->getName();
+      $name= iconv('iso-8859-1', $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $entry->getName()));
       $nameLength= strlen($name);
       $extraLength= 0;
       $extra= '';
       
       $info= pack(
-        'vvvVVVvv',
+        'vvvvvVVVvv',
+        10,                       // version
+        $this->unicode ? 2048 : 0,// flags
         0,                        // compression method
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
@@ -66,7 +105,8 @@
         $extraLength              // extra field length
       );
 
-      $this->stream->write(self::FHDR.$info.$name.$extra);
+      $this->stream->write(self::FHDR.$info.$name);
+      $extraLength && $this->stream->write($extra);
       
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x10);
       $this->pointer+= (
@@ -91,7 +131,14 @@
       }
 
       $this->out && $this->out->close();
-      $this->out= new ZipFileOutputStream($this, $entry);
+
+      if ($this->password) {
+        $cipher= new ZipCipher($this->password);
+        $this->out= new CipheringZipFileOutputStream($this, $entry, $cipher);
+      } else {
+        $this->out= new ZipFileOutputStream($this, $entry);
+      }
+      
       $entry->os= $this->out;
       return $entry;
     }
@@ -123,6 +170,15 @@
         ($date->getDay() & 0x1F)
       ;
     }
+
+    /**
+     * Writes to a stream
+     *
+     * @param   string arg
+     */
+    public function streamWrite($arg) {
+      $this->stream->write($arg);
+    }
     
     /**
      * Write a file entry
@@ -131,18 +187,20 @@
      * @param   int size
      * @param   int compressed
      * @param   int crc32
-     * @param   string data
+     * @param   int flags
      */
-    public function writeFile($file, $size, $compressed, $crc32, $data) {
+    public function writeFile($file, $size, $compressed, $crc32, $flags) {
       $mod= $file->getLastModified();
-      $name= str_replace('\\', '/', $file->getName());
+      $name= iconv('iso-8859-1', $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $file->getName()));
       $nameLength= strlen($name);
       $method= $file->getCompression()->ordinal();
       $extraLength= 0;
       $extra= '';
 
       $info= pack(
-        'vvvVVVvv',
+        'vvvvvVVVvv',
+        10,                       // version
+        $this->unicode ? 2048 : $flags,
         $method,                  // compression method, 0 = none, 8 = gz, 12 = bz
         $this->dosTime($mod),     // last modified dostime
         $this->dosDate($mod),     // last modified dosdate
@@ -153,9 +211,10 @@
         $extraLength              // extra field length
       );
 
-      $this->stream->write(self::FHDR.$info.$name.$extra);
-      $this->stream->write($data);
-      
+      $this->stream->write(self::FHDR.$info);
+      $this->stream->write($name);
+      $extraLength && $this->stream->write($extra);
+
       $this->dir[$name]= array('info' => $info, 'pointer' => $this->pointer, 'type' => 0x20);
       $this->pointer+= (
         strlen(self::FHDR) + 
@@ -179,7 +238,7 @@
       foreach ($this->dir as $name => $entry) {
         $s= (
           self::DHDR.
-          "\x00\x00".           // general purpose bit flag
+          "\x14\x0b".           // version made by
           $entry['info'].       // { see writeFile() }
           "\x00\x00".           // file comment length
           "\x00\x00".           // disk number start

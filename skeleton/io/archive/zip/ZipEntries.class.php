@@ -9,6 +9,7 @@
   /**
    * Iterates on ZIP archive entries
    *
+   * @test    xp://net.xp_framework.unittest.io.archive.ZipFileEntriesTest
    */
   class ZipEntries extends Object implements Iterator {
     protected $impl= NULL;

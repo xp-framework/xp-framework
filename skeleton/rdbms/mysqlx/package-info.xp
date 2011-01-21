@@ -1,0 +1,25 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * MySQL support for RDBMS api - snap-in used when either no MySQL is
+ * available in PHP or when ext/mysqlnd is loaded.
+ *
+ * Overview
+ * ========
+ * <ul>
+ *   <li>DSN scheme: <tt>mysql</tt></li>
+ * </ul>
+ * 
+ * @see      http://mysql.com/
+ * @see      http://news.planet-xp.net/article/404/2011/01/16/
+ * @see      http://stackoverflow.com/questions/1575807/cannot-connect-to-mysql-4-1-using-old-authentication
+ * @see      http://bugs.mysql.com/bug.php?id=37552
+ * @see      xp://rdbms.DriverManager - the entry point
+ * @purpose  Databases
+ */
+package rdbms.mysqlx {
+}

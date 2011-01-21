@@ -35,12 +35,22 @@
     }
 
     /**
-     * Returns the value of this number as a float.
+     * Returns the value of this number as a double.
      *
-     * @return  float
+     * @deprecated Inconsistent with XP type system - use doubleValue() instead
+     * @return  double
      */
     public function floatValue() {
-      return (float)$this->value;
+      return (double)$this->value;
+    }
+
+    /**
+     * Returns the value of this number as a float.
+     *
+     * @return  double
+     */
+    public function doubleValue() {
+      return (double)$this->value;
     }
     
     /**

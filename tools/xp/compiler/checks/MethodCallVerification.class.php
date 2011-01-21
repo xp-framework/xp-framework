@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('xp.compiler.checks.Check', 'xp.compiler.ast.MethodCallNode', 'xp.compiler.types.TypeInstance');
+  uses('xp.compiler.checks.AbstractMethodCallVerification', 'xp.compiler.ast.MethodCallNode');
 
   /**
    * Verifies method calls
    *
    * @test    xp://net.xp_lang.tests.checks.MethodCallVerificationTest
    */
-  class MethodCallVerification extends Object implements Check {
+  class MethodCallVerification extends AbstractMethodCallVerification {
 
     /**
      * Return node this check works on
@@ -51,29 +51,7 @@
         return array('T305', 'Using member calls on unsupported type '.$type->compoundName());
       }
 
-      // Verify target method exists
-      $target= new TypeInstance($scope->resolveType($type));
-      if (!$target->hasMethod($call->name)) {
-        return array('T404', 'No such method '.$call->name.'() in '.$target->name());
-      }
-      
-      // Verify visibility
-      $method= $target->getMethod($call->name);
-      if (!($method->modifiers & MODIFIER_PUBLIC)) {
-        $enclosing= $scope->resolveType($scope->declarations[0]->name);
-        if (
-          ($method->modifiers & MODIFIER_PRIVATE && !$enclosing->equals($target)) ||
-          ($method->modifiers & MODIFIER_PROTECTED && !($enclosing->equals($target) || $enclosing->isSubclassOf($target)))
-        ) {
-          return array('T403', sprintf(
-            'Invoking %s %s::%s() from %s',
-            implode(' ', Modifiers::namesOf($method->modifiers)),
-            $target->name(),
-            $method->name,
-            $enclosing->name()
-          ));
-        }
-      }
+      return $this->verifyMethod($type, $call->name, $scope);
     }
   }
 ?>
