@@ -15,16 +15,16 @@
   abstract class ZipFileContentsTest extends ZipFileTest {
 
     /**
-     * Returns an array of entries in a given zip file
+     * Returns entry content
      *
-     * @param   io.archive.zip.ZipArchiveReader reader
-     * @return  io.archive.zip.ZipEntry[]
+     * @param   io.archive.zip.ZipEntry entry
+     * @return  string
      */
     protected function entryContent(ZipEntry $entry) {
       if ($entry->isDirectory()) {
         return NULL;
       } else {
-        return Streams::readAll($entry->getInputStream());
+        return (string)Streams::readAll($entry->getInputStream());
       }
     }
 
