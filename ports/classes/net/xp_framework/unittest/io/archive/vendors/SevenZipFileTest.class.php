@@ -37,9 +37,9 @@
       $this->assertEquals(1660, $entry->getSize());
       
       with ($is= $entry->getInputStream()); {
-        $this->assertEquals('This file is to be compressed', $is->read(29));
+        $this->assertEquals('This file is to be compressed', (string)$is->read(29));
         $is->read(1630);
-        $this->assertEquals('.', $is->read(1));
+        $this->assertEquals('.', (string)$is->read(1));
       }
     }
 
