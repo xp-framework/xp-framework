@@ -49,7 +49,7 @@
       $entries= $this->seekCentralDirectory();
 
       // File pointer is positioned at start of the central directory
-      while (self::EOCD !== ($sig= $this->stream->read(4))) {
+      while (self::EOCD !== ($sig= (string)$this->stream->read(4))) {
         if (self::DHDR != $sig) 
           throw new FormatException('No central directory header signature found, have: '.addcslashes($sig, "\0..\17"));
 
@@ -58,9 +58,9 @@
           $this->stream->read(42)
         );
         
-        $filename= $this->stream->read($header['namelen']);
-        $extra= $this->stream->read($header['extralen']);
-        $comment= $this->stream->read($header['commentlen']);
+        $filename= (string)$this->stream->read($header['namelen']);
+        $extra= (string)$this->stream->read($header['extralen']);
+        $comment= (string)$this->stream->read($header['commentlen']);
 
         $this->addToIndex($filename, $header);
       }
@@ -82,14 +82,10 @@
       
       // By reading one byte at a time, try to find the magic marker sequence
       // which indicates the start of the EOCD section
-      $marker= $this->stream->read(3);
+      $marker= (string)$this->stream->read(3);
       while ($this->stream->available()) {
-        $marker.= $this->stream->read(1);
-        
-        if ($marker == parent::EOCD) {
-          break;
-        }
-        
+        $marker.= (string)$this->stream->read(1);
+        if ($marker == parent::EOCD) break;
         $marker= substr($marker, -3);
       }
       

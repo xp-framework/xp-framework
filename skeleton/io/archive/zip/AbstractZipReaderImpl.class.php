@@ -121,7 +121,7 @@
             // Prevent 0-length read.
             $decoded= '';
           } else {
-            $name= $this->stream->read($header['namelen']);
+            $name= (string)$this->stream->read($header['namelen']);
             
             // Decode name from zipfile. If we find general purpose flag bit 11 
             // (EFS), the name is encoded in UTF-8, if not, we try the following: 
@@ -181,7 +181,7 @@
           // Bit 1: The file is encrypted
           if ($header['flags'] & 1) {
             $cipher= new ZipCipher($this->password);
-            $preamble= $cipher->decipher($this->stream->read(12));
+            $preamble= $cipher->decipher((string)$this->stream->read(12));
             
             // Verify            
             if (ord($preamble{11}) !== (($header['crc'] >> 24) & 0xFF)) {
