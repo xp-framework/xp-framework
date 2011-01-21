@@ -121,7 +121,7 @@
             // Prevent 0-length read.
             $decoded= '';
           } else {
-            $name= $this->stream->read($header['namelen']);
+            $name= (string)$this->stream->read($header['namelen']);
             
             // Decode name from zipfile. If we find general purpose flag bit 11 
             // (EFS), the name is encoded in UTF-8, if not, we try the following: 
