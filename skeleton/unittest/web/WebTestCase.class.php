@@ -178,14 +178,24 @@
     }
 
     /**
-     * Follow redirect from location header
+     * Follow redirect from either the location or the refresh header.
+     * Ignoring the http-equiv meta tag "refresh"
      *
      * @param   int assertStatus
      * @param   string assertBase
      * @throws  unittest.AssertionFailedError
      */
     public function followRedirect($assertStatus= NULL, $assertBase= NULL) {
-      $this->navigateTo(this($this->response->header('Location'), 0));
+      // redirect to location header
+      if ($location= $this->response->getHeader('Location')) {
+        $this->navigateTo($location);
+      }
+      // redirect to refresh header
+      if ($refresh= $this->response->getHeader('Refresh')) {
+        // the content of the refresh header in general looks like
+        // "0;URL=http://foo.bar/baz"
+        $this->navigateTo(substr($refresh, stripos($refresh, 'url=') + 4));
+      }
 
       if (NULL !== $assertStatus) {
         $this->assertStatus($assertStatus);

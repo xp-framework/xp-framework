@@ -54,6 +54,9 @@ Features
 - Added function to follow redirects in web test cases and check http status codes and
   url base afterwards.
   (robert, ilankin)
+- Enhanced the followRedirect() method of the unittest.web.WebTestCase class to
+  handle the Refresh header too.
+  (rledermueller)
 
 Version 5.8.0, released 2011-01-11
 ----------------------------------
