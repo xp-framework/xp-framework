@@ -85,5 +85,16 @@
         $this->entriesWithContentIn($this->archiveReaderFor('fixtures', 'twofiles'))
       );
     }
+
+    /**
+     * Tests reading file contents after iterating over the index
+     *
+     */
+    #[@test]
+    public function loadContentAfterIteration() {
+      $entries= $this->entriesIn($this->archiveReaderFor('fixtures', 'twofiles'));
+      $this->assertEquals('Eins', $this->entryContent($entries[0]));
+      $this->assertEquals('Zwei', $this->entryContent($entries[1]));
+    }
   }
 ?>
