@@ -1,0 +1,448 @@
+Index: skeleton/lang/ClassLoader.class.php
+===================================================================
+--- skeleton/lang/ClassLoader.class.php	(revision 15268)
++++ skeleton/lang/ClassLoader.class.php	(working copy)
+@@ -59,7 +59,14 @@
+         if (is_dir($resolved)) {
+           self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
+         } else if (is_file($resolved)) {
+-          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
++          if ('.xar' == substr($resolved, -4)) {
++            self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
++          } else if ('.jar' == substr($resolved, -4)) {
++            XPClass::forName('lang.archive.jar.JarArchiveClassLoader');
++            self::registerLoader(JarArchiveClassLoader::instanceFor($resolved, FALSE));
++          } else {
++            xp::error('[bootstrap] Classpath element ['.$element.'] not supported');
++          }
+         } else {
+           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
+         }
+@@ -88,7 +95,14 @@
+       if (is_dir($resolved)) {
+         return self::registerLoader(FileSystemClassLoader::instanceFor($resolved, $before));
+       } else if (is_file($resolved)) {
+-        return self::registerLoader(ArchiveClassLoader::instanceFor($resolved, $before));
++        if ('.xar' == substr($resolved, -4)) {
++          return self::registerLoader(ArchiveClassLoader::instanceFor($resolved, $before));
++        } else if ('.jar' == substr($resolved, -4)) {
++          XPClass::forName('lang.archive.jar.JarArchiveClassLoader');
++          return self::registerLoader(JarArchiveClassLoader::instanceFor($resolved, $before));
++        } else {
++          raise('lang.ElementNotFoundException', 'Classpath element ['.$element.'] not supported');
++        }
+       }
+       raise('lang.ElementNotFoundException', 'Element "'.$element.'" not found');
+     }
+Index: skeleton/lang/archive/ArchiveClassLoader.class.php
+===================================================================
+--- skeleton/lang/archive/ArchiveClassLoader.class.php	(revision 15268)
++++ skeleton/lang/archive/ArchiveClassLoader.class.php	(working copy)
+@@ -40,7 +40,7 @@
+       $this->path= $archive instanceof Archive ? $archive->getURI() : $archive;
+ 
+       // Archive within an archive
+-      if (0 === strncmp('xar://', $this->path, 6)) {
++      if (strstr($this->path, '://')) {
+         $this->path= urlencode($this->path);
+       }
+       $this->archive= 'xar://'.$this->path.'?';
+Index: skeleton/lang/archive/jar/JarArchiveClassLoader.class.php
+===================================================================
+--- skeleton/lang/archive/jar/JarArchiveClassLoader.class.php	(revision 0)
++++ skeleton/lang/archive/jar/JarArchiveClassLoader.class.php	(revision 0)
+@@ -0,0 +1,197 @@
++<?php
++/* This class is part of the XP framework
++ * 
++ * $Id$
++ */
++
++  uses(
++    'lang.AbstractClassLoader',
++    'lang.archive.jar.JarArchiveStreamWrapper'
++  );
++
++  /** 
++   * Loads XP classes from a JAR (Java Archive)
++   * 
++   * Usage:
++   * <code>
++   *   $l= new JarArchiveClassLoader('classes.jar')));
++   *   try {
++   *     $class= $l->loadClass($argv[1]);
++   *   } catch (ClassNotFoundException $e) {
++   *     $e->printStackTrace();
++   *     exit(-1);
++   *   }
++   * 
++   *   $obj= $class->newInstance();
++   * </code>
++   *
++   * @test     xp://net.xp_framework.unittest.core.JarArchiveClassLoaderTest
++   * @purpose  Load classes from an archive
++   * @see      xp://lang.ClassLoader
++   * @see      xp://io.archive.zip.ZipFile
++   * @ext      tokenize
++   */
++  class JarArchiveClassLoader extends AbstractClassLoader {
++    protected $archive= NULL;
++    
++    /**
++     * Constructor
++     * 
++     * @param   string  archive path
++     */
++    public function __construct($archive) {
++      $this->path= ($archive instanceof File ? $archive->getURI() : $archive);
++      
++      // Archive within an archive
++      if (strstr($this->path, '://')) {
++        $this->path= urlencode($this->path);
++      }
++      $this->archive= 'jar://'.$this->path.'?';
++    }
++
++    /**
++     * Load class bytes
++     *
++     * @param   string name fully qualified class name
++     * @return  string
++     */
++    public function loadClassBytes($name) {
++      return file_get_contents($this->archive.strtr($name, '.', '/').xp::CLASS_FILE_EXT);
++    }
++    
++    /**
++     * Returns URI suitable for include() given a class name
++     *
++     * @param   string class
++     * @return  string
++     */
++    protected function classUri($class) {
++      return $this->archive.strtr($class, '.', '/').xp::CLASS_FILE_EXT;
++    }
++
++    /**
++     * Loads a resource.
++     *
++     * @param   string string name of resource
++     * @return  string
++     * @throws  lang.ElementNotFoundException in case the resource cannot be found
++     */
++    public function getResource($string) {
++      if (FALSE !== ($r= file_get_contents($this->archive.$string))) {
++        return $r;
++      }
++
++      return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
++    }
++    
++    /**
++     * Retrieve a stream to the resource
++     *
++     * @param   string string name of resource
++     * @return  io.Stream
++     * @throws  lang.ElementNotFoundException in case the resource cannot be found
++     */
++    public function getResourceAsStream($string) {
++      if (!file_exists($fn= $this->archive.$string)) {
++        return raise('lang.ElementNotFoundException', 'Could not load resource '.$string);
++      }
++
++      return new File($fn);
++    }
++    
++    /**
++     * Checks whether this loader can provide the requested class
++     *
++     * @param   string class
++     * @return  bool
++     */
++    public function providesClass($class) {
++      return file_exists($this->archive.strtr($class, '.', '/').xp::CLASS_FILE_EXT);
++    }
++
++    /**
++     * Checks whether this loader can provide the requested resource
++     *
++     * @param   string filename
++     * @return  bool
++     */
++    public function providesResource($filename) {
++      return file_exists($this->archive.$filename);
++    }
++
++    /**
++     * Checks whether this loader can provide the requested package
++     *
++     * @param   string package
++     * @return  bool
++     */
++    public function providesPackage($package) {
++      raise('lang.MethodNotImplementedException', __METHOD__);
++      $acquired= JarArchiveStreamWrapper::acquire(urldecode(substr($this->archive, 6, -1)));
++      $cmps= strtr($package, '.', '/').'/';
++      $cmpl= strlen($cmps);
++      
++      foreach (array_keys($acquired['index']) as $e) {
++        if (strncmp($cmps, $e, $cmpl) === 0) return TRUE;
++      }
++      return FALSE;
++    }
++    
++    /**
++     * Fetch instance of classloader by the path to the archive
++     *
++     * @param   string path
++     * @param   bool expand default TRUE whether to expand the path using realpath
++     * @return  lang.archive.ArchiveClassLoader
++     */
++    public static function instanceFor($path, $expand= TRUE) {
++      static $pool= array();
++
++      $path= $expand && 0 !== strncmp('jar%3A%2F%2F', $path, 12) ? realpath($path) : $path;
++      if (!isset($pool[$path])) {
++        $pool[$path]= new self($path);
++      }
++      
++      return $pool[$path];
++    }
++
++    /**
++     * Get package contents
++     *
++     * @param   string package
++     * @return  string[] filenames
++     */
++    public function packageContents($package) {
++      raise('lang.MethodNotImplementedException', __METHOD__);
++      $contents= array();
++      var_dump($this->archive);
++      $acquired= JarArchiveStreamWrapper::acquire(urldecode(substr($this->archive, 6, -1)));
++      $cmps= strtr($package, '.', '/');
++      $cmpl= strlen($cmps);
++      
++      foreach (array_keys($acquired['index']) as $e) {
++        if (strncmp($cmps, $e, $cmpl) != 0) continue;
++        $entry= 0 != $cmpl ? substr($e, $cmpl+ 1) : $e;
++        
++        // Check to see if we're getting something in a subpackage. Imagine the 
++        // following structure:
++        //
++        // archive.xar
++        // - tests/ClassOne.class.php
++        // - tests/classes/RecursionTest.class.php
++        // - tests/classes/ng/NextGenerationRecursionTest.class.php
++        //
++        // When this method is invoked with "tests" as name, "ClassOne.class.php"
++        // and "classes/" should be returned (but neither any of the subdirectories
++        // nor their contents)
++        if (FALSE !== ($p= strpos($entry, '/'))) {
++          $entry= substr($entry, 0, $p);
++          if (strstr($entry, '/')) continue;
++          $entry.= '/';
++        }
++        $contents[$entry]= NULL;
++      }
++      return array_keys($contents);
++    }
++  }
++?>
+
+Property changes on: skeleton/lang/archive/jar/JarArchiveClassLoader.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php
+===================================================================
+--- skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php	(revision 0)
++++ skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php	(revision 0)
+@@ -0,0 +1,167 @@
++<?php
++/* This class is part of the XP framework
++ *
++ * $Id$ 
++ */
++
++  uses(
++    'io.File',
++    'io.archive.zip.ZipFile',
++    'io.streams.FileInputStream',
++    'io.streams.MemoryInputStream'
++  );
++
++  /**
++   * (Insert class' description here)
++   *
++   * @ext      extension
++   * @see      reference
++   * @purpose  purpose
++   */
++  class JarArchiveStreamWrapper extends Object {
++    protected static $archives= array();
++    
++    protected
++      $archive  = NULL,
++      $stream   = NULL;
++      
++    static function __static() {
++      stream_wrapper_register('jar', 'JarArchiveStreamWrapper');
++    }
++    
++    /**
++     * Acquire instance of JarArchiveStreamWrapper
++     *
++     * @param   string archive
++     * @return  lang.archive.jar.JarArchiveStreamWrapper
++     */
++    public static function acquire($archive) {
++      if (!isset(self::$archives[$archive])) {
++        $reader= ZipFile::open(new FileInputStream(new File($archive)));
++        foreach ($reader->entries() as $entry) {
++        
++          if ($entry instanceof ZipDirEntry) continue;
++          
++          $is= $entry->getInputStream();
++          $index[$entry->getName()]= array(
++            'entry' => $entry,
++            'data'  => $is->read($entry->getSize())
++          );
++        }
++        
++        self::$archives[$archive]= array(
++          'reader'  => $reader,
++          'index'   => $index,
++        );
++      }
++      
++      return self::$archives[$archive];
++    }
++    
++    /**
++     * Open stream
++     *
++     * @param   string path
++     * @param   int mode
++     * @param   int options
++     * @param   string opened_path
++     * @return  bool
++     */
++    public function stream_open($path, $mode, $options, $opened_path) {
++      sscanf($path, 'jar://%[^?]?%[^$]', $archive, $file);
++      $this->archive= urldecode($archive);
++      $this->filename= $file;
++      
++      $current= self::acquire($this->archive);
++      if (!isset($current['index'][$this->filename])) return FALSE;
++      
++      $this->stream= new MemoryInputStream($current['index'][$this->filename]['data']);
++      return TRUE;
++    }
++    
++    /**
++     * Flush stream
++     *
++     * @param   
++     * @return  
++     */
++    public function stream_flush() {
++      // NOOP
++    }
++    
++    /**
++     * Close stream
++     *
++     */
++    public function stream_close() {
++      // unset(self::$archives[$this->archive]['index'][$this->filename]);
++      // $this->stream= NULL;
++    }
++    
++    /**
++     * Read bytes from stream
++     *
++     * @param   int count
++     * @return  byte[]
++     */
++    public function stream_read($count) {
++      return $this->stream->read($count);
++    }
++    
++    /**
++     * Check if stream has more to read
++     *
++     * @return  bool
++     */
++    public function stream_eof() {
++      return $this->stream->available() > 0;
++    }
++    
++    /**
++     * Retrieve stream's status
++     *
++     * @return  mixed
++     */
++    public function stream_stat() {
++      $current= self::acquire($this->archive);
++      return array(
++        'size'  => $current['index'][$this->filename]['entry']->getSize()
++      );
++    }
++    
++    /**
++     * Seek in stream
++     *
++     * @param   int offset
++     * @param   int whence
++     */
++    public function stream_seek($offset, $whence) {
++      $this->stream->seek($offset, $whence);
++    }
++    
++    /**
++     * Retrieve current offset in stream
++     *
++     * @return  int
++     */
++    public function stream_tell() {
++      return $this->stream->tell();
++    }
++    
++    /**
++     * Retrieve file stat by url
++     *
++     * @param   string path
++     * @return  mixed
++     */
++    function url_stat($path) {
++      sscanf($path, 'jar://%[^?]?%[^$]', $archive, $file);
++      $current= self::acquire(urldecode($archive));
++
++      return isset($current['index'][$file]) 
++        ? array('size' => $current['index'][$file]['entry']->getSize())
++        : FALSE
++      ;
++    }
++  }
++?>
+
+Property changes on: skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php
+___________________________________________________________________
+Added: svn:keywords
+   + Id
+
+Index: skeleton/io/File.class.php
+===================================================================
+--- skeleton/io/File.class.php	(revision 15268)
++++ skeleton/io/File.class.php	(working copy)
+@@ -141,7 +141,7 @@
+      * @throws  lang.IllegalArgumentException in case an invalid file name was given
+      */
+     public function setURI($uri) {
+-      static $allowed= array('xar://*', 'php://stderr', 'php://stdout', 'php://stdin', 'res://*');
++      static $allowed= array('xar://*', 'php://stderr', 'php://stdout', 'php://stdin', 'res://*', 'jar://*');
+ 
+       $uri= (string)$uri;
+       if (0 === strlen($uri) || FALSE !== strpos($uri, "\0")) {

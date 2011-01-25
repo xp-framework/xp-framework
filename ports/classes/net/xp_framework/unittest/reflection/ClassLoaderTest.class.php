@@ -75,8 +75,8 @@
     /**
      * Display some information
      *
+     * Annotate this method w/ @test to retrieve debug information.
      */
-    #[@test, @ignore('For CLI debugging purposes only')]
     public function classLoaderInformation() {
       with ($p= Package::forName('net.xp_framework.unittest.reflection.classes')); {
         Console::writeLine('Object     : ', XPClass::forName('lang.Object')->getClassLoader());

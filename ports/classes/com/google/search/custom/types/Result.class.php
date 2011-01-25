@@ -19,6 +19,7 @@
     protected $language= NULL;
     protected $mimeType= NULL;
     protected $excerpt= '';
+    protected $details= array();
     
     /**
      * Sets index
@@ -111,7 +112,7 @@
      *
      * @return  string
      */
-    public function getmimeType() {
+    public function getMimeType() {
       return $this->mimeType;
     }
 
@@ -133,6 +134,26 @@
     public function getExcerpt() {
       return $this->excerpt;
     }
+
+    /**
+     * Sets a detail info
+     *
+     * @param   string name
+     * @param   string value
+     */
+    #[@xmlmapping(element= 'FS', pass= array('@NAME', '@VALUE'))]
+    public function setDetail($name, $value) {
+      $this->details[$name]= $value;
+    }
+    
+    /**
+     * Returns details
+     *
+     * @return  string
+     */
+    public function getDetails() {
+      return $this->details;
+    }
     
     /**
      * Creates a string representation of this result set entry
@@ -147,6 +168,7 @@
         "  [language] %s\n".
         "  [mimetype] %s\n".
         "  [excerpt]  %s\n".
+        "  [details]  %s\n".
         "}",
         $this->getClassName(),
         $this->index,
@@ -154,7 +176,8 @@
         $this->url,
         $this->language ? $this->language : '(none)',
         $this->mimeType ? $this->mimeType : '(none)',
-        $this->excerpt
+        $this->excerpt,
+        xp::stringOf($this->details)
       );
     }
   }
