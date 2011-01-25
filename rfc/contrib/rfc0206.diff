@@ -1,6 +1,6 @@
 Index: skeleton/lang/ClassLoader.class.php
 ===================================================================
---- skeleton/lang/ClassLoader.class.php	(revision 15268)
+--- skeleton/lang/ClassLoader.class.php	(revision 15275)
 +++ skeleton/lang/ClassLoader.class.php	(working copy)
 @@ -59,7 +59,14 @@
          if (is_dir($resolved)) {
@@ -36,7 +36,7 @@ Index: skeleton/lang/ClassLoader.class.php
      }
 Index: skeleton/lang/archive/ArchiveClassLoader.class.php
 ===================================================================
---- skeleton/lang/archive/ArchiveClassLoader.class.php	(revision 15268)
+--- skeleton/lang/archive/ArchiveClassLoader.class.php	(revision 15275)
 +++ skeleton/lang/archive/ArchiveClassLoader.class.php	(working copy)
 @@ -40,7 +40,7 @@
        $this->path= $archive instanceof Archive ? $archive->getURI() : $archive;
@@ -51,7 +51,7 @@ Index: skeleton/lang/archive/jar/JarArchiveClassLoader.class.php
 ===================================================================
 --- skeleton/lang/archive/jar/JarArchiveClassLoader.class.php	(revision 0)
 +++ skeleton/lang/archive/jar/JarArchiveClassLoader.class.php	(revision 0)
-@@ -0,0 +1,197 @@
+@@ -0,0 +1,194 @@
 +<?php
 +/* This class is part of the XP framework
 + * 
@@ -180,12 +180,11 @@ Index: skeleton/lang/archive/jar/JarArchiveClassLoader.class.php
 +     * @return  bool
 +     */
 +    public function providesPackage($package) {
-+      raise('lang.MethodNotImplementedException', __METHOD__);
 +      $acquired= JarArchiveStreamWrapper::acquire(urldecode(substr($this->archive, 6, -1)));
 +      $cmps= strtr($package, '.', '/').'/';
 +      $cmpl= strlen($cmps);
 +      
-+      foreach (array_keys($acquired['index']) as $e) {
++      foreach ($acquired['index'] as $e => $dummy) {
 +        if (strncmp($cmps, $e, $cmpl) === 0) return TRUE;
 +      }
 +      return FALSE;
@@ -216,14 +215,12 @@ Index: skeleton/lang/archive/jar/JarArchiveClassLoader.class.php
 +     * @return  string[] filenames
 +     */
 +    public function packageContents($package) {
-+      raise('lang.MethodNotImplementedException', __METHOD__);
-+      $contents= array();
-+      var_dump($this->archive);
 +      $acquired= JarArchiveStreamWrapper::acquire(urldecode(substr($this->archive, 6, -1)));
 +      $cmps= strtr($package, '.', '/');
 +      $cmpl= strlen($cmps);
 +      
-+      foreach (array_keys($acquired['index']) as $e) {
++      $contents= array();
++      foreach ($acquired['index'] as $e => $dummy) {
 +        if (strncmp($cmps, $e, $cmpl) != 0) continue;
 +        $entry= 0 != $cmpl ? substr($e, $cmpl+ 1) : $e;
 +        
@@ -259,7 +256,7 @@ Index: skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php
 ===================================================================
 --- skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php	(revision 0)
 +++ skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php	(revision 0)
-@@ -0,0 +1,167 @@
+@@ -0,0 +1,170 @@
 +<?php
 +/* This class is part of the XP framework
 + *
@@ -300,19 +297,14 @@ Index: skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php
 +    public static function acquire($archive) {
 +      if (!isset(self::$archives[$archive])) {
 +        $reader= ZipFile::open(new FileInputStream(new File($archive)));
-+        foreach ($reader->entries() as $entry) {
++        $index= array();
 +        
-+          if ($entry instanceof ZipDirEntry) continue;
-+          
-+          $is= $entry->getInputStream();
-+          $index[$entry->getName()]= array(
-+            'entry' => $entry,
-+            'data'  => $is->read($entry->getSize())
-+          );
++        foreach ($reader->entries() as $entry) {
++          $index[$entry->getName()]= $entry;
 +        }
 +        
 +        self::$archives[$archive]= array(
-+          'reader'  => $reader,
++          // 'reader'  => $reader,
 +          'index'   => $index,
 +        );
 +      }
@@ -337,7 +329,15 @@ Index: skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php
 +      $current= self::acquire($this->archive);
 +      if (!isset($current['index'][$this->filename])) return FALSE;
 +      
-+      $this->stream= new MemoryInputStream($current['index'][$this->filename]['data']);
++      // First, read all contents from stream into a buffer which
++      // then is stored in a MemoryInputStream; this is necessary, as the
++      // given inputstream is a InflatingInputStream, that is not seekable.
++      $is= $current['index'][$this->filename]->getInputStream();
++
++      $data= '';
++      while ($is->available()) { $data.= $is->read(); }
++
++      $this->stream= new MemoryInputStream($data);
 +      return TRUE;
 +    }
 +    
@@ -387,7 +387,7 @@ Index: skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php
 +    public function stream_stat() {
 +      $current= self::acquire($this->archive);
 +      return array(
-+        'size'  => $current['index'][$this->filename]['entry']->getSize()
++        'size'  => $current['index'][$this->filename]->getSize()
 +      );
 +    }
 +    
@@ -421,7 +421,7 @@ Index: skeleton/lang/archive/jar/JarArchiveStreamWrapper.class.php
 +      $current= self::acquire(urldecode($archive));
 +
 +      return isset($current['index'][$file]) 
-+        ? array('size' => $current['index'][$file]['entry']->getSize())
++        ? array('size' => $current['index'][$file]->getSize())
 +        : FALSE
 +      ;
 +    }
@@ -435,7 +435,7 @@ Added: svn:keywords
 
 Index: skeleton/io/File.class.php
 ===================================================================
---- skeleton/io/File.class.php	(revision 15268)
+--- skeleton/io/File.class.php	(revision 15275)
 +++ skeleton/io/File.class.php	(working copy)
 @@ -141,7 +141,7 @@
       * @throws  lang.IllegalArgumentException in case an invalid file name was given
