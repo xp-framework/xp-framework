@@ -57,6 +57,10 @@ Features
 - Enhanced the followRedirect() method of the unittest.web.WebTestCase class to
   handle the Refresh header too.
   (rledermueller)
+- followRedirect() will now throw an exception if no redirect target is found
+  (rledermueller)
+- navigateTo() from WebTestCase class will now use query parameters as an array instead of a string
+  (rledermueller)
 
 Version 5.8.0, released 2011-01-11
 ----------------------------------
