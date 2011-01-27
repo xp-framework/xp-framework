@@ -192,7 +192,7 @@
         $this->navigateTo($location);
 
       // redirect to refresh header
-      } elseif ($refresh= $this->response->getHeader('Refresh')) {
+      } else if ($refresh= $this->response->getHeader('Refresh')) {
         // the content of the refresh header in general looks like
         // "0;URL=http://foo.bar/baz"
         $this->navigateTo(substr($refresh, stripos($refresh, 'url=') + 4));
