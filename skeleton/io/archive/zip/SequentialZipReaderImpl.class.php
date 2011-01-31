@@ -32,8 +32,18 @@
      * @return  io.archive.zip.ZipEntry
      */
     public function nextEntry() {
-      $this->skip && $this->stream->read($this->skip);
+      $this->skip && $this->streamRead($this->skip);
       return $this->currentEntry();
+    }
+
+    /**
+     * Seeks a stream
+     *
+     * @param   int offset absolute offset
+     * @param   int whence
+     */
+    protected function streamSeek($offset, $whence) {
+      throw new IllegalArgumentException('Stream not seekable');
     }
   }
 ?>

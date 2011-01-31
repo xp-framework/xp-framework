@@ -14,6 +14,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Implemented extracting ZIP file entries after index iteration for 
+  seekable streams
+  (friebe)
 - Changed FileInputStream and FileOutputStream classes to only open files
   if not already open
   (friebe)
@@ -51,6 +54,13 @@ Features
 - Added function to follow redirects in web test cases and check http status codes and
   url base afterwards.
   (robert, ilankin)
+- Enhanced the followRedirect() method of the unittest.web.WebTestCase class to
+  handle the Refresh header too.
+  (rledermueller)
+- followRedirect() will now throw an exception if no redirect target is found
+  (rledermueller)
+- navigateTo() from WebTestCase class will now use query parameters as an array instead of a string
+  (rledermueller)
 
 Version 5.8.0, released 2011-01-11
 ----------------------------------

@@ -15,6 +15,7 @@
   class ZipFileInputStream extends Object implements InputStream {
     protected 
       $reader      = NULL,
+      $start       = 0,
       $pos         = 0,
       $length      = 0;
 
@@ -22,10 +23,12 @@
      * Constructor
      *
      * @param   io.archive.zip.AbstractZipReaderImpl reader
+     * @param   int start
      * @param   int length
      */
-    public function __construct(AbstractZipReaderImpl $reader, $length) {
+    public function __construct(AbstractZipReaderImpl $reader, $start, $length) {
       $this->reader= $reader;
+      $this->start= $start;
       $this->length= $length;
     }
 
@@ -36,7 +39,9 @@
      * @return  string
      */
     public function read($limit= 8192) {
-      if ($this->pos >= $this->length) {
+      if (0 === $this->pos) {
+        $this->reader->streamPosition($this->start);
+      } else if ($this->pos >= $this->length) {
         throw new IOException('EOF');
       }
       $chunk= $this->reader->streamRead(min($limit, $this->length- $this->pos));

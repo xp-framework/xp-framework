@@ -26,6 +26,7 @@
     protected $stream= NULL;
     protected $index= array();
     protected $password= NULL;
+    protected $position= 0;
 
     // Signatures
     const EOCD = "\x50\x4b\x05\x06";  // End-Of-Central-Directory
@@ -86,8 +87,31 @@
      * @return  string
      */
     public function streamRead($limit) {
-      return $this->stream->read($limit);
+      if (0 === $limit) return '';
+      $chunk= $this->stream->read($limit);
+      $this->position+= strlen($chunk);
+      return $chunk;
     }
+
+    /**
+     * Sets stream position 
+     *
+     * @param   int offset absolute offset
+     */
+    public function streamPosition($offset) {
+      if ($offset !== $this->position) {
+        $this->streamSeek($offset, SEEK_SET);
+        $this->position= $offset;
+      }
+    }
+
+    /**
+     * Seeks a stream
+     *
+     * @param   int offset absolute offset
+     * @param   int whence
+     */
+    protected abstract function streamSeek($offset, $whence);
 
     /**
      * Get first entry
@@ -109,19 +133,19 @@
      * @return  io.archive.zip.ZipEntry
      */
     public function currentEntry() {
-      $type= $this->stream->read(4);
+      $type= $this->streamRead(4);
       switch ($type) {
         case self::FHDR: {      // Entry
           $header= unpack(
             'vversion/vflags/vcompression/vtime/vdate/Vcrc/Vcompressed/Vuncompressed/vnamelen/vextralen', 
-            $this->stream->read(26)
+            $this->streamRead(26)
           );
           if (0 === $header['namelen']) {
           
             // Prevent 0-length read.
             $decoded= '';
           } else {
-            $name= (string)$this->stream->read($header['namelen']);
+            $name= (string)$this->streamRead($header['namelen']);
             
             // Decode name from zipfile. If we find general purpose flag bit 11 
             // (EFS), the name is encoded in UTF-8, if not, we try the following: 
@@ -136,7 +160,7 @@
               }
             }
           }
-          $extra= $this->stream->read($header['extralen']);
+          $extra= $this->streamRead($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
           $this->skip= $header['compressed'];
 
@@ -154,9 +178,9 @@
           // immediately following the compressed data.
           if ($header['flags'] & 8) {
             if (!isset($this->index[$name])) {
-              $position= $this->stream->tell();
+              $position= $this->position;
               $offset= $this->readCentralDirectory();
-              $this->stream->seek($position, SEEK_SET);
+              $this->streamPosition($position);
             }
             
             if (!isset($this->index[$name])) throw new FormatException('.zip archive broken: cannot find "'.$name.'" in central directory.');
@@ -172,7 +196,7 @@
             // * file header signature (4 bytes)
             // * file header (26 bytes)
             // * file extra + file name (variable size)
-            $this->stream->seek($header['offset']+ 30 + $header['extralen'] + $header['namelen'], SEEK_SET);
+            $this->streamPosition($header['offset']+ 30 + $header['extralen'] + $header['namelen']);
             
             // Set skip accordingly: 4 bytes data descriptor signature + 12 bytes data descriptor
             $this->skip= $header['compressed']+ 16;
@@ -191,9 +215,9 @@
             // Password matches.
             $this->skip-= 12; 
             $header['compressed']-= 12;
-            $is= new DecipheringInputStream(new ZipFileInputStream($this, $header['compressed']), $cipher);
+            $is= new DecipheringInputStream(new ZipFileInputStream($this, $this->position, $header['compressed']), $cipher);
           } else {
-            $is= new ZipFileInputStream($this, $header['compressed']);
+            $is= new ZipFileInputStream($this, $this->position, $header['compressed']);
           }
           
           // Create ZipEntry object and return it

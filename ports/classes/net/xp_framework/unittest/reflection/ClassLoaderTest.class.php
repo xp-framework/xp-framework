@@ -25,7 +25,7 @@
     protected
       $libraryLoader   = NULL,
       $brokenLoader    = NULL,
-      $containedLoader = NULL;  
+      $containedLoader = NULL;
       
     /**
      * Setup this test. Registeres class loaders deleates for the 
@@ -277,5 +277,38 @@
     public function newInstance__PHP_Incomplete_Class() {
       new XPClass(unserialize('O:12:"DoesNotExist":0:{}'));
     }
+    
+    /**
+     * Test archive delivers the correct contents
+     *
+     */
+    #[@test]
+    public function packageContents() {
+      $this->assertEquals(
+        array('net/', 'META-INF/', 'contained.xar'),
+        $this->libraryLoader->packageContents('')
+      );
+    }
+    
+    /**
+     * Test archive correctly detects delivered packages
+     *
+     */
+    #[@test]
+    public function providesPackage() {
+      $this->assertTrue($this->libraryLoader->providesPackage('net.xp_framework'));
+    }
+    
+    
+    /**
+     * Test archive checks full path for package names
+     *
+     */
+    #[@test]
+    public function doesNotProvideAPackage() {
+      $this->assertFalse($this->libraryLoader->providesPackage('net.xp_frame'));
+    }
+    
+    
   }
 ?>

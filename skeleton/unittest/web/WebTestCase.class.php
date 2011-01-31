@@ -107,7 +107,7 @@
       $request= $this->conn->create(new HttpRequest());
       $request->setMethod($method);
       $request->setParameters($params);
-      
+
       //set headers specified for this web test
       foreach ($this->persistentHeaders as $name => $value) {
        $request->setHeader($name, $value);
@@ -168,7 +168,8 @@
           $url->getHost(),
           -1 === $url->getPort(-1) ? '' : ':'.$url->getPort()
         ));
-        $this->beginAt($url->getPath(), $url->getQuery($params), $method);
+        $params ? $url->setParams($params) : '';
+        $this->beginAt($url->getPath(), $url->getParams(), $method);
       } else if ('' !== $target && '/' === $target{0}) {
         $this->beginAt($target, $params, $method);
       } else {
@@ -178,14 +179,28 @@
     }
 
     /**
-     * Follow redirect from location header
+     * Follow redirect from either the location or the refresh header.
+     * Ignoring the http-equiv meta tag "refresh"
      *
      * @param   int assertStatus
      * @param   string assertBase
      * @throws  unittest.AssertionFailedError
      */
     public function followRedirect($assertStatus= NULL, $assertBase= NULL) {
-      $this->navigateTo(this($this->response->header('Location'), 0));
+      // redirect to location header
+      if ($location= $this->response->getHeader('Location')) {
+        $this->navigateTo($location);
+
+      // redirect to refresh header
+      } else if ($refresh= $this->response->getHeader('Refresh')) {
+        // the content of the refresh header in general looks like
+        // "0;URL=http://foo.bar/baz"
+        $this->navigateTo(substr($refresh, stripos($refresh, 'url=') + 4));
+
+      // no redirect target set
+      } else {
+        $this->fail('No target for redirect found.', NULL, 'Http header "Location" or "Refresh"');
+      }
 
       if (NULL !== $assertStatus) {
         $this->assertStatus($assertStatus);
