@@ -9,6 +9,7 @@
   /**
    * Outputs XML to an output stream.
    *
+   * @test    xp://net.xp_framework.unittest.xml.io.XmlStreamWriterTest
    */
   class XmlStreamWriter extends xml·io·XmlWriter {
     protected $stack= array();
@@ -19,7 +20,7 @@
      *
      * @param   io.streams.OutputStream stream
      */
-    public function __construct($stream) {
+    public function __construct(OutputStream $stream) {
       $this->stream= $stream;
     }
   
