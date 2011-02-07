@@ -84,6 +84,7 @@
         protected function _response() {
           $res= parent::_response();
           $stylesheet= create(new Stylesheet())
+            ->withEncoding("iso-8859-1")
             ->withOutputMethod("xml")
             ->withTemplate(create(new XslTemplate())->matching("/")
               ->withChild(create(new Node("h1"))

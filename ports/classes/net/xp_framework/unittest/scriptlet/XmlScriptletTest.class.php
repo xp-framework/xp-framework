@@ -94,6 +94,7 @@
     public function doGet() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate(create(new XslTemplate())->matching('/')
           ->withChild(create(new Node('html'))
@@ -189,6 +190,7 @@
     public function doPost() {
       $req= $this->newRequest('POST', new URL('http://localhost/'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate(create(new XslTemplate())->matching('/')
           ->withChild(create(new Node('html'))
@@ -243,6 +245,7 @@
     public function requestParametersAppearInFormresult() {
       $req= $this->newRequest('GET', new URL('http://localhost/?a=b&b=c'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate(create(new XslTemplate())->matching('/')
           ->withChild(create(new Node('html'))
@@ -278,6 +281,7 @@
     public function requestArrayParametersAppearInFormresult() {
       $req= $this->newRequest('GET', new URL('http://localhost/?a[]=b&a[]=c'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate(create(new XslTemplate())->matching('/')
           ->withChild(create(new Node('html'))
@@ -313,6 +317,7 @@
     public function defaultParameters() {
       $req= $this->newRequest('GET', new URL('http://localhost/'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate($this->dumpParamsTemplate())
       );
@@ -335,6 +340,7 @@
     public function homeState() {
       $req= $this->newRequest('GET', new URL('http://localhost/xml/home'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate($this->dumpParamsTemplate())
       );
@@ -357,6 +363,7 @@
     public function productAndLanguage() {
       $req= $this->newRequest('GET', new URL('http://localhost/xml/public.de_DE/home'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate($this->dumpParamsTemplate())
       );
@@ -379,6 +386,7 @@
     public function query() {
       $req= $this->newRequest('GET', new URL('http://localhost/?a=b'));
       $res= $this->newResponse(create(new Stylesheet())
+        ->withEncoding('iso-8859-1')
         ->withOutputMethod('xml')
         ->withTemplate($this->dumpParamsTemplate())
       );
