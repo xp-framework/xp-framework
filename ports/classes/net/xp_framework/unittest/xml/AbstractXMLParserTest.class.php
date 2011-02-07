@@ -426,7 +426,7 @@
 
       $this->assertEquals(array(
         'doc', array(), array(
-          '©', '2001-2009 the XP team'
+          'Â©', '2001-2009 the XP team'
         )
       ), $callback->tree);
     }
