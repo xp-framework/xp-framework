@@ -10,7 +10,7 @@
    *
    * The XML document will look somewhat like this:
    * <xmp>
-   *   <?xml version="1.0" encoding="iso-8859-1"?>
+   *   <?xml version="1.0" encoding="utf-8"?>
    *   <formresult                                                  
    *    serial="1034524928"                                         
    *    xmlns:xsd="http://www.w3.org/2001/XMLSchema"                
