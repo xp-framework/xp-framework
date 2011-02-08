@@ -72,7 +72,7 @@
      */
     #[@test]
     public function stringWithUmlauts() {
-      $this->assertEquals('H�llo', $this->decode('<string>Hällo</string>'));
+      $this->assertEquals('Hällo', $this->decode('<string>Hällo</string>'));
     }
 
     /**
