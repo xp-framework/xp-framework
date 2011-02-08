@@ -5,7 +5,7 @@
  */
 
   uses(
-    'unittest.TestCase',
+    'net.xp_framework.unittest.scriptlet.rpc.MockedRpcRouterTest',
     'net.xp_framework.unittest.scriptlet.rpc.mock.XmlRpcRouterMock'
   );
 
@@ -15,7 +15,7 @@
    * @see      xp://webservices.xmlrpc.rpc.XmlRpcRouter
    * @purpose  Testcase
    */
-  class XmlRpcRouterTest extends TestCase {
+  class XmlRpcRouterTest extends MockedRpcRouterTest {
     protected
       $router = NULL;
 
@@ -43,7 +43,7 @@
       $this->router->init();
       $response= $this->router->process();
       $this->assertEquals(200, $response->statusCode);
-      $this->assertTrue(in_array('Content-type: text/xml; charset=iso-8859-1', $response->headers));
+      $this->assertHasHeader($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
       
       $msg= XmlRpcResponseMessage::fromString($response->getContent());
       $this->assertEquals('net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler', $msg->getData());
@@ -192,7 +192,7 @@
       
       $this->router->init();
       $response= $this->router->process();
-      $this->assertTrue(in_array('Content-type: text/xml; charset=iso-8859-1', $response->headers));
+      $this->assertHasHeader($response->headers, 'Content-type: text/xml; charset=iso-8859-1');
       $this->assertEquals(200, $response->statusCode);
       
       $msg= XmlRpcResponseMessage::fromString($response->getContent());

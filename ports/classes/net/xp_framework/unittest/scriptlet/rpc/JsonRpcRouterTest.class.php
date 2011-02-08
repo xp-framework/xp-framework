@@ -5,7 +5,7 @@
  */
 
   uses(
-    'unittest.TestCase',
+    'net.xp_framework.unittest.scriptlet.rpc.MockedRpcRouterTest',
     'net.xp_framework.unittest.scriptlet.rpc.mock.JsonRpcRouterMock',
     'webservices.json.JsonFactory'
   );
@@ -16,7 +16,7 @@
    * @see      xp://webservices.json.rpc.JsonRpcRouter
    * @purpose  Testcase
    */
-  class JsonRpcRouterTest extends TestCase {
+  class JsonRpcRouterTest extends MockedRpcRouterTest {
     protected
       $router = NULL;
       
@@ -44,7 +44,7 @@
         '{ "result" : "net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler" , "error" : null , "id" : 1 }',
         $response->getContent()
       );
-      $this->assertTrue(in_array('Content-type: application/json; charset=UTF-8', $response->headers));
+      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=UTF-8');
     }
     
     /**
@@ -137,17 +137,18 @@
      * Test
      *
      */
-    #[@test]
+    #[@test, @ignore('Not forward compatible w/ unicode branch')]
     public function multipleParameters() {
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.checkMultipleParameters", "params" : [ "Lalala", 1, [ 12, "Egypt", false, -31 ], { "lowerBound" : 18, "upperBound" : 139 } ], "id" : 12 }');
       $this->router->init();
       $response= $this->router->process();
-      $this->assertTrue(in_array('Content-type: application/json; charset=UTF-8', $response->headers));
+
+      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=UTF-8');
       $this->assertEquals(200, $response->statusCode);
       
       $msg= JsonResponseMessage::fromString($response->getContent());
       $data= $msg->getData();
-      $this->assertEquals('Lalala', $data[0]);
+      $this->assertEquals('Lalala', (string)$data[0]);
       $this->assertEquals(1, $data[1]);
       $this->assertEquals(array(12, 'Egypt', FALSE, -31), $data[2]);
       $this->assertEquals(array('lowerBound' => 18, 'upperBound' => 139), $data[3]);
