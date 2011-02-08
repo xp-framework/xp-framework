@@ -6,7 +6,7 @@
 
   uses(
     'webservices.soap.xp.XPSoapMessage',
-    'unittest.TestCase',
+    'net.xp_framework.unittest.scriptlet.rpc.MockedRpcRouterTest',
     'net.xp_framework.unittest.scriptlet.rpc.mock.SoapRpcRouterMock'
   );
 
@@ -16,7 +16,7 @@
    * @see      xp://webservices.soap.rpc.SoapRpcRouter
    * @purpose  Testcase
    */
-  class SoapRpcRouterTest extends TestCase {
+  class SoapRpcRouterTest extends MockedRpcRouterTest {
     protected
       $router = NULL;
 
@@ -57,7 +57,7 @@
       $this->router->init();
       $response= $this->router->process();
       $this->assertEquals(200, $response->statusCode);
-      $this->assertTrue(in_array('Content-type: text/xml; charset=iso-8859-1', $response->headers));
+      $this->assertHasHeader($response->headers, 'Content-type: text/xml');
     }
 
     /**
@@ -229,6 +229,7 @@
       // The executed method throws an error, if the string is wrong and this
       // will be indicated by a different statuscode than 200
       $this->assertEquals(200, $response->statusCode);
+      $this->assertHasHeader($response->headers, 'Content-type: text/xml');
     }
     
     
@@ -268,6 +269,12 @@
       // The executed method throws an error, if the string is wrong and this
       // will be indicated by a different statuscode than 200
       $this->assertEquals(200, $response->statusCode);
+      
+      // $this->assertHasHeader($response->headers, 'Content-type: text/xml; charset=utf-8');
+      $this->assertStringContained(
+        new String('Störung in Düsseldorf', 'iso-8859-1'),
+        new String($response->getContent(), 'iso-8859-1')
+      );
     }
   }
 ?>

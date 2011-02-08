@@ -5,7 +5,7 @@
  */
 
   uses(
-    'unittest.TestCase',
+    'net.xp_framework.unittest.scriptlet.rpc.MockedRpcRouterTest',
     'net.xp_framework.unittest.scriptlet.rpc.mock.JsonRpcRouterMock',
     'webservices.json.JsonFactory'
   );
@@ -16,7 +16,7 @@
    * @see      xp://webservices.json.rpc.JsonRpcRouter
    * @purpose  Testcase
    */
-  class JsonRpcRouterTest extends TestCase {
+  class JsonRpcRouterTest extends MockedRpcRouterTest {
     protected
       $router = NULL;
       
@@ -44,7 +44,7 @@
         '{ "result" : "net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler" , "error" : null , "id" : 1 }',
         $response->getContent()
       );
-      $this->assertTrue(in_array('Content-type: application/json; charset=UTF-8', $response->headers));
+      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=UTF-8');
     }
     
     /**
@@ -142,7 +142,8 @@
       $this->router->setMockData('{ "method" : "DummyRpcImplementation.checkMultipleParameters", "params" : [ "Lalala", 1, [ 12, "Egypt", false, -31 ], { "lowerBound" : 18, "upperBound" : 139 } ], "id" : 12 }');
       $this->router->init();
       $response= $this->router->process();
-      $this->assertTrue(in_array('Content-type: application/json; charset=UTF-8', $response->headers));
+
+      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=UTF-8');
       $this->assertEquals(200, $response->statusCode);
       
       $msg= JsonResponseMessage::fromString($response->getContent());

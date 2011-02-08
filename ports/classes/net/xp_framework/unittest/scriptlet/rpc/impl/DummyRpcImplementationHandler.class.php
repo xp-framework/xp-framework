@@ -88,6 +88,8 @@
       if ('Störung in Düsseldorf' !== $string) {
         throw new IllegalArgumentException('Invalid encoding: "'.$string.'"');
       }
+      
+      return $string;
     }
   }
 ?>
