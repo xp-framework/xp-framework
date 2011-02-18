@@ -104,11 +104,12 @@ WPDyiSAwwKIzRnlGBb+eJGQX2ZDyvPg7
     /**
      * Test
      *
+     * @see    http://www.cilogon.org/openssl1 Hashing changed in OpenSSL 1.0.0
      */
     #[@test]
     public function hashMethod() {
       $this->assertEquals(
-        'f2473bfa', 
+        OPENSSL_VERSION_NUMBER < 0x10000000 ? 'f2473bfa' : '2f76c690', 
         $this->fixture->getHash(), 
         'hash'
       );
