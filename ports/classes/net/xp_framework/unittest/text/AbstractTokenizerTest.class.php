@@ -261,5 +261,25 @@
       $this->assertEquals('7', $t->nextToken(), 'Should yield token pushed back');
       $this->assertFalse($t->hasMoreTokens(), 'Should be at end again');
     }
+
+    /**
+     * Test performance
+     *
+     */
+    #[@test, @ignore('Remove ignore annotation to test performance')]
+    public function performance() {
+    
+      // Create a string with 10000 tokens
+      $input= '';
+      for ($i= 0; $i < 10000; $i++) {
+        $input.= str_repeat('*', rand(0, 76))."\n";
+      }
+      
+      // Tokenize it
+      $t= $this->tokenizerInstance($input, "\n", FALSE);
+      while ($t->hasMoreTokens()) {
+        $token= $t->nextToken();
+      }
+    }
   }
 ?>
