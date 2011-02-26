@@ -256,17 +256,28 @@
           self::printClass($class);
         }
         return 0;
-      } else if ($cl->providesPackage($args[0])) {
+      }
+     
+      // Not a class, check for packages
+      $provided= FALSE;
+      foreach ($cl->getLoaders() as $loader) {
+        if (!$loader->providesPackage($args[0])) continue;
+        Console::writeLine('@', $loader);
+        $provided= TRUE;
+      }
+      
+      if ($provided) {
         self::printPackage(Package::forName($args[0]));
         return 0;
-      } else {
-        Console::$err->writeLine('*** Failed to locate either a class or a package named "', $args[0], '", tried all of {');
-        foreach ($cl->getLoaders() as $loader) {
-          Console::$err->writeLine('  ', $loader);
-        }
-        Console::$err->writeLine('}');
-        return 1;
       }
+      
+      // Not found
+      Console::$err->writeLine('*** Failed to locate either a class or a package named "', $args[0], '", tried all of {');
+      foreach ($cl->getLoaders() as $loader) {
+        Console::$err->writeLine('  ', $loader);
+      }
+      Console::$err->writeLine('}');
+      return 1;
     }
   }
 ?>
