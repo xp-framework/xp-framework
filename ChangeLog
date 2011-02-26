@@ -27,6 +27,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Improved text.StringTokenizer and text.StreamTokenizer performance
+  (friebe)
 - Added support for multi-line strings inside .ini files
   (gghigea)
 - Added userland MySQL implementation in case neither "mysql" nor 
