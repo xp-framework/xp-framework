@@ -26,7 +26,8 @@
       $_stack = array(),
       $_buf   = '',
       $_src   = NULL,
-      $_ofs   = 0;
+      $_ofs   = 0,
+      $_len   = 0;
 
     /**
      * Reset this tokenizer
