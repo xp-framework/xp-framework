@@ -6,7 +6,7 @@ $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 @created: Wed Nov 24 08:08:26     2010
 @status: draft
 @category: <core>
-@target: 5.8
+@target: 5.8.1
 
 Scope of Change
 ---------------
@@ -28,12 +28,13 @@ exception class.
 
 Functionality
 -------------
-+ Move code from lang.ChainedException into lang.Throwable
-+ Make lang.ChainedException be empty
-+ Deprecate lang.ChainedException for XP 5.9
+* Move code from lang.ChainedException into lang.Throwable
+* Make lang.ChainedException be empty
+* Deprecate lang.ChainedException for XP 5.9
 
 Security considerations
 -----------------------
+n/a
 
 Speed impact
 ------------
