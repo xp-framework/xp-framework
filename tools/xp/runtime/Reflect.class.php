@@ -206,21 +206,26 @@
         'class'     => array()
       );
       foreach ($package->getClasses() as $class) {
+        $mod= $class->getModifiers();
         if ($class->isInterface()) {
-          $order['interface'][]= self::displayNameOf($class);
+          $type= 'interface';
+          $mod= $mod ^ MODIFIER_ABSTRACT;
         } else if ($class->isEnum()) {
-          $order['enum'][]= self::displayNameOf($class);;
+          $type= 'enum';
         } else {
-          $order['class'][]= self::displayNameOf($class);;
+          $type= 'class';
         }
+        
+        $name= self::displayNameOf($class);
+        $order[$type][]= implode(' ', Modifiers::namesOf($mod)).' '.$type.' '.self::displayNameOf($class);
       }
       foreach ($order as $type => $classes) {
         if (empty($classes)) continue;
 
         Console::writeLine();
         sort($classes);
-        foreach ($classes as $class) {
-          Console::writeLine('  ', $type, ' ', $class);
+        foreach ($classes as $name) {
+          Console::writeLine('  ', $name);
         }
       }
 
