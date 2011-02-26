@@ -25,9 +25,7 @@
     protected
       $_stack = array(),
       $_buf   = '',
-      $_src   = NULL,
-      $_ofs   = 0,
-      $_len   = 0;
+      $_src   = NULL;
 
     /**
      * Reset this tokenizer
@@ -46,9 +44,7 @@
         }
       }
       $this->_src= $this->source;
-      $this->_buf= $this->_src->read();
-      $this->_ofs= 0;
-      $this->_len= strlen($this->_buf);
+      $this->_buf= '';
     }
     
     /**
@@ -57,7 +53,7 @@
      * @return  bool more tokens
      */
     public function hasMoreTokens() {
-      return (!empty($this->_stack) || $this->_ofs < $this->_len);
+      return !(empty($this->_stack) && FALSE === $this->_buf);
     }
     
     /**
@@ -66,12 +62,7 @@
      * @param   string str
      */
     public function pushBack($str) {
-      $this->_buf= (
-        substr($this->_buf, 0, $this->_ofs).
-        $str.implode('', $this->_stack).
-        substr($this->_buf, $this->_ofs)
-      );
-      $this->_len= strlen($this->_buf);
+      $this->_buf= $str.implode('', $this->_stack).$this->_buf;
       $this->_stack= array();
     }
     
@@ -87,17 +78,16 @@
         // Read until we have either find a delimiter or until we have 
         // consumed the entire content.
         do {
-          $offset= strcspn($this->_buf, $delimiters ? $delimiters : $this->delimiters, $this->_ofs);
-          if ($offset != $this->_len) break;
+          $offset= strcspn($this->_buf, $delimiters ? $delimiters : $this->delimiters);
+          if ($offset < strlen($this->_buf)- 1 || !$this->_src->available()) break;
           $this->_buf.= $this->_src->read();
-          $this->_len= strlen($this->_buf);
-        } while ($this->_src->available());
+        } while (TRUE);
 
-        if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->_buf, $this->_ofs, $offset);
-        if ($this->returnDelims && $this->_ofs + $offset < $this->_len) {
-          $this->_stack[]= $this->_buf{$this->_ofs + $offset};
+        if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->_buf, 0, $offset);
+        if ($this->returnDelims && $offset < strlen($this->_buf)) {
+          $this->_stack[]= $this->_buf{$offset};
         }
-        $this->_ofs+= $offset+ 1;
+        $this->_buf= substr($this->_buf, $offset+ 1);
       }
       
       return array_shift($this->_stack);
