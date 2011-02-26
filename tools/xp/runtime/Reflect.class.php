@@ -16,16 +16,17 @@
   class xp·runtime·Reflect extends Object {
   
     /**
-     * Prints class name (and generic components if this class is a 
+     * Gets class name (and generic components if this class is a 
      * generic definition)
      *
      * @param   lang.XPClass class
+     * @return  string
      */
-    protected static function printName(XPClass $class) {
-      Console::write($class->getName());
-      if ($class->isGenericDefinition()) {
-        Console::write('<', implode(', ', $class->genericComponents()), '>');
-      }
+    protected static function displayNameOf(XPClass $class) {
+      return $class->getName().($class->isGenericDefinition()
+        ? '<'.implode(', ', $class->genericComponents()).'>'
+        : ''
+      );
     }
   
     /**
@@ -57,13 +58,11 @@
      */
     protected static function printEnum(XPClass $enum) {
       Console::write(implode(' ', Modifiers::namesOf($enum->getModifiers())));
-      Console::write(' enum ');
-      self::printName($enum);
+      Console::write(' enum ', self::displayNameOf($enum));
 
       // Parent class, if not lang.Enum
       if (!XPClass::forName('lang.Enum')->equals($parent= $enum->getParentClass())) {
-        Console::write(' extends ');
-        self::printName($parent);
+        Console::write(' extends ', self::displayNameOf($parent));
       }
 
       // Interfaces
@@ -71,7 +70,7 @@
         Console::write(' implements ');
         $s= sizeof($interfaces)- 1;
         foreach ($interfaces as $i => $iface) {
-          self::printName($iface);
+          Console::write(self::displayNameOf($iface));
           $i < $s && Console::write(', ');
         }
       }
@@ -108,15 +107,14 @@
      */
     protected static function printInterface(XPClass $iface) {
       Console::write(implode(' ', Modifiers::namesOf($iface->getModifiers() ^ MODIFIER_ABSTRACT)));
-      Console::write(' interface ');
-      self::printName($iface);
+      Console::write(' interface ', self::displayNameOf($iface));
 
       // Interfaces are this interface's parents
       if ($interfaces= $iface->getDeclaredInterfaces()) {
         Console::write(' extends ');
         $s= sizeof($interfaces)- 1;
         foreach ($interfaces as $i => $parent) {
-          self::printName($parent);
+          Console::write(self::displayNameOf($parent));
           $i < $s && Console::write(', ');
         }
       }
@@ -152,18 +150,16 @@
      */
     protected static function printClass(XPClass $class) {
       Console::write(implode(' ', Modifiers::namesOf($class->getModifiers())));
-      Console::write(' class ');
-      self::printName($class);
+      Console::write(' class ', self::displayNameOf($class));
       
       if ($parent= $class->getParentClass()) {
-        Console::write(' extends ');
-        self::printName($parent);
+        Console::write(' extends ', self::displayNameOf($parent));
       }
       if ($interfaces= $class->getDeclaredInterfaces()) {
         Console::write(' implements ');
         $s= sizeof($interfaces)- 1;
         foreach ($interfaces as $i => $iface) {
-          self::printName($iface);
+          Console::write(self::displayNameOf($iface));
           $i < $s && Console::write(', ');
         }
       }
@@ -191,29 +187,80 @@
     }
 
     /**
+     * Prints package
+     *
+     * @param   lang.reflect.Package package
+     */
+    protected static function printPackage($package) {
+      Console::writeLine('package ', $package->getName(), ' {');
+
+      // Child packages
+      foreach ($package->getPackages() as $child) {
+        Console::writeLine('  package ', $child->getName());
+      }
+      
+      // Classes
+      $order= array(
+        'interface' => array(),
+        'enum'      => array(),
+        'class'     => array()
+      );
+      foreach ($package->getClasses() as $class) {
+        if ($class->isInterface()) {
+          $order['interface'][]= self::displayNameOf($class);
+        } else if ($class->isEnum()) {
+          $order['enum'][]= self::displayNameOf($class);;
+        } else {
+          $order['class'][]= self::displayNameOf($class);;
+        }
+      }
+      foreach ($order as $type => $classes) {
+        if (empty($classes)) continue;
+
+        Console::writeLine();
+        sort($classes);
+        foreach ($classes as $class) {
+          Console::writeLine('  ', $type, ' ', $class);
+        }
+      }
+
+      Console::writeLine('}');
+    }
+
+    /**
      * Main
      *
      * @param   string[] args
      */
     public static function main(array $args) {
-      try {
-        $class= XPClass::forName($args[0]);
-      } catch (ClassNotFoundException $e) {
-        Console::$err->writeLine('*** ', $e->getMessage(), ', tried all of {');
-        foreach ($e->getLoaders() as $loader) {
+      if (sizeof($args) < 1 || '' == $args[0]) {
+        Console::$err->writeLine('*** No class or package name given');
+        return 2;
+      }
+      
+      // Check whether a class or a package is given
+      $cl= ClassLoader::getDefault();
+      if ($cl->providesClass($args[0])) {
+        $class= XPClass::forName($args[0], $cl);
+        Console::writeLine('@', $class->getClassLoader());
+        if ($class->isInterface()) {
+          self::printInterface($class);
+        } else if ($class->isEnum()) {
+          self::printEnum($class);
+        } else {
+          self::printClass($class);
+        }
+        return 0;
+      } else if ($cl->providesPackage($args[0])) {
+        self::printPackage(Package::forName($args[0]));
+        return 0;
+      } else {
+        Console::$err->writeLine('*** Failed to locate either a class or a package named "', $args[0], '", tried all of {');
+        foreach ($cl->getLoaders() as $loader) {
           Console::$err->writeLine('  ', $loader);
         }
         Console::$err->writeLine('}');
-        exit(1);
-      }
-      
-      Console::writeLine('@', $class->getClassLoader());
-      if ($class->isInterface()) {
-        self::printInterface($class);
-      } else if ($class->isEnum()) {
-        self::printEnum($class);
-      } else {
-        self::printClass($class);
+        return 1;
       }
     }
   }

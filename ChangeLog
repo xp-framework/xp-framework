@@ -27,6 +27,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Extended command line reflection to also accept package names
+  (friebe)
 - Improved text.StringTokenizer and text.StreamTokenizer performance
   (friebe)
 - Added support for multi-line strings inside .ini files
