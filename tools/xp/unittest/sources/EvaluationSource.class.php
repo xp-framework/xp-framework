@@ -32,14 +32,13 @@
     }
 
     /**
-     * Get all test classes
+     * Get all test cases
      *
-     * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
+     * @param   var[] arguments
+     * @return  unittest.TestCase[]
      */
-    public function testClasses() {
-      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
-      $tests->put($this->testClass, new ArrayList());
-      return $tests;
+    public function testCasesWith($arguments) {
+      return array($this->testClass->newInstance('run'));
     }
 
     /**

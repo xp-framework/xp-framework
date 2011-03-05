@@ -47,6 +47,7 @@
    *   <li>{package.name}.**: All classes inside a given package and all subpackages</li>
    *   <li>{Test}.class.php: A class file</li>
    *   <li>{test.class.Name}: A fully qualified class name</li>
+   *   <li>{test.class.Name}::{testName}: A fully qualified class name and a test name</li>
    *   <li>-e {test method sourcecode}: Evaluate source</li>
    * </ul>
    *
@@ -185,6 +186,8 @@
             $sources->add(new PackageSource(Package::forName(substr($args[$i], 0, -3)), TRUE));
           } else if (strstr($args[$i], '.*')) {
             $sources->add(new PackageSource(Package::forName(substr($args[$i], 0, -2))));
+          } else if (FALSE !== ($p= strpos($args[$i], '::'))) {
+            $sources->add(new ClassSource(XPClass::forName(substr($args[$i], 0, $p)), substr($args[$i], $p+ 2)));
           } else {
             $sources->add(new ClassSource(XPClass::forName($args[$i])));
           }
@@ -208,18 +211,22 @@
       // Add test classes
       foreach ($sources as $source) {
         $verbose && $this->out->writeLine('===> Adding test classes from ', $source);
-        $classes= $source->testClasses();
-        foreach ($classes->keys() as $class) {
-          try {
-            $suite->addTestClass($class, $arguments ? $arguments : $classes[$class]->values);
-          } catch (NoSuchElementException $e) {
-            $this->err->writeLine('*** Warning: ', $e->getMessage());
-            continue;
-          } catch (IllegalArgumentException $e) {
-            $this->err->writeLine('*** Error: ', $e->getMessage());
-            return 1;
+        try {
+          $tests= $source->testCasesWith($arguments);
+          foreach ($tests as $test) {
+            $suite->addTest($test);
           }
+        } catch (NoSuchElementException $e) {
+          $this->err->writeLine('*** Warning: ', $e->getMessage());
+          continue;
+        } catch (IllegalArgumentException $e) {
+          $this->err->writeLine('*** Error: ', $e->getMessage());
+          return 1;
+        } catch (MethodNotImplementedException $e) {
+          $this->err->writeLine('*** Error: ', $e->getMessage(), ': ', $e->method, '()');
+          return 1;
         }
+        
       }
       
       // Run it!

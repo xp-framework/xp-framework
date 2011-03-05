@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('xp.unittest.sources.AbstractSource', 'io.File');
+  uses('xp.unittest.sources.AbstractSource');
 
   /**
    * Source that load tests from a class filename
@@ -12,27 +12,35 @@
    * @purpose  Source implementation
    */
   class ClassSource extends xp·unittest·sources·AbstractSource {
-    protected
-      $testClass= NULL;
+    protected $testClass= NULL;
+    protected $method= NULL;
     
     /**
      * Constructor
      *
      * @param   lang.XPClass testClass
+     * @param   string method default NULL
      */
-    public function __construct(XPClass $testClass) {
+    public function __construct(XPClass $testClass, $method= NULL) {
       $this->testClass= $testClass;
+      $this->method= $method;
     }
 
     /**
-     * Get all test classes
+     * Get all test cases
      *
-     * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
+     * @param   var[] arguments
+     * @return  unittest.TestCase[]
      */
-    public function testClasses() {
-      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
-      $tests->put($this->testClass, new ArrayList());
-      return $tests;
+    public function testCasesWith($arguments) {
+      if (NULL === $this->method) {
+        return $this->testCasesInClass($this->testClass, $arguments);
+      }
+      
+      return array($this->testClass->getConstructor()->newInstance(array_merge(
+        (array)$this->method, 
+        (array)$arguments
+      )));
     }
 
     /**
