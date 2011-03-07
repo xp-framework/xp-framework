@@ -11,13 +11,18 @@
    *
    * @see      xp://lang.Error
    * @see      xp://lang.XPException
+   * @see      http://mindprod.com/jgloss/chainedexceptions.html
+   * @see      http://www.jguru.com/faq/view.jsp?EID=1026405  
    * @test     xp://net.xp_framework.unittest.core.ExceptionsTest
+   * @test     xp://net.xp_framework.unittest.core.ChainedExceptionTest
    * @purpose  Base class
    */
   class Throwable extends Exception implements Generic {
     public
       $__id;
+
     public 
+      $cause    = NULL,
       $message  = '',
       $trace    = array();
     
@@ -45,10 +50,29 @@
      *
      * @param   string message
      */
-    public function __construct($message) {
+    public function __construct($message, $cause= NULL) {
       $this->__id= microtime();
       $this->message= is_string($message) ? $message : xp::stringOf($message);
+      $this->cause= $cause;
       $this->fillInStackTrace();
+    }
+
+    /**
+     * Set cause
+     *
+     * @param   lang.Throwable cause
+     */
+    public function setCause($cause) {
+      $this->cause= $cause;
+    }
+
+    /**
+     * Get cause
+     *
+     * @return  lang.Throwable
+     */
+    public function getCause() {
+      return $this->cause;
     }
     
     /**
@@ -183,9 +207,35 @@
      */
     public function toString() {
       $s= $this->compoundMessage()."\n";
-      for ($i= 0, $t= sizeof($this->trace); $i < $t; $i++) {
-        $s.= $this->trace[$i]->toString(); 
+      $tt= $this->getStackTrace();
+      $t= sizeof($tt);
+      for ($i= 0; $i < $t; $i++) {
+        $s.= $tt[$i]->toString(); 
       }
+      if (!$this->cause) return $s;
+      
+      $loop= $this->cause;
+      while ($loop) {
+
+        // String of cause
+        $s.= 'Caused by '.$loop->compoundMessage()."\n";
+
+        // Find common stack trace elements
+        $lt= $loop->getStackTrace();
+        for ($ct= $cc= sizeof($lt)- 1, $t= sizeof($tt)- 1; $ct > 0 && $cc > 0 && $t > 0; $cc--, $t--) {
+          if (!$lt[$cc]->equals($tt[$t])) break;
+        }
+
+        // Output uncommon elements only and one line how many common elements exist!
+        for ($i= 0; $i < $cc; $i++) {
+          $s.= xp::stringOf($lt[$i]); 
+        }
+        if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
+        
+        $loop= $loop instanceof ChainedException ? $loop->cause : NULL;
+        $tt= $lt;
+      }
+      
       return $s;
     }
 

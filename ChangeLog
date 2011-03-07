@@ -12,6 +12,11 @@ Heads up!
   http://news.planet-xp.net/article/404/2011/01/16/
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0205 - All exceptions can be chained optionally
+  (friebe)
+  
 Bugfixes
 ~~~~~~~~
 - Fixed util.collections classes to work correctly when arrays or maps
