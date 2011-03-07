@@ -69,6 +69,42 @@
      *
      */
     #[@test]
+    public function mapIsNotAnIntArray() {
+      $this->assertFalse(is('int[]', array('one' => 1, 'two' => 2)));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function intIsNotAnIntArray() {
+      $this->assertFalse(is('int[]', 1));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function thisIsNotAnIntArray() {
+      $this->assertFalse(is('int[]', $this));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function emptyArrayIsAnIntArray() {
+      $this->assertTrue(is('int[]', array()));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
     public function objectArray() {
       $this->assertTrue(is('lang.Object[]', array(new Object(), new Object(), new Object())));
     }
@@ -98,6 +134,42 @@
     #[@test]
     public function intMap() {
       $this->assertTrue(is('[:int]', array('greet' => 1, 'whom' => 2)));
+    }
+
+    /**
+     * Tests the is() core function with [:]
+     *
+     */
+    #[@test]
+    public function intArrayIsNotAnIntMap() {
+      $this->assertFalse(is('[:int]', array(1, 2)));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function intIsNotAnIntMap() {
+      $this->assertFalse(is('[:int]', 1));
+    }
+
+    /**
+     * Tests the is() core function with []
+     *
+     */
+    #[@test]
+    public function thisIsNotAnIntMap() {
+      $this->assertFalse(is('[:int]', $this));
+    }
+
+    /**
+     * Tests the is() core function with [:]
+     *
+     */
+    #[@test]
+    public function emptyArrayIsAnIntMap() {
+      $this->assertTrue(is('[:int]', array()));
     }
 
     /**

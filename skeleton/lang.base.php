@@ -490,12 +490,14 @@
     } else if ('var' === $type) {
       return TRUE;
     } else if ('[]' === substr($type, -2)) {
+      if (!is_array($object) || (!empty($object) && !is_int(key($object)))) return FALSE;
       $type= substr($type, 0, -2);
       foreach ($object as $element) {
         if (!is($type, $element)) return FALSE;
       }
       return TRUE;
     } else if ('[:' === substr($type, 0, 2)) {
+      if (!is_array($object) || (!empty($object) && !is_string(key($object)))) return FALSE;
       $type= substr($type, 2, -1);
       foreach ($object as $element) {
         if (!is($type, $element)) return FALSE;
