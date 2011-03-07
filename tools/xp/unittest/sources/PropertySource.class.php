@@ -26,23 +26,22 @@
     }
 
     /**
-     * Get all test classes
+     * Get all test cases
      *
-     * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
+     * @param   var[] arguments
+     * @return  unittest.TestCase[]
      */
-    public function testClasses() {
-      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
+    public function testCasesWith($arguments) {
+      $r= array();
       $section= $this->prop->getFirstSection();
       do {
         if ('this' == $section) continue;   // Ignore special section
-
-        $tests->put(
+        $r= array_merge($r, $this->testCasesInClass(
           XPClass::forName($this->prop->readString($section, 'class')),
-          ArrayList::newInstance($this->prop->readArray($section, 'args'))
-        );
+          $arguments ? $arguments : $this->prop->readArray($section, 'args')
+        ));
       } while ($section= $this->prop->getNextSection());
-      
-      return $tests;
+      return $r;
     }
 
     /**

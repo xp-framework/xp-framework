@@ -237,5 +237,39 @@
       $this->assertEquals('', $this->err->getBytes());
       $this->assertOnStream($this->out, 'FAIL: 1/1 run (0 skipped), 0 succeeded, 1 failed');
     }
+
+    /**
+     * Test running a single test
+     *
+     */
+    #[@test]
+    public function runSingleTest() {
+      $command= newinstance('unittest.TestCase', array('succeeds'), '{
+        #[@test]
+        public function succeeds() {
+          $this->assertTrue(TRUE);
+        }
+      }');
+      $return= $this->runner->run(array($command->getClassName().'::succeeds'));
+      $this->assertEquals(0, $return);
+      $this->assertEquals('', $this->err->getBytes());
+    }
+
+    /**
+     * Test running a single test
+     *
+     */
+    #[@test]
+    public function runSingleTestWrongSpec() {
+      $command= newinstance('unittest.TestCase', array('succeeds'), '{
+        #[@test]
+        public function succeeds() {
+          $this->assertTrue(TRUE);
+        }
+      }');
+      $return= $this->runner->run(array($command->getClassName().'::succeed'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Error: Test method does not exist: succeed()');
+    }
   }
 ?>

@@ -71,8 +71,13 @@ What we would want to do would be something along the lines of:
 <summary>
 Usage:
 <pre>
-  $ xpcli sloccount-2.0.1 ~/devel/xp/trunk    # Use a certain version
-  $ xpcli sloccount ~/devel/xp/trunk          # Use newest version
+  # Use a certain version: Long version, -m shorthand
+  $ xpcli -cp sloccount@2.0.1 de.thekid.sloccount.SlocCount ~/devel/xp/trunk
+  $ xpcli -m sloccount@2.0.1 ~/devel/xp/trunk
+  
+  # Use a certain version: Long version, -m shorthand
+  $ xpcli -cp sloccount@ de.thekid.sloccount.SlocCount ~/devel/xp/trunk
+  $ xpcli -m sloccount ~/devel/xp/trunk
 </pre>
 
 The app would still be installed in a certain place (but this would
@@ -94,9 +99,8 @@ So the directory layout would be something like this:
      |- app.pth
      ^- README
 </pre>
-The app.pth file contains the line <tt>src</tt> and some information
-stored in some kind of a file inside that directory indicating its
-dependencies.
+The app.pth file contains the lines <tt>src</tt> and <tt>lang-parsers@1.0.0</tt>
+so that the dependencies are loaded.
 </summary>
 
 module-info.xp
@@ -107,10 +111,10 @@ Most simple version:
   }
 </code>
 
-An application:
+An application with a main class:
 <code>
   #[@main('de.thekid.dialog.cmd.AddAlbum')]
-  module dialog.addalbum(2.5.0) requires parallels(0.1.1), xp(5.7+) {
+  module dialog.addalbum(2.5.0) {
   }
 </code>
 
@@ -136,28 +140,57 @@ Execution
 ~~~~~~~~~
 A module with a main class can be executed as follows:
 <pre>
-  $ xp -cp dialog.addalbum [arg1 [arg2 [...]]]
+  $ xp -m dialog.addalbum [arg1 [arg2 [...]]]
 </pre>
 
 Inclusion
 ~~~~~~~~~
 Command line:
 <pre>
-  $ xp -cp mysqlx-0.1.1 [class.Name]
+  $ xp -cp mysqlx@0.1.1 [class.Name]
 </pre>
 
 Path file:
 <pre>
   src/              # A directory
   lib/utils.xar     # An archive
-  mysqlx-0.1.1      # A module reference
+  mysqlx@0.1.1      # A module reference
 </pre>
 
 Configuration
 ~~~~~~~~~~~~~
 In xp.ini:
 <pre>
-  repository=/opt/xp/modules/
+  use=~/.xp/5.9.0
+  repository=local(~/.xp/modules,/opt/xp/modules/)
+  repository=ivy(~/.ivy)
+</pre>
+
+Bootstrapping
+~~~~~~~~~~~~~
+Here's a directory listing for an XP release:
+<pre>
+  $ ls 5.9.0/*
+  5.9.0/boot.pth  5.9.0/bootstrap.xar
+
+  5.9.0/tools:
+  class.php  web.php    xar.php  lang.base.php
+</pre>
+The bootstrap.xar file contains all the classes in the <tt>lang</tt> package
+and its subpackages and the <tt>VERSION</tt> file. The <tt>boot.pth</tt> file
+contains the lines <tt>bootstrap.xar</tt> and <tt>xp-rt@5.9.0</tt>.
+
+Module layout
+~~~~~~~~~~~~~
+A typical module directory consists of a class path and a <tt>module-info.xp</tt>
+file as well as the sources, either inside a file system structure or inside
+an archive.
+<pre>
+  $ ls xp-rt/*/*
+  xp-rt/5.9.0/class.pth  xp-rt/5.9.0/module-info.xp
+
+  xp-rt/5.9.0/lib:
+  xp-rt-5.9.0.xar  xp-tools-5.9.0.xar
 </pre>
 
 Reflection

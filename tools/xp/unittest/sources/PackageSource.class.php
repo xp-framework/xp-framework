@@ -41,7 +41,6 @@
           !$class->isSubclassOf('unittest.TestCase') ||
           Modifiers::isAbstract($class->getModifiers())
         ) continue;
-        
         $r[]= $class;
       }
       if ($recursive) foreach ($package->getPackages() as $package) {
@@ -51,14 +50,15 @@
     }
 
     /**
-     * Get all test Packagees
+     * Get all test cases
      *
-     * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
+     * @param   var[] arguments
+     * @return  unittest.TestCase[]
      */
-    public function testClasses() {
-      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
+    public function testCasesWith($arguments) {
+      $tests= array();
       foreach (self::testClassesIn($this->package, $this->recursive) as $class) {
-        $tests->put($class, new ArrayList());
+        $tests= array_merge($tests, $this->testCasesInClass($class, $arguments));
       }
       return $tests;
     }

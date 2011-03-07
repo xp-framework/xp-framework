@@ -239,7 +239,9 @@
             o.type = "U"          -- User table
             and o.name not in (   -- Replication tables
               "rs_threads", 
+              "rs_dbversion", 
               "rs_lastcommit", 
+              "rs_ticket_history", 
               "ticket_detail", 
               "ticket_hist", 
               "ticket_result"

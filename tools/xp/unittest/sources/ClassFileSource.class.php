@@ -12,8 +12,7 @@
    * @purpose  Source implementation
    */
   class ClassFileSource extends xp·unittest·sources·AbstractSource {
-    protected
-      $file= NULL;
+    protected $file= NULL;
     
     /**
      * Constructor
@@ -29,24 +28,22 @@
     }
 
     /**
-     * Get all test classes
+     * Get all test cases
      *
-     * @return  util.collections.HashTable<lang.XPClass, lang.types.ArrayList>
+     * @param   var[] arguments
+     * @return  unittest.TestCase[]
      */
-    public function testClasses() {
+    public function testCasesWith($arguments) {
       $uri= $this->file->getURI();
       $path= dirname($uri);
-      $paths= array_flip(array_map('realpath', xp::registry('classpath')));
-      $tests= create('new util.collections.HashTable<lang.XPClass, lang.types.ArrayList>()');
+      $paths= array_flip(array_filter(array_map('realpath', xp::registry('classpath'))));
 
+      // Search class path
       while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
-        if (isset($paths[$path])) {
-          $tests->put(
-            XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.')),
-            new ArrayList()
-          );
-          return $tests;
-        }
+        if (isset($paths[$path])) return $this->testCasesInClass(
+          XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.')),
+          $arguments
+        );
 
         $path= substr($path, 0, $pos); 
       }

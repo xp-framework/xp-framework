@@ -4,17 +4,16 @@ $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
 @authors: kiesel
 @created: Wed Nov 24 08:08:26     2010
-@status: draft
+@status: discussion, ends Sat Mar  5 12:00:00     2011
 @category: <core>
-@target: 5.8
+@target: 5.8.1
 
 Scope of Change
 ---------------
 Existing functionality of the lang.ChainedException will be moved into
-the XP framework's base exception class lang.Throwable.
+the XP framework's base exception class lang.Throwable. As result, all 
+exceptions can have an optional causing exception attached to them.
 
-As result, all exceptions can have an optional causing exception
-attached to them.
 
 Rationale
 ---------
@@ -28,12 +27,15 @@ exception class.
 
 Functionality
 -------------
-+ Move code from lang.ChainedException into lang.Throwable
-+ Make lang.ChainedException be empty
-+ Deprecate lang.ChainedException for XP 5.9
+* Move code from lang.ChainedException into lang.Throwable
+* Make lang.ChainedException be empty
+* Deprecate lang.ChainedException for XP 5.9
+
 
 Security considerations
 -----------------------
+n/a
+
 
 Speed impact
 ------------
@@ -41,13 +43,16 @@ A new member "cause" will be added to lang.Throwable, so this will consume
 more memory, and thus be slower. The impact is expected to be negligible,
 though.
 
+
 Dependencies
 ------------
 n/a
 
+
 Related documents
 -----------------
-n/a
+http://xp-framework.net/rfc/contrib/rfc0205.diff
+Implementing patch
 
 Comments
 --------

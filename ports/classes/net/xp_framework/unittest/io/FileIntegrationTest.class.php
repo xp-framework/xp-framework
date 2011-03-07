@@ -47,12 +47,13 @@
      *
      */
     public function setUp() {
-      $this->file= new File(self::$temp, '.xp-'.$this->getName().'file');
+      $unid= getmypid();
+      $this->file= new File(self::$temp, '.xp-'.$unid.$this->getName().'file');
       if (file_exists($this->file->getURI())) {
         unlink($this->file->getURI());
       }
 
-      $this->folder= new Folder($this->file->getPath(), '.xp-'.$this->getName().'folder');
+      $this->folder= new Folder($this->file->getPath(), '.xp-'.$unid.$this->getName().'folder');
       if (!file_exists($this->folder->getURI())) {
         mkdir($this->folder->getURI());
       } else {

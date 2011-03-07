@@ -53,7 +53,7 @@
      * @return  bool more tokens
      */
     public function hasMoreTokens() {
-      return !(empty($this->_stack) && (FALSE === $this->_buf));
+      return !(empty($this->_stack) && FALSE === $this->_buf);
     }
     
     /**
@@ -78,10 +78,10 @@
         // Read until we have either find a delimiter or until we have 
         // consumed the entire content.
         do {
-          $this->_buf.= $this->_src->read();
           $offset= strcspn($this->_buf, $delimiters ? $delimiters : $this->delimiters);
-          if ($offset != strlen($this->_buf)) break;
-        } while ($this->_src->available());
+          if ($offset < strlen($this->_buf)- 1 || !$this->_src->available()) break;
+          $this->_buf.= $this->_src->read();
+        } while (TRUE);
 
         if (!$this->returnDelims || $offset > 0) $this->_stack[]= substr($this->_buf, 0, $offset);
         if ($this->returnDelims && $offset < strlen($this->_buf)) {

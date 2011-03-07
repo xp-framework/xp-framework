@@ -21,14 +21,14 @@
           }
           
           if ('~' === $line{0}) {
-            $base= $home; $line= substr($line, 1);
+            $base= $home.DIRECTORY_SEPARATOR; $line= substr($line, 1);
           } else if ('/' === $line{0} || (':' === $line{1} && '\\' === $line{2})) {
             $base= '';
           } else {
-            $base= $path; 
+            $base= $path.DIRECTORY_SEPARATOR; 
           }
 
-          $qn= $base.DIRECTORY_SEPARATOR.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
+          $qn= $base.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
           $pre ? $inc= $qn.$inc : $inc.= $qn;
         }
       }
