@@ -486,5 +486,47 @@
       }
       $this->assertTrue($h->isEmpty());
     }
+
+    /**
+     * Tests HashTable<string[], lang.types.String>
+     *
+     */
+    #[@test]
+    public function arrayAsKeyLookupWithMatchingKey() {
+      with ($h= create('new util.collections.HashTable<string[], lang.types.String>')); {
+        $h->put(array('hello'), new String('World'));
+        $this->assertEquals(new String('World'), $h->get(array('hello')));
+      }
+    }
+
+    /**
+     * Tests HashTable<string[], lang.types.String>
+     *
+     */
+    #[@test]
+    public function arrayAsKeyLookupWithMismatchingKey() {
+      with ($h= create('new util.collections.HashTable<string[], lang.types.String>')); {
+        $h->put(array('hello'), new String('World'));
+        $this->assertNull($h->get(array('world')));
+      }
+    }
+
+    /**
+     * Tests HashTable<string[], lang.types.String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function arrayAsKeyArrayComponentTypeMismatch() {
+      create('new util.collections.HashTable<string[], lang.types.String>')->put(array(1), new String('World'));
+    }
+
+    /**
+     * Tests HashTable<string[], lang.types.String>
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function arrayAsKeyTypeMismatch() {
+      create('new util.collections.HashTable<string[], lang.types.String>')->put('hello', new String('World'));
+    }
   }
 ?>

@@ -53,7 +53,7 @@
      */
     #[@generic(params= 'T', return= 'T')]
     public function push($element) {
-      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
       array_unshift($this->_elements, $element);
       $this->_hash+= HashProvider::hashOf($h);
       return $element;
@@ -71,7 +71,7 @@
         throw new NoSuchElementException('Stack is empty');
       }
       $element= array_shift($this->_elements);
-      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
       $this->_hash+= HashProvider::hashOf($h);
       return $element;
     }

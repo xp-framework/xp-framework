@@ -46,7 +46,7 @@
      */
     #[@generic(params= 'T', return= 'T')]
     public function add($element) {
-      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
       $this->_access[$h]= microtime(TRUE);
       $this->_elements[$h]= $element;
 
@@ -70,7 +70,7 @@
      */
     #[@generic(params= 'T')]
     public function update($element) {
-      $h= $element instanceof Generic ? $element->hashCode() : $element;
+      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
       $this->_access[$h]= microtime(TRUE);
     }
     
