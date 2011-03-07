@@ -4,15 +4,13 @@
  * $Id$ 
  */
 
-  uses('lang.ChainedException');
-
   /**
    * Holds a reference to an exception
    *
    * @see      xp://remote.Serializer
    * @purpose  Exception reference
    */
-  class ExceptionReference extends ChainedException {
+  class ExceptionReference extends XPException {
     public 
       $referencedClassname= '';
 

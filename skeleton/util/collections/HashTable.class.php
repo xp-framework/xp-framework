@@ -78,7 +78,7 @@
      */
     #[@generic(params= 'K, V', return= 'V')]
     public function put($key, $value) {
-      $h= $key instanceof Generic ? $key->hashCode() : $key;
+      $h= $key instanceof Generic ? $key->hashCode() : (is_array($key) ? serialize($key) : $key);
       if (!isset($this->_buckets[$h])) {
         $previous= NULL;
       } else {
@@ -99,7 +99,7 @@
      */
     #[@generic(params= 'K', return= 'V')]
     public function get($key) {
-      $h= $key instanceof Generic ? $key->hashCode() : $key;
+      $h= $key instanceof Generic ? $key->hashCode() : (is_array($key) ? serialize($key) : $key);
       return isset($this->_buckets[$h]) ? $this->_buckets[$h][1] : NULL; 
     }
     
@@ -113,7 +113,7 @@
      */
     #[@generic(params= 'K', return= 'V')]
     public function remove($key) {
-      $h= $key instanceof Generic ? $key->hashCode() : $key;
+      $h= $key instanceof Generic ? $key->hashCode() : (is_array($key) ? serialize($key) : $key);
       if (!isset($this->_buckets[$h])) {
         $prev= NULL;
       } else {
@@ -158,7 +158,7 @@
      */
     #[@generic(params= 'K')]
     public function containsKey($key) {
-      $h= $key instanceof Generic ? $key->hashCode() : $key;
+      $h= $key instanceof Generic ? $key->hashCode() : (is_array($key) ? serialize($key) : $key);
       return isset($this->_buckets[$h]);
     }
 

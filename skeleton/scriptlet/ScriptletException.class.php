@@ -4,10 +4,7 @@
  * $Id$
  */
 
-  uses(
-    'peer.http.HttpConstants',
-    'lang.ChainedException'
-  );
+  uses('peer.http.HttpConstants');
 
   /**
    * Defines an exception which is thrown inside an HttpScriptlet
@@ -22,7 +19,7 @@
    *
    * @see      xp://scriptlet.HttpScriptlet#service
    */  
-  class ScriptletException extends ChainedException {
+  class ScriptletException extends XPException {
     public $statusCode= 0;
       
     /**

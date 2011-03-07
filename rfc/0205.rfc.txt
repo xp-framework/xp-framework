@@ -4,7 +4,7 @@ $Id: template.txt 5001 2005-04-18 12:10:58Z friebe $
 
 @authors: kiesel
 @created: Wed Nov 24 08:08:26     2010
-@status: discussion, ends Sat Mar  5 12:00:00     2011
+@status: implemented, Mon Mar  7 20:36:43     2011
 @category: <core>
 @target: 5.8.1
 

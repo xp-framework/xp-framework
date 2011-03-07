@@ -4,10 +4,7 @@
  * $Id$
  */
  
-  uses(
-    'lang.ClassLoadingException',
-    'lang.ChainedException'
-  );
+  uses('lang.ClassLoadingException');
 
   /**
    * Indicates a class specified by a name cannot be found - that is,
@@ -19,7 +16,7 @@
    * @test  xp://net.xp_framework.unittest.reflection.ReflectionTest
    * @test  xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
    */
-  class ClassNotFoundException extends ChainedException implements ClassLoadingException {
+  class ClassNotFoundException extends XPException implements ClassLoadingException {
     protected
       $failedClass  = NULL,
       $loaders      = array();

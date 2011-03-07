@@ -8,12 +8,26 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed all exceptions previously inheriting from lang.ChainedException
+  to extend lang.XPException instead
+  (friebe)
 - Changed DriverManager to use userland MySQL in favor of ext/mysqlnd
   http://news.planet-xp.net/article/404/2011/01/16/
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0205 - All exceptions can be chained optionally
+  (friebe)
+  
 Bugfixes
 ~~~~~~~~
+- Fixed util.collections classes to work correctly when arrays or maps
+  are used for keys
+  (friebe)
+- Fixed is() core functionality to not raise warnings when given non-
+  array values for array and map type tests
+  (friebe)
 - Implemented extracting ZIP file entries after index iteration for 
   seekable streams
   (friebe)

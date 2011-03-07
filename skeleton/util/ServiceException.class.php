@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('lang.ChainedException');
-
   /**
    * Indicates a certain fault occurred. Service methods may throw
    * this exception to indicate a well-known, categorised exceptional
@@ -18,7 +16,7 @@
    * @see      xp://webservices.soap.rpc.SoapRpcRouter#doPost
    * @purpose  Custom service exception.
    */
-  class ServiceException extends ChainedException {
+  class ServiceException extends XPException {
     public
       $faultcode;
 
