@@ -12,7 +12,7 @@
    *
    * @purpose  Exception
    */
-  class PrerequisitesNotMetError extends ChainedException {
+  class PrerequisitesNotMetError extends XPException {
     public $prerequisites= array();
       
     /**

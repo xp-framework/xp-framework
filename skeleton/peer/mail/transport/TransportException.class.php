@@ -4,14 +4,13 @@
  * $Id$ 
  */
 
-  uses('lang.ChainedException');
-
   /**
    * TransportException
    *
    * @see      xp://peer.mail.transport.Transport
    * @purpose  Indicate a transport error has occured
    */
-  class TransportException extends ChainedException {
+  class TransportException extends XPException {
+
   }
 ?>

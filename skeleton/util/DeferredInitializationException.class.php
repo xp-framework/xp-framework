@@ -4,13 +4,11 @@
  * $Id$ 
  */
   
-  uses('lang.ChainedException');
-
   /**
    * DeferredInitialization Exception
    *
-   * @purpose  Exception class
    */
-  class DeferredInitializationException extends ChainedException {
+  class DeferredInitializationException extends XPException {
+
   }
 ?>

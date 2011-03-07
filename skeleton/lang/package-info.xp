@@ -48,12 +48,11 @@
  *
  * Chained exceptions
  * ==================
- * Not all exceptions in the framework have a cause. Exceptions that 
- * choose to have a cause may extend the lang.ChainedException class.
+ * All exceptions in the framework can optionally have a cause.
  *
  * Example (abbreviated):
  * <code>
- *   class FinderException extends ChainedException { }
+ *   class FinderException extends XPException { }
  *   
  *   class NewsFinder extends Finder {
  *     public function findByPK($pk) {
@@ -93,7 +92,7 @@
  *
  * These exceptions are guaranteed to be loaded at any given time:
  *
- * lang.ChainedException, lang.NullPointerException, lang.IllegalAccessException, 
+ * lang.NullPointerException, lang.IllegalAccessException, 
  * lang.IllegalArgumentException, lang.IllegalStateException, 
  * lang.FormatException, lang.ClassNotFoundException, 
  * 

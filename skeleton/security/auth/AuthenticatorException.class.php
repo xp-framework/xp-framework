@@ -4,8 +4,6 @@
  * $Id$ 
  */
 
-  uses('lang.ChainedException');
-
   /**
    * Indicates authentication failed unexpectedly, probably due to 
    * problems with the authentication backend. For instance, the 
@@ -15,7 +13,7 @@
    * @see      xp://lang.ChainedException
    * @purpose  Exception
    */
-  class AuthenticatorException extends ChainedException {
+  class AuthenticatorException extends XPException {
   
   }
 ?>

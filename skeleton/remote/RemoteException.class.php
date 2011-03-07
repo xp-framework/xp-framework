@@ -4,15 +4,13 @@
  * $Id$ 
  */
 
-  uses('lang.ChainedException');
-
   /**
    * Indicates an exception occured on the server
    *
    * @see      xp://Remote
    * @purpose  Exception
    */
-  class RemoteException extends ChainedException {
+  class RemoteException extends XPException {
 
   }
 ?>
