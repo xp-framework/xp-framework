@@ -14,6 +14,12 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.collections classes to work correctly when arrays or maps
+  are used for keys
+  (friebe)
+- Fixed is() core functionality to not raise warnings when given non-
+  array values for array and map type tests
+  (friebe)
 - Implemented extracting ZIP file entries after index iteration for 
   seekable streams
   (friebe)
