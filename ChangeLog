@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+
+Version 5.8.1, released 2011-03-14
+----------------------------------
+SVN version: 15320
+
 Heads up!
 ~~~~~~~~~
 - Changed all exceptions previously inheriting from lang.ChainedException
