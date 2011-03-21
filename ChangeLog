@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed unittest API not to allow overwriting TestCase's methods with test 
+  methods (e.g. setUp(), tearDown(), getName(), ...)
+  (friebe, kiesel)
+
 
 Version 5.8.1, released 2011-03-14
 ----------------------------------
