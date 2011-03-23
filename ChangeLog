@@ -8,6 +8,9 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Improved exception message in remote.UnknownRemoteObject, so the name
+  of the unknown object is visible
+  (kiesel, friebe)
 - Fixed unittest API not to allow overwriting TestCase's methods with test 
   methods (e.g. setUp(), tearDown(), getName(), ...)
   (friebe, kiesel)
