@@ -42,6 +42,7 @@
      */
     public function addAll($cwd) {
       $list= array();
+      $qs= preg_quote(DIRECTORY_SEPARATOR);
 
       foreach ($this->getArguments() as $arg) {
         if (FALSE !== ($p= strrpos($arg, '='))) {
@@ -56,15 +57,14 @@
           continue;
         }
         
-        // Recursively retrieve all files from directory
+        // Recursively retrieve all files from directory, ignoring well-known
+        // VCS control files.
         if (is_dir($arg)) {
           $collection= new FileCollection($arg);
-          
-          // Fetch all files except 
           $iterator= new FilteredIOCollectionIterator(
             $collection,
             new AllOfFilter(array(
-              new NegationOfFilter(new RegexFilter('#'.preg_quote(DIRECTORY_SEPARATOR).'(CVS|\.svn)'.preg_quote(DIRECTORY_SEPARATOR).'#')),
+              new NegationOfFilter(new RegexFilter('#'.$qs.'(CVS|\.svn)'.$qs.'#')),
               new NegationOfFilter(new CollectionFilter())
             )),
             TRUE
@@ -73,7 +73,6 @@
           while ($iterator->hasNext()) {
             $this->add($iterator->next()->getURI(), $cwd);
           }
-          
           continue;
         }
       }
