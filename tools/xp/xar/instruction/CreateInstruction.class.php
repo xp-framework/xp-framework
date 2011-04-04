@@ -64,7 +64,7 @@
           $iterator= new FilteredIOCollectionIterator(
             $collection,
             new AllOfFilter(array(
-              new NegationOfFilter(new RegexFilter('#'.$qs.'(CVS|\.svn)'.$qs.'#')),
+              new NegationOfFilter(new RegexFilter('#'.$qs.'(CVS|\.svn|\.git|\.arch|\.hg|_darcs|\.bzr)'.$qs.'#')),
               new NegationOfFilter(new CollectionFilter())
             )),
             TRUE
