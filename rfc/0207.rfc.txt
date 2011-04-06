@@ -24,7 +24,15 @@ Functionality
 The method is declared as follows:
 
 <code>
-  public rdbms.Field fields()
+  public rdbms.Fields fields()
+</code>
+
+The rdbms.Fields class is declared as follows:
+
+<code>
+  public class rdbms.Fields extends lang.Object implements ArrayAccess, Traversable {
+    public string[] names()
+  }
 </code>
 
 The rdbms.Field class is declared as follows:
