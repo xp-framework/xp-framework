@@ -1,0 +1,204 @@
+RFC 0207: Resultset field reflection
+========================================================================
+$Id$
+
+@authors: friebe
+@created: Wed Apr  6 13:59:24     2011
+@status: draft
+@category: rdbms
+
+Scope of Change
+---------------
+The rdbms.ResultSet class will provide a method <tt>fields()</tt> which 
+will return an array of fields, their names, data types and further information. 
+
+
+Rationale
+---------
+This method will supersede the usage of the public "fields" member which 
+cannot be guaranteed to adhere to the same interface.
+
+
+Functionality
+-------------
+The method is declared as follows:
+
+<code>
+  public rdbms.Field fields()
+</code>
+
+The rdbms.Field class is declared as follows:
+
+<code>
+  public class rdbms.Field extends lang.Object {
+    public string name()
+    public string table()
+    public string typeName()
+  }
+</code>
+
+
+The following functions will be used:
+
+MySQL
+~~~~~
+http://de3.php.net/mysql_fetch_field
+http://de3.php.net/mysql_field_flags
+
+Returns the following field information:
+<summary>
+* Field name
+* Column source table
+* Field max. length
+* Nullable?
+* Primary key?
+* Unique key?
+* Multiple key?
+* Numeric?
+* Blob?
+* Type
+* Unsigned?
+* Zerofill?
+* Flags
+</summary>
+
+MySQLi
+~~~~~~
+http://de3.php.net/mysqli_fetch_field
+
+Returns the following field information:
+<summary>
+* Field name
+* Original field name (for aliases)
+* Column source table (if not calculated)
+* Original table (for aliases)
+* Field max. length
+* Length
+* Charset number
+* Flags
+* Type
+* Number of decimals used
+</summary>
+
+MySQLx
+~~~~~~
+Implemented in <tt>rdbms.mysqlx.MysqlxProtocol</tt>
+
+Returns the following field information:
+<summary>
+* Field name
+* Original field name (for aliases)
+* Column source table (if not calculated)
+* Original table (for aliases)
+* Field max. length
+* Length
+* Charset number
+* Flags
+* Type
+* Number of decimals used
+</summary>
+
+Sybase
+~~~~~~
+http://de3.php.net/sybase_fetch_field
+
+Returns the following field information:
+<summary>
+* Field name ("computed#XXX" for unnamed)
+* Column source table
+* Field max. length
+* Numeric?
+* Type
+</summary>
+
+MSSQL
+~~~~~
+http://de3.php.net/mssql_fetch_field
+
+Returns the following field information:
+<summary>
+* Field name ("computed#XXX" for unnamed)
+* Column source table
+* Field max. length
+* Numeric?
+* Type
+</summary>
+
+SQLite
+~~~~~~
+http://de3.php.net/sqlite_field_name
+
+Returns the following field information:
+<summary>
+* Field name
+</summary>
+
+PostgreSQL
+~~~~~~~~~~
+http://de3.php.net/pg_field_name
+http://de3.php.net/pg_field_type
+http://de3.php.net/pg_field_table
+http://de3.php.net/pg_field_size
+http://de3.php.net/pg_field_prtlen
+
+Returns the following field information:
+<summary>
+* Field name ("computed#XXX" for unnamed)
+* Column source table
+* Field size (-1 for variable length)
+* Field printed length
+* Type
+</summary>
+
+Firebird/InterBase
+~~~~~~~~~~~~~~~~~~
+http://de3.php.net/ibase_field_info
+
+Returns the following field information:
+<summary>
+* Field name
+* Alias
+* Column source table
+* Field length
+* Type
+</summary>
+
+SQLSrv
+~~~~~~
+http://technet.microsoft.com/de-de/library/cc296197(SQL.90).aspx
+
+Returns the following field information:
+<summary>
+* Field name ("computed#XXX" for unnamed)
+* Type
+* Size
+* Precision
+* Scale
+* Nullable?
+</summary>
+
+
+
+Security considerations
+-----------------------
+n/a
+
+
+Speed impact
+------------
+None.
+
+
+Dependencies
+------------
+
+Related documents
+-----------------
+http://dev.mysql.com/doc/refman/5.1/de/c-api-datatypes.html
+MySQL field flags bitfield and field type constants
+
+
+Comments
+--------
+
+<EOF>
