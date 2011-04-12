@@ -58,6 +58,9 @@ Bugfixes
   (friebe)
 - When writing zip files, convert names from iso-8859-1 to CP437
   (friebe)
+- Changed util.log.SyslogAppender to work with util.log.Logger as it sets
+  custom parameters via public member access
+  (treuter)
 
 Features
 ~~~~~~~~
