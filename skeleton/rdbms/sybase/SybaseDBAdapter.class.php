@@ -198,13 +198,15 @@
       }
       
       // Get foreign key constraints
-      // in mysql the only way is to parse the creat statement
       $sp_helpconstraint= $this->conn->query('sp_helpconstraint %s, detail', $this->qualifiedTablename($table, $database));
+      if (!$sp_helpconstraint instanceof ResultSet) return $t;
+
       while ($db_constraint= $sp_helpconstraint->next()) {
         if ('referential constraint' != $db_constraint['type']) continue;
         if (0 !== strpos($db_constraint['definition'], $table.' ')) continue;
         $t->addForeignKeyConstraint($this->parseForeignKey($db_constraint));
       }
+      $sp_helpconstraint->close();
 
       return $t;
     }

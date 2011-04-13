@@ -17,6 +17,11 @@ Bugfixes
 - Fixed unittest API not to allow overwriting TestCase's methods with test 
   methods (e.g. setUp(), tearDown(), getName(), ...)
   (friebe, kiesel)
+- Fixed segmentation fault when using mssql.so to get constraints.
+  (friebe, robert)
+- Fixed an fatal error when an "Object does not have any declarative constraints"
+  (friebe, robert)
+
 
 Features
 ~~~~~~~~
