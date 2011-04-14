@@ -6,6 +6,34 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Bugfixes
+~~~~~~~~
+- Changed util.log.SyslogAppender to work with util.log.Logger as it sets
+  custom parameters via public member access
+  (treuter)
+- Improved exception message in remote.UnknownRemoteObject, so the name
+  of the unknown object is visible
+  (kiesel, friebe)
+- Fixed unittest API not to allow overwriting TestCase's methods with test 
+  methods (e.g. setUp(), tearDown(), getName(), ...)
+  (friebe, kiesel)
+- Fixed segmentation fault when using mssql.so to get constraints.
+  (friebe, robert)
+- Fixed an fatal error when an "Object does not have any declarative constraints"
+  (friebe, robert)
+
+
+Features
+~~~~~~~~
+- Made "xar" command line utility exclude hidden version control systems 
+  files other than just SVN and CVS (GIT/Mercurial/Bazaar/...)
+  (friebe, kiesel)
+
+
+Version 5.8.1, released 2011-03-14
+----------------------------------
+SVN version: 15320
+
 Heads up!
 ~~~~~~~~~
 - Changed all exceptions previously inheriting from lang.ChainedException

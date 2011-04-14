@@ -69,7 +69,7 @@
      * Assert read access to a member fails
      *
      */
-    #[@test, @expect('lang.IllegalAccessException')]
+    #[@test, @expect(class= 'lang.IllegalAccessException', withMessage= '/name::id/')]
     public function readMember() {
       $o= new UnknownRemoteObject('name');
       $id= $o->id;
@@ -79,7 +79,7 @@
      * Assert write access to a member fails
      *
      */
-    #[@test, @expect('lang.IllegalAccessException')]
+    #[@test, @expect(class= 'lang.IllegalAccessException', withMessage= '/name::id/')]
     public function writeMember() {
       $o= new UnknownRemoteObject('name');
       $o->id= 1;
@@ -89,7 +89,7 @@
      * Assert method call fails
      *
      */
-    #[@test, @expect('lang.IllegalAccessException')]
+    #[@test, @expect(class= 'lang.IllegalAccessException', withMessage= '/name::method/')]
     public function invokeMethod() {
       $o= new UnknownRemoteObject('name');
       $o->method();

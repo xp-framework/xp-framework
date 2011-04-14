@@ -59,6 +59,18 @@
         throw new MethodNotImplementedException('Test method does not exist', $test->name);
       }
       $className= $test->getClassName();
+      
+      // Verify no special method, e.g. setUp() or tearDown() is overwritten.
+      $base= XPClass::forName('unittest.TestCase');
+      if ($base->hasMethod($test->name)) {
+        throw new IllegalStateException(sprintf(
+          'Cannot override %s::%s with test method in %s',
+          $base->getName(),
+          $test->name,
+          $test->getClass()->getMethod($test->name)->getDeclaringClass()->getName()
+        ));
+      }
+      
       if (!isset($this->order[$className])) $this->order[$className]= array();
       $this->order[$className][]= sizeof($this->tests);
       $this->tests[]= $test;
@@ -75,17 +87,32 @@
      * @throws  util.NoSuchElementException in case given testcase class does not contain any tests
      */
     public function addTestClass($class, $arguments= array()) {
-      if (!$class->isSubclassOf('unittest.TestCase')) {
+      $base= XPClass::forName('unittest.TestCase');
+      if (!$class->isSubclassOf($base)) {
         throw new IllegalArgumentException('Given argument is not a TestCase class ('.xp::stringOf($class).')');
       }
 
       $ignored= array();
       $numBefore= $this->numTests();
       $className= $class->getName();
+      $tests= $this->tests;
+      $order= $this->order;
       if (!isset($this->order[$className])) $this->order[$className]= array();
       foreach ($class->getMethods() as $m) {
         if (!$m->hasAnnotation('test')) continue;
         if ($m->hasAnnotation('ignore')) $ignored[]= $m;
+        
+        // Verify no special method, e.g. setUp() or tearDown() is overwritten.
+        if ($base->hasMethod($m->getName())) {
+          $this->tests= $tests;
+          $this->order= $order;
+          throw new IllegalStateException(sprintf(
+            'Cannot override %s::%s with test method in %s',
+            $base->getName(),
+            $m->getName(),
+            $m->getDeclaringClass()->getName()
+          ));
+        }
 
         $this->tests[]= $class->getConstructor()->newInstance(array_merge(
           (array)$m->getName(TRUE),

@@ -14,6 +14,12 @@
    * @purpose  Appender
    */  
   class SyslogAppender extends Appender {
+    protected
+      $lastIdentifier= FALSE;
+    
+    public
+      $identifier,
+      $facility;
 
     /**
      * Constructor
@@ -23,11 +29,8 @@
      * @see     php://openlog for valid facility values
      */
     public function __construct($identifier= NULL, $facility= LOG_USER) {
-      openlog(
-        $identifier ? $identifier : basename($_SERVER['PHP_SELF']), 
-        LOG_ODELAY | LOG_PID, 
-        $facility
-      );
+      $this->identifier= $identifier;
+      $this->facility= $facility;
     }
     
     /**
@@ -36,6 +39,16 @@
      * @param   util.log.LoggingEvent event
      */ 
     public function append(LoggingEvent $event) {
+      if ($this->identifier != $this->lastIdentifier) {
+        closelog();
+        openlog(
+          $this->identifier ? $this->identifier : basename($_SERVER['PHP_SELF']), 
+          LOG_ODELAY | LOG_PID, 
+          $this->facility
+        );
+        $this->lastIdentifier= $this->identifier;
+      }
+    
       static $map= array(
         LogLevel::INFO    => LOG_INFO,
         LogLevel::WARN    => LOG_WARNING,
@@ -43,7 +56,7 @@
         LogLevel::DEBUG   => LOG_DEBUG,
         LogLevel::NONE    => LOG_NOTICE
       );
-
+      
       $l= $event->getLevel();
       syslog($map[isset($map[$l]) ? $l : LogLevel::NONE], $this->layout->format($event));
     }
@@ -55,6 +68,7 @@
      */
     public function finalize() {
       closelog();
+      $this->lastIdentifier= FALSE;
     }
 
     /**
