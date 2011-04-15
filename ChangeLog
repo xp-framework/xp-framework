@@ -25,6 +25,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Migrated repository to github.com (for the records)
+  (friebe, ilankin, kiesel, rene)
 - Made "xar" command line utility exclude hidden version control systems 
   files other than just SVN and CVS (GIT/Mercurial/Bazaar/...)
   (friebe, kiesel)
