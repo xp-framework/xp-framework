@@ -1,0 +1,78 @@
+RFC 0208: Mocking Library
+========================================================================
+
+@authors: iigorr
+@created: Wed Apr  14 15:48:23     2011
+@status: draft
+@category: unittest
+
+Scope of Change
+---------------
+A native mocking library.
+
+
+Rationale
+---------
+Currently to create mock objects users have to derive from the required class or 
+use proxies or newinstance. This methods are often cumbersome and do not provide 
+features "real" mocking libraries do, e.g. behaviour verification. At least not in
+in the same elegant and readable way.
+
+Functionality
+-------------
+A new Class named <tt>Mockery</tt> is introduced that provides a method <tt>createMock</tt> 
+which can be used to create an mock object of any type that derives from lang.Object. 
+
+<code>public lang.Object createMock(string typeName, boolean overrideAll)</code>
+
+Using the record/replay/verify paradigm the mock object provides recoding expectations
+including (repeated) return values, raising exceptions and argument matching.
+(@see http://ayende.com/Blog/archive/2007/12/26/The-RecordReplayVerify-model.aspx)
+
+The mock object provides a fluent interface in record mode. E.g.
+<code>
+  $context->hasPermission(Arg::any())->returns(TRUE)->repeatAny();
+</code>
+or
+<code>
+  $context->hasPermission("special permission")->throws(new IllegalAccessException());
+</code>
+
+There are two ways to switch a mock object into replay mode and verify expectations. 
+1) In addtion to the implemented interface a mock objects provides special methods which control a mock objects state:
+   - _replayMock() // switches a mock object to replay mode
+   - _verifyMock() // verifies all expectations for this mock object. 
+
+2) The mockery provides the methods replayAll() and verifyAll which replay or verify all 
+   mocks created by this mockery respectively.
+
+
+Security considerations
+-----------------------
+n/a
+
+Speed impact
+------------
+- Using mock objects instead of (real) complex implementations of the dependencies of a system under test
+  the performance of the test suite may be increased significantly.
+
+- The creation of mock objects however is relatively slow as reflection is used. Thus an excessive creation 
+  of mock objects is not encouraged in unit testing.
+
+Dependencies
+------------
+The mock library is based on a modification of the Proxy class.
+
+Related documents
+-----------------
+* http://martinfowler.com/articles/mocksArentStubs.html
+  Mock's aren't Stubs (article by Martin Fowler)
+* http://en.wikipedia.org/wiki/Mock_object
+  Wikipedia Article on Mock Objects
+* http://ayende.com/Blog/archive/2007/12/26/The-RecordReplayVerify-model.aspx
+  Record-Replay-Verify Paradigm (by Rhino Mocks)
+
+Comments
+--------
+
+<EOF>
