@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id: OverloadedInterface.class.php 11704 2008-01-12 21:54:46Z friebe $ 
  */
 
   /**

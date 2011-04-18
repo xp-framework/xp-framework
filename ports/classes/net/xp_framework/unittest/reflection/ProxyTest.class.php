@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$
+ * $Id: ProxyTest.class.php 14483 2010-04-17 14:30:29Z friebe $
  */
 
   uses(
@@ -81,15 +81,6 @@
     }
 
     /**
-     * Tests passing a list of empty interfaces
-     *
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function emptyInterfaces() {
-      Proxy::getProxyClass(ClassLoader::getDefault(), array());
-    }
-
-    /**
      * Tests passing NULL for interfaces
      *
      */
@@ -132,8 +123,8 @@
     public function iteratorInterfaceIsImplemented() {
       $class= $this->proxyClassFor(array($this->iteratorClass));
       $interfaces= $class->getInterfaces();
-      $this->assertEquals(2, sizeof($interfaces));
-      $this->assertEquals($this->iteratorClass, $interfaces[1]);
+      $this->assertEquals(3, sizeof($interfaces)); //lang.Generic, lang.reflect.IProxy, util.XPIterator
+      $this->assertTrue(in_array($this->iteratorClass, $interfaces));
     }
 
     /**
@@ -144,7 +135,7 @@
     public function allInterfacesAreImplemented() {
       $class= $this->proxyClassFor(array($this->iteratorClass, $this->observerClass));
       $interfaces= $class->getInterfaces();
-      $this->assertEquals(3, sizeof($interfaces));
+      $this->assertEquals(4, sizeof($interfaces));
       $this->assertTrue(in_array($this->iteratorClass, $interfaces));
       $this->assertTrue(in_array($this->observerClass, $interfaces));
     }
@@ -157,7 +148,6 @@
     public function iteratorMethods() {
       $expected= array(
         'hashcode', 'equals', 'getclassname', 'getclass', 'tostring', // lang.Object
-        'getproxyclass', 'newproxyinstance',                          // lang.reflect.Proxy
         'hasnext', 'next'                                             // util.XPIterator
       );
       
@@ -180,6 +170,7 @@
     #[@test]
     public function iteratorNextInvoked() {
       $proxy= $this->proxyInstanceFor(array($this->iteratorClass));
+
       $proxy->next();
       $this->assertEquals(array(), $this->handler->invocations['next_0']);
     }
@@ -219,6 +210,81 @@
       $proxy->overloaded('foo', 'bar');
       $this->assertEquals(array('foo'), $this->handler->invocations['overloaded_1']);
       $this->assertEquals(array('foo', 'bar'), $this->handler->invocations['overloaded_2']);
-    }    
+    }
+    /**
+     * A proxy class should be instance of IProxy
+     */
+    #[@test]
+    public function proxyClass_implements_IProxy() {
+      $proxy= $this->proxyClassFor(array($this->iteratorClass));
+      $interfaces= $proxy->getInterfaces();
+      $this->assertTrue(in_array(XPClass::forName('lang.reflect.IProxy'), $interfaces));
   }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function concrete_methods_should_not_be_changed_by_default() {
+    $proxyBuilder= new Proxy();
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+    $this->assertEquals('concreteMethod', $proxy->concreteMethod());
+  }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function abstract_methods_should_delegated_to_handler() {
+    $proxyBuilder= new Proxy();
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+    $proxy->abstractMethod();
+
+    $this->assertArray($this->handler->invocations['abstractMethod_0']);
+  }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function with_overwriteAll_abstract_methods_should_delegated_to_handler() {
+    $proxyBuilder= new Proxy();
+    $proxyBuilder->setOverwriteExisting(TRUE);
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+    $proxy->concreteMethod();
+    $this->assertArray($this->handler->invocations['concreteMethod_0']);
+  }
+
+  /**
+   * TODO: description
+   */
+  #[@test]
+  public function reserved_methods_should_not_be_overridden() {
+    $proxyBuilder= new Proxy();
+    $proxyBuilder->setOverwriteExisting(TRUE);
+    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+      array(),
+      XPClass::forName('net.xp_framework.unittest.reflection.AbstractDummy'));
+
+    $proxy= $class->newInstance($this->handler);
+
+    $proxy->equals(new Object());
+    $this->assertFalse(isset($this->handler->invocations['equals_1']));
+  }
+
+
+}
 ?>
+
