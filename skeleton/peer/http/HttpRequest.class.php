@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  * 
- * $Id$
+ * $Id: HttpRequest.class.php 14881 2010-10-01 07:46:08Z friebe $
  */
 
   uses(
@@ -101,6 +101,16 @@
       }
       
       $this->parameters= array_diff($params, $this->url->getParams());
+    }
+    
+    /**
+     * Set a single request parameter
+     *
+     * @param   string name
+     * @param   string value
+     */
+    public function setParameter($name, $value) {
+      $this->parameters[$name]= $value;
     }
     
     /**
