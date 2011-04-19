@@ -329,8 +329,18 @@
       return $return;
     }
 
+    /*
+     * Indicates whether the timespan to compare equals this timespan
+     *
+     * @param   util.TimeSpan cmp
+     * @return  bool TRUE if timespans are equal
+     */
+    public function equals($cmp) {
+      return ($cmp instanceof self) && ($cmp->getSeconds() == $this->getSeconds());
+    }
+
     /**
-     * creates a string representation
+     * Creates a string representation
      *
      * @see     xp://util.TimeSpan#format
      * @param   string format, defaults to '%ed, %yh, %jm, %ws'
