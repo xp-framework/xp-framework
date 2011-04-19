@@ -1,8 +1,0 @@
-BEGIN:VCARD
-VERSION:2.1
-FN:Core Developers
-N:;Core Developers
-X-XP-MULTIREF:xp://identity/friebe;xp://identity/kiesel
-URL:http://xp-framework.net/
-EMAIL;INTERNET:xp@php3.de
-END:VCARD

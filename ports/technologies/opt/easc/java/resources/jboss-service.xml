@@ -1,9 +1,0 @@
-<server>
-  <classpath codebase="xp-easc-1.0.ear"></classpath>
-  <mbean code="net.xp_framework.easc.jmx.jboss.EascService" name="net.xp_framework.easc:service=EascService">
-    <attribute name="Port">6448</attribute>
-  </mbean>
-  <mbean code="net.xp_framework.easc.jmx.jboss.EsdlService" name="net.xp_framework.easc:service=EsdlService">
-    <attribute name="Port">6449</attribute>
-  </mbean>
-</server>
