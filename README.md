@@ -16,7 +16,7 @@ Directory structure
     |     `- resources
     |
     `- tools              # Entry point
-	   |- tools           # Bootstrappung
+	   |- tools           # Bootstrapping (class.php, xar.php, web.php)
        `- src             # Sourcecode, by Maven conventions
           `- main
 
