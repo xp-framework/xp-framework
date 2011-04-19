@@ -283,5 +283,23 @@
     public function formatPercent() {
       $this->assertEquals('%1d%1h%', create(new TimeSpan(91865))->format('%%%ed%%%yh%%'));
     }
+
+    /**
+     * Test timespan compare
+     *
+     */
+    #[@test]
+    public function compareTwoEqualInstances() {
+      $this->assertEquals(new TimeSpan(3600), new TimeSpan(3600));
+    }
+
+    /**
+     * Test timespan compare
+     *
+     */
+    #[@test]
+    public function compareTwoUnequalInstances() {
+      $this->assertNotEquals(new TimeSpan(3600), new TimeSpan(0));
+    }
   }
 ?>
