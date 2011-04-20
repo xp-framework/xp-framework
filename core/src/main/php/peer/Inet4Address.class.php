@@ -22,8 +22,14 @@
      * @return  int
      */
     protected static function ip2long($ip) {
-      $i= 0; $addr= 0;
+      $i= 0; $addr= 0; $count= 0;
       foreach (explode('.', $ip) as $byte) {
+        if (++$count > 4)
+          throw new FormatException('Given IP string has more than 4 blocks: ['.$ip.']');
+
+        if (!is_numeric($byte) || $byte < 0 || $byte > 255)
+          throw new FormatException('Invalid format of ip address: ['.$ip.']');
+
         $addr|= ($byte << (8 * (3 - $i++)));
       }
       return $addr;
@@ -33,6 +39,7 @@
      * Constructor
      *
      * @param   string address
+     * @throws  lang.FormatException in case address is illegal
      */
     public function __construct($address) {
       $this->addr= self::ip2long($address);
