@@ -34,13 +34,24 @@
     protected static function normalize($addr) {
       $out= '';
       $hexquads= explode(':', $addr);
+
+      // Shortest address is ::1, this results in 3 parts...
+      if (sizeof($hexquads) < 3) {
+        throw new FormatException('Address contains less than 1 hexquad part: ['.$addr.']');
+      }
+
       if ('' == $hexquads[0]) array_shift($hexquads);
       foreach ($hexquads as $hq) {
         if ('' == $hq) {
           $out.= str_repeat('0000', 8 - (sizeof($hexquads)- 1));
           continue;
         }
-        
+
+        // Catch cases like ::ffaadd00::
+        if (strlen($hq) > 4) {
+          throw new FormatException('Detected hexquad w/ more than 4 digits in ['.$addr.']');
+        }
+
         $out.= str_repeat('0', 4- strlen($hq)).$hq;
       }
       

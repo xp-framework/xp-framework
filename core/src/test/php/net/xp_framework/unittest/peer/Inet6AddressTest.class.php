@@ -144,5 +144,23 @@
     public function notInSubnet() {
       $this->assertFalse(create(new Inet6Address('::1'))->inSubnet('::0101/120'));
     }
+
+    /**
+     * Test invalid address is caught
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function illegalAddress() {
+      new Inet6Address('::ffffff:::::a');
+    }
+
+    /**
+     * Test invalid address is caught
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function anotherIllegalAddress() {
+      new Inet6Address('');
+    }
   }
 ?>
