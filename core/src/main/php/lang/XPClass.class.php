@@ -611,8 +611,8 @@
               if (']' == substr(rtrim($tokens[$i][1]), -1)) {
                 ob_start();
                 $annotations= eval('return array('.preg_replace(
-                  array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-                  array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
+                  array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= (array)*/i'),
+                  array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => $3'),
                   trim($parsed, "[]# \t\n\r").','
                 ).');');
                 $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
