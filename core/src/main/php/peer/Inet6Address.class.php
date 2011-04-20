@@ -7,19 +7,18 @@
   uses('peer.InetAddress');
   
   /**
-   * (Insert class' description here)
+   * IPv4 address
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @test      xp://net.xp_framework.unittest.peer.Inet6AddressTest
+   * @see       php://ip2long
+   * @purpose   Represent an IPv6 address
    */
   class Inet6Address extends InetAddress {
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
+     * @param   string address
      */
     public function __construct($addr) {
       $addr= self::normalize($addr);
@@ -27,10 +26,10 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Normalize address
      *
-     * @param   
-     * @return  
+     * @param   string addr
+     * @return  string
      */
     protected static function normalize($addr) {
       $out= '';
@@ -49,10 +48,12 @@
     }
         
     /**
-     * (Insert method's description here)
+     * Retrieve human-readable form;
      *
-     * @param   
-     * @return  
+     * this method will shorten upon the first possible occasion, not on the
+     * occasion where shortening will save the most space.
+     *
+     * @return  string
      */
     public function getAddress() {
       $skipZero= FALSE; $hasSkipped= FALSE; $hexquads= array();
@@ -79,20 +80,20 @@
     }    
     
     /**
-     * (Insert method's description here)
+     * Determine whether address is a loopback address
      *
-     * @param   
-     * @return  
+     * @return  bool
      */
     public function isLoopback() {
       return "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01" == $this->addr;
     }
     
     /**
-     * (Insert method's description here)
+     * Determine whether address is in the given subnet
      *
-     * @param   
-     * @return  
+     * @param   string net
+     * @return  bool
+     * @throws  lang.FormatException in case net has invalid format
      */
     public function inSubnet($net) {
       list($addr, $mask)= explode('/', $net);

@@ -7,19 +7,19 @@
   uses('peer.InetAddress');
 
   /**
-   * (Insert class' description here)
+   * IPv4 address
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @test      xp://net.xp_framework.unittest.peer.Inet4AddressTest
+   * @see       php://ip2long
+   * @purpose   Represent an IPv4 address
    */
   class Inet4Address extends InetAddress {
   
     /**
-     * (Insert method's description here)
+     * Convert IPv4 address from dotted form into a long
      *
-     * @param   
-     * @return  
+     * @param   string ip
+     * @return  int
      */
     protected static function ip2long($ip) {
       $i= 0; $addr= 0;
@@ -30,40 +30,38 @@
     }
     
     /**
-     * (Insert method's description here)
+     * Constructor
      *
-     * @param   
-     * @return  
+     * @param   string address
      */
     public function __construct($address) {
       $this->addr= self::ip2long($address);
     }
     
     /**
-     * (Insert method's description here)
+     * Retrieve human-readable form
      *
-     * @param   
-     * @return  
+     * @return  string
      */
     public function getAddress() {
       return long2ip($this->addr);
     }
     
     /**
-     * (Insert method's description here)
+     * Determine whether address is a loopback address
      *
-     * @param   
-     * @return  
+     * @return  bool
      */
     public function isLoopback() {
       return $this->addr >> 8 == 0x7F0000;
     }
     
     /**
-     * (Insert method's description here)
+     * Determine whether address is in the given subnet
      *
-     * @param   
-     * @return  
+     * @param   string net
+     * @return  bool
+     * @throws  lang.FormatException in case net has invalid format
      */
     public function inSubnet($net) {
       list ($addr, $mask)= explode('/', $net);

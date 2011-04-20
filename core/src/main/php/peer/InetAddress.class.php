@@ -5,45 +5,34 @@
  */
 
   /**
-   * (Insert class' description here)
+   * Abstract base for Inet address
    *
-   * @ext      extension
-   * @see      reference
-   * @purpose  purpose
+   * @purpose  Common ancestor for IPv4 and IPv6
    */
   abstract class InetAddress extends Object {
     protected
       $addr = NULL;
 
     /**
-     * (Insert method's description here)
+     * Retrieve "human-readable" address
      *
-     * @param   
-     * @return  
-     */
-    
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
+     * @return  string
      */
     public abstract function getAddress();
     
     /**
-     * (Insert method's description here)
+     * Check whether this address is a loopback address
      *
-     * @param   
-     * @return  
+     * @return  bool
      */
     public abstract function isLoopback();
     
     /**
-     * (Insert method's description here)
+     * Determine whether this address is in the given network.
      *
-     * @param   
-     * @return  
+     * @param   string net
+     * @return  bool
+     * @throws  lang.FormatException in case net has invalid format
      */
     public abstract function inSubnet($net);    
   }
