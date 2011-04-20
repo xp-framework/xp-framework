@@ -13,7 +13,7 @@
    * @see       php://ip2long
    * @purpose   Represent an IPv6 address
    */
-  class Inet6Address extends InetAddress {
+  class Inet6Address extends Object implements InetAddress {
     
     /**
      * Constructor

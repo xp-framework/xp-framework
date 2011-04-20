@@ -13,7 +13,7 @@
    * @see       php://ip2long
    * @purpose   Represent an IPv4 address
    */
-  class Inet4Address extends InetAddress {
+  class Inet4Address extends Object implements InetAddress {
   
     /**
      * Convert IPv4 address from dotted form into a long
