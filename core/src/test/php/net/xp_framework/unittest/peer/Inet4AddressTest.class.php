@@ -10,33 +10,52 @@
   );
 
   /**
-   * TestCase
+   * Test for Inet4Address
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.Inet4Address
+   * @purpose  TestCase
    */
   class Inet4AddressTest extends TestCase {
   
     /**
-     * Sets up test case
-     *
-     */
-    public function setUp() {
-      // TODO: Fill code that gets executed before every test method
-      //       or remove this method
-    }
-    
-    /**
-     * Test
+     * Test creation of address
      *
      */
     #[@test]
     public function createAddress() {
       $this->assertEquals('127.0.0.1', create(new Inet4Address('127.0.0.1'))->getAddress());
     }
+
+    /**
+     * Test creation of IP from some string raises exception
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function createInvalidAddressRaisesException() {
+      new Inet4Address('Who am I');
+    }
+
+    /**
+     * Test creation of invalid formatted IP raises exception
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function createInvalidAddressThatLooksLikeAddressRaisesException() {
+      new Inet4Address('10.0.0.355');
+    }
     
     /**
-     * Test
+     * Test creation of ip from string with too many dot blocks
+     * raises an exception
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function createInvalidAddressWithTooManyBlocksRaisesException() {
+      new Inet4Address('10.0.0.255.5');
+    }
+
+    /**
+     * 127.0.0.1 should be detected as loopback
      *
      */
     #[@test]
@@ -45,7 +64,7 @@
     }
     
     /**
-     * Test
+     * 127.0.0.x should be detected as loopback
      *
      */
     #[@test]
@@ -54,7 +73,7 @@
     }
     
     /**
-     * Test
+     * Test subnet determination works
      *
      */
     #[@test]
@@ -63,7 +82,7 @@
     }
     
     /**
-     * Test
+     * Test ip is not part of subnet
      *
      */
     #[@test]
@@ -71,9 +90,8 @@
       $this->assertFalse(create(new Inet4Address('192.168.2.1'))->inSubnet('172.17.0.0/12'));
     }
     
-    
     /**
-     * Test
+     * Test that a host is in his own host-subnet
      *
      */
     #[@test]
@@ -82,17 +100,12 @@
     }
     
     /**
-     * Test
+     * Test invalid formatted net raises exception
      *
      */
     #[@test, @expect('lang.FormatException')]
     public function illegalSubnet() {
       create(new Inet4Address('172.17.29.6'))->inSubnet('172.17.29.6/33');
     }
-    
-    
-    
-    
-    
   }
 ?>

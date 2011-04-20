@@ -10,35 +10,15 @@
   );
 
   /**
-   * TestCase
+   * Test for Inet6Address
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see      xp://peer.Inet6Address
+   * @purpose  Testcase
    */
   class Inet6AddressTest extends TestCase {
   
     /**
-     * Sets up test case
-     *
-     */
-    public function setUp() {
-      // TODO: Fill code that gets executed before every test method
-      //       or remove this method
-    }
-    
-    /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function tearDown() {
-      // TODO: Fill code that gets executed after every test method
-      //       or remove this method
-    }
-    
-    /**
-     * Test
+     * Test creation of address
      *
      */
     #[@test]
@@ -50,7 +30,7 @@
     }
     
     /**
-     * Test
+     * Test getAddress() shortens address
      *
      */
     #[@test]
@@ -62,7 +42,7 @@
     }
     
     /**
-     * Test
+     * Test shortening only takes place once
      *
      */
     #[@test]
@@ -75,7 +55,7 @@
     
     
     /**
-     * Test
+     * Test hexquads become shortened if first digits are zero
      *
      */
     #[@test]
@@ -87,7 +67,7 @@
     }
     
     /**
-     * Test
+     * Test prefix is shortened
      *
      */
     #[@test]
@@ -99,7 +79,7 @@
     }
     
     /**
-     * Test
+     * Test postfix is shortened
      *
      */
     #[@test]
@@ -112,7 +92,7 @@
     
     
     /**
-     * Test
+     * Test loopback address is formatted correctly
      *
      */
     #[@test]
@@ -121,7 +101,7 @@
     }
     
     /**
-     * Test
+     * Test loopback address is detected
      *
      */
     #[@test]
@@ -130,7 +110,7 @@
     }
     
     /**
-     * Test
+     * Test alternative loopback address is detected
      *
      */
     #[@test]
@@ -139,7 +119,7 @@
     }
     
     /**
-     * Test
+     * Test subnet detection for loopback
      *
      */
     #[@test]
@@ -148,7 +128,7 @@
     }
     
     /**
-     * Test
+     * Test smallest possible subnet contains loopback
      *
      */
     #[@test]
@@ -157,7 +137,7 @@
     }
     
     /**
-     * Test
+     * Test address not being detected in subnet when its not
      *
      */
     #[@test]
