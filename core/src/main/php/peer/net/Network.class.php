@@ -48,8 +48,8 @@
      *
      * @return  string
      */
-    public function getAddressAsString() {
-      return $this->address->getAddress().'/'.$this->netmask;
+    public function asString() {
+      return $this->address->asString().'/'.$this->netmask;
     }
 
     /**
@@ -89,7 +89,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->address->toString().'/'.$this->netmask.')';
+      return $this->getClassName().'('.$this->address->asString().'/'.$this->netmask.')';
     }
   }
 ?>

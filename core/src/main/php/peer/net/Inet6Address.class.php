@@ -75,7 +75,7 @@
      *
      * @return  string
      */
-    public function getAddress() {
+    public function asString() {
       $skipZero= FALSE; $hasSkipped= FALSE; $hexquads= array();
       for ($i= 0; $i < 16; $i+=2) {
         if (!$hasSkipped && "\x00\x00" == $this->addr{$i}.$this->addr{$i+1}) {
@@ -149,7 +149,7 @@
      * @return  string
      */
     public function toString() {
-      return 'ipv6:'.$this->getAddress();
+      return $this->getClassName().'('.$this->asString().')';
     }
 
   }

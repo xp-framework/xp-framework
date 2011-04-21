@@ -59,7 +59,7 @@
      *
      * @return  string
      */
-    public function getAddress() {
+    public function asString() {
       return long2ip($this->addr);
     }
     
@@ -102,7 +102,7 @@
      * @return  string
      */
     public function toString() {
-      return 'ipv4:'.$this->getAddress();
+      return $this->getClassName().'('.$this->asString().')';
     }
   }
 ?>

@@ -24,7 +24,7 @@
      */
     #[@test]
     public function createAddress() {
-      $this->assertEquals('127.0.0.1', create(new Inet4Address('127.0.0.1'))->getAddress());
+      $this->assertEquals('127.0.0.1', create(new Inet4Address('127.0.0.1'))->asString());
     }
 
     /**

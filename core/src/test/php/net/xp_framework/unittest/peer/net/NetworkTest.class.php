@@ -25,7 +25,7 @@
     #[@test]
     public function createNetwork() {
       $net= new Network(new Inet4Address("127.0.0.1"), 24);
-      $this->assertEquals('127.0.0.1/24', $net->getAddressAsString());
+      $this->assertEquals('127.0.0.1/24', $net->asString());
     }
 
     /**
@@ -45,7 +45,7 @@
     public function createNetworkV6() {
       $this->assertEquals(
         'fe00::/7',
-        create(new Network(new Inet6Address('fe00::'), 7))->getAddressAsString()
+        create(new Network(new Inet6Address('fe00::'), 7))->asString()
       );
     }
 
@@ -57,7 +57,7 @@
     public function createNetworkV6WorkAlsoWithNetmaskTooBigInV4() {
       $this->assertEquals(
         'fe00::/35',
-        create(new Network(new Inet6Address('fe00::'), 35))->getAddressAsString()
+        create(new Network(new Inet6Address('fe00::'), 35))->asString()
       );
     }
 

@@ -16,7 +16,7 @@
      *
      * @return  string
      */
-    public function getAddress();
+    public function asString();
     
     /**
      * Check whether this address is a loopback address
