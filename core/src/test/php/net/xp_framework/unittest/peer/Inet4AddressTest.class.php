@@ -78,7 +78,7 @@
      */
     #[@test]
     public function inSubnet() {
-      $this->assertTrue(create(new Inet4Address('192.168.2.1'))->inSubnet('192.168.2/24'));
+      $this->assertTrue(create(new Inet4Address('192.168.2.1'))->inSubnet(new Network(new Inet4Address('192.168.2'), 24)));
     }
     
     /**
@@ -87,7 +87,7 @@
      */
     #[@test]
     public function notInSubnet() {
-      $this->assertFalse(create(new Inet4Address('192.168.2.1'))->inSubnet('172.17.0.0/12'));
+      $this->assertFalse(create(new Inet4Address('192.168.2.1'))->inSubnet(new Network(new Inet4Address('172.17.0.0'), 12)));
     }
     
     /**
@@ -96,7 +96,7 @@
      */
     #[@test]
     public function hostInOwnHostSubnet() {
-      $this->assertTrue(create(new Inet4Address('172.17.29.6'))->inSubnet('172.17.29.6/32'));
+      $this->assertTrue(create(new Inet4Address('172.17.29.6'))->inSubnet(new Network(new Inet4Address('172.17.29.6'), 32)));
     }
     
     /**
@@ -105,7 +105,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function illegalSubnet() {
-      create(new Inet4Address('172.17.29.6'))->inSubnet('172.17.29.6/33');
+      create(new Inet4Address('172.17.29.6'))->inSubnet(new Network(new Inet4Address('172.17.29.6'), 33));
     }
 
     /**

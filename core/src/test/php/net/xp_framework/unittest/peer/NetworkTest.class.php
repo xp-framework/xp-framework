@@ -38,6 +38,39 @@
     }
 
     /**
+     * Create v6 network
+     *
+     */
+    #[@test]
+    public function createNetworkV6() {
+      $this->assertEquals(
+        'fe00::/7',
+        create(new Network(new Inet6Address('fe00::'), 7))->getAddressAsString()
+      );
+    }
+
+    /**
+     * Create v6 network
+     *
+     */
+    #[@test]
+    public function createNetworkV6WorkAlsoWithNetmaskTooBigInV4() {
+      $this->assertEquals(
+        'fe00::/35',
+        create(new Network(new Inet6Address('fe00::'), 35))->getAddressAsString()
+      );
+    }
+
+    /**
+     * Create v6 network
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function createNetworkV6FailsIfTooLargeNetmaskGiven() {
+      new Network(new Inet6Address('fe00::'), 763);
+    }
+
+    /**
      * Create network fails
      *
      */

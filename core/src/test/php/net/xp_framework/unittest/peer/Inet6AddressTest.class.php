@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'peer.Inet6Address'
+    'peer.Inet6Address',
+    'peer.Network'
   );
 
   /**
@@ -124,7 +125,7 @@
      */
     #[@test]
     public function inSubnet() {
-      $this->assertTrue(create(new Inet6Address('::1'))->inSubnet('::1/120'));
+      $this->assertTrue(create(new Inet6Address('::1'))->inSubnet(new Network(new Inet6Address('::1'), 120)));
     }
     
     /**
@@ -133,7 +134,7 @@
      */
     #[@test]
     public function inSmallestPossibleSubnet() {
-      $this->assertTrue(create(new Inet6Address('::1'))->inSubnet('::0/127'));
+      $this->assertTrue(create(new Inet6Address('::1'))->inSubnet(new Network(new Inet6Address('::0'), 127)));
     }
     
     /**
@@ -142,7 +143,7 @@
      */
     #[@test]
     public function notInSubnet() {
-      $this->assertFalse(create(new Inet6Address('::1'))->inSubnet('::0101/120'));
+      $this->assertFalse(create(new Inet6Address('::1'))->inSubnet(new Network(new Inet6Address('::0101'), 120)));
     }
 
     /**
