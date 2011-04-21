@@ -162,5 +162,24 @@
     public function anotherIllegalAddress() {
       new Inet6Address('');
     }
+
+    /**
+     * The same IPs should be equal
+     *
+     */
+    #[@test]
+    public function sameIPsShouldBeEqual() {
+      $this->assertEquals(new Inet6Address('::1'), new Inet6Address('::1'));
+    }
+
+    /**
+     * Different IPs should not be equal
+     *
+     */
+    #[@test]
+    public function differentIPsShouldBeDifferent() {
+      $this->assertNotEquals(new Inet6Address('::1'), new Inet6Address('::fe08'));
+    }
+
   }
 ?>

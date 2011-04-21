@@ -123,5 +123,25 @@
       
       return TRUE;
     }
+
+    /**
+     * Equals method
+     *
+     * @param   lang.Object cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->addr === $this->addr;
+    }
+
+    /**
+     * Get string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return 'ipv6:'.$this->getAddress();
+    }
+
   }
 ?>

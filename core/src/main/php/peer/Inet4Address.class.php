@@ -77,5 +77,23 @@
       
       return $this->addr >> (32 - $mask) == $addrn >> (32 - $mask);
     }
+
+    /**
+     * Equals method
+     *
+     * @param   lang.Object cmp
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $this->addr === $cmp->addr;
+    }
+
+    /**
+     * Get string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return 'ipv4:'.$this->getAddress();
+    }
   }
 ?>

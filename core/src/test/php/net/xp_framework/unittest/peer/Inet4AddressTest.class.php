@@ -107,5 +107,23 @@
     public function illegalSubnet() {
       create(new Inet4Address('172.17.29.6'))->inSubnet('172.17.29.6/33');
     }
+
+    /**
+     * The same IPs should be equal
+     *
+     */
+    #[@test]
+    public function sameIPsShouldBeEqual() {
+      $this->assertEquals(new Inet4Address('127.0.0.1'), new Inet4Address('127.0.0.1'));
+    }
+
+    /**
+     * Different IPs should not be equal
+     *
+     */
+    #[@test]
+    public function differentIPsShouldBeDifferent() {
+      $this->assertNotEquals(new Inet4Address('127.0.0.5'), new Inet4Address('192.168.1.1'));
+    }
   }
 ?>
