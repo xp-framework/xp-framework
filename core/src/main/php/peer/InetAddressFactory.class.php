@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.Inet4Address', 'peer.Inet6Address');
+
   /**
    * InetAddress Factory
    *

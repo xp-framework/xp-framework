@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'peer.Network'
+    'peer.Network',
+    'peer.Inet4Address'
   );
 
   /**
@@ -24,7 +25,7 @@
     #[@test]
     public function createNetwork() {
       $net= new Network(new Inet4Address("127.0.0.1"), 24);
-      $this->assertEquals('127.0.0.1/24', $net->getAddress());
+      $this->assertEquals('127.0.0.1/24', $net->getAddressAsString());
     }
 
     /**
@@ -74,23 +75,20 @@
     }
 
     /**
-     * Retrieve network ip
+     * Check if given IP is part of net
      *
      */
-    #[@test, @ignore]
-    public function firstIP() {
-      $net= new Network(new Inet4Address("127.0.0.0"), 24);
-      $this->assertEquals(new Inet4Address("127.0.0.1"), $net->getFirstAddress());
+    #[@test]
+    public function loopbackNetworkContainsLoopbackAddressV4() {
+      $this->assertTrue(create(new Network(new Inet4Address('127.0.0.5'), 24))->contains(new Inet4Address('127.0.0.1')));
     }
 
-    /**
-     * Retrieve network ip
-     *
-     */
-    #[@test, @ignore]
-    public function broadcastIP() {
-      $net= new Network(new Inet4Address("127.0.0.0"), 24);
-      $this->assertEquals(new Inet4Address("127.0.0.255"), $net->getBroadcastAddress());
+    #[@test]
+    public function equalNetworksAreEqual() {
+      $this->assertEquals(
+        new Network(new Inet4Address('127.0.0.1'), 8),
+        new Network(new Inet4Address('127.0.0.1'), 8)
+      );
     }
   }
 ?>

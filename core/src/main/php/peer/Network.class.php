@@ -26,11 +26,29 @@
     }
 
     /**
+     * Acquire address
+     *
+     * @return  peer.InetAddress
+     */
+    public function getAddress() {
+      return $this->address;
+    }
+
+    /**
+     * Get netmask
+     *
+     * @return  int
+     */
+    public function getNetmask() {
+      return $this->netmask;
+    }
+
+    /**
      * Return address as string
      *
      * @return  string
      */
-    public function getAddress() {
+    public function getAddressAsString() {
       return $this->address->getAddress().'/'.$this->netmask;
     }
 
@@ -43,10 +61,35 @@
       return $this->address;
     }
 
-    public function getFirstAddress() {
-      return $this->address->next();
+    /**
+     * Determine whether given address is part of this network
+     *
+     * @param   peer.InetAddress addr
+     * @return  bool
+     */
+    public function contains(InetAddress $addr) {
+      return $addr->inSubnet($this);
     }
 
+    /**
+     * Check if object is equal
+     *
+     * @param   lang.Object cmp
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self &&
+        $cmp->netmask === $this->netmask &&
+        $this->address->equals($cmp->address)
+      ;
+    }
 
+    /**
+     * Retrieve string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->address->toString().'/'.$this->netmask.')';
+    }
   }
 ?>
