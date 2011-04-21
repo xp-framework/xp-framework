@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'peer.NetworkParser'
+    'peer.net.NetworkParser'
   );
 
   /**

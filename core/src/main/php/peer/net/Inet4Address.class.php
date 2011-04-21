@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.InetAddress');
+  uses('peer.net.InetAddress');
 
   /**
    * IPv4 address

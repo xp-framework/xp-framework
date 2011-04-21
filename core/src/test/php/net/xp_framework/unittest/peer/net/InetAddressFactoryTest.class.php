@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'peer.InetAddressFactory'
+    'peer.net.InetAddressFactory'
   );
 
   /**
@@ -32,7 +32,7 @@
      */
     #[@test]
     public function createLocalhostV4() {
-      $this->assertInstanceOf('peer.Inet4Address', $this->cut->parse('127.0.0.1'));
+      $this->assertInstanceOf('peer.net.Inet4Address', $this->cut->parse('127.0.0.1'));
     }
 
     /**
@@ -59,7 +59,7 @@
      */
     #[@test]
     public function parseLocalhostV6() {
-      $this->assertInstanceOf('peer.Inet6Address', $this->cut->parse('::1'));
+      $this->assertInstanceOf('peer.net.Inet6Address', $this->cut->parse('::1'));
     }
 
     /**
@@ -68,7 +68,7 @@
      */
     #[@test]
     public function parseV6() {
-      $this->assertInstanceOf('peer.Inet6Address', $this->cut->parse('fe80::a6ba:dbff:fefe:7755'));
+      $this->assertInstanceOf('peer.net.Inet6Address', $this->cut->parse('fe80::a6ba:dbff:fefe:7755'));
     }
 
     /**

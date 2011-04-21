@@ -5,8 +5,8 @@
  */
 
   uses(
-    'peer.Network',
-    'peer.InetAddressFactory'
+    'peer.net.Network',
+    'peer.net.InetAddressFactory'
   );
 
   /**
