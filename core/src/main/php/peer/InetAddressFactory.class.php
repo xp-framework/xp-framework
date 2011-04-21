@@ -20,7 +20,7 @@
      * @return  peer.InetAddress
      * @throws  lang.FormatException if address could not be matched
      */
-    public function parseAddress($string) {
+    public function parse($string) {
       if (4 == sscanf($string, '%d.%d.%d.%d', $a, $b, $c, $d))
         return new Inet4Address($string);
 

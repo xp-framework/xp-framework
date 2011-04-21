@@ -37,7 +37,7 @@
       if (2 !== sscanf($string, '%[^/]/%d$', $addr, $mask)) 
         throw new FormatException('Given string cannot be parsed to network: ['.$string.']');
 
-      return new Network($this->addressParser->parseAddress($addr), $mask);
+      return new Network($this->addressParser->parse($addr), $mask);
     }
   }
 ?>
