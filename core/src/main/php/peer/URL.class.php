@@ -460,7 +460,7 @@
      * @throws  lang.FormatException if string is unparseable
      */
     public function setURL($str) {
-      if (!strstr($str, '://') || !($this->_info= parse_url($str))) {
+      if (!strstr($str, '://') || !($this->_info= parse_url($str)) || !isset($this->_info['scheme'])) {
         $e= new FormatException('Cannot parse "'.$str.'"');
         xp::gc(__FILE__);
         throw $e;
