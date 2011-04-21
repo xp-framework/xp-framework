@@ -24,6 +24,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Extended parser for annotations to allow annotations like
+  #[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]
+  (Gabriel Mihai Ghigea, kiesel)
 - Added setParameter() method to peer.http.HttpRequest class
   (friebe)
 - Migrated repository to github.com (for the records)
