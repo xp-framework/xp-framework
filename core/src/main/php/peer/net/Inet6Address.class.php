@@ -152,5 +152,14 @@
       return $this->getClassName().'('.$this->asString().')';
     }
 
+    /**
+     * Magic string cast callback
+     *
+     * @return  string
+     */
+    public function __toString() {
+      return '['.$this->asString().']';
+    }
+
   }
 ?>

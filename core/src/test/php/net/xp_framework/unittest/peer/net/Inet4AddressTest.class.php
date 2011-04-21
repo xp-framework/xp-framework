@@ -126,5 +126,16 @@
     public function differentIPsShouldBeDifferent() {
       $this->assertNotEquals(new Inet4Address('127.0.0.5'), new Inet4Address('192.168.1.1'));
     }
+
+    /**
+     * Check casting to string works
+     *
+     */
+    #[@test]
+    public function castToString() {
+      $this->assertEquals('192.168.1.1', (string)new Inet4Address('192.168.1.1'));
+    }
+
+
   }
 ?>

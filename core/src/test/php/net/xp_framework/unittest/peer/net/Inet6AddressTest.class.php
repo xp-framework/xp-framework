@@ -181,5 +181,15 @@
     public function differentIPsShouldBeDifferent() {
       $this->assertNotEquals(new Inet6Address('::1'), new Inet6Address('::fe08'));
     }
+
+    /**
+     * Check casting to string works
+     *
+     */
+    #[@test]
+    public function castToString() {
+      $this->assertEquals('[::1]', (string)new Inet6Address('::1'));
+
+    }
   }
 ?>
