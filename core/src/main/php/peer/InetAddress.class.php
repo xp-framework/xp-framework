@@ -32,6 +32,13 @@
      * @return  bool
      * @throws  lang.FormatException in case net has invalid format
      */
-    public function inSubnet($net);
+    public function inSubnet(Network $net);
+
+    /**
+     * Retrieve size of address in bits
+     *
+     * @return  int
+     */
+    public function sizeInBits();
   }
 ?>

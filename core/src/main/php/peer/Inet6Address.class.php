@@ -24,7 +24,16 @@
       $addr= self::normalize($addr);
       $this->addr= pack('H*', $addr);
     }
-    
+
+    /**
+     * Retrieve size of ips of this kind in bits.
+     *
+     * @return  int
+     */
+    public function sizeInBits() {
+      return 128;
+    }
+
     /**
      * Normalize address
      *
@@ -106,9 +115,9 @@
      * @return  bool
      * @throws  lang.FormatException in case net has invalid format
      */
-    public function inSubnet($net) {
-      list($addr, $mask)= explode('/', $net);
-      $addr= new self($addr);
+    public function inSubnet(Network $net) {
+      $addr= $net->getAddress();
+      $mask= $net->getNetmask();
       
       $position= 0;
       while ($mask > 8) {

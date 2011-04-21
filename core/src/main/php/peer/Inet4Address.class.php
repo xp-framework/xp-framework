@@ -44,7 +44,16 @@
     public function __construct($address) {
       $this->addr= self::ip2long($address);
     }
-    
+
+    /**
+     * Retrieve size of ips of this kind in bits.
+     *
+     * @return  int
+     */
+    public function  sizeInBits() {
+      return 32;
+    }
+
     /**
      * Retrieve human-readable form
      *
@@ -70,11 +79,11 @@
      * @return  bool
      * @throws  lang.FormatException in case net has invalid format
      */
-    public function inSubnet($net) {
-      list ($addr, $mask)= explode('/', $net);
-      if (empty($mask) || empty($addr) || $mask < 0 || $mask > 32) throw new FormatException('Invalid subnet notation given: use "host/mask"');
-      $addrn= self::ip2long($addr);
+    public function inSubnet(Network $net) {
+      if (!$net->getAddress() instanceof self) return FALSE;
       
+      $addrn= $net->getAddress()->addr;
+      $mask= $net->getNetmask();
       return $this->addr >> (32 - $mask) == $addrn >> (32 - $mask);
     }
 
