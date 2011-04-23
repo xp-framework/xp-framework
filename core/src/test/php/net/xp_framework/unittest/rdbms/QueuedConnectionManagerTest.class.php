@@ -5,7 +5,8 @@
  */
 
   uses(
-    'net.xp_framework.unittest.rdbms.ConnectionManagerTest'
+    'net.xp_framework.unittest.rdbms.ConnectionManagerTest',
+    'rdbms.DSN'
   );
 
   /**
@@ -29,6 +30,19 @@
         $cm->queue($dsn, $name);
       }
       return $cm;
+    }
+    
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function queueReturnsDSN() {
+      $dsn= 'mock://user:pass@host/db?autoconnect=1';
+      $this->assertEquals(
+        new DSN($dsn), 
+        ConnectionManager::getInstance()->queue($dsn)
+      );
     }
   }
 ?>
