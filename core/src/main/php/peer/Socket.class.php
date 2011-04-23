@@ -90,7 +90,7 @@
       if ($this->isConnected()) return TRUE;
       
       if (!$this->_sock= fsockopen(
-        $this->_prefix.$this->host,
+        $this->_prefix.(string)$this->host,
         $this->port,
         $errno,
         $errstr,
