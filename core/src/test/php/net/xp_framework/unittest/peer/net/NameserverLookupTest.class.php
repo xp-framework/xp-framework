@@ -46,9 +46,29 @@
      *
      */
     #[@test]
+    public function lookupLocalhostInet4() {
+      $this->cut->addLookup('127.0.0.1');
+      $this->assertEquals(new Inet4Address('127.0.0.1'), $this->cut->lookupInet4('localhost'));
+    }
+
+    /**
+     * Test lookup localhost
+     *
+     */
+    #[@test]
     public function lookupLocalhostAllInet6() {
       $this->cut->addLookup('::1');
       $this->assertEquals(array(new Inet6Address('::1')), $this->cut->lookupAllInet6('localhost'));
+    }
+
+    /**
+     * Test lookup localhost
+     *
+     */
+    #[@test]
+    public function lookupLocalhostInet6() {
+      $this->cut->addLookup('::1');
+      $this->assertEquals(new Inet6Address('::1'), $this->cut->lookupInet6('localhost'));
     }
 
     /**
@@ -63,6 +83,21 @@
       $this->assertEquals(
         array(new Inet4Address('127.0.0.1'), new Inet6Address('::1')),
         $this->cut->lookupAll('localhost')
+      );
+    }
+
+    /**
+     * Test lookup localhost
+     *
+     */
+    #[@test]
+    public function lookupLocalhost() {
+      $this->cut->addLookup('127.0.0.1');
+      $this->cut->addLookup('::1');
+
+      $this->assertEquals(
+        new Inet4Address('127.0.0.1'),
+        $this->cut->lookup('localhost')
       );
     }
 

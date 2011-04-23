@@ -38,6 +38,19 @@
     }
 
     /**
+     * Lookup inet4 addresses
+     *
+     * @param   string host
+     * @return  peer.netInet4Address[]
+     */
+    public function lookupInet4($host) {
+      $addr= $this->_nativeLookup($host, DNS_A);
+      if (sizeof($addr) < 1) throw new ElementNotFoundException('No record found for "'.$host.'"');
+
+      return new Inet4Address($addr[0]['ip']);
+    }
+
+    /**
      * Lookup all inet6 addresses
      *
      * @param   string host
@@ -53,6 +66,19 @@
     }
 
     /**
+     * Lookup inet4 addresses
+     *
+     * @param   string host
+     * @return  peer.netInet4Address[]
+     */
+    public function lookupInet6($host) {
+      $addr= $this->_nativeLookup($host, DNS_AAAA);
+      if (sizeof($addr) < 1) throw new ElementNotFoundException('No record found for "'.$host.'"');
+
+      return new Inet6Address($addr[0]['ip']);
+    }
+
+    /**
      * Lookup all addresses
      *
      * @param   string host
@@ -65,6 +91,20 @@
       }
 
       return $res;
+    }
+
+    /**
+     * Lookup inet4 addresses
+     *
+     * @param   string host
+     * @return  peer.netInet4Address[]
+     */
+    public function lookup($host) {
+      $addr= $this->_nativeLookup($host, DNS_A|DNS_AAAA);
+      if (sizeof($addr) < 1) throw new ElementNotFoundException('No record found for "'.$host.'"');
+
+      $parser= new InetAddressFactory();
+      return $parser->parse($addr[0]['ip']);
     }
   }
 
