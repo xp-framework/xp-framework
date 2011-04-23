@@ -36,9 +36,9 @@
      *
      */
     #[@test]
-    public function lookupLocalhostInet4() {
+    public function lookupLocalhostAllInet4() {
       $this->cut->addLookup('127.0.0.1');
-      $this->assertEquals(array(new Inet4Address('127.0.0.1')), $this->cut->lookupInet4('localhost'));
+      $this->assertEquals(array(new Inet4Address('127.0.0.1')), $this->cut->lookupAllInet4('localhost'));
     }
 
     /**
@@ -46,9 +46,9 @@
      *
      */
     #[@test]
-    public function lookupLocalhostInet6() {
+    public function lookupLocalhostAllInet6() {
       $this->cut->addLookup('::1');
-      $this->assertEquals(array(new Inet6Address('::1')), $this->cut->lookupInet6('localhost'));
+      $this->assertEquals(array(new Inet6Address('::1')), $this->cut->lookupAllInet6('localhost'));
     }
 
     /**
@@ -56,14 +56,23 @@
      *
      */
     #[@test]
-    public function lookupLocalhostV6() {
+    public function lookupLocalhostAll() {
       $this->cut->addLookup('127.0.0.1');
       $this->cut->addLookup('::1');
       
       $this->assertEquals(
         array(new Inet4Address('127.0.0.1'), new Inet6Address('::1')),
-        $this->cut->lookup('localhost')
+        $this->cut->lookupAll('localhost')
       );
+    }
+
+    /**
+     * Test nonexistant lookup returns empty array
+     *
+     */
+    #[@test]
+    public function lookupAllNonexistantGivesEmptyArray() {
+      $this->assertEquals(array(), $this->cut->lookupAll('localhost'));
     }
 
   }

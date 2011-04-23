@@ -28,7 +28,7 @@
      * @param   string host
      * @return  peer.netInet4Address[]
      */
-    public function lookupInet4($host) {
+    public function lookupAllInet4($host) {
       $res= array();
       foreach ($this->_nativeLookup($host, DNS_A) as $addr) {
         $res[]= new Inet4Address($addr['ip']);
@@ -43,7 +43,7 @@
      * @param   string host
      * @return  peer.net.Inet6Address
      */
-    public function lookupInet6($host) {
+    public function lookupAllInet6($host) {
       $res= array();
       foreach ($this->_nativeLookup($host, DNS_AAAA) as $addr) {
         $res[]= new Inet6Address($addr['ip']);
@@ -58,7 +58,7 @@
      * @param   string host
      * @return  peer.net.InetAddress[]
      */
-    public function lookup($host) {
+    public function lookupAll($host) {
       $res= array(); $parser= new InetAddressFactory();
       foreach ($this->_nativeLookup($host, DNS_A|DNS_AAAA) as $addr) {
         $res[]= $parser->parse($addr['ip']);
