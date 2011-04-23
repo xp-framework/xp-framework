@@ -27,7 +27,12 @@
     protected function instanceWith($dsns) {
       $cm= ConnectionManager::getInstance();
       foreach ($dsns as $name => $dsn) {
-        $cm->register(DriverManager::getConnection($dsn), $name);
+        $conn= DriverManager::getConnection($dsn);
+        if (FALSE !== ($p= strpos($name, '.'))) {
+          $cm->register($conn, substr($name, 0, $p), substr($name, $p+ 1));
+        } else {
+          $cm->register($conn, $name);
+        }
       }
       return $cm;
     }

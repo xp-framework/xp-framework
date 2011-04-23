@@ -27,7 +27,11 @@
     protected function instanceWith($dsns) {
       $cm= ConnectionManager::getInstance();
       foreach ($dsns as $name => $dsn) {
-        $cm->queue($dsn, $name);
+        if (FALSE !== ($p= strpos($name, '.'))) {
+          $cm->queue($dsn, substr($name, 0, $p), substr($name, $p+ 1));
+        } else {
+          $cm->queue($dsn, $name);
+        }
       }
       return $cm;
     }

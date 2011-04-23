@@ -102,7 +102,7 @@
       $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
       $cm->get('mydb', 'nonexistant');
     }
-    
+
     /**
      * Check that configuring with a not supported scheme works.
      *
@@ -121,6 +121,70 @@
     public function acquireInvalidDsnScheme() {
       $cm= $this->instanceWith(array('mydb' => 'invalid://user:pass@host/db?autoconnect=1'));
       $cm->getByHost('mydb', 0);
+    }
+
+    /**
+     * Acquire a connection by host
+     *
+     */
+    #[@test]
+    public function getByUserAndHost() {
+      $dsns= array(
+        'mydb.user'  => 'mock://user:pass@host/db?autoconnect=1',
+        'mydb.admin' => 'mock://admin:pass@host/db?autoconnect=1'
+      );
+      $cm= $this->instanceWith($dsns);
+      $this->assertEquals(new DSN($dsns['mydb.user']), $cm->get('mydb', 'user')->dsn);
+    }
+ 
+    /**
+     * Acquire first connection by host
+     *
+     */
+    #[@test]
+    public function getFirstByHost() {
+      $dsns= array(
+        'mydb.user'  => 'mock://user:pass@host/db?autoconnect=1',
+        'mydb.admin' => 'mock://admin:pass@host/db?autoconnect=1'
+      );
+      $cm= $this->instanceWith($dsns);
+      $this->assertEquals(new DSN($dsns['mydb.user']), $cm->getByHost('mydb', 0)->dsn);
+    }
+ 
+    /**
+     * Acquire first connection by host
+     *
+     */
+    #[@test]
+    public function getSecondByHost() {
+      $dsns= array(
+        'mydb.user'  => 'mock://user:pass@host/db?autoconnect=1',
+        'mydb.admin' => 'mock://admin:pass@host/db?autoconnect=1'
+      );
+      $cm= $this->instanceWith($dsns);
+      $this->assertEquals(new DSN($dsns['mydb.admin']), $cm->getByHost('mydb', 1)->dsn);
+    }
+
+    /**
+     * Acquire all connections by host
+     *
+     */
+    #[@test]
+    public function getAllByHost() {
+      $dsns= array(
+        'mydb.user'  => 'mock://user:pass@host/db?autoconnect=1',
+        'mydb.admin' => 'mock://admin:pass@host/db?autoconnect=1'
+      );
+      $cm= $this->instanceWith($dsns);
+      
+      $values= array();
+      foreach ($cm->getByHost('mydb') as $conn) {
+        $values[]= $conn->dsn;
+      }
+      $this->assertEquals(
+        array(new DSN($dsns['mydb.user']), new DSN($dsns['mydb.admin'])), 
+        $values
+      );
     }
   }
 ?>
