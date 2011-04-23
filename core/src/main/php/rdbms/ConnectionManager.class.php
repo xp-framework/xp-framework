@@ -11,16 +11,13 @@
   );
   
   /**
-   * ConnectionManager
+   * ConnectionManager holds connections to databases
    *
-   * @purpose  Hold connections to databases
+   * @test    xp://net.xp_framework.rdbms.ConnectionManagerTest
    */
   class ConnectionManager extends Object implements Configurable {
-    protected static 
-      $instance     = NULL;
-
-    public 
-      $pool= array();
+    protected static $instance= NULL;
+    public $pool= array();
 
     static function __static() {
       self::$instance= new self();
