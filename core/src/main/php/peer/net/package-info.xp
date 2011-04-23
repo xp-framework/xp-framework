@@ -1,0 +1,25 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The peer.net package contains classes to represent IP- and IPv6-
+ * addresses.
+ *
+ * Next to factories and parsers, the package also contains classes
+ * to resolve names into IP addresses by performing DNS nameserver
+ * lookup queries.
+ *
+ * Inet4Address and Inet6Address object are also accepted by Socket
+ * and BSDSocket from the peer package.
+ *
+ *
+ * @see      http://ip2long
+ * @see      php://network
+ * @see      php://dns_check_record
+ * @purpose  Networking / IPv6 / DNS
+ */
+package peer.net {
+}
