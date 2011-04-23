@@ -6,9 +6,18 @@
 
   uses(
     'peer.net.InetAddressFactory',
-    'peer.net.Inet4Address'
+    'peer.net.Inet4Address',
+    'peer.net.Inet6Address'
   );
 
+  /**
+   * Class to perform DNS name server lookups; supports IPv4
+   * and IPv6, both.
+   *
+   * @test    xp://net.xp_framework.unittest.peer.net.NameserverLookupTest
+   * @see     php://dns_get_record
+   * @purpose Perform DNS queries
+   */
   class NameserverLookup extends Object {
 
     /**
@@ -106,7 +115,33 @@
       $parser= new InetAddressFactory();
       return $parser->parse($addr[0]['ip']);
     }
+
+    /**
+     * Perform reverse lookup for given address
+     *
+     * @param   peer.InetAddress $addr
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case no reverse lookup exists
+     */
+    public function reverseLookup(InetAddress $addr) {
+      $ptr= $this->tryReverseLookup($addr);
+      if (NULL === $ptr) throw new ElementNotFoundException('No reverse lookup for '.$addr->toString());
+
+      return $ptr;
+    }
+
+    /**
+     * Try to erform reverse lookup for given address; if no reverse lookup
+     * exists, returns NULL.
+     *
+     * @param   peer.InetAddress $addr
+     * @return  string
+     */
+    public function tryReverseLookup(InetAddress $addr) {
+      $ptr= $this->_nativeLookup($addr->reversedNotation(), DNS_PTR);
+      if (!isset($ptr[0]['target'])) return NULL;
+
+      return $ptr[0]['target'];
+    }
   }
-
-
 ?>

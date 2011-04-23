@@ -17,12 +17,8 @@
       $this->cut= newinstance('peer.net.NameserverLookup', array(), '{
         protected $results= array();
 
-        public function setLookup(array $ret) {
-          $this->results= $ret;
-        }
-
-        public function addLookup($ip) {
-          $this->results[]= array("ip" => $ip);
+        public function addLookup($ip, $type= "ip") {
+          $this->results[]= array($type => $ip);
         }
 
         protected function _nativeLookup($what, $type) {
@@ -118,6 +114,33 @@
     public function lookupNonexistantThrowsException() {
       $this->cut->lookup('localhost');
     }
-  }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function reverseLookup() {
+      $this->cut->addLookup('localhost', 'target');
+      $this->assertEquals('localhost', $this->cut->reverseLookup(new Inet4Address('127.0.0.1')));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function nonexistingReverseLookupCausesException() {
+      $this->cut->reverseLookup(new Inet4Address('192.168.1.1'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function tryReverseLookupReturnsNullWhenNoneFound() {
+      $this->assertNull($this->cut->tryReverseLookup(new Inet4Address('192.178.1.1')));
+    }
+  }
 ?>
