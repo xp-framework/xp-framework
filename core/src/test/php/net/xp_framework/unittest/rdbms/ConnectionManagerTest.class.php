@@ -15,7 +15,7 @@
    *
    * @see   xp://rdbms.ConnectionManager
    */
-  class ConnectionManagerTest extends TestCase {
+  abstract class ConnectionManagerTest extends TestCase {
     const MOCK_CONNECTION_CLASS = 'net.xp_framework.unittest.rdbms.mock.MockConnection';
   
     /**
@@ -34,41 +34,32 @@
     public function setUp() {
       ConnectionManager::getInstance()->pool= array();
     }
-
+    
     /**
-     * Returns connection manager instance configured with the given 
-     * properties. 
+     * Returns an instance with a given number of DSNs
      *
-     * @see     xp://rdbms.ConnectionManager#configure
-     * @param   util.Properties prop
+     * @param   [:string] dsns
      * @return  rdbms.ConnectionManager
      */
-    protected function configured(Properties $prop) {
-      $cm= ConnectionManager::getInstance();
-      $cm->configure($prop);
-      return $cm;
-    }
-    
+    protected abstract function instanceWith($dsns);
+
     /**
      * Check configure with an empty properties file yields an an empty
      * connection manager instance pool.
      *
      */
     #[@test]
-    public function callingConfigureWithEmptyProperties() {
-      $this->assertEquals(array(), $this->configured(Properties::fromString(''))->getConnections());
+    public function initallyEmpty() {
+      $this->assertEquals(array(), $this->instanceWith(array())->getConnections());
     }
-    
+
     /**
      * Acquire an existing connection
      *
      */
     #[@test]
     public function acquireExistingConnectionViaGetByHost() {
-      $cm= $this->configured(Properties::fromString('[mydb]
-        dsn="mock://user:pass@host/db?autoconnect=1
-      '));
-
+      $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
       $this->assertInstanceOf(self::MOCK_CONNECTION_CLASS, $cm->getByHost('mydb', 0));
     }
     
@@ -78,11 +69,8 @@
      */
     #[@test, @expect('rdbms.ConnectionNotRegisteredException')]
     public function acquireNonExistantConnectionViaGetByHost() {
-      $cm= $this->configured(Properties::fromString('[mydb]
-        dsn="mock://user:pass@host/db?autoconnect=1
-      '));
-
-      $cm->getByHost('yourdb', 0);
+      $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
+      $cm->getByHost('nonexistant', 0);
     }
 
     /**
@@ -91,10 +79,7 @@
      */
     #[@test]
     public function acquireExistingConnectionViaGet() {
-      $cm= $this->configured(Properties::fromString('[mydb]
-        dsn="mock://user:pass@host/db?autoconnect=1
-      '));
-
+      $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
       $this->assertInstanceOf(self::MOCK_CONNECTION_CLASS, $cm->getByHost('mydb', 0));
     }
     
@@ -104,10 +89,7 @@
      */
     #[@test, @expect('rdbms.ConnectionNotRegisteredException')]
     public function acquireNonExistantConnectionWithExistantUserViaGet() {
-      $cm= $this->configured(Properties::fromString('[mydb]
-        dsn="mock://user:pass@host/db?autoconnect=1
-      '));
-
+      $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
       $cm->get('nonexistant', 'user');
     }
 
@@ -117,10 +99,7 @@
      */
     #[@test, @expect('rdbms.ConnectionNotRegisteredException')]
     public function acquireExistantConnectionWithNonExistantUserViaGet() {
-      $cm= $this->configured(Properties::fromString('[mydb]
-        dsn="mock://user:pass@host/db?autoconnect=1
-      '));
-
+      $cm= $this->instanceWith(array('mydb' => 'mock://user:pass@host/db?autoconnect=1'));
       $cm->get('mydb', 'nonexistant');
     }
     
@@ -129,10 +108,8 @@
      *
      */
     #[@test]
-    public function configureInvalid() {
-      $this->configured(Properties::fromString('[mydb]
-        dsn="invalid://user:pass@host/db?autoconnect=1
-      '));
+    public function invalidDsnScheme() {
+      $this->instanceWith(array('mydb' => 'invalid://user:pass@host/db?autoconnect=1'));
     }
     
     /**
@@ -141,10 +118,9 @@
      *
      */
     #[@test, @expect('rdbms.DriverNotSupportedException')]
-    public function acquireInvalid() {
-      $this->configured(Properties::fromString('[mydb]
-        dsn="invalid://user:pass@host/db?autoconnect=1
-      '))->getByHost('mydb', 0);
+    public function acquireInvalidDsnScheme() {
+      $cm= $this->instanceWith(array('mydb' => 'invalid://user:pass@host/db?autoconnect=1'));
+      $cm->getByHost('mydb', 0);
     }
   }
 ?>
