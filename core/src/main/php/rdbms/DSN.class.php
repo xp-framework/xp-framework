@@ -179,9 +179,14 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
-        $cmp->url->equals($this->url) && 
-        $cmp->prop === $this->prop &&
-        $cmp->flags === $this->flags
+        $cmp->getDriver() === $this->getDriver() &&
+        $cmp->getUser() === $this->getUser() &&
+        $cmp->getPassword() === $this->getPassword() &&
+        $cmp->getHost() === $this->getHost() &&
+        $cmp->getPort() === $this->getPort() &&
+        $cmp->getDatabase() === $this->getDatabase() &&
+        $cmp->flags === $this->flags &&
+        array() === array_diff($cmp->prop, $this->prop)
       );
     }
   }
