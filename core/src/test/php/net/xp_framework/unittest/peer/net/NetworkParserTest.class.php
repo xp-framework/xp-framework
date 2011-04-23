@@ -19,16 +19,22 @@
       $cut  = NULL;
 
     /**
+     * Set up test fixture
+     *
+     */
+    public function setUp() {
+      $this->cut= new NetworkParser();
+    }
+
+    /**
      * Test parsing ipv4 network string
      * 
      */
     #[@test]
     public function parseV4Network() {
-      $parser= new NetworkParser();
-
       $this->assertEquals(
         new Network(new Inet4Address('192.168.1.1'), 24),
-        $parser->parse('192.168.1.1/24')
+        $this->cut->parse('192.168.1.1/24')
       );
     }
 
@@ -38,8 +44,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function parseV4NetworkThrowsExceptionOnIllegalNetworkString() {
-      $parser= new NetworkParser();
-      $parser->parse('192.168.1.1 b24');
+      $this->cut->parse('192.168.1.1 b24');
     }
 
     /**
@@ -47,13 +52,31 @@
      */
     #[@test]
     public function parseV6Network() {
-      $parser= new NetworkParser();
-
       $this->assertEquals(
         new Network(new Inet6Address('fc00::'), 7),
-        $parser->parse('fc00::/7')
+        $this->cut->parse('fc00::/7')
       );
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function tryParse() {
+      $this->assertEquals(
+        new Network(new Inet4Address('172.16.0.0'), 12),
+        $this->cut->tryParse('172.16.0.0/12')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function tryParseReturnsNullOnFailure() {
+      $this->assertEquals(NULL, $this->cut->tryParse('not a network'));
+    }
   }
 ?>

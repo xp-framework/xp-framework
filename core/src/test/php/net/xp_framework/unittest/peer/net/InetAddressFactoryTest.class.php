@@ -51,7 +51,25 @@
     #[@test, @expect('lang.FormatException')]
     public function parseInvalidAddressThatAlsoLooksLikeV4() {
       $this->cut->parse('10..3.3');
-    }    
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function tryParse() {
+      $this->assertEquals(new Inet4Address('172.17.29.6'), $this->cut->tryParse('172.17.29.6'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function tryParseReturnsNullOnFailure() {
+      $this->assertEquals(NULL, $this->cut->tryParse('not an ip address'));
+    }
 
     /**
      * Parse localhost address

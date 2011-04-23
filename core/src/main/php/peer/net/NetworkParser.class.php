@@ -12,6 +12,7 @@
   /**
    * Description of NetworkParser
    *
+   * @test      xp://net.xp_framework.unittest.peer.net.NetworkParserTest
    * @purpose   Parse network addresses
    */
   class NetworkParser extends Object {
@@ -38,6 +39,20 @@
         throw new FormatException('Given string cannot be parsed to network: ['.$string.']');
 
       return new Network($this->addressParser->parse($addr), $mask);
+    }
+
+    /**
+     * Parse given string into network object, return NULL if it fails.
+     *
+     * @param   string string
+     * @return  peer.Network
+     */
+    public function tryParse($string) {
+      try {
+        return $this->parse($string);
+      } catch (FormatException $e) {
+        return NULL;
+      }
     }
   }
 ?>

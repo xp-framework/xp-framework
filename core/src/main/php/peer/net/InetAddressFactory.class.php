@@ -9,6 +9,7 @@
   /**
    * InetAddress Factory
    *
+   * @test      xp://net.xp_framework.unittest.peer.net.InetAddressFactoryTest
    * @purpose   Factory class
    */
   class InetAddressFactory extends Object {
@@ -27,7 +28,21 @@
       if (preg_match('#^[a-f0-9\:]+$#', $string))
         return new Inet6Address($string);
 
-      throw new FormatException('Given argument does not look like an IP address: ', $string);
+      throw new FormatException('Given argument does not look like an IP address: '.$string);
+    }
+
+    /**
+     * Parse address from string, return NULL on failure
+     *
+     * @param   string string
+     * @return  peer.InetAddress
+     */
+    public function tryParse($string) {
+      try {
+        return $this->parse($string);
+      } catch (FormatException $e) {
+        return NULL;
+      }
     }
   }
 ?>
