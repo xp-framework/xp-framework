@@ -110,6 +110,14 @@
       $this->assertEquals(array(), $this->cut->lookupAll('localhost'));
     }
 
+    /**
+     * Test nonexistant lookup returns empty array
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function lookupNonexistantThrowsException() {
+      $this->cut->lookup('localhost');
+    }
   }
 
 ?>
