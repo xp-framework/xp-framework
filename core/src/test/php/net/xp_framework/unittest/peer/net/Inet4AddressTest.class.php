@@ -136,6 +136,13 @@
       $this->assertEquals('192.168.1.1', (string)new Inet4Address('192.168.1.1'));
     }
 
-
+    /**
+     * Test reverse address being built
+     *
+     */
+    #[@test]
+    public function reverseNotationLocalhost() {
+      $this->assertEquals('1.0.0.127.in-addr.arpa', create(new Inet4Address('127.0.0.1'))->reversedNotation());
+    }
   }
 ?>

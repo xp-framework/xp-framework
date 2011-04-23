@@ -107,7 +107,22 @@
     public function isLoopback() {
       return "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01" == $this->addr;
     }
-    
+
+    /**
+     * Retrieve reversed notation
+     *
+     * @return  string
+     */
+    public function reversedNotation() {
+      $nibbles= this(unpack('H*', $this->addr), 1);
+      $ret= '';
+      for ($i= 31; $i >= 0; $i--) {
+        $ret.= $nibbles{$i}.'.';
+      }
+
+      return $ret.'ip6.arpa';
+    }
+
     /**
      * Determine whether address is in the given subnet
      *

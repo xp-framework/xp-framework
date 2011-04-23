@@ -189,7 +189,19 @@
     #[@test]
     public function castToString() {
       $this->assertEquals('[::1]', (string)new Inet6Address('::1'));
+    }
 
+    /**
+     * Test
+     *
+     * @see   http://en.wikipedia.org/wiki/Reverse_DNS_lookup#IPv6_reverse_resolution
+     */
+    #[@test]
+    public function reversedNotation() {
+      $this->assertEquals(
+        'b.a.9.8.7.6.5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa',
+        create(new Inet6Address('2001:db8::567:89ab'))->reversedNotation()
+      );
     }
   }
 ?>

@@ -55,6 +55,15 @@
     }
 
     /**
+     * Retrieve IP address notation for DNS reverse query
+     *
+     * @return  string
+     */
+    public function reversedNotation() {
+      return implode('.', array_reverse(explode('.', $this->asString()))).'.in-addr.arpa';
+    }
+
+        /**
      * Retrieve human-readable form
      *
      * @return  string

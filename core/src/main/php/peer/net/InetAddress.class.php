@@ -40,5 +40,12 @@
      * @return  int
      */
     public function sizeInBits();
+
+    /**
+     * Retrieve reversed notation for reverse DNS lookups
+     *
+     * @return  string
+     */
+    public function reversedNotation();
   }
 ?>
