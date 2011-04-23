@@ -169,5 +169,20 @@
         $this->url->getQuery() ? '?'.$this->url->getQuery() : ''
       );
     }
+    
+    /**
+     * Checks whether an object is equal to this DSN
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */    
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $cmp->url->equals($this->url) && 
+        $cmp->prop === $this->prop &&
+        $cmp->flags === $this->flags
+      );
+    }
   }
 ?>
