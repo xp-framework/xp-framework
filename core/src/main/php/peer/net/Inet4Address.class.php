@@ -104,5 +104,14 @@
     public function toString() {
       return $this->getClassName().'('.$this->asString().')';
     }
+
+    /**
+     * Magic string case callback
+     *
+     * @return  string
+     */
+    public function  __toString() {
+      return $this->asString();
+    }
   }
 ?>
