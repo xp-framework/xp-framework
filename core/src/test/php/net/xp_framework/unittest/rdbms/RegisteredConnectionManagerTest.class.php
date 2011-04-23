@@ -40,5 +40,46 @@
     public function invalidDsnScheme() {
       // NOOP
     }
+
+    /**
+     * Test register() method returns a connection instance
+     *
+     */
+    #[@test]
+    public function registerReturnsConnection() {
+      $conn= DriverManager::getConnection('mock://user:pass@host/db');
+      $cm= $this->instanceWith(array());
+      
+      $this->assertEquals($conn, $cm->register($conn));
+    }
+ 
+    /**
+     * Test register() method returns a connection instance
+     *
+     */
+    #[@test]
+    public function registerReturnsConnectionWhenPreviouslyRegistered() {
+      $conn= DriverManager::getConnection('mock://user:pass@host/db');
+      $cm= $this->instanceWith(array());
+      $cm->register($conn);
+
+      $this->assertEquals($conn, $cm->register($conn));
+    }
+
+    /**
+     * Test register() method implementation
+     *
+     */
+    #[@test]
+    public function registerDoesNotOverwritePreviouslyRegistered() {
+      $conn1= DriverManager::getConnection('mock://user:pass@host/db1');
+      $conn2= DriverManager::getConnection('mock://user:pass@host/db2');
+      $cm= $this->instanceWith(array());
+
+      $this->assertEquals($conn1, $cm->register($conn1));
+      $this->assertEquals($conn2, $cm->register($conn2));
+
+      $this->assertEquals($conn1, $cm->getByHost('host', 0));
+    }
   }
 ?>

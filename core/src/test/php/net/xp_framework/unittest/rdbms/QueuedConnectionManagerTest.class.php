@@ -33,16 +33,44 @@
     }
     
     /**
-     * Test
+     * Test queue() method returns a DSN instance
      *
      */
     #[@test]
     public function queueReturnsDSN() {
-      $dsn= 'mock://user:pass@host/db?autoconnect=1';
-      $this->assertEquals(
-        new DSN($dsn), 
-        ConnectionManager::getInstance()->queue($dsn)
-      );
+      $dsn= 'mock://user:pass@host/db';
+      $cm= $this->instanceWith(array());
+      
+      $this->assertEquals(new DSN($dsn), $cm->queue($dsn));
+    }
+ 
+    /**
+     * Test queue() method returns a DSN instance
+     *
+     */
+    #[@test]
+    public function queueReturnsDSNWhenPreviouslyRegistered() {
+      $dsn= 'mock://user:pass@host/db';
+      $cm= $this->instanceWith(array());
+      $cm->queue($dsn);
+
+      $this->assertEquals(new DSN($dsn), $cm->queue($dsn));
+    }
+
+    /**
+     * Test queue() method implementation
+     *
+     */
+    #[@test]
+    public function queueDoesNotOverwritePreviouslyRegistered() {
+      $conn1= 'mock://user:pass@host/db1';
+      $conn2= 'mock://user:pass@host/db2';
+      $cm= $this->instanceWith(array());
+
+      $this->assertEquals(new DSN($conn1), $cm->queue($conn1));
+      $this->assertEquals(new DSN($conn2), $cm->queue($conn2));
+
+      $this->assertEquals(new DSN($conn1), $cm->getByHost('host', 0)->dsn);
     }
   }
 ?>
