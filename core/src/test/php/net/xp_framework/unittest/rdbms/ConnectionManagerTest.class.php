@@ -39,7 +39,7 @@
      * Returns connection manager instance configured with the given 
      * properties. 
      *
-     * @see     xp://rdbms.ConnectionManager::configure
+     * @see     xp://rdbms.ConnectionManager#configure
      * @param   util.Properties prop
      * @return  rdbms.ConnectionManager
      */
