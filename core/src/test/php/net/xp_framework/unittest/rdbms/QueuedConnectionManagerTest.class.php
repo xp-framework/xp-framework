@@ -66,7 +66,7 @@
      *
      */
     #[@test]
-    public function queueDoesNotOverwritePreviouslyRegistered() {
+    public function queueOverwritesPreviouslyRegistered() {
       $conn1= 'mock://user:pass@host/db1';
       $conn2= 'mock://user:pass@host/db2';
       $cm= $this->instanceWith(array());
@@ -74,7 +74,7 @@
       $this->assertEquals(new DSN($conn1), $cm->queue($conn1));
       $this->assertEquals(new DSN($conn2), $cm->queue($conn2));
 
-      $this->assertEquals(new DSN($conn1), $cm->getByHost('host', 0)->dsn);
+      $this->assertEquals(new DSN($conn2), $cm->getByHost('host', 0)->dsn);
     }
   }
 ?>

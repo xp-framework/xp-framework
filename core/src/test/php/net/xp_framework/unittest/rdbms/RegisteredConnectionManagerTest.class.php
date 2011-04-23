@@ -76,7 +76,7 @@
      *
      */
     #[@test]
-    public function registerDoesNotOverwritePreviouslyRegistered() {
+    public function registerOverwritesPreviouslyRegistered() {
       $conn1= DriverManager::getConnection('mock://user:pass@host/db1');
       $conn2= DriverManager::getConnection('mock://user:pass@host/db2');
       $cm= $this->instanceWith(array());
@@ -84,7 +84,7 @@
       $this->assertEquals($conn1, $cm->register($conn1));
       $this->assertEquals($conn2, $cm->register($conn2));
 
-      $this->assertEquals($conn1, $cm->getByHost('host', 0));
+      $this->assertEquals($conn2, $cm->getByHost('host', 0));
     }
   }
 ?>
