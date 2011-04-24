@@ -132,6 +132,7 @@
     public function connect($timeout= 2.0) {
       static $domains= array(
         AF_INET   => 'AF_INET',
+        AF_INET6  => 'AF_INET6',
         AF_UNIX   => 'AF_UNIX'
       );
       static $types= array(
