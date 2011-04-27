@@ -1350,5 +1350,17 @@
     public function getURLWithEmptyQueryStringConstructor() {
       $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test?'))->getURL());
     }
+
+    /**
+     * Test 
+     *
+     * @see   http://bugs.php.net/54180
+     */
+    #[@test]
+    public function fragmentWithQuestionMark() {
+      $url= new URL('http://example.com/path/script.html#fragment?data');
+      $this->assertEquals('/path/script.html', $url->getPath());
+      $this->assertEquals('fragment?data', $url->getFragment());
+    }
   }
 ?>
