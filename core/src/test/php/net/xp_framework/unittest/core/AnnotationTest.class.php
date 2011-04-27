@@ -255,17 +255,5 @@
         $this->methodAnnotation('stringWithEqualSigns', 'permission')
       );
     }
-
-    /**
-     * Method annotated with multiple values which contains equal signs
-     *
-     */
-    #[@test]
-    public function multipleValuesWithStringsAndEqualSigns() {
-      $this->assertEquals(
-        array('names'=>array('rn=login, rt=config1', 'rn=login, rt=config2')),
-        $this->methodAnnotation('multipleValuesWithStringsAndEqualSigns', 'permission')
-      );
-    }
   }
 ?>
