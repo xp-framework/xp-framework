@@ -255,5 +255,31 @@
         $this->methodAnnotation('stringWithEqualSigns', 'permission')
       );
     }
+
+    /**
+     * Test string assignment without whitespace is parsed correctly.
+     *
+     */
+     #[@test]
+     public function stringAssignedWithoutWhitespace() {
+       $this->assertEquals(
+         array('name' => 'verbose', 'short' => 'v'),
+         $this->methodAnnotation('stringAssignedWithoutWhitespace', 'arg')
+       );
+     }
+
+    /**
+     * Test annotation with mulitple values containing equal signs
+     * is parsed correctly.
+     *
+     */
+     #[@test, @ignore('Test needs adjustment in XPClass and AnnotatedClass')]
+     public function multipleValuesWithStringsAndEqualSigns() {
+       $this->assertEquals(
+         array('rn=login, rt=config1', 'rn=login, rt=config2'),
+         $this->methodAnnotation('multipleValuesWithStringsAndEqualSigns')
+       );
+     }
+
   }
 ?>
