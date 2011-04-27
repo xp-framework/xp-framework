@@ -164,11 +164,19 @@
           socket_set_option($this->_sock, $level, $name, $value);
         }
       }
-      
+
       // ...and connect it
       switch ($this->domain) {
-        case AF_INET: {
-          $r= socket_connect($this->_sock, gethostbyname($this->host), $this->port);
+        case AF_INET:
+        case AF_INET6: {
+          $host= NULL;
+          if ($this->host instanceof InetAddress) {
+            $host= $this->host->asString();
+          } else {
+            // TBD: Refactor
+            $host= gethostbyname($this->host);
+          }
+          $r= socket_connect($this->_sock, $host, $this->port);
           break;
         }
         

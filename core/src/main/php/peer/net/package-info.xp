@@ -1,0 +1,49 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * The peer.net package contains classes to represent IP- and IPv6-
+ * addresses.
+ *
+ * Next to factories and parsers, the package also contains classes
+ * to resolve names into IP addresses by performing DNS nameserver
+ * lookup queries.
+ *
+ * Inet4Address and Inet6Address object are also accepted by Socket
+ * and BSDSocket from the peer package.
+ *
+ * Usage of peer.net.InetAddress:
+ * ==============================
+ *
+ * Create ipv4 address, if known:
+ * <code>
+ *   $addr= new Inet4Address('127.0.0.1');
+ * </code>
+ *
+ * Create ipv6 address, if known:
+ * <code>
+ *   $addr= new Inet6Address('::1');
+ * </code>
+ *
+ * Create address, if type not known:
+ * <code>
+ *   $factory= new InetAddressFactory();
+ *   $addr= $factory->parse($input);
+ * </code>
+ *
+ * This gives you either an peer.inet.Inet4Address or peer.inet.Inet6Adddress,
+ * or throws an lang.FormatException.
+ * To circumvent an exception, use tryParse().
+ *
+ *
+ *
+ * @see      php://ip2long
+ * @see      php://network
+ * @see      php://dns_check_record
+ * @purpose  Networking / IPv6 / DNS
+ */
+package peer.net {
+}
