@@ -460,19 +460,31 @@
      * @throws  lang.FormatException if string is unparseable
      */
     public function setURL($str) {
-      if (!strstr($str, '://') || !($this->_info= parse_url($str)) || !isset($this->_info['scheme'])) {
-        $e= new FormatException('Cannot parse "'.$str.'"');
-        xp::gc(__FILE__);
-        throw $e;
+      if (!preg_match('!([^:]+)://([^@]+@)?([^/?#]+)(/([^#?]*))?(.*)!', $str, $matches)) {
+        throw new FormatException('Cannot parse "'.$str.'"');
       }
       
-      if (isset($this->_info['user'])) $this->_info['user']= rawurldecode($this->_info['user']);
-      if (isset($this->_info['pass'])) $this->_info['pass']= rawurldecode($this->_info['pass']);
-      if (isset($this->_info['query'])) {
-        $this->_info['params']= $this->parseQuery($this->_info['query']);
-        unset($this->_info['query']);
+      $this->_info= array();
+	  $this->_info['scheme']= $matches[1];
+      if ('' !== $matches[2]) {
+        sscanf($matches[2], '%[^:@]:%[^@]@', $user, $password);
+        $this->_info['user']= rawurldecode($user);
+        $this->_info['pass']= NULL === $password ? NULL : rawurldecode($password);
       } else {
+        $this->_info['user']= NULL;
+        $this->_info['pass']= NULL;
+      }
+      sscanf($matches[3], '%[^:]:%d', $this->_info['host'], $this->_info['port']);
+	  $this->_info['path']= '' === $matches[4] ? NULL : $matches[4];
+      if ('' === $matches[6] || '?' === $matches[6] || '#' === $matches[6]) {
         $this->_info['params']= array();
+        $this->_info['fragment']= NULL;
+      } else if ('#' === $matches[6]{0}) {
+        $this->_info['params']= array();
+        $this->_info['fragment']= substr($matches[6], 1);
+      } else if ('?' === $matches[6]{0}) {
+        sscanf($matches[6], "?%[^#]#%[^\r]", $query, $this->_info['fragment']);
+        $this->_info['params']= $this->parseQuery($query);
       }
     }
 

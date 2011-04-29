@@ -87,12 +87,19 @@
      */
     #[@permission('rn=login, rt=config')]
     public function stringWithEqualSigns() { }
+    
+    /**
+     * Method annotated with a string, w/o whitespace in assignment
+     * 
+     */
+    #[@arg(name= 'verbose', short='v')]
+    public function stringAssignedWithoutWhitespace() {}
 
     /**
      * Method annotated with multiple values which contains equal signs
      *
+     * #[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]
      */
-    #[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]
     public function multipleValuesWithStringsAndEqualSigns() { }
   }
 ?>

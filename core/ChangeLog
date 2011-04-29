@@ -8,6 +8,9 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Replaced parse_url() inside peer.URL by handcrafted implementation to
+  work around PHP bug #54180
+  (friebe)
 - Changed util.log.SyslogAppender to work with util.log.Logger as it sets
   custom parameters via public member access
   (treuter)
@@ -24,9 +27,6 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- Extended parser for annotations to allow annotations like
-  #[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]
-  (Gabriel Mihai Ghigea, kiesel)
 - Added setParameter() method to peer.http.HttpRequest class
   (friebe)
 - Migrated repository to github.com (for the records)
