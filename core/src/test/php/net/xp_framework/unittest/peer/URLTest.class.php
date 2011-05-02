@@ -1472,6 +1472,15 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function duplicatePort() {
+      new URL('http://example.com:443:443');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function unclosedIPV6Brackets() {
       new URL('http://[::1');
     }
