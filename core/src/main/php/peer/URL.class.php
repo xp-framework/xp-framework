@@ -483,14 +483,9 @@
         $this->_info['params']= array();
         $this->_info['fragment']= substr($matches[6], 1);
       } else if ('?' === $matches[6]{0}) {
-        if (FALSE !== ($p= strpos($matches[6], '#'))) {
-          $query= substr($matches[6], 1, $p- 1);
-          $this->_info['fragment']= $p >= strlen($matches[6])- 1 ? NULL : substr($matches[6], $p+ 1);
-        } else {
-          $this->_info['fragment']= NULL;
-          $query= substr($matches[6], 1);
-        }
-        $this->_info['params']= $this->parseQuery((string)$query);
+        $p= strcspn($matches[6], '#');
+        $this->_info['params']= $this->parseQuery(substr($matches[6], 1, $p- 1));
+        $this->_info['fragment']= $p >= strlen($matches[6])- 1 ? NULL : substr($matches[6], $p+ 1);
       }
     }
 
