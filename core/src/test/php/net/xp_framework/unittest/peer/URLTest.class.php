@@ -1171,6 +1171,15 @@
     }
 
     /**
+     * Test URL parsing does not support file:
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function doesNotSupportFile() {
+      new URL('file:///etc/passwed');
+    }
+
+    /**
      * Test URL parsing
      *
      */
