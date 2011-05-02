@@ -54,6 +54,15 @@
     }
 
     /**
+     * Test getHost() method
+     *
+     */
+    #[@test]
+    public function uppercaseHost() {
+      $this->assertEquals('TEST', create(new URL('http://TEST'))->getHost());
+    }
+
+    /**
      * Test setHost()
      *
      */

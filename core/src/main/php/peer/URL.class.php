@@ -474,7 +474,7 @@
         $this->_info['user']= NULL;
         $this->_info['pass']= NULL;
       }
-      if (!preg_match('!^([a-z0-9\.-]+|\[[^\]]+\])(:([0-9]+))?$!', $matches[3], $host)) {
+      if (!preg_match('!^([a-zA-Z0-9\.-]+|\[[^\]]+\])(:([0-9]+))?$!', $matches[3], $host)) {
         throw new FormatException('Cannot parse "'.$str.'": Host and/or port malformed');
       }
       $this->_info['host']= $host[1];
