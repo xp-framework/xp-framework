@@ -1286,6 +1286,69 @@
     public function missingClosingBracketInNestedBeforeClosed() {
       new URL('http://localhost/?a[nested[a][]=c');
     }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function tripleSlash() {
+      new URL('http:///blah.com');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function portOnlyNoHost() {
+      new URL('http://:80');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function userAndPortOnlyNoHost() {
+      new URL('http://user@:80');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function doubleDoubleColon() {
+      new URL('http://::');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function questionMarkOnlyNoHost() {
+      new URL('http://?');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function hashSignOnlyNoHost() {
+      new URL('http://#');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function nonNumericPort() {
+      new URL('http://example.com:ABCDEF');
+    }
     
     /**
      * Test associative arrays in url parameters, e.g. data[key]=value gets
@@ -1458,9 +1521,29 @@
      *
      */
     #[@test]
+    public function ipv6Address() {
+      $this->assertEquals('[::1]', create(new URL('http://[::1]'))->getHost());
+    }
+
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
     public function ipv4AddressAndPort() {
       $u= new URL('http://64.246.30.37:8080');
       $this->assertEquals('64.246.30.37', $u->getHost());
+      $this->assertEquals(8080, $u->getPort());
+    }
+
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
+    public function ipv6AddressAndPort() {
+      $u= new URL('http://[::1]:8080');
+      $this->assertEquals('[::1]', $u->getHost());
       $this->assertEquals(8080, $u->getPort());
     }
   }

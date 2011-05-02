@@ -474,7 +474,11 @@
         $this->_info['user']= NULL;
         $this->_info['pass']= NULL;
       }
-      sscanf($matches[3], '%[^:]:%d', $this->_info['host'], $this->_info['port']);
+      if (!preg_match('!^([^:]+|\[[^\]]+\])(:([0-9]+))?$!', $matches[3], $host)) {
+        throw new FormatException('Cannot parse "'.$str.'": Host');
+      }
+      $this->_info['host']= $host[1];
+      $this->_info['port']= isset($host[2]) ? (int)$host[3] : NULL;
 	  $this->_info['path']= '' === $matches[4] ? NULL : $matches[4];
       if ('' === $matches[6] || '?' === $matches[6] || '#' === $matches[6]) {
         $this->_info['params']= array();
