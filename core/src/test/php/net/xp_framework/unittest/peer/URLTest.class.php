@@ -1095,6 +1095,15 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function schemeOnlyUnparseable() {
+      new URL('http:');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function schemeAndSeparatorOnlyUnparseable() {
       new URL('http://');
     }
 
@@ -1105,6 +1114,24 @@
     #[@test, @expect('lang.FormatException')]
     public function schemeSeparatorOnlyUnparseable() {
       new URL('://');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function colonOnlyUnparseable() {
+      new URL(':');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function slashSlashOnlyUnparseable() {
+      new URL('//');
     }
 
     /**
