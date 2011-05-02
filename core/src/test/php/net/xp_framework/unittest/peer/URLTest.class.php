@@ -355,6 +355,33 @@
      *
      */
     #[@test]
+    public function fragmentWithSlash() {
+      $this->assertEquals('top', create(new URL('http://localhost/#top'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function fragmentWithSlashAndQuestionMark() {
+      $this->assertEquals('top', create(new URL('http://localhost/?#top'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function fragmentWithQuery() {
+      $this->assertEquals('top', create(new URL('http://localhost/?query#top'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
     public function emptyFragment() {
       $this->assertEquals(NULL, create(new URL('http://localhost'))->getFragment());
     }
@@ -366,6 +393,24 @@
     #[@test]
     public function hashOnly() {
       $this->assertEquals(NULL, create(new URL('http://localhost#'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function hashAtEnd() {
+      $this->assertEquals(NULL, create(new URL('http://localhost?#'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function hashAtEndWithQuery() {
+      $this->assertEquals(NULL, create(new URL('http://localhost?query#'))->getFragment());
     }
 
     /**
