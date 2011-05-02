@@ -460,12 +460,14 @@
      * @throws  lang.FormatException if string is unparseable
      */
     public function setURL($str) {
-      if (!preg_match('!^([a-z\+]+)://([^@]+@)?([^/?#]+)(/([^#?]*))?(.*)$!', $str, $matches)) {
+      if (!preg_match('!^([a-z\+]+)://([^@]+@)?([^/?#]*)(/([^#?]*))?(.*)$!', $str, $matches)) {
         throw new FormatException('Cannot parse "'.$str.'"');
       }
       
       $this->_info= array();
 	  $this->_info['scheme']= $matches[1];
+      
+      // Credentials
       if ('' !== $matches[2]) {
         sscanf($matches[2], '%[^:@]:%[^@]@', $user, $password);
         $this->_info['user']= rawurldecode($user);
@@ -474,12 +476,28 @@
         $this->_info['user']= NULL;
         $this->_info['pass']= NULL;
       }
-      if (!preg_match('!^([a-zA-Z0-9\.-]+|\[[^\]]+\])(:([0-9]+))?$!', $matches[3], $host)) {
-        throw new FormatException('Cannot parse "'.$str.'": Host and/or port malformed');
+
+      // Host and port, optionally
+      if ('' === $matches[3] && '' !== $matches[4]) {
+        $this->_info['host']= NULL;
+      } else {
+        if (!preg_match('!^([a-zA-Z0-9\.-]+|\[[^\]]+\])(:([0-9]+))?$!', $matches[3], $host)) {
+          throw new FormatException('Cannot parse "'.$str.'": Host and/or port malformed');
+        }
+        $this->_info['host']= $host[1];
+        $this->_info['port']= isset($host[2]) ? (int)$host[3] : NULL;
       }
-      $this->_info['host']= $host[1];
-      $this->_info['port']= isset($host[2]) ? (int)$host[3] : NULL;
-	  $this->_info['path']= '' === $matches[4] ? NULL : $matches[4];
+      
+      // Path
+      if ('' === $matches[4]) {
+        $this->_info['path']= NULL;
+      } else if (strlen($matches[4]) > 3 && (':' === $matches[4]{2} || '|' === $matches[4]{2})) {
+        $this->_info['path']= $matches[4]{1}.':'.substr($matches[4], 3);
+      } else {
+        $this->_info['path']= $matches[4];
+      }
+
+      // Query string and fragment
       if ('' === $matches[6] || '?' === $matches[6] || '#' === $matches[6]) {
         $this->_info['params']= array();
         $this->_info['fragment']= NULL;

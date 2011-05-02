@@ -1180,15 +1180,6 @@
     }
 
     /**
-     * Test URL parsing does not support file:
-     *
-     */
-    #[@test, @expect('lang.FormatException')]
-    public function doesNotSupportFile() {
-      new URL('file:///etc/passwed');
-    }
-
-    /**
      * Test URL parsing
      *
      */
@@ -1375,15 +1366,6 @@
     #[@test, @expect('lang.FormatException')]
     public function missingClosingBracketInNestedBeforeClosed() {
       new URL('http://localhost/?a[nested[a][]=c');
-    }
-
-    /**
-     * Test URL parsing
-     *
-     */
-    #[@test, @expect('lang.FormatException')]
-    public function tripleSlash() {
-      new URL('http:///blah.com');
     }
 
     /**
@@ -1725,6 +1707,83 @@
       $u= new URL('http://[::1]:8080');
       $this->assertEquals('[::1]', $u->getHost());
       $this->assertEquals(8080, $u->getPort());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function fileUrl() {
+      $u= new URL('file:///etc/passwd');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function hostInFileUrl() {
+      $u= new URL('file://localhost/etc/passwd');
+      $this->assertEquals('localhost', $u->getHost());
+      $this->assertEquals('/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrl() {
+      $u= new URL('file:///c:/etc/passwd');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrlWithHost() {
+      $u= new URL('file://localhost/c:/etc/passwd');
+      $this->assertEquals('localhost', $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrlWithPipe() {
+      $u= new URL('file:///c|/etc/passwd');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrlWithPipeWithHost() {
+      $u= new URL('file://localhost/c|/etc/passwd');
+      $this->assertEquals('localhost', $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test sqlite:/// URL
+     *
+     */
+    #[@test]
+    public function sqliteUrl() {
+      $u= new URL('sqlite:///path/to/file.db');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('/path/to/file.db', $u->getPath());
     }
   }
 ?>
