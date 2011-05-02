@@ -24,6 +24,15 @@
     }
 
     /**
+     * Test getScheme() method
+     *
+     */
+    #[@test]
+    public function schemeWithPlus() {
+      $this->assertEquals('svn+ssl', create(new URL('svn+ssl://localhost'))->getScheme());
+    }
+
+    /**
      * Test setScheme()
      *
      */
@@ -1144,12 +1153,21 @@
     }
 
     /**
-     * Test URL parsing
+     * Test URL parsing does not accept a URL inside a text 
      *
      */
     #[@test, @expect('lang.FormatException')]
     public function insideAText() {
       new URL('this is the url http://url/ and nothing else');
+    }
+
+    /**
+     * Test URL parsing does not support mailto:
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function doesNotSupportMailto() {
+      new URL('mailto:user@example.com');
     }
 
     /**
@@ -1159,6 +1177,24 @@
     #[@test, @expect('lang.FormatException')]
     public function whiteSpaceInSchemeNotAllowed() {
       new URL('scheme ://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function minusInSchemeNotAllowed() {
+      new URL('scheme-minus://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function underscoreInSchemeNotAllowed() {
+      new URL('scheme_underscore://host');
     }
 
     /**
@@ -1330,6 +1366,15 @@
     #[@test, @expect('lang.FormatException')]
     public function tripleSlash() {
       new URL('http:///blah.com');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function singleSlash() {
+      new URL('http:/blah.com');
     }
 
     /**

@@ -460,7 +460,7 @@
      * @throws  lang.FormatException if string is unparseable
      */
     public function setURL($str) {
-      if (!preg_match('!^([a-z\+_-]+)://([^@]+@)?([^/?#]+)(/([^#?]*))?(.*)$!', $str, $matches)) {
+      if (!preg_match('!^([a-z\+]+)://([^@]+@)?([^/?#]+)(/([^#?]*))?(.*)$!', $str, $matches)) {
         throw new FormatException('Cannot parse "'.$str.'"');
       }
       
