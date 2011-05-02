@@ -1454,8 +1454,26 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function questionMarkAndColonAndOnlyNoHost() {
+      new URL('http://?:');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function nonNumericPort() {
       new URL('http://example.com:ABCDEF');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unclosedIPV6Brackets() {
+      new URL('http://[::1');
     }
 
     /**
