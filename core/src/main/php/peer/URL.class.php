@@ -460,7 +460,7 @@
      * @throws  lang.FormatException if string is unparseable
      */
     public function setURL($str) {
-      if (!preg_match('!([^:]+)://([^@]+@)?([^/?#]+)(/([^#?]*))?(.*)!', $str, $matches)) {
+      if (!preg_match('!^([a-z\+_-]+)://([^@]+@)?([^/?#]+)(/([^#?]*))?(.*)$!', $str, $matches)) {
         throw new FormatException('Cannot parse "'.$str.'"');
       }
       
@@ -474,8 +474,8 @@
         $this->_info['user']= NULL;
         $this->_info['pass']= NULL;
       }
-      if (!preg_match('!^([^:]+|\[[^\]]+\])(:([0-9]+))?$!', $matches[3], $host)) {
-        throw new FormatException('Cannot parse "'.$str.'": Host');
+      if (!preg_match('!^([a-z0-9\.-]+|\[[^\]]+\])(:([0-9]+))?$!', $matches[3], $host)) {
+        throw new FormatException('Cannot parse "'.$str.'": Host and/or port malformed');
       }
       $this->_info['host']= $host[1];
       $this->_info['port']= isset($host[2]) ? (int)$host[3] : NULL;

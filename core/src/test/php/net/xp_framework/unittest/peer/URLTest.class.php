@@ -1148,6 +1148,33 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function insideAText() {
+      new URL('this is the url http://url/ and nothing else');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function whiteSpaceInSchemeNotAllowed() {
+      new URL('scheme ://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function numericSchemeNotAllowed() {
+      new URL('123://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function schemeOnlyUnparseable() {
       new URL('http:');
     }
@@ -1213,6 +1240,15 @@
     #[@test, @expect('lang.FormatException')]
     public function withoutSchemeUnparseable() {
       new URL('/path/to/file');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function slashOnlyUnparseable() {
+      new URL('/');
     }
 
     /**
@@ -1319,6 +1355,24 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function atSignOnlyNoHost() {
+      new URL('http://@');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function userOnlyNoHost() {
+      new URL('http://user@');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function doubleDoubleColon() {
       new URL('http://::');
     }
@@ -1346,8 +1400,44 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function colonAndQuestionMarkOnlyNoHost() {
+      new URL('http://:?');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function nonNumericPort() {
       new URL('http://example.com:ABCDEF');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function colonInDomainNameNotAllowed() {
+      new URL('http://a:o.com/');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function percentSignInDomainNameNotAllowed() {
+      new URL('http://a%o.com/');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function spaceInDomainNameNotAllowed() {
+      new URL('http://a o.com/');
     }
     
     /**
