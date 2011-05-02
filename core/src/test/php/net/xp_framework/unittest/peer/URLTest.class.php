@@ -294,6 +294,15 @@
     }
 
     /**
+     * Test getQuery() method
+     *
+     */
+    #[@test]
+    public function questionMarkAndFragmentOnly() {
+      $this->assertEquals(NULL, create(new URL('http://localhost?#'))->getQuery());
+    }
+
+    /**
      * Test getQuery() method when invoked with a default value
      *
      */
@@ -1388,6 +1397,26 @@
       $url= new URL('http://example.com/path/script.html#fragment?data');
       $this->assertEquals('/path/script.html', $url->getPath());
       $this->assertEquals('fragment?data', $url->getFragment());
+    }
+ 
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
+    public function ipv4Address() {
+      $this->assertEquals('64.246.30.37', create(new URL('http://64.246.30.37'))->getHost());
+    }
+
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
+    public function ipv4AddressAndPort() {
+      $u= new URL('http://64.246.30.37:8080');
+      $this->assertEquals('64.246.30.37', $u->getHost());
+      $this->assertEquals(8080, $u->getPort());
     }
   }
 ?>

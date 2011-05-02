@@ -484,7 +484,7 @@
         $this->_info['fragment']= substr($matches[6], 1);
       } else if ('?' === $matches[6]{0}) {
         sscanf($matches[6], "?%[^#]#%[^\r]", $query, $this->_info['fragment']);
-        $this->_info['params']= $this->parseQuery($query);
+        $this->_info['params']= $this->parseQuery((string)$query);
       }
     }
 
