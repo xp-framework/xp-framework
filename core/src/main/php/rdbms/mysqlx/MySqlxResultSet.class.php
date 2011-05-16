@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('rdbms.ResultSet');
+  uses('rdbms.mysqlx.AbstractMysqlxResultSet');
 
   /**
    * Result set
    *
    * @purpose  Resultset wrapper
    */
-  class MySQLxResultSet extends ResultSet {
+  class MySQLxResultSet extends AbstractMySQLxResultSet {
   
     /**
      * Seek
@@ -37,7 +37,8 @@
         $this->handle= NULL;
         return NULL;
       }
-      return $field ? $record[$field] : $record;
+      
+      return $this->record($record, $field);
     }
     
     /**
