@@ -388,7 +388,7 @@
             case self::ST_USES.T_CONSTANT_ENCAPSED_STRING:
               $cn= trim($t[1], '"\'');
               if (!$this->findClass($cn)) throw new IllegalStateException(
-                'Could not find used class "'.$cn.'" for class '.$classname
+                'Could not find used class "'.$cn.'" for class '.$classname.' in '.xp::stringOf($this->sourcepath)
               );
               $doc->usedClasses->classes[]= $cn;
               break;

@@ -169,5 +169,25 @@
         $this->url->getQuery() ? '?'.$this->url->getQuery() : ''
       );
     }
+    
+    /**
+     * Checks whether an object is equal to this DSN
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */    
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        $cmp->getDriver() === $this->getDriver() &&
+        $cmp->getUser() === $this->getUser() &&
+        $cmp->getPassword() === $this->getPassword() &&
+        $cmp->getHost() === $this->getHost() &&
+        $cmp->getPort() === $this->getPort() &&
+        $cmp->getDatabase() === $this->getDatabase() &&
+        $cmp->flags === $this->flags &&
+        array() === array_diff($cmp->prop, $this->prop)
+      );
+    }
   }
 ?>

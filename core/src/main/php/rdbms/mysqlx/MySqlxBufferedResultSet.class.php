@@ -4,14 +4,14 @@
  * $Id$
  */
 
-  uses('rdbms.ResultSet');
+  uses('rdbms.mysqlx.AbstractMysqlxResultSet');
 
   /**
    * Result set
    *
    * @purpose  Resultset wrapper
    */
-  class MySqlxBufferedResultSet extends ResultSet {
+  class MySqlxBufferedResultSet extends AbstractMysqlxResultSet {
     protected $records= array();
 
     /**
@@ -48,8 +48,9 @@
      */
     public function next($field= NULL) {
       if (FALSE === ($record= current($this->records))) return NULL;
+      
       next($this->records);
-      return $field ? $record[$field] : $record;
+      return $this->record($record, $field);
     }
     
     /**

@@ -11,16 +11,13 @@
   );
   
   /**
-   * ConnectionManager
+   * ConnectionManager holds connections to databases
    *
-   * @purpose  Hold connections to databases
+   * @test    xp://net.xp_framework.rdbms.ConnectionManagerTest
    */
   class ConnectionManager extends Object implements Configurable {
-    protected static 
-      $instance     = NULL;
-
-    public 
-      $pool= array();
+    protected static $instance= NULL;
+    public $pool= array();
 
     static function __static() {
       self::$instance= new self();
@@ -94,17 +91,14 @@
       $host= (NULL == $hostAlias) ? $conn->dsn->getHost() : $hostAlias;
       $user= (NULL == $userAlias) ? $conn->dsn->getUser() : $userAlias;
       
-      if (!isset($this->pool[$user.'@'.$host])) {
-        $this->pool[$user.'@'.$host]= $conn;
-      }
-      
+      $this->pool[$user.'@'.$host]= $conn;
       return $conn;
     }
     
     /**
      * Queue a connection string for registering on demand.
      *
-     * @param   rdbms.DSN dsn The connection's DSN
+     * @param   string dsn The connection's DSN
      * @return  rdbms.DSN
      * @param   string hostAlias default NULL
      * @param   string userAlias default NULL
@@ -114,10 +108,7 @@
       $host= (NULL == $hostAlias) ? $dsn->getHost() : $hostAlias;
       $user= (NULL == $userAlias) ? $dsn->getUser() : $userAlias;
       
-      if (!isset($this->pool[$user.'@'.$host])) {
-        $this->pool[$user.'@'.$host]= $str;
-      }
-      
+      $this->pool[$user.'@'.$host]= $str;
       return $dsn;
     }
     

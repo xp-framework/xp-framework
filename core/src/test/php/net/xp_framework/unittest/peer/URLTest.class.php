@@ -24,6 +24,15 @@
     }
 
     /**
+     * Test getScheme() method
+     *
+     */
+    #[@test]
+    public function schemeWithPlus() {
+      $this->assertEquals('svn+ssl', create(new URL('svn+ssl://localhost'))->getScheme());
+    }
+
+    /**
      * Test setScheme()
      *
      */
@@ -42,6 +51,15 @@
     #[@test]
     public function host() {
       $this->assertEquals('localhost', create(new URL('http://localhost'))->getHost());
+    }
+
+    /**
+     * Test getHost() method
+     *
+     */
+    #[@test]
+    public function uppercaseHost() {
+      $this->assertEquals('TEST', create(new URL('http://TEST'))->getHost());
     }
 
     /**
@@ -294,6 +312,15 @@
     }
 
     /**
+     * Test getQuery() method
+     *
+     */
+    #[@test]
+    public function questionMarkAndFragmentOnly() {
+      $this->assertEquals(NULL, create(new URL('http://localhost?#'))->getQuery());
+    }
+
+    /**
      * Test getQuery() method when invoked with a default value
      *
      */
@@ -346,6 +373,33 @@
      *
      */
     #[@test]
+    public function fragmentWithSlash() {
+      $this->assertEquals('top', create(new URL('http://localhost/#top'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function fragmentWithSlashAndQuestionMark() {
+      $this->assertEquals('top', create(new URL('http://localhost/?#top'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function fragmentWithQuery() {
+      $this->assertEquals('top', create(new URL('http://localhost/?query#top'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
     public function emptyFragment() {
       $this->assertEquals(NULL, create(new URL('http://localhost'))->getFragment());
     }
@@ -357,6 +411,24 @@
     #[@test]
     public function hashOnly() {
       $this->assertEquals(NULL, create(new URL('http://localhost#'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function hashAtEnd() {
+      $this->assertEquals(NULL, create(new URL('http://localhost?#'))->getFragment());
+    }
+
+    /**
+     * Test getFragment() method
+     *
+     */
+    #[@test]
+    public function hashAtEndWithQuery() {
+      $this->assertEquals(NULL, create(new URL('http://localhost?query#'))->getFragment());
     }
 
     /**
@@ -1090,11 +1162,74 @@
     }
 
     /**
+     * Test URL parsing does not accept a URL inside a text 
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function insideAText() {
+      new URL('this is the url http://url/ and nothing else');
+    }
+
+    /**
+     * Test URL parsing does not support mailto:
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function doesNotSupportMailto() {
+      new URL('mailto:user@example.com');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function whiteSpaceInSchemeNotAllowed() {
+      new URL('scheme ://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function minusInSchemeNotAllowed() {
+      new URL('scheme-minus://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function underscoreInSchemeNotAllowed() {
+      new URL('scheme_underscore://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function numericSchemeNotAllowed() {
+      new URL('123://host');
+    }
+
+    /**
      * Test URL parsing
      *
      */
     #[@test, @expect('lang.FormatException')]
     public function schemeOnlyUnparseable() {
+      new URL('http:');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function schemeAndSeparatorOnlyUnparseable() {
       new URL('http://');
     }
 
@@ -1105,6 +1240,24 @@
     #[@test, @expect('lang.FormatException')]
     public function schemeSeparatorOnlyUnparseable() {
       new URL('://');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function colonOnlyUnparseable() {
+      new URL(':');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function slashSlashOnlyUnparseable() {
+      new URL('//');
     }
 
     /**
@@ -1132,6 +1285,15 @@
     #[@test, @expect('lang.FormatException')]
     public function withoutSchemeUnparseable() {
       new URL('/path/to/file');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function slashOnlyUnparseable() {
+      new URL('/');
     }
 
     /**
@@ -1204,6 +1366,150 @@
     #[@test, @expect('lang.FormatException')]
     public function missingClosingBracketInNestedBeforeClosed() {
       new URL('http://localhost/?a[nested[a][]=c');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function singleSlash() {
+      new URL('http:/blah.com');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function portOnlyNoHost() {
+      new URL('http://:80');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function userAndPortOnlyNoHost() {
+      new URL('http://user@:80');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function atSignOnlyNoHost() {
+      new URL('http://@');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function userOnlyNoHost() {
+      new URL('http://user@');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function doubleDoubleColon() {
+      new URL('http://::');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function questionMarkOnlyNoHost() {
+      new URL('http://?');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function hashSignOnlyNoHost() {
+      new URL('http://#');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function colonAndQuestionMarkOnlyNoHost() {
+      new URL('http://:?');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function questionMarkAndColonAndOnlyNoHost() {
+      new URL('http://?:');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function nonNumericPort() {
+      new URL('http://example.com:ABCDEF');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function duplicatePort() {
+      new URL('http://example.com:443:443');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unclosedIPV6Brackets() {
+      new URL('http://[::1');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function colonInDomainNameNotAllowed() {
+      new URL('http://a:o.com/');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function percentSignInDomainNameNotAllowed() {
+      new URL('http://a%o.com/');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function spaceInDomainNameNotAllowed() {
+      new URL('http://a o.com/');
     }
     
     /**
@@ -1349,6 +1655,135 @@
     #[@test]
     public function getURLWithEmptyQueryStringConstructor() {
       $this->assertEquals('http://example.com/test', create(new URL('http://example.com/test?'))->getURL());
+    }
+
+    /**
+     * Test 
+     *
+     * @see   http://bugs.php.net/54180
+     */
+    #[@test]
+    public function fragmentWithQuestionMark() {
+      $url= new URL('http://example.com/path/script.html#fragment?data');
+      $this->assertEquals('/path/script.html', $url->getPath());
+      $this->assertEquals('fragment?data', $url->getFragment());
+    }
+ 
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
+    public function ipv4Address() {
+      $this->assertEquals('64.246.30.37', create(new URL('http://64.246.30.37'))->getHost());
+    }
+
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
+    public function ipv6Address() {
+      $this->assertEquals('[::1]', create(new URL('http://[::1]'))->getHost());
+    }
+
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
+    public function ipv4AddressAndPort() {
+      $u= new URL('http://64.246.30.37:8080');
+      $this->assertEquals('64.246.30.37', $u->getHost());
+      $this->assertEquals(8080, $u->getPort());
+    }
+
+    /**
+     * Test parsing an IP address
+     *
+     */
+    #[@test]
+    public function ipv6AddressAndPort() {
+      $u= new URL('http://[::1]:8080');
+      $this->assertEquals('[::1]', $u->getHost());
+      $this->assertEquals(8080, $u->getPort());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function fileUrl() {
+      $u= new URL('file:///etc/passwd');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function hostInFileUrl() {
+      $u= new URL('file://localhost/etc/passwd');
+      $this->assertEquals('localhost', $u->getHost());
+      $this->assertEquals('/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrl() {
+      $u= new URL('file:///c:/etc/passwd');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrlWithHost() {
+      $u= new URL('file://localhost/c:/etc/passwd');
+      $this->assertEquals('localhost', $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrlWithPipe() {
+      $u= new URL('file:///c|/etc/passwd');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test file:/// URL
+     *
+     */
+    #[@test]
+    public function windowsDriveInFileUrlWithPipeWithHost() {
+      $u= new URL('file://localhost/c|/etc/passwd');
+      $this->assertEquals('localhost', $u->getHost());
+      $this->assertEquals('c:/etc/passwd', $u->getPath());
+    }
+
+    /**
+     * Test sqlite:/// URL
+     *
+     */
+    #[@test]
+    public function sqliteUrl() {
+      $u= new URL('sqlite:///path/to/file.db');
+      $this->assertEquals(NULL, $u->getHost());
+      $this->assertEquals('/path/to/file.db', $u->getPath());
     }
   }
 ?>

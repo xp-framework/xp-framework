@@ -328,5 +328,63 @@
         create(new DSN('pgsql://postgres:1433/db?observer[util.log.LogObserver]=default'))->getProperty('observer')
       );
     }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
+    public function twoDsnsCreatedFromSameStringAreEqual() {
+      $string= 'scheme://user:password@host/DATABASE?log=default&autoconnect=1';
+      $this->assertEquals(new DSN($string), new DSN($string));
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
+    public function twoDsnsWithDifferingAutoconnectNotEqual() {
+      $this->assertNotEquals(
+        new DSN('scheme://user:password@host/DATABASE?log=default&autoconnect=0'), 
+        new DSN('scheme://user:password@host/DATABASE?log=default&autoconnect=1')
+      );
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
+    public function twoDsnsWithDifferingParamsNotEqual() {
+      $this->assertNotEquals(
+        new DSN('scheme://user:password@host/DATABASE'), 
+        new DSN('scheme://user:password@host/DATABASE?log=default')
+      );
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
+    public function twoDsnsWithDifferingFlagParamsNotEqual() {
+      $this->assertNotEquals(
+        new DSN('scheme://user:password@host/DATABASE'), 
+        new DSN('scheme://user:password@host/DATABASE?autoconnect=1')
+      );
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
+    public function twoDsnsWithDifferentlyOrderedParamsAreEqual() {
+      $this->assertEquals(
+        new DSN('scheme://host/DATABASE?autoconnect=1&observer[rdbms.sybase.SybaseShowplanObserver]=sql&log=default'), 
+        new DSN('scheme://host/DATABASE?log=default&observer[rdbms.sybase.SybaseShowplanObserver]=sql&autoconnect=1')
+      );
+    }
   }
 ?>
