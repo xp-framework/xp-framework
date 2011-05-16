@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.ResultSet');
+  uses('rdbms.ResultSet', 'lang.types.String');
 
   /**
    * Abstract base class
@@ -54,7 +54,7 @@
             break;
 
           default:
-            $return[$info['name']]= $value;
+            $return[$info['name']]= NULL === $value ? NULL : new String($value, 'utf-8');
         }
       }
       return $return;    
