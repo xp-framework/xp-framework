@@ -24,14 +24,36 @@
       foreach ($this->fields as $i => $info) {
         $type= $info['type'];
         $value= $record[$i];
-        if (3 === $type) {
-          $return[$info['name']]= (int)$value;
-        } else if (246 === $type) {
-          $return[$info['name']]= (double)$value;
-        } else if (12 === $type || 7 === $type) {
-          $return[$info['name']]= NULL === $value || '0000-00-00 00:00:00' === $value ? NULL : Date::fromString($value, $this->tz);
-        } else {
-          $return[$info['name']]= $value;
+        switch ($type) {
+          case 10:    // DATE
+          case 11:    // TIME
+          case 12:    // DATETIME
+          case 14:    // NEWDATETIME
+            $return[$info['name']]= NULL === $value || '0000-00-00 00:00:00' === $value ? NULL : Date::fromString($value, $this->tz);
+            break;
+          
+          case 8:     // LONGLONG
+          case 3:     // LONG
+          case 9:     // INT24
+          case 2:     // SHORT
+          case 1:     // TINY
+          case 16:    // BIT
+            if ($value <= LONG_MAX && $value >= LONG_MIN) {
+              $return[$info['name']]= (int)$value;
+            } else {
+              $return[$info['name']]= (double)$value;
+            }
+            break;
+            
+          case 4:     // FLOAT
+          case 5:     // DOUBLE
+          case 0:     // DECIMAL
+          case 246:   // NEWDECIMAL
+            $return[$info['name']]= (double)$value;
+            break;
+
+          default:
+            $return[$info['name']]= $value;
         }
       }
       return $return;    
