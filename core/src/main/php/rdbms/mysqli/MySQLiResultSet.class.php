@@ -64,6 +64,7 @@
         switch ($this->fields[$key]) {
           case MYSQLI_TYPE_DATETIME:
           case MYSQLI_TYPE_DATE:
+          case MYSQLI_TYPE_TIME:
           case MYSQLI_TYPE_TIMESTAMP:
           case MYSQLI_TYPE_NEWDATE:
             $row[$key]= '0000-00-00 00:00:00' === $row[$key] ? NULL : Date::fromString($row[$key], $this->tz);

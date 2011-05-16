@@ -29,6 +29,7 @@
           case 11:    // TIME
           case 12:    // DATETIME
           case 14:    // NEWDATETIME
+          case 7:     // TIMESTAMP
             $return[$info['name']]= NULL === $value || '0000-00-00 00:00:00' === $value ? NULL : Date::fromString($value, $this->tz);
             break;
           
