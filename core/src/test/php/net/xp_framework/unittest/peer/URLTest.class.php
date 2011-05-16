@@ -1220,6 +1220,33 @@
      *
      */
     #[@test, @expect('lang.FormatException')]
+    public function plusAsFirstSignInSchemeNotAllowed() {
+      new URL('+v2://host');
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test]
+    public function numericAsPartOfSchemeAllowed() {
+      $this->assertEquals('foo+v2', create(new URL('foo+v2://host'))->getScheme());
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test]
+    public function oneLetterScheme() {
+      $this->assertEquals('f', create(new URL('f://host'))->getScheme());
+    }
+
+    /**
+     * Test URL parsing
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
     public function schemeOnlyUnparseable() {
       new URL('http:');
     }
