@@ -37,6 +37,8 @@ Features
 - Made "xar" command line utility exclude hidden version control systems 
   files other than just SVN and CVS (GIT/Mercurial/Bazaar/...)
   (friebe, kiesel)
+- Implement verbose parameter for xpcli runner
+  (hinckel)
 
 
 Version 5.8.1, released 2011-03-14

@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$
+ * $Id: Runner.class.php 14473 2010-04-16 07:16:10Z friebe $
  */
 
   $package= 'xp.command';
@@ -36,6 +36,10 @@
    * 
    * -cp:
    *   Add the path value to the class path.
+   *
+   * -v:
+   *   Enable verbosity (show complete stack trace when exceptions
+   *   occurred)
    * </pre>
    *
    * @test     xp://net.xp_framework.unittest.util.cmd.RunnerTest
@@ -47,6 +51,9 @@
       $in     = NULL,
       $out    = NULL,
       $err    = NULL;
+    
+    private
+      $verbose= FALSE;
     
     static function __static() {
       self::$in= new StringReader(new ConsoleInputStream(STDIN));
@@ -187,18 +194,23 @@
       }
 
       // Separate runner options from class options
-      for ($offset= 0, $i= 0; $i < $params->count; $i++) {
-        if ('-c' === $params->list[$i]) {
+      for ($offset= 0, $i= 0; $i < $params->count; $i++) switch ($params->list[$i]) {
+        case '-c':
           $pm->configure($params->list[$i+ 1]);
           $offset+= 2; $i++;
-        } else if ('-cp' === $params->list[$i]) {
+          break;
+        case '-cp':
           foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
             ClassLoader::registerPath($element, FALSE);
           }
           $offset+= 2; $i++;
-        } else {
           break;
-        }
+        case '-v':
+          $this->verbose= TRUE;
+          $offset+= 1; $i++;
+          break;
+        default:
+          break 2;
       }
       
       // Sanity check
@@ -239,7 +251,7 @@
         try {
           $class= XPClass::forName($classname);
         } catch (ClassNotFoundException $e) {
-          self::$err->writeLine('*** ', $e->getMessage());
+          self::$err->writeLine('*** ', $this->verbose ? $e : $e->getMessage());
           return 1;
         }
       }
@@ -337,7 +349,7 @@
           try {
             $method->invoke($instance, array($pass));
           } catch (Throwable $e) {
-            self::$err->writeLine('*** Error for arguments '.$begin.'..'.$end.': '.$e->getMessage());
+            self::$err->writeLine('*** Error for arguments '.$begin.'..'.$end.': ', $this->verbose ? $e : $e->getMessage());
             return 2;
           }
         } else if ($method->hasAnnotation('arg')) {  // Pass arguments
@@ -372,7 +384,7 @@
           try {
             $method->invoke($instance, $args);
           } catch (TargetInvocationException $e) {
-            self::$err->writeLine('*** Error for argument '.$name.': '.$e->getCause()->compoundMessage());
+            self::$err->writeLine('*** Error for argument '.$name.': ', $this->verbose ? $e->getCause() : $e->getCause()->compoundMessage());
             return 2;
           }
         }
