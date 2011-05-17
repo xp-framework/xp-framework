@@ -68,7 +68,12 @@
         throw new SQLConnectException('#'.mysqli_connect_error().': '.mysqli_connect_error(), $this->dsn);
       }
 
-      mysqli_set_charset($this->handle, 'latin1');
+      // Set character set to utf-8 
+      if (!mysqli_set_charset($this->handle, 'utf8')) {
+        $message= '#'.mysqli_errno($this->handle).': '.mysqli_error($this->handle);
+        $this->close();
+        throw new SQLConnectException($message, $this->dsn);
+      }
 
       // Figure out sql_mode and update formatter's escaperules accordingly
       // - See: http://bugs.mysql.com/bug.php?id=10214

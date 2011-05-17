@@ -74,8 +74,12 @@
       if (!is_resource($this->handle)) {
         throw new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
       }
-      
-      mysql_query('set names UTF8', $this->handle);
+     
+      // Set character set to utf-8 
+      if (!mysql_query('set names UTF8', $this->handle)) {
+        $this->close();
+        throw new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
+      }
 
       // Figure out sql_mode and update formatter's escaperules accordingly
       // - See: http://bugs.mysql.com/bug.php?id=10214
