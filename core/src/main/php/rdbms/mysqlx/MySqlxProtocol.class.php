@@ -14,6 +14,7 @@
   class MySqlxProtocol extends Object {
     protected $pkt= 0;
     protected $sock= NULL;
+    protected $fieldparser= NULL;
     public $connected= FALSE;
     const MAX_PACKET_LENGTH = 16777215;   // 256 * 256 * 256 - 1
 
