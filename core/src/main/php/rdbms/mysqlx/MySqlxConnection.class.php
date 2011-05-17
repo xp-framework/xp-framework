@@ -56,19 +56,21 @@
         throw new SQLConnectException($e->getMessage(), $this->dsn);
       }
 
+      // Set character set to utf-8 
       try {
         $this->handle->exec('set names UTF8');
-
-        // Figure out sql_mode and update formatter's escaperules accordingly
-        // - See: http://bugs.mysql.com/bug.php?id=10214
-        // - Possible values: http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html
-        // "modes is a list of different modes separated by comma (,) characters."
-        $modes= array_flip(explode(',', current($this->handle->consume($this->handle->query(
-          "show variables like 'sql_mode'"
-        )))));
       } catch (IOException $e) {
-        // Ignore
+        $this->close();
+        throw new SQLConnectException($e->getMessage(), $this->dsn);
       }
+
+      // Figure out sql_mode and update formatter's escaperules accordingly
+      // - See: http://bugs.mysql.com/bug.php?id=10214
+      // - Possible values: http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html
+      // "modes is a list of different modes separated by comma (,) characters."
+      $modes= array_flip(explode(',', current($this->handle->consume($this->handle->query(
+        "show variables like 'sql_mode'"
+      )))));
       
       // NO_BACKSLASH_ESCAPES: Disable the use of the backslash character 
       // (\) as an escape character within strings. With this mode enabled, 
