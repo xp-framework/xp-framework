@@ -16,6 +16,7 @@
     protected $sock= NULL;
     protected $fieldparser= NULL;
     public $connected= FALSE;
+    public $version= NULL;
     const MAX_PACKET_LENGTH = 16777215;   // 256 * 256 * 256 - 1
 
     // Client flags
@@ -85,9 +86,9 @@
       // Protocol and server version
       $proto= ord($buf[0]);
       $p= strpos($buf, "\0");
-      $version= substr($buf, 1, $p- 1);
+      $this->version= substr($buf, 1, $p- 1);
       if (10 !== $proto) {
-        throw new ProtocolException('MySQL Protocol version #'.$proto.' not supported, server '.$version);
+        throw new ProtocolException('MySQL Protocol version #'.$proto.' not supported, server '.$this->version);
       }
 
       // Scramble
@@ -469,7 +470,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.xp::stringOf($this->sock->getHandle()).', P@'.$this->pkt.')';
+      return $this->getClassName().'('.xp::stringOf($this->sock->getHandle()).', V'.$this->version.', P@'.$this->pkt.')';
     }
   }
 ?>
