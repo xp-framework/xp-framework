@@ -21,7 +21,7 @@
    */
   class XPSoapClient extends Object implements Traceable {
     public 
-      $encoding           = 'iso-8859-1',
+      $encoding           = 'utf-8',
       $transport          = NULL,
       $action             = '',
       $targetNamespace    = NULL,

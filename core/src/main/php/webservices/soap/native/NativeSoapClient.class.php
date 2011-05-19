@@ -26,7 +26,7 @@
       $cat      = NULL,
       $version  = NULL,
       $location = NULL,
-      $charset  = 'iso-8859-1',
+      $charset  = 'utf-8',
       $style    = SOAP_RPC,
       $encoding = SOAP_ENCODED;
     
