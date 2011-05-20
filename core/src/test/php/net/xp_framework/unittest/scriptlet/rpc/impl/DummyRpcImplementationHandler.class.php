@@ -85,7 +85,7 @@
      */
     #[@webmethod]
     public function checkUTF8Content($string) {
-      if ('Störung in Düsseldorf' !== $string) {
+      if ('StÃ¶rung in DÃ¼sseldorf' !== $string) {
         throw new IllegalArgumentException('Invalid encoding: "'.$string.'"');
       }
       

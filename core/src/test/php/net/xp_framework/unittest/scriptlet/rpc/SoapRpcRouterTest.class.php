@@ -270,7 +270,7 @@
       // $this->assertHasHeader($response->headers, 'Content-type: text/xml; charset=utf-8');
       $this->assertStringContained(
         new String('Störung in Düsseldorf', 'iso-8859-1'),
-        new String($response->getContent(), 'iso-8859-1')
+        new String($response->getContent(), 'utf-8')
       );
     }
   }
