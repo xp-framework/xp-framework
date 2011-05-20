@@ -182,7 +182,8 @@
       ');
       $this->router->init();
       $response= $this->router->process();
-      if (!$this->assertEquals(200, $response->statusCode)) return;
+
+      $this->assertEquals(200, $response->statusCode);
 
       $msg= XPSoapMessage::fromString($response->getContent());
       $data= current($msg->getData());
@@ -225,10 +226,8 @@
       
       $this->router->init();
       $response= $this->router->process();
-      
-      // The executed method throws an error, if the string is wrong and this
-      // will be indicated by a different statuscode than 200
-      $this->assertEquals(200, $response->statusCode);
+
+      $this->assertEquals(200, $response->statusCode, xp::stringOf($response->message));
       $this->assertHasHeader($response->headers, 'Content-type: text/xml');
     }
     
@@ -266,9 +265,7 @@
       $this->router->init();
       $response= $this->router->process();
       
-      // The executed method throws an error, if the string is wrong and this
-      // will be indicated by a different statuscode than 200
-      $this->assertEquals(200, $response->statusCode);
+      $this->assertEquals(200, $response->statusCode, xp::stringOf($response->message));
       
       // $this->assertHasHeader($response->headers, 'Content-type: text/xml; charset=utf-8');
       $this->assertStringContained(
