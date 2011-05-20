@@ -125,23 +125,23 @@
           $e
         );
 
-        if ($e->getCause() instanceof ServiceException) {
-          $cause= $e->getCause();
+        $cause= $e->getCause();
+        if ($cause instanceof ServiceException) {
           
           // Server methods may throw a ServiceException to have more
-          // conveniant control over the faultcode which is returned to the client.
+          // convenient control over the faultcode which is returned to the client.
           $answer->setFault(
             $cause->getFaultcode(),
             $cause->getMessage(),
             $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-            $this->formatStackTrace($e->getStackTrace())
+            $this->formatStackTrace($cause->getStackTrace())
           );
         } else {
           $answer->setFault(
             HttpConstants::STATUS_INTERNAL_SERVER_ERROR,
-            $e->getMessage(),
+            $cause->getMessage(),
             $request->getEnvValue('SERVER_NAME').':'.$request->getEnvValue('SERVER_PORT'),
-            $this->formatStackTrace($e->getStackTrace())
+            $this->formatStackTrace($cause->getStackTrace())
           );
         }
       } catch (XPException $e) {
