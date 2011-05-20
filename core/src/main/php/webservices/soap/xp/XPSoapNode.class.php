@@ -99,11 +99,6 @@
           $t= 'string';
       }
       
-      // Decode if necessary
-      switch (strtolower($encoding)) {
-        case 'utf-8': $ret= utf8_decode($ret); break;
-      }
-
       // Set type
       settype($ret, $t);
 
