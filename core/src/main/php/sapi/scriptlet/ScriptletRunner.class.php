@@ -65,7 +65,10 @@
       }
 
       // Send output
-      $response->sendHeaders();
+      // Send headers if they are not already send by the scriptlet
+      if (!$response->isCommitted()) {
+        $response->sendHeaders();
+      }
       $response->sendContent();
       flush();
 

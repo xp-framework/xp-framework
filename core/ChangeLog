@@ -8,6 +8,8 @@ SVN version: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #16: ScriptletRunner - graceful header handling
+  (friebe, robert)
 - Fixed mysqlx protocol implementation to handle timezones, timestamps 
   and numeric data types and correctly
   (friebe)

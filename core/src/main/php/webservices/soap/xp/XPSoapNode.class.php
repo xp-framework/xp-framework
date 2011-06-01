@@ -148,6 +148,12 @@
         $this->_marshall($child, $value->value, $mapping);
         return;
       }
+
+      if ($value instanceof String) {
+        $child->attribute['xsi:type']= 'xsd:string';
+        $child->setContent($value);
+        return;
+      }
       
       if ($value instanceof Date) {       // Date
         $value= new SOAPDateTime($value->getHandle());
