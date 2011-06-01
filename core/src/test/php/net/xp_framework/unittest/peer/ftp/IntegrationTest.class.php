@@ -225,6 +225,21 @@
     }
 
     /**
+     * Test retrieving the "htdocs/index.html" file
+     *
+     */
+    #[@test]
+    public function whitespacesHtml() {
+      $this->conn->connect();
+      with ($htdocs= $this->conn->rootDir()->getDir('htdocs')); {
+        $this->assertTrue($htdocs->hasFile('file with whitespaces.html'));
+        $file= $htdocs->getFile('file with whitespaces.html');
+        $this->assertClass($file, 'peer.ftp.FtpFile');
+        $this->assertEquals('/htdocs/file with whitespaces.html', $file->getName());
+      }
+    }
+
+    /**
      * Test checking for a non-existant file
      *
      */

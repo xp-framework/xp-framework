@@ -29,6 +29,8 @@ Bugfixes
   (friebe, robert)
 - Fixed an fatal error when an "Object does not have any declarative constraints"
   (friebe, robert)
+- Fixed file name interpretation in LIST command in FTP API
+  (hinckel)
 
 Features
 ~~~~~~~~
