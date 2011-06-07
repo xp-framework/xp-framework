@@ -19,7 +19,8 @@
       DELETE  = 'DELETE',
       OPTIONS = 'OPTIONS',
       TRACE   = 'TRACE',
-      CONNECT = 'CONNECT';
+      CONNECT = 'CONNECT',
+      PATCH   = 'PATCH';
 
     const 
       STATUS_CONTINUE                          = 100,

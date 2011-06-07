@@ -44,6 +44,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added PATCH verb to peer.http.HttpConstants - issue #21
+  (friebe)
 - Added setParameter() method to peer.http.HttpRequest class
   (friebe)
 - Migrated repository to github.com (for the records)
