@@ -6,6 +6,15 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed util.Properties to no longer use parse_ini_file(), fixes the
+  behavioral problems documented in issue #15.
+  (friebe)
+- Deprecated util.Properties::save(), fromString() and fromFile() in favor
+  of store(OutputStream $out) and load(InputStream $in).
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed issue #16: ScriptletRunner - graceful header handling
@@ -22,12 +31,13 @@ Bugfixes
 - Improved exception message in remote.UnknownRemoteObject, so the name
   of the unknown object is visible
   (kiesel, friebe)
-- Fixed unittest API not to allow overwriting TestCase's methods with test 
-  methods (e.g. setUp(), tearDown(), getName(), ...)
+- Fixed unittest API not to allow overwriting TestCase's methods with 
+  test methods (e.g. setUp(), tearDown(), getName(), ...)
   (friebe, kiesel)
 - Fixed segmentation fault when using mssql.so to get constraints.
   (friebe, robert)
-- Fixed an fatal error when an "Object does not have any declarative constraints"
+- Fixed an fatal error when an "Object does not have any declarative 
+  constraints"
   (friebe, robert)
 - Fixed file name interpretation in LIST command in FTP API
   (hinckel)

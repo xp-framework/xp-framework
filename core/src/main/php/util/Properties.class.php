@@ -7,6 +7,11 @@
   uses(
     'io.IOException',
     'io.File',
+    'io.streams.InputStream',
+    'io.streams.MemoryInputStream',
+    'io.streams.MemoryOutputStream',
+    'io.streams.FileInputStream',
+    'text.StreamTokenizer',
     'util.Hashmap'
   );
   
@@ -26,19 +31,16 @@
    * key=value
    * </pre>
    *
-   * @test      xp://net.xp_framework.unittest.util.PropertiesTest
-   * @purpose   Wrapper around parse_ini_file
+   * @test    xp://net.xp_framework.unittest.util.PropertyWritingTest
+   * @test    xp://net.xp_framework.unittest.util.StringBasedPropertiesTest
+   * @test    xp://net.xp_framework.unittest.util.FileBasedPropertiesTest
+   * @see     php://parse_ini_file
    */
   class Properties extends Object {
     public
       $_file    = '',
       $_data    = NULL;
 
-    private static $INI_PARSE_BUG= FALSE;
-    static function __static() {
-      self::$INI_PARSE_BUG= version_compare(PHP_VERSION, '5.3.0', 'lt');
-    }
-      
     /**
      * Constructor
      *
@@ -49,96 +51,125 @@
     }
     
     /**
+     * Load from an input stream, e.g. a file
+     *
+     * @param   io.streams.InputStream in
+     * @throws  io.IOException
+     * @throws  lang.FormatException
+     */
+    public function load(InputStream $in) {
+      $s= new StreamTokenizer($in, "\r\n");
+      $this->_data= array();
+      $section= NULL;
+      while ($s->hasMoreTokens()) {
+        if ('' === ($t= $s->nextToken())) continue;                // Empty lines
+        $c= $t{0};
+        if (';' === $c || '#' === $c) {                            // One line comments
+          continue;
+        } else if ('[' === $c) {
+          if (FALSE === ($p= strrpos($t, ']'))) {
+            throw new FormatException('Unclosed section "'.$t.'"');
+          }
+          $section= substr($t, 1, $p- 1);
+          $this->_data[$section]= array();
+        } else if (FALSE !== ($p= strpos($t, '='))) {
+          $key= trim(substr($t, 0, $p));
+          $value= trim(substr($t, $p+ 1));
+          if (strlen($value) && ('"' === ($q= $value{0}))) {       // Quoted strings
+            if (FALSE === ($p= strrpos($value, $q, 1))) {
+              $value= substr($value, 1)."\n".$s->nextToken($q);
+            } else {
+              $value= substr($value, 1, $p- 1);
+            }
+          } else if (FALSE !== ($p= strpos($value, ';'))) {        // Comments at end of line
+            $value= trim(substr($value, 0, $p));
+          }
+
+          // Arrays and maps: key[], key[0], key[assoc]
+          if (']' === substr($key, -1)) {
+            if (FALSE === ($p= strpos($key, '['))) {
+              throw new FormatException('Invalid key "'.$key.'"');
+            }
+            $offset= substr($key, $p+ 1, -1);
+            $key= substr($key, 0, $p);
+            if (!isset($this->_data[$section][$key])) {
+              $this->_data[$section][$key]= array();
+            }
+            if ('' === $offset) {
+              $this->_data[$section][$key][]= $value;
+            } else {
+              $this->_data[$section][$key][$offset]= $value;
+            }
+          } else {
+            $this->_data[$section][$key]= $value;
+          }
+        } else if ('' !== trim($t)) {
+          throw new FormatException('Invalid line "'.$t.'"');
+        }
+      }
+    }
+
+    /**
+     * Store to an output stream, e.g. a file
+     *
+     * @param   io.streams.OutputStream out
+     * @throws  io.IOException
+     */
+    public function store(OutputStream $out) {
+      foreach (array_keys($this->_data) as $section) {
+        $out->write(sprintf("[%s]\n", $section));
+        
+        foreach ($this->_data[$section] as $key => $val) {
+          if (';' == $key{0}) {
+            $out->write(sprintf("\n; %s\n", $val)); 
+          } else {
+            if ($val instanceof Hashmap) {
+              $str= '';
+              foreach ($val->keys() as $k) {
+                $str.= '|'.$k.':'.$val->get($k);
+              }
+              $val= (string)substr($str, 1);
+            } 
+            if (is_array($val)) $val= implode('|', $val);
+            if (is_string($val)) $val= '"'.$val.'"';
+            $out->write(sprintf(
+              "%s=%s\n",
+              $key,
+              strval($val)
+            ));
+          }
+        }
+        $out->write("\n");
+      }
+    }
+    
+    /**
      * Create a property file from an io.File object
      *
+     * @deprecated  Use load() method instead
      * @param   io.File file
      * @return  util.Properties
      * @throws  io.IOException in case the file given does not exist
      */
     public static function fromFile(File $file) {
-      if (!$file->exists()) {
-        throw new IOException('The file "'.$file->getURI().'" could not be read');
-      }
-      return new self($file->getURI());
+      $self= new self($file->getURI());
+      $self->load($file->getInputStream());
+      return $self;
     }
 
     /**
      * Create a property file from a string
      *
+     * @deprecated  Use load() method instead
      * @param   string str
      * @return  util.Properties
      */
     public static function fromString($str) {
       $self= new self(NULL);
-      $self->_data= self::parse($str);
+      $self->load(new MemoryInputStream($str));
       return $self;
     }
-    
-    /**
-     * Parse from a string
-     *
-     * @param   string str
-     * @return  [:var] data
-     */
-    protected static function parse($str) {
-      $section= NULL;
-      $data= array();
-      if ($t= strtok($str, "\r\n")) do {
-        switch ($t{0}) {
-          case ';':
-          case '#':
-            break;
 
-          case '[':
-            $p= strpos($t, '[');
-            $section= substr($t, $p+ 1, strpos($t, ']', $p)- 1);
-            $data[$section]= array();
-            break;
-
-          default:
-            if (FALSE === ($p= strpos($t, '='))) break;
-            $key= trim(substr($t, 0, $p));
-            $value= trim(substr($t, $p+ 1), ' ');
-
-            // Check for string quotations
-            if (strlen($value) && ('"' == ($quote= $value{0}))) {
-
-              // For multiline values, get next token by quote
-              if (FALSE === strrpos($value, $quote, 1))
-                $value.= "\n".strtok($quote);
-
-              $value= trim($value, $quote);
-              $value= trim(substr($value, 0, ($p= strpos($value, '"')) !== FALSE
-                ? $p : strlen($value)
-              ), $quote);
-
-            // Check for comment
-            } else if (FALSE !== ($p= strpos($value, ';'))) {
-              $value= trim(substr($value, 0, $p));
-            }
-
-            // Arrays and maps: key[], key[0], key[assoc]
-            if (']' === substr($key, -1)) {
-              $p= strpos($key, '[');
-              $offset= substr($key, $p+ 1, -1);
-              $key= substr($key, 0, $p);
-              if (!isset($data[$section][$key])) {
-                $data[$section][$key]= array();
-              }
-              if ('' === $offset) {
-                $data[$section][$key][]= $value;
-              } else {
-                $data[$section][$key][$offset]= $value;
-              }
-            } else {
-              $data[$section][$key]= $value;
-            }
-            break;
-        }
-      } while ($t= strtok("\r\n"));
-      return $data;
-    }
-    
     /**
      * Retrieves the file name containing the properties
      *
@@ -154,9 +185,12 @@
      * @throws  io.IOException if the property file could not be created
      */
     public function create() {
-      $fd= new File($this->_file);
-      $fd->open(FILE_MODE_WRITE);
-      $fd->close();
+      if (NULL !== $this->_file) {
+        $fd= new File($this->_file);
+        $fd->open(FILE_MODE_WRITE);
+        $fd->close();
+      }
+      $this->_data= array();
     }
     
     /**
@@ -176,20 +210,7 @@
      */
     protected function _load($force= FALSE) {
       if (!$force && NULL !== $this->_data) return;
-      
-      if (self::$INI_PARSE_BUG) {
-        $this->_data= $this->parse(file_get_contents($this->_file));
-        $error= xp::errorAt(__FILE__, __LINE__ - 1);
-      } else {
-        $this->_data= parse_ini_file($this->_file, TRUE);
-        $error= xp::errorAt(__FILE__, __LINE__ - 1);
-      }
-      if ($error) {
-        $e= new IOException('The file "'.$this->_file.'" could not be read');
-        xp::gc(__FILE__);
-        $this->_data= NULL;
-        throw $e;
-      }
+      $this->load(new FileInputStream($this->_file));
     }
     
     /**
@@ -203,37 +224,12 @@
     /**
      * Save properties to the file
      *
+     * @deprecated  Use store() method instead
      * @throws  io.IOException if the property file could not be written
      */
     public function save() {
       $fd= new File($this->_file);
-      $fd->open(FILE_MODE_WRITE);
-      
-      foreach (array_keys($this->_data) as $section) {
-        $fd->write(sprintf("[%s]\n", $section));
-        
-        foreach ($this->_data[$section] as $key => $val) {
-          if (';' == $key{0}) {
-            $fd->write(sprintf("\n; %s\n", $val)); 
-          } else {
-            if ($val instanceof Hashmap) {
-              $str= '';
-              foreach ($val->keys() as $k) {
-                $str.= '|'.$k.':'.$val->get($k);
-              }
-              $val= substr($str, 1);
-            }
-            if (is_array($val)) $val= implode('|', $val);
-            if (is_string($val)) $val= '"'.$val.'"';
-            $fd->write(sprintf(
-              "%s=%s\n",
-              $key,
-              strval($val)
-            ));
-          }
-        }
-        $fd->write("\n");
-      }
+      $this->store($fd->getOutputStream());
       $fd->close();
     }
 
