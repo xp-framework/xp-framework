@@ -1,0 +1,107 @@
+%token T_TRUE  261 /* used in lexer */
+%token T_FALSE 262 /* used in lexer */
+%token T_NULL  263 /* used in lexer */
+%token T_INT   264 /* used in lexer */
+%token T_FLOAT 265 /* used in lexer */
+
+%token T_STRING                270 /* used in lexer */
+%token T_ESCAPE_QUOTATION      271 /* used in lexer */
+%token T_ESCAPE_REVERSESOLIDUS 272 /* used in lexer */
+%token T_ESCAPE_SOLIDUS        273 /* used in lexer */
+%token T_ESCAPE_BACKSPACE      274 /* used in lexer */
+%token T_ESCAPE_FORMFEED       275 /* used in lexer */
+%token T_ESCAPE_NEWLINE        276 /* used in lexer */
+%token T_ESCAPE_CARRIAGERETURN 277 /* used in lexer */
+%token T_ESCAPE_HORIZONTALTAB  278 /* used in lexer */
+%token T_ESCAPE_UNICODE        279 /* used in lexer */
+
+%%
+
+expression:
+      object
+    | array
+    | string
+    | atom
+;
+
+object:
+    semiobject  {
+                  // Introspect array to check if this is actually an object
+                  if (!empty($1['__jsonclass__']) && !empty($1['__xpclass__'])) {
+                    $$= XPClass::forName($1['__xpclass__'])->newInstance();
+                    
+                    foreach ($1 as $key => $value) {
+                      // TBD: A member like "constructor" should probably not be serialized
+                      // at all. It should be ignored at this point...
+                      if (in_array($key, array('__jsonclass__', '__xpclass__', 'constructor'))) continue;
+                      $$->{$key}= $value;
+                    }
+                    
+                    if (method_exists($$, '__wakeup')) $$->__wakeup();
+                  } else {
+                    $$= $1;
+                  }
+                }
+;
+
+semiobject:
+      '{' objectcontent '}' { $$= $2; }
+    | '{' '}'               { $$= array(); }
+;
+
+objectcontent:
+  objectpart
+  | objectcontent ',' objectpart { $$= $1 + $3; }
+;
+
+objectpart:
+      string ':' expression { $$= array($1 => $3); }
+;
+
+array:
+      '[' arraycontent ']' { $$= $2; }
+    | '[' ']'              { $$= array(); }
+;
+
+arraycontent:
+    expression                  { $$= array($1); }
+  | arraycontent ',' expression { $$= array_merge($1, array($3)); }
+;
+
+string:
+    '"' word '"' { $$= $2; }
+  | '"' '"' { $$= ''; }
+;
+
+word:
+    stringpart
+  | word stringpart { $$= $1.$2; }
+;
+
+stringpart:
+      T_STRING                { $$= iconv('UTF-8', 'ISO-8859-15//IGNORE//TRANSLIT', $1); }
+    | T_ESCAPE_QUOTATION      { $$= '"'; }
+    | T_ESCAPE_REVERSESOLIDUS { $$= "\\"; }
+    | T_ESCAPE_SOLIDUS        { $$= "/"; }
+    | T_ESCAPE_BACKSPACE      { $$= "\b"; }
+    | T_ESCAPE_FORMFEED       { $$= "\f"; }
+    | T_ESCAPE_NEWLINE        { $$= "\n"; }
+    | T_ESCAPE_CARRIAGERETURN { $$= "\r"; }
+    | T_ESCAPE_HORIZONTALTAB  { $$= "\t"; }
+    | T_ESCAPE_UNICODE        {
+                                $$= iconv(
+                                  'UCS-4BE',
+                                  'ISO-8859-15//IGNORE//TRANSLIT',
+                                  pack('N', hexdec(substr($1, 2)))
+                                );
+                              }
+;
+
+atom:
+      T_TRUE  { $$= TRUE; }
+    | T_FALSE { $$= FALSE; }
+    | T_NULL  { $$= NULL; }
+    | T_FLOAT { $$= doubleval($1); }
+    | T_INT   { $$= intval($1); }
+;
+%%
