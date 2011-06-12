@@ -475,5 +475,44 @@ foo]=value
 foo=bar
       ');
     }
+
+    /**
+     * Unicode file format
+     *
+     */
+    #[@test]
+    public function utf8Bom() {
+      $p= $this->newPropertiesFrom("\357\273\277".'
+[section]
+key=Ãœbercoder
+      ');
+      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+    }
+
+    /**
+     * Unicode file format
+     *
+     */
+    #[@test]
+    public function utf16BeBom() {
+      $p= $this->newPropertiesFrom("\376\377".trim('
+ [ s e c t i o n ]  
+ k e y = Ü b e r c o d e r
+      ', " \r\n"));
+      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+    }
+
+    /**
+     * Unicode file format
+     *
+     */
+    #[@test]
+    public function utf16LeBom() {
+      $p= $this->newPropertiesFrom("\377\376".trim('
+[ s e c t i o n ]  
+ k e y = Ü b e r c o d e r 
+      ', " \r\n"));
+      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+    }
   }
 ?>

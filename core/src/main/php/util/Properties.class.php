@@ -11,7 +11,8 @@
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
     'io.streams.FileInputStream',
-    'text.StreamTokenizer',
+    'io.streams.TextReader',
+    'text.TextTokenizer',
     'util.Hashmap'
   );
   
@@ -49,23 +50,24 @@
     public function __construct($filename) {
       $this->_file= $filename;
     }
-    
+
     /**
      * Load from an input stream, e.g. a file
      *
      * @param   io.streams.InputStream in
+     * @param   string charset the charset the stream is encoded in or NULL to trigger autodetection by BOM
      * @throws  io.IOException
      * @throws  lang.FormatException
      */
-    public function load(InputStream $in) {
-      $s= new StreamTokenizer($in, "\r\n");
+    public function load(InputStream $in, $charset= NULL) {
+      $s= new TextTokenizer(new TextReader($in, $charset), "\r\n");
       $this->_data= array();
       $section= NULL;
       while ($s->hasMoreTokens()) {
         if ('' === ($t= $s->nextToken())) continue;                // Empty lines
         $c= $t{0};
         if (';' === $c || '#' === $c) {                            // One line comments
-          continue;
+          continue;                    
         } else if ('[' === $c) {
           if (FALSE === ($p= strrpos($t, ']'))) {
             throw new FormatException('Unclosed section "'.$t.'"');
