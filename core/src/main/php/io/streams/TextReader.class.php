@@ -16,6 +16,8 @@
   class TextReader extends Reader {
     protected $in = NULL;
     protected $buf = '';
+    protected $bom = 0;
+    protected $charset = NULL;
   
     /**
      * Constructor. Creates a new TextReader on an underlying input
@@ -35,6 +37,27 @@
       if (!stream_filter_append($this->in, 'convert.iconv.'.$charset.'/iso-8859-1', STREAM_FILTER_READ)) {
         throw new IOException('Could not append stream filter');
       }
+
+      $this->charset= $charset;
+    }
+    
+    /**
+     * Returns the character set used
+     *
+     * @return  string
+     */
+    public function charset() {
+      return $this->charset;
+    }
+    
+    /**
+     * Reset to bom. 
+     *
+     * @throws  io.IOException in case the underlying stream does not support seeking
+     */
+    public function reset() {
+      fseek($this->in, $this->bom, SEEK_SET);
+      $this->buf= '';
     }
     
     /**
@@ -49,21 +72,25 @@
       
       // Check for UTF-16 (BE)
       if ("\376\377" === $c) {
+        $this->bom= 2;
         return 'utf-16be';
       }
       
       // Check for UTF-16 (LE)
       if ("\377\376" === $c) {
+        $this->bom= 2;
         return 'utf-16le';
       }
       
       // Check for UTF-8 BOM
       if ("\357\273" === $c && "\357\273\277" === ($c.= $this->read(1))) {
+        $this->bom= 3;
         return 'utf-8';
       }
       
       // Fall back to ISO-8859-1
       $this->buf= $c;
+      $this->bom= 0;
       return 'iso-8859-1';
     }
   
