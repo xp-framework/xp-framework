@@ -176,6 +176,38 @@ range="1..5"
         $p->readRange('section', 'range')
       );
     }
+
+    /**
+     * Test simple reading of range
+     *
+     */
+    #[@test]
+    public function readRangeUpperBoundaryLessThanLower() {
+      $p= $this->newPropertiesFrom('
+[section]
+range="1..0"
+      ');
+      $this->assertEquals(
+        range(1, 0),
+        $p->readRange('section', 'range')
+      );
+    }
+
+    /**
+     * Test simple reading of range
+     *
+     */
+    #[@test]
+    public function readRangeNegativeNumbers() {
+      $p= $this->newPropertiesFrom('
+[section]
+range="-3..3"
+      ');
+      $this->assertEquals(
+        range(-3, 3),
+        $p->readRange('section', 'range')
+      );
+    }
     
     /**
      * Test simple reading of integer
@@ -389,6 +421,98 @@ second line
 third line';
 
       $this->assertEquals($expected, $p->readString('section', 'key'));
+    }
+
+    /**
+     * Test a property file where everything is indented from the left
+     *
+     */
+    #[@test]
+    public function identedKey() {
+      $p= $this->newPropertiesFrom('
+[section]
+  key1="value1"
+  key2="value2"
+      ');
+      $this->assertEquals(
+        array('key1' => 'value1', 'key2' => 'value2'), 
+        $p->readSection('section')
+      );
+    }
+
+    /**
+     * Test a property file where a key without value exists
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malformedLine() {
+      $p= $this->newPropertiesFrom('
+[section]
+foo
+      ');
+    }
+
+    /**
+     * Test a property file where a key without value exists
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malformedKey() {
+      $p= $this->newPropertiesFrom('
+[section]
+foo]=value
+      ');
+    }
+
+    /**
+     * Malformed section (unclosed brackets)
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malformedSection() {
+      $p= $this->newPropertiesFrom('
+[section
+foo=bar
+      ');
+    }
+
+    /**
+     * Unicode file format
+     *
+     */
+    #[@test]
+    public function utf8Bom() {
+      $p= $this->newPropertiesFrom("\357\273\277".'
+[section]
+key=Ãœbercoder
+      ');
+      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+    }
+
+    /**
+     * Unicode file format
+     *
+     */
+    #[@test]
+    public function utf16BeBom() {
+      $p= $this->newPropertiesFrom("\376\377".trim('
+ [ s e c t i o n ]  
+ k e y = Ü b e r c o d e r
+      ', " \r\n"));
+      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+    }
+
+    /**
+     * Unicode file format
+     *
+     */
+    #[@test]
+    public function utf16LeBom() {
+      $p= $this->newPropertiesFrom("\377\376".trim('
+[ s e c t i o n ]  
+ k e y = Ü b e r c o d e r 
+      ', " \r\n"));
+      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
     }
   }
 ?>

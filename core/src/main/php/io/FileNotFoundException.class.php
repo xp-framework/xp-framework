@@ -10,9 +10,17 @@
    * Indicates the file could not be found
    *
    * @see      xp://io.IOException
-   * @purpose  Exception
    */
   class FileNotFoundException extends IOException {
   
+    /**
+     * Constructor
+     *
+     * @param   string file
+     * @param   lang.Throwable cause default NULL
+     */
+    public function __construct($file, $cause= NULL) {
+      parent::__construct('File "'.$file.'" not found', $cause);
+    }
   }
 ?>

@@ -6,8 +6,19 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 SVN version: ?????
 
+Heads up!
+~~~~~~~~~
+- Changed util.Properties to no longer use parse_ini_file(), fixes the
+  behavioral problems documented in issue #15.
+  (friebe)
+- Deprecated util.Properties::save(), fromString() and fromFile() in favor
+  of store(OutputStream $out) and load(InputStream $in).
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
+- Fixed issue #16: ScriptletRunner - graceful header handling
+  (friebe, robert)
 - Fixed mysqlx protocol implementation to handle timezones, timestamps 
   and numeric data types and correctly
   (friebe)
@@ -20,16 +31,29 @@ Bugfixes
 - Improved exception message in remote.UnknownRemoteObject, so the name
   of the unknown object is visible
   (kiesel, friebe)
-- Fixed unittest API not to allow overwriting TestCase's methods with test 
-  methods (e.g. setUp(), tearDown(), getName(), ...)
+- Fixed unittest API not to allow overwriting TestCase's methods with 
+  test methods (e.g. setUp(), tearDown(), getName(), ...)
   (friebe, kiesel)
 - Fixed segmentation fault when using mssql.so to get constraints.
   (friebe, robert)
-- Fixed an fatal error when an "Object does not have any declarative constraints"
+- Fixed an fatal error when an "Object does not have any declarative 
+  constraints"
   (friebe, robert)
+- Fixed file name interpretation in LIST command in FTP API
+  (hinckel)
 
 Features
 ~~~~~~~~
+- Added support for Unicode in .uni files (UTF-8, UTF-16LE/BE)- issue #20
+  (friebe)
+- Added text.TextTokenizer class which tokenizes off a io.streams.Reader 
+  (friebe)
+- Added charset() to io.streams.TextReader which returns charset in use
+  (friebe)
+- Added reset() method to io.streams.Reader which resets it to the start
+  (friebe)
+- Added PATCH verb to peer.http.HttpConstants - issue #21
+  (friebe)
 - Added setParameter() method to peer.http.HttpRequest class
   (friebe)
 - Migrated repository to github.com (for the records)
@@ -37,6 +61,8 @@ Features
 - Made "xar" command line utility exclude hidden version control systems 
   files other than just SVN and CVS (GIT/Mercurial/Bazaar/...)
   (friebe, kiesel)
+- Implement verbose parameter for xpcli runner
+  (hinckel)
 
 
 Version 5.8.1, released 2011-03-14

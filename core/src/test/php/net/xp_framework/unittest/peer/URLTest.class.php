@@ -1812,5 +1812,23 @@
       $this->assertEquals(NULL, $u->getHost());
       $this->assertEquals('/path/to/file.db', $u->getPath());
     }
+
+    /**
+     * Parse ipv6 URL
+     *
+     */
+    #[@test]
+    public function parseIpv6LocalhostURL() {
+      $this->assertEquals('http://[::1]:80/authenticate/', create(new URL('http://[::1]:80/authenticate/'))->getURL());
+    }
+
+    /**
+     * Parse ipv6 URL
+     *
+     */
+    #[@test]
+    public function parseIpv6URL() {
+      $this->assertEquals('http://[2001:8d8f:1fe:5:abba:dbff:fefe:7755]:80/authenticate/', create(new URL('http://[2001:8d8f:1fe:5:abba:dbff:fefe:7755]:80/authenticate/'))->getURL());
+    }
   }
 ?>

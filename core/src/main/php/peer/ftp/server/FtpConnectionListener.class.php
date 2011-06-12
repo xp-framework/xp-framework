@@ -417,9 +417,8 @@
       if (!$socket= $this->openDatasock($event)) return;
             
       // Split options from arguments
-      if (($parts= sscanf($params, '-%s %s')) && $parts[0]) {
-        $options= $parts[0];
-        $params= $parts[1];
+      if (substr($params, 0, 1) === '-') {
+        list($options, $params)= explode(' ', substr($params, 1), 2);
         $this->cat && $this->cat->debug('+++ Options:', $options);
       } else {
         $options= '';
