@@ -44,6 +44,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added reset() method to io.streams.Reader which resets it to the start
+  (friebe)
 - Added PATCH verb to peer.http.HttpConstants - issue #21
   (friebe)
 - Added setParameter() method to peer.http.HttpRequest class
