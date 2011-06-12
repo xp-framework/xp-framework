@@ -44,6 +44,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added text.TextTokenizer class which tokenizes off a io.streams.Reader 
+  (friebe)
 - Added charset() to io.streams.TextReader which returns charset in use
   (friebe)
 - Added reset() method to io.streams.Reader which resets it to the start
