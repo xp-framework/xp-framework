@@ -283,19 +283,59 @@
      *
      */
     #[@test]
+    public function autodetectUtf8() {
+      $r= $this->newReader("\357\273\277\303\234bercoder", NULL);
+      $this->assertEquals('utf-8', $r->charset());
+    }
+
+    /**
+     * Test reading lines w/ autodetected encoding at utf-16be
+     *
+     */
+    #[@test]
     public function readLinesAutodetectUtf16BE() {
       $r= $this->newReader("\376\377\000\334\000b\000e\000r\000c\000o\000d\000e\000r", NULL);
       $this->assertEquals('Übercoder', $r->readLine());
     }
-    
+
     /**
-     * Test reading lines w/ autodetected encoding at utf-8
+     * Test reading lines w/ autodetected encoding at utf-16be
      *
      */
     #[@test]
-    public function readLinesAutodetectUtf16LE() {
+    public function autodetectUtf16Be() {
+      $r= $this->newReader("\376\377\000\334\000b\000e\000r\000c\000o\000d\000e\000r", NULL);
+      $this->assertEquals('utf-16be', $r->charset());
+    }
+    
+    /**
+     * Test reading lines w/ autodetected encoding at utf-16le
+     *
+     */
+    #[@test]
+    public function readLinesAutodetectUtf16Le() {
       $r= $this->newReader("\377\376\334\000b\000e\000r\000c\000o\000d\000e\000r\000", NULL);
       $this->assertEquals('Übercoder', $r->readLine());
+    }
+
+    /**
+     * Test reading lines w/ autodetected encoding at utf-16le
+     *
+     */
+    #[@test]
+    public function autodetectUtf16Le() {
+      $r= $this->newReader("\377\376\334\000b\000e\000r\000c\000o\000d\000e\000r\000", NULL);
+      $this->assertEquals('utf-16le', $r->charset());
+    }
+
+    /**
+     * Test reading lines w/ autodetected encoding at iso-8859-1
+     *
+     */
+    #[@test]
+    public function defaultCharsetIsIso88591() {
+      $r= $this->newReader('Übercoder', NULL);
+      $this->assertEquals('iso-8859-1', $r->charset());
     }
 
     /**
@@ -320,6 +360,117 @@
       $r= $this->newReader('');
       $r->close();
       $r->close();
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function reset() {
+      $r= $this->newReader('ABC');
+      $this->assertEquals('ABC', $r->read(3));
+      $r->reset();
+      $this->assertEquals('ABC', $r->read(3));
+
+    }
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function resetWithBuffer() {
+      $r= $this->newReader("Line 1\rLine 2");
+      $this->assertEquals('Line 1', $r->readLine());    // We have "\n" in the buffer
+      $r->reset();
+      $this->assertEquals('Line 1', $r->readLine());
+      $this->assertEquals('Line 2', $r->readLine());
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function resetUtf8() {
+      $r= $this->newReader("\357\273\277ABC", NULL);
+      $this->assertEquals('ABC', $r->read(3));
+      $r->reset();
+      $this->assertEquals('ABC', $r->read(3));
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function resetUtf8WithoutBOM() {
+      $r= $this->newReader('ABC', 'utf-8');
+      $this->assertEquals('ABC', $r->read(3));
+      $r->reset();
+      $this->assertEquals('ABC', $r->read(3));
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function resetUtf16Le() {
+      $r= $this->newReader("\377\376A\000B\000C\000", NULL);
+      $this->assertEquals('ABC', $r->read(3));
+      $r->reset();
+      $this->assertEquals('ABC', $r->read(3));
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function resetUtf16LeWithoutBOM() {
+      $r= $this->newReader("A\000B\000C\000", 'utf-16le');
+      $this->assertEquals('ABC', $r->read(3));
+      $r->reset();
+      $this->assertEquals('ABC', $r->read(3));
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function resetUtf16Be() {
+      $r= $this->newReader("\376\377\000A\000B\000C", NULL);
+      $this->assertEquals('ABC', $r->read(3));
+      $r->reset();
+      $this->assertEquals('ABC', $r->read(3));
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test]
+    public function resetUtf16BeWithoutBOM() {
+      $r= $this->newReader("\000A\000B\000C", 'utf-16be');
+      $this->assertEquals('ABC', $r->read(3));
+      $r->reset();
+      $this->assertEquals('ABC', $r->read(3));
+    }
+
+    /**
+     * Test resetting a reader
+     *
+     */
+    #[@test, @expect(class= 'io.IOException', withMessage= 'Underlying stream does not support seeking')]
+    public function resetUnseekable() {
+      $r= new TextReader(newinstance('io.streams.InputStream', array(), '{
+        public function read($size= 8192) { return NULL; }
+        public function available() { return 0; }
+        public function close() { }
+      }'));
+      $r->reset();
     }
   }
 ?>
