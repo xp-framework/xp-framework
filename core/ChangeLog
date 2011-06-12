@@ -45,6 +45,7 @@ Bugfixes
 Features
 ~~~~~~~~
 - Added support for Unicode in .uni files (UTF-8, UTF-16LE/BE)- issue #20
+  http://news.planet-xp.net/article/414/2011/06/12/
   (friebe)
 - Added text.TextTokenizer class which tokenizes off a io.streams.Reader 
   (friebe)
