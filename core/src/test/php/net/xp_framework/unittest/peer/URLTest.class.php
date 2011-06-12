@@ -1813,6 +1813,7 @@
       $this->assertEquals('/path/to/file.db', $u->getPath());
     }
 
+    /**
      * Parse ipv6 URL
      *
      */
