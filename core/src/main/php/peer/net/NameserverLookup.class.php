@@ -14,6 +14,11 @@
    * Class to perform DNS name server lookups; supports IPv4
    * and IPv6, both.
    *
+   * This class is currently still experimental, because it internally
+   * uses php://dns_get_record - a function which is not available on
+   * all platforms in all supported PHP versions.
+   *
+   * @experimental
    * @test    xp://net.xp_framework.unittest.peer.net.NameserverLookupTest
    * @see     php://dns_get_record
    * @purpose Perform DNS queries

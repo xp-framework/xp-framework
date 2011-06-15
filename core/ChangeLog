@@ -44,6 +44,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added peer.net API with support for IPv4/IPv6 address handling
+  (kiesel)
 - Added support for Unicode in .uni files (UTF-8, UTF-16LE/BE)- issue #20
   http://news.planet-xp.net/article/414/2011/06/12/
   (friebe)
