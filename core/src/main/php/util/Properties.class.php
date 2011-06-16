@@ -64,15 +64,17 @@
       $this->_data= array();
       $section= NULL;
       while ($s->hasMoreTokens()) {
-        if ('' === ($t= $s->nextToken())) continue;                // Empty lines
-        $c= $t{0};
+        $t= $s->nextToken();
+        $trimmedToken=trim($t);
+        if ('' === $trimmedToken) continue;                // Empty lines
+        $c= $trimmedToken{0};
         if (';' === $c || '#' === $c) {                            // One line comments
           continue;                    
         } else if ('[' === $c) {
-          if (FALSE === ($p= strrpos($t, ']'))) {
-            throw new FormatException('Unclosed section "'.$t.'"');
+          if (FALSE === ($p= strrpos($trimmedToken, ']'))) {
+            throw new FormatException('Unclosed section "'.$trimmedToken.'"');
           }
-          $section= substr($t, 1, $p- 1);
+          $section= substr($trimmedToken, 1, $p- 1);
           $this->_data[$section]= array();
         } else if (FALSE !== ($p= strpos($t, '='))) {
           $key= trim(substr($t, 0, $p));

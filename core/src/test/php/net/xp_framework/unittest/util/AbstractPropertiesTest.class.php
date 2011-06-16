@@ -477,6 +477,24 @@ foo=bar
     }
 
     /**
+     * Lines may have leading whitespaces.
+     *
+     */
+    #[@test]
+    public function sectionWithLeadingWhitespace() {
+      $p= $this->newPropertiesFrom('
+        [section]
+        key=value
+
+        [section2]
+        key="value"
+      ');
+
+      $this->assertEquals('value', $p->readString('section', 'key'));
+      $this->assertEquals('value', $p->readString('section2', 'key'));
+    }
+
+    /**
      * Unicode file format
      *
      */
