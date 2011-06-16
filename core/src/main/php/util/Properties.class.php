@@ -78,16 +78,20 @@
           $this->_data[$section]= array();
         } else if (FALSE !== ($p= strpos($t, '='))) {
           $key= trim(substr($t, 0, $p));
-          $value= trim(substr($t, $p+ 1));
+          $value= ltrim(substr($t, $p+ 1));
           if (strlen($value) && ('"' === ($q= $value{0}))) {       // Quoted strings
             if (FALSE === ($p= strrpos($value, $q, 1))) {
               $value= substr($value, 1)."\n".$s->nextToken($q);
             } else {
               $value= substr($value, 1, $p- 1);
             }
-          } else if (FALSE !== ($p= strpos($value, ';'))) {        // Comments at end of line
-            $value= trim(substr($value, 0, $p));
+          } else {        // unquoted string
+            if (FALSE !== ($p= strpos($value, ';'))) {        // Comments at end of line
+              $value= substr($value, 0, $p);
+            }
+            $value= rtrim($value);
           }
+          
 
           // Arrays and maps: key[], key[0], key[assoc]
           if (']' === substr($key, -1)) {

@@ -495,6 +495,35 @@ foo=bar
     }
 
     /**
+     * Multilines strings work
+     *
+     */
+    #[@test]
+    public function multilineValues() {
+      $p= $this->newPropertiesFrom('
+        [section]
+        key="value
+value"');
+
+      $this->assertEquals("value\nvalue", $p->readString('section', 'key'));
+    }
+
+    /**
+     * Multilines strings with arbitrary spaces work
+     *
+     */
+    #[@test]
+    public function multilineValuesWithWhitespaces() {
+      $value= "value  \n   value ";
+      $p= $this->newPropertiesFrom('
+        [section]
+        key="'.$value.'"');  
+
+      $this->assertEquals(strlen($value), strlen($p->readString('section', 'key')), "Length of strings does not match");
+      $this->assertEquals($value, $p->readString('section', 'key'));
+    }
+
+    /**
      * Unicode file format
      *
      */
