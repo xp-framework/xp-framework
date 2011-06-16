@@ -519,8 +519,7 @@ value"');
         [section]
         key="'.$value.'"');  
 
-      $this->assertEquals(strlen($value), strlen($p->readString('section', 'key')), "Length of strings does not match");
-      $this->assertEquals($value, $p->readString('section', 'key'));
+      $this->assertEquals(new Bytes($value), new Bytes($p->readString('section', 'key')));
     }
 
     /**
