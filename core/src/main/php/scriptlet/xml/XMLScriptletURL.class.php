@@ -198,6 +198,10 @@
      * @return string
      */
     public function getURL() {
+      $defaultPorts= array(
+        'http'  => 80,
+        'https' => 443
+      );
     
       // Determine which settings we need to pass
       $xsr= array();
@@ -210,10 +214,21 @@
       }
       if ($this->getSessionId()) $xsr[]= 'psessionid='.$this->getSessionId();
 
+      $port= '';
+      if (
+        $this->getPort() &&
+        (!isset($defaultPorts[$this->getScheme()]) ||
+        $this->getPort() != $defaultPorts[$this->getScheme()])
+      ) {
+        $port= ':'.$this->getPort();
+      }
+
+
       return sprintf(
-        '%s://%s/xml/%s%s%s%s', 
+        '%s://%s%s/xml/%s%s%s%s',
         $this->getScheme(),
         $this->getHost(),
+        $port,
         (sizeof($xsr) ? implode('.', $xsr).'/' : ''),
         $this->getStateName(), 
         $this->getQuery() ? '?'.$this->getQuery() : '',

@@ -110,11 +110,42 @@
     #[@test]
     public function getUrlContainsPort() {
       $url= new XMLScriptletURL('http://xp-framework.net:8080/xml/home');
+      $this->assertEquals('http://xp-framework.net:8080/xml/home', $url->getURL());
+    }
 
-      $this->assertEquals(
-        'http://xp-framework.net:8080/xml/home',
-        $url->getURL()
-      );
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getUrlDoesNotContainDefaultPort() {
+      $url= new XMLScriptletURL('http://xp-framework.net:80/xml/home');
+      $this->assertEquals('http://xp-framework.net/xml/home', $url->getURL());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getUrlDoesNotContainDefaultPortForHttps() {
+      $url= new XMLScriptletURL('https://xp-framework.net:443/xml/home');
+      $this->assertEquals('https://xp-framework.net/xml/home', $url->getURL());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getURLStripsDefaultValuesButNotState() {
+      $url= new XMLScriptletURL('http://xp-framework.net/xml/a.en_US/home');
+
+      $url->setDefaultProduct('a');
+      $url->setDefaultLanguage('en_US');
+      $url->setDefaultStateName('home');
+
+      $this->assertEquals('http://xp-framework.net/xml/home', $url->getURL());
     }
   }
 ?>
