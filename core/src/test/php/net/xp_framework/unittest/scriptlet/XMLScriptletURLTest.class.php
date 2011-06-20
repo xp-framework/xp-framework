@@ -11,15 +11,15 @@
   );
 
   /**
-   * TestCase
+   * TestCase for XMLScriptletURL
    *
-   * @see       ...
-   * @purpose   TestCase for
+   * @see       xp://scriptlet.xml.XMLScriptletURL
+   * @purpose   TestCase
    */
   class XMLScriptletURLTest extends TestCase {
 
     /**
-     * Test
+     * Test URL w/ empty path
      *
      */
     #[@test]
@@ -29,7 +29,7 @@
     }
 
     /**
-     * Test
+     * Test URL has product
      *
      */
     #[@test]
@@ -37,8 +37,9 @@
       $url= new XMLScriptletURL('http://xp-framework.net/xml/xp.de_DE/home');
       $this->assertEquals('xp', $url->getProduct());
     }
+
     /**
-     * Test
+     * Test URL has language
      *
      */
     #[@test]
@@ -48,7 +49,7 @@
     }
 
     /**
-     * Test
+     * Test URL has state
      *
      */
     #[@test]
@@ -58,7 +59,8 @@
     }
 
     /**
-     * Test
+     * Test path element treated as url & product or plain path
+     * if only one part is given
      *
      */
     #[@test]
@@ -70,7 +72,7 @@
     }
 
     /**
-     * Test
+     * Test session id
      *
      */
     #[@test]
@@ -80,7 +82,7 @@
     }
 
     /**
-     * Test
+     * Test __page parsing
      *
      */
     #[@test]
@@ -90,7 +92,7 @@
     }
 
     /**
-     * Test
+     * Test full URL is conserved
      *
      */
     #[@test]
@@ -104,7 +106,7 @@
     }
 
     /**
-     * Test
+     * Test port is conserved
      *
      */
     #[@test]
@@ -114,7 +116,7 @@
     }
 
     /**
-     * Test
+     * Test port 80 is stripped for http
      *
      */
     #[@test]
@@ -124,7 +126,7 @@
     }
 
     /**
-     * Test
+     * Test port 443 is stripped for https
      *
      */
     #[@test]
@@ -134,7 +136,7 @@
     }
 
     /**
-     * Test
+     * Test default value stripping
      *
      */
     #[@test]
