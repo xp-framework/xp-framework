@@ -47,6 +47,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Removed obsolete class webservices.soap.interop.Round2BaseClient which
+  actually is a custom soap endpoint implementation
+  (kiesel)
 - Added peer.net API with support for IPv4/IPv6 address handling
   (kiesel)
 - Added support for Unicode in .uni files (UTF-8, UTF-16LE/BE)- issue #20
