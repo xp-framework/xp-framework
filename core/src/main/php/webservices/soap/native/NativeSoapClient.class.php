@@ -8,6 +8,7 @@
     'peer.URL',
     'xml.QName',
     'util.log.Traceable',
+    'webservices.soap.ISoapClient',
     'webservices.soap.CommonSoapFault',
     'webservices.soap.SOAPFaultException'
   );
@@ -18,7 +19,7 @@
    * @see      php://soap
    * @purpose  Integration of the PHP5 soap extension into the XP framework
    */
-  class NativeSoapClient extends Object implements Traceable {
+  class NativeSoapClient extends Object implements ISoapClient, Traceable {
     public
       $endpoint = '',
       $uri      = '',
@@ -59,10 +60,20 @@
     /**
      * Set location url of the soap service
      *
+     * @deprecated  Use setEndpoint() instead
      * @param   string location
      */
     public function setLocation($location) {
-      $this->location= $location;
+      $this->setEndpoint($location);
+    }
+
+    /**
+     * Set endpoint url of soap service
+     *
+     * @param string  url
+     */
+    public function setEndpoint($url) {
+      $this->location= $url;
     }
 
     /**
@@ -96,7 +107,7 @@
 
     /**
      * Get encoding
-     *
+     * 
      * @return  string
      */
     public function getEncoding() {

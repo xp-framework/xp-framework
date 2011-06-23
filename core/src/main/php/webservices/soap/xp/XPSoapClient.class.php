@@ -7,6 +7,7 @@
   uses(
     'xml.QName',
     'util.log.Traceable',
+    'webservices.soap.ISoapClient',
     'webservices.soap.xp.XPSoapMessage',
     'webservices.soap.xp.XPSoapMapping',
     'webservices.soap.transport.SOAPHTTPTransport'
@@ -19,7 +20,7 @@
    * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
-  class XPSoapClient extends Object implements Traceable {
+  class XPSoapClient extends Object implements ISoapClient, Traceable {
     public 
       $encoding           = 'iso-8859-1',
       $transport          = NULL,
@@ -36,10 +37,19 @@
      * @param   string targetNamespace default NULL
      */
     public function __construct($url, $action) {
-      $this->transport= new SOAPHTTPTransport($url);
+      $this->setEndpoint($url);
       $this->action= $action;
       $this->targetNamespace= NULL;
       $this->mapping= new XPSoapMapping();
+    }
+
+    /**
+     * Set endpoint url for soap service
+     *
+     * @param   string url
+     */
+    public function setEndpoint($url) {
+      $this->transport= new SOAPHTTPTransport($url);
     }
 
     /**
@@ -60,6 +70,10 @@
       $this->encoding= $encoding;
     }
 
+    public function getEncoding() {
+      return $this->encoding;
+    }
+
     /**
      * Set trace for debugging
      *
@@ -73,19 +87,37 @@
      * Dummy function to set WSDL-mode, which is not supported
      * by the XPSoap-client.
      *
-     * @throws lang.MethodNotImplementedException  
+     * @param   string url
+     * @throws  lang.MethodNotImplementedException
      */
-    public function setWsdl() {
+    public function setWsdl($url) {
       throw new MethodNotImplementedException('XPSoapClient does not support WSDL-Mode');
+    }
+
+    public function setStyle($style) {
+      throw new MethodNotImplementedException('XPSoapClient only supports soap style rpc');
+    }
+
+    public function getStyle() {
+      return SOAP_RPC;
+    }
+
+    public function setSoapEncoding($encoding) {
+      throw new MethodNotImplementedException('XPSoapClient only supports soap encoding "encoded"');
+    }
+
+    public function getSoapEncoding() {
+      return SOAP_ENCODED;
     }
     
     /**
      * Dummy function to set the soap version, which is not supported
      * by the XPSoap-client.
      *
-     * @throws lang.MethodNotImplementedException  
+     * @param   int version
+     * @throws  lang.MethodNotImplementedException
      */
-    public function setSoapVersion() {
+    public function setSoapVersion($version) {
       throw new MethodNotImplementedException('XPSoapClient cannot change the soap version');
     }    
     
