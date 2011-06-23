@@ -28,6 +28,20 @@
       $targetNamespace    = NULL,
       $mapping            = NULL,
       $headers            = array();
+
+    static function __static() {
+
+      // Define constants used here which will be missing if ext/soap
+      // has not been loaded
+      if (!defined('SOAP_RPC')) {
+        define('SOAP_RPC',        0x01);
+        define('SOAP_DOCUMENT',   0x02);
+        define('SOAP_ENCODED',    0x01);
+        define('SOAP_LITERAL',    0x02);
+        define('SOAP_1_1',        0x01);
+        define('SOAP_1_2',        0x02);
+      }
+    }
     
     /**
      * Constructor
@@ -70,6 +84,11 @@
       $this->encoding= $encoding;
     }
 
+    /**
+     * Retrieve encoding
+     *
+     * @return  string
+     */
     public function getEncoding() {
       return $this->encoding;
     }
@@ -94,18 +113,46 @@
       throw new MethodNotImplementedException('XPSoapClient does not support WSDL-Mode');
     }
 
+    /**
+     * Set Soap style; this implementation only supports SOAP_RPC
+     *
+     * @param   int style
+     */
     public function setStyle($style) {
-      throw new MethodNotImplementedException('XPSoapClient only supports soap style rpc');
+      switch ($style) {
+        case SOAP_RPC: return;
+        default:
+          throw new IllegalArgumentException('XPSoapClient does not support given soap style');
+      }
     }
 
+    /**
+     * Retrieve current style
+     *
+     * @return  int
+     */
     public function getStyle() {
       return SOAP_RPC;
     }
 
+    /**
+     * Set soap encoding; this implementation only supports SOAP_ENCODED
+     *
+     * @param   int encoding
+     */
     public function setSoapEncoding($encoding) {
-      throw new MethodNotImplementedException('XPSoapClient only supports soap encoding "encoded"');
+      switch ($encoding) {
+        case SOAP_ENCODED: return;
+        default:
+          throw new IllegalArgumentException('XPSoapClient does not support given soap encoding');
+      }
     }
 
+    /**
+     * Retrieve soap encoding
+     *
+     * @return  int
+     */
     public function getSoapEncoding() {
       return SOAP_ENCODED;
     }
@@ -115,10 +162,14 @@
      * by the XPSoap-client.
      *
      * @param   int version
-     * @throws  lang.MethodNotImplementedException
+     * @throws  lang.IllegalArgumentException if version not supported
      */
     public function setSoapVersion($version) {
-      throw new MethodNotImplementedException('XPSoapClient cannot change the soap version');
+      switch ($version) {
+        case SOAP_1_1: return;
+        default:
+          throw new IllegalArgumentException('XPSoapClient does not support given soap version');
+      }
     }    
     
     /**
