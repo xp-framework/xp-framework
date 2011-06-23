@@ -26,9 +26,9 @@
       $cat      = NULL,
       $version  = NULL,
       $location = NULL,
-      $charset  = 'iso-8859-1',
+      $encoding = 'iso-8859-1',
       $style    = SOAP_RPC,
-      $encoding = SOAP_ENCODED;
+      $use      = SOAP_ENCODED;
     
     protected
       $map      = array();
@@ -66,21 +66,41 @@
     }
 
     /**
-     * Set Charset
+     * Set encoding
      *
+     * @deprecated  Use setEncoding()
      * @param   string charset
      */
     public function setCharset($charset) {
-      $this->charset= $charset;
+      $this->setEncoding($charset);
     }
 
     /**
-     * Get Charset
+     * Get encoding
      *
+     * @deprecated  Use getEncoding()
      * @return  string
      */
     public function getCharset() {
-      return $this->charset;
+      return $this->getEncoding();
+    }
+
+    /**
+     * Set encoding
+     *
+     * @param string  encoding
+     */
+    public function setEncoding($encoding) {
+      $this->encoding= $encoding;
+    }
+
+    /**
+     * Get encoding
+     *
+     * @return  string
+     */
+    public function getEncoding() {
+      return $this->encoding;
     }
 
     /**
@@ -108,8 +128,8 @@
      *
      * @param   int encoding
      */
-    public function setEncoding($encoding) {
-      $this->encoding= $encoding;
+    public function setSoapEncoding($encoding) {
+      $this->use= $encoding;
     }
 
     /**
@@ -117,8 +137,8 @@
      *
      * @return  int
      */
-    public function getEncoding() {
-      return $this->encoding;
+    public function getSoapEncoding() {
+      return $this->use;
     }
 
     /**
@@ -222,7 +242,7 @@
       $method= array_shift($args);
       
       $options= array(
-        'encoding'    => $this->getCharset(),
+        'encoding'    => $this->getEncoding(),
         'exceptions'  => 0,
         'trace'       => ($this->cat != NULL)
       );
@@ -251,7 +271,7 @@
 
         $options['uri']= $this->uri;
         $options['style']= $this->getStyle();
-        $options['use']= $this->getEncoding();
+        $options['use']= $this->getSoapEncoding();
         
         $client= new SoapClient(NULL, $options);
       }
