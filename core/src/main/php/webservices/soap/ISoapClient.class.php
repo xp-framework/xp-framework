@@ -16,14 +16,18 @@
 
     public function setStyle($style);
     public function getStyle();
+
     public function setSoapEncoding($encoding);
     public function getSoapEncoding();
+
     public function setSoapVersion($version);
 
     public function setWsdl($enabled);
     public function setEndpoint($url);
 
     public function registerMapping(Qname $qname, XPClass $class);
+
+    public function invoke();
   }
 
 ?>
