@@ -106,10 +106,10 @@
      * Dummy function to set WSDL-mode, which is not supported
      * by the XPSoap-client.
      *
-     * @param   string url
+     * @param   bool enabled
      * @throws  lang.MethodNotImplementedException
      */
-    public function setWsdl($url) {
+    public function setWsdl($enabled) {
       throw new MethodNotImplementedException('XPSoapClient does not support WSDL-Mode');
     }
 

@@ -20,7 +20,7 @@
     public function getSoapEncoding();
     public function setSoapVersion($version);
 
-    public function setWsdl($url);
+    public function setWsdl($enabled);
     public function setEndpoint($url);
 
     public function registerMapping(Qname $qname, XPClass $class);
