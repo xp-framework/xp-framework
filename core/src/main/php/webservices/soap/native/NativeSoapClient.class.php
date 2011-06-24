@@ -20,7 +20,7 @@
    * @purpose  Integration of the PHP5 soap extension into the XP framework
    */
   class NativeSoapClient extends Object implements ISoapClient, Traceable {
-    public
+    protected
       $endpoint = '',
       $uri      = '',
       $wsdl     = FALSE,

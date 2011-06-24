@@ -16,12 +16,12 @@
   /**
    * Basic SOAP-Client
    *
-   * @see      xp://webservices.soap.SoapDriver
+   * @see     xp://webservices.soap.SoapDriver
    * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
   class XPSoapClient extends Object implements ISoapClient, Traceable {
-    public 
+    protected
       $encoding           = 'iso-8859-1',
       $transport          = NULL,
       $action             = '',
@@ -64,6 +64,15 @@
      */
     public function setEndpoint($url) {
       $this->transport= new SOAPHTTPTransport($url);
+    }
+
+    /**
+     * Retrieve transport implementation
+     *
+     * @return  webservices.soap.transport.SOAPHTTPTransport
+     */
+    public function getTransport() {
+      return $this->transport;
     }
 
     /**
