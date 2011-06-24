@@ -7,6 +7,7 @@
   uses(
     'xml.QName',
     'util.log.Traceable',
+    'webservices.soap.ISoapClient',
     'webservices.soap.xp.XPSoapMessage',
     'webservices.soap.xp.XPSoapMapping',
     'webservices.soap.transport.SOAPHTTPTransport'
@@ -15,18 +16,32 @@
   /**
    * Basic SOAP-Client
    *
-   * @see      xp://webservices.soap.SoapDriver
+   * @see     xp://webservices.soap.SoapDriver
    * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
-  class XPSoapClient extends Object implements Traceable {
-    public 
+  class XPSoapClient extends Object implements ISoapClient, Traceable {
+    protected
       $encoding           = 'iso-8859-1',
       $transport          = NULL,
       $action             = '',
       $targetNamespace    = NULL,
       $mapping            = NULL,
       $headers            = array();
+
+    static function __static() {
+
+      // Define constants used here which will be missing if ext/soap
+      // has not been loaded
+      if (!defined('SOAP_RPC')) {
+        define('SOAP_RPC',        0x01);
+        define('SOAP_DOCUMENT',   0x02);
+        define('SOAP_ENCODED',    0x01);
+        define('SOAP_LITERAL',    0x02);
+        define('SOAP_1_1',        0x01);
+        define('SOAP_1_2',        0x02);
+      }
+    }
     
     /**
      * Constructor
@@ -36,10 +51,28 @@
      * @param   string targetNamespace default NULL
      */
     public function __construct($url, $action) {
-      $this->transport= new SOAPHTTPTransport($url);
+      $this->setEndpoint($url);
       $this->action= $action;
       $this->targetNamespace= NULL;
       $this->mapping= new XPSoapMapping();
+    }
+
+    /**
+     * Set endpoint url for soap service
+     *
+     * @param   string url
+     */
+    public function setEndpoint($url) {
+      $this->transport= new SOAPHTTPTransport($url);
+    }
+
+    /**
+     * Retrieve transport implementation
+     *
+     * @return  webservices.soap.transport.SOAPHTTPTransport
+     */
+    public function getTransport() {
+      return $this->transport;
     }
 
     /**
@@ -61,6 +94,15 @@
     }
 
     /**
+     * Retrieve encoding
+     *
+     * @return  string
+     */
+    public function getEncoding() {
+      return $this->encoding;
+    }
+
+    /**
      * Set trace for debugging
      *
      * @param   util.log.LogCategory cat
@@ -73,20 +115,70 @@
      * Dummy function to set WSDL-mode, which is not supported
      * by the XPSoap-client.
      *
-     * @throws lang.MethodNotImplementedException  
+     * @param   bool enabled
+     * @throws  lang.MethodNotImplementedException
      */
-    public function setWsdl() {
+    public function setWsdl($enabled) {
       throw new MethodNotImplementedException('XPSoapClient does not support WSDL-Mode');
+    }
+
+    /**
+     * Set Soap style; this implementation only supports SOAP_RPC
+     *
+     * @param   int style
+     */
+    public function setStyle($style) {
+      switch ($style) {
+        case SOAP_RPC: return;
+        default:
+          throw new IllegalArgumentException('XPSoapClient does not support given soap style');
+      }
+    }
+
+    /**
+     * Retrieve current style
+     *
+     * @return  int
+     */
+    public function getStyle() {
+      return SOAP_RPC;
+    }
+
+    /**
+     * Set soap encoding; this implementation only supports SOAP_ENCODED
+     *
+     * @param   int encoding
+     */
+    public function setSoapEncoding($encoding) {
+      switch ($encoding) {
+        case SOAP_ENCODED: return;
+        default:
+          throw new IllegalArgumentException('XPSoapClient does not support given soap encoding');
+      }
+    }
+
+    /**
+     * Retrieve soap encoding
+     *
+     * @return  int
+     */
+    public function getSoapEncoding() {
+      return SOAP_ENCODED;
     }
     
     /**
      * Dummy function to set the soap version, which is not supported
      * by the XPSoap-client.
      *
-     * @throws lang.MethodNotImplementedException  
+     * @param   int version
+     * @throws  lang.IllegalArgumentException if version not supported
      */
-    public function setSoapVersion() {
-      throw new MethodNotImplementedException('XPSoapClient cannot change the soap version');
+    public function setSoapVersion($version) {
+      switch ($version) {
+        case SOAP_1_1: return;
+        default:
+          throw new IllegalArgumentException('XPSoapClient does not support given soap version');
+      }
     }    
     
     /**
