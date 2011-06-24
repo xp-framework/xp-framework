@@ -8,6 +8,14 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Introduced common interface for SOAP implementations:
+  webservices.soap.ISoapClient (see issue #19). This re-dedicated
+  NativeSoapClient::setEncoding() to change the charset's encoding, not the
+  SOAP encoding and thus is a BC break!
+  (kiesel, friebe)
+- Made members of SOAP implementations protected - this is a potential
+  BC break
+  (kiesel, friebe)
 - Changed util.Properties to no longer use parse_ini_file(), fixes the
   behavioral problems documented in issue #15.
   (friebe)
