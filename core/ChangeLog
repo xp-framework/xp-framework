@@ -17,7 +17,7 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
-- Fixed issue #22: XMLScriptletURL adds port if not default port for
+- Fixed issue #23: XMLScriptletURL adds port if not default port for
   given scheme
   (kiesel)
 - Fixed issue #16: ScriptletRunner - graceful header handling
