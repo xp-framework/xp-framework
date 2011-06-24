@@ -7,26 +7,86 @@
   /**
    * SoapClient interface
    *
-   * @purpose   Interface
    */
   interface ISoapClient {
 
+    /**
+     * Set encoding
+     *
+     * @param   string encoding
+     */
     public function setEncoding($encoding);
+
+    /**
+     * Get encoding
+     *
+     * @return  string
+     */
     public function getEncoding();
 
+    /**
+     * Set SOAP style - rpc or document.
+     *
+     * @param   int style
+     */
     public function setStyle($style);
+
+    /**
+     * Get SOAP style
+     *
+     * @return  int
+     */
     public function getStyle();
 
+    /**
+     * Set SOAP encoding - encoded or literal
+     *
+     * @param   int encoding
+     */
     public function setSoapEncoding($encoding);
+
+    /**
+     * Get SOAP encoding
+     *
+     * @return  int
+     */
     public function getSoapEncoding();
 
+    /**
+     * Set SOAP version: 1.1 or 1.2
+     *
+     * @param   int version
+     */
     public function setSoapVersion($version);
 
+    /**
+     * Enable or disable use of WSDL mode
+     *
+     * @param   bool enabled
+     */
     public function setWsdl($enabled);
+
+    /**
+     * Set endpoint URL
+     *
+     * @param   string url
+     */
     public function setEndpoint($url);
 
-    public function registerMapping(Qname $qname, XPClass $class);
+    /**
+     * Register custom SOAP type mapping based on QName
+     *
+     * @param   xml.QName qname
+     * @param   lang.XPClass class
+     */
+    public function registerMapping(QName $qname, XPClass $class);
 
+    /**
+     * Perform SOAP call
+     *
+     * @param   mixed[]
+     * @return  mixed
+     */
     public function invoke();
   }
 
