@@ -7,13 +7,13 @@
   uses('peer.net.InetAddress');
   
   /**
-   * IPv4 address
+   * IPv6 address
    *
-   * @test      xp://net.xp_framework.unittest.peer.Inet6AddressTest
-   * @see       php://ip2long
+   * @test      xp://net.xp_framework.unittest.peer.net.Inet6AddressTest
    * @purpose   Represent an IPv6 address
    */
   class Inet6Address extends Object implements InetAddress {
+    protected $addr;
     
     /**
      * Constructor
@@ -21,8 +21,7 @@
      * @param   string address
      */
     public function __construct($addr) {
-      $addr= self::normalize($addr);
-      $this->addr= pack('H*', $addr);
+      $this->addr= pack('H*', self::normalize($addr));
     }
 
     /**
@@ -59,6 +58,11 @@
         // Catch cases like ::ffaadd00::
         if (strlen($hq) > 4) {
           throw new FormatException('Detected hexquad w/ more than 4 digits in ['.$addr.']');
+        }
+        
+        // Not hex
+        if (strspn($hq, '0123456789abcdefABCDEF') < strlen($hq)) {
+          throw new FormatException('Illegal digits in ['.$addr.']');
         }
 
         $out.= str_repeat('0', 4- strlen($hq)).$hq;

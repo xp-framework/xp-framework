@@ -29,7 +29,19 @@
         create(new Inet6Address('febc:a574:382b:23c1:aa49:4592:4efe:9982'))->asString()
       );
     }
-    
+
+    /**
+     * Test creation of address
+     *
+     */
+    #[@test]
+    public function createAddressFromUpperCase() {
+      $this->assertEquals(
+        'febc:a574:382b:23c1:aa49:4592:4efe:9982',
+        create(new Inet6Address('FEBC:A574:382B:23C1:AA49:4592:4EFE:9982'))->asString()
+      );
+    }
+
     /**
      * Test getAddress() shortens address
      *
@@ -162,6 +174,51 @@
     #[@test, @expect('lang.FormatException')]
     public function anotherIllegalAddress() {
       new Inet6Address('');
+    }
+
+    /**
+     * Test creation of address from an invalid input string
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function invalidInputOfNumbers() {
+      new Inet6Address('12345678901234567');
+    }
+
+    /**
+     * Test creation of address from an invalid input string
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function invalidHexQuadBeginning() {
+      new Inet6Address('XXXX::a574:382b:23c1:aa49:4592:4efe:9982');
+    }
+
+    /**
+     * Test creation of address from an invalid input string
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function invalidHexQuadEnd() {
+      new Inet6Address('9982::a574:382b:23c1:aa49:4592:4efe:XXXX');
+    }
+
+    /**
+     * Test creation of address from an invalid input string
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function invalidHexQuad() {
+      new Inet6Address('a574::XXXX:382b:23c1:aa49:4592:4efe:9982');
+    }
+    
+    /**
+     * Test creation of address from an invalid input string
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function invalidHexDigit() {
+      new Inet6Address('a574::382X:382b:23c1:aa49:4592:4efe:9982');
     }
 
     /**
