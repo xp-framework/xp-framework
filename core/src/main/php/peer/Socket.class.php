@@ -351,5 +351,21 @@
     public function __destruct() {
       $this->close();
     }
+    
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return sprintf(
+        '%s(%s -> %s%s:%d)',
+        $this->getClassName(),
+        NULL === $this->_sock ? '(closed)' : xp::stringOf($this->_sock),
+        $this->_prefix,
+        $this->host,
+        $this->port
+      );
+    }
   }
 ?>

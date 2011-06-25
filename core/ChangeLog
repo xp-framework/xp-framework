@@ -55,6 +55,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Add toString() implementation to peer.Socket
+  (friebe)
 - Removed obsolete class webservices.soap.interop.Round2BaseClient which
   actually is a custom soap endpoint implementation
   (kiesel)
