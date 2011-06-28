@@ -14,9 +14,13 @@
    * Class to perform DNS name server lookups; supports IPv4
    * and IPv6, both.
    *
+   * This class is currently still experimental, because it internally
+   * uses php://dns_get_record - a function which is not available on
+   * all platforms in all supported PHP versions.
+   *
+   * @experimental
    * @test    xp://net.xp_framework.unittest.peer.net.NameserverLookupTest
    * @see     php://dns_get_record
-   * @purpose Perform DNS queries
    */
   class NameserverLookup extends Object {
 
@@ -24,7 +28,7 @@
      * Perform "real" dns lookup
      *
      * @param   string what
-     * @param   Int type
+     * @param   int type a bitfield of DNS_* constants
      * @return  array
      */
     protected function _nativeLookup($what, $type) {
@@ -47,10 +51,10 @@
     }
 
     /**
-     * Lookup inet4 addresses
+     * Lookup inet4 address
      *
      * @param   string host
-     * @return  peer.netInet4Address[]
+     * @return  peer.netInet4Address
      */
     public function lookupInet4($host) {
       $addr= $this->_nativeLookup($host, DNS_A);
@@ -75,10 +79,10 @@
     }
 
     /**
-     * Lookup inet4 addresses
+     * Lookup inet6 address
      *
      * @param   string host
-     * @return  peer.netInet4Address[]
+     * @return  peer.net.Inet4Address
      */
     public function lookupInet6($host) {
       $addr= $this->_nativeLookup($host, DNS_AAAA);
@@ -103,10 +107,10 @@
     }
 
     /**
-     * Lookup inet4 addresses
+     * Lookup inet4 address
      *
      * @param   string host
-     * @return  peer.netInet4Address[]
+     * @return  peer.netInet4Address
      */
     public function lookup($host) {
       $addr= $this->_nativeLookup($host, DNS_A|DNS_AAAA);
@@ -119,7 +123,7 @@
     /**
      * Perform reverse lookup for given address
      *
-     * @param   peer.InetAddress $addr
+     * @param   peer.InetAddress addr
      * @return  string
      * @throws  lang.ElementNotFoundException in case no reverse lookup exists
      */
@@ -131,10 +135,10 @@
     }
 
     /**
-     * Try to erform reverse lookup for given address; if no reverse lookup
+     * Try to perform reverse lookup for given address; if no reverse lookup
      * exists, returns NULL.
      *
-     * @param   peer.InetAddress $addr
+     * @param   peer.InetAddress addr
      * @return  string
      */
     public function tryReverseLookup(InetAddress $addr) {

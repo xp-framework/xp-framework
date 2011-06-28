@@ -90,15 +90,14 @@
      */
     public function getURL() {
       $sessionId= $this->getSessionId();
-      return sprintf(
-        '%1$s://%2$s%3$s?%4$s%5$s',
-        $this->getScheme(),
-        $this->getHost(),
-        $this->getPath(),
-        $this->getQuery(),
-        $sessionId ? '&psessionid='.$sessionId : '',
-        $this->getFragment()
-      );
+      if ($sessionId) {
+        $cloned= clone $this;
+        $cloned->setParam('psessionid', $sessionId);
+        $cloned->setSessionId(NULL);
+        return $cloned->getURL();
+      }
+
+      return parent::getURL();
     }
   }
 ?>

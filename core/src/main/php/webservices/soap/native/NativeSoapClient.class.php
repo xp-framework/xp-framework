@@ -8,6 +8,7 @@
     'peer.URL',
     'xml.QName',
     'util.log.Traceable',
+    'webservices.soap.ISoapClient',
     'webservices.soap.CommonSoapFault',
     'webservices.soap.SOAPFaultException'
   );
@@ -18,17 +19,17 @@
    * @see      php://soap
    * @purpose  Integration of the PHP5 soap extension into the XP framework
    */
-  class NativeSoapClient extends Object implements Traceable {
-    public
+  class NativeSoapClient extends Object implements ISoapClient, Traceable {
+    protected
       $endpoint = '',
       $uri      = '',
       $wsdl     = FALSE,
       $cat      = NULL,
       $version  = NULL,
       $location = NULL,
-      $charset  = 'utf-8',
+      $encoding = 'utf-8',
       $style    = SOAP_RPC,
-      $encoding = SOAP_ENCODED;
+      $use      = SOAP_ENCODED;
     
     protected
       $map      = array();
@@ -59,28 +60,58 @@
     /**
      * Set location url of the soap service
      *
+     * @deprecated  Use setEndpoint() instead
      * @param   string location
      */
     public function setLocation($location) {
-      $this->location= $location;
+      $this->setEndpoint($location);
     }
 
     /**
-     * Set Charset
+     * Set endpoint url of soap service
      *
+     * @param string  url
+     */
+    public function setEndpoint($url) {
+      $this->location= $url;
+    }
+
+    /**
+     * Set encoding
+     *
+     * @deprecated  Use setEncoding()
      * @param   string charset
      */
     public function setCharset($charset) {
-      $this->charset= $charset;
+      $this->setEncoding($charset);
     }
 
     /**
-     * Get Charset
+     * Get encoding
      *
+     * @deprecated  Use getEncoding()
      * @return  string
      */
     public function getCharset() {
-      return $this->charset;
+      return $this->getEncoding();
+    }
+
+    /**
+     * Set encoding
+     *
+     * @param string  encoding
+     */
+    public function setEncoding($encoding) {
+      $this->encoding= $encoding;
+    }
+
+    /**
+     * Get encoding
+     * 
+     * @return  string
+     */
+    public function getEncoding() {
+      return $this->encoding;
     }
 
     /**
@@ -108,8 +139,8 @@
      *
      * @param   int encoding
      */
-    public function setEncoding($encoding) {
-      $this->encoding= $encoding;
+    public function setSoapEncoding($encoding) {
+      $this->use= $encoding;
     }
 
     /**
@@ -117,8 +148,8 @@
      *
      * @return  int
      */
-    public function getEncoding() {
-      return $this->encoding;
+    public function getSoapEncoding() {
+      return $this->use;
     }
 
     /**
@@ -222,7 +253,7 @@
       $method= array_shift($args);
       
       $options= array(
-        'encoding'    => $this->getCharset(),
+        'encoding'    => $this->getEncoding(),
         'exceptions'  => 0,
         'trace'       => ($this->cat != NULL)
       );
@@ -251,7 +282,7 @@
 
         $options['uri']= $this->uri;
         $options['style']= $this->getStyle();
-        $options['use']= $this->getEncoding();
+        $options['use']= $this->getSoapEncoding();
         
         $client= new SoapClient(NULL, $options);
       }

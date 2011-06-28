@@ -8,6 +8,14 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Introduced common interface for SOAP implementations:
+  webservices.soap.ISoapClient (see issue #19). This re-dedicated
+  NativeSoapClient::setEncoding() to change the charset's encoding, not the
+  SOAP encoding and thus is a BC break!
+  (kiesel, friebe)
+- Made members of SOAP implementations protected - this is a potential
+  BC break
+  (kiesel, friebe)
 - Changed util.Properties to no longer use parse_ini_file(), fixes the
   behavioral problems documented in issue #15.
   (friebe)
@@ -17,6 +25,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #23: XMLScriptletURL adds port if not default port for
+  given scheme
+  (kiesel)
 - Fixed issue #16: ScriptletRunner - graceful header handling
   (friebe, robert)
 - Fixed mysqlx protocol implementation to handle timezones, timestamps 
@@ -44,7 +55,15 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Add toString() implementation to peer.Socket
+  (friebe)
+- Removed obsolete class webservices.soap.interop.Round2BaseClient which
+  actually is a custom soap endpoint implementation
+  (kiesel)
+- Added peer.net API with support for IPv4/IPv6 address handling
+  (kiesel)
 - Added support for Unicode in .uni files (UTF-8, UTF-16LE/BE)- issue #20
+  http://news.planet-xp.net/article/414/2011/06/12/
   (friebe)
 - Added text.TextTokenizer class which tokenizes off a io.streams.Reader 
   (friebe)
