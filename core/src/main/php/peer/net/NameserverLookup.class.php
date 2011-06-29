@@ -73,7 +73,7 @@
     public function lookupAllInet6($host) {
       $res= array();
       foreach ($this->_nativeLookup($host, DNS_AAAA) as $addr) {
-        $res[]= new Inet6Address($addr['ip']);
+        $res[]= new Inet6Address($addr['ipv6']);
       }
 
       return $res;
@@ -89,7 +89,7 @@
       $addr= $this->_nativeLookup($host, DNS_AAAA);
       if (sizeof($addr) < 1) throw new ElementNotFoundException('No record found for "'.$host.'"');
 
-      return new Inet6Address($addr[0]['ip']);
+      return new Inet6Address($addr[0]['ipv6']);
     }
 
     /**
@@ -101,7 +101,13 @@
     public function lookupAll($host) {
       $res= array(); $parser= new InetAddressFactory();
       foreach ($this->_nativeLookup($host, DNS_A|DNS_AAAA) as $addr) {
-        $res[]= $parser->parse($addr['ip']);
+        if (isset($addr['ip'])) {
+          $res[]= $parser->parse($addr['ip']);
+        }
+
+        if (isset($addr['ipv6'])) {
+          $res[]= $parser->parse($addr['ipv6']);
+        }
       }
 
       return $res;
