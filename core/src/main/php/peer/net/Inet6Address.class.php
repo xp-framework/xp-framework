@@ -21,7 +21,11 @@
      * @param   string address
      */
     public function __construct($addr) {
-      $this->addr= pack('H*', self::normalize($addr));
+      if (16 === strlen($addr) && FALSE === strpos($addr, ':')) {
+        $this->addr= $addr;
+      } else {
+        $this->addr= pack('H*', self::normalize($addr));
+      }
     }
 
     /**

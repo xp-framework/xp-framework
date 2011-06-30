@@ -55,6 +55,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made peer.net.Inet6Address accept packed form - see issue #26
+  (friebe)
 - Add toString() implementation to peer.Socket
   (friebe)
 - Removed obsolete class webservices.soap.interop.Round2BaseClient which
