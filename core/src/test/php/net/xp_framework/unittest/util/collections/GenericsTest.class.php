@@ -555,5 +555,18 @@
       $c->add(0.2);
       $this->assertEquals(array(0.1, 0.2), $c->toArray());
     }
+
+    /**
+     * Tests LRUBuffer with floats
+     *
+     * @see   issue://31
+     */
+    #[@test]
+    public function floatInLRUBuffer() {
+      $c= create('new util.collections.LRUBuffer<float>', $irrelevant= 10);
+      $c->add(0.1);
+      $c->add(0.2);
+      $this->assertEquals(2, $c->numElements());
+    }
   }
 ?>
