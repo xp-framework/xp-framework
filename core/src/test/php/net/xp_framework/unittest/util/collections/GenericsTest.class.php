@@ -528,5 +528,19 @@
     public function arrayAsKeyTypeMismatch() {
       create('new util.collections.HashTable<string[], lang.types.String>')->put('hello', new String('World'));
     }
+
+    /**
+     * Tests HashTable with float keys
+     *
+     * @see   issue://31
+     */
+    #[@test]
+    public function floatK() {
+      $c= create('new util.collections.HashTable<float, string>');
+      $c[0.1]= '1/10';
+      $c[0.2]= '2/10';
+      $this->assertEquals('1/10', $c[0.1], '0.1');
+      $this->assertEquals('2/10', $c[0.2], '0.2');
+    }
   }
 ?>
