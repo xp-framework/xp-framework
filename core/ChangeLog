@@ -25,6 +25,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #31: Floating point numbers used as keys in util.collections 
+  classes HashSet, HashTable and LRUBuffer
+  (friebe)
 - Fixed issue #23: XMLScriptletURL adds port if not default port for
   given scheme
   (kiesel)

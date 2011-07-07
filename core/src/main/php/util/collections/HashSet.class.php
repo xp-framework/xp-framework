@@ -100,7 +100,7 @@
      */
     #[@generic(params= 'T')]
     public function add($element) { 
-      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
+      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
       if (isset($this->_elements[$h])) return FALSE;
       
       $this->_hash+= HashProvider::hashOf($h);
@@ -116,7 +116,7 @@
      */
     #[@generic(params= 'T')]
     public function remove($element) { 
-      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
+      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
       if (!isset($this->_elements[$h])) return FALSE;
 
       $this->_hash-= HashProvider::hashOf($h);
@@ -132,7 +132,7 @@
      */
     #[@generic(params= 'T')]
     public function contains($element) { 
-      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
+      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
       return isset($this->_elements[$h]);
     }
 
@@ -173,7 +173,7 @@
     public function addAll($elements) { 
       $changed= FALSE;
       foreach ($elements as $element) {
-        $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
+        $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
         if (isset($this->_elements[$h])) continue;
 
         $this->_hash+= HashProvider::hashOf($h);
