@@ -568,5 +568,41 @@
       $c->add(0.2);
       $this->assertEquals(2, $c->numElements());
     }
+
+    /**
+     * Tests HashTable::toString() in conjunction with primitives
+     *
+     * @see   issue://32
+     */
+    #[@test]
+    public function primitiveInHashTableToString() {
+      $c= create('new util.collections.HashTable<string, string>');
+      $c->put('hello', 'World');
+      $this->assertNotEquals('', $c->toString());
+    }
+
+    /**
+     * Tests HashSet::toString() in conjunction with primitives
+     *
+     * @see   issue://32
+     */
+    #[@test]
+    public function primitiveInHashSetToString() {
+      $c= create('new util.collections.HashSet<string>');
+      $c->add('hello');
+      $this->assertNotEquals('', $c->toString());
+    }
+
+    /**
+     * Tests Vector::toString() in conjunction with primitives
+     *
+     * @see   issue://32
+     */
+    #[@test]
+    public function primitiveInVectorToString() {
+      $c= create('new util.collections.Vector<string>');
+      $c->add('hello');
+      $this->assertNotEquals('', $c->toString());
+    }
   }
 ?>
