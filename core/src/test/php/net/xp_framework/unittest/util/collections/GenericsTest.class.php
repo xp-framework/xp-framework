@@ -535,12 +535,25 @@
      * @see   issue://31
      */
     #[@test]
-    public function floatK() {
+    public function floatKeyHashTable() {
       $c= create('new util.collections.HashTable<float, string>');
       $c[0.1]= '1/10';
       $c[0.2]= '2/10';
       $this->assertEquals('1/10', $c[0.1], '0.1');
       $this->assertEquals('2/10', $c[0.2], '0.2');
+    }
+
+    /**
+     * Tests HashSet with floats
+     *
+     * @see   issue://31
+     */
+    #[@test]
+    public function floatInHashSet() {
+      $c= create('new util.collections.HashSet<float>');
+      $c->add(0.1);
+      $c->add(0.2);
+      $this->assertEquals(array(0.1, 0.2), $c->toArray());
     }
   }
 ?>
