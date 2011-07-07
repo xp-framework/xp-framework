@@ -227,7 +227,7 @@
 
       $s.= "\n";
       foreach (array_keys($this->_elements) as $key) {
-        $s.= '  '.$this->_elements[$key]->toString().",\n";
+        $s.= '  '.xp::stringOf($this->_elements[$key]).",\n";
       }
       return substr($s, 0, -2)."\n}";
     }
