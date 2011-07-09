@@ -246,7 +246,7 @@
      * Tests string default with "="
      *
      * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#stringWithEqualSigns
-     * @see   http://bugs.xp-framework.net/show_bug.cgi?id=38
+     * @see     http://bugs.xp-framework.net/show_bug.cgi?id=38
      */
     #[@test]
     public function stringWithEqualSigns() {
