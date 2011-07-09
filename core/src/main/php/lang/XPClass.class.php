@@ -578,8 +578,9 @@
      * Parses annotation string
      *
      * @param   string input
-     * @param   string content
+     * @param   string context the class name, and optionally the line number.
      * @return  [:var]
+     * @throws  lang.ClassFormatException
      */
     public static function parseAnnotations($input, $context) {
       ob_start();
