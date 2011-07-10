@@ -28,15 +28,15 @@
    */
   class ClassBinding extends Object implements Binding {
     protected
-      $injector      = null,
-      $type          = null,
-      $impl          = null,
-      $name          = null,
-      $scope         = null,
-      $instance      = null,
-      $provider      = null,
-      $providerClass = null,
-      $scopes        = null;
+      $injector      = NULL,
+      $type          = NULL,
+      $impl          = NULL,
+      $name          = NULL,
+      $scope         = NULL,
+      $instance      = NULL,
+      $provider      = NULL,
+      $providerClass = NULL,
+      $scopes        = NULL;
 
     /**
      * constructor
@@ -172,7 +172,7 @@
      */
     public function getInstance($type, $name)
     {
-        if (null !== $this->instance) {
+        if (NULL !== $this->instance) {
             return $this->instance;
         }
 
@@ -180,14 +180,14 @@
             $this->impl = XPClass::forName($this->impl);
         }
 
-        if (null === $this->scope) {
+        if (NULL === $this->scope) {
             if ($this->impl->hasAnnotation('singleton')) {
                 $this->scope = $this->scopes->getSingletonScope();
             }
         }
 
-        if (null === $this->provider) {
-            if (null != $this->providerClass) {
+        if (NULL === $this->provider) {
+            if (NULL != $this->providerClass) {
                 $provider = $this->injector->getInstance($this->providerClass);
                 if (!($provider instanceof InjectionProvider)) {
                     throw new BindingException('Configured provider class ' . $this->providerClass . ' for type ' . $this->type . ' is not an instance of ioc.InjectionProvider.');
@@ -199,7 +199,7 @@
             }
         }
 
-        if (null !== $this->scope) {
+        if (NULL !== $this->scope) {
             return $this->scope->getInstance(XPClass::forName($this->type), $this->impl, $this->provider);
         }
 
@@ -212,7 +212,7 @@
      * @return  string
      */
     public function getKey() {
-      if (null === $this->name) {
+      if (NULL === $this->name) {
         return $this->type;
       }
 

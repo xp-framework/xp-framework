@@ -16,7 +16,7 @@
      * @param   string  $name  optional
      * @return  mixed
      */
-    public function get($name = null) {
+    public function get($name = NULL) {
       return 42;
     }
   }

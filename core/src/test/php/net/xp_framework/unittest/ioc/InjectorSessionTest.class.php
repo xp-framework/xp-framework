@@ -77,7 +77,7 @@
         $scope = new SessionBindingScope();
         $scope->getInstance(XPClass::forName('net.xp_framework.unittest.ioc.helper.TestNumber'),
                             XPClass::forName('net.xp_framework.unittest.ioc.helper.Random'),
-                            newinstance('ioc.InjectionProvider', array(), '{ public function get($name = null) { } }')
+                            newinstance('ioc.InjectionProvider', array(), '{ public function get($name = NULL) { } }')
         );
     }
   }

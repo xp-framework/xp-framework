@@ -14,7 +14,7 @@
       SESSION_KEY = 'ioc.sessionScope#';
 
     protected
-      $session   = null,
+      $session   = NULL,
       $instances = array();
 
     /**
@@ -37,7 +37,7 @@
      * @throws  lang.RuntimeError
      */
     public function getInstance(XPClass $type, XPClass $impl, InjectionProvider $provider) {
-      if (null === $this->session) {
+      if (NULL === $this->session) {
         throw new RuntimeError('No instance of scriptlet.Session available.');
       }
 

@@ -71,7 +71,7 @@
      *
      * @return  string
      */
-    #[@inject(optional=true), @named('argv.0')]
+    #[@inject(optional=TRUE), @named('argv.0')]
     public function setArgument($arg) {
       $this->arg = $arg;
     }

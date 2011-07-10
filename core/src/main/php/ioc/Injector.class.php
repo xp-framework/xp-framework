@@ -17,7 +17,7 @@
    */
   class Injector extends Object {
     protected
-      $scopes   = null,
+      $scopes   = NULL,
       $bindings = array();
 
     private $bindingIndex = array();
@@ -27,8 +27,8 @@
      *
      * @param  ioc.BindingScopes  $scopes  optional
      */
-    public function __construct(BindingScopes $scopes = null) {
-      if (null === $scopes) {
+    public function __construct(BindingScopes $scopes = NULL) {
+      if (NULL === $scopes) {
         $this->scopes = new BindingScopes();
       } else {
         $this->scopes = $scopes;
@@ -87,8 +87,8 @@
      * @param   string   $name
      * @return  boolean
      */
-    public function hasBinding($type, $name = null) {
-      return ($this->getBinding($type, $name) != null);
+    public function hasBinding($type, $name = NULL) {
+      return ($this->getBinding($type, $name) != NULL);
     }
 
     /**
@@ -101,11 +101,11 @@
      * @param   string   $name
      * @return  boolean
      */
-    public function hasExplicitBinding($type, $name = null) {
+    public function hasExplicitBinding($type, $name = NULL) {
       $bindingIndex = $this->getIndex();
-      if (null !== $name) {
+      if (NULL !== $name) {
         if (isset($bindingIndex[$type . '#' . $name])) {
-          return true;
+          return TRUE;
         }
       }
 
@@ -120,9 +120,9 @@
      * @return  object
      * @throws  ioc.BindingException
      */
-    public function getInstance($type, $name = null) {
+    public function getInstance($type, $name = NULL) {
       $binding = $this->getBinding($type, $name);
-      if (null === $binding) {
+      if (NULL === $binding) {
         throw new BindingException('No binding for ' . $type . ' defined');
       }
 
@@ -160,9 +160,9 @@
      * @param   string       $name
      * @return  ioc.Binding
      */
-    protected function getBinding($type, $name = null) {
+    protected function getBinding($type, $name = NULL) {
       $bindingIndex = $this->getIndex();
-      if (null !== $name) {
+      if (NULL !== $name) {
         if (isset($bindingIndex[$type . '#' . $name])) {
           return $bindingIndex[$type . '#' . $name];
         }
@@ -174,7 +174,7 @@
 
       // prevent illegal access to reflection class for constant type
       if (ConstantBinding::TYPE === $type) {
-        return null;
+        return NULL;
       }
 
       // check for default implementation
@@ -193,7 +193,7 @@
                       ->to($typeClass);
       }
 
-      return null;
+      return NULL;
     }
 
     /**
@@ -221,8 +221,8 @@
      * @param   lang.XPClass  $class     optional
      * @throws  ioc.BindingException
      */
-    public function handleInjections(Generic $instance, XPClass $class = null) {
-      if (null === $class) {
+    public function handleInjections(Generic $instance, XPClass $class = NULL) {
+      if (NULL === $class) {
         $class = $instance->getClass();
       }
 
@@ -255,7 +255,7 @@
      */
     public function getInjectionValuesForMethod(Routine $method, XPClass $class) {
       $paramValues = array();
-      $namedMethod = (($method->hasAnnotation('named')) ? ($method->getAnnotation('named')) : (null));
+      $namedMethod = (($method->hasAnnotation('named')) ? ($method->getAnnotation('named')) : (NULL));
       foreach ($method->getParameters() as $param) {
         $paramClass = $param->getTypeRestriction();
         $type       = (($paramClass instanceof XPClass) ? ($paramClass->getName()) : (ConstantBinding::TYPE));
@@ -286,7 +286,7 @@
      * @return  string
      */
     protected function createTypeMessage($type, $name) {
-      return ((null !== $name) ? ($type . ' (named "' . $name . '")') : ($type));
+      return ((NULL !== $name) ? ($type . ' (named "' . $name . '")') : ($type));
     }
 
     /**
@@ -302,7 +302,7 @@
       $message = $class->getName() . '::' . $method->getName() . '(';
       if (ConstantBinding::TYPE !== $type) {
         $message .= $type . ' ';
-      } elseif ($parameter->getTypeRestriction() != null && $parameter->getTypeRestriction()->getName() === 'array') {
+      } elseif ($parameter->getTypeRestriction() != NULL && $parameter->getTypeRestriction()->getName() === 'array') {
         $message .= 'array ';
       }
 

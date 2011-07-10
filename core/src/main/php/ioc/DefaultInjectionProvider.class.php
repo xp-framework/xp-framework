@@ -34,14 +34,14 @@
      * @param   string  $name  optional
      * @return  mixed
      */
-    public function get($name = null) {
+    public function get($name = NULL) {
       if ($this->impl->hasConstructor()) {
         $constructor = $this->impl->getConstructor();
       } else {
-        $constructor = null;
+        $constructor = NULL;
       }
       
-      if (null === $constructor || !$constructor->hasAnnotation('inject')) {
+      if (NULL === $constructor || !$constructor->hasAnnotation('inject')) {
           $instance = $this->impl->newInstance();
       } else {
           $instance = $constructor->newInstance($this->injector->getInjectionValuesForMethod($constructor, $this->impl));

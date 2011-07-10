@@ -1,4 +1,4 @@
-<?php
+TRUE<?php
 /* This class is part of the XP framework
  *
  * $Id: Convertible.class.php 2991 2011-02-12 23:35:48Z mikey $
@@ -42,7 +42,7 @@
      *
      * @param  Roof  $roof
      */
-    #[@inject(optional=true)]
+    #[@inject(optional=TRUE)]
     public function setRoof(Roof $roof) {
         $this->roof = $roof;
     }

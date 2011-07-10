@@ -14,11 +14,11 @@
       TYPE = '__CONSTANT__';
 
     protected
-      $injector      = null,
-      $name          = null,
-      $value         = null,
-      $provider      = null,
-      $providerClass = null;
+      $injector      = NULL,
+      $name          = NULL,
+      $value         = NULL,
+      $provider      = NULL,
+      $providerClass = NULL;
 
     /**
      * constructor
@@ -102,11 +102,11 @@
      * @throws  ioc.BindingException
      */
     public function getInstance($type, $name) {
-      if (null !== $this->provider) {
+      if (NULL !== $this->provider) {
         return $this->provider->get($name);
       }
 
-      if (null != $this->providerClass) {
+      if (NULL != $this->providerClass) {
         $provider = $this->injector->getInstance($this->providerClass);
         if (!($provider instanceof InjectionProvider)) {
           throw new BindingException('Configured provider class ' . $this->providerClass . ' for constant ' . $this->name . ' is not an instance of ioc.InjectionProvider.');

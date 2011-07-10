@@ -24,7 +24,7 @@
     }
 
     /**
-     * checking for a non-existent constant binding should return false
+     * checking for a non-existent constant binding should return FALSE
      */
     #[@test]
     public function checkForNonExistingConstantBindingShouldReturnFalse() {

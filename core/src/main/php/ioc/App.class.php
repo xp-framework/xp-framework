@@ -55,7 +55,7 @@
      * @param   string[]  $argv       optional  list of arguments
      * @return  object
      */
-    public static function createInstance($className, $argv = null) {
+    public static function createInstance($className, $argv = NULL) {
       return self::createInjectorWithBindings(self::getBindingsForClass($className, $argv))
                  ->getInstance($className);
     }
@@ -67,14 +67,14 @@
      * @param   string[]                             $argv       optional  list of arguments
      * @return  string[]|ioc.module.BindingModule[]
      */
-    public static function getBindingsForClass($className, $argv = null) {
+    public static function getBindingsForClass($className, $argv = NULL) {
       $bindings = array();
       $class    = XPClass::forName($className);
       if (method_exists($class->getSimpleName(), '__bindings')) {
         $bindings = call_user_func(array($class->getSimpleName(), '__bindings'));
       }
 
-      if (null !== $argv) {
+      if (NULL !== $argv) {
         $bindings[] = new ArgumentsBindingModule($argv);
       }
  

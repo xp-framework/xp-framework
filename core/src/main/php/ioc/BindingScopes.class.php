@@ -20,14 +20,14 @@
      * @param  ioc.BindingScope  $singletonScope  optional
      * @param  ioc.BindingScope  $sessionScope    optional
      */
-    public function  __construct(BindingScope $singletonScope = null, BindingScope $sessionScope = null) {
-      if (null === $singletonScope) {
+    public function  __construct(BindingScope $singletonScope = NULL, BindingScope $sessionScope = NULL) {
+      if (NULL === $singletonScope) {
         $this->singletonScope = new SingletonBindingScope();
       } else {
         $this->singletonScope = $singletonScope;
       }
 
-      if (null === $sessionScope) {
+      if (NULL === $sessionScope) {
         $this->sessionScope = new SessionBindingScope();
       } else {
         $this->sessionScope = $sessionScope;

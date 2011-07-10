@@ -17,8 +17,8 @@
      *
      * @param  ioc.Injector $injector  optional
      */
-    public function __construct(Injector $injector = null) {
-      if (null === $injector) {
+    public function __construct(Injector $injector = NULL) {
+      if (NULL === $injector) {
         $this->injector = new Injector();
       } else {
         $this->injector = $injector;
