@@ -7,7 +7,7 @@
   uses('scriptlet.Session');
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class DummySession extends Object implements Session {
     protected $data;

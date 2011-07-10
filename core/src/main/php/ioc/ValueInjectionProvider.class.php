@@ -7,7 +7,7 @@
   uses('ioc.InjectionProvider');
 
   /**
-   * @purpose  Simple injection provider for a single predefined value.
+   * Simple injection provider for a single predefined value.
    */
   class ValueInjectionProvider extends Object implements InjectionProvider {
     protected $value;

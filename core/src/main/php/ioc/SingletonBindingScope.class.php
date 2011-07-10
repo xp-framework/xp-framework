@@ -7,7 +7,7 @@
   uses('ioc.BindingScope');
 
   /**
-   * @purpose  Scope which ensures always the same instance for a class is provided.
+   * Scope which ensures always the same instance for a class is provided.
    */
   class SingletonBindingScope extends Object implements BindingScope {
     protected $instances = array();

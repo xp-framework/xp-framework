@@ -7,7 +7,7 @@
   uses('net.xp_framework.unittest.ioc.helper.TestNumber');
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class SlotMachine extends Object {
     public

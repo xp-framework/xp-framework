@@ -7,7 +7,7 @@
   uses('ioc.Injector', 'scriptlet.Session');
 
   /**
-   * @purpose  Simple injection provider for a single predefined value.
+   * Entry class to ease the adding of bindings.
    */
   class Binder extends Object {
     protected $injector;

@@ -7,7 +7,7 @@
   uses('ioc.InjectionProvider');
 
   /**
-   * @purpose  Interface for for different scopes of a binding.
+   * Interface for for different scopes of a binding.
    */
   interface BindingScope {
 

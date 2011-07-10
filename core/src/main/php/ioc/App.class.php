@@ -12,7 +12,7 @@
   );
 
   /**
-   * @purpose  Class for starting the application by configuring the IoC container.
+   * Class for starting the application by configuring the IoC container.
    */
   class App extends Object {
 

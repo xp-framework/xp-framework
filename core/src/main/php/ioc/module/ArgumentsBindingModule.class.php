@@ -7,7 +7,7 @@
   uses('ioc.module.BindingModule');
 
   /**
-   * @purpose  Binding module to configure the binder with arguments.
+   * Binding module to configure the binder with arguments.
    */
   class ArgumentsBindingModule extends Object implements BindingModule {
     protected $argv;

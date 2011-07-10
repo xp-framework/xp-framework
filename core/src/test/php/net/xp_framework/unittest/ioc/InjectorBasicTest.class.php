@@ -14,7 +14,7 @@
   );
 
   /**
-   * @purpose  Unittest
+   * Unittest
    */
   class InjectorBasicTest extends TestCase {
 

@@ -5,7 +5,7 @@
  */
 
   /**
-   * @purpose  Interface for injection value providers.
+   * Interface for injection value providers.
    */
   interface InjectionProvider {
 

@@ -10,7 +10,7 @@
   );
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class DeveloperProvider extends Object implements InjectionProvider {
     /**

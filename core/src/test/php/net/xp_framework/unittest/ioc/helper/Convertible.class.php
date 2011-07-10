@@ -11,7 +11,7 @@ TRUE<?php
   );
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class Convertible extends Object implements Vehicle {
     /**

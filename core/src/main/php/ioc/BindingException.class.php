@@ -5,7 +5,7 @@
  */
 
   /**
-   * @purpose  Indicates errors during the binding process.
+   * Indicates errors during the binding process.
    */
   class BindingException extends XPException {
 

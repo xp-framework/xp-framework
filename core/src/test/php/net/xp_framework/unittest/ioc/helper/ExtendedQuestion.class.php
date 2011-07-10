@@ -5,7 +5,7 @@
  */
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class ExtendedQuestion extends Object {
     private $answer;

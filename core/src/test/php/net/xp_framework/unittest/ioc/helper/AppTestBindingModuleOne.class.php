@@ -7,7 +7,7 @@
   uses('ioc.module.BindingModule');
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class AppTestBindingModuleOne extends Object implements BindingModule {
     /**

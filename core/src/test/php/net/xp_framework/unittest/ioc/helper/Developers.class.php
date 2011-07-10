@@ -7,7 +7,7 @@
   uses('net.xp_framework.unittest.ioc.helper.Person');
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class Developers extends Object {
     public

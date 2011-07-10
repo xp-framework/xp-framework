@@ -5,7 +5,7 @@
  */
 
   /**
-   * @purpose  Binds an interface to an implementation.
+   * Binds an interface to an implementation.
    */
   interface Binding {
 

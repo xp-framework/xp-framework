@@ -7,7 +7,7 @@
   uses('net.xp_framework.unittest.ioc.helper.Goodyear');
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    * @link     http://stubbles.net/ticket/102
    */
   class ImplicitDependencyBug102 extends Object {

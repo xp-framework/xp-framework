@@ -7,7 +7,7 @@
   uses('ioc.SessionBindingScope', 'ioc.SingletonBindingScope');
 
   /**
-   * @purpose  Access to all built-in scopes.
+   * Access to all built-in scopes.
    */
   class BindingScopes extends Object {
     protected

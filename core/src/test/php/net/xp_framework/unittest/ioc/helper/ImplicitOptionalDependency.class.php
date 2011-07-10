@@ -7,7 +7,7 @@
   uses('net.xp_framework.unittest.ioc.helper.Goodyear');
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   class ImplicitOptionalDependency extends Object {
     /**

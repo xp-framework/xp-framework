@@ -5,7 +5,7 @@
  */
 
   /**
-   * @purpose  Helper class for test cases.
+   * Helper class for test cases.
    */
   #[@implementedBy('net.xp_framework.unittest.ioc.helper.Schst')]
   interface Person {

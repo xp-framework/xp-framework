@@ -7,7 +7,7 @@
   uses('ioc.BindingScope', 'scriptlet.Session', 'lang.RuntimeError');
 
   /**
-   * @purpose  Scope which ensures always the same instance for a class is provided within a session.
+   * Scope which ensures always the same instance for a class is provided within a session.
    */
   class SessionBindingScope extends Object implements BindingScope {
     const

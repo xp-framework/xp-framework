@@ -7,7 +7,7 @@
   uses('unittest.TestCase', 'ioc.ValueInjectionProvider');
 
   /**
-   * @purpose  Unittest
+   * Unittest
    */
   class ValueInjectionProviderTest extends TestCase {
     /**

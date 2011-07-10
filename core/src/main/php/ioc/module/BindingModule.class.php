@@ -7,7 +7,7 @@
   uses('ioc.Binder');
 
   /**
-   * @purpose  Interface for modules which configure the binder.
+   * Interface for modules which configure the binder.
    */
   interface BindingModule {
 

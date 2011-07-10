@@ -16,7 +16,7 @@
   );
 
   /**
-   * @purpose  Binding to bind an interface to an implementation.
+   * Binding to bind an interface to an implementation.
    *
    * Please note that you can do a binding to a class or to an instance, or to
    * an injection provider, or to an injection provider class. These options are

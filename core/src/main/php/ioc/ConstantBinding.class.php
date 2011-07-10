@@ -7,7 +7,7 @@
   uses('ioc.Binding');
 
   /**
-   * @purpose  Interface for for different scopes of a binding.
+   * Binding for constant values, e.g. scalar values.
    */
   class ConstantBinding extends Object implements Binding {
     const

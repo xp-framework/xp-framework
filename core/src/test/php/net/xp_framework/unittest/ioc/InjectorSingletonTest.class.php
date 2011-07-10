@@ -7,7 +7,7 @@
   uses('unittest.TestCase', 'ioc.Binder');
 
   /**
-   * @purpose  Unittest
+   * Unittest
    */
   class InjectorSingletonTest extends TestCase {
     /**

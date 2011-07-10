@@ -10,7 +10,7 @@
   );
 
   /**
-   * @purpose  Creates objects and injects all dependencies via the default injector.
+   * Creates objects and injects all dependencies via the default injector.
    */
   class DefaultInjectionProvider extends Object implements InjectionProvider {
     protected

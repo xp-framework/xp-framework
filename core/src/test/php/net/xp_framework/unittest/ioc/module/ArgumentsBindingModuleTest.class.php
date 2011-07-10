@@ -12,7 +12,7 @@
   );
 
   /**
-   * @purpose  Unittest
+   * Unittest
    */
   class ArgumentsBindingModuleTest extends TestCase {
 
