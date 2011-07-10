@@ -22,7 +22,7 @@
      *
      * @param  Goodyear  $goodyear
      */
-    #[@Inject(optional=true)]
+    #[@inject(optional=true)]
     public function setGoodyear(Goodyear $goodyear) {
       $this->goodyearBySetter = $goodyear;
     }

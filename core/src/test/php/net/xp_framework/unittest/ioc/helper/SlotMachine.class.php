@@ -19,7 +19,7 @@
      *
      * @param  net.xp_framework.unittest.ioc.helper.TestNumber  $number
      */
-    #[@Inject]
+    #[@inject]
     public function setNumber1(TestNumber $number) {
       $this->number1 = $number;
     }
@@ -29,7 +29,7 @@
      *
      * @param  net.xp_framework.unittest.ioc.helper.TestNumber  $number
      */
-    #[@Inject]
+    #[@inject]
     public function setNumber2(TestNumber $number) {
       $this->number2 = $number;
     }

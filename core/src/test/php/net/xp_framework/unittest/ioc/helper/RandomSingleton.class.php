@@ -9,7 +9,7 @@
   /**
    * @purpose  Helper class for test cases.
    */
-  #[@Singleton]
+  #[@singleton]
   class RandomSingleton extends Object implements TestNumber {
     private $number;
 

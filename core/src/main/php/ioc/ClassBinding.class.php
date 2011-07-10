@@ -181,7 +181,7 @@
         }
 
         if (null === $this->scope) {
-            if ($this->impl->hasAnnotation('Singleton')) {
+            if ($this->impl->hasAnnotation('singleton')) {
                 $this->scope = $this->scopes->getSingletonScope();
             }
         }

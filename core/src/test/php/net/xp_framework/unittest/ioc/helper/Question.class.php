@@ -10,7 +10,7 @@
   class Question extends Object {
     private $answer;
 
-    #[@Inject, @Named('answer')]
+    #[@inject, @named('answer')]
     public function setAnswer($answer) {
       $this->answer = $answer;
     }

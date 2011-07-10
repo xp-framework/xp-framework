@@ -179,12 +179,12 @@
 
       // check for default implementation
       $typeClass = XPClass::forName($type);
-      if ($typeClass->hasAnnotation('ImplementedBy')) {
+      if ($typeClass->hasAnnotation('implementedBy')) {
         return $this->bind($type)
-                    ->to(XPClass::forName($typeClass->getAnnotation('ImplementedBy')));
-      } elseif ($typeClass->hasAnnotation('ProvidedBy')) {
+                    ->to(XPClass::forName($typeClass->getAnnotation('implementedBy')));
+      } elseif ($typeClass->hasAnnotation('providedBy')) {
         return $this->bind($type)
-                    ->toProviderClass(XPClass::forName($typeClass->getAnnotation('ProvidedBy')));
+                    ->toProviderClass(XPClass::forName($typeClass->getAnnotation('providedBy')));
       }
 
       // try implicit binding
@@ -227,14 +227,14 @@
       }
 
       foreach ($class->getMethods() as $method) {
-        if (!($method->getModifiers() & MODIFIER_PUBLIC) || !$method->hasAnnotation('Inject')) {
+        if (!($method->getModifiers() & MODIFIER_PUBLIC) || !$method->hasAnnotation('inject')) {
           continue;
         }
 
         try {
           $paramValues = $this->getInjectionValuesForMethod($method, $class);
         } catch (BindingException $be) {
-          if (!$method->hasAnnotation('Inject', 'optional')) {
+          if (!$method->hasAnnotation('inject', 'optional')) {
             throw $be;
           }
 
@@ -255,14 +255,14 @@
      */
     public function getInjectionValuesForMethod(Routine $method, XPClass $class) {
       $paramValues = array();
-      $namedMethod = (($method->hasAnnotation('Named')) ? ($method->getAnnotation('Named')) : (null));
+      $namedMethod = (($method->hasAnnotation('named')) ? ($method->getAnnotation('named')) : (null));
       foreach ($method->getParameters() as $param) {
         $paramClass = $param->getTypeRestriction();
         $type       = (($paramClass instanceof XPClass) ? ($paramClass->getName()) : (ConstantBinding::TYPE));
         # XP does not support annotations for parameters
-        #$name       = (($param->hasAnnotation('Named')) ? ($param->getAnnotation('Named', 'name')) : ($namedMethod));
+        #$name       = (($param->hasAnnotation('named')) ? ($param->getAnnotation('named', 'name')) : ($namedMethod));
         $name       = $namedMethod;
-        if (!$this->hasExplicitBinding($type, $name) && $method->hasAnnotation('Inject', 'optional')) {
+        if (!$this->hasExplicitBinding($type, $name) && $method->hasAnnotation('inject', 'optional')) {
           // Somewhat hackish... throwing an exception here which is catched and ignored in handleInjections()
           throw new BindingException('Could not find explicit binding for optional injection of type ' . $this->createTypeMessage($type, $name) . ' to complete  ' . $this->createCalledMethodMessage($class, $method, $param, $type));
         }

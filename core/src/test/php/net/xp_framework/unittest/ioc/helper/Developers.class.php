@@ -19,7 +19,7 @@
      *
      * @param  Person  $schst
      */
-    #[@Inject, @Named('schst')]
+    #[@inject, @named('schst')]
     public function setSchst(Person $schst) {
       $this->schst = $schst;
     }
@@ -29,7 +29,7 @@
      *
      * @param  Person  $schst
      */
-    #[@Inject]
+    #[@inject]
     public function setMikey(Person $mikey) {
       $this->mikey = $mikey;
     }

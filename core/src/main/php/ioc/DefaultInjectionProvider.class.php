@@ -41,7 +41,7 @@
         $constructor = null;
       }
       
-      if (null === $constructor || !$constructor->hasAnnotation('Inject')) {
+      if (null === $constructor || !$constructor->hasAnnotation('inject')) {
           $instance = $this->impl->newInstance();
       } else {
           $instance = $constructor->newInstance($this->injector->getInjectionValuesForMethod($constructor, $this->impl));

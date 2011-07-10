@@ -7,7 +7,7 @@
   /**
    * @purpose  Helper class for test cases.
    */
-  #[@ProvidedBy('net.xp_framework.unittest.ioc.helper.DeveloperProvider')]
+  #[@providedBy('net.xp_framework.unittest.ioc.helper.DeveloperProvider')]
   interface Developer {
     /**
      * does some coding

@@ -32,7 +32,7 @@
      *
      * @param  Tire  $tire
      */
-    #[@Inject]
+    #[@inject]
     public function __construct(Tire $tire) {
       $this->tire = $tire;
     }
@@ -42,7 +42,7 @@
      *
      * @param  Roof  $roof
      */
-    #[@Inject(optional=true)]
+    #[@inject(optional=true)]
     public function setRoof(Roof $roof) {
         $this->roof = $roof;
     }

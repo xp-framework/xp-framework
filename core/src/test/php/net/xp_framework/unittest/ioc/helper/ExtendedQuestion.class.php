@@ -10,7 +10,7 @@
   class ExtendedQuestion extends Object {
     private $answer;
 
-    #[@Inject]
+    #[@inject]
     public function setAnswer(Answer $answer) {
       $this->answer = $answer;
     }

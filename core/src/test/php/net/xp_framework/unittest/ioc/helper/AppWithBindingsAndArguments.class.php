@@ -31,7 +31,7 @@
      *
      * @param  lang.Object  $object
      */
-    #[@Inject]
+    #[@inject]
     public function setObject(Object $object) {
       $this->object = $object;
     }
@@ -51,7 +51,7 @@
      *
      * @param  lang.Generic  $generic
      */
-    #[@Inject]
+    #[@inject]
     public function setGeneric(Generic $generic) {
       $this->generic = $generic;
     }
@@ -71,7 +71,7 @@
      *
      * @return  string
      */
-    #[@Inject(optional=true), @Named('argv.0')]
+    #[@inject(optional=true), @named('argv.0')]
     public function setArgument($arg) {
       $this->arg = $arg;
     }

@@ -25,7 +25,7 @@
      *
      * @param  Tire  $tire
      */
-    #[@Inject]
+    #[@inject]
     public function __construct(Tire $tire) {
       $this->tire = $tire;
     }

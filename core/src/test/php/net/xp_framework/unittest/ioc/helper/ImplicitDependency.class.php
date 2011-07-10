@@ -28,7 +28,7 @@
      *
      * @param  Goodyear  $goodyear
      */
-    #[@Inject]
+    #[@inject]
     public function __construct(Goodyear $goodyear) {
       $this->goodyearByConstructor = $goodyear;
     }
@@ -38,7 +38,7 @@
      *
      * @param  Goodyear  $goodyear
      */
-    #[@Inject]
+    #[@inject]
     public function setGoodyear(Goodyear $goodyear) {
       $this->goodyearBySetter = $goodyear;
     }
