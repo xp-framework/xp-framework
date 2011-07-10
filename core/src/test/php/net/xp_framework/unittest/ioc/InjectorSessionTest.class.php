@@ -43,11 +43,11 @@
       $this->assertInstanceOf('TestNumber', $number);
       $this->assertInstanceOf('Random', $number);
       $this->assertTrue($this->dummySession->hasValue(SessionBindingScope::SESSION_KEY . 'net.xp_framework.unittest.ioc.helper.Random'));
-      $this->assertEquals(spl_object_hash($number),
-                          spl_object_hash($this->dummySession->getValue(SessionBindingScope::SESSION_KEY . 'net.xp_framework.unittest.ioc.helper.Random'))
+      $this->assertEquals($number,
+                          $this->dummySession->getValue(SessionBindingScope::SESSION_KEY . 'net.xp_framework.unittest.ioc.helper.Random')
       );
-      $this->assertEquals(spl_object_hash($number),
-                          spl_object_hash($injector->getInstance('net.xp_framework.unittest.ioc.helper.TestNumber'))
+      $this->assertEquals($number,
+                          $injector->getInstance('net.xp_framework.unittest.ioc.helper.TestNumber')
       );
     }
 
@@ -63,8 +63,8 @@
       $number   = new Random();
       $this->dummySession->putValue(SessionBindingScope::SESSION_KEY . 'net.xp_framework.unittest.ioc.helper.Random', $number);
       $this->assertTrue($injector->hasBinding('net.xp_framework.unittest.ioc.helper.TestNumber'));
-      $this->assertEquals(spl_object_hash($number),
-                          spl_object_hash($injector->getInstance('net.xp_framework.unittest.ioc.helper.TestNumber'))
+      $this->assertEquals($number,
+                          $injector->getInstance('net.xp_framework.unittest.ioc.helper.TestNumber')
       );
     }
 

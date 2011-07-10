@@ -31,7 +31,7 @@
       $binder    = new Binder();
       $injector  = $binder->getInjector();
       $injector2 = $binder->getInjector();
-      $this->assertEquals(spl_object_hash($injector), spl_object_hash($injector2));
+      $this->assertEquals($injector, $injector2);
     }
 
     /**
@@ -42,7 +42,7 @@
     {
         $injector = new Injector();
         $binder   = new Binder($injector);
-        $this->assertEquals(spl_object_hash($injector), spl_object_hash($binder->getInjector()));
+        $this->assertEquals($injector, $binder->getInjector());
     }
   }
 ?>

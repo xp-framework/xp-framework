@@ -31,7 +31,7 @@
       $this->assertInstanceOf('Random', $slot->number1);
       $this->assertInstanceOf('TestNumber', $slot->number2);
       $this->assertInstanceOf('Random', $slot->number2);
-      $this->assertEquals(spl_object_hash($slot->number1), spl_object_hash($slot->number2));
+      $this->assertEquals($slot->number1, $slot->number2);
     }
 
     /**
@@ -54,7 +54,7 @@
       $this->assertInstanceOf('RandomSingleton', $slot->number1);
       $this->assertInstanceOf('TestNumber', $slot->number2);
       $this->assertInstanceOf('RandomSingleton', $slot->number2);
-      $this->assertEquals(spl_object_hash($slot->number1), spl_object_hash($slot->number2));
+      $this->assertEquals($slot->number1, $slot->number2);
     }
   }
 ?>

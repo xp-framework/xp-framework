@@ -123,7 +123,7 @@
       $this->assertInstanceOf('Bike', $vehicle);
       $this->assertInstanceOf('Tire', $vehicle->tire);
       $this->assertInstanceOf('Goodyear', $vehicle->tire);
-      $this->assertEquals(spl_object_hash($vehicle->tire), spl_object_hash($tire));
+      $this->assertEquals($vehicle->tire, $tire);
     }
 
     /**
@@ -246,7 +246,7 @@
 
     public function getKey() { }
   }');
-      $this->assertEquals(spl_object_hash($mockBinding), spl_object_hash($injector->addBinding($mockBinding)));
+      $this->assertEquals($mockBinding, $injector->addBinding($mockBinding));
     }
   }
 ?>
