@@ -10,11 +10,6 @@
    * Helper class for test cases.
    */
   class ImplicitOptionalDependency extends Object {
-    /**
-     * instance from setter injection
-     *
-     * @var  Goodyear
-     */
     protected $goodyearBySetter;
 
     /**

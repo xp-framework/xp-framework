@@ -11,11 +11,6 @@
    * @link     http://stubbles.net/ticket/102
    */
   class ImplicitDependencyBug102 extends Object {
-    /**
-     * instance from setter injection
-     *
-     * @var  Goodyear
-     */
     protected $goodyearBySetter;
 
     /**

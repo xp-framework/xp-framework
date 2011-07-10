@@ -13,11 +13,6 @@
    * Helper class for test cases.
    */
   class Bike extends Object implements Vehicle {
-    /**
-     * injected tire instance
-     *
-     * @var  Tire
-     */
     public $tire;
 
     /**

@@ -14,18 +14,9 @@ TRUE<?php
    * Helper class for test cases.
    */
   class Convertible extends Object implements Vehicle {
-    /**
-     * injected tire instance
-     *
-     * @var  Tire
-     */
-    public $tire;
-    /**
-     * injected roof instance
-     *
-     * @var   Roof
-     */
-    public $roof;
+    public
+      $tire,
+      $roof;
 
     /**
      * Create a new car

@@ -10,18 +10,9 @@
    * Helper class for test cases.
    */
   class ImplicitDependency extends Object {
-    /**
-     * instance from constructor injection
-     *
-     * @var  Goodyear
-     */
-    protected $goodyearByConstructor;
-    /**
-     * instance from setter injection
-     *
-     * @var  Goodyear
-     */
-    protected $goodyearBySetter;
+    protected
+      $goodyearByConstructor,
+      $goodyearBySetter;
 
     /**
      * constructor
