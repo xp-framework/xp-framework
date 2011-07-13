@@ -51,7 +51,7 @@
      */
     #[@generic(params= 'T', return= 'T')]
     public function put($element) {
-      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
+      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
       $this->_elements[]= $element;
       $this->_hash+= HashProvider::hashOf($h);
       return $element;
@@ -70,7 +70,7 @@
       }
 
       $element= $this->_elements[0];
-      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
+      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
       $this->_hash-= HashProvider::hashOf($h);
       $this->_elements= array_slice($this->_elements, 1);
       return $element;
@@ -132,7 +132,7 @@
       if (-1 == ($pos= $this->search($element))) return FALSE;
       
       $element= $this->_elements[$pos];
-      $h= $element instanceof Generic ? $element->hashCode() : (is_array($element) ? serialize($element) : $element);
+      $h= $element instanceof Generic ? $element->hashCode() : serialize($element);
       $this->_hash-= HashProvider::hashOf($h);
       unset($this->_elements[$pos]);
       $this->_elements= array_values($this->_elements);   // Re-index

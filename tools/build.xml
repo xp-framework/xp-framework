@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="xp-framework-tools" basedir=".">
+  <property name="xp.publish.resolver" value="public-authenticated"/>
+  <import file="${user.home}/.ant/xp-build/build-loader.xml"/>
+
+  <target name="xp.compile.bootstrap" extensionOf="compile">
+    <copy todir="${build.target}/bootstrap-build">
+      <fileset dir="${basedir}">
+        <include name="tools/*.php"/>
+      </fileset>
+    </copy>
+
+    <copy todir="${build.target}/bootstrap">
+      <fileset dir="${basedir}">
+        <include name="tools/*.php"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="xp.package.sources" extensionOf="package" depends="xp.setup.ivy, xp.build.number">
+    <xar-from-system
+     dir="${build.target}/classes"
+     target="${build.target}/${ivy.module}-${ivy.new.revision}.xar"
+    />
+  </target>
+  
+  <target name="xp.package.bootstrap" extensionOf="package" depends="xp.setup.ivy, xp.build.number">
+    <zip
+     destfile="${build.target}/${ivy.module}-bootstrap-${ivy.new.revision}.zip"
+    >
+      <zipfileset dir="${build.target}/bootstrap-build"/>
+    </zip>
+  </target>
+</project>

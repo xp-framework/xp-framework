@@ -43,6 +43,18 @@
     }
 
     /**
+     * Test creation of address from its packed form
+     *
+     */
+    #[@test]
+    public function createAddressFromPackedForm() {
+      $this->assertEquals(
+        '::1',
+        create(new Inet6Address("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\1"))->asString()
+      );
+    }
+
+    /**
      * Test getAddress() shortens address
      *
      */

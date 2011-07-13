@@ -53,7 +53,7 @@
      */
     #[@test]
     public function lookupLocalhostAllInet6() {
-      $this->cut->addLookup('::1');
+      $this->cut->addLookup('::1', 'ipv6');
       $this->assertEquals(array(new Inet6Address('::1')), $this->cut->lookupAllInet6('localhost'));
     }
 
@@ -63,7 +63,7 @@
      */
     #[@test]
     public function lookupLocalhostInet6() {
-      $this->cut->addLookup('::1');
+      $this->cut->addLookup('::1', 'ipv6');
       $this->assertEquals(new Inet6Address('::1'), $this->cut->lookupInet6('localhost'));
     }
 
@@ -74,7 +74,7 @@
     #[@test]
     public function lookupLocalhostAll() {
       $this->cut->addLookup('127.0.0.1');
-      $this->cut->addLookup('::1');
+      $this->cut->addLookup('::1', 'ipv6');
       
       $this->assertEquals(
         array(new Inet4Address('127.0.0.1'), new Inet6Address('::1')),
@@ -89,7 +89,7 @@
     #[@test]
     public function lookupLocalhost() {
       $this->cut->addLookup('127.0.0.1');
-      $this->cut->addLookup('::1');
+      $this->cut->addLookup('::1', 'ipv6');
 
       $this->assertEquals(
         new Inet4Address('127.0.0.1'),

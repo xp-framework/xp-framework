@@ -25,6 +25,11 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #32: Primitives in HashSet cause fatal error in toString()
+  (friebe)
+- Fixed issue #31: Floating point numbers used as keys in util.collections 
+  classes HashSet, HashTable and LRUBuffer
+  (friebe)
 - Fixed issue #23: XMLScriptletURL adds port if not default port for
   given scheme
   (kiesel)
@@ -55,6 +60,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made peer.net.Inet6Address accept packed form - see issue #26
+  (friebe)
 - Add toString() implementation to peer.Socket
   (friebe)
 - Removed obsolete class webservices.soap.interop.Round2BaseClient which

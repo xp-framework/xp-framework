@@ -528,5 +528,81 @@
     public function arrayAsKeyTypeMismatch() {
       create('new util.collections.HashTable<string[], lang.types.String>')->put('hello', new String('World'));
     }
+
+    /**
+     * Tests HashTable with float keys
+     *
+     * @see   issue://31
+     */
+    #[@test]
+    public function floatKeyHashTable() {
+      $c= create('new util.collections.HashTable<float, string>');
+      $c[0.1]= '1/10';
+      $c[0.2]= '2/10';
+      $this->assertEquals('1/10', $c[0.1], '0.1');
+      $this->assertEquals('2/10', $c[0.2], '0.2');
+    }
+
+    /**
+     * Tests HashSet with floats
+     *
+     * @see   issue://31
+     */
+    #[@test]
+    public function floatInHashSet() {
+      $c= create('new util.collections.HashSet<float>');
+      $c->add(0.1);
+      $c->add(0.2);
+      $this->assertEquals(array(0.1, 0.2), $c->toArray());
+    }
+
+    /**
+     * Tests LRUBuffer with floats
+     *
+     * @see   issue://31
+     */
+    #[@test]
+    public function floatInLRUBuffer() {
+      $c= create('new util.collections.LRUBuffer<float>', $irrelevant= 10);
+      $c->add(0.1);
+      $c->add(0.2);
+      $this->assertEquals(2, $c->numElements());
+    }
+
+    /**
+     * Tests HashTable::toString() in conjunction with primitives
+     *
+     * @see   issue://32
+     */
+    #[@test]
+    public function primitiveInHashTableToString() {
+      $c= create('new util.collections.HashTable<string, string>');
+      $c->put('hello', 'World');
+      $this->assertNotEquals('', $c->toString());
+    }
+
+    /**
+     * Tests HashSet::toString() in conjunction with primitives
+     *
+     * @see   issue://32
+     */
+    #[@test]
+    public function primitiveInHashSetToString() {
+      $c= create('new util.collections.HashSet<string>');
+      $c->add('hello');
+      $this->assertNotEquals('', $c->toString());
+    }
+
+    /**
+     * Tests Vector::toString() in conjunction with primitives
+     *
+     * @see   issue://32
+     */
+    #[@test]
+    public function primitiveInVectorToString() {
+      $c= create('new util.collections.Vector<string>');
+      $c->add('hello');
+      $this->assertNotEquals('', $c->toString());
+    }
   }
 ?>
