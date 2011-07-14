@@ -55,8 +55,13 @@ objectcontent:
 ;
 
 objectpart:
-      string ':' expression { $$= array($1 => $3); }
+      objectkey ':' expression { $$= array($1 => $3); }
 ;
+
+objectkey:
+    '"' word '"' { $$= $2; }
+  | '"' '"' { $$= ''; }
+;    
 
 array:
       '[' arraycontent ']' { $$= $2; }
@@ -69,7 +74,7 @@ arraycontent:
 ;
 
 string:
-    '"' word '"' { $$= $2; }
+    '"' word '"' { $$= new String($2); }
   | '"' '"' { $$= ''; }
 ;
 

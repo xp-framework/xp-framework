@@ -33,54 +33,58 @@
 
     protected static $yyLhs= array(-1,
           0,     0,     0,     0,     1,     5,     5,     6,     6,     7, 
-          2,     2,     8,     8,     3,     3,     9,     9,    10,    10, 
-         10,    10,    10,    10,    10,    10,    10,    10,     4,     4, 
-          4,     4,     4, 
+          8,     8,     2,     2,    10,    10,     3,     3,     9,     9, 
+         11,    11,    11,    11,    11,    11,    11,    11,    11,    11, 
+          4,     4,     4,     4,     4, 
     );
     protected static $yyLen= array(2,
           1,     1,     1,     1,     1,     3,     2,     1,     3,     3, 
-          3,     2,     1,     3,     3,     2,     1,     2,     1,     1, 
+          3,     2,     3,     2,     1,     3,     3,     2,     1,     2, 
           1,     1,     1,     1,     1,     1,     1,     1,     1,     1, 
-          1,     1,     1, 
+          1,     1,     1,     1,     1, 
     );
     protected static $yyDefRed= array(0,
-         29,    30,    31,    33,    32,     0,     0,     0,     0,     1, 
-          2,     3,     4,     5,     7,     0,     0,     8,    12,    13, 
-          0,    19,    20,    21,    22,    23,    24,    25,    26,    27, 
-         28,    16,     0,    17,     0,     6,     0,     0,    11,    15, 
-         18,    10,     9,    14, 
+         31,    32,    33,    35,    34,     0,     0,     0,     0,     1, 
+          2,     3,     4,     5,     7,     0,     0,     8,     0,    21, 
+         22,    23,    24,    25,    26,    27,    28,    29,    30,    18, 
+          0,    19,    14,    15,     0,    12,     0,     6,     0,     0, 
+         17,    20,     0,    13,    11,     9,    10,    16, 
     );
     protected static $yyDgoto= array(9,
-         10,    11,    12,    13,    14,    17,    18,    21,    33,    34, 
+         10,    11,    12,    13,    14,    17,    18,    19,    31,    35, 
+         32, 
     );
-    protected static $yySindex = array(           -5,
-          0,     0,     0,     0,     0,   -32,   -33,   -34,     0,     0, 
-          0,     0,     0,     0,     0,   -52,   -41,     0,     0,     0, 
-        -40,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,   -24,     0,    -5,     0,   -26,    -5,     0,     0, 
-          0,     0,     0,     0, 
+    protected static $yySindex = array(           15,
+          0,     0,     0,     0,     0,   -32,   -34,   -33,     0,     0, 
+          0,     0,     0,     0,     0,   -24,   -41,     0,   -51,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
+        -14,     0,     0,     0,   -40,     0,    -4,     0,   -26,    15, 
+          0,     0,    15,     0,     0,     0,     0,     0, 
     );
     protected static $yyRindex= array(            0,
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0, 
     );
-    protected static $yyGindex= array(-2,
-          0,     0,     1,     0,     0,     0,   -28,     0,     0,   -22, 
+    protected static $yyGindex= array(-3,
+          0,     0,     0,     0,     0,     0,   -30,     0,    -5,     0, 
+        -25, 
     );
-    protected static $yyTable = array(32,
-          8,     8,    37,    38,    20,    35,    16,     8,    43,    40, 
-         41,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     8,     0, 
-          0,     0,    42,     0,     0,    44,     0,    16,     0,     0, 
+    protected static $yyTable = array(30,
+          7,    16,    39,    43,    34,    42,    40,    16,    46,    36, 
+         37,    42,     0,     0,     0,     0,     0,     0,     0,    41, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,    45, 
+          0,     0,     0,     0,     0,     0,    47,     0,     0,    48, 
+          0,     0,     0,     0,     0,     0,     0,     0,     7,     0, 
+          0,     0,    44,     0,     0,     0,     0,     8,     0,    33, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,    39,     0,     0,     0,     0,     7,     0,    19, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,    36,     0,     7,     0,     0,     0,     6, 
+          0,     0,     0,    38,     0,     0,     0,     0,     0,     6, 
           0,     0,    15,     0,     0,     0,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     8,     0,     0,     0,     0, 
+          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     6,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
@@ -91,24 +95,26 @@
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
-          0,     0,     0,     0,     0,     0,     0,     0,     0,     0, 
           0,     0,     0,     0,     0,     0,     0,     1,     2,     3, 
-          4,     5,     0,     0,     0,    22,    23,    24,    25,    26, 
-         27,    28,    29,    30,    31,    22,    23,    24,    25,    26, 
-         27,    28,    29,    30,    31,     1,     2,     3,     4,     5, 
+          4,     5,     0,     0,     0,    20,    21,    22,    23,    24, 
+         25,    26,    27,    28,    29,    20,    21,    22,    23,    24, 
+         25,    26,    27,    28,    29,    20,    21,    22,    23,    24, 
+         25,    26,    27,    28,    29,    20,    21,    22,    23,    24, 
+         25,    26,    27,    28,    29,     1,     2,     3,     4,     5, 
     );
     protected static $yyCheck = array(34,
-         34,    34,    44,    44,     7,    58,     6,    34,    37,    34, 
-         33,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         34,    34,    44,    44,     8,    31,    58,    34,    39,    34, 
+         16,    37,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    34, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    34, 
+         -1,    -1,    -1,    -1,    -1,    -1,    40,    -1,    -1,    43, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    34,    -1, 
-         -1,    -1,    35,    -1,    -1,    38,    -1,    37,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    93,    -1,    -1,    -1,    -1,    91,    -1,    93, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,   125,    -1,    91,    -1,    -1,    -1,   123, 
+         -1,    -1,    -1,   125,    -1,    -1,    -1,    -1,    -1,   123, 
          -1,    -1,   125,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    91,    -1,    -1,    -1,    -1, 
+         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,   123,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
@@ -119,10 +125,10 @@
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
-         -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1, 
          -1,    -1,    -1,    -1,    -1,    -1,    -1,   261,   262,   263, 
         264,   265,    -1,    -1,    -1,   270,   271,   272,   273,   274, 
+        275,   276,   277,   278,   279,   270,   271,   272,   273,   274, 
+        275,   276,   277,   278,   279,   270,   271,   272,   273,   274, 
         275,   276,   277,   278,   279,   270,   271,   272,   273,   274, 
         275,   276,   277,   278,   279,   261,   262,   263,   264,   265, 
     );
@@ -341,51 +347,57 @@
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
     case 12:  #line 63 "grammar/json.jay"
-    { $yyVal= array(); } break;
-
-    case 13:  #line 67 "grammar/json.jay"
-    { $yyVal= array($yyVals[0+$yyTop]); } break;
-
-    case 14:  #line 68 "grammar/json.jay"
-    { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
-
-    case 15:  #line 72 "grammar/json.jay"
-    { $yyVal= $yyVals[-1+$yyTop]; } break;
-
-    case 16:  #line 73 "grammar/json.jay"
     { $yyVal= ''; } break;
 
-    case 18:  #line 78 "grammar/json.jay"
-    { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
+    case 13:  #line 67 "grammar/json.jay"
+    { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 19:  #line 82 "grammar/json.jay"
-    { $yyVal= iconv('UTF-8', 'ISO-8859-15//IGNORE//TRANSLIT', $yyVals[0+$yyTop]); } break;
+    case 14:  #line 68 "grammar/json.jay"
+    { $yyVal= array(); } break;
+
+    case 15:  #line 72 "grammar/json.jay"
+    { $yyVal= array($yyVals[0+$yyTop]); } break;
+
+    case 16:  #line 73 "grammar/json.jay"
+    { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
+
+    case 17:  #line 77 "grammar/json.jay"
+    { $yyVal= new String($yyVals[-1+$yyTop]); } break;
+
+    case 18:  #line 78 "grammar/json.jay"
+    { $yyVal= ''; } break;
 
     case 20:  #line 83 "grammar/json.jay"
+    { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
+
+    case 21:  #line 87 "grammar/json.jay"
+    { $yyVal= iconv('UTF-8', 'ISO-8859-15//IGNORE//TRANSLIT', $yyVals[0+$yyTop]); } break;
+
+    case 22:  #line 88 "grammar/json.jay"
     { $yyVal= '"'; } break;
 
-    case 21:  #line 84 "grammar/json.jay"
+    case 23:  #line 89 "grammar/json.jay"
     { $yyVal= "\\"; } break;
 
-    case 22:  #line 85 "grammar/json.jay"
+    case 24:  #line 90 "grammar/json.jay"
     { $yyVal= "/"; } break;
 
-    case 23:  #line 86 "grammar/json.jay"
+    case 25:  #line 91 "grammar/json.jay"
     { $yyVal= "\b"; } break;
 
-    case 24:  #line 87 "grammar/json.jay"
+    case 26:  #line 92 "grammar/json.jay"
     { $yyVal= "\f"; } break;
 
-    case 25:  #line 88 "grammar/json.jay"
+    case 27:  #line 93 "grammar/json.jay"
     { $yyVal= "\n"; } break;
 
-    case 26:  #line 89 "grammar/json.jay"
+    case 28:  #line 94 "grammar/json.jay"
     { $yyVal= "\r"; } break;
 
-    case 27:  #line 90 "grammar/json.jay"
+    case 29:  #line 95 "grammar/json.jay"
     { $yyVal= "\t"; } break;
 
-    case 28:  #line 91 "grammar/json.jay"
+    case 30:  #line 96 "grammar/json.jay"
     {
                                 $yyVal= iconv(
                                   'UCS-4BE',
@@ -394,21 +406,21 @@
                                 );
                               } break;
 
-    case 29:  #line 101 "grammar/json.jay"
+    case 31:  #line 106 "grammar/json.jay"
     { $yyVal= TRUE; } break;
 
-    case 30:  #line 102 "grammar/json.jay"
+    case 32:  #line 107 "grammar/json.jay"
     { $yyVal= FALSE; } break;
 
-    case 31:  #line 103 "grammar/json.jay"
+    case 33:  #line 108 "grammar/json.jay"
     { $yyVal= NULL; } break;
 
-    case 32:  #line 104 "grammar/json.jay"
+    case 34:  #line 109 "grammar/json.jay"
     { $yyVal= doubleval($yyVals[0+$yyTop]); } break;
 
-    case 33:  #line 105 "grammar/json.jay"
+    case 35:  #line 110 "grammar/json.jay"
     { $yyVal= intval($yyVals[0+$yyTop]); } break;
-#line 412 "-"
+#line 424 "-"
             }
                    
             $yyTop-= self::$yyLen[$yyN];

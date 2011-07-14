@@ -179,10 +179,13 @@
      */
     #[@test]
     public function decodeLongString() {
-      with ($data= str_repeat('*', 6100)); {
+      with (
+        $data= str_repeat('*', 6100),
+        $decodedString= $this->decoder->decode('"'.$data.'"')
+      ); {
         $this->assertEquals(
           strlen($data),
-          $this->decoder->decode('"'.$data.'"').length(),
+          $decodedString->length(),
           'Decoded length mismatch'
         );
       }
@@ -1059,7 +1062,7 @@
     #[@test]
     public function decodeStringWithNumbers() {
       $this->assertEquals(
-        'foo'."\n".'200',
+        new String('foo'."\n".'200'),
         $this->decoder->decode('"foo\n200"')
       );
     }
@@ -1071,7 +1074,7 @@
     #[@test]
     public function decodeStringWithJsonSyntax() {
       $this->assertEquals(
-        '[foo, bar]',
+        new String('[foo, bar]'),
         $this->decoder->decode('"[foo, bar]"')
       );
     }
