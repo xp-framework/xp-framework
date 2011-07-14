@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'util.Date',
+    'lang.types.String',
     'webservices.json.JsonDecoder'
   );
 
@@ -438,5 +439,23 @@
         $this->decoder->encode(array('foo' => 'bar'))
       );
     }
+
+    /**
+     * Even more additional tests
+     *
+     */
+
+    /**
+     * Test encode lang.types.String to Json string
+     *
+     */
+    #[@test]
+    public function encodeStringObject() {
+      $this->assertEquals(
+        '"foobar"',
+        $this->decoder->encode(new String('foobar'))
+      );
+    }
+    
   }
 ?>

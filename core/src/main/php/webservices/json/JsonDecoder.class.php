@@ -143,7 +143,10 @@
         case 'object': {
           // Convert objects to arrays and store the classname with them as
           // suggested by JSON-RPC
-          if ($data instanceof Generic) {
+          if ($data instanceof String) {
+            $stream->write('"'.$data->toString().'"');
+            break;
+          } else if ($data instanceof Generic) {
             if (!method_exists($data, '__sleep')) {
               $vars= get_object_vars($data);
             } else {
