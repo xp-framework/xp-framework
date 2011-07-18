@@ -90,7 +90,7 @@
      */
     public function encode($data) {
       $stream= new MemoryOutputStream();
-      $this->streamEncode($data, $stream);
+      $this->encodeTo($data, $stream);
       return $stream->getBytes();
     }
 
@@ -107,7 +107,7 @@
      * @return  boolean
      * @throws  webservices.json.JsonException if the data could not be serialized
      */
-    public function streamEncode($data, $stream) {
+    public function encodeTo($data, $stream) {
       static $controlChars= array(
         '"'   => '\\"', 
         '\\'  => '\\\\', 
