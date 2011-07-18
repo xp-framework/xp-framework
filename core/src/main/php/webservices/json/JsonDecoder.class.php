@@ -8,7 +8,7 @@
     'lang.types.String',
     'lang.types.Character',
     'io.streams.MemoryOutputStream',
-    'text.StringTokenizer',
+    'io.streams.MemoryInputStream',
     'webservices.json.JsonException',
     'webservices.json.IJsonDecoder',
     'webservices.json.JsonParser',
@@ -261,15 +261,30 @@
      * @throws  webservices.json.JsonException
      */
     public function decode($string) {
+      $stream= new MemoryInputStream($string.PHP_EOL);
+      $data= $this->decodeTo($stream);
+      return $data;
+    }
+
+    /**
+     * Decode a stream of JSON data into PHP data
+     *
+     *  Be sure to send an PHP_EOL at the end of your stream.
+     *
+     * @param   var stream
+     * @return  var
+     * @throws  webservices.json.JsonException
+     */
+    public function decodeTo($stream) {
       $parser= new JsonParser();
 
       try{
-        $result= $parser->parse(new JsonLexer($string));
+        $data= $parser->parse(new JsonLexer($stream));
       } catch (ParseException $pe) {
         throw new JsonException($pe);
       }
 
-      return $result;
+      return $data;
     }
     
     /**
