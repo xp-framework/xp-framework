@@ -82,6 +82,34 @@
     public function registerMapping(QName $qname, XPClass $class);
 
     /**
+     * Set connect timeout
+     *
+     * @param   int
+     */
+    public function setConnectTimeout($i);
+
+    /**
+     * Set connect timeout
+     *
+     * @return  int
+     */
+    public function getConnectTimeout();
+
+    /**
+     * Set connect timeout
+     *
+     * @param   int
+     */
+    public function setTimeout($i);
+
+    /**
+     * Set connect timeout
+     *
+     * @return  int
+     */
+    public function getTimeout();
+
+    /**
      * Perform SOAP call
      *
      * @param   mixed[]

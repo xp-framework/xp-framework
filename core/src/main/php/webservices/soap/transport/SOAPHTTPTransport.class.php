@@ -64,6 +64,16 @@
     }
     
     /**
+     * Set the timeout for the request.
+     * Note: this is the connect-timeout.
+     *
+     * @param   int timeout
+     */
+    public function setConnectTimeout($timeout) {
+      $this->_conn->setConnectTimeout($timeout);
+    }
+
+    /**
      * Adds a header. If this header is already set, it will
      * be overwritten.
      *
@@ -87,6 +97,16 @@
      */
     public function getTimeout() {
       return $this->_conn->getTimeout();
+    }
+
+    /**
+     * Retrieve the current timeout setting.
+     * Note: this is the connect-timeout.
+     *
+     * @return  int
+     */
+    public function getConnectTimeout() {
+      return $this->_conn->getConnectTimeout();
     }
 
     /**
