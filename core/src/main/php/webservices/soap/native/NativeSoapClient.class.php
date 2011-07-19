@@ -29,7 +29,9 @@
       $location = NULL,
       $encoding = 'iso-8859-1',
       $style    = SOAP_RPC,
-      $use      = SOAP_ENCODED;
+      $use      = SOAP_ENCODED,
+      $ctimeout = NULL,
+      $timeout  = NULL;
     
     protected
       $map      = array();
@@ -45,6 +47,42 @@
       $this->uri= $uri;
       $this->wsdl= FALSE;
       $this->map= array();
+    }
+
+    /**
+     * Set connect timeout
+     *
+     * @param   int timeout
+     */
+    public function setConnectTimeout($i) {
+      $this->ctimeout= $i;
+    }
+
+    /**
+     * Set timeout
+     *
+     * @param   int timeout
+     */
+    public function setTimeout($i) {
+      $this->timeout= $i;
+    }
+
+    /**
+     * Get connect timeout
+     *
+     * @return  int
+     */
+    public function getConnectTimeout() {
+      return $this->ctimeout;
+    }
+
+    /**
+     * Set timeout
+     *
+     * @return  int
+     */
+    public function getTimeout() {
+      return $this->timeout;
     }
 
     /**
@@ -257,6 +295,14 @@
         'exceptions'  => 0,
         'trace'       => ($this->cat != NULL)
       );
+
+      if (NULL !== $this->ctimeout) {
+        $options['connection_timeout']= $this->ctimeout;
+      }
+
+      if (NULL !== $this->timeout) {
+        // NOOP
+      }
 
       if (NULL !== $this->endpoint->getUser()) {
         $options['login']= $this->endpoint->getUser();
