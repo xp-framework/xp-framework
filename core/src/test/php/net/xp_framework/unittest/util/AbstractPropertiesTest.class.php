@@ -532,7 +532,8 @@ value"');
 [section]
 key=Ãœbercoder
       ');
-      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+      $expected=new String('Übercoder', 'iso-8859-1');
+      $this->assertEquals($expected->toString(), $p->readString('section', 'key'));
     }
 
     /**
@@ -545,7 +546,8 @@ key=Ãœbercoder
  [ s e c t i o n ]  
  k e y = Ü b e r c o d e r
       ', " \r\n"));
-      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+      $expected=new String('Übercoder', 'iso-8859-1');
+      $this->assertEquals($expected->toString(), $p->readString('section', 'key'));
     }
 
     /**
@@ -558,7 +560,8 @@ key=Ãœbercoder
 [ s e c t i o n ]  
  k e y = Ü b e r c o d e r 
       ', " \r\n"));
-      $this->assertEquals('Übercoder', $p->readString('section', 'key'));
+      $expected=new String('Übercoder', 'iso-8859-1');
+      $this->assertEquals($expected->toString(), $p->readString('section', 'key'));
     }
   }
 ?>

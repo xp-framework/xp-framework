@@ -35,7 +35,6 @@
         return $arg->getBytes(STR_ENC)->buffer;
       } else if (is_string($arg) || $arg instanceof Bytes) {
         $charset= strtoupper($charset ? $charset : iconv_get_encoding('input_encoding'));
-
         // Convert the input to internal encoding
         $buffer= iconv($charset, STR_ENC, $arg);
         if (xp::errorAt(__FILE__, __LINE__ - 1)) {
