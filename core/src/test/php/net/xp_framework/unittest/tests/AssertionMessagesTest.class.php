@@ -35,10 +35,22 @@
      *
      */
     #[@test]
-    public function differentPrimitives() {
+    public function differentIntegerPrimitives() {
       $this->assertMessageEquals(
         '(==) { expected: [integer:2] but was: [integer:1] }',
         new AssertionFailedError('==', 1, 2)
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function differentPrimitives() {
+      $this->assertMessageEquals(
+        '(==) { expected: [integer:2] but was: [double:2] }',
+        new AssertionFailedError('==', 2.0, 2)
       );
     }
 
