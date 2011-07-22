@@ -47,10 +47,34 @@
      *
      */
     #[@test]
-    public function differentObjects() {
+    public function differentStrings() {
       $this->assertMessageEquals(
         '(equals) { expected: [lang.types.String:] but was: [lang.types.String:abc] }',
         new AssertionFailedError('equals', new String('abc'), new String(''))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function stringAndStringPrimitive() {
+      $this->assertMessageEquals(
+        '(equals) { expected: [lang.types.String:] but was: [string:""] }',
+        new AssertionFailedError('equals', '', new String(''))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function differentTypes() {
+      $this->assertMessageEquals(
+        '(equals) { expected: [lang.types.String:] but was: [net.xp_framework.unittest.tests.AssertionMessagesTest:net.xp_framework.unittest.tests.AssertionMessagesTest<differentTypes>] }',
+        new AssertionFailedError('equals', $this, new String(''))
       );
     }
   }
