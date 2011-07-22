@@ -7,7 +7,7 @@
   /**
    * Indicates an assertion failed
    *
-   * @purpose  Exception
+   * @test    xp://net.xp_framework.unittest.tests.AssertionMessagesTest
    */
   class AssertionFailedError extends XPException {
     public
