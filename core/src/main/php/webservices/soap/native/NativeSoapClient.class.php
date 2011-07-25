@@ -257,6 +257,24 @@
           
         case ($parameter instanceof SOAPLong):
           return new SoapVar($parameter->long, XSD_LONG);
+
+        case ($parameter instanceof Long):
+          return new SoapVar($parameter->value, XSD_LONG);
+
+        case ($parameter instanceof Integer):
+          return new SoapVar($parameter->intValue(), XSD_INTEGER);
+
+        case ($parameter instanceof Double):
+          return new SoapVar($parameter->doubleValue(), XSD_DOUBLE);
+
+        case ($parameter instanceof Short):
+          return new SoapVar($parameter->value, XSD_SHORT);
+
+        case ($parameter instanceof String):
+          return new SoapVar($parameter->toString(), XSD_STRING);
+
+        case ($parameter instanceof Bytes):
+          return new SoapVar(base64_encode($parameter->__toString()), XSD_BASE64BINARY);
           
         case ($parameter instanceof SOAPBase64Binary):
           return new SoapVar($parameter->encoded, XSD_BASE64BINARY);
@@ -266,6 +284,9 @@
           
         case ($parameter instanceof SOAPDateTime):
           return new SoapVar($parameter->value, XSD_DATETIME);
+
+        case ($parameter instanceof Date):
+          return new SoapVar($parameter, XSD_DATETIME);
           
         case ($parameter instanceof SOAPHashMap):
           return $parameter->value;
@@ -325,6 +346,11 @@
 
         // Do not overwrite location if already set from outside
         $options['location'] || $options['location']= $this->endpoint->getURL();
+
+        // Assert we have a uri
+        if (!$this->uri) throw new IllegalArgumentException (
+          'SOAP uri required in non-wsdl mode.'
+        );
 
         $options['uri']= $this->uri;
         $options['style']= $this->getStyle();
