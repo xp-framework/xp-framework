@@ -25,6 +25,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #28: Bug in io.File::readLine()
+  (Stormwind, friebe, kiesel)
 - Fixed issue #32: Primitives in HashSet cause fatal error in toString()
   (friebe)
 - Fixed issue #31: Floating point numbers used as keys in util.collections 
