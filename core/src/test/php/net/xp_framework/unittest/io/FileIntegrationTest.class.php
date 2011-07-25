@@ -208,6 +208,208 @@
      *
      */
     #[@test]
+    public function read0() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals('', $this->file->read(0));
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data
+     *
+     */
+    #[@test]
+    public function readAfterEnd() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals($data, $this->file->read(strlen($data)));
+        $this->assertFalse($this->file->read(1));
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using gets()
+     *
+     */
+    #[@test]
+    public function gets() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals($data, $this->file->gets());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using gets()
+     *
+     */
+    #[@test]
+    public function gets0() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals('', $this->file->gets(0));
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using gets()
+     *
+     */
+    #[@test]
+    public function getsTwoLines() {
+      with ($data= "Hello\nWorld\n"); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals("Hello\n", $this->file->gets());
+        $this->assertEquals("World\n", $this->file->gets());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using gets()
+     *
+     */
+    #[@test]
+    public function getsAfterEnd() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals('Hello', $this->file->gets());
+        $this->assertFalse($this->file->gets());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using readLine()
+     *
+     */
+    #[@test]
+    public function readLine() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals($data, $this->file->readLine());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using readLine()
+     *
+     */
+    #[@test]
+    public function readLine0() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals('', $this->file->readLine(0));
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using readLine()
+     *
+     */
+    #[@test]
+    public function readLines() {
+      with ($data= "Hello\nWorld\n"); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals('Hello', $this->file->readLine());
+        $this->assertEquals('World', $this->file->readLine());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using readLine()
+     *
+     */
+    #[@test]
+    public function readLinesAfterEnd() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals('Hello', $this->file->readLine());
+        $this->assertFalse($this->file->readLine());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using readChar()
+     *
+     */
+    #[@test]
+    public function readChar() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals($data{0}, $this->file->readChar());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using readChar()
+     *
+     */
+    #[@test]
+    public function readChars() {
+      with ($data= 'Hello'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals($data{0}, $this->file->readChar());
+        $this->assertEquals($data{1}, $this->file->readChar());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data using readChar()
+     *
+     */
+    #[@test]
+    public function readCharsAfterEnd() {
+      with ($data= 'H'); {
+        $this->writeData($this->file, $data);
+
+        $this->file->open(FILE_MODE_READ);
+        $this->assertEquals('H', $this->file->readChar());
+        $this->assertFalse($this->file->readChar());
+        $this->file->close();
+      }
+    }
+
+    /**
+     * Test writing to a file, then reading back the data
+     *
+     */
+    #[@test]
     public function overwritingExistant() {
       with ($data= 'Hello World', $appear= 'This should not appear'); {
         $this->writeData($this->file, $appear);
