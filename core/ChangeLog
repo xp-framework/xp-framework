@@ -25,6 +25,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed fatal error in io.archive.zip.ZipFileEntry::toString()
+  (friebe)
 - Fixed issue #28: Bug in io.File::readLine()
   (Stormwind, friebe, kiesel)
 - Fixed issue #32: Primitives in HashSet cause fatal error in toString()

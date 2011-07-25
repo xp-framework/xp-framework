@@ -144,13 +144,14 @@
       return sprintf(
         "%s(%s)@{\n".
         "  [lastModified] %s\n".
-        "  [compression ] %s\n".
+        "  [compression ] %s level %d\n".
         "  [size        ] %d\n".
         "}",
         $this->getClassName(),
         $this->name,
         xp::stringOf($this->mod),
-        $this->compression->name(),
+        xp::stringOf($this->compression[0]),
+        $this->compression[1],
         $this->size
       );
     }
