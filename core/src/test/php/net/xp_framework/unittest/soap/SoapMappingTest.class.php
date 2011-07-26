@@ -42,7 +42,7 @@
       ');
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
-      $client->transport= $transport;
+      $client->setTransport($transport);
       $client->registerMapping(
         new QName('http://net.xp_framework/soap/types', 'SoapTestType'),
         XPClass::forName('net.xp_framework.unittest.soap.SoapMappingTestTarget')
@@ -70,7 +70,7 @@
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
       
       // Re-set transport as constructor created a copy of it!
-      $client->transport= $transport;
+      $client->setTransport($transport);
       
       $client->registerMapping(
         new QName('http://net.xp_framework/soap/types', 'SoapTestType'),

@@ -45,7 +45,7 @@
 ');
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
-      $client->transport= $transport;
+      $client->setTransport($transport);
       $this->assertEquals(array(NULL, NULL), $client->invoke('irrelevant'));
     }
   
@@ -74,7 +74,7 @@
 ');
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
-      $client->transport= $transport;
+      $client->setTransport($transport);
       $client->invoke('irrelevant');
     }
 
@@ -105,7 +105,7 @@
 ');
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
-      $client->transport= $transport;
+      $client->setTransport($transport);
       $this->assertEquals(5, $client->invoke('irrelevant'));
     }
 
@@ -138,7 +138,7 @@
 ');
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
-      $client->transport= $transport;
+      $client->setTransport($transport);
       $this->assertEquals(array('first value', 'second value'), $client->invoke('irrelevant'));
     }
 
@@ -172,7 +172,7 @@
 ');
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
-      $client->transport= $transport;
+      $client->setTransport($transport);
       $this->assertEquals(array(
         'string' => array('first value', 'second value')
       ), $client->invoke('irrelevant'));
@@ -210,13 +210,57 @@
 ');
       
       $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
-      $client->transport= $transport;
+      $client->setTransport($transport);
       $this->assertEquals(array(
         'scalar' => 'some string',
         'array' => array(
           'string' => array('first value', 'second value')
         )
       ), $client->invoke('irrelevant'));
+    }
+
+    /**
+     * Test accessing members for BC works
+     *
+     */
+    #[@test]
+    public function accessMembers() {
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      $this->assertInstanceOf(
+        'webservices.soap.transport.SOAPHTTPTransport',
+        $client->transport
+      );
+
+      $this->assertEquals(1, sizeof(xp::registry('errors')));
+      xp::gc();
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function accessNonexistingMembersYieldsNull() {
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      $this->assertNull($client->foobar);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function settingMembersIsIgnored() {
+      $client= new XPSoapClient('http://xp-framework.net/', 'urn://test');
+      try {
+        $client->action= 'Hello World';
+        $this->fail('Expected exception not caught.');
+      } catch (IllegalAccessException $e) {
+      }
+
+      $this->assertEquals('urn://test', $client->action);
+      $this->assertEquals(1, sizeof(xp::registry('errors')));
+      xp::gc();
     }
   }
 ?>
