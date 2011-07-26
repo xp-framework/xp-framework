@@ -254,10 +254,8 @@
           }
           
           return new SoapParam($parameter->value, $parameter->name);
-          
-        case ($parameter instanceof SOAPLong):
-          return new SoapVar($parameter->long, XSD_LONG);
 
+        // Support several XP types (lang.types)
         case ($parameter instanceof Long):
           return new SoapVar($parameter->value, XSD_LONG);
 
@@ -275,7 +273,14 @@
 
         case ($parameter instanceof Bytes):
           return new SoapVar(base64_encode($parameter->__toString()), XSD_BASE64BINARY);
+
+        case ($parameter instanceof SoapType):
+          return $parameter->asSoapType();
           
+        // Support SOAP types (webservices.soap.types)
+        case ($parameter instanceof SOAPLong):
+          return new SoapVar($parameter->long, XSD_LONG);
+
         case ($parameter instanceof SOAPBase64Binary):
           return new SoapVar($parameter->encoded, XSD_BASE64BINARY);
           
