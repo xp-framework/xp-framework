@@ -37,5 +37,12 @@
      * @return  string
      */    
     public function getItemName();
+
+    /**
+     * Retrieve type as native SOAP type
+     *
+     * @return  php.SoapVar
+     */
+    public function asSoapType();
   }
 ?>

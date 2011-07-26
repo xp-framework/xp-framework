@@ -278,23 +278,8 @@
           return $parameter->asSoapType();
           
         // Support SOAP types (webservices.soap.types)
-        case ($parameter instanceof SOAPLong):
-          return new SoapVar($parameter->long, XSD_LONG);
-
-        case ($parameter instanceof SOAPBase64Binary):
-          return new SoapVar($parameter->encoded, XSD_BASE64BINARY);
-          
-        case ($parameter instanceof SOAPHexBinary):
-          return new SoapVar($parameter->encoded, XSD_HEXBINARY);
-          
-        case ($parameter instanceof SOAPDateTime):
-          return new SoapVar($parameter->value, XSD_DATETIME);
-
         case ($parameter instanceof Date):
           return new SoapVar($parameter, XSD_DATETIME);
-          
-        case ($parameter instanceof SOAPHashMap):
-          return $parameter->value;
           
         // case ($parameter instanceof SOAPVector):
         //   return new SoapVar($parameter->value, XSD_DATETIME);
