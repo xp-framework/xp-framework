@@ -10,7 +10,7 @@
    * Represents a double value.
    *
    */
-  class SOAPDouble extends SoapType {
+  class SOAPDouble extends Object implements SoapType {
     public
       $double;
       
