@@ -12,7 +12,7 @@
    * into a long (as PHP does automagically).
    *
    */
-  class SOAPLong extends SoapType {
+  class SOAPLong extends Object implements SoapType {
     public
       $long;
       
@@ -41,6 +41,15 @@
      */
     public function getType() {
       return 'xsd:long';
+    }
+
+    /**
+     * Retrieve item name
+     *
+     * @return  mixed
+     */
+    public function getItemName() {
+      return FALSE;
     }
   }
 ?>

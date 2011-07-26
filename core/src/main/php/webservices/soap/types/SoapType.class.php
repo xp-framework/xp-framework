@@ -14,25 +14,21 @@
    * @see      xp://webservices.soap.xp.XPSoapNode
    * @purpose  Base class for all SOAP types
    */
-  class SoapType extends Object {
+  interface SoapType {
   
     /**
      * Return a string representation for use in SOAP
      *
      * @return  string 
      */
-    public function toString() { 
-      return FALSE; 
-    }
+    public function toString();
     
     /**
      * Returns this type's name
      *
      * @return  string
      */
-    public function getType() { 
-      return FALSE; 
-    }
+    public function getType();
 
     /**
      * Returns this type's name or FALSE if there's no 
@@ -40,8 +36,6 @@
      *
      * @return  string
      */    
-    public function getItemName() { 
-      return FALSE; 
-    }
+    public function getItemName();
   }
 ?>

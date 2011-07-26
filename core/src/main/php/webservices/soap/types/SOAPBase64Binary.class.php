@@ -12,7 +12,7 @@
    * @see      xp://webservices.soap.xp.XPSoapNode
    * @purpose  Transport base64 encoded data
    */
-  class SOAPBase64Binary extends SoapType {
+  class SOAPBase64Binary extends Object implements SoapType {
     public
       $string,
       $encoded;
@@ -59,6 +59,15 @@
      */
     public function equals($cmp) {
       return is('webservices.soap.types.SOAPBase64Binary', $cmp) && (0 === strcmp($this->string, $cmp->string));
-    }    
+    }
+
+    /**
+     * Retrieve item name
+     *
+     * @return  mixed
+     */
+    public function getItemName() {
+      return FALSE;
+    }
   }
 ?>
