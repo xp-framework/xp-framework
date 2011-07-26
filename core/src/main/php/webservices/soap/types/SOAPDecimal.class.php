@@ -41,5 +41,14 @@
     public function getType() {
       return 'xsd:decimal';
     }
+
+    /**
+     * Retrieve type as native SOAP type
+     *
+     * @return  php.SoapVar
+     */
+    public function asSoapType() {
+      return new SoapVar($this->decimal, XSD_DOUBLE);
+    }
   }
 ?>

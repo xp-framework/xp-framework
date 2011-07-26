@@ -69,5 +69,14 @@
     public function getItemName() {
       return FALSE;
     }
+
+    /**
+     * Retrieve type as native SOAP type
+     *
+     * @return  php.SoapVar
+     */
+    public function asSoapType() {
+      return new SoapVar($this->encoded, XSD_HEXBINARY);
+    }
   }
 ?>
