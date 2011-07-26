@@ -226,69 +226,17 @@
      * @return  var[]
      */
     protected function checkParams($args) {
+      $type= new NativeSoapTypes();
+
       foreach ($args as $i => $a) {
-        if ($a instanceof Parameter || $a instanceof SoapType) {
-          $args[$i]= $this->wrapParameter($a);
+        if ($type->supports($a)) {
+          $args[$i]= $type->box($a);
         }
       }
       
       return $args;
     }
 
-    /**
-     * Wrap single argument to ext/soap value object
-     *
-     * @param   var parameter
-     * @return  var
-     * @throws  lang.IllegalArgumentException if parameter type cannot be converted
-     */
-    protected function wrapParameter($parameter) {
-
-      // Instanceof testing frenzy begins here.
-      // This is necessary to convert XP Parameter and SOAP*-Types to 
-      // Soap-ext SoapParam and SoapVar
-      switch (TRUE) {
-        case ($parameter instanceof Parameter):
-          if ($parameter->value instanceof SoapType) {
-            return new SoapParam($this->wrapParameter($parameter->value), $parameter->name);
-          }
-          
-          return new SoapParam($parameter->value, $parameter->name);
-
-        // Support several XP types (lang.types)
-        case ($parameter instanceof Long):
-          return new SoapVar($parameter->value, XSD_LONG);
-
-        case ($parameter instanceof Integer):
-          return new SoapVar($parameter->intValue(), XSD_INTEGER);
-
-        case ($parameter instanceof Double):
-          return new SoapVar($parameter->doubleValue(), XSD_DOUBLE);
-
-        case ($parameter instanceof Short):
-          return new SoapVar($parameter->value, XSD_SHORT);
-
-        case ($parameter instanceof String):
-          return new SoapVar($parameter->toString(), XSD_STRING);
-
-        case ($parameter instanceof Bytes):
-          return new SoapVar(base64_encode($parameter->__toString()), XSD_BASE64BINARY);
-
-        case ($parameter instanceof SoapType):
-          return $parameter->asSoapType();
-          
-        // Support SOAP types (webservices.soap.types)
-        case ($parameter instanceof Date):
-          return new SoapVar($parameter, XSD_DATETIME);
-          
-        // case ($parameter instanceof SOAPVector):
-        //   return new SoapVar($parameter->value, XSD_DATETIME);
-        
-        default:
-          throw new IllegalArgumentException('Cannot serialize '.$parameter->getClassName());
-      }
-    }
-    
     /**
      * Invoke method call
      *
