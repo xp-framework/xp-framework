@@ -9,6 +9,7 @@
     'xml.QName',
     'util.log.Traceable',
     'webservices.soap.ISoapClient',
+    'webservices.soap.native.NativeSoapType',
     'webservices.soap.CommonSoapFault',
     'webservices.soap.SOAPFaultException'
   );
@@ -226,7 +227,7 @@
      * @return  var[]
      */
     protected function checkParams($args) {
-      $type= new NativeSoapTypes();
+      $type= new NativeSoapType();
 
       foreach ($args as $i => $a) {
         if ($type->supports($a)) {
@@ -252,7 +253,8 @@
       $options= array(
         'encoding'    => $this->getEncoding(),
         'exceptions'  => 0,
-        'trace'       => ($this->cat != NULL)
+        'trace'       => ($this->cat != NULL),
+        'user_agent'  => 'XP-Framework/'.get_class($this)
       );
 
       if (NULL !== $this->ctimeout) {
@@ -283,7 +285,7 @@
       } else {
 
         // Do not overwrite location if already set from outside
-        $options['location'] || $options['location']= $this->endpoint->getURL();
+        isset($options['location']) || $options['location']= $this->endpoint->getURL();
 
         // Assert we have a uri
         if (!$this->uri) throw new IllegalArgumentException (
