@@ -40,5 +40,19 @@
     public function getType() {
       return 'xsd:double';
     }
+
+    /**
+     *
+     */
+    public function getItemName() {
+      return FALSE;
+    }
+
+    /**
+     *
+     */
+    public function asSoapType() {
+      return new SoapVar($this->double, XSD_DOUBLE);
+    }
   }
 ?>

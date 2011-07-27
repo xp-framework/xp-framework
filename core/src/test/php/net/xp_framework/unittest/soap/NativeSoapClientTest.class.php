@@ -7,7 +7,10 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.soap.native.NativeSoapClient'
+    'lang.types.Long',
+    'webservices.soap.native.NativeSoapClient',
+    'webservices.soap.types.SOAPLong',
+    'webservices.soap.types.SOAPDouble'
   );
 
   /**
@@ -24,10 +27,15 @@
      */
     #[@test]
     public function test() {
-      $client= new NativeSoapClient('http://localhost:12345', 'uri');
+      $client= new NativeSoapClient('http://127.0.0.1:12345/', 'foo');
       $client->setTimeout(2);
       $client->setConnectTimeout(2);
-      $client->invoke('foo', 'bar');
+      $client->invoke('testMethod',
+        new SOAPLong('99999999'),
+        new Long('88888888'),
+        new SOAPDouble(15.5),
+        new Double(12.5)
+      );
     }
 
   }
