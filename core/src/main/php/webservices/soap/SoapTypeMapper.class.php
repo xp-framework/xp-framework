@@ -51,15 +51,15 @@
       throw new IllegalArgumentException('Type '.xp::typeOf($object).' is not supported.');
     }
 
-    abstract function boxParameter($object);
-    abstract function boxSoapType($object);
-    abstract function boxString($object);
-    abstract function boxLong($object);
-    abstract function boxInteger($object);
-    abstract function boxShort($object);
-    abstract function boxDouble($object);
-    abstract function boxBoolean($object);
-    abstract function boxBytes($object);
-    abstract function boxCharacter($object);
+    protected abstract function boxParameter($object);
+    protected abstract function boxSoapType($object);
+    protected abstract function boxString($object);
+    protected abstract function boxLong($object);
+    protected abstract function boxInteger($object);
+    protected abstract function boxShort($object);
+    protected abstract function boxDouble($object);
+    protected abstract function boxBoolean($object);
+    protected abstract function boxBytes($object);
+    protected abstract function boxCharacter($object);
   }
 ?>
