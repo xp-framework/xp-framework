@@ -4,14 +4,7 @@
  * $Id$
  */
 
-  uses(
-    'lang.Type',
-    'lang.types.String',
-    'lang.types.Integer',
-    'lang.types.Double',
-    'lang.types.Boolean',
-    'lang.types.ArrayList'
-  );
+  uses('webservices.soap.SoapTypeMapper');
 
   /**
    * Represents supported SoapTypes
@@ -20,38 +13,7 @@
    * @see      TODO
    * @purpose  Type implementation
    */
-  class NativeSoapType extends Object {
-    protected
-      $handler= array(
-        'Parameter' => TRUE,
-        'SoapType'  => TRUE,
-        'String'    => TRUE,
-        'Long'      => TRUE,
-        'Integer'   => TRUE,
-        'Short'     => TRUE,
-        'Double'    => TRUE,
-        'Boolean'   => TRUE,
-        'Bytes'     => TRUE,
-        'Character' => TRUE
-      );
-
-    public function supports($object) {
-      foreach ($this->handler as $handler => $t) {
-        if ($object instanceof $handler) return TRUE;
-      }
-
-      return FALSE;
-    }
-
-    public function box($object) {
-      foreach ($this->handler as $handler => $t) {
-        if (!$object instanceof $handler) continue;
-
-        return call_user_func(array($this, 'box'.$handler), $object);
-      }
-
-      throw new IllegalArgumentException('Type '.xp::typeOf($object).' is not supported.');
-    }
+  class NativeSoapType extends SoapTypeMapper {
 
     protected function boxSoapType($object) {
       return $object->asSoapType();
