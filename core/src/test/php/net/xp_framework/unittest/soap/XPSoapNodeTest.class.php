@@ -8,7 +8,8 @@
     'unittest.TestCase',
     'webservices.soap.xp.XPSoapNode',
     'webservices.soap.xp.XPSoapMapping',
-    'webservices.soap.Parameter'
+    'webservices.soap.Parameter',
+    'webservices.soap.types.SOAPHashMap'
   );
 
   /**
@@ -107,5 +108,63 @@
         $this->node(new Boolean(TRUE))
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleDouble() {
+      $this->assertEquals(
+        new XPSoapNode('item', 5.0, array('xsi:type' => 'xsd:float')),
+        $this->node(5.0)
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function doubleType() {
+      $this->assertEquals(
+        new XPSoapNode('item', 5.0, array('xsi:type' => 'xsd:float')),
+        $this->node(new Double(5.0))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleArray() {
+      $this->assertEquals(
+        create(new XPSoapNode('item', NULL, array('xsi:type' => 'xsd:struct')))
+          ->withChild(new XPSoapNode('key', 'value', array('xsi:type' => 'xsd:string'))),
+        $this->node(array('key' => 'value'))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function soapHashmap() {
+      $node= new XPSoapNode('item', '', array('xmlns:hash' => 'http://xml.apache.org/xml-soap', 'xsi:type' => 'hash:Map'));
+      $node->addChild(new XPSoapNode('item'))
+        ->withChild(new XPSoapNode('key', 'key', array('xsi:type' => 'xsd:string')))
+        ->withChild(new XPSoapNode('value', 'value', array('xsi:type' => 'xsd:string')));
+
+      $this->assertEquals(
+        $node,
+        $this->node(new SOAPHashMap(array('key' => 'value')))
+      );
+    }
+
+
+
+
   }
 ?>
