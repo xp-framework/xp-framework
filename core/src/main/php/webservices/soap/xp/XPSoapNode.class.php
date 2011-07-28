@@ -124,6 +124,10 @@
         $value= $value->intValue();
       }
 
+      if ($value instanceof String) {
+        $value= (string)$value;
+      }
+
       if (is_scalar($value)) {          // Scalar
         $child->attribute['xsi:type']= $child->_typeName($value);
         $child->setContent($child->_contentFormat($value));
@@ -150,12 +154,6 @@
       if ($value instanceof Parameter) {  // Named parameter
         $child->name= $value->name;
         $this->_marshall($child, $value->value, $mapping);
-        return;
-      }
-
-      if ($value instanceof String) {
-        $child->attribute['xsi:type']= 'xsd:string';
-        $child->setContent($value);
         return;
       }
 
