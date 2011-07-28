@@ -43,7 +43,7 @@
     #[@test]
     public function stringType() {
       $this->assertEquals(
-        new XPSoapNode('item', new String('my string'), array('xsi:type' => 'xsd:string')),
+        new XPSoapNode('item', 'my string', array('xsi:type' => 'xsd:string')),
         $this->node(new String('my string'))
       );
     }
