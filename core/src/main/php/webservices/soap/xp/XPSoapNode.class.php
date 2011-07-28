@@ -133,6 +133,10 @@
         $value= $value->value;
       }
 
+      if ($value instanceof Double) {
+        $value= $value->doubleValue();
+      }
+
       if (is_scalar($value)) {          // Scalar
         $child->attribute['xsi:type']= $child->_typeName($value);
         $child->setContent($child->_contentFormat($value));
