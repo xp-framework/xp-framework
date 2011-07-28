@@ -128,6 +128,11 @@
         $value= (string)$value;
       }
 
+      if ($value instanceof Boolean) {
+        // Nice one:
+        $value= $value->value;
+      }
+
       if (is_scalar($value)) {          // Scalar
         $child->attribute['xsi:type']= $child->_typeName($value);
         $child->setContent($child->_contentFormat($value));

@@ -83,5 +83,29 @@
         $this->node(new Parameter('name', 'content'))
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleBoolean() {
+      $this->assertEquals(
+        new XPSoapNode('item', 'true', array('xsi:type' => 'xsd:boolean')),
+        $this->node(TRUE)
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function booleanType() {
+      $this->assertEquals(
+        new XPSoapNode('item', 'true', array('xsi:type' => 'xsd:boolean')),
+        $this->node(new Boolean(TRUE))
+      );
+    }
   }
 ?>
