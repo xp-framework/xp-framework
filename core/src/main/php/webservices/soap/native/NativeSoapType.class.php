@@ -54,5 +54,13 @@
     protected function boxBytes($object) {
       return new SoapVar(base64_encode($object->__toString()), XSD_BASE64BINARY);
     }
+
+    protected function boxBoolean($object) {
+      return new SoapVar($object->value, XSD_BOOLEAN);
+    }
+
+    protected function boxCharacter($object) {
+      return new SoapVar($object->value, XSD_STRING);
+    }
   }
 ?>
