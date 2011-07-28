@@ -119,7 +119,11 @@
      */
     protected function _marshall($child, $value, $mapping) {
       static $ns= 0;
-      
+
+      if ($value instanceof Integer) {
+        $value= $value->intValue();
+      }
+
       if (is_scalar($value)) {          // Scalar
         $child->attribute['xsi:type']= $child->_typeName($value);
         $child->setContent($child->_contentFormat($value));
@@ -154,7 +158,7 @@
         $child->setContent($value);
         return;
       }
-      
+
       if ($value instanceof Date) {       // Date
         $value= new SOAPDateTime($value->getHandle());
         // Fallthrough intended
