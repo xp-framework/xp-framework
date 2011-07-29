@@ -40,7 +40,7 @@
      */
     #[@test]
     public function paramNotSet() {
-      $this->assertNull(create(new RestPath('/'))->getParam('id'));
+      $this->assertNull(create(new RestPath('/path/{id}'))->getParam('id'));
     }
     
     /**
