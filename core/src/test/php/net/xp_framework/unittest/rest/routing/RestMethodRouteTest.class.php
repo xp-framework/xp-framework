@@ -63,7 +63,7 @@
      * 
      * @return webservices.rest.routing.RestMethodRoute
      */
-    protected function routeFor($path= '/', $target= NULL) {
+    protected function routeFor($path= '/path/{value}', $target= NULL) {
       return new RestMethodRoute(new RestPath($path), $target === NULL ? $this->targetMethod : $target);
     }
     
@@ -82,7 +82,7 @@
      */
     #[@test]
     public function getPath() {
-      $route= new RestMethodRoute($path= new RestPath('/'), $this->targetMethod);
+      $route= new RestMethodRoute($path= new RestPath('/path/{value}'), $this->targetMethod);
       
       $this->assertEquals($path, $route->getPath());
     }
@@ -123,6 +123,16 @@
       $route->route($this->request, $this->response);
       
       $this->assertEquals(array(123, 6100), $this->target->getInvokedArgs());
+    }
+    
+    /**
+     * Test routing to method with missing arguments
+     * 
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function routeToMethodWithMissingArgs() {
+      $route= $this->routeFor('/path/{value}', $this->targetMethodMultiple);
+      $route->route($this->request, $this->response);
     }
   }
 ?>

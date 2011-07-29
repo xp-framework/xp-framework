@@ -94,6 +94,10 @@
      * @param string name The parameter name
      */
     public function getParam($name) {
+      if (!in_array($name, $this->names)) throw new IllegalArgumentException(
+        'Parameter "'.$name.'" does not exist in path: '.$this->path
+      );
+      
       return isset($this->params[$name]) ? $this->params[$name] : NULL;
     }
   }
