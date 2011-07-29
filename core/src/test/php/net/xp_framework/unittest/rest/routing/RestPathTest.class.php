@@ -35,34 +35,34 @@
     }
     
     /**
-     * Test setPathParam()/getPathParam() when no parameter is set
+     * Test setParam()/getParam() when no parameter is set
      * 
      */
     #[@test]
-    public function pathParamNotSet() {
-      $this->assertNull(create(new RestPath('/'))->getPathParam('id'));
+    public function paramNotSet() {
+      $this->assertNull(create(new RestPath('/'))->getParam('id'));
     }
     
     /**
-     * Test setPathParam()/getPathParam() with setting non-existant
+     * Test setParam()/getParam() with setting non-existant
      * parameter
      * 
      */
     #[@test, @expect('lang.IllegalArgumentException')]
-    public function pathParamSetNonexitant() {
-      create(new RestPath('/'))->setPathParam('unknown', 123);
+    public function paramSetNonexitant() {
+      create(new RestPath('/'))->setParam('unknown', 123);
     }
     
     /**
-     * Test setPathParam()/getPathParam() with parameter set
+     * Test setParam()/getParam() with parameter set
      * 
      */
     #[@test]
-    public function pathParamWithParameter() {
+    public function paramWithParameter() {
       $path= new RestPath('/{id}');
-      $path->setPathParam('id', 123);
+      $path->setParam('id', 123);
       
-      $this->assertEquals(123, $path->getPathParam('id'));
+      $this->assertEquals(123, $path->getParam('id'));
     }
     
     /**
@@ -74,7 +74,7 @@
       $path= new RestPath('/path/to/item/{id}');
       
       $this->assertTrue($path->match('/path/to/item/1234'));
-      $this->assertEquals('1234', $path->getPathParam('id'));
+      $this->assertEquals('1234', $path->getParam('id'));
     }
     
     /**
@@ -86,8 +86,8 @@
       $path= new RestPath('/path/to/item/{id}/entity/{entity}');
       
       $this->assertTrue($path->match('/path/to/item/1234/entity/1337'));
-      $this->assertEquals('1234', $path->getPathParam('id'));
-      $this->assertEquals('1337', $path->getPathParam('entity'));
+      $this->assertEquals('1234', $path->getParam('id'));
+      $this->assertEquals('1337', $path->getParam('entity'));
     }
   }
 ?>

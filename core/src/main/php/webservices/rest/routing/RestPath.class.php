@@ -21,8 +21,7 @@
       $path= '',
       $names= array(),
       $pattern= '',
-      $params= array(),
-      $query= array();
+      $params= array();
     
     /**
      * Constructor
@@ -57,7 +56,7 @@
         array_shift($matches);
         
         foreach ($this->names as $i => $name) {
-          $this->setPathParam($name, $matches[$i]);
+          $this->setParam($name, $matches[$i]);
         }
         
         return TRUE;
@@ -76,12 +75,12 @@
     }
     
     /**
-     * Set path parameter
+     * Set parameter
      * 
      * @param name The parameter name
      * @param string value The parameter value
      */
-    public function setPathParam($name, $value) {
+    public function setParam($name, $value) {
       if (!in_array($name, $this->names)) throw new IllegalArgumentException(
         'Parameter '.$name.' does not exist in path: '.$this->path
       );
@@ -94,17 +93,8 @@
      * 
      * @param string name The parameter name
      */
-    public function getPathParam($name) {
+    public function getParam($name) {
       return isset($this->params[$name]) ? $this->params[$name] : NULL;
-    }
-    
-    /**
-     * Return query parameter
-     * 
-     * @param string name The parameter name
-     */
-    public function getQueryParam($name) {
-      return isset($this->query[$name]) ? $this->query[$name] : NULL;
     }
   }
 ?>

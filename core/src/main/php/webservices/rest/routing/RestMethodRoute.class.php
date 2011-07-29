@@ -36,7 +36,7 @@
     public function route($request, $response) {
       $args= array();
       foreach ($this->method->getParameters() as $arg) {
-        $args[]= $this->path->getPathParam($arg->getName());
+        $args[]= $this->path->getParam($arg->getName());
       }
       
       return $this->method->invoke(
