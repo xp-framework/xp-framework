@@ -75,6 +75,15 @@
     }
     
     /**
+     * Return parameter names
+     * 
+     */
+    #[@test]
+    public function getParamNames() {
+      return $this->names;
+    }
+    
+    /**
      * Set parameter
      * 
      * @param name The parameter name

@@ -35,6 +35,15 @@
     }
     
     /**
+     * Test getParamNames()
+     * 
+     */
+    #[@test]
+    public function getParamNames() {
+      $this->assertEquals(array('id'), create(new RestPath('/path/to/{id}'))->getParamNames());
+    }
+    
+    /**
      * Test setParam()/getParam() when no parameter is set
      * 
      */
