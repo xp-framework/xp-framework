@@ -9,7 +9,8 @@
     'webservices.soap.xp.XPSoapNode',
     'webservices.soap.xp.XPSoapMapping',
     'webservices.soap.Parameter',
-    'webservices.soap.types.SOAPHashMap'
+    'webservices.soap.types.SOAPHashMap',
+    'util.Binford'
   );
 
   /**
@@ -202,6 +203,18 @@
       );
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleObject() {
+      $this->assertEquals(
+        create(new XPSoapNode('item', NULL, array('xmlns:xp' => 'http://xp-framework.net/xmlns/xp', 'xsi:type' => 'xp:util.Binford')))
+          ->withChild(new XPSoapNode('poweredBy', 6100, array('xsi:type' => 'xsd:int'))),
+        $this->node(new Binford(6100))
+      );
+    }
 
   }
 ?>
