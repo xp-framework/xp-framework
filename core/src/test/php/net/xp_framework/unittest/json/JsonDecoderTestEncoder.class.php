@@ -332,66 +332,6 @@
         ))
         );
     }
-    
-    /**
-     * Test encoding of object
-     *
-     */
-    #[@test]
-    public function encodeObject() {
-      $o= ClassLoader::defineClass('JsonTestValueClass', 'lang.Object', array(), '{
-        public $prop  = NULL;
-      }')->newInstance();
-
-      $o->__id= '<bogusid>';
-      $o->prop= 'prop';
-
-      $this->assertEquals(
-        '{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "JsonTestValueClass" , "prop" : "prop" , "__id" : "<bogusid>" }',
-        $this->decoder->encode($o)
-      );
-    }
-    
-    /**
-     * Test encoding of objects in array
-     *
-     */
-    #[@test]
-    public function encodeMoreObjects() {
-      $o= ClassLoader::defineClass('JsonTestValueClass', 'lang.Object', array(), '{
-        public $prop  = NULL;
-      }');
-
-      $oa=$o->newInstance();
-      $ob=$o->newInstance();
-      $oc=$o->newInstance();
-
-      $oa->__id= '<bogusid>';
-      $oa->prop= 'prop-a';
-      $ob->__id= '<bogusid>';
-      $ob->prop= 'prop-b';
-      $oc->__id= '<bogusid>';
-      $oc->prop= 'prop-c';
-
-      $this->assertEquals(
-        '{ "oa" : { "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "JsonTestValueClass" , "prop" : "prop-a" , "__id" : "<bogusid>" } , '.
-        '"ob" : { "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "JsonTestValueClass" , "prop" : "prop-b" , "__id" : "<bogusid>" } , '.
-        '"oc" : { "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "JsonTestValueClass" , "prop" : "prop-c" , "__id" : "<bogusid>" } }',
-        $this->decoder->encode(array("oa" => $oa, "ob" => $ob, "oc" => $oc))
-      );
-    } 
-    
-    /**
-     * Test date encoding
-     *
-     */
-    #[@test]
-    public function encodeDate() {
-      $this->assertEquals(
-        '{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "util.Date" , "constructor" : "__construct()" , "value" : "2009-05-18 01:02:03+0200" , "__id" : null }',
-        $this->decoder->encode(new Date('2009-05-18 01:02:03'))
-      );
-    }
 
    /**
     * Test exception
@@ -456,6 +396,27 @@
         $this->decoder->encode(new String('foobar'))
       );
     }
-    
+
+    /**
+     * Test encode date object
+     *
+     */
+    #[@test]
+    public function encodeDateObject() {
+      $je= NULL;
+
+      try {
+        $this->decoder->encode(new Date('2009-05-18 01:02:03'));
+      } catch (JsonException $je) {
+        // Do nothing here
+      }
+
+      $this->assertInstanceOf(
+        'webservices.json.JsonException',
+        $je
+      );
+    }
+
+
   }
 ?>

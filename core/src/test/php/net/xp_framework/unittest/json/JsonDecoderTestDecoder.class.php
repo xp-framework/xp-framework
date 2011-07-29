@@ -554,78 +554,6 @@
       );
     }
 
-    /**
-     * Test decoding of object
-     *
-     */
-    #[@test]
-    public function decodeObject() {
-      $o= newinstance('lang.Object', array(), '{
-        public $prop= 1;
-        
-        public function equals($cmp) {
-          return $cmp instanceof self && $cmp->prop == $this->prop;
-        }
-      }');
-
-      $this->assertEquals(
-        $o,
-        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.utf8_encode($o->getClassName()).'" , "prop" : 1 }')
-      );
-    }
-
-    /**
-     * Test decoding of array in objects
-     *
-     */
-    #[@test]
-    public function decodeMoreObjects() {
-      $oa= newinstance('lang.Object', array(), '{
-        public $prop= 1;
-        
-        public function equals($cmp) {
-          return $cmp instanceof self && $cmp->prop == $this->prop;
-        }
-      }');
-
-      $ob= newinstance('lang.Object', array(), '{
-        public $prop= 1;
-        
-        public function equals($cmp) {
-          return $cmp instanceof self && $cmp->prop == $this->prop;
-        }
-      }');
-
-      $oc= newinstance('lang.Object', array(), '{
-        public $prop= 1;
-        
-        public function equals($cmp) {
-          return $cmp instanceof self && $cmp->prop == $this->prop;
-        }
-      }');
-
-      $this->assertEquals(
-        array("oa" => $oa, "ob" => $ob, "oc" => $oc),
-        $this->decoder->decode(
-          '{ "oa" : { "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.utf8_encode($oa->getClassName()).'" , "prop" : 1 }, '.
-          '"ob" : { "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.utf8_encode($ob->getClassName()).'" , "prop" : 1 }, '.
-          '"oc" : { "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "'.utf8_encode($oc->getClassName()).'" , "prop" : 1 } }'
-        )
-      );
-    }
-    
-    /**
-     * Test date decoding
-     *
-     */
-    #[@test]
-    public function decodeDate() {
-      $this->assertEquals(
-        new Date('2009-05-18 01:02:03'),
-        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "util.Date" , "constructor" : "__construct()" , "value" : "2009-05-18 01:02:03+0200" , "__id" : null }')
-      );
-    }
-
    /**
     * Test exception
     *
@@ -969,24 +897,6 @@
       );
     }
 
-   /**
-    * Test exception
-    *
-    */
-   #[@test]
-    public function decodeInvalidXPObject() {
-      try {
-        $this->decoder->decode('{ "__jsonclass__" : [ "__construct()" ] , "__xpclass__" : "Foo" , "constructor" : "__construct()" , "value" : "2009-05-18 01:02:03+0200" , "__id" : null }');
-      } catch (JsonException $je) {
-        // Do nothing here
-      }
-
-      $this->assertInstanceOf(
-        'webservices.json.JsonException',
-        $je
-      );
-    }
-
     /**
      * Decoding non-json data should result in an exception
      *
@@ -1150,6 +1060,5 @@
         $je
       );
     }
-
   }
 ?>

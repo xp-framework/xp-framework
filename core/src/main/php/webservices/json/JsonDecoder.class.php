@@ -140,37 +140,6 @@
           return TRUE;
         }
         
-        case 'object': {
-          // Convert objects to arrays and store the classname with them as
-          // suggested by JSON-RPC
-          if ($data instanceof String) {
-            $stream->write('"'.$data->toString().'"');
-            break;
-          } else if ($data instanceof Generic) {
-            if (!method_exists($data, '__sleep')) {
-              $vars= get_object_vars($data);
-            } else {
-              $vars= array(
-                'constructor' => '__construct()'
-              );
-              foreach ($data->__sleep() as $var) $vars[$var]= $data->{$var};
-            }
-            
-            // __xpclass__ is an addition to the spec, I added to be able to pass the FQCN
-            $data= array_merge(
-              array(
-                '__jsonclass__' => array('__construct()'),
-                '__xpclass__'   => utf8_encode($data->getClassName())
-              ),
-              $vars
-            );
-          } else {
-            $data= (array)$data;
-          }
-          
-          // Break missing intentially
-        }
-        
         case 'array': {
           if ($this->_isVector($data)) {
             // Bail out early on bordercase
@@ -204,6 +173,15 @@
             $stream->write(' }');
             return TRUE;
           }
+        }
+
+        case 'object': {
+          // Converts a string object into an normal json string
+          if ($data instanceof String) {
+            $stream->write('"'.$data->toString().'"');
+            break;
+          }
+          // Break missing intentially
         }
         
         default: {

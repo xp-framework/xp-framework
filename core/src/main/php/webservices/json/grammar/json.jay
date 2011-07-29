@@ -25,26 +25,6 @@ expression:
 ;
 
 object:
-    semiobject  {
-                  // Introspect array to check if this is actually an object
-                  if (!empty($1['__jsonclass__']) && !empty($1['__xpclass__'])) {
-                    $$= XPClass::forName($1['__xpclass__'])->newInstance();
-                    
-                    foreach ($1 as $key => $value) {
-                      // TBD: A member like "constructor" should probably not be serialized
-                      // at all. It should be ignored at this point...
-                      if (in_array($key, array('__jsonclass__', '__xpclass__', 'constructor'))) continue;
-                      $$->{$key}= $value;
-                    }
-                    
-                    if (method_exists($$, '__wakeup')) $$->__wakeup();
-                  } else {
-                    $$= $1;
-                  }
-                }
-;
-
-semiobject:
       '{' objectcontent '}' { $$= $2; }
     | '{' '}'               { $$= array(); }
 ;
