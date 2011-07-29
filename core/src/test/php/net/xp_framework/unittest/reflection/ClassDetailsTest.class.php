@@ -239,10 +239,10 @@
         /**
          * Abstract protected method
          *
-         * @param   lang.Collection<lang.Object> param1
+         * @param   util.collections.Vector<lang.Object> param1
          */
       ');
-      $this->assertEquals('lang.Collection<lang.Object>', $details[DETAIL_ARGUMENTS][0]);
+      $this->assertEquals('util.collections.Vector<lang.Object>', $details[DETAIL_ARGUMENTS][0]);
     }
     
     /**
