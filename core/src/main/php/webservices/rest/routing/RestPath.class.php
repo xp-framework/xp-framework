@@ -17,10 +17,12 @@
    * @purpose Path
    */
   class RestPath extends Object {
-    protected $names= array();
-    protected $pattern= '';
-    protected $params= array();
-    protected $query= array();
+    protected
+      $path= '',
+      $names= array(),
+      $pattern= '',
+      $params= array(),
+      $query= array();
     
     /**
      * Constructor
@@ -55,13 +57,36 @@
         array_shift($matches);
         
         foreach ($this->names as $i => $name) {
-          $this->params[$name]= $matches[$i];
+          $this->setPathParam($name, $matches[$i]);
         }
         
         return TRUE;
       }
       
       return FALSE;
+    }
+    
+    /**
+     * Return path
+     * 
+     * @return string
+     */
+    public function getPath() {
+      return $this->path;
+    }
+    
+    /**
+     * Set path parameter
+     * 
+     * @param name The parameter name
+     * @param string value The parameter value
+     */
+    public function setPathParam($name, $value) {
+      if (!in_array($name, $this->names)) throw new IllegalArgumentException(
+        'Parameter '.$name.' does not exist in path: '.$this->path
+      );
+      
+      $this->params[$name]= $value;
     }
     
     /**

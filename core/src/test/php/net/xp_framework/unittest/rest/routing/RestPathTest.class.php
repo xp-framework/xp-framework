@@ -26,6 +26,46 @@
     }
     
     /**
+     * Test getPath()
+     * 
+     */
+    #[@test]
+    public function getPath() {
+      $this->assertEquals('/path/to/{id}/details', create(new RestPath('/path/to/{id}/details'))->getPath());
+    }
+    
+    /**
+     * Test setPathParam()/getPathParam() when no parameter is set
+     * 
+     */
+    #[@test]
+    public function pathParamNotSet() {
+      $this->assertNull(create(new RestPath('/'))->getPathParam('id'));
+    }
+    
+    /**
+     * Test setPathParam()/getPathParam() with setting non-existant
+     * parameter
+     * 
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function pathParamSetNonexitant() {
+      create(new RestPath('/'))->setPathParam('unknown', 123);
+    }
+    
+    /**
+     * Test setPathParam()/getPathParam() with parameter set
+     * 
+     */
+    #[@test]
+    public function pathParamWithParameter() {
+      $path= new RestPath('/{id}');
+      $path->setPathParam('id', 123);
+      
+      $this->assertEquals(123, $path->getPathParam('id'));
+    }
+    
+    /**
      * Test simple parameter
      * 
      */
