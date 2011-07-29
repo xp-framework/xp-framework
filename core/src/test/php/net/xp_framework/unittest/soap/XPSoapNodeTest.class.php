@@ -6,10 +6,13 @@
 
   uses(
     'unittest.TestCase',
+    'lang.types.Long',
     'webservices.soap.xp.XPSoapNode',
     'webservices.soap.xp.XPSoapMapping',
     'webservices.soap.Parameter',
     'webservices.soap.types.SOAPHashMap',
+    'webservices.soap.types.SOAPDateTime',
+    'webservices.soap.types.SOAPLong',
     'util.Binford'
   );
 
@@ -83,6 +86,30 @@
       $this->assertEquals(
         new XPSoapNode('item', 12345, array('xsi:type' => 'xsd:int')),
         $this->node(new Integer(12345))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function soapLong() {
+      $this->assertEquals(
+        new XPSoapNode('item', '12345', array('xsi:type' => 'xsd:long')),
+        $this->node(new SOAPLong(12345))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function longType() {
+      $this->assertEquals(
+        new XPSoapNode('item', '12345', array('xsi:type' => 'xsd:long')),
+        $this->node(new Long(12345))
       );
     }
 
@@ -216,5 +243,28 @@
       );
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleDate() {
+      $this->assertEquals(
+        new XPSoapNode('item', '1980-05-28T12:05:00+02:00', array('xsi:type' => 'xsd:dateTime')),
+        $this->node(new Date('1980-05-28 12:05:00+0200'))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function soapDate() {
+      $this->assertEquals(
+        new XPSoapNode('item', '1980-05-28T12:05:00+02:00', array('xsi:type' => 'xsd:dateTime')),
+        $this->node(new SOAPDateTime('1980-05-28 12:05:00+0200'))
+      );
+    }
   }
 ?>
