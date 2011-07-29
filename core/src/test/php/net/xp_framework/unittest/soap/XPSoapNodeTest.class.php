@@ -30,6 +30,18 @@
      *
      */
     #[@test]
+    public function simpleNull() {
+      $this->assertEquals(
+        new XPSoapNode('item', NULL, array('xsi:nil' => 'true')),
+        $this->node(NULL)
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function simpleString() {
       $this->assertEquals(
         new XPSoapNode('item', 'my string', array('xsi:type' => 'xsd:string')),
@@ -138,7 +150,7 @@
      *
      */
     #[@test]
-    public function simpleArray() {
+    public function simpleHashmap() {
       $this->assertEquals(
         create(new XPSoapNode('item', NULL, array('xsi:type' => 'xsd:struct')))
           ->withChild(new XPSoapNode('key', 'value', array('xsi:type' => 'xsd:string'))),
@@ -163,7 +175,32 @@
       );
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function simpleArray() {
+      $this->assertEquals(
+        create(new XPSoapNode('item', NULL, array('xsi:type' => 'SOAP-ENC:Array', 'SOAP-ENC:arrayType' => 'xsd:anyType[3]')))
+          ->withChild(new XPSoapNode('item', 'one', array('xsi:type' => 'xsd:string')))
+          ->withChild(new XPSoapNode('item', 'two', array('xsi:type' => 'xsd:string')))
+          ->withChild(new XPSoapNode('item', 'three', array('xsi:type' => 'xsd:string'))),
+        $this->node(array('one', 'two', 'three'))
+      );
+    }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function emptyArray() {
+      $this->assertEquals(
+        create(new XPSoapNode('item', NULL, array('xsi:type' => 'xsd:struct', 'xsi:nil' => 'true'))),
+        $this->node(array())
+      );
+    }
 
 
   }
