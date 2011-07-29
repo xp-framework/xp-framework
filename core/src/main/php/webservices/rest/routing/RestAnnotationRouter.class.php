@@ -50,11 +50,11 @@
      * 
      * @param webservices.rest.transport.HttpRequestAdapter request The request
      */
-    protected function route($request) {
-      $method= strtoupper($request->getMethod());
+    protected function route($method, $path) {
+      $method= strtoupper($method);
       
       if (isset($this->map[$method])) foreach ($this->map[$method] as $map) {
-        if ($map['path']->match($request->getPath())) return $map;
+        if ($map['path']->match($path)) return $map;
       }
       
       return NULL;
@@ -65,7 +65,7 @@
      * 
      */
     public function hasRoutesFor($method, $path) {
-      return $this->route($method) !== NULL;
+      return $this->route($method, $path) !== NULL;
     }
     
     /**
