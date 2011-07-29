@@ -9,6 +9,7 @@
   /**
    * Routing to method of class
    *
+   * @test xp://net.xp_framework.unittest.rest.routing.RestMethodRouteTest
    * @purpose Route
    */
   class RestMethodRoute extends Object implements RestRoute {
@@ -24,6 +25,15 @@
     public function __construct($path, $method) {
       $this->path= $path;
       $this->method= $method;
+    }
+    
+    /**
+     * Return path
+     * 
+     * @return webservices.rest.routing.RestPath
+     */
+    public function getPath() {
+      return $this->path;
     }
     
     /**
