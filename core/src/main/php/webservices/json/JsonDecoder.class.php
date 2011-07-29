@@ -281,7 +281,7 @@
       try{
         $data= $parser->parse(new JsonLexer($stream));
       } catch (ParseException $pe) {
-        throw new JsonException($pe);
+        throw new JsonException($pe->getMessage(), $pe);
       }
 
       return $data;
