@@ -8,6 +8,7 @@
     'util.Date', 
     'util.log.Traceable', 
     'util.collections.HashTable',
+    'util.collections.Vector',
     'net.xp_framework.unittest.reflection.AbstractTestClass'
   );
 
@@ -168,10 +169,10 @@
     /**
      * Retrieve values
      *
-     * @return  lang.Collection<lang.Object>
+     * @return  util.collections.Vector<lang.Object>
      */
     public function mapValues() {
-      $c= Collection::forClass('lang.Object');
+      $c= create('new Vector<lang.Object>');
       $c->addAll(array_values($this->map));
       return $c;
     }
@@ -180,7 +181,7 @@
      * Retrieve values filtered by a given pattern
      *
      * @param   string pattern default NULL
-     * @return  lang.Collection<lang.Object>
+     * @return  util.collections.Vector<lang.Object>
      */
     public function filterMap($pattern= NULL) {
       // TBI
