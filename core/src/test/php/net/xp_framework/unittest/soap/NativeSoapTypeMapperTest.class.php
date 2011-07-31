@@ -7,7 +7,7 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.soap.native.NativeSoapType'
+    'webservices.soap.native.NativeSoapTypeMapper'
   );
 
   /**
@@ -22,7 +22,7 @@
     
     public function __construct($name) {
       parent::__construct($name);
-      $this->fixture= new NativeSoapType();
+      $this->fixture= new NativeSoapTypeMapper();
     }
 
     public function assertEqualSoapVar($expected, $actual) {

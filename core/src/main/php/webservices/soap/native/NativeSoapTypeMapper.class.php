@@ -11,7 +11,7 @@
    *
    * @see      webservices.soap.native.NativeSoapClient
    */
-  class NativeSoapType extends SoapTypeMapper {
+  class NativeSoapTypeMapper extends SoapTypeMapper {
 
     /**
      * Box SoapType

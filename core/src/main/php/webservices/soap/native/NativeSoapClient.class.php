@@ -9,7 +9,7 @@
     'xml.QName',
     'util.log.Traceable',
     'webservices.soap.ISoapClient',
-    'webservices.soap.native.NativeSoapType',
+    'webservices.soap.native.NativeSoapTypeMapper',
     'webservices.soap.CommonSoapFault',
     'webservices.soap.SOAPFaultException'
   );
@@ -227,7 +227,7 @@
      * @return  var[]
      */
     protected function checkParams($args) {
-      $type= new NativeSoapType();
+      $type= new NativeSoapTypeMapper();
 
       foreach ($args as $i => $a) {
         if ($type->supports($a)) {
