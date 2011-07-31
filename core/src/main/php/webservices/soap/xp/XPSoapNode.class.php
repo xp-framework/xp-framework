@@ -6,7 +6,6 @@
 
   uses(
     'xml.Node',
-    'webservices.soap.xp.XPSoapTypeMapper',
     'webservices.soap.types.SOAPBase64Binary',
     'webservices.soap.types.SOAPHexBinary',
     'webservices.soap.types.SOAPDateTime',
