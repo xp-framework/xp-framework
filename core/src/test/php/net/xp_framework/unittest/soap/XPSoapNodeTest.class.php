@@ -168,7 +168,7 @@
     #[@test]
     public function doubleType() {
       $this->assertEquals(
-        new XPSoapNode('item', 5.0, array('xsi:type' => 'xsd:float')),
+        new XPSoapNode('item', '5', array('xsi:type' => 'xsd:double')),
         $this->node(new Double(5.0))
       );
     }

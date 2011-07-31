@@ -10,7 +10,8 @@
     'webservices.soap.types.SOAPBase64Binary',
     'webservices.soap.types.SOAPHexBinary',
     'webservices.soap.types.SOAPDateTime',
-    'webservices.soap.types.SOAPHashMap'
+    'webservices.soap.types.SOAPHashMap',
+    'webservices.soap.types.SOAPDouble'
   );
 
   /**
@@ -120,54 +121,30 @@
      */
     protected function _marshall($child, $value, $mapping) {
       static $ns= 0;
-      $mapper= new XPSoapTypeMapper();
-
-      if (0 && $mapper->supports($value)) {
-        $node= $mapper->box($value);
-        $child->setName($node->getName());
-        $child->setContent($node->getContent());
-        $child->attribute= $node->attribute;
-        return;
-      }
-
-      if ($value instanceof Integer) {
-        $node= $mapper->box($value);
-        $child->setName($node->getName());
-        $child->setContent($node->getContent());
-        $child->attribute= $node->attribute;
-        return;
-      }
 
       if ($value instanceof String) {
-        $node= $mapper->box($value);
-        $child->setName($node->getName());
-        $child->setContent($node->getContent());
-        $child->attribute= $node->attribute;
-        return;
-      }
-
-      if ($value instanceof Boolean) {
-        $node= $mapper->box($value);
-        $child->setName($node->getName());
-        $child->setContent($node->getContent());
-        $child->attribute= $node->attribute;
-        return;
+        $value= (string)$value;
+        // Fallthrough intended
       }
 
       if ($value instanceof Double) {
-        $node= $mapper->box($value);
-        $child->setName($node->getName());
-        $child->setContent($node->getContent());
-        $child->attribute= $node->attribute;
-        return;
+        $value= new SOAPDouble($value->floatValue());
+        // Fallthrough intended
+      }
+
+      if ($value instanceof Boolean) {
+        $value= $value->value;
+        // Fallthrough intended
       }
 
       if ($value instanceof Long) {
-        $node= $mapper->box($value);
-        $child->setName($node->getName());
-        $child->setContent($node->getContent());
-        $child->attribute= $node->attribute;
-        return;
+        $value= new SOAPLong($value->value);
+        // Fallthrough
+      }
+
+      if ($value instanceof Integer) {
+        $value= $value->intValue();
+        // Fallthrough
       }
 
       if (is_scalar($value)) {          // Scalar
@@ -208,25 +185,18 @@
         $value= new SOAPHashMap($value->_hash);
         // Fallthrough intended
       }
-      
+
       if ($value instanceof SoapType) {   // Special SoapTypes
-        $node= $mapper->box($value);
-
         if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
-        $child->setName($node->getName());
-        $child->setContent($node->getContent());
-        foreach ($node->attribute as $k => $v) {
-          $child->setAttribute($k, $v);
-        }
-
         $this->_marshall($child, $value->toString(), $mapping);
 
-        foreach ($node->attribute as $k => $v) {
-          $child->setAttribute($k, $v);
-        }
+        // Specified type
+        if (NULL !== ($t= $value->getType())) $child->attribute['xsi:type']= $t;
 
-        foreach ($node->children as $c) {
-          $child->addChild($c);
+        // A node
+        if (isset($value->item)) {
+          $child->attribute= $value->item->attribute;
+          $child->children= array_merge($child->children, $value->item->children);
         }
 
         return;
