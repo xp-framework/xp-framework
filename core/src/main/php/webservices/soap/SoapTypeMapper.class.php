@@ -7,6 +7,7 @@
   uses(
     'lang.Type',
     'lang.types.String',
+    'lang.types.Short',
     'lang.types.Integer',
     'lang.types.Double',
     'lang.types.Boolean',
@@ -150,6 +151,6 @@
      * @param   util.Date object
      * @return  mixed
      */
-    protected function boxDate($object);
+    protected abstract function boxDate($object);
   }
 ?>

@@ -94,7 +94,7 @@
      * @return  mixed
      */
     protected function boxDate($object) {
-      return new SoapVar($object, XSD_DATETIME);
+      return new SoapVar($object->toString(DATE_ISO8601), XSD_DATETIME);
     }
 
     /**
@@ -124,7 +124,7 @@
      * @return  mixed
      */
     protected function boxCharacter($object) {
-      return new SoapVar($object->value, XSD_STRING);
+      return new SoapVar((string)$object, XSD_STRING);
     }
   }
 ?>
