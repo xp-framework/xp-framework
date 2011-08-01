@@ -75,6 +75,27 @@
     }
     
     /**
+     * Test getParams()
+     * 
+     */
+    #[@test]
+    public function getParamsEmpty() {
+      $this->assertEquals(array(), create(new RestPath('/'))->getParams());
+    }
+    
+    /**
+     * Test getParam() when parameter is set
+     * 
+     */
+    #[@test]
+    public function getParamsWithParameters() {
+      $path= new RestPath('/{id}');
+      $path->match('/123');
+      
+      $this->assertEquals(array('id' => '123'), $path->getParams());
+    }
+    
+    /**
      * Test simple parameter
      * 
      */

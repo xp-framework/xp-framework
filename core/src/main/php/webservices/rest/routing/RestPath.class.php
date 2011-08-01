@@ -109,5 +109,23 @@
       
       return isset($this->params[$name]) ? $this->params[$name] : NULL;
     }
+    
+    /**
+     * Set parameters
+     * 
+     * @param mixed[] params The list of parameters to set
+     */
+    public function setParams($params) {
+      $this->params= $params;
+    }
+    
+    /**
+     * Return list of parameters
+     * 
+     * @return mixed[]
+     */
+    public function getParams() {
+      return $this->params;
+    }
   }
 ?>
