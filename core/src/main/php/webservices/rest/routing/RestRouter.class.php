@@ -14,8 +14,9 @@
      * Configure router
      * 
      * @param string setup The setup string
+     * @param string base The base URL
      */
-    public function configure($setup);
+    public function configure($setup, $base= '');
     
     /**
      * Return routes for given request and response

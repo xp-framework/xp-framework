@@ -18,15 +18,18 @@
    * @purpose Router
    */
   class RestAnnotationRouter extends Object implements RestRouter {
+    protected $base= '';
     protected $map= array();
     
     /**
      * Configure router
      * 
      * @param string setup The setup string
+     * @param string base The base URI
      */
-    public function configure($setup) {
+    public function configure($setup, $base= '') {
       $package= Package::forName($setup);
+      $this->base= rtrim($base, '/');
       
       foreach ($package->getClasses() as $handler) {
         if (!$handler->hasAnnotation('webservice')) continue;
@@ -82,7 +85,7 @@
      * @return webservices.rest.RestRoute[]
      */
     public function routesFor($request, $response) {
-      if ($route= $this->route($request->getMethod(), $request->getPath())) {
+      if ($route= $this->route($request->getMethod(), substr($request->getPath(), strlen($this->base)))) {
         $args= array();
 
         // Build list of injected arguments

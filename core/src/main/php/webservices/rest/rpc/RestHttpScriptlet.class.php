@@ -27,7 +27,7 @@
      */
     public function __construct($package, $router, $base= '') {
       $this->router= XPClass::forName($router)->newInstance();
-      $this->router->configure($package);
+      $this->router->configure($package, $base);
     }
     
     /**
