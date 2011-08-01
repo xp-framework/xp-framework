@@ -20,8 +20,7 @@
     protected
       $path= '',
       $names= array(),
-      $pattern= '',
-      $params= array();
+      $pattern= '';
     
     /**
      * Constructor
@@ -44,22 +43,22 @@
     }
     
     /**
-     * Match the given URL
+     * Match the given URL and return values matched
      * 
      * @param string path The URL path
-     * @return bool
+     * @return mixed[]
      */
     public function match($path) {
-      $this->params= array();
+      $params= array();
       
       if (preg_match('#^'.$this->pattern.'#', $path, $matches)) {
         array_shift($matches);
         
         foreach ($this->names as $i => $name) {
-          $this->setParam($name, $matches[$i]);
+          $params[$name]= $matches[$i];
         }
         
-        return TRUE;
+        return $params;
       }
       
       return FALSE;
@@ -78,54 +77,18 @@
      * Return parameter names
      * 
      */
-    #[@test]
     public function getParamNames() {
       return $this->names;
     }
     
     /**
-     * Set parameter
+     * Test if parameter exist
      * 
-     * @param name The parameter name
-     * @param string value The parameter value
+     * @param string name The name of parameter
+     * @return bool
      */
-    public function setParam($name, $value) {
-      if (!in_array($name, $this->names)) throw new IllegalArgumentException(
-        'Parameter '.$name.' does not exist in path: '.$this->path
-      );
-      
-      $this->params[$name]= $value;
-    }
-    
-    /**
-     * Return path parameter
-     * 
-     * @param string name The parameter name
-     */
-    public function getParam($name) {
-      if (!in_array($name, $this->names)) throw new IllegalArgumentException(
-        'Parameter "'.$name.'" does not exist in path: '.$this->path
-      );
-      
-      return isset($this->params[$name]) ? $this->params[$name] : NULL;
-    }
-    
-    /**
-     * Set parameters
-     * 
-     * @param mixed[] params The list of parameters to set
-     */
-    public function setParams($params) {
-      $this->params= $params;
-    }
-    
-    /**
-     * Return list of parameters
-     * 
-     * @return mixed[]
-     */
-    public function getParams() {
-      return $this->params;
+    public function hasParam($name) {
+      return in_array($name, $this->names);
     }
   }
 ?>

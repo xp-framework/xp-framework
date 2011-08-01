@@ -69,5 +69,77 @@
     public function hasRoutesForPathCaseInsensitive() {
       $this->assertTrue($this->fixture->hasRoutesFor('get', '/some/thing'));
     }
+    
+    /**
+     * Test routesFor() with no target found
+     * 
+     */
+    #[@test]
+    public function routesForWithNoTarget() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/'));
+      
+      $this->assertEquals(array(), $this->fixture->routesFor(
+        new JsonHttpRequestAdapter($request),
+        new JsonHttpResponseAdapter(new HttpScriptletResponse())
+      ));
+    }
+    
+    /**
+     * Test routesFor() with target found
+     * 
+     */
+    #[@test]
+    public function routesForWithTarget() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/some/thing'));
+      
+      $routes= $this->fixture->routesFor(
+        new JsonHttpRequestAdapter($request),
+        new JsonHttpResponseAdapter(new HttpScriptletResponse())
+      );
+      
+      $this->assertEquals(1, sizeof($routes));
+      $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routes[0]);
+      $this->assertEquals('/some/thing', $routes[0]->getPath()->getPath());
+    }
+    
+    /**
+     * Test routesFor() with target using parameters
+     * 
+     */
+    #[@test]
+    public function routesForWithTargetAndParameters() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/some/thing/123'));
+      
+      $routes= $this->fixture->routesFor(
+        new JsonHttpRequestAdapter($request),
+        new JsonHttpResponseAdapter(new HttpScriptletResponse())
+      );
+      
+      $this->assertEquals(1, sizeof($routes));
+      $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routes[0]);
+      $this->assertEquals(array('id' => "123"), $routes[0]->getArguments());
+    }
+    
+    /**
+     * Test routesFor() with target using injection
+     * 
+     */
+    #[@test]
+    public function routesForWithTargetAndInjection() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/some/injected/thing/123'));
+      
+      $routes= $this->fixture->routesFor(
+        $reqAdapter= new JsonHttpRequestAdapter($request),
+        $resAdapter= new JsonHttpResponseAdapter(new HttpScriptletResponse())
+      );
+      
+      $this->assertEquals(1, sizeof($routes));
+      $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routes[0]);
+      $this->assertEquals(array($reqAdapter, $resAdapter, 'id' => "123"), $routes[0]->getArguments());
+    }
   }
 ?>

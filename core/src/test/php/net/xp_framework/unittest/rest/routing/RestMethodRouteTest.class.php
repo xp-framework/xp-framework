@@ -38,7 +38,7 @@
           self::$args= func_get_args();
         }
         
-        public function setInvokedMultiple($value= TRUE, $other= TRUE) {
+        public function setInvokedMultiple($value, $other) {
           self::$invoked= TRUE;
           self::$args= func_get_args();
         }
@@ -63,8 +63,12 @@
      * 
      * @return webservices.rest.routing.RestMethodRoute
      */
-    protected function routeFor($path= '/path/{value}', $target= NULL) {
-      return new RestMethodRoute(new RestPath($path), $target === NULL ? $this->targetMethod : $target);
+    protected function routeFor($path= '/path/{value}', $target= NULL, $args= array()) {
+      return new RestMethodRoute(
+        new RestPath($path),
+        $target === NULL ? $this->targetMethod : $target,
+        $args
+      );
     }
     
     /**
@@ -104,8 +108,9 @@
      */
     #[@test]
     public function routeToMethodWithArg() {
-      $route= $this->routeFor('/path/{value}');
-      $route->getPath()->setParam('value', 123);
+      $route= $this->routeFor('/path/{value}', $this->targetMethod, array(
+        'value' => 123
+      ));
       $route->route($this->request, $this->response);
       
       $this->assertEquals(array(123), $this->target->getInvokedArgs());
@@ -117,9 +122,10 @@
      */
     #[@test]
     public function routeToMethodWithMultipleArgs() {
-      $route= $this->routeFor('/path/{other}/thing/{value}', $this->targetMethodMultiple);
-      $route->getPath()->setParam('other', 6100);
-      $route->getPath()->setParam('value', 123);
+      $route= $this->routeFor('/path/{other}/thing/{value}', $this->targetMethodMultiple, array(
+        'other' => 6100,
+        'value' => 123
+      ));
       $route->route($this->request, $this->response);
       
       $this->assertEquals(array(123, 6100), $this->target->getInvokedArgs());

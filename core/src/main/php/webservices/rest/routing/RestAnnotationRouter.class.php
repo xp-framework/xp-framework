@@ -39,7 +39,10 @@
           
           $this->map[strtoupper($method->getAnnotation('webmethod', 'method'))][]= array(
             'path'   => new RestPath($method->getAnnotation('webmethod', 'path')),
-            'method' => $method
+            'method' => $method,
+            'inject' => $method->hasAnnotation('webmethod', 'inject')
+              ? $method->getAnnotation('webmethod', 'inject')
+              : array()
           );
         }
       }
@@ -54,7 +57,10 @@
       $method= strtoupper($method);
       
       if (isset($this->map[$method])) foreach ($this->map[$method] as $map) {
-        if ($map['path']->match($path)) return $map;
+        if (FALSE !== ($args= $map['path']->match($path))) return array(
+          'route' => $map,
+          'args'  => $args
+        );
       }
       
       return NULL;
@@ -76,10 +82,35 @@
      * @return webservices.rest.RestRoute[]
      */
     public function routesFor($request, $response) {
-      if ($route= $this->route($request)) return array(new RestMethodRoute(
-        $route['path'],
-        $route['method']
-      ));
+      if ($route= $this->route($request->getMethod(), $request->getPath())) {
+        $args= array();
+
+        // Build list of injected arguments
+        foreach ($route['route']['inject'] as $type) switch ($type) {
+          case 'webservices.rest.transport.HttpRequestAdapter':
+            $args[]= $request;
+            break;
+          case 'webservices.rest.transport.HttpResponseAdapter':
+            $args[]= $response;
+            break;
+          case 'payload':
+            $args[]= $request->getData();
+            break;
+          default:
+            throw new IllegalArgumentException('Can not inject '.$type);
+        }
+        
+        // Add named parameters
+        foreach ($route['args'] as $name => $value) {
+          $args[$name]= $value;
+        }
+      
+        return array(new RestMethodRoute(
+          $route['route']['path'],
+          $route['route']['method'],
+          $args
+        ));
+      }
       
       return array();
     }
