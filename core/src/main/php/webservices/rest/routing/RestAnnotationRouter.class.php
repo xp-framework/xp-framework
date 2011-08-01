@@ -60,10 +60,11 @@
       $method= strtoupper($method);
       
       if (isset($this->map[$method])) foreach ($this->map[$method] as $map) {
-        if (FALSE !== ($args= $map['path']->match($path))) return array(
-          'route' => $map,
-          'args'  => $args
-        );
+        if (FALSE !== ($args= $map['path']->match($path))) {
+          $map['args']= $args;
+          
+          return $map;
+        }
       }
       
       return NULL;
@@ -89,7 +90,7 @@
         $args= array();
 
         // Build list of injected arguments
-        foreach ($route['route']['inject'] as $type) switch ($type) {
+        foreach ($route['inject'] as $type) switch ($type) {
           case 'webservices.rest.transport.HttpRequestAdapter':
             $args[]= $request;
             break;
@@ -109,8 +110,8 @@
         }
       
         return array(new RestMethodRoute(
-          $route['route']['path'],
-          $route['route']['method'],
+          $route['path'],
+          $route['method'],
           $args
         ));
       }
