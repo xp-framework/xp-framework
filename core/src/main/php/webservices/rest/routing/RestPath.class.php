@@ -51,7 +51,7 @@
     public function match($path) {
       $params= array();
       
-      if (preg_match('#^'.$this->pattern.'#', $path, $matches)) {
+      if (preg_match('#^'.$this->pattern.'$#', $path, $matches)) {
         array_shift($matches);
         
         foreach ($this->names as $i => $name) {
