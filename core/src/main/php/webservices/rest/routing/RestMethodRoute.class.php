@@ -13,30 +13,18 @@
    * @purpose Route
    */
   class RestMethodRoute extends Object implements RestRoute {
-    protected $path= NULL;
     protected $method= NULL;
     protected $args= array();
     
     /**
      * Constructor
      * 
-     * @param webservices.rest.routing.RestPath path The path
      * @param lang.reflect.Method method The method to route to
      * @param mixed[] args The additional args to use when invoking the method (defaults to empty array)
      */
-    public function __construct($path, $method, $args= array()) {
-      $this->path= $path;
+    public function __construct($method, $args= array()) {
       $this->method= $method;
       $this->args= $args;
-    }
-    
-    /**
-     * Return path
-     * 
-     * @return webservices.rest.routing.RestPath
-     */
-    public function getPath() {
-      return $this->path;
     }
     
     /**

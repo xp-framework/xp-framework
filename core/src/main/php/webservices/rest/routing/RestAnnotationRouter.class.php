@@ -19,7 +19,15 @@
    */
   class RestAnnotationRouter extends Object implements RestRouter {
     protected $base= '';
-    protected $map= array();
+    protected $table= NULL;
+    
+    /**
+     * Constructor
+     * 
+     */
+    public function __construct() {
+      $this->table= new RestRouting();
+    }
     
     /**
      * Configure router
@@ -40,42 +48,35 @@
             !$method->hasAnnotation('webmethod', 'path')
           ) continue;
           
-          $this->map[strtoupper($method->getAnnotation('webmethod', 'method'))][]= array(
-            'path'   => new RestPath($method->getAnnotation('webmethod', 'path')),
-            'method' => $method,
-            'inject' => $method->hasAnnotation('webmethod', 'inject')
-              ? $method->getAnnotation('webmethod', 'inject')
-              : array()
+          // Build argument and injection list
+          $args= new RestRoutingArgs();
+          foreach ($method->getParameters() as $param) {
+            $args->addArgument($param->getName());
+          }
+          if ($method->hasAnnotation('webmethod', 'inject')) foreach ($method->getAnnotation('webmethod', 'inject') as $name) {
+            $args->addInjection($name);
+          }
+          
+          // Add routing to table
+          $this->table->addRoute(
+            $method->getAnnotation('webmethod', 'method'),
+            $method->getAnnotation('webmethod', 'path'),
+            new RestMethodRoute($method),
+            $args
           );
         }
       }
     }
     
     /**
-     * Retrieve route for request
-     * 
-     * @param webservices.rest.transport.HttpRequestAdapter request The request
-     */
-    protected function route($method, $path) {
-      $method= strtoupper($method);
-      
-      if (isset($this->map[$method])) foreach ($this->map[$method] as $map) {
-        if (FALSE !== ($args= $map['path']->match($path))) {
-          $map['args']= $args;
-          
-          return $map;
-        }
-      }
-      
-      return NULL;
-    }
-    
-    /**
      * Test if route exists
-     * 
+     *
+     * @param string method The method
+     * @param string path The path
+     * @return bool 
      */
     public function hasRoutesFor($method, $path) {
-      return $this->route($method, $path) !== NULL;
+      return $this->table->hasRouting($method, $path);
     }
     
     /**
@@ -86,11 +87,16 @@
      * @return webservices.rest.RestRoute[]
      */
     public function routesFor($request, $response) {
-      if ($route= $this->route($request->getMethod(), substr($request->getPath(), strlen($this->base)))) {
+      $method= $request->getMethod();
+      $path= substr($request->getPath(), strlen($this->base));
+      
+      if ($this->table->hasRouting($method, $path)) {
+        $route= $this->table->getRouting($method, $path);
+        
         $args= array();
 
         // Build list of injected arguments
-        foreach ($route['inject'] as $type) switch ($type) {
+        foreach ($route->getArgs()->getInjections() as $type) switch ($type) {
           case 'webservices.rest.transport.HttpRequestAdapter':
             $args[]= $request;
             break;
@@ -105,13 +111,15 @@
         }
         
         // Add named parameters
-        foreach ($route['args'] as $name => $value) {
-          $args[$name]= $value;
+        $values= $route->getPath()->match($path);
+        foreach ($route->getArgs()->getArguments() as $i => $name) {
+          if ($i < sizeof($route->getArgs()->getInjections())) continue;  // Skip injection arguments
+          
+          $args[$name]= $values[$name];
         }
       
         return array(new RestMethodRoute(
-          $route['path'],
-          $route['method'],
+          $route->getTarget()->getMethod(),
           $args
         ));
       }

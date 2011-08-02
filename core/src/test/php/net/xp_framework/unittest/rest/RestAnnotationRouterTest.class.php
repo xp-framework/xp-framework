@@ -101,7 +101,6 @@
       
       $this->assertEquals(1, sizeof($routes));
       $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routes[0]);
-      $this->assertEquals('/some/thing', $routes[0]->getPath()->getPath());
     }
     
     /**

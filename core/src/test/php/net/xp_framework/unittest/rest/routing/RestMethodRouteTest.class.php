@@ -65,7 +65,6 @@
      */
     protected function routeFor($path= '/path/{value}', $target= NULL, $args= array()) {
       return new RestMethodRoute(
-        new RestPath($path),
         $target === NULL ? $this->targetMethod : $target,
         $args
       );
@@ -78,17 +77,6 @@
     #[@test]
     public function instance() {
       $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $this->routeFor());
-    }
-    
-    /**
-     * Test getPath()
-     * 
-     */
-    #[@test]
-    public function getPath() {
-      $route= new RestMethodRoute($path= new RestPath('/path/{value}'), $this->targetMethod);
-      
-      $this->assertEquals($path, $route->getPath());
     }
     
     /**
