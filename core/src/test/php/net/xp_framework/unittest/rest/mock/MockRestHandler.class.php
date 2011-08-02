@@ -33,7 +33,7 @@
      * 
      */
     #[@webmethod(method= "GET", path= "/some/injected/thing/{id}", inject= array('webservices.rest.transport.HttpRequestAdapter', 'webservices.rest.transport.HttpResponseAdapter'))]
-    public function handlerInject($request, $respones, $id) {
+    public function handlerInject($request, $response, $id) {
     }
   }
 ?>
