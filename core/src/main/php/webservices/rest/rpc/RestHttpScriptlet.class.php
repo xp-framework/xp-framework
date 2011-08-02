@@ -6,6 +6,7 @@
 
   uses(
     'scriptlet.HttpScriptlet',
+    'webservices.rest.routing.RestRoutingProcessor',
     'webservices.rest.transport.HttpRequestAdapterFactory',
     'webservices.rest.transport.HttpResponseAdapterFactory'
   );
@@ -51,32 +52,14 @@
       // Only use the first routing
       $routing= current($routings);
 
-      $args= array();
+      $processor= new RestRoutingProcessor();
+      $processor->bind('webservices.rest.transport.HttpRequestAdapter', $req);
+      $processor->bind('webservices.rest.transport.HttpResponseAdapter', $res);
       
-      // Build list of injected arguments
-      foreach ($routing->getArgs()->getInjections() as $type) switch ($type) {
-        case 'webservices.rest.transport.HttpRequestAdapter':
-          $args[]= $request;
-          break;
-        case 'webservices.rest.transport.HttpResponseAdapter':
-          $args[]= $response;
-          break;
-        case 'payload':
-          $args[]= $request->getData();
-          break;
-        default:
-          throw new IllegalArgumentException('Can not inject '.$type);
-      }
-
-      // Add named parameters
-      $values= $routing->getPath()->match(substr($req->getPath(), strlen($this->base)));
-      foreach ($routing->getArgs()->getArguments() as $i => $name) {
-        if ($i < sizeof($routing->getArgs()->getInjections())) continue;  // Skip injection arguments
-
-        $args[]= $values[$name];
-      }
-
-      $res->setData($routing->getTarget()->process($args));
+      $res->setData($processor->execute(
+        $routing,
+        $routing->getPath()->match(substr($req->getPath(), strlen($this->base)))
+      ));
     }
     
     /**
