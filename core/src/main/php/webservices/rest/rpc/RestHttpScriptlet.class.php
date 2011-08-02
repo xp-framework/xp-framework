@@ -76,7 +76,7 @@
         $args[]= $values[$name];
       }
 
-      $res->setData($routing->getTarget()->route($req, $res, $args));
+      $res->setData($routing->getTarget()->process($args));
     }
     
     /**

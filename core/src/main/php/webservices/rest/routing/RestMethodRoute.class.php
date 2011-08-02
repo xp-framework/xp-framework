@@ -46,12 +46,10 @@
     /**
      * Handle route 
      * 
-     * @param webservices.rest.transport.HttpRequestAdapter request The request
-     * @param webservices.rest.transport.HttpResponseAdapter response The response
      * @param mixed[] args The list of arguments to use
      * @return mixed[]
      */
-    public function route($request, $response, $args= array()) {
+    public function process($args= array()) {
       foreach ($this->method->getParameters() as $n => $arg) {
         if (!isset($args[$n]) && !$arg->isOptional()) {
           throw new IllegalArgumentException('Argument '.$arg->getName().' missing');

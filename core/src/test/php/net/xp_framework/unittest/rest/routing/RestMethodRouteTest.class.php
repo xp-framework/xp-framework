@@ -20,9 +20,7 @@
   class RestMethodRouteTest extends TestCase {
     protected
       $target= NULL,
-      $targetMethod= NULL,
-      $request= NULL,
-      $response= NULL;
+      $targetMethod= NULL;
     
     /**
      * Set up
@@ -53,9 +51,6 @@
       }');
       $this->targetMethod= $this->target->getClass()->getMethod('setInvoked');
       $this->targetMethodMultiple= $this->target->getClass()->getMethod('setInvokedMultiple');
-      
-      $this->request= new JsonHttpRequestAdapter(new HttpScriptletRequest());
-      $this->response= new JsonHttpResponseAdapter(new HttpScriptletResponse());
     }
     
     /**
@@ -82,7 +77,7 @@
      */
     #[@test]
     public function routeToMethod() {
-      $this->routeFor()->route($this->request, $this->response);
+      $this->routeFor()->process();
       
       $this->assertTrue($this->target->getInvoked());
     }
@@ -94,7 +89,7 @@
     #[@test]
     public function routeToMethodWithArg() {
       $route= $this->routeFor('/path/{value}', $this->targetMethod);
-      $route->route($this->request, $this->response, array(123));
+      $route->process(array(123));
       
       $this->assertEquals(array(123), $this->target->getInvokedArgs());
     }
@@ -106,7 +101,7 @@
     #[@test]
     public function routeToMethodWithMultipleArgs() {
       $route= $this->routeFor('/path/{other}/thing/{value}', $this->targetMethodMultiple);
-      $route->route($this->request, $this->response, array(123, 6100));
+      $route->process(array(123, 6100));
       
       $this->assertEquals(array(123, 6100), $this->target->getInvokedArgs());
     }
@@ -118,7 +113,7 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function routeToMethodWithMissingArgs() {
       $route= $this->routeFor('/path/{value}', $this->targetMethodMultiple);
-      $route->route($this->request, $this->response);
+      $route->process();
     }
   }
 ?>
