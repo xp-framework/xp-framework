@@ -46,15 +46,20 @@
       $routings= $this->router->routesFor($req, $res);
       
       if (sizeof($routings) == 0)  throw new IllegalStateException(
-        'Can not route request '.$req->getPath()
+        'Can not route '.$req->getMethod().' request '.$req->getPath()
       );
       
       // Only use the first routing
       $routing= current($routings);
+      
+/*      if ($routing->getArgs()->hasInjection())
+      $data= RestRequestData($req->getData());
+      $data->castTo($routing->);*/
 
       $processor= new RestRoutingProcessor();
       $processor->bind('webservices.rest.transport.HttpRequestAdapter', $req);
       $processor->bind('webservices.rest.transport.HttpResponseAdapter', $res);
+      $processor->bind('webservices.rest.transport.payload', $req->getData());
       
       $res->setData($processor->execute(
         $routing,

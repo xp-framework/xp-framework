@@ -52,7 +52,7 @@
           // Build argument and injection list
           $args= new RestRoutingArgs();
           foreach ($method->getParameters() as $param) {
-            $args->addArgument($param->getName());
+            $args->addArgument($param->getName(), $param->getType());
           }
           if ($method->hasAnnotation('webmethod', 'inject')) foreach ($method->getAnnotation('webmethod', 'inject') as $name) {
             $args->addInjection($name);

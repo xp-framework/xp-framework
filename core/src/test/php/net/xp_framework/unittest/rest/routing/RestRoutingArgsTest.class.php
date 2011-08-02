@@ -37,7 +37,7 @@
     }
     
     /**
-     * Test getArgs()
+     * Test getArguments()
      * 
      */
     #[@test]
@@ -46,14 +46,35 @@
     }
     
     /**
-     * Test addArg()
+     * Test addArgument()
      * 
      */
     #[@test]
-    public function addArgumnets() {
+    public function addArgument() {
       $this->args->addArgument('another');
       
       $this->assertEquals(array('id', 'title', 'name', 'another'), $this->args->getArguments());
+    }
+    
+    /**
+     * Test getArgumentType() for argument registration without specifying
+     * type to default to Type::$VAR
+     * 
+     */
+    #[@test]
+    public function getArgumentTypeDefault() {
+      $this->assertEquals(Type::$VAR, $this->args->getArgumentType('id'));
+    }
+    
+    /**
+     * Test getArgumentType() for argument with type
+     * 
+     */
+    #[@test]
+    public function getArgumentTypeForObject() {
+      $this->args->addArgument('obj', XPClass::forName('lang.Object'));
+      
+      $this->assertEquals(XPClass::forName('lang.Object'), $this->args->getArgumentType('obj'));
     }
     
     /**

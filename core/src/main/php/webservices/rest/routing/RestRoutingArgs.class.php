@@ -27,7 +27,10 @@
      * @param string[] injects The injected arguments (defaults to empty)
      */
     public function __construct($args= array(), $injects= array()) {
-      $this->args= $args;
+      foreach ($args as $name => $type) {
+        is_numeric($name) ? $this->addArgument($type) : $this->addArgument($name, $type);
+      }
+      
       $this->injects= $injects;
     }
     
@@ -35,9 +38,10 @@
      * Add argument
      * 
      * @param string name The name of argument
+     * @param lang.reflect.Type type The type of argument
      */
-    public function addArgument($name) {
-      $this->args[]= $name;
+    public function addArgument($name, Type $type= NULL) {
+      $this->args[$name]= $type !== NULL ? $type : Type::$VAR;
     }
     
     /**
@@ -46,7 +50,16 @@
      * @return string
      */
     public function getArguments() {
-      return $this->args;
+      return array_keys($this->args);
+    }
+    
+    /**
+     * Return type for given argument
+     * 
+     * @return lang.Type
+     */
+    public function getArgumentType($name) {
+      return $this->args[$name];
     }
     
     /**
