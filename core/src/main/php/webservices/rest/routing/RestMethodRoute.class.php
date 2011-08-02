@@ -14,7 +14,6 @@
    */
   class RestMethodRoute extends Object implements RestRoute {
     protected $method= NULL;
-    protected $args= array();
     
     /**
      * Constructor
@@ -22,9 +21,8 @@
      * @param lang.reflect.Method method The method to route to
      * @param mixed[] args The additional args to use when invoking the method (defaults to empty array)
      */
-    public function __construct($method, $args= array()) {
+    public function __construct($method) {
       $this->method= $method;
-      $this->args= $args;
     }
     
     /**
@@ -50,22 +48,12 @@
      * 
      * @param webservices.rest.transport.HttpRequestAdapter request The request
      * @param webservices.rest.transport.HttpResponseAdapter response The response
+     * @param mixed[] args The list of arguments to use
      * @return mixed[]
      */
-    public function route($request, $response) {
-      $args= array();
-      
-      // Copy inject parameters
-      $i= 0;
-      while (isset($this->args[$i])) $args[]= $this->args[$i++];
-      
-      // Append named parameters
+    public function route($request, $response, $args= array()) {
       foreach ($this->method->getParameters() as $n => $arg) {
-        if ($n < $i) continue;  // Skip injected args
-        
-        if (isset($this->args[$arg->getName()])) {
-          $args[]= $this->args[$arg->getName()];
-        } else if ($arg->isOptional() === FALSE) {
+        if (!isset($args[$n]) && !$arg->isOptional()) {
           throw new IllegalArgumentException('Argument '.$arg->getName().' missing');
         }
       }

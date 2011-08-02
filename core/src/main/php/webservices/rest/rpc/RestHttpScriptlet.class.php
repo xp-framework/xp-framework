@@ -17,6 +17,7 @@
    */
   class RestHttpScriptlet extends HttpScriptlet {
     protected $router= NULL;
+    protected $base= '';
     
     /**
      * Constructor
@@ -28,6 +29,7 @@
     public function __construct($package, $router, $base= '') {
       $this->router= XPClass::forName($router)->newInstance();
       $this->router->configure($package, $base);
+      $this->base= rtrim($base, '/');
     }
     
     /**
@@ -40,13 +42,41 @@
       $req= HttpRequestAdapterFactory::forRequest($request)->newInstance($request);
       $res= HttpResponseAdapterFactory::forRequest($request)->newInstance($response);
       
-      $routes= $this->router->routesFor($req, $res);
+      $routings= $this->router->routesFor($req, $res);
       
-      if (sizeof($routes) == 0)  throw new IllegalStateException(
+      if (sizeof($routings) == 0)  throw new IllegalStateException(
         'Can not route request '.$req->getPath()
       );
       
-      $res->setData(current($routes)->route($req, $res));
+      // Only use the first routing
+      $routing= current($routings);
+
+      $args= array();
+      
+      // Build list of injected arguments
+      foreach ($routing->getArgs()->getInjections() as $type) switch ($type) {
+        case 'webservices.rest.transport.HttpRequestAdapter':
+          $args[]= $request;
+          break;
+        case 'webservices.rest.transport.HttpResponseAdapter':
+          $args[]= $response;
+          break;
+        case 'payload':
+          $args[]= $request->getData();
+          break;
+        default:
+          throw new IllegalArgumentException('Can not inject '.$type);
+      }
+
+      // Add named parameters
+      $values= $routing->getPath()->match(substr($req->getPath(), strlen($this->base)));
+      foreach ($routing->getArgs()->getArguments() as $i => $name) {
+        if ($i < sizeof($routing->getArgs()->getInjections())) continue;  // Skip injection arguments
+
+        $args[]= $values[$name];
+      }
+
+      $res->setData($routing->getTarget()->route($req, $res, $args));
     }
     
     /**

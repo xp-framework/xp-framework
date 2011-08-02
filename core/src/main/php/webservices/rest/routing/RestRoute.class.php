@@ -15,9 +15,10 @@
      * 
      * @param webservices.rest.transport.HttpRequestAdapter request The request
      * @param webservices.rest.transport.HttpResponseAdapter response The response
+     * @param mixed[] args The arguments
      * @return webservices.rest.RestRoute[]
      */
-    public function route($request, $response);
+    public function route($request, $response, $args= array());
     
   }
 ?>

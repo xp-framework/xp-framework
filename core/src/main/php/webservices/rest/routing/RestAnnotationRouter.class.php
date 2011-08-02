@@ -92,37 +92,7 @@
       $path= substr($request->getPath(), strlen($this->base));
       
       if ($this->table->hasRoutings($method, $path)) {
-        $route= current($this->table->getRoutings($method, $path));
-        
-        $args= array();
-
-        // Build list of injected arguments
-        foreach ($route->getArgs()->getInjections() as $type) switch ($type) {
-          case 'webservices.rest.transport.HttpRequestAdapter':
-            $args[]= $request;
-            break;
-          case 'webservices.rest.transport.HttpResponseAdapter':
-            $args[]= $response;
-            break;
-          case 'payload':
-            $args[]= $request->getData();
-            break;
-          default:
-            throw new IllegalArgumentException('Can not inject '.$type);
-        }
-        
-        // Add named parameters
-        $values= $route->getPath()->match($path);
-        foreach ($route->getArgs()->getArguments() as $i => $name) {
-          if ($i < sizeof($route->getArgs()->getInjections())) continue;  // Skip injection arguments
-          
-          $args[$name]= $values[$name];
-        }
-      
-        return array(new RestMethodRoute(
-          $route->getTarget()->getMethod(),
-          $args
-        ));
+        return $this->table->getRoutings($method, $path);
       }
       
       return array();

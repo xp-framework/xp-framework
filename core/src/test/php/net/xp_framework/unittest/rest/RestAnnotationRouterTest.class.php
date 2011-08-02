@@ -100,7 +100,7 @@
       );
       
       $this->assertEquals(1, sizeof($routes));
-      $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routes[0]);
+      $this->assertInstanceOf('webservices.rest.routing.RestRoutingItem', $routes[0]);
     }
     
     /**
@@ -118,8 +118,8 @@
       );
       
       $this->assertEquals(1, sizeof($routes));
-      $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routes[0]);
-      $this->assertEquals(array('id' => "123"), $routes[0]->getArguments());
+      $this->assertInstanceOf('webservices.rest.routing.RestRoutingItem', $routes[0]);
+      $this->assertEquals(array('id'), $routes[0]->getArgs()->getArguments());
     }
     
     /**
@@ -137,8 +137,12 @@
       );
       
       $this->assertEquals(1, sizeof($routes));
-      $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routes[0]);
-      $this->assertEquals(array($reqAdapter, $resAdapter, 'id' => "123"), $routes[0]->getArguments());
+      $this->assertInstanceOf('webservices.rest.routing.RestRoutingItem', $routes[0]);
+      $this->assertEquals(array('request', 'response', 'id'), $routes[0]->getArgs()->getArguments());
+      $this->assertEquals(
+        array('webservices.rest.transport.HttpRequestAdapter', 'webservices.rest.transport.HttpResponseAdapter'),
+        $routes[0]->getArgs()->getInjections()
+      );
     }
   }
 ?>

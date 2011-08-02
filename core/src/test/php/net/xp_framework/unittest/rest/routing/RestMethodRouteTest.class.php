@@ -63,11 +63,8 @@
      * 
      * @return webservices.rest.routing.RestMethodRoute
      */
-    protected function routeFor($path= '/path/{value}', $target= NULL, $args= array()) {
-      return new RestMethodRoute(
-        $target === NULL ? $this->targetMethod : $target,
-        $args
-      );
+    protected function routeFor($path= '/path/{value}', $target= NULL) {
+      return new RestMethodRoute($target === NULL ? $this->targetMethod : $target);
     }
     
     /**
@@ -96,10 +93,8 @@
      */
     #[@test]
     public function routeToMethodWithArg() {
-      $route= $this->routeFor('/path/{value}', $this->targetMethod, array(
-        'value' => 123
-      ));
-      $route->route($this->request, $this->response);
+      $route= $this->routeFor('/path/{value}', $this->targetMethod);
+      $route->route($this->request, $this->response, array(123));
       
       $this->assertEquals(array(123), $this->target->getInvokedArgs());
     }
@@ -110,11 +105,8 @@
      */
     #[@test]
     public function routeToMethodWithMultipleArgs() {
-      $route= $this->routeFor('/path/{other}/thing/{value}', $this->targetMethodMultiple, array(
-        'other' => 6100,
-        'value' => 123
-      ));
-      $route->route($this->request, $this->response);
+      $route= $this->routeFor('/path/{other}/thing/{value}', $this->targetMethodMultiple);
+      $route->route($this->request, $this->response, array(123, 6100));
       
       $this->assertEquals(array(123, 6100), $this->target->getInvokedArgs());
     }
