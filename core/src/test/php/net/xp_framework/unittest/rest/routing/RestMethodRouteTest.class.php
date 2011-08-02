@@ -88,8 +88,7 @@
      */
     #[@test]
     public function routeToMethodWithArg() {
-      $route= $this->routeFor('/path/{value}', $this->targetMethod);
-      $route->process(array(123));
+      $this->routeFor('/path/{value}', $this->targetMethod)->process(array(123));
       
       $this->assertEquals(array(123), $this->target->getInvokedArgs());
     }
@@ -100,8 +99,7 @@
      */
     #[@test]
     public function routeToMethodWithMultipleArgs() {
-      $route= $this->routeFor('/path/{other}/thing/{value}', $this->targetMethodMultiple);
-      $route->process(array(123, 6100));
+      $route= $this->routeFor('/path/{other}/thing/{value}', $this->targetMethodMultiple)->process(array(123, 6100));
       
       $this->assertEquals(array(123, 6100), $this->target->getInvokedArgs());
     }
@@ -112,8 +110,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function routeToMethodWithMissingArgs() {
-      $route= $this->routeFor('/path/{value}', $this->targetMethodMultiple);
-      $route->process();
+      $this->routeFor('/path/{value}', $this->targetMethodMultiple)->process();
     }
   }
 ?>
