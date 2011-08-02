@@ -35,15 +35,6 @@
     }
     
     /**
-     * Return injected arguments
-     * 
-     * @return mixed[]
-     */
-    public function getArguments() {
-      return $this->args;
-    }
-    
-    /**
      * Handle route 
      * 
      * @param mixed[] args The list of arguments to use
