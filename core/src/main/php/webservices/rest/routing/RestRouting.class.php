@@ -40,14 +40,8 @@
      * @param string path The path
      * @return bool
      */
-    public function hasRouting($method, $path) {
-      $method= strtoupper($method);
-      
-      foreach ($this->routings as $item) {
-        if ($item->appliesTo($method, $path)) return TRUE;
-      }
-      
-      return FALSE;
+    public function hasRoutings($method, $path) {
+      return sizeof($this->getRoutings($method, $path)) > 0;
     }
     
     /**
@@ -55,16 +49,17 @@
      * 
      * @param string method The method
      * @param string path The path
-     * @return webservices.rest.routing.RestRoutingItem
+     * @return webservices.rest.routing.RestRoutingItem[]
      */
-    public function getRouting($method, $path) {
+    public function getRoutings($method, $path) {
       $method= strtoupper($method);
       
+      $routings= array();
       foreach ($this->routings as $item) {
-        if ($item->appliesTo($method, $path)) return $item;
+        if ($item->appliesTo($method, $path)) $routings[]= $item;
       }
       
-      throw new NoSuchElementException('No route found for '.$path);
+      return $routings;
     }
   }
 ?>

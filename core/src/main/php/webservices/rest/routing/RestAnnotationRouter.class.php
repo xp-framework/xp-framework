@@ -8,6 +8,7 @@
     'util.Hashmap',
     'webservices.rest.routing.RestPath',
     'webservices.rest.routing.RestRouter',
+    'webservices.rest.routing.RestRouting',
     'webservices.rest.routing.RestMethodRoute'
   );
   
@@ -76,7 +77,7 @@
      * @return bool 
      */
     public function hasRoutesFor($method, $path) {
-      return $this->table->hasRouting($method, $path);
+      return $this->table->hasRoutings($method, $path);
     }
     
     /**
@@ -90,8 +91,8 @@
       $method= $request->getMethod();
       $path= substr($request->getPath(), strlen($this->base));
       
-      if ($this->table->hasRouting($method, $path)) {
-        $route= $this->table->getRouting($method, $path);
+      if ($this->table->hasRoutings($method, $path)) {
+        $route= current($this->table->getRoutings($method, $path));
         
         $args= array();
 

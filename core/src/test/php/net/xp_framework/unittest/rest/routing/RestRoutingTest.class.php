@@ -34,43 +34,43 @@
     }
     
     /**
-     * Test hasRouting() with not routes
+     * Test hasRoutings() with not routes
      * 
      */
     #[@test]
     public function hasNoRouting() {
-      $this->assertFalse($this->routing->hasRouting('GET', '/'));
+      $this->assertFalse($this->routing->hasRoutings('GET', '/'));
     }
     
     /**
-     * Test hasRouting()
+     * Test hasRoutings()
      * 
      */
     #[@test]
     public function hasRouting() {
       $this->routing->addRoute('GET', '/path/to/something', new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)));
       
-      $this->assertTrue($this->routing->hasRouting('GET', '/path/to/something'));
+      $this->assertTrue($this->routing->hasRoutings('GET', '/path/to/something'));
     }
     
     /**
-     * Test getRouting() with no routes
-     * 
-     */
-    #[@test, @expect('util.NoSuchElementException')]
-    public function getNoRouting() {
-      $this->routing->getRouting('GET', '/');
-    }
-    
-    /**
-     * Test getRouting()
+     * Test getRoutings() with no routes
      * 
      */
     #[@test]
-    public function getRouting() {
+    public function getNoRouting() {
+      $this->assertEquals(array(), $this->routing->getRoutings('GET', '/'));
+    }
+    
+    /**
+     * Test getRoutings()
+     * 
+     */
+    #[@test]
+    public function getRoutings() {
       $this->routing->addRoute('GET', '/path/to/something', new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)), new RestRoutingArgs(array('id'), array('some.Class')));
       
-      $routing= $this->routing->getRouting('GET', '/path/to/something');
+      $routing= current($this->routing->getRoutings('GET', '/path/to/something'));
       $this->assertInstanceOf('webservices.rest.routing.RestRoutingItem', $routing);
       $this->assertEquals('GET', $routing->getMethod());
       $this->assertEquals('/path/to/something', $routing->getPath()->getPath());
