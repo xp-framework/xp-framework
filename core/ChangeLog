@@ -66,6 +66,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added quiet mode to unittest command - see issue #24
+  (friebe)
 - Made peer.net.Inet6Address accept packed form - see issue #26
   (friebe)
 - Add toString() implementation to peer.Socket

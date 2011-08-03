@@ -7,8 +7,7 @@
   $package= 'xp.unittest';
 
   uses(
-    'xp.unittest.DefaultListener',
-    'xp.unittest.VerboseListener',
+    'xp.unittest.TestListeners',
     'xp.unittest.sources.PropertySource',
     'xp.unittest.sources.ClassSource',
     'xp.unittest.sources.ClassFileSource',
@@ -34,6 +33,7 @@
    * Options is one of:
    * <ul>
    *   <li>-v : Be verbose</li>
+   *   <li>-q : Be quiet (no output)</li>
    *   <li>-cp: Add classpath elements</li>
    *   <li>-a {argument}: Define argument to pass to tests (may be used
    *     multiple times)</li>
@@ -158,12 +158,14 @@
 
       // Parse arguments
       $sources= new Vector();
-      $verbose= FALSE;
+      $listener= TestListeners::$DEFAULT;
       $arguments= array();
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
           if ('-v' == $args[$i]) {
-            $verbose= TRUE;
+            $listener= TestListeners::$VERBOSE;
+          } else if ('-q' == $args[$i]) {
+            $listener= TestListeners::$QUIET;
           } else if ('-cp' == $args[$i]) {
             foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $path) {
               ClassLoader::getDefault()->registerPath($path);
@@ -203,14 +205,9 @@
         return 1;
       }
       
-      $suite->addListener($verbose 
-        ? new VerboseListener($this->out)
-        : new DefaultListener($this->out)
-      );
-      
-      // Add test classes
+      // Set up suite
+      $suite->addListener($listener->newInstance($this->out));
       foreach ($sources as $source) {
-        $verbose && $this->out->writeLine('===> Adding test classes from ', $source);
         try {
           $tests= $source->testCasesWith($arguments);
           foreach ($tests as $test) {
