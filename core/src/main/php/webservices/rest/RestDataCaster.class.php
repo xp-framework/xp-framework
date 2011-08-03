@@ -73,7 +73,7 @@
      */
     public static function complex($data, Type $type) {
       switch ($type->getName()) {
-        case 'NULL':  // TDB
+        case 'NULL':
           return NULL;
         
         case 'lang.types.Integer':
@@ -136,9 +136,12 @@
               }
             }
             return $result;
+            
+          } else if ($type instanceof Primitive) {
+            return self::complex($data, $type->wrapperClass());
           }
         
-          throw new IllegalStateException('Can not convert '.$type->getName());
+          throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
       }
     }
   }

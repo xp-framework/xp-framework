@@ -148,6 +148,17 @@
     }
     
     /**
+     * Test simplify primitives object
+     * 
+     */
+    #[@test]
+    public function simplifyPrimitivesObject() {
+      $this->assertEquals(1, RestDataCaster::complex(1, Primitive::$INT));
+      $this->assertEquals('test', RestDataCaster::complex('test', Primitive::$STRING));
+      $this->assertEquals(TRUE, RestDataCaster::complex(TRUE, Primitive::$BOOLEAN));
+    }
+    
+    /**
      * Test simplify array
      * 
      */
