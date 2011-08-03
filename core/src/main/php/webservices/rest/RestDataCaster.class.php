@@ -119,14 +119,20 @@
                   throw new IllegalStateException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
-                $field->set($result, $data[$field->getName()]);
+                $field->set($result, self::complex(
+                  $data[$field->getName()],
+                  XPClass::forName($field->getType() ? $field->getType() : 'lang.types.String')
+                ));
                 
               } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
                 if (!isset($data[$field->getName()])) {
                   throw new IllegalStateException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
-                $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array($data[$field->getName()]));
+                $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array(self::complex(
+                  $data[$field->getName()],
+                  XPClass::forName($field->getType() ? $field->getType() : 'lang.types.String')
+                )));
               }
             }
             return $result;

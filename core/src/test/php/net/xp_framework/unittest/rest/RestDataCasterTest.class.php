@@ -20,7 +20,9 @@
       $arrayTwoHash= NULL,
       $stdClassThree= NULL,
       $objThreeFields= NULL,
-      $objThreeMethods= NULL;
+      $objThreeTypedFields= NULL,
+      $objThreeMethods= NULL,
+      $objTwoFields= NULL;
     
     /**
      * Before class setup
@@ -37,9 +39,19 @@
       self::$stdClassThree->two= '2';
       self::$stdClassThree->three= '3';
       
+      self::$objTwoFields= newinstance('lang.Object', array(), '{
+        public $one= "1";
+        public $two= "2";
+      }');
       self::$objThreeFields= newinstance('lang.Object', array(), '{
         public $one= "1";
         public $two= "2";
+        public $three= "3";
+      }');
+      self::$objThreeTypedFields= newinstance('lang.Object', array(), '{
+        public $one= "1";
+        public $two= "2";
+        #[@type(\''.self::$objTwoFields->getClassName().'\')]
         public $three= "3";
       }');
       self::$objThreeMethods= newinstance('lang.Object', array(), '{
@@ -110,6 +122,21 @@
     }
     
     /**
+     * Test simplify Object with Object inside
+     * 
+     */
+    #[@test]
+    public function simplifyObjectWithObjectInside() {
+      $instance= self::$objThreeFields;
+      $instance->three= self::$objTwoFields;
+      
+      $result= self::$arrayThreeHash;
+      $result['three']= self::$arrayTwoHash;
+      
+      $this->assertEquals($result, RestDataCaster::simple($instance));
+    }
+    
+    /**
      * Test simplify primitives
      * 
      */
@@ -173,6 +200,24 @@
       $this->assertEquals('1', $casted->getOne());
       $this->assertEquals('2', $casted->getTwo());
       $this->assertEquals('3', $casted->getThree());
+    }
+    
+    /**
+     * Test complexify array with array inside
+     * 
+     */
+    #[@test]
+    public function complexifyObjectWithObjectInside() {
+      $instance= self::$objThreeFields;
+      $instance->three= self::$objTwoFields;
+      
+      $result= self::$arrayThreeHash;
+      $result['three']= self::$arrayTwoHash;
+      
+      $casted= RestDataCaster::complex($result, self::$objThreeTypedFields->getClass());
+      
+      $this->assertInstanceOf(self::$objThreeTypedFields->getClassName(), $casted);
+      $this->assertInstanceOf(self::$objTwoFields->getClassName(), $casted->three);
     }
   }
 ?>
