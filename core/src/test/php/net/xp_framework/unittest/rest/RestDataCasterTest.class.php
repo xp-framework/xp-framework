@@ -245,5 +245,41 @@
       $this->assertInstanceOf(self::$objThreeTypedFields->getClassName(), $casted);
       $this->assertInstanceOf(self::$objTwoFields->getClassName(), $casted->three);
     }
+    
+    /**
+     * Test complexify array list with wrong data
+     * 
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function complexifyArrayListWithWrongData() {
+      RestDataCaster::complex(1, XPClass::forName('lang.types.ArrayList'));
+    }
+    
+    /**
+     * Test complexify hash map with wrong data
+     * 
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function complexifyHashmapWithWrongData() {
+      RestDataCaster::complex(1, XPClass::forName('util.Hashmap'));
+    }
+    
+    /**
+     * Test complexify stdClass with wrong data
+     * 
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function complexifyStdClassWithWrongData() {
+      RestDataCaster::complex(1, new Type('php.stdClass'));
+    }
+    
+    /**
+     * Test complexify with wrong target type
+     * 
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function complexifyWithWrongType() {
+      RestDataCaster::complex(1, new Object());
+    }
   }
 ?>
