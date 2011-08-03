@@ -5,6 +5,7 @@
  */
 
   uses(
+    'webservices.rest.RestDataCaster',
     'webservices.rest.routing.RestRoutingItem'
   );
   
@@ -61,7 +62,10 @@
       foreach ($routing->getArgs()->getArguments() as $i => $name) {
         if ($i < sizeof($routing->getArgs()->getInjections())) continue;  // Skip injection arguments
 
-        $args[]= $values[$name];
+        $args[]= RestDataCaster::complex(
+          RestDataCaster::simple($values[$name]),
+          $routing->getArgs()->getArgumentType($name)
+        );
       }
       
       return $routing->getTarget()->process($args);
