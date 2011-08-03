@@ -19,6 +19,7 @@
       $arrayThreeHash= NULL,
       $arrayTwoHash= NULL,
       $stdClassThree= NULL,
+      $objPrivateFields= NULL,
       $objThreeFields= NULL,
       $objThreeTypedFields= NULL,
       $objThreeMethods= NULL,
@@ -39,6 +40,11 @@
       self::$stdClassThree->two= '2';
       self::$stdClassThree->three= '3';
       
+      self::$objPrivateFields= newinstance('lang.Object', array(), '{
+        public $one= "1";
+        public $two= "2";
+        protected $three= "3";
+      }');
       self::$objTwoFields= newinstance('lang.Object', array(), '{
         public $one= "1";
         public $two= "2";
@@ -134,6 +140,15 @@
       $result['three']= self::$arrayTwoHash;
       
       $this->assertEquals($result, RestDataCaster::simple($instance));
+    }
+    
+    /**
+     * Test simplify Object ignoring private fields
+     * 
+     */
+    #[@test]
+    public function simplifyObjectIgnoringPrivateFields() {
+      $this->assertEquals(self::$arrayTwoHash, RestDataCaster::simple(self::$objPrivateFields));
     }
     
     /**
