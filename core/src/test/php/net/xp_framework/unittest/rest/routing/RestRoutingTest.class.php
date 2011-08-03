@@ -72,7 +72,7 @@
       
       $routing= current($this->routing->getRoutings('GET', '/path/to/something'));
       $this->assertInstanceOf('webservices.rest.routing.RestRoutingItem', $routing);
-      $this->assertEquals('GET', $routing->getMethod());
+      $this->assertEquals('GET', $routing->getVerb());
       $this->assertEquals('/path/to/something', $routing->getPath()->getPath());
       $this->assertInstanceOf('webservices.rest.routing.RestMethodRoute', $routing->getTarget());
       $this->assertInstanceOf('webservices.rest.routing.RestRoutingArgs', $routing->getArgs());

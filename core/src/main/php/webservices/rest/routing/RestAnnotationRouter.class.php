@@ -45,7 +45,7 @@
         
         foreach ($handler->getMethods() as $method) {
           if (
-            !$method->hasAnnotation('webmethod', 'method') ||
+            !$method->hasAnnotation('webmethod', 'verb') ||
             !$method->hasAnnotation('webmethod', 'path')
           ) continue;
           
@@ -60,7 +60,7 @@
           
           // Add routing to table
           $this->table->addRoute(
-            $method->getAnnotation('webmethod', 'method'),
+            $method->getAnnotation('webmethod', 'verb'),
             $method->getAnnotation('webmethod', 'path'),
             new RestMethodRoute($method),
             $args
@@ -72,12 +72,12 @@
     /**
      * Test if route exists
      *
-     * @param string method The method
+     * @param string verb The verb
      * @param string path The path
      * @return bool 
      */
-    public function hasRoutesFor($method, $path) {
-      return $this->table->hasRoutings($method, $path);
+    public function hasRoutesFor($verb, $path) {
+      return $this->table->hasRoutings($verb, $path);
     }
     
     /**
@@ -88,11 +88,11 @@
      * @return webservices.rest.RestRoute[]
      */
     public function routesFor($request, $response) {
-      $method= $request->getMethod();
+      $verb= $request->getMethod();
       $path= substr($request->getPath(), strlen($this->base));
       
-      if ($this->table->hasRoutings($method, $path)) {
-        return $this->table->getRoutings($method, $path);
+      if ($this->table->hasRoutings($verb, $path)) {
+        return $this->table->getRoutings($verb, $path);
       }
       
       return array();

@@ -35,7 +35,7 @@
      */
     #[@test]
     public function instance() {
-      $this->assertEquals('GET', $this->fixture->getMethod());
+      $this->assertEquals('GET', $this->fixture->getVerb());
       $this->assertEquals('/some/path', $this->fixture->getPath()->getPath());
       $this->assertEquals($this->getClass()->getMethod('setUp'), $this->fixture->getTarget()->getMethod());
       $this->assertEquals(array('id'), $this->fixture->getArgs()->getArguments());
