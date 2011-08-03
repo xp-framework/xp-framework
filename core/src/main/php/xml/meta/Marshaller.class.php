@@ -112,11 +112,6 @@
           foreach ($result as $key => $val) {
             $child->addChild(new Node($key, $val));
           }
-        } else if (is('lang.Collection', $result)) {
-          $elementClass= $result->getElementClass();
-          foreach ($result->values() as $value) {
-            self::recurse($value, $elementClass, $node->addChild(new Node($element)), $inject);
-          }
         } else if ($result instanceof Traversable) {
           foreach ($result as $value) {
             if ($value instanceof Generic) {

@@ -189,14 +189,6 @@
         return;
       }
       
-      if ($value instanceof Collection) { // XP collection
-        $child->attribute['xsi:type']= 'SOAP-ENC:Array';
-        $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
-        $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
-        $this->_recurse($child, $value->values(), $mapping);
-        return;
-      }
-      
       if ($value instanceof Generic) {     // XP objects
         $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
         $child->attribute['xsi:type']= 'xp:'.$value->getClassName();

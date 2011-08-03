@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed lang.Collection deprecation left-overs - see issue #42
+  (friebe)
 - Introduced common interface for SOAP implementations:
   webservices.soap.ISoapClient (see issue #19). This re-dedicated
   NativeSoapClient::setEncoding() to change the charset's encoding, not the
