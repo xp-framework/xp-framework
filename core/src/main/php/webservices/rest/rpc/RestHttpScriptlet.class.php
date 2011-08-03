@@ -52,14 +52,10 @@
       // Only use the first routing
       $routing= current($routings);
       
-/*      if ($routing->getArgs()->hasInjection())
-      $data= RestRequestData($req->getData());
-      $data->castTo($routing->);*/
-
       $processor= new RestRoutingProcessor();
       $processor->bind('webservices.rest.transport.HttpRequestAdapter', $req);
       $processor->bind('webservices.rest.transport.HttpResponseAdapter', $res);
-      $processor->bind('webservices.rest.transport.payload', $req->getData());
+      $processor->bind('payload', $req->getData());
       
       $res->setData($processor->execute(
         $routing,
