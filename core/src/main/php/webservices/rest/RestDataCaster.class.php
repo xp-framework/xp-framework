@@ -65,13 +65,75 @@
     }
     
     /**
-     * Cast data to given type
+     * Complexify data by creating an object
      * 
-     * @param mixed[] data The data to cast
-     * @param lang.Type type The target type
+     * @param mixed[] data The data to simplify
+     * @param lang.Type type The type to use
+     * @return mixed[]
      */
-    public static function cast($data, $type) {
-      return self::simplify($data);
+    public static function complex($data, Type $type) {
+      switch ($type->getName()) {
+        case 'NULL':  // TDB
+          return NULL;
+        
+        case 'lang.types.Integer':
+        case 'lang.types.String':
+        case 'lang.types.Boolean':
+          return Primitive::unboxed($type->newInstance($data));
+        
+        case 'lang.types.ArrayList':
+          if (!is_array($data)) {
+            throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to array');
+          }
+          
+          $result= array();
+          foreach ($data as $key => $value) {
+            $result[$key]= self::complex($value, XPClass::forName('lang.types.String'));
+          }
+          return $data;
+        
+        case 'util.Hashmap':
+          if (!is_array($data)) {
+            throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to hash map');
+          }
+          
+          return new Hashmap($data);
+        
+        case 'php.stdClass':
+          if (!is_array($data)) {
+            throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to stdClass');
+          }
+          
+          $result= new stdClass();
+          foreach ($data as $key => $value) {
+            $result->$key= self::complex($value, XPClass::forName('lang.types.String'));
+          }
+          return $result;
+          
+        default:
+          if ($type instanceof XPClass) {
+            $result= $type->newInstance();
+            foreach ($type->getFields() as $field) {
+              if ($field->getModifiers() & MODIFIER_PUBLIC) {
+                if (!isset($data[$field->getName()])) {
+                  throw new IllegalStateException('Field '.$field->getName().' missing for '.$type->getName());
+                }
+                
+                $field->set($result, $data[$field->getName()]);
+                
+              } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
+                if (!isset($data[$field->getName()])) {
+                  throw new IllegalStateException('Field '.$field->getName().' missing for '.$type->getName());
+                }
+                
+                $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array($data[$field->getName()]));
+              }
+            }
+            return $result;
+          }
+        
+          throw new IllegalStateException('Can not convert '.$type->getName());
+      }
     }
   }
 ?>
