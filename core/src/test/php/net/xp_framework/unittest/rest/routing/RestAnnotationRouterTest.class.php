@@ -22,7 +22,7 @@
      */
     public function setUp() {
       $this->fixture= new RestAnnotationRouter();
-      $this->fixture->configure($this->getClass()->getPackage()->getName().'.mock');
+      $this->fixture->configure('net.xp_framework.unittest.rest.mock');
     }
     
     /**
@@ -40,7 +40,7 @@
      */
     #[@test]
     public function configure() {
-      $this->fixture->configure($this->getClass()->getPackage()->getName().'.mock');
+      $this->fixture->configure('net.xp_framework.unittest.rest.mock');
     }
     
     /**
