@@ -5,6 +5,7 @@
  */
 
   uses(
+    'lang.ClassCastException',
     'webservices.rest.routing.RestRoutingItem'
   );
   
@@ -60,7 +61,7 @@
             return self::simple((array)$data);
           }
         
-          throw new IllegalStateException('Can not cast '.xp::typeOf($data).' to simple type');
+          throw new ClassCastException('Can not cast '.xp::typeOf($data).' to simple type');
       }
     }
     
@@ -83,7 +84,7 @@
         
         case 'lang.types.ArrayList':
           if (!is_array($data)) {
-            throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to array');
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to array');
           }
           
           $result= array();
@@ -94,14 +95,14 @@
         
         case 'util.Hashmap':
           if (!is_array($data)) {
-            throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to hash map');
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to hash map');
           }
           
           return new Hashmap($data);
         
         case 'php.stdClass':
           if (!is_array($data)) {
-            throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to stdClass');
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to stdClass');
           }
           
           $result= new stdClass();
@@ -116,7 +117,7 @@
             foreach ($type->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
                 if (!isset($data[$field->getName()])) {
-                  throw new IllegalStateException('Field '.$field->getName().' missing for '.$type->getName());
+                  throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
                 $field->set($result, self::complex(
@@ -126,7 +127,7 @@
                 
               } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
                 if (!isset($data[$field->getName()])) {
-                  throw new IllegalStateException('Field '.$field->getName().' missing for '.$type->getName());
+                  throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
                 $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array(self::complex(
@@ -141,7 +142,7 @@
             return self::complex($data, $type->wrapperClass());
           }
         
-          throw new IllegalStateException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+          throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
       }
     }
   }

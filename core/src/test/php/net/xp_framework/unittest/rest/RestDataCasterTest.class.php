@@ -253,7 +253,7 @@
      * Test complexify array list with wrong data
      * 
      */
-    #[@test, @expect('lang.IllegalStateException')]
+    #[@test, @expect('lang.ClassCastException')]
     public function complexifyArrayListWithWrongData() {
       RestDataCaster::complex(1, XPClass::forName('lang.types.ArrayList'));
     }
@@ -262,7 +262,7 @@
      * Test complexify hash map with wrong data
      * 
      */
-    #[@test, @expect('lang.IllegalStateException')]
+    #[@test, @expect('lang.ClassCastException')]
     public function complexifyHashmapWithWrongData() {
       RestDataCaster::complex(1, XPClass::forName('util.Hashmap'));
     }
@@ -271,7 +271,7 @@
      * Test complexify stdClass with wrong data
      * 
      */
-    #[@test, @expect('lang.IllegalStateException')]
+    #[@test, @expect('lang.ClassCastException')]
     public function complexifyStdClassWithWrongData() {
       RestDataCaster::complex(1, new Type('php.stdClass'));
     }
