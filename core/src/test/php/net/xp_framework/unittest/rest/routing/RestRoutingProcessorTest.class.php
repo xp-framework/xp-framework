@@ -44,5 +44,57 @@
       
       $this->assertEquals($obj, $this->fixture->getBinding('test'));
     }
+    
+    /**
+     * Test binding with non-existant key
+     * 
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function bindWrongkey() {
+      $this->fixture->getBinding('unknown');
+    }
+    
+    /**
+     * Test binding with key using array
+     * 
+     */
+    #[@test]
+    public function bindArrayKey() {
+      $this->fixture->bind('test', array('first' => 1, 'second' => 2));
+      
+      $this->assertEquals(1, $this->fixture->getBinding('test[first]'));
+    }
+    
+    /**
+     * Test binding with wrong key using array
+     * 
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function bindArrayWrongKey() {
+      $this->fixture->bind('test', array('first' => 1, 'second' => 2));
+      $this->fixture->getBinding('test[wrong]');
+    }
+    
+    /**
+     * Test binding with key using object
+     * 
+     */
+    #[@test]
+    public function bindObjectKey() {
+      $this->fixture->bind('test', newinstance('lang.Object', array(), '{
+        public $first= 1;
+      }'));
+      $this->fixture->getBinding('test[first]');
+    }
+    
+    /**
+     * Test invalid binding name
+     * 
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function bindInvalid() {
+      $this->fixture->bind('test', array('first' => 1, 'second' => 2));
+      $this->fixture->getBinding('test[missingbracket');
+    }
   }
 ?>
