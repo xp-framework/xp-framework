@@ -66,8 +66,11 @@
         protected $three= "3";
         
         public function getOne() { return $this->one; }
+        public function setOne($v) { $this->one= $v; }
         public function getTwo() { return $this->two; }
+        public function setTwo($v) { $this->two= $v; }
         public function getThree() { return $this->three; }
+        public function setThree($v) { $this->three= $v; }
       }');
     }
     
@@ -219,9 +222,9 @@
      * Test complexify Object with private fields but accessor functions
      * 
      */
-    #[@testx]
+    #[@test]
     public function complexifyObjectWithPrivateFieldsButPublicMethods() {
-      $casted= RestDataCaster::complex(self::$arrayThreeHash, self::$objThreePublicMethods->getClass());
+      $casted= RestDataCaster::complex(self::$arrayThreeHash, self::$objThreeMethods->getClass());
       
       $this->assertEquals('1', $casted->getOne());
       $this->assertEquals('2', $casted->getTwo());
