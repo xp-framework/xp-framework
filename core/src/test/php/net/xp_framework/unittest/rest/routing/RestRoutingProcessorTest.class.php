@@ -46,6 +46,17 @@
     }
     
     /**
+     * Test binding NULL values
+     * 
+     */
+    #[@test]
+    public function bindNull() {
+      $this->fixture->bind('test', NULL);
+      
+      $this->assertNull($this->fixture->getBinding('test'));
+    }
+    
+    /**
      * Test binding with non-existant key
      * 
      */

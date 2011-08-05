@@ -55,14 +55,14 @@
     public function getBinding($token) {
       list($name, $key)= $this->parseName($token);
       
-      if (!isset($this->bindings[$name])) {
+      if (!array_key_exists($name, $this->bindings)) {
         throw new IllegalArgumentException('No binding to inject '.$token);
       }
       
       if ($key !== NULL) {
         $binding= (array)$this->bindings[$name];
         
-        if (!isset($binding[$key])) {
+        if (!array_key_exists($key, $binding)) {
           throw new IllegalArgumentException('Binding '.$name.' has no key '.$key);
         }
         
