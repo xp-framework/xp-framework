@@ -45,22 +45,30 @@
       
       $routings= $this->router->routesFor($req, $res);
       
-      if (sizeof($routings) == 0)  throw new IllegalStateException(
-        'Can not route '.$req->getMethod().' request '.$req->getPath()
-      );
-      
-      // Only use the first routing
-      $routing= current($routings);
-      
+      // Setup processor and bind data sources
       $processor= new RestRoutingProcessor();
       $processor->bind('webservices.rest.transport.HttpRequestAdapter', $req);
       $processor->bind('webservices.rest.transport.HttpResponseAdapter', $res);
       $processor->bind('payload', $req->getData());
       
-      $res->setData($processor->execute(
-        $routing,
-        $routing->getPath()->match(substr($req->getPath(), strlen($this->base)))
-      ));
+      $routed= FALSE;
+      for ($i= 0, $s= sizeof($routings); $i<$s && !$routed; $i++) {
+        $routing= $routings[$i];
+        
+        try {
+          $res->setData($processor->execute(
+            $routing,
+            $routing->getPath()->match(substr($req->getPath(), strlen($this->base)))
+          ));
+          $routed= TRUE;
+        } catch (ClassCastException $e) {
+          // When casting arguments, try next route
+        }
+      }
+      
+      if (!$routed)  throw new IllegalStateException(
+        'Can not route '.$req->getMethod().' request '.$req->getPath()
+      );
     }
     
     /**
