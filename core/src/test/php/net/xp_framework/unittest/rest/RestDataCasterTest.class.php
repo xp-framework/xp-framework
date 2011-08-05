@@ -155,7 +155,7 @@
     }
     
     /**
-     * Test simplify primitives
+     * Test complexify primitives
      * 
      */
     #[@test]
@@ -166,18 +166,18 @@
     }
     
     /**
-     * Test simplify primitives object
+     * Test complexify primitives object
      * 
      */
     #[@test]
-    public function simplifyPrimitivesObject() {
+    public function complexifyPrimitivesObject() {
       $this->assertEquals(1, RestDataCaster::complex(1, Primitive::$INT));
       $this->assertEquals('test', RestDataCaster::complex('test', Primitive::$STRING));
       $this->assertEquals(TRUE, RestDataCaster::complex(TRUE, Primitive::$BOOLEAN));
     }
     
     /**
-     * Test simplify array
+     * Test complexify array
      * 
      */
     #[@test]
@@ -186,7 +186,7 @@
     }
     
     /**
-     * Test simplify hashmap
+     * Test complexify hashmap
      * 
      */
     #[@test]
@@ -195,7 +195,7 @@
     }
     
     /**
-     * Test simplify stdclass
+     * Test complexify stdclass
      * 
      */
     #[@test]
@@ -206,7 +206,7 @@
     }
     
     /**
-     * Test simplify Object with public fields
+     * Test complexify Object with public fields
      * 
      */
     #[@test]
