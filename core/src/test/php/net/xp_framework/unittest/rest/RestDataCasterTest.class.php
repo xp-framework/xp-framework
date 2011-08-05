@@ -177,11 +177,11 @@
     }
     
     /**
-     * Test complexify wrong data types
+     * Test complexify wrong data types to primitive type
      * 
      */
     #[@test]
-    public function complexifyToPrimitiveTypes() {
+    public function complexifyToPrimitiveTypesFails() {
       $casts= array(
         array(Primitive::$INT, array()),
         array(Primitive::$INT, new Object()),
@@ -200,6 +200,25 @@
           RestDataCaster::complex($cast[1], $cast[0]);
           
           throw new IllegalStateException('Cast '.xp::typeOf($cast[1]).' to '.$cast[0]->getName().' should throw exception');
+        } catch (ClassCastException $e) {
+          // Ignore this, because it's assumed and OK
+        }
+      }
+    }
+    
+    /**
+     * Test complexify wrong data types to lang.Object
+     * 
+     */
+    #[@test]
+    public function complexifyToObjectFails() {
+      $casts= array(1, TRUE, 'test');
+      
+      foreach ($casts as $cast) {
+        try {
+          RestDataCaster::complex($cast, XPClass::forName('lang.Object'));
+          
+          throw new IllegalStateException('Cast '.xp::typeOf($cast).' to lang.Object should throw exception');
         } catch (ClassCastException $e) {
           // Ignore this, because it's assumed and OK
         }

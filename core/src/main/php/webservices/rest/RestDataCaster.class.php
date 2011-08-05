@@ -120,6 +120,10 @@
           
         default:
           if ($type instanceof XPClass) {
+            if (!is_array($data)) {
+              throw new ClassCastException('Can not convert '.xp::typeOf($data).' to lang.Object');
+            }
+            
             $result= $type->newInstance();
             foreach ($type->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
