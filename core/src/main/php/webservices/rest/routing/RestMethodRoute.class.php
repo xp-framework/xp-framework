@@ -47,10 +47,14 @@
         }
       }
       
-      return $this->method->invoke(
-        $this->method->getDeclaringClass()->newInstance(),
-        $args
-      );
+      try {
+        return $this->method->invoke(
+          $this->method->getDeclaringClass()->newInstance(),
+          $args
+        );
+      } catch (TargetInvocationException $e) {
+        throw $e->getCause();
+      }
     }
   }
 ?>
