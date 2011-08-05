@@ -78,10 +78,17 @@
           return NULL;
         
         case 'lang.types.Integer':
+          if (!is_scalar($data) || ((string)$data != (string)(int)$data)) {
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+          }
+          
         case 'lang.types.String':
         case 'lang.types.Boolean':
+          if (!is_scalar($data)) {
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+          }
           return Primitive::unboxed($type->newInstance($data));
-        
+          
         case 'lang.types.ArrayList':
           if (!is_array($data)) {
             throw new ClassCastException('Can not convert '.xp::typeOf($data).' to array');

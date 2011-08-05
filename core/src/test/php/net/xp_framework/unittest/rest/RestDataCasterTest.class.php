@@ -177,6 +177,36 @@
     }
     
     /**
+     * Test complexify wrong data types
+     * 
+     */
+    #[@test]
+    public function complexifyToPrimitiveTypes() {
+      $casts= array(
+        array(Primitive::$INT, array()),
+        array(Primitive::$INT, new Object()),
+        array(Primitive::$INT, '1.3'),
+        array(Primitive::$INT, 'test'),
+        
+        array(Primitive::$BOOLEAN, array()),
+        array(Primitive::$BOOLEAN, new Object()),
+        
+        array(Primitive::$STRING, array()),
+        array(Primitive::$STRING, new Object()),
+      );
+      
+      foreach ($casts as $cast) {
+        try {
+          RestDataCaster::complex($cast[1], $cast[0]);
+          
+          throw new IllegalStateException('Cast '.xp::typeOf($cast[1]).' to '.$cast[0]->getName().' should throw exception');
+        } catch (ClassCastException $e) {
+          // Ignore this, because it's assumed and OK
+        }
+      }
+    }
+    
+    /**
      * Test complexify array
      * 
      */
