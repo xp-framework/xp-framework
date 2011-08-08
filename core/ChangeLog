@@ -8,6 +8,8 @@ SVN version: ?????
 
 Heads up!
 ~~~~~~~~~
+- Added support for PHP 5.3.7 - see issue #49
+  (friebe)
 - Removed lang.Collection deprecation left-overs - see issue #42
   (friebe)
 - Introduced common interface for SOAP implementations:
