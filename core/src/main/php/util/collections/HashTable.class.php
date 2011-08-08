@@ -17,10 +17,21 @@
    * @purpose  Map interface implementation
    */
   #[@generic(self= 'K, V', implements= array('K, V'))]
-  class HashTable extends Object implements Map {
+  class HashTable extends Object implements Map, IteratorAggregate {
     protected
       $_buckets  = array(),
       $_hash     = 0;
+
+    /**
+     * Throws an IllegalStateException
+     *
+     * @see     https://github.com/xp-framework/xp-framework/issues/47#issuecomment-1728753
+     * @see     php://language.oop5.iterations
+     * @return  php.Iterator
+     */
+    public function getIterator() {
+      throw new IllegalStateException('Iteration not supported');
+    }
     
     /**
      * = list[] overloading

@@ -213,5 +213,14 @@
         $this->map->toString()
       );
     }
-  }
+
+    /**
+     * Verifies iteration is not supported.
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function iterationNotSupported() {
+      foreach ($this->map as $key => $value) { }
+    }
+ }
 ?>
