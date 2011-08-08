@@ -84,19 +84,27 @@
       $args= array();
       
       // Build list of injected arguments
-      foreach ($routing->getArgs()->getInjections() as $name) {
-        $args[]= $this->getBinding($name);
+      foreach ($routing->getArgs()->getInjections() as $i => $name) {
+        $ref= $routing->getArgs()->getInjectionRef($i);
+        
+        // Test if injection references a named argument
+        if (!is_numeric($ref)) {
+          $ref= array_search($ref, $routing->getArgs()->getArguments());
+        }
+        
+        $args[(int)$ref]= $this->getBinding($name);
       }
 
       // Add named parameters
       foreach ($routing->getArgs()->getArguments() as $i => $name) {
-        if ($i < sizeof($routing->getArgs()->getInjections())) continue;  // Skip injection arguments
+        if (isset($args[$i])) continue;  // Skip injection arguments
 
-        $args[]= RestDataCaster::complex(
+        $args[$i]= RestDataCaster::complex(
           RestDataCaster::simple($values[$name]),
           $routing->getArgs()->getArgumentType($name)
         );
       }
+      ksort($args);
       
       return $routing->getTarget()->process($args);
     }

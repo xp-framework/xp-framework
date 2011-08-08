@@ -54,8 +54,12 @@
           foreach ($method->getParameters() as $param) {
             $args->addArgument($param->getName(), $param->getType());
           }
-          if ($method->hasAnnotation('webmethod', 'inject')) foreach ($method->getAnnotation('webmethod', 'inject') as $name) {
-            $args->addInjection($name);
+          if ($method->hasAnnotation('webmethod', 'inject')) foreach ($method->getAnnotation('webmethod', 'inject') as $ref => $name) {
+            if (!is_numeric($ref) && !$args->hasArgument($ref)) {
+              throw new IllegalArgumentException('Argument '.$ref.' does not exist for injecting '.$name);
+            }
+            
+            $args->addInjection($name, $ref);
           }
           
           // Add routing to table
