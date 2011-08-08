@@ -56,5 +56,14 @@
         throw $e->getCause();
       }
     }
+    
+    /**
+     * Return string representation
+     * 
+     * @return string
+     */
+    public function toString() {
+      return $this->method->getDeclaringClass()->getName().'::'.$this->method->getName().'()';
+    }
   }
 ?>
