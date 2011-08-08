@@ -52,6 +52,7 @@
       $processor->bind('payload', $req->getData());
       
       $routed= FALSE;
+      $errors= array();
       for ($i= 0, $s= sizeof($routings); $i<$s && !$routed; $i++) {
         $routing= $routings[$i];
         
@@ -62,12 +63,20 @@
           ));
           $routed= TRUE;
         } catch (ClassCastException $e) {
-          // When casting arguments, try next route
+          // When casting arguments, try next route and register error
+          $errors[]= sprintf(
+            '%s ~ %s (%s)',
+            $routing->getTarget()->toString(),
+            $e->getClassName(),
+            $e->getMessage()
+          );
         }
       }
       
       if (!$routed)  throw new IllegalStateException(
-        'Can not route '.$req->getMethod().' request '.$req->getPath()
+        'Can not route '.$req->getMethod().' request '.$req->getPath()." [\n  ".
+        implode($errors, "\n  ").
+        "\n]"
       );
     }
     
