@@ -57,6 +57,16 @@
     }
     
     /**
+     * Test hasArgument()
+     * 
+     */
+    #[@test]
+    public function hasArgument() {
+      $this->assertTrue($this->args->hasArgument('id'));
+      $this->assertFalse($this->args->hasArgument('unknown'));
+    }
+    
+    /**
      * Test getArgumentType() for argument registration without specifying
      * type to default to Type::$VAR
      * 
@@ -101,6 +111,17 @@
         array('webservices.rest.transport.HttpRequestAdapter', 'webservices.rest.transport.HttpResponseAdapter', 'some.other.Class'),
         $this->args->getInjections()
       );
+    }
+    
+    /**
+     * Test getInjectionRef()
+     * 
+     */
+    #[@test]
+    public function getInjectionRef() {
+      $this->args->addInjection('some.other.Class', 'arg1');
+      
+      $this->assertEquals('arg1', $this->args->getInjectionRef(2));
     }
   }
 ?>

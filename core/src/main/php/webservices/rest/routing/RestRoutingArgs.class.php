@@ -45,6 +45,16 @@
     }
     
     /**
+     * Test if argument exists
+     * 
+     * @param string name The name of argument
+     * @return bool
+     */
+    public function hasArgument($name) {
+      return isset($this->args[$name]);
+    }
+    
+    /**
      * Return list of arguments
      * 
      * @return string
@@ -66,9 +76,10 @@
      * Add injection
      * 
      * @param string name The injection name
+     * @param string ref The optional reference id
      */
-    public function addInjection($name) {
-      $this->injects[]= $name;
+    public function addInjection($name, $ref= NULL) {
+      $this->injects[$ref !== NULL ? $ref : sizeof($this->injects)]= $name;
     }
     
     /**
@@ -77,7 +88,19 @@
      * @return string[]
      */
     public function getInjections() {
-      return $this->injects;
+      return array_values($this->injects);
+    }
+    
+    /**
+     * Get injection reference
+     * 
+     * @param int idx The injection index
+     * @return string
+     */
+    public function getInjectionRef($idx) {
+      $keys= array_keys($this->injects);
+      
+      return $keys[$idx];
     }
   }
 ?>
