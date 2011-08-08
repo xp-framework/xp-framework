@@ -62,6 +62,15 @@
     }
     
     /**
+     * Test query string parsing
+     * 
+     */
+    #[@test]
+    public function getParamNamesForQuery() {
+      $this->assertTrue(create(new RestPath('/path/?p1={p1}'))->hasParam('p1'));
+    }
+    
+    /**
      * Test simple parameter
      * 
      */
@@ -85,6 +94,33 @@
         'entity' => '1337'
       ),
         create(new RestPath('/path/to/item/{id}/entity/{entity}'))->match('/path/to/item/1234/entity/1337')
+      );
+    }
+    
+    /**
+     * Test simple query parameter
+     * 
+     */
+    #[@test]
+    public function simpleQueryParam() {
+      $this->assertEquals(array(
+        'p1' => '1234'
+      ),
+        create(new RestPath('/path/to/item/?id={p1}'))->match('/path/to/item/?id=1234')
+      );
+    }
+    
+    /**
+     * Test multiple parameters
+     * 
+     */
+    #[@test]
+    public function multipleQueryParams() {
+      $this->assertEquals(array(
+        'p1' => '1234',
+        'p2' => '5678'
+      ),
+        create(new RestPath('/path/to/item/?id={p1}&key={p2}'))->match('/path/to/item/?key=5678&id=1234')
       );
     }
   }

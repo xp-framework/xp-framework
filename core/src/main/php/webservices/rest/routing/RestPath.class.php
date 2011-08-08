@@ -19,6 +19,7 @@
   class RestPath extends Object {
     protected
       $path= '',
+      $query= array(),
       $names= array(),
       $pattern= '';
     
@@ -31,7 +32,15 @@
       static $search= '/\{(\w*)\}/';
       static $replace= '(\w*)';
       
-      $this->path= $path;
+      list ($this->path, $this->query)= $this->splitParams($path);
+      
+      foreach ($this->query as $name => $param) {
+        if (preg_match($search, $param, $matches)) {
+          $this->query[$name]= $matches[1];
+        } else {
+          unset($this->query[$name]);
+        }
+      }
       
       // Check if placeholders are in path
       if (preg_match_all($search, $this->path, $names)) {
@@ -43,19 +52,41 @@
     }
     
     /**
+     * Split path and query parameters
+     * 
+     * @param string path The path and query string
+     * @return mixed[]
+     */
+    protected function splitParams($path) {
+      $query= array();
+      
+      if (FALSE !== ($p= strpos($path, '?'))) {
+        parse_str(substr($path, $p+1), $query);
+        $path= substr($path, 0, $p-1);
+      }
+      
+      return array($path, $query);
+    }
+    
+    /**
      * Match the given URL and return values matched
      * 
      * @param string path The URL path
      * @return mixed[]
      */
     public function match($path) {
-      $params= array();
+      list ($path, $query)= $this->splitParams($path);
       
       if (preg_match('#^'.$this->pattern.'$#', $path, $matches)) {
         array_shift($matches);
         
+        $params= array();
         foreach ($this->names as $i => $name) {
           $params[$name]= $matches[$i];
+        }
+        
+        foreach ($this->query as $name => $param) {
+          if (isset($query[$name])) $params[$param]= $query[$name];
         }
         
         return $params;
@@ -78,7 +109,7 @@
      * 
      */
     public function getParamNames() {
-      return $this->names;
+      return array_merge($this->names, array_values($this->query));
     }
     
     /**
@@ -88,7 +119,7 @@
      * @return bool
      */
     public function hasParam($name) {
-      return in_array($name, $this->names);
+      return in_array($name, $this->getParamNames());
     }
   }
 ?>
