@@ -60,6 +60,19 @@
         // to use $response->addFormValue() because this is done in
         // XMLScriptlet::processRequest() called in XMLScriptlet::doGet().
         if (isset($request->params[$key])) continue;
+
+        // Skip array lists too
+        // 
+        // Array list set in handler differs to the list in the request
+        // e.g. Handler array -> $handler->setFormValue('arrayname[KEY1]', ...)
+        //                       $handler->setFormValue('arrayname[KEY2]', ...)
+        //   But this list is saved in a array with the name arrayname and not with
+        //   the separate names, which was set in the setFormValue
+        if ($key[strlen($key)-1] == ']') {
+          $array_name= substr($key, 0, strpos($key, '['));
+          $array_key= substr($key, stripos($key, '[')+1, -1);
+          if (isset($request->params[$array_name][$array_key])) continue;
+        }
         $request->params[$key]= $handler->values[HVAL_FORMPARAM][$key];
       }
       
