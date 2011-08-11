@@ -34,6 +34,33 @@
     }
     
     /**
+     * Generate API documentation
+     * 
+     * @param scriptlet.http.HttpScriptletRequest request The request
+     * @param scriptlet.http.HttpScriptletResponse response The response
+     */
+    public function doDocumentation($request, $response) {
+      $response->write('<html><head><title>REST @ '.$request->getURL()->getPath().'</title></head><body style="font-family: courier;">');
+
+      $response->write('<h1>Methods</h1><ul>');
+      foreach ($this->router->getRouting()->getItems() as $item) {
+        $response->write('<li>'.$item->getVerb().' '.$item->getPath()->getPath().'<br/>');
+        
+        $args= $item->getArgs();
+        foreach ($args->getArguments() as $name) {
+          $response->write('- '.$name.' : '.$args->getArgumentType($name)->getName());
+          
+          if ($args->isInjected($name)) $response->write(' (injected by '.$args->getInjection($name).')');
+          
+          $response->write('<br/>');
+        }
+        $response->write('<br/></li>');
+      }
+      
+      $response->write('</ul></body></html>');
+    }
+    
+    /**
      * Do request processing
      * 
      * @param scriptlet.http.HttpScriptletRequest request The request
@@ -90,6 +117,12 @@
       
       // Setup request
       parent::handleMethod($request);
+      
+      // Check Accept header for "text/html" which may indicate a direct
+      // browser request - in this case just show the API doc
+      if (FALSE !== strpos($request->getHeader('Accept'), 'text/html')) {
+        return 'doDocumentation';
+      }
       
       // We want to handle all request at one place
       return 'doProcess';
