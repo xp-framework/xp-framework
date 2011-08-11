@@ -19,6 +19,13 @@
     public function configure($setup, $base= '');
     
     /**
+     * Get routing table
+     * 
+     * @return webservices.rest.routing.RestRouting
+     */
+    public function getRouting();
+    
+    /**
      * Return routes for given request and response
      * 
      * @param webservices.rest.transport.HttpRequestAdapter request The request

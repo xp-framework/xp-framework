@@ -74,6 +74,15 @@
     }
     
     /**
+     * Get routing table
+     * 
+     * @return webservices.rest.routing.RestRouting
+     */
+    public function getRouting() {
+      return $this->table;
+    }
+    
+    /**
      * Test if route exists
      *
      * @param string verb The verb
