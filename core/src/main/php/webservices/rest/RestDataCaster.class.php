@@ -45,7 +45,7 @@
           return self::simple($data->toArray());
         
         default:
-          if ($data instanceof Object) {
+          if ($data instanceof Generic) {
             $fields= array();
             foreach ($data->getClass()->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
