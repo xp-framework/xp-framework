@@ -13,7 +13,7 @@
     /**
      * Handle route 
      * 
-     * @param mixed[] args The arguments
+     * @param var[] args The arguments
      * @return webservices.rest.RestRoute[]
      */
     public function process($args= array());

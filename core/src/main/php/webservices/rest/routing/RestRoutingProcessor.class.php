@@ -50,7 +50,7 @@
      * Retrieve binding
      * 
      * @param string token The token name of binding
-     * @return mixed
+     * @return var
      */
     public function getBinding($token) {
       list($name, $key)= $this->parseName($token);
@@ -78,7 +78,7 @@
      * 
      * @param webservices.rest.routing.RestRoutingItem routing The routing item to process
      * @param mixed[] values The argument values
-     * @return mixed
+     * @return var
      */
     public function execute(RestRoutingItem $routing, $values) {
       $args= array();

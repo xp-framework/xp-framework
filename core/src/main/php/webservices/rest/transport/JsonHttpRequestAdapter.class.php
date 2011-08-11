@@ -20,7 +20,7 @@
     /**
      * Retrieve body
      * 
-     * @return mixed[]
+     * @return var[]
      */
     public function getData() {
       return create(new JsonDecoder())->decode($this->request->getData());

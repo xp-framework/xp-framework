@@ -20,7 +20,7 @@
     /**
      * Set body
      * 
-     * @param mixed[] data The data
+     * @param var[] data The data
      */
     public function setData($data) {
       $this->response->write(create(new JsonDecoder())->encode($data));

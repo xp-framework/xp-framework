@@ -19,7 +19,7 @@
      * Constructor
      * 
      * @param lang.reflect.Method method The method to route to
-     * @param mixed[] args The additional args to use when invoking the method (defaults to empty array)
+     * @param var[] args The additional args to use when invoking the method (defaults to empty array)
      */
     public function __construct($method) {
       $this->method= $method;
@@ -37,8 +37,8 @@
     /**
      * Handle route 
      * 
-     * @param mixed[] args The list of arguments to use
-     * @return mixed[]
+     * @param var[] args The list of arguments to use
+     * @return var[]
      */
     public function process($args= array()) {
       foreach ($this->method->getParameters() as $n => $arg) {

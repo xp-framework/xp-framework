@@ -55,7 +55,7 @@
      * Split path and query parameters
      * 
      * @param string path The path and query string
-     * @return mixed[]
+     * @return var[]
      */
     protected function splitParams($path) {
       $query= array();
@@ -72,7 +72,7 @@
      * Match the given URL and return values matched
      * 
      * @param string path The URL path
-     * @return mixed[]
+     * @return var[]
      */
     public function match($path) {
       list ($path, $query)= $this->splitParams($path);

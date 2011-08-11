@@ -21,8 +21,8 @@
      * Simplify data structure by generating a simple array containing
      * the data
      * 
-     * @param mixed[] data The data to simplify
-     * @return mixed[]
+     * @param var[] data The data to simplify
+     * @return var[]
      */
     public static function simple($data) {
       switch (xp::typeOf($data)) {
@@ -69,9 +69,9 @@
     /**
      * Complexify data by creating an object
      * 
-     * @param mixed[] data The data to simplify
+     * @param var[] data The data to simplify
      * @param lang.Type type The type to use
-     * @return mixed[]
+     * @return var[]
      */
     public static function complex($data, Type $type) {
       switch ($type->getName()) {
