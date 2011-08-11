@@ -18,7 +18,7 @@
    */
   class RestRoutingArgs extends Object {
     protected $args= array();
-    protected $injects= array();
+    public $injects= array();
     
     /**
      * Constructor
@@ -31,9 +31,8 @@
         is_numeric($name) ? $this->addArgument($type) : $this->addArgument($name, $type);
       }
       
-      $args= $this->getArguments();
       foreach ($injects as $name => $inject) {
-        $this->addInjection($inject, is_numeric($name) ? $args[$name] : $name);
+        $this->addInjection($inject, $name);
       }
     }
     
@@ -82,7 +81,16 @@
      * @param string ref The optional reference id
      */
     public function addInjection($name, $ref= NULL) {
-      $this->injects[$ref !== NULL ? $ref : sizeof($this->injects)]= $name;
+      if ($ref === NULL) {  // Append injection parameter
+        $this->injects[sizeof($this->injects)]= $name;
+        
+      } else if (is_numeric($ref)) {  // Reference by index
+        $args= $this->getArguments();
+        $this->injects[$args[$ref]]= $name;
+        
+      } else {  // Referenced by name
+        $this->injects[$ref]= $name;
+      }
     }
     
     /**
