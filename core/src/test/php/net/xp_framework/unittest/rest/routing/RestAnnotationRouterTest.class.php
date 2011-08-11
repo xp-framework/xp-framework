@@ -44,6 +44,15 @@
     }
     
     /**
+     * Test getRouting()
+     * 
+     */
+    #[@test]
+    public function getRouting() {
+      $this->assertInstanceOf('webservices.rest.routing.RestRouting', $this->fixture->getRouting());
+    }
+    
+    /**
      * Test hasRoutesFor()
      * 
      */
