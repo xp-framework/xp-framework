@@ -11,13 +11,6 @@
   interface HttpResponseAdapter {
     
     /**
-     * Constructor
-     * 
-     * @param scriptlet.http.HttpResponse response The response
-     */
-    public function __construct($response);
-    
-    /**
      * Set status code
      * 
      * @param int code The status code

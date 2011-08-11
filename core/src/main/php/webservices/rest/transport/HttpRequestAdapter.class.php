@@ -11,13 +11,6 @@
   interface HttpRequestAdapter {
     
     /**
-     * Constructor
-     * 
-     * @param scriptlet.http.HttpRequest request The request
-     */
-    public function __construct($request);
-    
-    /**
      * Retrieve method
      * 
      * @return string 
