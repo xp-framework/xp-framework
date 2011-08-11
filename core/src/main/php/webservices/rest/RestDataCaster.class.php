@@ -47,12 +47,13 @@
         default:
           if ($data instanceof Generic) {
             $fields= array();
-            foreach ($data->getClass()->getFields() as $field) {
+            $class= $data->getClass();
+            foreach ($class->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
                 $fields[$field->getName()]= self::simple($field->get($data));
                 
-              } else if ($data->getClass()->hasMethod('get'.ucfirst($field->getName()))) {
-                $fields[$field->getName()]= self::simple($data->getClass()->getMethod('get'.ucfirst($field->getName()))->invoke($data));
+              } else if ($class->hasMethod('get'.ucfirst($field->getName()))) {
+                $fields[$field->getName()]= self::simple($class->getMethod('get'.ucfirst($field->getName()))->invoke($data));
               }
             }
             return $fields;
