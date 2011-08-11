@@ -34,6 +34,28 @@
     }
     
     /**
+     * Test getItems()
+     * 
+     */
+    #[@test]
+    public function getItems() {
+      $this->assertEquals(array(), $this->routing->getItems());
+    }
+    
+    /**
+     * Test getItems() with routing items
+     * 
+     */
+    #[@test]
+    public function getItemsWithItems() {
+      $this->routing->addRoute('GET', '/path/to/something', new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)));
+      $routes= $this->routing->getItems();
+      
+      $this->assertEquals(1, sizeof($routes));
+      $this->assertInstanceOf('webservices.rest.routing.RestRoutingItem', $routes[0]);
+    }
+    
+    /**
      * Test hasRoutings() with not routes
      * 
      */

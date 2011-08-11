@@ -20,6 +20,15 @@
     protected $routings= array();
     
     /**
+     * Return items
+     * 
+     * @return webservices.rest.routing.RestRoutingItem
+     */
+    public function getItems() {
+      return $this->routings;
+    }
+    
+    /**
      * Add new route
      * 
      * @param string verb The verb to add route for
