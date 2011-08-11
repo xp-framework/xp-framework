@@ -18,7 +18,7 @@
    */
   class RestRoutingArgs extends Object {
     protected $args= array();
-    protected $injections= array();
+    protected $injects= array();
     
     /**
      * Constructor
@@ -31,7 +31,10 @@
         is_numeric($name) ? $this->addArgument($type) : $this->addArgument($name, $type);
       }
       
-      $this->injects= $injects;
+      $args= $this->getArguments();
+      foreach ($injects as $name => $inject) {
+        $this->addInjection($inject, is_numeric($name) ? $args[$name] : $name);
+      }
     }
     
     /**
@@ -57,7 +60,7 @@
     /**
      * Return list of arguments
      * 
-     * @return string
+     * @return string[]
      */
     public function getArguments() {
       return array_keys($this->args);
@@ -92,6 +95,26 @@
     }
     
     /**
+     * Return injection name for given parameter
+     * 
+     * @param string name The parameter name
+     * @return string
+     */
+    public function getInjection($name) {
+      if (array_key_exists($name, $this->injects)) {  // Referenced injection
+        return $this->injects[$name];
+      } else {
+        $names= $this->getArguments();
+        
+        if (FALSE !== ($p= array_key_exists($name, array_keys($names)))) {
+          return $this->injects[$names[$name]];
+        }
+      }
+      
+      return NULL;
+    }
+    
+    /**
      * Get injection reference
      * 
      * @param int idx The injection index
@@ -101,6 +124,16 @@
       $keys= array_keys($this->injects);
       
       return $keys[$idx];
+    }
+    
+    /**
+     * Test if given parameter name is an injection parameter
+     * 
+     * @param string name The name of parameter
+     * @return bool
+     */
+    public function isInjected($name) {
+      return $this->getInjection($name) !== NULL;
     }
   }
 ?>

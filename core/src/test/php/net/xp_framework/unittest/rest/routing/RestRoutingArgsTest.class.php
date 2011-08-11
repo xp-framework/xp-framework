@@ -114,6 +114,44 @@
     }
     
     /**
+     * Test getInjection() with parameter name
+     * 
+     */
+    #[@test]
+    public function getInjectionByName() {
+      $this->args->addInjection('payload[test]', 'arg1');
+      
+      $this->assertEquals('payload[test]', $this->args->getInjection('arg1'));
+    }
+    
+    /**
+     * Test getInjection() with wrong name
+     * 
+     */
+    #[@test]
+    public function getInjectionWrongName() {
+      $this->assertNull($this->args->getInjection('unknown'));
+    }
+    
+    /**
+     * Test getInjection() with parameter index
+     * 
+     */
+    #[@test]
+    public function getInjectionByIndex() {
+      $this->assertEquals('webservices.rest.transport.HttpRequestAdapter', $this->args->getInjection(0));
+    }
+    
+    /**
+     * Test getInjection() with wrong index
+     * 
+     */
+    #[@test]
+    public function getInjectionWrongIndex() {
+      $this->assertNull($this->args->getInjection(5));
+    }
+    
+    /**
      * Test getInjectionRef()
      * 
      */
@@ -122,6 +160,44 @@
       $this->args->addInjection('some.other.Class', 'arg1');
       
       $this->assertEquals('arg1', $this->args->getInjectionRef(2));
+    }
+    
+    /**
+     * Test isInjected() for named parameter
+     * 
+     */
+    #[@test]
+    public function isInjectedByName() {
+      $this->args->addInjection('some.other.Class', 'arg1');
+      
+      $this->assertTrue($this->args->isInjected('arg1'));
+    }
+    
+    /**
+     * Test isInjected() for parameter index
+     * 
+     */
+    #[@test]
+    public function isInjectedByIndex() {
+      $this->assertTrue($this->args->isInjected(0));
+    }
+    
+    /**
+     * Test isInjected() for non-existant parameter name
+     * 
+     */
+    #[@test]
+    public function isInjectedWrongName() {
+      $this->assertFalse($this->args->isInjected('unknown'));
+    }
+    
+    /**
+     * Test isInjected() for non-existant parameter index
+     * 
+     */
+    #[@test]
+    public function isInjectedWrongIndex() {
+      $this->assertFalse($this->args->isInjected(5));
     }
   }
 ?>
