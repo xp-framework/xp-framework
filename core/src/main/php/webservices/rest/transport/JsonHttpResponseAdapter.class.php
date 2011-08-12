@@ -23,6 +23,7 @@
      * @param var[] data The data
      */
     public function setData($data) {
+      $this->response->setHeader('Content-Type', 'application/json');
       $this->response->write(create(new JsonDecoder())->encode($data));
     }
   }
