@@ -82,6 +82,7 @@
      */
     public function execute(RestRoutingItem $routing, $values) {
       $args= array();
+      $names= $routing->getArgs()->getArguments();
       
       // Build list of injected arguments
       foreach ($routing->getArgs()->getInjections() as $i => $name) {
@@ -89,16 +90,21 @@
         
         // Test if injection references a named argument
         if (!is_numeric($ref)) {
-          $ref= array_search($ref, $routing->getArgs()->getArguments());
+          $ref= array_search($ref, $names);
         }
         
-        $args[(int)$ref]= $this->getBinding($name);
+        // Try to convert binding to requested argument type
+        $args[(int)$ref]= RestDataCaster::complex(
+          RestDataCaster::simple($this->getBinding($name)),
+          $routing->getArgs()->getArgumentType($names[$ref])
+        );
       }
 
       // Add named parameters
-      foreach ($routing->getArgs()->getArguments() as $i => $name) {
+      foreach ($names as $i => $name) {
         if (isset($args[$i])) continue;  // Skip injection arguments
 
+        // Try to convert parameters to requested argument type
         $args[$i]= RestDataCaster::complex(
           RestDataCaster::simple($values[$name]),
           $routing->getArgs()->getArgumentType($name)
