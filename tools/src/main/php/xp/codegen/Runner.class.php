@@ -32,7 +32,7 @@
    * Output options
    * --------------
    * <ul>
-   *   <li>-: Output is written to standard ouput (default if omitted)</li>
+   *   <li>-O: Output is written to standard ouput (default if omitted)</li>
    *   <li>[name].xar: Output is written to a XAR archive</li>
    *   <li>[directory]: Output is written to the filesystem</li>
    * </ul>
