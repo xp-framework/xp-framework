@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('security.crypto.CryptoException');
+
   /**
    * Unix crypt algorithm implementation. Note:  There is no decrypt 
    * function, since crypt() uses a one-way algorithm.
@@ -22,9 +24,6 @@
    *   // Use blowfish encryption with 16 character salt
    *   $blowfish= UnixCrypt::crypt('plain', '$2$0123456789ABCDEF');
    *
-   *   // Use standard DES-based encryption with a two character salt
-   *   $des= UnixCrypt::crypt('plain', '_01');
-   *
    *   // Use extended DES-based encryption with a nine character salt
    *   $extdes= UnixCrypt::crypt('plain', '_012345678');
    * </code>
@@ -34,6 +33,7 @@
    *   $verified= UnixCrypt::matches($crypted, $entered);
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.security.UnixCryptTest
    * @see      php://crypt
    * @purpose  One-way string encryption (hashing)
    */
@@ -69,7 +69,11 @@
      * @return  string crypted
      */
     public static function crypt($original, $salt= NULL) {
-      return crypt($original, $salt);
+      $crypted= crypt($original, $salt);
+      if (strlen($crypted) < 13) {
+        throw new CryptoException('Failed to crypt: '.$crypted);
+      }
+      return $crypted;
     }
     
     /**
