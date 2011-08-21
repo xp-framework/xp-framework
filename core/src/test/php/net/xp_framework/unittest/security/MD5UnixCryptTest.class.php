@@ -49,16 +49,38 @@
       $this->assertCryptedMatches('$1$_', '$1$_$.m3t.Z4nwsU9NHyuqbRAC1');
     }
 
-
     /**
      * Test MD5 method
      *
      */
     #[@test]
+    public function md5SaltDoesNotEndWithDollar() {
+      $this->assertCryptedMatches('$1$01234567_', '$1$01234567$CEE8q9mw43U6PHo8uPcOW/');
+    }
+
+    /**
+     * Verify PHP Bug #55439
+     *
+     * @see   https://bugs.php.net/bug.php?id=55439
+     */
+    #[@test]
     public function phpBug55439() {
       $this->assertEquals(
         '$1$U7AjYB.O$L1N7ux7twaMIMw0En8UUR1',
-        UnixCrypt::crypt('password', '$1$U7AjYB.O$')
+        $this->fixture()->crypt('password', '$1$U7AjYB.O$')
+      );
+    }
+
+    /**
+     * Verify correct functionality
+     *
+     * @see   http://stackoverflow.com/questions/5258860/php-crypt-returning-wrong-answer
+     */
+    #[@test]
+    public function incorrectBehaviourInWindowsPHP() {
+      $this->assertEquals(
+        '$1$ad000000$8tTFeywywdEQrAl9QzV.M1',
+        $this->fixture()->crypt('hello world', '$1$ad0000000')
       );
     }
   }

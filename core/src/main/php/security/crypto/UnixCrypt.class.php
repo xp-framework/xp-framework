@@ -49,19 +49,91 @@
     public static $MD5;
 
     static function __static() {
-      self::$STANDARD= CRYPT_STD_DES ? new NativeCryptImpl() : new CryptNotImplemented('STD_DES');
-      self::$EXTENDED= CRYPT_EXT_DES ? new NativeCryptImpl() : new CryptNotImplemented('EXT_DES');
-      self::$BLOWFISH= CRYPT_BLOWFISH ? new NativeCryptImpl() : new CryptNotImplemented('BLOWFISH');
+      $builtin= version_compare(PHP_VERSION, '5.3.0', 'ge');
+
+      if (!CRYPT_STD_DES) {
+        self::$STANDARD= new CryptNotImplemented('STD_DES');
+      } else {
+        self::$STANDARD= new NativeCryptImpl();
+        
+        // Before 5.3.2, PHP's crypt() function returned incorrect values 
+        // when given salt characters outside of the alphabet "./0-9A-Za-z".
+        // No real workaround, so throw an exception - this is inconsistent
+        // with XP on newer PHP versions which yields the correct results
+        if (version_compare(PHP_VERSION, '5.3.2', 'lt')) {
+          self::$STANDARD= newinstance('security.crypto.NativeCryptImpl', array(), '{
+            public function crypt($plain, $salt) {
+              if (!preg_match("#^[./0-9A-Za-z]{2}#", $salt)) {
+                throw new CryptoException("Malformed salt");
+              }
+              return parent::crypt($plain, $salt);
+            }
+          }');
+        }
+      }
+
+      if (!CRYPT_BLOWFISH) {
+        self::$BLOWFISH= new CryptNotImplemented('BLOWFISH');
+      } else {
+        self::$BLOWFISH= new NativeCryptImpl();
+        
+        // The blowfish method has a bug between PHP 5.3.0 and 5.3.2 which
+        // returns a bogus result instead of failing when the cost parameter
+        // is incorrect. For *any* builtin implementation, recognition is 
+        // broken as the "__" in "$2a$__$" for example makes PHP not jump 
+        // into the blowfish branch but fall back to the else branch, and thus 
+        // to standard DES. See line 247 and following in ext/standard/crypt.c
+        if ($builtin) {
+          self::$BLOWFISH= newinstance('security.crypto.NativeCryptImpl', array(), '{
+            public function crypt($plain, $salt) {
+              if (0 === strpos($salt, "$2a$")) {
+                if (1 !== sscanf($salt, "$2a$%02d$", $cost)) {
+                  throw new CryptoException("Malformed cost parameter");
+                }
+                if ($cost < 4 || $cost > 31) {
+                  throw new CryptoException("Cost parameter must be between 04 and 31");
+                }
+              }
+              return parent::crypt($plain, $salt);
+            }
+          }');
+        }
+      }
+      
+      if (!CRYPT_EXT_DES) {
+        self::$EXTENDED= new CryptNotImplemented('EXT_DES');
+      } else {
+        self::$EXTENDED= new NativeCryptImpl();
+
+        // PHP's crypt() function crashes if the salt is too short due to PHP 
+        // using its own DES implementations as 5.3 - these don't check the 
+        // return value correctly. See Bug #51059, which was fixed in PHP 5.3.2
+        if ($builtin && version_compare(PHP_VERSION, '5.3.2', 'lt')) {
+          self::$EXTENDED= newinstance('security.crypto.NativeCryptImpl', array(), '{
+            public function crypt($plain, $salt) {
+              if ("_" === $salt{0} && strlen($salt) < 9) {
+                throw new CryptoException("Extended DES: Salt too short");
+              }
+              return parent::crypt($plain, $salt);
+            }
+          }');
+        }
+      }
 
       if (!CRYPT_MD5) {
         self::$MD5= XPClass::forName('security.crypto.MD5CryptImpl')->newInstance();
       } else {
         self::$MD5= new NativeCryptImpl();
-
-        // In PHP Bug #55439, crypt() returns just the salt for MD5. This bug 
-        // first occurred in PHP 5.3.7 RC6 and was shipped with PHP 5.3.7, and
-        // fixed in the release thereafter.
-        if (0 === strpos(PHP_VERSION, '5.3.7')) {
+        
+        // In PHP version between 5.3.0 and 5.3.5, this fails for situations when
+        // the salt is too short, too long or does not end with "$". 5.3.6 only
+        // breaks when the salt is too short. 5.3.7 is the first version to get it
+        // right, except: In PHP Bug #55439, crypt() returns just the salt for MD5
+        // on Un*x systems. This bug first occurred in PHP 5.3.7 RC6 and was shipped 
+        // with PHP 5.3.7, and fixed in the release thereafter.
+        if ($builtin && version_compare(PHP_VERSION, '5.3.7', 'lt')) {
+          self::$MD5= XPClass::forName('security.crypto.MD5CryptImpl')->newInstance();
+        } else if (0 === strpos(PHP_VERSION, '5.3.7')) {
           if ('$1$' === crypt('', '$1$')) {
             self::$MD5= XPClass::forName('security.crypto.MD5CryptImpl')->newInstance();
           }
