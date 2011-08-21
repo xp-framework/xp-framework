@@ -21,11 +21,12 @@
      *
      * @param   string salt
      * @param   string crypted
+     * @param   string plain default 'plain'
      * @throws  unittest.AssertionFailedError
      */
-    protected function assertCryptedMatches($salt, $crypted) {
-      $this->assertEquals($crypted, UnixCrypt::crypt('plain', $salt), 'Crypted string not equal');
-      $this->assertTrue(UnixCrypt::matches($crypted, 'plain'), 'Entered does not match crypted');
+    protected function assertCryptedMatches($salt, $crypted, $plain= 'plain') {
+      $this->assertEquals($crypted, UnixCrypt::crypt($plain, $salt), 'Crypted string not equal');
+      $this->assertTrue(UnixCrypt::matches($crypted, $plain), 'Entered does not match crypted');
       $this->assertFalse(UnixCrypt::matches($crypted, 'other'), 'Incorrect value matches crypted');
     }
   
@@ -45,6 +46,24 @@
     #[@test]
     public function md5() {
       $this->assertCryptedMatches('$1$0123456789AB', '$1$01234567$CEE8q9mw43U6PHo8uPcOW/');
+    }
+
+    /**
+     * Test MD5 method
+     *
+     */
+    #[@test]
+    public function md5PhpNetExample() {
+      $this->assertCryptedMatches('$1$rasmusle$', '$1$rasmusle$rISCgZzpwk3UhDidwXvin0', 'rasmuslerdorf');
+    }
+
+    /**
+     * Test MD5 method
+     *
+     */
+    #[@test]
+    public function md5ShortSalt() {
+      $this->assertCryptedMatches('$1$_', '$1$_$.m3t.Z4nwsU9NHyuqbRAC1');
     }
 
     /**
