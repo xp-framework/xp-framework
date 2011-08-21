@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('security.crypto.CryptoException');
+  uses(
+    'security.crypto.CryptoException',
+    'security.crypto.NativeCryptImpl',
+    'security.crypto.CryptNotImplemented'
+  );
 
   /**
    * Unix crypt algorithm implementation. Note:  There is no decrypt 
@@ -38,18 +42,33 @@
    * @purpose  One-way string encryption (hashing)
    */
   class UnixCrypt extends Object {
-    protected static $md5impl= NULL;
+    public static $DEFAULT;
+    public static $STANDARD;
+    public static $EXTENDED;
+    public static $BLOWFISH;
+    public static $MD5;
 
     static function __static() {
+      self::$STANDARD= CRYPT_STD_DES ? new NativeCryptImpl() : new CryptNotImplemented('STD_DES');
+      self::$EXTENDED= CRYPT_EXT_DES ? new NativeCryptImpl() : new CryptNotImplemented('EXT_DES');
+      self::$BLOWFISH= CRYPT_BLOWFISH ? new NativeCryptImpl() : new CryptNotImplemented('BLOWFISH');
 
-      // In PHP Bug #55439, crypt() returns just the salt for MD5. This bug 
-      // first occurred in PHP 5.3.7 RC6 and was shipped with PHP 5.3.7, and
-      // fixed in the release thereafter.
-      if (0 === strpos(PHP_VERSION, '5.3.7')) {
-        if ('$1$' === crypt('', '$1$')) {
-          self::$md5impl= XPClass::forName('security.crypto.MD5CryptImpl')->newInstance();
+      if (!CRYPT_MD5) {
+        self::$MD5= XPClass::forName('security.crypto.MD5CryptImpl')->newInstance();
+      } else {
+        self::$MD5= new NativeCryptImpl();
+
+        // In PHP Bug #55439, crypt() returns just the salt for MD5. This bug 
+        // first occurred in PHP 5.3.7 RC6 and was shipped with PHP 5.3.7, and
+        // fixed in the release thereafter.
+        if (0 === strpos(PHP_VERSION, '5.3.7')) {
+          if ('$1$' === crypt('', '$1$')) {
+            self::$MD5= XPClass::forName('security.crypto.MD5CryptImpl')->newInstance();
+          }
         }
       }
+      
+      self::$DEFAULT= self::$MD5;
     }
   
     /**
@@ -82,15 +101,19 @@
      * @return  string crypted
      */
     public static function crypt($original, $salt= NULL) {
-      if (self::$md5impl && 0 === strpos($salt, '$1$')) {
-        return self::$md5impl->crypt($original, $salt);
+      if (NULL === $salt) {
+        $impl= self::$DEFAULT;
+      } else if ('_' === $salt{0}) {
+        $impl= self::$EXTENDED;
+      } else if (0 === strpos($salt, '$1$')) {
+        $impl= self::$MD5;
+      } else if (0 === strpos($salt, '$2a$')) {
+        $impl= self::$BLOWFISH;
       } else {
-        $crypted= crypt($original, $salt);
-        if (strlen($crypted) < 13) {
-          throw new CryptoException('Failed to crypt: '.$crypted);
-        }
-        return $crypted;
+        $impl= self::$STANDARD;
       }
+
+      return $impl->crypt($original, $salt);
     }
     
     /**

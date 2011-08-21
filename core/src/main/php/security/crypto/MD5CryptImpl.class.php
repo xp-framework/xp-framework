@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('security.crypto.CryptImpl');
+
   /**
    * MD5 Crypt implementation
    *
@@ -21,7 +23,7 @@
    * @see   xp://security.crypto.UnixCrypt
    * @see   https://bugs.php.net/bug.php?id=55439
    */
-  class MD5CryptImpl extends Object {
+  class MD5CryptImpl extends security·crypto·CryptImpl {
     const MAGIC = '$1$';
     
     /**
