@@ -73,5 +73,17 @@
     public function extendedDESSaltTooShort() {
       UnixCrypt::crypt('plain', '_');
     }
+
+    /**
+     * Test MD5 method
+     *
+     */
+    #[@test]
+    public function phpBug55439() {
+      $this->assertEquals(
+        '$1$U7AjYB.O$L1N7ux7twaMIMw0En8UUR1',
+        UnixCrypt::crypt('password', '$1$U7AjYB.O$')
+      );
+    }
   }
 ?>
