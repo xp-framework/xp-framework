@@ -28,7 +28,7 @@
      */
     #[@test]
     public function extendedDES() {
-      $this->assertCryptedMatches('_012345678', '_01234567xl8NJKKN6es');
+      $this->assertCryptedMatches('_12345678', '_12345678SkhUrQrtUJM');
     }
 
     /**
@@ -45,9 +45,26 @@
      *
      */
     #[@test, @expect('security.crypto.CryptoException')]
-    public function extendedDESSaltTooShort() {
+    public function extendedDES1CharSalt() {
       $this->fixture()->crypt('plain', '_');
     }
 
+    /**
+     * Test extended DES method
+     *
+     */
+    #[@test, @expect('security.crypto.CryptoException')]
+    public function extendedDES2CharSalt() {
+      $this->fixture()->crypt('plain', '_1');
+    }
+
+    /**
+     * Test extended DES method
+     *
+     */
+    #[@test, @expect('security.crypto.CryptoException')]
+    public function extendedDES7CharSalt() {
+      $this->fixture()->crypt('plain', '_1234567');
+    }
   }
 ?>
