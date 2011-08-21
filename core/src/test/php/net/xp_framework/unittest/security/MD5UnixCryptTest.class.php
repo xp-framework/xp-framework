@@ -27,15 +27,6 @@
      *
      */
     #[@test]
-    public function md5() {
-      $this->assertCryptedMatches('$1$0123456789AB', '$1$01234567$CEE8q9mw43U6PHo8uPcOW/');
-    }
-
-    /**
-     * Test MD5 method
-     *
-     */
-    #[@test]
     public function md5PhpNetExample() {
       $this->assertCryptedMatches('$1$rasmusle$', '$1$rasmusle$rISCgZzpwk3UhDidwXvin0', 'rasmuslerdorf');
     }
@@ -45,7 +36,16 @@
      *
      */
     #[@test]
-    public function md5ShortSalt() {
+    public function md5SaltTooLong() {
+      $this->assertCryptedMatches('$1$0123456789AB', '$1$01234567$CEE8q9mw43U6PHo8uPcOW/');
+    }
+
+    /**
+     * Test MD5 method
+     *
+     */
+    #[@test]
+    public function md5SaltTooShort() {
       $this->assertCryptedMatches('$1$_', '$1$_$.m3t.Z4nwsU9NHyuqbRAC1');
     }
 
