@@ -7,6 +7,15 @@
   /**
    * MD5 Crypt implementation
    *
+   * Based on the implementation found in FreeBSD 2.2.[56]-RELEASE, which
+   * contains the following license:
+   * <pre>
+   *   "THE BEER-WARE LICENSE" (Revision 42):
+   *   <phk@login.dknet.dk> wrote this file.  As long as you retain this notice you
+   *   can do whatever you want with this stuff. If we meet some day, and you think
+   *   this stuff is worth it, you can buy me a beer in return.   Poul-Henning Kamp
+   * </pre>
+   *
    * @see   php://md5
    * @see   php://pack
    * @see   xp://security.crypto.UnixCrypt
@@ -23,7 +32,8 @@
      * @return  string
      */
     protected function to64($value, $length) {
-      $itoa= './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      static $itoa= './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
       $r= '';
       while ($length--) {
         $r.= $itoa{$value & 0x3F};
