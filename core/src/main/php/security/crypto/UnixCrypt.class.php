@@ -86,13 +86,11 @@
         if ($builtin) {
           self::$BLOWFISH= newinstance('security.crypto.NativeCryptImpl', array(), '{
             public function crypt($plain, $salt) {
-              if (0 === strpos($salt, "$2a$")) {
-                if (1 !== sscanf($salt, "$2a$%02d$", $cost)) {
-                  throw new CryptoException("Malformed cost parameter");
-                }
-                if ($cost < 4 || $cost > 31) {
-                  throw new CryptoException("Cost parameter must be between 04 and 31");
-                }
+              if (1 !== sscanf($salt, "$2a$%02d$", $cost)) {
+                throw new CryptoException("Malformed cost parameter");
+              }
+              if ($cost < 4 || $cost > 31) {
+                throw new CryptoException("Cost parameter must be between 04 and 31");
               }
               return parent::crypt($plain, $salt);
             }
@@ -111,7 +109,7 @@
         if ($builtin && version_compare(PHP_VERSION, '5.3.2', 'lt')) {
           self::$EXTENDED= newinstance('security.crypto.NativeCryptImpl', array(), '{
             public function crypt($plain, $salt) {
-              if ("_" === $salt{0} && strlen($salt) < 9) {
+              if (strlen($salt) < 9) {
                 throw new CryptoException("Extended DES: Salt too short");
               }
               return parent::crypt($plain, $salt);
