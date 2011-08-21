@@ -38,6 +38,19 @@
    * @purpose  One-way string encryption (hashing)
    */
   class UnixCrypt extends Object {
+    protected static $md5impl= NULL;
+
+    static function __static() {
+
+      // In PHP Bug #55439, crypt() returns just the salt for MD5. This bug 
+      // first occurred in PHP 5.3.7 RC6 and was shipped with PHP 5.3.7, and
+      // fixed in the release thereafter.
+      if (0 === strpos(PHP_VERSION, '5.3.7')) {
+        if ('$1$' === crypt('', '$1$')) {
+          self::$md5impl= XPClass::forName('security.crypto.MD5CryptImpl')->newInstance();
+        }
+      }
+    }
   
     /**
      * Encrypt a string
@@ -69,11 +82,15 @@
      * @return  string crypted
      */
     public static function crypt($original, $salt= NULL) {
-      $crypted= crypt($original, $salt);
-      if (strlen($crypted) < 13) {
-        throw new CryptoException('Failed to crypt: '.$crypted);
+      if (self::$md5impl && 0 === strpos($salt, '$1$')) {
+        return self::$md5impl->crypt($original, $salt);
+      } else {
+        $crypted= crypt($original, $salt);
+        if (strlen($crypted) < 13) {
+          throw new CryptoException('Failed to crypt: '.$crypted);
+        }
+        return $crypted;
       }
-      return $crypted;
     }
     
     /**
@@ -84,7 +101,7 @@
      * @return  bool
      */
     public static function matches($encrypted, $entered) {
-      return ($encrypted == crypt($entered, $encrypted));
+      return ($encrypted === self::crypt($entered, $encrypted));
     }
   }
 ?>
