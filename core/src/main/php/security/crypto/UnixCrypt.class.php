@@ -59,11 +59,22 @@
         // Before 5.3.2, PHP's crypt() function returned incorrect values 
         // when given salt characters outside of the alphabet "./0-9A-Za-z".
         // No real workaround, so throw an exception - this is inconsistent
-        // with XP on newer PHP versions which yields the correct results
-        if (defined('SUHOSIN_PATCH') || version_compare(PHP_VERSION, '5.3.2', 'lt')) {
+        // with XP on newer PHP versions which yields the correct results.
+        // On systems >= 5.3.2, check for usage of libc crypt() which also  
+        // allows salts which are too short and unsafe characters \n and : 
+        if (version_compare(PHP_VERSION, '5.3.2', 'lt')) {
           self::$STANDARD= newinstance('security.crypto.NativeCryptImpl', array(), '{
             public function crypt($plain, $salt) {
               if (!preg_match("#^[./0-9A-Za-z]{2}#", $salt)) {
+                throw new CryptoException("Malformed salt");
+              }
+              return parent::crypt($plain, $salt);
+            }
+          }');
+        } else if (':' === substr(crypt('', ':'), 0, 1)) {
+          self::$STANDARD= newinstance('security.crypto.NativeCryptImpl', array(), '{
+            public function crypt($plain, $salt) {
+              if (strlen($salt) < 1 || strcspn($salt, "\n:") < 2) {
                 throw new CryptoException("Malformed salt");
               }
               return parent::crypt($plain, $salt);
