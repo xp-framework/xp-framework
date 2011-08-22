@@ -98,24 +98,29 @@
         }
       }
       
-      if (!CRYPT_EXT_DES || defined('SUHOSIN_PATCH')) {
+      if (!CRYPT_EXT_DES) {
         self::$EXTENDED= new CryptNotImplemented('EXT_DES');
       } else {
-        self::$EXTENDED= new NativeCryptImpl();
 
         // PHP's crypt() function crashes if the salt is too short due to PHP 
         // using its own DES implementations as 5.3 - these don't check the 
         // return value correctly. See Bug #51059, which was fixed in PHP 5.3.2
-        if ($builtin && version_compare(PHP_VERSION, '5.3.2', 'lt')) {
-          self::$EXTENDED= newinstance('security.crypto.NativeCryptImpl', array(), '{
-            public function crypt($plain, $salt) {
-              if (strlen($salt) < 9) {
-                throw new CryptoException("Extended DES: Salt too short");
-              }
-              return parent::crypt($plain, $salt);
+        // Debian only recognizes EXT_DES if the salt is 9 characters long, see
+        // notes in PHP Bug #51254. As there is no reliable way to detect whether
+        // the patch (referenced in this bug) is applied, always use the check
+        // and strip off rest of crypted when matching. 
+        self::$EXTENDED= newinstance('security.crypto.NativeCryptImpl', array(), '{
+          public function crypt($plain, $salt) {
+            if (strlen($salt) < 9) {
+              throw new CryptoException("Extended DES: Salt too short");
             }
-          }');
-        }
+            return parent::crypt($plain, $salt); 
+          }
+
+          public function matches($encrypted, $entered) {
+            return ($encrypted === $this->crypt($entered, substr($encrypted, 0, 9))); 
+          }
+        }');
       }
 
       if (!CRYPT_MD5) {
