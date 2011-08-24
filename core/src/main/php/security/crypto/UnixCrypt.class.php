@@ -232,10 +232,15 @@
     /**
      * Returns crypt implementations
      *
-     * @return  security.crypto.CryptImpl[]
+     * @return  [:security.crypto.CryptImpl]
      */
     public static function implementations() {
-      return array(self::$STANDARD, self::$EXTENDED, self::$BLOWFISH, self::$MD5);
+      return array(
+        'std_des'  => self::$STANDARD, 
+        'ext_des'  => self::$EXTENDED, 
+        'blowfish' => self::$BLOWFISH, 
+        'md5'      => self::$MD5
+      );
     }
   }
 ?>
