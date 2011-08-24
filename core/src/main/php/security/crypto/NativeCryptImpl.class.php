@@ -28,5 +28,14 @@
       }
       return $crypted;
     }
+
+    /**
+     * Creates a string representation of this crypt implementation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName();
+    }
   }
 ?>

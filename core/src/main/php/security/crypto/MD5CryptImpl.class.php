@@ -96,5 +96,14 @@
         $this->to64(ord($final{11}), 2)
       );
     }
+
+    /**
+     * Creates a string representation of this crypt implementation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName();
+    }
   }
 ?>

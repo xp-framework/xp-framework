@@ -33,5 +33,14 @@
     public function crypt($plain, $salt) {
       throw new CryptoException('Method '.$this->method.' not implemented');
     }
+
+    /**
+     * Creates a string representation of this crypt implementation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->method.'>';
+    }
   }
 ?>

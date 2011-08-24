@@ -70,6 +70,10 @@
               }
               return parent::crypt($plain, $salt);
             }
+
+            public function toString() {
+              return "security.crypto.NativeCryptImpl+std:salt-alphabet-constraint";
+            }
           }');
         } else if (':' === substr(crypt('', ':'), 0, 1)) {
           self::$STANDARD= newinstance('security.crypto.NativeCryptImpl', array(), '{
@@ -78,6 +82,10 @@
                 throw new CryptoException("Malformed salt");
               }
               return parent::crypt($plain, $salt);
+            }
+
+            public function toString() {
+              return "security.crypto.NativeCryptImpl+std:salt-unsafe-check";
             }
           }');
         }
@@ -105,6 +113,10 @@
               }
               return parent::crypt($plain, $salt);
             }
+
+            public function toString() {
+              return "security.crypto.NativeCryptImpl+blowfish:cost-param-check";
+            }
           }');
         }
       }
@@ -130,6 +142,10 @@
 
           public function matches($encrypted, $entered) {
             return ($encrypted === $this->crypt($entered, substr($encrypted, 0, 9))); 
+          }
+
+          public function toString() {
+            return "security.crypto.NativeCryptImpl+ext:recognition-fix";
           }
         }');
       }
@@ -211,6 +227,15 @@
      */
     public static function matches($encrypted, $entered) {
       return ($encrypted === self::crypt($entered, $encrypted));
+    }
+
+    /**
+     * Returns crypt implementations
+     *
+     * @return  security.crypto.CryptImpl[]
+     */
+    public static function implementations() {
+      return array(self::$STANDARD, self::$EXTENDED, self::$BLOWFISH, self::$MD5);
     }
   }
 ?>
