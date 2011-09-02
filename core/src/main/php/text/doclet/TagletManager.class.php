@@ -32,7 +32,7 @@
         self::$instance->taglets['param']= new ParamTaglet();
         self::$instance->taglets['return']= new ReturnTaglet();
         self::$instance->taglets['throws']= new ThrowsTaglet();
-        self::$instance->taglets['test']= new TestTaglet;
+        self::$instance->taglets['test']= new TestTaglet();
         
         // Simple taglets
         $s= new SimpleTaglet();

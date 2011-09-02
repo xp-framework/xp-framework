@@ -35,6 +35,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Added missing brackets in TestTaglet instantiation in TagletManager
+  (hinckel)
 - Fixed fatal error in io.archive.zip.ZipFileEntry::toString()
   (friebe)
 - Fixed issue #28: Bug in io.File::readLine()
