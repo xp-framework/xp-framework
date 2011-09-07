@@ -7,7 +7,7 @@
   <info 
    organisation="net.xp_framework" 
    module="tools"
-   status="integration"
+   status="release"
    revision="5.8.2"
   >
     <license name="BSD"/>

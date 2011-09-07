@@ -8,7 +8,7 @@
   <info 
    organisation="net.xp_framework" 
    module="core"
-   status="integration"
+   status="release"
    revision="5.8.2"
   >
     <license name="BSD"/>
