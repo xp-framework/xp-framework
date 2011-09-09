@@ -8,8 +8,8 @@
   <info 
    organisation="net.xp_framework" 
    module="core"
-   status="release"
-   revision="5.8.2"
+   status="integration"
+   revision="5.8.3"
   >
     <license name="BSD"/>
     <description homepage="http://xp-framework.net/">
