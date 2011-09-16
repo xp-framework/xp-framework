@@ -98,8 +98,22 @@
     /**
      * Method annotated with multiple values which contains equal signs
      *
-     * #[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]
      */
+    #[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]
     public function multipleValuesWithStringsAndEqualSigns() { }
+
+    /**
+     * Method annotated with multiple string values
+     *
+     */
+    #[@permission('rn=login, rt=config1', 'rn=login, rt=config2')]
+    public function multipleStringValues() { }
+
+    /**
+     * Method annotated with multiple values but without using the 'array' keyword
+     *
+     */
+    #[@function(arguments= ('arg1', 'arg2'))]
+    public function multipleWithoutArrayKeyword() { }
   }
 ?>

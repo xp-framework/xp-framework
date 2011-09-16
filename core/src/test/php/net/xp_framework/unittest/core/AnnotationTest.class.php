@@ -273,13 +273,41 @@
      * is parsed correctly.
      *
      */
-     #[@test, @ignore('Test needs adjustment in XPClass and AnnotatedClass')]
+     #[@test]
      public function multipleValuesWithStringsAndEqualSigns() {
        $this->assertEquals(
-         array('rn=login, rt=config1', 'rn=login, rt=config2'),
-         $this->methodAnnotation('multipleValuesWithStringsAndEqualSigns')
+         array(
+          'names' => array('rn=login, rt=config1', 'rn=login, rt=config2')
+         ),
+         $this->methodAnnotation('multipleValuesWithStringsAndEqualSigns', 'permission')
        );
      }
 
+    /**
+     * Test annotation with multiple string values is parsed correctly.
+     *
+     */
+     #[@test]
+     public function multipleStringValues() {
+       $this->assertEquals(
+         array('rn=login, rt=config1', 'rn=login, rt=config2'),
+         $this->methodAnnotation('multipleStringValues', 'permission')
+       );
+     }
+
+    /**
+     * Test annotation with multiple annotations without using
+     * the 'array' keyword is parsed correctly.
+     *
+     */
+     #[@test]
+     public function multipleWithoutArrayKeyword() {
+       $this->assertEquals(
+         array(
+          'arguments' => array('arg1', 'arg2')
+         ),
+         $this->methodAnnotation('multipleWithoutArrayKeyword', 'function')
+       );
+     }
   }
 ?>

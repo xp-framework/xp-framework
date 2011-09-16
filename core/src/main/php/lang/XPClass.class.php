@@ -585,10 +585,25 @@
     public static function parseAnnotations($input, $context) {
       ob_start();
       $annotations= eval('return array('.($eval= preg_replace(
-        array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/(\(|, *)([a-z_]+) *= */i'),
-        array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
-        trim($input, "[]# \t\n\r").','
+        array(
+          "/@([a-z_]+)\('([^']+)'\),/i",            // Match string annotation: @string('value')
+          "/'([^']*)'/e",                           // Encode chars inside apostrophes: '...'
+          "/@([a-z_]+)\(/i",                        // Match complex annotations: @complex(...)
+          "/@([a-z_]+),/i",                         // Match simple annotations: @simple,...
+          "/= *(array)?\(/",                        // Match array values: '...=(', '...=array('
+          "/([a-z_]+) *= */i",                      // Match key/value pairs
+        ),
+        array(
+          "$1 = '$2',",
+          "\"urldecode('\".urlencode(\"$1\").\"')\"",
+          "$1 = (",
+          "$1 = NULL,",
+          "= array(",
+          "'$1' => ",
+        ),
+        trim($input, "[]# \t\n\r").','              // Trim decorators and add a trailing comma ','
       )).');');
+
       $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
       if (FALSE === $annotations || $msg) {
         ob_end_clean();
