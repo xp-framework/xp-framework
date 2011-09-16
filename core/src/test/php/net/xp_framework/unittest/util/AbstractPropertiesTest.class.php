@@ -616,5 +616,18 @@ key=value
 
       $p->removeKey('section1', 'key2');
     }
+
+    /**
+     * Remove nonexistant key in nonexistant section
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function removeNonexistingKeyInNonExistingSectionThrowsException() {
+      $p= $this->newPropertiesFrom('[section1]
+key=value
+      ');
+
+      $p->removeKey('section2', 'key2');
+    }
   }
 ?>
