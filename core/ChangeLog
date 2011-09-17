@@ -14,6 +14,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.types support for webservices.soap implementations, as
+  proposed in issue #18
+  (kiesel)
 - Added util.Properties::removeSection() and ::removeKey() methods, as
   proposed in issue #54
   (kiesel)
