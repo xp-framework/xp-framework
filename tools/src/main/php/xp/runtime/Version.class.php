@@ -23,7 +23,7 @@
     public static function main(array $args) {
       Console::writeLinef(
         'XP %s { PHP %s & ZE %s } @ %s', 
-        trim(ClassLoader::getDefault()->getResource('VERSION')),
+        xp::version(),
         phpversion(),
         zend_version(),
         php_uname()
