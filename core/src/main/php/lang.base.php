@@ -241,6 +241,19 @@
       trigger_error($message, E_USER_ERROR);
       exit(0x3d);
     }
+
+    // {{{ internal string version()
+    //     Retrieves current XP version
+    static function version() {
+      static $version= NULL;
+
+      if (NULL === $version) {
+        $version= trim(XPClass::forName('lang.Object')->getClass()->getClassLoader()->getResource('VERSION'));
+      }
+
+      return $version;
+    }
+    // }}}
   }
   // }}}
 
