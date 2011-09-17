@@ -12,7 +12,7 @@
    * @see      xp://webservices.soap.types.SoapType
    * @purpose  Vector type
    */
-  class SOAPVector extends SoapType {
+  class SOAPVector extends Object implements SoapType {
     public 
       $_vector;
     
@@ -45,6 +45,24 @@
      */
     public function getType() {
       return 'vec:Vector';
+    }
+
+    /**
+     * Retrieve item name
+     *
+     * @return  mixed
+     */
+    public function getItemName() {
+      return FALSE;
+    }
+
+    /**
+     * Retrieve type as native SOAP type
+     *
+     * @return  php.SoapVar
+     */
+    public function asSoapType() {
+      return new SoapVar($this->_vector, SOAP_ENC_ARRAY);
     }
   }
 ?>

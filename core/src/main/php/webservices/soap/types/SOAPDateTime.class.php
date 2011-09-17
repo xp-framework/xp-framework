@@ -14,7 +14,7 @@
    * @see      http://www.w3.org/TR/xmlschema-2/#dateTime
    * @purpose  DateTime type
    */
-  class SOAPDateTime extends SoapType {
+  class SOAPDateTime extends Object implements SoapType {
     public
       $value= NULL;
       
@@ -43,6 +43,24 @@
      */
     public function getType() {
       return 'xsd:dateTime';
+    }
+
+    /**
+     * Retrieve item name
+     *
+     * @return  mixed
+     */
+    public function getItemName() {
+      return FALSE;
+    }
+
+    /**
+     * Retrieve type as native SOAP type
+     *
+     * @return  php.SoapVar
+     */
+    public function asSoapType() {
+      return new SoapVar($this->value, XSD_DATETIME);
     }
   }
 ?>

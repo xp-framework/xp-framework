@@ -88,7 +88,7 @@
      *
      * @return  &webservices.soap.XPSoapMessage
      */
-    public function retrieve() {
+    public function retrieve($response) {
       return XPSoapMessage::fromString($this->answer);
     }
   }
