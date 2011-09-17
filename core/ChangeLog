@@ -6,6 +6,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+
+Bugfixes
+~~~~~~~~
+
+Features
+~~~~~~~~
+- Added util.Properties::removeSection() and ::removeKey() methods, as
+  proposed in issue #54
+  (kiesel)
 
 
 Version 5.8.2, released 2011-09-07
