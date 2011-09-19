@@ -584,24 +584,40 @@
      */
     public static function parseAnnotations($input, $context) {
       ob_start();
+
       $annotations= eval('return array('.($eval= preg_replace(
         array(
-          "/@([a-z_]+)\('([^']+)'\),/i",            // Match string annotation: @string('value')
-          "/'([^']*)'/e",                           // Encode chars inside apostrophes: '...'
-          "/@([a-z_]+)\(/i",                        // Match complex annotations: @complex(...)
-          "/@([a-z_]+),/i",                         // Match simple annotations: @simple,...
-          "/= *(array)?\(/",                        // Match array values: '...=(', '...=array('
-          "/([a-z_]+) *= */i",                      // Match key/value pairs
+          // Match scalar annotation: @string('strval'), @string("strval"), @integer(123)
+          "/@([a-z_]+)\((('([^']+)')|(\"([^\"]+)\")|([^=,\)]+))\),/i",
+
+          // Encode chars between apostrophes: '...'
+          "/'([^']*)'/e",
+
+          // Encode chars between double-quotes: "..."
+          '/"([^"]*)"/e',
+
+          // Match complex annotations: @complex(...)
+          '/@([a-z_]+)\(/i',
+
+            // Match simple annotations: @simple,...
+          '/@([a-z_]+),/i',
+
+          // Match XP-Language like array definitions [1, 2]
+          '/\[([^\]]*)\]/',
+
+          // Match key/value pairs
+          '/([a-z_]+) *=/i',
         ),
         array(
-          "$1 = '$2',",
-          "\"urldecode('\".urlencode(\"$1\").\"')\"",
-          "$1 = (",
-          "$1 = NULL,",
-          "= array(",
-          "'$1' => ",
+          '$1 = $2,',
+          '"urldecode(\'".urlencode("$1")."\')"',
+          '"urldecode(\'".urlencode(\'$1\')."\')"',
+          '$1 = array(',
+          '$1 = NULL,',
+          'array($1)',
+          '\'$1\' => ',
         ),
-        trim($input, "[]# \t\n\r").','              // Trim decorators and add a trailing comma ','
+        trim($input, "[]# \t\n\r").','
       )).');');
 
       $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");

@@ -163,6 +163,17 @@
     }
 
     /**
+     * Tests getAnnotation() returns the integer associated with the 
+     * annotation.
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#integerValue
+     */
+    #[@test]
+    public function integerAnnotationValue() {
+      $this->assertEquals(123, $this->methodAnnotation('integerValue', 'intval'));
+    }
+
+    /**
      * Tests getAnnotation() returns the string associated with the 
      * annotation.
      *
@@ -272,6 +283,7 @@
      * Test annotation with mulitple values containing equal signs
      * is parsed correctly.
      *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multipleValuesWithStringsAndEqualSigns
      */
      #[@test]
      public function multipleValuesWithStringsAndEqualSigns() {
@@ -286,6 +298,7 @@
     /**
      * Test annotation with multiple string values is parsed correctly.
      *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multipleStringValues
      */
      #[@test]
      public function multipleStringValues() {
@@ -296,9 +309,23 @@
      }
 
     /**
+     * Test annotation with multiple mixed values is parsed correctly.
+     *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multipleMixedValues
+     */
+     #[@test]
+     public function multipleMixedValues() {
+       $this->assertEquals(
+         array('rn=login, rt=config1', 123, 10.34, false),
+         $this->methodAnnotation('multipleMixedValues', 'permission')
+       );
+     }
+
+    /**
      * Test annotation with multiple annotations without using
      * the 'array' keyword is parsed correctly.
      *
+     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multipleWithoutArrayKeyword
      */
      #[@test]
      public function multipleWithoutArrayKeyword() {

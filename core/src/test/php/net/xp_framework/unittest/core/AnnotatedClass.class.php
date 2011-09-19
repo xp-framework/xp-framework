@@ -34,6 +34,13 @@
     public function stringValue() { }
 
     /**
+     * Method annotated with an integer value
+     *
+     */
+    #[@intval(123)]
+    public function integerValue() { }
+
+    /**
      * Method annotated with an annotation with a hash value containing one
      * key/value pair
      *
@@ -96,7 +103,7 @@
     public function stringAssignedWithoutWhitespace() {}
 
     /**
-     * Method annotated with multiple values which contains equal signs
+     * Method annotated with multiple values that contain equal signs
      *
      */
     #[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]
@@ -110,10 +117,18 @@
     public function multipleStringValues() { }
 
     /**
-     * Method annotated with multiple values but without using the 'array' keyword
+     * Method annotated with multiple mixed values
      *
      */
-    #[@function(arguments= ('arg1', 'arg2'))]
+    #[@permission('rn=login, rt=config1', 123, 10.34, false)]
+    public function multipleMixedValues() { }
+
+    /**
+     * Method annotated with multiple values but without using
+     * the 'array' keyword
+     *
+     */
+    #[@function(arguments= ['arg1', 'arg2'])]
     public function multipleWithoutArrayKeyword() { }
   }
 ?>
