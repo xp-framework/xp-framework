@@ -10,7 +10,7 @@
    * Represents a double value.
    *
    */
-  class SOAPDouble extends SoapType {
+  class SOAPDouble extends Object implements SoapType {
     public
       $double;
       
@@ -39,6 +39,20 @@
      */
     public function getType() {
       return 'xsd:double';
+    }
+
+    /**
+     *
+     */
+    public function getItemName() {
+      return FALSE;
+    }
+
+    /**
+     *
+     */
+    public function asSoapType() {
+      return new SoapVar($this->double, XSD_DOUBLE);
     }
   }
 ?>
