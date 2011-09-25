@@ -110,7 +110,7 @@
      * is parsed correctly.
      *
      */
-     #[@test, @ignore('Test needs adjustment in XPClass and AnnotatedClass')]
+     #[@test]
      public function multipleValuesWithStringsAndEqualSigns() {
       $this->assertEquals(
         array('permission' => array('names' => array('rn=login, rt=config1', 'rn=login, rt=config2'))),
