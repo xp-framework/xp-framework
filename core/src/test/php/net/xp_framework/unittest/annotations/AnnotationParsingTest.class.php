@@ -54,6 +54,30 @@
      *
      */
     #[@test]
+    public function sqStringValueWithEqualsSign() {
+      $this->assertEquals(
+        array('hello' => 'World=Welt'),
+        $this->parse("#[@hello('World=Welt')]")
+      );
+    }
+
+    /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test]
+    public function sqStringValueWithDoubleQuotes() {
+      $this->assertEquals(
+        array('hello' => 'said "he"'),
+        $this->parse("#[@hello('said \"he\"')]")
+      );
+    }
+
+    /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test]
     public function dqStringValue() {
       $this->assertEquals(
         array('hello' => 'World'),
@@ -65,7 +89,7 @@
      * Tests simple annotation with string value
      *
      */
-    #[@test, @ignore('Caused by problematic escaping with PCRE /e modifier')]
+    #[@test]
     public function dqStringValueWithSingleQuote() {
       $this->assertEquals(
         array('hello' => 'Beck\'s'),
@@ -77,7 +101,7 @@
      * Tests simple annotation with string value
      *
      */
-    #[@test, @ignore('Caused by problematic escaping with PCRE /e modifier')]
+    #[@test, @ignore('Escape sequences are unsupported')]
     public function dqStringValueWithEscapeSequence() {
       $this->assertEquals(
         array('hello' => "World\n"),

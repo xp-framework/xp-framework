@@ -596,10 +596,10 @@
         array(
           '$1 = $2,',
           '\'urldecode("\'.urlencode("$1").\'")\'',
-          '\'urldecode("\'.urlencode("$1").\'")\'',
+          '\'urldecode("\'.urlencode(\'$1\').\'")\'',
           '$1 = array(',
           '$1 = NULL,',
-          '\'$1\' => '
+          '\'$1\' =>'
         ),
         trim($input, "[]# \t\n\r").','
       )).');');
