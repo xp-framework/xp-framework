@@ -583,33 +583,55 @@
      * @throws  lang.ClassFormatException
      */
     public static function parseAnnotations($input, $context) {
-      ob_start();
-      $annotations= eval('return array('.($eval= preg_replace(
-        array(
-          '/@([a-z_]+)\(((\'([^\']+)\')|("([^"]+)")|([^=,\)]+))\),/i',
-          '/\'([^\']*)\'/e',
-          '/"([^"]+)"/e',
-          '/@([a-z_]+)\(/i',
-          '/@([a-z_]+),/i',
-          '/([a-z_]+) *=/i'
-        ),
-        array(
-          '$1 = $2,',
-          '\'urldecode("\'.urlencode("$1").\'")\'',
-          '\'urldecode("\'.urlencode(\'$1\').\'")\'',
-          '$1 = array(',
-          '$1 = NULL,',
-          '\'$1\' =>'
-        ),
-        trim($input, "[]# \t\n\r").','
-      )).');');
-      $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
-      if (FALSE === $annotations || $msg) {
-        ob_end_clean();
-        xp::gc();
-        raise('lang.ClassFormatException', 'Parse error: '.$msg.' of "'.addcslashes($eval, "\0..\17").'" in '.$context);
+      $input= trim($input, "[]# \t\n\r");
+      $annotations= array();
+      preg_match_all('/@([a-z_]+)([\(,])/i', $input.',', $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+      $s= sizeof($matches) - 1;
+      foreach ($matches as $i => $match) {
+        if (',' === $match[2][0]) {
+          $annotations[$match[1][0]]= NULL;
+        } else if ('(' === $match[2][0]) {
+          $content= substr($input, $match[2][1]+ 1, $i >= $s ? strlen($input) - $match[2][1] - 2 : $matches[$i+ 1][2][1] - 2);
+          if (!preg_match('/^([a-z_]+) *= */i', $content, $key, PREG_OFFSET_CAPTURE)) {
+            $annotations[$match[1][0]]= @eval('return '.$content.';');
+          } else {
+            $annotations[$match[1][0]]= array();
+            $offset= 0;
+            do {
+              $offset+= strlen($key[0][0]);
+              if ('\'' === $content{$offset} || '"' === $content{$offset}) {    // Strings
+                $q= $content{$offset} ;
+                $p= $offset;
+                while (++$p < strlen($content)) {
+                  if ($q === $content{$p} && '\\' !== $content{$p- 1}) break;
+                }
+                if (!is_string($value= @eval('return '.substr($content, $offset, $p- $offset+ 1).';'))) {
+                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
+                }
+                $offset= $p+ 1;
+              } else if ('array' === substr($content, $offset, 5)) {            // Arrays
+                $b= 1;
+                $p= $offset;
+                while ($b > 0 && ++$p < strlen($content)) {
+                  if ('(' === $content{$p}) $b++;
+                  if (')' === $content{$p}) $b--;
+                }
+                if (!is_array($value= @eval('return '.substr($content, $offset, $p- $offset).';'))) {
+                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
+                }
+                $offset= $p+ 1;
+              } else {                                                          // Any other
+                $p= strcspn($content, ',', $offset);
+                $value= @eval('return '.substr($content, $offset, $p).';');
+                $offset+= $p;
+              }
+              
+              $annotations[$match[1][0]][$key[1][0]]= $value;
+            } while (preg_match('/, *([a-z_]+) *= */i', $content, $key, PREG_OFFSET_CAPTURE, $offset));
+          }
+        }
       }
-      ob_end_clean();
+      
       return $annotations;
     }
 

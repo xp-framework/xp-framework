@@ -12,6 +12,7 @@
    * @see     rfc://0016
    * @see     xp://lang.XPClass#parseAnnotations
    * @see     http://bugs.xp-framework.net/show_bug.cgi?id=38
+   * @see     https://github.com/xp-framework/xp-framework/issues/14
    */
   class AnnotationParsingTest extends TestCase {
   
@@ -78,6 +79,18 @@
      *
      */
     #[@test]
+    public function sqStringValueWithEscapedSingleQuotes() {
+      $this->assertEquals(
+        array('hello' => "said 'he'"),
+        $this->parse("#[@hello('said \'he\'')]")
+      );
+    }
+
+    /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test]
     public function dqStringValue() {
       $this->assertEquals(
         array('hello' => 'World'),
@@ -101,7 +114,18 @@
      * Tests simple annotation with string value
      *
      */
-    #[@test, @ignore('Escape sequences are unsupported')]
+    #[@test]
+    public function dqStringValueWithEscapedDoubleQuotes() {
+      $this->assertEquals(
+        array('hello' => 'said "he"'),
+        $this->parse('#[@hello("said \"he\"")]')
+      );
+    }
+    /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test]
     public function dqStringValueWithEscapeSequence() {
       $this->assertEquals(
         array('hello' => "World\n"),
@@ -230,11 +254,23 @@
      * is parsed correctly.
      *
      */
-     #[@test]
-     public function multipleValuesWithStringsAndEqualSigns() {
+    #[@test]
+    public function multipleValuesWithStringsAndEqualSigns() {
       $this->assertEquals(
         array('permission' => array('names' => array('rn=login, rt=config1', 'rn=login, rt=config2'))),
         $this->parse("#[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]")
+      );
+    }
+
+    /**
+     * Test string assignment without whitespace is parsed correctly.
+     *
+     */
+    #[@test]
+    public function unittestAnnotation() {
+      $this->assertEquals(
+        array('test' => NULL, 'ignore' => NULL, 'limit' => array('time' => 0.1, 'memory' => 100)),
+        $this->parse("#[@test, @ignore, @limit(time = 0.1, memory = 100)]")
       );
     }
   }
