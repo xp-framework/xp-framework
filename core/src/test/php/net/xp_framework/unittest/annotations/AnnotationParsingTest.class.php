@@ -42,10 +42,58 @@
      *
      */
     #[@test]
-    public function stringValue() {
+    public function sqStringValue() {
       $this->assertEquals(
         array('hello' => 'World'),
         $this->parse("#[@hello('World')]")
+      );
+    }
+
+    /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test, @ignore('Not yet supported')]
+    public function dqStringValue() {
+      $this->assertEquals(
+        array('hello' => 'World'),
+        $this->parse('#[@hello("World")]')
+      );
+    }
+
+    /**
+     * Tests simple annotation with an int value
+     *
+     */
+    #[@test, @ignore('Not yet supported')]
+    public function intValue() {
+      $this->assertEquals(
+        array('answer' => 42),
+        $this->parse('#[@answer(42)]')
+      );
+    }
+
+    /**
+     * Tests simple annotation with a double value
+     *
+     */
+    #[@test, @ignore('Not yet supported')]
+    public function doubleValue() {
+      $this->assertEquals(
+        array('version' => 3.5),
+        $this->parse('#[@version(3.5)]')
+      );
+    }
+
+    /**
+     * Tests simple annotation with a bool value
+     *
+     */
+    #[@test, @ignore('Not yet supported')]
+    public function boolValue() {
+      $this->assertEquals(
+        array('supported' => TRUE),
+        $this->parse('#[@supported(TRUE)]')
       );
     }
 
