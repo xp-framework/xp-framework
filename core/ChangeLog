@@ -11,6 +11,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed timeout for FTP connections - see pull request #58
+  (kiesel, Thomas Reuter)
 
 Features
 ~~~~~~~~
