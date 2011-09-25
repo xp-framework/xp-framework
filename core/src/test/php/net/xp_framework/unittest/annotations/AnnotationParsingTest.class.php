@@ -53,7 +53,7 @@
      * Tests simple annotation with string value
      *
      */
-    #[@test, @ignore('Not yet supported')]
+    #[@test]
     public function dqStringValue() {
       $this->assertEquals(
         array('hello' => 'World'),
@@ -65,7 +65,7 @@
      * Tests simple annotation with an int value
      *
      */
-    #[@test, @ignore('Not yet supported')]
+    #[@test]
     public function intValue() {
       $this->assertEquals(
         array('answer' => 42),
@@ -77,7 +77,7 @@
      * Tests simple annotation with a double value
      *
      */
-    #[@test, @ignore('Not yet supported')]
+    #[@test]
     public function doubleValue() {
       $this->assertEquals(
         array('version' => 3.5),
@@ -89,7 +89,7 @@
      * Tests simple annotation with a bool value
      *
      */
-    #[@test, @ignore('Not yet supported')]
+    #[@test]
     public function boolValue() {
       $this->assertEquals(
         array('supported' => TRUE),

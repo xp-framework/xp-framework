@@ -585,8 +585,22 @@
     public static function parseAnnotations($input, $context) {
       ob_start();
       $annotations= eval('return array('.($eval= preg_replace(
-        array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/\'([^\']+)\'/e', '/(\(|, *)([a-z_]+) *= */i'),
-        array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '"urldecode(\'".urlencode("$1")."\')"', '$1\'$2\' => '),
+        array(
+          '/@([a-z_]+)\(((\'([^\']+)\')|("([^"]+)")|([^=,\)]+))\),/i',
+          '/\'([^\']*)\'/e',
+          '/"([^"]+)"/e',
+          '/@([a-z_]+)\(/i',
+          '/@([a-z_]+),/i',
+          '/([a-z_]+) *=/i'
+        ),
+        array(
+          '$1 = $2,',
+          '"urldecode(\'".urlencode("$1")."\')"',
+          '"urldecode(\'".urlencode(\'$1\')."\')"',
+          '$1 = array(',
+          '$1 = NULL,',
+          '\'$1\' => '
+        ),
         trim($input, "[]# \t\n\r").','
       )).');');
       $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
