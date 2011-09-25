@@ -62,6 +62,30 @@
     }
 
     /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test, @ignore('Caused by problematic escaping with PCRE /e modifier')]
+    public function dqStringValueWithSingleQuote() {
+      $this->assertEquals(
+        array('hello' => 'Beck\'s'),
+        $this->parse('#[@hello("Beck\'s")]')
+      );
+    }
+
+    /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test, @ignore('Caused by problematic escaping with PCRE /e modifier')]
+    public function dqStringValueWithEscapeSequence() {
+      $this->assertEquals(
+        array('hello' => "World\n"),
+        $this->parse('#[@hello("World\n")]')
+      );
+    }
+
+    /**
      * Tests simple annotation with an int value
      *
      */
