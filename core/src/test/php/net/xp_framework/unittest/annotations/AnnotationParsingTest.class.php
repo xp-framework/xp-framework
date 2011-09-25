@@ -26,6 +26,30 @@
     }
 
     /**
+     * Tests simple annotation without a value
+     *
+     */
+    #[@test]
+    public function noValue() {
+      $this->assertEquals(
+        array('hello' => NULL),
+        $this->parse("#[@hello]")
+      );
+    }
+
+    /**
+     * Tests simple annotation with string value
+     *
+     */
+    #[@test]
+    public function stringValue() {
+      $this->assertEquals(
+        array('hello' => 'World'),
+        $this->parse("#[@hello('World')]")
+      );
+    }
+
+    /**
      * Tests different value types
      *
      */
