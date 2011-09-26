@@ -63,6 +63,18 @@
     }
 
     /**
+     * Test string with at sign inside
+     *
+     */
+    #[@test]
+    public function sqStringValueWithAtSign() {
+      $this->assertEquals(
+        array('hello' => '@World'),
+        $this->parse("#[@hello('@World')]")
+      );
+    }
+
+    /**
      * Tests simple annotation with string value
      *
      */
@@ -130,6 +142,18 @@
       $this->assertEquals(
         array('hello' => "World\n"),
         $this->parse('#[@hello("World\n")]')
+      );
+    }
+
+    /**
+     * Test string with at sign inside
+     *
+     */
+    #[@test]
+    public function dqStringValueWithAtSign() {
+      $this->assertEquals(
+        array('hello' => '@World'),
+        $this->parse('#[@hello("@World")]')
       );
     }
 
@@ -263,7 +287,7 @@
     }
 
     /**
-     * Test string assignment without whitespace is parsed correctly.
+     * Test unittest annotations
      *
      */
     #[@test]
