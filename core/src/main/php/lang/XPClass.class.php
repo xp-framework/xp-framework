@@ -583,52 +583,78 @@
      * @throws  lang.ClassFormatException
      */
     public static function parseAnnotations($input, $context) {
-      $input= trim($input, "[]# \t\n\r");
+      $input= trim($input, "[]# \t\n\r").']';
+      $offset= 0;
       $annotations= array();
-      preg_match_all('/@([a-z_]+)([\(,])/i', $input.',', $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
-      $s= sizeof($matches) - 1;
-      foreach ($matches as $i => $match) {
-        if (',' === $match[2][0]) {
-          $annotations[$match[1][0]]= NULL;
-        } else if ('(' === $match[2][0]) {
-          $content= substr($input, $match[2][1]+ 1, $i >= $s ? strlen($input) - $match[2][1] - 2 : $matches[$i+ 1][2][1] - 2);
+      $annotation= $value= NULL;
+      $length= strlen($input);
+      while ($offset < $length) {
+        $state= $input{$offset};
+        if ('@' === $state) {
+          $span= strcspn($input, ',(]', $offset);
+          $annotation= substr($input, $offset+ 1, $span- 1);
+          $offset+= $span;
+        } else if (']' === $state) {
+          $annotations[$annotation]= $value;
+          break;
+        } else if ('(' === $state) {
+          $brackets= 1;
+          $pos= $offset;
+          do {
+            $offset+= strcspn($input, '()', $offset+ 1) + 1;
+            if ($offset === $length) {
+              raise('lang.ClassFormatException', 'Parse error: Unclosed (');
+            }
+            $state= $input{$offset};
+            if (')' === $state) $brackets--; else if ('(' === $state) $brackets++;
+          } while ($brackets);
+          $content= substr($input, $pos+ 1, $offset- $pos- 1);
           if (!preg_match('/^([a-z_]+) *= */i', $content, $key, PREG_OFFSET_CAPTURE)) {
-            $annotations[$match[1][0]]= @eval('return '.$content.';');
+            $value= @eval('return '.$content.';');
           } else {
-            $annotations[$match[1][0]]= array();
-            $offset= 0;
+            $value= array();
+            $pos= 0;
             do {
-              $offset+= strlen($key[0][0]);
-              if ('\'' === $content{$offset} || '"' === $content{$offset}) {    // Strings
-                $q= $content{$offset} ;
-                $p= $offset;
+              $pos+= strlen($key[0][0]);
+              if ('\'' === $content{$pos} || '"' === $content{$pos}) {    // Strings
+                $q= $content{$pos} ;
+                $p= $pos;
                 while (++$p < strlen($content)) {
                   if ($q === $content{$p} && '\\' !== $content{$p- 1}) break;
                 }
-                if (!is_string($value= @eval('return '.substr($content, $offset, $p- $offset+ 1).';'))) {
+                if (!is_string($complex= @eval('return '.substr($content, $pos, $p- $pos+ 1).';'))) {
                   raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
                 }
-                $offset= $p+ 1;
-              } else if ('array' === substr($content, $offset, 5)) {            // Arrays
+                $pos= $p+ 1;
+              } else if ('array' === substr($content, $pos, 5)) {            // Arrays
                 $b= 1;
-                $p= $offset;
+                $p= $pos;
                 while ($b > 0 && ++$p < strlen($content)) {
                   if ('(' === $content{$p}) $b++;
                   if (')' === $content{$p}) $b--;
                 }
-                if (!is_array($value= @eval('return '.substr($content, $offset, $p- $offset).';'))) {
+                if (!is_array($complex= @eval('return '.substr($content, $pos, $p- $pos).';'))) {
                   raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
                 }
-                $offset= $p+ 1;
+                $pos= $p+ 1;
               } else {                                                          // Any other
-                $p= strcspn($content, ',', $offset);
-                $value= @eval('return '.substr($content, $offset, $p).';');
-                $offset+= $p;
+                $p= strcspn($content, ',', $pos);
+                $complex= @eval('return '.substr($content, $pos, $p).';');
+                $pos+= $p;
               }
               
-              $annotations[$match[1][0]][$key[1][0]]= $value;
-            } while (preg_match('/, *([a-z_]+) *= */i', $content, $key, PREG_OFFSET_CAPTURE, $offset));
+              $value[$key[1][0]]= $complex;
+            } while (preg_match('/, *([a-z_]+) *= */i', $content, $key, PREG_OFFSET_CAPTURE, $pos));
           }
+          $offset++;    // ")"
+        } else if (',' === $state) {
+          $annotations[$annotation]= $value;
+          $annotation= $value= NULL;
+          if (FALSE === ($offset= strpos($input, '@', $offset))) {
+            raise('lang.ClassFormatException', 'Parse error: Expecting @');
+          }
+        } else {
+          raise('lang.ClassFormatException', 'Parse error: Unknown state '.$state.' at position '.$offset);
         }
       }
       

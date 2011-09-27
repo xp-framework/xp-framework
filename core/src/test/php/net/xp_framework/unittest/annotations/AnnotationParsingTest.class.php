@@ -75,6 +75,18 @@
     }
 
     /**
+     * Test string with an annotation inside a string
+     *
+     */
+    #[@test]
+    public function sqStringValueWithAnnotation() {
+      $this->assertEquals(
+        array('hello' => '@hello("World")'),
+        $this->parse("#[@hello('@hello(\"World\")')]")
+      );
+    }
+
+    /**
      * Tests simple annotation with string value
      *
      */
@@ -154,6 +166,18 @@
       $this->assertEquals(
         array('hello' => '@World'),
         $this->parse('#[@hello("@World")]')
+      );
+    }
+
+    /**
+     * Test string with an annotation inside a string
+     *
+     */
+    #[@test]
+    public function dqStringValueWithAnnotation() {
+      $this->assertEquals(
+        array('hello' => '@hello(\'World\')'),
+        $this->parse('#[@hello("@hello(\'World\')")]')
       );
     }
 
