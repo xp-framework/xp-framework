@@ -13,6 +13,7 @@
    * @see     xp://lang.XPClass#parseAnnotations
    * @see     http://bugs.xp-framework.net/show_bug.cgi?id=38
    * @see     https://github.com/xp-framework/xp-framework/issues/14
+   * @see     https://github.com/xp-framework/xp-framework/pull/56
    */
   class AnnotationParsingTest extends TestCase {
   
