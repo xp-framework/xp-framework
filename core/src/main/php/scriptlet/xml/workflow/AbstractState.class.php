@@ -29,6 +29,7 @@
      * @return  scriptlet.xml.workflow.Handler the added handler
      */
     public function addHandler($handler) {
+      $handler->setTrace($this->cat);
       $this->handlers[]= $handler;
       return $handler;
     }
