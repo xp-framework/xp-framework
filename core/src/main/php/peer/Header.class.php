@@ -72,5 +72,15 @@
       list($k, $v)= explode(': ', $str, 2);
       return new self($k, $v);
     }
+
+    /**
+     * Indicates whether the header to compare equals this header.
+     *
+     * @param   peer.Header cmp
+     * @return  bool TRUE if headers are equal
+     */
+    public function equals($cmp) {
+      return ($cmp instanceof self) && ($this->getName() === $cmp->getName()) && ($this->getValue() === $cmp->getValue());
+    }
   }
 ?>
