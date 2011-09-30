@@ -584,11 +584,42 @@
      */
     public static function parseAnnotations($input, $context) {
       ob_start();
+
       $annotations= eval('return array('.($eval= preg_replace(
-        array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/(\(|, *)([a-z_]+) *= */i'),
-        array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
+        array(
+          // Match scalar annotation: @string('strval'), @string("strval"), @integer(123)
+          "/@([a-z_]+)\((('([^']+)')|(\"([^\"]+)\")|([^=,\)]+))\),/i",
+
+          // Encode chars between apostrophes: '...'
+          "/'([^']*)'/e",
+
+          // Encode chars between double-quotes: "..."
+          '/"([^"]*)"/e',
+
+          // Match complex annotations: @complex(...)
+          '/@([a-z_]+)\(/i',
+
+            // Match simple annotations: @simple,...
+          '/@([a-z_]+),/i',
+
+          // Match XP-Language like array definitions [1, 2]
+          '/\[([^\]]*)\]/',
+
+          // Match key/value pairs
+          '/([a-z_]+) *=/i',
+        ),
+        array(
+          '$1 = $2,',
+          '"urldecode(\'".urlencode("$1")."\')"',
+          '"urldecode(\'".urlencode(\'$1\')."\')"',
+          '$1 = array(',
+          '$1 = NULL,',
+          'array($1)',
+          '\'$1\' => ',
+        ),
         trim($input, "[]# \t\n\r").','
       )).');');
+
       $msg= ltrim(ob_get_contents(), ini_get('error_prepend_string')."\r\n\t ");
       if (FALSE === $annotations || $msg) {
         ob_end_clean();
