@@ -220,6 +220,30 @@
     }
 
     /**
+     * Tests simple annotation with an array value
+     *
+     */
+    #[@test]
+    public function arrayValueWithNestedArray() {
+      $this->assertEquals(
+        array('versions' => array(array(3))),
+        $this->parse('#[@versions(array(array(3)))]')
+      );
+    }
+
+    /**
+     * Tests simple annotation with an array value
+     *
+     */
+    #[@test]
+    public function arrayValueWithNestedArrays() {
+      $this->assertEquals(
+        array('versions' => array(array(3), array(4))),
+        $this->parse('#[@versions(array(array(3), array(4)))]')
+      );
+    }
+
+    /**
      * Tests simple annotation with a bool value
      *
      */
