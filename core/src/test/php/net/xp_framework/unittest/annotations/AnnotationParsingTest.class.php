@@ -14,6 +14,7 @@
    * @see     http://bugs.xp-framework.net/show_bug.cgi?id=38
    * @see     https://github.com/xp-framework/xp-framework/issues/14
    * @see     https://github.com/xp-framework/xp-framework/pull/56
+   * @see     https://gist.github.com/1240769
    */
   class AnnotationParsingTest extends TestCase {
   
