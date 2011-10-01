@@ -611,6 +611,18 @@
               raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
             }
             $offset= $p+ 1;
+          } else if ('array' === substr($peek, 0, 5)) {
+            $b= 1;
+            $p= $offset+ 1+ 6;
+            while ($b > 0) {
+              $p+= strcspn($input, '()', $p);
+              if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--;
+              $p++;
+            }
+            if (!is_array($value= @eval('return '.substr($input, $offset+ 1, $p- $offset- 1).';'))) {
+              raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
+            }
+            $offset= $p;
           } else if ('=' !== $peek{strlen($peek)- 1}) {
             $value= eval('return '.substr($peek, 0, -1).';');
             $offset+= strlen($peek);
