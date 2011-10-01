@@ -314,12 +314,26 @@
     /**
      * Test unittest annotations
      *
+     * @see   xp://unittest.TestCase
      */
     #[@test]
     public function unittestAnnotation() {
       $this->assertEquals(
         array('test' => NULL, 'ignore' => NULL, 'limit' => array('time' => 0.1, 'memory' => 100)),
         $this->parse("#[@test, @ignore, @limit(time = 0.1, memory = 100)]")
+      );
+    }
+
+    /**
+     * Test overloaded annotations
+     *
+     * @see   xp://lang.reflect.Proxy
+     */
+    #[@test]
+    public function overloadedAnnotation() {
+      $this->assertEquals(
+        array('overloaded' => array('signatures' => array(array('string'), array('string', 'string')))),
+        $this->parse('#[@overloaded(signatures= array(array("string"), array("string", "string")))]')
       );
     }
   }
