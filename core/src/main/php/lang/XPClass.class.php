@@ -625,14 +625,15 @@
               } else if ('array' === substr($input, $offset, 5)) {
                 $b= 1;
                 $p= $offset+ 6;
-                while ($b > 0 && ($s= strcspn($input, '()', $p)) !== 0) {
-                  $p+= $s;
+                while ($b > 0) {
+                  $p+= strcspn($input, '()', $p);
                   if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--;
+                  $p++;
                 }
-                if (!is_array($value[$key]= @eval('return '.substr($input, $offset, $p- $offset+ 1).';'))) {
+                if (!is_array($value[$key]= @eval('return '.substr($input, $offset, $p- $offset).';'))) {
                   raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
                 }
-                $offset= $p+ 1;
+                $offset= $p;
               } else if ('\'' === $input{$offset} || '"' === $input{$offset}) {
                 $p= $offset+ 1;
                 $q= $input{$offset};
