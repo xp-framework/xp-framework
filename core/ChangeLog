@@ -11,6 +11,13 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed annotation parsing:
+  . Support for @anno(array(...)) 
+  . Support for @anno(...) where ... is any scalar value
+  . Fix for strings containing a) annotations b) braces c) equal signs
+  . Fix for arrays containing strings
+  See pull request #56 and comments.
+  (mrosoiu, friebe)
 - Fixed timeout for FTP connections - see pull request #58
   (kiesel, Thomas Reuter)
 
