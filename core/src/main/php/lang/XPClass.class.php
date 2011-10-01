@@ -591,62 +591,75 @@
       while ($offset < $length) {
         $state= $input{$offset};
         if ('@' === $state) {
-          $span= strcspn($input, ',(]', $offset);
-          $annotation= substr($input, $offset+ 1, $span- 1);
-          $offset+= $span;
+          $s= strcspn($input, ',(]', $offset);
+          $annotation= substr($input, $offset+ 1, $s- 1);
+          $offset+= $s;
         } else if (']' === $state) {
           $annotations[$annotation]= $value;
           break;
         } else if ('(' === $state) {
-          $brackets= 1;
-          $pos= $offset;
-          do {
-            $offset+= strcspn($input, '()', $offset+ 1) + 1;
-            if ($offset === $length) {
-              raise('lang.ClassFormatException', 'Parse error: Unclosed (');
+          $peek= substr($input, $offset+ 1, strcspn($input, '="\')', $offset));
+          if ('\'' === $peek{0} || '"' === $peek{0}) {
+            $p= $offset+ 2;
+            $q= $peek{0};
+            while (($s= strcspn($input, $q, $p)) !== 0) {
+              $p+= $s;
+              if ('\\' !== $input{$p- 1}) break;
+              $p++;   
             }
-            $state= $input{$offset};
-            if (')' === $state) $brackets--; else if ('(' === $state) $brackets++;
-          } while ($brackets);
-          $content= substr($input, $pos+ 1, $offset- $pos- 1);
-          if (!preg_match('/^([a-z_]+) *= */i', $content, $key, PREG_OFFSET_CAPTURE)) {
-            $value= @eval('return '.$content.';');
+            if (!is_string($value= @eval('return '.substr($input, $offset+ 1, $p - $offset).';'))) {
+              raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
+            }
+            $offset= $p+ 1;
+          } else if ('=' !== $peek{strlen($peek)- 1}) {
+            $value= eval('return '.substr($peek, 0, -1).';');
+            $offset+= strlen($peek);
           } else {
             $value= array();
-            $pos= 0;
             do {
-              $pos+= strlen($key[0][0]);
-              if ('\'' === $content{$pos} || '"' === $content{$pos}) {    // Strings
-                $q= $content{$pos} ;
-                $p= $pos;
-                while (++$p < strlen($content)) {
-                  if ($q === $content{$p} && '\\' !== $content{$p- 1}) break;
-                }
-                if (!is_string($complex= @eval('return '.substr($content, $pos, $p- $pos+ 1).';'))) {
-                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
-                }
-                $pos= $p+ 1;
-              } else if ('array' === substr($content, $pos, 5)) {            // Arrays
+              $key= trim($peek, '= ');
+              $offset+= strlen($peek)+ 1;
+              $offset+= strspn($input, ' ', $offset);
+              if ($offset >= $length) {
+                break;
+              } else if ('array' === substr($input, $offset, 5)) {
                 $b= 1;
-                $p= $pos;
-                while ($b > 0 && ++$p < strlen($content)) {
-                  if ('(' === $content{$p}) $b++;
-                  if (')' === $content{$p}) $b--;
+                $p= $offset+ 6;
+                while ($b > 0 && ($s= strcspn($input, '()', $p)) !== 0) {
+                  $p+= $s;
+                  if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--;
                 }
-                if (!is_array($complex= @eval('return '.substr($content, $pos, $p- $pos).';'))) {
+                if (!is_array($value[$key]= @eval('return '.substr($input, $offset, $p- $offset+ 1).';'))) {
                   raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed array in '.$context);
                 }
-                $pos= $p+ 1;
-              } else {                                                          // Any other
-                $p= strcspn($content, ',', $pos);
-                $complex= @eval('return '.substr($content, $pos, $p).';');
-                $pos+= $p;
+                $offset= $p+ 1;
+              } else if ('\'' === $input{$offset} || '"' === $input{$offset}) {
+                $p= $offset+ 1;
+                $q= $input{$offset};
+                while (($s= strcspn($input, $q, $p)) !== 0) {
+                  $p+= $s;
+                  if ('\\' !== $input{$p- 1}) break;
+                  $p++;   
+                }
+                if (!is_string($value[$key]= @eval('return '.substr($input, $offset, $p - $offset + 1).';'))) {
+                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
+                }
+                $offset= $p+ 1;
+              } else {
+                $s= strcspn($input, ',)', $offset);
+                $value[$key]= eval('return '.substr($input, $offset, $s).';');
+                $offset+= $s;
               }
               
-              $value[$key[1][0]]= $complex;
-            } while (preg_match('/, *([a-z_]+) *= */i', $content, $key, PREG_OFFSET_CAPTURE, $pos));
+              // Find next key
+              $s= strcspn($input, '="\')', $offset);
+              $peek= substr($input, $offset+ 1, $s);
+            } while ($s);
           }
           $offset++;    // ")"
+          if ($offset > $length) {
+            raise('lang.ClassFormatException', 'Parse error: Expecting ]');
+          }
         } else if (',' === $state) {
           $annotations[$annotation]= $value;
           $annotation= $value= NULL;
