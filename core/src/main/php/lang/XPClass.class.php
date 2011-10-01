@@ -615,8 +615,17 @@
             $b= 1;
             $p= $offset+ 1+ 6;
             while ($b > 0) {
-              $p+= strcspn($input, '()', $p);
-              if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--;
+              $p+= strcspn($input, '()"\'', $p);
+              if ($p > $length) break; 
+              if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
+                $q= $input{$p};
+                $p++;
+                while (($s= strcspn($input, $q, $p)) !== 0) {
+                  $p+= $s;
+                  if ('\\' !== $input{$p- 1}) break;
+                  $p++;
+                }
+              }
               $p++;
             }
             if (!is_array($value= @eval('return '.substr($input, $offset+ 1, $p- $offset- 1).';'))) {
@@ -638,8 +647,17 @@
                 $b= 1;
                 $p= $offset+ 6;
                 while ($b > 0) {
-                  $p+= strcspn($input, '()', $p);
-                  if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--;
+                  $p+= strcspn($input, '()"\'', $p);
+                  if ($p > $length) break; 
+                  if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
+                    $q= $input{$p};
+                    $p++;
+                    while (($s= strcspn($input, $q, $p)) !== 0) {
+                      $p+= $s;
+                      if ('\\' !== $input{$p- 1}) break;
+                      $p++;
+                    }
+                  }
                   $p++;
                 }
                 if (!is_array($value[$key]= @eval('return '.substr($input, $offset, $p- $offset).';'))) {

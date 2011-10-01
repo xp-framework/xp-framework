@@ -244,6 +244,18 @@
     }
 
     /**
+     * Tests simple annotation with an array value
+     *
+     */
+    #[@test]
+    public function arrayValueWithStringsContainingBraces() {
+      $this->assertEquals(
+        array('versions' => array('(3..4]')),
+        $this->parse('#[@versions(array("(3..4]"))]')
+      );
+    }
+
+    /**
      * Tests simple annotation with a bool value
      *
      */
