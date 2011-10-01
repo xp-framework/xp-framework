@@ -22,7 +22,8 @@ Features
 - Added util.Properties::removeSection() and ::removeKey() methods, as
   proposed in issue #54
   (kiesel)
-
+- Added peer.Header::equals() as proposed in pull request #61
+  (apenciu)
 
 Version 5.8.2, released 2011-09-07
 ----------------------------------
