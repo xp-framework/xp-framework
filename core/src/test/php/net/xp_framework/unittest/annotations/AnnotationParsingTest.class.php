@@ -208,6 +208,18 @@
     }
 
     /**
+     * Tests simple annotation with an array value
+     *
+     */
+    #[@test]
+    public function arrayValue() {
+      $this->assertEquals(
+        array('versions' => array(3.4, 3.5)),
+        $this->parse('#[@versions(array(3.4, 3.5))]')
+      );
+    }
+
+    /**
      * Tests simple annotation with a bool value
      *
      */
