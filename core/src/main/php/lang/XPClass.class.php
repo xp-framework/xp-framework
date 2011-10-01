@@ -671,16 +671,16 @@
           }
           $offset++;    // ")"
           if ($offset > $length) {
-            raise('lang.ClassFormatException', 'Parse error: Expecting ]');
+            raise('lang.ClassFormatException', 'Parse error: Expecting ] in '.$context);
           }
         } else if (',' === $state) {
           $annotations[$annotation]= $value;
           $annotation= $value= NULL;
           if (FALSE === ($offset= strpos($input, '@', $offset))) {
-            raise('lang.ClassFormatException', 'Parse error: Expecting @');
+            raise('lang.ClassFormatException', 'Parse error: Expecting @ in '.$context);
           }
         } else {
-          raise('lang.ClassFormatException', 'Parse error: Unknown state '.$state.' at position '.$offset);
+          raise('lang.ClassFormatException', 'Parse error: Unknown state '.$state.' at position '.$offset.' in '.$context);
         }
       }
       
