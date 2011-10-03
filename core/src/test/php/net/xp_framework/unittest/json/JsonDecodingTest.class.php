@@ -1063,21 +1063,12 @@
     }
 
     /**
-     * Test nothing
+     * Test empty input
      *
      */
-    #[@test]
-    public function decodeNothing() {
-      try {
-        $this->decode('');
-      } catch (JsonException $je) {
-        // Do nothing here
-      }
-
-      $this->assertInstanceOf(
-        'webservices.json.JsonException',
-        $je
-      );
+    #[@test, @expect('webservices.json.JsonException')]
+    public function decodeEmptyInput() {
+      $this->decode('');
     }
   }
 ?>
