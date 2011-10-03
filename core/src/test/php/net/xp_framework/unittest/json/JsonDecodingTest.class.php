@@ -15,8 +15,10 @@
    * Testcase for JsonDecoder
    *
    * @see   xp://webservices.json.JsonDecoder
+   * @see   xp://net.xp_framework.unittest.json.JsonStringDecodingTest
+   * @see   xp://net.xp_framework.unittest.json.JsonStreamDecodingTest
    */
-  class JsonDecodingTest extends TestCase {
+  abstract class JsonDecodingTest extends TestCase {
     protected $fixture= NULL;
     protected $tz= NULL;
         
@@ -44,9 +46,7 @@
      * @param   string input
      * @return  var
      */
-    protected function decode($input) {
-      return $this->fixture->decode($input);
-    }
+    protected abstract function decode($input);
     
     /**
      * Test string decoding

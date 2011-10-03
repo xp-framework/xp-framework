@@ -32,8 +32,9 @@
    *
    * </code>
    *
-   * @test      xp://net.xp_framework.unittest.json.JsonDecoderTestDecoder
-   * @test      xp://net.xp_framewort.unittest.json.JsonDecoderTestEncoder
+   * @test      xp://net.xp_framework.unittest.json.JsonStreamDecodingTest
+   * @test      xp://net.xp_framework.unittest.json.JsonStringDecodingTest
+   * @test      xp://net.xp_framewort.unittest.json.JsonEncodingTest
    * @see       http://json.org
    * @purpose   JSON en- and decoder
    */
@@ -240,7 +241,7 @@
      */
     public function decode($string) {
       $stream= new MemoryInputStream($string.PHP_EOL);
-      $data= $this->decodeTo($stream);
+      $data= $this->decodeFrom($stream);
       return $data;
     }
 
@@ -249,11 +250,11 @@
      *
      *  Be sure to send an PHP_EOL at the end of your stream.
      *
-     * @param   var stream
+     * @param   io.streams.InputStream stream
      * @return  var
      * @throws  webservices.json.JsonException
      */
-    public function decodeTo($stream) {
+    public function decodeFrom($stream) {
       $parser= new JsonParser();
 
       try{
