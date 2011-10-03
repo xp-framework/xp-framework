@@ -854,10 +854,31 @@
     /**
      * Test empty input
      *
+     * @see   https://bugs.php.net/bug.php?id=54484
      */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeEmptyInput() {
       $this->decode('');
+    }
+
+    /**
+     * Test JSON spread out over multiple lines
+     *
+     */
+    #[@test]
+    public function decodeHumanReadableJSON() {
+      $this->assertEquals(
+        array(
+          'color' => new String('green'),
+          'sizes' => array(new String('S'), new String('M'), new String('L'), new String('XL')),
+          'price' => 12.99
+        ),
+        $this->decode('{
+          "color" : "green",
+          "sizes" : [ "S", "M", "L", "XL" ],
+          "price" : 12.99
+        }')
+      );
     }
   }
 ?>
