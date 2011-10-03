@@ -18,6 +18,7 @@
    */
   class JsonDecodingTest extends TestCase {
     protected $fixture= NULL;
+    protected $tz= NULL;
         
     /**
      * Setup text fixture
@@ -25,7 +26,16 @@
      */
     public function setUp() {
       $this->fixture= new JsonDecoder();
+      $this->tz= date_default_timezone_get();
       date_default_timezone_set('Europe/Berlin');
+    }
+    
+    /**
+     * Tear down test.
+     *
+     */
+    public function tearDown() {
+      date_default_timezone_set($this->tz);
     }
     
     /**
