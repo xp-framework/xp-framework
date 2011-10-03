@@ -839,10 +839,7 @@
      */
     #[@test]
     public function decodeZero() {
-      $this->assertEquals(
-        0,
-        $this->decode('0')
-      );
+      $this->assertEquals(0, $this->decode('0'));
     }
 
     /**
@@ -851,10 +848,7 @@
      */
     #[@test]
     public function decodeEmptyString() {
-      $this->assertEquals(
-        "",
-        $this->decode('""')
-      );
+      $this->assertEquals('', $this->decode('""'));
     }
 
     /**
