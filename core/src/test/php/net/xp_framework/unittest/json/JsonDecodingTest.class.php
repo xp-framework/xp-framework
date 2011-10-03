@@ -335,7 +335,7 @@
       $this->assertEquals(10000000.1, $this->decode('10000000.1'));
     }
 
-       /**
+    /**
      * Test number decoding
      *
      */
@@ -405,6 +405,16 @@
     #[@test]
     public function decodeNegativeFloatNumberWithExponente() {
       $this->assertEquals(-10000000000.0, $this->decode('-1e10'));
+    }
+
+    /**
+     * Test number decoding
+     *
+     * @see   https://bugs.php.net/bug.php?id=45791
+     */
+    #[@test]
+    public function decodeFloatNumberWithExponentZero() {
+      $this->assertEquals(0.0, $this->decode('0E0'));
     }
 
     /**
