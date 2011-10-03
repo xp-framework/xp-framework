@@ -155,7 +155,11 @@
             }
 
             // Load handler values from session
+            // If active, remove form params, they'll be read from $request now.
             $this->handlers[$i]->values= $request->session->getValue($this->handlers[$i]->identifier);
+            if (!$this->handlers[$i]->requestOverride && $this->handlers[$i]->isActive($request, $context)) {
+              unset($this->handlers[$i]->values[HVAL_FORMPARAM]);
+            }
             $node->setAttribute('status', HANDLER_INITIALIZED);
             $this->addHandlerToFormresult($this->handlers[$i], $node, $request);
 
