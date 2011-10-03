@@ -5,7 +5,7 @@
  */
 
   uses(
-    'text.StreamTokenizer', 
+    'text.Tokenizer', 
     'text.parser.generic.AbstractLexer'
   );
 
@@ -36,10 +36,12 @@
     /**
      * Constructor
      *
-     * @param   string source
+     * @param   text.Tokenizer source
      */
-    public function __construct($source) {
-      $this->tokenizer= new StreamTokenizer($source, self::DELIMITERS, TRUE);
+    public function __construct(Tokenizer $source) {
+      $this->tokenizer= $source;
+      $this->tokenizer->delimiters= self::DELIMITERS;
+      $this->tokenizer->returnDelims= TRUE;
       $this->position= array(1, 1);   // Y, X. Current postition. Used for debugging.
     }
   

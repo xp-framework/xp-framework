@@ -8,7 +8,8 @@
     'lang.types.String',
     'lang.types.Character',
     'io.streams.MemoryOutputStream',
-    'io.streams.MemoryInputStream',
+    'text.StreamTokenizer',
+    'text.StringTokenizer',
     'webservices.json.JsonException',
     'webservices.json.IJsonDecoder',
     'webservices.json.JsonParser',
@@ -39,7 +40,12 @@
    * @purpose   JSON en- and decoder
    */
   class JsonDecoder extends Object implements IJsonDecoder {
+    protected static $parser= NULL;
   
+    static function __static() {
+      self::$parser= new JsonParser();
+   }
+
     /**
      * Encode PHP data into JSON
      *
@@ -192,6 +198,21 @@
     }
     
     /**
+     * Parse a source and return the value
+     *
+     * @param   text.Tokenizer source
+     * @return  var
+     * @throws  webservices.json.JsonException(
+     */
+    protected function parse($source) {
+      try {
+        return self::$parser->parse(new JsonLexer($source));
+      } catch (ParseException $e) {
+        throw new JsonException($e->getMessage(), $e);
+      }
+    }
+    
+    /**
      * Decode a string into a PHP data structure
      *
      * Converts a string into PHP data structures, if the given string is valid JSON.<br/>
@@ -240,9 +261,7 @@
      * @throws  webservices.json.JsonException
      */
     public function decode($string) {
-      $stream= new MemoryInputStream($string.PHP_EOL);
-      $data= $this->decodeFrom($stream);
-      return $data;
+      return $this->parse(new StringTokenizer($string.PHP_EOL));
     }
 
     /**
@@ -255,15 +274,7 @@
      * @throws  webservices.json.JsonException
      */
     public function decodeFrom($stream) {
-      $parser= new JsonParser();
-
-      try{
-        $data= $parser->parse(new JsonLexer($stream));
-      } catch (ParseException $pe) {
-        throw new JsonException($pe->getMessage(), $pe);
-      }
-
-      return $data;
+      return $this->parse(new StreamTokenizer($stream));
     }
     
     /**
