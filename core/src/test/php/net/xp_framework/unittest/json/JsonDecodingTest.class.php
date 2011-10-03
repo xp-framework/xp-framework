@@ -440,9 +440,17 @@
      */
     #[@test]
     public function decodeEmptyArray() {
+      $this->assertEquals(array(), $this->decode('[]'));
+    }
+    
+    /**
+     * Test empty array decoding
+     *
+     */
+    #[@test]
+    public function decodeEmptyArrayWithWhitespace() {
       $this->assertEquals(array(), $this->decode('[ ]'));
     }
-
 
     /**
      * Test simple numeric array decoding
