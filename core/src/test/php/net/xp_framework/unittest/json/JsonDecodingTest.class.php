@@ -573,173 +573,172 @@
       );
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidNumber1() {
         $this->decode('0.00.1');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidNumber2() {
       $this->decode('010');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidNumber3() {
       $this->decode('0-10');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString1() {
       $this->decode('"foo');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString2() {
       $this->decode('foo"');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString3() {
       $this->decode('"foo"bar"');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString4() {
       $this->decode('foo');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidArray1() {
       $this->decode('1 , 2 , 3');
     }
 
-
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidArray2() {
       $this->decode('[ 1 2 3 ]');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidArray3() {
       $this->decode('[ 1 , 2 , 3');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidArray4() {
       $this->decode('1 , 2 , 3 ]');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject1() {
       $this->decode('{ "foo" "bar" }');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject2() {
       $this->decode('{ 1 : "bar" }');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject3() {
       $this->decode('{ foo : "bar" }');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject4() {
       $this->decode('{ "foo" : bar }');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject5() {
       $this->decode('"foo" : "bar"');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject6() {
       $this->decode('"foo" : "bar" }');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject7() {
       $this->decode('{ "foo" : "bar"');
     }
 
-   /**
-    * Test exception
-    *
-    */
+    /**
+     * Test exception
+     *
+     */
     #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidObject8() {
       $this->decode('{ "foo" : "bar" "bar" : "foo" }');
