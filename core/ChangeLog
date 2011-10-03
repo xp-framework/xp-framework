@@ -33,6 +33,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added webservices.json.JsonDecoder::encodeTo() and ::decodeFrom()
+  methods to work with io.streams API
+  (friebe, Rebecca Dietrich)
 - Added lang.types support for webservices.soap implementations, as
   proposed in issue #18
   (kiesel)
