@@ -14,8 +14,7 @@
   /**
    * Testcase for JsonDecoder
    *
-   * @see      http://json.org
-   * @purpose  Testcase
+   * @see   xp://webservices.json.JsonDecoder
    */
   class JsonDecodingTest extends TestCase {
     protected $decoder= NULL;
