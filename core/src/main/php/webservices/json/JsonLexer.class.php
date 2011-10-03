@@ -57,7 +57,7 @@
 
       while ($loop == TRUE ) {
         if (strpos(" \n\r\t", $this->value ) !== FALSE && $this->string == FALSE) {
-          // If it is only a seperation charakter, continue
+          // If it is only a seperation character, continue
           $token= $this->tokenizer->nextToken($this->delimiters);
           $this->value= $token;
           // Move position
