@@ -533,6 +533,19 @@
         $this->decode('{ "foo" : "bar", "bar" : "baz" }')
       );
     }
+
+    /**
+     * Test object decoding
+     *
+     * @see   https://bugs.php.net/bug.php?id=41504
+     */
+    #[@test]
+    public function decodeHashmapWithEmptyKey() {
+      $this->assertEquals(
+        array('' => new String('empty')),
+        $this->decode('{ "" : "empty" }')
+      );
+    }
     
     /**
      * Test object array decoding
