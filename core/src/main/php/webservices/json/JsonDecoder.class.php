@@ -7,45 +7,107 @@
   uses(
     'lang.types.String',
     'lang.types.Character',
-    'io.Stream',
-    'text.StringTokenizer',
+    'io.streams.MemoryOutputStream',
+    'io.streams.MemoryInputStream',
     'webservices.json.JsonException',
-    'webservices.json.IJsonDecoder'
+    'webservices.json.IJsonDecoder',
+    'webservices.json.JsonParser',
+    'webservices.json.JsonLexer'
   );
-
-  // Defines for the tokenizer
 
   /**
    * JSON decoder and encoder
    *
-   * @test      xp://net.xp_framework.unittest.json.JsonDecoderTest
+   * Used for converting JSON into PHP and PHP into JSON.
+   *
+   * Usage
+   * =====
+   * <code>
+   *   uses('webservices.json.JsonDecoder');
+   *
+   *   $decoder= new JsonDecoder();
+   *
+   *   $phpData= $decoder->deocode($jsonString);
+   *   $jsonString= $decoder->encode($phpData);
+   *
+   * </code>
+   *
+   * @test      xp://net.xp_framework.unittest.json.JsonDecoderTestDecoder
+   * @test      xp://net.xp_framewort.unittest.json.JsonDecoderTestEncoder
    * @see       http://json.org
    * @purpose   JSON en- and decoder
    */
   class JsonDecoder extends Object implements IJsonDecoder {
-    const 
-      T_LBRACE    = 0x0000,
-      T_RBRACE    = 0x0001,
-      T_LBRACKET  = 0x0002,
-      T_RBRACKET  = 0x0003,
-      T_COMMA     = 0x0004,
-      T_COLON     = 0x0005,
-      T_VALUE     = 0x1000;
-
-    public
-      $stream     = NULL;
-    
-    public
-      $_tokenValue  = NULL;
   
     /**
-     * Encode PHP data into 
+     * Encode PHP data into JSON
      *
-     * @param   var data
-     * @return  string
-     * @throws  webservices.json.JsonException if the data could not be serialized
+     * encode() gets PHP data and converts this into a JSON string.
+     *
+     *   <ul>
+     *     <li>
+     *       If you put in a boolean or NULL, you will retrieve a string within the
+     *       name of this boolean.
+     *       <code>
+     *         $decoder->encode(TRUE); // Will return 'true'
+     *       </code>
+     *     </li>
+     *     <li>
+     *       If you put in an integer or a float, you will retrieve a string representation
+     *       of this number.
+     *       <code>
+     *         $decoder->encode(10); // Will return '10'
+     *         $decoder->encode(0.1); // Will return '0.1'
+     *         $decoder->encode(0.000001); // Will return '1.0E-6', also valid JSON
+     *       </code>
+     *     </li>
+     *     <li>
+     *       If you put in a string, you will retrieve this string.
+     *     </li>
+     *     <li>
+     *       If you put in an array, the value you return depends on the array. If
+     *       it has only numeric keys (from 0 up to n-1), you will retrieve a JSON
+     *       array.
+     *       <code>
+     *         $decode->encode(array('foo', 'bar')); // Will return '[ "foo" , "bar" ]'
+     *       </code>
+     *       If the array has string keys or disordered numeric keys, you will retrieve
+     *       a JSON object.
+     *       <code>
+     *         $decode->encode(array('foo1' => 'bar1', 'foo2' => 'bar2'));
+     *         // Will return '{ "foo1" : "bar1" , "foo2" : "bar2" }'
+     *       <code>
+     *     </li>
+     *     <li>
+     *       If you put in a PHP object, it will be serialized and you will retrieve
+     *       it as a JSON object
+     *     </li>
+     *   </ul>
+     *
+     * @param var data
+     * @return string
+     * @throws webservices.json.JsonException
      */
     public function encode($data) {
+      $stream= new MemoryOutputStream();
+      $this->encodeTo($data, $stream);
+      return $stream->getBytes();
+    }
+
+    /**
+     * Encode PHP data into JSON via stream
+     *
+     * Gets the PHP data and a stream.<br/>
+     * It converts the data to JSON and will put every atom into the stream as soon
+     * as it is available.<br/>
+     * The usage is similar to encode() except the second argument.
+     *
+     * @param   var data
+     * @param   var stream
+     * @return  boolean
+     * @throws  webservices.json.JsonException if the data could not be serialized
+     */
+    public function encodeTo($data, $stream) {
       static $controlChars= array(
         '"'   => '\\"', 
         '\\'  => '\\\\', 
@@ -58,72 +120,68 @@
       );
       switch (gettype($data)) {
         case 'string': {
-          return '"'.strtr(utf8_encode($data), $controlChars).'"';
+          $stream->write('"'.strtr(utf8_encode($data), $controlChars).'"');
+          return TRUE;
         }
         case 'integer': {
-          return (string)$data;
+          $stream->write(strval($data));
+          return TRUE;
         }
         case 'double': {
-          return strval($data);
+          $stream->write(strval($data));
+          return TRUE;
         }
         case 'boolean': {
-          return ($data ? 'true' : 'false');
+          $stream->write(($data ? 'true' : 'false'));
+          return TRUE;
         }
         case 'NULL': {
-          return 'null';
-        }
-        
-        case 'object': {
-          // Convert objects to arrays and store the classname with them as
-          // suggested by JSON-RPC
-          if ($data instanceof Generic) {
-            if (!method_exists($data, '__sleep')) {
-              $vars= get_object_vars($data);
-            } else {
-              $vars= array(
-                'constructor' => '__construct()'
-              );
-              foreach ($data->__sleep() as $var) $vars[$var]= $data->{$var};
-            }
-            
-            // __xpclass__ is an addition to the spec, I added to be able to pass the FQCN
-            $data= array_merge(
-              array(
-                '__jsonclass__' => array('__construct()'),
-                '__xpclass__'   => utf8_encode($data->getClassName())
-              ),
-              $vars
-            );
-          } else {
-            $data= (array)$data;
-          }
-          
-          // Break missing intentially
+          $stream->write('null');
+          return TRUE;
         }
         
         case 'array': {
           if ($this->_isVector($data)) {
             // Bail out early on bordercase
-            if (0 == sizeof($data)) return '[ ]';
+            if (0 == sizeof($data)) {
+              $stream->write('[ ]');
+              return TRUE;
+           };
 
-            $ret= '[ ';
+            $stream->write('[ ');
+            // Get first element
+            $stream->write($this->encode(array_shift($data)));
             foreach ($data as $value) {
-              $ret.= $this->encode($value).' , ';
+              $stream->write(' , '.$this->encode($value));
             }
 
-            return substr($ret, 0, -2).']';
+            $stream->write(' ]');
+            return TRUE;
           } else {
-            $ret= '{ ';
+            $stream->write('{ ');
 
-            // Bail out early on bordercase
-            if (0 == sizeof($data)) return '{ }';
-
-            foreach ($data as $key => $value) {
-              $ret.= $this->encode((string)$key).' : '.$this->encode($value).' , ';
+            $value= each($data);
+            $stream->write($this->encode(
+              (string)$value['key']).' : '.$this->encode($value['value']
+            ));
+            while ($value= each($data)) {
+              $stream->write(
+                ' , '.$this->encode((string)$value['key']).' : '.$this->encode($value['value'])
+              );
             }
 
-            return substr($ret, 0, -2).'}';
+            $stream->write(' }');
+            return TRUE;
           }
+        }
+
+        case 'object': {
+          // Converts a string object into an normal json string
+          if ($data instanceof String) {
+            $stream->write('"'.$data->toString().'"');
+            break;
+          }
+          // Break missing intentially
         }
         
         default: {
@@ -135,277 +193,76 @@
     /**
      * Decode a string into a PHP data structure
      *
+     * Converts a string into PHP data structures, if the given string is valid JSON.<br/>
+     * You will find a description of valid JSON on json.org.<br/>
+     * See the list below to find out the corresponding PHP data types.
+     *
+     * <ul>
+     *   <li>
+     *     If you put in a JSON boolean or 'null', you will retrieve its PHP value.
+     *     <code>
+     *       $decoder->decode('true'); // Will return TRUE
+     *     </code>
+     *   </li>
+     *   <li>
+     *     If you put in a number, you will retrieve an integer or float, depending
+     *     on its value.
+     *     <code>
+     *         $decoder->decode('10'); // Will return 10 (integer)
+     *         $decoder->decode('0.1'); // Will return 0.1 (float)
+     *     </code>
+     *   </li>
+     *   <li>
+     *     If you put in a simple string, you will retrieve this string.
+     *   </li>
+     *   <li>
+     *     If you put in a JSON array, you will retrieve a normal PHP array.
+     *     <code>
+     *       $decode->decode('[ "foo" , "bar" ]'); // Will return array('foo', 'bar')
+     *     </code>
+     *   </li>
+     *   <li>
+     *     If you put in an JSON object, you will return a PHP hash map.
+     *     <code>
+     *       $decode->decode('{ "foo1" : "bar1" , "foo2" : "bar2" }');
+     *       // Will return array('foo1' => 'bar1', 'foo2' => 'bar2')
+     *     </code>
+     *   </li>
+     *   <li>
+     *     If you put in a serialized PHP object, you will return this as PHP object
+     *     as it is given.
+     *   </li>
+     * </ul>
+     *
      * @param   string string
      * @return  var
+     * @throws  webservices.json.JsonException
      */
     public function decode($string) {
-      $this->stream= new Stream();
-      $this->stream->open(STREAM_MODE_READWRITE);
-      $this->stream->write($string);
-      $this->stream->rewind();
-      
-      switch ($this->_getNextToken()) {
-        case self::T_LBRACKET: {
-          return $this->_decodeArray();
-        }
-        
-        case self::T_LBRACE: {
-          return $this->_decodeObject();
-        }
-        
-        case self::T_VALUE: {
-          return $this->_getTokenValue();
-        }
-      }
+      $stream= new MemoryInputStream($string.PHP_EOL);
+      $data= $this->decodeTo($stream);
+      return $data;
     }
-    
-    /**
-     * Decode an string into array structure
-     *
-     * @return  array
-     */
-    protected function _decodeArray() {
-      $array= array();
-      do {
-        $token= $this->_getNextToken();
-        switch ($token) {
-          case self::T_LBRACKET: {
-            $array[]= $this->_decodeArray();
-            break;
-          }
-          case self::T_LBRACE: {
-            $array[]= $this->_decodeObject();
-            break;
-          }
-          case self::T_VALUE: {
-            $array[]= $this->_getTokenValue();
-            break;
-          }
-        }
-      } while ($token != self::T_RBRACKET);
-      return $array;
-    }
-    
-    /**
-     * Decode string into object structure
-     *
-     * @return  stdclass
-     */
-    protected function _decodeObject() {
-      $array= array();
-      do {
-        $token= $this->_getNextToken();
-        switch ($token) {
-          case self::T_LBRACKET: {
-            $array[$key]= $this->_decodeArray();
-            unset($key);
-            break;
-          }
-          case self::T_LBRACE: {
-            $array[$key]= $this->_decodeObject();
-            unset($key);
-            break;
-          }
-          case self::T_VALUE: {
-            if (empty($key)) {
-              $key= $this->_getTokenValue();
-            } else {
-              $array[$key]= $this->_getTokenValue();
-              unset($key);
-            }
-            break;
-          }
-        }
-      } while ($token != self::T_RBRACE);
 
-      // Introspect array to check if this is actually an object
-      if (!empty($array['__jsonclass__']) && !empty($array['__xpclass__'])) {
-        $inst= XPClass::forName($array['__xpclass__'])->newInstance();
-        
-        foreach ($array as $key => $value) {
-
-          // TBD: A member like "constructor" should probably not be serialized
-          // at all. It should be ignored at this point...
-          if (in_array($key, array('__jsonclass__', '__xpclass__', 'constructor'))) continue;
-          $inst->{$key}= $value;
-        }
-        
-        if (method_exists($inst, '__wakeup')) $inst->__wakeup();
-              
-        return $inst;
-      }
-
-      return $array;
-    }
-    
     /**
-     * Fetch next token from stream
+     * Decode a stream of JSON data into PHP data
      *
-     * @return  int
-     */
-    protected function _getNextToken() {
-      if ($this->stream->eof()) return -1;
-      $this->_trim();
-      
-      $token= $this->stream->read(1);
-      
-      switch ($token) {
-        case '{': return self::T_LBRACE;
-        case '}': return self::T_RBRACE;
-        case '[': return self::T_LBRACKET;
-        case ']': return self::T_RBRACKET;
-        case ',': return self::T_COMMA;
-        case ':': return self::T_COLON;
-        case 't': {
-          $this->_tokenValue= TRUE;
-          $this->stream->read(3); // eat "rue"
-          return self::T_VALUE;
-        }
-        case 'f': {
-          $this->_tokenValue= FALSE;
-          $this->stream->read(4); // eat "alse"
-          return self::T_VALUE;
-        }
-        
-        case 'n': {
-          $this->_tokenValue= NULL;
-          $this->stream->read(3); // eat "ull"
-          return self::T_VALUE;
-        }
-        
-        case '"': {
-          $this->_tokenValue= $this->_readString();
-          return self::T_VALUE;
-        }
-        
-        case '-':
-        case '+':
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case '0': {
-          $this->stream->seek($this->stream->tell()- 1);
-          $this->_tokenValue= $this->_readNumber();
-          return self::T_VALUE;
-        }
-        
-        default: 
-          throw new JsonException('Invalid character: "'.$token.'" at position '.$this->stream->tell());
-      }
-    }
-    
-    /**
-     * Fetch token value
+     *  Be sure to send an PHP_EOL at the end of your stream.
      *
+     * @param   var stream
      * @return  var
+     * @throws  webservices.json.JsonException
      */
-    protected function _getTokenValue() {
-      return $this->_tokenValue;
-    }    
-    
-    /**
-     * Trim string, that is eat up all whitespace
-     * (but not from within string)
-     *
-     */
-    protected function _trim() {
-      $str= $this->stream->read(10);
-      $this->stream->seek($this->stream->tell() - strlen($str) + (strlen($str) - strlen(ltrim($str, ' '))));
-    }
-    
-    /**
-     * Decode string from wire
-     *
-     * @return  string
-     * @throws  webservices.json.JsonException if the string could not be parsed
-     */
-    protected function _readString() {
-      $ret= new String();
-      do {
-        $initpos= $this->stream->tell();
-        $offset= 0;
-        $str= $this->stream->read();
-      
-        $esc= FALSE;
-        $tokenizer= new StringTokenizer($str, '\"', TRUE);
-        $tok= '';
-        while (strlen($tok) || $tokenizer->hasMoreTokens()) {
-          if (empty($tok)) {
-            $tok= $tokenizer->nextToken();
-            $offset+= strlen($tok);
-          }
-          
-          if ($esc) {
-            $tmp= $tok{0};
-            $tok= substr($tok, 1);
-            switch ($tmp) {
-              case '\\':
-              case '"': 
-              case '/': $ret->concat($tmp);  break;
-              case 't': $ret->concat("\t"); break;
-              case 'n': $ret->concat("\n"); break;
-              case 'r': $ret->concat("\r"); break;
-              case 'b': $ret->concat("\b"); break;
-              case 'u': {
+    public function decodeTo($stream) {
+      $parser= new JsonParser();
 
-                // Read next 4 bytes
-                $ret->concat(new Character(hexdec(substr($tok, 0, 4))));
-                $tok= substr($tok, 4);
-                break;
-              }
-            }
-            
-            $esc= FALSE; 
-            continue; 
-          }
-          
-          switch ($tok) {
-            case '"': {
-              $this->stream->seek($initpos + $offset);
-              return (string)$ret->getBytes('ISO-8859-15');
-            }
-            
-            case '\\': {
-              $esc= TRUE;
-              $tok= '';
-              break;
-            }
-            
-            default: {
-              $ret->concat(new String($tok, 'UTF-8'));
-              $tok= '';
-              break;
-            }
-          }
-        }
-      } while (!$this->stream->eof());
-      throw new JsonException('String not well-formed.');
-    }
-    
-    /**
-     * Decode number from wire
-     *
-     * @return  var
-     */
-    protected function _readNumber() {
-      $initpos= $this->stream->tell();
-      $str= $this->stream->read();
-      
-      $endpos= strspn($str, '-+0123456789.eE');
-      $this->stream->seek($initpos + $endpos);
-      $nstr= substr($str, 0, $endpos);
-      
-      return (FALSE !== (strpos($nstr, '.')) || strpos(strtolower($nstr), 'e') || $nstr > LONG_MAX || $nstr < LONG_MIN)
-        ? floatval($nstr) 
-        : intval($nstr)
-      ;
+      try{
+        $data= $parser->parse(new JsonLexer($stream));
+      } catch (ParseException $pe) {
+        throw new JsonException($pe->getMessage(), $pe);
+      }
+
+      return $data;
     }
     
     /**
