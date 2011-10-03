@@ -261,13 +261,11 @@
      * @throws  webservices.json.JsonException
      */
     public function decode($string) {
-      return $this->parse(new StringTokenizer($string.PHP_EOL));
+      return $this->parse(new StringTokenizer($string));
     }
 
     /**
      * Decode a stream of JSON data into PHP data
-     *
-     *  Be sure to send an PHP_EOL at the end of your stream.
      *
      * @param   io.streams.InputStream stream
      * @return  var

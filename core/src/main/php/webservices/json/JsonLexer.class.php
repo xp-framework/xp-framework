@@ -51,11 +51,12 @@
      * @return  bool
      */
     public function advance() {
+      $hasMore= $this->tokenizer->hasMoreTokens();
+
       $token= $this->tokenizer->nextToken($this->delimiters);
       $this->value= $token;
       $loop= TRUE;
-
-      while ($loop == TRUE ) {
+      while ($loop) {
         if (strpos(" \n\r\t", $this->value ) !== FALSE && $this->string == FALSE) {
           // If it is only a seperation character, continue
           $token= $this->tokenizer->nextToken($this->delimiters);
@@ -160,14 +161,10 @@
         }
       }
 
-      //var_dump('This Token: '.$this->token);
-      //var_dump('This Value: '.$this->value);
-      //var_dump($this->delimiters);
-
       // Move postition
       $this->position[1]+= strlen($this->value);
       // Return if next token exists.
-      return $this->tokenizer->hasMoreTokens();
+      return $hasMore;
     }
   }
 ?>
