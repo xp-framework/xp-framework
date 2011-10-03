@@ -17,15 +17,25 @@
    * @see   xp://webservices.json.JsonDecoder
    */
   class JsonDecodingTest extends TestCase {
-    protected $decoder= NULL;
+    protected $fixture= NULL;
         
     /**
      * Setup text fixture
      *
      */
     public function setUp() {
-      $this->decoder= new JsonDecoder();
+      $this->fixture= new JsonDecoder();
       date_default_timezone_set('Europe/Berlin');
+    }
+    
+    /**
+     * Returns decoded input
+     *
+     * @param   string input
+     * @return  var
+     */
+    protected function decode($input) {
+      return $this->fixture->decode($input);
     }
     
     /**
@@ -36,7 +46,7 @@
     public function decodeString() {
       $this->assertEquals(
         new String('foobar'),
-        $this->decoder->decode('"foobar"')
+        $this->decode('"foobar"')
       );
     }
 
@@ -48,7 +58,7 @@
     public function decodeStringWithQuotedDelimiter() {
       $this->assertEquals(
         new String('foo"bar'),
-        $this->decoder->decode('"foo\\"bar"')
+        $this->decode('"foo\\"bar"')
       );
     }
 
@@ -60,7 +70,7 @@
     public function decodeStringWithQuotes() {
       $this->assertEquals(
         new String('foo\\bar'),
-        $this->decoder->decode('"foo\\\\bar"')
+        $this->decode('"foo\\\\bar"')
       );
     }
 
@@ -72,7 +82,7 @@
     public function decodeStringWithSolidus() {
       $this->assertEquals(
         new String('foo/bar'),
-        $this->decoder->decode('"foo\\/bar"')
+        $this->decode('"foo\\/bar"')
       );
     }
 
@@ -84,7 +94,7 @@
     public function decodeStringWithQuotedQuotes() {
       $this->assertEquals(
         new String('foobar\"'),
-        $this->decoder->decode('"foobar\\\\\""')
+        $this->decode('"foobar\\\\\""')
       );
     }
 
@@ -96,7 +106,7 @@
     public function decodeStringWithBackspace() {
       $this->assertEquals(
         new String('fo'."\b".'o'),
-        $this->decoder->decode('"fo\\bo"')
+        $this->decode('"fo\\bo"')
       );
     }
 
@@ -108,7 +118,7 @@
     public function decodeStringWithFormfeed() {
       $this->assertEquals(
         new String('fo'."\f".'o'),
-        $this->decoder->decode('"fo\\fo"')
+        $this->decode('"fo\\fo"')
       );
     }
 
@@ -120,7 +130,7 @@
     public function decodeStringWithNewline() {
        $this->assertEquals(
          new String('fo'."\n".'o'),
-         $this->decoder->decode('"fo\\no"')
+         $this->decode('"fo\\no"')
        );
     }
 
@@ -132,7 +142,7 @@
     public function decodeStringWithCarriageReturn() {
       $this->assertEquals(
         new String('fo'."\r".'o'),
-        $this->decoder->decode('"fo\\ro"')
+        $this->decode('"fo\\ro"')
       );
     }
 
@@ -144,7 +154,7 @@
     public function decodeStringWithTabEscape() {
       $this->assertEquals(
         new String("foobar\t"),
-        $this->decoder->decode('"foobar\\t"')
+        $this->decode('"foobar\\t"')
       );
     }
 
@@ -156,7 +166,7 @@
     public function decodeStringWithTabsAndQuotes() {
       $this->assertEquals(
         new String('foobar'."\t".'\"'),
-        $this->decoder->decode('"foobar\\t\\\\\""')
+        $this->decode('"foobar\\t\\\\\""')
       );
     }
 
@@ -168,7 +178,7 @@
     public function decodeStringWithHTML() {
       $this->assertEquals(
         new String("\nbbb ".'<span style="font-weight: bold;">tes</span>t " test'."\n"),
-        $this->decoder->decode('"\nbbb <span style=\"font-weight: bold;\">tes</span>t \" test\n"')
+        $this->decode('"\nbbb <span style=\"font-weight: bold;\">tes</span>t \" test\n"')
       );
     }
 
@@ -180,7 +190,7 @@
     public function decodeLongString() {
       with (
         $data= str_repeat('*', 6100),
-        $decodedString= $this->decoder->decode('"'.$data.'"')
+        $decodedString= $this->decode('"'.$data.'"')
       ); {
         $this->assertEquals(
           strlen($data),
@@ -198,7 +208,7 @@
     public function decodeUTF8String() {
       $this->assertEquals(
         new String('Knüper', 'Windows-1252'),
-        $this->decoder->decode('"KnÃ¼per"')
+        $this->decode('"KnÃ¼per"')
       );
     }
     
@@ -211,11 +221,11 @@
     public function decodeUTF8StringWithUnicodeCodepoint() {
       $this->assertEquals(
         new String('Günther', 'Windows-1252'),
-        $this->decoder->decode('"G\u00fcnther"')
+        $this->decode('"G\u00fcnther"')
       );
       $this->assertEquals(
         new String('¤uro'),
-        $this->decoder->decode('"\u20ACuro"')
+        $this->decode('"\u20ACuro"')
       );
     }
 
@@ -225,7 +235,7 @@
      */
     #[@test]
     public function decodeIntNumber() {
-      $this->assertEquals(1, $this->decoder->decode('1'));
+      $this->assertEquals(1, $this->decode('1'));
     }
 
     /**
@@ -234,7 +244,7 @@
      */
     #[@test]
     public function decodeNegativeIntNumber() {
-      $this->assertEquals(-1, $this->decoder->decode('-1'));
+      $this->assertEquals(-1, $this->decode('-1'));
     }
 
     /**
@@ -243,7 +253,7 @@
      */
     #[@test]
     public function decodeLongMax() {
-      $this->assertEquals(LONG_MAX, $this->decoder->decode((string)LONG_MAX));
+      $this->assertEquals(LONG_MAX, $this->decode((string)LONG_MAX));
     }
 
     /**
@@ -252,7 +262,7 @@
      */
     #[@test]
     public function decodeLongMin() {
-      $this->assertEquals(LONG_MIN, $this->decoder->decode((string)LONG_MIN));
+      $this->assertEquals(LONG_MIN, $this->decode((string)LONG_MIN));
     }
 
     /**
@@ -263,7 +273,7 @@
     public function decodeLargeNumber() {
       $this->assertEquals(
         (float)'9999999999999999999999999999999999999',
-        $this->decoder->decode('9999999999999999999999999999999999999')
+        $this->decode('9999999999999999999999999999999999999')
       );
     }
 
@@ -275,7 +285,7 @@
     public function decodeLargeNegativeNumber() {
       $this->assertEquals(
         (float)'-9999999999999999999999999999999999999',
-        $this->decoder->decode('-9999999999999999999999999999999999999')
+        $this->decode('-9999999999999999999999999999999999999')
       );
     }
 
@@ -285,7 +295,7 @@
      */
     #[@test]
     public function decodeFloatNumber() {
-      $this->assertEquals(1.1, $this->decoder->decode('1.1'));
+      $this->assertEquals(1.1, $this->decode('1.1'));
     }
     
     /**
@@ -294,7 +304,7 @@
      */
     #[@test]
     public function decodeNegativeFloatNumber() {
-      $this->assertEquals(-1.1, $this->decoder->decode('-1.1'));
+      $this->assertEquals(-1.1, $this->decode('-1.1'));
     }
 
     /**
@@ -303,7 +313,7 @@
      */
     #[@test]
     public function decodeSmallFloatNumber() {
-      $this->assertEquals(0.0000000001, $this->decoder->decode('0.0000000001'));
+      $this->assertEquals(0.0000000001, $this->decode('0.0000000001'));
     }
     
     /**
@@ -312,7 +322,7 @@
      */
     #[@test]
     public function decodeBigFloatNumber() {
-      $this->assertEquals(10000000.1, $this->decoder->decode('10000000.1'));
+      $this->assertEquals(10000000.1, $this->decode('10000000.1'));
     }
 
        /**
@@ -321,7 +331,7 @@
      */
     #[@test]
     public function decodeFloatNumberWithExponent() {
-      $this->assertEquals(10.0, $this->decoder->decode('1E1'));
+      $this->assertEquals(10.0, $this->decode('1E1'));
     }
     
     /**
@@ -330,7 +340,7 @@
      */
     #[@test]
     public function decodeNegativeFloatNumberWithExponent() {
-      $this->assertEquals(-10.0, $this->decoder->decode('-1E1'));
+      $this->assertEquals(-10.0, $this->decode('-1E1'));
     }
 
     /**
@@ -339,7 +349,7 @@
      */
     #[@test]
     public function decodeFloatNumberWithNegativeExponent() {
-      $this->assertEquals(0.1, $this->decoder->decode('1E-1'));
+      $this->assertEquals(0.1, $this->decode('1E-1'));
     }
     
     /**
@@ -348,7 +358,7 @@
      */
     #[@test]
     public function decodeNegativeFloatNumberWithNegativeExponent() {
-      $this->assertEquals(-0.1, $this->decoder->decode('-1E-1'));
+      $this->assertEquals(-0.1, $this->decode('-1E-1'));
     }
 
    /**
@@ -357,7 +367,7 @@
      */
     #[@test]
     public function decodeFloatNumberWithPositiveExponent() {
-      $this->assertEquals(10.0, $this->decoder->decode('1E+1'));
+      $this->assertEquals(10.0, $this->decode('1E+1'));
     }
     
     /**
@@ -366,7 +376,7 @@
      */
     #[@test]
     public function decodeNegativeFloatNumberWithPositiveExponent() {
-      $this->assertEquals(-10.0, $this->decoder->decode('-1E+1'));
+      $this->assertEquals(-10.0, $this->decode('-1E+1'));
     }
 
    /**
@@ -375,7 +385,7 @@
      */
     #[@test]
     public function decodeFloatNumberWithExponente() {
-      $this->assertEquals(10.0, $this->decoder->decode('1e1'));
+      $this->assertEquals(10.0, $this->decode('1e1'));
     }
     
     /**
@@ -384,7 +394,7 @@
      */
     #[@test]
     public function decodeNegativeFloatNumberWithExponente() {
-      $this->assertEquals(-10000000000.0, $this->decoder->decode('-1e10'));
+      $this->assertEquals(-10000000000.0, $this->decode('-1e10'));
     }
 
     /**
@@ -393,7 +403,7 @@
      */
     #[@test]
     public function decodeNull() {
-      $this->assertEquals(NULL, $this->decoder->decode('null'));
+      $this->assertEquals(NULL, $this->decode('null'));
     }
 
     /**
@@ -402,7 +412,7 @@
      */
     #[@test]
     public function decodeTrue() {
-      $this->assertEquals(TRUE, $this->decoder->decode('true'));
+      $this->assertEquals(TRUE, $this->decode('true'));
     }
 
     /**
@@ -411,7 +421,7 @@
      */
     #[@test]
     public function decodeFalse() {
-      $this->assertEquals(FALSE, $this->decoder->decode('false'));
+      $this->assertEquals(FALSE, $this->decode('false'));
     }
     
     /**
@@ -420,7 +430,7 @@
      */
     #[@test]
     public function decodeEmptyArray() {
-      $this->assertEquals(array(), $this->decoder->decode('[ ]'));
+      $this->assertEquals(array(), $this->decode('[ ]'));
     }
 
 
@@ -432,7 +442,7 @@
     public function decodeSimpleNumericArray() {
       $this->assertEquals(
         array(1, 2, 3),
-        $this->decoder->decode('[ 1 , 2 , 3 ]')
+        $this->decode('[ 1 , 2 , 3 ]')
       );
     }
 
@@ -444,7 +454,7 @@
     public function decodeStringArray() {
       $this->assertEquals(
         array(new String('foo'), new String('bar')),
-        $this->decoder->decode('[ "foo" , "bar" ]')
+        $this->decode('[ "foo" , "bar" ]')
       );
     }
 
@@ -456,7 +466,7 @@
     public function decodeArray() {
       $this->assertEquals(
         array(TRUE, FALSE, NULL),
-        $this->decoder->decode('[ true , false, null ]')
+        $this->decode('[ true , false, null ]')
       );
     }
 
@@ -468,7 +478,7 @@
     public function decodeSimpleMixedArray() {
       $this->assertEquals(
         array(new String('foo'), 2, new String('bar')),
-        $this->decoder->decode('[ "foo" , 2 , "bar" ]')
+        $this->decode('[ "foo" , 2 , "bar" ]')
       );
     }
 
@@ -480,7 +490,7 @@
     public function decodeNormalMixedArray() {
       $this->assertEquals(
         array(new String('foo'), 0.001, FALSE, array(1, 2, 3)),
-        $this->decoder->decode('[ "foo" , 0.001 , false , [ 1 , 2 , 3 ] ]')
+        $this->decode('[ "foo" , 0.001 , false , [ 1 , 2 , 3 ] ]')
       );
     }
     
@@ -492,7 +502,7 @@
     public function decodeHashmap() {
       $this->assertEquals(
         array('foo' => new String('bar'), 'bar' => new String('baz')),
-        $this->decoder->decode('{ "foo" : "bar", "bar" : "baz" }')
+        $this->decode('{ "foo" : "bar", "bar" : "baz" }')
       );
     }
     
@@ -504,7 +514,7 @@
     public function decodeObjectArray() {
       $this->assertEquals(
         array(array('foo' => 1), array('bar' => new String('baz'))),
-        $this->decoder->decode('[ { "foo" : 1 } , { "bar" : "baz" } ]')
+        $this->decode('[ { "foo" : 1 } , { "bar" : "baz" } ]')
       );
     }
 
@@ -516,7 +526,7 @@
     public function decodeComplexMixedArray() {
       $this->assertEquals(
         array(new String('foo'), TRUE, array('foo' => new String('bar'), 'bar' => 2)),
-        $this->decoder->decode('[ "foo" , true , { "foo" : "bar" , "bar" : 2 } ]')
+        $this->decode('[ "foo" , true , { "foo" : "bar" , "bar" : 2 } ]')
       );
     }
 
@@ -528,7 +538,7 @@
     public function decodeNestedObject() {
       $this->assertEquals(
         array('ref' => array('foo' => new String('bar'))),
-        $this->decoder->decode('{ "ref" : { "foo" : "bar" } }')
+        $this->decode('{ "ref" : { "foo" : "bar" } }')
       );
     }
 
@@ -546,7 +556,7 @@
           "array2" => array("foo" => TRUE, "bar" => 4),
           "array3" => array("foo" => array("foo" => new String("bar")))
         ),
-        $this->decoder->decode(
+        $this->decode(
           '{ "foo" : "bar" , "3" : 0.123 , "4" : false , "array" : [ 1 , "foo" , false ] , '.
           '"array2" : { "foo" : true , "bar" : 4 } , "array3" : { "foo" : { "foo" : "bar" } } }'
         )
@@ -560,7 +570,7 @@
    #[@test]
     public function decodeInvalidNumber1() {
       try {
-        $this->decoder->decode('0.00.1');
+        $this->decode('0.00.1');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -578,7 +588,7 @@
    #[@test]
     public function decodeInvalidNumber2() {
       try {
-        $this->decoder->decode('010');
+        $this->decode('010');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -596,7 +606,7 @@
    #[@test]
     public function decodeInvalidNumber3() {
       try {
-        $this->decoder->decode('0-10');
+        $this->decode('0-10');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -614,7 +624,7 @@
    #[@test]
     public function decodeInvalidString1() {
       try {
-        $this->decoder->decode('"foo');
+        $this->decode('"foo');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -632,7 +642,7 @@
    #[@test]
     public function decodeInvalidString2() {
       try {
-        $this->decoder->decode('foo"');
+        $this->decode('foo"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -650,7 +660,7 @@
    #[@test]
     public function decodeInvalidString3() {
       try {
-        $this->decoder->decode('"foo"bar"');
+        $this->decode('"foo"bar"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -668,7 +678,7 @@
    #[@test]
     public function decodeInvalidString4() {
       try {
-        $this->decoder->decode('foo');
+        $this->decode('foo');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -686,7 +696,7 @@
    #[@test]
     public function decodeInvalidArray1() {
       try {
-        $this->decoder->decode('1 , 2 , 3');
+        $this->decode('1 , 2 , 3');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -705,7 +715,7 @@
    #[@test]
     public function decodeInvalidArray2() {
       try {
-        $this->decoder->decode('[ 1 2 3 ]');
+        $this->decode('[ 1 2 3 ]');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -723,7 +733,7 @@
    #[@test]
     public function decodeInvalidArray3() {
       try {
-        $this->decoder->decode('[ 1 , 2 , 3');
+        $this->decode('[ 1 , 2 , 3');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -741,7 +751,7 @@
    #[@test]
      public function decodeInvalidArray4() {
       try {
-        $this->decoder->decode('1 , 2 , 3 ]');
+        $this->decode('1 , 2 , 3 ]');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -759,7 +769,7 @@
    #[@test]
     public function decodeInvalidObject1() {
       try {
-        $this->decoder->decode('{ "foo" "bar" }');
+        $this->decode('{ "foo" "bar" }');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -777,7 +787,7 @@
    #[@test]
     public function decodeInvalidObject2() {
       try {
-        $this->decoder->decode('{ 1 : "bar" }');
+        $this->decode('{ 1 : "bar" }');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -795,7 +805,7 @@
    #[@test]
     public function decodeInvalidObject3() {
       try {
-        $this->decoder->decode('{ foo : "bar" }');
+        $this->decode('{ foo : "bar" }');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -813,7 +823,7 @@
    #[@test]
     public function decodeInvalidObject4() {
       try {
-        $this->decoder->decode('{ "foo" : bar }');
+        $this->decode('{ "foo" : bar }');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -831,7 +841,7 @@
    #[@test]
     public function decodeInvalidObject5() {
       try {
-        $this->decoder->decode('"foo" : "bar"');
+        $this->decode('"foo" : "bar"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -849,7 +859,7 @@
    #[@test]
     public function decodeInvalidObject6() {
       try {
-        $this->decoder->decode('"foo" : "bar" }');
+        $this->decode('"foo" : "bar" }');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -867,7 +877,7 @@
    #[@test]
     public function decodeInvalidObject7() {
       try {
-        $this->decoder->decode('{ "foo" : "bar"');
+        $this->decode('{ "foo" : "bar"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -885,7 +895,7 @@
    #[@test]
     public function decodeInvalidObject8() {
       try {
-        $this->decoder->decode('{ "foo" : "bar" "bar" : "foo" }');
+        $this->decode('{ "foo" : "bar" "bar" : "foo" }');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -902,7 +912,7 @@
      */
     #[@test,@expect('webservices.json.JsonException')]
     public function decodeInvalidData() {
-      $this->decoder->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
+      $this->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
     }
     
     /**
@@ -917,7 +927,7 @@
     #[@test]
     public function decodeInvalidString5() {
       try {
-        $this->decoder->decode('"foobar\"');
+        $this->decode('"foobar\"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -935,7 +945,7 @@
     #[@test]
     public function decodeInvalidString6() {
       try {
-        $this->decoder->decode('"foo\u20A"');
+        $this->decode('"foo\u20A"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -953,7 +963,7 @@
     #[@test]
     public function decodeInvalidString7() {
       try {
-        $this->decoder->decode('"foo\ufoobar"');
+        $this->decode('"foo\ufoobar"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -972,7 +982,7 @@
     public function decodeStringWithNumbers() {
       $this->assertEquals(
         new String('foo'."\n".'200'),
-        $this->decoder->decode('"foo\n200"')
+        $this->decode('"foo\n200"')
       );
     }
 
@@ -984,7 +994,7 @@
     public function decodeStringWithJsonSyntax() {
       $this->assertEquals(
         new String('[foo, bar]'),
-        $this->decoder->decode('"[foo, bar]"')
+        $this->decode('"[foo, bar]"')
       );
     }
 
@@ -995,7 +1005,7 @@
     #[@test]
     public function decodeInvalidString8() {
       try {
-        $this->decoder->decode('"foo\obar"');
+        $this->decode('"foo\obar"');
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -1014,7 +1024,7 @@
     public function decodeObjectWithIdenticalKeys() {
       $this->assertEquals(
         array('foo' => new String('bar')),
-        $this->decoder->decode('{ "foo" : "bar", "foo" : "bar2" }')
+        $this->decode('{ "foo" : "bar", "foo" : "bar2" }')
       );
     }
 
@@ -1026,7 +1036,7 @@
     public function decodeZero() {
       $this->assertEquals(
         0,
-        $this->decoder->decode('0')
+        $this->decode('0')
       );
     }
 
@@ -1038,7 +1048,7 @@
     public function decodeEmptyString() {
       $this->assertEquals(
         "",
-        $this->decoder->decode('""')
+        $this->decode('""')
       );
     }
 
@@ -1049,7 +1059,7 @@
     #[@test]
     public function decodeNothing() {
       try {
-        $this->decoder->decode('');
+        $this->decode('');
       } catch (JsonException $je) {
         // Do nothing here
       }

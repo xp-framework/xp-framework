@@ -17,15 +17,25 @@
    * @see   xp://webservices.json.JsonDecoder
    */
   class JsonEncodingTest extends TestCase {
-    protected $decoder= NULL;
+    protected $fixture= NULL;
         
     /**
      * Setup text fixture
      *
      */
     public function setUp() {
-      $this->decoder= new JsonDecoder();
+      $this->fixture= new JsonDecoder();
       date_default_timezone_set('Europe/Berlin');
+    }
+
+    /**
+     * Returns encoded object
+     *
+     * @param   var input
+     * @return  string
+     */
+    protected function encode($input) {
+      return $this->fixture->encode($input);
     }
     
     /**
@@ -34,7 +44,7 @@
      */
     #[@test]
     public function encodeString() {
-      $this->assertEquals('"foo"', $this->decoder->encode('foo'));
+      $this->assertEquals('"foo"', $this->encode('foo'));
     }
     
     /**
@@ -43,7 +53,7 @@
      */
     #[@test]
     public function encodeUTF8String() {
-      $this->assertEquals('"fÃ¶o"', $this->decoder->encode('föo'));
+      $this->assertEquals('"fÃ¶o"', $this->encode('föo'));
     }
 
     /**
@@ -52,7 +62,7 @@
      */
      #[@test]
      public function encodeQuotationMarkString() {
-       $this->assertEquals('"f\\"o\\"o"', $this->decoder->encode('f"o"o'));
+       $this->assertEquals('"f\\"o\\"o"', $this->encode('f"o"o'));
      }
 
      /**
@@ -61,7 +71,7 @@
      */
      #[@test]
      public function encodeReverseSolidusString() {
-       $this->assertEquals('"fo\\\\o"', $this->decoder->encode('fo\\o'));
+       $this->assertEquals('"fo\\\\o"', $this->encode('fo\\o'));
      }
 
      /**
@@ -70,7 +80,7 @@
      */
      #[@test]
      public function encodeSolidusString() {
-       $this->assertEquals('"fo\\/o"', $this->decoder->encode('fo/o'));
+       $this->assertEquals('"fo\\/o"', $this->encode('fo/o'));
      }
 
      /**
@@ -79,7 +89,7 @@
      */
      #[@test]
      public function encodeBackspaceString() {
-       $this->assertEquals('"fo\\bo"', $this->decoder->encode('fo'."\b".'o'));
+       $this->assertEquals('"fo\\bo"', $this->encode('fo'."\b".'o'));
      }
 
      /**
@@ -88,7 +98,7 @@
      */
      #[@test]
      public function encodeFormfeedString() {
-       $this->assertEquals('"fo\\fo"', $this->decoder->encode('fo'."\f".'o'));
+       $this->assertEquals('"fo\\fo"', $this->encode('fo'."\f".'o'));
      }
 
     /**
@@ -97,7 +107,7 @@
      */
      #[@test]
      public function encodeNewlineString() {
-       $this->assertEquals('"fo\\no"', $this->decoder->encode('fo'."\n".'o'));
+       $this->assertEquals('"fo\\no"', $this->encode('fo'."\n".'o'));
      }
 
      /**
@@ -106,7 +116,7 @@
      */
      #[@test]
      public function encodeCarriageReturnString() {
-       $this->assertEquals('"fo\\ro"', $this->decoder->encode('fo'."\r".'o'));
+       $this->assertEquals('"fo\\ro"', $this->encode('fo'."\r".'o'));
      }
 
      /**
@@ -115,7 +125,7 @@
      */
      #[@test]
      public function encodeHorizontalTabString() {
-       $this->assertEquals('"fo\\to"', $this->decoder->encode('fo'."\t".'o'));
+       $this->assertEquals('"fo\\to"', $this->encode('fo'."\t".'o'));
      }
   
     /**
@@ -124,7 +134,7 @@
      */
     #[@test]
     public function encodePositiveSmallInt() {
-      $this->assertEquals('1', $this->decoder->encode(1));
+      $this->assertEquals('1', $this->encode(1));
     }
 
     /**
@@ -133,7 +143,7 @@
      */
     #[@test]
     public function encodeNegativeSmallInt() {
-      $this->assertEquals('-1', $this->decoder->encode(-1));
+      $this->assertEquals('-1', $this->encode(-1));
     }
 
     /**
@@ -142,7 +152,7 @@
      */
     #[@test]
     public function encodePositiveBigInt() {
-      $this->assertEquals('2147483647', $this->decoder->encode(2147483647));
+      $this->assertEquals('2147483647', $this->encode(2147483647));
     }
     
     /**
@@ -151,7 +161,7 @@
      */
     #[@test]
     public function encodeNegativeBigInt() {
-      $this->assertEquals('-2147483647', $this->decoder->encode(-2147483647));
+      $this->assertEquals('-2147483647', $this->encode(-2147483647));
     }
 
     /**
@@ -160,7 +170,7 @@
      */
     #[@test]
     public function encodeIntegerFloat() {
-      $this->assertEquals('1', $this->decoder->encode(1.0));
+      $this->assertEquals('1', $this->encode(1.0));
     }
 
     /**
@@ -169,7 +179,7 @@
      */
     #[@test]
     public function encodeSmallPositiveFloat() { 
-      $this->assertEquals('1.1', $this->decoder->encode(1.1));
+      $this->assertEquals('1.1', $this->encode(1.1));
     }
     
     /**
@@ -178,7 +188,7 @@
      */
     #[@test]
     public function encodeFloat() { 
-      $this->assertEquals('-1.1', $this->decoder->encode(-1.1));
+      $this->assertEquals('-1.1', $this->encode(-1.1));
     }
 
     /**
@@ -187,7 +197,7 @@
      */
     #[@test]
     public function encodeBigPositiveFloat() { 
-      $this->assertEquals('9999999999999.1', $this->decoder->encode(9999999999999.1));
+      $this->assertEquals('9999999999999.1', $this->encode(9999999999999.1));
     }
 
     /**
@@ -196,7 +206,7 @@
      */
     #[@test]
     public function encodeBigNevativeFloat() { 
-      $this->assertEquals('-9999999999999.1', $this->decoder->encode(-9999999999999.1));
+      $this->assertEquals('-9999999999999.1', $this->encode(-9999999999999.1));
     }
 
     /**
@@ -205,7 +215,7 @@
      */
     #[@test]
     public function encodeVerySmallFloat() { 
-      $this->assertEquals('1.0E-11', $this->decoder->encode(0.00000000001));
+      $this->assertEquals('1.0E-11', $this->encode(0.00000000001));
     }
 
     /**
@@ -214,7 +224,7 @@
      */
     #[@test]
     public function encodeAlmostVerySmallFloat() { 
-      $this->assertEquals('0.123456789', $this->decoder->encode(0.123456789));
+      $this->assertEquals('0.123456789', $this->encode(0.123456789));
     }
 
     /**
@@ -223,7 +233,7 @@
      */
     #[@test]
     public function encodeNull() {
-      $this->assertEquals('null', $this->decoder->encode(NULL));
+      $this->assertEquals('null', $this->encode(NULL));
     }
 
     /**
@@ -232,7 +242,7 @@
      */
     #[@test]
     public function encodeTrue() {
-      $this->assertEquals('true', $this->decoder->encode(TRUE));
+      $this->assertEquals('true', $this->encode(TRUE));
     }
 
     /**
@@ -241,7 +251,7 @@
      */
     #[@test]
     public function encodeFalse() {
-      $this->assertEquals('false', $this->decoder->encode(FALSE));
+      $this->assertEquals('false', $this->encode(FALSE));
     }
     
     /**
@@ -250,7 +260,7 @@
      */
     #[@test]
     public function encodeEmptyArray() {
-      $this->assertEquals('[ ]', $this->decoder->encode(array()));
+      $this->assertEquals('[ ]', $this->encode(array()));
     }
 
     /**
@@ -261,7 +271,7 @@
     public function encodeSimpleNumericArray() {
       $this->assertEquals(
         '[ 1 , 2 , 3 ]',
-        $this->decoder->encode(array(1, 2, 3))
+        $this->encode(array(1, 2, 3))
       );
     }
 
@@ -273,7 +283,7 @@
     public function encodeSimpleMixedArray() {
       $this->assertEquals(
         '[ "foo" , 2 , "bar" ]',
-        $this->decoder->encode(array('foo', 2, 'bar'))
+        $this->encode(array('foo', 2, 'bar'))
       );
     }
 
@@ -285,7 +295,7 @@
     public function encodeNormalMixedArray() {
       $this->assertEquals(
         '[ "foo" , 0.001 , false , [ 1 , 2 , 3 ] ]',
-        $this->decoder->encode(array('foo', 0.001, FALSE, array(1, 2, 3)))
+        $this->encode(array('foo', 0.001, FALSE, array(1, 2, 3)))
       );
     }
        
@@ -297,7 +307,7 @@
     public function encodeSimpleHashmap() {
       $this->assertEquals(
         '{ "foo" : "bar" , "bar" : "baz" }',
-        $this->decoder->encode(array('foo' => 'bar', 'bar' => 'baz'))
+        $this->encode(array('foo' => 'bar', 'bar' => 'baz'))
       );
     }
 
@@ -309,7 +319,7 @@
     public function encodeComplexMixedArray() {
       $this->assertEquals(
        '[ "foo" , true , { "foo" : "bar" , "0" : 2 } ]',
-       $this->decoder->encode(array('foo', TRUE, array('foo' => 'bar', 2)))
+       $this->encode(array('foo', TRUE, array('foo' => 'bar', 2)))
       );
     }
 
@@ -322,7 +332,7 @@
       $this->assertEquals(
         '{ "foo" : "bar" , "3" : 0.123 , "4" : false , "array" : [ 1 , "foo" , false ] , '.
         '"array2" : { "0" : true , "bar" : 4 } , "array3" : { "foo" : { "foo" : "bar" } } }',
-        $this->decoder->encode(array('foo' => 'bar',
+        $this->encode(array('foo' => 'bar',
           3 => 0.123,
           FALSE,
           "array" => array(1, "foo", FALSE),
@@ -342,7 +352,7 @@
       $file= tmpfile();
 
       try {
-        $this->decoder->encode($file);
+        $this->encode($file);
       } catch (JsonException $je) {
         // Do nothing here
       }
@@ -364,7 +374,7 @@
      */
     #[@test]
     public function encodeOneElementArray() {
-      $this->assertEquals('[ "foo" ]', $this->decoder->encode(array('foo')));
+      $this->assertEquals('[ "foo" ]', $this->encode(array('foo')));
     }
 
     /**
@@ -375,7 +385,7 @@
     public function encodeOneElementObejct() {
       $this->assertEquals(
         '{ "foo" : "bar" }',
-        $this->decoder->encode(array('foo' => 'bar'))
+        $this->encode(array('foo' => 'bar'))
       );
     }
 
@@ -392,7 +402,7 @@
     public function encodeStringObject() {
       $this->assertEquals(
         '"foobar"',
-        $this->decoder->encode(new String('foobar'))
+        $this->encode(new String('foobar'))
       );
     }
 
@@ -405,7 +415,7 @@
       $je= NULL;
 
       try {
-        $this->decoder->encode(new Date('2009-05-18 01:02:03'));
+        $this->encode(new Date('2009-05-18 01:02:03'));
       } catch (JsonException $je) {
         // Do nothing here
       }
