@@ -111,7 +111,7 @@
                   break;
                 case 'u'  :
                   $this->token= JsonParser::T_ESCAPE_UNICODE;
-                  // A unicode charakter needs four hex digits
+                  // A unicode character needs four hex digits
                   for ($i= 0; $i < 4; $i++) {
                     $nextToken= $this->tokenizer->nextToken(self::HEX);
                     $this->value.= $nextToken;
