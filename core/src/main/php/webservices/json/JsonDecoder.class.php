@@ -8,6 +8,8 @@
     'lang.types.String',
     'lang.types.Character',
     'io.streams.MemoryOutputStream',
+    'io.streams.OutputStream',
+    'io.streams.InputStream',
     'text.StreamTokenizer',
     'text.StringTokenizer',
     'webservices.json.JsonException',
@@ -91,9 +93,9 @@
      *     </li>
      *   </ul>
      *
-     * @param var data
-     * @return string
-     * @throws webservices.json.JsonException
+     * @param   var data
+     * @return  string
+     * @throws  webservices.json.JsonException
      */
     public function encode($data) {
       $stream= new MemoryOutputStream();
@@ -110,11 +112,11 @@
      * The usage is similar to encode() except the second argument.
      *
      * @param   var data
-     * @param   var stream
+     * @param   io.streams.OutputStream stream
      * @return  boolean
      * @throws  webservices.json.JsonException if the data could not be serialized
      */
-    public function encodeTo($data, $stream) {
+    public function encodeTo($data, OutputStream $stream) {
       static $controlChars= array(
         '"'   => '\\"', 
         '\\'  => '\\\\', 
@@ -271,7 +273,7 @@
      * @return  var
      * @throws  webservices.json.JsonException
      */
-    public function decodeFrom($stream) {
+    public function decodeFrom(InputStream $stream) {
       return $this->parse(new StreamTokenizer($stream));
     }
     
