@@ -23,7 +23,7 @@
    * @see      xp://scriptlet.xml.workflow.AbstractState#addHandler
    * @purpose  Base class
    */
-  class Handler extends Object {
+  class AbstractHandler extends Object {
     public
       $wrapper      = NULL,
       $values       = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
