@@ -17,7 +17,7 @@
    * @see      http://json.org
    * @purpose  Testcase
    */
-  class JsonDecoderTestDecoder extends TestCase {
+  class JsonDecodingTest extends TestCase {
     protected $decoder= NULL;
         
     /**
