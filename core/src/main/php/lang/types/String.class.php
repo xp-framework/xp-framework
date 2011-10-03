@@ -20,6 +20,12 @@
       $buffer= '',
       $length= 0;
 
+    public static $EMPTY = NULL;
+
+    static function __static() {
+      self::$EMPTY= new self('', STR_ENC);
+    }
+
     /**
      * Convert a string to internal encoding
      *

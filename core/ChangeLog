@@ -33,6 +33,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added lang.types.String::$EMPTY constant
+  (friebe)
 - Added webservices.json.JsonDecoder::encodeTo() and ::decodeFrom()
   methods to work with io.streams API
   (friebe, Rebecca Dietrich)
