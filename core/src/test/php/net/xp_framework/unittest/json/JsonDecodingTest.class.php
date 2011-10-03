@@ -222,7 +222,6 @@
       );
     }
     
-    
     /**
      * Test string decoding
      *
@@ -233,8 +232,16 @@
         new String('Günther', 'Windows-1252'),
         $this->decode('"G\u00fcnther"')
       );
+    }
+
+    /**
+     * Test string decoding
+     *
+     */
+    #[@test]
+    public function decodeUTF8StringWithEuroSymbol() {
       $this->assertEquals(
-        new String('¤uro'),
+        new String("\xe2\x82\xacuro", 'utf-8'),
         $this->decode('"\u20ACuro"')
       );
     }
@@ -845,6 +852,18 @@
     }
 
     /**
+     * Test object with unicode key
+     *
+     */
+    #[@test]
+    public function objectKeyTreatedAsIso88591() {
+      $this->assertEquals(
+        array('über' => new String('coder')),
+        $this->decode('{ "\u00FCber" : "coder" }')
+      );
+    }
+
+    /**
      * Test object with two identical keys
      *
      */
@@ -871,7 +890,7 @@
      */
     #[@test]
     public function decodeEmptyString() {
-      $this->assertEquals('', $this->decode('""'));
+      $this->assertEquals(String::$EMPTY, $this->decode('""'));
     }
 
     /**

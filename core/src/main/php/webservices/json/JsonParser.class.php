@@ -323,7 +323,7 @@
     { $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); } break;
 
     case 10:  #line 42 "grammar/json.jay"
-    { $yyVal= $yyVals[-1+$yyTop]; } break;
+    { $yyVal= utf8_decode($yyVals[-1+$yyTop]); /* xp::CHARSET */ } break;
 
     case 11:  #line 43 "grammar/json.jay"
     { $yyVal= ''; } break;
@@ -341,16 +341,16 @@
     { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
 
     case 16:  #line 57 "grammar/json.jay"
-    { $yyVal= new String($yyVals[-1+$yyTop]); } break;
+    { $yyVal= new String($yyVals[-1+$yyTop], 'utf-8'); } break;
 
     case 17:  #line 58 "grammar/json.jay"
-    { $yyVal= ''; } break;
+    { $yyVal= String::$EMPTY; } break;
 
     case 19:  #line 63 "grammar/json.jay"
     { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
 
     case 20:  #line 67 "grammar/json.jay"
-    { $yyVal= iconv('UTF-8', 'ISO-8859-15//IGNORE//TRANSLIT', $yyVals[0+$yyTop]); } break;
+    { $yyVal= $yyVals[0+$yyTop]; } break;
 
     case 21:  #line 68 "grammar/json.jay"
     { $yyVal= '"'; } break;
@@ -379,8 +379,8 @@
     case 29:  #line 76 "grammar/json.jay"
     {
                                 $yyVal= iconv(
-                                  'UCS-4BE',
-                                  'ISO-8859-15//IGNORE//TRANSLIT',
+                                  'ucs-4be',
+                                  'UTF-8',
                                   pack('N', hexdec(substr($yyVals[0+$yyTop], 2)))
                                 );
                               } break;

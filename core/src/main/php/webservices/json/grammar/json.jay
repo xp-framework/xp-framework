@@ -39,7 +39,7 @@ objectpart:
 ;
 
 objectkey:
-    '"' word '"' { $$= $2; }
+    '"' word '"' { $$= utf8_decode($2); /* xp::CHARSET */ }
   | '"' '"' { $$= ''; }
 ;    
 
@@ -54,8 +54,8 @@ arraycontent:
 ;
 
 string:
-    '"' word '"' { $$= new String($2); }
-  | '"' '"' { $$= ''; }
+    '"' word '"' { $$= new String($2, 'utf-8'); }
+  | '"' '"' { $$= String::$EMPTY; }
 ;
 
 word:
@@ -64,7 +64,7 @@ word:
 ;
 
 stringpart:
-      T_STRING                { $$= iconv('UTF-8', 'ISO-8859-15//IGNORE//TRANSLIT', $1); }
+      T_STRING                { $$= $1; }
     | T_ESCAPE_QUOTATION      { $$= '"'; }
     | T_ESCAPE_REVERSESOLIDUS { $$= "\\"; }
     | T_ESCAPE_SOLIDUS        { $$= "/"; }
@@ -75,8 +75,8 @@ stringpart:
     | T_ESCAPE_HORIZONTALTAB  { $$= "\t"; }
     | T_ESCAPE_UNICODE        {
                                 $$= iconv(
-                                  'UCS-4BE',
-                                  'ISO-8859-15//IGNORE//TRANSLIT',
+                                  'ucs-4be',
+                                  'UTF-8',
                                   pack('N', hexdec(substr($1, 2)))
                                 );
                               }
