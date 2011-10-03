@@ -25,11 +25,12 @@
    */
   class AbstractHandler extends Object {
     public
-      $wrapper      = NULL,
-      $values       = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
-      $errors       = array(),
-      $identifier   = '',
-      $name         = '';
+      $wrapper          = NULL,
+      $values           = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
+      $errors           = array(),
+      $identifier       = '',
+      $name             = '',
+      $requestOverride  = FALSE;
 
     /**
      * Constructor
