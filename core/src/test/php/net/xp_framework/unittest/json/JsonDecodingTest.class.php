@@ -924,64 +924,32 @@
     public function decodeInvalidData() {
       $this->decode('<xml version="1.0" encoding="iso-8859-1"?><document/>');
     }
-    
-    /**
-     *  Additional tests
-     */
-
 
     /**
      * Test invalid string
      *
      */
-    #[@test]
+    #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString5() {
-      try {
-        $this->decode('"foobar\"');
-      } catch (JsonException $je) {
-        // Do nothing here
-      }
-
-      $this->assertInstanceOf(
-        'webservices.json.JsonException',
-        $je
-      );
+      $this->decode('"foobar\"');
     }
 
     /**
      * Test invalid string
      *
      */
-    #[@test]
+    #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString6() {
-      try {
-        $this->decode('"foo\u20A"');
-      } catch (JsonException $je) {
-        // Do nothing here
-      }
-
-      $this->assertInstanceOf(
-        'webservices.json.JsonException',
-        $je
-      );
+      $this->decode('"foo\u20A"');
     }
 
     /**
      * Test invalid string
      *
      */
-    #[@test]
+    #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString7() {
-      try {
-        $this->decode('"foo\ufoobar"');
-      } catch (JsonException $je) {
-        // Do nothing here
-      }
-
-      $this->assertInstanceOf(
-        'webservices.json.JsonException',
-        $je
-      );
+      $this->decode('"foo\ufoobar"');
     }
 
     /**
