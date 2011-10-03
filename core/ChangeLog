@@ -8,9 +8,16 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated scriptlet.xml.workflow.Handler class. See issue #55 - use 
+  the new scriptlet.xml.workflow.AbstractHandler class instead!
+  (friebe)
 
 Bugfixes
 ~~~~~~~~
+- Fixed request value is not unset/disabled when set via setFormValue()
+  when using new AbstractHandler class, old behavior retained for BC 
+  reasons - see issue #55
+  (friebe, apenciu)
 - Fixed annotation parsing:
   . Support for @anno(array(...)) 
   . Support for @anno(...) where ... is any scalar value
