@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed JSON parser to use a generated parser instead of hand-crafted
+  one. Implements functionality suggested in pull request #37 
+  (friebe, Rebecca Dietrich)
 - Deprecated scriptlet.xml.workflow.Handler class. See issue #55 - use 
   the new scriptlet.xml.workflow.AbstractHandler class instead!
   (friebe)
