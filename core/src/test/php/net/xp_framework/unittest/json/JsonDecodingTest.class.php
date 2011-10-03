@@ -1012,18 +1012,9 @@
      * Test invalid string
      *
      */
-    #[@test]
+    #[@test, @expect('webservices.json.JsonException')]
     public function decodeInvalidString8() {
-      try {
-        $this->decode('"foo\obar"');
-      } catch (JsonException $je) {
-        // Do nothing here
-      }
-
-      $this->assertInstanceOf(
-        'webservices.json.JsonException',
-        $je
-      );
+      $this->decode('"foo\obar"');
     }
 
     /**
