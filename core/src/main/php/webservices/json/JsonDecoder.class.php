@@ -110,17 +110,39 @@
      * @return  string
      */
     protected function escape($in) {
-      static $controlChars= array(
-        '"'   => '\\"', 
-        '\\'  => '\\\\', 
-        '/'   => '\\/', 
-        "\b"  => '\\b',
-        "\f"  => '\\f', 
-        "\n"  => '\\n', 
-        "\r"  => '\\r', 
-        "\t"  => '\\t'
+      static $ctrl= array(
+        34 => '\\"', 
+        92 => '\\\\', 
+        47 => '\\/', 
+         8 => '\\b',
+        12 => '\\f', 
+        10 => '\\n', 
+        13 => '\\r', 
+         9 => '\\t'
       );
-      return strtr($in, $controlChars);
+      
+      $out= '';
+      for ($i= 0, $s= strlen($in); $i < $s; $i++) {
+        $c= ord($in{$i});
+        if (isset($ctrl[$c])) {
+          $out.= $ctrl[$c];
+        } else if ($c < 0x20) {
+          $out.= sprintf('\u%04x', $c);
+        } else if ($c < 0x80) {
+          $out.= $in{$i};
+        } else if ($c < 0xE0) {
+          $out.= sprintf('\u%04x', (($c & 0x1F) << 6) | (ord($in{$i+ 1}) & 0x3F));
+          $i+= 1;
+        } else if ($c < 0xF0) {
+          $out.= sprintf('\u%04x', (($c & 0x0F) << 12) | ((ord($in{$i+ 1}) & 0x3F) << 6) | (ord($in{$i+ 2}) & 0x3F));
+          $i+= 2;
+        } else if ($c < 0xF5) {
+          $out.= sprintf('\u%04x', (($c & 0x07) << 18) | ((ord($in{$i+ 1}) & 0x0F) << 12) | ((ord($in{$i+ 2}) & 0x3F) << 6) | (ord($in{$i+ 3}) & 0x3F));
+          $i+= 3;
+        }
+      }
+      
+      return $out;
     }
 
     /**
@@ -197,7 +219,7 @@
         case 'object': {
           // Converts a string object into an normal json string
           if ($data instanceof String) {
-            $stream->write('"'.$this->escape($data->getBytes('utf-8')).'"');
+            $stream->write('"'.$this->escape((string)$data->getBytes('utf-8')).'"');
             break;
           }
           // Break missing intentially

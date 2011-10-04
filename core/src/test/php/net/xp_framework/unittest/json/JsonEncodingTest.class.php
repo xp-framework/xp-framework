@@ -63,7 +63,7 @@
      */
     #[@test]
     public function encodeUTF8String() {
-      $this->assertEquals('"fÃ¶o"', $this->encode('föo'));
+      $this->assertEquals('"f\u00f6o"', $this->encode('föo'));
     }
 
     /**
@@ -99,7 +99,7 @@
      */
      #[@test]
      public function encodeBackspaceString() {
-       $this->assertEquals('"fo\\bo"', $this->encode('fo'."\b".'o'));
+       $this->assertEquals('"fo\\bo"', $this->encode('fo'."\x08".'o'));
      }
 
      /**
@@ -108,7 +108,7 @@
      */
      #[@test]
      public function encodeFormfeedString() {
-       $this->assertEquals('"fo\\fo"', $this->encode('fo'."\f".'o'));
+       $this->assertEquals('"fo\\fo"', $this->encode('fo'."\x0c".'o'));
      }
 
     /**
@@ -427,10 +427,22 @@
      * Test encode lang.types.String to Json string
      *
      */
-    #[@test, @ignore('Not supported yet')]
-    public function encodeUnicodeStringObject() {
+    #[@test]
+    public function encodeStringObjectWithUmlat() {
       $this->assertEquals(
-        '"\u20ACuro"',
+        '"E\u00fcro"',
+        $this->encode(new String("EÃ¼ro", 'utf-8'))
+      );
+    }
+
+    /**
+     * Test encode lang.types.String to Json string
+     *
+     */
+    #[@test]
+    public function encodeStringObjectWithEuroSign() {
+      $this->assertEquals(
+        '"\u20acuro"',
         $this->encode(new String("\xe2\x82\xacuro", 'utf-8'))
       );
     }
