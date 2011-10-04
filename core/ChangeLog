@@ -33,7 +33,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- Added utf-8 support to webservices.json.JsonDecoder
+- Added Unicode support to webservices.json.JsonDecoder - characters are
+  now correctly converted to escape sequences and back.
   (friebe)
 - Added lang.types.String::$EMPTY constant
   (friebe)
