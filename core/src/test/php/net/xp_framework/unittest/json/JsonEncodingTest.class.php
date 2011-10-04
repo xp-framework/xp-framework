@@ -400,11 +400,6 @@
     }
 
     /**
-     * Even more additional tests
-     *
-     */
-
-    /**
      * Test encode lang.types.String to Json string
      *
      */
@@ -413,6 +408,30 @@
       $this->assertEquals(
         '"foobar"',
         $this->encode(new String('foobar'))
+      );
+    }
+
+    /**
+     * Test encode lang.types.String to Json string
+     *
+     */
+    #[@test]
+    public function encodeStringObjectWithEscape() {
+      $this->assertEquals(
+        '"foobar\n"',
+        $this->encode(new String("foobar\n"))
+      );
+    }
+
+    /**
+     * Test encode lang.types.String to Json string
+     *
+     */
+    #[@test, @ignore('Not supported yet')]
+    public function encodeUnicodeStringObject() {
+      $this->assertEquals(
+        '"\u20ACuro"',
+        $this->encode(new String("\xe2\x82\xacuro", 'utf-8'))
       );
     }
 

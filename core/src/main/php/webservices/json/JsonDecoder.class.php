@@ -102,6 +102,26 @@
       $this->encodeTo($data, $stream);
       return $stream->getBytes();
     }
+    
+    /**
+     * Escapes escape sequences inside string
+     *
+     * @param   string in utf8-encoded string
+     * @return  string
+     */
+    protected function escape($in) {
+      static $controlChars= array(
+        '"'   => '\\"', 
+        '\\'  => '\\\\', 
+        '/'   => '\\/', 
+        "\b"  => '\\b',
+        "\f"  => '\\f', 
+        "\n"  => '\\n', 
+        "\r"  => '\\r', 
+        "\t"  => '\\t'
+      );
+      return strtr($in, $controlChars);
+    }
 
     /**
      * Encode PHP data into JSON via stream
@@ -117,19 +137,9 @@
      * @throws  webservices.json.JsonException if the data could not be serialized
      */
     public function encodeTo($data, OutputStream $stream) {
-      static $controlChars= array(
-        '"'   => '\\"', 
-        '\\'  => '\\\\', 
-        '/'   => '\\/', 
-        "\b"  => '\\b',
-        "\f"  => '\\f', 
-        "\n"  => '\\n', 
-        "\r"  => '\\r', 
-        "\t"  => '\\t'
-      );
       switch (gettype($data)) {
         case 'string': {
-          $stream->write('"'.strtr(utf8_encode($data), $controlChars).'"');
+          $stream->write('"'.$this->escape(utf8_encode($data)).'"');
           return TRUE;
         }
         case 'integer': {
@@ -187,7 +197,7 @@
         case 'object': {
           // Converts a string object into an normal json string
           if ($data instanceof String) {
-            $stream->write('"'.$data->toString().'"');
+            $stream->write('"'.$this->escape($data->getBytes('utf-8')).'"');
             break;
           }
           // Break missing intentially
