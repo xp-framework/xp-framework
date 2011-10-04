@@ -17,6 +17,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed fatal error in webservices testsuite when running on PHP
+  without ext/soap
+  (friebe, kiesel)
 - Fixed request value is not unset/disabled when set via setFormValue()
   when using new AbstractHandler class, old behavior retained for BC 
   reasons - see issue #55

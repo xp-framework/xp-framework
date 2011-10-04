@@ -1,9 +1,8 @@
 <?php
-
-  /* This class is part of the XP framework
-   *
-   * $Id$
-   */
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
 
   uses(
     'unittest.TestCase',
@@ -13,21 +12,34 @@
   /**
    * TestCase
    *
-   * @see       ...
-   * @purpose   TestCase for
+   * @see   xp://webservices.soap.native.NativeSoapTypeMapper
    */
   class NativeSoapTypeMapperTest extends TestCase {
-    protected
-      $fixture  = NULL;
+    protected $fixture= NULL;
 
-    public function __construct($name) {
-      parent::__construct($name);
+    /**
+     * Set up test and create fixture
+     *
+     */
+    public function setUp() {
+      if (!Runtime::getInstance()->extensionAvailable('soap')) {
+        throw new PrerequisitesNotMetError('PHP Soap extension not available', NULL, array('ext/soap'));
+      }
+
       $this->fixture= new NativeSoapTypeMapper();
     }
 
+    /**
+     * Assertion helper
+     *
+     * @param   var expected
+     * @param   var actual
+     * @throws  unittest.AssertionFailedError
+     */
     public function assertEqualSoapVar($expected, $actual) {
-      if (xp::stringOf($expected) != xp::stringOf($actual))
+      if (xp::stringOf($expected) !== xp::stringOf($actual)) {
         $this->fail('not equal', $actual, $expected);
+      }
     }
 
     /**
