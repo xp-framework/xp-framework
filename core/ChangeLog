@@ -6,6 +6,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+
+Features
+~~~~~~~~
+
+Bugfixes
+~~~~~~~~
+- Changed program's exit code to 0xff in case an uncaught
+  exception occurs.
+  (kiesel)
 
 
 Version 5.8.2, released 2011-09-07
