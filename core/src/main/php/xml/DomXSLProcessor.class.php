@@ -76,7 +76,7 @@
      * @param   string dir
      */
     public function setBase($dir) {
-      $this->_base= sscanf($dir, '%[^:/]://%s', $scheme, $uri) !== 2
+      $this->_base= strpos($dir, '://') === FALSE
         ? rtrim(realpath($dir), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR
         : $dir;
     }
