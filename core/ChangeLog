@@ -36,6 +36,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support to DomXSLProcessor to load XML or XSL files by stream
+  wrappers, e.g. using res:// to load files with ResourceProvider
+  (ohinckel)
 - Added Unicode support to webservices.json.JsonDecoder - characters are
   now correctly converted to escape sequences and back.
   (friebe)

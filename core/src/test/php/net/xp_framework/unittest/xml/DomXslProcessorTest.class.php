@@ -6,6 +6,7 @@
  
   uses(
     'xml.DomXSLProcessor',
+    'lang.ResourceProvider',
     'net.xp_framework.unittest.xml.AbstractProcessorTest'
   );
 
@@ -289,6 +290,26 @@
       $this->setXMLDoc();
       $this->processor->run();
       $this->assertEquals('document', $this->processor->output());
+    }
+    
+    /**
+     * Test loading XSL with schemes, e.g. by using res:// and
+     * ResourceProvider
+     *
+     */
+    #[@test]
+    public function loadXSLFromStreamWrapper() {
+      $this->processor->setXSLFile('res://net/xp_framework/unittest/xml/include.xsl');
+    }
+    
+    /**
+     * Test loading non-existant XSL with schemes, e.g. by using res://
+     * and ResourceProvider
+     *
+     */
+    #[@test, @expect('io.FileNotFoundException')]
+    public function loadNonexistantXSLFromStreamWrapper() {
+      $this->processor->setXSLFile('res://nonexistant.xsl');
     }
   }
 ?>
