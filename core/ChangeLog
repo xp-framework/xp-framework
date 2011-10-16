@@ -17,6 +17,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Changed program's exit code to 0xff in case an uncaught exception 
+  occurs. 
+  (kiesel)
 - Fixed fatal error in webservices testsuite when running on PHP
   without ext/soap
   (friebe, kiesel)

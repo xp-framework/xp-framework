@@ -54,6 +54,7 @@
   //     Exception handler
   function __except($e) {
     fputs(STDERR, 'Uncaught exception: '.xp::stringOf($e));
+    exit(0xff);
   }    
   // }}}
 
