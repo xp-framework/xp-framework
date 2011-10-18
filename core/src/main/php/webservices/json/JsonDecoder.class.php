@@ -236,7 +236,7 @@
      *
      * @param   text.Tokenizer source
      * @return  var
-     * @throws  webservices.json.JsonException(
+     * @throws  webservices.json.JsonException
      */
     protected function parse($source) {
       try {
