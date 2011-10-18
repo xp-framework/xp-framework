@@ -57,7 +57,7 @@
             $return[$info['name']]= $value;
         }
       }
-      return $return;    
+      return NULL === $field ? $return : $return[$field];
     } 
   }
 ?>

@@ -17,6 +17,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.mysqlx.AbstractMysqlxResultSet::record() method to return
+  only a single field value if its field parameter is set
+  (friebe)
 - Changed program's exit code to 0xff in case an uncaught exception 
   occurs. 
   (kiesel)
