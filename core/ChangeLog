@@ -22,6 +22,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed timezone issues when runnning complete test suite - see issue #72
+  (friebe)
 - Allowed for deprecated multi-value annotations - see issue #69
   (friebe)
 - Fixed rdbms.mysqlx.AbstractMysqlxResultSet::record() method to return

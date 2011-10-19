@@ -319,7 +319,7 @@
 
       $timer->stop();
       $test->tearDown();
-
+      
       // Check expected exception
       if ($expected) {
         $this->notifyListeners('testFailed', array(
