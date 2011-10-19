@@ -4,84 +4,21 @@
  * $Id$
  */
 
-  uses(
-    'unittest.TestCase',
-    'scriptlet.HttpScriptletRequest',
-    'webservices.rest.server.transport.JsonHttpRequestAdapter'
-  );
+  uses('net.xp_framework.unittest.rest.server.transport.AbstractHttpRequestAdapterTest');
   
   /**
    * Test JSON HTTP request adapter class
    *
    */
-  class JsonHttpRequestAdapterTest extends TestCase {
-    protected $request= NULL;
-    protected $fixture= NULL;
-    
+  class JsonHttpRequestAdapterTest extends AbstractHttpRequestAdapterTest {
+  
     /**
-     * Setup
-     * 
+     * Return adapter class name
+     *
+     * @return string
      */
-    public function setUp() {
-      $this->request= new HttpScriptletRequest();
-      $this->fixture= new JsonHttpRequestAdapter($this->request);
-    }
-    
-    /**
-     * Test instance
-     * 
-     */
-    #[@test]
-    public function instance() {
-      $this->assertInstanceOf('webservices.rest.server.transport.JsonHttpRequestAdapter', $this->fixture);
-    }
-    
-    /**
-     * Test getHeader() with header not set
-     * 
-     */
-    #[@test]
-    public function headerNotSet() {
-      $this->assertNull($this->fixture->getHeader('Test'));
-    }
-    
-    /**
-     * Test getHeader() with header set
-     * 
-     */
-    #[@test]
-    public function headerSet() {
-      $this->request->addHeader('Test', 'Test value');
-      $this->assertEquals('Test value', $this->fixture->getHeader('Test'));
-    }
-    
-    /**
-     * Test getPath()
-     * 
-     */
-    #[@test]
-    public function getPath() {
-      $this->request->setURL(new HttpScriptletURL('http://localhost/some/path'));
-      $this->assertEquals('/some/path', $this->fixture->getPath());
-    }
-    
-    /**
-     * Test getParam() not set
-     * 
-     */
-    #[@test]
-    public function paramNotSet() {
-      $this->assertNull($this->fixture->getParam('test'));
-    }
-    
-    /**
-     * Test getParam() with parameter set
-     *  
-     */
-    #[@test]
-    public function paramSet() {
-      $this->request->setParam('test', 'test value');
-      $this->assertEquals('test value', $this->fixture->getParam('test'));
+    protected function adapter() {
+      return 'webservices.rest.server.transport.JsonHttpRequestAdapter';
     }
     
     /**
