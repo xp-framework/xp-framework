@@ -208,6 +208,48 @@
     }
 
     /**
+     * Tests simple annotation with multiple values
+     *
+     * @deprecated
+     */
+    #[@test]
+    public function multiValueBackwardsCompatibility() {
+      $this->assertEquals(
+        array('xmlmapping' => array('hw_server', 'server')),
+        $this->parse("#[@xmlmapping('hw_server', 'server')]")
+      );
+      xp::gc();
+    }
+
+    /**
+     * Tests simple annotation with multiple values
+     *
+     * @deprecated
+     */
+    #[@test]
+    public function multiValueBackwardsCompatibilityNoWhitespace() {
+      $this->assertEquals(
+        array('xmlmapping' => array('hw_server', 'server')),
+        $this->parse("#[@xmlmapping('hw_server','server')]")
+      );
+      xp::gc();
+    }
+
+    /**
+     * Tests simple annotation with multiple values
+     *
+     * @deprecated
+     */
+    #[@test]
+    public function multiValueBackwardsCompatibilityMixedValue() {
+      $this->assertEquals(
+        array('xmlmapping' => array('hw_server', TRUE)),
+        $this->parse("#[@xmlmapping('hw_server', TRUE)]")
+      );
+      xp::gc();
+    }
+
+    /**
      * Tests simple annotation with an array value
      *
      */

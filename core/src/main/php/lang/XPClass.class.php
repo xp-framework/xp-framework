@@ -588,6 +588,7 @@
       $annotations= array();
       $annotation= $value= NULL;
       $length= strlen($input);
+      ob_start();
       while ($offset < $length) {
         $state= $input{$offset};
         if ('@' === $state) {
@@ -595,7 +596,7 @@
           $annotation= substr($input, $offset+ 1, $s- 1);
           $offset+= $s;
         } else if (']' === $state) {
-          $annotations[$annotation]= $value;
+          $annotation && $annotations[$annotation]= $value;
           break;
         } else if ('(' === $state) {
           $peek= substr($input, $offset+ 1, strcspn($input, '="\')', $offset));
@@ -687,11 +688,44 @@
               $peek= substr($input, $offset+ 1, $s);
             } while ($s);
           }
-          $offset++;    // ")"
-          if ($offset > $length) {
+          if ($offset >= $length) {
             raise('lang.ClassFormatException', 'Parse error: Expecting ] in '.$context);
           }
+        } else if (')' === $state) {
+          $annotations[$annotation]= $value;
+          $annotation= $value= NULL;
+          $s= strspn($input, ',]', $offset);
+          $offset+= $s + 1;
         } else if (',' === $state) {
+          if (NULL !== $annotation && NULL !== $value) {    // BC
+            trigger_error('Deprecated usage of multi-value annotations in '.$context, E_USER_DEPRECATED);
+            $annotations[$annotation]= array($value);
+            do {
+              $s= strspn($input, ' "\')', $offset+ 1);
+              $offset+= $s;
+              if ('\'' === $input{$offset} || '"' === $input{$offset}) {
+                $p= $offset+ 1;
+                $q= $input{$offset};
+                while (($s= strcspn($input, $q, $p)) !== 0) {
+                  $p+= $s;
+                  if ('\\' !== $input{$p- 1}) break;
+                  $p++;
+                }
+                if (!is_string($value= @eval('return '.substr($input, $offset, $p - $offset+ 1).';'))) {
+                  raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
+                }
+                $offset= $p+ 1;
+                $annotations[$annotation][]= $value;
+              } else if (')' === $input{$offset}) {
+                break;
+              } else {
+                $s= strcspn($input, ',)', $offset);
+                $annotations[$annotation][]= eval('return '.substr($input, $offset, $s).';');
+                $offset+= $s;
+              }
+            } while ($offset <= $length);
+            break;
+          }
           $annotations[$annotation]= $value;
           $annotation= $value= NULL;
           if (FALSE === ($offset= strpos($input, '@', $offset))) {
@@ -700,6 +734,11 @@
         } else {
           raise('lang.ClassFormatException', 'Parse error: Unknown state '.$state.' at position '.$offset.' in '.$context);
         }
+      }
+      $error= ob_get_contents();
+      ob_end_clean();
+      if ($error) {
+        raise('lang.ClassFormatException', trim($error).' in '.$context);
       }
       
       return $annotations;
