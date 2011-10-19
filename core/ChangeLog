@@ -15,6 +15,11 @@ Heads up!
   the new scriptlet.xml.workflow.AbstractHandler class instead!
   (friebe)
 
+RFCs
+~~~~
+- Implemented RFC #0216 - REST server API implementation
+  (ohinckel)
+
 Bugfixes
 ~~~~~~~~
 - Fixed rdbms.mysqlx.AbstractMysqlxResultSet::record() method to return
