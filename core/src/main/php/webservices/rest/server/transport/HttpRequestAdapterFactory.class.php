@@ -23,6 +23,10 @@
         'application/json' => 'webservices.rest.server.transport.JsonHttpRequestAdapter'
       );
       
+      if (NULL === $request->getHeader('Content-Type')) {
+        return XPClass::forName('webservices.rest.server.transport.EmptyHttpRequestAdapter');
+      }
+      
       if (!isset($map[$request->getHeader('Content-Type')])) throw new IllegalArgumentException(
         'The content type is not supported: '.$request->getHeader('Content-Type')
       );
