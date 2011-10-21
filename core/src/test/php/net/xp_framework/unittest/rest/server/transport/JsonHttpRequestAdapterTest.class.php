@@ -27,8 +27,11 @@
      */
     #[@test]
     public function getData() {
-      $this->request->setData('{ "some" : "thing" }');
-      $this->assertEquals(array('some' => 'thing'), $this->fixture->getData());
+      $decoder= new JsonDecoder();
+      $data= array('some' => new String('thing'));
+      
+      $this->request->setData($decoder->encode($data));
+      $this->assertEquals($data, $this->fixture->getData());
     }
   }
 ?>

@@ -15,6 +15,7 @@
    */
   class RestRoutingItemTest extends TestCase {
     protected $fixture= NULL;
+    protected $fixtureParams= NULL;
     
     /**
      * Set up
@@ -24,6 +25,12 @@
       $this->fixture= new RestRoutingItem(
         'GET',
         new RestPath('/some/path'),
+        new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)),
+        new RestRoutingArgs(array('id'), array('some.Class'))
+      );
+      $this->fixtureParams= new RestRoutingItem(
+        'GET',
+        new RestPath('/some/path/{arg}'),
         new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)),
         new RestRoutingArgs(array('id'), array('some.Class'))
       );
@@ -76,6 +83,24 @@
     #[@test]
     public function appliesToLowercaseMethod() {
       $this->assertFalse($this->fixture->appliesTo('get', '/some/path'));
+    }
+    
+    /**
+     * Test appliesTo() with parameter
+     *
+     */
+    #[@test]
+    public function appliesToParameterPath() {
+      $this->assertTrue($this->fixtureParams->appliesTo('GET', '/some/path/123'));
+    }
+    
+    /**
+     * Test appliesTo() with parameter including encoded characters
+     *
+     */
+    #[@test]
+    public function appliesToEncodedParameterPath() {
+      $this->assertTrue($this->fixtureParams->appliesTo('GET', '/some/path/123%20456'));
     }
   }
 ?>

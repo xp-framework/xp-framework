@@ -57,13 +57,16 @@
     }
     
     /**
-     * Test getData()
+     * Test setData()
      * 
      */
-    #[@xtest]
-    public function getData() {
-      $this->request->setData('{ "some" : "thing" }');
-      $this->assertEquals(array('some' => 'thing'), $this->fixture->getData());
+    #[@test]
+    public function setData() {
+      $decoder= new JsonDecoder();
+      $data= array('some' => 'thing');
+      
+      $this->fixture->setData($data);
+      $this->assertEquals($decoder->encode($data), $this->response->getContent());
     }
   }
 ?>
