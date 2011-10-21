@@ -76,7 +76,7 @@ stringpart:
     | T_ESCAPE_UNICODE        {
                                 $$= iconv(
                                   'ucs-4be',
-                                  'UTF-8',
+                                  'utf-8',
                                   pack('N', hexdec(substr($1, 2)))
                                 );
                               }

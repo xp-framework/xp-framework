@@ -432,19 +432,19 @@
     }
 
     /**
-     * Test umlauts returned in ISO-8859-1
+     * Test umlauts returned in iso-8859-1
      *
      */
     #[@test]
     public function iso88591Conversion() {
-      $this->parser->setEncoding('ISO-8859-1');
+      $this->parser->setEncoding('iso-8859-1');
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
       $this->parser->parse($this->source('
         <doc>The übercoder returns</doc>
       '));
 
-      $this->assertEquals('ISO-8859-1', $callback->encoding);
+      $this->assertEquals('iso-8859-1', $callback->encoding);
       $this->assertEquals(array(
         'doc', array(), array(
           'The', '�bercoder returns'
@@ -458,14 +458,14 @@
      */
     #[@test]
     public function utf8Conversion() {
-      $this->parser->setEncoding('UTF-8');
+      $this->parser->setEncoding('utf-8');
       $callback= $this->newCallback();
       $this->parser->setCallback($callback);
       $this->parser->parse($this->source('
         <doc>The übercoder returns</doc>
       '));
       
-      $this->assertEquals('UTF-8', $callback->encoding);
+      $this->assertEquals('utf-8', $callback->encoding);
       $this->assertEquals(array(
         'doc', array(), array(
           'The', 'übercoder returns'

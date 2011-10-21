@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  define('STR_ENC', 'UTF-8');
+  define('STR_ENC', 'utf-8');
 
   uses('lang.types.Character', 'lang.types.Bytes');
 
@@ -303,7 +303,7 @@
     /**
      * Returns the bytes representing this string
      *
-     * @param   string charset default 'UTF-8'
+     * @param   string charset default 'utf-8'
      * @return  lang.types.Bytes
      */
     public function getBytes($charset= NULL) {

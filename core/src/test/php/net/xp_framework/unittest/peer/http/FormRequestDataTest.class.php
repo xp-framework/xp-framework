@@ -90,7 +90,7 @@
      */
     #[@test]
     public function noDefaultCharsetMimeRepresentation() {
-      $this->fixture->addPart(new FormData('key', 'value', 'text/plain', 'UTF-8'));
+      $this->fixture->addPart(new FormData('key', 'value', 'text/plain', 'utf-8'));
 
       $this->assertEquals(
         "--".$this->fixture->getBoundary()."\r\n".
