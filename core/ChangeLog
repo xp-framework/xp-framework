@@ -30,8 +30,8 @@ Bugfixes
 - Fixed rdbms.mysqlx.AbstractMysqlxResultSet::record() method to return
   only a single field value if its field parameter is set
   (friebe)
-- Changed program's exit code to 0xff in case an uncaught exception 
-  occurs. 
+- Changed program's exit code to 0xff in case an uncaught exception occurs. 
+  http://news.planet-xp.net/article/424/2011/10/14/
   (kiesel)
 - Fixed fatal error in webservices testsuite when running on PHP
   without ext/soap
