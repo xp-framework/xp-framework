@@ -112,7 +112,7 @@
       }
       ksort($args);
       
-      return $routing->getTarget()->process($args);
+      return RestDataCaster::simple($routing->getTarget()->process($args));
     }
   }
 ?>
