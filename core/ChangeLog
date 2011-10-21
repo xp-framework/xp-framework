@@ -51,6 +51,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made usage of encoding names consistant to all lowercase,
+  see issue #73
+  (ppetermann, kiesel)
 - Added support to DomXSLProcessor to load XML or XSL files by stream
   wrappers, e.g. using res:// to load files with ResourceProvider
   (ohinckel)
