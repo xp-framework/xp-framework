@@ -29,8 +29,8 @@
      * @param string path The path
      */
     public function __construct($path) {
-      static $search= '/\{(\w*)\}/';
-      static $replace= '(\w*)';
+      static $search= '/\{([\w]*)\}/';
+      static $replace= '([%\w]*)';
       
       list ($this->path, $this->query)= $this->splitParams($path);
       
@@ -82,7 +82,7 @@
         
         $params= array();
         foreach ($this->names as $i => $name) {
-          $params[$name]= $matches[$i];
+          $params[$name]= rawurldecode($matches[$i]);
         }
         
         foreach ($this->query as $name => $param) {
