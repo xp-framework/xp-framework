@@ -6,7 +6,11 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.server.routing.RestAnnotationRouter'
+    'webservices.rest.server.routing.RestAnnotationRouter',
+    'webservices.rest.server.transport.JsonHttpRequestAdapter',
+    'webservices.rest.server.transport.JsonHttpResponseAdapter',
+    'scriptlet.HttpScriptletRequest',
+    'scriptlet.HttpScriptletResponse'
   );
   
   /**
