@@ -65,7 +65,7 @@
       }
       
       // New Session
-      session_regenerate_id();
+      @session_regenerate_id();
       @session_start(); 
       $this->isNew= TRUE;
       $this->id= session_id();
