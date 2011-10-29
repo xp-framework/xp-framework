@@ -126,6 +126,23 @@
      * @return  io.archive.zip.ZipEntry
      */
     public abstract function nextEntry();
+    
+    /**
+     * Decode a name from a list of given character sets
+     *
+     * @param   string name
+     * @param   string[] charsets
+     * @return  string
+     */
+    protected function decodeName($name, $charsets) {
+      xp::gc(__FILE__);
+      foreach ($charsets as $charset) {
+        $decoded= iconv($charset, 'iso-8859-1', $name);
+        if (!xp::errorAt(__FILE__, __LINE__ - 1)) return $decoded;
+        xp::gc(__FILE__);   // Clean up and try next charset
+      }
+      return $name;
+    }
 
     /**
      * Gets current entry
@@ -152,13 +169,10 @@
             // Decode from utf-8, then try cp437, and if that fails, we will use 
             // it as-is. Do this as certain vendors (Java e.g.) always use utf-8 
             // but do not indicate this via EFS.
-            if ($header['flags'] & 2048) {
-              $decoded= iconv('utf-8', 'iso-8859-1', $name);
-            } else if ('' === ($decoded= @iconv('utf-8', 'iso-8859-1', $name))) {
-              if ('' === ($decoded= @iconv('cp437', 'iso-8859-1', $name))) {
-                $decoded= $name;
-              }
-            }
+            $decoded= $this->decodeName($name, $header['flags'] & 2048
+              ? array('utf-8')
+              : array('utf-8', 'cp437')
+            );
           }
           $extra= $this->streamRead($header['extralen']);
           $date= $this->dateFromDosDateTime($header['date'], $header['time']);
