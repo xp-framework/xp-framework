@@ -34,7 +34,7 @@
     protected
       $_proc  = NULL,
       $status = array();
-    
+
     /**
      * Constructor
      *
@@ -164,13 +164,40 @@
       // Note: It would be really nice to have a getmyexe() function in PHP
       // complementing getmypid().
       if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
-        try {
-          $c= new com('winmgmts:');
-          $p= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"');
-          $self->status['exe']= $p->executablePath;
-          $self->status['command']= $p->commandLine;
-        } catch (Exception $e) {
-          throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
+
+        // PHP 5.4 has broken COM implementation, use wmic command line tool and
+        // parse its output, which is like:
+        // A      B      C
+        // ValueA ValueB ValueC
+        if (strstr(PHP_VERSION, '5.4.0')) {
+          exec('wmic process where handle="'.$pid.'" get Handle,ExecutablePath,CommandLine 2>&1', $result, $exit);
+          if (0 == $exit) {
+            $fields= array();
+            $p= 0;
+            do {
+              $s= strcspn($result[0], ' ', $p);
+              $f= substr($result[0], $p, $s);
+              $e= $s+ strspn($result[0], ' ', $p+ $s);
+              $fields[$f]= array($p, $e- 2);
+              $p+= $e;
+            } while ($p < strlen($result[0]));
+            $fields[$f][1]= strlen($result[1]) - $fields[$f][0];
+          }
+          if (!isset($fields['Handle'])) {
+            throw new IllegalStateException('Cannot find executable: '.$result[0]);
+          }
+
+          $self->status['exe']= substr($result[1], $fields['ExecutablePath'][0], $fields['ExecutablePath'][1]);
+          $self->status['command']= substr($result[1], $fields['CommandLine'][0], $fields['CommandLine'][1]);
+        } else {
+          try {
+            $c= new com('winmgmts:');
+            $p= $c->get('//./root/cimv2:Win32_Process.Handle="'.$pid.'"');
+            $self->status['exe']= $p->executablePath;
+            $self->status['command']= $p->commandLine;
+          } catch (Exception $e) {
+            throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
+          }
         }
         
       // Try to figure out whether we can use /proc filesystem (and also check
