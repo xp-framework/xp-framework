@@ -10,8 +10,10 @@
   );
 
   /**
-   * Testcase ensuring XP refuses to start 
+   * Testcase ensuring XP refuses to start when magic_quotes_gpc is enabled.
    *
+   * @see   http://svn.php.net/viewvc/php/php-src/branches/PHP_5_4/NEWS?revision=318433&view=markup
+   * @see   php://magic_quotes
    */
   class MagicQuotesTest extends TestCase {
   
