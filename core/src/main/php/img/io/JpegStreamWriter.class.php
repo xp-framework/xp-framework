@@ -36,7 +36,7 @@
      * @return  bool
      */    
     protected function output($handle) {
-      return imagejpeg($handle, '', $this->quality);
+      return imagejpeg($handle, NULL, $this->quality);
     }
   }
 ?>

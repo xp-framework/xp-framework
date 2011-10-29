@@ -37,7 +37,7 @@
      * @return  bool
      */    
     protected function output($handle) {
-      return imagegd2($handle, '', 0, $this->format);
+      return imagegd2($handle, NULL, 0, $this->format);
     }
   }
 ?>
