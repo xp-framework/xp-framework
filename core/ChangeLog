@@ -8,6 +8,11 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Added initial support for PHP 5.4 by a couple of forward-compatible
+  adjustments and workarounds. Please note PHP 5.4 is not officially
+  released yet and thus PHP 5.4 support is preliminary at best!
+  Discussion and details available in issue #76
+  (friebe)
 - Changed JSON parser to use a generated parser instead of hand-crafted
   one. Implements functionality suggested in pull request #37 
   (friebe, Rebecca Dietrich)
