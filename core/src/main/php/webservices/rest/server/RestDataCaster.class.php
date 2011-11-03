@@ -40,6 +40,11 @@
             $result[$key]= self::simple($value);
           }
           return $result;
+
+        case 'lang.types.Integer':
+        case 'lang.types.String':
+        case 'lang.types.Boolean':
+          return Primitive::boxed($data);
         
         case 'util.Hashmap':
           return self::simple($data->toArray());
