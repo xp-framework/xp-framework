@@ -84,6 +84,17 @@
       $this->assertEquals('test', RestDataCaster::simple('test'));
       $this->assertTrue(RestDataCaster::simple(TRUE));
     }
+
+    /**
+     * Test simplify primitives object
+     * 
+     */
+    #[@test]
+    public function simplifyPrimitivesObject() {
+      $this->assertEquals(1, RestDataCaster::simple(new Integer(1)));
+      $this->assertEquals('test', RestDataCaster::simple(new String('test')));
+      $this->assertEquals(TRUE, RestDataCaster::simple(new Boolean(TRUE)));
+    }
     
     /**
      * Test simplify array
