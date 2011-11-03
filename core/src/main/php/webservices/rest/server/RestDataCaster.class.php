@@ -44,7 +44,7 @@
         case 'lang.types.Integer':
         case 'lang.types.String':
         case 'lang.types.Boolean':
-          return Primitive::boxed($data);
+          return Primitive::unboxed($data);
         
         case 'util.Hashmap':
           return self::simple($data->toArray());
@@ -82,6 +82,17 @@
       switch ($type->getName()) {
         case 'NULL':
           return NULL;
+
+        case 'lang.ArrayType':
+          if (!is_array($data)) {
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+          }
+
+          $result= array();
+          foreach ($data as $key => $value) {
+            $result[$key]= self::complex($value, XPClass::forName($type->componentType()->getName()));
+          }
+          return $data;
         
         case 'lang.types.Integer':
           if (!is_scalar($data) || ((string)$data != (string)(int)$data)) {
