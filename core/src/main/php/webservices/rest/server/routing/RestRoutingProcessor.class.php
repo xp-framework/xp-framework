@@ -94,10 +94,14 @@
         }
         
         // Try to convert binding to requested argument type
-        $args[(int)$ref]= RestDataCaster::complex(
-          RestDataCaster::simple($this->getBinding($name)),
-          $routing->getArgs()->getArgumentType($names[$ref])
-        );
+        try {
+          $args[(int)$ref]= RestDataCaster::complex(
+            RestDataCaster::simple($this->getBinding($name)),
+            $routing->getArgs()->getArgumentType($names[$ref])
+          );
+        } catch (XPException $e) {
+          throw new ClassCastException('Can not convert argument #'.$ref.' from '.$name.': '.$e->getMessage(), $e);
+        }
       }
 
       // Add named parameters
@@ -105,10 +109,14 @@
         if (isset($args[$i])) continue;  // Skip injection arguments
 
         // Try to convert parameters to requested argument type
-        $args[$i]= RestDataCaster::complex(
-          RestDataCaster::simple($values[$name]),
-          $routing->getArgs()->getArgumentType($name)
-        );
+        try {
+          $args[$i]= RestDataCaster::complex(
+            RestDataCaster::simple($values[$name]),
+            $routing->getArgs()->getArgumentType($name)
+          );
+        } catch (XPException $e) {
+          throw new ClassCastException('Can not convert object field '.$name.': '.$e->getMessage(), $e);
+        }
       }
       ksort($args);
       
