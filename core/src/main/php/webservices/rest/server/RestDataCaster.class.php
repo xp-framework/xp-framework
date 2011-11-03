@@ -79,30 +79,32 @@
      * @return var[]
      */
     public static function complex($data, Type $type) {
-      switch ($type->getName()) {
+      $typeName= $type instanceof ArrayType ? xp::typeOf($type) : $type->getName();
+
+      switch ($typeName) {
         case 'NULL':
           return NULL;
 
         case 'lang.ArrayType':
           if (!is_array($data)) {
-            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
           }
 
           $result= array();
           foreach ($data as $key => $value) {
             $result[$key]= self::complex($value, XPClass::forName($type->componentType()->getName()));
           }
-          return $data;
+          return $result;
         
         case 'lang.types.Integer':
           if (!is_scalar($data) || ((string)$data != (string)(int)$data)) {
-            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
           }
           
         case 'lang.types.String':
         case 'lang.types.Boolean':
           if (!is_scalar($data)) {
-            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
           }
           return Primitive::unboxed($type->newInstance($data));
           
@@ -115,7 +117,7 @@
           foreach ($data as $key => $value) {
             $result[$key]= self::complex($value, XPClass::forName('lang.types.String'));
           }
-          return $data;
+          return $result;
         
         case 'util.Hashmap':
           if (!is_array($data)) {
@@ -170,7 +172,7 @@
             return self::complex($data, $type->wrapperClass());
           }
         
-          throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$type->getName());
+          throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
       }
     }
   }
