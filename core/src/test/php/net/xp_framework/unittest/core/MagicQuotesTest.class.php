@@ -81,7 +81,7 @@
      * to standard error. 
      *
      */
-    #[@test, @runtime('[5.3.0,5.4.0[')]
+    #[@test, @runtime('[5.3.4,5.4.0[')]
     public function xpFrameworkRefusesToStartAndDeprecationWarning() {
       $r= $this->run();
       $this->assertEquals(255, $r[0], 'exitcode');
