@@ -34,5 +34,6 @@
   <dependencies>
     <dependency name="tools" rev="5.8.3+" conf="*->default"/>
     <dependency org="net.xp_framework.build" name="plugin-apidoc" rev="latest.integration" conf="compile"/>
+    <exclude org="net.xp_framework" module="core"/>
   </dependencies>
 </ivy-module>
