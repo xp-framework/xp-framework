@@ -138,7 +138,7 @@
         $this->wrapperNode->getAttribute('assertions')+ $outcome->test->getAssertions()
       );
       $inc && $this->wrapperNode->setAttribute($inc, $this->wrapperNode->getAttribute($inc)+ 1);
-      $this->overalltime+= $outcome->elapsed;
+      $this->overalltime+= $outcome->elapsed();
       $this->wrapperNode->setAttribute('time', sprintf('%.6f', $this->overalltime));
       
       // Add testcase information
@@ -148,7 +148,7 @@
         'file'       => $this->getFileUri($testClass),
         'line'       => $this->getStartLine($testClass, $outcome->test->getName()),
         'assertions' => $outcome->test->getAssertions(),
-        'time'       => sprintf('%.6f', $outcome->elapsed)
+        'time'       => sprintf('%.6f', $outcome->elapsed())
       )));
     }
 
