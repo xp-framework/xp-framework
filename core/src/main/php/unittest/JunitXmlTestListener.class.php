@@ -20,9 +20,9 @@
   class JunitXmlTestListener extends Object implements TestListener {
     public $out= NULL;
     protected $tree= NULL;
+    protected $root= NULL;
     protected $classes= NULL;
     protected $overalltime= 0;
-    protected $wrappernode= NULL;
 
 
     /**
@@ -32,18 +32,7 @@
      */
     public function __construct(OutputStreamWriter $out) {
       $this->out= $out;
-      $this->tree= new Tree('testsuites');
-      
-      // Add a wrapper node because Netbeans expects it
-      $this->wrapperNode=  $this->tree->addChild(new Node('testsuite', NULL, array(
-        'name'       => '.',
-        'tests'      => 0,
-        'assertions' => 0,
-        'failures'   => 0,
-        'errors'     => 0,
-        'skipped'    => 0,
-        'time'       => 0.0
-      )));
+      $this->tree= create(new Tree('testsuites'))->withRoot($this->root= new Node('testsuites'));
       
       $this->classes= create('new util.collections.HashTable<lang.XPClass, xml.Node>()');
     }
@@ -98,7 +87,7 @@
     protected function testNode(TestCase $case) {
       $class= $case->getClass();
       if (!$this->classes->containsKey($class)) {
-        $this->classes[$class]= $this->wrapperNode->addChild(new Node('testsuite', NULL, array(
+        $this->classes[$class]= $this->root->addChild(new Node('testsuite', NULL, array(
           'name'       => $class->getName(),
           'file'       => $this->getFileUri($class),
           'fullPackage'=> $class->getPackage()->getName(),
@@ -131,15 +120,15 @@
       $n->setAttribute('assertions', $n->getAttribute('assertions')+ $outcome->test->getAssertions());
       $inc && $n->setAttribute($inc, $n->getAttribute($inc)+ 1);
 
-      //Update wrappernode
-      $this->wrapperNode->setAttribute('tests', $this->wrapperNode->getAttribute('tests')+ 1);
-      $this->wrapperNode->setAttribute(
+      //Update test counter
+      $this->root->setAttribute('tests', $this->root->getAttribute('tests')+ 1);
+      $this->root->setAttribute(
         'assertions',
-        $this->wrapperNode->getAttribute('assertions')+ $outcome->test->getAssertions()
+        $this->root->getAttribute('assertions')+ $outcome->test->getAssertions()
       );
-      $inc && $this->wrapperNode->setAttribute($inc, $this->wrapperNode->getAttribute($inc)+ 1);
+      $inc && $this->root->setAttribute($inc, $this->root->getAttribute($inc)+ 1);
       $this->overalltime+= $outcome->elapsed();
-      $this->wrapperNode->setAttribute('time', sprintf('%.6f', $this->overalltime));
+      $this->root->setAttribute('time', sprintf('%.6f', $this->overalltime));
       
       // Add testcase information
       return $n->addChild(new Node('testcase', NULL, array(
