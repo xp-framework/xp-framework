@@ -36,22 +36,22 @@
       
       // Add a wrapper node because Netbeans expects it
       $this->wrapperNode=  $this->tree->addChild(new Node('testsuite', NULL, array(
-          'name'       => '.',
-          'tests'      => 0,
-          'assertions' => 0,
-          'failures'   => 0,
-          'errors'     => 0,
-          'skipped'    => 0,
-          'time'       => 0.0
-        )));
+        'name'       => '.',
+        'tests'      => 0,
+        'assertions' => 0,
+        'failures'   => 0,
+        'errors'     => 0,
+        'skipped'    => 0,
+        'time'       => 0.0
+      )));
       
       $this->classes= create('new util.collections.HashTable<lang.XPClass, xml.Node>()');
     }
 
-    /*
+    /**
      * Tries to get class uri via reflection
      *
-     * @param lang.XPClass $class
+     * @param lang.XPClass class The class to return the URI for
      * @return string
      */
     private function getFileUri(XPClass $class) {
@@ -65,7 +65,7 @@
       }
     }
 
-        /*
+    /**
      * Tries to get method start line
      *
      * @param lang.XPClass $class
@@ -125,7 +125,6 @@
     protected function addTestCase(TestOutcome $outcome, $inc= NULL) {
       $testClass= $outcome->test->getClass();
 
-      // Update test suite
       // Update test count
       $n= $this->testNode($outcome->test);
       $n->setAttribute('tests', $n->getAttribute('tests')+ 1);
@@ -136,7 +135,8 @@
       $this->wrapperNode->setAttribute('tests', $this->wrapperNode->getAttribute('tests')+ 1);
       $this->wrapperNode->setAttribute(
         'assertions',
-        $this->wrapperNode->getAttribute('assertions')+ $outcome->test->getAssertions());
+        $this->wrapperNode->getAttribute('assertions')+ $outcome->test->getAssertions()
+      );
       $inc && $this->wrapperNode->setAttribute($inc, $this->wrapperNode->getAttribute($inc)+ 1);
       $this->overalltime+= $outcome->elapsed;
       $this->wrapperNode->setAttribute('time', sprintf('%.6f', $this->overalltime));
@@ -162,12 +162,12 @@
       $trace= $failure->reason->getStackTrace();
 
       $content= sprintf(
-         "%s(%s)\n%s \n\n%s:%d\n\n",
-         $testClass->getName(),
-          $failure->test->getName(),
-          trim($failure->reason->compoundMessage()),
-          $this->getFileUri($testClass),
-          $this->getStartLine($testClass, $failure->test->getName())
+        "%s(%s)\n%s \n\n%s:%d\n\n",
+        $testClass->getName(),
+        $failure->test->getName(),
+        trim($failure->reason->compoundMessage()),
+        $this->getFileUri($testClass),
+        $this->getStartLine($testClass, $failure->test->getName())
       );
 
       $t= $this->addTestCase($failure, 'failures');
@@ -187,12 +187,12 @@
       $trace= $error->reason->getStackTrace();
 
       $content= sprintf(
-         "%s(%s)\n%s \n\n%s:%d\n\n",
-         $testClass->getName(),
-          $error->test->getName(),
-          trim($error->reason->compoundMessage()),
-          $this->getFileUri($testClass),
-          $this->getStartLine($testClass, $error->test->getName())
+        "%s(%s)\n%s \n\n%s:%d\n\n",
+        $testClass->getName(),
+        $error->test->getName(),
+        trim($error->reason->compoundMessage()),
+        $this->getFileUri($testClass),
+        $this->getStartLine($testClass, $error->test->getName())
       );
 
       $t= $this->addTestCase($error, 'failures');
