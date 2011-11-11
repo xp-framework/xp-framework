@@ -92,7 +92,6 @@
           'fullPackage'=> $class->getPackage()->getName(),
           'package'    => $class->getPackage()->getSimpleName(),
           'tests'      => 0,
-          'assertions' => 0,
           'failures'   => 0,
           'errors'     => 0,
           'skipped'    => 0,
@@ -116,16 +115,11 @@
       // Update test count
       $n= $this->testNode($outcome->test);
       $n->setAttribute('tests', $n->getAttribute('tests')+ 1);
-      $n->setAttribute('assertions', $n->getAttribute('assertions')+ $outcome->test->getAssertions());
       $n->setAttribute('time', $n->getAttribute('time')+ $outcome->elapsed());
       $inc && $n->setAttribute($inc, $n->getAttribute($inc)+ 1);
 
       //Update test counter
       $this->root->setAttribute('tests', $this->root->getAttribute('tests')+ 1);
-      $this->root->setAttribute(
-        'assertions',
-        $this->root->getAttribute('assertions')+ $outcome->test->getAssertions()
-      );
       $inc && $this->root->setAttribute($inc, $this->root->getAttribute($inc)+ 1);
       
       // Add testcase information
@@ -134,7 +128,6 @@
         'class'      => $testClass->getName(),
         'file'       => $this->getFileUri($testClass),
         'line'       => $this->getStartLine($testClass, $outcome->test->getName()),
-        'assertions' => $outcome->test->getAssertions(),
         'time'       => sprintf('%.6f', $outcome->elapsed())
       )));
     }
