@@ -22,7 +22,6 @@
     protected $tree= NULL;
     protected $root= NULL;
     protected $classes= NULL;
-    protected $overalltime= 0;
 
 
     /**
@@ -118,6 +117,7 @@
       $n= $this->testNode($outcome->test);
       $n->setAttribute('tests', $n->getAttribute('tests')+ 1);
       $n->setAttribute('assertions', $n->getAttribute('assertions')+ $outcome->test->getAssertions());
+      $n->setAttribute('time', $n->getAttribute('time')+ $outcome->elapsed());
       $inc && $n->setAttribute($inc, $n->getAttribute($inc)+ 1);
 
       //Update test counter
@@ -127,8 +127,6 @@
         $this->root->getAttribute('assertions')+ $outcome->test->getAssertions()
       );
       $inc && $this->root->setAttribute($inc, $this->root->getAttribute($inc)+ 1);
-      $this->overalltime+= $outcome->elapsed();
-      $this->root->setAttribute('time', sprintf('%.6f', $this->overalltime));
       
       // Add testcase information
       return $n->addChild(new Node('testcase', NULL, array(
