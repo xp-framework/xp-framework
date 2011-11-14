@@ -69,6 +69,25 @@
     }
     
     /**
+     * Return message error string for given error
+     * 
+     * @param unittest.TestOutcome error The error
+     * @return string
+     */
+    protected function messageFor(TestOutcome $error) {
+      $testClass= $error->test->getClass();
+      
+      return sprintf(
+        "%s(%s)\n%s \n\n%s:%d\n\n",
+        $testClass->getName(),
+        $error->test->getName(),
+        trim($error->reason->compoundMessage()),
+        $this->getFileUri($testClass),
+        $this->getStartLine($testClass, $error->test->getName())
+      );
+    }
+    
+    /**
      * Called when a test case starts.
      *
      * @param   unittest.TestCase failure
@@ -138,18 +157,8 @@
      * @param   unittest.TestFailure failure
      */
     public function testFailed(TestFailure $failure) {
-      $testClass= $failure->test->getClass();
-      $trace= $failure->reason->getStackTrace();
-
       $t= $this->addTestCase($failure, 'failures');
-      $t->addChild(new Node('failure', $content= sprintf(
-        "%s(%s)\n%s \n\n%s:%d\n\n",
-        $testClass->getName(),
-        $failure->test->getName(),
-        trim($failure->reason->compoundMessage()),
-        $this->getFileUri($testClass),
-        $this->getStartLine($testClass, $failure->test->getName())
-      ), array(
+      $t->addChild(new Node('failure', $this->messageFor($failure), array(
         'message' => trim($failure->reason->compoundMessage()),
         'type'    => xp::typeOf($failure->reason)
       )));
@@ -161,17 +170,8 @@
      * @param   unittest.TestError error
      */
     public function testError(TestError $error) {
-      $testClass= $error->test->getClass();
-
       $t= $this->addTestCase($error, 'failures');
-      $t->addChild(new Node('error', sprintf(
-        "%s(%s)\n%s \n\n%s:%d\n\n",
-        $testClass->getName(),
-        $error->test->getName(),
-        trim($error->reason->compoundMessage()),
-        $this->getFileUri($testClass),
-        $this->getStartLine($testClass, $error->test->getName())
-      ), array(
+      $t->addChild(new Node('error', $this->messageFor($error), array(
         'message' => trim($error->reason->compoundMessage()),
         'type'    => xp::typeOf($error->reason)
       )));
