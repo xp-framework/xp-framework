@@ -44,12 +44,11 @@
      */
     private function getFileUri(XPClass $class) {
       try {
-        $loader= $class->getClassLoader();
-        $Urimethod= $loader->getClass()->getMethod('classURI');
+        $Urimethod= $class->getClassLoader()->getClass()->getMethod('classURI');
         $Urimethod->setAccessible(TRUE);
-        return $Urimethod->invoke($loader, $class->getName());
+        return $Urimethod->invoke($class->getClassLoader(), $class->getName());
       } catch (Exception $ignored) {
-        return '';
+        return $class->getClassName();
       }
     }
 
@@ -81,7 +80,7 @@
         "%s(%s)\n%s \n\n%s:%d\n\n",
         $testClass->getName(),
         $error->test->getName(),
-        trim($error->reason->compoundMessage()),
+        xp::stringOf($error->reason),
         $this->getFileUri($testClass),
         $this->getStartLine($testClass, $error->test->getName())
       );
@@ -160,7 +159,7 @@
       $t= $this->addTestCase($failure, 'failures');
       $t->addChild(new Node('failure', $this->messageFor($failure), array(
         'message' => trim($failure->reason->compoundMessage()),
-        'type'    => xp::typeOf($failure->reason)
+        'type'    => $failure->reason->getClassName()
       )));
     }
 
@@ -173,7 +172,7 @@
       $t= $this->addTestCase($error, 'failures');
       $t->addChild(new Node('error', $this->messageFor($error), array(
         'message' => trim($error->reason->compoundMessage()),
-        'type'    => xp::typeOf($error->reason)
+        'type'    => $error->reason->getClassName()
       )));
     }
 
@@ -184,9 +183,9 @@
      */
     public function testWarning(TestWarning $warning) {
       $t= $this->addTestCase($warning, 'errors');
-      $t->addChild(new Node('error', implode("\n", $warning->reason), array(
+      $t->addChild(new Node('error', $this->messageFor($warning), array(
         'message' => 'Non-clear error stack',
-        'type'    => 'warnings'
+        'type'    => $warning->getClassName()
       )));
     }
     
