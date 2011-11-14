@@ -141,17 +141,15 @@
       $testClass= $failure->test->getClass();
       $trace= $failure->reason->getStackTrace();
 
-      $content= sprintf(
+      $t= $this->addTestCase($failure, 'failures');
+      $t->addChild(new Node('failure', $content= sprintf(
         "%s(%s)\n%s \n\n%s:%d\n\n",
         $testClass->getName(),
         $failure->test->getName(),
         trim($failure->reason->compoundMessage()),
         $this->getFileUri($testClass),
         $this->getStartLine($testClass, $failure->test->getName())
-      );
-
-      $t= $this->addTestCase($failure, 'failures');
-      $t->addChild(new Node('failure', $content, array(
+      ), array(
         'message' => trim($failure->reason->compoundMessage()),
         'type'    => xp::typeOf($failure->reason)
       )));
@@ -164,19 +162,16 @@
      */
     public function testError(TestError $error) {
       $testClass= $error->test->getClass();
-      $trace= $error->reason->getStackTrace();
 
-      $content= sprintf(
+      $t= $this->addTestCase($error, 'failures');
+      $t->addChild(new Node('error', sprintf(
         "%s(%s)\n%s \n\n%s:%d\n\n",
         $testClass->getName(),
         $error->test->getName(),
         trim($error->reason->compoundMessage()),
         $this->getFileUri($testClass),
         $this->getStartLine($testClass, $error->test->getName())
-      );
-
-      $t= $this->addTestCase($error, 'failures');
-      $t->addChild(new Node('error', $content, array(
+      ), array(
         'message' => trim($error->reason->compoundMessage()),
         'type'    => xp::typeOf($error->reason)
       )));
