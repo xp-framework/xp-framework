@@ -141,13 +141,13 @@
       }
       $this->write($data);
       $answer= $this->read();
-      
+
       // By sending this very specific reply server asks us to send scrambled password in old format. 
       if (1 === strlen($answer) && "\376" === $answer[0] && $capabilities & self::CLIENT_SECURE_CONNECTION) {
         $this->write(substr(MySqlPassword::$PROTOCOL_40->scramble($password, substr($init['scramble'], 0, -12)), 0, 8)."\0");
         $answer= $this->read();
       }
-      
+
       $this->pkt= 0;
       $this->connected= TRUE;
     }
@@ -166,6 +166,7 @@
       }
       $this->sock->close();
       $this->connected= FALSE;
+      $this->pkt= 0;
     }
     
     /**
@@ -443,7 +444,7 @@
       }
 
       // DEBUG Console::$err->writeLine('R-> ', new Bytes($buf));
-      
+
       // 0xFF indicates an error
       if ("\377" !== $buf{0}) return $buf;
 
