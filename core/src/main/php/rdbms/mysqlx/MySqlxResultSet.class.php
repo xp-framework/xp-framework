@@ -35,7 +35,7 @@
     public function next($field= NULL) {
       if (NULL === $this->handle || NULL === ($record= $this->handle->fetch($this->fields))) {
         $this->handle= NULL;
-        return NULL;
+        return FALSE;
       }
       
       return $this->record($record, $field);
