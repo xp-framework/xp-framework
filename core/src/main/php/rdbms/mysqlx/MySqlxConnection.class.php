@@ -63,9 +63,10 @@
         // - See: http://bugs.mysql.com/bug.php?id=10214
         // - Possible values: http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html
         // "modes is a list of different modes separated by comma (,) characters."
-        $modes= array_flip(explode(',', current($this->handle->consume($this->handle->query(
+        $modes= current($this->handle->consume($this->handle->query(
           "show variables like 'sql_mode'"
-        )))));
+        )));
+        $modes= array_flip(explode(',', $modes[1]));
       } catch (IOException $e) {
         // Ignore
       }
@@ -139,11 +140,11 @@
       if (!$this->handle->connected) {
         if (!($this->flags & DB_AUTOCONNECT)) throw new SQLStateException('Not connected');
         $c= $this->connect();
-        
+
         // Check for subsequent connection errors
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
-      
+
       try {
         $this->handle->ready() || $this->handle->cancel();
         $result= $this->handle->query($sql);
@@ -163,7 +164,7 @@
       } catch (IOException $e) {
         throw new SQLStatementFailedException($e->getMessage());
       }
-      
+
       if (!is_array($result)) {
         $this->affected= $result;
         return TRUE;
