@@ -2,7 +2,6 @@
 
   /* This interface is part of the XP framework
    *
-   * $Id$
    */
 
   /**

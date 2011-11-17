@@ -13,17 +13,17 @@
    */
   class ExpectationList extends Object {
     private
-    $list = null,
-    $called = null,
+    $list= null,
+    $called= null,
     $unexpected= null;
     
     /**
      * Constructor      
      */
     public function __construct() {
-      $this->list = new Vector();
-      $this->called = new Vector();
-      $this->unexpected = new Vector();
+      $this->list= new Vector();
+      $this->called= new Vector();
+      $this->unexpected= new Vector();
     }
 
     /**
@@ -45,8 +45,8 @@
      * @return unittest.mock.Expectation  
      */
     public function getNext($args) {
-      $expectation = $this->getMatching($args);
-      if(!$expectation)
+      $expectation= $this->getMatching($args);
+      if (!$expectation)
         return null;
       
       $expectation->incActualCalls(); //increase call counter

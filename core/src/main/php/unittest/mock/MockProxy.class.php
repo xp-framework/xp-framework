@@ -2,7 +2,6 @@
 
 /* This class is part of the XP framework
  *
- * $Id$
  */
 
   uses(
@@ -23,12 +22,12 @@
   class MockProxy extends Object implements InvocationHandler {
 
     private
-    $mockState = null,
-    $expectionMap = null;
+    $mockState= null,
+    $expectionMap= null;
 
     public function __construct() {
-      $this->expectionMap = new Hashmap();
-      $this->mockState = new RecordState($this->expectionMap);
+      $this->expectionMap= new Hashmap();
+      $this->mockState= new RecordState($this->expectionMap);
     }
 
     /**
@@ -98,7 +97,7 @@
     }
 
     private function constructViolationMessage($method, $exp) {
-      $msg='';
+      $msg= '';
       if($exp->getRepeat()> $exp->getActualCalls()) {
         $msg= "Expectation not met for '$method'. ";
       }

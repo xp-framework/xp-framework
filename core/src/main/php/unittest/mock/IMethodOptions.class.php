@@ -2,9 +2,9 @@
 
   /* This interface is part of the XP framework
    *
-   * $Id$
    */
   uses('lang.Throwable');
+  
   /**
    * Fluent interface for specifying mock expectation.
    *
@@ -27,6 +27,7 @@
      * @return  IMethodOptions
      */
     function throws(Throwable $exception);
+    
     /**
      * Specifies the number of returns for that method. -1 for unlimited.
      *

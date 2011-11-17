@@ -2,7 +2,6 @@
 
 /* This class is part of the XP framework
  *
- * $Id$
  */
 
   uses('unittest.mock.arguments.IArgumentMatcher');
@@ -160,7 +159,7 @@
      * @param mixed b
      * @return boolean
      */
-    private function _compare($a, $b) { //FIXME: this is a duplication from TestCase
+    private function _compare($a, $b) {
       if (is_array($a)) {
         if (!is_array($b) || sizeof($a) != sizeof($b))
           return FALSE;

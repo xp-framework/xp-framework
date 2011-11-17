@@ -1,9 +1,8 @@
 <?php
+
 /* This class is part of the XP framework
  *
- * $Id$
  */
-
   uses('unittest.mock.arguments.IArgumentMatcher');
 
  /**
@@ -12,6 +11,11 @@
   * @purpose Argument Matching
   */
   class AnyMatcher extends Object implements IArgumentMatcher {
+    /**
+     * Trivial matches implementations.
+     * 
+     * @param value mixed
+     */
     public function matches($value) {
       return true;
     }

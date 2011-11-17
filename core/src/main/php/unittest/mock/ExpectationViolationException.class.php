@@ -1,16 +1,15 @@
 <?php
+
 /* This class is part of the XP framework
- *
- * $Id$
+ * 
  */
 
-  uses();
 
-  /**
- * TODO: Description
+/**
+ * Exception indicating that expectations have not been fulfilled.
  *
- * @see TODO: xp://fqdn
- * @purpose TODO: purpose
+ * @see xp://unittest.mock.ExpectationViolationException
+ * @purpose Expectation verification
  */
   class ExpectationViolationException extends XPException {
   }

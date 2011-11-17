@@ -1,7 +1,7 @@
 <?php
+
 /* This class is part of the XP framework
  *
- * $Id$
  */
 
   uses(
@@ -10,11 +10,11 @@
   );
 
 
-/**
- * Convenience class providing common argument matchers.
- *
- * @purpose Argument matching.
- */
+ /**
+  * Convenience class providing common argument matchers.
+  *
+  * @purpose Argument matching.
+  */
   class Arg extends Object {
     private static $any;
 
@@ -25,6 +25,9 @@
       self::$any= new AnyMatcher();
     }
 
+    /*
+     * Accessor method for the any matcher.
+     */
     public static function any() {
       return self::$any;
     }

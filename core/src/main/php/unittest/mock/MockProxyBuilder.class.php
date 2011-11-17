@@ -1,7 +1,6 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: Proxy.class.php 14483 2010-04-17 14:30:29Z friebe $ 
  */
 
   uses('unittest.mock.IMockProxy',
@@ -21,8 +20,8 @@
       $added= array();
 
     private static 
-      $num=0,
-      $cache=array();
+      $num= 0,
+      $cache= array();
     
     /**
      * Constructor
@@ -145,8 +144,8 @@
      */
     private function buildCacheId($baseClass, $interfaces) {
       $key= $this->classLoader->hashCode().':'.$baseClass->getName().';';
-      $key.=implode(';', array_map(create_function('$i', 'return $i->getName();'), $interfaces));
-      $key.=$this->overwriteExisting?'override':'';
+      $key.= implode(';', array_map(create_function('$i', 'return $i->getName();'), $interfaces));
+      $key.= $this->overwriteExisting?'override':'';
 
       return $key;
     }
@@ -166,10 +165,10 @@
      * @return string
      */
     private function generatePreamble() {
-      $handlerName=$this->getHandlerName();
+      $handlerName= $this->getHandlerName();
       
-      $preamble='private $'.$handlerName.'= null;'."\n\n";
-      $preamble.='public function __construct($handler) {'."\n".
+      $preamble= 'private $'.$handlerName.'= null;'."\n\n";
+      $preamble.= 'public function __construct($handler) {'."\n".
                  '  $this->'.$handlerName.'= $handler;'."\n".
                  "}\n";
 
@@ -183,7 +182,7 @@
      * @return string
      */
     private function generateInterfaceMethods($if) {
-      $bytes='';
+      $bytes= '';
       // Verify that the Class object actually represents an interface
       if (!$if->isInterface()) {
         throw new IllegalArgumentException($if->getName().' is not an interface');
@@ -194,7 +193,7 @@
          // Check for already declared methods, do not redeclare them
         if (isset($this->added[$m->getName()])) continue;
         $this->added[$m->getName()]= TRUE;
-        $bytes.=$this->generateMethod($m);
+        $bytes.= $this->generateMethod($m);
       }
       return $bytes;
     }
@@ -206,7 +205,7 @@
      * @param lang.XPClass baseClass
      */
     private function generateBaseClassMethods($baseClass) {
-      $bytes='';
+      $bytes= '';
 
       $reservedMethods= XPClass::forName('lang.Generic')->getMethods();
       $reservedMethodNames= array_map(create_function('$i', 'return $i->getName();'), $reservedMethods);
@@ -222,7 +221,7 @@
           // Check for already declared methods, do not redeclare them
           if (isset($this->added[$m->getName()])) continue;
           $this->added[$m->getName()]= TRUE;
-          $bytes.=$this->generateMethod($m);
+          $bytes.= $this->generateMethod($m);
         }
       }
       return $bytes;
@@ -236,7 +235,7 @@
      * @return string
      */
     private function generateMethod($method) {       
-      $bytes='';
+      $bytes= '';
       // Build signature and argument list
       if ($method->hasAnnotation('overloaded')) {
         $signatures= $method->getAnnotation('overloaded', 'signatures');

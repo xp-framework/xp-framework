@@ -2,11 +2,11 @@
 
   /* This class is part of the XP framework
    *
-   * $Id$
    */
 
   uses('lang.Type',
-       'unittest.mock.MockProxy');
+       'unittest.mock.MockProxy',
+       'unittest.mock.MockProxyBuilder');
 
   /**
    * Class for creating mock/stub instances of arbitrary types
@@ -31,10 +31,10 @@
         throw new IllegalArgumentException('Cannot mock other types than XPClass types.');
       }
 
-      $parentClass=null;
-      $interfaces=array(XPClass::forName('unittest.mock.IMock'));
+      $parentClass= null;
+      $interfaces= array(XPClass::forName('unittest.mock.IMock'));
       if($type->isInterface())
-        $interfaces[]=$type;
+        $interfaces[]= $type;
       else 
         $parentClass=$type;
 
