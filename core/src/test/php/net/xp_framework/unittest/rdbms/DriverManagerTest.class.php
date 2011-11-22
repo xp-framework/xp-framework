@@ -13,7 +13,6 @@
    * TestCase
    *
    * @see      xp://rdbms.DriverManager
-   * @purpose  purpose
    */
   class DriverManagerTest extends TestCase {
   
