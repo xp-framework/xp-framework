@@ -70,14 +70,10 @@
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.DriverManagerTest
-   * @purpose  Manager
    */
   class DriverManager extends Object {
-    protected static 
-      $instance     = NULL;
-
-    public
-      $drivers  = array();
+    protected static $instance= NULL;
+    public $drivers= array();
 
     static function __static() {
       self::$instance= new self();
