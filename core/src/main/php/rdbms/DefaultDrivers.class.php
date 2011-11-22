@@ -11,7 +11,7 @@
    *
    * @see   xp://rdbms.DriverImplementationsProvider
    */
-  class DefaultPreferences extends DriverImplementationsProvider {
+  class DefaultDrivers extends DriverImplementationsProvider {
     protected static $impl= array();
 
     static function __static() {

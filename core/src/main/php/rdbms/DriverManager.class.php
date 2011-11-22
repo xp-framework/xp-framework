@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.DBConnection', 'rdbms.DriverImplementationsProvider', 'rdbms.DriverNotSupportedException');
+  uses('rdbms.DBConnection', 'rdbms.DefaultDrivers', 'rdbms.DriverNotSupportedException');
 
   /**
    * Manages database drivers
@@ -69,35 +69,17 @@
    *   Console::writeLine($conn->query('select @@version as version')->next('version'));
    * </code>
    *
-   * Driver preferences
-   * ==================
-   * Certain driver implementations may be preferred over others for performance
-   * or conformity reasons - this is handled by the rdbms.spi package. Define a
-   * class extending the rdbms.DriverImplementationsProvider base class as follows
-   * to override:
-   *
-   * <code>
-   *   class OverriddenImplementation extends DriverImplementationsProvider {
-   *   
-   *     public function implementationsFor($driver) {
-   *       if ('sybase' === $driver) {
-   *         return array('rdbms.mssql.MsSQLConnection');
-   *       }
-   *       return parent::implementationsFor($driver);
-   *     }
-   *   
-   *   }
-   * </code>
-   *
    * @test     xp://net.xp_framework.unittest.rdbms.DriverManagerTest
    */
   class DriverManager extends Object {
     protected static $instance= NULL;
     public $drivers= array();
     protected $lookup= array();
+    protected $provider= NULL;
 
     static function __static() {
       self::$instance= new self();
+      self::$instance->provider= new DefaultDrivers(NULL);
     }
     
     /**
@@ -169,7 +151,10 @@
         if (isset(self::$instance->drivers[$driver])) {
           self::$instance->lookup[$driver]= self::$instance->drivers[$driver];
         } else {
-          $provider= NULL;
+          $provider= self::$instance->provider;
+          foreach ($provider->implementationsFor($driver) as $impl) {
+            XPClass::forName($impl);
+          }
           foreach (Package::forName('rdbms.spi')->getClasses() as $class) {
             if (!$class->isSubclassOf('rdbms.DriverImplementationsProvider')) continue;
             $provider= $class->newInstance($provider);

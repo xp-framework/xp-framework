@@ -7,7 +7,7 @@
   /**
    * Driver implementations provider for driver manager
    *
-   * @see   xp://rdbms.DriverPreferences
+   * @see   xp://rdbms.DefaultDrivers
    */
   abstract class DriverImplementationsProvider extends Object {
     protected $parent= NULL;
