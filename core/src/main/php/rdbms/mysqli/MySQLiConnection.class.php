@@ -23,6 +23,12 @@
    */
   class MySQLiConnection extends DBConnection {
 
+    static function __static() {
+      if (extension_loaded('mysqli')) {
+        DriverManager::register('mysql+i', new XPClass(__CLASS__));
+      }
+    }
+
     /**
      * Constructor
      *

@@ -23,6 +23,14 @@
    */
   class MySQLConnection extends DBConnection {
 
+    static function __static() {
+      if (extension_loaded('mysql')) {
+        DriverManager::register('mysql+std', new XPClass(__CLASS__));
+      } else if (extension_loaded('mysqlnd')) {
+        DriverManager::register('mysql+nd', new XPClass(__CLASS__));
+      }
+    }
+
     /**
      * Constructor
      *
