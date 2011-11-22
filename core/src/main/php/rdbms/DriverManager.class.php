@@ -141,7 +141,7 @@
      * @throws  rdbms.DriverNotSupportedException
      */
     public static function getConnection($str) {
-      $dsn= new DSN($str);
+      $dsn= new DSN((string)$str);
       $driver= $dsn->getDriver();
 
       // Lookup driver by identifier, if no direct match is found, choose from 
@@ -180,7 +180,7 @@
               break 2;
             }
             throw new DriverNotSupportedException(sprintf(
-              'No driver registered for %s or provided by any of %s',
+              'No driver registered for "%s" or provided by any of %s',
               $driver,
               xp::stringOf($provider)
             ));

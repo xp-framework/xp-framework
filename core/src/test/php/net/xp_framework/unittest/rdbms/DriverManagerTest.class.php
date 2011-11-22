@@ -50,6 +50,33 @@
     }
 
     /**
+     * Test getConnection()
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function nullConnection() {
+      DriverManager::getConnection(NULL);
+    }
+
+    /**
+     * Test getConnection()
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function emptyConnection() {
+      DriverManager::getConnection('');
+    }
+
+    /**
+     * Test getConnection()
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malformedConnection() {
+      DriverManager::getConnection('not.a.dsn');
+    }
+
+    /**
      * Ensure "mysqlx" is always supported - this is our userland implementation 
      * for MySQL connectivity as snap-in replacement so even if PHP comes without 
      * MySQL (!), the XP Framework supports it.
