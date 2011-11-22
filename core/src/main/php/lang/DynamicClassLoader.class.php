@@ -11,6 +11,7 @@
    *
    * @see   xp://lang.ClassLoader::defineClass
    * @test  xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
+   * @test  xp://net.xp_framework.unittest.core.DynamicClassLoaderTest
    */
   class DynamicClassLoader extends AbstractClassLoader {
     const DEVICE = 1852557578;   // crc32('lang.DynamicClassLoader')
