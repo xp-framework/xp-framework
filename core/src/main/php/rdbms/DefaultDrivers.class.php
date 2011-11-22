@@ -39,14 +39,14 @@
 
       // PostgreSQL support
       self::$impl['pgsql']= array('rdbms.pgsql.PostgreSQLConnection');
-      
+
       // SQLite support
       self::$impl['sqlite']= array('rdbms.sqlite.SQLiteConnection');
 
       // Interbase support
       self::$impl['ibase']= array('rdbms.ibase.InterBaseConnection');
     }
-    
+
     /**
      * Returns an array of class names implementing a given driver
      *
