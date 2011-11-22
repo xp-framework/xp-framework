@@ -73,6 +73,10 @@
      * @return  bool
      */
     public function providesPackage($package) {
+      $l= strlen($package);
+      foreach (array_keys(self::$bytes) as $name) {
+        if (0 === strncmp($name, $package, $l)) return TRUE;
+      }
       return FALSE;
     }
 
@@ -119,7 +123,19 @@
      * @return  string[] filenames
      */
     public function packageContents($package) {
-      return array();
+      $names= array();
+      $l= strlen($package);
+      foreach (array_keys(self::$bytes) as $name) {
+        if (0 !== strncmp($name, $package, $l)) continue;
+
+        $contained= substr($name, $l+ 1);
+        if (FALSE === ($p= strpos($contained, '.'))) {
+          $names[]= $contained.xp::CLASS_FILE_EXT;
+        } else {
+          $names[]= substr($contained, 0, $p).'/';
+        }
+      }
+      return $names;
     }
 
     /**

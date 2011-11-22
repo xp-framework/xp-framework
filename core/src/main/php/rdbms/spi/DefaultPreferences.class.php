@@ -7,11 +7,11 @@
   uses('rdbms.DriverImplementationsProvider');
 
   /**
-   * Driver preferences for driver manager
+   * Default driver preferences for driver manager
    *
    * @see   xp://rdbms.DriverImplementationsProvider
    */
-  class DriverPreferences extends Object implements DriverImplementationsProvider {
+  class DefaultPreferences extends DriverImplementationsProvider {
     protected static $impl= array();
 
     static function __static() {
@@ -54,7 +54,7 @@
      * @return  string[] implementations
      */
     public function implementationsFor($driver) {
-      return isset(self::$impl[$driver]) ? self::$impl[$driver] : array();
+      return isset(self::$impl[$driver]) ? self::$impl[$driver] : parent::implementationsFor($driver);
     }
   }
 ?>

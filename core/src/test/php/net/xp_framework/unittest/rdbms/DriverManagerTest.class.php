@@ -97,19 +97,43 @@
 
       // Should choose the "a" implementation
       $this->register('test+a', ClassLoader::defineClass(
-        'net.xp_framework.unittest.rdbms.AMockConnection', 
+        'net.xp_framework.unittest.rdbms.mock.AMockConnection', 
         'net.xp_framework.unittest.rdbms.mock.MockConnection', 
         array(), 
         '{}'
       ));
       $this->register('test+b', ClassLoader::defineClass(
-        'net.xp_framework.unittest.rdbms.BMockConnection', 
+        'net.xp_framework.unittest.rdbms.mock.BMockConnection', 
         'net.xp_framework.unittest.rdbms.mock.MockConnection', 
         array(), 
         '{}'
       ));
 
-      $this->assertInstanceOf('AMockConnection', DriverManager::getConnection('test://localhost'));
+      $this->assertInstanceOf(
+        'net.xp_framework.unittest.rdbms.mock.AMockConnection', 
+        DriverManager::getConnection('test://localhost')
+      );
+    }
+
+    /**
+     * Test searching for a connection
+     *
+     */
+    #[@test]
+    public function driverPreferences() {
+      $spi= ClassLoader::defineClass('rdbms.spi.OverriddenImplementation', 'rdbms.DriverImplementationsProvider', array(), '{
+        public static $inquired= array();
+        public function implementationsFor($driver) {
+          self::$inquired[]= $driver;
+          return array();
+        }
+      }');
+
+      // Ensure the 
+      $this->register('mock+std', XPClass::forName('net.xp_framework.unittest.rdbms.mock.MockConnection'));
+      DriverManager::getConnection('mock://localhost');
+      
+      $this->assertEquals(array('mock'), $spi->getField('inquired')->get(NULL));
     }
   }
 ?>

@@ -72,17 +72,29 @@
    * Driver preferences
    * ==================
    * Certain driver implementations may be preferred over others for performance
-   * or conformity reasons - this is handled by the rdbms.DriverPreferences class 
-   * for the framework's own implementations. This class is lazily loaded inside 
-   * the <tt>getConnection()</tt> method and may thus be overridden by placing a 
-   * userland class implementing rdbms.DriverImplementationsProvider upfront in
-   * the classpath.
+   * or conformity reasons - this is handled by the rdbms.spi package. Define a
+   * class extending the rdbms.DriverImplementationsProvider base class as follows
+   * to override:
+   *
+   * <code>
+   *   class OverriddenImplementation extends DriverImplementationsProvider {
+   *   
+   *     public function implementationsFor($driver) {
+   *       if ('sybase' === $driver) {
+   *         return array('rdbms.mssql.MsSQLConnection');
+   *       }
+   *       return parent::implementationsFor($driver);
+   *     }
+   *   
+   *   }
+   * </code>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.DriverManagerTest
    */
   class DriverManager extends Object {
     protected static $instance= NULL;
     public $drivers= array();
+    protected $lookup= array();
 
     static function __static() {
       self::$instance= new self();
@@ -126,6 +138,7 @@
         ));
       }
       self::$instance->drivers[$name]= $class;
+      self::$instance->lookup= array();
     }
     
     /**
@@ -135,6 +148,7 @@
      */
     public static function remove($name) {
       unset(self::$instance->drivers[$name]);
+      self::$instance->lookup= array();
     }
     
     /**
@@ -150,33 +164,41 @@
       
       // Lookup driver by identifier, if no direct match is found, choose from 
       // the drivers with the same driver identifier. If no implementation can
-      // be found that way, lazily load a class called rdbms.DriverPreferences,
-      // verify it implements rdbms.DriverImplementationsProvider and then ask 
-      // it for implementations once.
-      if (!isset(self::$instance->drivers[$driver])) {
-        $pref= NULL;
-        do {
-          $s= $driver.'+';
-          $l= strlen($s);
-          foreach (self::$instance->drivers as $name => $class) {
-            if (0 !== strncmp($name, $s, $l)) continue;
-            self::$instance->drivers[$driver]= $class;
-            break 2;
+      // be found that way, ask available rdbms.DriverImplementationsProviders 
+      if (!isset(self::$instance->lookup[$driver])) {
+        if (isset(self::$instance->drivers[$driver])) {
+          self::$instance->lookup[$driver]= self::$instance->drivers[$driver];
+        } else {
+          $provider= NULL;
+          foreach (Package::forName('rdbms.spi')->getClasses() as $class) {
+            if (!$class->isSubclassOf('rdbms.DriverImplementationsProvider')) continue;
+            $provider= $class->newInstance($provider);
+            foreach ($provider->implementationsFor($driver) as $impl) {
+              XPClass::forName($impl);
+            }
           }
 
-          if (NULL !== $pref) {
-            $pref= NULL;
-            throw new DriverNotSupportedException('No driver registered for '.$driver.' - is the library loaded?');
-          }
-
-          $pref= cast(XPClass::forName('rdbms.DriverPreferences')->newInstance(), 'rdbms.DriverImplementationsProvider');
-          foreach ($pref->implementationsFor($driver) as $impl) {
-            XPClass::forName($impl);
-          }
-        } while ($pref);
+          // Not every implementation may be available (e.g., due to a missing 
+          // prerequisite), so now search the registered implementations for a 
+          // suitable driver.
+          do {
+            $s= $driver.'+';
+            $l= strlen($s);
+            foreach (self::$instance->drivers as $name => $class) {
+              if (0 !== strncmp($name, $s, $l)) continue;
+              self::$instance->lookup[$driver]= $class;
+              break 2;
+            }
+            throw new DriverNotSupportedException(sprintf(
+              'No driver registered for %s or provided by any of %s',
+              $driver,
+              xp::stringOf($provider)
+            ));
+          } while (0);
+        }
       }
       
-      return self::$instance->drivers[$driver]->newInstance($dsn);
+      return self::$instance->lookup[$driver]->newInstance($dsn);
     }
   }
 ?>

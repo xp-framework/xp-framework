@@ -159,7 +159,7 @@
           }
         }
 
-        with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+        with ($dyn= self::registerLoader(DynamicClassLoader::instanceFor(__METHOD__))); {
           $dyn->setClassBytes($class, sprintf(
             'class %s extends %s%s %s',
             $name,
@@ -196,7 +196,7 @@
           }
         }
 
-        with ($dyn= DynamicClassLoader::instanceFor(__METHOD__)); {
+        with ($dyn= self::registerLoader(DynamicClassLoader::instanceFor(__METHOD__))); {
           $dyn->setClassBytes($class, sprintf(
             'interface %s%s %s',
             $name,
