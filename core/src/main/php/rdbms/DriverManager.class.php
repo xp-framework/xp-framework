@@ -143,7 +143,7 @@
     public static function getConnection($str) {
       $dsn= new DSN($str);
       $driver= $dsn->getDriver();
-      
+
       // Lookup driver by identifier, if no direct match is found, choose from 
       // the drivers with the same driver identifier. If no implementation can
       // be found that way, ask available rdbms.DriverImplementationsProviders 
@@ -156,18 +156,26 @@
             if (!$class->isSubclassOf('rdbms.DriverImplementationsProvider')) continue;
             $provider= $class->newInstance($provider);
           }
-          foreach ($provider->implementationsFor($driver) as $impl) {
+
+          // Normalize driver, then query providers for available implementations
+          if (FALSE === ($p= strpos($driver, '+'))) {
+            $family= $driver;
+            $search= $driver.'+';
+          } else {
+            $family= substr($driver, 0, $p);
+            $search= $driver;
+          }
+          $l= strlen($search);
+          foreach ($provider->implementationsFor($family) as $impl) {
             XPClass::forName($impl);
           }
 
-          // Not every implementation may be available (e.g., due to a missing 
+          // Not every implementation may be registered (e.g., due to a missing 
           // prerequisite), so now search the registered implementations for a 
           // suitable driver.
           do {
-            $s= $driver.'+';
-            $l= strlen($s);
             foreach (self::$instance->drivers as $name => $class) {
-              if (0 !== strncmp($name, $s, $l)) continue;
+              if (0 !== strncmp($name, $search, $l)) continue;
               self::$instance->lookup[$driver]= $class;
               break 2;
             }

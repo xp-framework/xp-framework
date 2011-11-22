@@ -50,9 +50,32 @@
     }
 
     /**
-     * Test "mysql" is always supported - we have a userland implementation for
-     * this as snap-in replacement so even if PHP comes without MySQL (!), the 
-     * XP Framework supports MySQL connectivity through its rdbms.mysqlx package.
+     * Ensure "mysqlx" is always supported - this is our userland implementation 
+     * for MySQL connectivity as snap-in replacement so even if PHP comes without 
+     * MySQL (!), the XP Framework supports it.
+     *
+     */
+    #[@test]
+    public function mysqlxProvidedByDefaultDrivers() {
+      $this->assertInstanceOf(
+        'rdbms.mysqlx.MySqlxConnection', 
+        DriverManager::getConnection('mysql+x://localhost')
+      );
+    }
+
+    /**
+     * Ensure querying specifically for "mysql+unsupported" will raise an 
+     * exception and not find the "mysql" family driver.
+     *
+     */
+    #[@test, @expect('rdbms.DriverNotSupportedException')]
+    public function unsupportedDriverInMySQLDriverFamily() {
+      DriverManager::getConnection('mysql+unsupported://localhost');
+    }
+
+    /**
+     * Test "mysql" is always supported, in the "worst" case through our mysqlx 
+     * implementation (see above).
      *
      */
     #[@test]
@@ -132,7 +155,7 @@
 
       with ($field= $spi->getField('inquired')); {
         DriverManager::getConnection('mock+std://localhost');
-        $this->assertEquals(array(), $field->get(NULL), 'A direct query should not invoke the SPI');
+        $this->assertEquals(array(), $field->get(NULL), 'A direct hit should not invoke the SPI');
 
         DriverManager::getConnection('mock://localhost');
         $this->assertEquals(array('mock'), $field->get(NULL), 'The first indirect query should invoke the SPI');
