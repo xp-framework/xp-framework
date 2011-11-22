@@ -152,15 +152,12 @@
           self::$instance->lookup[$driver]= self::$instance->drivers[$driver];
         } else {
           $provider= self::$instance->provider;
-          foreach ($provider->implementationsFor($driver) as $impl) {
-            XPClass::forName($impl);
-          }
           foreach (Package::forName('rdbms.spi')->getClasses() as $class) {
             if (!$class->isSubclassOf('rdbms.DriverImplementationsProvider')) continue;
             $provider= $class->newInstance($provider);
-            foreach ($provider->implementationsFor($driver) as $impl) {
-              XPClass::forName($impl);
-            }
+          }
+          foreach ($provider->implementationsFor($driver) as $impl) {
+            XPClass::forName($impl);
           }
 
           // Not every implementation may be available (e.g., due to a missing 
