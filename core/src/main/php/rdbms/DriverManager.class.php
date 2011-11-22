@@ -165,7 +165,6 @@
             $family= substr($driver, 0, $p);
             $search= $driver;
           }
-          $l= strlen($search);
           foreach ($provider->implementationsFor($family) as $impl) {
             XPClass::forName($impl);
           }
@@ -173,6 +172,7 @@
           // Not every implementation may be registered (e.g., due to a missing 
           // prerequisite), so now search the registered implementations for a 
           // suitable driver.
+          $l= strlen($search);
           do {
             foreach (self::$instance->drivers as $name => $class) {
               if (0 !== strncmp($name, $search, $l)) continue;
