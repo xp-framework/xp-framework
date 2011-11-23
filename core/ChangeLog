@@ -27,6 +27,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.DSN::equals() method to no longer regard differing observer
+  params as equal
+  (friebe)
 - Fixed timezone issues when runnning complete test suite - see issue #72
   (friebe)
 - Allowed for deprecated multi-value annotations - see issue #69
