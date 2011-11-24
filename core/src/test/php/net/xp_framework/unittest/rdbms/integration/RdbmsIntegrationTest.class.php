@@ -249,12 +249,12 @@
     }
 
     /**
-     * Test selecting string values
+     * Test selecting string values with an umlaut inside
      *
      */
     #[@test]
-    public function selectUnicodeString() {
-      $this->assertEquals(utf8_encode('Übercoder'), $this->db()->query('select %s as value', new String('Übercoder'))->next('value'));
+    public function selectUmlautString() {
+      $this->assertEquals('Übercoder', $this->db()->query('select %s as value', 'Übercoder')->next('value'));
     }
     
     /**
