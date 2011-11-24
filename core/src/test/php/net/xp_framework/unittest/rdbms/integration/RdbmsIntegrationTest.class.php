@@ -15,8 +15,8 @@
    *
    */
   abstract class RdbmsIntegrationTest extends TestCase {
-    protected
-      $dsn    = NULL;
+    protected $dsn= NULL;
+    protected $conn= NULL;
 
     /**
      * Set up testcase
@@ -34,10 +34,18 @@
       }
 
       try {
-        $this->db();
+        $this->conn= DriverManager::getConnection($this->dsn);
       } catch (Throwable $t) {
         throw new PrerequisitesNotMetError($t->getMessage(), $t);
       }
+    }
+
+    /**
+     * Tear down test case, close connection.
+     *
+     */
+    public function tearDown() {
+      $this->conn->close();
     }
 
     /**
@@ -54,10 +62,8 @@
      * @return  rdbms.DBConnection
      */
     protected function db($connect= TRUE) {
-      with ($db= DriverManager::getConnection($this->dsn)); {
-        if ($connect) $db->connect();
-        return $db;
-      }
+      $connect && $this->conn->connect();
+      return $this->conn;
     }
     
     /**
@@ -67,8 +73,7 @@
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function noQueryWhenNotConnected() {
-      $db= $this->db(FALSE);
-      $db->query('select 1');
+      $this->conn->query('select 1');
     }
     
     /**
@@ -90,7 +95,7 @@
      */
     #[@test]
     public function connect() {
-      $this->assertEquals(TRUE, $this->db(FALSE)->connect());
+      $this->assertEquals(TRUE, $this->conn->connect());
     }
     
     /**
