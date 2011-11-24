@@ -131,6 +131,28 @@
       $this->assertInstanceOf('rdbms.ResultSet', $q);
       $this->assertEquals(1, $q->next('foo'));
     }
+
+    /**
+     * Test open() and next()
+     *
+     */
+    #[@test]
+    public function openAndNext() {
+      $q= $this->db()->open('select 1 as foo');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
+      $this->assertEquals(array('foo' => 1), $q->next());
+    }
+
+    /**
+     * Test open() and next()
+     *
+     */
+    #[@test]
+    public function openAndNextWithField() {
+      $q= $this->db()->open('select 1 as foo');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
+      $this->assertEquals(1, $q->next('foo'));
+    }
    
     /**
      * Test query() w/ an empty result set (empty or not - it should
