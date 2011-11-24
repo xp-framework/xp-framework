@@ -97,6 +97,18 @@
     public function connect() {
       $this->assertEquals(TRUE, $this->conn->connect());
     }
+
+    /**
+     * Test query throws rdbms.SQLStateException when no longer 
+     * connected to the database
+     *
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    public function noQueryWhenDisConnected() {
+      $this->conn->connect();
+      $this->conn->close();
+      $this->conn->query('select 1');
+    }
     
     /**
      * Test select()
