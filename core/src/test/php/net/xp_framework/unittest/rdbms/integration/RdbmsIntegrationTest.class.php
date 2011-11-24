@@ -111,16 +111,27 @@
     }
     
     /**
-     * Test query()
+     * Test query() and next()
      *
      */
     #[@test]
-    public function simpleQuery() {
+    public function queryAndNext() {
       $q= $this->db()->query('select 1 as foo');
-      $this->assertSubclass($q, 'rdbms.ResultSet');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
+      $this->assertEquals(array('foo' => 1), $q->next());
+    }
+ 
+    /**
+     * Test query() and next()
+     *
+     */
+    #[@test]
+    public function queryAndNextWithField() {
+      $q= $this->db()->query('select 1 as foo');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
       $this->assertEquals(1, $q->next('foo'));
     }
-    
+   
     /**
      * Test query() w/ an empty result set (empty or not - it should
      * be a ResultSet)
