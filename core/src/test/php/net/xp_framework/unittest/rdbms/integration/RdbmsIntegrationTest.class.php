@@ -141,7 +141,7 @@
     public function emptyQuery() {
       $this->createTable();
       $q= $this->db()->query('select * from unittest where 1=0');
-      $this->assertSubclass($q, 'rdbms.ResultSet');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
       $this->assertEquals(FALSE, $q->next());
     }
     
@@ -169,17 +169,33 @@
     }
     
     /**
+     * Test insert via query()
+     *
+     */
+    #[@test]
+    public function insertViaQuery() {
+      $this->createTable();
+      $this->assertTrue($this->db()->query('insert into unittest values (1, "kiesel")'));
+    }
+
+    /**
      * Test insert()
      *
      */
     #[@test]
     public function insertIntoTable() {
       $this->createTable();
-      $q= $this->db()->query('insert into unittest values (1, "kiesel")');
-      $this->assertEquals(TRUE, $q);
-      
-      $q= $this->db()->insert('into unittest values (2, "xp")');
-      $this->assertEquals(1, $q);
+      $this->assertEquals(1, $this->db()->insert('into unittest values (2, "xp")'));
+    }
+
+    /**
+     * Test update via query()
+     *
+     */
+    #[@test]
+    public function updateViaQuery() {
+      $this->createTable();
+      $this->assertTrue($this->db()->query('update unittest set pk= pk+ 1 where pk= 2'));
     }
     
     /**
@@ -189,15 +205,17 @@
     #[@test]
     public function updateTable() {
       $this->createTable();
-      $this->assertEquals(
-        TRUE,
-        $this->db()->query('update unittest set pk= pk+ 1 where pk= 2')
-      );
+      $this->assertEquals(1, $this->db()->update('unittest set pk= pk+ 1 where pk= 1'));
+    }
 
-      $this->assertEquals(
-        1, 
-        $this->db()->update('unittest set pk= pk+ 1 where pk= 1')
-      );
+    /**
+     * Test delete via query()
+     *
+     */
+    #[@test]
+    public function deleteViaQuery() {
+      $this->createTable();
+      $this->assertTrue($this->db()->query('delete from unittest where pk= 2'));
     }
     
     /**
@@ -207,15 +225,7 @@
     #[@test]
     public function deleteFromTable() {
       $this->createTable();
-      $this->assertEquals(
-        TRUE,
-        $this->db()->query('delete from unittest where pk= 2')
-      );
-
-      $this->assertEquals(
-        1, 
-        $this->db()->delete('from unittest where pk= 1')
-      );
+      $this->assertEquals(1, $this->db()->delete('from unittest where pk= 1'));
     }
     
     /**
@@ -240,14 +250,41 @@
     public function malformedStatement() {
       $this->db()->query('select insert into delete.');
     }
+
+    /**
+     * Test selecting NULL
+     *
+     */
+    #[@test]
+    public function selectNull() {
+      $this->assertEquals(NULL, $this->db()->query('select NULL as value')->next('value'));
+    }
     
     /**
-     * Test selecting integer values leads 
+     * Test selecting integer values
      *
      */
     #[@test]
     public function selectInteger() {
       $this->assertEquals(1, $this->db()->query('select 1 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting integer values
+     *
+     */
+    #[@test]
+    public function selectIntegerZero() {
+      $this->assertEquals(0, $this->db()->query('select 0 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting integer values
+     *
+     */
+    #[@test]
+    public function selectNegativeInteger() {
+      $this->assertEquals(-6100, $this->db()->query('select -6100 as value')->next('value'));
     }
     
     /**
@@ -275,7 +312,33 @@
     #[@test]
     public function selectFloat() {
       $this->assertEquals(0.5, $this->db()->query('select 0.5 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting float values
+     *
+     */
+    #[@test]
+    public function selectFloatOne() {
       $this->assertEquals(1.0, $this->db()->query('select 1.0 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting float values
+     *
+     */
+    #[@test]
+    public function selectFloatZero() {
+      $this->assertEquals(0.0, $this->db()->query('select 0.0 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting float values
+     *
+     */
+    #[@test]
+    public function selectNegativeFloat() {
+      $this->assertEquals(-6.1, $this->db()->query('select -6.1 as value')->next('value'));
     }
     
     /**
@@ -287,7 +350,7 @@
       $cmp= new Date('2009-08-14 12:45:00');
       $result= $this->db()->query('select cast(%s as date) as value', $cmp)->next('value');
       
-      $this->assertSubclass($result, 'util.Date');
+      $this->assertInstanceOf('util.Date', $result);
       $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
     }
     
