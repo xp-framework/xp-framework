@@ -65,7 +65,7 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_object($this->handle)) {
-        $e= new SQLConnectException('#'.mysqli_connect_error().': '.mysqli_connect_error(), $this->dsn);
+        $e= new SQLConnectException('#'.mysqli_connect_errno().': '.mysqli_connect_error(), $this->dsn);
         xp::gc(__FILE__);
         throw $e;
       }
