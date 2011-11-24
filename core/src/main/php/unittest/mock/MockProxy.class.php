@@ -87,7 +87,7 @@
         $expectationList=$this->expectionMap->get($method);
         
         foreach($expectationList->getExpectations() as $exp) {
-          if($exp->getRepeat() === -1) //unlimited calls
+          if($exp->getActualCalls() !== 0)
             continue;
 
           $msg= $this->constructViolationMessage($method, $exp);
@@ -102,7 +102,7 @@
         $msg= "Expectation not met for '$method'. ";
       }
 
-      $msg.= "expected#: ".$exp->getRepeat();
+      $msg.= "expected#: ".$exp->getRepeat()==-1? 1: $exp->getRepeat();
       $msg.= " called#: ".$exp->getActualCalls();
 
       return $msg;

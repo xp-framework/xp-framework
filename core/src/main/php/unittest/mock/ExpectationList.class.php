@@ -51,8 +51,12 @@
       
       $expectation->incActualCalls(); //increase call counter
 
+      if(!$this->called->contains($expectation))
+          $this->called->add($expectation);
+      
       if (!$expectation->canRepeat()) { // no more repetitions left
-        $this->moveToCalledList($expectation);
+          $idx = $this->list->indexOf($expectation); //find it
+          $this->list->remove($idx); //remove it
       }
 
       return $expectation;
@@ -71,19 +75,6 @@
       }
 
       return null;
-    }
-
-    /**
-     * Removes the passed expectation from the expectation list to the called
-     * list, so that expectation is 'invalidated' by this method and won't be
-     * returned by getNext anymore.
-     * 
-     * @param  $expectation 
-     */
-    private function moveToCalledList($expectation) {
-      $idx = $this->list->indexOf($expectation); //find it
-      $this->list->remove($idx); //remove it
-      $this->called->add($expectation); 
     }
 
     /**

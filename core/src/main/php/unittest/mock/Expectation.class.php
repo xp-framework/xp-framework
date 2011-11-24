@@ -31,7 +31,7 @@
       $this->return = $value;
     }
 
-    private $repeat = 1;
+    private $repeat = -1;
     /**
      * Gets the number of repetions of this expectation.
      * 

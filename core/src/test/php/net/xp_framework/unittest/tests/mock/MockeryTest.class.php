@@ -120,10 +120,7 @@
     public function missingExpectationLeadsToNull() {
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
-      $object->foo()->returns(new Object());
-
       $object->_replayMock();
-      $this->assertInstanceOf('lang.Object', $object->foo());
       $this->assertNull($object->foo());
       $this->assertNull($object->foo());
       $this->assertNull($object->foo());
@@ -140,12 +137,13 @@
       $return2="bar";
       $return3="baz";
       
-      $object->foo()->returns($return1);
-      $object->foo()->returns($return2);
-      $object->foo()->returns($return3);
+      $object->foo()->returns($return1)->repeat(1);
+      $object->foo()->returns($return2)->repeat(2);
+      $object->foo()->returns($return3)->repeat(1);
       $object->_replayMock();
       
       $this->assertEquals($return1, $object->foo());
+      $this->assertEquals($return2, $object->foo());
       $this->assertEquals($return2, $object->foo());
       $this->assertEquals($return3, $object->foo());
       $this->assertNull($object->foo());
@@ -215,7 +213,7 @@
      */
     #[@test]
     public function concreteMethodsNotMocked() {
-      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
+      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', false);
 
       $this->assertEquals('IComplexInterface.foo', $obj->foo());
     }

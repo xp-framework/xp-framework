@@ -54,8 +54,8 @@
      * The repeat count is 0 by default
      */
     #[@test]
-    public function repeat_is0_byDefault() {
-      $this->assertEquals(1, $this->sut->getRepeat());
+    public function repeat_isMinus1_byDefault() {
+      $this->assertEquals(-1, $this->sut->getRepeat());
     }
 
     /**
@@ -89,6 +89,7 @@
      */
     #[@test]
     public function canRepeat_isTrueOnce_ByDefault() {
+      $this->sut->setRepeat(1);
       $this->assertTrue($this->sut->canRepeat());
       $this->sut->incActualCalls();
       $this->assertFalse($this->sut->canRepeat());

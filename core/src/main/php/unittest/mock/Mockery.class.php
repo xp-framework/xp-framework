@@ -24,8 +24,8 @@
      * @param   boolean overrideAll
      * @return  Object
      */
-    public function createMock($typeName, $overrideAll=false) {
-      $type = Type::forName($typeName);
+    public function createMock($typeName, $overrideAll= true) {
+      $type= Type::forName($typeName);
 
       if (!($type instanceof XPClass)) {
         throw new IllegalArgumentException('Cannot mock other types than XPClass types.');
@@ -36,7 +36,7 @@
       if($type->isInterface())
         $interfaces[]= $type;
       else 
-        $parentClass=$type;
+        $parentClass= $type;
 
       $defaultCL= ClassLoader::getDefault();
 

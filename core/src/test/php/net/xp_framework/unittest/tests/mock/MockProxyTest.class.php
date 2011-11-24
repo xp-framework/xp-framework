@@ -110,9 +110,9 @@
      */
     #[@test]
     public function callingReplayTwice_stateShouldNotChange() {
-      $this->sut->invoke(null, 'foo', null)->returns('foo1');
-      $this->sut->invoke(null, 'foo', null)->returns('foo2');
-      $this->sut->invoke(null, 'bar', null)->returns('bar');
+      $this->sut->invoke(null, 'foo', null)->returns('foo1')->repeat(1);
+      $this->sut->invoke(null, 'foo', null)->returns('foo2')->repeat(1);
+      $this->sut->invoke(null, 'bar', null)->returns('bar')->repeat(1);
       $this->sut->replay();
 
       $this->assertEquals('foo1', $this->sut->invoke(null, 'foo', null));

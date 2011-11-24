@@ -76,12 +76,9 @@
       $myExpectation=new Expectation();
       $myExpectation->setReturn('foobar');
       
-      $expectationsList=new ExpectationList();
-      $expectationsList->add($myExpectation);
-      
+      $expectationsList=new ExpectationList();    
       $this->expectationMap->put('foo', $expectationsList);
       
-      $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
       $this->assertNull($this->sut->handleInvocation('foo', null));
     }
 

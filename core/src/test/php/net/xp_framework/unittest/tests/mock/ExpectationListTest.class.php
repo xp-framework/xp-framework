@@ -70,12 +70,13 @@
      * If no more expectations left, getNext should return null.
      */
     #[@test]
-    public function getNextReturnsNullIfNoMoreElements() {
+    public function getNextReturns_should_return_last_expectation_over_and_over() {
       $expect=new Expectation();
       $this->sut->add($expect);
       
       $this->assertEquals($expect, $this->sut->getNext(array()));
-      $this->assertNull($this->sut->getNext(array()));
+      $this->assertEquals($expect, $this->sut->getNext(array()));
+      $this->assertEquals($expect, $this->sut->getNext(array()));
     }
     
     /**
@@ -118,7 +119,7 @@
       $this->sut->add($expect);
 
       $list= $this->sut->getExpectations();
-      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals(1, $list->size());
       $this->assertEquals($expect, $list[0]);
     }
     /**
@@ -131,7 +132,7 @@
       $this->sut->getNext(array());
       
       $list= $this->sut->getCalled();
-      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals(1, $list->size());
       $this->assertEquals($expect, $list[0]);
     }
 
@@ -143,13 +144,13 @@
       $expect=new Expectation();
       $this->sut->add($expect);
       $list= $this->sut->getExpectations();
-      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals(1, $list->size());
       $this->assertEquals($expect, $list[0]);
       
       $this->sut->getNext(array());
 
       $list= $this->sut->getCalled();
-      $this->assertEquals(1, sizeof($list));
+      $this->assertEquals(1, $list->size());
       $this->assertEquals($expect, $list[0]);
     }
   }
