@@ -378,20 +378,21 @@
       
       $db= $this->db();
       $db->addObserver($observer);
-      
       $db->query('select 1');
       
       $this->assertEquals(2, $observer->numberOfObservations());
       
-      $o1= $observer->observationAt(0);
-      $this->assertEquals('query', $o1->getName());
-      $this->assertEquals('select 1', $o1->getArgument());
-      
-      $o1= $observer->observationAt(1);
-      $this->assertSubclass($o1, 'rdbms.DBEvent');
-      $this->assertEquals('queryend', $o1->getName());
-      $this->assertSubclass($o1->getArgument(), 'rdbms.ResultSet');
+      with ($o0= $observer->observationAt(0)); {
+        $this->assertInstanceOf('rdbms.DBEvent', $o0);
+        $this->assertEquals('query', $o0->getName());
+        $this->assertEquals('select 1', $o0->getArgument());
+      }
+
+      with ($o1= $observer->observationAt(1)); {
+        $this->assertInstanceOf('rdbms.DBEvent', $o1);
+        $this->assertEquals('queryend', $o1->getName());
+        $this->assertInstanceOf('rdbms.ResultSet', $o1->getArgument());
+      }
     }
-    
   }
 ?>
