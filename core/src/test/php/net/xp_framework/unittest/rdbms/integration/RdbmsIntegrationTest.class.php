@@ -180,7 +180,7 @@
     }
     
     /**
-     * Helper method to create table
+     * Create autoincrement table
      *
      */
     protected function createTable() {
@@ -188,6 +188,24 @@
       $this->db()->query('create table unittest (pk int, username varchar(30))');
       $this->db()->insert('into unittest values (1, "kiesel")');
       $this->db()->insert('into unittest values (2, "kiesel")');
+    }
+
+    /**
+     * Helper method to create table
+     *
+     * @param   string name
+     */
+    protected function createAutoIncrementTable($name) {
+      raise('lang.MethodNotImplementedException', __FUNCTION__);
+    }
+
+    /**
+     * Create transactions table
+     *
+     * @param   string name
+     */
+    protected function createTransactionsTable($name) {
+      raise('lang.MethodNotImplementedException', __FUNCTION__);
     }
     
     /**
@@ -415,6 +433,39 @@
         $this->assertEquals('queryend', $o1->getName());
         $this->assertInstanceOf('rdbms.ResultSet', $o1->getArgument());
       }
+    }
+
+    /**
+     * Test transactions
+     *
+     */
+    #[@test]
+    public function rolledBackTransaction() {
+      $this->createTransactionsTable('unittest');
+      $db= $this->db();
+
+      $tran= $db->begin(new Transaction('test'));
+      $db->insert('into unittest values (1, "should_not_be_here")');
+      $tran->rollback();
+      
+      $this->assertEquals(array(), $db->select('* from unittest'));
+    }
+
+
+    /**
+     * Test transactions
+     *
+     */
+    #[@test]
+    public function committedTransaction() {
+      $this->createTransactionsTable('unittest');
+      $db= $this->db();
+
+      $tran= $db->begin(new Transaction('test'));
+      $db->insert('into unittest values (1, "should_be_here")');
+      $tran->commit();
+      
+      $this->assertEquals(array(array('pk' => 1, 'username' => 'should_be_here')), $db->select('* from unittest'));
     }
   }
 ?>

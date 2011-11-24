@@ -21,7 +21,7 @@
     public function _dsn() {
       return 'mysql';
     }
-    
+
     /**
      * Create autoincrement table
      *
@@ -30,6 +30,16 @@
     protected function createAutoIncrementTable($name) {
       $this->removeTable($name);
       $this->db()->query('create table %c (pk int primary key auto_increment, username varchar(30))', $name);
+    }
+    
+    /**
+     * Create transactions table
+     *
+     * @param   string name
+     */
+    protected function createTransactionsTable($name) {
+      $this->removeTable($name);
+      $this->db()->query('create table %c (pk int, username varchar(30)) Engine=InnoDB', $name);
     }
   }
 ?>
