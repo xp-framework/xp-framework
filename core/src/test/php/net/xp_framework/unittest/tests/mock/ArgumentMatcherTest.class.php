@@ -7,7 +7,8 @@
 
   uses(
     'unittest.mock.arguments.IArgumentMatcher',
-    'unittest.mock.arguments.AnyMatcher'
+    'unittest.mock.arguments.AnyMatcher',
+    'unittest.mock.arguments.DynamicMatcher'
   );
 
   /**
@@ -24,6 +25,22 @@
       $this->assertTrue($matcher->matches(1));
       $this->assertTrue($matcher->matches(""));
       $this->assertTrue($matcher->matches(new Object()));
+    }
+    
+        /**
+     * AnyMatcher should return true.
+     */
+    #[@test]
+    public function DynamicMatchter_should_return_true() {
+      $matcher = new DynamicMatcher("matchEmpty", "ArgumentMatcherTest");
+      $this->assertFalse($matcher->matches(null));
+      $this->assertFalse($matcher->matches(1));
+      $this->assertTrue($matcher->matches(""));
+      $this->assertFalse($matcher->matches(new Object()));
+    }
+    
+    public static function matchEmpty($string) {
+      return $string === "";
     }
 
   }

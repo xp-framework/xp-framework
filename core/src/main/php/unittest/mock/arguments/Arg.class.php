@@ -17,7 +17,7 @@
   */
   class Arg extends Object {
     private static $any;
-
+    
     /**
      * Static constructor. Sets up the matchers
      */
@@ -30,6 +30,10 @@
      */
     public static function any() {
       return self::$any;
+    }
+    
+    public static function func($func, $classOrObj= NULL) {
+      return new DynamicMatcher($func, $classOrObj);
     }
     
   }
