@@ -12,6 +12,7 @@
    * @see   http://en.wikipedia.org/wiki/Tabular_Data_Stream
    * @see   http://msdn.microsoft.com/en-us/library/cc448435.aspx
    * @see   http://www.freetds.org/tds.html
+   * @see   https://github.com/mono/mono/tree/master/mcs/class/Mono.Data.Tds/Mono.Data.Tds.Protocol
    */
   class TdsV7Protocol extends Object {
     protected $pkt= 0;
