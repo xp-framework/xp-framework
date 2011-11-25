@@ -22,8 +22,11 @@
     const EOM          = 0x01;
 
     // Messages
-    const MSG_PRELOGIN = 0x12;
+    const MSG_QUERY    = 0x1;
+    const MSG_REPLY    = 0x4;
+    const MSG_CANCEL   = 0x6;
     const MSG_LOGIN7   = 0x10;
+    const MSG_LOGOFF   = 0x71;
 
     /**
      * Creates a new protocol instance
@@ -254,7 +257,7 @@
       $consumed+= $b[$t];
       if (0 === $l) return NULL;
 
-      $chunk= iconv('ucs-2le', 'iso-8859-1', substr($data, $consumed, $l));
+      $chunk= iconv('ucs-2le', 'iso-8859-1//IGNORE', substr($data, $consumed, $l));
       $consumed+= $l;
       return $chunk;
     }
@@ -304,7 +307,8 @@
      * @return  var
      */
     public function query($sql) {
-      
+      $this->write(self::MSG_QUERY, self::EOM, iconv('iso-8859-1', 'ucs-2le', $sql));
+      $this->read();
     }
 
     /**
