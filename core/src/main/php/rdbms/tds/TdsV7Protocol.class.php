@@ -111,7 +111,7 @@
       );
 
       $login= pack(
-        'VVVVVCCCC',
+        'VVVVVCCCCVV',
         0x71000001,         //  4: TDSVersion 7.1
         0,                  //  8: PacketSize
         7,                  // 12: ClientProgVer
@@ -120,10 +120,10 @@
         0x20 | 0x40 | 0x80, // 24: OptionFlags1 (use warning, initial db change, set language)
         0x03,               // 25: OptionFlags2
         0,                  // 26: TypeFlags
-        0                   // 27: (FRESERVEDBYTE / OptionFlags3)
+        0,                  // 27: (FRESERVEDBYTE / OptionFlags3)
+        0,                  // 28: ClientTimZone
+        0                   // 32: ClientLCID
       );
-      $login.= "\x00\x00\x00\x00";  // ClientTimZone
-      $login.= "\x00\x00\x00\x00";  // ClientLCID
 
       $offset= 86;
       $data= '';
