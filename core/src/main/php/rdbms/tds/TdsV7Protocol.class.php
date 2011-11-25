@@ -205,20 +205,18 @@
      * @throws  peer.ProtocolException
      */
     protected function write($type, $status, $arg) {
-      static $i= 0;
-      Console::$err->writeLine('W-> ', array(
+      $length= strlen($arg)+ 8;
+      $packet= pack('CCnnCc', $type, $status, $length, 0x0000, $this->pkt, 0).$arg;
+
+      Console::writeLine('W-> ', array(
         'type'    => $type,
         'status'  => $status,
-        'length'  => strlen($arg)+ 8,
+        'length'  => $length,
         'spid'    => 0x0000,
-        'packet'  => 0, // $this->pkt,
+        'packet'  => $this->pkt,
         'window'  => 0
       ));
-      
-      $packet= pack('CCnnCc', $type, $status, strlen($arg)+ 8, 0x0000, 1, 0).$arg;
-      $packet.= str_repeat("\0", 512- 8- strlen($arg));
-      file_put_contents('tds'.$i++, $packet);
-      Console::$err->writeLine($this->dump($packet));
+      Console::writeLine($this->dump($packet));
  
       $this->sock->write($packet);
 
