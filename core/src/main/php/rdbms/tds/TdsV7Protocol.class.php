@@ -83,7 +83,7 @@
       $s= '';
       for ($i= 0, $l= strlen($password); $i < $l; $i++) {
         $c= ord($password{$i}) ^ $xor;
-        $s.= chr((($c >> 4) & 0x0F0F) | (($c << 4) & 0xF0F0));
+        $s.= chr((($c >> 4) & 0x0F0F) | (($c << 4) & 0xF0F0))."\xA5";
       }
       return $s;
     }
@@ -99,17 +99,18 @@
       $this->sock->isConnected() || $this->sock->connect();
 
       $params= array(
-        'hostname'   => 'CARLA',
-        'username'   => $user,
-        'password'   => $this->scramble($password),
-        'appname'    => 'jTDS',
-        'servername' => 'localhost',
-        'unused'     => '',
-        'library'    => 'jTDS',
-        'language'   => '',
-        'database'   => 'master'
+        'hostname'   => array(TRUE, 'CARLA'),
+        'username'   => array(TRUE, $user),
+        'password'   => array(FALSE, $this->scramble($password), strlen($password)),
+        'appname'    => array(TRUE, 'XP-Framework'),
+        'servername' => array(TRUE, 'localhost'),
+        'unused'     => array(FALSE, ''),
+        'library'    => array(TRUE, $this->getClassName()),
+        'language'   => array(TRUE, ''),
+        'database'   => array(TRUE, 'master')
       );
-
+      
+      // Initial packet
       $login= pack(
         'VVVVVCCCCVV',
         0x71000001,         //  4: TDSVersion 7.1
@@ -125,19 +126,30 @@
         0                   // 32: ClientLCID
       );
 
+      // Offsets
       $offset= 86;
       $data= '';
-      foreach ($params as $name =>$param) {
-        $ucs= iconv('iso-8859-1', 'ucs-2le', $param);
-        $length= strlen($param);
+      foreach ($params as $name => $param) {
+        if ($param[0]) {
+          $chunk= iconv('iso-8859-1', 'ucs-2le', $param[1]);
+          $length= strlen($param[1]);
+        } else {
+          $chunk= $param[1];
+          $length= $param[2];
+        }
         $login.= pack('vv', $offset, $length);
-        $offset+= strlen($ucs);
-        $data.= $ucs;
+        $offset+= strlen($chunk);
+        $data.= $chunk;
       }
-      $login.= "\x00\x00\x00\x00\x00\x00";    // ClientID
-      $login.= pack('vv', $offset, 0);        // SSPI
-      $login.= pack('vv', $offset, 0);        // SSPILong
       
+      // Packet end
+      $login.= "\x00\x00\x00\x00\x00\x00";  // ClientID
+      $login.= pack(
+        'vvvv',
+        $offset, 0,         // SSPI
+        $offset, 0          // SSPILong
+      );
+
       // Login
       $this->write(self::MSG_LOGIN7, self::EOM, pack('V', $offset).$login.$data);
       $this->read();
@@ -207,7 +219,6 @@
       Console::writeLine($this->dump($packet));
  
       $this->sock->write($packet);
-
       $this->pkt= $this->pkt+ 1 & 0xFF;
     }
 
