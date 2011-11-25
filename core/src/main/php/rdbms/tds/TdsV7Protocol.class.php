@@ -217,7 +217,7 @@
         'packet'  => $this->pkt,
         'window'  => 0
       ));
-      Console::writeLine($this->dump($packet));
+      Console::writeLine(self::dump($packet));
  
       $this->sock->write($packet);
       $this->pkt= $this->pkt+ 1 & 0xFF;
@@ -270,7 +270,7 @@
       Console::$err->writeLine('R<- ', $header);
 
       $data= $this->readFully($header['length'] - 8);
-      Console::$err->writeLine($this->dump($data));
+      Console::$err->writeLine(self::dump($data));
       
       // An error response
       if ("\xAA" === $data{0}) {
