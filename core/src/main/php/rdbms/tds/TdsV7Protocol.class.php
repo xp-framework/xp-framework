@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.Socket', 'rdbms.mysqlx.MySqlxProtocolException', 'rdbms.mysqlx.MySqlPassword', 'util.Date');
+  uses('peer.Socket', 'rdbms.tds.TdsProtocolException', 'util.Date');
 
   /**
    * TDS V7 protocol implementation
@@ -105,7 +105,7 @@
         'password'   => array(FALSE, $this->scramble($password), strlen($password)),
         'appname'    => array(TRUE, 'XP-Framework'),
         'servername' => array(TRUE, 'localhost'),
-        'unused'     => array(FALSE, ''),
+        'unused'     => array(FALSE, '', 0),
         'library'    => array(TRUE, $this->getClassName()),
         'language'   => array(TRUE, ''),
         'database'   => array(TRUE, 'master')
@@ -153,7 +153,7 @@
 
       // Login
       $this->write(self::MSG_LOGIN7, self::EOM, pack('V', $offset).$login.$data);
-      $this->read();
+      $response= $this->read();
       
       $this->connected= TRUE;
     }
@@ -240,6 +240,26 @@
     }
     
     /**
+     * Returns a string from a given buffer and increased consumed length
+     *
+     * @param   string data
+     * @param   string t token
+     * @param   &int consumed
+     * @return  string
+     */
+    protected function lstr($data, $t, &$consumed) {
+      static $b= array('C' => 1, 'v' => 2);
+
+      $l= current(unpack($t, substr($data, $consumed, $b[$t]))) * 2;
+      $consumed+= $b[$t];
+      if (0 === $l) return NULL;
+
+      $chunk= iconv('ucs-2le', 'iso-8859-1', substr($data, $consumed, $l));
+      $consumed+= $l;
+      return $chunk;
+    }
+    
+    /**
      * Protocol read
      *
      * @return  string
@@ -252,7 +272,39 @@
       $data= $this->readFully($header['length'] - 8);
       Console::$err->writeLine($this->dump($data));
       
+      // An error response
+      if ("\xAA" === $data{0}) {
+        $meta= unpack('vlength/Vnumber/Cstate/Cclass', substr($data, 1, 8));
+        $consumed= 9;
+        $meta['message']= $this->lstr($data, 'v', $consumed);
+        $meta['server']= $this->lstr($data, 'C', $consumed);
+        $meta['proc']= $this->lstr($data, 'C', $consumed);
+        $meta['line']= current(unpack('v', substr($data, $consumed, 2)));
+
+        throw new TdsProtocolException(
+          $meta['message'],
+          $meta['number'], 
+          $meta['state'], 
+          $meta['class'],
+          $meta['server'],
+          $meta['proc'],
+          $meta['line']
+        );
+      } else {
+        Console::$err->writeLine('OK');
+      }
+      
       return $data;
+    }
+
+    /**
+     * Issues a query and returns the results
+     *
+     * @param   string sql
+     * @return  var
+     */
+    public function query($sql) {
+      
     }
 
     /**
