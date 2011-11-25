@@ -155,7 +155,7 @@
       );
 
       // Login
-      $this->write(self::MSG_LOGIN7, self::EOM, pack('V', $offset).$login.$data);
+      $this->write(self::MSG_LOGIN7, pack('V', $offset).$login.$data);
       $response= $this->read();
       
       $this->connected= TRUE;
@@ -204,17 +204,16 @@
      * Protocol write
      *
      * @param   int type the message type one of the MSG_* constants
-     * @param   int status the status
      * @param   string arg
      * @throws  peer.ProtocolException
      */
-    protected function write($type, $status, $arg) {
+    protected function write($type, $arg) {
       $length= strlen($arg)+ 8;
-      $packet= pack('CCnnCc', $type, $status, $length, 0x0000, $this->pkt, 0).$arg;
+      $packet= pack('CCnnCc', $type, self::EOM, $length, 0x0000, $this->pkt, 0).$arg;
 
       Console::writeLine('W-> ', array(
         'type'    => $type,
-        'status'  => $status,
+        'status'  => self::EOM,
         'length'  => $length,
         'spid'    => 0x0000,
         'packet'  => $this->pkt,
@@ -307,7 +306,7 @@
      * @return  var
      */
     public function query($sql) {
-      $this->write(self::MSG_QUERY, self::EOM, iconv('iso-8859-1', 'ucs-2le', $sql));
+      $this->write(self::MSG_QUERY, iconv('iso-8859-1', 'ucs-2le', $sql));
       $this->read();
     }
 
@@ -318,7 +317,12 @@
     public function close() {
       if (!$this->sock->isConnected()) return;
 
-      // TODO
+      try {
+        $this->write(self::MSG_LOGOFF, "\0");
+        $this->read();
+      } catch (IOException $ignored) {
+        // Can't do much here
+      } 
 
       $this->sock->close();
       $this->connected= FALSE;
