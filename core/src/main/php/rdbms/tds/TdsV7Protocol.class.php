@@ -98,18 +98,6 @@
     public function connect($user= '', $password= '') {
       $this->sock->isConnected() || $this->sock->connect();
 
-      // Pre-login
-      /*
-      $this->write(self::MSG_PRELOGIN, self::EOM, $this->streamOf(array(
-        'VERSION'      => "\x08\x00\x01\x55\x00\x00",
-        'ENCRYPTION'   => pack('C', 0),
-        'INSTOPT'      => "\x00",
-        'THREADID'     => "\x01\x02\x00\x00"
-      )));
-      $tokens= $this->tokensIn($this->read());
-      Console::writeLine('Server Version ', $tokens); // array_map('dechex', unpack('Nversion/nsubbuild', $tokens[0])));
-      */
-      
       $params= array(
         'hostname'   => 'CARLA',
         'username'   => $user,
@@ -127,7 +115,7 @@
         0x71000001,         //  4: TDSVersion 7.1
         0,                  //  8: PacketSize
         7,                  // 12: ClientProgVer
-        123,         // 16: ClientPID
+        getmypid(),         // 16: ClientPID
         0,                  // 20: ConnectionID
         0x20 | 0x40 | 0x80, // 24: OptionFlags1 (use warning, initial db change, set language)
         0x03,               // 25: OptionFlags2
