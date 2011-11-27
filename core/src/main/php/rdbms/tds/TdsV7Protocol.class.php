@@ -286,9 +286,9 @@
       $record= array();
       foreach ($fields as $i => $field) {
         switch ($field['type']) {
-          case self::XT_VARCHAR:    // XX Collation?
+          case self::XT_VARCHAR:
             $len= $this->stream->getShort();
-            $record[$i]= $this->stream->read($len);
+            $record[$i]= 0xFFFF === $len ? NULL : $this->stream->read($len);
             break;
 
           case self::T_INTN:
