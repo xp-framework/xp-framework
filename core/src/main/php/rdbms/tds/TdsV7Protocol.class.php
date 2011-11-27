@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.Socket', 'rdbms.tds.TdsProtocolException', 'util.Date');
+  uses('peer.Socket', 'rdbms.tds.TdsDataStream', 'rdbms.tds.TdsProtocolException', 'util.Date');
 
   /**
    * TDS V7 protocol implementation
@@ -15,18 +15,83 @@
    * @see   https://github.com/mono/mono/tree/master/mcs/class/Mono.Data.Tds/Mono.Data.Tds.Protocol
    */
   class TdsV7Protocol extends Object {
-    protected $pkt= 0;
-    protected $sock= NULL;
+    protected $stream= NULL;
     public $connected= FALSE;
 
-    const EOM          = 0x01;
-
     // Messages
-    const MSG_QUERY    = 0x1;
-    const MSG_REPLY    = 0x4;
-    const MSG_CANCEL   = 0x6;
-    const MSG_LOGIN7   = 0x10;
-    const MSG_LOGOFF   = 0x71;
+    const MSG_QUERY     = 0x1;
+    const MSG_REPLY     = 0x4;
+    const MSG_CANCEL    = 0x6;
+    const MSG_LOGIN7    = 0x10;
+    const MSG_LOGOFF    = 0x71;
+
+    // Types
+    const T_CHAR       = 0x2F;
+    const T_VARCHAR    = 0x27;
+    const T_INTN       = 0x26;
+    const T_INT1       = 0x30;
+    const T_DATE       = 0x31;
+    const T_TIME       = 0x33;
+    const T_INT2       = 0x34;
+    const T_INT4       = 0x38;
+    const T_INT8       = 0x7F;
+    const T_FLT8       = 0x3E;
+    const T_DATETIME   = 0x3D;
+    const T_BIT        = 0x32;
+    const T_TEXT       = 0x23;
+    const T_NTEXT      = 0x63;
+    const T_IMAGE      = 0x22;
+    const T_MONEY4     = 0x7A;
+    const T_MONEY      = 0x3C;
+    const T_DATETIME4  = 0x3A;
+    const T_REAL       = 0x3B;
+    const T_BINARY     = 0x2D;
+    const T_VOID       = 0x1F;
+    const T_VARBINARY  = 0x25;
+    const T_NVARCHAR   = 0x67;
+    const T_BITN       = 0x68;
+    const T_NUMERIC    = 0x6C;
+    const T_DECIMAL    = 0x6A;
+    const T_FLTN       = 0x6D;
+    const T_MONEYN     = 0x6E;
+    const T_DATETIMN   = 0x6F;
+    const T_DATEN      = 0x7B;
+    const T_TIMEN      = 0x93;
+    const XT_CHAR      = 0xAF;
+    const XT_VARCHAR   = 0xA7;
+    const XT_NVARCHAR  = 0xE7;
+    const XT_NCHAR     = 0xEF;
+    const XT_VARBINARY = 0xA5;
+    const XT_BINARY    = 0xAD;
+    const T_UNITEXT    = 0xAE;
+    const T_LONGBINARY = 0xE1;
+    const T_SINT1      = 0x40;
+    const T_UINT2      = 0x41;
+    const T_UINT4      = 0x42;
+    const T_UINT8      = 0x43;
+    const T_UINTN      = 0x44;
+    const T_UNIQUE     = 0x24;
+    const T_VARIANT    = 0x62;
+    const T_SINT8      = 0xBF;
+
+    protected static $fixed= array(
+      self::T_INT1   => 1,
+      self::T_INT2   => 2,
+      self::T_INT4   => 4,
+      self::T_INT8   => 8,
+      self::T_FLT8   => 8,
+      self::T_BIT    => 1,
+      self::T_MONEY4 => 4,
+      self::T_MONEY  => 8,
+      self::T_REAL   => 4,
+      self::T_DATE   => 4,
+      self::T_TIME   => 4,
+      self::T_SINT1  => 1,
+      self::T_UINT2  => 2,
+      self::T_UINT4  => 3,
+      self::T_UINT8  => 8,
+      self::T_SINT8  => 8,
+    );
 
     /**
      * Creates a new protocol instance
@@ -34,46 +99,7 @@
      * @param   peer.Socket s
      */
     public function __construct(Socket $s) {
-      $this->sock= $s;
-    }
-
-    /**
-     * Helper method for dump()
-     *
-     * @param   string bytes
-     * @param   int offset
-     * @return  string
-     */
-    protected static function chars($bytes, $offset) {
-      $s= '';
-      for ($j= $offset- 16, $l= min($offset, strlen($bytes)); $j < $l; $j++) {
-        $c= $bytes{$j};
-        $s.= $c < "\x20" || $c > "\x7F" ? ' ' : $c;
-      }
-      return $s;
-    }
-
-    /**
-     * Creates a hexdump
-     *
-     * @param   string bytes
-     * @return  string
-     */
-    protected static function dump($bytes) {
-      $s= '';
-      for ($i= 0, $n= strlen($bytes); $i < $n; $i++) {
-        if (0 === $i) {
-          $s= '  0: ';
-        } else if (0 === ($i % 16)) {
-          $s.= sprintf("|%s|\n%3d: ", self::chars($bytes, $i), $i);
-        }
-        $s.= sprintf('%02X ', ord($bytes{$i}));
-      }
-      if ($r= ($i % 16)) {
-        $s.= str_repeat('   ', 16 - ($i % 16));
-      }
-      $s.= '|'.self::chars($bytes, $i).'|';
-      return $s;
+      $this->stream= new TdsDataStream($s);
     }
 
     /**
@@ -100,7 +126,7 @@
      * @throws  io.IOException
      */
     public function connect($user= '', $password= '') {
-      $this->sock->isConnected() || $this->sock->connect();
+      $this->stream->connect();
 
       $params= array(
         'hostname'   => array(TRUE, 'CARLA'),
@@ -155,271 +181,45 @@
       );
 
       // Login
-      $this->write(self::MSG_LOGIN7, pack('V', $offset).$login.$data);
+      $this->stream->write(self::MSG_LOGIN7, pack('V', $offset).$login.$data);
       $response= $this->read();
+      
+      // TODO: Handle response, e.g. ENVCHANGE
       
       $this->connected= TRUE;
     }
     
     /**
-     * Creates a token stream of TokenType, TokenPosition and TokenLeng
-     * followed by the data itself.
-     *
-     * @param   [:string] tokens
-     * @return  string
-     */
-    protected function streamOf($tokens) {
-      $s= '';
-      $i= 0;
-      $offset= (5 * sizeof($tokens)) + 1;
-      foreach ($tokens as $token) {
-        $length= strlen($token);
-        $s.= pack('vvC', $i, $offset, $length);
-        $offset+= $length;
-        $i++;
-      }
-      $s.= "\xFF";
-      foreach ($tokens as $token) {
-        $s.= $token;
-      }
-      return $s;
-    }
-    
-    /**
-     * Decodes a complete token stream into tokens
-     *
-     * @param   string stream
-     * @return  string[] tokens
-     */
-    protected function tokensIn($stream) {
-      $tokens= array();
-      for ($t= 0, $l= strlen($stream); $t < $l && "\xFF" !== $stream{$t}; $t+= 5) {
-        $pos= unpack('Cn/noffset/nlength', substr($stream, $t, 5));
-        $tokens[]= substr($stream, $pos['offset'], $pos['length']);
-      }
-      return $tokens;
-    }
-
-    /**
-     * Protocol write
-     *
-     * @param   int type the message type one of the MSG_* constants
-     * @param   string arg
-     * @throws  peer.ProtocolException
-     */
-    protected function write($type, $arg) {
-      $length= strlen($arg)+ 8;
-      $packet= pack('CCnnCc', $type, self::EOM, $length, 0x0000, $this->pkt, 0).$arg;
-
-      Console::$err->writeLine('W-> ', array(
-        'type'    => $type,
-        'status'  => self::EOM,
-        'length'  => $length,
-        'spid'    => 0x0000,
-        'packet'  => $this->pkt,
-        'window'  => 0
-      ));
-      Console::$err->writeLine(self::dump($packet));
- 
-      $this->sock->write($packet);
-      $this->pkt= $this->pkt+ 1 & 0xFF;
-    }
-
-    /**
-     * Read a number of bytes
-     *
-     * @param   int bytes
-     * @return  string
-     */
-    protected function readFully($bytes) {
-      $b= '';
-      while (($s= strlen($b)) < $bytes) {
-        $c= $this->sock->readBinary($bytes- $s);
-        if ('' === $c) break;
-        $b.= $c;
-      }
-      return $b;
-    }
-    
-    /**
-     * Returns a string from a given buffer and increased consumed length
-     *
-     * @param   string data
-     * @param   string t token
-     * @param   &int consumed
-     * @return  string
-     */
-    protected function lstr($data, $t, &$consumed) {
-      static $b= array('C' => 1, 'v' => 2);
-
-      $l= current(unpack($t, substr($data, $consumed, $b[$t]))) * 2;
-      $consumed+= $b[$t];
-      if (0 === $l) return NULL;
-
-      $chunk= iconv('ucs-2le', 'iso-8859-1//IGNORE', substr($data, $consumed, $l));
-      $consumed+= $l;
-      return $chunk;
-    }
-    
-    const SYBCHAR               = 47; // 0x2F
-    const SYBVARCHAR            = 39; // 0x27
-    const SYBINTN               = 38; // 0x26
-    const SYBINT1               = 48; // 0x30
-    const SYBDATE               = 49; // 0x31 Sybase 12
-    const SYBTIME               = 51; // 0x33 Sybase 12
-    const SYBINT2               = 52; // 0x34
-    const SYBINT4               = 56; // 0x38
-    const SYBINT8               = 127;// 0x7F
-    const SYBFLT8               = 62; // 0x3E
-    const SYBDATETIME           = 61; // 0x3D
-    const SYBBIT                = 50; // 0x32
-    const SYBTEXT               = 35; // 0x23
-    const SYBNTEXT              = 99; // 0x63
-    const SYBIMAGE              = 34; // 0x22
-    const SYBMONEY4             = 122;// 0x7A
-    const SYBMONEY              = 60; // 0x3C
-    const SYBDATETIME4          = 58; // 0x3A
-    const SYBREAL               = 59; // 0x3B
-    const SYBBINARY             = 45; // 0x2D
-    const SYBVOID               = 31; // 0x1F
-    const SYBVARBINARY          = 37; // 0x25
-    const SYBNVARCHAR           = 103;// 0x67
-    const SYBBITN               = 104;// 0x68
-    const SYBNUMERIC            = 108;// 0x6C
-    const SYBDECIMAL            = 106;// 0x6A
-    const SYBFLTN               = 109;// 0x6D
-    const SYBMONEYN             = 110;// 0x6E
-    const SYBDATETIMN           = 111;// 0x6F
-    const SYBDATEN              = 123;// 0x7B SYBASE 12
-    const SYBTIMEN              = 147;// 0x93 SYBASE 12
-    const XSYBCHAR              = 175;// 0xAF
-    const XSYBVARCHAR           = 167;// 0xA7
-    const XSYBNVARCHAR          = 231;// 0xE7
-    const XSYBNCHAR             = 239;// 0xEF
-    const XSYBVARBINARY         = 165;// 0xA5
-    const XSYBBINARY            = 173;// 0xAD
-    const SYBUNITEXT            = 174;// 0xAE SYBASE 15
-    const SYBLONGBINARY         = 225;// 0xE1 SYBASE 12
-    const SYBSINT1              = 64; // 0x40
-    const SYBUINT2              = 65; // 0x41 SYBASE 15
-    const SYBUINT4              = 66; // 0x42 SYBASE 15
-    const SYBUINT8              = 67; // 0x43 SYBASE 15
-    const SYBUINTN              = 68; // 0x44 SYBASE 15
-    const SYBUNIQUE             = 36; // 0x24
-    const SYBVARIANT            = 98; // 0x62
-    const SYBSINT8              = 191;// 0xBF SYBASE 15
-
-    protected static $fixed= array(
-      self::SYBINT1   => 1,
-      self::SYBINT2   => 2,
-      self::SYBINT4   => 4,
-      self::SYBINT8   => 8,
-      self::SYBFLT8   => 8,
-      self::SYBBIT    => 1,
-      self::SYBMONEY4 => 4,
-      self::SYBMONEY  => 8,
-      self::SYBREAL   => 4,
-      self::SYBDATE   => 4,
-      self::SYBTIME   => 4,
-      self::SYBSINT1  => 1,
-      self::SYBUINT2  => 2,
-      self::SYBUINT4  => 3,
-      self::SYBUINT8  => 8,
-      self::SYBSINT8  => 8,
-    );
-    
-    /**
      * Protocol read
      *
-     * @return  string
+     * @return  string the message token
      * @throws  peer.ProtocolException
      */
     protected function read() {
-      $header= unpack('Ctype/Cstatus/nlength/nspid/Cpacket/cwindow', $this->readFully(8));
-      Console::$err->writeLine('R<- ', $header);
+      $type= $this->stream->begin();
 
-      $data= $this->readFully($header['length'] - 8);
-      Console::$err->writeLine(self::dump($data));
-
-      // See 2.2.5.7 Data Buffer Stream Tokens
-      switch ($data{0}) {
-        case "\xAA":    // ERROR
-          $meta= unpack('vlength/Vnumber/Cstate/Cclass', substr($data, 1, 8));
-          $consumed= 9;
-          $meta['message']= $this->lstr($data, 'v', $consumed);
-          $meta['server']= $this->lstr($data, 'C', $consumed);
-          $meta['proc']= $this->lstr($data, 'C', $consumed);
-          $meta['line']= current(unpack('v', substr($data, $consumed, 2)));
-
-          throw new TdsProtocolException(
-            $meta['message'],
-            $meta['number'], 
-            $meta['state'], 
-            $meta['class'],
-            $meta['server'],
-            $meta['proc'],
-            $meta['line']
-          );
-        
-        case "\x81":    // COLMETADATA
-          $nfields= current(unpack('v', substr($data, 1, 2)));
-          $consumed= 3;
-          $fields= array();
-          for ($i= 0; $i < $nfields; $i++) {
-            $field= unpack('Cx1/Cx2/Cflags/Cx3/Ctype', substr($data, $consumed, 5));
-            $consumed+= 5;
-
-            // Handle column. TODO: blob types - read table name
-            if ($field['type'] > 128) {
-              $field['size']= current(unpack('v', substr($data, $consumed, 2)));
-              $consumed+= 2;
-              $consumed+= 5;  // Collation?
-            } else if (isset(self::$fixed[$field['type']])) {
-              $field['size']= self::$fixed[$field['type']];
-            } else {
-              $field['size']= current(unpack('C', substr($data, $consumed, 1)));
-              $consumed+= 1;
-            }
-
-            $field['name']= $this->lstr($data, 'C', $consumed);
-            $fields[]= $field;
-          }
-          Console::$err->writeLine($nfields, ' FIELDS ', $fields);
-
-          $rows= array();
-          while ("\xD1" === $data{$consumed}) {
-            $consumed++;
-            $row= array();
-            foreach ($fields as $field) {
-              switch ($field['type']) {
-                case self::XSYBVARCHAR:    // XX Collation?
-                  $len= current(unpack('v', substr($data, $consumed, 2)));
-                  $row[$field['name']]= substr($data, $consumed+ 2, $len);
-                  $consumed+= $len+ 2;
-                  break;
-
-                case self::SYBINTN:
-                  $len= current(unpack('C', substr($data, $consumed, 1)));
-                  switch ($len) {
-                    case 4: $row[$field['name']]= current(unpack('V', substr($data, $consumed+ 1, 4)));
-                  }
-                  $consumed+= $len+ 1;
-                  break;
-              }
-            }
-            $rows[]= $row;
-          }
-
-          return $rows;
-
-        case "\xFD":    // DONE
-          $meta= unpack('vstatus/vcmd/Vrowcount', substr($data, 1, 8));
-          return $meta;
-        
-        default:
-          Console::$err->writeLinef('Unhandled packet %02X', ord($data{0}));
+      // Check for message type
+      if (self::MSG_REPLY !== $type) {
+        $this->stream->read(-1);
+        throw new TdsProtocolException('Unknown message type '.$type);
       }
-      return $data;
+      
+      // Handle errors - see also 2.2.5.7: Data Buffer Stream Tokens
+      $token= $this->stream->getToken();
+      if ("\xAA" === $token) {
+        $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
+        throw new TdsProtocolException(
+          $this->stream->getString($this->stream->getShort()),
+          $meta['number'], 
+          $meta['state'], 
+          $meta['class'],
+          $this->stream->getString($this->stream->getByte()),
+          $this->stream->getString($this->stream->getByte()),
+          $this->stream->getByte()
+        );
+      }
+      
+      return $token;
     }
 
     /**
@@ -429,8 +229,77 @@
      * @return  var
      */
     public function query($sql) {
-      $this->write(self::MSG_QUERY, iconv('iso-8859-1', 'ucs-2le', $sql));
-      return $this->read();
+      $this->stream->write(self::MSG_QUERY, iconv('iso-8859-1', 'ucs-2le', $sql));
+      $token= $this->read();
+
+      if ("\x81" === $token) {          // COLMETADATA
+        $fields= array();
+        $nfields= $this->stream->getShort();
+        for ($i= 0; $i < $nfields; $i++) {
+          $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
+
+          // Handle column. TODO: blob types - read table name
+          if ($field['type'] > 128) {
+            $field['size']= $this->stream->getShort();
+            $this->stream->read(5);     // XXX Collation?
+          } else if (isset(self::$fixed[$field['type']])) {
+            $field['size']= self::$fixed[$field['type']];
+          } else {
+            $field['size']= $this->stream->getByte();
+          }
+
+          $field['name']= $this->stream->getString($this->stream->getByte());
+          $fields[]= $field;
+        }
+        return $fields;
+      } else if ("\xFD" === $token) {   // DONE
+        $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
+        
+        // TODO: Maybe?
+        return $meta['rowcount'];
+      } else {
+        throw new TdsProtocolException(
+          sprintf('Unexpected token 0x%02X', ord($token)),
+          0,    // Number
+          0,    // State
+          0,    // Class
+          NULL, // Server
+          NULL, // Proc
+          -1    // Line
+        );
+      }
+    }
+    
+    /**
+     * Fetches one record
+     *
+     * @param   [:var][] fields
+     * @return  [:var] record
+     */
+    public function fetch($fields) {
+      $token= $this->stream->getToken();
+      if ("\xD1" !== $token) {
+        // Console::$err->writeLinef('END TOKEN %02x', $token);
+        return NULL;
+      }
+      
+      $record= array();
+      foreach ($fields as $i => $field) {
+        switch ($field['type']) {
+          case self::XT_VARCHAR:    // XX Collation?
+            $len= $this->stream->getShort();
+            $record[$i]= $this->stream->read($len);
+            break;
+
+          case self::T_INTN:
+            $len= $this->stream->getByte();
+            switch ($len) {
+              case 4: $record[$i]= $this->stream->getLong();
+            }
+            break;
+        }
+      }
+      return $record;
     }
 
     /**
@@ -438,15 +307,15 @@
      *
      */
     public function close() {
-      if (!$this->sock->isConnected()) return;
+      if (!$this->connected) return;
 
       try {
-        $this->write(self::MSG_LOGOFF, "\0");
+        $this->stream->write(self::MSG_LOGOFF, "\0");
       } catch (IOException $ignored) {
         // Can't do much here
       } 
 
-      $this->sock->close();
+      $this->stream->close();
       $this->connected= FALSE;
     }
     
@@ -456,7 +325,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.xp::stringOf($this->sock->getHandle()).')';
+      return $this->getClassName().'('.xp::stringOf($this->stream).')';
     }
   }
 ?>
