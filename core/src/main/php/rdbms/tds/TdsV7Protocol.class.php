@@ -382,7 +382,7 @@
             } else {
               $div= 10000;
             }
-            $record[$i]= bcdiv(bcadd(bcmul($hi, 4294967296), $lo), $div, 5);
+            $record[$i]= bcdiv(bcadd(bcmul($hi, '4294967296'), $lo), $div, 5);
             break;
 
           default:
