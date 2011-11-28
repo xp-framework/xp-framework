@@ -66,6 +66,24 @@
     public function setException(Throwable $exception) {
       $this->exception= $exception;
     }
+
+    private $isInPropertyBehavior= false;
+    
+    /**
+     * Changes a setter/getter (as well as the corresponding getter/setter) to 
+     * be in property mode.
+     */
+    public function setPropertyBehavior() {
+      $this->isInPropertyBehavior= true;
+    }
+
+    /**
+     * Indicates whether the expectation is in property behaviour mode.
+     */
+    public function isInPropertyBehavior() {
+      return $this->isInPropertyBehavior;
+    }
+
     private $actualCalls = 0;
     /**
      * Gets the number of actual calls for this expectation.
