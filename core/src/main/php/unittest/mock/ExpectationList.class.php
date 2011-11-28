@@ -63,6 +63,25 @@
     }
 
     /**
+     * Returns the expectation at position $idx
+     *
+     * @param int idx
+     * @return unittest.mock.Expectation  
+     */
+    public function getExpectation($idx) {
+      return $this->list[$idx];
+    }
+    
+    /**
+     * Returns the size of the list
+     *
+     * @return int  
+     */
+    public function size() {
+      return $this->list->size();
+    }
+    
+    /**
      * Searches for a (valid) expectation that matches the parameters
      *
      * @param  mixed[] args
@@ -70,7 +89,7 @@
      */
     private function getMatching($args) {
       foreach ($this->list as $exp) {
-        if ($exp->doesMatchArgs($args))
+        if ($exp->isInPropertyBehavior() || $exp->doesMatchArgs($args))
           return $exp;
       }
 
