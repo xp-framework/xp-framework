@@ -38,25 +38,6 @@
     }
 
     /**
-     * Test non-existant classpath elements raise a fatal error
-     *
-     */
-    #[@test]
-    public function fatalsForMagicQuotesGPC() {
-      $r= $this->runWith(Runtime::getInstance()->startupOptions()->withSetting('magic_quotes_gpc', 1));
-      $this->assertEquals(255, $r[0], 'exitcode');
-      $this->assertTrue(
-        (bool)strstr($r[1].$r[2], '[xp::core] magic_quotes_gpc enabled'),
-        xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
-      );
-
-      // In PHP 5.3+, magic_quotes_gpc = On raises a "PHP Warning:  Directive 
-      // 'magic_quotes_gpc' is deprecated in PHP 5.3 and greater" to standard
-      // error. This cannot be suppressed by display_startup_errors = Off, so
-      // not checking STDERR at all.
-    }
-    
-    /**
      * Helper to run bootstrapping with given tz
      *
      * @param   string tz

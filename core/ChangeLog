@@ -6,6 +6,84 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+- Added initial support for PHP 5.4 by a couple of forward-compatible
+  adjustments and workarounds. Please note PHP 5.4 is not officially
+  released yet and thus PHP 5.4 support is preliminary at best!
+  Discussion and details available in issue #76
+  (friebe)
+- Changed JSON parser to use a generated parser instead of hand-crafted
+  one. Implements functionality suggested in pull request #37 
+  (friebe, Rebecca Dietrich)
+- Deprecated scriptlet.xml.workflow.Handler class. See issue #55 - use 
+  the new scriptlet.xml.workflow.AbstractHandler class instead!
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0216 - REST server API implementation
+  (ohinckel)
+
+Bugfixes
+~~~~~~~~
+- Fixed rdbms.DSN::equals() method to no longer regard differing observer
+  params as equal
+  (friebe)
+- Fixed timezone issues when runnning complete test suite - see issue #72
+  (friebe)
+- Allowed for deprecated multi-value annotations - see issue #69
+  http://news.planet-xp.net/article/422/2011/10/19/
+  (friebe)
+- Fixed rdbms.mysqlx.AbstractMysqlxResultSet::record() method to return
+  only a single field value if its field parameter is set
+  (friebe)
+- Changed program's exit code to 0xff in case an uncaught exception occurs. 
+  http://news.planet-xp.net/article/424/2011/10/14/
+  (kiesel)
+- Fixed fatal error in webservices testsuite when running on PHP
+  without ext/soap
+  (friebe, kiesel)
+- Fixed request value is not unset/disabled when set via setFormValue()
+  when using new AbstractHandler class, old behavior retained for BC 
+  reasons - see issue #55
+  (friebe, apenciu)
+- Fixed annotation parsing:
+  . Support for @anno(array(...)) 
+  . Support for @anno(...) where ... is any scalar value
+  . Fix for strings containing a) annotations b) braces c) equal signs
+  . Fix for arrays containing strings
+  See pull request #56 and comments.
+  (mrosoiu, friebe)
+- Fixed timeout for FTP connections - see pull request #58
+  (kiesel, Thomas Reuter)
+
+Features
+~~~~~~~~
+- Include more information in output produced by XmlTestListener
+  (ohinckel)
+- Made usage of encoding names consistant to all lowercase,
+  see issue #73
+  (ppetermann, kiesel)
+- Added support to DomXSLProcessor to load XML or XSL files by stream
+  wrappers, e.g. using res:// to load files with ResourceProvider
+  (ohinckel)
+- Added Unicode support to webservices.json.JsonDecoder - characters are
+  now correctly converted to escape sequences and back.
+  (friebe)
+- Added lang.types.String::$EMPTY constant
+  (friebe)
+- Added webservices.json.JsonDecoder::encodeTo() and ::decodeFrom()
+  methods to work with io.streams API
+  (friebe, Rebecca Dietrich)
+- Added lang.types support for webservices.soap implementations, as
+  proposed in issue #18
+  (kiesel)
+- Added util.Properties::removeSection() and ::removeKey() methods, as
+  proposed in issue #54
+  (kiesel)
+- Added peer.Header::equals() as proposed in pull request #61
+  (apenciu)
 
 
 Version 5.8.2, released 2011-09-07

@@ -45,6 +45,15 @@
     protected abstract function output($handle);
     
     /**
+     * Callback for output buffering which writes to the stream
+     *
+     * @param   string data
+     */
+    protected function streamWrite($data) {
+      $this->stream->write($data);
+    }
+    
+    /**
      * Sets the image resource that is to be written
      *
      * @param   resource handle
@@ -55,15 +64,16 @@
         
         // Use output buffering with a callback method to capture the 
         // image(gd|jpeg|png|...) functions' output.
-        ob_start(array($this->stream, 'write'));
+        ob_start(array($this, 'streamWrite'));
         $r= $this->output($handle);
-        ob_end_clean();
+        ob_end_flush();
         
         $this->stream->close();
-        if (!$r) throw new ImagingException('Could not write image');
-      } catch (IOException $e) {
+      } catch (Throwable $e) {
+        ob_end_clean();
         throw new ImagingException($e->getMessage());
       }
+      if (!$r) throw new ImagingException('Could not write image');
     }
   } 
 ?>

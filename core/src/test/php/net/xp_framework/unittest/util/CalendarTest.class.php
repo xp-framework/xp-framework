@@ -20,19 +20,27 @@
       $nowDate  = NULL,
       $refDate  = NULL;
     
-    protected
-      $oldtz    = NULL;
+    protected $tz= NULL;
     
     /**
      * Set up this test
      *
      */
     public function setUp() {
+      $this->tz= date_default_timezone_get();
       date_default_timezone_set('GMT');
       
       $this->nowTime= time();
       $this->nowDate= new Date($this->nowTime);
       $this->refDate= Date::fromString('1977-12-14 11:55');
+    }
+
+    /**
+     * Tear down test.
+     *
+     */
+    public function tearDown() {
+      date_default_timezone_set($this->tz);
     }
     
     /**

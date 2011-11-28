@@ -560,5 +560,74 @@ key=Ãœbercoder
       ', " \r\n"));
       $this->assertEquals('Übercoder', $p->readString('section', 'key'));
     }
+
+    /**
+     * Removing a section
+     *
+     */
+    #[@test]
+    public function removeSection() {
+      $p= $this->newPropertiesFrom('[section1]
+key=value
+      ');
+
+      $this->assertTrue($p->hasSection('section1'));
+      $p->removeSection('section1');
+      $this->assertFalse($p->hasSection('section1'));
+    }
+
+    /**
+     * Removing nonexistant section
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function removeNonexistingSectionThrowsException() {
+      $p= $this->newPropertiesFrom('[section1]
+key=value
+      ');
+
+      $p->removeSection('section2');
+    }
+
+    /**
+     * Removing a key
+     *
+     */
+    #[@test]
+    public function removeKey() {
+      $p= $this->newPropertiesFrom('[section1]
+key=value
+      ');
+
+      $this->assertEquals('value', $p->readString('section1', 'key'));
+      $p->removeKey('section1', 'key');
+      $this->assertNull($p->readString('section1', 'key', NULL));
+    }
+
+    /**
+     * Remove nonexistant key
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function removeNonexistingKeyThrowsException() {
+      $p= $this->newPropertiesFrom('[section1]
+key=value
+      ');
+
+      $p->removeKey('section1', 'key2');
+    }
+
+    /**
+     * Remove nonexistant key in nonexistant section
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function removeNonexistingKeyInNonExistingSectionThrowsException() {
+      $p= $this->newPropertiesFrom('[section1]
+key=value
+      ');
+
+      $p->removeKey('section2', 'key2');
+    }
   }
 ?>

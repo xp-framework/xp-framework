@@ -72,7 +72,9 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_resource($this->handle)) {
-        throw new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
+        $e= new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
+        xp::gc(__FILE__);
+        throw $e;
       }
 
       mysql_query('set names LATIN1', $this->handle);

@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'peer.net.Network',
-    'peer.net.Inet4Address'
+    'peer.net.Inet4Address',
+    'peer.net.Inet6Address'
   );
 
   /**

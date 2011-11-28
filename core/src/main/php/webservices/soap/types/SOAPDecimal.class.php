@@ -10,7 +10,7 @@
    * Represents a decimal value.
    *
    */
-  class SOAPDecimal extends SoapType {
+  class SOAPDecimal extends Object implements SoapType {
     public
       $decimal;
       
@@ -40,6 +40,15 @@
      */
     public function getType() {
       return 'xsd:decimal';
+    }
+
+    /**
+     * Retrieve type as native SOAP type
+     *
+     * @return  php.SoapVar
+     */
+    public function asSoapType() {
+      return new SoapVar($this->decimal, XSD_DOUBLE);
     }
   }
 ?>

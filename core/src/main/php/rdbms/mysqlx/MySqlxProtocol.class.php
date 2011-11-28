@@ -166,6 +166,7 @@
       }
       $this->sock->close();
       $this->connected= FALSE;
+      $this->pkt= 0;
     }
     
     /**
@@ -188,6 +189,12 @@
      */
     protected function length($data, &$consumed, $ll= FALSE) {
       $o= $consumed;
+
+      // Prevent against E_WARNINGs when offet exceeds lengths in code
+      // below.
+      if (!isset($data[$consumed])) {
+        return 0;
+      }
       switch ($data{$consumed}) {
         case "\373": $consumed+= 1; return NULL;
         case "\374": $consumed+= 3; return ord($data[$o+ 1]) + ord($data[$o+ 2]) * 256;

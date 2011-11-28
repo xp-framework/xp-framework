@@ -22,8 +22,8 @@
      *
      */
     public function setUp() {
-      iconv_set_encoding('input_encoding', 'ISO-8859-1');
-      iconv_set_encoding('output_encoding', 'ISO-8859-1');
+      iconv_set_encoding('input_encoding', 'iso-8859-1');
+      iconv_set_encoding('output_encoding', 'iso-8859-1');
     }
 
     /**
@@ -60,7 +60,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function incompleteMultiByteCharacter() {
-      new String('ä', 'UTF-8');
+      new String('ä', 'utf-8');
     }
   
     /**
@@ -161,14 +161,14 @@
     }
 
     /**
-     * Test a string with UTF-8 in it
+     * Test a string with utf-8 in it
      *
      */
     #[@test]
     public function utf8String() {
       $this->assertEquals(
-        new String('HÃ¤llo', 'UTF-8'),
-        new String('Hällo', 'ISO-8859-1')
+        new String('HÃ¤llo', 'utf-8'),
+        new String('Hällo', 'iso-8859-1')
       );
     }
 
@@ -180,7 +180,7 @@
     public function transliteration() {
       $this->assertEquals(
         'Trenciansky kraj', 
-        create(new String('TrenÄiansky kraj', 'UTF-8'))->toString()
+        create(new String('TrenÄiansky kraj', 'utf-8'))->toString()
       );
     }
 

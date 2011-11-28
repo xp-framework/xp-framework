@@ -44,7 +44,7 @@
         '{ "result" : "net.xp_framework.unittest.scriptlet.rpc.impl.DummyRpcImplementationHandler" , "error" : null , "id" : 1 }',
         $response->getContent()
       );
-      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=UTF-8');
+      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=utf-8');
     }
     
     /**
@@ -143,7 +143,7 @@
       $this->router->init();
       $response= $this->router->process();
 
-      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=UTF-8');
+      $this->assertHasHeader($response->headers, 'Content-type: application/json; charset=utf-8');
       $this->assertEquals(200, $response->statusCode);
       
       $msg= JsonResponseMessage::fromString($response->getContent());

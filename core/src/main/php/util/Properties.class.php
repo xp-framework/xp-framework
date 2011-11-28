@@ -544,6 +544,31 @@
     }
     
     /**
+     * Remove section completely
+     *
+     * @param   string section
+     * @throws  lang.IllegalStateException if given section does not exist
+     */
+    public function removeSection($section) {
+      $this->_load();
+      if (!isset($this->_data[$section])) throw new IllegalStateException('Cannot remove nonexistant section "'.$section.'"');
+      unset($this->_data[$section]);
+    }
+
+    /**
+     * Remove key
+     *
+     * @param   string section
+     * @param   string key
+     * @throws  lang.IllegalStateException if given key does not exist
+     */
+    public function removeKey($section, $key) {
+      $this->_load();
+      if (!isset($this->_data[$section][$key])) throw new IllegalStateException('Cannot remove nonexistant key "'.$key.'" in "'.$section.'"');
+      unset($this->_data[$section][$key]);
+    }
+
+    /**
      * Creates a string representation of this property file
      *
      * @return  string
