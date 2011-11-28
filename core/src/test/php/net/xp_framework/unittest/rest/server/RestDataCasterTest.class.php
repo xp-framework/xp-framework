@@ -53,6 +53,7 @@
         public $one= "1";
         public $two= "2";
         public $three= "3";
+        public function equals($o) { return $this->one == $o->one && $this->two == $o->two && $this->three == $o->three; }
       }');
       self::$objThreeTypedFields= newinstance('lang.Object', array(), '{
         public $one= "1";
@@ -84,6 +85,17 @@
       $this->assertEquals('test', RestDataCaster::simple('test'));
       $this->assertTrue(RestDataCaster::simple(TRUE));
     }
+
+    /**
+     * Test simplify primitives object
+     * 
+     */
+    #[@test]
+    public function simplifyPrimitivesObject() {
+      $this->assertEquals(1, RestDataCaster::simple(new Integer(1)));
+      $this->assertEquals('test', RestDataCaster::simple(new String('test')));
+      $this->assertEquals(TRUE, RestDataCaster::simple(new Boolean(TRUE)));
+    }
     
     /**
      * Test simplify array
@@ -92,6 +104,19 @@
     #[@test]
     public function simplifyArray() {
       $this->assertEquals(self::$arrayThree, RestDataCaster::simple(self::$arrayThree));
+    }
+
+    /**
+     * Test simplify array type
+     *
+     */
+    #[@test]
+    public function simplifyArrayType() {
+      $this->assertEquals(array(
+        self::$arrayThreeHash, self::$arrayThreeHash
+      ), RestDataCaster::simple(
+        array(self::$objThreeFields, self::$objThreeFields)
+      ));
     }
     
     /**
@@ -136,7 +161,7 @@
      */
     #[@test]
     public function simplifyObjectWithObjectInside() {
-      $instance= self::$objThreeFields;
+      $instance= clone self::$objThreeFields;
       $instance->three= self::$objTwoFields;
       
       $result= self::$arrayThreeHash;
@@ -233,6 +258,20 @@
     public function complexifyArray() {
       $this->assertEquals(self::$arrayThree, RestDataCaster::complex(self::$arrayThree, XPClass::forName('lang.types.ArrayList')));
     }
+
+    /**
+     * Test complexify array type
+     *
+     */
+    #[@test]
+    public function complexifyArrayType() {
+      $this->assertEquals(array(
+        self::$objThreeFields, self::$objThreeFields
+      ), RestDataCaster::complex(
+        array((array)self::$objThreeFields, (array)self::$objThreeFields),
+        Type::forName(self::$objThreeFields->getClassName().'[]')
+      ));
+    }
     
     /**
      * Test complexify hashmap
@@ -286,7 +325,7 @@
      */
     #[@test]
     public function complexifyObjectWithObjectInside() {
-      $instance= self::$objThreeFields;
+      $instance= clone self::$objThreeFields;
       $instance->three= self::$objTwoFields;
       
       $result= self::$arrayThreeHash;

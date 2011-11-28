@@ -47,7 +47,7 @@
      * @return  var
      */
     public function next($field= NULL) {
-      if (FALSE === ($record= current($this->records))) return NULL;
+      if (FALSE === ($record= current($this->records))) return FALSE;
       
       next($this->records);
       return $this->record($record, $field);

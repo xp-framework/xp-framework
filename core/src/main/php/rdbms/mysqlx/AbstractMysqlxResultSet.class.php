@@ -24,6 +24,12 @@
       foreach ($this->fields as $i => $info) {
         $type= $info['type'];
         $value= $record[$i];
+
+        if (NULL === $value) {
+          $return[$info['name']]= NULL;
+          continue;
+        }
+
         switch ($type) {
           case 10:    // DATE
           case 11:    // TIME
