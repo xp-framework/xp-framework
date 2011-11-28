@@ -18,19 +18,44 @@
   class ReplayState extends Object implements IMockState {
     private
       $unexpectedCalls= NULL,
-      $expectationMap= NULL;
+      $expectationMap= NULL,
+      $properties= NULL;
         
     /**
      * Constructor
      *
      * @param Hashmap expectationsMap
      */
-    public function  __construct($expectationMap) {
+    public function  __construct($expectationMap, $properties) {
       if(!($expectationMap instanceof Hashmap))
         throw new IllegalArgumentException('Invalid expectation map passed.');
       
+      if(!($properties instanceof Hashmap))
+        throw new IllegalArgumentException('Invalid properties passed.');
+            
       $this->expectationMap= $expectationMap;
-      $this->unexpectedCalls= new Vector();
+      $this->properties= $properties;
+      
+      $this->unexpectedCalls= new Hashmap();
+      
+      $this->buildUpProperties();
+    }
+    
+    private function buildUpProperties() {
+      foreach($this->expectationMap->keys() as $method) {
+        $expList= $this->expectationMap->get($method);
+        if($expList->size() != 1) {
+          continue;
+        }
+        $expectation= $expList->getExpectation(0);
+        
+        if(!$expectation || !$expectation->isInPropertyBehavior()) {
+          continue;
+        }
+        
+        $propertyName= substr($method, 3);
+        $this->properties->put($propertyName, $expectation->getReturn());        
+      }
     }
     /**
      * Handles calls to methods regarding the 
@@ -40,9 +65,20 @@
      * @return  var
      */
     public function handleInvocation($method, $args) {
-      if(!$this->expectationMap->containsKey($method))
-        return NULL;
-
+      if($this->isPropertyMethod($method)) {
+        $prefix= substr($method, 0, 3);
+        $suffix= substr($method, 3);
+             
+         if($prefix == 'set') {
+           $this->properties->put($suffix, $args[0]);
+           return;
+         }
+         else return $this->properties->get($suffix);
+      }
+      
+      if(!$this->expectationMap->get($method))
+        return NULL; //
+            
       $expectationList= $this->expectationMap->get($method);
       $nextExpectation= $expectationList->getNext($args);
       if(!$nextExpectation) {//no more expectations
@@ -54,6 +90,13 @@
         throw $nextExpectation->getException();
 
       return $nextExpectation->getReturn();      
+    }
+    
+    private function isPropertyMethod($method) {
+      $prefix= substr($method, 0, 3);
+      $suffix= substr($method, 3);
+      
+      return ($prefix == 'get' || $prefix == 'set') && in_array($suffix, $this->properties->keys());
     }
   }
 

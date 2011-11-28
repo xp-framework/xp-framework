@@ -23,10 +23,12 @@
 
     private
     $mockState= null,
-    $expectionMap= null;
+    $expectionMap= null,
+    $properties= null;
 
     public function __construct() {
       $this->expectionMap= new Hashmap();
+      $this->properties= new Hashmap();
       $this->mockState= new RecordState($this->expectionMap);
     }
 
@@ -50,7 +52,7 @@
         case '_verifyMock':
           return $this->verifyMock();
       }
-
+      
       return $this->mockState->handleInvocation($method, $args);
     }
 
@@ -76,7 +78,7 @@
      * Switches state to replay mode
      */
     public function replay() {
-      $this->mockState = new ReplayState($this->expectionMap);
+      $this->mockState = new ReplayState($this->expectionMap, $this->properties);
     }
 
     /**

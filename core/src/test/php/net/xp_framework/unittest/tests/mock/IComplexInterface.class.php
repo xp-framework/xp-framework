@@ -15,5 +15,8 @@
   interface IComplexInterface extends IEmptyInterface {
     function foo();
     function bar($a, $b);
+    
+    function getFoo();
+    function setFoo($value);
   }
 ?>

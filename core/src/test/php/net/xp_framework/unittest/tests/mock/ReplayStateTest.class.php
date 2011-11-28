@@ -18,7 +18,8 @@
 
     private 
       $sut=null,
-      $expectationMap;
+      $expectationMap,
+      $properties;
     
     /**
      * Creates the fixture;
@@ -26,7 +27,9 @@
      */
     public function setUp() {
       $this->expectationMap= new Hashmap();
-      $this->sut=new ReplayState($this->expectationMap);
+      $this->properties= new Hashmap();
+      
+      $this->sut=new ReplayState($this->expectationMap, $this->properties);
     }
       
     /**
@@ -34,15 +37,22 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectationMapRequiredOnCreate() {
-      new ReplayState(null);
+      new ReplayState(null, null);
     }
     
+    /**
+     * Cannot create without valid Hasmap.
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function propertiesRequiredOnCreate() {
+      new ReplayState(new Hashmap(), null);
+    }
     /**
      * Can create with valid hasmap.
      */
     #[@test]
     public function canCreate() {
-      new ReplayState(new Hashmap());
+      new ReplayState(new Hashmap(), new Hashmap());
     }
     
     /**
@@ -68,6 +78,7 @@
       
       $this->assertEquals($myExpectation->getReturn(), $this->sut->handleInvocation('foo', null));
     }
+
     /**
      * if no expectations are left, null is returned                       
      */

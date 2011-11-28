@@ -11,7 +11,8 @@
     'net.xp_framework.unittest.tests.mock.IEmptyInterface',
     'net.xp_framework.unittest.tests.mock.IComplexInterface',
     'net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy',
-    'unittest.mock.ExpectationViolationException'
+    'unittest.mock.ExpectationViolationException',
+    'unittest.mock.arguments.Arg'
   );
 
   /**
@@ -390,15 +391,33 @@
       $this->fail('No exception thrown.', null, $expected);
     }
     
-        /**
-     * "Partial" mocks are also possible.
+    /**
+     * Test
      */
     #[@test]
-    public function can_createMock_forStaticMethods() {
-      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', true);
-      $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', $obj);
+    public function property_behavior_get_methods_should_return_null_by_default() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       
-      $obj->aStaticFunction('bla');
+      $object->getFoo()->propertyBehavior();
+      $this->fixture->replayAll();
+      
+      $this->assertNull($object->getFoo());
     }
+        /**
+     * Test
+     */
+    #[@test]
+    public function property_behavior_get_methods_should_return_value_set_by_setter() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object->getFoo()->propertyBehavior();
+      $this->fixture->replayAll();
+
+      $object->setFoo(7);
+      $this->assertEquals(7, $object->getFoo());
+      
+      $object->setFoo("blub");
+      $this->assertEquals("blub", $object->getFoo());
+    }
+
   }
 ?>
