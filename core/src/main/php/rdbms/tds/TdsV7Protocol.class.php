@@ -372,6 +372,19 @@
             $record[$i]= Date::create(1900, 1, 1 + $days, 0, 0, $seconds / 300);
             break;
 
+          case self::T_MONEY:
+            $hi= $this->stream->getLong();
+            $lo= $this->stream->getLong();
+            if ($hi < 0) {
+              $hi= ~$hi;
+              $lo= ~($lo - 1);
+              $div= -10000;
+            } else {
+              $div= 10000;
+            }
+            $record[$i]= bcdiv(bcadd(bcmul($hi, 4294967296), $lo), $div, 5);
+            break;
+
           default:
             Console::$err->writeLinef('Unknown field type 0x%02x', $field['type']);
         }
