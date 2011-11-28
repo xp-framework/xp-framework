@@ -102,8 +102,15 @@
      * @param   peer.Socket s
      */
     public function __construct(Socket $s) {
-      $this->stream= new TdsDataStream($s);
+      $this->stream= new TdsDataStream($s, $this->defaultPacketSize());
     }
+
+    /**
+     * Returns default packet size to use
+     *
+     * @return  int
+     */
+    protected abstract function defaultPacketSize();
     
     /**
      * Send login record

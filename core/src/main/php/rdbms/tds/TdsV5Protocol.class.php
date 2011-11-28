@@ -13,13 +13,22 @@
   class TdsV5Protocol extends TdsProtocol {
 
     /**
+     * Returns default packet size to use
+     *
+     * @return  int
+     */
+    protected function defaultPacketSize() {
+      return 512;
+    }
+
+    /**
      * Connect
      *
      * @param   string user
      * @param   string password
      * @throws  io.IOException
      */
-    public function login($user, $password) {
+    protected function login($user, $password) {
      $packet= pack('a30Ca30Ca30Ca30C',
         'localhost', min(30, strlen('localhost')),
         $user, min(30, strlen($user)),

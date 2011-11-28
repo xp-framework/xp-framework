@@ -29,13 +29,22 @@
     }
 
     /**
+     * Returns default packet size to use
+     *
+     * @return  int
+     */
+    protected function defaultPacketSize() {
+      return 4096;
+    }
+
+    /**
      * Connect
      *
      * @param   string user
      * @param   string password
      * @throws  io.IOException
      */
-    public function login($user, $password) {
+    protected function login($user, $password) {
       $params= array(
         'hostname'   => array(TRUE, 'localhost'),
         'username'   => array(TRUE, $user),

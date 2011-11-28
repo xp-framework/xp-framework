@@ -14,9 +14,21 @@
    */
   class TdsDataStream extends Object {
     protected $pkt= 0;
+    protected $packetSize= 0;
     protected $sock= NULL;
     protected $buffer= '';
     protected $header= array('status' => 0, 'length' => -1);
+
+    /**
+     * Creates a new data stream on a given socket with a given packet size
+     *
+     * @param   peer.Socket sock
+     * @param   int packetSize default 512
+     */
+    public function __construct($sock, $packetSize= 512) {
+      $this->sock= $sock;
+      $this->packetSize= $packetSize;
+    }
 
     /**
      * Helper method for dump()
@@ -57,15 +69,6 @@
       }
       return $s;
     }
-
-    /**
-     * Constructor
-     *
-     * @param   peer.Socket sock
-     */
-    public function __construct($sock) {
-      $this->sock= $sock;
-    }
     
     /**
      * Connect
@@ -91,20 +94,31 @@
      * @throws  peer.ProtocolException
      */
     public function write($type, $arg) {
-      $length= strlen($arg)+ 8;
-      $packet= pack('CCnnCc', $type, 1, $length, 0x0000, $this->pkt, 0).$arg;
+      $offset= $status= 0;
+      do {
+        $length= strlen($arg)+ 8 - $offset;
+        if ($length > $this->packetSize) {
+          $length= $this->packetSize;
+          $status= 0;
+        } else {
+          $status= 1;
+        }
+        $chunk= substr($arg, $offset, $length- 8);
+        $packet= pack('CCnnCc', $type, $status, $length, 0x0000, $this->pkt, 0).$chunk;
 
-      // DEBUG Console::$err->writeLine('W-> ', array(
-      // DEBUG   'type'    => $type,
-      // DEBUG   'status'  => 1,
-      // DEBUG   'length'  => $length,
-      // DEBUG   'spid'    => 0x0000,
-      // DEBUG   'packet'  => $this->pkt,
-      // DEBUG  'window'  => 0
-      // DEBUG ));
-      // DEBUG Console::$err->writeLine(self::dump($packet));
- 
-      $this->sock->write($packet);
+        // DEBUG Console::$err->writeLine('W-> ', array(
+        // DEBUG   'type'    => $type,
+        // DEBUG   'status'  => $status,
+        // DEBUG   'length'  => $length,
+        // DEBUG   'spid'    => 0x0000,
+        // DEBUG   'packet'  => $this->pkt,
+        // DEBUG   'window'  => 0
+        // DEBUG ));
+        // DEBUG Console::$err->writeLine(self::dump($packet));
+
+        $this->sock->write($packet);
+        $offset+= $length- 8;
+      } while (0 === $status);
       $this->pkt= $this->pkt+ 1 & 0xFF;
     }
 
