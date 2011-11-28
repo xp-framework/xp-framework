@@ -51,6 +51,17 @@
     }
 
     /**
+     * Test
+     */
+    #[@test]
+    public function setPropertyBehavior_sets_expectation_to_prop_behavior() {
+      $expectation=new Expectation();
+      $sut= new MethodOptions($expectation);
+      $sut->propertyBehavior();
+
+      $this->assertTrue($expectation->isInPropertyBehavior());
+    }
+    /**
      * when throws is used, the expectations exception property should be set
      * to the passed value.
      */

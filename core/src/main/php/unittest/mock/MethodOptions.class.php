@@ -69,5 +69,10 @@
     public function repeatAny() {
       return $this->repeat(-1);
     }
+    
+    public function propertyBehavior() {
+      $this->expectation->setPropertyBehavior();
+      return $this;
+    }
   }
 ?>

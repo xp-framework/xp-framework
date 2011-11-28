@@ -39,5 +39,11 @@
      * Specifies that that method may be called an unlimited number of times.
      */
     function repeatAny();
+    
+    /**
+     * Specifies that the given getter/setter are to be treated as property 
+     * getter/setter. 
+     */
+    function propertyBehavior();
   }
 ?>
