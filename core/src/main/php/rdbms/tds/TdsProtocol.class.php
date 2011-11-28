@@ -21,6 +21,7 @@
 
     // Messages
     const MSG_QUERY     = 0x1;
+    const MSG_LOGIN     = 0x2;
     const MSG_REPLY     = 0x4;
     const MSG_CANCEL    = 0x6;
     const MSG_LOGIN7    = 0x10;
@@ -141,7 +142,7 @@
       // Check for message type
       if (self::MSG_REPLY !== $type) {
         $this->cancel();
-        throw new TdsProtocolException('Unknown message type '.$type);
+        throw new ProtocolException('Unknown message type '.$type);
       }
       
       // Handle errors - see also 2.2.5.7: Data Buffer Stream Tokens
@@ -158,7 +159,21 @@
           $this->stream->getString($this->stream->getByte()),
           $this->stream->getByte()
         );
+      } else if ("\xE5" === $token) {
+        $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
+        $this->stream->read($this->stream->getByte() + 1 + 2); // Skip SQLState, Status, TranState
+        $this->done= TRUE;
+        throw new TdsProtocolException(
+          $this->stream->read($this->stream->getShort()),
+          $meta['number'], 
+          $meta['state'], 
+          $meta['class'],
+          $this->stream->read($this->stream->getByte()),
+          $this->stream->read($this->stream->getByte()),
+          $this->stream->getByte()
+        );
       }
+
       
       return $token;
     }

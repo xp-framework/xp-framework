@@ -37,7 +37,7 @@
      */
     public function login($user, $password) {
       $params= array(
-        'hostname'   => array(TRUE, 'CARLA'),
+        'hostname'   => array(TRUE, 'localhost'),
         'username'   => array(TRUE, $user),
         'password'   => array(FALSE, $this->scramble($password), strlen($password)),
         'appname'    => array(TRUE, 'XP-Framework'),

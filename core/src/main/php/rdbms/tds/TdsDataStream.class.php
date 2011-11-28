@@ -208,10 +208,16 @@
           xp::gc(__FILE__);
           throw $e;
         }
-        
-        // Console::$err->writeLine('R-> ', $this->header);
+
+        // Sybase 15 EED packets e.g.
+        if (0 === $this->header['type']) {
+          $this->header['type']= 0x04;
+          $this->header['status']= 0x01;
+        }
+
+        // DEBUG Console::$err->writeLine('R-> ', $this->header);
         $packet= $this->sock->readBinary($this->header['length'] - 8);
-        // DEBUG Console::$err->writeLine(self::dump($packet));
+        // DEBUG Console::$err->writeLine(self::dump($bytes.$packet));
         $this->buffer.= $packet;
       }
 
