@@ -329,7 +329,7 @@
       $record= array();
       foreach ($fields as $i => $field) {
         switch ($field['type']) {
-          case self::XT_VARCHAR:
+          case self::XT_VARCHAR: case self::XT_NVARCHAR:
             $len= $this->stream->getShort();
             $record[$i]= 0xFFFF === $len ? NULL : $this->stream->read($len);
             break;
