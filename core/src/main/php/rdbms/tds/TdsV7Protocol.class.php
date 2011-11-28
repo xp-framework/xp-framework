@@ -239,7 +239,11 @@
           $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
 
           // Handle column. TODO: blob types - read table name
-          if ($field['type'] > 128) {
+          if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
+            $field['size']= $this->stream->getByte();
+            $field['prec']= $this->stream->getByte();
+            $field['scale']= $this->stream->getByte();
+          } else if ($field['type'] > 128) {
             $field['size']= $this->stream->getShort();
             $this->stream->read(5);     // XXX Collation?
           } else if (isset(self::$fixed[$field['type']])) {
@@ -294,9 +298,37 @@
           case self::T_INTN:
             $len= $this->stream->getByte();
             switch ($len) {
+              case 1: $record[$i]= $this->stream->getByte();
+              case 2: $record[$i]= $this->stream->getShort();
               case 4: $record[$i]= $this->stream->getLong();
+              default: $record[$i]= NULL;
             }
             break;
+
+          case self::T_INT1:
+            $record[$i]= $this->stream->getByte();
+            break;
+
+          case self::T_INT2:
+            $record[$i]= $this->stream->getShort();
+            break;
+
+          case self::T_INT4:
+            $record[$i]= $this->stream->getLong();
+            break;
+
+          case self::T_NUMERIC:
+            $len= $this->stream->getByte()- 1;
+            $pos= $this->stream->getByte();
+            $bits= array();
+            for ($j= 0; $j < $len; $j+= 4) {
+              $bits[]= $this->stream->getLong();
+            }
+            $record[$i]= array($pos, $bits);    // TODO: Create number from this
+            break;
+
+          default:
+            Console::$err->writeLinef('Unknown field type 0x%02x', $field['type']);
         }
       }
       return $record;
