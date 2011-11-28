@@ -359,11 +359,10 @@
           case self::T_NUMERIC:
             $len= $this->stream->getByte()- 1;
             $pos= $this->stream->getByte();
-            $bits= array();
-            for ($j= 0; $j < $len; $j+= 4) {
-              $bits[]= $this->stream->getLong();
+            for ($j= 0, $n= 0, $m= 1; $j < $len; $j+= 4, $m= bcmul($m, '4294967296')) {
+              $n= bcadd($n, bcmul($this->stream->getLong(), $m));
             }
-            $record[$i]= array($pos, $bits);    // TODO: Create number from this
+            $record[$i]= $pos ? $n : bcmul($n, -1);
             break;
 
           case self::T_DATETIME:
