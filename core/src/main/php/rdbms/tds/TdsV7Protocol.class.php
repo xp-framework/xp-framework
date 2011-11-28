@@ -311,6 +311,24 @@
         );
       }
     }
+    
+    /**
+     * Convert lo and hi values to money value
+     *
+     * @param   int lo
+     * @param   int hi
+     * @return  string
+     */
+    public function toMoney($lo, $hi) {
+      if ($hi < 0) {
+        $hi= ~$hi;
+        $lo= ~($lo - 1);
+        $div= -10000;
+      } else {
+        $div= 10000;
+      }
+      return bcdiv(bcadd(bcmul($hi, '4294967296'), $lo), $div, 5);
+    }
 
     /**
      * Fetches one record
@@ -371,17 +389,21 @@
             $record[$i]= Date::create(1900, 1, 1 + $days, 0, 0, $seconds / 300);
             break;
 
-          case self::T_MONEY:
-            $hi= $this->stream->getLong();
-            $lo= $this->stream->getLong();
-            if ($hi < 0) {
-              $hi= ~$hi;
-              $lo= ~($lo - 1);
-              $div= -10000;
-            } else {
-              $div= 10000;
+          case self::T_MONEYN:
+            $len= $this->stream->getByte();
+            switch ($len) {
+              case 4: $record[$i]= $this->toMoney($this->stream->getLong()); break;
+              case 8: $record[$i]= $this->toMoney($this->stream->getLong(), $this->stream->getLong()); break;
+              default: $record[$i]= NULL;
             }
-            $record[$i]= bcdiv(bcadd(bcmul($hi, '4294967296'), $lo), $div, 5);
+            break;
+
+          case self::T_MONEY4:
+            $record[$i]= $this->toMoney($this->stream->getLong());
+            break;
+
+          case self::T_MONEY:
+            $record[$i]= $this->toMoney($this->stream->getLong(), $this->stream->getLong());
             break;
 
           default:
