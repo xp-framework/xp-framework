@@ -115,6 +115,8 @@
         self::$instance->drivers['mssql']= XPClass::forName('rdbms.sqlsrv.SqlSrvConnection');
       } else if (extension_loaded('mssql')) {
         self::$instance->drivers['mssql']= XPClass::forName('rdbms.mssql.MsSQLConnection');
+      } else {
+        self::$instance->drivers['mssql']= XPClass::forName('rdbms.tds.MsSQLxConnection');
       }
       
       // Interbase support
