@@ -419,5 +419,56 @@
       $this->assertEquals("blub", $object->getFoo());
     }
 
+    /**
+     * Test
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function property_behavior_should_throw_exception_if_returns_is_set_before() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $object->getFoo()->returns("x");
+      $object->getFoo()->propertyBehavior();
+
+      
+      $this->fixture->replayAll();
+    }
+    
+        /**
+     * Test
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function property_behavior_should_throw_exception_if_returns_is_set_afterwards() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+
+      $object->getFoo()->propertyBehavior();
+      $object->getFoo()->returns("x");
+
+      
+      $this->fixture->replayAll();
+    }
+    
+    /**
+     * Test
+     */
+    #[@test]
+    public function property_behavior_return_value_should_be_predefinable() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object->getFoo()->propertyBehavior()->returns(10);
+      $this->fixture->replayAll();
+
+      $this->assertEquals(10, $object->getFoo());
+
+      $object->setFoo(7);
+      $this->assertEquals(7, $object->getFoo());
+    }
+    
+        /**
+     * Test
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function property_behavior_should_only_be_applicable_to_getters_and_setters() {
+      $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
+      $object->foo()->propertyBehavior();
+    }
   }
 ?>

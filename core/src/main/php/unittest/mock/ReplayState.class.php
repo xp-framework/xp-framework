@@ -44,9 +44,10 @@
     private function buildUpProperties() {
       foreach($this->expectationMap->keys() as $method) {
         $expList= $this->expectationMap->get($method);
-        if($expList->size() != 1) {
+        
+        if(!$this->checkForBehaviorMode($expList))
           continue;
-        }
+        
         $expectation= $expList->getExpectation(0);
         
         if(!$expectation || !$expectation->isInPropertyBehavior()) {
@@ -56,6 +57,28 @@
         $propertyName= substr($method, 3);
         $this->properties->put($propertyName, $expectation->getReturn());        
       }
+    }
+    
+    private function checkForBehaviorMode($list) {
+      $seenBehaviorMode= FALSE;
+      for($i=0; $i< $list->size(); ++$i) {
+        $exp= $list->getExpectation($i);
+        
+        if($seenBehaviorMode) {
+          throw new IllegalStateException('Invalid expectations definition '.$exp->toString().'. Property behavior has been applied.');
+        }
+        
+        if($exp->isInPropertyBehavior() && $i>0) {
+          throw new IllegalStateException('Invalid expectations definition '.$exp->toString().'. Cannot switch to property behavior as expecations have been defined already.');
+        }
+        
+        if($exp->isInPropertyBehavior())
+          $seenBehaviorMode= TRUE;
+        
+        
+      }
+
+      return $seenBehaviorMode;
     }
     /**
      * Handles calls to methods regarding the 

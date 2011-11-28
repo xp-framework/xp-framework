@@ -52,7 +52,7 @@
       
       $methodExpectations->add($expectation);
 
-      return new MethodOptions($expectation);
+      return new MethodOptions($expectation, $method);
     }
   }
 
