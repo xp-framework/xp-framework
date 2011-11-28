@@ -45,5 +45,15 @@
       $this->removeTable($name);
       $this->db()->query('create table %c (pk int identity, username varchar(30))', $name);
     }
+    
+    /**
+     * Create transactions table
+     *
+     * @param   string name
+     */
+    protected function createTransactionsTable($name) {
+      $this->removeTable($name);
+      $this->db()->query('create table %c (pk int, username varchar(30))', $name);
+    }
   }
 ?>
