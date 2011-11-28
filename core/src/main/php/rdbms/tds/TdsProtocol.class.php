@@ -324,6 +324,19 @@
             }
             break;
 
+          case self::T_FLTN:  // TODO: Convert to float
+            $len= $this->stream->getByte();
+            switch ($len) {
+              case 4: $record[$i]= $this->stream->getLong(); break;
+              case 8: $record[$i]= array($this->stream->getLong(), $this->stream->getLong()); break;
+              default: $record[$i]= NULL;
+            }
+            break;
+
+          case self::T_FLT8:  // TODO: Convert to float
+            $record[$i]= array($this->stream->getLong(), $this->stream->getLong());
+            break;
+
           case self::T_DATETIME:
             $days= $this->stream->getLong();
             $seconds= $this->stream->getLong();
