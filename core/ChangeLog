@@ -60,6 +60,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Include more information in output produced by XmlTestListener
+  (ohinckel)
 - Made usage of encoding names consistant to all lowercase,
   see issue #73
   (ppetermann, kiesel)
@@ -82,6 +84,7 @@ Features
   (kiesel)
 - Added peer.Header::equals() as proposed in pull request #61
   (apenciu)
+
 
 Version 5.8.2, released 2011-09-07
 ----------------------------------

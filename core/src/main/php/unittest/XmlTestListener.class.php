@@ -33,6 +33,56 @@
       $this->tree= new Tree('testsuites');
       $this->classes= create('new util.collections.HashTable<lang.XPClass, xml.Node>()');
     }
+
+    /**
+     * Tries to get class uri via reflection
+     *
+     * @param lang.XPClass class The class to return the URI for
+     * @return string
+     */
+    private function uriFor(XPClass $class) {
+      try {
+        $Urimethod= $class->getClassLoader()->getClass()->getMethod('classURI');
+        $Urimethod->setAccessible(TRUE);
+        return $Urimethod->invoke($class->getClassLoader(), $class->getName());
+      } catch (Exception $ignored) {
+        return $class->getClassName();
+      }
+    }
+
+    /**
+     * Tries to get method start line
+     *
+     * @param lang.XPClass $class
+     * @param string $methodname
+     * @return int
+     */
+    private function lineFor(XPClass $class, $methodname) {
+      try {
+        return $class->_reflect->getMethod($methodname)->getStartLine();
+      } catch (Exception $ignored) {
+        return 0;
+      }
+    }
+    
+    /**
+     * Return message error string for given error
+     * 
+     * @param unittest.TestOutcome error The error
+     * @return string
+     */
+    protected function messageFor(TestOutcome $error) {
+      $testClass= $error->test->getClass();
+      
+      return sprintf(
+        "%s(%s)\n%s \n\n%s:%d\n\n",
+        $testClass->getName(),
+        $error->test->getName(),
+        xp::stringOf($error->reason),
+        $this->uriFor($testClass),
+        $this->lineFor($testClass, $error->test->getName())
+      );
+    }
     
     /**
      * Called when a test case starts.
@@ -54,10 +104,12 @@
       if (!$this->classes->containsKey($class)) {
         $this->classes[$class]= $this->tree->addChild(new Node('testsuite', NULL, array(
           'name'       => $class->getName(),
+          'file'       => $this->uriFor($class),
           'tests'      => 0,
           'failures'   => 0,
           'errors'     => 0,
-          'skipped'    => 0
+          'skipped'    => 0,
+          'time'       => 0
         )));
       }
 
@@ -77,12 +129,15 @@
       // Update test count
       $n= $this->testNode($outcome->test);
       $n->setAttribute('tests', $n->getAttribute('tests')+ 1);
+      $n->setAttribute('time', $n->getAttribute('time')+ $outcome->elapsed());
       $inc && $n->setAttribute($inc, $n->getAttribute($inc)+ 1);
       
       // Add testcase information
       return $n->addChild(new Node('testcase', NULL, array(
         'name'       => $outcome->test->getName(),
         'class'      => $testClass->getName(),
+        'file'       => $this->uriFor($testClass),
+        'line'       => $this->lineFor($testClass, $outcome->test->getName()),
         'time'       => sprintf('%.6f', $outcome->elapsed)
       )));
     }
@@ -94,7 +149,7 @@
      */
     public function testFailed(TestFailure $failure) {
       $t= $this->addTestCase($failure, 'failures');
-      $t->addChild(new Node('failure', xp::stringOf($failure->reason), array(
+      $t->addChild(new Node('failure', $this->messageFor($failure), array(
         'message' => trim($failure->reason->compoundMessage()),
         'type'    => xp::typeOf($failure->reason)
       )));
@@ -107,7 +162,7 @@
      */
     public function testError(TestError $error) {
       $t= $this->addTestCase($error, 'errors');
-      $t->addChild(new Node('error', xp::stringOf($error->reason), array(
+      $t->addChild(new Node('error', $this->messageFor($error), array(
         'message' => trim($error->reason->compoundMessage()),
         'type'    => xp::typeOf($error->reason)
       )));
@@ -120,7 +175,7 @@
      */
     public function testWarning(TestWarning $warning) {
       $t= $this->addTestCase($warning, 'errors');
-      $t->addChild(new Node('error', implode("\n", $warning->reason), array(
+      $t->addChild(new Node('error', $this->messageFor($warning), array(
         'message' => 'Non-clear error stack',
         'type'    => 'warnings'
       )));
