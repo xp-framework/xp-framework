@@ -377,10 +377,14 @@
           case self::T_NUMERIC:
             $len= $this->stream->getByte()- 1;
             $pos= $this->stream->getByte();
-            for ($j= 0, $n= 0, $m= 1; $j < $len; $j+= 4, $m= bcmul($m, '4294967296')) {
+            for ($j= 0, $n= 0, $m= $pos ? 1 : -1; $j < $len; $j+= 4, $m= bcmul($m, '4294967296')) {
               $n= bcadd($n, bcmul($this->stream->getLong(), $m));
             }
-            $record[$i]= $pos ? $n : bcmul($n, -1);
+            if (0 === $field['scale']) {
+              $record[$i]= $n;
+            } else {
+              $record[$i]= bcdiv($n, pow(10, $field['scale']), $field['prec']);
+            }
             break;
 
           case self::T_DATETIME:
