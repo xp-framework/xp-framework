@@ -16,6 +16,7 @@
    */
   class TdsV7Protocol extends Object {
     protected $stream= NULL;
+    protected $done= FALSE;
     public $connected= FALSE;
 
     // Messages
@@ -184,9 +185,9 @@
       // Login
       $this->stream->write(self::MSG_LOGIN7, pack('V', $offset).$login.$data);
       $response= $this->read();
-      
-      // TODO: Handle response, e.g. ENVCHANGE
-      
+
+      $this->cancel();    // TODO: Handle response, e.g. ENVCHANGE
+
       $this->connected= TRUE;
     }
     
@@ -197,11 +198,12 @@
      * @throws  peer.ProtocolException
      */
     protected function read() {
+      $this->done= FALSE;
       $type= $this->stream->begin();
 
       // Check for message type
       if (self::MSG_REPLY !== $type) {
-        $this->stream->read(-1);
+        $this->cancel();
         throw new TdsProtocolException('Unknown message type '.$type);
       }
       
@@ -209,6 +211,7 @@
       $token= $this->stream->getToken();
       if ("\xAA" === $token) {
         $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
+        $this->done= TRUE;
         throw new TdsProtocolException(
           $this->stream->getString($this->stream->getShort()),
           $meta['number'], 
@@ -221,6 +224,37 @@
       }
       
       return $token;
+    }
+
+    /**
+     * Check whether connection is ready
+     *
+     * @return  bool
+     */
+    public function ready() {
+      return $this->done;
+    }
+
+    /**
+     * Cancel result set
+     *
+     */
+    public function cancel() {
+      if (!$this->done) {
+        $this->stream->read(-1);    // TODO: Send cancel, then read rest. Will work like this, though, too.
+        $this->done= TRUE;
+      }
+    }
+
+    /**
+     * Execute SQL in "fire and forget" mode.
+     *
+     * @param   string sql
+     */
+    public function exec($sql) {
+      if (is_array($r= $this->query($sql))) {
+        $this->cancel();
+      }
     }
 
     /**
@@ -259,9 +293,12 @@
         return $fields;
       } else if ("\xFD" === $token) {   // DONE
         $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
-        
+        $this->done= TRUE;
         // TODO: Maybe?
         return $meta['rowcount'];
+      } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
+        // HANDLE!
+        $this->cancel();
       } else {
         throw new TdsProtocolException(
           sprintf('Unexpected token 0x%02X', ord($token)),
@@ -285,6 +322,7 @@
       $token= $this->stream->getToken();
       if ("\xD1" !== $token) {
         // Console::$err->writeLinef('END TOKEN %02x', $token);
+        $this->done= TRUE;
         return NULL;
       }
       
