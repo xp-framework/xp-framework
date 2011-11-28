@@ -75,22 +75,23 @@
     const T_SINT8      = 0xBF;
 
     protected static $fixed= array(
-      self::T_INT1   => 1,
-      self::T_INT2   => 2,
-      self::T_INT4   => 4,
-      self::T_INT8   => 8,
-      self::T_FLT8   => 8,
-      self::T_BIT    => 1,
-      self::T_MONEY4 => 4,
-      self::T_MONEY  => 8,
-      self::T_REAL   => 4,
-      self::T_DATE   => 4,
-      self::T_TIME   => 4,
-      self::T_SINT1  => 1,
-      self::T_UINT2  => 2,
-      self::T_UINT4  => 3,
-      self::T_UINT8  => 8,
-      self::T_SINT8  => 8,
+      self::T_INT1     => 1,
+      self::T_INT2     => 2,
+      self::T_INT4     => 4,
+      self::T_INT8     => 8,
+      self::T_FLT8     => 8,
+      self::T_BIT      => 1,
+      self::T_MONEY4   => 4,
+      self::T_MONEY    => 8,
+      self::T_REAL     => 4,
+      self::T_DATE     => 4,
+      self::T_TIME     => 4,
+      self::T_DATETIME => 8,
+      self::T_SINT1    => 1,
+      self::T_UINT2    => 2,
+      self::T_UINT4    => 3,
+      self::T_UINT8    => 8,
+      self::T_SINT8    => 8,
     );
 
     /**
@@ -273,7 +274,7 @@
         );
       }
     }
-    
+
     /**
      * Fetches one record
      *
@@ -325,6 +326,12 @@
               $bits[]= $this->stream->getLong();
             }
             $record[$i]= array($pos, $bits);    // TODO: Create number from this
+            break;
+
+          case self::T_DATETIME:
+            $days= $this->stream->getLong();
+            $seconds= $this->stream->getLong();
+            $record[$i]= Date::create(1900, 1, 1 + $days, 0, 0, $seconds / 300);
             break;
 
           default:
