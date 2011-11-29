@@ -10,14 +10,6 @@
   interface Binding {
 
     /**
-     * set the name of the injection
-     *
-     * @param   string       $name
-     * @return  ioc.Binding
-     */
-    public function named($name);
-
-    /**
      * returns the created instance
      *
      * @param   string  $type

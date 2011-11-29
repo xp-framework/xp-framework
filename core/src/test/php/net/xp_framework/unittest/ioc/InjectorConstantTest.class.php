@@ -16,7 +16,7 @@
     #[@test]
     public function injectConstant() {
       $binder = new Binder();
-      $binder->bindConstant()->named('answer')->to(42);
+      $binder->bindNamedConstant('answer')->to(42);
       $injector = $binder->getInjector();
       $question = $injector->getInstance('net.xp_framework.unittest.ioc.helper.Question');
       $this->assertInstanceOf('Question', $question);
@@ -40,7 +40,7 @@
       $binder = new Binder();
       $injector = $binder->getInjector();
       $this->assertFalse($injector->hasConstant('answer'));
-      $binder->bindConstant()->named('answer')->to(42);
+      $binder->bindNamedConstant('answer')->to(42);
       $this->assertTrue($injector->hasConstant('answer'));
       $this->assertEquals(42, $injector->getConstant('answer'));
     }
@@ -52,8 +52,7 @@
     public function constantViaInjectionProviderInstance()
     {
       $binder = new Binder();
-      $binder->bindConstant()
-             ->named('answer')
+      $binder->bindNamedConstant('answer')
              ->toProvider(new ValueInjectionProvider(42));
       $injector = $binder->getInjector();
       $this->assertTrue($injector->hasConstant('answer'));
@@ -70,8 +69,7 @@
     public function constantViaInvalidInjectionProviderClassThrowsBindingException()
     {
       $binder = new Binder();
-      $binder->bindConstant()
-             ->named('answer')
+      $binder->bindNamedConstant('answer')
              ->toProviderClass('net.xp_framework.unittest.ioc.helper.Mikey');
       $binder->getInjector()->getConstant('answer');
     }
@@ -83,8 +81,7 @@
     public function constantViaInjectionProviderClass()
     {
       $binder = new Binder();
-      $binder->bindConstant()
-             ->named('answer')
+      $binder->bindNamedConstant('answer')
              ->toProviderClass(XPClass::forName('net.xp_framework.unittest.ioc.helper.InjectorAnswerConstantProvider'));
       $injector = $binder->getInjector();
       $this->assertTrue($injector->hasConstant('answer'));
@@ -101,8 +98,7 @@
     public function constantViaInjectionProviderClassName()
     {
         $binder = new Binder();
-        $binder->bindConstant()
-               ->named('answer')
+        $binder->bindNamedConstant('answer')
                ->toProviderClass('net.xp_framework.unittest.ioc.helper.InjectorAnswerConstantProvider');
         $injector = $binder->getInjector();
         $this->assertTrue($injector->hasConstant('answer'));

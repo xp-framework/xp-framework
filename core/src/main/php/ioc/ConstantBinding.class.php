@@ -24,9 +24,11 @@
      * constructor
      *
      * @param  ioc.Injector  $injector
+     * @param  string  $name
      */
-    public function __construct(Injector $injector) {
+    public function __construct(Injector $injector, $name) {
       $this->injector = $injector;
+      $this->name     = $name;
     }
 
     /**
@@ -37,17 +39,6 @@
      */
     public function to($value) {
       $this->value = $value;
-      return $this;
-    }
-
-    /**
-     * set the name of the injection
-     *
-     * @param   string  $name
-     * @return  ioc.ConstantBinding
-     */
-    public function named($name) {
-      $this->name = $name;
       return $this;
     }
 

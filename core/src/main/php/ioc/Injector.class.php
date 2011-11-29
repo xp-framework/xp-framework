@@ -74,10 +74,11 @@
     /**
      * creates and adds a constanct binding
      *
+     * @param   string  $name
      * @return  ioc.ConstantBinding
      */
-    public function bindConstant() {
-      return $this->addBinding(new ConstantBinding($this));
+    public function bindNamedConstant($name) {
+      return $this->addBinding(new ConstantBinding($this, $name));
     }
 
     /**

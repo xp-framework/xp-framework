@@ -47,12 +47,13 @@
     }
 
     /**
-     * Bind a new constant
+     * Bind a new constant with given name
      *
+     * @param   string  $name
      * @return  ioc.ConstantBinding
      */
-    public function bindConstant() {
-      return $this->injector->bindConstant();
+    public function bindNamedConstant($name) {
+      return $this->injector->bindNamedConstant($name);
     }
 
     /**

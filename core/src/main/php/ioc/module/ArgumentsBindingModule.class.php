@@ -28,8 +28,7 @@
      */
     public function configure(Binder $binder) {
       foreach ($this->argv as $position => $value) {
-        $binder->bindConstant()
-               ->named('argv.' . $position)
+        $binder->bindNamedConstant('argv.' . $position)
                ->to($value);
       }
     }
