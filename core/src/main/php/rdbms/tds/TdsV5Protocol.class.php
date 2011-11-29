@@ -75,7 +75,8 @@
       $packet.= pack('a30CC', 'iso_1', strlen('iso_1'), 1);
 
       // Network packet size (in text!)
-      $packet.= pack('a6C', '512', strlen('512'));
+      $size= (string)$this->defaultPacketSize();
+      $packet.= pack('a6C', $size, strlen($size));
 
       // TDS 5.0 specific end
       $packet.= pack('xxxx');
