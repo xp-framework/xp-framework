@@ -108,6 +108,8 @@
         self::$instance->drivers['sybase']= XPClass::forName('rdbms.sybase.SybaseConnection');
       } else if (extension_loaded('mssql')) {
         self::$instance->drivers['sybase']= XPClass::forName('rdbms.mssql.MsSQLConnection');
+      } else {
+        self::$instance->drivers['sybase']= XPClass::forName('rdbms.tds.SybasexConnection');
       }
       
       // MSSQL support: Prefer SQLsrv from Microsoft over mssql 

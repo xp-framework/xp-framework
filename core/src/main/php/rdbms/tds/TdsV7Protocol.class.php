@@ -100,5 +100,61 @@
       // Login
       $this->stream->write(self::MSG_LOGIN7, pack('V', $offset).$login.$data);
     }
+    
+
+    /**
+     * Issues a query and returns the results
+     *
+     * @param   string sql
+     * @return  var
+     */
+    public function query($sql) {
+      $this->stream->write(self::MSG_QUERY, iconv('iso-8859-1', 'ucs-2le', $sql));
+      $token= $this->read();
+
+      if ("\x81" === $token) {          // COLMETADATA
+        $fields= array();
+        $nfields= $this->stream->getShort();
+        for ($i= 0; $i < $nfields; $i++) {
+          $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
+
+          // Handle column. TODO: blob types - read table name
+          if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
+            $field['size']= $this->stream->getByte();
+            $field['prec']= $this->stream->getByte();
+            $field['scale']= $this->stream->getByte();
+          } else if ($field['type'] > 128) {
+            $field['size']= $this->stream->getShort();
+            $this->stream->read(5);     // XXX Collation?
+          } else if (isset(self::$fixed[$field['type']])) {
+            $field['size']= self::$fixed[$field['type']];
+          } else {
+            $field['size']= $this->stream->getByte();
+          }
+
+          $field['name']= $this->stream->getString($this->stream->getByte());
+          $fields[]= $field;
+        }
+        return $fields;
+      } else if ("\xFD" === $token) {   // DONE
+        $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
+        $this->done= TRUE;
+        // TODO: Maybe?
+        return $meta['rowcount'];
+      } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
+        // HANDLE!
+        $this->cancel();
+      } else {
+        throw new TdsProtocolException(
+          sprintf('Unexpected token 0x%02X', ord($token)),
+          0,    // Number
+          0,    // State
+          0,    // Class
+          NULL, // Server
+          NULL, // Proc
+          -1    // Line
+        );
+      }
+    }
   }
 ?>

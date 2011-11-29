@@ -93,5 +93,66 @@
       // Login
       $this->stream->write(self::MSG_LOGIN, $packet);
     }
+    
+    /**
+     * Issues a query and returns the results
+     *
+     * @param   string sql
+     * @return  var
+     */
+    public function query($sql) {
+      $this->stream->write(self::MSG_QUERY, $sql);
+      $token= $this->read();
+
+      if ("\xEE" === $token) {          // TDS_ROWFMT
+        $fields= array();
+        $this->stream->getShort();
+        $nfields= $this->stream->getShort();
+        for ($i= 0; $i < $nfields; $i++) {
+          $field= array();
+          if (0 === ($len= $this->stream->getByte())) {
+            $field= array('name' => NULL);
+          } else {
+            $field= array('name' => $this->stream->read($len));
+          }
+          $field['status']= $this->stream->getByte();
+          $this->stream->read(4);   // Skip usertype
+          $field['type']= $this->stream->getByte();
+
+          // Handle column. TODO: blob types - read table name
+          if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
+            $field['size']= $this->stream->getByte();
+            $field['prec']= $this->stream->getByte();
+            $field['scale']= $this->stream->getByte();
+          } else if (isset(self::$fixed[$field['type']])) {
+            $field['size']= self::$fixed[$field['type']];
+          } else {
+            $field['size']= $this->stream->getByte();
+          }
+          
+          $this->stream->read(1);   // Skip locale
+          $fields[]= $field;
+        }
+        return $fields;
+      } else if ("\xFD" === $token) {   // DONE
+        $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
+        $this->done= TRUE;
+        // TODO: Maybe?
+        return $meta['rowcount'];
+      } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
+        // HANDLE!
+        $this->cancel();
+      } else {
+        throw new TdsProtocolException(
+          sprintf('Unexpected token 0x%02X', ord($token)),
+          0,    // Number
+          0,    // State
+          0,    // Class
+          NULL, // Server
+          NULL, // Proc
+          -1    // Line
+        );
+      }
+    }
   }
 ?>
