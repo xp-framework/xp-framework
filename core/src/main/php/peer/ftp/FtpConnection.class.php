@@ -93,7 +93,7 @@
           break;
       }
       
-      $this->socket->connect();
+      $this->socket->connect($timeout);
       
       // Read banner message
       $this->expect($this->getResponse(), array(220));

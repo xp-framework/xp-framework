@@ -33,7 +33,7 @@
      * @return  string
      */
     public function read($limit= 8192) {
-      return $this->file->read($limit);
+      return (string)$this->file->read($limit);
     }
 
     /**

@@ -9,7 +9,8 @@
     'webservices.soap.types.SOAPBase64Binary',
     'webservices.soap.types.SOAPHexBinary',
     'webservices.soap.types.SOAPDateTime',
-    'webservices.soap.types.SOAPHashMap'
+    'webservices.soap.types.SOAPHashMap',
+    'webservices.soap.types.SOAPDouble'
   );
 
   /**
@@ -119,7 +120,32 @@
      */
     protected function _marshall($child, $value, $mapping) {
       static $ns= 0;
-      
+
+      if ($value instanceof String) {
+        $value= (string)$value;
+        // Fallthrough intended
+      }
+
+      if ($value instanceof Double) {
+        $value= new SOAPDouble($value->floatValue());
+        // Fallthrough intended
+      }
+
+      if ($value instanceof Boolean) {
+        $value= $value->value;
+        // Fallthrough intended
+      }
+
+      if ($value instanceof Long) {
+        $value= new SOAPLong($value->value);
+        // Fallthrough
+      }
+
+      if ($value instanceof Integer) {
+        $value= $value->intValue();
+        // Fallthrough
+      }
+
       if (is_scalar($value)) {          // Scalar
         $child->attribute['xsi:type']= $child->_typeName($value);
         $child->setContent($child->_contentFormat($value));
@@ -149,12 +175,6 @@
         return;
       }
 
-      if ($value instanceof String) {
-        $child->attribute['xsi:type']= 'xsd:string';
-        $child->setContent($value);
-        return;
-      }
-      
       if ($value instanceof Date) {       // Date
         $value= new SOAPDateTime($value->getHandle());
         // Fallthrough intended
@@ -164,19 +184,20 @@
         $value= new SOAPHashMap($value->_hash);
         // Fallthrough intended
       }
-      
+
       if ($value instanceof SoapType) {   // Special SoapTypes
         if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
         $this->_marshall($child, $value->toString(), $mapping);
-        
+
         // Specified type
         if (NULL !== ($t= $value->getType())) $child->attribute['xsi:type']= $t;
-        
+
         // A node
         if (isset($value->item)) {
           $child->attribute= $value->item->attribute;
           $child->children= array_merge($child->children, $value->item->children);
         }
+
         return;
       }
       
@@ -186,14 +207,6 @@
         $child->attribute['xsi:type']= 'ns'.$ns.':'.$qname->localpart;
         
         $this->_recurse($child, get_object_vars($value), $mapping);
-        return;
-      }
-      
-      if ($value instanceof Collection) { // XP collection
-        $child->attribute['xsi:type']= 'SOAP-ENC:Array';
-        $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
-        $child->attribute['SOAP-ENC:arrayType']= 'xp:'.$value->getElementClassName().'['.$value->size().']';
-        $this->_recurse($child, $value->values(), $mapping);
         return;
       }
       

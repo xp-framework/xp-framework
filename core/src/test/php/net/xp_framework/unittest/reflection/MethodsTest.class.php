@@ -426,7 +426,7 @@
     #[@test]
     public function filterMapString() {
       $this->assertEquals(
-        'public lang.Collection<lang.Object> filterMap([string $pattern= null])', 
+        'public util.collections.Vector<lang.Object> filterMap([string $pattern= null])',
         $this->fixture->getMethod('filterMap')->toString()
       );
     }

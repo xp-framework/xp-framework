@@ -23,8 +23,8 @@
      *
      */
     public function setUp() {
-      iconv_set_encoding('input_encoding', 'ISO-8859-1');
-      iconv_set_encoding('output_encoding', 'ISO-8859-1');
+      iconv_set_encoding('input_encoding', 'iso-8859-1');
+      iconv_set_encoding('output_encoding', 'iso-8859-1');
     }
 
     /**
@@ -33,7 +33,7 @@
      */
     #[@test, @expect('lang.FormatException')]
     public function incompleteMultiByteCharacter() {
-      new Character('ä', 'UTF-8');
+      new Character('ä', 'utf-8');
     }
 
     /**
@@ -51,7 +51,7 @@
      */
     #[@test]
     public function euroSymbol() {
-      $this->assertEquals(new Bytes("\xe2\x82\xac"), create(new Character(8364))->getBytes('UTF-8')); // &#8364; in HTML
+      $this->assertEquals(new Bytes("\xe2\x82\xac"), create(new Character(8364))->getBytes('utf-8')); // &#8364; in HTML
     }
   
     /**
@@ -91,14 +91,14 @@
     }
 
     /**
-     * Test a string with UTF-8 in it
+     * Test a string with utf-8 in it
      *
      */
     #[@test]
     public function utf8Character() {
       $this->assertEquals(
-        new Character('Ã¤', 'UTF-8'),
-        new Character('ä', 'ISO-8859-1')
+        new Character('Ã¤', 'utf-8'),
+        new Character('ä', 'iso-8859-1')
       );
     }
 
@@ -108,7 +108,7 @@
      */
     #[@test, @ignore('Does not work with all iconv implementations')]
     public function transliteration() {
-      $this->assertEquals('c', create(new String('Ä', 'UTF-8'))->toString());
+      $this->assertEquals('c', create(new String('Ä', 'utf-8'))->toString());
     }
 
     /**

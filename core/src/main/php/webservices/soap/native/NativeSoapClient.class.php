@@ -9,6 +9,7 @@
     'xml.QName',
     'util.log.Traceable',
     'webservices.soap.ISoapClient',
+    'webservices.soap.native.NativeSoapTypeMapper',
     'webservices.soap.CommonSoapFault',
     'webservices.soap.SOAPFaultException'
   );
@@ -29,7 +30,9 @@
       $location = NULL,
       $encoding = 'iso-8859-1',
       $style    = SOAP_RPC,
-      $use      = SOAP_ENCODED;
+      $use      = SOAP_ENCODED,
+      $ctimeout = NULL,
+      $timeout  = NULL;
     
     protected
       $map      = array();
@@ -45,6 +48,42 @@
       $this->uri= $uri;
       $this->wsdl= FALSE;
       $this->map= array();
+    }
+
+    /**
+     * Set connect timeout
+     *
+     * @param   int timeout
+     */
+    public function setConnectTimeout($i) {
+      $this->ctimeout= $i;
+    }
+
+    /**
+     * Set timeout
+     *
+     * @param   int timeout
+     */
+    public function setTimeout($i) {
+      $this->timeout= $i;
+    }
+
+    /**
+     * Get connect timeout
+     *
+     * @return  int
+     */
+    public function getConnectTimeout() {
+      return $this->ctimeout;
+    }
+
+    /**
+     * Set timeout
+     *
+     * @return  int
+     */
+    public function getTimeout() {
+      return $this->timeout;
     }
 
     /**
@@ -188,58 +227,17 @@
      * @return  var[]
      */
     protected function checkParams($args) {
+      $type= new NativeSoapTypeMapper();
+
       foreach ($args as $i => $a) {
-        if ($a instanceof Parameter || $a instanceof SoapType) {
-          $args[$i]= $this->wrapParameter($a);
+        if ($type->supports($a)) {
+          $args[$i]= $type->box($a);
         }
       }
       
       return $args;
     }
 
-    /**
-     * Wrap single argument to ext/soap value object
-     *
-     * @param   var parameter
-     * @return  var
-     * @throws  lang.IllegalArgumentException if parameter type cannot be converted
-     */
-    protected function wrapParameter($parameter) {
-
-      // Instanceof testing frenzy begins here.
-      // This is necessary to convert XP Parameter and SOAP*-Types to 
-      // Soap-ext SoapParam and SoapVar
-      switch (TRUE) {
-        case ($parameter instanceof Parameter):
-          if ($parameter->value instanceof SoapType) {
-            return new SoapParam($this->wrapParameter($parameter->value), $parameter->name);
-          }
-          
-          return new SoapParam($parameter->value, $parameter->name);
-          
-        case ($parameter instanceof SOAPLong):
-          return new SoapVar($parameter->long, XSD_LONG);
-          
-        case ($parameter instanceof SOAPBase64Binary):
-          return new SoapVar($parameter->encoded, XSD_BASE64BINARY);
-          
-        case ($parameter instanceof SOAPHexBinary):
-          return new SoapVar($parameter->encoded, XSD_HEXBINARY);
-          
-        case ($parameter instanceof SOAPDateTime):
-          return new SoapVar($parameter->value, XSD_DATETIME);
-          
-        case ($parameter instanceof SOAPHashMap):
-          return $parameter->value;
-          
-        // case ($parameter instanceof SOAPVector):
-        //   return new SoapVar($parameter->value, XSD_DATETIME);
-        
-        default:
-          throw new IllegalArgumentException('Cannot serialize '.$parameter->getClassName());
-      }
-    }
-    
     /**
      * Invoke method call
      *
@@ -255,8 +253,17 @@
       $options= array(
         'encoding'    => $this->getEncoding(),
         'exceptions'  => 0,
-        'trace'       => ($this->cat != NULL)
+        'trace'       => ($this->cat != NULL),
+        'user_agent'  => 'XP-Framework/'.get_class($this)
       );
+
+      if (NULL !== $this->ctimeout) {
+        $options['connection_timeout']= $this->ctimeout;
+      }
+
+      if (NULL !== $this->timeout) {
+        // NOOP
+      }
 
       if (NULL !== $this->endpoint->getUser()) {
         $options['login']= $this->endpoint->getUser();
@@ -278,7 +285,12 @@
       } else {
 
         // Do not overwrite location if already set from outside
-        $options['location'] || $options['location']= $this->endpoint->getURL();
+        isset($options['location']) || $options['location']= $this->endpoint->getURL();
+
+        // Assert we have a uri
+        if (!$this->uri) throw new IllegalArgumentException (
+          'SOAP uri required in non-wsdl mode.'
+        );
 
         $options['uri']= $this->uri;
         $options['style']= $this->getStyle();

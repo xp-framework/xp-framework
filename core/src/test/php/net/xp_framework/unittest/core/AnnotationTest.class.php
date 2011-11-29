@@ -144,10 +144,9 @@
      */
     #[@test]
     public function multipleAnnotationsReturnedAsList() {
-      $method= $this->class->getMethod('multiple');
       $this->assertEquals(
         array('one' => NULL, 'two' => NULL, 'three' => NULL),
-        $method->getAnnotations()
+        $this->class->getMethod('multiple')->getAnnotations()
       );
     }
 
@@ -183,103 +182,7 @@
       $m= $this->class->getMethod('testMethod');
       $this->assertTrue($m->hasAnnotation('test'));
       $this->assertTrue($m->hasAnnotation('ignore'));
-      $this->assertEquals(0.1, $m->getAnnotation('limit', 'time'));
-      $this->assertEquals(100, $m->getAnnotation('limit', 'memory'));
-      $this->assertEquals(
-        array('time' => 0.1, 'memory' => 100), 
-        $m->getAnnotation('limit')
-      );
+      $this->assertEquals(array('time' => 0.1, 'memory' => 100), $m->getAnnotation('limit'));
     }
-
-    /**
-     * Tests getAnnotation() returns the string associated with the 
-     * annotation.
-     *
-     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#keyValuePairs
-     */
-    #[@test]
-    public function keyValuePairsAnnotationValue() {
-      $this->assertEquals(
-        array('key' => 'value', 'times' => 5, 'disabled' => FALSE, 'null' => NULL, 'list' => array(1, 2)), 
-        $this->methodAnnotation('keyValuePairs', 'config')
-      );
-    }
-
-    /**
-     * Tests multi-line annotations
-     *
-     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#multiLine
-     */
-    #[@test]
-    public function multiLineAnnotation() {
-      $this->assertEquals(array('classes' => array(
-        'net.xp_framework.unittest.core.FirstInterceptor',
-        'net.xp_framework.unittest.core.SecondInterceptor',
-      )), $this->methodAnnotation('multiLine', 'interceptors'));
-    }
-
-    /**
-     * Tests simple xpath annotations
-     *
-     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#simpleXPath
-     */
-    #[@test]
-    public function simpleXPathAnnotation() {
-      $this->assertEquals(array(
-        'xpath' => '/parent/child/@attribute'
-      ), $this->methodAnnotation('simpleXPath', 'fromXml'));
-    }
-
-    /**
-     * Tests complex xpath annotations
-     *
-     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#complexXPath
-     */
-    #[@test]
-    public function complexXPathAnnotation() {
-      $this->assertEquals(array(
-        'xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"]'
-      ), $this->methodAnnotation('complexXPath', 'fromXml'));
-    }
-
-    /**
-     * Tests string default with "="
-     *
-     * @see     xp://net.xp_framework.unittest.core.AnnotatedClass#stringWithEqualSigns
-     * @see   http://bugs.xp-framework.net/show_bug.cgi?id=38
-     */
-    #[@test]
-    public function stringWithEqualSigns() {
-      $this->assertEquals(
-        'rn=login, rt=config', 
-        $this->methodAnnotation('stringWithEqualSigns', 'permission')
-      );
-    }
-
-    /**
-     * Test string assignment without whitespace is parsed correctly.
-     *
-     */
-     #[@test]
-     public function stringAssignedWithoutWhitespace() {
-       $this->assertEquals(
-         array('name' => 'verbose', 'short' => 'v'),
-         $this->methodAnnotation('stringAssignedWithoutWhitespace', 'arg')
-       );
-     }
-
-    /**
-     * Test annotation with mulitple values containing equal signs
-     * is parsed correctly.
-     *
-     */
-     #[@test, @ignore('Test needs adjustment in XPClass and AnnotatedClass')]
-     public function multipleValuesWithStringsAndEqualSigns() {
-       $this->assertEquals(
-         array('rn=login, rt=config1', 'rn=login, rt=config2'),
-         $this->methodAnnotation('multipleValuesWithStringsAndEqualSigns')
-       );
-     }
-
   }
 ?>

@@ -323,7 +323,8 @@
      * @throws  io.IOException in case of an error
      */
     public function readLine($bytes= 4096) {
-      return chop($this->gets($bytes));
+      $bytes= $this->gets($bytes);
+      return FALSE === $bytes ? FALSE : chop($bytes);
     }
     
     /**
@@ -375,7 +376,7 @@
         xp::gc(__FILE__);
         throw $e;
       }
-      return $result;
+      return '' === $result ? FALSE : $result;
     }
 
     /**

@@ -4,10 +4,104 @@ $Id$
 
 Version ?.?.?, released ????-??-??
 ----------------------------------
-SVN version: ?????
+Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Added initial support for PHP 5.4 by a couple of forward-compatible
+  adjustments and workarounds. Please note PHP 5.4 is not officially
+  released yet and thus PHP 5.4 support is preliminary at best!
+  Discussion and details available in issue #76
+  (friebe)
+- Changed JSON parser to use a generated parser instead of hand-crafted
+  one. Implements functionality suggested in pull request #37 
+  (friebe, Rebecca Dietrich)
+- Deprecated scriptlet.xml.workflow.Handler class. See issue #55 - use 
+  the new scriptlet.xml.workflow.AbstractHandler class instead!
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0216 - REST server API implementation
+  (ohinckel)
+
+Bugfixes
+~~~~~~~~
+- Fixed rdbms.DSN::equals() method to no longer regard differing observer
+  params as equal
+  (friebe)
+- Fixed timezone issues when runnning complete test suite - see issue #72
+  (friebe)
+- Allowed for deprecated multi-value annotations - see issue #69
+  http://news.planet-xp.net/article/422/2011/10/19/
+  (friebe)
+- Fixed rdbms.mysqlx.AbstractMysqlxResultSet::record() method to return
+  only a single field value if its field parameter is set
+  (friebe)
+- Changed program's exit code to 0xff in case an uncaught exception occurs. 
+  http://news.planet-xp.net/article/424/2011/10/14/
+  (kiesel)
+- Fixed fatal error in webservices testsuite when running on PHP
+  without ext/soap
+  (friebe, kiesel)
+- Fixed request value is not unset/disabled when set via setFormValue()
+  when using new AbstractHandler class, old behavior retained for BC 
+  reasons - see issue #55
+  (friebe, apenciu)
+- Fixed annotation parsing:
+  . Support for @anno(array(...)) 
+  . Support for @anno(...) where ... is any scalar value
+  . Fix for strings containing a) annotations b) braces c) equal signs
+  . Fix for arrays containing strings
+  See pull request #56 and comments.
+  (mrosoiu, friebe)
+- Fixed timeout for FTP connections - see pull request #58
+  (kiesel, Thomas Reuter)
+
+Features
+~~~~~~~~
+- Include more information in output produced by XmlTestListener
+  (ohinckel)
+- Made usage of encoding names consistant to all lowercase,
+  see issue #73
+  (ppetermann, kiesel)
+- Added support to DomXSLProcessor to load XML or XSL files by stream
+  wrappers, e.g. using res:// to load files with ResourceProvider
+  (ohinckel)
+- Added Unicode support to webservices.json.JsonDecoder - characters are
+  now correctly converted to escape sequences and back.
+  (friebe)
+- Added lang.types.String::$EMPTY constant
+  (friebe)
+- Added webservices.json.JsonDecoder::encodeTo() and ::decodeFrom()
+  methods to work with io.streams API
+  (friebe, Rebecca Dietrich)
+- Added lang.types support for webservices.soap implementations, as
+  proposed in issue #18
+  (kiesel)
+- Added util.Properties::removeSection() and ::removeKey() methods, as
+  proposed in issue #54
+  (kiesel)
+- Added peer.Header::equals() as proposed in pull request #61
+  (apenciu)
+
+
+Version 5.8.2, released 2011-09-07
+----------------------------------
+Git commit: 7e7f1463274fe70a851b93609e03bbb33f242cff
+
+Heads up!
+~~~~~~~~~
+- Added support for PHP 5.3.8 (see issue #52)
+  (friebe)
+- Added support for APC by supplying dev and ino elements inside class
+  loading infrastructure. Implements issue #51
+  (friebe, Thomas Geiger)
+- Added support for PHP 5.3.7 (see issue #49) - includes workaround for
+  PHP Bug 55439 (crypt() returns only salt w/ md5 method)
+  (friebe)
+- Removed lang.Collection deprecation left-overs - see issue #42
+  (friebe)
 - Introduced common interface for SOAP implementations:
   webservices.soap.ISoapClient (see issue #19). This re-dedicated
   NativeSoapClient::setEncoding() to change the charset's encoding, not the
@@ -25,6 +119,12 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Added missing brackets in TestTaglet instantiation in TagletManager
+  (hinckel)
+- Fixed fatal error in io.archive.zip.ZipFileEntry::toString()
+  (friebe)
+- Fixed issue #28: Bug in io.File::readLine()
+  (Stormwind, friebe, kiesel)
 - Fixed issue #32: Primitives in HashSet cause fatal error in toString()
   (friebe)
 - Fixed issue #31: Floating point numbers used as keys in util.collections 
@@ -60,6 +160,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added quiet mode to unittest command - see issue #24
+  (friebe)
 - Made peer.net.Inet6Address accept packed form - see issue #26
   (friebe)
 - Add toString() implementation to peer.Socket

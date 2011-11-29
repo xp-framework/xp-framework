@@ -237,8 +237,8 @@
       
       if ('string' == ($type= gettype($this->content))) {
         $content= $conv
-          ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content))
-          : htmlspecialchars($this->content)
+          ? iconv('iso-8859-1', $encoding, htmlspecialchars($this->content, ENT_COMPAT, 'iso-8859-1'))
+          : htmlspecialchars($this->content, ENT_COMPAT, 'iso-8859-1')
         ;
       } else if ('float' == $type) {
         $content= ($this->content - floor($this->content) == 0)
@@ -256,16 +256,17 @@
           : $this->content->cdata
         ).']]>';
       } else if ($this->content instanceof String) {
-        $content= htmlspecialchars($this->content->getBytes($encoding));
+        $content= htmlspecialchars($this->content->getBytes($encoding), ENT_COMPAT, $encoding);
       } else {
         $content= $this->content; 
       }
       
       if (INDENT_NONE === $indent) {
         foreach ($this->attribute as $key => $value) {
-          $xml.= ' '.$key.'="'.htmlspecialchars($conv
-            ? iconv('iso-8859-1', $encoding, $value) 
-            : $value
+          $xml.= ' '.$key.'="'.htmlspecialchars(
+            $conv ? iconv('iso-8859-1', $encoding, $value) : $value,
+            ENT_COMPAT,
+            'iso-8859-1'
           ).'"';
         }
         $xml.= '>'.$content;
@@ -277,9 +278,10 @@
         if ($this->attribute) {
           $sep= (sizeof($this->attribute) < 3) ? '' : "\n".$inset;
           foreach ($this->attribute as $key => $value) {
-            $xml.= $sep.' '.$key.'="'.htmlspecialchars($conv
-              ? iconv('iso-8859-1', $encoding, $value) 
-              : $value
+            $xml.= $sep.' '.$key.'="'.htmlspecialchars(
+              $conv ? iconv('iso-8859-1', $encoding, $value) : $value,
+              ENT_COMPAT,
+              'iso-8859-1'
             ).'"';
           }
           $xml.= $sep;

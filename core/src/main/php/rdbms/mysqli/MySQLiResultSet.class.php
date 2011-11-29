@@ -54,7 +54,7 @@
     public function next($field= NULL) {
       if (
         !is_object($this->handle) ||
-        FALSE === ($row= mysqli_fetch_assoc($this->handle))
+        NULL === ($row= mysqli_fetch_assoc($this->handle))
       ) {
         return FALSE;
       }

@@ -12,7 +12,7 @@
    * @see      xp://webservices.soap.types.SoapType
    * @purpose  HashMap type
    */
-  class SOAPHashMap extends SoapType {
+  class SOAPHashMap extends Object implements SoapType {
 
     /**
      * Constructor
@@ -48,6 +48,24 @@
      */
     public function getType() {
       return 'hash:Map';
+    }
+
+    /**
+     * Retrieve item name
+     *
+     * @return  mixed
+     */
+    public function getItemName() {
+      return FALSE;
+    }
+
+    /**
+     * Retrieve type as native SOAP type
+     *
+     * @return  php.SoapVar
+     */
+    public function asSoapType() {
+      return $this->value;
     }
   }
 ?>

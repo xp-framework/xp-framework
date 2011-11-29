@@ -100,15 +100,6 @@
           $node->addChild(new Node('dateTime', $data->toString('r')));
           break;
         
-        case 'lang.Collection':
-          $a= $node->addChild(new Node('array', NULL, array(
-            'length'  => sizeof($data)
-          )));
-          foreach (array_keys($data) as $idx) {
-            $this->_marshall($a, $data[$idx]);
-          }
-          break;
-        
         default:
           throw new IllegalArgumentException('Found datatype which cannot be serialized: '.xp::typeOf($data));
       }

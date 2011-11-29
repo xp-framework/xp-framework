@@ -1,0 +1,92 @@
+%token T_TRUE  261 /* used in lexer */
+%token T_FALSE 262 /* used in lexer */
+%token T_NULL  263 /* used in lexer */
+%token T_INT   264 /* used in lexer */
+%token T_FLOAT 265 /* used in lexer */
+
+%token T_STRING                270 /* used in lexer */
+%token T_ESCAPE_QUOTATION      271 /* used in lexer */
+%token T_ESCAPE_REVERSESOLIDUS 272 /* used in lexer */
+%token T_ESCAPE_SOLIDUS        273 /* used in lexer */
+%token T_ESCAPE_BACKSPACE      274 /* used in lexer */
+%token T_ESCAPE_FORMFEED       275 /* used in lexer */
+%token T_ESCAPE_NEWLINE        276 /* used in lexer */
+%token T_ESCAPE_CARRIAGERETURN 277 /* used in lexer */
+%token T_ESCAPE_HORIZONTALTAB  278 /* used in lexer */
+%token T_ESCAPE_UNICODE        279 /* used in lexer */
+
+%%
+
+expression:
+      object
+    | array
+    | string
+    | atom
+;
+
+object:
+      '{' objectcontent '}' { $$= $2; }
+    | '{' '}'               { $$= array(); }
+;
+
+objectcontent:
+  objectpart
+  | objectcontent ',' objectpart { $$= $1 + $3; }
+;
+
+objectpart:
+      objectkey ':' expression { $$= array($1 => $3); }
+;
+
+objectkey:
+    '"' word '"' { $$= utf8_decode($2); /* xp::CHARSET */ }
+  | '"' '"' { $$= ''; }
+;    
+
+array:
+      '[' arraycontent ']' { $$= $2; }
+    | '[' ']'              { $$= array(); }
+;
+
+arraycontent:
+    expression                  { $$= array($1); }
+  | arraycontent ',' expression { $$= array_merge($1, array($3)); }
+;
+
+string:
+    '"' word '"' { $$= new String($2, 'utf-8'); }
+  | '"' '"' { $$= String::$EMPTY; }
+;
+
+word:
+    stringpart
+  | word stringpart { $$= $1.$2; }
+;
+
+stringpart:
+      T_STRING                { $$= $1; }
+    | T_ESCAPE_QUOTATION      { $$= '"'; }
+    | T_ESCAPE_REVERSESOLIDUS { $$= "\\"; }
+    | T_ESCAPE_SOLIDUS        { $$= "/"; }
+    | T_ESCAPE_BACKSPACE      { $$= "\b"; }
+    | T_ESCAPE_FORMFEED       { $$= "\f"; }
+    | T_ESCAPE_NEWLINE        { $$= "\n"; }
+    | T_ESCAPE_CARRIAGERETURN { $$= "\r"; }
+    | T_ESCAPE_HORIZONTALTAB  { $$= "\t"; }
+    | T_ESCAPE_UNICODE        {
+                                $$= iconv(
+                                  'ucs-4be',
+                                  'utf-8',
+                                  pack('N', hexdec(substr($1, 2)))
+                                );
+                              }
+;
+
+atom:
+      T_TRUE  { $$= TRUE; }
+    | T_FALSE { $$= FALSE; }
+    | T_NULL  { $$= NULL; }
+    | T_FLOAT { $$= doubleval($1); }
+    | T_INT   { $$= intval($1); }
+;
+%%

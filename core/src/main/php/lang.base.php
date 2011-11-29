@@ -311,7 +311,7 @@
             $unpack[$header['version']], 
             fread($current['handle'], 0x0100)
           );
-          $current['index'][$entry['id']]= array($entry['size'], $entry['offset']);
+          $current['index'][$entry['id']]= array($entry['size'], $entry['offset'], $i);
         }
       }
 
@@ -358,7 +358,9 @@
     function stream_stat() {
       $current= self::acquire($this->archive);
       return array(
-        'size'  => $current['index'][$this->filename][0]
+        'size'  => $current['index'][$this->filename][0],
+        'dev'   => crc32($this->archive),
+        'ino'   => $current['index'][$this->filename][2]
       );
     }
     // }}}
@@ -389,12 +391,15 @@
     //     Retrieve status of url
     function url_stat($path) {
       sscanf($path, 'xar://%[^?]?%[^$]', $archive, $file);
-      $current= self::acquire(urldecode($archive));
+      $archive= urldecode($archive);
+      $current= self::acquire($archive);
 
-      return isset($current['index'][$file]) 
-        ? array('size' => $current['index'][$file][0])
-        : FALSE
-      ;
+      if (!isset($current['index'][$file])) return FALSE;
+      return array(
+        'size'  => $current['index'][$file][0],
+        'dev'   => crc32($archive),
+        'ino'   => $current['index'][$file][2]
+      );
     }
     // }}}
   }

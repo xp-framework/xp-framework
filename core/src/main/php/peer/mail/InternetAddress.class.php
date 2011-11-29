@@ -33,10 +33,12 @@
      * @param   string personal default ''
      */
     public function __construct($mail, $personal= '') {
-      list($this->localpart, $this->domain)= (is_array($mail) 
-        ? $mail
-        : explode('@', $mail)
-      );
+      if (is_array($mail)) {
+        $this->localpart= $mail[0];
+        $this->domain= $mail[1];
+      } else {
+        sscanf($mail, "%[^@]@%[^\r]", $this->localpart, $this->domain);
+      }
       $this->personal= $personal;
     }
     

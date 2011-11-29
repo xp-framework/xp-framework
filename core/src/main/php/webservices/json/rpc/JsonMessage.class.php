@@ -19,7 +19,7 @@
     public
       $method   = '',
       $id       = '',
-      $encoding = 'UTF-8',
+      $encoding = 'utf-8',
       $data     = NULL,
       $class    = '';
 

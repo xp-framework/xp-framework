@@ -16,14 +16,14 @@
   /**
    * Basic SOAP-Client
    *
-   * @see     xp://webservices.soap.SoapDriver
+   * @see      xp://webservices.soap.SoapDriver
    * @test     xp://net.xp_framework.unittest.soap.SoapClientTest
    * @purpose  Generic SOAP client base class
    */
   class XPSoapClient extends Object implements ISoapClient, Traceable {
     protected
-      $encoding           = 'iso-8859-1',
       $transport          = NULL,
+      $encoding           = 'iso-8859-1',
       $action             = '',
       $targetNamespace    = NULL,
       $mapping            = NULL,
@@ -55,6 +55,77 @@
       $this->action= $action;
       $this->targetNamespace= NULL;
       $this->mapping= new XPSoapMapping();
+    }
+
+    /**
+     * Retrieve members directly; this method is supposed to keep BC for
+     * the class' behaviour until the next minor release (5.9).
+     *
+     * @param   string key
+     * @return  mixed
+     */
+    public function __get($key) {
+      if (in_array($key, array('transport', 'encoding', 'action', 'targetNamespace', 'mapping', 'headers'))) {
+        trigger_error('Direct use of XPSoapClient member "'.$key.'" is discouraged.', E_USER_DEPRECATED);
+        return $this->{$key};
+      }
+
+      return NULL;
+    }
+
+    /**
+     * Magic __set method - prohibits any attempt to set member directly.
+     *
+     * @param   mixed key
+     * @param   mixed value
+     */
+    public function __set($key, $value) {
+      throw new IllegalAccessException('Direct modification of member "'.$key.'" is no longer supported.');
+    }
+
+    /**
+     * Set transport
+     *
+     * @param webservices.soap.transport.SOAPHTTPTransport transport
+     */
+    public function setTransport(SOAPHTTPTransport $transport) {
+      $this->transport= $transport;
+    }
+
+    /**
+     * Set connect timeout
+     *
+     * @param   int timeout
+     */
+    public function setConnectTimeout($i) {
+      $this->getTransport()->setConnectTimeout($i);
+    }
+
+    /**
+     * Set timeout
+     *
+     * @param   int timeout
+     */
+    public function setTimeout($i) {
+      $this->getTransport()->setTimeout($i);
+    }
+
+    /**
+     * Get connect timeout
+     *
+     * @return  int
+     */
+    public function getConnectTimeout() {
+      return $this->getTransport()->getConnectTimeout();
+    }
+
+    /**
+     * Set timeout
+     *
+     * @return  int
+     */
+    public function getTimeout() {
+      return $this->getTransport()->getTimeout();
     }
 
     /**

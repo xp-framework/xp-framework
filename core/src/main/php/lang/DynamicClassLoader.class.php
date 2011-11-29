@@ -13,6 +13,8 @@
    * @test  xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
    */
   class DynamicClassLoader extends AbstractClassLoader {
+    const DEVICE = 1852557578;   // crc32('lang.DynamicClassLoader')
+
     protected
       $position = 0,
       $current  = '',
@@ -189,7 +191,11 @@
      * @return  [:string]
      */
     public function stream_stat() {
-      return array('size' => strlen(self::$bytes[$this->current]));
+      return array(
+        'size' => strlen(self::$bytes[$this->current]),
+        'dev'  => self::DEVICE,
+        'ino'  => crc32(self::$bytes[$this->current])
+      );
     }
 
     /**
@@ -242,8 +248,12 @@
      * @return  [:var]
      */
     public function url_stat($path) {
-      list($name)= sscanf($path, 'dyn://%s');
-      return array('size'  => strlen(self::$bytes[$name]));
+      sscanf($path, 'dyn://%s', $name);
+      return array(
+        'size' => strlen(self::$bytes[$name]),
+        'dev'  => self::DEVICE,
+        'ino'  => crc32(self::$bytes[$name])
+      );
     }
   }
 ?>

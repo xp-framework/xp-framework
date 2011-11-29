@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<ivy-module
+ version="2.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd"
+>
+  <info 
+   organisation="net.xp_framework" 
+   module="tools"
+   status="integration"
+   revision="5.8.3"
+  >
+    <license name="BSD"/>
+    <description homepage="http://xp-framework.net/">
+      The XP framework offers consistent, multi-purpose, object oriented, 
+      production-tested collection of classes, APIs for app server 
+      connectivity, web services, dynamic web sites, date access and 
+      manipulation, logging, collections, I/O, databases, O/R mapping, 
+      XML, unittesting, and much more.
+    </description>
+  </info>
+  <configurations>
+    <conf name="default" visibility="public"/>
+    <conf name="test" visibility="public"/>
+  </configurations>
+  <publications>
+    <artifact name="tools" type="xar" ext="xar" conf="default"/>
+    <artifact name="tools-bootstrap" type="bootstrap" ext="zip" conf="default"/>
+  </publications>
+</ivy-module>
