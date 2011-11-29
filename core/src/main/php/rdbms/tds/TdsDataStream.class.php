@@ -26,6 +26,9 @@
      * @param   int packetSize default 512
      */
     public function __construct($sock, $packetSize= 512) {
+      if ($packetSize < 9) {
+        throw new IllegalArgumentException('Packet size must be at least 9');
+      }
       $this->sock= $sock;
       $this->packetSize= $packetSize;
     }
