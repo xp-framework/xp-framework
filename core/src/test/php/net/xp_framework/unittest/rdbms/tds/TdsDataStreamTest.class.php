@@ -21,11 +21,15 @@
     #[@beforeClass]
     public static function mockSocket() {
       self::$sock= ClassLoader::defineClass('net.xp_framework.unittest.rdbms.tds.MockTdsSocket', 'peer.Socket', array(), '{
-        protected $bytes;
+        public $bytes;
         protected $offset= 0;
         
-        public function __construct($bytes) {
+        public function __construct($bytes= "") {
           $this->bytes= $bytes;
+        }
+
+        public function write($bytes) {
+          $this->bytes.= $bytes;
         }
         
         public function readBinary($l) {
@@ -39,10 +43,12 @@
     /**
      * Creates a new TdsDataStream instance
      *
-     * @param   string bytws
+     * @param   string bytes
+     * @param   int packetSize default 512
+     * @return  rdbms.tds.TdsDataStream
      */
-    public function newDataStream($bytes) {
-      return new TdsDataStream(self::$sock->newInstance($bytes));
+    public function newDataStream($bytes= '', $packetSize= 512) {
+      return new TdsDataStream(self::$sock->newInstance($bytes), $packetSize);
     }
     
     /**
@@ -53,7 +59,7 @@
      * @return  string
      */
     protected function headerWith($length, $last= TRUE) {
-      return pack('CCnnCc', 0x04, $last ? 0x01 : 0x00, $length + 8, 0x00, 0x01, 0x00);
+      return pack('CCnnCc', 0x04, $last ? 0x01 : 0x00, $length + 8, 0x00, 0x00, 0x00);
     }
 
     /**
@@ -190,6 +196,53 @@
       $str->begin();
       $this->assertEquals("\xAA", $str->getToken());
       $this->assertEquals("\xA2", $str->getToken());
+    }
+    
+    /**
+     * Assertion helper
+     *
+     * @param   string bytes
+     * @param   rdbms.tds.TdsDataStream str
+     * @throws  unittest.AssertionFailedError
+     */
+    protected function assertBytes($bytes, $str) {
+      $field= $str->getClass()->getField('sock')->setAccessible(TRUE);
+      $this->assertEquals(new Bytes($bytes), new Bytes($field->get($str)->bytes));
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test, @expect(class = 'lang.IllegalArgumentException', withMessage= '/must be at least 9/')]
+    public function illegalPacketSize() {
+      $this->newDataStream('', 1);
+    }
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeBytes() {
+      $str= $this->newDataStream();
+      $str->write(0x04, 'Login');
+      $this->assertBytes($this->headerWith(5).'Login', $str);
+    }
+
+
+    /**
+     * Test write() method
+     *
+     */
+    #[@test]
+    public function writeBytesSpanningMultiplePackets() {
+      $str= $this->newDataStream('', 10);
+      $str->write(0x04, 'Test');
+      $this->assertBytes(
+        $this->headerWith(2, FALSE).'Te'.$this->headerWith(2, TRUE).'st', 
+        $str
+      );
     }
   }
 ?>
