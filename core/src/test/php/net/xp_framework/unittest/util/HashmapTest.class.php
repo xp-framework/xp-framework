@@ -361,5 +361,16 @@
       }
       $this->assertEquals(4, $i);
     }    
+    
+        /**
+     * Test
+     */
+    #[@test]
+    public function containsKey_should_return_true_even_for_null_values() {
+      $map= new  Hashmap();
+      $map->put("myKey", NULL);
+
+      $this->assertTrue($map->containsKey("myKey"));
+    }
   }
 ?>
