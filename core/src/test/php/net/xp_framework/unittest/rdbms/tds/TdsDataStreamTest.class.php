@@ -156,13 +156,66 @@
     }
 
     /**
-     * Test
+     * Test getString()
      *
      */
     #[@test]
     public function getString() {
       $str= $this->newDataStream($this->headerWith(9)."\x04T\x00e\x00s\x00t\x00");
       $this->assertEquals('Test', $str->getString($str->getByte()));
+    }
+
+    /**
+     * Test getToken()
+     *
+     */
+    #[@test]
+    public function getToken() {
+      $str= $this->newDataStream($this->headerWith(1)."\x07");
+      $this->assertEquals("\x07", $str->getToken());
+    }
+
+    /**
+     * Test getByte()
+     *
+     */
+    #[@test]
+    public function getByte() {
+      $str= $this->newDataStream($this->headerWith(1)."\x07");
+      $this->assertEquals(0x07, $str->getByte());
+    }
+
+    /**
+     * Test getShort()
+     *
+     */
+    #[@test]
+    public function getShort() {
+      $str= $this->newDataStream($this->headerWith(2)."\x07\x08");
+      $this->assertEquals(0x0807, $str->getShort());
+    }
+
+    /**
+     * Test getLong()
+     *
+     */
+    #[@test]
+    public function getLong() {
+      $str= $this->newDataStream($this->headerWith(4)."\x05\x06\x07\x08");
+      $this->assertEquals(0x8070605, $str->getLong());
+    }
+
+    /**
+     * Test get()
+     *
+     */
+    #[@test]
+    public function get() {
+      $str= $this->newDataStream($this->headerWith(4)."\x05\x06\x07\x08");
+      $this->assertEquals(
+        array('length' => 0x05, 'flags' => 0x06, 'state' => 0x0807),
+        $str->get("Clength/Cflags/vstate", 4)
+      );
     }
 
     /**
