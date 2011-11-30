@@ -293,6 +293,7 @@
         for ($i= 0; $i < $length; $i++) {
           $this->stream->read($this->stream->getByte());
         }
+        $this->stream->read(1);   // ???
       } else if ("\xD1" !== $token) {
         // DEBUG Console::$err->writeLinef('END TOKEN %02x', ord($token));
         $this->done= TRUE;
