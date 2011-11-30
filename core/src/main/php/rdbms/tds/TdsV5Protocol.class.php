@@ -29,69 +29,58 @@
      * @throws  io.IOException
      */
     protected function login($user, $password) {
-     $packet= pack('a30Ca30Ca30Ca30C',
-        'localhost', min(30, strlen('localhost')),
-        $user, min(30, strlen($user)),
-        $password, min(30, strlen($password)),
-        (string)getmypid(), min(30, strlen(getmypid()))
-      );
-
-      $packet.= pack('CCCCCCCCCN',
-        0x03, 0x01, 0x06, 0x0a, 0x09, 0x01,   // magic bytes (1)
-        0,                                    // connection->bulk_copy ?
-        0x00, 0x00,                           // magic bytes (2)
-        0x00                                  // 4 null bytes for TDS5.0
-      );
-
-      $packet.= pack('CCCa30Ca30C',
-        0x00, 0x00, 0x00,                    // magic bytes (3)
-        $this->getClassName(), min(30, strlen($this->getClassName())),
-        'localhost', min(30, strlen('localhost'))
-      );
-
-      // Put password2
       if (strlen($password) > 253) {
         throw new IllegalArgumentException('Password length must not exceed 253 bytes.');
       }
-      $packet.= pack('xCa253C', strlen($password), $password, strlen($password)+ 2);
 
-      // Protocol & program version (TDS 5.0)
-      $packet.= pack('CCCC', 0x05, 0x00, 0x00, 0x00); // Protocol
-      $packet.= pack('a10C', 'Ct-Library', strlen('Ct-Library')); // Client library name
-      $packet.= pack('CCCC', 0x05, 0x00, 0x00, 0x00); // Program
-
-
-      $packet.= pack('CCC', 0x00, 0x0d, 0x11);        // Magic bytes (4)
-      $packet.= pack('a30CC',
-        'us_english',                                 // language,
-        strlen('us_english'),                         // length of language
-        0x00                                          // "connection->suppress_language"
+      $packetSize= (string)$this->defaultPacketSize();
+      $packet= pack(
+        'a30Ca30Ca30Ca30CCCCCCCCCCx7a30Ca30Cx2a253CCCCCa10CCCCCCCCa30CCnx8nCa30CCa6Cx8',
+        'localhost', min(30, strlen('localhost')),
+        $user, min(30, strlen($user)),
+        $password, min(30, strlen($password)),
+        (string)getmypid(), min(30, strlen(getmypid())),
+        0x03,       // Byte order for 2 byte ints: 2 = <MSB, LSB>, 3 = <LSB, MSB>
+        0x01,       // Byte order for 4 byte ints: 0 = <MSB, LSB>, 1 = <LSB, MSB>
+        0x06,       // Character rep (6 = ASCII, 7 = EBCDIC)
+        0x0A,       // Eight byte floating point rep (10 =  IEEE <LSB, ..., MSB>)
+        0x09,       // Eight byte date format (8 = <MSB, ..., LSB>)
+        0x01,       // Notify of "use db"
+        0x01,       // Disallow dump/load and bulk insert
+        0x00,       // SQL Interface type
+        0x00,       // Type of network connection
+        $this->getClassName(), min(30, strlen($this->getClassName())),
+        'localhost', min(30, strlen('localhost')),
+        $password, strlen($password)+ 2,    // Remote passwords
+        0x05, 0x00, 0x00, 0x00,             // TDS Version
+        'Ct-Library', strlen('Ct-Library'), // Client library name
+        0x06, 0x00, 0x00, 0x00,             // Prog version
+        0x00,                               // Auto convert short
+        0x0D,                               // Type of flt4
+        0x11,                               // Type of date4
+        'us_english', strlen('us_english'), // Language
+        0x00,                               // Notify on lang change
+        0x00,                               // Security label hierarchy
+        0x00,                               // Security spare
+        0x00,                               // Security login role
+        'iso_1', strlen('iso_1'),           // Charset
+        0x01,                               // Notify on charset change
+        $packetSize, strlen($packetSize)    // Network packet size (in text!)
       );
-      $packet.= pack('xx');                           // Magic bytes (5)
-      $packet.= pack('C', 0);                         // connection->encryption_level (1 / 0)
-      $packet.= pack('xxxxxxxxxx');                   // Magic bytes (6)
 
-      // Char set
-      $packet.= pack('a30CC', 'iso_1', strlen('iso_1'), 1);
-
-      // Network packet size (in text!)
-      $size= (string)$this->defaultPacketSize();
-      $packet.= pack('a6C', $size, strlen($size));
-
-      // TDS 5.0 specific end
-      $packet.= pack('xxxx');
-      $packet.= pack('C', 0xE2);                      // 0xE2 = 226 = TDS_CAPABILITY_TOKEN
-      $packet.= pack('n', 22);                        // 22 = TDS_MAX_CAPABILITY
-
-      // TODO: Capability tokens should not be hardcoded, but meaningful;
-      // anyways, this works.
-      $packet.= pack('CCCCCCCCCCCCCCCCCCxxxx',
-        0x01, 0x07, 0x00, 0x60, 0x81, 0xcf, 0xFF, 0xFE, 0x3e,
-        0x02, 0x07, 0x00, 0x00, 0x00, 0x78, 0xc0, 0x00, 0x00
+      // Capabilities
+      $capabilities= pack(
+        'CnCCCCCCCCCCCCCCCCCC',
+        0xE2,                               // TDS_CAPABILITY_TOKEN
+        20,
+        0x01,                               // TDS_CAP_REQUEST
+        0x03, 0xEF, 0x65, 0x41, 0xFF, 0xFF, 0xFF, 0xD6,
+        0x02,                               // TDS_CAP_RESPONSE
+        0x00, 0x00, 0x00, 0x06, 0x48, 0x00, 0x00, 0x08
       );
 
       // Login
-      $this->stream->write(self::MSG_LOGIN, $packet);
+      $this->stream->write(self::MSG_LOGIN, $packet.$capabilities);
     }
     
     /**
