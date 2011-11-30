@@ -122,6 +122,45 @@
     protected abstract function login($user, $password);
 
     /**
+     * Handles ERROR messages (0xAA)
+     *
+     * @throws  rdbms.tds.TdsProtocolException
+     */
+    protected function handleError() {
+      $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
+      $this->done= TRUE;
+      throw new TdsProtocolException(
+        $this->stream->getString($this->stream->getShort()),
+        $meta['number'],
+        $meta['state'],
+        $meta['class'],
+        $this->stream->getString($this->stream->getByte()),
+        $this->stream->getString($this->stream->getByte()),
+        $this->stream->getByte()
+      );
+    }
+
+    /**
+     * Handles EED messages (0xE5)
+     *
+     * @throws  rdbms.tds.TdsProtocolException
+     */
+    protected function handleExtendedError() {
+      $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
+      $this->stream->read($this->stream->getByte() + 1 + 2); // Skip SQLState, Status, TranState
+      $this->done= TRUE;
+      throw new TdsProtocolException(
+        $this->stream->read($this->stream->getShort()),
+        $meta['number'],
+        $meta['state'],
+        $meta['class'],
+        $this->stream->read($this->stream->getByte()),
+        $this->stream->read($this->stream->getByte()),
+        $this->stream->getByte()
+      );
+    }
+
+    /**
      * Connect
      *
      * @param   string user
@@ -132,7 +171,28 @@
       $this->stream->connect();
       $this->login($user, $password);
       $response= $this->read();
-      $this->cancel();    // TODO: Handle response, e.g. ENVCHANGE
+
+      if ("\xAD" === $response) {   // TDS_LOGINACK
+        $meta= $this->stream->get('vlength/Cstatus', 3);
+        switch ($meta['status']) {
+          case 5:     // TDS_LOG_SUCCEED
+            $this->stream->read($meta['length']- 1);
+            break;
+
+          case 6:     // TDS_LOG_FAIL
+            $this->stream->read($meta['length']- 1);
+            $this->stream->getToken();    // 0xE5
+            $this->handleExtendedError();
+            break;
+
+          case 7:     // TDS_LOG_NEGOTIATE
+            $this->stream->read($meta['length']- 1);
+            throw new TdsProtocolException('Negotiation not yet implemented');
+        }
+      } else {
+        $this->cancel();    // TODO: Handle response, e.g. ENVCHANGE
+      }
+
       $this->connected= TRUE;
     }
     
@@ -155,30 +215,9 @@
       // Handle errors - see also 2.2.5.7: Data Buffer Stream Tokens
       $token= $this->stream->getToken();
       if ("\xAA" === $token) {
-        $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
-        $this->done= TRUE;
-        throw new TdsProtocolException(
-          $this->stream->getString($this->stream->getShort()),
-          $meta['number'], 
-          $meta['state'], 
-          $meta['class'],
-          $this->stream->getString($this->stream->getByte()),
-          $this->stream->getString($this->stream->getByte()),
-          $this->stream->getByte()
-        );
+        $this->handleError();
       } else if ("\xE5" === $token) {
-        $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
-        $this->stream->read($this->stream->getByte() + 1 + 2); // Skip SQLState, Status, TranState
-        $this->done= TRUE;
-        throw new TdsProtocolException(
-          $this->stream->read($this->stream->getShort()),
-          $meta['number'], 
-          $meta['state'], 
-          $meta['class'],
-          $this->stream->read($this->stream->getByte()),
-          $this->stream->read($this->stream->getByte()),
-          $this->stream->getByte()
-        );
+        $this->handleExtendedError();
       }
       
       return $token;
