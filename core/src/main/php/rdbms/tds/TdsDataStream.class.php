@@ -109,15 +109,7 @@
         $chunk= substr($arg, $offset, $length- 8);
         $packet= pack('CCnnCc', $type, $status, $length, 0x0000, $this->pkt, 0).$chunk;
 
-        // DEBUG Console::$err->writeLine('W-> ', array(
-        // DEBUG   'type'    => $type,
-        // DEBUG   'status'  => $status,
-        // DEBUG   'length'  => $length,
-        // DEBUG   'spid'    => 0x0000,
-        // DEBUG   'packet'  => $this->pkt,
-        // DEBUG   'window'  => 0
-        // DEBUG ));
-        // DEBUG Console::$err->writeLine(self::dump($packet));
+        // DEBUG Console::$err->writeLine("W->\n".self::dump($packet));
 
         $this->sock->write($packet);
         $offset+= $length- 8;
@@ -232,9 +224,10 @@
           $this->header['status']= 0x01;
         }
 
-        // DEBUG Console::$err->writeLine('R-> ', $this->header);
         $packet= $this->sock->readBinary($this->header['length'] - 8);
-        // DEBUG Console::$err->writeLine(self::dump($bytes.$packet));
+
+        // DEBUG Console::$err->writeLine("R->\n".self::dump($bytes.$packet));
+
         $this->buffer.= $packet;
       }
 
