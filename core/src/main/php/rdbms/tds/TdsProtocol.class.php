@@ -304,7 +304,6 @@
       foreach ($fields as $i => $field) {
         switch ($field['type']) {
           case self::T_VARCHAR:
-            $this->stream->read(1);   // Skip collation
             $len= $this->stream->getByte();
             $record[$i]= 0 === $len ? NULL : $this->stream->read($len);
             break;
