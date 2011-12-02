@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.Date');
+
   /**
    * Abstract base class for TDS records
    *
@@ -13,6 +15,17 @@
 
     static function __static() {
       self::$precision= ini_get('precision');
+    }
+
+    /**
+     * Convert days and seconds since 01.01.1900 to a date
+     *
+     * @param   int days
+     * @param   int seconds
+     * @return  string
+     */
+    protected function toDate($days, $seconds) {
+      return Date::create(1900, 1, 1 + $days, 0, 0, $seconds / 300);
     }
 
     /**

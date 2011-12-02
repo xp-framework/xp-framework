@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.Socket', 'rdbms.tds.TdsDataStream', 'rdbms.tds.TdsRecord', 'rdbms.tds.TdsProtocolException', 'util.Date');
+  uses('peer.Socket', 'rdbms.tds.TdsDataStream', 'rdbms.tds.TdsRecord', 'rdbms.tds.TdsProtocolException');
 
   /**
    * TDS protocol implementation
@@ -155,9 +155,22 @@
       }');
       self::$records[self::T_DATETIME]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
-          $days= $stream->getLong();
-          $seconds= $stream->getLong();
-          return Date::create(1900, 1, 1 + $days, 0, 0, $seconds / 300);
+          return $this->toDate($stream->getLong(), $stream->getLong());
+        }
+      }');
+      self::$records[self::T_DATETIME4]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          return $this->toDate($stream->getShort(), $stream->getShort() * 60);
+        }
+      }');
+      self::$records[self::T_DATETIMN]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          $len= $stream->getByte();
+          switch ($len) {
+            case 4: return $this->toDate($stream->getShort(), $stream->getShort() * 60); break;
+            case 8: return $this->toDate($stream->getLong(), $stream->getLong()); break;
+            default: return NULL;
+          }
         }
       }');
       self::$records[self::T_MONEYN]= newinstance('rdbms.tds.TdsRecord', array(), '{
