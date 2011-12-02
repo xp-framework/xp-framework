@@ -18,5 +18,7 @@
     
     function getFoo();
     function setFoo($value);
+    
+    function fooWithTypeHint(IEmptyInterface $arg);
   }
 ?>
