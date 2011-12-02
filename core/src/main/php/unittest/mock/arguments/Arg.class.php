@@ -7,7 +7,8 @@
   uses(
     'unittest.mock.arguments.IArgumentMatcher',
     'unittest.mock.arguments.AnyMatcher',
-    'unittest.mock.arguments.TypeMatcher'
+    'unittest.mock.arguments.TypeMatcher',
+    'unittest.mock.MockProxyBuilder'
   );
 
 
