@@ -6,7 +6,8 @@
 
   uses(
     'unittest.mock.arguments.IArgumentMatcher',
-    'unittest.mock.arguments.AnyMatcher'
+    'unittest.mock.arguments.AnyMatcher',
+    'unittest.mock.arguments.TypeMatcher'
   );
 
 
