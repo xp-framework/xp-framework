@@ -349,24 +349,6 @@
     public abstract function query($sql);
 
     /**
-     * Convert lo and hi values to money value
-     *
-     * @param   int lo
-     * @param   int hi
-     * @return  string
-     */
-    public function toMoney($lo, $hi) {
-      if ($hi < 0) {
-        $hi= ~$hi;
-        $lo= ~($lo - 1);
-        $div= -10000;
-      } else {
-        $div= 10000;
-      }
-      return bcdiv(bcadd(bcmul($hi, '4294967296'), $lo), $div, 5);
-    }
-
-    /**
      * Fetches one record
      *
      * @param   [:var][] fields
@@ -394,7 +376,7 @@
           continue;
         }
 
-        $record[$i]= self::$records[$type]->unmarshal($this->stream);
+        $record[$i]= self::$records[$type]->unmarshal($this->stream, $field);
       }
       return $record;
     }

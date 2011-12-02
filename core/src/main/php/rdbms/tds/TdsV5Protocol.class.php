@@ -22,11 +22,7 @@
           for ($n= 0, $m= $pos ? -1 : 1, $i= $len- 4; $i > 0; $i-= 4, $m= bcmul($m, "4294967296")) {
             $n= bcmul(current(unpack("N", substr($bytes, $i, 4))), $m);
           }
-          if (0 === $field["scale"]) {
-            return $n;
-          } else {
-            return bcdiv($n, pow(10, $field["scale"]), $field["prec"]);
-          }
+          return $this->toNumber($n, $field["scale"], $field["prec"]);
         }
       }');
     }
