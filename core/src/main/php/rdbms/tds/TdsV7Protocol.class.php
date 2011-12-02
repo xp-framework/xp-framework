@@ -12,6 +12,24 @@
    */
   class TdsV7Protocol extends TdsProtocol {
 
+    static function __static() {
+      parent::__static();
+      self::$records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          $len= $stream->getByte()- 1;
+          $pos= $stream->getByte();
+          for ($j= 0, $n= 0, $m= $pos ? 1 : -1; $j < $len; $j+= 4, $m= bcmul($m, "4294967296")) {
+            $n= bcadd($n, bcmul($stream->getLong(), $m));
+          }
+          if (0 === $field["scale"]) {
+            return $n;
+          } else {
+            return bcdiv($n, pow(10, $field["scale"]), $field["prec"]);
+          }
+        }
+      }');
+    }
+
     /**
      * Scrambles password
      *
