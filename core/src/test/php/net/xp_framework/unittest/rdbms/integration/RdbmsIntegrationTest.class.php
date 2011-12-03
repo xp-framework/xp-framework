@@ -367,6 +367,15 @@
     }
 
     /**
+     * Test selecting string values
+     *
+     */
+    #[@test]
+    public function selectSpace() {
+      $this->assertEquals(' ', $this->db()->query('select " " as value')->next('value'));
+    }
+
+    /**
      * Test selecting string values with an umlaut inside
      *
      */
@@ -422,6 +431,15 @@
       
       $this->assertInstanceOf('util.Date', $result);
       $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test]
+    public function selectNumericNull() {
+      $this->assertEquals(NULL, $this->db()->query('select convert(numeric(8), NULL) as value')->next('value'));
     }
 
     /**
@@ -494,6 +512,33 @@
     #[@test]
     public function selectCharWithPadding() {
       $this->assertEquals('t   ', $this->db()->query('select cast("t" as char(4)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting varchar values
+     *
+     */
+    #[@test]
+    public function selectEmptyVarChar() {
+      $this->assertEquals('', $this->db()->query('select cast("" as varchar(255)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectVarChar() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as varchar(255)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectNullVarChar() {
+      $this->assertEquals(NULL, $this->db()->query('select cast(NULL as varchar(255)) as value')->next('value'));
     }
     
     /**

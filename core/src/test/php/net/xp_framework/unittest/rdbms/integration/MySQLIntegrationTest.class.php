@@ -42,6 +42,14 @@
       $this->db()->query('create table %c (pk int, username varchar(30)) Engine=InnoDB', $name);
     }
 
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test, @ignore('Numeric not supported by MySQL')]
+    public function selectNumericNull() {
+      parent::selectNumericNull();
+    }
 
     /**
      * Test selecting numeric values
@@ -86,6 +94,33 @@
     #[@test, @ignore('Numeric not supported by MySQL')]
     public function select64BitLongMinMinus1Numeric() {
       parent::select64BitLongMinMinus1Numeric();
+    }
+
+    /**
+     * Test selecting varchar values
+     *
+     */
+    #[@test, @ignore('Cast to varchar not supported by MySQL')]
+    public function selectEmptyVarChar() {
+      parent::selectEmptyVarChar();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to varchar not supported by MySQL')]
+    public function selectVarChar() {
+      parent::selectVarChar();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to varchar not supported by MySQL')]
+    public function selectNullVarChar() {
+      parent::selectNullVarChar();
     }
 
     /**

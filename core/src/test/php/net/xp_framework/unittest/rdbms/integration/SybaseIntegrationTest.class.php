@@ -73,5 +73,15 @@
     public function selectEmptyString() {
       $this->assertEquals(' ', $this->db()->query('select "" as value')->next('value'));
     }
+
+    /**
+     * Test selecting string values
+     *
+     * @see   http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.help.ase_15.0.blocks/html/blocks/blocks258.htm
+     */
+    #[@test]
+    public function selectEmptyVarchar() {
+      $this->assertEquals(' ', $this->db()->query('select cast("" as varchar(255)) as value')->next('value'));
+    }
   }
 ?>
