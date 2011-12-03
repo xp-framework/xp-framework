@@ -23,8 +23,8 @@
           $len= $stream->getByte()- 1;
           $pos= $stream->getByte();
           $bytes= $stream->read($len);
-          for ($n= 0, $m= $pos ? -1 : 1, $i= $len- 4; $i > 0; $i-= 4, $m= bcmul($m, "4294967296")) {
-            $n= bcmul(current(unpack("N", substr($bytes, $i, 4))), $m);
+          for ($n= 0, $m= $pos ? -1 : 1, $i= $len- 4; $i >= 0; $i-= 4, $m= bcmul($m, "4294967296", 0)) {
+            $n= bcadd($n, bcmul(sprintf("%u", current(unpack("N", substr($bytes, $i, 4)))), $m, 0), 0);
           }
           return $this->toNumber($n, $field["scale"], $field["prec"]);
         }
