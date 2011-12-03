@@ -95,7 +95,19 @@
       $mask= $net->getNetmask();
       return $this->addr >> (32 - $mask) == $addrn >> (32 - $mask);
     }
-
+    
+    /**
+     * Create a subnet of this address, with the specified size.
+     *
+     * @param   int subnetSize
+     * @return  Network
+     * @throws  lang.IllegalArgumentException in case the subnetSize is not correct
+     */
+    public function createSubnet($subnetSize) {
+      $addr= $this->addr & (0xFFFFFFFF << (32-$subnetSize));
+      return new Network(new Inet4Address(long2ip($addr)), $subnetSize);
+    }
+    
     /**
      * Equals method
      *
