@@ -22,8 +22,8 @@
         public function unmarshal($stream, $field) {
           $len= $stream->getByte()- 1;
           $pos= $stream->getByte();
-          for ($j= 0, $n= 0, $m= $pos ? 1 : -1; $j < $len; $j+= 4, $m= bcmul($m, "4294967296")) {
-            $n= bcadd($n, bcmul($stream->getLong(), $m));
+          for ($j= 0, $n= 0, $m= $pos ? 1 : -1; $j < $len; $j+= 4, $m= bcmul($m, "4294967296", 0)) {
+            $n= bcadd($n, bcmul(sprintf("%u", $stream->getLong()), $m, 0), 0);
           }
           return $this->toNumber($n, $field["scale"], $field["prec"]);
         }
