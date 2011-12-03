@@ -207,6 +207,8 @@
           return $this->toMoney($stream->getLong(), $stream->getLong());
         }
       }');
+      $this->records[self::T_CHAR]= $this->records[self::T_VARCHAR];
+      $this->records[self::XT_CHAR]= $this->records[self::XT_VARCHAR];
     }
 
     /**
