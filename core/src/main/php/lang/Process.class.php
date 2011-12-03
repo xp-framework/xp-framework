@@ -165,11 +165,11 @@
       // complementing getmypid().
       if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
 
-        // PHP 5.4 has broken COM implementation, use wmic command line tool and
-        // parse its output, which is like:
+        // PHP 5.4 has broken COM implementation (see bug #60167), use wmic command 
+        // line tool and parse its output, which is like:
         // A      B      C
         // ValueA ValueB ValueC
-        if (strstr(PHP_VERSION, '5.4.0')) {
+        if (version_compare(PHP_VERSION, '5.4.0RC2', 'lt')) {
           exec('wmic process where handle="'.$pid.'" get Handle,ExecutablePath,CommandLine 2>&1', $result, $exit);
           if (0 == $exit) {
             $fields= array();
