@@ -63,5 +63,15 @@
       $this->removeTable($name);
       $this->db()->query('create table %c (pk int, username varchar(30))', $name);
     }
+
+    /**
+     * Test selecting string values
+     *
+     * @see   http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.help.ase_15.0.blocks/html/blocks/blocks258.htm
+     */
+    #[@test]
+    public function selectEmptyString() {
+      $this->assertEquals(' ', $this->db()->query('select "" as value')->next('value'));
+    }
   }
 ?>
