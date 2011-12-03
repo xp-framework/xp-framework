@@ -43,7 +43,7 @@
      * @param   string addr
      * @return  string
      */
-    protected static function normalize($addr) {
+    public static function normalize($addr) {
       $out= '';
       $hexquads= explode(':', $addr);
 
@@ -155,7 +155,28 @@
       
       return TRUE;
     }
-
+    
+    /**
+     * Create a subnet of this address, with the specified size.
+     *
+     * @param   int subnetSize
+     * @return  Network
+     * @throws  lang.IllegalArgumentException in case the subnetSize is not correct
+     */
+    public function createSubnet($subnetSize) {
+      $addr=$this->addr;
+      
+      for ($i= 15; $i >= $subnetSize/8; --$i) {
+        $addr{$i}= "\x0";
+      }
+      
+      if($subnetSize%8 > 0) {
+        $lastNibblePos= (int)($subnetSize/8);
+        $lastByte= ord($addr{$lastNibblePos}) & (0xFF<<(8-$subnetSize%8));
+        $addr{$lastNibblePos}=pack("i*", $lastByte);
+      }
+      return new Network(new Inet6Address($addr), $subnetSize);
+    }
     /**
      * Equals method
      *

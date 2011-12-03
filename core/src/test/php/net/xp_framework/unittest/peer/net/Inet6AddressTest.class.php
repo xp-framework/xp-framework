@@ -272,5 +272,27 @@
         create(new Inet6Address('2001:db8::567:89ab'))->reversedNotation()
       );
     }
+    
+        /**
+     * Test reverse address being built
+     *
+     */
+    #[@test]
+    public function createSubnet_creates_subnet_with_trailing_zeros() {
+      $addr= new Inet6Address('febc:a574:382b:23c1:aa49:4592:4efe:9982');
+      $subNetSize= 64;
+      $expAddr= new Inet6Address('febc:a574:382b:23c1::');
+      $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
+      
+      $addr= new Inet6Address('febc:a574:382b:23c1:aa49:4592:4efe:9982');
+      $subNetSize= 48;
+      $expAddr= new Inet6Address('febc:a574:382b::');
+      $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
+      
+      $addr= new Inet6Address('febc:a574:382b:23c1:aa49:4592:4efe:9982');
+      $subNetSize= 35;
+      $expAddr= new Inet6Address('febc:a574:2000::');
+      $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
+    }
   }
 ?>
