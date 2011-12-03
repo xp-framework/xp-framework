@@ -31,11 +31,11 @@
     /**
      * Convert lo and hi values to money value
      *
-     * @param   int lo
      * @param   int hi
+     * @param   int lo
      * @return  string
      */
-    protected function toMoney($lo, $hi) {
+    protected function toMoney($hi, $lo= 0) {
       if ($hi < 0) {
         $hi= ~$hi;
         $lo= ~($lo - 1);

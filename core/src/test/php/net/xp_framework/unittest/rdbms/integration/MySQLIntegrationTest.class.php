@@ -124,6 +124,51 @@
     }
 
     /**
+     * Test selecting money values
+     *
+     */
+    #[@test, @ignore('Money not supported by MySQL')]
+    public function selectMoney() {
+      parent::selectMoney();
+    }
+
+    /**
+     * Test selecting money values
+     *
+     */
+    #[@test, @ignore('Money not supported by MySQL')]
+    public function selectHugeMoney() {
+      parent::selectHugeMoney();
+    }
+
+    /**
+     * Test selecting money values
+     *
+     */
+    #[@test, @ignore('Money not supported by MySQL')]
+    public function selectMoneyOne() {
+      parent::selectMoneyOne();
+    }
+
+    /**
+     * Test selecting money values
+     *
+     */
+    #[@test, @ignore('Money not supported by MySQL')]
+    public function selectMoneyZero() {
+      parent::selectMoneyZero();
+    }
+
+    /**
+     * Test selecting money values
+     *
+     */
+    #[@test, @ignore('Money not supported by MySQL')]
+    public function selectNegativeMoney() {
+      parent::selectNegativeMoney();
+    }
+
+    /**
      * Test selecting char values. Overwritten from parent class, MySQL does
      * not pad the value.
      *
