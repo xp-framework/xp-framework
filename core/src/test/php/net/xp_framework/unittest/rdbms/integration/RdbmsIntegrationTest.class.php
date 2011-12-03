@@ -346,6 +346,15 @@
     }
 
     /**
+     * Test selecting string values
+     *
+     */
+    #[@test]
+    public function selectEmptyString() {
+      $this->assertEquals('', $this->db()->query('select "" as value')->next('value'));
+    }
+
+    /**
      * Test selecting string values with an umlaut inside
      *
      */
@@ -446,6 +455,33 @@
     #[@test]
     public function select64BitLongMinMinus1Numeric() {
       $this->assertEquals('-9223372036854775809', $this->db()->query('select convert(numeric(20), -9223372036854775809) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectEmptyChar() {
+      $this->assertEquals('    ', $this->db()->query('select cast("" as char(4)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectCharWithoutPadding() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as char(4)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectCharWithPadding() {
+      $this->assertEquals('t   ', $this->db()->query('select cast("t" as char(4)) as value')->next('value'));
     }
     
     /**

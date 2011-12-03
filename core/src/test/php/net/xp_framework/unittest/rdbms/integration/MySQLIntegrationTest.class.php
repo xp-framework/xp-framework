@@ -87,5 +87,25 @@
     public function select64BitLongMinMinus1Numeric() {
       parent::select64BitLongMinMinus1Numeric();
     }
+
+    /**
+     * Test selecting char values. Overwritten from parent class, MySQL does
+     * not pad the value.
+     *
+     */
+    #[@test]
+    public function selectEmptyChar() {
+      $this->assertEquals('', $this->db()->query('select cast("" as char(4)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values. Overwritten from parent class, MySQL does
+     * not pad the value.
+     *
+     */
+    #[@test]
+    public function selectCharWithPadding() {
+      $this->assertEquals('t', $this->db()->query('select cast("t" as char(4)) as value')->next('value'));
+    }
   }
 ?>
