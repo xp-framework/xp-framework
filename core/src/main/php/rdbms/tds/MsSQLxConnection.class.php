@@ -11,7 +11,7 @@
   );
 
   /**
-   * Connection to MSSQL Databases via TDS
+   * Connection to MSSQL Databases via TDS 7.0
    *
    * @see   xp://rdbms.tds.TdsConnection
    */

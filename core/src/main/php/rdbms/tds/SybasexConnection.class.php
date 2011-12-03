@@ -11,7 +11,7 @@
   );
 
   /**
-   * Connection to MSSQL Databases via TDS
+   * Connection to Sybase Databases via TDS 5.0
    *
    * @see   xp://rdbms.tds.TdsConnection
    */
