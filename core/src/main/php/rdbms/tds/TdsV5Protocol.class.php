@@ -12,9 +12,13 @@
    */
   class TdsV5Protocol extends TdsProtocol {
   
-    static function __static() {
-      parent::__static();
-      self::$records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
+    /**
+     * Setup record handlers
+     *
+     */
+    protected function setupRecords() {
+      parent::setupRecords();
+      $this->records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getByte()- 1;
           $pos= $stream->getByte();

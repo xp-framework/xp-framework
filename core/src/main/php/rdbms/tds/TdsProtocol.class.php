@@ -17,9 +17,9 @@
   abstract class TdsProtocol extends Object {
     protected $stream= NULL;
     protected $done= FALSE;
+    protected $records= array();
     public $connected= FALSE;
 
-    protected static $records= array();
 
     // Messages
     const MSG_QUERY     = 0x1;
@@ -98,21 +98,35 @@
       self::T_SINT8    => 8,
     );
 
-    static function __static() {
-      self::$records[self::T_VARCHAR]= newinstance('rdbms.tds.TdsRecord', array(), '{
+    /**
+     * Creates a new protocol instance
+     *
+     * @param   peer.Socket s
+     */
+    public function __construct(Socket $s) {
+      $this->stream= new TdsDataStream($s, $this->defaultPacketSize());
+      $this->setupRecords();
+    }
+
+    /**
+     * Setup record handlers
+     *
+     */
+    protected function setupRecords() {
+      $this->records[self::T_VARCHAR]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getByte();
           return 0 === $len ? NULL : $stream->read($len);
         }
       }');
-      self::$records[self::XT_VARCHAR]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::XT_VARCHAR]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getShort();
           return 0xFFFF === $len ? NULL : $stream->read($len);
         }
       }');
-      self::$records[self::XT_NVARCHAR]= self::$records[self::XT_VARCHAR];
-      self::$records[self::T_INTN]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::XT_NVARCHAR]= $this->records[self::XT_VARCHAR];
+      $this->records[self::T_INTN]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getByte();
           switch ($len) {
@@ -123,22 +137,22 @@
           }
         }
       }');
-      self::$records[self::T_INT1]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_INT1]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $stream->getByte();
         }
       }');
-      self::$records[self::T_INT2]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_INT2]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $stream->getShort();
         }
       }');
-      self::$records[self::T_INT4]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_INT4]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $stream->getLong();
         }
       }');
-      self::$records[self::T_FLTN]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_FLTN]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {  // TODO: Convert to float
           $len= $stream->getByte();
           switch ($len) {
@@ -148,22 +162,22 @@
           }
         }
       }');
-      self::$records[self::T_FLT8]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_FLT8]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {  // TODO: Convert to float
           return array($stream->getLong(), $stream->getLong());
         }
       }');
-      self::$records[self::T_DATETIME]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_DATETIME]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $this->toDate($stream->getLong(), $stream->getLong());
         }
       }');
-      self::$records[self::T_DATETIME4]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_DATETIME4]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $this->toDate($stream->getShort(), $stream->getShort() * 60);
         }
       }');
-      self::$records[self::T_DATETIMN]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_DATETIMN]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getByte();
           switch ($len) {
@@ -173,7 +187,7 @@
           }
         }
       }');
-      self::$records[self::T_MONEYN]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_MONEYN]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getByte();
           switch ($len) {
@@ -183,25 +197,16 @@
           }
         }
       }');
-      self::$records[self::T_MONEY4]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_MONEY4]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $this->toMoney($stream->getLong());
         }
       }');
-      self::$records[self::T_MONEY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $this->records[self::T_MONEY]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $this->toMoney($stream->getLong(), $stream->getLong());
         }
       }');
-    }
-
-    /**
-     * Creates a new protocol instance
-     *
-     * @param   peer.Socket s
-     */
-    public function __construct(Socket $s) {
-      $this->stream= new TdsDataStream($s, $this->defaultPacketSize());
     }
 
     /**
@@ -384,12 +389,12 @@
       $record= array();
       foreach ($fields as $i => $field) {
         $type= $field['type'];
-        if (!isset(self::$records[$type])) {
+        if (!isset($this->records[$type])) {
           Console::$err->writeLinef('Unknown field type 0x%02x', $type);
           continue;
         }
 
-        $record[$i]= self::$records[$type]->unmarshal($this->stream, $field);
+        $record[$i]= $this->records[$type]->unmarshal($this->stream, $field);
       }
       return $record;
     }
