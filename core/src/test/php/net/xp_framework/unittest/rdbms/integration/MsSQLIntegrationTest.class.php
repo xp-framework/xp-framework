@@ -7,7 +7,7 @@
   uses('net.xp_framework.unittest.rdbms.integration.RdbmsIntegrationTest');
 
   /**
-   * Sybase integration test
+   * MSSQL integration test
    *
    * @ext       mssql
    */
