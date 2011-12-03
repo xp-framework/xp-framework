@@ -20,7 +20,7 @@
       parent::setupRecords();
       $this->records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
-          $len= $stream->getByte()- 1;
+          if (-1 === ($len= $stream->getByte()- 1)) return NULL;
           $pos= $stream->getByte();
           $bytes= $stream->read($len);
           if ($i= ($len % 4)) {
