@@ -18,6 +18,10 @@
   class TdsDataStreamTest extends TestCase {
     protected static $sock;
   
+    /**
+     * Defines the mock socket class necessary for these tests
+     *
+     */
     #[@beforeClass]
     public static function mockSocket() {
       self::$sock= ClassLoader::defineClass('net.xp_framework.unittest.rdbms.tds.MockTdsSocket', 'peer.Socket', array(), '{
