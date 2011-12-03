@@ -59,6 +59,10 @@
             $return[$info['name']]= (double)$value;
             break;
 
+          case 253:   // CHAR
+            $return[$info['name']]= (string)$value;
+            break;
+
           default:
             $return[$info['name']]= $value;
         }
