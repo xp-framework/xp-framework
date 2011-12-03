@@ -376,17 +376,21 @@
      */
     public function fetch($fields) {
       $token= $this->stream->getToken();
-      if ("\xAE" === $token) {    // TDS_CONTROL
-        $length= $this->stream->getShort();
-        for ($i= 0; $i < $length; $i++) {
-          $this->stream->read($this->stream->getByte());
+      do {
+        $continue= FALSE;
+        if ("\xAE" === $token) {    // TDS_CONTROL
+          $length= $this->stream->getShort();
+          for ($i= 0; $i < $length; $i++) {
+            $this->stream->read($this->stream->getByte());
+          }
+          $token= $this->stream->getToken();
+          $continue= TRUE;
+        } else if ("\xD1" !== $token) {
+          // DEBUG Console::$err->writeLinef('END TOKEN %02x', ord($token));
+          $this->done= TRUE;
+          return NULL;
         }
-        $this->stream->read(1);   // ???
-      } else if ("\xD1" !== $token) {
-        // DEBUG Console::$err->writeLinef('END TOKEN %02x', ord($token));
-        $this->done= TRUE;
-        return NULL;
-      }
+      } while ($continue);
       
       $record= array();
       foreach ($fields as $i => $field) {
