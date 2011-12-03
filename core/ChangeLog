@@ -27,7 +27,7 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Fixed peer.BSDSocket connect timout
+- Fixed peer.BSDSocket connect timeout - see pull request #86
   (ohinckel)
 - Fixed rdbms.DSN::equals() method to no longer regard differing observer
   params as equal
