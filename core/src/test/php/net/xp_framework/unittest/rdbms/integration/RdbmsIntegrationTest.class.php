@@ -335,7 +335,7 @@
     public function selectNegativeInteger() {
       $this->assertEquals(-6100, $this->db()->query('select -6100 as value')->next('value'));
     }
-    
+
     /**
      * Test selecting string values
      *
@@ -401,6 +401,51 @@
       
       $this->assertInstanceOf('util.Date', $result);
       $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test]
+    public function selectNumeric() {
+      $this->assertEquals(1, $this->db()->query('select convert(numeric(8), 1) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test]
+    public function selectNumericZero() {
+      $this->assertEquals(0, $this->db()->query('select convert(numeric(8), 0) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test]
+    public function selectNegativeNumeric() {
+      $this->assertEquals(-6100, $this->db()->query('select convert(numeric(8), -6100) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test]
+    public function select64BitLongMaxPlus1Numeric() {
+      $this->assertEquals('9223372036854775808', $this->db()->query('select convert(numeric(20), 9223372036854775808) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test]
+    public function select64BitLongMinMinus1Numeric() {
+      $this->assertEquals('-9223372036854775809', $this->db()->query('select convert(numeric(20), -9223372036854775809) as value')->next('value'));
     }
     
     /**

@@ -41,5 +41,51 @@
       $this->removeTable($name);
       $this->db()->query('create table %c (pk int, username varchar(30)) Engine=InnoDB', $name);
     }
+
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test, @ignore('Numeric not supported by MySQL')]
+    public function selectNumeric() {
+      parent::selectNumeric();
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test, @ignore('Numeric not supported by MySQL')]
+    public function selectNumericZero() {
+      parent::selectNumericZero();
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test, @ignore('Numeric not supported by MySQL')]
+    public function selectNegativeNumeric() {
+      parent::selectNegativeNumeric();
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test, @ignore('Numeric not supported by MySQL')]
+    public function select64BitLongMaxPlus1Numeric() {
+      parent::select64BitLongMaxPlus1Numeric();
+    }
+
+    /**
+     * Test selecting numeric values
+     *
+     */
+    #[@test, @ignore('Numeric not supported by MySQL')]
+    public function select64BitLongMinMinus1Numeric() {
+      parent::select64BitLongMinMinus1Numeric();
+    }
   }
 ?>
