@@ -64,5 +64,18 @@
       $this->removeTable($name);
       $this->db()->query('create table %c (pk int, username varchar(30))', $name);
     }
+
+    /**
+     * Test selecting date values returns util.Date objects
+     *
+     */
+    #[@test]
+    public function selectDate() {
+      $cmp= new Date('2009-08-14 12:45:00');
+      $result= $this->db()->query('select convert(datetime, %s, 120) as value', $cmp)->next('value');
+
+      $this->assertInstanceOf('util.Date', $result);
+      $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
+    }
   }
 ?>
