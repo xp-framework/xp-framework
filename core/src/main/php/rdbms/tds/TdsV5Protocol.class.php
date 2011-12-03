@@ -23,6 +23,10 @@
           $len= $stream->getByte()- 1;
           $pos= $stream->getByte();
           $bytes= $stream->read($len);
+          if ($i= ($len % 4)) {
+            $bytes= str_repeat("\0", 4 - $i).$bytes;
+            $len+= 4 - $i;
+          }
           for ($n= 0, $m= $pos ? -1 : 1, $i= $len- 4; $i >= 0; $i-= 4, $m= bcmul($m, "4294967296", 0)) {
             $n= bcadd($n, bcmul(sprintf("%u", current(unpack("N", substr($bytes, $i, 4)))), $m, 0), 0);
           }
