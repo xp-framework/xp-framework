@@ -585,7 +585,7 @@
       $this->createTable();
       $db= $this->db();
 
-      $db->open('select * from unittest');
+      $db->open('select * from %c', $this->tableName());
 
       $this->assertEquals(1, $db->query('select 1 as num')->next('num'));
     }
@@ -599,7 +599,7 @@
       $this->createTable();
       $db= $this->db();
 
-      $q= $db->open('select * from unittest');
+      $q= $db->open('select * from %c', $this->tableName());
       $this->assertEquals(array('pk' => 1, 'username' => 'kiesel'), $q->next());
 
       $this->assertEquals(1, $db->query('select 1 as num')->next('num'));
