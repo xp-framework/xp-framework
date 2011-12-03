@@ -28,6 +28,15 @@
           
 
     /**
+     * Creates table name
+     *
+     * @return  string
+     */
+    protected function tableName() {
+      return '#unittest';
+    }
+
+    /**
      * Retrieve dsn
      *
      * @return  string

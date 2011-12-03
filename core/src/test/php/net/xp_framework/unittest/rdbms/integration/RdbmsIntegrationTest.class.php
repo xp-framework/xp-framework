@@ -162,7 +162,7 @@
     #[@test]
     public function emptyQuery() {
       $this->createTable();
-      $q= $this->db()->query('select * from unittest where 1=0');
+      $q= $this->db()->query('select * from %c where 1 = 0', $this->tableName());
       $this->assertInstanceOf('rdbms.ResultSet', $q);
       $this->assertEquals(FALSE, $q->next());
     }
@@ -178,16 +178,25 @@
         $this->db()->query('drop table %c', $name);
       } catch (SQLStatementFailedException $ignored) {}
     }
-    
+
+    /**
+     * Creates table name
+     *
+     * @return  string
+     */
+    protected function tableName() {
+      return 'unittest';
+    }
+
     /**
      * Create autoincrement table
      *
      */
     protected function createTable() {
-      $this->removeTable('unittest');
-      $this->db()->query('create table unittest (pk int, username varchar(30))');
-      $this->db()->insert('into unittest values (1, "kiesel")');
-      $this->db()->insert('into unittest values (2, "kiesel")');
+      $this->removeTable($this->tableName());
+      $this->db()->query('create table %c (pk int, username varchar(30))', $this->tableName());
+      $this->db()->insert('into %c values (1, "kiesel")', $this->tableName());
+      $this->db()->insert('into %c values (2, "kiesel")', $this->tableName());
     }
 
     /**
@@ -215,7 +224,7 @@
     #[@test]
     public function insertViaQuery() {
       $this->createTable();
-      $this->assertTrue($this->db()->query('insert into unittest values (1, "kiesel")'));
+      $this->assertTrue($this->db()->query('insert into %c values (1, "kiesel")', $this->tableName()));
     }
 
     /**
@@ -225,7 +234,7 @@
     #[@test]
     public function insertIntoTable() {
       $this->createTable();
-      $this->assertEquals(1, $this->db()->insert('into unittest values (2, "xp")'));
+      $this->assertEquals(1, $this->db()->insert('into %c values (2, "xp")', $this->tableName()));
     }
 
     /**
@@ -235,7 +244,7 @@
     #[@test]
     public function updateViaQuery() {
       $this->createTable();
-      $this->assertTrue($this->db()->query('update unittest set pk= pk+ 1 where pk= 2'));
+      $this->assertTrue($this->db()->query('update %c set pk= pk+ 1 where pk= 2', $this->tableName()));
     }
     
     /**
@@ -245,7 +254,7 @@
     #[@test]
     public function updateTable() {
       $this->createTable();
-      $this->assertEquals(1, $this->db()->update('unittest set pk= pk+ 1 where pk= 1'));
+      $this->assertEquals(1, $this->db()->update('%c set pk= pk+ 1 where pk= 1', $this->tableName()));
     }
 
     /**
@@ -255,7 +264,7 @@
     #[@test]
     public function deleteViaQuery() {
       $this->createTable();
-      $this->assertTrue($this->db()->query('delete from unittest where pk= 2'));
+      $this->assertTrue($this->db()->query('delete from %c where pk= 2', $this->tableName()));
     }
     
     /**
@@ -265,7 +274,7 @@
     #[@test]
     public function deleteFromTable() {
       $this->createTable();
-      $this->assertEquals(1, $this->db()->delete('from unittest where pk= 1'));
+      $this->assertEquals(1, $this->db()->delete('from %c where pk= 1', $this->tableName()));
     }
     
     /**
@@ -274,12 +283,12 @@
      */
     #[@test]
     public function identity() {
-      $this->createAutoIncrementTable('unittest_ai');      
-      $this->assertEquals(1, $this->db()->insert('into unittest_ai (username) values ("kiesel")'));
-      $first= $this->db()->identity('unittest_ai_pk_seq');
+      $this->createAutoIncrementTable($this->tableName());      
+      $this->assertEquals(1, $this->db()->insert('into %c (username) values ("kiesel")', $this->tableName()));
+      $first= $this->db()->identity('unittest_pk_seq');
       
-      $this->assertEquals(1, $this->db()->insert('into unittest_ai (username) values ("kiesel")'));
-      $this->assertEquals($first+ 1, $this->db()->identity('unittest_ai_pk_seq'));
+      $this->assertEquals(1, $this->db()->insert('into %c (username) values ("kiesel")', $this->tableName()));
+      $this->assertEquals($first+ 1, $this->db()->identity('unittest_pk_seq'));
     }
     
     /**
@@ -441,14 +450,17 @@
      */
     #[@test]
     public function rolledBackTransaction() {
-      $this->createTransactionsTable('unittest');
+      $this->createTransactionsTable($this->tableName());
       $db= $this->db();
 
       $tran= $db->begin(new Transaction('test'));
-      $db->insert('into unittest values (1, "should_not_be_here")');
+      $db->insert('into %c values (1, "should_not_be_here")', $this->tableName());
       $tran->rollback();
       
-      $this->assertEquals(array(), $db->select('* from unittest'));
+      $this->assertEquals(
+        array(), 
+        $db->select('* from %c',$this->tableName())
+      );
     }
 
 
@@ -458,14 +470,17 @@
      */
     #[@test]
     public function committedTransaction() {
-      $this->createTransactionsTable('unittest');
+      $this->createTransactionsTable($this->tableName());
       $db= $this->db();
 
       $tran= $db->begin(new Transaction('test'));
-      $db->insert('into unittest values (1, "should_be_here")');
+      $db->insert('into %c values (1, "should_be_here")', $this->tableName());
       $tran->commit();
       
-      $this->assertEquals(array(array('pk' => 1, 'username' => 'should_be_here')), $db->select('* from unittest'));
+      $this->assertEquals(
+        array(array('pk' => 1, 'username' => 'should_be_here')), 
+        $db->select('* from %c', $this->tableName())
+      );
     }
   }
 ?>
