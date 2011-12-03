@@ -377,7 +377,6 @@
     public function fetch($fields) {
       $token= $this->stream->getToken();
       do {
-        $continue= FALSE;
         if ("\xAE" === $token) {    // TDS_CONTROL
           $length= $this->stream->getShort();
           for ($i= 0; $i < $length; $i++) {
@@ -389,6 +388,8 @@
           // DEBUG Console::$err->writeLinef('END TOKEN %02x', ord($token));
           $this->done= TRUE;
           return NULL;
+        } else {
+          $continue= FALSE;
         }
       } while ($continue);
       
