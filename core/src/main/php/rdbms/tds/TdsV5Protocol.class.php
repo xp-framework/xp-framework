@@ -12,13 +12,15 @@
    */
   class TdsV5Protocol extends TdsProtocol {
   
+    static function __static() { }
+  
     /**
      * Setup record handlers
      *
+     * @return  [:rdbms.tds.TdsRecord] handlers
      */
     protected function setupRecords() {
-      parent::setupRecords();
-      $this->records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
+      $records[self::T_NUMERIC]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           if (-1 === ($len= $stream->getByte()- 1)) return NULL;
           $pos= $stream->getByte();
@@ -33,6 +35,7 @@
           return $this->toNumber($n, $field["scale"], $field["prec"]);
         }
       }');
+      return $records;
     }
 
     /**
