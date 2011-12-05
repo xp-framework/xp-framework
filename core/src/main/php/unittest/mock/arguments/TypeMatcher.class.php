@@ -12,15 +12,18 @@
   * @purpose Argument Matching
   */
   class TypeMatcher extends Object implements IArgumentMatcher, InvocationHandler  {
-    private $type;
+    private 
+      $type,
+      $matchNull;
     
     /**
      * Constructor.
      * 
      * @param value string
      */
-    public function __construct($type) {
+    public function __construct($type, $matchNull= true) {
       $this->type= $type;
+      $this->matchNull= $machtNull;
     }
     
     /**
@@ -29,6 +32,9 @@
      * @param value mixed
      */
     public function matches($value) {
+      if(NULL === $value && $this->matchNull)
+        return true;
+      
       return xp::typeof($value) == XPClass::forName($this->type)->getName();
     }
 
