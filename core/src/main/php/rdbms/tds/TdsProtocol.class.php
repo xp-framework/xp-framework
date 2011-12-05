@@ -20,6 +20,8 @@
     protected $records= array();
     public $connected= FALSE;
 
+    // Record handler cache per base class implementation
+    protected static $recordsFor= array();
 
     // Messages
     const MSG_QUERY     = 0x1;
@@ -105,7 +107,15 @@
      */
     public function __construct(Socket $s) {
       $this->stream= new TdsDataStream($s, $this->defaultPacketSize());
-      $this->setupRecords();
+
+      // Cache record handlers per instance
+      $impl= $this->getClassName();
+      if (!isset(self::$recordsFor[$impl])) {
+        $this->setupRecords();
+        self::$recordsFor[$impl]= $this->records;
+      } else {
+        $this->records= self::$recordsFor[$impl];
+      }
     }
 
     /**
