@@ -33,7 +33,7 @@
      *
      * @param   int hi
      * @param   int lo
-     * @return  string
+     * @return  double
      */
     protected function toMoney($hi, $lo= 0) {
       if ($hi < 0) {
@@ -43,7 +43,7 @@
       } else {
         $div= 10000;
       }
-      return bcdiv(bcadd(bcmul($hi, '4294967296'), $lo), $div, 5);
+      return (double)bcdiv(bcadd(bcmul($hi, '4294967296'), $lo), $div, 5);
     }
 
     /**

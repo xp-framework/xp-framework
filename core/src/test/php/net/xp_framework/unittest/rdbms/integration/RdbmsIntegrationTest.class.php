@@ -547,7 +547,7 @@
      */
     #[@test]
     public function selectMoney() {
-      $this->assertEquals('0.50000', $this->db()->query('select $0.5 as value')->next('value'));
+      $this->assertEquals(0.5, $this->db()->query('select $0.5 as value')->next('value'));
     }
 
     /**
@@ -556,7 +556,7 @@
      */
     #[@test]
     public function selectHugeMoney() {
-      $this->assertEquals('2147483648.00000', $this->db()->query('select $2147483648 as value')->next('value'));
+      $this->assertEquals(2147483648.0, $this->db()->query('select $2147483648 as value')->next('value'));
     }
 
     /**
@@ -565,7 +565,7 @@
      */
     #[@test]
     public function selectMoneyOne() {
-      $this->assertEquals('1.00000', $this->db()->query('select $1.0 as value')->next('value'));
+      $this->assertEquals(1.0, $this->db()->query('select $1.0 as value')->next('value'));
     }
 
     /**
@@ -574,7 +574,7 @@
      */
     #[@test]
     public function selectMoneyZero() {
-      $this->assertEquals('0.00000', $this->db()->query('select $0.0 as value')->next('value'));
+      $this->assertEquals(0.0, $this->db()->query('select $0.0 as value')->next('value'));
     }
 
     /**
@@ -583,7 +583,7 @@
      */
     #[@test]
     public function selectNegativeMoney() {
-      $this->assertEquals('-6.10000', $this->db()->query('select -$6.1 as value')->next('value'));
+      $this->assertEquals(-6.1, $this->db()->query('select -$6.1 as value')->next('value'));
     }
 
     /**
