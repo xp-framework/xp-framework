@@ -9,7 +9,7 @@
   /**
    * Lookup host name and port to connect to by sql.ini file
    *
-   *
+   * @test    xp://net.xp_framework.unittest.rdbms.tds.SqlIniLookupTest
    */
   class SqlIniLookup extends Object implements rdbms·tds·ConnectionLookup {
     protected $ini= NULL;
