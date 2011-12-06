@@ -7,8 +7,8 @@
   uses(
     'rdbms.tds.TdsConnection',
     'rdbms.tds.TdsV5Protocol',
-    'rdbms.sybase.SybaseDialect',
-    'io.File'
+    'rdbms.tds.ConnectionLookup',
+    'rdbms.sybase.SybaseDialect'
   );
 
   /**
@@ -21,73 +21,12 @@
 
     static function __static() {
       if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
-        self::$lookup= 'useSqlIni';
+        self::$lookup= XPClass::forName('rdbms.tds.SqlIniLookup')->newInstance();
       } else if (getenv('SYBASE')) {
-        self::$lookup= 'useInterfaces';
+        self::$lookup= XPClass::forName('rdbms.tds.InterfacesLookup')->newInstance();
       } else {
-        self::$lookup= 'useFreeTds';
+        self::$lookup= XPClass::forName('rdbms.tds.FreeTdsLookup')->newInstance();
       }
-    }
-
-    /**
-     * Parse an ini file
-     *
-     * @param   string ini
-     * @return  [:[:string]] sections
-     */
-    protected function parseIni($ini) {
-      $f= new File($ini);
-      $f->open(FILE_MODE_READ);
-      $section= NULL;
-      $sections= array();
-      while (FALSE !== ($line= $f->readLine())) {
-        if ('' === $line || ';' === $line{0}) {
-          continue;
-        } else if ('[' === $line{0}) {
-          $section= strtolower(trim($line, '[]'));
-        } else if (FALSE !== ($p= strpos($line, '='))) {
-          $key= trim(substr($line, 0, $p));
-          $value= trim(substr($line, $p+ 1));
-          $sections[$section][$key]= $value;
-        }
-      }
-      $f->close();
-      return $sections;
-    }
-
-    /**
-     * Use sql.ini file if possible
-     *
-     * @param   rdbms.DSN dsn
-     */
-    protected function useSqlIni($dsn) {
-      if (!file_exists($ini= getenv('SYBASE').'\\ini\\sql.ini')) return;
-
-      $host= strtolower($dsn->getHost());
-      $sections= $this->parseIni($ini);
-      if (!isset($sections[$host])) return;
-
-      sscanf($sections[$host]['query'], '%[^,],%[^,],%d', $proto, $host, $port);
-      $dsn->url->setHost(gethostbyname($host));
-      $dsn->url->setPort($port);
-    }
-
-    /**
-     * Use Sybase interfaces file if possible
-     *
-     * @param   rdbms.DSN dsn
-     */
-    protected function useInterfaces($dsn) {
-      // TODO
-    }
-
-    /**
-     * Use FreeTDS config file if possible
-     *
-     * @param   rdbms.DSN dsn
-     */
-    protected function useFreeTds($dsn) {
-      // TODO
     }
 
     /**
@@ -97,7 +36,7 @@
      */
     public function __construct($dsn) {
       if (NULL === $dsn->getPort(NULL)) {       // Check lookup
-        $this->{self::$lookup}($dsn);
+        self::$lookup->lookup($dsn);
       }
       parent::__construct($dsn);
     }
