@@ -22,7 +22,7 @@
      */
     public function __construct($ini= NULL) {
       $this->ini= NULL === $ini
-        ? new File((self::$env ? self::$env : getenv('SYBASE')).'/ini/sql.ini')
+        ? new File(getenv('SYBASE').'/ini/sql.ini')
         : $ini
       ;
     }
