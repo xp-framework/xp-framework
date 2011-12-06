@@ -26,25 +26,70 @@
     }
     
     /**
-     * (Insert method's description here)
-     *
-     * @param   
-     * @return  
-     */
-    public function tearDown() {
-      // TODO: Fill code that gets executed after every test method
-      //       or remove this method
-    }
-    
-    /**
      * Test
      *
      */
     #[@test]
     public function lookup() {
-      $dsn= new DSN('sybase://carla/tempdb');
+      $dsn= new DSN('sybase://CARLA');
       $this->fixture->lookup($dsn);
-      $this->assertEquals(new DSN('sybase://carla.example.com:5000/tempdb'), $dsn);
+      $this->assertEquals(new DSN('sybase://carla.example.com:5000'), $dsn);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function lookupCaseInsensitive() {
+      $dsn= new DSN('sybase://carla');
+      $this->fixture->lookup($dsn);
+      $this->assertEquals(new DSN('sybase://carla.example.com:5000'), $dsn);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function lookupNonExistantHost() {
+      $dsn= new DSN('sybase://nonexistant');
+      $this->fixture->lookup($dsn);
+      $this->assertEquals(new DSN('sybase://nonexistant'), $dsn);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function lookupExistingHostWithoutQueryKey() {
+      $dsn= new DSN('sybase://banane');
+      $this->fixture->lookup($dsn);
+      $this->assertEquals(new DSN('sybase://banane'), $dsn);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function lookupIpv4() {
+      $dsn= new DSN('sybase://wurst4');
+      $this->fixture->lookup($dsn);
+      $this->assertEquals(new DSN('sybase://192.0.43.10:1998'), $dsn);
+    }
+
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function lookupIpv6() {
+      $dsn= new DSN('sybase://wurst6');
+      $this->fixture->lookup($dsn);
+      $this->assertEquals(new DSN('sybase://[2001:500:88:200::10]:1998'), $dsn);
     }
   }
 ?>
