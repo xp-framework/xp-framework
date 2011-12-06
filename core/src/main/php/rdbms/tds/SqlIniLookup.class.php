@@ -15,13 +15,14 @@
     protected $ini= NULL;
     
     /**
-     * Creates a new 
+     * Creates a new sql.ini lookup instance with a given file. If
+     * the file is omitted, ENV{SYBASE}/ini/sql.ini is used.
      *
      * @param   io.File ini
      */
     public function __construct($ini= NULL) {
       $this->ini= NULL === $ini
-        ? new File((self::$env ? self::$env : getenv('SYBASE')).'\\ini\\sql.ini')
+        ? new File((self::$env ? self::$env : getenv('SYBASE')).'/ini/sql.ini')
         : $ini
       ;
     }
@@ -51,7 +52,7 @@
     }
 
     /**
-     * Look up DSN
+     * Look up DSN. Reparses SQL.ini file every time its called.
      *
      * @param   rdbms.DSN dsn
      */
@@ -60,10 +61,14 @@
 
       $host= strtolower($dsn->getHost());
       $sections= $this->parse();
-      if (!isset($sections[$host])) return;
+      if (!isset($sections[$host]['query'])) return;
 
       sscanf($sections[$host]['query'], '%[^,],%[^,],%d', $proto, $host, $port);
-      $dsn->url->setHost(gethostbyname($host));
+      if (strstr($host, ':')) {
+        $dsn->url->setHost('['.$host.']');
+      } else {
+        $dsn->url->setHost($host);
+      }
       $dsn->url->setPort($port);
     }
   }
