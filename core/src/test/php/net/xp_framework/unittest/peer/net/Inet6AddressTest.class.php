@@ -50,7 +50,13 @@
     public function createAddressFromPackedForm() {
       $this->assertEquals(
         '::1',
-        create(new Inet6Address("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\1"))->asString()
+        create(new Inet6Address("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\1", TRUE))->asString()
+      );
+      
+      //special case when a colon is part of the packed address string
+      $this->assertEquals(
+        '::3a',
+        create(new Inet6Address("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0:", TRUE))->asString() // ord(':')==0x32
       );
     }
 
@@ -294,7 +300,7 @@
       
       $subNetSize= 128;
       $expAddr= $addr;
-      $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
+      $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());      
     }
   }
 ?>

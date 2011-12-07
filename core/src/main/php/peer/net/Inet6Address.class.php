@@ -20,8 +20,8 @@
      *
      * @param   string address
      */
-    public function __construct($addr) {
-      if (16 === strlen($addr) && FALSE === strpos($addr, ':')) {
+    public function __construct($addr, $packed= FALSE) {
+      if ($packed) {
         $this->addr= $addr;
       } else {
         $this->addr= pack('H*', self::normalize($addr));
@@ -164,7 +164,7 @@
      * @throws  lang.IllegalArgumentException in case the subnetSize is not correct
      */
     public function createSubnet($subnetSize) {
-      $addr=$this->addr;
+      $addr= $this->addr;
       
       for ($i= 15; $i >= $subnetSize/8; --$i) {
         $addr{$i}= "\x0";
@@ -175,7 +175,7 @@
         $lastByte= ord($addr{$lastNibblePos}) & (0xFF<<(8-$subnetSize%8));
         $addr{$lastNibblePos}=pack("i*", $lastByte);
       }
-      return new Network(new Inet6Address($addr), $subnetSize);
+      return new Network(new Inet6Address($addr, TRUE), $subnetSize);
     }
     /**
      * Equals method
