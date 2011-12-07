@@ -284,14 +284,16 @@
       $expAddr= new Inet6Address('febc:a574:382b:23c1::');
       $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
       
-      $addr= new Inet6Address('febc:a574:382b:23c1:aa49:4592:4efe:9982');
       $subNetSize= 48;
       $expAddr= new Inet6Address('febc:a574:382b::');
       $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
       
-      $addr= new Inet6Address('febc:a574:382b:23c1:aa49:4592:4efe:9982');
       $subNetSize= 35;
       $expAddr= new Inet6Address('febc:a574:2000::');
+      $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
+      
+      $subNetSize= 128;
+      $expAddr= $addr;
       $this->assertEquals($expAddr->asString(), $addr->createSubnet($subNetSize)->getAddress()->asString());
     }
   }
