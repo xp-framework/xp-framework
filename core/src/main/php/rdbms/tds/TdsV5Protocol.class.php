@@ -134,8 +134,11 @@
           $this->stream->read(4);   // Skip usertype
           $field['type']= $this->stream->getByte();
 
-          // Handle column. TODO: blob types - read table name
-          if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
+          // Handle column.
+          if (self::T_TEXT === $field['type'] || self::T_IMAGE === $field['type']) {
+            $field['size']= $this->stream->getLong();
+            $this->stream->getShort();
+          } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
             $field['size']= $this->stream->getByte();
             $field['prec']= $this->stream->getByte();
             $field['scale']= $this->stream->getByte();

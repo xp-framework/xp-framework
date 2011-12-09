@@ -139,8 +139,12 @@
         for ($i= 0; $i < $nfields; $i++) {
           $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
 
-          // Handle column. TODO: blob types - read table name
-          if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
+          // Handle column.
+          if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type'] || self::T_IMAGE === $field['type']) {
+            $field['size']= $this->stream->getLong();
+            $this->stream->read(5);     // XXX Collation?
+            $field['table']= $this->stream->read($this->stream->getShort());
+          } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
             $field['size']= $this->stream->getByte();
             $field['prec']= $this->stream->getByte();
             $field['scale']= $this->stream->getByte();

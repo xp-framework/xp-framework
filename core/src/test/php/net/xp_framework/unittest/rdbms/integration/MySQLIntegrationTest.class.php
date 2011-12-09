@@ -169,6 +169,42 @@
     }
 
     /**
+     * Test selecting text values
+     *
+     */
+    #[@test, @ignore('Cast to text not supported by MySQL')]
+    public function selectEmptyText() {
+      parent::selectEmptyText();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to text not supported by MySQL')]
+    public function selectText() {
+      parent::selectText();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to text not supported by MySQL')]
+    public function selectUmlautText() {
+      parent::selectUmlautText();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to text not supported by MySQL')]
+    public function selectNulltext() {
+      parent::selectNulltext();
+    }
+
+    /**
      * Test selecting char values. Overwritten from parent class, MySQL does
      * not pad the value.
      *

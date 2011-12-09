@@ -197,6 +197,17 @@
       }');
       self::$recordsFor[0][self::T_CHAR]= self::$recordsFor[0][self::T_VARCHAR];
       self::$recordsFor[0][self::XT_CHAR]= self::$recordsFor[0][self::XT_VARCHAR];
+      self::$recordsFor[0][self::T_TEXT]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          $has= $stream->getByte();
+          if ($has !== 16) return NULL;
+
+          $stream->read(24);  // Skip 16 Byte TEXTPTR, 8 Byte TIMESTAMP
+          return $stream->read($stream->getLong());
+        }
+      }');
+      self::$recordsFor[0][self::T_NTEXT]= self::$recordsFor[0][self::T_TEXT];
+      self::$recordsFor[0][self::T_IMAGE]= self::$recordsFor[0][self::T_TEXT];
     }
 
     /**

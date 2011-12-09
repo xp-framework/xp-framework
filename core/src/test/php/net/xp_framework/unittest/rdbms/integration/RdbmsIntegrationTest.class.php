@@ -542,6 +542,42 @@
     }
 
     /**
+     * Test selecting text values
+     *
+     */
+    #[@test]
+    public function selectEmptyText() {
+      $this->assertEquals('', $this->db()->query('select cast("" as text) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectText() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as text) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUmlautText() {
+      $this->assertEquals('Übercoder', $this->db()->query('select cast("Übercoder" as text) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectNulltext() {
+      $this->assertEquals(NULL, $this->db()->query('select cast(NULL as text) as value')->next('value'));
+    }
+
+    /**
      * Test selecting money values
      *
      */
