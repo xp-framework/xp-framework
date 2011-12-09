@@ -18,7 +18,8 @@
     /**
      * Constructor
      *
-     * @param   string address
+     * @param   string addr
+     * @param   bool   binary
      */
     public function __construct($addr, $binary= FALSE) {
       if ($binary) {
