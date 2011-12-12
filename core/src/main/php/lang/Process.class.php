@@ -149,20 +149,20 @@
         'arguments' => NULL,
         'owner'     => FALSE
       );
-      
+
       // Determine executable and command line:
       // * On Windows, use Windows Management Instrumentation API - see
       //   http://en.wikipedia.org/wiki/Windows_Management_Instrumentation
       //
       // * On systems with a /proc filesystem, use information from /proc/self
-      //   See http://en.wikipedia.org/wiki/Procfs
+      //   See http://en.wikipedia.org/wiki/Procfs. Before relying oin it, 
+      //   also check that /proc is not just an empty directory; this assumes 
+      //   that process 1 always exists - which usually is `init`.
       //
-      // * Fall back to use the "_" environment variable and /bin/ps to retrieve
-      //   the command line (please note unfortunately any quote signs have been 
+      // * Fall back to use the PHP_BINARY (#54514) constant and finally the "_" 
+      //   environment variable for the executable and /bin/ps to retrieve the 
+      //   command line (please note unfortunately any quote signs have been 
       //   lost and it can thus be only used for display purposes)
-      //
-      // Note: It would be really nice to have a getmyexe() function in PHP
-      // complementing getmypid().
       if (strncasecmp(PHP_OS, 'Win', 3) === 0) {
         try {
           $c= new com('winmgmts:');
@@ -173,33 +173,41 @@
           throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
         }
         
-      // Try to figure out whether we can use /proc filesystem (and also check
-      // that /proc is not just an empty directory; this assumes that process 1
-      // always exists - which usually is `init`)  
       } else if (is_dir('/proc/1')) {
         if (!file_exists($proc= '/proc/'.$pid)) {
           throw new IllegalStateException('Cannot find executable in /proc');
         }
-        foreach (array('/exe', '/file') as $alt) {
-          if (!file_exists($proc.$alt)) continue;
-          $self->status['exe']= readlink($proc.$alt);
-          break;
-        }
+        if (defined('PHP_BINARY')) {
+          $self->status['exe']= PHP_BINARY;
+        } else do {
+          foreach (array('/exe', '/file') as $alt) {
+            if (!file_exists($proc.$alt)) continue;
+            $self->status['exe']= readlink($proc.$alt);
+            break 2;
+          }
+          throw new IllegalStateException('Cannot find executable in '.$proc);
+        } while (0);
         $self->status['command']= strtr(file_get_contents($proc.'/cmdline'), "\0", ' ');
-      } else if ($exe || ($_= getenv('_'))) {
+      } else {
         try {
-          $self->status['exe']= self::resolve($exe ? $exe : $_);
+          if (defined('PHP_BINARY')) {
+            $self->status['exe']= PHP_BINARY;
+          } else if ($exe) {
+            $self->status['exe']= self::resolve($exe);
+          } else if ($_= getenv('_')) {
+            $self->status['exe']= self::resolve($_);
+          } else {
+            throw new IllegalStateException('Cannot find executable');
+          }
           $self->status['command']= exec('ps -ww -p '.$pid.' -ocommand 2>&1', $out, $exit);
+          if (0 !== $exit) {
+            throw new IllegalStateException('Cannot find executable: '.implode('', $out));
+          }
         } catch (IOException $e) {
           throw new IllegalStateException($e->getMessage());
         }
-        if (0 !== $exit) {
-          throw new IllegalStateException('Cannot find executable: '.implode('', $out));
-        }
-      } else {
-        throw new IllegalStateException('Cannot find executable');
       }
-      
+
       $self->in= xp::null();
       $self->out= xp::null();
       $self->err= xp::null();
