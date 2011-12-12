@@ -99,12 +99,12 @@
     }
 
     private function constructViolationMessage($method, $exp) {
-      $msg= '';
+      $msg= 'Method '.$method.' ';
       if($exp->getRepeat()> $exp->getActualCalls()) {
         $msg= "Expectation not met for '$method'. ";
       }
 
-      $msg.= "expected#: ".$exp->getRepeat()==-1? 1: $exp->getRepeat();
+      $msg.= "expected#: ".($exp->getRepeat()==-1? 1: $exp->getRepeat());
       $msg.= " called#: ".$exp->getActualCalls();
 
       return $msg;

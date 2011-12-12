@@ -22,7 +22,7 @@
      *
      */
     public function setUp() {
-        $this->sut = new Expectation();
+        $this->sut = new Expectation('method');
     }
 
     /**
@@ -30,7 +30,7 @@
      */
     #[@test]
     public function canCreate() {
-        new Expectation();
+        new Expectation('method');
     }
 
     /**

@@ -55,7 +55,7 @@
       
       $defaultCL= ClassLoader::getDefault();
       
-      $interfaces= array();
+      $interfaces= array(XPClass::forName('unittest.mock.arguments.IArgumentMatcher'));
       $parentClass= NULL;
       
       $type= XPClass::forName($typeName);

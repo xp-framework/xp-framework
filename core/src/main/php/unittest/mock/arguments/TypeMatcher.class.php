@@ -23,7 +23,7 @@
      */
     public function __construct($type, $matchNull= true) {
       $this->type= $type;
-      $this->matchNull= $machtNull;
+      $this->matchNull= $matchNull;
     }
     
     /**

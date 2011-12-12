@@ -48,6 +48,30 @@
      * Can create.
      */
     #[@test]
+    public function matches_should_match_null() {
+      $sut= new TypeMatcher("lang.Object");
+      $this->assertTrue($sut->matches(NULL));
+      
+      $sut= new TypeMatcher("unittest.mock.arguments.TypeMatcher");
+      $this->assertTrue($sut->matches(NULL));
+    }
+    
+    /**
+     * Can create.
+     */
+    #[@test]
+    public function matches_should_not_match_null_if_defined_so() {
+      $sut= new TypeMatcher("lang.Object", FALSE);
+      $this->assertFalse($sut->matches(NULL));
+      
+      $sut= new TypeMatcher("unittest.mock.arguments.TypeMatcher", FALSE);
+      $this->assertFalse($sut->matches(NULL));
+    }
+    
+    /**
+     * Can create.
+     */
+    #[@test]
     public function mockery_should_work_with() {
       $mockery= new Mockery();
       $interface= $mockery->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');

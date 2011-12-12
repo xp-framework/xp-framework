@@ -52,7 +52,7 @@
      */
     #[@test]
     public function canAddExpectation() {
-      $this->sut->add(new Expectation());
+      $this->sut->add(new Expectation('method'));
     }
     
     /**
@@ -60,7 +60,7 @@
      */
     #[@test]
     public function getNextReturnsAddedExpectation() {
-      $expect=new Expectation();
+      $expect=new Expectation('method');
       $this->sut->add($expect);
       
       $this->assertEquals($expect, $this->sut->getNext(array()));
@@ -71,7 +71,7 @@
      */
     #[@test]
     public function getNextReturns_should_return_last_expectation_over_and_over() {
-      $expect=new Expectation();
+      $expect=new Expectation('method');
       $this->sut->add($expect);
       
       $this->assertEquals($expect, $this->sut->getNext(array()));
@@ -101,7 +101,7 @@
      */
     #[@test]
     public function getNext_SameExpectationTwice_whenRepeatIs2() {
-      $expect=new Expectation();
+      $expect=new Expectation('method');
       $expect->setRepeat(2);
       $this->sut->add($expect);
 
@@ -115,7 +115,7 @@
      */
     #[@test]
     public function should_provide_access_to_left_expectations() {
-      $expect=new Expectation();
+      $expect=new Expectation('method');
       $this->sut->add($expect);
 
       $list= $this->sut->getExpectations();
@@ -127,7 +127,7 @@
      */
     #[@test]
     public function should_provide_access_to_used_expectations() {
-      $expect=new Expectation();
+      $expect=new Expectation('method');
       $this->sut->add($expect);
       $this->sut->getNext(array());
       
@@ -141,7 +141,7 @@
      */
   #[@test]
     public function expectation_should_be_moved_to_calledList_after_usage() {
-      $expect=new Expectation();
+      $expect=new Expectation('method');
       $this->sut->add($expect);
       $list= $this->sut->getExpectations();
       $this->assertEquals(1, $list->size());

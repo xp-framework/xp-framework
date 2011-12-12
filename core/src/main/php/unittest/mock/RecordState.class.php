@@ -42,7 +42,7 @@
      * @return  var
      */
     public function handleInvocation($method, $args) {
-      $expectation= new Expectation();
+      $expectation= new Expectation($method);
       $expectation->setArguments($args);
       $methodExpectations= new ExpectationList();
       if($this->expectationMap->containsKey($method))

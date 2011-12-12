@@ -68,7 +68,7 @@
      */
     #[@test]
     public function handleInvocation_withExistingExpectation_returnExpectationsReturnValue() {
-      $myExpectation=new Expectation();
+      $myExpectation=new Expectation('foo');
       $myExpectation->setReturn('foobar');
       
       $expectationsList=new ExpectationList();
@@ -84,7 +84,7 @@
      */
     #[@test]
     public function handleInvocation_missingExpectation_returnsNull() {
-      $myExpectation=new Expectation();
+      $myExpectation=new Expectation('foo');
       $myExpectation->setReturn('foobar');
       
       $expectationsList=new ExpectationList();    
@@ -98,7 +98,7 @@
      */
     #[@test]
     public function handleInvocation_ExpectationRepeatedTwice_returnExpectationsReturnValueTwice() {
-      $myExpectation=new Expectation();
+      $myExpectation=new Expectation('foo');
       $myExpectation->setReturn('foobar');
       $myExpectation->setRepeat(2);
 
@@ -118,7 +118,7 @@
   #[@test]
     public function handleInvocation_should_throw_exception_when_expectation_defines_one() {
       $expected= new XPException('foo');
-      $myExpectation=new Expectation();
+      $myExpectation=new Expectation('foo');
       $myExpectation->setException($expected);
       $expectationsList=new ExpectationList();
       $expectationsList->add($myExpectation);

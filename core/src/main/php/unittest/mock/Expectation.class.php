@@ -14,7 +14,20 @@
    */
   class Expectation extends Object {
 
-    private $return = null;
+    public function __construct($methodName) {
+      $this->methodName= $methodName;
+    }
+
+    private $methodName;
+    /**
+     * Gets the method name of the expectation
+     * @return mixed
+     */
+    public function getMethodName() {
+      return $this->methodName;
+    }
+    
+    private $return = NULL;
     /**
      * Gets the return value of the expectation
      * @return mixed
@@ -49,7 +62,7 @@
       $this->repeat = $value;
     }
 
-    private $exception= null;
+    private $exception= NULL;
     /**
      * Gets the exception, that is thrown on a method call.
      *
@@ -67,14 +80,14 @@
       $this->exception= $exception;
     }
 
-    private $isInPropertyBehavior= false;
+    private $isInPropertyBehavior= FALSE;
     
     /**
      * Changes a setter/getter (as well as the corresponding getter/setter) to 
      * be in property mode.
      */
     public function setPropertyBehavior() {
-      $this->isInPropertyBehavior= true;
+      $this->isInPropertyBehavior= TRUE;
     }
 
     /**
@@ -141,13 +154,13 @@
      */
     public function doesMatchArgs($args) {
       if (sizeof($this->args) != sizeof($args))
-        return false;
+        return FALSE;
 
       for ($i = 0; $i < sizeof($args); ++$i)
         if (!$this->doesMatchArg($i, $args[$i]))
-          return false;
+          return FALSE;
 
-      return true;
+      return TRUE;
     }
 
     /**

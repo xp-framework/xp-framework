@@ -17,7 +17,7 @@
      *
      */
     public function setUp() {
-      $this->sut=new MethodOptions(new Expectation(), "method");
+      $this->sut=new MethodOptions(new Expectation('method'), 'method');
     }
       
     /**
@@ -33,7 +33,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function nameRequiredOnCreate() {
-      new MethodOptions(new Expectation(), null);
+      new MethodOptions(new Expectation('method'), null);
     }
     
     /**
@@ -49,7 +49,7 @@
      */
     #[@test]
     public function returns_valueSetInExpectation() {
-      $expectation=new Expectation();
+      $expectation=new Expectation('foo');
       $sut= new MethodOptions($expectation, "foo");
       $expected=new Object();
 
@@ -63,7 +63,7 @@
      */
     #[@test]
     public function setPropertyBehavior_sets_expectation_to_prop_behavior() {
-      $expectation=new Expectation();
+      $expectation=new Expectation('setFoo');
       $sut= new MethodOptions($expectation, "setFoo");
       $sut->propertyBehavior();
 
@@ -76,7 +76,7 @@
      */
     #[@test]
     public function throws_sets_the_exception_property_of_the_expectation() {
-      $expectation=new Expectation();
+      $expectation=new Expectation('foo');
       $sut= new MethodOptions($expectation, "foo");
       $expected=new XPException('foo');
 
@@ -90,7 +90,7 @@
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function setPropertyBehavior_throws_an_exception_if_no_setter_or_getter() {
-      $expectation=new Expectation();
+      $expectation=new Expectation('blabla');
       $sut= new MethodOptions($expectation, "blabla");
       $sut->propertyBehavior();
     }
