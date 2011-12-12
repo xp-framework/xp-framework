@@ -155,7 +155,7 @@
       //   http://en.wikipedia.org/wiki/Windows_Management_Instrumentation
       //
       // * On systems with a /proc filesystem, use information from /proc/self
-      //   See http://en.wikipedia.org/wiki/Procfs. Before relying oin it, 
+      //   See http://en.wikipedia.org/wiki/Procfs. Before relying on it, 
       //   also check that /proc is not just an empty directory; this assumes 
       //   that process 1 always exists - which usually is `init`.
       //
@@ -172,7 +172,6 @@
         } catch (Exception $e) {
           throw new IllegalStateException('Cannot find executable: '.$e->getMessage());
         }
-        
       } else if (is_dir('/proc/1')) {
         if (!file_exists($proc= '/proc/'.$pid)) {
           throw new IllegalStateException('Cannot find executable in /proc');
