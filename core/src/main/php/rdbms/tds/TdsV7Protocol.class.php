@@ -9,6 +9,7 @@
   /**
    * TDS V7 protocol implementation
    *
+   * @see   https://github.com/mono/mono/blob/master/mcs/class/Mono.Data.Tds/Mono.Data.Tds.Protocol/Tds70.cs
    */
   class TdsV7Protocol extends TdsProtocol {
 
