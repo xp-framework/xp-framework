@@ -97,6 +97,18 @@
     public function connect() {
       $this->assertEquals(TRUE, $this->conn->connect());
     }
+
+    /**
+     * Test query throws rdbms.SQLStateException when no longer 
+     * connected to the database
+     *
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    public function noQueryWhenDisConnected() {
+      $this->conn->connect();
+      $this->conn->close();
+      $this->conn->query('select 1');
+    }
     
     /**
      * Test select()
@@ -466,6 +478,35 @@
       $tran->commit();
       
       $this->assertEquals(array(array('pk' => 1, 'username' => 'should_be_here')), $db->select('* from unittest'));
+    }
+
+    /**
+     * Test not reading until the end of a non-buffered result
+     *
+     */
+    #[@test]
+    public function unbufferedReadNoResults() {
+      $this->createTable();
+      $db= $this->db();
+
+      $db->open('select * from unittest');
+
+      $this->assertEquals(1, $db->query('select 1 as num')->next('num'));
+    }
+    
+    /**
+     * Test not reading until the end of a non-buffered result
+     *
+     */
+    #[@test]
+    public function unbufferedReadOneResult() {
+      $this->createTable();
+      $db= $this->db();
+
+      $q= $db->open('select * from unittest');
+      $this->assertEquals(array('pk' => 1, 'username' => 'kiesel'), $q->next());
+
+      $this->assertEquals(1, $db->query('select 1 as num')->next('num'));
     }
   }
 ?>

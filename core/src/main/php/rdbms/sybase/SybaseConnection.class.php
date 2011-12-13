@@ -154,11 +154,11 @@
       }
       
       if (!$buffered) {
-        $result= sybase_unbuffered_query($sql, $this->handle, FALSE);
+        $result= @sybase_unbuffered_query($sql, $this->handle, FALSE);
       } else if ($this->flags & DB_UNBUFFERED) {
-        $result= sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
+        $result= @sybase_unbuffered_query($sql, $this->handle, $this->flags & DB_STORE_RESULT);
       } else {
-        $result= sybase_query($sql, $this->handle);
+        $result= @sybase_query($sql, $this->handle);
       }
 
       if (FALSE === $result) {

@@ -165,6 +165,9 @@
           socket_set_option($this->_sock, $level, $name, $value);
         }
       }
+      
+      // ... and timeouts
+      $this->setTimeout($timeout);
 
       // ...and connect it
       switch ($this->domain) {
@@ -198,8 +201,6 @@
         xp::gc(__FILE__);
         throw $e;
       }
-      
-      $this->setTimeout($this->_timeout);
       return TRUE;
     }
     
