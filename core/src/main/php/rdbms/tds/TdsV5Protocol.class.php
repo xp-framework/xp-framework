@@ -9,6 +9,7 @@
   /**
    * TDS V5 protocol implementation
    *
+   * @see   https://github.com/mono/mono/blob/master/mcs/class/Mono.Data.Tds/Mono.Data.Tds.Protocol/Tds50.cs
    */
   class TdsV5Protocol extends TdsProtocol {
   
@@ -137,17 +138,19 @@
           // Handle column.
           if (self::T_TEXT === $field['type'] || self::T_IMAGE === $field['type']) {
             $field['size']= $this->stream->getLong();
-            $this->stream->getShort();
+            $this->stream->read($this->stream->getShort());
           } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
             $field['size']= $this->stream->getByte();
             $field['prec']= $this->stream->getByte();
             $field['scale']= $this->stream->getByte();
+          } else if (self::T_LONGBINARY === $field['type'] || self::XT_CHAR === $field['type']) {
+            $field['size']= $this->stream->getLong() / 2;
           } else if (isset(self::$fixed[$field['type']])) {
             $field['size']= self::$fixed[$field['type']];
           } else {
             $field['size']= $this->stream->getByte();
           }
-          
+
           $this->stream->read(1);   // Skip locale
           $fields[]= $field;
         }
