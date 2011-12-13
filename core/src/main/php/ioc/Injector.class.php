@@ -7,6 +7,7 @@
   uses(
     'ioc.Binding',
     'ioc.BindingException',
+    'ioc.BindingScope',
     'ioc.BindingScopes',
     'ioc.ClassBinding',
     'ioc.ConstantBinding'
@@ -38,11 +39,11 @@
     /**
      * sets session to be used with the session scope
      *
-     * @param   scriptlet.Session  $session
+     * @param   ioc.BindingScope $sessionScope
      * @return  ioc.Injector
      */
-    public function setSessionForSessionScope(Session $session) {
-      $this->scopes->setSessionForSessionScope($session);
+    public function setSessionScope(BindingScope $sessionScope) {
+      $this->scopes->setSessionScope($sessionScope);
       return $this;
     }
 

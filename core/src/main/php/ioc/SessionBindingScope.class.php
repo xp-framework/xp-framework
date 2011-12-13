@@ -22,7 +22,7 @@
      *
      * @param  Session  $session
      */
-    public function setSession(Session $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
     }

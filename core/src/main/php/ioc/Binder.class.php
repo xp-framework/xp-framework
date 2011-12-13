@@ -4,7 +4,7 @@
  * $Id: Binder.class.php 2991 2011-02-12 23:35:48Z mikey $
  */
 
-  uses('ioc.Injector', 'scriptlet.Session');
+  uses('ioc.Injector', 'ioc.BindingScope');
 
   /**
    * Entry class to ease the adding of bindings.
@@ -26,13 +26,13 @@
     }
 
     /**
-     * sets session to be used with the session scope
+     * sets session scope
      *
-     * @param   scriptlet.Session  $session
+     * @param   ioc.BindingScope  $sessionScope
      * @return  ioc.Binder
      */
-    public function setSessionForSessionScope(Session $session) {
-      $this->injector->setSessionForSessionScope($session);
+    public function setSessionScope(BindingScope $sessionScope) {
+      $this->injector->setSessionScope($sessionScope);
       return $this;
     }
 

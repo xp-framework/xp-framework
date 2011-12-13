@@ -4,7 +4,11 @@
  * $Id: BindingScopes.class.php 2991 2011-02-12 23:35:48Z mikey $
  */
 
-  uses('ioc.SessionBindingScope', 'ioc.SingletonBindingScope');
+  uses(
+    'ioc.SessionBindingScope',
+    'ioc.SingletonBindingScope',
+    'lang.RuntimeError'
+  );
 
   /**
    * Access to all built-in scopes.
@@ -27,9 +31,7 @@
         $this->singletonScope = $singletonScope;
       }
 
-      if (NULL === $sessionScope) {
-        $this->sessionScope = new SessionBindingScope();
-      } else {
+      if (NULL !== $sessionScope) {
         $this->sessionScope = $sessionScope;
       }
     }
@@ -46,11 +48,11 @@
     /**
      * sets session to be used with the session scope
      *
-     * @param   scriptlet.Session $session
+     * @param   ioc.BindingScope  $sessionScope
      * @return  ioc.BindingScope
      */
-    public function setSessionForSessionScope(Session $session) {
-      $this->sessionScope->setSession($session);
+    public function setSessionScope(BindingScope $sessionScope) {
+      $this->sessionScope = $sessionScope;
       return $this;
     }
 
@@ -60,6 +62,10 @@
      * @return  ioc.BindingScope
      */
     public function getSessionScope() {
+      if (NULL === $this->sessionScope) {
+        throw new RuntimeError('No session binding scope available.');
+      }
+
       return $this->sessionScope;
     }
   }

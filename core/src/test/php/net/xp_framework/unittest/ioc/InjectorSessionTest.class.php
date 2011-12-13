@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'ioc.Binder',
+    'ioc.SessionBindingScope',
     'net.xp_framework.unittest.ioc.helper.DummySession'
   );
 
@@ -24,7 +25,7 @@
     public function setUp() {
       $this->binder       = new Binder();
       $this->dummySession = new DummySession();
-      $this->binder->setSessionForSessionScope($this->dummySession);
+      $this->binder->setSessionScope(new SessionBindingScope($this->dummySession));
     }
 
     /**
@@ -72,13 +73,12 @@
      * no session available throws RuntimeError
      */
     #[@test, @expect('lang.RuntimeError')]
-    public function noSessionAvailableThrowsRuntimeError()
+    public function bindingInSessionScopeWithoutAvailableSessionThrowsRuntimeError()
     {
-        $scope = new SessionBindingScope();
-        $scope->getInstance(XPClass::forName('net.xp_framework.unittest.ioc.helper.TestNumber'),
-                            XPClass::forName('net.xp_framework.unittest.ioc.helper.Random'),
-                            newinstance('ioc.InjectionProvider', array(), '{ public function get($name = NULL) { } }')
-        );
+        $this->binder = new Binder();
+        $this->binder->bind('net.xp_framework.unittest.ioc.helper.TestNumber')
+                     ->to('net.xp_framework.unittest.ioc.helper.Random')
+                     ->inSession();
     }
   }
 ?>
