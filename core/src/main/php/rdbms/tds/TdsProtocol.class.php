@@ -24,12 +24,12 @@
     protected static $recordsFor= array();
 
     // Messages
-    const MSG_QUERY     = 0x1;
-    const MSG_LOGIN     = 0x2;
-    const MSG_REPLY     = 0x4;
-    const MSG_CANCEL    = 0x6;
-    const MSG_LOGIN7    = 0x10;
-    const MSG_LOGOFF    = 0x71;
+    const MSG_QUERY    = 0x1;
+    const MSG_LOGIN    = 0x2;
+    const MSG_REPLY    = 0x4;
+    const MSG_CANCEL   = 0x6;
+    const MSG_LOGIN7   = 0x10;
+    const MSG_LOGOFF   = 0x71;
 
     // Types
     const T_CHAR       = 0x2F;
@@ -208,6 +208,13 @@
       }');
       self::$recordsFor[0][self::T_NTEXT]= self::$recordsFor[0][self::T_TEXT];
       self::$recordsFor[0][self::T_IMAGE]= self::$recordsFor[0][self::T_TEXT];
+      self::$recordsFor[0][self::T_LONGBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          $len= $stream->getLong();
+          $string= $stream->getString($len / 2);
+          return $string;
+        }
+      }');
     }
 
     /**
