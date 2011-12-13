@@ -249,5 +249,14 @@
       $this->buffer= substr($this->buffer, $length);
       return (string)$chunk;
     }
+
+    /**
+     * Creates a string representation of this stream
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'(#'.$this->packetSize.")@{\n".self::dump($this->buffer)."\n}";
+    }
   }
 ?>
