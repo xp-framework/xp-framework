@@ -219,6 +219,13 @@
       }');
       self::$recordsFor[0][self::T_NTEXT]= self::$recordsFor[0][self::T_TEXT];
       self::$recordsFor[0][self::T_IMAGE]= self::$recordsFor[0][self::T_TEXT];
+      self::$recordsFor[0][self::T_BINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0 === ($len= $stream->getByte())) return NULL;
+          $string= $stream->read($len);
+          return substr($string, 0, strcspn($string, "\0"));
+        }
+      }');
       self::$recordsFor[0][self::T_LONGBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getLong();
