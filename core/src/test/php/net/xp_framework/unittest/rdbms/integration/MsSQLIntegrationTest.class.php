@@ -77,5 +77,51 @@
       $this->assertInstanceOf('util.Date', $result);
       $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
     }
+
+    /**
+     * Test SQL_VARIANT type
+     *
+     */
+    #[@test]
+    public function selectVarcharVariant() {
+      $this->assertEquals('Test', $this->db()->query('select cast("Test" as sql_variant) as value')->next('value'));
+    }
+
+    /**
+     * Test SQL_VARIANT type
+     *
+     */
+    #[@test]
+    public function selectIntegerVariant() {
+      $this->assertEquals(1, $this->db()->query('select cast(1 as sql_variant) as value')->next('value'));
+    }
+
+    /**
+     * Test SQL_VARIANT type
+     *
+     */
+    #[@test]
+    public function selectDecimalVariant() {
+      $this->assertEquals(1.2, $this->db()->query('select cast(1.2 as sql_variant) as value')->next('value'));
+    }
+
+    /**
+     * Test SQL_VARIANT type
+     *
+     */
+    #[@test]
+    public function selectMoneyVariant() {
+      $this->assertEquals(1.23, $this->db()->query('select cast($1.23 as sql_variant) as value')->next('value'));
+    }
+
+    /**
+     * Test SQL_VARIANT type
+     *
+     */
+    #[@test]
+    public function selectDateVariant() {
+      $cmp= new Date('2009-08-14 12:45:00');
+      $this->assertEquals($cmp, $this->db()->query('select cast(convert(datetime, %s, 102) as sql_variant) as value', $cmp)->next('value'));
+    }
   }
 ?>
