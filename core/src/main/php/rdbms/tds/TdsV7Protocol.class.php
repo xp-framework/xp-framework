@@ -31,6 +31,40 @@
           return $this->toNumber($n, $field["scale"], $field["prec"]);
         }
       }');
+      $records[self::T_VARIANT]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0 === ($len= $stream->getLong())) return NULL;
+
+          $base= $stream->getByte();
+          $prop= $stream->getByte();
+          switch ($base) {
+            case TdsProtocol::T_INT4:
+              return $stream->getLong();
+
+            case TdsProtocol::T_MONEY:
+              return $this->toMoney($stream->getLong(), $stream->getLong());
+
+            case TdsProtocol::T_DATETIME:
+              return $this->toDate($stream->getLong(), $stream->getLong());
+
+            case TdsProtocol::XT_NVARCHAR: case TdsProtocol::XT_VARCHAR:
+              $stream->read(5);   // Collation
+              return $stream->read($stream->getShort());
+
+            case TdsProtocol::T_NUMERIC:
+              $prec= $stream->getByte();
+              $scale= $stream->getByte();
+              $pos= $stream->getByte();
+              for ($i= 0, $n= 0, $m= $pos ? 1 : -1; $i < 4; $i++, $m= bcmul($m, "4294967296", 0)) {
+                $n= bcadd($n, bcmul(sprintf("%u", $stream->getLong()), $m, 0), 0);
+              }
+              return $this->toNumber($n, $scale, $prec);
+
+            default:
+              throw new ProtocolException("Unknown variant base type 0x".dechex($base));
+          }
+        }
+      }');
       return $records;
     }
 
@@ -139,6 +173,7 @@
         $nfields= $this->stream->getShort();
         for ($i= 0; $i < $nfields; $i++) {
           $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
+          
 
           // Handle column.
           if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type'] || self::T_IMAGE === $field['type']) {
@@ -154,6 +189,8 @@
             $this->stream->read(5);     // XXX Collation?
           } else if (isset(self::$fixed[$field['type']])) {
             $field['size']= self::$fixed[$field['type']];
+          } else if (self::T_VARIANT === $field['type']) {
+            $field['variant']= new Bytes($this->stream->read(4));   // XXX Always {I\037\000\000}?
           } else {
             $field['size']= $this->stream->getByte();
           }
