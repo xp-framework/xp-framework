@@ -435,7 +435,7 @@
           $token= $this->stream->getToken();
           $continue= TRUE;
         } else if ("\xD1" !== $token) {
-          // DEBUG Console::$err->writeLinef('END TOKEN %02x', ord($token));
+          // DEBUG Console::$err->writeLinef('END TOKEN %02x', ord($token));    // 2.2.5.7 Data Buffer Stream Tokens
           $this->done= TRUE;
           return NULL;
         } else {
