@@ -205,15 +205,7 @@
         $this->header= unpack('Ctype/Cstatus/nlength/nspid/Cpacket/cwindow', $bytes);
         if (FALSE === $this->header) {
           $this->header['status']= 1;
-          $e= new TdsProtocolException(
-            'Expecting header, have unknown byte sequence '.addcslashes($bytes, "\0..\17\177..\377"),
-            0,    // Number
-            0,    // State
-            0,    // Class
-            NULL, // Server
-            NULL, // Proc
-            -1    // Line
-          );
+          $e= new TdsProtocolException('Expecting header, have unknown byte sequence '.addcslashes($bytes, "\0..\17\177..\377"));
           xp::gc(__FILE__);
           throw $e;
         }
