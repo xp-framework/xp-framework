@@ -121,6 +121,7 @@
             case 1: return $stream->getByte();
             case 2: return $stream->getShort();
             case 4: return $stream->getLong();
+            case 8: return $this->toNumber($stream->getInt64(), 0, 0);
             default: return NULL;
           }
         }
@@ -138,6 +139,11 @@
       self::$recordsFor[0][self::T_INT4]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $stream->getLong();
+        }
+      }');
+      self::$recordsFor[0][self::T_INT8]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          return$this->toNumber($stream->getInt64(), 0, 0);
         }
       }');
       self::$recordsFor[0][self::T_FLTN]= newinstance('rdbms.tds.TdsRecord', array(), '{

@@ -168,6 +168,16 @@
     }
 
     /**
+     * Get a 64-bit integer (8 bytes)
+     *
+     * @return  string
+     */
+    public function getInt64() {
+      $u= unpack('VV', $this->read(8));
+      return bcadd($u[1], bcmul($u[2] + $u[1] < 0, "4294967296", 0), 0);
+    }
+
+    /**
      * Reads a string
      *
      * @param   int length
