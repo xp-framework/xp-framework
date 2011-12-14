@@ -220,6 +220,16 @@
           return $string;
         }
       }');
+      self::$recordsFor[0][self::T_BITN]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          return $stream->getByte() ? $stream->getByte() : NULL;
+        }
+      }');
+      self::$recordsFor[0][self::T_BIT]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          return $stream->getByte();
+        }
+      }');
     }
 
     /**
