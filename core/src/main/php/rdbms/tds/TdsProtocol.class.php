@@ -141,18 +141,23 @@
         }
       }');
       self::$recordsFor[0][self::T_FLTN]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {  // TODO: Convert to float
+        public function unmarshal($stream, $field) {
           $len= $stream->getByte();
           switch ($len) {
-            case 4: return $stream->getLong(); break;
-            case 8: return array($stream->getLong(), $stream->getLong()); break;
+            case 4: return $this->toFloat($stream->read(4)); break;
+            case 8: return $this->toDouble($stream->read(8)); break;
             default: return NULL;
           }
         }
       }');
       self::$recordsFor[0][self::T_FLT8]= newinstance('rdbms.tds.TdsRecord', array(), '{
-        public function unmarshal($stream, $field) {  // TODO: Convert to float
-          return array($stream->getLong(), $stream->getLong());
+        public function unmarshal($stream, $field) {
+          return $this->toDouble($stream->read(8));
+        }
+      }');
+      self::$recordsFor[0][self::T_REAL]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          return $this->toFloat($stream->read(4));
         }
       }');
       self::$recordsFor[0][self::T_DATETIME]= newinstance('rdbms.tds.TdsRecord', array(), '{

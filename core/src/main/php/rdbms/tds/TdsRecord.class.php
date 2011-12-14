@@ -49,6 +49,26 @@
     /**
      * Convert to number
      *
+     * @param   string bytes
+     * @return  var
+     */
+    protected function toDouble($bytes) {
+      return current(unpack('d', $bytes));
+    }
+
+    /**
+     * Convert to number
+     *
+     * @param   string bytes
+     * @return  var
+     */
+    protected function toFloat($bytes) {
+      return current(unpack('f', $bytes));
+    }
+
+    /**
+     * Convert to number
+     *
      * @param   string n
      * @param   int scale
      * @param   int prec
