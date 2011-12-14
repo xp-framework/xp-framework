@@ -1,15 +1,20 @@
 <?php
-  /* This class is part of the XP Framework
-   *
-   * $Id$
-   */
+/* This class is part of the XP Framework
+ *
+ * $Id$
+ */
 
+  uses(
+    'util.Properties',
+    'util.PropertyProvider'
+  );
+  
   /**
    * Description of CompositeProperties
    *
    * @purpose
    */
-  class CompositeProperties extends Object {
+  class CompositeProperties extends Object implements PropertyProvider {
     protected $props  = array();
 
     public function __construct(Properties $p, array $s= array()) {
@@ -21,14 +26,23 @@
       return sizeof($this->props);
     }
 
-    public function readString($section, $key, $default= NULL) {
+    private function _read($method, $section, $key, $default) {
       foreach ($this->props as $p) {
-        if (xp::null() !== ($p->readString($section, $key, xp::null()))) {
-          return $p->readString($section, $key);
+        $res= call_user_func_array(array($p, $method), array($section, $key, xp::null()));
+        if (xp::null() !== $res) {
+          return $res;
         }
       }
 
       return $default;
+    }
+
+    public function readString($section, $key, $default= NULL) {
+      return $this->_read(__FUNCTION__, $section, $key, $default);
+    }
+
+    public function readBool($section, $key, $default= FALSE) {
+      return $this->_read(__FUNCTION__, $section, $key, $default);
     }
   }
 

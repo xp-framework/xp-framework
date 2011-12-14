@@ -79,5 +79,47 @@ str2="Another thing"')));
 
       $this->assertEquals('Hello World', $c->readString('section', 'str3', 'Hello World'));
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readBooleanUsesFirst() {
+      $c= new CompositeProperties(Properties::fromString('[section]
+b1=true'),
+array(Properties::fromString('[section]
+b1=false')));
+
+      $this->assertEquals(TRUE, $c->readBool('section', 'b1'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readBooleanUsesSecondIfFirstUnset() {
+      $c= new CompositeProperties(Properties::fromString('[section]
+b1=true'),
+array(Properties::fromString('[section]
+b2=false')));
+
+      $this->assertEquals(FALSE, $c->readBool('section', 'b2'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readBooleanUsesDefaultOnNoOccurrance() {
+      $c= new CompositeProperties(Properties::fromString('[section]
+b1=true'),
+array(Properties::fromString('[section]
+b2=false')));
+
+      $this->assertEquals('Hello.', $c->readBool('section', 'b3', 'Hello.'));
+    }
   }
 ?>
