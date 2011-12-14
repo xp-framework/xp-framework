@@ -78,7 +78,7 @@
       if (0 === $scale) {
         return $n > LONG_MAX || $n < LONG_MIN ? $n : (int)$n;
       } else {
-        $n= bcdiv($n, pow(10, $scale), $prec);
+        $n= bcdiv($n, pow(10, $scale), $scale);
         return strlen($n) > self::$precision ? $n : (double)$n;
       }
     }
