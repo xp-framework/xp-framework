@@ -41,12 +41,15 @@
     protected function fixture() {
       return new CompositeProperties(Properties::fromString('[section]
 str="string..."
-b1=true'),
+b1=true
+arr1="foo|bar"'),
 array(Properties::fromString('[section]
 str="Another thing"
 str2="Another thing"
 b1=false
 b2=false
+arr1="foo|bar|baz"
+arr2="foo|bar|baz"
 ')));
 
       return $c;
@@ -104,6 +107,33 @@ b2=false
     #[@test]
     public function readBooleanUsesDefaultOnNoOccurrance() {
       $this->assertEquals('Hello.', $this->fixture()->readBool('section', 'b3', 'Hello.'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readArrayUsesFirst() {
+      $this->assertEquals(array('foo', 'bar'), $this->fixture()->readArray('section', 'arr1'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readArrayUsesSecondIfFirstUnset() {
+      $this->assertEquals(array('foo', 'bar', 'baz'), $this->fixture()->readArray('section', 'arr2'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readArrayUsesDefaultOnNoOccurrance() {
+      $this->assertEquals('Hello.', $this->fixture()->readArray('section', 'arr3', 'Hello.'));
     }
   }
 ?>
