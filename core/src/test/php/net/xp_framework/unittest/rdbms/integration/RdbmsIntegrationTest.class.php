@@ -385,39 +385,111 @@
     }
     
     /**
-     * Test selecting float values
+     * Test selecting Decimal values
      *
      */
     #[@test]
-    public function selectFloat() {
+    public function selectDecimal() {
       $this->assertEquals(0.5, $this->db()->query('select 0.5 as value')->next('value'));
     }
 
     /**
-     * Test selecting float values
+     * Test selecting Decimal values
      *
      */
     #[@test]
-    public function selectFloatOne() {
+    public function selectDecimalOne() {
       $this->assertEquals(1.0, $this->db()->query('select 1.0 as value')->next('value'));
     }
 
     /**
-     * Test selecting float values
+     * Test selecting Decimal values
      *
      */
     #[@test]
-    public function selectFloatZero() {
+    public function selectDecimalZero() {
       $this->assertEquals(0.0, $this->db()->query('select 0.0 as value')->next('value'));
     }
 
     /**
-     * Test selecting float values
+     * Test selecting Decimal values
+     *
+     */
+    #[@test]
+    public function selectNegativeDecimal() {
+      $this->assertEquals(-6.1, $this->db()->query('select -6.1 as value')->next('value'));
+    }
+    
+    /**
+     * Test selecting Float values
+     *
+     */
+    #[@test]
+    public function selectFloat() {
+      $this->assertEquals(0.5, $this->db()->query('select cast(0.5 as float) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting Float values
+     *
+     */
+    #[@test]
+    public function selectFloatOne() {
+      $this->assertEquals(1.0, $this->db()->query('select cast(1.0 as float) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting Float values
+     *
+     */
+    #[@test]
+    public function selectFloatZero() {
+      $this->assertEquals(0.0, $this->db()->query('select cast(0.0 as float) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting Float values
      *
      */
     #[@test]
     public function selectNegativeFloat() {
-      $this->assertEquals(-6.1, $this->db()->query('select -6.1 as value')->next('value'));
+      $this->assertEquals(-6.1, round($this->db()->query('select cast(-6.1 as float) as value')->next('value'), 1));
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test]
+    public function selectReal() {
+      $this->assertEquals(0.5, $this->db()->query('select cast(0.5 as real) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test]
+    public function selectRealOne() {
+      $this->assertEquals(1.0, $this->db()->query('select cast(1.0 as real) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test]
+    public function selectRealZero() {
+      $this->assertEquals(0.0, $this->db()->query('select cast(0.0 as real) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test]
+    public function selectNegativeReal() {
+      $this->assertEquals(-6.1, round($this->db()->query('select cast(-6.1 as real) as value')->next('value'), 1));
     }
     
     /**

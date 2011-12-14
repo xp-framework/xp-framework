@@ -97,6 +97,78 @@
     }
 
     /**
+     * Test selecting Float values
+     *
+     */
+    #[@test, @ignore('Cast to float not supported by MySQL')]
+    public function selectFloat() {
+      parent::selectFloat();
+    }
+
+    /**
+     * Test selecting Float values
+     *
+     */
+    #[@test, @ignore('Cast to float not supported by MySQL')]
+    public function selectFloatOne() {
+      parent::selectFloatOne();
+    }
+
+    /**
+     * Test selecting Float values
+     *
+     */
+    #[@test, @ignore('Cast to float not supported by MySQL')]
+    public function selectFloatZero() {
+      parent::selectFloatZero();
+    }
+
+    /**
+     * Test selecting Float values
+     *
+     */
+    #[@test, @ignore('Cast to float not supported by MySQL')]
+    public function selectNegativeFloat() {
+      parent::selectNegativeFloat();
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test, @ignore('Cast to real not supported by MySQL')]
+    public function selectReal() {
+      parent::selectReal();
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test, @ignore('Cast to real not supported by MySQL')]
+    public function selectRealOne() {
+      parent::selectRealOne();
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test, @ignore('Cast to real not supported by MySQL')]
+    public function selectRealZero() {
+      parent::selectRealZero();
+    }
+
+    /**
+     * Test selecting Real values
+     *
+     */
+    #[@test, @ignore('Cast to real not supported by MySQL')]
+    public function selectNegativeReal() {
+      parent::selectNegativeReal();
+    }
+
+    /**
      * Test selecting varchar values
      *
      */
