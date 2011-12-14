@@ -226,6 +226,13 @@
           return substr($string, 0, strcspn($string, "\0"));
         }
       }');
+      self::$recordsFor[0][self::XT_BINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0xFFFF === ($len= $stream->getShort())) return NULL;
+          $string= $stream->read($len);
+          return substr($string, 0, strcspn($string, "\0"));
+        }
+      }');
       self::$recordsFor[0][self::T_LONGBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $len= $stream->getLong();
