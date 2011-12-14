@@ -123,5 +123,26 @@
       $cmp= new Date('2009-08-14 12:45:00');
       $this->assertEquals($cmp, $this->db()->query('select cast(convert(datetime, %s, 102) as sql_variant) as value', $cmp)->next('value'));
     }
+ 
+    /**
+     * Test uniqueidentifier type
+     *
+     * @see   http://msdn.microsoft.com/en-us/library/ms187942.aspx
+     */
+    #[@test]
+    public function selectUniqueIdentifier() {
+      $cmp= '0E984725-C51C-4BF4-9960-E1C80E27ABA0';
+      $this->assertEquals($cmp, $this->db()->query('select convert(uniqueidentifier, %s) as value', $cmp)->next('value'));
+    }
+ 
+    /**
+     * Test uniqueidentifier type
+     *
+     * @see   http://msdn.microsoft.com/en-us/library/ms187942.aspx
+     */
+    #[@test]
+    public function selectNullUniqueIdentifier() {
+      $this->assertNull($this->db()->query('select convert(uniqueidentifier, NULL) as value')->next('value'));
+    }
   }
 ?>

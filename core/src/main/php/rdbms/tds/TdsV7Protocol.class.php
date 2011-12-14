@@ -65,6 +65,21 @@
           }
         }
       }');
+      $records[self::T_UNIQUE]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0 === ($len= $stream->getByte())) return NULL;
+
+          $bytes= $stream->read($len);
+          return sprintf(
+            "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X",
+            ord($bytes{3}), ord($bytes{2}), ord($bytes{1}), ord($bytes{0}),
+            ord($bytes{5}), ord($bytes{4}),
+            ord($bytes{7}), ord($bytes{6}),
+            ord($bytes{8}), ord($bytes{9}),
+            ord($bytes{10}), ord($bytes{11}), ord($bytes{12}), ord($bytes{13}), ord($bytes{14}), ord($bytes{15})
+          );
+        }
+      }');
       return $records;
     }
 
