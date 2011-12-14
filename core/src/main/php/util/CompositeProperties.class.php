@@ -44,6 +44,10 @@
     public function readBool($section, $key, $default= FALSE) {
       return $this->_read(__FUNCTION__, $section, $key, $default);
     }
+
+    public function readArray($section, $key, $default= array()) {
+      return $this->_read(__FUNCTION__, $section, $key, $default);
+    }
   }
 
 ?>
