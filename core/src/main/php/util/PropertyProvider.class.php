@@ -9,8 +9,14 @@
    */
   interface PropertyProvider {
     public function readArray($section, $key, $default= array());
+    public function readHash($section, $key, $default= NULL);
     public function readBool($section, $key, $default= FALSE);
     public function readString($section, $key, $default= NULL);
+    public function readInteger($section, $key, $default= 0);
+    public function readFloat($section, $key, $default= 0.0);
+    public function readSection($section, $default= array());
+
+    public function hasSection($section);
   }
 
 ?>
