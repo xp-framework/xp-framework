@@ -144,5 +144,22 @@
     public function reverseNotationLocalhost() {
       $this->assertEquals('1.0.0.127.in-addr.arpa', create(new Inet4Address('127.0.0.1'))->reversedNotation());
     }
+    
+    /**
+     * Test reverse address being built
+     *
+     */
+    #[@test]
+    public function createSubnet_creates_subnet_with_trailing_zeros() {
+      $addr= new Inet4Address('192.168.1.1');
+      $subNetSize= 24;
+      $expAddr= new Inet4Address('192.168.1.0');
+      $this->assertEquals($expAddr, $addr->createSubnet($subNetSize)->getAddress());
+      
+      $addr= new Inet4Address('192.168.1.1');
+      $subNetSize= 12;
+      $expAddr= new Inet4Address('192.160.0.0');
+      $this->assertEquals($expAddr, $addr->createSubnet($subNetSize)->getAddress());
+    }
   }
 ?>

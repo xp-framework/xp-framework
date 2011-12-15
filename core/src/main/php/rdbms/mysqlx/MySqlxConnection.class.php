@@ -63,9 +63,9 @@
         // - See: http://bugs.mysql.com/bug.php?id=10214
         // - Possible values: http://dev.mysql.com/doc/refman/5.0/en/server-sql-mode.html
         // "modes is a list of different modes separated by comma (,) characters."
-        $modes= array_flip(explode(',', current($this->handle->consume($this->handle->query(
+        $modes= array_flip(explode(',', this(this($this->handle->consume($this->handle->query(
           "show variables like 'sql_mode'"
-        )))));
+        )), 0), 1)));
       } catch (IOException $e) {
         // Ignore
       }
@@ -102,6 +102,7 @@
     public function selectdb($db) {
       try {
         $this->handle->exec('use '.$db);
+        return TRUE;
       } catch (IOException $e) {
         throw new SQLStatementFailedException($e->getMessage());
       }
