@@ -6,7 +6,7 @@
 
   uses(
     'util.Properties',
-    'util.PropertyProvider'
+    'util.PropertyAccess'
   );
   
   /**
@@ -14,7 +14,7 @@
    *
    * @purpose
    */
-  class CompositeProperties extends Object implements PropertyProvider {
+  class CompositeProperties extends Object implements PropertyAccess {
     protected $props  = array();
     private
       $sections = NULL;

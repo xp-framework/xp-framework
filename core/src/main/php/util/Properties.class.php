@@ -7,7 +7,7 @@
   uses(
     'io.IOException',
     'io.File',
-    'util.PropertyProvider',
+    'util.PropertyAccess',
     'io.streams.InputStream',
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
@@ -38,7 +38,7 @@
    * @test    xp://net.xp_framework.unittest.util.FileBasedPropertiesTest
    * @see     php://parse_ini_file
    */
-  class Properties extends Object implements PropertyProvider {
+  class Properties extends Object implements PropertyAccess {
     public
       $_file    = '',
       $_data    = NULL;

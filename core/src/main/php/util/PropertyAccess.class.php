@@ -7,7 +7,7 @@
   /**
    * PropertyProvider interface
    */
-  interface PropertyProvider {
+  interface PropertyAccess {
     public function readArray($section, $key, $default= array());
     public function readHash($section, $key, $default= NULL);
     public function readBool($section, $key, $default= FALSE);
