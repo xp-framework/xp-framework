@@ -16,6 +16,8 @@
    */
   class CompositeProperties extends Object implements PropertyProvider {
     protected $props  = array();
+    private
+      $sections = NULL;
 
     public function __construct(Properties $p, array $s= array()) {
       $this->props[]= $p;
@@ -79,6 +81,30 @@
       }
 
       return FALSE;
+    }
+
+    public function getFirstSection() {
+
+      // Lazy initialize - for subsequent loops
+      if (NULL === $this->sections) {
+        $this->sections= array();
+        foreach ($this->props as $p) {
+          $section= $p->getFirstSection();
+          while ($section) {
+            $this->sections[$section]= TRUE;
+            $section= $p->getNextSection();
+          }
+        }
+      }
+
+      reset($this->sections);
+      return key($this->sections);
+    }
+
+    public function getNextSection() {
+      if (!is_array($this->sections)) return NULL;
+      next($this->sections);
+      return key($this->sections);
     }
   }
 

@@ -279,5 +279,78 @@ anotherkey="is there, too"
       $this->assertEquals(FALSE, $this->fixture()->hasSection('any'));
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getFirstSection() {
+      $fixture= $this->fixture();
+      $this->assertEquals('section', $fixture->getFirstSection());
+      return $fixture;
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getNextSection() {
+      $fixture= $this->getFirstSection();
+      $this->assertEquals('read', $fixture->getNextSection());
+      return $fixture;
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getThirdSection() {
+      $fixture= $this->getNextSection();
+      $this->assertEquals('secondsection', $fixture->getNextSection());
+      return $fixture;
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function nextSectionCannotBeCalledWithoutCallToFirstSection() {
+      $this->assertEquals(NULL, $this->fixture()->getNextSection());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getLastSectionReturnsNull() {
+      $fixture= $this->getThirdSection();
+      $this->assertEquals('empty', $fixture->getNextSection());
+      $this->assertEquals(NULL, $fixture->getNextSection());
+      return $fixture;
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function lastSectionReturnsNullForever() {
+      $this->assertEquals(NULL, $this->getLastSectionReturnsNull()->getNextSection());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function firstSectionResetsLoop() {
+      $fixture= $this->getThirdSection();
+      $this->assertEquals('section', $fixture->getFirstSection());
+      $this->assertEquals('read', $fixture->getNextSection());
+    }
   }
 ?>

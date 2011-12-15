@@ -17,6 +17,8 @@
     public function readSection($section, $default= array());
 
     public function hasSection($section);
+    public function getFirstSection();
+    public function getNextSection();
   }
 
 ?>
