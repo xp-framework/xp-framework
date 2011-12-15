@@ -63,6 +63,10 @@
       return $this->_read(__FUNCTION__, $section, $key, $default);
     }
 
+    public function readRange($section, $key, $default= 0.0) {
+      return $this->_read(__FUNCTION__, $section, $key, $default);
+    }
+
     public function readSection($section, $default= array()) {
       $result= array(); $sectionFound= FALSE;
       foreach (array_reverse($this->props) as $p) {
@@ -107,5 +111,4 @@
       return key($this->sections);
     }
   }
-
 ?>

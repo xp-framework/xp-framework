@@ -15,6 +15,7 @@
     public function readInteger($section, $key, $default= 0);
     public function readFloat($section, $key, $default= 0.0);
     public function readSection($section, $default= array());
+    public function readRange($section, $key, $default= array());
 
     public function hasSection($section);
     public function getFirstSection();

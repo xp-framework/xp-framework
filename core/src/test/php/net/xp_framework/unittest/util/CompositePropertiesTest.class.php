@@ -46,6 +46,7 @@ arr1="foo|bar"
 hash1="a:b|b:c"
 int1=5
 float1=0.5
+range1=1..3
 
 [read]
 key=value'),
@@ -62,6 +63,8 @@ int1=10
 int2=4
 float1=1.1
 float2=4.99999999
+range1=5..6
+range2=99..100
 
 [secondsection]
 foo=bar
@@ -236,6 +239,33 @@ anotherkey="is there, too"
     #[@test]
     public function readFloatUsesDefaultOnNoOccurrance() {
       $this->assertEquals('Hello.', $this->fixture()->readFloat('section', 'float3', 'Hello.'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readRangeUsesFirst() {
+      $this->assertEquals(array(1, 2, 3), $this->fixture()->readRange('section', 'range1'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readRangeUsesSecondIfFirstUnset() {
+      $this->assertEquals(array(99, 100), $this->fixture()->readRange('section', 'range2'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readRangeUsesDefaultOnNoOccurrance() {
+      $this->assertEquals('Hello.', $this->fixture()->readRange('section', 'range3', 'Hello.'));
     }
 
     /**
