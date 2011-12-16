@@ -39,7 +39,7 @@ objectpart:
 ;
 
 objectkey:
-    '"' word '"' { $$= iconv('utf-8', $this->getTargetEncoding(), $2); /* xp::CHARSET */ }
+    '"' word '"' { $$= iconv($this->getTargetEncoding(), 'iso-8859-1', $2); /* xp::CHARSET */ }
   | '"' '"' { $$= ''; }
 ;    
 
@@ -54,7 +54,7 @@ arraycontent:
 ;
 
 string:
-    '"' word '"' { $$= iconv('utf-8', $this->getTargetEncoding(), $2); }
+    '"' word '"' { $$= $2; }
   | '"' '"' { $$= ''; }
 ;
 
@@ -64,7 +64,7 @@ word:
 ;
 
 stringpart:
-      T_STRING                { $$= $1; }
+      T_STRING                { $$= iconv('utf-8', $this->getTargetEncoding(), $1); }
     | T_ESCAPE_QUOTATION      { $$= '"'; }
     | T_ESCAPE_REVERSESOLIDUS { $$= "\\"; }
     | T_ESCAPE_SOLIDUS        { $$= "/"; }
