@@ -22,8 +22,8 @@
      * @param   string input
      * @return  var
      */
-    protected function decode($input) {
-      return $this->fixture->decodeFrom(new MemoryInputStream($input));
+    protected function decode($input, $targetEncoding= 'iso-8859-1') {
+      return $this->fixture->decodeFrom(new MemoryInputStream($input), $targetEncoding);
     }
   }
 ?>
