@@ -39,7 +39,7 @@ objectpart:
 ;
 
 objectkey:
-    '"' word '"' { $$= utf8_decode($2); /* xp::CHARSET */ }
+    '"' word '"' { $$= iconv('utf-8', $this->getTargetEncoding(), $2); /* xp::CHARSET */ }
   | '"' '"' { $$= ''; }
 ;    
 
@@ -54,8 +54,8 @@ arraycontent:
 ;
 
 string:
-    '"' word '"' { $$= new String($2, 'utf-8'); }
-  | '"' '"' { $$= String::$EMPTY; }
+    '"' word '"' { $$= iconv('utf-8', $this->getTargetEncoding(), $2); }
+  | '"' '"' { $$= ''; }
 ;
 
 word:
@@ -76,7 +76,7 @@ stringpart:
     | T_ESCAPE_UNICODE        {
                                 $$= iconv(
                                   'ucs-4be',
-                                  'utf-8',
+                                  $this->getTargetEncoding(),
                                   pack('N', hexdec(substr($1, 2)))
                                 );
                               }
@@ -90,3 +90,12 @@ atom:
     | T_INT   { $$= intval($1); }
 ;
 %%
+
+  protected $targetEncoding= 'iso-8859-1';  // xp::CHARSET
+  public function setTargetEncoding($e) {
+    $this->targetEncoding= $e;
+  }
+
+  public function getTargetEncoding() {
+    return $this->targetEncoding;
+  }
