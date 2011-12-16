@@ -26,9 +26,8 @@
     protected static 
       $instance     = NULL;
 
-    public 
-      $_path    = '.',
-      $_prop    = array();
+    protected
+      $paths    = array();
 
     static function __static() {
       self::$instance= new self();
@@ -56,7 +55,12 @@
      * @param   string path search path to the property files
      */
     public function configure($path) {
-      $this->_path= $path;
+      $this->addPath($path);
+    }
+
+    public function addPath($path) {
+      if (isset($this->paths[$path])) return;
+      $this->paths[$path]= array();
     }
     
     /**
@@ -66,7 +70,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      $this->_prop[$this->_path.$name]= $properties;
+      $this->paths[$this->_path][$name]= $properties;
     }
 
     /**
@@ -76,10 +80,17 @@
      * @return  bool
      */
     public function hasProperties($name) {
-      return (
-        isset($this->_prop[$this->_path.$name]) || 
-        file_exists($this->_path.DIRECTORY_SEPARATOR.$name.'.ini')
-      );
+      // First check cache
+      foreach ($this->paths as $path => $elements) {
+        if (isset($elements[$name])) return TRUE;
+      }
+
+      // Second loop checks fs
+      foreach ($this->paths as $path => $elements) {
+        if (file_exists($path.DIRECTORY_SEPARATOR.$name.'.ini')) return TRUE;
+      }
+
+      return FALSE;
     }
    
     /**
@@ -89,12 +100,19 @@
      * @return  util.Properties
      */
     public function getProperties($name) {
-      if (!isset($this->_prop[$this->_path.$name])) {
-        $this->_prop[$this->_path.$name]= new Properties(
-          $this->_path.DIRECTORY_SEPARATOR.$name.'.ini'
-        );
+      foreach ($this->paths as $path => $elements) {
+        if (isset($elements[$name])) return $elements[$name];
       }
-      return $this->_prop[$this->_path.$name];
+
+      foreach ($this->paths as $path => $elements) {
+        if (isset($elements[$name])) continue;
+        if (file_exists($path.DIRECTORY_SEPARATOR.$name.'.ini')) {
+          $this->paths[$path][$name]= new Properties(
+            $path.DIRECTORY_SEPARATOR.$name.'.ini'
+          );
+          return $this->paths[$path][$name];
+        }
+      }
     }
   }
 ?>

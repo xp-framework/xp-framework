@@ -26,6 +26,12 @@
       return $class->getMethod('newInstance')->invoke(NULL);
     }
     
+    private function preconfigured() {
+      $f= $this->fixture();
+      $f->configure(dirname(__FILE__));
+      return $f;
+    }
+
     /**
      * Test
      *
@@ -72,7 +78,6 @@
       $fixture->configure(dirname(__FILE__));
       
       $this->assertTrue($fixture->hasProperties('example'));
-      return $fixture;
     }
     
     /**
@@ -81,7 +86,7 @@
      */
     #[@test]
     public function doesNotHaveConfiguredPathProperties() {
-      $this->assertFalse($this->hasConfiguredPathProperties()->hasProperties('does-not-exist'));
+      $this->assertFalse($this->preconfigured()->hasProperties('does-not-exist'));
     }
     
     /**
@@ -90,7 +95,7 @@
      */
     #[@test]
     public function getPropertiesReturnsSameObject() {
-      $fixture= $this->hasConfiguredPathProperties();
+      $fixture= $this->preconfigured();
       $this->assertEquals(
         $fixture->getProperties('example')->hashCode(),
         $fixture->getProperties('example')->hashCode()
@@ -103,9 +108,43 @@
      */
     #[@test]
     public function registerOverwritesExistingProperties() {
-      $fixture= $this->hasConfiguredPathProperties();
+      $fixture= $this->preconfigured();
       $fixture->register('example', Properties::fromString('[any-section]'));
       $this->assertEquals('any-section', $fixture->getProperties('example')->getFirstSection());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getProperties() {
+      $prop= $this->preconfigured()->getProperties('example');
+      $this->assertInstanceOf('util.Properties', $prop);
+      $this->assertEquals('value', $prop->readString('section', 'key'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function addPath() {
+      $fixture= $this->preconfigured();
+      $fixture->addPath(dirname(__FILE__).'/..');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getPropertiesFromSecondPath() {
+      $fixture= $this->fixture();
+      $fixture->configure(dirname(__FILE__).'/..');
+      $fixture->addPath(dirname(__FILE__).'/.');
+
+      $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
     }
   }
 ?>
