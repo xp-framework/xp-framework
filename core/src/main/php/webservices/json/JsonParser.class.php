@@ -323,7 +323,7 @@
     { $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); } break;
 
     case 10:  #line 42 "src/main/jay/webservices/json/json.jay"
-    { $yyVal= iconv('utf-8', $this->getTargetEncoding(), $yyVals[-1+$yyTop]); /* xp::CHARSET */ } break;
+    { $yyVal= iconv($this->getTargetEncoding(), 'iso-8859-1', $yyVals[-1+$yyTop]); /* xp::CHARSET */ } break;
 
     case 11:  #line 43 "src/main/jay/webservices/json/json.jay"
     { $yyVal= ''; } break;
@@ -341,7 +341,7 @@
     { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
 
     case 16:  #line 57 "src/main/jay/webservices/json/json.jay"
-    { $yyVal= iconv('utf-8', $this->getTargetEncoding(), $yyVals[-1+$yyTop]); } break;
+    { $yyVal= $yyVals[-1+$yyTop]; } break;
 
     case 17:  #line 58 "src/main/jay/webservices/json/json.jay"
     { $yyVal= ''; } break;
@@ -350,7 +350,7 @@
     { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
 
     case 20:  #line 67 "src/main/jay/webservices/json/json.jay"
-    { $yyVal= $yyVals[0+$yyTop]; } break;
+    { $yyVal= iconv('utf-8', $this->getTargetEncoding(), $yyVals[0+$yyTop]); } break;
 
     case 21:  #line 68 "src/main/jay/webservices/json/json.jay"
     { $yyVal= '"'; } break;
