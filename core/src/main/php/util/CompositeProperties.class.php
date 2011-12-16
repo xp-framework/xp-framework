@@ -16,12 +16,21 @@
    */
   class CompositeProperties extends Object implements PropertyAccess {
     protected $props  = array();
-    private
-      $sections = NULL;
+    private $sections = NULL;
 
     public function __construct(Properties $p, array $s= array()) {
       $this->props[]= $p;
       if (sizeof($s)) $this->props= array_merge($this->props, $s);
+    }
+
+    public function add(Properties $a) {
+      foreach ($this->props as $p) {
+        if ($p === $a) return;
+        if ($p->equals($a)) return;
+      }
+
+      $this->props[]= $a;
+      $this->sections= NULL;
     }
 
     public function length() {

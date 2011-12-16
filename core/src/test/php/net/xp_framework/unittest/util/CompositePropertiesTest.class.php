@@ -38,6 +38,50 @@
       $this->assertEquals(2, $c->length());
     }
 
+    /**
+     * Test
+     *
+     */
+    #[@test, @ignore]
+    public function addOtherProperties() {
+      $c= new CompositeProperties(new Properties(NULL));
+      $this->assertEquals(1, $c->length());
+
+      $c->add(new Properties(NULL));
+      $this->assertEquals(2, $c->length());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function addingIdenticalPropertiesIsIdempotent() {
+      $p= new Properties('');
+      $c= new CompositeProperties($p);
+      $this->assertEquals(1, $c->length());
+
+      $c->add($p);
+      $this->assertEquals(1, $c->length());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function addingEqualPropertiesIsIdempotent() {
+      $c= new CompositeProperties(Properties::fromString('[section]
+a=b
+b=c'));
+      $this->assertEquals(1, $c->length());
+
+      $c->add(Properties::fromString('[section]
+a=b
+b=c'));
+      $this->assertEquals(1, $c->length());
+    }
+
     protected function fixture() {
       return new CompositeProperties(Properties::fromString('[section]
 str="string..."
@@ -381,6 +425,18 @@ anotherkey="is there, too"
       $fixture= $this->getThirdSection();
       $this->assertEquals('section', $fixture->getFirstSection());
       $this->assertEquals('read', $fixture->getNextSection());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function addingToCompositeResetsIterationPointer() {
+      $fixture= $this->getThirdSection();
+      $fixture->add(Properties::fromString('[unknown]'));
+
+      $this->assertEquals(NULL, $fixture->getNextSection());
     }
   }
 ?>
