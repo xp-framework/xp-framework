@@ -570,6 +570,37 @@
     }
 
     /**
+     * Check if is equal to other object
+     *
+     * @param   var $cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      if (!$cmp instanceof Properties) return FALSE;
+
+      if ($this->_data && $cmp->_data) {
+        return $this->_data == $cmp->_data;
+      }
+
+      // If based on files, and both base on same file, then they're equal
+      if ($this->_file && $cmp->_file) {
+        return $this->_file === $cmp->_file;
+      }
+
+      // Bordercase
+      if (
+        $this->_file === NULL &&
+        $cmp->_file === NULL &&
+        $this->_data === NULL &&
+        $cmp->_data === NULL
+      ) {
+        return TRUE;
+      }
+
+      return FALSE;
+    }
+
+    /**
      * Creates a string representation of this property file
      *
      * @return  string
