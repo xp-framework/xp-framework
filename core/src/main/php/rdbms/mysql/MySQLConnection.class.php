@@ -19,6 +19,7 @@
    * @ext      mysql
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
+   * @test     net.xp_framework.unittest.rdbms.integration.MySQLIntegrationTest
    * @purpose  Database connection
    */
   class MySQLConnection extends DBConnection {
