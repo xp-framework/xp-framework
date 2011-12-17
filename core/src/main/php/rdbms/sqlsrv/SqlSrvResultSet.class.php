@@ -13,6 +13,11 @@
    * @purpose  Resultset wrapper
    */
   class SqlSrvResultSet extends ResultSet {
+    protected static $precision;
+
+    static function __static() {
+      self::$precision= ini_get('precision');
+    }
   
     /**
      * Constructor
@@ -70,7 +75,9 @@
             break;
 
           case 2:  // SQLSRV_SQLTYPE_NUMERIC
-            if ($this->fields[$key]['Scale'] > 0) {
+            if (strlen($row[$key]) > self::$precision) {
+              break;
+            } else if ($this->fields[$key]['Scale'] > 0) {
               settype($row[$key], 'double');
               break;
             }
@@ -84,7 +91,7 @@
             }
             break;
 
-          case 7: // SQLSRV_SQLTYPE_REAL
+          case 7: case 3: // SQLSRV_SQLTYPE_REAL, SQLSRV_SQLTYPE_MONEY
             settype($row[$key], 'double');
             break;
         }

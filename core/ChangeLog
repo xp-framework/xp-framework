@@ -14,6 +14,11 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed money values in rdbms.sqlsrv.SqlSrvConnection (friebe)
+- Fixed rdbms.sqlsrv.SqlSrvConnection::query() to cancel previous results
+  if necessary, preventing "The connection cannot process this operation 
+  because there is a statement with pending results" errors.
+  (friebe)
 - Fixed rdbms.mysqli.MySQLiConnection::query() to cancel previous results
   if necessary, preventing "Commands out of sync" errors
   (friebe)
