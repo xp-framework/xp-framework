@@ -22,6 +22,7 @@
    * @purpose  Database connection
    */
   class SqlSrvConnection extends DBConnection {
+    protected $affected= 0;
 
     /**
      * Constructor
@@ -124,7 +125,7 @@
      * @return  int
      */
     protected function affectedRows() {
-      return sqlsrv_rows_affected($this->handle);
+      return $this->affected;
     }
     
     /**
@@ -168,11 +169,13 @@
             throw new SQLStatementFailedException($message, $sql, $code);
         }
       }
-      
-      return (TRUE === $result
-        ? $result
-        : new SqlSrvResultSet($result, $this->tz)
-      );
+
+      if (sqlsrv_has_rows($result)) {
+        return new SqlSrvResultSet($result, $this->tz);
+      } else {
+        $this->affected= sqlsrv_rows_affected($result);
+        return TRUE;
+      }
     }
     
     /**
