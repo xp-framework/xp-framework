@@ -21,8 +21,12 @@
      */
     public function __construct($result, $fields, TimeZone $tz= NULL) {
       parent::__construct($result, $fields, $tz);
-      while (NULL !== ($record= $this->handle->fetch($this->fields))) {
-        $this->records[]= $record;
+      try {
+        while (NULL !== ($record= $this->handle->fetch($this->fields))) {
+          $this->records[]= $record;
+        }
+      } catch (ProtocolException $e) {
+        throw new SQLException('Failed reading rows', $e);
       }
       reset($this->records);
     }

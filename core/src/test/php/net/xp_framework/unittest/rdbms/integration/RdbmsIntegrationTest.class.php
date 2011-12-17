@@ -802,5 +802,14 @@
 
       $this->assertEquals(1, $db->query('select 1 as num')->next('num'));
     }
+
+    /**
+     * Test arithmetic overflow
+     *
+     */
+    #[@test, @expect('rdbms.SQLException')]
+    public function arithmeticOverflow() {
+      $this->db()->query('select cast(10000000000000000 as int)')->next();
+    }
   }
 ?>

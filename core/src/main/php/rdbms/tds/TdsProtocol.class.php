@@ -381,7 +381,7 @@
         $this->cancel();
         throw new ProtocolException('Unknown message type '.$type);
       }
-      
+
       // Handle errors - see also 2.2.5.7: Data Buffer Stream Tokens
       $token= $this->stream->getToken();
       if ("\xAA" === $token) {
@@ -448,8 +448,12 @@
           }
           $token= $this->stream->getToken();
           $continue= TRUE;
+        } else if ("\xAA" === $token) {
+          $this->handleError();
+        } else if ("\xE5" === $token) {
+          $this->handleExtendedError();
         } else if ("\xD1" !== $token) {
-          // DEBUG Console::$err->writeLinef('END TOKEN %02x', ord($token));    // 2.2.5.7 Data Buffer Stream Tokens
+          // Console::$err->writeLinef('END TOKEN %02x', ord($token));    // 2.2.5.7 Data Buffer Stream Tokens
           $this->done= TRUE;
           return NULL;
         } else {
