@@ -168,9 +168,9 @@
       }
       
       if (!$buffered || $this->flags & DB_UNBUFFERED) {
-        $result= mysql_unbuffered_query($sql, $this->handle);
+        $result= @mysql_unbuffered_query($sql, $this->handle);
       } else {
-        $result= mysql_query($sql, $this->handle);
+        $result= @mysql_query($sql, $this->handle);
       }
       
       if (FALSE === $result) {

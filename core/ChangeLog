@@ -14,6 +14,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed warnings raised from rdbms.mysql.MySQLConnection::query() when
+  unbuffered results have not completely been read
+  (friebe)
 
 
 Version 5.8.3, released 2011-12-08
