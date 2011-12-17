@@ -460,5 +460,42 @@
       } catch (IllegalArgumentException $expected) { }
       Date::now();
     }
+    
+    /**
+     * Test Date::create function with empty string's as arguments
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function dateCreateWithAllInvalidArguments() {
+      Date::create('', '', '', '', '', '');
+    }
+    
+    /**
+     * Test Date::create function with empty string's as arguments
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function dateCreateWithInvalidArgumentsExceptTimeZone() {
+      Date::create('', '', '', '', '', '', new TimeZone('UTC'));
+    }
+    
+    /**
+     * Create new date from static Date::now() without TimeZone param
+     *
+     */
+    #[@test]
+    public function createDateFromStaticNowFunctionWithoutParam() {
+      $this->assertEquals(TRUE, Date::now() instanceof Date);
+    }
+    
+    /**
+     * Create new date from static Date::now() with TimeZone param
+     *
+     */
+    #[@test]
+    public function createDateFromStaticNowFunctionWithZimeZone() {
+      $d= Date::now(new TimeZone('Australia/Sydney'));
+      $this->assertEquals('Australia/Sydney', $d->getTimeZone()->getName());
+    }
   }
 ?>
