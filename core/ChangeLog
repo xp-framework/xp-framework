@@ -14,6 +14,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.mysqli.MySQLiConnection::query() to cancel previous results
+  if necessary, preventing "Commands out of sync" errors
+  (friebe)
 - Fixed warnings raised from rdbms.mysql.MySQLConnection::query() when
   unbuffered results have not completely been read
   (friebe)
