@@ -14,7 +14,7 @@
  *   <li>Depends on PHP extension <tt>sqlsrv</tt></li>
  * </ul>
  * 
- * @see      http://www.microsoft.com/sqlserver/2005/en/us/PHP-Driver.aspx
+ * @see      http://sqlsrvphp.codeplex.com/
  * @see      http://www.microsoft.com/sqlserver
  * @see      xp://rdbms.DriverManager - the entry point
  * @purpose  Databases
