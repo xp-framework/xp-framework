@@ -22,7 +22,7 @@
    * @purpose  Database connection
    */
   class SqlSrvConnection extends DBConnection {
-    protected $affected= 0;
+    protected $result= FALSE;
 
     /**
      * Constructor
@@ -67,6 +67,7 @@
         'LoginTimeout' => $this->timeout,
         'UID'          => $this->dsn->getUser(),
         'PWD'          => $this->dsn->getPassword(),
+        'MultipleActiveResultSets' => FALSE
       ));
 
       if (!is_resource($this->handle)) {
@@ -125,7 +126,7 @@
      * @return  int
      */
     protected function affectedRows() {
-      return $this->affected;
+      return sqlsrv_rows_affected($this->result);
     }
     
     /**
@@ -144,9 +145,16 @@
         // Check for subsequent connection errors
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
       }
-      
-      $result= sqlsrv_query($this->handle, $sql);
-      if (FALSE === $result) {
+
+      // Cancel pending result sets. TODO: Look into using MARS (Multiple
+      // Active Result Sets) feature, but this was causing problems in other
+      // places.
+      if (FALSE !== $this->result) {
+        sqlsrv_free_stmt($this->result);
+      }
+
+      $this->result= sqlsrv_query($this->handle, $sql);
+      if (FALSE === $this->result) {
         $message= 'Statement failed: '.$this->errors().' @ '.$this->dsn->getHost();
         if (!is_resource($error= sqlsrv_query($this->handle, 'select @@error'))) {
         
@@ -170,10 +178,9 @@
         }
       }
 
-      if (sqlsrv_has_rows($result)) {
-        return new SqlSrvResultSet($result, $this->tz);
+      if (sqlsrv_num_fields($this->result)) {
+        return new SqlSrvResultSet($this->result, $this->tz);
       } else {
-        $this->affected= sqlsrv_rows_affected($result);
         return TRUE;
       }
     }
