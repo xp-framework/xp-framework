@@ -19,6 +19,7 @@
    * @ext      sqlsrv
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
+   * @test     xp://net.xp_framework.unittest.rdbms.integration.MsSQLIntegrationTest
    * @purpose  Database connection
    */
   class SqlSrvConnection extends DBConnection {
