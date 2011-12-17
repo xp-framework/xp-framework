@@ -812,7 +812,6 @@
       $this->db()->query('select cast(10000000000000000 as int)')->next();
     }
 
-
     /**
      * Test arithmetic overflow
      *
@@ -820,6 +819,58 @@
     #[@test, @expect('rdbms.SQLException')]
     public function arithmeticOverflowWithOpen() {
       $this->db()->open('select cast(10000000000000000 as int)')->next();
+    }
+
+    /**
+     * Creates fixture for next two tests
+     *
+     * @return  string SQL
+     */
+    protected function rowFailureFixture() {
+      $this->removeTable($this->tableName());
+      $this->db()->query('create table %c (i varchar(20))', $this->tableName());
+      $this->db()->insert('into %c values ("1")', $this->tableName());
+      $this->db()->insert('into %c values ("not-a-number")', $this->tableName());
+      $this->db()->insert('into %c values ("2")', $this->tableName());
+      return $this->db()->prepare('select cast(i as int) as i from %c', $this->tableName());
+    }
+
+    /**
+     * Test 
+     *
+     */
+    #[@test]
+    public function readingRowFailsWithQuery() {
+      $q= $this->db()->query($this->rowFailureFixture());
+      $records= array();
+      do {
+        try {
+          $r= $q->next('i');
+          if ($r) $records[]= $r;
+        } catch (SQLException $e) {
+          $records[]= FALSE;
+        }
+      } while ($r);
+      $this->assertEquals(array(1, FALSE), $records);
+    }
+
+    /**
+     * Test 
+     *
+     */
+    #[@test]
+    public function readingRowFailsWithOpen() {
+      $q= $this->db()->open($this->rowFailureFixture());
+      $records= array();
+      do {
+        try {
+          $r= $q->next('i');
+          if ($r) $records[]= $r;
+        } catch (SQLException $e) {
+          $records[]= FALSE;
+        }
+      } while ($r);
+      $this->assertEquals(array(1, FALSE), $records);
     }
   }
 ?>

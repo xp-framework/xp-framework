@@ -21,13 +21,14 @@
      */
     public function __construct($result, $fields, TimeZone $tz= NULL) {
       parent::__construct($result, $fields, $tz);
-      try {
-        while (NULL !== ($record= $this->handle->fetch($this->fields))) {
+      do {
+        try {
+          if (NULL === ($record= $this->handle->fetch($this->fields))) break;
           $this->records[]= $record;
+        } catch (ProtocolException $e) {
+          $this->records[]= new SQLException('Failed reading rows', $e);
         }
-      } catch (ProtocolException $e) {
-        throw new SQLException('Failed reading rows', $e);
-      }
+      } while (1);
       reset($this->records);
     }
       
@@ -54,7 +55,11 @@
       if (FALSE === ($record= current($this->records))) return FALSE;
       
       next($this->records);
-      return $this->record($record, $field);
+      if ($record instanceof SQLException) {
+        throw $record;
+      } else {
+        return $this->record($record, $field);
+      }
     }
     
     /**

@@ -295,5 +295,23 @@
     public function selectCharWithPadding() {
       $this->assertEquals('t', $this->db()->query('select cast("t" as char(4)) as value')->next('value'));
     }
+
+    /**
+     * Test 
+     *
+     */
+    #[@test, @ignore('No known way to test this in MySQL')]
+    public function readingRowFailsWithQuery() {
+      parent::readingRowFailsWithQuery();
+    }
+
+    /**
+     * Test 
+     *
+     */
+    #[@test, @ignore('No known way to test this in MySQL')]
+    public function readingRowFailsWithOpen() {
+      parent::readingRowFailsWithOpen();
+    }
   }
 ?>
