@@ -808,8 +808,18 @@
      *
      */
     #[@test, @expect('rdbms.SQLException')]
-    public function arithmeticOverflow() {
+    public function arithmeticOverflowWithQuery() {
       $this->db()->query('select cast(10000000000000000 as int)')->next();
+    }
+
+
+    /**
+     * Test arithmetic overflow
+     *
+     */
+    #[@test, @expect('rdbms.SQLException')]
+    public function arithmeticOverflowWithOpen() {
+      $this->db()->open('select cast(10000000000000000 as int)')->next();
     }
   }
 ?>
