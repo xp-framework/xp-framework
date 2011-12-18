@@ -93,7 +93,7 @@
             continue;
           }
 
-          $msg= $this->constructViolationMessage($method, $exp);
+          $msg= $this->constructViolationMessage($exp);
           throw new ExpectationViolationException($msg);
         }
       }
