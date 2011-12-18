@@ -920,6 +920,33 @@
     }
 
     /**
+     * Test selecting smallint values
+     *
+     */
+    #[@test]
+    public function selectSmallint() {
+      $this->assertEquals(5, $this->db()->query('select cast(5 as smallint) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting smallint values
+     *
+     */
+    #[@test]
+    public function selectSmallintOne() {
+      $this->assertEquals(1, $this->db()->query('select cast(1 as smallint) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting smallint values
+     *
+     */
+    #[@test]
+    public function selectSmallintZero() {
+      $this->assertEquals(0, $this->db()->query('select cast(0 as smallint) as value')->next('value'));
+    }
+
+    /**
      * Test observers are being called
      *
      */

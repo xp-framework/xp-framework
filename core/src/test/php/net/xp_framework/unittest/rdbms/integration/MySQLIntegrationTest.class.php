@@ -539,5 +539,32 @@
     public function selectTinyintZero() {
       parent::selectTinyintZero();
     }
+
+    /**
+     * Test selecting smallint values
+     *
+     */
+    #[@test, @ignore('Cast to smallint not supported by MySQL')]
+    public function selectSmallint() {
+      parent::selectSmallint();
+    }
+
+    /**
+     * Test selecting smallint values
+     *
+     */
+    #[@test, @ignore('Cast to smallint not supported by MySQL')]
+    public function selectSmallintOne() {
+      parent::selectSmallintOne();
+    }
+
+    /**
+     * Test selecting smallint values
+     *
+     */
+    #[@test, @ignore('Cast to smallint not supported by MySQL')]
+    public function selectSmallintZero() {
+      parent::selectSmallintZero();
+    }
   }
 ?>
