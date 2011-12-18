@@ -313,5 +313,23 @@
     public function readingRowFailsWithOpen() {
       parent::readingRowFailsWithOpen();
     }
+
+    /**
+     * Test selecting a signed int
+     *
+     */
+    #[@test]
+    public function selectSignedInt() {
+      $this->assertEquals(1, $this->db()->query('select cast(1 as signed integer) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting an unsigned bigint
+     *
+     */
+    #[@test, @ignore('MySQL does not know unsigned bigints')]
+    public function selectMaxUnsignedBigInt() {
+      parent::selectMaxUnsignedBigInt();
+    }
   }
 ?>

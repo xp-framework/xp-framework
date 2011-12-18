@@ -155,12 +155,12 @@
     }
 
     /**
-     * Test selecting an unsigned int
+     * Test selecting an unsigned bigint
      *
      */
-    #[@test, @ignore('MsSQL does not know signed ints')]
-    public function selectSignedInt() {
-      parent::selectUnsignedInt();
+    #[@test, @ignore('MsSQL does not know unsigned bigints')]
+    public function selectMaxUnsignedBigInt() {
+      parent::selectMaxUnsignedBigInt();
     }
   }
 ?>

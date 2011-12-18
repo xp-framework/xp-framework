@@ -704,12 +704,12 @@
     }
 
     /**
-     * Test selecting an unsigned int
+     * Test selecting an unsigned bigint
      *
      */
     #[@test]
-    public function selectSignedInt() {
-      $this->assertEquals(1, $this->db()->query('select cast(1 as signed integer) as value')->next('value'));
+    public function selectMaxUnsignedBigInt() {
+      $this->assertEquals('18446744073709551615', $this->db()->query('select cast(18446744073709551615 as unsigned bigint) as value')->next('value'));
     }
 
     /**
