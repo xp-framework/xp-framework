@@ -79,6 +79,42 @@
     }
 
     /**
+     * Test selecting NumericWithScale values
+     *
+     */
+    #[@test, @ignore('NumericWithScale not supported by MySQL')]
+    public function selectNumericWithScaleNull() {
+      parent::selectNumericWithScaleNull();
+    }
+
+    /**
+     * Test selecting NumericWithScale values
+     *
+     */
+    #[@test, @ignore('NumericWithScale not supported by MySQL')]
+    public function selectNumericWithScale() {
+      parent::selectNumericWithScale();
+    }
+
+    /**
+     * Test selecting NumericWithScale values
+     *
+     */
+    #[@test, @ignore('NumericWithScale not supported by MySQL')]
+    public function selectNumericWithScaleZero() {
+      parent::selectNumericWithScaleZero();
+    }
+
+    /**
+     * Test selecting NumericWithScale values
+     *
+     */
+    #[@test, @ignore('NumericWithScale not supported by MySQL')]
+    public function selectNegativeNumericWithScale() {
+      parent::selectNegativeNumericWithScale();
+    }
+
+    /**
      * Test selecting numeric values
      *
      */

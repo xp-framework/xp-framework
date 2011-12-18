@@ -542,6 +542,42 @@
     }
 
     /**
+     * Test selecting numeric(n, m) values
+     *
+     */
+    #[@test]
+    public function selectNumericWithScaleNull() {
+      $this->assertEquals(NULL, $this->db()->query('select convert(numeric(8, 2), NULL) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting numeric(n, m) values
+     *
+     */
+    #[@test]
+    public function selectNumericWithScale() {
+      $this->assertEquals(1.00, $this->db()->query('select convert(numeric(8, 2), 1) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting numeric(n, m) values
+     *
+     */
+    #[@test]
+    public function selectNumericWithScaleZero() {
+      $this->assertEquals(0.00, $this->db()->query('select convert(numeric(8, 2), 0) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting numeric(n, m) values
+     *
+     */
+    #[@test]
+    public function selectNegativeNumericWithScale() {
+      $this->assertEquals(-6100.00, $this->db()->query('select convert(numeric(8, 2), -6100) as value')->next('value'));
+    }
+
+    /**
      * Test selecting numeric values
      *
      */
