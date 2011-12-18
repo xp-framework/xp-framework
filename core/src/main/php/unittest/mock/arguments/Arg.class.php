@@ -51,7 +51,7 @@
      */
     public static function anyOfType($typeName) {
       $builder= new MockProxyBuilder();
-      $builder->setOverwriteExisting(false);
+      $builder->setOverwriteExisting(FALSE);
       
       $defaultCL= ClassLoader::getDefault();
       
@@ -59,11 +59,12 @@
       $parentClass= NULL;
       
       $type= XPClass::forName($typeName);
-      if($type->isInterface()) 
+      if($type->isInterface()) {
         $interfaces[]= $type;
-      else
+      } else {
         $parentClass= $type;
-        
+      }
+      
       $proxyClass= $builder->createProxyClass($defaultCL, $interfaces, $parentClass);
       return $proxyClass->newInstance(new TypeMatcher($typeName));
     }

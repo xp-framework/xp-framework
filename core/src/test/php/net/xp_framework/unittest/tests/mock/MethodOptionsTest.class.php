@@ -11,13 +11,13 @@
    */
   class MethodOptionsTest extends TestCase {
 
-    private $sut=null;
+    private $sut= NULL;
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-      $this->sut=new MethodOptions(new Expectation('method'), 'method');
+      $this->sut= new MethodOptions(new Expectation('method'), 'method');
     }
       
     /**
@@ -25,7 +25,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectationRequiredOnCreate() {
-      new MethodOptions(null, null);
+      new MethodOptions(NULL, NULL);
     }
 
     /**
@@ -33,7 +33,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function nameRequiredOnCreate() {
-      new MethodOptions(new Expectation('method'), null);
+      new MethodOptions(new Expectation('method'), NULL);
     }
     
     /**
@@ -41,7 +41,7 @@
      */
     #[@test]
     public function canCallReturns() {
-      $this->sut->returns(null);
+      $this->sut->returns(NULL);
     }
 
     /**

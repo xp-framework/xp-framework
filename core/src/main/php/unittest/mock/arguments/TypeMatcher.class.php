@@ -21,7 +21,7 @@
      * 
      * @param value string
      */
-    public function __construct($type, $matchNull= true) {
+    public function __construct($type, $matchNull= TRUE) {
       $this->type= $type;
       $this->matchNull= $matchNull;
     }
@@ -32,15 +32,17 @@
      * @param value mixed
      */
     public function matches($value) {
-      if(NULL === $value && $this->matchNull)
-        return true;
+      if(NULL === $value && $this->matchNull) {
+        return TRUE;
+      }
       
       return xp::typeof($value) == XPClass::forName($this->type)->getName();
     }
 
     public function invoke($proxy, $method, $args) {
-      if($method == 'matches')
+      if($method == 'matches') {
         return $this->matches($args[0]);
+      }
       
       throw new IllegalStateException('Unknown method "'.$method.'".');
     }

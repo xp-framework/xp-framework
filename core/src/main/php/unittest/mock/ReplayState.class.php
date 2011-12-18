@@ -27,12 +27,14 @@
      * @param Hashmap expectationsMap
      */
     public function  __construct($expectationMap, $properties) {
-      if(!($expectationMap instanceof Hashmap))
+      if(!($expectationMap instanceof Hashmap)) {
         throw new IllegalArgumentException('Invalid expectation map passed.');
+      }
       
-      if(!($properties instanceof Hashmap))
+      if(!($properties instanceof Hashmap)) {
         throw new IllegalArgumentException('Invalid properties passed.');
-            
+      }
+      
       $this->expectationMap= $expectationMap;
       $this->properties= $properties;
       
@@ -45,8 +47,9 @@
       foreach($this->expectationMap->keys() as $method) {
         $expList= $this->expectationMap->get($method);
         
-        if(!$this->checkForBehaviorMode($expList))
+        if(!$this->checkForBehaviorMode($expList)) {
           continue;
+        }
         
         $expectation= $expList->getExpectation(0);
         
@@ -61,7 +64,7 @@
     
     private function checkForBehaviorMode($list) {
       $seenBehaviorMode= FALSE;
-      for($i=0; $i< $list->size(); ++$i) {
+      for($i= 0; $i< $list->size(); ++$i) {
         $exp= $list->getExpectation($i);
         
         if($seenBehaviorMode) {
@@ -72,10 +75,9 @@
           throw new IllegalStateException('Invalid expectations definition '.$exp->toString().'. Cannot switch to property behavior as expecations have been defined already.');
         }
         
-        if($exp->isInPropertyBehavior())
+        if($exp->isInPropertyBehavior()) {
           $seenBehaviorMode= TRUE;
-        
-        
+        }
       }
 
       return $seenBehaviorMode;
@@ -95,12 +97,14 @@
          if($prefix == 'set') {
            $this->properties->put($suffix, $args[0]);
            return;
+         } else {
+           return $this->properties->get($suffix);
          }
-         else return $this->properties->get($suffix);
       }
       
-      if(!$this->expectationMap->get($method))
-        return NULL; //
+      if(!$this->expectationMap->get($method)) {
+        return NULL;
+      }
             
       $expectationList= $this->expectationMap->get($method);
       $nextExpectation= $expectationList->getNext($args);
@@ -109,9 +113,10 @@
         return NULL;
       }
 
-      if(NULL != $nextExpectation->getException())
+      if(NULL != $nextExpectation->getException()) {
         throw $nextExpectation->getException();
-
+      }
+      
       return $nextExpectation->getReturn();      
     }
     

@@ -22,9 +22,9 @@
   class MockProxy extends Object implements InvocationHandler {
 
     private
-    $mockState= null,
-    $expectionMap= null,
-    $properties= null;
+    $mockState= NULL,
+    $expectionMap= NULL,
+    $properties= NULL;
 
     public function __construct() {
       $this->expectionMap= new Hashmap();
@@ -78,7 +78,7 @@
      * Switches state to replay mode
      */
     public function replay() {
-      $this->mockState = new ReplayState($this->expectionMap, $this->properties);
+      $this->mockState= new ReplayState($this->expectionMap, $this->properties);
     }
 
     /**
@@ -89,8 +89,9 @@
         $expectationList=$this->expectionMap->get($method);
         
         foreach($expectationList->getExpectations() as $exp) {
-          if($exp->getActualCalls() !== 0)
+          if($exp->getActualCalls() !== 0) {
             continue;
+          }
 
           $msg= $this->constructViolationMessage($method, $exp);
           throw new ExpectationViolationException($msg);
@@ -98,10 +99,13 @@
       }
     }
 
-    private function constructViolationMessage($method, $exp) {
-      $msg= 'Method '.$method.' ';
+    /**
+     * Creates 
+     */
+    private function constructViolationMessage($exp) {
+      $msg= 'Method '.$exp->getMethodName().'. ';
       if($exp->getRepeat()> $exp->getActualCalls()) {
-        $msg= "Expectation not met for '$method'. ";
+        $msg= 'Expectation not met for "'.$exp->getMethodName().'". ';
       }
 
       $msg.= "expected#: ".($exp->getRepeat()==-1? 1: $exp->getRepeat());

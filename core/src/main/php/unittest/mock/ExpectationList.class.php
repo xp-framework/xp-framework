@@ -32,9 +32,10 @@
      * @param unittest.mock.Expectation expectation    
      */
     public function add($expectation) {
-      if (!($expectation instanceof Expectation))
+      if (!($expectation instanceof Expectation)) {
         throw new IllegalArgumentException("Expectation expected.");
-
+      }
+      
       $this->list->add($expectation);
     }
 
@@ -46,16 +47,18 @@
      */
     public function getNext($args) {
       $expectation= $this->getMatching($args);
-      if (!$expectation)
-        return null;
+      if (!$expectation) {
+        return NULL;
+      }
       
       $expectation->incActualCalls(); //increase call counter
 
-      if(!$this->called->contains($expectation))
+      if(!$this->called->contains($expectation)) {
           $this->called->add($expectation);
+      }
       
       if (!$expectation->canRepeat()) { // no more repetitions left
-          $idx = $this->list->indexOf($expectation); //find it
+          $idx= $this->list->indexOf($expectation); //find it
           $this->list->remove($idx); //remove it
       }
 
@@ -89,11 +92,12 @@
      */
     private function getMatching($args) {
       foreach ($this->list as $exp) {
-        if ($exp->isInPropertyBehavior() || $exp->doesMatchArgs($args))
+        if ($exp->isInPropertyBehavior() || $exp->doesMatchArgs($args)) {
           return $exp;
+        }
       }
 
-      return null;
+      return NULL;
     }
 
     /**
@@ -106,10 +110,20 @@
       $this->unexpected->add(array($method, $args));
     }
 
+    /**
+     * Returns the expectation list
+     *
+     * @return util.collections.Vector
+     */
     public function getExpectations() {
       return $this->list;
     }
 
+    /**
+     * Returns expectations that have been "called"
+     *
+     * @return util.collections.Vector
+     */
     public function getCalled() {
       return $this->called;
     }

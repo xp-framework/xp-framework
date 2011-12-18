@@ -17,26 +17,24 @@
    */
   class ArgumentMatcherTest extends TestCase {
     /**
-     * AnyMatcher should return true.
+     * AnyMatcher should return TRUE.
      */
     #[@test]
     public function AnyMatchter_should_work() {
       $matcher = Arg::any();
-      $this->assertTrue($matcher->matches(null));
+      $this->assertTrue($matcher->matches(NULL));
       $this->assertTrue($matcher->matches(1));
       $this->assertTrue($matcher->matches(""));
       $this->assertTrue($matcher->matches(new Object()));
-      
-      
     }
     
         /**
-     * AnyMatcher should return true.
+     * AnyMatcher should return TRUE.
      */
     #[@test]
     public function DynamicMatchter_should_work() {
       $matcher= Arg::func("matchEmpty", "ArgumentMatcherTest");
-      $this->assertFalse($matcher->matches(null));
+      $this->assertFalse($matcher->matches(NULL));
       $this->assertFalse($matcher->matches(1));
       $this->assertTrue($matcher->matches(""));
       $this->assertFalse($matcher->matches(new Object()));
@@ -46,17 +44,15 @@
     }
     
     /**
-     * AnyMatcher should return true.
+     * AnyMatcher should return TRUE.
      */
     #[@test]
     public function TypeMatcher_should_work() {
       $matcher = Arg::anyOfType('util.Date');
-      $this->assertTrue($matcher->matches(null));
+      $this->assertTrue($matcher->matches(NULL));
       $this->assertFalse($matcher->matches(1));
       $this->assertFalse($matcher->matches(""));
       $this->assertTrue($matcher->matches(Date::now()));
     }
-
-
   }
 ?>

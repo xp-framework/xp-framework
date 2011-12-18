@@ -17,7 +17,7 @@
      * @param value mixed
      */
     public function matches($value) {
-      return true;
+      return TRUE;
     }
   }
 ?>

@@ -4,12 +4,13 @@
  * $Id$
  */
 
-  uses('unittest.mock.MockProxy',
-       'unittest.mock.Mockery',
-       'lang.Type',
-       'lang.reflect.Proxy',
-       'net.xp_framework.unittest.tests.mock.IEmptyInterface',
-       'net.xp_framework.unittest.tests.mock.IComplexInterface'
+  uses(
+    'unittest.mock.MockProxy',
+    'unittest.mock.Mockery',
+    'lang.Type',
+    'lang.reflect.Proxy',
+    'net.xp_framework.unittest.tests.mock.IEmptyInterface',
+    'net.xp_framework.unittest.tests.mock.IComplexInterface'
   );
 
   /**
@@ -20,14 +21,14 @@
    * @purpose  Unit Test
    */
   class MockProxyTest extends TestCase {
+    private $sut=NULL;
 
-    private $sut=null;
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-      $this->sut=new MockProxy();
+      $this->sut= new MockProxy();
     }
 
     /**
@@ -58,7 +59,7 @@
      */
     #[@test]
     public function canCallInvoke() {
-      $this->sut->invoke(null, 'foo', null);
+      $this->sut->invoke(NULL, 'foo', NULL);
     }
 
     /**
@@ -66,7 +67,7 @@
      */
     #[@test]
     public function invokeReturnsObject() {
-      $this->assertObject($this->sut->invoke(null, 'foo', null));
+      $this->assertObject($this->sut->invoke(NULL, 'foo', NULL));
     }
 
     /**
@@ -98,11 +99,11 @@
      */
     #[@test]
     public function stateChangesAfterReplayCall() {
-        $this->assertTrue($this->sut->isRecording());
-        $this->assertFalse($this->sut->isReplaying());
-        $this->sut->replay();
-        $this->assertFalse($this->sut->isRecording());
-        $this->assertTrue($this->sut->isReplaying());
+      $this->assertTrue($this->sut->isRecording());
+      $this->assertFalse($this->sut->isReplaying());
+      $this->sut->replay();
+      $this->assertFalse($this->sut->isRecording());
+      $this->assertTrue($this->sut->isReplaying());
     }
 
     /**
@@ -110,17 +111,17 @@
      */
     #[@test]
     public function callingReplayTwice_stateShouldNotChange() {
-      $this->sut->invoke(null, 'foo', null)->returns('foo1')->repeat(1);
-      $this->sut->invoke(null, 'foo', null)->returns('foo2')->repeat(1);
-      $this->sut->invoke(null, 'bar', null)->returns('bar')->repeat(1);
+      $this->sut->invoke(NULL, 'foo', NULL)->returns('foo1')->repeat(1);
+      $this->sut->invoke(NULL, 'foo', NULL)->returns('foo2')->repeat(1);
+      $this->sut->invoke(NULL, 'bar', NULL)->returns('bar')->repeat(1);
       $this->sut->replay();
 
-      $this->assertEquals('foo1', $this->sut->invoke(null, 'foo', null));
-      $this->assertEquals('bar', $this->sut->invoke(null, 'bar', null));
+      $this->assertEquals('foo1', $this->sut->invoke(NULL, 'foo', NULL));
+      $this->assertEquals('bar', $this->sut->invoke(NULL, 'bar', NULL));
 
       $this->sut->replay(); //should not start over
-      $this->assertEquals('foo2', $this->sut->invoke(null, 'foo', null));
-      $this->assertEquals(null, $this->sut->invoke(null, 'bar', null));
+      $this->assertEquals('foo2', $this->sut->invoke(NULL, 'foo', NULL));
+      $this->assertEquals(NULL, $this->sut->invoke(NULL, 'bar', NULL));
     }
   }
 ?>

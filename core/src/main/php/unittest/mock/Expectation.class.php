@@ -27,7 +27,7 @@
       return $this->methodName;
     }
     
-    private $return = NULL;
+    private $return= NULL;
     /**
      * Gets the return value of the expectation
      * @return mixed
@@ -41,10 +41,10 @@
      * @param mixed value
      */
     public function setReturn($value) {
-      $this->return = $value;
+      $this->return= $value;
     }
 
-    private $repeat = -1;
+    private $repeat= -1;
     /**
      * Gets the number of repetions of this expectation.
      * 
@@ -59,7 +59,7 @@
      * @param int value
      */
     public function setRepeat($value) {
-      $this->repeat = $value;
+      $this->repeat= $value;
     }
 
     private $exception= NULL;
@@ -97,7 +97,7 @@
       return $this->isInPropertyBehavior;
     }
 
-    private $actualCalls = 0;
+    private $actualCalls= 0;
     /**
      * Gets the number of actual calls for this expectation.
      *
@@ -111,7 +111,7 @@
      * Increases the actual calls by one.
      */
     public function incActualCalls() {
-      $this->actualCalls += 1;
+      $this->actualCalls+= 1;
     }
 
     /**
@@ -125,7 +125,7 @@
       || $this->actualCalls < $this->repeat; //limit not reached
     }
 
-    private $args = array();
+    private $args= array();
 
     /**
      * Gets the argument sepecifications for this expectation.
@@ -142,7 +142,7 @@
      * @param mixed[] args
      */
     public function setArguments($args) {
-      $this->args = $args;
+      $this->args= $args;
     }
 
     /**
@@ -156,7 +156,7 @@
       if (sizeof($this->args) != sizeof($args))
         return FALSE;
 
-      for ($i = 0; $i < sizeof($args); ++$i)
+      for ($i= 0; $i < sizeof($args); ++$i)
         if (!$this->doesMatchArg($i, $args[$i]))
           return FALSE;
 
@@ -171,7 +171,7 @@
      * @return boolean
      */
     private function doesMatchArg($pos, $value) {
-      $argVal = $this->args[$pos];
+      $argVal= $this->args[$pos];
 
       if($argVal instanceof IArgumentMatcher) {
         

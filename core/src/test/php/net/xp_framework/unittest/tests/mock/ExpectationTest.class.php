@@ -15,7 +15,7 @@
    */
   class ExpectationTest extends TestCase {
 
-    private $sut = null;
+    private $sut = NULL;
 
     /**
      * Creates the fixture;
@@ -34,7 +34,7 @@
     }
 
     /**
-     * By default the return value is null
+     * By default the return value is NULL
      */
     #[@test]
     public function returnValue_isNull_byDefault() {
@@ -85,7 +85,7 @@
     }
 
     /**
-     * CanRepeat is true by default
+     * CanRepeat is TRUE by default
      */
     #[@test]
     public function canRepeat_isTrueOnce_ByDefault() {
@@ -97,7 +97,7 @@
     }
 
     /**
-     * CanRepeat should be true if repeat is set to -1,
+     * CanRepeat should be TRUE if repeat is set to -1,
      * even after incActualCalls
      */
     #[@test]
@@ -115,7 +115,7 @@
     }
 
     /**
-     * CanRepeat with repeat==1 returns 2 times true and then false
+     * CanRepeat with repeat==1 returns 2 times TRUE and then FALSE
      */
     #[@test]
     public function canRepeat_withNumericRepeat2_TrueTwice() {
@@ -188,13 +188,13 @@
     }
 
     /**
-     * null is also a valid argument.
+     * NULL is also a valid argument.
      */
     #[@test]
     public function doesMatch_should_work_with_null() {
-      $this->sut->setArguments(array(null, null));
+      $this->sut->setArguments(array(NULL, NULL));
 
-      $this->assertTrue($this->sut->doesMatchArgs(array(null, null)));
+      $this->assertTrue($this->sut->doesMatchArgs(array(NULL, NULL)));
     }
 
     /**
@@ -204,7 +204,7 @@
     public function doesMatch_should_work_with_generic_AnyMatcher() {
       $this->sut->setArguments(array(Arg::any()));
 
-      $this->assertTrue($this->sut->doesMatchArgs(array(null)));
+      $this->assertTrue($this->sut->doesMatchArgs(array(NULL)));
       $this->assertTrue($this->sut->doesMatchArgs(array("test")));
       $this->assertTrue($this->sut->doesMatchArgs(array(42)));
       $this->assertTrue($this->sut->doesMatchArgs(array(new Object())));

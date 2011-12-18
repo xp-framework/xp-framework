@@ -20,7 +20,7 @@
     public abstract function abstractMethod();
     
     public function equals($cmp) { //from Generic
-      return true;
+      return TRUE;
     }
 
   }

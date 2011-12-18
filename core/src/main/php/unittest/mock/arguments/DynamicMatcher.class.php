@@ -22,7 +22,7 @@
      * @param classOrObject string null
      */
     public function __construct($function, $classOrObject= null) {
-      $this->function = $function;
+      $this->function= $function;
       $this->classOrObject= $classOrObject;
     }
     

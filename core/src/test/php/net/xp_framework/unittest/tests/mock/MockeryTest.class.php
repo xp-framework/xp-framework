@@ -22,14 +22,14 @@
    * @purpose  Unit Test
    */
   class MockeryTest extends TestCase {
-
-    private $fixture=null;
+    private $fixture= NULL;
+    
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-      $this->fixture=new Mockery();
+      $this->fixture= new Mockery();
     }
       
     /**
@@ -97,7 +97,7 @@
     #[@test]
     public function canCallReturnsFluently() {
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
-      $object->foo()->returns(null);
+      $object->foo()->returns(NULL);
     }
 
     /**
@@ -115,7 +115,7 @@
     }
 
     /**
-     * If no expectations are left, null is returned
+     * If no expectations are left, NULL is returned
      */
     #[@test]
     public function missingExpectationLeadsToNull() {
@@ -128,7 +128,7 @@
     }
     
     /**
-     * If no expectations are left, null is returned
+     * If no expectations are left, NULL is returned
      */
     #[@test]
     public function recordedReturnsAreInCorrectOrder() {
@@ -185,7 +185,7 @@
      */
     #[@test]
     public function can_createMock_fromAbstractClass() {
-      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', true);
+      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', TRUE);
       $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', $obj);
     }
     
@@ -197,15 +197,15 @@
       $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy');
 
       $baz_expect='BAAAAZ!';
-      $obj->baz(null)->returns($baz_expect);
+      $obj->baz(NULL)->returns($baz_expect);
 
       $bar_expect='BAAARRR';
-      $obj->bar(null, null)->returns($bar_expect);
+      $obj->bar(NULL, NULL)->returns($bar_expect);
 
       $obj->_replayMock();
 
-      $this->assertEquals($baz_expect, $obj->baz(null));
-      $this->assertEquals($bar_expect, $obj->bar(null, null));
+      $this->assertEquals($baz_expect, $obj->baz(NULL));
+      $this->assertEquals($bar_expect, $obj->bar(NULL, NULL));
     }
 
     /**
@@ -214,7 +214,7 @@
      */
     #[@test]
     public function concreteMethodsNotMocked() {
-      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', false);
+      $obj= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy', FALSE);
 
       $this->assertEquals('IComplexInterface.foo', $obj->foo());
     }
@@ -225,7 +225,7 @@
     public function concreteClassesMocked_whenSpecifiedSo() {
       $obj= $this->fixture->createMock(
               'net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy',
-              true);
+              TRUE);
 
       $foo_expect='fooooo';
       $obj->foo()->returns($foo_expect);
@@ -298,7 +298,7 @@
       $object->bar(Arg::any(), Arg::any())->returns($expect)->repeatAny();
       $this->fixture->replayAll();
 
-      $this->assertEquals($expect, $object->bar(null, null));
+      $this->assertEquals($expect, $object->bar(NULL, NULL));
       $this->assertEquals($expect, $object->bar(34, "foo"));
       $this->assertEquals($expect, $object->bar(23.0, new Object));
     }
@@ -388,7 +388,7 @@
         return;
       }
 
-      $this->fail('No exception thrown.', null, $expected);
+      $this->fail('No exception thrown.', NULL, $expected);
     }
     
     /**

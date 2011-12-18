@@ -4,11 +4,12 @@
  * $Id$
  */
 
-  uses('unittest.mock.arguments.TypeMatcher',
-       'unittest.mock.Mockery',
-       'lang.Type',
-       'lang.Object',
-       'util.Date'   
+  uses(
+    'unittest.mock.arguments.TypeMatcher',
+    'unittest.mock.Mockery',
+    'lang.Type',
+    'lang.Object',
+    'util.Date'   
   );
 
   /**

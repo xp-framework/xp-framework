@@ -14,17 +14,17 @@
    * @purpose  Unit Test
    */
   class RecordStateTest extends TestCase {
-
     private 
-      $sut= null,
-      $expectationMap= null;
+      $sut= NULL,
+      $expectationMap= NULL;
+    
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
       $this->expectationMap= new Hashmap();
-      $this->sut=new RecordState($this->expectationMap);
+      $this->sut= new RecordState($this->expectationMap);
     }
       
     /**
@@ -32,7 +32,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectationMapRequiredOnCreate() {
-      new RecordState(null);
+      new RecordState(NULL);
     }
     
     /**
@@ -47,7 +47,7 @@
      */
     #[@test]
     public function canHandleInvocation() {
-      $this->sut->handleInvocation('methodName', null);
+      $this->sut->handleInvocation('methodName', NULL);
     }
 
     /**
@@ -55,7 +55,7 @@
      */
     #[@test]
     public function newExpectationCreatedOnHandleInvocation() {
-      $this->sut->handleInvocation('foo', null);
+      $this->sut->handleInvocation('foo', NULL);
       $this->assertEquals(1, $this->expectationMap->size());
       $expectationList= $this->expectationMap->get('foo');
       $this->assertInstanceOf('unittest.mock.ExpectationList', $expectationList);
@@ -67,8 +67,8 @@
      */
     #[@test]
     public function newExpectationCreatedOnHandleInvocation_twoDifferentMethods() {
-      $this->sut->handleInvocation('foo', null);
-      $this->sut->handleInvocation('bar', null);
+      $this->sut->handleInvocation('foo', NULL);
+      $this->sut->handleInvocation('bar', NULL);
       $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('foo')->getNext(array()));
       $this->assertInstanceOf('unittest.mock.Expectation', $this->expectationMap->get('bar')->getNext(array()));
     }
@@ -78,14 +78,13 @@
      */
     #[@test]
     public function newExpectationCreatedOn_EACH_HandleInvocationCall() {
-      $this->sut->handleInvocation('foo', null);
-      $this->sut->handleInvocation('foo', null);
+      $this->sut->handleInvocation('foo', NULL);
+      $this->sut->handleInvocation('foo', NULL);
       $expectationList= $this->expectationMap->get('foo');
 
       $this->assertInstanceOf('unittest.mock.ExpectationList', $expectationList);
       $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext(array()));
       $this->assertInstanceOf('unittest.mock.Expectation', $expectationList->getNext(array()));
-
     }
 
     /**

@@ -20,7 +20,7 @@
    */
   class RecordState extends Object implements IMockState {
     private
-      $expectationMap= null;
+      $expectationMap= NULL;
 
     /**
      * Constructor
@@ -28,8 +28,9 @@
      * @param Hashmap expectationsMap
      */
     public function  __construct($expectationMap) {
-      if(!($expectationMap instanceof Hashmap))
+      if(!($expectationMap instanceof Hashmap)) {
         throw new IllegalArgumentException('Invalid expectation map passed.');
+      }
       
       $this->expectationMap= $expectationMap;
     }
@@ -45,10 +46,11 @@
       $expectation= new Expectation($method);
       $expectation->setArguments($args);
       $methodExpectations= new ExpectationList();
-      if($this->expectationMap->containsKey($method))
+      if($this->expectationMap->containsKey($method)) {
         $methodExpectations= $this->expectationMap->get($method);
-      else
+      } else {
         $this->expectationMap->put($method, $methodExpectations);
+      }
       
       $methodExpectations->add($expectation);
 

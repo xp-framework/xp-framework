@@ -15,8 +15,8 @@
    */
   class MockProxyBuilder extends Object {   
     private
-      $classLoader= null,
-      $overwriteExisting= false,
+      $classLoader= NULL,
+      $overwriteExisting= FALSE,
       $added= array();
 
     private static 
@@ -28,8 +28,8 @@
      * 
      * @param lang.ClassLoader $classLoader
      */
-    public function  __construct($classLoader=NULL) {
-      if($classLoader == null)
+    public function  __construct($classLoader= NULL) {
+      if($classLoader == NULL)
         $this->classLoader= ClassLoader::getDefault();
       else
         $this->classLoader= $classLoader;
@@ -55,7 +55,7 @@
      * @return  lang.XPClass
      * @throws  lang.IllegalArgumentException
      */
-    public function createProxyClass(IClassLoader $classloader, array $interfaces, $baseClass=NULL) {
+    public function createProxyClass(IClassLoader $classloader, array $interfaces, $baseClass= NULL) {
       $this->added= array();
 
       if (!$baseClass) {
@@ -130,10 +130,11 @@
      * @return lang.XPClass
      */
     private function tryGetFromCache($key) {
-      if(isset(self::$cache[$key])) 
+      if(isset(self::$cache[$key])) {
         return self::$cache[$key];
+      }
       
-      return null;
+      return NULL;
     }
     
     /**
@@ -211,12 +212,14 @@
       $reservedMethodNames= array_map(create_function('$i', 'return $i->getName();'), $reservedMethods);
       
       foreach($baseClass->getMethods() as $m) {
-        if(in_array($m->getName(), $reservedMethodNames)) //do not overwrite reserved methods
+        if(in_array($m->getName(), $reservedMethodNames)) { //do not overwrite reserved methods
           continue;
+        }
         
-        if(($m->getModifiers()&ReflectionMethod::IS_STATIC) == ReflectionMethod::IS_STATIC)  //omit static methods
+        if(($m->getModifiers()&ReflectionMethod::IS_STATIC) == ReflectionMethod::IS_STATIC) {  //omit static methods
           continue;
-        
+        }
+          
         if($this->overwriteExisting || ($m->getModifiers()&2) == 2) { //implement abstract methods
           // Check for already declared methods, do not redeclare them
           if (isset($this->added[$m->getName()])) continue;

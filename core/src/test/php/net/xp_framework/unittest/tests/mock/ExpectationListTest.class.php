@@ -14,13 +14,13 @@
  */
   class ExpectationListTest extends TestCase {
 
-    private $sut=null;
+    private $sut= NULL;
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-      $this->sut=new ExpectationList();
+      $this->sut= new ExpectationList();
     }
       
     /**
@@ -40,7 +40,7 @@
     }
     
     /**
-     * getNext should return null after initialization.                  
+     * getNext should return NULL after initialization.                  
      */
     #[@test]
     public function getNext_returnNullByDefault() {
@@ -60,18 +60,18 @@
      */
     #[@test]
     public function getNextReturnsAddedExpectation() {
-      $expect=new Expectation('method');
+      $expect= new Expectation('method');
       $this->sut->add($expect);
       
       $this->assertEquals($expect, $this->sut->getNext(array()));
     }
     
     /**
-     * If no more expectations left, getNext should return null.
+     * If no more expectations left, getNext should return NULL.
      */
     #[@test]
     public function getNextReturns_should_return_last_expectation_over_and_over() {
-      $expect=new Expectation('method');
+      $expect= new Expectation('method');
       $this->sut->add($expect);
       
       $this->assertEquals($expect, $this->sut->getNext(array()));
@@ -84,7 +84,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function cannotAddNull() {
-      $this->sut->add(null);
+      $this->sut->add(NULL);
     }
     
     /**
@@ -101,7 +101,7 @@
      */
     #[@test]
     public function getNext_SameExpectationTwice_whenRepeatIs2() {
-      $expect=new Expectation('method');
+      $expect= new Expectation('method');
       $expect->setRepeat(2);
       $this->sut->add($expect);
 
@@ -115,7 +115,7 @@
      */
     #[@test]
     public function should_provide_access_to_left_expectations() {
-      $expect=new Expectation('method');
+      $expect= new Expectation('method');
       $this->sut->add($expect);
 
       $list= $this->sut->getExpectations();
@@ -127,7 +127,7 @@
      */
     #[@test]
     public function should_provide_access_to_used_expectations() {
-      $expect=new Expectation('method');
+      $expect= new Expectation('method');
       $this->sut->add($expect);
       $this->sut->getNext(array());
       
@@ -141,7 +141,7 @@
      */
   #[@test]
     public function expectation_should_be_moved_to_calledList_after_usage() {
-      $expect=new Expectation('method');
+      $expect= new Expectation('method');
       $this->sut->add($expect);
       $list= $this->sut->getExpectations();
       $this->assertEquals(1, $list->size());

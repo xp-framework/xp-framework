@@ -4,9 +4,11 @@
    *
    */
 
-  uses('lang.Type',
-       'unittest.mock.MockProxy',
-       'unittest.mock.MockProxyBuilder');
+  uses(
+    'lang.Type',
+    'unittest.mock.MockProxy',
+    'unittest.mock.MockProxyBuilder'
+  );
 
   /**
    * Class for creating mock/stub instances of arbitrary types
@@ -24,20 +26,21 @@
      * @param   boolean overrideAll
      * @return  Object
      */
-    public function createMock($typeName, $overrideAll= true) {
+    public function createMock($typeName, $overrideAll= TRUE) {
       $type= Type::forName($typeName);
 
       if (!($type instanceof XPClass)) {
         throw new IllegalArgumentException('Cannot mock other types than XPClass types.');
       }
 
-      $parentClass= null;
+      $parentClass= NULL;
       $interfaces= array(XPClass::forName('unittest.mock.IMock'));
-      if($type->isInterface())
+      if($type->isInterface()) {
         $interfaces[]= $type;
-      else 
+      } else {
         $parentClass= $type;
-
+      }
+      
       $defaultCL= ClassLoader::getDefault();
 
       $proxy= new MockProxyBuilder();
@@ -51,16 +54,18 @@
      * Replays all mocks.
      */
     public function replayAll() {
-      foreach($this->mocks as $mock)
+      foreach($this->mocks as $mock) {
         $mock->_replayMock();
+      }
     }
 
     /**
      * Verifies all mocks.
      */
     public function verifyAll() {
-      foreach($this->mocks as $mock)
+      foreach($this->mocks as $mock) {
         $mock->_verifyMock();
+      }
     }
 
   }

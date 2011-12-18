@@ -14,8 +14,8 @@
    */
   class MethodOptions extends Object implements IMethodOptions {
     private
-      $expectation= null,
-      $methodName= null;
+      $expectation= NULL,
+      $methodName= NULL;
 
     /**
      * Constructor
@@ -23,12 +23,14 @@
      * @param Array expectation
      */
     public function  __construct($expectation, $methodName) {
-      if(!($expectation instanceof Expectation))
+      if(!($expectation instanceof Expectation)) {
         throw new IllegalArgumentException('Invalid expectation map passed.');
-
-      if(!($methodName))
+      }
+      
+      if(!($methodName)) {
         throw new IllegalArgumentException('Method name required.');
-            
+      }
+      
       $this->expectation= $expectation;
       $this->methodName= $methodName;
     }
@@ -77,8 +79,9 @@
     
     public function propertyBehavior() {
       $prefix= substr($this->methodName, 0, 3);
-      if($prefix != 'set' && $prefix != 'get')
+      if($prefix != 'set' && $prefix != 'get') {
         throw new IllegalStateException('Property behavior is only applicable to getters and setters.');
+      }
       
       $this->expectation->setPropertyBehavior();
       return $this;
