@@ -36,6 +36,7 @@
           return $this->toNumber($n, $field["scale"], $field["prec"]);
         }
       }');
+      $records[self::T_DECIMAL]= $records[self::T_NUMERIC];
       return $records;
     }
 

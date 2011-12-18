@@ -133,6 +133,78 @@
     }
 
     /**
+     * Test selecting Decimal values
+     *
+     */
+    #[@test, @ignore('Decimal not supported by MySQL')]
+    public function selectDecimalNull() {
+      parent::selectDecimalNull();
+    }
+
+    /**
+     * Test selecting Decimal values
+     *
+     */
+    #[@test, @ignore('Decimal not supported by MySQL')]
+    public function selectDecimal() {
+      parent::selectDecimal();
+    }
+
+    /**
+     * Test selecting Decimal values
+     *
+     */
+    #[@test, @ignore('Decimal not supported by MySQL')]
+    public function selectDecimalZero() {
+      parent::selectDecimalZero();
+    }
+
+    /**
+     * Test selecting Decimal values
+     *
+     */
+    #[@test, @ignore('Decimal not supported by MySQL')]
+    public function selectNegativeDecimal() {
+      parent::selectNegativeDecimal();
+    }
+
+    /**
+     * Test selecting DecimalWithScale values
+     *
+     */
+    #[@test, @ignore('DecimalWithScale not supported by MySQL')]
+    public function selectDecimalWithScaleNull() {
+      parent::selectDecimalWithScaleNull();
+    }
+
+    /**
+     * Test selecting DecimalWithScale values
+     *
+     */
+    #[@test, @ignore('DecimalWithScale not supported by MySQL')]
+    public function selectDecimalWithScale() {
+      parent::selectDecimalWithScale();
+    }
+
+    /**
+     * Test selecting DecimalWithScale values
+     *
+     */
+    #[@test, @ignore('DecimalWithScale not supported by MySQL')]
+    public function selectDecimalWithScaleZero() {
+      parent::selectDecimalWithScaleZero();
+    }
+
+    /**
+     * Test selecting DecimalWithScale values
+     *
+     */
+    #[@test, @ignore('DecimalWithScale not supported by MySQL')]
+    public function selectNegativeDecimalWithScale() {
+      parent::selectNegativeDecimalWithScale();
+    }
+
+    /**
      * Test selecting Float values
      *
      */

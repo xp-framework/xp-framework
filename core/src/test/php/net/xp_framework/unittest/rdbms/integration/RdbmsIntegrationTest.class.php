@@ -389,7 +389,7 @@
      *
      */
     #[@test]
-    public function selectDecimal() {
+    public function selectDecimalLiteral() {
       $this->assertEquals(0.5, $this->db()->query('select 0.5 as value')->next('value'));
     }
 
@@ -398,7 +398,7 @@
      *
      */
     #[@test]
-    public function selectDecimalOne() {
+    public function selectDecimalLiteralOne() {
       $this->assertEquals(1.0, $this->db()->query('select 1.0 as value')->next('value'));
     }
 
@@ -407,7 +407,7 @@
      *
      */
     #[@test]
-    public function selectDecimalZero() {
+    public function selectDecimalLiteralZero() {
       $this->assertEquals(0.0, $this->db()->query('select 0.0 as value')->next('value'));
     }
 
@@ -416,7 +416,7 @@
      *
      */
     #[@test]
-    public function selectNegativeDecimal() {
+    public function selectNegativeDecimalLiteral() {
       $this->assertEquals(-6.1, $this->db()->query('select -6.1 as value')->next('value'));
     }
     
@@ -593,6 +593,78 @@
     #[@test]
     public function select64BitLongMinMinus1Numeric() {
       $this->assertEquals('-9223372036854775809', $this->db()->query('select convert(numeric(20), -9223372036854775809) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal values
+     *
+     */
+    #[@test]
+    public function selectDecimalNull() {
+      $this->assertEquals(NULL, $this->db()->query('select convert(decimal(8), NULL) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal values
+     *
+     */
+    #[@test]
+    public function selectDecimal() {
+      $this->assertEquals(1, $this->db()->query('select convert(decimal(8), 1) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal values
+     *
+     */
+    #[@test]
+    public function selectDecimalZero() {
+      $this->assertEquals(0, $this->db()->query('select convert(decimal(8), 0) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal values
+     *
+     */
+    #[@test]
+    public function selectNegativeDecimal() {
+      $this->assertEquals(-6100, $this->db()->query('select convert(decimal(8), -6100) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal(n, m) values
+     *
+     */
+    #[@test]
+    public function selectDecimalWithScaleNull() {
+      $this->assertEquals(NULL, $this->db()->query('select convert(decimal(8, 2), NULL) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal(n, m) values
+     *
+     */
+    #[@test]
+    public function selectDecimalWithScale() {
+      $this->assertEquals(1.00, $this->db()->query('select convert(decimal(8, 2), 1) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal(n, m) values
+     *
+     */
+    #[@test]
+    public function selectDecimalWithScaleZero() {
+      $this->assertEquals(0.00, $this->db()->query('select convert(decimal(8, 2), 0) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting decimal(n, m) values
+     *
+     */
+    #[@test]
+    public function selectNegativeDecimalWithScale() {
+      $this->assertEquals(-6100.00, $this->db()->query('select convert(decimal(8, 2), -6100) as value')->next('value'));
     }
 
     /**

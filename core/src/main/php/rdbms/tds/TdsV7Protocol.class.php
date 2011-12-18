@@ -31,6 +31,7 @@
           return $this->toNumber($n, $field["scale"], $field["prec"]);
         }
       }');
+      $records[self::T_DECIMAL]= $records[self::T_NUMERIC];
       $records[self::T_VARIANT]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           if (0 === ($len= $stream->getLong())) return NULL;
