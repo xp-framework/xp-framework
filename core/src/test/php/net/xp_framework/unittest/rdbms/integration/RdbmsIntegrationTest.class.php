@@ -695,6 +695,24 @@
     }
 
     /**
+     * Test selecting an unsigned int
+     *
+     */
+    #[@test]
+    public function selectUnsignedInt() {
+      $this->assertEquals(1, $this->db()->query('select cast(1 as unsigned integer) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting an unsigned int
+     *
+     */
+    #[@test]
+    public function selectSignedInt() {
+      $this->assertEquals(1, $this->db()->query('select cast(1 as signed integer) as value')->next('value'));
+    }
+
+    /**
      * Test observers are being called
      *
      */

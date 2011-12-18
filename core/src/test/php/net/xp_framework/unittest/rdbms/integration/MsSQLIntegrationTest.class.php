@@ -144,5 +144,23 @@
     public function selectNullUniqueIdentifier() {
       $this->assertNull($this->db()->query('select convert(uniqueidentifier, NULL) as value')->next('value'));
     }
+
+    /**
+     * Test selecting an unsigned int
+     *
+     */
+    #[@test, @ignore('MsSQL does not know unsigned ints')]
+    public function selectUnsignedInt() {
+      parent::selectUnsignedInt();
+    }
+
+    /**
+     * Test selecting an unsigned int
+     *
+     */
+    #[@test, @ignore('MsSQL does not know signed ints')]
+    public function selectSignedInt() {
+      parent::selectUnsignedInt();
+    }
   }
 ?>
