@@ -18,6 +18,8 @@
     /**
      * Setup record handlers
      *
+     * @see     http://infocenter.sybase.com/help/topic/com.sybase.dc35823_1500/html/uconfig/uconfig111.htm
+     * @see     http://infocenter.sybase.com/help/topic/com.sybase.dc38421_1500/html/ntconfig/ntconfig80.htm
      * @return  [:rdbms.tds.TdsRecord] handlers
      */
     protected function setupRecords() {
@@ -37,6 +39,25 @@
         }
       }');
       $records[self::T_DECIMAL]= $records[self::T_NUMERIC];
+      $records[self::T_BINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0 === ($len= $stream->getByte())) return NULL;
+          $string= $stream->read($len);
+          return iconv("cp850", "iso-8859-1", substr($string, 0, strcspn($string, "\0")));
+        }
+      }');
+      $records[self::T_VARBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0 === ($len= $stream->getByte())) return NULL;
+          return iconv("cp850", "iso-8859-1", $stream->read($len));
+        }
+      }');
+      $records[self::T_LONGBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          $len= $stream->getLong();
+          return $stream->getString($len / 2);
+        }
+      }');
       return $records;
     }
 

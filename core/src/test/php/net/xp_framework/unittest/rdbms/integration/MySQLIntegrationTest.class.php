@@ -385,6 +385,79 @@
     }
 
     /**
+     * Test selecting binary values
+     *
+     */
+    #[@test, @ignore('Cast to binary not supported by MySQL')]
+    public function selectEmptyBinary() {
+      parent::selectEmptyBinary();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to binary not supported by MySQL')]
+    public function selectBinary() {
+      parent::selectBinary();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to binary not supported by MySQL')]
+    public function selectUmlautBinary() {
+      parent::selectUmlautBinary();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to binary not supported by MySQL')]
+    public function selectNullBinary() {
+      parent::selectNullBinary();
+    }
+
+
+    /**
+     * Test selecting varbinary values
+     *
+     */
+    #[@test, @ignore('Cast to varbinary not supported by MySQL')]
+    public function selectEmptyVarBinary() {
+      parent::selectEmptyVarBinary();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to varbinary not supported by MySQL')]
+    public function selectVarBinary() {
+      parent::selectVarBinary();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to varbinary not supported by MySQL')]
+    public function selectUmlautVarBinary() {
+      parent::selectUmlautVarBinary();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to varbinary not supported by MySQL')]
+    public function selectNullVarBinary() {
+      parent::selectNullVarBinary();
+    }
+
+    /**
      * Test selecting char values. Overwritten from parent class, MySQL does
      * not pad the value.
      *

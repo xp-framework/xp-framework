@@ -758,6 +758,78 @@
     }
 
     /**
+     * Test selecting binary values
+     *
+     */
+    #[@test]
+    public function selectEmptyBinary() {
+      $this->assertEquals('', $this->db()->query('select cast("" as binary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectBinary() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as binary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUmlautBinary() {
+      $this->assertEquals('Übercoder', $this->db()->query('select cast("Übercoder" as binary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectNullBinary() {
+      $this->assertEquals(NULL, $this->db()->query('select cast(NULL as binary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting varbinary values
+     *
+     */
+    #[@test]
+    public function selectEmptyVarBinary() {
+      $this->assertEquals('', $this->db()->query('select cast("" as varbinary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectVarBinary() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as varbinary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUmlautVarBinary() {
+      $this->assertEquals('Übercoder', $this->db()->query('select cast("Übercoder" as varbinary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectNullVarBinary() {
+      $this->assertEquals(NULL, $this->db()->query('select cast(NULL as varbinary) as value')->next('value'));
+    }
+
+    /**
      * Test selecting money values
      *
      */

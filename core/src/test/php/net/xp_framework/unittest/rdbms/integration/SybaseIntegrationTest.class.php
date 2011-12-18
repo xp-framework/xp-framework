@@ -93,5 +93,25 @@
     public function selectEmptyText() {
       $this->assertEquals(' ', $this->db()->query('select cast("" as text) as value')->next('value'));
     }
+
+    /**
+     * Test selecting binary values
+     *
+     * @see   http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.help.ase_15.0.blocks/html/blocks/blocks258.htm
+     */
+    #[@test]
+    public function selectEmptyBinary() {
+      $this->assertEquals(' ', $this->db()->query('select cast("" as binary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting varbinary values
+     *
+     * @see   http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.help.ase_15.0.blocks/html/blocks/blocks258.htm
+     */
+    #[@test]
+    public function selectEmptyVarBinary() {
+      $this->assertEquals(' ', $this->db()->query('select cast("" as varbinary) as value')->next('value'));
+    }
   }
 ?>

@@ -81,6 +81,19 @@
           );
         }
       }');
+      $records[self::XT_BINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0xFFFF === ($len= $stream->getShort())) return NULL;
+          $string= $stream->read($len);
+          return substr($string, 0, strcspn($string, "\0"));
+        }
+      }');
+      $records[self::XT_VARBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          if (0xFFFF === ($len= $stream->getShort())) return NULL;
+          return $stream->read($len);
+        }
+      }');
       return $records;
     }
 
@@ -189,7 +202,7 @@
         $nfields= $this->stream->getShort();
         for ($i= 0; $i < $nfields; $i++) {
           $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
-          
+
           // Handle column.
           if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type'] || self::T_IMAGE === $field['type']) {
             $field['size']= $this->stream->getLong();
@@ -199,7 +212,7 @@
             $field['size']= $this->stream->getByte();
             $field['prec']= $this->stream->getByte();
             $field['scale']= $this->stream->getByte();
-          } else if (self::XT_BINARY === $field['type']) {
+          } else if (self::XT_BINARY === $field['type'] || self::XT_VARBINARY === $field['type']) {
             $field['size']= $this->stream->getShort();
           } else if ($field['type'] > 128) {
             $field['size']= $this->stream->getShort();
