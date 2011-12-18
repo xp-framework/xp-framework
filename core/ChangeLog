@@ -14,6 +14,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed util.Date::create() to throw an exception when given invalid
+  arguments instead of creating a date with values from the current 
+  date and time filled in - pull request #88 (cconstandachi, friebe)
 - Fixed money values in rdbms.sqlsrv.SqlSrvConnection (friebe)
 - Fixed rdbms.sqlsrv.SqlSrvConnection::query() to cancel previous results
   if necessary, preventing "The connection cannot process this operation 
@@ -25,6 +28,11 @@ Bugfixes
 - Fixed warnings raised from rdbms.mysql.MySQLConnection::query() when
   unbuffered results have not completely been read
   (friebe)
+
+Features
+~~~~~~~~
+- Added optional timezone to util.Date::now() - see pull request #88
+  (cconstandachi, friebe)
 
 
 Version 5.8.3, released 2011-12-08
