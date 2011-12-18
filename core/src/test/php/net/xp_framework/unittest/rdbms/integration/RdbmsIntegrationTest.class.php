@@ -893,6 +893,33 @@
     }
 
     /**
+     * Test selecting tinyint values
+     *
+     */
+    #[@test]
+    public function selectTinyint() {
+      $this->assertEquals(5, $this->db()->query('select cast(5 as tinyint) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting tinyint values
+     *
+     */
+    #[@test]
+    public function selectTinyintOne() {
+      $this->assertEquals(1, $this->db()->query('select cast(1 as tinyint) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting tinyint values
+     *
+     */
+    #[@test]
+    public function selectTinyintZero() {
+      $this->assertEquals(0, $this->db()->query('select cast(0 as tinyint) as value')->next('value'));
+    }
+
+    /**
      * Test observers are being called
      *
      */

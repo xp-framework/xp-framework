@@ -512,5 +512,32 @@
     public function selectMaxUnsignedBigInt() {
       parent::selectMaxUnsignedBigInt();
     }
+
+    /**
+     * Test selecting tinyint values
+     *
+     */
+    #[@test, @ignore('Cast to tinyint not supported by MySQL')]
+    public function selectTinyint() {
+      parent::selectTinyint();
+    }
+
+    /**
+     * Test selecting tinyint values
+     *
+     */
+    #[@test, @ignore('Cast to tinyint not supported by MySQL')]
+    public function selectTinyintOne() {
+      parent::selectTinyintOne();
+    }
+
+    /**
+     * Test selecting tinyint values
+     *
+     */
+    #[@test, @ignore('Cast to tinyint not supported by MySQL')]
+    public function selectTinyintZero() {
+      parent::selectTinyintZero();
+    }
   }
 ?>
