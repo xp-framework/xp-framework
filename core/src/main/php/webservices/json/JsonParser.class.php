@@ -323,7 +323,7 @@
     { $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); } break;
 
     case 10:  #line 42 "src/main/jay/webservices/json/json.jay"
-    { $yyVal= iconv($this->getTargetEncoding(), 'iso-8859-1', $yyVals[-1+$yyTop]); /* xp::CHARSET */ } break;
+    { $yyVal= iconv($this->targetEncoding, 'iso-8859-1', $yyVals[-1+$yyTop]); /* xp::CHARSET */ } break;
 
     case 11:  #line 43 "src/main/jay/webservices/json/json.jay"
     { $yyVal= ''; } break;
@@ -350,7 +350,7 @@
     { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
 
     case 20:  #line 67 "src/main/jay/webservices/json/json.jay"
-    { $yyVal= iconv('utf-8', $this->getTargetEncoding(), $yyVals[0+$yyTop]); } break;
+    { $yyVal= iconv('utf-8', $this->targetEncoding, $yyVals[0+$yyTop]); } break;
 
     case 21:  #line 68 "src/main/jay/webservices/json/json.jay"
     { $yyVal= '"'; } break;
@@ -380,7 +380,7 @@
     {
                                 $yyVal= iconv(
                                   'ucs-4be',
-                                  $this->getTargetEncoding(),
+                                  $this->$this->targetEncoding,
                                   pack('N', hexdec(substr($yyVals[0+$yyTop], 2)))
                                 );
                               } break;
@@ -432,13 +432,27 @@
 #line 93 "src/main/jay/webservices/json/json.jay"
 
   protected $targetEncoding= 'iso-8859-1';  // xp::CHARSET
+
+  /**
+   * Set target encoding. The target encoding is the string encoding that all
+   * string that leave the parser will have.
+   *
+   * The default encoding is 'iso-8859-1'
+   *
+   * @param   string e
+   */
   public function setTargetEncoding($e) {
     $this->targetEncoding= $e;
   }
 
+  /**
+   * Retrieve target encoding
+   *
+   * @return  string
+   */
   public function getTargetEncoding() {
     return $this->targetEncoding;
   }
-#line 443 "-"
+#line 457 "-"
   }
 ?>

@@ -39,7 +39,7 @@ objectpart:
 ;
 
 objectkey:
-    '"' word '"' { $$= iconv($this->getTargetEncoding(), 'iso-8859-1', $2); /* xp::CHARSET */ }
+    '"' word '"' { $$= iconv($this->targetEncoding, 'iso-8859-1', $2); /* xp::CHARSET */ }
   | '"' '"' { $$= ''; }
 ;    
 
@@ -64,7 +64,7 @@ word:
 ;
 
 stringpart:
-      T_STRING                { $$= iconv('utf-8', $this->getTargetEncoding(), $1); }
+      T_STRING                { $$= iconv('utf-8', $this->targetEncoding, $1); }
     | T_ESCAPE_QUOTATION      { $$= '"'; }
     | T_ESCAPE_REVERSESOLIDUS { $$= "\\"; }
     | T_ESCAPE_SOLIDUS        { $$= "/"; }
@@ -76,7 +76,7 @@ stringpart:
     | T_ESCAPE_UNICODE        {
                                 $$= iconv(
                                   'ucs-4be',
-                                  $this->getTargetEncoding(),
+                                  $this->$this->targetEncoding,
                                   pack('N', hexdec(substr($1, 2)))
                                 );
                               }
@@ -92,10 +92,24 @@ atom:
 %%
 
   protected $targetEncoding= 'iso-8859-1';  // xp::CHARSET
+
+  /**
+   * Set target encoding. The target encoding is the string encoding that all
+   * string that leave the parser will have.
+   *
+   * The default encoding is 'iso-8859-1'
+   *
+   * @param   string e
+   */
   public function setTargetEncoding($e) {
     $this->targetEncoding= $e;
   }
 
+  /**
+   * Retrieve target encoding
+   *
+   * @return  string
+   */
   public function getTargetEncoding() {
     return $this->targetEncoding;
   }
