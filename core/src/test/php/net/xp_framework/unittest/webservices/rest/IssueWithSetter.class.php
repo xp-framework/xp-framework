@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $issueId$ 
+ * $Id$
  */
 
   $package= 'net.xp_framework.unittest.webservices.rest';
@@ -39,7 +39,7 @@
      *
      * @param   int issueId
      */
-    public function setissueId($issueId) {
+    public function setIssueId($issueId) {
       $this->issueId= $issueId;
     }
     

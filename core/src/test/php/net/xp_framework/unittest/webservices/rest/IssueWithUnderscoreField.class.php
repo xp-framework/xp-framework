@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $issue_id$ 
+ * $Id$
  */
 
   $package= 'net.xp_framework.unittest.webservices.rest';
