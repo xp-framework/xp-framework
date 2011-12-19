@@ -380,7 +380,7 @@
     {
                                 $yyVal= iconv(
                                   'ucs-4be',
-                                  $this->$this->targetEncoding,
+                                  $this->targetEncoding,
                                   pack('N', hexdec(substr($yyVals[0+$yyTop], 2)))
                                 );
                               } break;
