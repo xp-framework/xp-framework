@@ -8,11 +8,15 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Merged pull request #89: Make JsonDecoder / parser accept target
+  encoding; the parser returns native PHP strings instead of
+  lang.types.String objects
+  (kiesel)
 
 RFCs
 ~~~~
 - Implemented RFC #0219 - Mocking Library
-  (iigoorr)
+  (iigorr)
 
 Bugfixes
 ~~~~~~~~
@@ -35,6 +39,8 @@ Features
 ~~~~~~~~
 - Added optional timezone to util.Date::now() - see pull request #88
   (cconstandachi, friebe)
+- Merged pull request #90: Add webservices.rest
+  (kiesel, friebe)
 
 
 Version 5.8.3, released 2011-12-08
