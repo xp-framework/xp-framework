@@ -46,6 +46,23 @@
           return iconv("cp850", "iso-8859-1", substr($string, 0, strcspn($string, "\0")));
         }
       }');
+      $records[self::T_IMAGE]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          $has= $stream->getByte();
+          if ($has !== 16) return NULL;
+
+          $stream->read(24);  // Skip 16 Byte TEXTPTR, 8 Byte TIMESTAMP
+          $r= $stream->read($stream->getLong());
+
+          // HACK - cannot figure out why UNITEXT is not being returned as such
+          // but as IMAGE type with different inside layout!
+          return iconv(
+            strlen($r) > 1 && "\0" === $r{1} ? "ucs-2le" : "cp850",
+            "iso-8859-1",
+            $r
+          );
+        }
+      }');
       $records[self::T_VARBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           if (0 === ($len= $stream->getByte())) return NULL;
@@ -119,13 +136,13 @@
 
       // Capabilities
       $capabilities= pack(
-        'CnCCCCCCCCCCCCCCCCCC',
+        'CnCCCCCCCCCCCCCCCCCCCCCCCC',
         0xE2,                               // TDS_CAPABILITY_TOKEN
-        20,
-        0x01,                               // TDS_CAP_REQUEST
-        0x03, 0xEF, 0x65, 0x41, 0xFF, 0xFF, 0xFF, 0xD6,
-        0x02,                               // TDS_CAP_RESPONSE
-        0x00, 0x00, 0x00, 0x06, 0x48, 0x00, 0x00, 0x08
+        24,                                 // Length
+        0x01, 0x0C,                         // TDS_CAP_REQUEST & Length
+        0x07, 0x4F, 0xFF, 0x85, 0xEE, 0xEF, 0x65, 0x7F, 0xFF, 0xFF, 0xFF, 0xD6,
+        0x02, 0x08,                         // TDS_CAP_RESPONSE & Length
+        0x00, 0x06, 0x80, 0x06, 0x48, 0x00, 0x00, 0x00
       );
 
       // Login
@@ -173,7 +190,7 @@
             $field['size']= $this->stream->getByte();
           }
 
-          $this->stream->read(1);   // Skip locale
+          $field['locale']= $this->stream->getByte();
           $fields[]= $field;
         }
         return $fields;

@@ -81,6 +81,15 @@
           );
         }
       }');
+      $records[self::T_IMAGE]= newinstance('rdbms.tds.TdsRecord', array(), '{
+        public function unmarshal($stream, $field) {
+          $has= $stream->getByte();
+          if ($has !== 16) return NULL;
+
+          $stream->read(24);  // Skip 16 Byte TEXTPTR, 8 Byte TIMESTAMP
+          return $stream->read($stream->getLong());
+        }
+      }');
       $records[self::XT_BINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           if (0xFFFF === ($len= $stream->getShort())) return NULL;
@@ -204,7 +213,7 @@
           $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
 
           // Handle column.
-          if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type'] || self::T_IMAGE === $field['type']) {
+          if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type']) {
             $field['size']= $this->stream->getLong();
             $this->stream->read(5);     // XXX Collation?
             $field['table']= $this->stream->read($this->stream->getShort());
@@ -221,6 +230,9 @@
             $field['size']= self::$fixed[$field['type']];
           } else if (self::T_VARIANT === $field['type']) {
             $field['variant']= new Bytes($this->stream->read(4));   // XXX Always {I\037\000\000}?
+          } else if (self::T_IMAGE === $field['type']) {
+            $field['size']= $this->stream->getLong();
+            $field['table']= $this->stream->read($this->stream->getShort());
           } else {
             $field['size']= $this->stream->getByte();
           }
