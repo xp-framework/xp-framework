@@ -95,6 +95,16 @@
     }
 
     /**
+     * Test selecting image values
+     *
+     * @see   http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.help.ase_15.0.blocks/html/blocks/blocks258.htm
+     */
+    #[@test]
+    public function selectEmptyImage() {
+      $this->assertEquals(' ', $this->db()->query('select cast("" as image) as value')->next('value'));
+    }
+
+    /**
      * Test selecting binary values
      *
      * @see   http://infocenter.sybase.com/help/index.jsp?topic=/com.sybase.help.ase_15.0.blocks/html/blocks/blocks258.htm
@@ -112,6 +122,78 @@
     #[@test]
     public function selectEmptyVarBinary() {
       $this->assertEquals(' ', $this->db()->query('select cast("" as varbinary) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting univarchar values
+     *
+     */
+    #[@test]
+    public function selectEmptyUniVarChar() {
+      $this->assertEquals(' ', $this->db()->query('select cast("" as univarchar(255)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUniVarChar() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as univarchar(255)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUmlautUniVarChar() {
+      $this->assertEquals('Übercoder', $this->db()->query('select cast("Übercoder" as univarchar(255)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectNullUniVarChar() {
+      $this->assertEquals(NULL, $this->db()->query('select cast(NULL as univarchar(255)) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting unitext values
+     *
+     */
+    #[@test]
+    public function selectEmptyUniText() {
+      $this->assertEquals(' ', $this->db()->query('select cast("" as unitext) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUniText() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as unitext) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUmlautUniText() {
+      $this->assertEquals('Übercoder', $this->db()->query('select cast("Übercoder" as unitext) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectNullUniText() {
+      $this->assertEquals(NULL, $this->db()->query('select cast(NULL as unitext) as value')->next('value'));
     }
   }
 ?>

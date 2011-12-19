@@ -385,6 +385,42 @@
     }
 
     /**
+     * Test selecting Image values
+     *
+     */
+    #[@test, @ignore('Cast to Image not supported by MySQL')]
+    public function selectEmptyImage() {
+      parent::selectEmptyImage();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to Image not supported by MySQL')]
+    public function selectImage() {
+      parent::selectImage();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to Image not supported by MySQL')]
+    public function selectUmlautImage() {
+      parent::selectUmlautImage();
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test, @ignore('Cast to Image not supported by MySQL')]
+    public function selectNullImage() {
+      parent::selectNullImage();
+    }
+
+    /**
      * Test selecting binary values
      *
      */

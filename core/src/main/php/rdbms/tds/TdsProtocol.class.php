@@ -218,7 +218,6 @@
         }
       }');
       self::$recordsFor[0][self::T_NTEXT]= self::$recordsFor[0][self::T_TEXT];
-      self::$recordsFor[0][self::T_IMAGE]= self::$recordsFor[0][self::T_TEXT];
       self::$recordsFor[0][self::T_BITN]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           return $stream->getByte() ? $stream->getByte() : NULL;

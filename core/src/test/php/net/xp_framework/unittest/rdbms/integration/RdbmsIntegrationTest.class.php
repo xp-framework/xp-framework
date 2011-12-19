@@ -758,6 +758,43 @@
     }
 
     /**
+     * Test selecting Image values
+     *
+     */
+    #[@test]
+    public function selectEmptyImage() {
+      $this->assertEquals('', $this->db()->query('select cast("" as image) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectImage() {
+      $this->assertEquals('test', $this->db()->query('select cast("test" as image) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectUmlautImage() {
+      $this->assertEquals('Übercoder', $this->db()->query('select cast("Übercoder" as image) as value')->next('value'));
+    }
+
+    /**
+     * Test selecting char values
+     *
+     */
+    #[@test]
+    public function selectNullImage() {
+      $this->assertEquals(NULL, $this->db()->query('select cast(NULL as image) as value')->next('value'));
+    }
+
+
+    /**
      * Test selecting binary values
      *
      */
