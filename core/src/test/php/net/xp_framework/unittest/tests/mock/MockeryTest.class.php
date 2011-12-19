@@ -6,7 +6,7 @@
  
   uses(
     'unittest.TestCase',
-    'unittest.mock.Mockery',
+    'unittest.mock.MockRepository',
     'lang.reflect.Proxy',
     'net.xp_framework.unittest.tests.mock.IEmptyInterface',
     'net.xp_framework.unittest.tests.mock.IComplexInterface',
@@ -18,7 +18,7 @@
   /**
    * Class for automaticly stubbing interfaces
    *
-   * @see      xp://unittest.mock.Mockery
+   * @see      xp://unittest.mock.MockRepository
    * @purpose  Unit Test
    */
   class MockeryTest extends TestCase {
@@ -29,7 +29,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new Mockery();
+      $this->fixture= new MockRepository();
     }
       
     /**
@@ -37,7 +37,7 @@
      */
     #[@test]
     public function canCreate() {
-      new Mockery();
+      new MockRepository();
     }
     /**
      * Can create mock for empty interface

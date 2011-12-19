@@ -15,7 +15,7 @@
    *
    * @purpose  Mocking
    */
-  class Mockery extends Object {
+  class MockRepository extends Object {
     private
       $mocks= array();
 

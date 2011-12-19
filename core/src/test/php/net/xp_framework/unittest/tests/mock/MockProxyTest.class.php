@@ -6,7 +6,7 @@
 
   uses(
     'unittest.mock.MockProxy',
-    'unittest.mock.Mockery',
+    'unittest.mock.MockRepository',
     'lang.Type',
     'lang.reflect.Proxy',
     'net.xp_framework.unittest.tests.mock.IEmptyInterface',
@@ -36,7 +36,7 @@
      */
     #[@test]
     public function canCreate() {
-      new MockProxy(new Mockery());
+      new MockProxy(new MockRepository());
     }
     
     /**

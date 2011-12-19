@@ -6,7 +6,7 @@
 
   uses(
     'unittest.mock.arguments.TypeMatcher',
-    'unittest.mock.Mockery',
+    'unittest.mock.MockRepository',
     'lang.Type',
     'lang.Object',
     'util.Date'   
@@ -74,7 +74,7 @@
      */
     #[@test]
     public function mockery_should_work_with() {
-      $mockery= new Mockery();
+      $mockery= new MockRepository();
       $interface= $mockery->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
       $interface->fooWithTypeHint(Arg::anyOfType('net.xp_framework.unittest.tests.mock.IEmptyInterface'));
     }

@@ -9,7 +9,7 @@
   /**
    * Dummy interface used in other tests
    *
-   * @see      xp://unittest.mock.Mockery
+   * @see      xp://unittest.mock.MockRepository
    * @purpose  Unit Test
    */
   interface IComplexInterface extends IEmptyInterface {
