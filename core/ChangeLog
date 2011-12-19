@@ -56,12 +56,12 @@ Heads up!
 RFCs
 ~~~~
 - Implemented RFC #0216 - REST server API implementation
-  (ohinckel)
+  (hinckel)
 
 Bugfixes
 ~~~~~~~~
 - Fixed peer.BSDSocket connect timeout - see pull request #86
-  (ohinckel)
+  (hinckel)
 - Fixed rdbms.DSN::equals() method to no longer regard differing observer
   params as equal
   (friebe)
@@ -96,13 +96,13 @@ Bugfixes
 Features
 ~~~~~~~~
 - Include more information in output produced by XmlTestListener
-  (ohinckel)
+  (hinckel)
 - Made usage of encoding names consistant to all lowercase,
   see issue #73
   (ppetermann, kiesel)
 - Added support to DomXSLProcessor to load XML or XSL files by stream
   wrappers, e.g. using res:// to load files with ResourceProvider
-  (ohinckel)
+  (hinckel)
 - Added Unicode support to webservices.json.JsonDecoder - characters are
   now correctly converted to escape sequences and back.
   (friebe)
