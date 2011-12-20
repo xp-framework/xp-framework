@@ -19,9 +19,11 @@
    * @ext      mysqli
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
+   * @test     net.xp_framework.unittest.rdbms.integration.MySQLIntegrationTest
    * @purpose  Database connection
    */
   class MySQLiConnection extends DBConnection {
+    protected $result= NULL;
 
     /**
      * Constructor
@@ -160,9 +162,15 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
-      $result= mysqli_query($this->handle, $sql, !$buffered || $this->flags & DB_UNBUFFERED ? MYSQLI_USE_RESULT : 0);
-      
-      if (FALSE === $result) {
+      // Clean up previous results to prevent "Commands out of sync" errors
+      if (NULL !== $this->result) {
+        mysqli_free_result($this->result);
+        $this->result= NULL;
+      }
+
+      // Execute query
+      $r= mysqli_query($this->handle, $sql, !$buffered || $this->flags & DB_UNBUFFERED ? MYSQLI_USE_RESULT : 0);
+      if (FALSE === $r) {
         $code= mysqli_errno($this->handle);
         $message= 'Statement failed: '.mysqli_error($this->handle).' @ '.$this->dsn->getHost();
         switch ($code) {
@@ -176,12 +184,12 @@
           default:   // Other error
             throw new SQLStatementFailedException($message, $sql, $code);
         }
+      } else if (TRUE === $r) {
+        return TRUE;
+      } else {
+        $this->result= $r;
+        return new MySQLiResultSet($this->result, $this->tz);
       }
-      
-      return (TRUE === $result
-        ? $result
-        : new MySQLiResultSet($result, $this->tz)
-      );
     }
 
     /**

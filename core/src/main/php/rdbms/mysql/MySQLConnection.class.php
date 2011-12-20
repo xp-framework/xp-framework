@@ -19,6 +19,7 @@
    * @ext      mysql
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
+   * @test     net.xp_framework.unittest.rdbms.integration.MySQLIntegrationTest
    * @purpose  Database connection
    */
   class MySQLConnection extends DBConnection {
@@ -168,9 +169,9 @@
       }
       
       if (!$buffered || $this->flags & DB_UNBUFFERED) {
-        $result= mysql_unbuffered_query($sql, $this->handle);
+        $result= @mysql_unbuffered_query($sql, $this->handle);
       } else {
-        $result= mysql_query($sql, $this->handle);
+        $result= @mysql_query($sql, $this->handle);
       }
       
       if (FALSE === $result) {
