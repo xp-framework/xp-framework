@@ -68,12 +68,12 @@
      * Test
      *
      */
-    #[@test, @ignore]
+    #[@test]
     public function addOtherProperties() {
       $c= new CompositeProperties(array(new Properties(NULL)));
       $this->assertEquals(1, $c->length());
 
-      $c->add(new Properties(NULL));
+      $c->add(Properties::fromString('[section]'));
       $this->assertEquals(2, $c->length());
     }
 
