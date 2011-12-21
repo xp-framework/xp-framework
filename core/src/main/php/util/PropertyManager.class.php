@@ -24,6 +24,9 @@
    * @purpose  Container
    */
   class PropertyManager extends Object {
+    const
+      MEMORY  = ':mem;';
+
     protected static 
       $instance     = NULL;
 
@@ -71,7 +74,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      $this->paths[$this->_path][$name]= $properties;
+      $this->paths[self::MEMORY][$name]= $properties;
     }
 
     /**
@@ -88,6 +91,7 @@
 
       // Second loop checks fs
       foreach ($this->paths as $path => $elements) {
+        if (self::MEMORY == $path) continue;
         if (file_exists($path.DIRECTORY_SEPARATOR.$name.'.ini')) return TRUE;
       }
 
@@ -109,6 +113,7 @@
       }
 
       foreach ($this->paths as $path => $elements) {
+        if (self::MEMORY == $path) continue;
         if (isset($elements[$name])) continue;
 
         if (file_exists($path.DIRECTORY_SEPARATOR.$name.'.ini')) {
