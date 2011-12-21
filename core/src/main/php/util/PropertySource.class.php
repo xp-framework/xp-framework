@@ -23,6 +23,7 @@
      *
      * @param   string name
      * @return  util.Properties
+     * @throws  lang.IllegalArgumentException if property requested is not available
      */
     public function fetch($name);
   }

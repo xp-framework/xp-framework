@@ -38,11 +38,11 @@
      *
      * @param   string name
      * @return  util.Properties
-     * @throws  io.IOException in case file does not exist
+     * @throws  lang.IllegalArgumentException if property requested is not available
      */
     public function fetch($name) {
       if (!$this->provides($name))
-        throw new IOException('No properties '.$name.' found at '.$this->root);
+        throw new IllegalArgumentException('No properties '.$name.' found at '.$this->root);
 
       if (!isset($this->cache[$name])) {
         $this->cache[$name]= new Properties($this->root.DIRECTORY_SEPARATOR.$name.'.ini');

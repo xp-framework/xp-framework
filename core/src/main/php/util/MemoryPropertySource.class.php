@@ -12,7 +12,20 @@
    * @test     xp://net.xp_framework.unittest.MemoryPropertySourceTest
    */
   class MemoryPropertySource extends Object implements PropertySource {
-    protected $props= array();
+    protected
+      $name = NULL,
+      $prop = NULL;
+
+    /**
+     * Constructor
+     *
+     * @param   string name
+     * @param   util.PropertyAccess prop
+     */
+    public function __construct($name, PropertyAccess $prop) {
+      $this->name= $name;
+      $this->prop= $prop;
+    }
 
     /**
      * Check for properties
@@ -21,7 +34,7 @@
      * @return  bool
      */
     public function provides($name) {
-      return isset($this->props[$name]);
+      return $name == $this->name;
     }
 
     /**
@@ -31,17 +44,17 @@
      * @return  util.PropertyAccess
      */
     public function fetch($name) {
-      return $this->props[$name];
+      if (!$name == $this->name)
+        throw new IllegalArgumentException('Access to property source under wrong name "'.$name.'"');
+
+      return $this->prop;
     }
 
-    /**
-     * Register properties
-     *
-     * @param   string name
-     * @param   util.PropertyAccess p
-     */
-    public function register($name, PropertyAccess $p) {
-      $this->props[$name]= $p;
+    public function equals($cmp) {
+      return $cmp instanceof self &&
+        $cmp->name == $this->name &&
+        $this->prop->equals($cmp->prop)
+      ;
     }
   }
 ?>

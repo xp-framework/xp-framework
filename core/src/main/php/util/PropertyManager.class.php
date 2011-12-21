@@ -33,8 +33,7 @@
       $instance     = NULL;
 
     protected
-      $provider     = array(),
-      $memory       = NULL;
+      $provider     = array();
 
     static function __static() {
       self::$instance= new self();
@@ -106,12 +105,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      if (!$this->memory) {
-        $this->memory= new MemoryPropertySource();
-        $this->prependPath($this->memory);
-      }
-
-      $this->memory->register($name, $properties);
+      $this->prependPath(new MemoryPropertySource($name, $properties));
     }
 
     /**
