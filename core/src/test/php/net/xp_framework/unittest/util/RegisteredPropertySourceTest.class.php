@@ -6,19 +6,19 @@
 
   uses(
     'unittest.TestCase',
-    'util.MemoryPropertySource'
+    'util.RegisteredPropertySource'
   );
 
   /**
-   * Test for MemoryPropertySource
+   * Test for RegisteredPropertySource
    *
-   * @see      xp://util.MemoryPropertySource
+   * @see      xp://util.RegisteredPropertySource
    */
-  class MemoryPropertySourceTest extends TestCase {
+  class RegisteredPropertySourceTest extends TestCase {
     protected $fixture= NULL;
 
     public function setUp() {
-      $this->fixture= new MemoryPropertySource('props', new Properties(NULL));
+      $this->fixture= new RegisteredPropertySource('props', new Properties(NULL));
     }
     
     /**
@@ -46,7 +46,7 @@
     #[@test]
     public function returnsRegisteredProperties() {
       $p= new Properties(NULL);
-      $m= new MemoryPropertySource('name', $p);
+      $m= new RegisteredPropertySource('name', $p);
 
       $this->assertTrue($p === $m->fetch('name'));
     }
@@ -57,8 +57,8 @@
      */
     #[@test]
     public function equalsReturnsFalseForDifferingName() {
-      $p1= new MemoryPropertySource('name1', new Properties(NULL));
-      $p2= new MemoryPropertySource('name2', new Properties(NULL));
+      $p1= new RegisteredPropertySource('name1', new Properties(NULL));
+      $p2= new RegisteredPropertySource('name2', new Properties(NULL));
 
       $this->assertNotEquals($p1, $p2);
     }
@@ -69,8 +69,8 @@
      */
     #[@test]
     public function equalsReturnsFalseForDifferingProperties() {
-      $p1= new MemoryPropertySource('name1', new Properties(NULL));
-      $p2= new MemoryPropertySource('name1', Properties::fromString('[section]'));
+      $p1= new RegisteredPropertySource('name1', new Properties(NULL));
+      $p2= new RegisteredPropertySource('name1', Properties::fromString('[section]'));
 
       $this->assertNotEquals($p1, $p2);
     }
@@ -81,8 +81,8 @@
      */
     #[@test]
     public function equalsReturnsTrueForSameInnerPropertiesAndName() {
-      $p1= new MemoryPropertySource('name1', Properties::fromString('[section]'));
-      $p2= new MemoryPropertySource('name1', Properties::fromString('[section]'));
+      $p1= new RegisteredPropertySource('name1', Properties::fromString('[section]'));
+      $p2= new RegisteredPropertySource('name1', Properties::fromString('[section]'));
 
       $this->assertEquals($p1, $p2);
     }

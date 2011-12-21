@@ -9,9 +9,9 @@
   /**
    * Memory-based property source
    *
-   * @test     xp://net.xp_framework.unittest.MemoryPropertySourceTest
+   * @test     xp://net.xp_framework.unittest.RegisteredPropertySourceTest
    */
-  class MemoryPropertySource extends Object implements PropertySource {
+  class RegisteredPropertySource extends Object implements PropertySource {
     protected
       $name = NULL,
       $prop = NULL;
@@ -50,6 +50,12 @@
       return $this->prop;
     }
 
+    /**
+     * Compare against other object
+     *
+     * @param   util.RegisteredPropertySource cmp
+     * @return  bool
+     */
     public function equals($cmp) {
       return $cmp instanceof self &&
         $cmp->name == $this->name &&

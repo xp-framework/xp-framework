@@ -7,7 +7,7 @@
   uses(
     'util.Properties',
     'util.CompositeProperties',
-    'util.MemoryPropertySource',
+    'util.RegisteredPropertySource',
     'util.FilesystemPropertySource'
   );
   
@@ -105,7 +105,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      $this->prependPath(new MemoryPropertySource($name, $properties));
+      $this->prependPath(new RegisteredPropertySource($name, $properties));
     }
 
     /**
