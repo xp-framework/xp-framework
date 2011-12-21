@@ -25,7 +25,7 @@
    */
   class PropertyManager extends Object {
     const
-      MEMORY  = ':mem;';
+      MEMORY  = ':mem;';      // Special name for in-memory properties' section
 
     protected static 
       $instance     = NULL;
@@ -62,11 +62,21 @@
       $this->appendPath($path);
     }
 
+    /**
+     * Append path to paths to search
+     *
+     * @param   string path
+     */
     public function appendPath($path) {
       if (isset($this->paths[$path])) return;
       $this->paths[$path]= array();
     }
-    
+
+    /**
+     * Prepend path to paths to search
+     *
+     * @param   string path
+     */
     public function prependPath($path) {
       if (isset($this->paths[$path])) return;
       $this->paths= array_merge(array($path => array()), $this->paths);
