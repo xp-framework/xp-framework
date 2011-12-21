@@ -139,10 +139,10 @@
      *
      * @param   string section
      * @param   string key
-     * @param   mixed default default 0.0
+     * @param   mixed default default array()
      * @return  double
      */
-    public function readFloat($section, $key, $default= 0.0) {
+    public function readFloat($section, $key, $default= array()) {
       return $this->_read(__FUNCTION__, $section, $key, $default);
     }
 
