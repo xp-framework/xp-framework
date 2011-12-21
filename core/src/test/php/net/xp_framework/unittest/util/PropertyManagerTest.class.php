@@ -131,7 +131,7 @@
     #[@test]
     public function prependPath() {
       $fixture= $this->preconfigured();
-      $fixture->prependPath(dirname(__FILE__).'/..');
+      $fixture->prependPath(new FilesystemPropertySource(dirname(__FILE__).'/..'));
     }
 
     /**
@@ -141,7 +141,7 @@
     #[@test]
     public function appendPath() {
       $fixture= $this->preconfigured();
-      $fixture->appendPath(dirname(__FILE__).'/..');
+      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__).'/..'));
     }
 
     /**
@@ -152,7 +152,7 @@
     public function getPropertiesFromSecondPath() {
       $fixture= $this->fixture();
       $fixture->configure(dirname(__FILE__).'/..');
-      $fixture->appendPath(dirname(__FILE__).'/.');
+      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__).'/.'));
 
       $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
     }
@@ -195,7 +195,19 @@ dynamic-value=whatever'));
       $fixture->register('example', Properties::fromString('[section]
 key="overwritten value"'));
       $this->assertEquals('overwritten value', $fixture->getProperties('example')->readString('section', 'key'));
+    }
 
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function appendingSourcesOnlyAddsNewSources() {
+      $fixture= $this->fixture();
+      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__)));
+      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__)));
+
+      $this->assertInstanceOf('util.Properties', $fixture->getProperties('example'));
     }
   }
 ?>

@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('util.Properties', 'util.CompositeProperties');
+  uses(
+    'util.Properties',
+    'util.CompositeProperties',
+    'util.MemoryPropertySource',
+    'util.FilesystemPropertySource'
+  );
   
   /**
    * Property-Manager
@@ -24,14 +29,12 @@
    * @purpose  Container
    */
   class PropertyManager extends Object {
-    const
-      MEMORY  = ':mem;';      // Special name for in-memory properties' section
-
     protected static 
       $instance     = NULL;
 
     protected
-      $paths    = array();
+      $provider     = array(),
+      $memory       = NULL;
 
     static function __static() {
       self::$instance= new self();
@@ -59,27 +62,41 @@
      * @param   string path search path to the property files
      */
     public function configure($path) {
-      $this->appendPath($path);
+      $this->appendPath(new FilesystemPropertySource($path));
+    }
+
+    /**
+     * Check if given source is new source
+     *
+     * @param   util.PropertySource p
+     * @return  bool
+     */
+    protected function isNewSource(PropertySource $p) {
+      foreach ($this->provider as $provider) {
+        if ($provider->equals($p)) return FALSE;
+      }
+
+      return TRUE;
     }
 
     /**
      * Append path to paths to search
      *
-     * @param   string path
+     * @param   util.PropertySource path
      */
-    public function appendPath($path) {
-      if (isset($this->paths[$path])) return;
-      $this->paths[$path]= array();
+    public function appendPath(PropertySource $path) {
+      if (!$this->isNewSource($path)) return;
+      $this->provider[]= $path;
     }
 
     /**
      * Prepend path to paths to search
      *
-     * @param   string path
+     * @param   util.PropertySource path
      */
-    public function prependPath($path) {
-      if (isset($this->paths[$path])) return;
-      $this->paths= array_merge(array($path => array()), $this->paths);
+    public function prependPath(PropertySource $path) {
+      if (!$this->isNewSource($path)) return;
+      array_unshift($this->provider, $path);
     }
 
     /**
@@ -89,8 +106,12 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      if (!isset($this->paths[$name])) $this->prependPath(self::MEMORY);
-      $this->paths[self::MEMORY][$name]= $properties;
+      if (!$this->memory) {
+        $this->memory= new MemoryPropertySource();
+        $this->prependPath($this->memory);
+      }
+
+      $this->memory->register($name, $properties);
     }
 
     /**
@@ -100,15 +121,8 @@
      * @return  bool
      */
     public function hasProperties($name) {
-      // First check cache
-      foreach ($this->paths as $path => $elements) {
-        if (isset($elements[$name])) return TRUE;
-      }
-
-      // Second loop checks fs
-      foreach ($this->paths as $path => $elements) {
-        if (self::MEMORY == $path) continue;
-        if (file_exists($path.DIRECTORY_SEPARATOR.$name.'.ini')) return TRUE;
+      foreach ($this->provider as $path) {
+        if ($path->provides($name)) return TRUE;
       }
 
       return FALSE;
@@ -122,21 +136,10 @@
      */
     public function getProperties($name) {
       $found= array();
-      foreach ($this->paths as $path => $elements) {
-        if (isset($elements[$name])) {
-          $found[]= $elements[$name];
-        }
-      }
 
-      foreach ($this->paths as $path => $elements) {
-        if (self::MEMORY == $path) continue;
-        if (isset($elements[$name])) continue;
-
-        if (file_exists($path.DIRECTORY_SEPARATOR.$name.'.ini')) {
-          $this->paths[$path][$name]= new Properties(
-            $path.DIRECTORY_SEPARATOR.$name.'.ini'
-          );
-          $found[]= $this->paths[$path][$name];
+      foreach ($this->provider as $path) {
+        if ($path->provides($name)) {
+          $found[]= $path->fetch($name);
         }
       }
 
