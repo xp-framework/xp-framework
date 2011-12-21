@@ -576,7 +576,7 @@
      * @return  bool
      */
     public function equals($cmp) {
-      if (!$cmp instanceof Properties) return FALSE;
+      if (!$cmp instanceof self) return FALSE;
 
       if ($this->_data && $cmp->_data) {
         return $this->_data == $cmp->_data;
