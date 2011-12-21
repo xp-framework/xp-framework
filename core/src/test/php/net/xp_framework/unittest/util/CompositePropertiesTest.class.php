@@ -11,10 +11,9 @@
   );
 
   /**
-   * TestCase
+   * Test CompositeProperties
    *
-   * @see       ...
-   * @purpose   TestCase for
+   * @see       xp://util.CompositeProperies
    */
   class CompositePropertiesTest extends TestCase {
 

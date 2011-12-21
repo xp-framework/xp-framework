@@ -99,7 +99,7 @@
     }
 
     /**
-     * Read arrayvalue
+     * Read array value
      *
      * @param   string section
      * @param   string key
