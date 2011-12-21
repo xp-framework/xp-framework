@@ -94,7 +94,7 @@
      *
      */
     #[@test]
-    public function getPropertiesReturnsSameObject() {
+    public function getPropertiesReturnsSameObjectIfExactlyOneAvailable() {
       $fixture= $this->preconfigured();
       $this->assertEquals(
         $fixture->getProperties('example')->hashCode(),
@@ -120,7 +120,7 @@
     #[@test]
     public function getProperties() {
       $prop= $this->preconfigured()->getProperties('example');
-      $this->assertInstanceOf('util.Properties', $prop);
+      $this->assertInstanceOf('util.PropertyAccess', $prop);
       $this->assertEquals('value', $prop->readString('section', 'key'));
     }
 
@@ -145,6 +145,30 @@
       $fixture->addPath(dirname(__FILE__).'/.');
 
       $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function getCompositeProperties() {
+      $fixture= $this->fixture();
+      $fixture->configure(dirname(__FILE__));
+
+      // Register new Properties, with some value in existing section
+      $fixture->register('example', Properties::fromString('[section]
+dynamic-value=whatever'));
+
+      $prop= $fixture->getProperties('example');
+      $this->assertInstanceOf('util.PropertyAccess', $prop);
+      $this->assertFalse($prop instanceof Properties);
+
+      // Check key from example.ini is available
+      $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
+
+      // Check key from registered Properties is available
+      $this->assertEquals('whatever', $prop->readString('section', 'dynamic-value'));
     }
   }
 ?>

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.Properties');
+  uses('util.Properties', 'util.CompositeProperties');
   
   /**
    * Property-Manager
@@ -20,6 +20,7 @@
    *   // from etc/database.ini
    * </code>
    *
+   * @test      xp://net.xp_framework.unittest.util.PropertyManagerTest
    * @purpose  Container
    */
   class PropertyManager extends Object {
@@ -97,22 +98,30 @@
      * Return properties by name
      *
      * @param   string name
-     * @return  util.Properties
+     * @return  util.PropertyAccess
      */
     public function getProperties($name) {
+      $found= array();
       foreach ($this->paths as $path => $elements) {
-        if (isset($elements[$name])) return $elements[$name];
+        if (isset($elements[$name])) {
+          $found[]= $elements[$name];
+        }
       }
 
       foreach ($this->paths as $path => $elements) {
         if (isset($elements[$name])) continue;
+
         if (file_exists($path.DIRECTORY_SEPARATOR.$name.'.ini')) {
           $this->paths[$path][$name]= new Properties(
             $path.DIRECTORY_SEPARATOR.$name.'.ini'
           );
-          return $this->paths[$path][$name];
+          $found[]= $this->paths[$path][$name];
         }
       }
+
+      if (0 == sizeof($found)) return NULL;
+      if (1 == sizeof($found)) return $found[0];
+      return new CompositeProperties(array_shift($found), $found);
     }
   }
 ?>
