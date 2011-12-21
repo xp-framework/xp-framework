@@ -59,14 +59,19 @@
      * @param   string path search path to the property files
      */
     public function configure($path) {
-      $this->addPath($path);
+      $this->appendPath($path);
     }
 
-    public function addPath($path) {
+    public function appendPath($path) {
       if (isset($this->paths[$path])) return;
       $this->paths[$path]= array();
     }
     
+    public function prependPath($path) {
+      if (isset($this->paths[$path])) return;
+      $this->paths= array_merge(array($path => array()), $this->paths);
+    }
+
     /**
      * Register a certain property object to a specified name
      *
@@ -74,6 +79,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
+      if (!isset($this->paths[$name])) $this->prependPath(self::MEMORY);
       $this->paths[self::MEMORY][$name]= $properties;
     }
 

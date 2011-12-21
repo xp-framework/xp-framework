@@ -129,9 +129,19 @@
      *
      */
     #[@test]
-    public function addPath() {
+    public function prependPath() {
       $fixture= $this->preconfigured();
-      $fixture->addPath(dirname(__FILE__).'/..');
+      $fixture->prependPath(dirname(__FILE__).'/..');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function appendPath() {
+      $fixture= $this->preconfigured();
+      $fixture->appendPath(dirname(__FILE__).'/..');
     }
 
     /**
@@ -142,7 +152,7 @@
     public function getPropertiesFromSecondPath() {
       $fixture= $this->fixture();
       $fixture->configure(dirname(__FILE__).'/..');
-      $fixture->addPath(dirname(__FILE__).'/.');
+      $fixture->appendPath(dirname(__FILE__).'/.');
 
       $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
     }
@@ -169,6 +179,23 @@ dynamic-value=whatever'));
 
       // Check key from registered Properties is available
       $this->assertEquals('whatever', $prop->readString('section', 'dynamic-value'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function memoryPropertiesAlwaysHavePrecendenceInCompositeProperties() {
+      $fixture= $this->fixture();
+      $fixture->configure(dirname(__FILE__));
+
+      $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
+
+      $fixture->register('example', Properties::fromString('[section]
+key="overwritten value"'));
+      $this->assertEquals('overwritten value', $fixture->getProperties('example')->readString('section', 'key'));
+
     }
   }
 ?>
