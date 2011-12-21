@@ -23,7 +23,7 @@
      */
     #[@test]
     public function createCompositeSingle() {
-      $c= new CompositeProperties(new Properties(''));
+      $c= new CompositeProperties(array(new Properties('')));
       $this->assertEquals(1, $c->length());
     }
 
@@ -33,8 +33,35 @@
      */
     #[@test]
     public function createCompositeDual() {
-      $c= new CompositeProperties(new Properties(''), array(new Properties('')));
+      $c= new CompositeProperties(array(new Properties(''), new Properties('')));
       $this->assertEquals(2, $c->length());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function createCompositeThrowsExceptionWhenNoArgumentGiven() {
+      new CompositeProperties();
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function createEmptyCompositeThrowsException() {
+      new CompositeProperties(array());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function createCompositeThrowsExceptionWhenSomethingElseThenPropertiesGiven() {
+      new CompositeProperties(array(new Properties(NULL), 1, new Properties(NULL)));
     }
 
     /**
@@ -43,7 +70,7 @@
      */
     #[@test, @ignore]
     public function addOtherProperties() {
-      $c= new CompositeProperties(new Properties(NULL));
+      $c= new CompositeProperties(array(new Properties(NULL)));
       $this->assertEquals(1, $c->length());
 
       $c->add(new Properties(NULL));
@@ -57,7 +84,7 @@
     #[@test]
     public function addingIdenticalPropertiesIsIdempotent() {
       $p= new Properties('');
-      $c= new CompositeProperties($p);
+      $c= new CompositeProperties(array($p));
       $this->assertEquals(1, $c->length());
 
       $c->add($p);
@@ -70,9 +97,9 @@
      */
     #[@test]
     public function addingEqualPropertiesIsIdempotent() {
-      $c= new CompositeProperties(Properties::fromString('[section]
+      $c= new CompositeProperties(array(Properties::fromString('[section]
 a=b
-b=c'));
+b=c')));
       $this->assertEquals(1, $c->length());
 
       $c->add(Properties::fromString('[section]
@@ -82,7 +109,7 @@ b=c'));
     }
 
     protected function fixture() {
-      return new CompositeProperties(Properties::fromString('[section]
+      return new CompositeProperties(array(Properties::fromString('[section]
 str="string..."
 b1=true
 arr1="foo|bar"
@@ -93,7 +120,7 @@ range1=1..3
 
 [read]
 key=value'),
-array(Properties::fromString('[section]
+        Properties::fromString('[section]
 str="Another thing"
 str2="Another thing"
 b1=false

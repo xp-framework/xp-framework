@@ -25,9 +25,9 @@
      * @param   util.Properties p
      * @param   util.Properties[] s default array()
      */
-    public function __construct(Properties $p, array $s= array()) {
-      $this->props[]= $p;
-      if (sizeof($s)) $this->props= array_merge($this->props, $s);
+    public function __construct(array $properties) {
+      if (empty($properties)) throw new IllegalArgumentException(__CLASS__.' requires at least 1 util.Properties child.');
+      foreach ($properties as $p) $this->add($p);
     }
 
     /**

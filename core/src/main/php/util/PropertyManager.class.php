@@ -142,7 +142,7 @@
 
       if (0 == sizeof($found)) return NULL;
       if (1 == sizeof($found)) return $found[0];
-      return new CompositeProperties(array_shift($found), $found);
+      return new CompositeProperties($found);
     }
   }
 ?>
