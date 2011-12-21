@@ -171,7 +171,7 @@
               ClassLoader::getDefault()->registerPath($path);
             }
           } else if ('-e' == $args[$i]) {
-            $sources->add(new EvaluationSource($this->arg($args, ++$i, 'e')));
+            $sources->add(new xp暉nittest新ources幌valuationSource($this->arg($args, ++$i, 'e')));
           } else if ('-l' == $args[$i]) {
             $class= XPClass::forName($this->arg($args, ++$i, 'l'));
             $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
@@ -181,17 +181,17 @@
           } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');
           } else if (strstr($args[$i], '.ini')) {
-            $sources->add(new PropertySource(new Properties($args[$i])));
+            $sources->add(new xp暉nittest新ources感ropertySource(new Properties($args[$i])));
           } else if (strstr($args[$i], xp::CLASS_FILE_EXT)) {
-            $sources->add(new ClassFileSource(new File($args[$i])));
+            $sources->add(new xp暉nittest新ources嵩lassFileSource(new File($args[$i])));
           } else if (strstr($args[$i], '.**')) {
-            $sources->add(new PackageSource(Package::forName(substr($args[$i], 0, -3)), TRUE));
+            $sources->add(new xp暉nittest新ources感ackageSource(Package::forName(substr($args[$i], 0, -3)), TRUE));
           } else if (strstr($args[$i], '.*')) {
-            $sources->add(new PackageSource(Package::forName(substr($args[$i], 0, -2))));
+            $sources->add(new xp暉nittest新ources感ackageSource(Package::forName(substr($args[$i], 0, -2))));
           } else if (FALSE !== ($p= strpos($args[$i], '::'))) {
-            $sources->add(new ClassSource(XPClass::forName(substr($args[$i], 0, $p)), substr($args[$i], $p+ 2)));
+            $sources->add(new xp暉nittest新ources嵩lassSource(XPClass::forName(substr($args[$i], 0, $p)), substr($args[$i], $p+ 2)));
           } else {
-            $sources->add(new ClassSource(XPClass::forName($args[$i])));
+            $sources->add(new xp暉nittest新ources嵩lassSource(XPClass::forName($args[$i])));
           }
         }
       } catch (Throwable $e) {
