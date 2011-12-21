@@ -346,9 +346,25 @@ anotherkey="is there, too"
      *
      */
     #[@test]
-    public function sectionExists() {
+    public function sectionFromMultipleSourcesExists() {
       $this->assertEquals(TRUE, $this->fixture()->hasSection('section'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function sectionFromSingleSourceExists() {
       $this->assertEquals(TRUE, $this->fixture()->hasSection('secondsection'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function nonexistantSectionDoesNotExist() {
       $this->assertEquals(FALSE, $this->fixture()->hasSection('any'));
     }
 
