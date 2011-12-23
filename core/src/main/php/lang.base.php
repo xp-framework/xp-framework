@@ -47,7 +47,16 @@
         }
 
         // Register class name and call static initializer if available
-        $name= ($package ? strtr($package, '.', '·').'·' : '').substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+        if (NULL === $package) {
+          $name= substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+          if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
+
+            // Use namespaced variant of class name
+            $name= strtr($class, '.', '\\');
+          }
+        } else {
+          $name= strtr($class, '.', '·');
+        }
         xp::$registry['class.'.$name]= $class;
         method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
         if (0 == xp::$registry['cl.level']) {

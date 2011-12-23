@@ -377,7 +377,7 @@
             case self::ST_INITIAL.T_VARIABLE:
               if ('$package' === $t[1]) {   // RFC #0037: $package= 'lang.reflect';
                 while (T_CONSTANT_ENCAPSED_STRING !== $tokens[$i][0] && $i < $s) $i++;
-                $package= $tokens[$i][1];
+                $package= trim($tokens[$i][1], '\'"');
               }
               break;
 
@@ -399,6 +399,16 @@
 
             case self::ST_INITIAL.self::T_DEFINE:
               $state= self::ST_DEFINE;
+              break;
+
+            case self::ST_INITIAL.T_NAMESPACE:
+              $package= '';
+              $i+= 2; // Eat "namespace"
+              while (';' !== $tokens[$i][0] && $i < $s) {
+                $package.= trim($tokens[$i++][1]);
+              }
+
+              $package= strtr($package, '\\', '.');
               break;
 
             case self::ST_DEFINE.T_CONSTANT_ENCAPSED_STRING:
@@ -424,7 +434,12 @@
             case self::ST_INITIAL.T_CLASS:
               while (T_STRING !== $tokens[$i][0] && $i < $s) $i++;
 
-              $doc->name= $package ? substr($tokens[$i][1], strlen($package)- 1) : $tokens[$i][1];
+              $name= $tokens[$i][1];
+              if ($package && substr(strtr($name, '·', '.'), 0, strlen($package)) == $package) {
+                $name= substr($name, strlen($package)+ 1);
+              }
+
+              $doc->name= $name;
               $doc->qualifiedName= $classname;
               $doc->rawComment= $comment;
               $doc->annotations= $annotations;
