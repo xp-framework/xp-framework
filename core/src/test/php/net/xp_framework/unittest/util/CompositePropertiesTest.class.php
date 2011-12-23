@@ -113,6 +113,7 @@ b=c'));
 str="string..."
 b1=true
 arr1="foo|bar"
+arr3="foo"
 hash1="a:b|b:c"
 int1=5
 float1=0.5
@@ -127,6 +128,7 @@ b1=false
 b2=false
 arr1="foo|bar|baz"
 arr2="foo|bar|baz"
+arr3[]="bar"
 hash1="b:a|c:b"
 hash2="b:null"
 int1=10
@@ -227,7 +229,16 @@ anotherkey="is there, too"
      */
     #[@test]
     public function readArrayUsesDefaultOnNoOccurrance() {
-      $this->assertEquals('Hello.', $this->fixture()->readArray('section', 'arr3', 'Hello.'));
+      $this->assertEquals('Hello.', $this->fixture()->readArray('section', 'arr4', 'Hello.'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function readArrayDoesNotAddArrayElements() {
+      $this->assertEquals(array('foo'), $this->fixture()->readArray('section', 'arr3'));
     }
 
     /**
