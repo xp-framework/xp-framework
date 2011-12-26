@@ -14,6 +14,11 @@
   abstract class FtpTransfer extends Object {
     const ASCII  = 1;
     const BINARY = 2;
+
+    protected static $modes= array(
+      self::ASCII  => 'A',
+      self::BINARY => 'I'
+    );
     
     protected
       $remote      = NULL,
@@ -94,9 +99,12 @@
      */
     public function start($mode) {      
       with ($conn= $this->remote->getConnection()); {
-        $this->socket= $conn->transferSocket();
-        
+
+        // Set mode
+        $conn->expect($conn->sendCommand('TYPE %s', self::$modes[$mode]), array(200));
+      
         // Issue the transfer command
+        $this->socket= $conn->transferSocket();
         $r= $conn->sendCommand('%s %s', $this->getCommand(), $this->remote->getName());
         sscanf($r[0], "%d %[^\r\n]", $code, $message);
         if (150 !== $code) {
