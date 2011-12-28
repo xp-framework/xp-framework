@@ -671,6 +671,14 @@
   }
   // }}}
 
+  // {{{ void __autoload(string classname)
+  //     Autoloads class
+  function autoload($class) {
+    uses(strtr($class, '\\', '.'));
+    class_alias(substr($class, strrpos($class, '\\')), $class);
+  }
+  // }}}
+
   // {{{ initialization
   error_reporting(E_ALL);
   
@@ -680,6 +688,7 @@
 
   // Hooks
   set_error_handler('__error');
+  spl_autoload_register('autoload', TRUE, TRUE);
   
   // Get rid of magic quotes 
   get_magic_quotes_gpc() && xp::error('[xp::core] magic_quotes_gpc enabled');
