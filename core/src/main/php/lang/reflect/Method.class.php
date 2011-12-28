@@ -68,46 +68,47 @@
           $this->_reflect->getName()
         ));
       }
-      if (!($m & MODIFIER_PUBLIC)) {
-        if (!$this->accessible) {
-          $t= debug_backtrace();
-          if ($t[1]['class'] !== $this->_class) {
-            $scope= new ReflectionClass($t[1]['class']);
-            if (!$scope->isSubclassOf($this->_class)) {
-              throw new IllegalAccessException(sprintf(
-                'Cannot invoke %s %s::%s from scope %s',
-                Modifiers::stringOf($this->getModifiers()),
-                $this->_class,
-                $this->_reflect->getName(),
-                $t[1]['class']
-              ));
-            }
-          }
+      $public= $m & MODIFIER_PUBLIC;
+      if (!$public && !$this->accessible) {
+        $t= debug_backtrace(0);
+        $decl= $this->_reflect->getDeclaringClass()->getName();
+        if ($m & MODIFIER_PROTECTED) {
+          $allow= $t[1]['class'] === $decl || is_subclass_of($t[1]['class'], $decl);
+        } else {
+          $allow= $t[1]['class'] === $decl && self::$SETACCESSIBLE_AVAILABLE;
         }
-        
-        try {
-          if ($this->_reflect->isStatic()) {
-            return call_user_func(array($this->_class, '__callStatic'), "\7".$this->_reflect->getName(), (array)$args);
-          } else {
-            return call_user_func_array(array($obj, "\7".$this->_reflect->getName()), (array)$args);
-          }
-        } catch (SystemExit $e) {
-          throw $e;
-        } catch (Throwable $e) {
-          throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() ~ '.$e->getMessage(), $e);
+        if (!$allow) {
+          throw new IllegalAccessException(sprintf(
+            'Cannot invoke %s %s::%s from scope %s',
+            Modifiers::stringOf($this->getModifiers()),
+            $this->_class,
+            $this->_reflect->getName(),
+            $t[1]['class']
+          ));
         }
       }
 
+      // For non-public methods: Use setAccessible() / invokeArgs() combination 
+      // if possible, resort to __call() workaround.
       try {
-        return $this->_reflect->invokeArgs($obj, (array)$args);
+        if ($public) {
+          return $this->_reflect->invokeArgs($obj, (array)$args);
+        }
+
+        if (self::$SETACCESSIBLE_AVAILABLE) {
+          $this->_reflect->setAccessible(TRUE);
+          return $this->_reflect->invokeArgs($obj, (array)$args);
+        } else if ($m & MODIFIER_STATIC) {
+          return call_user_func(array($this->_class, '__callStatic'), "\7".$this->_reflect->getName(), $args);
+        } else {
+          return $obj->__call("\7".$this->_reflect->getName(), $args);
+        }
       } catch (SystemExit $e) {
         throw $e;
       } catch (Throwable $e) {
-        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() invocation failed', $e);
-      } catch (ReflectionException $e) {
-
-        // This should never occur, we checked everything beforehand...
-        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName().'() invocation failed', new XPException($e->getMessage()));
+        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName(), $e);
+      } catch (Exception $e) {
+        throw new TargetInvocationException($this->_class.'::'.$this->_reflect->getName(), new XPException($e->getMessage()));
       }
     }
   }
