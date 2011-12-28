@@ -7,7 +7,7 @@
   namespace net\xp_framework\unittest\text\doclet;
   
   /**
-   * Class C
+   * Class Namespaced (used in ClassDocTest)
    *
    */
   class Namespaced extends \Object {

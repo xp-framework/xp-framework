@@ -56,6 +56,14 @@
     const T_USES                = 0x1000;
     const T_PACKAGE             = 0x1001;
     const T_DEFINE              = 0x1002;
+
+    static function __static() {
+
+      // For parsing backwards compatibility in PHP 5.2
+      if (!defined('T_NAMESPACE')) {
+        define('T_NAMESPACE', 377);
+      }
+    }
     
     /**
      * Constructor
@@ -64,7 +72,7 @@
     public function __construct() {
       $this->setSourcePath(xp::$registry['classpath']);
     }
-    
+
     /**
      * Sets source path
      *
