@@ -41,43 +41,49 @@
         throw new IllegalAccessException('Cannot instantiate abstract class '.$this->_class);
       }
 
-      // Check modifiers. If caller is an instance of this class, allow
-      // protected constructor invocation (which the PHP reflection API
-      // does not).
+      // Check modifiers. If caller is an instance of this class, allow private and
+      // protected constructor invocation (which the PHP reflection API does not).
       $m= $this->_reflect->getModifiers();
-      if (!($m & MODIFIER_PUBLIC)) {
-        if (!$this->accessible) {
-          $t= debug_backtrace();
-          if ($t[1]['class'] !== $this->_class) {
-            $scope= new ReflectionClass($t[1]['class']);
-            if (!$scope->isSubclassOf($this->_class)) {
-              throw new IllegalAccessException(sprintf(
-                'Cannot invoke %s constructor of class %s from scope %s',
-                Modifiers::stringOf($this->getModifiers()),
-                $this->_class,
-                $t[1]['class']
-              ));
-            }
-          }
+      $public= $m & MODIFIER_PUBLIC;
+      if (!$public && !$this->accessible) {
+        $t= debug_backtrace(0);
+        $decl= $this->_reflect->getDeclaringClass()->getName();
+        if ($m & MODIFIER_PROTECTED) {
+          $allow= $t[1]['class'] === $decl || is_subclass_of($t[1]['class'], $decl);
+        } else {
+          $allow= $t[1]['class'] === $decl && self::$SETACCESSIBLE_AVAILABLE;
         }
-        
-        // Create instance without invoking constructor
-        $instance= unserialize('O:'.strlen($this->_class).':"'.$this->_class.'":0:{}');
-        $inv= '$instance->{"\7__construct"}(%s); return $instance;';
-      } else {
-        $inv= 'return new '.$this->_class.'(%s);';
+        if (!$allow) {
+          throw new IllegalAccessException(sprintf(
+            'Cannot invoke %s constructor of class %s from scope %s',
+            Modifiers::stringOf($this->getModifiers()),
+            $this->_class,
+            $t[1]['class']
+          ));
+        }
       }
-      
-      $paramstr= '';
-      for ($i= 0, $m= sizeof($args); $i < $m; $i++) {
-        $paramstr.= ', $args['.$i.']';
-      }
+
+      // For non-public constructors: Use setAccessible() / invokeArgs() combination 
+      // if possible, resort to __call() workaround.
       try {
-        return eval(sprintf($inv, substr($paramstr, 2)));
+        if ($public) {
+          return $class->newInstanceArgs($args);
+        }
+
+        $instance= unserialize('O:'.strlen($this->_class).':"'.$this->_class.'":0:{}');
+        if (self::$SETACCESSIBLE_AVAILABLE) {
+          $this->_reflect->setAccessible(TRUE);
+          $this->_reflect->invokeArgs($instance, $args);
+        } else {
+          $instance->__call("\7__construct", $args);
+        }
+        return $instance;
       } catch (SystemExit $e) {
         throw $e;
       } catch (Throwable $e) {
         throw new TargetInvocationException($this->_class.'::<init>', $e);
+      } catch (Exception $e) {
+        throw new TargetInvocationException($this->_class.'::<init>', new XPException($e->getMessage()));
       }
     }
 
