@@ -4,48 +4,21 @@
  * $Id$ 
  */
 
+  uses('net.xp_framework.unittest.reflection.PrivateAccessibilityFixture');
+
   /**
    * Fixture class for accessibility tests
    *
-   * @see      xp://net.xp_framework.unittest.reflection.AccessibilityTest
+   * @see      xp://net.xp_framework.unittest.reflection.PrivateAccessibilityTest
    */
-  class AccessibilityFixture extends Object {
-    protected $target= 'Target';
-    protected static $staticTarget= 'Target';
+  class PrivateAccessibilityFixtureChild extends PrivateAccessibilityFixture {
 
     /**
-     * Constructor
+     * Constructor. Overwritten from parent class to allow constructing 
+     * this class.
      *
      */
-    protected function __construct() { }
-
-    /**
-     * Target method
-     *
-     * @return  string
-     */
-    protected function target() { 
-      return 'Invoked';
-    }
- 
-    /**
-     * Target method
-     *
-     * @return  string
-     */
-    protected static function staticTarget() { 
-      return 'Invoked';
-    }
-   
-    /**
-     * Entry point: Invoke constructor
-     *
-     * @param   lang.XPClass
-     * @return  net.xp_framework.unittest.reflection.AccessibilityFixture
-     */
-    public static function construct(XPClass $class) {
-      return $class->getConstructor()->newInstance(array());
-    }
+    private function __construct() { }
 
     /**
      * Entry point: Invoke target method
@@ -68,7 +41,7 @@
     }
 
     /**
-     * Entry point: Read target member
+     * Entry point: Invoke target method
      *
      * @param   lang.XPClass
      * @return  string
@@ -101,7 +74,7 @@
     }
 
     /**
-     * Entry point: Write target member, then read it back
+     * Entry point: Write staticTarget member, then read it back
      *
      * @param   lang.XPClass
      * @return  string
