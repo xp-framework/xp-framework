@@ -445,7 +445,15 @@
     $scope= NULL;
     foreach (func_get_args() as $str) {
       $class= xp::$registry['loader']->loadClass0($str);
-      if (method_exists($class, '__import')) {
+
+      // Tricky: We can arrive at this point without the class actually existing:
+      // A : uses("B")
+      // `-- B : uses("A")
+      //     `--> A : We are here, class A not complete!
+      // "Wait" until we unwind the stack until the first position so A is
+      // "complete" before calling __import.
+      // Check with class_exists(), because method_exists() triggers autoloading.
+      if (class_exists($class, FALSE) && method_exists($class, '__import')) {
         if (NULL === $scope) {
           $trace= debug_backtrace();
           $scope= xp::reflect($trace[2]['args'][0]);
