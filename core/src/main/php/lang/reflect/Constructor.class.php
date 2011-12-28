@@ -46,7 +46,7 @@
       $m= $this->_reflect->getModifiers();
       $public= $m & MODIFIER_PUBLIC;
       if (!$public && !$this->accessible) {
-        $t= debug_backtrace();
+        $t= debug_backtrace(0);
         $decl= $this->_reflect->getDeclaringClass()->getName();
         if ($m & MODIFIER_PROTECTED) {
           $allow= $t[1]['class'] === $decl || is_subclass_of($t[1]['class'], $decl);
