@@ -679,7 +679,7 @@
     if ($cl instanceof null) return FALSE;
 
     $decl= $cl->loadClass0($name);
-    class_alias($decl, $class);
+    strstr($decl, '\\') || class_alias($decl, $class);
     return TRUE;
   }
   // }}}
