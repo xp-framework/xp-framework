@@ -671,11 +671,16 @@
   }
   // }}}
 
-  // {{{ void __autoload(string classname)
-  //     Autoloads class
-  function autoload($class) {
-    uses(strtr($class, '\\', '.'));
-    class_alias(substr($class, strrpos($class, '\\')), $class);
+  // {{{ bool __load(string class)
+  //     SPL Autoload callback
+  function __load($class) {
+    $name= strtr($class, '\\', '.');
+    $cl= xp::$registry['loader']->findClass($name);
+    if ($cl instanceof null) return FALSE;
+
+    $decl= $cl->loadClass0($name);
+    class_alias($decl, $class);
+    return TRUE;
   }
   // }}}
 
@@ -688,7 +693,7 @@
 
   // Hooks
   set_error_handler('__error');
-  spl_autoload_register('autoload', TRUE, TRUE);
+  call_user_func('spl_autoload_register', '__load');
   
   // Get rid of magic quotes 
   get_magic_quotes_gpc() && xp::error('[xp::core] magic_quotes_gpc enabled');
