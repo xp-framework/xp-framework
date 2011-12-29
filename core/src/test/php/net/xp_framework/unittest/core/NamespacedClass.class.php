@@ -11,7 +11,7 @@
    *
    * @see   xp://net.xp_framework.unittest.core.NamespacedClassesTest
    */
-  class NamespacedClass extends \Object {
+  class NamespacedClass extends \lang\Object {
     
   }
 ?>
