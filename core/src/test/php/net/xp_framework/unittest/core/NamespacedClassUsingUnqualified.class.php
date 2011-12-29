@@ -13,7 +13,7 @@
    *
    * @see   xp://net.xp_framework.unittest.core.NamespacedClassesTest
    */
-  class NamespacedClassUsingUnqualified extends \Object {
+  class NamespacedClassUsingUnqualified extends \lang\Object {
     
     /**
      * Returns an empty string
