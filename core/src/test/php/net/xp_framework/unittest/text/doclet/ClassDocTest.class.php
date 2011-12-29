@@ -60,6 +60,21 @@
     }
 
     /**
+     * Test fully qualified classes' names in namespace
+     *
+     * @see   http://xp-framework.net/rfc/0222
+     */
+    #[@test]
+    public function namesForNamespacedFullyQualified() {
+      if (version_compare(PHP_VERSION, '5.3.0', 'gt')) {
+        with ($classdoc= $this->root->classNamed('net.xp_framework.unittest.text.doclet.Namespaced')); {
+          $this->assertEquals('Namespaced', $classdoc->name());
+          $this->assertEquals('net.xp_framework.unittest.text.doclet.Namespaced', $classdoc->qualifiedName());
+        }
+      }
+    }
+
+    /**
      * Test containingPackage() method
      *
      */
