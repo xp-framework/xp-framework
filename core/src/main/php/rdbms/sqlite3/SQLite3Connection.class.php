@@ -13,7 +13,11 @@
   );
 
   /**
-   * Connection to SQLite Databases
+   * Connection to SQLite Databases; specify the path to the database
+   * file as the DSN's path - the hostname property should remain empty.
+   *
+   * To use in-memory databases, use :memory: as path - remember to
+   * urlencode its value.
    *
    * Note: SQLite is typeless. Sometimes, though, it makes sense to 
    * operate with a "real" integer instead of its string representation.
