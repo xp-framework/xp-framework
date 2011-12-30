@@ -629,5 +629,64 @@ key=value
 
       $p->removeKey('section2', 'key2');
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function equalsComparesContent() {
+      $one= $this->newPropertiesFrom('[section1]
+key=value');
+      $two= $this->newPropertiesFrom('[section1]
+key=value');
+
+      $this->assertEquals($one, $two);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function equalsWorksWithBiggerLeftSideArg() {
+      $one= $this->newPropertiesFrom('[section1]
+key=value
+
+[section2]
+key=value');
+      $two= $this->newPropertiesFrom('[section1]
+key=value');
+
+      $this->assertNotEquals($one, $two);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function equalsWorksWithBiggerRightSideArg() {
+      $one= $this->newPropertiesFrom('[section1]
+key=value');
+      $two= $this->newPropertiesFrom('[section1]
+key=value
+
+[section2]
+key=value');
+
+      $this->assertNotEquals($one, $two);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function emptyPropertiesAreEqual() {
+      $one= new Properties(NULL);
+      $two= new Properties(NULL);
+      $this->assertEquals($one, $two);
+    }
   }
 ?>
