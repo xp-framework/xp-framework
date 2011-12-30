@@ -152,10 +152,6 @@
           self::$instance->lookup[$driver]= self::$instance->drivers[$driver];
         } else {
           $provider= self::$instance->provider;
-          foreach (Package::forName('rdbms.spi')->getClasses() as $class) {
-            if (!$class->isSubclassOf('rdbms.DriverImplementationsProvider')) continue;
-            $provider= $class->newInstance($provider);
-          }
 
           // Normalize driver, then query providers for available implementations
           if (FALSE === ($p= strpos($driver, '+'))) {

@@ -164,32 +164,5 @@
         DriverManager::getConnection('test://localhost')
       );
     }
-
-    /**
-     * Test SPI
-     *
-     */
-    #[@test]
-    public function driverPreferences() {
-      $spi= ClassLoader::defineClass('rdbms.spi.OverriddenImplementation', 'rdbms.DriverImplementationsProvider', array(), '{
-        public static $inquired= array();
-        public function implementationsFor($driver) {
-          self::$inquired[]= $driver;
-          return parent::implementationsFor($driver);
-        }
-      }');
-      $this->register('mock+std', XPClass::forName('net.xp_framework.unittest.rdbms.mock.MockConnection'));
-
-      with ($field= $spi->getField('inquired')); {
-        DriverManager::getConnection('mock+std://localhost');
-        $this->assertEquals(array(), $field->get(NULL), 'A direct hit should not invoke the SPI');
-
-        DriverManager::getConnection('mock://localhost');
-        $this->assertEquals(array('mock'), $field->get(NULL), 'The first indirect query should invoke the SPI');
-
-        DriverManager::getConnection('mock://localhost');
-        $this->assertEquals(array('mock'), $field->get(NULL), 'The next indirect query should no longer invoke the SPI');
-      }
-    }
   }
 ?>
