@@ -15,6 +15,10 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0221 - Allow combining application properties from
+  multiple sources
+  (kiesel)
+
 - Implemented RFC #0219 - Mocking Library
   (iigorr)
 
