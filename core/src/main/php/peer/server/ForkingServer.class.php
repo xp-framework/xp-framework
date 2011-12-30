@@ -34,10 +34,16 @@
 
         // Have connection, fork child
         $pid= pcntl_fork();
-        if (-1 == $pid) {
+        if (-1 == $pid) { // Could not fork
+
+          // Send client an error and disconnect
           $m->write("500 Server busy\r\n");
           $m->close();
+
+          // Wait until one child terminates, then forking might work again
           pcntl_waitpid(-1, $status);
+
+          // A child has joined, now continue to main loop...
           continue;
         } else if ($pid) {      // Parent
 

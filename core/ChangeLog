@@ -20,6 +20,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed peer.server.ForkingServer to continue execution even when forking one
+  child fails
+  (kiesel, friebe)
 - Fixed util.Date::create() to throw an exception when given invalid
   arguments instead of creating a date with values from the current 
   date and time filled in - pull request #88 (cconstandachi, friebe)
