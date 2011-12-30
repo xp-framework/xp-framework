@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('util.Properties');
+  uses(
+    'util.Properties',
+    'util.CompositeProperties',
+    'util.RegisteredPropertySource',
+    'util.FilesystemPropertySource'
+  );
   
   /**
    * Property-Manager
@@ -20,15 +25,15 @@
    *   // from etc/database.ini
    * </code>
    *
+   * @test      xp://net.xp_framework.unittest.util.PropertyManagerTest
    * @purpose  Container
    */
   class PropertyManager extends Object {
     protected static 
       $instance     = NULL;
 
-    public 
-      $_path    = '.',
-      $_prop    = array();
+    protected
+      $provider     = array();
 
     static function __static() {
       self::$instance= new self();
@@ -56,9 +61,43 @@
      * @param   string path search path to the property files
      */
     public function configure($path) {
-      $this->_path= $path;
+      $this->appendPath(new FilesystemPropertySource($path));
     }
-    
+
+    /**
+     * Check if given source is new source
+     *
+     * @param   util.PropertySource p
+     * @return  bool
+     */
+    protected function isNewSource(PropertySource $p) {
+      foreach ($this->provider as $provider) {
+        if ($provider->equals($p)) return FALSE;
+      }
+
+      return TRUE;
+    }
+
+    /**
+     * Append path to paths to search
+     *
+     * @param   util.PropertySource path
+     */
+    public function appendPath(PropertySource $path) {
+      if (!$this->isNewSource($path)) return;
+      $this->provider[]= $path;
+    }
+
+    /**
+     * Prepend path to paths to search
+     *
+     * @param   util.PropertySource path
+     */
+    public function prependPath(PropertySource $path) {
+      if (!$this->isNewSource($path)) return;
+      array_unshift($this->provider, $path);
+    }
+
     /**
      * Register a certain property object to a specified name
      *
@@ -66,7 +105,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      $this->_prop[$this->_path.$name]= $properties;
+      $this->prependPath(new RegisteredPropertySource($name, $properties));
     }
 
     /**
@@ -76,25 +115,31 @@
      * @return  bool
      */
     public function hasProperties($name) {
-      return (
-        isset($this->_prop[$this->_path.$name]) || 
-        file_exists($this->_path.DIRECTORY_SEPARATOR.$name.'.ini')
-      );
+      foreach ($this->provider as $path) {
+        if ($path->provides($name)) return TRUE;
+      }
+
+      return FALSE;
     }
    
     /**
      * Return properties by name
      *
      * @param   string name
-     * @return  util.Properties
+     * @return  util.PropertyAccess
      */
     public function getProperties($name) {
-      if (!isset($this->_prop[$this->_path.$name])) {
-        $this->_prop[$this->_path.$name]= new Properties(
-          $this->_path.DIRECTORY_SEPARATOR.$name.'.ini'
-        );
+      $found= array();
+
+      foreach ($this->provider as $path) {
+        if ($path->provides($name)) {
+          $found[]= $path->fetch($name);
+        }
       }
-      return $this->_prop[$this->_path.$name];
+
+      if (0 == sizeof($found)) return NULL;
+      if (1 == sizeof($found)) return $found[0];
+      return new CompositeProperties($found);
     }
   }
 ?>

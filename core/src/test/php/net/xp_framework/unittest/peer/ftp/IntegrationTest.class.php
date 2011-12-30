@@ -155,6 +155,58 @@
     }
 
     /**
+     * Test
+     *
+     */
+    #[@test]
+    public function sendCwd() {
+      $this->conn->connect();
+      $r= $this->conn->sendCommand('CWD %s', '/htdocs/');
+      $this->assertEquals('250 "/htdocs" is new working directory', $r[0]);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function listingWithoutParams() {
+      $this->conn->connect();
+      $this->conn->sendCommand('CWD %s', '/htdocs/');
+      $r= $this->conn->listingOf(NULL);
+      $list= implode("\n", $r);
+      $this->assertEquals(TRUE, (bool)strpos($list, 'index.html'), $list);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function cwdBackToRoot() {
+      $this->sendCwd();
+      $r= $this->conn->sendCommand('CWD %s', '/');
+      $this->assertEquals('250 "/" is new working directory', $r[0]);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function cwdRelative() {
+      $this->conn->connect();
+      $r= $this->conn->sendCommand('CWD %s', '/outer/inner');
+      $this->assertEquals('250 "/outer/inner" is new working directory', $r[0]);
+
+      $r= $this->conn->sendCommand('CDUP');
+      $this->assertEquals('250 CDUP command successful', $r[0]);
+
+      $r= $this->conn->sendCommand('CWD inner');
+      $this->assertEquals('250 "/outer/inner" is new working directory', $r[0]);
+    }
+
+    /**
      * Test retrieving the ".trash" directory which is empty.(except for
      * the ".svn" directory, if test runs within svn checkout).
      *

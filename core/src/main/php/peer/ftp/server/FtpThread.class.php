@@ -10,8 +10,6 @@
     'util.log.Traceable'
   );
   
-  define('LISTENER_CLASS',  'peer.ftp.server.FtpConnectionListener');
-
   /**
    * Server thread which does all of the accept()ing on the sockets.
    *
@@ -152,10 +150,10 @@
      */
     public function run() {
       try {
-        with ($class= XPClass::forName(LISTENER_CLASS), $cl= ClassLoader::getDefault()); {
+        with ($class= XPClass::forName('peer.ftp.server.FtpProtocol'), $cl= ClassLoader::getDefault()); {
         
           // Add listener
-          $this->server->addListener($listener= $class->newInstance(
+          $this->server->setProtocol($proto= $class->newInstance(
             $storage= Proxy::newProxyInstance(
               $cl,
               array(XPClass::forName('peer.ftp.server.storage.Storage')),
@@ -170,17 +168,17 @@
         }
         
         // Copy interceptors to connection listener
-        $listener->interceptors= $this->interceptors;
+        $proto->interceptors= $this->interceptors;
 
         // Enable debugging      
         if ($this->cat) {
-          $listener->setTrace($this->cat);
+          $proto->setTrace($this->cat);
           $this->server instanceof Traceable && $this->server->setTrace($this->cat);
         }
 
         // Try to start the server
         $this->server->init();
-      } catch (Exception $e) {
+      } catch (Throwable $e) {
         $this->server->shutdown();
         throw $e;
       }
