@@ -34,8 +34,11 @@
 
         // Have connection, fork child
         $pid= pcntl_fork();
-        if (-1 == $pid) {       // Woops?
-          throw new RuntimeError('Could not fork');
+        if (-1 == $pid) {
+          $m->write("500 Server busy\r\n");
+          $m->close();
+          pcntl_waitpid(-1, $status);
+          continue;
         } else if ($pid) {      // Parent
 
           // Close own copy of message socket
