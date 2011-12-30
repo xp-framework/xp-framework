@@ -18,7 +18,7 @@
 
       // MySQL support: Use mysql extension by default, mysqli otherwise. Never use mysqlnd!
       if (extension_loaded('mysqlnd')) {
-        self::$impl['mysql']= array('rdbms.mysqli.MySQLiConnection', 'rdbms.mysqlx.MySqlxConnection', 'rdbms.mysql.MySQLConnection');
+        self::$impl['mysql']= array('rdbms.mysqlx.MySqlxConnection', 'rdbms.mysql.MySQLConnection', 'rdbms.mysqli.MySQLiConnection');
       } else {
         self::$impl['mysql']= array('rdbms.mysql.MySQLConnection', 'rdbms.mysqli.MySQLiConnection', 'rdbms.mysqlx.MySqlxConnection');
       }
