@@ -154,53 +154,5 @@
         public function setDebug($cat);
       }');
     }
-
-    /**
-     * Test defineClass() method
-     *
-     */
-    #[@test]
-    public function defineClassInNewPackage() {
-      $name= 'net.xp_framework.unittest.reflection.dynclass1.ClassInNewPackage1';
-      $class= $this->defineClass($name, 'lang.Object', NULL, '{}');
-
-      $this->assertEquals(array($name), $class->getPackage()->getClassNames());
-    }
-
-    /**
-     * Test defineClass() method
-     *
-     */
-    #[@test]
-    public function defineClassInNewPackageIndirect() {
-      $name= 'net.xp_framework.unittest.reflection.dynclass2.ClassInNewPackage2';
-      $class= $this->defineClass($name, 'lang.Object', NULL, '{}');
-
-      $this->assertEquals(array($name), Package::forName($class->getPackage()->getName())->getClassNames());
-    }
-
-    /**
-     * Test defineInterface() method
-     *
-     */
-    #[@test]
-    public function defineInterfaceInNewPackage() {
-      $name= 'net.xp_framework.unittest.reflection.dyninterface1.InterfaceInNewPackage1';
-      $class= $this->defineInterface($name, array(), '{}');
-
-      $this->assertEquals(array($name), $class->getPackage()->getClassNames());
-    }
-
-    /**
-     * Test defineInterface() method
-     *
-     */
-    #[@test]
-    public function defineInterfaceInNewPackageIndirect() {
-      $name= 'net.xp_framework.unittest.reflection.dyninterface2.InterfaceInNewPackage2';
-      $class= $this->defineInterface($name, array(), '{}');
-
-      $this->assertEquals(array($name), Package::forName($class->getPackage()->getName())->getClassNames());
-    }
   }
 ?>
