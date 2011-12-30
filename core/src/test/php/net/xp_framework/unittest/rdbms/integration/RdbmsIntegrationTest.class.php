@@ -15,8 +15,8 @@
    *
    */
   abstract class RdbmsIntegrationTest extends TestCase {
-    protected
-      $dsn    = NULL;
+    protected $dsn= NULL;
+    protected $conn= NULL;
 
     /**
      * Set up testcase
@@ -34,10 +34,18 @@
       }
 
       try {
-        $this->db();
+        $this->conn= DriverManager::getConnection($this->dsn);
       } catch (Throwable $t) {
         throw new PrerequisitesNotMetError($t->getMessage(), $t);
       }
+    }
+
+    /**
+     * Tear down test case, close connection.
+     *
+     */
+    public function tearDown() {
+      $this->conn->close();
     }
 
     /**
@@ -54,10 +62,8 @@
      * @return  rdbms.DBConnection
      */
     protected function db($connect= TRUE) {
-      with ($db= DriverManager::getConnection($this->dsn)); {
-        if ($connect) $db->connect();
-        return $db;
-      }
+      $connect && $this->conn->connect();
+      return $this->conn;
     }
     
     /**
@@ -67,8 +73,7 @@
      */
     #[@test, @expect('rdbms.SQLStateException')]
     public function noQueryWhenNotConnected() {
-      $db= $this->db(FALSE);
-      $db->query('select 1');
+      $this->conn->query('select 1');
     }
     
     /**
@@ -90,7 +95,19 @@
      */
     #[@test]
     public function connect() {
-      $this->assertEquals(TRUE, $this->db(FALSE)->connect());
+      $this->assertEquals(TRUE, $this->conn->connect());
+    }
+
+    /**
+     * Test query throws rdbms.SQLStateException when no longer 
+     * connected to the database
+     *
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    public function noQueryWhenDisConnected() {
+      $this->conn->connect();
+      $this->conn->close();
+      $this->conn->query('select 1');
     }
     
     /**
@@ -106,16 +123,49 @@
     }
     
     /**
-     * Test query()
+     * Test query() and next()
      *
      */
     #[@test]
-    public function simpleQuery() {
+    public function queryAndNext() {
       $q= $this->db()->query('select 1 as foo');
-      $this->assertSubclass($q, 'rdbms.ResultSet');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
+      $this->assertEquals(array('foo' => 1), $q->next());
+    }
+ 
+    /**
+     * Test query() and next()
+     *
+     */
+    #[@test]
+    public function queryAndNextWithField() {
+      $q= $this->db()->query('select 1 as foo');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
       $this->assertEquals(1, $q->next('foo'));
     }
-    
+
+    /**
+     * Test open() and next()
+     *
+     */
+    #[@test]
+    public function openAndNext() {
+      $q= $this->db()->open('select 1 as foo');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
+      $this->assertEquals(array('foo' => 1), $q->next());
+    }
+
+    /**
+     * Test open() and next()
+     *
+     */
+    #[@test]
+    public function openAndNextWithField() {
+      $q= $this->db()->open('select 1 as foo');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
+      $this->assertEquals(1, $q->next('foo'));
+    }
+   
     /**
      * Test query() w/ an empty result set (empty or not - it should
      * be a ResultSet)
@@ -125,7 +175,7 @@
     public function emptyQuery() {
       $this->createTable();
       $q= $this->db()->query('select * from unittest where 1=0');
-      $this->assertSubclass($q, 'rdbms.ResultSet');
+      $this->assertInstanceOf('rdbms.ResultSet', $q);
       $this->assertEquals(FALSE, $q->next());
     }
     
@@ -142,7 +192,7 @@
     }
     
     /**
-     * Helper method to create table
+     * Create autoincrement table
      *
      */
     protected function createTable() {
@@ -151,7 +201,35 @@
       $this->db()->insert('into unittest values (1, "kiesel")');
       $this->db()->insert('into unittest values (2, "kiesel")');
     }
+
+    /**
+     * Helper method to create table
+     *
+     * @param   string name
+     */
+    protected function createAutoIncrementTable($name) {
+      raise('lang.MethodNotImplementedException', __FUNCTION__);
+    }
+
+    /**
+     * Create transactions table
+     *
+     * @param   string name
+     */
+    protected function createTransactionsTable($name) {
+      raise('lang.MethodNotImplementedException', __FUNCTION__);
+    }
     
+    /**
+     * Test insert via query()
+     *
+     */
+    #[@test]
+    public function insertViaQuery() {
+      $this->createTable();
+      $this->assertTrue($this->db()->query('insert into unittest values (1, "kiesel")'));
+    }
+
     /**
      * Test insert()
      *
@@ -159,11 +237,17 @@
     #[@test]
     public function insertIntoTable() {
       $this->createTable();
-      $q= $this->db()->query('insert into unittest values (1, "kiesel")');
-      $this->assertEquals(TRUE, $q);
-      
-      $q= $this->db()->insert('into unittest values (2, "xp")');
-      $this->assertEquals(1, $q);
+      $this->assertEquals(1, $this->db()->insert('into unittest values (2, "xp")'));
+    }
+
+    /**
+     * Test update via query()
+     *
+     */
+    #[@test]
+    public function updateViaQuery() {
+      $this->createTable();
+      $this->assertTrue($this->db()->query('update unittest set pk= pk+ 1 where pk= 2'));
     }
     
     /**
@@ -173,15 +257,17 @@
     #[@test]
     public function updateTable() {
       $this->createTable();
-      $this->assertEquals(
-        TRUE,
-        $this->db()->query('update unittest set pk= pk+ 1 where pk= 2')
-      );
+      $this->assertEquals(1, $this->db()->update('unittest set pk= pk+ 1 where pk= 1'));
+    }
 
-      $this->assertEquals(
-        1, 
-        $this->db()->update('unittest set pk= pk+ 1 where pk= 1')
-      );
+    /**
+     * Test delete via query()
+     *
+     */
+    #[@test]
+    public function deleteViaQuery() {
+      $this->createTable();
+      $this->assertTrue($this->db()->query('delete from unittest where pk= 2'));
     }
     
     /**
@@ -191,15 +277,7 @@
     #[@test]
     public function deleteFromTable() {
       $this->createTable();
-      $this->assertEquals(
-        TRUE,
-        $this->db()->query('delete from unittest where pk= 2')
-      );
-
-      $this->assertEquals(
-        1, 
-        $this->db()->delete('from unittest where pk= 1')
-      );
+      $this->assertEquals(1, $this->db()->delete('from unittest where pk= 1'));
     }
     
     /**
@@ -224,14 +302,41 @@
     public function malformedStatement() {
       $this->db()->query('select insert into delete.');
     }
+
+    /**
+     * Test selecting NULL
+     *
+     */
+    #[@test]
+    public function selectNull() {
+      $this->assertEquals(NULL, $this->db()->query('select NULL as value')->next('value'));
+    }
     
     /**
-     * Test selecting integer values leads 
+     * Test selecting integer values
      *
      */
     #[@test]
     public function selectInteger() {
       $this->assertEquals(1, $this->db()->query('select 1 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting integer values
+     *
+     */
+    #[@test]
+    public function selectIntegerZero() {
+      $this->assertEquals(0, $this->db()->query('select 0 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting integer values
+     *
+     */
+    #[@test]
+    public function selectNegativeInteger() {
+      $this->assertEquals(-6100, $this->db()->query('select -6100 as value')->next('value'));
     }
     
     /**
@@ -244,12 +349,12 @@
     }
 
     /**
-     * Test selecting string values
+     * Test selecting string values with an umlaut inside
      *
      */
     #[@test]
-    public function selectUnicodeString() {
-      $this->assertEquals(utf8_encode('Übercoder'), $this->db()->query('select %s as value', new String('Übercoder'))->next('value'));
+    public function selectUmlautString() {
+      $this->assertEquals('Übercoder', $this->db()->query('select %s as value', 'Übercoder')->next('value'));
     }
     
     /**
@@ -259,7 +364,33 @@
     #[@test]
     public function selectFloat() {
       $this->assertEquals(0.5, $this->db()->query('select 0.5 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting float values
+     *
+     */
+    #[@test]
+    public function selectFloatOne() {
       $this->assertEquals(1.0, $this->db()->query('select 1.0 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting float values
+     *
+     */
+    #[@test]
+    public function selectFloatZero() {
+      $this->assertEquals(0.0, $this->db()->query('select 0.0 as value')->next('value'));
+    }
+
+    /**
+     * Test selecting float values
+     *
+     */
+    #[@test]
+    public function selectNegativeFloat() {
+      $this->assertEquals(-6.1, $this->db()->query('select -6.1 as value')->next('value'));
     }
     
     /**
@@ -271,7 +402,7 @@
       $cmp= new Date('2009-08-14 12:45:00');
       $result= $this->db()->query('select cast(%s as date) as value', $cmp)->next('value');
       
-      $this->assertSubclass($result, 'util.Date');
+      $this->assertInstanceOf('util.Date', $result);
       $this->assertEquals($cmp->toString('Y-m-d'), $result->toString('Y-m-d'));
     }
     
@@ -299,20 +430,83 @@
       
       $db= $this->db();
       $db->addObserver($observer);
-      
       $db->query('select 1');
       
       $this->assertEquals(2, $observer->numberOfObservations());
       
-      $o1= $observer->observationAt(0);
-      $this->assertEquals('query', $o1->getName());
-      $this->assertEquals('select 1', $o1->getArgument());
+      with ($o0= $observer->observationAt(0)); {
+        $this->assertInstanceOf('rdbms.DBEvent', $o0);
+        $this->assertEquals('query', $o0->getName());
+        $this->assertEquals('select 1', $o0->getArgument());
+      }
+
+      with ($o1= $observer->observationAt(1)); {
+        $this->assertInstanceOf('rdbms.DBEvent', $o1);
+        $this->assertEquals('queryend', $o1->getName());
+        $this->assertInstanceOf('rdbms.ResultSet', $o1->getArgument());
+      }
+    }
+
+    /**
+     * Test transactions
+     *
+     */
+    #[@test]
+    public function rolledBackTransaction() {
+      $this->createTransactionsTable('unittest');
+      $db= $this->db();
+
+      $tran= $db->begin(new Transaction('test'));
+      $db->insert('into unittest values (1, "should_not_be_here")');
+      $tran->rollback();
       
-      $o1= $observer->observationAt(1);
-      $this->assertSubclass($o1, 'rdbms.DBEvent');
-      $this->assertEquals('queryend', $o1->getName());
-      $this->assertSubclass($o1->getArgument(), 'rdbms.ResultSet');
+      $this->assertEquals(array(), $db->select('* from unittest'));
+    }
+
+
+    /**
+     * Test transactions
+     *
+     */
+    #[@test]
+    public function committedTransaction() {
+      $this->createTransactionsTable('unittest');
+      $db= $this->db();
+
+      $tran= $db->begin(new Transaction('test'));
+      $db->insert('into unittest values (1, "should_be_here")');
+      $tran->commit();
+      
+      $this->assertEquals(array(array('pk' => 1, 'username' => 'should_be_here')), $db->select('* from unittest'));
+    }
+
+    /**
+     * Test not reading until the end of a non-buffered result
+     *
+     */
+    #[@test]
+    public function unbufferedReadNoResults() {
+      $this->createTable();
+      $db= $this->db();
+
+      $db->open('select * from unittest');
+
+      $this->assertEquals(1, $db->query('select 1 as num')->next('num'));
     }
     
+    /**
+     * Test not reading until the end of a non-buffered result
+     *
+     */
+    #[@test]
+    public function unbufferedReadOneResult() {
+      $this->createTable();
+      $db= $this->db();
+
+      $q= $db->open('select * from unittest');
+      $this->assertEquals(array('pk' => 1, 'username' => 'kiesel'), $q->next());
+
+      $this->assertEquals(1, $db->query('select 1 as num')->next('num'));
+    }
   }
 ?>

@@ -32,14 +32,21 @@
     /**
      * Helper method
      *
+     * @param   string clientId
      * @param   string uri
      * @return  string
      */
     public function realname($clientId, $uri) {
+
+      // Short-circuit this
+      if (NULL === $uri) {
+        return $this->root.DIRECTORY_SEPARATOR.$this->base[$clientId];
+      }
+
       $uri= strtr($uri, '/', DIRECTORY_SEPARATOR);    // External uris use "/"
       $path= (DIRECTORY_SEPARATOR === $uri{0} && isset($this->base[$clientId])
-        ? $this->base[$clientId].DIRECTORY_SEPARATOR.$uri
-        : $uri
+        ? $uri
+        : $this->base[$clientId].DIRECTORY_SEPARATOR.$uri
       );
       
       with (

@@ -121,8 +121,8 @@
     #[@test]
     public function boxCharacter() {
       $this->assertEqualSoapVar(
-        new SoapVar('ä', XSD_STRING),
-        $this->fixture->box(new Character('ä'))
+        new SoapVar('a', XSD_STRING),
+        $this->fixture->box(new Character('a'))
       );
     }
 

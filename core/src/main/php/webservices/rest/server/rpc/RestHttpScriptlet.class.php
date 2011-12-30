@@ -73,8 +73,8 @@
       
       // Setup processor and bind data sources
       $processor= new RestRoutingProcessor();
-      $processor->bind('webservices.rest.transport.HttpRequestAdapter', $req);
-      $processor->bind('webservices.rest.transport.HttpResponseAdapter', $res);
+      $processor->bind('webservices.rest.server.transport.HttpRequestAdapter', $req);
+      $processor->bind('webservices.rest.server.transport.HttpResponseAdapter', $res);
       $processor->bind('payload', $req->getData());
       
       $routed= FALSE;

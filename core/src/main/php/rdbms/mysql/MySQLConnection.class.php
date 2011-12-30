@@ -19,6 +19,7 @@
    * @ext      mysql
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
+   * @test     net.xp_framework.unittest.rdbms.integration.MySQLIntegrationTest
    * @purpose  Database connection
    */
   class MySQLConnection extends DBConnection {
@@ -80,7 +81,9 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_resource($this->handle)) {
-        throw new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
+        $e= new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
+        xp::gc(__FILE__);
+        throw $e;
       }
 
       mysql_query('set names LATIN1', $this->handle);
@@ -174,9 +177,9 @@
       }
       
       if (!$buffered || $this->flags & DB_UNBUFFERED) {
-        $result= mysql_unbuffered_query($sql, $this->handle);
+        $result= @mysql_unbuffered_query($sql, $this->handle);
       } else {
-        $result= mysql_query($sql, $this->handle);
+        $result= @mysql_query($sql, $this->handle);
       }
       
       if (FALSE === $result) {

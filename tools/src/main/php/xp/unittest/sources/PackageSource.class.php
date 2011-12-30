@@ -6,12 +6,14 @@
 
   uses('xp.unittest.sources.AbstractSource', 'lang.reflect.Package');
 
+  $package= 'xp.unittest.sources';
+
   /**
    * Source that load tests from a package
    *
    * @purpose  Source implementation
    */
-  class PackageSource extends xp暉nittest新ources嫂bstractSource {
+  class xp暉nittest新ources感ackageSource extends xp暉nittest新ources嫂bstractSource {
     protected
       $package    = NULL,
       $recursive  = FALSE;

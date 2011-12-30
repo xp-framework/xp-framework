@@ -19,9 +19,11 @@
    * @ext      mysqli
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
+   * @test     net.xp_framework.unittest.rdbms.integration.MySQLIntegrationTest
    * @purpose  Database connection
    */
   class MySQLiConnection extends DBConnection {
+    protected $result= NULL;
 
     static function __static() {
       if (extension_loaded('mysqli')) {
@@ -71,7 +73,9 @@
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
 
       if (!is_object($this->handle)) {
-        throw new SQLConnectException('#'.mysqli_connect_error().': '.mysqli_connect_error(), $this->dsn);
+        $e= new SQLConnectException('#'.mysqli_connect_errno().': '.mysqli_connect_error(), $this->dsn);
+        xp::gc(__FILE__);
+        throw $e;
       }
 
       mysqli_set_charset($this->handle, 'latin1');
@@ -164,9 +168,15 @@
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
       
-      $result= mysqli_query($this->handle, $sql, !$buffered || $this->flags & DB_UNBUFFERED ? MYSQLI_USE_RESULT : 0);
-      
-      if (FALSE === $result) {
+      // Clean up previous results to prevent "Commands out of sync" errors
+      if (NULL !== $this->result) {
+        mysqli_free_result($this->result);
+        $this->result= NULL;
+      }
+
+      // Execute query
+      $r= mysqli_query($this->handle, $sql, !$buffered || $this->flags & DB_UNBUFFERED ? MYSQLI_USE_RESULT : 0);
+      if (FALSE === $r) {
         $code= mysqli_errno($this->handle);
         $message= 'Statement failed: '.mysqli_error($this->handle).' @ '.$this->dsn->getHost();
         switch ($code) {
@@ -180,12 +190,12 @@
           default:   // Other error
             throw new SQLStatementFailedException($message, $sql, $code);
         }
+      } else if (TRUE === $r) {
+        return TRUE;
+      } else {
+        $this->result= $r;
+        return new MySQLiResultSet($this->result, $this->tz);
       }
-      
-      return (TRUE === $result
-        ? $result
-        : new MySQLiResultSet($result, $this->tz)
-      );
     }
 
     /**

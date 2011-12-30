@@ -35,6 +35,15 @@
     public function inSubnet(Network $net);
 
     /**
+     * Create a subnet of this address, with the specified size.
+     *
+     * @param   int subnetSize
+     * @return  Network
+     * @throws  lang.IllegalArgumentException in case the subnetSize is not correct
+     */
+    public function createSubnet($subnetSize);
+    
+    /**
      * Retrieve size of address in bits
      *
      * @return  int

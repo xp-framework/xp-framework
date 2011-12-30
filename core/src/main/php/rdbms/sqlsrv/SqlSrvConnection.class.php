@@ -19,9 +19,11 @@
    * @ext      sqlsrv
    * @test     xp://net.xp_framework.unittest.rdbms.TokenizerTest
    * @test     xp://net.xp_framework.unittest.rdbms.DBTest
+   * @test     xp://net.xp_framework.unittest.rdbms.integration.MsSQLIntegrationTest
    * @purpose  Database connection
    */
   class SqlSrvConnection extends DBConnection {
+    protected $result= FALSE;
 
     static function __static() {
       if (extension_loaded('sqlsrv')) {
@@ -72,6 +74,7 @@
         'LoginTimeout' => $this->timeout,
         'UID'          => $this->dsn->getUser(),
         'PWD'          => $this->dsn->getPassword(),
+        'MultipleActiveResultSets' => FALSE
       ));
 
       if (!is_resource($this->handle)) {
@@ -130,7 +133,7 @@
      * @return  int
      */
     protected function affectedRows() {
-      return sqlsrv_rows_affected($this->handle);
+      return sqlsrv_rows_affected($this->result);
     }
     
     /**
@@ -149,9 +152,16 @@
         // Check for subsequent connection errors
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect');
       }
-      
-      $result= sqlsrv_query($this->handle, $sql);
-      if (FALSE === $result) {
+
+      // Cancel pending result sets. TODO: Look into using MARS (Multiple
+      // Active Result Sets) feature, but this was causing problems in other
+      // places.
+      if (FALSE !== $this->result) {
+        sqlsrv_free_stmt($this->result);
+      }
+
+      $this->result= sqlsrv_query($this->handle, $sql);
+      if (FALSE === $this->result) {
         $message= 'Statement failed: '.$this->errors().' @ '.$this->dsn->getHost();
         if (!is_resource($error= sqlsrv_query($this->handle, 'select @@error'))) {
         
@@ -174,11 +184,12 @@
             throw new SQLStatementFailedException($message, $sql, $code);
         }
       }
-      
-      return (TRUE === $result
-        ? $result
-        : new SqlSrvResultSet($result, $this->tz)
-      );
+
+      if (sqlsrv_num_fields($this->result)) {
+        return new SqlSrvResultSet($this->result, $this->tz);
+      } else {
+        return TRUE;
+      }
     }
     
     /**

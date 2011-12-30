@@ -215,7 +215,7 @@
      * @return  bool key exists
      */
     public function containsKey($key) {
-      return isset($this->_hash[$key]);
+      return array_key_exists($key, $this->_hash);
     }
 
     /**

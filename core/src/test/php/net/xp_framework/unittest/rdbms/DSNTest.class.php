@@ -380,6 +380,42 @@
      *
      */
     #[@test]
+    public function twoDsnsWithDifferingObserverParamsNotEqual() {
+      $this->assertNotEquals(
+        new DSN('scheme://user:password@host/DATABASE?observer[rdbms.sybase.SybaseShowplanObserver]=sql'), 
+        new DSN('scheme://user:password@host/DATABASE?observer[util.log.LogObserver]=default')
+      );
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
+    public function twoDsnsWithDifferingObserverParamValuesNotEqual() {
+      $this->assertNotEquals(
+        new DSN('scheme://user:password@host/DATABASE?observer[util.log.LogObserver]=sql'), 
+        new DSN('scheme://user:password@host/DATABASE?observer[util.log.LogObserver]=default')
+      );
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
+    public function twoDsnsWithSameObserverParamsEqual() {
+      $this->assertEquals(
+        new DSN('scheme://user:password@host/DATABASE?observer[util.log.LogObserver]=default'), 
+        new DSN('scheme://user:password@host/DATABASE?observer[util.log.LogObserver]=default')
+      );
+    }
+
+    /**
+     * Tests the equals() method
+     *
+     */
+    #[@test]
     public function twoDsnsWithDifferentlyOrderedParamsAreEqual() {
       $this->assertEquals(
         new DSN('scheme://host/DATABASE?autoconnect=1&observer[rdbms.sybase.SybaseShowplanObserver]=sql&log=default'), 
