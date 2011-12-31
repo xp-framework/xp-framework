@@ -25,7 +25,7 @@
      * @param   string section
      * @param   string key
      * @param   mixed default default NULL
-     * @return  [string:string]
+     * @return  util.Hashmap
      */
     public function readHash($section, $key, $default= NULL);
 
@@ -74,7 +74,7 @@
      *
      * @param   string section
      * @param   mixed default default array()
-     * @return  [string:string]
+     * @return  [:string]
      */
     public function readSection($section, $default= array());
 
