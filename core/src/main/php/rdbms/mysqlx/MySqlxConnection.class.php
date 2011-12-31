@@ -25,6 +25,10 @@
   class MySqlxConnection extends DBConnection {
     protected $affected= -1;
 
+    static function __static() {
+      DriverManager::register('mysql+x', new XPClass(__CLASS__));
+    }
+
     /**
      * Constructor
      *

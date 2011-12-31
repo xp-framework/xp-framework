@@ -24,6 +24,12 @@
     protected
       $result     = NULL;
 
+    static function __static() {
+      if (extension_loaded('pgsql')) {
+        DriverManager::register('pgsql+std', new XPClass(__CLASS__));
+      }
+    }
+
     /**
      * Constructor
      *

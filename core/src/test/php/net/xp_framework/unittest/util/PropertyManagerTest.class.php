@@ -16,6 +16,12 @@
    * @see   xp://util.PropertyManager
    */
   class PropertyManagerTest extends TestCase{
+
+    /**
+     * Creates a fixrture
+     *
+     * @return  util.PropertyManager
+     */
     private function fixture() {
       $class= ClassLoader::getDefault()->defineClass('NonSingletonPropertyManager', 'util.PropertyManager', array(), '{
         public static function newInstance() {
@@ -26,6 +32,12 @@
       return $class->getMethod('newInstance')->invoke(NULL);
     }
     
+    /**
+     * Returns a PropertyManager configured with the directory this test
+     * class lies in.
+     *
+     * @return  util.PropertyManager
+     */
     private function preconfigured() {
       $f= $this->fixture();
       $f->configure(dirname(__FILE__));

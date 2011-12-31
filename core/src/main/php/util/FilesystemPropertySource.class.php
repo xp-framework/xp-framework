@@ -60,5 +60,14 @@
     public function equals($cmp) {
       return $cmp instanceof self && $cmp->root === $this->root;
     }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->root.'>';
+    }
   }
 ?>

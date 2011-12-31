@@ -25,6 +25,12 @@
   class SqlSrvConnection extends DBConnection {
     protected $result= FALSE;
 
+    static function __static() {
+      if (extension_loaded('sqlsrv')) {
+        DriverManager::register('mssql+ms', new XPClass(__CLASS__));
+      }
+    }
+
     /**
      * Constructor
      *
