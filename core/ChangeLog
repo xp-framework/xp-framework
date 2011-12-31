@@ -18,7 +18,6 @@ RFCs
 - Implemented RFC #0221 - Allow combining application properties from
   multiple sources
   (kiesel)
-
 - Implemented RFC #0219 - Mocking Library
   (iigorr)
 
@@ -44,6 +43,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Made database drivers implementations selectable - see pull request #79
+  (friebe)
 - Added optional timezone to util.Date::now() - see pull request #88
   (cconstandachi, friebe)
 - Merged pull request #90: Add webservices.rest
