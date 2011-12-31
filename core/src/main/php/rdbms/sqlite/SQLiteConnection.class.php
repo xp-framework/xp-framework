@@ -51,6 +51,12 @@
    */
   class SQLiteConnection extends DBConnection {
 
+    static function __static() {
+      if (extension_loaded('sqlite')) {
+        DriverManager::register('sqlite+std', new XPClass(__CLASS__));
+      }
+    }
+
     /**
      * Constructor
      *
