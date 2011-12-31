@@ -24,7 +24,10 @@
   class SybaseConnection extends DBConnection {
 
     static function __static() {
-      ini_set('sybct.deadlock_retry_count', 0);
+      if (extension_loaded('sybase_ct')) {
+        ini_set('sybct.deadlock_retry_count', 0);
+        DriverManager::register('sybase+ct', new XPClass(__CLASS__));
+      }
     }
     
     /**
