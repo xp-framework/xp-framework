@@ -137,7 +137,7 @@
     }
 
     /**
-     * Test
+     * Test prependPath()
      *
      */
     #[@test]
@@ -147,13 +147,36 @@
     }
 
     /**
-     * Test
+     * Test appendPath()
      *
      */
     #[@test]
     public function appendPath() {
       $fixture= $this->preconfigured();
       $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__).'/..'));
+    }
+
+    /**
+     * Test hasPath()
+     *
+     */
+    #[@test]
+    public function hasPath() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $this->assertFalse($fixture->hasPath($path));
+    }
+
+    /**
+     * Test hasPath()
+     *
+     */
+    #[@test]
+    public function hasAppendedPath() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $fixture->appendPath($path);
+      $this->assertTrue($fixture->hasPath($path));
     }
 
     /**

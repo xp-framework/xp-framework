@@ -70,12 +70,12 @@
      * @param   util.PropertySource p
      * @return  bool
      */
-    protected function isNewSource(PropertySource $p) {
+    public function hasPath(PropertySource $p) {
       foreach ($this->provider as $provider) {
-        if ($provider->equals($p)) return FALSE;
+        if ($provider->equals($p)) return TRUE;
       }
 
-      return TRUE;
+      return FALSE;
     }
 
     /**
@@ -84,7 +84,7 @@
      * @param   util.PropertySource path
      */
     public function appendPath(PropertySource $path) {
-      if (!$this->isNewSource($path)) return;
+      if ($this->hasPath($path)) return;
       $this->provider[]= $path;
     }
 
@@ -94,7 +94,7 @@
      * @param   util.PropertySource path
      */
     public function prependPath(PropertySource $path) {
-      if (!$this->isNewSource($path)) return;
+      if ($this->hasPath($path)) return;
       array_unshift($this->provider, $path);
     }
 
