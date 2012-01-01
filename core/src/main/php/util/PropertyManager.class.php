@@ -81,7 +81,7 @@
      * @return  util.PropertySource the added path
      */
     public function appendPath(PropertySource $path) {
-      $this->provider[$path->hashCode()]= $path;
+      if (!$this->hasPath($path)) $this->provider[$path->hashCode()]= $path;
       return $path;
     }
 
@@ -92,7 +92,7 @@
      * @return  util.PropertySource the added path
      */
     public function prependPath(PropertySource $path) {
-      $this->provider= array_merge(array($path->hashCode() => $path), $this->provider);
+      if (!$this->hasPath($path)) $this->provider= array_merge(array($path->hashCode() => $path), $this->provider);
       return $path;
     }
 
