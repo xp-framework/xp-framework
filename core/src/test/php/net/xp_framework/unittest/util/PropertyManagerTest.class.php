@@ -221,5 +221,23 @@ key="overwritten value"'));
 
       $this->assertInstanceOf('util.Properties', $fixture->getProperties('example'));
     }
+
+    /**
+     * Test getProperties()
+     *
+     */
+    #[@test]
+    public function getExistingProperties() {
+      $this->assertTrue($this->preconfigured()->getProperties('example')->exists());
+    }
+
+    /**
+     * Test getProperties()
+     *
+     */
+    #[@test]
+    public function getNonExistantProperties() {
+      $this->assertNull($this->preconfigured()->getProperties('does-not-exist'));
+    }
   }
 ?>
