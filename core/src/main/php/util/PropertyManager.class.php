@@ -99,6 +99,22 @@
     }
 
     /**
+     * Remove path from search list
+     *
+     * @param   util.PropertySource path
+     * @return  bool whether the path was removed
+     */
+    public function removePath(PropertySource $path) {
+      foreach ($this->provider as $i => $provider) {
+        if (!$provider->equals($path)) continue;
+        unset($this->provider[$i]);
+        return TRUE;
+      }
+
+      return FALSE;
+    }
+
+    /**
      * Register a certain property object to a specified name
      *
      * @param   string name

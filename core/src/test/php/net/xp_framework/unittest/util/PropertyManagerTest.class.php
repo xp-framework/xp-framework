@@ -180,6 +180,30 @@
     }
 
     /**
+     * Test removePath()
+     *
+     */
+    #[@test]
+    public function removePath() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $this->assertFalse($fixture->removePath($path));
+    }
+
+    /**
+     * Test removePath()
+     *
+     */
+    #[@test]
+    public function removeAppendedPath() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $fixture->appendPath($path);
+      $this->assertTrue($fixture->removePath($path));
+      $this->assertFalse($fixture->hasPath($path));
+    }
+
+    /**
      * Test
      *
      */
