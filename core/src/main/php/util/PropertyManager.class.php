@@ -82,20 +82,22 @@
      * Append path to paths to search
      *
      * @param   util.PropertySource path
+     * @return  util.PropertySource the added path
      */
     public function appendPath(PropertySource $path) {
-      if ($this->hasPath($path)) return;
-      $this->provider[]= $path;
+      if (!$this->hasPath($path)) $this->provider[]= $path;
+      return $path;
     }
 
     /**
      * Prepend path to paths to search
      *
      * @param   util.PropertySource path
+     * @return  util.PropertySource the added path
      */
     public function prependPath(PropertySource $path) {
-      if ($this->hasPath($path)) return;
-      array_unshift($this->provider, $path);
+      if (!$this->hasPath($path)) array_unshift($this->provider, $path);
+      return $path;
     }
 
     /**

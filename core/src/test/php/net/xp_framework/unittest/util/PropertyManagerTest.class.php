@@ -142,8 +142,8 @@
      */
     #[@test]
     public function prependPath() {
-      $fixture= $this->preconfigured();
-      $fixture->prependPath(new FilesystemPropertySource(dirname(__FILE__).'/..'));
+      $path= new FilesystemPropertySource('.');
+      $this->assertEquals($path, $this->fixture()->prependPath($path));
     }
 
     /**
@@ -152,8 +152,8 @@
      */
     #[@test]
     public function appendPath() {
-      $fixture= $this->preconfigured();
-      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__).'/..'));
+      $path= new FilesystemPropertySource('.');
+      $this->assertEquals($path, $this->fixture()->appendPath($path));
     }
 
     /**
