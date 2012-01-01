@@ -81,7 +81,7 @@
      * @return  util.PropertySource the added path
      */
     public function appendPath(PropertySource $path) {
-      if (!$this->hasPath($path)) $this->provider[$path->hashCode()]= $path;
+      $this->provider[$path->hashCode()]= $path;
       return $path;
     }
 
