@@ -99,6 +99,15 @@
     }
 
     /**
+     * Get all paths used to search
+     *
+     * @return  util.PropertySource[]
+     */
+    public function getPaths() {
+      return $this->provider;
+    }
+
+    /**
      * Remove path from search list
      *
      * @param   util.PropertySource path

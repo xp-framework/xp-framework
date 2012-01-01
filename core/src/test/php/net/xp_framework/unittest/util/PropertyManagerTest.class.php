@@ -217,6 +217,39 @@
     }
 
     /**
+     * Test getPaths()
+     *
+     */
+    #[@test]
+    public function getPathsInitiallyEmpty() {
+      $this->assertEquals(array(),  $this->fixture()->getPaths());
+    }
+
+    /**
+     * Test getPaths()
+     *
+     */
+    #[@test]
+    public function getPathsAfterAppendingOne() {
+      $path= new FilesystemPropertySource('.');
+      $fixture= $this->fixture();
+      $fixture->appendPath($path);
+      $this->assertEquals(array($path), $fixture->getPaths());
+    }
+
+    /**
+     * Test getPaths()
+     *
+     */
+    #[@test]
+    public function getPathsAfterPrependingOne() {
+      $path= new FilesystemPropertySource('.');
+      $fixture= $this->fixture();
+      $fixture->prependPath($path);
+      $this->assertEquals(array($path), $fixture->getPaths());
+    }
+
+    /**
      * Test
      *
      */
