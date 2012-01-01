@@ -71,11 +71,7 @@
      * @return  bool
      */
     public function hasPath(PropertySource $p) {
-      foreach ($this->provider as $provider) {
-        if ($provider->equals($p)) return TRUE;
-      }
-
-      return FALSE;
+      return isset($this->provider[$p->hashCode()]);
     }
 
     /**
@@ -85,7 +81,7 @@
      * @return  util.PropertySource the added path
      */
     public function appendPath(PropertySource $path) {
-      if (!$this->hasPath($path)) $this->provider[]= $path;
+      $this->provider[$path->hashCode()]= $path;
       return $path;
     }
 
@@ -96,7 +92,7 @@
      * @return  util.PropertySource the added path
      */
     public function prependPath(PropertySource $path) {
-      if (!$this->hasPath($path)) array_unshift($this->provider, $path);
+      $this->provider= array_merge(array($path->hashCode() => $path), $this->provider);
       return $path;
     }
 
@@ -106,7 +102,7 @@
      * @return  util.PropertySource[]
      */
     public function getPaths() {
-      return $this->provider;
+      return array_values($this->provider);
     }
 
     /**
@@ -116,13 +112,9 @@
      * @return  bool whether the path was removed
      */
     public function removePath(PropertySource $path) {
-      foreach ($this->provider as $i => $provider) {
-        if (!$provider->equals($path)) continue;
-        unset($this->provider[$i]);
-        return TRUE;
-      }
-
-      return FALSE;
+      $removed= isset($this->provider[$path->hashCode()]);
+      unset($this->provider[$path->hashCode()]);
+      return $removed;
     }
 
     /**
