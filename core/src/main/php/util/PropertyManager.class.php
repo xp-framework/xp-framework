@@ -180,7 +180,7 @@
         case 0: raise('lang.ElementNotFoundException', sprintf(
           'Canot find properties "%s" in any of %s',
           $name,
-          xp::stringOf($this->provider)
+          xp::stringOf(array_values($this->provider))
         ));
         default: return new CompositeProperties($found);
       }
