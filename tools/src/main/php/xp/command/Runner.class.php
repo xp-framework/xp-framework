@@ -195,7 +195,7 @@
       // Separate runner options from class options
       for ($offset= 0, $i= 0; $i < $params->count; $i++) switch ($params->list[$i]) {
         case '-c':
-          $props= params->list[$i+ 1];
+          $props= $params->list[$i+ 1];
           $offset+= 2; $i++;
           break;
         case '-cp':
