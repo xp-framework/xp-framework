@@ -23,6 +23,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug #97: Fatal error in scriptlet testsuite
+  (friebe)
 - Fixed peer.server.ForkingServer to continue execution even when forking one
   child fails
   (kiesel, friebe)
