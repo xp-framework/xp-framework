@@ -293,32 +293,35 @@
         } else {
           $type= $method->getParameter(0)->getType()->getName();
         }
-        switch ($type) {
-          case 'rdbms.DBConnection': {
-            $args= array($cm->getByHost($inject['name'], 0));
-            break;
-          }
-
-          case 'util.Properties': {
-            $args= array($pm->getProperties($inject['name']));
-            break;
-          }
-
-          case 'util.log.LogCategory': {
-            $args= array($l->getCategory($inject['name']));
-            break;
-          }
-
-          default: {
-            self::$err->writeLine('*** Unknown injection type "'.$type.'" at method "'.$method->getName().'"');
-            return 2;
-          }
-        }
-
         try {
+          switch ($type) {
+            case 'rdbms.DBConnection': {
+              $args= array($cm->getByHost($inject['name'], 0));
+              break;
+            }
+
+            case 'util.Properties': {
+              $args= array($pm->getProperties($inject['name']));
+              break;
+            }
+
+            case 'util.log.LogCategory': {
+              $args= array($l->getCategory($inject['name']));
+              break;
+            }
+
+            default: {
+              self::$err->writeLine('*** Unknown injection type "'.$type.'" at method "'.$method->getName().'"');
+              return 2;
+            }
+          }
+
           $method->invoke($instance, $args);
         } catch (TargetInvocationException $e) {
           self::$err->writeLine('*** Error injecting '.$type.' '.$inject['name'].': '.$e->getCause()->compoundMessage());
+          return 2;
+        } catch (Throwable $e) {
+          self::$err->writeLine('*** Error injecting '.$type.' '.$inject['name'].': '.$e->compoundMessage());
           return 2;
         }
       }

@@ -15,7 +15,7 @@
    *
    * @see   xp://util.PropertyManager
    */
-  class PropertyManagerTest extends TestCase{
+  class PropertyManagerTest extends TestCase {
 
     /**
      * Creates a fixrture
@@ -318,6 +318,27 @@ key="overwritten value"'));
     #[@test]
     public function getNonExistantProperties() {
       $this->assertNull($this->preconfigured()->getProperties('does-not-exist'));
+    }
+
+    /**
+     * Test getProperties()
+     *
+     */
+    #[@test]
+    public function getExistantProperties() {
+      $p= $this->preconfigured()->getProperties('example');
+      $this->assertInstanceOf('util.Properties', $p);
+      $this->assertTrue($p->exists(), 'Should return an existant Properties instance');
+
+    }
+
+    /**
+     * Test getProperties()
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function getNonExistantProperties() {
+      $this->preconfigured()->getProperties('does-not-exist');
     }
   }
 ?>

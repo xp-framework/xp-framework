@@ -146,6 +146,7 @@
      *
      * @param   string name
      * @return  util.PropertyAccess
+     * throws   lang.ElementNotFoundException
      */
     public function getProperties($name) {
       $found= array();
@@ -156,9 +157,15 @@
         }
       }
 
-      if (0 == sizeof($found)) return NULL;
-      if (1 == sizeof($found)) return $found[0];
-      return new CompositeProperties($found);
-    }
+      switch (sizeof($found)) {
+        case 1: return $found[0];
+        case 0: raise('lang.ElementNotFoundException', sprintf(
+          'Canot find properties "%s" in any of %s',
+          $name,
+          xp::stringOf($this->provider)
+        ));
+        default: return new CompositeProperties($found);
+      }
+	  }
   }
 ?>
