@@ -61,39 +61,39 @@
      * @param   string path search path to the property files
      */
     public function configure($path) {
-      $this->appendPath(new FilesystemPropertySource($path));
+      $this->appendSource(new FilesystemPropertySource($path));
     }
 
     /**
      * Check if given source is new source
      *
-     * @param   util.PropertySource p
+     * @param   util.PropertySource source
      * @return  bool
      */
-    public function hasPath(PropertySource $p) {
-      return isset($this->provider[$p->hashCode()]);
+    public function hasSource(PropertySource $source) {
+      return isset($this->provider[$source->hashCode()]);
     }
 
     /**
      * Append path to paths to search
      *
-     * @param   util.PropertySource path
+     * @param   util.PropertySource source
      * @return  util.PropertySource the added path
      */
-    public function appendPath(PropertySource $path) {
-      $this->provider[$path->hashCode()]= $path;
-      return $path;
+    public function appendSource(PropertySource $source) {
+      $this->provider[$source->hashCode()]= $source;
+      return $source;
     }
 
     /**
      * Prepend path to paths to search
      *
-     * @param   util.PropertySource path
+     * @param   util.PropertySource source
      * @return  util.PropertySource the added path
      */
-    public function prependPath(PropertySource $path) {
-      if (!$this->hasPath($path)) $this->provider= array_merge(array($path->hashCode() => $path), $this->provider);
-      return $path;
+    public function prependSource(PropertySource $source) {
+      if (!$this->hasSource($source)) $this->provider= array_merge(array($source->hashCode() => $source), $this->provider);
+      return $source;
     }
 
     /**
@@ -101,19 +101,19 @@
      *
      * @return  util.PropertySource[]
      */
-    public function getPaths() {
+    public function getSources() {
       return array_values($this->provider);
     }
 
     /**
      * Remove path from search list
      *
-     * @param   util.PropertySource path
+     * @param   util.PropertySource source
      * @return  bool whether the path was removed
      */
-    public function removePath(PropertySource $path) {
-      $removed= isset($this->provider[$path->hashCode()]);
-      unset($this->provider[$path->hashCode()]);
+    public function removeSource(PropertySource $source) {
+      $removed= isset($this->provider[$source->hashCode()]);
+      unset($this->provider[$source->hashCode()]);
       return $removed;
     }
 
@@ -124,7 +124,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      $this->prependPath(new RegisteredPropertySource($name, $properties));
+      $this->prependSource(new RegisteredPropertySource($name, $properties));
     }
 
     /**
@@ -134,8 +134,8 @@
      * @return  bool
      */
     public function hasProperties($name) {
-      foreach ($this->provider as $path) {
-        if ($path->provides($name)) return TRUE;
+      foreach ($this->provider as $source) {
+        if ($source->provides($name)) return TRUE;
       }
 
       return FALSE;
@@ -150,9 +150,9 @@
     public function getProperties($name) {
       $found= array();
 
-      foreach ($this->provider as $path) {
-        if ($path->provides($name)) {
-          $found[]= $path->fetch($name);
+      foreach ($this->provider as $source) {
+        if ($source->provides($name)) {
+          $found[]= $source->fetch($name);
         }
       }
 
