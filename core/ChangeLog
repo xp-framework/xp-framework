@@ -8,6 +8,10 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Made util.PropertyManager::getProperties() throw lang.ElementNotFoundException
+  in case not a single Properties could be provided by any PropertySource. See
+  issue #95
+  (kiesel, friebe)
 - Merged pull request #89: Make JsonDecoder / parser accept target
   encoding; the parser returns native PHP strings instead of
   lang.types.String objects
