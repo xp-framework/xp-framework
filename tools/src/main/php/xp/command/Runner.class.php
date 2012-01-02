@@ -304,7 +304,26 @@
             }
 
             case 'util.Properties': {
-              $args= array($pm->getProperties($inject['name']));
+              $p= $pm->getProperties($inject['name']);
+
+              // If a PropertyAccess is retrieved which is not a util.Properties,
+              // then, for BC sake, convert it into a util.Properties
+              if (
+                $p instanceof PropertyAccess &&
+                !$p instanceof Properties
+              ) {
+                $convert= Properties::fromString('');
+
+                $section= $p->getFirstSection();
+                while ($section) {
+                  $convert->_data[$section]= $p->readSection($section);  // HACK
+                  $section= $p->getNextSection();
+                }
+
+                $args= array($convert);
+              } else {
+                $args= array($p);
+              }
               break;
             }
 
