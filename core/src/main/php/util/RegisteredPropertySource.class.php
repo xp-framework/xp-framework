@@ -51,6 +51,15 @@
     }
 
     /**
+     * Returns hashcode for this source
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return md5($this->name.serialize($this->prop));
+    }
+
+    /**
      * Compare against other object
      *
      * @param   util.RegisteredPropertySource cmp
