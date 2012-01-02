@@ -27,7 +27,9 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Fixed bug #97: Fatal error in scriptlet testsuite
+- Fixed issue #100: XPCLI: -c does not overwrite properties, but adds
+  (friebe)
+- Fixed issue #97: Fatal error in scriptlet testsuite
   (friebe)
 - Fixed peer.server.ForkingServer to continue execution even when forking one
   child fails
