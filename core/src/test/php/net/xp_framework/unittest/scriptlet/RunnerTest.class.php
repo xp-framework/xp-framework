@@ -29,6 +29,7 @@
     protected static $debugScriptlet= NULL;
     protected static $xmlScriptlet= NULL;
     protected static $exitScriptlet= NULL;
+    protected static $propertySource= NULL;
     
     static function __static() {
       self::$errorScriptlet= ClassLoader::defineClass('ErrorScriptlet', 'scriptlet.HttpScriptlet', array('util.log.Traceable'), '{
@@ -156,6 +157,27 @@
           Runtime::halt($request->getParam("code"), $request->getParam("message"));
         }
       }');
+    }
+
+    /**
+     * Sets up property source
+     *
+     */
+    #[@beforeClass]
+    public static function setupPropertySource() {
+      self::$propertySource= PropertyManager::getInstance()->appendSource(newinstance('util.PropertySource', array(), '{
+        public function provides($name) { return "debug" === $name; }
+        public function fetch($name) { return new Properties("/var/www/etc/dev/debug.ini"); }
+      }'));
+    }
+
+    /**
+     * Sets up property source
+     *
+     */
+    #[@beforeClass]
+    public static function removePropertySource() {
+      PropertyManager::getInstance()->removeSource(self::$propertySource);
     }
 
     /**

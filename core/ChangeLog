@@ -23,6 +23,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug #97: Fatal error in scriptlet testsuite
+  (friebe)
 - Fixed peer.server.ForkingServer to continue execution even when forking one
   child fails
   (kiesel, friebe)
@@ -43,6 +45,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Merged pull request #99 - Propertymanager paths CRUD
+  (friebe)
 - Made database drivers implementations selectable - see pull request #79
   (friebe)
 - Added optional timezone to util.Date::now() - see pull request #88

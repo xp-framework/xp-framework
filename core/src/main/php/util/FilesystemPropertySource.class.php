@@ -52,6 +52,15 @@
     }
 
     /**
+     * Returns hashcode for this source
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return md5($this->root);
+    }
+
+    /**
      * Check if this instance equals another
      *
      * @param   Generic cmp
