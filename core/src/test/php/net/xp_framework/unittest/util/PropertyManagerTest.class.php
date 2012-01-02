@@ -85,7 +85,7 @@
      *
      */
     #[@test]
-    public function hasConfiguredPathProperties() {
+    public function hasConfiguredSourceProperties() {
       $fixture= $this->fixture();
       $fixture->configure(dirname(__FILE__));
       
@@ -97,7 +97,7 @@
      *
      */
     #[@test]
-    public function doesNotHaveConfiguredPathProperties() {
+    public function doesNotHaveConfiguredSourceProperties() {
       $this->assertFalse($this->preconfigured()->hasProperties('does-not-exist'));
     }
     
@@ -137,13 +137,70 @@
     }
 
     /**
-     * Test
+     * Test prependSource()
      *
      */
     #[@test]
-    public function prependPath() {
-      $fixture= $this->preconfigured();
-      $fixture->prependPath(new FilesystemPropertySource(dirname(__FILE__).'/..'));
+    public function prependSource() {
+      $path= new FilesystemPropertySource('.');
+      $this->assertEquals($path, $this->fixture()->prependSource($path));
+    }
+
+    /**
+     * Test appendSource()
+     *
+     */
+    #[@test]
+    public function appendSource() {
+      $path= new FilesystemPropertySource('.');
+      $this->assertEquals($path, $this->fixture()->appendSource($path));
+    }
+
+    /**
+     * Test hasSource()
+     *
+     */
+    #[@test]
+    public function hasSource() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $this->assertFalse($fixture->hasSource($path));
+    }
+
+    /**
+     * Test hasSource()
+     *
+     */
+    #[@test]
+    public function hasAppendedSource() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $fixture->appendSource($path);
+      $this->assertTrue($fixture->hasSource($path));
+    }
+
+    /**
+     * Test removeSource()
+     *
+     */
+    #[@test]
+    public function removeSource() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $this->assertFalse($fixture->removeSource($path));
+    }
+
+    /**
+     * Test removeSource()
+     *
+     */
+    #[@test]
+    public function removeAppendedSource() {
+      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $fixture= $this->fixture();
+      $fixture->appendSource($path);
+      $this->assertTrue($fixture->removeSource($path));
+      $this->assertFalse($fixture->hasSource($path));
     }
 
     /**
@@ -151,22 +208,45 @@
      *
      */
     #[@test]
-    public function appendPath() {
-      $fixture= $this->preconfigured();
-      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__).'/..'));
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function getPropertiesFromSecondPath() {
+    public function getPropertiesFromSecondSource() {
       $fixture= $this->fixture();
       $fixture->configure(dirname(__FILE__).'/..');
-      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__).'/.'));
+      $fixture->appendSource(new FilesystemPropertySource(dirname(__FILE__).'/.'));
 
       $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
+    }
+
+    /**
+     * Test getSources()
+     *
+     */
+    #[@test]
+    public function getSourcesInitiallyEmpty() {
+      $this->assertEquals(array(),  $this->fixture()->getSources());
+    }
+
+    /**
+     * Test getSources()
+     *
+     */
+    #[@test]
+    public function getSourcesAfterAppendingOne() {
+      $path= new FilesystemPropertySource('.');
+      $fixture= $this->fixture();
+      $fixture->appendSource($path);
+      $this->assertEquals(array($path), $fixture->getSources());
+    }
+
+    /**
+     * Test getSources()
+     *
+     */
+    #[@test]
+    public function getSourcesAfterPrependingOne() {
+      $path= new FilesystemPropertySource('.');
+      $fixture= $this->fixture();
+      $fixture->prependSource($path);
+      $this->assertEquals(array($path), $fixture->getSources());
     }
 
     /**
@@ -216,10 +296,28 @@ key="overwritten value"'));
     #[@test]
     public function appendingSourcesOnlyAddsNewSources() {
       $fixture= $this->fixture();
-      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__)));
-      $fixture->appendPath(new FilesystemPropertySource(dirname(__FILE__)));
+      $fixture->appendSource(new FilesystemPropertySource(dirname(__FILE__)));
+      $fixture->appendSource(new FilesystemPropertySource(dirname(__FILE__)));
 
       $this->assertInstanceOf('util.Properties', $fixture->getProperties('example'));
+    }
+
+    /**
+     * Test getProperties()
+     *
+     */
+    #[@test]
+    public function getExistingProperties() {
+      $this->assertTrue($this->preconfigured()->getProperties('example')->exists());
+    }
+
+    /**
+     * Test getProperties()
+     *
+     */
+    #[@test]
+    public function getNonExistantProperties() {
+      $this->assertNull($this->preconfigured()->getProperties('does-not-exist'));
     }
   }
 ?>
