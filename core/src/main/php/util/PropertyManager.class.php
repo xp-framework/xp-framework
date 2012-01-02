@@ -86,6 +86,24 @@
     }
 
     /**
+     * Set path to paths to search
+     *
+     * @param   util.PropertySource[] source
+     */
+    public function setSources(array $sources) {
+      $provider= $this->provider;
+      $this->provider= array();
+      try {
+        foreach ($sources as $source) {
+          $this->appendSource($source);
+        }
+      } catch (IllegalArgumentException $e) {
+        $this->provider= $provider;
+        throw $e;
+      }
+    }
+
+    /**
      * Prepend path to paths to search
      *
      * @param   util.PropertySource source
