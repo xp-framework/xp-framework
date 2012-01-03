@@ -18,10 +18,9 @@
   /**
    * Class for automaticly stubbing interfaces
    *
-   * @see      xp://unittest.mock.MockRepository
-   * @purpose  Unit Test
+   * @see   xp://unittest.mock.MockRepository
    */
-  class MockeryTest extends TestCase {
+  class MockRepositoryTest extends TestCase {
     private $fixture= NULL;
     
     /**
@@ -34,13 +33,16 @@
       
     /**
      * Can create.
+     *
      */
     #[@test]
     public function canCreate() {
       new MockRepository();
     }
+
     /**
      * Can create mock for empty interface
+     *
      */
     #[@test]
     public function canCreateMockForEmptyInterface() {
@@ -48,8 +50,9 @@
       $this->assertInstanceOf('net.xp_framework.unittest.tests.mock.IEmptyInterface', $object);
     }
 
-     /**
+    /**
      * Can create mock for non-empty interface
+     *
      */
     #[@test]
     public function canCreateMockForComplexInterface() {
@@ -59,6 +62,7 @@
 
     /**
      * Can create mock for non-empty interface
+     *
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function cannotCreateMockForUnknownTypes() {
@@ -67,6 +71,7 @@
 
     /**
      * Can create mock for non-empty interface
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function cannotCreateMockForNonXPClassTypes() {
@@ -75,6 +80,7 @@
 
     /**
      * Can call replay
+     *
      */
     #[@test]
     public function canCallReplay() {
@@ -84,6 +90,7 @@
 
     /**
      * Can call interface methods
+     *
      */
     #[@test]
     public function canCallInterfaceMethods() {
@@ -93,6 +100,7 @@
 
     /**
      * Can call returns() on mocked object
+     *
      */
     #[@test]
     public function canCallReturnsFluently() {
@@ -102,6 +110,7 @@
 
     /**
      * Defined value returned in replay mode
+     *
      */
     #[@test]
     public function canDefineReturnValue() {
@@ -129,14 +138,15 @@
     
     /**
      * If no expectations are left, NULL is returned
+     *
      */
     #[@test]
     public function recordedReturnsAreInCorrectOrder() {
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
-      $return1="foo";
-      $return2="bar";
-      $return3="baz";
+      $return1='foo';
+      $return2='bar';
+      $return3='baz';
       
       $object->foo()->returns($return1)->repeat(1);
       $object->foo()->returns($return2)->repeat(2);
@@ -153,6 +163,7 @@
     
     /**
      * Mockery has replayAll method                       
+     *
      */
     #[@test]
     public function canCallReplayAll() {
@@ -162,6 +173,7 @@
     /**
      * All mocks created by one mockery are set to replay mode when
      * replayAll is called.
+     *
      */
     #[@test]
     public function replayAllSetsAllMocksInReplayMode() {
@@ -181,7 +193,8 @@
     }
     
     /**
-     * "Partial" mocks are also possible.
+     * 'Partial' mocks are also possible.
+     *
      */
     #[@test]
     public function can_createMock_fromAbstractClass() {
@@ -191,6 +204,7 @@
     
     /**
      * Abstract methods should be implemented (and delegated to the handler).
+     *
      */
     #[@test]
     public function abstractMethodAreMocked() {
@@ -211,6 +225,7 @@
     /**
      * The concretely implemented methods should not be mocked if
      * overrideAll is unset.
+     *
      */
     #[@test]
     public function concreteMethodsNotMocked() {
@@ -218,16 +233,19 @@
 
       $this->assertEquals('IComplexInterface.foo', $obj->foo());
     }
+
     /**
+     * Tests mocking concrete classes
      *
      */
     #[@test]
     public function concreteClassesMocked_whenSpecifiedSo() {
       $obj= $this->fixture->createMock(
-              'net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy',
-              TRUE);
+        'net.xp_framework.unittest.tests.mock.PartiallyImplementedAbstractDummy',
+        TRUE
+      );
 
-      $foo_expect='fooooo';
+      $foo_expect= 'fooooo';
       $obj->foo()->returns($foo_expect);
       $obj->_replayMock();
 
@@ -235,13 +253,14 @@
     }
 
     /**
-     * can define return object for two calls with repeat
+     * Can define return object for two calls with repeat
+     *
      */
     #[@test]
     public function canCallRepeat() {
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
-      $expected= "myFooReturn";
+      $expected= 'myFooReturn';
       $object->foo()->returns($expected)->repeat(2);
       $this->fixture->replayAll();
 
@@ -252,13 +271,14 @@
 
 
     /**
-     * can define return object for two calls with repeat
+     * Can define return object for two calls with repeat
+     *
      */
     #[@test]
     public function canCallRepeatAny() {
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
-      $expected= "myFooReturn";
+      $expected= 'myFooReturn';
       $object->foo()->returns($expected)->repeatAny();
       $this->fixture->replayAll();
 
@@ -271,7 +291,8 @@
     }
 
     /**
-     * when recording calls, the arguments should be considered.
+     * When recording calls, the arguments should be considered.
+     *
      */
     #[@test]
     public function method_arguments_should_be_considered_in_recodring() {
@@ -299,7 +320,7 @@
       $this->fixture->replayAll();
 
       $this->assertEquals($expect, $object->bar(NULL, NULL));
-      $this->assertEquals($expect, $object->bar(34, "foo"));
+      $this->assertEquals($expect, $object->bar(34, 'foo'));
       $this->assertEquals($expect, $object->bar(23.0, new Object));
     }
 
@@ -372,7 +393,7 @@
     }
 
     /**
-     * When a expectation with "throws" is defined on a mock, then this exception
+     * When a expectation with 'throws' is defined on a mock, then this exception
      * should be thrown when the expected method is called in replay mode.
      */
     #[@test]
@@ -393,6 +414,7 @@
     
     /**
      * Test
+     *
      */
     #[@test]
     public function property_behavior_get_methods_should_return_null_by_default() {
@@ -403,8 +425,10 @@
       
       $this->assertNull($object->getFoo());
     }
-        /**
+
+    /**
      * Test
+     *
      */
     #[@test]
     public function property_behavior_get_methods_should_return_value_set_by_setter() {
@@ -415,33 +439,35 @@
       $object->setFoo(7);
       $this->assertEquals(7, $object->getFoo());
       
-      $object->setFoo("blub");
-      $this->assertEquals("blub", $object->getFoo());
+      $object->setFoo('blub');
+      $this->assertEquals('blub', $object->getFoo());
     }
 
     /**
      * Test
+     *
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function property_behavior_should_throw_exception_if_returns_is_set_before() {
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
-      $object->getFoo()->returns("x");
+      $object->getFoo()->returns('x');
       $object->getFoo()->propertyBehavior();
 
       
       $this->fixture->replayAll();
     }
     
-        /**
+    /**
      * Test
+     *
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function property_behavior_should_throw_exception_if_returns_is_set_afterwards() {
       $object= $this->fixture->createMock('net.xp_framework.unittest.tests.mock.IComplexInterface');
 
       $object->getFoo()->propertyBehavior();
-      $object->getFoo()->returns("x");
+      $object->getFoo()->returns('x');
 
       
       $this->fixture->replayAll();
@@ -449,6 +475,7 @@
     
     /**
      * Test
+     *
      */
     #[@test]
     public function property_behavior_return_value_should_be_predefinable() {
@@ -462,8 +489,9 @@
       $this->assertEquals(7, $object->getFoo());
     }
     
-        /**
+    /**
      * Test
+     *
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function property_behavior_should_only_be_applicable_to_getters_and_setters() {
