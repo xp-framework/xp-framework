@@ -4,25 +4,35 @@
  * $Id$
  */
 
-  uses();
+  /**
+   * A abstract dummy class for testing.
+   *
+   */
+  abstract class AbstractDummy extends Object {
 
-/**
- * A abstract dummy class for testing.
- *
- * @purpose Unit tests
- */
- abstract class AbstractDummy extends Object {
-
+    /**
+     * A concrete method
+     *
+     * @return  string
+     */
     public function concreteMethod() {
       return 'concreteMethod';
     }
 
+    /**
+     * An abstract method
+     *
+     */
     public abstract function abstractMethod();
     
-    public function equals($cmp) { //from Generic
+    /**
+     * Returns whether a given value is equal to this class
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
       return TRUE;
     }
-
   }
-
 ?>

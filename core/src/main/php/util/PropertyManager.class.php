@@ -178,7 +178,7 @@
       switch (sizeof($found)) {
         case 1: return $found[0];
         case 0: raise('lang.ElementNotFoundException', sprintf(
-          'Canot find properties "%s" in any of %s',
+          'Cannot find properties "%s" in any of %s',
           $name,
           xp::stringOf(array_values($this->provider))
         ));
