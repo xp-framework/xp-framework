@@ -37,6 +37,8 @@
      * Run with given args
      *
      * @param   string[] args
+     * @param   string in
+     * @param   util.PropertySource[] propertySources default array()
      * @return  int
      */
     protected function runWith(array $args, $in= '', $propertySources= array()) {
@@ -898,7 +900,7 @@
         }
 
         public function run() {
-          // Not reached
+          // Intentionally empty
         }
       }');
       $this->runWith(array($command->getClassName()), '', array(new RegisteredPropertySource('debug', Properties::fromString('[section]

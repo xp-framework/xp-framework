@@ -316,7 +316,9 @@
 
                 $section= $p->getFirstSection();
                 while ($section) {
-                  $convert->_data[$section]= $p->readSection($section);  // HACK
+                  // HACK: Properties::writeSection() would first attempts to
+                  // read the whole file, we cannot make use of it.
+                  $convert->_data[$section]= $p->readSection($section);
                   $section= $p->getNextSection();
                 }
 
