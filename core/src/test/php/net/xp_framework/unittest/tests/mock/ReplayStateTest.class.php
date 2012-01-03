@@ -11,17 +11,15 @@
   );
 
   /**
-   * TODO: Description
+   * Testcase for ReplayState
    *
-   * @see      xp://unittest.mock.Replay
-   * @purpose  Unit Test
+   * @see   xp://unittest.mock.ReplayState
    */
   class ReplayStateTest extends TestCase {
-
     private 
-      $sut=NULL,
-      $expectationMap,
-      $properties;
+      $sut            = NULL,
+      $expectationMap = NULL,
+      $properties     = NULL;
     
     /**
      * Creates the fixture;
@@ -30,12 +28,12 @@
     public function setUp() {
       $this->expectationMap= new Hashmap();
       $this->properties= new Hashmap();
-      
       $this->sut= new ReplayState($this->expectationMap, $this->properties);
     }
       
     /**
      * Cannot create without valid Hasmap.
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectationMapRequiredOnCreate() {
@@ -44,13 +42,16 @@
     
     /**
      * Cannot create without valid Hasmap.
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function propertiesRequiredOnCreate() {
       new ReplayState(new Hashmap(), NULL);
     }
+
     /**
      * Can create with valid hasmap.
+     *
      */
     #[@test]
     public function canCreate() {
@@ -59,6 +60,7 @@
     
     /**
      * Can call handle invocation.
+     *
      */
     #[@test]
     public function canHandleInvocation() {
@@ -66,7 +68,8 @@
     }
     
     /**
-     * if expectation exists, return value is returned                        
+     * If expectation exists, return value is returned
+     *
      */
     #[@test]
     public function handleInvocation_withExistingExpectation_returnExpectationsReturnValue() {
@@ -82,7 +85,8 @@
     }
 
     /**
-     * if no expectations are left, NULL is returned                       
+     * If no expectations are left, NULL is returned
+     *
      */
     #[@test]
     public function handleInvocation_missingExpectation_returnsNull() {
@@ -97,6 +101,7 @@
 
     /**
      * Repetions work in replay state.
+     *
      */
     #[@test]
     public function handleInvocation_ExpectationRepeatedTwice_returnExpectationsReturnValueTwice() {
@@ -115,9 +120,10 @@
     }
 
     /**
-
+     * Test handling invocations
+     *
      */
-  #[@test]
+    #[@test]
     public function handleInvocation_should_throw_exception_when_expectation_defines_one() {
       $expected= new XPException('foo');
       $myExpectation= new Expectation('foo');
@@ -127,13 +133,12 @@
       
       $this->expectationMap->put('foo', $expectationsList);
 
-      try { $this->sut->handleInvocation('foo', NULL); }
-      catch(XPException $e) {
+      try { 
+        $this->sut->handleInvocation('foo', NULL); 
+        $this->fail('Exception not thrown.', NULL, $expect);
+      } catch (XPException $e) {
         $this->assertEquals($expected, $e);
-        return;
       }
-
-      $this->fail('Exception not thrown.', NULL, $expect);
     }
   }
 ?>

@@ -14,7 +14,7 @@
   /**
    * Replaying state.
    *
-   * @purpose Replay expectations 
+   * @test  xp://net.xp_framework.unittest.tests.mock.ReplayStateTest
    */
   class ReplayState extends Object implements IMockState {
     private
