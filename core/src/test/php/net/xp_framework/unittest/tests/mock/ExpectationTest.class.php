@@ -31,7 +31,7 @@
      */
     #[@test]
     public function canCreate() {
-        new Expectation('method');
+      new Expectation('method');
     }
 
     /**
