@@ -4,18 +4,17 @@
  * $Id$ 
  */
 
-  uses('lang.IllegalArgumentException');
+  uses('lang.IllegalArgumentException', 'util.collections.Vector');
 
   /**
    * A stateful list for expectations.
    *
-   * @purpose
    */
   class ExpectationList extends Object {
     private
-    $list= null,
-    $called= null,
-    $unexpected= null;
+      $list      = NULL,
+      $called    = NULL,
+      $unexpected= NULL;
     
     /**
      * Constructor      
@@ -29,11 +28,11 @@
     /**
      * Adds an expectation.
      * 
-     * @param unittest.mock.Expectation expectation    
+     * @param   unittest.mock.Expectation expectation    
      */
     public function add($expectation) {
       if (!($expectation instanceof Expectation)) {
-        throw new IllegalArgumentException("Expectation expected.");
+        throw new IllegalArgumentException('Expectation expected.');
       }
       
       $this->list->add($expectation);
@@ -42,8 +41,8 @@
     /**
      * Returns the next expectation or null if no expectations left.
      *
-     * @param mixed[] args
-     * @return unittest.mock.Expectation  
+     * @param   var[] args
+     * @return  unittest.mock.Expectation  
      */
     public function getNext($args) {
       $expectation= $this->getMatching($args);
@@ -68,8 +67,8 @@
     /**
      * Returns the expectation at position $idx
      *
-     * @param int idx
-     * @return unittest.mock.Expectation  
+     * @param   int idx
+     * @return  unittest.mock.Expectation  
      */
     public function getExpectation($idx) {
       return $this->list[$idx];
@@ -78,7 +77,7 @@
     /**
      * Returns the size of the list
      *
-     * @return int  
+     * @return  int  
      */
     public function size() {
       return $this->list->size();
@@ -87,14 +86,12 @@
     /**
      * Searches for a (valid) expectation that matches the parameters
      *
-     * @param  mixed[] args
-     * @return unittest.mock.Expectation
+     * @param   var[] args
+     * @return  unittest.mock.Expectation
      */
     private function getMatching($args) {
       foreach ($this->list as $exp) {
-        if ($exp->isInPropertyBehavior() || $exp->doesMatchArgs($args)) {
-          return $exp;
-        }
+        if ($exp->isInPropertyBehavior() || $exp->doesMatchArgs($args)) return $exp;
       }
 
       return NULL;
@@ -103,8 +100,8 @@
     /**
      * Stores a call in the $unexpected list.
      *
-     * @param string method
-     * @param mixed[] args
+     * @param   string method
+     * @param   var[] args
      */
     public function fileUnexpected($method, $args) {
       $this->unexpected->add(array($method, $args));

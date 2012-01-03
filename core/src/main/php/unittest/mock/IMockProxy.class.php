@@ -7,8 +7,8 @@
   /**
    * Marker interface for mock proxy objects
    *
-   * @purpose  Proxy objects
    */
   interface IMockProxy {
+
   }
 ?>

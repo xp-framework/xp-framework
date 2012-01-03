@@ -9,7 +9,6 @@
   /**
    * Fluent interface for specifying mock expectation.
    *
-   * @purpose  Mockery
    */
   interface IMethodOptions {
     
@@ -19,7 +18,7 @@
      * @param   mixed The return value for that expectation.
      * @return  IMethodOptions
      */
-    function returns($value);
+    public function returns($value);
 
     /**
      * Specifies an exception that should be thrown on exectution of that method.
@@ -27,24 +26,24 @@
      * @param   lang.Throwable The exception that should be thrown
      * @return  IMethodOptions
      */
-    function throws(Throwable $exception);
+    public function throws(Throwable $exception);
     
     /**
      * Specifies the number of returns for that method. -1 for unlimited.
      *
      * @param int
      */
-    function repeat($count);
+    public function repeat($count);
 
     /**
      * Specifies that that method may be called an unlimited number of times.
      */
-    function repeatAny();
+    public function repeatAny();
     
     /**
      * Specifies that the given getter/setter are to be treated as property 
      * getter/setter. 
      */
-    function propertyBehavior();
+    public function propertyBehavior();
   }
 ?>

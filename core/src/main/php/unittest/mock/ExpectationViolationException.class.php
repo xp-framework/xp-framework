@@ -5,13 +5,11 @@
  */
 
 
-/**
- * Exception indicating that expectations have not been fulfilled.
- *
- * @see xp://unittest.mock.ExpectationViolationException
- * @purpose Expectation verification
- */
+  /**
+   * Exception indicating that expectations have not been fulfilled.
+   *
+   */
   class ExpectationViolationException extends XPException {
-  }
 
+  }
 ?>
