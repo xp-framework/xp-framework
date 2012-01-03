@@ -13,7 +13,7 @@
   /**
    * Class for creating mock/stub instances of arbitrary types
    *
-   * @purpose  Mocking
+   * @test  xp://net.xp_framework.unittest.tests.mock.MockeryTest
    */
   class MockRepository extends Object {
     private $mocks= array();
