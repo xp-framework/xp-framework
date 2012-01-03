@@ -37,13 +37,26 @@
      * Run with given args
      *
      * @param   string[] args
+     * @param   string in
+     * @param   util.PropertySource[] propertySources default array()
      * @return  int
      */
-    protected function runWith(array $args, $in= '') {
+    protected function runWith(array $args, $in= '', $propertySources= array()) {
+      $pm= PropertyManager::getInstance();
+      $sources= $pm->getSources();
+      $pm->setSources($propertySources);
+
       $this->in= $this->runner->setIn(new MemoryInputStream($in));
       $this->out= $this->runner->setOut(new MemoryOutputStream());
       $this->err= $this->runner->setErr(new MemoryOutputStream());
-      return $this->runner->run(new ParamString($args));
+      try {
+        $res= $this->runner->run(new ParamString($args));
+        $pm->setSources($sources);
+        return $res;
+      } catch (Throwable $t) {
+        $pm->setSources($sources);
+        throw $t;
+      }
     }
 
     /**
@@ -849,6 +862,54 @@
       $this->runWith(array($command->getClassName()));
       $this->assertOnStream($this->err, '*** Error injecting util.log.LogCategory debug');
       $this->assertOnStream($this->err, 'Logging disabled by policy');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function injectProperties() {
+      $command= newinstance('util.cmd.Command', array(), '{
+
+        #[@inject(name= "debug")]
+        public function setTrace(Properties $prop) {
+          $this->out->write("Have ", $prop->readString("section", "key"));
+        }
+
+        public function run() {
+          // Not reached
+        }
+      }');
+      $this->runWith(array('-c', dirname(__FILE__), $command->getClassName()));
+      $this->assertEquals('', $this->err->getBytes());
+      $this->assertEquals('Have value', $this->out->getBytes());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function injectCompositeProperties() {
+      $command= newinstance('util.cmd.Command', array(), '{
+
+        #[@inject(name= "debug")]
+        public function setTrace(Properties $prop) {
+          $this->out->write("Have ", $prop->readString("section", "key"));
+        }
+
+        public function run() {
+          // Intentionally empty
+        }
+      }');
+      $this->runWith(array($command->getClassName()), '', array(new RegisteredPropertySource('debug', Properties::fromString('[section]
+key=overwritten_value'
+        )),
+        new FilesystemPropertySource(dirname(__FILE__))
+      ));
+      $this->assertEquals('', $this->err->getBytes());
+      $this->assertEquals('Have overwritten_value', $this->out->getBytes());
     }
   }
 ?>

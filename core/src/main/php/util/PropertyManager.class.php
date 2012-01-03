@@ -86,6 +86,24 @@
     }
 
     /**
+     * Set path to paths to search
+     *
+     * @param   util.PropertySource[] source
+     */
+    public function setSources(array $sources) {
+      $provider= $this->provider;
+      $this->provider= array();
+      try {
+        foreach ($sources as $source) {
+          $this->appendSource($source);
+        }
+      } catch (IllegalArgumentException $e) {
+        $this->provider= $provider;
+        throw $e;
+      }
+    }
+
+    /**
      * Prepend path to paths to search
      *
      * @param   util.PropertySource source
@@ -162,7 +180,7 @@
         case 0: raise('lang.ElementNotFoundException', sprintf(
           'Canot find properties "%s" in any of %s',
           $name,
-          xp::stringOf($this->provider)
+          xp::stringOf(array_values($this->provider))
         ));
         default: return new CompositeProperties($found);
       }
