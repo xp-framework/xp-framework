@@ -15,14 +15,14 @@
    * @see   xp://unittest.mock.Expectation
    */
   class ExpectationTest extends TestCase {
-    private $sut = NULL;
+    private $sut= NULL;
 
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-      $this->sut = new Expectation('method');
+      $this->sut= new Expectation('method');
     }
 
     /**
