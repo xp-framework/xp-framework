@@ -4,17 +4,19 @@
  * $Id$
  */
 
-  uses('unittest.mock.ExpectationList',
-       'unittest.mock.Expectation');
+  uses(
+    'unittest.mock.ExpectationList',
+    'unittest.mock.Expectation'
+  );
   
-/**
- * Test cases for the ExpectationList class
- *
- * @purpose Unit tests
- */
+  /**
+   * Test cases for the ExpectationList class
+   *
+   * @see   xp://unittest.mock.ExpectationList
+   */
   class ExpectationListTest extends TestCase {
-
     private $sut= NULL;
+
     /**
      * Creates the fixture;
      *
@@ -25,6 +27,7 @@
       
     /**
      * Can create.
+     *
      */
     #[@test]
     public function canCreate() {
@@ -33,6 +36,7 @@
 
     /**
      * getNext should exist.          
+     *
      */
     #[@test]
     public function canCallGetNext() {
@@ -41,6 +45,7 @@
     
     /**
      * getNext should return NULL after initialization.                  
+     *
      */
     #[@test]
     public function getNext_returnNullByDefault() {
@@ -49,6 +54,7 @@
     
     /**
      * add method should exist.            
+     *
      */
     #[@test]
     public function canAddExpectation() {
@@ -57,6 +63,7 @@
     
     /**
      * Added expectations should be returned by getNext.
+     *
      */
     #[@test]
     public function getNextReturnsAddedExpectation() {
@@ -68,6 +75,7 @@
     
     /**
      * If no more expectations left, getNext should return NULL.
+     *
      */
     #[@test]
     public function getNextReturns_should_return_last_expectation_over_and_over() {
@@ -81,6 +89,7 @@
     
     /**
      * Null shall never be added.
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function cannotAddNull() {
@@ -89,6 +98,7 @@
     
     /**
      * Another object shall never be added.
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function cannotAddObjects() {
@@ -98,6 +108,7 @@
 
     /**
      * getNext returns an expectation is returned twice if repeat is set to 1
+     *
      */
     #[@test]
     public function getNext_SameExpectationTwice_whenRepeatIs2() {
@@ -112,6 +123,7 @@
 
     /**
      * ExpectationList should provide access to the left over expectations
+     *
      */
     #[@test]
     public function should_provide_access_to_left_expectations() {
@@ -122,8 +134,10 @@
       $this->assertEquals(1, $list->size());
       $this->assertEquals($expect, $list[0]);
     }
+
     /**
      * ExpectationList should provide access to the "used" expectations
+     *
      */
     #[@test]
     public function should_provide_access_to_used_expectations() {
@@ -137,9 +151,9 @@
     }
 
     /**
-
+     * Test
      */
-  #[@test]
+    #[@test]
     public function expectation_should_be_moved_to_calledList_after_usage() {
       $expect= new Expectation('method');
       $this->sut->add($expect);
@@ -154,5 +168,4 @@
       $this->assertEquals($expect, $list[0]);
     }
   }
-
 ?>
