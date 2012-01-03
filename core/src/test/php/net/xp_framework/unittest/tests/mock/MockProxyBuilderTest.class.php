@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: ProxyTest.class.php 14483 2010-04-17 14:30:29Z friebe $
+ * $Id$
  */
 
   uses(
