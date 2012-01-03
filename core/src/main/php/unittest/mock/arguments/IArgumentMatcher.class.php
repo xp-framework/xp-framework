@@ -4,17 +4,18 @@
  * $Id$ 
  */
 
-/**
- * Interface for argument matchers
- *
- * @purpose  Argument matching in expectations
- */
+  /**
+   * Interface for argument matchers
+   *
+   */
   interface IArgumentMatcher {
+
     /**
      * Checks whether the provided parameter does match a certain criteria.
      * 
-     * @param value mixed
-     * @return bool
+     * @param   var value
+     * @return  bool
      */
-    function matches($value);
+    public function matches($value);
   }
+?>
