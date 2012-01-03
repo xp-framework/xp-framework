@@ -1,16 +1,14 @@
 <?php
-  /* This interface is part of the XP framework
-   *
-   * $Id$
-   */
-
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
 
   /**
    * Dummy interface used in other tests
    *
-   * @see      xp://unittest.mock.MockRepository
-   * @purpose  Unit Test
    */
   interface IEmptyInterface {
+
   }
 ?>
