@@ -4,22 +4,23 @@
  * $Id$
  */
  
-  uses('unittest.mock.RecordState',
-       'util.Hashmap');
+  uses(
+    'unittest.mock.RecordState',
+    'util.Hashmap'
+  );
 
   /**
-   * TODO: Description
+   * Testcase for RecordState
    *
-   * @see      xp://unittest.mock.RecordState
-   * @purpose  Unit Test
+   * @see   xp://unittest.mock.RecordState
    */
   class RecordStateTest extends TestCase {
     private 
-      $sut= NULL,
-      $expectationMap= NULL;
+      $sut            = NULL,
+      $expectationMap = NULL;
     
     /**
-     * Creates the fixture;
+     * Creates the fixture
      *
      */
     public function setUp() {
@@ -29,6 +30,7 @@
       
     /**
      * Cannot create without valid Hasmap.
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectationMapRequiredOnCreate() {
@@ -37,12 +39,15 @@
     
     /**
      * Can create with valid hasmap.
+     *
      */
     #[@test]
     public function canCreate() {
       new RecordState(new Hashmap());
     }
+
     /**
+     *
      * Can call handleInvocation.
      */
     #[@test]
@@ -51,7 +56,8 @@
     }
 
     /**
-     * a new expectation is created when calling handleInvocation
+     * A new expectation is created when calling handleInvocation
+     *
      */
     #[@test]
     public function newExpectationCreatedOnHandleInvocation() {
@@ -63,7 +69,8 @@
     }
 
     /**
-     * a new expectation is created when calling handleInvocation
+     * A new expectation is created when calling handleInvocation
+     *
      */
     #[@test]
     public function newExpectationCreatedOnHandleInvocation_twoDifferentMethods() {
@@ -74,7 +81,8 @@
     }
 
     /**
-     * a new expectation is created when calling handleInvocation
+     * A new expectation is created when calling handleInvocation
+     *
      */
     #[@test]
     public function newExpectationCreatedOn_EACH_HandleInvocationCall() {
@@ -89,6 +97,7 @@
 
     /**
      * The expectations arguments should be set in handleInvocation.
+     *
      */
     #[@test]
     public function method_call_should_set_arguments() {

@@ -17,7 +17,7 @@
   /**
    * Record expectations on a mock object.
    *
-   * @purpose Mocking
+   * @test  xp://net.xp_framework.unittest.tests.mock.RecordStateTest
    */
   class RecordState extends Object implements IMockState {
     private $expectationMap = NULL;
