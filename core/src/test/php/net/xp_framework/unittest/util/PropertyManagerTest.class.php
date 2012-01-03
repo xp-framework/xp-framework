@@ -15,7 +15,7 @@
    *
    * @see   xp://util.PropertyManager
    */
-  class PropertyManagerTest extends TestCase{
+  class PropertyManagerTest extends TestCase {
 
     /**
      * Creates a fixrture
@@ -307,17 +307,93 @@ key="overwritten value"'));
      *
      */
     #[@test]
-    public function getExistingProperties() {
-      $this->assertTrue($this->preconfigured()->getProperties('example')->exists());
+    public function getExistantProperties() {
+      $p= $this->preconfigured()->getProperties('example');
+      $this->assertInstanceOf('util.Properties', $p);
+      $this->assertTrue($p->exists(), 'Should return an existant Properties instance');
+
     }
 
     /**
      * Test getProperties()
      *
      */
-    #[@test]
+    #[@test, @expect('lang.ElementNotFoundException')]
     public function getNonExistantProperties() {
-      $this->assertNull($this->preconfigured()->getProperties('does-not-exist'));
+      $this->preconfigured()->getProperties('does-not-exist');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function setSource() {
+      $fixture= $this->fixture();
+      $fixture->setSources(array());
+
+      $this->assertEquals(array(), $fixture->getSources());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function setSingleSource() {
+      $source= new FilesystemPropertySource('.');
+      $fixture= $this->fixture();
+      $fixture->setSources(array($source));
+
+      $this->assertEquals(array($source), $fixture->getSources());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function setSources() {
+      $one= new FilesystemPropertySource('.');
+      $two= new FilesystemPropertySource('..');
+
+      $fixture= $this->fixture();
+      $fixture->setSources(array($one, $two));
+
+      $this->assertEquals(array($one, $two), $fixture->getSources());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function setIllegalSourceKeepsPreviousStateAndThrowsException() {
+      $one= new FilesystemPropertySource('.');
+
+      $fixture= $this->fixture();
+      try {
+        $fixture->setSources(array($one, NULL));
+        $this->fail('No exception thrown', NULL, 'lang.IllegalArgumentException');
+      } catch (IllegalArgumentException $expected) {
+      }
+
+      $this->assertEquals(array(), $fixture->getSources());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function passEmptySourcesResetsList() {
+      $one= new FilesystemPropertySource('.');
+
+      $fixture= $this->fixture();
+      $fixture->appendSource($one);
+
+      $fixture->setSources(array());
+      $this->assertEquals(array(), $fixture->getSources());
     }
   }
 ?>
