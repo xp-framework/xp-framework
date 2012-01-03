@@ -1,8 +1,7 @@
 <?php
-
 /* This class is part of the XP framework
  *
- * $Id$
+ * $Id$ 
  */
 
   uses('unittest.mock.IMockState',

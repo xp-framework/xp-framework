@@ -1,8 +1,9 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
 
-  /* This interface is part of the XP framework
-   *
-   */
   uses('lang.Throwable');
   
   /**

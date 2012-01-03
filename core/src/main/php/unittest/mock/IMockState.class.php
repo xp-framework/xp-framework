@@ -1,8 +1,8 @@
 <?php
-
-  /* This interface is part of the XP framework
-   *
-   */
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
 
   /**
    * Interface for mock states (record/replay/verify)

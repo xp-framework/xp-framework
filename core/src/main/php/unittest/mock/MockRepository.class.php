@@ -1,8 +1,8 @@
 <?php
-
-  /* This class is part of the XP framework
-   *
-   */
+/* This class is part of the XP framework
+ *
+ * $Id$ 
+ */
 
   uses(
     'lang.Type',
