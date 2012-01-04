@@ -159,7 +159,7 @@
      * Returns a string representation of this object, by default anonymizing
      * the password.
      *
-     * @param   boolean raw default FALSE
+     * @param   bool raw default FALSE
      * @return  string
      */
     public function asString($raw= FALSE) {
