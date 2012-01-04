@@ -51,7 +51,7 @@
    * @ext      sqlite
    * @see      http://sqlite.org/
    * @see      http://php.net/sqlite3
-   * @purpose  Database connection
+   * @test     xp://net.xp_framework.unittest.rdbms.sqlite3.SQLite3ConnectionTest
    */
   class SQLite3Connection extends DBConnection {
 

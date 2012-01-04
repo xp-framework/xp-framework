@@ -10,10 +10,9 @@
   );
 
   /**
-   * @TODO: Description and path of Sqlite3ConnectionTest
+   * Testcase for rdbms.sqlite3.SQLite3Connection
    *
-   * @purpose  unittest
-   * @see      xp://path.to.testing.class
+   * @see      xp://rdbms.sqlite3.SQLite3Connection
    */
   class SQLite3ConnectionTest extends TestCase {
 
