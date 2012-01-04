@@ -9,15 +9,25 @@
   /**
    * An abstract class for tests
    *
-   * @purpose Mockery tests
    */
   abstract class PartiallyImplementedAbstractDummy extends Object implements IComplexInterface {
-    public static function aStaticFunction($param1) { return $param1; }
+
+    /**
+     * Static method
+     *
+     * @param   var param1
+     * @return  var
+     */
+    public static function aStaticFunction($param1) { 
+      return $param1; 
+    }
+
     /**
      * Constructor
+     *
      */
-    public function __construct($param1, $param2="default") {
-
+    public function __construct($param1, $param2= 'default') {
+      // Empty
     }
 
     /**
@@ -26,11 +36,12 @@
      * @return string
      */
     public function foo()  {
-      return "IComplexInterface.foo";
+      return 'IComplexInterface.foo';
     }
 
     /**
      * Abstract method introduced in this class.
+     *
      */
     public abstract function baz($a);
 
@@ -40,7 +51,7 @@
      * @return string
      */
     public function foobar() {
-      return "PartiallyImplementedAbstractDummy.foobar";
+      return 'PartiallyImplementedAbstractDummy.foobar';
     }
   }
 ?>

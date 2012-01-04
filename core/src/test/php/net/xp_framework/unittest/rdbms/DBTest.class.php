@@ -18,15 +18,24 @@
    * @purpose  Unit Test
    */
   class DBTest extends TestCase {
-    public
-      $conn = NULL;
+    protected $conn = NULL;
  
-     /**
-     * Static initializer
+    /**
+     * Register mock connection
      *
      */  
-    public static function __static() {
+    #[@beforeClass]
+    public static function registerMockConnection() {
       DriverManager::register('mock', XPClass::forName(MOCK_CONNECTION_CLASS));
+    }
+
+    /**
+     * Remove mock connection
+     *
+     */
+    #[@afterClass]
+    public static function removeMockConnection() {
+      DriverManager::remove('mock');
     }
      
     /**

@@ -35,6 +35,7 @@
       $server     = NULL,
       $terminate  = FALSE,
       $tcpnodelay = FALSE;
+
     /**
      * Constructor
      *
