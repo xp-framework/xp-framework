@@ -39,7 +39,7 @@
      */
     #[@test]
     public function connect_localhost() {
-      $conn= new SQLite3Connection(new DSN('sqlite+3://localhost/:memory:'));
+      $conn= new SQLite3Connection(new DSN('sqlite+3://./:memory:'));
       $conn->connect();
     }
 

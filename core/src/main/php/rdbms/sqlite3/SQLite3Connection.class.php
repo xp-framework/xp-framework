@@ -89,8 +89,8 @@
       // Sanity check: SQLite(3) works local: either loads a database from a file
       // or from memory, so connecting to remote hosts is not supported, thus
       // checked here. You may pass "localhost", though
-      if ('' != $this->dsn->getHost() && 'localhost' != $this->dsn->getHost()) {
-        throw new SQLConnectException('sqlite+3:// only supports local databases', $this->dsn);
+      if ('' != $this->dsn->getHost() && '.' != $this->dsn->getHost()) {
+        throw new SQLConnectException('sqlite+3:// connecting to remote database not supported', $this->dsn);
       }
 
       $this->handle= new SQLite3(
@@ -231,22 +231,6 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
-    }
-
-    /**
-     * Method
-     *
-     */
-    public function toString() {
-      return sprintf(
-        '%s(->%s://%s/%s%s%s)',
-        $this->getClassName(),
-        $this->dsn->getDriver(),
-        $this->dsn->getHost(),
-        $this->dsn->getDatabase(),
-        $this->tz ? ', tz='.$this->tz->toString() : '',
-        $this->handle ? ', conn='.get_resource_type($this->handle).' #'.(int)$this->handle : ''
-      );
     }
   }
 ?>
