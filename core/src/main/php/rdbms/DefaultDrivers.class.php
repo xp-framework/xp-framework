@@ -41,7 +41,7 @@
       self::$impl['pgsql']= array('rdbms.pgsql.PostgreSQLConnection');
 
       // SQLite support
-      self::$impl['sqlite']= array('rdbms.sqlite.SQLiteConnection');
+      self::$impl['sqlite']= array('rdbms.sqlite3.SQLite3Connection', 'rdbms.sqlite.SQLiteConnection');
 
       // Interbase support
       self::$impl['ibase']= array('rdbms.ibase.InterBaseConnection');
