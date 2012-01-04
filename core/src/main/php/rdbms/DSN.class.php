@@ -152,12 +152,25 @@
      * @return  string
      */
     public function toString() {
-      return sprintf(
-        '%s@(%s://%s%s%s/%s%s)',
-        $this->getClassName(),
+      return $this->getClassName().'@('.$this->asString().')';
+    }
+
+    /**
+     * Returns a string representation of this object, by default anonymizing
+     * the password.
+     *
+     * @param   boolean raw default FALSE
+     * @return  string
+     */
+    public function asString($raw= FALSE) {
+      $pass= (TRUE === $raw
+        ? ':'.$this->url->getPassword()
+        : ($this->url->getPassword() ? ':********' : '')
+      );
+      return sprintf('%s://%s%s%s/%s%s',
         $this->url->getScheme(),
-        ($this->url->getUser() 
-          ? $this->url->getUser().($this->url->getPassword() ? ':'.str_repeat('*', strlen($this->url->getPassword())) : '').'@'
+        ($this->url->getUser()
+          ? $this->url->getUser().$pass.'@'
           : ''
         ),
         $this->url->getHost(),
