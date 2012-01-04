@@ -82,17 +82,21 @@
       if ($this->handle instanceof SQLite3) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
-      if (!($this->flags & DB_PERSISTENT)) {
-        $this->handle= new SQLite3(
-          urldecode($this->dsn->getDatabase()), 
-          SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE
-        );
-      } else {
-        $this->handle= new SQLite3(
-          urldecode($this->dsn->getDatabase()),
-          SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE
-        );
+      if (($this->flags & DB_PERSISTENT)) {
+        throw new SQLConnectException('sqlite+3:// does not support persistent connections.', $this->dsn);
       }
+
+      // Sanity check: SQLite(3) works local: either loads a database from a file
+      // or from memory, so connecting to remote hosts is not supported, thus
+      // checked here. You may pass "localhost", though
+      if ('' != $this->dsn->getHost() && 'localhost' != $this->dsn->getHost()) {
+        throw new SQLConnectException('sqlite+3:// only supports local databases', $this->dsn);
+      }
+
+      $this->handle= new SQLite3(
+        urldecode($this->dsn->getDatabase()),
+        SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE
+      );
 
       if (!$this->handle instanceof SQLite3) {
         throw new SQLConnectException($err, $this->dsn);
@@ -137,6 +141,7 @@
      * @return  var identity value
      */
     public function identity($field= NULL) {
+      if (!$this->handle instanceof SQLite3) throw new SQLStateException('Not connected');
       $i= $this->handle->lastInsertRowID();
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $i));
       return $i;
@@ -156,7 +161,7 @@
      *
      * @param   string sql
      * @param   bool buffered default TRUE
-     * @return  rdbms.sqlite.SQLiteResultSet or FALSE to indicate failure
+     * @return  rdbms.sqlite.SQLite3ResultSet or FALSE to indicate failure
      * @throws  rdbms.SQLException
      */
     protected function query0($sql, $buffered= TRUE) {
@@ -226,6 +231,22 @@
      */
     public function commit($name) { 
       return $this->query('commit transaction xp_%c', $name);
+    }
+
+    /**
+     * Method
+     *
+     */
+    public function toString() {
+      return sprintf(
+        '%s(->%s://%s/%s%s%s)',
+        $this->getClassName(),
+        $this->dsn->getDriver(),
+        $this->dsn->getHost(),
+        $this->dsn->getDatabase(),
+        $this->tz ? ', tz='.$this->tz->toString() : '',
+        $this->handle ? ', conn='.get_resource_type($this->handle).' #'.(int)$this->handle : ''
+      );
     }
   }
 ?>

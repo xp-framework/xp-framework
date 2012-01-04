@@ -22,15 +22,7 @@
      *
      */
     public function setUp() {
-      $this->conn= new Sqlite3Connection(new DSN('sqlite3:///:memory:?autoconnect=1'));;
-    }
-
-    /**
-     * Tear down the this test case.
-     *
-     */
-    public function tearDown() {
-      // Enter code here or delete this function
+      $this->conn= new Sqlite3Connection(new DSN('sqlite+3:///:memory:?autoconnect=1'));
     }
 
     /**
@@ -40,6 +32,36 @@
     #[@test]
     public function connect() {
       $this->conn->connect();
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function connect_localhost() {
+      $conn= new SQLite3Connection(new DSN('sqlite+3://localhost/:memory:'));
+      $conn->connect();
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test @throws('rdbms.SQLConnectException')]
+    public function connectPersistent_is_not_supported() {
+      $this->conn->setFlags(DB_PERSISTENT);
+      $this->conn->connect();
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('rdbms.SQLConnectException')]
+    public function connect_does_not_support_remote_hosts() {
+      $conn= new SQLite3Connection(new DSN('sqlite+3://some.host/:memory:'));
+      $conn->connect();
     }
 
     /**
@@ -115,6 +137,16 @@
     }
 
     /**
+     * Unbuffered queries are not supported
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function open_throws_exception() {
+      $this->conn->connect();
+      $this->conn->open('select 1');
+    }
+
+    /**
      * Test
      *
      */
@@ -174,5 +206,14 @@
       $this->conn->connect();
       $this->conn->query('select 1');
     }
-  }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('rdbms.SQLStateException')]
+    public function identity_throws_exception_when_not_connected() {
+      $this->conn->identity();
+    }
+   }
 ?>
