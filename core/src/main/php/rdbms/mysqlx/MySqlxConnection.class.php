@@ -39,11 +39,10 @@
       parent::__construct($dsn);
       $this->formatter= new StatementFormatter($this, new MysqlDialect());
 
-      // Compatibility with MSQL client library: If "localhost" is supplied
-      // as host name, use a local socket. To force using TCP/IP, use the
-      // value "127.0.0.1" instead.
+      // Use local socket (unix socket on Un*x systems, named pipe on Windows)
+      // if "." is supplied as hostname
       $host= $this->dsn->getHost();
-      if ('localhost' === $host) {
+      if ('.' === $host) {
         $sock= LocalSocket::forName(PHP_OS)->newInstance();
       } else {
         $sock= new Socket($host, $this->dsn->getPort(3306));

@@ -7,11 +7,13 @@
   uses('io.File');
 
   /**
-   * Local socket: If "localhost" is supplied as host name to a MySqlx
-   * connection, a local socket is used depending on the operating system. 
-   * To force using TCP/IP, use the value "127.0.0.1" instead.
+   * Local socket: If "." is supplied as host name to a MySqlx connection,
+   * a local socket is used depending on the operating system. 
    *
-   * This exist for compatibility reasons with the MySQL client library!
+   * Note:
+   * This is different from the MySQL client libraries! They use local 
+   * sockets if "localhost" is supplied and can only be forced to use
+   * TCP/IP by suppliying the value "127.0.0.1" instead.
    *
    * @see     http://dev.mysql.com/doc/refman/5.1/en/option-files.html
    */
