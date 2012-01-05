@@ -34,7 +34,7 @@
     /**
      * Parse my.cnf file and return sections
      *
-     * @param   io.File ini
+     * @param   io.File cnf
      * @return  [:[:string]] sections
      */
     protected function parse($cnf) {
