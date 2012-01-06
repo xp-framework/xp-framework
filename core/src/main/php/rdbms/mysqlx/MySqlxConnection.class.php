@@ -43,7 +43,7 @@
       // if "." is supplied as hostname
       $host= $this->dsn->getHost();
       if ('.' === $host) {
-        $sock= LocalSocket::forName(PHP_OS)->newInstance();
+        $sock= LocalSocket::forName(PHP_OS)->newInstance($this->dsn->getProperty('socket', NULL));
       } else {
         $sock= new Socket($host, $this->dsn->getPort(3306));
       }

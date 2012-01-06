@@ -52,14 +52,18 @@
     /**
      * Creates the socket instance
      *
+     * @param   string socket default NULL
      * @return  peer.Socket
      */
-    public function newInstance() {
-      if (!($fd= fopen($name= $this->locate(), 'r+'))) {
-        $e= new IOException('Cannot open pipe "'.$name.'"');
+    public function newInstance($socket= NULL) {
+      if (NULL === $socket) $socket= $this->locate();
+
+      if (!($fd= fopen($socket, 'r+'))) {
+        $e= new IOException('Cannot open pipe "'.$socket.'"');
         xp::gc(__FILE__);
         throw $e;
       }
+
       return new Socket(NULL, NULL, $fd);
     }
   }

@@ -52,10 +52,11 @@
     /**
      * Creates the socket instance
      *
+     * @param   string socket default NULL
      * @return  peer.Socket
      */
-    public function newInstance() {
-      $sock= new BSDSocket($this->locate(), -1);
+    public function newInstance($socket= NULL) {
+      $sock= new BSDSocket(NULL === $socket ? $this->locate() : $socket, -1);
       $sock->setDomain(AF_UNIX);
       $sock->setType(SOCK_STREAM);
       $sock->setProtocol(0);

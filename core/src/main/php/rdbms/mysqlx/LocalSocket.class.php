@@ -23,13 +23,14 @@
      * Returns the implementation for the given operating system.
      *
      * @param   string os operating system name, e.g. PHP_OS
+     * @param   string socket default NULL
      * @return  rdbms.mysqlx.LocalSocket
      */
-    public static function forName($os) {
+    public static function forName($os, $socket= NULL) {
       if (0 === strncasecmp($os, 'Win', 3)) {
-        return XPClass::forName('rdbms.mysqlx.NamedPipe')->newInstance();
+        return XPClass::forName('rdbms.mysqlx.NamedPipe')->newInstance($socket);
       } else {
-        return XPClass::forName('rdbms.mysqlx.UnixSocket')->newInstance();
+        return XPClass::forName('rdbms.mysqlx.UnixSocket')->newInstance($socket);
       }
     }
 
@@ -61,8 +62,9 @@
     /**
      * Creates the socket instance
      *
+     * @param   string socket default NULL
      * @return  peer.Socket
      */
-    public abstract function newInstance();
+    public abstract function newInstance($socket= NULL);
   }
 ?>
