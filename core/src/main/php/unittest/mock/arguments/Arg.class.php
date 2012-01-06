@@ -8,13 +8,14 @@
     'unittest.mock.arguments.IArgumentMatcher',
     'unittest.mock.arguments.AnyMatcher',
     'unittest.mock.arguments.TypeMatcher',
+    'unittest.mock.arguments.DynamicMatcher',
     'unittest.mock.MockProxyBuilder'
   );
-
 
   /**
    * Convenience class providing common argument matchers.
    *
+   * @test  xp://net.xp_framework.unittest.tests.mock.ArgumentMatcherTest
    */
   class Arg extends Object {
     private static $any;

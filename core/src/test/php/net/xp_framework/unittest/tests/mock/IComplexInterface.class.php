@@ -9,16 +9,42 @@
   /**
    * Dummy interface used in other tests
    *
-   * @see      xp://unittest.mock.MockRepository
-   * @purpose  Unit Test
    */
   interface IComplexInterface extends IEmptyInterface {
-    function foo();
-    function bar($a, $b);
+
+    /**
+     * Foo
+     *
+     */
+    public function foo();
+
+    /**
+     * Bar
+     *
+     * @param   var a
+     * @param   var b
+     */
+    public function bar($a, $b);
     
-    function getFoo();
-    function setFoo($value);
+    /**
+     * Foo get accessor
+     *
+     * @return  var
+     */
+    public function getFoo();
+
+    /**
+     * Foo set accessor
+     *
+     * @param   var value
+     */
+    public function setFoo($value);
     
-    function fooWithTypeHint(IEmptyInterface $arg);
+    /**
+     * Foo with type hint
+     *
+     * @param   net.xp_framework.unittest.tests.mock.IEmptyInterface arg
+     */
+    public function fooWithTypeHint(IEmptyInterface $arg);
   }
 ?>

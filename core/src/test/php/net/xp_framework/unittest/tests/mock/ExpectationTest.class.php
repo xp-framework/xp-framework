@@ -4,37 +4,39 @@
  * $Id$
  */
 
-
   uses(
     'unittest.mock.Expectation',
     'unittest.mock.arguments.Arg'
   );
 
   /**
-   * Test cases for
+   * Test cases for the Expectation class
+   *
+   * @see   xp://unittest.mock.Expectation
    */
   class ExpectationTest extends TestCase {
-
-    private $sut = NULL;
+    private $sut= NULL;
 
     /**
      * Creates the fixture;
      *
      */
     public function setUp() {
-        $this->sut = new Expectation('method');
+      $this->sut= new Expectation('method');
     }
 
     /**
      * Can create.
+     *
      */
     #[@test]
     public function canCreate() {
-        new Expectation('method');
+      new Expectation('method');
     }
 
     /**
      * By default the return value is NULL
+     *
      */
     #[@test]
     public function returnValue_isNull_byDefault() {
@@ -43,15 +45,17 @@
     
     /**
      * The return value can be set
+     *
      */
     #[@test]
     public function returnValue_canSetGet() {
-      $this->sut->setReturn("foo");
-      $this->assertEquals("foo", $this->sut->getReturn());
+      $this->sut->setReturn('foo');
+      $this->assertEquals('foo', $this->sut->getReturn());
     }
     
     /**
      * The repeat count is 0 by default
+     *
      */
     #[@test]
     public function repeat_isMinus1_byDefault() {
@@ -60,6 +64,7 @@
 
     /**
      * The repeat count can be set
+     *
      */
     #[@test]
     public function repeat_canSetGet() {
@@ -69,6 +74,7 @@
 
     /**
      * The actual call count is 0 by default
+     *
      */
     #[@test]
     public function actualCalls_is0_byDefault() {
@@ -77,6 +83,7 @@
 
     /**
      * The repeat count can be set
+     *
      */
     #[@test]
     public function incActualCalls_increasesBy1() {
@@ -86,6 +93,7 @@
 
     /**
      * CanRepeat is TRUE by default
+     *
      */
     #[@test]
     public function canRepeat_isTrueOnce_ByDefault() {
@@ -93,12 +101,12 @@
       $this->assertTrue($this->sut->canRepeat());
       $this->sut->incActualCalls();
       $this->assertFalse($this->sut->canRepeat());
-      
     }
 
     /**
      * CanRepeat should be TRUE if repeat is set to -1,
      * even after incActualCalls
+     *
      */
     #[@test]
     public function canRepeat_isTrue_withRepeatMinus1() {
@@ -115,7 +123,8 @@
     }
 
     /**
-     * CanRepeat with repeat==1 returns 2 times TRUE and then FALSE
+     * CanRepeat with repeat == 1 returns 2 times TRUE and then FALSE
+     *
      */
     #[@test]
     public function canRepeat_withNumericRepeat2_TrueTwice() {
@@ -129,6 +138,7 @@
 
     /**
      * set/getArguments
+     *
      */
     #[@test]
     public function setArguments_should_set_arguments() {
@@ -140,6 +150,7 @@
 
     /**
      * doesMatchArgs exists
+     *
      */
     #[@test]
     public function cancall_doesMatchArgs() {
@@ -148,6 +159,7 @@
 
     /**
      * The number of arguments is relevant for matching.
+     *
      */
     #[@test]
     public function argument_count_should_be_considered_when_matching_args() {
@@ -160,8 +172,9 @@
 
     /**
      * Types are relevant for matching arguments.
+     *
      */
-   #[@test]
+    #[@test]
     public function doesMatch_should_return_false_on_differentTypes() {
       $this->sut->setArguments(array('1'));
 
@@ -170,15 +183,18 @@
 
     /**
      * Equality is of course relevant for argument matching.
+     *
      */
-  #[@test]
+    #[@test]
     public function doesMatch_should_return_true_if_args_are_equal() {
       $this->sut->setArguments(array('1', 2, 3.0, '4'));
 
       $this->assertTrue($this->sut->doesMatchArgs(array('1', 2, 3.0, '4')));
     }
+
     /**
      * Unequal arguments should not match.
+     *
      */
     #[@test]
     public function doesMatch_should_return_false_if_args_are_unequal() {
@@ -189,6 +205,7 @@
 
     /**
      * NULL is also a valid argument.
+     *
      */
     #[@test]
     public function doesMatch_should_work_with_null() {
@@ -199,19 +216,21 @@
 
     /**
      * Arg::any() should work for any arguments
+     *
      */
     #[@test]
     public function doesMatch_should_work_with_generic_AnyMatcher() {
       $this->sut->setArguments(array(Arg::any()));
 
       $this->assertTrue($this->sut->doesMatchArgs(array(NULL)));
-      $this->assertTrue($this->sut->doesMatchArgs(array("test")));
+      $this->assertTrue($this->sut->doesMatchArgs(array('test')));
       $this->assertTrue($this->sut->doesMatchArgs(array(42)));
       $this->assertTrue($this->sut->doesMatchArgs(array(new Object())));
     }
 
     /**
-     * Set's the exception that is to be thrown on execution
+     * Sets the exception that is to be thrown on execution
+     *
      */
     #[@test]
     public function setExceptions_should_set_exception() {
@@ -221,6 +240,5 @@
 
       $this->assertEquals($expected, $actual);
     }
-
   }
 ?>
