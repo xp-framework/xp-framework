@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed sqlite scheme to default to SQLite3 instead of SQLite2.
+  http://news.planet-xp.net/article/432/2012/01/06/
+  (kiesel)
 - Made util.PropertyManager::getProperties() throw lang.ElementNotFoundException
   in case not a single Properties could be provided by any PropertySource. See
   issue #95
@@ -51,6 +54,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Merged pull request #104 - Add support for SQLite3
+  (kiesel)
 - Merged pull request #99 - Propertymanager paths CRUD
   (friebe)
 - Made database drivers implementations selectable - see pull request #79
