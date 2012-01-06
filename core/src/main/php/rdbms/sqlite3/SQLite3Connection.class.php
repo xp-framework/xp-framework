@@ -52,6 +52,7 @@
    * @see      http://sqlite.org/
    * @see      http://php.net/sqlite3
    * @test     xp://net.xp_framework.unittest.rdbms.sqlite3.SQLite3ConnectionTest
+   * @test     xp://net.xp_framework.unittest.rdbms.sqlite3.SQLite3CreationTest
    */
   class SQLite3Connection extends DBConnection {
 
@@ -93,13 +94,11 @@
         throw new SQLConnectException('sqlite+3:// connecting to remote database not supported', $this->dsn);
       }
 
-      $this->handle= new SQLite3(
-        urldecode($this->dsn->getDatabase()),
-        SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE
-      );
-
-      if (!$this->handle instanceof SQLite3) {
-        throw new SQLConnectException($err, $this->dsn);
+      $database= urldecode($this->dsn->getDatabase());
+      try {
+        $this->handle= new SQLite3($database, SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE);
+      } catch (Exception $e) {
+        throw new SQLConnectException($e->getMessage().': '.$database, $this->dsn);
       }
       
       $this->getFormatter()->dialect->registerCallbackFunctions($this->handle);
