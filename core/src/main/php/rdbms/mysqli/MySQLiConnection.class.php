@@ -62,12 +62,28 @@
       if (is_object($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      // Connect via local sockets if "." is passed. This will not work on
+      // Windows with the mysqlnd extension (see PHP bug #48082: "mysql_connect
+      // does not work with named pipes"). For mysqlnd, we default to mysqlx
+      // anyways, so this works transparently.
+      $host= $this->dsn->getHost();
+      if ('.' === $host) {
+        $sock= $this->dsn->getProperty('socket', NULL);
+        if (0 === strncasecmp(PHP_OS, 'Win', 3)) {
+          $connect= '.';
+          if (NULL !== $sock) $sock= substr($sock, 9);   // 9 = strlen("\\\\.\\pipe\\")
+        } else {
+          $connect= 'localhost';
+        }
+      }
+
       $this->handle= mysqli_connect(
-        ($this->flags & DB_PERSISTENT ? 'p:' : '').$this->dsn->getHost(), 
+        ($this->flags & DB_PERSISTENT ? 'p:' : '').$connect,
         $this->dsn->getUser(), 
         $this->dsn->getPassword(),
         $this->dsn->getDatabase(),
-        $this->dsn->getPort(3306)
+        $this->dsn->getPort(3306),
+        $sock
       );
 
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));

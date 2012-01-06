@@ -59,15 +59,36 @@
       if (is_resource($this->handle)) return TRUE;  // Already connected
       if (!$reconnect && (FALSE === $this->handle)) return FALSE;    // Previously failed connecting
 
+      // Connect via local sockets if "." is passed. This will not work on
+      // Windows with the mysqlnd extension (see PHP bug #48082: "mysql_connect
+      // does not work with named pipes"). For mysqlnd, we default to mysqlx
+      // anyways, so this works transparently.
+      $host= $this->dsn->getHost();
+      $ini= NULL;
+      if ('.' === $host) {
+        $sock= $this->dsn->getProperty('socket', NULL);
+        if (0 === strncasecmp(PHP_OS, 'Win', 3)) {
+          $connect= '.';
+          if (NULL !== $sock) {
+            $ini= ini_set('mysql.default_socket');
+            ini_set('mysql.default_socket', substr($sock, 9)); // 9 = strlen("\\\\.\\pipe\\")
+          }
+        } else {
+          $connect= NULL === $sock ? 'localhost' : ':'.$sock;
+        }
+      } else {
+        $connect= $host.':'.$this->dsn->getPort(3306);
+      }
+
       if ($this->flags & DB_PERSISTENT) {
         $this->handle= mysql_pconnect(
-          $this->dsn->getHost().':'.$this->dsn->getPort(3306), 
+          $connect,
           $this->dsn->getUser(), 
           $this->dsn->getPassword()
         );
       } else {
         $this->handle= mysql_connect(
-          $this->dsn->getHost().':'.$this->dsn->getPort(3306), 
+          $connect,
           $this->dsn->getUser(), 
           $this->dsn->getPassword(),
           ($this->flags & DB_NEWLINK)
@@ -75,7 +96,7 @@
       }
       
       $this->_obs && $this->notifyObservers(new DBEvent(__FUNCTION__, $reconnect));
-
+      $ini && ini_set('mysql.default_socket', $ini);
       if (!is_resource($this->handle)) {
         $e= new SQLConnectException('#'.mysql_errno().': '.mysql_error(), $this->dsn);
         xp::gc(__FILE__);
