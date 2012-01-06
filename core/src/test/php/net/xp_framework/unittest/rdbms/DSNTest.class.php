@@ -39,6 +39,42 @@
     }
 
     /**
+     * Test
+     *
+     */
+    #[@test]
+    public function asStringRemovesPassword() {
+      $this->assertEquals(
+        'mysql://user:********@localhost/?log=default',
+        create(new DSN('mysql://user:foobar@localhost/?log=default'))->asString()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function asStringKeepsPasswordIfRequested() {
+      $this->assertEquals(
+        'mysql://user:foobar@localhost/?log=default',
+        create(new DSN('mysql://user:foobar@localhost/?log=default'))->asString(TRUE)
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function asStringSkipsUserEvenWithRaw() {
+      $this->assertEquals(
+        'mysql://localhost/?log=default',
+        create(new DSN('mysql://localhost/?log=default'))->asString(TRUE)
+      );
+    }
+
+    /**
      * Tests the getDriver() method
      *
      */
