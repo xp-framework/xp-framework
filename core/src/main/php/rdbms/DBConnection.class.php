@@ -13,6 +13,7 @@
     'rdbms.SQLDeadlockException',
     'rdbms.DBEvent',
     'rdbms.DSN',
+    'rdbms.DriverManager',
     'rdbms.ResultSet',
     'util.log.Logger',
     'util.Observable',
