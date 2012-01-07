@@ -27,6 +27,7 @@
       } else {
         self::$lookup= XPClass::forName('rdbms.tds.FreeTdsLookup')->newInstance();
       }
+      DriverManager::register('sybase+x', new XPClass(__CLASS__));
     }
 
     /**
