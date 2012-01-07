@@ -6,14 +6,14 @@
 
   uses(
     'net.xp_framework.unittest.peer.server.AbstractServerTest',
-    'net.xp_framework.unittest.peer.server.ExtendedTestingProtocol'
+    'net.xp_framework.unittest.peer.server.AcceptTestingProtocol'
   );
 
   /**
-   * TestCase for extended server protocol
+   * TestCase for server protocol with accept handler
    *
    */
-  class ExtendedServerTest extends AbstractServerTest {
+  class AcceptingServerTest extends AbstractServerTest {
     
     /**
      * Starts server in background
@@ -21,7 +21,7 @@
      */
     #[@beforeClass]
     public static function startServer() {
-      parent::startServerWith('net.xp_framework.unittest.peer.server.ExtendedTestingProtocol');
+      parent::startServerWith('net.xp_framework.unittest.peer.server.AcceptTestingProtocol');
     }
 
     /**
