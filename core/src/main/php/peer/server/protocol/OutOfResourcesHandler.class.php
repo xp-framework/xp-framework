@@ -20,7 +20,7 @@
      * Handle out of resources error
      *
      * @param   peer.Socket socket
-     * @param   lang.XPException e
+     * @param   lang.XPException reason
      */
     public function handleOutOfResources($socket, $reason);
   }
