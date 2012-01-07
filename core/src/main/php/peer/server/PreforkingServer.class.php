@@ -125,7 +125,7 @@
         }
 
         // Handle accepted socket
-        if ($this->protocol instanceof ExtendedServerProtocol) {
+        if ($this->protocol instanceof SocketAcceptHandler) {
           if (!$this->protocol->handleAccept($m)) {
             $m->close();
             continue;

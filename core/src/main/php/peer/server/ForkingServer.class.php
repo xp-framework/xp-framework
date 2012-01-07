@@ -33,7 +33,7 @@
         if (!$m) continue;
 
         // Handle accepted socket
-        if ($this->protocol instanceof ExtendedServerProtocol) {
+        if ($this->protocol instanceof SocketAcceptHandler) {
           if (!$this->protocol->handleAccept($m)) {
             $m->close();
             continue;
@@ -46,7 +46,7 @@
 
           // If the protocol can handle this, be friendly, else simply
           // close the socket. There's not much we can do here!
-          if ($this->protocol instanceof ExtendedServerProtocol) {
+          if ($this->protocol instanceof OutOfResourcesHandler) {
             $this->protocol->handleOutOfResources($m, new SystemException('Could not fork', -1));
           }
           $m->close();

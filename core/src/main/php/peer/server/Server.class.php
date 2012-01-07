@@ -26,6 +26,7 @@
    *
    * @ext      sockets
    * @see      xp://peer.ServerSocket
+   * @see      xp://net.xp_framework.unittest.peer.server.ServerTest
    * @purpose  TCP/IP Server
    */
   class Server extends Object {
@@ -175,7 +176,7 @@
             }
 
             // Handle accepted socket
-            if ($this->protocol instanceof ExtendedServerProtocol) {
+            if ($this->protocol instanceof SocketAcceptHandler) {
               if (!$this->protocol->handleAccept($m)) {
                 $m->close();
                 continue;
