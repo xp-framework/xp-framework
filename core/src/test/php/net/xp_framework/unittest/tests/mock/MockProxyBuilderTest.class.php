@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id: ProxyTest.class.php 14483 2010-04-17 14:30:29Z friebe $
+ * $Id$
  */
 
   uses(
@@ -211,80 +211,87 @@
       $this->assertEquals(array('foo'), $this->handler->invocations['overloaded_1']);
       $this->assertEquals(array('foo', 'bar'), $this->handler->invocations['overloaded_2']);
     }
+
     /**
      * A proxy class should be instance of IProxy
+     *
      */
     #[@test]
     public function proxyClass_implements_IMockProxy() {
       $proxy= $this->proxyClassFor(array($this->iteratorClass));
       $interfaces= $proxy->getInterfaces();
       $this->assertTrue(in_array(XPClass::forName('unittest.mock.IMockProxy'), $interfaces));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function concrete_methods_should_not_be_changed_by_default() {
+      $proxyBuilder= new MockProxyBuilder();
+      $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+        array(),
+        XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
+      );
+
+      $proxy= $class->newInstance($this->handler);
+      $this->assertEquals('concreteMethod', $proxy->concreteMethod());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function abstract_methods_should_delegated_to_handler() {
+      $proxyBuilder= new MockProxyBuilder();
+      $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+        array(),
+        XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
+      );
+
+      $proxy= $class->newInstance($this->handler);
+      $proxy->abstractMethod();
+
+      $this->assertArray($this->handler->invocations['abstractMethod_0']);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function with_overwriteAll_abstract_methods_should_delegated_to_handler() {
+      $proxyBuilder= new MockProxyBuilder();
+      $proxyBuilder->setOverwriteExisting(TRUE);
+      $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+        array(),
+        XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
+      );
+
+      $proxy= $class->newInstance($this->handler);
+      $proxy->concreteMethod();
+      $this->assertArray($this->handler->invocations['concreteMethod_0']);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function reserved_methods_should_not_be_overridden() {
+      $proxyBuilder= new MockProxyBuilder();
+      $proxyBuilder->setOverwriteExisting(TRUE);
+      $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
+        array(),
+        XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy')
+      );
+
+      $proxy= $class->newInstance($this->handler);
+
+      $proxy->equals(new Object());
+      $this->assertFalse(isset($this->handler->invocations['equals_1']));
+    }
   }
-
-  /**
-   * TODO: description
-   */
-  #[@test]
-  public function concrete_methods_should_not_be_changed_by_default() {
-    $proxyBuilder= new MockProxyBuilder();
-    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
-      array(),
-      XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy'));
-
-    $proxy= $class->newInstance($this->handler);
-    $this->assertEquals('concreteMethod', $proxy->concreteMethod());
-  }
-
-  /**
-   * TODO: description
-   */
-  #[@test]
-  public function abstract_methods_should_delegated_to_handler() {
-    $proxyBuilder= new MockProxyBuilder();
-    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
-      array(),
-      XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy'));
-
-    $proxy= $class->newInstance($this->handler);
-    $proxy->abstractMethod();
-
-    $this->assertArray($this->handler->invocations['abstractMethod_0']);
-  }
-
-  /**
-   * TODO: description
-   */
-  #[@test]
-  public function with_overwriteAll_abstract_methods_should_delegated_to_handler() {
-    $proxyBuilder= new MockProxyBuilder();
-    $proxyBuilder->setOverwriteExisting(TRUE);
-    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
-      array(),
-      XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy'));
-
-    $proxy= $class->newInstance($this->handler);
-    $proxy->concreteMethod();
-    $this->assertArray($this->handler->invocations['concreteMethod_0']);
-  }
-
-  /**
-   * TODO: description
-   */
-  #[@test]
-  public function reserved_methods_should_not_be_overridden() {
-    $proxyBuilder= new MockProxyBuilder();
-    $proxyBuilder->setOverwriteExisting(TRUE);
-    $class= $proxyBuilder->createProxyClass(ClassLoader::getDefault(),
-      array(),
-      XPClass::forName('net.xp_framework.unittest.tests.mock.AbstractDummy'));
-
-    $proxy= $class->newInstance($this->handler);
-
-    $proxy->equals(new Object());
-    $this->assertFalse(isset($this->handler->invocations['equals_1']));
-  }
-
-
-}
 ?>
-

@@ -163,7 +163,7 @@
       $parent= getmypid();
       $pid= pcntl_fork();
       if (-1 == $pid) {     // Cannot fork
-        throw new SystemException('Cannot fork');
+        throw new SystemException('Cannot fork', 255);
       } else if ($pid) {     // Parent
         $this->running= TRUE;
         $this->_id= $pid;

@@ -1,48 +1,51 @@
 <?php
-
 /* This class is part of the XP framework
  *
  * $Id$
  */
 
-  uses('unittest.mock.IMockState',
-       'lang.IllegalArgumentException',
-       'util.Hashmap',
-       'util.collections.Vector');
+  uses(
+    'unittest.mock.IMockState',
+    'lang.IllegalArgumentException',
+    'util.Hashmap',
+    'util.collections.Vector'
+  );
 
   /**
    * Replaying state.
    *
-   * @purpose Replay expectations 
+   * @test  xp://net.xp_framework.unittest.tests.mock.ReplayStateTest
    */
   class ReplayState extends Object implements IMockState {
     private
-      $unexpectedCalls= NULL,
-      $expectationMap= NULL,
-      $properties= NULL;
+      $unexpectedCalls = NULL,
+      $expectationMap  = NULL,
+      $properties      = NULL;
         
     /**
      * Constructor
      *
-     * @param Hashmap expectationsMap
+     * @param   util.Hashmap expectationsMap
+     * @param   util.Hashmap properties
      */
     public function  __construct($expectationMap, $properties) {
-      if(!($expectationMap instanceof Hashmap)) {
+      if (!($expectationMap instanceof Hashmap)) {
         throw new IllegalArgumentException('Invalid expectation map passed.');
       }
-      
-      if(!($properties instanceof Hashmap)) {
+      if (!($properties instanceof Hashmap)) {
         throw new IllegalArgumentException('Invalid properties passed.');
       }
       
       $this->expectationMap= $expectationMap;
       $this->properties= $properties;
-      
       $this->unexpectedCalls= new Hashmap();
-      
       $this->buildUpProperties();
     }
     
+    /**
+     * Build properties
+     *
+     */
     private function buildUpProperties() {
       foreach($this->expectationMap->keys() as $method) {
         $expList= $this->expectationMap->get($method);
@@ -62,20 +65,26 @@
       }
     }
     
+    /**
+     * Checks for behavior mode
+     *
+     * @param   var list
+     * @return  bool
+     */
     private function checkForBehaviorMode($list) {
       $seenBehaviorMode= FALSE;
-      for($i= 0; $i< $list->size(); ++$i) {
+      for($i= 0; $i < $list->size(); ++$i) {
         $exp= $list->getExpectation($i);
         
-        if($seenBehaviorMode) {
+        if ($seenBehaviorMode) {
           throw new IllegalStateException('Invalid expectations definition '.$exp->toString().'. Property behavior has been applied.');
         }
         
-        if($exp->isInPropertyBehavior() && $i>0) {
+        if ($exp->isInPropertyBehavior() && $i>0) {
           throw new IllegalStateException('Invalid expectations definition '.$exp->toString().'. Cannot switch to property behavior as expecations have been defined already.');
         }
         
-        if($exp->isInPropertyBehavior()) {
+        if ($exp->isInPropertyBehavior()) {
           $seenBehaviorMode= TRUE;
         }
       }
@@ -120,6 +129,17 @@
       return $nextExpectation->getReturn();      
     }
     
+    /**
+     * Checks whether method is a property accessor, which is the case
+     * when its name...
+     * <ul>
+     *   <li>...starts with either "get" or "set"</li>
+     *   <li>...is named like any of the properties known to this state</li>
+     * </ul>
+     *
+     * @param   string method
+     * @return  bool
+     */
     private function isPropertyMethod($method) {
       $prefix= substr($method, 0, 3);
       $suffix= substr($method, 3);

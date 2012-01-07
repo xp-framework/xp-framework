@@ -6,12 +6,14 @@
 
   uses('xp.unittest.sources.AbstractSource', 'io.File');
 
+  $package= 'xp.unittest.sources';
+
   /**
    * Source that dynamically creates testcases
    *
    * @purpose  Source implementation
    */
-  class EvaluationSource extends xp·unittest·sources·AbstractSource {
+  class xp·unittest·sources·EvaluationSource extends xp·unittest·sources·AbstractSource {
     protected static
       $uniqId    = 0;
 

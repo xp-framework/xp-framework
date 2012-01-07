@@ -7,13 +7,15 @@
   uses('unittest.mock.MethodOptions');
 
   /**
-   * Tests for the MethodOptions class.
+   * Tests for the MethodOptions class
+   *
+   * @see   xp://unittest.mock.MethodOptions
    */
   class MethodOptionsTest extends TestCase {
-
     private $sut= NULL;
+
     /**
-     * Creates the fixture;
+     * Creates the fixture
      *
      */
     public function setUp() {
@@ -22,6 +24,7 @@
       
     /**
      * Test
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function expectationRequiredOnCreate() {
@@ -30,6 +33,7 @@
 
     /**
      * Test
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function nameRequiredOnCreate() {
@@ -38,6 +42,7 @@
     
     /**
      * Can call returns.
+     *
      */
     #[@test]
     public function canCallReturns() {
@@ -46,12 +51,13 @@
 
     /**
      * When returns is called, the expectation's return value should be set too.
+     *
      */
     #[@test]
     public function returns_valueSetInExpectation() {
       $expectation=new Expectation('foo');
-      $sut= new MethodOptions($expectation, "foo");
-      $expected=new Object();
+      $sut= new MethodOptions($expectation, 'foo');
+      $expected= new Object();
 
       $sut->returns($expected);
 
@@ -60,24 +66,26 @@
 
     /**
      * Test
+     *
      */
     #[@test]
     public function setPropertyBehavior_sets_expectation_to_prop_behavior() {
       $expectation=new Expectation('setFoo');
-      $sut= new MethodOptions($expectation, "setFoo");
+      $sut= new MethodOptions($expectation, 'setFoo');
       $sut->propertyBehavior();
 
       $this->assertTrue($expectation->isInPropertyBehavior());
     }
     
     /**
-     * when throws is used, the expectations exception property should be set
+     * When throws is used, the expectations exception property should be set
      * to the passed value.
+     *
      */
     #[@test]
     public function throws_sets_the_exception_property_of_the_expectation() {
       $expectation=new Expectation('foo');
-      $sut= new MethodOptions($expectation, "foo");
+      $sut= new MethodOptions($expectation, 'foo');
       $expected=new XPException('foo');
 
       $sut->throws($expected);
@@ -87,11 +95,12 @@
     
     /**
      * Test
+     *
      */
     #[@test, @expect('lang.IllegalStateException')]
     public function setPropertyBehavior_throws_an_exception_if_no_setter_or_getter() {
       $expectation=new Expectation('blabla');
-      $sut= new MethodOptions($expectation, "blabla");
+      $sut= new MethodOptions($expectation, 'blabla');
       $sut->propertyBehavior();
     }
   }

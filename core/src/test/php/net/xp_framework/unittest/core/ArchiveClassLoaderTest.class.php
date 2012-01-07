@@ -47,7 +47,7 @@
      */
     protected function testClassName($prefix= '') {
       $classname= $prefix.'ClassUsedForArchiveClassLoader'.ucfirst($this->name).'Test';
-      if (class_exists($classname)) {
+      if (class_exists($classname, FALSE)) {
         throw new IllegalStateException('Class '.$this->classname.' may not exist!');
       }
       return $classname;

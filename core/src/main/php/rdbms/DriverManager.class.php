@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('rdbms.DBConnection', 'rdbms.DriverNotSupportedException');
+  uses('rdbms.DBConnection', 'rdbms.DefaultDrivers', 'rdbms.DriverNotSupportedException');
 
   /**
    * Manages database drivers
@@ -70,61 +70,16 @@
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.rdbms.DriverManagerTest
-   * @purpose  Manager
    */
   class DriverManager extends Object {
-    protected static 
-      $instance     = NULL;
-
-    public
-      $drivers  = array();
+    protected static $instance= NULL;
+    public $drivers= array();
+    protected $lookup= array();
+    protected $provider= NULL;
 
     static function __static() {
       self::$instance= new self();
-
-      // MySQL support: Use mysql extension by default, mysqli otherwise. Never use mysqlnd!
-      if (extension_loaded('mysqlnd')) {
-        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqlx.MySqlxConnection');
-      } else if (extension_loaded('mysql')) {
-        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysql.MySQLConnection');
-      } else if (extension_loaded('mysqli')) {
-        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqli.MySQLiConnection');
-      } else {
-        self::$instance->drivers['mysql']= XPClass::forName('rdbms.mysqlx.MySqlxConnection');
-      }
-
-      // PostgreSQL support
-      if (extension_loaded('pgsql')) {
-        self::$instance->drivers['pgsql']= XPClass::forName('rdbms.pgsql.PostgreSQLConnection');
-      }
-      
-      // SQLite support
-      if (extension_loaded('sqlite')) {
-        self::$instance->drivers['sqlite']= XPClass::forName('rdbms.sqlite.SQLiteConnection');
-      }
-      
-      // Sybase support: Prefer sybase_ct over mssql
-      if (extension_loaded('sybase_ct')) {
-        self::$instance->drivers['sybase']= XPClass::forName('rdbms.sybase.SybaseConnection');
-      } else if (extension_loaded('mssql')) {
-        self::$instance->drivers['sybase']= XPClass::forName('rdbms.mssql.MsSQLConnection');
-      } else {
-        self::$instance->drivers['sybase']= XPClass::forName('rdbms.tds.SybasexConnection');
-      }
-      
-      // MSSQL support: Prefer SQLsrv from Microsoft over mssql 
-      if (extension_loaded('sqlsrv')) {
-        self::$instance->drivers['mssql']= XPClass::forName('rdbms.sqlsrv.SqlSrvConnection');
-      } else if (extension_loaded('mssql')) {
-        self::$instance->drivers['mssql']= XPClass::forName('rdbms.mssql.MsSQLConnection');
-      } else {
-        self::$instance->drivers['mssql']= XPClass::forName('rdbms.tds.MsSQLxConnection');
-      }
-      
-      // Interbase support
-      if (extension_loaded('interbase')) {
-        self::$instance->drivers['ibase']= XPClass::forName('rdbms.ibase.InterBaseConnection');
-      } 
+      self::$instance->provider= new DefaultDrivers(NULL);
     }
     
     /**
@@ -165,6 +120,17 @@
         ));
       }
       self::$instance->drivers[$name]= $class;
+      self::$instance->lookup= array();
+    }
+    
+    /**
+     * Remove a driver
+     *
+     * @param   string name
+     */
+    public static function remove($name) {
+      unset(self::$instance->drivers[$name]);
+      self::$instance->lookup= array();
     }
     
     /**
@@ -175,15 +141,50 @@
      * @throws  rdbms.DriverNotSupportedException
      */
     public static function getConnection($str) {
-      $dsn= new DSN($str);
-      $id= $dsn->getDriver();
-      
-      // Lookup driver by identifier.
-      if (!isset(self::$instance->drivers[$id])) {
-        throw new DriverNotSupportedException('No driver registered for '.$id.' - is the library loaded?');
+      $dsn= new DSN((string)$str);
+      $driver= $dsn->getDriver();
+
+      // Lookup driver by identifier, if no direct match is found, choose from 
+      // the drivers with the same driver identifier. If no implementation can
+      // be found that way, ask available rdbms.DriverImplementationsProviders 
+      if (!isset(self::$instance->lookup[$driver])) {
+        if (isset(self::$instance->drivers[$driver])) {
+          self::$instance->lookup[$driver]= self::$instance->drivers[$driver];
+        } else {
+          $provider= self::$instance->provider;
+
+          // Normalize driver, then query providers for available implementations
+          if (FALSE === ($p= strpos($driver, '+'))) {
+            $family= $driver;
+            $search= $driver.'+';
+          } else {
+            $family= substr($driver, 0, $p);
+            $search= $driver;
+          }
+          foreach ($provider->implementationsFor($family) as $impl) {
+            XPClass::forName($impl);
+          }
+
+          // Not every implementation may be registered (e.g., due to a missing 
+          // prerequisite), so now search the registered implementations for a 
+          // suitable driver.
+          $l= strlen($search);
+          do {
+            foreach (self::$instance->drivers as $name => $class) {
+              if (0 !== strncmp($name, $search, $l)) continue;
+              self::$instance->lookup[$driver]= $class;
+              break 2;
+            }
+            throw new DriverNotSupportedException(sprintf(
+              'No driver registered for "%s" or provided by any of %s',
+              $driver,
+              xp::stringOf($provider)
+            ));
+          } while (0);
+        }
       }
       
-      return self::$instance->drivers[$id]->newInstance($dsn);
+      return self::$instance->lookup[$driver]->newInstance($dsn);
     }
   }
 ?>
