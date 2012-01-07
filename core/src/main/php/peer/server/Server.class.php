@@ -24,10 +24,9 @@
    *   }
    * </code>
    *
-   * @ext      sockets
-   * @see      xp://peer.ServerSocket
-   * @see      xp://net.xp_framework.unittest.peer.server.ServerTest
-   * @purpose  TCP/IP Server
+   * @ext   sockets
+   * @see   xp://peer.ServerSocket
+   * @test  xp://net.xp_framework.unittest.peer.server.ServerTest
    */
   class Server extends Object {
     public
