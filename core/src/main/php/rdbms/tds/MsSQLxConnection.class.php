@@ -16,6 +16,10 @@
    * @see   xp://rdbms.tds.TdsConnection
    */
   class MsSQLxConnection extends TdsConnection {
+
+    static function __static() {
+      DriverManager::register('mssql+x', new XPClass(__CLASS__));
+    }
     
     /**
      * Returns dialect
