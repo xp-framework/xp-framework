@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('peer.server.Server', 'lang.RuntimeError');
+  uses('peer.server.Server', 'lang.SystemException');
 
   /**
    * Forking TCP/IP Server
@@ -32,12 +32,23 @@
         }
         if (!$m) continue;
 
+        // Handle accepted socket
+        if ($this->protocol instanceof SocketAcceptHandler) {
+          if (!$this->protocol->handleAccept($m)) {
+            $m->close();
+            continue;
+          }
+        }
+
         // Have connection, fork child
         $pid= pcntl_fork();
         if (-1 == $pid) { // Could not fork
 
-          // Send client an error and disconnect
-          $m->write("500 Server busy\r\n");
+          // If the protocol can handle this, be friendly, else simply
+          // close the socket. There's not much we can do here!
+          if ($this->protocol instanceof OutOfResourcesHandler) {
+            $this->protocol->handleOutOfResources($m, new SystemException('Could not fork', -1));
+          }
           $m->close();
 
           // Wait until one child terminates, then forking might work again

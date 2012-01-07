@@ -54,6 +54,12 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Merged pull request #103 - Extended Server Protocol, allowing to handle
+  accepting sockets and out of resources situations.
+  (friebe)
+- Merged pull request #105 - MySQL local sockets, adding the possibility
+  to use local sockets (Unix sockets on Un*x, Named Pipes on Windows).
+  (friebe)
 - Merged pull request #104 - Add support for SQLite3
   (kiesel)
 - Merged pull request #99 - Propertymanager paths CRUD

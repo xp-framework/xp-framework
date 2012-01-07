@@ -15,6 +15,7 @@
    * @see      xp://rdbms.sqlite3.SQLite3Connection
    */
   class SQLite3ConnectionTest extends TestCase {
+    protected $conn= NULL;
 
     /**
      * Set up this test
@@ -22,45 +23,6 @@
      */
     public function setUp() {
       $this->conn= new Sqlite3Connection(new DSN('sqlite+3:///:memory:?autoconnect=1'));
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function connect() {
-      $this->conn->connect();
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function connect_localhost() {
-      $conn= new SQLite3Connection(new DSN('sqlite+3://./:memory:'));
-      $conn->connect();
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test @throws('rdbms.SQLConnectException')]
-    public function connectPersistent_is_not_supported() {
-      $this->conn->setFlags(DB_PERSISTENT);
-      $this->conn->connect();
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test, @expect('rdbms.SQLConnectException')]
-    public function connect_does_not_support_remote_hosts() {
-      $conn= new SQLite3Connection(new DSN('sqlite+3://some.host/:memory:'));
-      $conn->connect();
     }
 
     /**
