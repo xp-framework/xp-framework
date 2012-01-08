@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed "localhost" local sockets magic from MySQL implementations
+  http://news.planet-xp.net/article/434/2012/01/08/
+  (friebe, kiesel)
 - Changed sqlite scheme to default to SQLite3 instead of SQLite2.
   http://news.planet-xp.net/article/432/2012/01/06/
   (kiesel)

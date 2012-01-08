@@ -76,6 +76,8 @@
         } else {
           $connect= NULL === $sock ? 'localhost' : ':'.$sock;
         }
+      } else if ('localhost' === $host) {
+        $connect= '127.0.0.1:'.$this->dsn->getPort(3306);   // Force TCP/IP
       } else {
         $connect= $host.':'.$this->dsn->getPort(3306);
       }
