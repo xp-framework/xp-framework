@@ -49,7 +49,7 @@
      * Test handleError() is invoked
      *
      */
-    #[@test]
+    #[@test, @ignore('Fragile test, dependant on OS / platform and implementation vagaries')]
     public function error() {
       $this->connect();
       $this->conn->write("SEND\n");
