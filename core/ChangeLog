@@ -57,6 +57,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added tests for rdbms.Statement class
+  (hinckel)
 - Merged pull request #103 - Extended Server Protocol, allowing to handle
   accepting sockets and out of resources situations.
   (friebe)

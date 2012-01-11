@@ -24,6 +24,7 @@
    *  }
    * </code>
    *
+   * @test     xp://net.xp_framework.unittest.rdbms.StatementTest
    * @purpose  Expression
    */
   class Statement extends Object implements SQLExpression {
