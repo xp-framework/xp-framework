@@ -39,8 +39,8 @@
      *
      */
     #[@test]
-    public function valueOfIsGeneric() {
-      $this->assertTrue($this->fixture->getMethod('valueOf')->isGeneric());
+    public function valueOfIsGenericDefinition() {
+      $this->assertTrue($this->fixture->getMethod('valueOf')->isGenericDefinition());
     }
 
     /**

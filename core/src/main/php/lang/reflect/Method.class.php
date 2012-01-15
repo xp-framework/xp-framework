@@ -41,7 +41,7 @@
      *
      * @return  bool
      */
-    public function isGeneric() {
+    public function isGenericDefinition() {
       return NULL !== $this->generic;
     }
     
