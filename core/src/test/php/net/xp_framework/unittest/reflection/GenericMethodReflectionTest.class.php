@@ -89,5 +89,14 @@
     public function valueOfGenericComponents() {
       $this->assertEquals(array('T'), $this->fixture->getMethod('valueOf')->genericComponents());
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function genericComponents() {
+      $this->fixture->getMethod('equals')->genericComponents();
+    }
   }
 ?>
