@@ -54,6 +54,7 @@
     /**
      * Returns whether this is a generic method
      *
+     * @throws  lang.IllegalStateException if method is not generic
      * @return  bool
      */
     public function genericComponents() {
