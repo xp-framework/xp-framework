@@ -16,17 +16,23 @@
    */
   class Method extends Routine {
     protected $generic= NULL;
+    protected $typeargs= NULL;
   
     /**
      * Creates a new method instance
      *
-     * @param   string name
+     * @param   string class
      * @param   php.ReflectionMethod reflect
+     * @param   lang.Type[] typeargs default NULL
      */
-    public function __construct($name, $reflect) {
-      parent::__construct($name, $reflect);
+    public function __construct($class, $reflect, $typeargs= NULL) {
+      parent::__construct($class, $reflect);
       if ('«»' === substr($this->_reflect->name, -2)) {
-        $this->generic= $this->getAnnotation('generic', 'self');
+        if (NULL === $typeargs) {
+          $this->generic= $this->getAnnotation('generic', 'self');
+        } else {
+          $this->typeargs= $typeargs;
+        }
       }
     }
   
@@ -61,12 +67,42 @@
       if (!$this->generic) {
         throw new IllegalStateException('Method '.$this->_reflect->name.' is not generic');
       }
+
       $components= array();
       foreach (explode(',', $this->generic) as $name) {
         $components[]= ltrim($name);
       }
       return $components;
     }
+    
+    /**
+     * Reflectively creates a new type
+     *
+     * @param   lang.Type[] arguments
+     * @return  lang.reflect.GenericMethod
+     * @throws  lang.IllegalStateException if this class is not a generic definition
+     * @throws  lang.IllegalArgumentException if number of arguments does not match components
+     */
+    public function newGenericMethod(array $arguments) {
+      if (!$this->generic) {
+        throw new IllegalStateException('Method '.$this->_reflect->name.' is not generic');
+      }
+
+      $components= $this->genericComponents();
+      $cs= sizeof($components);
+      if ($cs != sizeof($arguments)) {
+        throw new IllegalArgumentException(sprintf(
+          'Method %s expects %d component(s) <%s>, %d argument(s) given',
+          $this->getName(),
+          $cs,
+          implode(', ', $components),
+          sizeof($arguments)
+        ));
+      }
+      
+      return new self($this->_class, $this->_reflect, $arguments);
+    }
+    
 
     /**
      * Returns this method's parameters
@@ -142,6 +178,11 @@
           xp::nameOf($this->_class),
           xp::typeOf($obj)
         ));
+      }
+      
+      // Prepend type args for generic method
+      if (NULL !== $this->typeargs) {
+        $args= array_merge($this->typeargs, $args);
       }
       
       // Check modifiers. If caller is an instance of this class, allow
