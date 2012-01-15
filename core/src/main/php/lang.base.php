@@ -656,6 +656,16 @@
   }
   // }}}
 
+  // {{{ var invoke(string spec, var* args)
+  //     Invokes a static method dynamically.
+  function invoke($spec) {
+    $args= func_get_args();
+    array_shift($args);
+    sscanf($spec, '%[^:]::%[^$]', $class, $method);
+    return call_user_func_array(array($class, $method), $args);
+  }
+  // }}}
+
   // {{{ lang.Type typeof(mixed arg)
   //     Returns type
   function typeof($arg) {
