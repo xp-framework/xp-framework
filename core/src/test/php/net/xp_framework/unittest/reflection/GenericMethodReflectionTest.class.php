@@ -98,5 +98,15 @@
     public function genericComponents() {
       $this->fixture->getMethod('equals')->genericComponents();
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function valueOfInvocation() {
+      $method= $this->fixture->getMethod('valueOf')->newGenericMethod(array(Primitive::$INT));
+      $this->assertEquals(1, $method->invoke($this->fixture->newInstance(), array('i:1;')));
+    }
   }
 ?>
