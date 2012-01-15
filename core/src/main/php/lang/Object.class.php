@@ -92,6 +92,9 @@
     public function __call($name, $args) {
       if ("\7" === $name{0}) {
         return call_user_func_array(array($this, substr($name, 1)), $args);
+      } else if (FALSE !== ($p= strpos($name, '<'))) {
+        array_unshift($args, Type::forName(substr($name, $p+ 1, -1)));
+        return call_user_func_array(array($this, substr($name, 0, $p).'«»'), $args);
       }
       $t= debug_backtrace();
       $i= 1; $s= sizeof($t);

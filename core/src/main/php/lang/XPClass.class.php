@@ -143,7 +143,7 @@
      * @return  lang.Object 
      * @throws  lang.IllegalAccessException in case this class cannot be instantiated
      */
-    public function newInstance() {
+    public function newInstance($value= NULL) {
       if ($this->_reflect->isInterface()) {
         throw new IllegalAccessException('Cannot instantiate interfaces ('.$this->name.')');
       } else if ($this->_reflect->isAbstract()) {
@@ -193,7 +193,7 @@
       }
       return $list;
     }
-
+    
     /**
      * Gets a method by a specified name.
      *
@@ -203,8 +203,12 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getMethod($name) {
-      if ($this->hasMethod($name)) {
+      if (0 === strncmp('__', $name, 2)) {
+        return FALSE;
+      } else if ($this->_reflect->hasMethod($name)) {
         return new Method($this->_class, $this->_reflect->getMethod($name));
+      } else if ($this->_reflect->hasMethod($g= $name.'«»')) {
+        return new Method($this->_class, $this->_reflect->getMethod($g));
       }
       raise('lang.ElementNotFoundException', 'No such method "'.$name.'" in class '.$this->name);
     }
@@ -221,10 +225,13 @@
      * @return  bool TRUE if method exists
      */
     public function hasMethod($method) {
-      return ((0 === strncmp('__', $method, 2))
-        ? FALSE
-        : $this->_reflect->hasMethod($method)
-      );
+      if (0 === strncmp('__', $method, 2)) {
+        return FALSE;
+      } else if ($this->_reflect->hasMethod($method)) {
+        return TRUE;
+      } else if ($this->_reflect->hasMethod($method.'«»')) {
+        return TRUE;
+      }
     }
     
     /**
@@ -347,11 +354,11 @@
     /**
      * Cast a given object to the class represented by this object
      *
-     * @param   lang.Generic expression
+     * @param   var expression
      * @return  lang.Generic the given expression
      * @throws  lang.ClassCastException
      */
-    public function cast(Generic $expression= NULL) {
+    public function cast($expression) {
       if (NULL === $expression) {
         return xp::null();
       } else if (is($this->name, $expression)) {
