@@ -54,11 +54,13 @@
      *
      */
     public static function __callStatic($name, $args) {
-      if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
-      }
       $t= debug_backtrace();
+      if ("\7" === $name{0}) {
+        return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
+      } else if (FALSE !== ($p= strpos($name, '<'))) {
+        array_unshift($args, Type::forName(substr($name, $p+ 1, -1)));
+        return call_user_func_array(array($t[1]['class'], substr($name, 0, $p).'«»'), $args);
+      }
       throw new Error('Call to undefined method '.$t[1]['class'].'::'.$name);
     }
 
