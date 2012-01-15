@@ -203,12 +203,12 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getMethod($name) {
-      if (0 === strncmp('__', $name, 2)) {
-        return FALSE;
-      } else if ($this->_reflect->hasMethod($name)) {
-        return new Method($this->_class, $this->_reflect->getMethod($name));
-      } else if ($this->_reflect->hasMethod($g= $name.'«»')) {
-        return new Method($this->_class, $this->_reflect->getMethod($g));
+      if (0 !== strncmp('__', $name, 2)) {
+        if ($this->_reflect->hasMethod($name)) {
+          return new Method($this->_class, $this->_reflect->getMethod($name));
+        } else if ($this->_reflect->hasMethod($g= $name.'«»')) {
+          return new Method($this->_class, $this->_reflect->getMethod($g));
+        }
       }
       raise('lang.ElementNotFoundException', 'No such method "'.$name.'" in class '.$this->name);
     }
@@ -232,6 +232,7 @@
       } else if ($this->_reflect->hasMethod($method.'«»')) {
         return TRUE;
       }
+      return FALSE;
     }
     
     /**
