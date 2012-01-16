@@ -29,7 +29,7 @@
       curl_setopt($this->handle, CURLOPT_SSL_VERIFYHOST, 0);
       curl_setopt($this->handle, CURLOPT_SSL_VERIFYPEER, 0);
       if (1 === sscanf($arg, 'v%d', $version)) {
-        curl_setopt($curl, CURLOPT_SSLVERSION, $version);
+        curl_setopt($this->handle, CURLOPT_SSLVERSION, $version);
       }
     }
   
@@ -53,11 +53,15 @@
       }
       
       $response= curl_exec($curl);
-      curl_close($curl);
 
       if (FALSE === $response) {
-        throw new IOException(sprintf('%d: %s', curl_errno($curl), curl_error($curl)));
+        $errno= curl_errno($curl);
+        $error= curl_error($curl);
+        curl_close($curl);
+        throw new IOException(sprintf('%d: %s', $errno, $error));
       }
+      // ensure handle is closed
+      curl_close($curl);
 
       return new HttpResponse(new MemoryInputStream($response));
     }
