@@ -25,7 +25,8 @@
       $resultSets       = NULL,
       $queryError       = array(),
       $connectError     = NULL,
-      $currentResultSet = 0;
+      $currentResultSet = 0,
+      $sql              = NULL;
 
     public
       $_connected       = FALSE;
@@ -152,6 +153,15 @@
     public function getAffectedRows() {
       return $this->affectedRows;
     }
+    
+    /**
+     * Mock: Get last query
+     *
+     * @return  string
+     */
+     public function getStatement() {
+       return $this->sql;
+     }
 
     /**
      * Connect
@@ -161,6 +171,8 @@
      * @throws  rdbms.SQLConnectException
      */
     public function connect($reconnect= FALSE) {
+      $this->sql= NULL;
+    
       if ($this->_connected && !$reconnect) return TRUE;
       
       if ($this->connectError) {
@@ -229,6 +241,8 @@
         // Check for subsequent connection errors
         if (FALSE === $c) throw new SQLStateException('Previously failed to connect.');
       }
+      
+      $this->sql= $sql;
 
       switch (sizeof($this->queryError)) {
         case 0: {

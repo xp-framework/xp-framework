@@ -310,94 +310,94 @@
             // Actions
             switch ($yyN) {
 
-    case 5:  #line 28 "grammar/json.jay"
+    case 5:  #line 28 "src/main/jay/webservices/json/json.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 6:  #line 29 "grammar/json.jay"
+    case 6:  #line 29 "src/main/jay/webservices/json/json.jay"
     { $yyVal= array(); } break;
 
-    case 8:  #line 34 "grammar/json.jay"
+    case 8:  #line 34 "src/main/jay/webservices/json/json.jay"
     { $yyVal= $yyVals[-2+$yyTop] + $yyVals[0+$yyTop]; } break;
 
-    case 9:  #line 38 "grammar/json.jay"
+    case 9:  #line 38 "src/main/jay/webservices/json/json.jay"
     { $yyVal= array($yyVals[-2+$yyTop] => $yyVals[0+$yyTop]); } break;
 
-    case 10:  #line 42 "grammar/json.jay"
-    { $yyVal= utf8_decode($yyVals[-1+$yyTop]); /* xp::CHARSET */ } break;
+    case 10:  #line 42 "src/main/jay/webservices/json/json.jay"
+    { $yyVal= iconv($this->targetEncoding, 'iso-8859-1', $yyVals[-1+$yyTop]); /* xp::CHARSET */ } break;
 
-    case 11:  #line 43 "grammar/json.jay"
+    case 11:  #line 43 "src/main/jay/webservices/json/json.jay"
     { $yyVal= ''; } break;
 
-    case 12:  #line 47 "grammar/json.jay"
+    case 12:  #line 47 "src/main/jay/webservices/json/json.jay"
     { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 13:  #line 48 "grammar/json.jay"
+    case 13:  #line 48 "src/main/jay/webservices/json/json.jay"
     { $yyVal= array(); } break;
 
-    case 14:  #line 52 "grammar/json.jay"
+    case 14:  #line 52 "src/main/jay/webservices/json/json.jay"
     { $yyVal= array($yyVals[0+$yyTop]); } break;
 
-    case 15:  #line 53 "grammar/json.jay"
+    case 15:  #line 53 "src/main/jay/webservices/json/json.jay"
     { $yyVal= array_merge($yyVals[-2+$yyTop], array($yyVals[0+$yyTop])); } break;
 
-    case 16:  #line 57 "grammar/json.jay"
-    { $yyVal= new String($yyVals[-1+$yyTop], 'utf-8'); } break;
+    case 16:  #line 57 "src/main/jay/webservices/json/json.jay"
+    { $yyVal= $yyVals[-1+$yyTop]; } break;
 
-    case 17:  #line 58 "grammar/json.jay"
-    { $yyVal= String::$EMPTY; } break;
+    case 17:  #line 58 "src/main/jay/webservices/json/json.jay"
+    { $yyVal= ''; } break;
 
-    case 19:  #line 63 "grammar/json.jay"
+    case 19:  #line 63 "src/main/jay/webservices/json/json.jay"
     { $yyVal= $yyVals[-1+$yyTop].$yyVals[0+$yyTop]; } break;
 
-    case 20:  #line 67 "grammar/json.jay"
-    { $yyVal= $yyVals[0+$yyTop]; } break;
+    case 20:  #line 67 "src/main/jay/webservices/json/json.jay"
+    { $yyVal= iconv('utf-8', $this->targetEncoding, $yyVals[0+$yyTop]); } break;
 
-    case 21:  #line 68 "grammar/json.jay"
+    case 21:  #line 68 "src/main/jay/webservices/json/json.jay"
     { $yyVal= '"'; } break;
 
-    case 22:  #line 69 "grammar/json.jay"
+    case 22:  #line 69 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\\"; } break;
 
-    case 23:  #line 70 "grammar/json.jay"
+    case 23:  #line 70 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "/"; } break;
 
-    case 24:  #line 71 "grammar/json.jay"
+    case 24:  #line 71 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\b"; } break;
 
-    case 25:  #line 72 "grammar/json.jay"
+    case 25:  #line 72 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\f"; } break;
 
-    case 26:  #line 73 "grammar/json.jay"
+    case 26:  #line 73 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\n"; } break;
 
-    case 27:  #line 74 "grammar/json.jay"
+    case 27:  #line 74 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\r"; } break;
 
-    case 28:  #line 75 "grammar/json.jay"
+    case 28:  #line 75 "src/main/jay/webservices/json/json.jay"
     { $yyVal= "\t"; } break;
 
-    case 29:  #line 76 "grammar/json.jay"
+    case 29:  #line 76 "src/main/jay/webservices/json/json.jay"
     {
                                 $yyVal= iconv(
                                   'ucs-4be',
-                                  'utf-8',
+                                  $this->targetEncoding,
                                   pack('N', hexdec(substr($yyVals[0+$yyTop], 2)))
                                 );
                               } break;
 
-    case 30:  #line 86 "grammar/json.jay"
+    case 30:  #line 86 "src/main/jay/webservices/json/json.jay"
     { $yyVal= TRUE; } break;
 
-    case 31:  #line 87 "grammar/json.jay"
+    case 31:  #line 87 "src/main/jay/webservices/json/json.jay"
     { $yyVal= FALSE; } break;
 
-    case 32:  #line 88 "grammar/json.jay"
+    case 32:  #line 88 "src/main/jay/webservices/json/json.jay"
     { $yyVal= NULL; } break;
 
-    case 33:  #line 89 "grammar/json.jay"
+    case 33:  #line 89 "src/main/jay/webservices/json/json.jay"
     { $yyVal= doubleval($yyVals[0+$yyTop]); } break;
 
-    case 34:  #line 90 "grammar/json.jay"
+    case 34:  #line 90 "src/main/jay/webservices/json/json.jay"
     { $yyVal= intval($yyVals[0+$yyTop]); } break;
 #line 403 "-"
             }
@@ -429,5 +429,30 @@
       }
     }
 
+#line 93 "src/main/jay/webservices/json/json.jay"
+
+  protected $targetEncoding= 'iso-8859-1';  // xp::CHARSET
+
+  /**
+   * Set target encoding. The target encoding is the string encoding that all
+   * string that leave the parser will have.
+   *
+   * The default encoding is 'iso-8859-1'
+   *
+   * @param   string e
+   */
+  public function setTargetEncoding($e) {
+    $this->targetEncoding= $e;
+  }
+
+  /**
+   * Retrieve target encoding
+   *
+   * @return  string
+   */
+  public function getTargetEncoding() {
+    return $this->targetEncoding;
+  }
+#line 457 "-"
   }
 ?>

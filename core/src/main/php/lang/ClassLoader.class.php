@@ -191,7 +191,7 @@
         if (!empty($parents)) {
           $if= array_map(array('xp', 'reflect'), (array)$parents);
           foreach ($if as $i => $super) {
-            if (interface_exists($super)) continue;
+            if (interface_exists($super, FALSE)) continue;
             raise('lang.ClassLinkageException', $parents[$i], self::getLoaders()); 
           }
         }

@@ -25,6 +25,12 @@
    */
   class InterBaseConnection extends DBConnection {
 
+    static function __static() {
+      if (extension_loaded('interbase')) {
+        DriverManager::register('ibase+std', new XPClass(__CLASS__));
+      }
+    }
+
     /**
      * Constructor
      *

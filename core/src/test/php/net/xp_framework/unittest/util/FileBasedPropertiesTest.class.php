@@ -78,5 +78,18 @@
         xp::gc();
       }
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function propertiesFromSameFileAreEqual() {
+      $one= Properties::fromFile($this->getClass()->getPackage()->getResourceAsStream('example.ini'));
+      $two= Properties::fromFile($this->getClass()->getPackage()->getResourceAsStream('example.ini'));
+
+      $this->assertFalse($one === $two);
+      $this->assertTrue($one->equals($two));
+    }
   }
 ?>

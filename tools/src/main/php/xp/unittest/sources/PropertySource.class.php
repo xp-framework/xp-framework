@@ -6,12 +6,14 @@
 
   uses('xp.unittest.sources.AbstractSource', 'util.Properties');
 
+  $package= 'xp.unittest.sources';
+
   /**
    * Source that load tests from a .ini file
    *
    * @purpose  Source implementation
    */
-  class PropertySource extends xp暉nittest新ources嫂bstractSource {
+  class xp暉nittest新ources感ropertySource extends xp暉nittest新ources嫂bstractSource {
     protected $prop= NULL;
     protected $descr= NULL;
     

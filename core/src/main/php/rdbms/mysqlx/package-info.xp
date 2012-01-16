@@ -13,11 +13,35 @@
  * <ul>
  *   <li>DSN scheme: <tt>mysql</tt></li>
  * </ul>
+ *
+ * Using local sockets
+ * ===================
+ * MySQL servers can use local sockets for communication - Unix sockets
+ * usually in /tmp/mysql.sock on Un*x systems, and named pipes on Windows
+ * OSes, defaulting to \\.\pipe\MySQL. Supply the special host name "."
+ * to force connection via a socket as follows:
+ *
+ * <code>
+ *   // Pipe name will be searched for by rdbms.mysqlx.LocalSocket 
+ *   // implementations' locate() method
+ *   DriverManager::getConnection('mysql://./database');
+ *   
+ *   // Pipe name override, "socket" property will be fed into 
+ *   // rdbms.mysqlx.LocalSocket's newInstance()
+ *   DriverManager::getConnection('mysql://./database?socket=\\.\pipe\mysql');
+ *   DriverManager::getConnection('mysql://./database?socket=/tmp/mysql.sock');
+ * </code>
+ *
+ * This is intentionally not compatible with the way the MySQL client 
+ * libraries work: They magically connect using local sockets when the
+ * value "localhost" is supplied (to force connectio via TCP/IP, one 
+ * needs to pass "127.0.0.1" instead).
  * 
  * @see      http://mysql.com/
  * @see      http://news.planet-xp.net/article/404/2011/01/16/
  * @see      http://stackoverflow.com/questions/1575807/cannot-connect-to-mysql-4-1-using-old-authentication
  * @see      http://bugs.mysql.com/bug.php?id=37552
+ * @see      https://github.com/xp-framework/xp-framework/issues/102
  * @see      xp://rdbms.DriverManager - the entry point
  * @purpose  Databases
  */

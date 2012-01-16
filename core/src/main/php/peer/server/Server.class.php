@@ -24,9 +24,9 @@
    *   }
    * </code>
    *
-   * @ext      sockets
-   * @see      xp://peer.ServerSocket
-   * @purpose  TCP/IP Server
+   * @ext   sockets
+   * @see   xp://peer.ServerSocket
+   * @test  xp://net.xp_framework.unittest.peer.server.ServerTest
    */
   class Server extends Object {
     public
@@ -35,6 +35,7 @@
       $server     = NULL,
       $terminate  = FALSE,
       $tcpnodelay = FALSE;
+
     /**
      * Constructor
      *
@@ -171,6 +172,14 @@
           if ($handle === $accepting) {
             if (!($m= $this->socket->accept())) {
               throw new SocketException('Call to accept() failed');
+            }
+
+            // Handle accepted socket
+            if ($this->protocol instanceof SocketAcceptHandler) {
+              if (!$this->protocol->handleAccept($m)) {
+                $m->close();
+                continue;
+              }
             }
             
             $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);

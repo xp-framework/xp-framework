@@ -8,12 +8,76 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed "localhost" local sockets magic from MySQL implementations
+  http://news.planet-xp.net/article/434/2012/01/08/
+  (friebe, kiesel)
+- Changed sqlite scheme to default to SQLite3 instead of SQLite2.
+  http://news.planet-xp.net/article/432/2012/01/06/
+  (kiesel)
+- Made util.PropertyManager::getProperties() throw lang.ElementNotFoundException
+  in case not a single Properties could be provided by any PropertySource. See
+  issue #95
+  (kiesel, friebe)
+- Merged pull request #89: Make JsonDecoder / parser accept target
+  encoding; the parser returns native PHP strings instead of
+  lang.types.String objects
+  (kiesel)
 
 RFCs
 ~~~~
+- Implemented RFC #0221 - Allow combining application properties from
+  multiple sources
+  (kiesel)
+- Implemented RFC #0219 - Mocking Library
+  (iigorr)
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #109: Errors in CurlHttpTransport 
+  (ppetermann, friebe)
+- Fixed issue #100: XPCLI: -c does not overwrite properties, but adds
+  (friebe)
+- Fixed issue #97: Fatal error in scriptlet testsuite
+  (friebe)
+- Fixed peer.server.ForkingServer to continue execution even when forking one
+  child fails
+  (kiesel, friebe)
+- Fixed util.Date::create() to throw an exception when given invalid
+  arguments instead of creating a date with values from the current 
+  date and time filled in - pull request #88 (cconstandachi, friebe)
+- Fixed money values in rdbms.sqlsrv.SqlSrvConnection (friebe)
+- Fixed rdbms.sqlsrv.SqlSrvConnection::query() to cancel previous results
+  if necessary, preventing "The connection cannot process this operation 
+  because there is a statement with pending results" errors.
+  (friebe)
+- Fixed rdbms.mysqli.MySQLiConnection::query() to cancel previous results
+  if necessary, preventing "Commands out of sync" errors
+  (friebe)
+- Fixed warnings raised from rdbms.mysql.MySQLConnection::query() when
+  unbuffered results have not completely been read
+  (friebe)
+
+Features
+~~~~~~~~
+- Added tests for rdbms.Statement class
+  (hinckel)
+- Merged pull request #103 - Extended Server Protocol, allowing to handle
+  accepting sockets and out of resources situations.
+  (friebe)
+- Merged pull request #105 - MySQL local sockets, adding the possibility
+  to use local sockets (Unix sockets on Un*x, Named Pipes on Windows).
+  (friebe)
+- Merged pull request #104 - Add support for SQLite3
+  (kiesel)
+- Merged pull request #99 - Propertymanager paths CRUD
+  (friebe)
+- Made database drivers implementations selectable - see pull request #79
+  http://news.planet-xp.net/article/431/2011/12/30/
+  (friebe)
+- Added optional timezone to util.Date::now() - see pull request #88
+  (cconstandachi, friebe)
+- Merged pull request #90: Add webservices.rest
+  (kiesel, friebe)
 
 
 Version 5.8.3, released 2011-12-08
@@ -37,12 +101,12 @@ Heads up!
 RFCs
 ~~~~
 - Implemented RFC #0216 - REST server API implementation
-  (ohinckel)
+  (hinckel)
 
 Bugfixes
 ~~~~~~~~
 - Fixed peer.BSDSocket connect timeout - see pull request #86
-  (ohinckel)
+  (hinckel)
 - Fixed rdbms.DSN::equals() method to no longer regard differing observer
   params as equal
   (friebe)
@@ -77,13 +141,13 @@ Bugfixes
 Features
 ~~~~~~~~
 - Include more information in output produced by XmlTestListener
-  (ohinckel)
+  (hinckel)
 - Made usage of encoding names consistant to all lowercase,
   see issue #73
   (ppetermann, kiesel)
 - Added support to DomXSLProcessor to load XML or XSL files by stream
   wrappers, e.g. using res:// to load files with ResourceProvider
-  (ohinckel)
+  (hinckel)
 - Added Unicode support to webservices.json.JsonDecoder - characters are
   now correctly converted to escape sequences and back.
   (friebe)

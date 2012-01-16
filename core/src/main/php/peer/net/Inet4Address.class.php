@@ -63,7 +63,7 @@
       return implode('.', array_reverse(explode('.', $this->asString()))).'.in-addr.arpa';
     }
 
-        /**
+    /**
      * Retrieve human-readable form
      *
      * @return  string
