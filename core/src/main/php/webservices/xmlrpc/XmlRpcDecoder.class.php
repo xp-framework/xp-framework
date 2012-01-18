@@ -35,6 +35,12 @@
      * @throws  xml.XMLFormatException
      */
     protected function _unmarshall(Node $node) {
+
+      // value without type is supposed to be string (XML-RPC specs)
+      if('value' == $node->getName() && !isset($node->children[0])) {
+        return (string)$node->getContent();
+      }
+
       if (!isset($node->children[0])) {
         throw new XMLFormatException('Tried to access nonexistant node.');
       }
