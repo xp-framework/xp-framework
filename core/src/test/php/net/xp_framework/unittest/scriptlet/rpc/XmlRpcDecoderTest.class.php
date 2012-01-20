@@ -321,5 +321,18 @@
     public function unsupported() {
       $this->decode('<not_a_type>any-value</not_a_type>');
     }
- }
+
+    /**
+     * Test decoding value nodes without type
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/112
+     */
+    #[@test]
+    public function nodeWithoutTypeSubNodeIsString() {
+      $this->assertEquals(
+        array('Test'), 
+        $this->decode('<array><data><value>Test</value></data></array>'
+      ));
+    }
+  }
 ?>
