@@ -5,7 +5,7 @@
  */
 
   /**
-   * (Insert class' description here)
+   * A module represents a named class path.
    *
    */
   class Module extends Object {
@@ -27,6 +27,56 @@
      */
     public function getName() {
       return $this->reflect[1];
+    }
+
+    /**
+     * Returns comment
+     *
+     * @return  string
+     */
+    public function getComment() {
+      return $this->reflect[0]->getComment();
+    }
+
+    /**
+     * Check whether an annotation exists
+     *
+     * @param   string name
+     * @param   string key default NULL
+     * @return  bool
+     */
+    public function hasAnnotation($name, $key= NULL) {
+      return $this->reflect[0]->hasAnnotation($name, $key);
+    }
+
+    /**
+     * Retrieve annotation by name
+     *
+     * @param   string name
+     * @param   string key default NULL
+     * @return  var
+     * @throws  lang.ElementNotFoundException
+     */
+    public function getAnnotation($name, $key= NULL) {
+      return $this->reflect[0]->getAnnotation($name, $key);
+    }
+
+    /**
+     * Retrieve whether this module has annotations
+     *
+     * @return  bool
+     */
+    public function hasAnnotations() {
+      return $this->reflect[0]->hasAnnotations();
+    }
+
+    /**
+     * Retrieve all of a module's annotations
+     *
+     * @return  var[] annotations
+     */
+    public function getAnnotations() {
+      return $this->reflect[0]->getAnnotations();
     }
 
     /**
