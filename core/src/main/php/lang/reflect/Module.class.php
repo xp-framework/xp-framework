@@ -80,10 +80,19 @@
     }
 
     /**
+     * Retrieve class loader associated with this module
+     *
+     * @return  lang.IClassLoader
+     */
+    public function getClassLoader() {
+      return $this->reflect[3];
+    }
+
+    /**
      * Gets a module by a given name
      *
      * @param   string name
-     * @return  lang.reflect.Module name
+     * @return  lang.reflect.Module
      * @throws  lang.ElementNotFoundException if the module doesn't exist
      */
     public static function forName($name) {
@@ -92,6 +101,19 @@
       }
       
       return new self($name);
+    }
+
+    /**
+     * Gets all declared modules
+     *
+     * @return  lang.reflect.Module[]
+     */
+    public static function getModules() {
+      $r= array();
+      foreach (xp::$registry['modules'] as $name => $definitions) {
+        $r[]= new self($name);
+      }
+      return $r;
     }
   }
 ?>

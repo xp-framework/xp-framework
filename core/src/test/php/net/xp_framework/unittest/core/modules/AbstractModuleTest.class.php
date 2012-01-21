@@ -50,5 +50,14 @@
     public function modules_name() {
       $this->assertEquals($this->moduleName(), $this->fixture->getName());
     }
+
+    /**
+     * Test getClassLoader()
+     *
+     */
+    #[@test]
+    public function modules_loader() {
+      $this->assertEquals($this->loader, $this->fixture->getClassLoader());
+    }
   }
 ?>
