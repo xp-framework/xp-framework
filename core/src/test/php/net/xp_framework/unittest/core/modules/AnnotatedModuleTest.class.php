@@ -4,43 +4,21 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'lang.reflect.Module'
-  );
+  uses('net.xp_framework.unittest.core.modules.AbstractModuleTest');
 
   /**
    * TestCase
    *
    */
-  class AnnotatedModuleTest extends TestCase {
-    protected static $loader= NULL;
-    protected $fixture= NULL;
-  
-    /**
-     * Register imaging module path. This will actually trigger loading it.
-     *
-     */
-    #[@beforeClass]
-    public static function registerPath() {
-      self::$loader= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/forkqueue');
-    }
+  class AnnotatedModuleTest extends AbstractModuleTest {
 
     /**
-     * Remove imaging module path.
+     * Return module name
      *
+     * @return  string
      */
-    #[@afterClass]
-    public static function removePath() {
-      ClassLoader::getDefault()->removeLoader(self::$loader);
-    }
-  
-    /**
-     * Sets up test case
-     *
-     */
-    public function setUp() {
-      $this->fixture= Module::forName('forkqueue');
+    protected function moduleName() {
+      return 'forkqueue';
     }
     
     /**

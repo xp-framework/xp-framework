@@ -4,52 +4,21 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'lang.reflect.Module'
-  );
+  uses('net.xp_framework.unittest.core.modules.AbstractModuleTest');
 
   /**
    * TestCase
    *
    */
-  class ImagingModuleTest extends TestCase {
-    protected static $loader= NULL;
-    protected $fixture= NULL;
-  
-    /**
-     * Register imaging module path. This will actually trigger loading it.
-     *
-     */
-    #[@beforeClass]
-    public static function registerPath() {
-      self::$loader= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/imaging');
-    }
+  class ImagingModuleTest extends AbstractModuleTest {
 
     /**
-     * Remove imaging module path.
+     * Return module name
      *
+     * @return  string
      */
-    #[@afterClass]
-    public static function removePath() {
-      ClassLoader::getDefault()->removeLoader(self::$loader);
-    }
-  
-    /**
-     * Sets up test case
-     *
-     */
-    public function setUp() {
-      $this->fixture= Module::forName('imaging');
-    }
-    
-    /**
-     * Test getName()
-     *
-     */
-    #[@test]
-    public function imaging_modules_name() {
-      $this->assertEquals('imaging', $this->fixture->getName());
+    protected function moduleName() {
+      return 'imaging';
     }
 
     /**
