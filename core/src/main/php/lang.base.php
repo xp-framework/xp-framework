@@ -704,6 +704,7 @@
   xp::$registry['null']= new null();
   xp::$registry['loader']= new xp();
   xp::$registry['classpath']= explode(PATH_SEPARATOR, get_include_path());
+  xp::$registry['modules']= array();
 
   // Register stream wrapper for .xar class loading
   stream_wrapper_register('xar', 'xarloader');
