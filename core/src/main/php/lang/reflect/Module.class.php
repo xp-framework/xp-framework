@@ -7,6 +7,10 @@
   /**
    * A module represents a named class path.
    *
+   * @test  xp://net.xp_framework.unittest.core.modules.AnnotatedModuleTest
+   * @test  xp://net.xp_framework.unittest.core.modules.ImagingModuleTest
+   * @test  xp://net.xp_framework.unittest.core.modules.ModuleTest
+   * @see   https://github.com/xp-framework/rfc/issues/220
    */
   class Module extends Object {
     protected $reflect;
