@@ -1,0 +1,14 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * A forked queue for parallel processing
+   *
+   */
+  module forkqueue {
+  
+  }
+?>
