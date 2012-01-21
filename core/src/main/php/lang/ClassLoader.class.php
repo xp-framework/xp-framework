@@ -94,6 +94,28 @@
     }
     
     /**
+     * Declare a module
+     *
+     * @param   lang.IClassLoader l
+     */
+    public static function declareModule($l) {
+      if (!preg_match('/module ([a-z\.-]+)(\(([^\)]+)\))?\s*{/', $moduleInfo= $l->getResource('module.xp'), $m)) {
+        raise('lang.ElementNotFoundException', 'Missing or malformed module-info in '.$l->toString());
+      }
+
+      // Declare module
+      $class= ucfirst(strtr($m[1], '.-', '__')).'Module';
+      $dyn= DynamicClassLoader::instanceFor('modules');
+      $dyn->setClassBytes($class, str_replace(
+        $m[0], 
+        'class '.$class.' extends Object {', 
+        substr(trim($moduleInfo), 5, -2)      // Strip PHP open and close tags
+      ));
+      $t= $dyn->loadClass($class);
+      xp::$registry['modules'][$m[1]]= array($t, $m[1], $m[2]);
+    }
+
+    /**
      * Register a class loader as a delegate
      *
      * @param   lang.IClassLoader l
@@ -106,6 +128,8 @@
       } else {
         self::$delegates[$l->hashCode()]= $l;
       }
+
+      $l->providesResource('module.xp') && self::declareModule($l);
       return $l;
     }
 
