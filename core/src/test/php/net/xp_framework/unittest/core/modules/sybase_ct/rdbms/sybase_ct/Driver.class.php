@@ -9,6 +9,7 @@
   /**
    * Fixture for module tests
    *
+   * @see   xp://net.xp_framework.unittest.core.modules.ModuleWithStaticInitializerTest
    */
   class rdbms·sybase_ct·Driver extends Object {
     public static $instance;

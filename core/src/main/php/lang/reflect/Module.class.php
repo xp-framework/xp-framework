@@ -10,6 +10,7 @@
    * @test  xp://net.xp_framework.unittest.core.modules.AnnotatedModuleTest
    * @test  xp://net.xp_framework.unittest.core.modules.ImagingModuleTest
    * @test  xp://net.xp_framework.unittest.core.modules.ModuleTest
+   * @test  xp://net.xp_framework.unittest.core.modules.ModuleWithStaticInitializerTest
    * @see   https://github.com/xp-framework/rfc/issues/220
    */
   class Module extends Object {
