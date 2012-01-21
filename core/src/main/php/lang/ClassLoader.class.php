@@ -99,9 +99,11 @@
      * @param   lang.IClassLoader l
      */
     public static function declareModule($l) {
-      if (!preg_match('/module ([a-z\.-]+)(\(([^\)]+)\))?\s*{/', $moduleInfo= $l->getResource('module.xp'), $m)) {
+      if (!preg_match('/module ([a-z_\.-]+)(\(([^\)]+)\))?\s*{/', $moduleInfo= $l->getResource('module.xp'), $m)) {
         raise('lang.ElementNotFoundException', 'Missing or malformed module-info in '.$l->toString());
       }
+
+      if (isset(xp::$registry['modules'][$m[1]])) return;
 
       // Declare module
       $class= ucfirst(strtr($m[1], '.-', '__')).'Module';
