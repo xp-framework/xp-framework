@@ -33,6 +33,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #112: XmlRpcDecoder does not comply with XML-RPC specifications
+  (ppetermann, friebe)
+- Fixed issue #109: Errors in CurlHttpTransport 
+  (ppetermann, friebe)
 - Fixed issue #100: XPCLI: -c does not overwrite properties, but adds
   (friebe)
 - Fixed issue #97: Fatal error in scriptlet testsuite

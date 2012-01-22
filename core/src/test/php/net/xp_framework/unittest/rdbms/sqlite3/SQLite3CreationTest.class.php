@@ -61,10 +61,11 @@
      * Test invalid filenames
      *
      * @see   https://github.com/xp-framework/xp-framework/issues/107
+     * @see   https://github.com/xp-framework/xp-framework/issues/111
      */
     #[@test, @expect('rdbms.SQLConnectException')]
     public function connect_fails_for_invalid_filenames() {
-      $conn= new SQLite3Connection(new DSN('sqlite+3://./:database.db'));
+      $conn= new SQLite3Connection(new DSN('sqlite+3://./'));
       $conn->connect();
     }
 
