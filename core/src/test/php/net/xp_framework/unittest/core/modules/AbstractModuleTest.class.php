@@ -30,7 +30,9 @@
      */
     public function setUp() {
       $name= $this->moduleName();
-      $this->loader= ClassLoader::getDefault()->registerPath(dirname(__FILE__).'/'.$name);
+      $this->loader= ClassLoader::getDefault()->registerPath(
+        dirname(__FILE__).'/../../../../../modules/'.$name
+      );
       $this->fixture= Module::forName($name);
     }
 
