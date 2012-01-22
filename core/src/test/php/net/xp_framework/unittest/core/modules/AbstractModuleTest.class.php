@@ -25,7 +25,7 @@
     protected abstract function moduleName();
   
     /**
-     * Register imaging module path. This will actually trigger loading it.
+     * Register module path. This will actually trigger loading it.
      *
      */
     public function setUp() {
