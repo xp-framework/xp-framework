@@ -53,6 +53,13 @@
     static function __static() {
       xp::$registry['loader']= new self();
       
+      // Declare core module
+      $dyn= DynamicClassLoader::instanceFor('modules');
+      $dyn->setClassBytes('CoreModule', 'class CoreModule extends Object { }');
+      xp::$registry['modules']= array(
+        'core' => array($dyn->loadClass('CoreModule'), 'core', NULL, xp::$registry['loader'])
+      );
+
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
         $resolved= realpath($element);

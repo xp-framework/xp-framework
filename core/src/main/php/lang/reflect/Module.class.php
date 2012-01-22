@@ -120,5 +120,33 @@
       }
       return $r;
     }
+
+    /**
+     * Returns whether another module is equal to this module.
+     *
+     * @param   var cmo
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->name === $this->name;
+    }
+
+    /**
+     * Creates a string representation of this object
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->name.'>';
+    }
+
+    /**
+     * Returns a hashcode for this object
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return get_class($this).':'.$this->name;
+    }
   }
 ?>
