@@ -419,9 +419,9 @@
       if (!isset($this->_data[$section][$key])) return $default;
       return (
         '1'     === $this->_data[$section][$key] ||
-        'yes'   === $this->_data[$section][$key] ||
-        'true'  === $this->_data[$section][$key] ||
-        'on'    === $this->_data[$section][$key]
+        'yes'   === strtolower($this->_data[$section][$key]) ||
+        'true'  === strtolower($this->_data[$section][$key]) ||
+        'on'    === strtolower($this->_data[$section][$key])
       );
     }
     
