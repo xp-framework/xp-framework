@@ -217,7 +217,7 @@
       with ($field= $this->fixture->getField('date')); {
         $this->assertClass($field, 'lang.reflect.Field');
         $this->assertEquals('date', $field->getName());
-        $this->assertEquals('util.Date', $field->getType());
+        $this->assertEquals(XPClass::forName('util.Date'), $field->getType());
         $this->assertTrue($this->fixture->equals($field->getDeclaringClass()));
       }
     }
@@ -364,7 +364,7 @@
     #[@test]
     public function cacheFieldString() {
       $this->assertEquals(
-        'private static net.xp_framework.unittest.reflection.TestClass::$cache', 
+        'private static var net.xp_framework.unittest.reflection.TestClass::$cache', 
         $this->fixture->getField('cache')->toString()
       );
     }
@@ -376,7 +376,17 @@
      */
     #[@test]
     public function dateFieldType() {
-      $this->assertEquals('util.Date', $this->fixture->getField('date')->getType());
+      $this->assertEquals(XPClass::forName('util.Date'), $this->fixture->getField('date')->getType());
+    }
+
+    /**
+     * Tests retrieving the "date" field's is defined
+     *
+     * @see     xp://lang.reflect.Field#getTypeName
+     */
+    #[@test]
+    public function dateFieldTypeName() {
+      $this->assertEquals('util.Date', $this->fixture->getField('date')->getTypeName());
     }
 
     /**
@@ -386,7 +396,17 @@
      */
     #[@test]
     public function cacheFieldType() {
-      $this->assertEquals(NULL, $this->fixture->getField('cache')->getType());
+      $this->assertEquals(Type::$VAR, $this->fixture->getField('cache')->getType());
+    }
+
+    /**
+     * Tests retrieving the "cache" field's type is unknown
+     *
+     * @see     xp://lang.reflect.Field#getTypeName
+     */
+    #[@test]
+    public function cacheFieldTypeName() {
+      $this->assertEquals('var', $this->fixture->getField('cache')->getTypeName());
     }
 
     /**
@@ -394,8 +414,17 @@
      *
      */
     #[@test]
-    public function fieldDetailsForInheritedField() {
-      $this->assertEquals('lang.Object', $this->fixture->getField('inherited')->getType());
+    public function fieldTypeForInheritedField() {
+      $this->assertEquals(XPClass::forName('lang.Object'), $this->fixture->getField('inherited')->getType());
+    }
+
+    /**
+     * Tests field details for inherited field
+     *
+     */
+    #[@test]
+    public function fieldTypeNameForInheritedField() {
+      $this->assertEquals('lang.Object', $this->fixture->getField('inherited')->getTypeName());
     }
   }
 ?>
