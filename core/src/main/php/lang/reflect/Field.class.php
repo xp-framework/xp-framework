@@ -48,13 +48,25 @@
     /**
      * Gets field type
      *
-     * @return  string
+     * @return  lang.Type
      */
     public function getType() {
       if ($details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName())) {
+        if (isset($details[DETAIL_ANNOTATIONS]['type'])) return Type::forName($details[DETAIL_ANNOTATIONS]['type']);
+      }
+      return Type::$VAR;
+    }
+
+    /**
+     * Gets field type
+     *
+     * @return  string
+     */
+    public function getTypeName() {
+      if ($details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName())) {
         if (isset($details[DETAIL_ANNOTATIONS]['type'])) return $details[DETAIL_ANNOTATIONS]['type'];
       }
-      return NULL;
+      return 'var';
     }
 
     /**
@@ -311,11 +323,10 @@
      * @return  string
      */
     public function toString() {
-      $t= $this->getType();
       return sprintf(
-        '%s%s %s::$%s',
+        '%s %s %s::$%s',
         Modifiers::stringOf($this->getModifiers()),
-        $t ? ' '.$t : '',
+        $this->getTypeName(),
         $this->getDeclaringClass()->getName(),
         $this->getName()
       );
