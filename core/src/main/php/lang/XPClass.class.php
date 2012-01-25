@@ -835,6 +835,7 @@
               DETAIL_ANNOTATIONS  => $annotations,
               DETAIL_NAME         => $tokens[$i][1]
             );
+            $annotations= array();
             $matches= NULL;
             preg_match_all(
               '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)?/',
@@ -842,12 +843,26 @@
               $matches, 
               PREG_SET_ORDER
             );
-            $annotations= array();
             $comment= NULL;
+            $arg= 0;
+            while ('{' !== $tokens[$i][0] && ';' !== $tokens[$i][0]) {
+              if (T_VARIABLE === $tokens[$i][0]) {
+                $details[1][$m][DETAIL_ARGUMENTS][$arg++]= array(NULL, self::parseAnnotations(
+                  trim(substr($comment, 2, -2)),  // /* and */
+                  $class.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
+                ));
+                $comment= NULL;
+              } else if (T_COMMENT === $tokens[$i][0]) {
+                $comment= $tokens[$i][1];
+              }
+              $i++;
+            }
+            $comment= NULL;
+            $arg= 0;
             foreach ($matches as $match) {
               switch ($match[1]) {
                 case 'param':
-                  $details[1][$m][DETAIL_ARGUMENTS][]= $match[2];
+                  $details[1][$m][DETAIL_ARGUMENTS][$arg++][0]= $match[2];
                   break;
 
                 case 'return':
