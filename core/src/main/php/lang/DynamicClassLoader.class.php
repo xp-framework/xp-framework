@@ -73,6 +73,10 @@
      * @return  bool
      */
     public function providesPackage($package) {
+      $l= strlen($package);
+      foreach (array_keys(self::$bytes) as $class) {
+        if (0 === strncmp($class, $package, $l)) return TRUE;
+      }
       return FALSE;
     }
 
