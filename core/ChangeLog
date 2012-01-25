@@ -64,6 +64,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Merged pull request #115: Properties: Support uppercase booleans
+  (ledermueller)
 - Added tests for rdbms.Statement class
   (hinckel)
 - Merged pull request #103 - Extended Server Protocol, allowing to handle
