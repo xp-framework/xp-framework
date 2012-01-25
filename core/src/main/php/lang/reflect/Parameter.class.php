@@ -51,7 +51,7 @@
       ) {   // Unknown or unparseable, return ANYTYPE
         return Type::$VAR;
       }
-      return Type::forName(ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&'));
+      return Type::forName(ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]][0], '&'));
     }
 
     /**
@@ -66,7 +66,7 @@
       ) {   // Unknown or unparseable, return ANYTYPE
         return 'var';
       }
-      return ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&');
+      return ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]][0], '&');
     }
 
     /**
@@ -105,6 +105,83 @@
       }
 
       throw new IllegalStateException('Parameter "'.$this->_reflect->getName().'" has no default value');
+    }
+
+    /**
+     * Check whether an annotation exists
+     *
+     * @param   string name
+     * @param   string key default NULL
+     * @return  bool
+     */
+    public function hasAnnotation($name, $key= NULL) {
+      if (
+        !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
+        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
+      ) {   // Unknown or unparseable
+        return FALSE;
+      }
+
+      return $details && ($key 
+        ? array_key_exists($key, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name]) 
+        : array_key_exists($name, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1])
+      );
+    }
+
+    /**
+     * Retrieve annotation by name
+     *
+     * @param   string name
+     * @param   string key default NULL
+     * @return  var
+     * @throws  lang.ElementNotFoundException
+     */
+    public function getAnnotation($name, $key= NULL) {
+      if (
+        !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
+        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]]) || !($key 
+          ? array_key_exists($key, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name]) 
+          : array_key_exists($name, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1])
+        ) 
+      ) return raise(
+        'lang.ElementNotFoundException', 
+        'Annotation "'.$name.($key ? '.'.$key : '').'" does not exist'
+      );
+
+      return ($key 
+        ? $details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name][$key] 
+        : $details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name]
+      );
+    }
+
+    /**
+     * Retrieve whether a method has annotations
+     *
+     * @return  bool
+     */
+    public function hasAnnotations() {
+      if (
+        !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
+        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
+      ) {   // Unknown or unparseable
+        return FALSE;
+      }
+      return $details ? !empty($details[DETAIL_ARGUMENTS][$this->_details[2]][1]) : FALSE;
+    }
+
+    /**
+     * Retrieve all of a method's annotations
+     *
+     * @return  array annotations
+     */
+    public function getAnnotations() {
+      if (
+        !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
+        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
+      ) {   // Unknown or unparseable
+        return array();
+      }
+      return $details[DETAIL_ARGUMENTS][$this->_details[2]][1];
     }
     
     /**
