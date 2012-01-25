@@ -418,10 +418,10 @@
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       return (
-        '1'     === $this->_data[$section][$key] ||
-        'yes'   === strtolower($this->_data[$section][$key]) ||
-        'true'  === strtolower($this->_data[$section][$key]) ||
-        'on'    === strtolower($this->_data[$section][$key])
+        '1' === $this->_data[$section][$key] ||
+        0   === strncasecmp('yes', $this->_data[$section][$key], 3) ||
+        0   === strncasecmp('true', $this->_data[$section][$key], 4) ||
+        0   === strncasecmp('on', $this->_data[$section][$key], 2)
       );
     }
     
