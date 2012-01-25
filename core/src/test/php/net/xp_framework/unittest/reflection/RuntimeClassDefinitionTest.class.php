@@ -156,5 +156,31 @@
         public function setDebug($cat);
       }');
     }
+
+    /**
+     * Test default class loader
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/94
+     */
+    #[@test]
+    public function defaultClassLoaderProvidesDefinedClass() {
+      $class= 'net.xp_framework.unittest.reflection.lostandfound.CL1';
+      $this->defineClass($class, 'lang.Object', array(), '{ }');
+
+      $this->assertTrue(ClassLoader::getDefault()->providesClass($class));
+    }
+
+    /**
+     * Test default class loader
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/94
+     */
+    #[@test]
+    public function defaultClassLoaderProvidesPackageOfDefinedClass() {
+      $package= 'net.xp_framework.unittest.reflection.lostandfound';
+      $this->defineClass($package.'.CL2', 'lang.Object', array(), '{ }');
+
+      $this->assertTrue(ClassLoader::getDefault()->providesPackage($package));
+    }
   }
 ?>
