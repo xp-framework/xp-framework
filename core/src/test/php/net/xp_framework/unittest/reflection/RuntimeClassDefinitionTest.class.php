@@ -30,7 +30,9 @@
      * Helper method
      *
      * @param   string name
-     * @param   lang.XPClass class
+     * @param   string parent
+     * @param   string[] interfaces
+     * @return  lang.XPClass class
      * @throws  unittest.AssertionFailedError
      */
     protected function defineClass($name, $parent, $interfaces, $bytes) {
