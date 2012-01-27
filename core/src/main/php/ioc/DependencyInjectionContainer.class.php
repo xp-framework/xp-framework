@@ -16,11 +16,6 @@
    *
    * 1. Register bindings: The container can hold 2 types of bindings:
    *    -> Type bindings:
-   *       - If the seconds parameter is a FQCN string or an XPClass, a new instance will be created whenever the
-   *         reference must be resolved
-   *       - If the seconds paramter is an lang.Object instance, it will be returned every time the reference must
-   *          be resolved (shared/singleton)
-   *
    *       <code>
    *         // The next 2 lines are doing the same thing
    *         $c->bindType('util.Observable', 'my.project.ObservableImpl');
@@ -29,35 +24,31 @@
    *         // Shared instance
    *         $c->bindType('util.Observable', new ObservableImpl());
    *       </code>
+   *       - If the seconds parameter is a FQCN string or an XPClass, a new instance will be created whenever the
+   *         reference must be resolved
+   *       - If the seconds parameter is an lang.Object instance, it will be returned every time the reference must
+   *          be resolved (shared/singleton)
    *
    *    -> Constant bindings:
-   *       - Constant values are not checked for a type; they can be NULL, scalars or Objects
-   *
    *       <code>
    *         $c->bindConstant('my.project.settings.username', 'root');
    *         $c->bindConstant('my.project.settings.timeout', 5.50);
    *       </code>
+   *       - Constant values are not checked for a type; they can be NULL, scalars or Objects
    *
    * 2. Ask container to create instances. The container uses 3 types of injections:
    *    -> Constructor injection:
-   *       - This type of injections are always required; an exception is thrown when the constructor arguments
-   *         cannot be resolved
-   *       - @inject annotation is not required
-   *
    *       <code>
    *         public class MyProcess {
    *           public class __construct(Observable $obs) { ... }
    *         }
    *         $p= $c->resolve('my.project.MyProcess');
    *       </code>
+   *       - This type of injections are always required; an exception is thrown when the constructor arguments
+   *         cannot be resolved
+   *       - @inject annotation is not required
    *
    *    -> Class fields injection:
-   *       - @inject annotation is required to tell apart what fields to try to inject and what fields to leave alone
-   *       - Since class fields cannot be type-hinted, only constants can be injected
-   *       - Class fields injections are optional; is if a constant referenced in the @inject annotation was not
-   *         bound via bindConstant(), it will be silently ignored
-   *       - Both public and protected class fields can be injected
-   *
    *       <code>
    *         public class MyConnection {
    *           #[@inject(constant= 'my.project.settings.timeout')]
@@ -65,13 +56,13 @@
    *         }
    *         $conn= $c->resolve('my.project.MyConnection');
    *       </code>
+   *       - @inject annotation is required to tell apart what fields to try to inject and what fields to leave alone
+   *       - Since class fields cannot be type-hinted, only constants can be injected
+   *       - Class fields injections are optional; is if a constant referenced in the @inject annotation was not
+   *         bound via bindConstant(), it will be silently ignored
+   *       - Both public and protected class fields can be injected
    *
    *    -> Setter injection:
-   *         @inject annotation is required to tell apart what methods to call and what methods to leave alone
-   *       - Setter injections are optional (same as class field injections)
-   *       - Both Constants and Types can be injected; when a Constant is injected, the setter must have
-   *         exactly 1 argument (where the Constant value will be injected)
-   *
    *       <code>
    *         public class MyConnection {
    *           #[@inject]
@@ -82,12 +73,16 @@
    *         }
    *         $conn= $c->resolve('my.project.MyConnection');
    *       </code>
+   *       - @inject annotation is required to tell apart what methods to call and what methods to leave alone
+   *       - Setter injections are optional (same as class field injections)
+   *       - Both Constants and Types can be injected; when a Constant is injected, the setter must have
+   *         exactly 1 argument (where the Constant value will be injected)
    *
    *
    * About injection context:
    *
    * bindType(), bindConstant() and resolve() have a last optional argument called $context (a string value),
-   * or better knows as Named Bindings. The counterpart is the @inject(context='my-context') annnotation:
+   * better known as "Named Bindings". The counterpart is the @inject(context='my-context') annnotation:
    *
    * Suppose we have an Interface IWeapon and 2 implementations Sword and Bow and the following bindings:
    *
@@ -111,8 +106,8 @@
    *   }
    * </code>
    *
-   * Whan we ask the container for an instance of Infantry it will call it's constructor with a Sword instance. Same
-   * logic applies to the Archer class, where Bow instances will be injected to its constructor:
+   * When we ask the container for an instance of Infantry it will call it's constructor injecting a Sword instance.
+   * Same logic applies to the Archer class, where Bow instances will be injected to its constructor:
    *
    * <code>
    *   $infantry = $c->resolve('Infantry');
