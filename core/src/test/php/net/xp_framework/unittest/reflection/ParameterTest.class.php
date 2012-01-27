@@ -457,5 +457,23 @@
         $this->methodParameter('setConnection', 1)->getAnnotations()
       );
     }
+
+    /**
+     * Tests hasAnnotations()
+     *
+     */
+    #[@test]
+    public function normalParameterHasNoAnnotation() {
+      $this->assertFalse($this->methodParameter('setConnection', 1)->hasAnnotation('irrelevant'));
+    }
+
+    /**
+     * Tests getAnnotations()
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function normalParameterGetAnnotationRaisesException() {
+      $this->methodParameter('setConnection', 1)->getAnnotation('irrelevant');
+    }
   }
 ?>
