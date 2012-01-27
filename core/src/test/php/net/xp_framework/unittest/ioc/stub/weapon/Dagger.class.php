@@ -16,20 +16,11 @@
     protected $damage= 10;
 
     /**
-     * {@inhertiDoc}
+     * {@inheritDoc}
      *
      */
     public function hit($target) {
       return 'Stab '.$target.' for '.$this->damage.' damage';
-    }
-
-    /**
-     * Getter for damage
-     *
-     * @return int
-     */
-    public function getDamage() {
-      return $this->damage;
     }
   }
 ?>

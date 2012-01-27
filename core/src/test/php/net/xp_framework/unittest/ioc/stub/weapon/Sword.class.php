@@ -11,14 +11,14 @@
    *
    */
   class Sword extends Object implements IWeapon {
-    public $damage= 20;
+    protected $damage= 20;
 
     /**
      * {@inheritDoc}
      *
      */
     public function hit($target) {
-      return 'Smashed '.$target.' for '.$this->damage.' damage';
+      return 'Cut '.$target.' for '.$this->damage.' damage';
     }
 
     /**

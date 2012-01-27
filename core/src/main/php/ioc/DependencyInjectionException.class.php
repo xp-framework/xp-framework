@@ -9,6 +9,6 @@
    *
    * @see xp://lang.XPException
    */
-  class DependecyInjectionException extends XPException {
+  class DependencyInjectionException extends XPException {
   }
 ?>

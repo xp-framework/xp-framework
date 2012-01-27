@@ -7,18 +7,18 @@
   uses(
     'unittest.TestCase',
     'util.log.LogCategory',
-    'ioc.DependecyInjectionContainer',
+    'ioc.DependencyInjectionContainer',
     'net.xp_framework.unittest.ioc.stub.weapon.Bow',
     'net.xp_framework.unittest.ioc.stub.weapon.Sword',
     'net.xp_framework.unittest.ioc.stub.weapon.Dagger'
   );
 
   /**
-   * Testcase for DependecyInjectionContainer
+   * Testcase for DependencyInjectionContainer
    *
-   * @see xp://ioc.DependecyInjectionContainer
+   * @see xp://ioc.DependencyInjectionContainer
    */
-  class DependecyInjectionContainerTest extends TestCase {
+  class DependencyInjectionContainerTest extends TestCase {
     protected $fixture= NULL;
 
     /**
@@ -26,7 +26,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= new DependecyInjectionContainer();
+      $this->fixture= new DependencyInjectionContainer();
     }
 
     /**
@@ -132,7 +132,7 @@
      * Test resolve() should not resolve unbound Interfaces
      *
      */
-    #[@test, @expect('ioc.DependecyInjectionException')]
+    #[@test, @expect('ioc.DependencyInjectionException')]
     public function cantResolveUnboundInterfaces() {
       $this->fixture->resolve('util.Observer');
     }
@@ -141,7 +141,7 @@
      * Test resolve() should not resolve unbound Abstract classes
      *
      */
-    #[@test, @expect('ioc.DependecyInjectionException')]
+    #[@test, @expect('ioc.DependencyInjectionException')]
     public function cantResolveUnboundAbstractClasses() {
       $this->fixture->resolve('util.cmd.Command');
     }
@@ -269,10 +269,11 @@
     #[@test]
     public function resolveClassFieldInject() {
       $this->fixture->bindConstant('dagger.damage', 150);
-
       $weapon= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.weapon.Dagger');
+
+      // Dagger should have injected damage (150)
       $this->assertClass($weapon, 'net.xp_framework.unittest.ioc.stub.weapon.Dagger');
-      $this->assertEquals(150, $weapon->getDamage());
+      $this->assertEquals('Stab Training-Dummy for 150 damage', $weapon->hit('Training-Dummy'));
     }
 
     /**
@@ -282,10 +283,10 @@
     #[@test]
     public function resolveClassFieldInjectAndIgnoreMissingConstants() {
       $weapon= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.weapon.Dagger');
-      $this->assertClass($weapon, 'net.xp_framework.unittest.ioc.stub.weapon.Dagger');
 
-      // Should have default damage
-      $this->assertEquals(create(new Dagger())->getDamage(), $weapon->getDamage());
+      // Dagger should have default damage (10)
+      $this->assertClass($weapon, 'net.xp_framework.unittest.ioc.stub.weapon.Dagger');
+      $this->assertEquals('Stab Training-Dummy for 10 damage', $weapon->hit('Training-Dummy'));
     }
 
     /**
@@ -295,10 +296,11 @@
     #[@test]
     public function resolveSetterConstantInject() {
       $this->fixture->bindConstant('sword.damage', 400);
-
       $weapon= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.weapon.Sword');
+
+      // Sword should have injected damage (400)
       $this->assertClass($weapon, 'net.xp_framework.unittest.ioc.stub.weapon.Sword');
-      $this->assertEquals(400, $weapon->damage);
+      $this->assertEquals('Cut Training-Dummy for 400 damage', $weapon->hit('Training-Dummy'));
     }
 
     /**
@@ -308,10 +310,10 @@
     #[@test]
     public function resolveSetterConstantInjectAndIgnoreMissingConstants() {
       $weapon= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.weapon.Sword');
-      $this->assertClass($weapon, 'net.xp_framework.unittest.ioc.stub.weapon.Sword');
 
-      // Should have default damage
-      $this->assertEquals(create(new Sword())->damage, $weapon->damage);
+      // Sword should have default damage (20)
+      $this->assertClass($weapon, 'net.xp_framework.unittest.ioc.stub.weapon.Sword');
+      $this->assertEquals('Cut Training-Dummy for 20 damage', $weapon->hit('Training-Dummy'));
     }
 
     /**
@@ -320,12 +322,12 @@
      */
     #[@test]
     public function resolveSetterTypeInject() {
-      $weapon= new Sword();
-      $this->fixture->bindType('net.xp_framework.unittest.ioc.stub.IWeapon', $weapon);
-
+      $this->fixture->bindType('net.xp_framework.unittest.ioc.stub.IWeapon', new Sword());
       $unit= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.unit.Peon');
+
+      // Unit should have a Sword equipped (injected in Setter)
       $this->assertClass($unit, 'net.xp_framework.unittest.ioc.stub.unit.Peon');
-      $this->assertEquals($weapon, $unit->getWeapon());
+      $this->assertEquals('Peon: Cut Training-Dummy for 20 damage', $unit->attack('Training-Dummy'));
     }
 
     /**
@@ -335,8 +337,10 @@
     #[@test]
     public function resolveSetterTypeInjectAndIgnoreMissingConstants() {
       $unit= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.unit.Peon');
+
+      // Unit should have no IWeapon equipped
       $this->assertClass($unit, 'net.xp_framework.unittest.ioc.stub.unit.Peon');
-      $this->assertEquals(NULL, $unit->getWeapon());
+      $this->assertEquals('Peon: I have no weapon so Training-Dummy got away', $unit->attack('Training-Dummy'));
     }
 
     /**
@@ -345,20 +349,22 @@
      */
     #[@test]
     public function resolveConstructorInject() {
-      $weapon= new Sword();
-      $this->fixture->bindType('net.xp_framework.unittest.ioc.stub.IWeapon', $weapon);
-
+      $this->fixture->bindType('net.xp_framework.unittest.ioc.stub.IWeapon', new Sword());
       $unit= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.unit.Infantry');
+
+      // Unit should have a Sword equipped (injected in Constructor)
       $this->assertClass($unit, 'net.xp_framework.unittest.ioc.stub.unit.Infantry');
-      $this->assertEquals($weapon, $unit->getWeapon());
+      $this->assertEquals('Infantry: Cut Training-Dummy for 20 damage', $unit->attack('Training-Dummy'));
     }
 
     /**
      * Test resolve() constructor inject Type with missing Type Binding
      *
      */
-    #[@test, @expect('ioc.DependecyInjectionException')]
+    #[@test, @expect('ioc.DependencyInjectionException')]
     public function cantResolveConstructorInjectWithMissingTypeBinding() {
+
+      // Infantry has a constructor (thus required) unresolved dependency (IWeapon)
       $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.unit.Infantry');
     }
 
@@ -375,10 +381,10 @@
       $this->fixture->bindType('net.xp_framework.unittest.ioc.stub.IWeapon', $bow, 'ranged');
 
       $ninja= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.unit.Ninja');
-      $this->assertEquals($dagger, $ninja->getWeapon());
+      $this->assertEquals('Ninja: Stab Training-Dummy for 10 damage', $ninja->attack('Training-Dummy'));
 
       $archer= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.unit.Archer');
-      $this->assertEquals($bow, $archer->getWeapon());
+      $this->assertEquals('Archer: Shot Training-Dummy for 30 damage', $archer->attack('Training-Dummy'));
     }
 
     /**
@@ -400,7 +406,7 @@
       // Get an Infantry equipped with a mighty Sword
       $unit= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.IUnit');
       $this->assertClass($unit, 'net.xp_framework.unittest.ioc.stub.unit.Infantry');
-      $this->assertClass($unit->getWeapon(), 'net.xp_framework.unittest.ioc.stub.weapon.Sword');
+      $this->assertEquals('Infantry: Cut Training-Dummy for 20 damage', $unit->attack('Training-Dummy'));
     }
 
     /**
@@ -434,12 +440,12 @@
       // Get a Ninja equipped with a sharp Dagger
       $ninja= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.IUnit', 'stealth');
       $this->assertClass($ninja, 'net.xp_framework.unittest.ioc.stub.unit.Ninja');
-      $this->assertClass($ninja->getWeapon(), 'net.xp_framework.unittest.ioc.stub.weapon.Dagger');
+      $this->assertEquals('Ninja: Stab Training-Dummy for 10 damage', $ninja->attack('Training-Dummy'));
 
       // Get an Archer equipped with a pointy Bow
       $archer= $this->fixture->resolve('net.xp_framework.unittest.ioc.stub.IUnit', 'ranged');
       $this->assertClass($archer, 'net.xp_framework.unittest.ioc.stub.unit.Archer');
-      $this->assertClass($archer->getWeapon(), 'net.xp_framework.unittest.ioc.stub.weapon.Bow');
+      $this->assertEquals('Archer: Shot Training-Dummy for 30 damage', $archer->attack('Training-Dummy'));
     }
   }
 ?>

@@ -21,8 +21,8 @@
      *
      */
     public function attack($target) {
-      if (NULL === $weapon) {
-        return 'Peon: No weapon found so '.$target.' got away';
+      if (NULL === $this->weapon) {
+        return 'Peon: I have no weapon so '.$target.' got away';
       }
       return 'Peon: '.$this->weapon->hit($target);
     }
@@ -36,15 +36,6 @@
     #[@inject]
     public function setWeapon(IWeapon $weapon) {
       $this->weapon= $weapon;
-    }
-
-    /**
-     * Getter for weapon
-     *
-     * @return net.xp_framework.unittest.ioc.stub.IWeapon $weapon
-     */
-    public function getWeapon() {
-      return $this->weapon;
     }
   }
 ?>

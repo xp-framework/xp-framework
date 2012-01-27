@@ -6,7 +6,7 @@
 
   uses(
     'lang.reflect.Routine',
-    'ioc.DependecyInjectionException'
+    'ioc.DependencyInjectionException'
   );
 
   /**
@@ -120,7 +120,7 @@
    * </code>
    *
    */
-  class DependecyInjectionContainer extends Object {
+  class DependencyInjectionContainer extends Object {
     protected
       $typeBindings     = array(),
       $constantBindings = array();
@@ -208,7 +208,7 @@
      * @param  string $context
      * @return var
      * @throws lang.IllegalArgumentException when $ref is neither a string nor a lang.XPClass
-     * @throws ioc.DependecyInjectionException when cannot create the specified instance
+     * @throws ioc.DependencyInjectionException when cannot create the specified instance
      */
     public function resolve($ref, $context= '*') {
 
@@ -244,12 +244,12 @@
 
         // Cannot resolve unbound Interfaces
         if ($binding->isInterface()) {
-          throw new DependecyInjectionException('Cannot resolve unbound Interface ['.$ref.']');
+          throw new DependencyInjectionException('Cannot resolve unbound Interface ['.$ref.']');
         }
 
         // Cannot resolve unbound abstract Classes
         if ($binding->getModifiers() & MODIFIER_ABSTRACT) {
-          throw new DependecyInjectionException('Cannot resolve unbound abstract Class ['.$ref.']');
+          throw new DependencyInjectionException('Cannot resolve unbound abstract Class ['.$ref.']');
         }
       }
 
@@ -297,7 +297,7 @@
 
         // Bindings via setters are optional
         // If parameter(s) cannot be resolved, quietly ignore it
-        } catch (DependecyInjectionException $ex) {
+        } catch (DependencyInjectionException $ex) {
           continue;
         }
 
@@ -313,7 +313,7 @@
      * Resolve routine parameters using bindings defined in this container
      *
      * @param  lang.reflect.Routine $routine
-     * @throws ioc.DependecyInjectionException when not all parameters could be resolved
+     * @throws ioc.DependencyInjectionException when not all parameters could be resolved
      */
     protected function resolveRoutineParameters(Routine $routine) {
       $retVal= array();
@@ -335,7 +335,7 @@
 
         // Routine should only have one parameter
         if (1 !== $pn) {
-          throw new DependecyInjectionException(sprintf(
+          throw new DependencyInjectionException(sprintf(
             'Method %s::%s() defines a constant binding and should have just one parameter, %d found',
             $routine->getDeclaringClass()->getName(),
             $routine->getName(),
@@ -346,7 +346,7 @@
         // Broken dependency chain: constant not defined
         $constantName= $routine->getAnnotation('inject', 'constant');
         if (!isset($this->constantBindings[$constantName][$context])) {
-          throw new DependecyInjectionException(sprintf(
+          throw new DependencyInjectionException(sprintf(
             'Cannot resolve constant binding "%s" defined by %s::%s()',
             $constantName,
             $routine->getDeclaringClass()->getName(),
@@ -373,7 +373,7 @@
           }
 
           // Broken dependency chain: missing type hinting
-          throw new DependecyInjectionException(sprintf(
+          throw new DependencyInjectionException(sprintf(
             'Missing type hinting for parameter %d ($%s) passed to %s::%s()',
             $pi + 1,
             $parameter->getName(),
@@ -396,7 +396,7 @@
           }
 
           // Broken dependency chain: cannot resolve binding
-          throw new DependecyInjectionException(sprintf(
+          throw new DependencyInjectionException(sprintf(
             'Cannot resolve parameter %d ($%s) passed to  %s::%s()',
             $pi + 1,
             $parameter->getName(),

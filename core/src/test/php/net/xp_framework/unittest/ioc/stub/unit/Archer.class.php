@@ -33,14 +33,5 @@
     public function attack($target) {
       return 'Archer: '.$this->weapon->hit($target);
     }
-
-    /**
-     * Getter for weapon
-     *
-     * @return net.xp_framework.unittest.ioc.stub.IWeapon $weapon
-     */
-    public function getWeapon() {
-      return $this->weapon;
-    }
   }
 ?>
