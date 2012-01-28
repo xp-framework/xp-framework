@@ -73,7 +73,7 @@
     public function xpFrameworkRefusesToStart() {
       $r= $this->run();
       $this->assertEquals(255, $r[0], 'exitcode');
-      $this->assertTrue((bool)strstr($r[1], "[xp::core] magic_quotes_gpc enabled"), $r[1]);
+      $this->assertTrue((bool)strstr($r[1], "[xp::core] magic_quotes_gpc enabled"), xp::stringOf($r));
     }
 
     /**
@@ -85,8 +85,8 @@
     public function xpFrameworkRefusesToStartAndDeprecationWarning() {
       $r= $this->run();
       $this->assertEquals(255, $r[0], 'exitcode');
-      $this->assertTrue((bool)strstr($r[1], "[xp::core] magic_quotes_gpc enabled"), $r[1]);
-      $this->assertTrue((bool)strstr($r[2], "Directive 'magic_quotes_gpc' is deprecated in PHP 5.3 and greater"), $r[2]);
+      $this->assertTrue((bool)strstr($r[1], "[xp::core] magic_quotes_gpc enabled"), xp::stringOf($r));
+      $this->assertTrue((bool)strstr($r[2], "Directive 'magic_quotes_gpc' is deprecated in PHP 5.3 and greater"), xp::stringOf($r));
     }
     
     /**
@@ -98,7 +98,11 @@
     public function phpRefusesToStart() {
       $r= $this->run();
       $this->assertEquals(1, $r[0], 'exitcode');
-      $this->assertTrue((bool)strstr($r[1], "Directive 'magic_quotes_gpc' is no longer available in PHP"), $r[1]);
+      if (strstr(phpversion(), '5.4.0RC7')) {   // PHP bug #60920
+        $this->assertTrue((bool)strstr($r[2], "Directive 'magic_quotes_gpc' is no longer available in PHP"), xp::stringOf($r));
+      } else {
+        $this->assertTrue((bool)strstr($r[1], "Directive 'magic_quotes_gpc' is no longer available in PHP"), xp::stringOf($r));
+      }
     }
   }
 ?>
