@@ -92,7 +92,8 @@
      * @param   rdbms.DBConnection conn
      * @param   string mode
      */
-    private function setConnection(/*[@inject(name= "db")]*/ $conn, $mode) { }
+    #[@$conn: inject(name= "db")]
+    private function setConnection($conn, $mode) { }
   
     /**
      * Tests Method::numParameters()
