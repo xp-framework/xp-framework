@@ -18,7 +18,7 @@
   define('DETAIL_THROWS',         3);
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
-  define('DETAIL_NAME',           6);
+  define('DETAIL_TARGET_ANNO',    6);
   define('DETAIL_GENERIC',        7);
  
   /**
@@ -585,7 +585,7 @@
     public static function parseAnnotations($input, $context) {
       $input= trim($input, "[]# \t\n\r").']';
       $offset= 0;
-      $annotations= array();
+      $annotations= array(0 => array(), 1 => array());
       $annotation= $value= NULL;
       $length= strlen($input);
       ob_start();
@@ -596,7 +596,16 @@
           $annotation= substr($input, $offset+ 1, $s- 1);
           $offset+= $s;
         } else if (']' === $state) {
-          $annotation && $annotations[$annotation]= $value;
+          if (NULL === $annotation) {
+            // Nothing
+          } else if (FALSE === ($p= strpos($annotation, ':'))) {
+            $annotations[0][$annotation]= $value;
+          } else {
+            $target= rtrim(substr($annotation, 0, $p), ' ');
+            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
+            isset($annotations[1][$target]) || $annotations[1][$target]= array();
+            $annotations[1][$target][$annotation]= $value;
+          }
           break;
         } else if ('(' === $state) {
           $peek= substr($input, $offset+ 1, strcspn($input, '="\')', $offset));
@@ -692,14 +701,21 @@
             raise('lang.ClassFormatException', 'Parse error: Expecting ] in '.$context);
           }
         } else if (')' === $state) {
-          $annotations[$annotation]= $value;
+          if (FALSE === ($p= strpos($annotation, ':'))) {
+            $annotations[0][$annotation]= $value;
+          } else {
+            $target= rtrim(substr($annotation, 0, $p), ' ');
+            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
+            isset($annotations[1][$target]) || $annotations[1][$target]= array();
+            $annotations[1][$target][$annotation]= $value;
+          }
           $annotation= $value= NULL;
           $s= strspn($input, ',]', $offset);
           $offset+= $s + 1;
         } else if (',' === $state) {
           if (NULL !== $annotation && NULL !== $value) {    // BC
             trigger_error('Deprecated usage of multi-value annotations in '.$context, E_USER_DEPRECATED);
-            $annotations[$annotation]= array($value);
+            $annotations[0][$annotation]= array($value);
             do {
               $s= strspn($input, ' "\')', $offset+ 1);
               $offset+= $s;
@@ -715,18 +731,18 @@
                   raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
                 }
                 $offset= $p+ 1;
-                $annotations[$annotation][]= $value;
+                $annotations[0][$annotation][]= $value;
               } else if (')' === $input{$offset}) {
                 break;
               } else {
                 $s= strcspn($input, ',)', $offset);
-                $annotations[$annotation][]= eval('return '.substr($input, $offset, $s).';');
+                $annotations[0][$annotation][]= eval('return '.substr($input, $offset, $s).';');
                 $offset+= $s;
               }
             } while ($offset <= $length);
             break;
           }
-          $annotations[$annotation]= $value;
+          $annotations[0][$annotation]= $value;
           $annotation= $value= NULL;
           if (FALSE === ($offset= strpos($input, '@', $offset))) {
             raise('lang.ClassFormatException', 'Parse error: Expecting @ in '.$context);
@@ -760,7 +776,7 @@
       if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
 
       $details= array(array(), array());
-      $annotations= array();
+      $annotations= array(0 => array(), 1 => array());
       $comment= NULL;
       $members= TRUE;
       $parsed= '';
@@ -800,9 +816,9 @@
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
               ))),
-              DETAIL_ANNOTATIONS  => $annotations
+              DETAIL_ANNOTATIONS  => $annotations[0]
             );
-            $annotations= array();
+            $annotations= array(0 => array(), 1 => array());
             $comment= NULL;
             break;
 
@@ -813,9 +829,9 @@
             '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $name= substr($tokens[$i][1], 1);
             $details[0][$name]= array(
-              DETAIL_ANNOTATIONS => $annotations
+              DETAIL_ANNOTATIONS => $annotations[0]
             );
-            $annotations= array();
+            $annotations= array(0 => array(), 1 => array());
             break;
 
           case T_FUNCTION:
@@ -832,10 +848,10 @@
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
               ))),
-              DETAIL_ANNOTATIONS  => $annotations,
-              DETAIL_NAME         => $tokens[$i][1]
+              DETAIL_ANNOTATIONS  => $annotations[0],
+              DETAIL_TARGET_ANNO    => $annotations[1]
             );
-            $annotations= array();
+            $annotations= array(0 => array(), 1 => array());
             $matches= NULL;
             preg_match_all(
               '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)?/',
@@ -845,24 +861,10 @@
             );
             $comment= NULL;
             $arg= 0;
-            while ('{' !== $tokens[$i][0] && ';' !== $tokens[$i][0]) {
-              if (T_VARIABLE === $tokens[$i][0]) {
-                $details[1][$m][DETAIL_ARGUMENTS][$arg++]= array(NULL, self::parseAnnotations(
-                  trim(substr($comment, 2, -2)),  // /* and */
-                  $class.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
-                ));
-                $comment= NULL;
-              } else if (T_COMMENT === $tokens[$i][0]) {
-                $comment= $tokens[$i][1];
-              }
-              $i++;
-            }
-            $comment= NULL;
-            $arg= 0;
             foreach ($matches as $match) {
               switch ($match[1]) {
                 case 'param':
-                  $details[1][$m][DETAIL_ARGUMENTS][$arg++][0]= $match[2];
+                  $details[1][$m][DETAIL_ARGUMENTS][$arg++]= $match[2];
                   break;
 
                 case 'return':
@@ -1060,7 +1062,7 @@
                   DETAIL_THROWS       => array(),
                   DETAIL_COMMENT      => $comment,
                   DETAIL_ANNOTATIONS  => $annotations,
-                  DETAIL_NAME         => $m
+                  DETAIL_TARGET_ANNO  => array()
                 );
                 foreach ($matches as $match) {
                   switch ($match[1]) {
