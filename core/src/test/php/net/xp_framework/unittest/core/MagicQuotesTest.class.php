@@ -98,7 +98,11 @@
     public function phpRefusesToStart() {
       $r= $this->run();
       $this->assertEquals(1, $r[0], 'exitcode');
-      $this->assertTrue((bool)strstr($r[2], "Directive 'magic_quotes_gpc' is no longer available in PHP"), xp::stringOf($r));
+      if (strstr(phpversion(), '5.4.0RC7')) {   // PHP bug #60920
+        $this->assertTrue((bool)strstr($r[2], "Directive 'magic_quotes_gpc' is no longer available in PHP"), xp::stringOf($r));
+      } else {
+        $this->assertTrue((bool)strstr($r[1], "Directive 'magic_quotes_gpc' is no longer available in PHP"), xp::stringOf($r));
+      }
     }
   }
 ?>
