@@ -51,7 +51,7 @@
           strpos($comment, '* @')- 2      // position of first details token
         ))),
         DETAIL_ANNOTATIONS  => $annotations,
-        DETAIL_NAME         => $name
+        DETAIL_TARGET_ANNO  => array()
       );
       
       foreach ($matches as $match) {
