@@ -51,7 +51,7 @@
       ) {   // Unknown or unparseable, return ANYTYPE
         return Type::$VAR;
       }
-      return Type::forName(ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]][0], '&'));
+      return Type::forName(ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&'));
     }
 
     /**
@@ -66,7 +66,7 @@
       ) {   // Unknown or unparseable, return ANYTYPE
         return 'var';
       }
-      return ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]][0], '&');
+      return ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&');
     }
 
     /**
@@ -115,16 +115,17 @@
      * @return  bool
      */
     public function hasAnnotation($name, $key= NULL) {
+      $n= '$'.$this->_reflect->getName();
       if (
         !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
-        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
+        !isset($details[DETAIL_TARGET_ANNO][$n])
       ) {   // Unknown or unparseable
         return FALSE;
       }
 
       return $details && ($key 
-        ? array_key_exists($key, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name]) 
-        : array_key_exists($name, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1])
+        ? array_key_exists($key, (array)@$details[DETAIL_TARGET_ANNO][$n][$name]) 
+        : array_key_exists($name, (array)@$details[DETAIL_TARGET_ANNO][$n])
       );
     }
 
@@ -137,11 +138,12 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
+      $n= '$'.$this->_reflect->getName();
       if (
         !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
-        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]]) || !($key 
-          ? array_key_exists($key, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name]) 
-          : array_key_exists($name, (array)@$details[DETAIL_ARGUMENTS][$this->_details[2]][1])
+        !isset($details[DETAIL_TARGET_ANNO][$n]) || !($key 
+          ? array_key_exists($key, (array)@$details[DETAIL_TARGET_ANNO][$n][$name]) 
+          : array_key_exists($name, (array)@$details[DETAIL_TARGET_ANNO][$n])
         ) 
       ) return raise(
         'lang.ElementNotFoundException', 
@@ -149,8 +151,8 @@
       );
 
       return ($key 
-        ? $details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name][$key] 
-        : $details[DETAIL_ARGUMENTS][$this->_details[2]][1][$name]
+        ? $details[DETAIL_TARGET_ANNO][$n][$name][$key] 
+        : $details[DETAIL_TARGET_ANNO][$n][$name]
       );
     }
 
@@ -160,13 +162,14 @@
      * @return  bool
      */
     public function hasAnnotations() {
+      $n= '$'.$this->_reflect->getName();
       if (
         !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
-        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
+        !isset($details[DETAIL_TARGET_ANNO][$n])
       ) {   // Unknown or unparseable
         return FALSE;
       }
-      return $details ? !empty($details[DETAIL_ARGUMENTS][$this->_details[2]][1]) : FALSE;
+      return $details ? !empty($details[DETAIL_TARGET_ANNO][$n]) : FALSE;
     }
 
     /**
@@ -175,13 +178,14 @@
      * @return  var[] annotations
      */
     public function getAnnotations() {
+      $n= '$'.$this->_reflect->getName();
       if (
         !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
-        !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
+        !isset($details[DETAIL_TARGET_ANNO][$n])
       ) {   // Unknown or unparseable
         return array();
       }
-      return $details[DETAIL_ARGUMENTS][$this->_details[2]][1];
+      return $details[DETAIL_TARGET_ANNO][$n];
     }
     
     /**
