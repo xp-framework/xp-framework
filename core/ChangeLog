@@ -66,6 +66,7 @@ Features
 ~~~~~~~~
 - Added lang.reflect.Field::getTypeName() for forward compatibility - see 
   comments in issue #34
+  http://news.planet-xp.net/article/440/2012/01/28/
   (friebe)
 - Merged pull request #115: Properties: Support uppercase booleans
   (ledermueller)
