@@ -390,16 +390,6 @@
     }
 
     /**
-     * Tests retrieving the "date" field's is defined
-     *
-     * @see     xp://lang.reflect.Field#getTypeName
-     */
-    #[@test]
-    public function dateFieldTypeName() {
-      $this->assertEquals('util.Date', $this->fixture->getField('date')->getTypeName());
-    }
-
-    /**
      * Tests retrieving the "cache" field's type is unknown
      *
      * @see     xp://lang.reflect.Field#getType
@@ -407,25 +397,6 @@
     #[@test]
     public function cacheFieldType() {
       $this->assertEquals(Type::$VAR, $this->fixture->getField('cache')->getType());
-    }
-
-    /**
-     * Tests retrieving the "cache" field's type is unknown
-     *
-     * @see     xp://lang.reflect.Field#getTypeName
-     */
-    #[@test]
-    public function cacheFieldTypeName() {
-      $this->assertEquals('var', $this->fixture->getField('cache')->getTypeName());
-    }
-
-    /**
-     * Tests field details for inherited field
-     *
-     */
-    #[@test]
-    public function fieldTypeForInheritedField() {
-      $this->assertEquals(XPClass::forName('lang.Object'), $this->fixture->getField('inherited')->getType());
     }
 
     /**
