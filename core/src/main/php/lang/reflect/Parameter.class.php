@@ -172,7 +172,7 @@
     /**
      * Retrieve all of a method's annotations
      *
-     * @return  array annotations
+     * @return  var[] annotations
      */
     public function getAnnotations() {
       if (
