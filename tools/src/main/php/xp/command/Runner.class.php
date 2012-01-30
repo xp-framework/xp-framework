@@ -184,7 +184,7 @@
      * @return  int
      */
     public function run(ParamString $params) {
-      $props= 'etc';
+      $default_props= 'etc';
 
       // No arguments given - show our own usage
       if ($params->count < 1) {
@@ -192,10 +192,15 @@
         return 1;
       }
 
+      // Configure properties
+      $pm= PropertyManager::getInstance();
+
       // Separate runner options from class options
       for ($offset= 0, $i= 0; $i < $params->count; $i++) switch ($params->list[$i]) {
         case '-c':
-          $props= $params->list[$i+ 1];
+          foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
+            $pm->appendSource(new FilesystemPropertySource($element));
+          }
           $offset+= 2; $i++;
           break;
         case '-cp':
@@ -218,9 +223,10 @@
         return 1;
       }
       
-      // Configure properties
-      $pm= PropertyManager::getInstance();
-      $pm->configure($props);
+      // Use default path for PropertyManager if no soruces set
+      if (!$pm->getSources()) {
+        $pm->configure($default_props);
+      }
 
       unset($params->list[-1]);
       $classname= $params->value($offset);
