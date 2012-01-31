@@ -64,6 +64,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for multiple configuration paths for web applications
+  see RFC #0221
+  (kuse)
 - Added support for multiple -c arguments for xpcli runner - see RFC #0221
   (kuse)
 - Added lang.reflect.Field::getTypeName() for forward compatibility - see 

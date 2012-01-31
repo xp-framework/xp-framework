@@ -223,7 +223,7 @@
         return 1;
       }
       
-      // Use default path for PropertyManager if no soruces set
+      // Use default path for PropertyManager if no sources set
       if (!$pm->getSources()) {
         $pm->configure($default_props);
       }
