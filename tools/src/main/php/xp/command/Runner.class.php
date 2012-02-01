@@ -198,9 +198,7 @@
       // Separate runner options from class options
       for ($offset= 0, $i= 0; $i < $params->count; $i++) switch ($params->list[$i]) {
         case '-c':
-          foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
-            $pm->appendSource(new FilesystemPropertySource($element));
-          }
+          $pm->appendSource(new FilesystemPropertySource($params->list[$i+ 1]));
           $offset+= 2; $i++;
           break;
         case '-cp':
