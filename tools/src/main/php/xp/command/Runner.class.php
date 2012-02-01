@@ -54,6 +54,8 @@
     
     private
       $verbose= FALSE;
+
+    const DEFAULT_CONFIG_PATH = 'etc';
     
     static function __static() {
       self::$in= new StringReader(new ConsoleInputStream(STDIN));
@@ -184,8 +186,6 @@
      * @return  int
      */
     public function run(ParamString $params) {
-      $default_props= 'etc';
-
       // No arguments given - show our own usage
       if ($params->count < 1) {
         self::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
@@ -223,7 +223,7 @@
       
       // Use default path for PropertyManager if no sources set
       if (!$pm->getSources()) {
-        $pm->configure($default_props);
+        $pm->configure(self::DEFAULT_CONFIG_PATH);
       }
 
       unset($params->list[-1]);
