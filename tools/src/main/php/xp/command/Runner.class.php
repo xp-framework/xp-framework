@@ -28,11 +28,11 @@
    * Options includes one of the following:
    * <pre>
    * -c:
-   *   Set the path with which the PropertyManager is configured with. The
-   *   PropertyManager is used for dependency injection. If a file called
-   *   log.ini exists in this path, the Logger will be configured with. If
-   *   a database.ini is present there, the ConnectionManager will be
-   *   configured with it.
+   *   Add the path to the PropertyManager sources. The PropertyManager
+   *   is used for dependency injection. If files called log.ini exists
+   *   in this paths, the Logger will be configured with. If any
+   *   database.ini are present there, the ConnectionManager will be
+   *   configured with it. (If not given etc is used as default path)
    * 
    * -cp:
    *   Add the path value to the class path.
