@@ -28,11 +28,11 @@
    * Options includes one of the following:
    * <pre>
    * -c:
-   *   Set the path with which the PropertyManager is configured with. The
-   *   PropertyManager is used for dependency injection. If a file called
-   *   log.ini exists in this path, the Logger will be configured with. If
-   *   a database.ini is present there, the ConnectionManager will be
-   *   configured with it.
+   *   Add the path to the PropertyManager sources. The PropertyManager
+   *   is used for dependency injection. If files called log.ini exists
+   *   in this paths, the Logger will be configured with. If any
+   *   database.ini are present there, the ConnectionManager will be
+   *   configured with it. (If not given etc is used as default path)
    * 
    * -cp:
    *   Add the path value to the class path.
@@ -54,6 +54,8 @@
     
     private
       $verbose= FALSE;
+
+    const DEFAULT_CONFIG_PATH = 'etc';
     
     static function __static() {
       self::$in= new StringReader(new ConsoleInputStream(STDIN));
@@ -184,18 +186,19 @@
      * @return  int
      */
     public function run(ParamString $params) {
-      $props= 'etc';
-
       // No arguments given - show our own usage
       if ($params->count < 1) {
         self::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
         return 1;
       }
 
+      // Configure properties
+      $pm= PropertyManager::getInstance();
+
       // Separate runner options from class options
       for ($offset= 0, $i= 0; $i < $params->count; $i++) switch ($params->list[$i]) {
         case '-c':
-          $props= $params->list[$i+ 1];
+          $pm->appendSource(new FilesystemPropertySource($params->list[$i+ 1]));
           $offset+= 2; $i++;
           break;
         case '-cp':
@@ -218,9 +221,10 @@
         return 1;
       }
       
-      // Configure properties
-      $pm= PropertyManager::getInstance();
-      $pm->configure($props);
+      // Use default path for PropertyManager if no sources set
+      if (!$pm->getSources()) {
+        $pm->configure(self::DEFAULT_CONFIG_PATH);
+      }
 
       unset($params->list[-1]);
       $classname= $params->value($offset);
