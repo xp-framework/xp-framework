@@ -923,24 +923,5 @@
         }')
       );
     }
-    
-    /**
-     * Test encoding of object
-     *
-     */
-    #[@test]
-    public function encodeObject() {
-      $o= ClassLoader::defineClass('JsonTestValueClass', 'lang.Object', array(), '{
-        public $prop  = NULL;
-      }')->newInstance();
-
-      $o->__id= '<bogusid>';
-      $o->prop= 'prop';
-
-      $this->assertEquals(
-        '{ "prop" : "prop" , "__id" : "<bogusid>" }',
-        $this->fixture->encode($o)
-      );
-    }    
   }
 ?>
