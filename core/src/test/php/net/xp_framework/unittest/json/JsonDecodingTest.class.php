@@ -939,7 +939,7 @@
 
       $this->assertEquals(
         '{ "prop" : "prop" , "__id" : "<bogusid>" }',
-        $this->decoder->encode($o)
+        $this->fixture->encode($o)
       );
     }    
   }
