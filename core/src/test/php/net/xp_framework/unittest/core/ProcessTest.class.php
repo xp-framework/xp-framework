@@ -61,11 +61,7 @@
     public function newInstance() {
       $p= Runtime::getInstance()->getExecutable()->newInstance(array('-v'));
       $version= 'PHP '.phpversion();
-      if (strstr($version, '5.4.0RC7')) {   // PHP bug #60920
-        $this->assertEquals($version, $p->err->read(strlen($version)));
-      } else {
-        $this->assertEquals($version, $p->out->read(strlen($version)));
-      }
+      $this->assertEquals($version, $p->out->read(strlen($version)));
       $p->close();
     }
 
