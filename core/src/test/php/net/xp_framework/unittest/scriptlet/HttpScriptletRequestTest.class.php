@@ -34,7 +34,7 @@
       $r= new HttpScriptletRequest();
       $r->method= $method;
       $r->setURI(new URL($u['scheme'].'://'.$u['host'].'/'.$u['path']));
-      $r->setParams(array_change_key_case($params, CASE_LOWER));
+      $r->setParams($params);
       $r->headers= array_change_key_case($headers, CASE_LOWER);
       
       return $r;
