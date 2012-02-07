@@ -172,7 +172,7 @@
      * @param   var value
      */
     public function setParam($name, $value) {
-      $this->params[$name]= $value;
+      $this->params[strtolower($name)]= $value;
     }
     
     /**
