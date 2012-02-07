@@ -342,10 +342,57 @@
      *
      */
     #[@test]
+    public function addHeaderAndGetHeadersRoundtrip() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->addHeader('a', 'b');
+      $this->assertEquals(array('a' => 'b'), $r->getHeaders());
+    }
+
+    /**
+     * Test getHeader() and addHeader() methods
+     *
+     */
+    #[@test]
+    public function addHeaderOverwritingAndGetHeadersRoundtrip() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->addHeader('a', 'b');
+      $r->addHeader('A', 'c');
+      $this->assertEquals(array('a' => 'c'), $r->getHeaders());
+    }
+
+    /**
+     * Test getHeader() and addHeader() methods
+     *
+     */
+    #[@test]
     public function addHeaderAndGetHeaderRoundtrip() {
       $r= $this->newRequest('GET', 'http://localhost/', array());
       $r->addHeader('a', 'b');
       $this->assertEquals('b', $r->getHeader('a'));
+    }
+
+    /**
+     * Test getHeader() and addHeader() methods
+     *
+     */
+    #[@test]
+    public function addHeaderOverwritingAndGetHeaderRoundtrip() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->addHeader('a', 'b');
+      $r->addHeader('a', 'c');
+      $this->assertEquals('c', $r->getHeader('a'));
+    }
+
+    /**
+     * Test getHeader() and addHeader() methods
+     *
+     */
+    #[@test]
+    public function addHeaderOverwritingCaseInsensitiveAndGetHeaderRoundtrip() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->addHeader('a', 'b');
+      $r->addHeader('A', 'c');
+      $this->assertEquals('c', $r->getHeader('a'));
     }
 
     /**
