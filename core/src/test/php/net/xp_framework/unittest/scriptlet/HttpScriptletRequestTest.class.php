@@ -59,6 +59,16 @@
       $r= $this->newRequest('GET', 'http://localhost/', array());
       $this->assertNull($r->getParam('a'));
     }
+
+    /**
+     * Test getParam()
+     *
+     */
+    #[@test]
+    public function getNonExistantParamDefault() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertEquals('default', $r->getParam('a', 'default'));
+    }
   
     /**
      * Test hasParam()
@@ -248,6 +258,38 @@
     public function headersEmpty() {
       $r= $this->newRequest('GET', 'http://localhost/', array());
       $this->assertEquals(array(), $r->getHeaders());
+    }
+
+    /**
+     * Test getHeader()
+     *
+     */
+    #[@test]
+    public function getHeader() {
+      $r= $this->newRequest('GET', 'http://localhost/', array(
+        'Referer' => 'http://example.com/'
+      ));
+      $this->assertEquals('http://example.com/', $r->getHeader('Referer'));
+    }
+
+    /**
+     * Test getHeader()
+     *
+     */
+    #[@test]
+    public function getNonExistantHeader() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertNull($r->getHeader('User-Agent'));
+    }
+
+    /**
+     * Test getHeader()
+     *
+     */
+    #[@test]
+    public function getNonExistantHeaderDefault() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertEquals('default', $r->getHeader('User-Agent', 'default'));
     }
 
     /**
