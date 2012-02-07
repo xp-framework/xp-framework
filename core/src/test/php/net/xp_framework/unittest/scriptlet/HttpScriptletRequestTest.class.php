@@ -267,7 +267,7 @@
     #[@test]
     public function params() {
       $r= $this->newRequest('GET', 'http://localhost/?CustomerId=1&Sort=ASC', array());
-      $this->assertEquals(array('CustomerId' => '1', 'Sort' => 'ASC'), $r->getParams());
+      $this->assertEquals(array('customerid' => '1', 'sort' => 'ASC'), $r->getParams());
     }
 
     /**
