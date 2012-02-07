@@ -39,19 +39,85 @@
       
       return $r;
     }
-  
+
     /**
-     * Test hasParam() and getParam() methods
+     * Test hasParam()
      *
      */
     #[@test]
-    public function oneParam() {
-      with ($r= $this->newRequest('GET', 'http://localhost/?a=b', array())); {
-        $this->assertTrue($r->hasParam('a'));
-        $this->assertEquals('b', $r->getParam('a'));
-        $this->assertFalse($r->hasParam('c'));
-        $this->assertNull($r->getParam('c'));
-      }
+    public function doesNotHaveNonExistantParam() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertFalse($r->hasParam('a'));
+    }
+
+    /**
+     * Test getParam()
+     *
+     */
+    #[@test]
+    public function getNonExistantParam() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertNull($r->getParam('a'));
+    }
+  
+    /**
+     * Test hasParam()
+     *
+     */
+    #[@test]
+    public function hasOneParam() {
+      $r= $this->newRequest('GET', 'http://localhost/?a=b', array());
+      $this->assertTrue($r->hasParam('a'));
+    }
+
+    /**
+     * Test getParam()
+     *
+     */
+    #[@test]
+    public function getOneParamLowerCaseParamMixedCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/?paramname=b', array());
+      $this->assertEquals('b', $r->getParam('ParamName'));
+    }
+
+    /**
+     * Test hasParam()
+     *
+     */
+    #[@test]
+    public function hasOneParamLowerCaseParamMixedCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/?paramname=b', array());
+      $this->assertTrue($r->hasParam('ParamName'));
+    }
+
+    /**
+     * Test getParam()
+     *
+     */
+    #[@test]
+    public function getOneParamMixedCaseParamLowerCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/?ParamName=b', array());
+      $this->assertEquals('b', $r->getParam('paramname'));
+    }
+
+    /**
+     * Test hasParam()
+     *
+     */
+    #[@test]
+    public function hasOneParamMixedCaseParamLowerCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/?ParamName=b', array());
+      $this->assertTrue($r->hasParam('paramname'));
+    }
+
+    /**
+     * Test getParam()
+     *
+     */
+    #[@test]
+    public function getOneParam() {
+      $r= $this->newRequest('GET', 'http://localhost/?a=b', array());
+      $this->assertEquals('b', $r->getParam('a'));
     }
 
     /**
@@ -73,12 +139,34 @@
      *
      */
     #[@test]
+    public function oneParamWithArrayValue() {
+      with ($r= $this->newRequest('GET', 'http://localhost/?a[]=1&a[]=2', array())); {
+        $this->assertTrue($r->hasParam('a'));
+        $this->assertEquals(array('1', '2'), $r->getParam('a'));
+      }
+    }
+
+    /**
+     * Test hasParam() and getParam() methods
+     *
+     */
+    #[@test]
+    public function oneParamWithHashValue() {
+      with ($r= $this->newRequest('GET', 'http://localhost/?a[one]=1&a[two]=2', array())); {
+        $this->assertTrue($r->hasParam('a'));
+        $this->assertEquals(array('one' => '1', 'two' => '2'), $r->getParam('a'));
+      }
+    }
+
+    /**
+     * Test hasParam() and getParam() methods
+     *
+     */
+    #[@test]
     public function oneParamWithoutValue() {
       with ($r= $this->newRequest('GET', 'http://localhost/?a', array())); {
         $this->assertTrue($r->hasParam('a'));
         $this->assertEquals('', $r->getParam('a'));
-        $this->assertFalse($r->hasParam('b'));
-        $this->assertNull($r->getParam('b'));
       }
     }
 
@@ -105,18 +193,6 @@
       with ($r= $this->newRequest('GET', 'http://localhost/?login.SessionId=4711', array())); {
         $this->assertTrue($r->hasParam('login.SessionId'));
         $this->assertEquals('4711', $r->getParam('login.SessionId'));
-      }
-    }
-
-    /**
-     * Test hasParam() and getParam() methods
-     *
-     */
-    #[@test]
-    public function noParams() {
-      with ($r= $this->newRequest('GET', 'http://localhost/', array())); {
-        $this->assertFalse($r->hasParam('any'));
-        $this->assertNull($r->getParam('any'));
       }
     }
 
