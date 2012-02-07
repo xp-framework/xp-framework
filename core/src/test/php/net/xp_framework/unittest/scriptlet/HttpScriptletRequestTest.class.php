@@ -219,6 +219,28 @@
     }
 
     /**
+     * Test getParam() and setParam() methods
+     *
+     */
+    #[@test]
+    public function setParamAndgetParamRoundtripMixedCaseHeaderLowerCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setParam('ParamName', 'b');
+      $this->assertEquals('b', $r->getParam('paramname'));
+    }
+
+    /**
+     * Test getParam() and setParam() methods
+     *
+     */
+    #[@test]
+    public function setParamAndgetParamRoundtripLowerCaseHeaderMixedCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setParam('paramname', 'b');
+      $this->assertEquals('b', $r->getParam('ParamName'));
+    }
+
+    /**
      * Test
      *
      */
