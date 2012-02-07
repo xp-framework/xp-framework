@@ -252,5 +252,27 @@
       $r->addHeader('a', 'b');
       $this->assertEquals('b', $r->getHeader('a'));
     }
+
+    /**
+     * Test getHeader() and addHeader() methods
+     *
+     */
+    #[@test]
+    public function addHeaderAndGetHeaderRoundtripMixedCaseHeaderLowerCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->addHeader('HeaderName', 'b');
+      $this->assertEquals('b', $r->getHeader('headername'));
+    }
+
+    /**
+     * Test getHeader() and addHeader() methods
+     *
+     */
+    #[@test]
+    public function addHeaderAndGetHeaderRoundtripLowerCaseHeaderMixedCaseQuery() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->addHeader('headername', 'b');
+      $this->assertEquals('b', $r->getHeader('HeaderName'));
+    }
   }
 ?>
