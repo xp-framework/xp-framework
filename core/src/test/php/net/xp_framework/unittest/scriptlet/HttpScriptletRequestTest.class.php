@@ -197,13 +197,35 @@
     }
 
     /**
+     * Test hasParam() and setParam() methods
+     *
+     */
+    #[@test]
+    public function setParamAndHasParamRoundtrip() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setParam('a', 'b');
+      $this->assertTrue($r->hasParam('a'));
+    }
+
+    /**
+     * Test getParam() and setParam() methods
+     *
+     */
+    #[@test]
+    public function setParamAndGetParamRoundtrip() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setParam('a', 'b');
+      $this->assertEquals('b', $r->getParam('a'));
+    }
+
+    /**
      * Test
      *
      */
     #[@test]
     public function headersEmpty() {
       $r= $this->newRequest('GET', 'http://localhost/', array());
-      $this->assertEmpty($r->getHeaders());
+      $this->assertEquals(array(), $r->getHeaders());
     }
 
     /**
@@ -218,6 +240,17 @@
 
       $this->assertEquals(1, $r->getHeader('uppercase'));
       $this->assertEquals(1, $r->getHeader('UpPeRCaSe'));
+    }
+
+    /**
+     * Test getHeader() and addHeader() methods
+     *
+     */
+    #[@test]
+    public function addHeaderAndGetHeaderRoundtrip() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->addHeader('a', 'b');
+      $this->assertEquals('b', $r->getHeader('a'));
     }
   }
 ?>
