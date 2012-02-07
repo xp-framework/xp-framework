@@ -255,9 +255,40 @@
      *
      */
     #[@test]
+    public function paramsEmpty() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $this->assertEquals(array(), $r->getParams());
+    }
+
+    /**
+     * Test getParams()
+     *
+     */
+    #[@test]
+    public function params() {
+      $r= $this->newRequest('GET', 'http://localhost/?CustomerId=1&Sort=ASC', array());
+      $this->assertEquals(array('CustomerId' => '1', 'Sort' => 'ASC'), $r->getParams());
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function headersEmpty() {
       $r= $this->newRequest('GET', 'http://localhost/', array());
       $this->assertEquals(array(), $r->getHeaders());
+    }
+
+    /**
+     * Test getHeaders()
+     *
+     */
+    #[@test]
+    public function headers() {
+      $headers= array('Referer' => 'http://example.com/', 'User-Agent' => 'XP');
+      $r= $this->newRequest('GET', 'http://localhost/', $headers);
+      $this->assertEquals($headers, $r->getHeaders());
     }
 
     /**
