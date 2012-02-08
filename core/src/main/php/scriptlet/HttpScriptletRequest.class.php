@@ -27,6 +27,7 @@
       $session=         NULL;
 
     protected
+      $paramlookup=     array(),
       $headerlookup=    array();
     
     /**
@@ -155,7 +156,7 @@
      */
     public function getParam($name, $default= NULL) {
       $name= strtolower(strtr($name, '. ', '__'));
-      if (isset($this->params[$name])) return $this->params[$name]; else return $default;
+      if (isset($this->paramlookup[$name])) return $this->params[$this->paramlookup[$name]]; else return $default;
     }
 
     /**
@@ -165,7 +166,7 @@
      * @return  bool
      */
     public function hasParam($name) {
-      return isset($this->params[strtolower(strtr($name, '. ', '__'))]);
+      return isset($this->paramlookup[strtolower(strtr($name, '. ', '__'))]);
     }
 
     /**
@@ -175,7 +176,13 @@
      * @param   var value
      */
     public function setParam($name, $value) {
-      $this->params[strtolower($name)]= $value;
+      $l= strtolower($name);
+      if (isset($this->paramlookup[$l])) {
+        $name= $this->paramlookup[$l];
+      } else {
+        $this->paramlookup[$l]= $name;
+      }
+      $this->params[$name]= $value;
     }
     
     /**
@@ -241,7 +248,10 @@
      * @param   [:string] params
      */
     public function setParams($params) {
-      $this->params= array_change_key_case($params, CASE_LOWER);
+      $this->params= $this->paramlookup= array();
+      foreach ($params as $name => $value) {
+        $this->setParam($name, $value);
+      }
     }
 
     /**
@@ -284,10 +294,15 @@
     /**
      * Gets all request parameters
      *
+     * @param   int transform Either CASE_UPPER or CASE_LOWER, if omitted, no transformation is applied
      * @return  [:string] params
      */
-    public function getParams() {
-      return $this->params;
+    public function getParams($transform= -1) {
+      if (-1 === $transform) {
+        return $this->params;
+      } else {
+        return array_change_key_case($this->params, $transform);
+      }
     }
     
     /**
