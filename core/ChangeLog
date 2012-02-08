@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed scriptlet request parameters and headers to be case-preserving
+  See issue #120, http://news.planet-xp.net/article/443/2012/02/08/
+  (friebe, kiesel)
 - Removed "localhost" local sockets magic from MySQL implementations
   http://news.planet-xp.net/article/434/2012/01/08/
   (friebe, kiesel)
