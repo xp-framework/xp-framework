@@ -25,6 +25,9 @@
       $data=            NULL,
       $method=          HttpConstants::GET,
       $session=         NULL;
+
+    protected
+      $headerlookup=    array();
     
     /**
      * Initialize this request object. Does nothing in this default 
@@ -139,7 +142,7 @@
      */
     public function getHeader($name, $default= NULL) {
       $name= strtolower($name);
-      if (isset($this->headers[$name])) return $this->headers[$name]; else return $default;
+      if (isset($this->headerlookup[$name])) return $this->headers[$this->headerlookup[$name]]; else return $default;
     }
     
     /**
@@ -172,7 +175,7 @@
      * @param   var value
      */
     public function setParam($name, $value) {
-      $this->params[$name]= $value;
+      $this->params[strtolower($name)]= $value;
     }
     
     /**
@@ -256,7 +259,10 @@
      * @param   [:string] headers
      */
     public function setHeaders($headers) {
-      $this->headers= array_change_key_case($headers, CASE_LOWER);
+      $this->headers= $this->headerlookup= array();
+      foreach ($headers as $name => $value) {
+        $this->addHeader($name, $value);
+      }
     }
 
     /**
@@ -266,7 +272,13 @@
      * @param   string value
      */
     public function addHeader($name, $value) {
-      $this->headers[strtolower($name)]= $value;
+      $l= strtolower($name);
+      if (isset($this->headerlookup[$l])) {
+        $name= $this->headerlookup[$l];
+      } else {
+        $this->headerlookup[$l]= $name;
+      }
+      $this->headers[$name]= $value;
     }
 
     /**

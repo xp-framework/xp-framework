@@ -911,5 +911,27 @@ key=overwritten_value'
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('Have overwritten_value', $this->out->getBytes());
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function injectPropertiesMultipleSources() {
+      $command= newinstance('util.cmd.Command', array(), '{
+
+        #[@inject(name= "debug")]
+        public function setTrace(Properties $prop) {
+          $this->out->write("Have ", $prop->readString("section", "key"));
+        }
+
+        public function run() {
+          // Not reached
+        }
+      }');
+      $this->runWith(array('-c', dirname(__FILE__).DIRECTORY_SEPARATOR.'add_etc', '-c', dirname(__FILE__), $command->getClassName()));
+      $this->assertEquals('', $this->err->getBytes());
+      $this->assertEquals('Have overwritten_value', $this->out->getBytes());
+    }
   }
 ?>
