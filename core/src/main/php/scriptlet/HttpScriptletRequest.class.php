@@ -294,14 +294,14 @@
     /**
      * Gets all request parameters
      *
-     * @param   int handle default -1
+     * @param   int transform Either CASE_UPPER or CASE_LOWER, if omitted, no transformation is applied
      * @return  [:string] params
      */
-    public function getParams($handle= -1) {
-      if (-1 === $handle) {
+    public function getParams($transform= -1) {
+      if (-1 === $transform) {
         return $this->params;
       } else {
-        return array_change_key_case($this->params, $handle);
+        return array_change_key_case($this->params, $transform);
       }
     }
     
