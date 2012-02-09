@@ -20,8 +20,12 @@
      * Constructor
      *
      * @param   string value
+     * @throws  lang.FormatException
      */
     public function __construct($value) {
+      if (!is_numeric($value))
+        throw new FormatException('Not a number: '.$value);
+
       $this->value= (string)$value;
     }
     

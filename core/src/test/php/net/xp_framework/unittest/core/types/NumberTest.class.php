@@ -105,5 +105,42 @@
       $this->assertNotEquals(new Byte(1), new Short(1), 'byte = short');
       $this->assertNotEquals(new Double(1.0), new Float(1.0), 'double = float');
     }
+
+    /**
+     * Tests that numeric strings are still recognized as numbers
+     *
+     */
+    #[@test]
+    public function numericStringIsANumber() {
+      $long= new Long('1');
+      $this->assertEquals(1, $long->intValue());
+    }
+
+    /**
+     * Tests that strings are not a number
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function stringIsNotANumber() {
+      new Long('string');
+    }
+
+    /**
+     * Tests that booleans are not a number
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function booleanIsNotANumber() {
+      new Long(TRUE);
+    }
+
+    /**
+     * Tests that NULL is not a number
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function nullIsNotANumber() {
+      new Long(NULL);
+    }
   }
 ?>
