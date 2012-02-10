@@ -52,6 +52,20 @@
     }
 
     /**
+     * Returns a hashcode for this connection
+     *
+     * Example:
+     * <pre>
+     *   mysqlx link #50
+     * </pre>
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'mysqlx link #'.$this->handle->hashCode();
+    }
+
+    /**
      * Connect
      *
      * @param   bool reconnect default FALSE

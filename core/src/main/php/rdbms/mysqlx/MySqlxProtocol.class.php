@@ -468,6 +468,15 @@
       }
       throw new MySqlxProtocolException($error, $errno, $sqlstate);
     }
+
+    /**
+     * Returns a hashcode for this protocol instance
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return (string)(int)$this->sock->getHandle();
+    }
     
     /**
      * Creates a string representation
