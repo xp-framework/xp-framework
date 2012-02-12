@@ -46,7 +46,7 @@
           );
         }
       }');
-      return $appender->withLayout(new PatternLayout('%m'));
+      return $appender->withLayout(new PatternLayout('%x%m'));
     }
     
     /**
@@ -434,6 +434,79 @@
       $app3= $this->cat->addAppender($this->mockAppender(), LogLevel::INFO);
       $app4= $this->cat->addAppender($this->mockAppender(), LogLevel::DEBUG);
       $this->assertEquals(array($app1, $app2, $app3, $app4), $this->cat->getAppenders());
+    }
+
+    /**
+     * Tests adding context
+     *
+     */
+    #[@test]
+    public function addNestedDiagnosticContext() {
+      $this->cat->pushContext('A context');
+
+      $this->assertEquals(array('A context'), $this->cat->getContext());
+    }
+
+    /**
+     * Tests adding multiple context
+     *
+     */
+    #[@test]
+    public function addMultipleContext() {
+      $this->addNestedDiagnosticContext();
+      $this->cat->pushContext('B context');
+
+      $this->assertEquals(array('A context', 'B context'), $this->cat->getContext());
+    }
+
+    /**
+     * Tests adding multiple equal content does only
+     * add it once
+     *
+     */
+    #[@test]
+    public function aContextWillOnlyBeAddedOnce() {
+      $this->addMultipleContext();
+      $this->cat->pushContext('A context');
+
+      $this->assertEquals(array('A context', 'B context'), $this->cat->getContext());
+    }
+
+    /**
+     * Tests removing context
+     *
+     */
+    #[@test]
+    public function removeContext() {
+      $this->addMultipleContext();
+      $this->cat->removeContext('A context');
+
+      $this->assertEquals(array('B context'), $this->cat->getContext());
+    }
+
+    /**
+     * Tests clearing context
+     *
+     */
+    #[@test]
+    public function resetContext() {
+      $this->addMultipleContext();
+      $this->cat->resetContext();
+
+      $this->assertEquals(array(), $this->cat->getContext());
+    }
+
+    /**
+     * Tests context will be passed to layout
+     *
+     */
+    #[@test]
+    public function verifyContextWillBeLogged() {
+      $this->cat->pushContext('A context');
+      $app= $this->cat->addAppender($this->mockAppender());
+
+      $this->cat->debug('Something.');
+      $this->assertEquals(array(array('debug', 'A context Something.')), $app->messages);
     }
   }
 ?>

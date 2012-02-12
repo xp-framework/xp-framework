@@ -40,6 +40,7 @@
   class LogCategory extends Object {
     protected static $DEFAULT_LAYOUT= NULL;
     protected $_appenders= array();
+    protected $context= array();
 
     public $flags= 0;
     public $identifier= '';
@@ -87,7 +88,7 @@
      */
     protected function callAppenders($level, $args) {
       if (!($this->flags & $level)) return;
-      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
+      $event= new LoggingEvent($this, time(), getmypid(), $level, $args, $this->getContext());
       foreach ($this->_appenders as $appflag => $appenders) {
         if (!($level & $appflag)) continue;
         foreach ($appenders as $appender) {
@@ -348,6 +349,41 @@
         $s.= "  ]\n";
       }
       return $s.'}';
+    }
+
+    /**
+     * Add context
+     *
+     * @param   string ctx
+     */
+    public function pushContext($ctx) {
+      $this->context[$ctx]= TRUE;
+    }
+
+    /**
+     * Remove context
+     *
+     * @param   string ctx
+     */
+    public function removeContext($ctx) {
+      unset($this->context[$ctx]);
+    }
+
+    /**
+     * Resets context to empty
+     *
+     */
+    public function resetContext() {
+      $this->context= array();
+    }
+
+    /**
+     * Retrieve context values
+     *
+     * @return string[]
+     */
+    public function getContext() {
+      return array_keys($this->context);
     }
   }
 ?>

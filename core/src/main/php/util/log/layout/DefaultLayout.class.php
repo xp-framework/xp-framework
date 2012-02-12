@@ -32,10 +32,11 @@
      */
     public function format(LoggingEvent $event) {
       return sprintf(
-        "[%s %5d %5s] %s\n", 
+        "[%s %5d %5s] %s%s\n",
         date('H:i:s', $event->getTimestamp()),
         $event->getProcessId(),
         strtolower(LogLevel::nameOf($event->getLevel())),
+        (sizeof($event->getContext()) == 0 ? '' : implode(' ', $event->getContext()).' '),
         implode(' ', array_map(array($this, 'stringOf'), $event->getArguments()))
       );
     }
