@@ -346,8 +346,8 @@
     /**
      * Fetches one record
      *
-     * @param   [string:var][] fields
-     * @return  [string:var] record
+     * @param   [:var][] fields
+     * @return  [:var] record
      */
     public function fetch($fields) {
       $r= $this->read();
@@ -383,8 +383,8 @@
     /**
      * Consume entire result set
      *
-     * @param   [string:var][] fields
-     * @return  [string:var][] records
+     * @param   [:var][] fields
+     * @return  [:var][] records
      */
     public function consume($fields) {
       $records= array();
