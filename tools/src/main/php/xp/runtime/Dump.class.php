@@ -44,8 +44,8 @@
       // Perform
       $return= eval($src);
       switch ($way) {
-        case 'w': Console::writeLine($return); break;
-        case 'd': var_dump($return); break;
+        case '-w': Console::writeLine($return); break;
+        case '-d': var_dump($return); break;
       }
     }
   }
