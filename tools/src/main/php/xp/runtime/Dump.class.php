@@ -42,7 +42,7 @@
       }
       
       // Allow missing return
-      strstr($src, 'return ') || $src= 'return '.$src;
+      strstr($src, 'return ') || strstr($src, 'return;') || $src= 'return '.$src;
 
       // Rewrite argc, argv
       $argv= array(xp::nameOf(__CLASS__)) + $args;
