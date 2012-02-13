@@ -22,7 +22,7 @@
     public static function main(array $args) {
       $way= array_shift($args);
 
-      // Read sourcecode from STDIN
+      // Read sourcecode from STDIN if no further argument is given
       if (0 === sizeof($args)) {
         $src= file_get_contents('php://stdin');
       } else {
