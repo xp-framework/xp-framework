@@ -33,7 +33,7 @@
       // Perform
       $argv= array(xp::nameOf(__CLASS__)) + $args;
       $argc= sizeof($argv);
-      exit(eval($src));
+      return eval($src);
     }
   }
 ?>
