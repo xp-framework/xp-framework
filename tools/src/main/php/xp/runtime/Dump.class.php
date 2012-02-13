@@ -21,7 +21,14 @@
      */
     public static function main(array $args) {
       $way= array_shift($args);
-      $src= trim($args[0]).';';
+
+      // Read sourcecode from STDIN
+      if (0 === sizeof($args)) {
+        $src= file_get_contents('php://stdin');
+      } else {
+        $src= $args[0];
+      }
+      $src= trim($src, ' ;').';';
       
       // Extract uses() and load classes
       if (0 === strncmp($src, 'uses', 4)) {
