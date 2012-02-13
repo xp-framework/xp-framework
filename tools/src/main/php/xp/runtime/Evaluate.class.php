@@ -9,9 +9,8 @@
   uses('util.cmd.Console');
 
   /**
-   * Displays XP version and runtime information
+   * Evaluates sourcecode
    *
-   * @purpose  Tool
    */
   class xp·runtime·Evaluate extends Object {
     
