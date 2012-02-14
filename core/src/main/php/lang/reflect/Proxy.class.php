@@ -16,8 +16,9 @@
    * @see      http://java.sun.com/j2se/1.5.0/docs/api/java/lang/reflect/Proxy.html
    */
   class Proxy extends Object {
-    public
-      $_h= NULL;
+    const PREFIX = 'Proxy·';
+
+    public $_h= NULL;
 
     /**
      * Constructor
@@ -56,7 +57,7 @@
       if (isset($cache[$key])) return $cache[$key];
       
       // Create proxy class' name, using a unique identifier and a prefix
-      $name= PROXY_PREFIX.($num++);
+      $name= self::PREFIX.($num++);
       $bytes= 'class '.$name.' extends '.xp::reflect('lang.reflect.Proxy').' implements ';
       $added= array();
       

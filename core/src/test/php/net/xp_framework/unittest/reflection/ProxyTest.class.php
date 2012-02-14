@@ -106,7 +106,7 @@
     #[@test]
     public function proxyClassNamesGetPrefixed() {
       $class= $this->proxyClassFor(array($this->iteratorClass));
-      $this->assertEquals(PROXY_PREFIX, substr($class->getName(), 0, strlen(PROXY_PREFIX)));
+      $this->assertEquals(Proxy::PREFIX, substr($class->getName(), 0, strlen(Proxy::PREFIX)));
     }
 
     /**
