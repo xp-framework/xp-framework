@@ -171,14 +171,14 @@
      */
     #[@test]
     public function exponentNotationIsANumber() {
-      $double1= new Double(1e4);
-      $double2= new Double(1E4);
-      $double3= new Double(1e-4);
-      $double4= new Double(1E-4);
-      $double5= new Double(-1e4);
-      $double6= new Double(-1E4);
-      $double7= new Double(-1e-4);
-      $double8= new Double(-1E-4);
+      $double1= new Double('1e4');
+      $double2= new Double('1E4');
+      $double3= new Double('1e-4');
+      $double4= new Double('1E-4');
+      $double5= new Double('-1e4');
+      $double6= new Double('-1E4');
+      $double7= new Double('-1e-4');
+      $double8= new Double('-1E-4');
 
       $this->assertEquals(1e4, $double1->doubleValue());
       $this->assertEquals(1E4, $double2->doubleValue());
@@ -223,7 +223,7 @@
      */
     #[@test]
     public function hexNumbersAreNumbers() {
-      $long= new Long(0xAAAA);
+      $long= new Long('0xAAAA');
       $this->assertEquals(43690, $long->intValue());
     }
 

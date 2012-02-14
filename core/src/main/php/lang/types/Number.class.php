@@ -35,7 +35,7 @@
      * @return  int
      */
     public function intValue() {
-      return (int)$this->value;
+      return $this->value + 0;
     }
 
     /**
@@ -45,7 +45,7 @@
      * @return  double
      */
     public function floatValue() {
-      return (double)$this->value;
+      return $this->doubleValue();
     }
 
     /**
@@ -54,7 +54,7 @@
      * @return  double
      */
     public function doubleValue() {
-      return (double)$this->value;
+      return $this->value + 0.0;
     }
     
     /**
