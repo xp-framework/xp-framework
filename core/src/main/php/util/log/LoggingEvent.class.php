@@ -27,7 +27,7 @@
      * @param   int processId
      * @param   int level one debug, info, warn or error
      * @param   var[] arguments
-     * @param   var[] context default array()
+     * @param   util.log.LogContext[] context default
      */
     public function __construct($category, $timestamp, $processId, $level, array $arguments, array $context= array()) {
       $this->category= $category;
@@ -91,6 +91,21 @@
      */
     public function getContext() {
       return $this->context;
+    }
+
+    /**
+     * Return string representation of active contexts
+     *
+     * @return string
+     */
+    public function getContextAsString() {
+      $str= '';
+      foreach ($this->context as $ctx) {
+        $str.= $ctx->getMessage().' ';
+      }
+
+      // Intentionally leave trailing whitespace
+      return $str;
     }
 
     /**

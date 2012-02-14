@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'util.log.layout.PatternLayout'
+    'util.log.layout.PatternLayout',
+    'util.log.LogContext'
   );
 
   /**
@@ -111,7 +112,7 @@
     public function whitespaceAddedForContext() {
       $this->assertEquals(
         '[16:08:04 1214 warn] Context Hello',
-        create(new PatternLayout('[%t %p %l] %x%m'))->format($this->newLoggingEvent(array('Context')))
+        create(new PatternLayout('[%t %p %l] %x%m'))->format($this->newLoggingEvent(array(new LogContext('Context'))))
       );
     }
   }

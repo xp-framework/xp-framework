@@ -92,7 +92,7 @@
           case '%l': $out.= strtolower(LogLevel::nameOf($event->getLevel())); break;
           case '%L': $out.= strtoupper(LogLevel::nameOf($event->getLevel())); break;
           case '%p': $out.= $event->getProcessId(); break;
-          case '%x': sizeof($event->getContext()) && $out.= implode(' ', $event->getContext()).' '; break;
+          case '%x': $out.= $event->getContextAsString(); break;
           default: $out.= $token;
         }
       }

@@ -9,6 +9,7 @@
     'util.log.Logger',
     'util.log.Appender',
     'util.log.LogAppender',
+    'util.log.LogContext',
     'util.log.layout.PatternLayout'
   );
 
@@ -442,9 +443,21 @@
      */
     #[@test]
     public function addNestedDiagnosticContext() {
-      $this->cat->pushContext('A context');
+      $this->cat->enter(new LogContext('A context'));
 
-      $this->assertEquals(array('A context'), $this->cat->getContext());
+      $this->assertEquals(
+        array(new LogContext('A context')),
+        $this->cat->getContext()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function resetContextWithoutContext() {
+      $this->cat->resetContext();
     }
 
     /**
@@ -454,9 +467,12 @@
     #[@test]
     public function addMultipleContext() {
       $this->addNestedDiagnosticContext();
-      $this->cat->pushContext('B context');
+      $this->cat->enter(new LogContext('B context'));
 
-      $this->assertEquals(array('A context', 'B context'), $this->cat->getContext());
+      $this->assertEquals(
+        array(new LogContext('A context'), new LogContext('B context')),
+        $this->cat->getContext()
+      );
     }
 
     /**
@@ -464,12 +480,11 @@
      * add it once
      *
      */
-    #[@test]
+    #[@test, @expect('lang.IllegalStateException')]
     public function aContextWillOnlyBeAddedOnce() {
       $this->addMultipleContext();
-      $this->cat->pushContext('A context');
-
-      $this->assertEquals(array('A context', 'B context'), $this->cat->getContext());
+      $ctx= $this->cat->getContext();
+      $this->cat->enter($ctx[0]);
     }
 
     /**
@@ -477,11 +492,15 @@
      *
      */
     #[@test]
-    public function removeContext() {
+    public function leaveContext() {
       $this->addMultipleContext();
-      $this->cat->removeContext('A context');
+      $ctx= $this->cat->getContext();
+      $ctx[0]->leave();
 
-      $this->assertEquals(array('B context'), $this->cat->getContext());
+      $this->assertEquals(
+        array(new LogContext('B context')),
+        $this->cat->getContext()
+      );
     }
 
     /**
@@ -502,7 +521,7 @@
      */
     #[@test]
     public function verifyContextWillBeLogged() {
-      $this->cat->pushContext('A context');
+      $this->cat->enter(new LogContext('A context'));
       $app= $this->cat->addAppender($this->mockAppender());
 
       $this->cat->debug('Something.');

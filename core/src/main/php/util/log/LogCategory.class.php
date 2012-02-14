@@ -7,8 +7,9 @@
   uses(
     'util.log.LogLevel', 
     'util.log.Appender', 
-    'util.log.LoggingEvent', 
-    'util.log.layout.DefaultLayout'
+    'util.log.LoggingEvent',
+    'util.log.layout.DefaultLayout',
+    'util.collections.HashSet'
   );
 
   /**
@@ -40,7 +41,7 @@
   class LogCategory extends Object {
     protected static $DEFAULT_LAYOUT= NULL;
     protected $_appenders= array();
-    protected $context= array();
+    protected $context= NULL;
 
     public $flags= 0;
     public $identifier= '';
@@ -352,21 +353,29 @@
     }
 
     /**
-     * Add context
+     * Enter context
      *
-     * @param   string ctx
+     * @param   util.log.LogContext ctx
      */
-    public function pushContext($ctx) {
-      $this->context[$ctx]= TRUE;
+    public function enter(LogContext $ctx) {
+      if (NULL === $this->context) {
+        $this->context= create('new HashSet<util.log.LogContext>()');
+      }
+      $this->context->add($ctx);
+      $ctx->bind($this);
+      return $ctx;
     }
 
     /**
-     * Remove context
+     * Leave context; this method should not be called
+     * directly. Instead call $context->leave() on the
+     * actual LogContext
      *
-     * @param   string ctx
+     * @param   util.log.LogContext ctx
      */
-    public function removeContext($ctx) {
-      unset($this->context[$ctx]);
+    public function leaveContext(LogContext $ctx) {
+      if (NULL === $this->context) return;
+      $this->context->remove($ctx);
     }
 
     /**
@@ -374,7 +383,7 @@
      *
      */
     public function resetContext() {
-      $this->context= array();
+      $this->context= NULL;
     }
 
     /**
@@ -383,7 +392,8 @@
      * @return string[]
      */
     public function getContext() {
-      return array_keys($this->context);
+      if (NULL === $this->context) return array();
+      return $this->context->toArray();
     }
   }
 ?>

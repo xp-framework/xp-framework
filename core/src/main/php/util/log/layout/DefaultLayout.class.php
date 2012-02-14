@@ -36,7 +36,7 @@
         date('H:i:s', $event->getTimestamp()),
         $event->getProcessId(),
         strtolower(LogLevel::nameOf($event->getLevel())),
-        (sizeof($event->getContext()) == 0 ? '' : implode(' ', $event->getContext()).' '),
+        $event->getContextAsString(),
         implode(' ', array_map(array($this, 'stringOf'), $event->getArguments()))
       );
     }
