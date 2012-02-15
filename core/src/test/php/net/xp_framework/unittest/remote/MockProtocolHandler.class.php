@@ -94,5 +94,13 @@
      */
     public function setTrace($cat) {
     }
+
+    /**
+     * Set timeout
+     *
+     * @param double timeout
+     */
+    public function setTimeout($timeout) {
+    }
   } 
 ?>
