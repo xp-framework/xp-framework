@@ -78,6 +78,8 @@
       );
       $this->_sock= new BSDSocket($proxy->getHost('localhost'), $proxy->getPort(6448));
       $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
+      // Set default timeout
+      $this->_sock->setTimeout($this->timeout);
       // Set sporty timeout for connect
       $this->_sock->connect(2.0);
 
@@ -103,8 +105,6 @@
         $r= $this->sendPacket(REMOTE_MSG_INIT, "\0");
       }
 
-      // Set default timeout
-      $this->_sock->setTimeout($this->timeout);
       $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
     }
     
