@@ -9,6 +9,12 @@ $ xp [options] -v
 Evaluate code:
 $ xp [options] -e {code}
 
+Evaluate code and write result:
+$ xp [options] -w {code}
+
+Evaluate code and dump result:
+$ xp [options] -d {code}
+
 Reflect a class:
 $ xp [options] -r {qualified.class.Name}
 
