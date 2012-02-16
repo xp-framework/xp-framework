@@ -37,10 +37,10 @@ RFCs
 Bugfixes
 ~~~~~~~~
 - Fixed default timeout setting in XpProtocolHandler.
-  (robert)
+  (ledermueller)
 - Fixed timeout settings in BSDSocket to not overwrite the general timeout with
   the connect timeout.
-  (robert)
+  (ledermueller)
 - Merged pull request #119: Json serialization for Generic objects
   (mrosoiu)
 - Fixed readBool() in Properties to also accept different notations of true
@@ -77,7 +77,7 @@ Features
 - Added support for setting a timeout programmatic or via dsn in the
   HandlerInstancePool to make it possible to overwrite the default timeout of
   60 seconds.
-  (robert)
+  (ledermueller)
 - Added support for multiple configuration paths for web applications
   see RFC #0221 (pull request #118)
   (kuse)
