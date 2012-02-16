@@ -72,8 +72,26 @@
      *
      */
     #[@test]
+    public function trueStringMixedCase() {
+      $this->assertEquals(Boolean::$TRUE, new Boolean('True'));
+    }
+
+    /**
+     * Tests
+     *
+     */
+    #[@test]
     public function falseString() {
       $this->assertEquals(Boolean::$FALSE, new Boolean('false'));
+    }
+
+    /**
+     * Tests
+     *
+     */
+    #[@test]
+    public function falseStringMixedCase() {
+      $this->assertEquals(Boolean::$FALSE, new Boolean('False'));
     }
 
     /**
@@ -82,7 +100,7 @@
      */
     #[@test]
     public function trueIsOne() {
-      $this->assertEquals(1, create(new Boolean(TRUE))->intValue());
+      $this->assertEquals(1, Boolean::$TRUE->intValue());
     }
 
     /**
@@ -91,16 +109,61 @@
      */
     #[@test]
     public function falseIsZero() {
-      $this->assertEquals(0, create(new Boolean(FALSE))->intValue());
+      $this->assertEquals(0, Boolean::$FALSE->intValue());
     }
 
     /**
-     * Tests
+     * Tests hashCode()
+     *
+     */
+    #[@test]
+    public function trueHashCode() {
+      $this->assertEquals('true', Boolean::$TRUE->hashCode());
+    }
+
+    /**
+     * Tests hashCode()
+     *
+     */
+    #[@test]
+    public function falseHashCode() {
+      $this->assertEquals('false', Boolean::$FALSE->hashCode());
+    }
+
+    /**
+     * Tests unacceptable values
      *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function numericStringIsNotAValidBoolean() {
       new Boolean('1');
+    }
+
+    /**
+     * Tests unacceptable values
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function emptyStringIsNotAValidBoolean() {
+      new Boolean('');
+    }
+
+    /**
+     * Tests unacceptable values
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function misspelledFalse() {
+      new Boolean('fals3');
+    }
+
+    /**
+     * Tests unacceptable values
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function doublePrimitiveIsNotAValidBoolean() {
+      new Boolean(1.0);
     }
   }
 ?>
