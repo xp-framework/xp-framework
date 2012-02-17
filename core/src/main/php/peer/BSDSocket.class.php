@@ -166,7 +166,8 @@
         }
       }
       
-      // ... and timeouts
+      // ... and connection timeouts
+      $origTimeout= $this->getTimeout();
       $this->setTimeout($timeout);
 
       // ...and connect it
@@ -189,7 +190,10 @@
           break;
         }
       }
-      
+
+      // Reset initial timeout settings
+      $this->setTimeout($origTimeout);
+
       // Check return status
       if (FALSE === $r) {
         $e= new ConnectException(sprintf(
@@ -224,14 +228,12 @@
      */
     public function setTimeout($timeout) {
       $this->_timeout= $timeout;
-      
+
       // Apply changes to already opened connection
-      if (is_resource($this->_sock)) {
-        $sec= floor($this->_timeout);
-        $usec= ($this->_timeout- $sec) * 1000;
-        socket_set_option($this->_sock, SOL_SOCKET, SO_RCVTIMEO, array('sec' => $sec, 'usec' => $usec));
-        socket_set_option($this->_sock, SOL_SOCKET, SO_SNDTIMEO, array('sec' => $sec, 'usec' => $usec));
-      }
+      $sec= floor($this->_timeout);
+      $usec= ($this->_timeout- $sec) * 1000;
+      $this->setOption(SOL_SOCKET, SO_RCVTIMEO, array('sec' => $sec, 'usec' => $usec));
+      $this->setOption(SOL_SOCKET, SO_SNDTIMEO, array('sec' => $sec, 'usec' => $usec));
     }
 
     /**
