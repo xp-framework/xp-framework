@@ -89,6 +89,8 @@
       if (NULL !== ($cat= $url->getParam('log'))) {
         $instance->setTrace(Logger::getInstance()->getCategory($cat));
       }
+      // Set timeout, defaults to 60 seconds
+      $instance->setTimeout($url->getParam('timeout', 60));
 
       $initialize && $instance->initialize($url);
       return $instance;

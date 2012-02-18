@@ -36,6 +36,11 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed default timeout setting in XpProtocolHandler.
+  (ledermueller)
+- Fixed timeout settings in BSDSocket to not overwrite the general timeout with
+  the connect timeout.
+  (ledermueller, kiesel)
 - Changed lang.types.Boolean to accept TRUE, FALSE, integers and the strings 
   "true" and "false" and throw exceptions otherwise
   (friebe, mrosoiu)
@@ -74,6 +79,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for setting a timeout programmatic or via dsn in the
+  HandlerInstancePool to make it possible to overwrite the default timeout of
+  60 seconds.
+  (ledermueller)
 - Added Boolean::$TRUE and Boolean::$FALSE to lang.types.Boolean
   (friebe)
 - Added support for multiple configuration paths for web applications
