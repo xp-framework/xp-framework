@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed scriptlet request parameters and headers to be case-preserving
+  See issue #120, http://news.planet-xp.net/article/443/2012/02/08/
+  (friebe, kiesel)
 - Removed "localhost" local sockets magic from MySQL implementations
   http://news.planet-xp.net/article/434/2012/01/08/
   (friebe, kiesel)
@@ -25,6 +28,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0237 - xp -w and xp -d
+  (friebe)
 - Implemented RFC #0221 - Allow combining application properties from
   multiple sources
   (kiesel)
@@ -33,6 +38,16 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed default timeout setting in XpProtocolHandler.
+  (ledermueller)
+- Fixed timeout settings in BSDSocket to not overwrite the general timeout with
+  the connect timeout.
+  (ledermueller, kiesel)
+- Changed lang.types.Boolean to accept TRUE, FALSE, integers and the strings 
+  "true" and "false" and throw exceptions otherwise
+  (friebe, mrosoiu)
+- Merged pull request #122: Check for numeric value during creation of numbers
+  (ledermueller)
 - Merged pull request #119: Json serialization for Generic objects
   (mrosoiu)
 - Fixed readBool() in Properties to also accept different notations of true
@@ -66,6 +81,12 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for setting a timeout programmatic or via dsn in the
+  HandlerInstancePool to make it possible to overwrite the default timeout of
+  60 seconds.
+  (ledermueller)
+- Added Boolean::$TRUE and Boolean::$FALSE to lang.types.Boolean
+  (friebe)
 - Added support for multiple configuration paths for web applications
   see RFC #0221 (pull request #118)
   (kuse)
