@@ -28,6 +28,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0237 - xp -w and xp -d
+  (friebe)
 - Implemented RFC #0221 - Allow combining application properties from
   multiple sources
   (kiesel)
