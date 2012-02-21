@@ -41,6 +41,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed bug #127: Exception cause swallowed
+  (friebe)
 - Fixed default timeout setting in XpProtocolHandler.
   (ledermueller)
 - Fixed timeout settings in BSDSocket to not overwrite the general timeout with
