@@ -35,9 +35,8 @@
         $p= strpos($src, ');');
         $uses= substr($src, 5, $p- 5);    // "uses("
         $src= substr($src, $p+ 2);        // ");"
-        $cl= ClassLoader::getDefault();
         foreach (explode(',', $uses) as $class) {
-          $cl->loadClass0(trim($class, '" '));
+          uses(trim($class, '" '));
         }
       }
       
