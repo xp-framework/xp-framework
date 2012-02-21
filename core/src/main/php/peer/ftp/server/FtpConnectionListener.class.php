@@ -10,6 +10,7 @@
     'peer.BSDSocket',
     'peer.server.ConnectionListener',
     'peer.ftp.server.FtpSession',
+    'peer.ftp.server.storage.Storage',
     'peer.ServerSocket',
     'peer.SocketException',
     'security.auth.Authenticator',
@@ -48,7 +49,7 @@
     /**
      * Constructor
      *
-     * @param   peer.ftp.server.Storage storage
+     * @param   peer.ftp.server.storage.Storage storage
      * @param   security.auth.Authenticator authenticator
      */
     public function __construct($storage, $authenticator) {
