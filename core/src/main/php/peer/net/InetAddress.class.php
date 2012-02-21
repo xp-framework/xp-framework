@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('peer.net.Network');
+
   /**
    * Interface Inet address
    *
@@ -28,7 +30,7 @@
     /**
      * Determine whether this address is in the given network.
      *
-     * @param   string net
+     * @param   peer.net.Network net
      * @return  bool
      * @throws  lang.FormatException in case net has invalid format
      */
@@ -38,7 +40,7 @@
      * Create a subnet of this address, with the specified size.
      *
      * @param   int subnetSize
-     * @return  Network
+     * @return  peer.net.Network
      * @throws  lang.IllegalArgumentException in case the subnetSize is not correct
      */
     public function createSubnet($subnetSize);
