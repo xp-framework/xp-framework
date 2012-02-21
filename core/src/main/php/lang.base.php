@@ -4,6 +4,14 @@
  * $Id$
  */
 
+  define('MODIFIER_STATIC',       1);
+  define('MODIFIER_ABSTRACT',     2);
+  define('MODIFIER_FINAL',        4);
+  define('MODIFIER_PUBLIC',     256);
+  define('MODIFIER_PROTECTED',  512);
+  define('MODIFIER_PRIVATE',   1024);
+
+
   // {{{ final class xp
   final class xp {
     const CLASS_FILE_EXT= '.class.php';
