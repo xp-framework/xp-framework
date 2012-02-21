@@ -11,6 +11,7 @@
 
   uses(
     'peer.ConnectException',
+    'peer.ldap.LDAPQuery',
     'peer.ldap.LDAPException',
     'peer.ldap.LDAPSearchResult'
   );
