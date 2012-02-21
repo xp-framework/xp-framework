@@ -5,6 +5,7 @@
  */
 
   uses(
+    'text.parser.generic.AbstractLexer',
     'text.parser.generic.ParseException',
     'text.parser.generic.ParserMessage',
     'util.log.Traceable'

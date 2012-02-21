@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated img.graph package
+  http://news.planet-xp.net/article/446/2012/02/21/
+  (friebe)
 - Changed scriptlet request parameters and headers to be case-preserving
   See issue #120, http://news.planet-xp.net/article/443/2012/02/08/
   (friebe, kiesel)

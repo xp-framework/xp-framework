@@ -10,6 +10,7 @@
     'webservices.soap.types.SOAPHexBinary',
     'webservices.soap.types.SOAPDateTime',
     'webservices.soap.types.SOAPHashMap',
+    'webservices.soap.types.SOAPLong',
     'webservices.soap.types.SOAPDouble'
   );
 
