@@ -7,6 +7,9 @@
   uses(
     'unittest.TestExpectationMet',
     'unittest.TestAssertionFailed',
+    'unittest.TestSuccess',
+    'unittest.TestSkipped',
+    'unittest.TestFailure',
     'unittest.TestPrerequisitesNotMet'
   );
 
@@ -30,7 +33,7 @@
      * @return  unittest.TestOutcome the given outcome
      */
     public function set(TestCase $test, TestOutcome $outcome) {
-      if ($outcome instanceof TestSucceeded) {
+      if ($outcome instanceof TestSuccess) {
         $this->succeeded[$test->hashCode()]= $outcome;
       } else if ($outcome instanceof TestSkipped) {
         $this->skipped[$test->hashCode()]= $outcome;
