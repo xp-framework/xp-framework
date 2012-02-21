@@ -4,7 +4,10 @@
  * $Id$ 
  */
 
-  uses('webservices.wddx.WddxMessage');
+  uses(
+    'webservices.wddx.WddxMessage',
+    'webservices.wddx.transport.WddxHttpTransport'
+  );
 
   /**
    * This is a WDDX client; WDDX is a remote procedure call
