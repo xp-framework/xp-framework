@@ -7,6 +7,8 @@
   uses(
     'util.log.Logger',
     'remote.server.deploy.DeployException',
+    'remote.server.deploy.Deployment',
+    'remote.server.deploy.IncompleteDeployment',
     'remote.server.container.StatelessSessionBeanContainer',
     'remote.server.naming.NamingDirectory',
     'remote.server.ContainerInvocationHandler',
