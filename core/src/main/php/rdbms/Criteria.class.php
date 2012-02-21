@@ -8,6 +8,7 @@
     'rdbms.criterion.SimpleExpression',
     'rdbms.join.JoinProcessor',
     'rdbms.SQLExpression',
+    'rdbms.Peer',
     'rdbms.Column',
     'rdbms.criterion.Criterion',
     'rdbms.criterion.Projections',
