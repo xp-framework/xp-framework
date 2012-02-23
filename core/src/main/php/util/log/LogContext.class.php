@@ -5,73 +5,30 @@
  */
 
   /**
-   * Log Context - NDC
+   * Log Context interface
    *
    */
-  class LogContext extends Object {
-    protected
-      $message,
-      $cat;
+  interface LogContext {
 
     /**
-     * Constructor of LogContext
-     *
-     */
-    public function __construct($message) {
-      $this->message= $message;
-    }
-
-    /**
-     * Bind this context to a LogCategory
+     * Bind to LogCategory
      *
      * @param   util.log.LogCategory cat
      * @throws  lang.IllegalStateException if already bound
      */
-    public function bind(LogCategory $cat) {
-      if ($this->cat) {
-        throw new IllegalStateException('Can only bind to one LogCategory.');
-      }
-      
-      $this->cat= $cat;
-    }
+    public function bind(LogCategory $cat);
 
     /**
-     * Leave this context; unbinds from LogCategory
+     * Leave context; unbinds from LogCategory
      *
      */
-    public function leave() {
-      if (!$this->cat) return;
-      $this->cat->leaveContext($this);
-      $this->cat= NULL;
-    }
+    public function leave();
 
     /**
-     * Retrieve message
+     * Format for logging
      *
      * @return  string
      */
-    public function getMessage() {
-      return $this->message;
-    }
-
-    /**
-     * Equals method
-     *
-     * @param   self cmp
-     * @return  bool
-     */
-    public function equals($cmp) {
-      if (!$cmp instanceof self) return FALSE;
-      return $this->message == $cmp->message;
-    }
-
-    /**
-     * Retrieve string representation
-     *
-     * @return  string
-     */
-    public function toString() {
-      return $this->getClassName().'@('.$this->hashCode().') { "'.$this->message.'" }';
-    }
+    public function format();
   }
 ?>

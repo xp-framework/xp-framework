@@ -37,6 +37,19 @@
  *   $cat->debug('Log message');
  * </code>
  *
+ * LogContext
+ * ==========
+ * Contexts can be entered whose information will be added to every log
+ * line automatically - until the context is left again.
+ *
+ * <code>
+ *   $cat= Logger::getInstance()->getCategory();
+ *
+ *   $context= $cat->enter(new StringLogContext('Context information'));
+ *   $cat->debug('Log line with context');
+ *   $context->leave();
+ * </code>
+ *
  * @see      http://news.xp-framework.net/article/203/2007/07/18/
  * @purpose  Logging
  */

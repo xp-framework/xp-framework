@@ -9,7 +9,7 @@
     'util.log.Logger',
     'util.log.Appender',
     'util.log.LogAppender',
-    'util.log.LogContext',
+    'util.log.StringLogContext',
     'util.log.layout.PatternLayout'
   );
 
@@ -442,11 +442,11 @@
      *
      */
     #[@test]
-    public function addNestedDiagnosticContext() {
-      $this->cat->enter(new LogContext('A context'));
+    public function addDiagnosticContext() {
+      $this->cat->enter(new StringLogContext('A context'));
 
       $this->assertEquals(
-        array(new LogContext('A context')),
+        array(new StringLogContext('A context')),
         $this->cat->getContext()
       );
     }
@@ -466,11 +466,11 @@
      */
     #[@test]
     public function addMultipleContext() {
-      $this->addNestedDiagnosticContext();
-      $this->cat->enter(new LogContext('B context'));
+      $this->addDiagnosticContext();
+      $this->cat->enter(new StringLogContext('B context'));
 
       $this->assertEquals(
-        array(new LogContext('A context'), new LogContext('B context')),
+        array(new StringLogContext('A context'), new StringLogContext('B context')),
         $this->cat->getContext()
       );
     }
@@ -498,7 +498,7 @@
       $ctx[0]->leave();
 
       $this->assertEquals(
-        array(new LogContext('B context')),
+        array(new StringLogContext('B context')),
         $this->cat->getContext()
       );
     }
@@ -521,7 +521,7 @@
      */
     #[@test]
     public function verifyContextWillBeLogged() {
-      $this->cat->enter(new LogContext('A context'));
+      $this->cat->enter(new StringLogContext('A context'));
       $app= $this->cat->addAppender($this->mockAppender());
 
       $this->cat->debug('Something.');

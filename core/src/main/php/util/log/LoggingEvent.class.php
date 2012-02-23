@@ -101,7 +101,7 @@
     public function getContextAsString() {
       $str= '';
       foreach ($this->context as $ctx) {
-        $str.= $ctx->getMessage().' ';
+        $str.= $ctx->format().' ';
       }
 
       // Intentionally leave trailing whitespace
