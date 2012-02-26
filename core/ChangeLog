@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.4, released 2012-02-26
+----------------------------------
+Git commit: fb9fb97c7d40f4e19c5546386f9666669e6c3622
+
 Heads up!
 ~~~~~~~~~
 - Removed deprecated img.graph package
