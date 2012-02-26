@@ -41,6 +41,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed broken class-external extension method resolution in the XP compiler
+  (friebe)
 - Fixed bug #127: Exception cause swallowed
   (friebe)
 - Fixed default timeout setting in XpProtocolHandler.
