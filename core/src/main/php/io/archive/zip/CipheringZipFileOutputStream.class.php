@@ -6,6 +6,7 @@
 
   uses(
     'io.streams.OutputStream', 
+    'io.archive.zip.ZipArchiveWriter',
     'io.archive.zip.Compression', 
     'io.streams.MemoryOutputStream',
     'security.checksum.CRC32'

@@ -232,7 +232,7 @@
         }
         if ($cc != $ct) $s.= '  ... '.($ct - $cc + 1)." more\n";
         
-        $loop= $loop instanceof ChainedException ? $loop->cause : NULL;
+        $loop= $loop->cause;
         $tt= $lt;
       }
       

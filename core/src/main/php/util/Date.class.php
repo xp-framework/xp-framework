@@ -133,17 +133,15 @@
       if (FALSE === @date_date_set($date, $year, $month, $day) || 
         FALSE === @date_time_set($date, $hour, $minute, $second)
       ) {
-        throw new IllegalArgumentException(
-          sprintf('One or more given arguments ar not valid:
-          	$year=%s, $month=%s, $day= %s, $hour=%s, $minute=%s, $second=%s',
-            $year, 
-            $month, 
-            $day, 
-            $hour, 
-            $minute, 
-            $second 
-          )
-        );
+        throw new IllegalArgumentException(sprintf(
+          'One or more given arguments are not valid: $year=%s, $month=%s, $day= %s, $hour=%s, $minute=%s, $second=%s',
+          $year,
+          $month,
+          $day,
+          $hour,
+          $minute,
+          $second 
+        ));
       }
       
       return new self($date);
@@ -179,6 +177,7 @@
     /**
      * Static method to get current date/time
      *
+     * @param   util.TimeZone tz default NULL
      * @return  util.Date
      */
     public static function now(TimeZone $tz= NULL) {

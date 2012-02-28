@@ -123,6 +123,14 @@
           $this->cat && $this->cat->warn('Accepted socket type error ', xp::typeOf($m));
           return;
         }
+
+        // Handle accepted socket
+        if ($this->protocol instanceof SocketAcceptHandler) {
+          if (!$this->protocol->handleAccept($m)) {
+            $m->close();
+            continue;
+          }
+        }
         
         $tcp= getprotobyname('tcp');
         $this->tcpnodelay && $m->setOption($tcp, TCP_NODELAY, TRUE);

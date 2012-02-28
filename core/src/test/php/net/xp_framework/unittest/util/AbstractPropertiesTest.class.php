@@ -255,23 +255,47 @@ float4=-5.0
 [section]
 bool1=1
 bool2=yes
-bool3=on
-bool4=true
-bool5=0
-bool6=no
-bool7=off
-bool8=false
+bool3=Yes
+bool4=YES
+bool5=on
+bool6=On
+bool7=ON
+bool8=true
+bool9=True
+bool10=TRUE
+bool11=0
+bool12=no
+bool13=No
+bool14=NO
+bool15=off
+bool16=Off
+bool17=OFF
+bool18=false
+bool19=False
+bool20=FALSE
       ');
       $this->assertTrue($p->readBool('section', 'bool1'), '1');
       $this->assertTrue($p->readBool('section', 'bool2'), 'yes');
-      $this->assertTrue($p->readBool('section', 'bool3'), 'on');
-      $this->assertTrue($p->readBool('section', 'bool4'), 'true');
-      $this->assertFalse($p->readBool('section', 'bool5'), '0');
-      $this->assertFalse($p->readBool('section', 'bool6'), 'no');
-      $this->assertFalse($p->readBool('section', 'bool7'), 'off');
-      $this->assertFalse($p->readBool('section', 'bool8'), 'false');
+      $this->assertTrue($p->readBool('section', 'bool3'), 'Yes');
+      $this->assertTrue($p->readBool('section', 'bool4'), 'YES');
+      $this->assertTrue($p->readBool('section', 'bool5'), 'on');
+      $this->assertTrue($p->readBool('section', 'bool6'), 'On');
+      $this->assertTrue($p->readBool('section', 'bool7'), 'ON');
+      $this->assertTrue($p->readBool('section', 'bool8'), 'true');
+      $this->assertTrue($p->readBool('section', 'bool9'), 'True');
+      $this->assertTrue($p->readBool('section', 'bool10'), 'TRUE');
+      $this->assertFalse($p->readBool('section', 'bool11'), '0');
+      $this->assertFalse($p->readBool('section', 'bool12'), 'no');
+      $this->assertFalse($p->readBool('section', 'bool13'), 'No');
+      $this->assertFalse($p->readBool('section', 'bool14'), 'NO');
+      $this->assertFalse($p->readBool('section', 'bool15'), 'off');
+      $this->assertFalse($p->readBool('section', 'bool16'), 'Off');
+      $this->assertFalse($p->readBool('section', 'bool17'), 'OFF');
+      $this->assertFalse($p->readBool('section', 'bool18'), 'false');
+      $this->assertFalse($p->readBool('section', 'bool19'), 'False');
+      $this->assertFalse($p->readBool('section', 'bool120'), 'FALSE');
     }
-    
+
     /**
      * Test simple reading of section
      *
@@ -628,6 +652,65 @@ key=value
       ');
 
       $p->removeKey('section2', 'key2');
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function equalsComparesContent() {
+      $one= $this->newPropertiesFrom('[section1]
+key=value');
+      $two= $this->newPropertiesFrom('[section1]
+key=value');
+
+      $this->assertEquals($one, $two);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function equalsWorksWithBiggerLeftSideArg() {
+      $one= $this->newPropertiesFrom('[section1]
+key=value
+
+[section2]
+key=value');
+      $two= $this->newPropertiesFrom('[section1]
+key=value');
+
+      $this->assertNotEquals($one, $two);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function equalsWorksWithBiggerRightSideArg() {
+      $one= $this->newPropertiesFrom('[section1]
+key=value');
+      $two= $this->newPropertiesFrom('[section1]
+key=value
+
+[section2]
+key=value');
+
+      $this->assertNotEquals($one, $two);
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function emptyPropertiesAreEqual() {
+      $one= new Properties(NULL);
+      $two= new Properties(NULL);
+      $this->assertEquals($one, $two);
     }
   }
 ?>

@@ -7,6 +7,8 @@
   uses(
     'img.ImagingException',
     'img.Color',
+    'img.ImgStyle',
+    'img.ImgBrush',
     'lang.CloneNotSupportedException'
   );
 

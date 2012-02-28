@@ -7,6 +7,7 @@
   uses(
     'io.IOException',
     'io.File',
+    'util.PropertyAccess',
     'io.streams.InputStream',
     'io.streams.MemoryInputStream',
     'io.streams.MemoryOutputStream',
@@ -37,7 +38,7 @@
    * @test    xp://net.xp_framework.unittest.util.FileBasedPropertiesTest
    * @see     php://parse_ini_file
    */
-  class Properties extends Object {
+  class Properties extends Object implements PropertyAccess {
     public
       $_file    = '',
       $_data    = NULL;
@@ -417,10 +418,10 @@
       $this->_load();
       if (!isset($this->_data[$section][$key])) return $default;
       return (
-        '1'     === $this->_data[$section][$key] ||
-        'yes'   === $this->_data[$section][$key] ||
-        'true'  === $this->_data[$section][$key] ||
-        'on'    === $this->_data[$section][$key]
+        '1' === $this->_data[$section][$key] ||
+        0   === strncasecmp('yes', $this->_data[$section][$key], 3) ||
+        0   === strncasecmp('true', $this->_data[$section][$key], 4) ||
+        0   === strncasecmp('on', $this->_data[$section][$key], 2)
       );
     }
     
@@ -566,6 +567,37 @@
       $this->_load();
       if (!isset($this->_data[$section][$key])) throw new IllegalStateException('Cannot remove nonexistant key "'.$key.'" in "'.$section.'"');
       unset($this->_data[$section][$key]);
+    }
+
+    /**
+     * Check if is equal to other object
+     *
+     * @param   var $cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      if (!$cmp instanceof self) return FALSE;
+
+      if ($this->_data && $cmp->_data) {
+        return $this->_data == $cmp->_data;
+      }
+
+      // If based on files, and both base on same file, then they're equal
+      if ($this->_file && $cmp->_file) {
+        return $this->_file === $cmp->_file;
+      }
+
+      // Bordercase
+      if (
+        $this->_file === NULL &&
+        $cmp->_file === NULL &&
+        $this->_data === NULL &&
+        $cmp->_data === NULL
+      ) {
+        return TRUE;
+      }
+
+      return FALSE;
     }
 
     /**

@@ -28,11 +28,11 @@
    * Options includes one of the following:
    * <pre>
    * -c:
-   *   Set the path with which the PropertyManager is configured with. The
-   *   PropertyManager is used for dependency injection. If a file called
-   *   log.ini exists in this path, the Logger will be configured with. If
-   *   a database.ini is present there, the ConnectionManager will be
-   *   configured with it.
+   *   Add the path to the PropertyManager sources. The PropertyManager
+   *   is used for dependency injection. If files called log.ini exists
+   *   in this paths, the Logger will be configured with. If any
+   *   database.ini are present there, the ConnectionManager will be
+   *   configured with it. (If not given etc is used as default path)
    * 
    * -cp:
    *   Add the path value to the class path.
@@ -54,6 +54,8 @@
     
     private
       $verbose= FALSE;
+
+    const DEFAULT_CONFIG_PATH = 'etc';
     
     static function __static() {
       self::$in= new StringReader(new ConsoleInputStream(STDIN));
@@ -184,19 +186,19 @@
      * @return  int
      */
     public function run(ParamString $params) {
-      $pm= PropertyManager::getInstance();
-      $pm->configure('etc');
-
       // No arguments given - show our own usage
       if ($params->count < 1) {
         self::$err->writeLine(self::textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
         return 1;
       }
 
+      // Configure properties
+      $pm= PropertyManager::getInstance();
+
       // Separate runner options from class options
       for ($offset= 0, $i= 0; $i < $params->count; $i++) switch ($params->list[$i]) {
         case '-c':
-          $pm->configure($params->list[$i+ 1]);
+          $pm->appendSource(new FilesystemPropertySource($params->list[$i+ 1]));
           $offset+= 2; $i++;
           break;
         case '-cp':
@@ -219,6 +221,11 @@
         return 1;
       }
       
+      // Use default path for PropertyManager if no sources set
+      if (!$pm->getSources()) {
+        $pm->configure(self::DEFAULT_CONFIG_PATH);
+      }
+
       unset($params->list[-1]);
       $classname= $params->value($offset);
       $classparams= new ParamString(array_slice($params->list, $offset+ 1));
@@ -293,32 +300,56 @@
         } else {
           $type= $method->getParameter(0)->getType()->getName();
         }
-        switch ($type) {
-          case 'rdbms.DBConnection': {
-            $args= array($cm->getByHost($inject['name'], 0));
-            break;
-          }
-
-          case 'util.Properties': {
-            $args= array($pm->getProperties($inject['name']));
-            break;
-          }
-
-          case 'util.log.LogCategory': {
-            $args= array($l->getCategory($inject['name']));
-            break;
-          }
-
-          default: {
-            self::$err->writeLine('*** Unknown injection type "'.$type.'" at method "'.$method->getName().'"');
-            return 2;
-          }
-        }
-
         try {
+          switch ($type) {
+            case 'rdbms.DBConnection': {
+              $args= array($cm->getByHost($inject['name'], 0));
+              break;
+            }
+
+            case 'util.Properties': {
+              $p= $pm->getProperties($inject['name']);
+
+              // If a PropertyAccess is retrieved which is not a util.Properties,
+              // then, for BC sake, convert it into a util.Properties
+              if (
+                $p instanceof PropertyAccess &&
+                !$p instanceof Properties
+              ) {
+                $convert= Properties::fromString('');
+
+                $section= $p->getFirstSection();
+                while ($section) {
+                  // HACK: Properties::writeSection() would first attempts to
+                  // read the whole file, we cannot make use of it.
+                  $convert->_data[$section]= $p->readSection($section);
+                  $section= $p->getNextSection();
+                }
+
+                $args= array($convert);
+              } else {
+                $args= array($p);
+              }
+              break;
+            }
+
+            case 'util.log.LogCategory': {
+              $args= array($l->getCategory($inject['name']));
+              break;
+            }
+
+            default: {
+              self::$err->writeLine('*** Unknown injection type "'.$type.'" at method "'.$method->getName().'"');
+              return 2;
+            }
+          }
+
           $method->invoke($instance, $args);
         } catch (TargetInvocationException $e) {
           self::$err->writeLine('*** Error injecting '.$type.' '.$inject['name'].': '.$e->getCause()->compoundMessage());
+          return 2;
+        } catch (Throwable $e) {
+          self::$err->writeLine('*** Error injecting '.$type.' '.$inject['name'].': '.$e->compoundMessage());
           return 2;
         }
       }

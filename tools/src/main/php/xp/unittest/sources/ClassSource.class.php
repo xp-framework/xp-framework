@@ -6,12 +6,14 @@
 
   uses('xp.unittest.sources.AbstractSource');
 
+  $package= 'xp.unittest.sources';
+
   /**
    * Source that load tests from a class filename
    *
    * @purpose  Source implementation
    */
-  class ClassSource extends xp·unittest·sources·AbstractSource {
+  class xp·unittest·sources·ClassSource extends xp·unittest·sources·AbstractSource {
     protected $testClass= NULL;
     protected $method= NULL;
     

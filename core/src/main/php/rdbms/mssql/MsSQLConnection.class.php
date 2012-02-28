@@ -23,6 +23,13 @@
    */
   class MsSQLConnection extends DBConnection {
 
+    static function __static() {
+      if (extension_loaded('mssql')) {
+        DriverManager::register('mssql+std', new XPClass(__CLASS__));
+        DriverManager::register('sybase+ms', new XPClass(__CLASS__));
+      }
+    }
+
     /**
      * Constructor
      *

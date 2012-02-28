@@ -11,7 +11,8 @@
     'rdbms.mysqlx.MySqlxProtocol',
     'rdbms.Transaction',
     'rdbms.StatementFormatter',
-    'rdbms.mysql.MysqlDialect'
+    'rdbms.mysql.MysqlDialect',
+    'rdbms.mysqlx.LocalSocket'
   );
 
   /**
@@ -25,6 +26,10 @@
   class MySqlxConnection extends DBConnection {
     protected $affected= -1;
 
+    static function __static() {
+      DriverManager::register('mysql+x', new XPClass(__CLASS__));
+    }
+
     /**
      * Constructor
      *
@@ -33,7 +38,31 @@
     public function __construct($dsn) { 
       parent::__construct($dsn);
       $this->formatter= new StatementFormatter($this, new MysqlDialect());
-      $this->handle= new MysqlxProtocol(new Socket($this->dsn->getHost(), $this->dsn->getPort(3306)));
+
+      // Use local socket (unix socket on Un*x systems, named pipe on Windows)
+      // if "." is supplied as hostname
+      $host= $this->dsn->getHost();
+      if ('.' === $host) {
+        $sock= LocalSocket::forName(PHP_OS)->newInstance($this->dsn->getProperty('socket', NULL));
+      } else {
+        $sock= new Socket($host, $this->dsn->getPort(3306));
+      }
+
+      $this->handle= new MysqlxProtocol($sock);
+    }
+
+    /**
+     * Returns a hashcode for this connection
+     *
+     * Example:
+     * <pre>
+     *   mysqlx link #50
+     * </pre>
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return 'mysqlx link #'.$this->handle->hashCode();
     }
 
     /**

@@ -52,6 +52,18 @@
     }
 
     /**
+     * Gets field type
+     *
+     * @return  string
+     */
+    public function getTypeName() {
+      if ($details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName())) {
+        if (isset($details[DETAIL_ANNOTATIONS]['type'])) return $details[DETAIL_ANNOTATIONS]['type'];
+      }
+      return 'var';
+    }
+
+    /**
      * Check whether an annotation exists
      *
      * @param   string name

@@ -256,7 +256,9 @@
       // Initializer logger, properties and connections to property base, 
       // defaulting to the same directory the web.ini resides in
       $pm= PropertyManager::getInstance();
-      $pm->configure($application->getConfig());
+      foreach (explode('|', $application->getConfig()) as $element) {
+        $pm->appendSource(new FilesystemPropertySource($element));
+      }
       
       $l= Logger::getInstance();
       $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));

@@ -363,7 +363,7 @@
     }
 
     /**
-     * Read (binary-safe)
+     * Read (binary-safe) up to a given amount of bytes
      *
      * @param   int bytes default 4096 Max. amount of bytes to read
      * @return  string Data read

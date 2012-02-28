@@ -4,7 +4,12 @@
  * $Id$ 
  */
 
-  uses('util.Properties');
+  uses(
+    'util.Properties',
+    'util.CompositeProperties',
+    'util.RegisteredPropertySource',
+    'util.FilesystemPropertySource'
+  );
   
   /**
    * Property-Manager
@@ -20,15 +25,15 @@
    *   // from etc/database.ini
    * </code>
    *
+   * @test      xp://net.xp_framework.unittest.util.PropertyManagerTest
    * @purpose  Container
    */
   class PropertyManager extends Object {
     protected static 
       $instance     = NULL;
 
-    public 
-      $_path    = '.',
-      $_prop    = array();
+    protected
+      $provider     = array();
 
     static function __static() {
       self::$instance= new self();
@@ -56,9 +61,80 @@
      * @param   string path search path to the property files
      */
     public function configure($path) {
-      $this->_path= $path;
+      $this->appendSource(new FilesystemPropertySource($path));
     }
-    
+
+    /**
+     * Check if given source is new source
+     *
+     * @param   util.PropertySource source
+     * @return  bool
+     */
+    public function hasSource(PropertySource $source) {
+      return isset($this->provider[$source->hashCode()]);
+    }
+
+    /**
+     * Append path to paths to search
+     *
+     * @param   util.PropertySource source
+     * @return  util.PropertySource the added path
+     */
+    public function appendSource(PropertySource $source) {
+      $this->provider[$source->hashCode()]= $source;
+      return $source;
+    }
+
+    /**
+     * Set path to paths to search
+     *
+     * @param   util.PropertySource[] source
+     */
+    public function setSources(array $sources) {
+      $provider= $this->provider;
+      $this->provider= array();
+      try {
+        foreach ($sources as $source) {
+          $this->appendSource($source);
+        }
+      } catch (IllegalArgumentException $e) {
+        $this->provider= $provider;
+        throw $e;
+      }
+    }
+
+    /**
+     * Prepend path to paths to search
+     *
+     * @param   util.PropertySource source
+     * @return  util.PropertySource the added path
+     */
+    public function prependSource(PropertySource $source) {
+      if (!$this->hasSource($source)) $this->provider= array_merge(array($source->hashCode() => $source), $this->provider);
+      return $source;
+    }
+
+    /**
+     * Get all paths used to search
+     *
+     * @return  util.PropertySource[]
+     */
+    public function getSources() {
+      return array_values($this->provider);
+    }
+
+    /**
+     * Remove path from search list
+     *
+     * @param   util.PropertySource source
+     * @return  bool whether the path was removed
+     */
+    public function removeSource(PropertySource $source) {
+      $removed= isset($this->provider[$source->hashCode()]);
+      unset($this->provider[$source->hashCode()]);
+      return $removed;
+    }
+
     /**
      * Register a certain property object to a specified name
      *
@@ -66,7 +142,7 @@
      * @param   util.Properties properties
      */
     public function register($name, $properties) {
-      $this->_prop[$this->_path.$name]= $properties;
+      $this->prependSource(new RegisteredPropertySource($name, $properties));
     }
 
     /**
@@ -76,25 +152,38 @@
      * @return  bool
      */
     public function hasProperties($name) {
-      return (
-        isset($this->_prop[$this->_path.$name]) || 
-        file_exists($this->_path.DIRECTORY_SEPARATOR.$name.'.ini')
-      );
+      foreach ($this->provider as $source) {
+        if ($source->provides($name)) return TRUE;
+      }
+
+      return FALSE;
     }
    
     /**
      * Return properties by name
      *
      * @param   string name
-     * @return  util.Properties
+     * @return  util.PropertyAccess
+     * throws   lang.ElementNotFoundException
      */
     public function getProperties($name) {
-      if (!isset($this->_prop[$this->_path.$name])) {
-        $this->_prop[$this->_path.$name]= new Properties(
-          $this->_path.DIRECTORY_SEPARATOR.$name.'.ini'
-        );
+      $found= array();
+
+      foreach ($this->provider as $source) {
+        if ($source->provides($name)) {
+          $found[]= $source->fetch($name);
+        }
       }
-      return $this->_prop[$this->_path.$name];
-    }
+
+      switch (sizeof($found)) {
+        case 1: return $found[0];
+        case 0: raise('lang.ElementNotFoundException', sprintf(
+          'Cannot find properties "%s" in any of %s',
+          $name,
+          xp::stringOf(array_values($this->provider))
+        ));
+        default: return new CompositeProperties($found);
+      }
+	  }
   }
 ?>

@@ -26,7 +26,7 @@
      *
      * @param   server.protocol.Serializer serializer
      * @param   lang.Object value
-     * @param   [:var]context default array()
+     * @param   [:var] context default array()
      * @return  string
      */
     public function representationOf($serializer, $value, $context= array());

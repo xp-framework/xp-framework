@@ -11,6 +11,7 @@
     'peer.server.ServerProtocol',
     'peer.ftp.server.FtpSession',
     'peer.SocketException',
+    'security.auth.Authenticator',
     'util.log.Traceable'
   );
   
@@ -43,7 +44,7 @@
      * Constructor
      *
      * @param   peer.ftp.server.Storage storage
-     * @param   peer.ftp.server.Authenticator authenticator
+     * @param   security.auth.Authenticator authenticator
      */
     public function __construct($storage, $authenticator) {
       $this->storage= $storage;
