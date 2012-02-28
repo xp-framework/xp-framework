@@ -31,8 +31,8 @@
       System::putEnv('REQUEST_URI', '/');
       System::putEnv('QUERY_STRING', '');
       $request->method= $this->method;
-      $request->headers= array_change_key_case($this->headers, CASE_LOWER);
-      $request->setParams(array_change_key_case($this->params, CASE_LOWER));
+      $request->setHeaders($this->headers);
+      $request->setParams($this->params);
     }
     
     /**

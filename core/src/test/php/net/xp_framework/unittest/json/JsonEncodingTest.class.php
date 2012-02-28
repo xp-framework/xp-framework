@@ -448,25 +448,59 @@
     }
 
     /**
+     * Test encoding of object
+     *
+     */
+    #[@test]
+    public function encodeObject() {
+      $this->assertEquals(
+        '{ "prop" : "prop" , "__id" : null }',
+        $this->encode(newinstance('lang.Object', array(), '{
+          public $prop= "prop";
+        }'))
+      );
+    }
+
+    /**
+     * Test encoding of object
+     *
+     */
+    #[@test]
+    public function encodeObjectWithPrivateProperty() {
+      $this->assertEquals(
+        '{ "prop" : "prop" , "__id" : null }',
+        $this->encode(newinstance('lang.Object', array(), '{
+          public $prop= "prop";
+          private $priv= "priv";
+        }'))
+      );
+    }
+
+    /**
+     * Test encoding of object
+     *
+     */
+    #[@test]
+    public function encodeObjectWithProtectedProperty() {
+      $this->assertEquals(
+        '{ "prop" : "prop" , "__id" : null }',
+        $this->encode(newinstance('lang.Object', array(), '{
+          public $prop= "prop";
+          protected $prot= "prot";
+        }'))
+      );
+    }
+
+    /**
      * Test encode date object
      *
      */
     #[@test]
     public function encodeDateObject() {
-      $je= NULL;
-
-      try {
-        $this->encode(new Date('2009-05-18 01:02:03'));
-      } catch (JsonException $je) {
-        // Do nothing here
-      }
-
-      $this->assertInstanceOf(
-        'webservices.json.JsonException',
-        $je
+      $this->assertEquals(
+        '{ "value" : "2009-05-18 01:02:03+0200" , "__id" : null }',
+        $this->encode(new Date('2009-05-18 01:02:03'))
       );
     }
-
-
   }
 ?>
