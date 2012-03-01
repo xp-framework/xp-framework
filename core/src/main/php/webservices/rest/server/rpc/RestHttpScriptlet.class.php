@@ -79,7 +79,7 @@
       
       $routings= $this->router->routesFor($req, $res);     
       if(count($routings) === 0) {
-        throw new HttpScriptletException('The method '.$req->getMethod().' is not allowed on the resource '.$path.'.', HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED);
+        throw new HttpScriptletException('The method '.$req->getMethod().' is not allowed on the resource '.$path.'.', HttpConstants::STATUS_METHOD_NOT_ALLOWED);
       }
       
       // Setup processor and bind data sources
