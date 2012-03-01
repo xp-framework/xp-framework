@@ -604,13 +604,21 @@
     }
 
     $name= $type.'·'.(++$u);
+    if (FALSE === ($p= strrpos($name, '\\'))) {
+      $decl= $name;
+      $ns= '';
+    } else {
+      $decl= substr($name, $p+ 1);
+      $ns= 'namespace '.substr($name, 0, $p).'; ';
+      $type= '\\'.$type;
+    }
     
     // Checks whether an interface or a class was given
     $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
     if (interface_exists($type)) {
-      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$type.' '.$bytes);
+      $cl->setClassBytes($name, $ns.'class '.$decl.' extends Object implements '.$type.' '.$bytes);
     } else {
-      $cl->setClassBytes($name, 'class '.$name.' extends '.$type.' '.$bytes);
+      $cl->setClassBytes($name, $ns.'class '.$decl.' extends '.$type.' '.$bytes);
     }
 
     $cl->loadClass0($name);
