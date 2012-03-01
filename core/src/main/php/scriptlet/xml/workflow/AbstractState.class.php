@@ -59,8 +59,8 @@
         // posted via request to avoid duplicate parameters. We do not need
         // to use $response->addFormValue() because this is done in
         // XMLScriptlet::processRequest() called in XMLScriptlet::doGet().
-        if (isset($request->params[$key])) continue;
-        $request->params[$key]= $handler->values[HVAL_FORMPARAM][$key];
+        if ($request->hasParam($key)) continue;
+        $request->setParam($key, $handler->values[HVAL_FORMPARAM][$key]);
       }
       
       // Add wrapper parameter representation if the handler has a wrapper

@@ -168,7 +168,7 @@
         case HttpConstants::POST:
         case HttpConstants::PUT: {
           if (!empty($_FILES)) {
-            $request->params= array_merge($request->params, $_FILES);
+            $request->setParams(array_merge($request->getParams(), $_FILES));
           }
           
           // Break missing intentionally
