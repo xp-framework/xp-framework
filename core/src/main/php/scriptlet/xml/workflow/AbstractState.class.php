@@ -114,7 +114,7 @@
 
               // If the handler is already active, this means the page was reloaded
               if ($this->handlers[$i]->isActive($request, $context)) {
-                $this->handlers[$i]->finalize($request, $response, $context);
+                $this->handlers[$i]->finalizeReloaded($request, $response, $context);
                 $node->setAttribute('status', HANDLER_RELOADED);
                 continue;
               }
@@ -175,7 +175,7 @@
               
               // Remove handler from session and call handler's finalize() method
               $request->session->removeValue($this->handlers[$i]->identifier);
-              $this->handlers[$i]->finalize($request, $response, $context);
+              $this->handlers[$i]->finalizeCancel($request, $response, $context);
               
               continue;
             }
@@ -221,7 +221,7 @@
 
             // Tell the handler to finalize itself. This may include adding a 
             // node to the formresult or sending a redirect to another page
-            $this->handlers[$i]->finalize($request, $response, $context);
+            $this->handlers[$i]->finalizeSuccess($request, $response, $context);
             $node->setAttribute('status', HANDLER_SUCCESS);
           }
         }
@@ -257,6 +257,5 @@
     public function setTrace($cat) { 
       $this->cat= $cat;
     }
-
   } 
 ?>
