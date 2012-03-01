@@ -38,8 +38,7 @@
      * Return whether a specified resource exists
      * 
      * @param string resourcePath The resource path
-     * @param webservices.rest.server.transport.HttpResponseAdapter response The response
-     * @return webservices.rest.server.RestRoute[]
+     * @return bool
      */
     public function resourceExists($resourcePath);
     
