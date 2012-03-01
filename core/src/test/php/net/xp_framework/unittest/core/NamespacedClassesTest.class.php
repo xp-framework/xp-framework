@@ -13,6 +13,7 @@
    * TestCase for XP Framework's namespaces support
    *
    * @see   https://github.com/xp-framework/rfc/issues/222
+   * @see   xp://net.xp_framework.unittest.core.NamespacedClass
    * @see   php://namespaces
    */
   class NamespacedClassesTest extends TestCase {
@@ -77,6 +78,16 @@
         'net.xp_framework.unittest.core.UnloadedNamespacedClass',
         self::$package->loadClass('NamespacedClassUsingQualifiedUnloaded')->newInstance()->getNamespacedClass()
       );
+    }
+
+    /**
+     * Tests newinstance() on namespaced class
+     *
+     */
+    #[@test]
+    public function newInstanceOnNamespacedClass() {
+      $i= newinstance('net.xp_framework.unittest.core.NamespacedClass', array(), '{}');
+      $this->assertInstanceOf('net.xp_framework.unittest.core.NamespacedClass', $i);
     }
   }
 ?>
