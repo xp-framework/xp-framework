@@ -6,6 +6,17 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
+  params public property, use setters and getters instead
+  (cconstandachi)
+
+Features
+~~~~~~~~
+- Improved error handling in RestHttpScriptlet
+  (iigorr)
+
 
 Version 5.8.4, released 2012-02-26
 ----------------------------------
