@@ -34,5 +34,14 @@
      */
     public function routesFor($request, $response);
     
+    /**
+     * Return whether a specified resource exists
+     * 
+     * @param string resourcePath The resource path
+     * @param webservices.rest.server.transport.HttpResponseAdapter response The response
+     * @return webservices.rest.server.RestRoute[]
+     */
+    public function resourceExists($resourcePath);
+    
   }
 ?>

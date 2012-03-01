@@ -110,5 +110,20 @@
       
       return array();
     }
+    
+    /**
+     * Return whether a specified resource exists
+     * 
+     * @param string resourcePath The resource path
+     * @param webservices.rest.server.transport.HttpResponseAdapter response The response
+     * @return webservices.rest.server.RestRoute[]
+     */
+    public function resourceExists($resourcePath) {
+      foreach($this->table->getItems() as $item) {
+        if ($item->getPath()->match($resourcePath)) return true;
+      }
+      
+      return false;
+    }
   }
 ?>
