@@ -62,7 +62,7 @@
         //
         // Note: This will only happen when the handler itself is set up.
         if (isset($definitions[self::PARAM_DEFAULT]) && '' == $request->getParam($name, '')) {
-          $request->params[$name]= $definitions[self::PARAM_DEFAULT];
+          $request->setParam($name, $definitions[self::PARAM_DEFAULT]);
         }
         
         // If this is a pass-behind value, register it to the handler's 
@@ -70,7 +70,7 @@
         // session (where it has been registered to during this call)
         // rather than from the request data (GET / POST / COOKIE).
         if ($definitions[self::PARAM_OCCURRENCE] & self::OCCURRENCE_PASSBEHIND) {
-          $handler->setValue($name, $request->params[$name]);
+          $handler->setValue($name, $request->getParam($name));
         }
       } 
     }

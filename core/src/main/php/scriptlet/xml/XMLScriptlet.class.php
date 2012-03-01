@@ -203,7 +203,7 @@
       $response->hasStylesheet() || $this->_setStylesheet($request, $response);
 
       // Add all request parameters to the formvalue node
-      foreach ($request->params as $key => $value) {
+      foreach ($request->getParams() as $key => $value) {
         $response->addFormValue($key, $value);
       }
     }
