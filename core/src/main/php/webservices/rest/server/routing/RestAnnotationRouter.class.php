@@ -110,5 +110,19 @@
       
       return array();
     }
+    
+    /**
+     * Return whether a specified resource exists
+     * 
+     * @param string resourcePath The resource path
+     * @return bool
+     */
+    public function resourceExists($resourcePath) {
+      foreach($this->table->getItems() as $item) {
+        if ($item->getPath()->match($resourcePath)) return true;
+      }
+      
+      return false;
+    }
   }
 ?>

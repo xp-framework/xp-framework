@@ -23,7 +23,13 @@
      * @return var[]
      */
     public function getData() {
-      return create(new JsonDecoder())->decode($this->request->getData());
+      if('' === $this->request->getData())
+        return null;
+      try {
+        return create(new JsonDecoder())->decode($this->request->getData());
+      } catch(JsonException $e) {
+        throw new FormatException('Could not process JSON data. ', $e);
+      }
     }
   }
 ?>
