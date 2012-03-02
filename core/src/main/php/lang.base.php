@@ -595,7 +595,7 @@
     // Check for an anonymous generic 
     if (strstr($spec, '<')) {
       $class= Type::forName($spec)->genericDefinition();
-      $name= $class->getName();
+      $spec= $class->getName();
       $type= $class->literal();
     } else {
       $type= xp::reflect(FALSE === strrpos($spec, '.') ? xp::nameOf($spec) : $spec);
@@ -603,12 +603,11 @@
         xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
         // Bails
       }
-      $name= $spec;
     }
 
     // Create unique name
     $n= '·'.(++$u);
-    $name.= $n;
+    $spec.= $n;
     if (FALSE !== ($p= strrpos($type, '·'))) {
       $ns= '$package= "'.strtr(substr($type, 0, $p), '·', '.').'"; ';
       $decl= $type.$n;
@@ -624,12 +623,12 @@
     // Checks whether an interface or a class was given
     $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
     if (interface_exists($type)) {
-      $cl->setClassBytes($name, $ns.'class '.$decl.' extends Object implements '.$type.' '.$bytes);
+      $cl->setClassBytes($spec, $ns.'class '.$decl.' extends Object implements '.$type.' '.$bytes);
     } else {
-      $cl->setClassBytes($name, $ns.'class '.$decl.' extends '.$type.' '.$bytes);
+      $cl->setClassBytes($spec, $ns.'class '.$decl.' extends '.$type.' '.$bytes);
     }
 
-    $decl= $cl->loadClass0($name);
+    $decl= $cl->loadClass0($spec);
 
     // Build paramstr for evaluation
     for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
