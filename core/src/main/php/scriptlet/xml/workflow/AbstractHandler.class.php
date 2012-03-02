@@ -290,7 +290,7 @@
      * @param   scriptlet.xml.XMLScriptletResponse response
      * @param   scriptlet.xml.Context context
      */
-    public function finalizeReloaded($request, $response, $context) {
+    public function reloaded($request, $response, $context) {
       $this->finalize($request, $response, $context);
     }
     
@@ -301,7 +301,7 @@
      * @param   scriptlet.xml.XMLScriptletResponse response
      * @param   scriptlet.xml.Context context
      */
-    public function finalizeCancel($request, $response, $context) {
+    public function cancelled($request, $response, $context) {
       $this->finalize($request, $response, $context);
     }
     
@@ -312,7 +312,7 @@
      * @param   scriptlet.xml.XMLScriptletResponse response
      * @param   scriptlet.xml.Context context
      */
-    public function finalizeSuccess($request, $response, $context) {
+    public function success($request, $response, $context) {
       $this->finalize($request, $response, $context);
     }
   }
