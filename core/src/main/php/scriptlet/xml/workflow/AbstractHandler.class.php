@@ -282,5 +282,38 @@
      * @param   scriptlet.xml.Context context
      */
     public function finalize($request, $response, $context) { }
+    
+    /**
+     * Finalize this handler when the page was reloaded
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.Context context
+     */
+    public function reloaded($request, $response, $context) {
+      $this->finalize($request, $response, $context);
+    }
+    
+    /**
+     * Finalize this handler for cancellation
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.Context context
+     */
+    public function cancelled($request, $response, $context) {
+      $this->finalize($request, $response, $context);
+    }
+    
+    /**
+     * Finalize this handler with success
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.Context context
+     */
+    public function success($request, $response, $context) {
+      $this->finalize($request, $response, $context);
+    }
   }
 ?>
