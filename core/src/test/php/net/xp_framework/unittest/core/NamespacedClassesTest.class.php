@@ -106,7 +106,7 @@
      * Tests package retrieval on newinstance() created namespaced class
      *
      */
-    #[@test, @ignore('Not yet working')]
+    #[@test]
     public function packageOfNewInstancedNamespacedClass() {
       $i= newinstance('net.xp_framework.unittest.core.NamespacedClass', array(), '{}');
       $this->assertEquals(
