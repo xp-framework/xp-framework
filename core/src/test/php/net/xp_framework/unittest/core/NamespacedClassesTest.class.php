@@ -49,6 +49,18 @@
      *
      */
     #[@test]
+    public function packageOfNamespacedClass() {
+      $this->assertEquals(
+        Package::forName('net.xp_framework.unittest.core'),
+        self::$package->loadClass('NamespacedClass')->getPackage()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function namespacedClassUsingUnqualified() {
       $this->assertEquals(
         String::$EMPTY, 
@@ -88,6 +100,19 @@
     public function newInstanceOnNamespacedClass() {
       $i= newinstance('net.xp_framework.unittest.core.NamespacedClass', array(), '{}');
       $this->assertInstanceOf('net.xp_framework.unittest.core.NamespacedClass', $i);
+    }
+
+    /**
+     * Tests package retrieval on newinstance() created namespaced class
+     *
+     */
+    #[@test, @ignore('Not yet working')]
+    public function packageOfNewInstancedNamespacedClass() {
+      $i= newinstance('net.xp_framework.unittest.core.NamespacedClass', array(), '{}');
+      $this->assertEquals(
+        Package::forName('net.xp_framework.unittest.core'),
+        $i->getClass()->getPackage()
+      );
     }
   }
 ?>
