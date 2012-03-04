@@ -5,12 +5,9 @@
  */
 
   uses(
-    'unittest.TestCase',
+    'net.xp_framework.unittest.scriptlet.ScriptletTestCase',
     'scriptlet.xml.XMLScriptlet',
-    'xml.Stylesheet',
-    'lang.System',
-    'io.Folder',
-    'peer.URL'
+    'xml.Stylesheet'
   );
 
   /**
@@ -18,19 +15,7 @@
    *
    * @see      xp://scriptlet.xml.XMLScriptlet
    */
-  class XmlScriptletTest extends TestCase {
-    protected static $temp= NULL;
-
-    /**
-     * Set session path to temporary directory
-     *
-     */
-    #[@beforeClass]
-    public static function prepareTempDir() {
-      self::$temp= new Folder(System::tempDir(), md5(uniqid()));
-      self::$temp->create();
-      session_save_path(self::$temp->getURI());
-    }
+  class XmlScriptletTest extends ScriptletTestCase {
 
     /**
      * Verify dom and xsl extensions are loaded
@@ -44,23 +29,6 @@
       }
     }
 
-    /**
-     * Destroy session
-     *
-     */
-    public function tearDown() {
-      session_id(NULL);
-    }
-
-    /**
-     * Cleanup temporary directory
-     *
-     */
-    #[@afterClass]
-    public static function cleanupTempDir() {
-      self::$temp->unlink();
-    }
-  
     /**
      * Creates a new request object
      *

@@ -4,68 +4,15 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'scriptlet.HttpScriptlet',
-    'lang.System',
-    'io.Folder',
-    'peer.URL'
-  );
+  uses('net.xp_framework.unittest.scriptlet.ScriptletTestCase');
 
   /**
    * TestCase for the deprecated HttpScriptlet::process() method
    *
-   * @see      xp://scriptlet.HttpScriptlet
+   * @see   xp://scriptlet.HttpScriptlet
    */
-  class HttpScriptletProcessTest extends TestCase {
-    protected static $temp= NULL;
-  
-    static function __static() {
-      if (!function_exists('getallheaders')) {
-        function getallheaders() { return array(); }
-      }
-    }
+  class HttpScriptletProcessTest extends ScriptletTestCase {
 
-    /**
-     * Set session path to temporary directory
-     *
-     */
-    #[@beforeClass]
-    public static function prepareTempDir() {
-      self::$temp= new Folder(System::tempDir(), md5(uniqid()));
-      self::$temp->create();
-      session_save_path(self::$temp->getURI());
-    }
-
-    /**
-     * Verify dom and xsl extensions are loaded
-     *
-     */
-    public function setUp() {
-      foreach (array('dom', 'xsl') as $ext) {
-        if (!extension_loaded($ext)) {
-          throw new PrerequisitesNotMetError($ext.' extension not loaded');
-        }
-      }
-    }
-
-    /**
-     * Destroy session
-     *
-     */
-    public function tearDown() {
-      session_id(NULL);
-    }
-
-    /**
-     * Cleanup temporary directory
-     *
-     */
-    #[@afterClass]
-    public static function cleanupTempDir() {
-      self::$temp->unlink();
-    }
-    
     /**
      * Creates a new request object. Uses the system environment and global
      * variables to put necessary parameters into place.

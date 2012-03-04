@@ -5,22 +5,17 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'scriptlet.HttpScriptlet',
-    'scriptlet.RequestAuthenticator',
-    'lang.System',
-    'io.Folder',
-    'peer.URL'
+    'net.xp_framework.unittest.scriptlet.ScriptletTestCase',
+    'scriptlet.RequestAuthenticator'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://scriptlet.HttpScriptlet
+   * @see   xp://scriptlet.HttpScriptlet
    */
-  class HttpScriptletTest extends TestCase {
+  class HttpScriptletTest extends ScriptletTestCase {
     protected static $helloScriptlet= NULL;
-    protected static $temp= NULL;
     
     static function __static() {
       self::$helloScriptlet= newinstance('scriptlet.HttpScriptlet', array(), '{
@@ -46,34 +41,6 @@
           $response->write("Hello ".$request->method);
         }
       }');
-    }
-  
-    /**
-     * Set session path to temporary directory
-     *
-     */
-    #[@beforeClass]
-    public static function prepareTempDir() {
-      self::$temp= new Folder(System::tempDir(), md5(uniqid()));
-      self::$temp->create();
-      session_save_path(self::$temp->getURI());
-    }
-
-    /**
-     * Destroy session
-     *
-     */
-    public function tearDown() {
-      session_id(NULL);
-    }
-
-    /**
-     * Cleanup temporary directory
-     *
-     */
-    #[@afterClass]
-    public static function cleanupTempDir() {
-      self::$temp->unlink();
     }
     
     /**
