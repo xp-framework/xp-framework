@@ -8,6 +8,8 @@
     'unittest.TestCase',
     'scriptlet.HttpScriptlet',
     'scriptlet.RequestAuthenticator',
+    'lang.System',
+    'io.Folder',
     'peer.URL'
   );
 
@@ -18,6 +20,7 @@
    */
   class HttpScriptletTest extends TestCase {
     protected static $helloScriptlet= NULL;
+    protected static $temp= NULL;
     
     static function __static() {
       self::$helloScriptlet= newinstance('scriptlet.HttpScriptlet', array(), '{
@@ -46,23 +49,31 @@
     }
   
     /**
-     * Set session path to current working directory
+     * Set session path to temporary directory
      *
      */
-    public function setUp() {
-      session_save_path(getcwd());
+    #[@beforeClass]
+    public static function prepareTempDir() {
+      self::$temp= new Folder(System::tempDir(), md5(uniqid()));
+      self::$temp->create();
+      session_save_path(self::$temp->getURI());
     }
 
     /**
-     * Destroy session and cleanup file
+     * Destroy session
      *
      */
     public function tearDown() {
-      if (session_id()) {
-        session_write_close();
-        unlink(session_save_path().DIRECTORY_SEPARATOR.'sess_'.session_id());
-        session_id(NULL);
-      }
+      session_id(NULL);
+    }
+
+    /**
+     * Cleanup temporary directory
+     *
+     */
+    #[@afterClass]
+    public static function cleanupTempDir() {
+      self::$temp->unlink();
     }
     
     /**

@@ -8,6 +8,8 @@
     'unittest.TestCase',
     'scriptlet.xml.XMLScriptlet',
     'xml.Stylesheet',
+    'lang.System',
+    'io.Folder',
     'peer.URL'
   );
 
@@ -17,9 +19,21 @@
    * @see      xp://scriptlet.xml.XMLScriptlet
    */
   class XmlScriptletTest extends TestCase {
+    protected static $temp= NULL;
 
     /**
-     * Set session path to current working directory
+     * Set session path to temporary directory
+     *
+     */
+    #[@beforeClass]
+    public static function prepareTempDir() {
+      self::$temp= new Folder(System::tempDir(), md5(uniqid()));
+      self::$temp->create();
+      session_save_path(self::$temp->getURI());
+    }
+
+    /**
+     * Verify dom and xsl extensions are loaded
      *
      */
     public function setUp() {
@@ -28,20 +42,23 @@
           throw new PrerequisitesNotMetError($ext.' extension not loaded');
         }
       }
-
-      session_save_path(getcwd());
     }
 
     /**
-     * Destroy session and cleanup file
+     * Destroy session
      *
      */
     public function tearDown() {
-      if (session_id()) {
-        session_write_close();
-        unlink(session_save_path().DIRECTORY_SEPARATOR.'sess_'.session_id());
-        session_id(NULL);
-      }
+      session_id(NULL);
+    }
+
+    /**
+     * Cleanup temporary directory
+     *
+     */
+    #[@afterClass]
+    public static function cleanupTempDir() {
+      self::$temp->unlink();
     }
   
     /**
