@@ -8,13 +8,17 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Handle empty Json request gracefully.
+  (iigorr)
 - Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
   params public property, use setters and getters instead
   (cconstandachi)
 
 Features
 ~~~~~~~~
-- Changed text.parser.generic.ParseException to contain the parse error messages. Not only their messages.
+- Changed webservices.rest.server.RestDataCaster methods to be non-static.
+  (iigorr)
+- Added possibility to handle error in webservices.rest.server.rpc.RestHttpScriptlet using webservices.rest.server.RestErrorFormatter
   (iigorr)
 - Changed text.parser.generic.ParseException to contain the parse error messages. Not only their messages.
   (iigorr)
