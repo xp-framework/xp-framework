@@ -21,8 +21,8 @@
      * Constructor
      * 
      * @param string message
-     * @param Throwable cause
-     * @param ParserMessage[] errors 
+     * @param lang.Throwable cause
+     * @param text.parser.generic.ParserMessage[] errors 
      */
     public function __construct($message, $cause= NULL, $errors= array()) {
       parent::__construct($message, $cause);
@@ -33,7 +33,7 @@
     /**
      * Sets the errors.
      * 
-     * @param ParserMessage[] errors 
+     * @param text.parser.generic.ParserMessage[] errors 
      */
     public function setErrors($errors) {
       $this->errors= $errors;
@@ -42,7 +42,7 @@
     /**
      * Add a parse error message
      * 
-     * @param ParserMessage errors 
+     * @param text.parser.generic.ParserMessage errors 
      */
     public function addError(ParserMessage $error) {
       $this->errors[]= $error;
@@ -51,7 +51,7 @@
     /**
      * Gets the parse error messages
      * 
-     * @return ParserMessage[] 
+     * @return text.parser.generic.ParserMessage[] 
      */
     public function getErrors() {
       return $this->errors;
