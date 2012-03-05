@@ -118,11 +118,11 @@
      * @return bool
      */
     public function resourceExists($resourcePath) {
-      foreach($this->table->getItems() as $item) {
-        if ($item->getPath()->match($resourcePath)) return true;
+      foreach ($this->table->getItems() as $item) {
+        if ($item->getPath()->match($resourcePath)) return TRUE;
       }
       
-      return false;
+      return FALSE;
     }
   }
 ?>

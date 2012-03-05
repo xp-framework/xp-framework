@@ -16,6 +16,26 @@
    * @purpose Caster
    */
   class RestDataCaster extends Object {
+    private
+      $ignoreNullFields= TRUE;
+    
+    /**
+     * Indicates whether fields that are set to NULL are ignored in simplification.
+     * 
+     * @return bool
+     */
+    public function getIgnoreNullFields() {
+      return $this->ignoreNullFields;
+    }
+    
+    /**
+     * Sets whether to ignore fields that are set to NULL in simplification.
+     * 
+     * @param bool ignore 
+     */
+    public function setIgnoreNullFields($ignore) {
+      $this->ignoreNullFields= $ignore;
+    }
     
     /**
      * Simplify data structure by generating a simple array containing
@@ -24,7 +44,7 @@
      * @param var[] data The data to simplify
      * @return var[]
      */
-    public static function simple($data) {
+    public function simple($data) {
       switch (xp::typeOf($data)) {
         case 'NULL':
           return NULL;
@@ -54,15 +74,22 @@
             $fields= array();
             $class= $data->getClass();
             foreach ($class->getFields() as $field) {
+
+              $val= NULL;
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
-                $fields[$field->getName()]= self::simple($field->get($data));
-                
+                $val = self::simple($field->get($data));
               } else if ($class->hasMethod('get'.ucfirst($field->getName()))) {
-                $fields[$field->getName()]= self::simple($class->getMethod('get'.ucfirst($field->getName()))->invoke($data));
+                $val= self::simple($class->getMethod('get'.ucfirst($field->getName()))->invoke($data));
+              } else {
+                continue;
               }
+
+              if ($this->ignoreNullFields && $val === NULL) continue;
+
+              $fields[$field->getName()]= $val;
             }
+            
             return $fields;
-          
           } else if (is_object($data)) {
             return self::simple((array)$data);
           }
@@ -78,7 +105,7 @@
      * @param lang.Type type The type to use
      * @return var[]
      */
-    public static function complex($data, Type $type) {
+    public function complex($data, Type $type) {
       $typeName= $type instanceof ArrayType ? xp::typeOf($type) : $type->getName();
 
       switch ($typeName) {

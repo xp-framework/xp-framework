@@ -16,8 +16,20 @@
    * @purpose Router
    */
   class RestRoutingProcessor extends Object {
-    protected
-      $bindings= array();
+    private
+      $bindings= array(),
+      $dataCaster= NULL;
+    /**
+     * Constructor
+     * 
+     * @param scriptlet.HttpResponse response The response
+     */
+    public function __construct(RestDataCaster $dataCaster= NULL) {
+      $this->dataCaster= $dataCaster;
+      if(NULL === $this->dataCaster) {
+        $this->dataCaster= new RestDataCaster();
+      }
+    }
     
     /**
      * Bind resource
@@ -95,8 +107,8 @@
         
         // Try to convert binding to requested argument type
         try {
-          $args[(int)$ref]= RestDataCaster::complex(
-            RestDataCaster::simple($this->getBinding($name)),
+          $args[(int)$ref]= $this->dataCaster->complex(
+            $this->dataCaster->simple($this->getBinding($name)),
             $routing->getArgs()->getArgumentType($names[$ref])
           );
         } catch (XPException $e) {
@@ -110,8 +122,8 @@
 
         // Try to convert parameters to requested argument type
         try {
-          $args[$i]= RestDataCaster::complex(
-            RestDataCaster::simple($values[$name]),
+          $args[$i]= $this->dataCaster->complex(
+            $this->dataCaster->simple($values[$name]),
             $routing->getArgs()->getArgumentType($name)
           );
         } catch (XPException $e) {
@@ -120,7 +132,7 @@
       }
       ksort($args);
       
-      return RestDataCaster::simple($routing->getTarget()->process($args));
+      return $this->dataCaster->simple($routing->getTarget()->process($args));
     }
   }
 ?>

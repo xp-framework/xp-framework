@@ -6,6 +6,7 @@
 
   uses(
     'webservices.rest.server.transport.AbstractHttpResponseAdapter',
+    'webservices.rest.server.RestDataCaster',
     'webservices.json.JsonDecoder'
   );
   
@@ -16,7 +17,22 @@
    * @purpose Adapter
    */
   class JsonHttpResponseAdapter extends AbstractHttpResponseAdapter {
-    
+    private 
+      $dataCaster= NULL;
+    /**
+     * Constructor
+     * 
+     * @param scriptlet.HttpResponse response The response
+     * @param webservices.rest.server.RestDataCaste dataCaster The data caster, optionally.
+     */
+    public function __construct($response, RestDataCaster $dataCaster= NULL) {
+      parent::__construct($response);
+      
+      $this->dataCaster= $dataCaster;
+      if(NULL === $this->dataCaster) {
+        $this->dataCaster= new RestDataCaster();
+      }
+    }
     /**
      * Set body
      * 
@@ -24,7 +40,7 @@
      */
     public function setData($data) {
       $this->response->setHeader('Content-Type', 'application/json');
-      $this->response->write(create(new JsonDecoder())->encode($data));
+      $this->response->write(create(new JsonDecoder())->encode($this->dataCaster->simple($data)));
     }
   }
 ?>
