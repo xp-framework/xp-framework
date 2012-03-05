@@ -123,11 +123,7 @@
       }
       
       if (!empty($this->messages[self::ERROR])) {
-        $s= '';
-        foreach ($this->messages[self::ERROR] as $error) {
-          $s.= '- '.$error->toString()."\n";
-        }
-        throw new ParseException(sizeof($this->messages[self::ERROR]).' error(s)', new FormatException($s));
+        throw new ParseException(sizeof($this->messages[self::ERROR]).' parse error(s) occurred.', NULL, $this->messages[self::ERROR]);
       }
       
       return $result;
