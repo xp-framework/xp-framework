@@ -57,7 +57,7 @@
         case 'array':
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= self::simple($value);
+            $result[$key]= $this->simple($value);
           }
           return $result;
 
@@ -67,7 +67,7 @@
           return Primitive::unboxed($data);
         
         case 'util.Hashmap':
-          return self::simple($data->toArray());
+          return $this->simple($data->toArray());
         
         default:
           if ($data instanceof Generic) {
@@ -77,9 +77,9 @@
 
               $val= NULL;
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
-                $val = self::simple($field->get($data));
+                $val = $this->simple($field->get($data));
               } else if ($class->hasMethod('get'.ucfirst($field->getName()))) {
-                $val= self::simple($class->getMethod('get'.ucfirst($field->getName()))->invoke($data));
+                $val= $this->simple($class->getMethod('get'.ucfirst($field->getName()))->invoke($data));
               } else {
                 continue;
               }
@@ -91,7 +91,7 @@
             
             return $fields;
           } else if (is_object($data)) {
-            return self::simple((array)$data);
+            return $this->simple((array)$data);
           }
         
           throw new ClassCastException('Can not cast '.xp::typeOf($data).' to simple type');
@@ -119,7 +119,7 @@
 
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= self::complex($value, XPClass::forName($type->componentType()->getName()));
+            $result[$key]= $this->complex($value, XPClass::forName($type->componentType()->getName()));
           }
           return $result;
         
@@ -142,7 +142,7 @@
           
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= self::complex($value, XPClass::forName('lang.types.String'));
+            $result[$key]= $this->complex($value, XPClass::forName('lang.types.String'));
           }
           return $result;
         
@@ -160,7 +160,7 @@
           
           $result= new stdClass();
           foreach ($data as $key => $value) {
-            $result->$key= self::complex($value, XPClass::forName('lang.types.String'));
+            $result->$key= $this->complex($value, XPClass::forName('lang.types.String'));
           }
           return $result;
           
@@ -177,7 +177,7 @@
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
-                $field->set($result, self::complex(
+                $field->set($result, $this->complex(
                   $data[$field->getName()],
                   XPClass::forName($field->getType() ? $field->getType() : 'lang.types.String')
                 ));
@@ -187,7 +187,7 @@
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
-                $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array(self::complex(
+                $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array($this->complex(
                   $data[$field->getName()],
                   XPClass::forName($field->getType() ? $field->getType() : 'lang.types.String')
                 )));
@@ -196,7 +196,7 @@
             return $result;
             
           } else if ($type instanceof Primitive) {
-            return self::complex($data, $type->wrapperClass());
+            return $this->complex($data, $type->wrapperClass());
           }
         
           throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
