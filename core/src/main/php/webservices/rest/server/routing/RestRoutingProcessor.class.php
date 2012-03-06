@@ -13,21 +13,22 @@
    * REST route processor
    *
    * @test    xp://net.xp_framework.unittest.rest.server.routing.RestRoutingProcessorTest
-   * @purpose Router
    */
   class RestRoutingProcessor extends Object {
     private
       $bindings= array(),
       $dataCaster= NULL;
+
     /**
      * Constructor
      * 
-     * @param scriptlet.HttpResponse response The response
+     * @param     webservices.rest.server.RestDataCaster
      */
     public function __construct(RestDataCaster $dataCaster= NULL) {
-      $this->dataCaster= $dataCaster;
-      if(NULL === $this->dataCaster) {
+      if (NULL === $dataCaster) {
         $this->dataCaster= new RestDataCaster();
+      } else {
+        $this->dataCaster= $dataCaster;
       }
     }
     

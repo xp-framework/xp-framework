@@ -13,26 +13,28 @@
   /**
    * The JSON representation of HTTP response
    *
-   * @test xp://net.xp_framework.unittest.rest.server.transport.JsonHttpResponseAdapterTest
-   * @purpose Adapter
+   * @test    xp://net.xp_framework.unittest.rest.server.transport.JsonHttpResponseAdapterTest
    */
   class JsonHttpResponseAdapter extends AbstractHttpResponseAdapter {
     private 
       $dataCaster= NULL;
+
     /**
      * Constructor
      * 
-     * @param scriptlet.HttpResponse response The response
-     * @param webservices.rest.server.RestDataCaste dataCaster The data caster, optionally.
+     * @param   scriptlet.HttpResponse response The response
+     * @param   webservices.rest.server.RestDataCaster dataCaster The data caster, optionally.
      */
     public function __construct($response, RestDataCaster $dataCaster= NULL) {
       parent::__construct($response);
       
-      $this->dataCaster= $dataCaster;
-      if(NULL === $this->dataCaster) {
+      if (NULL === $dataCaster) {
         $this->dataCaster= new RestDataCaster();
+      } else {
+        $this->dataCaster= $dataCaster;
       }
     }
+
     /**
      * Set body
      * 
