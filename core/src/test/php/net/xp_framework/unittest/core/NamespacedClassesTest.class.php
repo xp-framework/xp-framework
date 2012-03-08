@@ -121,10 +121,10 @@
      *
      * @see   https://github.com/xp-framework/xp-framework/issues/132
      */
-    #[@test, @ignore('Does not work yet')]
+    #[@test]
     public function generics() {
       $v= create('new util.collections.Vector<net.xp_framework.unittest.core.NamespacedClass>');
-      $this->assertNotNull($v);
+      $this->assertTrue($v->getClass()->isGeneric());
     }
   }
 ?>
