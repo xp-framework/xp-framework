@@ -925,7 +925,7 @@
       // Compose names
       $cn= $qc= '';
       foreach ($arguments as $typearg) {
-        $cn.= '¸'.$typearg->literal();
+        $cn.= '¸'.strtr($typearg->literal(), '\\', '¦');
         $qc.= ','.$typearg->getName();
       }
       $name= xp::reflect($self->name).'··'.substr($cn, 1);
@@ -1002,7 +1002,7 @@
                 foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
                   $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= ' extends '.self::createGenericType($self->getParentClass(), $xargs)->literal();
+                $src.= ' extends '.strtr(self::createGenericType($self->getParentClass(), $xargs)->literal(), '\\', '¦');
               } else {
                 $src.= ' extends '.$tokens[$i+ 2][1];
               }
@@ -1135,7 +1135,7 @@
                 foreach (explode(',', $annotation[$counter]) as $j => $placeholder) {
                   $iargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs)->literal();
+                $src.= strtr(self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs)->literal(), '\\', '¦');
               } else {
                 $src.= $tokens[$i][1];
               }
