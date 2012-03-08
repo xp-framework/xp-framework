@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'lang.types.String'
+    'lang.types.String',
+    'util.collections.Vector'
   );
 
   /**
@@ -113,6 +114,17 @@
         Package::forName('net.xp_framework.unittest.core'),
         $i->getClass()->getPackage()
       );
+    }
+
+    /**
+     * Tests generics creation
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/132
+     */
+    #[@test, @ignore('Does not work yet')]
+    public function generics() {
+      $v= create('new util.collections.Vector<net.xp_framework.unittest.core.NamespacedClass>');
+      $this->assertNotNull($v);
     }
   }
 ?>
