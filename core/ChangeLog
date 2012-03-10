@@ -16,11 +16,16 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
+  finalizeSuccess()
+  (cconstandachi, friebe)
 - Changed webservices.rest.server.RestDataCaster methods to be non-static.
   (iigorr)
-- Added possibility to handle error in webservices.rest.server.rpc.RestHttpScriptlet using webservices.rest.server.RestErrorFormatter
+- Added possibility to handle error in RestHttpScriptlet using instances
+  of RestErrorFormatter.
   (iigorr)
-- Changed text.parser.generic.ParseException to contain the parse error messages. Not only their messages.
+- Changed text.parser.generic.ParseException to contain the parse error
+  instances, not only their messages.
   (iigorr)
 - Improved error handling in RestHttpScriptlet
   (iigorr)
