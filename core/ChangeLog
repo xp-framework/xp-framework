@@ -26,7 +26,7 @@ Features
   (iigorr)
 - Changed text.parser.generic.ParseException to contain the parse error
   instances, not only their messages.
-  (iigorr)
+  (iigorr, friebe)
 - Improved error handling in RestHttpScriptlet
   (iigorr)
 
