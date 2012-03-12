@@ -25,7 +25,6 @@
      */
     public function __construct($message, $cause= NULL, $errors= array()) {
       parent::__construct($message, $cause);
-      
       $this->errors= $errors;
     }
     
@@ -57,20 +56,36 @@
     }
     
     /**
+     * Gets the parse error messages formatted as a string list
+     *
+     * <pre>
+     *   - Error 1
+     *   - Error 2
+     *   - ...
+     * </pre>
+     *
+     * @param   string indent
+     * @return  string
+     */
+    public function formattedErrors($indent= '  ') {
+      $s= '';
+      foreach ($this->errors as $error) {
+        $s.= $indent.'- '.$error->toString()."\n";
+      }
+      return $s;
+    }
+
+    /**
      * Return compound message including all error messages.
      * 
      * @return string 
      */
     public function compoundMessage() {
-      $s= '';
-      foreach ($this->errors as $error) {
-        $s.= '  - '.$error->toString()."\n";
-      }
       return sprintf(
         "Exception %s (%s)\n%s",
         $this->getClassName(),
         $this->message,
-        $s
+        $this->formattedErrors()
       );
     }
   }
