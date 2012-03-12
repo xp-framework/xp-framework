@@ -9,8 +9,8 @@
     'webservices.rest.server.routing.RestRoutingProcessor',
     'webservices.rest.server.transport.HttpRequestAdapterFactory',
     'webservices.rest.server.transport.HttpResponseAdapterFactory',
+    'webservices.rest.server.RestErrorFormatter',
     'webservices.json.JsonDecoder'
-
   );
   
   /**
@@ -18,8 +18,10 @@
    *
    */
   class RestHttpScriptlet extends HttpScriptlet {
-    protected $router= NULL;
-    protected $base= '';
+    protected 
+      $router= NULL,
+      $base= '',
+      $errorFormatter= NULL;
     
     /**
      * Constructor
@@ -32,6 +34,15 @@
       $this->router= XPClass::forName($router)->newInstance();
       $this->router->configure($package, $base);
       $this->base= rtrim($base, '/');
+    }
+    
+    /**
+     * Sets an error formatter.
+     * 
+     * @param type $errorFormatter 
+     */
+    public function setErrorFormatter(RestErrorFormatter $errorFormatter) {
+      $this->errorFormatter= $errorFormatter;
     }
     
     /**
@@ -62,7 +73,7 @@
     }
     
     /**
-     * Do request processing
+     * Process request and handle errors
      * 
      * @param scriptlet.http.HttpScriptletRequest request The request
      * @param scriptlet.http.HttpScriptletResponse response The response
@@ -71,17 +82,35 @@
       $req= HttpRequestAdapterFactory::forRequest($request)->newInstance($request);
       $res= HttpResponseAdapterFactory::forRequest($request)->newInstance($response);
       
-      $path= substr($req->getPath(), strlen($this->base));
-      
-      if (!$this->router->resourceExists($path)) {
-        throw new HttpScriptletException('Resource '.$path.' does not exist.', HttpConstants::STATUS_NOT_FOUND);
+      try {
+        $this->execute($req, $res);
+      } catch (Throwable $e) {
+        if(!$this->errorFormatter)
+          throw $e;
+
+        $formattedError= $this->errorFormatter->format($e);
+        if (NULL === $formattedError)
+          throw $e;
+
+        if ($e instanceof ScriptletException) {
+          $res->setStatus($e->getStatus());
+        } else {
+          $res->setStatus(HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
+        }
+        
+        $res->setData($formattedError);  
       }
-      
-      $routings= $this->router->routesFor($req, $res);     
-      if(count($routings) === 0) {
-        throw new HttpScriptletException('The method '.$req->getMethod().' is not allowed on the resource '.$path.'.', HttpConstants::STATUS_METHOD_NOT_IMPLEMENTED);
-      }
-      
+    }
+    
+    /**
+     * Do request processing
+     * 
+     * @param scriptlet.http.HttpScriptletRequest request The request
+     * @param scriptlet.http.HttpScriptletResponse response The response
+     */
+    private function execute($req, $res) {
+      $routings = $this->getRequestRoutes($req);
+            
       // Setup processor and bind data sources
       $processor= new RestRoutingProcessor();
       $processor->bind('webservices.rest.server.transport.HttpRequestAdapter', $req);
@@ -89,12 +118,10 @@
       
       try {
         $processor->bind('payload', $req->getData());
-      } catch(FormatException $e) {
+      } catch (FormatException $e) {
         throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $e->getCause());
       }
-      catch (Throwable $e) {
-        $res->setData($e->toString()); return;
-      }
+
       $routed= FALSE;
       $errors= array();
       for ($i= 0, $s= sizeof($routings); $i<$s && !$routed; $i++) {
@@ -116,12 +143,32 @@
           );
         } 
       }
-      
       if (!$routed)  throw new IllegalStateException(
         'Can not route '.$req->getMethod().' request '.$req->getPath()." [\n  ".
         implode($errors, "\n  ").
         "\n]"
       );
+    }
+    
+    /**
+     * Configure available routes for request
+     * 
+     * @param scriptlet.http.HttpScriptletRequest request The request
+     * @param scriptlet.http.HttpScriptletResponse response The response
+     */
+    private function getRequestRoutes($req) {
+      $path= substr($req->getPath(), strlen($this->base));
+      
+      if (!$this->router->resourceExists($path)) {
+        throw new HttpScriptletException('Resource '.$path.' does not exist.', HttpConstants::STATUS_NOT_FOUND);
+      }
+      
+      $routings= $this->router->routesFor($req, $res);     
+      if (count($routings) === 0) {
+        throw new HttpScriptletException('The method '.$req->getMethod().' is not allowed on the resource '.$path.'.', HttpConstants::STATUS_METHOD_NOT_ALLOWED);
+      }
+      
+      return $routings;
     }
     
     /**

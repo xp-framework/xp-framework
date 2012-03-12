@@ -8,12 +8,25 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Handle empty Json request gracefully.
+  (iigorr)
 - Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
   params public property, use setters and getters instead
   (cconstandachi)
 
 Features
 ~~~~~~~~
+- Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
+  finalizeSuccess()
+  (cconstandachi, friebe)
+- Changed webservices.rest.server.RestDataCaster methods to be non-static.
+  (iigorr)
+- Added possibility to handle error in RestHttpScriptlet using instances
+  of RestErrorFormatter.
+  (iigorr)
+- Changed text.parser.generic.ParseException to contain the parse error
+  instances, not only their messages.
+  (iigorr)
 - Improved error handling in RestHttpScriptlet
   (iigorr)
 

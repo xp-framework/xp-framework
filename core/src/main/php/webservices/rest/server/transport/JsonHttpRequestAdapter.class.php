@@ -6,9 +6,12 @@
 
   uses(
     'webservices.rest.server.transport.AbstractHttpRequestAdapter',
-    'webservices.json.JsonDecoder'
+    'webservices.json.JsonDecoder',
+    'scriptlet.HttpScriptletException',
+    'peer.http.HttpConstants'
   );
   
+    
   /**
    * The JSON representation of HTTP request
    *
@@ -23,12 +26,12 @@
      * @return var[]
      */
     public function getData() {
-      if('' === $this->request->getData())
-        return null;
+      if ('' === $this->request->getData()) return NULL;
+      
       try {
         return create(new JsonDecoder())->decode($this->request->getData());
-      } catch(JsonException $e) {
-        throw new FormatException('Could not process JSON data. ', $e);
+      } catch (JsonException $e) {
+        throw new HttpScriptletException('Could not process JSON data.', HttpConstants::STATUS_BAD_REQUEST, $e);
       }
     }
   }
