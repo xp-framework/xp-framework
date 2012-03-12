@@ -4,9 +4,8 @@
  * $Id$
  */
 
-  uses(
-    'text.parser.generic.ParserMessage'
-  );
+  uses('text.parser.generic.ParserMessage');
+
   /**
    * Indicates an error occured during parsing
    *
