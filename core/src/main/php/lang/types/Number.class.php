@@ -20,8 +20,12 @@
      * Constructor
      *
      * @param   string value
+     * @throws  lang.IllegalArgumentException
      */
     public function __construct($value) {
+      if (!is_numeric($value))
+        throw new IllegalArgumentException('Not a number: '.$value);
+
       $this->value= (string)$value;
     }
     
@@ -31,7 +35,7 @@
      * @return  int
      */
     public function intValue() {
-      return (int)$this->value;
+      return $this->value + 0;
     }
 
     /**
@@ -41,7 +45,7 @@
      * @return  double
      */
     public function floatValue() {
-      return (double)$this->value;
+      return $this->doubleValue();
     }
 
     /**
@@ -50,7 +54,7 @@
      * @return  double
      */
     public function doubleValue() {
-      return (double)$this->value;
+      return $this->value + 0.0;
     }
     
     /**

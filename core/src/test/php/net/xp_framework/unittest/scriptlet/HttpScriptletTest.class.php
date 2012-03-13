@@ -5,18 +5,16 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'scriptlet.HttpScriptlet',
-    'scriptlet.RequestAuthenticator',
-    'peer.URL'
+    'net.xp_framework.unittest.scriptlet.ScriptletTestCase',
+    'scriptlet.RequestAuthenticator'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://scriptlet.HttpScriptlet
+   * @see   xp://scriptlet.HttpScriptlet
    */
-  class HttpScriptletTest extends TestCase {
+  class HttpScriptletTest extends ScriptletTestCase {
     protected static $helloScriptlet= NULL;
     
     static function __static() {
@@ -43,26 +41,6 @@
           $response->write("Hello ".$request->method);
         }
       }');
-    }
-  
-    /**
-     * Set session path to current working directory
-     *
-     */
-    public function setUp() {
-      session_save_path(getcwd());
-    }
-
-    /**
-     * Destroy session and cleanup file
-     *
-     */
-    public function tearDown() {
-      if (session_id()) {
-        session_write_close();
-        unlink(session_save_path().DIRECTORY_SEPARATOR.'sess_'.session_id());
-        session_id(NULL);
-      }
     }
     
     /**

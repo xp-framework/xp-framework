@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('util.XPIterator');
+  uses('util.XPIterator', 'text.doclet.RootDoc');
 
   /**
    * Iterates over a collection of classes, parsing them as going along.

@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('unittest.TestFailure');
+  uses('unittest.TestFailure', 'unittest.AssertionFailedError');
 
   /**
    * Indicates a test failed

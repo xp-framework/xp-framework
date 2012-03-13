@@ -40,7 +40,7 @@
      * @throws  lang.IllegalArgumentException
      */
     public function datepart($datepart) {
-      return self::$dateparts[$datepart];
+      return FALSE;
     }
 
     /**

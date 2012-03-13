@@ -75,6 +75,8 @@
         } else {
           $connect= 'localhost';
         }
+      } else if ('localhost' === $host) {
+        $connect= '127.0.0.1';   // Force TCP/IP
       }
 
       $this->handle= mysqli_connect(

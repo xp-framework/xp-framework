@@ -222,6 +222,20 @@
             $stream->write('"'.$this->escape((string)$data->getBytes('utf-8')).'"');
             break;
           }
+
+          if ($data instanceof Generic) {
+          
+            if (!method_exists($data, '__sleep')) {
+              $vars= get_object_vars($data);
+            } else {
+              $vars= array();
+              foreach ($data->__sleep() as $var) $vars[$var]= $data->{$var};
+            }
+            
+            $this->encodeTo($vars, $stream);
+            return TRUE;
+          }
+          
           // Break missing intentially
         }
         

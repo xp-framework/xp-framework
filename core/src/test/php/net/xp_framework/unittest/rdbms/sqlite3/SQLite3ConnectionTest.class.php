@@ -18,6 +18,17 @@
     protected $conn= NULL;
 
     /**
+     * Verifies sqlite3 extension is available
+     *
+     */
+    #[@beforeClass]
+    public static function verifySqlite3Extension() {
+      if (!Runtime::getInstance()->extensionAvailable('sqlite3')) {
+        throw new PrerequisitesNotMetError('Extension not available', NULL, array('sqlite3'));
+      }
+    }
+
+    /**
      * Set up this test
      *
      */

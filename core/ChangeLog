@@ -6,8 +6,46 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Handle empty Json request gracefully.
+  (iigorr)
+- Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
+  params public property, use setters and getters instead
+  (cconstandachi)
+
+Features
+~~~~~~~~
+- Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
+  finalizeSuccess()
+  (cconstandachi, friebe)
+- Changed webservices.rest.server.RestDataCaster methods to be non-static.
+  (iigorr)
+- Added possibility to handle error in RestHttpScriptlet using instances
+  of RestErrorFormatter.
+  (iigorr)
+- Changed text.parser.generic.ParseException to contain the parse error
+  instances, not only their messages.
+  (iigorr, friebe)
+- Improved error handling in RestHttpScriptlet
+  (iigorr)
+
+
+Version 5.8.4, released 2012-02-26
+----------------------------------
+Git commit: fb9fb97c7d40f4e19c5546386f9666669e6c3622
+
 Heads up!
 ~~~~~~~~~
+- Removed deprecated img.graph package
+  http://news.planet-xp.net/article/446/2012/02/21/
+  (friebe)
+- Changed scriptlet request parameters and headers to be case-preserving
+  See issue #120, http://news.planet-xp.net/article/443/2012/02/08/
+  (friebe, kiesel)
+- Removed "localhost" local sockets magic from MySQL implementations
+  http://news.planet-xp.net/article/434/2012/01/08/
+  (friebe, kiesel)
 - Changed sqlite scheme to default to SQLite3 instead of SQLite2.
   http://news.planet-xp.net/article/432/2012/01/06/
   (kiesel)
@@ -22,6 +60,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0237 - xp -w and xp -d
+  (friebe)
 - Implemented RFC #0221 - Allow combining application properties from
   multiple sources
   (kiesel)
@@ -30,6 +70,29 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed broken class-external extension method resolution in the XP compiler
+  (friebe)
+- Fixed bug #127: Exception cause swallowed
+  (friebe)
+- Fixed default timeout setting in XpProtocolHandler.
+  (ledermueller)
+- Fixed timeout settings in BSDSocket to not overwrite the general timeout with
+  the connect timeout.
+  (ledermueller, kiesel)
+- Changed lang.types.Boolean to accept TRUE, FALSE, integers and the strings 
+  "true" and "false" and throw exceptions otherwise
+  (friebe, mrosoiu)
+- Merged pull request #122: Check for numeric value during creation of numbers
+  (ledermueller)
+- Merged pull request #119: Json serialization for Generic objects
+  (mrosoiu)
+- Fixed readBool() in Properties to also accept different notations of true
+  values like "True" or "TRUE"
+  (robert)
+- Fixed issue #112: XmlRpcDecoder does not comply with XML-RPC specifications
+  (ppetermann, friebe)
+- Fixed issue #109: Errors in CurlHttpTransport 
+  (ppetermann, friebe)
 - Fixed issue #100: XPCLI: -c does not overwrite properties, but adds
   (friebe)
 - Fixed issue #97: Fatal error in scriptlet testsuite
@@ -54,6 +117,26 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for setting a timeout programmatic or via dsn in the
+  HandlerInstancePool to make it possible to overwrite the default timeout of
+  60 seconds.
+  (ledermueller)
+- Added Boolean::$TRUE and Boolean::$FALSE to lang.types.Boolean
+  (friebe)
+- Added support for multiple configuration paths for web applications
+  see RFC #0221 (pull request #118)
+  (kuse)
+- Added support for multiple -c arguments for xpcli runner
+  see RFC #0221  (pull request #118)
+  (kuse)
+- Added lang.reflect.Field::getTypeName() for forward compatibility - see 
+  comments in issue #34
+  http://news.planet-xp.net/article/440/2012/01/28/
+  (friebe)
+- Merged pull request #115: Properties: Support uppercase booleans
+  (ledermueller)
+- Added tests for rdbms.Statement class
+  (hinckel)
 - Merged pull request #103 - Extended Server Protocol, allowing to handle
   accepting sockets and out of resources situations.
   (friebe)

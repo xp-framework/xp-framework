@@ -279,7 +279,7 @@
                       }
                     } while ($yyTop-- >= 0);
 
-                    throw new ParseError(E_ERROR, sprintf(
+                    throw new ParseException(sprintf(
                       'Irrecoverable syntax error at %s, line %d (offset %d)',
                       $yyLex->fileName,
                       $yyLex->position[0],
@@ -289,7 +289,7 @@
 
                   case 3: {
                     if (0 == $yyToken) {
-                      throw new ParseError(E_ERROR, sprintf(
+                      throw new ParseException(sprintf(
                         'Irrecoverable syntax error at end-of-file at %s, line %d (offset %d)',
                         $yyLex->fileName,
                         $yyLex->position[0],

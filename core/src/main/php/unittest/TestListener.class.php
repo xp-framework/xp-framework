@@ -4,6 +4,17 @@
  * $Id$ 
  */
 
+  uses(
+    'unittest.TestCase',
+    'unittest.TestSuite',
+    'unittest.TestFailure',
+    'unittest.TestError',
+    'unittest.TestWarning',
+    'unittest.TestSuccess',
+    'unittest.TestSkipped',
+    'unittest.TestResult'
+  );
+
   /**
    * To intercept certain events during a test run, add a listener to
    * the test suite before calling its run() or runTest() methods.

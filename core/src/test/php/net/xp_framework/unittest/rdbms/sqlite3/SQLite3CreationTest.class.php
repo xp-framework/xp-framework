@@ -17,6 +17,17 @@
   class SQLite3CreationTest extends TestCase {
 
     /**
+     * Verifies sqlite3 extension is available
+     *
+     */
+    #[@beforeClass]
+    public static function verifySqlite3Extension() {
+      if (!Runtime::getInstance()->extensionAvailable('sqlite3')) {
+        throw new PrerequisitesNotMetError('Extension not available', NULL, array('sqlite3'));
+      }
+    }
+
+    /**
      * Test
      *
      */
@@ -50,10 +61,11 @@
      * Test invalid filenames
      *
      * @see   https://github.com/xp-framework/xp-framework/issues/107
+     * @see   https://github.com/xp-framework/xp-framework/issues/111
      */
     #[@test, @expect('rdbms.SQLConnectException')]
     public function connect_fails_for_invalid_filenames() {
-      $conn= new SQLite3Connection(new DSN('sqlite+3://./:database.db'));
+      $conn= new SQLite3Connection(new DSN('sqlite+3://./'));
       $conn->connect();
     }
 
