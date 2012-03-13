@@ -72,6 +72,7 @@
         '/etc/freetds.conf',
         '/usr/local/etc/freetds.conf'
       ) as $location) {
+        if (empty($location)) continue;
         $f= new File($location);
         if ($f->exists()) return $f;
       }
