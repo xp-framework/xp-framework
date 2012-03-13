@@ -25,16 +25,16 @@
 
       // Sybase support: Prefer sybase_ct over mssql
       if (extension_loaded('sybase_ct')) {
-        self::$impl['sybase']= array('rdbms.sybase.SybaseConnection', 'rdbms.mssql.MsSQLConnection');
+        self::$impl['sybase']= array('rdbms.sybase.SybaseConnection', 'rdbms.mssql.MsSQLConnection', 'rdbms.tds.SybasexConnection');
       } else {
-        self::$impl['sybase']= array('rdbms.mssql.MsSQLConnection', 'rdbms.sybase.SybaseConnection');
+        self::$impl['sybase']= array('rdbms.mssql.MsSQLConnection', 'rdbms.sybase.SybaseConnection', 'rdbms.tds.SybasexConnection');
       }
 
       // MSSQL support: Prefer SQLsrv from Microsoft over mssql 
       if (extension_loaded('sqlsrv')) {
-        self::$impl['mssql']= array('rdbms.sqlsrv.SqlSrvConnection', 'rdbms.mssql.MsSQLConnection');
+        self::$impl['mssql']= array('rdbms.sqlsrv.SqlSrvConnection', 'rdbms.mssql.MsSQLConnection', 'rdbms.tds.MsSQLxConnection');
       } else {
-        self::$impl['mssql']= array('rdbms.mssql.MsSQLConnection', 'rdbms.sqlsrv.SqlSrvConnection');
+        self::$impl['mssql']= array('rdbms.mssql.MsSQLConnection', 'rdbms.sqlsrv.SqlSrvConnection', 'rdbms.tds.MsSQLxConnection');
       }
 
       // PostgreSQL support
