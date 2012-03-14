@@ -163,7 +163,7 @@
      * @return  int
      */
     public function getLong() {
-      $u= unpack('V', $this->read(4));
+      $u= unpack('I', $this->read(4));
       return $u[1];
     }
 
