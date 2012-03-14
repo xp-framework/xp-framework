@@ -49,10 +49,13 @@
       $records[self::T_IMAGE]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $has= $stream->getByte();
-          if ($has !== 16) return NULL;
+          if ($has !== 16) return NULL; // Seems to always be 16 - obsolete?
 
           $stream->read(24);  // Skip 16 Byte TEXTPTR, 8 Byte TIMESTAMP
-          $r= $stream->read($stream->getLong());
+          $len= $stream->getLong();
+          if (0 === $len) return NULL;
+
+          $r= $stream->read($len);
 
           // HACK - cannot figure out why UNITEXT is not being returned as such
           // but as IMAGE type with different inside layout!
