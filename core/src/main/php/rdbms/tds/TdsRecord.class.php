@@ -76,7 +76,7 @@
      */
     protected function toNumber($n, $scale, $prec) {
       if (0 === $scale) {
-        return $n > LONG_MAX || $n < LONG_MIN ? $n : (int)$n;
+        return bccomp($n, LONG_MAX) == 1 || bccomp($n, LONG_MIN) == -1 ? $n : (int)$n;
       } else {
         $n= bcdiv($n, pow(10, $scale), $scale);
         return strlen($n) > self::$precision ? $n : (double)$n;
