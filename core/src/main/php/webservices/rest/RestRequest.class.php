@@ -264,10 +264,15 @@
     /**
      * Gets query
      *
+     * @param   string base
      * @return  string query
      */
-    public function getTarget() {
-      $resource= $this->resource;
+    public function getTarget($base= '/') {
+      if ('/' === $this->resource{0}) {
+        $resource= $this->resource;       // Absolute
+      } else {
+        $resource= $base.$this->resource;
+      }
       $l= strlen($resource);
       $target= '';
       $offset= 0;

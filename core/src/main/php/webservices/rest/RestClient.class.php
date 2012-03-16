@@ -101,7 +101,7 @@
       $send= $this->connection->create(new HttpRequest());
       $send->addHeaders($request->getHeaders());
       $send->setMethod($request->getMethod());
-      $send->setTarget($request->getTarget());
+      $send->setTarget($request->getTarget($this->connection->getUrl()->getPath('/')));
       
       if ($request->hasBody()) {
         $send->setParameters($request->getBody());
