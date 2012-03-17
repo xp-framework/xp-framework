@@ -85,6 +85,7 @@
      * @param   var t either a string or a lang.Type - target type for payload
      * @param   webservices.rest.RestRequest request
      * @return  webservices.rest.RestResponse
+     * @throws  lang.IllegalStateException if no connection is set
      */
     public function execute($t, $request= NULL) {
       if (1 === func_num_args()) {      // Overloaded version with single argument
@@ -99,6 +100,10 @@
       }
       if (!$request instanceof RestRequest) {
         throw new IllegalArgumentException('Given request is not a RestRequest, '.xp::typeOf($request).' given');
+      }
+
+      if (NULL === $this->connection) {
+        throw new IllegalStateException('No connection set');
       }
 
       $send= $this->connection->create(new HttpRequest());

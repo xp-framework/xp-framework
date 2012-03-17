@@ -146,5 +146,14 @@
     public function executeThisRequest() {
       $this->newFixture()->execute(Type::$VAR, $this);
     }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'No connection set')]
+    public function executeWithoutBase() {
+      $this->newFixture()->execute(Type::$VAR, new RestRequest());
+    }
   }
 ?>
