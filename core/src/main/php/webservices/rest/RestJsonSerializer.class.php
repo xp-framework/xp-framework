@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('webservices.rest.RestSerializer');
+  uses('webservices.rest.RestSerializer', 'webservices.json.JsonFactory');
 
   /**
    * A serializer
