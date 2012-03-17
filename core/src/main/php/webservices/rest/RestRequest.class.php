@@ -6,7 +6,8 @@
 
   uses(
     'peer.http.HttpConstants',
-    'webservices.json.JsonFactory'
+    'webservices.rest.RestJsonSerializer',
+    'webservices.rest.RestXmlSerializer'
   );
 
   /**
@@ -115,23 +116,11 @@
      * Sets payload
      *
      * @param   var payload
-     * @param   string type The Content-Type
-     * @param   string root the root node
+     * @param   webservices.rest.RestSerializer serializer
      */
-    public function setPayload($payload, $type, $root= 'root') {
-      $header= substr($type, 0, strcspn($type, ';'));
-      switch ($header) {
-        case 'application/json':
-          $this->body= new RequestData(JsonFactory::create()->encode($payload));
-          break;
-        
-        case 'text/xml':
-          $t= new Tree();
-          $t->root= Node::fromArray($payload, $root);
-          $this->body= new RequestData($t->getDeclaration()."\n".$t->getSource(INDENT_NONE));
-          break;
-      }
-      $this->headers['Content-Type']= $type;
+    public function setPayload($payload, RestSerializer $serializer) {
+      $this->body= new RequestData($serializer->serialize($payload));
+      $this->headers['Content-Type']= $serializer->contentType();
     }
 
     /**

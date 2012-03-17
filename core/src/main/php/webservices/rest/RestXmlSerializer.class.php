@@ -40,9 +40,9 @@
      */
     public function serialize($payload) {
       $t= new Tree();
-      $t->setEncoding('utf-8');
+      $t->setEncoding('UTF-8');
       $t->root= Node::fromArray($payload, $this->root);
-      return $t->getDeclaration()."\n".$t->getSource(INDENT_NONE));
+      return $t->getDeclaration()."\n".$t->getSource(INDENT_NONE);
     }
   }
 ?>

@@ -132,7 +132,7 @@
     #[@test]
     public function hasBodyWithJsonPayload() {
       $fixture= new RestRequest();
-      $fixture->setPayload(array('title' => 'New issue'), 'application/json');
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
       $this->assertTrue($fixture->hasBody());
     }
 
@@ -143,7 +143,7 @@
     #[@test]
     public function getBodyWithJsonPayload() {
       $fixture= new RestRequest();
-      $fixture->setPayload(array('title' => 'New issue'), 'application/json');
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
       $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
     }
 
@@ -154,7 +154,7 @@
     #[@test]
     public function hasBodyWithXmlPayload() {
       $fixture= new RestRequest();
-      $fixture->setPayload(array('title' => 'New issue'), 'text/xml');
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
       $this->assertTrue($fixture->hasBody());
     }
 
@@ -163,11 +163,11 @@
      *
      */
     #[@test]
-    public function getBodyWithXmlnPayload() {
+    public function getBodyWithXmlPayload() {
       $fixture= new RestRequest();
-      $fixture->setPayload(array('title' => 'New issue'), 'text/xml');
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
       $this->assertEquals(
-        '<?xml version="1.0" encoding="ISO-8859-1"?>'."\n".
+        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
         '<root><title>New issue</title></root>', 
         $fixture->getBody()->data
       );
