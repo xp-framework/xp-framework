@@ -167,7 +167,7 @@
       $header= substr($this->content, 0, strcspn($this->content, ';'));
       switch ($header) {
         case 'application/json':
-          return $this->convert($this->type, JsonFactory::create()->decode(Streams::readAll($this->input)));
+          return $this->convert($this->type, JsonFactory::create()->decodeFrom($this->input));
         
         case 'text/xml':
           $tree= new Tree();
