@@ -92,5 +92,59 @@
       $fixture->setConnection(new HttpConnection(self::BASE_URL));
       $this->assertEquals(new URL(self::BASE_URL), $fixture->getBase());
     }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function singleArgumentExecuteNull() {
+      $this->newFixture()->execute(NULL);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function singleArgumentExecuteThis() {
+      $this->newFixture()->execute($this);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeNullTypeNullRequest() {
+      $this->newFixture()->execute(NULL, NULL);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeNullType() {
+      $this->newFixture()->execute(NULL, new RestRequest());
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeNullRequest() {
+      $this->newFixture()->execute(Type::$VAR, NULL);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeThisRequest() {
+      $this->newFixture()->execute(Type::$VAR, $this);
+    }
   }
 ?>

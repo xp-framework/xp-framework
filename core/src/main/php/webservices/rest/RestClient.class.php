@@ -82,24 +82,25 @@
     /**
      * Execute a request
      *
-     * @param   var type either a string or a lang.Type - target type for payload
+     * @param   var t either a string or a lang.Type - target type for payload
      * @param   webservices.rest.RestRequest request
      * @return  webservices.rest.RestResponse
      */
-    public function execute() {
-      $args= func_get_args();
-      if (is_string($args[0])) {
-        $type= Type::forName($args[0]);
-        $offset= 1;
-      } else if ($args[0] instanceof Type) {
-        $type= $args[0];
-        $offset= 1;
-      } else {
+    public function execute($t, $request= NULL) {
+      if (1 === func_num_args()) {      // Overloaded version with single argument
+        $request= $t;
         $type= NULL;
-        $offset= 0;
+      } else if (is_string($t)) {       // Overloaded version with string type
+        $type= Type::forName($t);
+      } else if ($t instanceof Type) {  // Overloaded version with Type instance
+        $type= $t;
+      } else {
+        throw new IllegalArgumentException('Given type is neither a Type nor a string, '.xp::typeOf($request).' given');
+      }
+      if (!$request instanceof RestRequest) {
+        throw new IllegalArgumentException('Given request is not a RestRequest, '.xp::typeOf($request).' given');
       }
 
-      $request= $args[$offset];
       $send= $this->connection->create(new HttpRequest());
       $send->addHeaders($request->getHeaders());
       $send->setMethod($request->getMethod());
