@@ -307,5 +307,25 @@
         $fixture->getHeaders()
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function relativeResourceWithEndingSlash() {
+      $fixture= new RestRequest('issues');
+      $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2/'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function relativeResourceWithoutEndingSlash() {
+      $fixture= new RestRequest('issues');
+      $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2'));
+    }
   }
 ?>

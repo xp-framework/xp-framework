@@ -271,7 +271,7 @@
       if ('/' === $this->resource{0}) {
         $resource= $this->resource;       // Absolute
       } else {
-        $resource= $base.$this->resource;
+        $resource= rtrim($base, '/').'/'.$this->resource;
       }
       $l= strlen($resource);
       $target= '';
