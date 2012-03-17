@@ -82,6 +82,8 @@
     /**
      * Execute a request
      *
+     * @param   var type either a string or a lang.Type - target type for payload
+     * @param   webservices.rest.RestRequest request
      * @return  webservices.rest.RestResponse
      */
     public function execute() {
