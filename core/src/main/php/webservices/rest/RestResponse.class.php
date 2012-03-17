@@ -169,7 +169,7 @@
         case 'application/json':
           return $this->convert($this->type, JsonFactory::create()->decodeFrom($this->input));
         
-        case 'text/xml':
+        case 'text/xml': case 'application/xml':
           $tree= new Tree();
           create(new XMLParser())->withCallback($tree)->parse(new StreamInputSource($this->input));
           return $this->convert($this->type, new RestXmlMap($tree->root));
