@@ -115,7 +115,7 @@
     }
 
     /**
-     * Test
+     * Test 
      *
      */
     #[@test]
@@ -123,6 +123,54 @@
       $fixture= new RestRequest();
       $fixture->setBody(new RequestData('{ "title" : "New issue" }'));
       $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function hasBodyWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), 'application/json');
+      $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), 'application/json');
+      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function hasBodyWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), 'text/xml');
+      $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithXmlnPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), 'text/xml');
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="ISO-8859-1"?>'."\n".
+        '<root><title>New issue</title></root>', 
+        $fixture->getBody()->data
+      );
     }
 
     /**
