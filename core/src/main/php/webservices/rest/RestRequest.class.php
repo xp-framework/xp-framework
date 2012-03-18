@@ -113,6 +113,34 @@
     }
 
     /**
+     * Adds an expected mime type
+     *
+     * @param   string range
+     * @param   string q
+     */
+    public function addAccept($type, $q= NULL) {
+      $range= $type;
+      NULL === $q || $range.= ';q='.$q;
+      if (!isset($this->headers['Accept'])) {
+        $this->headers['Accept']= $range;
+      } else {
+        $this->headers['Accept'].= ', '.$range;
+      }
+    }
+
+    /**
+     * Adds an expected mime type
+     *
+     * @param   string range
+     * @param   string q
+     * @return  webservices.rest.RestRequest
+     */
+    public function withAccept($type, $q= NULL) {
+      $this->addAccept($type, $q);
+      return $this;
+    }
+
+    /**
      * Sets payload
      *
      * @param   var payload

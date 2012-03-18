@@ -390,5 +390,49 @@
       $fixture= new RestRequest('issues');
       $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2'));
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function acceptOne() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml');
+      $this->assertEquals(
+        array('Accept' => 'text/xml'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function accept() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml');
+      $fixture->addAccept('text/json');
+      $this->assertEquals(
+        array('Accept' => 'text/xml, text/json'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function acceptWithQ() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml', '0.5');
+      $fixture->addAccept('text/json', '0.8');
+      $this->assertEquals(
+        array('Accept' => 'text/xml;q=0.5, text/json;q=0.8'), 
+        $fixture->getHeaders()
+      );
+    }
   }
 ?>
