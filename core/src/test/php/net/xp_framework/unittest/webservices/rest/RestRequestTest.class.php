@@ -174,6 +174,21 @@
     }
 
     /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithXmlPayloadAndRootNode() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer('issue'));
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
+        '<issue><title>New issue</title></issue>', 
+        $fixture->getBody()->data
+      );
+    }
+
+    /**
      * Test
      *
      */
