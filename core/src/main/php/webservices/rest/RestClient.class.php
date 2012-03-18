@@ -126,6 +126,7 @@
       
       $rr= new RestResponse(
         $response->statusCode(), 
+        $response->message(), 
         this($response->header('Content-Type'), 0),
         $response->headers(), 
         $type,

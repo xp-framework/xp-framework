@@ -21,6 +21,7 @@
    */
   class RestResponse extends Object {
     protected $status= -1;
+    protected $message= '';
     protected $content= '';
     protected $headers= array();
     protected $type= NULL;
@@ -30,13 +31,15 @@
      * Creates a new response
      *
      * @param   int status
+     * @param   string message
      * @param   string content
      * @param   [:string[]] headers
      * @param   lang.Type type
      * @param   io.streams.InputStream input
      */
-    public function __construct($status, $content, $headers, $type, $input) {
+    public function __construct($status, $message, $content, $headers, $type, $input) {
       $this->status= $status;
+      $this->message= $message;
       $this->content= $content;
       $this->headers= $headers;
       $this->type= $type;
@@ -50,6 +53,15 @@
      */
     public function status() {
       return $this->status;
+    }
+
+    /**
+     * Get status message
+     *
+     * @return  string
+     */
+    public function message() {
+      return $this->message;
     }
     
     /**
@@ -162,8 +174,12 @@
      * Get data
      *
      * @return  var
+     * @throws  webservices.rest.RestException if the status code is > 399
      */
     public function data() {
+      if ($this->status > 399) {
+        throw new RestException($this->status.': '.$this->message);
+      }
       $header= substr($this->content, 0, strcspn($this->content, ';'));
       switch ($header) {
         case 'application/json':
