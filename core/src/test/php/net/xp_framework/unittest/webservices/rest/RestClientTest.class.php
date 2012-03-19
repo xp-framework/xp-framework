@@ -193,6 +193,30 @@
     }
 
     /**
+     * Test "text/x-json" is supported
+     *
+     */
+    #[@test]
+    public function textXJsonDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer', 
+        $this->newFixture()->deserializerFor('text/x-json')
+      );
+    }
+
+    /**
+     * Test "text/javascript" is supported
+     *
+     */
+    #[@test]
+    public function textJavascriptnDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer', 
+        $this->newFixture()->deserializerFor('text/javascript')
+      );
+    }
+
+    /**
      * Test "application/json" is supported
      *
      */

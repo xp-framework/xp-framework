@@ -38,6 +38,8 @@
       $this->deserializers['application/json']= new RestJsonDeserializer();
       $this->deserializers['text/xml']= $this->deserializers['application/xml'];
       $this->deserializers['text/json']= $this->deserializers['application/json'];
+      $this->deserializers['text/x-json']= $this->deserializers['application/json'];
+      $this->deserializers['text/javascript']= $this->deserializers['application/json'];
     }
 
     /**
