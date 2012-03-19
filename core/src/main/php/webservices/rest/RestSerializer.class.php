@@ -12,6 +12,21 @@
   abstract class RestSerializer extends Object {
 
     /**
+     * Calculate variants of a given name
+     *
+     * @param   string name
+     * @return  string[] names
+     */
+    protected function variantsOf($name) {
+      $variants= array($name);
+      $chunks= explode('_', $name);
+      if (sizeof($chunks) > 1) {      // product_id => productId
+        $variants[]= array_shift($chunks).implode(array_map('ucfirst', $chunks));
+      }
+      return $variants;
+    }
+
+    /**
      * Convert data
      *
      * @param   var data
@@ -26,8 +41,13 @@
         foreach ($class->getFields() as $field) {
           if ($field->getModifiers() & MODIFIER_PUBLIC) {
             $r[$field->getName()]= $this->convert($field->get($data));
-          } else if ($class->hasMethod($m= 'get'.$field->getName())) {
-            $r[$field->getName()]= $this->convert($class->getMethod($m)->invoke($data));
+          } else {
+            foreach ($this->variantsOf($field->getName()) as $name) {
+              if ($class->hasMethod($m= 'get'.$name)) {
+                $r[$field->getName()]= $this->convert($class->getMethod($m)->invoke($data));
+                continue 2;
+              }
+            }
           }
         }
         return $r;

@@ -9,6 +9,7 @@
     'webservices.rest.RestJsonSerializer',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithGetter',
+    'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreFieldsAndGetter',
     'util.Date',
     'util.TimeZone'
   );
@@ -80,6 +81,18 @@
       $this->assertEquals(
         '{ "issueId" : 1 , "title" : "New issue" , "createdAt" : "Mon, 19 Mar 2012 08:37:00 +0000" }', 
         $this->fixture->serialize(new net·xp_framework·unittest·webservices·rest·IssueWithGetter(1, 'New issue', new Date('2012-03-19 08:37:00', TimeZone::getByName('GMT'))))
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function issueWithUnderscoreFieldsAndGetter() {
+      $this->assertEquals(
+        '{ "issue_id" : 1 , "title" : "New issue" , "created_at" : null }', 
+        $this->fixture->serialize(new net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreFieldsAndGetter(1, 'New issue'))
       );
     }
   }
