@@ -127,7 +127,7 @@
     /**
      * Tests the toString() method
      *
-     * @see     xp://lang.Object#equals
+     * @see     xp://lang.Object#toString
      */
     #[@test]
     public function toStringMethod() {
