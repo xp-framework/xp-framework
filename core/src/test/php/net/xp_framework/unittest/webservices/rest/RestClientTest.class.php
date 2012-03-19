@@ -155,5 +155,53 @@
     public function executeWithoutBase() {
       $this->newFixture()->execute(Type::$VAR, new RestRequest());
     }
+
+    /**
+     * Test "text/xml" is supported
+     *
+     */
+    #[@test]
+    public function textXmlDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer', 
+        $this->newFixture()->deserializerFor('text/xml')
+      );
+    }
+
+    /**
+     * Test "application/xml" is supported
+     *
+     */
+    #[@test]
+    public function applicationXmlDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer', 
+        $this->newFixture()->deserializerFor('application/xml')
+      );
+    }
+
+    /**
+     * Test "text/json" is supported
+     *
+     */
+    #[@test]
+    public function textJsonDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer', 
+        $this->newFixture()->deserializerFor('text/json')
+      );
+    }
+
+    /**
+     * Test "application/json" is supported
+     *
+     */
+    #[@test]
+    public function applicationJsonDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer', 
+        $this->newFixture()->deserializerFor('application/json')
+      );
+    }
   }
 ?>
