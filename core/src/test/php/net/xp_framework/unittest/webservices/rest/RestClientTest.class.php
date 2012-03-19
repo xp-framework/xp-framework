@@ -34,7 +34,7 @@
     #[@test]
     public function stringBase() {
       $this->assertEquals(
-        new URL(self::BASE_URL), 
+        new URL(self::BASE_URL),
         $this->newFixture(self::BASE_URL)->getBase()
       );
     }
@@ -55,7 +55,7 @@
     #[@test]
     public function urlBase() {
       $this->assertEquals(
-        new URL(self::BASE_URL), 
+        new URL(self::BASE_URL),
         $this->newFixture(new URL(self::BASE_URL))->getBase()
       );
     }
@@ -163,7 +163,7 @@
     #[@test]
     public function textXmlDeserializer() {
       $this->assertInstanceOf(
-        'webservices.rest.RestDeserializer', 
+        'webservices.rest.RestDeserializer',
         $this->newFixture()->deserializerFor('text/xml')
       );
     }
@@ -175,7 +175,7 @@
     #[@test]
     public function applicationXmlDeserializer() {
       $this->assertInstanceOf(
-        'webservices.rest.RestDeserializer', 
+        'webservices.rest.RestDeserializer',
         $this->newFixture()->deserializerFor('application/xml')
       );
     }
@@ -187,7 +187,7 @@
     #[@test]
     public function textJsonDeserializer() {
       $this->assertInstanceOf(
-        'webservices.rest.RestDeserializer', 
+        'webservices.rest.RestDeserializer',
         $this->newFixture()->deserializerFor('text/json')
       );
     }
@@ -199,7 +199,7 @@
     #[@test]
     public function textXJsonDeserializer() {
       $this->assertInstanceOf(
-        'webservices.rest.RestDeserializer', 
+        'webservices.rest.RestDeserializer',
         $this->newFixture()->deserializerFor('text/x-json')
       );
     }
@@ -209,9 +209,9 @@
      *
      */
     #[@test]
-    public function textJavascriptnDeserializer() {
+    public function textJavascriptDeserializer() {
       $this->assertInstanceOf(
-        'webservices.rest.RestDeserializer', 
+        'webservices.rest.RestDeserializer',
         $this->newFixture()->deserializerFor('text/javascript')
       );
     }
@@ -223,7 +223,7 @@
     #[@test]
     public function applicationJsonDeserializer() {
       $this->assertInstanceOf(
-        'webservices.rest.RestDeserializer', 
+        'webservices.rest.RestDeserializer',
         $this->newFixture()->deserializerFor('application/json')
       );
     }
