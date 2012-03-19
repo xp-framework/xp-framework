@@ -203,5 +203,14 @@
         $this->newFixture()->deserializerFor('application/json')
       );
     }
+
+    /**
+     * Test "text/html" is not supported
+     *
+     */
+    #[@test]
+    public function unknownDeserializer() {
+      $this->assertNull($this->newFixture()->deserializerFor('text/html'));
+    }
   }
 ?>
