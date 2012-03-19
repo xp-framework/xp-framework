@@ -11,7 +11,7 @@
    *
    * @see   xp://webservices.rest.RestRequest#setPayload
    */
-  class RestXmlSerializer extends Object implements RestSerializer {
+  class RestXmlSerializer extends RestSerializer {
     protected $root;
   
     /**

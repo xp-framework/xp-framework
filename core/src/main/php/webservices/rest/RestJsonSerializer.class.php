@@ -11,7 +11,7 @@
    *
    * @see   xp://webservices.rest.RestRequest#setPayload
    */
-  class RestJsonSerializer extends Object implements RestSerializer {
+  class RestJsonSerializer extends RestSerializer {
 
     /**
      * Return the Content-Type header's value
@@ -29,7 +29,7 @@
      * @return  string
      */
     public function serialize($payload) {
-      return JsonFactory::create()->encode($payload);
+      return JsonFactory::create()->encode($this->convert($payload));
     }
   }
 ?>
