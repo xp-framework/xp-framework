@@ -7,8 +7,9 @@
   uses('webservices.rest.RestSerializer', 'webservices.json.JsonFactory');
 
   /**
-   * A serializer
+   * A JSON serializer
    *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestJsonSerializerTest
    * @see   xp://webservices.rest.RestRequest#setPayload
    */
   class RestJsonSerializer extends RestSerializer {
