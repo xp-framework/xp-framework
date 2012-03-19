@@ -95,8 +95,9 @@
       }
       $t= debug_backtrace();
       $i= 1; $s= sizeof($t);
-      while ($i++ < $s && !isset($t[$i]['class'])) { }
-      $scope= $t[$i]['class'];
+      while (!isset($t[$i]['class']) && $i++ < $s) { }
+      $self= $t[$i]['class'];
+      $scope= $t[$i+ 1]['class'];
       if (isset(xp::$registry['ext'][$scope])) {
         foreach (xp::$registry['ext'][$scope] as $type => $class) {
           if (!$this instanceof $type || !method_exists($class, $name)) continue;
@@ -104,7 +105,7 @@
           return call_user_func_array(array($class, $name), $args);
         }
       }
-      throw new Error('Call to undefined method '.$this->getClassName().'::'.$name.'() from scope '.xp::nameOf($scope));
+      throw new Error('Call to undefined method '.xp::nameOf($self).'::'.$name.'() from scope '.xp::nameOf($scope));
     }
 
     /**
