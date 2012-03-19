@@ -9,6 +9,7 @@
   /**
    * A serializer
    *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestXmlSerializerTest
    * @see   xp://webservices.rest.RestRequest#setPayload
    */
   class RestXmlSerializer extends RestSerializer {
@@ -41,7 +42,11 @@
     public function serialize($payload) {
       $t= new Tree();
       $t->setEncoding('UTF-8');
-      $t->root= Node::fromArray($payload, $this->root);
+      if ($payload instanceof Generic || is_array($payload)) {
+        $t->root= Node::fromArray($this->convert($payload), $this->root);
+      } else {
+        $t->root= new Node($this->root, $this->convert($payload));
+      }
       return $t->getDeclaration()."\n".$t->getSource(INDENT_NONE);
     }
   }
