@@ -30,6 +30,7 @@
     protected function newFixture($content, $body) {
       return new RestResponse(
         HttpConstants::STATUS_OK,
+        'OK',
         $content,
         array(),
         Type::forName('[:var]'),
