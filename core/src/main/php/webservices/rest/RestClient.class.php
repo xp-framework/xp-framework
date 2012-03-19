@@ -9,6 +9,8 @@
     'peer.http.HttpConnection',
     'webservices.rest.RestRequest',
     'webservices.rest.RestResponse',
+    'webservices.rest.RestXmlDeserializer',
+    'webservices.rest.RestJsonDeserializer',
     'webservices.rest.RestException'
   );
 
@@ -22,6 +24,7 @@
   class RestClient extends Object implements Traceable {
     protected $connection= NULL;
     protected $cat= NULL;
+    protected $deserializers= array();
     
     /**
      * Creates a new Restconnection instance
@@ -30,6 +33,11 @@
      */
     public function __construct($base= NULL) {
       if (NULL !== $base) $this->setBase($base);
+
+      $this->deserializers['application/xml']= new RestXmlDeserializer();
+      $this->deserializers['application/json']= new RestJsonDeserializer();
+      $this->deserializers['text/xml']= $this->deserializers['application/xml'];
+      $this->deserializers['text/json']= $this->deserializers['application/json'];
     }
 
     /**
@@ -80,6 +88,30 @@
     }
 
     /**
+     * Sets deserializer
+     *
+     * @param   string mediaType e.g. "text/xml"
+     * @param   webservices.rest.Deserializer deserializer
+     */
+    public function setDeserializer($mediaType, $deserializer) {
+      $this->deserializers[$mediaType]= $deserializer;
+    }
+    
+    /**
+     * Returns a deserializer
+     *
+     * @param   string contentType
+     * @return  webservices.rest.RestDeserializer
+     */
+    public function deserializerFor($contentType) {
+      $mediaType= substr($contentType, 0, strcspn($contentType, ';'));
+      return isset($this->deserializers[$mediaType])
+        ? $this->deserializers[$mediaType]
+        : NULL
+      ;
+    }
+
+    /**
      * Execute a request
      *
      * @param   var t either a string or a lang.Type - target type for payload
@@ -127,7 +159,7 @@
       $rr= new RestResponse(
         $response->statusCode(), 
         $response->message(), 
-        this($response->header('Content-Type'), 0),
+        $this->deserializerFor(this($response->header('Content-Type'), 0)),
         $response->headers(), 
         $type,
         $response->getInputStream()

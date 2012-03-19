@@ -8,6 +8,8 @@
     'unittest.TestCase',
     'peer.http.HttpConstants',
     'io.streams.MemoryInputStream',
+    'webservices.rest.RestXmlDeserializer',
+    'webservices.rest.RestJsonDeserializer',
     'webservices.rest.RestResponse'
   );
 
@@ -18,7 +20,14 @@
    */
   class RestResponseTest extends TestCase {
     const JSON = 'application/json';
-    const XML = 'text/xml';
+    const XML  = 'text/xml';
+
+    protected static $deserializers= array();
+ 
+    static function __static() {
+      self::$deserializers[self::JSON]= new RestJsonDeserializer();
+      self::$deserializers[self::XML]= new RestXmlDeserializer();
+    }
   
     /**
      * Creates a new fixture
@@ -31,7 +40,7 @@
       return new RestResponse(
         HttpConstants::STATUS_OK,
         'OK',
-        $content,
+        self::$deserializers[$content],
         array(),
         Type::forName('[:var]'),
         new MemoryInputStream($body)
@@ -58,19 +67,6 @@
     #[@test]
     public function dataAsMap() {
       $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
-      $this->assertEquals(
-        array('issue_id' => 1, 'title' => NULL), 
-        $fixture->data()
-      );
-    }
-
-    /**
-     * Test data()
-     *
-     */
-    #[@test]
-    public function dataWithCharsetAsMap() {
-      $fixture= $this->newFixture(self::JSON.'; charset=utf-8', '{ "issue_id" : 1, "title" : null }');
       $this->assertEquals(
         array('issue_id' => 1, 'title' => NULL), 
         $fixture->data()
