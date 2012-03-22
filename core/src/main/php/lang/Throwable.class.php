@@ -111,6 +111,17 @@
       }
       return $this;
     }
+
+    /**
+     * Remove all stacktrace elements' arguments; this can be used
+     * in case sensitive information is to be hidden.
+     *
+     */
+    public function clearStackTraceArguments() {
+      foreach ($this->trace as $ste) {
+        $ste->clearArguments();
+      }
+    }
     
     /**
      * Adds new stacktrace elements to the internal list of stacktrace

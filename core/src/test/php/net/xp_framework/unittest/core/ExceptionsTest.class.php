@@ -193,5 +193,24 @@
         $this->assertEquals(__FUNCTION__, $e->method);
       }
     }
+
+    protected function calledWithSensitiveInformation($info1) {
+      throw new Throwable('This contains no sensitive information.');
+    }
+
+    #[@test]
+    public function clearStackTraceArguments() {
+      try {
+        $this->calledWithSensitiveInformation('Could be a password...');
+        $this->fail('Exception should have been thrown.');
+      } catch (Throwable $t) {
+        $t->clearStackTraceArguments();
+      }
+
+      $out= new MemoryOutputStream();
+      $t->printStackTrace(Streams::writeableFd($out));
+
+      $this->assertFalse(strpos($out->getBytes(), 'Could be a password...'));
+    }
   }
 ?>
