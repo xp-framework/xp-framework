@@ -18,8 +18,7 @@
    * @purpose  Base class
    */
   class Throwable extends Exception implements Generic {
-    public
-      $__id;
+    use __xp;
 
     public 
       $cause    = NULL,
@@ -319,48 +318,6 @@
       }
       
       return $s;
-    }
-
-    /**
-     * Returns a hashcode for this object
-     *
-     * @return  string
-     */
-    public function hashCode() {
-      return $this->__id;
-    }
-    
-    /**
-     * Indicates whether some other object is "equal to" this one.
-     *
-     * @param   lang.Generic cmp
-     * @return  bool TRUE if the compared object is equal to this object
-     */
-    public function equals($cmp) {
-      if (!$cmp instanceof Generic) return FALSE;
-      if (!$this->__id) $this->__id= microtime();
-      if (!$cmp->__id) $cmp->__id= microtime();
-      return $this === $cmp;
-    }
-    
-    /** 
-     * Returns the fully qualified class name for this class 
-     * (e.g. "io.File")
-     * 
-     * @return  string fully qualified class name
-     */
-    public function getClassName() {
-      return xp::nameOf(get_class($this));
-    }
-
-    /**
-     * Returns the runtime class of an object.
-     *
-     * @return  lang.XPClass runtime class
-     * @see     xp://lang.XPClass
-     */
-    public function getClass() {
-      return new XPClass($this);
     }
   }
 ?>
