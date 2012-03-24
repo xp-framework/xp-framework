@@ -262,5 +262,29 @@
     public function loadPackageByDifferentName() {
       Package::forName('net.xp_framework.unittest.reflection')->getPackage('lang.reflect');
     }
+
+    /**
+     * Tests the getComment() method
+     *
+     */
+    #[@test]
+    public function thisPackageHasNoComment() {
+      $this->assertNull(
+        Package::forName('net.xp_framework.unittest.reflection')->getComment()
+      );
+    }
+
+
+    /**
+     * Tests the getComment() method
+     *
+     */
+    #[@test]
+    public function libPackageComment() {
+      $this->assertEquals(
+        'Fixture libraries for package reflection tests',
+        trim(Package::forName('net.xp_framework.unittest.reflection.lib')->getComment())
+      );
+    }
   }
 ?>
