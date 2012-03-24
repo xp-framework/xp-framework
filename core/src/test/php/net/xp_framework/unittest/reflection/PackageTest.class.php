@@ -7,10 +7,9 @@
   uses('unittest.TestCase', 'lang.archive.Archive');
 
   /**
-   * TestCase
+   * TestCase for package reflection
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see   xp://lang.reflect.Package
    */
   class PackageTest extends TestCase {
     protected static
@@ -262,6 +261,30 @@
     #[@test, @expect('lang.IllegalArgumentException')]
     public function loadPackageByDifferentName() {
       Package::forName('net.xp_framework.unittest.reflection')->getPackage('lang.reflect');
+    }
+
+    /**
+     * Tests the getComment() method
+     *
+     */
+    #[@test]
+    public function thisPackageHasNoComment() {
+      $this->assertNull(
+        Package::forName('net.xp_framework.unittest.reflection')->getComment()
+      );
+    }
+
+
+    /**
+     * Tests the getComment() method
+     *
+     */
+    #[@test]
+    public function libPackageComment() {
+      $this->assertEquals(
+        'Fixture libraries for package reflection tests',
+        trim(Package::forName('net.xp_framework.unittest.reflection.lib')->getComment())
+      );
     }
   }
 ?>
