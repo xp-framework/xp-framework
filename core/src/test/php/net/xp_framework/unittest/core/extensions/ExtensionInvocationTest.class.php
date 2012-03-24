@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase', 
     'lang.types.ArrayList',
-    'net.xp_framework.unittest.core.extensions.ArrayListExtensions'
+    'net.xp_framework.unittest.core.extensions.ArrayListExtensions',
+    'net.xp_framework.unittest.core.extensions.ThrowableExtensions'
   );
 
   /**
@@ -48,6 +49,19 @@
     #[@test, @expect('lang.Error')]
     public function nonExistantExtensionMethod() {
       create(new ArrayList(1, 2, 3))->nonExistant();
+    }
+
+    /**
+     * Test extension methods on lang.Throwable
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/137
+     */
+    #[@test]
+    public function throwabeExtensions() {
+      $t= new Throwable('Test');
+      $this->assertNotEquals(array(), $t->getStackTrace());
+      $t->clearStackTrace();
+      $this->assertEquals(array(), $t->getStackTrace());
     }
   }
 ?>

@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #137 - Extension methods don't work on lang.Throwable
+  (friebe)
 - Fix typo in lang.ClassLoader to correct method's argument list,
   see pull request #134
   (mrosoiu, kiesel)
