@@ -28,6 +28,12 @@
     public 
       $_reflect   = NULL;
 
+    protected static $SETACCESSIBLE_AVAILABLE;
+
+    static function __static() {
+      self::$SETACCESSIBLE_AVAILABLE= method_exists('ReflectionMethod', 'setAccessible');
+    }
+
     /**
      * Constructor
      *
@@ -251,6 +257,9 @@
      * @return  lang.reflect.Routine this
      */
     public function setAccessible($flag) {
+      if (!self::$SETACCESSIBLE_AVAILABLE && $this->_reflect->isPrivate()) {
+        throw new IllegalAccessException('Cannot make private fields accessible');
+      }
       $this->accessible= $flag;
       return $this;
     }

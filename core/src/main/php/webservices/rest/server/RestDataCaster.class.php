@@ -179,7 +179,7 @@
                 
                 $field->set($result, $this->complex(
                   $data[$field->getName()],
-                  XPClass::forName($field->getType() ? $field->getType() : 'lang.types.String')
+                  XPClass::forName('var' === $field->getTypeName() ? 'lang.types.String' : $field->getTypeName())
                 ));
                 
               } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
@@ -189,7 +189,7 @@
                 
                 $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array($this->complex(
                   $data[$field->getName()],
-                  XPClass::forName($field->getType() ? $field->getType() : 'lang.types.String')
+                  XPClass::forName('var' === $field->getTypeName() ? 'lang.types.String' : $field->getTypeName())
                 )));
               }
             }

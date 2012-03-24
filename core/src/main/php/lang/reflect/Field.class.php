@@ -19,6 +19,12 @@
     public
       $_reflect   = NULL;
 
+    protected static $SETACCESSIBLE_AVAILABLE;
+
+    static function __static() {
+      self::$SETACCESSIBLE_AVAILABLE= method_exists('ReflectionMethod', 'setAccessible');
+    }
+
     /**
      * Constructor
      *
@@ -42,13 +48,13 @@
     /**
      * Gets field type
      *
-     * @return  string
+     * @return  lang.Type
      */
     public function getType() {
       if ($details= XPClass::detailsForField($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName())) {
-        if (isset($details[DETAIL_ANNOTATIONS]['type'])) return $details[DETAIL_ANNOTATIONS]['type'];
+        if (isset($details[DETAIL_ANNOTATIONS]['type'])) return Type::forName($details[DETAIL_ANNOTATIONS]['type']);
       }
-      return NULL;
+      return Type::$VAR;
     }
 
     /**
@@ -144,34 +150,7 @@
      * @throws  lang.IllegalAccessException in case this field is not public
      */
     public function get($instance) {
-    
-      // Verify the field is public
-      if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
-        if (!$this->accessible) {
-          $t= debug_backtrace();
-          if ($t[1]['class'] !== $this->_class) {
-            $scope= new ReflectionClass($t[1]['class']);
-            if (!$scope->isSubclassOf($this->_class)) {        
-              throw new IllegalAccessException('Cannot read '.$this->toString());
-            }
-          }
-        }
-
-        if ($this->_reflect->isStatic()) {
-          return call_user_func(array($this->_class, '__getStatic'), "\7".$this->_reflect->getName());
-        } else {
-          return $instance->{"\7".$this->_reflect->getName()};
-        }
-      }
-
-      // Short-circuit further checks for static members
-      if ($this->_reflect->isStatic()) {
-        return $this->_reflect->getValue(NULL);
-      }
-
-      // Verify given instance is instance of the class declaring this 
-      // property
-      if (!($instance instanceof $this->_class)) {
+      if (NULL !== $instance && !($instance instanceof $this->_class)) {
         throw new IllegalArgumentException(sprintf(
           'Passed argument is not a %s class (%s)',
           xp::nameOf($this->_class),
@@ -179,8 +158,50 @@
         ));
       }
 
+      // Check modifiers. If caller is an instance of this class, allow
+      // protected method invocation (which the PHP reflection API does 
+      // not).
+      $m= $this->_reflect->getModifiers();
+      $public= $m & MODIFIER_PUBLIC;
+      if (!$public && !$this->accessible) {
+        $t= debug_backtrace(0);
+        $decl= $this->_reflect->getDeclaringClass()->getName();
+        if ($m & MODIFIER_PROTECTED) {
+          $allow= $t[1]['class'] === $decl || is_subclass_of($t[1]['class'], $decl);
+        } else {
+          $allow= $t[1]['class'] === $decl && self::$SETACCESSIBLE_AVAILABLE;
+        }
+        if (!$allow) {
+          throw new IllegalAccessException(sprintf(
+            'Cannot read %s %s::$%s from scope %s',
+            Modifiers::stringOf($this->getModifiers()),
+            $this->_class,
+            $this->_reflect->getName(),
+            $t[1]['class']
+          ));
+        }
+      }
 
-      return $this->_reflect->getValue($instance);
+      // For non-public methods: Use setAccessible() / invokeArgs() combination
+      // if possible, resort to __get() / __getStatic() workaround.
+      try {
+        if ($public) {
+          return $this->_reflect->getValue($instance);
+        }
+
+        if (self::$SETACCESSIBLE_AVAILABLE) {
+          $this->_reflect->setAccessible(TRUE);
+          return $this->_reflect->getValue($instance);
+        } else if ($m & MODIFIER_STATIC) {
+          return call_user_func(array($this->_class, '__getStatic'), "\7".$this->_reflect->getName());
+        } else {
+          return $instance->__get("\7".$this->_reflect->getName());
+        }
+      } catch (Throwable $e) {
+        throw $e;
+      } catch (Exception $e) {
+        throw new XPException($e->getMessage());
+      }
     }
 
     /**
@@ -201,30 +222,50 @@
         ));
       }
     
-      // Verify the field is public
-      if (!($this->_reflect->getModifiers() & MODIFIER_PUBLIC)) {
-        if (!$this->accessible) {
-          $t= debug_backtrace();
-          if ($t[1]['class'] !== $this->_class) {
-            $scope= new ReflectionClass($t[1]['class']);
-            if (!$scope->isSubclassOf($this->_class)) {        
-              throw new IllegalAccessException('Cannot write '.$this->toString());
-            }
-          }
-        }
-
-        if ($this->_reflect->isStatic()) {
-          call_user_func(array($this->_class, '__setStatic'), "\7".$this->_reflect->getName(), $value);
+      // Check modifiers. If caller is an instance of this class, allow
+      // protected method invocation (which the PHP reflection API does 
+      // not).
+      $m= $this->_reflect->getModifiers();
+      $public= $m & MODIFIER_PUBLIC;
+      if (!$public && !$this->accessible) {
+        $t= debug_backtrace(0);
+        $decl= $this->_reflect->getDeclaringClass()->getName();
+        if ($m & MODIFIER_PROTECTED) {
+          $allow= $t[1]['class'] === $decl || is_subclass_of($t[1]['class'], $decl);
         } else {
-          $instance->{"\7".$this->_reflect->getName()}= $value;
+          $allow= $t[1]['class'] === $decl && self::$SETACCESSIBLE_AVAILABLE;
         }
-        return;
+        if (!$allow) {
+          throw new IllegalAccessException(sprintf(
+            'Cannot write %s %s::$%s from scope %s',
+            Modifiers::stringOf($this->getModifiers()),
+            xp::nameOf($this->_class),
+            $this->_reflect->getName(),
+            $t[1]['class']
+          ));
+        }
       }
 
-      if ($this->_reflect->isStatic()) {
-        return $this->_reflect->setValue(NULL, $value);
-      } else {
-        $this->_reflect->setValue($instance, $value);
+      // For non-public methods: Use setAccessible() / invokeArgs() combination
+      // if possible, resort to __set() / __setStatic() workaround.
+      try {
+        if ($public) {
+          $this->_reflect->setValue($instance, $value);
+          return;
+        }
+
+        if (self::$SETACCESSIBLE_AVAILABLE) {
+          $this->_reflect->setAccessible(TRUE);
+          $this->_reflect->setValue($instance, $value);
+        } else if ($m & MODIFIER_STATIC) {
+          call_user_func(array($this->_class, '__setStatic'), "\7".$this->_reflect->getName(), $value);
+        } else {
+          $instance->__set("\7".$this->_reflect->getName(), $value);
+        }
+      } catch (Throwable $e) {
+        throw $e;
+      } catch (Exception $e) {
+        throw new XPException($e->getMessage());
       }
     }
 
@@ -246,6 +287,9 @@
      * @return  lang.reflect.Routine this
      */
     public function setAccessible($flag) {
+      if (!self::$SETACCESSIBLE_AVAILABLE && $this->_reflect->isPrivate()) {
+        throw new IllegalAccessException('Cannot make private fields accessible');
+      }
       $this->accessible= $flag;
       return $this;
     }
@@ -279,11 +323,10 @@
      * @return  string
      */
     public function toString() {
-      $t= $this->getType();
       return sprintf(
-        '%s%s %s::$%s',
+        '%s %s %s::$%s',
         Modifiers::stringOf($this->getModifiers()),
-        $t ? ' '.$t : '',
+        $this->getTypeName(),
         $this->getDeclaringClass()->getName(),
         $this->getName()
       );
