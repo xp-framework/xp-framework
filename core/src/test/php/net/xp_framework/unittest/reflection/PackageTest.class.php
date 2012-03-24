@@ -7,10 +7,9 @@
   uses('unittest.TestCase', 'lang.archive.Archive');
 
   /**
-   * TestCase
+   * TestCase for package reflection
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see   xp://lang.reflect.Package
    */
   class PackageTest extends TestCase {
     protected static
