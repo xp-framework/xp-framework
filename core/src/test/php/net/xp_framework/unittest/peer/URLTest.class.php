@@ -1837,7 +1837,7 @@
      */
     #[@test]
     public function testCanonicalURL() {
-     $this->assertEquals('https://localhost', create(new URL('https+v3://localhost'))->getCanonicalUrl());
+     $this->assertEquals('https://localhost', create(new URL('https+v3://localhost'))->getCanonicalURL());
     }
   }
 ?>
