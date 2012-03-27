@@ -1830,5 +1830,15 @@
     public function parseIpv6URL() {
       $this->assertEquals('http://[2001:8d8f:1fe:5:abba:dbff:fefe:7755]:80/authenticate/', create(new URL('http://[2001:8d8f:1fe:5:abba:dbff:fefe:7755]:80/authenticate/'))->getURL());
     }
+    
+    /**
+     * Test canonical URL
+     *
+     */
+    #[@test]
+    public function testCanonicalURL() {
+     $this->assertEquals('https://localhost', create(new URL('https+v3://localhost'))->getCanonicalURL());
+    }
   }
 ?>
+

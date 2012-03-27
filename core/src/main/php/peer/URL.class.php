@@ -430,25 +430,49 @@
     }
     
     /**
+     * Build the URL 
+     * (if the canonical argument is set to TRUE
+     * the string represent the standard URL)
+     *
+     * @param  bool canonical
+     * @return  string
+     */
+    protected function getAssembledURL($canonical= FALSE) {
+      sscanf($this->_info['scheme'], '%[^+]', $scheme);
+      $url= ($canonical ? $scheme : $this->_info['scheme']).'://';
+      if (isset($this->_info['user'])) $url.= sprintf(
+        '%s%s@',
+        rawurlencode($this->_info['user']),
+        (isset($this->_info['pass']) ? ':'.rawurlencode($this->_info['pass']) : '')
+      );
+      $url.= $this->_info['host'];
+      isset($this->_info['port']) && $url.= ':'.$this->_info['port'];
+      isset($this->_info['path']) && $url.= $this->_info['path'];
+      if ($this->_info['params']) {
+        $url.= '?'.$this->getQuery();
+      }
+      isset($this->_info['fragment']) && $url.= '#'.$this->_info['fragment'];
+      return $url;
+    }
+    
+    /**
+     * Get standard URL 
+     * (without arguments like protocol version)
+     *
+     * @return  string
+     */
+    public function getCanonicalURL() {
+      return $this->getAssembledURL(TRUE);
+    }
+    
+    /**
      * Get full URL
      *
      * @return  string
      */
     public function getURL() {
       if (!isset($this->_info['url'])) {
-        $this->_info['url']= $this->_info['scheme'].'://';
-        if (isset($this->_info['user'])) $this->_info['url'].= sprintf(
-          '%s%s@',
-          rawurlencode($this->_info['user']),
-          (isset($this->_info['pass']) ? ':'.rawurlencode($this->_info['pass']) : '')
-        );
-        $this->_info['url'].= $this->_info['host'];
-        isset($this->_info['port']) && $this->_info['url'].= ':'.$this->_info['port'];
-        isset($this->_info['path']) && $this->_info['url'].= $this->_info['path'];
-        if ($this->_info['params']) {
-          $this->_info['url'].= '?'.$this->getQuery();
-        }
-        isset($this->_info['fragment']) && $this->_info['url'].= '#'.$this->_info['fragment'];
+        $this->_info['url']= $this->getAssembledURL();
       }
       return $this->_info['url'];
     }
@@ -531,3 +555,4 @@
     }
   }
 ?>
+
