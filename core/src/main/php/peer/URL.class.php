@@ -437,7 +437,7 @@
      * @param  bool canonical
      * @return  string
      */
-    protected function getAssembleddURL($canonical= FALSE) {
+    protected function getAssembledURL($canonical= FALSE) {
       sscanf($this->_info['scheme'], '%[^+]', $scheme);
       $url= ($canonical ? $scheme : $this->_info['scheme']).'://';
       if (isset($this->_info['user'])) $url.= sprintf(
@@ -462,7 +462,7 @@
      * @return  string
      */
     public function getCanonicalURL() {
-      return $this->getAssembleddURL(TRUE);
+      return $this->getAssembledURL(TRUE);
     }
     
     /**
@@ -472,7 +472,7 @@
      */
     public function getURL() {
       if (!isset($this->_info['url'])) {
-        $this->_info['url']= $this->getAssembleddURL();
+        $this->_info['url']= $this->getAssembledURL();
       }
       return $this->_info['url'];
     }
