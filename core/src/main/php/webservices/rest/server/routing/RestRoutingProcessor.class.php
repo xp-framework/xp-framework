@@ -106,10 +106,17 @@
           $ref= array_search($ref, $names);
         }
         
+        // Do not un-serialize object instances
+        $binding= $this->getBinding($name);
+        if ($binding instanceof Generic) {
+          $args[(int)$ref]= $binding;
+          continue;
+        }
+        
         // Try to convert binding to requested argument type
         try {
           $args[(int)$ref]= $this->dataCaster->complex(
-            $this->dataCaster->simple($this->getBinding($name)),
+            $this->dataCaster->simple($binding),
             $routing->getArgs()->getArgumentType($names[$ref])
           );
         } catch (XPException $e) {
