@@ -21,6 +21,12 @@
    * @see    php://parse_url
    */
   class URL extends Object {
+    protected static
+      $defaultPorts= array(
+        'http' => 80,
+        'https'=> 443
+      );
+
     public $_info= array();
       
     /**
@@ -528,6 +534,168 @@
      */
     public function equals($cmp) {
       return $cmp instanceof self && $this->getURL() === $cmp->getURL();
+    }
+    
+    /**
+     * Capitalize letters in escape sequence
+     *
+     * @param  string string
+     * @return  string
+     */
+    protected function capitalizeLettersInEscapeSequence($string) {
+      return preg_replace_callback('/%[\w]{2}/',
+        create_function('$matches','return strtoupper($matches[0]);'),
+        $string
+      );
+    }
+    
+    /**
+     * Decode percent encoded octets
+     * 
+     * @see http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3
+     * @param  string string
+     * @return  string
+     */
+    protected function decodePercentEncodedOctets($string) {
+      $unreserved = array();
+        
+      for($octet= 65; $octet <= 90; $octet++) {
+        $unreserved[]= dechex($octet);
+      }
+
+      for($octet= 97; $octet<=122; $octet++) {
+        $unreserved[]= dechex($octet);
+      }
+
+      for($octet= 48; $octet<=57; $octet++) {
+        $unreserved[]= dechex($octet);
+      }
+
+      $unreserved[]= dechex(ord( '-' ));
+      $unreserved[]= dechex(ord( '.' ));
+      $unreserved[]= dechex(ord( '_' ));
+      $unreserved[]= dechex(ord( '~' ));
+
+      return preg_replace_callback( 
+        array_map(create_function('$str', 'return "/%".strtoupper($str)."/x";'), $unreserved), 
+        create_function('$matches', 'return chr(hexdec($matches[0]));'),
+        $string
+      );
+    }
+    
+    /**
+     * Decode percent encoded octets
+     * @see http://www.apps.ietf.org/rfc/rfc3986.html#sec-5.2.4
+     * 
+     * @param  string string
+     * @return  string
+     */
+    protected function removeDotSegments($path){
+      $cleanPath = '';
+
+      // A. If the input begins with a prefix of "../" or "./"
+      $patterns['stepA']   = '!^(\.\./|\./)!';
+      // B1. If the input begins with a prefix of "/./"
+      $patterns['stepB1'] = '!^(/\./)!';
+      // B2. If the input begins with a prefix of "/."
+      $patterns['stepB2'] = '!^(/\.)$!';
+      // C. If the input begins with a prefix of "/../" or "/.."
+      $patterns['stepC']   = '!^(/\.\./|/\.\.)!';
+      // D. If the input consists only of "." or ".."
+      $patterns['stepD']   = '!^(\.|\.\.)$!';
+      // E. Move the first path segment in the input to the end of the output
+      $patterns['stepE']   = '!(/*[^/]*)!';
+
+      while(!empty($path)) {
+        switch (TRUE) {
+          case preg_match($patterns['stepA'], $path):
+            $path= preg_replace($patterns['stepA'], '', $path);
+          break;
+
+          case preg_match($patterns['stepB1'], $path, $matches):
+          case preg_match($patterns['stepB2'], $path, $matches):
+            $path= preg_replace('!^'.$matches[1].'!', '/', $path);
+          break;
+
+          case preg_match($patterns['stepC'], $path, $matches):
+            $path= preg_replace('!^'.preg_quote($matches[1], '!').'!', '/', $path);
+            $cleanPath= preg_replace('!/([^/]+)$!', '', $cleanPath);
+          break;
+
+          case preg_match($patterns['stepD'], $path):
+            $path= preg_replace($patterns['stepD'], '', $path);
+          break;
+
+          case preg_match($patterns['stepE'], $path, $matches):
+            $path= preg_replace('/^'.preg_quote($matches[1], '/').'/', '', $path, 1);
+            $cleanPath.= $matches[1];
+          break;
+        }
+      }
+      return $cleanPath;
+    }
+    
+    /**
+     * Check if current port is the default one for this scheme
+     * @see http://www.apps.ietf.org/rfc/rfc3986.html#sec-5.2.4
+     * 
+     * @param  string scheme
+     * @param  string port
+     * @return  bool
+     */
+    protected function isDefaultPort($scheme, $port) {
+      if (array_key_exists($scheme, self::$defaultPorts) && $port==self::$defaultPorts[$scheme])
+        return TRUE;
+      return FALSE;
+    }
+    
+    /**
+     * Get standard URL 
+     * @see http://tools.ietf.org/html/rfc3986#page-38
+     *
+     * @return  string
+     */
+    public function getCanonicalURL() {
+      sscanf($this->_info['scheme'], '%[^+]', $scheme);
+      
+      // Convert the scheme to lower case
+      $url= strtolower($scheme).'://';
+
+      // Convert the host to lower case
+      $url.= strtolower($this->_info['host']);
+      
+      // Add port if exist and is not the default one for this scheme
+      if (isset($this->_info['port']) && !$this->isDefaultPort($scheme, $this->_info['port']))
+        $url.= ':'.$this->_info['port'];
+      
+      // Adding trailing /
+      $url.= '/';
+      
+      // Capitalize letters in escape sequences &
+      // Decode percent-encoded octets of unreserved characters &
+      // Remove dot-segments
+      if (isset($this->_info['path'])) {
+        $path= $this->capitalizeLettersInEscapeSequence($this->_info['path']);
+        $path= $this->decodePercentEncodedOctets($path);
+        $path= $this->removeDotSegments($path);
+        $url.= (strstr($path, '/')!==0) ? substr($path, 1) : $path;
+      }
+      
+      // Same steps as for path
+      if ($this->_info['params']) {
+        $query= $this->capitalizeLettersInEscapeSequence($this->getQuery());
+        $query= $this->decodePercentEncodedOctets($query);
+        $url.= '?'.$this->removeDotSegments($query);
+      }
+      
+      // Same steps as for path
+      if (isset($this->_info['fragment'])) {
+        $fragment= $this->capitalizeLettersInEscapeSequence($this->_info['fragment']);
+        $fragment= $this->decodePercentEncodedOctets($fragment);
+        $url.= '#'.$this->removeDotSegments($fragment);
+      }
+      
+      return $url;
     }
   }
 ?>
