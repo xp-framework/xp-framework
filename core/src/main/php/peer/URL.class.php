@@ -584,9 +584,9 @@
     }
     
     /**
-     * Decode percent encoded octets
+     * Remove dot segments
+     *
      * @see http://www.apps.ietf.org/rfc/rfc3986.html#sec-5.2.4
-     * 
      * @param  string string
      * @return  string
      */
@@ -637,22 +637,20 @@
     
     /**
      * Check if current port is the default one for this scheme
+     *
      * @see http://www.apps.ietf.org/rfc/rfc3986.html#sec-5.2.4
-     * 
      * @param  string scheme
      * @param  string port
      * @return  bool
      */
     protected function isDefaultPort($scheme, $port) {
-      if (array_key_exists($scheme, self::$defaultPorts) && $port==self::$defaultPorts[$scheme])
-        return TRUE;
-      return FALSE;
+      return (array_key_exists($scheme, self::$defaultPorts) && $port==self::$defaultPorts[$scheme]);
     }
     
     /**
      * Get standard URL 
-     * @see http://tools.ietf.org/html/rfc3986#page-38
      *
+     * @see http://tools.ietf.org/html/rfc3986#page-38
      * @return  string
      */
     public function getCanonicalURL() {
