@@ -22,6 +22,7 @@
       $arrayThreeHash= NULL,
       $arrayTwoHash= NULL,
       $arrayNullField= NULL,
+      $arrayOfArrays= NULL,
       $stdClassThree= NULL,
       $objPrivateFields= NULL,
       $objThreeFields= NULL,
@@ -40,6 +41,11 @@
       self::$arrayThreeHash= array('one' => '1', 'two' => '2', 'three' => '3');
       self::$arrayTwoHash= array('one' => '1', 'two' => '2');
       self::$arrayNullField= array('nullField' => null);
+      self::$arrayOfArrays= array(
+        'one' => array('1'),
+        'two' => array('1', '2'),
+        'three' => array('1', '2', '3')
+      );
       
       self::$stdClassThree= new stdClass();
       self::$stdClassThree->one= '1';
@@ -317,6 +323,15 @@
     public function complexifyPrimitiveHashMapAsHashMap() {
       $this->assertEquals(self::$arrayThreeHash, $this->sut->complex(self::$arrayThreeHash, Type::forName('[:lang.types.String]')));
     }  
+
+    /**
+     * Test complexify primitive hashmap of arrays
+     *
+     */
+    #[@test]
+    public function complexifyPrimitiveHashMapOfArrays() {
+      $this->assertEquals(self::$arrayOfArrays, $this->sut->complex(self::$arrayOfArrays, Type::forName('[:lang.types.String[]]')));
+    }
 
     /**
      * Test complexify hashmap

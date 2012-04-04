@@ -120,7 +120,7 @@
 
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= $this->complex($value, XPClass::forName($type->componentType()->getName()));
+            $result[$key]= $this->complex($value, Type::forName($type->componentType()->getName()));
           }
           return $result;
         
