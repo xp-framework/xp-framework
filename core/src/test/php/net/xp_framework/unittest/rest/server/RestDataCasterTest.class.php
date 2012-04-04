@@ -301,6 +301,24 @@
     }
     
     /**
+     * Test complexify primitive hashmap as array
+     *
+     */
+    #[@test]
+    public function complexifyPrimitiveHashMapAsArray() {
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->complex(self::$arrayThreeHash, Type::forName('lang.types.String[]')));
+    }
+
+    /**
+     * Test complexify primitive hashmap as hashmap
+     *
+     */
+    #[@test]
+    public function complexifyPrimitiveHashMapAsHashMap() {
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->complex(self::$arrayThreeHash, Type::forName('[:lang.types.String]')));
+    }  
+
+    /**
      * Test complexify hashmap
      * 
      */

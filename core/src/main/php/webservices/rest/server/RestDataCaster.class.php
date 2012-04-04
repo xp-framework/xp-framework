@@ -106,13 +106,14 @@
      * @return var[]
      */
     public function complex($data, Type $type) {
-      $typeName= $type instanceof ArrayType ? xp::typeOf($type) : $type->getName();
+      $typeName= ($type instanceof ArrayType || $type instanceof MapType) ? xp::typeOf($type) : $type->getName();
 
       switch ($typeName) {
         case 'NULL':
           return NULL;
 
         case 'lang.ArrayType':
+        case 'lang.MapType':
           if (!is_array($data)) {
             throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
           }
