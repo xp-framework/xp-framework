@@ -175,6 +175,9 @@
             foreach ($type->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
                 if (!isset($data[$field->getName()])) {
+                  if($this->ignoreNullFields) {
+                    continue;
+                  }
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
@@ -185,6 +188,9 @@
                 
               } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
                 if (!isset($data[$field->getName()])) {
+                  if($this->ignoreNullFields) {
+                    continue;
+                  }
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 

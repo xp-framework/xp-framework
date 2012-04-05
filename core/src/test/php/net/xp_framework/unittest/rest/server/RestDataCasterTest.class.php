@@ -370,6 +370,58 @@
     }
 
     /**
+     * Test complexify hashmap as object with optional fields
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectOptionalFields() {
+      $this->sut->setIgnoreNullFields(TRUE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeFields->getClass());
+
+      $this->assertEquals('4', $casted->one);
+      $this->assertEquals(self::$arrayThreeHash['two'], $casted->two);
+      $this->assertEquals('5', $casted->three);
+    }
+
+    /**
+     * Test complexify hashmap as object with missing fields
+     *
+     */
+    #[@test, @expect('lang.ClassCastException')]
+    public function complexifyHashMapAsObjectMissingFields() {
+      $this->sut->setIgnoreNullFields(FALSE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeFields->getClass());
+    }
+
+    /**
+     * Test complexify hashmap as object with private attributes and optional fields
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectOptionalPrivateFields() {
+      $this->sut->setIgnoreNullFields(TRUE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeMethods->getClass());
+
+      $this->assertEquals('4', $casted->getOne());
+      $this->assertEquals(self::$arrayThreeHash['two'], $casted->getTwo());
+      $this->assertEquals('5', $casted->getThree());
+    }
+
+    /**
+     * Test complexify hashmap as object with private attributes missing fields
+     *
+     */
+    #[@test, @expect('lang.ClassCastException')]
+    public function complexifyHashMapAsObjectMissingPrivateFields() {
+      $this->sut->setIgnoreNullFields(FALSE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeMethods->getClass());
+    }
+
+    /**
      * Test complexify hashmap
      * 
      */
