@@ -29,7 +29,9 @@
       $objThreeTypedFields= NULL,
       $objThreeMethods= NULL,
       $objTwoFields= NULL,
-      $objNullField= NULL;
+      $objNullField= NULL,
+      $objArrayField= NULL,
+      $objPrivateArrayField= NULL;
     
     /**
      * Before class setup
@@ -87,6 +89,18 @@
       }');
       self::$objNullField= newinstance('lang.Object', array(), '{
         public $nullField= NULL;
+      }');
+      self::$objArrayField= newinstance('lang.Object', array(), '{
+        #[@type(\'lang.types.String[]\')]
+        public $arrayThreeHash= NULL;
+      }');
+
+      self::$objPrivateArrayField= newinstance('lang.Object', array(), '{
+        #[@type(\'lang.types.String[]\')]
+        protected $arrayThreeHash= NULL;
+
+        public function setArrayThreeHash($value) { $this->arrayThreeHash= $value; }
+        public function getArrayThreeHash() { return $this->arrayThreeHash; }
       }');
     }
     
@@ -334,6 +348,28 @@
     }
 
     /**
+     * Test complexify hashmap as object within an array
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectWithinArray() {
+      $casted= $this->sut->complex(array('arrayThreeHash' => self::$arrayThreeHash), self::$objArrayField->getClass());
+
+      $this->assertEquals(self::$arrayThreeHash, $casted->arrayThreeHash);
+    }
+
+    /**
+     * Test complexify hashmap as object within an private array
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectWithinPrivateArray() {
+      $casted= $this->sut->complex(array('arrayThreeHash' => self::$arrayThreeHash), self::$objPrivateArrayField->getClass());
+
+      $this->assertEquals(self::$arrayThreeHash, $casted->getArrayThreeHash());
+    }
+
+    /**
      * Test complexify hashmap
      * 
      */
@@ -341,7 +377,7 @@
     public function complexifyHashmap() {
       $this->assertEquals(new Hashmap(self::$arrayThreeHash), $this->sut->complex(self::$arrayThreeHash, XPClass::forName('util.Hashmap')));
     }
-    
+
     /**
      * Test complexify stdclass
      * 
