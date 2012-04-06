@@ -21,6 +21,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Merged pull request #143 - New peer.URL::getCanonicalURL() method
+  http://news.planet-xp.net/article/453/2012/04/06/
+  (mihaighigea)
 - Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
   finalizeSuccess()
   (cconstandachi, friebe)
