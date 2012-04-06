@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Merged pull request #141 - Fix when using CURL transports w/ SSL version
+  (mihaighigea)
 - Fixed issue #137 - Extension methods don't work on lang.Throwable
   (friebe)
 - Fix typo in lang.ClassLoader to correct method's argument list,
