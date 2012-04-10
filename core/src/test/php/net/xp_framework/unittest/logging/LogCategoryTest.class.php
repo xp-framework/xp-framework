@@ -3,7 +3,7 @@
  *
  * $Id$
  */
- 
+
   uses(
     'unittest.TestCase',
     'util.log.Logger',
@@ -19,7 +19,7 @@
    */
   class LogCategoryTest extends TestCase {
     public $cat= NULL;
-    
+
     /**
      * Setup method. Creates logger and cat member for easier access to
      * the Logger instance
@@ -28,9 +28,9 @@
     public function setUp() {
       $this->cat= new LogCategory('test');
     }
-    
+
     /**
-     * Create a mock appender which simply stores all messages passed to 
+     * Create a mock appender which simply stores all messages passed to
      * its append() method.
      *
      * @return  util.log.Appender
@@ -38,17 +38,17 @@
     protected function mockAppender() {
       $appender= newinstance('util.log.Appender', array(), '{
         public $messages= array();
-        
+
         public function append(LoggingEvent $event) {
           $this->messages[]= array(
-            strtolower(LogLevel::nameOf($event->getLevel())), 
+            strtolower(LogLevel::nameOf($event->getLevel())),
             $this->layout->format($event)
           );
         }
       }');
       return $appender->withLayout(new PatternLayout('%m'));
     }
-    
+
     /**
      * Helper method
      *
@@ -74,7 +74,7 @@
       call_user_func_array(array($this->cat, $method), $args);
       $this->assertEquals(array(array_merge((array)substr($method, 0, -1), (array)vsprintf(array_shift($args), $args))), $app->messages);
     }
-    
+
     /**
      * Ensure the logger category initially has no appenders
      *
@@ -222,7 +222,7 @@
     #[@test]
     public function logCategoriesDifferingAppendersNotEqual() {
       $this->assertNotEquals(
-        new LogCategory('test'), 
+        new LogCategory('test'),
         $this->cat->withAppender($this->mockAppender())
       );
     }
@@ -235,7 +235,7 @@
     public function logCategoriesAppendersDifferingInFlagsNotEqual() {
       $appender= $this->mockAppender();
       $this->assertNotEquals(
-        create(new LogCategory('test'))->withAppender($appender, LogLevel::WARN), 
+        create(new LogCategory('test'))->withAppender($appender, LogLevel::WARN),
         $this->cat->withAppender($appender)
       );
     }
@@ -248,7 +248,7 @@
     public function logCategoriesSameAppendersEqual() {
       $appender= $this->mockAppender();
       $this->assertEquals(
-        create(new LogCategory('test'))->withAppender($appender), 
+        create(new LogCategory('test'))->withAppender($appender),
         $this->cat->withAppender($appender)
       );
     }
@@ -333,7 +333,7 @@
     public function mark() {
       $app= $this->cat->addAppender($this->mockAppender());
       $this->cat->mark();
-      $this->assertEquals(array(array('info', str_repeat('-', 72))), $app->messages); 
+      $this->assertEquals(array(array('info', str_repeat('-', 72))), $app->messages);
     }
 
     /**
@@ -346,7 +346,7 @@
       $app2= $this->cat->addAppender($this->mockAppender(), LogLevel::WARN);
       $this->cat->warn('Test');
       $this->assertEquals(array(), $app1->messages);
-      $this->assertEquals(array(array('warn', 'Test')), $app2->messages); 
+      $this->assertEquals(array(array('warn', 'Test')), $app2->messages);
     }
 
     /**
@@ -434,6 +434,28 @@
       $app3= $this->cat->addAppender($this->mockAppender(), LogLevel::INFO);
       $app4= $this->cat->addAppender($this->mockAppender(), LogLevel::DEBUG);
       $this->assertEquals(array($app1, $app2, $app3, $app4), $this->cat->getAppenders());
+    }
+
+    /**
+     * Tests LogCategory::hasContext()
+     *
+     */
+    #[@test]
+    public function hasContext() {
+      $this->assertFalse($this->cat->hasContext());
+      $this->cat->setContext(new LogContext());
+      $this->assertTrue($this->cat->hasContext());
+    }
+
+    /**
+     * Tests LogCategory::getContext()
+     *
+     */
+    #[@test]
+    public function getContext() {
+      $context= new LogContext();
+      $this->cat->setContext($context);
+      $this->assertEquals($context, $this->cat->getContext());
     }
   }
 ?>

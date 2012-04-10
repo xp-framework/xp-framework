@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses('util.log.Layout');
@@ -12,7 +12,7 @@
    * Format string
    * -------------
    * The format string consists of format tokens preceded by a percent
-   * sign (%) and any other character. The following format tokens are 
+   * sign (%) and any other character. The following format tokens are
    * supported:
    * <ul>
    *   <li>%m - Message</li>
@@ -23,13 +23,14 @@
    *   <li>%p - Process ID</li>
    *   <li>%% - A literal percent sign (%)</li>
    *   <li>%n - A line break</li>
+   *   <li>%x - Context information, if available; adds trailing whitespace if context available</li>
    * </ul>
    *
    * @test    xp://net.xp_framework.unittest.logging.PatternLayoutTest
    */
   class PatternLayout extends util·log·Layout {
     protected $format= array();
-  
+
     /**
      * Creates a new pattern layout
      *
@@ -43,15 +44,15 @@
           }
           switch ($format{$i}) {
             case '%': {   // Literal percent
-              $this->format[]= '%'; 
+              $this->format[]= '%';
               break;
             }
             case 'n': {
-              $this->format[]= "\n"; 
+              $this->format[]= "\n";
               break;
             }
             default: {    // Any other character - verify it's supported
-              if (!strspn($format{$i}, 'mclLtp')) {
+              if (!strspn($format{$i}, 'mclLtpx')) {
                 throw new IllegalArgumentException('Unknown format token "'.$format{$i}.'"');
               }
               $this->format[]= '%'.$format{$i};
@@ -64,7 +65,7 @@
     }
 
     /**
-     * Creates a string representation of the given argument. For any 
+     * Creates a string representation of the given argument. For any
      * string given, the result is the string itself, for any other type,
      * the result is the xp::stringOf() output.
      *
@@ -91,6 +92,7 @@
           case '%l': $out.= strtolower(LogLevel::nameOf($event->getLevel())); break;
           case '%L': $out.= strtoupper(LogLevel::nameOf($event->getLevel())); break;
           case '%p': $out.= $event->getProcessId(); break;
+          case '%x': $out.= $event->getContextAsString(); break;
           default: $out.= $token;
         }
       }

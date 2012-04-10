@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   $package= 'util.log';
@@ -13,7 +13,7 @@
    *
    */
   abstract class util·log·Layout extends Object {
-    
+
     /**
      * Formats a logging event according to this layout
      *
