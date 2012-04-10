@@ -94,11 +94,18 @@
         return call_user_func_array(array($this, substr($name, 1)), $args);
       }
       $t= debug_backtrace();
+
+      // Get self
       $i= 1; $s= sizeof($t);
       while (!isset($t[$i]['class']) && $i++ < $s) { }
       $self= $t[$i]['class'];
-      $scope= $t[$i+ 1]['class'];
-      if (isset(xp::$registry['ext'][$scope])) {
+
+      // Get scope
+      $i++;
+      while (!isset($t[$i]['class']) && $i++ < $s) { }
+      $scope= isset($t[$i]['class']) ? $t[$i]['class'] : NULL;
+
+      if (NULL != $scope && isset(xp::$registry['ext'][$scope])) {
         foreach (xp::$registry['ext'][$scope] as $type => $class) {
           if (!$this instanceof $type || !method_exists($class, $name)) continue;
           array_unshift($args, $this);
