@@ -6,6 +6,40 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Merged pull request #141 - Fix when using CURL transports w/ SSL version
+  (mihaighigea)
+- Fixed issue #137 - Extension methods don't work on lang.Throwable
+  (friebe)
+- Fix typo in lang.ClassLoader to correct method's argument list,
+  see pull request #134
+  (mrosoiu, kiesel)
+- Handle empty Json request gracefully.
+  (iigorr)
+- Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
+  params public property, use setters and getters instead
+  (cconstandachi)
+
+Features
+~~~~~~~~
+- Merged pull request #143 - New peer.URL::getCanonicalURL() method
+  http://news.planet-xp.net/article/453/2012/04/06/
+  (mihaighigea)
+- Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
+  finalizeSuccess()
+  (cconstandachi, friebe)
+- Changed webservices.rest.server.RestDataCaster methods to be non-static.
+  (iigorr)
+- Added possibility to handle error in RestHttpScriptlet using instances
+  of RestErrorFormatter.
+  (iigorr)
+- Changed text.parser.generic.ParseException to contain the parse error
+  instances, not only their messages.
+  (iigorr, friebe)
+- Improved error handling in RestHttpScriptlet
+  (iigorr)
+
 
 Version 5.8.4, released 2012-02-26
 ----------------------------------

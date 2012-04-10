@@ -34,5 +34,13 @@
      */
     public function routesFor($request, $response);
     
+    /**
+     * Return whether a specified resource exists
+     * 
+     * @param string resourcePath The resource path
+     * @return bool
+     */
+    public function resourceExists($resourcePath);
+    
   }
 ?>

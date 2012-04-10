@@ -14,16 +14,21 @@
    *
    */
   class RestDataCasterTest extends TestCase {
+    private
+      $sut= NULL;
+    
     protected static
       $arrayThree= NULL,
       $arrayThreeHash= NULL,
       $arrayTwoHash= NULL,
+      $arrayNullField= NULL,
       $stdClassThree= NULL,
       $objPrivateFields= NULL,
       $objThreeFields= NULL,
       $objThreeTypedFields= NULL,
       $objThreeMethods= NULL,
-      $objTwoFields= NULL;
+      $objTwoFields= NULL,
+      $objNullField= NULL;
     
     /**
      * Before class setup
@@ -34,6 +39,7 @@
       self::$arrayThree= array('1', '2', '3');
       self::$arrayThreeHash= array('one' => '1', 'two' => '2', 'three' => '3');
       self::$arrayTwoHash= array('one' => '1', 'two' => '2');
+      self::$arrayNullField= array('nullField' => null);
       
       self::$stdClassThree= new stdClass();
       self::$stdClassThree->one= '1';
@@ -73,6 +79,16 @@
         public function getThree() { return $this->three; }
         public function setThree($v) { $this->three= $v; }
       }');
+      self::$objNullField= newinstance('lang.Object', array(), '{
+        public $nullField= NULL;
+      }');
+    }
+    
+    /**
+     * Set up
+     */
+    public function setUp() {
+      $this->sut= new RestDataCaster();
     }
     
     /**
@@ -81,9 +97,9 @@
      */
     #[@test]
     public function simplifyPrimitives() {
-      $this->assertEquals(1, RestDataCaster::simple(1));
-      $this->assertEquals('test', RestDataCaster::simple('test'));
-      $this->assertTrue(RestDataCaster::simple(TRUE));
+      $this->assertEquals(1, $this->sut->simple(1));
+      $this->assertEquals('test', $this->sut->simple('test'));
+      $this->assertTrue($this->sut->simple(TRUE));
     }
 
     /**
@@ -92,9 +108,9 @@
      */
     #[@test]
     public function simplifyPrimitivesObject() {
-      $this->assertEquals(1, RestDataCaster::simple(new Integer(1)));
-      $this->assertEquals('test', RestDataCaster::simple(new String('test')));
-      $this->assertEquals(TRUE, RestDataCaster::simple(new Boolean(TRUE)));
+      $this->assertEquals(1, $this->sut->simple(new Integer(1)));
+      $this->assertEquals('test', $this->sut->simple(new String('test')));
+      $this->assertEquals(TRUE, $this->sut->simple(new Boolean(TRUE)));
     }
     
     /**
@@ -103,7 +119,7 @@
      */
     #[@test]
     public function simplifyArray() {
-      $this->assertEquals(self::$arrayThree, RestDataCaster::simple(self::$arrayThree));
+      $this->assertEquals(self::$arrayThree, $this->sut->simple(self::$arrayThree));
     }
 
     /**
@@ -114,7 +130,7 @@
     public function simplifyArrayType() {
       $this->assertEquals(array(
         self::$arrayThreeHash, self::$arrayThreeHash
-      ), RestDataCaster::simple(
+      ), $this->sut->simple(
         array(self::$objThreeFields, self::$objThreeFields)
       ));
     }
@@ -125,7 +141,7 @@
      */
     #[@test]
     public function simplifyHashmap() {
-      $this->assertEquals(self::$arrayThreeHash, RestDataCaster::simple(new Hashmap(self::$arrayThreeHash)));
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->simple(new Hashmap(self::$arrayThreeHash)));
     }
     
     /**
@@ -134,7 +150,7 @@
      */
     #[@test]
     public function simplifyStdclass() {
-      $this->assertEquals(self::$arrayThreeHash, RestDataCaster::simple(self::$stdClassThree));
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->simple(self::$stdClassThree));
     }
     
     /**
@@ -143,7 +159,7 @@
      */
     #[@test]
     public function simplifyObjectWithPublicFields() {
-      $this->assertEquals(self::$arrayThreeHash, RestDataCaster::simple(self::$objThreeFields));
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->simple(self::$objThreeFields));
     }
     
     /**
@@ -152,7 +168,7 @@
      */
     #[@test]
     public function simplifyObjectWithPrivateFieldsButPublicMethods() {
-      $this->assertEquals(self::$arrayThreeHash, RestDataCaster::simple(self::$objThreeMethods));
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->simple(self::$objThreeMethods));
     }
     
     /**
@@ -167,7 +183,7 @@
       $result= self::$arrayThreeHash;
       $result['three']= self::$arrayTwoHash;
       
-      $this->assertEquals($result, RestDataCaster::simple($instance));
+      $this->assertEquals($result, $this->sut->simple($instance));
     }
     
     /**
@@ -176,18 +192,29 @@
      */
     #[@test]
     public function simplifyObjectIgnoringPrivateFields() {
-      $this->assertEquals(self::$arrayTwoHash, RestDataCaster::simple(self::$objPrivateFields));
+      $this->assertEquals(self::$arrayTwoHash, $this->sut->simple(self::$objPrivateFields));
     }
     
+    #[@test]
+    public function simple_should_ignore_public_null_fields_by_default() {
+      $this->sut->setIgnoreNullFields(FALSE);
+      $this->assertEquals(self::$arrayNullField, $this->sut->simple(self::$objNullField));
+    }
+    
+    #[@test]
+    public function simple_should_ignore_public_null_fields_if_defined_so() {
+      
+      $this->assertEquals(array(), $this->sut->simple(self::$objNullField));
+    }
     /**
      * Test complexify primitives
      * 
      */
     #[@test]
     public function complexifyPrimitives() {
-      $this->assertEquals(1, RestDataCaster::complex(1, XPClass::forName('lang.types.Integer')));
-      $this->assertEquals('test', RestDataCaster::complex('test', XPClass::forName('lang.types.String')));
-      $this->assertTrue(RestDataCaster::simple(TRUE, XPClass::forName('lang.types.Boolean')));
+      $this->assertEquals(1, $this->sut->complex(1, XPClass::forName('lang.types.Integer')));
+      $this->assertEquals('test', $this->sut->complex('test', XPClass::forName('lang.types.String')));
+      $this->assertTrue($this->sut->simple(TRUE, XPClass::forName('lang.types.Boolean')));
     }
     
     /**
@@ -196,9 +223,9 @@
      */
     #[@test]
     public function complexifyPrimitivesObject() {
-      $this->assertEquals(1, RestDataCaster::complex(1, Primitive::$INT));
-      $this->assertEquals('test', RestDataCaster::complex('test', Primitive::$STRING));
-      $this->assertEquals(TRUE, RestDataCaster::complex(TRUE, Primitive::$BOOLEAN));
+      $this->assertEquals(1, $this->sut->complex(1, Primitive::$INT));
+      $this->assertEquals('test', $this->sut->complex('test', Primitive::$STRING));
+      $this->assertEquals(TRUE, $this->sut->complex(TRUE, Primitive::$BOOLEAN));
     }
     
     /**
@@ -222,7 +249,7 @@
       
       foreach ($casts as $cast) {
         try {
-          RestDataCaster::complex($cast[1], $cast[0]);
+          $this->sut->complex($cast[1], $cast[0]);
           
           throw new IllegalStateException('Cast '.xp::typeOf($cast[1]).' to '.$cast[0]->getName().' should throw exception');
         } catch (ClassCastException $e) {
@@ -241,7 +268,7 @@
       
       foreach ($casts as $cast) {
         try {
-          RestDataCaster::complex($cast, XPClass::forName('lang.Object'));
+          $this->sut->complex($cast, XPClass::forName('lang.Object'));
           
           throw new IllegalStateException('Cast '.xp::typeOf($cast).' to lang.Object should throw exception');
         } catch (ClassCastException $e) {
@@ -256,7 +283,7 @@
      */
     #[@test]
     public function complexifyArray() {
-      $this->assertEquals(self::$arrayThree, RestDataCaster::complex(self::$arrayThree, XPClass::forName('lang.types.ArrayList')));
+      $this->assertEquals(self::$arrayThree, $this->sut->complex(self::$arrayThree, XPClass::forName('lang.types.ArrayList')));
     }
 
     /**
@@ -267,7 +294,7 @@
     public function complexifyArrayType() {
       $this->assertEquals(array(
         self::$objThreeFields, self::$objThreeFields
-      ), RestDataCaster::complex(
+      ), $this->sut->complex(
         array((array)self::$objThreeFields, (array)self::$objThreeFields),
         Type::forName(self::$objThreeFields->getClassName().'[]')
       ));
@@ -279,7 +306,7 @@
      */
     #[@test]
     public function complexifyHashmap() {
-      $this->assertEquals(new Hashmap(self::$arrayThreeHash), RestDataCaster::complex(self::$arrayThreeHash, XPClass::forName('util.Hashmap')));
+      $this->assertEquals(new Hashmap(self::$arrayThreeHash), $this->sut->complex(self::$arrayThreeHash, XPClass::forName('util.Hashmap')));
     }
     
     /**
@@ -288,7 +315,7 @@
      */
     #[@test]
     public function complexifyStdclass() {
-      $casted= RestDataCaster::complex(self::$arrayThreeHash, new Type('php.stdClass'));
+      $casted= $this->sut->complex(self::$arrayThreeHash, new Type('php.stdClass'));
       
       $this->assertEquals((array)self::$stdClassThree, (array)$casted);
     }
@@ -299,7 +326,7 @@
      */
     #[@test]
     public function complexifyObjectWithPublicFields() {
-      $casted= RestDataCaster::complex(self::$arrayThreeHash, self::$objThreeFields->getClass());
+      $casted= $this->sut->complex(self::$arrayThreeHash, self::$objThreeFields->getClass());
       
       $this->assertEquals('1', $casted->one);
       $this->assertEquals('2', $casted->two);
@@ -312,7 +339,7 @@
      */
     #[@test]
     public function complexifyObjectWithPrivateFieldsButPublicMethods() {
-      $casted= RestDataCaster::complex(self::$arrayThreeHash, self::$objThreeMethods->getClass());
+      $casted= $this->sut->complex(self::$arrayThreeHash, self::$objThreeMethods->getClass());
       
       $this->assertEquals('1', $casted->getOne());
       $this->assertEquals('2', $casted->getTwo());
@@ -331,7 +358,7 @@
       $result= self::$arrayThreeHash;
       $result['three']= self::$arrayTwoHash;
       
-      $casted= RestDataCaster::complex($result, self::$objThreeTypedFields->getClass());
+      $casted= $this->sut->complex($result, self::$objThreeTypedFields->getClass());
       
       $this->assertInstanceOf(self::$objThreeTypedFields->getClassName(), $casted);
       $this->assertInstanceOf(self::$objTwoFields->getClassName(), $casted->three);
@@ -343,7 +370,7 @@
      */
     #[@test, @expect('lang.ClassCastException')]
     public function complexifyArrayListWithWrongData() {
-      RestDataCaster::complex(1, XPClass::forName('lang.types.ArrayList'));
+      $this->sut->complex(1, XPClass::forName('lang.types.ArrayList'));
     }
     
     /**
@@ -352,7 +379,7 @@
      */
     #[@test, @expect('lang.ClassCastException')]
     public function complexifyHashmapWithWrongData() {
-      RestDataCaster::complex(1, XPClass::forName('util.Hashmap'));
+      $this->sut->complex(1, XPClass::forName('util.Hashmap'));
     }
     
     /**
@@ -361,7 +388,7 @@
      */
     #[@test, @expect('lang.ClassCastException')]
     public function complexifyStdClassWithWrongData() {
-      RestDataCaster::complex(1, new Type('php.stdClass'));
+      $this->sut->complex(1, new Type('php.stdClass'));
     }
     
     /**
@@ -370,7 +397,7 @@
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function complexifyWithWrongType() {
-      RestDataCaster::complex(1, new Object());
+      $this->sut->complex(1, new Object());
     }
   }
 ?>
