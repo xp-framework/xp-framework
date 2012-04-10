@@ -8,6 +8,11 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
+  (friebe, mrosoiu)
+- Merged pull request #145 - Fix stacktrace scope when calling an undefined 
+  method using call_user_func_array()
+  (mrosoiu, friebe)
 - Merged pull request #141 - Fix when using CURL transports w/ SSL version
   (mihaighigea)
 - Fixed issue #137 - Extension methods don't work on lang.Throwable
