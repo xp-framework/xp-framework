@@ -69,7 +69,7 @@
         // session (where it has been registered to during this call)
         // rather than from the request data (GET / POST / COOKIE).
         if (($definitions[self::PARAM_OCCURRENCE] & self::OCCURRENCE_PASSBEHIND)
-            && (NULL!==$request->session)
+            && NULL !== $request->session
             && $request->session->hasValue($name)
         ) {
           $handler->setValue($name, $request->session->getValue($name));
