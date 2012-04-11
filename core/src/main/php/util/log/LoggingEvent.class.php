@@ -100,10 +100,10 @@
     /**
      * Gets context as string
      *
-     * @return string
+     * @return string NULL if no context is set
      */
     public function getContextAsString() {
-      return NULL === $this->context ? '' : $this->context->format();
+      return NULL === $this->context ? NULL : $this->context->format();
     }
 
     /**
@@ -113,13 +113,13 @@
      */
     public function toString() {
       return sprintf(
-        '%s(%s @ %s, PID %d) {%s - %s}',
+        '%s(%s @ %s, PID %d) {%s%s}',
         $this->getClassName(),
         LogLevel::nameOf($this->level),
         date('r', $this->timestamp),
         $this->processId,
-        xp::stringOf($this->arguments),
-        xp::stringOf($this->context)
+        NULL === $this->context ? '' : xp::stringOf($this->context).' - ',
+        xp::stringOf($this->arguments)
       );
     }
   }
