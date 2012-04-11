@@ -52,16 +52,16 @@
     }
 
     /**
-     * Tests LogContextNDC::peak()
+     * Tests LogContextNDC::peek()
      *
      */
     #[@test]
-    public function peak() {
-      $this->assertNull($this->context->peak());
+    public function peek() {
+      $this->assertNull($this->context->peek());
       $this->context->push('val1');
       $this->context->push('val2');
-      $this->assertEquals('val2', $this->context->peak());
-      $this->assertEquals('val2', $this->context->peak());
+      $this->assertEquals('val2', $this->context->peek());
+      $this->assertEquals('val2', $this->context->peek());
     }
 
     /**

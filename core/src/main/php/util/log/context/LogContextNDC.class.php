@@ -40,7 +40,7 @@
      *
      * @return string
      */
-    public function peak() {
+    public function peek() {
       if (0 === ($count= count($this->queue))) return NULL;
       return $this->queue[$count - 1];
     }
