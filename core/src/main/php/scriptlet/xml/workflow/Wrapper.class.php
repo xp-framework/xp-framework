@@ -52,9 +52,8 @@
      *
      * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request 
      * @param   scriptlet.xml.workflow.Handler handler
-     * @param   scriptlet.xml.workflow.Context context
      */
-    public function setup($request, $handler, $context) {
+    public function setup($request, $handler) {
       foreach ($this->paraminfo as $name => $definitions) {
         
         // Pre-fill form value if a default is defined and the request
@@ -69,8 +68,11 @@
         // values. "Pass-behind" means this value is retrieved from the 
         // session (where it has been registered to during this call)
         // rather than from the request data (GET / POST / COOKIE).
-        if ($definitions[self::PARAM_OCCURRENCE] & self::OCCURRENCE_PASSBEHIND) {
-          $handler->setValue($name, $request->getParam($name));
+        if (($definitions[self::PARAM_OCCURRENCE] & self::OCCURRENCE_PASSBEHIND)
+            && (NULL!==$request->session)
+            && $request->session->hasValue($name)
+        ) {
+          $handler->setValue($name, $request->session->getValue($name));
         }
       } 
     }
