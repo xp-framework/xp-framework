@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'util.log.LogContext'
+    'util.log.context.DefaultLogContext'
   );
 
   /**
@@ -21,7 +21,7 @@
      */
     #[@test]
     public function defaultFormatIsEmpty() {
-      $this->assertEquals('', create(new LogContext())->format());
+      $this->assertEquals('', create(new DefaultLogContext())->format());
     }
   }
 ?>

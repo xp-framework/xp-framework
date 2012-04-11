@@ -178,10 +178,10 @@
         }
 
         // Set context
-        $context= XPClass::forName(
-          $prop->readString($section, 'context', 'util.log.LogContext')
-        )->newInstance();
-        $this->category[$section]->setContext($context);
+        if ('' !== ($contextFQN= $prop->readString($section, 'context'))) {
+          $context= XPClass::forName($contextFQN)->newInstance();
+          $this->category[$section]->setContext($context);
+        }
       } while ($section= $prop->getNextSection());
     }
 

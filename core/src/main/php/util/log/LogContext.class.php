@@ -4,22 +4,23 @@
  * $Id$
  */
 
-  uses(
-    'io.File',
-    'peer.URL'
-  );
-
   /**
-   * Container for log context
+   * Base class for all log contexts
    *
    */
-  class LogContext extends Object {
-    protected
-      $hostname,
-      $runner,
-      $instance,
-      $resource,
-      $params;
+  abstract class LogContext extends Object {
+    protected $hostname = NULL;
+    protected $runner   = NULL;
+    protected $instance = NULL;
+    protected $resource = NULL;
+    protected $params   = NULL;
+
+    /**
+     * Formats a logging context
+     *
+     * @return string
+     */
+    abstract public function format();
 
     /**
      * Setter for hostname
@@ -114,15 +115,6 @@
      */
     public function getParams() {
       return $this->params;
-    }
-
-    /**
-     * Formats a logging context
-     *
-     * @return string
-     */
-    public function format() {
-      return '';
     }
 
     /**

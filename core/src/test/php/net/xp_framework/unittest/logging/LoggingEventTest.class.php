@@ -83,7 +83,7 @@
      */
     #[@test]
     public function getContextAsStringWithoutContext() {
-      $this->assertEquals('', $this->fixture->getContextAsString());
+      $this->assertNull($this->fixture->getContextAsString());
     }
 
     /**

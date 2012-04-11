@@ -9,7 +9,8 @@
     'util.log.Logger',
     'util.log.Appender',
     'util.log.LogAppender',
-    'util.log.layout.PatternLayout'
+    'util.log.layout.PatternLayout',
+    'util.log.context.DefaultLogContext'
   );
 
   /**
@@ -443,7 +444,7 @@
     #[@test]
     public function hasContext() {
       $this->assertFalse($this->cat->hasContext());
-      $this->cat->setContext(new LogContext());
+      $this->cat->setContext(new DefaultLogContext());
       $this->assertTrue($this->cat->hasContext());
     }
 
@@ -453,7 +454,7 @@
      */
     #[@test]
     public function getContext() {
-      $context= new LogContext();
+      $context= new DefaultLogContext();
       $this->cat->setContext($context);
       $this->assertEquals($context, $this->cat->getContext());
     }

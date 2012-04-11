@@ -36,7 +36,7 @@
         date('H:i:s', $event->getTimestamp()),
         $event->getProcessId(),
         strtolower(LogLevel::nameOf($event->getLevel())),
-        '' === ($contextString= $event->getContextAsString()) ? '' : $contextString.' ',
+        NULL === ($contextString= $event->getContextAsString()) ? '' : $contextString.' ',
         implode(' ', array_map(array($this, 'stringOf'), $event->getArguments()))
       );
     }
