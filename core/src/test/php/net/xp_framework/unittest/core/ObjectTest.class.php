@@ -139,5 +139,25 @@
         $o->toString()
       );
     }
+
+    /**
+     * Tests call to undefined method
+     *
+     * @see     xp://lang.Object#__call
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined method .+::undefMethod\(\) from scope net\.xp_framework\.unittest\.core\.ObjectTest/')]
+    public function callUndefinedMethod() {
+      create(new Object())->undefMethod();
+    }
+
+    /**
+     * Tests call to undefined method using call_user_func_array()
+     *
+     * @see     xp://lang.Object#__call
+     */
+    #[@test, @expect(class= 'lang.Error', withMessage= '/Call to undefined method .+::undefMethod\(\) from scope net\.xp_framework\.unittest\.core\.ObjectTest/')]
+    public function callUndefinedMethod_call_user_func_array() {
+      call_user_func_array(array(new Object(), 'undefMethod'), array());
+    }
   }
 ?>

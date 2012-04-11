@@ -8,6 +8,13 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
+  (friebe, mrosoiu)
+- Merged pull request #145 - Fix stacktrace scope when calling an undefined 
+  method using call_user_func_array()
+  (mrosoiu, friebe)
+- Merged pull request #141 - Fix when using CURL transports w/ SSL version
+  (mihaighigea)
 - Fixed issue #137 - Extension methods don't work on lang.Throwable
   (friebe)
 - Fix typo in lang.ClassLoader to correct method's argument list,
@@ -21,6 +28,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Merged pull request #143 - New peer.URL::getCanonicalURL() method
+  http://news.planet-xp.net/article/453/2012/04/06/
+  (mihaighigea)
 - Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
   finalizeSuccess()
   (cconstandachi, friebe)
