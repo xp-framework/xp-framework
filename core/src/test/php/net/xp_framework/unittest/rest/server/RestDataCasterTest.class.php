@@ -22,13 +22,16 @@
       $arrayThreeHash= NULL,
       $arrayTwoHash= NULL,
       $arrayNullField= NULL,
+      $arrayOfArrays= NULL,
       $stdClassThree= NULL,
       $objPrivateFields= NULL,
       $objThreeFields= NULL,
       $objThreeTypedFields= NULL,
       $objThreeMethods= NULL,
       $objTwoFields= NULL,
-      $objNullField= NULL;
+      $objNullField= NULL,
+      $objArrayField= NULL,
+      $objPrivateArrayField= NULL;
     
     /**
      * Before class setup
@@ -40,6 +43,11 @@
       self::$arrayThreeHash= array('one' => '1', 'two' => '2', 'three' => '3');
       self::$arrayTwoHash= array('one' => '1', 'two' => '2');
       self::$arrayNullField= array('nullField' => null);
+      self::$arrayOfArrays= array(
+        'one' => array('1'),
+        'two' => array('1', '2'),
+        'three' => array('1', '2', '3')
+      );
       
       self::$stdClassThree= new stdClass();
       self::$stdClassThree->one= '1';
@@ -81,6 +89,18 @@
       }');
       self::$objNullField= newinstance('lang.Object', array(), '{
         public $nullField= NULL;
+      }');
+      self::$objArrayField= newinstance('lang.Object', array(), '{
+        #[@type(\'lang.types.String[]\')]
+        public $arrayThreeHash= NULL;
+      }');
+
+      self::$objPrivateArrayField= newinstance('lang.Object', array(), '{
+        #[@type(\'lang.types.String[]\')]
+        protected $arrayThreeHash= NULL;
+
+        public function setArrayThreeHash($value) { $this->arrayThreeHash= $value; }
+        public function getArrayThreeHash() { return $this->arrayThreeHash; }
       }');
     }
     
@@ -301,6 +321,107 @@
     }
     
     /**
+     * Test complexify primitive hashmap as array
+     *
+     */
+    #[@test]
+    public function complexifyPrimitiveHashMapAsArray() {
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->complex(self::$arrayThreeHash, Type::forName('lang.types.String[]')));
+    }
+
+    /**
+     * Test complexify primitive hashmap as hashmap
+     *
+     */
+    #[@test]
+    public function complexifyPrimitiveHashMapAsHashMap() {
+      $this->assertEquals(self::$arrayThreeHash, $this->sut->complex(self::$arrayThreeHash, Type::forName('[:lang.types.String]')));
+    }  
+
+    /**
+     * Test complexify primitive hashmap of arrays
+     *
+     */
+    #[@test]
+    public function complexifyPrimitiveHashMapOfArrays() {
+      $this->assertEquals(self::$arrayOfArrays, $this->sut->complex(self::$arrayOfArrays, Type::forName('[:lang.types.String[]]')));
+    }
+
+    /**
+     * Test complexify hashmap as object within an array
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectWithinArray() {
+      $casted= $this->sut->complex(array('arrayThreeHash' => self::$arrayThreeHash), self::$objArrayField->getClass());
+
+      $this->assertEquals(self::$arrayThreeHash, $casted->arrayThreeHash);
+    }
+
+    /**
+     * Test complexify hashmap as object within an private array
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectWithinPrivateArray() {
+      $casted= $this->sut->complex(array('arrayThreeHash' => self::$arrayThreeHash), self::$objPrivateArrayField->getClass());
+
+      $this->assertEquals(self::$arrayThreeHash, $casted->getArrayThreeHash());
+    }
+
+    /**
+     * Test complexify hashmap as object with optional fields
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectOptionalFields() {
+      $this->sut->setIgnoreNullFields(TRUE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeFields->getClass());
+
+      $this->assertEquals('4', $casted->one);
+      $this->assertEquals(self::$arrayThreeHash['two'], $casted->two);
+      $this->assertEquals('5', $casted->three);
+    }
+
+    /**
+     * Test complexify hashmap as object with missing fields
+     *
+     */
+    #[@test, @expect('lang.ClassCastException')]
+    public function complexifyHashMapAsObjectMissingFields() {
+      $this->sut->setIgnoreNullFields(FALSE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeFields->getClass());
+    }
+
+    /**
+     * Test complexify hashmap as object with private attributes and optional fields
+     *
+     */
+    #[@test]
+    public function complexifyHashMapAsObjectOptionalPrivateFields() {
+      $this->sut->setIgnoreNullFields(TRUE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeMethods->getClass());
+
+      $this->assertEquals('4', $casted->getOne());
+      $this->assertEquals(self::$arrayThreeHash['two'], $casted->getTwo());
+      $this->assertEquals('5', $casted->getThree());
+    }
+
+    /**
+     * Test complexify hashmap as object with private attributes missing fields
+     *
+     */
+    #[@test, @expect('lang.ClassCastException')]
+    public function complexifyHashMapAsObjectMissingPrivateFields() {
+      $this->sut->setIgnoreNullFields(FALSE);
+
+      $casted= $this->sut->complex(array('one' => '4', /* two is missing */ 'three' => '5'), self::$objThreeMethods->getClass());
+    }
+
+    /**
      * Test complexify hashmap
      * 
      */
@@ -308,7 +429,7 @@
     public function complexifyHashmap() {
       $this->assertEquals(new Hashmap(self::$arrayThreeHash), $this->sut->complex(self::$arrayThreeHash, XPClass::forName('util.Hashmap')));
     }
-    
+
     /**
      * Test complexify stdclass
      * 
