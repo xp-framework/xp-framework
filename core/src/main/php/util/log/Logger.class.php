@@ -71,6 +71,12 @@
    * appenders="util.log.FileAppender"
    * appender.util.log.FileAppender.params="filename"
    * appender.util.log.FileAppender.param.filename="/var/log/xp/subscribe_%Y-%m-%d.log"
+   *
+   * [withContext]
+   * appenders="util.log.FileAppender"
+   * context="util.log.context.LogContextMDC"
+   * appender.util.log.FileAppender.params="filename"
+   * appender.util.log.FileAppender.param.filename="/var/log/xp/service_%Y-%m-%d.log"
    * </pre>
    *
    * @test     xp://net.xp_framework.unittest.logging.LoggerTest
