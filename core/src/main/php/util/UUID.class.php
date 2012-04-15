@@ -51,7 +51,7 @@
       if (NULL === $str) {
         return;
       } else if (11 !== sscanf(
-        $str, 
+        trim($str, '{}'), 
         self::FORMAT,
         $this->time_low,
         $this->time_mid,

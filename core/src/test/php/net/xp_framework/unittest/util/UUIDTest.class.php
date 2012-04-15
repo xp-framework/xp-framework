@@ -72,6 +72,15 @@
      *
      */
     #[@test]
+    public function fixtureEqualToBracedSelf() {
+      $this->assertEquals($this->fixture, new UUID('{00000000-0000-0000-c000-000000000046}'));
+    }
+
+    /**
+     * Test creating a UUID
+     *
+     */
+    #[@test]
     public function createdUUIDNotEqualToFixture() {
       $this->assertNotEquals($this->fixture, UUID::create());
     }
