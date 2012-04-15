@@ -40,6 +40,34 @@
       $clock_seq_low                = 0,
       $clock_seq_hi_and_reserved    = 0,
       $node                         = array();
+
+    /**
+     * Create a UUID from a string
+     *
+     * @param   string str
+     * @throws  lang.FormatException in case str is not a valid UUID string
+     */
+    public function __construct($str= NULL) {
+      if (NULL === $str) {
+        return;
+      } else if (11 !== sscanf(
+        $str, 
+        self::FORMAT,
+        $this->time_low,
+        $this->time_mid,
+        $this->time_hi_and_version,
+        $this->clock_seq_low,
+        $this->clock_seq_hi_and_reserved,
+        $this->node[0],
+        $this->node[1],
+        $this->node[2],
+        $this->node[3],
+        $this->node[4],
+        $this->node[5]
+      )) {
+        throw new FormatException($str.' is not a valid UUID string');
+      }
+    }
         
     /**
      * Create a new UUID
@@ -76,35 +104,6 @@
       return $uuid;
     }
     
-    /**
-     * Create a UUID from a string
-     *
-     * @param   string str
-     * @return  org.ietf.UUID
-     * @throws  lang.FormatException in case str is not a valid UUID string
-     */
-    public static function fromString($str) {
-      $uuid= new UUID();
-      if (11 != sscanf(
-        $str, 
-        self::FORMAT,
-        $uuid->time_low,
-        $uuid->time_mid,
-        $uuid->time_hi_and_version,
-        $uuid->clock_seq_low,
-        $uuid->clock_seq_hi_and_reserved,
-        $uuid->node[0],
-        $uuid->node[1],
-        $uuid->node[2],
-        $uuid->node[3],
-        $uuid->node[4],
-        $uuid->node[5]
-      )) {
-        throw new FormatException($str.' is not a valid UUID string');
-      }
-      return $uuid;
-    }
-
     /**
      * Returns a hashcode
      *

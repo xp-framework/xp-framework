@@ -19,7 +19,7 @@
      *
      */
     public function setUp() {
-      $this->fixture= UUID::fromString('00000000-0000-0000-C000-000000000046');
+      $this->fixture= new UUID('00000000-0000-0000-C000-000000000046');
     }
 
     /**
@@ -56,6 +56,15 @@
     #[@test]
     public function fixtureEqualToSelf() {
       $this->assertEquals($this->fixture, $this->fixture);
+    }
+
+    /**
+     * Test creating a UUID
+     *
+     */
+    #[@test]
+    public function fixtureEqualToLowerCaseSelf() {
+      $this->assertEquals($this->fixture, new UUID('00000000-0000-0000-c000-000000000046'));
     }
 
     /**
