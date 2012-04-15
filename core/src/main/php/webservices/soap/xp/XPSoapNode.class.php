@@ -6,10 +6,12 @@
 
   uses(
     'xml.Node',
+    'webservices.soap.Parameter',
     'webservices.soap.types.SOAPBase64Binary',
     'webservices.soap.types.SOAPHexBinary',
     'webservices.soap.types.SOAPDateTime',
     'webservices.soap.types.SOAPHashMap',
+    'webservices.soap.types.SOAPLong',
     'webservices.soap.types.SOAPDouble'
   );
 

@@ -4,45 +4,15 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'scriptlet.HttpScriptlet',
-    'peer.URL'
-  );
+  uses('net.xp_framework.unittest.scriptlet.ScriptletTestCase');
 
   /**
    * TestCase for the deprecated HttpScriptlet::process() method
    *
-   * @see      xp://scriptlet.HttpScriptlet
+   * @see   xp://scriptlet.HttpScriptlet
    */
-  class HttpScriptletProcessTest extends TestCase {
-  
-    static function __static() {
-      if (!function_exists('getallheaders')) {
-        function getallheaders() { return array(); }
-      }
-    }
-    
-    /**
-     * Set session path to current working directory
-     *
-     */
-    public function setUp() {
-      session_save_path(getcwd());
-    }
+  class HttpScriptletProcessTest extends ScriptletTestCase {
 
-    /**
-     * Destroy session and cleanup file
-     *
-     */
-    public function tearDown() {
-      if (session_id()) {
-        session_write_close();
-        unlink(session_save_path().DIRECTORY_SEPARATOR.'sess_'.session_id());
-        session_id(NULL);
-      }
-    }
-    
     /**
      * Creates a new request object. Uses the system environment and global
      * variables to put necessary parameters into place.

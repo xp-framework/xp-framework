@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.SQLFunction');
+
   /**
    * helps to build statments for different SQL servers
    *
@@ -125,7 +127,7 @@
     /**
      * Get a function format string
      *
-     * @param   SQLFunction func
+     * @param   rdbms.SQLFunction func
      * @return  string
      * @throws  lang.IllegalArgumentException
      */

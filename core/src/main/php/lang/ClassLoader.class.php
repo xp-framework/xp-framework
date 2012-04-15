@@ -86,9 +86,9 @@
     public static function registerPath($element, $before= FALSE) {
       $resolved= realpath($element);
       if (is_dir($resolved)) {
-        return self::registerLoader(FileSystemClassLoader::instanceFor($resolved, $before));
+        return self::registerLoader(FileSystemClassLoader::instanceFor($resolved), $before);
       } else if (is_file($resolved)) {
-        return self::registerLoader(ArchiveClassLoader::instanceFor($resolved, $before));
+        return self::registerLoader(ArchiveClassLoader::instanceFor($resolved), $before);
       }
       raise('lang.ElementNotFoundException', 'Element "'.$element.'" not found');
     }

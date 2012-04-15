@@ -6,6 +6,7 @@
 
   uses(
     'peer.http.HttpConnection',
+    'peer.http.HttpRequestFactory',
     'peer.http.UnexpectedResponseException'
   );
   

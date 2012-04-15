@@ -6,8 +6,57 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
+  (friebe, mrosoiu)
+- Merged pull request #145 - Fix stacktrace scope when calling an undefined 
+  method using call_user_func_array()
+  (mrosoiu, friebe)
+- Merged pull request #141 - Fix when using CURL transports w/ SSL version
+  (mihaighigea)
+- Fixed issue #137 - Extension methods don't work on lang.Throwable
+  (friebe)
+- Fix typo in lang.ClassLoader to correct method's argument list,
+  see pull request #134
+  (mrosoiu, kiesel)
+- Handle empty Json request gracefully.
+  (iigorr)
+- Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
+  params public property, use setters and getters instead
+  (cconstandachi)
+
+Features
+~~~~~~~~
+- Merged pull request #144 - Some improvements of the RestDataCaster
+  (Stormwind, friebe)
+- Merged pull request #143 - New peer.URL::getCanonicalURL() method
+  http://news.planet-xp.net/article/453/2012/04/06/
+  (mihaighigea)
+- Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
+  finalizeSuccess()
+  (cconstandachi, friebe)
+- Changed webservices.rest.server.RestDataCaster methods to be non-static.
+  (iigorr)
+- Added possibility to handle error in RestHttpScriptlet using instances
+  of RestErrorFormatter.
+  (iigorr)
+- Changed text.parser.generic.ParseException to contain the parse error
+  instances, not only their messages.
+  (iigorr, friebe)
+- Improved error handling in RestHttpScriptlet
+  (iigorr)
+
+
+Version 5.8.4, released 2012-02-26
+----------------------------------
+Git commit: fb9fb97c7d40f4e19c5546386f9666669e6c3622
+
 Heads up!
 ~~~~~~~~~
+- Removed deprecated img.graph package
+  http://news.planet-xp.net/article/446/2012/02/21/
+  (friebe)
 - Changed scriptlet request parameters and headers to be case-preserving
   See issue #120, http://news.planet-xp.net/article/443/2012/02/08/
   (friebe, kiesel)
@@ -38,6 +87,10 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed broken class-external extension method resolution in the XP compiler
+  (friebe)
+- Fixed bug #127: Exception cause swallowed
+  (friebe)
 - Fixed default timeout setting in XpProtocolHandler.
   (ledermueller)
 - Fixed timeout settings in BSDSocket to not overwrite the general timeout with

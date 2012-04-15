@@ -75,6 +75,8 @@
      * @return var[]
      */
     public function match($path) {
+      if ($path === $this->path) return TRUE;
+      
       list ($path, $query)= $this->splitParams($path);
       
       if (preg_match('#^'.$this->pattern.'$#', $path, $matches)) {

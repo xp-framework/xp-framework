@@ -4,7 +4,12 @@
  * $Id$
  */
 
-  uses('peer.ServerSocket');
+  uses(
+    'peer.ServerSocket', 
+    'peer.server.ServerProtocol', 
+    'peer.server.protocol.SocketAcceptHandler',
+    'peer.server.protocol.OutOfResourcesHandler'
+  );
 
   /**
    * Basic TCP/IP Server

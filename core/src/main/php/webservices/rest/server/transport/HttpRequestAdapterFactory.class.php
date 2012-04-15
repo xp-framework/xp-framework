@@ -4,6 +4,11 @@
  * $Id$
  */
 
+  uses(
+    'scriptlet.HttpScriptletException',
+    'peer.http.HttpConstants'
+  );
+  
   /**
    * Factory for HTTP request adapters
    *
@@ -27,8 +32,9 @@
         return XPClass::forName('webservices.rest.server.transport.EmptyHttpRequestAdapter');
       }
       
-      if (!isset($map[$request->getHeader('Content-Type')])) throw new IllegalArgumentException(
-        'The content type is not supported: '.$request->getHeader('Content-Type')
+      if (!isset($map[$request->getHeader('Content-Type')])) throw new HttpScriptletException(
+        'The content type is not supported: '.$request->getHeader('Content-Type'),
+        HttpConstants::STATUS_UNSUPPORTED_MEDIA_TYPE
       );
       
       return XPClass::forName($map[$request->getHeader('Content-Type')]);

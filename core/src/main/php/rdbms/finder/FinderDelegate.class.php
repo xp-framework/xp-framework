@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('rdbms.finder.Finder');
+
   /**
    * Abstract base class for finder delegates
    *
@@ -12,9 +14,9 @@
     protected $finder= NULL;
 
     /**
-     * Creates a new GenericFinder instance with a given Peer object.
+     * Creates a new instance with a given finder
      *
-     * @param   rdbms.Peer peer
+     * @param   rdbms.finder.Finder finder
      */
     public function __construct($finder) {
       $this->finder= $finder;
