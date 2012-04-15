@@ -21,7 +21,7 @@
      * Creates a new object reader
      *
      * @param   string str
-     * @param   [:string] keys
+     * @param   string[] keys
      * @return  text.csv.CsvMapReader
      */
     protected function newReader($str, array $keys= array()) {
