@@ -107,7 +107,7 @@
     }
 
     /**
-     * Test getBytes()
+     * Test creating a UUID from bytes
      *
      */
     #[@test]

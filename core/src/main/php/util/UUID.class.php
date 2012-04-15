@@ -24,10 +24,16 @@
    *   var_dump($uuid->toString());
    * </code>
    *
-   * Example [get a UUID from a string]:
+   * Creating UUIDs 
+   * --------------
+   * UUIDs can be created from various input sources. The following are
+   * all equivalent:
+   *
    * <code>
-   *   $uuid= UUID::fromString($uuidstr);
-   *   var_dump($uuid->toString());
+   *   new UUID('6ba7b811-9dad-11d1-80b4-00c04fd430c8');
+   *   new UUID('{6ba7b811-9dad-11d1-80b4-00c04fd430c8}');
+   *   new UUID('urn:uuid:6ba7b811-9dad-11d1-80b4-00c04fd430c8');
+   *   new UUID(new Bytes("k\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0O\xd40\xc8"));
    * </code>
    *
    * @see   http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
@@ -44,7 +50,7 @@
       $node                         = array();
 
     /**
-     * Create a UUID string
+     * Create a UUID
      *
      * @param   var arg
      * @throws  lang.FormatException in case str is not a valid UUID string
