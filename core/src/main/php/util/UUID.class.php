@@ -145,6 +145,7 @@
       return $uuid;
     }
 
+
     /**
      * Create a version 3 UUID based upon a name and a given namespace
      *
@@ -152,7 +153,7 @@
      * @param   string name
      * @return  util.UUID
      */
-    public static function nameUUID(self $namespace, $name, $charset= 'utf-8') {
+    public static function md5UUID(self $namespace, $name, $charset= 'utf-8') {
       $bytes= md5($namespace->getBytes().iconv('iso-8859-1', $charset, $name));
       $str= sprintf('%08s-%04s-%04x-%04x-%12s',
 
@@ -163,8 +164,40 @@
         substr($bytes, 8, 4),
 
         // 16 bits for "time_hi_and_version",
-        // four most significant bits holds version number 3
+        // four most significant bits holds version number 5
         hexdec(substr($bytes, 12, 4)) & 0x0fff | 0x3000,
+
+        // 16 bits, 8 bits for "clk_seq_hi_res",
+        // 8 bits for "clk_seq_low",
+        // two most significant bits holds zero and one for variant DCE1.1
+        hexdec(substr($bytes, 16, 4)) & 0x3fff | 0x8000,
+
+        // 48 bits for "node"
+        substr($bytes, 20, 12)
+      );
+      return new self($str);
+    }
+
+    /**
+     * Create a version 3 UUID based upon a name and a given namespace
+     *
+     * @param   util.UUID namespace
+     * @param   string name
+     * @return  util.UUID
+     */
+    public static function sha1UUID(self $namespace, $name, $charset= 'utf-8') {
+      $bytes= sha1($namespace->getBytes().iconv('iso-8859-1', $charset, $name));
+      $str= sprintf('%08s-%04s-%04x-%04x-%12s',
+
+        // 32 bits for "time_low"
+        substr($bytes, 0, 8),
+
+        // 16 bits for "time_mid"
+        substr($bytes, 8, 4),
+
+        // 16 bits for "time_hi_and_version",
+        // four most significant bits holds version number 5
+        hexdec(substr($bytes, 12, 4)) & 0x0fff | 0x5000,
 
         // 16 bits, 8 bits for "clk_seq_hi_res",
         // 8 bits for "clk_seq_low",

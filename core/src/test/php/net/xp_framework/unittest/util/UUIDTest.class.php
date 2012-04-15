@@ -256,8 +256,8 @@
      *
      */
     #[@test]
-    public function nameUUID() {
-      $this->assertEquals(3, UUID::nameUUID(UUID::$NS_DNS, 'example.com')->version());
+    public function md5UUID() {
+      $this->assertEquals(3, UUID::md5UUID(UUID::$NS_DNS, 'example.com')->version());
     }
 
     /**
@@ -265,10 +265,31 @@
      *
      */
     #[@test]
-    public function exampleDotComWithDnsNs() {
+    public function md5ExampleDotComWithDnsNs() {
       $this->assertEquals(
         '9073926b-929f-31c2-abc9-fad77ae3e8eb', 
-        UUID::nameUUID(UUID::$NS_DNS, 'example.com')->hashCode()
+        UUID::md5UUID(UUID::$NS_DNS, 'example.com')->hashCode()
+      );
+    }
+
+    /**
+     * Verify version 5 UUID creation
+     *
+     */
+    #[@test]
+    public function sha1UUID() {
+      $this->assertEquals(5, UUID::sha1UUID(UUID::$NS_DNS, 'example.com')->version());
+    }
+
+    /**
+     * Verify version 5 UUID creation
+     *
+     */
+    #[@test]
+    public function sha1ExampleDotComWithDnsNs() {
+      $this->assertEquals(
+        'cfbff0d1-9375-5685-968c-48ce8b15ae17', 
+        UUID::sha1UUID(UUID::$NS_DNS, 'example.com')->hashCode()
       );
     }
 
