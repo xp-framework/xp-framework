@@ -73,10 +73,8 @@
      * @throws  lang.FormatException in case str is not a valid UUID string
      */
     public function __construct($arg) {
-
-      // Detect input format
       if ($arg instanceof Bytes) {
-        $str= implode('-', unpack('H8a/H4b/H4c/H4d/H12e', $arg));
+        $this->populate(implode('-', unpack('H8a/H4b/H4c/H4d/H12e', $arg)));
       } else if (is_array($arg)) {
         $this->version= $arg[0];
         $this->time_low= $arg[1];
@@ -85,12 +83,19 @@
         $this->clock_seq_low= $arg[4] & 0xFF;
         $this->clock_seq_hi_and_reserved= (($arg[4] & 0x3F00) >> 8) | 0x80;
         $this->node= $arg[5];
-        return;
       } else if (0 === strncasecmp($arg, 'urn:uuid', 8)) {
-        $str= substr($arg, 9);
+        $this->populate(substr($arg, 9));
       } else {
-        $str= trim($arg, '{}');
+        $this->populate(trim($arg, '{}'));
       }
+    }
+
+    /**
+     * Populate instance members from a given string
+     *
+     * @param   string
+     */
+    private function populate($str) {
 
       // Parse. Use %04x%04x for "time_low" instead of "%08x" to overcome
       // sscanf()'s 32 bit limitation and do the multiplication manually.
@@ -278,6 +283,25 @@
      */
     public function equals($cmp) {
       return $cmp instanceof self && $cmp->hashCode() === $this->hashCode();
+    }
+
+    /**
+     * Serialization callback
+     *
+     * @return    string[]
+     */
+    public function __sleep() {
+      $this->value= $this->hashCode();    // Invent "value" member
+      return array('value');
+    }
+
+    /**
+     * Deserialization callback
+     *
+     */
+    public function __wakeup() {
+      $this->populate($this->value);
+      unset($this->value);
     }
   }
 ?>

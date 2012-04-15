@@ -301,5 +301,29 @@
     public function version() {
       $this->assertEquals(1, $this->fixture->version());
     }
+
+    /**
+     * Test serialization
+     *
+     */
+    #[@test]
+    public function serialization() {
+      $this->assertEquals(
+        'O:4:"UUID":1:{s:5:"value";s:36:"6ba7b811-9dad-11d1-80b4-00c04fd430c8";}', 
+        serialize($this->fixture)
+      );
+    }
+
+    /**
+     * Test deserialization
+     *
+     */
+    #[@test]
+    public function deserialization() {
+      $this->assertEquals(
+        $this->fixture,
+        unserialize('O:4:"UUID":1:{s:5:"value";s:36:"6ba7b811-9dad-11d1-80b4-00c04fd430c8";}')
+      );
+    }
   }
 ?>
