@@ -57,7 +57,7 @@
     public function getBytes() {
       $this->assertEquals(
         new Bytes("k\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0O\xd40\xc8"), 
-        new Bytes($this->fixture->getBytes())
+        $this->fixture->getBytes()
       );
     }
   
@@ -104,6 +104,15 @@
     #[@test]
     public function fixtureEqualToUrnNotation() {
       $this->assertEquals($this->fixture, new UUID('urn:uuid:6ba7b811-9dad-11d1-80b4-00c04fd430c8'));
+    }
+
+    /**
+     * Test getBytes()
+     *
+     */
+    #[@test]
+    public function fixtureEqualsToBytes() {
+      $this->assertEquals($this->fixture, new UUID(new Bytes("k\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0O\xd40\xc8")));
     }
 
     /**

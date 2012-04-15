@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('lang.types.Bytes');
+
   /**
    * Encapsulates UUIDs (Universally Unique IDentifiers), also known as
    * GUIDs (Globally Unique IDentifiers).
@@ -42,19 +44,21 @@
       $node                         = array();
 
     /**
-     * Create a UUID from a string
+     * Create a UUID string
      *
-     * @param   string str
+     * @param   var arg
      * @throws  lang.FormatException in case str is not a valid UUID string
      */
-    public function __construct($str= NULL) {
-      if (NULL === $str) return;
+    public function __construct($arg= NULL) {
+      if (NULL === $arg) return;
 
-      // Detect format
-      if (0 === strncasecmp($str, 'urn:uuid', 8)) {
-        $str= substr($str, 9);
+      // Detect input format
+      if ($arg instanceof Bytes) {
+        $str= implode('-', unpack('H8a/H4b/H4c/H4d/H12e', $arg));
+      } else if (0 === strncasecmp($arg, 'urn:uuid', 8)) {
+        $str= substr($arg, 9);
       } else {
-        $str= trim($str, '{}');
+        $str= trim($arg, '{}');
       }
 
       // Parse
@@ -137,10 +141,10 @@
     /**
      * Get bytes
      *
-     * @return  string
+     * @return  lang.types.Bytes
      */
     public function getBytes() {
-      return pack('H32', str_replace('-', '', $this->hashCode()));
+      return new Bytes(pack('H32', str_replace('-', '', $this->hashCode())));
     }
 
     /**
