@@ -28,25 +28,16 @@
      */
     #[@test]
     public function stringRepresentation() {
-      $this->assertEquals('6ba7b811-9dad-11d1-80b4-00c04fd430c8', $this->fixture->toString());
+      $this->assertEquals('{6ba7b811-9dad-11d1-80b4-00c04fd430c8}', $this->fixture->toString());
     }
 
     /**
-     * Test toUrn()
+     * Test getUrn()
      *
      */
     #[@test]
     public function urnRepresentation() {
-      $this->assertEquals('urn:uuid:6ba7b811-9dad-11d1-80b4-00c04fd430c8', $this->fixture->toUrn());
-    }
-
-    /**
-     * Test hashCode()
-     *
-     */
-    #[@test]
-    public function hashCodeMethod() {
-      $this->assertEquals('6ba7b811-9dad-11d1-80b4-00c04fd430c8', $this->fixture->hashCode());
+      $this->assertEquals('urn:uuid:6ba7b811-9dad-11d1-80b4-00c04fd430c8', $this->fixture->getUrn());
     }
 
     /**
@@ -59,6 +50,15 @@
         new Bytes("k\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0O\xd40\xc8"), 
         $this->fixture->getBytes()
       );
+    }
+
+    /**
+     * Test hashCode()
+     *
+     */
+    #[@test]
+    public function hashCodeMethod() {
+      $this->assertEquals('6ba7b811-9dad-11d1-80b4-00c04fd430c8', $this->fixture->hashCode());
     }
   
     /**

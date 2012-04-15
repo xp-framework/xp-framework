@@ -121,9 +121,40 @@
       
       return $uuid;
     }
+
+    /**
+     * Get bytes
+     *
+     * @return  lang.types.Bytes
+     */
+    public function getBytes() {
+      return new Bytes(pack('H32', str_replace('-', '', $this->hashCode())));
+    }
+
+    /**
+     * Creates a urn representation
+     *
+     * @return  string
+     */
+    public function getUrn() {
+      return 'urn:uuid:'.$this->hashCode();
+    }
     
     /**
+     * Creates a string representation. 
+     *
+     * Example: <tt>{f81d4fae-7dec-11d0-a765-00a0c91e6bf6}</tt>
+     *
+     * @return  string
+     */
+    public function toString() {
+      return '{'.$this->hashCode().'}';
+    }
+
+    /**
      * Returns a hashcode
+     *
+     * Example: <tt>f81d4fae-7dec-11d0-a765-00a0c91e6bf6</tt>
      *
      * @return  string
      */
@@ -143,15 +174,6 @@
         $this->node[5]
       );
     }
-    
-    /**
-     * Get bytes
-     *
-     * @return  lang.types.Bytes
-     */
-    public function getBytes() {
-      return new Bytes(pack('H32', str_replace('-', '', $this->hashCode())));
-    }
 
     /**
      * Returns whether another instance is equal to this
@@ -161,30 +183,6 @@
      */
     public function equals($cmp) {
       return $cmp instanceof self && $cmp->hashCode() === $this->hashCode();
-    }
-
-    /**
-     * Creates a string representation. 
-     *
-     * Examples: 
-     * <pre>
-     *   f81d4fae-7dec-11d0-a765-00a0c91e6bf6
-     *   c71a4a80-4a80-171a-8fb7-000401000800
-     * </pre>
-     *
-     * @return  string
-     */
-    public function toString() {
-      return $this->hashCode();
-    }
-
-    /**
-     * Creates a urn representation
-     *
-     * @return  string
-     */
-    public function toUrn() {
-      return 'urn:uuid:'.$this->hashCode();
     }
   }
 ?>
