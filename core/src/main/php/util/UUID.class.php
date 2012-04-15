@@ -50,7 +50,11 @@
     public function __construct($str= NULL) {
       if (NULL === $str) {
         return;
-      } else if (11 !== sscanf(
+      }
+      if (0 === strncasecmp($str, 'urn:uuid', 8)) {
+        $str= substr($str, 9);
+      }
+      if (11 !== sscanf(
         trim($str, '{}'), 
         self::FORMAT,
         $this->time_low,
@@ -149,6 +153,15 @@
      */
     public function toString() {
       return $this->hashCode();
+    }
+
+    /**
+     * Creates a urn representation
+     *
+     * @return  string
+     */
+    public function toUrn() {
+      return 'urn:uuid:'.$this->hashCode();
     }
   }
 ?>

@@ -32,6 +32,15 @@
     }
 
     /**
+     * Test toUrn()
+     *
+     */
+    #[@test]
+    public function urnRepresentation() {
+      $this->assertEquals('urn:uuid:00000000-0000-0000-c000-000000000046', $this->fixture->toUrn());
+    }
+
+    /**
      * Test hashCode()
      *
      */
@@ -74,6 +83,15 @@
     #[@test]
     public function fixtureEqualToBracedSelf() {
       $this->assertEquals($this->fixture, new UUID('{00000000-0000-0000-c000-000000000046}'));
+    }
+
+    /**
+     * Test creating a UUID
+     *
+     */
+    #[@test]
+    public function fixtureEqualToUrnNotation() {
+      $this->assertEquals($this->fixture, new UUID('urn:uuid:00000000-0000-0000-c000-000000000046'));
     }
 
     /**
