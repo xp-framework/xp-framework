@@ -105,19 +105,13 @@
       }
       return $uuid;
     }
-    
+
     /**
-     * Creates a string representation. 
-     *
-     * Examples: 
-     * <pre>
-     *   f81d4fae-7dec-11d0-a765-00a0c91e6bf6
-     *   c71a4a80-4a80-171a-8fb7-000401000800
-     * </pre>
+     * Returns a hashcode
      *
      * @return  string
      */
-    public function toString() {
+    public function hashCode() {
       return sprintf(
         self::FORMAT,
         $this->time_low, 
@@ -132,6 +126,31 @@
         $this->node[4], 
         $this->node[5]
       );
+    }
+
+    /**
+     * Returns whether another instance is equal to this
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->hashCode() === $this->hashCode();
+    }
+
+    /**
+     * Creates a string representation. 
+     *
+     * Examples: 
+     * <pre>
+     *   f81d4fae-7dec-11d0-a765-00a0c91e6bf6
+     *   c71a4a80-4a80-171a-8fb7-000401000800
+     * </pre>
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->hashCode();
     }
   }
 ?>

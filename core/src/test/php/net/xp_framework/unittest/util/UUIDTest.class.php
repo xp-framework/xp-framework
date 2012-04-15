@@ -45,6 +45,15 @@
      *
      */
     #[@test]
+    public function fixtureEqualToSelf() {
+      $this->assertEquals($this->fixture, $this->fixture);
+    }
+
+    /**
+     * Test creating a UUID
+     *
+     */
+    #[@test]
     public function createdUUIDNotEqualToFixture() {
       $this->assertNotEquals($this->fixture, UUID::create());
     }
