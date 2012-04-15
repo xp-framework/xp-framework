@@ -30,6 +30,15 @@
     public function stringRepresentation() {
       $this->assertEquals('00000000-0000-0000-c000-000000000046', $this->fixture->toString());
     }
+
+    /**
+     * Test hashCode()
+     *
+     */
+    #[@test]
+    public function hashCodeMethod() {
+      $this->assertEquals('00000000-0000-0000-c000-000000000046', $this->fixture->hashCode());
+    }
   
     /**
      * Test node
