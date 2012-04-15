@@ -21,6 +21,15 @@
     public function setUp() {
       $this->fixture= UUID::fromString('00000000-0000-0000-C000-000000000046');
     }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentation() {
+      $this->assertEquals('00000000-0000-0000-c000-000000000046', $this->fixture->toString());
+    }
   
     /**
      * Test node
