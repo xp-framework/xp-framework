@@ -73,11 +73,19 @@
      * @throws  lang.FormatException in case str is not a valid UUID string
      */
     public function __construct($arg) {
-      if (NULL === $arg) return;
 
       // Detect input format
       if ($arg instanceof Bytes) {
         $str= implode('-', unpack('H8a/H4b/H4c/H4d/H12e', $arg));
+      } else if (is_array($arg)) {
+        $this->version= $arg[0];
+        $this->time_low= $arg[1];
+        $this->time_mid= $arg[2];
+        $this->time_hi_and_version= $arg[3] | ($arg[0] << 12);
+        $this->clock_seq_low= $arg[4] & 0xFF;
+        $this->clock_seq_hi_and_reserved= (($arg[4] & 0x3F00) >> 8) | 0x80;
+        $this->node= $arg[5];
+        return;
       } else if (0 === strncasecmp($arg, 'urn:uuid', 8)) {
         $str= substr($arg, 9);
       } else {
@@ -121,30 +129,24 @@
       list($usec, $sec) = explode(' ', microtime());
       $t= ($sec * 10000000) + ($usec * 10) + 122192928000000000;
       $clock_seq= mt_rand();
-
-      $uuid= new self(NULL);
-      $uuid->version= 1;
-      $uuid->time_low= ($t & 0xFFFFFFFF);
-      $uuid->time_mid= (($t >> 32) & 0xFFFF);
-      $uuid->time_hi_and_version= (($t >> 48) & 0x0FFF);
-      $uuid->time_hi_and_version |= (1 << 12);
-      $uuid->clock_seq_low= $clock_seq & 0xFF;
-      $uuid->clock_seq_hi_and_reserved= ($clock_seq & 0x3F00) >> 8;
-      $uuid->clock_seq_hi_and_reserved |= 0x80;
-
       $h= md5(php_uname());
-      $uuid->node= array(
-        hexdec(substr($h, 0x0, 2)),
-        hexdec(substr($h, 0x2, 2)),
-        hexdec(substr($h, 0x4, 2)),
-        hexdec(substr($h, 0x6, 2)),
-        hexdec(substr($h, 0x8, 2)),
-        hexdec(substr($h, 0xB, 2))
-      );
 
-      return $uuid;
+      return new self(array(
+        1,
+        ($t & 0xFFFFFFFF),
+        (($t >> 32) & 0xFFFF),
+        (($t >> 48) & 0x0FFF),
+        $clock_seq,
+        array(
+          hexdec(substr($h, 0x0, 2)),
+          hexdec(substr($h, 0x2, 2)),
+          hexdec(substr($h, 0x4, 2)),
+          hexdec(substr($h, 0x6, 2)),
+          hexdec(substr($h, 0x8, 2)),
+          hexdec(substr($h, 0xB, 2))
+        )
+      ));
     }
-
 
     /**
      * Create a version 3 UUID based upon a name and a given namespace
@@ -155,19 +157,15 @@
      */
     public static function md5UUID(self $namespace, $name, $charset= 'utf-8') {
       $bytes= md5($namespace->getBytes().iconv('iso-8859-1', $charset, $name));
-
-      $uuid= new self(NULL);
-      $uuid->version= 3;
-      $uuid->time_low= hexdec(substr($bytes, 0, 8));
-      $uuid->time_mid= hexdec(substr($bytes, 8, 4));
-      $uuid->time_hi_and_version= hexdec(substr($bytes, 12, 4)) & 0x0fff | 0x3000;
-      $clock_seq= hexdec(substr($bytes, 16, 4)) & 0x3fff | 0x8000;
-      $uuid->clock_seq_low= $clock_seq & 0xFF;
-      $uuid->clock_seq_hi_and_reserved= ($clock_seq & 0x3F00) >> 8;
-      $uuid->clock_seq_hi_and_reserved |= 0x80;
-      $uuid->node= array_map('hexdec', str_split(substr($bytes, 20, 12), 2));
-
-      return $uuid;
+      
+      return new self(array(
+        3,
+        hexdec(substr($bytes, 0, 8)),
+        hexdec(substr($bytes, 8, 4)),
+        hexdec(substr($bytes, 12, 4)) & 0x0fff,
+        hexdec(substr($bytes, 16, 4)) & 0x3fff | 0x8000,
+        array_map('hexdec', str_split(substr($bytes, 20, 12), 2))
+      ));
     }
 
     /**
@@ -180,18 +178,14 @@
     public static function sha1UUID(self $namespace, $name, $charset= 'utf-8') {
       $bytes= sha1($namespace->getBytes().iconv('iso-8859-1', $charset, $name));
 
-      $uuid= new self(NULL);
-      $uuid->version= 5;
-      $uuid->time_low= hexdec(substr($bytes, 0, 8));
-      $uuid->time_mid= hexdec(substr($bytes, 8, 4));
-      $uuid->time_hi_and_version= hexdec(substr($bytes, 12, 4)) & 0x0fff | 0x5000;
-      $clock_seq= hexdec(substr($bytes, 16, 4)) & 0x3fff | 0x8000;
-      $uuid->clock_seq_low= $clock_seq & 0xFF;
-      $uuid->clock_seq_hi_and_reserved= ($clock_seq & 0x3F00) >> 8;
-      $uuid->clock_seq_hi_and_reserved |= 0x80;
-      $uuid->node= array_map('hexdec', str_split(substr($bytes, 20, 12), 2));
-
-      return $uuid;
+      return new self(array(
+        5,
+        hexdec(substr($bytes, 0, 8)),
+        hexdec(substr($bytes, 8, 4)),
+        hexdec(substr($bytes, 12, 4)) & 0x0fff,
+        hexdec(substr($bytes, 16, 4)) & 0x3fff | 0x8000,
+        array_map('hexdec', str_split(substr($bytes, 20, 12), 2))
+      ));
     }
 
     /**
@@ -200,21 +194,17 @@
      * @return  util.UUID
      */
     public static function randomUUID() {
-      $uuid= new self(NULL);
-      $uuid->version= 4;
-      $uuid->time_low= mt_rand(0, 0xffff) * 0x10000 + mt_rand(0, 0xffff);
-      $uuid->time_mid= mt_rand(0, 0xffff);
-      $uuid->time_hi_and_version= mt_rand(0, 0x0fff) | 0x4000;
-      $clock_seq= mt_rand(0, 0x3fff) | 0x8000;
-      $uuid->clock_seq_low= $clock_seq & 0xFF;
-      $uuid->clock_seq_hi_and_reserved= ($clock_seq & 0x3F00) >> 8;
-      $uuid->clock_seq_hi_and_reserved |= 0x80;
-      $uuid->node= sscanf(
-        sprintf('%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)),
-        '%02x%02x%02x%02x%02x%02x'
-      );
-
-      return $uuid;
+      return new self(array(
+        4,
+        mt_rand(0, 0xffff) * 0x10000 + mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff),
+        mt_rand(0, 0x3fff) | 0x8000,
+        sscanf(
+          sprintf('%04x%04x%04x', mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)),
+          '%02x%02x%02x%02x%02x%02x'
+        )
+      ));
     }
 
     /**
