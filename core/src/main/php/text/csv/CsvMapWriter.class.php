@@ -17,7 +17,7 @@
     /**
      * Set header line
      *
-     * @return  string[]
+     * @param   string[] headers
      * @throws  lang.IllegalStateException if writing has already started
      */
     public function setHeaders($headers) {
