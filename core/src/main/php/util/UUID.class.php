@@ -54,7 +54,7 @@
       $t= ($sec * 10000000) + ($usec * 10) + 122192928000000000;
       $clock_seq= mt_rand();
       
-      $uuid= new UUID();
+      $uuid= new self();
       $uuid->time_low= ($t & 0xFFFFFFFF);
       $uuid->time_mid= (($t >> 32) & 0xFFFF);
       $uuid->time_hi_and_version= (($t >> 48) & 0x0FFF);
@@ -85,7 +85,6 @@
      */
     public static function fromString($str) {
       $uuid= new UUID();
-      $a= array();
       if (11 != sscanf(
         $str, 
         self::FORMAT,
