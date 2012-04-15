@@ -4,8 +4,6 @@
  * $Id$
  */
 
-  define('UUID_FMTSTRING',  '%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x');
-
   /**
    * Encapsulates UUIDs (Universally Unique IDentifiers), also known as
    * GUIDs (Globally Unique IDentifiers).
@@ -26,19 +24,15 @@
    *
    * Example [get a UUID from a string]:
    * <code>
-   *   try {
-   *     $uuid= UUID::fromString($uuidstr);
-   *   } catch (FormatException $e) {
-   *     $e->printStackTrace();
-   *     exit();
-   *   }
+   *   $uuid= UUID::fromString($uuidstr);
    *   var_dump($uuid->toString());
    * </code>
    *
-   * @purpose  Generate UUIDs
-   * @see      http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
+   * @see   http://www.ietf.org/internet-drafts/draft-mealling-uuid-urn-00.txt
    */
   class UUID extends Object {
+    const FORMAT = '%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x';
+
     public
       $time_low                     = 0,
       $time_mid                     = 0,
@@ -94,7 +88,7 @@
       $a= array();
       if (11 != sscanf(
         $str, 
-        UUID_FMTSTRING,
+        self::FORMAT,
         $uuid->time_low,
         $uuid->time_mid,
         $uuid->time_hi_and_version,
@@ -125,7 +119,7 @@
      */
     public function toString() {
       return sprintf(
-        UUID_FMTSTRING,
+        self::FORMAT,
         $this->time_low, 
         $this->time_mid, 
         $this->time_hi_and_version,
