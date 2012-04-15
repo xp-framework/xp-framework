@@ -48,14 +48,18 @@
      * @throws  lang.FormatException in case str is not a valid UUID string
      */
     public function __construct($str= NULL) {
-      if (NULL === $str) {
-        return;
-      }
+      if (NULL === $str) return;
+
+      // Detect format
       if (0 === strncasecmp($str, 'urn:uuid', 8)) {
         $str= substr($str, 9);
+      } else {
+        $str= trim($str, '{}');
       }
+
+      // Parse
       if (11 !== sscanf(
-        trim($str, '{}'), 
+        $str, 
         self::FORMAT,
         $this->time_low,
         $this->time_mid,

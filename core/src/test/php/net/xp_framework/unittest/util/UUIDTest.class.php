@@ -95,6 +95,88 @@
     }
 
     /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function emptyInput() {
+      new UUID('');
+    }
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malFormedMissingOctets() {
+      new UUID('00000000-0000-0000-c000');
+    }
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malFormedNonHexOctets() {
+      new UUID('00000000-0000-0000-c000-XXXXXXXXXXXX');
+    }
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function emptyBracedNotation() {
+      new UUID('{}');
+    }
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malFormedBracedNotationMissingOctets() {
+      new UUID('{00000000-0000-0000-c000}');
+    }
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malFormedBracedNotationNonHexOctets() {
+      new UUID('{00000000-0000-0000-c000-XXXXXXXXXXXX}');
+    }
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function emptyUrnNotation() {
+      new UUID('urn:uuid:');
+    }
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malFormedUrnNotationMissingOctets() {
+      new UUID('urn:uuid:00000000-0000-0000-c000');
+    }
+
+
+    /**
+     * Test malformed UUID
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function malFormedUrnNotationNonHexOctets() {
+      new UUID('urn:uuid:00000000-0000-0000-c000-XXXXXXXXXXXX');
+    }
+
+    /**
      * Test creating a UUID
      *
      */
