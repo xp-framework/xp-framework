@@ -106,20 +106,21 @@
      * @return var[]
      */
     public function complex($data, Type $type) {
-      $typeName= $type instanceof ArrayType ? xp::typeOf($type) : $type->getName();
+      $typeName= ($type instanceof ArrayType || $type instanceof MapType) ? xp::typeOf($type) : $type->getName();
 
       switch ($typeName) {
         case 'NULL':
           return NULL;
 
         case 'lang.ArrayType':
+        case 'lang.MapType':
           if (!is_array($data)) {
             throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
           }
 
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= $this->complex($value, XPClass::forName($type->componentType()->getName()));
+            $result[$key]= $this->complex($value, Type::forName($type->componentType()->getName()));
           }
           return $result;
         
@@ -174,22 +175,28 @@
             foreach ($type->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
                 if (!isset($data[$field->getName()])) {
+                  if($this->ignoreNullFields) {
+                    continue;
+                  }
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
                 $field->set($result, $this->complex(
                   $data[$field->getName()],
-                  XPClass::forName('var' === $field->getTypeName() ? 'lang.types.String' : $field->getTypeName())
+                  Type::forName($field->getType() ? $field->getType() : 'lang.types.String')
                 ));
                 
               } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
                 if (!isset($data[$field->getName()])) {
+                  if($this->ignoreNullFields) {
+                    continue;
+                  }
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
                 $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array($this->complex(
                   $data[$field->getName()],
-                  XPClass::forName('var' === $field->getTypeName() ? 'lang.types.String' : $field->getTypeName())
+                  Type::forName($field->getType() ? $field->getType() : 'lang.types.String')
                 )));
               }
             }
