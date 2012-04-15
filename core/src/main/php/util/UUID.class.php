@@ -43,9 +43,9 @@
     const FORMAT = '%04x%04x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x';
 
     public static
-      $NS_DNS                       = NULL;
-      $NS_URL                       = NULL;
-      $NS_OID                       = NULL;
+      $NS_DNS                       = NULL,
+      $NS_URL                       = NULL,
+      $NS_OID                       = NULL,
       $NS_X500                      = NULL;
 
     public
