@@ -133,6 +133,15 @@
         $this->node[5]
       );
     }
+    
+    /**
+     * Get bytes
+     *
+     * @return  string
+     */
+    public function getBytes() {
+      return pack('H32', str_replace('-', '', $this->hashCode()));
+    }
 
     /**
      * Returns whether another instance is equal to this
