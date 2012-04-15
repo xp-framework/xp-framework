@@ -198,21 +198,87 @@
     }
 
     /**
-     * Test creating a UUID
+     * Verify version 1 UUID creation
      *
      */
     #[@test]
-    public function createdUUIDNotEqualToFixture() {
-      $this->assertNotEquals($this->fixture, UUID::create());
+    public function timeUUID() {
+      $this->assertEquals(1, UUID::timeUUID()->version());
     }
 
     /**
-     * Test creating a UUID
+     * Verify version 1 UUID creation
      *
      */
     #[@test]
-    public function twoCreatedUUIDsNotEqual() {
-      $this->assertNotEquals(UUID::create(), UUID::create());
+    public function timeUUIDNotEqualToFixture() {
+      $this->assertNotEquals($this->fixture, UUID::timeUUID());
+    }
+
+    /**
+     * Verify version 1 UUID creation
+     *
+     */
+    #[@test]
+    public function twoTimeUUIDsNotEqual() {
+      $this->assertNotEquals(UUID::timeUUID(), UUID::timeUUID());
+    }
+
+    /**
+     * Verify version 4 UUID creation
+     *
+     */
+    #[@test]
+    public function randomUUID() {
+      $this->assertEquals(4, UUID::randomUUID()->version());
+    }
+
+    /**
+     * Verify version 4 UUID creation
+     *
+     */
+    #[@test]
+    public function randomUUIDNotEqualToFixture() {
+      $this->assertNotEquals($this->fixture, UUID::randomUUID());
+    }
+
+    /**
+     * Verify version 4 UUID creation
+     *
+     */
+    #[@test]
+    public function twoRandomUUIDsNotEqual() {
+      $this->assertNotEquals(UUID::randomUUID(), UUID::randomUUID());
+    }
+
+    /**
+     * Verify version 3 UUID creation
+     *
+     */
+    #[@test]
+    public function nameUUID() {
+      $this->assertEquals(3, UUID::nameUUID(UUID::$NS_DNS, 'example.com')->version());
+    }
+
+    /**
+     * Verify version 3 UUID creation
+     *
+     */
+    #[@test]
+    public function exampleDotComWithDnsNs() {
+      $this->assertEquals(
+        '9073926b-929f-31c2-abc9-fad77ae3e8eb', 
+        UUID::nameUUID(UUID::$NS_DNS, 'example.com')->hashCode()
+      );
+    }
+
+    /**
+     * Test version()
+     *
+     */
+    #[@test]
+    public function version() {
+      $this->assertEquals(1, $this->fixture->version());
     }
   }
 ?>
