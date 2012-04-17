@@ -62,7 +62,7 @@
       
       if (FALSE !== ($p= strpos($path, '?'))) {
         parse_str(substr($path, $p+1), $query);
-        $path= substr($path, 0, $p-1);
+        $path= substr($path, 0, $p);
       }
       
       return array($path, $query);
