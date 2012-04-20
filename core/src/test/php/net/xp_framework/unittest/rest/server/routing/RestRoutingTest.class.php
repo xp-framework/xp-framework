@@ -90,7 +90,10 @@
      */
     #[@test]
     public function getRoutings() {
-      $this->routing->addRoute('GET', '/path/to/something', new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)), new RestRoutingArgs(array('id'), array('some.Class')));
+      $this->routing->addRoute('GET', '/path/to/something', 
+              new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)), 
+              new RestRoutingArgs(array('id'), array('some.Class'))
+      );
       
       $routing= current($this->routing->getRoutings('GET', '/path/to/something'));
       $this->assertInstanceOf('webservices.rest.server.routing.RestRoutingItem', $routing);

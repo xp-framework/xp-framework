@@ -128,6 +128,10 @@
             $routing->getArgs()->getArgumentType($name)
           );
         } catch (XPException $e) {
+          if ($routing->getArgs()->isArgumentOptional($name)) {
+            $args[$i]= $routing->getArgs()->getArgumentDefaultValue($name);
+            continue;
+          }
           throw new ClassCastException('Can not convert object field '.$name.': '.$e->getMessage(), $e);
         }
       }

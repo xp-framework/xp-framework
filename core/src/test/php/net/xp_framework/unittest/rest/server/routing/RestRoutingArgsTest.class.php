@@ -17,6 +17,14 @@
     protected $args= NULL;
     
     /**
+     * Method without functionality to be used by tests.
+     *
+     * @param   string arg1
+     * @param   string arg2 default NULL
+     */
+    private function demoMethod($arg1, $arg2= 'default') { }
+    
+    /**
      * Set up
      * 
      */
@@ -51,7 +59,7 @@
      */
     #[@test]
     public function addArgument() {
-      $this->args->addArgument('another');
+      $this->args->addArgument('another', Type::$VAR);
       
       $this->assertEquals(array('id', 'title', 'name', 'another'), $this->args->getArguments());
     }
@@ -198,6 +206,27 @@
     #[@test]
     public function isInjectedWrongIndex() {
       $this->assertFalse($this->args->isInjected(5));
+    }
+    
+    /**
+     * Test optional params
+     * 
+     */
+    #[@test]
+    public function optionalParams() {
+      $restArgs= new RestRoutingArgs($this->getClass()->getMethod('demoMethod')->getParameters());
+      $this->assertFalse($restArgs->isArgumentOptional('arg1'));
+      $this->assertTrue($restArgs->isArgumentOptional('arg2'));
+    }
+    
+    /**
+     * Test params default value
+     * 
+     */
+    #[@test]
+    public function paramsDefaultValue() {
+      $restArgs= new RestRoutingArgs($this->getClass()->getMethod('demoMethod')->getParameters());
+      $this->assertEquals('default', $restArgs->getArgumentDefaultValue('arg2'));
     }
   }
 ?>
