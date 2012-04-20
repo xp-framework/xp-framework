@@ -60,5 +60,14 @@
     public function getParam($name) {
       return $this->request->getParam($name);
     }
+
+    /**
+     * Retrieve query string
+     * 
+     * @return string
+     */
+    public function getQueryString() {
+      return $this->request->getQueryString();
+    }
   }
 ?>
