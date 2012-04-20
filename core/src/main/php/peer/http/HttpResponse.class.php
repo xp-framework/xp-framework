@@ -181,6 +181,19 @@
     public function getInputStream() {
       return new HttpInputStream($this);
     }
+
+    /**
+     * Returns HTTP response as read from server
+     *
+     * @return  string
+     */
+    public function getResponseString() {
+      $s= 'HTTP/'.$this->version.' '.$this->statuscode.' '.$this->message."\n";
+      foreach ($this->headers as $k => $v) {
+        $s.= $k.': '.implode(', ', $v)."\n";
+      }
+      return $s;
+    }
     
     /**
      * Return nice string representation

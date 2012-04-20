@@ -329,5 +329,18 @@
         $response->header('X-Example')
       );
     }
+
+    /**
+     * Test getResponseString()
+     *
+     */
+    #[@test]
+    public function responseString() {
+      $response= $this->newResponse(array('HTTP/1.1 200 OK', 'Content-Type: application/json', 'Content-Length: 6100'));
+      $this->assertEquals(
+        "HTTP/1.1 200 OK\nContent-Type: application/json\nContent-Length: 6100\n",
+        $response->getResponseString()
+      );
+    }
   }
 ?>
