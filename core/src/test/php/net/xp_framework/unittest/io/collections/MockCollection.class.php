@@ -4,7 +4,11 @@
  * $Id$
  */
 
-  uses('net.xp_framework.unittest.io.collections.MockElement', 'io.collections.IOCollection');
+  uses(
+    'net.xp_framework.unittest.io.collections.MockElement', 
+    'io.collections.IOCollection', 
+    'io.collections.RandomCollectionAccess'
+  );
 
   /**
    * IOCollection implementation
@@ -25,7 +29,7 @@
      * @param   string uri
      */
     public function __construct($uri) {
-      $this->uri= $uri;
+      $this->uri= rtrim($uri, '/').'/';
     }
 
     /**
@@ -167,6 +171,148 @@
      */
     public function getOutputStream() {
       throw new IOException('Cannot write to a directory');
+    }
+
+    /**
+     * Creates a qualified name
+     *
+     * @param   string
+     * @return  string
+     */
+    protected function qualifiedName($name) {
+      return $this->uri.basename($name);
+    }
+
+    /**
+     * Creates a new element in this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOElement
+     */
+    public function newElement($name) {
+      $qualified= $this->qualifiedName($name);
+      foreach ($this->_elements as $element) {
+        if ($element instanceof IOElement && $qualified === $element->getURI()) {
+          throw new IllegalArgumentException('Element already exists');
+        }
+      }
+      $created= new MockElement($qualified);
+      $created->setOrigin($this);
+      $this->_elements[]= $created;
+      return $created;
+    }
+
+    /**
+     * Creates a new collection inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOCollection
+     */
+    public function newCollection($name) {
+      $qualified= rtrim($this->qualifiedName($name), '/').'/';
+      foreach ($this->_elements as $element) {
+        if ($element instanceof IOCollection && $qualified === $element->getURI()) {
+          throw new IllegalArgumentException('Collection already exists');
+        }
+      }
+
+      return $this->addElement(new MockCollection($qualified));
+    }
+
+    /**
+     * Finds an element inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOElement
+     */
+    public function findElement($name) {
+      $qualified= $this->qualifiedName($name);
+      foreach ($this->_elements as $element) {
+        if ($element instanceof IOElement && $qualified === $element->getURI()) return $element;
+      }
+      return NULL;
+    }
+    
+    /**
+     * Finds a collection inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOCollection
+     */
+    public function findCollection($name) {
+      $qualified= rtrim($this->qualifiedName($name), '/').'/';
+      foreach ($this->_elements as $element) {
+        if ($element instanceof IOCollection && $qualified === $element->getURI()) return $element;
+      }
+      return NULL;
+    }
+
+    /**
+     * Gets an element inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOElement
+     * @throws  util.NoSuchElementException
+     */
+    public function getElement($name) {
+      if (!($found= $this->findElement($name))) {
+        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
+      }
+      return $found;
+    }
+    
+    /**
+     * Get a collection inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOCollection
+     * @throws  util.NoSuchElementException
+     */
+    public function getCollection($name) {
+      if (!($found= $this->findCollection($name))) {
+        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
+      }
+      return $found;
+    }
+
+    /**
+     * Removes an element from this collection
+     *
+     * @param   string name
+     */
+    public function removeElement($name) {
+      $qualified= $this->qualifiedName($name);
+      foreach ($this->_elements as $i => $element) {
+        if ($element instanceof IOElement && $qualified === $element->getURI()) {
+          unset($this->_elements[$i]);
+          break;
+        }
+      }
+    }
+
+    /**
+     * Removes a collection from this collection
+     *
+     * @param   string name
+     */
+    public function removeCollection($name) {
+      $qualified= rtrim($this->qualifiedName($name), '/').'/';
+      foreach ($this->_elements as $i => $element) {
+        if ($element instanceof IOCollection && $qualified === $element->getURI()) {
+          unset($this->_elements[$i]);
+          break;
+        }
+      }
+    }
+
+    /**
+     * Returns whether another object is equal to this element
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->getURI() === $this->getURI();
     }
   } 
 ?>
