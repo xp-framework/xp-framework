@@ -123,7 +123,7 @@
       }
 
       // Use path and query params for maching routes
-      // (after casting to requiered type, the params are passed to web-methods)
+      // (after casting to required type, the params are passed to web-methods)
       $uri= sprintf('%s?%s', $req->getPath(), $req->getQueryString());
 
       $routed= FALSE;
