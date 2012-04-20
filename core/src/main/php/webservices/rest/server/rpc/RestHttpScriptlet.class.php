@@ -122,6 +122,10 @@
         throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $e->getCause());
       }
 
+      // Use path and query params for maching routes
+      // (after casting to required type, the params are passed to web-methods)
+      $uri= sprintf('%s?%s', $req->getPath(), $req->getQueryString());
+
       $routed= FALSE;
       $errors= array();
       for ($i= 0, $s= sizeof($routings); $i<$s && !$routed; $i++) {
@@ -130,7 +134,7 @@
         try {
           $res->setData($processor->execute(
             $routing,
-            $routing->getPath()->match(substr($req->getPath(), strlen($this->base)))
+            $routing->getPath()->match(substr($uri, strlen($this->base)))
           ));
           $routed= TRUE;
         } catch (ClassCastException $e) {
