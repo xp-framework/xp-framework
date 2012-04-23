@@ -188,11 +188,11 @@
      * @return  string
      */
     public function getResponseString() {
-      $s= 'HTTP/'.$this->version.' '.$this->statuscode.' '.$this->message."\n";
+      $s= 'HTTP/'.$this->version.' '.$this->statuscode.' '.$this->message."\r\n";
       foreach ($this->headers as $k => $v) {
-        $s.= $k.': '.implode(', ', $v)."\n";
+        $s.= $k.': '.implode(', ', $v)."\r\n";
       }
-      return $s;
+      return $s."\r\n";
     }
     
     /**

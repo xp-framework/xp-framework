@@ -336,9 +336,9 @@
      */
     #[@test]
     public function responseString() {
-      $response= $this->newResponse(array('HTTP/1.1 200 OK', 'Content-Type: application/json', 'Content-Length: 6100'));
+      $response= $this->newResponse(array('HTTP/1.1 200 OK', 'Content-Type: application/json', 'Content-Length: 0'));
       $this->assertEquals(
-        "HTTP/1.1 200 OK\nContent-Type: application/json\nContent-Length: 6100\n",
+        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 0\r\n\r\n",
         $response->getResponseString()
       );
     }
