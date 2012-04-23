@@ -26,8 +26,15 @@ Bugfixes
   params public property, use setters and getters instead
   (cconstandachi)
 
+RFCs
+~~~~
+- Implemented RFC #0235 - CsvMapReader, CsvMapWriter (pull request #148)
+  (friebe)
+
 Features
 ~~~~~~~~
+- New method lang.reflect.Package::getComment() - pull request #139
+  (friebe)
 - Merged pull request #144 - Some improvements of the RestDataCaster
   (Stormwind, friebe)
 - Merged pull request #143 - New peer.URL::getCanonicalURL() method
