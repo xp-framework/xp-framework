@@ -222,6 +222,55 @@
     }
     
     /**
+     * Returns details for a given package. Note: Results from this method
+     * are cached.
+     *
+     * @param   string package
+     * @return  [:var] details or NULL
+     */
+    public static function detailsForPackage($package) {
+      if (!isset(xp::$registry['details.'.$package])) {
+        $cl= ClassLoader::getDefault();
+        $info= strtr($package, '.', '/').'/package-info.xp';
+        if (!$cl->providesResource($info)) return NULL;
+
+        $tokens= token_get_all($cl->getResource($info));
+        $details= array();
+        $comment= NULL;
+        for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
+          switch ($tokens[$i][0]) {
+            case T_DOC_COMMENT:
+              $comment= $tokens[$i][1];
+              break;
+
+            case T_STRING:
+              if ('package' === $tokens[$i][1]) {
+                $details[DETAIL_COMMENT]= trim(preg_replace('/\n \* ?/', "\n", "\n".substr(
+                  $comment, 
+                  4,                              // "/**\n"
+                  strpos($comment, '* @')- 2      // position of first details token
+                )));
+              }
+              break;
+          }
+        }
+        xp::$registry['details.'.$package]= $details;
+      }
+      return xp::$registry['details.'.$package];
+    }
+
+    /**
+     * Gets package comment from package-info.xp. Returns NULL if no such 
+     * file exists inside this package
+     *
+     * @return  string
+     */
+    public function getComment() {
+      $details= self::detailsForPackage($this->name);
+      return NULL === $details ? NULL : $details[DETAIL_COMMENT];
+    }
+
+    /**
      * Creates a string representation of this package
      * 
      * Example:
