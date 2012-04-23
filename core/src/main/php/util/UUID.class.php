@@ -18,14 +18,22 @@
    * (approximately at A.D.  3400, based on the specified algorithm).
    * </quote>
    *
-   * Example [creating a new UUID]:
+   * Creating UUIDs
+   * --------------
    * <code>
-   *   $uuid= UUID::create();
-   *   var_dump($uuid->toString());
+   *   UUID::timeUUID();     // Creates a new v1, time based, UUID
+   *   UUID::randomUUID();   // Creates a new v4, pseudo randomly generated, UUID
    * </code>
    *
-   * Creating UUIDs 
-   * --------------
+   * Creating name-based UUIDs
+   * -------------------------
+   * <code>
+   *   UUID::md5UUID(UUID::$NS_DNS, 'example.com');
+   *   UUID::sha1UUID(UUID::$NS_DNS, 'example.com');
+   * </code>
+   *
+   * Instanciation
+   * -------------
    * UUIDs can be created from various input sources. The following are
    * all equivalent:
    *
@@ -34,6 +42,15 @@
    *   new UUID('{6ba7b811-9dad-11d1-80b4-00c04fd430c8}');
    *   new UUID('urn:uuid:6ba7b811-9dad-11d1-80b4-00c04fd430c8');
    *   new UUID(new Bytes("k\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0O\xd40\xc8"));
+   * </code>
+   *
+   * Output
+   * -----
+   * <code>
+   *   $uuid->hashCode(); // '6ba7b811-9dad-11d1-80b4-00c04fd430c8'
+   *   $uuid->toString(); // '{6ba7b811-9dad-11d1-80b4-00c04fd430c8}'
+   *   $uuid->getUrn();   // 'urn:uuid:6ba7b811-9dad-11d1-80b4-00c04fd430c8'
+   *   $uuid->getBytes(); // new Bytes("k\xa7\xb8\x11\x9d\xad\x11\xd1\x80\xb4\x00\xc0O\xd40\xc8")
    * </code>
    *
    * @see   rfc://4122
