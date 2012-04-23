@@ -171,6 +171,7 @@
               throw new ClassCastException('Can not convert '.xp::typeOf($data).' to lang.Object');
             }
             
+            $string= XPClass::forName('lang.types.String');
             $result= $type->newInstance();
             foreach ($type->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
@@ -183,7 +184,7 @@
                 
                 $field->set($result, $this->complex(
                   $data[$field->getName()],
-                  Type::forName($field->getType() ? $field->getType() : 'lang.types.String')
+                  Type::$VAR->equals($field->getType()) ? $string : $field->getType()
                 ));
                 
               } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
@@ -196,7 +197,7 @@
                 
                 $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array($this->complex(
                   $data[$field->getName()],
-                  Type::forName($field->getType() ? $field->getType() : 'lang.types.String')
+                  Type::$VAR->equals($field->getType()) ? $string : $field->getType()
                 )));
               }
             }
