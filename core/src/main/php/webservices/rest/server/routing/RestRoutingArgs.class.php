@@ -28,10 +28,9 @@
      */
     public function __construct($args= array(), $injects= array()) {
       foreach ($args as $arg) {
-        $this->addArgument(
-          is('lang.reflect.Parameter', $arg) ? $arg->getName() : $arg, 
-          is('lang.reflect.Parameter', $arg) ? $arg : Type::$VAR
-        );
+        if (!is('lang.reflect.Parameter', $arg))
+          throw new IllegalArgumentException(sprintf('Invalid argument %s', Primitive::boxed($arg)));
+        $this->addArgument($arg->getName(), $arg);
       }
       
       foreach ($injects as $name => $inject) {
@@ -46,6 +45,8 @@
      * @param lang.reflect.Parameter arg The argument
      */
     public function addArgument($name, $arg) {
+      if (!is('lang.reflect.Parameter', $arg))
+        throw new IllegalArgumentException(sprintf('Invalid argument %s', Primitive::boxed($arg)));
       $this->args[$name]= $arg;
     }
     
@@ -75,8 +76,7 @@
      * @return lang.Type
      */
     public function getArgumentType($name) {
-      return is('lang.reflect.Parameter', $this->args[$name]) ? 
-        $this->args[$name]->getType() : $this->args[$name];
+      return $this->args[$name]->getType();
     }
     
     /**
@@ -86,8 +86,7 @@
      * @return bool
      */
     public function isArgumentOptional($name) {
-      return is('lang.reflect.Parameter', $this->args[$name]) ? 
-        $this->args[$name]->isOptional() : FALSE;
+      return $this->args[$name]->isOptional();
     }
     
     /**

@@ -29,8 +29,10 @@
      * 
      */
     public function setUp() {
+      $params= XPClass::forName('net.xp_framework.unittest.rest.server.mock.MockArgs')
+        ->newInstance()->getClass()->getMethod('methodWithMultipleArguments')->getParameters();
       $this->args= new RestRoutingArgs(
-        array('id', 'title', 'name'),
+        $params,
         array('webservices.rest.server.transport.HttpRequestAdapter', 'webservices.rest.server.transport.HttpResponseAdapter')
       );
     }
@@ -59,7 +61,9 @@
      */
     #[@test]
     public function addArgument() {
-      $this->args->addArgument('another', Type::$VAR);
+      $params= XPClass::forName('net.xp_framework.unittest.rest.server.mock.MockArgs')
+        ->newInstance()->getClass()->getMethod('methodWithAnotherArgument')->getParameters();
+      $this->args->addArgument('another', $params[0]);
       
       $this->assertEquals(array('id', 'title', 'name', 'another'), $this->args->getArguments());
     }
@@ -75,13 +79,12 @@
     }
     
     /**
-     * Test getArgumentType() for argument registration without specifying
-     * type to default to Type::$VAR
+     * Test getArgumentType() for argument registration
      * 
      */
     #[@test]
     public function getArgumentTypeDefault() {
-      $this->assertEquals(Type::$VAR, $this->args->getArgumentType('id'));
+      $this->assertEquals(Primitive::$STRING, $this->args->getArgumentType('id'));
     }
     
     /**
@@ -90,9 +93,11 @@
      */
     #[@test]
     public function getArgumentTypeForObject() {
-      $this->args->addArgument('obj', XPClass::forName('lang.Object'));
+      $params= XPClass::forName('net.xp_framework.unittest.rest.server.mock.MockArgs')
+        ->newInstance()->getClass()->getMethod('methodWithAnotherArgument')->getParameters();
+      $this->args->addArgument('another', $params[0]);
       
-      $this->assertEquals(XPClass::forName('lang.Object'), $this->args->getArgumentType('obj'));
+      $this->assertEquals(XPClass::forName('lang.Object'), $this->args->getArgumentType('another'));
     }
     
     /**
@@ -214,7 +219,9 @@
      */
     #[@test]
     public function optionalParams() {
-      $restArgs= new RestRoutingArgs($this->getClass()->getMethod('demoMethod')->getParameters());
+      $params= XPClass::forName('net.xp_framework.unittest.rest.server.mock.MockArgs')
+        ->newInstance()->getClass()->getMethod('methodWithOptionalArguments')->getParameters();
+      $restArgs= new RestRoutingArgs($params);
       $this->assertFalse($restArgs->isArgumentOptional('arg1'));
       $this->assertTrue($restArgs->isArgumentOptional('arg2'));
     }
@@ -225,7 +232,9 @@
      */
     #[@test]
     public function paramsDefaultValue() {
-      $restArgs= new RestRoutingArgs($this->getClass()->getMethod('demoMethod')->getParameters());
+      $params= XPClass::forName('net.xp_framework.unittest.rest.server.mock.MockArgs')
+        ->newInstance()->getClass()->getMethod('methodWithOptionalArguments')->getParameters();
+      $restArgs= new RestRoutingArgs($params);
       $this->assertEquals('default', $restArgs->getArgumentDefaultValue('arg2'));
     }
   }
