@@ -497,5 +497,16 @@
       $d= Date::now(new TimeZone('Australia/Sydney'));
       $this->assertEquals('Australia/Sydney', $d->getTimeZone()->getName());
     }
+
+   /**
+    * Test time input string
+    *
+    * @see http://www.php.net/manual/en/datetime.formats.time.php
+    */
+    #[@test]
+    public function createDateFromTime() {
+      $date= new Date('19.19');
+      $this->assertEquals(strtotime('19.19'), $date->getTime());
+    }
   }
 ?>

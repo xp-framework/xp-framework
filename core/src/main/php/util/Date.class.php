@@ -44,7 +44,7 @@
     public function __construct($in= NULL, TimeZone $timezone= NULL) {
       if ($in instanceof DateTime) {
         $this->date= $in;
-      } else if (is_numeric($in)) {
+      } else if (is_numeric($in) && (int)$in == $in) {
         
         // Specially mark timestamps for parsing (we assume here that strings
         // containing only digits are timestamps)
