@@ -38,11 +38,22 @@
       $INTEGER = NULL;    // deprecated
     
     static function __static() {
-      self::$STRING= new self('string');
-      self::$INTEGER= self::$INT= new self('int');
-      self::$DOUBLE= new self('double');
-      self::$BOOLEAN= self::$BOOL= new self('bool');
-      self::$ARRAY= new self('array');
+      self::$STRING= new self('string', '');
+      self::$INTEGER= self::$INT= new self('int', 0);
+      self::$DOUBLE= new self('double', 0.0);
+      self::$BOOLEAN= self::$BOOL= new self('bool', FALSE);
+      self::$ARRAY= new self('array', array());
+    }
+    
+    /**
+     * Creates a new primitive instance
+     *
+     * @param   string name
+     * @param   var default
+     */
+    public function __construct($name, $default) {
+      parent::__construct($name);
+      $this->default= $default;
     }
     
     /**
@@ -59,6 +70,32 @@
         case self::$BOOL: return XPClass::forName('lang.types.Boolean');
         case self::$ARRAY: return XPClass::forName('lang.types.ArrayList'); // deprecated
       }
+    }
+
+    /**
+     * Returns a new instance of this object
+     *
+     * @param   var value
+     * @return  var
+     */
+    public function newInstance($value= NULL) {
+      if (!$this->isInstance($value)) {
+        raise('lang.IllegalArgumentException', 'Cannot create instances of the '.$this->name.' type from '.xp::typeOf($value));
+      }
+      return $value;
+    }
+
+    /**
+     * Returns a new instance of this object
+     *
+     * @param   var value
+     * @return  var
+     */
+    public function cast($value) {
+      if (!$this->isInstance($value)) {
+        raise('lang.ClassCastException', 'Cannot cast '.xp::typeOf($value).' to the '.$this->name.' type');
+      }
+      return $value;
     }
     
     /**

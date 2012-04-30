@@ -71,7 +71,7 @@
      * Tests cast() method
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('lang.ClassCastException')]
     public function castPrimitive() {
       $this->getClass()->cast(0);
     }
