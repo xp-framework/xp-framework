@@ -67,7 +67,7 @@
      * @return string
      */
     public function getQueryString() {
-      return $this->request->getUrl()->getQuery();
+      return $this->request->getQueryString();
     }
   }
 ?>
