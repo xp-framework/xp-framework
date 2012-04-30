@@ -89,5 +89,29 @@
       $this->request->setParam('test', 'test value');
       $this->assertEquals('test value', $this->fixture->getParam('test'));
     }
+    
+    /**
+     * Test getQueryString()
+     *  
+     */
+    #[@test]
+    public function getQueryString() {
+      $this->request->setParam('product1', 'name&name');
+      $this->request->setParam('product2', 'test&test');
+      $this->assertEquals('product1=name%26name&product2=test%26test', $this->fixture->getQueryString());
+    }
+    
+    /**
+     * Test getQueryString()
+     *  
+     */
+    #[@test]
+    public function getQueryStringEqualWithHttpRequestQueryString() {
+      $this->request->env['QUERY_STRING']='product1=name%26name&product2=test%26test';
+      $this->request->setParam('product1', 'name&name');
+      $this->request->setParam('product2', 'test&test');
+      $this->assertNotEquals($this->request->getQueryString(), $this->fixture->getQueryString());
+      $this->assertEquals($this->request->getQueryString(), urldecode($this->fixture->getQueryString()));
+    }
   }
 ?>
