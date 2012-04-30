@@ -139,11 +139,11 @@
     }
 
     /**
-     * Returns HTTP request headers as being written to server
+     * Returns payload
      *
-     * @return  string
+     * @param   bool withBody
      */
-    public function getHeaderString() {
+    protected function getPayload($withBody) {
      if ($this->parameters instanceof RequestData) {
         $this->addHeaders($this->parameters->getHeaders());
         $query= '&'.$this->parameters->getData();
@@ -160,7 +160,8 @@
         }
       }
       $target= $this->target;
-      
+      $body= '';
+
       // Which HTTP method? GET and HEAD use query string, POST etc. use
       // body for passing parameters
       switch ($this->method) {
@@ -170,34 +171,42 @@
           } else {
             $target.= empty($query) ? '' : '?'.substr($query, 1);
           }
-          $body= '';
           break;
-          
+
         case HttpConstants::POST: case HttpConstants::PUT: case HttpConstants::TRACE: default:
-          $body= substr($query, 1);
+          if ($withBody) $body= substr($query, 1);
           if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
-          $this->headers['Content-Length']= array(strlen($body));
+          $this->headers['Content-Length']= array(strlen($query)- 1);
           if (empty($this->headers['Content-Type'])) {
             $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
           }
           break;
       }
-      
+
       $request= sprintf(
         "%s %s HTTP/%s\r\n",
         $this->method,
         $target,
         $this->version
       );
-      
+
       // Add request headers
       foreach ($this->headers as $k => $v) {
         foreach ($v as $value) {
           $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value)."\r\n";
         }
       }
-      
-      return $request."\r\n";
+
+      return $request."\r\n".$body;
+    }
+
+    /**
+     * Returns HTTP request headers as being written to server
+     *
+     * @return  string
+     */
+    public function getHeaderString() {
+      return $this->getPayload(FALSE);
     }
     
     /**
@@ -206,60 +215,7 @@
      * @return  string
      */
     public function getRequestString() {
-      if ($this->parameters instanceof RequestData) {
-        $this->addHeaders($this->parameters->getHeaders());
-        $query= '&'.$this->parameters->getData();
-      } else {
-        $query= '';
-        foreach ($this->parameters as $name => $value) {
-          if (is_array($value)) {
-            foreach ($value as $k => $v) {
-              $query.= '&'.$name.'['.$k.']='.urlencode($v);
-            }
-          } else {
-            $query.= '&'.$name.'='.urlencode($value);
-          }
-        }
-      }
-      $target= $this->target;
-      
-      // Which HTTP method? GET and HEAD use query string, POST etc. use
-      // body for passing parameters
-      switch ($this->method) {
-        case HttpConstants::HEAD: case HttpConstants::GET: case HttpConstants::DELETE: case HttpConstants::OPTIONS:
-          if (NULL !== $this->url->getQuery()) {
-            $target.= '?'.$this->url->getQuery().(empty($query) ? '' : $query);
-          } else {
-            $target.= empty($query) ? '' : '?'.substr($query, 1);
-          }
-          $body= '';
-          break;
-          
-        case HttpConstants::POST: case HttpConstants::PUT: case HttpConstants::TRACE: default:
-          $body= substr($query, 1);
-          if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
-          $this->headers['Content-Length']= array(strlen($body));
-          if (empty($this->headers['Content-Type'])) {
-            $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
-          }
-          break;
-      }
-      
-      $request= sprintf(
-        "%s %s HTTP/%s\r\n",
-        $this->method,
-        $target,
-        $this->version
-      );
-      
-      // Add request headers
-      foreach ($this->headers as $k => $v) {
-        foreach ($v as $value) {
-          $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value)."\r\n";
-        }
-      }
-      
-      return $request."\r\n".$body;
+      return $this->getPayload(TRUE);
     }
   }
 ?>
