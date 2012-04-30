@@ -500,5 +500,35 @@
         $r->getRequestString()
       );
     }
+
+    /**
+     * Test getHeaderString()
+     *
+     */
+    #[@test]
+    public function headerString() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::GET);
+      $r->setParameters('a=b');
+      $this->assertEquals(
+        "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getHeaderString()
+      );
+    }
+
+    /**
+     * Test getHeaderString()
+     *
+     */
+    #[@test]
+    public function headerStringDoesNotIncludeContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b');
+      $this->assertEquals(
+        "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nContent-Length: 3\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n",
+        $r->getHeaderString()
+      );
+    }
   }
 ?>
