@@ -36,6 +36,9 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added HttpResponse::getHeaderString() and HttpRequest::getHeaderString()
+  see pull request #153
+  (friebe)
 - New method lang.reflect.Package::getComment() - pull request #139
   (friebe)
 - Merged pull request #144 - Some improvements of the RestDataCaster
