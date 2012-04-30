@@ -183,11 +183,11 @@
     }
 
     /**
-     * Returns HTTP response as read from server
+     * Returns HTTP response headers as read from server
      *
      * @return  string
      */
-    public function getResponseString() {
+    public function getHeaderString() {
       $s= 'HTTP/'.$this->version.' '.$this->statuscode.' '.$this->message."\r\n";
       foreach ($this->headers as $k => $v) {
         $s.= $k.': '.implode(', ', $v)."\r\n";

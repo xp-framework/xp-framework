@@ -331,15 +331,28 @@
     }
 
     /**
-     * Test getResponseString()
+     * Test getHeaderString()
      *
      */
     #[@test]
-    public function responseString() {
+    public function headerString() {
       $response= $this->newResponse(array('HTTP/1.1 200 OK', 'Content-Type: application/json', 'Content-Length: 0'));
       $this->assertEquals(
         "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 0\r\n\r\n",
-        $response->getResponseString()
+        $response->getHeaderString()
+      );
+    }
+
+    /**
+     * Test getHeaderString()
+     *
+     */
+    #[@test]
+    public function headerStringDoesNotIncludeContent() {
+      $response= $this->newResponse(array('HTTP/1.1 200 OK', 'Content-Type: application/json', 'Content-Length: 21'), '{ "hello" : "world" }');
+      $this->assertEquals(
+        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 21\r\n\r\n",
+        $response->getHeaderString()
       );
     }
   }
