@@ -497,5 +497,49 @@
       $d= Date::now(new TimeZone('Australia/Sydney'));
       $this->assertEquals('Australia/Sydney', $d->getTimeZone()->getName());
     }
+
+   /**
+    * Test time input string
+    *
+    * @see http://www.php.net/manual/en/datetime.formats.time.php
+    */
+    #[@test]
+    public function createDateFromTime() {
+      $date= new Date('19.19');
+      $this->assertEquals(strtotime('19.19'), $date->getTime());
+    }
+
+   /**
+    * Test unix timestamp string
+    *
+    * @see http://www.php.net/manual/en/datetime.formats.time.php
+    */
+    #[@test]
+    public function testValidUnixTimestamp() {
+
+      $this->assertDateEquals('1970-01-01T00:00:00+00:00', new Date(0));
+      $this->assertDateEquals('1970-01-01T00:00:00+00:00', new Date('0'));
+
+      $this->assertDateEquals('1970-01-01T00:00:01+00:00', new Date(1));
+      $this->assertDateEquals('1970-01-01T00:00:01+00:00', new Date('1'));
+
+      $this->assertDateEquals('1969-12-31T23:59:59+00:00', new Date(-1));
+      $this->assertDateEquals('1969-12-31T23:59:59+00:00', new Date('-1'));
+
+      $this->assertDateEquals('1969-12-20T10:13:20+00:00', new Date(-1000000));
+      $this->assertDateEquals('1969-12-20T10:13:20+00:00', new Date('-1000000'));
+
+      $this->assertDateEquals('1970-01-12T13:46:40+00:00', new Date(1000000));
+      $this->assertDateEquals('1970-01-12T13:46:40+00:00', new Date('1000000'));
+    }
+
+   /**
+    * Test invalid time
+    *
+    */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function testInvalidUnixTimestamp() {
+      new Date('+1000000');
+    }
   }
 ?>
