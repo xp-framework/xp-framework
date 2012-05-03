@@ -8,6 +8,9 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed creation of Date from a float value causes PHP fatal error - see
+  pull request #156
+  (ghiata)
 - Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
   (friebe, mrosoiu)
 - Merged pull request #145 - Fix stacktrace scope when calling an undefined 
