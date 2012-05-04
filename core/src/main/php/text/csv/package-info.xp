@@ -1,0 +1,70 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Contains the XP Framework's CSV API
+ *
+ * Reading
+ * =======
+ * CSV data can be read off any input stream. Character set decoding
+ * is accomplished by passing a charset to TextReader, or <tt>NULL</tt>
+ * to use auto-detection.
+ *
+ * <code>
+ *   $in= new CsvListReader(new TextReader(new FileInputStream('in.csv')));
+ * 
+ *   $header= $in->getHeader();
+ *   while ($record= $in->read()) {
+ *     Console::writeLine('- ', $record);
+ *   }
+ * 
+ *   $in->close();
+ * </code>
+ *
+ * Writing
+ * =======
+ * CSV data can be written to any output stream. Character set encoding
+ * is accomplished by passing a charset to TextWriter.
+ *
+ * <code>
+ *   $out= new CsvListWriter(new TextWriter(new FileOutputStream('out.csv')));
+ * 
+ *   $out->setHeader(array('name', 'city', 'zip'));
+ *   $out->write(array('Timm', 'Karlsruhe', 76137));
+ *   $out->write(array('Alex', 'Karlsruhe', 76131));
+ * 
+ *   $out->close();
+ * </code>
+ *
+ * Format
+ * ======
+ * CSV files usually use the semi-colon to separate values. Depending on the 
+ * file we're parsing, this might be a different character. Both readers and
+ * writers accept an optional second parameter with which the format can be
+ * changed.
+ *
+ * <code>
+ *   $format= create(new CsvFormat())->withDelimiter(',');
+ *   $format= CsvFormat::$COMMAS;    // Short-hand for the above
+ * 
+ *   $writer= new CsvListWriter(..., $format);
+ *   $reader= new CsvListReader(..., $format);
+ * </code>
+ *
+ * @see   https://github.com/xp-framework/rfc/issues/191
+ * @see   https://github.com/xp-framework/rfc/issues/235
+ * @see   xp://text.csv.CsvFormat
+ * @see   xp://text.csv.CsvListReader
+ * @see   xp://text.csv.CsvMapReader
+ * @see   xp://text.csv.CsvObjectReader
+ * @see   xp://text.csv.CsvBeanReader
+ * @see   xp://text.csv.CsvListWriter
+ * @see   xp://text.csv.CsvMapWriter
+ * @see   xp://text.csv.CsvObjectWriter
+ * @see   xp://text.csv.CsvBeanWriter
+ */
+package text.csv {
+}

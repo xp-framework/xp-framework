@@ -123,5 +123,29 @@
         create(new RestPath('/path/to/item/?id={p1}&key={p2}'))->match('/path/to/item/?key=5678&id=1234')
       );
     }
+    
+    /**
+     * Test path and query
+     *
+     */
+    #[@test]
+    public function pathAndQuery() {
+      $restPath= new RestPath('/path/to/item?filter={filter}&type={type}');
+      
+      $this->assertEquals('/path/to/item', $restPath->getPath());
+      $this->assertEquals(array('filter', 'type'), $restPath->getParamNames());
+    }
+    
+    /**
+     * Test match
+     *
+     */
+    #[@test]
+    public function matchQueryParams() {
+      $this->assertEquals(
+        array('filter'=>'red', 'type'=>'color'),
+        create(new RestPath('/path/to/item?filter={filter}&type={type}'))->match('/path/to/item?filter=red&type=color')
+      );
+    }
   }
 ?>

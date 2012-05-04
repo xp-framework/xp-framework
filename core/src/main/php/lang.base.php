@@ -4,6 +4,14 @@
  * $Id$
  */
 
+  define('MODIFIER_STATIC',       1);
+  define('MODIFIER_ABSTRACT',     2);
+  define('MODIFIER_FINAL',        4);
+  define('MODIFIER_PUBLIC',     256);
+  define('MODIFIER_PROTECTED',  512);
+  define('MODIFIER_PRIVATE',   1024);
+
+
   // {{{ final class xp
   final class xp {
     const CLASS_FILE_EXT= '.class.php';
@@ -586,32 +594,47 @@
 
     // Check for an anonymous generic 
     if (strstr($spec, '<')) {
-      $type= Type::forName($spec)->literal();
+      $class= Type::forName($spec)->genericDefinition();
+      $spec= $class->getName();
+      $type= $class->literal();
     } else {
-      $type= xp::reflect(strstr($spec, '.') ? $spec : xp::nameOf($spec));
+      $type= xp::reflect(FALSE === strrpos($spec, '.') ? xp::nameOf($spec) : $spec);
       if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
         xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
         // Bails
       }
     }
 
-    $name= $type.'·'.(++$u);
-    
+    // Create unique name
+    $n= '·'.(++$u);
+    $spec.= $n;
+    if (FALSE !== ($p= strrpos($type, '·'))) {
+      $ns= '$package= "'.strtr(substr($type, 0, $p), '·', '.').'"; ';
+      $decl= $type.$n;
+    } else if (FALSE === ($p= strrpos($type, '\\'))) {
+      $ns= '';
+      $decl= $type.$n;
+    } else {
+      $ns= 'namespace '.substr($type, 0, $p).'; ';
+      $decl= substr($type, $p+ 1).$n;
+      $type= '\\'.$type;
+    }
+
     // Checks whether an interface or a class was given
     $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
     if (interface_exists($type)) {
-      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$type.' '.$bytes);
+      $cl->setClassBytes($spec, $ns.'class '.$decl.' extends Object implements '.$type.' '.$bytes);
     } else {
-      $cl->setClassBytes($name, 'class '.$name.' extends '.$type.' '.$bytes);
+      $cl->setClassBytes($spec, $ns.'class '.$decl.' extends '.$type.' '.$bytes);
     }
 
-    $cl->loadClass0($name);
+    $decl= $cl->loadClass0($spec);
 
     // Build paramstr for evaluation
     for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
       $paramstr.= ', $args['.$i.']';
     }
-    return eval('return new '.$name.'('.substr($paramstr, 2).');');
+    return eval('return new '.$decl.'('.substr($paramstr, 2).');');
   }
   // }}}
 
