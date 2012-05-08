@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <!-- The Basics -->
-  <groupId>net.xp_framework</groupId>
+  <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
   <version>5.8.5</version>
   <packaging>pom</packaging>
@@ -12,7 +12,7 @@
   <name>XP-Framework</name>
   <description>The XP framework is an all-purpose, object oriented PHP framework</description>
   <url>https://github.com/xp-framework/xp-framework</url>
-  <inceptionYear>2011</inceptionYear>
+  <inceptionYear>2001</inceptionYear>
   <organization>
     <name>XP-Framework Team</name>
     <url>http://xp-framework.net/</url>
