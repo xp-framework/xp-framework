@@ -1,0 +1,15 @@
+language: php
+
+php:
+  - 5.2
+  - 5.3
+  - 5.4
+
+before_script:
+  - wget 'http://xp-framework.net/downloads/releases/bin/setup' -O - | php
+  - echo "use=core:tools" > xp.ini
+  - echo "[runtime]" >> xp.ini
+  - echo "date.timezone=Europe/Berlin" >> xp.ini
+
+script:
+  - for i in core/src/resources/unittest/*.ini; do echo "---> $i"; ./unittest $i; if [ $? -ne 0 ]; then exit $?; fi; done;
