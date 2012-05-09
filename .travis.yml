@@ -1,3 +1,6 @@
+# This provides an initial configuration to
+# test xp-framework on http://travis-ci.org/
+
 language: php
 
 php:
