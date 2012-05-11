@@ -18,11 +18,13 @@
   class DefaultListener extends Object implements TestListener {
     const OUTPUT_WIDTH  = 72;
 
-    public
-      $out= NULL;
-    
-    protected
-      $column= 0;
+    public $out= NULL;
+    protected $column= 0;
+    protected static $colored;
+
+    static function __static() {
+      self::$colored= getenv('TERM') || getenv('ANSICON');
+    }
 
     /**
      * Constructor
@@ -133,21 +135,25 @@
       $this->out->writeLine(']');
       
       // Show failed test details
+      $fail= FALSE;
       if ($result->failureCount() > 0) {
         $this->out->writeLine();
         foreach ($result->failed as $failure) {
           $this->out->writeLine('F ', $failure);
         }
+        $fail= TRUE;
       }
 
       $this->out->writeLinef(
-        "\n%s: %d/%d run (%d skipped), %d succeeded, %d failed",
-        $result->failureCount() ? 'FAIL' : 'OK',
+        "\n%s%s: %d/%d run (%d skipped), %d succeeded, %d failed%s",
+        self::$colored ? ($fail ? "\033[41;1;37m" : "\033[42;1;37m") : '',
+        $fail ? 'FAIL' : 'OK',
         $result->runCount(),
         $result->count(),
         $result->skipCount(),
         $result->successCount(),
-        $result->failureCount()
+        $result->failureCount(),
+        self::$colored ? "\033[0m" : ''
       );
       $this->out->writeLinef(
         'Memory used: %.2f kB (%.2f kB peak)',
