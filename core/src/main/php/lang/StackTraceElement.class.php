@@ -48,6 +48,16 @@
     protected function qualifiedClassName($class) {
       return xp::nameOf($class);
     }
+
+    /**
+     * Remove all recorded arguments; this will make the StackTraceElement
+     * just show no args, as if the method would have been invoked without
+     * any.
+     *
+     */
+    public function clearArguments() {
+      $this->args= NULL;
+    }
     
     /**
      * Create string representation
