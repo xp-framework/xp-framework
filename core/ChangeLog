@@ -36,6 +36,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added new peer.http.HttpConnection::patch() method - pull request #161
+  (friebe)
 - Added new HTTP status codes defined in RFC 6585, see issue #158
   (friebe)
 - Added HttpResponse::getHeaderString() and HttpRequest::getHeaderString()
