@@ -76,6 +76,20 @@
     }
   
     /**
+     * Test patch method
+     *
+     */
+    #[@test]
+    public function patch() {
+      $c= new MockHttpConnection(new URL('http://example.com:80/path/of/file'));
+      $c->patch(new RequestData('THIS IS A DATA STRING'));
+      $this->assertEquals(
+        "PATCH /path/of/file HTTP/1.1\r\nConnection: close\r\nHost: example.com:80\r\nContent-Length: 21\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\nTHIS IS A DATA STRING",
+        $c->getLastRequest()->getRequestString()
+      );
+    }
+
+    /**
      * Test delete method
      *
      */
