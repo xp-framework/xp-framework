@@ -235,7 +235,7 @@
      */
     public function findCollection($name) {
       $qualified= $this->qualifiedName($name);
-      if (!is_file($qualified)) return NULL;
+      if (!is_dir($qualified)) return NULL;
 
       $found= new FileCollection($qualified);
       $found->setOrigin($this);
