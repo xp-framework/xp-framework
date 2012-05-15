@@ -15,6 +15,8 @@
      *
      * @param   string name
      * @return  io.collections.IOElement
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function newElement($name);
 
@@ -23,6 +25,8 @@
      *
      * @param   string name
      * @return  io.collections.IOCollection
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function newCollection($name);
 
@@ -31,6 +35,8 @@
      *
      * @param   string name
      * @return  io.collections.IOElement
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function findElement($name);
 
@@ -39,6 +45,8 @@
      *
      * @param   string name
      * @return  io.collections.IOCollection
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function findCollection($name);
 
@@ -48,6 +56,8 @@
      * @param   string name
      * @return  io.collections.IOElement
      * @throws  util.NoSuchElementException
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function getElement($name);
 
@@ -57,6 +67,8 @@
      * @param   string name
      * @return  io.collections.IOCollection
      * @throws  util.NoSuchElementException
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function getCollection($name);
 
@@ -64,6 +76,8 @@
      * Removes an element in this collection
      *
      * @param   string name
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function removeElement($name);
 
@@ -71,6 +85,8 @@
      * Removes a collection from this collection
      *
      * @param   string name
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function removeCollection($name);
   }
