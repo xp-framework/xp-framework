@@ -8,6 +8,9 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed creation of Date from a float value causes PHP fatal error - see
+  pull request #156
+  (ghiata)
 - Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
   (friebe, mrosoiu)
 - Merged pull request #145 - Fix stacktrace scope when calling an undefined 
@@ -26,8 +29,22 @@ Bugfixes
   params public property, use setters and getters instead
   (cconstandachi)
 
+RFCs
+~~~~
+- Implemented RFC #0235 - CsvMapReader, CsvMapWriter (pull request #148)
+  (friebe)
+
 Features
 ~~~~~~~~
+- Added new peer.http.HttpConnection::patch() method - pull request #161
+  (friebe)
+- Added new HTTP status codes defined in RFC 6585, see issue #158
+  (friebe)
+- Added HttpResponse::getHeaderString() and HttpRequest::getHeaderString()
+  see pull request #153
+  (friebe)
+- New method lang.reflect.Package::getComment() - pull request #139
+  (friebe)
 - Merged pull request #144 - Some improvements of the RestDataCaster
   (Stormwind, friebe)
 - Merged pull request #143 - New peer.URL::getCanonicalURL() method
