@@ -1,22 +1,22 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses('util.log.LogCategory', 'util.Configurable', 'util.log.LogLevel');
-  
+
   // Deprecated
   define('LOG_DEFINES_DEFAULT', 'default');
-  
+
   /**
    * A singleton logger
-   * 
+   *
    * Example output:
    * <pre>
-   * [20:45:30 16012 info ] Starting work on 2002/05/29/ 
-   * [20:45:30 16012 info ] Done, 0 order(s) processed, 0 error(s) occured 
-   * [20:45:30 16012 info ] Finish 
+   * [20:45:30 16012 info ] Starting work on 2002/05/29/
+   * [20:45:30 16012 info ] Done, 0 order(s) processed, 0 error(s) occured
+   * [20:45:30 16012 info ] Finish
    * </pre>
    *
    * The format of the line prefix (noted in square brackets above) can be configured by:
@@ -61,16 +61,22 @@
    * appender.util.log.FileAppender.params="filename"
    * appender.util.log.FileAppender.param.filename="/var/log/xp/service_%Y-%m-%d.log"
    * appender.util.log.FileAppender.levels="ERROR|WARN"
-   * 
+   *
    * [info.binford6100.webservices.EventHandler]
    * appenders="util.log.FileAppender"
    * appender.util.log.FileAppender.params="filename"
    * appender.util.log.FileAppender.param.filename="/var/log/xp/event_%Y-%m-%d.log"
-   * 
+   *
    * [info.binford6100.webservices.SubscriberHandler]
    * appenders="util.log.FileAppender"
    * appender.util.log.FileAppender.params="filename"
    * appender.util.log.FileAppender.param.filename="/var/log/xp/subscribe_%Y-%m-%d.log"
+   *
+   * [withContext]
+   * appenders="util.log.FileAppender"
+   * context="util.log.context.LogContextMDC"
+   * appender.util.log.FileAppender.params="filename"
+   * appender.util.log.FileAppender.param.filename="/var/log/xp/service_%Y-%m-%d.log"
    * </pre>
    *
    * @test     xp://net.xp_framework.unittest.logging.LoggerTest
@@ -96,23 +102,32 @@
     }
 
     /**
+     * Get list of categories
+     *
+     * @return util.log.LogCategory[]
+     */
+    public function getCategories() {
+      return $this->category;
+    }
+
+    /**
      * Get a category
      *
      * @param   string name default self::DFLT
      * @return  util.log.LogCategory
-     */ 
+     */
     public function getCategory($name= self::DFLT) {
       if (!isset($this->category[$name])) $name= self::DFLT;
       return $this->category[$name];
     }
-    
+
     /**
      * Configure this logger
      *
      * @param   util.Properties prop instance of a Properties object
      */
     public function configure($prop) {
-      
+
       // Read all other properties
       $section= $prop->getFirstSection();
       do {
@@ -122,13 +137,13 @@
           $section,
           $prop->readInteger($section, 'flags', LogLevel::ALL)
         );
-        
+
         // Configure appenders
         $appenders= $prop->readArray($section, 'appenders', array());
 
         // Go through all of the appenders, loading classes as necessary
         foreach ($appenders as $appender) {
-          
+
           // Read levels (alternatively, for BC, read "flags" setting)
           $levels= $prop->readArray($section, 'appender.'.$appender.'.levels');
           if (!empty($levels)) {
@@ -149,13 +164,13 @@
               }
             }
           }
-          
+
           $a= $this->category[$section]->addAppender(
             XPClass::forName($appender)->newInstance(),
             $flags
           );
           $params= $prop->readArray($section, 'appender.'.$appender.'.params', array());
-          
+
           // Params
           foreach ($params as $param) {
             $a->{$param}= strftime(
@@ -167,9 +182,15 @@
             );
           }
         }
+
+        // Set context
+        if ('' !== ($contextFQN= $prop->readString($section, 'context'))) {
+          $context= XPClass::forName($contextFQN)->newInstance();
+          $this->category[$section]->setContext($context);
+        }
       } while ($section= $prop->getNextSection());
     }
-    
+
     /**
      * Tells all categories to finalize themselves
      *
@@ -180,7 +201,7 @@
       }
       $this->_finalized= TRUE;
     }
-    
+
     /**
      * Returns an instance of this class
      *
@@ -189,5 +210,5 @@
     public static function getInstance() {
       return self::$instance;
     }
-  } 
+  }
 ?>

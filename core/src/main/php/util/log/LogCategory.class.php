@@ -5,16 +5,17 @@
  */
 
   uses(
-    'util.log.LogLevel', 
-    'util.log.Appender', 
-    'util.log.LoggingEvent', 
+    'util.log.LogLevel',
+    'util.log.Appender',
+    'util.log.LogContext',
+    'util.log.LoggingEvent',
     'util.log.layout.DefaultLayout'
   );
 
   /**
    * The log category is the interface to be used. All logging information
-   * is sent to a log category via one of the info, warn, error, debug 
-   * methods which accept any number of arguments of any type (or 
+   * is sent to a log category via one of the info, warn, error, debug
+   * methods which accept any number of arguments of any type (or
    * their *f variants which use sprintf).
    *
    * Basic example:
@@ -43,7 +44,9 @@
 
     public $flags= 0;
     public $identifier= '';
-      
+
+    protected $context= NULL;
+
     static function __static() {
       self::$DEFAULT_LAYOUT= new DefaultLayout();
     }
@@ -61,6 +64,34 @@
     }
 
     /**
+     * Setter for context
+     *
+     * @param  util.log.LogContext context
+     * @return void
+     */
+    public function setContext(LogContext $context) {
+      $this->context= $context;
+    }
+
+    /**
+     * Retrieves whether this log category has a context
+     *
+     * @return  bool
+     */
+    public function hasContext() {
+      return NULL !== $this->context;
+    }
+
+    /**
+     * Getter for context
+     *
+     * @return util.log.LogContext context
+     */
+    public function getContext() {
+      return $this->context;
+    }
+
+    /**
      * Sets the flags (what should be logged). Note that you also
      * need to add an appender for a category you want to log.
      *
@@ -69,7 +100,7 @@
     public function setFlags($flags) {
       $this->flags= $flags;
     }
-    
+
     /**
      * Gets flags
      *
@@ -78,7 +109,7 @@
     public function getFlags() {
       return $this->flags;
     }
-    
+
     /**
      * Calls all appenders
      *
@@ -87,7 +118,7 @@
      */
     protected function callAppenders($level, $args) {
       if (!($this->flags & $level)) return;
-      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
+      $event= new LoggingEvent($this, time(), getmypid(), $level, $args, $this->context);
       foreach ($this->_appenders as $appflag => $appenders) {
         if (!($level & $appflag)) continue;
         foreach ($appenders as $appender) {
@@ -104,7 +135,7 @@
     public function hasAppenders() {
       return !empty($this->_appenders);
     }
-    
+
     /**
      * Finalize
      *
@@ -116,10 +147,10 @@
         }
       }
     }
-    
+
     /**
-     * Adds an appender for the given log categories. Use logical OR to 
-     * combine the log types or use LogLevel::ALL (default) to log all 
+     * Adds an appender for the given log categories. Use logical OR to
+     * combine the log types or use LogLevel::ALL (default) to log all
      * types.
      *
      * @param   util.log.Appender appender The appender object
@@ -134,7 +165,7 @@
       } else {
         throw new IllegalArgumentException('Expected an util.log.Appender, have '.xp::typeOf($appender));
       }
-      
+
       $appender->getLayout() || $appender->setLayout(self::$DEFAULT_LAYOUT);
       $this->_appenders[$flag][$appender->hashCode()]= $appender;
       return $appender;
@@ -142,8 +173,8 @@
 
     /**
      * Adds an appender for the given log categories and returns this
-     * category - for use in a fluent interface way. Use logical OR to 
-     * combine the log types or use LogLevel::ALL (default) to log all 
+     * category - for use in a fluent interface way. Use logical OR to
+     * combine the log types or use LogLevel::ALL (default) to log all
      * types.
      *
      * @param   util.log.Appender appender The appender object
@@ -155,11 +186,11 @@
       $this->_appenders[$flag][$appender->hashCode()]= $appender;
       return $this;
     }
-    
+
     /**
      * Remove the specified appender from the given log categories. For usage
      * of log category flags, see addAppender().
-     * 
+     *
      * @param   util.log.Appender appender
      * @param   int flag default LogLevel::ALL
      */
@@ -167,14 +198,14 @@
       foreach ($this->_appenders as $f => $appenders) {
         if (!($f & $flag)) continue;
         unset($this->_appenders[$f][$appender->hashCode()]);
-        
+
         // Last appender for this flag removed - remove flag alltogether
         if (0 === sizeof($this->_appenders[$f])) {
           unset($this->_appenders[$f]);
         }
       }
     }
-    
+
     /**
      * Gets appenders
      *
@@ -191,7 +222,7 @@
 
     /**
      * Appends a log of type info. Accepts any number of arguments of
-     * any type. 
+     * any type.
      *
      * The common rule (though up to each appender on how to realize it)
      * for serialization of an argument is:
@@ -215,12 +246,12 @@
     /**
      * Appends a log of type info in sprintf-style. The first argument
      * to this method is the format string, containing sprintf-tokens,
-     * the rest of the arguments are used as argument to sprintf. 
+     * the rest of the arguments are used as argument to sprintf.
      *
      * Note: This also applies to warnf(), errorf() and debugf().
      *
      * @see     php://sprintf
-     * @param   string format 
+     * @param   string format
      * @param   var* args
      */
     public function infof() {
@@ -241,7 +272,7 @@
     /**
      * Appends a log of type info in printf-style
      *
-     * @param   string format 
+     * @param   string format
      * @param   var* args
      */
     public function warnf() {
@@ -262,7 +293,7 @@
     /**
      * Appends a log of type info in printf-style
      *
-     * @param   string format 
+     * @param   string format
      * @param   var* args
      */
     public function errorf() {
@@ -279,7 +310,7 @@
       $args= func_get_args();
       $this->callAppenders(LogLevel::DEBUG, $args);
     }
- 
+
     /**
      * Appends a log of type info in printf-style
      *
@@ -290,7 +321,7 @@
       $args= func_get_args();
       $this->callAppenders(LogLevel::DEBUG, array(vsprintf($args[0], array_slice($args, 1))));
     }
-   
+
     /**
      * Appends a separator (a "line" consisting of 72 dashes)
      *
@@ -298,7 +329,7 @@
     public function mark() {
       $this->callAppenders(LogLevel::INFO, array(str_repeat('-', 72)));
     }
-    
+
     /**
      * Helper method for equals
      *
@@ -343,7 +374,7 @@
       foreach ($this->_appenders as $flags => $appenders) {
         $s.= '  '.$flags.": [\n";
         foreach ($appenders as $appender) {
-          $s.= '  - '.$appender->toString()."\n"; 
+          $s.= '  - '.$appender->toString()."\n";
         }
         $s.= "  ]\n";
       }

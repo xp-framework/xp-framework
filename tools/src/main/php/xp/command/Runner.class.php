@@ -7,9 +7,10 @@
   $package= 'xp.command';
 
   uses(
+    'lang.System',
     'util.cmd.ParamString',
-    'io.streams.StringReader', 
-    'io.streams.StringWriter', 
+    'io.streams.StringReader',
+    'io.streams.StringWriter',
     'io.streams.ConsoleInputStream',
     'io.streams.ConsoleOutputStream',
     'util.log.Logger',
@@ -33,7 +34,7 @@
    *   in this paths, the Logger will be configured with. If any
    *   database.ini are present there, the ConnectionManager will be
    *   configured with it. (If not given etc is used as default path)
-   * 
+   *
    * -cp:
    *   Add the path value to the class path.
    *
@@ -51,18 +52,18 @@
       $in     = NULL,
       $out    = NULL,
       $err    = NULL;
-    
+
     private
       $verbose= FALSE;
 
     const DEFAULT_CONFIG_PATH = 'etc';
-    
+
     static function __static() {
       self::$in= new StringReader(new ConsoleInputStream(STDIN));
       self::$out= new StringWriter(new ConsoleOutputStream(STDOUT));
       self::$err= new StringWriter(new ConsoleOutputStream(STDERR));
     }
-  
+
     /**
      * Converts api-doc "markup" to plain text w/ ASCII "art"
      *
@@ -77,7 +78,7 @@
         $line, $line, '* ',
       ), trim($markup)));
     }
-    
+
     /**
      * Show usage
      *
@@ -135,7 +136,7 @@
         self::$err->writeLine('* ', $which, "\n  ", str_replace("\n", "\n  ", $comment), "\n");
       }
     }
-  
+
     /**
      * Main method
      *
@@ -156,7 +157,7 @@
       self::$in= new StringReader($in);
       return $in;
     }
-    
+
     /**
      * Reassigns standard output stream
      *
@@ -178,7 +179,7 @@
       self::$err= new StringWriter($err);
       return $err;
     }
-    
+
     /**
      * Main method
      *
@@ -214,13 +215,13 @@
         default:
           break 2;
       }
-      
+
       // Sanity check
       if (!$params->exists($offset)) {
         self::$err->writeLine('*** Missing classname');
         return 1;
       }
-      
+
       // Use default path for PropertyManager if no sources set
       if (!$pm->getSources()) {
         $pm->configure(self::DEFAULT_CONFIG_PATH);
@@ -241,13 +242,13 @@
         $path= dirname($uri);
         $paths= array_flip(array_map('realpath', xp::$registry['classpath']));
         $class= NULL;
-        while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) { 
+        while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) {
           if (isset($paths[$path])) {
             $class= XPClass::forName(strtr(substr($uri, strlen($path)+ 1, -10), DIRECTORY_SEPARATOR, '.'));
             break;
           }
 
-          $path= substr($path, 0, $pos); 
+          $path= substr($path, 0, $pos);
         }
 
         if (!$class) {
@@ -262,7 +263,7 @@
           return 1;
         }
       }
-      
+
       // Check whether class is runnable
       if (!$class->isSubclassOf('lang.Runnable')) {
         self::$err->writeLine('*** ', $class->getName(), ' is not runnable');
@@ -281,6 +282,16 @@
 
       $cm= ConnectionManager::getInstance();
       $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
+
+      // Setup logger context for all registered log categories
+      foreach (Logger::getInstance()->getCategories() as $category) {
+        if (NULL === ($context= $category->getContext())) continue;
+        $context->setHostname(System::getProperty('host.name'));
+        $context->setRunner($this->getClassName());
+        $context->setInstance($class->getName());
+        $context->setResource(NULL);
+        $context->setParams($params->string);
+      }
 
       $instance= $class->newInstance();
       $instance->in= self::$in;
@@ -353,7 +364,7 @@
           return 2;
         }
       }
-      
+
       // Arguments
       foreach ($methods as $method) {
         if ($method->hasAnnotation('args')) { // Pass all arguments

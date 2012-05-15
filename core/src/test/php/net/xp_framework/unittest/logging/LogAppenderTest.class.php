@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
@@ -20,7 +20,7 @@
   class LogAppenderTest extends TestCase {
     protected $fixture= NULL;
     protected $events= NULL;
-  
+
     /**
      * Sets up test case
      *
@@ -42,7 +42,7 @@
         ->withAppender($appender->withLayout(new PatternLayout('[%l] %m')))
       ;
     }
-    
+
     /**
      * Test
      *

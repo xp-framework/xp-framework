@@ -1,12 +1,13 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
     'unittest.TestCase',
-    'util.log.layout.PatternLayout'
+    'util.log.layout.PatternLayout',
+    'util.log.context.LogContextMDC'
   );
 
   /**
@@ -18,22 +19,22 @@
 
     /**
      * Test illegal format token %Q
-     * 
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function illegalFormatToken() {
       new PatternLayout('%Q');
     }
- 
+
     /**
      * Test unterminated format token
-     * 
+     *
      */
     #[@test, @expect('lang.IllegalArgumentException')]
     public function unterminatedFormatToken() {
       new PatternLayout('%');
     }
-    
+
     /**
      * Creates a new logging event
      *
@@ -41,17 +42,17 @@
      */
     protected function newLoggingEvent() {
       return new LoggingEvent(
-        new LogCategory('default'), 
-        1258733284, 
-        1214, 
-        LogLevel::WARN, 
+        new LogCategory('default'),
+        1258733284,
+        1214,
+        LogLevel::WARN,
         array('Hello')
-      );   
+      );
     }
 
     /**
      * Test literal percent
-     * 
+     *
      */
     #[@test]
     public function literalPercent() {
@@ -86,6 +87,28 @@
       $this->assertEquals(
         '[16:08:04 1214 warn] Hello',
         create(new PatternLayout('[%t %p %l] %m'))->format($this->newLoggingEvent())
+      );
+    }
+
+    /**
+     * Test format token %x
+     *
+     */
+    #[@test]
+    public function tokenContext() {
+      $context= new LogContextMDC();
+      $context->put('key1', 'val1');
+      $event= new LoggingEvent(
+        new LogCategory('default', NULL, NULL, 0),
+        1258733284,
+        1,
+        LogLevel::INFO,
+        array('Hello'),
+        $context
+      );
+      $this->assertEquals(
+        'key1=val1',
+        create(new PatternLayout('%x'))->format($event)
       );
     }
   }

@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   $package= 'xp.scriptlet';
@@ -14,7 +14,7 @@
     'scriptlet.HttpScriptlet',
     'peer.http.HttpConstants'
   );
-  
+
   /**
    * Scriptlet runner
    *
@@ -39,7 +39,7 @@
         }
       }
     }
-    
+
     /**
      * Creates a new scriptlet runner
      *
@@ -52,7 +52,7 @@
     }
 
     /**
-     * Read string. First tries special section "section"@"profile", then defaults 
+     * Read string. First tries special section "section"@"profile", then defaults
      * to "section"
      *
      * @param   util.Properties conf
@@ -67,9 +67,9 @@
       }
       return $s;
     }
-    
+
     /**
-     * Read array. First tries special section "section"@"profile", then defaults 
+     * Read array. First tries special section "section"@"profile", then defaults
      * to "section"
      *
      * @param   util.Properties conf
@@ -84,9 +84,9 @@
       }
       return $a;
     }
-    
+
     /**
-     * Read hashmap. First tries special section "section"@"profile", then defaults 
+     * Read hashmap. First tries special section "section"@"profile", then defaults
      * to "section"
      *
      * @param   util.Properties conf
@@ -101,7 +101,7 @@
       }
       return $h;
     }
-    
+
     /**
      * Creates a web application object from a given configuration section
      *
@@ -119,7 +119,7 @@
 
       $app= new WebApplication($application);
       $app->setScriptlet($this->readString($conf, $section, 'class', ''));
-      
+
       // Configuration base
       $app->setConfig($this->expand($this->readString($conf, $section, 'prop-base', $this->webroot.'/etc')));
 
@@ -129,20 +129,20 @@
         $flags |= WebDebug::flagNamed($lvl);
       }
       $app->setDebug($flags);
-      
+
       // Initialization arguments
       $args= array();
       foreach ($this->readArray($conf, $section, 'init-params', array()) as $value) {
         $args[]= $this->expand($value);
       }
       $app->setArguments($args);
- 
+
       // Environment
       $app->setEnvironment($this->readHash($conf, $section, 'init-envs', new Hashmap())->toArray());
-     
+
       return $app;
     }
-    
+
     /**
      * Configure this runner with a web.ini
      *
@@ -168,7 +168,7 @@
         throw new IllegalStateException('Web misconfigured: "app" section missing or broken');
       }
     }
-    
+
     /**
      * Entry point method. Receives the following arguments from web.php:
      * <ol>
@@ -184,7 +184,7 @@
       $r->configure(new Properties($args[0].'/etc/web.ini'));
       $r->run($args[2]);
     }
-    
+
     /**
      * Find which application the given url maps to
      *
@@ -239,33 +239,43 @@
         '{PROFILE}' => $this->profile,
       ));
     }
-    
+
     /**
      * Creates the scriptlet instance for the given URL and runs it
      *
      * @param   string url default '/'
      */
     public function run($url= '/') {
-    
+
       // Determine which scriptlet should be run
       $application= $this->applicationAt($url);
 
       // Determine debug level
       $flags= $application->getDebug();
-      
-      // Initializer logger, properties and connections to property base, 
+
+      // Initializer logger, properties and connections to property base,
       // defaulting to the same directory the web.ini resides in
       $pm= PropertyManager::getInstance();
       foreach (explode('|', $application->getConfig()) as $element) {
         $pm->appendSource(new FilesystemPropertySource($element));
       }
-      
+
       $l= Logger::getInstance();
       $pm->hasProperties('log') && $l->configure($pm->getProperties('log'));
 
       $cm= ConnectionManager::getInstance();
       $pm->hasProperties('database') && $cm->configure($pm->getProperties('database'));
-      
+
+      // Setup logger context for all registered log categories
+      foreach (Logger::getInstance()->getCategories() as $category) {
+        if (NULL === ($context= $category->getContext())) continue;
+        $context->setHostname($_SERVER['SERVER_NAME']);
+        $context->setRunner($this->getClassName());
+        $context->setInstance($application->getScriptlet());
+        $context->setResource($url);
+        $context->setParams($_SERVER['QUERY_STRING']);
+      }
+
       // Set environment variables
       foreach ($application->getEnvironment() as $key => $value) {
         putenv($key.'='.$value);
@@ -282,12 +292,12 @@
         } else {
           $instance= $class->getConstructor()->newInstance($application->getArguments());
         }
-        
+
         if ($flags & WebDebug::TRACE && $instance instanceof Traceable) {
           $instance->setTrace($cat);
         }
         $instance->init();
-      
+
         // Service
         $response= $instance->process();
       } catch (ScriptletException $e) {
@@ -328,7 +338,7 @@
         flush();
         echo '<xmp>', $response->document->getDeclaration()."\n".$response->document->getSource(0), '</xmp>';
       }
-      
+
       if (($flags & WebDebug::ERRORS)) {
         flush();
         echo '<xmp>', $e ? $e->toString() : '', xp::stringOf(xp::registry('errors')), '</xmp>';

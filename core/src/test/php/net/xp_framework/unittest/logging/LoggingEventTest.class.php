@@ -1,12 +1,13 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
     'unittest.TestCase',
-    'util.log.LoggingEvent'
+    'util.log.LoggingEvent',
+    'util.log.context.LogContextMDC'
   );
 
   /**
@@ -16,21 +17,21 @@
    */
   class LoggingEventTest extends TestCase {
     protected $fixture= NULL;
-  
+
     /**
      * Creates fixture
      *
      */
     public function setUp() {
       $this->fixture= new LoggingEvent(
-        new LogCategory('default', NULL, NULL, 0), 
-        1258733284, 
-        1, 
-        LogLevel::INFO, 
+        new LogCategory('default', NULL, NULL, 0),
+        1258733284,
+        1,
+        LogLevel::INFO,
         array('Hello')
       );
     }
-  
+
     /**
      * Test getCategory() method
      *
@@ -39,7 +40,7 @@
     public function getCategory() {
       $this->assertEquals(new LogCategory('default', NULL, NULL, 0), $this->fixture->getCategory());
     }
- 
+
     /**
      * Test getTimestamp() method
      *
@@ -74,6 +75,34 @@
     #[@test]
     public function getArguments() {
       $this->assertEquals(array('Hello'), $this->fixture->getArguments());
+    }
+
+    /**
+     * Test getContextAsString() method
+     *
+     */
+    #[@test]
+    public function getContextAsStringWithoutContext() {
+      $this->assertNull($this->fixture->getContextAsString());
+    }
+
+    /**
+     * Test getContextAsString() method
+     *
+     */
+    #[@test]
+    public function getContextAsStringWithContext() {
+      $context= new LogContextMDC();
+      $context->put('key1', 'val1');
+      $event= new LoggingEvent(
+        new LogCategory('default', NULL, NULL, 0),
+        1258733284,
+        1,
+        LogLevel::INFO,
+        array('Hello'),
+        $context
+      );
+      $this->assertEquals('key1=val1', $event->getContextAsString());
     }
   }
 ?>
