@@ -185,6 +185,8 @@
      *
      * @param   string name
      * @return  io.collections.IOElement
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function newElement($name) {
       $qualified= $this->qualifiedName($name);
@@ -201,6 +203,8 @@
      *
      * @param   string name
      * @return  io.collections.IOCollection
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function newCollection($name) {
       $qualified= $this->qualifiedName($name);
@@ -217,6 +221,8 @@
      *
      * @param   string name
      * @return  io.collections.IOElement
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function findElement($name) {
       $qualified= $this->qualifiedName($name);
@@ -232,6 +238,8 @@
      *
      * @param   string name
      * @return  io.collections.IOCollection
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function findCollection($name) {
       $qualified= $this->qualifiedName($name);
@@ -248,6 +256,8 @@
      * @param   string name
      * @return  io.collections.IOElement
      * @throws  util.NoSuchElementException
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function getElement($name) {
       if (!($found= $this->findElement($name))) {
@@ -262,6 +272,8 @@
      * @param   string name
      * @return  io.collections.IOCollection
      * @throws  util.NoSuchElementException
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function getCollection($name) {
       if (!($found= $this->findCollection($name))) {
@@ -274,6 +286,8 @@
      * Removes an element from this collection
      *
      * @param   string name
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function removeElement($name) {
       $qualified= $this->qualifiedName($name);
@@ -286,6 +300,8 @@
      * Removes a collection from this collection
      *
      * @param   string name
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
      */
     public function removeCollection($name) {
       $qualified= $this->qualifiedName($name);
