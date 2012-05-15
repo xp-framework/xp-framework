@@ -8,6 +8,7 @@
    * HttpConstants defines basic HTTP names and all HTTP/1.1 protocol entity names.
    *
    * @see      http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html HTTP methods
+   * @see      http://tools.ietf.org/html/rfc6585
    * @purpose  HTTP constants
    */
   class HttpConstants extends Object {
@@ -62,6 +63,9 @@
       STATUS_UNPROCESSABLE_ENTITY              = 422,
       STATUS_LOCKED                            = 423,
       STATUS_FAILED_DEPENDENCY                 = 424,
+      STATUS_PRECONDITION_REQUIRED             = 428,
+      STATUS_TOO_MANY_REQUESTS                 = 429,
+      STATUS_REQUEST_HEADER_FIELDS_TOO_LARGE   = 431,
       STATUS_INTERNAL_SERVER_ERROR             = 500,
       STATUS_METHOD_NOT_IMPLEMENTED            = 501,
       STATUS_BAD_GATEWAY                       = 502,
@@ -70,7 +74,8 @@
       STATUS_HTTP_VERSION_NOT_SUPPORTED        = 505,
       STATUS_VARIANT_ALSO_NEGOTIATES           = 506,
       STATUS_INSUFFICIENT_STORAGE              = 507,
-      STATUS_NOT_EXTENDED                      = 510;
+      STATUS_NOT_EXTENDED                      = 510,
+      STATUS_NETWORK_AUTHENTICATION_REQUIRED   = 511;
 
     const 
       VERSION_0_9 = '0.9',
