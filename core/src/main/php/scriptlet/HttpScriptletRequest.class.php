@@ -270,9 +270,59 @@
      */
     public function setHeaders($headers) {
       $this->headers= $this->headerlookup= array();
+      foreach(array('Content-Type', 'Accept', 'Accept-Encoding', 'Accept-Language', 'Accept-Charset') as $header_key) {
+        $headers[$header_key] = $this->parseQuality($headers[$header_key]); 
+      }
       foreach ($headers as $name => $value) {
         $this->addHeader($name, $value);
       }
+    }
+
+    /**
+     * Parse Quality of Header-Entry.
+     *
+     * @param string header_value
+     * @return string the entry with highest quality
+     */
+    private function parseQuality($header_value) {
+        $candidate_map = array();
+
+        foreach(explode(',', $header_value) as $header_candidate) {
+            if(strstr($header_candidate, ';')) {
+                list($media_type, $quality) = $this->parseQualityBit($header_candidate); 
+                $map[$media_type] = $quality; 
+            } else {
+                // no quality, set 0.1
+                $map[$header_candidate] = 0.1; 
+            }
+        }
+        asort($map); 
+        return end( array_keys( $map)); 
+    }
+
+    /** 
+     * Parse Quality Bit
+     * 
+     * @params string header_bit
+     * @return array [quality, value]
+     *
+     */ 
+    private function parseQualityBit($header_bit) {
+        $values = explode(';', $header_bit); 
+        // first key is value, next keys are options 
+        $media_type = array_shift($values); 
+        // the rest on the array should only foo=bar values 
+        foreach( $values as $value) {
+            $value = trim($value); 
+            if(strstr($value, '=')) {
+                list($qkey, $qval) = explode('=', $value, 2); 
+                $qval = (float) $qval; 
+                if($qkey == 'q') {
+                    return array($media_type, $qval); 
+                }
+            } 
+        }
+        return array($media_type, 0.1); 
     }
 
     /**
