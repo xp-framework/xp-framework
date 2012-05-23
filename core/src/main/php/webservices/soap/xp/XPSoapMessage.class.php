@@ -100,13 +100,13 @@
       ));
       
       if (!empty($headers)) {
-        $header= $this->root->addChild(new Node('SOAP-ENV:Header'));
+        $header= $this->root()->addChild(new Node('SOAP-ENV:Header'));
         for ($i= 0, $s= sizeof($headers); $i < $s; $i++) {
           $header->addChild($headers[$i]->getNode($this->namespaces));
         }
       }
       
-      $this->body= $this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->body= $this->root()->addChild(new Node('SOAP-ENV:Body'));
       $this->body->addChild(new Node($this->namespace.':'.$this->method));
     }
     
@@ -134,13 +134,13 @@
       $this->root= new Node('SOAP-ENV:Envelope', NULL, $ns);
       
       if (!empty($headers)) {
-        $header= $this->root->addChild(new Node('SOAP-ENV:Header'));
+        $header= $this->root()->addChild(new Node('SOAP-ENV:Header'));
         for ($i= 0, $s= sizeof($headers); $i < $s; $i++) {
           $header->addChild($headers[$i]->getNode($this->namespaces));
         }
       }
       
-      $this->body= $this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->body= $this->root()->addChild(new Node('SOAP-ENV:Body'));
       $this->body->addChild(new Node($this->namespace.':'.$this->method));
       $this->mapping= new XPSoapMapping();
     }
@@ -407,13 +407,13 @@
      * @param   var detail default NULL
      */    
     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= XPSoapNode::fromObject(new CommonSoapFault(
+      $this->root()->children[0]->children[0]= XPSoapNode::fromObject(new CommonSoapFault(
         $faultcode,
         $faultstring,
         $faultactor,
         $detail
       ), 'SOAP-ENV:Fault', $this->mapping);
-      $this->root->children[0]->children[0]->name= 'SOAP-ENV:Fault';
+      $this->root()->children[0]->children[0]->name= 'SOAP-ENV:Fault';
     }
 
     /**
@@ -472,9 +472,9 @@
       $this->_retrieveNamespaces($this->root);
       
       if (0 == strcasecmp(
-        $this->root->children[0]->getName(),
+        $this->root()->children[0]->getName(),
         $this->namespaces[XMLNS_SOAPENV].':Header'
-      )) return $this->root->children[0];
+      )) return $this->root()->children[0];
       
       return FALSE;
     }
@@ -493,11 +493,11 @@
       // Search for the body node. For usual, this will be the first element,
       // but some SOAP clients may include a header node (which we silently 
       // ignore for now).
-      for ($i= 0, $s= sizeof($this->root->children); $i < $s; $i++) {
+      for ($i= 0, $s= sizeof($this->root()->children); $i < $s; $i++) {
         if (0 == strcasecmp(
-          $this->root->children[$i]->getName(), 
+          $this->root()->children[$i]->getName(),
           $this->namespaces[XMLNS_SOAPENV].':Body'
-        )) return $this->root->children[$i];
+        )) return $this->root()->children[$i];
       }
 
       throw new FormatException('Could not locate Body element');

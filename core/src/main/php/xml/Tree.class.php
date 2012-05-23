@@ -43,6 +43,15 @@
     }
 
     /**
+     * Retrieve root node
+     *
+     * @return   xml.Node
+     */
+    public function root() {
+      return $this->root;
+    }
+
+    /**
      * Set encoding
      *
      * @param   string e encoding
@@ -210,7 +219,7 @@
         $parent->addChild($node);
         $this->_cdata= '';
       } else {
-        $this->root->content= $this->_cdata;
+        $this->root()->content= $this->_cdata;
         $this->_cdata= '';
       }
       $this->_cnt--;

@@ -39,8 +39,8 @@
       $msg->createCall('Test', 'testSerialization');
       $this->assertEquals($msg->action, 'Test');
       $this->assertEquals($msg->method, 'testSerialization');
-      $this->assertEquals($msg->root->name, 'SOAP-ENV:Envelope');
-      $this->assertNotEmpty($msg->root->attribute);
+      $this->assertEquals($msg->root()->name, 'SOAP-ENV:Envelope');
+      $this->assertNotEmpty($msg->root()->attribute);
       $msg->setData(array(
         'int'       => 1,
         'float'     => 6.1,

@@ -70,7 +70,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'@('.$this->root->getSource(INDENT_DEFAULT).')';
+      return $this->getClassName().'@('.$this->root()->getSource(INDENT_DEFAULT).')';
     }
   }
 ?>

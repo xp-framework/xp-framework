@@ -104,8 +104,8 @@
     public function successfulTest() {
       $t= $this->runTests(new SimpleTestCase('succeeds'));
 
-      $this->assertEquals('testsuites', $t->root->getName());
-      with ($suite= @$t->root->children[0]); {
+      $this->assertEquals('testsuites', $t->root()->getName());
+      with ($suite= @$t->root()->children[0]); {
         $this->assertSuiteNode(
           'net.xp_framework.unittest.tests.SimpleTestCase',
           array('tests' => '1', 'errors' => '0', 'failures' => '0', 'skipped' => '0'),
@@ -127,8 +127,8 @@
     public function skippedTest() {
       $t= $this->runTests(new SimpleTestCase('skipped'));
 
-      $this->assertEquals('testsuites', $t->root->getName());
-      with ($suite= @$t->root->children[0]); {
+      $this->assertEquals('testsuites', $t->root()->getName());
+      with ($suite= @$t->root()->children[0]); {
         $this->assertSuiteNode(
           'net.xp_framework.unittest.tests.SimpleTestCase',
           array('tests' => '1', 'errors' => '0', 'failures' => '0', 'skipped' => '1'),
@@ -150,8 +150,8 @@
     public function failingTest() {
       $t= $this->runTests(new SimpleTestCase('fails'));
 
-      $this->assertEquals('testsuites', $t->root->getName());
-      with ($suite= @$t->root->children[0]); {
+      $this->assertEquals('testsuites', $t->root()->getName());
+      with ($suite= @$t->root()->children[0]); {
         $this->assertSuiteNode(
           'net.xp_framework.unittest.tests.SimpleTestCase',
           array('tests' => '1', 'errors' => '0', 'failures' => '1', 'skipped' => '0'),
@@ -180,8 +180,8 @@
     public function errorTest() {
       $t= $this->runTests(new SimpleTestCase('throws'));
 
-      $this->assertEquals('testsuites', $t->root->getName());
-      with ($suite= @$t->root->children[0]); {
+      $this->assertEquals('testsuites', $t->root()->getName());
+      with ($suite= @$t->root()->children[0]); {
         $this->assertSuiteNode(
           'net.xp_framework.unittest.tests.SimpleTestCase',
           array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
@@ -210,8 +210,8 @@
     public function warningTest() {
       $t= $this->runTests(new SimpleTestCase('raisesAnError'));
 
-      $this->assertEquals('testsuites', $t->root->getName());
-      with ($suite= @$t->root->children[0]); {
+      $this->assertEquals('testsuites', $t->root()->getName());
+      with ($suite= @$t->root()->children[0]); {
         $this->assertSuiteNode(
           'net.xp_framework.unittest.tests.SimpleTestCase',
           array('tests' => '1', 'errors' => '1', 'failures' => '0', 'skipped' => '0'),
@@ -240,8 +240,8 @@
     public function multipleTests() {
       $t= $this->runTests(new SimpleTestCase('succeeds'), new SimpleTestCase('fails'));
 
-      $this->assertEquals('testsuites', $t->root->getName());
-      with ($suite= @$t->root->children[0]); {
+      $this->assertEquals('testsuites', $t->root()->getName());
+      with ($suite= @$t->root()->children[0]); {
         $this->assertSuiteNode(
           'net.xp_framework.unittest.tests.SimpleTestCase',
           array('tests' => '2', 'errors' => '0', 'failures' => '1', 'skipped' => '0'),
