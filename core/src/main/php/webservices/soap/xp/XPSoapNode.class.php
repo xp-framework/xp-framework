@@ -62,7 +62,7 @@
      * @return  var data
      */
     public function getContent($encoding= NULL, $namespaces= NULL) {
-      $ret= $this->content;
+      $ret= parent::getContent();
       @list($ns, $t)= explode(':', @$this->attribute[$namespaces[XMLNS_XSI].':type']);
       
       switch (strtolower($t)) {
