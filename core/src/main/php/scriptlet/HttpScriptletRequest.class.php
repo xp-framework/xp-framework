@@ -270,61 +270,11 @@
      */
     public function setHeaders($headers) {
       $this->headers= $this->headerlookup= array();
-      foreach(array('Content-Type', 'Accept', 'Accept-Encoding', 'Accept-Language', 'Accept-Charset') as $header_key) {
-        if(array_key_exists($header_key, $headers)) $headers[$header_key] = $this->parseQuality($headers[$header_key]); 
-      }
       foreach ($headers as $name => $value) {
         $this->addHeader($name, $value);
       }
     }
 
-    /**
-     * Parse Quality of Header-Entry.
-     *
-     * @param string header_value
-     * @return string the entry with highest quality
-     */
-    private function parseQuality($header_value) {
-        $candidate_map = array();
-
-        foreach(explode(',', $header_value) as $header_candidate) {
-            if(strstr($header_candidate, ';')) {
-                list($media_type, $quality) = $this->parseQualityBit($header_candidate); 
-                $map[$media_type] = $quality; 
-            } else {
-                // no quality, set q=1, as defined in RFC 2616
-                $map[$header_candidate] = 1; 
-            }
-        }
-        asort($map); 
-        $map = array_keys( $map); 
-        return trim( end( $map)); 
-    }
-
-    /** 
-     * Parse Quality Bit
-     * 
-     * @params string header_bit
-     * @return array [quality, value]
-     *
-     */ 
-    private function parseQualityBit($header_bit) {
-        $values = explode(';', $header_bit); 
-        // first key is value, next keys are options 
-        $media_type = array_shift($values); 
-        // the rest on the array should only foo=bar values 
-        foreach( $values as $value) {
-            $value = trim($value); 
-            if(strstr($value, '=')) {
-                list($qkey, $qval) = explode('=', $value, 2); 
-                $qval = (float) $qval; 
-                if($qkey == 'q') {
-                    return array($media_type, $qval); 
-                }
-            } 
-        }
-        return array($media_type, 0.1); 
-    }
 
     /**
      * Add single header - overwrites header if already set
@@ -414,6 +364,108 @@
      */
     public function isMultiPart() {
       return (bool)strstr($this->getHeader('Content-Type'), 'multipart/form-data');
+    }
+
+    /**
+     *  Returns the Accept Header by quality-param
+     *  
+     * @return php.stdClass
+     */
+    public function getAccept() {
+      return $this->parseQuality( $this->getHeader('Accept'));
+    }
+
+    /**
+     *  Returns the Accept-Charset Header by quality-param
+     *  
+     * @return php.stdClass
+     */
+    public function getAcceptCharset() {
+      return $this->parseQuality( $this->getHeader('Accept-Charset'));
+    }
+
+    /**
+     *  Returns the Accept-Encoding Header by quality-param
+     *  
+     * @return php.stdClass
+     */
+    public function getAcceptEncoding() {
+      return $this->parseQuality( $this->getHeader('Accept-Encoding'));
+    }
+
+    /**
+     *  Returns the Accept-Language Header by quality-param
+     *  
+     * @return php.stdClass
+     */
+    public function getAcceptLanguage() {
+      return $this->parseQuality( $this->getHeader('Accept-Language'));
+    }
+
+    /**
+     * Parse Quality of Header-Entry.
+     *
+     * @param string header_value
+     * @return php.stdClass 
+     */
+    private function parseQuality($header_value) {
+      $candidate_map = array();
+
+      foreach (explode(',', $header_value) as $header_candidate) {
+        if (strstr($header_candidate, ';')) {
+          list ($media_type, $quality) = $this->parseQualityBit($header_candidate); 
+          $map[trim($media_type)] = $quality; 
+        } else {
+          // no quality, set q=1, as defined in RFC 2616
+          $map[trim($header_candidate)] = 1; 
+        }
+      }
+
+      asort($map); 
+      $map_obj  = new stdClass();
+      $map_keys = array_keys($map); 
+
+      $map_obj->best_type  = end( $map_keys); 
+      $map_obj->all_types  = $map_keys; 
+      $map_obj->list       = array();
+
+      foreach (array_reverse($map) as $mapk => $mapv) {
+        $mapo             = new stdClass();
+        $mapo->type       = $mapk; 
+        $mapo->quality    = $mapv;
+        $map_obj->list[]  = $mapo; 
+      }
+
+      return $map_obj; 
+    }
+
+    /** 
+     * Parse Quality Bit
+     * 
+     * @params string header_bit
+     * @return array [quality, value]
+     *
+     */ 
+    private function parseQualityBit($header_bit) {
+      $values = explode(';', $header_bit); 
+
+      // first key is value, next keys are options 
+      $media_type = array_shift($values); 
+
+      // the rest on the array should only foo=bar values 
+      foreach ( $values as $value) {
+        $value = trim($value); 
+
+        if (strstr($value, '=')) {
+          list ($qkey, $qval) = explode('=', $value, 2); 
+
+          if ($qkey == 'q') {
+            $qval = (float) $qval; 
+            return array($media_type, $qval); 
+          }
+        } 
+      }
+      return array($media_type, 1); 
     }
   }
 ?>
