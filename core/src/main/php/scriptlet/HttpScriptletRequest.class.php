@@ -271,7 +271,7 @@
     public function setHeaders($headers) {
       $this->headers= $this->headerlookup= array();
       foreach(array('Content-Type', 'Accept', 'Accept-Encoding', 'Accept-Language', 'Accept-Charset') as $header_key) {
-        $headers[$header_key] = $this->parseQuality($headers[$header_key]); 
+        if(array_key_exists($header_key, $headers)) $headers[$header_key] = $this->parseQuality($headers[$header_key]); 
       }
       foreach ($headers as $name => $value) {
         $this->addHeader($name, $value);
@@ -292,12 +292,13 @@
                 list($media_type, $quality) = $this->parseQualityBit($header_candidate); 
                 $map[$media_type] = $quality; 
             } else {
-                // no quality, set 0.1
-                $map[$header_candidate] = 0.1; 
+                // no quality, set q=1, as defined in RFC 2616
+                $map[$header_candidate] = 1; 
             }
         }
         asort($map); 
-        return end( array_keys( $map)); 
+        $map = array_keys( $map); 
+        return trim( end( $map)); 
     }
 
     /** 

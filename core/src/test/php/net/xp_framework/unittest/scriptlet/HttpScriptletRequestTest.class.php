@@ -426,5 +426,81 @@
       $r->addHeader('headername', 'b');
       $this->assertEquals('b', $r->getHeader('HeaderName'));
     }
+
+    /**
+     * Test setHeader() with quality params on Accept
+     *
+     */
+    #[@test]
+    public function testHeaderWithQualityParamOnAccept() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept' => 'application/json, */*; q=0.01, application/json'
+      ));
+      
+      $this->assertEquals('application/json', $r->getHeader('Accept'));
+    }
+
+    /**
+     * Test setHeader() with more complex quality params on Accept without whitespaces
+     *
+     * @see http://shiflett.org/blog/2011/may/the-accept-header
+     */
+    #[@test]
+    public function testHeaderWithMoreComplexQualityParamsOnAcceptWithoutWhitespaces() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8,application/json'
+      ));
+      
+      $this->assertEquals('text/html', $r->getHeader('Accept'));
+    }
+
+    /**
+     * Test setHeader() with non-existent setted Header
+     *
+     */
+    #[@test]
+    public function testHeaderWithNonExistentHeader() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array( ));
+      
+      $this->assertEquals(null, $r->getHeader('Accept'));
+    }
+
+    /**
+     * Test setHeader() with null-byte injected
+     *
+     */
+    #[@test]
+    public function testHeaderWithNullByteInjected() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept' => 'text/html,application/xhtml+xml'.chr(0).',application/xml;q=0.9,*/*;q=0.8,application/json'
+      ));
+      
+      $this->assertEquals('text/html', $r->getHeader('Accept'));
+    }
+
+    /**
+     * Test setHeader() with complex header-data
+     *
+     */
+    #[@test]
+    public function testHeaderWithMoreComplexData() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept' => 'text/css,*/*;q=0.1', 
+        'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.3', 
+        'Accept-Encoding' => 'gzip,deflate,sdch', 
+        'Accept-Language' => 'de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4'
+      ));
+      
+      $this->assertEquals('text/css',   $r->getHeader('Accept'));
+      $this->assertEquals('ISO-8859-1', $r->getHeader('Accept-Charset'));
+      $this->assertEquals('gzip',       $r->getHeader('Accept-Encoding'));
+      $this->assertEquals('de-DE',      $r->getHeader('Accept-Language'));
+      
+    }
   }
 ?>
