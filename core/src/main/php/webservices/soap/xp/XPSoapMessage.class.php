@@ -205,7 +205,7 @@
  
           // Create a copy and pass name to it
           $c= $body->children[$idx];
-          $c->name= $child->name;
+          $c->setName($child->getName());
           return $this->unmarshall($c, $context);
           break;
         }
@@ -369,8 +369,8 @@
       for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
         $key= $i;
         if ($names) {
-          $pos= strpos($node->children[$i]->name, ':');
-          $key= substr($node->children[$i]->name, $pos !== FALSE ? $pos + 1 : 0);
+          $pos= strpos($node->children[$i]->getName(), ':');
+          $key= substr($node->children[$i]->getName(), $pos !== FALSE ? $pos + 1 : 0);
         }
         
         // In case a value for the current key already exists, treat result
@@ -413,7 +413,7 @@
         $faultactor,
         $detail
       ), 'SOAP-ENV:Fault', $this->mapping);
-      $this->root()->children[0]->children[0]->name= 'SOAP-ENV:Fault';
+      $this->root()->children[0]->children[0]->setName('SOAP-ENV:Fault');
     }
 
     /**

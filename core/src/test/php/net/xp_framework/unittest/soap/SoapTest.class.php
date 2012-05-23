@@ -37,9 +37,9 @@
     public function testSerialization() {
       $msg= new XPSoapMessage();
       $msg->createCall('Test', 'testSerialization');
-      $this->assertEquals($msg->action, 'Test');
-      $this->assertEquals($msg->method, 'testSerialization');
-      $this->assertEquals($msg->root()->name, 'SOAP-ENV:Envelope');
+      $this->assertEquals('Test', $msg->action);
+      $this->assertEquals('testSerialization', $msg->method);
+      $this->assertEquals('SOAP-ENV:Envelope', $msg->root()->getName());
       $this->assertNotEmpty($msg->root()->attribute);
       $msg->setData(array(
         'int'       => 1,
@@ -58,8 +58,8 @@
       
       // Let's be somewhat forgiving on whitespace
       $src= trim(chop($msg->getSource(0)));
-      $this->assertEquals(substr($src, 0, 18), '<SOAP-ENV:Envelope');
-      $this->assertEquals(substr($src, -20), '</SOAP-ENV:Envelope>');
+      $this->assertEquals('<SOAP-ENV:Envelope', substr($src, 0, 18));
+      $this->assertEquals('</SOAP-ENV:Envelope>', substr($src, -20));
       
       $this->assertContains(
         $src, '<int xsi:type="xsd:int">1</int>', 'integer'

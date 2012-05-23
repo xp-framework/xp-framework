@@ -172,7 +172,7 @@
       }
 
       if ($value instanceof Parameter) {  // Named parameter
-        $child->name= $value->name;
+        $child->setName($value->name);
         $this->_marshall($child, $value->value, $mapping);
         return;
       }
@@ -188,7 +188,7 @@
       }
 
       if ($value instanceof SoapType) {   // Special SoapTypes
-        if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
+        if (FALSE !== ($name= $value->getItemName())) $child->setName($name);
         $this->_marshall($child, $value->toString(), $mapping);
 
         // Specified type

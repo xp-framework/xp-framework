@@ -86,7 +86,7 @@
       }      
       
       with ($c= $t->root()->children[0]); {
-        $this->assertEquals('attribute', $c->name);
+        $this->assertEquals('attribute', $c->getName());
         $this->assertTrue($c->hasAttribute('name'));
         $this->assertEquals('key', $c->getAttribute('name'));
         $this->assertEquals(0, sizeof($c->children));
