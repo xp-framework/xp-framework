@@ -166,6 +166,15 @@
     public function setAttribute($name, $value) {
       $this->attribute[$name]= $value;
     }
+
+    /**
+     * Sets all attributes
+     *
+     * @param   <string,string>[] attributes
+     */
+    public function setAttributes($attrs) {
+      $this->attribute= $attrs;
+    }
     
     /**
      * Retrieve an attribute by its name. Returns the default value if the
@@ -177,6 +186,15 @@
      */
     public function getAttribute($name, $default= NULL) {
       return isset($this->attribute[$name]) ? $this->attribute[$name] : $default;
+    }
+
+    /**
+     * Retrieve all attributes
+     *
+     * @return   <string, string>[] attributes
+     */
+    public function getAttributes() {
+      return $this->attribute;
     }
 
     /**

@@ -40,7 +40,7 @@
       $this->assertEquals('Test', $msg->action);
       $this->assertEquals('testSerialization', $msg->method);
       $this->assertEquals('SOAP-ENV:Envelope', $msg->root()->getName());
-      $this->assertNotEmpty($msg->root()->attribute);
+      $this->assertNotEmpty($msg->root()->getAttributes());
       $msg->setData(array(
         'int'       => 1,
         'float'     => 6.1,

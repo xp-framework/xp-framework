@@ -188,19 +188,19 @@
     public function unmarshall($child, $context= NULL) {
       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
       if (
-        isset($child->attribute[$this->namespaces[XMLNS_XSI].':null']) or       // Java
-        isset($child->attribute[$this->namespaces[XMLNS_XSI].':nil'])           // SOAP::Lite
+        $child->hasAttribute($this->namespaces[XMLNS_XSI].':null') or       // Java
+        $child->hasAttribute($this->namespaces[XMLNS_XSI].':nil')           // SOAP::Lite
       ) {
         return NULL;
       }
 
       // References
-      if (isset($child->attribute['href'])) {
+      if ($child->hasAttribute('href')) {
         $body= $this->_bodyElement();
         foreach (array_keys($body->children) as $idx) {
           if (0 != strcasecmp(
-            @$body->children[$idx]->attribute['id'],
-            substr($child->attribute['href'], 1)
+            @$body->children[$idx]->getAttribute('id'),
+            substr($child->getAttribute('href'), 1)
           )) continue;
  
           // Create a copy and pass name to it
@@ -212,14 +212,14 @@
       }
       
       // Update namespaces list
-      foreach ($child->attribute as $key => $val) {
+      foreach ($child->getAttributes() as $key => $val) {
         if (0 == strncmp('xmlns:', $key, 6)) $this->namespaces[$val]= substr($key, 6);
       }
       
       // Type dependant
-      if (!isset($child->attribute[$this->namespaces[XMLNS_XSI].':type']) || !preg_match(
+      if (!$child->hasAttribute($this->namespaces[XMLNS_XSI].':type') || !preg_match(
         '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
-        $child->attribute[$this->namespaces[XMLNS_XSI].':type'],
+        $child->getAttribute($this->namespaces[XMLNS_XSI].':type'),
         $regs
       )) {
         // E.g.: SOAP-ENV:Fault
@@ -227,8 +227,8 @@
       }
 
       // SOAP-ENC:arrayType="xsd:anyType[4]"
-      if (isset($child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType'])) {
-        $regs[1]= $child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType'];
+      if ($child->hasAttribute($this->namespaces[XMLNS_SOAPENC].':arrayType')) {
+        $regs[1]= $child->getAttribute($this->namespaces[XMLNS_SOAPENC].':arrayType');
         $regs[2]= 'Array';
       }
 
@@ -282,7 +282,7 @@
           if (empty($child->children)) break;
           foreach ($child->children as $item) {
             $key= $item->children[0]->getContent($this->getEncoding(), $this->namespaces);
-            $result[$key]= ((empty($item->children[1]->children) && !isset($item->children[1]->attribute['href']))
+            $result[$key]= ((empty($item->children[1]->children) && !$item->children[1]->hasAttribute('href'))
               ? $item->children[1]->getContent($this->getEncoding(), $this->namespaces)
               : $this->unmarshall($item->children[1], 'MAP')
             );
@@ -360,7 +360,7 @@
         return $a;
       }
 
-      foreach ($node->attribute as $key => $val) {
+      foreach ($node->getAttributes() as $key => $val) {
         if (0 != strncmp('xmlns:', $key, 6)) continue;
         $this->namespaces[$val]= substr($key, 6);
       }
@@ -453,7 +453,7 @@
      * @param   xml.SOAPNode node
      */
     protected function _retrieveNamespaces($node) {
-      foreach ($node->attribute as $key => $val) {
+      foreach ($node->getAttributes() as $key => $val) {
         if (0 != strncmp('xmlns:', $key, 6)) continue;
         $this->namespaces[$val]= substr($key, 6);
       }
