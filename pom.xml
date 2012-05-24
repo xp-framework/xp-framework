@@ -40,9 +40,9 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
+        <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>maven-xpframework-plugin</artifactId>
-        <version>1.1</version>
+        <version>2.0.0</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
@@ -50,9 +50,9 @@
 
   <!-- Source code management -->
   <scm>
-    <connection>scm:git:git@github.com:xp-framework/xp-framework.git</connection>
+    <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
     <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
-    <url>git@github.com:xp-framework/xp-framework.git</url>
+    <url>https://github.com/xp-framework/xp-framework</url>
   </scm>
 
 </project>
