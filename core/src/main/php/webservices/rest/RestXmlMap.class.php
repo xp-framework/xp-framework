@@ -20,11 +20,15 @@
         private $i= 0, $c;
         private function value($n) {
           if (empty($n->children)) return $n->getContent();
-          $result= array();
+          $names= array();
           foreach ($n->children as $c) {
-            $m= new self();
-            $m->c= $c->children;
-            $result[]= $m;
+            $names[$c->name]= TRUE;
+          }
+          $result= array();
+          if (sizeof($names) > 1) foreach ($n->children as $c) {
+            $result[$c->name]= $this->value($c);
+          } else foreach ($n->children as $c) {
+            $result[]= $this->value($c);
           }
           return $result;
         }
