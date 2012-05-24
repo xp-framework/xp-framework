@@ -6,12 +6,11 @@
 
   $package= 'net.xp_framework.unittest.webservices.rest';
 
-
   /**
-   * Issue
+   * Issues
    *
    */
-  class net·xp_framework·unittest·webservices·rest·Issues extends Object {
+  class net·xp_framework·unittest·webservices·rest·IssuesWithField extends Object {
     #[@type('net.xp_framework.unittest.webservices.rest.IssueWithField[]')]
     public $issues= NULL;
 

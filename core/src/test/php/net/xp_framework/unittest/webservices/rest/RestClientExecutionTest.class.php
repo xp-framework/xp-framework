@@ -8,7 +8,8 @@
     'unittest.TestCase',
     'webservices.rest.RestClient',
     'io.streams.MemoryInputStream',
-    'net.xp_framework.unittest.webservices.rest.Issues',
+    'net.xp_framework.unittest.webservices.rest.IssuesWithField',
+    'net.xp_framework.unittest.webservices.rest.IssuesWithSetter',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
     'net.xp_framework.unittest.webservices.rest.IssueWithSetter',
@@ -207,19 +208,19 @@
      *
      */
     #[@test]
-    public function typedNestedArrayJsonContent() {
+    public function typedNestedArrayJsonContentWithSetter() {
       $fixture= $this->fixtureWith(
         HttpConstants::STATUS_OK,
         '{ "issues" : [ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ] }',
         array('Content-Type' => 'application/json')
       );
 
-      $class= Type::forName('net.xp_framework.unittest.webservices.rest.Issues');
+      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithSetter');
       $response= $fixture->execute($class, new RestRequest());
       $list= $response->data();
 
       $this->assertEquals(
-        new net·xp_framework·unittest·webservices·rest·Issues(array(
+        new net·xp_framework·unittest·webservices·rest·IssuesWithSetter(array(
           new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
           new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
         )),
@@ -227,6 +228,30 @@
       );
     }
 
+    /**
+     * Test if object collections are built as class fields
+     *
+     */
+    #[@test]
+    public function typedNestedArrayJsonContentWithField() {
+      $fixture= $this->fixtureWith(
+        HttpConstants::STATUS_OK,
+        '{ "issues" : [ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ] }',
+        array('Content-Type' => 'application/json')
+      );
+
+      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField');
+      $response= $fixture->execute($class, new RestRequest());
+      $list= $response->data();
+
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssuesWithField(array(
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
+        )),
+        $list
+      );
+    }
 
     /**
      * Test if object collections are built as class fields
