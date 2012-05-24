@@ -145,7 +145,7 @@
             $c= new Node('param', $val);
           }
           $c->setAttribute('name', $name.(is_int($k) ? '' : '['.$k.']'));
-          $c->setAttribute('xsi:type']= 'xsd:'.gettype($val));
+          $c->setAttribute('xsi:type', 'xsd:'.gettype($val));
         } catch (XMLFormatException $e) {
         
           // An XMLFormatException indicates data we have received on-wire
@@ -189,11 +189,11 @@
       } else {
         $c= new Node('error', $info);
       }
-      $c->attribute= array(
+      $c->setAttributes(array(
         'type'        => $type,
         'field'       => $field,
         'checker'     => $checker
-      );
+      ));
       $this->document->formerrors->addChild($c);
       
       return FALSE;
