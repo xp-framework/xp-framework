@@ -61,7 +61,7 @@
     public function getTree() {
       foreach ($this->tables as $t) {
         $constKeyList= array();
-        $tn= $this->doc->root()->children[0]->addChild(new Node('table', NULL, array(
+        $tn= $this->doc->root()->nodeAt(0)->addChild(new Node('table', NULL, array(
           'name' => $t->name,
         )));
 

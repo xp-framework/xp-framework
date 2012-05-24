@@ -117,14 +117,14 @@
      */
     public function getData() {
       $ret= array();
-      foreach (array_keys($this->tree->root()->children) as $idx) {
-        if ('params' != $this->tree->root()->children[$idx]->getName())
+      foreach (array_keys($this->tree->root()->getNodeChildren()) as $idx) {
+        if ('params' != $this->tree->root()->nodeAt($idx)->getName())
           continue;
         
         // Process params node
         $decoder= new XmlRpcDecoder();
-        foreach (array_keys($this->tree->root()->children[$idx]->children) as $params) {
-          $ret[]= $decoder->decode($this->tree->root()->children[$idx]->children[$params]->children[0]);
+        foreach (array_keys($this->tree->root()->nodeAt($idx)->getNodeChildren()) as $params) {
+          $ret[]= $decoder->decode($this->tree->root()->nodeAt($idx)->nodeAt($params)->nodeAt(0));
         }
         
         return $ret;
@@ -143,10 +143,10 @@
     public function setFault($faultcode, $faultstring) {
       $encoder= new XmlRpcEncoder();
       
-      $this->tree->root()->children[0]= new Node('fault');
-      $this->tree->root()->children[0]->addChild($encoder->encode(array(
-        'faultCode'   => $faultcode,
-        'faultString' => $faultstring
+      $this->tree->root()->addChild(new Node('fault'))
+        ->addChild($encoder->encode(array(
+          'faultCode'   => $faultcode,
+          'faultString' => $faultstring
       )));
     }
     
@@ -159,14 +159,14 @@
 
       // First check whether the fault-node exists
       if (
-        !is('xml.Node', $this->tree->root()->children[0]) ||
-        'fault' != $this->tree->root()->children[0]->getName()
+        !is('xml.Node', $this->tree->root()->nodeAt(0)) ||
+        'fault' != $this->tree->root()->nodeAt(0)->getName()
       ) {
         return NULL;
       }
       
       $decoder= new XmlRpcDecoder();
-      $data= $decoder->decode($this->tree->root()->children[0]->children[0]);
+      $data= $decoder->decode($this->tree->root()->nodeAt(0)->nodeAt(0));
       $f= new XmlRpcFault($data['faultCode'], $data['faultString']);
       return $f;
     }

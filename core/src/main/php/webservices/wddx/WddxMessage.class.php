@@ -113,13 +113,13 @@
      */
     public function getData() {
       $ret= array();
-      foreach (array_keys($this->root()->children) as $idx) {
-        if ('header' == $this->root()->children[$idx]->getName())
+      foreach (array_keys($this->root()->getNodeChildren()) as $idx) {
+        if ('header' == $this->root()->nodeAt($idx)->getName())
           continue;
         
         // Process params node
-        foreach (array_keys($this->root()->children[$idx]->children) as $params) {
-          $ret[]= $this->_unmarshall($this->root()->children[$idx]->children[$params]);
+        foreach (array_keys($this->root()->nodeAt($idx)->getNodeChildren()) as $params) {
+          $ret[]= $this->_unmarshall($this->root()->nodeAt($idx)->nodeAt($params));
         }
         
         return $ret;
@@ -157,15 +157,15 @@
         
         case 'array':
           $arr= array();
-          foreach (array_keys($node->children) as $idx) {
-            $arr[]= $this->_unmarshall($node->children[$idx]);
+          foreach (array_keys($node->getNodeChildren()) as $idx) {
+            $arr[]= $this->_unmarshall($node->nodeAt($idx));
           }
           return $arr;
         
         case 'struct':
           $struct= array();
-          foreach (array_keys($node->children) as $idx) {
-            $struct[$node->children[$idx]->getAttribute('name')]= $this->_unmarshall($node->children[$idx]);
+          foreach (array_keys($node->getNodeChildren()) as $idx) {
+            $struct[$node->nodeAt($idx)->getAttribute('name')]= $this->_unmarshall($node->nodeAt($idx));
           }
           return $struct;
       }

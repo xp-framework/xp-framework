@@ -147,7 +147,7 @@
       }
       
       // Unmarshal response
-      return $command->unmarshalFrom($answer->root()->children[0]->children[0]);
+      return $command->unmarshalFrom($answer->root()->nodeAt(0)->nodeAt(0));
     }
 
     /**

@@ -162,11 +162,11 @@
     public function setData($arr) {
       $node= XPSoapNode::fromArray($arr, 'item', $this->mapping);
       $node->namespace= $this->namespace;
-      if (empty($node->children)) return;
+      if (!$node->hasNodeChildren()) return;
       
       // Copy all of node's children to root element
-      foreach (array_keys($node->children) as $i) {
-        $this->body->children[0]->addChild($node->children[$i]);
+      foreach (array_keys($node->getNodeChildren()) as $i) {
+        $this->body->nodeAt(0)->addChild($node->nodeAt($i));
       }
     }
 
@@ -197,14 +197,14 @@
       // References
       if ($child->hasAttribute('href')) {
         $body= $this->_bodyElement();
-        foreach (array_keys($body->children) as $idx) {
+        foreach (array_keys($body->getNodeChildren()) as $idx) {
           if (0 != strcasecmp(
-            @$body->children[$idx]->getAttribute('id'),
+            @$body->nodeAt($idx)->getAttribute('id'),
             substr($child->getAttribute('href'), 1)
           )) continue;
  
           // Create a copy and pass name to it
-          $c= $body->children[$idx];
+          $c= $body->nodeAt($idx);
           $c->setName($child->getName());
           return $this->unmarshall($c, $context);
           break;
@@ -259,7 +259,7 @@
               }
               break;
             } else for ($i= 0; $i < $length; ++$i) {
-              $child->children[$i]->setAttribute($this->namespaces[XMLNS_XSI].':type', $ns.':'.$childType);
+              $child->nodeAt($i)->setAttribute($this->namespaces[XMLNS_XSI].':type', $ns.':'.$childType);
             }
           }
           
@@ -279,12 +279,12 @@
           // <value xsi:type="xsd:string">76135</value>
           // </item>
           // <item>
-          if (empty($child->children)) break;
-          foreach ($child->children as $item) {
-            $key= $item->children[0]->getContent($this->getEncoding(), $this->namespaces);
-            $result[$key]= ((empty($item->children[1]->children) && !$item->children[1]->hasAttribute('href'))
-              ? $item->children[1]->getContent($this->getEncoding(), $this->namespaces)
-              : $this->unmarshall($item->children[1], 'MAP')
+          if (!$child->hasNodeChildren()) break;
+          foreach ($child->getNodeChildren() as $item) {
+            $key= $item->nodeAt(0)->getContent($this->getEncoding(), $this->namespaces);
+            $result[$key]= ((!$item->nodeAt(1)->hasNodeChildren() && !$item->nodeAt(1)->hasAttribute('href'))
+              ? $item->nodeAt(1)->getContent($this->getEncoding(), $this->namespaces)
+              : $this->unmarshall($item->nodeAt(1), 'MAP')
             );
           }
           break;
@@ -296,7 +296,7 @@
           break;
           
         default:
-          if (!empty($child->children)) {
+          if ($child->hasNodeChildren()) {
             if ($this->namespaces[XMLNS_XSD] == $regs[1]) {
               $result= $this->_recurseData($child, TRUE, 'STRUCT');
               break;
@@ -355,7 +355,7 @@
      * @return  var data
      */    
     protected function _recurseData($node, $names= FALSE, $context= NULL) {
-      if (empty($node->children)) {
+      if (!$node->hasNodeChildren()) {
         $a= array();
         return $a;
       }
@@ -366,11 +366,11 @@
       }
       
       $results= array();
-      for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
+      for ($i= 0, $s= sizeof($node->getNodeChildren()); $i < $s; $i++) {
         $key= $i;
         if ($names) {
-          $pos= strpos($node->children[$i]->getName(), ':');
-          $key= substr($node->children[$i]->getName(), $pos !== FALSE ? $pos + 1 : 0);
+          $pos= strpos($node->nodeAt($i)->getName(), ':');
+          $key= substr($node->nodeAt($i)->getName(), $pos !== FALSE ? $pos + 1 : 0);
         }
         
         // In case a value for the current key already exists, treat result
@@ -383,14 +383,14 @@
           if (!is_array($results[$key]) || !isset($results[$key][0])) $results[$key]= array($results[$key]);
 
           $results[$key][]= $this->unmarshall(
-            $node->children[$i], 
+            $node->nodeAt($i),
             $context
           );
 
         // Assign value directly to key
         } else {
           $results[$key]= $this->unmarshall(
-            $node->children[$i], 
+            $node->nodeAt($i),
             $context
           );
         }
@@ -407,13 +407,15 @@
      * @param   var detail default NULL
      */    
     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root()->children[0]->children[0]= XPSoapNode::fromObject(new CommonSoapFault(
+      $node= $this->root()->nodeAt(0);
+      $node->clearNodeChildren();
+      $node->addChild(XPSoapNode::fromObject(new CommonSoapFault(
         $faultcode,
         $faultstring,
         $faultactor,
         $detail
-      ), 'SOAP-ENV:Fault', $this->mapping);
-      $this->root()->children[0]->children[0]->setName('SOAP-ENV:Fault');
+      ), 'SOAP-ENV:Fault', $this->mapping));
+      $node->nodeAt(0)->setName('SOAP-ENV:Fault');
     }
 
     /**
@@ -472,9 +474,9 @@
       $this->_retrieveNamespaces($this->root);
       
       if (0 == strcasecmp(
-        $this->root()->children[0]->getName(),
+        $this->root()->nodeAt(0)->getName(),
         $this->namespaces[XMLNS_SOAPENV].':Header'
-      )) return $this->root()->children[0];
+      )) return $this->root()->nodeAt(0);
       
       return FALSE;
     }
@@ -493,11 +495,11 @@
       // Search for the body node. For usual, this will be the first element,
       // but some SOAP clients may include a header node (which we silently 
       // ignore for now).
-      for ($i= 0, $s= sizeof($this->root()->children); $i < $s; $i++) {
+      for ($i= 0, $s= sizeof($this->root()->getNodeChildren()); $i < $s; $i++) {
         if (0 == strcasecmp(
-          $this->root()->children[$i]->getName(),
+          $this->root()->nodeAt($i)->getName(),
           $this->namespaces[XMLNS_SOAPENV].':Body'
-        )) return $this->root()->children[$i];
+        )) return $this->root()->nodeAt($i);
       }
 
       throw new FormatException('Could not locate Body element');
@@ -511,11 +513,11 @@
     public function getFault() {
       if ($body= $this->_bodyElement()) {
         if (0 != strcasecmp(
-          $body->children[0]->getName(), 
+          $body->nodeAt(0)->getName(),
           $this->namespaces[XMLNS_SOAPENV].':Fault'
         )) return NULL;
 
-        $return= $this->_recurseData($body->children[0], TRUE, 'OBJECT', array());
+        $return= $this->_recurseData($body->nodeAt(0), TRUE, 'OBJECT', array());
         // DEBUG Console::writeLine('RETURN >>> ', var_export($return, 1), '***'); // DEBUG
         return new CommonSoapFault(
           isset($return['faultcode'])   ? $return['faultcode']    : '',
@@ -536,10 +538,10 @@
      */
     public function getData($context= 'ENUM') {
       if ($body= $this->_bodyElement()) {
-        if ($body->children[0]->getName() == $this->namespaces[XMLNS_SOAPENV].':Fault') {
+        if ($body->nodeAt(0)->getName() == $this->namespaces[XMLNS_SOAPENV].':Fault') {
           $n= NULL; return $n;
         }
-        return $this->_recurseData($body->children[0], FALSE, $context, $this->mapping);
+        return $this->_recurseData($body->nodeAt(0), FALSE, $context, $this->mapping);
       }
     }
     
@@ -563,9 +565,9 @@
       
       // Go through all children
       $headers= array();
-      foreach (array_keys($h->children) as $idx) {
+      foreach (array_keys($h->getNodeChildren()) as $idx) {
         $headers[]= XPSoapHeaderElement::fromNode(
-          $h->children[$idx], 
+          $h->nodeAt($idx),
           $this->namespaces,
           $this->getEncoding()
         );

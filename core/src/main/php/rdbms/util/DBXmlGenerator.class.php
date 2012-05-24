@@ -64,8 +64,7 @@
       $indexes= array();
 
       // Attributes
-      with ($t= $this->doc->root()->children[0]); {
-        $t->children= array();
+      with ($t= $this->doc->root()->nodeAt(0)); {
         if ($attr= $this->table->getFirstAttribute()) do {
           $a= $t->addChild(new Node('attribute', NULL, array(
             'name'     => trim($attr->getName()),

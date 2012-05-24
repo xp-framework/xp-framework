@@ -133,7 +133,8 @@
       $this->channel->node= $node;
       $this->channel->sequence= $items->addChild(new Node('rdf:Seq'));
 
-      $this->root()->children[0]= $node;
+      $this->root()->clearNodeChildren();
+      $this->root()->addChild($node);
     }
     
     /**

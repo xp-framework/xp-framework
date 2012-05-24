@@ -19,9 +19,9 @@
       self::$iterate= newinstance('Iterator', array(), '{
         private $i= 0, $c;
         private function value($n) {
-          if (empty($n->children)) return $n->getContent();
+          if (!$n->hasNodeChildren())) return $n->getContent();
           $result= array();
-          foreach ($n->children as $c) {
+          foreach ($n->getNodeChildren() as $c) {
             $result[$c->name]= $this->value($c);
           }
           return $result;
@@ -51,7 +51,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on($this->node->children);
+      return self::$iterate->on($this->node->getNodeChildren());
     }
 
     /**
@@ -61,8 +61,8 @@
      * @return  var
      */
     public function offsetGet($offset) {
-      foreach ($this->node->children as $child) {
-        if ($child->name === $offset) return $child->getContent();
+      foreach ($this->node->getNodeChildren() as $child) {
+        if ($child->getName() === $offset) return $child->getContent();
       }
       return NULL;
     }
@@ -84,8 +84,8 @@
      * @return  bool
      */
     public function offsetExists($offset) {
-      foreach ($this->node->children as $child) {
-        if ($child->name === $offset) return TRUE;
+      foreach ($this->node->getNodeChildren() as $child) {
+        if ($child->getName() === $offset) return TRUE;
       }
       return FALSE;
     }

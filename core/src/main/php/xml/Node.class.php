@@ -347,6 +347,47 @@
       $this->addChild($child);
       return $this;
     }
+
+    /**
+     * Retrieve node children
+     *
+     * @return   xml.Node[] children
+     */
+    public function getNodeChildren() {
+      return $this->children;
+    }
+
+    /**
+     * Determine whether node has node children
+     *
+     * @return   bool
+     */
+    public function hasNodeChildren() {
+      return 0 < sizeof($this->children);
+    }
+
+    /**
+     * Retrieve nth node child
+     *
+     * @param    int pos
+     * @return   xml.Node
+     * @throws   lang.ElementNotFoundException if array index out of bounds
+     */
+    public function nodeAt($pos) {
+      if (!isset($this->children[$pos])) {
+        throw new ElementNotFoundException('Cannot access node at position '.$pos);
+      }
+
+      return $this->children[$pos];
+    }
+
+    /**
+     * Clear node children
+     *
+     */
+    public function clearNodeChildren() {
+      $this->children= array();
+    }
     
     /**
      * Returns whether another object is equal to this node

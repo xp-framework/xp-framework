@@ -40,7 +40,7 @@
       $msg->tree= Tree::fromString($string);
 
       // Set class and method members from XML structure
-      $target= $msg->tree->root()->children[0]->getContent();
+      $target= $msg->tree->root()->nodeAt(0)->getContent();
       list($msg->class, $msg->method)= explode('.', $target);
 
       return $msg;
@@ -68,14 +68,14 @@
      */
     public function getData() {
       $ret= array();
-      foreach (array_keys($this->tree->root()->children) as $idx) {
-        if ('params' != $this->tree->root()->children[$idx]->getName())
+      foreach (array_keys($this->tree->root()->getNodeChildren()) as $idx) {
+        if ('params' != $this->tree->root()->nodeAt($idx)->getName())
           continue;
         
         // Process params node
         $decoder= new XmlRpcDecoder();
-        foreach (array_keys($this->tree->root()->children[$idx]->children) as $params) {
-          $ret[]= $decoder->decode($this->tree->root()->children[$idx]->children[$params]->children[0]);
+        foreach (array_keys($this->tree->root()->nodeAt($idx)->getNodeChildren()) as $params) {
+          $ret[]= $decoder->decode($this->tree->root()->nodeAt($idx)->nodeAt($params)->nodeAt(0));
         }
         
         return $ret;
