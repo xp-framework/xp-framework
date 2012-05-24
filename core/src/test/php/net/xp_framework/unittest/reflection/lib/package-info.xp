@@ -1,0 +1,14 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * Fixture libraries for package reflection tests
+ *
+ * @see   xp://net.xp_framework.unittest.reflection.PackageTest
+ */
+package net.xp_framework.unittest.reflection.lib {
+
+}

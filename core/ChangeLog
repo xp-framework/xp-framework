@@ -8,6 +8,18 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed support for REST Object collections (see pull request #164)
+  (friebe, ghiata)
+- Fixed creation of Date from a float value causes PHP fatal error - see
+  pull request #156
+  (ghiata)
+- Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
+  (friebe, mrosoiu)
+- Merged pull request #145 - Fix stacktrace scope when calling an undefined 
+  method using call_user_func_array()
+  (mrosoiu, friebe)
+- Merged pull request #141 - Fix when using CURL transports w/ SSL version
+  (mihaighigea)
 - Fixed issue #137 - Extension methods don't work on lang.Throwable
   (friebe)
 - Fix typo in lang.ClassLoader to correct method's argument list,
@@ -19,8 +31,27 @@ Bugfixes
   params public property, use setters and getters instead
   (cconstandachi)
 
+RFCs
+~~~~
+- Implemented RFC #0235 - CsvMapReader, CsvMapWriter (pull request #148)
+  (friebe)
+
 Features
 ~~~~~~~~
+- Added new peer.http.HttpConnection::patch() method - pull request #161
+  (friebe)
+- Added new HTTP status codes defined in RFC 6585, see issue #158
+  (friebe)
+- Added HttpResponse::getHeaderString() and HttpRequest::getHeaderString()
+  see pull request #153
+  (friebe)
+- New method lang.reflect.Package::getComment() - pull request #139
+  (friebe)
+- Merged pull request #144 - Some improvements of the RestDataCaster
+  (Stormwind, friebe)
+- Merged pull request #143 - New peer.URL::getCanonicalURL() method
+  http://news.planet-xp.net/article/453/2012/04/06/
+  (mihaighigea)
 - Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
   finalizeSuccess()
   (cconstandachi, friebe)

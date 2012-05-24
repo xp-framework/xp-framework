@@ -137,14 +137,14 @@
         $this->setHeader($header instanceof Header ? $header->getName() : $key, $header);
       }
     }
-    
+
     /**
-     * Get request string
+     * Returns payload
      *
-     * @return  string
+     * @param   bool withBody
      */
-    public function getRequestString() {
-      if ($this->parameters instanceof RequestData) {
+    protected function getPayload($withBody) {
+     if ($this->parameters instanceof RequestData) {
         $this->addHeaders($this->parameters->getHeaders());
         $query= '&'.$this->parameters->getData();
       } else {
@@ -160,7 +160,8 @@
         }
       }
       $target= $this->target;
-      
+      $body= '';
+
       // Which HTTP method? GET and HEAD use query string, POST etc. use
       // body for passing parameters
       switch ($this->method) {
@@ -170,34 +171,51 @@
           } else {
             $target.= empty($query) ? '' : '?'.substr($query, 1);
           }
-          $body= '';
           break;
-          
+
         case HttpConstants::POST: case HttpConstants::PUT: case HttpConstants::TRACE: default:
-          $body= substr($query, 1);
+          if ($withBody) $body= substr($query, 1);
           if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
-          $this->headers['Content-Length']= array(strlen($body));
+          $this->headers['Content-Length']= array(strlen($query)- 1);
           if (empty($this->headers['Content-Type'])) {
             $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
           }
           break;
       }
-      
+
       $request= sprintf(
         "%s %s HTTP/%s\r\n",
         $this->method,
         $target,
         $this->version
       );
-      
+
       // Add request headers
       foreach ($this->headers as $k => $v) {
         foreach ($v as $value) {
           $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value)."\r\n";
         }
       }
-      
+
       return $request."\r\n".$body;
+    }
+
+    /**
+     * Returns HTTP request headers as being written to server
+     *
+     * @return  string
+     */
+    public function getHeaderString() {
+      return $this->getPayload(FALSE);
+    }
+    
+    /**
+     * Get request string
+     *
+     * @return  string
+     */
+    public function getRequestString() {
+      return $this->getPayload(TRUE);
     }
   }
 ?>
