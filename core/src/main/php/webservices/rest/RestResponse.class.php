@@ -100,7 +100,7 @@
               $method= $type->getMethod('set'.$variant);
               if ($method->getModifiers() & MODIFIER_PUBLIC) {
                 if (NULL !== ($param= $method->getParameter(0))) {
-                  $method->invoke($return, $this->convert($param->getType(), $value)); 
+                  $method->invoke($return, array($this->convert($param->getType(), $value)));
                 } else {
                   $method->invoke($return, array($value));
                 }
