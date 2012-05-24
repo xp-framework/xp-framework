@@ -257,20 +257,20 @@
      * Test if object collections are built as class fields
      *
      */
-    #[@test, @ignore('Internal array not correctly deserialized')]
-    public function typedNestedArrayXmlContent() {
+    #[@test]
+    public function typedNestedArrayXmlContentWithFields() {
       $fixture= $this->fixtureWith(
         HttpConstants::STATUS_OK,
-        '<issues><issue><issue_id>1</issue_id><title>Found a bug</title></issue><issue><issue_id>2</issue_id><title>Another</title></issue></issues>',
+        '<object><issues><issue><issue_id>1</issue_id><title>Found a bug</title></issue><issue><issue_id>2</issue_id><title>Another</title></issue></issues></object>',
         array('Content-Type' => 'text/xml')
       );
 
-      $class= Type::forName('net.xp_framework.unittest.webservices.rest.Issues');
+      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField');
       $response= $fixture->execute($class, new RestRequest());
       $list= $response->data();
 
       $this->assertEquals(
-        new net·xp_framework·unittest·webservices·rest·Issues(array(
+        new net·xp_framework·unittest·webservices·rest·IssuesWithField(array(
           new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
           new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
         )),

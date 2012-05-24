@@ -22,7 +22,9 @@
           if (empty($n->children)) return $n->getContent();
           $result= array();
           foreach ($n->children as $c) {
-            $result[$c->name]= $this->value($c);
+            $m= new self();
+            $m->c= $c->children;
+            $result[]= $m;
           }
           return $result;
         }
