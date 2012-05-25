@@ -100,7 +100,7 @@
               $method= $type->getMethod('set'.$variant);
               if ($method->getModifiers() & MODIFIER_PUBLIC) {
                 if (NULL !== ($param= $method->getParameter(0))) {
-                  $method->invoke($return, $this->convert($param->getType(), $value)); 
+                  $method->invoke($return, array($this->convert($param->getType(), $value)));
                 } else {
                   $method->invoke($return, array($value));
                 }
@@ -172,7 +172,7 @@
         case 'text/xml':
           $tree= new Tree();
           create(new XMLParser())->withCallback($tree)->parse(new StreamInputSource($this->input));
-          return $this->convert($this->type, new RestXmlMap($tree->root));
+          return $this->convert($this->type, new RestXmlMap($tree->root()));
 
         default:
           throw new IllegalArgumentException('Unknown content type "'.$header.'"');

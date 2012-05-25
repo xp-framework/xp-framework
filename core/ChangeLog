@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed support for REST Object collections (see pull request #164)
+  (friebe, ghiata)
 - Fixed creation of Date from a float value causes PHP fatal error - see
   pull request #156
   (ghiata)

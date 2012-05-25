@@ -19,16 +19,23 @@
       self::$iterate= newinstance('Iterator', array(), '{
         private $i= 0, $c;
         private function value($n) {
-          if (!$n->hasNodeChildren())) return $n->getContent();
-          $result= array();
+          if (!$n->hasNodeChildren()) return $n->getContent();
+          $names= array();
           foreach ($n->getNodeChildren() as $c) {
-            $result[$c->name]= $this->value($c);
+            $names[$c->getName()]= TRUE;
           }
+          $result= array();
+          if (sizeof($names) > 1) foreach ($n->getNodeChildren() as $c) {
+            $result[$c->getName()]= $this->value($c);
+          } else foreach ($n->getNodeChildren() as $c) {
+            $result[]= $this->value($c);
+          }
+
           return $result;
         }
         public function on($c) { $self= new self(); $self->c= $c; return $self; }
         public function current() { return $this->value($this->c[$this->i]); }
-        public function key() { return $this->c[$this->i]->name; }
+        public function key() { return $this->c[$this->i]->getName(); }
         public function next() { $this->i++; }
         public function rewind() { $this->i= 0; }
         public function valid() { return $this->i < sizeof($this->c); }
