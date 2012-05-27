@@ -105,7 +105,7 @@
     }
     
     /**
-     * Test
+     * Test data()
      *
      */
     #[@test]
@@ -118,7 +118,7 @@
     }
 
     /**
-     * Test
+     * Test data()
      *
      */
     #[@test]
@@ -135,13 +135,27 @@
      *
      */
     #[@test]
-    public function customConcept() {
-      $fixture= $this->fixtureWith(HttpConstants::STATUS_NO_CONTENT, '', array('Content-Type' => 'application/json'));
-
+    public function customContent() {
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_NO_CONTENT, '', array(
+        'Content-Type' => 'application/json'
+      ));
       $class= Type::forName('net.xp_framework.unittest.webservices.rest.CustomRestResponse');
       $response= $fixture->execute($class, new RestRequest());
       $this->assertInstanceOf($class, $response);
       $this->assertNull($response->data());
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function deprecatedExecuteOverloading() {
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(
+        'Content-Type' => 'application/json'
+      ));
+      $response= $fixture->execute('[:var]', new RestRequest());
+      $this->assertEquals(array('title' => 'Found a bug'), $response->data());
     }
   }
 ?>

@@ -169,7 +169,7 @@
         $rr= new RestResponse(
           $response,
           $this->deserializerFor(this($response->header('Content-Type'), 0)),
-          $type
+          $type       // Deprecated
         );
       }
 
