@@ -67,7 +67,7 @@
     /**
      * Get data
      *
-     * @return  var
+     * @return  string
      */
     public function content() {
       return Streams::readAll($this->input);
@@ -76,7 +76,7 @@
     /**
      * Copy data
      *
-     * @return  var
+     * @return  string
      */
     public function contentCopy() {
       $data= $this->content();
