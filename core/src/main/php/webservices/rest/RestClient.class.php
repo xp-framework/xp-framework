@@ -116,7 +116,7 @@
     /**
      * Execute a request
      *
-     * @param   var t either a string or a lang.Type - target type for payload
+     * @param   var t either a string or a lang.Type - response type, defaults to webservices.rest.RestResponse
      * @param   webservices.rest.RestRequest request
      * @return  webservices.rest.RestResponse
      * @throws  lang.IllegalStateException if no connection is set
@@ -132,6 +132,7 @@
       } else {
         throw new IllegalArgumentException('Given type is neither a Type nor a string, '.xp::typeOf($request).' given');
       }
+
       if (!$request instanceof RestRequest) {
         throw new IllegalArgumentException('Given request is not a RestRequest, '.xp::typeOf($request).' given');
       }
@@ -157,12 +158,20 @@
       } catch (IOException $e) {
         throw new RestException('Cannot send request', $e);
       }
-      
-      $rr= new RestResponse(
-        $response,
-        $this->deserializerFor(this($response->header('Content-Type'), 0)),
-        $type
-      );
+
+      if ($type instanceof XPClass && $type->isSubclassOf('webservices.rest.RestResponse')) {
+        $rr= $type->newInstance(
+          $response,
+          $this->deserializerFor(this($response->header('Content-Type'), 0)),
+          NULL
+        );
+      } else {
+        $rr= new RestResponse(
+          $response,
+          $this->deserializerFor(this($response->header('Content-Type'), 0)),
+          $type
+        );
+      }
 
       $this->cat && $this->cat->debug('<<<', $response->toString(), $rr->contentCopy());
       return $rr;

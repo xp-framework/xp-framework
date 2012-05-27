@@ -11,7 +11,10 @@
     'webservices.rest.RestXmlDeserializer',
     'webservices.rest.RestJsonDeserializer',
     'webservices.rest.RestResponse',
-    'net.xp_framework.unittest.webservices.rest.IssueWithField'
+    'net.xp_framework.unittest.webservices.rest.IssueWithField',
+    'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
+    'net.xp_framework.unittest.webservices.rest.IssueWithSetter',
+    'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreSetter'
   );
 
   /**
@@ -56,9 +59,9 @@
      */
     #[@test]
     public function content() {
-      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
       $this->assertEquals(
-        '{ "issue_id" : 1, "title" : null }',
+        '{ "issue_id" : 1, "title" : "test" }',
         $fixture->content()
       );
     }
@@ -69,6 +72,19 @@
      */
     #[@test]
     public function dataAsMap() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
+      $this->assertEquals(
+        array('issue_id' => 1, 'title' => 'test'), 
+        $fixture->data()
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function dataAsMapWithNull() {
       $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
       $this->assertEquals(
         array('issue_id' => 1, 'title' => NULL), 
@@ -81,10 +97,10 @@
      *
      */
     #[@test]
-    public function dataAsType() {
-      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
+    public function dataAsTypeWithField() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
       $this->assertEquals(
-        new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), 
+        new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test'), 
         $fixture->data(XPClass::forName('net.xp_framework.unittest.webservices.rest.IssueWithField'))
       );
     }
@@ -94,7 +110,59 @@
      *
      */
     #[@test]
+    public function dataAsTypeWithUnderscoreField() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreField(1, 'test'), 
+        $fixture->data(XPClass::forName('net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField'))
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function dataAsTypeWithSetter() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssueWithSetter(1, 'test'), 
+        $fixture->data(XPClass::forName('net.xp_framework.unittest.webservices.rest.IssueWithSetter'))
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function dataAsTypeWithUnderscoreSetter() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreSetter(1, 'test'), 
+        $fixture->data(XPClass::forName('net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreSetter'))
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
     public function dataAsTypeByName() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test'), 
+        $fixture->data('net.xp_framework.unittest.webservices.rest.IssueWithField')
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function dataAsTypeByNameWithNull() {
       $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
       $this->assertEquals(
         new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), 
@@ -108,10 +176,57 @@
      */
     #[@test, @expect('lang.ClassNotFoundException')]
     public function dataAsNonExistantType() {
-      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : "test" }');
       $fixture->data('non.existant.Type');
     }
 
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function typedArrayData() {
+      $fixture= $this->newFixture(self::JSON, '[ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ]');
+      $list= $fixture->data(Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField[]'));
+      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'), $list[0]);
+      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another'), $list[1]);
+    }
+
+    /**
+     * Test if object collections are built as class fields
+     *
+     */
+    #[@test]
+    public function nestedDataAsTypeWithSetter() {
+      $fixture= $this->newFixture(self::JSON, '{ "issues" : [ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ] }');
+      $list= $fixture->data(Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithSetter'));
+
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssuesWithSetter(array(
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
+        )),
+        $list
+      );
+    }
+
+    /**
+     * Test if object collections are built as class fields
+     *
+     */
+    #[@test]
+    public function nestedDataAsTypeWithField() {
+      $fixture= $this->newFixture(self::JSON, '{ "issues" : [ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ] }');
+      $list= $fixture->data(Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField'));
+
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssuesWithField(array(
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
+        )),
+        $list
+      );
+    }
 
     /**
      * Test data()
@@ -136,6 +251,52 @@
       $this->assertEquals(
         array('author' => array('id' => '1549', 'name' => 'Timm')),
         $fixture->data()
+      );
+    }
+
+    /**
+     * Test if object collections are built as class fields
+     *
+     */
+    #[@test]
+    public function nestedXmlAsTypeWithSetter() {
+      $fixture= $this->newFixture(self::XML, '<object>
+        <issues>
+          <issue><issue_id>1</issue_id><title>Found a bug</title></issue>
+          <issue><issue_id>2</issue_id><title>Another</title></issue>
+        </issues>
+      </object>');
+      $list= $fixture->data(Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithSetter'));
+
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssuesWithSetter(array(
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
+        )),
+        $list
+      );
+    }
+
+    /**
+     * Test if object collections are built as class fields
+     *
+     */
+    #[@test]
+    public function nestedXmlAsTypeWithField() {
+      $fixture= $this->newFixture(self::XML, '<object>
+        <issues>
+          <issue><issue_id>1</issue_id><title>Found a bug</title></issue>
+          <issue><issue_id>2</issue_id><title>Another</title></issue>
+        </issues>
+      </object>');
+      $list= $fixture->data(Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField'));
+
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssuesWithField(array(
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
+          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
+        )),
+        $list
       );
     }
   }
