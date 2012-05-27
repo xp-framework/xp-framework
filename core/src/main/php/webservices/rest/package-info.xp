@@ -32,11 +32,11 @@
  * Automatic deserialization
  * -------------------------
  * The REST API supports automatic result deserialization by passing
- * a <tt>lang.Type</tt> instance to the <tt>execute()</tt> method.
+ * a <tt>lang.Type</tt> instance to the <tt>data()</tt> method.
  * 
  * <code>
  *   $type= XPClass::forName('com.example.api.types.Resource');
- *   $resource= $client->execute($type, $request)->data();
+ *   $resource= $client->execute($request)->data($type);
  * </code>
  *
  * Authentication

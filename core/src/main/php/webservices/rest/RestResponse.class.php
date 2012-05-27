@@ -90,10 +90,11 @@
     /**
      * Get data
      *
+     * @param   var type target type of deserialization, either a lang.Type or a string
      * @return  var
      * @throws  webservices.rest.RestException if the status code is > 399
      */
-    public function data() {
+    public function data($type= NULL) {
       if ($this->status > 399) {
         throw new RestException($this->status.': '.$this->message);
       }
@@ -102,7 +103,15 @@
         throw new IllegalArgumentException('Unknown content type "'.$this->headers['Content-Type'][0].'"');
       }
 
-      return $this->deserializer->deserialize($this->input, $this->type);
+      if (NULL === $type) {
+        $target= $this->type;  // BC
+      } else if ($type instanceof Type) {
+        $target= $type;
+      } else {
+        $target= Type::forName($type);
+      }
+
+      return $this->deserializer->deserialize($this->input, $target);
     }
   }
 ?>

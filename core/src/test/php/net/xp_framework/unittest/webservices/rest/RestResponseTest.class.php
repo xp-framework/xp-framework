@@ -10,7 +10,8 @@
     'io.streams.MemoryInputStream',
     'webservices.rest.RestXmlDeserializer',
     'webservices.rest.RestJsonDeserializer',
-    'webservices.rest.RestResponse'
+    'webservices.rest.RestResponse',
+    'net.xp_framework.unittest.webservices.rest.IssueWithField'
   );
 
   /**
@@ -72,6 +73,43 @@
         $fixture->data()
       );
     }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function dataAsType() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), 
+        $fixture->data(XPClass::forName('net.xp_framework.unittest.webservices.rest.IssueWithField'))
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function dataAsTypeByName() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
+      $this->assertEquals(
+        new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), 
+        $fixture->data('net.xp_framework.unittest.webservices.rest.IssueWithField')
+      );
+    }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test, @expect('lang.ClassNotFoundException')]
+    public function dataAsNonExistantType() {
+      $fixture= $this->newFixture(self::JSON, '{ "issue_id" : 1, "title" : null }');
+      $fixture->data('non.existant.Type');
+    }
+
 
     /**
      * Test data()
