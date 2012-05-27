@@ -39,12 +39,14 @@
      */
     protected function newFixture($content, $body) {
       return new RestResponse(
-        HttpConstants::STATUS_OK,
-        'OK',
+        new HttpResponse(new MemoryInputStream(sprintf(
+          "HTTP/1.1 200 OK\r\nContent-Type: %s\r\nContent-Length: %d\r\n\r\n%s",
+          $content,
+          strlen($body),
+          $body
+        ))),
         self::$deserializers[$content],
-        array(),
-        Type::forName('[:var]'),
-        new MemoryInputStream($body)
+        Type::forName('[:var]')
       );
     }
 

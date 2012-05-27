@@ -159,12 +159,9 @@
       }
       
       $rr= new RestResponse(
-        $response->statusCode(), 
-        $response->message(), 
+        $response,
         $this->deserializerFor(this($response->header('Content-Type'), 0)),
-        $response->headers(), 
-        $type,
-        $response->getInputStream()
+        $type
       );
 
       $this->cat && $this->cat->debug('<<<', $response->toString(), $rr->contentCopy());

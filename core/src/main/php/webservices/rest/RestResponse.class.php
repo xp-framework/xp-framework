@@ -20,30 +20,23 @@
    * @test    xp://net.xp_framework.unittest.webservices.rest.RestResponseTest
    */
   class RestResponse extends Object {
-    protected $status= -1;
-    protected $message= '';
+    protected $response= NULL;
     protected $deserializer= NULL;
-    protected $headers= array();
     protected $type= NULL;
     protected $input= NULL;
 
     /**
      * Creates a new response
      *
-     * @param   int status
-     * @param   string message
-     * @param   webservices.rest.Deserializer deserializer
-     * @param   [:string[]] headers
+     * @param   peer.http.HttpResponse response
+     * @param   webservices.rest.RestDeserializer deserializer
      * @param   lang.Type type
-     * @param   io.streams.InputStream input
      */
-    public function __construct($status, $message, $deserializer, $headers, $type, $input) {
-      $this->status= $status;
-      $this->message= $message;
+    public function __construct(HttpResponse $response, RestDeserializer $deserializer= NULL, Type $type= NULL) {
+      $this->response= $response;
       $this->deserializer= $deserializer;
-      $this->headers= $headers;
       $this->type= $type;
-      $this->input= $input;
+      $this->input= $response->getInputStream();
     }
 
     /**
@@ -52,7 +45,7 @@
      * @return  int
      */
     public function status() {
-      return $this->status;
+      return $this->response->statusCode();
     }
 
     /**
@@ -61,7 +54,7 @@
      * @return  string
      */
     public function message() {
-      return $this->message;
+      return $this->response->message();
     }
 
     /**
@@ -88,6 +81,32 @@
     }
 
     /**
+     * Handle status code. Throws an exception in this default implementation
+     * if the numeric value is larger than 399. Overwrite in subclasses to 
+     * change this behaviour.
+     *
+     * @param   int code
+     * @throws  webservices.rest.RestException
+     */
+    protected function handleStatus($code) {
+      if ($code > 399) {
+        throw new RestException($code.': '.$this->response->message());
+      }
+    }
+
+    /**
+     * Handle payload deserialization. Uses the deserializer passed to the
+     * constructor to deserialize the input stream and coerces it to the 
+     * passed target type. Overwrite in subclasses to change this behaviour.
+     *
+     * @param   lang.Type target
+     * @return  var
+     */
+    protected function handlePayloadOf($target) {
+      return $this->deserializer->deserialize($this->input, $target);
+    }
+
+    /**
      * Get data
      *
      * @param   var type target type of deserialization, either a lang.Type or a string
@@ -95,14 +114,8 @@
      * @throws  webservices.rest.RestException if the status code is > 399
      */
     public function data($type= NULL) {
-      if ($this->status > 399) {
-        throw new RestException($this->status.': '.$this->message);
-      }
+      $this->handleStatus($this->response->statusCode());
  
-      if (NULL === $this->deserializer) {
-        throw new IllegalArgumentException('Unknown content type "'.$this->headers['Content-Type'][0].'"');
-      }
-
       if (NULL === $type) {
         $target= $this->type;  // BC
       } else if ($type instanceof Type) {
@@ -111,7 +124,11 @@
         $target= Type::forName($type);
       }
 
-      return $this->deserializer->deserialize($this->input, $target);
+      if (NULL === $this->deserializer) {
+        throw new IllegalArgumentException('Unknown content type "'.$this->headers['Content-Type'][0].'"');
+      }
+
+      return $this->handlePayloadOf($target);
     }
   }
 ?>
