@@ -162,14 +162,13 @@
       if ($type instanceof XPClass && $type->isSubclassOf('webservices.rest.RestResponse')) {
         $rr= $type->newInstance(
           $response,
-          $this->deserializerFor(this($response->header('Content-Type'), 0)),
-          NULL
+          $this->deserializerFor(this($response->header('Content-Type'), 0))
         );
       } else {
         $rr= new RestResponse(
           $response,
           $this->deserializerFor(this($response->header('Content-Type'), 0)),
-          $type       // Deprecated
+          $type       // Deprecated: This should be done via $response->data($type)
         );
       }
 
