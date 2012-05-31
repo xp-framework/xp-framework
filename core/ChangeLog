@@ -8,6 +8,11 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed problem with multiple entries in X-Forwarded-Host header. See 
+  issue #162, and http://httpd.apache.org/docs/2.2/mod/mod_proxy.html
+  (friebe)
+- Fixed support for REST Object collections (see pull request #164)
+  (friebe, ghiata)
 - Fixed creation of Date from a float value causes PHP fatal error - see
   pull request #156
   (ghiata)
