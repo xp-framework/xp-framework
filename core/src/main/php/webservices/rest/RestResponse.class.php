@@ -89,7 +89,7 @@
               $field= $type->getField($variant);
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
                 if (NULL !== ($fType= $field->getType())) {
-                  $field->set($return, $this->convert(Type::forName($fType), $value));
+                  $field->set($return, $this->convert($fType, $value));
                 } else {
                   $field->set($return, $value);
                 }
@@ -100,7 +100,7 @@
               $method= $type->getMethod('set'.$variant);
               if ($method->getModifiers() & MODIFIER_PUBLIC) {
                 if (NULL !== ($param= $method->getParameter(0))) {
-                  $method->invoke($return, $this->convert($param->getType(), $value)); 
+                  $method->invoke($return, array($this->convert($param->getType(), $value)));
                 } else {
                   $method->invoke($return, array($value));
                 }
