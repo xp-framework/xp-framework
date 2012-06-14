@@ -203,7 +203,11 @@
           break;
         case '-cp':
           foreach (explode(PATH_SEPARATOR, $params->list[$i+ 1]) as $element) {
-            ClassLoader::registerPath($element, FALSE);
+            if ('!' === $element{0}) {
+              ClassLoader::registerPath(substr($element, 1), TRUE);
+            } else {
+              ClassLoader::registerPath($element, FALSE);
+            }
           }
           $offset+= 2; $i++;
           break;

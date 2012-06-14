@@ -167,8 +167,12 @@
           } else if ('-q' == $args[$i]) {
             $listener= TestListeners::$QUIET;
           } else if ('-cp' == $args[$i]) {
-            foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $path) {
-              ClassLoader::getDefault()->registerPath($path);
+            foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $element) {
+              if ('!' === $element{0}) {
+                ClassLoader::registerPath(substr($element, 1), TRUE);
+              } else {
+                ClassLoader::registerPath($element, FALSE);
+              }
             }
           } else if ('-e' == $args[$i]) {
             $sources->add(new xp·unittest·sources·EvaluationSource($this->arg($args, ++$i, 'e')));

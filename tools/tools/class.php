@@ -3,9 +3,11 @@
 
   // {{{ string scanpath(string[] path, string home)
   //     Scans a path file 
-  function scanpath($paths, $home) {
+  function scanpath($scanPaths, $home, $includePaths) {
     $inc= '';
-    foreach ($paths as $path) {
+
+    // Scan $scanPaths for '.pth' files
+    foreach ($scanPaths as $path) {
       if (!($d= @opendir($path))) continue;
       while ($e= readdir($d)) {
         if ('.pth' !== substr($e, -4)) continue;
@@ -33,6 +35,15 @@
         }
       }
       closedir($d);
+    }
+
+    // Add $includePaths
+    foreach ($includePaths as $path) {
+      if ('!' === $path{0}) {
+        $inc= substr($path, 1).PATH_SEPARATOR.$inc;
+      } else {
+        $inc.= PATH_SEPARATOR.$path;
+      }
     }
     return $inc;
   }
@@ -71,10 +82,11 @@
   
   $home= getenv('HOME');
   list($use, $include)= explode(PATH_SEPARATOR.PATH_SEPARATOR, get_include_path());
-  set_include_path(
-    scanpath(explode(PATH_SEPARATOR, substr($use, 2).PATH_SEPARATOR.'.'), $home).
-    $include
-  );
+  set_include_path(scanpath(
+    explode(PATH_SEPARATOR, substr($use, 2).PATH_SEPARATOR.'.'),
+    $home,
+    explode(PATH_SEPARATOR, $include)
+  ));
 
   if (!include('lang.base.php')) {
     trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
