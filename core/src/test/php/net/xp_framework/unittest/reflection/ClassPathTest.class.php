@@ -47,7 +47,7 @@
     } 
 
     /**
-     * Test registering a path before all others
+     * Test registering a path after all others
      *
      */
     #[@test]
@@ -58,7 +58,7 @@
     }
 
     /**
-     * Test registering a path before all others
+     * Test registering a path after all others is the default
      *
      */
     #[@test]
