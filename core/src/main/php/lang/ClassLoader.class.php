@@ -38,6 +38,7 @@
    * to provide the class, a ClassNotFoundException will be thrown.
    * 
    * @test     xp://net.xp_framework.unittest.reflection.ClassLoaderTest
+   * @test     xp://net.xp_framework.unittest.reflection.ClassPathTest
    * @test     xp://net.xp_framework.unittest.reflection.ResourcesTest
    * @test     xp://net.xp_framework.unittest.reflection.PackageTest
    * @test     xp://net.xp_framework.unittest.reflection.RuntimeClassDefinitionTest
