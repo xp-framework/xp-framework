@@ -24,6 +24,17 @@
     }
 
     /**
+     * Set color
+     *
+     * @param   bool colors
+     * @return  self
+     **/
+    public function withColor($color) {
+      // Empty
+      return $this;
+    }
+
+    /**
      * Called when a test fails.
      *
      * @param   unittest.TestFailure failure

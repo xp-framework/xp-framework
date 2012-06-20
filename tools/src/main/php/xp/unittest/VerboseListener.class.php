@@ -24,6 +24,18 @@
     public function __construct(OutputStreamWriter $out) {
       $this->out= $out;
     }
+
+    /**
+     * Set color
+     *
+     * @param   bool colors
+     * @return  self
+     */
+    public function withColor($color) {
+      // Empty
+      return $this;
+    }
+
     
     /**
      * Called when a test case starts.

@@ -83,7 +83,18 @@
         $this->lineFor($testClass, $error->test->getName())
       );
     }
-    
+
+
+    /**
+     * Set color
+     *
+     * @param   bool colors
+     * @return  self
+     */
+    public function withColor($color) {
+      return $this;
+    }
+
     /**
      * Called when a test case starts.
      *

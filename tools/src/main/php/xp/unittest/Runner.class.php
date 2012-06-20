@@ -160,6 +160,7 @@
       $sources= new Vector();
       $listener= TestListeners::$DEFAULT;
       $arguments= array();
+      $colors= NULL;
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
           if ('-v' == $args[$i]) {
@@ -180,6 +181,18 @@
             return $this->usage();
           } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');
+          } else if ('--color' == substr($args[$i], 0, 7)) {
+            $remainder= substr($args[$i], 7);
+            $map= array(
+              FALSE => NULL,
+              '=on' => TRUE,
+              '=off' => FALSE,
+              '=auto' => NULL
+            );
+            if (!array_key_exists($remainder, $key)) {
+              throw new IllegalArgumentException('Unsupported argument for --color');
+            }
+            $colors= $map[$remainder];
           } else if (strstr($args[$i], '.ini')) {
             $sources->add(new xp·unittest·sources·PropertySource(new Properties($args[$i])));
           } else if (strstr($args[$i], xp::CLASS_FILE_EXT)) {
@@ -206,7 +219,7 @@
       }
       
       // Set up suite
-      $suite->addListener($listener->newInstance($this->out));
+      $suite->addListener($listener->newInstance($this->out)->withColor($colors));
       foreach ($sources as $source) {
         try {
           $tests= $source->testCasesWith($arguments);

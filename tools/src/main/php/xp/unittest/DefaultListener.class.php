@@ -20,11 +20,7 @@
 
     public $out= NULL;
     protected $column= 0;
-    protected static $colored;
-
-    static function __static() {
-      self::$colored= getenv('TERM') || getenv('ANSICON');
-    }
+    private $colored= NULL;
 
     /**
      * Constructor
@@ -34,7 +30,22 @@
     public function __construct(OutputStreamWriter $out) {
       $this->out= $out;
     }
-    
+
+    /**
+     * Set color
+     *
+     * @param   bool color
+     * @return  self
+     */
+    public function withColor($color) {
+      if (NULL === $color) {
+        $color= getenv('TERM') || getenv('ANSICON');
+      }
+
+      $this->colored= $color;
+      return $this;
+    }
+
     /**
      * Output method; takes care of wrapping output if output line
      * exceeds maximum length
@@ -146,14 +157,14 @@
 
       $this->out->writeLinef(
         "\n%s%s: %d/%d run (%d skipped), %d succeeded, %d failed%s",
-        self::$colored ? ($fail ? "\033[41;1;37m" : "\033[42;1;37m") : '',
+        $this->colored ? ($fail ? "\033[41;1;37m" : "\033[42;1;37m") : '',
         $fail ? 'FAIL' : 'OK',
         $result->runCount(),
         $result->count(),
         $result->skipCount(),
         $result->successCount(),
         $result->failureCount(),
-        self::$colored ? "\033[0m" : ''
+        $this->colored ? "\033[0m" : ''
       );
       $this->out->writeLinef(
         'Memory used: %.2f kB (%.2f kB peak)',
