@@ -56,11 +56,18 @@
       
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
+        if ('!' === $element{0}) {
+          $before  = TRUE;
+          $element = substr($element, 1);
+        } else {
+          $before= FALSE;
+        }
+
         $resolved= realpath($element);
         if (is_dir($resolved)) {
-          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE));
+          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE), $before);
         } else if (is_file($resolved)) {
-          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE));
+          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE), $before);
         } else {
           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
         }
