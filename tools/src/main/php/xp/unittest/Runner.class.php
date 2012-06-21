@@ -39,6 +39,12 @@
    *     multiple times)</li>
    *   <li>-l {listener.class.Name} {output}, where output is either "-"
    *     for console output or a file name</li>
+   *   <li>--color={mode} : Enable / disable color; mode can be one of
+   *     . "on" - activate color mode
+   *     . "off" - disable color mode
+   *     . "auto" - try to determine whether colors are supported and enable
+   *       accordingly.
+   *   </li>
    * </ul>
    * Tests can be one or more of:
    * <ul>
@@ -182,15 +188,16 @@
           } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');
           } else if ('--color' == substr($args[$i], 0, 7)) {
-            $remainder= substr($args[$i], 7);
             $map= array(
-              FALSE => NULL,
-              '=on' => TRUE,
-              '=off' => FALSE,
+              ''      => NULL,
+              '=on'   => TRUE,
+              '=off'  => FALSE,
               '=auto' => NULL
             );
-            if (!array_key_exists($remainder, $key)) {
-              throw new IllegalArgumentException('Unsupported argument for --color');
+            $remainder= (string)substr($args[$i], 7);
+
+            if (!array_key_exists($remainder, $map)) {
+              throw new IllegalArgumentException('Unsupported argument for --color (must be <empty>, "on", "off", "auto" (default))');
             }
             $colors= $map[$remainder];
           } else if (strstr($args[$i], '.ini')) {
@@ -236,7 +243,6 @@
           $this->err->writeLine('*** Error: ', $e->getMessage(), ': ', $e->method, '()');
           return 1;
         }
-        
       }
       
       // Run it!
