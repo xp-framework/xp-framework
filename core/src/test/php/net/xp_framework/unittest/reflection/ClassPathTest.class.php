@@ -69,8 +69,7 @@
     }
 
     /**
-     * Test determining the position by inspecting path
-     * (path does start with exclamation mark)
+     * Inspect path: it begins with !, so it is loaded first
      *
      */
     #[@test]
@@ -81,8 +80,7 @@
     }
 
     /**
-     * Test determining the position by inspecting path
-     * (path does _not_ start with exclamation mark)
+     * Inspect path: it does not begin with !, so it is loaded last
      *
      */
     #[@test]
