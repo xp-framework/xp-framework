@@ -373,7 +373,7 @@
     #[@test]
     public function dateToken() {
       static $expect= array(
-        'sybase'  => "select * from news where date= '1977-12-14 12:00AM'",
+        'sybase'  => "select * from news where date= '1977-12-14 12:00:00AM'",
         'mysql'   => "select * from news where date= '1977-12-14 00:00:00'",
         'pgsql'   => "select * from news where date= '1977-12-14 00:00:00'",
         // Add other built-in rdbms engines when added to the test!
@@ -394,7 +394,7 @@
     #[@test]
     public function timeStampToken() {
       static $expect= array(
-        'sybase'  => "select * from news where created= '1977-12-14 12:00AM'",
+        'sybase'  => "select * from news where created= '1977-12-14 12:00:00AM'",
         'mysql'   => "select * from news where created= '1977-12-14 00:00:00'",
         'pgsql'   => "select * from news where created= '1977-12-14 00:00:00'",
         // Add other built-in rdbms engines when added to the test!
@@ -455,7 +455,7 @@
     #[@test]
     public function dateArrayToken() {
       static $expect= array(
-        'sybase'  => "'1977-12-14 12:00AM', '1977-12-15 12:00AM'",
+        'sybase'  => "'1977-12-14 12:00:00AM', '1977-12-15 12:00:00AM'",
         'mysql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
         'pgsql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
         // Add other built-in rdbms engines when added to the test!
