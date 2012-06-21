@@ -226,7 +226,11 @@
       }
       
       // Set up suite
-      $suite->addListener($listener->newInstance($this->out)->withColor($colors));
+      $l= $suite->addListener($listener->newInstance($this->out));
+      if ($l instanceof ColorizingListener) {
+        $l->setColor($colors);
+      }
+
       foreach ($sources as $source) {
         try {
           $tests= $source->testCasesWith($arguments);

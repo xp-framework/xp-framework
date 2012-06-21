@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestListener',
+    'unittest.ColorizingListener',
     'io.streams.OutputStreamWriter',
     'lang.Runtime'
   );
@@ -15,7 +16,7 @@
    *
    * @purpose  TestListener
    */
-  class DefaultListener extends Object implements TestListener {
+  class DefaultListener extends Object implements TestListener, ColorizingListener {
     const OUTPUT_WIDTH  = 72;
 
     public $out= NULL;
@@ -37,12 +38,22 @@
      * @param   bool color
      * @return  self
      */
-    public function withColor($color) {
+    public function setColor($color) {
       if (NULL === $color) {
         $color= getenv('TERM') || getenv('ANSICON');
       }
 
       $this->colored= $color;
+    }
+
+    /**
+     * Set color
+     *
+     * @param   bool color
+     * @return  self
+     */
+    public function withColor($color) {
+      $this->setColor($color);
       return $this;
     }
 

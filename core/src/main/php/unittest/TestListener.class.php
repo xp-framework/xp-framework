@@ -89,14 +89,5 @@
      * @param   unittest.TestResult result
      */
     public function testRunFinished(TestSuite $suite, TestResult $result);
-
-    /**
-     * Set color
-     *
-     * @param   bool colors
-     * @return  self
-     */
-    public function withColor($color);
-
   }
 ?>

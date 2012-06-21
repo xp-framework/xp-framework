@@ -35,16 +35,6 @@
     }
 
     /**
-     * Set color
-     *
-     * @param   bool colors
-     * @return  self
-     */
-    public function withColor($color) {
-      return $this;
-    }
-
-    /**
      * Setup method. Creates a new test suite.
      *
      */
