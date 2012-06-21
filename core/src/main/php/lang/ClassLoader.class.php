@@ -80,11 +80,17 @@
      * Register a class loader from a path
      *
      * @param   string element
-     * @param   bool before default FALSE whether to register this as the first loader
+     * @param   bool before default FALSE whether to register this as the first loader,
+     *          NULL wheather to figure out position by inspecting $element
      * @return  lang.IClassLoader the registered loader
      * @throws  lang.ElementNotFoundException if the path cannot be found
      */
     public static function registerPath($element, $before= FALSE) {
+      if (NULL === $before && '!' === $element{0}) {
+        $before  = TRUE;
+        $element = substr($element, 1);
+      }
+      $before= (bool)$before;
       $resolved= realpath($element);
       if (is_dir($resolved)) {
         return self::registerLoader(FileSystemClassLoader::instanceFor($resolved), $before);

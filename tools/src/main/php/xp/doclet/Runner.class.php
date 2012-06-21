@@ -81,11 +81,7 @@
           $root->setSourcePath(explode(PATH_SEPARATOR, $args[++$i]));
         } else if ('-cp' === $args[$i]) {
           foreach (explode(PATH_SEPARATOR, $args[++$i]) as $element) {
-            if ('!' === $element{0}) {
-              $root->addSourcePath(ClassLoader::registerPath(substr($element, 1), TRUE)->path);
-            } else {
-              $root->addSourcePath(ClassLoader::registerPath($element, FALSE)->path);
-            }
+            $root->addSourcePath(ClassLoader::registerPath($element, NULL)->path);
           }
         } else {
           try {

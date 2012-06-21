@@ -168,11 +168,7 @@
             $listener= TestListeners::$QUIET;
           } else if ('-cp' == $args[$i]) {
             foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $element) {
-              if ('!' === $element{0}) {
-                ClassLoader::registerPath(substr($element, 1), TRUE);
-              } else {
-                ClassLoader::registerPath($element, FALSE);
-              }
+              ClassLoader::registerPath($element, NULL);
             }
           } else if ('-e' == $args[$i]) {
             $sources->add(new xp·unittest·sources·EvaluationSource($this->arg($args, ++$i, 'e')));

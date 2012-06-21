@@ -69,6 +69,30 @@
     }
 
     /**
+     * Test determining the position by inspecting path
+     * (path does start with exclamation mark)
+     *
+     */
+    #[@test]
+    public function before_via_inspect() {
+      $loader= $this->track(ClassLoader::registerPath('!.', NULL));
+      $loaders= ClassLoader::getLoaders();
+      $this->assertEquals($loader, $loaders[0]);
+    }
+
+    /**
+     * Test determining the position by inspecting path
+     * (path does _not_ start with exclamation mark)
+     *
+     */
+    #[@test]
+    public function after_via_inspect() {
+      $loader= $this->track(ClassLoader::registerPath('.', NULL));
+      $loaders= ClassLoader::getLoaders();
+      $this->assertEquals($loader, $loaders[sizeof($loaders)- 1]);
+    }
+
+    /**
      * Test registering a non-existant path
      *
      */
