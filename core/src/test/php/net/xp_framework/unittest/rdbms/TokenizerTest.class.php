@@ -7,7 +7,13 @@
   uses(
     'rdbms.sybase.SybaseConnection',
     'rdbms.mysql.MySQLConnection',
+    'rdbms.mysqli.MySQLiConnection',
     'rdbms.pgsql.PostgreSQLConnection',
+    'rdbms.sqlsrv.SqlSrvConnection',
+    'rdbms.mssql.MsSQLConnection',
+    'rdbms.sqlite.SQLiteConnection',
+    'rdbms.sqlite3.SQLite3Connection',
+    'rdbms.ibase.InterBaseConnection',
     'unittest.TestCase'
   );
 
@@ -27,7 +33,13 @@
     public function setUp() {
       $this->conn['sybase']= new SybaseConnection(new DSN('sybase://localhost:1999/'));
       $this->conn['mysql']= new MySQLConnection(new DSN('mysql://localhost/'));
+      $this->conn['mysqli']= new MySQLiConnection(new DSN('mysqli://localhost/'));
       $this->conn['pgsql']= new PostgreSQLConnection(new DSN('pgsql://localhost/'));
+      $this->conn['mssql']= new MsSQLConnection(new DSN('mssql://localhost/'));
+      $this->conn['sqlsrv']= new SqlSrvConnection(new DSN('sqlsrv://localhost/'));
+      $this->conn['sqlite']= new SQLiteConnection(new DSN('sqlite://localhost/'));
+      $this->conn['sqlite3']= new SQLite3Connection(new DSN('sqlite://localhost/'));
+      $this->conn['ibase']= new InterBaseConnection(new DSN('ibase://localhost/'));
     }
 
     /**
@@ -39,7 +51,13 @@
       static $expect= array(
         'sybase'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
         'mysql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'mysqli'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
         'pgsql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'mssql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'sqlsrv'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'sqlite'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'sqlite3' => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'ibase'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -59,7 +77,13 @@
       static $expect= array(
         'sybase'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
         'mysql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'mysqli'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
         'pgsql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'mssql'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'sqlsrv'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'sqlite'  => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'sqlite3' => 'select \'Uber\' + \' \' + \'Coder\' as realname',
+        'ibase'   => 'select \'Uber\' + \' \' + \'Coder\' as realname',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -79,7 +103,13 @@
       static $expect= array(
         'sybase'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
         'mysql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'mysqli'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
         'pgsql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'mssql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'sqlsrv'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'sqlite'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'sqlite3' => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'ibase'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -99,7 +129,13 @@
       static $expect= array(
         'sybase'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
         'mysql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'mysqli'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
         'pgsql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'mssql'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'sqlsrv'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'sqlite'  => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'sqlite3' => 'select \'Quote signs: " \'\' ` \'\'\' as test',
+        'ibase'   => 'select \'Quote signs: " \'\' ` \'\'\' as test',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -119,7 +155,13 @@
       static $expect= array(
         'sybase'  => 'select * from test where name like \'%.de\'',
         'mysql'   => 'select * from test where name like \'%.de\'',
+        'mysqli'  => 'select * from test where name like \'%.de\'',
         'pgsql'   => 'select * from test where name like \'%.de\'',
+        'mssql'   => 'select * from test where name like \'%.de\'',
+        'sqlsrv'  => 'select * from test where name like \'%.de\'',
+        'sqlite'  => 'select * from test where name like \'%.de\'',
+        'sqlite3' => 'select * from test where name like \'%.de\'',
+        'ibase'   => 'select * from test where name like \'%.de\'',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -139,7 +181,13 @@
       static $expect= array(
         'sybase'  => 'select * from test where url like \'http://%%20\'',
         'mysql'   => 'select * from test where url like \'http://%%20\'',
+        'mysqli'  => 'select * from test where url like \'http://%%20\'',
         'pgsql'   => 'select * from test where url like \'http://%%20\'',
+        'mssql'   => 'select * from test where url like \'http://%%20\'',
+        'sqlsrv'  => 'select * from test where url like \'http://%%20\'',
+        'sqlite'  => 'select * from test where url like \'http://%%20\'',
+        'sqlite3' => 'select * from test where url like \'http://%%20\'',
+        'ibase'   => 'select * from test where url like \'http://%%20\'',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -159,7 +207,13 @@
       static $expect= array(
         'sybase'  => 'select * from test where url like \'http://%%20\'',
         'mysql'   => 'select * from test where url like \'http://%%20\'',
+        'mysqli'  => 'select * from test where url like \'http://%%20\'',
         'pgsql'   => 'select * from test where url like \'http://%%20\'',
+        'mssql'   => 'select * from test where url like \'http://%%20\'',
+        'sqlsrv'  => 'select * from test where url like \'http://%%20\'',
+        'sqlite'  => 'select * from test where url like \'http://%%20\'',
+        'sqlite3' => 'select * from test where url like \'http://%%20\'',
+        'ibase'   => 'select * from test where url like \'http://%%20\'',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -179,7 +233,13 @@
       static $expect= array(
         'sybase'  => 'select * from test where name like \'%.de\'',
         'mysql'   => 'select * from test where name like \'%.de\'',
+        'mysqli'  => 'select * from test where name like \'%.de\'',
         'pgsql'   => 'select * from test where name like \'%.de\'',
+        'mssql'   => 'select * from test where name like \'%.de\'',
+        'sqlsrv'  => 'select * from test where name like \'%.de\'',
+        'sqlite'  => 'select * from test where name like \'%.de\'',
+        'sqlite3' => 'select * from test where name like \'%.de\'',
+        'ibase'   => 'select * from test where name like \'%.de\'',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -199,7 +259,13 @@
       static $expect= array(
         'sybase'  => 'select * from test where name like \'%X\'',
         'mysql'   => 'select * from test where name like \'%X\'',
+        'mysqli'  => 'select * from test where name like \'%X\'',
         'pgsql'   => 'select * from test where name like \'%X\'',
+        'mssql'   => 'select * from test where name like \'%X\'',
+        'sqlsrv'  => 'select * from test where name like \'%X\'',
+        'sqlite'  => 'select * from test where name like \'%X\'',
+        'sqlite3' => 'select * from test where name like \'%X\'',
+        'ibase'   => 'select * from test where name like \'%X\'',
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -315,7 +381,13 @@
       static $expect= array(
         'sybase'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'mysql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'mysqli'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'pgsql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'mssql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'sqlsrv'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'sqlite'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'sqlite3' => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'ibase'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         // Add other built-in rdbms engines when added to the test!
       );
       
@@ -335,7 +407,13 @@
       static $expect= array(
         'sybase'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'mysql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'mysqli'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         'pgsql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'mssql'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'sqlsrv'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'sqlite'  => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'sqlite3' => 'select \'"Hello", Tom\'\'s friend said\' as strval',
+        'ibase'   => 'select \'"Hello", Tom\'\'s friend said\' as strval',
         // Add other built-in rdbms engines when added to the test!
       );
       
@@ -355,7 +433,13 @@
       static $expect= array(
         'sybase'  => 'select * from \'order\'',
         'mysql'   => 'select * from `order`',
+        'mysqli'  => 'select * from `order`',
         'pgsql'   => 'select * from "order"',
+        'mssql'   => 'select * from \'order\'',
+        'sqlsrv'  => 'select * from \'order\'',
+        'sqlite'  => 'select * from \'order\'',
+        'sqlite3' => 'select * from \'order\'',
+        'ibase'   => 'select * from \'order\'',
         // TBD: Other built-in rdbms engines
       );
 
@@ -375,7 +459,13 @@
       static $expect= array(
         'sybase'  => "select * from news where date= '1977-12-14 12:00:00AM'",
         'mysql'   => "select * from news where date= '1977-12-14 00:00:00'",
+        'mysqli'  => "select * from news where date= '1977-12-14 00:00:00'",
         'pgsql'   => "select * from news where date= '1977-12-14 00:00:00'",
+        'mssql'   => "select * from news where date= '1977-12-14 12:00:00AM'",
+        'sqlsrv'  => "select * from news where date= '1977-12-14 12:00:00AM'",
+        'sqlite'  => "select * from news where date= '1977-12-14 00:00:00'",
+        'sqlite3' => "select * from news where date= '1977-12-14 00:00:00'",
+        'ibase'   => "select * from news where date= '1977-12-14 00:00:00'",
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -396,7 +486,13 @@
       static $expect= array(
         'sybase'  => "select * from news where created= '1977-12-14 12:00:00AM'",
         'mysql'   => "select * from news where created= '1977-12-14 00:00:00'",
+        'mysqli'  => "select * from news where created= '1977-12-14 00:00:00'",
         'pgsql'   => "select * from news where created= '1977-12-14 00:00:00'",
+        'mssql'   => "select * from news where created= '1977-12-14 12:00:00AM'",
+        'sqlsrv'  => "select * from news where created= '1977-12-14 12:00:00AM'",
+        'sqlite'  => "select * from news where created= '1977-12-14 00:00:00'",
+        'sqlite3' => "select * from news where created= '1977-12-14 00:00:00'",
+        'ibase'   => "select * from news where created= '1977-12-14 00:00:00'",
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -417,7 +513,13 @@
       static $expect= array(
         'sybase'  => 'select \'Hello \\ \' as strval',    // one backslash
         'mysql'   => 'select \'Hello \\\\ \' as strval',  // two backslashes
+        'mysqli'  => 'select \'Hello \\\\ \' as strval',  // two backslashes
         'pgsql'   => 'select \'Hello \\ \' as strval',    // one backslash
+        'mssql'   => 'select \'Hello \\ \' as strval',    // one backslash
+        'sqlsrv'  => 'select \'Hello \\ \' as strval',    // one backslash
+        'sqlite'  => 'select \'Hello \\ \' as strval',    // one backslash
+        'sqlite3' => 'select \'Hello \\ \' as strval',    // one backslash
+        'ibase'   => 'select \'Hello \\ \' as strval',    // one backslash
         // TBD: Other built-in rdbms engines
       );
       
@@ -457,7 +559,13 @@
       static $expect= array(
         'sybase'  => "'1977-12-14 12:00:00AM', '1977-12-15 12:00:00AM'",
         'mysql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
+        'mysqli'  => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
         'pgsql'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
+        'mssql'   => "'1977-12-14 12:00:00AM', '1977-12-15 12:00:00AM'",
+        'sqlsrv'  => "'1977-12-14 12:00:00AM', '1977-12-15 12:00:00AM'",
+        'sqlite'  => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
+        'sqlite3' => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
+        'ibase'   => "'1977-12-14 00:00:00', '1977-12-15 00:00:00'",
         // Add other built-in rdbms engines when added to the test!
       );
 
@@ -536,7 +644,13 @@
       static $expect= array(
         'sybase'  => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
         'mysql'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
-        'pgsql'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')'
+        'mysqli'  => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'pgsql'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'mssql'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'sqlsrv'  => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'sqlite'  => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'sqlite3' => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
+        'ibase'   => 'insert into table values (\'value\', \'str%&ing\', \'value\')',
       );
       
       foreach ($this->conn as $key => $value) $this->assertEquals(
@@ -555,7 +669,13 @@
       static $expect= array(
         'sybase'  => "select '%20'",
         'mysql'   => "select '%20'",
-        'pgsql'   => "select '%20'"
+        'mysqli'  => "select '%20'",
+        'pgsql'   => "select '%20'",
+        'mssql'   => "select '%20'",
+        'sqlsrv'  => "select '%20'",
+        'sqlite'  => "select '%20'",
+        'sqlite3' => "select '%20'",
+        'ibase'   => "select '%20'",
       );
 
       foreach ($this->conn as $key => $value) {
