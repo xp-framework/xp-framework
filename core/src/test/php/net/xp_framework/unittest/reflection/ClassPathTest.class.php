@@ -69,6 +69,28 @@
     }
 
     /**
+     * Inspect path: it begins with !, so it is loaded first
+     *
+     */
+    #[@test]
+    public function before_via_inspect() {
+      $loader= $this->track(ClassLoader::registerPath('!.', NULL));
+      $loaders= ClassLoader::getLoaders();
+      $this->assertEquals($loader, $loaders[0]);
+    }
+
+    /**
+     * Inspect path: it does not begin with !, so it is loaded last
+     *
+     */
+    #[@test]
+    public function after_via_inspect() {
+      $loader= $this->track(ClassLoader::registerPath('.', NULL));
+      $loaders= ClassLoader::getLoaders();
+      $this->assertEquals($loader, $loaders[sizeof($loaders)- 1]);
+    }
+
+    /**
      * Test registering a non-existant path
      *
      */
