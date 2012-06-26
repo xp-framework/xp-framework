@@ -80,7 +80,9 @@
         if ('-sp' === $args[$i]) {
           $root->setSourcePath(explode(PATH_SEPARATOR, $args[++$i]));
         } else if ('-cp' === $args[$i]) {
-          $root->addSourcePath(ClassLoader::registerPath($args[++$i])->path);
+          foreach (explode(PATH_SEPARATOR, $args[++$i]) as $element) {
+            $root->addSourcePath(ClassLoader::registerPath($element, NULL)->path);
+          }
         } else {
           try {
             $class= XPClass::forName($args[$i]);
