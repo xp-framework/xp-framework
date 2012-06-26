@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Added support for ! in classpaths - see pull request #168
+  (mrosoiu)
+
 
 Version 5.8.5, released 2012-06-08
 ----------------------------------
