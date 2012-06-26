@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Changed drivers for Sybase and MSSQL to also emit seconds of a given 
+  util.Date - see pull request #169
+
 Features
 ~~~~~~~~
 - Added support for ! in classpaths - see pull request #168
