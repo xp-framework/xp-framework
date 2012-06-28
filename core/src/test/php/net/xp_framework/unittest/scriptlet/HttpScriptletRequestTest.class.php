@@ -426,5 +426,80 @@
       $r->addHeader('headername', 'b');
       $this->assertEquals('b', $r->getHeader('HeaderName'));
     }
+
+    /**
+     * Test getHeader() yield
+     *
+     */
+    #[@test]
+    public function getHeaderYield() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept' => 'application/json, */*; q=0.01, application/json'
+      ));
+      $this->assertEquals(
+        'application/json, */*; q=0.01, application/json', 
+        $r->getHeader('Accept')
+      );
+    }
+
+    /**
+     * Test getAccept() with quality params on Accept
+     *
+     */
+    #[@test]
+    public function getAcceptWithQualityParamOnAccept() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept' => 'application/json, */*; q=0.01, application/json'
+      ));
+      
+      $this->assertEquals('application/json', $r->getAccept()->best_type);
+      $this->assertEquals(2, count( $r->getAccept()->list));
+      $this->assertObject($r->getAccept()->list[0]); 
+      $this->assertEquals(
+        "php.stdClass {\n  type => \"application/json\"\n  quality => 1\n}", 
+        xp::stringOf($r->getAccept()->list[0])
+      );
+    }
+
+    /**
+     * Test getAccept() with more complex quality params on Accept without whitespaces
+     *
+     */
+    #[@test]
+    public function getAcceptWithComplexQualityNoWhitespaces() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept' => 
+          'text/html,application/xml;q=0.9,*/*;q=0.8,application/json;q=0.7'
+      ));
+      
+      $this->assertEquals('text/html', $r->getAccept()->best_type); 
+      $this->assertTrue( 
+        in_array( 'application/json', $r->getAccept()->all_types)
+      );
+    }
+
+    /**
+     * Test all getAccept*() methods
+     *
+     */
+    #[@test]
+    public function testHeaderWithMoreComplexData() {
+      $r= $this->newRequest('GET', 'http://localhost/', array());
+      $r->setHeaders(array(
+        'Accept'          => 'text/css,*/*;q=0.1', 
+        'Accept-Charset'  => 'ISO-8859-1,utf-8;q=1,*;q=0.3', 
+        'Accept-Encoding' => 'gzip,deflate;q=1,sdch', 
+        'Accept-Language' => 'de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4'
+      ));
+      
+      $this->assertEquals('text/css',   $r->getAccept()->best_type);
+      $this->assertEquals('ISO-8859-1', $r->getAcceptCharset()->best_type);
+      $this->assertEquals('gzip',       $r->getAcceptEncoding()->best_type);
+      $this->assertEquals('de-DE',      $r->getAcceptLanguage()->best_type);
+
+    }
   }
 ?>
