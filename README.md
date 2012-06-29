@@ -13,7 +13,7 @@ Directory structure
     |  `- src             # Sourcecode, by Maven conventions
     |     |- main
     |     |- test
-    |     `- resources
+    |        `- resources
     |
     `- tools              # Entry point
 	   |- tools           # Bootstrapping (class.php, xar.php, web.php)
