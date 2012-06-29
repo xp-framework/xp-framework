@@ -8,7 +8,8 @@
     'rdbms.ResultIterator',
     'rdbms.ConnectionManager',
     'rdbms.Column',
-    'rdbms.Record'
+    'rdbms.Record',
+    'rdbms.Transaction'
   );
 
   /**
