@@ -10,7 +10,8 @@
   );
 
   /**
-   * Default listener - only shows details for failed tests.
+   * Updates the window title bar of an xterm or xterm-compatible
+   * shell window
    *
    * @purpose  TestListener
    */
@@ -28,6 +29,11 @@
       $this->out= $out;
     }
 
+    /**
+     * Write status of currently executing test case
+     *
+     * @param   unittest.TestCase case
+     */
     private function writeStatus(TestCase $case) {
       $this->cur++;
 
