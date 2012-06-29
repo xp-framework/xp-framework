@@ -124,7 +124,7 @@
     public function testRunFinished(TestSuite $suite, TestResult $result) {
       $this->out->writef(
         "\033]2;%s: %d/%d run (%d skipped), %d succeeded, %d failed\007",
-        $fail ? 'FAIL' : 'OK',
+        $result->failureCount() > 0 ? 'FAIL' : 'OK',
         $result->runCount(),
         $result->count(),
         $result->skipCount(),
