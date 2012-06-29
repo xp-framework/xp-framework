@@ -15,7 +15,7 @@
    *
    * @purpose  TestListener
    */
-  class XTermTitleUpdateListener extends Object implements TestListener {
+  class XTermTitleListener extends Object implements TestListener {
     const PROGRESS_WIDTH= 20;
     private $out= NULL;
     private $cur, $sum;
