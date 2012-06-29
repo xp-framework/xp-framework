@@ -1,7 +1,7 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   uses(
@@ -18,7 +18,7 @@
   class XTermTitleUpdateListener extends Object implements TestListener {
     const PROGRESS_WIDTH= 20;
     private $out= NULL;
-    private $cur, $sum= 0;
+    private $cur, $sum;
 
     /**
      * Constructor
@@ -78,7 +78,7 @@
      */
     public function testWarning(TestWarning $warning) {
     }
-    
+
     /**
      * Called when a test finished successfully.
      *
@@ -86,9 +86,9 @@
      */
     public function testSucceeded(TestSuccess $success) {
     }
-    
+
     /**
-     * Called when a test is not run because it is skipped due to a 
+     * Called when a test is not run because it is skipped due to a
      * failed prerequisite.
      *
      * @param   unittest.TestSkipped skipped
@@ -112,8 +112,9 @@
      */
     public function testRunStarted(TestSuite $suite) {
       $this->sum= $suite->numTests();
+      $this->cur= 0;
     }
-    
+
     /**
      * Called when a test run finishes.
      *
