@@ -13,6 +13,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added colored output for unittest runner - see issue #25 / pull #172
+  (kiesel, friebe)
 - Added support for supplying a path to the unittest command - will run
   all test case classes inside the given directory and its subdirectories.
   See pull request #170
