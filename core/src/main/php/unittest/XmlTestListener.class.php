@@ -83,7 +83,7 @@
         $this->lineFor($testClass, $error->test->getName())
       );
     }
-    
+
     /**
      * Called when a test case starts.
      *

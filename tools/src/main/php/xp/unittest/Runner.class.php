@@ -41,6 +41,12 @@
    *     multiple times)</li>
    *   <li>-l {listener.class.Name} {output}, where output is either "-"
    *     for console output or a file name</li>
+   *   <li>--color={mode} : Enable / disable color; mode can be one of
+   *     . "on" - activate color mode
+   *     . "off" - disable color mode
+   *     . "auto" - try to determine whether colors are supported and enable
+   *       accordingly.
+   *   </li>
    * </ul>
    * Tests can be one or more of:
    * <ul>
@@ -163,6 +169,14 @@
       $sources= new Vector();
       $listener= TestListeners::$DEFAULT;
       $arguments= array();
+      $colors= NULL;
+      $cmap= array(
+        ''      => NULL,
+        '=on'   => TRUE,
+        '=off'  => FALSE,
+        '=auto' => NULL
+      );
+
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
           if ('-v' == $args[$i]) {
@@ -183,6 +197,12 @@
             return $this->usage();
           } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');
+          } else if ('--color' == substr($args[$i], 0, 7)) {
+            $remainder= (string)substr($args[$i], 7);
+            if (!array_key_exists($remainder, $cmap)) {
+              throw new IllegalArgumentException('Unsupported argument for --color (must be <empty>, "on", "off", "auto" (default))');
+            }
+            $colors= $cmap[$remainder];
           } else if (strstr($args[$i], '.ini')) {
             $sources->add(new xp·unittest·sources·PropertySource(new Properties($args[$i])));
           } else if (strstr($args[$i], xp::CLASS_FILE_EXT)) {
@@ -211,7 +231,11 @@
       }
       
       // Set up suite
-      $suite->addListener($listener->newInstance($this->out));
+      $l= $suite->addListener($listener->newInstance($this->out));
+      if ($l instanceof ColorizingListener) {
+        $l->setColor($colors);
+      }
+
       foreach ($sources as $source) {
         try {
           $tests= $source->testCasesWith($arguments);
@@ -228,7 +252,6 @@
           $this->err->writeLine('*** Error: ', $e->getMessage(), ': ', $e->method, '()');
           return 1;
         }
-        
       }
       
       // Run it!

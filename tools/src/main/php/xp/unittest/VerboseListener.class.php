@@ -24,7 +24,7 @@
     public function __construct(OutputStreamWriter $out) {
       $this->out= $out;
     }
-    
+
     /**
      * Called when a test case starts.
      *
