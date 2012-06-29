@@ -167,6 +167,13 @@
       $listener= TestListeners::$DEFAULT;
       $arguments= array();
       $colors= NULL;
+      $cmap= array(
+        ''      => NULL,
+        '=on'   => TRUE,
+        '=off'  => FALSE,
+        '=auto' => NULL
+      );
+
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
           if ('-v' == $args[$i]) {
@@ -188,18 +195,11 @@
           } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');
           } else if ('--color' == substr($args[$i], 0, 7)) {
-            $map= array(
-              ''      => NULL,
-              '=on'   => TRUE,
-              '=off'  => FALSE,
-              '=auto' => NULL
-            );
             $remainder= (string)substr($args[$i], 7);
-
-            if (!array_key_exists($remainder, $map)) {
+            if (!array_key_exists($remainder, $cmap)) {
               throw new IllegalArgumentException('Unsupported argument for --color (must be <empty>, "on", "off", "auto" (default))');
             }
-            $colors= $map[$remainder];
+            $colors= $cmap[$remainder];
           } else if (strstr($args[$i], '.ini')) {
             $sources->add(new xp·unittest·sources·PropertySource(new Properties($args[$i])));
           } else if (strstr($args[$i], xp::CLASS_FILE_EXT)) {
