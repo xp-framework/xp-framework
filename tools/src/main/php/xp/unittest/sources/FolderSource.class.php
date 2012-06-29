@@ -4,7 +4,13 @@
  * $Id$ 
  */
 
-  uses('xp.unittest.sources.AbstractSource', 'io.Folder');
+  uses(
+    'xp.unittest.sources.AbstractSource', 
+    'io.Folder',
+    'io.collections.FileCollection',
+    'io.collections.iterate.FilteredIOCollectionIterator',
+    'io.collections.iterate.ExtensionEqualsFilter'
+  );
 
   $package= 'xp.unittest.sources';
 
@@ -30,28 +36,16 @@
     }
 
     /**
-     * Returns all test case classes inside a given package, recursively 
+     * Find first classloader responsible for a given path
      *
-     * @param   lang.reflect.Package package
-     * @return  lang.XPClass[]
+     * @param   string path
+     * @return  lang.IClassLoader
      */
-    protected function testClassesInPackage($package) {
-      $r= array();
-
-      // Classes inside package itself
-      foreach ($package->getClasses() as $class) {
-        if (
-          !$class->isSubclassOf('unittest.TestCase') ||
-          Modifiers::isAbstract($class->getModifiers())
-        ) continue;
-        $r[]= $class;
+    protected function findLoaderFor($path) {
+      foreach (ClassLoader::getLoaders() as $cl) {
+        if (0 === strncmp($cl->path, $path, strlen($cl->path))) return $cl;
       }
-
-      // Subpackages
-      foreach ($package->getPackages() as $package) {
-        $r= array_merge($r, $this->testClassesInPackage($package));
-      }
-      return $r;
+      return NULL;      
     }
 
     /**
@@ -61,24 +55,33 @@
      * @return  unittest.TestCase[]
      */
     public function testCasesWith($arguments) {
-      $uri= $this->folder->getURI();
-      $path= $uri;
-      $paths= array_flip(array_filter(array_map('realpath', xp::registry('classpath'))));
+      if (NULL === ($cl= $this->findLoaderFor($this->folder->getURI()))) {
+        throw new IllegalArgumentException($this->folder->toString().' is not in class path');
+      }
+      $l= strlen($cl->path);
+      $e= -strlen(xp::CLASS_FILE_EXT);
 
-      // Search class path
-      while (FALSE !== ($pos= strrpos($path, DIRECTORY_SEPARATOR))) {
-        if (isset($paths[$path])) {
-          $package= Package::forName(strtr(substr($uri, strlen($path)+ 1), DIRECTORY_SEPARATOR, '.'));
-          $cases= array();
-          foreach ($this->testClassesInPackage($package) as $class) {
-            $cases= array_merge($cases, $this->testCasesInClass($class, $arguments));
-          }
-          return $cases;
-        }
-        $path= substr($path, 0, $pos);
+      $it= new FilteredIOCollectionIterator(
+        new FileCollection($this->folder),
+        new ExtensionEqualsFilter(xp::CLASS_FILE_EXT),
+        TRUE  // recursive
+      );
+      $cases= array();
+      foreach ($it as $element) {
+        $name= strtr(substr($element->getUri(), $l, $e), DIRECTORY_SEPARATOR, '.');
+        $class= XPClass::forName($name);
+        if (
+          !$class->isSubclassOf('unittest.TestCase') ||
+          Modifiers::isAbstract($class->getModifiers())
+        ) continue;
+
+        $cases= array_merge($cases, $this->testCasesInClass($class, $arguments));
       }
 
-      throw new IllegalArgumentException('Cannot find any test cases in '.$this->folder->toString());
+      if (empty($cases)) {
+        throw new IllegalArgumentException('Cannot find any test cases in '.$this->folder->toString());
+      }
+      return $cases;
     }
 
     /**
