@@ -13,6 +13,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for supplying a path to the unittest command - will run
+  all test case classes inside the given directory and its subdirectories.
+  See pull request #170
+  (friebe, kiesel)
 - Added unittest listener to update terminal title - pull request #171
   (kiesel, friebe)
 - Added support for ! in classpaths - see pull request #168
