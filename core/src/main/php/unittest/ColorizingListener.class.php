@@ -1,5 +1,13 @@
 <?php
+/* This class is part of the XP framework
+ *
+ * $Id$
+ */
 
+  /**
+   * Provide color enabling functionality to a testlistener
+   *
+   */
   interface ColorizingListener {
 
     /**
