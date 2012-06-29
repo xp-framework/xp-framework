@@ -16,7 +16,9 @@
    * @purpose  TestListener
    */
   class XTermTitleUpdateListener extends Object implements TestListener {
+    const PROGRESS_WIDTH= 20;
     private $out= NULL;
+    private $cur, $sum= 0;
 
     /**
      * Constructor
@@ -27,12 +29,25 @@
       $this->out= $out;
     }
 
+    private function writeStatus(TestCase $case) {
+      $this->cur++;
+
+      $perc= floor($this->cur / $this->sum * self::PROGRESS_WIDTH);
+
+      $this->out->writef("\033]2;Running: [%s%s] %s::%s()\007",
+        str_repeat('*', $perc), str_repeat('-', self::PROGRESS_WIDTH- $perc),
+        $case->getClassName(),
+        $case->getName()
+      );
+    }
+
     /**
      * Called when a test case starts.
      *
      * @param   unittest.TestCase failure
      */
     public function testStarted(TestCase $case) {
+      $this->writeStatus($case);
     }
 
     /**
@@ -91,6 +106,7 @@
      * @param   unittest.TestSuite suite
      */
     public function testRunStarted(TestSuite $suite) {
+      $this->sum= $suite->numTests();
     }
     
     /**
@@ -100,7 +116,7 @@
      * @param   unittest.TestResult result
      */
     public function testRunFinished(TestSuite $suite, TestResult $result) {
-      $this->out->writeLinef(
+      $this->out->writef(
         "\033]2;%s: %d/%d run (%d skipped), %d succeeded, %d failed\007",
         $fail ? 'FAIL' : 'OK',
         $result->runCount(),
