@@ -6,8 +6,7 @@
 
   uses(
     'unittest.TestListener',
-    'io.streams.OutputStreamWriter',
-    'lang.Runtime'
+    'io.streams.OutputStreamWriter'
   );
 
   /**
