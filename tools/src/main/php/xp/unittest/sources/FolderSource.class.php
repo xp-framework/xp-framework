@@ -15,7 +15,8 @@
   $package= 'xp.unittest.sources';
 
   /**
-   * Source that load tests from a class filename
+   * Source that loads tests from test case classes inside a folder and
+   * its subfolders.
    *
    * @purpose  Source implementation
    */
