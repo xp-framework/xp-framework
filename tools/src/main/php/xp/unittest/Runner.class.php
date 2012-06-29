@@ -13,8 +13,10 @@
     'xp.unittest.sources.ClassFileSource',
     'xp.unittest.sources.PackageSource',
     'xp.unittest.sources.EvaluationSource',
+    'xp.unittest.sources.FolderSource',
     'io.streams.FileOutputStream',
     'io.File',
+    'io.Folder',
     'unittest.TestSuite',
     'util.Properties',
     'util.collections.Vector',
@@ -190,6 +192,8 @@
             $sources->add(new xp暉nittest新ources感ackageSource(Package::forName(substr($args[$i], 0, -2))));
           } else if (FALSE !== ($p= strpos($args[$i], '::'))) {
             $sources->add(new xp暉nittest新ources嵩lassSource(XPClass::forName(substr($args[$i], 0, $p)), substr($args[$i], $p+ 2)));
+          } else if (is_dir($args[$i])) {
+            $sources->add(new xp暉nittest新ources幹olderSource(new Folder($args[$i])));
           } else {
             $sources->add(new xp暉nittest新ources嵩lassSource(XPClass::forName($args[$i])));
           }
