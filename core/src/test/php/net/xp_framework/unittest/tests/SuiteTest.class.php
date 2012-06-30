@@ -512,11 +512,11 @@
     }
 
     /**
-     * Tests multiole @beforeClass methods
+     * Tests multiple @beforeClass methods
      *
      */
     #[@test]
-    public function allBeforeClassMethodsAreExecuted() {
+    public function allBeforeClassMethodsAreExecutedWithRun() {
       $t= newinstance('unittest.TestCase', array('fixture'), '{
         public static $initialized= array();
 
@@ -539,11 +539,37 @@
     }
 
     /**
+     * Tests multiple @beforeClass methods
+     *
+     */
+    #[@test]
+    public function allBeforeClassMethodsAreExecutedWithRunTest() {
+      $t= newinstance('unittest.TestCase', array('fixture'), '{
+        public static $initialized= array();
+
+        #[@beforeClass]
+        public static function prepareTestData() {
+          self::$initialized[]= "data";
+        }
+
+        #[@beforeClass]
+        public static function connectToDatabase() {
+          self::$initialized[]= "conn";
+        }
+
+        #[@test]
+        public function fixture() { }
+      }');
+      $this->suite->runTest($t);
+      $this->assertEquals(array('data', 'conn'), $t->getClass()->getField('initialized')->get(NULL));
+    }
+
+    /**
      * Tests multiole @afterClass methods
      *
      */
     #[@test]
-    public function allAfterClassMethodsAreExecuted() {
+    public function allAfterClassMethodsAreExecutedWithRun() {
       $t= newinstance('unittest.TestCase', array('fixture'), '{
         public static $finalized= array();
 
@@ -562,6 +588,32 @@
       }');
       $this->suite->addTest($t);
       $this->suite->run();
+      $this->assertEquals(array('conn', 'data'), $t->getClass()->getField('finalized')->get(NULL));
+    }
+
+    /**
+     * Tests multiole @afterClass methods
+     *
+     */
+    #[@test]
+    public function allAfterClassMethodsAreExecutedWithRunTest() {
+      $t= newinstance('unittest.TestCase', array('fixture'), '{
+        public static $finalized= array();
+
+        #[@beforeClass]
+        public static function disconnectFromDatabase() {
+          self::$finalized[]= "conn";
+        }
+
+        #[@beforeClass]
+        public static function deleteTestData() {
+          self::$finalized[]= "data";
+        }
+
+        #[@test]
+        public function fixture() { }
+      }');
+      $this->suite->runTest($t);
       $this->assertEquals(array('conn', 'data'), $t->getClass()->getField('finalized')->get(NULL));
     }
   }

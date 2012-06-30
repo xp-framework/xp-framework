@@ -416,7 +416,6 @@
           $this->notifyListeners('testRunFinished', array($this, $result));
           return;
         }
-        break;
       }
 
       // Run the single test case
@@ -429,7 +428,6 @@
         try {
           $m->invoke(NULL, array());
         } catch (TargetInvocationException $ignored) { }
-        break;
       }
       unset(xp::$registry['details.'.$test->getClassName()]); // TODO: xp::gc();
       return $result;
