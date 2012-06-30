@@ -510,5 +510,59 @@
       $r= $this->suite->run();
       $this->assertEquals(1, $r->failureCount());
     }
+
+    /**
+     * Tests multiole @beforeClass methods
+     *
+     */
+    #[@test]
+    public function allBeforeClassMethodsAreExecuted() {
+      $t= newinstance('unittest.TestCase', array('fixture'), '{
+        public static $initialized= array();
+
+        #[@beforeClass]
+        public static function prepareTestData() {
+          self::$initialized[]= "data";
+        }
+
+        #[@beforeClass]
+        public static function connectToDatabase() {
+          self::$initialized[]= "conn";
+        }
+
+        #[@test]
+        public function fixture() { }
+      }');
+      $this->suite->addTest($t);
+      $this->suite->run();
+      $this->assertEquals(array('data', 'conn'), $t->getClass()->getField('initialized')->get(NULL));
+    }
+
+    /**
+     * Tests multiole @afterClass methods
+     *
+     */
+    #[@test]
+    public function allAfterClassMethodsAreExecuted() {
+      $t= newinstance('unittest.TestCase', array('fixture'), '{
+        public static $finalized= array();
+
+        #[@beforeClass]
+        public static function disconnectFromDatabase() {
+          self::$finalized[]= "conn";
+        }
+
+        #[@beforeClass]
+        public static function deleteTestData() {
+          self::$finalized[]= "data";
+        }
+
+        #[@test]
+        public function fixture() { }
+      }');
+      $this->suite->addTest($t);
+      $this->suite->run();
+      $this->assertEquals(array('conn', 'data'), $t->getClass()->getField('finalized')->get(NULL));
+    }
   }
 ?>

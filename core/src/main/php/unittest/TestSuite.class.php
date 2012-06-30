@@ -447,9 +447,9 @@
       foreach ($this->order as $classname => $tests) {
         $class= XPClass::forName($classname);
 
-        // Call beforeClass method if present. If it throws an exception,
-        // mark all tests in this class as skipped and continue with tests
-        // from other classes (if available)
+        // Call beforeClass methods if present. If any of them throws an exception,
+        // mark all tests in this class as skipped and continue with tests from
+        // other classes (if available)
         foreach ($class->getMethods() as $m) {
           if (!$m->hasAnnotation('beforeClass')) continue;
           try {
@@ -466,21 +466,19 @@
             }
             continue 2;
           }
-          break;
         }
         
         foreach ($tests as $i) {
           $this->runInternal($this->tests[$i], $result);
         }
 
-        // Call afterClass method of the last test's class. Ignore any
+        // Call afterClass methods of the last test's class. Ignore any
         // exceptions thrown from this method.
         foreach ($class->getMethods() as $m) {
           if (!$m->hasAnnotation('afterClass')) continue;
           try {
             $m->invoke(NULL, array());
           } catch (TargetInvocationException $ignored) { }
-          break;
         }
         unset(xp::$registry['details.'.$class->getName()]);  // TODO: xp::gc();
       }
