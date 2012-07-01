@@ -35,6 +35,7 @@
    *
    * @test     xp://net.xp_framework.unittest.tests.SuiteTest
    * @test     xp://net.xp_framework.unittest.tests.ListenerTest
+   * @test     xp://net.xp_framework.unittest.tests.BeforeAndAfterClassTest
    * @see      http://junit.sourceforge.net/doc/testinfected/testing.htm
    * @purpose  Testcase container
    */
@@ -410,8 +411,14 @@
         try {
           $m->invoke(NULL, array());
         } catch (TargetInvocationException $e) {
+          $cause= $e->getCause();
+          if ($cause instanceof PrerequisitesNotMetError) {
+            $reason= $cause;
+          } else {
+            $reason= new PrerequisitesNotMetError('Exception in beforeClass method '.$m->getName(), $cause);
+          }
           $this->notifyListeners('testSkipped', array(
-            $result->setSkipped($test, $e->getCause(), 0.0)
+            $result->setSkipped($test, $reason, 0.0)
           ));
           $this->notifyListeners('testRunFinished', array($this, $result));
           return $result;
