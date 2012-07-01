@@ -35,6 +35,7 @@
    *
    * @test     xp://net.xp_framework.unittest.tests.SuiteTest
    * @test     xp://net.xp_framework.unittest.tests.ListenerTest
+   * @test     xp://net.xp_framework.unittest.tests.BeforeAndAfterClassTest
    * @see      http://junit.sourceforge.net/doc/testinfected/testing.htm
    * @purpose  Testcase container
    */
@@ -435,7 +436,8 @@
      * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
      */
     public function runTest(TestCase $test) {
-      if (!$test->getClass()->hasMethod($test->name)) {
+      $class= $test->getClass();
+      if (!$class->hasMethod($test->name)) {
         throw new MethodNotImplementedException('Test method does not exist', $test->name);
       }
       $this->notifyListeners('testRunStarted', array($this));
@@ -443,12 +445,12 @@
       // Run the single test
       $result= new TestResult();
       try {
-        $this->beforeClass($test->getClass());
+        $this->beforeClass($class);
         $this->runInternal($test, $result);
+        $this->afterClass($class);
       } catch (PrerequisitesNotMetError $e) {
         $this->notifyListeners('testSkipped', array($result->setSkipped($test, $e, 0.0)));
       }
-      $this->afterClass($test->getClass());
 
       $this->notifyListeners('testRunFinished', array($this, $result));
       return $result;
