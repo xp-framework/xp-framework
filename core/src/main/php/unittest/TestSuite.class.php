@@ -387,7 +387,46 @@
         call_user_func_array(array($l, $method), $args);
       }
     }
+
+    /**
+     * Call beforeClass methods if present. If any of them throws an exception,
+     * mark all tests in this class as skipped and continue with tests from
+     * other classes (if available)
+     *
+     * @param  lang.XPClass class
+     */
+    protected function beforeClass($class) {
+      foreach ($class->getMethods() as $m) {
+        if (!$m->hasAnnotation('beforeClass')) continue;
+        try {
+          $m->invoke(NULL, array());
+        } catch (TargetInvocationException $e) {
+          $cause= $e->getCause();
+          if ($cause instanceof PrerequisitesNotMetError) {
+            throw $cause;
+          } else {
+            throw new PrerequisitesNotMetError('Exception in beforeClass method '.$m->getName(), $cause);
+          }
+        }
+      }
+    }
     
+    /**
+     * Call afterClass methods of the last test's class. Ignore any 
+     * exceptions thrown from these methods.
+     *
+     * @param  lang.XPClass class
+     */
+    protected function afterClass($class) {
+      foreach ($class->getMethods() as $m) {
+        if (!$m->hasAnnotation('afterClass')) continue;
+        try {
+          $m->invoke(NULL, array());
+        } catch (TargetInvocationException $ignored) { }
+      }
+      unset(xp::$registry['details.'.$class->getName()]); // TODO: This should be part of xp::gc()
+    }
+
     /**
      * Run a single test
      *
@@ -397,48 +436,23 @@
      * @throws  lang.MethodNotImplementedException in case given argument is not a valid testcase
      */
     public function runTest(TestCase $test) {
-      if (!$test->getClass()->hasMethod($test->name)) {
+      $class= $test->getClass();
+      if (!$class->hasMethod($test->name)) {
         throw new MethodNotImplementedException('Test method does not exist', $test->name);
       }
       $this->notifyListeners('testRunStarted', array($this));
+
+      // Run the single test
       $result= new TestResult();
-      
-      // Check for methods annotated with beforeClass. If it throws an exception,
-      // mark test as skipped (using thrown exception as reason)
-      foreach ($test->getClass()->getMethods() as $m) {
-        if (!$m->hasAnnotation('beforeClass')) continue;
-        
-        try {
-          $m->invoke(NULL, array());
-        } catch (TargetInvocationException $e) {
-          $cause= $e->getCause();
-          if ($cause instanceof PrerequisitesNotMetError) {
-            $reason= $cause;
-          } else {
-            $reason= new PrerequisitesNotMetError('Exception in beforeClass method '.$m->getName(), $cause);
-          }
-          $this->notifyListeners('testSkipped', array(
-            $result->setSkipped($test, $reason, 0.0)
-          ));
-          $this->notifyListeners('testRunFinished', array($this, $result));
-          return $result;
-        }
-        break;
+      try {
+        $this->beforeClass($class);
+        $this->runInternal($test, $result);
+        $this->afterClass($class);
+      } catch (PrerequisitesNotMetError $e) {
+        $this->notifyListeners('testSkipped', array($result->setSkipped($test, $e, 0.0)));
       }
 
-      // Run the single test case
-      $this->runInternal($test, $result);
       $this->notifyListeners('testRunFinished', array($this, $result));
-
-      // Check for methods annotated with afterClass
-      foreach ($test->getClass()->getMethods() as $m) {
-        if (!$m->hasAnnotation('afterClass')) continue;
-        try {
-          $m->invoke(NULL, array());
-        } catch (TargetInvocationException $ignored) { }
-        break;
-      }
-      unset(xp::$registry['details.'.$test->getClassName()]); // TODO: xp::gc();
       return $result;
     }
     
@@ -454,42 +468,19 @@
       foreach ($this->order as $classname => $tests) {
         $class= XPClass::forName($classname);
 
-        // Call beforeClass method if present. If it throws an exception,
-        // mark all tests in this class as skipped and continue with tests
-        // from other classes (if available)
-        foreach ($class->getMethods() as $m) {
-          if (!$m->hasAnnotation('beforeClass')) continue;
-          try {
-            $m->invoke(NULL, array());
-          } catch (TargetInvocationException $e) {
-            $cause= $e->getCause();
-            if ($cause instanceof PrerequisitesNotMetError) {
-              $reason= $cause;
-            } else {
-              $reason= new PrerequisitesNotMetError('Exception in beforeClass method '.$m->getName(), $cause);
-            }
-            foreach ($tests as $i) {
-              $this->notifyListeners('testSkipped', array($result->setSkipped($this->tests[$i], $reason, 0.0)));
-            }
-            continue 2;
+        // Run all tests in this class
+        try {
+          $this->beforeClass($class);
+        } catch (PrerequisitesNotMetError $e) {
+          foreach ($tests as $i) {
+            $this->notifyListeners('testSkipped', array($result->setSkipped($this->tests[$i], $e, 0.0)));
           }
-          break;
+          continue;
         }
-        
         foreach ($tests as $i) {
           $this->runInternal($this->tests[$i], $result);
         }
-
-        // Call afterClass method of the last test's class. Ignore any
-        // exceptions thrown from this method.
-        foreach ($class->getMethods() as $m) {
-          if (!$m->hasAnnotation('afterClass')) continue;
-          try {
-            $m->invoke(NULL, array());
-          } catch (TargetInvocationException $ignored) { }
-          break;
-        }
-        unset(xp::$registry['details.'.$class->getName()]);  // TODO: xp::gc();
+        $this->afterClass($class);
       }
 
       $this->notifyListeners('testRunFinished', array($this, $result));
