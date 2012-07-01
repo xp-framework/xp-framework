@@ -14,7 +14,7 @@
    *
    * @see   xp://unittest.TestSuite
    */
-  class BeforeAndAfterClassTest extends TestCase {
+  abstract class BeforeAndAfterClassTest extends TestCase {
     protected $suite= NULL;
       
     /**
@@ -24,6 +24,14 @@
     public function setUp() {
       $this->suite= new TestSuite();
     }
+
+    /**
+     * Runs a test and returns the outcome
+     *
+     * @param   unittest.TestCase test
+     * @return  unittest.TestOutcome
+     */
+    protected abstract function runTest($test);
 
     /**
      * Tests @beforeClass methods
