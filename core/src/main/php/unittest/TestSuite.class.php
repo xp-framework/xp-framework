@@ -414,7 +414,7 @@
             $result->setSkipped($test, $e->getCause(), 0.0)
           ));
           $this->notifyListeners('testRunFinished', array($this, $result));
-          return;
+          return $result;
         }
         break;
       }
