@@ -9,7 +9,7 @@
    organisation="net.xp_framework" 
    module="core"
    status="integration"
-   revision="5.8.4"
+   revision="5.8.5"
    xp:package="lang.** io.** rdbms.** img.** gui.** math.** peer.** remote.** scriptlet.** security.** text.** util.** webservices.** xml"
   >
     <license name="BSD"/>
@@ -32,6 +32,6 @@
     <artifact name="core-bootstrap" type="bootstrap" ext="zip" conf="default"/>
   </publications>
   <dependencies>
-    <dependency name="tools" rev="5.8.4+" conf="*->default"/>
+    <dependency name="tools" rev="5.8.5+" conf="*->default"/>
   </dependencies>
 </ivy-module>
