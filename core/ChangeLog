@@ -11,6 +11,12 @@ Bugfixes
 - Changed drivers for Sybase and MSSQL to also emit seconds of a given 
   util.Date - see pull request #169
 
+RFCs
+~~~~
+- Implemented RFC #0255 - Allow multiple @beforeClass / @afterClass methods.
+  See also pull request #100.
+  (friebe)
+
 Features
 ~~~~~~~~
 - Added colored output for unittest runner - see issue #25 / pull #172
