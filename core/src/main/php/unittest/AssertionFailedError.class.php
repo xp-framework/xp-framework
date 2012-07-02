@@ -53,7 +53,7 @@
         $include= $te !== $ta;
       }
       return sprintf(
-        "%s { expected [%s] but was [%s] (using %s) }\n",
+        "%s { expected [%s] but was [%s] using: '%s' }\n",
         $this->getClassName(),
         $this->stringOf($this->expect, $include ? $te : NULL),
         $this->stringOf($this->actual, $include ? $ta : NULL),
