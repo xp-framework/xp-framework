@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestListener',
+    'unittest.ColorizingListener',
     'io.streams.OutputStreamWriter',
     'lang.Runtime'
   );
@@ -15,14 +16,12 @@
    *
    * @purpose  TestListener
    */
-  class DefaultListener extends Object implements TestListener {
+  class DefaultListener extends Object implements TestListener, ColorizingListener {
     const OUTPUT_WIDTH  = 72;
 
-    public
-      $out= NULL;
-    
-    protected
-      $column= 0;
+    public $out= NULL;
+    protected $column= 0;
+    private $colored= NULL;
 
     /**
      * Constructor
@@ -32,7 +31,32 @@
     public function __construct(OutputStreamWriter $out) {
       $this->out= $out;
     }
-    
+
+    /**
+     * Set color
+     *
+     * @param   bool color
+     * @return  self
+     */
+    public function setColor($color) {
+      if (NULL === $color) {
+        $color= getenv('TERM') || getenv('ANSICON');
+      }
+
+      $this->colored= $color;
+    }
+
+    /**
+     * Set color
+     *
+     * @param   bool color
+     * @return  self
+     */
+    public function withColor($color) {
+      $this->setColor($color);
+      return $this;
+    }
+
     /**
      * Output method; takes care of wrapping output if output line
      * exceeds maximum length
@@ -133,21 +157,25 @@
       $this->out->writeLine(']');
       
       // Show failed test details
+      $fail= FALSE;
       if ($result->failureCount() > 0) {
         $this->out->writeLine();
         foreach ($result->failed as $failure) {
           $this->out->writeLine('F ', $failure);
         }
+        $fail= TRUE;
       }
 
       $this->out->writeLinef(
-        "\n%s: %d/%d run (%d skipped), %d succeeded, %d failed",
-        $result->failureCount() ? 'FAIL' : 'OK',
+        "\n%s%s: %d/%d run (%d skipped), %d succeeded, %d failed%s",
+        $this->colored ? ($fail ? "\033[41;1;37m" : "\033[42;1;37m") : '',
+        $fail ? 'FAIL' : 'OK',
         $result->runCount(),
         $result->count(),
         $result->skipCount(),
         $result->successCount(),
-        $result->failureCount()
+        $result->failureCount(),
+        $this->colored ? "\033[0m" : ''
       );
       $this->out->writeLinef(
         'Memory used: %.2f kB (%.2f kB peak)',

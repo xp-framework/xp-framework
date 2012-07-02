@@ -30,7 +30,7 @@
       $escapeRules  = array("'" => "''"),
       $escapeT      = "'",
       $escapeTRules = array("'" => "''"),
-      $dateFormat   = 'Y-m-d h:iA';
+      $dateFormat   = 'Y-m-d h:i:sA';
         
     /**
      * Get a function format string

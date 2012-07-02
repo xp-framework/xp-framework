@@ -8,8 +8,8 @@
     <exclude name="php/lang.base.php"/>
   </fileset>
 
-  <fileset id="build.testConfigurations" dir="${basedir}/src/resources">
-    <include name="unittest/*.ini"/>
+  <fileset id="build.testConfigurations" dir="${basedir}/src/test/resources">
+    <include name="*.ini"/>
   </fileset>
 
   <target name="xp.compile.bootstrap" extensionOf="compile">
