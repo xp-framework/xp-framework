@@ -1,21 +1,25 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
-  uses('unittest.TestListener', 'io.streams.OutputStreamWriter', 'lang.Runtime');
+  uses(
+    'unittest.TestListener',
+    'io.streams.OutputStreamWriter'
+  );
 
   /**
-   * Verbose listener - shows details for all tests (succeeded, failed
-   * and skipped/ignored).
+   * Updates the window title bar of an xterm or xterm-compatible
+   * shell window
    *
    * @purpose  TestListener
    */
-  class VerboseListener extends Object implements TestListener {
-    public
-      $out= NULL;
-    
+  class XTermTitleListener extends Object implements TestListener {
+    const PROGRESS_WIDTH= 20;
+    private $out= NULL;
+    private $cur, $sum;
+
     /**
      * Constructor
      *
@@ -26,12 +30,29 @@
     }
 
     /**
+     * Write status of currently executing test case
+     *
+     * @param   unittest.TestCase case
+     */
+    private function writeStatus(TestCase $case) {
+      $this->cur++;
+
+      $perc= floor($this->cur / $this->sum * self::PROGRESS_WIDTH);
+
+      $this->out->writef("\033]2;Running: [%s%s] %s::%s()\007",
+        str_repeat('*', $perc), str_repeat('-', self::PROGRESS_WIDTH- $perc),
+        $case->getClassName(),
+        $case->getName()
+      );
+    }
+
+    /**
      * Called when a test case starts.
      *
      * @param   unittest.TestCase failure
      */
     public function testStarted(TestCase $case) {
-      // NOOP
+      $this->writeStatus($case);
     }
 
     /**
@@ -40,7 +61,6 @@
      * @param   unittest.TestFailure failure
      */
     public function testFailed(TestFailure $failure) {
-      $this->out->write('F');
     }
 
     /**
@@ -49,7 +69,6 @@
      * @param   unittest.TestError error
      */
     public function testError(TestError $error) {
-      $this->out->write('E');
     }
 
     /**
@@ -58,26 +77,23 @@
      * @param   unittest.TestWarning warning
      */
     public function testWarning(TestWarning $warning) {
-      $this->out->write('W');
     }
-    
+
     /**
      * Called when a test finished successfully.
      *
      * @param   unittest.TestSuccess success
      */
     public function testSucceeded(TestSuccess $success) {
-      $this->out->write('.');
     }
-    
+
     /**
-     * Called when a test is not run because it is skipped due to a 
+     * Called when a test is not run because it is skipped due to a
      * failed prerequisite.
      *
      * @param   unittest.TestSkipped skipped
      */
     public function testSkipped(TestSkipped $skipped) {
-      $this->out->write('S');
     }
 
     /**
@@ -87,7 +103,6 @@
      * @param   unittest.TestSkipped ignore
      */
     public function testNotRun(TestSkipped $ignore) {
-      $this->out->write('N');
     }
 
     /**
@@ -96,9 +111,10 @@
      * @param   unittest.TestSuite suite
      */
     public function testRunStarted(TestSuite $suite) {
-      $this->out->writeLine('===> Running test suite (', $suite->numTests(), ' test(s))');
+      $this->sum= $suite->numTests();
+      $this->cur= 0;
     }
-    
+
     /**
      * Called when a test run finishes.
      *
@@ -106,43 +122,14 @@
      * @param   unittest.TestResult result
      */
     public function testRunFinished(TestSuite $suite, TestResult $result) {
-
-      // Details
-      if ($result->successCount() > 0) {
-        $this->out->writeLine("\n---> Succeeeded:");
-        foreach (array_keys($result->succeeded) as $key) {
-          $this->out->writeLine('* ', $result->succeeded[$key]);
-        }
-      }
-      if ($result->skipCount() > 0) {
-        $this->out->writeLine("\n---> Skipped:");
-        foreach (array_keys($result->skipped) as $key) {
-          $this->out->writeLine('* ', $result->skipped[$key]);
-        }
-      }
-      if ($result->failureCount() > 0) {
-        $this->out->writeLine("\n---> Failed:");
-        foreach (array_keys($result->failed) as $key) {
-          $this->out->writeLine('* ', $result->failed[$key]);
-        }
-      }
-
-      $this->out->writeLinef(
-        "\n===> %s: %d run (%d skipped), %d succeeded, %d failed",
-        $result->failureCount() ? 'FAIL' : 'OK',
+      $this->out->writef(
+        "\033]2;%s: %d/%d run (%d skipped), %d succeeded, %d failed\007",
+        $result->failureCount() > 0 ? 'FAIL' : 'OK',
         $result->runCount(),
+        $result->count(),
         $result->skipCount(),
         $result->successCount(),
         $result->failureCount()
-      );
-      $this->out->writeLinef(
-        '===> Memory used: %.2f kB (%.2f kB peak)',
-        Runtime::getInstance()->memoryUsage() / 1024,
-        Runtime::getInstance()->peakMemoryUsage() / 1024
-      );
-      $this->out->writeLinef(
-        '===> Time taken: %.3f seconds',
-        $result->elapsed()
       );
     }
   }

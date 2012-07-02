@@ -185,6 +185,69 @@
     }
 
     /**
+     * Test running a colored test
+     *
+     */
+    #[@test]
+    public function runColoredTest($setting= '--color=on') {
+      $command= newinstance('unittest.TestCase', array('succeeds'), '{
+        #[@test]
+        public function succeeds() {
+          $this->assertTrue(TRUE);
+        }
+      }');
+      $return= $this->runner->run(array($setting, $command->getClassName()));
+      $this->assertEquals(0, $return);
+      $this->assertEquals('', $this->err->getBytes());
+      $this->assertOnStream($this->out, 'OK: 1/1 run (0 skipped), 1 succeeded, 0 failed');
+    }
+
+    /**
+     * Test running a noncolored test
+     *
+     */
+    #[@test]
+    public function runNocolorTest() {
+      $this->runColoredTest('--color=off');
+    }
+
+    /**
+     * Test running a noncolored test
+     *
+     */
+    #[@test]
+    public function runAutocolorTest() {
+      $this->runColoredTest('--color=auto');
+    }
+
+
+    /**
+     * Test running a noncolored test
+     *
+     */
+    #[@test]
+    public function runShortAutocolorTest() {
+      $this->runColoredTest('--color');
+    }
+
+    /**
+     * Test running a noncolored test
+     *
+     */
+    #[@test]
+    public function runUnsupportedColorSettingTestFails() {
+      $command= newinstance('unittest.TestCase', array('succeeds'), '{
+        #[@test]
+        public function succeeds() {
+          $this->assertTrue(TRUE);
+        }
+      }');
+      $return= $this->runner->run(array('--color=anything', $command->getClassName()));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Unsupported argument for --color');
+    }
+
+    /**
      * Test running a failing test
      *
      */

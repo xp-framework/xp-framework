@@ -56,7 +56,7 @@
               <outputDirectory>${project.build.testOutputDirectory}/etc/unittest</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/resources/unittest</directory>
+                  <directory>src/test/resources</directory>
                 </resource>
               </resources>
             </configuration>

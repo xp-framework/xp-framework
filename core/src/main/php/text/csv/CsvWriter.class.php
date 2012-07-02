@@ -60,15 +60,17 @@
      */
     protected function writeValues($values, $raw= FALSE) {
       $line= '';
-      foreach ($values as $v => $value) {        
-        if (!$raw && isset($this->processors[$v])) {
+      $i= 0;
+      foreach ($values as $value) {
+        if (!$raw && isset($this->processors[$i])) {
           try {
-            $value= $this->processors[$v]->process($value);
+            $value= $this->processors[$i]->process($value);
           } catch (Throwable $e) {
             $this->raise($e->getMessage());
           }
         }
         
+        $i++;
         $line.= $this->format->format((string)$value);
       }
       $this->line++;

@@ -1,0 +1,69 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+/**
+ * A REST client
+ *
+ * Entry point
+ * ===========
+ * The <tt>RestClient</tt> class serves as the entry point to this API.
+ * Create a new instance of it with the REST service's endpoint URL and
+ * then invoke its <tt>execute()</tt> method to work with the resources.
+ *
+ * Example
+ * =======
+ * Here's an overview of the typical usage for working with the REST API.
+ *
+ * <code>
+ *   $client= new RestClient('http://api.example.com/');
+ *   
+ *   $request= new RestRequest('/resource/{id}');
+ *   $request->addSegment('id', 5000);          // Replaces token in resource
+ *   $request->addParameter('details', 'true'); // POST or querystring
+ *   
+ *   $response= $client->execute($request);
+ *   $content= $response->content();            // Raw data as string
+ *   $content= $response->data();               // Deserialize to map
+ * </code>
+ *
+ * Automatic deserialization
+ * -------------------------
+ * The REST API supports automatic result deserialization by passing
+ * a <tt>lang.Type</tt> instance to the <tt>data()</tt> method.
+ * 
+ * <code>
+ *   $type= XPClass::forName('com.example.api.types.Resource');
+ *   $resource= $client->execute($request)->data($type);
+ * </code>
+ *
+ * Authentication
+ * --------------
+ * Basic authentication is supported by embedding the credentials in the
+ * endpoint URL:
+ * 
+ * <code>
+ *   $client= new RestClient('http://user:pass@api.example.com/');
+ * </code>
+ *
+ * Fluent interface
+ * ----------------
+ * The <tt>RestRequest</tt> class provides a fluent interface:
+ * 
+ * <code>
+ *   $request= create(new RestRequest('/resource/{id}'))
+ *    ->withMethod(HttpConstants::GET)
+ *    ->withSegment('id', 5000)
+ *    ->withParameter('details', 'true')
+ *    ->withHeader('X-Binford', '6100 (more power)'
+ *   ;
+ * </code>
+ *
+ * @see   xp://webservices.rest.RestClient
+ * @see   xp://webservices.rest.RestRequest
+ * @see   xp://webservices.rest.RestResponse
+ */
+package webservices.rest {
+}

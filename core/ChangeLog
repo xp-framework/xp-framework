@@ -8,6 +8,35 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Changed drivers for Sybase and MSSQL to also emit seconds of a given 
+  util.Date - see pull request #169
+
+RFCs
+~~~~
+- Implemented RFC #0255 - Allow multiple @beforeClass / @afterClass methods.
+  See also pull request #100.
+  (friebe)
+
+Features
+~~~~~~~~
+- Added colored output for unittest runner - see issue #25 / pull #172
+  (kiesel, friebe)
+- Added support for supplying a path to the unittest command - will run
+  all test case classes inside the given directory and its subdirectories.
+  See pull request #170
+  (friebe, kiesel)
+- Added unittest listener to update terminal title - pull request #171
+  (kiesel, friebe)
+- Added support for ! in classpaths - see pull request #168
+  (mrosoiu)
+
+
+Version 5.8.5, released 2012-06-08
+----------------------------------
+Git commit: a644ffc21f9e8b59db56ad505a0869afff6ab27f
+
+Bugfixes
+~~~~~~~~
 - Fixed problem with multiple entries in X-Forwarded-Host header. See 
   issue #162, and http://httpd.apache.org/docs/2.2/mod/mod_proxy.html
   (friebe)
@@ -41,6 +70,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Changed CsvWriter to be less strict in what it accepts - see issue #123
+  (friebe)
 - Added new peer.http.HttpConnection::patch() method - pull request #161
   (friebe)
 - Added new HTTP status codes defined in RFC 6585, see issue #158

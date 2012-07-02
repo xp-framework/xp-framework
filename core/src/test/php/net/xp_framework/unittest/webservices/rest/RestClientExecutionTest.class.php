@@ -105,7 +105,7 @@
     }
     
     /**
-     * Test
+     * Test data()
      *
      */
     #[@test]
@@ -116,166 +116,46 @@
       $response= $fixture->execute(new RestRequest());
       $this->assertEquals(array('title' => 'Found a bug'), $response->data());
     }
+
+    /**
+     * Test data()
+     *
+     */
+    #[@test]
+    public function xmlContent() {
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '<issue><title>Found a bug</title></issue>', array(
+        'Content-Type' => 'text/xml'
+      ));
+      $response= $fixture->execute(new RestRequest());
+      $this->assertEquals(array('title' => 'Found a bug'), $response->data(Type::forName('[:var]')));
+    }
     
     /**
-     * Helper method
+     * Test custom responses
      *
-     * @param   string type
-     * @throws  unittest.AssertionFailedError
      */
-    protected function assertTypedJsonContentWith($type) {
-      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '{ "issue_id" : 1, "title" : "Found a bug" }', array(
+    #[@test]
+    public function customContent() {
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_NO_CONTENT, '', array(
         'Content-Type' => 'application/json'
       ));
-      $class= XPClass::forName($type);
+      $class= Type::forName('net.xp_framework.unittest.webservices.rest.CustomRestResponse');
       $response= $fixture->execute($class, new RestRequest());
-      $this->assertEquals($class->newInstance(1, 'Found a bug'), $response->data());
-    }
-
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function typedJsonContentWithUnderscoreField() {
-      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField');
+      $this->assertInstanceOf($class, $response);
+      $this->assertNull($response->data());
     }
 
     /**
-     * Test
+     * Test data()
      *
      */
     #[@test]
-    public function typedJsonContentWithField() {
-      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithField');
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function typedJsonContentWithUnderscoreSetter() {
-      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreSetter');
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function typedJsonContentWithSetter() {
-      $this->assertTypedJsonContentWith('net.xp_framework.unittest.webservices.rest.IssueWithSetter');
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function typedJsonContentNull() {
-      $fixture= $this->fixtureWith(
-        HttpConstants::STATUS_OK, 
-        '{ "issue_id" : 1, "title" : null }', 
-        array('Content-Type' => 'application/json')
-      );
-      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField');
-      $response= $fixture->execute($class, new RestRequest());
-      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, NULL), $response->data());
-    }
-
-    /**
-     * Test
-     *
-     */
-    #[@test]
-    public function typedArrayJsonContent() {
-      $fixture= $this->fixtureWith(
-        HttpConstants::STATUS_OK, 
-        '[ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ]', 
-        array('Content-Type' => 'application/json')
-      );
-      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssueWithField[]');
-      $response= $fixture->execute($class, new RestRequest());
-      $list= $response->data();
-      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'), $list[0]);
-      $this->assertEquals(new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another'), $list[1]);
-    }
-
-    /**
-     * Test if object collections are built as class fields
-     *
-     */
-    #[@test]
-    public function typedNestedArrayJsonContentWithSetter() {
-      $fixture= $this->fixtureWith(
-        HttpConstants::STATUS_OK,
-        '{ "issues" : [ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ] }',
-        array('Content-Type' => 'application/json')
-      );
-
-      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithSetter');
-      $response= $fixture->execute($class, new RestRequest());
-      $list= $response->data();
-
-      $this->assertEquals(
-        new net·xp_framework·unittest·webservices·rest·IssuesWithSetter(array(
-          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
-          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
-        )),
-        $list
-      );
-    }
-
-    /**
-     * Test if object collections are built as class fields
-     *
-     */
-    #[@test]
-    public function typedNestedArrayJsonContentWithField() {
-      $fixture= $this->fixtureWith(
-        HttpConstants::STATUS_OK,
-        '{ "issues" : [ { "issue_id" : 1, "title" : "Found a bug" }, { "issue_id" : 2, "title" : "Another" } ] }',
-        array('Content-Type' => 'application/json')
-      );
-
-      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField');
-      $response= $fixture->execute($class, new RestRequest());
-      $list= $response->data();
-
-      $this->assertEquals(
-        new net·xp_framework·unittest·webservices·rest·IssuesWithField(array(
-          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
-          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
-        )),
-        $list
-      );
-    }
-
-    /**
-     * Test if object collections are built as class fields
-     *
-     */
-    #[@test]
-    public function typedNestedArrayXmlContentWithFields() {
-      $fixture= $this->fixtureWith(
-        HttpConstants::STATUS_OK,
-        '<object><issues><issue><issue_id>1</issue_id><title>Found a bug</title></issue><issue><issue_id>2</issue_id><title>Another</title></issue></issues></object>',
-        array('Content-Type' => 'text/xml')
-      );
-
-      $class= Type::forName('net.xp_framework.unittest.webservices.rest.IssuesWithField');
-      $response= $fixture->execute($class, new RestRequest());
-      $list= $response->data();
-
-      $this->assertEquals(
-        new net·xp_framework·unittest·webservices·rest·IssuesWithField(array(
-          new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'Found a bug'),
-          new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'Another')
-        )),
-        $list
-      );
+    public function deprecatedExecuteOverloading() {
+      $fixture= $this->fixtureWith(HttpConstants::STATUS_OK, '{ "title" : "Found a bug" }', array(
+        'Content-Type' => 'application/json'
+      ));
+      $response= $fixture->execute('[:var]', new RestRequest());
+      $this->assertEquals(array('title' => 'Found a bug'), $response->data());
     }
   }
 ?>
