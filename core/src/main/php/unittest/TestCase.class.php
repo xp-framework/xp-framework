@@ -54,9 +54,9 @@
      *
      * @deprecated
      * @param   var var
-     * @param   string error default 'notarray'
+     * @param   string error default 'is_array'
      */
-    public function assertArray($var, $error= 'notarray') {
+    public function assertArray($var, $error= 'is_array') {
       if (!is_array($var) && !is('lang.types.ArrayList', $var)) {
         $this->fail($error, xp::typeOf($var), 'array');
       }
@@ -67,9 +67,9 @@
      *
      * @deprecated
      * @param   var var
-     * @param   string error default 'notobject'
+     * @param   string error default 'is_object'
      */
-    public function assertObject($var, $error= 'notobject') {
+    public function assertObject($var, $error= 'is_object') {
       if (!is_object($var)) {
         $this->fail($error, xp::typeOf($var), 'object');
       }
@@ -80,10 +80,10 @@
      *
      * @deprecated
      * @param   var var
-     * @param   string error default 'notempty'
+     * @param   string error default 'empty'
      * @see     php://empty
      */
-    public function assertEmpty($var, $error= 'notempty') {
+    public function assertEmpty($var, $error= 'empty') {
       if (!empty($var)) {
         $this->fail($error, $var, '<empty>');
       }
@@ -94,10 +94,10 @@
      *
      * @deprecated
      * @param   var var
-     * @param   string error default 'empty'
+     * @param   string error default '!empty'
      * @see     php://empty
      */
-    public function assertNotEmpty($var, $error= 'empty') {
+    public function assertNotEmpty($var, $error= '!empty') {
       if (empty($var)) {
         $this->fail($error, $var, '<not empty>');
       }
@@ -109,9 +109,9 @@
      * @deprecated Use assertInstanceOf() instead
      * @param   lang.Generic var
      * @param   string name
-     * @param   string error default 'notequal'
+     * @param   string error default 'typeof'
      */
-    public function assertClass($var, $name, $error= 'notequal') {
+    public function assertClass($var, $name, $error= 'typeof') {
       if (!($var instanceof Generic)) {
         $this->fail($error, $var, $name);
       }
@@ -126,9 +126,9 @@
      * @deprecated Use assertInstanceOf() instead
      * @param   lang.Generic var
      * @param   string name
-     * @param   string error default 'notsubclass'
+     * @param   string error default 'instanceof'
      */
-    public function assertSubclass($var, $name, $error= 'notsubclass') {
+    public function assertSubclass($var, $name, $error= 'instanceof') {
       if (!($var instanceof Generic)) {
         $this->fail($error, $var, $name);
       }
@@ -165,7 +165,7 @@
      * @param   var actual
      * @param   string error default 'notequal'
      */
-    public function assertEquals($expected, $actual, $error= 'notequal') {
+    public function assertEquals($expected, $actual, $error= 'equals') {
       if (!$this->_compare($expected, $actual)) {
         $this->fail($error, $actual, $expected);
       }
@@ -178,7 +178,7 @@
      * @param   var actual
      * @param   string error default 'equal'
      */
-    public function assertNotEquals($expected, $actual, $error= 'equal') {
+    public function assertNotEquals($expected, $actual, $error= '!equals') {
       if ($this->_compare($expected, $actual)) {
         $this->fail($error, $actual, $expected);
       }
@@ -188,9 +188,9 @@
      * Assert that a value is true
      *
      * @param   var var
-     * @param   string error default 'nottrue'
+     * @param   string error default '==='
      */
-    public function assertTrue($var, $error= 'nottrue') {
+    public function assertTrue($var, $error= '===') {
       if (TRUE !== $var) {
         $this->fail($error, $var, TRUE);
       }
@@ -200,9 +200,9 @@
      * Assert that a value is false
      *
      * @param   var var
-     * @param   string error default 'notfalse'
+     * @param   string error default '==='
      */
-    public function assertFalse($var, $error= 'notfalse') {
+    public function assertFalse($var, $error= '===') {
       if (FALSE !== $var) {
         $this->fail($error, $var, FALSE);
       }
@@ -212,9 +212,9 @@
      * Assert that a value's type is null
      *
      * @param   var var
-     * @param   string error default 'notnull'
+     * @param   string error default '==='
      */
-    public function assertNull($var, $error= 'notnull') {
+    public function assertNull($var, $error= '===') {
       if (NULL !== $var) {
         $this->fail($error, $var, NULL);
       }
@@ -225,9 +225,9 @@
      *
      * @param   var type either a type name or a lang.Type instance
      * @param   var var
-     * @param   string error default 'notaninstance'
+     * @param   string error default 'instanceof'
      */
-    public function assertInstanceOf($type, $var, $error= 'notaninstance') {
+    public function assertInstanceOf($type, $var, $error= 'instanceof') {
       if (!($type instanceof Type)) {
         $type= Type::forName($type);
       }
