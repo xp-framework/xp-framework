@@ -175,7 +175,7 @@
      * Sets up property source
      *
      */
-    #[@beforeClass]
+    #[@afterClass]
     public static function removePropertySource() {
       PropertyManager::getInstance()->removeSource(self::$propertySource);
     }
