@@ -19,6 +19,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added default logger to scriptlet handlers - see pull request #62
+  (oanas, friebe)
 - Added colored output for unittest runner - see issue #25 / pull #172
   (kiesel, friebe)
 - Added support for supplying a path to the unittest command - will run
