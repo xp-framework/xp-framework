@@ -52,11 +52,14 @@
       } else {
         $include= $te !== $ta;
       }
+      $expect= $this->stringOf($this->expect, NULL !== $this->expect && $include ? $te : NULL);
+      $actual= $this->stringOf($this->actual, NULL !== $this->actual && $include ? $ta : NULL);
+
       return sprintf(
         "%s { expected [%s] but was [%s] using: '%s' }\n",
         $this->getClassName(),
-        $this->stringOf($this->expect, $include ? $te : NULL),
-        $this->stringOf($this->actual, $include ? $ta : NULL),
+        $expect,
+        $actual,
         $this->message
       );
     }
