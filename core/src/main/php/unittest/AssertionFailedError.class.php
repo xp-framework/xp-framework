@@ -45,15 +45,38 @@
      * @return  string
      */
     public function compoundMessage() {
-      $te= xp::typeOf($this->expect);
-      $ta= xp::typeOf($this->actual);
-      if ($this->expect instanceof Generic && $this->actual instanceof Generic) {
-        $include= FALSE;
+      if (is_string($this->expect) && is_string($this->actual)) {
+        $la= strlen($this->actual);
+        $le= strlen($this->expect);
+        for ($i= 0, $l= min($le, $la); $i < $l; $i++) {                     // Search from beginning
+          if ($this->expect{$i} !== $this->actual{$i}) break;
+        }
+        for ($j= $le- 1, $k= $la- 1; $k >= $i && $j >= $i; $k--, $j--) {    // Search from end
+          if ($this->expect{$j} !== $this->actual{$k}) break;
+        }
+        if ($j < $i && $k < $i) {
+          $expect= '"'.$this->expect.'"';
+          $actual= '"'.$this->actual.'"';
+        } else {
+          $expect= substr($this->expect, $i, $j+ 1- $i);
+          $actual= substr($this->actual, $i, $k+ 1- $i);
+          $c= $i <= $l && $i > 0;
+          $expect= $c ? '"...'.$expect : '"'.$expect;                       // Common beginning
+          $actual= $c ? '"...'.$actual : '"'.$actual;
+          $expect.= ($j < $le- 1) ? '..."' : '"';                           // Common ending
+          $actual.= ($k < $la- 1) ? '..."' : '"';
+        }
       } else {
-        $include= $te !== $ta;
+        $te= xp::typeOf($this->expect);
+        $ta= xp::typeOf($this->actual);
+        if ($this->expect instanceof Generic && $this->actual instanceof Generic) {
+          $include= FALSE;
+        } else {
+          $include= $te !== $ta;
+        }
+        $expect= $this->stringOf($this->expect, NULL !== $this->expect && $include ? $te : NULL);
+        $actual= $this->stringOf($this->actual, NULL !== $this->actual && $include ? $ta : NULL);
       }
-      $expect= $this->stringOf($this->expect, NULL !== $this->expect && $include ? $te : NULL);
-      $actual= $this->stringOf($this->actual, NULL !== $this->actual && $include ? $ta : NULL);
 
       return sprintf(
         "%s { expected [%s] but was [%s] using: '%s' }\n",

@@ -161,5 +161,45 @@
         new AssertionFailedError('equals', NULL, 'NULL')
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function differentStringsWithCommonLeadingPart() {
+      $prefix= str_repeat('*', 100);
+      $this->assertMessageEquals(
+        'expected ["...def"] but was ["...abc"] using: \'equals\'',
+        new AssertionFailedError('equals', $prefix.'abc', $prefix.'def')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function differentStringsWithCommonTrailingPart() {
+      $postfix= str_repeat('*', 100);
+      $this->assertMessageEquals(
+        'expected ["def..."] but was ["abc..."] using: \'equals\'',
+        new AssertionFailedError('equals', 'abc'.$postfix, 'def'.$postfix)
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function differentStringsWithCommonLeadingAndTrailingPart() {
+      $prefix= str_repeat('<', 100);
+      $postfix= str_repeat('>', 100);
+      $this->assertMessageEquals(
+        'expected ["...def..."] but was ["...abc..."] using: \'equals\'',
+        new AssertionFailedError('equals', $prefix.'abc'.$postfix, $prefix.'def'.$postfix)
+      );
+    }
   }
 ?>
