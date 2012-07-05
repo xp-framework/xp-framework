@@ -29,17 +29,35 @@
     }
 
     /**
+     * Creates a string representation of a given value.
+     *
+     * @param   var value
+     * @param   string type NULL if type name should be not included.
+     * @return  string
+     */
+    protected function stringOf($value, $type) {
+      return (NULL === $type ? '' : $type.':').xp::stringOf($value);
+    }
+
+    /**
      * Return compound message of this exception.
      *
      * @return  string
      */
     public function compoundMessage() {
+      $te= xp::typeOf($this->expect);
+      $ta= xp::typeOf($this->actual);
+      if ($this->expect instanceof Generic && $this->actual instanceof Generic) {
+        $include= FALSE;
+      } else {
+        $include= $te !== $ta;
+      }
       return sprintf(
-        "%s (%s) { expected: [%s:%s] but was: [%s:%s] }\n",
+        "%s { expected [%s] but was [%s] using: '%s' }\n",
         $this->getClassName(),
-        $this->message,
-        xp::typeOf($this->expect), xp::stringOf($this->expect),
-        xp::typeOf($this->actual), xp::stringOf($this->actual)
+        $this->stringOf($this->expect, $include ? $te : NULL),
+        $this->stringOf($this->actual, $include ? $ta : NULL),
+        $this->message
       );
     }
     

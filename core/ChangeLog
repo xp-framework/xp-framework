@@ -13,6 +13,9 @@ Bugfixes
 
 RFCs
 ~~~~
+- Implemented RFC #0256 - Improve unittest's error messages 
+  See also pull request #40.
+  (kiesel, friebe)
 - Implemented RFC #0255 - Allow multiple @beforeClass / @afterClass methods.
   See also pull request #100.
   (friebe)
