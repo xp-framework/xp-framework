@@ -77,15 +77,13 @@
         }
         $expect= $this->compact($this->expect, $i, $j+ 1, $le);
         $actual= $this->compact($this->actual, $i, $k+ 1, $la);
+      } else if ($this->expect instanceof Generic && $this->actual instanceof Generic) {
+        $expect= $this->stringOf($this->expect, NULL);
+        $actual= $this->stringOf($this->actual, NULL);
       } else {
-        if ($this->expect instanceof Generic && $this->actual instanceof Generic) {
-          $te= $ta= NULL;
-          $include= FALSE;
-        } else {
-          $te= xp::typeOf($this->expect);
-          $ta= xp::typeOf($this->actual);
-          $include= $te !== $ta;
-        }
+        $te= xp::typeOf($this->expect);
+        $ta= xp::typeOf($this->actual);
+        $include= $te !== $ta;
         $expect= $this->stringOf($this->expect, $include ? $te : NULL);
         $actual= $this->stringOf($this->actual, $include ? $ta : NULL);
       }
