@@ -38,7 +38,7 @@
      * @return  string
      */
     protected function stringOf($value, $type) {
-      return (NULL === $type ? '' : $type.':').xp::stringOf($value);
+      return (NULL === $value || NULL === $type ? '' : $type.':').xp::stringOf($value);
     }
 
     /**
@@ -78,15 +78,16 @@
         $expect= $this->compact($this->expect, $i, $j+ 1, $le);
         $actual= $this->compact($this->actual, $i, $k+ 1, $la);
       } else {
-        $te= xp::typeOf($this->expect);
-        $ta= xp::typeOf($this->actual);
         if ($this->expect instanceof Generic && $this->actual instanceof Generic) {
+          $te= $ta= NULL;
           $include= FALSE;
         } else {
+          $te= xp::typeOf($this->expect);
+          $ta= xp::typeOf($this->actual);
           $include= $te !== $ta;
         }
-        $expect= $this->stringOf($this->expect, NULL !== $this->expect && $include ? $te : NULL);
-        $actual= $this->stringOf($this->actual, NULL !== $this->actual && $include ? $ta : NULL);
+        $expect= $this->stringOf($this->expect, $include ? $te : NULL);
+        $actual= $this->stringOf($this->actual, $include ? $ta : NULL);
       }
 
       return sprintf(
