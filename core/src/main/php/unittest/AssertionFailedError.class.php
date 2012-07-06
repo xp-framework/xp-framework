@@ -10,10 +10,12 @@
    * @test    xp://net.xp_framework.unittest.tests.AssertionMessagesTest
    */
   class AssertionFailedError extends XPException {
+    const CONTEXT_LENGTH = 20;
+
     public
       $actual       = NULL,
       $expect       = NULL;
-      
+
     /**
      * Constructor
      *
@@ -40,6 +42,25 @@
     }
 
     /**
+     * Compacts a string
+     *
+     * @param  string s
+     * @param  int p common postfix offset
+     * @param  int s common suffix offset
+     * @param  int l length of the given string
+     */
+    protected function compact($str, $p, $s, $l) {
+      $result= substr($str, $p, $s- $p);
+      if ($p > 0) {
+        $result= ($p < self::CONTEXT_LENGTH ? substr($str, 0, $p) : '...').$result; 
+      }
+      if ($s < $l) {
+        $result= $result.($l- $s < self::CONTEXT_LENGTH ? substr($str, $s) : '...');
+      }
+      return '"'.$result.'"';
+    }
+
+    /**
      * Return compound message of this exception.
      *
      * @return  string
@@ -54,18 +75,8 @@
         for ($j= $le- 1, $k= $la- 1; $k >= $i && $j >= $i; $k--, $j--) {    // Search from end
           if ($this->expect{$j} !== $this->actual{$k}) break;
         }
-        if ($j < $i && $k < $i) {
-          $expect= '"'.$this->expect.'"';
-          $actual= '"'.$this->actual.'"';
-        } else {
-          $expect= substr($this->expect, $i, $j+ 1- $i);
-          $actual= substr($this->actual, $i, $k+ 1- $i);
-          $c= $i <= $l && $i > 0;
-          $expect= $c ? '"...'.$expect : '"'.$expect;                       // Common beginning
-          $actual= $c ? '"...'.$actual : '"'.$actual;
-          $expect.= ($j < $le- 1) ? '..."' : '"';                           // Common ending
-          $actual.= ($k < $la- 1) ? '..."' : '"';
-        }
+        $expect= $this->compact($this->expect, $i, $j+ 1, $le);
+        $actual= $this->compact($this->actual, $i, $k+ 1, $la);
       } else {
         $te= xp::typeOf($this->expect);
         $ta= xp::typeOf($this->actual);

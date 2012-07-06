@@ -201,5 +201,29 @@
         new AssertionFailedError('equals', $prefix.'abc'.$postfix, $prefix.'def'.$postfix)
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function prefixShorterThanContextLength() {
+      $this->assertMessageEquals(
+        'expected ["abc!"] but was ["abc."] using: \'equals\'',
+        new AssertionFailedError('equals', 'abc.', 'abc!')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function postfixShorterThanContextLength() {
+      $this->assertMessageEquals(
+        'expected ["!abc"] but was [".abc"] using: \'equals\'',
+        new AssertionFailedError('equals', '.abc', '!abc')
+      );
+    }
   }
 ?>
