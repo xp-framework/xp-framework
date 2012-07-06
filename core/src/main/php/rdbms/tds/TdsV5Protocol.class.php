@@ -162,6 +162,10 @@
       $this->stream->write(self::MSG_QUERY, $sql);
       $token= $this->read();
 
+      if ("\x00" === $token) {          // ??? 04 01 00 0A 00 00 00 00 00 00
+        $token= $this->read();
+      }
+
       if ("\xEE" === $token) {          // TDS_ROWFMT
         $fields= array();
         $this->stream->getShort();
