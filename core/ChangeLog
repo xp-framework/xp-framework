@@ -10,6 +10,7 @@ Bugfixes
 ~~~~~~~~
 - Changed drivers for Sybase and MSSQL to also emit seconds of a given 
   util.Date - see pull request #169
+  (ohinckel, friebe)
 
 RFCs
 ~~~~
