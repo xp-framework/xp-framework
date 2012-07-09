@@ -23,6 +23,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Improved unittest output when comparing large strings (pull request #30)
+  (friebe, kiesel)
 - Added unittest.TestCase::skip() method - see pull request #173
   (friebe)
 - Added default logger to scriptlet handlers - see pull request #62
