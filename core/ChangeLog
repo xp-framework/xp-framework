@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.6, released 2012-07-09
+----------------------------------
+Git commit: f244d67ac076f723934eb24ca187efed5664c6a8
+
 Bugfixes
 ~~~~~~~~
 - Changed drivers for Sybase and MSSQL to also emit seconds of a given 
