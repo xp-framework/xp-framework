@@ -23,6 +23,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Added unittest.TestCase::skip() method - see pull request #173
+  (friebe)
 - Added default logger to scriptlet handlers - see pull request #62
   (oanas, friebe)
 - Added colored output for unittest runner - see issue #25 / pull #172
