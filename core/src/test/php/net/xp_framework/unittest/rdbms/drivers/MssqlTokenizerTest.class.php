@@ -5,14 +5,14 @@
  */
  
   uses(
-    'rdbms.mssql.MssqlConnection',
+    'rdbms.mssql.MsSQLConnection',
     'net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest'
   );
 
   /**
    * Test MSSQL tokenizer
    *
-   * @see   xp://rdbms.mssql.MssqlConnection
+   * @see   xp://rdbms.mssql.MsSQLConnection
    * @see   xp://net.xp_framework.unittest.rdbms.drivers.TDSTokenizerTest
    */
   class MssqlTokenizerTest extends TDSTokenizerTest {
@@ -23,7 +23,7 @@
      * @return  rdbms.DBConnection
      */
     protected function fixture() {
-      return new MssqlConnection(new DSN('mssql://localhost:1433/'));
+      return new MsSQLConnection(new DSN('mssql://localhost:1433/'));
     }
   }
 ?>
