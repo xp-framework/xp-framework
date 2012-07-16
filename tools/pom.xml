@@ -36,10 +36,29 @@
                 <resource>
                   <directory>src/main/php/</directory>
                   <includes>
-                    <include>tools/*.php</include>
                     <include>xp/runtime/usage.txt</include>
                     <include>xp/scriptlet/*.html</include>
                     <include>xp/codegen/**/*.xsl</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <!-- Copy bootstrap -->
+          <execution>
+            <id>copy-bootstrap</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/tools</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>tools</directory>
+                  <includes>
+                    <include>*.php</include>
                   </includes>
                 </resource>
               </resources>
