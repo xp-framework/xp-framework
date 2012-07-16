@@ -5,7 +5,7 @@
   <parent>
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
-    <version>5.8.5</version>
+    <version>5.8.7</version>
   </parent>
 
   <!-- The Basics -->
@@ -23,9 +23,9 @@
         <version>2.5</version>
         <executions>
 
-          <!-- Copy base.lang.php, VERSION and LICENSE -->
+          <!-- Copy core resources -->
           <execution>
-            <id>copy-lang-base</id>
+            <id>copy-core-resources</id>
             <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -39,6 +39,9 @@
                     <include>lang.base.php</include>
                     <include>VERSION</include>
                     <include>LICENCE</include>
+                    <include>**/package-info.xp</include>
+                    <include>sapi/**/*.sapi.php</include>
+                    <include>sapi/scriptlet/*.html</include>
                   </includes>
                 </resource>
               </resources>

@@ -5,7 +5,7 @@
   <!-- The Basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
-  <version>5.8.5</version>
+  <version>5.8.7</version>
   <packaging>pom</packaging>
 
   <!-- More Project Information -->
@@ -41,8 +41,8 @@
     <plugins>
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
-        <artifactId>maven-xpframework-plugin</artifactId>
-        <version>2.0.0</version>
+        <artifactId>xp-maven-plugin</artifactId>
+        <version>3.0.0</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>

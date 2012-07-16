@@ -5,7 +5,7 @@
   <parent>
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
-    <version>5.8.5</version>
+    <version>5.8.7</version>
   </parent>
 
   <!-- The Basics -->
@@ -23,20 +23,23 @@
         <version>2.5</version>
         <executions>
 
-          <!-- tools/*.php -->
+          <!-- Copy tools resources -->
           <execution>
-            <id>copy-tools</id>
+            <id>copy-tools-resources</id>
             <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/tools</outputDirectory>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>tools</directory>
+                  <directory>src/main/php/</directory>
                   <includes>
-                    <include>*.php</include>
+                    <include>tools/*.php</include>
+                    <include>xp/runtime/usage.txt</include>
+                    <include>xp/scriptlet/*.html</include>
+                    <include>xp/codegen/**/*.xsl</include>
                   </includes>
                 </resource>
               </resources>
