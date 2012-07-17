@@ -17,6 +17,14 @@
     <name>XP-Framework Team</name>
     <url>http://xp-framework.net/</url>
   </organization>
+  <developers>
+    <developer>
+      <id>xp-framework</id>
+      <name>XP-Framework Team</name>
+      <email>devs@xp-framework.net</email>
+      <url>http://xp-framework.net</url>
+    </developer>
+  </developers>
   <licenses>
     <license>
       <name>BSD</name>
