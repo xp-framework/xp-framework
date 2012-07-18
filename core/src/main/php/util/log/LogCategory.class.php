@@ -39,7 +39,9 @@
    */
   class LogCategory extends Object {
     protected static $DEFAULT_LAYOUT= NULL;
-    protected $_appenders= array();
+    protected
+    	$_appenders= array(),
+    	$context= NULL;
 
     public $flags= 0;
     public $identifier= '';
@@ -60,6 +62,34 @@
       $this->_appenders= array();
     }
 
+    /**
+     * Setter for context
+     *
+     * @param util.log.LogContext context
+     * @return void
+     */
+    public function setContext(LogContext $context) {
+    	$this->context= $context;
+    }
+    
+    /**
+     * Retrieves whether this log category has a context
+     *
+     * @return bool
+     */
+    public function hasContext() {
+    	return NULL !== $this->context;
+    }
+    
+    /**
+     * Getter for context
+     *
+     * @return util.log.LogContext context
+     */
+    public function getContext() {
+    	return $this->context;
+    }
+    
     /**
      * Sets the flags (what should be logged). Note that you also
      * need to add an appender for a category you want to log.
@@ -87,7 +117,7 @@
      */
     protected function callAppenders($level, $args) {
       if (!($this->flags & $level)) return;
-      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
+      $event= new LoggingEvent($this, time(), getmypid(), $level, $args, $this->context);
       foreach ($this->_appenders as $appflag => $appenders) {
         if (!($level & $appflag)) continue;
         foreach ($appenders as $appender) {
