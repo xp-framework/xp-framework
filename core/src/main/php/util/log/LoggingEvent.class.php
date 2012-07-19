@@ -12,12 +12,12 @@
    * @test    xp://net.xp_framework.unittest.logging.LoggingEventTest
    */
   class LoggingEvent extends Object {
-    protected $category		= NULL;
-    protected $timestamp	= 0;
-    protected $processId	= 0;
-    protected $level			= 0;
-    protected $arguments	= array();
-    protected $context   	= NULL;
+    protected $category   = NULL;
+    protected $timestamp  = 0;
+    protected $processId  = 0;
+    protected $level      = 0;
+    protected $arguments  = array();
+    protected $context    = NULL;
     
     /**
      * Creates a new logging event
