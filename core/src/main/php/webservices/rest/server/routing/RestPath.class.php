@@ -30,7 +30,7 @@
      */
     public function __construct($path) {
       static $search= '/\{([\w]*)\}/';
-      static $replace= '([%\w]*)';
+      static $replace= '([%\w:\-\.]*)';
       
       list ($this->path, $this->query)= $this->splitParams($path);
       
