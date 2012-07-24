@@ -617,5 +617,47 @@
         XPClass::forName('util.collections.Map')->getMethod('offsetGet')->toString()
       );
     }
+
+    /**
+     * Test "self" in parameters
+     *
+     * @see     xp://lang.reflect.Parameter#getType
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#isDateBefore
+     */
+    #[@test]
+    public function selfParameterType() {
+      $this->assertEquals(
+        $this->fixture,
+        $this->fixture->getMethod('isDateBefore')->getParameter(0)->getType()
+      );
+    }
+
+    /**
+     * Test "self" in parameters
+     *
+     * @see     xp://lang.reflect.Parameter#getTypeName
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#isDateBefore
+     */
+    #[@test]
+    public function selfParameterTypeName() {
+      $this->assertEquals(
+        'self',
+        $this->fixture->getMethod('isDateBefore')->getParameter(0)->getTypeName()
+      );
+    }
+
+    /**
+     * Test "self" in parameters
+     *
+     * @see     xp://lang.reflect.Parameter#getTypeRestriction
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#isDateBefore
+     */
+    #[@test]
+    public function selfParameterTypeRestriction() {
+      $this->assertEquals(
+        $this->fixture,
+        $this->fixture->getMethod('isDateBefore')->getParameter(0)->getTypeRestriction()
+      );
+    }
   }
 ?>

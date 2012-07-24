@@ -54,6 +54,16 @@
     public function __construct($in= NULL) {
       $this->date= new Date($in);
     }
+
+    /**
+     * Checks whether this date is before another given test class' date
+     *
+     * @param   self test
+     * @return  bool
+     */
+    public function isDateBefore(self $test) {
+      return $this->date->isBefore($test->date);
+    }
     
     /**
      * Returns whether static initializer was called
