@@ -218,7 +218,7 @@
       $this->assertEquals('lang.IllegalAccessException', $details[DETAIL_THROWS][1]);
     }
  
-     /**
+    /**
      * Tests parsing of the "return" tag
      *
      */
@@ -233,5 +233,5 @@
       ');
       $this->assertEquals('int', $details[DETAIL_RETURNS]);
     }
- }
+  }
 ?>
