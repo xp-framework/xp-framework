@@ -88,6 +88,19 @@
       }
       $this->date= $date;
     }
+
+    /**
+     * Set date
+     *
+     * @param   util.Date date
+     * @return  self
+     * @throws  lang.IllegalArgumentException in case the given argument is of incorrect type
+     * @throws  lang.IllegalStateException if date is before 1970
+     */
+    public function withDate($date) {
+      $this->setDate($date);
+      return $this;
+    }
     
     /**
      * Retrieve current date as UN*X timestamp

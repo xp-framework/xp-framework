@@ -378,6 +378,19 @@
     }
 
     /**
+     * Tests self return value
+     *
+     * @see     xp://lang.reflect.Method#getReturnTypeName
+     * @see     xp://lang.reflect.Method#getReturnType
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#withDate
+     */
+    #[@test]
+    public function selfReturnValue() {
+      $this->assertEquals('self', $this->fixture->getMethod('withDate')->getReturnTypeName());
+      $this->assertEquals($this->fixture, $this->fixture->getMethod('withDate')->getReturnType());
+    }
+
+    /**
      * Tests bool return value
      *
      * @see     xp://lang.reflect.Method#getReturnTypeName
