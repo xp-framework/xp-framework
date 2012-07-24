@@ -128,8 +128,11 @@
      */
     public function getReturnType() {
       if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$VAR;
-      if ('self' === ($t= ltrim($details[DETAIL_RETURNS], '&'))) return new XPClass($this->_reflect->getDeclaringClass());
-      return Type::forName($t);
+      if ('self' === ($t= ltrim($details[DETAIL_RETURNS], '&'))) {
+        return new XPClass($this->_reflect->getDeclaringClass());
+      } else {
+        return Type::forName($t);
+      }
     }
 
     /**
