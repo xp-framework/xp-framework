@@ -25,61 +25,16 @@
      * @throws  unittest.AssertionFailedError
      */
     protected function parseComment($comment) {
-      $comment= trim($comment);
-      if (!preg_match_all(
-        '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)? ?(default ([^\r\n ]+))?/', 
-        $comment,
-        $matches, 
-        PREG_SET_ORDER
-      )) {
-        $this->fail('Could not parse comment', $actual= FALSE, $expect= TRUE);
-        return;
-      }
-
-      // Set these to empty values
-      $annotations= array();
-      $name= NULL;  
-      
-      // Initialize details array
-      $details= array(
-        DETAIL_ARGUMENTS    => array(),
-        DETAIL_RETURNS      => 'void',
-        DETAIL_THROWS       => array(),
-        DETAIL_COMMENT      => trim(preg_replace('/\n\s*\* ?/', "\n", "\n".substr(
-          $comment, 
-          4,                              // "/**\n"
-          strpos($comment, '* @')- 2      // position of first details token
-        ))),
-        DETAIL_ANNOTATIONS  => $annotations,
-        DETAIL_NAME         => $name
+      $details= XPClass::parseDetails('
+        <?php
+          class Test extends Object {
+            '.$comment.'
+            public function test() { }
+          }
+        ?>',
+        $this->name
       );
-      
-      foreach ($matches as $match) {
-        switch ($match[1]) {
-          case 'param':
-            $details[DETAIL_ARGUMENTS][]= $match[2];
-            break;
-
-          case 'return':
-            $details[DETAIL_RETURNS]= $match[2];
-            break;
-
-          case 'throws': 
-            $details[DETAIL_THROWS][]= $match[2];
-            break;
-        }
-      }
-      
-      return $details;
-    }
-    
-    /**
-     * Tests the parseComment() helper
-     *
-     */
-    #[@test, @expect('unittest.AssertionFailedError')]
-    public function testParseComment() {
-      $this->parseComment('NOT-A-COMMENT');
+      return $details[1]['test'];
     }
     
     /**
@@ -263,7 +218,7 @@
       $this->assertEquals('lang.IllegalAccessException', $details[DETAIL_THROWS][1]);
     }
  
-     /**
+    /**
      * Tests parsing of the "return" tag
      *
      */
@@ -278,5 +233,5 @@
       ');
       $this->assertEquals('int', $details[DETAIL_RETURNS]);
     }
- }
+  }
 ?>
