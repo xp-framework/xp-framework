@@ -124,11 +124,15 @@
     /**
      * Retrieve return type
      *
-     * @return  string
+     * @return  lang.Type
      */
     public function getReturnType() {
       if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$VAR;
-      return Type::forName(ltrim($details[DETAIL_RETURNS], '&'));
+      if ('self' === ($t= ltrim($details[DETAIL_RETURNS], '&'))) {
+        return new XPClass($this->_reflect->getDeclaringClass());
+      } else {
+        return Type::forName($t);
+      }
     }
 
     /**
