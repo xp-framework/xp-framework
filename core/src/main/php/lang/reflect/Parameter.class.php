@@ -51,7 +51,11 @@
       ) {   // Unknown or unparseable, return ANYTYPE
         return Type::$VAR;
       }
-      return Type::forName(ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&'));
+      if ('self' === ($t= ltrim($details[DETAIL_ARGUMENTS][$this->_details[2]], '&'))) {
+        return new XPClass($this->_details[0]);
+      } else {
+        return Type::forName($t);
+      }
     }
 
     /**
