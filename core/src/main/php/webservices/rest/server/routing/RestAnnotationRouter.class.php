@@ -50,10 +50,7 @@
           ) continue;
           
           // Build argument and injection list
-          $args= new RestRoutingArgs();
-          foreach ($method->getParameters() as $param) {
-            $args->addArgument($param->getName(), $param->getType());
-          }
+          $args= new RestRoutingArgs($method->getParameters());
           if ($method->hasAnnotation('webmethod', 'inject')) foreach ($method->getAnnotation('webmethod', 'inject') as $ref => $name) {
             if (!is_numeric($ref) && !$args->hasArgument($ref)) {
               throw new IllegalArgumentException('Argument '.$ref.' does not exist for injecting '.$name);

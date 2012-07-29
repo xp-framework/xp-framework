@@ -41,12 +41,6 @@
      * @return var[]
      */
     public function process($args= array()) {
-      foreach ($this->method->getParameters() as $n => $arg) {
-        if (!isset($args[$n]) && !$arg->isOptional()) {
-          throw new IllegalArgumentException('Argument '.$arg->getName().' missing');
-        }
-      }
-      
       try {
         return $this->method->invoke(
           $this->method->getDeclaringClass()->newInstance(),
