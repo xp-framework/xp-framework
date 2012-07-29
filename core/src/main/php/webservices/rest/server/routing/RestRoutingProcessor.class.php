@@ -121,6 +121,13 @@
       foreach ($names as $i => $name) {
         if (isset($args[$i])) continue;  // Skip injection arguments
 
+        // If the argument is optional and wasn't sent
+        // use it's default value and continue with next argument
+        if (NULL===$values[$name] && $routing->getArgs()->isArgumentOptional($name)) {
+          $args[$i]= $routing->getArgs()->getArgumentDefaultValue($name);
+          continue;
+        }
+
         // Try to convert parameters to requested argument type
         try {
           $args[$i]= $this->dataCaster->complex(
