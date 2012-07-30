@@ -294,6 +294,55 @@
     public function valuesOfNonEnum() {
       Enum::valuesOf($this);
     }
+    
+    /**
+     * Test Enum::getByName() method
+     *  
+     */
+    #[@test]
+    public function getByName() {
+      $this->assertEquals(Coin::$penny, Coin::getByName('penny'));
+    }
+    
+    /**
+     * Test Enum::getByName() method with wrong name
+     * 
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'Class Coin does not have a property named invalid')]
+    public function getByNameWithWrongName() {
+      Coin::getByName('invalid');
+    }
+    
+    /**
+     * Test Enum::getByOrdinal() method
+     * 
+     */
+    #[@test]
+    public function getByOrdinal() {
+      $this->assertEquals(Coin::$penny, Coin::getByOrdinal(1));
+    }
+    
+    /**
+     * Test Enum::getByOrdinal() method with wrong value
+     *  
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'No such member -1 in net.xp_framework.unittest.core.Coin')]
+    public function getByOrdinalWithWrongValue() {
+      Coin::getByOrdinal(-1);
+    }
+    
+    /**
+     * Test Enum::values()
+     * 
+     */
+    #[@test]
+    public function values() {
+      $values= Coin::values();
+      
+      $this->assertArray($values);
+      $this->assertTrue(sizeof($values) > 0);
+      $this->assertClass($values[0], 'net.xp_framework.unittest.core.Coin');
+    }
 
     /**
      * Test Operation::$plus

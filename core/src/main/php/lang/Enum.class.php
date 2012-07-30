@@ -122,5 +122,40 @@
       }
       return $r;
     }
+    
+    /**
+     * Return value for given name
+     * 
+     * @param string name The name of value
+     * @return self
+     */
+    public static function getByName($name) {
+      return self::valueOf(new XPClass(get_called_class()), $name);
+    }
+    
+    /**
+     * Return value for given ordina value
+     * 
+     * @param int ordinal The ordinal of value
+     * @return self
+     */
+    public static function getByOrdinal($ordinal) {
+      $class= new XPClass(get_called_class());
+      
+      foreach (self::valuesOf($class) as $value) {
+        if ($value->ordinal() == $ordinal) return $value;
+      }
+      
+      throw new IllegalArgumentException('No such member '.$ordinal.' in '.$class->getName());
+    }
+    
+    /**
+     * Return all available values for given enum
+     * 
+     * @return self[] 
+     */
+    public static function values() {
+      return self::valuesOf(new XPClass(get_called_class()));
+    }
   }
 ?>
