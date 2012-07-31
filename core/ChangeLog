@@ -6,10 +6,16 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.6, released 2012-07-09
+----------------------------------
+Git commit: f244d67ac076f723934eb24ca187efed5664c6a8
+
 Bugfixes
 ~~~~~~~~
 - Changed drivers for Sybase and MSSQL to also emit seconds of a given 
   util.Date - see pull request #169
+  (ohinckel, friebe)
 
 RFCs
 ~~~~
@@ -22,6 +28,12 @@ RFCs
 
 Features
 ~~~~~~~~
+- Improved unittest output when comparing large strings (pull request #30)
+  (friebe, kiesel)
+- Added unittest.TestCase::skip() method - see pull request #173
+  (friebe)
+- Added default logger to scriptlet handlers - see pull request #62
+  (oanas, friebe)
 - Added colored output for unittest runner - see issue #25 / pull #172
   (kiesel, friebe)
 - Added support for supplying a path to the unittest command - will run

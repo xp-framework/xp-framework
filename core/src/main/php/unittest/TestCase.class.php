@@ -47,6 +47,16 @@
     public function fail($reason, $actual, $expect) {
       throw new AssertionFailedError($reason, $actual, $expect);
     }
+
+    /**
+     * Skip this test case
+     *
+     * @param   string reason
+     * @param   var[] prerequisites default []
+     */
+    public function skip($reason, $prerequisites= array()) {
+      throw new PrerequisitesNotMetError($reason, $prerequisites= array());
+    }
     
     /**
      * Assert that a value is an array. This is TRUE if the given value 

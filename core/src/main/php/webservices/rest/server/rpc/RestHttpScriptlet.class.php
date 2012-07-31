@@ -60,7 +60,11 @@
         
         $args= $item->getArgs();
         foreach ($args->getArguments() as $name) {
-          $response->write('- '.$name.' : '.$args->getArgumentType($name)->getName());
+          $response->write(sprintf('- %s : %s %s',
+            $name, 
+            $args->getArgumentType($name)->getName(),
+            $args->isArgumentOptional($name) ? ' (optional)' : ''
+          ));
           
           if ($args->isInjected($name)) $response->write(' (injected by '.$args->getInjection($name).')');
           

@@ -530,5 +530,36 @@
         $r->getHeaderString()
       );
     }
+
+    /**
+     * Test getHeaderString()
+     *
+     */
+    #[@test]
+    public function emptyPostBody() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('');
+      $this->assertEquals(
+        "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nContent-Length: 0\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n",
+        $r->getHeaderString()
+      );
+    }
+
+    /**
+     * Test getHeaderString()
+     *
+     */
+    #[@test]
+    public function oneByteBody() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters(new RequestData('1'));
+      $this->assertEquals(
+        "POST / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\nContent-Length: 1\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n",
+        $r->getHeaderString()
+      );
+    }
+
   }
 ?>
