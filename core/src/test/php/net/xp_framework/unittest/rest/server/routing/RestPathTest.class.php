@@ -147,5 +147,53 @@
         create(new RestPath('/path/to/item?filter={filter}&type={type}'))->match('/path/to/item?filter=red&type=color')
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function underscoreAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a_b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a_b')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function colonAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a:b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a:b')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function dashAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a-b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a-b')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function dotAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a.b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a.b')
+      );
+    }
   }
 ?>

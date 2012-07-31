@@ -5,7 +5,7 @@
   <!-- The Basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
-  <version>5.8.5</version>
+  <version>5.8.7</version>
   <packaging>pom</packaging>
 
   <!-- More Project Information -->
@@ -17,6 +17,14 @@
     <name>XP-Framework Team</name>
     <url>http://xp-framework.net/</url>
   </organization>
+  <developers>
+    <developer>
+      <id>xp-framework</id>
+      <name>XP-Framework Team</name>
+      <email>devs@xp-framework.net</email>
+      <url>http://xp-framework.net</url>
+    </developer>
+  </developers>
   <licenses>
     <license>
       <name>BSD</name>
@@ -41,12 +49,37 @@
     <plugins>
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
-        <artifactId>maven-xpframework-plugin</artifactId>
-        <version>2.0.0</version>
+        <artifactId>xp-maven-plugin</artifactId>
+        <version>3.1.1</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>
+
+  <!--
+   ! Dependency Management
+   !
+   ! Add [net.xp-framework:pom] as 'import' dependency. It will be replaced with both
+   ! [net.xp-framework:core] and [net.xp-framework:tools] dependencies
+   !
+   ! @since 5.8.7
+   !-->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.xp-framework</groupId>
+        <artifactId>core</artifactId>
+        <version>${project.version}</version>
+        <type>xar</type>
+      </dependency>
+      <dependency>
+        <groupId>net.xp-framework</groupId>
+        <artifactId>tools</artifactId>
+        <version>${project.version}</version>
+        <type>xar</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <!-- Source code management -->
   <scm>

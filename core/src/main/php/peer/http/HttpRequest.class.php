@@ -176,7 +176,7 @@
         case HttpConstants::POST: case HttpConstants::PUT: case HttpConstants::TRACE: default:
           if ($withBody) $body= substr($query, 1);
           if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
-          $this->headers['Content-Length']= array(strlen($query)- 1);
+          $this->headers['Content-Length']= array(max(0, strlen($query)- 1));
           if (empty($this->headers['Content-Type'])) {
             $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
           }

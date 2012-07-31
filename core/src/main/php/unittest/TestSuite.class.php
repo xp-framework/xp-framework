@@ -309,6 +309,10 @@
           $this->notifyListeners('testFailed', array(
             $result->setFailed($test, $e, $timer->elapsedTime())
           ));
+        } else if ($e instanceof PrerequisitesNotMetError) {
+          $this->notifyListeners('testSkipped', array(
+            $result->setSkipped($test, $e, $timer->elapsedTime())
+          ));
         } else {
           $this->notifyListeners('testError', array(
             $result->set($test, new TestError($test, $e, $timer->elapsedTime()))

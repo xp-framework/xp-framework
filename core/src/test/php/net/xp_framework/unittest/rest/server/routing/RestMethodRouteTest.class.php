@@ -103,14 +103,5 @@
       
       $this->assertEquals(array(123, 6100), $this->target->getInvokedArgs());
     }
-    
-    /**
-     * Test routing to method with missing arguments
-     * 
-     */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function routeToMethodWithMissingArgs() {
-      $this->routeFor('/path/{value}', $this->targetMethodMultiple)->process();
-    }
   }
 ?>
