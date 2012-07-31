@@ -9,6 +9,7 @@
   uses(
     'xp.scriptlet.WebApplication',
     'util.PropertyManager',
+    'util.PropertySourceFactory',
     'util.log.Logger',
     'rdbms.ConnectionManager',
     'scriptlet.HttpScriptlet',
