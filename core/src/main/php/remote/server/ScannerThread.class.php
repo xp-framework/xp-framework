@@ -84,7 +84,7 @@
           
           // Check for *RE*-deployment
           if (!$initial) {
-            $this->cat && $this->cat->infof('Scanner #%s: Deployments changed, signalling server to redeploy', $this->_id);
+            $this->cat && $this->cat->debugf('Scanner #%s: Deployments changed, signalling server to redeploy', $this->_id);
             posix_kill($this->_pid, SIGHUP);
           }
           $initial= FALSE;
