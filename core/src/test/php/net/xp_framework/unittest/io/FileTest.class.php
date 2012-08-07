@@ -57,6 +57,58 @@
     }
 
     /**
+     * Test hashCode() method
+     *
+     */
+    #[@test]
+    public function hashCodesNotEqualForTwoFileHandles() {
+      $fn= $this->fileKnownToExist();
+      $this->assertNotEquals(
+        create(new File(fopen($fn, 'r')))->hashCode(),
+        create(new File(fopen($fn, 'r')))->hashCode()
+      );
+    }
+
+    /**
+     * Test hashCode() method
+     *
+     */
+    #[@test]
+    public function hashCodesEqualForSameFileHandles() {
+      $fn= fopen($this->fileKnownToExist(), 'r');
+      $this->assertEquals(
+        create(new File($fn))->hashCode(),
+        create(new File($fn))->hashCode()
+      );
+    }
+
+    /**
+     * Test hashCode() method
+     *
+     */
+    #[@test]
+    public function hashCodesEqualForSameFiles() {
+      $fn= $this->fileKnownToExist();
+      $this->assertEquals(
+        create(new File($fn))->hashCode(),
+        create(new File($fn))->hashCode()
+      );
+    }
+
+    /**
+     * Test hashCode() method
+     *
+     */
+    #[@test]
+    public function hashCodesNotEqualForHandleAndUri() {
+      $fn= $this->fileKnownToExist();
+      $this->assertNotEquals(
+        create(new File(fopen($fn, 'r')))->hashCode(),
+        create(new File($fn))->hashCode()
+      );
+    }
+
+    /**
      * Test getURI() method
      *
      */
