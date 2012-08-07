@@ -41,7 +41,7 @@
         );
       }
 
-      $this->cat && $this->cat->debug($this->getClassName(), 'Begin deployment of', $deployment);
+      $this->cat && $this->cat->info($this->getClassName(), 'Begin deployment of', $deployment);
 
       // Register beans classloader. This classloader must be put at the beginning
       // to prevent loading of the home interface not implmenenting BeanInterface
@@ -72,7 +72,7 @@
         $invocationHandler
       ));
       
-      $this->cat && $this->cat->debug($this->getClassName(), 'End deployment of', $impl->getName(), 'with ND entry', $directoryName);
+      $this->cat && $this->cat->info($this->getClassName(), 'End deployment of', $impl->getName(), 'with ND entry', $directoryName);
 
       return $beanContainer;
     }
