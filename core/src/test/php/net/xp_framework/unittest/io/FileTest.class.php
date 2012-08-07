@@ -26,7 +26,36 @@
     protected function fileKnownToExist() {
       return realpath(Runtime::getInstance()->getExecutable()->getFilename());
     }
-    
+
+    /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function sameInstanceIsEqual() {
+      $f= new File($this->fileKnownToExist());
+      $this->assertEquals($f, $f);
+    }
+
+    /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function sameFileIsEqual() {
+      $fn= $this->fileKnownToExist();
+      $this->assertEquals(new File($fn), new File($fn));
+    }
+
+    /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function differentFilesAreNotEqual() {
+      $this->assertNotEquals(new File($this->fileKnownToExist()), new File(__FILE__));
+    }
+
     /**
      * Test getURI() method
      *
