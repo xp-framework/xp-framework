@@ -15,9 +15,12 @@
   <!-- More Project Information -->
   <name>XP-Framework core</name>
 
-  <!-- Test resources are inside [src/test/php] and not inside [src/test/resources] -->
   <properties>
+    <!-- Test resources are inside [src/test/php] and not inside [src/test/resources] -->
     <xp.compile.testPhpIncludePattern>**/*</xp.compile.testPhpIncludePattern>
+
+    <!-- Unittest ini files location -->
+    <xp.test.iniDirectory>${basedir}/src/test/resources</xp.test.iniDirectory>
   </properties>
 
   <!-- Copy resources (not in the default Maven layout) -->
@@ -27,8 +30,6 @@
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.5</version>
         <executions>
-
-          <!-- Copy core resources -->
           <execution>
             <id>copy-core-resources</id>
             <phase>process-resources</phase>
@@ -51,24 +52,7 @@
                 </resource>
               </resources>
             </configuration>
-          </execution>
-
-          <!-- Copy unittest ini files -->
-          <execution>
-            <id>copy-test-resources</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.testOutputDirectory}/etc/unittest</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/test/resources</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
+         </execution>
         </executions>
       </plugin>
     </plugins>
