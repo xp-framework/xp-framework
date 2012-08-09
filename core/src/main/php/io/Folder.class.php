@@ -295,7 +295,7 @@
     }
 
     /**
-     * Returns whether a given value is equal to this file
+     * Returns whether a given value is equal to this folder
      *
      * @param   var cmp
      * @return  bool
