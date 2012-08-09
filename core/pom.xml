@@ -25,7 +25,6 @@
 
   <!-- Copy resources (not in the default Maven layout) -->
   <build>
-    <testResources />
     <plugins>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
