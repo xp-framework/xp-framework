@@ -9,7 +9,9 @@ Git commit: ?????
 Bugfixes
 ~~~~~~~~
 - Fix optional params for rest server - see pull request #152
-  (mihaighigea, kiesel, iigoorr)
+  (mihaighigea, kiesel, iigorr)
+- Fix HTTP content length calculation for empty POST bodys.
+  (kiesel, iigorr)
 
 Features
 ~~~~~~~~
