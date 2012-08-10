@@ -106,6 +106,16 @@
       return $this->category[$name];
     }
     
+    
+    /**
+     * Get list of categories
+     *
+     * @return util.log.LogCategory[]
+     */
+    public function getCategories() {
+    	return $this->category;
+    }
+    
     /**
      * Configure this logger
      *
@@ -166,6 +176,15 @@
               )
             );
           }
+          
+          // Set context
+          if ('' !== ($contextFQN= $prop->readString($section, 'context'))) {
+          	$context= XPClass::forName($contextFQN)->newInstance();
+          } else {
+          	$context= XPClass::forName('util.log.LogContext')->newInstance();
+          }
+          $this->category[$section]->setContext($context);
+          
         }
       } while ($section= $prop->getNextSection());
     }
