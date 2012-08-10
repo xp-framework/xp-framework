@@ -688,6 +688,25 @@
     }
 
     /**
+     * Returns whether a given value is equal to this file
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->hashCode() === $this->hashCode();
+    }
+
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return NULL === $this->uri ? (string)$this->_fd : md5($this->uri);
+    }
+
+    /**
      * Returns a string representation of this object
      *
      * @return  string
