@@ -6,6 +6,23 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fix optional params for rest server - see pull request #152
+  (mihaighigea, kiesel, iigoorr)
+
+Features
+~~~~~~~~
+- Added equals() methods to io.File & io.Folder - pull request #181
+  (friebe)
+- In remote package: Prefer "debug" loglevel over "info" - less verbose.
+  See pull request #180
+  (kiesel)
+- Extracted class parsing into own method (testability) - pull request #177
+  (friebe)
+- Added support for "self" as type in @return, @param - pull request #176
+  (friebe)
+
 
 Version 5.8.6, released 2012-07-09
 ----------------------------------
