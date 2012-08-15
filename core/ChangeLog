@@ -8,6 +8,8 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #182: URLs with `@` inside fail to parse
+  (friebe)
 - Allow _-.: as values in rest paths - see pull request #175
   (kiesel)
 - Fix optional params for rest server - see pull request #152
