@@ -1,13 +1,14 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   $package= 'xp.unittest';
 
   uses(
     'xp.unittest.TestListeners',
+    'xp.unittest.CoverageListener',
     'xp.unittest.sources.PropertySource',
     'xp.unittest.sources.ClassSource',
     'xp.unittest.sources.ClassFileSource',
@@ -36,6 +37,7 @@
    * <ul>
    *   <li>-v : Be verbose</li>
    *   <li>-q : Be quiet (no output)</li>
+   *   <li>-c : Add path elements for codecoverage</li>
    *   <li>-cp: Add classpath elements</li>
    *   <li>-a {argument}: Define argument to pass to tests (may be used
    *     multiple times)</li>
@@ -66,7 +68,7 @@
   class xp·unittest·Runner extends Object {
     protected $out= NULL;
     protected $err= NULL;
-    
+
     /**
      * Constructor. Initializes out and err members to console
      *
@@ -138,7 +140,7 @@
       }
       return $args[$offset];
     }
-    
+
     /**
      * Returns an output stream writer for a given file name.
      *
@@ -152,7 +154,7 @@
         return new StringWriter(new FileOutputStream($in));
       }
     }
-    
+
     /**
      * Runs suite
      *
@@ -168,6 +170,7 @@
       // Parse arguments
       $sources= new Vector();
       $listener= TestListeners::$DEFAULT;
+      $coverage= NULL;
       $arguments= array();
       $colors= NULL;
       $cmap= array(
@@ -183,6 +186,11 @@
             $listener= TestListeners::$VERBOSE;
           } else if ('-q' == $args[$i]) {
             $listener= TestListeners::$QUIET;
+          } else if ('-c' == $args[$i]) {
+            $coverage= new CoverageListener();
+            foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'c')) as $path) {
+              $coverage->registerPath($path);
+            }
           } else if ('-cp' == $args[$i]) {
             foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $element) {
               ClassLoader::registerPath($element, NULL);
@@ -224,12 +232,16 @@
         xp::gc();
         return 1;
       }
-      
+
+      if (isset($coverage)) {
+        $suite->addListener($coverage);
+      }
+
       if ($sources->isEmpty()) {
         $this->err->writeLine('*** No tests specified');
         return 1;
       }
-      
+
       // Set up suite
       $l= $suite->addListener($listener->newInstance($this->out));
       if ($l instanceof ColorizingListener) {
@@ -253,7 +265,7 @@
           return 1;
         }
       }
-      
+
       // Run it!
       if (0 == $suite->numTests()) {
         return 3;
@@ -270,6 +282,6 @@
      */
     public static function main(array $args) {
       return create(new self())->run($args);
-    }    
+    }
   }
 ?>
