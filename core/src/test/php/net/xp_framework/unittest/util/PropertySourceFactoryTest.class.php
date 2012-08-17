@@ -23,7 +23,7 @@
      */
     #[@test]
     public function filesystemPath() {
-      $this->assertClass(PropertySourceFactory::forUri('/some/path'), 'util.FilesystemPropertySource');
+      $this->assertInstanceOf('util.FilesystemPropertySource', PropertySourceFactory::forUri('/some/path'));
     }
     
     /**
@@ -32,7 +32,7 @@
      */
     #[@test]
     public function pathToXar() {
-      $this->assertClass(PropertySourceFactory::forUri('/some/archive.xar'), 'util.ArchivePropertySource');
+      $this->assertInstanceOf('util.ArchivePropertySource', PropertySourceFactory::forUri('/some/archive.xar'));
     }
   }
 ?>
