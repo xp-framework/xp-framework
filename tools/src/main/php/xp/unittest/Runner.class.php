@@ -38,6 +38,7 @@
    *   <li>-v : Be verbose</li>
    *   <li>-q : Be quiet (no output)</li>
    *   <li>-c : Add path elements for codecoverage</li>
+   *   <li>-cr : Set path for code coverage report file</li>
    *   <li>-cp: Add classpath elements</li>
    *   <li>-a {argument}: Define argument to pass to tests (may be used
    *     multiple times)</li>
@@ -179,6 +180,7 @@
         '=off'  => FALSE,
         '=auto' => NULL
       );
+      $coverageReportFile= NULL;
 
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
@@ -194,6 +196,8 @@
             foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'c')) as $path) {
               $coverage->registerPath($path);
             }
+          } else if ('-cr' == $args[$i]) {
+            $coverageReportFile= $this->arg($args, ++$i, 'cr'); 
           } else if ('-cp' == $args[$i]) {
             foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'cp')) as $element) {
               ClassLoader::registerPath($element, NULL);
@@ -234,6 +238,13 @@
         $this->err->writeLine('*** ', $e->getMessage());
         xp::gc();
         return 1;
+      }
+
+      if (!is_null($coverageReportFile)) {
+        if (is_null($coverage)) {
+          throw new IllegalArgumentException('Unsupported argument -cr when code coverage is not used (see -c flag)');
+        }
+        $coverage->setReportFile($coverageReportFile);
       }
 
       if (isset($coverage)) {

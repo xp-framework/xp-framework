@@ -8,7 +8,8 @@
     'unittest.TestListener',
     'io.streams.OutputStreamWriter',
     'xml.DomXSLProcessor',
-    'xml.Node'
+    'xml.Node',
+    'io.FileUtil'
   );
 
   /**
@@ -20,10 +21,15 @@
 
     private
       $paths    = array(),
-      $processor= NULL;
+      $processor= NULL,
+      $reportFile= 'coverage.html';
 
     public function registerPath($path) {
       $this->paths[]= $path;
+    }
+
+    public function setReportFile($reportFile) {
+      $this->reportFile= $reportFile;
     }
 
     /**
@@ -171,9 +177,7 @@
       $this->processor->setXMLBuf($pathsNode->getSource());
       $this->processor->run();
 
-      $reportfile= 'coverage-'.date('Y-m-d-H-i-s').'.html';
-      $reportfile= 'coverage.html';
-      file_put_contents($reportfile, $this->processor->output());
+      FileUtil::setContents(new File($this->reportFile), $this->processor->output());
     }
   }
 ?>
