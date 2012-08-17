@@ -187,6 +187,9 @@
           } else if ('-q' == $args[$i]) {
             $listener= TestListeners::$QUIET;
           } else if ('-c' == $args[$i]) {
+            if (!Runtime::extensionAvailable('xdebug')) {
+              throw new PrerequisitesNotMetError('code coverage not avaiable. Please install the xdebug extension.'); 
+            }
             $coverage= new CoverageListener();
             foreach (explode(PATH_SEPARATOR, $this->arg($args, ++$i, 'c')) as $path) {
               $coverage->registerPath($path);
