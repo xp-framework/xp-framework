@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.7, released 2012-08-17
+----------------------------------
+Git commit: 20ebf97d186623fcf82140de06a870eaba610464
+
 Bugfixes
 ~~~~~~~~
 - Fixed issue #182: URLs with `@` inside fail to parse
