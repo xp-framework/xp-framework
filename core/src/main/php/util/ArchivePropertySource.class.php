@@ -16,7 +16,6 @@
    * @see      xp://lang.ArchiveClassLoader
    */
   class ArchivePropertySource extends Object implements PropertySource {
-    protected $cache= array();
     protected $path= NULL;
     protected $cl= NULL;
 
@@ -37,7 +36,6 @@
      * @return  bool
      */
     public function provides($name) {
-      if (isset($this->cache[$name])) return TRUE;
       return $this->cl->providesResource($name.'.ini');
     }
 
@@ -52,11 +50,7 @@
       if (!$this->provides($name))
         throw new IllegalArgumentException('No properties '.$name.' found at '.$this->path);
 
-      if (!isset($this->cache[$name])) {
-        $this->cache[$name]= Properties::fromFile($this->cl->getResourceAsStream($name.'.ini'));
-      }
-
-      return $this->cache[$name];
+      return Properties::fromFile($this->cl->getResourceAsStream($name.'.ini'));
     }
 
     /**
