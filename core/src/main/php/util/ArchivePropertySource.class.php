@@ -50,7 +50,10 @@
       if (!$this->provides($name))
         throw new IllegalArgumentException('No properties '.$name.' found at '.$this->path);
 
-      return Properties::fromFile($this->cl->getResourceAsStream($name.'.ini'));
+      $p= new Properties($name);
+      $p->load($this->cl->getResourceAsStream($name.'.ini')->getInputStream());
+      
+      return $p;
     }
 
     /**
