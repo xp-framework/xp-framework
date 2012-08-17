@@ -119,7 +119,7 @@
 
             $('input[name=folder]').change(function(event) {
               $('.folder, .file').slideUp(300);
-              $('#fs' + $(event.target).attr('id').substr(2)).slideDown(300);
+              $(document.getElementById('fs' + $(event.target).attr('id').substr(2))).slideDown(300);
               $('.folder input').each(function(index, elem) {
                 $(elem).removeAttr('checked');
               });
@@ -127,7 +127,7 @@
             
             $('input[name=file]').change(function(event) {
               $('.file').slideUp(300);
-              $('#fs' + $(event.target).attr('id').substr(2)).slideDown(300);
+              $(document.getElementById('fs' + $(event.target).attr('id').substr(2))).slideDown(300);
             });
           });
         ]]>
