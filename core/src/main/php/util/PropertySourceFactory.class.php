@@ -25,7 +25,7 @@
      * @return  util.PropertySource
      */
     public static function forUri($uri) {
-      if (strrpos($uri, '.xar') == (strlen($uri)-4)) {
+      if (substr($uri, -4) === '.xar') {
         return new ArchivePropertySource($uri);
       } else {
         return new FilesystemPropertySource($uri);
