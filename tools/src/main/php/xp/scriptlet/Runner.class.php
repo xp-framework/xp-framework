@@ -268,7 +268,7 @@
       
       // Set environment variables
       foreach ($application->getEnvironment() as $key => $value) {
-        putenv($key.'='.$value);
+        $_ENV[$key]= $value;
       }
 
       // Instantiate and initialize
