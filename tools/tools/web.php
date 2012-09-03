@@ -47,6 +47,7 @@
       header('HTTP/1.0 500 Internal Server Error');
       $_SERVER['SCRIPT_URL']= substr($_SERVER['REQUEST_URI'], 0, strcspn($_SERVER['REQUEST_URI'], '?#'));
       $_SERVER['DOCUMENT_ROOT'].= '/static';
+      $_SERVER['SERVER_PROFILE']= getenv('SERVER_PROFILE');
       break;
 
     default:
@@ -72,5 +73,5 @@
     exit(0x3d);
   }
   uses('xp.scriptlet.Runner');
-  exit(xp新criptlet愛unner::main(array($webroot, $_ENV['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
+  exit(xp新criptlet愛unner::main(array($webroot, $_SERVER['SERVER_PROFILE'], $_SERVER['SCRIPT_URL'])));
 ?>
