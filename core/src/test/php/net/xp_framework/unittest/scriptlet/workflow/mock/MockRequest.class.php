@@ -41,11 +41,11 @@
         array(),
         $functionality
       )->newInstance();
-      $_ENV['STATE']= $stateName;
+      $_SERVER['STATE']= $stateName;
 
       // Set some defaults
-      $_ENV['PRODUCT']= 'xp';
-      $_ENV['LANGUAGE']= 'en_US';
+      $_SERVER['PRODUCT']= 'xp';
+      $_SERVER['LANGUAGE']= 'en_US';
     }
   }
 ?>
