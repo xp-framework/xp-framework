@@ -85,12 +85,8 @@
      */
     public function getEnvValue($name, $default= NULL) {
       if (!isset($this->env[$name])) {
-        if (!isset($_SERVER[$name])) {
-          if (!isset($_ENV[$name])) return $default;
-          $this->env[$name]= $_ENV[$name];
-        } else {
-          $this->env[$name]= $_SERVER[$name];
-        }
+        if (!isset($_SERVER[$name])) return $default;
+        $this->env[$name]= $_SERVER[$name];
       }
       return $this->env[$name];
     }
