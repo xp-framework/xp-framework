@@ -24,6 +24,15 @@
       if (function_exists('sybase_min_server_severity')) {
         sybase_min_server_severity(12);
       }
+
+      // Certain tests require a specific minimum server version
+      $m= $this->getClass()->getMethod($this->name);
+      if ($m->hasAnnotation('version')) {
+        $server= $this->db()->query('select @@version_number as v')->next('v');
+        if ($server < ($required= $m->getAnnotation('version'))) {
+          throw new PrerequisitesNotMetError('Server version not sufficient: '.$server, NULL, array($required));
+        }
+      }
     }    
 
     /**
@@ -164,7 +173,7 @@
      * Test selecting unitext values
      *
      */
-    #[@test]
+    #[@test, @version(15000)]
     public function selectEmptyUniText() {
       $this->assertEquals(' ', $this->db()->query('select cast("" as unitext) as value')->next('value'));
     }
@@ -173,7 +182,7 @@
      * Test selecting char values
      *
      */
-    #[@test]
+    #[@test, @version(15000)]
     public function selectUniText() {
       $this->assertEquals('test', $this->db()->query('select cast("test" as unitext) as value')->next('value'));
     }
@@ -182,7 +191,7 @@
      * Test selecting char values
      *
      */
-    #[@test]
+    #[@test, @version(15000)]
     public function selectUmlautUniText() {
       $this->assertEquals('Übercoder', $this->db()->query('select cast("Übercoder" as unitext) as value')->next('value'));
     }
@@ -191,7 +200,7 @@
      * Test selecting char values
      *
      */
-    #[@test]
+    #[@test, @version(15000)]
     public function selectNullUniText() {
       $this->assertEquals(NULL, $this->db()->query('select cast(NULL as unitext) as value')->next('value'));
     }
