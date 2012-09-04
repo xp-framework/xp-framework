@@ -12,6 +12,7 @@
    * @see   https://github.com/mono/mono/blob/master/mcs/class/Mono.Data.Tds/Mono.Data.Tds.Protocol/Tds50.cs
    */
   class TdsV5Protocol extends TdsProtocol {
+    protected $servercs= 'cp850';
   
     static function __static() { }
   
@@ -43,7 +44,7 @@
         public function unmarshal($stream, $field) {
           if (0 === ($len= $stream->getByte())) return NULL;
           $string= $stream->read($len);
-          return iconv("cp850", "iso-8859-1", substr($string, 0, strcspn($string, "\0")));
+          return iconv($field["conv"], "iso-8859-1", substr($string, 0, strcspn($string, "\0")));
         }
       }');
       $records[self::T_IMAGE]= newinstance('rdbms.tds.TdsRecord', array(), '{
@@ -60,7 +61,7 @@
           // HACK - cannot figure out why UNITEXT is not being returned as such
           // but as IMAGE type with different inside layout!
           return iconv(
-            strlen($r) > 1 && "\0" === $r{1} ? "ucs-2le" : "cp850",
+            strlen($r) > 1 && "\0" === $r{1} ? "ucs-2le" : $field["conv"],
             "iso-8859-1",
             $r
           );
@@ -69,7 +70,8 @@
       $records[self::T_VARBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           if (0 === ($len= $stream->getByte())) return NULL;
-          return iconv("cp850", "iso-8859-1", $stream->read($len));
+
+          return iconv($field["conv"], "iso-8859-1", $stream->read($len));
         }
       }');
       $records[self::T_LONGBINARY]= newinstance('rdbms.tds.TdsRecord', array(), '{
@@ -151,6 +153,21 @@
       // Login
       $this->stream->write(self::MSG_LOGIN, $packet.$capabilities);
     }
+
+    /**
+     * Handle ENVCHANGE
+     *
+     * @param  int type
+     * @param  string old
+     * @param  string new
+     * @param  bool initial if this ENVCHANGE was part of the login response
+     */
+    protected function handleEnvChange($type, $old, $new, $initial= FALSE) {
+      if ($initial && 3 === $type) {
+        $this->servercs= $old;
+      }
+      // DEBUG Console::writeLine($initial ? 'I' : 'E', $type, ' ', $old, ' -> ', $new);
+    }
     
     /**
      * Issues a query and returns the results
@@ -184,6 +201,7 @@
           // Handle column.
           if (self::T_TEXT === $field['type'] || self::T_IMAGE === $field['type']) {
             $field['size']= $this->stream->getLong();
+            $field['conv']= $this->servercs;
             $this->stream->read($this->stream->getShort());
           } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
             $field['size']= $this->stream->getByte();
@@ -193,6 +211,9 @@
             $field['size']= $this->stream->getLong() / 2;
           } else if (isset(self::$fixed[$field['type']])) {
             $field['size']= self::$fixed[$field['type']];
+          } else if (self::T_VARBINARY === $field['type'] || self::T_BINARY === $field['type']) {
+            $field['size']= $this->stream->getByte();
+            $field['conv']= $this->servercs;
           } else {
             $field['size']= $this->stream->getByte();
           }
@@ -207,8 +228,7 @@
         // TODO: Maybe?
         return $meta['rowcount'];
       } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
-        // HANDLE!
-        $this->cancel();
+        $this->envchange();
       } else {
         throw new TdsProtocolException(
           sprintf('Unexpected token 0x%02X', ord($token)),
