@@ -313,6 +313,18 @@
     }
 
     /**
+     * Handle ENVCHANGE
+     *
+     * @param  int type
+     * @param  string old
+     * @param  string new
+     * @param  bool initial if this ENVCHANGE was part of the login response
+     */
+    protected function handleEnvChange($type, $old, $new, $initial= FALSE) {
+      // Intentionally empty
+    }
+
+    /**
      * Connect
      *
      * @param   string user
@@ -324,7 +336,7 @@
       $this->login($user, $password);
       $response= $this->read();
 
-      if ("\xAD" === $response) {   // TDS_LOGINACK
+      if ("\xAD" === $response) {          // TDS_LOGINACK
         $meta= $this->stream->get('vlength/Cstatus', 3);
         switch ($meta['status']) {
           case 5:     // TDS_LOG_SUCCEED
@@ -341,15 +353,31 @@
             $this->stream->read($meta['length']- 1);
             throw new TdsProtocolException('Negotiation not yet implemented');
         }
-      } else if ("\xE3" === $response) {   // ENVCHANGE
-        $l= $this->stream->getShort();
-        $env= $this->stream->read($l);
-        // DEBUG Console::writeLine("ENVCHANGE ", new Bytes($env));
+      } else if ("\xE3" === $response) {   // TDS_ENVCHANGE
+        $this->envchange();
       } else {
-        $this->cancel();    // TODO: Handle response, e.g. ENVCHANGE
+        $this->cancel();                   // TODO: What else could we get here?
       }
 
       $this->connected= TRUE;
+    }
+
+    /**
+     * Process an ENVCHANGE token, e.g. "\015\003\005iso_1\005cp850"
+     *
+     */
+    protected function envchange() {
+      $len= $this->stream->getShort();
+      $env= $this->stream->read($len);
+      $i= 0;
+      while ($i < $len) {
+        $type= $env{$i++};
+        $new= substr($env, $i+ 1, $l= ord($env{$i++}));
+        $i+= $l;
+        $old= substr($env, $i+ 1, $l= ord($env{$i++}));
+        $i+= $l;
+        $this->handleEnvChange(ord($type), $old, $new, TRUE);
+      }
     }
     
     /**
