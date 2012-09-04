@@ -164,7 +164,7 @@
      */
     protected function handleEnvChange($type, $old, $new, $initial= FALSE) {
       if ($initial && 3 === $type) {
-        $this->servercs= $old;
+        $this->servercs= strtr($old, array('iso_' => 'iso-8859-'));
       }
       // DEBUG Console::writeLine($initial ? 'I' : 'E', $type, ' ', $old, ' -> ', $new);
     }
