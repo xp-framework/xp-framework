@@ -329,5 +329,31 @@
         $response->header('X-Example')
       );
     }
+
+    /**
+     * Test getHeaderString()
+     *
+     */
+    #[@test]
+    public function headerString() {
+      $response= $this->newResponse(array('HTTP/1.1 200 OK', 'Content-Type: application/json', 'Content-Length: 0'));
+      $this->assertEquals(
+        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 0\r\n\r\n",
+        $response->getHeaderString()
+      );
+    }
+
+    /**
+     * Test getHeaderString()
+     *
+     */
+    #[@test]
+    public function headerStringDoesNotIncludeContent() {
+      $response= $this->newResponse(array('HTTP/1.1 200 OK', 'Content-Type: application/json', 'Content-Length: 21'), '{ "hello" : "world" }');
+      $this->assertEquals(
+        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 21\r\n\r\n",
+        $response->getHeaderString()
+      );
+    }
   }
 ?>

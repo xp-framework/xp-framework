@@ -218,6 +218,17 @@
     }
 
     /**
+     * Perform a PATCH request
+     *
+     * @param   string arg default NULL
+     * @param   array headers default array()
+     * @return  peer.http.HttpResponse response object
+     */
+    public function patch($arg= NULL, $headers= array()) {
+      return $this->request(HttpConstants::PATCH, $arg, $headers);
+    }
+
+    /**
      * Perform a DELETE request
      *
      * @param   string arg default NULL

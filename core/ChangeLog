@@ -6,16 +6,135 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Changed scriptlet API to use $_SERVER instead of getenv() - this is more
+  portable to different web server SAPIs. See pull request #184
+  (friebe)
+
+
+Version 5.8.7, released 2012-08-17
+----------------------------------
+Git commit: 20ebf97d186623fcf82140de06a870eaba610464
+
 Bugfixes
 ~~~~~~~~
+- Fixed issue #182: URLs with `@` inside fail to parse
+  (friebe)
+- Allowed _-.: as values in rest paths - see pull request #175
+  (kiesel)
+- Fixed optional params for rest server - see pull request #152
+  (mihaighigea, kiesel, iigorr)
+- Fixed HTTP content length calculation for empty POST bodys.
+  (kiesel, iigorr)
+
+Features
+~~~~~~~~
+- Added equals() methods to io.File & io.Folder - pull request #181
+  (friebe)
+- Preferred "debug" loglevel over "info" in remote package - less verbose.
+  See pull request #180
+  (kiesel)
+- Extracted class parsing into own method (testability) - pull request #177
+  (friebe)
+- Added support for "self" as type in @return, @param - pull request #176
+  (friebe)
+
+
+Version 5.8.6, released 2012-07-09
+----------------------------------
+Git commit: f244d67ac076f723934eb24ca187efed5664c6a8
+
+Bugfixes
+~~~~~~~~
+- Changed drivers for Sybase and MSSQL to also emit seconds of a given 
+  util.Date - see pull request #169
+  (ohinckel, friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0256 - Improve unittest's error messages 
+  See also pull request #40.
+  (kiesel, friebe)
+- Implemented RFC #0255 - Allow multiple @beforeClass / @afterClass methods.
+  See also pull request #100.
+  (friebe)
+
+Features
+~~~~~~~~
+- Improved unittest output when comparing large strings (pull request #30)
+  (friebe, kiesel)
+- Added unittest.TestCase::skip() method - see pull request #173
+  (friebe)
+- Added default logger to scriptlet handlers - see pull request #62
+  (oanas, friebe)
+- Added colored output for unittest runner - see issue #25 / pull #172
+  (kiesel, friebe)
+- Added support for supplying a path to the unittest command - will run
+  all test case classes inside the given directory and its subdirectories.
+  See pull request #170
+  (friebe, kiesel)
+- Added unittest listener to update terminal title - pull request #171
+  (kiesel, friebe)
+- Added support for ! in classpaths - see pull request #168
+  (mrosoiu)
+
+
+Version 5.8.5, released 2012-06-08
+----------------------------------
+Git commit: a644ffc21f9e8b59db56ad505a0869afff6ab27f
+
+Bugfixes
+~~~~~~~~
+- Fixed problem with multiple entries in X-Forwarded-Host header. See 
+  issue #162, and http://httpd.apache.org/docs/2.2/mod/mod_proxy.html
+  (friebe)
+- Fixed support for REST Object collections (see pull request #164)
+  (friebe, ghiata)
+- Fixed creation of Date from a float value causes PHP fatal error - see
+  pull request #156
+  (ghiata)
+- Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
+  (friebe, mrosoiu)
+- Merged pull request #145 - Fix stacktrace scope when calling an undefined 
+  method using call_user_func_array()
+  (mrosoiu, friebe)
+- Merged pull request #141 - Fix when using CURL transports w/ SSL version
+  (mihaighigea)
+- Fixed issue #137 - Extension methods don't work on lang.Throwable
+  (friebe)
+- Fix typo in lang.ClassLoader to correct method's argument list,
+  see pull request #134
+  (mrosoiu, kiesel)
 - Handle empty Json request gracefully.
   (iigorr)
 - Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
   params public property, use setters and getters instead
   (cconstandachi)
 
+RFCs
+~~~~
+- Implemented RFC #0235 - CsvMapReader, CsvMapWriter (pull request #148)
+  (friebe)
+
 Features
 ~~~~~~~~
+- Changed CsvWriter to be less strict in what it accepts - see issue #123
+  (friebe)
+- Added new peer.http.HttpConnection::patch() method - pull request #161
+  (friebe)
+- Added new HTTP status codes defined in RFC 6585, see issue #158
+  (friebe)
+- Added HttpResponse::getHeaderString() and HttpRequest::getHeaderString()
+  see pull request #153
+  (friebe)
+- New method lang.reflect.Package::getComment() - pull request #139
+  (friebe)
+- Merged pull request #144 - Some improvements of the RestDataCaster
+  (Stormwind, friebe)
+- Merged pull request #143 - New peer.URL::getCanonicalURL() method
+  http://news.planet-xp.net/article/453/2012/04/06/
+  (mihaighigea)
 - Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
   finalizeSuccess()
   (cconstandachi, friebe)

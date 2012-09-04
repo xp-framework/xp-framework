@@ -123,5 +123,77 @@
         create(new RestPath('/path/to/item/?id={p1}&key={p2}'))->match('/path/to/item/?key=5678&id=1234')
       );
     }
+    
+    /**
+     * Test path and query
+     *
+     */
+    #[@test]
+    public function pathAndQuery() {
+      $restPath= new RestPath('/path/to/item?filter={filter}&type={type}');
+      
+      $this->assertEquals('/path/to/item', $restPath->getPath());
+      $this->assertEquals(array('filter', 'type'), $restPath->getParamNames());
+    }
+    
+    /**
+     * Test match
+     *
+     */
+    #[@test]
+    public function matchQueryParams() {
+      $this->assertEquals(
+        array('filter'=>'red', 'type'=>'color'),
+        create(new RestPath('/path/to/item?filter={filter}&type={type}'))->match('/path/to/item?filter=red&type=color')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function underscoreAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a_b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a_b')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function colonAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a:b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a:b')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function dashAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a-b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a-b')
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function dotAllowedInParam() {
+      $this->assertEquals(
+        array('token' => 'a.b'),
+        create(new RestPath('/path/to/{token}'))->match('/path/to/a.b')
+      );
+    }
   }
 ?>

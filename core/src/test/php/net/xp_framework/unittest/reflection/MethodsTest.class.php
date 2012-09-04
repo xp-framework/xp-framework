@@ -378,6 +378,19 @@
     }
 
     /**
+     * Tests self return value
+     *
+     * @see     xp://lang.reflect.Method#getReturnTypeName
+     * @see     xp://lang.reflect.Method#getReturnType
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#withDate
+     */
+    #[@test]
+    public function selfReturnValue() {
+      $this->assertEquals('self', $this->fixture->getMethod('withDate')->getReturnTypeName());
+      $this->assertEquals($this->fixture, $this->fixture->getMethod('withDate')->getReturnType());
+    }
+
+    /**
      * Tests bool return value
      *
      * @see     xp://lang.reflect.Method#getReturnTypeName
@@ -602,6 +615,48 @@
       $this->assertEquals(
         'public abstract var offsetGet(var $offset)', 
         XPClass::forName('util.collections.Map')->getMethod('offsetGet')->toString()
+      );
+    }
+
+    /**
+     * Test "self" in parameters
+     *
+     * @see     xp://lang.reflect.Parameter#getType
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#isDateBefore
+     */
+    #[@test]
+    public function selfParameterType() {
+      $this->assertEquals(
+        $this->fixture,
+        $this->fixture->getMethod('isDateBefore')->getParameter(0)->getType()
+      );
+    }
+
+    /**
+     * Test "self" in parameters
+     *
+     * @see     xp://lang.reflect.Parameter#getTypeName
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#isDateBefore
+     */
+    #[@test]
+    public function selfParameterTypeName() {
+      $this->assertEquals(
+        'self',
+        $this->fixture->getMethod('isDateBefore')->getParameter(0)->getTypeName()
+      );
+    }
+
+    /**
+     * Test "self" in parameters
+     *
+     * @see     xp://lang.reflect.Parameter#getTypeRestriction
+     * @see     xp://net.xp_framework.unittest.reflection.TestClass#isDateBefore
+     */
+    #[@test]
+    public function selfParameterTypeRestriction() {
+      $this->assertEquals(
+        $this->fixture,
+        $this->fixture->getMethod('isDateBefore')->getParameter(0)->getTypeRestriction()
       );
     }
   }

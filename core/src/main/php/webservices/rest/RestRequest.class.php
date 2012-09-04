@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('peer.http.HttpConstants');
+  uses(
+    'peer.http.HttpConstants',
+    'webservices.rest.RestJsonSerializer',
+    'webservices.rest.RestXmlSerializer'
+  );
 
   /**
    * A REST request
@@ -105,6 +109,57 @@
      */
     public function withBody(RequestData $body) {
       $this->body= $body;
+      return $this;
+    }
+
+    /**
+     * Adds an expected mime type
+     *
+     * @param   string range
+     * @param   string q
+     */
+    public function addAccept($type, $q= NULL) {
+      $range= $type;
+      NULL === $q || $range.= ';q='.$q;
+      if (!isset($this->headers['Accept'])) {
+        $this->headers['Accept']= $range;
+      } else {
+        $this->headers['Accept'].= ', '.$range;
+      }
+    }
+
+    /**
+     * Adds an expected mime type
+     *
+     * @param   string range
+     * @param   string q
+     * @return  webservices.rest.RestRequest
+     */
+    public function withAccept($type, $q= NULL) {
+      $this->addAccept($type, $q);
+      return $this;
+    }
+
+    /**
+     * Sets payload
+     *
+     * @param   var payload
+     * @param   webservices.rest.RestSerializer serializer
+     */
+    public function setPayload($payload, RestSerializer $serializer) {
+      $this->body= new RequestData($serializer->serialize($payload));
+      $this->headers['Content-Type']= $serializer->contentType();
+    }
+
+    /**
+     * Sets payload
+     *
+     * @param   var payload
+     * @param   string type The Content-Type
+     * @return  webservices.rest.RestRequest
+     */
+    public function withPayload($payload, $type) {
+      $this->setPayload($payload, $type);
       return $this;
     }
 
@@ -264,10 +319,15 @@
     /**
      * Gets query
      *
+     * @param   string base
      * @return  string query
      */
-    public function getTarget() {
-      $resource= $this->resource;
+    public function getTarget($base= '/') {
+      if ('/' === $this->resource{0}) {
+        $resource= $this->resource;       // Absolute
+      } else {
+        $resource= rtrim($base, '/').'/'.$this->resource;
+      }
       $l= strlen($resource);
       $target= '';
       $offset= 0;

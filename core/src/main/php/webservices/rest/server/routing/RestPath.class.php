@@ -30,7 +30,7 @@
      */
     public function __construct($path) {
       static $search= '/\{([\w]*)\}/';
-      static $replace= '([%\w]*)';
+      static $replace= '([%\w:\-\.]*)';
       
       list ($this->path, $this->query)= $this->splitParams($path);
       
@@ -62,7 +62,7 @@
       
       if (FALSE !== ($p= strpos($path, '?'))) {
         parse_str(substr($path, $p+1), $query);
-        $path= substr($path, 0, $p-1);
+        $path= substr($path, 0, $p);
       }
       
       return array($path, $query);

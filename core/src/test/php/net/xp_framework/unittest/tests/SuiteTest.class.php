@@ -510,5 +510,27 @@
       $r= $this->suite->run();
       $this->assertEquals(1, $r->failureCount());
     }
+
+    /**
+     * Test fail()
+     *
+     */
+    #[@test]
+    public function doFail() {
+      $this->suite->addTest(new SimpleTestCase('doFail'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->failureCount());
+    }
+
+    /**
+     * Test skip()
+     *
+     */
+    #[@test]
+    public function doSkip() {
+      $this->suite->addTest(new SimpleTestCase('doSkip'));
+      $r= $this->suite->run();
+      $this->assertEquals(1, $r->skipCount());
+    }
   }
 ?>

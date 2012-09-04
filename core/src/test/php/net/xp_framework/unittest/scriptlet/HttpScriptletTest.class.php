@@ -470,5 +470,38 @@
       $s->service($req, $res);
       $this->assertEquals('Welcome!', $res->getContent());
     }
+
+    /**
+     * Test X-Forwarded-Host
+     *
+     */
+    #[@test]
+    public function forwardedHost() {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $req->addHeader('X-Forwarded-Host', 'proxy.example.com');
+      $res= new HttpScriptletResponse();
+
+      $s= new HttpScriptlet();
+      $s->service($req, $res);
+
+      $this->assertEquals('proxy.example.com', $req->getURL()->getHost());
+    }
+
+    /**
+     * Test X-Forwarded-Host with multiple hosts
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/162
+     */
+    #[@test]
+    public function forwardedHosts() {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $req->addHeader('X-Forwarded-Host', 'balance.example.com, proxy.example.com');
+      $res= new HttpScriptletResponse();
+
+      $s= new HttpScriptlet();
+      $s->service($req, $res);
+
+      $this->assertEquals('balance.example.com', $req->getURL()->getHost());
+    }
   }
 ?>

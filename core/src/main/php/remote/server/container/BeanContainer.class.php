@@ -53,7 +53,7 @@
         if (!$method->hasAnnotation('inject')) continue;
 
         $inject= $method->getAnnotation('inject');
-        $this->cat && $this->cat->info('---> Injecting', $inject['type'], 'via', $method->getName(TRUE).'()');
+        $this->cat && $this->cat->debug('---> Injecting', $inject['type'], 'via', $method->getName(TRUE).'()');
         
         $method->invoke($instance, array($this->injector->injectFor($inject['type'], $inject['name'])));
       }

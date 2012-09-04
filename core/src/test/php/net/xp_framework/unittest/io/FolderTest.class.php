@@ -49,6 +49,34 @@
     }
 
     /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function sameInstanceIsEqual() {
+      $f= new Folder($this->temp);
+      $this->assertEquals($f, $f);
+    }
+
+    /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function sameFolderIsEqual() {
+      $this->assertEquals(new Folder($this->temp), new Folder($this->temp));
+    }
+
+    /**
+     * Test equals() method
+     *
+     */
+    #[@test]
+    public function differentFoldersAreNotEqual() {
+      $this->assertNotEquals(new Folder($this->temp), new Folder(dirname(__FILE__)));
+    }
+
+    /**
      * Test isOpen()
      *
      */
