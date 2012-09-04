@@ -210,5 +210,23 @@
     public function selectNullUniText() {
       $this->assertEquals(NULL, $this->db()->query('select cast(NULL as unitext) as value')->next('value'));
     }
+
+    /**
+     * Test selecting an unsigned int
+     *
+     */
+    #[@test, @version(15000)]
+    public function selectUnsignedInt() {
+      parent::selectUnsignedInt();
+    }
+
+    /**
+     * Test selecting an unsigned bigint
+     *
+     */
+    #[@test, @version(15000)]
+    public function selectMaxUnsignedBigInt() {
+      parent::selectMaxUnsignedBigInt();
+    }
   }
 ?>
