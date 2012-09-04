@@ -22,13 +22,13 @@
      */
     protected function newRequest($method, URL $url) {
       $q= $url->getQuery();
-      putenv('REQUEST_METHOD='.$method);
-      putenv('SERVER_PROTOCOL=HTTP/1.1');
-      putenv('HTTP_HOST='.$url->getHost());
-      putenv('REQUEST_URI='.$url->getPath('/').($q ? '?'.$q : '')."\0");
-      putenv('QUERY_STRING='.$q);
+      $_SERVER['REQUEST_METHOD']= $method;
+      $_SERVER['SERVER_PROTOCOL']= 'HTTP/1.1';
+      $_SERVER['HTTP_HOST']= $url->getHost();
+      $_SERVER['REQUEST_URI']= $url->getPath('/').($q ? '?'.$q : '');
+      $_SERVER['QUERY_STRING']= $q;
       if ('https' === $url->getScheme()) { 
-        putenv('HTTPS=on');
+        $_SERVER['HTTPS']= 'on';
       }
       $_REQUEST= $url->getParams();
     }
