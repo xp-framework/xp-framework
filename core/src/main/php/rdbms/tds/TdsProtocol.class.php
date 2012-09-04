@@ -341,6 +341,10 @@
             $this->stream->read($meta['length']- 1);
             throw new TdsProtocolException('Negotiation not yet implemented');
         }
+      } else if ("\xE3" === $response) {   // ENVCHANGE
+        $l= $this->stream->getShort();
+        $env= $this->stream->read($l);
+        // DEBUG Console::writeLine("ENVCHANGE ", new Bytes($env));
       } else {
         $this->cancel();    // TODO: Handle response, e.g. ENVCHANGE
       }
