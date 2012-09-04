@@ -12,20 +12,26 @@
    * @ext       sybase_ct
    */
   class SybaseIntegrationTest extends RdbmsIntegrationTest {
-    
+
     /**
      * Before class method: set minimun server severity;
      * otherwise server messages end up on the error stack
      * and will let the test fail (no error policy).
      *
      */
-    public function setUp() {
-      parent::setUp();
+    #[@beforeClass]
+    public static function setMinimumServerSeverity() {
       if (function_exists('sybase_min_server_severity')) {
         sybase_min_server_severity(12);
       }
+    }
 
-      // Certain tests require a specific minimum server version
+    /**
+     * Skip tests which require a specific minimum server version
+     *
+     */
+    public function setUp() {
+      parent::setUp();
       $m= $this->getClass()->getMethod($this->name);
       if ($m->hasAnnotation('version')) {
         $server= $this->db()->query('select @@version_number as v')->next('v');
