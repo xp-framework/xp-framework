@@ -39,7 +39,7 @@
    *   <li>-v : Be verbose</li>
    *   <li>-q : Be quiet (no output)</li>
    *   <li>-c : Add path elements for codecoverage</li>
-   *   <li>-cr : Set path for code coverage report file</li>
+   *   <li>-cr: Set path for code coverage report file</li>
    *   <li>-cp: Add classpath elements</li>
    *   <li>-a {argument}: Define argument to pass to tests (may be used
    *     multiple times)</li>
