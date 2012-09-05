@@ -242,8 +242,8 @@
         return 1;
       }
 
-      if (!is_null($coverageReportFile)) {
-        if (is_null($coverage)) {
+      if (NULL !== $coverageReportFile) {
+        if (NULL === $coverage) {
           throw new IllegalArgumentException('Unsupported argument -cr when code coverage is not used (see -c flag)');
         }
         $coverage->setReportFile($coverageReportFile);
