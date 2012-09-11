@@ -134,12 +134,10 @@
       $matching= array();
       foreach ($this->routes[$verb] as $route) {
         if (!preg_match($route['path'], $path, $segments)) continue;
-
-        if (NULL === $route['returns']) {
-          if (NULL === ($returns= $this->bestOf($accept, $supported))) continue;
-        } else {
-          if (!preg_match($accept, $route['returns'], $returns)) continue;
-        }
+        if (NULL === ($returns= $this->bestOf(
+          $accept,
+          $route['returns'] ? array($route['returns']) : $supported
+        ))) continue;
 
         if (NULL === $mediatype) {
           $accepts= array(NULL);    // No Content-Type -> no input data!
