@@ -7,6 +7,7 @@
   uses(
     'scriptlet.HttpScriptlet',
     'webservices.rest.server.RestFormat',
+    'webservices.rest.server.Response',
     'webservices.rest.server.routing.RestDefaultRouter',
     'util.log.Traceable'
   );
@@ -184,10 +185,25 @@
         return;
       }
 
-      // For any other methods, set status to "OK" and return
-      $response->setStatus(HttpConstants::STATUS_OK);
-      $response->setContentType($route['output']);
-      $this->formatFor($route['output'])->write($response, $result); 
+      // If a response is returned, use it. For any other methods, set status to "OK" and return
+      $output= $this->formatFor($route['output']);
+      if ($result instanceof Response) {
+        $response->setStatus($result->status);
+        $response->setContentType($route['output']);
+        foreach ($result->headers as $name => $value) {
+          if ('Location' === $name) {
+            $url= clone $request->getURL();
+            $response->setHeader($name, $url->setPath($value)->getURL());
+          } else {
+            $response->setHeader($name, $value);
+          }
+        }
+        $output->write($response, $result->payload);
+      } else {
+        $response->setStatus(HttpConstants::STATUS_OK);
+        $response->setContentType($route['output']);
+        $output->write($response, $result);
+      }
     }
 
     /**
