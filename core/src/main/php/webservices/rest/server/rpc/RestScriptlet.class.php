@@ -87,6 +87,22 @@
     }
 
     /**
+     * Write an exception 
+     *
+     * @param  scriptlet.http.HttpScriptletResponse response The response
+     * @param  webservices.rest.server.RestFormat format
+     * @param  scriptlet.HttpScriptletException se
+     */
+    protected function writeError($response, $format, $se) {
+      $this->cat && $this->cat->warn($se);
+
+      $response->setStatus($se->getStatus());
+      $format->write($response, array(
+        'message' => $se->getMessage()
+      )); 
+    }
+
+    /**
      * Process request and handle errors
      * 
      * @param  scriptlet.http.HttpScriptletRequest request The request
@@ -94,7 +110,7 @@
      */
     public function doProcess($request, $response) {
       $url= $request->getURL()->getURL();
-      $this->cat && $this->cat->debug(
+      $this->cat && $this->cat->info(
         $request->getMethod(),
         $request->getHeader('Content-Type', '(null)'),
         $url,
@@ -161,7 +177,12 @@
         try {
           $result= $route['target']->invoke($instance, $args);
         } catch (TargetInvocationException $t) {
-          throw new HttpScriptletException($e->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST);
+          $this->writeError(
+            $response,
+            $this->formatFor($route['output']), 
+            new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t)
+          );
+          return;
         }
 
         // For "VOID" methods, set status to "no content"
@@ -172,12 +193,16 @@
 
         // For any other methods, set status to "OK" and return
         $response->setStatus(HttpConstants::STATUS_OK);
-        $response->setHeader('Content-Type', $route['output']);
+        $response->setContentType($route['output']);
         $this->formatFor($route['output'])->write($response, $result); 
         return;
       }
-      
-      throw new HttpScriptletException('Could not route request to '.$url, HttpConstants::STATUS_NOT_FOUND);
+
+      $this->writeError(
+        $response,
+        $this->formatFor($route['output'] ? $route['output'] : 'application/json'), 
+        new HttpScriptletException('Could not route request to '.$url, HttpConstants::STATUS_NOT_FOUND)
+      );
     }
   }
 ?>
