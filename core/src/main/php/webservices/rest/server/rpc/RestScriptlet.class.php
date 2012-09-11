@@ -179,31 +179,27 @@
         throw new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t);
       }
 
-      // For "VOID" methods, set status to "no content"
+      // For "VOID" methods, set status to "no content". If a response is returned, 
+      // use its status, headers and payload. For any other methods, set status to "OK".
       if (Type::$VOID->equals($route['target']->getReturnType())) {
-        $response->setStatus(HttpConstants::STATUS_NO_CONTENT);
-        return;
+        $res= Response::status(HttpConstants::STATUS_NO_CONTENT);
+      } else if ($result instanceof Response) {
+        $res= $result;
+      } else {
+        $res= Response::status(HttpConstants::STATUS_OK)->withPayload($result);
       }
 
-      // If a response is returned, use it. For any other methods, set status to "OK" and return
-      $output= $this->formatFor($route['output']);
-      if ($result instanceof Response) {
-        $response->setStatus($result->status);
-        $response->setContentType($route['output']);
-        foreach ($result->headers as $name => $value) {
-          if ('Location' === $name) {
-            $url= clone $request->getURL();
-            $response->setHeader($name, $url->setPath($value)->getURL());
-          } else {
-            $response->setHeader($name, $value);
-          }
+      $response->setStatus($res->status);
+      $response->setContentType($route['output']);
+      foreach ($res->headers as $name => $value) {
+        if ('Location' === $name) {
+          $url= clone $request->getURL();
+          $response->setHeader($name, $url->setPath($value)->getURL());
+        } else {
+          $response->setHeader($name, $value);
         }
-        $output->write($response, $result->payload);
-      } else {
-        $response->setStatus(HttpConstants::STATUS_OK);
-        $response->setContentType($route['output']);
-        $output->write($response, $result);
       }
+      $this->formatFor($route['output'])->write($response, $res->payload);
     }
 
     /**
