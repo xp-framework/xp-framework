@@ -49,7 +49,7 @@
     protected function patternMatchingAnyOf($values) {
       $pattern= '';
       foreach ($values as $value => $q) {
-        $pattern.= ')|('.strtr($value, array('*' => '.+', '#' => '\#', '-' => '\-'));
+        $pattern.= ')|('.strtr($value, array('*' => '\w+', '#' => '\#', '-' => '\-'));
       }
       return '#('.substr($pattern, 3).')#i';
     }
@@ -97,6 +97,20 @@
     }
 
     /**
+     * Returns best of
+     *
+     * @param  string accept a pattern
+     * @param  string[] supported
+     * @return string[] best an array with the best type in position 0
+     */
+    protected function bestOf($accept, $supported) {
+      foreach ($supported as $type) {
+        if (preg_match($accept, $type, $matches) && $matches[1]) return $matches;
+      }
+      return NULL;
+    }
+
+    /**
      * Return routes for given request and response
      * 
      * @param  scriptlet.http.HttpScriptletRequest request The request
@@ -121,11 +135,7 @@
         if (!preg_match($pattern, $path, $segments)) continue;
 
         if (NULL === $route['returns']) {
-          $returns= NULL;
-          foreach ($supported as $type) {
-            if (preg_match($accept, $type, $returns)) break;
-          }
-          if (!$returns) continue;
+          if (NULL === ($returns= $this->bestOf($accept, $supported))) continue;
         } else {
           if (!preg_match($accept, $route['returns'], $returns)) continue;
         }

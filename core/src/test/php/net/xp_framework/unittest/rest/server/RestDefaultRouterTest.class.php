@@ -118,7 +118,70 @@
     public function greet_favor_xml() {
       $request= new HttpScriptletRequest();
       $request->setURL(new HttpScriptletURL('http://localhost/greet/test'));
-      $request->addHeader('Accept', 'application/json;q=0.9, text/json');
+      $request->addHeader('Accept', 'application/json;q=0.9, text/xml');
+
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
+          'segments' => array(0 => '/greet/test', 'name' => 'test', 1 => 'test'),
+          'input'    => NULL,
+          'output'   => 'text/xml'
+        )),
+        $this->fixture->routesFor($request, new HttpScriptletResponse())
+      );
+    }
+
+    /**
+     * Test routesFor()
+     *
+     */
+    #[@test]
+    public function greet_favor_text_any() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/greet/test'));
+      $request->addHeader('Accept', 'application/json;q=0.9, text/*');
+
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
+          'segments' => array(0 => '/greet/test', 'name' => 'test', 1 => 'test'),
+          'input'    => NULL,
+          'output'   => 'text/json'
+        )),
+        $this->fixture->routesFor($request, new HttpScriptletResponse())
+      );
+    }
+
+    /**
+     * Test routesFor()
+     *
+     */
+    #[@test]
+    public function greet_favor_text_any_over_html() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/greet/test'));
+      $request->addHeader('Accept', 'text/html;q=0.3, application/json;q=0.9, text/*');
+
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
+          'segments' => array(0 => '/greet/test', 'name' => 'test', 1 => 'test'),
+          'input'    => NULL,
+          'output'   => 'text/json'
+        )),
+        $this->fixture->routesFor($request, new HttpScriptletResponse())
+      );
+    }
+
+    /**
+     * Test routesFor()
+     *
+     */
+    #[@test]
+    public function greet_favor_application_json_over_text_any() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/greet/test'));
+      $request->addHeader('Accept', 'text/*;q=0.3, application/json;q=0.9');
 
       $this->assertEquals(
         array(array(
