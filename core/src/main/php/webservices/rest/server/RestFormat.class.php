@@ -9,7 +9,8 @@
     'webservices.rest.RestJsonSerializer',
     'webservices.rest.RestJsonDeserializer',
     'webservices.rest.RestXmlSerializer',
-    'webservices.rest.RestXmlDeserializer'
+    'webservices.rest.RestXmlDeserializer',
+    'webservices.rest.RestFormDeserializer'
   );
 
   /**
@@ -28,6 +29,7 @@
       self::$UNKNOWN= new self(0, 'UNKNOWN', xp::null(), xp::null());
       self::$JSON= new self(1, 'JSON', new RestJsonSerializer(), new RestJsonDeserializer());
       self::$XML= new self(2, 'XML', new RestXmlSerializer(), new RestXmlDeserializer());
+      self::$FORM= new self(3, 'FORM', xp::null(), new RestFormDeserializer());
     }
 
     /**
