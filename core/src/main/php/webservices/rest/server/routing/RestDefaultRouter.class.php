@@ -49,7 +49,7 @@
     protected function patternMatchingAnyOf($values) {
       $pattern= '';
       foreach ($values as $value => $q) {
-        $pattern.= ')|('.strtr($value, array('*' => '.+', '#' => '\#', '-' => '\-'));
+        $pattern.= ')|('.strtr(preg_quote($value, '#'), array('\*' => '.+'));
       }
       return '#('.substr($pattern, 3).')#i';
     }
