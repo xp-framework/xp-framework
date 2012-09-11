@@ -131,7 +131,7 @@
         }
 
         if (NULL === $mediatype) {
-          $accepts= array(NULL);
+          $accepts= array(NULL);    // No Content-Type -> no input data!
         } else {
           if (!preg_match($route['accepts'], $mediatype, $accepts)) continue;
         }
