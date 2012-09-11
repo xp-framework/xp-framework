@@ -81,13 +81,13 @@
         }
         return $return;
       } else if ($type->equals(Primitive::$STRING)) {
-        return (string)$data;
+        return is_array($data) ? (string)$data[key($data)] : (string)$data;
       } else if ($type->equals(Primitive::$INT)) {
-        return (int)$data;
+        return is_array($data) ? (int)$data[key($data)] : (int)$data;
       } else if ($type->equals(Primitive::$DOUBLE)) {
-        return (double)$data;
+        return is_array($data) ? (double)$data[key($data)] : (double)$data;
       } else if ($type->equals(Primitive::$BOOL)) {
-        return (bool)$data;
+        return is_array($data) ? (bool)$data[key($data)] :  (bool)$data;
       } else {
         throw new FormatException('Cannot convert to '.xp::stringOf($type));
       }
