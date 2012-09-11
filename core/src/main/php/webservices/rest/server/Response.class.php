@@ -14,7 +14,9 @@
     public $payload;
 
     public static function ok() {
+      $self= new self();
       $self->status= 200;
+      return $self;
     }
 
     public static function created($location) {
