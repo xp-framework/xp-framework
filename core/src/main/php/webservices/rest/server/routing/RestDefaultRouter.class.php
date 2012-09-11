@@ -115,10 +115,9 @@
      * Return routes for given request and response
      * 
      * @param  scriptlet.http.HttpScriptletRequest request The request
-     * @param  scriptlet.http.HttpScriptletResponse response The response
      * @return webservices.rest.server.RestRoute[]
      */
-    public function routesFor($request, $response) {
+    public function routesFor($request, $_= NULL) {
       static $supported= array('application/json', 'text/json', 'text/xml', 'application/xml');
 
       $verb= $request->getMethod();

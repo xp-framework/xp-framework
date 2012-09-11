@@ -206,7 +206,7 @@
       );
 
       // Iterate over all applicable routes
-      foreach ($this->router->routesFor($request, $response) as $route) {
+      foreach ($this->router->routesFor($request) as $route) {
         $this->cat && $this->cat->debug('->', $route);
 
         try {
