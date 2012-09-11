@@ -200,7 +200,7 @@
 
       $this->writeError(
         $response,
-        $this->formatFor($route['output'] ? $route['output'] : 'application/json'), 
+        $this->formatFor(isset($route['output']) ? $route['output'] : 'application/json'), 
         new HttpScriptletException('Could not route request to '.$url, HttpConstants::STATUS_NOT_FOUND)
       );
     }
