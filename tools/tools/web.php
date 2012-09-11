@@ -48,6 +48,9 @@
       $_SERVER['SCRIPT_URL']= substr($_SERVER['REQUEST_URI'], 0, strcspn($_SERVER['REQUEST_URI'], '?#'));
       $_SERVER['DOCUMENT_ROOT'].= '/static';
       $_SERVER['SERVER_PROFILE']= getenv('SERVER_PROFILE');
+      define('STDIN', fopen('php://stdin', 'rb'));
+      define('STDOUT', fopen('php://stdout', 'wb'));
+      define('STDERR', fopen('php://stderr', 'wb'));
       break;
 
     default:
