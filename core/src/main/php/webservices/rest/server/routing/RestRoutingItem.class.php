@@ -84,5 +84,14 @@
         (FALSE !== $this->path->match($path))
       );
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->verb.' '.$this->path->getUri().' -> '.$this->target->toString().')';
+    }
   }
 ?>
