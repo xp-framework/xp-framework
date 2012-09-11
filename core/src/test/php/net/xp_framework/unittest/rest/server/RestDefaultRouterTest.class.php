@@ -75,14 +75,14 @@
     #[@test]
     public function greet_post() {
       $request= new HttpScriptletRequest();
-      $request->setURL(new HttpScriptletURL('http://localhost/hello'));
+      $request->setURL(new HttpScriptletURL('http://localhost/greet'));
       $request->method= 'POST';
       $request->addHeader('Content-Type', 'application/json');
       $request->setData('"test"');
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
-          'segments' => array(0 => '/hello'),
+          'segments' => array(0 => '/greet'),
           'input'    => 'application/json',
           'output'   => 'application/json'
         )),
@@ -269,6 +269,28 @@
           'segments' => array(0 => '/hello/test', 'name' => 'test', 1 => 'test'),
           'input'    => NULL,
           'output'   => 'application/vnd.example.v2+json'
+        )),
+        $this->fixture->routesFor($request, new HttpScriptletResponse())
+      );
+    }
+
+    /**
+     * Test routesFor()
+     *
+     */
+    #[@test]
+    public function hello_with_vendor_mime() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/hello'));
+      $request->method= 'POST';
+      $request->addHeader('Content-Type', 'application/vnd.example.v2+json');
+      $request->setData('{ "name" : "test" }');
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'hello_posted'),
+          'segments' => array(0 => '/hello'),
+          'input'    => 'application/vnd.example.v2+json',
+          'output'   => 'application/json'
         )),
         $this->fixture->routesFor($request, new HttpScriptletResponse())
       );
