@@ -16,6 +16,7 @@
   /**
    * REST HTTP scriptlet
    *
+   * @deprecated  Use webservices.rest.server.rpc.RestScriptlet instead!
    */
   class RestHttpScriptlet extends HttpScriptlet {
     protected 
