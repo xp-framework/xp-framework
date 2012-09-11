@@ -70,6 +70,28 @@
 
     /**
      * Test routesFor()
+     *
+     */
+    #[@test]
+    public function greet_post() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/hello'));
+      $request->method= 'POST';
+      $request->addHeader('Content-Type', 'application/json');
+      $request->setData('"test"');
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
+          'segments' => array(0 => '/hello'),
+          'input'    => 'application/json',
+          'output'   => 'application/json'
+        )),
+        $this->fixture->routesFor($request, new HttpScriptletResponse())
+      );
+    }
+
+    /**
+     * Test routesFor()
      * 
      */
     #[@test]
