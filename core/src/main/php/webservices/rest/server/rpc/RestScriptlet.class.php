@@ -147,7 +147,7 @@
               if (!isset($route['segments'][$annotations[$param][1]])) {
                 $args[]= $parameter->getDefaultValue();
               } else {
-                $args[]= $route['segments'][$annotations[$param][1]];   
+                $args[]= rawurldecode($route['segments'][$annotations[$param][1]]);
               }
               break;
 

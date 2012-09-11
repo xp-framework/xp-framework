@@ -62,7 +62,7 @@
      */
     public function configure($setup, $base= '') {
       static $search= '/\{([\w]*)\}/';
-      static $replace= '(?P<$1>[%\w:\-\.]*)';
+      static $replace= '(?P<$1>[%\w:\+\-\.]*)';
 
       $package= Package::forName($setup);
       foreach ($package->getClasses() as $handler) {
