@@ -84,8 +84,6 @@
             'returns' => isset($webmethod['returns']) ? $webmethod['returns'] : NULL
           );
         }
-        uses('util.cmd.Console');
-        Console::writeLine($this->routes);
       }
     }
     

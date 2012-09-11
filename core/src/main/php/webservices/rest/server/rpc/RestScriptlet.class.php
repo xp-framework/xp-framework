@@ -7,15 +7,17 @@
   uses(
     'scriptlet.HttpScriptlet',
     'webservices.rest.server.RestFormat',
-    'webservices.rest.server.routing.RestDefaultRouter'
+    'webservices.rest.server.routing.RestDefaultRouter',
+    'util.log.Traceable'
   );
   
   /**
    * REST scriptlet
    *
    */
-  class RestScriptlet extends HttpScriptlet {
+  class RestScriptlet extends HttpScriptlet implements Traceable {
     protected 
+      $cat    = NULL,
       $router = NULL,
       $base   = '';
     
@@ -26,6 +28,7 @@
      * @param  string base The base URL (will be stripped off from request url)
      * @param  string router The router class to use
      */
+
     public function __construct($package, $base= '', $router= '') {
       if ('' === (string)$router) {
         $this->router= new RestDefaultRouter();
@@ -46,6 +49,15 @@
     }
 
     /**
+     * Set a log category fot tracing
+     *
+     * @param  util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
+    }
+
+    /**
      * Calculate method to invoke
      *
      * @param   scriptlet.HttpScriptletRequest request 
@@ -56,6 +68,12 @@
       return 'doProcess';
     }
 
+    /**
+     * Get format for a given mediatype
+     *
+     * @param  string mediatype
+     * @return webservices.rest.server.RestFormat
+     */
     protected function formatFor($mediatype) {
       if ('application/x-www-form-urlencoded' === $mediatype) {
         return RestFormat::$FORM;
@@ -75,11 +93,16 @@
      * @param  scriptlet.http.HttpScriptletResponse response The response
      */
     public function doProcess($request, $response) {
-      uses('util.cmd.Console');
-      Console::writeLine($request->getMethod(), ' ', $request->getHeader('Content-Type', '(null)'), ' ', $url= $request->getURL()->getURL(), ' ', $request->getHeader('Accept'));
+      $url= $request->getURL()->getURL();
+      $this->cat && $this->cat->debug(
+        $request->getMethod(),
+        $request->getHeader('Content-Type', '(null)'),
+        $url,
+        $request->getHeader('Accept')
+      );
 
       foreach ($this->router->routesFor($request, $response) as $route) {
-        Console::writeLine('-> ', $route);
+        $this->cat && $this->cat->debug('->', $route);
 
         // Unserialize incoming payload if given
         if ($route['input']) {
