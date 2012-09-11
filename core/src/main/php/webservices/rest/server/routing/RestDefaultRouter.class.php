@@ -49,7 +49,7 @@
     protected function patternMatchingAnyOf($values) {
       $pattern= '';
       foreach ($values as $value => $q) {
-        $pattern.= ')|('.strtr($value, array('*' => '\w+', '#' => '\#', '-' => '\-'));
+        $pattern.= ')|('.strtr($value, array('*' => '.+', '#' => '\#', '-' => '\-'));
       }
       return '#('.substr($pattern, 3).')#i';
     }
@@ -78,7 +78,8 @@
           $webmethod= $method->getAnnotation('webmethod');
           $pattern= '#^'.$base.$hbase.preg_replace($search, $replace, rtrim($webmethod['path'], '/')).'$#';
           $accept= isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : array('*');
-          $this->routes[$webmethod['verb']][$pattern]= array(
+          $this->routes[$webmethod['verb']][]= array(
+            'path'    => $pattern,
             'target'  => $method,
             'accepts' => $this->patternMatchingAnyOf($this->preferenceOf($accept)),
             'returns' => isset($webmethod['returns']) ? $webmethod['returns'] : NULL
@@ -131,8 +132,8 @@
       // Figure out matching routes, taking into account what the client
       // tells us it accepts and its content-type
       $matching= array();
-      foreach ($this->routes[$verb] as $pattern => $route) {
-        if (!preg_match($pattern, $path, $segments)) continue;
+      foreach ($this->routes[$verb] as $route) {
+        if (!preg_match($route['path'], $path, $segments)) continue;
 
         if (NULL === $route['returns']) {
           if (NULL === ($returns= $this->bestOf($accept, $supported))) continue;

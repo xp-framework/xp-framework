@@ -209,5 +209,26 @@
         $this->fixture->routesFor($request, new HttpScriptletResponse())
       );
     }
+
+    /**
+     * Test routesFor()
+     *
+     */
+    #[@test]
+    public function hello_accepting_any_json() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/hello/test'));
+      $request->addHeader('Accept', '*json');
+
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'hello'),
+          'segments' => array(0 => '/hello/test', 'name' => 'test', 1 => 'test'),
+          'input'    => NULL,
+          'output'   => 'application/vnd.example.v2+json'
+        )),
+        $this->fixture->routesFor($request, new HttpScriptletResponse())
+      );
+    }
   }
 ?>
