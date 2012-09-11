@@ -10,7 +10,8 @@
     'webservices.rest.RestJsonDeserializer',
     'webservices.rest.RestXmlSerializer',
     'webservices.rest.RestXmlDeserializer',
-    'webservices.rest.RestFormDeserializer'
+    'webservices.rest.RestFormDeserializer',
+    'io.streams.ChannelInputStream'
   );
 
   /**
@@ -54,7 +55,7 @@
      * @return var
      */
     public function read($request, $type) {
-      return $this->deserializer->deserialize(new MemoryInputStream($request->getData()), $type);
+      return $this->deserializer->deserialize(new ChannelInputStream('input'), $type);
     }
 
     /**

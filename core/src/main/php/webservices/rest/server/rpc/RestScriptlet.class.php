@@ -118,13 +118,7 @@
      * @throws  scriptlet.HttpScriptletException
      */
     public function handle($route, $request) {
-
-      // Unserialize incoming payload if given
-      if ($route['input']) {
-        $input= $this->formatFor($route['input']);
-      } else {
-        $input= xp::null();
-      }
+      $input= NULL;
 
       // Instantiate the handler class
       $instance= $route['target']->getDeclaringClass()->newInstance();
@@ -161,7 +155,10 @@
             break;
 
           case NULL:
-            $args[]= $input->read($request, $parameter->getType()); 
+            if (NULL === $input) {
+              $input= $this->formatFor($route['input'])->read($request, $parameter->getType()); 
+            }
+            $args[]= $input;
             break;
 
           default: 
