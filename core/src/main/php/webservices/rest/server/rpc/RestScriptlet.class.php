@@ -112,12 +112,12 @@
     /**
      * Handle routing item
      *
-     * @param   var route
-     * @param   scriptlet.HttpScriptletRequest request The request
-     * @return  var
-     * @throws  scriptlet.HttpScriptletException
+     * @param  var route
+     * @param  scriptlet.HttpScriptletRequest request The request
+     * @param  scriptlet.HttpScriptletResponse response The response
+     * @throws scriptlet.HttpScriptletException
      */
-    public function handle($route, $request) {
+    public function handle($route, $request, $response) {
       $input= NULL;
 
       // Instantiate the handler class
@@ -173,10 +173,21 @@
 
       // Invoke method
       try {
-        return $route['target']->invoke($instance, $args);
+        $result= $route['target']->invoke($instance, $args);
       } catch (TargetInvocationException $t) {
         throw new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t);
       }
+
+      // For "VOID" methods, set status to "no content"
+      if (Type::$VOID->equals($route['target']->getReturnType())) {
+        $response->setStatus(HttpConstants::STATUS_NO_CONTENT);
+        return;
+      }
+
+      // For any other methods, set status to "OK" and return
+      $response->setStatus(HttpConstants::STATUS_OK);
+      $response->setContentType($route['output']);
+      $this->formatFor($route['output'])->write($response, $result); 
     }
 
     /**
@@ -199,23 +210,12 @@
         $this->cat && $this->cat->debug('->', $route);
 
         try {
-          $result= $this->handle($route, $request);
+          $this->handle($route, $request, $response);
+          return;
         } catch (HttpScriptletException $e) {
           $this->writeError($response, $this->formatFor($route['output']), $e);
           return;
         }
-
-        // For "VOID" methods, set status to "no content"
-        if (Type::$VOID->equals($route['target']->getReturnType())) {
-          $response->setStatus(HttpConstants::STATUS_NO_CONTENT);
-          return;
-        }
-
-        // For any other methods, set status to "OK" and return
-        $response->setStatus(HttpConstants::STATUS_OK);
-        $response->setContentType($route['output']);
-        $this->formatFor($route['output'])->write($response, $result); 
-        return;
       }
 
       $this->writeError(
