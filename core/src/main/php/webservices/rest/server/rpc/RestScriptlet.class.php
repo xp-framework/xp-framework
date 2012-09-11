@@ -17,9 +17,10 @@
    */
   class RestScriptlet extends HttpScriptlet implements Traceable {
     protected 
-      $cat    = NULL,
-      $router = NULL,
-      $base   = '';
+      $cat     = NULL,
+      $router  = NULL,
+      $base    = '',
+      $convert = NULL;
     
     /**
      * Constructor
@@ -46,6 +47,11 @@
       
       $this->base= rtrim($base, '/');
       $this->router->configure($package, $this->base);
+      $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
+        public function deserialize($in, $target) {
+          throw new IllegalStateException("Unused");
+        }
+      }');
     }
 
     /**
@@ -102,11 +108,85 @@
       )); 
     }
 
+
+    /**
+     * Handle routing item
+     *
+     * @param   var route
+     * @param   scriptlet.HttpScriptletRequest request The request
+     * @return  var
+     * @throws  scriptlet.HttpScriptletException
+     */
+    public function handle($route, $request) {
+
+      // Unserialize incoming payload if given
+      if ($route['input']) {
+        $input= $this->formatFor($route['input']);
+      } else {
+        $input= xp::null();
+      }
+
+      // Instantiate the handler class
+      $instance= $route['target']->getDeclaringClass()->newInstance();
+
+      // Parameter annotations parsing
+      $annotations= array();
+      foreach ($route['target']->getAnnotations() as $annotation => $value) {
+        if (2 === sscanf($annotation, '$%[^:]: %s', $param, $source)) {
+          $annotations[$param]= array($source, $value ? $value : $param);
+        }
+      }
+
+      // Extract arguments according to definition
+      $args= array();
+      foreach ($route['target']->getParameters() as $parameter) {
+        $param= $parameter->getName();
+        switch ($annotations[$param][0]) {
+          case 'path':
+            if (!isset($route['segments'][$annotations[$param][1]])) {
+              $arg= $parameter->getDefaultValue();
+            } else {
+              $arg= rawurldecode($route['segments'][$annotations[$param][1]]);
+            }
+            $args[]= $this->convert->convert($parameter->getType(), $arg);
+            break;
+
+          case 'param':
+            if (!$request->hasParam($annotations[$param][1])) {
+              $arg= $parameter->getDefaultValue();
+            } else {
+              $arg= $request->getParam($annotations[$param][1]); 
+            }
+            $args[]= $this->convert->convert($parameter->getType(), $arg);
+            break;
+
+          case NULL:
+            $args[]= $input->read($request, $parameter->getType()); 
+            break;
+
+          default: 
+            throw new HttpScriptletException(sprintf(
+              'Malformed source %s for parameter %s of %s',
+              $annotations[$param][0],
+              $param,
+              $route['target']->toString()
+            ));
+        }
+      }
+
+      // Invoke method
+      try {
+        return $route['target']->invoke($instance, $args);
+      } catch (TargetInvocationException $t) {
+        throw new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t);
+      }
+    }
+
     /**
      * Process request and handle errors
      * 
-     * @param  scriptlet.http.HttpScriptletRequest request The request
-     * @param  scriptlet.http.HttpScriptletResponse response The response
+     * @param  scriptlet.HttpScriptletRequest request The request
+     * @param  scriptlet.HttpScriptletResponse response The response
      */
     public function doProcess($request, $response) {
       $url= $request->getURL()->getURL();
@@ -117,71 +197,14 @@
         $request->getHeader('Accept')
       );
 
+      // Iterate over all applicable routes
       foreach ($this->router->routesFor($request, $response) as $route) {
         $this->cat && $this->cat->debug('->', $route);
 
-        // Unserialize incoming payload if given
-        if ($route['input']) {
-          $input= $this->formatFor($route['input']);
-        } else {
-          $input= xp::null();
-        }
-
-        // Instantiate
-        $instance= $route['target']->getDeclaringClass()->newInstance();
-
-        // Parameter annotations parsing
-        $annotations= array();
-        foreach ($route['target']->getAnnotations() as $annotation => $value) {
-          if (2 === sscanf($annotation, '$%[^:]: %s', $param, $source)) {
-            $annotations[$param]= array($source, $value ? $value : $param);
-          }
-        }
-
-        // Extract arguments according to definition
-        $args= array();
-        foreach ($route['target']->getParameters() as $parameter) {
-          $param= $parameter->getName();
-          switch ($annotations[$param][0]) {
-            case 'path':
-              if (!isset($route['segments'][$annotations[$param][1]])) {
-                $args[]= $parameter->getDefaultValue();
-              } else {
-                $args[]= rawurldecode($route['segments'][$annotations[$param][1]]);
-              }
-              break;
-
-            case 'param':
-              if (!$request->hasParam($annotations[$param][1])) {
-                $args[]= $parameter->getDefaultValue();
-              } else {
-                $args[]= $request->getParam($annotations[$param][1]); 
-              }
-              break;
-
-            case NULL:
-              $args[]= $input->read($request, $parameter->getType()); 
-              break;
-
-            default: 
-              throw new HttpScriptletException(sprintf(
-                'Malformed source %s for parameter %s of %s',
-                $annotations[$param][0],
-                $param,
-                $route['target']->toString()
-              ));
-          }
-        }
-
-        // Invoke method
         try {
-          $result= $route['target']->invoke($instance, $args);
-        } catch (TargetInvocationException $t) {
-          $this->writeError(
-            $response,
-            $this->formatFor($route['output']), 
-            new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t)
-          );
+          $result= $this->handle($route, $request);
+        } catch (HttpScriptletException $e) {
+          $this->writeError($response, $this->formatFor($route['output']), $e);
           return;
         }
 
