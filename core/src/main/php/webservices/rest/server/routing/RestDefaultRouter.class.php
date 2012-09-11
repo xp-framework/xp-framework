@@ -134,6 +134,7 @@
       $matching= array();
       foreach ($this->routes[$verb] as $route) {
         if (!preg_match($route['path'], $path, $segments)) continue;
+
         if (NULL === ($returns= $this->bestOf(
           $accept,
           $route['returns'] ? array($route['returns']) : $supported
