@@ -14,7 +14,7 @@
   /**
    * REST router based on class and method annotations
    *
-   * @test    xp://net.xp_framework.unittest.rest.server.RestAnnotationRouterTest
+   * @test    xp://net.xp_framework.unittest.rest.server.RestDefaultRouterTest
    */
   class RestDefaultRouter extends Object implements RestRouter {
     protected $routes= array();
@@ -125,7 +125,7 @@
           foreach ($supported as $type) {
             if (preg_match($accept, $type, $returns)) break;
           }
-          if (NULL === $returns) continue;
+          if (!$returns) continue;
         } else {
           if (!preg_match($accept, $route['returns'], $returns)) continue;
         }
