@@ -22,8 +22,7 @@
     public static $XML;
     public static $FORM;
 
-    public $serializer;
-    public $deserializer;
+    private $serializer, $deserializer;
 
     static function __static() {
       self::$UNKNOWN= new self(0, 'UNKNOWN', xp::null(), xp::null());
