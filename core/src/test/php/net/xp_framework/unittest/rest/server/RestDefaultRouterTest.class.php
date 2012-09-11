@@ -115,6 +115,27 @@
      * 
      */
     #[@test]
+    public function greet_favor_xml() {
+      $request= new HttpScriptletRequest();
+      $request->setURL(new HttpScriptletURL('http://localhost/greet/test'));
+      $request->addHeader('Accept', 'application/json;q=0.9, text/json');
+
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
+          'segments' => array(0 => '/greet/test', 'name' => 'test', 1 => 'test'),
+          'input'    => NULL,
+          'output'   => 'application/json'
+        )),
+        $this->fixture->routesFor($request, new HttpScriptletResponse())
+      );
+    }
+
+    /**
+     * Test routesFor()
+     * 
+     */
+    #[@test]
     public function greet_accepting_dos_program() {
       $request= new HttpScriptletRequest();
       $request->setURL(new HttpScriptletURL('http://localhost/greet/test'));

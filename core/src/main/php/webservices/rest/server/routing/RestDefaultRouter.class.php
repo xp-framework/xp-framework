@@ -29,17 +29,17 @@
       $values= array();
       foreach ($accept as $t) {
         if (FALSE === ($p= strpos($t, ';'))) {
-          $value= $t;
+          $value= ltrim($t, ' ');
           $q= 1.0;
         } else {
-          $value= substr($t, 0, $p);
+          $value= ltrim(substr($t, 0, $p), ' ');
           $q= (float)substr($t, $p + 3);    // skip ";q="
         }
         $values[$value]= $q;
       }
       
-      asort($values, SORT_NUMERIC);
-      return array_reverse($values);
+      arsort($values, SORT_NUMERIC);
+      return $values;
     }
 
     /**
