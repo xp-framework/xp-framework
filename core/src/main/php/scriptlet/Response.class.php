@@ -4,12 +4,14 @@
  * $Id$ 
  */
 
+  $package= 'scriptlet';
+
   /**
    * Defines the response sent by the server to the client
    *
    * @purpose  Interface
    */  
-  interface Response {
+  interface scriptlet·Response {
 
     /**
      * Set a cookie. May be called multiple times with different cookies

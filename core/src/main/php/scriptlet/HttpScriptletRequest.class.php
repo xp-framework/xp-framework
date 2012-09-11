@@ -16,7 +16,7 @@
    * @see      xp://scriptlet.HttpScriptlet
    * @purpose  Wrap request
    */  
-  class HttpScriptletRequest extends Object implements Request {
+  class HttpScriptletRequest extends Object implements scriptlet·Request {
     public
       $url=             NULL,
       $env=             array(),
