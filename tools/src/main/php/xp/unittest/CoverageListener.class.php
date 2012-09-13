@@ -160,9 +160,9 @@
           $fileNode->setAttribute('name', $fileName);
 
           $num= 1;
-          $handle= fopen($pathName.'/'.$fileName, 'r');
-          while (!feof($handle)) {
-            $line= stream_get_line($handle, 1000, "\n");
+          $reader= new TextReader(new FileInputStream($pathName.'/'.$fileName));
+          while (($line = $reader->readLine()) !== NULL) {
+            $lineNode = new Node('line', new CData($line));
 
             $lineNode = new Node('line', new CData($line));
             if (isset($data[$num])) {
