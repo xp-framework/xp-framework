@@ -181,7 +181,6 @@
         }
         $pathsNode->addChild($pathNode);
       }
-      $now= time();
       $pathsNode->setAttribute('time', date('Y-m-d H:i:s'));
 
       $this->processor->setXMLBuf($pathsNode->getSource());
