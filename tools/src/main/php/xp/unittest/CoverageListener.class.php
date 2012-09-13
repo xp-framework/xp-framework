@@ -166,9 +166,9 @@
 
             $lineNode = new Node('line', new CData($line));
             if (isset($data[$num])) {
-              if(1 === $data[$num]) {
+              if (1 === $data[$num]) {
                 $lineNode->setAttribute('checked', 'checked');
-              } elseif(-1 === $data[$num]) {
+              } elseif (-1 === $data[$num]) {
                 $lineNode->setAttribute('unchecked', 'unchecked');
               }
             }
