@@ -110,7 +110,7 @@
           }
         ]]>
         </style>
-        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" />
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" />
         <script type="text/javascript">
         <![CDATA[
           $(document).ready(function() {
