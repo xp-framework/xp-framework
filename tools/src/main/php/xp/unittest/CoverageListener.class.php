@@ -24,10 +24,20 @@
       $processor= NULL,
       $reportFile= 'coverage.html';
 
+    /**
+     * register a path to include in coverage report
+     *
+     * @param string
+     */
     public function registerPath($path) {
       $this->paths[]= $path;
     }
 
+    /**
+     * set path for the report file
+     *
+     * @param string
+     */
     public function setReportFile($reportFile) {
       $this->reportFile= $reportFile;
     }
