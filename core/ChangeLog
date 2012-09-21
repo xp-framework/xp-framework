@@ -6,6 +6,45 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+RFCs
+~~~~
+- Implemented RFC #0254 - Builtin development webserver "xpws"
+  (friebe)
+
+Features
+~~~~~~~~
+- Changed scriptlet API to use $_SERVER instead of getenv() - this is more
+  portable to different web server SAPIs. See pull request #184
+  (friebe)
+
+
+Version 5.8.7, released 2012-08-17
+----------------------------------
+Git commit: 20ebf97d186623fcf82140de06a870eaba610464
+
+Bugfixes
+~~~~~~~~
+- Fixed issue #182: URLs with `@` inside fail to parse
+  (friebe)
+- Allowed _-.: as values in rest paths - see pull request #175
+  (kiesel)
+- Fixed optional params for rest server - see pull request #152
+  (mihaighigea, kiesel, iigorr)
+- Fixed HTTP content length calculation for empty POST bodys.
+  (kiesel, iigorr)
+
+Features
+~~~~~~~~
+- Added equals() methods to io.File & io.Folder - pull request #181
+  (friebe)
+- Preferred "debug" loglevel over "info" in remote package - less verbose.
+  See pull request #180
+  (kiesel)
+- Extracted class parsing into own method (testability) - pull request #177
+  (friebe)
+- Added support for "self" as type in @return, @param - pull request #176
+  (friebe)
+
 
 Version 5.8.6, released 2012-07-09
 ----------------------------------

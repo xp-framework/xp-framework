@@ -24,12 +24,11 @@
      * @param   &scriptlet.HttpRequest request
      */
     protected function _setupRequest($request) {
-      System::putEnv('SERVER_PROTOCOL', 'HTTP/1.1');
-      System::putEnv('REQUEST_METHOD', $this->method);
-      System::putEnv('SERVER_PROTOCOL', 'HTTP/1.1');
-      System::putEnv('HTTP_HOST', 'unittest');
-      System::putEnv('REQUEST_URI', '/');
-      System::putEnv('QUERY_STRING', '');
+      $request->env['SERVER_PROTOCOL']= 'HTTP/1.1';
+      $request->env['REQUEST_METHOD']= $this->method;
+      $request->env['HTTP_HOST']= 'unittest';
+      $request->env['REQUEST_URI']= '/';
+      $request->env['QUERY_STRING']= '';
       $request->method= $this->method;
       $request->setHeaders($this->headers);
       $request->setParams($this->params);
