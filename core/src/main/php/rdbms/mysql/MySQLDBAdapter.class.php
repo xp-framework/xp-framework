@@ -38,7 +38,8 @@
       'tinyblob'   => DB_ATTRTYPE_TEXT,
       'blob'       => DB_ATTRTYPE_TEXT,
       'mediumblob' => DB_ATTRTYPE_TEXT,
-      'longblob'   => DB_ATTRTYPE_TEXT
+      'longblob'   => DB_ATTRTYPE_TEXT,
+      'time'       => DB_ATTRTYPE_TEXT
     );
 
     /**

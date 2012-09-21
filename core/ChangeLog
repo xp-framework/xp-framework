@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+RFCs
+~~~~
+- Implemented RFC #0254 - Builtin development webserver "xpws"
+  (friebe)
+
 Features
 ~~~~~~~~
 - Changed scriptlet API to use $_SERVER instead of getenv() - this is more

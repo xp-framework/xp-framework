@@ -105,6 +105,19 @@
     public function getPath() {
       return $this->path;
     }
+
+    /**
+     * Return URI (path and query)
+     *
+     * @return string
+     */
+    public function getUri() {
+      $s= $this->path.'?';
+      foreach ($this->query as $key => $value) {
+        $s.= rawurlencode($key).'={'.rawurlencode($value).'}&';
+      }
+      return substr($s, 0, -1);
+    }
     
     /**
      * Return parameter names
@@ -122,6 +135,15 @@
      */
     public function hasParam($name) {
       return in_array($name, $this->getParamNames());
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->getUri().')';
     }
   }
 ?>
