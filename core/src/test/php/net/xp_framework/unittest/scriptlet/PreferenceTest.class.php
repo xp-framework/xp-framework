@@ -196,5 +196,19 @@
         create(new Preference('text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'))->match(array('text/plain', 'text/html'))
       );
     }
+
+    /**
+     * Test match()
+     *
+     * @see  http://en.wikipedia.org/wiki/Content_negotiation
+     */
+    #[@test]
+    public function wikipedia_example_match_html_vs_plaintext() {
+      $this->assertEquals(
+        'text/html', 
+        create(new Preference('text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
+'))->match(array('text/plain', 'text/html'))
+      );
+    }
   }
 ?>
