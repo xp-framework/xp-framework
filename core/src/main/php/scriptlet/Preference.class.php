@@ -59,10 +59,11 @@
       }
     }
 
-    public function preferred() {
-      return key($this->list);
-    }
-
+    /**
+     * Returns all preferred values in order of quality-rating
+     *
+     * @return  string[]
+     */
     public function all() {
       return array_keys($this->list);
     }

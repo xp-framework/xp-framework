@@ -126,38 +126,14 @@
     }
 
     /**
-     * Test preferred()
+     * Test all()
      *
      */
     #[@test]
-    public function single_best_preference() {
+    public function preferences_reordered() {
       $this->assertEquals(
-        'text/xml', 
-        create(new Preference('text/xml'))->preferred()
-      );
-    }
-
-    /**
-     * Test preferred()
-     *
-     */
-    #[@test]
-    public function one_preference_with_qvalue_one_without() {
-      $this->assertEquals(
-        'text/plain', 
-        create(new Preference('text/xml;q=0.9, text/plain'))->preferred()
-      );
-    }
-
-    /**
-     * Test preferred()
-     *
-     */
-    #[@test]
-    public function both_preferences_with_qvalues() {
-      $this->assertEquals(
-        'text/plain', 
-        create(new Preference('text/xml;q=0.7, text/plain;q=1.0'))->preferred()
+        array('text/plain', 'text/xml'), 
+        create(new Preference('text/xml;q=0.9, text/plain;q=1.0'))->all()
       );
     }
 
