@@ -80,5 +80,14 @@
       }
       return NULL;
     }
+
+    /**
+     * Returns whether another instance is equal to this
+     *
+     * @param  var cmp
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->list === $this->list;
+    }
   }
 ?>

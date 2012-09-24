@@ -18,6 +18,54 @@
   class PreferenceTest extends TestCase {
 
     /**
+     * Test constructor
+     *
+     */
+    #[@test]
+    public function create_with_single_preference() {
+      $this->assertEquals(
+        create(new Preference(array('text/xml'))),
+        create(new Preference('text/xml'))
+      );
+    }
+
+    /**
+     * Test constructor
+     *
+     */
+    #[@test]
+    public function create_with_multiple_preferences() {
+      $this->assertEquals(
+        create(new Preference(array('text/xml', 'text/plain'))),
+        create(new Preference('text/xml,text/plain'))
+      );
+    }
+
+    /**
+     * Test constructor
+     *
+     */
+    #[@test]
+    public function create_with_multiple_preferences_and_qvalues() {
+      $this->assertEquals(
+        create(new Preference(array('text/xml;q=1.0', 'text/plain;q=0.9'))),
+        create(new Preference('text/xml;q=1.0,text/plain;q=0.9'))
+      );
+    }
+
+    /**
+     * Test constructor
+     *
+     */
+    #[@test]
+    public function create_with_multiple_preferences_and_qvalues_reordered() {
+      $this->assertEquals(
+        create(new Preference(array('text/xml;q=1.0', 'text/plain;q=0.9'))),
+        create(new Preference('text/plain;q=0.9,text/xml;q=1.0'))
+      );
+    }
+
+    /**
      * Test all()
      *
      */
