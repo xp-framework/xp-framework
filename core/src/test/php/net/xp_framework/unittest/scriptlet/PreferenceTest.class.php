@@ -226,6 +226,18 @@
      *
      */
     #[@test]
+    public function text_any_matching_first_of_supported() {
+      $this->assertEquals(
+        'text/plain', 
+        create(new Preference('text/*'))->match(array('text/plain', 'text/html'))
+      );
+    }
+
+    /**
+     * Test match()
+     *
+     */
+    #[@test]
     public function any_any_matches_first_of_supported() {
       $this->assertEquals(
         'application/xml', 
