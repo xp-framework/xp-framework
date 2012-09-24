@@ -166,6 +166,42 @@
      *
      */
     #[@test]
+    public function text_any_matching_one_of_supported() {
+      $this->assertEquals(
+        'text/html', 
+        create(new Preference('text/*'))->match(array('application/xml', 'text/html', 'text/plain'))
+      );
+    }
+
+    /**
+     * Test match()
+     *
+     */
+    #[@test]
+    public function any_any_matches_first_of_supported() {
+      $this->assertEquals(
+        'application/xml', 
+        create(new Preference('*/*'))->match(array('application/xml', 'text/html', 'text/plain'))
+      );
+    }
+
+    /**
+     * Test match()
+     *
+     */
+    #[@test]
+    public function application_any_matches_first_of_supported() {
+      $this->assertEquals(
+        'application/xml', 
+        create(new Preference('*/*;q=0.1; application/*'))->match(array('application/xml', 'text/html', 'text/plain'))
+      );
+    }
+
+    /**
+     * Test match()
+     *
+     */
+    #[@test]
     public function ie9_default_accept_match_html_vs_plaintext() {
       $this->assertEquals(
         'text/html', 
