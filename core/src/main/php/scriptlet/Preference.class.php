@@ -30,7 +30,11 @@
       foreach ($accept as $t) {
         if (FALSE === ($p= strpos($t, ';'))) {
           $value= ltrim($t, ' ');
-          $q= $significance-= 0.0001;
+
+          // RFC 2626, Section 3.9: "HTTP/1.1 applications MUST NOT generate more than
+          // three digits after the decimal point". Use 5 digits, allowing for 100 q-
+          // values with 1 > q > 0.999. Common user-agents supply 3 to 5 values.
+          $q= ($significance-= 0.00001);
         } else {
           $value= ltrim(substr($t, 0, $p), ' ');
           $q= (float)ltrim(substr($t, $p), '; q=');
