@@ -246,5 +246,27 @@
 '))->match(array('text/plain', 'text/html'))
       );
     }
+
+    /**
+     * Test match()
+     *
+     */
+    #[@test]
+    public function application_json_not_supported() {
+      $this->assertNull(
+        create(new Preference('application/json'))->match(array('text/html', 'text/plain'))
+      );
+    }
+
+    /**
+     * Test match()
+     *
+     */
+    #[@test]
+    public function application_any_not_supported() {
+      $this->assertNull(
+        create(new Preference('application/*'))->match(array('text/html', 'text/plain'))
+      );
+    }
   }
 ?>
