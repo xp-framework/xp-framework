@@ -76,11 +76,7 @@
     public function match($supported) {
       $str= implode(' ', $supported);
       foreach ($this->list as $preference => $q) {
-        if (strstr($preference, '*')) {
-          if (preg_match('#('.strtr(preg_quote($preference, '#'), array('\*' => '[^ ]+')).')#', $str, $matches)) return $matches[1];
-        } else {
-          if (FALSE !== ($p= array_search($preference, $supported))) return $supported[$p];
-        }
+        if (preg_match('#('.strtr(preg_quote($preference, '#'), array('\*' => '[^ ]+')).')#', $str, $matches)) return $matches[1];
       }
       return NULL;
     }
