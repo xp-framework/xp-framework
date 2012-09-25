@@ -26,20 +26,15 @@
      */
     protected function preferenceOf($accept) {
       $values= array();
-      $significance= 1.0;
+      $prec= 1.0;
       foreach ($accept as $t) {
-        if (FALSE === ($p= strpos($t, ';'))) {
-          $value= ltrim($t, ' ');
-
-          // RFC 2626, Section 3.9: "HTTP/1.1 applications MUST NOT generate more than
-          // three digits after the decimal point". Use 5 digits, allowing for 100 q-
-          // values with 1 > q > 0.999. Common user-agents supply 3 to 5 values.
-          $q= ($significance-= 0.00001);
+        preg_match('# ?(.+); ?q=([0-9\.]+)#', $t, $matches);
+        if (empty($matches)) {
+          $values[trim($t, ' ')]= $prec - 0.0001 * substr_count($t, '*') + 0.001 * substr_count($t, ';');
+          $prec-= 0.00001;
         } else {
-          $value= ltrim(substr($t, 0, $p), ' ');
-          $q= (float)ltrim(substr($t, $p), '; q=');
+          $values[$matches[1]]= (float)$matches[2];
         }
-        $values[$value]= $q;
       }
       
       arsort($values, SORT_NUMERIC);

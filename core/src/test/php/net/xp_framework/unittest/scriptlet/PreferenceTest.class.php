@@ -138,6 +138,18 @@
     }
 
     /**
+     * Test all()
+     *
+     */
+    #[@test]
+    public function rfc2616_more_specific_ranges_override() {
+      $this->assertEquals(
+        array('text/html;level=1', 'text/html', 'text/*', '*/*'), 
+        create(new Preference('text/*, text/html, text/html;level=1, */*'))->all()
+      );
+    }
+
+    /**
      * Test match()
      *
      */
