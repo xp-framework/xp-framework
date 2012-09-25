@@ -30,8 +30,8 @@
       foreach ($accept as $t) {
         preg_match('# ?(.+); ?q=([0-9\.]+)#', $t, $matches);
         if (empty($matches)) {
-          $values[trim($t, ' ')]= $prec - 0.0001 * substr_count($t, '*') + 0.001 * substr_count($t, ';');
-          $prec-= 0.00001;
+          $values[trim($t, ' ')]= $prec - 0.00001 * substr_count($t, '*') + 0.0001 * substr_count($t, ';');
+          $prec-= 0.000001;
         } else {
           $values[$matches[1]]= (float)$matches[2];
         }
