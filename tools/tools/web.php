@@ -44,9 +44,14 @@
       break;
 
     case 'cli-server':
+      if (FALSE === getenv('DOCUMENT_ROOT')) {
+        $_SERVER['DOCUMENT_ROOT'].= DIRECTORY_SEPARATOR.'static';
+      }
+      if (is_file($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI'])) {
+        return FALSE;
+      }
       header('HTTP/1.0 500 Internal Server Error');
       $_SERVER['SCRIPT_URL']= substr($_SERVER['REQUEST_URI'], 0, strcspn($_SERVER['REQUEST_URI'], '?#'));
-      $_SERVER['DOCUMENT_ROOT'].= '/static';
       $_SERVER['SERVER_PROFILE']= getenv('SERVER_PROFILE');
       define('STDIN', fopen('php://stdin', 'rb'));
       define('STDOUT', fopen('php://stdout', 'wb'));
