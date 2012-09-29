@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Added support for MySQL time column type - see pull request #185
+  (andstefiul)
+
 RFCs
 ~~~~
 - Implemented RFC #0254 - Builtin development webserver "xpws"
