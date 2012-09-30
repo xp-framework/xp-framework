@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- The finally() function is replaced by ensure($t) - see pull request #187
+  This way we're forward-compatible with PHP 5.5 - see issue #186.
+  (friebe)
 - The SAPI feature is now deprecated and will be removed in next major series!
   (friebe)
 - Changed newinstance() to declare classes inside the package of the 
@@ -18,7 +21,6 @@ Heads up!
   (friebe)
 - Merged pull request #93: Access to private constructors, methods and fields
   (friebe)
-
 
 RFCs
 ~~~~
@@ -34,7 +36,6 @@ RFCs
 - Implemented RFC #0222: Optional support for PHP 5.3 namespaces
   http://news.planet-xp.net/article/433/2012/01/06/
   (kiesel, friebe)
-
 
 Bugfixes
 ~~~~~~~~
