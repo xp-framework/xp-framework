@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.8, released 2012-09-30
+----------------------------------
+Git commit: e5e65ff70b85af9629f9a5af1854cc2d3fd064fe
+
 Bugfixes
 ~~~~~~~~
 - Added support for MySQL time column type - see pull request #185
