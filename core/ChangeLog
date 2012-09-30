@@ -10,6 +10,9 @@ Bugfixes
 ~~~~~~~~
 - Added support for MySQL time column type - see pull request #185
   (andstefiul)
+- Fixed bug in compiler resolving platform-specific constants, e.g.
+  DIRECTORY_SEPARATOR, at compile time.
+  (friebe)
 
 RFCs
 ~~~~
