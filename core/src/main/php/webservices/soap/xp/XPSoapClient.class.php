@@ -23,7 +23,7 @@
   class XPSoapClient extends Object implements ISoapClient, Traceable {
     protected
       $transport          = NULL,
-      $encoding           = 'iso-8859-1',
+      $encoding           = xp::ENCODING,
       $action             = '',
       $targetNamespace    = NULL,
       $mapping            = NULL,

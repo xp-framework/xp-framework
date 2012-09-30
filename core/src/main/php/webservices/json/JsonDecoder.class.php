@@ -249,11 +249,11 @@
      * Parse a source and return the value
      *
      * @param   text.Tokenizer source
-     * @param   string targetEncoding default 'iso-8859-1'
+     * @param   string targetEncoding defaults to XP default encoding
      * @return  var
      * @throws  webservices.json.JsonException
      */
-    protected function parse($source, $targetEncoding= 'iso-8859-1') {
+    protected function parse($source, $targetEncoding= xp::ENCODING) {
       try {
         self::$parser->setTargetEncoding($targetEncoding);
         return self::$parser->parse(new JsonLexer($source));
@@ -307,11 +307,11 @@
      * </ul>
      *
      * @param   string string
-     * @param   string targetEncoding default 'iso-8859-1'
+     * @param   string targetEncoding defaults to XP default encoding
      * @return  var
      * @throws  webservices.json.JsonException
      */
-    public function decode($string, $targetEncoding= 'iso-8859-1') {
+    public function decode($string, $targetEncoding= xp::ENCODING) {
       return $this->parse(new StringTokenizer($string), $targetEncoding);
     }
 
@@ -319,11 +319,11 @@
      * Decode a stream of JSON data into PHP data
      *
      * @param   io.streams.InputStream stream
-     * @param   string targetEncoding default 'iso-8859-1'
+     * @param   string targetEncoding defaults to XP default encoding
      * @return  var
      * @throws  webservices.json.JsonException
      */
-    public function decodeFrom(InputStream $stream, $targetEncoding= 'iso-8859-1') {
+    public function decodeFrom(InputStream $stream, $targetEncoding= xp::ENCODING) {
       return $this->parse(new StreamTokenizer($stream), $targetEncoding);
     }
     

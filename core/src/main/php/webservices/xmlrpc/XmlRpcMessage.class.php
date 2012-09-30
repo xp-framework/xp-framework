@@ -75,7 +75,7 @@
      * @return  string
      */
     public function getEncoding() {
-      return 'iso-8859-1';
+      return xp::ENCODING;
     }
     
     /**

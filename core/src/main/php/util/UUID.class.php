@@ -178,7 +178,7 @@
      * @return  util.UUID
      */
     public static function md5UUID(self $namespace, $name) {
-      $bytes= md5($namespace->getBytes().iconv('iso-8859-1', 'utf-8', $name));
+      $bytes= md5($namespace->getBytes().iconv(xp::ENCODING, 'utf-8', $name));
       
       return new self(array(
         3,
@@ -198,7 +198,7 @@
      * @return  util.UUID
      */
     public static function sha1UUID(self $namespace, $name) {
-      $bytes= sha1($namespace->getBytes().iconv('iso-8859-1', 'utf-8', $name));
+      $bytes= sha1($namespace->getBytes().iconv(xp::ENCODING, 'utf-8', $name));
 
       return new self(array(
         5,
