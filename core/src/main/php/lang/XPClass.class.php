@@ -842,7 +842,7 @@
                 strpos($comment, '* @')- 2      // position of first details token
               ))),
               DETAIL_ANNOTATIONS  => $annotations[0],
-              DETAIL_TARGET_ANNO    => $annotations[1]
+              DETAIL_TARGET_ANNO  => $annotations[1]
             );
             $annotations= array(0 => array(), 1 => array());
             $matches= NULL;
@@ -1030,9 +1030,9 @@
             continue;
           } else if (T_CLASS === $state[0]) {
             if (T_EXTENDS === $tokens[$i][0]) {
-              if (isset($annotations['generic']['parent'])) {
+              if (isset($annotations[0]['generic']['parent'])) {
                 $xargs= array();
-                foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
+                foreach (explode(',', $annotations[0]['generic']['parent']) as $j => $placeholder) {
                   $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
                 $src.= ' extends '.strtr(self::createGenericType($self->getParentClass(), $xargs)->literal(), '\\', '¦');
@@ -1042,7 +1042,7 @@
             } else if (T_IMPLEMENTS === $tokens[$i][0]) {
               $src.= ' implements';
               $counter= 0;
-              $annotation= @$annotations['generic']['implements'];
+              $annotation= @$annotations[0]['generic']['implements'];
               array_unshift($state, 5);
             } else if ('{' === $tokens[$i][0]) {
               array_shift($state);
@@ -1054,7 +1054,7 @@
             if (T_EXTENDS === $tokens[$i][0]) {
               $src.= ' extends';
               $counter= 0;
-              $annotation= @$annotations['generic']['extends'];
+              $annotation= @$annotations[0]['generic']['extends'];
               array_unshift($state, 5);
             } else if ('{' === $tokens[$i][0]) {
               array_shift($state);
@@ -1070,15 +1070,15 @@
               array_unshift($state, 2);
               $m= $tokens[$i+ 2][1];
               if (isset($meta[1][$m])) {
-                $annotations= $meta[1][$m][DETAIL_ANNOTATIONS];
+                $annotations= array($meta[1][$m][DETAIL_ANNOTATIONS], $meta[1][$m][DETAIL_TARGET_ANNO]);
               } else {
                 $meta[1][$m]= array(
                   DETAIL_ARGUMENTS    => array(),
                   DETAIL_RETURNS      => 'void',
                   DETAIL_THROWS       => array(),
                   DETAIL_COMMENT      => $comment,
-                  DETAIL_ANNOTATIONS  => $annotations,
-                  DETAIL_TARGET_ANNO  => array()
+                  DETAIL_ANNOTATIONS  => $annotations[0],
+                  DETAIL_TARGET_ANNO  => $annotations[1]
                 );
                 foreach ($matches as $match) {
                   switch ($match[1]) {
@@ -1113,12 +1113,12 @@
               array_unshift($state, 4);
               $src.= '{';
               
-              if (isset($annotations['generic']['return'])) {
-                $meta[1][$m][DETAIL_RETURNS]= strtr($annotations['generic']['return'], $placeholders);
+              if (isset($annotations[0]['generic']['return'])) {
+                $meta[1][$m][DETAIL_RETURNS]= strtr($annotations[0]['generic']['return'], $placeholders);
               }
-              if (isset($annotations['generic']['params'])) {
+              if (isset($annotations[0]['generic']['params'])) {
                 $generic= array();
-                foreach (explode(',', $annotations['generic']['params']) as $j => $placeholder) {
+                foreach (explode(',', $annotations[0]['generic']['params']) as $j => $placeholder) {
                   if ('' === ($replaced= strtr(ltrim($placeholder), $placeholders))) {
                     $generic[$j]= NULL;
                   } else {
