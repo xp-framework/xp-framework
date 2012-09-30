@@ -668,7 +668,7 @@
         $entry->close();
       } catch (XPException $e) {
         $this->answer($socket, 550, $params.': '.$e->getMessage());
-      } finally(); {
+      } ensure($e); {
         $dataSocket->close();
         if ($e) return;
       }
@@ -719,7 +719,7 @@
         $entry->close();
       } catch (XPException $e) {
         $this->answer($socket, 550, $params.': '.$e->getMessage());
-      } finally(); {
+      } ensure($e); {
         $dataSocket->close();
         if ($e) return;
       }
