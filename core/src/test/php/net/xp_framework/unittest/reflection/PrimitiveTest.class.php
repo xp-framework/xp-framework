@@ -163,7 +163,7 @@
         Primitive::boxed($fd);
       } catch (IllegalArgumentException $expected) {
         // OK
-      } finally(); {
+      } ensure($expected); {
         fclose($fd);    // Necessary, PHP will segfault otherwise
         if ($expected) return;
       }
