@@ -18,6 +18,7 @@
   define('DETAIL_THROWS',         3);
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
+  define('DETAIL_TARGET_ANNO',    6);
   define('DETAIL_NAME',           6);
   define('DETAIL_GENERIC',        7);
  
