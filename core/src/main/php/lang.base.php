@@ -461,9 +461,10 @@
   }
   // }}}
 
-  // {{{ void finally (void)
-  //     Syntactic sugar. Intentionally empty
-  function finally() {
+  // {{{ void ensure ($t)
+  //     Forward "finally" support
+  function ensure(&$t) {
+    if (!isset($t)) $t= NULL;
   }
   // }}}
 
