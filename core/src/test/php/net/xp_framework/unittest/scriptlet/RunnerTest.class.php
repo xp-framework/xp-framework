@@ -31,7 +31,12 @@
     protected static $exitScriptlet= NULL;
     protected static $propertySource= NULL;
     
-    static function __static() {
+    /**
+     * Defines scriptlet classes used as fixtures
+     *
+     */
+    #[@beforeClass]
+    public static function defineScriptlets() {
       self::$errorScriptlet= ClassLoader::defineClass('ErrorScriptlet', 'scriptlet.HttpScriptlet', array('util.log.Traceable'), '{
         protected function _request() {
           $req= parent::_request();
@@ -175,7 +180,7 @@
      * Sets up property source
      *
      */
-    #[@beforeClass]
+    #[@afterClass]
     public static function removePropertySource() {
       PropertyManager::getInstance()->removeSource(self::$propertySource);
     }

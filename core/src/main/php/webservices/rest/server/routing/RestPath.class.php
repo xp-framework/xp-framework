@@ -30,7 +30,7 @@
      */
     public function __construct($path) {
       static $search= '/\{([\w]*)\}/';
-      static $replace= '([%\w]*)';
+      static $replace= '([%\w:\-\.]*)';
       
       list ($this->path, $this->query)= $this->splitParams($path);
       
@@ -62,7 +62,7 @@
       
       if (FALSE !== ($p= strpos($path, '?'))) {
         parse_str(substr($path, $p+1), $query);
-        $path= substr($path, 0, $p-1);
+        $path= substr($path, 0, $p);
       }
       
       return array($path, $query);
@@ -75,6 +75,8 @@
      * @return var[]
      */
     public function match($path) {
+      if ($path === $this->path) return TRUE;
+      
       list ($path, $query)= $this->splitParams($path);
       
       if (preg_match('#^'.$this->pattern.'$#', $path, $matches)) {
@@ -103,6 +105,19 @@
     public function getPath() {
       return $this->path;
     }
+
+    /**
+     * Return URI (path and query)
+     *
+     * @return string
+     */
+    public function getUri() {
+      $s= $this->path.'?';
+      foreach ($this->query as $key => $value) {
+        $s.= rawurlencode($key).'={'.rawurlencode($value).'}&';
+      }
+      return substr($s, 0, -1);
+    }
     
     /**
      * Return parameter names
@@ -120,6 +135,15 @@
      */
     public function hasParam($name) {
       return in_array($name, $this->getParamNames());
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->getUri().')';
     }
   }
 ?>

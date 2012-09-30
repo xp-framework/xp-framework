@@ -8,6 +8,8 @@
     'peer.URL',
     'peer.ConnectException',
     'peer.AuthenticationException',
+    'peer.Socket',
+    'peer.SSLSocket',
     'peer.SocketException',
     'peer.ftp.FtpDir',
     'peer.ftp.WindowsFtpListParser',

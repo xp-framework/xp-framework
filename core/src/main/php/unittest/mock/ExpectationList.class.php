@@ -4,7 +4,11 @@
  * $Id$ 
  */
 
-  uses('lang.IllegalArgumentException', 'util.collections.Vector');
+  uses(
+    'lang.IllegalArgumentException', 
+    'unittest.mock.Expectation',
+    'util.collections.Vector'
+  );
 
   /**
    * A stateful list for expectations.

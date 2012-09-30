@@ -43,7 +43,7 @@
      */
     public function send(HttpRequest $request, $timeout= 60, $connecttimeout= 2.0) {
       $curl= curl_copy_handle($this->handle);
-      curl_setopt($curl, CURLOPT_URL, $request->url->getUrl());
+      curl_setopt($curl, CURLOPT_URL, $request->url->getCanonicalURL());
       curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $request->getRequestString());
       curl_setopt($curl, CURLOPT_TIMEOUT, $timeout);
       

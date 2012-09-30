@@ -13,11 +13,24 @@
    * REST route processor
    *
    * @test    xp://net.xp_framework.unittest.rest.server.routing.RestRoutingProcessorTest
-   * @purpose Router
    */
   class RestRoutingProcessor extends Object {
-    protected
-      $bindings= array();
+    private
+      $bindings= array(),
+      $dataCaster= NULL;
+
+    /**
+     * Constructor
+     * 
+     * @param     webservices.rest.server.RestDataCaster
+     */
+    public function __construct(RestDataCaster $dataCaster= NULL) {
+      if (NULL === $dataCaster) {
+        $this->dataCaster= new RestDataCaster();
+      } else {
+        $this->dataCaster= $dataCaster;
+      }
+    }
     
     /**
      * Bind resource
@@ -95,8 +108,8 @@
         
         // Try to convert binding to requested argument type
         try {
-          $args[(int)$ref]= RestDataCaster::complex(
-            RestDataCaster::simple($this->getBinding($name)),
+          $args[(int)$ref]= $this->dataCaster->complex(
+            $this->dataCaster->simple($this->getBinding($name)),
             $routing->getArgs()->getArgumentType($names[$ref])
           );
         } catch (XPException $e) {
@@ -108,10 +121,17 @@
       foreach ($names as $i => $name) {
         if (isset($args[$i])) continue;  // Skip injection arguments
 
+        // If the argument is optional and wasn't sent
+        // use it's default value and continue with next argument
+        if (NULL===$values[$name] && $routing->getArgs()->isArgumentOptional($name)) {
+          $args[$i]= $routing->getArgs()->getArgumentDefaultValue($name);
+          continue;
+        }
+
         // Try to convert parameters to requested argument type
         try {
-          $args[$i]= RestDataCaster::complex(
-            RestDataCaster::simple($values[$name]),
+          $args[$i]= $this->dataCaster->complex(
+            $this->dataCaster->simple($values[$name]),
             $routing->getArgs()->getArgumentType($name)
           );
         } catch (XPException $e) {
@@ -120,7 +140,7 @@
       }
       ksort($args);
       
-      return RestDataCaster::simple($routing->getTarget()->process($args));
+      return $this->dataCaster->simple($routing->getTarget()->process($args));
     }
   }
 ?>

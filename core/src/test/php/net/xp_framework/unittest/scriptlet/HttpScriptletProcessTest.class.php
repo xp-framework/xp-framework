@@ -4,45 +4,15 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'scriptlet.HttpScriptlet',
-    'peer.URL'
-  );
+  uses('net.xp_framework.unittest.scriptlet.ScriptletTestCase');
 
   /**
    * TestCase for the deprecated HttpScriptlet::process() method
    *
-   * @see      xp://scriptlet.HttpScriptlet
+   * @see   xp://scriptlet.HttpScriptlet
    */
-  class HttpScriptletProcessTest extends TestCase {
-  
-    static function __static() {
-      if (!function_exists('getallheaders')) {
-        function getallheaders() { return array(); }
-      }
-    }
-    
-    /**
-     * Set session path to current working directory
-     *
-     */
-    public function setUp() {
-      session_save_path(getcwd());
-    }
+  class HttpScriptletProcessTest extends ScriptletTestCase {
 
-    /**
-     * Destroy session and cleanup file
-     *
-     */
-    public function tearDown() {
-      if (session_id()) {
-        session_write_close();
-        unlink(session_save_path().DIRECTORY_SEPARATOR.'sess_'.session_id());
-        session_id(NULL);
-      }
-    }
-    
     /**
      * Creates a new request object. Uses the system environment and global
      * variables to put necessary parameters into place.
@@ -52,13 +22,13 @@
      */
     protected function newRequest($method, URL $url) {
       $q= $url->getQuery();
-      putenv('REQUEST_METHOD='.$method);
-      putenv('SERVER_PROTOCOL=HTTP/1.1');
-      putenv('HTTP_HOST='.$url->getHost());
-      putenv('REQUEST_URI='.$url->getPath('/').($q ? '?'.$q : '')."\0");
-      putenv('QUERY_STRING='.$q);
+      $_SERVER['REQUEST_METHOD']= $method;
+      $_SERVER['SERVER_PROTOCOL']= 'HTTP/1.1';
+      $_SERVER['HTTP_HOST']= $url->getHost();
+      $_SERVER['REQUEST_URI']= $url->getPath('/').($q ? '?'.$q : '');
+      $_SERVER['QUERY_STRING']= $q;
       if ('https' === $url->getScheme()) { 
-        putenv('HTTPS=on');
+        $_SERVER['HTTPS']= 'on';
       }
       $_REQUEST= $url->getParams();
     }

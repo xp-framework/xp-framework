@@ -54,6 +54,16 @@
     public function __construct($in= NULL) {
       $this->date= new Date($in);
     }
+
+    /**
+     * Checks whether this date is before another given test class' date
+     *
+     * @param   self test
+     * @return  bool
+     */
+    public function isDateBefore(self $test) {
+      return $this->date->isBefore($test->date);
+    }
     
     /**
      * Returns whether static initializer was called
@@ -87,6 +97,19 @@
         throw new IllegalStateException('Date must be after 1970');
       }
       $this->date= $date;
+    }
+
+    /**
+     * Set date
+     *
+     * @param   util.Date date
+     * @return  self
+     * @throws  lang.IllegalArgumentException in case the given argument is of incorrect type
+     * @throws  lang.IllegalStateException if date is before 1970
+     */
+    public function withDate($date) {
+      $this->setDate($date);
+      return $this;
     }
     
     /**

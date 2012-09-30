@@ -15,12 +15,11 @@
   /**
    * Scriptlet/Workflow API test case
    *
-   * @see       xp://scriptlet.xml.workflow.AbstractXMLScriptlet
-   * @purpose   Unit test
+   * @see   xp://scriptlet.xml.workflow.AbstractXMLScriptlet
+   * @see   xp://scriptlet.xml.workflow.AbstractState
    */
   class WorkflowApiTest extends TestCase {
-    protected
-      $scriptlet  = NULL;
+    protected $scriptlet  = NULL;
   
     /**
      * Setup method.

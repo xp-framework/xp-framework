@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>net.xp-framework</groupId>
+    <artifactId>pom</artifactId>
+    <version>5.8.8</version>
+  </parent>
+
+  <!-- The Basics -->
+  <artifactId>core</artifactId>
+  <packaging>xar</packaging>
+
+  <!-- More Project Information -->
+  <name>XP-Framework core</name>
+
+  <properties>
+    <!-- Test resources are inside [src/test/php] and not inside [src/test/resources] -->
+    <xp.compile.testPhpIncludePattern>**/*</xp.compile.testPhpIncludePattern>
+
+    <!-- Unittest ini files location -->
+    <xp.test.iniDirectory>${basedir}/src/test/resources</xp.test.iniDirectory>
+  </properties>
+
+  <!-- Copy resources (not in the default Maven layout) -->
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>copy-core-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/php/</directory>
+                  <includes>
+                    <include>lang.base.php</include>
+                    <include>VERSION</include>
+                    <include>LICENCE</include>
+                    <include>**/package-info.xp</include>
+                    <include>sapi/**/*.sapi.php</include>
+                    <include>sapi/scriptlet/*.html</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+         </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

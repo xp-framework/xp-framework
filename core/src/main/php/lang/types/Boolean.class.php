@@ -5,22 +5,43 @@
  */
 
   /**
-   * The abstract class Number is the superclass of classes representing
-   * numbers
+   * The boolean wrapper class
    *
-   * @purpose  Base class
+   * @test    xp://net.xp_framework.unittest.core.types.BooleanTest
    */
   class Boolean extends Object {
-    public
-      $value = '';
+    public static $TRUE, $FALSE;
+    public $value = FALSE;
+
+    static function __static() {
+      self::$TRUE= new self(TRUE);
+      self::$FALSE= new self(FALSE);
+    }
 
     /**
-     * Constructor
+     * Constructor. Accepts one of the following:
      *
-     * @param   string value
+     * <ul>
+     *   <li>The values TRUE or FALSE</li>
+     *   <li>An integer - any non-zero value will be regarded TRUE</li>
+     *   <li>The strings "true" and "false", case-insensitive</li>
+     * </ul>
+     *
+     * @param   var value
+     * @throws  lang.IllegalArgumentException if value is not acceptable
      */
     public function __construct($value) {
-      $this->value= (bool)$value;
+      if (TRUE === $value || FALSE === $value) {
+        $this->value= $value;
+      } else if (is_int($value)) {
+        $this->value= 0 !== $value;
+      } else if (0 === strncasecmp($value, 'true', 4)) {
+        $this->value= TRUE;
+      } else if (0 === strncasecmp($value, 'false', 5)) {
+        $this->value= FALSE;
+      } else {
+        throw new IllegalArgumentException('Not a valid boolean: '.xp::stringOf($value));
+      }
     }
     
     /**
@@ -47,7 +68,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->value.')';
+      return $this->getClassName().'('.($this->value ? 'true' : 'false').')';
     }
     
     /**

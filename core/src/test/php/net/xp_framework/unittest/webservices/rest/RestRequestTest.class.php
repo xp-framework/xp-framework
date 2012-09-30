@@ -115,7 +115,7 @@
     }
 
     /**
-     * Test
+     * Test 
      *
      */
     #[@test]
@@ -123,6 +123,69 @@
       $fixture= new RestRequest();
       $fixture->setBody(new RequestData('{ "title" : "New issue" }'));
       $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function hasBodyWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function hasBodyWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
+        '<root><title>New issue</title></root>', 
+        $fixture->getBody()->data
+      );
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithXmlPayloadAndRootNode() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer('issue'));
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
+        '<issue><title>New issue</title></issue>', 
+        $fixture->getBody()->data
+      );
     }
 
     /**
@@ -304,6 +367,70 @@
       $fixture->addHeader('Referer', 'http://localhost');
       $this->assertEquals(
         array('Accept' => 'text/xml', 'Referer' => 'http://localhost'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function relativeResourceWithEndingSlash() {
+      $fixture= new RestRequest('issues');
+      $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2/'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function relativeResourceWithoutEndingSlash() {
+      $fixture= new RestRequest('issues');
+      $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function acceptOne() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml');
+      $this->assertEquals(
+        array('Accept' => 'text/xml'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function accept() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml');
+      $fixture->addAccept('text/json');
+      $this->assertEquals(
+        array('Accept' => 'text/xml, text/json'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function acceptWithQ() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml', '0.5');
+      $fixture->addAccept('text/json', '0.8');
+      $this->assertEquals(
+        array('Accept' => 'text/xml;q=0.5, text/json;q=0.8'), 
         $fixture->getHeaders()
       );
     }

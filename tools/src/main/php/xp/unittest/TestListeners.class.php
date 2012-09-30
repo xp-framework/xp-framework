@@ -7,7 +7,8 @@
   uses(
     'xp.unittest.DefaultListener',
     'xp.unittest.VerboseListener',
-    'xp.unittest.QuietListener'
+    'xp.unittest.QuietListener',
+    'io.streams.OutputStreamWriter'
   );
 
   /**

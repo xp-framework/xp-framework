@@ -90,7 +90,14 @@
      */
     #[@test]
     public function getRoutings() {
-      $this->routing->addRoute('GET', '/path/to/something', new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)), new RestRoutingArgs(array('id'), array('some.Class')));
+      $params= XPClass::forName('net.xp_framework.unittest.rest.server.mock.MockArgs')
+        ->newInstance()->getClass()->getMethod('simpleMethod')->getParameters();
+      $this->routing->addRoute(
+        'GET', 
+        '/path/to/something', 
+        new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)), 
+        new RestRoutingArgs($params, array('some.Class'))
+      );
       
       $routing= current($this->routing->getRoutings('GET', '/path/to/something'));
       $this->assertInstanceOf('webservices.rest.server.routing.RestRoutingItem', $routing);

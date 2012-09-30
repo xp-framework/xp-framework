@@ -11,7 +11,9 @@
    *
    */
   class net·xp_framework·unittest·webservices·rest·IssueWithField extends Object {
+    #[@type('int')]
     public $issueId= 0;
+    #[@type('string')]
     public $title= NULL;
     
     /**

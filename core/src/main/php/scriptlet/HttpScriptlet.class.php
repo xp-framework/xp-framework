@@ -168,7 +168,7 @@
         case HttpConstants::POST:
         case HttpConstants::PUT: {
           if (!empty($_FILES)) {
-            $request->params= array_merge($request->params, $_FILES);
+            $request->setParams(array_merge($request->getParams(), $_FILES));
           }
           
           // Break missing intentionally
@@ -320,9 +320,10 @@
      * @throws  scriptlet.ScriptletException indicating fatal errors
      */
     public function service(HttpScriptletRequest $request, HttpScriptletResponse $response) {
+      $host= $request->getHeader('X-Forwarded-Host', $request->getEnvValue('HTTP_HOST'));
       $request->setURL($this->_url(
         ('on' == $request->getEnvValue('HTTPS') ? 'https' : 'http').'://'.
-        $request->getHeader('X-Forwarded-Host', $request->getEnvValue('HTTP_HOST')).
+        substr($host, 0, strcspn($host, ',')).
         $request->getEnvValue('REQUEST_URI')
       ));
 

@@ -209,5 +209,23 @@
     #[@test, @limit(time= 1.0)]
     public function noTimeout() {
     }
+
+    /**
+     * Calls fail()
+     *
+     */
+    #[@test]
+    public function doFail() {
+      $this->fail('Test');
+    }
+
+    /**
+     * Calls skip()
+     *
+     */
+    #[@test]
+    public function doSkip() {
+      $this->skip('Test');
+    }
   }
 ?>

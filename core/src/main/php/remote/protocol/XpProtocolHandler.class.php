@@ -25,7 +25,8 @@
       $versionMajor   = 0,
       $versionMinor   = 0,
       $serializer     = NULL,
-      $cat            = NULL;
+      $cat            = NULL,
+      $timeout        = 60;
     
     public
       $_sock= NULL;  
@@ -77,16 +78,13 @@
       );
       $this->_sock= new BSDSocket($proxy->getHost('localhost'), $proxy->getPort(6448));
       $this->_sock->setOption(getprotobyname('tcp'), TCP_NODELAY, TRUE);
-      $this->_sock->connect();
-      
+      // Set default timeout
+      $this->_sock->setTimeout($this->timeout);
       // Set sporty timeout for connect
-      $this->_sock->setOption(SOL_SOCKET, SO_RCVTIMEO, array(
-        'sec'   => 2,
-        'usec'  => 0
-      ));
-      
+      $this->_sock->connect(2.0);
+
       if ($user= $proxy->getUser()) {
-        $this->cat && $this->cat->infof(
+        $this->cat && $this->cat->debugf(
           '>>> %s(%s:%d) INITIALIZE %s',
           $this->getClassName(),
           $this->_sock->host,
@@ -98,7 +96,7 @@
           new ByteCountedString($proxy->getPassword())
         ));
       } else {
-        $this->cat && $this->cat->infof(
+        $this->cat && $this->cat->debugf(
           '>>> %s(%s:%d) INITIALIZE',
           $this->getClassName(),
           $this->_sock->host,
@@ -106,13 +104,8 @@
         );
         $r= $this->sendPacket(REMOTE_MSG_INIT, "\0");
       }
-      
-      // Reset default socket timeout
-      $this->_sock->setOption(SOL_SOCKET, SO_RCVTIMEO, array(
-        'sec'   => 60,
-        'usec'  => 0
-      ));
-      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+
+      $this->cat && $this->cat->debugf('<<< %s', $this->stringOf($r));
     }
     
     /**
@@ -131,7 +124,7 @@
      * @param   lang.Object
      */
     public function lookup($name) {
-      $this->cat && $this->cat->infof(
+      $this->cat && $this->cat->debugf(
         '>>> %s(%s:%d) LOOKUP %s',
         $this->getClassName(),
         $this->_sock->host,
@@ -139,7 +132,7 @@
         $name
       );
       $r= $this->sendPacket(REMOTE_MSG_LOOKUP, '', array(new ByteCountedString($name)));
-      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      $this->cat && $this->cat->debugf('<<< %s', $this->stringOf($r));
       return $r;
     }
 
@@ -150,7 +143,7 @@
      * @param   bool
      */
     public function begin($tran) {
-      $this->cat && $this->cat->infof(
+      $this->cat && $this->cat->debugf(
         '>>> %s(%s:%d) BEGIN %s',
         $this->getClassName(),
         $this->_sock->host,
@@ -158,7 +151,7 @@
         $this->stringOf($tran)
       );
       $r= $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_BEGIN));
-      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      $this->cat && $this->cat->debugf('<<< %s', $this->stringOf($r));
       return $r;
     }
 
@@ -169,7 +162,7 @@
      * @param   bool
      */
     public function rollback($tran) {
-      $this->cat && $this->cat->infof(
+      $this->cat && $this->cat->debugf(
         '>>> %s(%s:%d) ROLLBACK %s',
         $this->getClassName(),
         $this->_sock->host,
@@ -177,7 +170,7 @@
         $this->stringOf($tran)
       );
       $r= $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_ROLLBACK));
-      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      $this->cat && $this->cat->debugf('<<< %s', $this->stringOf($r));
       return $r;
     }
 
@@ -188,7 +181,7 @@
      * @param   bool
      */
     public function commit($tran) {
-      $this->cat && $this->cat->infof(
+      $this->cat && $this->cat->debugf(
         '>>> %s(%s:%d) COMMIT %s',
         $this->getClassName(),
         $this->_sock->host,
@@ -196,7 +189,7 @@
         $this->stringOf($tran)
       );
       $r= $this->sendPacket(REMOTE_MSG_TRAN_OP, pack('N', REMOTE_TRAN_COMMIT));
-      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      $this->cat && $this->cat->debugf('<<< %s', $this->stringOf($r));
       return $r;
     }
 
@@ -210,7 +203,7 @@
      * @return  var
      */
     public function invoke($oid, $method, $args) {
-      $this->cat && $this->cat->infof(
+      $this->cat && $this->cat->debugf(
         '>>> %s(%s:%d) %d::%s(%s)',
         $this->getClassName(),
         $this->_sock->host,
@@ -227,7 +220,7 @@
           new ByteCountedString($this->serializer->representationOf(ArrayList::newInstance($args)))
         )
       );
-      $this->cat && $this->cat->infof('<<< %s', $this->stringOf($r));
+      $this->cat && $this->cat->debugf('<<< %s', $this->stringOf($r));
       return $r;
     }
 
@@ -340,6 +333,15 @@
      */
     public function setTrace($cat) {
       $this->cat= $cat;
+    }
+
+    /**
+     * Set timeout
+     *
+     * @param double timeout 
+     */
+    public function setTimeout($timeout) {
+      $this->timeout= $timeout;
     }
   } 
 ?>

@@ -29,6 +29,7 @@
      * @return  scriptlet.xml.workflow.Handler the added handler
      */
     public function addHandler($handler) {
+      $handler->setTrace($this->cat);
       $this->handlers[]= $handler;
       return $handler;
     }
@@ -59,8 +60,8 @@
         // posted via request to avoid duplicate parameters. We do not need
         // to use $response->addFormValue() because this is done in
         // XMLScriptlet::processRequest() called in XMLScriptlet::doGet().
-        if (isset($request->params[$key])) continue;
-        $request->params[$key]= $handler->values[HVAL_FORMPARAM][$key];
+        if ($request->hasParam($key)) continue;
+        $request->setParam($key, $handler->values[HVAL_FORMPARAM][$key]);
       }
       
       // Add wrapper parameter representation if the handler has a wrapper
@@ -114,7 +115,7 @@
 
               // If the handler is already active, this means the page was reloaded
               if ($this->handlers[$i]->isActive($request, $context)) {
-                $this->handlers[$i]->finalize($request, $response, $context);
+                $this->handlers[$i]->reloaded($request, $response, $context);
                 $node->setAttribute('status', HANDLER_RELOADED);
                 continue;
               }
@@ -175,7 +176,7 @@
               
               // Remove handler from session and call handler's finalize() method
               $request->session->removeValue($this->handlers[$i]->identifier);
-              $this->handlers[$i]->finalize($request, $response, $context);
+              $this->handlers[$i]->cancelled($request, $response, $context);
               
               continue;
             }
@@ -221,7 +222,7 @@
 
             // Tell the handler to finalize itself. This may include adding a 
             // node to the formresult or sending a redirect to another page
-            $this->handlers[$i]->finalize($request, $response, $context);
+            $this->handlers[$i]->success($request, $response, $context);
             $node->setAttribute('status', HANDLER_SUCCESS);
           }
         }
@@ -257,6 +258,5 @@
     public function setTrace($cat) { 
       $this->cat= $cat;
     }
-
   } 
 ?>

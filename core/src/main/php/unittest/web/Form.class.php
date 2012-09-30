@@ -5,9 +5,11 @@
  */
 
   $package= 'unittest.web';
+
   uses(
     'unittest.web.Field', 
     'unittest.web.Fields',
+    'unittest.web.WebTestCase',
     'peer.http.HttpConstants'
   );
 

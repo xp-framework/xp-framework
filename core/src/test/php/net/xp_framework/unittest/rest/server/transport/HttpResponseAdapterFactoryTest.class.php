@@ -29,7 +29,7 @@
      * Test wrong type
      * 
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
+    #[@test, @expect('scriptlet.HttpScriptletException')]
     public function wrongContentType() {
       $this->request->addHeader('Content-Type', 'something/wrong');
       

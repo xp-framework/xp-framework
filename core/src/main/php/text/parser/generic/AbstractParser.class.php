@@ -5,6 +5,7 @@
  */
 
   uses(
+    'text.parser.generic.AbstractLexer',
     'text.parser.generic.ParseException',
     'text.parser.generic.ParserMessage',
     'util.log.Traceable'
@@ -122,11 +123,9 @@
       }
       
       if (!empty($this->messages[self::ERROR])) {
-        $s= '';
-        foreach ($this->messages[self::ERROR] as $error) {
-          $s.= '- '.$error->toString()."\n";
-        }
-        throw new ParseException(sizeof($this->messages[self::ERROR]).' error(s)', new FormatException($s));
+        $p= new ParseException(sizeof($this->messages[self::ERROR]).' parse error(s) occurred.', NULL, $this->messages[self::ERROR]);
+        $p->setCause(new FormatException("[\n".$p->formattedErrors().']'));
+        throw $p;
       }
       
       return $result;
