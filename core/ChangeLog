@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+- Deprecated finally() in favor of ensure($t) - see issue #186.
+  http://news.planet-xp.net/article/481/2012/09/30/
+  (friebe)
+
 
 Version 5.8.8, released 2012-09-30
 ----------------------------------
