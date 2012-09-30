@@ -187,7 +187,7 @@
     }
     // }}}
     
-    // {{{ public var sapi(string* sapis)
+    // {{{ deprecated public var sapi(string* sapis)
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
