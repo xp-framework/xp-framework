@@ -96,7 +96,7 @@
         $proc->setXmlBuf('<document/>');
         $proc->run();
       } catch (Throwable $t) {
-      } finally(); {
+      } ensure($t); {
         ClassLoader::removeLoader($added);
       
         xp::gc();
