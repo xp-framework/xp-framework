@@ -85,6 +85,15 @@
      * @param   bool new
      */
     private function setStatus($new= FALSE) { }
+
+    /**
+     * Method without functionality to be used by tests.
+     *
+     * @param   rdbms.DBConnection conn
+     * @param   string mode
+     */
+    #[@$conn: inject(name= "db")]
+    private function setConnection($conn, $mode) { }
   
     /**
      * Tests Method::numParameters()
@@ -385,6 +394,87 @@
         $this->methodParameter('setArray', 0)->getTypeRestriction(),
         'setArray'
       );
+    }
+
+    /**
+     * Tests hasAnnotation()
+     *
+     */
+    #[@test]
+    public function annotatedParameterHasInjectAnnotation() {
+      $this->assertTrue($this->methodParameter('setConnection', 0)->hasAnnotation('inject'));
+    }
+
+    /**
+     * Tests getAnnotation()
+     *
+     */
+    #[@test]
+    public function annotatedParametersInjectAnnotation() {
+      $this->assertEquals(
+        array('name' => 'db'), 
+        $this->methodParameter('setConnection', 0)->getAnnotation('inject')
+      );
+    }
+
+    /**
+     * Tests hasAnnotations()
+     *
+     */
+    #[@test]
+    public function annotatedParameterHasAnnotations() {
+      $this->assertTrue($this->methodParameter('setConnection', 0)->hasAnnotations());
+    }
+
+    /**
+     * Tests getAnnotations()
+     *
+     */
+    #[@test]
+    public function annotatedParametersAnnotations() {
+      $this->assertEquals(
+        array('inject' => array('name' => 'db')), 
+        $this->methodParameter('setConnection', 0)->getAnnotations()
+      );
+    }
+
+    /**
+     * Tests hasAnnotations()
+     *
+     */
+    #[@test]
+    public function normalParameterHasNoAnnotations() {
+      $this->assertFalse($this->methodParameter('setConnection', 1)->hasAnnotations());
+    }
+
+    /**
+     * Tests getAnnotations()
+     *
+     */
+    #[@test]
+    public function normalParametersAnnotations() {
+      $this->assertEquals(
+        array(), 
+        $this->methodParameter('setConnection', 1)->getAnnotations()
+      );
+    }
+
+    /**
+     * Tests hasAnnotations()
+     *
+     */
+    #[@test]
+    public function normalParameterHasNoAnnotation() {
+      $this->assertFalse($this->methodParameter('setConnection', 1)->hasAnnotation('irrelevant'));
+    }
+
+    /**
+     * Tests getAnnotations()
+     *
+     */
+    #[@test, @expect('lang.ElementNotFoundException')]
+    public function normalParameterGetAnnotationRaisesException() {
+      $this->methodParameter('setConnection', 1)->getAnnotation('irrelevant');
     }
   }
 ?>
