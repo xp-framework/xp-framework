@@ -75,14 +75,14 @@
       
       // Decode arguments [2..*]
       for ($i= 2, $args= array(), $s= sizeof($va); $i < $s; $i++) {
-        $args[]= is_string($va[$i]) ? utf8_decode($va[$i]) : $va[$i];
+        $args[]= is_string($va[$i]) ? iconv('utf-8', xp::ENCODING, $va[$i]) : $va[$i];
       }
       
       // Call callback method
       $r= call_user_func_array(array($instance, $method), $args);
       
       // Encode result if necessary
-      return is_string($r) ? utf8_encode($r) : $r;
+      return is_string($r) ? iconv(xp::ENCODING, 'utf-8', $r) : $r;
     }
   }
 ?>

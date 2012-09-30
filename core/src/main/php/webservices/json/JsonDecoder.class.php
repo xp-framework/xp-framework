@@ -161,7 +161,7 @@
     public function encodeTo($data, OutputStream $stream) {
       switch (gettype($data)) {
         case 'string': {
-          $stream->write('"'.$this->escape(utf8_encode($data)).'"');
+          $stream->write('"'.$this->escape(iconv(xp::ENCODING, 'utf-8', $data)).'"');
           return TRUE;
         }
         case 'integer': {

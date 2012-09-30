@@ -317,7 +317,7 @@
         foreach (array_keys($v) as $i) $v[$i]= $this->_encode($v[$i]);
         return $v;
       }
-      return utf8_encode($v);
+      return iconv(xp::ENCODING, 'utf-8', $v);
     }
     
     /**

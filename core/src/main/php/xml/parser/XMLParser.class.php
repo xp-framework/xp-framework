@@ -35,9 +35,9 @@
     /**
      * Constructor
      *
-     * @param   string encoding default 'iso-8859-1'
+     * @param   string encoding defaults to XP default encoding
      */
-    public function __construct($encoding= 'iso-8859-1') {
+    public function __construct($encoding= xp::ENCODING) {
       $this->encoding= $encoding;
     }
 
