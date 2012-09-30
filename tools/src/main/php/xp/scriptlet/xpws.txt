@@ -1,0 +1,15 @@
+xpws - XP Development Webserver
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Usage:
+========================================================================
+  xpws [options] [host[:port]]
+========================================================================
+
+Options is one of:
+
+  * -r <path>    : Specify document root. Defaults to "./static"
+  * -p <profile> : Set SERVER_PROFILE. Defaults to "dev"
+
+
+Host and port default to "localhost:8080".
