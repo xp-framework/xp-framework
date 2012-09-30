@@ -311,7 +311,7 @@
             $unpack[$header['version']], 
             fread($current['handle'], 0x0100)
           );
-          $current['index'][$entry['id']]= array($entry['size'], $entry['offset'], $i);
+          $current['index'][rtrim($entry['id'], "\0")]= array($entry['size'], $entry['offset'], $i);
         }
       }
 
