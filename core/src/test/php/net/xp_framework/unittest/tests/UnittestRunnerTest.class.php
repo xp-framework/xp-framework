@@ -69,6 +69,51 @@
     }
 
     /**
+     * Test -l parameter without the listener class given
+     *
+     */
+    #[@test]
+    public function listenerArgMissingClass() {
+      $return= $this->runner->run(array('-l'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -l requires an argument');
+    }
+
+    /**
+     * Test -l parameter with non-existant class given as listener
+     *
+     */
+    #[@test]
+    public function listenerArgWrongClass() {
+      $return= $this->runner->run(array('-l', 'does.not.Exist'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Class "does.not.Exist" could not be found');
+    }
+
+
+    /**
+     * Test -l parameter with listener but missing output argument
+     *
+     */
+    #[@test]
+    public function listenerArgWithMissingOutput() {
+      $return= $this->runner->run(array('-l', 'xp.unittest.DefaultListener'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -l requires an argument');
+    }
+
+    /**
+     * Test -o parameter
+     *
+     */
+    #[@test]
+    public function listenerArg() {
+      $return= $this->runner->run(array('-l', 'xp.unittest.DefaultListener', '-'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** No tests specified');
+    }
+
+    /**
      * Test when invoked with no tests
      *
      */
