@@ -41,6 +41,8 @@
    *     multiple times)</li>
    *   <li>-l {listener.class.Name} {output}, where output is either "-"
    *     for console output or a file name</li>
+   *   <li>-o {name} {value}: Set option for last added listener (may be
+   *     used multiple times)
    *   <li>--color={mode} : Enable / disable color; mode can be one of
    *     . "on" - activate color mode
    *     . "off" - disable color mode
@@ -192,7 +194,16 @@
           } else if ('-l' == $args[$i]) {
             $class= XPClass::forName($this->arg($args, ++$i, 'l'));
             $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
-            $suite->addListener($class->newInstance($output));
+            $listener= $suite->addListener($class->newInstance($output));
+          } else if ('-o' == $args[$i]) {
+            $name= $this->arg($args, ++$i, 'o');
+            $value= $this->arg($args, ++$i, 'o');
+            $method= 'set'.ucfirst($name);
+            if ($listener->getClass()->hasMethod($method)) {
+              $listener->getClass()->getMethod($method)->invoke($listener, array($value));
+            } else {
+              throw new IllegalArgumentException('Unsupported option "'.$name.'" for '.$listener->getClassName());
+            }
           } else if ('-?' == $args[$i]) {
             return $this->usage();
           } else if ('-a' == $args[$i]) {

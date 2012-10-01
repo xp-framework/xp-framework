@@ -103,7 +103,7 @@
     }
 
     /**
-     * Test -o parameter
+     * Test -l parameter with all arguments required
      *
      */
     #[@test]
@@ -111,6 +111,57 @@
       $return= $this->runner->run(array('-l', 'xp.unittest.DefaultListener', '-'));
       $this->assertEquals(1, $return);
       $this->assertOnStream($this->err, '*** No tests specified');
+    }
+
+    /**
+     * Test -o parameter with missing name and value
+     *
+     */
+    #[@test]
+    public function optionArgMissingNameAndValue() {
+      $return= $this->runner->run(array('-o'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -o requires an argument');
+    }
+
+    /**
+     * Test -o parameter with missing name
+     *
+     */
+    #[@test]
+    public function optionArgMissingValue() {
+      $return= $this->runner->run(array('-o', 'name'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -o requires an argument');
+    }
+
+    /**
+     * Test -o parameter with invalid option
+     *
+     */
+    #[@test]
+    public function optionArgInvalid() {
+      $return= $this->runner->run(array('-o', 'invalid', 'value'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Unsupported option "invalid" for TestListener');
+    }
+
+    /**
+     * Test -o parameter setting options
+     *
+     */
+    #[@test]
+    public function optionArg() {
+      ClassLoader::getDefault()->defineClass('OptionableTestListener', 'xp.unittest.DefaultListener', array(), '{
+        static $options= array();
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+        public function setVerbose($value) { self::$options[__FUNCTION__]= $value; }
+        public static function options() { return self::$options; }
+      }');
+      $return= $this->runner->run(array('-l', 'OptionableTestListener', '-', '-o', 'option', 'value', '-o', 'verbose', 'on'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** No tests specified');
+      $this->assertEquals(array('setOption' => 'value', 'setVerbose' => 'on'), OptionableTestListener::options());
     }
 
     /**
