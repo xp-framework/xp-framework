@@ -333,5 +333,26 @@
       $this->assertEquals(1, $return);
       $this->assertOnStream($this->err, '*** Error: Test method does not exist: succeed()');
     }
+
+    /**
+     * Test running a single test
+     *
+     */
+    #[@test, @ignore('Not yet implemented')]
+    public function withListenerOptions() {
+      $class= ClassLoader::getDefault()->defineClass('WithListenerOptionsTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+        #[@arg]
+        public function setVerbose() { self::$options[__FUNCTION__]= TRUE; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'value', '-v'));
+      $this->assertEquals(
+        array('setOption' => 'value', 'setVerbose' => 'on'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
   }
 ?>
