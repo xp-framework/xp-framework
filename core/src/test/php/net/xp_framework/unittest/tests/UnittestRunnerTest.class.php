@@ -13,8 +13,7 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see  xp://xp.unittest.Runner
    */
   class UnittestRunnerTest extends TestCase {
     protected
