@@ -195,12 +195,16 @@
             $class= array_shift($arg);
             $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
 
-            // Parse options (name1=value1,name2=value2,name3)
+            // Parse options (value0,name1=value1,name2=value2,name3)
             $options= array();
             foreach ($arg as $offset => $option) {
-              $value= NULL;
-              sscanf($option, '%[^=]=%[^ ]', $name, $value);
-              $options[$offset]= $options[$name]= $value;
+              $s= sscanf($option, '%[^=]=%[^ ]', $name, $value);
+              if (1 === $s) {
+                $options[$name]= NULL;
+                $options[$offset]= $name;
+              } else {
+                $options[$name]= $value;
+              }
             }
 
             // Pass arguments
