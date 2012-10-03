@@ -338,7 +338,24 @@
      * Test running a single test
      *
      */
-    #[@test, @ignore('Not yet implemented')]
+    #[@test]
+    public function withListener() {
+      $class= ClassLoader::getDefault()->defineClass('WithListenerTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-'));
+      $this->assertEquals(
+        array(), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test running a single test
+     *
+     */
+    #[@test]
     public function withListenerOptions() {
       $class= ClassLoader::getDefault()->defineClass('WithListenerOptionsTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
@@ -348,9 +365,9 @@
         public function setVerbose() { self::$options[__FUNCTION__]= TRUE; }
       }');
 
-      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'value', '-v'));
+      $return= $this->runner->run(array('-l', $class->getName().',o=value,v', '-'));
       $this->assertEquals(
-        array('setOption' => 'value', 'setVerbose' => 'on'), 
+        array('setOption' => 'value', 'setVerbose' => TRUE), 
         $class->getField('options')->get(NULL)
       );
     }
