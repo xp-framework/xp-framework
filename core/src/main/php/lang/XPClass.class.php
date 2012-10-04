@@ -18,6 +18,7 @@
   define('DETAIL_THROWS',         3);
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
+  define('DETAIL_TARGET_ANNO',    6);
   define('DETAIL_NAME',           6);
   define('DETAIL_GENERIC',        7);
  
@@ -970,12 +971,19 @@
         $counter= 0;
         $tokens= token_get_all($bytes);
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
-          if (T_COMMENT === $tokens[$i][0] && '#' === $tokens[$i][1]{0}) {
-            $annotations= eval('return array('.preg_replace(
-              array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-              array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
-              trim($tokens[$i][1], "[]# \t\n\r").','
-            ).');');
+          if (T_COMMENT === $tokens[$i][0] && '#' === $tokens[$i][1]{0}) {  // Annotations
+            if ('[' === $tokens[$i][1]{1}) {
+              $parsed= substr($tokens[$i][1], 2);
+            } else {
+              $parsed.= substr($tokens[$i][1], 1);
+            }
+            if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+              $annotations= self::parseAnnotations(
+                trim($parsed, " \t\n\r"), 
+                $qname.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
+              );
+              $parsed= '';
+            }
             continue;
           } else if (T_DOC_COMMENT === $tokens[$i][0]) {
             $matches= NULL;

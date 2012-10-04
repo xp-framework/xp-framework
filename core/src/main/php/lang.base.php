@@ -311,7 +311,7 @@
             $unpack[$header['version']], 
             fread($current['handle'], 0x0100)
           );
-          $current['index'][$entry['id']]= array($entry['size'], $entry['offset'], $i);
+          $current['index'][rtrim($entry['id'], "\0")]= array($entry['size'], $entry['offset'], $i);
         }
       }
 
@@ -461,7 +461,14 @@
   }
   // }}}
 
-  // {{{ void finally (void)
+  // {{{ void ensure ($t)
+  //     Replacement for finally() which clashes with PHP 5.5.0's finally
+  function ensure(&$t) {
+    if (!isset($t)) $t= NULL;
+  }
+  // }}}
+
+  // {{{ deprecated void finally (void)
   //     Syntactic sugar. Intentionally empty
   function finally() {
   }
