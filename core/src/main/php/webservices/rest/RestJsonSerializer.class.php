@@ -20,7 +20,7 @@
      * @return  string
      */
     public function contentType() {
-      return 'application/json; charset=utf-u8';
+      return 'application/json; charset=utf-8';
     }
     
     /**

@@ -905,6 +905,61 @@
     }
 
     /**
+     * Test one trailing whitespace
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/189
+     */
+    #[@test]
+    public function oneTrailingWhitespace() {
+      $this->assertEquals(array('Hello' => 'World!'), $this->decode('{ "Hello": "World!" } '));
+    }
+
+    /**
+     * Test two trailing whitespaces
+     *
+     */
+    #[@test]
+    public function twoTrailingWhitespaces() {
+      $this->assertEquals(array('Hello' => 'World!'), $this->decode('{ "Hello": "World!" }  '));
+    }
+
+    /**
+     * Test trailing whitespace and newlines
+     *
+     */
+    #[@test]
+    public function trailingWhitespacesAndNewLines() {
+      $this->assertEquals(array('Hello' => 'World!'), $this->decode("{ \"Hello\": \"World!\" } \r\n "));
+    }
+
+    /**
+     * Test one leading whitespace
+     *
+     */
+    #[@test]
+    public function oneLeadingWhitespace() {
+      $this->assertEquals(array('Hello' => 'World!'), $this->decode(' { "Hello": "World!" }'));
+    }
+
+    /**
+     * Test one leading whitespace
+     *
+     */
+    #[@test]
+    public function twoLeadingWhitespaces() {
+      $this->assertEquals(array('Hello' => 'World!'), $this->decode('  { "Hello": "World!" }'));
+    }
+
+    /**
+     * Test leading whitespace and newlines
+     *
+     */
+    #[@test]
+    public function leadingWhitespacesAndNewLines() {
+      $this->assertEquals(array('Hello' => 'World!'), $this->decode(" \r\n { \"Hello\": \"World!\" }"));
+    }
+
+    /**
      * Test JSON spread out over multiple lines
      *
      */

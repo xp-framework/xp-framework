@@ -51,27 +51,23 @@
      * @return  bool
      */
     public function advance() {
-      $hasMore= $this->tokenizer->hasMoreTokens();
+      while ($hasMore= $this->tokenizer->hasMoreTokens()) {
+        $token= $this->tokenizer->nextToken($this->delimiters);
+        $this->value= $token;
 
-      $token= $this->tokenizer->nextToken($this->delimiters);
-      $this->value= $token;
-      $loop= TRUE;
-      while ($loop) {
-        if (strpos(" \n\r\t", $this->value ) !== FALSE && $this->string == FALSE) {
-          // If it is only a seperation character, continue
-          $token= $this->tokenizer->nextToken($this->delimiters);
-          $this->value= $token;
-          // Move position
-          if ($this->value == "\n") {
-            $this->position[0]++;
-            $this->position[1]= 1;
-          } else {
-            $this->position[1]++;
-          }
+        // Move position
+        $l= substr_count($this->value, "\n");
+        if ($l > 0) {
+          $this->position[0]+= $l;
+          $this->position[1]= strlen($this->value) - strrpos($this->value, "\n");
         } else {
-          // else, stop after this run.
-          $loop= FALSE;
+          $this->position[1]+= strlen($this->value);
+        }
 
+        // If it is only a seperation character, continue
+        if (strpos(" \n\r\t", $this->value) !== FALSE && $this->string == FALSE) {
+          continue;
+        } else {
           if (strlen($this->value) == 1 && strpos($this->delimiters, $this->value)!== FALSE) {
             if ($this->value == '"') {
               // Start or end a string
@@ -159,10 +155,9 @@
             $this->token= JsonParser::T_STRING;
           }
         }
+        break;
       }
 
-      // Move postition
-      $this->position[1]+= strlen($this->value);
       // Return if next token exists.
       return $hasMore;
     }

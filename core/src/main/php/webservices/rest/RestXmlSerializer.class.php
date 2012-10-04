@@ -30,7 +30,7 @@
      * @return  string
      */
     public function contentType() {
-      return 'text/xml; charset=utf-u8';
+      return 'text/xml; charset=utf-8';
     }
     
     /**
