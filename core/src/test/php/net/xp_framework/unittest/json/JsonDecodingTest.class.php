@@ -905,6 +905,16 @@
     }
 
     /**
+     * Test trailing whitespace
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/189
+     */
+    #[@test]
+    public function trailingWhitespace() {
+      $this->assertEquals(array('Hello' => 'World!'), $this->decode('{ "Hello": "World!" } '));
+    }
+
+    /**
      * Test JSON spread out over multiple lines
      *
      */
