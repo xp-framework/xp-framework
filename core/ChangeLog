@@ -14,6 +14,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed JsonDecoder to ignore trailing whitespace - see issue #189.
+  (friebe)
 - Added forward-compatible version of handling unpack("a...") data. 
   With PHP 5.5.0, this has been changed to include trailing \0s, see
   https://bugs.php.net/bug.php?id=61038
