@@ -12,20 +12,22 @@ Heads up!
   http://news.planet-xp.net/article/481/2012/09/30/
   (friebe)
 
-Features
-~~~~~~~~
-- Added DETAIL_TARGET_ANNO for forward compatibility with parameter
-  annotations implementation to core and compiler.
-  (friebe)
-
 Bugfixes
 ~~~~~~~~
+- Fixed JsonDecoder to ignore trailing whitespace - see issue #189.
+  (friebe)
 - Added forward-compatible version of handling unpack("a...") data. 
   With PHP 5.5.0, this has been changed to include trailing \0s, see
   https://bugs.php.net/bug.php?id=61038
   (friebe)
 - Replaced preg_replace() calls with /e modifier where applicable, it
   is deprecated in PHP 5.5.0
+  (friebe)
+
+Features
+~~~~~~~~
+- Added DETAIL_TARGET_ANNO for forward compatibility with parameter
+  annotations implementation to core and compiler.
   (friebe)
 
 
