@@ -29,19 +29,10 @@
       if (is_array($this->_parsed)) return;   // Short-cuircuit: We've already parsed it
       
       $this->_parsed= array();
-      if (!$this->annotations) return;
-
-      $expr= preg_replace(
-        array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-        array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
-        trim($this->annotations, "[]# \t\n\r").','
-      );
-      if (!is_array($hash= eval('return array('.$expr.');'))) {
-        throw new FormatException('Cannot parse '.$this->annotations.' ('.$expr.')');
-      }
-      
-      foreach ($hash as $name => $value) {
-        $this->_parsed[$name]= new AnnotationDoc($name, $value);
+      if ($this->annotations) {
+        foreach (XPClass::parseAnnotations($this->annotations, $this->getClassName()) as $name => $value) {
+          $this->_parsed[$name]= new AnnotationDoc($name, $value);
+        }
       }
     }
      
