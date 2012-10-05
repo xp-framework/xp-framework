@@ -179,6 +179,12 @@
       $this->stream->write(self::MSG_QUERY, $sql);
       $token= $this->read();
 
+      // Skip over DONEPROC & DONEINPROC results
+      while ("\xFF" === $token || "\xFE" === $token) {
+        $m= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
+        $token= $this->stream->getToken();
+      }
+
       if ("\x00" === $token) {          // ??? 04 01 00 0A 00 00 00 00 00 00
         $token= $this->read();
       }
