@@ -466,6 +466,11 @@
           $this->handleError();
         } else if ("\xE5" === $token) {
           $this->handleExtendedError();
+        } else if ("\xA9" === $token) { // TDS_COLUMNORDER
+          Console::writeLine("xA9");
+          $this->stream->read($this->stream->getShort());
+          $token= $this->stream->getToken();
+          $continue= TRUE;
         } else if ("\xD1" !== $token) {
           // Console::$err->writeLinef('END TOKEN %02x', ord($token));    // 2.2.5.7 Data Buffer Stream Tokens
           $this->done= TRUE;
