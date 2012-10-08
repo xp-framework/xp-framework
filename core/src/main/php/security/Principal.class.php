@@ -104,5 +104,14 @@
     public function getEmailAddress() {
       return $this->dn['EMAIL'];
     }
+
+    /**
+     * Retrieve string representation.
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getName();
+    }
   }
 ?>
