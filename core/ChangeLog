@@ -14,6 +14,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Added support for double data type in REST serializer - see pull #192
+  (weiher)
 - Fixed JsonDecoder to ignore trailing whitespace - see issue #189.
   (friebe)
 - Added forward-compatible version of handling unpack("a...") data. 
@@ -26,6 +28,10 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added failover Sybase/MSSQL support via userland driver by merging 
+  the incubator/tds branch in pull request #190. 
+  http://news.planet-xp.net/article/483/2012/10/11/
+  (friebe, kiesel) 
 - Added DETAIL_TARGET_ANNO for forward compatibility with parameter
   annotations implementation to core and compiler.
   (friebe)

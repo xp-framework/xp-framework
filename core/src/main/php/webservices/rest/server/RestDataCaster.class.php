@@ -52,6 +52,7 @@
         case 'integer':
         case 'string':
         case 'boolean':
+        case 'double':
           return $data;
         
         case 'array':
