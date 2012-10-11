@@ -23,6 +23,7 @@
       $arrayTwoHash= NULL,
       $arrayNullField= NULL,
       $arrayOfArrays= NULL,
+      $arrayWithDoubles= NULL,
       $stdClassThree= NULL,
       $objPrivateFields= NULL,
       $objThreeFields= NULL,
@@ -47,6 +48,10 @@
         'one' => array('1'),
         'two' => array('1', '2'),
         'three' => array('1', '2', '3')
+      );
+
+      self::$arrayWithDoubles= array(
+        'one' => array(0.1, 0.2, 0.3)
       );
       
       self::$stdClassThree= new stdClass();
@@ -152,6 +157,19 @@
         self::$arrayThreeHash, self::$arrayThreeHash
       ), $this->sut->simple(
         array(self::$objThreeFields, self::$objThreeFields)
+      ));
+    }
+
+    /**
+     * Test simplify array type with double
+     *
+     */
+    #[@test]
+    public function simplifyArrayWithDouble() {
+      $this->assertEquals(array(
+        array('one' => array(0.1, 0.2, 0.3))
+      ), $this->sut->simple(
+        array(self::$arrayWithDoubles)
       ));
     }
     
