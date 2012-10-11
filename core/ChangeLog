@@ -26,6 +26,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added failover Sybase/MSSQL support via userland driver by merging 
+  the incubator/tds branch in pull request #190. 
+  (friebe, kiesel) 
 - Added DETAIL_TARGET_ANNO for forward compatibility with parameter
   annotations implementation to core and compiler.
   (friebe)
