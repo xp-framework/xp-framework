@@ -14,6 +14,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Added support for double data type in REST serializer - see pull #192
+  (weiher)
 - Fixed JsonDecoder to ignore trailing whitespace - see issue #189.
   (friebe)
 - Added forward-compatible version of handling unpack("a...") data. 
