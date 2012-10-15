@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.Socket');
+  uses('peer.CryptoSocket');
 
   /**
    * TLS socket
@@ -12,7 +12,7 @@
    * @ext      openssl
    * @purpose  Specialized socket
    */
-  class TLSSocket extends Socket {
+  class TLSSocket extends CryptoSocket {
 
     /**
      * Constructor

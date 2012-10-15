@@ -27,8 +27,11 @@
       
     public
       $_sock    = NULL,
-      $_prefix  = '',
+      $_prefix  = 'tcp://',
       $_timeout = 60;
+
+    private
+      $context  = NULL;
     
     /**
      * Constructor
@@ -45,8 +48,32 @@
       $this->host= $host;
       $this->port= $port;
       $this->_sock= $socket;
+      $this->context= stream_context_create();
+    }
+
+    /**
+     * Set option on socket context
+     *
+     * @param   string wrapper 'ssl', 'tcp', 'ftp'
+     * @param   string option
+     * @param   var value
+     */
+    protected function setSocketOption($wrapper, $option, $value) {
+      stream_context_set_option($this->context, $wrapper, $option, $value);
     }
     
+    /**
+     * Retrieve option on socket context
+     *
+     * @param   string wrapper
+     * @param   string option
+     * @param   var
+     */
+    protected function getSocketOption($wrapper, $option) {
+      $options= stream_context_get_options($this->context);
+      return @$options[$wrapper][$option];
+    }
+
     /**
      * Get last error. A very inaccurate way of going about error messages since
      * any PHP error/warning is returned - but since there's no function like
@@ -89,12 +116,13 @@
     public function connect($timeout= 2.0) {
       if ($this->isConnected()) return TRUE;
       
-      if (!$this->_sock= fsockopen(
-        $this->_prefix.(string)$this->host,
-        $this->port,
+      if (!$this->_sock= stream_socket_client(
+        $this->_prefix.(string)$this->host.':'.$this->port,
         $errno,
         $errstr,
-        $timeout
+        $timeout,
+        STREAM_CLIENT_CONNECT,
+        $this->context
       )) {
         $e= new ConnectException(sprintf(
           'Failed connecting to %s:%s within %s seconds [%d: %s]',
@@ -108,7 +136,7 @@
         throw $e;
       }
       
-      socket_set_timeout($this->_sock, $this->_timeout);
+      stream_set_timeout($this->_sock, $this->_timeout);
       return TRUE;
     }
 
@@ -136,7 +164,7 @@
       
       // Apply changes to already opened connection
       if (is_resource($this->_sock)) {
-        socket_set_timeout($this->_sock, $this->_timeout);
+        stream_set_timeout($this->_sock, $this->_timeout);
       }
     }
 
@@ -158,7 +186,7 @@
      * @see     php://socket_set_blocking
      */
     public function setBlocking($blockMode) {
-      if (FALSE === socket_set_blocking($this->_sock, $blockMode)) {
+      if (FALSE === stream_set_blocking($this->_sock, $blockMode)) {
         $e= new SocketException('Set blocking call failed: '.$this->getLastError());
         xp::gc(__FILE__);
         throw $e;

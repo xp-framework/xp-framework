@@ -69,12 +69,20 @@
     /**
      * Constructor
      *
-     * @param   array _info
-     * @param   resource _res
+     * @param   array _info information from openssl_x509_parse() or NULL to trigger auto-parsing
+     * @param   resource _res resource handle of x.509 certificate
      */
     public function __construct($_info, $_res) {
       $this->_info= $_info;
       $this->_res= $_res;
+
+      if (NULL === $_info) {
+        if (!is_array($this->_info= openssl_x509_parse($_res, TRUE))) {
+          throw new CertificateException(
+            'Cannot parse certificate information', OpenSslUtil::getErrors()
+          );
+        }
+      }
     }
     
     /**
@@ -204,15 +212,10 @@
           'Could not read certificate', OpenSslUtil::getErrors()
         );
       }
-      if (!is_array($_info= openssl_x509_parse($_res, TRUE))) {
-        throw new CertificateException(
-          'Cannot parse certificate information', OpenSslUtil::getErrors()
-        );
-      }
-      
-      return new X509Certificate($_info, $_res);
+
+      return new X509Certificate(NULL, $_res);
     }
-    
+
     /**
      * Check whether the given private key corresponds
      * to this certificate.
@@ -240,6 +243,29 @@
      */
     public function __destruct() {
       if (is_resource($this->_res)) openssl_x509_free($this->_res);
-    }  
+    }
+
+    /**
+     * Retrieve string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      $s= $this->getClassName().'@(hash= '.$this->getHash().'; version= '.$this->getVersion().") {\n";
+      $s.= '  [     Serial ] '.$this->getSerialNumber()."\n";
+      $s.= '  [    Subject ] '.xp::stringOf($this->getSubjectDN())."\n";
+      $s.= '  [     Issuer ] '.xp::stringOf($this->getIssuerDN())."\n";
+      $s.= '  [   Purposes ] ';
+
+      foreach ($this->getKeyUsage() as $type => $u) {
+        if ($u) $p.= $type.', ';
+      }
+
+      $s.= rtrim($p, ', ')."\n";
+      $s.= '  [ Not before ] '.xp::stringOf($this->getNotBefore())."\n";
+      $s.= '  [  Not after ] '.xp::stringOf($this->getNotAfter())."\n";
+
+      return $s."}\n";
+    }
   }
 ?>
