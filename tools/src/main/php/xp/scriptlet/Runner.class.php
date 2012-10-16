@@ -9,6 +9,7 @@
   uses(
     'xp.scriptlet.WebApplication',
     'util.PropertyManager',
+    'util.PropertySourceFactory',
     'util.log.Logger',
     'rdbms.ConnectionManager',
     'scriptlet.HttpScriptlet',
@@ -257,7 +258,7 @@
       // defaulting to the same directory the web.ini resides in
       $pm= PropertyManager::getInstance();
       foreach (explode('|', $application->getConfig()) as $element) {
-        $pm->appendSource(new FilesystemPropertySource($element));
+        $pm->appendSource(PropertySourceFactory::forUri($element));
       }
       
       $l= Logger::getInstance();

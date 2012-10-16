@@ -14,6 +14,7 @@
     'io.streams.ConsoleOutputStream',
     'util.log.Logger',
     'util.PropertyManager',
+    'util.PropertySourceFactory',
     'rdbms.ConnectionManager'
   );
 
@@ -198,7 +199,7 @@
       // Separate runner options from class options
       for ($offset= 0, $i= 0; $i < $params->count; $i++) switch ($params->list[$i]) {
         case '-c':
-          $pm->appendSource(new FilesystemPropertySource($params->list[$i+ 1]));
+          $pm->appendSource(PropertySourceFactory::forUri($params->list[$i+ 1]));
           $offset+= 2; $i++;
           break;
         case '-cp':
