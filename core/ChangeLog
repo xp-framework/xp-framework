@@ -28,6 +28,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added SSL-specific options for sockets - see pull request #193 
+  (kiesel)
 - Added failover Sybase/MSSQL support via userland driver by merging 
   the incubator/tds branch in pull request #190. 
   http://news.planet-xp.net/article/483/2012/10/11/
