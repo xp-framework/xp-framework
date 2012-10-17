@@ -9,7 +9,8 @@
     'io.streams.OutputStreamWriter',
     'xml.DomXSLProcessor',
     'xml.Node',
-    'io.FileUtil'
+    'io.FileUtil',
+    'lang.Runtime'
   );
 
   /**
@@ -29,7 +30,7 @@
      *
      * @param string
      */
-    public function registerPath($path) {
+    public function setRegisterPath($path) {
       $this->paths[]= $path;
     }
 
@@ -42,12 +43,22 @@
       $this->reportFile= $reportFile;
     }
 
+    public function newInstance(OutputStreamWriter $out) {
+      return new DefaultListener($out);
+    }
+
     /**
      * Constructor
      *
      * @param io.streams.OutputStreamWriter out
      */
     public function __construct() {
+      $runtime= Runtime::getInstance(); 
+      if (!$runtime->extensionAvailable('xdebug')) {
+        throw new PrerequisitesNotMetError('code coverage not avaiable. Please install the xdebug extension.'); 
+      }
+
+      $runtime= Runtime::getInstance(); 
       $this->processor= new DomXSLProcessor();
       $this->processor->setXSLBuf($this->getClass()->getPackage()->getResource('coverage.xsl'));
 
