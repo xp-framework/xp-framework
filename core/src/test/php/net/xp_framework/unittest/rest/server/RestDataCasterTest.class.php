@@ -449,6 +449,35 @@
     }
 
     /**
+     * Test deserialization of Date objects
+     * 
+     */
+    #[@test, @expect('lang.ClassCastException')]
+    public function deserializationShouldNotAcceptArrays() {
+      $this->sut->complex(array(), XPClass::forName('util.Date'));
+    }
+
+    /**
+     * Test deserialization of Date objects
+     * 
+     */
+    #[@test, @expect('lang.ClassCastException')]
+    public function deserializationShouldNotAcceptIntegers() {
+      $this->sut->complex(1, XPClass::forName('util.Date'));
+    }
+
+    /**
+     * Test serialization and deserialization of Date objects
+     * 
+     */
+    #[@test]
+    public function serializationAndDeserializationShouldWorkForDateObjects() {
+      $date= Date::now();
+
+      $this->assertEquals($date, $this->sut->complex($this->sut->simple($date), XPClass::forName('util.Date'))); 
+    }
+
+    /**
      * Test complexify stdclass
      * 
      */
