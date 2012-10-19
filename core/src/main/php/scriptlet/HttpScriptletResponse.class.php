@@ -256,7 +256,10 @@
      *
      */
     public function sendContent() {
-      if ($this->statusCode != HttpConstants::STATUS_NO_CONTENT) {
+      if (
+        $this->statusCode != HttpConstants::STATUS_NO_CONTENT &&
+        $this->statusCode != HttpConstants::STATUS_NOT_MODIFIED
+      ) {
         echo $this->getContent();
       }
     }
