@@ -256,7 +256,9 @@
      *
      */
     public function sendContent() {
-      echo $this->getContent();
+      if ($this->statusCode != HttpConstants::STATUS_NO_CONTENT) {
+        echo $this->getContent();
+      }
     }
     
     /**

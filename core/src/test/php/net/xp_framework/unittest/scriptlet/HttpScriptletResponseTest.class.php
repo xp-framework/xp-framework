@@ -84,5 +84,24 @@
       $this->r->getOutputStream()->write('Hello');
       $this->assertEquals('Hello', $this->r->getContent());
     }
+
+    /**
+     * Does not add Content-Type header or send body, if status code is
+     * 204 No Content.
+     *
+     */
+    #[@test]
+    public function doNotAddContentAtStatus204() {
+      $this->r->getOutputStream()->write('Hello');
+      $this->r->setStatus(HttpConstants::STATUS_NO_CONTENT);
+
+      // Catch echo output
+      ob_start();
+      $this->r->sendContent();
+      $output= ob_get_contents();
+      ob_end_clean();
+
+      $this->assertEquals(0, strlen($output));
+    }
   }
 ?>
