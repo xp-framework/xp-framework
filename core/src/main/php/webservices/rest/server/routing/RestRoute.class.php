@@ -25,7 +25,7 @@
      * @param  string[] produces
      */
     public function __construct($verb, $path, $target, $accepts, $produces) {
-      $this->verb= $verb;
+      $this->verb= strtoupper($verb);
       $this->path= $path;
       $this->target= $target;
       $this->accepts= $accepts;

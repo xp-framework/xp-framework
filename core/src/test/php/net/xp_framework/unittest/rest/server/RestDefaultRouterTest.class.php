@@ -50,7 +50,7 @@
     }
 
     /**
-     * Test routesFor()
+     * Test targetsFor()
      * 
      */
     #[@test]
@@ -62,12 +62,12 @@
           'input'    => NULL,
           'output'   => 'text/json'
         )),
-        $this->fixture->routesFor('GET', '/greet/test', NULL, new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('GET', '/greet/test', NULL, new Preference('*/*'), array('text/json'))
       );
     }
 
     /**
-     * Test routesFor()
+     * Test targetsFor()
      * 
      */
     #[@test]
@@ -79,12 +79,12 @@
           'input'    => NULL,
           'output'   => 'application/vnd.example.v2+json'
         )),
-        $this->fixture->routesFor('GET', '/hello/test', NULL, new Preference('application/vnd.example.v2+json'), array('text/json'))
+        $this->fixture->targetsFor('GET', '/hello/test', NULL, new Preference('application/vnd.example.v2+json'), array('text/json'))
       );
     }
 
     /**
-     * Test routesFor()
+     * Test targetsFor()
      *
      */
     #[@test]
@@ -96,12 +96,12 @@
           'input'    => 'application/json',
           'output'   => 'text/json'
         )),
-        $this->fixture->routesFor('POST', '/greet', 'application/json', new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('POST', '/greet', 'application/json', new Preference('*/*'), array('text/json'))
       );
     }
 
     /**
-     * Test routesFor()
+     * Test targetsFor()
      *
      */
     #[@test]
@@ -121,31 +121,31 @@
             'output'   => 'text/json'
           )
         ),
-        $this->fixture->routesFor('POST', '/greet', 'application/vnd.example.v2+json', new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('POST', '/greet', 'application/vnd.example.v2+json', new Preference('*/*'), array('text/json'))
       );
     }
 
     /**
-     * Test routesFor()
+     * Test targetsFor()
      *
      */
     #[@test]
     public function no_say_route() {
       $this->assertEquals(
         array(),
-        $this->fixture->routesFor('GET', '/say', NULL, new Preference(''))
+        $this->fixture->targetsFor('GET', '/say', NULL, new Preference(''))
       );
     }
 
     /**
-     * Test routesFor()
+     * Test targetsFor()
      *
      */
     #[@test]
     public function no_slash_route() {
       $this->assertEquals(
         array(),
-        $this->fixture->routesFor('GET', '/', NULL, new Preference(''))
+        $this->fixture->targetsFor('GET', '/', NULL, new Preference(''))
       );
     }
   }

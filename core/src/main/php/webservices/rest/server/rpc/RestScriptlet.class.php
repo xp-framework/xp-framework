@@ -220,12 +220,12 @@
       $this->cat && $this->cat->info(
         $request->getMethod(),
         $request->getHeader('Content-Type', '(null)'),
-        $url,
+        $url->getURL(),
         $accept
       );
 
       // Iterate over all applicable routes
-      foreach ($this->router->routesFor(
+      foreach ($this->router->targetsFor(
         $request->getMethod(), 
         $url->getPath(), 
         $request->getHeader('Content-Type', NULL), 
