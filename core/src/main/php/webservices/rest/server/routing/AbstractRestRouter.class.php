@@ -65,7 +65,7 @@
       $path= rtrim($path, '/');
       $matching= array();
       foreach ($this->routes[$verb] as $route) {
-        if (!preg_match($route->getPath(), $path, $segments)) continue;
+        if (!preg_match($route->getPattern(), $path, $segments)) continue;
 
         // Check input type if specified by client
         if (NULL !== $type) {

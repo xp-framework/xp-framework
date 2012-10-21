@@ -51,6 +51,18 @@
     }
 
     /**
+     * Get path pattern
+     *
+     * @return string
+     */
+    public function getPattern() {
+      static $search= '/\{([\w]*)\}/';
+      static $replace= '(?P<$1>[%\w:\+\-\.]*)';
+
+      return '#^'.preg_replace($search, $replace, $this->path).'$#';
+    }
+
+    /**
      * Get target
      *
      * @return lang.reflect.Method

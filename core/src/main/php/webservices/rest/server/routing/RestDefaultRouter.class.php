@@ -33,9 +33,6 @@
      * @param  string base The base URI
      */
     public function configure($setup, $base= '') {
-      static $search= '/\{([\w]*)\}/';
-      static $replace= '(?P<$1>[%\w:\+\-\.]*)';
-
       $package= Package::forName($setup);
       foreach ($package->getClasses() as $handler) {
         if (!$handler->hasAnnotation('webservice')) continue;
@@ -50,7 +47,7 @@
           $webmethod= $method->getAnnotation('webmethod');
           $this->addRoute(new RestRoute(
             $webmethod['verb'],
-            '#^'.$base.$hbase.preg_replace($search, $replace, rtrim($webmethod['path'], '/')).'$#',
+            $base.$hbase.rtrim($webmethod['path'], '/'),
             $method,
             isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
             isset($webmethod['returns']) ? (array)$webmethod['returns'] : NULL

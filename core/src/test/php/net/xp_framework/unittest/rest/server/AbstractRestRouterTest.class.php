@@ -101,8 +101,8 @@
      */
     #[@test]
     public function get_route_returned() {
-      $route1= new RestRoute('GET', '#^/resource/(?P<id>[%\w:\+\-\.]*)$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
-      $route2= new RestRoute('POST', '#^/resource$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $route1= new RestRoute('GET', '/resource/{id}', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $route2= new RestRoute('POST', '/resource', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
       $this->fixture->addRoute($route1);
       $this->fixture->addRoute($route2);
       $this->assertEquals(
@@ -122,8 +122,8 @@
      */
     #[@test]
     public function post_route_returned() {
-      $route1= new RestRoute('GET', '#^/resource/(?P<id>[%\w:\+\-\.]*)$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
-      $route2= new RestRoute('POST', '#^/resource$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $route1= new RestRoute('GET', '/resource/{id}', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $route2= new RestRoute('POST', '/resource', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
       $this->fixture->addRoute($route1);
       $this->fixture->addRoute($route2);
       $this->assertEquals(
