@@ -35,7 +35,7 @@
      */
     public function setUp() {
       $this->fixture= new RestDefaultRouter();
-      $this->fixture->configure(self::$package);
+      $this->fixture->configure(self::$package->getName());
     }
 
     /**

@@ -48,7 +48,7 @@
       }
       
       $this->base= rtrim($base, '/');
-      $this->router->configure(Package::forName($package), $this->base);
+      $this->router->configure($package, $this->base);
       $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
         public function deserialize($in, $target) {
           throw new IllegalStateException("Unused");

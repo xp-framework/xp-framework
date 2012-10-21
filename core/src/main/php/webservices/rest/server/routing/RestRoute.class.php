@@ -8,15 +8,61 @@
    * REST route interface
    *
    */
-  interface RestRoute  {
+  class RestRoute extends Object {
+    protected $path= '';
+    protected $target= NULL;
+    protected $accepts= array();
+    protected $returns= array();
     
     /**
-     * Handle route 
+     * Constructor
      * 
-     * @param var[] args The arguments
-     * @return webservices.rest.server.RestRoute[]
+     * @param  string path
+     * @param  lang.reflect.Method target
+     * @param  string[] accepts
+     * @param  string returns
      */
-    public function process($args= array());
-    
+    public function __construct($path, $target, $accepts, $returns) {
+      $this->path= $path;
+      $this->target= $target;
+      $this->accepts= $accepts;
+      $this->returns= $returns;
+    }
+
+    /**
+     * Get path
+     *
+     * @return string
+     */
+    public function getPath() {
+      return $this->path;
+    }
+
+    /**
+     * Get target
+     *
+     * @return lang.reflect.Method
+     */
+    public function getTarget() {
+      return $this->target;
+    }
+
+    /**
+     * Get what is accepted
+     *
+     * @return string[]
+     */
+    public function getAccepts() {
+      return $this->accepts;
+    }
+
+    /**
+     * Get what is returned
+     *
+     * @return string
+     */
+    public function getReturns() {
+      return $this->returns;
+    }
   }
 ?>
