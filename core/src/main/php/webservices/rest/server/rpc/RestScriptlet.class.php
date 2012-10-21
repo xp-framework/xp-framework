@@ -231,11 +231,11 @@
         // Check input type if specified by client
         if (NULL !== $type) {
           $preference= new Preference($route['input'] ? $route['input'] : '*/*');
-          $route['input']= $preference->match(array($type));
+          if (NULL === ($route['input']= $preference->match(array($type)))) continue;
         }
 
         // Check output type
-        $route['output']= $accept->match($route['output'] ? array($route['output']) : $supported);
+        if (NULL === ($route['output']= $accept->match($route['output'] ? array($route['output']) : $supported))) continue;
 
         try {
           $this->handle($route, $request, $response);
