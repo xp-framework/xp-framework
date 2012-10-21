@@ -51,7 +51,7 @@
           'target'   => $route->getTarget(), 
           'segments' => $segments,
           'input'    => $route->getAccepts(),
-          'output'   => $route->getReturns()
+          'output'   => $route->getProduces()
         );
       }
       return $matching;
