@@ -146,5 +146,35 @@
         $this->fixture->targetsFor('POST', '/resource', NULL, new Preference('*/*'), array('text/json'))
       );
     }
+
+    /**
+     * Test targetsFor()
+     * 
+     */
+    #[@test]
+    public function route_with_custom_mimetype_preferred_according_to_accept() {
+      $route1= new RestRoute('GET', '/resource/{id}', $this->target, NULL, NULL);
+      $route2= new RestRoute('GET', '/resource/{id}', $this->target, NULL, array('application/vnd.example.v2+json'));
+      $this->fixture->addRoute($route1); 
+      $this->fixture->addRoute($route2);
+      $this->assertEquals(
+        array(
+          array(
+            'target'   => $route2->getTarget(),
+            'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
+            'input'    => NULL,
+            'output'   => 'application/vnd.example.v2+json'
+          ),
+          array(
+            'target'   => $route1->getTarget(),
+            'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
+            'input'    => NULL,
+            'output'   => 'text/json'
+          )
+        ), 
+        $this->fixture->targetsFor('GET', '/resource/1', NULL, new Preference('application/vnd.example.v2+json, text/json'), array('text/json'))
+      );
+    }
+
   }
 ?>

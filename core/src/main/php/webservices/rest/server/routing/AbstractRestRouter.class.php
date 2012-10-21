@@ -63,32 +63,49 @@
 
       // Figure out matching routes
       $path= rtrim($path, '/');
-      $matching= array();
+      $matching= $order= array();
       foreach ($this->routes[$verb] as $route) {
         if (!preg_match($route->getPattern(), $path, $segments)) continue;
 
         // Check input type if specified by client
         if (NULL !== $type) {
-          $before= $route->getAccepts() !== NULL;
-          if (NULL === ($input= create(new Preference($route->getAccepts('*/*')))->match(array($type)))) continue;
+          $pref= new Preference($route->getAccepts('*/*'));
+          if (NULL === ($input= $pref->match(array($type)))) continue;
+          $q= $pref->qualityOf($input, 6);
         } else {
-          $before= FALSE;
           $input= NULL;
+          $q= 0.0;
         }
 
         // Check output type
         if (NULL === ($output= $accept->match($route->getProduces($supported)))) continue;
 
         // Found possible candidate
-        $candidate= array(
+        $matching[]= array(
           'target'   => $route->getTarget(), 
           'segments' => $segments,
           'input'    => $input,
           'output'   => $output
         );
-        $before ? array_unshift($matching, $candidate) : $matching[]= $candidate;
+        $order[sizeof($matching)- 1]= $q + $accept->qualityOf($output, 6);
       }
-      return $matching;
+
+      // Sort by quality
+      arsort($order, SORT_NUMERIC);
+      $return= array();
+      foreach ($order as $offset => $q) {
+        $return[]= $matching[$offset];
+      }
+      return $return;
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      return $this->getClassName().'@'.xp::stringOf($this->routes);
     }
   }
 ?>

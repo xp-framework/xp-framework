@@ -97,12 +97,13 @@
      */
     public function toString() {
       return sprintf(
-        '%s(%s %s%s%s)',
+        '%s(%s %s%s -> %s%s)',
         $this->getClassName(),
         $this->verb,
         $this->path,
         NULL === $this->accepts ? '' : ' @ '.implode(', ', $this->accepts),
-        NULL === $this->produces ? '' : ' -> '.implode(', ', $this->produces)
+        $this->target->toString(),
+        NULL === $this->produces ? '' : ' @ '.implode(', ', $this->produces)
       );
     }
   }

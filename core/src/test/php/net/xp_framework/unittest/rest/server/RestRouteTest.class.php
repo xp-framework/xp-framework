@@ -152,7 +152,7 @@
     public function string_representation() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, NULL);
       $this->assertEquals(
-        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub})', 
+        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget())', 
         $r->toString()
       );
     }
@@ -165,7 +165,7 @@
     public function string_representation_with_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, array('text/json'));
       $this->assertEquals(
-        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} -> text/json)', 
+        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget() @ text/json)', 
         $r->toString()
       );
     }
@@ -178,7 +178,7 @@
     public function string_representation_with_accepts_and_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, array('text/xml'), array('text/json'));
       $this->assertEquals(
-        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} @ text/xml -> text/json)', 
+        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} @ text/xml -> public void fixtureTarget() @ text/json)', 
         $r->toString()
       );
     }

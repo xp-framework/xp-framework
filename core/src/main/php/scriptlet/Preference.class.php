@@ -89,6 +89,25 @@
     }
 
     /**
+     * Returns quality of a given type
+     *
+     * @param  string type
+     * @param  int precision 
+     * @return double
+     */
+    public function qualityOf($type, $precision= 3) {
+      if (isset($this->list[$type])) {
+        $q= $this->list[$type];
+      } else {
+        $q= 0.0;
+        foreach ($this->list as $preference => $q) {
+          if (preg_match('#('.strtr(preg_quote($preference, '#'), array('\*' => '[^ ]+')).')#', $type, $matches)) break;
+        }
+      }
+      return round($q, $precision);
+    }
+
+    /**
      * Returns whether another instance is equal to this
      *
      * @param  var cmp

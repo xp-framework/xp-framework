@@ -364,5 +364,53 @@
         create(new Preference('text/xml;q=1.0, text/html;q=0.8'))->toString()
       );
     }
+
+    /**
+     * Test qualityOf()
+     *
+     */
+    #[@test]
+    public function quality_of_xml() {
+      $this->assertEquals(
+        1.0,
+        create(new Preference('text/xml;q=1.0, text/html;q=0.8'))->qualityOf('text/xml')
+      );
+    }
+
+    /**
+     * Test qualityOf()
+     *
+     */
+    #[@test]
+    public function quality_of_html() {
+      $this->assertEquals(
+        0.8,
+        create(new Preference('text/xml;q=1.0, text/html;q=0.8'))->qualityOf('text/html')
+      );
+    }
+
+    /**
+     * Test qualityOf()
+     *
+     */
+    #[@test]
+    public function quality_of_plain() {
+      $this->assertEquals(
+        1.0,
+        create(new Preference('text/xml, text/plain'))->qualityOf('text/plain')
+      );
+    }
+
+    /**
+     * Test qualityOf()
+     *
+     */
+    #[@test]
+    public function quality_of_plain_with_asterisk() {
+      $this->assertEquals(
+        0.99999,
+        create(new Preference('text/*'))->qualityOf('text/plain', 6)
+      );
+    }
   }
 ?>
