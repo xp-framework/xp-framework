@@ -213,17 +213,30 @@
      * @param  scriptlet.HttpScriptletResponse response The response
      */
     public function doProcess($request, $response) {
+      static $supported= array('application/json', 'text/json', 'text/xml', 'application/xml');
+
       $url= $request->getURL()->getURL();
-      $preference= new Preference($request->getHeader('Accept'));
+      $accept= new Preference($request->getHeader('Accept'));
       $this->cat && $this->cat->info(
         $request->getMethod(),
         $request->getHeader('Content-Type', '(null)'),
         $url,
-        $preference
+        $accept
       );
 
       // Iterate over all applicable routes
-      foreach ($this->router->routesFor($request, $preference) as $route) {
+      $type= $request->getHeader('Content-Type');
+      foreach ($this->router->routesFor($request) as $route) {
+
+        // Check input type if specified by client
+        if (NULL !== $type) {
+          $preference= new Preference($route['input'] ? $route['input'] : '*/*');
+          $route['input']= $preference->match(array($type));
+        }
+
+        // Check output type
+        $route['output']= $accept->match($route['output'] ? array($route['output']) : $supported);
+
         try {
           $this->handle($route, $request, $response);
           return;
@@ -235,7 +248,7 @@
 
       $this->writeError(
         $response,
-        $this->formatFor($preference->match(array('application/json', 'text/json', 'text/xml', 'application/xml'))), 
+        $this->formatFor($accept->match($supported)), 
         new HttpScriptletException('Could not route request to '.$url, HttpConstants::STATUS_NOT_FOUND)
       );
     }
