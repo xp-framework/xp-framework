@@ -132,13 +132,13 @@
      */
     #[@test]
     public function post_route_returned() {
-      $route1= new RestRoute('GET', '/resource/{id}', $this->target, NULL, NULL);
+      $route1= new RestRoute('GET', '/resource/{id}', NULL, NULL, NULL);
       $route2= new RestRoute('POST', '/resource', $this->target, NULL, NULL);
       $this->fixture->addRoute($route1);
       $this->fixture->addRoute($route2);
       $this->assertEquals(
         array(array(
-          'target'   => $route2->getTarget(),
+          'target'   => $this->target,
           'segments' => array(0 => '/resource'),
           'input'    => NULL,
           'output'   => 'text/json'
@@ -153,26 +153,55 @@
      */
     #[@test]
     public function route_with_custom_mimetype_preferred_according_to_accept() {
-      $route1= new RestRoute('GET', '/resource/{id}', $this->target, NULL, NULL);
+      $route1= new RestRoute('GET', '/resource/{id}', NULL, NULL, NULL);
       $route2= new RestRoute('GET', '/resource/{id}', $this->target, NULL, array('application/vnd.example.v2+json'));
       $this->fixture->addRoute($route1); 
       $this->fixture->addRoute($route2);
       $this->assertEquals(
         array(
           array(
-            'target'   => $route2->getTarget(),
+            'target'   => $this->target,
             'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
             'input'    => NULL,
             'output'   => 'application/vnd.example.v2+json'
           ),
           array(
-            'target'   => $route1->getTarget(),
+            'target'   => NULL,
             'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
             'input'    => NULL,
             'output'   => 'text/json'
           )
         ), 
         $this->fixture->targetsFor('GET', '/resource/1', NULL, new Preference('application/vnd.example.v2+json, text/json'), array('text/json'))
+      );
+    }
+
+    /**
+     * Test targetsFor()
+     * 
+     */
+    #[@test]
+    public function route_with_custom_mimetype_preferred_according_to_type() {
+      $route1= new RestRoute('POST', '/resource', NULL, NULL, NULL);
+      $route2= new RestRoute('POST', '/resource', $this->target, array('application/vnd.example.v2+json'), NULL);
+      $this->fixture->addRoute($route1); 
+      $this->fixture->addRoute($route2);
+      $this->assertEquals(
+        array(
+          array(
+            'target'   => $this->target,
+            'segments' => array(0 => '/resource'),
+            'input'    => 'application/vnd.example.v2+json',
+            'output'   => 'text/json'
+          ),
+          array(
+            'target'   => NULL,
+            'segments' => array(0 => '/resource'),
+            'input'    => 'application/vnd.example.v2+json',
+            'output'   => 'text/json'
+          )
+        ), 
+        $this->fixture->targetsFor('POST', '/resource', 'application/vnd.example.v2+json', new Preference('*/*'), array('text/json'))
       );
     }
 
