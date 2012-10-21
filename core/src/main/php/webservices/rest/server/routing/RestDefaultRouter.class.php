@@ -54,7 +54,7 @@
             $pattern,
             $method,
             isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
-            isset($webmethod['returns']) ? $webmethod['returns'] : NULL
+            isset($webmethod['returns']) ? (array)$webmethod['returns'] : NULL
           ));
         }
       }

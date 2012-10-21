@@ -22,7 +22,7 @@
      * @param  string path
      * @param  lang.reflect.Method target
      * @param  string[] accepts
-     * @param  string produces
+     * @param  string[] produces
      */
     public function __construct($verb, $path, $target, $accepts, $produces) {
       $this->verb= $verb;
@@ -64,17 +64,17 @@
      *
      * @return string[]
      */
-    public function getAccepts() {
-      return $this->accepts;
+    public function getAccepts($default= NULL) {
+      return NULL === $this->accepts ? $default : $this->accepts;
     }
 
     /**
      * Get what is produced
      *
-     * @return string
+     * @return string[]
      */
-    public function getProduces() {
-      return $this->produces;
+    public function getProduces($default= NULL) {
+      return NULL === $this->produces ? $default : $this->produces;
     }
   }
 ?>

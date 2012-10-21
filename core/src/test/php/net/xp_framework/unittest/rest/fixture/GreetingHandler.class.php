@@ -56,7 +56,7 @@
      * @param   net.xp_framework.unittest.rest.fixture.Greeting
      * @return  bool
      */
-    #[@webmethod(verb= 'POST', path= '/hello', accepts= 'application/vnd.example.v2+json')]
+    #[@webmethod(verb= 'POST', path= '/greet', accepts= 'application/vnd.example.v2+json')]
     public function hello_posted(Greeting $payload) {
       return $this->greet($payload->name, $payload->word);
     }

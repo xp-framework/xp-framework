@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.server.routing.RestRoute');
+  uses('webservices.rest.server.routing.RestRoute', 'scriptlet.Preference');
 
   /**
    * Abstract base class
@@ -51,24 +51,43 @@
     /**
      * Return routes for given request and response
      * 
-     * @param   scriptlet.http.HttpScriptletRequest request The request
+     * @param   string verb
+     * @param   string path
+     * @param   string type The Content-Type, or NULL
+     * @param   scriptlet.Preference accept the "Accept" header's contents
+     * @param   string[] supported
      * @return  [:var]
      */
-    public function routesFor($request) {
-      $verb= $request->getMethod();
-      if (!isset($this->routes[$verb])) return FALSE;
+    public function routesFor($verb, $path, $type, Preference $accept, array $supported= array()) {
+      if (!isset($this->routes[$verb])) return FALSE;   // Short-circuit
 
       // Figure out matching routes
-      $path= rtrim($request->getURL()->getPath(), '/');
+      $path= rtrim($path, '/');
       $matching= array();
       foreach ($this->routes[$verb] as $route) {
         if (!preg_match($route->getPath(), $path, $segments)) continue;
-        $matching[]= array(
+
+        // Check input type if specified by client
+        $before= FALSE;
+        if (NULL !== $type) {
+          $before= $route->getAccepts() !== NULL;
+          $preference= new Preference($route->getAccepts('*/*'));
+          if (NULL === ($input= $preference->match(array($type)))) continue;
+        } else {
+          $input= NULL;
+        }
+
+        // Check output type
+        if (NULL === ($output= $accept->match($route->getProduces($supported)))) continue;
+
+        // Found possible candidate
+        $candidate= array(
           'target'   => $route->getTarget(), 
           'segments' => $segments,
-          'input'    => $route->getAccepts(),
-          'output'   => $route->getProduces()
+          'input'    => $input,
+          'output'   => $output
         );
+        $before ? array_unshift($matching, $candidate) : $matching[]= $candidate;
       }
       return $matching;
     }

@@ -216,7 +216,7 @@
       static $supported= array('application/json', 'text/json', 'text/xml', 'application/xml');
 
       $url= $request->getURL()->getURL();
-      $accept= new Preference($request->getHeader('Accept'));
+      $accept= new Preference($request->getHeader('Accept', '*/*'));
       $this->cat && $this->cat->info(
         $request->getMethod(),
         $request->getHeader('Content-Type', '(null)'),
@@ -225,18 +225,13 @@
       );
 
       // Iterate over all applicable routes
-      $type= $request->getHeader('Content-Type');
-      foreach ($this->router->routesFor($request) as $route) {
-
-        // Check input type if specified by client
-        if (NULL !== $type) {
-          $preference= new Preference($route['input'] ? $route['input'] : '*/*');
-          if (NULL === ($route['input']= $preference->match(array($type)))) continue;
-        }
-
-        // Check output type
-        if (NULL === ($route['output']= $accept->match($route['output'] ? array($route['output']) : $supported))) continue;
-
+      foreach ($this->router->routesFor(
+        $request->getMethod(), 
+        $request->getURL()->getPath(), 
+        $request->getHeader('Content-Type', NULL), 
+        $accept,
+        $supported
+      ) as $route) {
         try {
           $this->handle($route, $request, $response);
           return;

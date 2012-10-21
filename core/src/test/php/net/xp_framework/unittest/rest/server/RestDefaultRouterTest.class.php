@@ -55,16 +55,31 @@
      */
     #[@test]
     public function greet_default() {
-      $request= new HttpScriptletRequest();
-      $request->setURL(new HttpScriptletURL('http://localhost/greet/test'));
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
           'segments' => array(0 => '/greet/test', 'name' => 'test', 1 => 'test'),
           'input'    => NULL,
-          'output'   => NULL
+          'output'   => 'text/json'
         )),
-        $this->fixture->routesFor($request)
+        $this->fixture->routesFor('GET', '/greet/test', NULL, new Preference('*/*'), array('text/json'))
+      );
+    }
+
+    /**
+     * Test routesFor()
+     * 
+     */
+    #[@test]
+    public function greet_custom() {
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('GreetingHandler', 'hello'),
+          'segments' => array(0 => '/hello/test', 'name' => 'test', 1 => 'test'),
+          'input'    => NULL,
+          'output'   => 'application/vnd.example.v2+json'
+        )),
+        $this->fixture->routesFor('GET', '/hello/test', NULL, new Preference('application/vnd.example.v2+json'), array('text/json'))
       );
     }
 
@@ -74,19 +89,39 @@
      */
     #[@test]
     public function greet_post() {
-      $request= new HttpScriptletRequest();
-      $request->setURL(new HttpScriptletURL('http://localhost/greet'));
-      $request->method= 'POST';
-      $request->addHeader('Content-Type', 'application/json');
-      $request->setData('"test"');
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
           'segments' => array(0 => '/greet'),
-          'input'    => NULL,
-          'output'   => NULL
+          'input'    => 'application/json',
+          'output'   => 'text/json'
         )),
-        $this->fixture->routesFor($request)
+        $this->fixture->routesFor('POST', '/greet', 'application/json', new Preference('*/*'), array('text/json'))
+      );
+    }
+
+    /**
+     * Test routesFor()
+     *
+     */
+    #[@test]
+    public function hello_post() {
+      $this->assertEquals(
+        array(
+          array(
+            'target'   => $this->fixtureMethod('GreetingHandler', 'hello_posted'),
+            'segments' => array(0 => '/greet'),
+            'input'    => 'application/vnd.example.v2+json',
+            'output'   => 'text/json'
+          ),
+          array(
+            'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
+            'segments' => array(0 => '/greet'),
+            'input'    => 'application/vnd.example.v2+json',    // because it accepts "*/*"
+            'output'   => 'text/json'
+          )
+        ),
+        $this->fixture->routesFor('POST', '/greet', 'application/vnd.example.v2+json', new Preference('*/*'), array('text/json'))
       );
     }
 
@@ -96,11 +131,9 @@
      */
     #[@test]
     public function no_say_route() {
-      $request= new HttpScriptletRequest();
-      $request->setURL(new HttpScriptletURL('http://localhost/say'));
       $this->assertEquals(
         array(),
-        $this->fixture->routesFor($request)
+        $this->fixture->routesFor('GET', '/say', NULL, new Preference(''))
       );
     }
 
@@ -110,11 +143,9 @@
      */
     #[@test]
     public function no_slash_route() {
-      $request= new HttpScriptletRequest();
-      $request->setURL(new HttpScriptletURL('http://localhost/'));
       $this->assertEquals(
         array(),
-        $this->fixture->routesFor($request)
+        $this->fixture->routesFor('GET', '/', NULL, new Preference(''))
       );
     }
   }
