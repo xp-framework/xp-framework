@@ -230,12 +230,12 @@
         $url->getPath(), 
         $request->getHeader('Content-Type', NULL), 
         $accept
-      ) as $route) {
+      ) as $target) {
         try {
-          $this->handle($route, $request, $response);
+          $this->handle($target, $request, $response);
           return;
         } catch (HttpScriptletException $e) {
-          $this->writeError($response, $this->formatFor($route['output']), $e);
+          $this->writeError($response, $this->formatFor($target['output']), $e);
           return;
         }
       }

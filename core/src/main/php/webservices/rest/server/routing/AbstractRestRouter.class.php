@@ -93,7 +93,7 @@
      * @param   string path
      * @param   string type The Content-Type, or NULL
      * @param   scriptlet.Preference accept the "Accept" header's contents
-     * @return  [:var]
+     * @return  var[]
      */
     public function targetsFor($verb, $path, $type, Preference $accept) {
       if (!isset($this->routes[$verb])) return array();   // Short-circuit
