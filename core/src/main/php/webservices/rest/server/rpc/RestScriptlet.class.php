@@ -215,7 +215,7 @@
     public function doProcess($request, $response) {
       static $supported= array('application/json', 'text/json', 'text/xml', 'application/xml');
 
-      $url= $request->getURL()->getURL();
+      $url= $request->getURL();
       $accept= new Preference($request->getHeader('Accept', '*/*'));
       $this->cat && $this->cat->info(
         $request->getMethod(),
@@ -227,7 +227,7 @@
       // Iterate over all applicable routes
       foreach ($this->router->routesFor(
         $request->getMethod(), 
-        $request->getURL()->getPath(), 
+        $url->getPath(), 
         $request->getHeader('Content-Type', NULL), 
         $accept,
         $supported
@@ -244,7 +244,7 @@
       $this->writeError(
         $response,
         $this->formatFor($accept->match($supported)), 
-        new HttpScriptletException('Could not route request to '.$url, HttpConstants::STATUS_NOT_FOUND)
+        new HttpScriptletException('Could not route request to '.$url->getURL(), HttpConstants::STATUS_NOT_FOUND)
       );
     }
   }
