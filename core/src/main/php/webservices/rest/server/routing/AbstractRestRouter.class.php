@@ -59,7 +59,7 @@
      * @return  [:var]
      */
     public function routesFor($verb, $path, $type, Preference $accept, array $supported= array()) {
-      if (!isset($this->routes[$verb])) return FALSE;   // Short-circuit
+      if (!isset($this->routes[$verb])) return array();   // Short-circuit
 
       // Figure out matching routes
       $path= rtrim($path, '/');

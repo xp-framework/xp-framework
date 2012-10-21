@@ -82,5 +82,17 @@
       $this->fixture->addRoute($route2);
       $this->assertEquals(array($route1, $route2), $this->fixture->allRoutes());
     }
+
+    /**
+     * Test routesFor()
+     * 
+     */
+    #[@test]
+    public function routes_for_empty_fixture() {
+      $this->assertEquals(
+        array(), 
+        $this->fixture->routesFor('GET', '/resource', NULL, new Preference('*/*'), array())
+      );
+    }
   }
 ?>
