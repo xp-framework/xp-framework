@@ -24,10 +24,10 @@
     /**
      * Add a route
      *
-     * @param  string verb one of the HTTP verbs
      * @param  webservices.rest.server.routing.RestRoute route
      */
-    public function addRoute($verb, RestRoute $route) {
+    public function addRoute(RestRoute $route) {
+      $verb= $route->getVerb();
       if (!isset($this->routes[$verb])) $this->routes[$verb]= array();
       $this->routes[$verb][]= $route;
     }

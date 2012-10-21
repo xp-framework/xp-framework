@@ -36,7 +36,8 @@
 
           $webmethod= $method->getAnnotation('webmethod');
           $pattern= '#^'.$base.$hbase.preg_replace($search, $replace, rtrim($webmethod['path'], '/')).'$#';
-          $this->addRoute($webmethod['verb'], new RestRoute(
+          $this->addRoute(new RestRoute(
+            $webmethod['verb'],
             $pattern,
             $method,
             isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
