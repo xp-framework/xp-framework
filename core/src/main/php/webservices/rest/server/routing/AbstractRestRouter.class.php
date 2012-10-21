@@ -10,26 +10,42 @@
    * Abstract base class
    *
    */
-  abstract class AbstractRestRouter extends Object {
+  class AbstractRestRouter extends Object {
     protected $routes= array();
     
     /**
-     * Configure router
+     * Configure router. Template method - overwrite and implement in subclasses!
      * 
      * @param  string setup
      * @param  string base The base URL
      */
-    public abstract function configure($setup, $base= '');
+    public function configure($setup, $base= '') {
+    }
 
     /**
      * Add a route
      *
-     * @param  webservices.rest.server.routing.RestRoute route
+     * @param   webservices.rest.server.routing.RestRoute route
+     * @return  webservices.rest.server.routing.RestRoute The added route
      */
     public function addRoute(RestRoute $route) {
       $verb= $route->getVerb();
       if (!isset($this->routes[$verb])) $this->routes[$verb]= array();
       $this->routes[$verb][]= $route;
+      return $route;
+    }
+
+    /**
+     * Returns all routes
+     *
+     * @return  webservices.rest.server.routing.RestRoute[]
+     */
+    public function allRoutes() {
+      $r= array();
+      foreach ($this->routes as $verb => $routes) {
+        $r= array_merge($r, $routes);
+      }
+      return $r;
     }
 
     /**

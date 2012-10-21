@@ -9,7 +9,20 @@
   /**
    * REST router based on class and method annotations
    *
-   * @test    xp://net.xp_framework.unittest.rest.server.RestDefaultRouterTest
+   * Example of web service class
+   * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   * <code>
+   *   #[@webservice]
+   *   class HelloWorldHandler extends Object {
+   *
+   *     #[@webmethod(verb= 'GET', path= '/hello')]
+   *     public function helloWorld() {
+   *       return 'Hello, World!';
+   *     }
+   *   }
+   * </code>
+   *
+   * @test  xp://net.xp_framework.unittest.rest.server.RestDefaultRouterTest
    */
   class RestDefaultRouter extends AbstractRestRouter {
 

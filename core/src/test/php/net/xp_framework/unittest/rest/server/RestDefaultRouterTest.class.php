@@ -30,8 +30,8 @@
     }
 
     /**
-     * Setup
-     * 
+     * Sets up router fixture
+     *
      */
     public function setUp() {
       $this->fixture= new RestDefaultRouter();
