@@ -94,5 +94,47 @@
         $this->fixture->routesFor('GET', '/resource', NULL, new Preference('*/*'), array())
       );
     }
+
+    /**
+     * Test routesFor()
+     * 
+     */
+    #[@test]
+    public function get_route_returned() {
+      $route1= new RestRoute('GET', '#^/resource/(?P<id>[%\w:\+\-\.]*)$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $route2= new RestRoute('POST', '#^/resource$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $this->fixture->addRoute($route1);
+      $this->fixture->addRoute($route2);
+      $this->assertEquals(
+        array(array(
+          'target'   => $route1->getTarget(),
+          'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
+          'input'    => NULL,
+          'output'   => 'text/json'
+        )), 
+        $this->fixture->routesFor('GET', '/resource/1', NULL, new Preference('*/*'), array('text/json'))
+      );
+    }
+
+    /**
+     * Test routesFor()
+     * 
+     */
+    #[@test]
+    public function post_route_returned() {
+      $route1= new RestRoute('GET', '#^/resource/(?P<id>[%\w:\+\-\.]*)$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $route2= new RestRoute('POST', '#^/resource$#', $this->getClass()->getMethod(__FUNCTION__), NULL, NULL);
+      $this->fixture->addRoute($route1);
+      $this->fixture->addRoute($route2);
+      $this->assertEquals(
+        array(array(
+          'target'   => $route2->getTarget(),
+          'segments' => array(0 => '/resource'),
+          'input'    => NULL,
+          'output'   => 'text/json'
+        )), 
+        $this->fixture->routesFor('POST', '/resource', NULL, new Preference('*/*'), array('text/json'))
+      );
+    }
   }
 ?>
