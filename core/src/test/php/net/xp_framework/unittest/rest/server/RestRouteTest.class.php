@@ -151,7 +151,36 @@
     #[@test]
     public function string_representation() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, NULL);
-      $this->assertEquals('(GET /resource/{id}{sub})', $this->getClassName());
+      $this->assertEquals(
+        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub})', 
+        $r->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     * 
+     */
+    #[@test]
+    public function string_representation_with_produces() {
+      $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, array('text/json'));
+      $this->assertEquals(
+        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} -> text/json)', 
+        $r->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     * 
+     */
+    #[@test]
+    public function string_representation_with_accepts_and_produces() {
+      $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, array('text/xml'), array('text/json'));
+      $this->assertEquals(
+        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} @ text/xml -> text/json)', 
+        $r->toString()
+      );
     }
 
   }

@@ -96,7 +96,14 @@
      * @return string
      */
     public function toString() {
-      return $this->getClassName().'('.$this->verb.' '.$this->path.')';
+      return sprintf(
+        '%s(%s %s%s%s)',
+        $this->getClassName(),
+        $this->verb,
+        $this->path,
+        NULL === $this->accepts ? '' : ' @ '.implode(', ', $this->accepts),
+        NULL === $this->produces ? '' : ' -> '.implode(', ', $this->produces)
+      );
     }
   }
 ?>
