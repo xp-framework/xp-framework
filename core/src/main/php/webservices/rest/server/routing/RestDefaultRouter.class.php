@@ -20,51 +20,15 @@
     protected $routes= array();
 
     /**
-     * Parses the "Accept" header
-     *
-     * @param  string[] accept
-     * @param  string pattern suitable for regex
-     */
-    protected function preferenceOf($accept) {
-      $values= array();
-      foreach ($accept as $t) {
-        if (FALSE === ($p= strpos($t, ';'))) {
-          $value= ltrim($t, ' ');
-          $q= 1.0;
-        } else {
-          $value= ltrim(substr($t, 0, $p), ' ');
-          $q= (float)substr($t, $p + 3);    // skip ";q="
-        }
-        $values[$value]= $q;
-      }
-      
-      arsort($values, SORT_NUMERIC);
-      return $values;
-    }
-
-    /**
-     * @param   [:float] values
-     * @return  string pattern suitable for regex
-     */
-    protected function patternMatchingAnyOf($values) {
-      $pattern= '';
-      foreach ($values as $value => $q) {
-        $pattern.= ')|('.strtr(preg_quote($value, '#'), array('\*' => '.+'));
-      }
-      return '#('.substr($pattern, 3).')#i';
-    }
-
-    /**
      * Configure router
      * 
-     * @param  string setup The setup string
+     * @param  lang.reflect.Package package
      * @param  string base The base URI
      */
-    public function configure($setup, $base= '') {
+    public function configure($package, $base= '') {
       static $search= '/\{([\w]*)\}/';
       static $replace= '(?P<$1>[%\w:\+\-\.]*)';
 
-      $package= Package::forName($setup);
       foreach ($package->getClasses() as $handler) {
         if (!$handler->hasAnnotation('webservice')) continue;
         $hbase= $handler->hasAnnotation('webservice', 'path') 
@@ -77,11 +41,10 @@
 
           $webmethod= $method->getAnnotation('webmethod');
           $pattern= '#^'.$base.$hbase.preg_replace($search, $replace, rtrim($webmethod['path'], '/')).'$#';
-          $accept= isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : array('*');
           $this->routes[$webmethod['verb']][]= array(
             'path'    => $pattern,
             'target'  => $method,
-            'accepts' => $this->patternMatchingAnyOf($this->preferenceOf($accept)),
+            'accepts' => isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
             'returns' => isset($webmethod['returns']) ? $webmethod['returns'] : NULL
           );
         }
@@ -98,62 +61,27 @@
     }
 
     /**
-     * Returns best of
-     *
-     * @param  string accept a pattern
-     * @param  string[] supported
-     * @return string[] best an array with the best type in position 0
-     */
-    protected function bestOf($accept, $supported) {
-      foreach ($supported as $type) {
-        if (preg_match($accept, $type, $matches) && $matches[1]) return $matches;
-      }
-      return NULL;
-    }
-
-    /**
      * Return routes for given request and response
      * 
      * @param  scriptlet.http.HttpScriptletRequest request The request
-     * @param  scriptlet.Preference preference the preferred content-types (from the "Accept" header)
      * @return webservices.rest.server.RestRoute[]
      */
-    public function routesFor($request, $preference= NULL) {
-      static $supported= array('application/json', 'text/json', 'text/xml', 'application/xml');
-
+    public function routesFor($request, $_= NULL) {
       $verb= $request->getMethod();
       if (!isset($this->routes[$verb])) return FALSE;
 
+      // Figure out matching routes
       $path= rtrim($request->getURL()->getPath(), '/');
-      $preference= $this->preferenceOf(explode(',', $request->getHeader('Accept', '*/*')));
-      $accept= $this->patternMatchingAnyOf($preference);
-      $mediatype= $request->getHeader('Content-Type', NULL);
-
-      // Figure out matching routes, taking into account what the client
-      // tells us it accepts and its content-type
       $matching= array();
       foreach ($this->routes[$verb] as $route) {
         if (!preg_match($route['path'], $path, $segments)) continue;
-
-        if (NULL === ($returns= $this->bestOf(
-          $accept,
-          $route['returns'] ? array($route['returns']) : $supported
-        ))) continue;
-
-        if (NULL === $mediatype) {
-          $accepts= array(NULL);    // No Content-Type -> no input data!
-        } else {
-          if (!preg_match($route['accepts'], $mediatype, $accepts)) continue;
-        }
-
         $matching[]= array(
           'target'   => $route['target'], 
           'segments' => $segments,
-          'input'    => $accepts[0],
-          'output'   => $returns[0]
+          'input'    => $route['accepts'],
+          'output'   => $route['returns']
         );
       }
-
       return $matching;
     }
     
