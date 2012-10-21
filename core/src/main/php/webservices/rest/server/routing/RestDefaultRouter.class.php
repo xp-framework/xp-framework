@@ -48,10 +48,9 @@
           if (!$method->hasAnnotation('webmethod')) continue;
 
           $webmethod= $method->getAnnotation('webmethod');
-          $pattern= '#^'.$base.$hbase.preg_replace($search, $replace, rtrim($webmethod['path'], '/')).'$#';
           $this->addRoute(new RestRoute(
             $webmethod['verb'],
-            $pattern,
+            '#^'.$base.$hbase.preg_replace($search, $replace, rtrim($webmethod['path'], '/')).'$#',
             $method,
             isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
             isset($webmethod['returns']) ? (array)$webmethod['returns'] : NULL
