@@ -7,11 +7,22 @@
   /**
    * A preference
    *
+   * Examples
+   * ~~~~~~~~
    * <pre> 
    * Accept-Language: en,de;q=0.5
    * Accept-Language: en-UK;q=0.7, en-US;q=0.6, no;q=1.0, dk;q=0.8
    * Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
    * </pre>
+   *
+   * Usage
+   * ~~~~~
+   * <code>
+   *   $preferred= new Preference('text/xml,text/plain;q=0.8');
+   *   $supported= array('text/plain', 'text/html');
+   *   
+   *   $best= $preferred->match($supported);  // "text/html"
+   * </code>
    *
    * @test     xp://net.xp_framework.unittest.scriptlet.PreferenceTest
    */
@@ -42,7 +53,7 @@
     }
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param   var arg
      */
