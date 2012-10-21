@@ -26,11 +26,14 @@
      */
     public function setUp() {
       $this->fixture= new AbstractRestRouter();
+      $this->fixture->setInputFormats(array('*json'));
+      $this->fixture->setOutputFormats(array('text/json'));
       $this->target= $this->getClass()->getMethod('target');
     }
 
     /**
      * Target method
+     *
      */
     #[@webservice]
     public function target() {
@@ -101,7 +104,7 @@
     public function routes_for_empty_fixture() {
       $this->assertEquals(
         array(), 
-        $this->fixture->targetsFor('GET', '/resource', NULL, new Preference('*/*'), array())
+        $this->fixture->targetsFor('GET', '/resource', NULL, new Preference('*/*'))
       );
     }
 
@@ -122,7 +125,7 @@
           'input'    => NULL,
           'output'   => 'text/json'
         )), 
-        $this->fixture->targetsFor('GET', '/resource/1', NULL, new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('GET', '/resource/1', NULL, new Preference('*/*'))
       );
     }
 
@@ -143,7 +146,7 @@
           'input'    => NULL,
           'output'   => 'text/json'
         )), 
-        $this->fixture->targetsFor('POST', '/resource', NULL, new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('POST', '/resource', NULL, new Preference('*/*'))
       );
     }
 
@@ -172,7 +175,7 @@
             'output'   => 'text/json'
           )
         ), 
-        $this->fixture->targetsFor('GET', '/resource/1', NULL, new Preference('application/vnd.example.v2+json, text/json'), array('text/json'))
+        $this->fixture->targetsFor('GET', '/resource/1', NULL, new Preference('application/vnd.example.v2+json, text/json'))
       );
     }
 
@@ -201,7 +204,7 @@
             'output'   => 'text/json'
           )
         ), 
-        $this->fixture->targetsFor('POST', '/resource', 'application/vnd.example.v2+json', new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('POST', '/resource', 'application/vnd.example.v2+json', new Preference('*/*'))
       );
     }
 

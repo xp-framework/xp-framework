@@ -12,6 +12,8 @@
    */
   class AbstractRestRouter extends Object {
     protected $routes= array();
+    protected $input= array();
+    protected $output= array();
     
     /**
      * Configure router. Template method - overwrite and implement in subclasses!
@@ -20,6 +22,42 @@
      * @param  string base The base URL
      */
     public function configure($setup, $base= '') {
+    }
+
+    /**
+     * Sets input formats
+     *
+     * @param  string[] supported order by preference
+     */
+    public function setInputFormats($supported) {
+      $this->input= $supported;
+    }
+
+    /**
+     * Gets input formats
+     *
+     * @return string[]
+     */
+    public function getInputFormats() {
+      return $this->input;
+    }
+
+    /**
+     * Sets output formats
+     *
+     * @param  string[] supported order by preference
+     */
+    public function setOutputFormats($supported) {
+      $this->output= $supported;
+    }
+
+    /**
+     * Gets output formats
+     *
+     * @return string[]
+     */
+    public function getOutputFormats() {
+      return $this->output;
     }
 
     /**
@@ -55,10 +93,9 @@
      * @param   string path
      * @param   string type The Content-Type, or NULL
      * @param   scriptlet.Preference accept the "Accept" header's contents
-     * @param   string[] supported
      * @return  [:var]
      */
-    public function targetsFor($verb, $path, $type, Preference $accept, array $supported= array()) {
+    public function targetsFor($verb, $path, $type, Preference $accept) {
       if (!isset($this->routes[$verb])) return array();   // Short-circuit
 
       // Figure out matching routes
@@ -69,7 +106,7 @@
 
         // Check input type if specified by client
         if (NULL !== $type) {
-          $pref= new Preference($route->getAccepts('*/*'));
+          $pref= new Preference($route->getAccepts($this->input));
           if (NULL === ($input= $pref->match(array($type)))) continue;
           $q= $pref->qualityOf($input, 6);
         } else {
@@ -78,7 +115,7 @@
         }
 
         // Check output type
-        if (NULL === ($output= $accept->match($route->getProduces($supported)))) continue;
+        if (NULL === ($output= $accept->match($route->getProduces($this->output)))) continue;
 
         // Found possible candidate
         $matching[]= array(

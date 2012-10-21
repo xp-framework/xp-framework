@@ -36,6 +36,8 @@
     public function setUp() {
       $this->fixture= new RestDefaultRouter();
       $this->fixture->configure(self::$package->getName());
+      $this->fixture->setInputFormats(array('*json'));
+      $this->fixture->setOutputFormats(array('text/json'));
     }
 
     /**
@@ -62,7 +64,7 @@
           'input'    => NULL,
           'output'   => 'text/json'
         )),
-        $this->fixture->targetsFor('GET', '/greet/test', NULL, new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('GET', '/greet/test', NULL, new Preference('*/*'))
       );
     }
 
@@ -79,7 +81,7 @@
           'input'    => NULL,
           'output'   => 'application/vnd.example.v2+json'
         )),
-        $this->fixture->targetsFor('GET', '/hello/test', NULL, new Preference('application/vnd.example.v2+json'), array('text/json'))
+        $this->fixture->targetsFor('GET', '/hello/test', NULL, new Preference('application/vnd.example.v2+json'))
       );
     }
 
@@ -96,7 +98,7 @@
           'input'    => 'application/json',
           'output'   => 'text/json'
         )),
-        $this->fixture->targetsFor('POST', '/greet', 'application/json', new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('POST', '/greet', 'application/json', new Preference('*/*'))
       );
     }
 
@@ -121,7 +123,7 @@
             'output'   => 'text/json'
           )
         ),
-        $this->fixture->targetsFor('POST', '/greet', 'application/vnd.example.v2+json', new Preference('*/*'), array('text/json'))
+        $this->fixture->targetsFor('POST', '/greet', 'application/vnd.example.v2+json', new Preference('*/*'))
       );
     }
 

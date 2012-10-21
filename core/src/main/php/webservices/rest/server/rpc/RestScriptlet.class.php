@@ -49,6 +49,8 @@
       
       $this->base= rtrim($base, '/');
       $this->router->configure($package, $this->base);
+      $this->router->setInputFormats(array('*json', '*xml', 'application/x-www-form-urlencoded'));
+      $this->router->setOutputFormats(array('application/json', 'text/json', 'text/xml', 'application/xml'));
       $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
         public function deserialize($in, $target) {
           throw new IllegalStateException("Unused");
@@ -213,8 +215,6 @@
      * @param  scriptlet.HttpScriptletResponse response The response
      */
     public function doProcess($request, $response) {
-      static $supported= array('application/json', 'text/json', 'text/xml', 'application/xml');
-
       $url= $request->getURL();
       $accept= new Preference($request->getHeader('Accept', '*/*'));
       $this->cat && $this->cat->info(
@@ -229,8 +229,7 @@
         $request->getMethod(), 
         $url->getPath(), 
         $request->getHeader('Content-Type', NULL), 
-        $accept,
-        $supported
+        $accept
       ) as $route) {
         try {
           $this->handle($route, $request, $response);
@@ -243,7 +242,7 @@
 
       $this->writeError(
         $response,
-        $this->formatFor($accept->match($supported)), 
+        $this->formatFor($accept->match($this->router->getOutputFormats())), 
         new HttpScriptletException('Could not route request to '.$url->getURL(), HttpConstants::STATUS_NOT_FOUND)
       );
     }
