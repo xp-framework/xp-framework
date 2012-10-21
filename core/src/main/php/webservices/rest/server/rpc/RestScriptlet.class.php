@@ -119,6 +119,7 @@
      * @throws scriptlet.HttpScriptletException
      */
     public function handle($route, $request, $response) {
+      $this->cat && $this->cat->debug('->', $route);
       $input= NULL;
 
       // Instantiate the handler class
@@ -175,7 +176,9 @@
       // Invoke method
       try {
         $result= $route['target']->invoke($instance, $args);
+        $this->cat && $this->cat->debug('<-', $result);
       } catch (TargetInvocationException $t) {
+        $this->cat && $this->cat->warn('<-', $t);
         throw new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t);
       }
 
@@ -219,8 +222,6 @@
 
       // Iterate over all applicable routes
       foreach ($this->router->routesFor($request) as $route) {
-        $this->cat && $this->cat->debug('->', $route);
-
         try {
           $this->handle($route, $request, $response);
           return;
