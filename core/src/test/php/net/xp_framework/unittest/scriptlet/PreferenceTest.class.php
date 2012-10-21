@@ -316,5 +316,53 @@
         create(new Preference('application/*'))->match(array('text/html', 'text/plain'))
       );
     }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function single_preference_string() {
+      $this->assertEquals(
+        'scriptlet.Preference<text/xml>',
+        create(new Preference('text/xml'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function preferences_string() {
+      $this->assertEquals(
+        'scriptlet.Preference<text/xml, text/html>',
+        create(new Preference('text/xml, text/html'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function preferences_with_qvalue_string() {
+      $this->assertEquals(
+        'scriptlet.Preference<text/xml, text/html;q=0.8>',
+        create(new Preference('text/xml, text/html;q=0.8'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function one_point_zero_qvalue_omitted_in_string() {
+      $this->assertEquals(
+        'scriptlet.Preference<text/xml, text/html;q=0.8>',
+        create(new Preference('text/xml;q=1.0, text/html;q=0.8'))->toString()
+      );
+    }
   }
 ?>

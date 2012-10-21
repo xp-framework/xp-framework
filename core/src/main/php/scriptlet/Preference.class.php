@@ -96,5 +96,18 @@
     public function equals($cmp) {
       return $cmp instanceof self && $cmp->list === $this->list;
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @return  string
+     */
+    public function toString() {
+      $list= '';
+      foreach ($this->list as $preference => $q) {
+        $list.= (1.0 - $q < 0.001) ? ', '.$preference : sprintf(', %s;q=%.1f', $preference, $q);
+      }
+      return $this->getClassName().'<'.substr($list, 2).'>';
+    }
   }
 ?>

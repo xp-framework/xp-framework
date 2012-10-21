@@ -6,6 +6,7 @@
 
   uses(
     'scriptlet.HttpScriptlet',
+    'scriptlet.Preference',
     'webservices.rest.server.RestFormat',
     'webservices.rest.server.Response',
     'webservices.rest.server.routing.RestDefaultRouter',
@@ -213,11 +214,12 @@
      */
     public function doProcess($request, $response) {
       $url= $request->getURL()->getURL();
+      $pref= new Preference($request->getHeader('Accept'));
       $this->cat && $this->cat->info(
         $request->getMethod(),
         $request->getHeader('Content-Type', '(null)'),
         $url,
-        $request->getHeader('Accept')
+        $pref
       );
 
       // Iterate over all applicable routes
