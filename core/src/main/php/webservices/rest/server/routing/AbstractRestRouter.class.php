@@ -68,12 +68,11 @@
         if (!preg_match($route->getPath(), $path, $segments)) continue;
 
         // Check input type if specified by client
-        $before= FALSE;
         if (NULL !== $type) {
           $before= $route->getAccepts() !== NULL;
-          $preference= new Preference($route->getAccepts('*/*'));
-          if (NULL === ($input= $preference->match(array($type)))) continue;
+          if (NULL === ($input= create(new Preference($route->getAccepts('*/*')))->match(array($type)))) continue;
         } else {
+          $before= FALSE;
           $input= NULL;
         }
 
