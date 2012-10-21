@@ -144,5 +144,15 @@
       $this->assertEquals('#^/resource/(?P<id>[%\w:\+\-\.]*)/(?P<sub>[%\w:\+\-\.]*)$#', $r->getPattern());
     }
 
+    /**
+     * Test toString()
+     * 
+     */
+    #[@test]
+    public function string_representation() {
+      $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, NULL);
+      $this->assertEquals('(GET /resource/{id}{sub})', $this->getClassName());
+    }
+
   }
 ?>

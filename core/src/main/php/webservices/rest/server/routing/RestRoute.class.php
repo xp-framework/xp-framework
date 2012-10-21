@@ -89,5 +89,14 @@
     public function getProduces($default= NULL) {
       return NULL === $this->produces ? $default : $this->produces;
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'('.$this->verb.' '.$this->path.')';
+    }
   }
 ?>
