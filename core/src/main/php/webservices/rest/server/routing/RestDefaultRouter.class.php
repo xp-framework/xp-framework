@@ -115,9 +115,10 @@
      * Return routes for given request and response
      * 
      * @param  scriptlet.http.HttpScriptletRequest request The request
+     * @param  scriptlet.Preference preference the preferred content-types (from the "Accept" header)
      * @return webservices.rest.server.RestRoute[]
      */
-    public function routesFor($request, $_= NULL) {
+    public function routesFor($request, $preference= NULL) {
       static $supported= array('application/json', 'text/json', 'text/xml', 'application/xml');
 
       $verb= $request->getMethod();

@@ -23,7 +23,7 @@
       $router  = NULL,
       $base    = '',
       $convert = NULL;
-    
+
     /**
      * Constructor
      * 
@@ -214,7 +214,7 @@
      */
     public function doProcess($request, $response) {
       $url= $request->getURL()->getURL();
-      $pref= new Preference($request->getHeader('Accept'));
+      $preference= new Preference($request->getHeader('Accept'));
       $this->cat && $this->cat->info(
         $request->getMethod(),
         $request->getHeader('Content-Type', '(null)'),
@@ -223,7 +223,7 @@
       );
 
       // Iterate over all applicable routes
-      foreach ($this->router->routesFor($request) as $route) {
+      foreach ($this->router->routesFor($request, $preference) as $route) {
         try {
           $this->handle($route, $request, $response);
           return;
@@ -235,7 +235,7 @@
 
       $this->writeError(
         $response,
-        $this->formatFor(isset($route['output']) ? $route['output'] : 'application/json'), 
+        $this->formatFor($preference->match(array('application/json', 'text/json', 'text/xml', 'application/xml'))), 
         new HttpScriptletException('Could not route request to '.$url, HttpConstants::STATUS_NOT_FOUND)
       );
     }
