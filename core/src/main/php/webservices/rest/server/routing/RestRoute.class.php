@@ -13,7 +13,7 @@
     protected $path= '';
     protected $target= NULL;
     protected $accepts= array();
-    protected $returns= array();
+    protected $produces= array();
     
     /**
      * Constructor
@@ -22,14 +22,14 @@
      * @param  string path
      * @param  lang.reflect.Method target
      * @param  string[] accepts
-     * @param  string returns
+     * @param  string produces
      */
-    public function __construct($verb, $path, $target, $accepts, $returns) {
+    public function __construct($verb, $path, $target, $accepts, $produces) {
       $this->verb= $verb;
       $this->path= $path;
       $this->target= $target;
       $this->accepts= $accepts;
-      $this->returns= $returns;
+      $this->produces= $produces;
     }
 
     /**
@@ -69,12 +69,12 @@
     }
 
     /**
-     * Get what is returned
+     * Get what is produced
      *
      * @return string
      */
-    public function getReturns() {
-      return $this->returns;
+    public function getProduces() {
+      return $this->produces;
     }
   }
 ?>
