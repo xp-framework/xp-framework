@@ -6,13 +6,13 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.server.routing.RestRoute'
+    'webservices.rest.srv.RestRoute'
   );
   
   /**
    * Test default router
    *
-   * @see  xp://webservices.rest.server.routing.RestRoute
+   * @see  xp://webservices.rest.srv.RestRoute
    */
   class RestRouteTest extends TestCase {
     protected $target= NULL;
@@ -152,7 +152,7 @@
     public function string_representation() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, NULL);
       $this->assertEquals(
-        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget())', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget())', 
         $r->toString()
       );
     }
@@ -165,7 +165,7 @@
     public function string_representation_with_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, array('text/json'));
       $this->assertEquals(
-        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget() @ text/json)', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget() @ text/json)', 
         $r->toString()
       );
     }
@@ -178,7 +178,7 @@
     public function string_representation_with_accepts_and_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, array('text/xml'), array('text/json'));
       $this->assertEquals(
-        'webservices.rest.server.routing.RestRoute(GET /resource/{id}/{sub} @ text/xml -> public void fixtureTarget() @ text/json)', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} @ text/xml -> public void fixtureTarget() @ text/json)', 
         $r->toString()
       );
     }

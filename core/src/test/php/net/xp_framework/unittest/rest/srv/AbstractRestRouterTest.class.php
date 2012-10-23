@@ -6,7 +6,7 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.server.routing.AbstractRestRouter',
+    'webservices.rest.srv.AbstractRestRouter',
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse'
   );
@@ -14,7 +14,7 @@
   /**
    * Test default router
    *
-   * @see  xp://webservices.rest.server.routing.RestDefaultRouter
+   * @see  xp://webservices.rest.srv.RestDefaultRouter
    */
   class AbstractRestRouterTest extends TestCase {
     protected $fixture= NULL;
