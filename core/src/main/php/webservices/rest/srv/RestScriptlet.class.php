@@ -126,9 +126,6 @@
       $this->cat && $this->cat->debug('->', $route);
       $input= NULL;
 
-      // Instantiate the handler class
-      $instance= $route['target']->getDeclaringClass()->newInstance();
-
       // Parameter annotations parsing
       $annotations= array();
       foreach ($route['target']->getAnnotations() as $annotation => $value) {
@@ -177,7 +174,8 @@
         }
       }
 
-      // Invoke method
+      // Instantiate the handler class and invoke method
+      $instance= $route['target']->getDeclaringClass()->newInstance();
       try {
         $result= $route['target']->invoke($instance, $args);
         $this->cat && $this->cat->debug('<-', $result);
