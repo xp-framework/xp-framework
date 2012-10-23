@@ -119,6 +119,7 @@
      * @param  var route
      * @param  scriptlet.HttpScriptletRequest request The request
      * @param  scriptlet.HttpScriptletResponse response The response
+     * @return webservices.rest.srv.Response
      * @throws scriptlet.HttpScriptletException
      */
     public function handle($route, $request, $response) {
@@ -194,18 +195,7 @@
       } else {
         $res= Response::status(HttpConstants::STATUS_OK)->withPayload($result);
       }
-
-      $response->setStatus($res->status);
-      $response->setContentType($route['output']);
-      foreach ($res->headers as $name => $value) {
-        if ('Location' === $name) {
-          $url= clone $request->getURL();
-          $response->setHeader($name, $url->setPath($value)->getURL());
-        } else {
-          $response->setHeader($name, $value);
-        }
-      }
-      $this->formatFor($route['output'])->write($response, $res->payload);
+      return $res;
     }
 
     /**
@@ -232,7 +222,19 @@
         $accept
       ) as $target) {
         try {
-          $this->handle($target, $request, $response);
+          $res= $this->handle($target, $request, $response);
+
+          $response->setStatus($res->status);
+          $response->setContentType($target['output']);
+          foreach ($res->headers as $name => $value) {
+            if ('Location' === $name) {
+              $url= clone $request->getURL();
+              $response->setHeader($name, $url->setPath($value)->getURL());
+            } else {
+              $response->setHeader($name, $value);
+            }
+          }
+          $this->formatFor($target['output'])->write($response, $res->payload);
           return;
         } catch (HttpScriptletException $e) {
           $this->writeError($response, $this->formatFor($target['output']), $e);
