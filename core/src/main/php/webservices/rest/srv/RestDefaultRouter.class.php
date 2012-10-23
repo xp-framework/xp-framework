@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.server.routing.AbstractRestRouter');
+  uses('webservices.rest.srv.AbstractRestRouter');
   
   /**
    * REST router based on class and method annotations

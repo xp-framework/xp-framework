@@ -7,9 +7,9 @@
   uses(
     'scriptlet.HttpScriptlet',
     'scriptlet.Preference',
-    'webservices.rest.server.RestFormat',
-    'webservices.rest.server.Response',
-    'webservices.rest.server.routing.RestDefaultRouter',
+    'webservices.rest.srv.RestFormat',
+    'webservices.rest.srv.Response',
+    'webservices.rest.srv.RestDefaultRouter',
     'util.log.Traceable'
   );
   

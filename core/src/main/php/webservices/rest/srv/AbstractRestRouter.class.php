@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.server.routing.RestRoute', 'scriptlet.Preference');
+  uses('webservices.rest.srv.RestRoute', 'scriptlet.Preference');
 
   /**
    * Abstract base class
