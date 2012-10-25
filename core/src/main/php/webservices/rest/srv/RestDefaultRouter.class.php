@@ -55,5 +55,58 @@
         }
       }
     }
+
+    public function argumentsFor($route, $request, $in) {
+      $input= NULL;
+
+      // Parameter annotations parsing
+      $annotations= array();
+      foreach ($route['target']->getAnnotations() as $annotation => $value) {
+        if (2 === sscanf($annotation, '$%[^:]: %s', $param, $source)) {
+          $annotations[$param]= array($source, $value ? $value : $param);
+        }
+      }
+
+      // Extract arguments according to definition
+      $args= array();
+      foreach ($route['target']->getParameters() as $parameter) {
+        $param= $parameter->getName();
+        switch ($annotations[$param][0]) {
+          case 'path':
+            if (!isset($route['segments'][$annotations[$param][1]])) {
+              $arg= $parameter->getDefaultValue();
+            } else {
+              $arg= rawurldecode($route['segments'][$annotations[$param][1]]);
+            }
+            $args[]= $this->convert->convert($parameter->getType(), $arg);
+            break;
+
+          case 'param':
+            if (!$request->hasParam($annotations[$param][1])) {
+              $arg= $parameter->getDefaultValue();
+            } else {
+              $arg= $request->getParam($annotations[$param][1]); 
+            }
+            $args[]= $this->convert->convert($parameter->getType(), $arg);
+            break;
+
+          case NULL:
+            if (NULL === $input) {
+              $input= $in->read($request, $parameter->getType()); 
+            }
+            $args[]= $input;
+            break;
+
+          default: 
+            throw new HttpScriptletException(sprintf(
+              'Malformed source %s for parameter %s of %s',
+              $annotations[$param][0],
+              $param,
+              $route['target']->toString()
+            ));
+        }
+      }
+      return $args;
+    }
   }
 ?>

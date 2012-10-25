@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.srv.RestRoute', 'scriptlet.Preference');
+  uses('webservices.rest.srv.RestRoute', 'webservices.rest.RestDeserializer', 'scriptlet.Preference');
 
   /**
    * Abstract base class
@@ -14,6 +14,19 @@
     protected $routes= array();
     protected $input= array();
     protected $output= array();
+    protected $convert= NULL;
+
+    /**
+     * Creates converter
+     *
+     */
+    public function __construct() {
+      $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
+        public function deserialize($in, $target) {
+          throw new IllegalStateException("Unused");
+        }
+      }');
+    }
     
     /**
      * Configure router. Template method - overwrite and implement in subclasses!
@@ -134,6 +147,43 @@
         $return[]= $matching[$offset];
       }
       return $return;
+    }
+
+    /**
+     * Handle routing item
+     *
+     * @param  var target
+     * @param  var[] args
+     * @return webservices.rest.srv.Response
+     * @throws scriptlet.HttpScriptletException
+     */
+    public function handle($target, $args) {
+      $this->cat && $this->cat->debug('->', $target);
+
+      // Instantiate the handler class and invoke method
+      $instance= $target['target']->getDeclaringClass()->newInstance();
+      try {
+        $result= $target['target']->invoke($instance, $args);
+        $this->cat && $this->cat->debug('<-', $result);
+      } catch (TargetInvocationException $t) {
+        $this->cat && $this->cat->warn('<-', $t);
+        throw new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t);
+      }
+
+      // For "VOID" methods, set status to "no content". If a response is returned, 
+      // use its status, headers and payload. For any other methods, set status to "OK".
+      if (Type::$VOID->equals($target['target']->getReturnType())) {
+        $res= Response::status(HttpConstants::STATUS_NO_CONTENT);
+      } else if ($result instanceof Response) {
+        $res= $result;
+      } else {
+        $res= Response::status(HttpConstants::STATUS_OK)->withPayload($result);
+      }
+      return $res;
+    }
+
+    public function process($target, $request, $format) {
+      return $this->handle($target, $this->argumentsFor($target, $request, $format));
     }
 
     /**
