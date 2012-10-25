@@ -5,6 +5,7 @@
  */
 
   uses(
+    'lang.IllegalStateException',
     'peer.http.HttpConstants',
     'peer.Socket',
     'peer.URL',
@@ -29,8 +30,10 @@
       $target     = '',
       $version    = HttpConstants::VERSION_1_1,
       $headers    = array('Connection' => array('close')),
-      $parameters = array();
-      
+      $parameters = array(),
+      $content    = NULL,
+      $contentSet = FALSE;
+
     /**
      * Constructor
      *
@@ -114,6 +117,25 @@
     }
     
     /**
+     * Specifically set a content.
+     * All given parameters will then be added to the url instead
+     *
+     * @param   string  content
+     */
+    public function setContent($content) {
+      $this->content= $content;
+      $this->contentSet= TRUE;
+    }
+
+    /**
+     * Clears any set content
+     */
+    public function clearContent() {
+      $this->content= NULL;
+      $this->contentSet= FALSE;
+    }
+
+    /**
      * Set header
      *
      * @param   string k header name
@@ -139,48 +161,126 @@
     }
 
     /**
-     * Returns payload
+     * Will return the set parameters or content url encoded
+     * Only handles array values with depth 1. Deeper levels are not supported.
      *
-     * @param   bool withBody
+     * @return  string
      */
-    protected function getPayload($withBody) {
-     if ($this->parameters instanceof RequestData) {
+    protected function getEncodedParameters() {
+      if ($this->parameters instanceof RequestData) {
         $this->addHeaders($this->parameters->getHeaders());
-        $query= '&'.$this->parameters->getData();
+        $sEncoded= $this->parameters->getData();
       } else {
-        $query= '';
+        $aEncoded= array();
         foreach ($this->parameters as $name => $value) {
           if (is_array($value)) {
             foreach ($value as $k => $v) {
-              $query.= '&'.$name.'['.$k.']='.urlencode($v);
+              $aEncoded[]= $name.'['.$k.']='.urlencode($v);
             }
           } else {
-            $query.= '&'.$name.'='.urlencode($value);
+            $aEncoded[]= $name.'='.urlencode($value);
           }
         }
+        $sEncoded= implode('&', $aEncoded);
       }
-      $target= $this->target;
-      $body= '';
+      return $sEncoded;
+    }
 
-      // Which HTTP method? GET and HEAD use query string, POST etc. use
-      // body for passing parameters
-      switch ($this->method) {
-        case HttpConstants::HEAD: case HttpConstants::GET: case HttpConstants::DELETE: case HttpConstants::OPTIONS:
-          if (NULL !== $this->url->getQuery()) {
-            $target.= '?'.$this->url->getQuery().(empty($query) ? '' : $query);
+    /**
+     * Will return the encoded content
+     *
+     * @return  string  
+     */
+    protected function getEncodedContent() {
+      if ($this->content instanceof RequestData) {
+        $this->addHeaders($this->content->getHeaders());
+        return $this->content->getData();
+      } else if (is_array($this->content)) {
+        $aEncoded= array();
+        foreach ($this->content as $name => $value) {
+          if (is_array($value)) {
+            foreach ($value as $k => $v) {
+              $aEncoded[]= $name.'['.$k.']='.urlencode($v);
+            }
           } else {
-            $target.= empty($query) ? '' : '?'.substr($query, 1);
+            $aEncoded[]= $name.'='.urlencode($value);
           }
-          break;
+        }
+        return implode('&', $aEncoded);
+      } else {
+        return $this->content;
+      }
+    }
 
-        case HttpConstants::POST: case HttpConstants::PUT: case HttpConstants::TRACE: default:
-          if ($withBody) $body= substr($query, 1);
-          if (NULL !== $this->url->getQuery()) $target.= '?'.$this->url->getQuery();
-          $this->headers['Content-Length']= array(max(0, strlen($query)- 1));
-          if (empty($this->headers['Content-Type'])) {
-            $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
-          }
-          break;
+    /**
+     * Returns payload.
+     *
+     * Old behaviour (no body set):
+     *  Params will be either placed in body or URI,
+     *  depending on the method
+     *
+     * New behaviour (a body was set):
+     *  Params will go to the URI
+     *  Body will go to the body
+     *
+     * @param   bool    withBody
+     * @return  string  payload
+     * @throws  lang.InvalidStateException  if body was set with a none supported method
+     */
+    protected function getPayload($withBody) {
+      $content= NULL;
+      $addParamsToURI= TRUE;
+      $paramsEncoded= $this->getEncodedParameters();
+
+      if (TRUE === $this->contentSet) {
+        // trigger with-"setBody" behaviour
+        switch ($this->method) {
+          case HttpConstants::GET:    // might not be forbidden in RFC. if this is the case move to below
+          case HttpConstants::HEAD:
+          case HttpConstants::OPTIONS:
+            throw new IllegalStateException('A '.$this->method.' request does not allow a body');
+            break;
+
+          default:
+            $content= $this->getEncodedContent();
+            break;
+        }
+      } else {
+        // trigger pre-"setBody" behaviour
+        // params will either go to the uri or the content
+        switch ($this->method) {
+          case HttpConstants::HEAD:
+          case HttpConstants::GET:
+          case HttpConstants::DELETE:
+          case HttpConstants::OPTIONS:
+            // intentionally nothing
+            break;
+
+          default:
+            $addParamsToURI= FALSE;
+            $content= $paramsEncoded;
+            break;
+        }
+      }
+
+      $queryString= array();
+      if (NULL !== $this->url->getQuery()) {
+        $queryString[]= $this->url->getQuery();
+      }
+      if ((TRUE === $addParamsToURI) &&
+          (!empty($paramsEncoded))
+      ) {
+        $queryString[]= $paramsEncoded;
+      }
+
+      $target= $this->target;
+      $target.= (count($queryString) > 0) ? '?'.implode('&', $queryString) : '';
+
+      if (!is_null($content)) {
+        $this->headers['Content-Length']= array(max(0, strlen($content)));
+        if (empty($this->headers['Content-Type'])) {
+          $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
+        }
       }
 
       $request= sprintf(
@@ -197,7 +297,10 @@
         }
       }
 
-      return $request."\r\n".$body;
+      if (!$withBody) {
+        $content= '';
+      }
+      return $request."\r\n".$content;
     }
 
     /**

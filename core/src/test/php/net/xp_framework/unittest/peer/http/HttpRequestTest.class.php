@@ -5,6 +5,7 @@
  */
 
   uses(
+    'lang.IllegalStateException',
     'unittest.TestCase',
     'peer.http.RequestData',
     'peer.http.FormRequestData',
@@ -132,6 +133,22 @@
         "GET /?a=b HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
+    }
+
+    /**
+     * Test HTTP GET - parameters via setParameters(string)
+     * with content
+     */
+    #[@test]
+    public function getUrlWithStringParamsWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::GET);
+      $r->setParameters('a=b');
+      $r->setContent('aloha content');
+      try {
+        $r->getRequestString();
+        $this->fail('Illegal State GET with Content not detected', NULL, 'lang.IllegalStateException');
+      } catch (IllegalStateException $ex) { }
     }
 
     /**
@@ -276,6 +293,43 @@
     }
 
     /**
+     * Test HTTP POST
+     * with content
+     */
+    #[@test]
+    public function postWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setContent('aloha content');
+      $this->assertEquals(
+        "POST /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "aloha content",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP POST
+     * with content and url params
+     */
+    #[@test]
+    public function postWithContentAndUrlParam() {
+      $r= new HttpRequest(new URL('http://example.com/?ar=ber'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setContent('aloha content');
+      $this->assertEquals(
+        "POST /?ar=ber&a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "aloha content",
+        $r->getRequestString()
+      );
+    }
+
+
+    /**
      * Test associative arrays are handled correctly in POST requests
      *
      */
@@ -327,6 +381,24 @@
     }
 
     /**
+     * Test HTTP PUT
+     * with content
+     */
+    #[@test]
+    public function putWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::PUT);
+      $r->setParameters('a=b&c=d');
+      $r->setContent('aloha content');
+      $this->assertEquals(
+        "PUT /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "aloha content",
+        $r->getRequestString()
+      );
+    }
+
+    /**
      * Test HTTP TRACE
      *
      */
@@ -339,6 +411,24 @@
         "TRACE / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
         "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
         "a=b&c=d",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP TRACE
+     * with content
+     */
+    #[@test]
+    public function traceWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::TRACE);
+      $r->setParameters('a=b&c=d');
+      $r->setContent('aloha content');
+      $this->assertEquals(
+        "TRACE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "aloha content",
         $r->getRequestString()
       );
     }
@@ -359,6 +449,22 @@
     }
 
     /**
+     * Test HTTP HEAD
+     * with content
+     */
+    #[@test]
+    public function headWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::HEAD);
+      $r->setParameters('a=b&c=d');
+      $r->setContent('aloha content');
+      try {
+        $r->getRequestString();
+        $this->fail('Illegal State HEAD with Content not detected', NULL, 'lang.IllegalStateException');
+      } catch (IllegalStateException $ex) { }
+    }
+
+    /**
      * Test HTTP DELETE
      *
      */
@@ -369,6 +475,24 @@
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP DELETE
+     * with content
+     */
+    #[@test]
+    public function deleteWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::DELETE);
+      $r->setParameters('a=b&c=d');
+      $r->setContent('aloha content');
+      $this->assertEquals(
+        "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "aloha content",
         $r->getRequestString()
       );
     }
@@ -386,6 +510,22 @@
         "OPTIONS /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
+    }
+
+    /**
+     * Test HTTP OPTIONS
+     * with content
+     */
+    #[@test]
+    public function optionsWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::OPTIONS);
+      $r->setParameters('a=b&c=d');
+      $r->setContent('aloha content');
+      try {
+        $r->getRequestString();
+        $this->fail('Illegal State OPTIONS with Content not detected', NULL, 'lang.IllegalStateException');
+      } catch (IllegalStateException $ex) { }
     }
 
     /**

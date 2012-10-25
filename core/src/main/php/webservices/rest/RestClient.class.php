@@ -146,10 +146,9 @@
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget($this->connection->getUrl()->getPath('/')));
       
+      $send->setParameters($request->getParameters());
       if ($request->hasBody()) {
-        $send->setParameters($request->getBody());
-      } else {
-        $send->setParameters($request->getParameters());
+        $send->setContent($request->getBody());
       }
       
       try {
