@@ -1,6 +1,6 @@
 <?php
 /* This class is part of the XP framework
- * 
+ *
  * $Id: HttpRequest.class.php 14881 2010-10-01 07:46:08Z friebe $
  */
 
@@ -13,9 +13,9 @@
     'peer.http.RequestData',
     'peer.Header'
   );
-  
+
   /**
-   * Wrap HTTP/1.0 and HTTP/1.1 requests (used internally by the 
+   * Wrap HTTP/1.0 and HTTP/1.1 requests (used internally by the
    * HttpConnection class)
    *
    * @test     xp://net.xp_framework.unittest.peer.HttpRequestTest
@@ -24,6 +24,11 @@
    * @purpose  HTTP request
    */
   class HttpRequest extends Object {
+
+    const
+      MODE_ENCODE_PARAM=    'params',
+      MODE_ENCODE_CONTENT=  'content';
+
     public
       $url        = NULL,
       $method     = HttpConstants::GET,
@@ -75,7 +80,7 @@
     public function setTarget($target) {
       $this->target= $target;
     }
-    
+
     /**
      * Set request method
      *
@@ -95,17 +100,17 @@
         $this->parameters= $p;
         return;
       } else if (is_string($p)) {
-        parse_str($p, $out); 
+        parse_str($p, $out);
         $params= $out;
       } else if (is_array($p)) {
         $params= $p;
       } else {
         $params= array();
       }
-      
+
       $this->parameters= array_diff($params, $this->url->getParams());
     }
-    
+
     /**
      * Set a single request parameter
      *
@@ -115,7 +120,7 @@
     public function setParameter($name, $value) {
       $this->parameters[$name]= $value;
     }
-    
+
     /**
      * Specifically set a content.
      * All given parameters will then be added to the url instead
@@ -162,53 +167,34 @@
 
     /**
      * Will return the set parameters or content url encoded
-     * Only handles array values with depth 1. Deeper levels are not supported.
+     * Handles array values with unrestricted depth. 
      *
-     * @return  string
+     * @param   mixed   data
+     * @param   mixed   prefix
+     * @return  string  encodedData
      */
-    protected function getEncodedParameters() {
-      if ($this->parameters instanceof RequestData) {
-        $this->addHeaders($this->parameters->getHeaders());
-        $sEncoded= $this->parameters->getData();
-      } else {
+    protected function encodedData($data, $prefix= '') {
+      $prefix= trim($prefix);
+      if ($data instanceof RequestData) {
+        $this->addHeaders($data->getHeaders());
+        return $prefix.$data->getData();
+      } else if (is_array($data)) {
         $aEncoded= array();
-        foreach ($this->parameters as $name => $value) {
-          if (is_array($value)) {
-            foreach ($value as $k => $v) {
-              $aEncoded[]= $name.'['.$k.']='.urlencode($v);
-            }
-          } else {
-            $aEncoded[]= $name.'='.urlencode($value);
+        foreach ($data as $name => $value) {
+          if ('' !== $prefix) {
+            $name= $prefix.'['.$name.']';
           }
-        }
-        $sEncoded= implode('&', $aEncoded);
-      }
-      return $sEncoded;
-    }
-
-    /**
-     * Will return the encoded content
-     *
-     * @return  string  
-     */
-    protected function getEncodedContent() {
-      if ($this->content instanceof RequestData) {
-        $this->addHeaders($this->content->getHeaders());
-        return $this->content->getData();
-      } else if (is_array($this->content)) {
-        $aEncoded= array();
-        foreach ($this->content as $name => $value) {
           if (is_array($value)) {
-            foreach ($value as $k => $v) {
-              $aEncoded[]= $name.'['.$k.']='.urlencode($v);
-            }
+            $aEncoded[]= $this->encodedData($value, $name);
           } else {
+            // TBD: Wouldn't a rawurlencode() be better?
+            //      In regards to the special case of blank (+ or %20)
             $aEncoded[]= $name.'='.urlencode($value);
           }
         }
         return implode('&', $aEncoded);
       } else {
-        return $this->content;
+        return $prefix.$data;
       }
     }
 
@@ -230,7 +216,7 @@
     protected function getPayload($withBody) {
       $content= NULL;
       $addParamsToURI= TRUE;
-      $paramsEncoded= $this->getEncodedParameters();
+      $paramsEncoded= $this->encodedData($this->parameters);
 
       if (TRUE === $this->contentSet) {
         // trigger with-"setBody" behaviour
@@ -242,7 +228,7 @@
             break;
 
           default:
-            $content= $this->getEncodedContent();
+            $content= $this->encodedData($this->content);
             break;
         }
       } else {
@@ -283,6 +269,7 @@
         }
       }
 
+      // build request
       $request= sprintf(
         "%s %s HTTP/%s\r\n",
         $this->method,
@@ -290,17 +277,17 @@
         $this->version
       );
 
-      // Add request headers
       foreach ($this->headers as $k => $v) {
         foreach ($v as $value) {
           $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value)."\r\n";
         }
       }
+      $request.= "\r\n";
 
-      if (!$withBody) {
-        $content= '';
+      if ($withBody) {
+        $request.= $content;
       }
-      return $request."\r\n".$content;
+      return $request;
     }
 
     /**
@@ -311,7 +298,7 @@
     public function getHeaderString() {
       return $this->getPayload(FALSE);
     }
-    
+
     /**
      * Get request string
      *
