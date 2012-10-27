@@ -94,7 +94,6 @@
      * @return var
      */
     public function execute(RestRoutingItem $routing, $values) {
-      // Console::writeLine('execute(', $routing, ', ', $values, ') inject ', $routing->getArgs()->getInjections());
       $args= array();
       $names= $routing->getArgs()->getArguments();
       
