@@ -6,6 +6,14 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed $__generic-style generics (BC with < 5.8) breaking. They yielded
+  a php.stdClass instance instead of the one to be instantiated, which 
+  would result in "Fatal error: Call to undefined method stdClass::X()" 
+  when any method X would be called
+  (friebe)
+
 
 Version 5.8.9, released 2012-10-19
 ----------------------------------
