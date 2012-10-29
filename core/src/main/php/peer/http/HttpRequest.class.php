@@ -260,9 +260,9 @@
       }
 
       $target= $this->target;
-      $target.= (count($queryString) > 0) ? '?'.implode('&', $queryString) : '';
+      $target.= (sizeOf($queryString) > 0) ? '?'.implode('&', $queryString) : '';
 
-      if (!is_null($content)) {
+      if (NULL !== $content) {
         $this->headers['Content-Length']= array(max(0, strlen($content)));
         if (empty($this->headers['Content-Type'])) {
           $this->headers['Content-Type']= array('application/x-www-form-urlencoded');

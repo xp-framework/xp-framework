@@ -139,16 +139,13 @@
      * Test HTTP GET - parameters via setParameters(string)
      * with content
      */
-    #[@test]
+    #[@test, @expect('lang.IllegalStateException')]
     public function getUrlWithStringParamsWithContent() {
       $r= new HttpRequest(new URL('http://example.com/'));
       $r->setMethod(HttpConstants::GET);
       $r->setParameters('a=b');
       $r->setContent('aloha content');
-      try {
-        $r->getRequestString();
-        $this->fail('Illegal State GET with Content not detected', NULL, 'lang.IllegalStateException');
-      } catch (IllegalStateException $ex) { }
+      $r->getRequestString();
     }
 
     /**
@@ -482,16 +479,13 @@
      * Test HTTP HEAD
      * with content
      */
-    #[@test]
+    #[@test, @expect('lang.IllegalStateException')]
     public function headWithContent() {
       $r= new HttpRequest(new URL('http://example.com/'));
       $r->setMethod(HttpConstants::HEAD);
       $r->setParameters('a=b&c=d');
       $r->setContent('aloha content');
-      try {
-        $r->getRequestString();
-        $this->fail('Illegal State HEAD with Content not detected', NULL, 'lang.IllegalStateException');
-      } catch (IllegalStateException $ex) { }
+      $r->getRequestString();
     }
 
     /**
