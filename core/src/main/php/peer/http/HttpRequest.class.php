@@ -25,10 +25,6 @@
    */
   class HttpRequest extends Object {
 
-    const
-      MODE_ENCODE_PARAM=    'params',
-      MODE_ENCODE_CONTENT=  'content';
-
     public
       $url        = NULL,
       $method     = HttpConstants::GET,
@@ -36,8 +32,8 @@
       $version    = HttpConstants::VERSION_1_1,
       $headers    = array('Connection' => array('close')),
       $parameters = array(),
-      $content    = NULL,
-      $contentSet = FALSE;
+      $body       = NULL,
+      $bodySet    = FALSE;
 
     /**
      * Constructor
@@ -122,22 +118,22 @@
     }
 
     /**
-     * Specifically set a content.
-     * All given parameters will then be added to the url instead
+     * Specifically set a body.
+     * All eventually set parameters will then be added to the url instead
      *
      * @param   string  content
      */
-    public function setContent($content) {
-      $this->content= $content;
-      $this->contentSet= TRUE;
+    public function setBody($body) {
+      $this->body= $body;
+      $this->bodySet= TRUE;
     }
 
     /**
-     * Clears any set content
+     * Clears any set body
      */
-    public function clearContent() {
-      $this->content= NULL;
-      $this->contentSet= FALSE;
+    public function clearBody() {
+      $this->body= NULL;
+      $this->bodySet= FALSE;
     }
 
     /**
@@ -214,11 +210,11 @@
      * @throws  lang.IllegalStateException  if body was set with a none supported method
      */
     protected function getPayload($withBody) {
-      $content= NULL;
+      $body= NULL;
       $addParamsToURI= TRUE;
       $paramsEncoded= $this->encodedData($this->parameters);
 
-      if (TRUE === $this->contentSet) {
+      if (TRUE === $this->bodySet) {
         // trigger with-"setBody" behaviour
         switch ($this->method) {
           case HttpConstants::GET:    // might not be forbidden in RFC. if this is the case move to below
@@ -228,12 +224,12 @@
             break;
 
           default:
-            $content= $this->encodedData($this->content);
+            $body= $this->encodedData($this->body);
             break;
         }
       } else {
         // trigger pre-"setBody" behaviour
-        // params will either go to the uri or the content
+        // params will either go to the uri or the body
         switch ($this->method) {
           case HttpConstants::HEAD:
           case HttpConstants::GET:
@@ -244,7 +240,7 @@
 
           default:
             $addParamsToURI= FALSE;
-            $content= $paramsEncoded;
+            $body= $paramsEncoded;
             break;
         }
       }
@@ -262,8 +258,8 @@
       $target= $this->target;
       $target.= (sizeOf($queryString) > 0) ? '?'.implode('&', $queryString) : '';
 
-      if (NULL !== $content) {
-        $this->headers['Content-Length']= array(max(0, strlen($content)));
+      if (NULL !== $body) {
+        $this->headers['Content-Length']= array(max(0, strlen($body)));
         if (empty($this->headers['Content-Type'])) {
           $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
         }
@@ -285,7 +281,7 @@
       $request.= "\r\n";
 
       if ($withBody) {
-        $request.= $content;
+        $request.= $body;
       }
       return $request;
     }

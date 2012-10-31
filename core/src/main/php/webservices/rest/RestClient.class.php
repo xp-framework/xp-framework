@@ -148,7 +148,7 @@
       
       $send->setParameters($request->getParameters());
       if ($request->hasBody()) {
-        $send->setContent($request->getBody());
+        $send->setBody($request->getBody());
       }
       
       try {
