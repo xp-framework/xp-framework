@@ -211,7 +211,7 @@
      *
      * @param   bool    withBody
      * @return  string  payload
-     * @throws  lang.InvalidStateException  if body was set with a none supported method
+     * @throws  lang.IllegalStateException  if body was set with a none supported method
      */
     protected function getPayload($withBody) {
       $content= NULL;
