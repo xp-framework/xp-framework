@@ -114,5 +114,16 @@
       $v= RestFormat::$XML->read($req, new MapType('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v); 
     }
+
+    /**
+     * Test FORM
+     *
+     */
+    #[@test]
+    public function form_deserialize() {
+      $req= self::$request->newInstance('name=Timm');
+      $v= RestFormat::$FORM->read($req, new MapType('[:string]'));
+      $this->assertEquals(array('name' => 'Timm'), $v);
+    }
   }
 ?>
