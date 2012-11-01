@@ -9,6 +9,7 @@
   /**
    * Abstract base class
    *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.AbstractRestRouterTest
    */
   class AbstractRestRouter extends Object {
     protected $routes= array();

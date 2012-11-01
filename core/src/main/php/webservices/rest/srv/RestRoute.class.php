@@ -7,7 +7,7 @@
   /**
    * REST route interface
    *
-   * @test  xp://net.xp_framework.unittest.rest.server.RestRouteTest
+   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestRouteTest
    */
   class RestRoute extends Object {
     protected $verb= '';

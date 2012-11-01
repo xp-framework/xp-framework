@@ -22,7 +22,7 @@
    *   }
    * </code>
    *
-   * @test  xp://net.xp_framework.unittest.rest.server.RestDefaultRouterTest
+   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestDefaultRouterTest
    */
   class RestDefaultRouter extends AbstractRestRouter {
 

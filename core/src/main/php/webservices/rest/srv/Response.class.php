@@ -9,14 +9,14 @@
    * of a REST call.
    *
    * <code>
-   *   #[@webservice(path= '/resources', method= 'POST')]
+   *   #[@webservice(verb= 'POST', path= '/resources')]
    *   public function addElement(Element $element) {
    *     // TBI: Create element
    *     return Response::created();
    *   }
    * </code>
    *
-   * @test  xp://net.xp_framework.unittest.rest.srv.ResponseTest
+   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.ResponseTest
    */
   class Response extends Object {
     public $status;

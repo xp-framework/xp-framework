@@ -16,7 +16,7 @@
   /**
    * Rest format
    *
-   * @test  xp://net.xp_framework.unittest.rest.srv.RestFormatTest
+   * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestFormatTest
    */
   class RestFormat extends Enum {
     public static $UNKNOWN;
