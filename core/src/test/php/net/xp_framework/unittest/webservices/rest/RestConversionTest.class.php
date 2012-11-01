@@ -110,6 +110,24 @@
     }
 
     /**
+     * Test string
+     *
+     */
+    #[@test]
+    public function array_as_string() {
+      $this->assertEquals('Test', $this->fixture->convert(Primitive::$STRING, array('Test')));
+    }
+
+    /**
+     * Test string
+     *
+     */
+    #[@test]
+    public function map_as_string() {
+      $this->assertEquals('Test', $this->fixture->convert(Primitive::$STRING, array('name' => 'Test')));
+    }
+
+    /**
      * Test int
      *
      */
@@ -147,6 +165,24 @@
     }
 
     /**
+     * Test int
+     *
+     */
+    #[@test]
+    public function array_as_int() {
+      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, array(1)));
+    }
+
+    /**
+     * Test int
+     *
+     */
+    #[@test]
+    public function map_as_int() {
+      $this->assertEquals(1, $this->fixture->convert(Primitive::$INT, array('one' => 1)));
+    }
+
+    /**
      * Test double
      *
      */
@@ -181,6 +217,24 @@
     public function bool_as_double() {
       $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, TRUE));
       $this->assertEquals(0.0, $this->fixture->convert(Primitive::$DOUBLE, FALSE));
+    }
+
+    /**
+     * Test double
+     *
+     */
+    #[@test]
+    public function array_as_double() {
+      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, array(1.0)));
+    }
+
+    /**
+     * Test double
+     *
+     */
+    #[@test]
+    public function map_as_double() {
+      $this->assertEquals(1.0, $this->fixture->convert(Primitive::$DOUBLE, array('one' => 1.0)));
     }
 
     /**
