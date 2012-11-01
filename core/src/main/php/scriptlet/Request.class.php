@@ -117,5 +117,12 @@
      * @return  string
      */
     public function getQueryString();
+
+    /**
+     * Gets the input stream
+     *
+     * @param   io.streams.InputStream
+     */
+    public function getInputStream();
   }
 ?>

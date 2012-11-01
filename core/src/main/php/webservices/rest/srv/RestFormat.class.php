@@ -10,13 +10,13 @@
     'webservices.rest.RestJsonDeserializer',
     'webservices.rest.RestXmlSerializer',
     'webservices.rest.RestXmlDeserializer',
-    'webservices.rest.RestFormDeserializer',
-    'io.streams.ChannelInputStream'
+    'webservices.rest.RestFormDeserializer'
   );
 
   /**
    * Rest format
    *
+   * @test  xp://net.xp_framework.unittest.rest.srv.RestFormatTest
    */
   class RestFormat extends Enum {
     public static $UNKNOWN;
@@ -55,7 +55,7 @@
      * @return var
      */
     public function read($request, $type) {
-      return $this->deserializer->deserialize(new ChannelInputStream('input'), $type);
+      return $this->deserializer->deserialize($request->getInputStream(), $type);
     }
 
     /**
@@ -65,7 +65,7 @@
      * @param  var value
      */
     public function write($response, $value) {
-      $response->write($this->serializer->serialize($value));
+      $response->getOutputStream()->write($this->serializer->serialize($value));
     }
 
     /**
