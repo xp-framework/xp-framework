@@ -5,7 +5,16 @@
  */
 
   /**
-   * REST response
+   * The Response class can be used to control the HTTP status code and headers
+   * of a REST call.
+   *
+   * <code>
+   *   #[@webservice(path= '/resources', method= 'POST')]
+   *   public function addElement(Element $element) {
+   *     // TBI: Create element
+   *     return Response::created();
+   *   }
+   * </code>
    *
    * @test  xp://net.xp_framework.unittest.rest.srv.ResponseTest
    */
