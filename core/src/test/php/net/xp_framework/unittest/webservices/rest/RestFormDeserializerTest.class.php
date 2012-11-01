@@ -45,5 +45,71 @@
         $this->fixture->deserialize($this->input('name=Timm&id=1549'), Type::forName('[:string]'))
       );
     }
+
+    /**
+     * Test key[]=...
+     *
+     */
+    #[@test]
+    public function array_of_strings() {
+      $this->assertEquals(
+        array('name' => array('Timm', 'Alex')), 
+        $this->fixture->deserialize($this->input('name[]=Timm&name[]=Alex'), Type::forName('[:string[]]'))
+      );
+    }
+
+    /**
+     * Test key[map]=...
+     *
+     */
+    #[@test]
+    public function map_of_strings() {
+      $this->assertEquals(
+        array('name' => array('thekid' => 'Timm', 'kiesel' => 'Alex')), 
+        $this->fixture->deserialize($this->input('name[thekid]=Timm&name[kiesel]=Alex'), Type::forName('[:[:string]]'))
+      );
+    }
+
+    /**
+     * Test url encoding
+     *
+     */
+    #[@test]
+    public function urlencoded_key() {
+      $this->assertEquals(
+        array('The Name' => 'Timm'), 
+        $this->fixture->deserialize($this->input('The%20Name=Timm'), Type::forName('[:string]'))
+      );
+    }
+
+    /**
+     * Test url encoding
+     *
+     */
+    #[@test]
+    public function urlencoded_value() {
+      $this->assertEquals(
+        array('name' => 'Timm Friebe'), 
+        $this->fixture->deserialize($this->input('name=Timm%20Friebe'), Type::forName('[:string]'))
+      );
+    }
+
+    /**
+     * Test name[=...
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unbalanced_opening_bracket_in_key() {
+      $this->fixture->deserialize($this->input('name[=...'), Type::$VAR);
+    }
+
+    /**
+     * Test name]=...
+     *
+     */
+    #[@test, @expect('lang.FormatException')]
+    public function unbalanced_closing_bracket_in_key() {
+      $this->fixture->deserialize($this->input('name]=...'), Type::$VAR);
+    }
   }
 ?>
