@@ -9,6 +9,7 @@
   /**
    * A deserializer
    *
+   * @test  xp://net.xp_framework.unittest.webservices.rest.RestFormDeserializerTest
    */
   class RestFormDeserializer extends RestDeserializer {
 
@@ -18,13 +19,16 @@
      * @param   io.streams.InputStream in
      * @param   lang.Type target
      * @return  var
+     * @throws  lang.FormatException
      */
     public function deserialize($in, $target) {
       $st= new StreamTokenizer($in, '&');
       $map= array();
       while ($st->hasMoreTokens()) {
         $key= $value= NULL;
-        sscanf($st->nextToken(), "%[^=]=%[^\r]", $key, $value);
+        if (2 !== sscanf($t= $st->nextToken(), "%[^=]=%[^\r]", $key, $value)) {
+          throw new FormatException('Malformed pair "'.$t.'"');
+        }
         $key= urldecode($key);
         if (substr_count($key, '[') !== substr_count($key, ']')) {
           throw new FormatException('Unbalanced [] in query string');

@@ -99,6 +99,7 @@
      * @param   io.streams.InputStream in
      * @param   lang.Type target
      * @return  var
+     * @throws  lang.FormatException
      */
     public abstract function deserialize($in, $target);
   }
