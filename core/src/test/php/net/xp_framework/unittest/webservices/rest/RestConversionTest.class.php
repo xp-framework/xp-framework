@@ -222,5 +222,53 @@
       $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, 'non-empty'));
       $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, ''));
     }
+
+    /**
+     * Test var-array
+     *
+     */
+    #[@test]
+    public function var_array() {
+      $this->assertEquals(
+        array(1, 2, 3), 
+        $this->fixture->convert(new ArrayType('var[]'), array(1, 2, 3))
+      );
+    }
+
+    /**
+     * Test var-array
+     *
+     */
+    #[@test]
+    public function int_array() {
+      $this->assertEquals(
+        array(1, 2, 3), 
+        $this->fixture->convert(new ArrayType('int[]'), array(1, '2', 3.0))
+      );
+    }
+
+    /**
+     * Test var-map
+     *
+     */
+    #[@test]
+    public function var_map() {
+      $this->assertEquals(
+        array('one' => 1, 'two' => 2, 'three' => 3),
+        $this->fixture->convert(new MapType('[:var]'), array('one' => 1, 'two' => 2, 'three' => 3))
+      );
+    }
+
+    /**
+     * Test int-map
+     *
+     */
+    #[@test]
+    public function int_map() {
+      $this->assertEquals(
+        array('one' => 1, 'two' => 2, 'three' => 3),
+        $this->fixture->convert(new MapType('[:int]'), array('one' => 1, 'two' => '2', 'three' => 3.0))
+      );
+    }
   }
 ?>
