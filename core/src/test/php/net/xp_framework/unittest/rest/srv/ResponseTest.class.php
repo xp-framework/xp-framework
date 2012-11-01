@@ -159,6 +159,16 @@
     }
 
     /**
+     * Test status() method
+     * 
+     */
+    #[@test]
+    public function status_402() {
+      $r= Response::status(402);
+      $this->assertEquals(402, $r->status);
+    }
+
+    /**
      * Test withHeader() method
      * 
      */

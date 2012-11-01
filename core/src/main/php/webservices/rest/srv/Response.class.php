@@ -116,8 +116,20 @@
     }
 
     /**
-     * Creates a new response instance with the status code set to a given error
-     * code (defaulting to 500 - Internal Server Error).
+     * Creates a new response instance with the status code set to a given status.
+     *
+     * @param   int code
+     * @return  self
+     */
+    public static function status($code) {
+      $self= new self();
+      $self->status= $code;
+      return $self;
+    }
+
+    /**
+     * Creates a new response instance with the status code optionally set to a given
+     * error code (defaulting to 500 - Internal Server Error).
      *
      * @param   int code
      * @return  self
