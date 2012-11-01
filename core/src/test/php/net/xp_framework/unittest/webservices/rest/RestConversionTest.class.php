@@ -278,6 +278,26 @@
     }
 
     /**
+     * Test bool
+     *
+     */
+    #[@test]
+    public function array_as_bool() {
+      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, array(TRUE)));
+      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, array(FALSE)));
+    }
+
+    /**
+     * Test bool
+     *
+     */
+    #[@test]
+    public function map_as_bool() {
+      $this->assertEquals(TRUE, $this->fixture->convert(Primitive::$BOOL, array('one' => TRUE)));
+      $this->assertEquals(FALSE, $this->fixture->convert(Primitive::$BOOL, array('one' => FALSE)));
+    }
+
+    /**
      * Test var-array
      *
      */
