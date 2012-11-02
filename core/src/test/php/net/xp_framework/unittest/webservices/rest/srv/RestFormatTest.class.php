@@ -75,7 +75,7 @@
     #[@test]
     public function json_deserialize() {
       $req= self::$request->newInstance('{ "name" : "Timm" }');
-      $v= RestFormat::$JSON->read($req, new MapType('[:string]'));
+      $v= RestFormat::$JSON->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v); 
     }
 
@@ -100,7 +100,7 @@
     #[@test]
     public function xml_deserialize() {
       $req= self::$request->newInstance('<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>');
-      $v= RestFormat::$XML->read($req, new MapType('[:string]'));
+      $v= RestFormat::$XML->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v); 
     }
 
@@ -111,7 +111,7 @@
     #[@test]
     public function xml_deserialize_without_xml_declaration() {
       $req= self::$request->newInstance('<root><name>Timm</name></root>');
-      $v= RestFormat::$XML->read($req, new MapType('[:string]'));
+      $v= RestFormat::$XML->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v); 
     }
 
@@ -122,7 +122,7 @@
     #[@test]
     public function form_deserialize() {
       $req= self::$request->newInstance('name=Timm');
-      $v= RestFormat::$FORM->read($req, new MapType('[:string]'));
+      $v= RestFormat::$FORM->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v);
     }
   }

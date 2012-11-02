@@ -309,7 +309,7 @@
     public function var_array() {
       $this->assertEquals(
         array(1, 2, 3), 
-        $this->fixture->convert(new ArrayType('var[]'), array(1, 2, 3))
+        $this->fixture->convert(ArrayType::forName('var[]'), array(1, 2, 3))
       );
     }
 
@@ -321,7 +321,7 @@
     public function int_array() {
       $this->assertEquals(
         array(1, 2, 3), 
-        $this->fixture->convert(new ArrayType('int[]'), array(1, '2', 3.0))
+        $this->fixture->convert(ArrayType::forName('int[]'), array(1, '2', 3.0))
       );
     }
 
@@ -333,7 +333,7 @@
     public function var_map() {
       $this->assertEquals(
         array('one' => 1, 'two' => 2, 'three' => 3),
-        $this->fixture->convert(new MapType('[:var]'), array('one' => 1, 'two' => 2, 'three' => 3))
+        $this->fixture->convert(MapType::forName('[:var]'), array('one' => 1, 'two' => 2, 'three' => 3))
       );
     }
 
@@ -345,7 +345,7 @@
     public function int_map() {
       $this->assertEquals(
         array('one' => 1, 'two' => 2, 'three' => 3),
-        $this->fixture->convert(new MapType('[:int]'), array('one' => 1, 'two' => '2', 'three' => 3.0))
+        $this->fixture->convert(MapType::forName('[:int]'), array('one' => 1, 'two' => '2', 'three' => 3.0))
       );
     }
 
@@ -410,7 +410,7 @@
       $issue1= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1');
       $issue2= new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2');
       $this->assertEquals(array($issue1, $issue2), $this->fixture->convert(
-        new ArrayType($issue1->getClassName().'[]'), 
+        ArrayType::forName($issue1->getClassName().'[]'), 
         array(array('issue_id' => 1, 'title' => 'test1'), array('issue_id' => 2, 'title' => 'test2')))
       );
     }
@@ -424,7 +424,7 @@
       $issue1= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1');
       $issue2= new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2');
       $this->assertEquals(array('one' => $issue1, 'two' => $issue2), $this->fixture->convert(
-        new MapType('[:'.$issue1->getClassName().']'), 
+        MapType::forName('[:'.$issue1->getClassName().']'), 
         array('one' => array('issue_id' => 1, 'title' => 'test1'), 'two' => array('issue_id' => 2, 'title' => 'test2')))
       );
     }
