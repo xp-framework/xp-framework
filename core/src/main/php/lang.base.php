@@ -311,7 +311,7 @@
             $unpack[$header['version']], 
             fread($current['handle'], 0x0100)
           );
-          $current['index'][$entry['id']]= array($entry['size'], $entry['offset'], $i);
+          $current['index'][rtrim($entry['id'], "\0")]= array($entry['size'], $entry['offset'], $i);
         }
       }
 
@@ -461,7 +461,14 @@
   }
   // }}}
 
-  // {{{ void finally (void)
+  // {{{ void ensure ($t)
+  //     Replacement for finally() which clashes with PHP 5.5.0's finally
+  function ensure(&$t) {
+    if (!isset($t)) $t= NULL;
+  }
+  // }}}
+
+  // {{{ deprecated void finally (void)
   //     Syntactic sugar. Intentionally empty
   function finally() {
   }
@@ -603,7 +610,7 @@
     $class= XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base));
     if ($class->hasField('__generic')) {
       $__id= microtime();
-      $name= xp::reflect($classname);
+      $name= $class->literal();
       $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
       foreach ($typeargs as $type) {
         $instance->__generic[]= xp::reflect($type->getName());

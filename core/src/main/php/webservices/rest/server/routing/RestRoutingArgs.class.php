@@ -27,8 +27,10 @@
      * @param string[] injects The injected arguments (defaults to empty)
      */
     public function __construct($args= array(), $injects= array()) {
-      foreach ($args as $name => $type) {
-        is_numeric($name) ? $this->addArgument($type) : $this->addArgument($name, $type);
+      foreach ($args as $arg) {
+        if (!is('lang.reflect.Parameter', $arg))
+          throw new IllegalArgumentException(sprintf('Invalid argument %s', Primitive::boxed($arg)));
+        $this->addArgument($arg->getName(), $arg);
       }
       
       foreach ($injects as $name => $inject) {
@@ -40,10 +42,12 @@
      * Add argument
      * 
      * @param string name The name of argument
-     * @param lang.reflect.Type type The type of argument
+     * @param lang.reflect.Parameter arg The argument
      */
-    public function addArgument($name, Type $type= NULL) {
-      $this->args[$name]= $type !== NULL ? $type : Type::$VAR;
+    public function addArgument($name, $arg) {
+      if (!is('lang.reflect.Parameter', $arg))
+        throw new IllegalArgumentException(sprintf('Invalid argument %s', Primitive::boxed($arg)));
+      $this->args[$name]= $arg;
     }
     
     /**
@@ -68,10 +72,32 @@
     /**
      * Return type for given argument
      * 
+     * @param string name The name of argument
      * @return lang.Type
      */
     public function getArgumentType($name) {
-      return $this->args[$name];
+      return $this->args[$name]->getType();
+    }
+    
+    /**
+     * Check if the argument is optional or not
+     * 
+     * @param string name The name of argument
+     * @return bool
+     */
+    public function isArgumentOptional($name) {
+      return $this->args[$name]->isOptional();
+    }
+    
+    /**
+     * Get default value if argument is optional
+     * 
+     * @param string name The name of argument
+     * @return bool
+     */
+    public function getArgumentDefaultValue($name) {
+      return $this->isArgumentOptional($name) ? 
+        $this->args[$name]->getDefaultValue() : NULL;
     }
     
     /**

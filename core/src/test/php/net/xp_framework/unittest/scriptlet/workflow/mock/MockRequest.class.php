@@ -41,11 +41,11 @@
         array(),
         $functionality
       )->newInstance();
-      putenv('STATE='.$stateName);
+      $_SERVER['STATE']= $stateName;
 
       // Set some defaults
-      putenv('PRODUCT=xp');
-      putenv('LANGUAGE=en_US');
+      $_SERVER['PRODUCT']= 'xp';
+      $_SERVER['LANGUAGE']= 'en_US';
     }
   }
 ?>

@@ -8,6 +8,153 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed $__generic-style generics (BC with < 5.8) breaking. They yielded
+  a php.stdClass instance instead of the one to be instantiated, which 
+  would result in "Fatal error: Call to undefined method stdClass::X()" 
+  when any method X would be called
+  (friebe)
+
+
+Version 5.8.9, released 2012-10-19
+----------------------------------
+Git commit: f7ccfbe86cac0765f6cf41d048484d21346c7eb5
+
+Heads up!
+~~~~~~~~~
+- Deprecated finally() in favor of ensure($t) - see issue #186.
+  http://news.planet-xp.net/article/481/2012/09/30/
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Added support for double data type in REST serializer - see pull #192
+  (weiher)
+- Fixed JsonDecoder to ignore trailing whitespace - see issue #189.
+  (friebe)
+- Added forward-compatible version of handling unpack("a...") data. 
+  With PHP 5.5.0, this has been changed to include trailing \0s, see
+  https://bugs.php.net/bug.php?id=61038
+  (friebe)
+- Replaced preg_replace() calls with /e modifier where applicable, it
+  is deprecated in PHP 5.5.0
+  (friebe)
+
+Features
+~~~~~~~~
+- Added SSL-specific options for sockets - see pull request #193 
+  (kiesel)
+- Added failover Sybase/MSSQL support via userland driver by merging 
+  the incubator/tds branch in pull request #190. 
+  http://news.planet-xp.net/article/483/2012/10/11/
+  (friebe, kiesel) 
+- Added DETAIL_TARGET_ANNO for forward compatibility with parameter
+  annotations implementation to core and compiler.
+  (friebe)
+
+
+Version 5.8.8, released 2012-09-30
+----------------------------------
+Git commit: e5e65ff70b85af9629f9a5af1854cc2d3fd064fe
+
+Bugfixes
+~~~~~~~~
+- Added support for MySQL time column type - see pull request #185
+  (andstefiul)
+- Fixed bug in compiler resolving platform-specific constants, e.g.
+  DIRECTORY_SEPARATOR, at compile time.
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0254 - Builtin development webserver "xpws"
+  http://news.planet-xp.net/article/478/2012/09/29/
+  (friebe)
+
+Features
+~~~~~~~~
+- Changed scriptlet API to use $_SERVER instead of getenv() - this is more
+  portable to different web server SAPIs. See pull request #184
+  (friebe)
+
+
+Version 5.8.7, released 2012-08-17
+----------------------------------
+Git commit: 20ebf97d186623fcf82140de06a870eaba610464
+
+Bugfixes
+~~~~~~~~
+- Fixed issue #182: URLs with `@` inside fail to parse
+  (friebe)
+- Allowed _-.: as values in rest paths - see pull request #175
+  (kiesel)
+- Fixed optional params for rest server - see pull request #152
+  (mihaighigea, kiesel, iigorr)
+- Fixed HTTP content length calculation for empty POST bodys.
+  (kiesel, iigorr)
+
+Features
+~~~~~~~~
+- Added equals() methods to io.File & io.Folder - pull request #181
+  (friebe)
+- Preferred "debug" loglevel over "info" in remote package - less verbose.
+  See pull request #180
+  (kiesel)
+- Extracted class parsing into own method (testability) - pull request #177
+  (friebe)
+- Added support for "self" as type in @return, @param - pull request #176
+  (friebe)
+
+
+Version 5.8.6, released 2012-07-09
+----------------------------------
+Git commit: f244d67ac076f723934eb24ca187efed5664c6a8
+
+Bugfixes
+~~~~~~~~
+- Changed drivers for Sybase and MSSQL to also emit seconds of a given 
+  util.Date - see pull request #169
+  (ohinckel, friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0256 - Improve unittest's error messages 
+  See also pull request #40.
+  (kiesel, friebe)
+- Implemented RFC #0255 - Allow multiple @beforeClass / @afterClass methods.
+  See also pull request #100.
+  (friebe)
+
+Features
+~~~~~~~~
+- Improved unittest output when comparing large strings (pull request #30)
+  (friebe, kiesel)
+- Added unittest.TestCase::skip() method - see pull request #173
+  (friebe)
+- Added default logger to scriptlet handlers - see pull request #62
+  (oanas, friebe)
+- Added colored output for unittest runner - see issue #25 / pull #172
+  (kiesel, friebe)
+- Added support for supplying a path to the unittest command - will run
+  all test case classes inside the given directory and its subdirectories.
+  See pull request #170
+  (friebe, kiesel)
+- Added unittest listener to update terminal title - pull request #171
+  (kiesel, friebe)
+- Added support for ! in classpaths - see pull request #168
+  (mrosoiu)
+
+
+Version 5.8.5, released 2012-06-08
+----------------------------------
+Git commit: a644ffc21f9e8b59db56ad505a0869afff6ab27f
+
+Bugfixes
+~~~~~~~~
+- Fixed problem with multiple entries in X-Forwarded-Host header. See 
+  issue #162, and http://httpd.apache.org/docs/2.2/mod/mod_proxy.html
+  (friebe)
+- Fixed support for REST Object collections (see pull request #164)
+  (friebe, ghiata)
 - Fixed creation of Date from a float value causes PHP fatal error - see
   pull request #156
   (ghiata)
@@ -36,6 +183,8 @@ RFCs
 
 Features
 ~~~~~~~~
+- Changed CsvWriter to be less strict in what it accepts - see issue #123
+  (friebe)
 - Added new peer.http.HttpConnection::patch() method - pull request #161
   (friebe)
 - Added new HTTP status codes defined in RFC 6585, see issue #158

@@ -18,6 +18,7 @@
   define('DETAIL_THROWS',         3);
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
+  define('DETAIL_TARGET_ANNO',    6);
   define('DETAIL_NAME',           6);
   define('DETAIL_GENERIC',        7);
  
@@ -745,20 +746,13 @@
     }
 
     /**
-     * Retrieve details for a specified class. Note: Results from this 
-     * method are cached!
+     * Parse details from a given input string
      *
-     * @param   string class fully qualified class name
-     * @return  array or NULL to indicate no details are available
+     * @param   string bytes
+     * @param   string context default ''
+     * @return  [:var] details
      */
-    public static function detailsForClass($class) {
-      if (!$class) return NULL;        // Border case
-      if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
-
-      // Retrieve class' sourcecode
-      $cl= self::_classLoaderFor($class);
-      if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
-
+    public static function parseDetails($bytes, $context= '') {
       $details= array(array(), array());
       $annotations= array();
       $comment= NULL;
@@ -781,7 +775,7 @@
               if (']' == substr(rtrim($tokens[$i][1]), -1)) {
                 $annotations= self::parseAnnotations(
                   trim($parsed, " \t\n\r"), 
-                  $class.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
+                  $context.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
                 );
                 $parsed= '';
               }
@@ -792,10 +786,10 @@
           case T_INTERFACE:
             if ('' !== $parsed) raise(
               'lang.ClassFormatException', 
-              'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
+              'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
             );
             $details['class']= array(
-              DETAIL_COMMENT      => trim(preg_replace('/\n   \* ?/', "\n", "\n".substr(
+              DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
@@ -810,7 +804,7 @@
             if (!$members) break;
 
             // Have a member variable
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $name= substr($tokens[$i][1], 1);
             $details[0][$name]= array(
               DETAIL_ANNOTATIONS => $annotations
@@ -819,7 +813,7 @@
             break;
 
           case T_FUNCTION:
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $members= FALSE;
             while (T_STRING !== $tokens[$i][0]) $i++;
             $m= $tokens[$i][1];
@@ -827,7 +821,7 @@
               DETAIL_ARGUMENTS    => array(),
               DETAIL_RETURNS      => 'void',
               DETAIL_THROWS       => array(),
-              DETAIL_COMMENT      => trim(preg_replace('/\n     \* ?/', "\n", "\n".substr(
+              DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
@@ -865,10 +859,26 @@
             // Empty
         }
       }
-      
-      // Return details for specified class
-      xp::$registry['details.'.$class]= $details;
       return $details;
+    }
+
+    /**
+     * Retrieve details for a specified class. Note: Results from this 
+     * method are cached!
+     *
+     * @param   string class fully qualified class name
+     * @return  array or NULL to indicate no details are available
+     */
+    public static function detailsForClass($class) {
+      if (!$class) return NULL;        // Border case
+      if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
+
+      // Retrieve class' sourcecode
+      $cl= self::_classLoaderFor($class);
+      if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
+
+      // Return details for specified class
+      return xp::$registry['details.'.$class]= self::parseDetails($bytes, $class);
     }
 
     /**
@@ -961,12 +971,19 @@
         $counter= 0;
         $tokens= token_get_all($bytes);
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
-          if (T_COMMENT === $tokens[$i][0] && '#' === $tokens[$i][1]{0}) {
-            $annotations= eval('return array('.preg_replace(
-              array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-              array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
-              trim($tokens[$i][1], "[]# \t\n\r").','
-            ).');');
+          if (T_COMMENT === $tokens[$i][0] && '#' === $tokens[$i][1]{0}) {  // Annotations
+            if ('[' === $tokens[$i][1]{1}) {
+              $parsed= substr($tokens[$i][1], 2);
+            } else {
+              $parsed.= substr($tokens[$i][1], 1);
+            }
+            if (']' == substr(rtrim($tokens[$i][1]), -1)) {
+              $annotations= self::parseAnnotations(
+                trim($parsed, " \t\n\r"), 
+                $qname.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
+              );
+              $parsed= '';
+            }
             continue;
           } else if (T_DOC_COMMENT === $tokens[$i][0]) {
             $matches= NULL;

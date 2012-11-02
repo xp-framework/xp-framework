@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.log.Traceable');
+
   // Handler stati
   define('HANDLER_SETUP',       'setup');
   define('HANDLER_FAILED',      'failed');
@@ -23,8 +25,9 @@
    * @see      xp://scriptlet.xml.workflow.AbstractState#addHandler
    * @purpose  Base class
    */
-  class AbstractHandler extends Object {
+  class AbstractHandler extends Object implements Traceable {
     public
+      $cat              = NULL,
       $wrapper          = NULL,
       $values           = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
       $errors           = array(),
@@ -39,7 +42,17 @@
     public function __construct() {
       $this->name= strtolower($this->getClass()->getSimpleName());
     }
-    
+
+    /**
+     * Set a trace for debugging
+     *
+     * @param   util.log.LogCategory cat
+     * @see     xp://util.log.Traceable
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
+    }
+
     /**
      * Creates a string representation of this handler
      *

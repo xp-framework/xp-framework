@@ -5,7 +5,7 @@
   <parent>
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
-    <version>5.8.5</version>
+    <version>5.8.10</version>
   </parent>
 
   <!-- The Basics -->
@@ -15,6 +15,14 @@
   <!-- More Project Information -->
   <name>XP-Framework core</name>
 
+  <properties>
+    <!-- Test resources are inside [src/test/php] and not inside [src/test/resources] -->
+    <xp.compile.testPhpIncludePattern>**/*</xp.compile.testPhpIncludePattern>
+
+    <!-- Unittest ini files location -->
+    <xp.test.iniDirectory>${basedir}/src/test/resources</xp.test.iniDirectory>
+  </properties>
+
   <!-- Copy resources (not in the default Maven layout) -->
   <build>
     <plugins>
@@ -22,10 +30,8 @@
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.5</version>
         <executions>
-
-          <!-- Copy base.lang.php, VERSION and LICENSE -->
           <execution>
-            <id>copy-lang-base</id>
+            <id>copy-core-resources</id>
             <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -39,28 +45,14 @@
                     <include>lang.base.php</include>
                     <include>VERSION</include>
                     <include>LICENCE</include>
+                    <include>**/package-info.xp</include>
+                    <include>sapi/**/*.sapi.php</include>
+                    <include>sapi/scriptlet/*.html</include>
                   </includes>
                 </resource>
               </resources>
             </configuration>
-          </execution>
-
-          <!-- Copy unittest ini files -->
-          <execution>
-            <id>copy-test-resources</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.testOutputDirectory}/etc/unittest</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/resources/unittest</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
+         </execution>
         </executions>
       </plugin>
     </plugins>

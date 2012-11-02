@@ -95,7 +95,7 @@
       $this->assertEquals(
         "--".$this->fixture->getBoundary()."\r\n".
         "Content-Disposition: form-data; name=\"key\"\r\n".
-        "Content-Type: text/plain; charset=\"UTF-8\"\r\n\r\n".
+        "Content-Type: text/plain; charset=\"utf-8\"\r\n\r\n".
         "value\r\n--".$this->fixture->getBoundary()."--\r\n",
 
         $this->fixture->getData()

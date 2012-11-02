@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('peer.Socket');
+  uses('peer.CryptoSocket');
 
   /**
    * SSL (Secure socket layer) socket
@@ -17,7 +17,7 @@
    * @see   php://transports
    * @ext   openssl
    */
-  class SSLSocket extends Socket {
+  class SSLSocket extends CryptoSocket {
 
     /**
      * Constructor

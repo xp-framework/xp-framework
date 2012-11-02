@@ -278,7 +278,7 @@
           // Read index
           for ($i= 0; $i < $data['indexsize']; $i++) {
             $entry= unpack($unpack[$this->version], $this->file->read(ARCHIVE_INDEX_ENTRY_SIZE));
-            $this->_index[$entry['id']]= array($entry['size'], $entry['offset'], NULL);
+            $this->_index[rtrim($entry['id'], "\0")]= array($entry['size'], $entry['offset'], NULL);
           }
           return TRUE;
           

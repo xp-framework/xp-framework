@@ -22,17 +22,19 @@
      * 
      */
     public function setUp() {
+      $params= XPClass::forName('net.xp_framework.unittest.rest.server.mock.MockArgs')
+        ->newInstance()->getClass()->getMethod('simpleMethod')->getParameters();
       $this->fixture= new RestRoutingItem(
         'GET',
         new RestPath('/some/path'),
         new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)),
-        new RestRoutingArgs(array('id'), array('some.Class'))
+        new RestRoutingArgs($params, array('some.Class'))
       );
       $this->fixtureParams= new RestRoutingItem(
         'GET',
         new RestPath('/some/path/{arg}'),
         new RestMethodRoute($this->getClass()->getMethod(__FUNCTION__)),
-        new RestRoutingArgs(array('id'), array('some.Class'))
+        new RestRoutingArgs($params, array('some.Class'))
       );
     }
     

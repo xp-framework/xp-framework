@@ -52,6 +52,7 @@
         case 'integer':
         case 'string':
         case 'boolean':
+        case 'double':
           return $data;
         
         case 'array':
@@ -68,6 +69,9 @@
         
         case 'util.Hashmap':
           return $this->simple($data->toArray());
+        
+        case 'util.Date':
+          return $data->toString();
         
         default:
           if ($data instanceof Generic) {
@@ -153,6 +157,13 @@
           }
           
           return new Hashmap($data);
+
+        case 'util.Date':
+          if (!is_string($data)) {
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to util.Date');
+          }
+          
+          return Date::fromString($data);
         
         case 'php.stdClass':
           if (!is_array($data)) {

@@ -12,14 +12,16 @@ Directory structure
     |  |- ChangeLog
     |  `- src             # Sourcecode, by Maven conventions
     |     |- main
+    |     |  `- php
     |     |- test
-    |     `- resources
+    |        `- php
+    |        `- resources
     |
     `- tools              # Entry point
 	   |- tools           # Bootstrapping (class.php, xar.php, web.php)
        `- src             # Sourcecode, by Maven conventions
           `- main
-
+             `- php
 
 Using it
 --------
