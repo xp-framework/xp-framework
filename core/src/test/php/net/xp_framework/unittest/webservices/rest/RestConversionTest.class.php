@@ -6,7 +6,11 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.RestDeserializer'
+    'webservices.rest.RestDeserializer',
+    'net.xp_framework.unittest.webservices.rest.IssueWithField',
+    'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
+    'net.xp_framework.unittest.webservices.rest.IssueWithSetter',
+    'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreSetter'
   );
 
   /**
@@ -342,6 +346,86 @@
       $this->assertEquals(
         array('one' => 1, 'two' => 2, 'three' => 3),
         $this->fixture->convert(new MapType('[:int]'), array('one' => 1, 'two' => '2', 'three' => 3.0))
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function issue_with_field() {
+      $issue= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test');
+      $this->assertEquals(
+        $issue, 
+        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function issue_with_underscore_field() {
+      $issue= new net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreField(1, 'test');
+      $this->assertEquals(
+        $issue, 
+        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function issue_with_setter() {
+      $issue= new net·xp_framework·unittest·webservices·rest·IssueWithSetter(1, 'test');
+      $this->assertEquals(
+        $issue, 
+        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function issue_with_underscore_setter() {
+      $issue= new net·xp_framework·unittest·webservices·rest·IssueWithUnderscoreSetter(1, 'test');
+      $this->assertEquals(
+        $issue, 
+        $this->fixture->convert($issue->getClass(), array('issue_id' => 1, 'title' => 'test'))
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function array_of_issues() {
+      $issue1= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1');
+      $issue2= new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2');
+      $this->assertEquals(array($issue1, $issue2), $this->fixture->convert(
+        new ArrayType($issue1->getClassName().'[]'), 
+        array(array('issue_id' => 1, 'title' => 'test1'), array('issue_id' => 2, 'title' => 'test2')))
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function map_of_issues() {
+      $issue1= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1');
+      $issue2= new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2');
+      $this->assertEquals(array('one' => $issue1, 'two' => $issue2), $this->fixture->convert(
+        new MapType('[:'.$issue1->getClassName().']'), 
+        array('one' => array('issue_id' => 1, 'title' => 'test1'), 'two' => array('issue_id' => 2, 'title' => 'test2')))
       );
     }
   }
