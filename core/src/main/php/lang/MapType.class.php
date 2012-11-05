@@ -9,12 +9,24 @@
   /**
    * Represents map types
    *
-   * @see      xp://lang.Type
-   * @test     xp://net.xp_framework.unittest.core.MapTypeTest
-   * @purpose  Type implementation
+   * @see   xp://lang.Type
+   * @test  xp://net.xp_framework.unittest.core.MapTypeTest
    */
   class MapType extends Type {
-  
+
+    /**
+     * Creates a new array type instance
+     *
+     * @param  var component
+     */
+    public function __construct($component) {
+      if ($component instanceof Type) {
+        parent::__construct('[:'.$component->getName().']');
+      } else {
+        parent::__construct('[:'.$component.']');
+      }
+    }
+
     /**
      * Gets this array's component type
      *
@@ -32,9 +44,11 @@
      * @throws  lang.IllegalArgumentException if the given name does not correspond to a primitive
      */
     public static function forName($name) {
-      if ('[:' !== substr($name, 0, 2)) throw new IllegalArgumentException('Not a map: '.$name);
+      if ('[:' !== substr($name, 0, 2)) {
+        throw new IllegalArgumentException('Not a map: '.$name);
+      }
       
-      return new self($name);
+      return new self(substr($name, 2, -1));
     }
 
     /**

@@ -14,6 +14,12 @@ Bugfixes
   when any method X would be called
   (friebe)
 
+Features
+~~~~~~~~
+- Added ArrayType and MapType constructors which accept component types
+  in pull request #197
+  (friebe)
+
 
 Version 5.8.9, released 2012-10-19
 ----------------------------------
