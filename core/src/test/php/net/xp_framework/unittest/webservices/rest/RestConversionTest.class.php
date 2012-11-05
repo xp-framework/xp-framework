@@ -479,5 +479,17 @@
       $c->id= 4711;
       $this->assertEquals($c, $this->fixture->convert($class, array('id' => 4711)));
     }
+
+    /**
+     * Test Date class
+     *
+     */
+    #[@test]
+    public function date_iso_formatted() {
+      $this->assertEquals(
+        new Date('2009-04-12T20:44:55'), 
+        $this->fixture->convert(XPClass::forName('util.Date'), '2009-04-12T20:44:55')
+      );
+    }
   }
 ?>
