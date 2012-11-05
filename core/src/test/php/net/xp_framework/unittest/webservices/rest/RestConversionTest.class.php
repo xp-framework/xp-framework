@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'webservices.rest.RestDeserializer',
+    'net.xp_framework.unittest.webservices.rest.ConstructorFixture',
     'net.xp_framework.unittest.webservices.rest.IssueWithField',
     'net.xp_framework.unittest.webservices.rest.IssueWithUnderscoreField',
     'net.xp_framework.unittest.webservices.rest.IssueWithSetter',
@@ -435,10 +436,8 @@
      */
     #[@test]
     public function constructor() {
-      $class= ClassLoader::defineClass('RestConversionTest_Constructor', 'lang.Object', array(), '{
-        protected $id= 0;
+      $class= ClassLoader::defineClass('RestConversionTest_Constructor', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
         public function __construct($id) { $this->id= (int)$id; }
-        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
       }');
       $this->assertEquals(
         $class->newInstance(4711),
@@ -452,11 +451,9 @@
      */
     #[@test]
     public function static_valueof_method() {
-      $class= ClassLoader::defineClass('RestConversionTest_StaticValueOf', 'lang.Object', array(), '{
-        protected $id= 0;
+      $class= ClassLoader::defineClass('RestConversionTest_StaticValueOf', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
         protected function __construct($id) { $this->id= (int)$id; }
         public static function valueOf($id) { return new self($id); }
-        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
       }');
       $this->assertEquals(
         $class->getMethod('valueOf')->invoke(NULL, array(4711)),
@@ -470,10 +467,8 @@
      */
     #[@test]
     public function public_valueof_instance_method_not_invoked() {
-      $class= ClassLoader::defineClass('RestConversionTest_PublicValueOf', 'lang.Object', array(), '{
-        public $id= 0;
+      $class= ClassLoader::defineClass('RestConversionTest_PublicValueOf', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
         public function valueOf($id) { throw new IllegalStateException("Should not reach this point!"); }
-        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
       }');
       $c= $class->newInstance();
       $c->id= 4711;
@@ -486,10 +481,8 @@
      */
     #[@test]
     public function private_valueof_instance_method_not_invoked() {
-      $class= ClassLoader::defineClass('RestConversionTest_PrivateValueOf', 'lang.Object', array(), '{
-        public $id= 0;
+      $class= ClassLoader::defineClass('RestConversionTest_PrivateValueOf', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
         private static function valueOf($id) { throw new IllegalStateException("Should not reach this point!"); }
-        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
       }');
       $c= $class->newInstance();
       $c->id= 4711;
@@ -502,10 +495,8 @@
      */
     #[@test]
     public function protected_valueof_instance_method_not_invoked() {
-      $class= ClassLoader::defineClass('RestConversionTest_ProtectedValueOf', 'lang.Object', array(), '{
-        public $id= 0;
+      $class= ClassLoader::defineClass('RestConversionTest_ProtectedValueOf', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
         protected static function valueOf($id) { throw new IllegalStateException("Should not reach this point!"); }
-        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
       }');
       $c= $class->newInstance();
       $c->id= 4711;
