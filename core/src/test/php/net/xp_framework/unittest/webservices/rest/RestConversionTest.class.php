@@ -435,13 +435,59 @@
      *
      */
     #[@test]
+    public function no_constructor() {
+      $class= ClassLoader::defineClass('RestConversionTest_NoConstructor', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
+      }');
+      $c= $class->newInstance();
+      $c->id= 4711;
+      $this->assertEquals(
+        $c,
+        $this->fixture->convert($class, array('id' => 4711))
+      );
+    }
+
+    /**
+     * Test value object's constructor is called
+     *
+     */
+    #[@test]
     public function constructor() {
       $class= ClassLoader::defineClass('RestConversionTest_Constructor', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
         public function __construct($id) { $this->id= (int)$id; }
       }');
       $this->assertEquals(
         $class->newInstance(4711),
-        $this->fixture->convert($class, '4711')
+        $this->fixture->convert($class, array('id' => 4711))
+      );
+    }
+
+    /**
+     * Test value object's constructor is called
+     *
+     */
+    #[@test]
+    public function constructor_inside_wrapper() {
+      $wrapped= ClassLoader::defineClass('RestConversionTest_Constructor', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
+        public function __construct($id) { $this->id= (int)$id; }
+      }');
+      $container= ClassLoader::defineClass('RestConversionTest_ConstructorWrapper', 'lang.Object', array(), '{
+        protected $ids= array();
+        /** @param RestConversionTest_Constructor[] ids **/
+        public function __construct(array $ids) { $this->ids= $ids; }
+        public function equals($cmp) { 
+          if (!($cmp instanceof self) || sizeof($this->ids) !== sizeof($cmp->ids)) return FALSE;
+          foreach ($this->ids as $offset => $id) {
+            if (!$id->equals($cmp->ids[$offset])) return FALSE;
+          }
+          return TRUE;
+        }
+      }');
+      $c= $container->newInstance(array());
+      $c->ids= array($wrapped->newInstance(1), $wrapped->newInstance(2));
+
+      $this->assertEquals(
+        $c,
+        $this->fixture->convert($container, array('ids' => array(array('id' => 1), array('id' => 2))))
       );
     }
 
@@ -457,7 +503,7 @@
       }');
       $this->assertEquals(
         $class->getMethod('valueOf')->invoke(NULL, array(4711)),
-        $this->fixture->convert($class, '4711')
+        $this->fixture->convert($class, array('id' => 4711))
       );
     }
 

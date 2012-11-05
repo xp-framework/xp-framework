@@ -24,6 +24,22 @@
       }
       return $variants;
     }
+
+    /**
+     * Returns the first element of a given traversable data structure
+     * or the data structure itself
+     *
+     * @param  var struct
+     * @param  var
+     */
+    protected function key($struct) {
+      if (is_array($struct) || $struct instanceof Traversable) {
+        foreach ($struct as $element) {
+          return $element;
+        }
+      }
+      return $struct;
+    }
     
     /**
      * Convert data based on type
@@ -41,11 +57,13 @@
         return $type->newInstance($data);
       } else if ($type instanceof XPClass) {
 
-        // Check if a one-arg public constructor exists
+        // Check if a one-arg public constructor exists and pass first element
+        // E.g.: Assuming the target type has a __construct(string $id) and the
+        // given payload data is { "id" : "4711" }, then pass "4711" to it.
         if ($type->hasConstructor()) {
           $c= $type->getConstructor();
           if (Modifiers::isPublic($c->getModifiers()) && 1 === $c->numParameters()) {
-            return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $data)));
+            return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $this->key($data))));
           }
         }
 
@@ -53,7 +71,7 @@
         if ($type->hasMethod('valueOf')) {
           $m= $type->getMethod('valueOf');
           if (Modifiers::isStatic($m->getModifiers()) && Modifiers::isPublic($m->getModifiers()) && 1 === $m->numParameters()) {
-            return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $data)));
+            return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $this->key($data))));
           }
         }
 
@@ -99,13 +117,13 @@
         }
         return $return;
       } else if ($type->equals(Primitive::$STRING)) {
-        return is_array($data) ? (string)$data[key($data)] : (string)$data;
+        return (string)$this->key($data);
       } else if ($type->equals(Primitive::$INT)) {
-        return is_array($data) ? (int)$data[key($data)] : (int)$data;
+        return (int)$this->key($data);
       } else if ($type->equals(Primitive::$DOUBLE)) {
-        return is_array($data) ? (double)$data[key($data)] : (double)$data;
+        return (double)$this->key($data);
       } else if ($type->equals(Primitive::$BOOL)) {
-        return is_array($data) ? (bool)$data[key($data)] :  (bool)$data;
+        return (bool)$this->key($data);
       } else {
         throw new FormatException('Cannot convert to '.xp::stringOf($type));
       }
