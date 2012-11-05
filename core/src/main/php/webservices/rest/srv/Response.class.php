@@ -162,5 +162,56 @@
       $this->payload= $data;
       return $this;
     }
+
+    /**
+     * Helper method to compare two arrays recursively
+     *
+     * @param   array a1
+     * @param   array a2
+     * @return  bool
+     */
+    protected function arrayequals($a1, $a2) {
+      if (sizeof($a1) != sizeof($a2)) return FALSE;
+
+      foreach (array_keys((array)$a1) as $k) {
+        switch (TRUE) {
+          case !array_key_exists($k, $a2): 
+            return FALSE;
+
+          case is_array($a1[$k]):
+            if (!$this->arrayequals($a1[$k], $a2[$k])) return FALSE;
+            break;
+
+          case $a1[$k] instanceof Generic:
+            if (!$a1[$k]->equals($a2[$k])) return FALSE;
+            break;
+
+          case $a1[$k] !== $a2[$k]:
+            return FALSE;
+        }
+      }
+      return TRUE;
+    }
+
+    /**
+     * Returns whether a given value is equal to this Response instance
+     *
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      if (!$cmp instanceof self || $this->status !== $cmp->status) return FALSE;
+
+      // Compare payload
+      if ($this->payload instanceof Generic) {
+        if (!$this->payload->equals($cmp->payload)) return FALSE;
+      } else if (is_array($this->payload)) {
+        if (!$this->arrayequals($this->payload, $cmp->payload)) return FALSE;
+      } else {
+        if ($this->payload !== $cmp->payload) return FALSE;
+      }
+
+      return $this->arrayequals($this->headers, $cmp->headers);
+    }
   }
 ?>
