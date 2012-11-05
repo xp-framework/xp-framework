@@ -73,24 +73,6 @@
     }
 
     /**
-     * Get format for a given mediatype
-     *
-     * @param  string mediatype
-     * @return webservices.rest.server.RestFormat
-     */
-    protected function formatFor($mediatype) {
-      if ('application/x-www-form-urlencoded' === $mediatype) {
-        return RestFormat::$FORM;
-      } else if (preg_match('#[/\+]json$#', $mediatype)) {
-        return RestFormat::$JSON;
-      } else if (preg_match('#[/\+]xml$#', $mediatype)) {
-        return RestFormat::$XML;
-      } else {
-        return RestFormat::$UNKNOWN;
-      }
-    }
-
-    /**
      * Write an exception 
      *
      * @param  scriptlet.http.HttpScriptletResponse response The response
@@ -131,7 +113,7 @@
         $accept
       ) as $target) {
         try {
-          $res= $this->router->process($target, $request, $this->formatFor($target['input']));
+          $res= $this->router->process($target, $request, RestFormat::forMediaType($target['input']));
           $response->setStatus($res->status);
           $response->setContentType($target['output']);
           foreach ($res->headers as $name => $value) {
@@ -142,17 +124,17 @@
               $response->setHeader($name, $value);
             }
           }
-          $this->formatFor($target['output'])->write($response, $res->payload);
+          RestFormat::forMediaType($target['output'])->write($response, $res->payload);
           return;
         } catch (HttpScriptletException $e) {
-          $this->writeError($response, $this->formatFor($target['output']), $e);
+          $this->writeError($response, RestFormat::forMediaType($target['output']), $e);
           return;
         }
       }
 
       $this->writeError(
         $response,
-        $this->formatFor($accept->match($this->router->getOutputFormats())), 
+        RestFormat::forMediaType($accept->match($this->router->getOutputFormats())), 
         new HttpScriptletException('Could not route request to '.$url->getURL(), HttpConstants::STATUS_NOT_FOUND)
       );
     }

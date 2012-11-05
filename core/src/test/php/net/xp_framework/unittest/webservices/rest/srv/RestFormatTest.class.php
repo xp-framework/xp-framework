@@ -125,5 +125,59 @@
       $v= RestFormat::$FORM->read($req, MapType::forName('[:string]'));
       $this->assertEquals(array('name' => 'Timm'), $v);
     }
+
+    /**
+     * Test forMediaType()
+     *
+     */
+    #[@test]
+    public function application_x_www_form_urlencoded_mediatype() {
+      $this->assertEquals(RestFormat::$FORM, RestFormat::forMediaType('application/x-www-form-urlencoded'));
+    }
+
+    /**
+     * Test forMediaType()
+     *
+     */
+    #[@test]
+    public function text_json_mediatype() {
+      $this->assertEquals(RestFormat::$JSON, RestFormat::forMediaType('text/json'));
+    }
+
+    /**
+     * Test forMediaType()
+     *
+     */
+    #[@test]
+    public function application_json_mediatype() {
+      $this->assertEquals(RestFormat::$JSON, RestFormat::forMediaType('application/json'));
+    }
+
+    /**
+     * Test forMediaType()
+     *
+     */
+    #[@test]
+    public function text_xml_mediatype() {
+      $this->assertEquals(RestFormat::$XML, RestFormat::forMediaType('text/xml'));
+    }
+
+    /**
+     * Test forMediaType()
+     *
+     */
+    #[@test]
+    public function application_xml_mediatype() {
+      $this->assertEquals(RestFormat::$XML, RestFormat::forMediaType('application/xml'));
+    }
+
+    /**
+     * Test forMediaType()
+     *
+     */
+    #[@test]
+    public function application_octet_stream_mediatype() {
+      $this->assertEquals(RestFormat::$UNKNOWN, RestFormat::forMediaType('application/octet-stream'));
+    }
   }
 ?>

@@ -69,6 +69,24 @@
     }
 
     /**
+     * Get format for a given mediatype
+     *
+     * @param  string mediatype
+     * @return self
+     */
+    public static function forMediaType($mediatype) {
+      if ('application/x-www-form-urlencoded' === $mediatype) {
+        return self::$FORM;
+      } else if (preg_match('#[/\+]json$#', $mediatype)) {
+        return self::$JSON;
+      } else if (preg_match('#[/\+]xml$#', $mediatype)) {
+        return self::$XML;
+      } else {
+        return self::$UNKNOWN;
+      }
+    }
+
+    /**
      * Values method
      *
      * @return lang.Enum[]
