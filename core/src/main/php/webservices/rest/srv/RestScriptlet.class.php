@@ -113,10 +113,10 @@
         $accept
       ) as $target) {
         try {
-          $res= $this->router->process($target, $request, RestFormat::forMediaType($target['input']));
-          $response->setStatus($res->status);
+          $result= $this->router->process($target, $request, RestFormat::forMediaType($target['input']));
+          $response->setStatus($result->status);
           $response->setContentType($target['output']);
-          foreach ($res->headers as $name => $value) {
+          foreach ($result->headers as $name => $value) {
             if ('Location' === $name) {
               $url= clone $request->getURL();
               $response->setHeader($name, $url->setPath($value)->getURL());
@@ -124,7 +124,7 @@
               $response->setHeader($name, $value);
             }
           }
-          RestFormat::forMediaType($target['output'])->write($response, $res->payload);
+          RestFormat::forMediaType($target['output'])->write($response, $result->payload);
           return;
         } catch (HttpScriptletException $e) {
           $this->writeError($response, RestFormat::forMediaType($target['output']), $e);

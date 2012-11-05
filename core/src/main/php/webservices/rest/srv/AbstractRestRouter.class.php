@@ -12,6 +12,7 @@
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.AbstractRestRouterTest
    */
   class AbstractRestRouter extends Object {
+    protected $cat= NULL;
     protected $routes= array();
     protected $input= array();
     protected $output= array();
@@ -153,38 +154,48 @@
     /**
      * Handle routing item
      *
-     * @param  var target
+     * @param  lang.Oject instance
+     * @param  lang.reflect.Method method
      * @param  var[] args
      * @return webservices.rest.srv.Response
-     * @throws scriptlet.HttpScriptletException
      */
-    public function handle($target, $args) {
+    public function handle($instance, $method, $args) {
       $this->cat && $this->cat->debug('->', $target);
 
       // Instantiate the handler class and invoke method
-      $instance= $target['target']->getDeclaringClass()->newInstance();
       try {
-        $result= $target['target']->invoke($instance, $args);
+        $result= $method->invoke($instance, $args);
         $this->cat && $this->cat->debug('<-', $result);
       } catch (TargetInvocationException $t) {
         $this->cat && $this->cat->warn('<-', $t);
-        throw new HttpScriptletException($t->getCause()->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $t);
+        return Response::status(HttpConstants::STATUS_BAD_REQUEST)->withPayload($t->getCause());
       }
 
       // For "VOID" methods, set status to "no content". If a response is returned, 
       // use its status, headers and payload. For any other methods, set status to "OK".
-      if (Type::$VOID->equals($target['target']->getReturnType())) {
-        $res= Response::status(HttpConstants::STATUS_NO_CONTENT);
+      if (Type::$VOID->equals($method->getReturnType())) {
+        return Response::status(HttpConstants::STATUS_NO_CONTENT);
       } else if ($result instanceof Response) {
-        $res= $result;
+        return $result;
       } else {
-        $res= Response::status(HttpConstants::STATUS_OK)->withPayload($result);
+        return Response::status(HttpConstants::STATUS_OK)->withPayload($result);
       }
-      return $res;
     }
 
+    /**
+     * Process a target with a given request
+     *
+     * @param  [:var] target
+     * @param  scriptlet.Request request
+     * @param  webservices.rest.srv.RestFormat format
+     * @return webservices.rest.srv.Response
+     */
     public function process($target, $request, $format) {
-      return $this->handle($target, $this->argumentsFor($target, $request, $format));
+      return $this->handle(
+        $target['target']->getDeclaringClass()->newInstance(), 
+        $target['target'],
+        $this->argumentsFor($target, $request, $format)
+      );
     }
 
     /**

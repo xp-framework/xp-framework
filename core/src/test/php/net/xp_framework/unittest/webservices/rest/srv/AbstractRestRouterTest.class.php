@@ -208,5 +208,95 @@
       );
     }
 
+    /**
+     * Fixture for handle() tests
+     *
+     * @return  string
+     */
+    #[@webmethod]
+    public function helloWorld() {
+      return 'Hello World';
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_primitive_return() {
+      $this->assertEquals(
+        Response::status(200)->withPayload('Hello World'),
+        $this->fixture->handle($this, $this->getClass()->getMethod('helloWorld'), array())
+      );
+    }
+
+    /**
+     * Fixture for handle() tests
+     *
+     * @return  string
+     */
+    #[@webmethod]
+    public function createIt() {
+      return Response::created('/resource/4711');
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_response_instance_return() {
+      $this->assertEquals(
+        Response::status(201)->withHeader('Location', '/resource/4711'),
+        $this->fixture->handle($this, $this->getClass()->getMethod('createIt'), array())
+      );
+    }
+
+    /**
+     * Fixture for handle() tests
+     *
+     * @return  void
+     */
+    #[@webmethod]
+    public function fireAndForget() {
+      // Initially empty
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_void() {
+      $this->assertEquals(
+        Response::status(204),
+        $this->fixture->handle($this, $this->getClass()->getMethod('fireAndForget'), array())
+      );
+    }
+
+    /**
+     * Fixture for handle() tests
+     *
+     * @param   lang.Throwable t
+     * @throws  lang.Throwable
+     * @return  void
+     */
+    #[@webmethod]
+    public function raiseAnError($t) {
+      throw $t;
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_exception() {
+      $t= new Throwable('Test');
+      $this->assertEquals(
+        Response::status(400)->withPayload($t),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+      );
+    }
   }
 ?>
