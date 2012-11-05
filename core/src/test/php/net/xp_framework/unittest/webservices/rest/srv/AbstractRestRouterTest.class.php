@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'webservices.rest.srv.AbstractRestRouter',
+    'webservices.rest.srv.RestContext',
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse'
   );
@@ -226,7 +227,7 @@
     public function handle_primitive_return() {
       $this->assertEquals(
         Response::status(200)->withPayload('Hello World'),
-        $this->fixture->handle($this, $this->getClass()->getMethod('helloWorld'), array())
+        $this->fixture->handle($this, $this->getClass()->getMethod('helloWorld'), array(), new RestContext())
       );
     }
 
@@ -248,7 +249,7 @@
     public function handle_response_instance_return() {
       $this->assertEquals(
         Response::status(201)->withHeader('Location', '/resource/4711'),
-        $this->fixture->handle($this, $this->getClass()->getMethod('createIt'), array())
+        $this->fixture->handle($this, $this->getClass()->getMethod('createIt'), array(), new RestContext())
       );
     }
 
@@ -270,7 +271,7 @@
     public function handle_void() {
       $this->assertEquals(
         Response::status(204),
-        $this->fixture->handle($this, $this->getClass()->getMethod('fireAndForget'), array())
+        $this->fixture->handle($this, $this->getClass()->getMethod('fireAndForget'), array(), new RestContext())
       );
     }
 
@@ -294,8 +295,47 @@
     public function handle_exception() {
       $t= new Throwable('Test');
       $this->assertEquals(
-        Response::status(400)->withPayload($t),
-        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+        Response::error(400)->withPayload($t),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t), new RestContext())
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_exception_with_mapper() {
+      $t= new Throwable('Test');
+      $ctx= new RestContext();
+      $ctx->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
+        public function asResponse($t) {
+          return Response::error(500)->withPayload(array("message" => $t->getMessage()));
+        }
+      }'));
+      $this->assertEquals(
+        Response::status(500)->withPayload(array('message' => 'Test')),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t), $ctx)
+      );
+    }
+
+
+    /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test]
+    public function constructor_injection() {
+      $ctx= new RestContext();
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_ConstructorInjection', 'lang.Object', array(), '{
+        protected $context;
+        #[@inject(type = "webservices.rest.srv.RestContext")]
+        public function __construct($context) { $this->context= $context; }
+        public function equals($cmp) { return $cmp instanceof self && $this->context->equals($cmp->context); }
+      }');
+      $this->assertEquals(
+        $class->newInstance($ctx),
+        $this->fixture->handlerInstanceFor($class, $ctx)
       );
     }
   }

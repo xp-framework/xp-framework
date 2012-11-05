@@ -8,6 +8,7 @@
     'scriptlet.HttpScriptlet',
     'scriptlet.Preference',
     'webservices.rest.srv.RestFormat',
+    'webservices.rest.srv.RestContext',
     'webservices.rest.srv.Response',
     'webservices.rest.srv.RestDefaultRouter',
     'util.log.Traceable'
@@ -88,7 +89,6 @@
       )); 
     }
 
-
     /**
      * Process request and handle errors
      * 
@@ -112,8 +112,9 @@
         $request->getHeader('Content-Type', NULL), 
         $accept
       ) as $target) {
+        $context= new RestContext();
         try {
-          $result= $this->router->process($target, $request, RestFormat::forMediaType($target['input']));
+          $result= $this->router->process($target, $request, $context, RestFormat::forMediaType($target['input']));
           $response->setStatus($result->status);
           $response->setContentType($target['output']);
           foreach ($result->headers as $name => $value) {
