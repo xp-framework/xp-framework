@@ -39,7 +39,25 @@
         return NULL;
       } else if ($type->equals(XPClass::forName('util.Date'))) {
         return $type->newInstance($data);
-      } else if ($type instanceof XPClass) {              // Conversion to a class
+      } else if ($type instanceof XPClass) {
+
+        // Check if a one-arg public constructor exists
+        if ($type->hasConstructor()) {
+          $c= $type->getConstructor();
+          if (Modifiers::isPublic($c->getModifiers()) && 1 === $c->numParameters()) {
+            return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $data)));
+          }
+        }
+
+        // Check if a public static one-arg valueOf() method exists
+        if ($type->hasMethod('valueOf')) {
+          $m= $type->getMethod('valueOf');
+          if (Modifiers::isStatic($m->getModifiers()) && Modifiers::isPublic($m->getModifiers()) && 1 === $m->numParameters()) {
+            return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $data)));
+          }
+        }
+
+        // Generic approach
         $return= $type->newInstance();
         foreach ($data as $name => $value) {
           foreach ($this->variantsOf($name) as $variant) {

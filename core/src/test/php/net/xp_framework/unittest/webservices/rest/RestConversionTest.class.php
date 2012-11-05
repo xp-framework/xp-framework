@@ -428,5 +428,56 @@
         array('one' => array('issue_id' => 1, 'title' => 'test1'), 'two' => array('issue_id' => 2, 'title' => 'test2')))
       );
     }
+
+    /**
+     * Test value object's constructor is called
+     *
+     */
+    #[@test]
+    public function constructor() {
+      $class= ClassLoader::defineClass('RestConversionTest_Constructor', 'lang.Object', array(), '{
+        protected $id= 0;
+        public function __construct($id) { $this->id= (int)$id; }
+        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
+      }');
+      $this->assertEquals(
+        $class->newInstance(4711),
+        $this->fixture->convert($class, '4711')
+      );
+    }
+
+    /**
+     * Test value object's constructor is called
+     *
+     */
+    #[@test]
+    public function static_valueof_method() {
+      $class= ClassLoader::defineClass('RestConversionTest_StaticValueOf', 'lang.Object', array(), '{
+        protected $id= 0;
+        protected function __construct($id) { $this->id= (int)$id; }
+        public static function valueOf($id) { return new self($id); }
+        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
+      }');
+      $this->assertEquals(
+        $class->getMethod('valueOf')->invoke(NULL, array(4711)),
+        $this->fixture->convert($class, '4711')
+      );
+    }
+
+    /**
+     * Test value object's constructor is called
+     *
+     */
+    #[@test]
+    public function valueof_method_not_invoked() {
+      $class= ClassLoader::defineClass('RestConversionTest_ValueOf', 'lang.Object', array(), '{
+        public $id= 0;
+        public function valueOf($id) { throw new IllegalStateException("Should not reach this point!"); }
+        public function equals($cmp) { return $cmp instanceof self && $cmp->id === $this->id; }
+      }');
+      $c= $class->newInstance();
+      $c->id= 4711;
+      $this->assertEquals($c, $this->fixture->convert($class, array('id' => 4711)));
+    }
   }
 ?>
