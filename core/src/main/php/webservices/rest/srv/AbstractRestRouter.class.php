@@ -168,6 +168,10 @@
     public function handle($instance, $method, $args, $context) {
       $this->cat && $this->cat->debug('->', $target);
 
+      foreach ($args as $i => $arg) {
+        $args[$i]= $context->unmarshal(typeof($arg), $arg);
+      }
+
       // Instantiate the handler class and invoke method
       try {
         $result= $method->invoke($instance, $args);
@@ -182,9 +186,10 @@
       if (Type::$VOID->equals($method->getReturnType())) {
         return Response::status(HttpConstants::STATUS_NO_CONTENT);
       } else if ($result instanceof Response) {
+        $result->payload= $context->marshal($result->payload);
         return $result;
       } else {
-        return Response::status(HttpConstants::STATUS_OK)->withPayload($result);
+        return Response::status(HttpConstants::STATUS_OK)->withPayload($context->marshal($result));
       }
     }
 
