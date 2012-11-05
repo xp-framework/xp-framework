@@ -188,5 +188,192 @@
       $r= create(new Response())->withPayload($data);
       $this->assertEquals($data, $r->payload);
     }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_identical() {
+      $r= Response::status(200);
+      $this->assertEquals($r, $r);
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_same() {
+      $this->assertEquals(Response::status(200), Response::status(200));
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_with_headers() {
+      $this->assertEquals(
+        Response::status(200)->withHeader('ETag', '4711'), 
+        Response::status(200)->withHeader('ETag', '4711')
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_different_status() {
+      $this->assertNotEquals(Response::status(200), Response::status(201));
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_different_header_values() {
+      $this->assertNotEquals(
+        Response::status(200)->withHeader('ETag', '4711'), 
+        Response::status(200)->withHeader('ETag', '4712')
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_different_header_keys() {
+      $this->assertNotEquals(
+        Response::status(200)->withHeader('ETag', '4711'), 
+        Response::status(200)->withHeader('X-Any-Number', '4711')
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_different_header_sizes() {
+      $this->assertNotEquals(
+        Response::status(200), 
+        Response::status(200)->withHeader('X-Any-Number', '4711')
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_same_primitive_payloads() {
+      $this->assertEquals(
+        Response::status(200)->withPayload('4711'), 
+        Response::status(200)->withPayload('4711')
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_different_primitive_payloads() {
+      $this->assertNotEquals(
+        Response::status(200)->withPayload('4711'), 
+        Response::status(200)->withPayload('4712')
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_same_array_payloads() {
+      $this->assertEquals(
+        Response::status(200)->withPayload(array('4711', 4712, NULL)), 
+        Response::status(200)->withPayload(array('4711', 4712, NULL))
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_different_array_payloads() {
+      $this->assertNotEquals(
+        Response::status(200)->withPayload(array('4711', 4712, NULL)), 
+        Response::status(200)->withPayload(array('4711', 4713, NULL))
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_identical_object_payloads() {
+      $this->assertEquals(
+        Response::status(200)->withPayload($this), 
+        Response::status(200)->withPayload($this)
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_same_object_payloads() {
+      $class= ClassLoader::defineClass('ResponseTest_SameObjectFixture', 'lang.Object', array(), '{
+        public function equals($cmp) { return TRUE; }
+      }');
+      $this->assertEquals(
+        Response::status(200)->withPayload($class->newInstance()), 
+        Response::status(200)->withPayload($class->newInstance())
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_different_object_payloads() {
+      $this->assertNotEquals(
+        Response::status(200)->withPayload($this), 
+        Response::status(200)->withPayload(new Object())
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_object_and_null_payloads() {
+      $this->assertNotEquals(
+        Response::status(200)->withPayload($this), 
+        Response::status(200)->withPayload(NULL)
+      );
+    }
+
+    /**
+     * Test equals() method
+     * 
+     */
+    #[@test]
+    public function equals_null() {
+      $this->assertEquals(
+        Response::status(200)->withPayload(NULL), 
+        Response::status(200)->withPayload(NULL)
+      );
+    }
   }
 ?>
