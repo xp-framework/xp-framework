@@ -301,7 +301,8 @@
     /**
      * Check if the provided value is an empty file upload field
      *
-     * @return bool
+     * @param   var value
+     * @return  bool
      */
     protected static function isEmptyFileUpload($value) {
       return (
