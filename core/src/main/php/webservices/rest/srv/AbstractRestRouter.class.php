@@ -157,81 +157,6 @@
     }
 
     /**
-     * Handle routing item
-     *
-     * @param  lang.Oject instance
-     * @param  lang.reflect.Method method
-     * @param  var[] args
-     * @param  webservices.rest.srv.RestContext context
-     * @return webservices.rest.srv.Response
-     */
-    public function handle($instance, $method, $args, $context) {
-      $this->cat && $this->cat->debug('->', $target);
-
-      foreach ($args as $i => $arg) {
-        $args[$i]= $context->unmarshal(typeof($arg), $arg);
-      }
-
-      // Instantiate the handler class and invoke method
-      try {
-        $result= $method->invoke($instance, $args);
-        $this->cat && $this->cat->debug('<-', $result);
-      } catch (TargetInvocationException $t) {
-        $this->cat && $this->cat->warn('<-', $t);
-        return $context->mapException($t->getCause());
-      }
-
-      // For "VOID" methods, set status to "no content". If a response is returned, 
-      // use its status, headers and payload. For any other methods, set status to "OK".
-      if (Type::$VOID->equals($method->getReturnType())) {
-        return Response::status(HttpConstants::STATUS_NO_CONTENT);
-      } else if ($result instanceof Response) {
-        $result->payload= $context->marshal($result->payload);
-        return $result;
-      } else {
-        return Response::status(HttpConstants::STATUS_OK)->withPayload($context->marshal($result));
-      }
-    }
-
-    protected function injectionArgs($routine, $context) {
-      if ($routine->numParameters() < 1) return array();
-
-      $inject= $routine->getAnnotation('inject');
-      $type= isset($inject['type']) ? $inject['type'] : $routine->getParameter(0)->getTypeName();
-      switch ($type) {
-        case 'util.log.LogCategory': 
-          $args= array($this->cat);
-          break;
-
-        case 'webservices.rest.srv.RestContext':
-          $args= array($context);
-          break;
-
-        default:
-          throw new IllegalStateException('Unkown injection type '.$type);
-      }
-
-      return $args;
-    }
-
-    public function handlerInstanceFor($class, $context) {
-
-      // Constructor injection
-      if ($class->hasConstructor()) {
-        $c= $class->getConstructor();
-        $instance= $c->newInstance($c->hasAnnotation('inject') ? $this->injectionArgs($c, $context) : array());
-      } else {
-        $instance= $class->newInstance();
-      }
-
-      // Method injection
-      foreach ($class->getMethods() as $m) {
-        if ($m->hasAnnotation('inject')) $m->invoke($instance, $this->injectionArgs($m, $context));
-      }
-      return $instance;
-    }
-
-    /**
      * Process a target with a given request
      *
      * @param  [:var] target
@@ -241,8 +166,8 @@
      * @return webservices.rest.srv.Response
      */
     public function process($target, $request, $context, $format) {
-      return $this->handle(
-        $this->handlerInstanceFor($target['target']->getDeclaringClass(), $context), 
+      return $context->handle(
+        $context->handlerInstanceFor($target['target']->getDeclaringClass()), 
         $target['target'],
         $this->argumentsFor($target, $request, $format)
       );
