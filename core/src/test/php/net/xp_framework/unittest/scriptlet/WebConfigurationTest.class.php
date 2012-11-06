@@ -108,8 +108,8 @@
 
         $this->assertEquals(
           array(
-            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
-            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+            '/service' => create(new WebApplication('service'))->withConfig('{WEBROOT}/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('{WEBROOT}/etc')
           ),
           create(new xp新criptlet慌ebConfiguration($p))->mappedApplications()
         );
@@ -146,8 +146,8 @@
 
         $this->assertEquals(
           array(
-            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
-            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+            '/service' => create(new WebApplication('service'))->withConfig('{WEBROOT}/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('{WEBROOT}/etc')
           ),
           create(new xp新criptlet慌ebConfiguration($p))->mappedApplications()
         );
@@ -163,7 +163,8 @@
       with ($p= Properties::fromString('')); {
         $p->writeSection('app');
         $p->writeString('app', 'map.service', '/service');
-        create(new xp新criptlet愛unner('/htdocs'))->configure($p);
+
+        create(new xp新criptlet慌ebConfiguration($p))->mappedApplications();
       }
     }
   }
