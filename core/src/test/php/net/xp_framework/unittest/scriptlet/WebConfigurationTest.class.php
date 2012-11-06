@@ -49,5 +49,122 @@
         );
       }
     }
+
+    /**
+     * Verifies unknown debug flag in configuration raises an exception
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= 'No flag named WebDebug::UNKNOWN')]
+    public function configureWithUnknownDebugFlag() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+        $p->writeSection('app::service');
+        $p->writeString('app::service', 'debug', 'UNKNOWN');
+
+        create(new xp新criptlet慌ebConfiguration($p))->mappedApplications();
+      }
+    }
+
+    /**
+     * Verifies that empty configured mappings produce correct result
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: "app" section missing or broken')]
+    public function emptyMappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+
+        create(new xp新criptlet慌ebConfiguration($p))->mappedApplications();
+      }
+    }
+
+    /**
+     * Verifies that empty configured mappings produce correct result
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: "app" section missing or broken')]
+    public function appSectionWithoutValidMappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'not.a.mapping', 1);
+
+        create(new xp新criptlet慌ebConfiguration($p))->mappedApplications();
+      }
+    }
+
+    /**
+     * Verifies that old-style configured mappings produce correct result
+     *
+     */
+    #[@test]
+    public function oldStyleMappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'mappings', '/service:service|/:global');
+
+        $p->writeSection('app::service');
+        $p->writeSection('app::global');
+
+        $this->assertEquals(
+          array(
+            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+          ),
+          create(new xp新criptlet慌ebConfiguration($p))->mappedApplications()
+        );
+      }
+    }
+
+    /**
+     * Verifies that old-style configured mappings produce correct result
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: Section app::service mapped by /service missing')]
+    public function oldStyleMappingWithoutCorrespondingSection() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'mappings', '/service:service');
+
+        create(new xp新criptlet慌ebConfiguration($p))->mappedApplications();
+      }
+    }
+
+    /**
+     * Verifies that configured mappings produce correct result
+     *
+     */
+    #[@test]
+    public function mappings() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+        $p->writeString('app', 'map.global', '/');
+
+        $p->writeSection('app::service');
+        $p->writeSection('app::global');
+
+        $this->assertEquals(
+          array(
+            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+          ),
+          create(new xp新criptlet慌ebConfiguration($p))->mappedApplications()
+        );
+      }
+    }
+
+    /**
+     * Verifies that old-style configured mappings produce correct result
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'Web misconfigured: Section app::service mapped by /service missing')]
+    public function mappingWithoutCorrespondingSection() {
+      with ($p= Properties::fromString('')); {
+        $p->writeSection('app');
+        $p->writeString('app', 'map.service', '/service');
+        create(new xp新criptlet愛unner('/htdocs'))->configure($p);
+      }
+    }
   }
 ?>
