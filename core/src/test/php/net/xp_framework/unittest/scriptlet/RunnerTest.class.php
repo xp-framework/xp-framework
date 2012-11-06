@@ -209,7 +209,7 @@
 
         $this->assertEquals(
           create(new WebApplication('service'))
-            ->withConfig('/htdocs/etc/dev')
+            ->withConfig('{WEBROOT}/etc/{PROFILE}')
             ->withScriptlet('ServiceScriptlet')
             ->withEnvironment(array('ROLE' => 'admin', 'CLUSTER' => 'a'))
             ->withDebug(WebDebug::STACKTRACE | WebDebug::ERRORS)
@@ -278,8 +278,8 @@
 
         $this->assertEquals(
           array(
-            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
-            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+            '/service' => create(new WebApplication('service'))->withConfig('{WEBROOT}/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('{WEBROOT}/etc')
           ),
           $r->mappedApplications()
         );
@@ -319,8 +319,8 @@
 
         $this->assertEquals(
           array(
-            '/service' => create(new WebApplication('service'))->withConfig('/htdocs/etc'), 
-            '/'        => create(new WebApplication('global'))->withConfig('/htdocs/etc')
+            '/service' => create(new WebApplication('service'))->withConfig('{WEBROOT}/etc'), 
+            '/'        => create(new WebApplication('global'))->withConfig('{WEBROOT}/etc')
           ),
           $r->mappedApplications()
         );
@@ -343,7 +343,7 @@
     /**
      * Creates a new runner
      *
-     */
+     */ 
     protected function newRunner($profile= NULL) {
       $r= new xp·scriptlet·Runner('/var/www', $profile);
       
