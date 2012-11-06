@@ -180,7 +180,7 @@
           foreach ($application->getArguments() as $arg) {
             $args[]= $this->expand($arg);
           }
-          $instance= $class->getConstructor()->newInstance($arg);
+          $instance= $class->getConstructor()->newInstance($args);
         }
         
         if ($flags & WebDebug::TRACE && $instance instanceof Traceable) {
