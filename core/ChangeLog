@@ -8,6 +8,12 @@ Git commit: ?????
 
 Bugfixes
 ~~~~~~~~
+- Fixed OCCURRENCE_OPTIONAL being ignored for missing file upload input 
+  fields - see pull request #198
+  (mrosoiu)
+- Fixed encoding of associative array with modified pointer position by
+  merging pull request #199
+  (andrei21funk, friebe)
 - Fixed $__generic-style generics (BC with < 5.8) breaking. They yielded
   a php.stdClass instance instead of the one to be instantiated, which 
   would result in "Fatal error: Call to undefined method stdClass::X()" 
