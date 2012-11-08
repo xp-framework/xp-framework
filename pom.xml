@@ -50,7 +50,7 @@
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.1.6</version>
+        <version>3.1.8</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
