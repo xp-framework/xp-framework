@@ -610,7 +610,7 @@
     $class= XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base));
     if ($class->hasField('__generic')) {
       $__id= microtime();
-      $name= xp::reflect($classname);
+      $name= $class->literal();
       $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
       foreach ($typeargs as $type) {
         $instance->__generic[]= xp::reflect($type->getName());

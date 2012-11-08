@@ -505,5 +505,20 @@
         $this->encode(new Date('2009-05-18 01:02:03'))
       );
     }
+
+    /**
+     * Test encode associative array with modified pointer position
+     *
+     */
+    #[@test]
+    public function encodeAssociativeArrayWithModifiedPointerPosition() {
+      $values= array("10" => "first", "15"=>"second", "22"=>"third");
+      next($values);
+
+      $this->assertEquals(
+        '{ "10" : "first" , "15" : "second" , "22" : "third" }',
+        $this->encode($values)
+      );
+    }
   }
 ?>

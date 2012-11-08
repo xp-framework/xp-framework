@@ -35,6 +35,24 @@
     }
 
     /**
+     * Test ArrayType constructor
+     *
+     */
+    #[@test]
+    public function newArrayTypeWithString() {
+      $this->assertEquals(ArrayType::forName('int[]'), new ArrayType('int'));
+    }
+
+    /**
+     * Test ArrayType constructor
+     *
+     */
+    #[@test]
+    public function newArrayTypeWithTypeInstance() {
+      $this->assertEquals(ArrayType::forName('int[]'), new ArrayType(Primitive::$INT));
+    }
+
+    /**
      * Test componentType() method
      *
      */
