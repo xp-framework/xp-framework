@@ -87,4 +87,10 @@
     <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
     <url>https://github.com/xp-framework/xp-framework</url>
   </scm>
+
+  <!-- Issue Management -->
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/xp-framework/xp-framework/issues</url>
+  </issueManagement>
 </project>
