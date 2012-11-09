@@ -10,6 +10,7 @@
     'net.xp_framework.unittest.xml.WindowType',
     'net.xp_framework.unittest.xml.ApplicationType',
     'net.xp_framework.unittest.xml.TextInputType',
+    'net.xp_framework.unittest.xml.ScrollBarType',
     'xml.meta.Marshaller'
   );
 
@@ -44,6 +45,56 @@
         preg_replace('#>[\s\r\n]+<#', '><', trim($expect)),
         preg_replace('#>[\s\r\n]+<#', '><', trim($node->getSource(INDENT_DEFAULT)))
       );
+    }
+
+    /**
+     * Tests marshalTo() returns the node its given
+     *
+     */
+    #[@test]
+    public function marshalToReturnsGivenNode() {
+      $n= new Node('node');
+      $this->assertEquals($n, $this->fixture->marshalTo($n, new Object()));
+    }
+
+    /**
+     * Tests node name given to marshalTo() is used
+     *
+     */
+    #[@test]
+    public function nameOfNodeUsed() {
+      $dialog= new DialogType();
+      $this->assertMarshalled('
+        <dialogtype id="">
+          <caption/>
+          <flags/>
+          <options/>
+        </dialogtype>',
+        $this->fixture->marshalTo(new Node('dialogtype'), $dialog)
+      );
+    }
+
+    /**
+     * Tests marshalTo() creates new node if none is given
+     *
+     */
+    #[@test]
+    public function marshalToCreatesNewNodeWhenNoneGiven() {
+      $this->assertEquals(new Node('object'), $this->fixture->marshalTo(NULL, new Object()));
+    }
+
+    /**
+     * Tests marshalTo() uses an xmlwrapped annotation for getting the name
+     *
+     * <code>
+     *   #[@xmlwrapped('scroll')]
+     * </code>
+     *
+     * @see  xp://net.xp_framework.unittest.xml.ScrollBarType
+     */
+    #[@test]
+    public function wrappedAnnotationSuppliesName() {
+      $this->assertEquals(new Node('scroll'), $this->fixture->marshalTo(NULL, new ScrollBarType()));
     }
 
     /**
@@ -157,6 +208,20 @@
       $this->assertEquals(
         Marshaller::marshal($dialog),
         $this->fixture->marshalTo(new Node('dialogtype'), $dialog)->getSource(INDENT_DEFAULT)
+      );
+    }
+
+    /**
+     * Tests the deprecated usage
+     *
+     * @deprecated
+     */
+    #[@test]
+    public function deprecatedUsageWithNamespace() {
+      $app= new ApplicationType();
+      $this->assertEquals(
+        Marshaller::marshal($app),
+        $this->fixture->marshalTo(new Node('ApplicationType'), $app)->getSource(INDENT_DEFAULT)
       );
     }
 
