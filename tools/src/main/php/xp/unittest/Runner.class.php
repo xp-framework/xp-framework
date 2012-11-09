@@ -201,15 +201,12 @@
               if ($method->hasAnnotation('arg')) {
                 $arg= $method->getAnnotation('arg');
                 if (isset($arg['position'])) {
-                  $name= $short= $arg['position'];
-                } else if (isset($arg['name'])) {
-                  $name= $select= $arg['name'];
-                  $short= isset($arg['short']) ? $arg['short'] : $name{0};
+                  $options[$arg['position']]= $method;
                 } else {
-                  $name= $select= strtolower(preg_replace('/^set/', '', $method->getName()));
+                  $name= isset($arg['name']) ? $arg['name'] : strtolower(preg_replace('/^set/', '', $method->getName()));
                   $short= isset($arg['short']) ? $arg['short'] : $name{0};
+                  $options[$name]= $options[$short]= $method;
                 }
-                $options[$name]= $options[$short]= $method;
               }
             }
             $option= 0;
