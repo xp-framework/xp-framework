@@ -408,6 +408,25 @@
         array('setOption' => 'value'), 
         $class->getField('options')->get(NULL)
       );
+    }
+
+    /**
+     * Test long listener option
+     *
+     */
+    #[@test]
+    public function withNamedLongListenerOptionShort() {
+      $class= ClassLoader::getDefault()->defineClass('WithNamedLongListenerOptionShortTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(name = "use")]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'u', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
     }    
 
     /**
