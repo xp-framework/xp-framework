@@ -365,7 +365,7 @@
         public function setVerbose() { self::$options[__FUNCTION__]= TRUE; }
       }');
 
-      $return= $this->runner->run(array('-l', $class->getName().',o=value,v', '-'));
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'option', 'value', '-o', 'v'));
       $this->assertEquals(
         array('setOption' => 'value', 'setVerbose' => TRUE), 
         $class->getField('options')->get(NULL)

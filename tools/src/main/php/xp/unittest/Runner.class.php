@@ -39,9 +39,9 @@
    *   <li>-cp: Add classpath elements</li>
    *   <li>-a {argument}: Define argument to pass to tests (may be used
    *     multiple times)</li>
-   *   <li>-l {listener.class.Name[,args]} {output}, where output is 
-   *     either "-" for console output or a file name. Args is a comma
-   *     separated list of args to be passed to the listener.</li>
+   *   <li>-l {listener.class.Name} {output} [-o option value [-o ...]]
+   *     where output is either "-" for console output or a file name. 
+   *     Options with "-o" are listener-dependant arguments.</li>
    *   <li>--color={mode} : Enable / disable color; mode can be one of
    *     . "on" - activate color mode
    *     . "off" - disable color mode
@@ -191,27 +191,14 @@
           } else if ('-e' == $args[$i]) {
             $sources->add(new xp·unittest·sources·EvaluationSource($this->arg($args, ++$i, 'e')));
           } else if ('-l' == $args[$i]) {
-            $arg= explode(',', $this->arg($args, ++$i, 'l'));
-            $class= array_shift($arg);
+            $class= XPClass::forName($this->arg($args, ++$i, 'l'));
             $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
+            $instance= $suite->addListener($class->newInstance($output));
 
-            // Parse options (value0,name1=value1,name2=value2,name3)
+            // Get all @arg-annotated methods
             $options= array();
-            foreach ($arg as $offset => $option) {
-              $s= sscanf($option, '%[^=]=%[^ ]', $name, $value);
-              if (1 === $s) {
-                $options[$name]= NULL;
-                $options[$offset]= $name;
-              } else {
-                $options[$name]= $value;
-              }
-            }
-
-            // Pass arguments
-            $instance= $suite->addListener(XPClass::forName($class)->newInstance($output));
-            foreach ($instance->getClass()->getMethods() as $method) {
+            foreach ($class->getMethods() as $method) {
               if ($method->hasAnnotation('arg')) {
-                $arg= $method->getAnnotation('arg');
                 if (isset($arg['position'])) {
                   $name= '#'.($arg['position']+ 1);
                   $select= intval($arg['position']);
@@ -223,27 +210,26 @@
                   $name= $select= strtolower(preg_replace('/^set/', '', $method->getName()));
                   $short= isset($arg['short']) ? $arg['short'] : $name{0};
                 }
-
-                if (0 == $method->numParameters()) {
-                  if (!array_key_exists($select, $options) && !array_key_exists($short, $options)) continue;
-                  $pass= array();
-                } else if (!array_key_exists($select, $options) && !array_key_exists($short, $options)) {
-                  if (!$method->getParameter(0)->isOptional()) {
-                    $this->err->writeLine('*** Argument '.$name.' does not exist!');
-                    return 2;
-                  }
-                  $pass= array();
-                } else {
-                  $pass= array(isset($options[$select]) ? isset($options[$select]) : $options[$short]);
-                }
-
-                try {
-                  $method->invoke($instance, $pass);
-                } catch (TargetInvocationException $e) {
-                  $this->err->writeLine('*** Error for argument '.$name.': ', $this->verbose ? $e->getCause() : $e->getCause()->compoundMessage());
-                  return 2;
-                }
+                $options[$name]= $options[$short]= $method;
               }
+            }
+          } else if ('-o' == $args[$i]) {
+            $option= $this->arg($args, ++$i, 'o');
+            if (!isset($options[$option])) {
+              $this->err->writeLine('*** Unknown listener argument '.$option.' to '.$instance->getClassName());
+              return 2;
+            }
+            $method= $options[$option];
+            if (0 == $method->numParameters()) {
+              $pass= array();
+            } else {
+              $pass= $this->arg($args, ++$i, 'o '.$option);
+            }
+            try {
+              $method->invoke($instance, $pass);
+            } catch (TargetInvocationException $e) {
+              $this->err->writeLine('*** Error for argument '.$option.' to '.$instance->getClassName().': '.$e->getCause()->toString());
+              return 2;
             }
           } else if ('-?' == $args[$i]) {
             return $this->usage();
