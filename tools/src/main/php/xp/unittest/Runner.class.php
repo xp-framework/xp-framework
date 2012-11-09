@@ -142,6 +142,7 @@
         }
         $this->err->writeLine();
         $this->err->write('Usage: -l ', $listener->getName(), ' ');
+        ksort($positional);
         foreach ($positional as $name) {
           $this->err->write('-o <', $name, '> ');
         }
