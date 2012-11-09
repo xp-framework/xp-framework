@@ -117,10 +117,12 @@
     /**
      * Displays usage
      *
+     * @param   lang.XPClass listener
      * @return  int exitcode
      */
-    protected function usage() {
+    protected function usage($listener= NULL) {
       $this->err->writeLine($this->textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
+      $listener && $this->err->writeLine($this->textOf($listener->getComment()));
       return 1;
     }
 
@@ -191,8 +193,14 @@
           } else if ('-e' == $args[$i]) {
             $sources->add(new xp·unittest·sources·EvaluationSource($this->arg($args, ++$i, 'e')));
           } else if ('-l' == $args[$i]) {
-            $class= XPClass::forName($this->arg($args, ++$i, 'l'));
-            $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
+            $arg= $this->arg($args, ++$i, 'l');
+            $class= XPClass::forName(strstr($arg, '.') ? $arg : 'xp.unittest.'.ucfirst($arg).'Listener');
+            $arg= $this->arg($args, ++$i, 'l');
+            if ('-?' == $arg || '--help' == $arg) {
+              $this->usage($class);
+              return 1;
+            }
+            $output= $this->streamWriter($arg);
             $instance= $suite->addListener($class->newInstance($output));
 
             // Get all @arg-annotated methods
@@ -234,7 +242,7 @@
               $this->err->writeLine('*** Error for argument '.$name.' to '.$instance->getClassName().': '.$e->getCause()->toString());
               return 2;
             }
-          } else if ('-?' == $args[$i]) {
+          } else if ('-?' == $args[$i] || '--help' == $args[$i]) {
             return $this->usage();
           } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');

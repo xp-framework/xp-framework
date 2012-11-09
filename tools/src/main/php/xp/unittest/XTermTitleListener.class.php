@@ -10,10 +10,10 @@
   );
 
   /**
-   * Updates the window title bar of an xterm or xterm-compatible
-   * shell window
-   *
-   * @purpose  TestListener
+   * XTerm Title listener
+   * --------------------
+   * Updates the window title bar of an xterm or xterm-compatible shell
+   * window. This listener has no options.
    */
   class XTermTitleListener extends Object implements TestListener {
     const PROGRESS_WIDTH= 20;
