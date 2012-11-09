@@ -467,5 +467,24 @@
       );
     }
 
+    /**
+     * Test short listener option
+     *
+     */
+    #[@test]
+    public function withPositionalOptionListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('WithPositionalOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(position= 0)]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
   }
 ?>

@@ -201,9 +201,7 @@
               if ($method->hasAnnotation('arg')) {
                 $arg= $method->getAnnotation('arg');
                 if (isset($arg['position'])) {
-                  $name= '#'.($arg['position']+ 1);
-                  $select= intval($arg['position']);
-                  $short= NULL;
+                  $name= $short= $arg['position'];
                 } else if (isset($arg['name'])) {
                   $name= $select= $arg['name'];
                   $short= isset($arg['short']) ? $arg['short'] : $name{0};
@@ -214,22 +212,29 @@
                 $options[$name]= $options[$short]= $method;
               }
             }
+            $option= 0;
           } else if ('-o' == $args[$i]) {
-            $option= $this->arg($args, ++$i, 'o');
-            if (!isset($options[$option])) {
-              $this->err->writeLine('*** Unknown listener argument '.$option.' to '.$instance->getClassName());
-              return 2;
+            if (isset($options[$option])) {
+              $name= '#'.($option+ 1);
+              $method= $options[$option];
+            } else {
+              $name= $this->arg($args, ++$i, 'o');
+              if (!isset($options[$name])) {
+                $this->err->writeLine('*** Unknown listener argument '.$name.' to '.$instance->getClassName());
+                return 2;
+              }
+              $method= $options[$name];
             }
-            $method= $options[$option];
+            $option++;
             if (0 == $method->numParameters()) {
               $pass= array();
             } else {
-              $pass= $this->arg($args, ++$i, 'o '.$option);
+              $pass= $this->arg($args, ++$i, 'o '.$name);
             }
             try {
               $method->invoke($instance, $pass);
             } catch (TargetInvocationException $e) {
-              $this->err->writeLine('*** Error for argument '.$option.' to '.$instance->getClassName().': '.$e->getCause()->toString());
+              $this->err->writeLine('*** Error for argument '.$name.' to '.$instance->getClassName().': '.$e->getCause()->toString());
               return 2;
             }
           } else if ('-?' == $args[$i]) {
