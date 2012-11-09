@@ -117,44 +117,50 @@
     /**
      * Displays usage
      *
-     * @param   lang.XPClass listener
      * @return  int exitcode
      */
-    protected function usage($listener= NULL) {
+    protected function usage() {
       $this->err->writeLine($this->textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      if ($listener) {
-        $this->err->writeLine($this->textOf($listener->getComment()));
-        $positional= $options= array();
-        foreach ($listener->getMethods() as $method) {
-          if ($method->hasAnnotation('arg')) {
-            $arg= $method->getAnnotation('arg');
-            $name= strtolower(preg_replace('/^set/', '', $method->getName()));
-            if (isset($arg['position'])) {
-              $positional[$arg['position']]= $name;
-              $options['<'.$name.'>']= $method;
-            } else {
-              $name= isset($arg['name']) ? $arg['name'] : $name;
-              $short= isset($arg['short']) ? $arg['short'] : $name{0};
-              $param= ($method->numParameters() > 0 ? ' <'.$method->getParameter(0)->getName().'>' : '');
-              $options[$name.'|'.$short.$param]= $method;
-            }
+      return 1;
+    }
+
+    /**
+     * Displays listener usage
+     *
+     * @return  int exitcode
+     */
+    protected function listenerUsage($listener) {
+      $this->err->writeLine($this->textOf($listener->getComment()));
+      $positional= $options= array();
+      foreach ($listener->getMethods() as $method) {
+        if ($method->hasAnnotation('arg')) {
+          $arg= $method->getAnnotation('arg');
+          $name= strtolower(preg_replace('/^set/', '', $method->getName()));
+          if (isset($arg['position'])) {
+            $positional[$arg['position']]= $name;
+            $options['<'.$name.'>']= $method;
+          } else {
+            $name= isset($arg['name']) ? $arg['name'] : $name;
+            $short= isset($arg['short']) ? $arg['short'] : $name{0};
+            $param= ($method->numParameters() > 0 ? ' <'.$method->getParameter(0)->getName().'>' : '');
+            $options[$name.'|'.$short.$param]= $method;
           }
         }
+      }
+      $this->err->writeLine();
+      $this->err->write('Usage: -l ', $listener->getName(), ' ');
+      ksort($positional);
+      foreach ($positional as $name) {
+        $this->err->write('-o <', $name, '> ');
+      }
+      if ($options) {
+        $this->err->writeLine('[options]');
         $this->err->writeLine();
-        $this->err->write('Usage: -l ', $listener->getName(), ' ');
-        ksort($positional);
-        foreach ($positional as $name) {
-          $this->err->write('-o <', $name, '> ');
+        foreach ($options as $name => $method) {
+          $this->err->writeLine('  * -o ', $name, ': ', self::textOf($method->getComment()));
         }
-        if ($options) {
-          $this->err->writeLine('[options]');
-          $this->err->writeLine();
-          foreach ($options as $name => $method) {
-            $this->err->writeLine('  * -o ', $name, ': ', self::textOf($method->getComment()));
-          }
-        } else {
-          $this->err->writeLine();
-        }
+      } else {
+        $this->err->writeLine();
       }
       return 1;
     }
@@ -230,7 +236,7 @@
             $class= XPClass::forName(strstr($arg, '.') ? $arg : 'xp.unittest.'.ucfirst($arg).'Listener');
             $arg= $this->arg($args, ++$i, 'l');
             if ('-?' == $arg || '--help' == $arg) {
-              return $this->usage($class);
+              return $this->listenerUsage($class);
             }
             $output= $this->streamWriter($arg);
             $instance= $suite->addListener($class->newInstance($output));
