@@ -122,7 +122,39 @@
      */
     protected function usage($listener= NULL) {
       $this->err->writeLine($this->textOf(XPClass::forName(xp::nameOf(__CLASS__))->getComment()));
-      $listener && $this->err->writeLine($this->textOf($listener->getComment()));
+      if ($listener) {
+        $this->err->writeLine($this->textOf($listener->getComment()));
+        $positional= $options= array();
+        foreach ($listener->getMethods() as $method) {
+          if ($method->hasAnnotation('arg')) {
+            $arg= $method->getAnnotation('arg');
+            $name= strtolower(preg_replace('/^set/', '', $method->getName()));
+            if (isset($arg['position'])) {
+              $positional[$arg['position']]= $name;
+              $options['<'.$name.'>']= $method;
+            } else {
+              $name= isset($arg['name']) ? $arg['name'] : $name;
+              $short= isset($arg['short']) ? $arg['short'] : $name{0};
+              $param= ($method->numParameters() > 0 ? ' <'.$method->getParameter(0)->getName().'>' : '');
+              $options[$name.'|'.$short.$param]= $method;
+            }
+          }
+        }
+        $this->err->writeLine();
+        $this->err->write('Usage: -l ', $listener->getName(), ' ');
+        foreach ($positional as $name) {
+          $this->err->write('-o <', $name, '> ');
+        }
+        if ($options) {
+          $this->err->writeLine('[options]');
+          $this->err->writeLine();
+          foreach ($options as $name => $method) {
+            $this->err->writeLine('  * -o ', $name, ': ', self::textOf($method->getComment()));
+          }
+        } else {
+          $this->err->writeLine();
+        }
+      }
       return 1;
     }
 
