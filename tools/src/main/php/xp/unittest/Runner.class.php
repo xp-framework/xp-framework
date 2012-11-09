@@ -197,8 +197,7 @@
             $class= XPClass::forName(strstr($arg, '.') ? $arg : 'xp.unittest.'.ucfirst($arg).'Listener');
             $arg= $this->arg($args, ++$i, 'l');
             if ('-?' == $arg || '--help' == $arg) {
-              $this->usage($class);
-              return 1;
+              return $this->usage($class);
             }
             $output= $this->streamWriter($arg);
             $instance= $suite->addListener($class->newInstance($output));
