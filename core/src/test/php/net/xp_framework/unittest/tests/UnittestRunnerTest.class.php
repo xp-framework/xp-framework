@@ -352,7 +352,7 @@
     }
 
     /**
-     * Test running a single test
+     * Test listener options
      *
      */
     #[@test]
@@ -371,5 +371,82 @@
         $class->getField('options')->get(NULL)
       );
     }
+
+    /**
+     * Test long listener option
+     *
+     */
+    #[@test]
+    public function withLongListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('WithLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'option', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test long listener option
+     *
+     */
+    #[@test]
+    public function withNamedLongListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('WithNamedLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(name = "use")]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'use', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }    
+
+    /**
+     * Test short listener option
+     *
+     */
+    #[@test]
+    public function withShortListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('WithShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'o', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test short listener option
+     *
+     */
+    #[@test]
+    public function withNamedShortListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('WithNamedShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(short = "O")]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'O', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
   }
 ?>

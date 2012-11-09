@@ -199,6 +199,7 @@
             $options= array();
             foreach ($class->getMethods() as $method) {
               if ($method->hasAnnotation('arg')) {
+                $arg= $method->getAnnotation('arg');
                 if (isset($arg['position'])) {
                   $name= '#'.($arg['position']+ 1);
                   $select= intval($arg['position']);
