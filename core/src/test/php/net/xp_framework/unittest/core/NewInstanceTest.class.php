@@ -6,7 +6,6 @@
 
   uses(
     'unittest.TestCase',
-    'net.xp_framework.unittest.core.generics.ArrayFilter',
     'lang.Runnable',
     'lang.Runtime'
   );
