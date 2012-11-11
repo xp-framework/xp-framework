@@ -5,11 +5,14 @@
   <parent>
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
-    <version>5.8.8</version>
+    <version>5.8.10</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <!-- The Basics -->
+  <groupId>net.xp-framework</groupId>
   <artifactId>tools</artifactId>
+  <version>5.8.10</version>
   <packaging>xar</packaging>
 
   <!-- More Project Information -->
@@ -37,6 +40,7 @@
                   <directory>src/main/php/</directory>
                   <includes>
                     <include>xp/runtime/usage.txt</include>
+                    <include>xp/scriptlet/xpws.txt</include>
                     <include>xp/scriptlet/*.html</include>
                     <include>xp/codegen/**/*.xsl</include>
                   </includes>

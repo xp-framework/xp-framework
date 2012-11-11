@@ -5,16 +5,20 @@
   <parent>
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
-    <version>5.8.8</version>
+    <version>5.8.10</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <!-- The Basics -->
+  <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
+  <version>5.8.10</version>
   <packaging>xar</packaging>
 
   <!-- More Project Information -->
   <name>XP-Framework core</name>
 
+  <!-- Properties -->
   <properties>
     <!-- Test resources are inside [src/test/php] and not inside [src/test/resources] -->
     <xp.compile.testPhpIncludePattern>**/*</xp.compile.testPhpIncludePattern>
@@ -23,9 +27,26 @@
     <xp.test.iniDirectory>${basedir}/src/test/resources</xp.test.iniDirectory>
   </properties>
 
-  <!-- Copy resources (not in the default Maven layout) -->
+  <!-- Build settings -->
   <build>
     <plugins>
+
+      <!-- Attach tests artifact -->
+      <plugin>
+        <groupId>net.xp-forge.maven.plugins</groupId>
+        <artifactId>xp-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-core-tests</id>
+            <phase>package</phase>
+            <goals>
+              <goal>test-package</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Copy resources (not in the default Maven layout) -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.5</version>
