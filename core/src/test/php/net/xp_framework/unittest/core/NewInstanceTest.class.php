@@ -6,6 +6,7 @@
 
   uses(
     'unittest.TestCase',
+    'net.xp_framework.unittest.core.generics.ArrayFilter',
     'lang.Runnable',
     'lang.Runtime'
   );
@@ -123,6 +124,36 @@
       $this->assertTrue(
         (bool)strstr($r[1].$r[2], 'Class "lang.Runnable" does not exist'),
         xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
+      );
+    }
+
+    /**
+     * Test class name of a anonymous generic instance
+     *
+     */
+    #[@test]
+    public function className() {
+      $instance= newinstance('Object', array(), '{ }');
+      $n= $instance->getClassName();
+      $this->assertEquals(
+        'Object',
+        substr($n, 0, strrpos($n, '·')),
+        $n
+      );
+    }
+
+    /**
+     * Test class name of a anonymous generic instance
+     *
+     */
+    #[@test]
+    public function classNameWithFullyQualifiedClassName() {
+      $instance= newinstance('lang.Object', array(), '{ }');
+      $n= $instance->getClassName();
+      $this->assertEquals(
+        'Object',
+        substr($n, 0, strrpos($n, '·')),
+        $n
       );
     }
   }
