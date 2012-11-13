@@ -246,7 +246,7 @@
      * @param   string value
      * @return  webservices.rest.RestRequest this
      */
-    public function withHeader($arg, $value) {
+    public function withHeader($arg, $value= NULL) {
       $this->addHeader($arg, $value);
       return $this;
     }
