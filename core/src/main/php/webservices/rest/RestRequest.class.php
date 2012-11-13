@@ -21,6 +21,7 @@
     protected $parameters= array();
     protected $segments= array();
     protected $headers= array();
+    protected $accept= array();
     protected $body= NULL;
 
     /**
@@ -121,11 +122,7 @@
     public function addAccept($type, $q= NULL) {
       $range= $type;
       NULL === $q || $range.= ';q='.$q;
-      if (!isset($this->headers['Accept'])) {
-        $this->headers['Accept']= $range;
-      } else {
-        $this->headers['Accept'].= ', '.$range;
-      }
+      $this->accept[]= $range;
     }
 
     /**
@@ -228,22 +225,29 @@
     /**
      * Adds a header
      *
-     * @param   string name
+     * @param   var arg
      * @param   string value
+     * @return  peer.Header
      */
-    public function addHeader($name, $value) {
-      $this->headers[$name]= $value;
+    public function addHeader($arg, $value= NULL) {
+      if ($arg instanceof Header) {
+        $h= $arg;
+      } else {
+        $h= new Header($arg, $value);
+      }
+      $this->headers[]= $h;
+      return $h;
     }
 
     /**
      * Adds a header
      *
-     * @param   string name
+     * @param   var arg
      * @param   string value
      * @return  webservices.rest.RestRequest this
      */
-    public function withHeader($name, $value) {
-      $this->headers[$name]= $value;
+    public function withHeader($arg, $value) {
+      $this->addHeader($arg, $value);
       return $this;
     }
 
@@ -301,10 +305,10 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getHeader($name) {
-      if (!isset($this->headers[$name])) {
-        raise('lang.ElementNotFoundException', 'No such header "'.$name.'"');
+      foreach ($this->headers as $header) {
+        if ($name === $header->getName()) return $header->getValue();
       }
-      return $this->headers[$name];
+      raise('lang.ElementNotFoundException', 'No such header "'.$name.'"');
     }
 
     /**
@@ -313,7 +317,26 @@
      * @param   [:string]
      */
     public function getHeaders() {
-      return $this->headers;
+      $headers= array();
+      foreach ($this->headers as $header) {
+        $headers[$header->getName()]= $header->getValue();
+      }
+      if ($this->accept) {
+        $headers['Accept']= implode(', ', $this->accept);
+      }
+      return $headers;
+    }
+
+    /**
+     * Returns all headers
+     *
+     * @param   peer.Header[]
+     */
+    public function headerList() {
+      return array_merge($this->headers, $this->accept
+        ? array(new Header('Accept', implode(', ', $this->accept)))
+        : array()
+      );
     }
 
     /**
