@@ -355,5 +355,19 @@
         $response->getHeaderString()
       );
     }
+
+    /**
+     * GitHub sometimes sends empty cache-control headers. This should not corrupt
+     * reading!
+     *
+     */
+    #[@test]
+    public function headerWithoutValue() {
+      $body= '.';
+      $response= $this->newResponse(array('HTTP/1.1 401 Unauthorized', 'Cache-Control: '), $body);
+      $this->assertEquals(401, $response->statusCode());
+      $this->assertEquals(array(NULL), $response->header('Cache-Control'));
+      $this->assertEquals($body, $response->readData());
+    }
   }
 ?>
