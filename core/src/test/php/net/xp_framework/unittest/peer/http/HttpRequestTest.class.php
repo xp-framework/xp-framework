@@ -331,7 +331,7 @@
       $r->setBody('aloha content');
       $this->assertEquals(
         "POST /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
         "aloha content",
         $r->getRequestString()
       );
@@ -349,12 +349,29 @@
       $r->setBody('aloha content');
       $this->assertEquals(
         "POST /?ar=ber&a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
         "aloha content",
         $r->getRequestString()
       );
     }
 
+    /**
+     * Test HTTP POST
+     * with array content and url params
+     */
+    #[@test]
+    public function postWithArrayContentAndUrlParam() {
+      $r= new HttpRequest(new URL('http://example.com/?ar=ber'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setBody(array('aloha content'));
+      $this->assertEquals(
+        "POST /?ar=ber&a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 15\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "0=aloha+content",
+        $r->getRequestString()
+      );
+    }    
 
     /**
      * Test associative arrays are handled correctly in POST requests
@@ -419,7 +436,7 @@
       $r->setBody('aloha content');
       $this->assertEquals(
         "PUT /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
         "aloha content",
         $r->getRequestString()
       );
@@ -454,7 +471,7 @@
       $r->setBody('aloha content');
       $this->assertEquals(
         "TRACE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
         "aloha content",
         $r->getRequestString()
       );
@@ -515,7 +532,7 @@
       $r->setBody('aloha content');
       $this->assertEquals(
         "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
-        "Content-Length: 13\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
         "aloha content",
         $r->getRequestString()
       );
@@ -540,16 +557,13 @@
      * Test HTTP OPTIONS
      * with content
      */
-    #[@test]
+    #[@test, @expect('lang.IllegalStateException')]
     public function optionsWithContent() {
       $r= new HttpRequest(new URL('http://example.com/'));
       $r->setMethod(HttpConstants::OPTIONS);
       $r->setParameters('a=b&c=d');
       $r->setBody('aloha content');
-      try {
-        $r->getRequestString();
-        $this->fail('Illegal State OPTIONS with Content not detected', NULL, 'lang.IllegalStateException');
-      } catch (IllegalStateException $ex) { }
+      $r->getRequestString();
     }
 
     /**

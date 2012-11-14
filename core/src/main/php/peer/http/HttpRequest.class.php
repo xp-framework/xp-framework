@@ -9,7 +9,9 @@
     'peer.http.HttpConstants',
     'peer.Socket',
     'peer.URL',
+    'peer.http.AbstractHttpRequestData',
     'peer.http.HttpResponse',
+    'peer.http.HttpRequestData',
     'peer.http.RequestData',
     'peer.Header'
   );
@@ -25,15 +27,19 @@
    */
   class HttpRequest extends Object {
 
+    const
+      MIME_TYPE_DEFAULT                   = 'text/plain';
+
     public
-      $url        = NULL,
-      $method     = HttpConstants::GET,
-      $target     = '',
-      $version    = HttpConstants::VERSION_1_1,
-      $headers    = array('Connection' => array('close')),
-      $parameters = array(),
-      $body       = NULL,
-      $bodySet    = FALSE;
+      $url            = NULL,
+      $method         = HttpConstants::GET,
+      $target         = '',
+      $version        = HttpConstants::VERSION_1_1,
+      $headers        = array('Connection' => array('close')),
+      $parameters     = array(),
+      $body           = NULL,
+      $bodySet        = FALSE,
+      $contentHeaders = NULL;
 
     /**
      * Constructor
@@ -87,7 +93,8 @@
     }
 
     /**
-     * Set request parameters
+     * Set request parameters.
+     * Be aware, that setting a RequestData (e.g. FormRequestData) as param, may break the URL!
      *
      * @param   var p either a string, a RequestData object or an associative array
      */
@@ -119,11 +126,24 @@
 
     /**
      * Specifically set a body.
-     * All eventually set parameters will then be added to the url instead
+     * If no peer.http.AbstractHttpRequestData is given, $body will be transformed to peer.http.HttpRequestData.
+     * If this method is used, all eventually set parameters will later be added to the url,
+     * which may lead to errors if RequestData was given!
      *
-     * @param   string  content
+     * @param   var  body anything except none serializable objects (exception peer.http.RequestData)
      */
     public function setBody($body) {
+      if(!$body instanceof AbstractHttpRequestData) {
+        // create one from the given data
+        if($body instanceof RequestData) {
+          $data= $body->getData();
+          $headers= $body->getHeaders();
+          $body= create(new HttpRequestData($data))
+            ->withHeaders($headers);
+        } else {
+          $body= new HttpRequestData($body);
+        }
+      }
       $this->body= $body;
       $this->bodySet= TRUE;
     }
@@ -160,19 +180,28 @@
         $this->setHeader($header instanceof Header ? $header->getName() : $key, $header);
       }
     }
+    
+    /**
+     * Will return if a header with the given name was set
+     *
+     * @param string name
+     * @return bool
+     */
+    public function hasHeader($name) {
+      return (array_key_exists($name, $this->headers));
+    }
 
     /**
      * Will return the set parameters or content url encoded
-     * Handles array values with unrestricted depth. 
+     * Handles array values with unrestricted depth.
      *
      * @param   mixed   data
      * @param   mixed   prefix
-     * @return  string  encodedData
+     * @return  string  encodeData
      */
-    protected function encodedData($data, $prefix= '') {
+    protected function encodeData($data, $prefix= '') {
       $prefix= trim($prefix);
       if ($data instanceof RequestData) {
-        $this->addHeaders($data->getHeaders());
         return $prefix.$data->getData();
       } else if (is_array($data)) {
         $aEncoded= array();
@@ -181,10 +210,8 @@
             $name= $prefix.'['.$name.']';
           }
           if (is_array($value)) {
-            $aEncoded[]= $this->encodedData($value, $name);
+            $aEncoded[]= $this->encodeData($value, $name);
           } else {
-            // TBD: Wouldn't a rawurlencode() be better?
-            //      In regards to the special case of blank (+ or %20)
             $aEncoded[]= $name.'='.urlencode($value);
           }
         }
@@ -211,37 +238,51 @@
      */
     protected function getPayload($withBody) {
       $body= NULL;
-      $addParamsToURI= TRUE;
-      $paramsEncoded= $this->encodedData($this->parameters);
+      $paramsEncoded= '';
 
       if (TRUE === $this->bodySet) {
-        // trigger with-"setBody" behaviour
+        // Trigger with-"setBody" behaviour
         switch ($this->method) {
-          case HttpConstants::GET:    // might not be forbidden in RFC. if this is the case move to below
+          case HttpConstants::GET:    // might not be forbidden in RFC. if this is the case move to default
           case HttpConstants::HEAD:
           case HttpConstants::OPTIONS:
             throw new IllegalStateException('A '.$this->method.' request does not allow a body');
             break;
 
           default:
-            $body= $this->encodedData($this->body);
+            // TBD: Prevent params if RequestData was given?
+            $paramsEncoded= $this->encodeData($this->parameters);
+            $body= $this->encodeData($this->body);
+            $this->addHeaders($this->body->getHeaders());
             break;
         }
       } else {
-        // trigger pre-"setBody" behaviour
-        // params will either go to the uri or the body
+        // Trigger pre-"setBody" behaviour
+        // Params will either go to the uri or the body
+        $encodedData= $this->encodeData($this->parameters);
+        if($this->parameters instanceof RequestData) {
+          // Headers are always set regardless where the params will go
+          // Actually wrong behavior... but keep as is
+          $this->addHeaders($this->parameters->getHeaders());
+        }
         switch ($this->method) {
           case HttpConstants::HEAD:
           case HttpConstants::GET:
           case HttpConstants::DELETE:
           case HttpConstants::OPTIONS:
-            // intentionally nothing
+            $paramsEncoded= $encodedData;
             break;
 
           default:
-            $addParamsToURI= FALSE;
-            $body= $paramsEncoded;
+            $body= $encodedData;
             break;
+        }
+
+        if (NULL !== $body) {
+          $this->headers['Content-Length']= array(max(0, strlen($body)));
+          if (empty($this->headers['Content-Type'])) {
+            $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
+          }
         }
       }
 
@@ -249,25 +290,16 @@
       if (NULL !== $this->url->getQuery()) {
         $queryString[]= $this->url->getQuery();
       }
-      if ((TRUE === $addParamsToURI) &&
-          (!empty($paramsEncoded))
-      ) {
+      if (!empty($paramsEncoded)) {
         $queryString[]= $paramsEncoded;
       }
 
       $target= $this->target;
       $target.= (sizeOf($queryString) > 0) ? '?'.implode('&', $queryString) : '';
 
-      if (NULL !== $body) {
-        $this->headers['Content-Length']= array(max(0, strlen($body)));
-        if (empty($this->headers['Content-Type'])) {
-          $this->headers['Content-Type']= array('application/x-www-form-urlencoded');
-        }
-      }
-
-      // build request
+      // Build request
       $request= sprintf(
-        "%s %s HTTP/%s\r\n",
+        '%s %s HTTP/%s'.HttpConstants::CRLF,
         $this->method,
         $target,
         $this->version
@@ -275,10 +307,10 @@
 
       foreach ($this->headers as $k => $v) {
         foreach ($v as $value) {
-          $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value)."\r\n";
+          $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value).HttpConstants::CRLF;
         }
       }
-      $request.= "\r\n";
+      $request.= HttpConstants::CRLF;
 
       if ($withBody) {
         $request.= $body;

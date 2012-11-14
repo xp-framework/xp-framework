@@ -53,7 +53,7 @@
         "Connection: close\r\n".
         "Host: test\r\n".
         "Content-Length: 5\r\n".
-        "Content-Type: application/x-www-form-urlencoded\r\n".
+        "Content-Type: text/plain\r\n".
         "\r\n".
         "Hello",
         $fixture->execute(create(new RestRequest('/', HttpConstants::POST))->withBody(new RequestData('Hello')))->content()

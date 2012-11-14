@@ -81,5 +81,8 @@
       VERSION_0_9 = '0.9',
       VERSION_1_0 = '1.0',
       VERSION_1_1 = '1.1';
+      
+    const
+      CRLF = "\r\n";
   }
 ?>
