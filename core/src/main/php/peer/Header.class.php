@@ -50,14 +50,11 @@
      * @return  string value
      */
     public function getValueRepresentation() {
-      return $this->getValue();
+      return $this->value;
     }
     
     /**
      * Create string representation
-     *
-     * TBD: Why two methods returning the same?
-     *      Do I really wish to use eventually different values for comparison and toString output?
      *
      * @return  string
      */
@@ -84,33 +81,6 @@
      */
     public function equals($cmp) {
       return ($cmp instanceof self) && ($this->getName() === $cmp->getName()) && ($this->getValue() === $cmp->getValue());
-    }
-    
-    /**
-     * Will return if this header is a valid request header
-     *
-     * @return bool TRUE
-     */
-    public function isRequestHeader() {
-      return TRUE;
-    }
-
-    /**
-     * Will return if this header is a valid response header
-     *
-     * @return bool TRUE
-     */
-    public function isResponseHeader() {
-      return TRUE;
-    }
-    
-    /**
-     * By default mark headers as not unique
-     *
-     * @return bool FALSE
-     */
-    public function isUnique() {
-      return FALSE;
     }
   }
 ?>
