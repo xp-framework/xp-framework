@@ -24,6 +24,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for peer.Header instances in REST client - pull #202
+  (friebe)
 - Added ArrayType and MapType constructors which accept component types
   in pull request #197
   (friebe)
