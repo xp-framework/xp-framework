@@ -361,6 +361,20 @@
      *
      */
     #[@test]
+    public function oneHeaderObject() {
+      $fixture= new RestRequest();
+      $fixture->addHeader(new Header('Accept', 'text/xml'));
+      $this->assertEquals(
+        array('Accept' => 'text/xml'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function twoHeaders() {
       $fixture= new RestRequest('/issues');
       $fixture->addHeader('Accept', 'text/xml');
@@ -369,6 +383,69 @@
         array('Accept' => 'text/xml', 'Referer' => 'http://localhost'), 
         $fixture->getHeaders()
       );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function twoHeaderObjects() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addHeader(new Header('Accept', 'text/xml'));
+      $fixture->addHeader(new Header('Referer', 'http://localhost'));
+      $this->assertEquals(
+        array('Accept' => 'text/xml', 'Referer' => 'http://localhost'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function headerListEmpty() {
+      $fixture= new RestRequest('/issues');
+      $this->assertEquals(
+        array(),
+        $fixture->headerList()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function headerListWithOneHeader() {
+      $fixture= new RestRequest('/issues');
+      $h= $fixture->addHeader(new Header('Accept', 'text/xml'));
+      $this->assertEquals(
+        array($h),
+        $fixture->headerList()
+      );
+    }
+
+    /**
+     * Test addHeader()
+     *
+     */
+    #[@test]
+    public function addHeaderReturnsAddedHeaderObject() {
+      $h= new Header('Accept', 'text/xml');
+      $fixture= new RestRequest('/issues');
+      $this->assertEquals($h, $fixture->addHeader($h));
+    }
+
+    /**
+     * Test addHeader()
+     *
+     */
+    #[@test]
+    public function addHeaderReturnsAddedHeader() {
+      $fixture= new RestRequest('/issues');
+      $this->assertEquals(new Header('Accept', 'text/xml'), $fixture->addHeader('Accept', 'text/xml'));
     }
 
     /**
