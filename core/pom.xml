@@ -6,10 +6,13 @@
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
     <version>5.8.10</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <!-- The Basics -->
+  <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
+  <version>5.8.10</version>
   <packaging>xar</packaging>
 
   <!-- More Project Information -->
