@@ -22,9 +22,8 @@
    */
   class HttpRequestDataMulti extends AbstractHttpRequestData {
     const
-      DEFAULT_TYPE_MULTIPART= 'multipart/mixed',
-      DEFAULT_BOUNDARY=       'HttpRequestDataMultipart',
-      BOUNDARY_SEPARATOR=     '--';
+      DEFAULT_CONTENTTYPE_MULTIPART=  'multipart/mixed',
+      BOUNDARY_SEPARATOR=             '--';
 
     protected
       $parts      = array(),
@@ -36,6 +35,7 @@
     public function __construct($parts = array(), $boundary= NULL) {
       $this->addParts($parts);
       if(!empty($boundary)) {
+        // don't call function, wait until default headers are created in parent
         $this->boundary= $boundary;
       }
       // call with empty body since parts may be added later
@@ -49,7 +49,7 @@
      * @return string
      */
     protected function getDefaultType() {
-      return self::DEFAULT_TYPE_MULTIPART;
+      return self::DEFAULT_CONTENTTYPE_MULTIPART;
     }
 
     /**
@@ -66,42 +66,53 @@
     /**
      * Add content part
      *
-     * @param   peer.http.HttpRequestData part
+     * @param   mixed part
      * @return  peer.http.HttpRequestData
      */
-    public function addPart(HttpRequestData $part) {
+    public function addPart($part) {
+      if(!$part instanceof HttpRequestData) {
+        $part= new HttpRequestData($part);
+      }
       $this->parts[]= $part;
       return $part;
     }
 
     /**
-     * Same as peer.http.HttpRequestDataMulti#addPart, but with more than one
+     * Add content parts
+     * If no array was given, will cast to one
      *
-     * @param   {:peer.http.HttpRequestData] parts
+     * @param   mixed parts
+     * @return  [:peer.http.HttpRequestData] added parts
+     * @see     peer.http.HttpRequestDataMulti#addPart
      */
     public function addParts($parts= array()) {
       $parts= (array)$parts;
+      $addedParts= array();
       foreach($parts as $part) {
-        $this->addPart($part);
+        $addedParts[]= $this->addPart($part);
       }
+      return $addedParts;
     }
 
     /**
      * Add form part - fluent interface
      *
-     * @param   peer.http.HttpRequestData part
+     * @param   mixed part
      * @return  peer.http.HttpRequestDataMulti this
+     * @see     peer.http.HttpRequestDataMulti#addPart
      */
-    public function withPart(HttpRequestData $part) {
+    public function withPart($part) {
       $this->addPart($part);
       return $this;
     }
 
     /**
-     * Same as peer.http.HttpRequestDataMulti#addParts - fluent interface
+     * Add form parts - fluent interface
+     * If no array was given, will be cast to one
      *
-     * @param   [:peer.http.HttpRequestData] parts
+     * @param   mixed parts
      * @return  peer.http.HttpRequestDataMulti this
+     * @see     peer.http.HttpRequestDataMulti#addParts
      */
     public function withParts($parts) {
       $this->addParts($parts);
@@ -121,7 +132,7 @@
       }
       $this->boundary= $boundary;
       // change boundary in content type header
-      $contentTypeHeader= $this->getHeadersForType(HttpFactory::TYPE_CONTENT_TYPE);
+      $contentTypeHeader= $this->getHeadersForType(HeaderFactory::TYPE_CONTENT_TYPE);
       if(is_array($contentTypeHeader) ||
          !$contentTypeHeader instanceof Header
       ) {
@@ -144,7 +155,7 @@
 
     /**
      * Retrieve boundary.
-     * If none set so far will generate one using the time.
+     * If none set so far will generate and set one using the time.
      *
      * @return  string
      */
@@ -161,9 +172,14 @@
      * @return  string
      */
     public function getData() {
-      $ret= self::BOUNDARY_SEPARATOR.$this->getBoundary;
+      $ret= self::BOUNDARY_SEPARATOR.$this->getBoundary();
       foreach ($this->parts as $part) {
-        $ret.=  HttpConstants::CRLF.$part->getData().HttpConstants::CRLF.self::BOUNDARY_SEPARATOR.$this->getBoundary;
+        // headers first
+        foreach($part->getHeaders() as $header) {
+          $ret.=  HttpConstants::CRLF.$header->toString();
+        }
+        // content
+        $ret.=  HttpConstants::CRLF.$part->getData().HttpConstants::CRLF.self::BOUNDARY_SEPARATOR.$this->getBoundary();
       }
       return $ret.self::BOUNDARY_SEPARATOR.HttpConstants::CRLF;
     }

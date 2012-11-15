@@ -36,7 +36,7 @@
      * @throws  lang.IllegalArgumentException
      * @see Serializable
      */
-    public function __construct(&$data) {
+    public function __construct($data) {
       parent::__construct($data);
       $this->setDefaultHeaders();
     }
@@ -93,9 +93,13 @@
         throw new IllegalArgumentException('Header must either be of type Header or array');
       }
       $name= $header->getName();
-      if($header->isUnique()) {
+      if(($header->isUnique()) ||
+         (!array_key_exists($name, $this->headers))
+      ) {
+        // unique or first with this name
         $this->headers[$name]= $header;
       } else {
+        $this->headers[$name]= (array)$this->headers[$name];
         $this->headers[$name][]= $header;
       }
     }
@@ -149,8 +153,10 @@
      * @return [:var]
      */
     public function getHeadersForType($type) {
-      // ignores parent headers
       if($this->hasHeader($type)) {
+        if(array_key_exists($type, $this->headers)) {
+          return $this->headers[$type];
+        }
         $name= HeaderFactory::getNameForType($type);
         return $this->headers[$name];
       }
@@ -164,8 +170,11 @@
      * @return bool
      */
     public function hasHeader($type) {
-      // ignores parent headers
-      $name= HeaderFactory::getNameForType($type);
+      try {
+        $name= HeaderFactory::getNameForType($type);
+      } catch (IllegalArgumentException $ex) {
+        return FALSE;
+      }
       return array_key_exists($name, $this->headers);
     }
 
