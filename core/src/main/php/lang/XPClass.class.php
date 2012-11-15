@@ -912,7 +912,7 @@
      *
      * @param   lang.XPClass self
      * @param   lang.Type[] arguments
-     * @return  lang.XPClass
+     * @return  string created type's literal name
      */
     public static function createGenericType(XPClass $self, array $arguments) {
 
@@ -987,7 +987,7 @@
                 foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
                   $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= ' extends '.self::createGenericType($self->getParentClass(), $xargs)->literal();
+                $src.= ' extends '.self::createGenericType($self->getParentClass(), $xargs);
               } else {
                 $src.= ' extends '.$tokens[$i+ 2][1];
               }
@@ -1102,7 +1102,7 @@
                 foreach (explode(',', $annotation[$counter]) as $j => $placeholder) {
                   $iargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs)->literal();
+                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs);
               } else {
                 $src.= $tokens[$i][1];
               }
@@ -1126,7 +1126,7 @@
         xp::$registry['class.'.$name]= $qname;
       }
       
-      return new XPClass(new ReflectionClass($name));
+      return $name;
     }
     
     /**
@@ -1137,8 +1137,8 @@
      * @throws  lang.IllegalStateException if this class is not a generic definition
      * @throws  lang.IllegalArgumentException if number of arguments does not match components
      */
-    public function newGenericType(array $arguments) {
-      return self::createGenericType($this, $arguments);
+    public function newGenericType($arguments) {
+      return new XPClass(new ReflectionClass(self::createGenericType($this, $arguments)));
     }
 
     /**
