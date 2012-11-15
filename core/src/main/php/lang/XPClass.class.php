@@ -1024,25 +1024,7 @@
               array_unshift($state, 3);
               array_unshift($state, 2);
               $m= $tokens[$i+ 2][1];
-              if (isset($meta[1][$m])) {
-                $annotations= $meta[1][$m][DETAIL_ANNOTATIONS];
-              } else {
-                $meta[1][$m]= array(
-                  DETAIL_ARGUMENTS    => array(),
-                  DETAIL_RETURNS      => 'void',
-                  DETAIL_THROWS       => array(),
-                  DETAIL_COMMENT      => $comment,
-                  DETAIL_ANNOTATIONS  => $annotations,
-                  DETAIL_NAME         => $m
-                );
-                foreach ($matches as $match) {
-                  switch ($match[1]) {
-                    case 'param': $meta[1][$m][DETAIL_ARGUMENTS][]= $match[2]; break;
-                    case 'return': $meta[1][$m][DETAIL_RETURNS]= $match[2]; break;
-                    case 'throws': $meta[1][$m][DETAIL_THROWS][]= $match[2]; break;
-                  }
-                }
-              }
+              $annotations= $meta[1][$m][DETAIL_ANNOTATIONS];
             } else if ('}' === $tokens[$i][0]) {
               $src.= '}';
               break;
