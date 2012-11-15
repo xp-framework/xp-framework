@@ -632,17 +632,9 @@
       throw new IllegalArgumentException($e->getMessage());
     }
 
-    // Instantiate
-    if ($type->hasConstructor()) {
-      $args= func_get_args();
-      try {
-        return $type->getConstructor()->newInstance(array_slice($args, 1));
-      } catch (TargetInvocationException $e) {
-        throw $e->getCause();
-      }
-    } else {
-      return $type->newInstance();
-    }
+    // Instantiate, passing the rest of any arguments passed to create()
+    $args= func_get_args();
+    return call_user_func_array(array($type, 'newInstance'), array_slice($args, 1));
   }
   // }}}
 
