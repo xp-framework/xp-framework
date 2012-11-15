@@ -975,9 +975,6 @@
             if (T_ABSTRACT === $tokens[$i][0] || T_FINAL === $tokens[$i][0]) {
               $src.= $tokens[$i][1].' ';
             } else if (T_CLASS === $tokens[$i][0] || T_INTERFACE === $tokens[$i][0]) {
-              if (NULL === $meta['class']) {
-                $meta['class']= array(DETAIL_COMMENT => $comment, DETAIL_ANNOTATIONS  => $annotations);
-              }
               $meta['class'][DETAIL_GENERIC]= array($self->name, $arguments);
               $src.= $tokens[$i][1].' '.$name;
               array_unshift($state, $tokens[$i][0]);
