@@ -24,6 +24,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Improved generics instance creation by factors between 1.2 and 1.6
+  (friebe)
 - Added support for peer.Header instances in REST client - pull #202
   (friebe)
 - Added ArrayType and MapType constructors which accept component types
