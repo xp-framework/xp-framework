@@ -7,12 +7,16 @@
   uses(
     'lang.ClassNotFoundException',
     'lang.IllegalArgumentException',
-    'lang.XPClass'
+    'lang.XPClass',
+    'peer.Header'
   );
 
   /**
-   * Factory for generating Headers
+   * Factory for generating specific Headers
    * Keep in mind, not all Headers are valid for Requests/Responses
+   *
+   * If a header is requested with a type that does not reflect a xp classname,
+   * a peer.Header with the type as name is returned instead.
    *
    * TODO - extend with more headers
    *
@@ -59,7 +63,7 @@
     public static function getResponseHeader($type) {
       $header= call_user_func_array(array('HeaderFactory', 'getHeader'), func_get_args());
       if(!$header->isResponseHeader()) {
-        throw new IllegalArgumentException('A response only header may not be used in a request');
+        throw new IllegalArgumentException('A request only header may not be used in a response');
       }
       return $header;
     }
@@ -69,16 +73,19 @@
      *
      * TBD: Should this be public and thus creating a backdoor for requesting headers without further request/response check
      *
-     * @param   string header type
+     * @param   string type
      * @return  peer.Header
      * @throws  IllegalArgumentException on empty/wrong type or initializing errors (missing params)
      */
     public static function getHeader($type) {
-      $class= self::getXPClass($type);
-      $args= func_get_args();
-      array_shift($args);
-      $header= call_user_func_array(array($class, 'newInstance'), $args);
-      return $header;
+      if(self::isPossibleXPClassname($type)) {
+        $args= func_get_args();
+        array_shift($args);
+        $class= self::getXPClass($type);
+        return call_user_func_array(array($class, 'newInstance'), $args);
+      } else {
+        return new Header($type, func_get_arg(1));
+      }
     }
 
     /**
@@ -89,27 +96,48 @@
      * @throws  IllegalArgumentException on empty/wrong type or initializing errors (missing params)
      */
     protected static function getXPClass($type) {
-      if (empty($type)) {
-        throw new IllegalArgumentException('A header type has to be given');
-      }
       try {
         $class= XPClass::forName($type);
+        if(!$class->isSubclassOf('peer.Header')) {
+          throw new IllegalArgumentException('Given type is no Header');
+        }
       } catch (ClassNotFoundException $ex) {
-        throw new IllegalArgumentException('Header for type \''.$type.'\' not found');
+        throw new IllegalArgumentException('Invalid type \''.$type.'\' given. Class not found.');
       }
       return $class;
     }
 
     /**
+     * Will check if the given type is a possible XPClassname and thus invalid Header name
+     * (Headers may not include a dot)
+     *
+     * This is used to determine, if a specified header is to be loaded or if the factory falls back to common peer.Header
+     *
+     * @param   string type
+     * @return  bool
+     * @throws  lang.IllegalArgumentException on empty type
+     */
+    protected static function isPossibleXPClassname($type) {
+      if (empty($type)) {
+        throw new IllegalArgumentException('A header type has to be given');
+      }
+      return (FALSE === strpos($type, '.')) ? FALSE : TRUE;
+    }
+
+    /**
      * Will return the header name for the given type if found
      *
-     * @param   string header type
+     * @param   string type
      * @return  string
      * @throws  IllegalArgumentException on empty/wrong type or initializing errors (missing params)
      */
     public static function getNameForType($type) {
-      $class= self::getXPClass($type);
-      return $class->getConstant('NAME');
+      if(self::isPossibleXPClassname($type)) {
+        $class= self::getXPClass($type);
+        return $class->getConstant('NAME');
+      } else {
+        return $type;
+      }
     }
   }
 ?>

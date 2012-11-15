@@ -43,12 +43,41 @@
     }
 
     /**
-     * Get invalid Request Header
+     * Get Request Header for Response
      *
      */
-    #[@test, @expect('lang.IllegalArgumentException')]
-    public function getIllegalRequestHeader() {
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/A response only header may not be used in a request/')]
+    public function getRequestHeaderForResponse() {
       $requestHeader= HeaderFactory::getRequestHeader(HeaderFactory::TYPE_CONTENT_LOCATION, '/var/log/apache2/error.log');
+    }
+
+    /**
+     * Get header for empty type classname
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/A header type has to be given/')]
+    public function getRequestHeaderForEmptyType() {
+      $requestHeader= HeaderFactory::getRequestHeader('', '/var/log/apache2/error.log');
+    }
+
+    /**
+     * Get header for invalid type classname
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/Invalid type \'de.schlund.alohahe.testonly.NoGoodHeaderClass\' given. Class not found./')]
+    public function getRequestHeaderForInvalidType() {
+      $requestHeader= HeaderFactory::getRequestHeader('de.schlund.alohahe.testonly.NoGoodHeaderClass', '/var/log/apache2/error.log');
+    }
+
+    /**
+     * Get standard header
+     *
+     */
+    #[@test]
+    public function getIllegalRequestHeader() {
+      $requestHeader= HeaderFactory::getRequestHeader('x-mycustom-header', 'random');
+      $requestHeaderExpected= new Header('x-mycustom-header', 'random');
+      $this->assertEquals($requestHeaderExpected->toString(), $requestHeader->toString());
     }
 
     /**
