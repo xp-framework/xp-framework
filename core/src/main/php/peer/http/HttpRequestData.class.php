@@ -4,9 +4,9 @@
  * $Id$
  */
   uses(
-    'peer.http.RequestData',
     'lang.IllegalArgumentException',
-    'peer.http.AbstractHttpRequestData'
+    'peer.http.AbstractHttpRequestData',
+    'peer.http.RequestData'
   );
 
   /**

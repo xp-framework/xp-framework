@@ -35,11 +35,11 @@
     public function __construct($parts = array(), $boundary= NULL) {
       $this->addParts($parts);
       if(!empty($boundary)) {
-        // don't call function, wait until default headers are created in parent
+        // Don't call function, wait until default headers are created in parent
         $this->boundary= $boundary;
       }
-      // call with empty body since parts may be added later
-      // so create data at the latest possible moment
+      // Call with empty body since parts may be added later
+      // So create data at the latest possible moment
       parent::__construct('');
     }
 
@@ -131,7 +131,7 @@
         throw new IllegalArgumentException('Empty boundary given');
       }
       $this->boundary= $boundary;
-      // change boundary in content type header
+      // Change boundary in content type header
       $contentTypeHeader= $this->getHeadersForType(HeaderFactory::TYPE_CONTENT_TYPE);
       if(is_array($contentTypeHeader) ||
          !$contentTypeHeader instanceof Header
@@ -174,11 +174,9 @@
     public function getData() {
       $ret= self::BOUNDARY_SEPARATOR.$this->getBoundary();
       foreach ($this->parts as $part) {
-        // headers first
         foreach($part->getHeaders() as $header) {
           $ret.=  HttpConstants::CRLF.$header->toString();
         }
-        // content
         $ret.=  HttpConstants::CRLF.$part->getData().HttpConstants::CRLF.self::BOUNDARY_SEPARATOR.$this->getBoundary();
       }
       return $ret.self::BOUNDARY_SEPARATOR.HttpConstants::CRLF;

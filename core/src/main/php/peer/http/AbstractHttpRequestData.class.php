@@ -13,8 +13,8 @@
   /**
    * AbstractHttpRequestData
    *
-   * TBD: Move all the header stuff into RequestData?
-   *      Might break things in inheriting classes. (pdietz)
+   * General object to handle all basic functionality. mainly header stuff
+   * of the HttpRequestData and requestDataMulti
    *
    * @see      xp://peer.http.HttpRequest#setBody
    * @see      xp://peer.http.HttpRequest#setParameters
@@ -34,7 +34,6 @@
      *
      * @param   int/string/array data
      * @throws  lang.IllegalArgumentException
-     * @see Serializable
      */
     public function __construct($data) {
       parent::__construct($data);
@@ -50,6 +49,8 @@
 
     /**
      * Will set the default headers, which will be used if not overwritten later
+     *
+     * @return void
      */
     protected function setDefaultHeaders() {
       $defaultHeaders= array(
@@ -83,6 +84,7 @@
      * if an array is given, the peer.Header will get instatiated
      *
      * @param array|peer.Header header
+     * @return void
      * @throws lang.IllegalArgumentException on illegal arguments
      */
     public function addHeader($header) {
@@ -107,8 +109,9 @@
     /**
      * Will set multiple Headers from the given array data
      *
-     * @param array
-     * @see peer.http.HttpRequestData#addHeader
+     * @param   array headers
+     * @return  void
+     * @see     peer.http.HttpRequestData#addHeader
      */
     public function addHeaders($headers= array()) {
       $headers= (array)$headers;
@@ -120,9 +123,9 @@
     /**
      * Same as peer.http.HttpRequestData#addHeader, but returns self.
      *
-     * @param array|peer.Header header
-     * @return peer.http.AbstractHttpRequestData this
-     * @throws lang.IllegalArgumentException on illegal arguments
+     * @param   array|peer.Header header
+     * @return  peer.http.AbstractHttpRequestData this
+     * @throws  lang.IllegalArgumentException on illegal arguments
      */
     public function withHeader($header) {
       $this->addHeader($header);
@@ -132,10 +135,10 @@
     /**
      * Same as peer.http.HttpRequestData#addHeaders, but returns self.
      *
-     * @param array
-     * @return peer.http.AbstractHttpRequestData this
-     * @throws lang.IllegalArgumentException on illegal arguments
-     * @see peer.http.HttpRequestData#addHeaders
+     * @param   array headers
+     * @return  peer.http.AbstractHttpRequestData this
+     * @throws  lang.IllegalArgumentException on illegal arguments
+     * @see     peer.http.HttpRequestData#addHeaders
      */
     public function withHeaders($headers= array()) {
       $headers= (array)$headers;
@@ -149,14 +152,11 @@
      * Will return the header(s) for the given type if exists.
      * Returns NULL if not set
      *
-     * @param string type
-     * @return [:var]
+     * @param   string type
+     * @return  [:var] peer.Header, array of peer.Header or null if none found
      */
     public function getHeadersForType($type) {
       if($this->hasHeader($type)) {
-        if(array_key_exists($type, $this->headers)) {
-          return $this->headers[$type];
-        }
         $name= HeaderFactory::getNameForType($type);
         return $this->headers[$name];
       }
@@ -166,8 +166,8 @@
     /**
      * Will return if a header for the given type is set
      *
-     * @param string type
-     * @return bool
+     * @param   string type
+     * @return  bool
      */
     public function hasHeader($type) {
       try {
@@ -193,8 +193,9 @@
     /**
      * Will process all headers and flatten possible subheaders them
      *
-     * @param [:peer.http.Header] headers
-     * @param [:var] header peer.http.Header or [:peer.http.Header]
+     * @param   [:peer.http.Header] headers
+     * @param   [:var] header peer.http.Header or [:peer.http.Header]
+     * @return  void
      */
     protected function addHeaderToList(&$headers, $header) {
       if(is_array($header)) {

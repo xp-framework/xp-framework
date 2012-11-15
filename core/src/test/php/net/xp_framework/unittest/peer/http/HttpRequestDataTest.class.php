@@ -6,10 +6,10 @@
 
   uses(
     'net.xp_framework.unittest.peer.http.AbstractHttpRequestDataTest',
-    'peer.http.HttpRequestData',
+    'lang.ClassLoader',
     'peer.header.ContentLengthHeader',
     'peer.header.ContentTypeHeader',
-    'lang.ClassLoader'
+    'peer.http.HttpRequestData'
   );
 
   /**

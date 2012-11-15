@@ -6,9 +6,9 @@
 
   uses(
     'net.xp_framework.unittest.peer.http.AbstractHttpRequestDataTest',
-    'peer.http.HttpRequestDataMulti',
     'peer.http.HttpConstants',
-    'peer.http.HttpRequestData'
+    'peer.http.HttpRequestData',
+    'peer.http.HttpRequestDataMulti'
   );
 
   /**

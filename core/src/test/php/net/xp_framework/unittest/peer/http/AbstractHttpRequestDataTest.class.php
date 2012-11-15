@@ -21,7 +21,6 @@
     protected
       $expectedHeaders=  array();
 
-
     /**
      * Has to return a new test obj for testing the header functionalities
      *
