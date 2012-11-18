@@ -596,29 +596,32 @@
 
     // Check for an anonymous generic 
     if (strstr($spec, '<')) {
-      $class= Type::forName($spec)->genericDefinition();
-      $spec= $class->getName();
+      $class= Type::forName($spec);
       $type= $class->literal();
+      $p= strrpos(substr($type, 0, strpos($type, '··')), '·');
     } else {
       $type= xp::reflect(FALSE === strrpos($spec, '.') ? xp::nameOf($spec) : $spec);
       if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
         xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
         // Bails
       }
+      $p= strrpos($type, '·');
     }
 
     // Create unique name
     $n= '·'.(++$u);
     $spec.= $n;
-    if (FALSE !== ($p= strrpos($type, '·'))) {
+    if (FALSE !== $p) {
       $ns= '$package= "'.strtr(substr($type, 0, $p), '·', '.').'"; ';
+      $spec= $type.$n;
       $decl= $type.$n;
     } else if (FALSE === ($p= strrpos($type, '\\'))) {
       $ns= '';
-      $decl= $type.$n;
+      $spec= $decl= $type.$n;
     } else {
       $ns= 'namespace '.substr($type, 0, $p).'; ';
       $decl= substr($type, $p+ 1).$n;
+      $spec= strtr($type, '\\', '.').$n;
       $type= '\\'.$type;
     }
 
