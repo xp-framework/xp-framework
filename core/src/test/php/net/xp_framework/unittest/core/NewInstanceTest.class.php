@@ -152,5 +152,35 @@
         $i->getClass()->getPackage()
       );
     }
+
+    /**
+     * Test class name of a anonymous generic instance
+     *
+     */
+    #[@test]
+    public function className() {
+      $instance= newinstance('Object', array(), '{ }');
+      $n= $instance->getClassName();
+      $this->assertEquals(
+        'Object',
+        substr($n, 0, strrpos($n, '·')),
+        $n
+      );
+    }
+
+    /**
+     * Test class name of a anonymous generic instance
+     *
+     */
+    #[@test]
+    public function classNameWithFullyQualifiedClassName() {
+      $instance= newinstance('lang.Object', array(), '{ }');
+      $n= $instance->getClassName();
+      $this->assertEquals(
+        'Object',
+        substr($n, 0, strrpos($n, '·')),
+        $n
+      );
+    }
   }
 ?>

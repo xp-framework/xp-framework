@@ -5,7 +5,7 @@
   <!-- The Basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
-  <version>5.8.8</version>
+  <version>5.8.10</version>
   <packaging>pom</packaging>
 
   <!-- More Project Information -->
@@ -50,7 +50,7 @@
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.1.2</version>
+        <version>3.1.8</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
@@ -88,4 +88,9 @@
     <url>https://github.com/xp-framework/xp-framework</url>
   </scm>
 
+  <!-- Issue Management -->
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/xp-framework/xp-framework/issues</url>
+  </issueManagement>
 </project>

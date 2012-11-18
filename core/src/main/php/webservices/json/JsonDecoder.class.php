@@ -199,6 +199,9 @@
             $stream->write(' ]');
             return TRUE;
           } else {
+            // Reset array internal pointer
+            reset($data);
+
             $stream->write('{ ');
 
             $value= each($data);

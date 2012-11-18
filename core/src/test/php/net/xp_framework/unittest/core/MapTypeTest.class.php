@@ -44,6 +44,24 @@
     }
 
     /**
+     * Test MapType constructor
+     *
+     */
+    #[@test]
+    public function newMapTypeWithString() {
+      $this->assertEquals(MapType::forName('[:int]'), new MapType('int'));
+    }
+
+    /**
+     * Test MapType constructor
+     *
+     */
+    #[@test]
+    public function newMapTypeWithTypeInstance() {
+      $this->assertEquals(MapType::forName('[:int]'), new MapType(Primitive::$INT));
+    }
+
+    /**
      * Test componentType() method
      *
      */

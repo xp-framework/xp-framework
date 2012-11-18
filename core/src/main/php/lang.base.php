@@ -658,7 +658,7 @@
     $class= XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base));
     if ($class->hasField('__generic')) {
       $__id= microtime();
-      $name= xp::reflect($classname);
+      $name= $class->literal();
       $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
       foreach ($typeargs as $type) {
         $instance->__generic[]= xp::reflect($type->getName());
@@ -673,23 +673,20 @@
       return $instance;
     }
     
+    // Instantiate, passing the rest of any arguments passed to create()
     // BC: Wrap IllegalStateExceptions into IllegalArgumentExceptions
     try {
-      $type= $class->newGenericType($typeargs);
+      $reflect= new ReflectionClass(XPClass::createGenericType($class, $typeargs));
+      if ($reflect->hasMethod('__construct')) {
+        $a= func_get_args();
+        return $reflect->newInstanceArgs(array_slice($a, 1));
+      } else {
+        return $reflect->newInstance();
+      }
     } catch (IllegalStateException $e) {
       throw new IllegalArgumentException($e->getMessage());
-    }
-
-    // Instantiate
-    if ($type->hasConstructor()) {
-      $args= func_get_args();
-      try {
-        return $type->getConstructor()->newInstance(array_slice($args, 1));
-      } catch (TargetInvocationException $e) {
-        throw $e->getCause();
-      }
-    } else {
-      return $type->newInstance();
+    } catch (ReflectionException $e) {
+      throw new IllegalAccessException($e->getMessage());
     }
   }
   // }}}
