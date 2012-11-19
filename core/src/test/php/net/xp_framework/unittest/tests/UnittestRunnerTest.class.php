@@ -69,6 +69,102 @@
     }
 
     /**
+     * Test -l parameter without the listener class given
+     *
+     */
+    #[@test]
+    public function listenerArgMissingClass() {
+      $return= $this->runner->run(array('-l'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -l requires an argument');
+    }
+
+    /**
+     * Test -l parameter with non-existant class given as listener
+     *
+     */
+    #[@test]
+    public function listenerArgWrongClass() {
+      $return= $this->runner->run(array('-l', 'does.not.Exist'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Class "does.not.Exist" could not be found');
+    }
+
+
+    /**
+     * Test -l parameter with listener but missing output argument
+     *
+     */
+    #[@test]
+    public function listenerArgWithMissingOutput() {
+      $return= $this->runner->run(array('-l', 'xp.unittest.DefaultListener'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -l requires an argument');
+    }
+
+    /**
+     * Test -l parameter with all arguments required
+     *
+     */
+    #[@test]
+    public function listenerArg() {
+      $return= $this->runner->run(array('-l', 'xp.unittest.DefaultListener', '-'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** No tests specified');
+    }
+
+    /**
+     * Test -o parameter with missing name and value
+     *
+     */
+    #[@test]
+    public function optionArgMissingNameAndValue() {
+      $return= $this->runner->run(array('-o'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -o requires an argument');
+    }
+
+    /**
+     * Test -o parameter with missing name
+     *
+     */
+    #[@test]
+    public function optionArgMissingValue() {
+      $return= $this->runner->run(array('-o', 'name'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Option -o requires an argument');
+    }
+
+    /**
+     * Test -o parameter with invalid option
+     *
+     */
+    #[@test]
+    public function optionArgInvalid() {
+      $return= $this->runner->run(array('-o', 'invalid', 'value'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** Unsupported option "invalid" for TestListener');
+    }
+
+    /**
+     * Test -o parameter setting options
+     *
+     */
+    #[@test]
+    public function optionArg() {
+      ClassLoader::getDefault()->defineClass('OptionableTestListener', 'xp.unittest.DefaultListener', array(), '{
+        static $options= array();
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+        public function setVerbose($value) { self::$options[__FUNCTION__]= $value; }
+        public static function options() { return self::$options; }
+      }');
+      $return= $this->runner->run(array('-l', 'OptionableTestListener', '-', '-o', 'option', 'value', '-o', 'verbose', 'on'));
+      $this->assertEquals(1, $return);
+      $this->assertOnStream($this->err, '*** No tests specified');
+      $this->assertEquals(array('setOption' => 'value', 'setVerbose' => 'on'), OptionableTestListener::options());
+    }
+
+    /**
      * Test when invoked with no tests
      *
      */
