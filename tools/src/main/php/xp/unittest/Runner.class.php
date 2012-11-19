@@ -1,13 +1,14 @@
 <?php
 /* This class is part of the XP framework
  *
- * $Id$ 
+ * $Id$
  */
 
   $package= 'xp.unittest';
 
   uses(
     'xp.unittest.TestListeners',
+    'xp.unittest.CoverageListener',
     'xp.unittest.sources.PropertySource',
     'xp.unittest.sources.ClassSource',
     'xp.unittest.sources.ClassFileSource',
@@ -20,7 +21,8 @@
     'unittest.TestSuite',
     'util.Properties',
     'util.collections.Vector',
-    'util.cmd.Console'
+    'util.cmd.Console', 
+    'lang.Runtime'
   );
 
   /**
@@ -41,6 +43,8 @@
    *     multiple times)</li>
    *   <li>-l {listener.class.Name} {output}, where output is either "-"
    *     for console output or a file name</li>
+   *   <li>-o {name} {value}: Set option for last added listener (may be
+   *     used multiple times)
    *   <li>--color={mode} : Enable / disable color; mode can be one of
    *     . "on" - activate color mode
    *     . "off" - disable color mode
@@ -66,7 +70,7 @@
   class xp·unittest·Runner extends Object {
     protected $out= NULL;
     protected $err= NULL;
-    
+
     /**
      * Constructor. Initializes out and err members to console
      *
@@ -138,7 +142,7 @@
       }
       return $args[$offset];
     }
-    
+
     /**
      * Returns an output stream writer for a given file name.
      *
@@ -152,7 +156,7 @@
         return new StringWriter(new FileOutputStream($in));
       }
     }
-    
+
     /**
      * Runs suite
      *
@@ -176,6 +180,7 @@
         '=off'  => FALSE,
         '=auto' => NULL
       );
+      $runtime= Runtime::getInstance(); 
 
       try {
         for ($i= 0, $s= sizeof($args); $i < $s; $i++) {
@@ -192,7 +197,16 @@
           } else if ('-l' == $args[$i]) {
             $class= XPClass::forName($this->arg($args, ++$i, 'l'));
             $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
-            $suite->addListener($class->newInstance($output));
+            $listener= $suite->addListener($class->newInstance($output));
+          } else if ('-o' == $args[$i]) {
+            $name= $this->arg($args, ++$i, 'o');
+            $value= $this->arg($args, ++$i, 'o');
+            $method= 'set'.ucfirst($name);
+            if ($listener->getClass()->hasMethod($method)) {
+              $listener->getClass()->getMethod($method)->invoke($listener, array($value));
+            } else {
+              throw new IllegalArgumentException('Unsupported option "'.$name.'" for '.$listener->getClassName());
+            }
           } else if ('-?' == $args[$i]) {
             return $this->usage();
           } else if ('-a' == $args[$i]) {
@@ -224,12 +238,12 @@
         xp::gc();
         return 1;
       }
-      
+
       if ($sources->isEmpty()) {
         $this->err->writeLine('*** No tests specified');
         return 1;
       }
-      
+
       // Set up suite
       $l= $suite->addListener($listener->newInstance($this->out));
       if ($l instanceof ColorizingListener) {
@@ -253,7 +267,7 @@
           return 1;
         }
       }
-      
+
       // Run it!
       if (0 == $suite->numTests()) {
         return 3;
@@ -270,6 +284,6 @@
      */
     public static function main(array $args) {
       return create(new self())->run($args);
-    }    
+    }
   }
 ?>
