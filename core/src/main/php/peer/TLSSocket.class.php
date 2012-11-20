@@ -24,6 +24,9 @@
     public function __construct($host, $port, $socket= NULL) {
       parent::__construct($host, $port, $socket);
       $this->_prefix= 'tls://';
+      $this->setVerifyPeer(TRUE);
+      $this->setAllowSelfSigned(FALSE);
+      // TBD: Where to find CA files?
     }
   }
 ?>
