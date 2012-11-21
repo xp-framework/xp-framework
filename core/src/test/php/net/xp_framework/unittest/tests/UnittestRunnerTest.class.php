@@ -340,7 +340,7 @@
      */
     #[@test]
     public function withListener() {
-      $class= ClassLoader::getDefault()->defineClass('WithListenerTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithListenerTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
       }');
 
@@ -357,7 +357,7 @@
      */
     #[@test]
     public function withListenerOptions() {
-      $class= ClassLoader::getDefault()->defineClass('WithListenerOptionsTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithListenerOptionsTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
         #[@arg]
         public function setOption($value) { self::$options[__FUNCTION__]= $value; }
@@ -378,7 +378,7 @@
      */
     #[@test]
     public function withLongListenerOption() {
-      $class= ClassLoader::getDefault()->defineClass('WithLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
         #[@arg]
         public function setOption($value) { self::$options[__FUNCTION__]= $value; }
@@ -397,7 +397,7 @@
      */
     #[@test]
     public function withNamedLongListenerOption() {
-      $class= ClassLoader::getDefault()->defineClass('WithNamedLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
         #[@arg(name = "use")]
         public function setOption($value) { self::$options[__FUNCTION__]= $value; }
@@ -416,7 +416,7 @@
      */
     #[@test]
     public function withNamedLongListenerOptionShort() {
-      $class= ClassLoader::getDefault()->defineClass('WithNamedLongListenerOptionShortTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedLongListenerOptionShortTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
         #[@arg(name = "use")]
         public function setOption($value) { self::$options[__FUNCTION__]= $value; }
@@ -435,7 +435,7 @@
      */
     #[@test]
     public function withShortListenerOption() {
-      $class= ClassLoader::getDefault()->defineClass('WithShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
         #[@arg]
         public function setOption($value) { self::$options[__FUNCTION__]= $value; }
@@ -454,7 +454,7 @@
      */
     #[@test]
     public function withNamedShortListenerOption() {
-      $class= ClassLoader::getDefault()->defineClass('WithNamedShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
         #[@arg(short = "O")]
         public function setOption($value) { self::$options[__FUNCTION__]= $value; }
@@ -473,7 +473,7 @@
      */
     #[@test]
     public function withPositionalOptionListenerOption() {
-      $class= ClassLoader::getDefault()->defineClass('WithPositionalOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithPositionalOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
         public static $options= array();
         #[@arg(position= 0)]
         public function setOption($value) { self::$options[__FUNCTION__]= $value; }
