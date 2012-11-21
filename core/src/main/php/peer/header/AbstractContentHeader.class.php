@@ -27,7 +27,7 @@
      * @param string content
      */
     public function setContent($content) {
-      $this->content= &$content;
+      $this->content= $content;
     }
 
     /**
@@ -45,7 +45,7 @@
      *
      * @return string
      */
-    protected function &getContent() {
+    protected function getContent() {
       return $this->content;
     }
 
@@ -65,7 +65,7 @@
      */
     protected function getPart($format, $value= NULL) {
       $part= '';
-      if(!empty($value)) {
+      if (!empty($value)) {
         $part= sprintf($format, $value);
       }
       return $part;

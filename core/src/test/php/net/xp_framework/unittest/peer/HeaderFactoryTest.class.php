@@ -26,7 +26,7 @@
      */
     #[@test]
     public function getRequestHeader() {
-      $requestHeader= HeaderFactory::getRequestHeader(HeaderFactory::TYPE_CONTENT_TYPE, 'application/excel', 'latin1');
+      $requestHeader= HeaderFactory::getRequestHeader(HeaderFactory::HEADER_CONTENTTYPE, 'application/excel', 'latin1');
       $requestHeaderExpected= new ContentTypeHeader('application/excel', 'latin1');
       $this->assertEquals($requestHeaderExpected->toString(), $requestHeader->toString());
     }
@@ -37,7 +37,7 @@
      */
     #[@test]
     public function getResponseHeader() {
-      $responseHeader= HeaderFactory::getResponseHeader(HeaderFactory::TYPE_CONTENT_MD5, 'myown-md5');
+      $responseHeader= HeaderFactory::getResponseHeader(HeaderFactory::HEADER_CONTENTMD5, 'myown-md5');
       $responseHeaderExpected= new ContentMD5Header('myown-md5');
       $this->assertEquals($responseHeaderExpected->toString(), $responseHeader->toString());
     }
@@ -48,7 +48,7 @@
      */
     #[@test, @expect(class= 'lang.IllegalArgumentException', withMessage= '/A response only header may not be used in a request/')]
     public function getRequestHeaderForResponse() {
-      $requestHeader= HeaderFactory::getRequestHeader(HeaderFactory::TYPE_CONTENT_LOCATION, '/var/log/apache2/error.log');
+      $requestHeader= HeaderFactory::getRequestHeader(HeaderFactory::HEADER_CONTENTLOCATION, '/var/log/apache2/error.log');
     }
 
     /**
@@ -86,7 +86,7 @@
      */
     #[@test]
     public function getNameForType() {
-      $retrievedName= HeaderFactory::getNameForType(HeaderFactory::TYPE_CONTENT_RANGE);
+      $retrievedName= HeaderFactory::getNameForType(HeaderFactory::HEADER_CONTENTRANGE);
       $expectedName= create(new ContentRangeHeader('egal', 'auch', 'nochmehr'))->getName();
       $this->assertEquals($expectedName, $retrievedName);
     }

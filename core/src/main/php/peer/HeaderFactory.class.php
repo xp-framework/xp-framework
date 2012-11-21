@@ -25,14 +25,14 @@
   class HeaderFactory extends Object {
 
     const
-      TYPE_CONTENT_DISPOSITION=  'peer.header.ContentDispositionHeader',
-      TYPE_CONTENT_ENCODING=     'peer.header.ContentEncodingHeader',
-      TYPE_CONTENT_LANGUAGE=     'peer.header.ContentLanguageHeader',
-      TYPE_CONTENT_LENGTH=       'peer.header.ContentLengthHeader',
-      TYPE_CONTENT_LOCATION=     'peer.header.ContentLocationHeader',
-      TYPE_CONTENT_MD5=          'peer.header.ContentMD5Header',
-      TYPE_CONTENT_RANGE=        'peer.header.ContentRangeHeader',
-      TYPE_CONTENT_TYPE=         'peer.header.ContentTypeHeader';
+      HEADER_CONTENTDISPOSITION=  'peer.header.ContentDispositionHeader',
+      HEADER_CONTENTENCODING=     'peer.header.ContentEncodingHeader',
+      HEADER_CONTENTLANGUAGE=     'peer.header.ContentLanguageHeader',
+      HEADER_CONTENTLENGTH=       'peer.header.ContentLengthHeader',
+      HEADER_CONTENTLOCATION=     'peer.header.ContentLocationHeader',
+      HEADER_CONTENTMD5=          'peer.header.ContentMD5Header',
+      HEADER_CONTENTRANGE=        'peer.header.ContentRangeHeader',
+      HEADER_CONTENTTYPE=         'peer.header.ContentTypeHeader';
 
     /**
      * Create the requested request header.
@@ -41,7 +41,7 @@
      *
      * @param string type
      * @return peer.Header
-     * @throws IllegalArgumentException on empty/wrong type or value
+     * @throws lang.IllegalArgumentException on empty/wrong type or value
      */
     public static function getRequestHeader($type) {
       $header= call_user_func_array(array('HeaderFactory', 'getHeader'), func_get_args());
@@ -58,7 +58,7 @@
      *
      * @param   string type
      * @return  peer.Header
-     * @throws  IllegalArgumentException on empty/wrong type or value
+     * @throws  lang.IllegalArgumentException on empty/wrong type or value
      */
     public static function getResponseHeader($type) {
       $header= call_user_func_array(array('HeaderFactory', 'getHeader'), func_get_args());
@@ -75,9 +75,10 @@
      *
      * @param   string type
      * @return  peer.Header
-     * @throws  IllegalArgumentException on empty/wrong type or initializing errors (missing params)
+     * @throws  lang.IllegalArgumentException on empty/wrong type or initializing errors (missing params)
      */
     public static function getHeader($type) {
+      self::raiseExceptionOnInvalid($type);
       if(self::isPossibleXPClassname($type)) {
         $args= func_get_args();
         array_shift($args);
@@ -93,7 +94,7 @@
      *
      * @param   string header type
      * @return  lang.XPClass class object
-     * @throws  IllegalArgumentException on empty/wrong type or initializing errors (missing params)
+     * @throws  lang.IllegalArgumentException on empty/wrong type or initializing errors (missing params)
      */
     protected static function getXPClass($type) {
       try {
@@ -117,21 +118,34 @@
      * @return  bool
      * @throws  lang.IllegalArgumentException on empty type
      */
-    protected static function isPossibleXPClassname($type) {
-      if (empty($type)) {
-        throw new IllegalArgumentException('A header type has to be given');
-      }
+    private static function isPossibleXPClassname($type) {
       return (FALSE === strpos($type, '.')) ? FALSE : TRUE;
     }
 
     /**
-     * Will return the header name for the given type if found
+     * Convenience function
+     * Will simply raise an exception if the given type is invalid
+     * empty or no string
+     * 
+     * @param   string type the header type to test
+     * @return  void
+     * @throws  lang.IllegalArgumentException on empty or no string type
+     */
+    private static function raiseExceptionOnInvalid($type) {
+      if (empty($type) || !is_string($type)) {
+        throw new IllegalArgumentException('A header type has to be given');
+      }
+    }
+
+    /**
+     * Will return the header name for the given header type if not empty
      *
-     * @param   string type
+     * @param   string type the header type
      * @return  string
-     * @throws  IllegalArgumentException on empty/wrong type or initializing errors (missing params)
+     * @throws  lang.IllegalArgumentException on empty/wrong type or initializing errors (missing params)
      */
     public static function getNameForType($type) {
+      self::raiseExceptionOnInvalid($type);
       if(self::isPossibleXPClassname($type)) {
         $class= self::getXPClass($type);
         return $class->getConstant('NAME');
