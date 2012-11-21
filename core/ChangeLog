@@ -24,6 +24,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for unittest listener options - see pull request #201
+  (friebe, ohinckel)
 - Improved generics instance creation by factors between 1.2 and 1.6
   (friebe)
 - Added support for peer.Header instances in REST client - pull #202
