@@ -45,7 +45,7 @@
      */
     public static function getRequestHeader($type) {
       $header= call_user_func_array(array('HeaderFactory', 'getHeader'), func_get_args());
-      if(!$header->isRequestHeader()) {
+      if (!$header->isRequestHeader()) {
         throw new IllegalArgumentException('A response only header may not be used in a request');
       }
       return $header;
@@ -62,7 +62,7 @@
      */
     public static function getResponseHeader($type) {
       $header= call_user_func_array(array('HeaderFactory', 'getHeader'), func_get_args());
-      if(!$header->isResponseHeader()) {
+      if (!$header->isResponseHeader()) {
         throw new IllegalArgumentException('A request only header may not be used in a response');
       }
       return $header;
@@ -79,7 +79,7 @@
      */
     public static function getHeader($type) {
       self::raiseExceptionOnInvalid($type);
-      if(self::isPossibleXPClassname($type)) {
+      if (self::isPossibleXPClassname($type)) {
         $args= func_get_args();
         array_shift($args);
         $class= self::getXPClass($type);
@@ -99,7 +99,7 @@
     protected static function getXPClass($type) {
       try {
         $class= XPClass::forName($type);
-        if(!$class->isSubclassOf('peer.Header')) {
+        if (!$class->isSubclassOf('peer.Header')) {
           throw new IllegalArgumentException('Given type is no Header');
         }
       } catch (ClassNotFoundException $ex) {
@@ -146,7 +146,7 @@
      */
     public static function getNameForType($type) {
       self::raiseExceptionOnInvalid($type);
-      if(self::isPossibleXPClassname($type)) {
+      if (self::isPossibleXPClassname($type)) {
         $class= self::getXPClass($type);
         return $class->getConstant('NAME');
       } else {
