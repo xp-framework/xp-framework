@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.Logger', 'rdbms.DBObserver');
+  uses('util.log.Logger', 'util.log.BoundLogObserver');
 
   /**
    * Observer interface
@@ -12,7 +12,7 @@
    * @see      xp://util.Observable
    * @purpose  Interface
    */
-  class LogObserver extends Object implements DBObserver {
+  class LogObserver extends Object implements BoundLogObserver {
     public $cat= NULL;
     
     /**
