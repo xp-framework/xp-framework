@@ -36,8 +36,8 @@
           'obj'       =>  $obj,
           'out'       =>  '--'.$boundary.'--'.HttpConstants::CRLF,
           'headers' =>  array(
-            create(new ContentLengthHeader(4+$boundaryLength+$crLFLength))->toString(),
-            create(new ContentTypeHeader(HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART, NULL, $boundary))->toString()
+            create(new Header('Content-Length', 4+$boundaryLength+$crLFLength))->toString(),
+            create(new Header('Content-Type', HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART.'; boundary='.$boundary))->toString()
           )
         ),
         'boundary' =>  array(
@@ -45,8 +45,8 @@
           'boundary'  =>  'blabla',
           'out'       =>  '--'.'blabla'.'--'.HttpConstants::CRLF,
           'headers' =>  array(
-            create(new ContentLengthHeader(10+$crLFLength))->toString(),
-            create(new ContentTypeHeader(HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART, NULL, 'blabla'))->toString()
+            create(new Header('Content-Length', 10+$crLFLength))->toString(),
+            create(new Header('Content-Type', HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART.'; boundary=blabla'))->toString()
           )
         ),
         'single'  => array(
@@ -58,8 +58,8 @@
                         'This is some content for header tests'.HttpConstants::CRLF.
                         '--'.$boundary.'--'.HttpConstants::CRLF,
           'headers' =>  array(
-            create(new ContentLengthHeader(75+2*$boundaryLength+5*$crLFLength+$ctLengthNoArray))->toString(),
-            create(new ContentTypeHeader(HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART, NULL, $boundary))->toString()
+            create(new Header('Content-Length', 75+2*$boundaryLength+5*$crLFLength+$ctLengthNoArray))->toString(),
+            create(new Header('Content-Type', HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART.'; boundary='.$boundary))->toString()
           ),
         ),
         'multi' =>  array(
@@ -92,8 +92,8 @@
                         'HttpRequestDataObj'.HttpConstants::CRLF.
                         '--'.$boundary.'--'.HttpConstants::CRLF,
           'headers' =>  array(
-            create(new ContentLengthHeader(250+4*$boundaryLength+14*$crLFLength+2*$ctLengthNoArray+$ctLengthArray))->toString(),
-            create(new ContentTypeHeader(HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART, NULL, $boundary))->toString()
+            create(new Header('Content-Length', 250+4*$boundaryLength+14*$crLFLength+2*$ctLengthNoArray+$ctLengthArray))->toString(),
+            create(new Header('Content-Type', HttpRequestDataMulti::DEFAULT_CONTENTTYPE_MULTIPART.'; boundary='.$boundary))->toString()
           )
         )
       );

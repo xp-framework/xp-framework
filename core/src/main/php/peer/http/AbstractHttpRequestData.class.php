@@ -5,9 +5,7 @@
  */
   uses(
     'peer.http.RequestData',
-    'lang.IllegalArgumentException',
-    'peer.HeaderFactory',
-    'peer.header.AbstractContentHeader'
+    'lang.IllegalArgumentException'
   );
 
   /**
@@ -67,7 +65,7 @@
      */
     protected function getDefaultHeader_ContentType() {
       $defaultType= $this->getDefaultType();
-      return HeaderFactory::getRequestHeader(HeaderFactory::TYPE_CONTENT_TYPE, $defaultType);
+      return new Header('Content-Type', $defaultType);
     }
 
     /**
@@ -76,7 +74,7 @@
      * @return peer.Header
      */
     protected function getDefaultHeader_ContentLength() {
-      return HeaderFactory::getRequestHeader(HeaderFactory::TYPE_CONTENT_LENGTH, 0);
+      return new Header('Content-Length', 0);
     }
 
     /**
@@ -89,21 +87,14 @@
      */
     public function addHeader($header) {
       if(is_array($header)) {
-        $header= call_user_func_array(array('HeaderFactory', 'getRequestHeader'), $header);
+        $header= array_values($header);
+        $header= new Header($header[0], $header[1]);
       }
       if(!$header instanceof Header) {
         throw new IllegalArgumentException('Header must either be of type Header or array');
       }
       $name= $header->getName();
-      if(($header->isUnique()) ||
-         (!array_key_exists($name, $this->headers))
-      ) {
-        // unique or first with this name
-        $this->headers[$name]= $header;
-      } else {
-        $this->headers[$name]= (array)$this->headers[$name];
-        $this->headers[$name][]= $header;
-      }
+      $this->headers[$name]= $header;
     }
 
     /**
@@ -155,9 +146,8 @@
      * @param   string type
      * @return  [:var] peer.Header, array of peer.Header or null if none found
      */
-    public function getHeadersForType($type) {
-      if($this->hasHeader($type)) {
-        $name= HeaderFactory::getNameForType($type);
+    public function getHeadersForType($name) {
+      if($this->hasHeader($name)) {
         return $this->headers[$name];
       }
       return NULL;
@@ -169,12 +159,7 @@
      * @param   string type
      * @return  bool
      */
-    public function hasHeader($type) {
-      try {
-        $name= HeaderFactory::getNameForType($type);
-      } catch (IllegalArgumentException $ex) {
-        return FALSE;
-      }
+    public function hasHeader($name) {
       return array_key_exists($name, $this->headers);
     }
 
@@ -186,30 +171,13 @@
      */
     public function getHeaders() {
       $headers= parent::getHeaders();
-      $this->addHeaderToList($headers, $this->headers);
-      return $headers;
-    }
-
-    /**
-     * Will process all headers and flatten possible subheaders them
-     *
-     * @param   [:peer.http.Header] headers
-     * @param   [:var] header peer.http.Header or [:peer.http.Header]
-     * @return  void
-     */
-    protected function addHeaderToList(&$headers, $header) {
-      if(is_array($header)) {
-        foreach($header as $subHeader) {
-          $this->addHeaderToList($headers, $subHeader);
+      foreach($this->headers as $header) {
+        if('Content-Length' === $header->getName()) {
+          $header->value= strlen($this->getData());
         }
-        return;
+        $headers[]= $header;
       }
-      // HACK think about a better solution of how to identify Headers that use the content
-      if($header instanceof AbstractContentHeader) {
-        // set the latest content
-        $header->setContent($this->getData());
-      }
-      $headers[]= $header;
+      return $headers;
     }
   }
 ?>

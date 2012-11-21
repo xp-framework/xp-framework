@@ -7,7 +7,6 @@
     'lang.IllegalArgumentException',
     'lang.IllegalStateException',
     'peer.Header',
-    'peer.HeaderFactory',
     'peer.http.AbstractHttpRequestData',
     'peer.http.HttpConstants',
     'peer.http.HttpRequestData'
@@ -60,7 +59,7 @@
     protected function getDefaultHeader_ContentType() {
       $defaultType= $this->getDefaultType();
       $boundary= $this->getBoundary();
-      return HeaderFactory::getRequestHeader(HeaderFactory::TYPE_CONTENT_TYPE, $defaultType, NULL, $boundary);
+      return new Header('Content-Type', $defaultType.'; boundary='.$boundary);
     }
 
     /**
@@ -124,21 +123,14 @@
      *
      * @param   string boundary
      * @throws  lang.IllegalArgumentException on empty boundary
-     * @throws  lang.IllegalStateException on Content-Type header not found or found more than once
+     * @throws  lang.IllegalStateException on Content-Type header not found
      */
     public function setBoundary($boundary) {
       if(empty($boundary)) {
         throw new IllegalArgumentException('Empty boundary given');
       }
       $this->boundary= $boundary;
-      // Change boundary in content type header
-      $contentTypeHeader= $this->getHeadersForType(HeaderFactory::TYPE_CONTENT_TYPE);
-      if(is_array($contentTypeHeader) ||
-         !$contentTypeHeader instanceof Header
-      ) {
-        throw new IllegalStateException('Content-Type Header set several times or not at all');
-      }
-      $contentTypeHeader->setBoundary($this->boundary);
+      $this->addHeader($this->getDefaultHeader_ContentType());
     }
 
     /**

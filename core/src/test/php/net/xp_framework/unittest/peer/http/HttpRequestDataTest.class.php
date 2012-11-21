@@ -7,8 +7,6 @@
   uses(
     'net.xp_framework.unittest.peer.http.AbstractHttpRequestDataTest',
     'lang.ClassLoader',
-    'peer.header.ContentLengthHeader',
-    'peer.header.ContentTypeHeader',
     'peer.http.HttpRequestData'
   );
 
@@ -38,8 +36,8 @@
           'in'      =>  'This is some content for header tests',
           'out'     =>  'This is some content for header tests',
           'headers' =>  array(
-            create(new ContentLengthHeader(37))->toString(),
-            create(new ContentTypeHeader(HttpRequestData::DEFAULT_CONTENTTYPE_NOARRAY))->toString()
+            create(new Header('Content-Length', 37))->toString(),
+            create(new Header('Content-Type', HttpRequestData::DEFAULT_CONTENTTYPE_NOARRAY))->toString()
           ),
         ),
         'array' =>  array(
@@ -54,16 +52,16 @@
           ),
           'out'     =>  'var1=value1&var2=value2&var3[0]=value3.1&var3[1]=value3.2&var3[2]=value3.3',
           'headers' =>  array(
-            create(new ContentLengthHeader(74))->toString(),
-            create(new ContentTypeHeader(HttpRequestData::DEFAULT_CONTENTTYPE_ARRAY))->toString()
+            create(new Header('Content-Length', 74))->toString(),
+            create(new Header('Content-Type', HttpRequestData::DEFAULT_CONTENTTYPE_ARRAY))->toString()
           )
         ),
         'object' =>  array(
           'in'      =>  new SerializableObj(),
           'out'     =>  'abcd',
           'headers' =>  array(
-            create(new ContentLengthHeader(4))->toString(),
-            create(new ContentTypeHeader(HttpRequestData::DEFAULT_CONTENTTYPE_NOARRAY))->toString()
+            create(new Header('Content-Length', 4))->toString(),
+            create(new Header('Content-Type', HttpRequestData::DEFAULT_CONTENTTYPE_NOARRAY))->toString()
           )
         ),
         'invalid_object'  =>  array(
