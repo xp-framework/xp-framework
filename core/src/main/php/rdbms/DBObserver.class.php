@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.BoundLogObserver');
+  uses('util.log.BoundLogObserver');
 
   /**
    * Generic DB observer interface.
