@@ -9,7 +9,6 @@
   /**
    * Generic DB observer interface.
    *
-   * @purpose  DB observer interface
    */
   interface BoundLogObserver extends Observer {
   
