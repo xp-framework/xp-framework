@@ -6,6 +6,12 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Heads up!
+~~~~~~~~~
+- Dropped interpackage dependency util -> rdbms, pull request #204
+  (kiesel)
+
 Bugfixes
 ~~~~~~~~
 - Fixed parsing of HTTP headers w/o value in peer.http.HttpResponse
