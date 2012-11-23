@@ -98,9 +98,7 @@
 
         if ($formattedError instanceof RestFormattedError && $formattedError->getStatus()) {
           $res->setStatus($formattedError->getStatus());
-        }
-
-        if ($e instanceof ScriptletException) {
+        } else if ($e instanceof ScriptletException) {
           $res->setStatus($e->getStatus());
         } else {
           $res->setStatus(HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
