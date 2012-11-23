@@ -96,6 +96,10 @@
         if (NULL === $formattedError)
           throw $e;
 
+        if ($formattedError instanceof RestFormattedError && $formattedError->getStatus()) {
+          $res->setStatus($formattedError->getStatus());
+        }
+
         if ($e instanceof ScriptletException) {
           $res->setStatus($e->getStatus());
         } else {
