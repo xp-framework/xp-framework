@@ -32,7 +32,7 @@
     #[@test]
     public function marshal_this_generically() {
       $this->assertEquals(
-        $this,
+        new Payload($this),
         $this->fixture->marshal($this)
       );
     }
@@ -52,7 +52,7 @@
         }
       }'));
       $this->assertEquals(
-        $this->getClassName().'::'.$this->getName(),
+        new Payload($this->getClassName().'::'.$this->getName()),
         $this->fixture->marshal($this)
       );
     }
@@ -96,7 +96,7 @@
     #[@test]
     public function handle_primitive_return() {
       $this->assertEquals(
-        Response::status(200)->withPayload('Hello World'),
+        Response::status(200)->withPayload(new Payload('Hello World')),
         $this->fixture->handle($this, $this->getClass()->getMethod('helloWorld'), array())
       );
     }
@@ -165,7 +165,7 @@
     public function handle_exception() {
       $t= new Throwable('Test');
       $this->assertEquals(
-        Response::error(400)->withPayload(array('message' => 'Test')),
+        Response::error(400)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
         $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
       );
     }
@@ -183,7 +183,7 @@
         }
       }'));
       $this->assertEquals(
-        Response::status(500)->withPayload(array('message' => 'Test')),
+        Response::status(500)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
         $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
       );
     }

@@ -21,5 +21,19 @@
       $this->value= $value;
       $this->properties= $properties;
     }
+
+    /**
+     * Returns whether a given value is equal to this payload
+     * 
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self && 
+        ($this->value instanceof Generic ? $this->value->equals($cmp->value) : $this->value === $cmp->value) &&
+        $this->properties === $cmp->properties
+      );
+    }
   }
 ?>

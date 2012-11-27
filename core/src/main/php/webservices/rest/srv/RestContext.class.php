@@ -60,22 +60,35 @@
      */
     public function mapException($t) {
       foreach ($this->mappers->keys() as $type) {
-        if ($type->isInstance($t)) return $this->mappers[$type]->asResponse($t);
+        if (!$type->isInstance($t)) continue;
+
+        $r= $this->mappers[$type]->asResponse($t);
+        if (!$r->payload instanceof Payload) {
+          $r->payload= new Payload($r->payload, array('name' => 'exception'));
+        }
+        return $r;
       }
-      return Response::status(HttpConstants::STATUS_BAD_REQUEST)->withPayload(array('message' => $t->getMessage()));
+
+      return Response::status(HttpConstants::STATUS_BAD_REQUEST)->withPayload(new Payload(
+        array('message' => $t->getMessage()),
+        array('name'    => 'exception')
+      ));
     }
 
     /**
      * Marshal a type
      *
-     * @param  var t
-     * @return webservices.rest.srv.Response
+     * @param  var value
+     * @return webservices.rest.Payload
      */
-    public function marshal($t) {
+    public function marshal($value, $properties= array()) {
       foreach ($this->marshallers->keys() as $type) {
-        if ($type->isInstance($t)) return $this->marshallers[$type]->marshal($t);
+        if (!$type->isInstance($value)) continue;
+
+        $value= $this->marshallers[$type]->marshal($value);
+        break;
       }
-      return $t;
+      return NULL === $value ? NULL : new Payload($value, $properties);
     }
 
     /**
@@ -160,6 +173,12 @@
         $args[$i]= $this->unmarshal(typeof($arg), $arg);
       }
 
+      // HACK: Ungeneric XML-related
+      $properties= array();
+      if ($method->hasAnnotation('xmlwrapped')) {
+        $properties['name']= $method->getAnnotation('xmlwrapped');
+      }
+
       // Instantiate the handler class and invoke method
       try {
         $result= $method->invoke($instance, $args);
@@ -174,10 +193,10 @@
       if (Type::$VOID->equals($method->getReturnType())) {
         return Response::status(HttpConstants::STATUS_NO_CONTENT);
       } else if ($result instanceof Response) {
-        $result->payload= $this->marshal($result->payload);
+        $result->payload= $this->marshal($result->payload, $properties);
         return $result;
       } else {
-        return Response::status(HttpConstants::STATUS_OK)->withPayload($this->marshal($result));
+        return Response::status(HttpConstants::STATUS_OK)->withPayload($this->marshal($result, $properties));
       }
     }
 

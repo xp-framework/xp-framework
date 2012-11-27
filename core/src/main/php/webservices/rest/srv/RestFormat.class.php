@@ -64,7 +64,7 @@
      * @param  scriptlet.Response request
      * @param  webservices.rest.Payload value
      */
-    public function write($response, Payload $value) {
+    public function write($response, Payload $value= NULL) {
       $response->getOutputStream()->write($this->serializer->serialize($value));
     }
 
