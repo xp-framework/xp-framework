@@ -220,6 +220,8 @@
           } else if (self::T_VARBINARY === $field['type'] || self::T_BINARY === $field['type']) {
             $field['size']= $this->stream->getByte();
             $field['conv']= $this->servercs;
+          } else if (self::T_DATETIME4 === $field['type']) {
+            $field['size']= 4;
           } else {
             $field['size']= $this->stream->getByte();
           }
