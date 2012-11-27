@@ -62,7 +62,7 @@
       foreach ($this->mappers->keys() as $type) {
         if ($type->isInstance($t)) return $this->mappers[$type]->asResponse($t);
       }
-      return Response::status(HttpConstants::STATUS_BAD_REQUEST)->withPayload($t);
+      return Response::status(HttpConstants::STATUS_BAD_REQUEST)->withPayload(array('message' => $t->getMessage()));
     }
 
     /**

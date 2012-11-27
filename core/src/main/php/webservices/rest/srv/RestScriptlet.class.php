@@ -74,22 +74,6 @@
     }
 
     /**
-     * Write an exception 
-     *
-     * @param  scriptlet.http.HttpScriptletResponse response The response
-     * @param  webservices.rest.server.RestFormat format
-     * @param  scriptlet.HttpScriptletException se
-     */
-    protected function writeError($response, $format, $se) {
-      $this->cat && $this->cat->warn($se);
-
-      $response->setStatus($se->getStatus());
-      $format->write($response, array(
-        'message' => $se->getMessage()
-      )); 
-    }
-
-    /**
      * Process request and handle errors
      * 
      * @param  scriptlet.HttpScriptletRequest request The request
@@ -115,29 +99,30 @@
         $context= new RestContext();
         try {
           $result= $this->router->process($target, $request, $context, RestFormat::forMediaType($target['input']));
-          $response->setStatus($result->status);
-          $response->setContentType($target['output']);
-          foreach ($result->headers as $name => $value) {
-            if ('Location' === $name) {
-              $url= clone $request->getURL();
-              $response->setHeader($name, $url->setPath($value)->getURL());
-            } else {
-              $response->setHeader($name, $value);
-            }
-          }
-          RestFormat::forMediaType($target['output'])->write($response, $result->payload);
-          return;
         } catch (HttpScriptletException $e) {
-          $this->writeError($response, RestFormat::forMediaType($target['output']), $e);
-          return;
+          $result= $context->mapException($e);
         }
+
+        // Have a result
+        $response->setStatus($result->status);
+        $response->setContentType($target['output']);
+        foreach ($result->headers as $name => $value) {
+          if ('Location' === $name) {
+            $url= clone $request->getURL();
+            $response->setHeader($name, $url->setPath($value)->getURL());
+          } else {
+            $response->setHeader($name, $value);
+          }
+        }
+        RestFormat::forMediaType($target['output'])->write($response, $result->payload);
+        return;
       }
 
-      $this->writeError(
-        $response,
-        RestFormat::forMediaType($accept->match($this->router->getOutputFormats())), 
-        new HttpScriptletException('Could not route request to '.$url->getURL(), HttpConstants::STATUS_NOT_FOUND)
-      );
+      // No route
+      $response->setStatus(HttpConstants::STATUS_NOT_FOUND);
+      RestFormat::forMediaType($accept->match($this->router->getOutputFormats()))->write($response, array(
+        'message' => 'Could not route request to '.$url->getURL()
+      ));
     }
   }
 ?>
