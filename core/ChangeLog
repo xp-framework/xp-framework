@@ -11,6 +11,8 @@ Heads up!
 ~~~~~~~~~
 - Dropped interpackage dependency util -> rdbms, pull request #204
   (kiesel)
+- Dropped interpackage dependency util.semaphore -> scriptlet, pull request #205
+  (kiesel)
 
 Bugfixes
 ~~~~~~~~
