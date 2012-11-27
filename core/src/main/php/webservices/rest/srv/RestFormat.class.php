@@ -62,9 +62,9 @@
      * Read the payload from the request
      *
      * @param  scriptlet.Response request
-     * @param  var value
+     * @param  webservices.rest.Payload value
      */
-    public function write($response, $value) {
+    public function write($response, Payload $value) {
       $response->getOutputStream()->write($this->serializer->serialize($value));
     }
 

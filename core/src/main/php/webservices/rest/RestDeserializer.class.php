@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('webservices.rest.Payload');
+
   /**
    * Deserializer abstract base class
    *

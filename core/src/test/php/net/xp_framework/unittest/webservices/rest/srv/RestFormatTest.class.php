@@ -64,7 +64,7 @@
     #[@test]
     public function json_serialize() {
       $res= self::$response->newInstance();
-      RestFormat::$JSON->write($res, array('name' => 'Timm'));
+      RestFormat::$JSON->write($res, new Payload(array('name' => 'Timm')));
       $this->assertEquals('{ "name" : "Timm" }', $res->content->getBytes());
     }
 
@@ -86,7 +86,7 @@
     #[@test]
     public function xml_serialize() {
       $res= self::$response->newInstance();
-      RestFormat::$XML->write($res, array('name' => 'Timm'));
+      RestFormat::$XML->write($res, new Payload(array('name' => 'Timm')));
       $this->assertEquals(
         '<?xml version="1.0" encoding="UTF-8"?>'."\n".'<root><name>Timm</name></root>', 
         $res->content->getBytes()
