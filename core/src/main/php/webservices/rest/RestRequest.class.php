@@ -232,6 +232,8 @@
     public function addHeader($arg, $value= NULL) {
       if ($arg instanceof Header) {
         $h= $arg;
+      } else if ($value instanceof Header) {
+        $h= $value;
       } else {
         $h= new Header($arg, $value);
       }
