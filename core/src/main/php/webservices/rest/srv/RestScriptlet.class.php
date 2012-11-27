@@ -120,8 +120,8 @@
 
       // No route
       $response->setStatus(HttpConstants::STATUS_NOT_FOUND);
-      RestFormat::forMediaType($accept->match($this->router->getOutputFormats()))->write($response, array(
-        'message' => 'Could not route request to '.$url->getURL()
+      RestFormat::forMediaType($accept->match($this->router->getOutputFormats()))->write($response, new Payload(
+        array('message' => 'Could not route request to '.$url->getURL()), array('name' => 'error')
       ));
     }
   }
