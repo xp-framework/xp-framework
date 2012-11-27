@@ -165,7 +165,7 @@
     public function handle_exception() {
       $t= new Throwable('Test');
       $this->assertEquals(
-        Response::error(400)->withPayload($t),
+        Response::error(400)->withPayload(array('message' => 'Test')),
         $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
       );
     }
