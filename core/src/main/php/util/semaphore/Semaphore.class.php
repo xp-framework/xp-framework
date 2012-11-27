@@ -7,8 +7,8 @@
   /**
    * Semaphore class
    *
-   * @see      http://
    * @purpose  Semaphore to serialize request
+   * @deprecated
    */
   class Semaphore extends Object {
     public
