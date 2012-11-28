@@ -186,7 +186,18 @@
     public function with_payload() {
       $data= array('name' => 'example');
       $r= create(new Response())->withPayload($data);
-      $this->assertEquals($data, $r->payload);
+      $this->assertEquals(new Payload($data), $r->payload);
+    }
+
+    /**
+     * Test withPayload() method
+     * 
+     */
+    #[@test]
+    public function with_payload_instance() {
+      $data= array('name' => 'example');
+      $r= create(new Response())->withPayload(new Payload($data));
+      $this->assertEquals(new Payload($data), $r->payload);
     }
 
     /**

@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('webservices.rest.Payload');
+
   /**
    * The Response class can be used to control the HTTP status code and headers
    * of a REST call.
@@ -159,7 +161,11 @@
      * @return  self
      */
     public function withPayload($data) {
-      $this->payload= $data;
+      if ($data instanceof Payload) {
+        $this->payload= $data;
+      } else {
+        $this->payload= new Payload($data);
+      }
       return $this;
     }
 
@@ -200,18 +206,12 @@
      * @return bool
      */
     public function equals($cmp) {
-      if (!$cmp instanceof self || $this->status !== $cmp->status) return FALSE;
-
-      // Compare payload
-      if ($this->payload instanceof Generic) {
-        if (!$this->payload->equals($cmp->payload)) return FALSE;
-      } else if (is_array($this->payload)) {
-        if (!$this->arrayequals($this->payload, $cmp->payload)) return FALSE;
-      } else {
-        if ($this->payload !== $cmp->payload) return FALSE;
-      }
-
-      return $this->arrayequals($this->headers, $cmp->headers);
+      return (
+        $cmp instanceof self && 
+        $this->status === $cmp->status &&
+        (NULL === $this->payload ? NULL === $cmp->payload : $this->payload->equals($cmp->payload)) &&
+        $this->arrayequals($this->headers, $cmp->headers)
+      );
     }
   }
 ?>

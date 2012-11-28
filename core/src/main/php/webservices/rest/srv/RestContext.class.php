@@ -59,36 +59,38 @@
      * @return webservices.rest.srv.Response
      */
     public function mapException($t) {
+      $properties= array('name' => 'exception');
+
+      // See if we can find an exception mapper
       foreach ($this->mappers->keys() as $type) {
         if (!$type->isInstance($t)) continue;
-
         $r= $this->mappers[$type]->asResponse($t);
-        if (!$r->payload instanceof Payload) {
-          $r->payload= new Payload($r->payload, array('name' => 'exception'));
-        }
+        $r->payload->properties= $properties;
         return $r;
       }
 
-      return Response::status(HttpConstants::STATUS_BAD_REQUEST)->withPayload(new Payload(
-        array('message' => $t->getMessage()),
-        array('name'    => 'exception')
-      ));
+      // Default: Use error 400 and the exception message
+      return Response::error(HttpConstants::STATUS_BAD_REQUEST)
+        ->withPayload(new Payload(array('message' => $t->getMessage()), $properties))
+      ;
     }
 
     /**
      * Marshal a type
      *
-     * @param  var value
+     * @param  webservices.rest.Payload payload
      * @return webservices.rest.Payload
      */
-    public function marshal($value, $properties= array()) {
-      foreach ($this->marshallers->keys() as $type) {
-        if (!$type->isInstance($value)) continue;
+    public function marshal(Payload $payload= NULL, $properties= array()) {
+      if (NULL === $payload) return NULL;
 
-        $value= $this->marshallers[$type]->marshal($value);
+      foreach ($this->marshallers->keys() as $type) {
+        if (!$type->isInstance($payload->value)) continue;
+
+        $payload->value= $this->marshallers[$type]->marshal($payload->value);
         break;
       }
-      return NULL === $value ? NULL : new Payload($value, $properties);
+      return NULL === $payload->value ? NULL : new Payload($payload->value, $properties);
     }
 
     /**
@@ -196,7 +198,9 @@
         $result->payload= $this->marshal($result->payload, $properties);
         return $result;
       } else {
-        return Response::status(HttpConstants::STATUS_OK)->withPayload($this->marshal($result, $properties));
+        return Response::status(HttpConstants::STATUS_OK)
+          ->withPayload($this->marshal(new Payload($result), $properties))
+        ;
       }
     }
 

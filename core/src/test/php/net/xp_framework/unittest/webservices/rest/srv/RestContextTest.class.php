@@ -33,7 +33,7 @@
     public function marshal_this_generically() {
       $this->assertEquals(
         new Payload($this),
-        $this->fixture->marshal($this)
+        $this->fixture->marshal(new Payload($this))
       );
     }
 
@@ -53,7 +53,7 @@
       }'));
       $this->assertEquals(
         new Payload($this->getClassName().'::'.$this->getName()),
-        $this->fixture->marshal($this)
+        $this->fixture->marshal(new Payload($this))
       );
     }
 
