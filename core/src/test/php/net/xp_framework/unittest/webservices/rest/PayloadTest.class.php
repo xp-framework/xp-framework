@@ -118,5 +118,29 @@
     public function different_map_payloads_are_not_equal() {
       $this->assertNotEquals(new Payload(array('key' => 'value')), new Payload(array('test' => 'yes')));
     }
+
+    /**
+     * Test equals()
+     *
+     */
+    #[@test]
+    public function properties_are_equal() {
+      $this->assertEquals(
+        new Payload(NULL, array('key' => 'value')),
+        new Payload(NULL, array('key' => 'value'))
+      );
+    }
+
+    /**
+     * Test equals()
+     *
+     */
+    #[@test]
+    public function different_properties_are_not_equal() {
+      $this->assertNotEquals(
+        new Payload(NULL, array('key' => 'value')),
+        new Payload(NULL, array('test' => 'yes'))
+      );
+    }
   }
 ?>
