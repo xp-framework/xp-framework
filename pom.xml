@@ -2,13 +2,20 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- The Basics -->
+  <!-- Sonatype OSS parent -->
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
   <version>5.8.10</version>
   <packaging>pom</packaging>
 
-  <!-- More Project Information -->
+  <!-- More project information -->
   <name>XP-Framework</name>
   <description>The XP framework is an all-purpose, object oriented PHP framework</description>
   <url>https://github.com/xp-framework/xp-framework</url>
@@ -44,20 +51,58 @@
     <project.build.sourceEncoding>ISO-8859-15</project.build.sourceEncoding>
   </properties>
 
-  <!-- Build Settings -->
+  <!-- Build settings -->
   <build>
     <plugins>
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.1.6</version>
+        <version>3.2.0</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>
 
   <!--
-   ! Dependency Management
+   ! When releasing to Sonatype, build and attach the "tests",
+   ! "sources" and "apidoc" artifacts
+   !-->
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>net.xp-forge.maven.plugins</groupId>
+            <artifactId>xp-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-tests</id>
+                <goals>
+                  <goal>test-package</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>source-no-fork</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>attach-apidoc</id>
+                <goals>
+                  <goal>apidoc-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <!--
+   ! Dependency management
    !
    ! Add [net.xp-framework:pom] as 'import' dependency. It will be replaced with both
    ! [net.xp-framework:core] and [net.xp-framework:tools] dependencies
@@ -87,4 +132,10 @@
     <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
     <url>https://github.com/xp-framework/xp-framework</url>
   </scm>
+
+  <!-- Issue management -->
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/xp-framework/xp-framework/issues</url>
+  </issueManagement>
 </project>
