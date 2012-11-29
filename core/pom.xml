@@ -9,13 +9,13 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <!-- The Basics -->
+  <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
   <version>5.8.10</version>
   <packaging>xar</packaging>
 
-  <!-- More Project Information -->
+  <!-- More project information -->
   <name>XP-Framework core</name>
 
   <!-- Properties -->
@@ -30,21 +30,6 @@
   <!-- Build settings -->
   <build>
     <plugins>
-
-      <!-- Attach tests artifact -->
-      <plugin>
-        <groupId>net.xp-forge.maven.plugins</groupId>
-        <artifactId>xp-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>package-core-tests</id>
-            <phase>package</phase>
-            <goals>
-              <goal>test-package</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
       <!-- Copy resources (not in the default Maven layout) -->
       <plugin>
