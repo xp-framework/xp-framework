@@ -13,8 +13,7 @@
   /**
    * TestCase
    *
-   * @see      reference
-   * @purpose  purpose
+   * @see  xp://xp.unittest.Runner
    */
   class UnittestRunnerTest extends TestCase {
     protected
@@ -334,5 +333,158 @@
       $this->assertEquals(1, $return);
       $this->assertOnStream($this->err, '*** Error: Test method does not exist: succeed()');
     }
+
+    /**
+     * Test running a single test
+     *
+     */
+    #[@test]
+    public function withListener() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithListenerTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-'));
+      $this->assertEquals(
+        array(), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test listener options
+     *
+     */
+    #[@test]
+    public function withListenerOptions() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithListenerOptionsTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+        #[@arg]
+        public function setVerbose() { self::$options[__FUNCTION__]= TRUE; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'option', 'value', '-o', 'v'));
+      $this->assertEquals(
+        array('setOption' => 'value', 'setVerbose' => TRUE), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test long listener option
+     *
+     */
+    #[@test]
+    public function withLongListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'option', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test long listener option
+     *
+     */
+    #[@test]
+    public function withNamedLongListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedLongListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(name = "use")]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'use', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test long listener option
+     *
+     */
+    #[@test]
+    public function withNamedLongListenerOptionShort() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedLongListenerOptionShortTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(name = "use")]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'u', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }    
+
+    /**
+     * Test short listener option
+     *
+     */
+    #[@test]
+    public function withShortListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'o', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test short listener option
+     *
+     */
+    #[@test]
+    public function withNamedShortListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithNamedShortListenerOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(short = "O")]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'O', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
+    /**
+     * Test short listener option
+     *
+     */
+    #[@test]
+    public function withPositionalOptionListenerOption() {
+      $class= ClassLoader::getDefault()->defineClass('net.xp_framework.unittest.tests.WithPositionalOptionTestFixture', 'xp.unittest.DefaultListener', array(), '{
+        public static $options= array();
+        #[@arg(position= 0)]
+        public function setOption($value) { self::$options[__FUNCTION__]= $value; }
+      }');
+
+      $return= $this->runner->run(array('-l', $class->getName(), '-', '-o', 'value'));
+      $this->assertEquals(
+        array('setOption' => 'value'), 
+        $class->getField('options')->get(NULL)
+      );
+    }
+
   }
 ?>

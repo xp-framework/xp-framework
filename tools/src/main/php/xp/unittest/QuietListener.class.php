@@ -7,9 +7,9 @@
   uses('unittest.TestListener');
 
   /**
-   * Quiet listener - no output at all
-   *
-   * @purpose  TestListener
+   * Quiet listener
+   * --------------
+   * No output at all. This listener has no options.
    */
   class QuietListener extends Object implements TestListener {
 

@@ -6,6 +6,7 @@
 
   uses(
     'util.log.Traceable',
+    'peer.Header',
     'peer.http.HttpConnection',
     'webservices.rest.RestRequest',
     'webservices.rest.RestResponse',
@@ -142,7 +143,7 @@
       }
 
       $send= $this->connection->create(new HttpRequest());
-      $send->addHeaders($request->getHeaders());
+      $send->addHeaders($request->headerList());
       $send->setMethod($request->getMethod());
       $send->setTarget($request->getTarget($this->connection->getUrl()->getPath('/')));
       

@@ -7,10 +7,10 @@
   uses('unittest.TestListener', 'io.streams.OutputStreamWriter', 'lang.Runtime');
 
   /**
-   * Verbose listener - shows details for all tests (succeeded, failed
-   * and skipped/ignored).
-   *
-   * @purpose  TestListener
+   * Verbose listener
+   * ----------------
+   * Shows details for all tests (succeeded, failed and skipped/ignored).
+   * This listener has no options.
    */
   class VerboseListener extends Object implements TestListener {
     public

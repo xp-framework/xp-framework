@@ -6,8 +6,20 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Heads up!
+~~~~~~~~~
+- Dropped interpackage dependency util -> rdbms, pull request #204
+  (kiesel)
+- Dropped interpackage dependency util.semaphore -> scriptlet, pull request #205
+  (kiesel)
+
 Bugfixes
 ~~~~~~~~
+- Fixed TDS protocol's T_DATETIME4 type not being deserialized correctly
+  (friebe)
+- Fixed parsing of HTTP headers w/o value in peer.http.HttpResponse
+  (friebe, kiesel)
 - Fixed OCCURRENCE_OPTIONAL being ignored for missing file upload input 
   fields - see pull request #198
   (mrosoiu)
@@ -22,6 +34,12 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for unittest listener options - see pull request #201
+  (friebe, ohinckel)
+- Improved generics instance creation by factors between 1.2 and 1.6
+  (friebe)
+- Added support for peer.Header instances in REST client - pull #202
+  (friebe)
 - Added ArrayType and MapType constructors which accept component types
   in pull request #197
   (friebe)
