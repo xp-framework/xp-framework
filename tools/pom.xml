@@ -5,17 +5,17 @@
   <parent>
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
-    <version>5.8.10</version>
+    <version>5.8.10-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <!-- The Basics -->
+  <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>tools</artifactId>
-  <version>5.8.10</version>
+  <version>5.8.10-SNAPSHOT</version>
   <packaging>xar</packaging>
 
-  <!-- More Project Information -->
+  <!-- More project information -->
   <name>XP-Framework tools</name>
 
   <!-- Copy resources (not in the default Maven layout) -->
