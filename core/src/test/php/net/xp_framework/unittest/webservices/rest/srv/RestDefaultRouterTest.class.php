@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'webservices.rest.srv.RestDefaultRouter',
+    'io.streams.MemoryInputStream',
     'scriptlet.HttpScriptletRequest',
     'scriptlet.HttpScriptletResponse'
   );
@@ -157,8 +158,14 @@
      * @param  [:string] params
      * @return scriptlet.Request
      */
-    protected function newRequest($params= array()) {
-      $r= new HttpScriptletRequest();
+    protected function newRequest($params= array(), $payload= NULL) {
+      $r= newinstance('scriptlet.HttpScriptletRequest', array($payload), '{
+        public function __construct($payload) {
+          if (NULL !== $payload) {
+            $this->inputStream= new MemoryInputStream($payload);
+          }
+        }
+      }');
       foreach ($params as $name => $value) {
         $r->setParam($name, $value);
       }
@@ -198,6 +205,24 @@
       $this->assertEquals(
         array('test', 'Hello'),
         $this->fixture->argumentsFor($route, $this->newRequest(), RestFormat::$FORM)
+      );
+    }
+
+    /**
+     * Test argumentsFor()
+     * 
+     */
+    #[@test]
+    public function greet_implicit_payload() {
+      $route= array(
+        'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
+        'segments' => array(0 => '/greet'),
+        'input'    => 'application/json',
+        'output'   => 'text/json'
+      );
+      $this->assertEquals(
+        array('Hello World'),
+        $this->fixture->argumentsFor($route, $this->newRequest(array(), '"Hello World"'), RestFormat::$JSON)
       );
     }
   }
