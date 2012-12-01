@@ -26,5 +26,17 @@
     public function greet($name, $greeting= 'Hello') {
       return $greeting.' '.$name;
     }
+
+    /**
+     * Say "hello" to someone
+     * 
+     * @param   string payload
+     * @return  string
+     */
+    #[@webmethod(verb= 'POST', path= '/greet')]
+    public function greet_posted($payload) {
+      sscanf($payload, '%s %s', $greeting, $name);
+      return $this->greet($name, $greeting);
+    }
   }
 ?>

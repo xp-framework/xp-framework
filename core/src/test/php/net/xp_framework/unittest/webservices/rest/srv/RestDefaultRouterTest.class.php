@@ -215,7 +215,7 @@
     #[@test]
     public function greet_implicit_payload() {
       $route= array(
-        'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
+        'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet_posted'),
         'segments' => array(0 => '/greet'),
         'input'    => 'application/json',
         'output'   => 'text/json'
