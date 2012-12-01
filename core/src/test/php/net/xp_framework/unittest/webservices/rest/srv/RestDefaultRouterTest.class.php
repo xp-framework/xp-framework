@@ -166,7 +166,7 @@
     }
 
     /**
-     * Test targetsFor()
+     * Test argumentsFor()
      * 
      */
     #[@test]
@@ -184,7 +184,7 @@
     }
 
     /**
-     * Test targetsFor()
+     * Test argumentsFor()
      * 
      */
     #[@test]
