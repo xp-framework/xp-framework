@@ -26,7 +26,7 @@
      */
     #[@beforeClass]
     public static function fixturePackage() {
-      self::$package= Package::forName('net.xp_framework.unittest.rest.fixture');
+      self::$package= Package::forName('net.xp_framework.unittest.webservices.rest.srv.fixture');
     }
 
     /**

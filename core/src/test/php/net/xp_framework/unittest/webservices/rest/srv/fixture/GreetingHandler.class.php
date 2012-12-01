@@ -4,12 +4,12 @@
  * $Id$
  */
 
-  uses('net.xp_framework.unittest.rest.fixture.Greeting');
+  uses('net.xp_framework.unittest.webservices.rest.srv.fixture.Greeting');
 
   /**
    * Fixture for default router
    *
-   * @see  xp://net.xp_framework.unittest.rest.server.RestDefaultRouterTest
+   * @see  xp://net.xp_framework.unittest.webservices.rest.srv.RestDefaultRouterTest
    */
   #[@webservice]
   class GreetingHandler extends TestCase {

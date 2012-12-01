@@ -7,7 +7,7 @@
   /**
    * Fixture for default router
    *
-   * @see  xp://net.xp_framework.unittest.rest.server.RestDefaultRouterTest
+   * @see  xp://net.xp_framework.unittest.webservices.rest.srv.RestDefaultRouterTest
    */
   class Greeting extends Object {
     public $word;
