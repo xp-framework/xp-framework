@@ -67,34 +67,46 @@
         }
       }
 
-      // Extract arguments according to definition
+      // Extract arguments according to definition. In case we don't have an explicit
+      // source for an argument, look up according to the following rules:
+      //
+      // * If we have a segment named exactly like the parameter, use it
+      // * If there is no incoming payload, check the parameters
+      // * If there is an incoming payload, use that.
+      //
+      // Handle explicitely configured sources first.
       $args= array();
       foreach ($route['target']->getParameters() as $parameter) {
         $param= $parameter->getName();
-        switch ($annotations[$param][0]) {
+        switch (@$annotations[$param][0]) {
           case 'path':
-            if (!isset($route['segments'][$annotations[$param][1]])) {
-              $arg= $parameter->getDefaultValue();
-            } else {
-              $arg= rawurldecode($route['segments'][$annotations[$param][1]]);
-            }
-            $args[]= $this->convert->convert($parameter->getType(), $arg);
+            $args[]= $this->convert->convert($parameter->getType(), isset($route['segments'][$annotations[$param][1]])
+              ? rawurldecode($route['segments'][$annotations[$param][1]])
+              : $parameter->getDefaultValue()
+            );
             break;
 
           case 'param':
-            if (!$request->hasParam($annotations[$param][1])) {
-              $arg= $parameter->getDefaultValue();
-            } else {
-              $arg= $request->getParam($annotations[$param][1]); 
-            }
-            $args[]= $this->convert->convert($parameter->getType(), $arg);
+            $args[]= $this->convert->convert($parameter->getType(), $request->hasParam($annotations[$param][1]) 
+              ? $request->getParam($annotations[$param][1])
+              : $parameter->getDefaultValue()
+            );
             break;
 
           case NULL:
-            if (NULL === $input) {
-              $input= $in->read($request, $parameter->getType()); 
+            if (isset($route['segments'][$param])) {
+              $args[]= $this->convert->convert($parameter->getType(), $route['segments'][$param]);
+            } else if (NULL === $route['input']) {
+              $args[]= $this->convert->convert($parameter->getType(), $request->hasParam($param) 
+                ? $request->getParam($param)
+                : $parameter->getDefaultValue()
+              );
+            } else {
+              if (NULL === $input) {
+                $input= $in->read($request, $parameter->getType()); 
+              }
+              $args[]= $input;
             }
-            $args[]= $input;
             break;
 
           default: 

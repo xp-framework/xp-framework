@@ -150,5 +150,55 @@
         $this->fixture->targetsFor('GET', '/', NULL, new Preference(''))
       );
     }
+
+    /**
+     * Creates a new request with a given parameter map
+     *
+     * @param  [:string] params
+     * @return scriptlet.Request
+     */
+    protected function newRequest($params= array()) {
+      $r= new HttpScriptletRequest();
+      foreach ($params as $name => $value) {
+        $r->setParam($name, $value);
+      }
+      return $r;
+    }
+
+    /**
+     * Test targetsFor()
+     * 
+     */
+    #[@test]
+    public function greet_implicit_segment_and_param() {
+      $route= array(
+        'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
+        'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertEquals(
+        array('test', 'Servus'),
+        $this->fixture->argumentsFor($route, $this->newRequest(array('greeting' => 'Servus')), RestFormat::$FORM)
+      );
+    }
+
+    /**
+     * Test targetsFor()
+     * 
+     */
+    #[@test]
+    public function greet_implicit_segment_and_missing_param() {
+      $route= array(
+        'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
+        'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertEquals(
+        array('test', 'Hello'),
+        $this->fixture->argumentsFor($route, $this->newRequest(), RestFormat::$FORM)
+      );
+    }
   }
 ?>
