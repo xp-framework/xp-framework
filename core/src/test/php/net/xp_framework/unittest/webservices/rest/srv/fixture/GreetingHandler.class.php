@@ -60,5 +60,17 @@
     public function hello_posted(Greeting $payload) {
       return $this->greet($payload->name, $payload->word);
     }
+
+    /**
+     * Greet someone
+     * 
+     * @param   string name
+     * @param   scriptlet.Preference language
+     * @return  string
+     */
+    #[@webmethod(verb= 'GET', path= '/intl/greet/{name}'), @$name: path, @$language: header('Accept-Language')]
+    public function greet_intl($name, Preference $language) {
+      // TBI
+    }
   }
 ?>

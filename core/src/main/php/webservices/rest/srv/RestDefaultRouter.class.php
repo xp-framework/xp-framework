@@ -93,6 +93,13 @@
             );
             break;
 
+          case 'header':
+            $args[]= $this->convert->convert($parameter->getType(), $request->getHeader(
+              $annotations[$param][1],
+              $parameter->isOptional() ? $parameter->getDefaultValue() : NULL
+            ));
+            break;
+
           case NULL:
             if (isset($route['segments'][$param])) {
               $args[]= $this->convert->convert($parameter->getType(), $route['segments'][$param]);

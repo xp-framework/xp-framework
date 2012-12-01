@@ -158,7 +158,7 @@
      * @param  [:string] params
      * @return scriptlet.Request
      */
-    protected function newRequest($params= array(), $payload= NULL) {
+    protected function newRequest($params= array(), $payload= NULL, $headers= array()) {
       $r= newinstance('scriptlet.HttpScriptletRequest', array($payload), '{
         public function __construct($payload) {
           if (NULL !== $payload) {
@@ -169,6 +169,7 @@
       foreach ($params as $name => $value) {
         $r->setParam($name, $value);
       }
+      $r->setHeaders($headers);
       return $r;
     }
 
@@ -223,6 +224,24 @@
       $this->assertEquals(
         array('Hello World'),
         $this->fixture->argumentsFor($route, $this->newRequest(array(), '"Hello World"'), RestFormat::$JSON)
+      );
+    }
+
+    /**
+     * Test argumentsFor()
+     * 
+     */
+    #[@test]
+    public function greet_intl() {
+      $route= array(
+        'target'   => $this->fixtureMethod('GreetingHandler', 'greet_intl'),
+        'segments' => array(0 => '/intl/greet/test', 'name' => 'test', 1 => 'test'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertEquals(
+        array('test', new Preference('de')),
+        $this->fixture->argumentsFor($route, $this->newRequest(array(), NULL, array('Accept-Language' => 'de')), RestFormat::$FORM)
       );
     }
   }
