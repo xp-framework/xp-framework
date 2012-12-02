@@ -100,6 +100,13 @@
             ));
             break;
 
+          case 'cookie':
+            $args[]= $this->convert->convert($parameter->getType(), $request->hasCookie($annotations[$param][1])
+              ? $request->getCookie($annotations[$param][1])->getValue()
+              : $parameter->getDefaultValue()
+            );
+            break;
+
           case NULL:
             if (isset($route['segments'][$param])) {
               $args[]= $this->convert->convert($parameter->getType(), $route['segments'][$param]);

@@ -72,5 +72,16 @@
     public function greet_intl($name, Preference $language) {
       // TBI
     }
+
+    /**
+     * Greet logged in user
+     * 
+     * @param   string name
+     * @return  string
+     */
+    #[@webmethod(verb= 'GET', path= '/user/greet'), @$name: cookie('user')]
+    public function greet_user($name) {
+      return 'Hello '.$name;
+    }
   }
 ?>

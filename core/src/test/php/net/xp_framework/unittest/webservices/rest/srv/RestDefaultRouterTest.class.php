@@ -167,7 +167,17 @@
         }
       }');
       foreach ($params as $name => $value) {
-        $r->setParam($name, $value);
+        if ('Cookie' === $name) {
+        } else {
+          $r->setParam($name, $value);
+        }
+      }
+      if (isset($headers['Cookie'])) {
+        foreach (explode(',', $headers['Cookie']) as $cookie) {
+          sscanf(trim($cookie), '%[^=]=%[^; ]', $name, $value);
+          $_COOKIE[$name]= $value;
+        }
+        unset($headers['Cookie']);
       }
       $r->setHeaders($headers);
       return $r;
@@ -242,6 +252,24 @@
       $this->assertEquals(
         array('test', new Preference('de')),
         $this->fixture->argumentsFor($route, $this->newRequest(array(), NULL, array('Accept-Language' => 'de')), RestFormat::$FORM)
+      );
+    }
+
+    /**
+     * Test argumentsFor()
+     * 
+     */
+    #[@test]
+    public function greet_user() {
+      $route= array(
+        'target'   => $this->fixtureMethod('GreetingHandler', 'greet_user'),
+        'segments' => array(0 => '/user/greet'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertEquals(
+        array('Test'),
+        $this->fixture->argumentsFor($route, $this->newRequest(array(), NULL, array('Cookie' => 'user=Test; Domain=example.com')), RestFormat::$FORM)
       );
     }
   }
