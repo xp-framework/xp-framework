@@ -35,104 +35,59 @@
     public function configure($setup, $base= '') {
       $package= Package::forName($setup);
       foreach ($package->getClasses() as $handler) {
-        if (!$handler->hasAnnotation('webservice')) continue;
-        $hbase= $handler->hasAnnotation('webservice', 'path') 
-          ? rtrim($handler->getAnnotation('webservice', 'path'), '/')
-          : ''
-        ;
-
-        foreach ($handler->getMethods() as $method) {
-          if (!$method->hasAnnotation('webmethod')) continue;
-
-          $webmethod= $method->getAnnotation('webmethod');
-          $this->addRoute(new RestRoute(
-            $webmethod['verb'],
-            $base.$hbase.rtrim($webmethod['path'], '/'),
-            $method,
-            isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
-            isset($webmethod['returns']) ? (array)$webmethod['returns'] : NULL
-          ));
-        }
+        if ($handler->hasAnnotation('webservice')) $this->addWebservice($handler, $base);
       }
     }
 
-    public function argumentsFor($route, $request, $in) {
-      $input= NULL;
+    /**
+     * Add a webservice
+     *
+     * @param  lang.XPClass class
+     * @param  string base
+     * @throws lang.IllegalArgumentException
+     */
+    public function addWebservice($class, $base= '') {
+      try {
+        $webservice= $class->getAnnotation('webservice');
+      } catch (ElementNotFoundException $e) {
+        throw new IllegalArgumentException('Not a webservice: '.$class->toString(), $e);
+      }
 
-      // Parameter annotations parsing
-      $annotations= array();
-      foreach ($route['target']->getAnnotations() as $annotation => $value) {
+      isset($webservice['path']) && $base.= rtrim($webservice['path'], '/');
+      foreach ($class->getMethods() as $method) {
+        if ($method->hasAnnotation('webmethod')) $this->addWebmethod($method, $base);
+      }
+    }
+
+    /**
+     * Add a webmethod
+     *
+     * @param  lang.reflect.Method method
+     * @param  string base
+     * @throws lang.IllegalArgumentException
+     */
+    public function addWebmethod($method, $base= '') {
+      try {
+        $webmethod= $method->getAnnotation('webmethod');
+      } catch (ElementNotFoundException $e) {
+        throw new IllegalArgumentException('Not a webmethod: '.$method->toString(), $e);
+      }
+
+      // Create route from @webmethod annotation
+      $route= $this->addRoute(new RestRoute(
+        $webmethod['verb'],
+        $base.rtrim($webmethod['path'], '/'),
+        $method,
+        isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
+        isset($webmethod['returns']) ? (array)$webmethod['returns'] : NULL
+      ));
+
+      // Add route parameters using parameter annotations
+      foreach ($method->getAnnotations() as $annotation => $value) {
         if (2 === sscanf($annotation, '$%[^:]: %s', $param, $source)) {
-          $annotations[$param]= array($source, $value ? $value : $param);
+          $route->addParam($param, RestParamSource::forName($source)->newInstance($value ? $value : $param));
         }
       }
-
-      // Extract arguments according to definition. In case we don't have an explicit
-      // source for an argument, look up according to the following rules:
-      //
-      // * If we have a segment named exactly like the parameter, use it
-      // * If there is no incoming payload, check the parameters
-      // * If there is an incoming payload, use that.
-      //
-      // Handle explicitely configured sources first.
-      $args= array();
-      foreach ($route['target']->getParameters() as $parameter) {
-        $param= $parameter->getName();
-        switch (@$annotations[$param][0]) {
-          case 'path':
-            $args[]= $this->convert->convert($parameter->getType(), isset($route['segments'][$annotations[$param][1]])
-              ? rawurldecode($route['segments'][$annotations[$param][1]])
-              : $parameter->getDefaultValue()
-            );
-            break;
-
-          case 'param':
-            $args[]= $this->convert->convert($parameter->getType(), $request->hasParam($annotations[$param][1]) 
-              ? $request->getParam($annotations[$param][1])
-              : $parameter->getDefaultValue()
-            );
-            break;
-
-          case 'header':
-            $args[]= $this->convert->convert($parameter->getType(), $request->getHeader(
-              $annotations[$param][1],
-              $parameter->isOptional() ? $parameter->getDefaultValue() : NULL
-            ));
-            break;
-
-          case 'cookie':
-            $args[]= $this->convert->convert($parameter->getType(), $request->hasCookie($annotations[$param][1])
-              ? $request->getCookie($annotations[$param][1])->getValue()
-              : $parameter->getDefaultValue()
-            );
-            break;
-
-          case NULL:
-            if (isset($route['segments'][$param])) {
-              $args[]= $this->convert->convert($parameter->getType(), $route['segments'][$param]);
-            } else if (NULL === $route['input']) {
-              $args[]= $this->convert->convert($parameter->getType(), $request->hasParam($param) 
-                ? $request->getParam($param)
-                : $parameter->getDefaultValue()
-              );
-            } else {
-              if (NULL === $input) {
-                $input= $in->read($request, $parameter->getType()); 
-              }
-              $args[]= $input;
-            }
-            break;
-
-          default: 
-            throw new HttpScriptletException(sprintf(
-              'Malformed source %s for parameter %s of %s',
-              $annotations[$param][0],
-              $param,
-              $route['target']->toString()
-            ));
-        }
-      }
-      return $args;
     }
   }
 ?>

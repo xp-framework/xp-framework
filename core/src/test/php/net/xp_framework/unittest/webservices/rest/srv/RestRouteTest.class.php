@@ -146,39 +146,68 @@
 
     /**
      * Test toString()
-     * 
+     *
      */
     #[@test]
     public function string_representation() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, NULL);
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget())', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> void fixtureTarget())', 
         $r->toString()
       );
     }
 
     /**
      * Test toString()
-     * 
+     *
      */
     #[@test]
     public function string_representation_with_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, array('text/json'));
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> public void fixtureTarget() @ text/json)', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> void fixtureTarget() @ text/json)', 
         $r->toString()
       );
     }
 
     /**
      * Test toString()
-     * 
+     *
      */
     #[@test]
     public function string_representation_with_accepts_and_produces() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, array('text/xml'), array('text/json'));
       $this->assertEquals(
-        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} @ text/xml -> public void fixtureTarget() @ text/json)', 
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} @ text/xml -> void fixtureTarget() @ text/json)', 
+        $r->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function string_representation_with_param() {
+      $r= new RestRoute('GET', '/resource/{id}', $this->target, NULL, NULL);
+      $r->addParam('id', new PathParamSource('id'));
+      $this->assertEquals(
+        'webservices.rest.srv.RestRoute(GET /resource/{id} -> void fixtureTarget(@$id: path(\'id\')))', 
+        $r->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function string_representation_with_params() {
+      $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, NULL);
+      $r->addParam('id', new PathParamSource('id'));
+      $r->addParam('sub', new PathParamSource('sub'));
+      $this->assertEquals(
+        'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> void fixtureTarget(@$id: path(\'id\'), @$sub: path(\'sub\')))', 
         $r->toString()
       );
     }

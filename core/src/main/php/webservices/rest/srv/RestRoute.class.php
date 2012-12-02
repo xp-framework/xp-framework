@@ -15,6 +15,7 @@
     protected $target= NULL;
     protected $accepts= array();
     protected $produces= array();
+    protected $params= array();
     
     /**
      * Constructor
@@ -91,18 +92,43 @@
     }
 
     /**
+     * Add a parameter
+     *
+     * @param  string name
+     * @param  webservices.rest.src.RestParamSource source
+     */
+    public function addParam($name, $source) {
+      $this->params[$name]= $source;
+    }
+
+    /**
+     * Gets all parameters
+     *
+     * @param  [:webservices.rest.src.RestParamSource]
+     */
+    public function getParams() {
+      return $this->params;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return string
      */
     public function toString() {
+      $params= '';
+      foreach ($this->params as $name => $source) {
+        $params.= ', @$'.$name.': '.$source->toString();
+      }
       return sprintf(
-        '%s(%s %s%s -> %s%s)',
+        '%s(%s %s%s -> %s %s(%s)%s)',
         $this->getClassName(),
         $this->verb,
         $this->path,
         NULL === $this->accepts ? '' : ' @ '.implode(', ', $this->accepts),
-        $this->target->toString(),
+        $this->target->getReturnTypeName(),
+        $this->target->getName(),
+        substr($params, 2),
         NULL === $this->produces ? '' : ' @ '.implode(', ', $this->produces)
       );
     }

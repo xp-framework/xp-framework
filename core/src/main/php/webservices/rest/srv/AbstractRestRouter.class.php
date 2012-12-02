@@ -6,8 +6,13 @@
 
   uses(
     'webservices.rest.srv.RestContext',
-    'webservices.rest.srv.RestRoute', 
-    'webservices.rest.RestDeserializer', 
+    'webservices.rest.srv.RestRoute',
+    'webservices.rest.srv.CookieParamSource',
+    'webservices.rest.srv.HeaderParamSource',
+    'webservices.rest.srv.QueryParamSource',
+    'webservices.rest.srv.PathParamSource',
+    'webservices.rest.srv.BodyParamSource',
+    'webservices.rest.RestDeserializer',
     'scriptlet.Preference'
   );
 
@@ -21,20 +26,7 @@
     protected $routes= array();
     protected $input= array();
     protected $output= array();
-    protected $convert= NULL;
 
-    /**
-     * Creates converter
-     *
-     */
-    public function __construct() {
-      $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
-        public function deserialize($in, $target) {
-          throw new IllegalStateException("Unused");
-        }
-      }');
-    }
-    
     /**
      * Configure router. Template method - overwrite and implement in subclasses!
      * 
@@ -140,6 +132,7 @@
         // Found possible candidate
         $matching[]= array(
           'target'   => $route->getTarget(), 
+          'params'   => $route->getParams(),
           'segments' => $segments,
           'input'    => $input,
           'output'   => $output
@@ -157,19 +150,60 @@
     }
 
     /**
+     * Read arguments from request
+     *
+     * @param  [:var] target
+     * @param  scriptlet.Request request
+     * @return var[] args
+     */
+    public function argumentsFor($target, $request) {
+      $args= array();
+      foreach ($target['target']->getParameters() as $parameter) {
+        $param= $parameter->getName();
+
+        // Extract arguments according to definition. In case we don't have an explicit
+        // source for an argument, look up according to the following rules:
+        //
+        // * If we have a segment named exactly like the parameter, use it
+        // * If there is no incoming payload, check the parameters
+        // * If there is an incoming payload, use that.
+        //
+        // Handle explicitely configured sources first.
+        if (isset($target['params'][$param])) {
+          $src= $target['params'][$param];
+        } else if (isset($target['segments'][$param])) {
+          $src= new PathParamSource($param);
+        } else if (NULL === $target['input']) {
+          $src= new QueryParamSource($param);
+        } else {
+          $src= new BodyParamSource();
+        }
+
+        if (NULL === ($arg= $src->read($parameter->getType(), $target, $request))) {
+          if ($parameter->isOptional()) {
+            $arg= $src->convert($parameter->getType(), $parameter->getDefaultValue());
+          } else {
+            throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
+          }
+        }
+        $args[]= $arg;
+      }
+      return $args;
+    }
+
+    /**
      * Process a target with a given request
      *
      * @param  [:var] target
      * @param  scriptlet.Request request
      * @param  webservices.rest.srv.Context context
-     * @param  webservices.rest.srv.RestFormat format
      * @return webservices.rest.srv.Response
      */
-    public function process($target, $request, $context, $format) {
+    public function process($target, $request, $context) {
       return $context->handle(
         $context->handlerInstanceFor($target['target']->getDeclaringClass()), 
         $target['target'],
-        $this->argumentsFor($target, $request, $format)
+        $this->argumentsFor($target, $request)
       );
     }
 

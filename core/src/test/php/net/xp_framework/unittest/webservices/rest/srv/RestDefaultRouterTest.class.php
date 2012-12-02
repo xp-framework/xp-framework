@@ -61,6 +61,7 @@
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
+          'params'   => array('name' => new PathParamSource('name'), 'greeting' => new QueryParamSource('greeting')),
           'segments' => array(0 => '/greet/test', 'name' => 'test', 1 => 'test'),
           'input'    => NULL,
           'output'   => 'text/json'
@@ -78,6 +79,7 @@
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'hello'),
+          'params'   => array('name' => new PathParamSource('name')),
           'segments' => array(0 => '/hello/test', 'name' => 'test', 1 => 'test'),
           'input'    => NULL,
           'output'   => 'application/vnd.example.v2+json'
@@ -95,6 +97,7 @@
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
+          'params'   => array(),
           'segments' => array(0 => '/greet'),
           'input'    => 'application/json',
           'output'   => 'text/json'
@@ -113,12 +116,14 @@
         array(
           array(
             'target'   => $this->fixtureMethod('GreetingHandler', 'hello_posted'),
+            'params'   => array(),
             'segments' => array(0 => '/greet'),
             'input'    => 'application/vnd.example.v2+json',
             'output'   => 'text/json'
           ),
           array(
             'target'   => $this->fixtureMethod('GreetingHandler', 'greet_posted'),
+            'params'   => array(),
             'segments' => array(0 => '/greet'),
             'input'    => 'application/vnd.example.v2+json',    // because it accepts "*/*"
             'output'   => 'text/json'
@@ -191,6 +196,7 @@
     public function greet_implicit_segment_and_param() {
       $route= array(
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
+        'params'   => array(),
         'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
         'input'    => NULL,
         'output'   => 'text/json'
@@ -209,6 +215,7 @@
     public function greet_implicit_segment_and_missing_param() {
       $route= array(
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
+        'params'   => array(),
         'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
         'input'    => NULL,
         'output'   => 'text/json'
@@ -227,6 +234,7 @@
     public function greet_implicit_payload() {
       $route= array(
         'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet_posted'),
+        'params'   => array(),
         'segments' => array(0 => '/greet'),
         'input'    => 'application/json',
         'output'   => 'text/json'
@@ -245,6 +253,7 @@
     public function greet_intl() {
       $route= array(
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_intl'),
+        'params'   => array('language' => new HeaderParamSource('Accept-Language')),
         'segments' => array(0 => '/intl/greet/test', 'name' => 'test', 1 => 'test'),
         'input'    => NULL,
         'output'   => 'text/json'
@@ -263,6 +272,7 @@
     public function greet_user() {
       $route= array(
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_user'),
+        'params'   => array('name' => new CookieParamSource('user')),
         'segments' => array(0 => '/user/greet'),
         'input'    => NULL,
         'output'   => 'text/json'

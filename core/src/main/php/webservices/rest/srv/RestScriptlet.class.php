@@ -98,7 +98,7 @@
       ) as $target) {
         $context= new RestContext();
         try {
-          $result= $this->router->process($target, $request, $context, RestFormat::forMediaType($target['input']));
+          $result= $this->router->process($target, $request, $context);
         } catch (HttpScriptletException $e) {
           $result= $context->mapException($e);
         }

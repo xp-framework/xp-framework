@@ -122,6 +122,7 @@
       $this->assertEquals(
         array(array(
           'target'   => $route1->getTarget(),
+          'params'   => array(),
           'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
           'input'    => NULL,
           'output'   => 'text/json'
@@ -143,6 +144,7 @@
       $this->assertEquals(
         array(array(
           'target'   => $this->target,
+          'params'   => array(),
           'segments' => array(0 => '/resource'),
           'input'    => NULL,
           'output'   => 'text/json'
@@ -165,12 +167,14 @@
         array(
           array(
             'target'   => $this->target,
+            'params'   => array(),
             'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
             'input'    => NULL,
             'output'   => 'application/vnd.example.v2+json'
           ),
           array(
             'target'   => NULL,
+            'params'   => array(),
             'segments' => array(0 => '/resource/1', 'id' => '1', 1 => '1'),
             'input'    => NULL,
             'output'   => 'text/json'
@@ -194,12 +198,14 @@
         array(
           array(
             'target'   => $this->target,
+            'params'   => array(),
             'segments' => array(0 => '/resource'),
             'input'    => 'application/vnd.example.v2+json',
             'output'   => 'text/json'
           ),
           array(
             'target'   => NULL,
+            'params'   => array(),
             'segments' => array(0 => '/resource'),
             'input'    => 'application/vnd.example.v2+json',
             'output'   => 'text/json'
