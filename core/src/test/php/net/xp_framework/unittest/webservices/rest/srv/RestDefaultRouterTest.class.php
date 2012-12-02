@@ -173,8 +173,8 @@
         }
       }
       if (isset($headers['Cookie'])) {
-        foreach (explode(',', $headers['Cookie']) as $cookie) {
-          sscanf(trim($cookie), '%[^=]=%[^; ]', $name, $value);
+        foreach (explode(';', $headers['Cookie']) as $cookie) {
+          sscanf(trim($cookie), '%[^=]=%s', $name, $value);
           $_COOKIE[$name]= $value;
         }
         unset($headers['Cookie']);
@@ -269,7 +269,7 @@
       );
       $this->assertEquals(
         array('Test'),
-        $this->fixture->argumentsFor($route, $this->newRequest(array(), NULL, array('Cookie' => 'user=Test; Domain=example.com')), RestFormat::$FORM)
+        $this->fixture->argumentsFor($route, $this->newRequest(array(), NULL, array('Cookie' => 'user=Test')), RestFormat::$FORM)
       );
     }
   }
