@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('webservices.rest.Payload');
+  uses('webservices.rest.Payload', 'scriptlet.Cookie');
 
   /**
    * The Response class can be used to control the HTTP status code and headers
@@ -23,6 +23,7 @@
   class Response extends Object {
     public $status;
     public $headers= array();
+    public $cookies= array();
     public $payload;
 
     /**
@@ -155,6 +156,17 @@
     }
 
     /**
+     * Adds a cookie and returns this instance
+     * 
+     * @param   scriptlet.Cookie cookie
+     * @return  self
+     */
+    public function withCookie(Cookie $cookie) {
+      $this->cookies[]= $cookie;
+      return $this;
+    }
+
+    /**
      * Sets payload and returns this instance
      * 
      * @param   var data
@@ -210,7 +222,8 @@
         $cmp instanceof self && 
         $this->status === $cmp->status &&
         (NULL === $this->payload ? NULL === $cmp->payload : $this->payload->equals($cmp->payload)) &&
-        $this->arrayequals($this->headers, $cmp->headers)
+        $this->arrayequals($this->headers, $cmp->headers) &&
+        $this->arrayequals($this->cookies, $cmp->cookies)
       );
     }
   }

@@ -386,5 +386,44 @@
         Response::status(200)->withPayload(NULL)
       );
     }
+
+    /**
+     * Test cookies
+     * 
+     */
+    #[@test]
+    public function without_cookies() {
+      $this->assertEquals(
+        array(),
+        Response::status(200)->cookies 
+      );
+    }
+
+    /**
+     * Test cookies
+     * 
+     */
+    #[@test]
+    public function with_one_cookie() {
+      $user= new Cookie('user', 'Test');
+      $this->assertEquals(
+        array($user),
+        Response::status(200)->withCookie($user)->cookies 
+      );
+    }
+
+    /**
+     * Test cookies
+     * 
+     */
+    #[@test]
+    public function with_two_cookies() {
+      $user= new Cookie('user', 'Test');
+      $lang= new Cookie('language', 'de');
+      $this->assertEquals(
+        array($user, $lang),
+        Response::status(200)->withCookie($user)->withCookie($lang)->cookies 
+      );
+    }
   }
 ?>
