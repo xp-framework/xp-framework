@@ -114,6 +114,9 @@
             $response->setHeader($name, $value);
           }
         }
+        foreach ($result->cookies as $cookie) {
+          $response->setCookie($cookie);
+        }
         RestFormat::forMediaType($target['output'])->write($response, $result->payload);
         return;
       }
