@@ -12,9 +12,9 @@
   );
 
   /**
-   * Default listener - only shows details for failed tests.
-   *
-   * @purpose  TestListener
+   * Default listener
+   * ----------------
+   * Only shows details for failed tests. This listener has no options.
    */
   class DefaultListener extends Object implements TestListener, ColorizingListener {
     const OUTPUT_WIDTH  = 72;

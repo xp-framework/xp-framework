@@ -15,7 +15,7 @@
    *
    * Example:
    * <code>
-   *   uses('util.collections.Stack', 'text.String');
+   *   uses('util.collections.Stack');
    *   
    *   // Fill stack
    *   with ($s= new Stack()); {
