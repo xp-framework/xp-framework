@@ -99,7 +99,7 @@
         $s.= self::readFully($stream, $ctl['length']);
       } while ($ctl['next']);
       
-      return iconv('utf-8', xp::ENCODING, $string);
+      return iconv('utf-8', xp::ENCODING, $s);
     }
   }
 ?>
