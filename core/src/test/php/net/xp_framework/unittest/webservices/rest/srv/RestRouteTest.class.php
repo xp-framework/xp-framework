@@ -190,7 +190,7 @@
     #[@test]
     public function string_representation_with_param() {
       $r= new RestRoute('GET', '/resource/{id}', $this->target, NULL, NULL);
-      $r->addParam('id', new PathParamSource('id'));
+      $r->addParam('id', new RestParamSource('id', ParamReader::forName('path')));
       $this->assertEquals(
         'webservices.rest.srv.RestRoute(GET /resource/{id} -> void fixtureTarget(@$id: path(\'id\')))', 
         $r->toString()
@@ -204,8 +204,8 @@
     #[@test]
     public function string_representation_with_params() {
       $r= new RestRoute('GET', '/resource/{id}/{sub}', $this->target, NULL, NULL);
-      $r->addParam('id', new PathParamSource('id'));
-      $r->addParam('sub', new PathParamSource('sub'));
+      $r->addParam('id', new RestParamSource('id', ParamReader::forName('path')));
+      $r->addParam('sub', new RestParamSource('sub', ParamReader::forName('path')));
       $this->assertEquals(
         'webservices.rest.srv.RestRoute(GET /resource/{id}/{sub} -> void fixtureTarget(@$id: path(\'id\'), @$sub: path(\'sub\')))', 
         $r->toString()

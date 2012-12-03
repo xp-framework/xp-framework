@@ -61,7 +61,10 @@
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
-          'params'   => array('name' => new PathParamSource('name'), 'greeting' => new QueryParamSource('greeting')),
+          'params'   => array(
+            'name'     => new RestParamSource('name', ParamReader::$PATH), 
+            'greeting' => new RestParamSource('greeting', ParamReader::$PARAM)
+          ),
           'segments' => array(0 => '/greet/test', 'name' => 'test', 1 => 'test'),
           'input'    => NULL,
           'output'   => 'text/json'
@@ -79,7 +82,7 @@
       $this->assertEquals(
         array(array(
           'target'   => $this->fixtureMethod('GreetingHandler', 'hello'),
-          'params'   => array('name' => new PathParamSource('name')),
+          'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
           'segments' => array(0 => '/hello/test', 'name' => 'test', 1 => 'test'),
           'input'    => NULL,
           'output'   => 'application/vnd.example.v2+json'
@@ -253,7 +256,7 @@
     public function greet_intl() {
       $route= array(
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_intl'),
-        'params'   => array('language' => new HeaderParamSource('Accept-Language')),
+        'params'   => array('language' => new RestParamSource('Accept-Language', ParamReader::$HEADER)),
         'segments' => array(0 => '/intl/greet/test', 'name' => 'test', 1 => 'test'),
         'input'    => NULL,
         'output'   => 'text/json'
@@ -272,7 +275,7 @@
     public function greet_user() {
       $route= array(
         'target'   => $this->fixtureMethod('GreetingHandler', 'greet_user'),
-        'params'   => array('name' => new CookieParamSource('user')),
+        'params'   => array('name' => new RestParamSource('user', ParamReader::$COOKIE)),
         'segments' => array(0 => '/user/greet'),
         'input'    => NULL,
         'output'   => 'text/json'

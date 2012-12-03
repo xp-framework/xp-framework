@@ -7,11 +7,8 @@
   uses(
     'webservices.rest.srv.RestContext',
     'webservices.rest.srv.RestRoute',
-    'webservices.rest.srv.CookieParamSource',
-    'webservices.rest.srv.HeaderParamSource',
-    'webservices.rest.srv.QueryParamSource',
-    'webservices.rest.srv.PathParamSource',
-    'webservices.rest.srv.BodyParamSource',
+    'webservices.rest.srv.RestParamSource',
+    'webservices.rest.srv.ParamReader',
     'webservices.rest.RestDeserializer',
     'scriptlet.Preference'
   );
@@ -172,16 +169,16 @@
         if (isset($target['params'][$param])) {
           $src= $target['params'][$param];
         } else if (isset($target['segments'][$param])) {
-          $src= new PathParamSource($param);
+          $src= new RestParamSource($param, ParamReader::$PATH);
         } else if (NULL === $target['input']) {
-          $src= new QueryParamSource($param);
+          $src= new RestParamSource($param, ParamReader::$PARAM);
         } else {
-          $src= new BodyParamSource();
+          $src= new RestParamSource(NULL, ParamReader::$BODY);
         }
 
-        if (NULL === ($arg= $src->read($parameter->getType(), $target, $request))) {
+        if (NULL === ($arg= $src->reader->read($src->name, $parameter->getType(), $target, $request))) {
           if ($parameter->isOptional()) {
-            $arg= $src->convert($parameter->getType(), $parameter->getDefaultValue());
+            $arg= $src->reader->convert($parameter->getType(), $parameter->getDefaultValue());
           } else {
             throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
           }

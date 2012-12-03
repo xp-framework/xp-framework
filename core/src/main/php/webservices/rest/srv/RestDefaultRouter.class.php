@@ -85,7 +85,10 @@
       // Add route parameters using parameter annotations
       foreach ($method->getAnnotations() as $annotation => $value) {
         if (2 === sscanf($annotation, '$%[^:]: %s', $param, $source)) {
-          $route->addParam($param, RestParamSource::forName($source)->newInstance($value ? $value : $param));
+          $route->addParam($param, new RestParamSource(
+            $value ? $value : $param,
+            ParamReader::forName($source)
+          ));
         }
       }
     }

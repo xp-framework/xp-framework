@@ -4,55 +4,48 @@
  * $Id$
  */
 
-  uses('webservices.rest.RestDeserializer');
+  uses('webservices.rest.srv.ParamReader');
 
   /**
-   * Abstract base class
+   * Parameter source
    *
    */
-  abstract class RestParamSource extends Object {
-    protected static $sources= array();
-    protected $convert= NULL;
+  class RestParamSource extends Object {
+    public $name;
+    public $reader;
 
     /**
-     * Creates this parameter source
-     *
-     */
-    public function __construct() {
-      $this->convert= newinstance('webservices.rest.RestDeserializer', array(), '{
-        public function deserialize($in, $target) {
-          throw new IllegalStateException("Unused");
-        }
-      }');
-    }
-
-    /**
-     * Factory method
+     * Creates a new param source instance
      *
      * @param  string name
-     * @return lang.XPClass
+     * @param  webservices.rest.srv.ParamReader reader
      */
-    public static function forName($name) {
-      if (isset(self::$sources[$name])) return self::$sources[$name];
-      
-      throw new IllegalArgumentException('Invalid parameter source "'.$name.'"');
+    public function __construct($name, $reader) {
+      $this->name= $name;
+      $this->reader= $reader;
     }
 
     /**
-     * Convert a given value
+     * Creates a string representation
      *
-     * @param  lang.Type target
-     * @param  var value
-     * @return var
+     * @return string
      */
-    public function convert($target, $value) {
-      return $this->convert->convert($target, $value);
+    public function toString() {
+      return $this->reader->name().($this->name ? "('".$this->name."')" : '');
     }
 
     /**
-     * Read this parameter from the given request
+     * Returns whether a given instance is equal to this
      *
+     * @param  var cmp
+     * @return bool
      */
-    public abstract function read($type, $route, $request);
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $cmp->name === $this->name &&
+        $cmp->reader->equals($this->reader)
+      );
+    }
   }
 ?>
