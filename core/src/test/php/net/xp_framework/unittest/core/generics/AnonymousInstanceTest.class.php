@@ -47,7 +47,7 @@
       }');
       $n= $instance->getClassName();
       $this->assertEquals(
-        'Vector··Object',
+        'util.collections.Vector··Object',
         substr($n, 0, strrpos($n, '·')),
         $n
       );
@@ -64,7 +64,7 @@
       }');
       $n= $instance->getClassName();
       $this->assertEquals(
-        'net·xp_framework·unittest·core·generics·ArrayFilter··Object',
+        'net.xp_framework.unittest.core.generics.ArrayFilter··Object',
         substr($n, 0, strrpos($n, '·')),
         $n
       );

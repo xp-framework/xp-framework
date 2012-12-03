@@ -600,7 +600,8 @@
       $type= $class->literal();
       $p= strrpos(substr($type, 0, strpos($type, '··')), '·');
     } else {
-      $type= xp::reflect(FALSE === strrpos($spec, '.') ? xp::nameOf($spec) : $spec);
+      FALSE === strrpos($spec, '.') && $spec= xp::nameOf($spec);
+      $type= xp::reflect($spec);
       if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
         xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
         // Bails
@@ -610,14 +611,14 @@
 
     // Create unique name
     $n= '·'.(++$u);
-    $spec.= $n;
     if (FALSE !== $p) {
       $ns= '$package= "'.strtr(substr($type, 0, $p), '·', '.').'"; ';
-      $spec= $type.$n;
+      $spec= strtr(substr($type, 0, $p), '·', '.').'.'.substr($type, $p+ 1).$n;
       $decl= $type.$n;
     } else if (FALSE === ($p= strrpos($type, '\\'))) {
       $ns= '';
-      $spec= $decl= $type.$n;
+      $decl= $type.$n;
+      $spec= substr($spec, 0, strrpos($spec, '.')).'.'.$type.$n;
     } else {
       $ns= 'namespace '.substr($type, 0, $p).'; ';
       $decl= substr($type, $p+ 1).$n;

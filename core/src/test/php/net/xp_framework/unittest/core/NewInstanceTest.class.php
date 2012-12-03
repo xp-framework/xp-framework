@@ -162,7 +162,7 @@
       $instance= newinstance('Object', array(), '{ }');
       $n= $instance->getClassName();
       $this->assertEquals(
-        'Object',
+        'lang.Object',
         substr($n, 0, strrpos($n, '·')),
         $n
       );
@@ -177,7 +177,7 @@
       $instance= newinstance('lang.Object', array(), '{ }');
       $n= $instance->getClassName();
       $this->assertEquals(
-        'Object',
+        'lang.Object',
         substr($n, 0, strrpos($n, '·')),
         $n
       );
