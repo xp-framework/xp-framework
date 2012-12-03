@@ -998,9 +998,9 @@
             continue;
           } else if (T_CLASS === $state[0]) {
             if (T_EXTENDS === $tokens[$i][0]) {
-              if (isset($annotations[0]['generic']['parent'])) {
+              if (isset($annotations['generic']['parent'])) {
                 $xargs= array();
-                foreach (explode(',', $annotations[0]['generic']['parent']) as $j => $placeholder) {
+                foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
                   $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
                 $src.= ' extends '.strtr(self::createGenericType($self->getParentClass(), $xargs), '\\', '¦');
@@ -1010,7 +1010,7 @@
             } else if (T_IMPLEMENTS === $tokens[$i][0]) {
               $src.= ' implements';
               $counter= 0;
-              $annotation= @$annotations[0]['generic']['implements'];
+              $annotation= @$annotations['generic']['implements'];
               array_unshift($state, 5);
             } else if ('{' === $tokens[$i][0]) {
               array_shift($state);
@@ -1022,7 +1022,7 @@
             if (T_EXTENDS === $tokens[$i][0]) {
               $src.= ' extends';
               $counter= 0;
-              $annotation= @$annotations[0]['generic']['extends'];
+              $annotation= @$annotations['generic']['extends'];
               array_unshift($state, 5);
             } else if ('{' === $tokens[$i][0]) {
               array_shift($state);
@@ -1097,10 +1097,9 @@
                     );
                   }
                 }
-
-                $annotations= array();
               }
-              
+
+              $annotations= array();              
               unset($meta[1][$m][DETAIL_ANNOTATIONS]['generic']);
               continue;
             }
