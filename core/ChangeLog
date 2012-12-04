@@ -36,6 +36,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added xp.unittest.ColoredBarListener - see issue #207
+  (kiesel, iigorr, ohinckel)
 - Added support for unittest listener options - see pull request #201
   (friebe, ohinckel)
 - Improved generics instance creation by factors between 1.2 and 1.6
