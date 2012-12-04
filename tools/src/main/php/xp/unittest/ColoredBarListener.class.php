@@ -22,9 +22,10 @@
    *
    */
   class ColoredBarListener extends Object implements TestListener {
-    const PROGRESS_WIDTH= 20;
+    const PROGRESS_WIDTH= 10;
     private $out= NULL;
     private $cur, $sum, $len, $status;
+    private $stats;
 
     private static $CODE_RED    = "\033[41;1;37m";
     private static $CODE_GREEN  = "\033[42;1;37m";
@@ -38,7 +39,6 @@
      */
     public function __construct(OutputStreamWriter $out) {
       $this->out= $out;
-      $this->status= TRUE;
     }
 
     /**
@@ -52,10 +52,15 @@
       }
 
       $perc= floor($this->cur / $this->sum * self::PROGRESS_WIDTH);
-      $out= sprintf(" - Running tests: %-3d of %d - [%-20s] ",
+      $out= sprintf(" Running %-3d of %d [%-10s] %01dF %01dE %01dW %01dS %01dN",
         $this->cur,
         $this->sum,
-        str_repeat(".", $perc)
+        str_repeat(".", $perc),
+        $this->stats['failed'],
+        $this->stats['errored'],
+        $this->stats['warned'],
+        $this->stats['skipped'],
+        $this->stats['notrun']
       );
 
       $out= sprintf('%50s %20s', 
@@ -136,6 +141,7 @@
      */
     public function testFailed(TestFailure $failure) {
       $this->status= FALSE;
+      $this->stats['failed']++;
       $this->writeFailure($failure);
     }
 
@@ -146,6 +152,7 @@
      */
     public function testError(TestError $error) {
       $this->status= FALSE;
+      $this->stats['errored']++;
       $this->writeFailure($error);
     }
 
@@ -156,6 +163,7 @@
      */
     public function testWarning(TestWarning $warning) {
       $this->writeFailure($warning);
+      $this->stats['warned']++;
     }
 
     /**
@@ -173,6 +181,7 @@
      * @param   unittest.TestSkipped skipped
      */
     public function testSkipped(TestSkipped $skipped) {
+      $this->stats['skipped']++;
     }
 
     /**
@@ -182,6 +191,7 @@
      * @param   unittest.TestSkipped ignore
      */
     public function testNotRun(TestSkipped $ignore) {
+      $this->stats['notrun']++;
     }
 
     /**
@@ -192,6 +202,14 @@
     public function testRunStarted(TestSuite $suite) {
       $this->sum= $suite->numTests();
       $this->cur= 0;
+      $this->stats= array(
+        'failed'  => 0,
+        'errored' => 0,
+        'warned'  => 0,
+        'skipped' => 0,
+        'notrun'  => 0
+      );
+      $this->status= TRUE;
     }
 
     /**
