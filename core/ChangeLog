@@ -16,6 +16,8 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed rdbms.sybase.SybaseDBAdapter to exclude incomplete index records
+  (friebe)
 - Fixed remote.ByteCountedString's length() method for zero-length strings
   (friebe)
 - Fixed TDS protocol's T_DATETIME4 type not being deserialized correctly
