@@ -26,7 +26,6 @@
      * @param  var in
      * @return T
      */
-    #
     public function unmarshal($in);
   }
 ?>
