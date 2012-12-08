@@ -228,5 +228,27 @@
     public function selectMaxUnsignedBigInt() {
       parent::selectMaxUnsignedBigInt();
     }
+
+    /**
+     * Test messages
+     *
+     */
+    #[@test, @expect(class = 'rdbms.SQLStatementFailedException', withMessage= '/More power/'))]
+    public function raiseError() {
+      $this->db()->query('raiserror 61000 "More power"');
+    }
+
+    /**
+     * Test messages
+     *
+     */
+    #[@test]
+    public function printMessage() {
+      $q= $this->db()->query('
+        print "More power"
+        select 1 as "result"
+      ');
+      $this->assertEquals(1, $q->next('result'));
+    }
   }
 ?>
