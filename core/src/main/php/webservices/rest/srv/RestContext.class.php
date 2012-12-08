@@ -302,7 +302,7 @@
     }
 
     /**
-     * Set a log category fot tracing
+     * Set a log category for tracing
      *
      * @param  util.log.LogCategory cat
      */
