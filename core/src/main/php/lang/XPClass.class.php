@@ -912,17 +912,21 @@
      *
      * @param   lang.XPClass self
      * @param   lang.Type[] arguments
-     * @return  lang.XPClass
+     * @return  string created type's literal name
      */
     public static function createGenericType(XPClass $self, array $arguments) {
 
       // Verify
-      if (!$self->isGenericDefinition()) {
+      $annotations= $self->getAnnotations();
+      if (!isset($annotations['generic']['self'])) {
         throw new IllegalStateException('Class '.$self->name.' is not a generic definition');
       }
-      $components= $self->genericComponents();
-      $cs= sizeof($components);
-      if ($cs != sizeof($arguments)) {
+      $components= array();
+      foreach (explode(',', $annotations['generic']['self']) as $cs => $name) {
+        $components[]= ltrim($name);
+      }
+      $cs++;
+      if ($cs !== sizeof($arguments)) {
         throw new IllegalArgumentException(sprintf(
           'Class %s expects %d component(s) <%s>, %d argument(s) given',
           $self->name,
@@ -938,16 +942,12 @@
         $cn.= '¸'.$typearg->literal();
         $qc.= ','.$typearg->getName();
       }
-      $name= xp::reflect($self->name).'··'.substr($cn, 1);
+      $name= $self->literal().'··'.substr($cn, 1);
       $qname= $self->name.'<'.substr($qc, 1).'>';
 
       // Create class if it doesn't exist yet
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        $meta= isset(xp::$registry['details.'.$self->name]) ? xp::$registry['details.'.$self->name] : array(
-          'class' => NULL,
-          0       => array(),
-          1       => array()
-        );
+        $meta= xp::$registry['details.'.$self->name];
 
         // Parse placeholders into a lookup map
         $placeholders= array();
@@ -963,50 +963,18 @@
 
         // Replace source
         $src= '';
-        $comment= NULL;
-        $annotations= array();
         $annotation= NULL;
         $matches= array();
         $state= array(0);
         $counter= 0;
         $tokens= token_get_all($bytes);
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
-          if (T_COMMENT === $tokens[$i][0] && '#' === $tokens[$i][1]{0}) {  // Annotations
-            if ('[' === $tokens[$i][1]{1}) {
-              $parsed= substr($tokens[$i][1], 2);
-            } else {
-              $parsed.= substr($tokens[$i][1], 1);
-            }
-            if (']' == substr(rtrim($tokens[$i][1]), -1)) {
-              $annotations= self::parseAnnotations(
-                trim($parsed, " \t\n\r"), 
-                $qname.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
-              );
-              $parsed= '';
-            }
+          if (T_COMMENT === $tokens[$i][0]) {
             continue;
-          } else if (T_DOC_COMMENT === $tokens[$i][0]) {
-            $matches= NULL;
-            $comment= trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
-              $tokens[$i][1], 
-              4,                                    // "/**\n"
-              strpos($tokens[$i][1], '* @')- 2      // position of first details token
-            )));
-            preg_match_all(
-              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)?/',
-              $tokens[$i][1], 
-              $matches, 
-              PREG_SET_ORDER
-            );
-          }
-        
-          if (0 === $state[0]) {
+          } else if (0 === $state[0]) {
             if (T_ABSTRACT === $tokens[$i][0] || T_FINAL === $tokens[$i][0]) {
               $src.= $tokens[$i][1].' ';
             } else if (T_CLASS === $tokens[$i][0] || T_INTERFACE === $tokens[$i][0]) {
-              if (NULL === $meta['class']) {
-                $meta['class']= array(DETAIL_COMMENT => $comment, DETAIL_ANNOTATIONS  => $annotations);
-              }
               $meta['class'][DETAIL_GENERIC]= array($self->name, $arguments);
               $src.= $tokens[$i][1].' '.$name;
               array_unshift($state, $tokens[$i][0]);
@@ -1019,7 +987,7 @@
                 foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
                   $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= ' extends '.self::createGenericType($self->getParentClass(), $xargs)->literal();
+                $src.= ' extends '.self::createGenericType($self->getParentClass(), $xargs);
               } else {
                 $src.= ' extends '.$tokens[$i+ 2][1];
               }
@@ -1053,25 +1021,7 @@
               array_unshift($state, 3);
               array_unshift($state, 2);
               $m= $tokens[$i+ 2][1];
-              if (isset($meta[1][$m])) {
-                $annotations= $meta[1][$m][DETAIL_ANNOTATIONS];
-              } else {
-                $meta[1][$m]= array(
-                  DETAIL_ARGUMENTS    => array(),
-                  DETAIL_RETURNS      => 'void',
-                  DETAIL_THROWS       => array(),
-                  DETAIL_COMMENT      => $comment,
-                  DETAIL_ANNOTATIONS  => $annotations,
-                  DETAIL_NAME         => $m
-                );
-                foreach ($matches as $match) {
-                  switch ($match[1]) {
-                    case 'param': $meta[1][$m][DETAIL_ARGUMENTS][]= $match[2]; break;
-                    case 'return': $meta[1][$m][DETAIL_RETURNS]= $match[2]; break;
-                    case 'throws': $meta[1][$m][DETAIL_THROWS][]= $match[2]; break;
-                  }
-                }
-              }
+              $annotations= $meta[1][$m][DETAIL_ANNOTATIONS];
             } else if ('}' === $tokens[$i][0]) {
               $src.= '}';
               break;
@@ -1152,7 +1102,7 @@
                 foreach (explode(',', $annotation[$counter]) as $j => $placeholder) {
                   $iargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs)->literal();
+                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs);
               } else {
                 $src.= $tokens[$i][1];
               }
@@ -1176,7 +1126,7 @@
         xp::$registry['class.'.$name]= $qname;
       }
       
-      return new XPClass(new ReflectionClass($name));
+      return $name;
     }
     
     /**
@@ -1187,8 +1137,8 @@
      * @throws  lang.IllegalStateException if this class is not a generic definition
      * @throws  lang.IllegalArgumentException if number of arguments does not match components
      */
-    public function newGenericType(array $arguments) {
-      return self::createGenericType($this, $arguments);
+    public function newGenericType($arguments) {
+      return new XPClass(new ReflectionClass(self::createGenericType($this, $arguments)));
     }
 
     /**

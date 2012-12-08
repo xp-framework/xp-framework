@@ -39,8 +39,9 @@
    *   <li>-cp: Add classpath elements</li>
    *   <li>-a {argument}: Define argument to pass to tests (may be used
    *     multiple times)</li>
-   *   <li>-l {listener.class.Name} {output}, where output is either "-"
-   *     for console output or a file name</li>
+   *   <li>-l {listener.class.Name} {output} [-o option value [-o ...]]
+   *     where output is either "-" for console output or a file name. 
+   *     Options with "-o" are listener-dependant arguments.</li>
    *   <li>--color={mode} : Enable / disable color; mode can be one of
    *     . "on" - activate color mode
    *     . "off" - disable color mode
@@ -124,6 +125,47 @@
     }
 
     /**
+     * Displays listener usage
+     *
+     * @return  int exitcode
+     */
+    protected function listenerUsage($listener) {
+      $this->err->writeLine($this->textOf($listener->getComment()));
+      $positional= $options= array();
+      foreach ($listener->getMethods() as $method) {
+        if ($method->hasAnnotation('arg')) {
+          $arg= $method->getAnnotation('arg');
+          $name= strtolower(preg_replace('/^set/', '', $method->getName()));
+          if (isset($arg['position'])) {
+            $positional[$arg['position']]= $name;
+            $options['<'.$name.'>']= $method;
+          } else {
+            $name= isset($arg['name']) ? $arg['name'] : $name;
+            $short= isset($arg['short']) ? $arg['short'] : $name{0};
+            $param= ($method->numParameters() > 0 ? ' <'.$method->getParameter(0)->getName().'>' : '');
+            $options[$name.'|'.$short.$param]= $method;
+          }
+        }
+      }
+      $this->err->writeLine();
+      $this->err->write('Usage: -l ', $listener->getName(), ' ');
+      ksort($positional);
+      foreach ($positional as $name) {
+        $this->err->write('-o <', $name, '> ');
+      }
+      if ($options) {
+        $this->err->writeLine('[options]');
+        $this->err->writeLine();
+        foreach ($options as $name => $method) {
+          $this->err->writeLine('  * -o ', $name, ': ', self::textOf($method->getComment()));
+        }
+      } else {
+        $this->err->writeLine();
+      }
+      return 1;
+    }
+
+    /**
      * Gets an argument
      *
      * @param   string[] args
@@ -190,10 +232,55 @@
           } else if ('-e' == $args[$i]) {
             $sources->add(new xp·unittest·sources·EvaluationSource($this->arg($args, ++$i, 'e')));
           } else if ('-l' == $args[$i]) {
-            $class= XPClass::forName($this->arg($args, ++$i, 'l'));
-            $output= $this->streamWriter($this->arg($args, ++$i, 'l'));
-            $suite->addListener($class->newInstance($output));
-          } else if ('-?' == $args[$i]) {
+            $arg= $this->arg($args, ++$i, 'l');
+            $class= XPClass::forName(strstr($arg, '.') ? $arg : 'xp.unittest.'.ucfirst($arg).'Listener');
+            $arg= $this->arg($args, ++$i, 'l');
+            if ('-?' == $arg || '--help' == $arg) {
+              return $this->listenerUsage($class);
+            }
+            $output= $this->streamWriter($arg);
+            $instance= $suite->addListener($class->newInstance($output));
+
+            // Get all @arg-annotated methods
+            $options= array();
+            foreach ($class->getMethods() as $method) {
+              if ($method->hasAnnotation('arg')) {
+                $arg= $method->getAnnotation('arg');
+                if (isset($arg['position'])) {
+                  $options[$arg['position']]= $method;
+                } else {
+                  $name= isset($arg['name']) ? $arg['name'] : strtolower(preg_replace('/^set/', '', $method->getName()));
+                  $short= isset($arg['short']) ? $arg['short'] : $name{0};
+                  $options[$name]= $options[$short]= $method;
+                }
+              }
+            }
+            $option= 0;
+          } else if ('-o' == $args[$i]) {
+            if (isset($options[$option])) {
+              $name= '#'.($option+ 1);
+              $method= $options[$option];
+            } else {
+              $name= $this->arg($args, ++$i, 'o');
+              if (!isset($options[$name])) {
+                $this->err->writeLine('*** Unknown listener argument '.$name.' to '.$instance->getClassName());
+                return 2;
+              }
+              $method= $options[$name];
+            }
+            $option++;
+            if (0 == $method->numParameters()) {
+              $pass= array();
+            } else {
+              $pass= $this->arg($args, ++$i, 'o '.$name);
+            }
+            try {
+              $method->invoke($instance, $pass);
+            } catch (TargetInvocationException $e) {
+              $this->err->writeLine('*** Error for argument '.$name.' to '.$instance->getClassName().': '.$e->getCause()->toString());
+              return 2;
+            }
+          } else if ('-?' == $args[$i] || '--help' == $args[$i]) {
             return $this->usage();
           } else if ('-a' == $args[$i]) {
             $arguments[]= $this->arg($args, ++$i, 'a');

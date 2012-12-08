@@ -81,23 +81,24 @@
     const T_SINT8      = 0xBF;
 
     protected static $fixed= array(
-      self::T_INT1     => 1,
-      self::T_INT2     => 2,
-      self::T_INT4     => 4,
-      self::T_INT8     => 8,
-      self::T_FLT8     => 8,
-      self::T_BIT      => 1,
-      self::T_MONEY4   => 4,
-      self::T_MONEY    => 8,
-      self::T_REAL     => 4,
-      self::T_DATE     => 4,
-      self::T_TIME     => 4,
-      self::T_DATETIME => 8,
-      self::T_SINT1    => 1,
-      self::T_UINT2    => 2,
-      self::T_UINT4    => 3,
-      self::T_UINT8    => 8,
-      self::T_SINT8    => 8,
+      self::T_INT1      => 1,
+      self::T_INT2      => 2,
+      self::T_INT4      => 4,
+      self::T_INT8      => 8,
+      self::T_FLT8      => 8,
+      self::T_BIT       => 1,
+      self::T_MONEY4    => 4,
+      self::T_MONEY     => 8,
+      self::T_REAL      => 4,
+      self::T_DATE      => 4,
+      self::T_TIME      => 4,
+      self::T_DATETIME4 => 4,
+      self::T_DATETIME  => 8,
+      self::T_SINT1     => 1,
+      self::T_UINT2     => 2,
+      self::T_UINT4     => 3,
+      self::T_UINT8     => 8,
+      self::T_SINT8     => 8,
     );
 
     static function __static() {
@@ -467,7 +468,6 @@
         } else if ("\xE5" === $token) {
           $this->handleExtendedError();
         } else if ("\xA9" === $token) { // TDS_COLUMNORDER
-          Console::writeLine("xA9");
           $this->stream->read($this->stream->getShort());
           $token= $this->stream->getToken();
           $continue= TRUE;
