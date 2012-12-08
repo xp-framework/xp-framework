@@ -73,6 +73,15 @@
     }
 
     /**
+     * Creates a new context object 
+     *
+     * @return  webservices.rest.RestContext
+     */
+    protected function newContext() {
+      return new RestContext();
+    }
+
+    /**
      * Process request and handle errors
      * 
      * @param  scriptlet.HttpScriptletRequest request The request
@@ -95,7 +104,7 @@
         $request->getHeader('Content-Type', NULL), 
         $accept
       ) as $target) {
-        $context= new RestContext();
+        $context= $this->newContext();
         try {
           $result= $this->router->process($target, $request, $context);
         } catch (HttpScriptletException $e) {
