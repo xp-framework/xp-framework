@@ -308,9 +308,9 @@
       $line= $this->stream->getShort();
       $this->done= TRUE;
 
-      // Fetch TDS_DONE associated with this EED and check for the error bit
+      // Fetch TDS_DONE (FD, FE, FF) associated with this EED and check for the error bit
       $done= $this->stream->get('Ctoken/vstatus/vcmd/Vrowcount', 9);
-      if (0xFF !== $done['token'] || $done['status'] & 0x0002) {
+      if ($done['token'] < 0xFD || $done['status'] & 0x0002) {
         throw new TdsProtocolException(
           $message,
           $meta['number'],
@@ -414,8 +414,10 @@
       $token= $this->stream->getToken();
       if ("\xAA" === $token) {
         $this->handleError();
+        // Raises an exception
       } else if ("\xE5" === $token) {
         $this->handleExtendedError();
+        $token= $this->stream->getToken();
       }
       
       return $token;
