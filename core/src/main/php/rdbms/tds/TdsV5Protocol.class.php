@@ -180,72 +180,72 @@
       $token= $this->read();
 
       // Skip over DONEPROC & DONEINPROC results
-      while ("\xFF" === $token || "\xFE" === $token) {
-        $m= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
-        $token= $this->stream->getToken();
-      }
+      do {
+        if ("\x00" === $token) {                 // ??? 04 01 00 0A 00 00 00 00 00 00
+          $token= $this->read();
+          continue;
+        } else if ("\xEE" === $token) {          // TDS_ROWFMT
+          $fields= array();
+          $this->stream->getShort();
+          $nfields= $this->stream->getShort();
+          for ($i= 0; $i < $nfields; $i++) {
+            $field= array();
+            if (0 === ($len= $this->stream->getByte())) {
+              $field= array('name' => NULL);
+            } else {
+              $field= array('name' => $this->stream->read($len));
+            }
+            $field['status']= $this->stream->getByte();
+            $this->stream->read(4);              // Skip usertype
+            $field['type']= $this->stream->getByte();
 
-      if ("\x00" === $token) {          // ??? 04 01 00 0A 00 00 00 00 00 00
-        $token= $this->read();
-      }
+            // Handle column.
+            if (self::T_TEXT === $field['type'] || self::T_IMAGE === $field['type']) {
+              $field['size']= $this->stream->getLong();
+              $field['conv']= $this->servercs;
+              $this->stream->read($this->stream->getShort());
+            } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
+              $field['size']= $this->stream->getByte();
+              $field['prec']= $this->stream->getByte();
+              $field['scale']= $this->stream->getByte();
+            } else if (self::T_LONGBINARY === $field['type'] || self::XT_CHAR === $field['type']) {
+              $field['size']= $this->stream->getLong() / 2;
+            } else if (isset(self::$fixed[$field['type']])) {
+              $field['size']= self::$fixed[$field['type']];
+            } else if (self::T_VARBINARY === $field['type'] || self::T_BINARY === $field['type']) {
+              $field['size']= $this->stream->getByte();
+              $field['conv']= $this->servercs;
+            } else {
+              $field['size']= $this->stream->getByte();
+            }
 
-      if ("\xEE" === $token) {          // TDS_ROWFMT
-        $fields= array();
-        $this->stream->getShort();
-        $nfields= $this->stream->getShort();
-        for ($i= 0; $i < $nfields; $i++) {
-          $field= array();
-          if (0 === ($len= $this->stream->getByte())) {
-            $field= array('name' => NULL);
-          } else {
-            $field= array('name' => $this->stream->read($len));
+            $field['locale']= $this->stream->getByte();
+            $fields[]= $field;
           }
-          $field['status']= $this->stream->getByte();
-          $this->stream->read(4);   // Skip usertype
-          $field['type']= $this->stream->getByte();
-
-          // Handle column.
-          if (self::T_TEXT === $field['type'] || self::T_IMAGE === $field['type']) {
-            $field['size']= $this->stream->getLong();
-            $field['conv']= $this->servercs;
-            $this->stream->read($this->stream->getShort());
-          } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
-            $field['size']= $this->stream->getByte();
-            $field['prec']= $this->stream->getByte();
-            $field['scale']= $this->stream->getByte();
-          } else if (self::T_LONGBINARY === $field['type'] || self::XT_CHAR === $field['type']) {
-            $field['size']= $this->stream->getLong() / 2;
-          } else if (isset(self::$fixed[$field['type']])) {
-            $field['size']= self::$fixed[$field['type']];
-          } else if (self::T_VARBINARY === $field['type'] || self::T_BINARY === $field['type']) {
-            $field['size']= $this->stream->getByte();
-            $field['conv']= $this->servercs;
-          } else {
-            $field['size']= $this->stream->getByte();
+          return $fields;
+        } else if ("\xFD" === $token || "\xFF" === $token || "\xFE" === $token) {   // DONE
+          $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
+          if ($meta['status'] & 0x0001) {
+            $token= $this->stream->getToken();
+            continue;
           }
-
-          $field['locale']= $this->stream->getByte();
-          $fields[]= $field;
+          $this->done= TRUE;
+          return $meta['rowcount'];
+        } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
+          $this->envchange();
+          return NULL;
+        } else {
+          throw new TdsProtocolException(
+            sprintf('Unexpected token 0x%02X', ord($token)),
+            0,    // Number
+            0,    // State
+            0,    // Class
+            NULL, // Server
+            NULL, // Proc
+            -1    // Line
+          );
         }
-        return $fields;
-      } else if ("\xFD" === $token) {   // DONE
-        $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
-        $this->done= TRUE;
-        // TODO: Maybe?
-        return $meta['rowcount'];
-      } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
-        $this->envchange();
-      } else {
-        throw new TdsProtocolException(
-          sprintf('Unexpected token 0x%02X', ord($token)),
-          0,    // Number
-          0,    // State
-          0,    // Class
-          NULL, // Server
-          NULL, // Proc
-          -1    // Line
-        );
-      }
+      } while (!$this->done);
     }
   }
 ?>
