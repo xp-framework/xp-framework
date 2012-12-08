@@ -294,23 +294,36 @@
     }
 
     /**
-     * Handles EED messages (0xE5)
+     * Handles EED text messages (0xE5)
      *
      * @throws  rdbms.tds.TdsProtocolException
      */
     protected function handleExtendedError() {
       $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
-      $this->stream->read($this->stream->getByte() + 1 + 2); // Skip SQLState, Status, TranState
+      $meta['sqlstate']= $this->stream->read($this->stream->getByte());
+      $meta= array_merge($meta, $this->stream->get('Cstatus/vtranstate', 3));
+      $message= $this->stream->read($this->stream->getShort());
+      $server= $this->stream->read($this->stream->getByte());
+      $proc= $this->stream->read($this->stream->getByte());
+      $line= $this->stream->getShort();
       $this->done= TRUE;
-      throw new TdsProtocolException(
-        $this->stream->read($this->stream->getShort()),
-        $meta['number'],
-        $meta['state'],
-        $meta['class'],
-        $this->stream->read($this->stream->getByte()),
-        $this->stream->read($this->stream->getByte()),
-        $this->stream->getByte()
-      );
+
+      // Fetch TDS_DONE associated with this EED and check for the error bit
+      $done= $this->stream->get('Ctoken/vstatus/vcmd/Vrowcount', 9);
+      if (0xFF !== $done['token'] || $done['status'] & 0x0002) {
+        throw new TdsProtocolException(
+          $message,
+          $meta['number'],
+          $meta['state'],
+          $meta['class'],
+          $server,
+          $proc,
+          $line
+        );
+      }
+
+      // TODO message handling
+      // Console::$err->writeLine($server, ': ', $message, ' in ', $proc, ' line ', $line);
     }
 
     /**
@@ -456,7 +469,7 @@
     public function fetch($fields) {
       $token= $this->stream->getToken();
       do {
-        if ("\xAE" === $token) {    // TDS_CONTROL
+        if ("\xAE" === $token) {              // TDS_CONTROL
           $length= $this->stream->getShort();
           for ($i= 0; $i < $length; $i++) {
             $this->stream->read($this->stream->getByte());
@@ -465,12 +478,24 @@
           $continue= TRUE;
         } else if ("\xAA" === $token) {
           $this->handleError();
+          // Always raises an exception
         } else if ("\xE5" === $token) {
           $this->handleExtendedError();
-        } else if ("\xA9" === $token) { // TDS_COLUMNORDER
+          $token= $this->stream->getToken();
+          $continue= TRUE;
+        } else if ("\xA9" === $token) {       // TDS_COLUMNORDER
           $this->stream->read($this->stream->getShort());
           $token= $this->stream->getToken();
           $continue= TRUE;
+        } else if ("\xFE" === $token || "\xFF" === $token) {
+          $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
+          if ($meta['status'] & 0x0001) {
+            $token= $this->stream->getToken();
+            $continue= TRUE;
+          } else {
+            $this->done= TRUE;
+            return NULL;
+          }
         } else if ("\xD1" !== $token) {
           // Console::$err->writeLinef('END TOKEN %02x', ord($token));    // 2.2.5.7 Data Buffer Stream Tokens
           $this->done= TRUE;
