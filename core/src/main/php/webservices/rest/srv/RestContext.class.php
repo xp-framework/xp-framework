@@ -20,6 +20,7 @@
   class RestContext extends Object implements Traceable {
     protected $mappers;
     protected $marshallers;
+    protected $cat= NULL;
 
     static function __static() {
       xp::extensions(__CLASS__, __CLASS__);
