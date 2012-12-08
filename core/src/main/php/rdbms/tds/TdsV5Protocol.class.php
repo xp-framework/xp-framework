@@ -231,9 +231,6 @@
           }
           $this->done= TRUE;
           return $meta['rowcount'];
-        } else if ("\xE5" === $token) {
-          $this->handleExtendedError();
-          $token= $this->stream->getToken(); 
         } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
           $this->envchange();
           return NULL;
