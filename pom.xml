@@ -57,49 +57,58 @@
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.2</version>
         <extensions>true</extensions>
+        <configuration>
+
+          <!-- @see https://github.com/xp-framework/xp-framework/wiki/setup.extensions -->
+          <extensions>
+
+            <!-- Core -->
+            <extension>standard</extension>
+            <extension>pcre</extension>
+            <extension>tokenizer</extension>
+            <extension>reflection</extension>
+            <extension>ctype</extension>
+            <extension>iconv</extension>
+            <extension>date</extension>
+            <extension>com_dotnet</extension>
+            <extension>zlib</extension>
+
+            <!-- XML -->
+            <extension>dom</extension>
+            <extension>xsl</extension>
+            <extension>xml</extension>
+            <extension>libxml</extension>
+
+            <!-- Networking -->
+            <extension>sockets</extension>
+            <extension>ftp</extension>
+            <extension>openssl</extension>
+            <extension>ldap</extension>
+            <extension>soap</extension>
+
+            <!-- Imaging -->
+            <extension>gd</extension>
+            <extension>exif</extension>
+            <extension>mbstring</extension>
+
+            <!-- Databases ??? -->
+            <!--extension>mysql</extension>
+            <extension>mysqli</extension>
+            <extension>sqlite3</extension-->
+
+            <!-- The web -->
+            <extension>session</extension>
+
+            <!-- Parallel processing -->
+            <extension>pcntl</extension>
+            <extension>posix</extension>
+          </extensions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
-
-  <!--
-   ! When releasing to Sonatype, build and attach the "tests",
-   ! "sources" and "apidoc" artifacts
-   !-->
-  <profiles>
-    <profile>
-      <id>sonatype-oss-release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>net.xp-forge.maven.plugins</groupId>
-            <artifactId>xp-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-tests</id>
-                <goals>
-                  <goal>test-package</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>source-no-fork</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>attach-apidoc</id>
-                <goals>
-                  <goal>apidoc-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
   <!--
    ! Dependency management

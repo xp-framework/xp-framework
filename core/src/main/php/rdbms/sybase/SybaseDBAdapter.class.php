@@ -186,17 +186,27 @@
       
       $keys= NULL;
       while ($record= $q->next()) {
+
+        // Ignore records which look like this - they contain only the table name
+        // array(4) {
+        //   ["keys"]   => string(1) " "
+        //   ["name"]   => string(8) "software"
+        //   ["number"] => int(0)
+        //   ["status"] => int(0)
+        // }
+        if (0 == $record['status'] + $record['number']) continue;
+
         if ($keys != $record['keys']) {
           $index= $t->addIndex(new DBIndex(
             $record['name'],
-            explode(',', $record['keys'])
+            explode(',', trim($record['keys']))
           ));
           $keys= $record['keys'];
         }
         if (2 == $record['number']) $index->unique= TRUE;
         if ($record['status'] & 2048) $index->primary= TRUE;
       }
-      
+
       // Get foreign key constraints
       $sp_helpconstraint= $this->conn->query('sp_helpconstraint %s, detail', $this->qualifiedTablename($table, $database));
       if (!$sp_helpconstraint instanceof ResultSet) return $t;
