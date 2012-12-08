@@ -98,14 +98,14 @@
       );
 
       // Iterate over all applicable routes
-      $context= $this->newContext();
-      $context->setTrace($this->cat);
       foreach ($this->router->targetsFor(
         $request->getMethod(), 
         $url->getPath(), 
         $request->getHeader('Content-Type', NULL), 
         $accept
       ) as $target) {
+        $context= $this->newContext();
+        $context->setTrace($this->cat);
         if ($context->process($target, $request, $response)) return;
       }
 
