@@ -22,6 +22,7 @@
     protected 
       $cat     = NULL,
       $router  = NULL,
+      $context = NULL,
       $base    = '';
 
     /**
@@ -29,24 +30,21 @@
      * 
      * @param  string package The package containing handler classes
      * @param  string base The base URL (will be stripped off from request url)
+     * @param  string context The context class to use
      * @param  string router The router class to use
      */
-    public function __construct($package, $base= '', $router= '') {
+    public function __construct($package, $base= '', $context= '', $router= '') {
+      $this->base= rtrim($base, '/');
+
+      // Context class
+      $this->context= XPClass::forName('' === (string)$context ? 'webservices.rest.srv.RestContext' : $context); 
+
+      // Create router
       if ('' === (string)$router) {
         $this->router= new RestDefaultRouter();
-      } else if (strstr($router, '.')) {
-        $this->router= cast(
-          XPClass::forName($router)->newInstance(),
-          'webservices.rest.server.routing.RestRouter'
-        );
       } else {
-        $this->router= Package::forName('webservices.rest.server.routing')
-          ->loadClass('Rest'.ucfirst($router).'Router')
-          ->newInstance()
-        ;
+        $this->router= XPClass::forName($name)->newInstance();
       }
-      
-      $this->base= rtrim($base, '/');
       $this->router->configure($package, $this->base);
       $this->router->setInputFormats(array('*json', '*xml', 'application/x-www-form-urlencoded'));
       $this->router->setOutputFormats(array('application/json', 'text/json', 'text/xml', 'application/xml'));
@@ -73,15 +71,6 @@
     }
 
     /**
-     * Creates a new context object 
-     *
-     * @return  webservices.rest.RestContext
-     */
-    protected function newContext() {
-      return new RestContext();
-    }
-
-    /**
      * Process request and handle errors
      * 
      * @param  scriptlet.HttpScriptletRequest request The request
@@ -104,7 +93,7 @@
         $request->getHeader('Content-Type', NULL), 
         $accept
       ) as $target) {
-        $context= $this->newContext();
+        $context= $this->context->newInstance();
         $context->setTrace($this->cat);
         if ($context->process($target, $request, $response)) return;
       }
