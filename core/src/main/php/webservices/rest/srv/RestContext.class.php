@@ -121,6 +121,12 @@
       return $in;
     }
 
+    /**
+     * Returns arguments used for injection 
+     *
+     * @param  lang.reflect.Routine routine
+     * @return var[] args
+     */
     protected function injectionArgs($routine) {
       if ($routine->numParameters() < 1) return array();
 
@@ -142,6 +148,12 @@
       return $args;
     }
 
+    /**
+     * Creates a handler instance
+     *
+     * @param  lang.XPClass class
+     * @return lang.Generic instance
+     */
     public function handlerInstanceFor($class) {
 
       // Constructor injection
@@ -204,6 +216,12 @@
       }
     }
 
+    /**
+     * Returns whether a given value is equal to this context instance
+     *
+     * @param  var cmp
+     * @return bool
+     */
     public function equals($cmp) {
       return (
         $cmp instanceof self && 
