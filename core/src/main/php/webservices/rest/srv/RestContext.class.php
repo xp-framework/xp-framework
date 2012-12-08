@@ -217,6 +217,62 @@
     }
 
     /**
+     * Read arguments from request
+     *
+     * @param  [:var] target
+     * @param  scriptlet.Request request
+     * @return var[] args
+     */
+    public function argumentsFor($target, $request) {
+      $args= array();
+      foreach ($target['target']->getParameters() as $parameter) {
+        $param= $parameter->getName();
+
+        // Extract arguments according to definition. In case we don't have an explicit
+        // source for an argument, look up according to the following rules:
+        //
+        // * If we have a segment named exactly like the parameter, use it
+        // * If there is no incoming payload, check the parameters
+        // * If there is an incoming payload, use that.
+        //
+        // Handle explicitely configured sources first.
+        if (isset($target['params'][$param])) {
+          $src= $target['params'][$param];
+        } else if (isset($target['segments'][$param])) {
+          $src= new RestParamSource($param, ParamReader::$PATH);
+        } else if (NULL === $target['input']) {
+          $src= new RestParamSource($param, ParamReader::$PARAM);
+        } else {
+          $src= new RestParamSource(NULL, ParamReader::$BODY);
+        }
+
+        if (NULL === ($arg= $src->reader->read($src->name, $parameter->getType(), $target, $request))) {
+          if ($parameter->isOptional()) {
+            $arg= $src->reader->convert($parameter->getType(), $parameter->getDefaultValue());
+          } else {
+            throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
+          }
+        }
+        $args[]= $arg;
+      }
+      return $args;
+    }
+
+    /**
+     * Process a request
+     *
+     * @param   scriptlet.Request request
+     * @param   [:var] target
+     */
+    public function process($request, $target) {
+      return $this->handle(
+        $this->handlerInstanceFor($target['target']->getDeclaringClass()),
+        $target['target'],
+        $this->argumentsFor($target, $request)
+      );
+    }
+
+    /**
      * Returns whether a given value is equal to this context instance
      *
      * @param  var cmp

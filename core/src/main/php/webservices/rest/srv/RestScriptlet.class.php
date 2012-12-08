@@ -106,7 +106,7 @@
       ) as $target) {
         $context= $this->newContext();
         try {
-          $result= $this->router->process($target, $request, $context);
+          $result= $context->process($request, $target);
         } catch (HttpScriptletException $e) {
           $result= $context->mapException($e);
         }

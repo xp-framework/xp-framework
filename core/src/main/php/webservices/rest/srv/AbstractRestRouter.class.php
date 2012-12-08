@@ -147,64 +147,6 @@
     }
 
     /**
-     * Read arguments from request
-     *
-     * @param  [:var] target
-     * @param  scriptlet.Request request
-     * @return var[] args
-     */
-    public function argumentsFor($target, $request) {
-      $args= array();
-      foreach ($target['target']->getParameters() as $parameter) {
-        $param= $parameter->getName();
-
-        // Extract arguments according to definition. In case we don't have an explicit
-        // source for an argument, look up according to the following rules:
-        //
-        // * If we have a segment named exactly like the parameter, use it
-        // * If there is no incoming payload, check the parameters
-        // * If there is an incoming payload, use that.
-        //
-        // Handle explicitely configured sources first.
-        if (isset($target['params'][$param])) {
-          $src= $target['params'][$param];
-        } else if (isset($target['segments'][$param])) {
-          $src= new RestParamSource($param, ParamReader::$PATH);
-        } else if (NULL === $target['input']) {
-          $src= new RestParamSource($param, ParamReader::$PARAM);
-        } else {
-          $src= new RestParamSource(NULL, ParamReader::$BODY);
-        }
-
-        if (NULL === ($arg= $src->reader->read($src->name, $parameter->getType(), $target, $request))) {
-          if ($parameter->isOptional()) {
-            $arg= $src->reader->convert($parameter->getType(), $parameter->getDefaultValue());
-          } else {
-            throw new IllegalArgumentException('Parameter "'.$param.'" required but found in '.$src->toString());
-          }
-        }
-        $args[]= $arg;
-      }
-      return $args;
-    }
-
-    /**
-     * Process a target with a given request
-     *
-     * @param  [:var] target
-     * @param  scriptlet.Request request
-     * @param  webservices.rest.srv.Context context
-     * @return webservices.rest.srv.Response
-     */
-    public function process($target, $request, $context) {
-      return $context->handle(
-        $context->handlerInstanceFor($target['target']->getDeclaringClass()), 
-        $target['target'],
-        $this->argumentsFor($target, $request)
-      );
-    }
-
-    /**
      * Creates a string representation
      *
      * @return  string
