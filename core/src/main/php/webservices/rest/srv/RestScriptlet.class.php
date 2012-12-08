@@ -31,7 +31,6 @@
      * @param  string base The base URL (will be stripped off from request url)
      * @param  string router The router class to use
      */
-
     public function __construct($package, $base= '', $router= '') {
       if ('' === (string)$router) {
         $this->router= new RestDefaultRouter();
