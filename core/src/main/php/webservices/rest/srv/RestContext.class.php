@@ -8,7 +8,8 @@
     'webservices.rest.TypeMarshaller',
     'webservices.rest.srv.Response',
     'webservices.rest.srv.ExceptionMapper',
-    'util.collections.HashTable'
+    'util.collections.HashTable',
+    'util.log.Traceable'
   );
 
   /**
@@ -16,7 +17,7 @@
    *
    * @test  xp://net.xp_framework.unittest.webservices.rest.srv.RestContextTest
    */
-  class RestContext extends Object {
+  class RestContext extends Object implements Traceable {
     protected $mappers;
     protected $marshallers;
 
@@ -181,8 +182,6 @@
      * @return webservices.rest.srv.Response
      */
     public function handle($instance, $method, $args) {
-      $this->cat && $this->cat->debug('->', $target);
-
       foreach ($args as $i => $arg) {
         $args[$i]= $this->unmarshal(typeof($arg), $arg);
       }
@@ -193,13 +192,13 @@
         $properties['name']= $method->getAnnotation('xmlwrapped');
       }
 
-      // Instantiate the handler class and invoke method
+      // Invoke the method
       try {
         $result= $method->invoke($instance, $args);
         $this->cat && $this->cat->debug('<-', $result);
-      } catch (TargetInvocationException $t) {
-        $this->cat && $this->cat->warn('<-', $t);
-        return $this->mapException($t->getCause());
+      } catch (TargetInvocationException $e) {
+        $this->cat && $this->cat->warn('<-', $e);
+        return $this->mapException($e->getCause());
       }
 
       // For "VOID" methods, set status to "no content". If a response is returned, 
@@ -261,15 +260,53 @@
     /**
      * Process a request
      *
-     * @param   scriptlet.Request request
      * @param   [:var] target
+     * @param   scriptlet.Request request
+     * @param   scriptlet.Response response
+     * @return  bool
      */
-    public function process($request, $target) {
-      return $this->handle(
-        $this->handlerInstanceFor($target['target']->getDeclaringClass()),
-        $target['target'],
-        $this->argumentsFor($target, $request)
-      );
+    public function process($target, $request, $response) {
+
+      // Invoke handler
+      try {
+        $this->cat && $this->cat->debug('->', $target);
+        $result= $this->handle(
+          $this->handlerInstanceFor($target['target']->getDeclaringClass()),
+          $target['target'],
+          $this->argumentsFor($target, $request)
+        );
+      } catch (Throwable $t) {                         // Marshalling, parameters, instantiation
+        $this->cat && $this->cat->error('<-', $t);
+        $result= $this->mapException($t);
+      }
+
+      // Have a result
+      $response->setStatus($result->status);
+      $response->setContentType($target['output']);
+      foreach ($result->headers as $name => $value) {
+        if ('Location' === $name) {
+          $url= clone $request->getURL();
+          $response->setHeader($name, $url->setPath($value)->getURL());
+        } else {
+          $response->setHeader($name, $value);
+        }
+      }
+      foreach ($result->cookies as $cookie) {
+        $response->setCookie($cookie);
+      }
+      RestFormat::forMediaType($target['output'])->write($response, $result->payload);
+
+      // Handled
+      return TRUE;
+    }
+
+    /**
+     * Set a log category fot tracing
+     *
+     * @param  util.log.LogCategory cat
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
     }
 
     /**

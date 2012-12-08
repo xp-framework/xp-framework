@@ -98,35 +98,15 @@
       );
 
       // Iterate over all applicable routes
+      $context= $this->newContext();
+      $context->setTrace($this->cat);
       foreach ($this->router->targetsFor(
         $request->getMethod(), 
         $url->getPath(), 
         $request->getHeader('Content-Type', NULL), 
         $accept
       ) as $target) {
-        $context= $this->newContext();
-        try {
-          $result= $context->process($request, $target);
-        } catch (HttpScriptletException $e) {
-          $result= $context->mapException($e);
-        }
-
-        // Have a result
-        $response->setStatus($result->status);
-        $response->setContentType($target['output']);
-        foreach ($result->headers as $name => $value) {
-          if ('Location' === $name) {
-            $url= clone $request->getURL();
-            $response->setHeader($name, $url->setPath($value)->getURL());
-          } else {
-            $response->setHeader($name, $value);
-          }
-        }
-        foreach ($result->cookies as $cookie) {
-          $response->setCookie($cookie);
-        }
-        RestFormat::forMediaType($target['output'])->write($response, $result->payload);
-        return;
+        if ($context->process($target, $request, $response)) return;
       }
 
       // No route
