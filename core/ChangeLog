@@ -16,6 +16,9 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed Unicode conversion for sybase databases in cases where "utf8" is
+  not recognized by iconv library
+  (friebe)
 - Fixed rdbms.sybase.SybaseDBAdapter to exclude incomplete index records
   (friebe)
 - Fixed remote.ByteCountedString's length() method for zero-length strings
