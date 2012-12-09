@@ -84,5 +84,34 @@
       $this->r->getOutputStream()->write('Hello');
       $this->assertEquals('Hello', $this->r->getContent());
     }
+
+    /**
+     * Test sendContent()
+     *
+     */
+    #[@test]
+    public function sendContent() {
+      $this->r->setContent('Test');
+      ob_start();
+      $this->r->sendContent();
+      $content= ob_get_contents();
+      ob_end_clean();
+      $this->assertEquals('Test', $content);
+    }
+
+    /**
+     * Test sendContent()
+     *
+     */
+    #[@test]
+    public function doNotSendNullContent() {
+      $this->r->setContent(NULL);
+      ob_start();
+      $this->r->sendContent();
+      $content= ob_get_contents();
+      ob_end_clean();
+      $this->assertEquals('', $content);
+    }
+
   }
 ?>
