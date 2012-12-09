@@ -84,5 +84,41 @@
       $this->r->getOutputStream()->write('Hello');
       $this->assertEquals('Hello', $this->r->getContent());
     }
+
+    /**
+     * Does not send body, if status code is 204 No Content.
+     *
+     */
+    #[@test]
+    public function doNotAddContentAtStatus204() {
+      $this->r->getOutputStream()->write('Hello');
+      $this->r->setStatus(HttpConstants::STATUS_NO_CONTENT);
+
+      // Catch echo output
+      ob_start();
+      $this->r->sendContent();
+      $output= ob_get_contents();
+      ob_end_clean();
+
+      $this->assertEquals(0, strlen($output));
+    }
+
+    /**
+     * Does not send body, if status code is 304 Not Modified.
+     *
+     */
+    #[@test]
+    public function doNotAddContentAtStatus304() {
+      $this->r->getOutputStream()->write('Hello');
+      $this->r->setStatus(HttpConstants::STATUS_NOT_MODIFIED);
+
+      // Catch echo output
+      ob_start();
+      $this->r->sendContent();
+      $output= ob_get_contents();
+      ob_end_clean();
+
+      $this->assertEquals(0, strlen($output));
+    }
   }
 ?>
