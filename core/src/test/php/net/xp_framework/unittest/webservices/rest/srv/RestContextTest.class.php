@@ -416,7 +416,7 @@
         'output'   => 'text/json'
       );
       $this->assertProcess(
-        204, array('Content-Type: text/json'), NULL,
+        204, array(), NULL,
         $route, $this->newRequest()
       );
     }

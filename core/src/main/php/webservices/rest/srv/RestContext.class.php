@@ -288,7 +288,6 @@
 
       // Have a result
       $response->setStatus($result->status);
-      $response->setContentType($target['output']);
       foreach ($result->headers as $name => $value) {
         if ('Location' === $name) {
           $url= clone $request->getURL();
@@ -301,6 +300,7 @@
         $response->setCookie($cookie);
       }
       if (NULL !== $result->payload) {
+        $response->setContentType($target['output']);
         RestFormat::forMediaType($target['output'])->write($response, $result->payload);
       }
 
