@@ -210,7 +210,7 @@
         $fields= array();
         $nfields= $this->stream->getShort();
         for ($i= 0; $i < $nfields; $i++) {
-          $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
+          $field= $this->stream->get('Cx1/Cx2/Cflags/Cstatus/Ctype', 5);
 
           // Handle column.
           if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type']) {
