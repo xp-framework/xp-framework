@@ -217,7 +217,7 @@
           $stream->read(24);  // Skip 16 Byte TEXTPTR, 8 Byte TIMESTAMP
 
           $len= $stream->getLong();
-          if ($len === 0) return "";
+          if ($len === 0) return $field["status"] & 0x20 ? NULL : "";
 
           return $stream->read($len);
         }
