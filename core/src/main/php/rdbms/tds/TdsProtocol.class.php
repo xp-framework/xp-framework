@@ -212,12 +212,12 @@
       self::$recordsFor[0][self::T_TEXT]= newinstance('rdbms.tds.TdsRecord', array(), '{
         public function unmarshal($stream, $field) {
           $has= $stream->getByte();
-          if ($has !== 16) return NULL; // This looks obsolete - see TdsV5Protocol T_IMAGE-serializer
+          if ($has !== 16) return NULL;
 
           $stream->read(24);  // Skip 16 Byte TEXTPTR, 8 Byte TIMESTAMP
 
           $len= $stream->getLong();
-          if ($len === 0) return NULL;
+          if ($len === 0) return "";
 
           return $stream->read($len);
         }
