@@ -294,6 +294,22 @@
     }
 
     /**
+     * Handles INFO messages (0xAB)
+     *
+     * @throws  rdbms.tds.TdsProtocolException
+     */
+    protected function handleInfo() {
+      $meta= $this->stream->get('vlength/Vnumber/Cstate/Cclass', 8);
+      $message= $this->stream->getString($this->stream->getShort());
+      $server= $this->stream->getString($this->stream->getByte());
+      $proc= $this->stream->getString($this->stream->getByte());
+      $line= $this->stream->getShort();
+
+      // TODO message handling
+      // DEBUG Console::$err->writeLine($server, ': ', $message, ' in ', $proc, ' line ', $line);
+    }
+
+    /**
      * Handles EED text messages (0xE5)
      *
      * @throws  rdbms.tds.TdsProtocolException

@@ -206,60 +206,68 @@
       $this->stream->write(self::MSG_QUERY, iconv('iso-8859-1', 'ucs-2le', $sql));
       $token= $this->read();
 
-      if ("\x81" === $token) {          // COLMETADATA
-        $fields= array();
-        $nfields= $this->stream->getShort();
-        for ($i= 0; $i < $nfields; $i++) {
-          $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
+      do {
+        if ("\x81" === $token) {          // COLMETADATA
+          $fields= array();
+          $nfields= $this->stream->getShort();
+          for ($i= 0; $i < $nfields; $i++) {
+            $field= $this->stream->get('Cx1/Cx2/Cflags/Cx3/Ctype', 5);
 
-          // Handle column.
-          if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type']) {
-            $field['size']= $this->stream->getLong();
-            $this->stream->read(5);     // XXX Collation?
-            $field['table']= $this->stream->read($this->stream->getShort());
-          } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
-            $field['size']= $this->stream->getByte();
-            $field['prec']= $this->stream->getByte();
-            $field['scale']= $this->stream->getByte();
-          } else if (self::XT_BINARY === $field['type'] || self::XT_VARBINARY === $field['type']) {
-            $field['size']= $this->stream->getShort();
-          } else if ($field['type'] > 128) {
-            $field['size']= $this->stream->getShort();
-            $this->stream->read(5);     // XXX Collation?
-          } else if (isset(self::$fixed[$field['type']])) {
-            $field['size']= self::$fixed[$field['type']];
-          } else if (self::T_VARIANT === $field['type']) {
-            $field['variant']= new Bytes($this->stream->read(4));   // XXX Always {I\037\000\000}?
-          } else if (self::T_IMAGE === $field['type']) {
-            $field['size']= $this->stream->getLong();
-            $field['table']= $this->stream->read($this->stream->getShort());
-          } else {
-            $field['size']= $this->stream->getByte();
+            // Handle column.
+            if (self::T_TEXT === $field['type'] || self::T_NTEXT === $field['type']) {
+              $field['size']= $this->stream->getLong();
+              $this->stream->read(5);     // XXX Collation?
+              $field['table']= $this->stream->read($this->stream->getShort());
+            } else if (self::T_NUMERIC === $field['type'] || self::T_DECIMAL === $field['type']) {
+              $field['size']= $this->stream->getByte();
+              $field['prec']= $this->stream->getByte();
+              $field['scale']= $this->stream->getByte();
+            } else if (self::XT_BINARY === $field['type'] || self::XT_VARBINARY === $field['type']) {
+              $field['size']= $this->stream->getShort();
+            } else if ($field['type'] > 128) {
+              $field['size']= $this->stream->getShort();
+              $this->stream->read(5);     // XXX Collation?
+            } else if (isset(self::$fixed[$field['type']])) {
+              $field['size']= self::$fixed[$field['type']];
+            } else if (self::T_VARIANT === $field['type']) {
+              $field['variant']= new Bytes($this->stream->read(4));   // XXX Always {I\037\000\000}?
+            } else if (self::T_IMAGE === $field['type']) {
+              $field['size']= $this->stream->getLong();
+              $field['table']= $this->stream->read($this->stream->getShort());
+            } else {
+              $field['size']= $this->stream->getByte();
+            }
+
+            $field['name']= $this->stream->getString($this->stream->getByte());
+            $fields[]= $field;
           }
-
-          $field['name']= $this->stream->getString($this->stream->getByte());
-          $fields[]= $field;
+          return $fields;
+        } else if ("\xFD" === $token || "\xFF" === $token || "\xFE" === $token) {   // DONE
+          $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
+          if ($meta['status'] & 0x0001) {
+            $token= $this->stream->getToken();
+            continue;
+          }
+          $this->done= TRUE;
+          return $meta['rowcount'];
+        } else if ("\xAB" === $token) {   // INFO
+          $this->handleInfo();
+          $token= $this->stream->getToken();
+        } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
+          $this->envchange();
+          return NULL;
+        } else {
+          throw new TdsProtocolException(
+            sprintf('Unexpected token 0x%02X', ord($token)),
+            0,    // Number
+            0,    // State
+            0,    // Class
+            NULL, // Server
+            NULL, // Proc
+            -1    // Line
+          );
         }
-        return $fields;
-      } else if ("\xFD" === $token) {   // DONE
-        $meta= $this->stream->get('vstatus/vcmd/Vrowcount', 8);
-        $this->done= TRUE;
-        // TODO: Maybe?
-        return $meta['rowcount'];
-      } else if ("\xE3" === $token) {   // ENVCHANGE, e.g. from "use [db]" queries
-        // HANDLE!
-        $this->cancel();
-      } else {
-        throw new TdsProtocolException(
-          sprintf('Unexpected token 0x%02X', ord($token)),
-          0,    // Number
-          0,    // State
-          0,    // Class
-          NULL, // Server
-          NULL, // Proc
-          -1    // Line
-        );
-      }
+      } while (!$this->done);
     }
   }
 ?>
