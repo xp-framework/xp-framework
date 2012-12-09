@@ -74,6 +74,17 @@
     }
 
     /**
+     * Greet someone
+     * 
+     * @param   string name
+     * @return  webservices.rest.srv.Response
+     */
+    #[@webmethod(verb= 'GET', path= '/greet/and/go/{name}'), @$name: path]
+    public function greet_and_go($name) {
+      return Response::noContent();
+    }
+
+    /**
      * Greet logged in user
      * 
      * @param   string name

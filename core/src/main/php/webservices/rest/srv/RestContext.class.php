@@ -300,7 +300,9 @@
       foreach ($result->cookies as $cookie) {
         $response->setCookie($cookie);
       }
-      RestFormat::forMediaType($target['output'])->write($response, $result->payload);
+      if (NULL !== $result->payload) {
+        RestFormat::forMediaType($target['output'])->write($response, $result->payload);
+      }
 
       // Handled
       return TRUE;

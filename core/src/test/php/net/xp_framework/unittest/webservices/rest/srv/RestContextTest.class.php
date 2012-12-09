@@ -401,5 +401,24 @@
         $route, $this->newRequest()
       );
     }
+
+    /**
+     * Test process()
+     * 
+     */
+    #[@test]
+    public function process_greet_and_go() {
+      $route= array(
+        'target'   => $this->fixtureMethod('GreetingHandler', 'greet_and_go'),
+        'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)), 
+        'segments' => array(0 => '/greet/and/go/test', 'name' => 'test', 1 => 'test'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        204, array('Content-Type: text/json'), NULL,
+        $route, $this->newRequest()
+      );
+    }
   }
 ?>
