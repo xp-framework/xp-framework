@@ -12,7 +12,7 @@
    * @see  xp://net.xp_framework.unittest.webservices.rest.srv.RestDefaultRouterTest
    */
   #[@webservice]
-  class GreetingHandler extends TestCase {
+  class GreetingHandler extends Object {
     protected $fixture= NULL;
 
     /**

@@ -4,14 +4,7 @@
  * $Id$
  */
 
-  uses(
-    'webservices.rest.srv.RestContext',
-    'webservices.rest.srv.RestRoute',
-    'webservices.rest.srv.RestParamSource',
-    'webservices.rest.srv.ParamReader',
-    'webservices.rest.RestDeserializer',
-    'scriptlet.Preference'
-  );
+  uses('scriptlet.Preference');
 
   /**
    * Abstract base class

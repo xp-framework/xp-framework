@@ -5,9 +5,14 @@
  */
 
   uses(
+    'peer.http.HttpConstants',
+    'scriptlet.Preference',
     'webservices.rest.TypeMarshaller',
     'webservices.rest.srv.Response',
+    'webservices.rest.srv.RestFormat',
+    'webservices.rest.srv.RestParamSource',
     'webservices.rest.srv.ExceptionMapper',
+    'webservices.rest.srv.ParamReader',
     'util.collections.HashTable',
     'util.log.Traceable'
   );

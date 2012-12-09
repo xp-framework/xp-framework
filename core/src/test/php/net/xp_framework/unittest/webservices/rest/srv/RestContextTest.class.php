@@ -6,6 +6,8 @@
 
   uses(
     'unittest.TestCase',
+    'scriptlet.HttpScriptletRequest',
+    'scriptlet.HttpScriptletResponse',
     'webservices.rest.srv.RestContext'
   );
   
@@ -351,6 +353,52 @@
       $this->assertEquals(
         array('Test'),
         $this->fixture->argumentsFor($route, $this->newRequest(array(), NULL, array('Cookie' => 'user=Test')), RestFormat::$FORM)
+      );
+    }
+
+    protected function assertProcess($status, $headers, $content, $route, $request) {
+      $response= new HttpScriptletResponse();
+      $this->fixture->process($route, $request, $response);
+      $this->assertEquals($status, $response->statusCode, 'Status code');
+      $this->assertEquals($headers, $response->headers, 'Headers');
+      $this->assertEquals($content, $response->content, 'Content');
+    }
+
+    /**
+     * Test process()
+     * 
+     */
+    #[@test]
+    public function process_greet_successfully() {
+      $route= array(
+        'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
+        'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
+        'segments' => array(0 => '/greet/Test', 'name' => 'Test', 1 => 'Test'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        200, array('Content-Type: text/json'), '"Hello Test"',
+        $route, $this->newRequest()
+      );
+    }
+
+    /**
+     * Test process()
+     * 
+     */
+    #[@test]
+    public function process_greet_with_missing_parameter() {
+      $route= array(
+        'target'   => $this->fixtureMethod('GreetingHandler', 'greet'),
+        'params'   => array('name' => new RestParamSource('name', ParamReader::$PATH)),
+        'segments' => array(0 => '/greet/'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertProcess(
+        400, array('Content-Type: text/json'), '{ "message" : "Parameter \"name\" required but found in path(\'name\')" }',
+        $route, $this->newRequest()
       );
     }
   }
