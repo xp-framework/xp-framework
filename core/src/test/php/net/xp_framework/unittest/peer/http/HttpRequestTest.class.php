@@ -339,6 +339,25 @@
 
     /**
      * Test HTTP POST
+     * with content and different content-type header in request
+     */
+    #[@test]
+    public function postWithContentAndCTHeader() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('{type: "json", another: "var"}');
+      $r->setHeader('Content-Type', 'application/json');
+      $this->assertEquals(
+        "POST /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Type: application/json\r\nContent-Length: 30\r\n\r\n".
+        "{type: \"json\", another: \"var\"}",
+        $r->getRequestString()
+      );
+    }
+    
+    /**
+     * Test HTTP POST
      * with content and url params
      */
     #[@test]

@@ -38,7 +38,6 @@
       $headers        = array('Connection' => array('close')),
       $parameters     = array(),
       $body           = NULL,
-      $bodySet        = FALSE,
       $contentHeaders = NULL;
 
     /**
@@ -145,7 +144,6 @@
         }
       }
       $this->body= $body;
-      $this->bodySet= TRUE;
     }
 
     /**
@@ -153,7 +151,6 @@
      */
     public function clearBody() {
       $this->body= NULL;
-      $this->bodySet= FALSE;
     }
 
     /**
@@ -191,6 +188,35 @@
       return (array_key_exists($name, $this->headers));
     }
 
+    /**
+     * Will return if a body is set
+     *
+     * @return bool
+     */
+    protected function isBodySet() {
+      return (NULL !== $this->body);
+    }
+    
+    /**
+     * Will return all headers from this request and the set content
+     * Headers set in the request have a higher priority, 
+     * so in case of conflict those are used.
+     *
+     * @return [:string] peer.Header|array
+     */
+    protected function getHeaders() {
+      $headers= $this->headers;
+      if($this->isBodySet()) {
+        foreach($this->body->getHeaders() as $header) {
+          $headerName= $header->getName();
+          if(!isset($headers[$headerName])) {
+            $headers[$headerName]= array($header);
+          }
+        }
+      }
+      return $headers;
+    }
+    
     /**
      * Will return the set parameters or content url encoded
      * Handles array values with unrestricted depth.
@@ -240,7 +266,7 @@
       $body= NULL;
       $paramsEncoded= '';
 
-      if (TRUE === $this->bodySet) {
+      if ($this->isBodySet()) {
         // Trigger with-"setBody" behaviour
         switch ($this->method) {
           case HttpConstants::GET:    // might not be forbidden in RFC. if this is the case move to default
@@ -253,7 +279,6 @@
             // TBD: Prevent params if RequestData was given?
             $paramsEncoded= $this->encodeData($this->parameters);
             $body= $this->encodeData($this->body);
-            $this->addHeaders($this->body->getHeaders());
             break;
         }
       } else {
@@ -305,7 +330,7 @@
         $this->version
       );
 
-      foreach ($this->headers as $k => $v) {
+      foreach ($this->getHeaders() as $k => $v) {
         foreach ($v as $value) {
           $request.= ($value instanceof Header ? $value->toString() : $k.': '.$value).HttpConstants::CRLF;
         }
