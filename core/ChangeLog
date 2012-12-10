@@ -9,10 +9,17 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Deprecated old REST API in webservices.rest.server, pull request #210
+  (friebe)
 - Dropped interpackage dependency util -> rdbms, pull request #204
   (kiesel)
 - Dropped interpackage dependency util.semaphore -> scriptlet, pull request #205
   (kiesel)
+
+RFCs
+~~~~
+- Implemented RFC #0243 - REST Client & Serverside APIs RFC, pull request #210
+  (friebe)
 
 Bugfixes
 ~~~~~~~~
