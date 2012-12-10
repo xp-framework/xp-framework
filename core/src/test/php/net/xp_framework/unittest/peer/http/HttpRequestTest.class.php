@@ -5,6 +5,7 @@
  */
 
   uses(
+    'lang.IllegalStateException',
     'unittest.TestCase',
     'peer.http.RequestData',
     'peer.http.FormRequestData',
@@ -118,7 +119,7 @@
         $r->getRequestString()
       );
     }
-
+    
     /**
      * Test HTTP GET - parameters via setParameters(string)
      *
@@ -136,6 +137,19 @@
 
     /**
      * Test HTTP GET - parameters via setParameters(string)
+     * with content
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function getUrlWithStringParamsWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::GET);
+      $r->setParameters('a=b');
+      $r->setBody('aloha content');
+      $r->getRequestString();
+    }
+
+    /**
+     * Test HTTP GET - parameters via setParameters(string)
      *
      */
     #[@test]
@@ -148,7 +162,7 @@
         $r->getRequestString()
       );
     }
-
+    
     /**
      * Test HTTP GET - parameters via setParameters(RequestData)
      *
@@ -243,6 +257,36 @@
     }
 
     /**
+     * Test HTTP GET - parameters via setParameters(array<string, array>)
+     * in combination with parameters passed in the constructor.
+     *
+     */
+    #[@test]
+    public function getUrlWithArrayXDepthParameter() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::GET);
+      $r->setParameters(
+        array(
+          'params'    => array(
+            'target'    => 'home', 
+            'ssl'       => 'true'
+          ),
+          'paramsExt' => array(
+            'location'  => array(
+              'work'      =>  'Brauerstr',
+              'home'      =>  'somewhere else'
+            )
+          )
+        )
+      );
+      $this->assertEquals(
+        "GET /?params[target]=home&params[ssl]=true&paramsExt[location][work]=Brauerstr&paramsExt[location][home]=somewhere+else HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+    
+    
+    /**
      * Test HTTP GET - parameters via setParameters(string)
      * in combination with parameters passed in the constructor.
      *
@@ -274,6 +318,79 @@
         $r->getRequestString()
       );
     }
+
+    /**
+     * Test HTTP POST
+     * with content
+     */
+    #[@test]
+    public function postWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('aloha content');
+      $this->assertEquals(
+        "POST /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
+        "aloha content",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP POST
+     * with content and different content-type header in request
+     */
+    #[@test]
+    public function postWithContentAndCTHeader() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('{type: "json", another: "var"}');
+      $r->setHeader('Content-Type', 'application/json');
+      $this->assertEquals(
+        "POST /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Type: application/json\r\nContent-Length: 30\r\n\r\n".
+        "{type: \"json\", another: \"var\"}",
+        $r->getRequestString()
+      );
+    }
+    
+    /**
+     * Test HTTP POST
+     * with content and url params
+     */
+    #[@test]
+    public function postWithContentAndUrlParam() {
+      $r= new HttpRequest(new URL('http://example.com/?ar=ber'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('aloha content');
+      $this->assertEquals(
+        "POST /?ar=ber&a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
+        "aloha content",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP POST
+     * with array content and url params
+     */
+    #[@test]
+    public function postWithArrayContentAndUrlParam() {
+      $r= new HttpRequest(new URL('http://example.com/?ar=ber'));
+      $r->setMethod(HttpConstants::POST);
+      $r->setParameters('a=b&c=d');
+      $r->setBody(array('aloha content'));
+      $this->assertEquals(
+        "POST /?ar=ber&a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 15\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
+        "0=aloha+content",
+        $r->getRequestString()
+      );
+    }    
 
     /**
      * Test associative arrays are handled correctly in POST requests
@@ -327,6 +444,24 @@
     }
 
     /**
+     * Test HTTP PUT
+     * with content
+     */
+    #[@test]
+    public function putWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::PUT);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('aloha content');
+      $this->assertEquals(
+        "PUT /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
+        "aloha content",
+        $r->getRequestString()
+      );
+    }
+
+    /**
      * Test HTTP TRACE
      *
      */
@@ -339,6 +474,24 @@
         "TRACE / HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
         "Content-Length: 7\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n".
         "a=b&c=d",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP TRACE
+     * with content
+     */
+    #[@test]
+    public function traceWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::TRACE);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('aloha content');
+      $this->assertEquals(
+        "TRACE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
+        "aloha content",
         $r->getRequestString()
       );
     }
@@ -359,6 +512,19 @@
     }
 
     /**
+     * Test HTTP HEAD
+     * with content
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function headWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::HEAD);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('aloha content');
+      $r->getRequestString();
+    }
+
+    /**
      * Test HTTP DELETE
      *
      */
@@ -369,6 +535,24 @@
       $r->setParameters('a=b&c=d');
       $this->assertEquals(
         "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
+        $r->getRequestString()
+      );
+    }
+
+    /**
+     * Test HTTP DELETE
+     * with content
+     */
+    #[@test]
+    public function deleteWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::DELETE);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('aloha content');
+      $this->assertEquals(
+        "DELETE /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n".
+        "Content-Length: 13\r\nContent-Type: text/plain\r\n\r\n".
+        "aloha content",
         $r->getRequestString()
       );
     }
@@ -386,6 +570,19 @@
         "OPTIONS /?a=b&c=d HTTP/1.1\r\nConnection: close\r\nHost: example.com\r\n\r\n",
         $r->getRequestString()
       );
+    }
+
+    /**
+     * Test HTTP OPTIONS
+     * with content
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function optionsWithContent() {
+      $r= new HttpRequest(new URL('http://example.com/'));
+      $r->setMethod(HttpConstants::OPTIONS);
+      $r->setParameters('a=b&c=d');
+      $r->setBody('aloha content');
+      $r->getRequestString();
     }
 
     /**
