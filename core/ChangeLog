@@ -16,6 +16,13 @@ Heads up!
 
 Bugfixes
 ~~~~~~~~
+- Fixed Unicode conversion for sybase databases in cases where "utf8" is
+  not recognized by iconv library
+  (friebe)
+- Fixed rdbms.sybase.SybaseDBAdapter to exclude incomplete index records
+  (friebe)
+- Fixed remote.ByteCountedString's length() method for zero-length strings
+  (friebe)
 - Fixed TDS protocol's T_DATETIME4 type not being deserialized correctly
   (friebe)
 - Fixed parsing of HTTP headers w/o value in peer.http.HttpResponse
@@ -34,6 +41,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added xp.unittest.ColoredBarListener - see issue #207
+  (kiesel, iigorr, ohinckel)
 - Added support for unittest listener options - see pull request #201
   (friebe, ohinckel)
 - Improved generics instance creation by factors between 1.2 and 1.6
