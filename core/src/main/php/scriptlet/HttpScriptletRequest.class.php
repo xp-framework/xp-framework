@@ -16,7 +16,7 @@
    * @see      xp://scriptlet.HttpScriptlet
    * @purpose  Wrap request
    */  
-  class HttpScriptletRequest extends Object implements Request {
+  class HttpScriptletRequest extends Object implements scriptlet·Request {
     public
       $url=             NULL,
       $env=             array(),
@@ -27,6 +27,7 @@
       $session=         NULL;
 
     protected
+      $inputStream=     NULL,
       $paramlookup=     array(),
       $headerlookup=    array();
     
@@ -363,6 +364,18 @@
      */
     public function isMultiPart() {
       return (bool)strstr($this->getHeader('Content-Type'), 'multipart/form-data');
+    }
+
+    /**
+     * Gets the input stream
+     *
+     * @param   io.streams.InputStream
+     */
+    public function getInputStream() {
+      if (NULL === $this->inputStream) {
+        $this->inputStream= XPClass::forName('io.streams.ChannelInputStream')->newInstance('input');
+      }
+      return $this->inputStream;
     }
   }
 ?>
