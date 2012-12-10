@@ -48,6 +48,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added @xmlwrapped annotation - see pull request #213 
+  (friebe)
 - Added xp.unittest.ColoredBarListener - see issue #207
   (kiesel, iigorr, ohinckel)
 - Added support for unittest listener options - see pull request #201
