@@ -30,7 +30,12 @@
      * @return  string
      */
     public function serialize($payload) {
-      return JsonFactory::create()->encode($this->convert($payload));
+      $encoder= JsonFactory::create();
+      if ($payload instanceof Payload) {
+        return $encoder->encode($this->convert($payload->value));
+      } else {
+        return $encoder->encode($this->convert($payload));
+      }
     }
   }
 ?>
