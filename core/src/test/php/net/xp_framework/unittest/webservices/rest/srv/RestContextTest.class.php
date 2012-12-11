@@ -198,6 +198,25 @@
      * 
      */
     #[@test]
+    public function handle_xmlfactory_annotated_method() {
+      $handler= newinstance('lang.Object', array(), '{
+        /** @return var **/
+        #[@webmethod, @xmlfactory(element = "book")]
+        public function getBook() {
+          return array("isbn" => "978-3-16-148410-0", "author" => "Test");
+        }
+      }');
+      $this->assertEquals(
+        Response::error(200)->withPayload(new Payload(array('isbn' => '978-3-16-148410-0', 'author' => 'Test'), array('name' => 'book'))),
+        $this->fixture->handle($handler, $handler->getClass()->getMethod('getBook'), array())
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
     public function handle_exception_with_mapper() {
       $t= new Throwable('Test');
       $this->fixture->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{

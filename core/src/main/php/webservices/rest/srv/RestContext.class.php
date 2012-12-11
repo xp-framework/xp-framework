@@ -194,8 +194,8 @@
 
       // HACK: Ungeneric XML-related
       $properties= array();
-      if ($method->hasAnnotation('xmlwrapped')) {
-        $properties['name']= $method->getAnnotation('xmlwrapped');
+      if ($method->hasAnnotation('xmlfactory', 'element')) {
+        $properties['name']= $method->getAnnotation('xmlfactory', 'element');
       }
 
       // Invoke the method
