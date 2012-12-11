@@ -356,6 +356,17 @@
       );
     }
 
+
+    /**
+     * Assertion helper
+     * 
+     * @param  int $status Expected status
+     * @param  string[] $headers Expected headers
+     * @param  string $content Expected content
+     * @param  [:var] $route Route
+     * @param  scriptlet.Request $request HTTP request
+     * @throws unittest.AssertionFailedError
+     */
     protected function assertProcess($status, $headers, $content, $route, $request) {
       $response= new HttpScriptletResponse();
       $this->fixture->process($route, $request, $response);
