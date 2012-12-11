@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('scriptlet.Preference');
+  uses('scriptlet.Preference', 'webservices.rest.srv.RestRoute');
 
   /**
    * Abstract base class
@@ -65,8 +65,8 @@
     /**
      * Add a route
      *
-     * @param   webservices.rest.server.routing.RestRoute route
-     * @return  webservices.rest.server.routing.RestRoute The added route
+     * @param   webservices.rest.srv.RestRoute route
+     * @return  webservices.rest.srv.RestRoute The added route
      */
     public function addRoute(RestRoute $route) {
       $verb= $route->getVerb();
@@ -78,7 +78,7 @@
     /**
      * Returns all routes
      *
-     * @return  webservices.rest.server.routing.RestRoute[]
+     * @return  webservices.rest.srv.RestRoute[]
      */
     public function allRoutes() {
       $r= array();
