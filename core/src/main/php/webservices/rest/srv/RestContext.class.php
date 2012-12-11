@@ -196,6 +196,8 @@
       $properties= array();
       if ($method->hasAnnotation('xmlfactory', 'element')) {
         $properties['name']= $method->getAnnotation('xmlfactory', 'element');
+      } else if (($class= $method->getDeclaringClass()) && $class->hasAnnotation('xmlfactory', 'element')) {
+        $properties['name']= $class->getAnnotation('xmlfactory', 'element');
       }
 
       // Invoke the method

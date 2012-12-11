@@ -217,6 +217,19 @@
      * 
      */
     #[@test]
+    public function handle_xmlfactory_annotated_class() {
+      $handler= self::$package->loadClass('GreetingHandler')->newInstance();
+      $this->assertEquals(
+        Response::error(200)->withPayload(new Payload('Hello Test', array('name' => 'greeting'))),
+        $this->fixture->handle($handler, $handler->getClass()->getMethod('greet'), array('Test'))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
     public function handle_exception_with_mapper() {
       $t= new Throwable('Test');
       $this->fixture->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
