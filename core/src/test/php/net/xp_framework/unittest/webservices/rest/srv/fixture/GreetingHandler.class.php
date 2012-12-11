@@ -11,7 +11,7 @@
    *
    * @see  xp://net.xp_framework.unittest.webservices.rest.srv.RestDefaultRouterTest
    */
-  #[@webservice]
+  #[@webservice, @xmlfactory(element= 'greeting')]
   class GreetingHandler extends Object {
     protected $fixture= NULL;
 

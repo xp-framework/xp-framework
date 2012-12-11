@@ -46,8 +46,8 @@
     
       // Calculate element name
       if ('' == $node->getName()) {
-        if ($class->hasAnnotation('xmlwrapped')) {
-          $node->setName($class->getAnnotation('xmlwrapped'));
+        if ($class->hasAnnotation('xmlfactory', 'element')) {
+          $node->setName($class->getAnnotation('xmlfactory', 'element'));
         } else {
           $node->setName(strtolower($class->getSimpleName()));
         }
