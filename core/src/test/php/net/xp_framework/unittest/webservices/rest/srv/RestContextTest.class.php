@@ -211,7 +211,6 @@
       );
     }
 
-
     /**
      * Test handlerInstanceFor() injection
      * 
@@ -227,25 +226,6 @@
       $this->assertEquals(
         $class->newInstance($this->fixture),
         $this->fixture->handlerInstanceFor($class)
-      );
-    }
-
-    /**
-     * Test argumentsFor()
-     * 
-     */
-    #[@test]
-    public function greet_implicit_segment_and_param() {
-      $route= array(
-        'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
-        'params'   => array(),
-        'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
-        'input'    => NULL,
-        'output'   => 'text/json'
-      );
-      $this->assertEquals(
-        array('test', 'Servus'),
-        $this->fixture->argumentsFor($route, $this->newRequest(array('greeting' => 'Servus')), RestFormat::$FORM)
       );
     }
 
@@ -278,6 +258,25 @@
       }
       $r->setHeaders($headers);
       return $r;
+    }
+
+    /**
+     * Test argumentsFor()
+     * 
+     */
+    #[@test]
+    public function greet_implicit_segment_and_param() {
+      $route= array(
+        'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
+        'params'   => array(),
+        'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertEquals(
+        array('test', 'Servus'),
+        $this->fixture->argumentsFor($route, $this->newRequest(array('greeting' => 'Servus')), RestFormat::$FORM)
+      );
     }
 
     /**
