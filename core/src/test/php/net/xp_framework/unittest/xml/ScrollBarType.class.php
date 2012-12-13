@@ -10,7 +10,7 @@
    * @see      xp://net.xp_framework.unittest.xml.MarshallerTest
    * @see      rfc://0040
    */
-  #[@xmlwrapped('scroll')]
+  #[@xmlfactory(element = 'scroll')]
   class ScrollBarType extends Object {
   }
 ?>

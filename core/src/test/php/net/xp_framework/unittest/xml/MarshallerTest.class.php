@@ -84,16 +84,16 @@
     }
 
     /**
-     * Tests marshalTo() uses an xmlwrapped annotation for getting the name
+     * Tests marshalTo() uses an xmlfactory annotation for getting the name
      *
      * <code>
-     *   #[@xmlwrapped('scroll')]
+     *   #[@xmlfactory(element = 'scroll')]
      * </code>
      *
      * @see  xp://net.xp_framework.unittest.xml.ScrollBarType
      */
     #[@test]
-    public function wrappedAnnotationSuppliesName() {
+    public function classAnnotationSuppliesName() {
       $this->assertEquals(new Node('scroll'), $this->fixture->marshalTo(NULL, new ScrollBarType()));
     }
 

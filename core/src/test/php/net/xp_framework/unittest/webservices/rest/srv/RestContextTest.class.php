@@ -198,6 +198,38 @@
      * 
      */
     #[@test]
+    public function handle_xmlfactory_annotated_method() {
+      $handler= newinstance('lang.Object', array(), '{
+        /** @return var **/
+        #[@webmethod, @xmlfactory(element = "book")]
+        public function getBook() {
+          return array("isbn" => "978-3-16-148410-0", "author" => "Test");
+        }
+      }');
+      $this->assertEquals(
+        Response::error(200)->withPayload(new Payload(array('isbn' => '978-3-16-148410-0', 'author' => 'Test'), array('name' => 'book'))),
+        $this->fixture->handle($handler, $handler->getClass()->getMethod('getBook'), array())
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_xmlfactory_annotated_class() {
+      $handler= self::$package->loadClass('GreetingHandler')->newInstance();
+      $this->assertEquals(
+        Response::error(200)->withPayload(new Payload('Hello Test', array('name' => 'greeting'))),
+        $this->fixture->handle($handler, $handler->getClass()->getMethod('greet'), array('Test'))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
     public function handle_exception_with_mapper() {
       $t= new Throwable('Test');
       $this->fixture->addExceptionMapping('lang.Throwable', newinstance('webservices.rest.srv.ExceptionMapper', array(), '{
@@ -210,7 +242,6 @@
         $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
       );
     }
-
 
     /**
      * Test handlerInstanceFor() injection
@@ -227,25 +258,6 @@
       $this->assertEquals(
         $class->newInstance($this->fixture),
         $this->fixture->handlerInstanceFor($class)
-      );
-    }
-
-    /**
-     * Test argumentsFor()
-     * 
-     */
-    #[@test]
-    public function greet_implicit_segment_and_param() {
-      $route= array(
-        'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
-        'params'   => array(),
-        'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
-        'input'    => NULL,
-        'output'   => 'text/json'
-      );
-      $this->assertEquals(
-        array('test', 'Servus'),
-        $this->fixture->argumentsFor($route, $this->newRequest(array('greeting' => 'Servus')), RestFormat::$FORM)
       );
     }
 
@@ -278,6 +290,25 @@
       }
       $r->setHeaders($headers);
       return $r;
+    }
+
+    /**
+     * Test argumentsFor()
+     * 
+     */
+    #[@test]
+    public function greet_implicit_segment_and_param() {
+      $route= array(
+        'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'greet'),
+        'params'   => array(),
+        'segments' => array(0 => '/implicit/greet/test', 'name' => 'test', 1 => 'test'),
+        'input'    => NULL,
+        'output'   => 'text/json'
+      );
+      $this->assertEquals(
+        array('test', 'Servus'),
+        $this->fixture->argumentsFor($route, $this->newRequest(array('greeting' => 'Servus')), RestFormat::$FORM)
+      );
     }
 
     /**
@@ -356,6 +387,17 @@
       );
     }
 
+
+    /**
+     * Assertion helper
+     * 
+     * @param  int $status Expected status
+     * @param  string[] $headers Expected headers
+     * @param  string $content Expected content
+     * @param  [:var] $route Route
+     * @param  scriptlet.Request $request HTTP request
+     * @throws unittest.AssertionFailedError
+     */
     protected function assertProcess($status, $headers, $content, $route, $request) {
       $response= new HttpScriptletResponse();
       $this->fixture->process($route, $request, $response);
