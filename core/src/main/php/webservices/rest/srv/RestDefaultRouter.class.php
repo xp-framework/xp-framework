@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('webservices.rest.srv.AbstractRestRouter');
+  uses(
+    'webservices.rest.srv.AbstractRestRouter',
+    'webservices.rest.srv.RestParamSource'
+  );
   
   /**
    * REST router based on class and method annotations
@@ -83,8 +86,9 @@
       ));
 
       // Add route parameters using parameter annotations
-      foreach ($method->getAnnotations() as $annotation => $value) {
-        if (2 === sscanf($annotation, '$%[^:]: %s', $param, $source)) {
+      foreach ($method->getParameters() as $parameter) {
+        $param= $parameter->getName();
+        foreach ($parameter->getAnnotations() as $source => $value) {
           $route->addParam($param, new RestParamSource(
             $value ? $value : $param,
             ParamReader::forName($source)
