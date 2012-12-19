@@ -626,7 +626,7 @@
             $p= $offset+ 1+ 6;
             while ($b > 0) {
               $p+= strcspn($input, '()"\'', $p);
-              if ($p > $length) break; 
+              if ($p >= $length) break; 
               if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
                 $q= $input{$p};
                 $p++;
@@ -742,7 +742,16 @@
             } while ($offset <= $length);
             break;
           }
-          $annotations[0][$annotation]= $value;
+          if (NULL === $annotation) {
+            // Nothing
+          } else if (FALSE === ($p= strpos($annotation, ':'))) {
+            $annotations[0][$annotation]= $value;
+          } else {
+            $target= rtrim(substr($annotation, 0, $p), ' ');
+            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
+            isset($annotations[1][$target]) || $annotations[1][$target]= array();
+            $annotations[1][$target][$annotation]= $value;
+          }
           $annotation= $value= NULL;
           if (FALSE === ($offset= strpos($input, '@', $offset))) {
             raise('lang.ClassFormatException', 'Parse error: Expecting @ in '.$context);

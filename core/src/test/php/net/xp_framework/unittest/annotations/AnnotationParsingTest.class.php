@@ -427,5 +427,65 @@
         $this->parse('#[@overloaded(signatures= array(array("string"), array("string", "string")))]')
       );
     }
+
+    /**
+     * Test webmethod annotation 
+     *
+     */
+    #[@test]
+    public function webMethodWithParameterAnnotations() {
+      $this->assertEquals(
+        array(
+          0 => array('webmethod' => array('verb' => 'GET', 'path' => '/greet/{name}')),
+          1 => array('$name' => array('path' => NULL), '$greeting' => array('param' => NULL))
+        ),
+        $this->parse('#[@webmethod(verb= "GET", path= "/greet/{name}"), @$name: path, @$greeting: param]')
+      );
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+    public function missingAnnotationAfterCommaAndValue() {
+      $this->parse('#[@ignore("Test"), ]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+    public function missingAnnotationAfterComma() {
+      $this->parse('#[@ignore, ]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+    public function missingAnnotationAfterSecondComma() {
+      $this->parse('#[@ignore, @test, ]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed string/')]
+    public function unterminatedString() {
+      $this->parse('#[@ignore("Test)]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed array/')]
+    public function unterminatedArray() {
+      $this->parse('#[@ignore(array(1]');
+    }
   }
 ?>
