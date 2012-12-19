@@ -45,6 +45,8 @@
      * @return  lang.Type
      */
     public function getType() {
+      if ($c= $this->_reflect->getClass()) return new XPClass($c);
+
       if (
         !($details= XPClass::detailsForMethod($this->_details[0], $this->_details[1])) ||  
         !isset($details[DETAIL_ARGUMENTS][$this->_details[2]])
