@@ -150,7 +150,12 @@
         if (MODIFIER_STATIC & $method->getModifiers() && $method->numParameters() > 0) {
           $param= $method->getParameter(0);
           if ('self' === $param->getName()) {
-            self::$registry['ext'][$scope][xp::reflect($param->getTypeName())]= $class;
+            if (NULL === ($t= $param->getTypeRestriction())) {
+              $type= xp::reflect($param->getTypeName());
+            } else {
+              $type= $t->literal();
+            }
+            self::$registry['ext'][$scope][$type]= $class;
           }
         }
       }
