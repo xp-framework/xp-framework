@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('webservices.rest.Payload');
+
   /**
    * Deserializer abstract base class
    *
@@ -24,6 +26,22 @@
       }
       return $variants;
     }
+
+    /**
+     * Returns the first element of a given traversable data structure
+     * or the data structure itself
+     *
+     * @param  var struct
+     * @param  var
+     */
+    protected function key($struct) {
+      if (is_array($struct) || $struct instanceof Traversable) {
+        foreach ($struct as $element) {
+          return $element;
+        }
+      }
+      return $struct;
+    }
     
     /**
      * Convert data based on type
@@ -39,7 +57,27 @@
         return NULL;
       } else if ($type->equals(XPClass::forName('util.Date'))) {
         return $type->newInstance($data);
-      } else if ($type instanceof XPClass) {              // Conversion to a class
+      } else if ($type instanceof XPClass) {
+
+        // Check if a one-arg public constructor exists and pass first element
+        // E.g.: Assuming the target type has a __construct(string $id) and the
+        // given payload data is { "id" : "4711" }, then pass "4711" to it.
+        if ($type->hasConstructor()) {
+          $c= $type->getConstructor();
+          if (Modifiers::isPublic($c->getModifiers()) && 1 === $c->numParameters()) {
+            return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $this->key($data))));
+          }
+        }
+
+        // Check if a public static one-arg valueOf() method exists
+        if ($type->hasMethod('valueOf')) {
+          $m= $type->getMethod('valueOf');
+          if (Modifiers::isStatic($m->getModifiers()) && Modifiers::isPublic($m->getModifiers()) && 1 === $m->numParameters()) {
+            return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $this->key($data))));
+          }
+        }
+
+        // Generic approach
         $return= $type->newInstance();
         foreach ($data as $name => $value) {
           foreach ($this->variantsOf($name) as $variant) {
@@ -81,13 +119,13 @@
         }
         return $return;
       } else if ($type->equals(Primitive::$STRING)) {
-        return (string)$data;
+        return (string)$this->key($data);
       } else if ($type->equals(Primitive::$INT)) {
-        return (int)$data;
+        return (int)$this->key($data);
       } else if ($type->equals(Primitive::$DOUBLE)) {
-        return (double)$data;
+        return (double)$this->key($data);
       } else if ($type->equals(Primitive::$BOOL)) {
-        return (bool)$data;
+        return (bool)$this->key($data);
       } else {
         throw new FormatException('Cannot convert to '.xp::stringOf($type));
       }
@@ -99,6 +137,7 @@
      * @param   io.streams.InputStream in
      * @param   lang.Type target
      * @return  var
+     * @throws  lang.FormatException
      */
     public abstract function deserialize($in, $target);
   }

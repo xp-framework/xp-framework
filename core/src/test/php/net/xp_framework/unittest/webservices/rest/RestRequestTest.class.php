@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.RestRequest'
+    'webservices.rest.RestRequest',
+    'webservices.rest.Payload'
   );
 
   /**
@@ -180,7 +181,7 @@
     #[@test]
     public function getBodyWithXmlPayloadAndRootNode() {
       $fixture= new RestRequest();
-      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer('issue'));
+      $fixture->setPayload(new Payload(array('title' => 'New issue'), array('name' => 'issue')), new RestXmlSerializer());
       $this->assertEquals(
         '<?xml version="1.0" encoding="UTF-8"?>'."\n".
         '<issue><title>New issue</title></issue>', 
