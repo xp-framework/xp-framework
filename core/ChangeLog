@@ -23,6 +23,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed xp::extensions() to also work exclusively with type restrictions
+  (friebe)
 - Fixed Unicode conversion for sybase databases in cases where "utf8" is
   not recognized by iconv library
   (friebe)
