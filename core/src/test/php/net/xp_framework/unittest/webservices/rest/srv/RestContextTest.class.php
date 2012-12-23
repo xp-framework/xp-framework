@@ -359,6 +359,20 @@
     }
 
     /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/setTrace\(\) invocation failed/')]
+    public function injection_error() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_InjectionError', 'lang.Object', array(), '{
+        #[@inject(type = "util.log.LogCategory")]
+        public function setTrace($cat) { throw new IllegalStateException("Test"); }
+      }');
+      $this->fixture->handlerInstanceFor($class);
+    }
+
+
+    /**
      * Creates a new request with a given parameter map
      *
      * @param  [:string] params
