@@ -28,21 +28,26 @@
     }
 
     /**
-     * Returns all elements of a given traversable data structure
-     * or an array of the data structure itself
+     * Returns the first element of a given traversable data structure
+     * or the data structure itself, or NULL if the structure has more
+     * than one element.
      *
      * @param  var struct
-     * @param  [:var]
+     * @param  var[]
      */
-    protected function hashOf($struct) {
+    protected function keyOf($struct) {
       if (is_array($struct) || $struct instanceof Traversable) {
-        $return= array();
-        foreach ($struct as $key => $element) {
-          $return[$key]= $element;
+        $return= NULL;
+        foreach ($struct as $element) {
+          if (NULL === $return) {
+            $return= array($element);
+            continue;
+          }
+          return NULL;    // Found a second element, return NULL
         }
-        return $return;
+        return $return;   // Will be NULL if we have no elements
       }
-      return array('' => $struct);
+      return array($struct);
     }
 
     /**
@@ -85,9 +90,8 @@
         if ($type->hasConstructor()) {
           $c= $type->getConstructor();
           if (Modifiers::isPublic($c->getModifiers()) && 1 === $c->numParameters()) {
-            $h= $this->hashOf($data);
-            if (1 === sizeof($h)) {
-              return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $h[key($h)])));
+            if (NULL !== ($arg= $this->keyOf($data))) {
+              return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $arg[0])));
             }
           }
         }
@@ -96,14 +100,13 @@
         if ($type->hasMethod('valueOf')) {
           $m= $type->getMethod('valueOf');
           if (Modifiers::isStatic($m->getModifiers()) && Modifiers::isPublic($m->getModifiers()) && 1 === $m->numParameters()) {
-            $h= $this->hashOf($data);
-            if (1 === sizeof($h)) {
-              return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $h[key($h)])));
+            if (NULL !== ($arg= $this->keyOf($data))) {
+              return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $arg[0])));
             }
           }
         }
 
-          // Generic approach
+        // Generic approach
         $return= $type->newInstance();
         foreach ((array)$data as $name => $value) {
           foreach ($this->variantsOf($name) as $variant) {
