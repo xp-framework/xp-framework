@@ -362,11 +362,23 @@
      * Test handlerInstanceFor() injection
      * 
      */
-    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/setTrace\(\) invocation failed/')]
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InjectionError::setTrace\(\) invocation failed/')]
     public function injection_error() {
       $class= ClassLoader::defineClass('AbstractRestRouterTest_InjectionError', 'lang.Object', array(), '{
         #[@inject(type = "util.log.LogCategory")]
         public function setTrace($cat) { throw new IllegalStateException("Test"); }
+      }');
+      $this->fixture->handlerInstanceFor($class);
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InstantiationError::<init>/')]
+    public function instantiation_error() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_InstantiationError', 'lang.Object', array(), '{
+        public function __construct() { throw new IllegalStateException("Test"); }
       }');
       $this->fixture->handlerInstanceFor($class);
     }
