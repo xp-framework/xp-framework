@@ -166,6 +166,7 @@
     public function handleMethod($request) {
       switch (strtoupper($request->method)) {
         case HttpConstants::POST:
+        case HttpConstants::PATCH:
         case HttpConstants::PUT: {
           if (!empty($_FILES)) {
             $request->setParams(array_merge($request->getParams(), $_FILES));
