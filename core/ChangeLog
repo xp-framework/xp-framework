@@ -23,6 +23,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed Parameter::getType() and getTypeName() for inherited methods / ctors
+  (friebe)
 - Fixed HttpScriptlet to support "PATCH" verb
   (friebe)
 - Fixed xp::extensions() to also work exclusively with type restrictions
