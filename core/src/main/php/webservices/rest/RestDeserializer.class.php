@@ -29,12 +29,35 @@
 
     /**
      * Returns the first element of a given traversable data structure
+     * or the data structure itself, or NULL if the structure has more
+     * than one element.
+     *
+     * @param  var struct
+     * @param  var[]
+     */
+    protected function keyOf($struct) {
+      if (is_array($struct) || $struct instanceof Traversable) {
+        $return= NULL;
+        foreach ($struct as $element) {
+          if (NULL === $return) {
+            $return= array($element);
+            continue;
+          }
+          return NULL;    // Found a second element, return NULL
+        }
+        return $return;   // Will be NULL if we have no elements
+      }
+      return array($struct);
+    }
+
+    /**
+     * Returns the first element of a given traversable data structure
      * or the data structure itself
      *
      * @param  var struct
      * @param  var
      */
-    protected function key($struct) {
+    protected function valueOf($struct) {
       if (is_array($struct) || $struct instanceof Traversable) {
         foreach ($struct as $element) {
           return $element;
@@ -61,11 +84,15 @@
 
         // Check if a one-arg public constructor exists and pass first element
         // E.g.: Assuming the target type has a __construct(string $id) and the
-        // given payload data is { "id" : "4711" }, then pass "4711" to it.
+        // given payload data is either a map or an array with one element, or
+        // a primitive, then pass that as value. Examples: { "id" : "4711" }, 
+        // [ "4711" ] or "4711" - in all cases pass just "4711".
         if ($type->hasConstructor()) {
           $c= $type->getConstructor();
           if (Modifiers::isPublic($c->getModifiers()) && 1 === $c->numParameters()) {
-            return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $this->key($data))));
+            if (NULL !== ($arg= $this->keyOf($data))) {
+              return $c->newInstance(array($this->convert($c->getParameter(0)->getType(), $arg[0])));
+            }
           }
         }
 
@@ -73,13 +100,15 @@
         if ($type->hasMethod('valueOf')) {
           $m= $type->getMethod('valueOf');
           if (Modifiers::isStatic($m->getModifiers()) && Modifiers::isPublic($m->getModifiers()) && 1 === $m->numParameters()) {
-            return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $this->key($data))));
+            if (NULL !== ($arg= $this->keyOf($data))) {
+              return $m->invoke(NULL, array($this->convert($m->getParameter(0)->getType(), $arg[0])));
+            }
           }
         }
 
         // Generic approach
         $return= $type->newInstance();
-        foreach ($data as $name => $value) {
+        foreach ((array)$data as $name => $value) {
           foreach ($this->variantsOf($name) as $variant) {
             if ($type->hasField($variant)) {
               $field= $type->getField($variant);
@@ -119,13 +148,13 @@
         }
         return $return;
       } else if ($type->equals(Primitive::$STRING)) {
-        return (string)$this->key($data);
+        return (string)$this->valueOf($data);
       } else if ($type->equals(Primitive::$INT)) {
-        return (int)$this->key($data);
+        return (int)$this->valueOf($data);
       } else if ($type->equals(Primitive::$DOUBLE)) {
-        return (double)$this->key($data);
+        return (double)$this->valueOf($data);
       } else if ($type->equals(Primitive::$BOOL)) {
-        return (bool)$this->key($data);
+        return (bool)$this->valueOf($data);
       } else {
         throw new FormatException('Cannot convert to '.xp::stringOf($type));
       }
