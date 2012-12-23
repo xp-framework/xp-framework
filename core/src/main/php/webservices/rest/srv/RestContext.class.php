@@ -15,6 +15,7 @@
     'webservices.rest.srv.ParamReader',
     'webservices.rest.srv.DefaultExceptionMapper',
     'util.collections.HashTable',
+    'util.PropertyManager',
     'util.log.Traceable'
   );
 
@@ -153,6 +154,10 @@
           $args= array($this->cat);
           break;
 
+        case 'util.Properties': 
+          $args= array(PropertyManager::getInstance()->getProperties($inject['name']));
+          break;
+
         case 'webservices.rest.srv.RestContext':
           $args= array($this);
           break;
@@ -169,6 +174,7 @@
      *
      * @param  lang.XPClass class
      * @return lang.Generic instance
+     * @throws lang.TargetInvocationException If the constructor or routines used for injection raise an exception
      */
     public function handlerInstanceFor($class) {
 
@@ -292,6 +298,9 @@
           $target['target'],
           $this->argumentsFor($target, $request)
         );
+      } catch (TargetInvocationException $e) {
+        $this->cat && $this->cat->error('<-', $e);
+        $result= $this->mapException($e->getCause());
       } catch (Throwable $t) {                         // Marshalling, parameters, instantiation
         $this->cat && $this->cat->error('<-', $t);
         $result= $this->mapException($t);

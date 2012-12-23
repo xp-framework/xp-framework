@@ -340,6 +340,51 @@
     }
 
     /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test]
+    public function setter_injection() {
+      $prop= new Properties('service.ini');
+      PropertyManager::getInstance()->register('service', $prop);
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_SetterInjection', 'lang.Object', array(), '{
+        public $prop;
+        #[@inject(type = "util.Properties", name = "service")]
+        public function setServiceConfig($prop) { $this->prop= $prop; }
+      }');
+      $this->assertEquals(
+        $prop,
+        $this->fixture->handlerInstanceFor($class)->prop
+      );
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InjectionError::setTrace\(\) invocation failed/')]
+    public function injection_error() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_InjectionError', 'lang.Object', array(), '{
+        #[@inject(type = "util.log.LogCategory")]
+        public function setTrace($cat) { throw new IllegalStateException("Test"); }
+      }');
+      $this->fixture->handlerInstanceFor($class);
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InstantiationError::<init>/')]
+    public function instantiation_error() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_InstantiationError', 'lang.Object', array(), '{
+        public function __construct() { throw new IllegalStateException("Test"); }
+      }');
+      $this->fixture->handlerInstanceFor($class);
+    }
+
+
+    /**
      * Creates a new request with a given parameter map
      *
      * @param  [:string] params
