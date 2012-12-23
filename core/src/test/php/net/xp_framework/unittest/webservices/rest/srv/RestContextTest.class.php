@@ -340,6 +340,25 @@
     }
 
     /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test]
+    public function setter_injection() {
+      $prop= new Properties('service.ini');
+      PropertyManager::getInstance()->register('service', $prop);
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_SetterInjection', 'lang.Object', array(), '{
+        public $prop;
+        #[@inject(type = "util.Properties", name = "service")]
+        public function setServiceConfig($prop) { $this->prop= $prop; }
+      }');
+      $this->assertEquals(
+        $prop,
+        $this->fixture->handlerInstanceFor($class)->prop
+      );
+    }
+
+    /**
      * Creates a new request with a given parameter map
      *
      * @param  [:string] params

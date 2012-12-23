@@ -15,6 +15,7 @@
     'webservices.rest.srv.ParamReader',
     'webservices.rest.srv.DefaultExceptionMapper',
     'util.collections.HashTable',
+    'util.PropertyManager',
     'util.log.Traceable'
   );
 
@@ -151,6 +152,10 @@
       switch ($type) {
         case 'util.log.LogCategory': 
           $args= array($this->cat);
+          break;
+
+        case 'util.Properties': 
+          $args= array(PropertyManager::getInstance()->getProperties($inject['name']));
           break;
 
         case 'webservices.rest.srv.RestContext':
