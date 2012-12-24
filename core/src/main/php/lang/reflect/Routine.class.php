@@ -91,8 +91,9 @@
      */
     public function getParameters() {
       $r= array();
+      $c= $this->_reflect->getDeclaringClass()->getName();
       foreach ($this->_reflect->getParameters() as $offset => $param) {
-        $r[]= new lang斟eflect感arameter($param, array($this->_class, $this->_reflect->getName(), $offset));
+        $r[]= new lang斟eflect感arameter($param, array($c, $this->_reflect->getName(), $offset));
       }
       return $r;
     }
@@ -106,7 +107,7 @@
     public function getParameter($offset) {
       $list= $this->_reflect->getParameters();
       return isset($list[$offset]) 
-        ? new lang斟eflect感arameter($list[$offset], array($this->_class, $this->_reflect->getName(), $offset))
+        ? new lang斟eflect感arameter($list[$offset], array($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName(), $offset))
         : NULL
       ;
     }

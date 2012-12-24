@@ -560,5 +560,71 @@
         $this->fixture->convert(XPClass::forName('util.Date'), '2009-04-12T20:44:55')
       );
     }
+
+    /**
+     * Test value object's constructor is not called with the payload if that
+     * has more than just one element (e.g. { "id" : 4711, "name" : "Test"}).
+     *
+     * If it was, the "id" and "name" memberswould never be set in the
+     * following example:
+     * 
+     * <code>
+     *   class ValueObject extends Object { 
+     *     public $id, $name;
+     *
+     *     public function __construct($id= NULL) { ... }
+     *   }
+     * </code>
+     */
+    #[@test]
+    public function constructor_not_used_with_complex_payload() {
+      $class= ClassLoader::defineClass('RestConversionTest_ConstructorVsSetter', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
+        public $name;
+        public function __construct() { 
+          if (func_num_args() > 0) throw new IllegalStateException("Should not reach this point!");
+        }
+        public function withId($id) { $this->id= $id; return $this; }
+        public function withName($name) { $this->name= $name; return $this; }
+        public function equals($cmp) { return parent::equals($cmp) && $this->name === $cmp->name; }
+        public function toString() { return parent::toString()."(name=\'".$this->name."\')"; }
+      }');
+      $this->assertEquals(
+        $class->newInstance()->withId(4711)->withName('Test'),
+        $this->fixture->convert($class, array('id' => 4711, 'name' => 'Test'))
+      );
+    }
+
+    /**
+     * Test value object's constructor is not called with the payload if that
+     * has more than just one element (e.g. { "id" : 4711, "name" : "Test"}).
+     *
+     * If it was, the "id" and "name" memberswould never be set in the
+     * following example:
+     * 
+     * <code>
+     *   class ValueObject extends Object { 
+     *     public $id, $name;
+     *
+     *     public static function valueOf($id) { ... }
+     *   }
+     * </code>
+     */
+    #[@test]
+    public function valueof_not_used_with_complex_payload() {
+      $class= ClassLoader::defineClass('RestConversionTest_ValueOfVsSetter', 'net.xp_framework.unittest.webservices.rest.ConstructorFixture', array(), '{
+        public $name;
+        public static function valueOf($id) { 
+          throw new IllegalStateException("Should not reach this point!");
+        }
+        public function withId($id) { $this->id= $id; return $this; }
+        public function withName($name) { $this->name= $name; return $this; }
+        public function equals($cmp) { return parent::equals($cmp) && $this->name === $cmp->name; }
+        public function toString() { return parent::toString()."(name=\'".$this->name."\')"; }
+      }');
+      $this->assertEquals(
+        $class->newInstance()->withId(4711)->withName('Test'),
+        $this->fixture->convert($class, array('id' => 4711, 'name' => 'Test'))
+      );
+    }
   }
 ?>

@@ -40,6 +40,12 @@
         public function doDelete($request, $response) {
           $response->write("Hello ".$request->method);
         }
+        public function doPut($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doPatch($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
       }');
     }
     
@@ -194,6 +200,24 @@
     #[@test]
     public function doConnect() {
       $this->assertHandlerForMethodTriggered('CONNECT');
+    }
+
+    /**
+     * Test doPut() method is invoked
+     *
+     */
+    #[@test]
+    public function doPut() {
+      $this->assertHandlerForMethodTriggered('PUT');
+    }
+
+    /**
+     * Test doPatch() method is invoked
+     *
+     */
+    #[@test]
+    public function doPatch() {
+      $this->assertHandlerForMethodTriggered('PATCH');
     }
 
     /**

@@ -13,7 +13,9 @@
     'webservices.rest.srv.RestParamSource',
     'webservices.rest.srv.ExceptionMapper',
     'webservices.rest.srv.ParamReader',
+    'webservices.rest.srv.DefaultExceptionMapper',
     'util.collections.HashTable',
+    'util.PropertyManager',
     'util.log.Traceable'
   );
 
@@ -37,6 +39,14 @@
     public function __construct() {
       $this->mappers= create('new HashTable<XPClass, ExceptionMapper>');
       $this->marshallers= create('new HashTable<Type, TypeMarshaller>');
+
+      // Default exception mappings
+      $this->addExceptionMapping('lang.IllegalAccessException', new DefaultExceptionMapper(403));
+      $this->addExceptionMapping('lang.IllegalArgumentException', new DefaultExceptionMapper(400));
+      $this->addExceptionMapping('lang.IllegalStateException', new DefaultExceptionMapper(409));
+      $this->addExceptionMapping('lang.ElementNotFoundException', new DefaultExceptionMapper(404));
+      $this->addExceptionMapping('lang.MethodNotImplementedException', new DefaultExceptionMapper(501));
+      $this->addExceptionMapping('lang.FormatException', new DefaultExceptionMapper(422));
     }
 
     /**
@@ -66,7 +76,7 @@
      * @return webservices.rest.srv.Response
      */
     public function mapException($t) {
-      $properties= array('name' => 'exception');
+      static $properties= array('name' => 'exception');   // XML root node
 
       // See if we can find an exception mapper
       foreach ($this->mappers->keys() as $type) {
@@ -76,8 +86,8 @@
         return $r;
       }
 
-      // Default: Use error 400 and the exception message
-      return Response::error(HttpConstants::STATUS_BAD_REQUEST)
+      // Default: Use error 500 ("Internal Server Error") and the exception message
+      return Response::error(HttpConstants::STATUS_INTERNAL_SERVER_ERROR)
         ->withPayload(new Payload(array('message' => $t->getMessage()), $properties))
       ;
     }
@@ -144,6 +154,10 @@
           $args= array($this->cat);
           break;
 
+        case 'util.Properties': 
+          $args= array(PropertyManager::getInstance()->getProperties($inject['name']));
+          break;
+
         case 'webservices.rest.srv.RestContext':
           $args= array($this);
           break;
@@ -160,6 +174,7 @@
      *
      * @param  lang.XPClass class
      * @return lang.Generic instance
+     * @throws lang.TargetInvocationException If the constructor or routines used for injection raise an exception
      */
     public function handlerInstanceFor($class) {
 
@@ -283,6 +298,9 @@
           $target['target'],
           $this->argumentsFor($target, $request)
         );
+      } catch (TargetInvocationException $e) {
+        $this->cat && $this->cat->error('<-', $e);
+        $result= $this->mapException($e->getCause());
       } catch (Throwable $t) {                         // Marshalling, parameters, instantiation
         $this->cat && $this->cat->error('<-', $t);
         $result= $this->mapException($t);

@@ -386,5 +386,31 @@
         'setArray'
       );
     }
+
+    /**
+     * Tests the first parameter of the constructor inherited from 
+     * the unittest.TestCase base class is of type string.
+     *
+     */
+    #[@test]
+    public function inheritedConstructorsParameter() {
+      $this->assertEquals(
+        Primitive::$STRING,
+        $this->getClass()->getConstructor()->getParameter(0)->getType()
+      );
+    }
+
+    /**
+     * Tests the first parameter of the constructor inherited from 
+     * the unittest.TestCase base class is of type string.
+     *
+     */
+    #[@test]
+    public function inheritedConstructorsParameters() {
+      $this->assertEquals(
+        Primitive::$STRING,
+        this($this->getClass()->getConstructor()->getParameters(), 0)->getType()
+      );
+    }
   }
 ?>

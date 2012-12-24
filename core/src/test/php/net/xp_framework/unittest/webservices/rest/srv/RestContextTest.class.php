@@ -188,7 +188,85 @@
     public function handle_exception() {
       $t= new Throwable('Test');
       $this->assertEquals(
+        Response::error(500)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_illegal_argument_exception() {
+      $t= new IllegalArgumentException('Test');
+      $this->assertEquals(
         Response::error(400)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_illegal_state_exception() {
+      $t= new IllegalStateException('Test');
+      $this->assertEquals(
+        Response::error(409)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_illegal_access_exception() {
+      $t= new IllegalAccessException('Test');
+      $this->assertEquals(
+        Response::error(403)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_element_not_found_exception() {
+      $t= new ElementNotFoundException('Test');
+      $this->assertEquals(
+        Response::error(404)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_method_not_implemented_exception() {
+      $t= new MethodNotImplementedException('Test', $this->name);
+      $this->assertEquals(
+        Response::error(501)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
+        $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
+      );
+    }
+
+    /**
+     * Test handle()
+     * 
+     */
+    #[@test]
+    public function handle_format_exception() {
+      $t= new FormatException('Test');
+      $this->assertEquals(
+        Response::error(422)->withPayload(new Payload(array('message' => 'Test'), array('name' => 'exception'))),
         $this->fixture->handle($this, $this->getClass()->getMethod('raiseAnError'), array($t))
       );
     }
@@ -260,6 +338,51 @@
         $this->fixture->handlerInstanceFor($class)
       );
     }
+
+    /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test]
+    public function setter_injection() {
+      $prop= new Properties('service.ini');
+      PropertyManager::getInstance()->register('service', $prop);
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_SetterInjection', 'lang.Object', array(), '{
+        public $prop;
+        #[@inject(type = "util.Properties", name = "service")]
+        public function setServiceConfig($prop) { $this->prop= $prop; }
+      }');
+      $this->assertEquals(
+        $prop,
+        $this->fixture->handlerInstanceFor($class)->prop
+      );
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InjectionError::setTrace\(\) invocation failed/')]
+    public function injection_error() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_InjectionError', 'lang.Object', array(), '{
+        #[@inject(type = "util.log.LogCategory")]
+        public function setTrace($cat) { throw new IllegalStateException("Test"); }
+      }');
+      $this->fixture->handlerInstanceFor($class);
+    }
+
+    /**
+     * Test handlerInstanceFor() injection
+     * 
+     */
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InstantiationError::<init>/')]
+    public function instantiation_error() {
+      $class= ClassLoader::defineClass('AbstractRestRouterTest_InstantiationError', 'lang.Object', array(), '{
+        public function __construct() { throw new IllegalStateException("Test"); }
+      }');
+      $this->fixture->handlerInstanceFor($class);
+    }
+
 
     /**
      * Creates a new request with a given parameter map
