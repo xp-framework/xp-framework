@@ -217,16 +217,17 @@
           substr($data, $offset, 8)
         );
         $offset+= 8;
+
         $l= $entry['size'] * $length[$entry['type']];
         if ($l > 4) {
           $entry['offset']= current(unpack($format[self::ULONG], substr($data, $offset, 4)));
-          $offset+= 4;
-          $entry['data']= current(unpack($format[$entry['type']], substr($data, $entry['offset'] + 6, $l)));
+          $read= $entry['offset']+ 6;
         } else {
           $entry['offset']= NULL;   // Fit into 4 bytes
-          $entry['data']= current(unpack($format[$entry['type']], substr($data, $offset, $l)));
-          $offset+= 4;
+          $read= $offset;
         }
+        $offset+= 4;
+        $entry['data']= current(unpack($format[$entry['type']], substr($data, $entry['offset'] + 6, $l)));
 
         $t= isset(self::$tag[$entry['tag']]) ? self::$tag[$entry['tag']] : '#'.$entry['tag'];
         $return[$t]= $entry;
