@@ -183,6 +183,14 @@
       return $data;
     }
 
+    /**
+     * Read IFD entries
+     *
+     * @param  string $data The EXIF data
+     * @param  int $offset The offset to start at
+     * @param  [:string] $format The unpack() formats
+     * @return [:var] IFD
+     */
     protected function readIFD($data, &$offset, $format) {
       static $length= array(
          self::BYTE      => 1,        // Unsigned Byte
