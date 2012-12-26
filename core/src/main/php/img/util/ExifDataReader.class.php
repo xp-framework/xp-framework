@@ -502,7 +502,12 @@
         $data->setModel(trim(self::lookup($headers['APP1']['data'], 'Model')));
         $data->setSoftware(self::lookup($headers['APP1']['data'], 'Software'));
 
-        $data->setApertureFNumber(self::lookup($exif, 'ApertureValue', 'MaxApertureValue', 'FNumber'));
+        if (NULL === ($a= self::lookup($exif, 'ApertureValue', 'MaxApertureValue', 'FNumber'))) {
+          $data->setApertureFNumber(NULL);
+        } else {
+          sscanf($a, '%d/%d', $n, $frac);
+          $data->setApertureFNumber(sprintf('f/%.1F', $n / $frac));
+        }
         $data->setExposureTime(self::lookup($exif, 'ExposureTime'));
         $data->setExposureProgram(self::lookup($exif, 'ExposureProgram'));
         $data->setMeteringMode(self::lookup($exif, 'MeteringMode'));
