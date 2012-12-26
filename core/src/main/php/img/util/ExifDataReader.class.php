@@ -354,7 +354,7 @@
           $read= $offset;
         }
         $offset+= 4;
-        $entry['data']= implode('/', unpack($format[$entry['type']], substr($data, $entry['offset'] + 6, $l)));
+        $entry['data']= implode('/', unpack($format[$entry['type']], substr($data, $read, $l)));
 
         $t= isset(self::$tag[$entry['tag']]) ? self::$tag[$entry['tag']] : sprintf('UndefinedTag:0x%04X', $entry['tag']);
         $return[$t]= $entry;
