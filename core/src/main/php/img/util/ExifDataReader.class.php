@@ -39,6 +39,54 @@
       "\xFE" => 'COM',   "\x01" => 'TEM',   "\x02" => 'RES'
     );
 
+    // From TIFF 6.0 Specification, Image File Directory, subsection "Types"
+    const BYTE      = 1;
+    const ASCII     = 2;
+    const USHORT    = 3;
+    const ULONG     = 4;
+    const URATIONAL = 5;
+
+    // From TIFF 6.0 Specification, Appendix A: TIFF Tags Sorted by Number
+    protected static $tag= array(
+      254 => 'NEWSUBFILETYPE', 255 => 'SUBFILETYPE', 256 => 'IMAGEWIDTH', 257 => 'IMAGEHEIGHT',
+      258 => 'BITSPERSAMPLE', 259 => 'COMPRESSION',
+
+      262 => 'PHOTOMETRICINTERPRETATION', 263 => 'THRESHHOLDING', 264 => 'CELLWIDTH',
+      265 => 'CELLLENGTH', 266 => 'FILLORDER', 269 => 'DOCUMENTNAME',
+
+      270 => 'DESC', 271 => 'MAKE', 272 => 'MODEL', 273 => 'STRIPOFFSETS', 274 => 'ORIENTATION',
+      277 => 'SAMPLESPP', 278 => 'ROWSPERSTRIP', 279 => 'STRIPBYTECOUNTS',
+
+      280 => 'MINSAMPLEVAL', 281 => 'MAXSAMPLEVAL', 282 => 'XRESOLUTION', 283 => 'YRESOLUTION',
+      284 => 'PLANARCONF', 285 => 'PAGENAME', 286 => 'XPOS', 287 => 'YPOS', 288 => 'FREEOFS',
+      289 => 'FREEBYTECOUNTS',
+
+      290 => 'GRAYRESPONSEUNIT', 291 => 'GRAYRESPONSECURVE', 292 => 'T4OPT', 293 => 'T6OPT',
+      296 => 'RESOLUTIONUNIT', 297 => 'PAGENUMBER',
+
+      301 => 'TRANSFERFUNC', 305 => 'SOFTWARE', 306 => 'DATETIME',
+
+      315 => 'ARTIST', 316 => 'HOSTCOMPUTER', 317 => 'PREDICTOR', 318 => 'WHITEPOINT',
+      319 => 'PRIMARYCHROM',
+
+      320 => 'COLORMAP', 321 => 'HALFTONEHINTS', 322 => 'TILEWIDTH', 323 => 'TILELENGTH',
+      324 => 'TILEOFS', 325 => 'TILEBYTECOUNTS',
+
+      332 => 'INKSET', 333 => 'INKNAMES', 334 => 'NUMBEROFINKS', 336 => 'DOTRANGE',
+      337 => 'TARGETPRINTER', 338 => 'EXTRASAMPLES', 339 => 'SAMPLEFORMAT',
+
+      340 => 'SMINSAMPLEVAL', 341 => 'SMAXSAMPLEVAL', 342 => 'TRANSFERRANGE',
+
+      512 => 'JPEGPROC', 513 => 'JPEGINTERCHANGEFORMAT', 514 => 'JPEGINTERCHANGEFORMATLEN',
+      515 => 'JPEGRESTARTINTV', 517 => 'JPEGLOSSLESSPRED', 518 => 'JEPGPOINTXFORMS',
+
+      520 => 'JPEGDCTABLES', 521 => 'JPEGACTABLES', 529 => 'YCBCRCOEFFICIENTS',
+
+      530 => 'YCBCRSUBSAMPLING', 531 => 'YCBCRPOSITIONING', 532 => 'REFBLACKWHITE',
+
+      0x8298 => 'COPYRIGHT'
+    );
+
     /**
      * Creates a new EXIF data reader instance
      * *
@@ -51,6 +99,7 @@
       }
       $this->offset= 3;
       $this->stream= $in;
+      $this->name= $name;
     }
 
     /**
@@ -88,10 +137,94 @@
           $this->offset++;
         }
 
-        // Interpret
+        // APP 1 "Exif" marker,
         if (!isset($headers['APP1'])) return NULL;
+
+        $offset= 0;
+        $header= unpack('a4id/x2nul/a2align', substr($headers['APP1']['data'], $offset, 8));
+        $offset+= 8;
+        if ('Exif' !== $header['id']) {
+          throw new FormatException('No EXIF data in APP1 section');
+        }
+
+        // TIFF Header, part 2: Magic number / first IFD offset
+        $pack= array(
+          'MM' => array(self::USHORT => 'n', self::ULONG => 'N', self::URATIONAL => 'N2', self::ASCII => 'a*'),
+          'II' => array(self::USHORT => 'v', self::ULONG => 'V', self::URATIONAL => 'V2', self::ASCII => 'a*'),
+        );
+        $header= array_merge($header, unpack(
+          $pack[$header['align']][self::USHORT].'magic/'.$pack[$header['align']][self::ULONG].'ifd1',
+          substr($headers['APP1']['data'], $offset, 6)
+        ));
+        $offset+= 6;
+        if (42 !== $header['magic']) {
+          throw new FormatException('Malformed EXIF data - magic number mismatch at offset '.$offset);
+        }
+
+        // Read IFDs
+        $n= $header['ifd1'];
+        $ifd= array();
+        do {
+          $offset= $n + 6;
+          $ifd= array_merge($ifd, $this->readIFD($headers['APP1']['data'], $offset, $pack[$header['align']]));
+          $n= current(unpack($pack[$header['align']][self::ULONG], substr($headers['APP1']['data'], $offset, 4)));
+        } while ($n > 0);
+
+        // Console::writeLine('IFD', $ifd);
+
+        $data->setFileName($this->name);
+        $data->setFileSize(-1);
+        $data->setMimeType('image/jpeg');
+        $data->setMake($ifd['MAKE']['data']);
+        $data->setModel($ifd['MODEL']['data']);
+        $data->setSoftware($ifd['SOFTWARE']['data']);
+        $data->setDateTime(new Date($ifd['DATETIME']['data']));
       }
       return $data;
+    }
+
+    protected function readIFD($data, &$offset, $format) {
+      static $length= array(
+         self::BYTE      => 1,        // Unsigned Byte
+         self::ASCII     => 1,        // ASCII String
+         self::USHORT    => 2,        // Unsigned Short
+         self::ULONG     => 4,        // Unsigned Long
+         self::URATIONAL => 8,        // Unsigned Rational
+         6 => 1,        // Signed Byte
+         7 => 1,        // Undefined
+         8 => 2,        // Signed Short
+         9 => 4,        // Signed Long
+        10 => 8,        // Signed Rational
+        11 => 4,        // Float
+        12 => 8         // Double
+      );
+
+      $entries= current(unpack($format[self::USHORT], substr($data, $offset, 2)));
+      $offset+= 2;
+
+      $return= array();
+      for ($i= 0; $i < $entries; $i++) {
+        $entry= unpack(
+          $format[self::USHORT].'tag/'.$format[self::USHORT].'type/'.$format[self::ULONG].'size',
+          substr($data, $offset, 8)
+        );
+        $offset+= 8;
+        $l= $entry['size'] * $length[$entry['type']];
+        if ($l > 4) {
+          $entry['offset']= current(unpack($format[self::ULONG], substr($data, $offset, 4)));
+          $offset+= 4;
+          $entry['data']= current(unpack($format[$entry['type']], substr($data, $entry['offset'] + 6, $l)));
+        } else {
+          $entry['offset']= NULL;   // Fit into 4 bytes
+          $entry['data']= current(unpack($format[$entry['type']], substr($data, $offset, $l)));
+          $offset+= 4;
+        }
+
+        $t= isset(self::$tag[$entry['tag']]) ? self::$tag[$entry['tag']] : '#'.$entry['tag'];
+        $return[$t]= $entry;
+      }
+
+      return $return;
     }
   }
 ?>
