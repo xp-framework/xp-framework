@@ -310,7 +310,6 @@
       $this->name= $name;
     }
 
-
     /**
      * Read IFD entries
      *
@@ -355,7 +354,7 @@
           $read= $offset;
         }
         $offset+= 4;
-        $entry['bytes']= current(unpack($format[$entry['type']], substr($data, $entry['offset'] + 6, $l)));
+        $entry['data']= implode('/', unpack($format[$entry['type']], substr($data, $entry['offset'] + 6, $l)));
 
         $t= isset(self::$tag[$entry['tag']]) ? self::$tag[$entry['tag']] : sprintf('UndefinedTag:0x%04X', $entry['tag']);
         $return[$t]= $entry;
@@ -453,13 +452,11 @@
         $data->setWidth($headers['SOF0']['data']['width']);
         $data->setHeight($headers['SOF0']['data']['height']);
 
-        $data->setMake($headers['EXIF']['Make']['bytes']);
-        $data->setModel($headers['EXIF']['Model']['bytes']);
-        $data->setSoftware($headers['EXIF']['Software']['bytes']);
-        $data->setDateTime(new Date($headers['EXIF']['DateTime']['bytes']));
+        $data->setMake(trim(self::lookup($headers['EXIF'], 'Make')));
+        $data->setModel(trim(self::lookup($headers['EXIF'], 'Model')));
+        $data->setSoftware(self::lookup($headers['EXIF'], 'Software'));
 
         $data->setApertureFNumber(self::lookup($headers['EXIF'], 'ApertureValue', 'MaxApertureValue', 'FNumber'));
-
         $data->setExposureTime(self::lookup($headers['EXIF'], 'ExposureTime'));
         $data->setExposureProgram(self::lookup($headers['EXIF'], 'ExposureProgram'));
         $data->setMeteringMode(self::lookup($headers['EXIF'], 'MeteringMode'));
@@ -490,7 +487,7 @@
           $data->setFlash(NULL);
         }
 
-        if (NULL !== ($date= self::lookup($headers['EXIF'], 'DateTimeOriginal', 'DateTimeDigitized'))) {
+        if (NULL !== ($date= self::lookup($headers['EXIF'], 'DateTimeOriginal', 'DateTimeDigitized', 'DateTime'))) {
           $t= sscanf($date, '%4d:%2d:%2d %2d:%2d:%2d');
           $data->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
         }
@@ -518,7 +515,7 @@
     protected static function lookup($exif) {
       for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
         $key= func_get_arg($i);
-        if (isset($exif[$key])) return $exif[$key]['bytes'];
+        if (isset($exif[$key])) return $exif[$key]['data'];
       }
       return NULL;
     }
