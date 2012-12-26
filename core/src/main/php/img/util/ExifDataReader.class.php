@@ -114,6 +114,8 @@
         $headers= array();
         while ("\xd9" !== ($marker= $this->stream->read(1))) {
           $this->offset++;
+          if ("\xda" === $marker) break;      // Stop at SOS (Start Of Scan)
+
           if ($marker < "\xd0" || $marker > "\xd7") {
             $size= current(unpack('n', $this->stream->read(2)));
             $headers[self::$seg[$marker]]= array(
@@ -124,9 +126,7 @@
             );
             $this->offset+= $size;
           }
-
-          // Stop at SOS (Start Of Scan)
-          if ("\xda" === $marker) break;
+          
           if ("\xff" !== ($c= $this->stream->read(1))) {
             throw new FormatException(sprintf(
               'JPEG header corrupted, have x%02x, expecting xff at offset %d',
@@ -135,6 +135,17 @@
             ));
           }
           $this->offset++;
+        }
+
+        $data->setFileName($this->name);
+        $data->setFileSize(-1);
+        $data->setMimeType('image/jpeg');
+
+        // Start of frame 0
+        if (isset($headers['SOF0'])) {
+          $sof= unpack('Cbits/nheight/nwidth/Cchannels', $headers['SOF0']['data']);
+          $data->setWidth($sof['width']);
+          $data->setHeight($sof['height']);
         }
 
         // APP 1 "Exif" marker, 
@@ -168,13 +179,11 @@
           $offset= $n + 6;
           $ifd= array_merge($ifd, $this->readIFD($headers['APP1']['data'], $offset, $pack[$header['align']]));
           $n= current(unpack($pack[$header['align']][self::ULONG], substr($headers['APP1']['data'], $offset, 4)));
-        } while ($n > 0);
+        } while ($n > 0 && $n < strlen($headers['APP1']['data']));
 
-        // Console::writeLine('IFD', $ifd);
+        // DEBUG Console::writeLine('HDR', $headers);
+        // DEBUG Console::writeLine('IFD', $ifd);
 
-        $data->setFileName($this->name);
-        $data->setFileSize(-1);
-        $data->setMimeType('image/jpeg');
         $data->setMake($ifd['MAKE']['data']);
         $data->setModel($ifd['MODEL']['data']);
         $data->setSoftware($ifd['SOFTWARE']['data']);

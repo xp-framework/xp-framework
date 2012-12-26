@@ -93,6 +93,7 @@
           'Cannot get EXIF information from '.$file->getURI().' (no APP1 marker)' 
         );
       }
+
       if (!($info= exif_read_data($file->getURI(), 'COMPUTED,FILE,IFD0,EXIF,COMMENT,MAKERNOTE', TRUE, FALSE))) {
         throw new FormatException('Cannot get EXIF information from '.$file->getURI());
       }
