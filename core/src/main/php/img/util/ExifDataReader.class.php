@@ -193,11 +193,11 @@
      */
     protected function readIFD($data, &$offset, $format) {
       static $length= array(
-         self::BYTE      => 1,        // Unsigned Byte
-         self::ASCII     => 1,        // ASCII String
-         self::USHORT    => 2,        // Unsigned Short
-         self::ULONG     => 4,        // Unsigned Long
-         self::URATIONAL => 8,        // Unsigned Rational
+         self::BYTE      => 1,
+         self::ASCII     => 1,
+         self::USHORT    => 2,
+         self::ULONG     => 4,
+         self::URATIONAL => 8,
          6 => 1,        // Signed Byte
          7 => 1,        // Undefined
          8 => 2,        // Signed Short
