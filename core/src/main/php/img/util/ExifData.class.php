@@ -164,6 +164,8 @@
           $t= sscanf($date, '%4d:%2d:%2d %2d:%2d:%2d');
           $e->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
         }
+
+        Console::writeLine($info);
       }
       return $e;
     }

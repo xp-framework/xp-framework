@@ -318,13 +318,13 @@
      * @param  [:string] $format The unpack() formats
      * @return [:var] IFD
      */
-    protected function readIFD($data, &$offset, $format) {
+    protected function readIFD($data, &$offset, $tags, $format) {
       static $length= array(
-         self::BYTE      => 1,
-         self::ASCII     => 1,
-         self::USHORT    => 2,
-         self::ULONG     => 4,
-         self::URATIONAL => 8,
+        self::BYTE      => 1,
+        self::ASCII     => 1,
+        self::USHORT    => 2,
+        self::ULONG     => 4,
+        self::URATIONAL => 8,
          6 => 1,        // Signed Byte
          7 => 1,        // Undefined
          8 => 2,        // Signed Short
@@ -332,6 +332,42 @@
         10 => 8,        // Signed Rational
         11 => 4,        // Float
         12 => 8         // Double
+      );
+      static $sub= array(
+        0x8769 => TRUE,           // Exif_IFD_Pointer
+        0x8825 => array(          // GPS_IFD_Pointer
+          0x0000 => 'GPSVersion',
+          0x0001 => 'GPSLatitudeRef',
+          0x0002 => 'GPSLatitude',
+          0x0003 => 'GPSLongitudeRef',
+          0x0004 => 'GPSLongitude',
+          0x0005 => 'GPSAltitudeRef',
+          0x0006 => 'GPSAltitude',
+          0x0007 => 'GPSTimeStamp',
+          0x0008 => 'GPSSatellites',
+          0x0009 => 'GPSStatus',
+          0x000A => 'GPSMeasureMode',
+          0x000B => 'GPSDOP',
+          0x000C => 'GPSSpeedRef',
+          0x000D => 'GPSSpeed',
+          0x000E => 'GPSTrackRef',
+          0x000F => 'GPSTrack',
+          0x0010 => 'GPSImgDirectionRef',
+          0x0011 => 'GPSImgDirection',
+          0x0012 => 'GPSMapDatum',
+          0x0013 => 'GPSDestLatitudeRef',
+          0x0014 => 'GPSDestLatitude',
+          0x0015 => 'GPSDestLongitudeRef',
+          0x0016 => 'GPSDestLongitude',
+          0x0017 => 'GPSDestBearingRef',
+          0x0018 => 'GPSDestBearing',
+          0x0019 => 'GPSDestDistanceRef',
+          0x001A => 'GPSDestDistance',
+          0x001B => 'GPSProcessingMode',
+          0x001C => 'GPSAreaInformation',
+          0x001D => 'GPSDateStamp',
+          0x001E => 'GPSDifferential'
+        )
       );
 
       $entries= current(unpack($format[self::USHORT], substr($data, $offset, 2)));
@@ -354,9 +390,17 @@
           $read= $offset;
         }
         $offset+= 4;
-        $entry['data']= implode('/', unpack($format[$entry['type']], substr($data, $read, $l)));
 
-        $t= isset(self::$tag[$entry['tag']]) ? self::$tag[$entry['tag']] : sprintf('UndefinedTag:0x%04X', $entry['tag']);
+        // Recursively extract Sub-IFDs
+        if (isset($sub[$entry['tag']])) {
+          $start= current(unpack($format[$entry['type']], substr($data, $read, $l)));
+          $read= $start + 6;
+          $entry['data']= $this->readIFD($data, $read, TRUE === $sub[$entry['tag']] ? self::$tag : $sub[$entry['tag']], $format);
+        } else {
+          $entry['data']= implode('/', unpack($format[$entry['type']], substr($data, $read, $l)));
+        }
+
+        $t= isset($tags[$entry['tag']]) ? $tags[$entry['tag']] : sprintf('UndefinedTag:0x%04X', $entry['tag']);
         $return[$t]= $entry;
       }
 
@@ -427,10 +471,10 @@
 
         // Read IFDs
         $n= $header['ifd1'];
-        $headers['EXIF']= array();
+        $headers['APP1']['data']= array();
         do {
           $offset= $n + 6;
-          $headers['EXIF']= array_merge($headers['EXIF'], $this->readIFD($headers['APP1']['bytes'], $offset, $pack[$header['align']]));
+          $headers['APP1']['data']= array_merge($headers['APP1']['data'], $this->readIFD($headers['APP1']['bytes'], $offset, self::$tag, $pack[$header['align']]));
           $n= current(unpack($pack[$header['align']][self::ULONG], substr($headers['APP1']['bytes'], $offset, 4)));
         } while ($n > 0 && $n < strlen($headers['APP1']['bytes']));
       }
@@ -452,18 +496,20 @@
         $data->setWidth($headers['SOF0']['data']['width']);
         $data->setHeight($headers['SOF0']['data']['height']);
 
-        $data->setMake(trim(self::lookup($headers['EXIF'], 'Make')));
-        $data->setModel(trim(self::lookup($headers['EXIF'], 'Model')));
-        $data->setSoftware(self::lookup($headers['EXIF'], 'Software'));
+        $exif= $headers['APP1']['data']['Exif_IFD_Pointer']['data'];
 
-        $data->setApertureFNumber(self::lookup($headers['EXIF'], 'ApertureValue', 'MaxApertureValue', 'FNumber'));
-        $data->setExposureTime(self::lookup($headers['EXIF'], 'ExposureTime'));
-        $data->setExposureProgram(self::lookup($headers['EXIF'], 'ExposureProgram'));
-        $data->setMeteringMode(self::lookup($headers['EXIF'], 'MeteringMode'));
-        $data->setIsoSpeedRatings(self::lookup($headers['EXIF'], 'ISOSpeedRatings'));
+        $data->setMake(trim(self::lookup($headers['APP1']['data'], 'Make')));
+        $data->setModel(trim(self::lookup($headers['APP1']['data'], 'Model')));
+        $data->setSoftware(self::lookup($headers['APP1']['data'], 'Software'));
+
+        $data->setApertureFNumber(self::lookup($exif, 'ApertureValue', 'MaxApertureValue', 'FNumber'));
+        $data->setExposureTime(self::lookup($exif, 'ExposureTime'));
+        $data->setExposureProgram(self::lookup($exif, 'ExposureProgram'));
+        $data->setMeteringMode(self::lookup($exif, 'MeteringMode'));
+        $data->setIsoSpeedRatings(self::lookup($exif, 'ISOSpeedRatings'));
 
         // Sometimes white balance is in MAKERNOTE - e.g. FUJIFILM's Finepix
-        if (NULL !== ($w= self::lookup($headers['EXIF'], 'WhiteBalance'))) {
+        if (NULL !== ($w= self::lookup($exif, 'WhiteBalance'))) {
           $data->setWhiteBalance($w);
         } else if (0) { // isset($info['MAKERNOTE']) && NULL !== ($w= self::lookup($info['MAKERNOTE'], 'whitebalance'))) {
           $data->setWhiteBalance($w);
@@ -473,7 +519,7 @@
 
         // Extract focal length. Some models store "80" as "80/1", rip off
         // the divisor "1" in this case.
-        if (NULL !== ($l= self::lookup($headers['EXIF'], 'FocalLength'))) {
+        if (NULL !== ($l= self::lookup($exif, 'FocalLength'))) {
           sscanf($l, '%d/%d', $n, $frac);
           $data->setFocalLength(1 == $frac ? $n : $n.'/'.$frac);
         } else {
@@ -481,18 +527,18 @@
         }
 
         // Check for Flash and flashUsed keys
-        if (NULL !== ($f= self::lookup($headers['EXIF'], 'Flash'))) {
+        if (NULL !== ($f= self::lookup($exif, 'Flash'))) {
           $data->setFlash($f);
         } else {
           $data->setFlash(NULL);
         }
 
-        if (NULL !== ($date= self::lookup($headers['EXIF'], 'DateTimeOriginal', 'DateTimeDigitized', 'DateTime'))) {
+        if (NULL !== ($date= self::lookup($exif, 'DateTimeOriginal', 'DateTimeDigitized', 'DateTime'))) {
           $t= sscanf($date, '%4d:%2d:%2d %2d:%2d:%2d');
           $data->setDateTime(new Date(mktime($t[3], $t[4], $t[5], $t[1], $t[2], $t[0])));
         }
 
-        if (NULL !== ($o= self::lookup($headers['EXIF'], 'Orientation'))) {
+        if (NULL !== ($o= self::lookup($exif, 'Orientation'))) {
           $data->setOrientation($o);
         } else {
           $data->setOrientation(($data->width / $data->height) > 1.0
