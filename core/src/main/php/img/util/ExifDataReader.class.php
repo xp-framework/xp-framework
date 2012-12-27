@@ -335,9 +335,8 @@
           if (!isset($this->headers[$seg])) $this->headers[$seg]= array();
           $this->headers[$seg][]= array(
             'type'   => $marker,
-            'offset' => $this->offset,
             'size'   => $size,
-            'bytes'   => $this->stream->read($size - 2)
+            'bytes'  => $this->stream->read($size - 2)
           );
           $this->offset+= $size;
         }
