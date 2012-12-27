@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('webservices.rest.srv.RestParamSource');
+
   /**
    * REST route interface
    *
@@ -95,7 +97,7 @@
      * Add a parameter
      *
      * @param  string name
-     * @param  webservices.rest.src.RestParamSource source
+     * @param  webservices.rest.srv.RestParamSource source
      */
     public function addParam($name, $source) {
       $this->params[$name]= $source;
@@ -104,7 +106,7 @@
     /**
      * Gets all parameters
      *
-     * @param  [:webservices.rest.src.RestParamSource]
+     * @param  [:webservices.rest.srv.RestParamSource]
      */
     public function getParams() {
       return $this->params;
