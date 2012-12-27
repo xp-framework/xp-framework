@@ -362,7 +362,7 @@
      * Test handlerInstanceFor() injection
      * 
      */
-    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InjectionError::setTrace\(\) invocation failed/')]
+    #[@test, @expect(class = 'lang.reflect.TargetInvocationException', withMessage= '/InjectionError::setTrace/')]
     public function injection_error() {
       $class= ClassLoader::defineClass('AbstractRestRouterTest_InjectionError', 'lang.Object', array(), '{
         #[@inject(type = "util.log.LogCategory")]
