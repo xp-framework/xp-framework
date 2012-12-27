@@ -483,6 +483,21 @@
     }
 
     /**
+     * Lookup helper
+     *
+     * @param   [:var] exif
+     * @param   string* key
+     * @return  string value or NULL
+     */
+    protected static function lookup($exif) {
+      for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
+        $key= func_get_arg($i);
+        if (isset($exif[$key])) return $exif[$key]['data'];
+      }
+      return NULL;
+    }
+
+    /**
      * Reads the data
      * 
      * @return img.util.ExifData
@@ -554,21 +569,6 @@
 
       }
       return $data;
-    }
-
-    /**
-     * Lookup helper
-     *
-     * @param   [:var] exif
-     * @param   string* key
-     * @return  string value or NULL
-     */
-    protected static function lookup($exif) {
-      for ($i= 1, $s= func_num_args(); $i < $s; $i++) {
-        $key= func_get_arg($i);
-        if (isset($exif[$key])) return $exif[$key]['data'];
-      }
-      return NULL;
     }
   }
 ?>
