@@ -440,7 +440,8 @@
           $read= $start + 6;
           $entry['data']= $this->readIFD($data, $read, TRUE === $sub[$entry['tag']] ? self::$tag : $sub[$entry['tag']], $format);
         } else {
-          $entry['data']= implode('/', unpack($format[$entry['type']], substr($data, $read, $l)));
+          $value= unpack($format[$entry['type']], substr($data, $read, $l));
+          $entry['data']= sizeof($value) > 1 ? implode('/', $value) : current($value);
         }
 
         $t= isset($tags[$entry['tag']]) ? $tags[$entry['tag']] : sprintf('UndefinedTag:0x%04X', $entry['tag']);
@@ -575,12 +576,19 @@
 
         $exif= $headers['APP1']['data']['exif']['Exif_IFD_Pointer']['data'];
 
-        if (NULL === ($a= self::lookup($exif, 'ApertureValue', 'MaxApertureValue', 'FNumber'))) {
-          $data->setApertureFNumber(NULL);
+        // Aperture is either a FNumber (use directly), otherwise calculate from value
+        if (NULL === ($a= self::lookup($exif, 'FNumber'))) {
+          if (NULL === ($a= self::lookup($exif, 'ApertureValue', 'MaxApertureValue'))) {
+            $data->setApertureFNumber(NULL);
+          } else {
+            sscanf($a, '%d/%d', $n, $frac);
+            $data->setApertureFNumber(sprintf('f/%.1F', exp($n / $frac * log(2) * 0.5)));
+          }
         } else {
           sscanf($a, '%d/%d', $n, $frac);
           $data->setApertureFNumber(sprintf('f/%.1F', $n / $frac));
         }
+
         $data->setExposureTime(self::lookup($exif, 'ExposureTime'));
         $data->setExposureProgram(self::lookup($exif, 'ExposureProgram'));
         $data->setMeteringMode(self::lookup($exif, 'MeteringMode'));
