@@ -412,6 +412,92 @@
           0x001E => 'GPSDifferential'
         )
       );
+      static $maker = array(
+        'CANON' => array(
+          0x0001 => 'ModeArray', /* guess */
+          0x0004 => 'ImageInfo', /* guess */
+          0x0006 => 'ImageType',
+          0x0007 => 'FirmwareVersion',
+          0x0008 => 'ImageNumber',
+          0x0009 => 'OwnerName',
+          0x000C => 'Camera',
+          0x000F => 'CustomFunctions'
+        ),
+
+        'CASIO' => array(
+          0x0001 => 'RecordingMode',
+          0x0002 => 'Quality',
+          0x0003 => 'FocusingMode',
+          0x0004 => 'FlashMode',
+          0x0005 => 'FlashIntensity',
+          0x0006 => 'ObjectDistance',
+          0x0007 => 'WhiteBalance',
+          0x000A => 'DigitalZoom',
+          0x000B => 'Sharpness',
+          0x000C => 'Contrast',
+          0x000D => 'Saturation',
+          0x0014 => 'CCDSensitivity'
+        ),
+
+        "FUJIFILM\x0C\x00\x00\x00" => array(
+          0x0000 => 'Version',
+          0x1000 => 'Quality',
+          0x1001 => 'Sharpness',
+          0x1002 => 'WhiteBalance',
+          0x1003 => 'Color',
+          0x1004 => 'Tone',
+          0x1010 => 'FlashMode',
+          0x1011 => 'FlashStrength',
+          0x1020 => 'Macro',
+          0x1021 => 'FocusMode',
+          0x1030 => 'SlowSync',
+          0x1031 => 'PictureMode',
+          0x1100 => 'ContTake',
+          0x1300 => 'BlurWarning',
+          0x1301 => 'FocusWarning',
+          0x1302 => 'AEWarning '
+        ),
+
+        'NIKON' => array(
+          0x0003 => 'Quality',
+          0x0004 => 'ColorMode',
+          0x0005 => 'ImageAdjustment',
+          0x0006 => 'CCDSensitivity',
+          0x0007 => 'WhiteBalance',
+          0x0008 => 'Focus',
+          0x000a => 'DigitalZoom',
+          0x000b => 'Converter'
+        ),
+
+        'NIKON_990' => array(
+          0x0001 => 'Version',
+          0x0002 => 'ISOSetting',
+          0x0003 => 'ColorMode',
+          0x0004 => 'Quality',
+          0x0005 => 'WhiteBalance',
+          0x0006 => 'ImageSharpening',
+          0x0007 => 'FocusMode',
+          0x0008 => 'FlashSetting',
+          0x000F => 'ISOSelection',
+          0x0080 => 'ImageAdjustment',
+          0x0082 => 'AuxiliaryLens',
+          0x0085 => 'ManualFocusDistance',
+          0x0086 => 'DigitalZoom',
+          0x0088 => 'AFFocusPosition',
+          0x0010 => 'DataDump'
+        ),
+
+        'OLYMPUS' => array(
+          0x0200 => 'SpecialMode',
+          0x0201 => 'JPEGQuality',
+          0x0202 => 'Macro',
+          0x0204 => 'DigitalZoom',
+          0x0207 => 'SoftwareRelease',
+          0x0208 => 'PictureInfo',
+          0x0209 => 'CameraId',
+          0x0F00 => 'DataDump'
+        ),
+      );
 
       $entries= current(unpack($format[self::USHORT], substr($data, $offset, 2)));
       $offset+= 2;
@@ -434,11 +520,20 @@
         }
         $offset+= 4;
 
-        // Recursively extract Sub-IFDs
+        // Recursively extract Sub-IFDs and makernote
         if (isset($sub[$entry['tag']])) {
           $start= current(unpack($format[$entry['type']], substr($data, $read, $l)));
           $read= $start + 6;
           $entry['data']= $this->readIFD($data, $read, TRUE === $sub[$entry['tag']] ? self::$tag : $sub[$entry['tag']], $format);
+        } else if (0x927C === $entry['tag']) {
+          $entry['data']= NULL;
+          $makernote= substr($data, $read, $l);
+          foreach ($maker as $pattern => $definitions) {
+            if (0 !== strncmp($pattern, $makernote, strlen($pattern))) continue;
+
+            // Found
+            // Console::$err->writeLine(new Bytes($pattern), ': ', new Bytes($makernote));
+          }
         } else {
           $value= unpack($format[$entry['type']], substr($data, $read, $l));
           $entry['data']= sizeof($value) > 1 ? implode('/', $value) : current($value);
