@@ -19,6 +19,13 @@
     const USHORT    = 3;
     const ULONG     = 4;
     const URATIONAL = 5;
+    const SBYTE     = 6;
+    const UNDEFINED = 7;
+    const SHORT     = 8;
+    const LONG      = 9;
+    const RATIONAL  = 10;
+    const FLOAT     = 11;
+    const DOUBLE    = 12;
 
     protected static $seg= array(
       "\xC0" => 'SOF0',  "\xC1" => 'SOF1',  "\xC2" => 'SOF2',  "\xC3" => 'SOF4',
@@ -359,17 +366,17 @@
         self::USHORT    => 2,
         self::ULONG     => 4,
         self::URATIONAL => 8,
-         6 => 1,        // Signed Byte
-         7 => 1,        // Undefined
-         8 => 2,        // Signed Short
-         9 => 4,        // Signed Long
-        10 => 8,        // Signed Rational
-        11 => 4,        // Float
-        12 => 8         // Double
+        self::SBYTE     => 1,
+        self::UNDEFINED => 1,
+        self::SHORT     => 2,
+        self::LONG      => 4,
+        self::RATIONAL  => 8,
+        self::FLOAT     => 4,
+        self::DOUBLE    => 8
       );
       static $sub= array(
-        0x8769 => TRUE,           // Exif_IFD_Pointer
-        0x8825 => array(          // GPS_IFD_Pointer
+        0x8769 => TRUE,           // Exif_IFD_Pointer, inherit tags
+        0x8825 => array(          // GPS_IFD_Pointer, defines own tags
           0x0000 => 'GPSVersion',
           0x0001 => 'GPSLatitudeRef',
           0x0002 => 'GPSLatitude',
