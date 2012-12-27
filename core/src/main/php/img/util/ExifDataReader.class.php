@@ -12,6 +12,14 @@
    * @see      php://exif_read_data
    */
   class ExifDataReader extends Object {
+
+    // From TIFF 6.0 Specification, Image File Directory, subsection "Types"
+    const BYTE      = 1;
+    const ASCII     = 2;
+    const USHORT    = 3;
+    const ULONG     = 4;
+    const URATIONAL = 5;
+
     protected static $seg= array(
       "\xC0" => 'SOF0',  "\xC1" => 'SOF1',  "\xC2" => 'SOF2',  "\xC3" => 'SOF4',
       "\xC5" => 'SOF5',  "\xC6" => 'SOF6',  "\xC7" => 'SOF7',  "\xC8" => 'JPG',
@@ -38,13 +46,6 @@
 
       "\xFE" => 'COM',   "\x01" => 'TEM',   "\x02" => 'RES'
     );
-
-    // From TIFF 6.0 Specification, Image File Directory, subsection "Types"
-    const BYTE      = 1;
-    const ASCII     = 2;
-    const USHORT    = 3;
-    const ULONG     = 4;
-    const URATIONAL = 5;
 
     // From PHP's exif.c
     protected static $tag= array(
@@ -253,11 +254,11 @@
       0x9291 => 'SubSecTimeOriginal',
       0x9292 => 'SubSecTimeDigitized',
       0x935C => 'ImageSourceData',             /* "Adobe Photoshop Document Data Block": 8BIM... */
-      0x9c9b => 'Title',                      /* Win XP specific, Unicode  */
-      0x9c9c => 'Comments',                   /* Win XP specific, Unicode  */
-      0x9c9d => 'Author',                     /* Win XP specific, Unicode  */
-      0x9c9e => 'Keywords',                   /* Win XP specific, Unicode  */
-      0x9c9f => 'Subject',                    /* Win XP specific, Unicode, not to be confused with SubjectDistance and SubjectLocation */
+      0x9c9b => 'Title',                       /* Win XP specific, Unicode  */
+      0x9c9c => 'Comments',                    /* Win XP specific, Unicode  */
+      0x9c9d => 'Author',                      /* Win XP specific, Unicode  */
+      0x9c9e => 'Keywords',                    /* Win XP specific, Unicode  */
+      0x9c9f => 'Subject',                     /* Win XP specific, Unicode, not to be confused with SubjectDistance and SubjectLocation */
       0xA000 => 'FlashPixVersion',
       0xA001 => 'ColorSpace',
       0xA002 => 'ExifImageWidth',
@@ -295,19 +296,52 @@
       0xA420 => 'ImageUniqueID',
     );
 
+    protected $name= '';
+    protected $stream= NULL;
+    protected $offset= 0;
+
     /**
      * Creates a new EXIF data reader instance
      * *
-     * @param io.streams.InputStream $in The input stream to read from
-     * @param string $name The input stream's name
+     * @param  io.streams.InputStream $in The input stream to read from
+     * @param  string $name The input stream's name
+     * @throws lang.FormatException if the input stream cannot be parsed
      */
     public function __construct(InputStream $in, $name= 'input stream') {
       if ("\xff\xd8\xff" !== $in->read(3)) {
         throw new FormatException('Could not find start of image marker in JPEG data '.$name);
       }
+
       $this->offset= 3;
       $this->stream= $in;
       $this->name= $name;
+
+      // Parse JPEG headers
+      $this->headers= array();
+      while ("\xd9" !== ($marker= $this->stream->read(1))) {
+        $this->offset++;
+        if ("\xda" === $marker) break;      // Stop at SOS (Start Of Scan)
+
+        if ($marker < "\xd0" || $marker > "\xd7") {
+          $size= current(unpack('n', $this->stream->read(2)));
+          $this->headers[self::$seg[$marker]]= array(
+            'type'   => $marker,
+            'offset' => $this->offset,
+            'size'   => $size,
+            'bytes'   => $this->stream->read($size - 2)
+          );
+          $this->offset+= $size;
+        }
+
+        if ("\xff" !== ($c= $this->stream->read(1))) {
+          throw new FormatException(sprintf(
+            'JPEG header corrupted, have x%02x, expecting xff at offset %d',
+            ord($c),
+            $this->offset
+          ));
+        }
+        $this->offset++;
+      }
     }
 
     /**
@@ -414,42 +448,15 @@
      */
     public function headers() {
 
-      // Parse JPEG headers
-      $headers= array();
-      while ("\xd9" !== ($marker= $this->stream->read(1))) {
-        $this->offset++;
-        if ("\xda" === $marker) break;      // Stop at SOS (Start Of Scan)
-
-        if ($marker < "\xd0" || $marker > "\xd7") {
-          $size= current(unpack('n', $this->stream->read(2)));
-          $headers[self::$seg[$marker]]= array(
-            'type'   => $marker,
-            'offset' => $this->offset,
-            'size'   => $size,
-            'bytes'   => $this->stream->read($size - 2)
-          );
-          $this->offset+= $size;
-        }
-
-        if ("\xff" !== ($c= $this->stream->read(1))) {
-          throw new FormatException(sprintf(
-            'JPEG header corrupted, have x%02x, expecting xff at offset %d',
-            ord($c),
-            $this->offset
-          ));
-        }
-        $this->offset++;
-      }
-
       // SOF0
-      if (isset($headers['SOF0'])) {
-        $headers['SOF0']['data']= unpack('Cbits/nheight/nwidth/Cchannels', $headers['SOF0']['bytes']);
+      if (isset($this->headers['SOF0'])) {
+        $this->headers['SOF0']['data']= unpack('Cbits/nheight/nwidth/Cchannels', $this->headers['SOF0']['bytes']);
       }
 
       // APP 1 "Exif" marker
-      if (isset($headers['APP1'])) {
+      if (isset($this->headers['APP1'])) {
         $offset= 0;
-        $header= unpack('a4id/x2nul/a2align', substr($headers['APP1']['bytes'], $offset, 8));
+        $header= unpack('a4id/x2nul/a2align', substr($this->headers['APP1']['bytes'], $offset, 8));
         $offset+= 8;
         if ('Exif' !== $header['id']) {
           throw new FormatException('No EXIF data in APP1 section');
@@ -462,7 +469,7 @@
         );
         $header= array_merge($header, unpack(
           $pack[$header['align']][self::USHORT].'magic/'.$pack[$header['align']][self::ULONG].'ifd1',
-          substr($headers['APP1']['bytes'], $offset, 6)
+          substr($this->headers['APP1']['bytes'], $offset, 6)
         ));
         $offset+= 6;
         if (42 !== $header['magic']) {
@@ -471,15 +478,15 @@
 
         // Read IFDs
         $n= $header['ifd1'];
-        $headers['APP1']['data']= array();
+        $this->headers['APP1']['data']= array();
         do {
           $offset= $n + 6;
-          $headers['APP1']['data']= array_merge($headers['APP1']['data'], $this->readIFD($headers['APP1']['bytes'], $offset, self::$tag, $pack[$header['align']]));
-          $n= current(unpack($pack[$header['align']][self::ULONG], substr($headers['APP1']['bytes'], $offset, 4)));
-        } while ($n > 0 && $n < strlen($headers['APP1']['bytes']));
+          $this->headers['APP1']['data']= array_merge($this->headers['APP1']['data'], $this->readIFD($this->headers['APP1']['bytes'], $offset, self::$tag, $pack[$header['align']]));
+          $n= current(unpack($pack[$header['align']][self::ULONG], substr($this->headers['APP1']['bytes'], $offset, 4)));
+        } while ($n > 0 && $n < strlen($this->headers['APP1']['bytes']));
       }
 
-      return $headers;
+      return $this->headers;
     }
 
     /**
@@ -567,8 +574,8 @@
           );
         }
 
+        return $data;
       }
-      return $data;
     }
   }
 ?>
