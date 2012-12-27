@@ -331,7 +331,9 @@
 
         if ($marker < "\xd0" || $marker > "\xd7") {
           $size= current(unpack('n', $this->stream->read(2)));
-          $this->headers[self::$seg[$marker]]= array(
+          $seg= self::$seg[$marker];
+          if (!isset($this->headers[$seg])) $this->headers[$seg]= array();
+          $this->headers[$seg][]= array(
             'type'   => $marker,
             'offset' => $this->offset,
             'size'   => $size,
@@ -449,45 +451,56 @@
     }
 
     /**
-     * Reads the data
+     * Interprets headers and aggregates this into headers map
      *
      * @return [:var]
      */
     public function headers() {
+      static $pack= array(
+        'MM' => array(self::USHORT => 'n', self::ULONG => 'N', self::URATIONAL => 'N2', self::ASCII => 'a*'),
+        'II' => array(self::USHORT => 'v', self::ULONG => 'V', self::URATIONAL => 'V2', self::ASCII => 'a*'),
+      );
 
       // SOF0
       if (isset($this->headers['SOF0'])) {
-        $this->headers['SOF0']['data']= unpack('Cbits/nheight/nwidth/Cchannels', $this->headers['SOF0']['bytes']);
+        foreach ($this->headers['SOF0'] as $i => $header) {
+          $this->headers['SOF0']['data']= unpack('Cbits/nheight/nwidth/Cchannels', $header['bytes']);
+        }
       }
 
       // Check APP1 header for "Exif" marker
-      if (isset($this->headers['APP1']) && 0 === strncmp('Exif', $this->headers['APP1']['bytes'], 4)) {
-        $offset= 0;
-        $header= unpack('x4id/x2nul/a2align', substr($this->headers['APP1']['bytes'], $offset, 8));
-        $offset+= 8;
-
-        // TIFF Header, part 2: Magic number / first IFD offset
-        $pack= array(
-          'MM' => array(self::USHORT => 'n', self::ULONG => 'N', self::URATIONAL => 'N2', self::ASCII => 'a*'),
-          'II' => array(self::USHORT => 'v', self::ULONG => 'V', self::URATIONAL => 'V2', self::ASCII => 'a*'),
-        );
-        $header= array_merge($header, unpack(
-          $pack[$header['align']][self::USHORT].'magic/'.$pack[$header['align']][self::ULONG].'ifd1',
-          substr($this->headers['APP1']['bytes'], $offset, 6)
-        ));
-        $offset+= 6;
-        if (42 !== $header['magic']) {
-          throw new FormatException('Malformed EXIF data - magic number mismatch at offset '.$offset);
-        }
-
-        // Read IFDs
-        $n= $header['ifd1'];
+      if (isset($this->headers['APP1'])) {
         $this->headers['APP1']['data']= array();
-        do {
-          $offset= $n + 6;
-          $this->headers['APP1']['data']= array_merge($this->headers['APP1']['data'], $this->readIFD($this->headers['APP1']['bytes'], $offset, self::$tag, $pack[$header['align']]));
-          $n= current(unpack($pack[$header['align']][self::ULONG], substr($this->headers['APP1']['bytes'], $offset, 4)));
-        } while ($n > 0 && $n < strlen($this->headers['APP1']['bytes']));
+        foreach ($this->headers['APP1'] as $i => $header) {
+          $marker= strtok($header['bytes'], "\0");
+          if ('Exif' === $marker) {
+            $offset= 0;
+            $tiff= unpack('x4id/x2nul/a2align', substr($header['bytes'], $offset, 8));
+            $offset+= 8;
+
+            // TIFF Header, part 2: Magic number / first IFD offset
+            $tiff= array_merge($tiff, unpack(
+              $pack[$tiff['align']][self::USHORT].'magic/'.$pack[$tiff['align']][self::ULONG].'ifd1',
+              substr($header['bytes'], $offset, 6)
+            ));
+            $offset+= 6;
+            if (42 !== $tiff['magic']) {
+              throw new FormatException('Malformed EXIF data - magic number mismatch at offset '.$offset);
+            }
+
+            // Read IFDs
+            $n= $tiff['ifd1'];
+            $data= array();
+            do {
+              $offset= $n + 6;
+              $data= array_merge($data, $this->readIFD($header['bytes'], $offset, self::$tag, $pack[$tiff['align']]));
+              $n= current(unpack($pack[$tiff['align']][self::ULONG], substr($header['bytes'], $offset, 4)));
+            } while ($n > 0 && $n < strlen($this->headers['APP1']['bytes']));
+          } else {
+            $data= NULL;
+          }
+          $this->headers['APP1']['data'][$marker]= $data;
+        }
       }
 
       return $this->headers;
@@ -522,11 +535,11 @@
         $data->setWidth($headers['SOF0']['data']['width']);
         $data->setHeight($headers['SOF0']['data']['height']);
 
-        $exif= $headers['APP1']['data']['Exif_IFD_Pointer']['data'];
+        $data->setMake(trim(self::lookup($headers['APP1']['data']['Exif'], 'Make')));
+        $data->setModel(trim(self::lookup($headers['APP1']['data']['Exif'], 'Model')));
+        $data->setSoftware(self::lookup($headers['APP1']['data']['Exif'], 'Software'));
 
-        $data->setMake(trim(self::lookup($headers['APP1']['data'], 'Make')));
-        $data->setModel(trim(self::lookup($headers['APP1']['data'], 'Model')));
-        $data->setSoftware(self::lookup($headers['APP1']['data'], 'Software'));
+        $exif= $headers['APP1']['data']['Exif']['Exif_IFD_Pointer']['data'];
 
         if (NULL === ($a= self::lookup($exif, 'ApertureValue', 'MaxApertureValue', 'FNumber'))) {
           $data->setApertureFNumber(NULL);
