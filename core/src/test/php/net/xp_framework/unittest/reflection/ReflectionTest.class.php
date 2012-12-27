@@ -334,6 +334,19 @@
     }
     
     /**
+     * Retrieval getConstants()
+     *
+     * @see     xp://lang.XPClass#getConstants
+     */
+    #[@test]
+    public function getConstants() {
+      $this->assertEquals(
+        array('CONSTANT_STRING' => 'XP Framework', 'CONSTANT_INT' => 15, 'CONSTANT_NULL' => NULL),
+        $this->class->getConstants()
+      );
+    }
+
+    /**
      * Retrieval of string constant
      *
      */

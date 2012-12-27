@@ -346,6 +346,15 @@
     }
 
     /**
+     * Retrieve class constants
+     *
+     * @return  [:var]
+     */
+    public function getConstants() {
+      return $this->_reflect->getConstants();
+    }
+
+    /**
      * Cast a given object to the class represented by this object
      *
      * @param   lang.Generic expression
