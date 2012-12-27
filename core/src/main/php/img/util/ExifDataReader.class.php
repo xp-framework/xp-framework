@@ -460,14 +460,11 @@
         $this->headers['SOF0']['data']= unpack('Cbits/nheight/nwidth/Cchannels', $this->headers['SOF0']['bytes']);
       }
 
-      // APP 1 "Exif" marker
-      if (isset($this->headers['APP1'])) {
+      // Check APP1 header for "Exif" marker
+      if (isset($this->headers['APP1']) && 0 === strncmp('Exif', $this->headers['APP1']['bytes'], 4)) {
         $offset= 0;
-        $header= unpack('a4id/x2nul/a2align', substr($this->headers['APP1']['bytes'], $offset, 8));
+        $header= unpack('x4id/x2nul/a2align', substr($this->headers['APP1']['bytes'], $offset, 8));
         $offset+= 8;
-        if ('Exif' !== $header['id']) {
-          throw new FormatException('No EXIF data in APP1 section');
-        }
 
         // TIFF Header, part 2: Magic number / first IFD offset
         $pack= array(
