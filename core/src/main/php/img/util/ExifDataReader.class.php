@@ -457,8 +457,34 @@
      */
     public function headers() {
       static $pack= array(
-        'MM' => array(self::USHORT => 'n', self::ULONG => 'N', self::URATIONAL => 'N2', self::ASCII => 'a*'),
-        'II' => array(self::USHORT => 'v', self::ULONG => 'V', self::URATIONAL => 'V2', self::ASCII => 'a*'),
+        'MM' => array(
+          self::BYTE      => 'C',
+          self::ASCII     => 'a*',
+          self::USHORT    => 'n',
+          self::ULONG     => 'N',
+          self::URATIONAL => 'N2', 
+          self::SBYTE     => 'c',
+          self::UNDEFINED => 'x*',
+          self::SHORT     => 'n',
+          self::LONG      => 'N',
+          self::RATIONAL  => 'N2',
+          self::FLOAT     => 'n2',
+          self::DOUBLE    => 'N2'
+        ),
+        'II' => array(
+          self::BYTE      => 'C',
+          self::ASCII     => 'a*',
+          self::USHORT    => 'v',
+          self::ULONG     => 'V',
+          self::URATIONAL => 'V2', 
+          self::SBYTE     => 'c',
+          self::UNDEFINED => 'x*',
+          self::SHORT     => 'v',
+          self::LONG      => 'V',
+          self::RATIONAL  => 'V2',
+          self::FLOAT     => 'n2',
+          self::DOUBLE    => 'V2'
+        )
       );
 
       // SOF0
@@ -494,7 +520,7 @@
               $offset= $n + 6;
               $data= array_merge($data, $this->readIFD($header['bytes'], $offset, self::$tag, $pack[$tiff['align']]));
               $n= current(unpack($pack[$tiff['align']][self::ULONG], substr($header['bytes'], $offset, 4)));
-            } while ($n > 0 && $n < strlen($this->headers['APP1']['bytes']));
+            } while ($n > 0 && $n < strlen($header['bytes']));
           } else if (0 === strncmp('http://ns.adobe.com/xap/1.0/', $header['bytes'], 28)) {
             $label= 'xap';
             $data= Document::fromString(substr($header['bytes'], 29));
@@ -531,7 +557,11 @@
      * @return img.util.ExifData
      */
     public function read() {
-      with ($data= new ExifData(), $headers= $this->headers()); {
+      $headers= $this->headers();
+      if (!isset($headers['APP1']['data']['exif'])) return NULL;
+
+      // APP1 marker found
+      with ($data= new ExifData()); {
         $data->setFileName($this->name);
         $data->setFileSize(-1);
         $data->setMimeType('image/jpeg');
@@ -539,9 +569,9 @@
         $data->setWidth($headers['SOF0']['data']['width']);
         $data->setHeight($headers['SOF0']['data']['height']);
 
-        $data->setMake(trim(self::lookup($headers['APP1']['data']['Exif'], 'Make')));
-        $data->setModel(trim(self::lookup($headers['APP1']['data']['Exif'], 'Model')));
-        $data->setSoftware(self::lookup($headers['APP1']['data']['Exif'], 'Software'));
+        $data->setMake(trim(self::lookup($headers['APP1']['data']['exif'], 'Make')));
+        $data->setModel(trim(self::lookup($headers['APP1']['data']['exif'], 'Model')));
+        $data->setSoftware(self::lookup($headers['APP1']['data']['exif'], 'Software'));
 
         $exif= $headers['APP1']['data']['exif']['Exif_IFD_Pointer']['data'];
 
