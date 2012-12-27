@@ -38,5 +38,15 @@
       sscanf($payload, '%s %s', $greeting, $name);
       return $this->greet($name, $greeting);
     }
+
+    /**
+     * Greet the world
+     * 
+     * @return  string
+     */
+    #[@webmethod(verb= 'GET')]
+    public function hello_world() {
+      return $this->greet('World');
+    }
   }
 ?>

@@ -159,5 +159,23 @@
         $this->fixture->targetsFor('GET', '/', NULL, new Preference(''))
       );
     }
+
+    /**
+     * Test targetsFor()
+     *
+     */
+    #[@test]
+    public function implicit_path() {
+      $this->assertEquals(
+        array(array(
+          'target'   => $this->fixtureMethod('ImplicitGreetingHandler', 'hello_world'),
+          'params'   => array(),
+          'segments' => array(0 => '/implicit'),
+          'input'    => NULL,
+          'output'   => 'text/json'
+        )),
+        $this->fixture->targetsFor('GET', '/implicit', NULL, new Preference('*/*'))
+      );
+    }
   }
 ?>
