@@ -486,7 +486,7 @@
      * Lookup helper
      *
      * @param   [:var] exif
-     * @param   string* key
+     * @param   string... key
      * @return  string value or NULL
      */
     protected static function lookup($exif) {
