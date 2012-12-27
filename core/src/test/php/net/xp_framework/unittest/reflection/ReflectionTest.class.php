@@ -334,19 +334,81 @@
     }
     
     /**
-     * Retrieval of string, int & null constant
+     * Retrieval getConstants()
+     *
+     * @see     xp://lang.XPClass#getConstants
+     */
+    #[@test]
+    public function getConstants() {
+      $this->assertEquals(
+        array('CONSTANT_STRING' => 'XP Framework', 'CONSTANT_INT' => 15, 'CONSTANT_NULL' => NULL),
+        $this->class->getConstants()
+      );
+    }
+
+    /**
+     * Retrieval of string constant
+     *
+     */
+    #[@test]
+    public function hasConstantString() {
+      $this->assertTrue($this->class->hasConstant('CONSTANT_STRING'));
+    }
+
+    /**
+     * Retrieval of string constant
      *
      */
     #[@test]
     public function getConstantString() {
-      $this->assertEquals(TRUE, $this->class->hasConstant('CONSTANT_STRING'));
       $this->assertEquals('XP Framework', $this->class->getConstant('CONSTANT_STRING'));
-      $this->assertEquals(TRUE, $this->class->hasConstant('CONSTANT_INT'));
+    }
+
+    /**
+     * Retrieval of string constant
+     *
+     */
+    #[@test]
+    public function hasConstantInt() {
+      $this->assertTrue($this->class->hasConstant('CONSTANT_INT'));
+    }
+
+    /**
+     * Retrieval of string constant
+     *
+     */
+    #[@test]
+    public function getConstantInt() {
       $this->assertEquals(15, $this->class->getConstant('CONSTANT_INT'));
-      $this->assertEquals(TRUE, $this->class->hasConstant('CONSTANT_NULL'));
+    }
+
+    /**
+     * Retrieval of string constant
+     *
+     */
+    #[@test]
+    public function hasConstantNull() {
+      $this->assertTrue($this->class->hasConstant('CONSTANT_NULL'));
+    }
+
+    /**
+     * Retrieval of string constant
+     *
+     */
+    #[@test]
+    public function getConstantNull() {
       $this->assertEquals(NULL, $this->class->getConstant('CONSTANT_NULL'));
     }
-    
+
+    /**
+     * Retrieval of nonexistant constant yields an exception
+     *
+     */
+    #[@test]
+    public function checkNonexistingConstant() {
+      $this->assertFalse($this->class->hasConstant('DOES_NOT_EXIST'));
+    }
+
     /**
      * Retrieval of nonexistant constant yields an exception
      *
