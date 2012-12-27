@@ -75,8 +75,17 @@
         }
       }
 
-      // Members
+      // Constants
       Console::writeLine(' {');
+      $i= 0;
+      foreach ($enum->getConstants() as $name => $value) {
+        Console::writeLine('  const ', $name, ' = ', xp::stringOf($value));
+        $i++;
+      }
+
+      // Members
+      $i && Console::writeLine();
+      $i= 0;
       foreach (Enum::valuesOf($enum) as $member) {
         Console::write('  ',  $member->ordinal(), ': ', $member->name());
         $class= $member->getClass();
@@ -120,6 +129,15 @@
       }
       Console::writeLine(' {');
 
+      // Constants
+      $i= 0;
+      foreach ($iface->getConstants() as $name => $value) {
+        Console::writeLine('  const ', $name, ' = ', xp::stringOf($value));
+        $i++;
+      }
+
+      // Constructor
+      $i && Console::writeLine();
       $i= 0;
       if ($iface->hasConstructor()) {
         Console::writeLine('  ', $iface->getConstructor());
@@ -127,6 +145,7 @@
       }
 
       // Methods
+      $i && Console::writeLine();
       foreach ($iface->getMethods() as $method) {
         Console::write('  ', $method->getReturnTypeName(), ' ', $method->getName(), '(');
         if ($params= $method->getParameters()) {
@@ -164,8 +183,16 @@
         }
       }
       
-      // Fields
+      // Constants
       Console::writeLine(' {');
+      $i= 0;
+      foreach ($class->getConstants() as $name => $value) {
+        Console::writeLine('  const ', $name, ' = ', xp::stringOf($value));
+        $i++;
+      }
+
+      // Fields
+      $i && Console::writeLine();
       $i= 0;
       foreach ($class->getFields() as $field) {
         Console::writeLine('  ', $field);
