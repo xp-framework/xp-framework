@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('io.streams.InputStream', 'img.util.ExifData');
+  uses('io.streams.InputStream', 'img.util.ExifData', 'xml.dom.Document');
 
   /**
    * Reads the EXIF headers from JPEG or TIFF
@@ -470,10 +470,9 @@
 
       // Check APP1 header for "Exif" marker
       if (isset($this->headers['APP1'])) {
-        $this->headers['APP1']['data']= array();
         foreach ($this->headers['APP1'] as $i => $header) {
-          $marker= strtok($header['bytes'], "\0");
-          if ('Exif' === $marker) {
+          if (0 === strncmp('Exif', $header['bytes'], 4)) {
+            $label= 'exif';
             $offset= 0;
             $tiff= unpack('x4id/x2nul/a2align', substr($header['bytes'], $offset, 8));
             $offset+= 8;
@@ -496,10 +495,15 @@
               $data= array_merge($data, $this->readIFD($header['bytes'], $offset, self::$tag, $pack[$tiff['align']]));
               $n= current(unpack($pack[$tiff['align']][self::ULONG], substr($header['bytes'], $offset, 4)));
             } while ($n > 0 && $n < strlen($this->headers['APP1']['bytes']));
+          } else if (0 === strncmp('http://ns.adobe.com/xap/1.0/', $header['bytes'], 28)) {
+            $label= 'xap';
+            $data= Document::fromString(substr($header['bytes'], 29));
           } else {
+            $label= '#'.$i;
             $data= NULL;
           }
-          $this->headers['APP1']['data'][$marker]= $data;
+
+          $this->headers['APP1']['data'][$label]= $data;
         }
       }
 
@@ -539,7 +543,7 @@
         $data->setModel(trim(self::lookup($headers['APP1']['data']['Exif'], 'Model')));
         $data->setSoftware(self::lookup($headers['APP1']['data']['Exif'], 'Software'));
 
-        $exif= $headers['APP1']['data']['Exif']['Exif_IFD_Pointer']['data'];
+        $exif= $headers['APP1']['data']['exif']['Exif_IFD_Pointer']['data'];
 
         if (NULL === ($a= self::lookup($exif, 'ApertureValue', 'MaxApertureValue', 'FNumber'))) {
           $data->setApertureFNumber(NULL);
