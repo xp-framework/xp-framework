@@ -7,11 +7,12 @@
   uses('io.streams.InputStream', 'img.util.ExifData', 'xml.dom.Document');
 
   /**
-   * Reads the EXIF headers from JPEG or TIFF
+   * Reads meta data from JPEG files
    *
-   * @see      php://exif_read_data
+   * @see  php://exif_read_data
+   * @see  php://getimagesize
    */
-  class ExifDataReader extends Object {
+  class MetaDataReader extends Object {
 
     // From TIFF 6.0 Specification, Image File Directory, subsection "Types"
     const BYTE      = 1;
