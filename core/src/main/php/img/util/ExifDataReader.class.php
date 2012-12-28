@@ -27,6 +27,38 @@
     const FLOAT     = 11;
     const DOUBLE    = 12;
 
+    protected static $pack= array(
+      'MM' => array(
+        self::BYTE      => 'C',
+        self::ASCII     => 'a*',
+        self::USHORT    => 'n',
+        self::ULONG     => 'N',
+        self::URATIONAL => 'N2',
+        self::SBYTE     => 'c',
+        self::UNDEFINED => 'a*',
+        self::SHORT     => 'n',
+        self::LONG      => 'N',
+        self::RATIONAL  => 'N2',
+        self::FLOAT     => 'n2',
+        self::DOUBLE    => 'N2'
+      ),
+      'II' => array(
+        self::BYTE      => 'C',
+        self::ASCII     => 'a*',
+        self::USHORT    => 'v',
+        self::ULONG     => 'V',
+        self::URATIONAL => 'V2',
+        self::SBYTE     => 'c',
+        self::UNDEFINED => 'a*',
+        self::SHORT     => 'v',
+        self::LONG      => 'V',
+        self::RATIONAL  => 'V2',
+        self::FLOAT     => 'n2',
+        self::DOUBLE    => 'V2'
+      )
+    );
+
+
     protected static $seg= array(
       "\xC0" => 'SOF0',  "\xC1" => 'SOF1',  "\xC2" => 'SOF2',  "\xC3" => 'SOF4',
       "\xC5" => 'SOF5',  "\xC6" => 'SOF6',  "\xC7" => 'SOF7',  "\xC8" => 'JPG',
@@ -357,10 +389,11 @@
      *
      * @param  string $data The EXIF data
      * @param  int $offset The offset to start at
+     * @param  int $base The base offset for calculations
      * @param  [:string] $format The unpack() formats
      * @return [:var] IFD
      */
-    protected function readIFD($data, &$offset, $tags, $format) {
+    protected function readIFD($data, &$offset, $base, $tags, $format) {
       static $length= array(
         self::BYTE      => 1,
         self::ASCII     => 1,
@@ -412,89 +445,59 @@
         )
       );
       static $maker = array(
-        'CANON' => array(
-          0x0001 => 'ModeArray', /* guess */
-          0x0004 => 'ImageInfo', /* guess */
-          0x0006 => 'ImageType',
-          0x0007 => 'FirmwareVersion',
-          0x0008 => 'ImageNumber',
-          0x0009 => 'OwnerName',
-          0x000C => 'Camera',
-          0x000F => 'CustomFunctions'
-        ),
-
-        'CASIO' => array(
-          0x0001 => 'RecordingMode',
-          0x0002 => 'Quality',
-          0x0003 => 'FocusingMode',
-          0x0004 => 'FlashMode',
-          0x0005 => 'FlashIntensity',
-          0x0006 => 'ObjectDistance',
-          0x0007 => 'WhiteBalance',
-          0x000A => 'DigitalZoom',
-          0x000B => 'Sharpness',
-          0x000C => 'Contrast',
-          0x000D => 'Saturation',
-          0x0014 => 'CCDSensitivity'
-        ),
-
         "FUJIFILM\x0C\x00\x00\x00" => array(
-          0x0000 => 'Version',
-          0x1000 => 'Quality',
-          0x1001 => 'Sharpness',
-          0x1002 => 'WhiteBalance',
-          0x1003 => 'Color',
-          0x1004 => 'Tone',
-          0x1010 => 'FlashMode',
-          0x1011 => 'FlashStrength',
-          0x1020 => 'Macro',
-          0x1021 => 'FocusMode',
-          0x1030 => 'SlowSync',
-          0x1031 => 'PictureMode',
-          0x1100 => 'ContTake',
-          0x1300 => 'BlurWarning',
-          0x1301 => 'FocusWarning',
-          0x1302 => 'AEWarning '
+          'name'   => 'FujiFilm',
+          'format' => 'II',
+          'offset' => 0,
+          'base'   => 0,
+          'tags'   => array(
+            0x0000 => 'Version',
+            0x1000 => 'Quality',
+            0x1001 => 'Sharpness',
+            0x1002 => 'WhiteBalance',
+            0x1003 => 'Color',
+            0x1004 => 'Tone',
+            0x1010 => 'FlashMode',
+            0x1011 => 'FlashStrength',
+            0x1020 => 'Macro',
+            0x1021 => 'FocusMode',
+            0x1030 => 'SlowSync',
+            0x1031 => 'PictureMode',
+            0x1100 => 'ContTake',
+            0x1300 => 'BlurWarning',
+            0x1301 => 'FocusWarning',
+            0x1302 => 'AEWarning '
+          ),
         ),
-
-        'NIKON' => array(
-          0x0003 => 'Quality',
-          0x0004 => 'ColorMode',
-          0x0005 => 'ImageAdjustment',
-          0x0006 => 'CCDSensitivity',
-          0x0007 => 'WhiteBalance',
-          0x0008 => 'Focus',
-          0x000a => 'DigitalZoom',
-          0x000b => 'Converter'
+        "Nikon\x00\x01\x00" => array(
+          'name'   => 'Nikon',
+          'offset' => 0,
+          'base'   => -826,       // ???
+          'tags'   => array(
+            0x0003 => 'Quality',
+            0x0004 => 'ColorMode',
+            0x0005 => 'ImageAdjustment',
+            0x0006 => 'CCDSensitivity',
+            0x0007 => 'WhiteBalance',
+            0x0008 => 'Focus',
+            0x000a => 'DigitalZoom',
+            0x000b => 'Converter'
+          )
         ),
-
-        'NIKON_990' => array(
-          0x0001 => 'Version',
-          0x0002 => 'ISOSetting',
-          0x0003 => 'ColorMode',
-          0x0004 => 'Quality',
-          0x0005 => 'WhiteBalance',
-          0x0006 => 'ImageSharpening',
-          0x0007 => 'FocusMode',
-          0x0008 => 'FlashSetting',
-          0x000F => 'ISOSelection',
-          0x0080 => 'ImageAdjustment',
-          0x0082 => 'AuxiliaryLens',
-          0x0085 => 'ManualFocusDistance',
-          0x0086 => 'DigitalZoom',
-          0x0088 => 'AFFocusPosition',
-          0x0010 => 'DataDump'
-        ),
-
-        'OLYMPUS' => array(
-          0x0200 => 'SpecialMode',
-          0x0201 => 'JPEGQuality',
-          0x0202 => 'Macro',
-          0x0204 => 'DigitalZoom',
-          0x0207 => 'SoftwareRelease',
-          0x0208 => 'PictureInfo',
-          0x0209 => 'CameraId',
-          0x0F00 => 'DataDump'
+        "OLYMP\x00\x01\x00" => array(
+          'name'   => 'Olympus',
+          'offset' => 0,
+          'base'   => -782,       // ???
+          'tags'   => array(
+            0x0200 => 'SpecialMode',
+            0x0201 => 'JPEGQuality',
+            0x0202 => 'Macro',
+            0x0204 => 'DigitalZoom',
+            0x0207 => 'SoftwareRelease',
+            0x0208 => 'PictureInfo',
+            0x0209 => 'CameraId',
+            0x0F00 => 'DataDump'
+          )
         ),
       );
 
@@ -512,7 +515,7 @@
         $l= $entry['size'] * $length[$entry['type']];
         if ($l > 4) {
           $entry['offset']= current(unpack($format[self::ULONG], substr($data, $offset, 4)));
-          $read= $entry['offset']+ 6;
+          $read= $entry['offset']+ $base;
         } else {
           $entry['offset']= NULL;   // Fit into 4 bytes
           $read= $offset;
@@ -522,16 +525,24 @@
         // Recursively extract Sub-IFDs and makernote
         if (isset($sub[$entry['tag']])) {
           $start= current(unpack($format[$entry['type']], substr($data, $read, $l)));
-          $read= $start + 6;
-          $entry['data']= $this->readIFD($data, $read, TRUE === $sub[$entry['tag']] ? self::$tag : $sub[$entry['tag']], $format);
+          $read= $start + $base;
+          $entry['data']= $this->readIFD($data, $read, $base, TRUE === $sub[$entry['tag']] ? self::$tag : $sub[$entry['tag']], $format);
         } else if (0x927C === $entry['tag']) {
           $entry['data']= NULL;
           $makernote= substr($data, $read, $l);
           foreach ($maker as $pattern => $definitions) {
-            if (0 !== strncmp($pattern, $makernote, strlen($pattern))) continue;
-
-            // Found
-            // Console::$err->writeLine(new Bytes($pattern), ': ', new Bytes($makernote));
+            $l= strlen($pattern);
+            if (0 !== strncmp($pattern, $makernote, $l)) continue;
+            $read= $definitions['offset'] + $l;
+            $entry['data']= $this->readIFD(
+              $makernote,
+              $read,
+              $definitions['base'],
+              $definitions['tags'],
+              isset($definitions['format']) ? self::$pack[$definitions['format']] : $format
+            );
+            // DEBUG Console::writeLine($definitions['name'], ': ', $entry['data'], ' @ ', $read, ': ', new Bytes($makernote));
+            break;
           }
         } else {
           $value= unpack($format[$entry['type']], substr($data, $read, $l));
@@ -551,36 +562,6 @@
      * @return [:var]
      */
     public function headers() {
-      static $pack= array(
-        'MM' => array(
-          self::BYTE      => 'C',
-          self::ASCII     => 'a*',
-          self::USHORT    => 'n',
-          self::ULONG     => 'N',
-          self::URATIONAL => 'N2',
-          self::SBYTE     => 'c',
-          self::UNDEFINED => 'x*',
-          self::SHORT     => 'n',
-          self::LONG      => 'N',
-          self::RATIONAL  => 'N2',
-          self::FLOAT     => 'n2',
-          self::DOUBLE    => 'N2'
-        ),
-        'II' => array(
-          self::BYTE      => 'C',
-          self::ASCII     => 'a*',
-          self::USHORT    => 'v',
-          self::ULONG     => 'V',
-          self::URATIONAL => 'V2',
-          self::SBYTE     => 'c',
-          self::UNDEFINED => 'x*',
-          self::SHORT     => 'v',
-          self::LONG      => 'V',
-          self::RATIONAL  => 'V2',
-          self::FLOAT     => 'n2',
-          self::DOUBLE    => 'V2'
-        )
-      );
 
       // SOF0
       if (isset($this->headers['SOF0'])) {
@@ -600,7 +581,7 @@
 
             // TIFF Header, part 2: Magic number / first IFD offset
             $tiff= array_merge($tiff, unpack(
-              $pack[$tiff['align']][self::USHORT].'magic/'.$pack[$tiff['align']][self::ULONG].'ifd1',
+              self::$pack[$tiff['align']][self::USHORT].'magic/'.self::$pack[$tiff['align']][self::ULONG].'ifd1',
               substr($header['bytes'], $offset, 6)
             ));
             $offset+= 6;
@@ -613,8 +594,8 @@
             $data= array();
             do {
               $offset= $n + 6;
-              $data= array_merge($data, $this->readIFD($header['bytes'], $offset, self::$tag, $pack[$tiff['align']]));
-              $n= current(unpack($pack[$tiff['align']][self::ULONG], substr($header['bytes'], $offset, 4)));
+              $data= array_merge($data, $this->readIFD($header['bytes'], $offset, 6, self::$tag, self::$pack[$tiff['align']]));
+              $n= current(unpack(self::$pack[$tiff['align']][self::ULONG], substr($header['bytes'], $offset, 4)));
             } while ($n > 0 && $n < strlen($header['bytes']));
           } else if (0 === strncmp('http://ns.adobe.com/xap/1.0/', $header['bytes'], 28)) {
             $label= 'xap';
@@ -691,7 +672,7 @@
         // Sometimes white balance is in MAKERNOTE - e.g. FUJIFILM's Finepix
         if (NULL !== ($w= self::lookup($exif, 'WhiteBalance'))) {
           $data->setWhiteBalance($w);
-        } else if (0) { // isset($info['MAKERNOTE']) && NULL !== ($w= self::lookup($info['MAKERNOTE'], 'whitebalance'))) {
+        } else if (isset($exif['MakerNote']) && NULL !== ($w= self::lookup($exif['MakerNote']['data'], 'WhiteBalance'))) {
           $data->setWhiteBalance($w);
         } else {
           $data->setWhiteBalance(NULL);
