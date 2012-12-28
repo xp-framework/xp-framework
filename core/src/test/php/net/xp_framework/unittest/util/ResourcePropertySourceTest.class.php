@@ -43,6 +43,7 @@
     /**
      * Test
      *
+     * Relies on a file "example.ini" existing parallel to this class
      */
     #[@test]
     public function returnsProperties() {
@@ -65,6 +66,7 @@
     /**
      * Test
      *
+     * Relies on a file "example.ini" existing parallel to this class
      */
     #[@test]
     public function propertiesFromSameResourceAreEqual() {
