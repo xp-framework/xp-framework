@@ -170,6 +170,42 @@
     }
 
     /**
+     * Test segmentsOf()
+     *
+     */
+    #[@test]
+    public function no_exif_data_segments_in_1x1() {
+      $this->assertEquals(array(), $this->extractFromFile('1x1.jpg')->segmentsOf('img.io.ExifSegment'));
+    }
+
+    /**
+     * Test segmentsOf()
+     *
+     */
+    #[@test]
+    public function no_iptc_data_segments_in_1x1() {
+      $this->assertEquals(array(), $this->extractFromFile('1x1.jpg')->segmentsOf('img.io.IptcSegment'));
+    }
+
+    /**
+     * Test exifData()
+     *
+     */
+    #[@test]
+    public function no_exif_data_in_1x1() {
+      $this->assertNull($this->extractFromFile('1x1.jpg')->exifData());
+    }
+
+    /**
+     * Test iptcData()
+     *
+     */
+    #[@test]
+    public function no_iptc_data_in_1x1() {
+      $this->assertNull($this->extractFromFile('1x1.jpg')->iptcData());
+    }
+
+    /**
      * Test a file with exif data
      *
      */
