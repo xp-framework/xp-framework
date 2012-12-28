@@ -635,5 +635,14 @@
       );
     }
 
+    /**
+     * Test a file with IPTC data
+     *
+     */
+    #[@test]
+    public function gps_data() {
+      $exif= this($this->extractFromFile('gps-embedded.jpg')->segmentsOf('img.io.ExifSegment'), 0);
+      $this->assertEquals(2, $exif->rawData('GPS_IFD_Pointer', 'GPSVersion'));
+    }
   }
 ?>
