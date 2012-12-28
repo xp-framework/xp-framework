@@ -23,7 +23,9 @@
    * </code>
    *
    * @see  php://exif_read_data
+   * @see  php://iptcparse
    * @see  php://getimagesize
+   * @test xp://net.xp_framework.unittest.img.MetaDataReaderTest
    */
   class MetaDataReader extends Object {
     protected static $seg= array(
