@@ -892,5 +892,35 @@
         $this->focalLength
       );
     }
+
+    /**
+     * Returns whether another ExifData instance is equal to this
+     *
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $cmp->width === $this->width &&
+        $cmp->height === $this->height &&
+        $cmp->mimeType === $this->mimeType &&
+        $cmp->fileName === $this->fileName &&
+        $cmp->fileSize === $this->fileSize &&
+        $cmp->make === $this->make &&
+        $cmp->model === $this->model &&
+        $cmp->software === $this->software &&
+        $cmp->flash === $this->flash &&
+        $cmp->orientation === $this->orientation &&
+        (NULL === $cmp->dateTime ? NULL === $this->dateTime : $cmp->dateTime->equals($this->dateTime)) &&
+        $cmp->apertureFNumber === $this->apertureFNumber &&
+        $cmp->exposureTime === $this->exposureTime &&
+        $cmp->exposureProgram === $this->exposureProgram &&
+        $cmp->meteringMode === $this->meteringMode &&
+        $cmp->whitebalance === $this->whitebalance &&
+        $cmp->isoSpeedRatings === $this->isoSpeedRatings &&
+        $cmp->focalLength === $this->focalLength
+      );
+    }
   }
 ?>
