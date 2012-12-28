@@ -4,7 +4,7 @@
  * $Id$
  */
 
-  uses('img.io.Segment', 'img.util.ExifData', 'img.util.IptcData');
+  uses('img.io.Segment', 'img.util.ExifData', 'img.util.IptcData', 'img.util.ImageInfo');
 
   /**
    * Image meta data
@@ -69,6 +69,20 @@
         if ($segment->getClassName() === $class) $r[]= $segment;
       }
       return $r;
+    }
+
+    /**
+     * Return image dimensions
+     *
+     * @return int[] an array with two integers - width and height
+     * @throws img.ImagingException if no information can be extracted
+     */
+    public function imageDimensions() {
+      if (!($seg= $this->segmentsOf('img.io.SOFNSegment'))) {
+        throw new ImagingException('Cannot load image information from '.$this->source);
+      }
+
+      return array($seg[0]->width(), $seg[0]->height());
     }
 
     /**
