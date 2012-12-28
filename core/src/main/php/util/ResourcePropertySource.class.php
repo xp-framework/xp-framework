@@ -4,7 +4,10 @@
  * $Id$
  */
 
-  uses('util.PropertySource');
+  uses(
+    'util.Properties',
+    'util.PropertySource'
+  );
 
   /**
    * Resource-based property source
