@@ -526,11 +526,20 @@
 
     /**
      * Returns the raw data
-     * 
-     * @return [:var]
+     *
+     * @param  string... keys
+     * @return var
      */
-    public function rawData() {
-      return $this->data;
+    public function rawData($arg= NULL) {
+      if (NULL === $arg) return $this->data;
+
+      // Look for a key
+      $ptr= $this->data;
+      foreach (func_get_args() as $arg) {
+        if (!isset($ptr[$arg])) return NULL;
+        $ptr= $ptr[$arg]['data'];
+      }
+      return $ptr;
     }
 
     /**
