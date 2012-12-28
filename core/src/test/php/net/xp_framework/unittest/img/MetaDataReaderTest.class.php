@@ -604,7 +604,7 @@
     }
 
     /**
-     * Test a file with exif data
+     * Test a file with IPTC data
      *
      */
     #[@test]
