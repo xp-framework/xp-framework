@@ -152,6 +152,24 @@
     }
 
     /**
+     * Test imageDimensions()
+     *
+     */
+    #[@test]
+    public function dimensions_of_1x1_image() {
+      $this->assertEquals(array(1, 1), $this->extractFromFile('1x1.jpg')->imageDimensions());
+    }
+
+    /**
+     * Test imageDimensions()
+     *
+     */
+    #[@test]
+    public function dimensions_of_xmp_image() {
+      $this->assertEquals(array(640, 480), $this->extractFromFile('canon-ixus.jpg', 'exif_org')->imageDimensions());
+    }
+
+    /**
      * Test a file with exif data
      *
      */
