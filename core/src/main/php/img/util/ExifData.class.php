@@ -74,6 +74,7 @@
     /**
      * Read from a file
      *
+     * @deprecated  Use img.io.MetaDataReader instead
      * @param   io.File file
      * @param   var default default void what should be returned in case no data is found
      * @return  img.util.ExifData
