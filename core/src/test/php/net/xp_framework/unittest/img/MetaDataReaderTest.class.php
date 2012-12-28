@@ -608,31 +608,32 @@
      *
      */
     #[@test]
-    public function iptc_data_() {
+    public function detailed_iptc_data() {
       $this->assertEquals(
         create(new IptcData())
           ->withTitle('Unittest Image')
           ->withUrgency(NULL)
           ->withCategory(NULL)
           ->withKeywords(NULL)
-          ->withDateCreated(NULL)
+          ->withDateCreated(new Date('2011-12-07 00:00:00+0100'))
           ->withAuthor(NULL)
           ->withAuthorPosition(NULL)
           ->withCity(NULL)
           ->withState(NULL)
           ->withCountry(NULL)
-          ->withHeadline(NULL)
-          ->withCredit(NULL)
-          ->withSource(NULL)
-          ->withCopyrightNotice(NULL)
-          ->withCaption(NULL)
-          ->withWriter(NULL)
+          ->withHeadline('Caption')
+          ->withCredit('Provider')
+          ->withSource('Source')
+          ->withCopyrightNotice('Timm Friebe, 2012')
+          ->withCaption('Description')
+          ->withWriter('Timm')
           ->withSupplementalCategories(NULL)
           ->withSpecialInstructions(NULL)
           ->withOriginalTransmissionReference(NULL)
         ,
-        $this->extractFromFile('iptc-only.jpg')->iptcData()
+        $this->extractFromFile('detailed-iptc-embedded.jpg')->iptcData()
       );
     }
+
   }
 ?>
