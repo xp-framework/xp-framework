@@ -53,6 +53,12 @@
           }
         }
         return $r;
+      } else if (is_array($data)) {
+        $r= array();
+        foreach ($data as $key => $val) {
+          $r[$key]= $this->convert($val);
+        }
+        return $r;
       }
       return $data;
     }

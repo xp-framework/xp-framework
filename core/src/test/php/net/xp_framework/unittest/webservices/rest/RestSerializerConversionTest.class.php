@@ -98,5 +98,29 @@
         $this->fixture->convert(array('greeting' => 'Hello', 'name' => 'World'))
       );
     }
+
+    /**
+     * Test a date instance
+     *
+     */
+    #[@test]
+    public function date_instance() {
+      $this->assertEquals(
+        'Mon, 31 Dec 2012 18:00:00 +0100',
+        $this->fixture->convert(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin')))
+      );
+    }
+
+    /**
+     * Test a date instance
+     *
+     */
+    #[@test]
+    public function date_array() {
+      $this->assertEquals(
+        array('Mon, 31 Dec 2012 18:00:00 +0100'),
+        $this->fixture->convert(array(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin'))))
+      );
+    }
   }
 ?>
