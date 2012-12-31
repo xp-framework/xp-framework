@@ -54,6 +54,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Changed command line reflection (xp -r) to accept file and directory
+  names referring to classes and packages
+  (friebe)
 - Changed command line reflection (xp -r) to display all class constants.
   Added forgotten lang.XPClass::getConstants() method to accomplish this.
   (friebe)
