@@ -19,7 +19,7 @@
    *
    * @see   xp://webservices.rest.RestDeserializer
    */
-  class RestConversionTest extends TestCase {
+  class RestDeserializerConversionTest extends TestCase {
     protected $fixture= NULL;
   
     /**
@@ -624,6 +624,24 @@
       $this->assertEquals(
         $class->newInstance()->withId(4711)->withName('Test'),
         $this->fixture->convert($class, array('id' => 4711, 'name' => 'Test'))
+      );
+    }
+
+
+    /**
+     * Test static members
+     *
+     */
+    #[@test]
+    public function static_member_excluded() {
+      $class= ClassLoader::defineClass('RestConversionTest_StaticMemberExcluded', 'lang.Object', array(), '{
+        public $name;
+        public static $instance= NULL;
+      }');
+      $this->assertNull($this->fixture->convert($class, array('name' => 'Test', 'instance' => 'Value'))
+        ->getClass()
+        ->getField('instance')
+        ->get(NULL)
       );
     }
   }

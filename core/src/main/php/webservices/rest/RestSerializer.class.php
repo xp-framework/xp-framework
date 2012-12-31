@@ -41,7 +41,10 @@
         $class= $data->getClass();
         $r= array();
         foreach ($class->getFields() as $field) {
-          if ($field->getModifiers() & MODIFIER_PUBLIC) {
+          $m= $field->getModifiers();
+          if ($m & MODIFIER_STATIC) {
+            continue;
+          } else if ($field->getModifiers() & MODIFIER_PUBLIC) {
             $r[$field->getName()]= $this->convert($field->get($data));
           } else {
             foreach ($this->variantsOf($field->getName()) as $name) {
@@ -51,6 +54,12 @@
               }
             }
           }
+        }
+        return $r;
+      } else if (is_array($data)) {
+        $r= array();
+        foreach ($data as $key => $val) {
+          $r[$key]= $this->convert($val);
         }
         return $r;
       }

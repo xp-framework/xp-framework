@@ -79,7 +79,7 @@
       // Create route from @webmethod annotation
       $route= $this->addRoute(new RestRoute(
         $webmethod['verb'],
-        $base.rtrim($webmethod['path'], '/'),
+        $base.(isset($webmethod['path']) ? rtrim($webmethod['path'], '/') : ''),
         $method,
         isset($webmethod['accepts']) ? (array)$webmethod['accepts'] : NULL,
         isset($webmethod['returns']) ? (array)$webmethod['returns'] : NULL
