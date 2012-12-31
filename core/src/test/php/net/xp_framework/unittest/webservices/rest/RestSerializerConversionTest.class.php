@@ -122,5 +122,44 @@
         $this->fixture->convert(array(new Date('2012-12-31 18:00:00', new TimeZone('Europe/Berlin'))))
       );
     }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function issue_with_field() {
+      $issue= new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test');
+      $this->assertEquals(
+        array('issueId' => 1, 'title' => 'test'), 
+        $this->fixture->convert($issue)
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function issue_with_getter() {
+      $issue= new net·xp_framework·unittest·webservices·rest·IssueWithGetter(1, 'test');
+      $this->assertEquals(
+        array('issueId' => 1, 'title' => 'test', 'createdAt' => NULL), 
+        $this->fixture->convert($issue)
+      );
+    }
+
+    /**
+     * Test value object
+     *
+     */
+    #[@test]
+    public function issue_with_static() {
+      $o= newinstance('lang.Object', array(), '{
+        public $name= "Test";
+        public static $instance;
+      }');
+      $this->assertEquals(array('name' => 'Test'), $this->fixture->convert($o));
+    }
   }
 ?>
