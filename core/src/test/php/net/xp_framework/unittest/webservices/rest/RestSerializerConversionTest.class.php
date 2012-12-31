@@ -150,6 +150,38 @@
     }
 
     /**
+     * Test array of value objects
+     *
+     */
+    #[@test]
+    public function array_of_issues() {
+      $issues= array(
+        new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1'),
+        new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2')
+      );
+      $this->assertEquals(
+        array(array('issueId' => 1, 'title' => 'test1'), array('issueId' => 2, 'title' => 'test2')),
+        $this->fixture->convert($issues)
+      );
+    }
+
+    /**
+     * Test map of value objects
+     *
+     */
+    #[@test]
+    public function map_of_issues() {
+      $issues= array(
+        'one' => new net·xp_framework·unittest·webservices·rest·IssueWithField(1, 'test1'),
+        'two' => new net·xp_framework·unittest·webservices·rest·IssueWithField(2, 'test2')
+      );
+      $this->assertEquals(
+        array('one' => array('issueId' => 1, 'title' => 'test1'), 'two' => array('issueId' => 2, 'title' => 'test2')),
+        $this->fixture->convert($issues)
+      );
+    }
+
+    /**
      * Test value object
      *
      */
