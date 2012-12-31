@@ -1,5 +1,7 @@
 XP Framework
 ============
+[![Build Status](https://secure.travis-ci.org/xp-framework/xp-framework.png)](http://travis-ci.org/xp-framework/xp-framework)
+
 This is the XP Framework's development checkout
 
 
@@ -37,7 +39,3 @@ in your xp.ini file:
 
 Enjoy!
 
-Build status
-------------
-
-[![Build Status](https://secure.travis-ci.org/xp-framework/xp-framework.png)](http://travis-ci.org/xp-framework/xp-framework)
