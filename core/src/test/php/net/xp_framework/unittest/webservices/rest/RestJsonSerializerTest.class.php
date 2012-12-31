@@ -79,7 +79,7 @@
     #[@test]
     public function issueWithGetterAndDate() {
       $this->assertEquals(
-        '{ "issueId" : 1 , "title" : "New issue" , "createdAt" : "Mon, 19 Mar 2012 08:37:00 +0000" }', 
+        '{ "issueId" : 1 , "title" : "New issue" , "createdAt" : "2012-03-19T08:37:00+00:00" }', 
         $this->fixture->serialize(new net·xp_framework·unittest·webservices·rest·IssueWithGetter(1, 'New issue', new Date('2012-03-19 08:37:00', TimeZone::getByName('GMT'))))
       );
     }

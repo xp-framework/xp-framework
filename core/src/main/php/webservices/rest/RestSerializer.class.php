@@ -36,7 +36,7 @@
      */
     public function convert($data) {
       if ($data instanceof Date) {
-        return $data->toString('r');
+        return $data->toString('c');    // ISO 8601, e.g. "2004-02-12T15:19:21+00:00"
       } else if ($data instanceof Generic) {
         $class= $data->getClass();
         $r= array();
