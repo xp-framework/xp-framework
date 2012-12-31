@@ -186,7 +186,7 @@
      *
      */
     #[@test]
-    public function issue_with_static() {
+    public function static_member_excluded() {
       $o= newinstance('lang.Object', array(), '{
         public $name= "Test";
         public static $instance;
