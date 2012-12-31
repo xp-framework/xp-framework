@@ -6,7 +6,7 @@
 
   $package= 'xp.runtime';
  
-  uses('util.cmd.Console');
+  uses('util.cmd.Console', 'io.File', 'io.Folder');
 
   /**
    * Dumps reflection information about a class
@@ -260,6 +260,46 @@
     }
 
     /**
+     * Derive class from a given file
+     *
+     * @param  io.File file
+     * @return lang.XPClass
+     * @throws lang.ElementNotFoundException
+     */
+    protected static function findClassBy($file) {
+      $q= $file->getURI();
+      foreach (ClassLoader::getLoaders() as $loader) {
+        if (
+          0 === strncmp($q, $loader->path, $l= strlen($loader->path)) &&
+          $loader->providesResource(substr($q, $l))
+        ) {
+          return $loader->loadClass(strtr(substr($q, $l, -strlen(xp::CLASS_FILE_EXT)), DIRECTORY_SEPARATOR, '.'));
+        }
+      }
+      raise('lang.ElementNotFoundException', 'Cannot derive class name from '.$q);
+    }
+
+    /**
+     * Derive package from a given file
+     *
+     * @param  io.Folder folder
+     * @return string
+     * @throws lang.ElementNotFoundException
+     */
+    protected static function findPackageBy($folder) {
+      $q= $folder->getURI();
+      foreach (ClassLoader::getLoaders() as $loader) {
+        if (
+          0 === strncmp($q, $loader->path, $l= strlen($loader->path)) &&
+          $loader->providesPackage($package= strtr(substr($q, $l), DIRECTORY_SEPARATOR, '.'))
+        ) {
+          return $package;
+        }
+      }
+      raise('lang.ElementNotFoundException', 'Cannot derive package name from '.$q);
+    }
+
+    /**
      * Main
      *
      * @param   string[] args
@@ -269,42 +309,50 @@
         Console::$err->writeLine('*** No class or package name given');
         return 2;
       }
-      
-      // Check whether a class or a package is given
+
+      // Check whether a file, class or a package directory or name is given
       $cl= ClassLoader::getDefault();
-      if ($cl->providesClass($args[0])) {
+      if (strstr($args[0], xp::CLASS_FILE_EXT)) {
+        $class= self::findClassBy(new File($args[0]));
+      } else if ($cl->providesClass($args[0])) {
         $class= XPClass::forName($args[0], $cl);
-        Console::writeLine('@', $class->getClassLoader());
-        if ($class->isInterface()) {
-          self::printInterface($class);
-        } else if ($class->isEnum()) {
-          self::printEnum($class);
+      } else {
+        if (strcspn($args[0], '\\/') < strlen($args[0])) {
+          $package= self::findPackageBy(new Folder($args[0]));
         } else {
-          self::printClass($class);
+          $package= $args[0];
         }
-        return 0;
+
+        $provided= FALSE;
+        foreach (ClassLoader::getLoaders() as $loader) {
+          if (!$loader->providesPackage($package)) continue;
+          Console::writeLine('@', $loader);
+          $provided= TRUE;
+        }
+
+        if ($provided) {
+          self::printPackage(Package::forName($package));
+          return 0;
+        }
+
+        // Not found
+        Console::$err->writeLine('*** Failed to locate either a class or a package named "', $args[0], '", tried all of {');
+        foreach (ClassLoader::getLoaders() as $loader) {
+          Console::$err->writeLine('  ', $loader);
+        }
+        Console::$err->writeLine('}');
+        return 1;
       }
-     
-      // Not a class, check for packages
-      $provided= FALSE;
-      foreach ($cl->getLoaders() as $loader) {
-        if (!$loader->providesPackage($args[0])) continue;
-        Console::writeLine('@', $loader);
-        $provided= TRUE;
+
+      Console::writeLine('@', $class->getClassLoader());
+      if ($class->isInterface()) {
+        self::printInterface($class);
+      } else if ($class->isEnum()) {
+        self::printEnum($class);
+      } else {
+        self::printClass($class);
       }
-      
-      if ($provided) {
-        self::printPackage(Package::forName($args[0]));
-        return 0;
-      }
-      
-      // Not found
-      Console::$err->writeLine('*** Failed to locate either a class or a package named "', $args[0], '", tried all of {');
-      foreach ($cl->getLoaders() as $loader) {
-        Console::$err->writeLine('  ', $loader);
-      }
-      Console::$err->writeLine('}');
-      return 1;
+      return 0;
     }
   }
 ?>
