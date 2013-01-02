@@ -65,6 +65,46 @@
         $fixture->content()
       );
     }
+
+    /**
+     * Test headers()
+     *
+     */
+    #[@test]
+    public function headers() {
+      $fixture= $this->newFixture(self::JSON, '');
+      $this->assertEquals(
+        array('Content-Type' => self::JSON, 'Content-Length' => '0'),
+        $fixture->headers()
+      );
+    }
+
+    /**
+     * Test header()
+     *
+     */
+    #[@test]
+    public function content_type_header() {
+      $this->assertEquals(self::JSON, $this->newFixture(self::JSON, '')->header('Content-Type'));
+    }
+
+    /**
+     * Test header()
+     *
+     */
+    #[@test]
+    public function content_type_header_case_insensitive() {
+      $this->assertEquals(self::JSON, $this->newFixture(self::JSON, '')->header('content-type'));
+    }
+
+    /**
+     * Test header()
+     *
+     */
+    #[@test]
+    public function non_existant_header() {
+      $this->assertNull($this->newFixture(self::JSON, '')->header('@@non-existant@@'));
+    }
     
     /**
      * Test data()

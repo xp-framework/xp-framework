@@ -54,6 +54,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added RestResponse::headers() and RestResponse::header() methods
+  (friebe, kiesel)
 - Changed command line reflection (xp -r) to accept file and directory
   names referring to classes and packages
   (friebe)
