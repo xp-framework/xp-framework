@@ -29,7 +29,11 @@
           }
 
           $qn= $base.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
-          $pre ? $inc= $qn.$inc : $inc.= $qn;
+          if (FALSE !== strpos($line, '.php')) {
+            require(substr($qn, 0, -1));
+          } else {
+            $pre ? $inc= $qn.$inc : $inc.= $qn;
+          }
         }
       }
       closedir($d);
