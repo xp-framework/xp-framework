@@ -512,5 +512,88 @@
         $fixture->getHeaders()
       );
     }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentation() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "]",
+        create(new RestRequest())->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithUrl() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /books)@[\n".
+        "]",
+        create(new RestRequest('/books'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithUrlAndMethod() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(POST /books)@[\n".
+        "]",
+        create(new RestRequest('/books', 'POST'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithHeader() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Referer: \"http://localhost\"\n".
+        "]",
+        create(new RestRequest())->withHeader('Referer', 'http://localhost')->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithAccept() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Accept: text/xml\n".
+        "]",
+        create(new RestRequest())->withAccept('text/xml')->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithHeaderAndAccept() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Referer: \"http://localhost\"\n".
+        "  Accept: text/xml\n".
+        "]",
+        create(new RestRequest())->withHeader('Referer', 'http://localhost')->withAccept('text/xml')->toString()
+      );
+    }
+
   }
 ?>

@@ -365,5 +365,23 @@
       } while ($offset < $l);
       return $target;
     }
+
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      $headers= "\n";
+      foreach ($this->headers as $header) {
+        $headers.= '  '.$header->getName().': '.xp::stringOf($header->getValue())."\n";
+      }
+      if ($this->accept) {
+        $headers.='  Accept: '.implode(', ', $this->accept)."\n";
+      }
+
+      return $this->getClassName().'('.$this->method.' '.$this->resource.')@['.$headers.']';
+    }
   }
 ?>
