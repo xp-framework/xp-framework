@@ -176,5 +176,14 @@
       $this->cat && $this->cat->debug('<<<', $response->toString(), $rr->contentCopy());
       return $rr;
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'(->'.xp::stringOf($this->connection).')';
+    }
   }
 ?>
