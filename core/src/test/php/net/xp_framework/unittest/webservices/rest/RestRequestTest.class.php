@@ -142,6 +142,17 @@
      *
      */
     #[@test]
+    public function contentTypeWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
     public function getBodyWithJsonPayload() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
@@ -157,6 +168,17 @@
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
       $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function contentTypeWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $this->assertEquals('text/xml; charset=utf-8', $fixture->getHeader('Content-Type'));
     }
 
     /**
@@ -187,6 +209,18 @@
         '<issue><title>New issue</title></issue>', 
         $fixture->getBody()->data
       );
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function setPayloadCalledTwice() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
     }
 
     /**
@@ -512,5 +546,88 @@
         $fixture->getHeaders()
       );
     }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentation() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "]",
+        create(new RestRequest())->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithUrl() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /books)@[\n".
+        "]",
+        create(new RestRequest('/books'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithUrlAndMethod() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(POST /books)@[\n".
+        "]",
+        create(new RestRequest('/books', 'POST'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithHeader() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Referer: \"http://localhost\"\n".
+        "]",
+        create(new RestRequest())->withHeader('Referer', 'http://localhost')->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithAccept() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Accept: text/xml\n".
+        "]",
+        create(new RestRequest())->withAccept('text/xml')->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithHeaderAndAccept() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Referer: \"http://localhost\"\n".
+        "  Accept: text/xml\n".
+        "]",
+        create(new RestRequest())->withHeader('Referer', 'http://localhost')->withAccept('text/xml')->toString()
+      );
+    }
+
   }
 ?>

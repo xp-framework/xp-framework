@@ -145,7 +145,14 @@
      */
     public function setPayload($payload, RestSerializer $serializer) {
       $this->body= new RequestData($serializer->serialize($payload));
-      $this->headers['Content-Type']= $serializer->contentType();
+
+      // Update content type header
+      foreach ($this->headers as $i => $header) {
+        if ('Content-Type' !== $header->getName()) continue;
+        $this->headers[$i]->value= $serializer->contentType();
+        return;
+      }
+      $this->headers[]= new Header('Content-Type', $serializer->contentType());
     }
 
     /**
@@ -364,6 +371,24 @@
         $offset+= $e+ 1;
       } while ($offset < $l);
       return $target;
+    }
+
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      $headers= "\n";
+      foreach ($this->headers as $header) {
+        $headers.= '  '.$header->getName().': '.xp::stringOf($header->getValue())."\n";
+      }
+      if ($this->accept) {
+        $headers.='  Accept: '.implode(', ', $this->accept)."\n";
+      }
+
+      return $this->getClassName().'('.$this->method.' '.$this->resource.')@['.$headers.']';
     }
   }
 ?>
