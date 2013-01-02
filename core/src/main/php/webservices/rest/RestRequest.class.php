@@ -145,7 +145,14 @@
      */
     public function setPayload($payload, RestSerializer $serializer) {
       $this->body= new RequestData($serializer->serialize($payload));
-      $this->headers['Content-Type']= $serializer->contentType();
+
+      // Update content type header
+      foreach ($this->headers as $i => $header) {
+        if ('Content-Type' !== $header->getName()) continue;
+        $this->headers[$i]->value= $serializer->contentType();
+        return;
+      }
+      $this->headers[]= new Header('Content-Type', $serializer->contentType());
     }
 
     /**

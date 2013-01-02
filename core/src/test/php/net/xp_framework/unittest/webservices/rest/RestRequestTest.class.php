@@ -142,6 +142,17 @@
      *
      */
     #[@test]
+    public function contentTypeWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
     public function getBodyWithJsonPayload() {
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
@@ -157,6 +168,17 @@
       $fixture= new RestRequest();
       $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
       $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function contentTypeWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $this->assertEquals('text/xml; charset=utf-8', $fixture->getHeader('Content-Type'));
     }
 
     /**
@@ -187,6 +209,18 @@
         '<issue><title>New issue</title></issue>', 
         $fixture->getBody()->data
       );
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function setPayloadCalledTwice() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
     }
 
     /**
