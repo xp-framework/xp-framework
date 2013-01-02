@@ -339,5 +339,20 @@
         $list
       );
     }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentation() {
+      $this->assertEquals(
+        "webservices.rest.RestResponse<OK>@(->peer.http.HttpResponse (HTTP/1.1 200 OK) {\n".
+        "  [Content-Type        ] { application/json }\n".
+        "  [Content-Length      ] { 9 }\n".
+        "})",
+        $this->newFixture(self::JSON, '"payload"')->toString()
+      );
+    }
   }
 ?>

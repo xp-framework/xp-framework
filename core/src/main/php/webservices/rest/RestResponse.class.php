@@ -150,5 +150,14 @@
 
       return $this->handlePayloadOf($target);
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->response->message().'>@(->'.$this->response->toString().')';
+    }
   }
 ?>
