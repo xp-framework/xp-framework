@@ -25,6 +25,8 @@ Heads up!
 
 RFCs
 ~~~~
+- RFC #0260: XP 5.9 as default branch
+  (friebe)
 - Implemented first part of RFC #0186 - deprecated SAPI feature.
   (friebe)
 - Implemented RFC #0218: Parameter annotations (pull request #116)
