@@ -65,7 +65,7 @@
      * Sets base and returns this connection
      *
      * @param   var base either a peer.URL or a string
-     * @return  webservices.rest.Restconnection
+     * @return  self
      */
     public function withBase($base) {
       $this->setBase($base);

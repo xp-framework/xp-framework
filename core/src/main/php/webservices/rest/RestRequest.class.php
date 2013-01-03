@@ -48,7 +48,7 @@
      * Sets resource
      *
      * @param   string resource
-     * @return  webservices.rest.RestRequest
+     * @return  self
      */
     public function withResource($resource) {
       $this->resource= $resource;
@@ -77,7 +77,7 @@
      * Sets method
      *
      * @param   string method
-     * @return  webservices.rest.RestRequest
+     * @return  self
      */
     public function withMethod($method) {
       $this->method= $method;
@@ -106,7 +106,7 @@
      * Sets body
      *
      * @param   peer.http.RequestData body
-     * @return  webservices.rest.RestRequest
+     * @return  self
      */
     public function withBody(RequestData $body) {
       $this->body= $body;
@@ -130,7 +130,7 @@
      *
      * @param   string range
      * @param   string q
-     * @return  webservices.rest.RestRequest
+     * @return  self
      */
     public function withAccept($type, $q= NULL) {
       $this->addAccept($type, $q);
@@ -160,7 +160,7 @@
      *
      * @param   var payload
      * @param   string type The Content-Type
-     * @return  webservices.rest.RestRequest
+     * @return  self
      */
     public function withPayload($payload, $type) {
       $this->setPayload($payload, $type);
@@ -200,7 +200,7 @@
      *
      * @param   string name
      * @param   string value
-     * @return  webservices.rest.RestRequest this
+     * @return  self
      */
     public function withParameter($name, $value) {
       $this->parameters[$name]= $value;
@@ -222,7 +222,7 @@
      *
      * @param   string name
      * @param   string value
-     * @return  webservices.rest.RestRequest this
+     * @return  self
      */
     public function withSegment($name, $value) {
       $this->segments[$name]= $value;
@@ -251,7 +251,7 @@
      *
      * @param   var arg
      * @param   string value
-     * @return  webservices.rest.RestRequest this
+     * @return  self
      */
     public function withHeader($arg, $value= NULL) {
       $this->addHeader($arg, $value);
