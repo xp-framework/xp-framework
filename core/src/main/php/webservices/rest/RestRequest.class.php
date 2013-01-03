@@ -275,7 +275,7 @@
     /**
      * Returns all parameters
      *
-     * @param   [:string]
+     * @return  [:string]
      */
     public function getParameters() {
       return $this->parameters;
@@ -298,7 +298,7 @@
     /**
      * Returns all segments
      *
-     * @param   [:string]
+     * @return  [:string]
      */
     public function getSegments() {
       return $this->segments;
@@ -321,7 +321,7 @@
     /**
      * Returns all headers
      *
-     * @param   [:string]
+     * @return  [:string]
      */
     public function getHeaders() {
       $headers= array();
@@ -337,7 +337,7 @@
     /**
      * Returns all headers
      *
-     * @param   peer.Header[]
+     * @return  peer.Header[]
      */
     public function headerList() {
       return array_merge($this->headers, $this->accept
