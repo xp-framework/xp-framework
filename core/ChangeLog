@@ -49,7 +49,7 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- Added support for PHP 5.5
+- Added preliminary support for PHP 5.5
   http://news.planet-xp.net/article/493/2012/12/31/
   (friebe, kiesel)
 - Added xp::ENCODING constant and replaced hardcoded values througout
