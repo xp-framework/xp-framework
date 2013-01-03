@@ -7,6 +7,11 @@ Version ?.?.?, released ????-??-??
 Git commit: ?????
 
 
+Version 5.8.10, released 2013-01-03
+-----------------------------------
+Git commit: 15aecfd82eae2db390868c0debd190a3b0023167
+
+
 Heads up!
 ~~~~~~~~~
 - Deprecated old REST API in webservices.rest.server, pull request #210
