@@ -6,6 +6,56 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Heads up!
+~~~~~~~~~
+- The finally() function is replaced by ensure($t) - see pull request #187
+  This way we're forward-compatible with PHP 5.5 - see issue #186.
+  http://news.planet-xp.net/article/481/2012/09/30/
+  (friebe)
+- The SAPI feature is now deprecated and will be removed in next major series!
+  (friebe)
+- Changed newinstance() to declare classes inside the package of the 
+  base class (or interface)
+  (friebe, kiesel)
+- Changed lang.reflect.Field::getType() to return lang.Type instances.
+  Added getTypeName() to restore old behaviour. See issue #34.
+  (friebe)
+- Merged pull request #93: Access to private constructors, methods and fields
+  (friebe)
+
+RFCs
+~~~~
+- Implemented first part of RFC #0186 - deprecated SAPI feature.
+  (friebe)
+- Implemented RFC #0218: Parameter annotations (pull request #116)
+  (friebe)
+- Implemented RFC #0229: New util.UUID class (pull request #149)
+  http://news.planet-xp.net/article/459/2012/04/23/
+  (friebe)
+- Implemented RFC #0215: Add accessor for XP Framework version 
+  (kiesel, friebe)
+- Implemented RFC #0222: Optional support for PHP 5.3 namespaces
+  http://news.planet-xp.net/article/433/2012/01/06/
+  (kiesel, friebe)
+
+Bugfixes
+~~~~~~~~
+- Fixed issue #132: Namespaced classes not usable in generics
+  (friebe)
+- Fixed issue #130: newinstance() fails to respect namespace
+  (kiesel, friebe)
+- Fixed issue #94: Dynamic Classloader does not provide defined classes
+  (friebe)
+
+Features
+~~~~~~~~
+- Added support for PHP 5.5
+  http://news.planet-xp.net/article/493/2012/12/31/
+  (friebe, kiesel)
+- Added xp::ENCODING constant and replaced hardcoded values througout
+  the framework's source code. See issue #35 for details.
+  (friebe, kiesel)
+
 
 Version 5.8.10, released 2013-01-03
 -----------------------------------
