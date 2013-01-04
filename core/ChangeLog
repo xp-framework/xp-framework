@@ -25,7 +25,9 @@ Heads up!
 
 RFCs
 ~~~~
-- RFC #0260: XP 5.9 as default branch
+- Implemented RFC #0210: Separate contrib & framework versions
+  (friebe)
+- Implemented RFC #0260: XP 5.9 as default branch
   (friebe)
 - Implemented first part of RFC #0186 - deprecated SAPI feature.
   (friebe)
