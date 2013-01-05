@@ -4,6 +4,11 @@
  * $Id$
  */
 
+  uses(
+    'scriptlet.HttpScriptletException',
+    'peer.http.HttpConstants'
+  );
+  
   /**
    * Factory for HTTP response adapters
    *
@@ -24,8 +29,9 @@
         'application/json' => 'webservices.rest.server.transport.JsonHttpResponseAdapter'
       );
       
-      if (!isset($map[$request->getHeader('Accept')])) throw new IllegalArgumentException(
-        'The accept type is not supported: '.$request->getHeader('Accept')
+      if (!isset($map[$request->getHeader('Accept')])) throw new HttpScriptletException(
+        'The accept type is not supported: '.$request->getHeader('Accept'),
+        HttpConstants::STATUS_NOT_ACCEPTABLE
       );
       
       return XPClass::forName($map[$request->getHeader('Accept')]);

@@ -16,6 +16,26 @@
    * @purpose Caster
    */
   class RestDataCaster extends Object {
+    private
+      $ignoreNullFields= TRUE;
+    
+    /**
+     * Indicates whether fields that are set to NULL are ignored in simplification.
+     * 
+     * @return bool
+     */
+    public function getIgnoreNullFields() {
+      return $this->ignoreNullFields;
+    }
+    
+    /**
+     * Sets whether to ignore fields that are set to NULL in simplification.
+     * 
+     * @param bool ignore 
+     */
+    public function setIgnoreNullFields($ignore) {
+      $this->ignoreNullFields= $ignore;
+    }
     
     /**
      * Simplify data structure by generating a simple array containing
@@ -24,7 +44,7 @@
      * @param var[] data The data to simplify
      * @return var[]
      */
-    public static function simple($data) {
+    public function simple($data) {
       switch (xp::typeOf($data)) {
         case 'NULL':
           return NULL;
@@ -32,12 +52,13 @@
         case 'integer':
         case 'string':
         case 'boolean':
+        case 'double':
           return $data;
         
         case 'array':
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= self::simple($value);
+            $result[$key]= $this->simple($value);
           }
           return $result;
 
@@ -47,24 +68,34 @@
           return Primitive::unboxed($data);
         
         case 'util.Hashmap':
-          return self::simple($data->toArray());
+          return $this->simple($data->toArray());
+        
+        case 'util.Date':
+          return $data->toString();
         
         default:
           if ($data instanceof Generic) {
             $fields= array();
             $class= $data->getClass();
             foreach ($class->getFields() as $field) {
+
+              $val= NULL;
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
-                $fields[$field->getName()]= self::simple($field->get($data));
-                
+                $val = $this->simple($field->get($data));
               } else if ($class->hasMethod('get'.ucfirst($field->getName()))) {
-                $fields[$field->getName()]= self::simple($class->getMethod('get'.ucfirst($field->getName()))->invoke($data));
+                $val= $this->simple($class->getMethod('get'.ucfirst($field->getName()))->invoke($data));
+              } else {
+                continue;
               }
+
+              if ($this->ignoreNullFields && $val === NULL) continue;
+
+              $fields[$field->getName()]= $val;
             }
+            
             return $fields;
-          
           } else if (is_object($data)) {
-            return self::simple((array)$data);
+            return $this->simple((array)$data);
           }
         
           throw new ClassCastException('Can not cast '.xp::typeOf($data).' to simple type');
@@ -78,21 +109,22 @@
      * @param lang.Type type The type to use
      * @return var[]
      */
-    public static function complex($data, Type $type) {
-      $typeName= $type instanceof ArrayType ? xp::typeOf($type) : $type->getName();
+    public function complex($data, Type $type) {
+      $typeName= ($type instanceof ArrayType || $type instanceof MapType) ? xp::typeOf($type) : $type->getName();
 
       switch ($typeName) {
         case 'NULL':
           return NULL;
 
         case 'lang.ArrayType':
+        case 'lang.MapType':
           if (!is_array($data)) {
             throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);
           }
 
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= self::complex($value, XPClass::forName($type->componentType()->getName()));
+            $result[$key]= $this->complex($value, Type::forName($type->componentType()->getName()));
           }
           return $result;
         
@@ -115,7 +147,7 @@
           
           $result= array();
           foreach ($data as $key => $value) {
-            $result[$key]= self::complex($value, XPClass::forName('lang.types.String'));
+            $result[$key]= $this->complex($value, XPClass::forName('lang.types.String'));
           }
           return $result;
         
@@ -125,6 +157,13 @@
           }
           
           return new Hashmap($data);
+
+        case 'util.Date':
+          if (!is_string($data)) {
+            throw new ClassCastException('Can not convert '.xp::typeOf($data).' to util.Date');
+          }
+          
+          return Date::fromString($data);
         
         case 'php.stdClass':
           if (!is_array($data)) {
@@ -133,7 +172,7 @@
           
           $result= new stdClass();
           foreach ($data as $key => $value) {
-            $result->$key= self::complex($value, XPClass::forName('lang.types.String'));
+            $result->$key= $this->complex($value, XPClass::forName('lang.types.String'));
           }
           return $result;
           
@@ -143,33 +182,40 @@
               throw new ClassCastException('Can not convert '.xp::typeOf($data).' to lang.Object');
             }
             
+            $string= XPClass::forName('lang.types.String');
             $result= $type->newInstance();
             foreach ($type->getFields() as $field) {
               if ($field->getModifiers() & MODIFIER_PUBLIC) {
                 if (!isset($data[$field->getName()])) {
+                  if($this->ignoreNullFields) {
+                    continue;
+                  }
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
-                $field->set($result, self::complex(
+                $field->set($result, $this->complex(
                   $data[$field->getName()],
-                  XPClass::forName('var' === $field->getTypeName() ? 'lang.types.String' : $field->getTypeName())
+                  Type::$VAR->equals($field->getType()) ? $string : $field->getType()
                 ));
                 
               } else if ($type->hasMethod('set'.ucfirst($field->getName()))) {
                 if (!isset($data[$field->getName()])) {
+                  if($this->ignoreNullFields) {
+                    continue;
+                  }
                   throw new ClassCastException('Field '.$field->getName().' missing for '.$type->getName());
                 }
                 
-                $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array(self::complex(
+                $type->getMethod('set'.ucfirst($field->getName()))->invoke($result, array($this->complex(
                   $data[$field->getName()],
-                  XPClass::forName('var' === $field->getTypeName() ? 'lang.types.String' : $field->getTypeName())
+                  Type::$VAR->equals($field->getType()) ? $string : $field->getType()
                 )));
               }
             }
             return $result;
             
           } else if ($type instanceof Primitive) {
-            return self::complex($data, $type->wrapperClass());
+            return $this->complex($data, $type->wrapperClass());
           }
         
           throw new ClassCastException('Can not convert '.xp::typeOf($data).' to '.$typeName);

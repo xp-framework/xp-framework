@@ -4,21 +4,14 @@
  * $Id$ 
  */
 
-  uses('util.Observer');
+  uses('util.log.BoundLogObserver');
 
   /**
    * Generic DB observer interface.
    *
    * @purpose  DB observer interface
+   * @deprecated
    */
-  interface DBObserver extends Observer {
-  
-    /**
-     * Retrieves an instance.
-     *
-     * @param   var argument
-     * @return  rdbms.DBObserver
-     */
-    public static function instanceFor($arg);
+  interface DBObserver extends BoundLogObserver {
   }
 ?>

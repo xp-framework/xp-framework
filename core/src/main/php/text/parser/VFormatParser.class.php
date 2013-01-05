@@ -77,7 +77,7 @@
      * @return  string
      */
     public static function decodeString($str) {
-      return strtr(utf8_decode($str), array(
+      return strtr(iconv('utf-8', xp::ENCODING, $str), array(
         '\,'    => ',',
         '\N'    => "\n",
         '\n'    => "\n"
@@ -193,7 +193,7 @@
       // Charsets and encodings
       for ($i= 0, $m= sizeof($kargs); $i < $m; $i++) switch ($kargs[$i]) {
         case 'CHARSET=UTF-8': 
-          $value= utf8_decode($value); 
+          $value= iconv('utf-8', xp::ENCODING, $value); 
           break;
           
         case 'ENCODING=BASE64':

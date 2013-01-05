@@ -25,7 +25,7 @@
      * @param   io.streams.OutputStream stream
      * @param   string charset the charset the stream is encoded in.
      */
-    public function __construct(OutputStream $stream, $charset= 'iso-8859-1') {
+    public function __construct(OutputStream $stream, $charset= xp::ENCODING) {
       parent::__construct($stream);
       $this->charset= $charset;
     }
@@ -83,7 +83,7 @@
     public function write($text) {
       $this->stream->write($text instanceof String || $text instanceof Character
         ? $text->getBytes($this->charset)
-        : iconv('iso-8859-1', $this->charset, $text)
+        : iconv(xp::ENCODING, $this->charset, $text)
       );
     }
     
@@ -95,7 +95,7 @@
     public function writeLine($text= '') {
       $this->stream->write(($text instanceof String || $text instanceof Character
         ? $text->getBytes($this->charset)
-        : iconv('iso-8859-1', $this->charset, $text)
+        : iconv(xp::ENCODING, $this->charset, $text)
       ).$this->newLine);
     }
   }

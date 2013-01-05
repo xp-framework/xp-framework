@@ -23,7 +23,7 @@
      * @return  string
      */
     public function getValue() {
-      return utf8_decode($this->node->textContent);
+      return iconv('utf-8', xp::ENCODING, $this->node->textContent);
     }
 
     /**
@@ -32,7 +32,7 @@
      * @param   string value
      */
     public function setValue($value) {
-      $this->node->textContent= utf8_encode($value);
+      $this->node->textContent= iconv(xp::ENCODING, 'utf-8', $value);
     }
   }
 ?>

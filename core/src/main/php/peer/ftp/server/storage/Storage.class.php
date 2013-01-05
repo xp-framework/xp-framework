@@ -4,6 +4,11 @@
  * $Id$ 
  */
 
+  uses(
+    'peer.ftp.server.storage.StorageElement',
+    'peer.ftp.server.storage.StorageCollection'
+  );
+
   define('ST_ELEMENT',     0x0000);
   define('ST_COLLECTION',  0x0001);
 

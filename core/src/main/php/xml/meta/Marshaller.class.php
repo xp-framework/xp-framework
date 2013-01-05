@@ -44,8 +44,18 @@
      */
     protected static function recurse($instance, $class, $node, $inject) {
     
+      // Calculate element name
+      if ('' == $node->getName()) {
+        if ($class->hasAnnotation('xmlfactory', 'element')) {
+          $node->setName($class->getAnnotation('xmlfactory', 'element'));
+        } else {
+          $node->setName(strtolower($class->getSimpleName()));
+        }
+      }
+
       // Namespace handling
       if ($class->hasAnnotation('xmlns')) {
+        $node->setName(key($class->getAnnotation('xmlns')).':'.$node->getName());
         foreach ($class->getAnnotation('xmlns') as $prefix => $url) {
           $node->setAttribute('xmlns:'.$prefix, $url);
         }
@@ -146,7 +156,7 @@
         $tree->root->setName($prefix.':'.$qname->localpart);
         $tree->root->setAttribute('xmlns:'.$prefix, $qname->namespace);
       } else if ($class->hasAnnotation('xmlns')) {
-        $tree->root->setName(key($class->getAnnotation('xmlns')).':'.$class->getSimpleName());
+        $tree->root->setName($class->getSimpleName());
       } else {
         $tree->root->setName(strtolower($class->getSimpleName()));
       }
@@ -163,14 +173,12 @@
      * @param   [:var] inject
      * @return  xml.Node the given target
      */
-    public function marshalTo(Node $target, Generic $instance, $inject= array()) {
+    public function marshalTo(Node $target= NULL, Generic $instance, $inject= array()) {
       $class= $instance->getClass();
 
-      // Add XML namespace from class' "xmlns" annotation if present
-      if ($class->hasAnnotation('xmlns')) {
-        $target->setName(key($class->getAnnotation('xmlns')).':'.$target->getName());
-      }
-      
+      // Create node if not existant
+      if (NULL === $target) $target= new Node(NULL);
+
       self::recurse($instance, $class, $target, $inject);
       return $target;
     }

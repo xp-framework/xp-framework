@@ -10,7 +10,10 @@
     'peer.BSDSocket',
     'peer.server.ConnectionListener',
     'peer.ftp.server.FtpSession',
+    'peer.ftp.server.storage.Storage',
+    'peer.ServerSocket',
     'peer.SocketException',
+    'security.auth.Authenticator',
     'util.log.Traceable'
   );
   
@@ -46,8 +49,8 @@
     /**
      * Constructor
      *
-     * @param   peer.ftp.server.Storage storage
-     * @param   peer.ftp.server.Authenticator authenticator
+     * @param   peer.ftp.server.storage.Storage storage
+     * @param   security.auth.Authenticator authenticator
      */
     public function __construct($storage, $authenticator) {
       $this->storage= $storage;
@@ -667,7 +670,7 @@
         $entry->close();
       } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
-      } finally(); {
+      } ensure($e); {
         $socket->close();
         if ($e) return;
       }
@@ -718,7 +721,7 @@
         $entry->close();
       } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
-      } finally(); {
+      } ensure($e); {
         $socket->close();
         if ($e) return;
       }

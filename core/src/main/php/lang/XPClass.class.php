@@ -18,7 +18,7 @@
   define('DETAIL_THROWS',         3);
   define('DETAIL_COMMENT',        4);
   define('DETAIL_ANNOTATIONS',    5);
-  define('DETAIL_NAME',           6);
+  define('DETAIL_TARGET_ANNO',    6);
   define('DETAIL_GENERIC',        7);
  
   /**
@@ -345,6 +345,15 @@
     }
 
     /**
+     * Retrieve class constants
+     *
+     * @return  [:var]
+     */
+    public function getConstants() {
+      return $this->_reflect->getConstants();
+    }
+
+    /**
      * Cast a given object to the class represented by this object
      *
      * @param   lang.Generic expression
@@ -585,7 +594,7 @@
     public static function parseAnnotations($input, $context) {
       $input= trim($input, "[]# \t\n\r").']';
       $offset= 0;
-      $annotations= array();
+      $annotations= array(0 => array(), 1 => array());
       $annotation= $value= NULL;
       $length= strlen($input);
       ob_start();
@@ -596,7 +605,16 @@
           $annotation= substr($input, $offset+ 1, $s- 1);
           $offset+= $s;
         } else if (']' === $state) {
-          $annotation && $annotations[$annotation]= $value;
+          if (NULL === $annotation) {
+            // Nothing
+          } else if (FALSE === ($p= strpos($annotation, ':'))) {
+            $annotations[0][$annotation]= $value;
+          } else {
+            $target= rtrim(substr($annotation, 0, $p), ' ');
+            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
+            isset($annotations[1][$target]) || $annotations[1][$target]= array();
+            $annotations[1][$target][$annotation]= $value;
+          }
           break;
         } else if ('(' === $state) {
           $peek= substr($input, $offset+ 1, strcspn($input, '="\')', $offset));
@@ -617,7 +635,7 @@
             $p= $offset+ 1+ 6;
             while ($b > 0) {
               $p+= strcspn($input, '()"\'', $p);
-              if ($p > $length) break; 
+              if ($p >= $length) break; 
               if ('(' === $input{$p}) $b++; else if (')' === $input{$p}) $b--; else if ('\'' === $input{$p} || '"' === $input{$p}) {
                 $q= $input{$p};
                 $p++;
@@ -692,14 +710,21 @@
             raise('lang.ClassFormatException', 'Parse error: Expecting ] in '.$context);
           }
         } else if (')' === $state) {
-          $annotations[$annotation]= $value;
+          if (FALSE === ($p= strpos($annotation, ':'))) {
+            $annotations[0][$annotation]= $value;
+          } else {
+            $target= rtrim(substr($annotation, 0, $p), ' ');
+            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
+            isset($annotations[1][$target]) || $annotations[1][$target]= array();
+            $annotations[1][$target][$annotation]= $value;
+          }
           $annotation= $value= NULL;
           $s= strspn($input, ',]', $offset);
           $offset+= $s + 1;
         } else if (',' === $state) {
           if (NULL !== $annotation && NULL !== $value) {    // BC
             trigger_error('Deprecated usage of multi-value annotations in '.$context, E_USER_DEPRECATED);
-            $annotations[$annotation]= array($value);
+            $annotations[0][$annotation]= array($value);
             do {
               $s= strspn($input, ' "\')', $offset+ 1);
               $offset+= $s;
@@ -715,18 +740,27 @@
                   raise('lang.ClassFormatException', 'Parse error: Unterminated or malformed string in '.$context);
                 }
                 $offset= $p+ 1;
-                $annotations[$annotation][]= $value;
+                $annotations[0][$annotation][]= $value;
               } else if (')' === $input{$offset}) {
                 break;
               } else {
                 $s= strcspn($input, ',)', $offset);
-                $annotations[$annotation][]= eval('return '.substr($input, $offset, $s).';');
+                $annotations[0][$annotation][]= eval('return '.substr($input, $offset, $s).';');
                 $offset+= $s;
               }
             } while ($offset <= $length);
             break;
           }
-          $annotations[$annotation]= $value;
+          if (NULL === $annotation) {
+            // Nothing
+          } else if (FALSE === ($p= strpos($annotation, ':'))) {
+            $annotations[0][$annotation]= $value;
+          } else {
+            $target= rtrim(substr($annotation, 0, $p), ' ');
+            $annotation= ltrim(substr($annotation, $p+ 1), ' ');
+            isset($annotations[1][$target]) || $annotations[1][$target]= array();
+            $annotations[1][$target][$annotation]= $value;
+          }
           $annotation= $value= NULL;
           if (FALSE === ($offset= strpos($input, '@', $offset))) {
             raise('lang.ClassFormatException', 'Parse error: Expecting @ in '.$context);
@@ -745,22 +779,15 @@
     }
 
     /**
-     * Retrieve details for a specified class. Note: Results from this 
-     * method are cached!
+     * Parse details from a given input string
      *
-     * @param   string class fully qualified class name
-     * @return  array or NULL to indicate no details are available
+     * @param   string bytes
+     * @param   string context default ''
+     * @return  [:var] details
      */
-    public static function detailsForClass($class) {
-      if (!$class) return NULL;        // Border case
-      if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
-
-      // Retrieve class' sourcecode
-      $cl= self::_classLoaderFor($class);
-      if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
-
+    public static function parseDetails($bytes, $context= '') {
       $details= array(array(), array());
-      $annotations= array();
+      $annotations= array(0 => array(), 1 => array());
       $comment= NULL;
       $members= TRUE;
       $parsed= '';
@@ -781,7 +808,7 @@
               if (']' == substr(rtrim($tokens[$i][1]), -1)) {
                 $annotations= self::parseAnnotations(
                   trim($parsed, " \t\n\r"), 
-                  $class.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
+                  $context.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
                 );
                 $parsed= '';
               }
@@ -792,17 +819,17 @@
           case T_INTERFACE:
             if ('' !== $parsed) raise(
               'lang.ClassFormatException', 
-              'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
+              'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : '')
             );
             $details['class']= array(
-              DETAIL_COMMENT      => trim(preg_replace('/\n   \* ?/', "\n", "\n".substr(
+              DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
               ))),
-              DETAIL_ANNOTATIONS  => $annotations
+              DETAIL_ANNOTATIONS  => $annotations[0]
             );
-            $annotations= array();
+            $annotations= array(0 => array(), 1 => array());
             $comment= NULL;
             break;
 
@@ -810,16 +837,16 @@
             if (!$members) break;
 
             // Have a member variable
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $name= substr($tokens[$i][1], 1);
             $details[0][$name]= array(
-              DETAIL_ANNOTATIONS => $annotations
+              DETAIL_ANNOTATIONS => $annotations[0]
             );
-            $annotations= array();
+            $annotations= array(0 => array(), 1 => array());
             break;
 
           case T_FUNCTION:
-            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$class.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
+            '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $members= FALSE;
             while (T_STRING !== $tokens[$i][0]) $i++;
             $m= $tokens[$i][1];
@@ -827,14 +854,15 @@
               DETAIL_ARGUMENTS    => array(),
               DETAIL_RETURNS      => 'void',
               DETAIL_THROWS       => array(),
-              DETAIL_COMMENT      => trim(preg_replace('/\n     \* ?/', "\n", "\n".substr(
+              DETAIL_COMMENT      => trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
                 $comment, 
                 4,                              // "/**\n"
                 strpos($comment, '* @')- 2      // position of first details token
               ))),
-              DETAIL_ANNOTATIONS  => $annotations,
-              DETAIL_NAME         => $tokens[$i][1]
+              DETAIL_ANNOTATIONS  => $annotations[0],
+              DETAIL_TARGET_ANNO  => $annotations[1]
             );
+            $annotations= array(0 => array(), 1 => array());
             $matches= NULL;
             preg_match_all(
               '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)?/',
@@ -842,12 +870,12 @@
               $matches, 
               PREG_SET_ORDER
             );
-            $annotations= array();
             $comment= NULL;
+            $arg= 0;
             foreach ($matches as $match) {
               switch ($match[1]) {
                 case 'param':
-                  $details[1][$m][DETAIL_ARGUMENTS][]= $match[2];
+                  $details[1][$m][DETAIL_ARGUMENTS][$arg++]= $match[2];
                   break;
 
                 case 'return':
@@ -865,10 +893,26 @@
             // Empty
         }
       }
-      
-      // Return details for specified class
-      xp::$registry['details.'.$class]= $details;
       return $details;
+    }
+
+    /**
+     * Retrieve details for a specified class. Note: Results from this 
+     * method are cached!
+     *
+     * @param   string class fully qualified class name
+     * @return  array or NULL to indicate no details are available
+     */
+    public static function detailsForClass($class) {
+      if (!$class) return NULL;        // Border case
+      if (isset(xp::$registry['details.'.$class])) return xp::$registry['details.'.$class];
+
+      // Retrieve class' sourcecode
+      $cl= self::_classLoaderFor($class);
+      if (!$cl || !($bytes= $cl->loadClassBytes($class))) return NULL;
+
+      // Return details for specified class
+      return xp::$registry['details.'.$class]= self::parseDetails($bytes, $class);
     }
 
     /**
@@ -902,17 +946,21 @@
      *
      * @param   lang.XPClass self
      * @param   lang.Type[] arguments
-     * @return  lang.XPClass
+     * @return  string created type's literal name
      */
     public static function createGenericType(XPClass $self, array $arguments) {
 
       // Verify
-      if (!$self->isGenericDefinition()) {
+      $annotations= $self->getAnnotations();
+      if (!isset($annotations['generic']['self'])) {
         throw new IllegalStateException('Class '.$self->name.' is not a generic definition');
       }
-      $components= $self->genericComponents();
-      $cs= sizeof($components);
-      if ($cs != sizeof($arguments)) {
+      $components= array();
+      foreach (explode(',', $annotations['generic']['self']) as $cs => $name) {
+        $components[]= ltrim($name);
+      }
+      $cs++;
+      if ($cs !== sizeof($arguments)) {
         throw new IllegalArgumentException(sprintf(
           'Class %s expects %d component(s) <%s>, %d argument(s) given',
           $self->name,
@@ -925,19 +973,15 @@
       // Compose names
       $cn= $qc= '';
       foreach ($arguments as $typearg) {
-        $cn.= '¸'.$typearg->literal();
+        $cn.= '¸'.strtr($typearg->literal(), '\\', '¦');
         $qc.= ','.$typearg->getName();
       }
-      $name= xp::reflect($self->name).'··'.substr($cn, 1);
+      $name= $self->literal().'··'.substr($cn, 1);
       $qname= $self->name.'<'.substr($qc, 1).'>';
 
       // Create class if it doesn't exist yet
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        $meta= isset(xp::$registry['details.'.$self->name]) ? xp::$registry['details.'.$self->name] : array(
-          'class' => NULL,
-          0       => array(),
-          1       => array()
-        );
+        $meta= xp::$registry['details.'.$self->name];
 
         // Parse placeholders into a lookup map
         $placeholders= array();
@@ -953,43 +997,18 @@
 
         // Replace source
         $src= '';
-        $comment= NULL;
-        $annotations= array();
         $annotation= NULL;
         $matches= array();
         $state= array(0);
         $counter= 0;
         $tokens= token_get_all($bytes);
         for ($i= 0, $s= sizeof($tokens); $i < $s; $i++) {
-          if (T_COMMENT === $tokens[$i][0] && '#' === $tokens[$i][1]{0}) {
-            $annotations= eval('return array('.preg_replace(
-              array('/@([a-z_]+),/i', '/@([a-z_]+)\(\'([^\']+)\'\)/ie', '/@([a-z_]+)\(/i', '/([^a-z_@])([a-z_]+) *= */i'),
-              array('\'$1\' => NULL,', '"\'$1\' => urldecode(\'".urlencode(\'$2\')."\')"', '\'$1\' => array(', '$1\'$2\' => '),
-              trim($tokens[$i][1], "[]# \t\n\r").','
-            ).');');
+          if (T_COMMENT === $tokens[$i][0]) {
             continue;
-          } else if (T_DOC_COMMENT === $tokens[$i][0]) {
-            $matches= NULL;
-            $comment= trim(preg_replace('/\n\s+\* ?/', "\n", "\n".substr(
-              $tokens[$i][1], 
-              4,                                    // "/**\n"
-              strpos($tokens[$i][1], '* @')- 2      // position of first details token
-            )));
-            preg_match_all(
-              '/@([a-z]+)\s*([^<\r\n]+<[^>]+>|[^\r\n ]+) ?([^\r\n ]+)?/',
-              $tokens[$i][1], 
-              $matches, 
-              PREG_SET_ORDER
-            );
-          }
-        
-          if (0 === $state[0]) {
+          } else if (0 === $state[0]) {
             if (T_ABSTRACT === $tokens[$i][0] || T_FINAL === $tokens[$i][0]) {
               $src.= $tokens[$i][1].' ';
             } else if (T_CLASS === $tokens[$i][0] || T_INTERFACE === $tokens[$i][0]) {
-              if (NULL === $meta['class']) {
-                $meta['class']= array(DETAIL_COMMENT => $comment, DETAIL_ANNOTATIONS  => $annotations);
-              }
               $meta['class'][DETAIL_GENERIC]= array($self->name, $arguments);
               $src.= $tokens[$i][1].' '.$name;
               array_unshift($state, $tokens[$i][0]);
@@ -1002,7 +1021,7 @@
                 foreach (explode(',', $annotations['generic']['parent']) as $j => $placeholder) {
                   $xargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= ' extends '.self::createGenericType($self->getParentClass(), $xargs)->literal();
+                $src.= ' extends '.strtr(self::createGenericType($self->getParentClass(), $xargs), '\\', '¦');
               } else {
                 $src.= ' extends '.$tokens[$i+ 2][1];
               }
@@ -1036,25 +1055,7 @@
               array_unshift($state, 3);
               array_unshift($state, 2);
               $m= $tokens[$i+ 2][1];
-              if (isset($meta[1][$m])) {
-                $annotations= $meta[1][$m][DETAIL_ANNOTATIONS];
-              } else {
-                $meta[1][$m]= array(
-                  DETAIL_ARGUMENTS    => array(),
-                  DETAIL_RETURNS      => 'void',
-                  DETAIL_THROWS       => array(),
-                  DETAIL_COMMENT      => $comment,
-                  DETAIL_ANNOTATIONS  => $annotations,
-                  DETAIL_NAME         => $m
-                );
-                foreach ($matches as $match) {
-                  switch ($match[1]) {
-                    case 'param': $meta[1][$m][DETAIL_ARGUMENTS][]= $match[2]; break;
-                    case 'return': $meta[1][$m][DETAIL_RETURNS]= $match[2]; break;
-                    case 'throws': $meta[1][$m][DETAIL_THROWS][]= $match[2]; break;
-                  }
-                }
-              }
+              $annotations= array($meta[1][$m][DETAIL_ANNOTATIONS], $meta[1][$m][DETAIL_TARGET_ANNO]);
             } else if ('}' === $tokens[$i][0]) {
               $src.= '}';
               break;
@@ -1080,12 +1081,12 @@
               array_unshift($state, 4);
               $src.= '{';
               
-              if (isset($annotations['generic']['return'])) {
-                $meta[1][$m][DETAIL_RETURNS]= strtr($annotations['generic']['return'], $placeholders);
+              if (isset($annotations[0]['generic']['return'])) {
+                $meta[1][$m][DETAIL_RETURNS]= strtr($annotations[0]['generic']['return'], $placeholders);
               }
-              if (isset($annotations['generic']['params'])) {
+              if (isset($annotations[0]['generic']['params'])) {
                 $generic= array();
-                foreach (explode(',', $annotations['generic']['params']) as $j => $placeholder) {
+                foreach (explode(',', $annotations[0]['generic']['params']) as $j => $placeholder) {
                   if ('' === ($replaced= strtr(ltrim($placeholder), $placeholders))) {
                     $generic[$j]= NULL;
                   } else {
@@ -1114,10 +1115,9 @@
                     );
                   }
                 }
-
-                $annotations= array();
               }
-              
+
+              $annotations= array();              
               unset($meta[1][$m][DETAIL_ANNOTATIONS]['generic']);
               continue;
             }
@@ -1135,7 +1135,7 @@
                 foreach (explode(',', $annotation[$counter]) as $j => $placeholder) {
                   $iargs[]= Type::forName(strtr(ltrim($placeholder), $placeholders));
                 }
-                $src.= self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs)->literal();
+                $src.= strtr(self::createGenericType(new XPClass(new ReflectionClass($tokens[$i][1])), $iargs), '\\', '¦');
               } else {
                 $src.= $tokens[$i][1];
               }
@@ -1159,7 +1159,7 @@
         xp::$registry['class.'.$name]= $qname;
       }
       
-      return new XPClass(new ReflectionClass($name));
+      return $name;
     }
     
     /**
@@ -1170,8 +1170,8 @@
      * @throws  lang.IllegalStateException if this class is not a generic definition
      * @throws  lang.IllegalArgumentException if number of arguments does not match components
      */
-    public function newGenericType(array $arguments) {
-      return self::createGenericType($this, $arguments);
+    public function newGenericType($arguments) {
+      return new XPClass(new ReflectionClass(self::createGenericType($this, $arguments)));
     }
 
     /**

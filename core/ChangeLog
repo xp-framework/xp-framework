@@ -8,6 +8,345 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- The finally() function is replaced by ensure($t) - see pull request #187
+  This way we're forward-compatible with PHP 5.5 - see issue #186.
+  http://news.planet-xp.net/article/481/2012/09/30/
+  (friebe)
+- The SAPI feature is now deprecated and will be removed in next major series!
+  (friebe)
+- Changed newinstance() to declare classes inside the package of the 
+  base class (or interface)
+  (friebe, kiesel)
+- Changed lang.reflect.Field::getType() to return lang.Type instances.
+  Added getTypeName() to restore old behaviour. See issue #34.
+  (friebe)
+- Merged pull request #93: Access to private constructors, methods and fields
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0210: Separate contrib & framework versions
+  (friebe)
+- Implemented RFC #0260: XP 5.9 as default branch
+  (friebe)
+- Implemented first part of RFC #0186 - deprecated SAPI feature.
+  (friebe)
+- Implemented RFC #0218: Parameter annotations (pull request #116)
+  (friebe)
+- Implemented RFC #0229: New util.UUID class (pull request #149)
+  http://news.planet-xp.net/article/459/2012/04/23/
+  (friebe)
+- Implemented RFC #0215: Add accessor for XP Framework version 
+  (kiesel, friebe)
+- Implemented RFC #0222: Optional support for PHP 5.3 namespaces
+  http://news.planet-xp.net/article/433/2012/01/06/
+  (kiesel, friebe)
+
+Bugfixes
+~~~~~~~~
+- Fixed issue #132: Namespaced classes not usable in generics
+  (friebe)
+- Fixed issue #130: newinstance() fails to respect namespace
+  (kiesel, friebe)
+- Fixed issue #94: Dynamic Classloader does not provide defined classes
+  (friebe)
+
+Features
+~~~~~~~~
+- Added preliminary support for PHP 5.5
+  http://news.planet-xp.net/article/493/2012/12/31/
+  (friebe, kiesel)
+- Added xp::ENCODING constant and replaced hardcoded values througout
+  the framework's source code. See issue #35 for details.
+  (friebe, kiesel)
+
+
+Version 5.8.10, released 2013-01-03
+-----------------------------------
+Git commit: 15aecfd82eae2db390868c0debd190a3b0023167
+
+
+Heads up!
+~~~~~~~~~
+- Deprecated old REST API in webservices.rest.server, pull request #210
+  (friebe)
+- Dropped interpackage dependency util -> rdbms, pull request #204
+  (kiesel)
+- Dropped interpackage dependency util.semaphore -> scriptlet, pull request #205
+  (kiesel)
+
+RFCs
+~~~~
+- Implemented RFC #0243 - REST Client & Serverside APIs RFC, pull request #210
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Fixed Parameter::getType() and getTypeName() for inherited methods / ctors
+  (friebe)
+- Fixed HttpScriptlet to support "PATCH" verb
+  (friebe)
+- Fixed xp::extensions() to also work exclusively with type restrictions
+  (friebe)
+- Fixed Unicode conversion for sybase databases in cases where "utf8" is
+  not recognized by iconv library
+  (friebe)
+- Fixed rdbms.sybase.SybaseDBAdapter to exclude incomplete index records
+  (friebe)
+- Fixed remote.ByteCountedString's length() method for zero-length strings
+  (friebe)
+- Fixed TDS protocol's T_DATETIME4 type not being deserialized correctly
+  (friebe)
+- Fixed parsing of HTTP headers w/o value in peer.http.HttpResponse
+  (friebe, kiesel)
+- Fixed OCCURRENCE_OPTIONAL being ignored for missing file upload input 
+  fields - see pull request #198
+  (mrosoiu)
+- Fixed encoding of associative array with modified pointer position by
+  merging pull request #199
+  (andrei21funk, friebe)
+- Fixed $__generic-style generics (BC with < 5.8) breaking. They yielded
+  a php.stdClass instance instead of the one to be instantiated, which 
+  would result in "Fatal error: Call to undefined method stdClass::X()" 
+  when any method X would be called
+  (friebe)
+
+Features
+~~~~~~~~
+- Added RestResponse::headers() and RestResponse::header() methods
+  (friebe, kiesel)
+- Changed command line reflection (xp -r) to accept file and directory
+  names referring to classes and packages
+  (friebe)
+- Changed command line reflection (xp -r) to display all class constants.
+  Added forgotten lang.XPClass::getConstants() method to accomplish this.
+  (friebe)
+- Added @xmlwrapped annotation - see pull request #213 
+  (friebe)
+- Added xp.unittest.ColoredBarListener - see issue #207
+  (kiesel, iigorr, ohinckel)
+- Added support for unittest listener options - see pull request #201
+  (friebe, ohinckel)
+- Improved generics instance creation by factors between 1.2 and 1.6
+  (friebe)
+- Added support for peer.Header instances in REST client - pull #202
+  (friebe)
+- Added ArrayType and MapType constructors which accept component types
+  in pull request #197
+  (friebe)
+
+
+Version 5.8.9, released 2012-10-19
+----------------------------------
+Git commit: f7ccfbe86cac0765f6cf41d048484d21346c7eb5
+
+Heads up!
+~~~~~~~~~
+- Deprecated finally() in favor of ensure($t) - see issue #186.
+  http://news.planet-xp.net/article/481/2012/09/30/
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Added support for double data type in REST serializer - see pull #192
+  (weiher)
+- Fixed JsonDecoder to ignore trailing whitespace - see issue #189.
+  (friebe)
+- Added forward-compatible version of handling unpack("a...") data. 
+  With PHP 5.5.0, this has been changed to include trailing \0s, see
+  https://bugs.php.net/bug.php?id=61038
+  (friebe)
+- Replaced preg_replace() calls with /e modifier where applicable, it
+  is deprecated in PHP 5.5.0
+  (friebe)
+
+Features
+~~~~~~~~
+- Added SSL-specific options for sockets - see pull request #193 
+  (kiesel)
+- Added failover Sybase/MSSQL support via userland driver by merging 
+  the incubator/tds branch in pull request #190. 
+  http://news.planet-xp.net/article/483/2012/10/11/
+  (friebe, kiesel) 
+- Added DETAIL_TARGET_ANNO for forward compatibility with parameter
+  annotations implementation to core and compiler.
+  (friebe)
+
+
+Version 5.8.8, released 2012-09-30
+----------------------------------
+Git commit: e5e65ff70b85af9629f9a5af1854cc2d3fd064fe
+
+Bugfixes
+~~~~~~~~
+- Added support for MySQL time column type - see pull request #185
+  (andstefiul)
+- Fixed bug in compiler resolving platform-specific constants, e.g.
+  DIRECTORY_SEPARATOR, at compile time.
+  (friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0254 - Builtin development webserver "xpws"
+  http://news.planet-xp.net/article/478/2012/09/29/
+  (friebe)
+
+Features
+~~~~~~~~
+- Changed scriptlet API to use $_SERVER instead of getenv() - this is more
+  portable to different web server SAPIs. See pull request #184
+  (friebe)
+
+
+Version 5.8.7, released 2012-08-17
+----------------------------------
+Git commit: 20ebf97d186623fcf82140de06a870eaba610464
+
+Bugfixes
+~~~~~~~~
+- Fixed issue #182: URLs with `@` inside fail to parse
+  (friebe)
+- Allowed _-.: as values in rest paths - see pull request #175
+  (kiesel)
+- Fixed optional params for rest server - see pull request #152
+  (mihaighigea, kiesel, iigorr)
+- Fixed HTTP content length calculation for empty POST bodys.
+  (kiesel, iigorr)
+
+Features
+~~~~~~~~
+- Added equals() methods to io.File & io.Folder - pull request #181
+  (friebe)
+- Preferred "debug" loglevel over "info" in remote package - less verbose.
+  See pull request #180
+  (kiesel)
+- Extracted class parsing into own method (testability) - pull request #177
+  (friebe)
+- Added support for "self" as type in @return, @param - pull request #176
+  (friebe)
+
+
+Version 5.8.6, released 2012-07-09
+----------------------------------
+Git commit: f244d67ac076f723934eb24ca187efed5664c6a8
+
+Bugfixes
+~~~~~~~~
+- Changed drivers for Sybase and MSSQL to also emit seconds of a given 
+  util.Date - see pull request #169
+  (ohinckel, friebe)
+
+RFCs
+~~~~
+- Implemented RFC #0256 - Improve unittest's error messages 
+  See also pull request #40.
+  (kiesel, friebe)
+- Implemented RFC #0255 - Allow multiple @beforeClass / @afterClass methods.
+  See also pull request #100.
+  (friebe)
+
+Features
+~~~~~~~~
+- Improved unittest output when comparing large strings (pull request #30)
+  (friebe, kiesel)
+- Added unittest.TestCase::skip() method - see pull request #173
+  (friebe)
+- Added default logger to scriptlet handlers - see pull request #62
+  (oanas, friebe)
+- Added colored output for unittest runner - see issue #25 / pull #172
+  (kiesel, friebe)
+- Added support for supplying a path to the unittest command - will run
+  all test case classes inside the given directory and its subdirectories.
+  See pull request #170
+  (friebe, kiesel)
+- Added unittest listener to update terminal title - pull request #171
+  (kiesel, friebe)
+- Added support for ! in classpaths - see pull request #168
+  (mrosoiu)
+
+
+Version 5.8.5, released 2012-06-08
+----------------------------------
+Git commit: a644ffc21f9e8b59db56ad505a0869afff6ab27f
+
+Bugfixes
+~~~~~~~~
+- Fixed problem with multiple entries in X-Forwarded-Host header. See 
+  issue #162, and http://httpd.apache.org/docs/2.2/mod/mod_proxy.html
+  (friebe)
+- Fixed support for REST Object collections (see pull request #164)
+  (friebe, ghiata)
+- Fixed creation of Date from a float value causes PHP fatal error - see
+  pull request #156
+  (ghiata)
+- Fixed broken ExtensionMethodsIntegrationTest::trimMethod() 
+  (friebe, mrosoiu)
+- Merged pull request #145 - Fix stacktrace scope when calling an undefined 
+  method using call_user_func_array()
+  (mrosoiu, friebe)
+- Merged pull request #141 - Fix when using CURL transports w/ SSL version
+  (mihaighigea)
+- Fixed issue #137 - Extension methods don't work on lang.Throwable
+  (friebe)
+- Fix typo in lang.ClassLoader to correct method's argument list,
+  see pull request #134
+  (mrosoiu, kiesel)
+- Handle empty Json request gracefully.
+  (iigorr)
+- Merged pull request #128 - Don't access scriptlet.HttpScriptletRequest
+  params public property, use setters and getters instead
+  (cconstandachi)
+
+RFCs
+~~~~
+- Implemented RFC #0235 - CsvMapReader, CsvMapWriter (pull request #148)
+  (friebe)
+
+Features
+~~~~~~~~
+- Changed CsvWriter to be less strict in what it accepts - see issue #123
+  (friebe)
+- Added new peer.http.HttpConnection::patch() method - pull request #161
+  (friebe)
+- Added new HTTP status codes defined in RFC 6585, see issue #158
+  (friebe)
+- Added HttpResponse::getHeaderString() and HttpRequest::getHeaderString()
+  see pull request #153
+  (friebe)
+- New method lang.reflect.Package::getComment() - pull request #139
+  (friebe)
+- Merged pull request #144 - Some improvements of the RestDataCaster
+  (Stormwind, friebe)
+- Merged pull request #143 - New peer.URL::getCanonicalURL() method
+  http://news.planet-xp.net/article/453/2012/04/06/
+  (mihaighigea)
+- Merged pull request #131 - Add finalizeReloaded(), finalizeCancel(),
+  finalizeSuccess()
+  (cconstandachi, friebe)
+- Changed webservices.rest.server.RestDataCaster methods to be non-static.
+  (iigorr)
+- Added possibility to handle error in RestHttpScriptlet using instances
+  of RestErrorFormatter.
+  (iigorr)
+- Changed text.parser.generic.ParseException to contain the parse error
+  instances, not only their messages.
+  (iigorr, friebe)
+- Improved error handling in RestHttpScriptlet
+  (iigorr)
+
+
+Version 5.8.4, released 2012-02-26
+----------------------------------
+Git commit: fb9fb97c7d40f4e19c5546386f9666669e6c3622
+
+Heads up!
+~~~~~~~~~
+- Removed deprecated img.graph package
+  http://news.planet-xp.net/article/446/2012/02/21/
+  (friebe)
+- Changed scriptlet request parameters and headers to be case-preserving
+  See issue #120, http://news.planet-xp.net/article/443/2012/02/08/
+  (friebe, kiesel)
 - Removed "localhost" local sockets magic from MySQL implementations
   http://news.planet-xp.net/article/434/2012/01/08/
   (friebe, kiesel)
@@ -25,6 +364,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0237 - xp -w and xp -d
+  (friebe)
 - Implemented RFC #0221 - Allow combining application properties from
   multiple sources
   (kiesel)
@@ -33,6 +374,25 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed broken class-external extension method resolution in the XP compiler
+  (friebe)
+- Fixed bug #127: Exception cause swallowed
+  (friebe)
+- Fixed default timeout setting in XpProtocolHandler.
+  (ledermueller)
+- Fixed timeout settings in BSDSocket to not overwrite the general timeout with
+  the connect timeout.
+  (ledermueller, kiesel)
+- Changed lang.types.Boolean to accept TRUE, FALSE, integers and the strings 
+  "true" and "false" and throw exceptions otherwise
+  (friebe, mrosoiu)
+- Merged pull request #122: Check for numeric value during creation of numbers
+  (ledermueller)
+- Merged pull request #119: Json serialization for Generic objects
+  (mrosoiu)
+- Fixed readBool() in Properties to also accept different notations of true
+  values like "True" or "TRUE"
+  (robert)
 - Fixed issue #112: XmlRpcDecoder does not comply with XML-RPC specifications
   (ppetermann, friebe)
 - Fixed issue #109: Errors in CurlHttpTransport 
@@ -61,6 +421,24 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for setting a timeout programmatic or via dsn in the
+  HandlerInstancePool to make it possible to overwrite the default timeout of
+  60 seconds.
+  (ledermueller)
+- Added Boolean::$TRUE and Boolean::$FALSE to lang.types.Boolean
+  (friebe)
+- Added support for multiple configuration paths for web applications
+  see RFC #0221 (pull request #118)
+  (kuse)
+- Added support for multiple -c arguments for xpcli runner
+  see RFC #0221  (pull request #118)
+  (kuse)
+- Added lang.reflect.Field::getTypeName() for forward compatibility - see 
+  comments in issue #34
+  http://news.planet-xp.net/article/440/2012/01/28/
+  (friebe)
+- Merged pull request #115: Properties: Support uppercase booleans
+  (ledermueller)
 - Added tests for rdbms.Statement class
   (hinckel)
 - Merged pull request #103 - Extended Server Protocol, allowing to handle

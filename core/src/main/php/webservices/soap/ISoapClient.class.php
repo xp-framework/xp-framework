@@ -4,6 +4,8 @@
  * $Id$
  */
 
+  uses('xml.QName');
+
   /**
    * SoapClient interface
    *

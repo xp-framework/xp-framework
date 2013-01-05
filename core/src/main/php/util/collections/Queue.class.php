@@ -15,7 +15,7 @@
    *
    * Example:
    * <code>
-   *   uses('util.collections.Queue', 'text.String');
+   *   uses('util.collections.Queue');
    *   
    *   // Fill queue
    *   with ($q= new Queue()); {

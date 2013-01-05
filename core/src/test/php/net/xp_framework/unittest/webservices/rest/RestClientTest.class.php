@@ -34,7 +34,7 @@
     #[@test]
     public function stringBase() {
       $this->assertEquals(
-        new URL(self::BASE_URL), 
+        new URL(self::BASE_URL),
         $this->newFixture(self::BASE_URL)->getBase()
       );
     }
@@ -55,7 +55,7 @@
     #[@test]
     public function urlBase() {
       $this->assertEquals(
-        new URL(self::BASE_URL), 
+        new URL(self::BASE_URL),
         $this->newFixture(new URL(self::BASE_URL))->getBase()
       );
     }
@@ -92,5 +92,174 @@
       $fixture->setConnection(new HttpConnection(self::BASE_URL));
       $this->assertEquals(new URL(self::BASE_URL), $fixture->getBase());
     }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function singleArgumentExecuteNull() {
+      $this->newFixture()->execute(NULL);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function singleArgumentExecuteThis() {
+      $this->newFixture()->execute($this);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeNullTypeNullRequest() {
+      $this->newFixture()->execute(NULL, NULL);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeNullType() {
+      $this->newFixture()->execute(NULL, new RestRequest());
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeNullRequest() {
+      $this->newFixture()->execute(Type::$VAR, NULL);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function executeThisRequest() {
+      $this->newFixture()->execute(Type::$VAR, $this);
+    }
+
+    /**
+     * Test execute()
+     *
+     */
+    #[@test, @expect(class= 'lang.IllegalStateException', withMessage= 'No connection set')]
+    public function executeWithoutBase() {
+      $this->newFixture()->execute(Type::$VAR, new RestRequest());
+    }
+
+    /**
+     * Test "text/xml" is supported
+     *
+     */
+    #[@test]
+    public function textXmlDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer',
+        $this->newFixture()->deserializerFor('text/xml')
+      );
+    }
+
+    /**
+     * Test "application/xml" is supported
+     *
+     */
+    #[@test]
+    public function applicationXmlDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer',
+        $this->newFixture()->deserializerFor('application/xml')
+      );
+    }
+
+    /**
+     * Test "text/json" is supported
+     *
+     */
+    #[@test]
+    public function textJsonDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer',
+        $this->newFixture()->deserializerFor('text/json')
+      );
+    }
+
+    /**
+     * Test "text/x-json" is supported
+     *
+     */
+    #[@test]
+    public function textXJsonDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer',
+        $this->newFixture()->deserializerFor('text/x-json')
+      );
+    }
+
+    /**
+     * Test "text/javascript" is supported
+     *
+     */
+    #[@test]
+    public function textJavascriptDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer',
+        $this->newFixture()->deserializerFor('text/javascript')
+      );
+    }
+
+    /**
+     * Test "application/json" is supported
+     *
+     */
+    #[@test]
+    public function applicationJsonDeserializer() {
+      $this->assertInstanceOf(
+        'webservices.rest.RestDeserializer',
+        $this->newFixture()->deserializerFor('application/json')
+      );
+    }
+
+    /**
+     * Test "text/html" is not supported
+     *
+     */
+    #[@test]
+    public function unknownDeserializer() {
+      $this->assertNull($this->newFixture()->deserializerFor('text/html'));
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentation() {
+      $this->assertEquals(
+        "webservices.rest.RestClient(->null)",
+        $this->newFixture()->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithBase() {
+      $this->assertEquals(
+        "webservices.rest.RestClient(->peer.http.HttpConnection(->URL{http://api.example.com/ via peer.http.SocketHttpTransport}, timeout: [read= 60.00, connect= 2.00]))",
+        $this->newFixture('http://api.example.com/')->toString()
+      );
+    }
+
   }
 ?>

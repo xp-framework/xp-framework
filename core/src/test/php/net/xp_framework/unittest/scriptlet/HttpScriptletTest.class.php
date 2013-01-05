@@ -5,18 +5,16 @@
  */
 
   uses(
-    'unittest.TestCase',
-    'scriptlet.HttpScriptlet',
-    'scriptlet.RequestAuthenticator',
-    'peer.URL'
+    'net.xp_framework.unittest.scriptlet.ScriptletTestCase',
+    'scriptlet.RequestAuthenticator'
   );
 
   /**
    * TestCase
    *
-   * @see      xp://scriptlet.HttpScriptlet
+   * @see   xp://scriptlet.HttpScriptlet
    */
-  class HttpScriptletTest extends TestCase {
+  class HttpScriptletTest extends ScriptletTestCase {
     protected static $helloScriptlet= NULL;
     
     static function __static() {
@@ -42,27 +40,13 @@
         public function doDelete($request, $response) {
           $response->write("Hello ".$request->method);
         }
+        public function doPut($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
+        public function doPatch($request, $response) {
+          $response->write("Hello ".$request->method);
+        }
       }');
-    }
-  
-    /**
-     * Set session path to current working directory
-     *
-     */
-    public function setUp() {
-      session_save_path(getcwd());
-    }
-
-    /**
-     * Destroy session and cleanup file
-     *
-     */
-    public function tearDown() {
-      if (session_id()) {
-        session_write_close();
-        unlink(session_save_path().DIRECTORY_SEPARATOR.'sess_'.session_id());
-        session_id(NULL);
-      }
     }
     
     /**
@@ -216,6 +200,24 @@
     #[@test]
     public function doConnect() {
       $this->assertHandlerForMethodTriggered('CONNECT');
+    }
+
+    /**
+     * Test doPut() method is invoked
+     *
+     */
+    #[@test]
+    public function doPut() {
+      $this->assertHandlerForMethodTriggered('PUT');
+    }
+
+    /**
+     * Test doPatch() method is invoked
+     *
+     */
+    #[@test]
+    public function doPatch() {
+      $this->assertHandlerForMethodTriggered('PATCH');
     }
 
     /**
@@ -491,6 +493,39 @@
       }');
       $s->service($req, $res);
       $this->assertEquals('Welcome!', $res->getContent());
+    }
+
+    /**
+     * Test X-Forwarded-Host
+     *
+     */
+    #[@test]
+    public function forwardedHost() {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $req->addHeader('X-Forwarded-Host', 'proxy.example.com');
+      $res= new HttpScriptletResponse();
+
+      $s= new HttpScriptlet();
+      $s->service($req, $res);
+
+      $this->assertEquals('proxy.example.com', $req->getURL()->getHost());
+    }
+
+    /**
+     * Test X-Forwarded-Host with multiple hosts
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/162
+     */
+    #[@test]
+    public function forwardedHosts() {
+      $req= $this->newRequest('GET', new URL('http://localhost/'));
+      $req->addHeader('X-Forwarded-Host', 'balance.example.com, proxy.example.com');
+      $res= new HttpScriptletResponse();
+
+      $s= new HttpScriptlet();
+      $s->service($req, $res);
+
+      $this->assertEquals('balance.example.com', $req->getURL()->getHost());
     }
   }
 ?>

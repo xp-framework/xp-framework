@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'text.csv.CsvListWriter',
+    'text.csv.processors.FormatDate',
     'io.streams.MemoryOutputStream'
   );
 
@@ -150,6 +151,28 @@
     public function quotesAroundEmptyAreEscaped() {
       $this->newWriter(create(new CsvFormat())->withQuote("'"))->write(array("''", 'Karlsruhe', '76137'));
       $this->assertEquals("'''''';Karlsruhe;76137\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test writing a single line
+     *
+     */
+    #[@test]
+    public function writeLineFromMap() {
+      $this->newWriter()->write(array('name' => 'Timm', 'city' => 'Karlsruhe', 'zip' => '76137'));
+      $this->assertEquals("Timm;Karlsruhe;76137\n", $this->out->getBytes());
+    }
+
+    /**
+     * Test writing a single line
+     *
+     */
+    #[@test]
+    public function writeLineFromMapWithProcessor() {
+      $writer= $this->newWriter();
+      $writer->setProcessor(1, new FormatDate('d.m.Y'));
+      $writer->write(array('id' => 1, 'date' => new Date('2012-02-10')));
+      $this->assertEquals("1;10.02.2012\n", $this->out->getBytes());
     }
   }
 ?>

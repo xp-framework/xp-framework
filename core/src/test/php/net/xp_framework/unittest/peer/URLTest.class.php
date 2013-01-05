@@ -9,8 +9,9 @@
   /**
    * TestCase
    *
-   * @see      xp://peer.URL
-   * @purpose  Unittest
+   * @see   xp://peer.URL
+   * @see   https://github.com/xp-framework/xp-framework/issues/182
+   * @see   rfc://rfc1738
    */
   class URLTest extends TestCase {
   
@@ -1829,6 +1830,136 @@
     #[@test]
     public function parseIpv6URL() {
       $this->assertEquals('http://[2001:8d8f:1fe:5:abba:dbff:fefe:7755]:80/authenticate/', create(new URL('http://[2001:8d8f:1fe:5:abba:dbff:fefe:7755]:80/authenticate/'))->getURL());
+    }
+
+    /**
+     * Remove arguments from scheme
+     *
+     */
+    #[@test]
+    public function canonicalURLScheme() {
+     $this->assertEquals('https://localhost/', create(new URL('https+v3://localhost'))->getCanonicalUrl());
+    }
+
+    /**
+     * Lowercase the host
+     *
+     */
+    #[@test]
+    public function canonicalURLLowerCaseHost() {
+      $this->assertEquals('http://localhost/', create(new URL('http://LOCALHOST'))->getCanonicalUrl());
+    }
+    
+    /**
+     * Fail lowercase the host
+     *
+     */
+    #[@test]
+    public function failCanonicalURLLowerCaseHost() {
+      $this->assertNotEquals('http://LOCALHOST/', create(new URL('http://LOCALHOST'))->getCanonicalUrl());
+    }
+    
+    /**
+     * Remove default port
+     *
+     */
+    #[@test]
+    public function canonicalURLRemoveDefaultPort() {
+      $this->assertEquals('http://localhost/', create(new URL('http://localhost:80'))->getCanonicalUrl());
+    }
+    
+    /**
+     * Don't remove if isn't default port
+     *
+     */
+    #[@test]
+    public function canonicalURLPort() {
+      $this->assertEquals('http://localhost:81/', create(new URL('http://localhost:81'))->getCanonicalUrl());
+    }
+    
+    /**
+     * Capitalize letters in escape sequence
+     *
+     */
+    #[@test]
+    public function canonicalURLCapitalizeLettersInEscapeSequenceForPath() {
+      $this->assertEquals('http://localhost/a%C2%B1b', create(new URL('http://localhost/a%c2%b1b'))->getCanonicalUrl());
+    }
+    
+    /**
+     * Decode percent encoded octets
+     *
+     */
+    #[@test]
+    public function canonicalURLdecodePercentEncodedOctetsForPath() {
+      $this->assertEquals('http://localhost/-._~', create(new URL('http://localhost/%2D%2E%5F%7E'))->getCanonicalUrl());
+    }
+    
+    /**
+     * Remove dot segments
+     *
+     */
+    #[@test]
+    public function canonicalURLremoveDotSegmentsForPath() {
+      $this->assertEquals('http://localhost/a/g', create(new URL('http://localhost/a/b/c/./../../g'))->getCanonicalUrl());
+    }
+    
+    /**
+     * Remove dot segments
+     *
+     */
+    #[@test]
+    public function canonicalURL() {
+      $srcURL='https+v3://LOCALHOST:443/%c2/%7E?q1=%2D&q2=%b1#/a/b/c/./../../g';
+      $destURL='https://localhost/%C2/~?q1=-&q2=%B1#/a/g';
+      $this->assertEquals($destURL, create(new URL($srcURL))->getCanonicalUrl());
+    }
+
+    /**
+     * Verify URLs with `@` as value for query params do not fail to parse
+     *
+     */
+    #[@test]
+    public function atInParams() {
+      $this->assertEquals('@', create(new URL('http://localhost/?q=@'))->getParam('q'));
+    }
+
+    /**
+     * Verify URLs with `@` inside query string not fail to parse
+     *
+     */
+    #[@test]
+    public function atInQuerystring() {
+      $this->assertEquals('%40', create(new URL('http://localhost/?@'))->getQuery());
+    }
+
+    /**
+     * Verify URLs with `@` inside fragment not fail to parse
+     *
+     */
+    #[@test]
+    public function atInFragment() {
+      $this->assertEquals('@', create(new URL('http://localhost/#@'))->getFragment());
+    }
+
+    /**
+     * Verify URLs with `@` inside fragment not fail to parse
+     *
+     */
+    #[@test]
+    public function atInPath() {
+      $this->assertEquals('/@', create(new URL('http://localhost/@'))->getPath());
+    }
+
+    /**
+     * Verify URLs with `@` inside fragment not fail to parse
+     *
+     */
+    #[@test]
+    public function atInUserAndPath() {
+      $u= new URL('http://user@localhost/@');
+      $this->assertEquals('user', $u->getUser());
+      $this->assertEquals('/@', $u->getPath());
     }
   }
 ?>

@@ -78,7 +78,7 @@
       $subject          = '',
       $priority         = MAIL_PRIORITY_NORMAL,
       $contenttype      = 'text/plain',
-      $charset          = 'iso-8859-1',
+      $charset          = xp::ENCODING,
       $encoding         = '8bit',
       $folder           = NULL,
       $uid              = 0,

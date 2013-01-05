@@ -17,13 +17,13 @@
    * @see      xp://scriptlet.HttpScriptlet
    * @purpose  Provide a way to access the HTTP response
    */  
-  class HttpScriptletResponse extends Object implements Response {
+  class HttpScriptletResponse extends Object implements scriptlet·Response {
     protected
       $uri=             NULL;
     
     public
       $version=         '1.1',
-      $content=         '',
+      $content=         NULL,
       $statusCode=      HttpConstants::STATUS_OK,
       $headers=         array();
     
@@ -256,7 +256,9 @@
      *
      */
     public function sendContent() {
-      echo $this->getContent();
+      if (NULL !== ($content= $this->getContent())) {
+        echo $this->getContent();
+      }
     }
     
     /**

@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>net.xp-framework</groupId>
+    <artifactId>pom</artifactId>
+    <version>5.8.10-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <!-- The basics -->
+  <groupId>net.xp-framework</groupId>
+  <artifactId>tools</artifactId>
+  <version>5.8.10-SNAPSHOT</version>
+  <packaging>xar</packaging>
+
+  <!-- More project information -->
+  <name>XP-Framework tools</name>
+
+  <!-- Copy resources (not in the default Maven layout) -->
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+
+          <!-- Copy tools resources -->
+          <execution>
+            <id>copy-tools-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/php/</directory>
+                  <includes>
+                    <include>xp/runtime/usage.txt</include>
+                    <include>xp/scriptlet/xpws.txt</include>
+                    <include>xp/scriptlet/*.html</include>
+                    <include>xp/codegen/**/*.xsl</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <!-- Copy bootstrap -->
+          <execution>
+            <id>copy-bootstrap</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/tools</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>tools</directory>
+                  <includes>
+                    <include>*.php</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--
+   ! When releasing to Sonatype, build and attach the "tests",
+   ! "sources" and "apidoc" artifacts
+   !-->
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>net.xp-forge.maven.plugins</groupId>
+            <artifactId>xp-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>source-no-fork</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>attach-apidoc</id>
+                <goals>
+                  <goal>apidoc-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

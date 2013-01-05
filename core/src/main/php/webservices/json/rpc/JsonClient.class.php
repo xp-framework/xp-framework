@@ -4,7 +4,10 @@
  * $Id: JsonClient.class.php 8651 2006-11-25 17:18:51Z kiesel $ 
  */
 
-  uses('webservices.json.rpc.JsonRequestMessage');
+  uses(
+    'webservices.json.rpc.JsonRequestMessage',
+    'webservices.json.rpc.transport.JsonRpcHttpTransport'
+  );
 
   /**
    * This is a Json-RPC client

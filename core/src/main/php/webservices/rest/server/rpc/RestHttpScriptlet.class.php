@@ -8,16 +8,21 @@
     'scriptlet.HttpScriptlet',
     'webservices.rest.server.routing.RestRoutingProcessor',
     'webservices.rest.server.transport.HttpRequestAdapterFactory',
-    'webservices.rest.server.transport.HttpResponseAdapterFactory'
+    'webservices.rest.server.transport.HttpResponseAdapterFactory',
+    'webservices.rest.server.RestErrorFormatter',
+    'webservices.json.JsonDecoder'
   );
   
   /**
    * REST HTTP scriptlet
    *
+   * @deprecated  Use webservices.rest.srv.RestScriptlet instead!
    */
   class RestHttpScriptlet extends HttpScriptlet {
-    protected $router= NULL;
-    protected $base= '';
+    protected 
+      $router= NULL,
+      $base= '',
+      $errorFormatter= NULL;
     
     /**
      * Constructor
@@ -30,6 +35,15 @@
       $this->router= XPClass::forName($router)->newInstance();
       $this->router->configure($package, $base);
       $this->base= rtrim($base, '/');
+    }
+    
+    /**
+     * Sets an error formatter.
+     * 
+     * @param type $errorFormatter 
+     */
+    public function setErrorFormatter(RestErrorFormatter $errorFormatter) {
+      $this->errorFormatter= $errorFormatter;
     }
     
     /**
@@ -47,7 +61,11 @@
         
         $args= $item->getArgs();
         foreach ($args->getArguments() as $name) {
-          $response->write('- '.$name.' : '.$args->getArgumentType($name)->getName());
+          $response->write(sprintf('- %s : %s %s',
+            $name, 
+            $args->getArgumentType($name)->getName(),
+            $args->isArgumentOptional($name) ? ' (optional)' : ''
+          ));
           
           if ($args->isInjected($name)) $response->write(' (injected by '.$args->getInjection($name).')');
           
@@ -60,7 +78,7 @@
     }
     
     /**
-     * Do request processing
+     * Process request and handle errors
      * 
      * @param scriptlet.http.HttpScriptletRequest request The request
      * @param scriptlet.http.HttpScriptletResponse response The response
@@ -69,14 +87,52 @@
       $req= HttpRequestAdapterFactory::forRequest($request)->newInstance($request);
       $res= HttpResponseAdapterFactory::forRequest($request)->newInstance($response);
       
-      $routings= $this->router->routesFor($req, $res);
-      
+      try {
+        $this->execute($req, $res);
+      } catch (Throwable $e) {
+        if(!$this->errorFormatter)
+          throw $e;
+
+        $formattedError= $this->errorFormatter->format($e);
+        if (NULL === $formattedError)
+          throw $e;
+
+        if ($formattedError instanceof RestFormattedError && $formattedError->getStatus()) {
+          $res->setStatus($formattedError->getStatus());
+        } else if ($e instanceof ScriptletException) {
+          $res->setStatus($e->getStatus());
+        } else {
+          $res->setStatus(HttpConstants::STATUS_INTERNAL_SERVER_ERROR);
+        }
+        
+        $res->setData($formattedError);  
+      }
+    }
+    
+    /**
+     * Do request processing
+     * 
+     * @param scriptlet.http.HttpScriptletRequest request The request
+     * @param scriptlet.http.HttpScriptletResponse response The response
+     */
+    private function execute($req, $res) {
+      $routings = $this->getRequestRoutes($req);
+            
       // Setup processor and bind data sources
       $processor= new RestRoutingProcessor();
       $processor->bind('webservices.rest.server.transport.HttpRequestAdapter', $req);
       $processor->bind('webservices.rest.server.transport.HttpResponseAdapter', $res);
-      $processor->bind('payload', $req->getData());
       
+      try {
+        $processor->bind('payload', $req->getData());
+      } catch (FormatException $e) {
+        throw new HttpScriptletException($e->getMessage(), HttpConstants::STATUS_BAD_REQUEST, $e->getCause());
+      }
+
+      // Use path and query params for maching routes
+      // (after casting to required type, the params are passed to web-methods)
+      $uri= sprintf('%s?%s', $req->getPath(), $req->getQueryString());
+
       $routed= FALSE;
       $errors= array();
       for ($i= 0, $s= sizeof($routings); $i<$s && !$routed; $i++) {
@@ -85,7 +141,7 @@
         try {
           $res->setData($processor->execute(
             $routing,
-            $routing->getPath()->match(substr($req->getPath(), strlen($this->base)))
+            $routing->getPath()->match(substr($uri, strlen($this->base)))
           ));
           $routed= TRUE;
         } catch (ClassCastException $e) {
@@ -96,14 +152,34 @@
             $e->getClassName(),
             $e->getMessage()
           );
-        }
+        } 
       }
-      
       if (!$routed)  throw new IllegalStateException(
         'Can not route '.$req->getMethod().' request '.$req->getPath()." [\n  ".
         implode($errors, "\n  ").
         "\n]"
       );
+    }
+    
+    /**
+     * Configure available routes for request
+     * 
+     * @param scriptlet.http.HttpScriptletRequest request The request
+     * @param scriptlet.http.HttpScriptletResponse response The response
+     */
+    private function getRequestRoutes($req) {
+      $path= substr($req->getPath(), strlen($this->base));
+      
+      if (!$this->router->resourceExists($path)) {
+        throw new HttpScriptletException('Resource '.$path.' does not exist.', HttpConstants::STATUS_NOT_FOUND);
+      }
+      
+      $routings= $this->router->routesFor($req, $res);     
+      if (count($routings) === 0) {
+        throw new HttpScriptletException('The method '.$req->getMethod().' is not allowed on the resource '.$path.'.', HttpConstants::STATUS_METHOD_NOT_ALLOWED);
+      }
+      
+      return $routings;
     }
     
     /**

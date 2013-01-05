@@ -9,9 +9,8 @@
   uses('util.cmd.Console');
 
   /**
-   * Displays XP version and runtime information
+   * Evaluates sourcecode
    *
-   * @purpose  Tool
    */
   class xp·runtime·Evaluate extends Object {
     
@@ -21,10 +20,19 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $src= $args[0];
+
+      // Read sourcecode from STDIN if no further argument is given
+      if (0 === sizeof($args)) {
+        $src= file_get_contents('php://stdin');
+      } else {
+        $src= $args[0];
+      }
+      $src= trim($src, ' ;').';';
+
+      // Perform
       $argv= array(xp::nameOf(__CLASS__)) + $args;
       $argc= sizeof($argv);
-      exit(eval($src));
+      return eval($src);
     }
   }
 ?>

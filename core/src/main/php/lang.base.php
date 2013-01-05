@@ -4,11 +4,20 @@
  * $Id$
  */
 
+  define('MODIFIER_STATIC',       1);
+  define('MODIFIER_ABSTRACT',     2);
+  define('MODIFIER_FINAL',        4);
+  define('MODIFIER_PUBLIC',     256);
+  define('MODIFIER_PROTECTED',  512);
+  define('MODIFIER_PRIVATE',   1024);
+
+
   // {{{ final class xp
   final class xp {
     const CLASS_FILE_EXT= '.class.php';
+    const ENCODING= 'iso-8859-1';
 
-    public static $registry  = array(
+    public static $registry = array(
       'errors'     => array(),
       'sapi'       => array(),
       'class.xp'   => '<xp>',
@@ -141,7 +150,7 @@
         if (MODIFIER_STATIC & $method->getModifiers() && $method->numParameters() > 0) {
           $param= $method->getParameter(0);
           if ('self' === $param->getName()) {
-            self::$registry['ext'][$scope][xp::reflect($param->getTypeName())]= $class;
+            self::$registry['ext'][$scope][$param->getType()->literal()]= $class;
           }
         }
       }
@@ -179,7 +188,7 @@
     }
     // }}}
     
-    // {{{ public var sapi(string* sapis)
+    // {{{ deprecated public var sapi(string* sapis)
     //     Sets an SAPI
     static function sapi() {
       foreach ($a= func_get_args() as $name) {
@@ -333,7 +342,7 @@
             $unpack[$header['version']], 
             fread($current['handle'], 0x0100)
           );
-          $current['index'][$entry['id']]= array($entry['size'], $entry['offset'], $i);
+          $current['index'][rtrim($entry['id'], "\0")]= array($entry['size'], $entry['offset'], $i);
         }
       }
 
@@ -491,9 +500,10 @@
   }
   // }}}
 
-  // {{{ void finally (void)
-  //     Syntactic sugar. Intentionally empty
-  function finally() {
+  // {{{ void ensure ($t)
+  //     Replacement for finally() which clashes with PHP 5.5.0's finally
+  function ensure(&$t) {
+    if (!isset($t)) $t= NULL;
   }
   // }}}
 
@@ -586,32 +596,51 @@
 
     // Check for an anonymous generic 
     if (strstr($spec, '<')) {
-      $type= Type::forName($spec)->literal();
+      $class= Type::forName($spec);
+      $type= $class->literal();
+      $p= strrpos(substr($type, 0, strpos($type, '··')), '·');
     } else {
-      $type= xp::reflect(strstr($spec, '.') ? $spec : xp::nameOf($spec));
+      FALSE === strrpos($spec, '.') && $spec= xp::nameOf($spec);
+      $type= xp::reflect($spec);
       if (!class_exists($type, FALSE) && !interface_exists($type, FALSE)) {
         xp::error(xp::stringOf(new Error('Class "'.$spec.'" does not exist')));
         // Bails
       }
+      $p= strrpos($type, '·');
     }
 
-    $name= $type.'·'.(++$u);
-    
+    // Create unique name
+    $n= '·'.(++$u);
+    if (FALSE !== $p) {
+      $ns= '$package= "'.strtr(substr($type, 0, $p), '·', '.').'"; ';
+      $spec= strtr(substr($type, 0, $p), '·', '.').'.'.substr($type, $p+ 1).$n;
+      $decl= $type.$n;
+    } else if (FALSE === ($p= strrpos($type, '\\'))) {
+      $ns= '';
+      $decl= $type.$n;
+      $spec= substr($spec, 0, strrpos($spec, '.')).'.'.$type.$n;
+    } else {
+      $ns= 'namespace '.substr($type, 0, $p).'; ';
+      $decl= substr($type, $p+ 1).$n;
+      $spec= strtr($type, '\\', '.').$n;
+      $type= '\\'.$type;
+    }
+
     // Checks whether an interface or a class was given
     $cl= DynamicClassLoader::instanceFor(__FUNCTION__);
     if (interface_exists($type)) {
-      $cl->setClassBytes($name, 'class '.$name.' extends Object implements '.$type.' '.$bytes);
+      $cl->setClassBytes($spec, $ns.'class '.$decl.' extends Object implements '.$type.' '.$bytes);
     } else {
-      $cl->setClassBytes($name, 'class '.$name.' extends '.$type.' '.$bytes);
+      $cl->setClassBytes($spec, $ns.'class '.$decl.' extends '.$type.' '.$bytes);
     }
 
-    $cl->loadClass0($name);
+    $decl= $cl->loadClass0($spec);
 
     // Build paramstr for evaluation
     for ($paramstr= '', $i= 0, $m= sizeof($args); $i < $m; $i++) {
       $paramstr.= ', $args['.$i.']';
     }
-    return eval('return new '.$name.'('.substr($paramstr, 2).');');
+    return eval('return new '.$decl.'('.substr($paramstr, 2).');');
   }
   // }}}
 
@@ -633,7 +662,7 @@
     $class= XPClass::forName(strstr($base, '.') ? $base : xp::nameOf($base));
     if ($class->hasField('__generic')) {
       $__id= microtime();
-      $name= xp::reflect($classname);
+      $name= $class->literal();
       $instance= unserialize('O:'.strlen($name).':"'.$name.'":1:{s:4:"__id";s:'.strlen($__id).':"'.$__id.'";}');
       foreach ($typeargs as $type) {
         $instance->__generic[]= xp::reflect($type->getName());
@@ -648,23 +677,20 @@
       return $instance;
     }
     
+    // Instantiate, passing the rest of any arguments passed to create()
     // BC: Wrap IllegalStateExceptions into IllegalArgumentExceptions
     try {
-      $type= $class->newGenericType($typeargs);
+      $reflect= new ReflectionClass(XPClass::createGenericType($class, $typeargs));
+      if ($reflect->hasMethod('__construct')) {
+        $a= func_get_args();
+        return $reflect->newInstanceArgs(array_slice($a, 1));
+      } else {
+        return $reflect->newInstance();
+      }
     } catch (IllegalStateException $e) {
       throw new IllegalArgumentException($e->getMessage());
-    }
-
-    // Instantiate
-    if ($type->hasConstructor()) {
-      $args= func_get_args();
-      try {
-        return $type->getConstructor()->newInstance(array_slice($args, 1));
-      } catch (TargetInvocationException $e) {
-        throw $e->getCause();
-      }
-    } else {
-      return $type->newInstance();
+    } catch (ReflectionException $e) {
+      throw new IllegalAccessException($e->getMessage());
     }
   }
   // }}}

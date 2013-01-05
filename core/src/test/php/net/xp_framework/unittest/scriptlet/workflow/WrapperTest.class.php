@@ -517,5 +517,75 @@
       ));
       $this->assertTrue($this->handler->errorsOccured());
     }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function missingFileUpload() {
+
+      // Register "file_upload" param
+      $this->wrapper->registerParamInfo(
+        'file_upload',
+        OCCURRENCE_UNDEFINED,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToFileData'),
+        array('scriptlet.xml.workflow.checkers.FileUploadPrechecker'),
+        NULL
+      );
+
+      $this->loadFromRequest(array(
+        'orderdate'   => '',
+        'shirt_size'  => 'S',
+        'shirt_qty'   => 1,
+        'notify_me'   => array('send'),
+        'options'     => array(NULL, '0020'),
+        'person_ids'  => array('', '1552'),
+        'file_upload' => array(
+          'name'     => '',
+          'type'     => '',
+          'tmp_name' => '',
+          'error'    => UPLOAD_ERR_NO_FILE,
+          'size'     => 0
+        )
+      ));
+      $this->assertFormError('file_upload', 'missing');
+    }
+
+    /**
+     * Test the load() method
+     *
+     */
+    #[@test]
+    public function ignoreMissingOptionalFileUpload() {
+
+      // Register "file_upload" param
+      $this->wrapper->registerParamInfo(
+        'file_upload',
+        OCCURRENCE_OPTIONAL,
+        NULL,
+        array('scriptlet.xml.workflow.casters.ToFileData'),
+        array('scriptlet.xml.workflow.checkers.FileUploadPrechecker'),
+        NULL
+      );
+
+      $this->loadFromRequest(array(
+        'orderdate'   => '',
+        'shirt_size'  => 'S',
+        'shirt_qty'   => 1,
+        'notify_me'   => array('send'),
+        'options'     => array(NULL, '0020'),
+        'person_ids'  => array('', '1552'),
+        'file_upload' => array(
+          'name'     => '',
+          'type'     => '',
+          'tmp_name' => '',
+          'error'    => UPLOAD_ERR_NO_FILE,
+          'size'     => 0
+        )
+      ));
+      $this->assertFalse($this->handler->errorsOccured());
+    }
   }
 ?>

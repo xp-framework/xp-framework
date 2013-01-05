@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.log.Traceable');
+
   // Handler stati
   define('HANDLER_SETUP',       'setup');
   define('HANDLER_FAILED',      'failed');
@@ -23,8 +25,9 @@
    * @see      xp://scriptlet.xml.workflow.AbstractState#addHandler
    * @purpose  Base class
    */
-  class AbstractHandler extends Object {
+  class AbstractHandler extends Object implements Traceable {
     public
+      $cat              = NULL,
       $wrapper          = NULL,
       $values           = array(HVAL_PERSISTENT => array(), HVAL_FORMPARAM => array()),
       $errors           = array(),
@@ -39,7 +42,17 @@
     public function __construct() {
       $this->name= strtolower($this->getClass()->getSimpleName());
     }
-    
+
+    /**
+     * Set a trace for debugging
+     *
+     * @param   util.log.LogCategory cat
+     * @see     xp://util.log.Traceable
+     */
+    public function setTrace($cat) {
+      $this->cat= $cat;
+    }
+
     /**
      * Creates a string representation of this handler
      *
@@ -282,5 +295,38 @@
      * @param   scriptlet.xml.Context context
      */
     public function finalize($request, $response, $context) { }
+    
+    /**
+     * Finalize this handler when the page was reloaded
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.Context context
+     */
+    public function reloaded($request, $response, $context) {
+      $this->finalize($request, $response, $context);
+    }
+    
+    /**
+     * Finalize this handler for cancellation
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.Context context
+     */
+    public function cancelled($request, $response, $context) {
+      $this->finalize($request, $response, $context);
+    }
+    
+    /**
+     * Finalize this handler with success
+     *
+     * @param   scriptlet.xml.workflow.WorkflowScriptletRequest request
+     * @param   scriptlet.xml.XMLScriptletResponse response
+     * @param   scriptlet.xml.Context context
+     */
+    public function success($request, $response, $context) {
+      $this->finalize($request, $response, $context);
+    }
   }
 ?>

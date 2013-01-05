@@ -55,10 +55,10 @@
      * Encode string
      *
      * @param   string str
-     * @param   string charset default 'iso-8859-1'
+     * @param   string charset defaults to XP default encoding
      * @return  string
      */
-    public static function encode($str, $charset= 'iso-8859-1') { 
+    public static function encode($str, $charset= xp::ENCODING) { 
       $r= array(' ' => '_');
       foreach (QuotedPrintable::getCharsToEncode() as $i) {
         $r[chr($i)]= '='.strtoupper(dechex($i));

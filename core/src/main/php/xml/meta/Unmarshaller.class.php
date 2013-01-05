@@ -42,7 +42,7 @@
      */
     protected static function contentOf($element) {
       if ($element instanceof DOMNodeList) {
-          return $element->length ? utf8_decode($element->item(0)->textContent) : NULL;
+        return $element->length ? iconv('utf-8', xp::ENCODING, $element->item(0)->textContent) : NULL;
       
       } else if (is_scalar($element)) {
         return $element;
@@ -50,14 +50,14 @@
       } else if ($element instanceof DOMNode) {
         switch ($element->nodeType) {
           case 1:   // DOMElement
-            return utf8_decode($element->textContent);
+            return iconv('utf-8', xp::ENCODING, $element->textContent);
 
           case 2:   // DOMAttr
-            return utf8_decode($element->value);
+            return iconv('utf-8', xp::ENCODING, $element->value);
 
           case 3:   // DOMText
           case 4:   // DOMCharacterData
-            return utf8_decode($element->data);
+            return iconv('utf-8', xp::ENCODING, $element->data);
         }
       } else return NULL;
     }
@@ -146,18 +146,18 @@
 
             // * If the xmlmapping annotation contains a key "convert", cast the node's
             //   contents using the given callback method before passing it to the method.
-            $arguments= call_user_func($target, utf8_decode($node->textContent));
+            $arguments= call_user_func($target, iconv('utf-8', xp::ENCODING, $node->textContent));
           } else if ($method->hasAnnotation('xmlmapping', 'type')) {
 
             // * If the xmlmapping annotation contains a key "type", cast the node's
             //   contents to the specified type before passing it to the method.
-            $value= utf8_decode($node->textContent);
+            $value= iconv('utf-8', xp::ENCODING, $node->textContent);
             settype($value, $method->getAnnotation('xmlmapping', 'type'));
             $arguments= array($value);
           } else {
 
             // * Otherwise, pass the node's content to the method
-            $arguments= array(utf8_decode($node->textContent));
+            $arguments= array(iconv('utf-8', xp::ENCODING, $node->textContent));
           }
           
           // Pass injection parameters at end of list

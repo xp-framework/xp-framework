@@ -104,8 +104,10 @@
 
       // Headers
       while ($line= $this->scanUntil("\n")) {
-        if (2 != sscanf($line, "%[^:]: %[^\r\n]", $k, $v)) break;
-        
+        if (strlen($line) < 2) break;   // A line starting with \r\n indicates ends of headers
+
+        $v= NULL;
+        sscanf($line, "%[^:]: %[^\r\n]", $k, $v);
         $l= strtolower($k);
         if (!isset($this->_headerlookup[$l])) {
           $this->_headerlookup[$l]= $k;
@@ -180,6 +182,19 @@
      */
     public function getInputStream() {
       return new HttpInputStream($this);
+    }
+
+    /**
+     * Returns HTTP response headers as read from server
+     *
+     * @return  string
+     */
+    public function getHeaderString() {
+      $s= 'HTTP/'.$this->version.' '.$this->statuscode.' '.$this->message."\r\n";
+      foreach ($this->headers as $k => $v) {
+        $s.= $k.': '.implode(', ', $v)."\r\n";
+      }
+      return $s."\r\n";
     }
     
     /**
