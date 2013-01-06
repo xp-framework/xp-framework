@@ -47,6 +47,15 @@
     }
 
     /**
+     * Test a module with only a single character
+     *
+     */
+    #[@test]
+    public function single_character() {
+      $this->assertModule('a', '2.1.0', '<?php module a(2.1.0) { } ?>');
+    }
+
+    /**
      * Test a module with a number in its name
      *
      */
@@ -74,6 +83,15 @@
     }
 
     /**
+     * Test a module with "." in its name
+     *
+     */
+    #[@test]
+    public function with_dot_inside_name() {
+      $this->assertModule('tds.mssql', '2.1.0', '<?php module tds.mssql(2.1.0) { } ?>');
+    }
+
+    /**
      * Test a module with a "-" in its version
      *
      */
@@ -98,6 +116,42 @@
     #[@test]
     public function release() {
       $this->assertModule('test', '5.9.1', '<?php module test(5.9.1) { } ?>');
+    }
+
+    /**
+     * Negative test: Name may not begin with a number
+     *
+     */
+    #[@test, @expect('lang.ClassFormatException')]
+    public function name_may_not_begin_with_number() {
+      $this->assertModule(NULL, NULL, '<?php module 3test(2.1.0) { } ?>');
+    }
+
+    /**
+     * Negative test: Name may not begin with "-"
+     *
+     */
+    #[@test, @expect('lang.ClassFormatException')]
+    public function name_may_not_begin_with_dash() {
+      $this->assertModule(NULL, NULL, '<?php module -test(2.1.0) { } ?>');
+    }
+
+    /**
+     * Negative test: Name may not begin with "_"
+     *
+     */
+    #[@test, @expect('lang.ClassFormatException')]
+    public function name_may_not_begin_with_underscore() {
+      $this->assertModule(NULL, NULL, '<?php module _test(2.1.0) { } ?>');
+    }
+
+    /**
+     * Negative test: Name may not begin with "."
+     *
+     */
+    #[@test, @expect('lang.ClassFormatException')]
+    public function name_may_not_begin_with_dot() {
+      $this->assertModule(NULL, NULL, '<?php module .test(2.1.0) { } ?>');
     }
   }
 ?>

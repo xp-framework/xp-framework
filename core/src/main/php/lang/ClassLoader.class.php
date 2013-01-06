@@ -118,10 +118,11 @@
      * Declare a module
      *
      * @param   lang.IClassLoader l
+     * @throws  lang.ClassFormatException
      */
     public static function declareModule($l) {
-      if (!preg_match('/module ([a-z0-9_\.-]+)(\(([^\)]+)\))?\s*{/', $moduleInfo= $l->getResource('module.xp'), $m)) {
-        raise('lang.ElementNotFoundException', 'Missing or malformed module-info in '.$l->toString());
+      if (!preg_match('/module ([a-z][a-z0-9_\.-]*)(\(([^\)]+)\))?\s*{/', $moduleInfo= $l->getResource('module.xp'), $m)) {
+        raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
       }
 
       if (isset(xp::$registry['modules'][$m[1]])) return;
