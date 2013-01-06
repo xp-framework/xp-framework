@@ -136,8 +136,8 @@
       if ('?>' === substr($moduleInfo, -2, 2)) $moduleInfo= substr($moduleInfo, 0, -2);
 
       // Load class and register
-      $dyn->setClassBytes($class, strtr($moduleInfo, array(
-        $m[0]   => 'class '.$class.' extends Object {',
+      $dyn->setClassBytes($class, strtr($moduleInfo, array($m[0] => 'class '.$class.' extends Object { '.
+        'public static $name= "'.$m[1].'", $version= '.(isset($m[2]) ? '"'.$m[3].'"' : 'NULL').'; '
       )));
       $t= $dyn->loadClass($class);
       xp::$registry['modules'][$m[1]]= array($t, $m[1], isset($m[2]) ? $m[3] : NULL, $l);

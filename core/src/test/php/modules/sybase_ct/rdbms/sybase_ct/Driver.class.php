@@ -13,7 +13,7 @@
    */
   class rdbms·sybase_ct·Driver extends Object {
     public static $instance;
-    public $registered= FALSE;
+    public $registered= NULL;
     
     static function __static() {
       self::$instance= new self();

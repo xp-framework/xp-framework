@@ -12,7 +12,7 @@
    */
   module sybase_ct(1.7.12RC1) {
     static function __static() {
-      rdbms·sybase_ct·Driver::$instance->registered= TRUE;
+      rdbms·sybase_ct·Driver::$instance->registered= array(self::$name, self::$version);
     }
   }
 ?>

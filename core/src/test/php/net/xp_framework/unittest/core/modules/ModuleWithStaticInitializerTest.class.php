@@ -46,7 +46,10 @@
     #[@test]
     public function static_initializer_has_run() {
       $class= $this->loader->loadClass('rdbms.sybase_ct.Driver');
-      $this->assertTrue($class->getField('registered')->get($class->getField('instance')->get(NULL)));
+      $this->assertEquals(
+        array($this->moduleName(), $this->moduleVersion()),
+        $class->getField('registered')->get($class->getField('instance')->get(NULL))
+      );
     }
   }
 ?>
