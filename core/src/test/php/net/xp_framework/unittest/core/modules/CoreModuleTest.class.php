@@ -26,6 +26,15 @@
     }
 
     /**
+     * Test getVersion()
+     *
+     */
+    #[@test]
+    public function modules_version() {
+      $this->assertEquals(xp::version(), $this->fixture->getVersion());
+    }
+
+    /**
      * Test getName()
      *
      */

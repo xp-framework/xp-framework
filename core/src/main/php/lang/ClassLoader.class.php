@@ -58,7 +58,7 @@
       $dyn= DynamicClassLoader::instanceFor('modules');
       $dyn->setClassBytes('CoreModule', 'class CoreModule extends Object { }');
       xp::$registry['modules']= array(
-        'core' => array($dyn->loadClass('CoreModule'), 'core', NULL, xp::$registry['loader'])
+        'core' => array($dyn->loadClass('CoreModule'), 'core', xp::version(), xp::$registry['loader'])
       );
 
       // Scan include-path, setting up classloaders for each element
