@@ -153,5 +153,14 @@
     public function name_may_not_begin_with_dot() {
       $this->assertModule(NULL, NULL, '<?php module .test(2.1.0) { } ?>');
     }
+
+    /**
+     * Tests what happens when a module loads a non-existant class via uses()
+     *
+     */
+    #[@test, @expect('lang.ClassDependencyException')]
+    public function references_nonexistant_class_via_uses() {
+      $this->assertModule(NULL, NULL, '<?php uses("@@non-existant@@"); module broken1(2.1.0) { } ?>');
+    }
   }
 ?>
