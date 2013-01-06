@@ -414,5 +414,14 @@
       }
       return array_unique($contents);
     }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName();
+    }
   }
 ?>
