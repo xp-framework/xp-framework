@@ -128,7 +128,7 @@
       if (isset(xp::$registry['modules'][$m[1]])) return;
 
       // Declare module
-      $class= ucfirst(strtr($m[1], '.-', '__')).'Module';
+      $class= ucfirst(strtr($m[1], '.-', '·»')).'Module';
       $dyn= DynamicClassLoader::instanceFor('modules');
       $dyn->setClassBytes($class, str_replace(
         $m[0], 
