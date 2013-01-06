@@ -138,7 +138,11 @@
      * @return  bool
      */
     public function equals($cmp) {
-      return $cmp instanceof self && $cmp->name === $this->name;
+      return (
+        $cmp instanceof self &&
+        $cmp->reflect[1] === $this->reflect[1] &&   // name
+        $cmp->reflect[2] === $this->reflect[2]      // version
+      );
     }
 
     /**
@@ -147,7 +151,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'<'.$this->name.'>';
+      return $this->getClassName().'<'.$this->reflect[1].(NULL === $this->reflect[2] ? '' : ':'.$this->reflect[2]).'>';
     }
 
     /**
@@ -156,7 +160,7 @@
      * @return  string
      */
     public function hashCode() {
-      return get_class($this).':'.$this->name;
+      return 'module'.$this->reflect[1].$this->reflect[2];
     }
   }
 ?>

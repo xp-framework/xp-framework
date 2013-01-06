@@ -51,5 +51,17 @@
     public function modules_loader() {
       $this->assertInstanceOf('lang.IClassLoader', $this->fixture->getClassLoader());
     }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function string_representation() {
+      $this->assertEquals(
+        'lang.reflect.Module<core:'.xp::version().'>',
+        $this->fixture->toString()
+      );
+    }
   }
 ?>

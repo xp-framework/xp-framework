@@ -77,5 +77,39 @@
     public function modules_loader() {
       $this->assertEquals($this->loader, $this->fixture->getClassLoader());
     }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function string_representation() {
+      $this->assertEquals(
+        'lang.reflect.Module<'.$this->moduleName().':'.$this->moduleVersion().'>',
+        $this->fixture->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function hashcode_value() {
+      $this->assertEquals(
+        'module'.$this->moduleName().$this->moduleVersion(),
+        $this->fixture->hashCode()
+      );
+    }
+
+
+    /**
+     * Test equals()
+     *
+     */
+    #[@test]
+    public function differing_modules_not_equal() {
+      $this->assertNotEquals(Module::forName('core'), $this->fixture);
+    }
   }
 ?>
