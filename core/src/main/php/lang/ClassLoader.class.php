@@ -121,14 +121,14 @@
      * @throws  lang.ClassFormatException
      */
     public static function declareModule($l) {
-      if (!preg_match('/module ([a-z][a-z0-9_\.-]*)(\(([^\)]+)\))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
+      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
         raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
       }
 
       if (isset(xp::$registry['modules'][$m[1]])) return;
 
       // Declare module
-      $class= ucfirst(strtr($m[1], '.-', '·»')).'Module';
+      $class= ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
       $dyn= DynamicClassLoader::instanceFor('modules');
 
       // Remove PHP tags if existant

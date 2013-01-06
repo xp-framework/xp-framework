@@ -92,6 +92,15 @@
     }
 
     /**
+     * Test a module with "/" in its name
+     *
+     */
+    #[@test]
+    public function with_slash_inside_name() {
+      $this->assertModule('thekid/dialog', '2.1.0', '<?php module thekid/dialog(2.1.0) { } ?>');
+    }
+
+    /**
      * Test a module with a "-" in its version
      *
      */
@@ -152,6 +161,15 @@
     #[@test, @expect('lang.ClassFormatException')]
     public function name_may_not_begin_with_dot() {
       $this->assertModule(NULL, NULL, '<?php module .test(2.1.0) { } ?>');
+    }
+
+    /**
+     * Negative test: Name may not begin with "/"
+     *
+     */
+    #[@test, @expect('lang.ClassFormatException')]
+    public function name_may_not_begin_with_slash() {
+      $this->assertModule(NULL, NULL, '<?php module /test(2.1.0) { } ?>');
     }
 
     /**
