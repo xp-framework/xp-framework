@@ -97,7 +97,7 @@
      */
     #[@test]
     public function alpha_version() {
-      $this->assertModule('test', '0.1.0-alpha7', '<?php module test(0.1.0-alpha7) { } ?>');
+      $this->assertModule('testalpha', '0.1.0-alpha7', '<?php module testalpha(0.1.0-alpha7) { } ?>');
     }
 
     /**
@@ -106,7 +106,7 @@
      */
     #[@test]
     public function release_candidate() {
-      $this->assertModule('test', '5.8.3RC4', '<?php module test(5.8.3RC4) { } ?>');
+      $this->assertModule('testrc', '5.8.3RC4', '<?php module testrc(5.8.3RC4) { } ?>');
     }
 
     /**
@@ -115,7 +115,7 @@
      */
     #[@test]
     public function release() {
-      $this->assertModule('test', '5.9.1', '<?php module test(5.9.1) { } ?>');
+      $this->assertModule('testrel', '5.9.1', '<?php module testrel(5.9.1) { } ?>');
     }
 
     /**
@@ -161,6 +161,15 @@
     #[@test, @expect('lang.ClassDependencyException')]
     public function references_nonexistant_class_via_uses() {
       $this->assertModule(NULL, NULL, '<?php uses("@@non-existant@@"); module broken1(2.1.0) { } ?>');
+    }
+
+    /**
+     * Tests a missing closing PHP tag doesn't break
+     *
+     */
+    #[@test]
+    public function missing_closing_tag() {
+      $this->assertModule('no_closing_tag', '2.1.0', '<?php module no_closing_tag(2.1.0) { }');
     }
   }
 ?>

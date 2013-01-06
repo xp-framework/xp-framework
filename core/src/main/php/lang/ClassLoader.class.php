@@ -130,11 +130,11 @@
       // Declare module
       $class= ucfirst(strtr($m[1], '.-', '·»')).'Module';
       $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes($class, str_replace(
-        $m[0], 
-        'class '.$class.' extends Object {', 
-        substr(trim($moduleInfo), 5, -2)      // Strip PHP open and close tags
-      ));
+      $dyn->setClassBytes($class, strtr($moduleInfo, array(
+        '<?php' => '',
+        $m[0]   => 'class '.$class.' extends Object {',
+        '?>'    => ''
+      )));
       $t= $dyn->loadClass($class);
       xp::$registry['modules'][$m[1]]= array($t, $m[1], isset($m[2]) ? $m[3] : NULL, $l);
     }
