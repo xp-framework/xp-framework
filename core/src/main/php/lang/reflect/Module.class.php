@@ -36,6 +36,15 @@
     }
 
     /**
+     * Returns module version or NULL if no version is set
+     *
+     * @return  string
+     */
+    public function getVersion() {
+      return $this->reflect[2];
+    }
+
+    /**
      * Returns comment
      *
      * @return  string

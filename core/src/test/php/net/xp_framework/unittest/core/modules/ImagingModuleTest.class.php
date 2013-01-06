@@ -22,6 +22,15 @@
     }
 
     /**
+     * Return module version
+     *
+     * @return  string
+     */
+    protected function moduleVersion() {
+      return '3.4.1';
+    }
+
+    /**
      * Test getComment()
      *
      */

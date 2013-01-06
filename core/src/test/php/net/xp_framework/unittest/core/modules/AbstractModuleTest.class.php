@@ -23,6 +23,13 @@
      * @return  string
      */
     protected abstract function moduleName();
+
+    /**
+     * Return module version
+     *
+     * @return  string
+     */
+    protected abstract function moduleVersion();
   
     /**
      * Register module path. This will actually trigger loading it.
@@ -51,6 +58,15 @@
     #[@test]
     public function modules_name() {
       $this->assertEquals($this->moduleName(), $this->fixture->getName());
+    }
+
+    /**
+     * Test getVersion()
+     *
+     */
+    #[@test]
+    public function modules_version() {
+      $this->assertEquals($this->moduleVersion(), $this->fixture->getVersion());
     }
 
     /**

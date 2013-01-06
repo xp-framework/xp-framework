@@ -22,6 +22,15 @@
     }
 
     /**
+     * Return module version
+     *
+     * @return  string
+     */
+    protected function moduleVersion() {
+      return '1.7.12RC1';
+    }
+
+    /**
      * Test
      *
      */

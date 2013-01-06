@@ -20,6 +20,15 @@
     protected function moduleName() {
       return 'forkqueue';
     }
+
+    /**
+     * Return module version
+     *
+     * @return  string
+     */
+    protected function moduleVersion() {
+      return NULL;      // Has no version
+    }
     
     /**
      * Test hasAnnotations()

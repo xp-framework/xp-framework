@@ -135,7 +135,7 @@
         substr(trim($moduleInfo), 5, -2)      // Strip PHP open and close tags
       ));
       $t= $dyn->loadClass($class);
-      xp::$registry['modules'][$m[1]]= array($t, $m[1], @$m[2], $l);
+      xp::$registry['modules'][$m[1]]= array($t, $m[1], isset($m[2]) ? $m[3] : NULL, $l);
     }
 
     /**

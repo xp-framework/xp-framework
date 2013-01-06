@@ -8,7 +8,7 @@
    * An imaging module
    *
    */
-  module imaging {
+  module imaging(3.4.1) {
   
   }
 ?>
