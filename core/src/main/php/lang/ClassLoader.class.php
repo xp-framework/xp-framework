@@ -121,7 +121,7 @@
      * @throws  lang.ClassFormatException
      */
     public static function declareModule($l) {
-      if (!preg_match('/module ([a-z][a-z0-9_\.-]*)(\(([^\)]+)\))?\s*{/', $moduleInfo= $l->getResource('module.xp'), $m)) {
+      if (!preg_match('/module ([a-z][a-z0-9_\.-]*)(\(([^\)]+)\))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
         raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
       }
 
@@ -130,10 +130,14 @@
       // Declare module
       $class= ucfirst(strtr($m[1], '.-', '·»')).'Module';
       $dyn= DynamicClassLoader::instanceFor('modules');
+
+      // Remove PHP tags if existant
+      if ('<?php' === substr($moduleInfo, 0, 5)) $moduleInfo= substr($moduleInfo, 5);
+      if ('?>' === substr($moduleInfo, -2, 2)) $moduleInfo= substr($moduleInfo, 0, -2);
+
+      // Load class and register
       $dyn->setClassBytes($class, strtr($moduleInfo, array(
-        '<?php' => '',
         $m[0]   => 'class '.$class.' extends Object {',
-        '?>'    => ''
       )));
       $t= $dyn->loadClass($class);
       xp::$registry['modules'][$m[1]]= array($t, $m[1], isset($m[2]) ? $m[3] : NULL, $l);
