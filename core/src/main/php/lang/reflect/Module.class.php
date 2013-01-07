@@ -15,15 +15,32 @@
    * @see   https://github.com/xp-framework/rfc/issues/220
    */
   class Module extends Object {
+    protected $loader;
+    protected $version;
+    protected $name;
     protected $reflect;
 
     /**
      * Creates a new instance of a module with a given name.
      *
-     * @param   string name
+     * @param  lang.IClassLoader loader
+     * @param  string name
+     * @param  string version
      */
-    protected function __construct($name) {
-      $this->reflect= xp::$registry['modules'][$name];
+    public function __construct($loader, $name, $version) {
+      $this->loader= $loader;
+      $this->version= $version;
+      $this->name= $name;
+      $this->reflect= $this->getClass();
+      $this->initialize();
+    }
+
+    /**
+     * Initialize this module. Overwrite this template method in subclasses.
+     * 
+     */
+    public function initialize() {
+      // Intentionally empty
     }
     
     /**
@@ -32,7 +49,7 @@
      * @return  string
      */
     public function getName() {
-      return $this->reflect[1];
+      return $this->name;
     }
 
     /**
@@ -41,7 +58,7 @@
      * @return  string
      */
     public function getVersion() {
-      return $this->reflect[2];
+      return $this->version;
     }
 
     /**
@@ -50,7 +67,7 @@
      * @return  string
      */
     public function getComment() {
-      return $this->reflect[0]->getComment();
+      return $this->reflect->getComment();
     }
 
     /**
@@ -61,7 +78,7 @@
      * @return  bool
      */
     public function hasAnnotation($name, $key= NULL) {
-      return $this->reflect[0]->hasAnnotation($name, $key);
+      return $this->reflect->hasAnnotation($name, $key);
     }
 
     /**
@@ -73,7 +90,7 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
-      return $this->reflect[0]->getAnnotation($name, $key);
+      return $this->reflect->getAnnotation($name, $key);
     }
 
     /**
@@ -82,7 +99,7 @@
      * @return  bool
      */
     public function hasAnnotations() {
-      return $this->reflect[0]->hasAnnotations();
+      return $this->reflect->hasAnnotations();
     }
 
     /**
@@ -91,7 +108,7 @@
      * @return  var[] annotations
      */
     public function getAnnotations() {
-      return $this->reflect[0]->getAnnotations();
+      return $this->reflect->getAnnotations();
     }
 
     /**
@@ -100,7 +117,7 @@
      * @return  lang.IClassLoader
      */
     public function getClassLoader() {
-      return $this->reflect[3];
+      return $this->loader;
     }
 
     /**
@@ -115,7 +132,7 @@
         raise('lang.ElementNotFoundException', 'No such module '.$name);
       }
       
-      return new self($name);
+      return xp::$registry['modules'][$name];
     }
 
     /**
@@ -125,8 +142,8 @@
      */
     public static function getModules() {
       $r= array();
-      foreach (xp::$registry['modules'] as $name => $definitions) {
-        $r[]= new self($name);
+      foreach (xp::$registry['modules'] as $name => $instance) {
+        $r[]= $instance;
       }
       return $r;
     }
@@ -140,8 +157,8 @@
     public function equals($cmp) {
       return (
         $cmp instanceof self &&
-        $cmp->reflect[1] === $this->reflect[1] &&   // name
-        $cmp->reflect[2] === $this->reflect[2]      // version
+        $cmp->name === $this->name &&
+        $cmp->version === $this->version
       );
     }
 
@@ -151,7 +168,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'<'.$this->reflect[1].(NULL === $this->reflect[2] ? '' : ':'.$this->reflect[2]).'>';
+      return xp::nameOf(__CLASS__).'<'.$this->name.(NULL === $this->version ? '' : ':'.$this->version).'>';
     }
 
     /**
@@ -160,7 +177,7 @@
      * @return  string
      */
     public function hashCode() {
-      return 'module'.$this->reflect[1].$this->reflect[2];
+      return 'module'.$this->name.$this->version;
     }
   }
 ?>

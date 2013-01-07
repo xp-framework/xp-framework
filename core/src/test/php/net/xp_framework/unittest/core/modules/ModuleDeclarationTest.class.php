@@ -22,7 +22,7 @@
      * @throws unittest.AssertionFailedError
      */
     protected function assertModule($name, $version, $moduleInfo) {
-      ClassLoader::declareModule(newinstance('lang.IClassLoader', array($moduleInfo), '{
+      $m= ClassLoader::declareModule(newinstance('lang.IClassLoader', array($moduleInfo), '{
         protected $moduleInfo= "";
         public function __construct($moduleInfo) { $this->moduleInfo= $moduleInfo; }
         public function providesResource($name) { return TRUE; }
@@ -36,14 +36,8 @@
         public function toString() { return $this->getClassName()."(`".$this->moduleInfo."`)"; }
       }'));
 
-      try {
-        $this->assertEquals($version, Module::forName($name)->getVersion());
-      } catch (XPException $e) {
-        //
-      } ensure($e); {
-        unset(xp::$registry['modules'][$name]);
-        if ($e) throw($e);
-      }
+      $this->assertEquals($name, $m->getName());
+      $this->assertEquals($version, $m->getVersion());
     }
 
     /**

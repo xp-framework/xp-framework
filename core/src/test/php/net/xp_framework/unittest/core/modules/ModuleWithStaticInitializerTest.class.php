@@ -44,7 +44,7 @@
      *
      */
     #[@test]
-    public function static_initializer_has_run() {
+    public function initializer_has_run() {
       $class= $this->loader->loadClass('rdbms.sybase_ct.Driver');
       $this->assertEquals(
         array($this->moduleName(), $this->moduleVersion()),

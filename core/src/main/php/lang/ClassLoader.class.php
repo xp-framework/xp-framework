@@ -8,7 +8,8 @@
     'lang.IClassLoader',
     'lang.FileSystemClassLoader',
     'lang.DynamicClassLoader',
-    'lang.archive.ArchiveClassLoader'
+    'lang.archive.ArchiveClassLoader',
+    'lang.reflect.Module'
   );
   
   /** 
@@ -56,9 +57,9 @@
       
       // Declare core module
       $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes('CoreModule', 'class CoreModule extends Object { }');
+      $dyn->setClassBytes('CoreModule', 'class CoreModule extends Module { }');
       xp::$registry['modules']= array(
-        'core' => array($dyn->loadClass('CoreModule'), 'core', xp::version(), xp::$registry['loader'])
+        'core' => $dyn->loadClass('CoreModule')->newInstance(xp::$registry['loader'], 'core', xp::version())
       );
 
       // Scan include-path, setting up classloaders for each element
@@ -119,28 +120,46 @@
      *
      * @param   lang.IClassLoader l
      * @throws  lang.ClassFormatException
+     * @return  lang.reflect.Module
      */
     public static function declareModule($l) {
       if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
         raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
       }
 
-      if (isset(xp::$registry['modules'][$m[1]])) return;
+      if (isset(xp::$registry['modules'][$m[1]])) {
+        raise('lang.ClassLinkageException', 'Module '.$m[1].' already registered');
+      }
 
       // Declare module
       $class= ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
-      $dyn= DynamicClassLoader::instanceFor('modules');
 
       // Remove PHP tags if existant
       if ('<?php' === substr($moduleInfo, 0, 5)) $moduleInfo= substr($moduleInfo, 5);
       if ('?>' === substr($moduleInfo, -2, 2)) $moduleInfo= substr($moduleInfo, 0, -2);
 
       // Load class and register
-      $dyn->setClassBytes($class, strtr($moduleInfo, array($m[0] => 'class '.$class.' extends Object { '.
-        'public static $name= "'.$m[1].'", $version= '.(isset($m[2]) ? '"'.$m[3].'"' : 'NULL').'; '
-      )));
-      $t= $dyn->loadClass($class);
-      xp::$registry['modules'][$m[1]]= array($t, $m[1], isset($m[2]) ? $m[3] : NULL, $l);
+      $dyn= DynamicClassLoader::instanceFor('modules');
+      $dyn->setClassBytes($class, strtr($moduleInfo, array($m[0] => 'class '.$class.' extends Module {')));
+      return $dyn->loadClass($class)->newInstance($l, $m[1], isset($m[2]) ? $m[3] : NULL);
+    }
+
+    /**
+     * Register module
+     * 
+     * @param  lang.reflect.Module m
+     */
+    public static function registerModule($m) {
+      xp::$registry['modules'][$m->getName()]= $m;
+    }
+
+    /**
+     * Unregister a module
+     * 
+     * @param  lang.reflect.Module m
+     */
+    public static function removeModule($m) {
+      unset(xp::$registry['modules'][$m->getName()]);
     }
 
     /**
@@ -157,7 +176,7 @@
         self::$delegates[$l->hashCode()]= $l;
       }
 
-      $l->providesResource('module.xp') && self::declareModule($l);
+      $l->providesResource('module.xp') && self::registerModule(self::declareModule($l));
       return $l;
     }
 

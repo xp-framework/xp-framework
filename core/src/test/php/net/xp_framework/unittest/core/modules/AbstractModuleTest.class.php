@@ -48,7 +48,8 @@
      *
      */
     public function tearDown() {
-      ClassLoader::getDefault()->removeLoader($this->loader);
+      ClassLoader::removeModule($this->fixture);
+      ClassLoader::removeLoader($this->loader);
     }
     
     /**
