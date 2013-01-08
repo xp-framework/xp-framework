@@ -30,7 +30,7 @@
      *
      * @param   string path
      */
-    public function __construct($path, $cl= NULL) {
+    public function __construct($path) {
       $this->root= rtrim($path, '/').'/';
     }
 
