@@ -14,10 +14,12 @@
   /**
    * Resource-based property source
    *
-   * // Read properties from the following resource: /path/to/inidirectory/test.ini provided by
-   * // the default class loader
-   * $src= new ResourcePropertySource('res://path/to/inidirectory');
-   * $p= $src->fetch('test');
+   * To read properties from the following resource: /path/to/inidirectory/test.ini provided by
+   * the default class loader:
+   * <code>
+   *   $src= new ResourcePropertySource('res://path/to/inidirectory');
+   *   $properties= $src->fetch('test');
+   * </code>
    *
    * @test     xp://net.xp_framework.unittest.util.ResourcePropertySourceTest
    */
@@ -35,7 +37,7 @@
     }
 
     /**
-     * Check whether source provides given properies
+     * Check whether source provides given properties
      *
      * @param   string name
      * @return  bool
