@@ -371,10 +371,15 @@
      */
     public function read($bytes= 4096) {
       if (0 === $bytes) return '';
-      if (FALSE === ($result= fread($this->_fd, $bytes)) && !feof($this->_fd)) {
-        $e= new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
-        xp::gc(__FILE__);
-        throw $e;
+      
+      $result= $buf= '';
+      while (($bytes > strlen($result)) && !feof($this->_fd)) {
+        if (FALSE === ($buf= fread($this->_fd, $bytes))) {
+          $e= new IOException('Cannot read '.$bytes.' bytes from '.$this->uri);
+          xp::gc(__FILE__);
+          throw $e;
+        }
+        $result.= $buf;
       }
       return '' === $result ? FALSE : $result;
     }
