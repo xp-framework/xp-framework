@@ -174,7 +174,7 @@
      *
      * @param  lang.XPClass class
      * @return lang.Generic instance
-     * @throws lang.TargetInvocationException If the constructor or routines used for injection raise an exception
+     * @throws lang.reflect.TargetInvocationException If the constructor or routines used for injection raise an exception
      */
     public function handlerInstanceFor($class) {
 
