@@ -44,7 +44,7 @@
      */    
     protected function _encode($value) {
       if (0 == strcasecmp('utf-8', $this->charset)) {
-        return utf8_encode($value);
+        return iconv(xp::ENCODING, 'utf-8', $value);
       }        
       return $value;
     }

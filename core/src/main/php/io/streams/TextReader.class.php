@@ -34,7 +34,7 @@
         $charset= $this->detectCharset();
       }
       
-      if (!stream_filter_append($this->in, 'convert.iconv.'.$charset.'/iso-8859-1', STREAM_FILTER_READ)) {
+      if (!stream_filter_append($this->in, 'convert.iconv.'.$charset.'/'.xp::ENCODING, STREAM_FILTER_READ)) {
         throw new IOException('Could not append stream filter');
       }
 

@@ -9,7 +9,7 @@
    organisation="net.xp_framework"
    module="core"
    status="integration"
-   revision="5.8.9"
+   revision="5.9.0"
    xp:package="lang.** io.** rdbms.** img.** gui.** math.** peer.** remote.** scriptlet.** security.** text.** util.** webservices.** xml"
   >  
     <license name="BSD"/>
@@ -55,7 +55,7 @@
   <dependencies>  
     <dependency
      name="tools"
-     rev="5.8.7+"
+     rev="5.9.0+"
      conf="*-&gt;default"
     />
   </dependencies>

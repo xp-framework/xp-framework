@@ -131,10 +131,10 @@
      * - Empty personal:     <friebe@example.com>  
      * </pre>
      *
-     * @param   string charset default 'iso-8859-1'
+     * @param   string charset defaults to XP default encoding
      * @return  string
      */
-    public function toString($charset= 'iso-8859-1') {
+    public function toString($charset= xp::ENCODING) {
       return (
         empty($this->personal) ? '' : 
         QuotedPrintable::encode($this->personal, $charset).' '

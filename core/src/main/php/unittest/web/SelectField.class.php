@@ -28,11 +28,11 @@
       // Find selected
       foreach ($this->node->childNodes as $child) {
         if ('option' != $child->tagName || !$child->hasAttribute('selected')) continue;
-        return utf8_decode($child->getAttribute('value'));
+        return iconv('utf-8', xp::ENCODING, $child->getAttribute('value'));
       }
       
       // Use first child's value
-      return utf8_decode($this->node->childNodes->item(0)->getAttribute('value'));
+      return iconv('utf-8', xp::ENCODING, $this->node->childNodes->item(0)->getAttribute('value'));
     }
     
     /**

@@ -116,6 +116,16 @@
     public function getNotAfter() {
       return new Date($this->_info['validTo_time_t']);
     }
+
+    /**
+     * Callback for decoding
+     *
+     * @param   string value
+     * @return  string
+     */
+    protected static function decode($value) {
+      return iconv('utf-8', xp::ENCODING, $value);
+    }
     
     /**
      * Gets the issuer DN (distinguished name)
@@ -126,7 +136,7 @@
       if (version_compare(phpversion(), '5.2.2', '<')) {
         return new Principal($this->_info['issuer']);
       } else {
-        return new Principal(array_map('utf8_decode', $this->_info['issuer']));
+        return new Principal(array_map(array('self', 'decode'), $this->_info['issuer']));
       }
     }
     
@@ -139,7 +149,7 @@
       if (version_compare(phpversion(), '5.2.2', '<')) {
         return new Principal($this->_info['subject']);
       } else {
-        return new Principal(array_map('utf8_decode', $this->_info['subject']));
+        return new Principal(array_map(array('self', 'decode'), $this->_info['subject']));
       }
     }
     

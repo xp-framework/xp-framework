@@ -30,7 +30,7 @@
       
       $this->_parsed= array();
       if ($this->annotations) {
-        foreach (XPClass::parseAnnotations($this->annotations, $this->getClassName()) as $name => $value) {
+        foreach (this(XPClass::parseAnnotations($this->annotations, $this->getClassName()), 0) as $name => $value) {
           $this->_parsed[$name]= new AnnotationDoc($name, $value);
         }
       }

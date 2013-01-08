@@ -16,10 +16,10 @@
      * Start writing a document
      *
      * @param   string version default "1.0"
-     * @param   string encoding default "iso-8859-1"
+     * @param   string encoding defaults to XP default encoding
      * @param   bool standalone default FALSE
      */
-    public abstract function startDocument($version= '1.0', $encoding= 'iso-8859-1', $standalone= FALSE);
+    public abstract function startDocument($version= '1.0', $encoding= xp::ENCODING, $standalone= FALSE);
 
     /**
      * Close document. Will close all opened tags.

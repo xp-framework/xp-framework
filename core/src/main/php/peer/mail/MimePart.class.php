@@ -56,7 +56,7 @@
         $this->disposition= MIME_DISPOSITION_ATTACHMENT;
         $this->charset= '';
       } else {
-        $this->charset= 'iso-8859-1';
+        $this->charset= xp::ENCODING;
       }
     }
 

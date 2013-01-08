@@ -112,9 +112,12 @@
           foreach ($this->variantsOf($name) as $variant) {
             if ($type->hasField($variant)) {
               $field= $type->getField($variant);
-              if ($field->getModifiers() & MODIFIER_PUBLIC) {
+              $m= $field->getModifiers();
+              if ($m & MODIFIER_STATIC) {
+                continue;
+              } else if ($m & MODIFIER_PUBLIC) {
                 if (NULL !== ($fType= $field->getType())) {
-                  $field->set($return, $this->convert(Type::forName($fType), $value));
+                  $field->set($return, $this->convert($fType, $value));
                 } else {
                   $field->set($return, $value);
                 }

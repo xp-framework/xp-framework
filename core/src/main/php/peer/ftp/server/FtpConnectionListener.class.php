@@ -670,7 +670,7 @@
         $entry->close();
       } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
-      } finally(); {
+      } ensure($e); {
         $socket->close();
         if ($e) return;
       }
@@ -721,7 +721,7 @@
         $entry->close();
       } catch (XPException $e) {
         $this->answer($event->stream, 550, $params.': '.$e->getMessage());
-      } finally(); {
+      } ensure($e); {
         $socket->close();
         if ($e) return;
       }

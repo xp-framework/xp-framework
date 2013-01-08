@@ -49,6 +49,7 @@
      *
      * @return  string
      */
+
     public function message() {
       return $this->response->message();
     }
@@ -61,6 +62,30 @@
     public function content() {
       return Streams::readAll($this->input);
     }
+
+    /**
+     * Get headers
+     *
+     * @return  [:var]
+     */
+    public function headers() {
+      $r= array();
+      foreach ($this->response->headers() as $key => $values) {
+        $r[$key]= sizeof($values) > 1 ? $values : $values[0];
+      }
+      return $r;
+    }
+
+    /**
+     * Get header by a specified name
+     *
+     * @param   string name
+     * @return  var
+     */
+    public function header($name) {
+      if (NULL === ($values= $this->response->header($name))) return NULL;  // Not found
+      return sizeof($values) > 1 ? $values : $values[0];
+   }
     
     /**
      * Copy data
@@ -125,6 +150,15 @@
       }
 
       return $this->handlePayloadOf($target);
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName().'<'.$this->response->message().'>@(->'.$this->response->toString().')';
     }
   }
 ?>

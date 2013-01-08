@@ -152,7 +152,7 @@
         $offset+= $ctl['length']+ 1;
       } while ($ctl['next']);
 
-      return utf8_decode($string);
+      return iconv('utf-8', xp::ENCODING, $string);
     }    
     
     /**

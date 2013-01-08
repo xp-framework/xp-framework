@@ -54,10 +54,14 @@
       } catch (ClassLoadingException $e) {
         xp::$registry['cl.level']--;
 
-        $decl= (NULL === $package
-          ? substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1))
-          : strtr($class, '.', '·')
-        );
+        $decl= NULL;
+        if (NULL === $package) {
+          $decl= substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+        } else if (TRUE === $package) {
+          $decl= strtr($class, '.', '\\');
+        } else {
+          $decl= strtr($class, '.', '·');
+        }
 
         // If class was declared, but loading threw an exception it means
         // a "soft" dependency, one that is only required at runtime, was
@@ -78,10 +82,21 @@
       }
       
       // Register it
-      $name= ($package ? strtr($package, '.', '·').'·' : '').substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+      $name= NULL;
+      if (NULL !== $package) {
+        $name= strtr($package, '.', '·').'·'.substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+      } else {
+        $name= substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+      }
+
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
-        unset(xp::$registry['classloader.'.$class]);
-        raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
+
+        // Class is not available as shortnamed class, now try namespaced variant:
+        $name= strtr($class, '.', '\\');
+        if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
+          unset(xp::$registry['classloader.'.$class]);
+          raise('lang.ClassFormatException', 'Class "'.$name.'" not declared in loaded file');
+        }
       }
       xp::$registry['class.'.$name]= $class;
       method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');
