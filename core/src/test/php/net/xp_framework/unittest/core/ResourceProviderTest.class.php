@@ -103,5 +103,18 @@
         if ($t) throw $t;
       }
     }
+    
+    /**
+     * Read large files via ResourceProvider which exceeds the PHP internal
+     * chunk size
+     * 
+     */
+    #[@test]
+    public function readFilesLargerChunkSize() {
+      $added= ClassLoader::registerPath(dirname(__FILE__).'/resourceprovider');
+      
+      $file= new File('res://LargerThan8KB.txt');
+      $this->assertEquals($file->size(), strlen(FileUtil::getContents($file)));
+    }
   }
 ?>
