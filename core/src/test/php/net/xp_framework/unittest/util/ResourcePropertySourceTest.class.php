@@ -19,7 +19,7 @@
     protected $fixture= NULL;
 
     public function setUp() {
-      $this->fixture= new ResourcePropertySource('/net/xp_framework/unittest/util');
+      $this->fixture= new ResourcePropertySource('res://net/xp_framework/unittest/util');
     }
 
     /**
@@ -57,8 +57,8 @@
      */
     #[@test]
     public function sourcesAreEqual() {
-      $p1= new ResourcePropertySource('net/xp_framework/unittest/util');
-      $p2= new ResourcePropertySource('net/xp_framework/unittest/util');
+      $p1= new ResourcePropertySource('res://net/xp_framework/unittest/util');
+      $p2= new ResourcePropertySource('res://net/xp_framework/unittest/util');
 
       $this->assertEquals($p1, $p2);
     }
@@ -70,8 +70,8 @@
      */
     #[@test]
     public function propertiesFromSameResourceAreEqual() {
-      $p1= new ResourcePropertySource('net/xp_framework/unittest/util');
-      $p2= new ResourcePropertySource('net/xp_framework/unittest/util');
+      $p1= new ResourcePropertySource('res://net/xp_framework/unittest/util');
+      $p2= new ResourcePropertySource('res://net/xp_framework/unittest/util');
 
       $this->assertEquals($p1->fetch('example'), $p2->fetch('example'));
     }

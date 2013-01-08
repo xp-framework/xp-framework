@@ -5,8 +5,10 @@
  */
 
   uses(
+    'io.File',
     'util.Properties',
-    'util.PropertySource'
+    'util.PropertySource',
+    'lang.ResourceProvider'
   );
 
   /**
@@ -14,25 +16,22 @@
    *
    * // Read properties from the following resource: /path/to/inidirectory/test.ini provided by
    * // the default class loader
-   * $src= new ResourcePropertySource('/path/to/inidirectory');
+   * $src= new ResourcePropertySource('res://path/to/inidirectory');
    * $p= $src->fetch('test');
    *
    * @test     xp://net.xp_framework.unittest.util.ResourcePropertySourceTest
    */
   class ResourcePropertySource extends Object implements PropertySource {
-    protected $cache= array();
-    protected $classLoader= NULL;
-    protected $root= NULL;
+    protected $cache = array();
+    protected $root  = NULL;
 
     /**
      * Constructor
      *
      * @param   string path
-     * @param   lang.IClassLoader cl If null, use default class loader
      */
     public function __construct($path, $cl= NULL) {
-      $this->root= '/'.trim($path, '/').'/';
-      $this->classLoader= (NULL === $cl ? ClassLoader::getDefault() : $cl);
+      $this->root= rtrim($path, '/').'/';
     }
 
     /**
@@ -43,7 +42,7 @@
      */
     public function provides($name) {
       if (isset($this->cache[$name])) return TRUE;
-      return $this->classLoader->providesResource($this->root.$name.'.ini');
+      return (FALSE !== ResourceProvider::getInstance()->url_stat($this->root.$name.'.ini', 0));
     }
 
     /**
@@ -58,7 +57,7 @@
         throw new IllegalArgumentException('No properties '.$name.' found at '.$this->root);
 
       if (!isset($this->cache[$name])) {
-        $this->cache[$name]= Properties::fromString($this->classLoader->getResource($this->root.$name.'.ini'));
+        $this->cache[$name]= Properties::fromFile(new File($this->root.$name.'.ini'));
       }
 
       return $this->cache[$name];
