@@ -14,11 +14,11 @@
   /**
    * Resource-based property source
    *
-   * To read properties from the following resource: /path/to/inidirectory/test.ini provided by
+   * To read properties from the "conf/dev/database.ini" resource provided by
    * the default class loader:
    * <code>
-   *   $src= new ResourcePropertySource('res://path/to/inidirectory');
-   *   $properties= $src->fetch('test');
+   *   $src= new ResourcePropertySource('conf/dev');
+   *   $properties= $src->fetch('database');
    * </code>
    *
    * @test     xp://net.xp_framework.unittest.util.ResourcePropertySourceTest
@@ -33,7 +33,7 @@
      * @param   string path
      */
     public function __construct($path) {
-      $this->root= rtrim($path, '/').'/';
+      $this->root= 'res://'.rtrim($path, '/').'/';
     }
 
     /**
