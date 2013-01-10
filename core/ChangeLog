@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Features
+~~~~~~~~
+- Merged pull request #216 - Image metadata reader
+  (friebe)
+
 
 Version 5.8.10, released 2013-01-03
 -----------------------------------
