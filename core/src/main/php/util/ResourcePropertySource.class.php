@@ -33,7 +33,7 @@
      * @param   string path
      */
     public function __construct($path) {
-      $this->root= 'res://'.rtrim($path, '/').'/';
+      $this->root= 'res://'.rtrim($path, '/');
     }
 
     /**
@@ -44,7 +44,7 @@
      */
     public function provides($name) {
       if (isset($this->cache[$name])) return TRUE;
-      return (FALSE !== ResourceProvider::getInstance()->url_stat($this->root.$name.'.ini', 0));
+      return file_exists($this->root.'/'.$name.'.ini');
     }
 
     /**
@@ -59,7 +59,7 @@
         throw new IllegalArgumentException('No properties '.$name.' found at '.$this->root);
 
       if (!isset($this->cache[$name])) {
-        $this->cache[$name]= Properties::fromFile(new File($this->root.$name.'.ini'));
+        $this->cache[$name]= new Properties($this->root.'/'.$name.'.ini');
       }
 
       return $this->cache[$name];

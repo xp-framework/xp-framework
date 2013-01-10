@@ -47,8 +47,7 @@
      */
     #[@test]
     public function returnsProperties() {
-      $p= Properties::fromFile($this->getClass()->getPackage()->getResourceAsStream('example.ini'));
-      $this->assertEquals($p, $this->fixture->fetch('example'));
+      $this->assertEquals('value', $this->fixture->fetch('example')->readString('section', 'key'));
     }
 
     /**
