@@ -155,9 +155,9 @@
         $data->setFileSize(-1);
         $data->setMimeType('image/jpeg');
 
-        $data->setMake(trim(self::lookup($raw, 'Make')));
-        $data->setModel(trim(self::lookup($raw, 'Model')));
-        $data->setSoftware(self::lookup($raw, 'Software'));
+        $data->setMake(NULL === ($l= self::lookup($raw, 'Make')) ? NULL : trim($l));
+        $data->setModel(NULL === ($l= self::lookup($raw, 'Model')) ? NULL : trim($l));
+        $data->setSoftware(NULL === ($l= self::lookup($raw, 'Software')) ? NULL : trim($l));
 
         $exif= $raw['Exif_IFD_Pointer']['data'];
 
