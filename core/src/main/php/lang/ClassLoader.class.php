@@ -57,9 +57,9 @@
       
       // Declare core module
       $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes('CoreModule', 'class CoreModule extends Module { }');
+      $dyn->setClassBytes('CoreModule', 'class __CoreModule extends Object { }');
       xp::$registry['modules']= array(
-        'core' => $dyn->loadClass('CoreModule')->newInstance(xp::$registry['loader'], 'core', xp::version())
+        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('CoreModule'), 'core', xp::version())
       );
 
       // Scan include-path, setting up classloaders for each element
@@ -132,7 +132,7 @@
       }
 
       // Declare module
-      $class= ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
+      $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
 
       // Remove PHP tags if existant
       if ('<?php' === substr($moduleInfo, 0, 5)) $moduleInfo= substr($moduleInfo, 5);
@@ -140,8 +140,15 @@
 
       // Load class and register
       $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes($class, strtr($moduleInfo, array($m[0] => 'class '.$class.' extends Module {')));
-      return $dyn->loadClass($class)->newInstance($l, $m[1], isset($m[2]) ? $m[3] : NULL);
+      $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends Object {'.
+        'public static $name= "'.$m[1].'";'.
+        'public static $version= '.(isset($m[2]) ? '"'.$m[3].'"' : 'NULL').';'
+      )));
+      $class= $dyn->loadClass($module);
+      if ($class->hasMethod('initialize')) {
+        $class->getMethod('initialize')->invoke(NULL, array($l));
+      }
+      return new Module($l, $class, $m[1], isset($m[2]) ? $m[3] : NULL);
     }
 
     /**

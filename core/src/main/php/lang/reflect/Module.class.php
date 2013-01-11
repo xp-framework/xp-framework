@@ -16,31 +16,27 @@
    */
   class Module extends Object {
     protected $loader;
-    protected $version;
+    protected $definition;
     protected $name;
-    protected $reflect;
+    protected $version;
 
     /**
      * Creates a new instance of a module with a given name.
      *
      * @param  lang.IClassLoader loader
+     * @param  lang.XPClass definition
      * @param  string name
      * @param  string version
      */
-    public function __construct($loader, $name, $version) {
+    public function __construct($loader, $definition, $name= NULL, $version= NULL) {
       $this->loader= $loader;
-      $this->version= $version;
-      $this->name= $name;
-      $this->reflect= $this->getClass();
-      $this->initialize();
-    }
+      $this->definition= $definition;
 
-    /**
-     * Initialize this module. Overwrite this template method in subclasses.
-     * 
-     */
-    public function initialize() {
-      // Intentionally empty
+      // This is a bit redundant, name and version are also static fields inside the
+      // class represented by $definition, but retrieving them reflectively is a 
+      // unneccessary - we calculate them right before definition anyways!
+      $this->name= (NULL === $name ? $definition->getField('name')->get(NULL) : $name);
+      $this->version= (NULL === $version ? $definition->getField('version')->get(NULL) : $version);
     }
     
     /**
@@ -67,7 +63,7 @@
      * @return  string
      */
     public function getComment() {
-      return $this->reflect->getComment();
+      return $this->definition->getComment();
     }
 
     /**
@@ -78,7 +74,7 @@
      * @return  bool
      */
     public function hasAnnotation($name, $key= NULL) {
-      return $this->reflect->hasAnnotation($name, $key);
+      return $this->definition->hasAnnotation($name, $key);
     }
 
     /**
@@ -90,7 +86,7 @@
      * @throws  lang.ElementNotFoundException
      */
     public function getAnnotation($name, $key= NULL) {
-      return $this->reflect->getAnnotation($name, $key);
+      return $this->definition->getAnnotation($name, $key);
     }
 
     /**
@@ -99,7 +95,7 @@
      * @return  bool
      */
     public function hasAnnotations() {
-      return $this->reflect->hasAnnotations();
+      return $this->definition->hasAnnotations();
     }
 
     /**
@@ -108,7 +104,7 @@
      * @return  var[] annotations
      */
     public function getAnnotations() {
-      return $this->reflect->getAnnotations();
+      return $this->definition->getAnnotations();
     }
 
     /**
