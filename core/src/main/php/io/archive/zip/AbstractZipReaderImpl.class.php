@@ -49,7 +49,7 @@
      */
     public function setPassword($password) {
       $this->password= new ZipCipher();
-      $this->password->initialize(iconv('iso-8859-1', 'cp437', $password));
+      $this->password->initialize(iconv(xp::ENCODING, 'cp437', $password));
     }
 
     /**
@@ -137,7 +137,7 @@
     protected function decodeName($name, $charsets) {
       xp::gc(__FILE__);
       foreach ($charsets as $charset) {
-        $decoded= iconv($charset, 'iso-8859-1', $name);
+        $decoded= iconv($charset, xp::ENCODING, $name);
         if (!xp::errorAt(__FILE__, __LINE__ - 1)) return $decoded;
         xp::gc(__FILE__);   // Clean up and try next charset
       }

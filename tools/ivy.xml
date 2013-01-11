@@ -8,7 +8,7 @@
    organisation="net.xp_framework" 
    module="tools"
    status="integration"
-   revision="5.8.7"
+   revision="5.9.0"
   >
     <license name="BSD"/>
     <description homepage="http://xp-framework.net/">

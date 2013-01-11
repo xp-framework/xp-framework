@@ -35,7 +35,7 @@
     #[@test]
     public function noValue() {
       $this->assertEquals(
-        array('hello' => NULL),
+        array(0 => array('hello' => NULL), 1 => array()),
         $this->parse("#[@hello]")
       );
     }
@@ -47,7 +47,7 @@
     #[@test]
     public function sqStringValue() {
       $this->assertEquals(
-        array('hello' => 'World'),
+        array(0 => array('hello' => 'World'), 1 => array()),
         $this->parse("#[@hello('World')]")
       );
     }
@@ -59,7 +59,7 @@
     #[@test]
     public function sqStringValueWithEqualsSign() {
       $this->assertEquals(
-        array('hello' => 'World=Welt'),
+        array(0 => array('hello' => 'World=Welt'), 1 => array()),
         $this->parse("#[@hello('World=Welt')]")
       );
     }
@@ -71,7 +71,7 @@
     #[@test]
     public function sqStringValueWithAtSign() {
       $this->assertEquals(
-        array('hello' => '@World'),
+        array(0 => array('hello' => '@World'), 1 => array()),
         $this->parse("#[@hello('@World')]")
       );
     }
@@ -83,7 +83,7 @@
     #[@test]
     public function sqStringValueWithAnnotation() {
       $this->assertEquals(
-        array('hello' => '@hello("World")'),
+        array(0 => array('hello' => '@hello("World")'), 1 => array()),
         $this->parse("#[@hello('@hello(\"World\")')]")
       );
     }
@@ -95,7 +95,7 @@
     #[@test]
     public function sqStringValueWithDoubleQuotes() {
       $this->assertEquals(
-        array('hello' => 'said "he"'),
+        array(0 => array('hello' => 'said "he"'), 1 => array()),
         $this->parse("#[@hello('said \"he\"')]")
       );
     }
@@ -107,7 +107,7 @@
     #[@test]
     public function sqStringValueWithEscapedSingleQuotes() {
       $this->assertEquals(
-        array('hello' => "said 'he'"),
+        array(0 => array('hello' => "said 'he'"), 1 => array()),
         $this->parse("#[@hello('said \'he\'')]")
       );
     }
@@ -119,7 +119,7 @@
     #[@test]
     public function dqStringValue() {
       $this->assertEquals(
-        array('hello' => 'World'),
+        array(0 => array('hello' => 'World'), 1 => array()),
         $this->parse('#[@hello("World")]')
       );
     }
@@ -131,7 +131,7 @@
     #[@test]
     public function dqStringValueWithSingleQuote() {
       $this->assertEquals(
-        array('hello' => 'Beck\'s'),
+        array(0 => array('hello' => 'Beck\'s'), 1 => array()),
         $this->parse('#[@hello("Beck\'s")]')
       );
     }
@@ -143,7 +143,7 @@
     #[@test]
     public function dqStringValueWithEscapedDoubleQuotes() {
       $this->assertEquals(
-        array('hello' => 'said "he"'),
+        array(0 => array('hello' => 'said "he"'), 1 => array()),
         $this->parse('#[@hello("said \"he\"")]')
       );
     }
@@ -154,7 +154,7 @@
     #[@test]
     public function dqStringValueWithEscapeSequence() {
       $this->assertEquals(
-        array('hello' => "World\n"),
+        array(0 => array('hello' => "World\n"), 1 => array()),
         $this->parse('#[@hello("World\n")]')
       );
     }
@@ -166,7 +166,7 @@
     #[@test]
     public function dqStringValueWithAtSign() {
       $this->assertEquals(
-        array('hello' => '@World'),
+        array(0 => array('hello' => '@World'), 1 => array()),
         $this->parse('#[@hello("@World")]')
       );
     }
@@ -178,7 +178,7 @@
     #[@test]
     public function dqStringValueWithAnnotation() {
       $this->assertEquals(
-        array('hello' => '@hello(\'World\')'),
+        array(0 => array('hello' => '@hello(\'World\')'), 1 => array()),
         $this->parse('#[@hello("@hello(\'World\')")]')
       );
     }
@@ -190,7 +190,7 @@
     #[@test]
     public function intValue() {
       $this->assertEquals(
-        array('answer' => 42),
+        array(0 => array('answer' => 42), 1 => array()),
         $this->parse('#[@answer(42)]')
       );
     }
@@ -202,7 +202,7 @@
     #[@test]
     public function doubleValue() {
       $this->assertEquals(
-        array('version' => 3.5),
+        array(0 => array('version' => 3.5), 1 => array()),
         $this->parse('#[@version(3.5)]')
       );
     }
@@ -215,7 +215,7 @@
     #[@test]
     public function multiValueBackwardsCompatibility() {
       $this->assertEquals(
-        array('xmlmapping' => array('hw_server', 'server')),
+        array(0 => array('xmlmapping' => array('hw_server', 'server')), 1 => array()),
         $this->parse("#[@xmlmapping('hw_server', 'server')]")
       );
       xp::gc();
@@ -229,7 +229,7 @@
     #[@test]
     public function multiValueBackwardsCompatibilityNoWhitespace() {
       $this->assertEquals(
-        array('xmlmapping' => array('hw_server', 'server')),
+        array(0 => array('xmlmapping' => array('hw_server', 'server')), 1 => array()),
         $this->parse("#[@xmlmapping('hw_server','server')]")
       );
       xp::gc();
@@ -243,7 +243,7 @@
     #[@test]
     public function multiValueBackwardsCompatibilityMixedValue() {
       $this->assertEquals(
-        array('xmlmapping' => array('hw_server', TRUE)),
+        array(0 => array('xmlmapping' => array('hw_server', TRUE)), 1 => array()),
         $this->parse("#[@xmlmapping('hw_server', TRUE)]")
       );
       xp::gc();
@@ -256,7 +256,7 @@
     #[@test]
     public function arrayValue() {
       $this->assertEquals(
-        array('versions' => array(3.4, 3.5)),
+        array(0 => array('versions' => array(3.4, 3.5)), 1 => array()),
         $this->parse('#[@versions(array(3.4, 3.5))]')
       );
     }
@@ -268,7 +268,7 @@
     #[@test]
     public function arrayValueWithNestedArray() {
       $this->assertEquals(
-        array('versions' => array(array(3))),
+        array(0 => array('versions' => array(array(3))), 1 => array()),
         $this->parse('#[@versions(array(array(3)))]')
       );
     }
@@ -280,7 +280,7 @@
     #[@test]
     public function arrayValueWithNestedArrays() {
       $this->assertEquals(
-        array('versions' => array(array(3), array(4))),
+        array(0 => array('versions' => array(array(3), array(4))), 1 => array()),
         $this->parse('#[@versions(array(array(3), array(4)))]')
       );
     }
@@ -292,7 +292,7 @@
     #[@test]
     public function arrayValueWithStringsContainingBraces() {
       $this->assertEquals(
-        array('versions' => array('(3..4]')),
+        array(0 => array('versions' => array('(3..4]')), 1 => array()),
         $this->parse('#[@versions(array("(3..4]"))]')
       );
     }
@@ -304,7 +304,7 @@
     #[@test]
     public function boolValue() {
       $this->assertEquals(
-        array('supported' => TRUE),
+        array(0 => array('supported' => TRUE), 1 => array()),
         $this->parse('#[@supported(TRUE)]')
       );
     }
@@ -316,7 +316,7 @@
     #[@test]
     public function keyValuePairsAnnotationValue() {
       $this->assertEquals(
-        array('config' => array('key' => 'value', 'times' => 5, 'disabled' => FALSE, 'null' => NULL, 'list' => array(1, 2))), 
+        array(0 => array('config' => array('key' => 'value', 'times' => 5, 'disabled' => FALSE, 'null' => NULL, 'list' => array(1, 2))), 1 => array()), 
         $this->parse("#[@config(key = 'value', times= 5, disabled= FALSE, null = NULL, list= array(1, 2))]")
       );
     }
@@ -328,10 +328,10 @@
     #[@test]
     public function multiLineAnnotation() {
       $this->assertEquals(
-        array('interceptors' => array('classes' => array(
+        array(0 => array('interceptors' => array('classes' => array(
           'net.xp_framework.unittest.core.FirstInterceptor',
           'net.xp_framework.unittest.core.SecondInterceptor',
-        ))),
+        ))), 1 => array()),
         $this->parse("
           #[@interceptors(classes= array(
             'net.xp_framework.unittest.core.FirstInterceptor',
@@ -348,7 +348,7 @@
     #[@test]
     public function simpleXPathAnnotation() {
       $this->assertEquals(
-        array('fromXml' => array('xpath' => '/parent/child/@attribute')),
+        array(0 => array('fromXml' => array('xpath' => '/parent/child/@attribute')), 1 => array()),
         $this->parse("#[@fromXml(xpath= '/parent/child/@attribute')]")
       );
     }
@@ -360,7 +360,7 @@
     #[@test]
     public function complexXPathAnnotation() {
       $this->assertEquals(
-        array('fromXml' => array('xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"]')),
+        array(0 => array('fromXml' => array('xpath' => '/parent[@attr="value"]/child[@attr1="val1" and @attr2="val2"]')), 1 => array()),
         $this->parse("#[@fromXml(xpath= '/parent[@attr=\"value\"]/child[@attr1=\"val1\" and @attr2=\"val2\"]')]")
       );
     }
@@ -372,7 +372,7 @@
     #[@test]
     public function stringWithEqualSigns() {
       $this->assertEquals(
-        array('permission' => 'rn=login, rt=config'),
+        array(0 => array('permission' => 'rn=login, rt=config'), 1 => array()),
         $this->parse("#[@permission('rn=login, rt=config')]")
       );
     }
@@ -384,7 +384,7 @@
     #[@test]
     public function stringAssignedWithoutWhitespace() {
       $this->assertEquals(
-        array('arg' => array('name' => 'verbose', 'short' => 'v')),
+        array(0 => array('arg' => array('name' => 'verbose', 'short' => 'v')), 1 => array()),
         $this->parse("#[@arg(name= 'verbose', short='v')]")
       );
     }
@@ -397,7 +397,7 @@
     #[@test]
     public function multipleValuesWithStringsAndEqualSigns() {
       $this->assertEquals(
-        array('permission' => array('names' => array('rn=login, rt=config1', 'rn=login, rt=config2'))),
+        array(0 => array('permission' => array('names' => array('rn=login, rt=config1', 'rn=login, rt=config2'))), 1 => array()),
         $this->parse("#[@permission(names= array('rn=login, rt=config1', 'rn=login, rt=config2'))]")
       );
     }
@@ -410,7 +410,7 @@
     #[@test]
     public function unittestAnnotation() {
       $this->assertEquals(
-        array('test' => NULL, 'ignore' => NULL, 'limit' => array('time' => 0.1, 'memory' => 100)),
+        array(0 => array('test' => NULL, 'ignore' => NULL, 'limit' => array('time' => 0.1, 'memory' => 100)), 1 => array()),
         $this->parse("#[@test, @ignore, @limit(time = 0.1, memory = 100)]")
       );
     }
@@ -423,9 +423,69 @@
     #[@test]
     public function overloadedAnnotation() {
       $this->assertEquals(
-        array('overloaded' => array('signatures' => array(array('string'), array('string', 'string')))),
+        array(0 => array('overloaded' => array('signatures' => array(array('string'), array('string', 'string')))), 1 => array()),
         $this->parse('#[@overloaded(signatures= array(array("string"), array("string", "string")))]')
       );
+    }
+
+    /**
+     * Test webmethod annotation 
+     *
+     */
+    #[@test]
+    public function webMethodWithParameterAnnotations() {
+      $this->assertEquals(
+        array(
+          0 => array('webmethod' => array('verb' => 'GET', 'path' => '/greet/{name}')),
+          1 => array('$name' => array('path' => NULL), '$greeting' => array('param' => NULL))
+        ),
+        $this->parse('#[@webmethod(verb= "GET", path= "/greet/{name}"), @$name: path, @$greeting: param]')
+      );
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+    public function missingAnnotationAfterCommaAndValue() {
+      $this->parse('#[@ignore("Test"), ]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+    public function missingAnnotationAfterComma() {
+      $this->parse('#[@ignore, ]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Expecting @/')]
+    public function missingAnnotationAfterSecondComma() {
+      $this->parse('#[@ignore, @test, ]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed string/')]
+    public function unterminatedString() {
+      $this->parse('#[@ignore("Test)]');
+    }
+
+    /**
+     * Test broken annotation
+     *
+     */
+    #[@test, @expect(class= 'lang.ClassFormatException', withMessage= '/Unterminated or malformed array/')]
+    public function unterminatedArray() {
+      $this->parse('#[@ignore(array(1]');
     }
   }
 ?>

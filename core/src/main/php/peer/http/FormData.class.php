@@ -15,7 +15,7 @@
     const
       CRLF  = "\r\n",
       DEFAULT_CONTENTTYPE = 'text/plain',
-      DEFAULT_CHARSET     = 'iso-8859-1';
+      DEFAULT_CHARSET     = xp::ENCODING;
 
     protected
       $name         = NULL,

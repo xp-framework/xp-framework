@@ -79,9 +79,9 @@
         $this->assertEquals(0, $first->getSize());
         $this->assertEquals(NULL, $c->next());
       } catch (Throwable $e) {
-      } finally(); {
+      } ensure($e); {
         $c->close();
-        if (isset($e)) throw $e;
+        if ($e) throw $e;
       }
     }
     
@@ -108,9 +108,9 @@
         }
         $this->assertEquals(NULL, $c->next());
       } catch (Throwable $e) {
-      } finally(); {
+      } ensure($e); {
         $c->close();
-        if (isset($e)) throw $e;
+        if ($e) throw $e;
       }
     }
 

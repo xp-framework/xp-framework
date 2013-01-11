@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'lang.Runnable',
-    'lang.Runtime'
+    'lang.Runtime',
+    'net.xp_framework.unittest.core.PackagedClass'
   );
 
   /**
@@ -127,6 +128,32 @@
     }
 
     /**
+     * Tests package retrieval on newinstance() created namespaced class
+     *
+     */
+    #[@test]
+    public function packageOfNewInstancedClass() {
+      $i= newinstance('lang.Object', array(), '{}');
+      $this->assertEquals(
+        Package::forName('lang'),
+        $i->getClass()->getPackage()
+      );
+    }
+
+    /**
+     * Tests package retrieval on newinstance() created namespaced class
+     *
+     */
+    #[@test]
+    public function packageOfNewInstancedFullyQualifiedClass() {
+      $i= newinstance('net.xp_framework.unittest.core.PackagedClass', array(), '{}');
+      $this->assertEquals(
+        Package::forName('net.xp_framework.unittest.core'),
+        $i->getClass()->getPackage()
+      );
+    }
+
+    /**
      * Test class name of a anonymous generic instance
      *
      */
@@ -135,7 +162,7 @@
       $instance= newinstance('Object', array(), '{ }');
       $n= $instance->getClassName();
       $this->assertEquals(
-        'Object',
+        'lang.Object',
         substr($n, 0, strrpos($n, '·')),
         $n
       );
@@ -150,7 +177,7 @@
       $instance= newinstance('lang.Object', array(), '{ }');
       $n= $instance->getClassName();
       $this->assertEquals(
-        'Object',
+        'lang.Object',
         substr($n, 0, strrpos($n, '·')),
         $n
       );

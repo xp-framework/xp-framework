@@ -24,7 +24,7 @@
      * @return  string
      */
     public static function encode($str) { 
-      return utf8_encode($str);
+      return iconv(xp::ENCODING, 'utf-8', $str);
     }
     
     /**
@@ -34,7 +34,7 @@
      * @return  string
      */
     public static function decode($str) { 
-      return utf8_decode($str);
+      return iconv('utf-8', xp::ENCODING, $str);
     }
   }
 ?>

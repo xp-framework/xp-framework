@@ -267,7 +267,7 @@
         
       } catch (SQLException $e) {
         delete($t);
-      } finally(); {
+      } ensure($e); {
         $this->dropTemporaryIndexesTable();
         if ($e) throw $e;
       }
@@ -288,7 +288,7 @@
         $t= $this->dbTableObjectFor($table, $database);
       } catch (SQLException $e) {
         delete($t);
-      } finally(); {
+      } ensure($e); {
         $this->dropTemporaryIndexesTable();
         if ($e) throw $e;
       }

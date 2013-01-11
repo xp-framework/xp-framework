@@ -38,9 +38,9 @@
       
       try {
         $r->run();
-      } catch (Exception $t) { } finally(); {
+      } catch (Exception $e) { } ensure($e); {
         stream_wrapper_restore('php');
-        if (isset($t)) throw $t;
+        if ($e) throw $e;
       }
       
       return self::$streams;

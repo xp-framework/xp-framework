@@ -28,10 +28,10 @@
      * Start writing a document
      *
      * @param   string version default "1.0"
-     * @param   string encoding default "iso-8859-1"
+     * @param   string encoding defaults to XP default encoding
      * @param   bool standalone default FALSE
      */
-    public function startDocument($version= '1.0', $encoding= 'iso-8859-1', $standalone= FALSE) {
+    public function startDocument($version= '1.0', $encoding= xp::ENCODING, $standalone= FALSE) {
       $this->stream->write(sprintf(
         '<?xml version="%s" encoding="%s"%s?>',
         $version,

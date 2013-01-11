@@ -104,7 +104,7 @@
       
       // Decode if necessary
       switch (strtolower($encoding)) {
-        case 'utf-8': $ret= utf8_decode($ret); break;
+        case 'utf-8': $ret= iconv('utf-8', xp::ENCODING, $ret); break;
       }
 
       // Set type
