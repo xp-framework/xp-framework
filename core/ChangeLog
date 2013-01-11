@@ -66,6 +66,8 @@ Git commit: ?????
 
 Features
 ~~~~~~~~
+- Merged pull request #217 - Resource property source
+  (mrosoiu)
 - Merged pull request #216 - Image metadata reader
   (friebe)
 
