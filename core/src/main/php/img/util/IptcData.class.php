@@ -58,6 +58,7 @@
     /**
      * Read from a file
      *
+     * @deprecated  Use img.io.MetaDataReader instead
      * @param   io.File file
      * @param   var default default void what should be returned in case no data is found
      * @return  img.util.IptcData
@@ -709,6 +710,37 @@
         xp::stringOf($this->supplementalCategories, '  '),
         $this->specialInstructions,
         $this->originalTransmissionReference
+      );
+    }
+
+    /**
+     * Returns whether another ExifData instance is equal to this
+     *
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $cmp->title === $this->title &&
+        $cmp->urgency === $this->urgency &&
+        $cmp->category === $this->category &&
+        $cmp->keywords === $this->keywords &&
+        (NULL === $cmp->dateCreated ? NULL === $this->dateCreated : $cmp->dateCreated->equals($this->dateCreated)) &&
+        $cmp->author === $this->author &&
+        $cmp->authorPosition === $this->authorPosition &&
+        $cmp->city === $this->city &&
+        $cmp->state === $this->state &&
+        $cmp->country === $this->country &&
+        $cmp->headline === $this->headline &&
+        $cmp->credit === $this->credit &&
+        $cmp->source === $this->source &&
+        $cmp->copyrightNotice === $this->copyrightNotice &&
+        $cmp->caption === $this->caption &&
+        $cmp->writer === $this->writer &&
+        $cmp->supplementalCategories === $this->supplementalCategories &&
+        $cmp->specialInstructions === $this->specialInstructions &&
+        $cmp->originalTransmissionReference === $this->originalTransmissionReference
       );
     }
   }
