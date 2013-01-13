@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('security.checksum.Checksum');
+  uses('security.checksum.Checksum', 'io.FileUtil');
   
   /**
    * CRC16 checksum [CRC-16 (Modbus)]
@@ -61,10 +61,7 @@
      * @return  security.checksum.CRC16
      */
     public static function fromFile($file) {
-      $file->open(FILE_MODE_READ);
-      $data= $file->read($file->size());
-      $file->close();
-      return CRC16::fromString($data);
+      return CRC16::fromString(FileUtil::getContents($file));
     }
   }
 ?>

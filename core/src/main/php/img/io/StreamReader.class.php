@@ -59,7 +59,10 @@
      * @throws  img.ImagingException
      */    
     public function readFromStream() {
-      $bytes= $this->stream->read($this->stream->size());
+      $bytes= '';
+      do {
+        $bytes.= $this->stream->read();
+      } while (!$this->stream->eof());
       $this->stream->close();
 
       return $this->readImage0($bytes);
