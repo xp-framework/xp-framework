@@ -29,7 +29,7 @@
           }
 
           $qn= $base.strtr(trim($line), '/', DIRECTORY_SEPARATOR).PATH_SEPARATOR;
-          if ('.php' === substr($line, -4, 4)) {
+          if ('.php' === substr($qn, -5, 4)) {
             require(substr($qn, 0, -1));
           } else {
             $pre ? $inc= $qn.$inc : $inc.= $qn;
