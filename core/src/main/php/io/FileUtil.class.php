@@ -28,8 +28,14 @@
     public static function getContents($file) {
       clearstatcache();
       $file->open(FILE_MODE_READ);
-      $data= $file->read($file->size());
+
+      // Read until EOF. Best case scenario is that this will run exactly once.
+      $data= '';
+      do {
+        $data.= $file->read($file->size() - strlen($data));
+      } while (!$file->eof());
       $file->close();
+
       return $data;
     }
     

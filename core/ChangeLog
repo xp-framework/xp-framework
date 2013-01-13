@@ -64,6 +64,13 @@ Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+Bugfixes
+~~~~~~~~
+- Fixed io.FileUtil class to work if File::read() returns less than the
+  given chunk size. See pull request #220 - this fixes FileUtil used in
+  combination with ResourceProvider, e.g.
+  (friebe, ohinckel)
+
 Features
 ~~~~~~~~
 - Merged pull request #217 - Resource property source
