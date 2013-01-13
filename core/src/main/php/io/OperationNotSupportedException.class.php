@@ -11,7 +11,7 @@
    *
    * @see    xp://io.IOException
    */
-  class OperationTimedOutException extends IOException {
-
+  class OperationNotSupportedException extends IOException {
+  
   }
 ?>
