@@ -4,7 +4,7 @@
  * $Id$
  */
  
-  uses('lang.ElementNotFoundException', 'io.EncapsedStream');
+  uses('lang.ElementNotFoundException', 'io.EncapsedStream', 'io.FileUtil');
 
   define('ARCHIVE_READ',             0x0000);
   define('ARCHIVE_CREATE',           0x0001);
@@ -71,11 +71,8 @@
      * @deprecated Use addFile() instead
      */
     public function add($file, $id) {
-      $file->open(FILE_MODE_READ);
-      $data= $file->read($file->size());
-      $file->close();
-
-      $this->_index[$id]= array(strlen($data), -1, $data);
+      $bytes= FileUtil::getContents($file);
+      $this->_index[$id]= array(strlen($bytes), -1, $bytes);
       return TRUE;
     }
     
@@ -110,10 +107,7 @@
      * @param   io.File file
      */
     public function addFile($id, $file) {
-      $file->open(FILE_MODE_READ);
-      $bytes= $file->read($file->size());
-      $file->close();
-
+      $bytes= FileUtil::getContents($file);
       $this->_index[$id]= array(strlen($bytes), -1, $bytes);
     }
     
