@@ -8,6 +8,7 @@
    * File utility functions
    *
    * @see      xp://io.File
+   * @test     xp://net.xp_framework.unittest.io.FileUtilTest
    * @purpose  Simplify often used file operations
    */
   class FileUtil extends Object {
