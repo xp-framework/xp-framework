@@ -170,5 +170,117 @@
     public function collectionOutputStream() {
       $this->firstElement($this->newCollection('/', array($this->newCollection('/root'))))->getOutputStream();
     }
+ 
+    /**
+     * Test findElement()
+     *
+     */
+    #[@test]
+    public function findExistingElement() {
+      $this->assertEquals(new MockElement('./first.txt'), $this->fixture->findElement('first.txt'));
+    }
+
+    /**
+     * Test findElement()
+     *
+     */
+    #[@test]
+    public function findNonExistantElement() {
+      $this->assertEquals(NULL, $this->fixture->findElement('doesnotexist.txt'));
+    }
+
+    /**
+     * Test newElement()
+     *
+     */
+    #[@test]
+    public function newNonExistantElement() {
+      $created= $this->fixture->newElement('new.txt');
+      $this->assertEquals(new MockElement('./new.txt'), $created);
+      $this->assertEquals($created, $this->fixture->getElement('new.txt'));
+    }
+
+    /**
+     * Test newElement()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function newExistingElement() {
+      $this->fixture->newElement('first.txt');
+    }
+
+    /**
+     * Test getElement()
+     *
+     */
+    #[@test]
+    public function getExistingElement() {
+      $this->assertEquals(new MockElement('./first.txt'), $this->fixture->getElement('first.txt'));
+    }
+
+    /**
+     * Test getElement()
+     *
+     */
+    #[@test, @expect('util.NoSuchElementException')]
+    public function getNonExistantElement() {
+      $this->fixture->getElement('doesnotexist.txt');
+    }
+
+    /**
+     * Test findCollection()
+     *
+     */
+    #[@test]
+    public function findExistingCollection() {
+      $this->assertEquals(new MockCollection('./sub'), $this->fixture->findCollection('sub'));
+    }
+
+    /**
+     * Test findCollection()
+     *
+     */
+    #[@test]
+    public function findNonExistantCollection() {
+      $this->assertEquals(NULL, $this->fixture->findCollection('doesnotexist'));
+    }
+ 
+    /**
+     * Test getCollection()
+     *
+     */
+    #[@test]
+    public function getExistingCollection() {
+      $this->assertEquals(new MockCollection('./sub'), $this->fixture->getCollection('sub'));
+    }
+
+    /**
+     * Test getCollection()
+     *
+     */
+    #[@test, @expect('util.NoSuchElementException')]
+    public function getNonExistantCollection() {
+      $this->fixture->getCollection('doesnotexist');
+    }
+
+    /**
+     * Test newCollection()
+     *
+     */
+    #[@test]
+    public function newNonExistantCollection() {
+      $created= $this->fixture->newCollection('newdir');
+      $this->assertEquals(new MockCollection('./newdir'), $created);
+      $this->assertEquals($created, $this->fixture->getCollection('newdir'));
+    }
+
+    /**
+     * Test newCollection()
+     *
+     */
+    #[@test, @expect('lang.IllegalArgumentException')]
+    public function newExistingCollection() {
+      $this->fixture->newCollection('sub');
+    }
   }
 ?>

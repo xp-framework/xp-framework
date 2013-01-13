@@ -129,5 +129,15 @@
     public function getOutputStream() {
       return new MemoryOutputStream();
     }
+    
+    /**
+     * Returns whether another object is equal to this element
+     *
+     * @param   lang.Generic cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->getURI() === $this->getURI();
+    }
   } 
 ?>

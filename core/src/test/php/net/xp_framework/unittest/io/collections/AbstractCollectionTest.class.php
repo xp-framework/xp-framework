@@ -88,60 +88,60 @@
       
       // Warning: Changing this list will make some tests fail!
       $this->addElement($this->fixture, new MockElement(
-        'first.txt', 
+        './first.txt', 
         1200, 
         Date::fromString('Oct 10  2006'), // accessed
         Date::fromString('Dec 14  2005'), // modified
         Date::fromString('Oct 30  2005')  // created
       ));
       $this->addElement($this->fixture, new MockElement(
-        'second.txt', 
+        './second.txt', 
         333, 
         Date::fromString('Oct 10  2006'), // accessed
         Date::fromString('Dec 24  2005'), // modified
         Date::fromString('Oct 30  2005')  // created
       ));
       $this->addElement($this->fixture, new MockElement(
-        'third.jpg', 
+        './third.jpg', 
         18882, 
         Date::fromString('Dec 11  2003'), // accessed
         Date::fromString('Dec 10  2003'), // modified
         Date::fromString('Dec 10  2003')  // created
       ));
       $this->addElement($this->fixture, new MockElement(
-        'zerobytes.png', 
+        './zerobytes.png', 
         0, 
         Date::fromString('Dec 11  2003'), // accessed
         Date::fromString('Dec 10  2003'), // modified
         Date::fromString('Dec 10  2003')  // created
       ));
 
-      with ($sub= $this->addElement($this->fixture, new MockCollection('sub'))); {
+      with ($sub= $this->addElement($this->fixture, new MockCollection('./sub'))); {
         $this->addElement($sub, new MockElement(
-          'sub/IMG_6100.jpg', 
+          './sub/IMG_6100.jpg', 
           531718, 
           Date::fromString('Mar  9  2006'), // accessed
           Date::fromString('Mar  9  2006'), // modified
           Date::fromString('Mar  9  2006')  // created
         ));
         $this->addElement($sub, new MockElement(
-          'sub/IMG_6100.txt', 
+          './sub/IMG_6100.txt', 
           5932, 
           Date::fromString('Mar 13  2006'), // accessed
           Date::fromString('Mar 13  2006'), // modified
           Date::fromString('Mar 13  2006')  // created
         ));
 
-        with ($sec= $this->addElement($this->fixture, new MockCollection('sub/sec'))); {
+        with ($sec= $this->addElement($this->fixture, new MockCollection('./sub/sec'))); {
           $this->addElement($sec, new MockElement(
-            'sub/sec/lang.base.php', 
+            './sub/sec/lang.base.php', 
             16739, 
             Date::fromString('Oct 11  2006'), // accessed
             Date::fromString('Oct 11  2006'), // modified
             Date::fromString('Feb 21  2002')  // created
           ));
           $this->addElement($sec, new MockElement(
-            'sub/sec/__xp__.php', 
+            './sub/sec/__xp__.php', 
             8589, 
             Date::fromString('Oct  8  2006'), // accessed
             Date::fromString('Oct  8  2006'), // modified
