@@ -127,10 +127,6 @@
         raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
       }
 
-      if (isset(xp::$registry['modules'][$m[1]])) {
-        raise('lang.ClassLinkageException', 'Module '.$m[1].' already registered');
-      }
-
       // Declare module
       $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
 
@@ -155,9 +151,15 @@
      * Register module
      * 
      * @param  lang.reflect.Module m
+     * @throws lang.IllegalStateException 
      */
     public static function registerModule($m) {
-      xp::$registry['modules'][$m->getName()]= $m;
+      $name= $m->getName();
+      if (isset(xp::$registry['modules'][$name])) {
+        raise('lang.IllegalStateException', 'Module "'.$name.'" already registered');
+      }
+
+      xp::$registry['modules'][$name]= $m;
     }
 
     /**
