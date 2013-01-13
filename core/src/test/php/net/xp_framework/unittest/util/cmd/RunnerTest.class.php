@@ -881,7 +881,7 @@
           // Not reached
         }
       }');
-      $this->runWith(array('-c', dirname(__FILE__), $command->getClassName()));
+      $this->runWith(array('-c', 'res://net/xp_framework/unittest/util/cmd/', $command->getClassName()));
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('Have value', $this->out->getBytes());
     }
@@ -929,7 +929,7 @@ key=overwritten_value'
           // Not reached
         }
       }');
-      $this->runWith(array('-c', dirname(__FILE__).DIRECTORY_SEPARATOR.'add_etc', '-c', dirname(__FILE__), $command->getClassName()));
+      $this->runWith(array('-c', 'res://net/xp_framework/unittest/util/cmd/add_etc', '-c', 'res://net/xp_framework/unittest/util/cmd/', $command->getClassName()));
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('Have overwritten_value', $this->out->getBytes());
     }
