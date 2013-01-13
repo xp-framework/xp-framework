@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+RFCs
+~~~~
+- Implemented RFC #0196: I/O Collections random access
+  (friebe)
+
 Bugfixes
 ~~~~~~~~
 - Fixed io.FileUtil class to work if File::read() returns less than the
