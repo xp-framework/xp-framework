@@ -60,6 +60,29 @@ Features
   the framework's source code. See issue #35 for details.
   (friebe, kiesel)
 
+Version 5.8.?, released ????-??-??
+----------------------------------
+Git commit: ?????
+
+RFCs
+~~~~
+- Implemented RFC #0196: I/O Collections random access
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Fixed io.FileUtil class to work if File::read() returns less than the
+  given chunk size. See pull request #220 - this fixes FileUtil used in
+  combination with ResourceProvider, e.g.
+  (friebe, ohinckel)
+
+Features
+~~~~~~~~
+- Merged pull request #217 - Resource property source
+  (mrosoiu)
+- Merged pull request #216 - Image metadata reader
+  (friebe)
+
 
 Version 5.8.10, released 2013-01-03
 -----------------------------------

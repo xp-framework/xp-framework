@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('security.checksum.Checksum');
+  uses('security.checksum.Checksum', 'io.FileUtil');
   
   /**
    * CRC32 checksum
@@ -55,10 +55,7 @@
      * @return  security.checksum.CRC32
      */
     public static function fromFile($file) {
-      $file->open(FILE_MODE_READ);
-      $data= $file->read($file->size());
-      $file->close();
-      return CRC32::fromString($data);
+      return CRC32::fromString(FileUtil::getContents($file));
     }
     
     /**
