@@ -57,9 +57,9 @@
       
       // Declare core module
       $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes('CoreModule', 'class __CoreModule extends Object { }');
+      $dyn->setClassBytes('__CoreModule', 'class __CoreModule extends Object { }');
       xp::$registry['modules']= array(
-        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('CoreModule'), 'core', xp::version())
+        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('__CoreModule'), 'core', xp::version())
       );
 
       // Scan include-path, setting up classloaders for each element
