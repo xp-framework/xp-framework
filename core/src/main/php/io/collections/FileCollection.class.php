@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('io.collections.FileElement', 'io.collections.IOCollection');
+  uses('io.collections.FileElement', 'io.collections.IOCollection', 'io.collections.RandomCollectionAccess');
 
   /**
    * File collection
@@ -12,7 +12,7 @@
    * @see      xp://io.collections.IOCollection
    * @purpose  IOCollection implementation
    */
-  class FileCollection extends Object implements IOCollection {
+  class FileCollection extends Object implements IOCollection, RandomCollectionAccess {
     public
       $uri = '';
     
@@ -56,6 +56,16 @@
      */
     public function rewind() { 
       rewinddir($this->_hd);
+    }
+    
+    /**
+     * Creates a qualified name
+     *
+     * @param   string
+     * @return  string
+     */
+    protected function qualifiedName($name) {
+      return $this->uri.basename($name);
     }
   
     /**
@@ -168,6 +178,136 @@
      */
     public function getOutputStream() {
       throw new IOException('Cannot write to a directory');
+    }
+
+    /**
+     * Creates a new element in this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOElement
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function newElement($name) {
+      $qualified= $this->qualifiedName($name);
+      if (!touch($qualified)) {
+        throw new IOException('Cannot create '.$qualified);
+      }
+      $created= new FileElement($qualified);
+      $created->setOrigin($this);
+      return $created;
+    }
+
+    /**
+     * Creates a new collection inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOCollection
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function newCollection($name) {
+      $qualified= $this->qualifiedName($name);
+      if (!mkdir($qualified)) {
+        throw new IOException('Cannot create '.$qualified);
+      }
+      $created= new FileCollection($qualified);
+      $created->setOrigin($this);
+      return $created;
+    }
+
+    /**
+     * Finds an element inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOElement
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function findElement($name) {
+      $qualified= $this->qualifiedName($name);
+      if (!is_file($qualified)) return NULL;
+
+      $found= new FileElement($qualified);
+      $found->setOrigin($this);
+      return $found;
+    }
+    
+    /**
+     * Finds a collection inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOCollection
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function findCollection($name) {
+      $qualified= $this->qualifiedName($name);
+      if (!is_dir($qualified)) return NULL;
+
+      $found= new FileCollection($qualified);
+      $found->setOrigin($this);
+      return $found;
+    }
+
+    /**
+     * Gets an element inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOElement
+     * @throws  util.NoSuchElementException
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function getElement($name) {
+      if (!($found= $this->findElement($name))) {
+        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
+      }
+      return $found;
+    }
+    
+    /**
+     * Get a collection inside this collection
+     *
+     * @param   string name
+     * @return  io.collections.IOCollection
+     * @throws  util.NoSuchElementException
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function getCollection($name) {
+      if (!($found= $this->findCollection($name))) {
+        throw new NoSuchElementException('Cannot find '.$name.' in '.$this->uri);
+      }
+      return $found;
+    }
+
+    /**
+     * Removes an element from this collection
+     *
+     * @param   string name
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function removeElement($name) {
+      $qualified= $this->qualifiedName($name);
+      if (!unlink($qualified)) {
+        throw new IOException('Cannot remove '.$qualified);
+      }
+    }
+
+    /**
+     * Removes a collection from this collection
+     *
+     * @param   string name
+     * @throws  io.OperationNotSupportedException
+     * @throws  io.IOException
+     */
+    public function removeCollection($name) {
+      $qualified= $this->qualifiedName($name);
+      if (!rmdir($qualified)) {
+        throw new IOException('Cannot remove '.$qualified);
+      }
     }
   } 
 ?>

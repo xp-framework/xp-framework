@@ -8,6 +8,7 @@
    * File utility functions
    *
    * @see      xp://io.File
+   * @test     xp://net.xp_framework.unittest.io.FileUtilTest
    * @purpose  Simplify often used file operations
    */
   class FileUtil extends Object {
@@ -27,8 +28,16 @@
     public static function getContents($file) {
       clearstatcache();
       $file->open(FILE_MODE_READ);
-      $data= $file->read($file->size());
+      $size= $file->size();
+
+      // Read until EOF. Best case scenario is that this will run exactly once.
+      $data= '';
+      do {
+        $l= $size - strlen($data);
+        $data.= $file->read($l);
+      } while ($l > 0 && !$file->eof());
       $file->close();
+
       return $data;
     }
     
