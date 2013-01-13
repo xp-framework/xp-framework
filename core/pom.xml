@@ -20,8 +20,6 @@
 
   <!-- Properties -->
   <properties>
-    <!-- Test resources are inside [src/test/php] and not inside [src/test/resources] -->
-    <xp.compile.testPhpIncludePattern>**/*</xp.compile.testPhpIncludePattern>
   </properties>
 
   <!-- Build settings -->
