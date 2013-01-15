@@ -53,6 +53,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for looking up configuration through the ClassLoader /
+  ResourceProvider infrastructure in pull request #217, #221
+  (mrosoiu, kiesel)
 - Added preliminary support for PHP 5.5
   http://news.planet-xp.net/article/493/2012/12/31/
   (friebe, kiesel)
