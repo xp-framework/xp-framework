@@ -36,7 +36,7 @@
      */
     #[@test]
     public function uses_has_executed() {
-      $this->assertTrue($this->loader->providesClass('rdbms.sybase_ct.Driver'));
+      $this->assertTrue($this->fixture->providesClass('rdbms.sybase_ct.Driver'));
     }
     
     /**
@@ -45,7 +45,7 @@
      */
     #[@test]
     public function initializer_has_run() {
-      $class= $this->loader->loadClass('rdbms.sybase_ct.Driver');
+      $class= $this->fixture->loadClass('rdbms.sybase_ct.Driver');
       $this->assertEquals(
         array($this->moduleName(), $this->moduleVersion()),
         $class->getField('registered')->get($class->getField('instance')->get(NULL))

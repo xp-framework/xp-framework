@@ -14,7 +14,6 @@
    *
    */
   abstract class AbstractModuleTest extends TestCase {
-    protected $loader= NULL;
     protected $fixture= NULL;
     
     /**
@@ -36,11 +35,9 @@
      *
      */
     public function setUp() {
-      $name= $this->moduleName();
-      $this->loader= ClassLoader::getDefault()->registerPath(
-        dirname(__FILE__).'/../../../../../modules/'.$name
+      $this->fixture= ClassLoader::getDefault()->registerPath(
+        dirname(__FILE__).'/../../../../../modules/'.$this->moduleName()
       );
-      $this->fixture= Module::forName($name);
     }
 
     /**
@@ -48,8 +45,7 @@
      *
      */
     public function tearDown() {
-      ClassLoader::removeModule($this->fixture);
-      ClassLoader::removeLoader($this->loader);
+      ClassLoader::removeLoader($this->fixture);
     }
     
     /**

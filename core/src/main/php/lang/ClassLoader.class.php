@@ -210,6 +210,7 @@
      */
     public static function removeLoader(IClassLoader $l) {
       if (!isset(self::$delegates[$l->hashCode()])) return FALSE;
+      $l instanceof Module && self::removeModule($l);
       unset(self::$delegates[$l->hashCode()]);
       return TRUE;
     }
