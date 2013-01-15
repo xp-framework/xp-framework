@@ -73,12 +73,13 @@
 
         $resolved= realpath($element);
         if (is_dir($resolved)) {
-          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE), $before);
+          $cl= FileSystemClassLoader::instanceFor($resolved, FALSE);
         } else if (is_file($resolved)) {
-          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE), $before);
+          $cl= ArchiveClassLoader::instanceFor($resolved, FALSE);
         } else {
           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
         }
+        isset(self::$delegates[$cl->hashCode()]) || self::registerLoader($cl, $before);
       }
     }
     
@@ -104,8 +105,9 @@
       if (NULL === $before && '!' === $element{0}) {
         $before  = TRUE;
         $element = substr($element, 1);
+      } else {
+        $before= (bool)$before;
       }
-      $before= (bool)$before;
       $resolved= realpath($element);
       if (is_dir($resolved)) {
         return self::registerLoader(FileSystemClassLoader::instanceFor($resolved), $before);
@@ -135,12 +137,19 @@
       if ('?>' === substr($moduleInfo, -2, 2)) $moduleInfo= substr($moduleInfo, 0, -2);
 
       // Load class and register
+      array_unshift(self::$delegates, $l);
       $dyn= DynamicClassLoader::instanceFor('modules');
       $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends Object {'.
         'public static $name= "'.$m[1].'";'.
         'public static $version= '.(isset($m[2]) ? '"'.$m[3].'"' : 'NULL').';'
       )));
-      $class= $dyn->loadClass($module);
+      try {
+        $class= $dyn->loadClass($module);
+        unset(self::$delegates[0]);
+      } catch (ClassLoadingException $e) {
+        unset(self::$delegates[0]);
+        throw $e;
+      }
       if ($class->hasMethod('initialize')) {
         $class->getMethod('initialize')->invoke(NULL, array($l));
       }
@@ -152,6 +161,7 @@
      * 
      * @param  lang.reflect.Module m
      * @throws lang.IllegalStateException 
+     * @return lang.reflect.Module m
      */
     public static function registerModule($m) {
       $name= $m->getName();
@@ -160,6 +170,7 @@
       }
 
       xp::$registry['modules'][$name]= $m;
+      return $m;
     }
 
     /**
@@ -179,13 +190,15 @@
      * @return  lang.IClassLoader the registered loader
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
+      if ($l->providesResource('module.xp')) {
+        $l= self::registerModule(self::declareModule($l));
+      }
+
       if ($before) {
         self::$delegates= array_merge(array($l->hashCode() => $l), self::$delegates);
       } else {
         self::$delegates[$l->hashCode()]= $l;
       }
-
-      $l->providesResource('module.xp') && self::registerModule(self::declareModule($l));
       return $l;
     }
 

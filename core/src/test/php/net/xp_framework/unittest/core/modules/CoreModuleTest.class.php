@@ -59,7 +59,7 @@
     #[@test]
     public function string_representation() {
       $this->assertEquals(
-        'lang.reflect.Module<core:'.xp::version().'>',
+        'lang.reflect.Module<core:'.xp::version().'>@lang.ClassLoader',
         $this->fixture->toString()
       );
     }

@@ -119,6 +119,15 @@
     }
 
     /**
+     * Returns a hashcode for this class loader
+     *
+     * @return string
+     */
+    public function hashCode() {
+      return 'cl@'.$this->path;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return  string

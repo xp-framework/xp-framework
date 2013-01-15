@@ -74,7 +74,7 @@
      * Test getClassLoader()
      *
      */
-    #[@test]
+    #[@test, @ignore('The module itself is the class loader')]
     public function modules_loader() {
       $this->assertEquals($this->loader, $this->fixture->getClassLoader());
     }
@@ -86,7 +86,7 @@
     #[@test]
     public function string_representation() {
       $this->assertEquals(
-        'lang.reflect.Module<'.$this->moduleName().':'.$this->moduleVersion().'>',
+        'lang.reflect.Module<'.$this->moduleName().':'.$this->moduleVersion().'>@'.$this->fixture->getClassLoader()->toString(),
         $this->fixture->toString()
       );
     }
@@ -95,7 +95,7 @@
      * Test toString()
      *
      */
-    #[@test]
+    #[@test, @ignore('Modules reuse class loader hashcodes')]
     public function hashcode_value() {
       $this->assertEquals(
         'module'.$this->moduleName().$this->moduleVersion(),

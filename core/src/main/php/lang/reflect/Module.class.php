@@ -14,7 +14,7 @@
    * @test  xp://net.xp_framework.unittest.core.modules.ModuleWithStaticInitializerTest
    * @see   https://github.com/xp-framework/rfc/issues/220
    */
-  class Module extends Object {
+  class Module extends Object implements IClassLoader {
     protected $loader;
     protected $definition;
     protected $name;
@@ -37,6 +37,90 @@
       // unneccessary - we calculate them right before definition anyways!
       $this->name= (NULL === $name ? $definition->getField('name')->get(NULL) : $name);
       $this->version= (NULL === $version ? $definition->getField('version')->get(NULL) : $version);
+    }
+
+    /**
+     * Checks whether this loader can provide the requested class
+     *
+     * @param   string class
+     * @return  bool
+     */
+    public function providesClass($class) {
+      return $this->loader->providesClass($class);
+    }
+
+    /**
+     * Checks whether this loader can provide the requested resource
+     *
+     * @param   string filename
+     * @return  bool
+     */
+    public function providesResource($filename) {
+      return $this->loader->providesResource($filename);
+    }
+
+    /**
+     * Checks whether this loader can provide the requested package
+     *
+     * @param   string package
+     * @return  bool
+     */
+    public function providesPackage($package) {
+      return $this->loader->providesPackage($package);
+    }
+
+    /**
+     * Get package contents
+     *
+     * @param   string package
+     * @return  string[] filenames
+     */
+    public function packageContents($package) {
+      return $this->loader->packageContents($package);
+    }
+
+    /**
+     * Load the class by the specified name
+     *
+     * @param   string class fully qualified class name io.File
+     * @return  lang.XPClass
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadClass($class) {
+      return $this->loader->loadClass($class);
+    }
+
+    /**
+     * Load the class by the specified name
+     *
+     * @param   string class fully qualified class name io.File
+     * @return  string class name
+     * @throws  lang.ClassNotFoundException in case the class can not be found
+     */
+    public function loadClass0($class) {
+      return $this->loader->loadClass0($class);
+    }
+
+    /**
+     * Loads a resource.
+     *
+     * @param   string string name of resource
+     * @return  string
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResource($string) {
+      return $this->loader->getResource($string);
+    }
+
+    /**
+     * Retrieve a stream to the resource
+     *
+     * @param   string string name of resource
+     * @return  io.Stream
+     * @throws  lang.ElementNotFoundException in case the resource cannot be found
+     */
+    public function getResourceAsStream($string) {
+      return $this->loader->getResourceAsStream($string);
     }
     
     /**
@@ -164,7 +248,7 @@
      * @return  string
      */
     public function toString() {
-      return xp::nameOf(__CLASS__).'<'.$this->name.(NULL === $this->version ? '' : ':'.$this->version).'>';
+      return xp::nameOf(__CLASS__).'<'.$this->name.(NULL === $this->version ? '' : ':'.$this->version).'>@'.$this->loader->toString();
     }
 
     /**
@@ -173,7 +257,7 @@
      * @return  string
      */
     public function hashCode() {
-      return 'module'.$this->name.$this->version;
+      return $this->loader->hashCode();
     }
   }
 ?>
