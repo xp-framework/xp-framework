@@ -4,14 +4,12 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'lang.reflect.Module'
-  );
+  uses('unittest.TestCase', 'lang.Module');
 
   /**
    * TestCase
    *
+   * @see xp://lang.Module
    */
   abstract class AbstractModuleTest extends TestCase {
     protected $fixture= NULL;
@@ -82,7 +80,7 @@
     #[@test]
     public function string_representation() {
       $this->assertEquals(
-        'lang.reflect.Module<'.$this->moduleName().':'.$this->moduleVersion().'>@'.$this->fixture->getClassLoader()->toString(),
+        'lang.Module<'.$this->moduleName().':'.$this->moduleVersion().'>@'.$this->fixture->getClassLoader()->toString(),
         $this->fixture->toString()
       );
     }

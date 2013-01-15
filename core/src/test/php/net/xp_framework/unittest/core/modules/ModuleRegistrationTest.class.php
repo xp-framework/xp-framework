@@ -4,14 +4,12 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'lang.reflect.Module'
-  );
+  uses('unittest.TestCase', 'lang.Module');
 
   /**
    * TestCase
    *
+   * @see xp://lang.Module
    */
   class ModuleRegistrationTest extends TestCase {
     protected static $module;

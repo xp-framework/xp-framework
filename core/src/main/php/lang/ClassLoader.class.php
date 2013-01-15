@@ -9,7 +9,7 @@
     'lang.FileSystemClassLoader',
     'lang.DynamicClassLoader',
     'lang.archive.ArchiveClassLoader',
-    'lang.reflect.Module'
+    'lang.Module'
   );
   
   /** 

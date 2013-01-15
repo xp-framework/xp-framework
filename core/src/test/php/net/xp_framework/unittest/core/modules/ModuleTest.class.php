@@ -4,14 +4,12 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'lang.reflect.Module'
-  );
+  uses('unittest.TestCase', 'lang.Module');
 
   /**
    * TestCase
    *
+   * @see xp://lang.Module
    */
   class ModuleTest extends TestCase {
 
@@ -30,7 +28,7 @@
      */
     #[@test]
     public function getmodules_returns_list_of_modules() {
-      $this->assertInstanceOf('lang.reflect.Module[]', Module::getModules());
+      $this->assertInstanceOf('lang.Module[]', Module::getModules());
     }
 
     /**

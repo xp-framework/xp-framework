@@ -4,10 +4,7 @@
  * $Id$ 
  */
 
-  uses(
-    'unittest.TestCase',
-    'lang.reflect.Module'
-  );
+  uses('unittest.TestCase', 'lang.Module');
 
   /**
    * TestCase
@@ -59,7 +56,7 @@
     #[@test]
     public function string_representation() {
       $this->assertEquals(
-        'lang.reflect.Module<core:'.xp::version().'>@lang.ClassLoader',
+        'lang.Module<core:'.xp::version().'>@lang.ClassLoader',
         $this->fixture->toString()
       );
     }
