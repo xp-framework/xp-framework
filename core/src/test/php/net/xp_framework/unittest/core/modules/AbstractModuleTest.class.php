@@ -70,9 +70,9 @@
      * Test getClassLoader()
      *
      */
-    #[@test, @ignore('The module itself is the class loader')]
+    #[@test]
     public function modules_loader() {
-      $this->assertEquals($this->loader, $this->fixture->getClassLoader());
+      $this->assertInstanceOf('lang.IClassLoader', $this->fixture->getClassLoader());
     }
 
     /**
