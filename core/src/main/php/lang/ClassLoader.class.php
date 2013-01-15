@@ -190,14 +190,15 @@
      * @return  lang.IClassLoader the registered loader
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
+      $id= $l->hashCode();
       if ($l->providesResource('module.xp')) {
         $l= self::registerModule(self::declareModule($l));
       }
 
       if ($before) {
-        self::$delegates= array_merge(array($l->hashCode() => $l), self::$delegates);
+        self::$delegates= array_merge(array($id => $l), self::$delegates);
       } else {
-        self::$delegates[$l->hashCode()]= $l;
+        self::$delegates[$id]= $l;
       }
       return $l;
     }
@@ -209,9 +210,17 @@
      * @return  bool TRUE if the delegate was unregistered
      */
     public static function removeLoader(IClassLoader $l) {
-      if (!isset(self::$delegates[$l->hashCode()])) return FALSE;
-      $l instanceof Module && self::removeModule($l);
-      unset(self::$delegates[$l->hashCode()]);
+      if ($l instanceof Module) {
+
+        // FIXME: a) we should not be using hashCode(), b) self::removeModule() specialization
+        self::removeModule($l);
+        $id= $l->getClassLoader()->hashCode();
+      } else {
+        $id= $l->hashCode();
+      }
+
+      if (!isset(self::$delegates[$id])) return FALSE;
+      unset(self::$delegates[$id]);
       return TRUE;
     }
 

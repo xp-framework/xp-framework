@@ -91,10 +91,10 @@
      * Test toString()
      *
      */
-    #[@test, @ignore('Modules reuse class loader hashcodes')]
+    #[@test]
     public function hashcode_value() {
       $this->assertEquals(
-        'module'.$this->moduleName().$this->moduleVersion(),
+        'module@'.$this->moduleName().$this->moduleVersion(),
         $this->fixture->hashCode()
       );
     }

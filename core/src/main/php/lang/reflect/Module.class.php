@@ -257,7 +257,7 @@
      * @return  string
      */
     public function hashCode() {
-      return $this->loader->hashCode();
+      return 'module@'.$this->name.$this->version;
     }
   }
 ?>
