@@ -245,10 +245,17 @@
     /**
      * Creates a string representation of this object
      *
+     * @param   string cwd default NULL
      * @return  string
      */
-    public function toString() {
-      return xp::nameOf(__CLASS__).'<'.$this->name.(NULL === $this->version ? '' : ':'.$this->version).'>@'.$this->loader->toString();
+    public function toString($cwd= NULL) {
+      return sprintf(
+        '%s<%s%s>@%s',
+        $this->getClassName(),
+        $this->name,
+        NULL === $this->version ? '' : ':'.$this->version,
+        $this->loader->toString($cwd)
+      );
     }
 
     /**

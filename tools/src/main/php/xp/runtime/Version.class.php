@@ -28,9 +28,10 @@
         zend_version(),
         php_uname()
       );
+      $cwd= realpath(getcwd());
       Console::writeLine('Copyright (c) 2001-2013 the XP group');
       foreach (ClassLoader::getLoaders() as $delegate) {
-        Console::writeLine($delegate);
+        Console::writeLine($delegate->toString($cwd));
       }
       exit(1);
     }
