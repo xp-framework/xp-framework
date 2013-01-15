@@ -250,7 +250,7 @@
      */
     public function toString($cwd= NULL) {
       return sprintf(
-        '%s<%s%s>@%s',
+        '%s<%s%s, %s>',
         $this->getClassName(),
         $this->name,
         NULL === $this->version ? '' : ':'.$this->version,
