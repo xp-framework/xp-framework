@@ -16,7 +16,7 @@
 
     static function __static() {
       ClassLoader::registerLoader(new ArchiveClassLoader(
-        new Archive(new File(dirname(__FILE__).'/lib/three-and-four.xar'))
+        new Archive(XPClass::forName(xp::nameOf(__CLASS__))->getPackage()->getPackage('lib')->getResourceAsStream('three-and-four.xar'))
       ));
     }
 
