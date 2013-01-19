@@ -20,8 +20,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
-- Merged pull request #217 - Resource property source
-  (mrosoiu)
+- Merged pull request #217 and #221 - Resource property source
+  (mrosoiu, kiesel)
 - Merged pull request #216 - Image metadata reader
   (friebe)
 
