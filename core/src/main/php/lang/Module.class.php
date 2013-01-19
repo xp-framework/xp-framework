@@ -18,6 +18,7 @@
     protected $loader;
     protected $definition;
     protected $name;
+    protected $provides;
     protected $version;
 
     /**
@@ -25,12 +26,14 @@
      *
      * @param  lang.IClassLoader loader
      * @param  lang.XPClass definition
+     * @param  string[] provides
      * @param  string name
      * @param  string version
      */
-    public function __construct($loader, $definition, $name= NULL, $version= NULL) {
+    public function __construct($loader, $definition, $provides= NULL, $name= NULL, $version= NULL) {
       $this->loader= $loader;
       $this->definition= $definition;
+      $this->provides= $provides;
 
       // This is a bit redundant, name and version are also static fields inside the
       // class represented by $definition, but retrieving them reflectively is a 
@@ -46,7 +49,11 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return $this->loader->providesClass($class);
+      if (NULL === $this->provides) return $this->loader->providesClass($class);
+      foreach ($this->provides as $package) {
+        if (0 === strncmp($class, $package, strlen($package))) return $this->loader->providesClass($class);
+      }
+      return FALSE;
     }
 
     /**
@@ -56,17 +63,26 @@
      * @return  bool
      */
     public function providesResource($filename) {
-      return $this->loader->providesResource($filename);
+      if (NULL === $this->provides) return $this->loader->providesResource($filename);
+      $cmp= strtr($filename, '/', '.');
+      foreach ($this->provides as $package) {
+        if (0 === strncmp($cmp, $package, strlen($package))) return $this->loader->providesResource($filename);
+      }
+      return FALSE;
     }
 
     /**
      * Checks whether this loader can provide the requested package
      *
-     * @param   string package
+     * @param   string name
      * @return  bool
      */
-    public function providesPackage($package) {
-      return $this->loader->providesPackage($package);
+    public function providesPackage($name) {
+      if (NULL === $this->provides) return $this->loader->providesPackage($name);
+      foreach ($this->provides as $package) {
+        if (0 === strncmp($name, $package, strlen($package))) return $this->loader->providesPackage($name);
+      }
+      return FALSE;
     }
 
     /**

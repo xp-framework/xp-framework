@@ -59,7 +59,7 @@
       $dyn= DynamicClassLoader::instanceFor('modules');
       $dyn->setClassBytes('__CoreModule', 'class __CoreModule extends Object { }');
       xp::$registry['modules']= array(
-        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('__CoreModule'), 'core', xp::version())
+        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('__CoreModule'), NULL, 'core', xp::version())
       );
 
       // Scan include-path, setting up classloaders for each element
@@ -125,7 +125,7 @@
      * @return  lang.reflect.Module
      */
     public static function declareModule($l) {
-      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
+      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?\s(provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
         raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
       }
 
@@ -153,7 +153,18 @@
       if ($class->hasMethod('initialize')) {
         $class->getMethod('initialize')->invoke(NULL, array($l));
       }
-      return new Module($l, $class, $m[1], isset($m[2]) ? $m[3] : NULL);
+
+      // Parse provided packages
+      if (isset($m[5])) {
+        $provides= array();
+        foreach (explode(',', $m[5]) as $package) {
+          $provides[]= trim($package);
+        }
+      } else {
+        $provides= NULL;
+      }
+
+      return new Module($l, $class, $provides, $m[1], isset($m[2]) ? $m[3] : NULL);
     }
 
     /**
