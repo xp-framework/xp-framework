@@ -19,7 +19,10 @@
     /**
      * Constructor
      *
+     * @param  K key
+     * @param  V value
      */
+    #[@generic(params= 'K, V')]
     public function __construct($key, $value) {
       $this->key= $key;
       $this->value= $value;
