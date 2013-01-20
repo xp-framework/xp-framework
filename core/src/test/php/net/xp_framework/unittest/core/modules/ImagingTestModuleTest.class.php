@@ -30,6 +30,11 @@
       return '3.4.1';
     }
 
+    /**
+     * Injects a class loader into the fixture
+     *
+     * @param  lang.ClassLoader cl
+     */
     protected function useClassLoader($cl) {
       $this->fixture->getClass()->getField('loader')->setAccessible(TRUE)->set($this->fixture, $cl);
     }
