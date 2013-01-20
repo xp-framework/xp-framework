@@ -130,16 +130,10 @@
     /**
      * Creates a string representation
      *
-     * @param   string cwd default NULL
      * @return  string
      */
-    public function toString($cwd= NULL) {
-      if ($cwd !== NULL && 0 === strncmp($cwd, $this->path, $l= strlen($cwd))) {
-        $path= '.'.substr($this->path, $l);
-      } else {
-        $path= $this->path;
-      }
-      return $this->getClassName(). '<'.$path.'>';
+    public function toString() {
+      return str_replace('ClassLoader', 'CL', $this->getClass()->getSimpleName()).'<'.$this->path.'>';
     }
   }
 ?>

@@ -31,7 +31,7 @@
       $cwd= realpath(getcwd());
       Console::writeLine('Copyright (c) 2001-2013 the XP group');
       foreach (ClassLoader::getLoaders() as $delegate) {
-        Console::writeLine($delegate->toString($cwd));
+        Console::writeLine($delegate->toString());
       }
       exit(1);
     }
