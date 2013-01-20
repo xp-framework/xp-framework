@@ -10,6 +10,8 @@
     'xp.scriptlet.WebApplication',
     'xp.scriptlet.WebConfiguration',
     'util.PropertyManager',
+    'util.FilesystemPropertySource',
+    'util.ResourcePropertySource',
     'util.log.Logger',
     'rdbms.ConnectionManager',
     'scriptlet.HttpScriptlet',
@@ -153,7 +155,12 @@
       // defaulting to the same directory the web.ini resides in
       $pm= PropertyManager::getInstance();
       foreach (explode('|', $application->getConfig()) as $element) {
-        $pm->appendSource(new FilesystemPropertySource($this->expand($element)));
+        $expanded= $this->expand($element);
+        if (0 == strncmp('res://', $expanded, 6)) {
+          $pm->appendSource(new ResourcePropertySource($expanded));
+        } else {
+          $pm->appendSource(new FilesystemPropertySource($expanded));
+        }
       }
       
       $l= Logger::getInstance();
