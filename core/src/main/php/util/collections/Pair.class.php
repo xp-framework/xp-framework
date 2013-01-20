@@ -5,10 +5,15 @@
  */
 
   /**
-   * Provides
+   * Provides key and value for iteration
+   *
+   * @see  xp://util.collections.HashTable
    */
+  #[@generic(self= 'K, V')]
   class Pair extends Object {
+    #[@type('K')]
     public $key;
+    #[@type('V')]
     public $value;
 
     /**
