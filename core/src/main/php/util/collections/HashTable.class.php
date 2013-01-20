@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('lang.Primitive', 'util.collections.Map');
+  uses('lang.Primitive', 'util.collections.Map', 'util.collections.Pair');
 
   /**
    * Hash table consisting of non-null objects as keys and values
@@ -18,9 +18,24 @@
    */
   #[@generic(self= 'K, V', implements= array('K, V'))]
   class HashTable extends Object implements Map, IteratorAggregate {
+    protected static
+      $iterate   = NULL;
+
     protected
       $_buckets  = array(),
       $_hash     = 0;
+
+    static function __static() {
+      self::$iterate= newinstance('Iterator', array(), '{
+        private $i= 0, $v, $b;
+        public function on($v) { $self= new self(); $self->v= $v; return $self; }
+        public function current() { return new Pair($this->b[0], $this->b[1]); }
+        public function key() { return $this->i; }
+        public function next() { $this->b= next($this->v); $this->i++; }
+        public function rewind() { reset($this->v); $this->b= current($this->v); $this->i= 0;  }
+        public function valid() { return $this->b !== FALSE; }
+      }');
+    }
 
     /**
      * Throws an IllegalStateException
@@ -30,7 +45,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      throw new IllegalStateException('Iteration not supported');
+      return self::$iterate->on($this->_buckets);
     }
     
     /**
