@@ -29,8 +29,34 @@
     }
     
     /**
-     * Get hashing implementation
+     * Returns whether a given value is equal to this pair
      * 
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        ($cmp->key instanceof Generic ? $cmp->key->equals($this->key) : $cmp->key === $this->key) &&
+        ($cmp->value instanceof Generic ? $cmp->value->equals($this->value) : $cmp->value === $this->value)
+      );
+    }
+
+    /**
+     * Returns a hashcode for this pair
+     *
+     * @return string
+     */
+    public function hashCode() {
+      return (
+        HashProvider::hashOf($this->key instanceof Generic ? $this->key->hashCode() : serialize($this->key)) +
+        HashProvider::hashOf($this->value instanceof Generic ? $this->value->hashCode() : serialize($this->value))
+      );
+    }
+
+    /**
+     * Get string representation
+     *
      * @return  string
      */
     public function toString() {
