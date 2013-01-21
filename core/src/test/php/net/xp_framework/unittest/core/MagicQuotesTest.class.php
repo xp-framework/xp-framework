@@ -98,7 +98,7 @@
     public function phpRefusesToStart() {
       $r= $this->run();
       $this->assertEquals(1, $r[0], 'exitcode');
-      $this->assertTrue((bool)strstr($r[1], "Directive 'magic_quotes_gpc' is no longer available in PHP"), xp::stringOf($r));
+      $this->assertTrue((bool)strstr($r[1].$r[2], "Directive 'magic_quotes_gpc' is no longer available in PHP"), xp::stringOf($r));
     }
   }
 ?>

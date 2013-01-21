@@ -695,7 +695,7 @@
           $this->out->write($this->copy); 
         }
       }');
-      $return= $this->runWith(array('-cp', dirname(__FILE__).'/instructions.xar', $command->getClassName(), '-cp', 'Copy'));
+      $return= $this->runWith(array('-cp', $this->getClass()->getPackage()->getResourceAsStream('instructions.xar')->getURI(), $command->getClassName(), '-cp', 'Copy'));
       $this->assertEquals(0, $return);
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('lang.XPClass<net.xp_forge.instructions.Copy>', $this->out->getBytes());
@@ -881,7 +881,7 @@
           // Not reached
         }
       }');
-      $this->runWith(array('-c', dirname(__FILE__), $command->getClassName()));
+      $this->runWith(array('-c', 'res://net/xp_framework/unittest/util/cmd/', $command->getClassName()));
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('Have value', $this->out->getBytes());
     }
@@ -929,7 +929,7 @@ key=overwritten_value'
           // Not reached
         }
       }');
-      $this->runWith(array('-c', dirname(__FILE__).DIRECTORY_SEPARATOR.'add_etc', '-c', dirname(__FILE__), $command->getClassName()));
+      $this->runWith(array('-c', 'res://net/xp_framework/unittest/util/cmd/add_etc', '-c', 'res://net/xp_framework/unittest/util/cmd/', $command->getClassName()));
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('Have overwritten_value', $this->out->getBytes());
     }
