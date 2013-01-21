@@ -23,7 +23,7 @@
    *   <li>%p - Process ID</li>
    *   <li>%% - A literal percent sign (%)</li>
    *   <li>%n - A line break</li>
-   *   <li>%x - A NDC, if available; adds trailing whitespace if context available</li>
+   *   <li>%x - A log context, if available; adds trailing whitespace if context available</li>
    * </ul>
    *
    * @test    xp://net.xp_framework.unittest.logging.PatternLayoutTest
