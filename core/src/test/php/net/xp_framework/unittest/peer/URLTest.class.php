@@ -9,8 +9,9 @@
   /**
    * TestCase
    *
-   * @see      xp://peer.URL
-   * @purpose  Unittest
+   * @see   xp://peer.URL
+   * @see   https://github.com/xp-framework/xp-framework/issues/182
+   * @see   rfc://rfc1738
    */
   class URLTest extends TestCase {
   
@@ -1912,6 +1913,53 @@
       $srcURL='https+v3://LOCALHOST:443/%c2/%7E?q1=%2D&q2=%b1#/a/b/c/./../../g';
       $destURL='https://localhost/%C2/~?q1=-&q2=%B1#/a/g';
       $this->assertEquals($destURL, create(new URL($srcURL))->getCanonicalUrl());
+    }
+
+    /**
+     * Verify URLs with `@` as value for query params do not fail to parse
+     *
+     */
+    #[@test]
+    public function atInParams() {
+      $this->assertEquals('@', create(new URL('http://localhost/?q=@'))->getParam('q'));
+    }
+
+    /**
+     * Verify URLs with `@` inside query string not fail to parse
+     *
+     */
+    #[@test]
+    public function atInQuerystring() {
+      $this->assertEquals('%40', create(new URL('http://localhost/?@'))->getQuery());
+    }
+
+    /**
+     * Verify URLs with `@` inside fragment not fail to parse
+     *
+     */
+    #[@test]
+    public function atInFragment() {
+      $this->assertEquals('@', create(new URL('http://localhost/#@'))->getFragment());
+    }
+
+    /**
+     * Verify URLs with `@` inside fragment not fail to parse
+     *
+     */
+    #[@test]
+    public function atInPath() {
+      $this->assertEquals('/@', create(new URL('http://localhost/@'))->getPath());
+    }
+
+    /**
+     * Verify URLs with `@` inside fragment not fail to parse
+     *
+     */
+    #[@test]
+    public function atInUserAndPath() {
+      $u= new URL('http://user@localhost/@');
+      $this->assertEquals('user', $u->getUser());
+      $this->assertEquals('/@', $u->getPath());
     }
   }
 ?>

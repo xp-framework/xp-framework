@@ -34,9 +34,7 @@
      */
     #[@test]
     public function loadingAsFile() {
-      $added= ClassLoader::registerPath(dirname(__FILE__).'/resourceprovider');
-      $this->assertEquals('Foobar', trim(FileUtil::getContents(new File('res://one/Dummy.txt'))));
-      ClassLoader::removeLoader($added);
+      $this->assertEquals('Foobar', trim(FileUtil::getContents(new File('res://net/xp_framework/unittest/core/resourceprovider/one/Dummy.txt'))));
     }
 
     /**
@@ -56,11 +54,9 @@
      */
     #[@test]
     public function fileAsXslFile() {
-      $added= ClassLoader::registerPath(dirname(__FILE__).'/resourceprovider');
-
       $proc= new DomXSLProcessor();
       $style= new DOMDocument();
-      $style->load('res://two/ModuleOne.xsl');
+      $style->load('res://net/xp_framework/unittest/core/resourceprovider/two/ModuleOne.xsl');
       
       $proc->setXSLDoc($style);
       $proc->setXmlBuf('<document/>');
@@ -68,8 +64,6 @@
 
       $this->assertTrue(0 < strpos($proc->output(), 'I\'ve been called.'));
       $this->assertTrue(0 < strpos($proc->output(), 'I have been called, too.'));
-
-      ClassLoader::removeLoader($added);
     }
 
     /**
@@ -82,26 +76,18 @@
      * faulty behavior will be automatically detected some 
      * time in the future.
      */
-    #[@test, @expect('xml.TransformerException')]
+    #[@test]
     public function fileAsXslFileWithRelativeIncludeDoesNotWork() {
-      $added= ClassLoader::registerPath(dirname(__FILE__).'/resourceprovider');
-
       $t= NULL;
-      try {
-        $proc= new DomXSLProcessor();
-        $style= new DOMDocument();
-        $style->load('res://two/IncludingStylesheet.xsl');
+      $proc= new DomXSLProcessor();
+      $style= new DOMDocument();
+      $style->load('res://net/xp_framework/unittest/core/resourceprovider/two/IncludingStylesheet.xsl');
 
-        $proc->setXSLDoc($style);
-        $proc->setXmlBuf('<document/>');
-        $proc->run();
-      } catch (Throwable $t) {
-      } finally(); {
-        ClassLoader::removeLoader($added);
-      
-        xp::gc();
-        if ($t) throw $t;
-      }
+      $proc->setXSLDoc($style);
+      $proc->setXmlBuf('<document/>');
+      $proc->run();
+
+      $this->assertTrue(FALSE !== strpos($proc->output(), 'Include has been called.'));
     }
   }
 ?>

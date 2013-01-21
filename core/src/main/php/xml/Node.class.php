@@ -245,11 +245,11 @@
      * </pre>
      *
      * @param   int indent default INDENT_WRAPPED
-     * @param   string encoding default 'iso-8859-1'
+     * @param   string encoding defaults to XP default encoding
      * @param   string inset default ''
      * @return  string XML
      */
-    public function getSource($indent= INDENT_WRAPPED, $encoding= 'iso-8859-1', $inset= '') {
+    public function getSource($indent= INDENT_WRAPPED, $encoding= xp::ENCODING, $inset= '') {
       $xml= $inset.'<'.$this->name;
       $conv= 'iso-8859-1' != $encoding;
       

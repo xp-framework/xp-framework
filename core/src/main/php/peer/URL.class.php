@@ -466,13 +466,13 @@
      * @throws  lang.FormatException if string is unparseable
      */
     public function setURL($str) {
-      if (!preg_match('!^([a-z][a-z0-9\+]*)://([^@]+@)?([^/?#]*)(/([^#?]*))?(.*)$!', $str, $matches)) {
+      if (!preg_match('!^([a-z][a-z0-9\+]*)://([^@/?#]+@)?([^/?#]*)(/([^#?]*))?(.*)$!', $str, $matches)) {
         throw new FormatException('Cannot parse "'.$str.'"');
       }
       
       $this->_info= array();
-	  $this->_info['scheme']= $matches[1];
-      
+      $this->_info['scheme']= $matches[1];
+
       // Credentials
       if ('' !== $matches[2]) {
         sscanf($matches[2], '%[^:@]:%[^@]@', $user, $password);

@@ -7,7 +7,8 @@
   uses(
     'unittest.TestCase',
     'lang.Runnable',
-    'lang.Runtime'
+    'lang.Runtime',
+    'net.xp_framework.unittest.core.PackagedClass'
   );
 
   /**
@@ -123,6 +124,62 @@
       $this->assertTrue(
         (bool)strstr($r[1].$r[2], 'Class "lang.Runnable" does not exist'),
         xp::stringOf(array('out' => $r[1], 'err' => $r[2]))
+      );
+    }
+
+    /**
+     * Tests package retrieval on newinstance() created namespaced class
+     *
+     */
+    #[@test]
+    public function packageOfNewInstancedClass() {
+      $i= newinstance('lang.Object', array(), '{}');
+      $this->assertEquals(
+        Package::forName('lang'),
+        $i->getClass()->getPackage()
+      );
+    }
+
+    /**
+     * Tests package retrieval on newinstance() created namespaced class
+     *
+     */
+    #[@test]
+    public function packageOfNewInstancedFullyQualifiedClass() {
+      $i= newinstance('net.xp_framework.unittest.core.PackagedClass', array(), '{}');
+      $this->assertEquals(
+        Package::forName('net.xp_framework.unittest.core'),
+        $i->getClass()->getPackage()
+      );
+    }
+
+    /**
+     * Test class name of a anonymous generic instance
+     *
+     */
+    #[@test]
+    public function className() {
+      $instance= newinstance('Object', array(), '{ }');
+      $n= $instance->getClassName();
+      $this->assertEquals(
+        'lang.Object',
+        substr($n, 0, strrpos($n, '·')),
+        $n
+      );
+    }
+
+    /**
+     * Test class name of a anonymous generic instance
+     *
+     */
+    #[@test]
+    public function classNameWithFullyQualifiedClassName() {
+      $instance= newinstance('lang.Object', array(), '{ }');
+      $n= $instance->getClassName();
+      $this->assertEquals(
+        'lang.Object',
+        substr($n, 0, strrpos($n, '·')),
+        $n
       );
     }
   }

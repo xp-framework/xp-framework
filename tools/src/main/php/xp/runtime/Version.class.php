@@ -23,12 +23,12 @@
     public static function main(array $args) {
       Console::writeLinef(
         'XP %s { PHP %s & ZE %s } @ %s', 
-        trim(ClassLoader::getDefault()->getResource('VERSION')),
+        xp::version(),
         phpversion(),
         zend_version(),
         php_uname()
       );
-      Console::writeLine('Copyright (c) 2001-2012 the XP group');
+      Console::writeLine('Copyright (c) 2001-2013 the XP group');
       foreach (ClassLoader::getLoaders() as $delegate) {
         Console::writeLine($delegate);
       }

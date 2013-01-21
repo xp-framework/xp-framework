@@ -295,6 +295,25 @@
     }
 
     /**
+     * Returns whether a given value is equal to this folder
+     *
+     * @param   var cmp
+     * @return  bool
+     */
+    public function equals($cmp) {
+      return $cmp instanceof self && $cmp->hashCode() === $this->hashCode();
+    }
+
+    /**
+     * Returns a hashcode
+     *
+     * @return  string
+     */
+    public function hashCode() {
+      return md5($this->uri);
+    }
+
+    /**
      * Returns a string representation of this object
      *
      * @return  string

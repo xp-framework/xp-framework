@@ -45,7 +45,7 @@
         $v[$i]= $this->_decode($v[$i]);
         return $v;
       }
-      return utf8_decode($v);
+      return iconv('utf-8', xp::ENCODING, $v);
     }
     
     /**

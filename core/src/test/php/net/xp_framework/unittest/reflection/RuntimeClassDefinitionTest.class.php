@@ -30,7 +30,9 @@
      * Helper method
      *
      * @param   string name
-     * @param   lang.XPClass class
+     * @param   string parent
+     * @param   string[] interfaces
+     * @return  lang.XPClass class
      * @throws  unittest.AssertionFailedError
      */
     protected function defineClass($name, $parent, $interfaces, $bytes) {
@@ -153,6 +155,45 @@
       $this->defineInterface($name, array('@@nonexistant@@'), '{
         public function setDebug($cat);
       }');
+    }
+
+    /**
+     * Test default class loader
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/94
+     */
+    #[@test]
+    public function defaultClassLoaderProvidesDefinedClass() {
+      $class= 'net.xp_framework.unittest.reflection.lostandfound.CL1';
+      $this->defineClass($class, 'lang.Object', array(), '{ }');
+
+      $this->assertTrue(ClassLoader::getDefault()->providesClass($class));
+    }
+
+    /**
+     * Test default class loader
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/94
+     */
+    #[@test]
+    public function defaultClassLoaderProvidesDefinedInterface() {
+      $class= 'net.xp_framework.unittest.reflection.lostandfound.IF1';
+      $this->defineInterface($class, array(), '{ }');
+
+      $this->assertTrue(ClassLoader::getDefault()->providesClass($class));
+    }
+
+    /**
+     * Test default class loader
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/94
+     */
+    #[@test]
+    public function defaultClassLoaderProvidesPackageOfDefinedClass() {
+      $package= 'net.xp_framework.unittest.reflection.lostandfound';
+      $this->defineClass($package.'.CL2', 'lang.Object', array(), '{ }');
+
+      $this->assertTrue(ClassLoader::getDefault()->providesPackage($package));
     }
   }
 ?>

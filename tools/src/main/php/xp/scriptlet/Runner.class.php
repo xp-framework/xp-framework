@@ -8,7 +8,10 @@
 
   uses(
     'xp.scriptlet.WebApplication',
+    'xp.scriptlet.WebConfiguration',
     'util.PropertyManager',
+    'util.FilesystemPropertySource',
+    'util.ResourcePropertySource',
     'util.log.Logger',
     'rdbms.ConnectionManager',
     'scriptlet.HttpScriptlet',
@@ -50,98 +53,6 @@
       $this->webroot= $webroot;
       $this->profile= $profile;
     }
-
-    /**
-     * Read string. First tries special section "section"@"profile", then defaults 
-     * to "section"
-     *
-     * @param   util.Properties conf
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  string
-     */
-    protected function readString($conf, $section, $key, $default= NULL) {
-      if (NULL === ($s= $conf->readString($section.'@'.$this->profile, $key, NULL))) {
-        return $conf->readString($section, $key, $default);
-      }
-      return $s;
-    }
-    
-    /**
-     * Read array. First tries special section "section"@"profile", then defaults 
-     * to "section"
-     *
-     * @param   util.Properties conf
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  string[]
-     */
-    protected function readArray($conf, $section, $key, $default= NULL) {
-      if (NULL === ($a= $conf->readArray($section.'@'.$this->profile, $key, NULL))) {
-        return $conf->readArray($section, $key, $default);
-      }
-      return $a;
-    }
-    
-    /**
-     * Read hashmap. First tries special section "section"@"profile", then defaults 
-     * to "section"
-     *
-     * @param   util.Properties conf
-     * @param   string section
-     * @param   string key
-     * @param   var default default NULL
-     * @return  util.Hashmap
-     */
-    protected function readHash($conf, $section, $key, $default= NULL) {
-      if (NULL === ($h= $conf->readHash($section.'@'.$this->profile, $key, NULL))) {
-        return $conf->readHash($section, $key, $default);
-      }
-      return $h;
-    }
-    
-    /**
-     * Creates a web application object from a given configuration section
-     *
-     * @param   util.Properties conf
-     * @param   string application app name
-     * @param   string url
-     * @return  xp.scriptlet.WebApplication
-     * @throws  lang.IllegalStateException if the web is misconfigured
-     */
-    protected function configuredApp($conf, $application, $url) {
-      $section= 'app::'.$application;
-      if (!$conf->hasSection($section)) {
-        throw new IllegalStateException('Web misconfigured: Section '.$section.' mapped by '.$url.' missing');
-      }
-
-      $app= new WebApplication($application);
-      $app->setScriptlet($this->readString($conf, $section, 'class', ''));
-      
-      // Configuration base
-      $app->setConfig($this->expand($this->readString($conf, $section, 'prop-base', $this->webroot.'/etc')));
-
-      // Determine debug level
-      $flags= WebDebug::NONE;
-      foreach ($this->readArray($conf, $section, 'debug', array()) as $lvl) {
-        $flags |= WebDebug::flagNamed($lvl);
-      }
-      $app->setDebug($flags);
-      
-      // Initialization arguments
-      $args= array();
-      foreach ($this->readArray($conf, $section, 'init-params', array()) as $value) {
-        $args[]= $this->expand($value);
-      }
-      $app->setArguments($args);
- 
-      // Environment
-      $app->setEnvironment($this->readHash($conf, $section, 'init-envs', new Hashmap())->toArray());
-     
-      return $app;
-    }
     
     /**
      * Configure this runner with a web.ini
@@ -150,22 +61,9 @@
      * @throws  lang.IllegalStateException if the web is misconfigured
      */
     public function configure(Properties $conf) {
-      $mappings= $conf->readHash('app', 'mappings', NULL);
-
-      // Verify configuration
-      if (NULL === $mappings) {
-        foreach ($conf->readSection('app') as $key => $url) {
-          if (0 !== strncmp('map.', $key, 4)) continue;
-          $this->mappings[$url]= $this->configuredApp($conf, substr($key, 4), $url);
-        }
-      } else {
-        foreach ($mappings->keys() as $url) {
-          $this->mappings[$url]= $this->configuredApp($conf, $mappings->get($url), $url);
-        }
-      }
-
-      if (0 === sizeof($this->mappings)) {
-        throw new IllegalStateException('Web misconfigured: "app" section missing or broken');
+      $conf= new xp·scriptlet·WebConfiguration($conf);
+      foreach ($conf->mappedApplications($this->profile) as $url => $application) {
+        $this->mapApplication($url, $application);
       }
     }
     
@@ -257,7 +155,12 @@
       // defaulting to the same directory the web.ini resides in
       $pm= PropertyManager::getInstance();
       foreach (explode('|', $application->getConfig()) as $element) {
-        $pm->appendSource(new FilesystemPropertySource($element));
+        $expanded= $this->expand($element);
+        if (0 == strncmp('res://', $expanded, 6)) {
+          $pm->appendSource(new ResourcePropertySource($expanded));
+        } else {
+          $pm->appendSource(new FilesystemPropertySource($expanded));
+        }
       }
       
       $l= Logger::getInstance();
@@ -268,7 +171,7 @@
       
       // Set environment variables
       foreach ($application->getEnvironment() as $key => $value) {
-        putenv($key.'='.$value);
+        $_SERVER[$key]= $this->expand($value);
       }
 
       // Instantiate and initialize
@@ -280,7 +183,11 @@
         if (!$class->hasConstructor()) {
           $instance= $class->newInstance();
         } else {
-          $instance= $class->getConstructor()->newInstance($application->getArguments());
+          $args= array();
+          foreach ($application->getArguments() as $arg) {
+            $args[]= $this->expand($arg);
+          }
+          $instance= $class->getConstructor()->newInstance($args);
         }
         
         if ($flags & WebDebug::TRACE && $instance instanceof Traceable) {

@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'webservices.rest.RestRequest'
+    'webservices.rest.RestRequest',
+    'webservices.rest.Payload'
   );
 
   /**
@@ -115,7 +116,7 @@
     }
 
     /**
-     * Test
+     * Test 
      *
      */
     #[@test]
@@ -123,6 +124,103 @@
       $fixture= new RestRequest();
       $fixture->setBody(new RequestData('{ "title" : "New issue" }'));
       $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function hasBodyWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function contentTypeWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithJsonPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('{ "title" : "New issue" }', $fixture->getBody()->data);
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function hasBodyWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $this->assertTrue($fixture->hasBody());
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function contentTypeWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $this->assertEquals('text/xml; charset=utf-8', $fixture->getHeader('Content-Type'));
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithXmlPayload() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
+        '<root><title>New issue</title></root>', 
+        $fixture->getBody()->data
+      );
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function getBodyWithXmlPayloadAndRootNode() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(new Payload(array('title' => 'New issue'), array('name' => 'issue')), new RestXmlSerializer());
+      $this->assertEquals(
+        '<?xml version="1.0" encoding="UTF-8"?>'."\n".
+        '<issue><title>New issue</title></issue>', 
+        $fixture->getBody()->data
+      );
+    }
+
+    /**
+     * Test payload
+     *
+     */
+    #[@test]
+    public function setPayloadCalledTwice() {
+      $fixture= new RestRequest();
+      $fixture->setPayload(array('title' => 'New issue'), new RestXmlSerializer());
+      $fixture->setPayload(array('title' => 'New issue'), new RestJsonSerializer());
+      $this->assertEquals('application/json; charset=utf-8', $fixture->getHeader('Content-Type'));
     }
 
     /**
@@ -298,6 +396,20 @@
      *
      */
     #[@test]
+    public function oneHeaderObject() {
+      $fixture= new RestRequest();
+      $fixture->addHeader(new Header('Accept', 'text/xml'));
+      $this->assertEquals(
+        array('Accept' => 'text/xml'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
     public function twoHeaders() {
       $fixture= new RestRequest('/issues');
       $fixture->addHeader('Accept', 'text/xml');
@@ -307,5 +419,215 @@
         $fixture->getHeaders()
       );
     }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function twoHeaderObjects() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addHeader(new Header('Accept', 'text/xml'));
+      $fixture->addHeader(new Header('Referer', 'http://localhost'));
+      $this->assertEquals(
+        array('Accept' => 'text/xml', 'Referer' => 'http://localhost'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function headerListEmpty() {
+      $fixture= new RestRequest('/issues');
+      $this->assertEquals(
+        array(),
+        $fixture->headerList()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function headerListWithOneHeader() {
+      $fixture= new RestRequest('/issues');
+      $h= $fixture->addHeader(new Header('Accept', 'text/xml'));
+      $this->assertEquals(
+        array($h),
+        $fixture->headerList()
+      );
+    }
+
+    /**
+     * Test addHeader()
+     *
+     */
+    #[@test]
+    public function addHeaderReturnsAddedHeaderObject() {
+      $h= new Header('Accept', 'text/xml');
+      $fixture= new RestRequest('/issues');
+      $this->assertEquals($h, $fixture->addHeader($h));
+    }
+
+    /**
+     * Test addHeader()
+     *
+     */
+    #[@test]
+    public function addHeaderReturnsAddedHeader() {
+      $fixture= new RestRequest('/issues');
+      $this->assertEquals(new Header('Accept', 'text/xml'), $fixture->addHeader('Accept', 'text/xml'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function relativeResourceWithEndingSlash() {
+      $fixture= new RestRequest('issues');
+      $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2/'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function relativeResourceWithoutEndingSlash() {
+      $fixture= new RestRequest('issues');
+      $this->assertEquals('/rest/api/v2/issues', $fixture->getTarget('/rest/api/v2'));
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function acceptOne() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml');
+      $this->assertEquals(
+        array('Accept' => 'text/xml'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function accept() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml');
+      $fixture->addAccept('text/json');
+      $this->assertEquals(
+        array('Accept' => 'text/xml, text/json'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function acceptWithQ() {
+      $fixture= new RestRequest('/issues');
+      $fixture->addAccept('text/xml', '0.5');
+      $fixture->addAccept('text/json', '0.8');
+      $this->assertEquals(
+        array('Accept' => 'text/xml;q=0.5, text/json;q=0.8'), 
+        $fixture->getHeaders()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentation() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "]",
+        create(new RestRequest())->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithUrl() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /books)@[\n".
+        "]",
+        create(new RestRequest('/books'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithUrlAndMethod() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(POST /books)@[\n".
+        "]",
+        create(new RestRequest('/books', 'POST'))->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithHeader() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Referer: \"http://localhost\"\n".
+        "]",
+        create(new RestRequest())->withHeader('Referer', 'http://localhost')->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithAccept() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Accept: text/xml\n".
+        "]",
+        create(new RestRequest())->withAccept('text/xml')->toString()
+      );
+    }
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function stringRepresentationWithHeaderAndAccept() {
+      $this->assertEquals(
+        "webservices.rest.RestRequest(GET /)@[\n".
+        "  Referer: \"http://localhost\"\n".
+        "  Accept: text/xml\n".
+        "]",
+        create(new RestRequest())->withHeader('Referer', 'http://localhost')->withAccept('text/xml')->toString()
+      );
+    }
+
   }
 ?>

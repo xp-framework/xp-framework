@@ -16,6 +16,7 @@
   /**
    * REST HTTP scriptlet
    *
+   * @deprecated  Use webservices.rest.srv.RestScriptlet instead!
    */
   class RestHttpScriptlet extends HttpScriptlet {
     protected 
@@ -60,7 +61,11 @@
         
         $args= $item->getArgs();
         foreach ($args->getArguments() as $name) {
-          $response->write('- '.$name.' : '.$args->getArgumentType($name)->getName());
+          $response->write(sprintf('- %s : %s %s',
+            $name, 
+            $args->getArgumentType($name)->getName(),
+            $args->isArgumentOptional($name) ? ' (optional)' : ''
+          ));
           
           if ($args->isInjected($name)) $response->write(' (injected by '.$args->getInjection($name).')');
           
@@ -92,7 +97,9 @@
         if (NULL === $formattedError)
           throw $e;
 
-        if ($e instanceof ScriptletException) {
+        if ($formattedError instanceof RestFormattedError && $formattedError->getStatus()) {
+          $res->setStatus($formattedError->getStatus());
+        } else if ($e instanceof ScriptletException) {
           $res->setStatus($e->getStatus());
         } else {
           $res->setStatus(HttpConstants::STATUS_INTERNAL_SERVER_ERROR);

@@ -28,6 +28,12 @@
     public 
       $_reflect   = NULL;
 
+    protected static $SETACCESSIBLE_AVAILABLE;
+
+    static function __static() {
+      self::$SETACCESSIBLE_AVAILABLE= method_exists('ReflectionMethod', 'setAccessible');
+    }
+
     /**
      * Constructor
      *
@@ -91,8 +97,9 @@
      */
     public function getParameters() {
       $r= array();
+      $c= $this->_reflect->getDeclaringClass()->getName();
       foreach ($this->_reflect->getParameters() as $offset => $param) {
-        $r[]= new lang斟eflect感arameter($param, array($this->_class, $this->_reflect->getName(), $offset));
+        $r[]= new lang斟eflect感arameter($param, array($c, $this->_reflect->getName(), $offset));
       }
       return $r;
     }
@@ -106,7 +113,7 @@
     public function getParameter($offset) {
       $list= $this->_reflect->getParameters();
       return isset($list[$offset]) 
-        ? new lang斟eflect感arameter($list[$offset], array($this->_class, $this->_reflect->getName(), $offset))
+        ? new lang斟eflect感arameter($list[$offset], array($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName(), $offset))
         : NULL
       ;
     }
@@ -124,11 +131,15 @@
     /**
      * Retrieve return type
      *
-     * @return  string
+     * @return  lang.Type
      */
     public function getReturnType() {
       if (!($details= XPClass::detailsForMethod($this->_reflect->getDeclaringClass()->getName(), $this->_reflect->getName()))) return Type::$VAR;
-      return Type::forName(ltrim($details[DETAIL_RETURNS], '&'));
+      if ('self' === ($t= ltrim($details[DETAIL_RETURNS], '&'))) {
+        return new XPClass($this->_reflect->getDeclaringClass());
+      } else {
+        return Type::forName($t);
+      }
     }
 
     /**
@@ -251,6 +262,9 @@
      * @return  lang.reflect.Routine this
      */
     public function setAccessible($flag) {
+      if (!self::$SETACCESSIBLE_AVAILABLE && $this->_reflect->isPrivate()) {
+        throw new IllegalAccessException('Cannot make private fields accessible');
+      }
       $this->accessible= $flag;
       return $this;
     }

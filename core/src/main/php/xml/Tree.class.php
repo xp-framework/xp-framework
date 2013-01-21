@@ -7,7 +7,8 @@
   uses(
     'xml.parser.XMLParser',
     'xml.Node',
-    'xml.parser.ParserCallback'
+    'xml.parser.ParserCallback',
+    'io.FileUtil'
   );
  
   /**
@@ -30,7 +31,7 @@
 
     protected 
       $version  = '1.0',
-      $encoding = 'iso-8859-1';
+      $encoding = xp::ENCODING;
     
     /**
      * Constructor
@@ -170,10 +171,7 @@
       $tree= new $c();
       
       $parser->setCallback($tree);
-      $file->open(FILE_MODE_READ);
-      $string= $file->read($file->size());
-      $file->close();
-      $parser->parse($string);
+      $parser->parse(FileUtil::getContents($file));
 
       // Fetch actual encoding from parser
       $tree->setEncoding($parser->getEncoding());

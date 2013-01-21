@@ -16,7 +16,7 @@
      * Format a throwable int oa specific object
      * 
      * @param lang.Throwable e
-     * @return var
+     * @return webservices.rest.server.RestFormattedError
      */
     public function format(Throwable $e);
   }

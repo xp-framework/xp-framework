@@ -2,13 +2,20 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- The Basics -->
+  <!-- Sonatype OSS parent -->
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
+  </parent>
+
+  <!-- The basics -->
   <groupId>net.xp-framework</groupId>
   <artifactId>pom</artifactId>
-  <version>5.8.5</version>
+  <version>5.9.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <!-- More Project Information -->
+  <!-- More project information -->
   <name>XP-Framework</name>
   <description>The XP framework is an all-purpose, object oriented PHP framework</description>
   <url>https://github.com/xp-framework/xp-framework</url>
@@ -17,6 +24,14 @@
     <name>XP-Framework Team</name>
     <url>http://xp-framework.net/</url>
   </organization>
+  <developers>
+    <developer>
+      <id>xp-framework</id>
+      <name>XP-Framework Team</name>
+      <email>devs@xp-framework.net</email>
+      <url>http://xp-framework.net</url>
+    </developer>
+  </developers>
   <licenses>
     <license>
       <name>BSD</name>
@@ -36,17 +51,89 @@
     <project.build.sourceEncoding>ISO-8859-15</project.build.sourceEncoding>
   </properties>
 
-  <!-- Build Settings -->
+  <!-- Build settings -->
   <build>
     <plugins>
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
-        <artifactId>maven-xpframework-plugin</artifactId>
-        <version>2.0.0</version>
+        <artifactId>xp-maven-plugin</artifactId>
+        <version>3.2.7</version>
         <extensions>true</extensions>
+        <configuration>
+
+          <!-- @see https://github.com/xp-framework/xp-framework/wiki/setup.extensions -->
+          <extensions>
+
+            <!-- Core -->
+            <extension>standard</extension>
+            <extension>pcre</extension>
+            <extension>tokenizer</extension>
+            <extension>reflection</extension>
+            <extension>ctype</extension>
+            <extension>iconv</extension>
+            <extension>date</extension>
+            <extension>com_dotnet</extension>
+            <extension>zlib</extension>
+
+            <!-- XML -->
+            <extension>dom</extension>
+            <extension>xsl</extension>
+            <extension>xml</extension>
+            <extension>libxml</extension>
+
+            <!-- Networking -->
+            <extension>sockets</extension>
+            <extension>ftp</extension>
+            <extension>openssl</extension>
+            <extension>ldap</extension>
+            <extension>soap</extension>
+
+            <!-- Imaging -->
+            <extension>gd</extension>
+            <extension>exif</extension>
+            <extension>mbstring</extension>
+
+            <!-- Databases ??? -->
+            <!--extension>mysql</extension>
+            <extension>mysqli</extension>
+            <extension>sqlite3</extension-->
+
+            <!-- The web -->
+            <extension>session</extension>
+
+            <!-- Parallel processing -->
+            <extension>pcntl</extension>
+            <extension>posix</extension>
+          </extensions>
+        </configuration>
       </plugin>
     </plugins>
   </build>
+
+  <!--
+   ! Dependency management
+   !
+   ! Add [net.xp-framework:pom] as 'import' dependency. It will be replaced with both
+   ! [net.xp-framework:core] and [net.xp-framework:tools] dependencies
+   !
+   ! @since 5.8.7
+   !-->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.xp-framework</groupId>
+        <artifactId>core</artifactId>
+        <version>${project.version}</version>
+        <type>xar</type>
+      </dependency>
+      <dependency>
+        <groupId>net.xp-framework</groupId>
+        <artifactId>tools</artifactId>
+        <version>${project.version}</version>
+        <type>xar</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <!-- Source code management -->
   <scm>
@@ -55,4 +142,9 @@
     <url>https://github.com/xp-framework/xp-framework</url>
   </scm>
 
+  <!-- Issue management -->
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/xp-framework/xp-framework/issues</url>
+  </issueManagement>
 </project>

@@ -4,7 +4,7 @@
  * $Id$ 
  */
 
-  uses('util.log.Logger', 'rdbms.DBObserver');
+  uses('util.log.Logger', 'util.log.BoundLogObserver');
 
   /**
    * Observer class to observe a SybaseConnections IO performance.
@@ -12,7 +12,7 @@
    * @ext      sybase
    * @purpose  Observe SybaseConnection
    */
-  class SybaseIOObserver extends Object implements DBObserver {
+  class SybaseIOObserver extends Object implements BoundLogObserver {
     protected
       $messages = array(),
       $queries  = array();

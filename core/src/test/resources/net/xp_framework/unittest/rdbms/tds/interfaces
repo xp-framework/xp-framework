@@ -1,0 +1,13 @@
+#
+
+CARLA
+        query tcp ether carla.example.com 5000
+
+banane
+        master tcp ether banane.example.com 1999
+
+wurst4
+        query tcp ether 192.0.43.10 1998
+
+tabs
+		query tcp ether tabs.example.com 1999

@@ -66,7 +66,7 @@
      */
     public function usingPassword($password) {
       $this->password= new ZipCipher();
-      $this->password->initialize(iconv('iso-8859-1', 'cp437', $password));
+      $this->password->initialize(iconv(xp::ENCODING, 'cp437', $password));
       return $this;
     }
 
@@ -86,7 +86,7 @@
       $this->out= NULL;
       
       $mod= $entry->getLastModified();
-      $name= iconv('iso-8859-1', $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $entry->getName()));
+      $name= iconv(xp::ENCODING, $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $entry->getName()));
       $nameLength= strlen($name);
       $extraLength= 0;
       $extra= '';
@@ -191,7 +191,7 @@
      */
     public function writeFile($file, $size, $compressed, $crc32, $flags) {
       $mod= $file->getLastModified();
-      $name= iconv('iso-8859-1', $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $file->getName()));
+      $name= iconv(xp::ENCODING, $this->unicode ? 'utf-8' : 'cp437', str_replace('\\', '/', $file->getName()));
       $nameLength= strlen($name);
       $method= $file->getCompression()->ordinal();
       $extraLength= 0;

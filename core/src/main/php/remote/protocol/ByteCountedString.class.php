@@ -25,7 +25,7 @@
    *
    * The rest of the bytes contains the string.
    * 
-   * @purpose  Wire format encoding
+   * @test  xp://net.xp_framework.unittest.remote.ByteCountedStringTest
    */
   class ByteCountedString extends Object {
     public
@@ -37,7 +37,7 @@
      * @param   string string default ''
      */
     public function __construct($string= '') {
-      $this->string= utf8_encode($string);
+      $this->string= iconv(xp::ENCODING, 'utf-8', $string);
     }
     
     /**
@@ -47,7 +47,8 @@
      * @return  int
      */
     public function length($chunksize= BCS_DEFAULT_CHUNK_SIZE) {
-      return strlen($this->string) + 3 * (int)ceil(strlen($this->string) / $chunksize);
+      if (0 === ($s= strlen($this->string))) return 3;
+      return $s + 3 * (int)ceil(strlen($this->string) / $chunksize);
     }
 
     /**
@@ -99,7 +100,7 @@
         $s.= self::readFully($stream, $ctl['length']);
       } while ($ctl['next']);
       
-      return utf8_decode($s);
+      return iconv('utf-8', xp::ENCODING, $s);
     }
   }
 ?>

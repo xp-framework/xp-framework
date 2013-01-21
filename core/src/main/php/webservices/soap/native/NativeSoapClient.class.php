@@ -28,7 +28,7 @@
       $cat      = NULL,
       $version  = NULL,
       $location = NULL,
-      $encoding = 'iso-8859-1',
+      $encoding = xp::ENCODING,
       $style    = SOAP_RPC,
       $use      = SOAP_ENCODED,
       $ctimeout = NULL,

@@ -235,7 +235,7 @@
         // the string "multiple", the array will be preserved. Otherwise, the
         // first element will be copied to the values hash, thus making 
         // accessibility easy.
-        if (empty($value) || 0 == strlen(implode($value))) {
+        if (empty($value) || 0 == strlen(implode($value)) || self::isEmptyFileUpload($value)) {
           if (!($definitions[self::PARAM_OCCURRENCE] & self::OCCURRENCE_OPTIONAL)) {
             $handler->addError('missing', $name);
             continue;
@@ -296,6 +296,22 @@
           $this->values[$name]= NULL;
         }
       }
+    }
+
+    /**
+     * Check if the provided value is an empty file upload field
+     *
+     * @param   var value
+     * @return  bool
+     */
+    protected static function isEmptyFileUpload($value) {
+      return (
+        isset($value['name'])     && '' === $value['name'] &&
+        isset($value['type'])     && '' === $value['type'] &&
+        isset($value['tmp_name']) && '' === $value['tmp_name'] &&
+        isset($value['error'])    && UPLOAD_ERR_NO_FILE  === $value['error'] &&
+        isset($value['size'])     && 0 === $value['size']
+      );
     }
   }
 ?>

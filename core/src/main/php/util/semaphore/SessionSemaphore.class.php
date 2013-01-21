@@ -6,7 +6,6 @@
 
   uses(
     'util.semaphore.Semaphore',
-    'scriptlet.HttpSession',
     'util.profiling.Timer'
   );
 
@@ -29,6 +28,7 @@
    *
    * @ext      session
    * @purpose  Wrap session semaphores
+   * @deprecated
    */
   class SessionSemaphore extends Semaphore {
 

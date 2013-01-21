@@ -5,27 +5,34 @@
   <parent>
     <groupId>net.xp-framework</groupId>
     <artifactId>pom</artifactId>
-    <version>5.8.5</version>
+    <version>5.9.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <!-- The Basics -->
+  <!-- The basics -->
+  <groupId>net.xp-framework</groupId>
   <artifactId>core</artifactId>
+  <version>5.9.0-SNAPSHOT</version>
   <packaging>xar</packaging>
 
-  <!-- More Project Information -->
+  <!-- More project information -->
   <name>XP-Framework core</name>
 
-  <!-- Copy resources (not in the default Maven layout) -->
+  <!-- Properties -->
+  <properties>
+  </properties>
+
+  <!-- Build settings -->
   <build>
     <plugins>
+
+      <!-- Copy resources (not in the default Maven layout) -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.5</version>
         <executions>
-
-          <!-- Copy base.lang.php, VERSION and LICENSE -->
           <execution>
-            <id>copy-lang-base</id>
+            <id>copy-core-resources</id>
             <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
@@ -37,32 +44,67 @@
                   <directory>src/main/php/</directory>
                   <includes>
                     <include>lang.base.php</include>
-                    <include>VERSION</include>
                     <include>LICENCE</include>
+                    <include>**/package-info.xp</include>
+                    <include>sapi/**/*.sapi.php</include>
+                    <include>sapi/scriptlet/*.html</include>
                   </includes>
                 </resource>
               </resources>
             </configuration>
-          </execution>
-
-          <!-- Copy unittest ini files -->
-          <execution>
-            <id>copy-test-resources</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.testOutputDirectory}/etc/unittest</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/resources/unittest</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
+         </execution>
         </executions>
       </plugin>
     </plugins>
+
+    <!-- Create VERSION file -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>VERSION</include>
+        </includes>
+      </resource>
+    </resources>
+
   </build>
+
+  <!--
+   ! When releasing to Sonatype, build and attach the "tests",
+   ! "sources" and "apidoc" artifacts
+   !-->
+  <profiles>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>net.xp-forge.maven.plugins</groupId>
+            <artifactId>xp-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-tests</id>
+                <goals>
+                  <goal>test-package</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>source-no-fork</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>attach-apidoc</id>
+                <goals>
+                  <goal>apidoc-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
