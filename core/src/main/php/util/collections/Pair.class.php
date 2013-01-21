@@ -4,6 +4,8 @@
  * $Id$ 
  */
 
+  uses('util.collections.HashProvider');
+
   /**
    * Provides key and value for iteration
    *
