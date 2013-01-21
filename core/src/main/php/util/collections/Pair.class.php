@@ -8,6 +8,7 @@
    * Provides key and value for iteration
    *
    * @see  xp://util.collections.HashTable
+   * @test xp://net.xp_framework.unittest.util.collections.PairTest
    */
   #[@generic(self= 'K, V')]
   class Pair extends Object {
