@@ -113,12 +113,12 @@
      */
     public function getData() {
       $ret= array();
-      foreach (array_keys($this->root()->getNodeChildren()) as $idx) {
+      foreach (array_keys($this->root()->getChildren()) as $idx) {
         if ('header' == $this->root()->nodeAt($idx)->getName())
           continue;
         
         // Process params node
-        foreach (array_keys($this->root()->nodeAt($idx)->getNodeChildren()) as $params) {
+        foreach (array_keys($this->root()->nodeAt($idx)->getChildren()) as $params) {
           $ret[]= $this->_unmarshall($this->root()->nodeAt($idx)->nodeAt($params));
         }
         
@@ -157,14 +157,14 @@
         
         case 'array':
           $arr= array();
-          foreach (array_keys($node->getNodeChildren()) as $idx) {
+          foreach (array_keys($node->getChildren()) as $idx) {
             $arr[]= $this->_unmarshall($node->nodeAt($idx));
           }
           return $arr;
         
         case 'struct':
           $struct= array();
-          foreach (array_keys($node->getNodeChildren()) as $idx) {
+          foreach (array_keys($node->getChildren()) as $idx) {
             $struct[$node->nodeAt($idx)->getAttribute('name')]= $this->_unmarshall($node->nodeAt($idx));
           }
           return $struct;

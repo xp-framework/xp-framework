@@ -38,7 +38,7 @@
 
       // Simple form: If no subnode indicating the type exists, the type
       // is string, e.g. <value>Test</value>
-      if (!$node->hasNodeChildren()) return (string)$node->getContent();
+      if (!$node->hasChildren()) return (string)$node->getContent();
 
       // Long form - with subnode, the type is derived from the node's name,
       // e.g. <value><string>Test</string></value>.
@@ -46,7 +46,7 @@
       switch ($c->getName()) {
         case 'struct':
           $ret= array();
-          foreach ($c->getNodeChildren() as $child) {
+          foreach ($c->getChildren() as $child) {
             $data= array();
             $data[$child->nodeAt(0)->getName()]= $child->nodeAt(0);
             $data[$child->nodeAt(1)->getName()]= $child->nodeAt(1);
@@ -80,7 +80,7 @@
           
         case 'array':
           $ret= array();
-          foreach ($c->nodeAt(0)->getNodeChildren() as $child) {
+          foreach ($c->nodeAt(0)->getChildren() as $child) {
             $ret[]= $this->_unmarshall($child);
           }
           return $ret;

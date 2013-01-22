@@ -247,7 +247,7 @@
           array('tests' => '2', 'errors' => '0', 'failures' => '1', 'skipped' => '0'),
           $suite
         );
-        $this->assertEquals(2, sizeof($suite->getNodeChildren()));
+        $this->assertEquals(2, sizeof($suite->getChildren()));
         $this->assertCaseNode(array('name' => 'succeeds'), $suite->nodeAt(0));
         $this->assertCaseNode(array('name' => 'fails'), $suite->nodeAt(1));
       }

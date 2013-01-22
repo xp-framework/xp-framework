@@ -28,7 +28,7 @@
       </list>');
       
       $this->assertEquals(
-        $dom->getDocumentElement()->getNodeChildren(),
+        $dom->getDocumentElement()->getChildren(),
         $dom->getElementsByTagName('person')
       );
     }

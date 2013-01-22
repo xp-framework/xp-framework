@@ -68,13 +68,13 @@
      */
     public function getData() {
       $ret= array();
-      foreach (array_keys($this->tree->root()->getNodeChildren()) as $idx) {
+      foreach (array_keys($this->tree->root()->getChildren()) as $idx) {
         if ('params' != $this->tree->root()->nodeAt($idx)->getName())
           continue;
         
         // Process params node
         $decoder= new XmlRpcDecoder();
-        foreach (array_keys($this->tree->root()->nodeAt($idx)->getNodeChildren()) as $params) {
+        foreach (array_keys($this->tree->root()->nodeAt($idx)->getChildren()) as $params) {
           $ret[]= $decoder->decode($this->tree->root()->nodeAt($idx)->nodeAt($params)->nodeAt(0));
         }
         

@@ -19,15 +19,15 @@
       self::$iterate= newinstance('Iterator', array(), '{
         private $i= 0, $c;
         private function value($n) {
-          if (!$n->hasNodeChildren()) return $n->getContent();
+          if (!$n->hasChildren()) return $n->getContent();
           $names= array();
-          foreach ($n->getNodeChildren() as $c) {
+          foreach ($n->getChildren() as $c) {
             $names[$c->getName()]= TRUE;
           }
           $result= array();
-          if (sizeof($names) > 1) foreach ($n->getNodeChildren() as $c) {
+          if (sizeof($names) > 1) foreach ($n->getChildren() as $c) {
             $result[$c->getName()]= $this->value($c);
-          } else foreach ($n->getNodeChildren() as $c) {
+          } else foreach ($n->getChildren() as $c) {
             $result[]= $this->value($c);
           }
 
@@ -58,7 +58,7 @@
      * @return  php.Iterator
      */
     public function getIterator() {
-      return self::$iterate->on($this->node->getNodeChildren());
+      return self::$iterate->on($this->node->getChildren());
     }
 
     /**
@@ -68,7 +68,7 @@
      * @return  var
      */
     public function offsetGet($offset) {
-      foreach ($this->node->getNodeChildren() as $child) {
+      foreach ($this->node->getChildren() as $child) {
         if ($child->getName() === $offset) return $child->getContent();
       }
       return NULL;
@@ -91,7 +91,7 @@
      * @return  bool
      */
     public function offsetExists($offset) {
-      foreach ($this->node->getNodeChildren() as $child) {
+      foreach ($this->node->getChildren() as $child) {
         if ($child->getName() === $offset) return TRUE;
       }
       return FALSE;

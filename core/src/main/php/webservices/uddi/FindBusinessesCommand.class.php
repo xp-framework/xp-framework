@@ -79,14 +79,14 @@
       }
       
       // Create business list object from XML representation
-      with ($list= new BusinessList(), $children= $node->nodeAt(0)->getNodeChildren()); {
+      with ($list= new BusinessList(), $children= $node->nodeAt(0)->getChildren()); {
         $list->setOperator($node->getAttribute('operator'));
         $list->setTruncated(0 == strcasecmp('true', $node->getAttribute('truncated')));
         
         for ($i= 0, $s= sizeof($children); $i < $s; $i++) {
           $b= new Business($children[$i]->getAttribute('businessKey'));
           
-          for ($j= 0, $t= sizeof($children[$i]->getNodeChildren()); $j < $s; $j++) {
+          for ($j= 0, $t= sizeof($children[$i]->getChildren()); $j < $s; $j++) {
             switch ($children[$i]->nodeAt($j)->name) {
               case 'name': 
                 $b->names[]= $children[$i]->nodeAt($j)->getContent();

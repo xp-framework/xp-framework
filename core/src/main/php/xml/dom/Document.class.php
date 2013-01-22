@@ -33,12 +33,12 @@
      */
     protected function _getElementsByTagName($node, $tagname, $max= -1) {
       $r= array();
-      foreach ($node->getNodeChildren() as $child) {
+      foreach ($node->getChildren() as $child) {
         if ($tagname == $child->getName()) {
           $r[]= $child;
           if ($max > 0 && sizeof($r) >= $max) return $r;
         }
-        if ($child->hasNodeChildren()) {
+        if ($child->hasChildren()) {
           $r= array_merge($r, $this->_getElementsByTagName(
             $child,
             $tagname
@@ -59,7 +59,7 @@
      */
     protected function _getElementsByAttribute($node, $attribute, $name, $max) {
       $r= array();
-      foreach ($node->getNodeChildren() as $child) {
+      foreach ($node->getChildren() as $child) {
         if (
           ($child->hasAttribute($attribute)) &&
           ($name == $child->getAttribute($attribute))
@@ -67,7 +67,7 @@
           $r[]= $child;
           if ($max > 0 && sizeof($r) >= $max) return $r;
         }
-        if ($child->hasNodeChildren()) {
+        if ($child->hasChildren()) {
           $r= array_merge($r, $this->_getElementsByAttribute(
             $child,
             $attribute, 

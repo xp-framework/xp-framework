@@ -198,8 +198,8 @@
         if (isset($value->item)) {
           // TODO FIXME
           $child->setAttributes($value->item->getAttributes());
-          $newChildren= array_merge($child->getNodeChildren(), $value->item->getNodeChildren());
-          $child->clearNodeChildren();
+          $newChildren= array_merge($child->getChildren(), $value->item->getChildren());
+          $child->clearChildren();
 
           foreach ($newChildren as $c) {
             $child->addChild($c);

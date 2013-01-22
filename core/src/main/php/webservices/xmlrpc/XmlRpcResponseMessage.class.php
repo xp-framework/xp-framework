@@ -38,7 +38,7 @@
       $msg= new self();
       $msg->tree= Tree::fromString($string);
 
-      if (!$msg->tree->root()->hasNodeChildren()) {
+      if (!$msg->tree->root()->hasChildren()) {
         throw new FormatException('Response is not well formed'); 
       }
 
