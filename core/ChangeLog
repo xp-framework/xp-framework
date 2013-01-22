@@ -8,6 +8,11 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed repository layout to Maven Standard Directory Layout - see pull
+  requests #222 and #224
+  (kiesel, mrosoiu, friebe)
+- Removed old and deprecated REST API - see pull request #223
+  (friebe)
 - The finally() function is replaced by ensure($t) - see pull request #187
   This way we're forward-compatible with PHP 5.5 - see issue #186.
   http://news.planet-xp.net/article/481/2012/09/30/
