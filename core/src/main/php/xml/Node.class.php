@@ -349,12 +349,41 @@
     }
 
     /**
+     * Set children to given list of children
+     *
+     * @param xml.Node[] children
+     */
+    public function setChildren(array $children) {
+      $this->children= array();
+      foreach ($children as $child) {
+        $this->addChild($child);
+      }
+    }
+
+    /**
      * Retrieve node children
      *
      * @return   xml.Node[] children
      */
-    public function getNodeChildren() {
+    public function getChildren() {
       return $this->children;
+    }
+
+    /**
+     * Clear node children
+     *
+     */
+    public function clearChildren() {
+      $this->setChildren(array());
+    }
+
+    /**
+     * Retrieve number of children
+     *
+     * @return  int
+     */
+    public function numChildren() {
+      return sizeof($this->children);
     }
 
     /**
@@ -362,7 +391,7 @@
      *
      * @return   bool
      */
-    public function hasNodeChildren() {
+    public function hasChildren() {
       return 0 < sizeof($this->children);
     }
 
@@ -379,14 +408,6 @@
       }
 
       return $this->children[$pos];
-    }
-
-    /**
-     * Clear node children
-     *
-     */
-    public function clearNodeChildren() {
-      $this->children= array();
     }
     
     /**
