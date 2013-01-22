@@ -29,10 +29,6 @@ To use the the XP Framework development checkout, put the following
 in your xp.ini file:
 
 ```ini
-; Windows
-use=[root]/core
-
-; Un*x
 use=[root]/core
 ```
 
