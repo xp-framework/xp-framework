@@ -8,6 +8,11 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Changed repository layout to Maven Standard Directory Layout - see pull
+  requests #222 and #224
+  (kiesel, mrosoiu, friebe)
+- Removed old and deprecated REST API - see pull request #223
+  (friebe)
 - The finally() function is replaced by ensure($t) - see pull request #187
   This way we're forward-compatible with PHP 5.5 - see issue #186.
   http://news.planet-xp.net/article/481/2012/09/30/
@@ -53,6 +58,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for looking up configuration through the ClassLoader /
+  ResourceProvider infrastructure in pull request #217, #221
+  (mrosoiu, kiesel)
 - Added preliminary support for PHP 5.5
   http://news.planet-xp.net/article/493/2012/12/31/
   (friebe, kiesel)
@@ -63,6 +71,18 @@ Features
 Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
+
+RFCs
+~~~~
+- Implemented RFC #0196: I/O Collections random access
+  (friebe)
+
+Bugfixes
+~~~~~~~~
+- Fixed io.FileUtil class to work if File::read() returns less than the
+  given chunk size. See pull request #220 - this fixes FileUtil used in
+  combination with ResourceProvider, e.g.
+  (friebe, ohinckel)
 
 Features
 ~~~~~~~~

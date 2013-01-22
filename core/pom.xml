@@ -20,11 +20,6 @@
 
   <!-- Properties -->
   <properties>
-    <!-- Test resources are inside [src/test/php] and not inside [src/test/resources] -->
-    <xp.compile.testPhpIncludePattern>**/*</xp.compile.testPhpIncludePattern>
-
-    <!-- Unittest ini files location -->
-    <xp.test.iniDirectory>${basedir}/src/test/resources</xp.test.iniDirectory>
   </properties>
 
   <!-- Build settings -->
