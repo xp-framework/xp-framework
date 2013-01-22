@@ -58,6 +58,9 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added support for ".php" files inside .pth-files; eases integration
+  with foreign libraries. See pull request #218.
+  (friebe, kiesel)
 - Added support for looking up configuration through the ClassLoader /
   ResourceProvider infrastructure in pull request #217, #221
   (mrosoiu, kiesel)
