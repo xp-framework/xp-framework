@@ -51,13 +51,18 @@
     <project.build.sourceEncoding>ISO-8859-15</project.build.sourceEncoding>
   </properties>
 
+  <!-- Prerequisites -->
+  <prerequisites>
+    <maven>2.2.1</maven>
+  </prerequisites>
+
   <!-- Build settings -->
   <build>
     <plugins>
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.2.7</version>
+        <version>3.2.9</version>
         <extensions>true</extensions>
         <configuration>
 
