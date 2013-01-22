@@ -156,7 +156,7 @@
         $tree->root()->setName($prefix.':'.$qname->localpart);
         $tree->root()->setAttribute('xmlns:'.$prefix, $qname->namespace);
       } else if ($class->hasAnnotation('xmlns')) {
-        $tree->root()->setName(key($class->getAnnotation('xmlns')).':'.$class->getSimpleName());
+        $tree->root()->setName($class->getSimpleName());
       } else {
         $tree->root()->setName(strtolower($class->getSimpleName()));
       }
