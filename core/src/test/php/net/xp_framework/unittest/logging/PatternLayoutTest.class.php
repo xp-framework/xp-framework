@@ -6,7 +6,8 @@
 
   uses(
     'unittest.TestCase',
-    'util.log.layout.PatternLayout'
+    'util.log.layout.PatternLayout',
+    'util.log.StringLogContext'
   );
 
   /**
@@ -39,13 +40,14 @@
      *
      * @return  util.log.LoggingEvent
      */
-    protected function newLoggingEvent() {
+    protected function newLoggingEvent($context= array()) {
       return new LoggingEvent(
         new LogCategory('default'), 
         1258733284, 
         1214, 
         LogLevel::WARN, 
-        array('Hello')
+        array('Hello'),
+        $context
       );   
     }
 
@@ -86,6 +88,31 @@
       $this->assertEquals(
         '[16:08:04 1214 warn] Hello',
         create(new PatternLayout('[%t %p %l] %m'))->format($this->newLoggingEvent())
+      );
+    }
+
+    /**
+     * Test %x evaluates to '' when no contet was given
+     *
+     */
+    #[@test]
+    public function noWhitespaceWhenNoContext() {
+      $this->assertEquals(
+        '[16:08:04 1214 warn] Hello',
+        create(new PatternLayout('[%t %p %l] %x%m'))->format($this->newLoggingEvent())
+      );
+    }
+
+    /**
+     * If context available, add trailing space to separate
+     * from message
+     *
+     */
+    #[@test]
+    public function whitespaceAddedForContext() {
+      $this->assertEquals(
+        '[16:08:04 1214 warn] Context Hello',
+        create(new PatternLayout('[%t %p %l] %x%m'))->format($this->newLoggingEvent(array(new StringLogContext('Context'))))
       );
     }
   }

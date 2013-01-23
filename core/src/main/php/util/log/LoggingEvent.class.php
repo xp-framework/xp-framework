@@ -16,6 +16,7 @@
     protected $timestamp= 0;
     protected $processId= 0;
     protected $level= 0;
+    protected $context= array();
     protected $arguments= array();
     
     /**
@@ -26,13 +27,15 @@
      * @param   int processId
      * @param   int level one debug, info, warn or error
      * @param   var[] arguments
+     * @param   util.log.LogContext[] context default
      */
-    public function __construct($category, $timestamp, $processId, $level, array $arguments) {
+    public function __construct($category, $timestamp, $processId, $level, array $arguments, array $context= array()) {
       $this->category= $category;
       $this->timestamp= $timestamp;
       $this->processId= $processId;
       $this->level= $level;
       $this->arguments= $arguments;
+      $this->context= $context;
     }
     
     /**
@@ -82,17 +85,42 @@
     }
 
     /**
+     * Gets context
+     *
+     * @return  var[]
+     */
+    public function getContext() {
+      return $this->context;
+    }
+
+    /**
+     * Return string representation of active contexts
+     *
+     * @return string
+     */
+    public function getContextAsString() {
+      $str= '';
+      foreach ($this->context as $ctx) {
+        $str.= $ctx->format().' ';
+      }
+
+      // Intentionally leave trailing whitespace
+      return $str;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return  string
      */
     public function toString() {
       return sprintf(
-        '%s(%s @ %s, PID %d) {%s}',
+        '%s(%s @ %s, PID %d) {%s - %s}',
         $this->getClassName(),
         LogLevel::named($this->level),
         date('r', $this->timestamp),
         $this->processId,
+        xp::stringOf($this->context),
         xp::stringOf($this->arguments)
       );
     }

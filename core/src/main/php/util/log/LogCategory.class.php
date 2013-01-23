@@ -7,8 +7,9 @@
   uses(
     'util.log.LogLevel', 
     'util.log.Appender', 
-    'util.log.LoggingEvent', 
-    'util.log.layout.DefaultLayout'
+    'util.log.LoggingEvent',
+    'util.log.layout.DefaultLayout',
+    'util.collections.HashSet'
   );
 
   /**
@@ -40,6 +41,7 @@
   class LogCategory extends Object {
     protected static $DEFAULT_LAYOUT= NULL;
     protected $_appenders= array();
+    protected $context= NULL;
 
     public $flags= 0;
     public $identifier= '';
@@ -87,7 +89,7 @@
      */
     protected function callAppenders($level, $args) {
       if (!($this->flags & $level)) return;
-      $event= new LoggingEvent($this, time(), getmypid(), $level, $args);
+      $event= new LoggingEvent($this, time(), getmypid(), $level, $args, $this->getContext());
       foreach ($this->_appenders as $appflag => $appenders) {
         if (!($level & $appflag)) continue;
         foreach ($appenders as $appender) {
@@ -348,6 +350,50 @@
         $s.= "  ]\n";
       }
       return $s.'}';
+    }
+
+    /**
+     * Enter context
+     *
+     * @param   util.log.LogContext ctx
+     */
+    public function enter(LogContext $ctx) {
+      if (NULL === $this->context) {
+        $this->context= create('new HashSet<util.log.LogContext>()');
+      }
+      $this->context->add($ctx);
+      $ctx->bind($this);
+      return $ctx;
+    }
+
+    /**
+     * Leave context; this method should not be called
+     * directly. Instead call $context->leave() on the
+     * actual LogContext
+     *
+     * @param   util.log.LogContext ctx
+     */
+    public function leaveContext(LogContext $ctx) {
+      if (NULL === $this->context) return;
+      $this->context->remove($ctx);
+    }
+
+    /**
+     * Resets context to empty
+     *
+     */
+    public function resetContext() {
+      $this->context= NULL;
+    }
+
+    /**
+     * Retrieve context values
+     *
+     * @return string[]
+     */
+    public function getContext() {
+      if (NULL === $this->context) return array();
+      return $this->context->toArray();
     }
   }
 ?>

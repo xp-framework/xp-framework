@@ -9,6 +9,7 @@
     'util.log.Logger',
     'util.log.Appender',
     'util.log.LogAppender',
+    'util.log.StringLogContext',
     'util.log.layout.PatternLayout'
   );
 
@@ -46,7 +47,7 @@
           );
         }
       }');
-      return $appender->withLayout(new PatternLayout('%m'));
+      return $appender->withLayout(new PatternLayout('%x%m'));
     }
     
     /**
@@ -434,6 +435,97 @@
       $app3= $this->cat->addAppender($this->mockAppender(), LogLevel::INFO);
       $app4= $this->cat->addAppender($this->mockAppender(), LogLevel::DEBUG);
       $this->assertEquals(array($app1, $app2, $app3, $app4), $this->cat->getAppenders());
+    }
+
+    /**
+     * Tests adding context
+     *
+     */
+    #[@test]
+    public function addDiagnosticContext() {
+      $this->cat->enter(new StringLogContext('A context'));
+
+      $this->assertEquals(
+        array(new StringLogContext('A context')),
+        $this->cat->getContext()
+      );
+    }
+
+    /**
+     * Test
+     *
+     */
+    #[@test]
+    public function resetContextWithoutContext() {
+      $this->cat->resetContext();
+    }
+
+    /**
+     * Tests adding multiple context
+     *
+     */
+    #[@test]
+    public function addMultipleContext() {
+      $this->addDiagnosticContext();
+      $this->cat->enter(new StringLogContext('B context'));
+
+      $this->assertEquals(
+        array(new StringLogContext('A context'), new StringLogContext('B context')),
+        $this->cat->getContext()
+      );
+    }
+
+    /**
+     * Tests adding multiple equal content does only
+     * add it once
+     *
+     */
+    #[@test, @expect('lang.IllegalStateException')]
+    public function aContextWillOnlyBeAddedOnce() {
+      $this->addMultipleContext();
+      $ctx= $this->cat->getContext();
+      $this->cat->enter($ctx[0]);
+    }
+
+    /**
+     * Tests removing context
+     *
+     */
+    #[@test]
+    public function leaveContext() {
+      $this->addMultipleContext();
+      $ctx= $this->cat->getContext();
+      $ctx[0]->leave();
+
+      $this->assertEquals(
+        array(new StringLogContext('B context')),
+        $this->cat->getContext()
+      );
+    }
+
+    /**
+     * Tests clearing context
+     *
+     */
+    #[@test]
+    public function resetContext() {
+      $this->addMultipleContext();
+      $this->cat->resetContext();
+
+      $this->assertEquals(array(), $this->cat->getContext());
+    }
+
+    /**
+     * Tests context will be passed to layout
+     *
+     */
+    #[@test]
+    public function verifyContextWillBeLogged() {
+      $this->cat->enter(new StringLogContext('A context'));
+      $app= $this->cat->addAppender($this->mockAppender());
+
+      $this->cat->debug('Something.');
+      $this->assertEquals(array(array('debug', 'A context Something.')), $app->messages);
     }
   }
 ?>
