@@ -26,8 +26,7 @@
      * @return  var[] an array with three elements: exitcode, stdout and stderr contents
      */
     protected function runInNewRuntime($uses, $src) {
-      with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, NULL)); {
-        $p->in->write('<?php require("lang.base.php");');
+      with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, 'class', 'xp.runtime.Evaluate', array())); {
         $uses && $p->in->write('uses("'.implode('", "', $uses).'");');
         $p->in->write($src);
         $p->in->close();
