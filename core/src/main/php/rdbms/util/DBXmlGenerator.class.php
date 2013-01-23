@@ -43,10 +43,10 @@
      */    
     public static function createFromTable(DBTable $table, $dbhost, $database) {
       $g= new self();
-      $g->doc->root->setAttribute('created_at', date('r'));
-      $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
+      $g->doc->root()->setAttribute('created_at', date('r'));
+      $g->doc->root()->setAttribute('created_by', System::getProperty('user.name'));
       
-      $g->doc->root->addChild(new Node('table', NULL, array(
+      $g->doc->root()->addChild(new Node('table', NULL, array(
         'name'     => $table->name,
         'dbhost'   => $dbhost,
         'database' => $database
@@ -64,8 +64,7 @@
       $indexes= array();
 
       // Attributes
-      with ($t= $this->doc->root->children[0]); {
-        $t->children= array();
+      with ($t= $this->doc->root()->nodeAt(0)); {
         if ($attr= $this->table->getFirstAttribute()) do {
           $a= $t->addChild(new Node('attribute', NULL, array(
             'name'     => trim($attr->getName()),

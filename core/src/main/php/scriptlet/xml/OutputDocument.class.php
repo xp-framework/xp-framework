@@ -59,7 +59,7 @@
         'xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema', 
         'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance'
       ));
-      $this->root= $this->formresult;
+      $this->withRoot($this->formresult);
       $this->formvalues= $this->formresult->addChild(new Node('formvalues'));
       $this->formerrors= $this->formresult->addChild(new Node('formerrors'));
     }
@@ -70,7 +70,7 @@
      * @return  string
      */
     public function toString() {
-      return $this->getClassName().'@('.$this->root->getSource(INDENT_DEFAULT).')';
+      return $this->getClassName().'@('.$this->root()->getSource(INDENT_DEFAULT).')';
     }
   }
 ?>

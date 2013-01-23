@@ -44,6 +44,15 @@
     }
 
     /**
+     * Retrieve root node
+     *
+     * @return   xml.Node
+     */
+    public function root() {
+      return $this->root;
+    }
+
+    /**
      * Set encoding
      *
      * @param   string e encoding
@@ -203,12 +212,12 @@
     public function onEndElement($parser, $name) {
       if ($this->_cnt > 1) {
         $node= $this->_objs[$this->_cnt];
-        $node->content= $this->_cdata;
+        $node->setContent($this->_cdata);
         $parent= $this->_objs[$this->_cnt- 1];
         $parent->addChild($node);
         $this->_cdata= '';
       } else {
-        $this->root->content= $this->_cdata;
+        $this->root()->setContent($this->_cdata);
         $this->_cdata= '';
       }
       $this->_cnt--;

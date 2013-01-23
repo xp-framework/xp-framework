@@ -28,7 +28,7 @@
       </list>');
       
       $this->assertEquals(
-        $dom->getDocumentElement()->children,
+        $dom->getDocumentElement()->getChildren(),
         $dom->getElementsByTagName('person')
       );
     }
@@ -45,7 +45,7 @@
       </list>');
       
       $this->assertEquals(
-        $dom->getDocumentElement()->children[0],
+        $dom->getDocumentElement()->nodeAt(0),
         $dom->getElementById('1549')
       );
     }
@@ -65,7 +65,7 @@
       </wizard>');
       
       $this->assertEquals(
-        array($dom->getDocumentElement()->children[0]->children[0]),
+        array($dom->getDocumentElement()->nodeAt(0)->nodeAt(0)),
         $dom->getElementsByName('package')
       );
     }
@@ -90,7 +90,7 @@
       </html>');
       
       $this->assertEquals(
-        $dom->getDocumentElement()->children[1]->children[0]->children[0]->children[0],
+        $dom->getDocumentElement()->nodeAt(1)->nodeAt(0)->nodeAt(0)->nodeAt(0),
         $dom->getElementById('home')
       );
     }

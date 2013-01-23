@@ -22,7 +22,7 @@
      */
     public function __construct() {
       parent::__construct('wddxPacket');
-      $this->root->setAttribute('version', '1.0');
+      $this->root()->setAttribute('version', '1.0');
     }
     
     /**
@@ -41,7 +41,7 @@
      * @param   string comment
      */
     public function create($comment= NULL) {
-      $h= $this->root->addChild(new Node('header'));
+      $h= $this->root()->addChild(new Node('header'));
       if ($comment) $h->addChild(new Node('comment', $comment));
     }
     
@@ -51,7 +51,7 @@
      * @param   var[] arr
      */
     public function setData($arr) {
-      $d= $this->root->addChild(new Node('data'));
+      $d= $this->root()->addChild(new Node('data'));
       if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
         $this->_marshall($d, $arr[$idx]);
       }
@@ -113,13 +113,13 @@
      */
     public function getData() {
       $ret= array();
-      foreach (array_keys($this->root->children) as $idx) {
-        if ('header' == $this->root->children[$idx]->getName())
+      foreach (array_keys($this->root()->getChildren()) as $idx) {
+        if ('header' == $this->root()->nodeAt($idx)->getName())
           continue;
         
         // Process params node
-        foreach (array_keys($this->root->children[$idx]->children) as $params) {
-          $ret[]= $this->_unmarshall($this->root->children[$idx]->children[$params]);
+        foreach (array_keys($this->root()->nodeAt($idx)->getChildren()) as $params) {
+          $ret[]= $this->_unmarshall($this->root()->nodeAt($idx)->nodeAt($params));
         }
         
         return $ret;
@@ -157,15 +157,15 @@
         
         case 'array':
           $arr= array();
-          foreach (array_keys($node->children) as $idx) {
-            $arr[]= $this->_unmarshall($node->children[$idx]);
+          foreach (array_keys($node->getChildren()) as $idx) {
+            $arr[]= $this->_unmarshall($node->nodeAt($idx));
           }
           return $arr;
         
         case 'struct':
           $struct= array();
-          foreach (array_keys($node->children) as $idx) {
-            $struct[$node->children[$idx]->getAttribute('name')]= $this->_unmarshall($node->children[$idx]);
+          foreach (array_keys($node->getChildren()) as $idx) {
+            $struct[$node->nodeAt($idx)->getAttribute('name')]= $this->_unmarshall($node->nodeAt($idx));
           }
           return $struct;
       }

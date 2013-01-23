@@ -100,13 +100,13 @@
       ));
       
       if (!empty($headers)) {
-        $header= $this->root->addChild(new Node('SOAP-ENV:Header'));
+        $header= $this->root()->addChild(new Node('SOAP-ENV:Header'));
         for ($i= 0, $s= sizeof($headers); $i < $s; $i++) {
           $header->addChild($headers[$i]->getNode($this->namespaces));
         }
       }
       
-      $this->body= $this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->body= $this->root()->addChild(new Node('SOAP-ENV:Body'));
       $this->body->addChild(new Node($this->namespace.':'.$this->method));
     }
     
@@ -134,13 +134,13 @@
       $this->root= new Node('SOAP-ENV:Envelope', NULL, $ns);
       
       if (!empty($headers)) {
-        $header= $this->root->addChild(new Node('SOAP-ENV:Header'));
+        $header= $this->root()->addChild(new Node('SOAP-ENV:Header'));
         for ($i= 0, $s= sizeof($headers); $i < $s; $i++) {
           $header->addChild($headers[$i]->getNode($this->namespaces));
         }
       }
       
-      $this->body= $this->root->addChild(new Node('SOAP-ENV:Body'));
+      $this->body= $this->root()->addChild(new Node('SOAP-ENV:Body'));
       $this->body->addChild(new Node($this->namespace.':'.$this->method));
       $this->mapping= new XPSoapMapping();
     }
@@ -162,11 +162,11 @@
     public function setData($arr) {
       $node= XPSoapNode::fromArray($arr, 'item', $this->mapping);
       $node->namespace= $this->namespace;
-      if (empty($node->children)) return;
+      if (!$node->hasChildren()) return;
       
       // Copy all of node's children to root element
-      foreach (array_keys($node->children) as $i) {
-        $this->body->children[0]->addChild($node->children[$i]);
+      foreach (array_keys($node->getChildren()) as $i) {
+        $this->body->nodeAt(0)->addChild($node->nodeAt($i));
       }
     }
 
@@ -188,38 +188,38 @@
     public function unmarshall($child, $context= NULL) {
       // DEBUG Console::writeLine('Unmarshalling ', $child->name, ' (', var_export($child->attribute, 1), ') >>> ', $child->content, '<<<', "\n"); // DEBUG
       if (
-        isset($child->attribute[$this->namespaces[XMLNS_XSI].':null']) or       // Java
-        isset($child->attribute[$this->namespaces[XMLNS_XSI].':nil'])           // SOAP::Lite
+        $child->hasAttribute($this->namespaces[XMLNS_XSI].':null') or       // Java
+        $child->hasAttribute($this->namespaces[XMLNS_XSI].':nil')           // SOAP::Lite
       ) {
         return NULL;
       }
 
       // References
-      if (isset($child->attribute['href'])) {
+      if ($child->hasAttribute('href')) {
         $body= $this->_bodyElement();
-        foreach (array_keys($body->children) as $idx) {
+        foreach (array_keys($body->getChildren()) as $idx) {
           if (0 != strcasecmp(
-            @$body->children[$idx]->attribute['id'],
-            substr($child->attribute['href'], 1)
+            @$body->nodeAt($idx)->getAttribute('id'),
+            substr($child->getAttribute('href'), 1)
           )) continue;
  
           // Create a copy and pass name to it
-          $c= $body->children[$idx];
-          $c->name= $child->name;
+          $c= $body->nodeAt($idx);
+          $c->setName($child->getName());
           return $this->unmarshall($c, $context);
           break;
         }
       }
       
       // Update namespaces list
-      foreach ($child->attribute as $key => $val) {
+      foreach ($child->getAttributes() as $key => $val) {
         if (0 == strncmp('xmlns:', $key, 6)) $this->namespaces[$val]= substr($key, 6);
       }
       
       // Type dependant
-      if (!isset($child->attribute[$this->namespaces[XMLNS_XSI].':type']) || !preg_match(
+      if (!$child->hasAttribute($this->namespaces[XMLNS_XSI].':type') || !preg_match(
         '#^([^:]+):([^\[]+)(\[[0-9+]\])?$#', 
-        $child->attribute[$this->namespaces[XMLNS_XSI].':type'],
+        $child->getAttribute($this->namespaces[XMLNS_XSI].':type'),
         $regs
       )) {
         // E.g.: SOAP-ENV:Fault
@@ -227,8 +227,8 @@
       }
 
       // SOAP-ENC:arrayType="xsd:anyType[4]"
-      if (isset($child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType'])) {
-        $regs[1]= $child->attribute[$this->namespaces[XMLNS_SOAPENC].':arrayType'];
+      if ($child->hasAttribute($this->namespaces[XMLNS_SOAPENC].':arrayType')) {
+        $regs[1]= $child->getAttribute($this->namespaces[XMLNS_SOAPENC].':arrayType');
         $regs[2]= 'Array';
       }
 
@@ -259,7 +259,7 @@
               }
               break;
             } else for ($i= 0; $i < $length; ++$i) {
-              $child->children[$i]->setAttribute($this->namespaces[XMLNS_XSI].':type', $ns.':'.$childType);
+              $child->nodeAt($i)->setAttribute($this->namespaces[XMLNS_XSI].':type', $ns.':'.$childType);
             }
           }
           
@@ -279,12 +279,12 @@
           // <value xsi:type="xsd:string">76135</value>
           // </item>
           // <item>
-          if (empty($child->children)) break;
-          foreach ($child->children as $item) {
-            $key= $item->children[0]->getContent($this->getEncoding(), $this->namespaces);
-            $result[$key]= ((empty($item->children[1]->children) && !isset($item->children[1]->attribute['href']))
-              ? $item->children[1]->getContent($this->getEncoding(), $this->namespaces)
-              : $this->unmarshall($item->children[1], 'MAP')
+          if (!$child->hasChildren()) break;
+          foreach ($child->getChildren() as $item) {
+            $key= $item->nodeAt(0)->getContent($this->getEncoding(), $this->namespaces);
+            $result[$key]= ((!$item->nodeAt(1)->hasChildren() && !$item->nodeAt(1)->hasAttribute('href'))
+              ? $item->nodeAt(1)->getContent($this->getEncoding(), $this->namespaces)
+              : $this->unmarshall($item->nodeAt(1), 'MAP')
             );
           }
           break;
@@ -296,7 +296,7 @@
           break;
           
         default:
-          if (!empty($child->children)) {
+          if ($child->hasChildren()) {
             if ($this->namespaces[XMLNS_XSD] == $regs[1]) {
               $result= $this->_recurseData($child, TRUE, 'STRUCT');
               break;
@@ -355,22 +355,22 @@
      * @return  var data
      */    
     protected function _recurseData($node, $names= FALSE, $context= NULL) {
-      if (empty($node->children)) {
+      if (!$node->hasChildren()) {
         $a= array();
         return $a;
       }
 
-      foreach ($node->attribute as $key => $val) {
+      foreach ($node->getAttributes() as $key => $val) {
         if (0 != strncmp('xmlns:', $key, 6)) continue;
         $this->namespaces[$val]= substr($key, 6);
       }
       
       $results= array();
-      for ($i= 0, $s= sizeof($node->children); $i < $s; $i++) {
+      for ($i= 0, $s= sizeof($node->getChildren()); $i < $s; $i++) {
         $key= $i;
         if ($names) {
-          $pos= strpos($node->children[$i]->name, ':');
-          $key= substr($node->children[$i]->name, $pos !== FALSE ? $pos + 1 : 0);
+          $pos= strpos($node->nodeAt($i)->getName(), ':');
+          $key= substr($node->nodeAt($i)->getName(), $pos !== FALSE ? $pos + 1 : 0);
         }
         
         // In case a value for the current key already exists, treat result
@@ -383,14 +383,14 @@
           if (!is_array($results[$key]) || !isset($results[$key][0])) $results[$key]= array($results[$key]);
 
           $results[$key][]= $this->unmarshall(
-            $node->children[$i], 
+            $node->nodeAt($i),
             $context
           );
 
         // Assign value directly to key
         } else {
           $results[$key]= $this->unmarshall(
-            $node->children[$i], 
+            $node->nodeAt($i),
             $context
           );
         }
@@ -407,13 +407,15 @@
      * @param   var detail default NULL
      */    
     public function setFault($faultcode, $faultstring, $faultactor= NULL, $detail= NULL) {
-      $this->root->children[0]->children[0]= XPSoapNode::fromObject(new CommonSoapFault(
+      $node= $this->root()->nodeAt(0);
+      $node->clearChildren();
+      $node->addChild(XPSoapNode::fromObject(new CommonSoapFault(
         $faultcode,
         $faultstring,
         $faultactor,
         $detail
-      ), 'SOAP-ENV:Fault', $this->mapping);
-      $this->root->children[0]->children[0]->name= 'SOAP-ENV:Fault';
+      ), 'SOAP-ENV:Fault', $this->mapping));
+      $node->nodeAt(0)->setName('SOAP-ENV:Fault');
     }
 
     /**
@@ -453,7 +455,7 @@
      * @param   xml.SOAPNode node
      */
     protected function _retrieveNamespaces($node) {
-      foreach ($node->attribute as $key => $val) {
+      foreach ($node->getAttributes() as $key => $val) {
         if (0 != strncmp('xmlns:', $key, 6)) continue;
         $this->namespaces[$val]= substr($key, 6);
       }
@@ -472,9 +474,9 @@
       $this->_retrieveNamespaces($this->root);
       
       if (0 == strcasecmp(
-        $this->root->children[0]->getName(),
+        $this->root()->nodeAt(0)->getName(),
         $this->namespaces[XMLNS_SOAPENV].':Header'
-      )) return $this->root->children[0];
+      )) return $this->root()->nodeAt(0);
       
       return FALSE;
     }
@@ -493,11 +495,11 @@
       // Search for the body node. For usual, this will be the first element,
       // but some SOAP clients may include a header node (which we silently 
       // ignore for now).
-      for ($i= 0, $s= sizeof($this->root->children); $i < $s; $i++) {
+      for ($i= 0, $s= sizeof($this->root()->getChildren()); $i < $s; $i++) {
         if (0 == strcasecmp(
-          $this->root->children[$i]->getName(), 
+          $this->root()->nodeAt($i)->getName(),
           $this->namespaces[XMLNS_SOAPENV].':Body'
-        )) return $this->root->children[$i];
+        )) return $this->root()->nodeAt($i);
       }
 
       throw new FormatException('Could not locate Body element');
@@ -511,11 +513,11 @@
     public function getFault() {
       if ($body= $this->_bodyElement()) {
         if (0 != strcasecmp(
-          $body->children[0]->getName(), 
+          $body->nodeAt(0)->getName(),
           $this->namespaces[XMLNS_SOAPENV].':Fault'
         )) return NULL;
 
-        $return= $this->_recurseData($body->children[0], TRUE, 'OBJECT', array());
+        $return= $this->_recurseData($body->nodeAt(0), TRUE, 'OBJECT', array());
         // DEBUG Console::writeLine('RETURN >>> ', var_export($return, 1), '***'); // DEBUG
         return new CommonSoapFault(
           isset($return['faultcode'])   ? $return['faultcode']    : '',
@@ -536,10 +538,10 @@
      */
     public function getData($context= 'ENUM') {
       if ($body= $this->_bodyElement()) {
-        if ($body->children[0]->getName() == $this->namespaces[XMLNS_SOAPENV].':Fault') {
+        if ($body->nodeAt(0)->getName() == $this->namespaces[XMLNS_SOAPENV].':Fault') {
           $n= NULL; return $n;
         }
-        return $this->_recurseData($body->children[0], FALSE, $context, $this->mapping);
+        return $this->_recurseData($body->nodeAt(0), FALSE, $context, $this->mapping);
       }
     }
     
@@ -563,9 +565,9 @@
       
       // Go through all children
       $headers= array();
-      foreach (array_keys($h->children) as $idx) {
+      foreach (array_keys($h->getChildren()) as $idx) {
         $headers[]= XPSoapHeaderElement::fromNode(
-          $h->children[$idx], 
+          $h->nodeAt($idx),
           $this->namespaces,
           $this->getEncoding()
         );

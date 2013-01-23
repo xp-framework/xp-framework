@@ -33,14 +33,14 @@
      */
     protected function _getElementsByTagName($node, $tagname, $max= -1) {
       $r= array();
-      foreach (array_keys($node->children) as $key) {
-        if ($tagname == $node->children[$key]->getName()) {
-          $r[]= $node->children[$key];
+      foreach ($node->getChildren() as $child) {
+        if ($tagname == $child->getName()) {
+          $r[]= $child;
           if ($max > 0 && sizeof($r) >= $max) return $r;
         }
-        if (!empty($node->children[$key]->children)) {
+        if ($child->hasChildren()) {
           $r= array_merge($r, $this->_getElementsByTagName(
-            $node->children[$key], 
+            $child,
             $tagname
           ));
         }
@@ -59,17 +59,17 @@
      */
     protected function _getElementsByAttribute($node, $attribute, $name, $max) {
       $r= array();
-      foreach (array_keys($node->children) as $key) {
+      foreach ($node->getChildren() as $child) {
         if (
-          ($node->children[$key]->hasAttribute($attribute)) &&
-          ($name == $node->children[$key]->getAttribute($attribute))
+          ($child->hasAttribute($attribute)) &&
+          ($name == $child->getAttribute($attribute))
         ) {
-          $r[]= $node->children[$key];
+          $r[]= $child;
           if ($max > 0 && sizeof($r) >= $max) return $r;
         }
-        if (!empty($node->children[$key]->children)) {
+        if ($child->hasChildren()) {
           $r= array_merge($r, $this->_getElementsByAttribute(
-            $node->children[$key], 
+            $child,
             $attribute, 
             $name,
             $max
