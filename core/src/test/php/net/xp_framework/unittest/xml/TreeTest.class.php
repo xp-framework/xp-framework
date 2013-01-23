@@ -47,10 +47,10 @@
      */
     #[@test]
     public function rootMember() {
-      with ($t= new Tree('formresult'), $r= $t->root); {
+      with ($t= new Tree('formresult'), $r= $t->root()); {
         $this->assertClass($r, 'xml.Node');
-        $this->assertEmpty($r->children);
-        $this->assertEmpty($r->attribute);
+        $this->assertFalse($r->hasChildren());
+        $this->assertEmpty($r->getAttributes());
         $this->assertEquals('formresult', $r->getName());
       }
     }
@@ -78,18 +78,18 @@
         </c:config>
       ');
       
-      with ($r= $t->root); {
+      with ($r= $t->root()); {
         $this->assertEquals('c:config', $r->getName());
         $this->assertTrue($r->hasAttribute('xmlns:c'));
         $this->assertEquals('http://example.com/cfg/1.0', $r->getAttribute('xmlns:c'));
-        $this->assertEquals(1, sizeof($r->children));
+        $this->assertEquals(1, sizeof($r->getChildren()));
       }      
       
-      with ($c= $t->root->children[0]); {
-        $this->assertEquals('attribute', $c->name);
+      with ($c= $t->root()->nodeAt(0)); {
+        $this->assertEquals('attribute', $c->getName());
         $this->assertTrue($c->hasAttribute('name'));
         $this->assertEquals('key', $c->getAttribute('name'));
-        $this->assertEquals(0, sizeof($c->children));
+        $this->assertEquals(0, sizeof($c->getChildren()));
         $this->assertEquals('value', $c->getContent());
       }
     }
@@ -105,9 +105,9 @@
       ');
       
       $this->assertEquals('iso-8859-1', $tree->getEncoding());
-      $this->assertEquals(1, sizeof($tree->root->children));
-      $this->assertEquals('document', $tree->root->getName());
-      $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
+      $this->assertEquals(1, sizeof($tree->root()->getChildren()));
+      $this->assertEquals('document', $tree->root()->getName());
+      $this->assertEquals('Some umlauts: öäü', $tree->root()->nodeAt(0)->getContent());
     }
 
     /**
@@ -121,9 +121,9 @@
       ');
       
       $this->assertEquals('iso-8859-1', $tree->getEncoding());
-      $this->assertEquals(1, sizeof($tree->root->children));
-      $this->assertEquals('document', $tree->root->getName());
-      $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
+      $this->assertEquals(1, sizeof($tree->root()->getChildren()));
+      $this->assertEquals('document', $tree->root()->getName());
+      $this->assertEquals('Some umlauts: öäü', $tree->root()->nodeAt(0)->getContent());
     }
 
     /**
@@ -133,9 +133,9 @@
     #[@test]
     public function singleElement() {
       $tree= Tree::fromString('<document empty="false">Content</document>');
-      $this->assertEquals(0, sizeof($tree->root->children));
-      $this->assertEquals('Content', $tree->root->getContent());
-      $this->assertEquals('false', $tree->root->getAttribute('empty'));
+      $this->assertEquals(0, sizeof($tree->root()->getChildren()));
+      $this->assertEquals('Content', $tree->root()->getContent());
+      $this->assertEquals('false', $tree->root()->getAttribute('empty'));
     }
 
     /**
@@ -154,7 +154,7 @@
     #[@test]
     public function utf8Encoding() {
       $t= create(new Tree('unicode'))->withEncoding('UTF-8');
-      $t->root->setContent('Hällo');
+      $t->root()->setContent('Hällo');
 
       $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>HÃ¤llo</unicode>', $this->sourceOf($t));
@@ -167,7 +167,7 @@
     #[@test]
     public function iso88591Encoding() {
       $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
-      $t->root->setContent('Hällo');
+      $t->root()->setContent('Hällo');
 
       $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
@@ -180,7 +180,7 @@
     #[@test]
     public function utf8EncodingWithIso88591StringObject() {
       $t= create(new Tree('unicode'))->withEncoding('UTF-8');
-      $t->root->setContent(new String('Hällo', 'iso-8859-1'));
+      $t->root()->setContent(new String('Hällo', 'iso-8859-1'));
 
       $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>HÃ¤llo</unicode>', $this->sourceOf($t));
@@ -193,7 +193,7 @@
     #[@test]
     public function iso88591EncodingWithIso88591StringObject() {
       $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
-      $t->root->setContent(new String('Hällo', 'iso-8859-1'));
+      $t->root()->setContent(new String('Hällo', 'iso-8859-1'));
 
       $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
@@ -206,7 +206,7 @@
     #[@test]
     public function utf8EncodingWithUtf8StringObject() {
       $t= create(new Tree('unicode'))->withEncoding('UTF-8');
-      $t->root->setContent(new String('HÃ¤llo', 'UTF-8'));
+      $t->root()->setContent(new String('HÃ¤llo', 'UTF-8'));
 
       $this->assertEquals('<?xml version="1.0" encoding="UTF-8"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>HÃ¤llo</unicode>', $this->sourceOf($t));
@@ -219,7 +219,7 @@
     #[@test]
     public function iso88591EncodingWithUtf8StringObject() {
       $t= create(new Tree('unicode'))->withEncoding('iso-8859-1');
-      $t->root->setContent(new String('HÃ¤llo', 'UTF-8'));
+      $t->root()->setContent(new String('HÃ¤llo', 'UTF-8'));
 
       $this->assertEquals('<?xml version="1.0" encoding="ISO-8859-1"?>', $t->getDeclaration());
       $this->assertEquals('<unicode>Hällo</unicode>', $this->sourceOf($t));
@@ -256,9 +256,9 @@
       '));
       
       $this->assertEquals('utf-8', $tree->getEncoding());
-      $this->assertEquals(1, sizeof($tree->root->children));
-      $this->assertEquals('document', $tree->root->getName());
-      $this->assertEquals('Some umlauts: Ã¶Ã¤Ã¼', $tree->root->children[0]->getContent());
+      $this->assertEquals(1, sizeof($tree->root()->getChildren()));
+      $this->assertEquals('document', $tree->root()->getName());
+      $this->assertEquals('Some umlauts: Ã¶Ã¤Ã¼', $tree->root()->nodeAt(0)->getContent());
     }
 
     /**
@@ -274,9 +274,9 @@
       '));
       
       $this->assertEquals('iso-8859-1', $tree->getEncoding());
-      $this->assertEquals(1, sizeof($tree->root->children));
-      $this->assertEquals('document', $tree->root->getName());
-      $this->assertEquals('Some umlauts: öäü', $tree->root->children[0]->getContent());
+      $this->assertEquals(1, sizeof($tree->root()->getChildren()));
+      $this->assertEquals('document', $tree->root()->getName());
+      $this->assertEquals('Some umlauts: öäü', $tree->root()->nodeAt(0)->getContent());
     }
   }
 ?>
