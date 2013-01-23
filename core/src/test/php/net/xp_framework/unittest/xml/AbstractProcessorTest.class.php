@@ -198,7 +198,7 @@
     #[@test]
     public function setXSLTree() {
       $t= new Tree('xsl:stylesheet');
-      $t->root->setAttribute('xmlns:xsl', 'http://www.w3.org/1999/XSL/Transform');
+      $t->root()->setAttribute('xmlns:xsl', 'http://www.w3.org/1999/XSL/Transform');
       $this->processor->setXSLTree($t);
     }
 

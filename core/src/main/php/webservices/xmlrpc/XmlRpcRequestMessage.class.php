@@ -22,7 +22,7 @@
      */
     public function create($method= NULL) {
       $this->tree= new Tree(XMLRPC_METHODCALL);
-      $this->tree->root->addChild(new Node('methodName', $method));
+      $this->tree->root()->addChild(new Node('methodName', $method));
     }
     
     /**
@@ -40,7 +40,7 @@
       $msg->tree= Tree::fromString($string);
 
       // Set class and method members from XML structure
-      $target= $msg->tree->root->children[0]->getContent();
+      $target= $msg->tree->root()->nodeAt(0)->getContent();
       list($msg->class, $msg->method)= explode('.', $target);
 
       return $msg;
@@ -54,7 +54,7 @@
     public function setData($arr) {
       $encoder= new XmlRpcEncoder();
 
-      $params= $this->tree->root->addChild(new Node('params'));
+      $params= $this->tree->root()->addChild(new Node('params'));
       if (sizeof($arr)) foreach (array_keys($arr) as $idx) {
         $n= $params->addChild(new Node('param'));
         $n->addChild($encoder->encode($arr[$idx]));
@@ -68,14 +68,14 @@
      */
     public function getData() {
       $ret= array();
-      foreach (array_keys($this->tree->root->children) as $idx) {
-        if ('params' != $this->tree->root->children[$idx]->getName())
+      foreach (array_keys($this->tree->root()->getChildren()) as $idx) {
+        if ('params' != $this->tree->root()->nodeAt($idx)->getName())
           continue;
         
         // Process params node
         $decoder= new XmlRpcDecoder();
-        foreach (array_keys($this->tree->root->children[$idx]->children) as $params) {
-          $ret[]= $decoder->decode($this->tree->root->children[$idx]->children[$params]->children[0]);
+        foreach (array_keys($this->tree->root()->nodeAt($idx)->getChildren()) as $params) {
+          $ret[]= $decoder->decode($this->tree->root()->nodeAt($idx)->nodeAt($params)->nodeAt(0));
         }
         
         return $ret;

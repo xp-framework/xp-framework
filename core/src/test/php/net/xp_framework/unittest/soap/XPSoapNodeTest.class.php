@@ -26,7 +26,7 @@
 
     protected function node($object) {
       $node= XPSoapNode::fromArray(array($object), 'array', new XPSoapMapping());
-      return $node->children[0];
+      return $node->nodeAt(0);
     }
 
     /**

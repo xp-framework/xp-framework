@@ -75,9 +75,9 @@
      */
     public function __construct() {
       parent::__construct('rdf:RDF');
-      $this->root->setAttribute('xmlns:rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-      $this->root->setAttribute('xmlns:dc',  'http://purl.org/dc/elements/1.1/');
-      $this->root->setAttribute('xmlns',     'http://purl.org/rss/1.0/');
+      $this->root()->setAttribute('xmlns:rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+      $this->root()->setAttribute('xmlns:dc',  'http://purl.org/dc/elements/1.1/');
+      $this->root()->setAttribute('xmlns',     'http://purl.org/rss/1.0/');
 
       $this->channel= new stdClass();
       $this->image= new stdClass();
@@ -133,7 +133,8 @@
       $this->channel->node= $node;
       $this->channel->sequence= $items->addChild(new Node('rdf:Seq'));
 
-      $this->root->children[0]= $node;
+      $this->root()->clearChildren();
+      $this->root()->addChild($node);
     }
     
     /**
@@ -153,7 +154,7 @@
         'url'           => $url,
         'link'          => $link
       ), 'image');
-      if (!isset($this->image->node)) $node= $this->root->addChild($node);
+      if (!isset($this->image->node)) $node= $this->root()->addChild($node);
       $this->image->node= $node;
     }
     
@@ -203,7 +204,7 @@
         'dc:date'       => $date->toString(DATE_ATOM)
       ), 'item');
       $node->setAttribute('rdf:about', $link);
-      $item->node= $this->root->addChild($node);
+      $item->node= $this->root()->addChild($node);
       $this->items[]= $item;
       $this->channel->sequence->addChild(new Node('rdf:li', NULL, array('rdf:resource' => $link)));
       

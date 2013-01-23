@@ -153,15 +153,15 @@
       $tree= new Tree();
       if ($qname) {
         $prefix= $qname->prefix ? $qname->prefix : $qname->localpart{0};
-        $tree->root->setName($prefix.':'.$qname->localpart);
-        $tree->root->setAttribute('xmlns:'.$prefix, $qname->namespace);
+        $tree->root()->setName($prefix.':'.$qname->localpart);
+        $tree->root()->setAttribute('xmlns:'.$prefix, $qname->namespace);
       } else if ($class->hasAnnotation('xmlns')) {
-        $tree->root->setName($class->getSimpleName());
+        $tree->root()->setName($class->getSimpleName());
       } else {
-        $tree->root->setName(strtolower($class->getSimpleName()));
+        $tree->root()->setName(strtolower($class->getSimpleName()));
       }
       
-      self::recurse($instance, $class, $tree->root, array());
+      self::recurse($instance, $class, $tree->root(), array());
       return $tree->getSource(INDENT_DEFAULT);
     }
  

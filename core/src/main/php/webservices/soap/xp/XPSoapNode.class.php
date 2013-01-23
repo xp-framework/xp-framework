@@ -62,8 +62,8 @@
      * @return  var data
      */
     public function getContent($encoding= NULL, $namespaces= NULL) {
-      $ret= $this->content;
-      @list($ns, $t)= explode(':', @$this->attribute[$namespaces[XMLNS_XSI].':type']);
+      $ret= parent::getContent();
+      @list($ns, $t)= explode(':', @$this->getAttribute($namespaces[XMLNS_XSI].':type'));
       
       switch (strtolower($t)) {
         case 'base64':
@@ -149,30 +149,30 @@
       }
 
       if (is_scalar($value)) {          // Scalar
-        $child->attribute['xsi:type']= $child->_typeName($value);
+        $child->setAttribute('xsi:type', $child->_typeName($value));
         $child->setContent($child->_contentFormat($value));
         return;
       }
       
       if (is_null($value)) {            // NULL
-        $child->attribute['xsi:nil']= 'true';
+        $child->setAttribute('xsi:nil', 'true');
         return;
       }
       
       if (is_array($value)) {           // Array
         if (is_numeric(key($value))) {
-          $child->attribute['xsi:type']= 'SOAP-ENC:Array';
-          $child->attribute['SOAP-ENC:arrayType']= 'xsd:anyType['.sizeof($value).']';
+          $child->setAttribute('xsi:type', 'SOAP-ENC:Array');
+          $child->setAttribute('SOAP-ENC:arrayType', 'xsd:anyType['.sizeof($value).']');
         } else {
-          $child->attribute['xsi:type']= 'xsd:struct';
-          if (empty($value)) $child->attribute['xsi:nil']= 'true';
+          $child->setAttribute('xsi:type', 'xsd:struct');
+          if (empty($value)) $child->setAttribute('xsi:nil', 'true');
         }
         $this->_recurse($child, $value, $mapping);
         return;
       }
 
       if ($value instanceof Parameter) {  // Named parameter
-        $child->name= $value->name;
+        $child->setName($value->name);
         $this->_marshall($child, $value->value, $mapping);
         return;
       }
@@ -188,16 +188,22 @@
       }
 
       if ($value instanceof SoapType) {   // Special SoapTypes
-        if (FALSE !== ($name= $value->getItemName())) $child->name= $name;
+        if (FALSE !== ($name= $value->getItemName())) $child->setName($name);
         $this->_marshall($child, $value->toString(), $mapping);
 
         // Specified type
-        if (NULL !== ($t= $value->getType())) $child->attribute['xsi:type']= $t;
+        if (NULL !== ($t= $value->getType())) $child->setAttribute('xsi:type', $t);
 
         // A node
         if (isset($value->item)) {
-          $child->attribute= $value->item->attribute;
-          $child->children= array_merge($child->children, $value->item->children);
+          // TODO FIXME
+          $child->setAttributes($value->item->getAttributes());
+          $newChildren= array_merge($child->getChildren(), $value->item->getChildren());
+          $child->clearChildren();
+
+          foreach ($newChildren as $c) {
+            $child->addChild($c);
+          }
         }
 
         return;
@@ -205,24 +211,24 @@
       
       if (($value instanceof Generic) && NULL !== ($qname= $mapping->qnameFor($value->getClass()))) {
         $ns++;
-        $child->attribute['xmlns:ns'.$ns]= $qname->namespace;
-        $child->attribute['xsi:type']= 'ns'.$ns.':'.$qname->localpart;
+        $child->setAttribute('xmlns:ns'.$ns, $qname->namespace);
+        $child->setAttribute('xsi:type', 'ns'.$ns.':'.$qname->localpart);
         
         $this->_recurse($child, get_object_vars($value), $mapping);
         return;
       }
       
       if ($value instanceof Generic) {     // XP objects
-        $child->attribute['xmlns:xp']= 'http://xp-framework.net/xmlns/xp';
-        $child->attribute['xsi:type']= 'xp:'.$value->getClassName();
+        $child->setAttribute('xmlns:xp', 'http://xp-framework.net/xmlns/xp');
+        $child->setAttribute('xsi:type', 'xp:'.$value->getClassName());
         $this->_recurse($child, get_object_vars($value), $mapping);
         return;
       }
       
       if (is_object($value)) {          // Any other object, e.g. "stdClass"
         $ns++;
-        $child->attribute['xmlns:ns'.$ns]= 'http://xp-framework.net/xmlns/php';
-        $child->attribute['xsi:type']= 'ns'.$ns.':'.get_class($value);
+        $child->setAttribute('xmlns:ns'.$ns, 'http://xp-framework.net/xmlns/php');
+        $child->setAttribute('xsi:type', 'ns'.$ns.':'.get_class($value));
         $this->_recurse($child, get_object_vars($value), $mapping);
         return;        
       }

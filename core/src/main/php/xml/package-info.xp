@@ -16,7 +16,7 @@
  * This example will print out a nicely formatted XML document:
  * <code>
  *   $t= new Tree('customer');
- *   $t->root->setAttribute('id', '6100');
+ *   $t->root()->setAttribute('id', '6100');
  *   $t->addChild(new Node('name', 'Timm Übercoder'));
  *   $t->addChild(new Node('email', 'uebercoder@example.com'));
  *   
