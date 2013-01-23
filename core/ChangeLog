@@ -21,8 +21,9 @@ Bugfixes
 Features
 ~~~~~~~~
 - Added accessors for attributes and content to xml.Node and new root()
-  method to xml.Tree. See pull request #166.
-  (kiesel)
+  method to xml.Tree. See pull request #166, partially applied for forward
+  compatibility
+  (kiesel, friebe)
 - Merged pull request #217 and #221 - Resource property source
   (mrosoiu, kiesel)
 - Merged pull request #216 - Image metadata reader
