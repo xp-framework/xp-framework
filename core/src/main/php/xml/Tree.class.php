@@ -44,6 +44,15 @@
     }
 
     /**
+     * Retrieve root node
+     *
+     * @return   xml.Node
+     */
+    public function root() {
+      return $this->root;
+    }
+
+    /**
      * Set encoding
      *
      * @param   string e encoding
