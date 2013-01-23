@@ -27,13 +27,13 @@
      */
     protected function getElementsByTagName($node, $tagname) {
       $r= create('new util.collections.Vector<xml.Node>()');
-      foreach (array_keys($node->children) as $key) {
-        if ($tagname == $node->children[$key]->getName()) {
-          $r[]= $node->children[$key];
+      foreach (array_keys($node->getChildren()) as $key) {
+        if ($tagname == $node->nodeAt($key)->getName()) {
+          $r[]= $node->nodeAt($key);
         }
-        if (!empty($node->children[$key]->children)) {
+        if ($node->nodeAt($key)->hasChildren()) {
           $r->addAll($this->_getElementsByTagName(
-            $node->children[$key], 
+            $node->nodeAt($key),
             $tagname
           ));
         }

@@ -105,7 +105,7 @@
         $m->root= new Node('soap:Envelope', NULL, array(
           'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope/'
         ));
-        $body= $m->root->addChild(new Node('soap:Body'));
+        $body= $m->root()->addChild(new Node('soap:Body'));
         $command->marshalTo($body->addChild(new Node('command', NULL, array(
           'xmlns'      => UDDIConstants::namespaceFor($this->version),
           'generic'    => UDDIConstants::versionIdFor($this->version)
@@ -147,7 +147,7 @@
       }
       
       // Unmarshal response
-      return $command->unmarshalFrom($answer->root->children[0]->children[0]);
+      return $command->unmarshalFrom($answer->root()->nodeAt(0)->nodeAt(0));
     }
 
     /**

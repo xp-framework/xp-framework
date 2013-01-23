@@ -166,6 +166,15 @@
     public function setAttribute($name, $value) {
       $this->attribute[$name]= $value;
     }
+
+    /**
+     * Sets all attributes
+     *
+     * @param   <string,string>[] attributes
+     */
+    public function setAttributes($attrs) {
+      $this->attribute= $attrs;
+    }
     
     /**
      * Retrieve an attribute by its name. Returns the default value if the
@@ -177,6 +186,15 @@
      */
     public function getAttribute($name, $default= NULL) {
       return isset($this->attribute[$name]) ? $this->attribute[$name] : $default;
+    }
+
+    /**
+     * Retrieve all attributes
+     *
+     * @return   <string, string>[] attributes
+     */
+    public function getAttributes() {
+      return $this->attribute;
     }
 
     /**
@@ -328,6 +346,68 @@
     public function withChild(Node $child) {
       $this->addChild($child);
       return $this;
+    }
+
+    /**
+     * Set children to given list of children
+     *
+     * @param xml.Node[] children
+     */
+    public function setChildren(array $children) {
+      $this->children= array();
+      foreach ($children as $child) {
+        $this->addChild($child);
+      }
+    }
+
+    /**
+     * Retrieve node children
+     *
+     * @return   xml.Node[] children
+     */
+    public function getChildren() {
+      return $this->children;
+    }
+
+    /**
+     * Clear node children
+     *
+     */
+    public function clearChildren() {
+      $this->setChildren(array());
+    }
+
+    /**
+     * Retrieve number of children
+     *
+     * @return  int
+     */
+    public function numChildren() {
+      return sizeof($this->children);
+    }
+
+    /**
+     * Determine whether node has node children
+     *
+     * @return   bool
+     */
+    public function hasChildren() {
+      return 0 < sizeof($this->children);
+    }
+
+    /**
+     * Retrieve nth node child
+     *
+     * @param    int pos
+     * @return   xml.Node
+     * @throws   lang.ElementNotFoundException if array index out of bounds
+     */
+    public function nodeAt($pos) {
+      if (!isset($this->children[$pos])) {
+        throw new ElementNotFoundException('Cannot access node at position '.$pos);
+      }
+
+      return $this->children[$pos];
     }
     
     /**

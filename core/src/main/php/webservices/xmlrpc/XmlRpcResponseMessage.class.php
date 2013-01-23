@@ -38,12 +38,12 @@
       $msg= new self();
       $msg->tree= Tree::fromString($string);
 
-      if (!isset($msg->tree->root->children[0])) {
+      if (!$msg->tree->root()->hasChildren()) {
         throw new FormatException('Response is not well formed'); 
       }
 
       // Set class and method members from XML structure
-      $target= $msg->tree->root->children[0]->getContent();
+      $target= $msg->tree->root()->nodeAt(0)->getContent();
       @list($msg->class, $msg->method)= explode('.', $target);
 
       return $msg;
@@ -57,7 +57,7 @@
     public function setData($value) {
       $encoder= new XmlRpcEncoder();
 
-      $params= $this->tree->root->addChild(new Node('params'));
+      $params= $this->tree->root()->addChild(new Node('params'));
       $param= $params->addChild(new Node('param'));
       $param->addChild($encoder->encode($value));
     }
@@ -71,8 +71,8 @@
       $ret= array();
       
       if (
-        !is('xml.Node', $this->tree->root->children[0]->children[0]->children[0]) ||
-        'value' != $this->tree->root->children[0]->children[0]->children[0]->getName()
+        !is('xml.Node', $this->tree->root()->nodeAt(0)->nodeAt(0)->nodeAt(0)) ||
+        'value' != $this->tree->root()->nodeAt(0)->nodeAt(0)->nodeAt(0)->getName()
       ) {
         throw new IllegalStateException('No node "params" found.');
       }
@@ -81,7 +81,7 @@
       $decoder= new XmlRpcDecoder();
       
       // Access node /methodResponse/params/param/value node
-      return $decoder->decode($this->tree->root->children[0]->children[0]->children[0]);
+      return $decoder->decode($this->tree->root()->nodeAt(0)->nodeAt(0)->nodeAt(0));
     }
   }
 ?>

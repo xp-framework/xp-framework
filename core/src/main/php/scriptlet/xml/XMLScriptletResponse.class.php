@@ -144,8 +144,8 @@
           } else {
             $c= new Node('param', $val);
           }
-          $c->attribute['name']= $name.(is_int($k) ? '' : '['.$k.']');
-          $c->attribute['xsi:type']= 'xsd:'.gettype($val);
+          $c->setAttribute('name', $name.(is_int($k) ? '' : '['.$k.']'));
+          $c->setAttribute('xsi:type', 'xsd:'.gettype($val));
         } catch (XMLFormatException $e) {
         
           // An XMLFormatException indicates data we have received on-wire
@@ -189,11 +189,11 @@
       } else {
         $c= new Node('error', $info);
       }
-      $c->attribute= array(
+      $c->setAttributes(array(
         'type'        => $type,
         'field'       => $field,
         'checker'     => $checker
-      );
+      ));
       $this->document->formerrors->addChild($c);
       
       return FALSE;
@@ -210,10 +210,10 @@
      */
     public function addFormResult($node) {
       if (
-        ('formerrors' == $node->name) ||
-        ('formvalues' == $node->name)
+        ('formerrors' == $node->getName()) ||
+        ('formvalues' == $node->getName())
       ) {
-        throw new IllegalArgumentException($node->name.' not allowed here');
+        throw new IllegalArgumentException($node->getName().' not allowed here');
       }
       return $this->document->formresult->addChild($node);
     }
