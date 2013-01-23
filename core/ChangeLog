@@ -93,6 +93,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Added iteration support to util.collections.HashTable - pull request #225
+  (friebe)
 - Added accessors for attributes and content to xml.Node and new root()
   method to xml.Tree. See pull request #166, partially applied for forward
   compatibility
