@@ -24,9 +24,8 @@
      * @return  var[] an array with three elements: exitcode, stdout and stderr contents
      */
     protected function useAllOf($uses, $decl= '') {
-      with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, NULL)); {
-        $p->in->write('<?php '.$decl.'
-          require("lang.base.php"); 
+      with ($out= $err= '', $p= Runtime::getInstance()->newInstance(NULL, 'class', 'xp.runtime.Evaluate', array())); {
+        $p->in->write($decl.'
           $errors= 0;
           foreach (array("'.implode('", "', $uses).'") as $class) {
             try {
@@ -38,7 +37,7 @@
             }
           }
           exit($errors);
-        ?>');
+        ');
         $p->in->close();
 
         // Read output

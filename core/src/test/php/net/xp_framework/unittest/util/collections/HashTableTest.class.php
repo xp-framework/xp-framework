@@ -215,12 +215,67 @@
     }
 
     /**
-     * Verifies iteration is not supported.
+     * Populates the fixture
+     *
+     * @return  [:lang.types.String[]]
+     */
+    protected function populatedMapFixture() {
+      $keys= array(new String('color'), new String('price'));
+      $values= array(new String('purple'), new String('25 USD'));
+      foreach ($keys as $i => $key) {
+        $this->map->put($key, $values[$i]);
+      }
+      return array('keys' => $keys, 'values' => $values);
+    }
+
+    /**
+     * Iterate on map
+     *
+     * @param  [:lang.types.String[]] expected
+     * @throws unittest.AssertionFailedError
+     */
+    protected function assertMapIteration($expected) {
+      $actual= array('keys' => array(), 'values' => array());
+      foreach ($this->map as $i => $pair) {
+        $actual['keys'][$i]= $pair->key;
+        $actual['values'][$i]= $pair->value;
+      }
+      $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Verifies iteration.
      *
      */
-    #[@test, @expect('lang.IllegalStateException')]
-    public function iterationNotSupported() {
-      foreach ($this->map as $key => $value) { }
+    #[@test]
+    public function iteration() {
+      $expected= $this->populatedMapFixture();
+      $this->assertMapIteration($expected);
     }
- }
+
+    /**
+     * Verifies iteration.
+     *
+     */
+    #[@test]
+    public function doubleIteration() {
+      $expected= $this->populatedMapFixture();
+      foreach ($this->map as $i => $pair) {
+      }
+      $this->assertMapIteration($expected);
+    }
+
+    /**
+     * Verifies iteration.
+     *
+     */
+    #[@test]
+    public function breakDoubleIteration() {
+      $expected= $this->populatedMapFixture();
+      foreach ($this->map as $i => $pair) {
+        break;
+      }
+      $this->assertMapIteration($expected);
+    }
+  }
 ?>
