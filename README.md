@@ -13,7 +13,7 @@ Directory structure
 `- core
    |- ChangeLog         # Version log
    |- boot.pth          # Bootstrap classpath
-   |- tools             # Bootstrapping (class.php, xar.php, web.php)
+   |- tools             # Bootstrapping (lang.base.php, class.php, xar.php, web.php)
    `- src               # Sourcecode, by Maven conventions
       |- main
       |  `- php
