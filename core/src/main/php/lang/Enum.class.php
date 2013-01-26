@@ -25,9 +25,9 @@
       // Automatically initialize this enum's public static members
       $i= 0;
       $c= new ReflectionClass($class);
-      foreach ($c->getProperties(257) as $prop) {
-        if (NULL !== ($v= $prop->getValue(NULL))) $i= $v;
-        $prop->setValue(NULL, $c->newInstance($i++, $prop->name));
+      foreach ($c->getStaticProperties() as $name => $prop) {
+        if (NULL !== $prop) $i= $prop;
+        $c->setStaticPropertyValue($name, $c->newInstance($i++, $name));
       }
     }
 
