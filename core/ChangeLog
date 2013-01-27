@@ -13,6 +13,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #230: Tests with closures inside cause abnormal exit
+  (friebe)
 - Fixed io.FileUtil class to work if File::read() returns less than the
   given chunk size. See pull request #220 - this fixes FileUtil used in
   combination with ResourceProvider, e.g.
