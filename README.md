@@ -1,6 +1,6 @@
 XP Framework
 ============
-[![Build Status](https://secure.travis-ci.org/xp-framework/xp-framework.png)](http://travis-ci.org/xp-framework/xp-framework)
+[![Build Status](https://travis-ci.org/xp-framework/xp-framework.png?branch=xp5_8)](https://travis-ci.org/xp-framework/xp-framework)
 
 This is the XP Framework's development checkout
 
