@@ -52,8 +52,6 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
-- Fixed issue #230: Tests with closures inside cause abnormal exit
-  (friebe)
 - Fixed issue #132: Namespaced classes not usable in generics
   (friebe)
 - Fixed issue #130: newinstance() fails to respect namespace
@@ -91,6 +89,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #230: Tests with closures inside cause abnormal exit
+  (friebe)
 - Fixed io.FileUtil class to work if File::read() returns less than the
   given chunk size. See pull request #220 - this fixes FileUtil used in
   combination with ResourceProvider, e.g.
