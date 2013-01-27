@@ -233,5 +233,28 @@
       ');
       $this->assertEquals('int', $details[DETAIL_RETURNS]);
     }
+
+    /**
+     * Tests parsing of classes with closures inside
+     *
+     * @see   https://github.com/xp-framework/xp-framework/issues/230
+     */
+    #[@test]
+    public function withClosure() {
+      $details= XPClass::parseDetails('<?php
+        class WithClosure extends Object {
+
+          /**
+           * Creates a new fixture
+           *
+           * @return  php.Closure
+           */
+          public function newAnswer() {
+            return function() { return 42; };
+          }
+        }
+      ?>');
+      $this->assertEquals('Creates a new fixture', $details[1]['newAnswer'][DETAIL_COMMENT]);
+    }
   }
 ?>
