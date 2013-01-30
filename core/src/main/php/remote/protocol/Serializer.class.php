@@ -205,29 +205,15 @@
     }
   
     /**
-     * Register or retrieve a mapping for a package.
+     * Retrieve a mapping for a package.
      *
-     * This method should only be used to retrieve package
-     * mappings. Registering functionality will be removed
-     * in future versions.
-     *
-     * @deprecated
-     * @param   string name
-     * @param   string replace
-     * @return  string replaced
+     * @param   string remote
+     * @param   string mapped
      */
-    public function packageMapping($name, $replace= NULL) {
-      if (NULL !== $replace) {
-        $this->packages[$name]= $replace;     // BC
-        $this->packages[0][$name]= $replace;
-      }
-
-      return $name == strtr($name, $this->packages)
-        ? strtr($name, $this->packages[0])
-        : strtr($name, $this->packages)      // BC
-      ;
+    public function packageMapping($remote) {
+      return strtr($remote, $this->packages[0]);
     }
-        
+
     /**
      * Map a remote package name to a local package
      *

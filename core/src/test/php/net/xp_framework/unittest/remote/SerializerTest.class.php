@@ -449,39 +449,6 @@
     /**
      * Test deserialization of a package-mapped classreference
      *
-     * @deprecated
-     */
-    #[@test]
-    public function oneWayPackageMappedClass() {
-      $this->serializer->packageMapping('net.xp_framework.easc.reflect', 'remote.reflect');
-
-      $class= $this->serializer->valueOf(new SerializedData('C:47:"net.xp_framework.easc.reflect.MethodDescription"'));
-      $this->assertTrue(is('remote.ClassReference', $class));
-      $this->assertEquals("remote.reflect.MethodDescription", $class->referencedName());
-    }
-
-    /**
-     * Test deserialization of a package-mapped classreference
-     *
-     * @deprecated
-     */
-    #[@test]
-    public function oneWayPackageMappedInterface() {
-      $this->serializer->packageMapping('net.xp_framework.easc.beans', 'remote.beans');
-      $this->serializer->mapping('I', new RemoteInterfaceMapping());
-
-      $class= $this->serializer->valueOf(
-        new SerializedData('I:12036987:{s:41:"net.xp_framework.easc.beans.BeanInterface";}'),
-        array('handler' => 'remote.protocol.XPProtocolHandler')
-      );
-
-      $this->assertSubclass($class, 'lang.reflect.Proxy');
-      $this->assertSubclass($class, 'remote.beans.BeanInterface');
-    }
-
-    /**
-     * Test deserialization of a package-mapped classreference
-     *
      */
     #[@test]
     public function remoteInterfaceMapping() {

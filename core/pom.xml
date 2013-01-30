@@ -2,11 +2,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- Sonatype OSS parent -->
   <parent>
-    <groupId>net.xp-framework</groupId>
-    <artifactId>pom</artifactId>
-    <version>5.9.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>7</version>
   </parent>
 
   <!-- The basics -->
@@ -17,20 +17,101 @@
 
   <!-- More project information -->
   <name>XP-Framework core</name>
+  <description>The XP framework is an all-purpose, object oriented PHP framework</description>
+  <url>http://xp-framework.net/</url>
+  <inceptionYear>2001</inceptionYear>
+  <organization>
+    <name>XP-Framework Team</name>
+    <url>http://xp-framework.net/</url>
+  </organization>
+  <developers>
+    <developer>
+      <id>xp-framework</id>
+      <name>XP-Framework Team</name>
+      <email>devs@xp-framework.net</email>
+      <url>http://xp-framework.net</url>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <!-- Properties -->
   <properties>
+    <project.build.sourceEncoding>ISO-8859-15</project.build.sourceEncoding>
   </properties>
+
+  <!-- Prerequisites -->
+  <prerequisites>
+    <maven>2.2.1</maven>
+  </prerequisites>
 
   <!-- Build settings -->
   <build>
     <plugins>
+      <plugin>
+        <groupId>net.xp-forge.maven.plugins</groupId>
+        <artifactId>xp-maven-plugin</artifactId>
+        <version>3.3.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <configuration>
 
-      <!-- Copy resources (not in the default Maven layout) -->
+          <!-- @see https://github.com/xp-framework/xp-framework/wiki/setup.extensions -->
+          <extensions>
+
+            <!-- Core -->
+            <extension>standard</extension>
+            <extension>pcre</extension>
+            <extension>tokenizer</extension>
+            <extension>reflection</extension>
+            <extension>ctype</extension>
+            <extension>iconv</extension>
+            <extension>date</extension>
+            <extension>com_dotnet</extension>
+            <extension>zlib</extension>
+
+            <!-- XML -->
+            <extension>dom</extension>
+            <extension>xsl</extension>
+            <extension>xml</extension>
+            <extension>libxml</extension>
+
+            <!-- Networking -->
+            <extension>sockets</extension>
+            <extension>ftp</extension>
+            <extension>openssl</extension>
+            <extension>ldap</extension>
+            <extension>soap</extension>
+
+            <!-- Imaging -->
+            <extension>gd</extension>
+            <extension>exif</extension>
+            <extension>mbstring</extension>
+
+            <!-- Databases ??? -->
+            <!--extension>mysql</extension>
+            <extension>mysqli</extension>
+            <extension>sqlite3</extension-->
+
+            <!-- The web -->
+            <extension>session</extension>
+
+            <!-- Parallel processing -->
+            <extension>pcntl</extension>
+            <extension>posix</extension>
+          </extensions>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>2.5</version>
         <executions>
+
+          <!-- Copy resources (not in the default Maven layout) -->
           <execution>
             <id>copy-core-resources</id>
             <phase>process-resources</phase>
@@ -43,16 +124,38 @@
                 <resource>
                   <directory>src/main/php/</directory>
                   <includes>
-                    <include>lang.base.php</include>
-                    <include>LICENCE</include>
                     <include>**/package-info.xp</include>
                     <include>sapi/**/*.sapi.php</include>
                     <include>sapi/scriptlet/*.html</include>
+                    <include>xp/runtime/usage.txt</include>
+                    <include>xp/scriptlet/xpws.txt</include>
+                    <include>xp/scriptlet/*.html</include>
+                    <include>xp/codegen/**/*.xsl</include>
                   </includes>
                 </resource>
               </resources>
             </configuration>
-         </execution>
+          </execution>
+
+          <!-- Copy tools -->
+          <execution>
+            <id>copy-tools</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/tools</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>tools</directory>
+                  <includes>
+                    <include>*.php</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
@@ -67,7 +170,6 @@
         </includes>
       </resource>
     </resources>
-
   </build>
 
   <!--
@@ -107,4 +209,17 @@
       </build>
     </profile>
   </profiles>
+
+  <!-- Source code management -->
+  <scm>
+    <connection>scm:git:git://github.com/xp-framework/xp-framework.git</connection>
+    <developerConnection>scm:git:git@github.com:xp-framework/xp-framework.git</developerConnection>
+    <url>https://github.com/xp-framework/xp-framework</url>
+  </scm>
+
+  <!-- Issue management -->
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/xp-framework/xp-framework/issues</url>
+  </issueManagement>
 </project>

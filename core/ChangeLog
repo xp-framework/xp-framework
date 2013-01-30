@@ -8,6 +8,9 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Removed deprecated package mapping registration via packageMapping() in
+  remote.protocol.Serializer
+  (friebe)
 - Changed repository layout to Maven Standard Directory Layout - see pull
   requests #222 and #224
   (kiesel, mrosoiu, friebe)
@@ -79,6 +82,11 @@ Version 5.8.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.11, released 2013-01-30
+-----------------------------------
+Git commit: 87c014945c3447249345b50a0ebf77a471624e32
+
 RFCs
 ~~~~
 - Implemented RFC #0196: I/O Collections random access
@@ -86,6 +94,8 @@ RFCs
 
 Bugfixes
 ~~~~~~~~
+- Fixed issue #230: Tests with closures inside cause abnormal exit
+  (friebe)
 - Fixed io.FileUtil class to work if File::read() returns less than the
   given chunk size. See pull request #220 - this fixes FileUtil used in
   combination with ResourceProvider, e.g.
