@@ -8,7 +8,8 @@
     'lang.IClassLoader',
     'lang.FileSystemClassLoader',
     'lang.DynamicClassLoader',
-    'lang.archive.ArchiveClassLoader'
+    'lang.archive.ArchiveClassLoader',
+    'lang.Module'
   );
   
   /** 
@@ -54,6 +55,13 @@
     static function __static() {
       xp::$registry['loader']= new self();
       
+      // Declare core module
+      $dyn= DynamicClassLoader::instanceFor('modules');
+      $dyn->setClassBytes('__CoreModule', 'class __CoreModule extends Object { }');
+      xp::$registry['modules']= array(
+        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('__CoreModule'), NULL, 'core', xp::version())
+      );
+
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
         if ('!' === $element{0}) {
@@ -65,12 +73,13 @@
 
         $resolved= realpath($element);
         if (is_dir($resolved)) {
-          self::registerLoader(FileSystemClassLoader::instanceFor($resolved, FALSE), $before);
+          $cl= FileSystemClassLoader::instanceFor($resolved, FALSE);
         } else if (is_file($resolved)) {
-          self::registerLoader(ArchiveClassLoader::instanceFor($resolved, FALSE), $before);
+          $cl= ArchiveClassLoader::instanceFor($resolved, FALSE);
         } else {
           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
         }
+        isset(self::$delegates[$cl->instanceId()]) || self::registerLoader($cl, $before);
       }
     }
     
@@ -96,8 +105,9 @@
       if (NULL === $before && '!' === $element{0}) {
         $before  = TRUE;
         $element = substr($element, 1);
+      } else {
+        $before= (bool)$before;
       }
-      $before= (bool)$before;
       $resolved= realpath($element);
       if (is_dir($resolved)) {
         return self::registerLoader(FileSystemClassLoader::instanceFor($resolved), $before);
@@ -108,6 +118,82 @@
     }
     
     /**
+     * Declare a module
+     *
+     * @param   lang.IClassLoader l
+     * @throws  lang.ClassFormatException
+     * @return  lang.reflect.Module
+     */
+    public static function declareModule($l) {
+      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?\s(provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
+        raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
+      }
+
+      // Declare module
+      $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
+
+      // Remove PHP tags if existant
+      if ('<?php' === substr($moduleInfo, 0, 5)) $moduleInfo= substr($moduleInfo, 5);
+      if ('?>' === substr($moduleInfo, -2, 2)) $moduleInfo= substr($moduleInfo, 0, -2);
+
+      // Load class and register
+      array_unshift(self::$delegates, $l);
+      $dyn= DynamicClassLoader::instanceFor('modules');
+      $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends Object {'.
+        'public static $name= "'.$m[1].'";'.
+        'public static $version= '.(isset($m[2]) ? '"'.$m[3].'"' : 'NULL').';'
+      )));
+      try {
+        $class= $dyn->loadClass($module);
+        unset(self::$delegates[0]);
+      } catch (ClassLoadingException $e) {
+        unset(self::$delegates[0]);
+        throw $e;
+      }
+      if ($class->hasMethod('initialize')) {
+        $class->getMethod('initialize')->invoke(NULL, array($l));
+      }
+
+      // Parse provided packages
+      if (isset($m[5])) {
+        $provides= array();
+        foreach (explode(',', $m[5]) as $package) {
+          $provides[]= trim($package);
+        }
+      } else {
+        $provides= NULL;
+      }
+
+      return new Module($l, $class, $provides, $m[1], isset($m[2]) ? $m[3] : NULL);
+    }
+
+    /**
+     * Register module
+     * 
+     * @param  lang.reflect.Module m
+     * @throws lang.IllegalStateException 
+     * @return lang.reflect.Module m
+     */
+    public static function registerModule($m) {
+      $name= $m->getName();
+      if (isset(xp::$registry['modules'][$name])) {
+        raise('lang.IllegalStateException', 'Module "'.$name.'" already registered');
+      }
+
+      xp::$registry['modules'][$name]= $m;
+      return $m;
+    }
+
+    /**
+     * Unregister a module
+     * 
+     * @param  lang.reflect.Module m
+     */
+    public static function removeModule($m) {
+      unset(xp::$registry['modules'][$m->getName()]);
+    }
+
+    /**
      * Register a class loader as a delegate
      *
      * @param   lang.IClassLoader l
@@ -115,10 +201,14 @@
      * @return  lang.IClassLoader the registered loader
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
+      if ($l->providesResource('module.xp')) {
+        $l= self::registerModule(self::declareModule($l));
+      }
+
       if ($before) {
-        self::$delegates= array_merge(array($l->hashCode() => $l), self::$delegates);
+        self::$delegates= array_merge(array($l->instanceId() => $l), self::$delegates);
       } else {
-        self::$delegates[$l->hashCode()]= $l;
+        self::$delegates[$l->instanceId()]= $l;
       }
       return $l;
     }
@@ -130,8 +220,13 @@
      * @return  bool TRUE if the delegate was unregistered
      */
     public static function removeLoader(IClassLoader $l) {
-      if (!isset(self::$delegates[$l->hashCode()])) return FALSE;
-      unset(self::$delegates[$l->hashCode()]);
+
+      // FIXME: we should not be using self::removeModule() specialization
+      if ($l instanceof Module) self::removeModule($l);
+
+      $id= $l->instanceId();
+      if (!isset(self::$delegates[$id])) return FALSE;
+      unset(self::$delegates[$id]);
       return TRUE;
     }
 
@@ -380,6 +475,24 @@
         $contents= array_merge($contents, $delegate->packageContents($package));
       }
       return array_unique($contents);
+    }
+
+    /**
+     * Creates a string representation
+     *
+     * @return string
+     */
+    public function toString() {
+      return $this->getClassName();
+    }
+
+    /**
+     * Returns a unique identifier for this class loader instance
+     *
+     * @return  string
+     */
+    public function instanceId() {
+      return '*';
     }
   }
 ?>

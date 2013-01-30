@@ -1,0 +1,14 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * An imaging module
+   *
+   */
+  module imaging(3.4.1) {
+  
+  }
+?>

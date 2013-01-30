@@ -81,5 +81,12 @@
      */
     public function getResourceAsStream($string);
 
+    /**
+     * Returns a unique identifier for this class loader instance
+     *
+     * @return  string
+     */
+    public function instanceId();
+
   }
 ?>
