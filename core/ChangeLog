@@ -33,6 +33,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0220: Modules - Classpath meta information & initializers
+  (friebe)
 - Implemented RFC #0210: Separate contrib & framework versions
   (friebe)
 - Implemented RFC #0260: XP 5.9 as default branch
