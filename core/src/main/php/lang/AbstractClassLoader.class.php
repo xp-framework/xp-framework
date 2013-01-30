@@ -119,12 +119,30 @@
     }
 
     /**
+     * Returns a hashcode for this class loader
+     *
+     * @return string
+     */
+    public function hashCode() {
+      return 'cl@'.$this->path;
+    }
+
+    /**
+     * Returns a unique identifier for this class loader instance
+     *
+     * @return  string
+     */
+    public function instanceId() {
+      return $this->path;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return  string
      */
     public function toString() {
-      return $this->getClassName(). '<'.$this->path.'>';
+      return str_replace('ClassLoader', 'CL', $this->getClass()->getSimpleName()).'<'.$this->path.'>';
     }
   }
 ?>
