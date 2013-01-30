@@ -50,8 +50,7 @@
       $options= $runtime->startupOptions()->withSetting('magic_quotes_gpc', 1)->withSetting('error_reporting', 'E_ALL');
       $out= $err= '';
 
-      with ($p= $runtime->newInstance($options, NULL)); {
-        $p->in->write('<?php require("lang.base.php"); ?>');
+      with ($p= $runtime->newInstance($options, 'class', 'xp.runtime.Evaluate', array('return 1;'))); {
         $p->in->close();
 
         // Read output

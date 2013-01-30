@@ -846,9 +846,10 @@
             break;
 
           case T_FUNCTION:
+            if (T_STRING !== $tokens[$i+ 2][0]) break;    // A closure, `function($params) { return TRUE; }`
             '' === $parsed || raise('lang.ClassFormatException', 'Unterminated annotation "'.addcslashes($parsed, "\0..\17").'" in '.$context.', line '.(isset($tokens[$i][2]) ? ', line '.$tokens[$i][2] : ''));
             $members= FALSE;
-            while (T_STRING !== $tokens[$i][0]) $i++;
+            $i+= 2;
             $m= $tokens[$i][1];
             $details[1][$m]= array(
               DETAIL_ARGUMENTS    => array(),
