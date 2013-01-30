@@ -54,6 +54,7 @@
         public function loadClass0($name) { /* Not reached */ }
         public function getResource($name) { /* Not reached */ }
         public function getResourceAsStream($name) { /* Not reached */ }
+        public function instanceId() { return "(test-fixture)"; }
       }'));
       $this->assertFalse($this->fixture->providesResource('imaging/api/resources/mime.ini'));
     }
@@ -73,6 +74,7 @@
         public function loadClass0($name) { /* Not reached */ }
         public function getResource($name) { /* Not reached */ }
         public function getResourceAsStream($name) { /* Not reached */ }
+        public function instanceId() { return "(test-fixture)"; }
       }'));
       $this->assertFalse($this->fixture->providesClass('imaging.api.AnyClass'));
     }
@@ -92,6 +94,7 @@
         public function loadClass0($name) { /* Not reached */ }
         public function getResource($name) { /* Not reached */ }
         public function getResourceAsStream($name) { /* Not reached */ }
+        public function instanceId() { return "(test-fixture)"; }
       }'));
       $this->assertFalse($this->fixture->providesPackage('imaging.api'));
     }

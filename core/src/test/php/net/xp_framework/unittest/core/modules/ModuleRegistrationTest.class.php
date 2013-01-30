@@ -28,7 +28,7 @@
         public function loadClass0($name) { /* Not reached */ }
         public function getResource($name) { return "<?php module registration-fixture { } ?>"; }
         public function getResourceAsStream($name) { /* Not reached */ }
-        public function toString() { return $this->getClassName()."(registration-fixture)"; }
+        public function instanceId() { return "(registration-fixture)"; }
       }'));
     }
 

@@ -33,7 +33,7 @@
         public function loadClass0($name) { /* Not reached */ }
         public function getResource($name) { return $this->moduleInfo; }
         public function getResourceAsStream($name) { /* Not reached */ }
-        public function toString() { return $this->getClassName()."(`".$this->moduleInfo."`)"; }
+        public function instanceId() { return "(`".$this->moduleInfo."`)"; }
       }'));
 
       $this->assertEquals($name, $m->getName());

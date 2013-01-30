@@ -79,7 +79,7 @@
         } else {
           xp::error('[bootstrap] Classpath element ['.$element.'] not found');
         }
-        isset(self::$delegates[$cl->hashCode()]) || self::registerLoader($cl, $before);
+        isset(self::$delegates[$cl->instanceId()]) || self::registerLoader($cl, $before);
       }
     }
     
@@ -201,15 +201,14 @@
      * @return  lang.IClassLoader the registered loader
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
-      $id= $l->hashCode();
       if ($l->providesResource('module.xp')) {
         $l= self::registerModule(self::declareModule($l));
       }
 
       if ($before) {
-        self::$delegates= array_merge(array($id => $l), self::$delegates);
+        self::$delegates= array_merge(array($l->instanceId() => $l), self::$delegates);
       } else {
-        self::$delegates[$id]= $l;
+        self::$delegates[$l->instanceId()]= $l;
       }
       return $l;
     }
@@ -221,15 +220,11 @@
      * @return  bool TRUE if the delegate was unregistered
      */
     public static function removeLoader(IClassLoader $l) {
-      if ($l instanceof Module) {
 
-        // FIXME: a) we should not be using hashCode(), b) self::removeModule() specialization
-        self::removeModule($l);
-        $id= $l->getClassLoader()->hashCode();
-      } else {
-        $id= $l->hashCode();
-      }
+      // FIXME: we should not be using self::removeModule() specialization
+      if ($l instanceof Module) self::removeModule($l);
 
+      $id= $l->instanceId();
       if (!isset(self::$delegates[$id])) return FALSE;
       unset(self::$delegates[$id]);
       return TRUE;
@@ -489,6 +484,15 @@
      */
     public function toString() {
       return $this->getClassName();
+    }
+
+    /**
+     * Returns a unique identifier for this class loader instance
+     *
+     * @return  string
+     */
+    public function instanceId() {
+      return '*';
     }
   }
 ?>

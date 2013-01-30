@@ -128,6 +128,15 @@
     }
 
     /**
+     * Returns a unique identifier for this class loader instance
+     *
+     * @return  string
+     */
+    public function instanceId() {
+      return $this->path;
+    }
+
+    /**
      * Creates a string representation
      *
      * @return  string

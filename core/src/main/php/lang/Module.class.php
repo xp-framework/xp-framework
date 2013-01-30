@@ -281,5 +281,14 @@
     public function hashCode() {
       return 'module@'.$this->name.$this->version;
     }
+
+    /**
+     * Returns a unique identifier for this class loader instance
+     *
+     * @return  string
+     */
+    public function instanceId() {
+      return $this->loader->instanceId();
+    }
   }
 ?>
