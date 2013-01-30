@@ -6,6 +6,11 @@ Version ?.?.?, released ????-??-??
 ----------------------------------
 Git commit: ?????
 
+
+Version 5.8.11, released 2013-01-30
+-----------------------------------
+Git commit: 87c014945c3447249345b50a0ebf77a471624e32
+
 RFCs
 ~~~~
 - Implemented RFC #0196: I/O Collections random access
