@@ -265,8 +265,7 @@
      */
     public function toString() {
       return sprintf(
-        '%s<%s%s, %s>',
-        $this->getClassName(),
+        'Module<%s%s, %s>',
         $this->name,
         NULL === $this->version ? '' : ':'.$this->version,
         $this->loader->toString()
