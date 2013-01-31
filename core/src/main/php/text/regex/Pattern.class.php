@@ -131,7 +131,7 @@
      *
      * @param   string replacement
      * @param   string input
-     * @return  text.regex.MatchResult
+     * @return  string
      * @throws  lang.FormatException
      */  
     public function replaceWith($replacement, $input) {
