@@ -133,7 +133,7 @@
     #[@test]
     public function string_representation() {
       $this->assertEquals(
-        'lang.Module<'.$this->moduleName().', '.$this->fixture->getClassLoader()->toString().'>',     // No version
+        'Module<'.$this->moduleName().', '.$this->fixture->getClassLoader()->toString().'>',     // No version
         $this->fixture->toString()
       );
     }

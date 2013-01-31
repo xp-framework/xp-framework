@@ -80,7 +80,7 @@
     #[@test]
     public function string_representation() {
       $this->assertEquals(
-        'lang.Module<'.$this->moduleName().':'.$this->moduleVersion().', '.$this->fixture->getClassLoader()->toString().'>',
+        'Module<'.$this->moduleName().':'.$this->moduleVersion().', '.$this->fixture->getClassLoader()->toString().'>',
         $this->fixture->toString()
       );
     }
