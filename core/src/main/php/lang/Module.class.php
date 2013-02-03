@@ -17,6 +17,7 @@
    */
   class Module extends Object implements IClassLoader {
     protected $lookup= array();
+    protected $delegates= array();
     protected $definition;
     protected $name;
     protected $version;
@@ -95,8 +96,8 @@
      */
     public function packageContents($package) {
       $contents= array();
-      foreach ($this->lookup as $l) {
-        $contents= array_merge($contents, $l[0]->packageContents($package));
+      foreach ($this->delegates as $l) {
+        $contents= array_merge($contents, $l->packageContents($package));
       }
       return $contents;
     }
@@ -109,8 +110,8 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
-      foreach ($this->lookup as $l) {
-        if ($l[0]->providesClass($class)) return $l[0]->loadClass($class);
+      foreach ($this->delegates as $l) {
+        if ($l->providesClass($class)) return $l->loadClass($class);
       }
       throw new ClassNotFoundException('Cannot find class '.$class);
     }
@@ -123,8 +124,8 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class) {
-      foreach ($this->lookup as $l) {
-        if ($l[0]->providesClass($class)) return $l[0]->loadClass0($class);
+      foreach ($this->delegates as $l) {
+        if ($l->providesClass($class)) return $l->loadClass0($class);
       }
       throw new ClassNotFoundException('Cannot find class '.$class);
     }
@@ -137,8 +138,8 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($string) {
-      foreach ($this->lookup as $l[0]) {
-        if ($l[0]->providesResource($string)) return $l[0]->getResource($string);
+      foreach ($this->delegates as $l) {
+        if ($l->providesResource($string)) return $l->getResource($string);
       }
       throw new ElementNotFoundException('Cannot find resource '.$string);
     }
@@ -151,8 +152,8 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($string) {
-      foreach ($this->lookup as $l) {
-        if ($l[0]->providesResource($string)) return $l[0]->getResourceAsStream($string);
+      foreach ($this->delegates as $l) {
+        if ($l->providesResource($string)) return $l->getResourceAsStream($string);
       }
       throw new ElementNotFoundException('Cannot find resource '.$string);
     }
@@ -240,11 +241,7 @@
      * @return  lang.IClassLoader[]
      */
     public function getDelegates() {
-      $r= array();
-      foreach ($this->lookup as $delegate) {
-        $r[]= $delegate[0];
-      }
-      return $r;
+      return $this->delegates;
     }
 
     /**
@@ -254,6 +251,7 @@
      * @param   string[] provides
      */
     public function addDelegate($l, $provides) {
+      $this->delegates[]= $l;
       foreach ($provides as $package) {
         $this->lookup[]= array($l, $package);
       }
