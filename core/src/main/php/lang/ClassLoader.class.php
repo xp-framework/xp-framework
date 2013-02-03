@@ -115,7 +115,7 @@
      *
      * @param   lang.IClassLoader l
      * @throws  lang.ClassFormatException
-     * @return  lang.reflect.Module
+     * @return  lang.Module
      */
     public static function declareModule($l) {
       if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?( extends ([^{ ]+))?( provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
@@ -172,9 +172,9 @@
     /**
      * Register module
      * 
-     * @param  lang.reflect.Module m
+     * @param  lang.Module m
      * @throws lang.IllegalStateException 
-     * @return lang.reflect.Module m
+     * @return lang.Module m
      */
     public static function registerModule($m) {
       $name= $m->getName();
@@ -189,7 +189,7 @@
     /**
      * Unregister a module
      * 
-     * @param  lang.reflect.Module m
+     * @param  lang.Module m
      */
     public static function removeModule($m) {
       unset(xp::$registry['modules'][$m->getName()]);
