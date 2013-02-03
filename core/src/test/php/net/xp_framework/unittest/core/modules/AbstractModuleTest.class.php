@@ -69,8 +69,8 @@
      *
      */
     #[@test]
-    public function modules_loader() {
-      $this->assertInstanceOf('lang.IClassLoader', $this->fixture->getClassLoader());
+    public function modules_delegates() {
+      $this->assertInstanceOf('lang.IClassLoader[]', $this->fixture->getDelegates());
     }
 
     /**
@@ -80,7 +80,7 @@
     #[@test]
     public function string_representation() {
       $this->assertEquals(
-        'Module<'.$this->moduleName().':'.$this->moduleVersion().', '.$this->fixture->getClassLoader()->toString().'>',
+        'Module<'.$this->moduleName().':'.$this->moduleVersion().">@[\n  **: ".this($this->fixture->getDelegates(), 0)->toString()."\n]>",
         $this->fixture->toString()
       );
     }
@@ -95,16 +95,6 @@
         'module@'.$this->moduleName().$this->moduleVersion(),
         $this->fixture->hashCode()
       );
-    }
-
-
-    /**
-     * Test equals()
-     *
-     */
-    #[@test]
-    public function differing_modules_not_equal() {
-      $this->assertNotEquals(Module::forName('core'), $this->fixture);
     }
   }
 ?>
