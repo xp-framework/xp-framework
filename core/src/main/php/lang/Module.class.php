@@ -16,7 +16,8 @@
    * @see   https://gist.github.com/4701515
    */
   class Module extends Object implements IClassLoader {
-    protected $lookup= array();
+    private $lookup= array();
+
     protected $delegates= array();
     protected $definition;
     protected $name;
