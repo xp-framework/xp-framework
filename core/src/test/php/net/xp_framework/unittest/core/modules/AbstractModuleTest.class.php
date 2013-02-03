@@ -81,7 +81,7 @@
     public function string_representation() {
       $v= $this->moduleVersion();
       $this->assertEquals(
-        'Module<'.$this->moduleName().(NULL === $v ? '' : ':'.$v).">@[\n  @".$this->fixture->getDelegate(NULL)->toString()."\n]",
+        'Module<'.$this->moduleName().(NULL === $v ? '' : ':'.$v).">@{\n  @".$this->fixture->getDelegate(NULL)->toString()."\n}",
         $this->fixture->toString()
       );
     }

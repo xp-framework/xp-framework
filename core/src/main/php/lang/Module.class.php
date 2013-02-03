@@ -317,7 +317,7 @@
         $lookup.= '  '.($name ? $name.' @' : '@').$delegate->toString()."\n";
       }
       return sprintf(
-        "Module<%s%s>@[\n%s]",
+        "Module<%s%s>@{\n%s}",
         $this->name,
         NULL === $this->version ? '' : ':'.$this->version,
         $lookup
