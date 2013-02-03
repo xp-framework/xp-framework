@@ -13,6 +13,7 @@
    * @test  xp://net.xp_framework.unittest.core.modules.ModuleTest
    * @test  xp://net.xp_framework.unittest.core.modules.ModuleWithStaticInitializerTest
    * @see   https://github.com/xp-framework/rfc/issues/220
+   * @see   https://gist.github.com/4701515
    */
   class Module extends Object implements IClassLoader {
     protected $lookup= array();
