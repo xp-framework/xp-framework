@@ -228,15 +228,6 @@
     }
 
     /**
-     * Retrieve class loader associated with this module
-     *
-     * @return  lang.IClassLoader
-     */
-    public function getClassLoader() {
-      /* FIXME - Remove this method */ return $this->loader;
-    }
-
-    /**
      * Retrieve class loaders associated with this module
      *
      * @return  lang.IClassLoader[]
