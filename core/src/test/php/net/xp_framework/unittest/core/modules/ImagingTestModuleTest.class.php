@@ -31,6 +31,15 @@
     }
 
     /**
+     * Return packages provided by module. Nulls 
+     *
+     * @return  string[]
+     */
+    protected function moduleProvides() {
+      return array('imaging.tests.unittest', 'imaging.tests.integration');
+    }
+
+    /**
      * Exchange fixture's class loader
      *
      * @param  lang.ClassLoader cl

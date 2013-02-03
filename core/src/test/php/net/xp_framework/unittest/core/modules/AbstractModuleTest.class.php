@@ -27,6 +27,15 @@
      * @return  string
      */
     protected abstract function moduleVersion();
+
+    /**
+     * Return packages provided by module. Nulls 
+     *
+     * @return  string[]
+     */
+    protected function moduleProvides() {
+      return array('**');
+    }
   
     /**
      * Register module path. This will actually trigger loading it.
@@ -81,7 +90,9 @@
     public function string_representation() {
       $v= $this->moduleVersion();
       $this->assertEquals(
-        'Module<'.$this->moduleName().(NULL === $v ? '' : ':'.$v).">@{\n  @".$this->fixture->getDelegate(NULL)->toString()."\n}",
+        'Module<'.$this->moduleName().(NULL === $v ? '' : ':'.$v).">@{\n".
+        '  '.implode(', ', $this->moduleProvides()).' @'.$this->fixture->getDelegate(NULL)->toString()."\n".
+        '}',
         $this->fixture->toString()
       );
     }

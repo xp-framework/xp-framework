@@ -314,7 +314,11 @@
     public function toString() {
       $lookup= '';
       foreach ($this->delegates as $name => $delegate) {
-        $lookup.= '  '.($name ? $name.' @' : '@').$delegate->toString()."\n";
+        $provides= '';
+        foreach ($this->lookup as $l) {
+          if ($l[0]->equals($delegate)) $provides.= ', '.($l[1] ? $l[1] : '**');
+        }
+        $lookup.= '  '.($name ? $name.': ' : '').substr($provides, 2).' @'.$delegate->toString()."\n";
       }
       return sprintf(
         "Module<%s%s>@{\n%s}",
