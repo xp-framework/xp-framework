@@ -37,7 +37,7 @@
      */
     protected function useClassLoader($cl) {
       $delegates= $this->fixture->getClass()->getField('delegates')->setAccessible(TRUE);
-      $delegates->set($this->fixture, array($cl));
+      $delegates->set($this->fixture, array(NULL => $cl));
     }
 
     /**
@@ -109,8 +109,8 @@
     public function string_representation() {
       $this->assertEquals(
         'Module<'.$this->moduleName().':'.$this->moduleVersion().">@[\n".
-        "  imaging.tests.unittest: ".this($this->fixture->getDelegates(), 0)->toString()."\n".
-        "  imaging.tests.integration: ".this($this->fixture->getDelegates(), 0)->toString()."\n".
+        "  imaging.tests.unittest: ".$this->fixture->getDelegate(NULL)->toString()."\n".
+        "  imaging.tests.integration: ".$this->fixture->getDelegate(NULL)->toString()."\n".
         "]",
         $this->fixture->toString()
       );

@@ -134,7 +134,7 @@
 
       // Check for a module to be extended
       if (isset($m[5]) && '' !== $m[5]) {
-        Module::forName($m[5])->addDelegate($l, $provides);
+        Module::forName($m[5])->addDelegate($m[1], $l, $provides);
         return NULL;
       }
 
@@ -165,7 +165,7 @@
       }
 
       $m= new Module($class, $m[1], $version);
-      $m->addDelegate($l, $provides);
+      $m->addDelegate(NULL, $l, $provides);
       return $m;
     }
 

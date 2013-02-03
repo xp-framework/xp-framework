@@ -1,0 +1,13 @@
+<?php
+/* This file is part of the XP Framework
+ *
+ * $Id$
+ */
+
+ /**
+  * The XP Frameworks's unittests
+  */
+  module tests extends xp-framework/core provides net.xp_framework.unittest, modules {
+
+  }
+?>

@@ -230,7 +230,21 @@
     /**
      * Retrieve class loaders associated with this module
      *
-     * @return  lang.IClassLoader[]
+     * @param   string name The delegate
+     * @return  lang.IClassLoader
+     * @throws  lang.IllegalArgumentException If no delegate with the specified name exists
+     */
+    public function getDelegate($name) {
+      if (!isset($this->delegates[$name])) {
+        throw new IllegalArgumentException('No delegate named "'.$name.'"');
+      }
+      return $this->delegates[$name];
+    }
+
+    /**
+     * Retrieve class loaders associated with this module
+     *
+     * @return  [:lang.IClassLoader]
      */
     public function getDelegates() {
       return $this->delegates;
@@ -239,11 +253,12 @@
     /**
      * Add a class loader to the class loader lookup associated with this module
      *
+     * @param   string name
      * @param   lang.IClassLoader l
      * @param   string[] provides
      */
-    public function addDelegate($l, $provides) {
-      $this->delegates[]= $l;
+    public function addDelegate($name, $l, $provides) {
+      $this->delegates[$name]= $l;
       foreach ($provides as $package) {
         $this->lookup[]= array($l, $package);
       }
@@ -324,7 +339,7 @@
      * @return  string
      */
     public function instanceId() {
-      return $this->lookup[0][0]->instanceId();
+      return $this->delegates[NULL]->instanceId();
     }
   }
 ?>

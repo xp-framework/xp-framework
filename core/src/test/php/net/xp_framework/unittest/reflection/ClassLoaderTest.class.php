@@ -169,7 +169,7 @@
     public function findThisClass() {
       $this->assertEquals(
         $this->getClass()->getClassLoader(),
-        ClassLoader::getDefault()->findClass($this->getClassName())
+        ClassLoader::getDefault()->findClass($this->getClassName())->getDelegate('tests')
       );
     }
 
