@@ -125,17 +125,5 @@
     public function throws_exception_for_non_existant_annotation_with_key() {
       $this->fixture->getAnnotation('non-existant', 'non-existant');
     }
-
-    /**
-     * Test toString()
-     *
-     */
-    #[@test]
-    public function string_representation() {
-      $this->assertEquals(
-        'Module<'.$this->moduleName().">@[\n  **: ".$this->fixture->getDelegate(NULL)->toString()."\n]",
-        $this->fixture->toString()
-      );
-    }
   }
 ?>

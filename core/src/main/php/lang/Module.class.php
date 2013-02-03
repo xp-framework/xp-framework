@@ -313,8 +313,8 @@
      */
     public function toString() {
       $lookup= '';
-      foreach ($this->lookup as $delegate) {
-        $lookup.= '  '.(isset($delegate[1]) ? $delegate[1] : '**').': '.$delegate[0]->toString()."\n";
+      foreach ($this->delegates as $name => $delegate) {
+        $lookup.= '  '.($name ? $name.' ' : '').'@'.$delegate->toString()."\n";
       }
       return sprintf(
         "Module<%s%s>@[\n%s]",

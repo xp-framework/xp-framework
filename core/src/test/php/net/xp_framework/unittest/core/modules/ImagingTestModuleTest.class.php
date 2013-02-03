@@ -99,21 +99,5 @@
       }'));
       $this->assertFalse($this->fixture->providesPackage('imaging.api'));
     }
-
-
-    /**
-     * Test toString()
-     *
-     */
-    #[@test]
-    public function string_representation() {
-      $this->assertEquals(
-        'Module<'.$this->moduleName().':'.$this->moduleVersion().">@[\n".
-        "  imaging.tests.unittest: ".$this->fixture->getDelegate(NULL)->toString()."\n".
-        "  imaging.tests.integration: ".$this->fixture->getDelegate(NULL)->toString()."\n".
-        "]",
-        $this->fixture->toString()
-      );
-    }
   }
 ?>
