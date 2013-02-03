@@ -31,12 +31,13 @@
     }
 
     /**
-     * Injects a class loader into the fixture
+     * Exchange fixture's class loader
      *
      * @param  lang.ClassLoader cl
      */
     protected function useClassLoader($cl) {
-      $this->fixture->getClass()->getField('loader')->setAccessible(TRUE)->set($this->fixture, $cl);
+      $delegates= $this->fixture->getClass()->getField('delegates')->setAccessible(TRUE);
+      $delegates->set($this->fixture, array($cl));
     }
 
     /**
@@ -97,6 +98,22 @@
         public function instanceId() { return "(test-fixture)"; }
       }'));
       $this->assertFalse($this->fixture->providesPackage('imaging.api'));
+    }
+
+
+    /**
+     * Test toString()
+     *
+     */
+    #[@test]
+    public function string_representation() {
+      $this->assertEquals(
+        'Module<'.$this->moduleName().':'.$this->moduleVersion().">@[\n".
+        "  imaging.tests.unittest: ".this($this->fixture->getDelegates(), 0)->toString()."\n".
+        "  imaging.tests.integration: ".this($this->fixture->getDelegates(), 0)->toString()."\n".
+        "]",
+        $this->fixture->toString()
+      );
     }
   }
 ?>
