@@ -15,7 +15,7 @@
    * @see   https://github.com/xp-framework/rfc/issues/220
    */
   class Module extends Object implements IClassLoader {
-    protected $delegates= array();
+    protected $lookup= array();
     protected $definition;
     protected $name;
     protected $version;
@@ -44,7 +44,7 @@
      * @return  bool
      */
     public function providesClass($class) {
-      foreach ($this->delegates as $l) {
+      foreach ($this->lookup as $l) {
         if (
           (isset($l[1]) || 0 === strncmp($class, $l[1], strlen($l[1]))) &&
           $l[0]->providesClass($class)
@@ -61,7 +61,7 @@
      */
     public function providesResource($filename) {
       $cmp= strtr($filename, '/', '.');
-      foreach ($this->delegates as $l) {
+      foreach ($this->lookup as $l) {
         if (
           (isset($l[1]) || 0 === strncmp($cmp, $l[1], strlen($l[1]))) &&
           $l[0]->providesResource($filename)
@@ -77,7 +77,7 @@
      * @return  bool
      */
     public function providesPackage($name) {
-      foreach ($this->delegates as $l) {
+      foreach ($this->lookup as $l) {
         if (
           (isset($l[1]) || 0 === strncmp($name, $l[1], strlen($l[1]))) &&
           $l[0]->providesPackage($name)
@@ -94,7 +94,7 @@
      */
     public function packageContents($package) {
       $contents= array();
-      foreach ($this->delegates as $l) {
+      foreach ($this->lookup as $l) {
         $contents= array_merge($contents, $l[0]->packageContents($package));
       }
       return $contents;
@@ -108,7 +108,7 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
-      foreach ($this->delegates as $l) {
+      foreach ($this->lookup as $l) {
         if ($l[0]->providesClass($class)) return $l[0]->loadClass($class);
       }
       throw new ClassNotFoundException('Cannot find class '.$class);
@@ -122,7 +122,7 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class) {
-      foreach ($this->delegates as $l) {
+      foreach ($this->lookup as $l) {
         if ($l[0]->providesClass($class)) return $l[0]->loadClass0($class);
       }
       throw new ClassNotFoundException('Cannot find class '.$class);
@@ -136,7 +136,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($string) {
-      foreach ($this->delegates as $l[0]) {
+      foreach ($this->lookup as $l[0]) {
         if ($l[0]->providesResource($string)) return $l[0]->getResource($string);
       }
       throw new ElementNotFoundException('Cannot find resource '.$string);
@@ -150,7 +150,7 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($string) {
-      foreach ($this->delegates as $l) {
+      foreach ($this->lookup as $l) {
         if ($l[0]->providesResource($string)) return $l[0]->getResourceAsStream($string);
       }
       throw new ElementNotFoundException('Cannot find resource '.$string);
@@ -240,21 +240,21 @@
      */
     public function getDelegates() {
       $r= array();
-      foreach ($this->delegates as $delegate) {
+      foreach ($this->lookup as $delegate) {
         $r[]= $delegate[0];
       }
       return $r;
     }
 
     /**
-     * Add a class loader to the class loader delegates associated with this module
+     * Add a class loader to the class loader lookup associated with this module
      *
      * @param   lang.IClassLoader l
      * @param   string[] provides
      */
     public function addDelegate($l, $provides) {
       foreach ($provides as $package) {
-        $this->delegates[]= array($l, $package);
+        $this->lookup[]= array($l, $package);
       }
     }
 
@@ -306,15 +306,15 @@
      * @return  string
      */
     public function toString() {
-      $delegates= '';
-      foreach ($this->delegates as $delegate) {
-        $delegates.= '  '.(isset($delegate[1]) ? $delegate[1] : '**').': '.$delegate[0]->toString()."\n";
+      $lookup= '';
+      foreach ($this->lookup as $delegate) {
+        $lookup.= '  '.(isset($delegate[1]) ? $delegate[1] : '**').': '.$delegate[0]->toString()."\n";
       }
       return sprintf(
         "Module<%s%s>@[\n%s]",
         $this->name,
         NULL === $this->version ? '' : ':'.$this->version,
-        $delegates
+        $lookup
       );
     }
 
@@ -333,7 +333,7 @@
      * @return  string
      */
     public function instanceId() {
-      return $this->delegates[0][0]->instanceId();
+      return $this->lookup[0][0]->instanceId();
     }
   }
 ?>
