@@ -308,7 +308,5 @@
     public function doesNotProvideAPackage() {
       $this->assertFalse($this->libraryLoader->providesPackage('net.xp_frame'));
     }
-    
-    
   }
 ?>
