@@ -140,6 +140,7 @@
 
       // Declare module
       $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
+      $version= isset($m[2]) && $m[2] !== '' ? $m[3] : NULL;
 
       // Remove PHP tags if existant
       if ('<?php' === substr($moduleInfo, 0, 5)) $moduleInfo= substr($moduleInfo, 5);
@@ -150,7 +151,7 @@
       $dyn= DynamicClassLoader::instanceFor('modules');
       $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends Object {'.
         'public static $name= "'.$m[1].'";'.
-        'public static $version= '.(isset($m[2]) ? '"'.$m[3].'"' : 'NULL').';'
+        'public static $version= '.var_export($version, TRUE).';'
       )));
       try {
         $class= $dyn->loadClass($module);
@@ -163,7 +164,7 @@
         $class->getMethod('initialize')->invoke(NULL, array($l));
       }
 
-      $m= new Module($class, $m[1], $m[2] === '' ? NULL : $m[3]);
+      $m= new Module($class, $m[1], $version);
       $m->addDelegate($l, $provides);
       return $m;
     }
