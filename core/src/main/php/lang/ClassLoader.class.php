@@ -59,7 +59,7 @@
       $dyn= DynamicClassLoader::instanceFor('modules');
       $dyn->setClassBytes('__CoreModule', 'class __CoreModule extends Object { }');
       xp::$registry['modules']= array(
-        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('__CoreModule'), NULL, 'core', xp::version())
+        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('__CoreModule'), array(NULL), 'core', xp::version())
       );
 
       // Scan include-path, setting up classloaders for each element
@@ -125,8 +125,30 @@
      * @return  lang.reflect.Module
      */
     public static function declareModule($l) {
-      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?\s(provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
+      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?( extends ([^{ ]+))?( provides ([^{ ]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
         raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
+      }
+
+      // Parse provided packages
+      if (isset($m[7])) {
+        $provides= array();
+        foreach (explode(',', $m[7]) as $package) {
+          $provides[]= trim($package);
+        }
+      } else {
+        $provides= array(NULL);
+      }
+
+      // Check for a module to be extended
+      if (isset($m[5]) && '' !== $m[5]) {
+        $parent= Module::forName($m[5]);
+        if ($provides) {
+          $f= $parent->getClass()->getField('provides')->setAccessible(TRUE);
+          $f->set($parent, array_merge((array)$f->get($parent), $provides));
+
+          $parent->addDelegate($l, $provides);
+        }
+        return NULL;
       }
 
       // Declare module
@@ -154,17 +176,7 @@
         $class->getMethod('initialize')->invoke(NULL, array($l));
       }
 
-      // Parse provided packages
-      if (isset($m[5])) {
-        $provides= array();
-        foreach (explode(',', $m[5]) as $package) {
-          $provides[]= trim($package);
-        }
-      } else {
-        $provides= NULL;
-      }
-
-      return new Module($l, $class, $provides, $m[1], isset($m[2]) ? $m[3] : NULL);
+      return new Module($l, $class, $provides, $m[1], $m[2] === '' ? NULL : $m[3]);
     }
 
     /**
@@ -202,7 +214,8 @@
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
       if ($l->providesResource('module.xp')) {
-        $l= self::registerModule(self::declareModule($l));
+        if (NULL === ($m= self::declareModule($l))) return;   // Extended module
+        $l= self::registerModule($m);
       }
 
       if ($before) {

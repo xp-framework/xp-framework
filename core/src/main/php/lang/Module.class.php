@@ -15,7 +15,7 @@
    * @see   https://github.com/xp-framework/rfc/issues/220
    */
   class Module extends Object implements IClassLoader {
-    protected $loader;
+    protected $delegates;
     protected $definition;
     protected $name;
     protected $provides;
@@ -30,8 +30,8 @@
      * @param  string name
      * @param  string version
      */
-    public function __construct($loader, $definition, $provides= NULL, $name= NULL, $version= NULL) {
-      $this->loader= $loader;
+    public function __construct($loader, $definition, array $provides, $name= NULL, $version= NULL) {
+      $this->delegates= array($loader);
       $this->definition= $definition;
       $this->provides= $provides;
 
@@ -49,9 +49,12 @@
      * @return  bool
      */
     public function providesClass($class) {
-      if (NULL === $this->provides) return $this->loader->providesClass($class);
       foreach ($this->provides as $package) {
-        if (0 === strncmp($class, $package, strlen($package))) return $this->loader->providesClass($class);
+        if (NULL === $package || 0 === strncmp($class, $package, strlen($package))) {
+          foreach ($this->delegates as $l) {
+            if ($l->providesClass($class)) return TRUE;
+          }
+        }
       }
       return FALSE;
     }
@@ -63,10 +66,13 @@
      * @return  bool
      */
     public function providesResource($filename) {
-      if (NULL === $this->provides) return $this->loader->providesResource($filename);
       $cmp= strtr($filename, '/', '.');
       foreach ($this->provides as $package) {
-        if (0 === strncmp($cmp, $package, strlen($package))) return $this->loader->providesResource($filename);
+        if (NULL === $package || 0 === strncmp($cmp, $package, strlen($package))) {
+          foreach ($this->delegates as $l) {
+            if ($l->providesResource($filename)) return TRUE;
+          }
+        }
       }
       return FALSE;
     }
@@ -78,9 +84,12 @@
      * @return  bool
      */
     public function providesPackage($name) {
-      if (NULL === $this->provides) return $this->loader->providesPackage($name);
       foreach ($this->provides as $package) {
-        if (0 === strncmp($name, $package, strlen($package))) return $this->loader->providesPackage($name);
+        if (NULL === $package || 0 === strncmp($name, $package, strlen($package))) {
+          foreach ($this->delegates as $l) {
+            if ($l->providesPackage($name)) return TRUE;
+          }
+        }
       }
       return FALSE;
     }
@@ -92,7 +101,11 @@
      * @return  string[] filenames
      */
     public function packageContents($package) {
-      return $this->loader->packageContents($package);
+      $contents= array();
+      foreach ($this->delegates as $l) {
+        $contents= array_merge($contents, $l->packageContents($package));
+      }
+      return $contents;
     }
 
     /**
@@ -103,7 +116,10 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
-      return $this->loader->loadClass($class);
+      foreach ($this->delegates as $l) {
+        if ($l->providesClass($class)) return $l->loadClass($class);
+      }
+      throw new ClassNotFoundException('Cannot find class '.$class);
     }
 
     /**
@@ -114,7 +130,10 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class) {
-      return $this->loader->loadClass0($class);
+      foreach ($this->delegates as $l) {
+        if ($l->providesClass($class)) return $l->loadClass0($class);
+      }
+      throw new ClassNotFoundException('Cannot find class '.$class);
     }
 
     /**
@@ -125,7 +144,10 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($string) {
-      return $this->loader->getResource($string);
+      foreach ($this->delegates as $l) {
+        if ($l->providesResource($string)) return $l->getResource($string);
+      }
+      throw new ElementNotFoundException('Cannot find resource '.$string);
     }
 
     /**
@@ -136,7 +158,10 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($string) {
-      return $this->loader->getResourceAsStream($string);
+      foreach ($this->delegates as $l) {
+        if ($l->providesResource($string)) return $l->getResourceAsStream($string);
+      }
+      throw new ElementNotFoundException('Cannot find resource '.$string);
     }
     
     /**
@@ -213,7 +238,25 @@
      * @return  lang.IClassLoader
      */
     public function getClassLoader() {
-      return $this->loader;
+      /* FIXME - Remove this method */ return $this->loader;
+    }
+
+    /**
+     * Retrieve class loaders associated with this module
+     *
+     * @return  lang.IClassLoader[]
+     */
+    public function getDelegates() {
+      return $this->delegates;
+    }
+
+    /**
+     * Add a class loader to the class loader delegates associated with this module
+     *
+     * @param   lang.IClassLoader l
+     */
+    public function addDelegate($l) {
+      $this->delegates[]= $l;
     }
 
     /**
@@ -264,11 +307,20 @@
      * @return  string
      */
     public function toString() {
+      $delegates= '';
+      foreach ($this->delegates as $l) {
+        $delegates.= '  '.$l->toString()."\n";
+      }
+      $provides= '';
+      foreach ($this->provides as $p) {
+        $provides.= ', '.(NULL === $p ? '**' : $p);
+      }
       return sprintf(
-        'Module<%s%s, %s>',
+        "Module<%s%s%s>@[\n%s]",
         $this->name,
         NULL === $this->version ? '' : ':'.$this->version,
-        $this->loader->toString()
+        $this->provides ? ' for '.substr($provides, 2) : '',
+        $delegates
       );
     }
 
@@ -287,7 +339,7 @@
      * @return  string
      */
     public function instanceId() {
-      return $this->loader->instanceId();
+      return $this->delegates[0]->instanceId();
     }
   }
 ?>
