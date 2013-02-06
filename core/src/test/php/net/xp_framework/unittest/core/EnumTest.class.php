@@ -8,7 +8,8 @@
     'unittest.TestCase',
     'net.xp_framework.unittest.core.Coin',
     'net.xp_framework.unittest.core.Profiling',
-    'net.xp_framework.unittest.core.Operation'
+    'net.xp_framework.unittest.core.Operation',
+    'net.xp_framework.unittest.core.WeekDay'
   );
 
   /**
@@ -446,6 +447,27 @@
         Profiling::values()
       );
       Profiling::$fixture= NULL;
+    }
+
+    /**
+     * Test Enum::values()
+     *
+     */
+    #[@test]
+    public function enumValuesMethodProvided() {
+      $this->assertEquals(
+        array(WeekDay::$MON, WeekDay::$TUE, WeekDay::$WED, WeekDay::$THU, WeekDay::$FRI, WeekDay::$SAT, WeekDay::$SUN),
+        WeekDay::values()
+      );
+    }
+
+    /**
+     * Test enum member initialization
+     *
+     */
+    #[@test]
+    public function enumValueInitializedToDeclaration() {
+      $this->assertEquals(1, WeekDay::$MON->ordinal());
     }
   }
 ?>
