@@ -30,13 +30,6 @@
     
     static function __static() {
       self::$instance= new self();
-      
-      // PHP versions < 5.2.1 only have these memory functions if
-      // compiled with --enable-memory-limit.
-      if (!function_exists('memory_get_usage')) { 
-        function memory_get_usage() { return -1; } 
-        function memory_get_peak_usage() { return -1; } 
-      }
     }
     
     /**
