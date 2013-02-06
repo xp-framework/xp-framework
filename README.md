@@ -13,9 +13,7 @@ $ cd [path]
 $ git clone git://github.com/xp-framework/xp-framework.git
 ```
 
-Directory structure
--------------------
-
+### Directory structure
 ```
 [path]/xp-framework
 `- core
@@ -31,8 +29,7 @@ Directory structure
          `- resources   # Test resources
 ```
 
-Runners
--------
+### Runners
 The entry point for software written in the XP Framework is not the PHP
 interpreter's CLI / web server API but either a command line runner or
 a specialized *web* entry point. These runners can be installed by using
@@ -43,8 +40,7 @@ $ cd ~/bin
 $ curl http://xp-framework.net/downloads/releases/bin/setup | php
 ```
 
-Using it
---------
+### Using it
 To use the the XP Framework development checkout, put the following
 in your `~/bin/xp.ini` file:
 
@@ -52,4 +48,8 @@ in your `~/bin/xp.ini` file:
 use=[path]/xp-framework/core
 ```
 
-Enjoy!
+**Enjoy!**
+
+Contributing
+------------
+To contribute, use the GitHub way - fork, hack, and submit a pull request!
