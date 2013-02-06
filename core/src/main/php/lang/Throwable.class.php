@@ -62,12 +62,11 @@
      *
      */
     public static function __callStatic($name, $args) {
+      $self= get_called_class();
       if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
+        return call_user_func_array(array($self, substr($name, 1)), $args);
       }
-      $t= debug_backtrace();
-      throw new Error('Call to undefined method '.$t[1]['class'].'::'.$name);
+      throw new Error('Call to undefined method '.$self.'::'.$name);
     }
 
     /**
