@@ -9,6 +9,7 @@ Git commit: ?????
 Heads up!
 ~~~~~~~~~
 - Minimum PHP version requirement is now PHP 5.3.0!
+  http://news.planet-xp.net/article/501/2013/02/06/
   (friebe)
 - Removed deprecated package mapping registration via packageMapping() in
   remote.protocol.Serializer
