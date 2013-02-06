@@ -1077,7 +1077,7 @@
             }
             if (T_VARIABLE === $tokens[$i][0]) {
               $parameters[]= $tokens[$i][1];
-            } else if ('=' ===$tokens[$i][0]) {
+            } else if ('=' === $tokens[$i][0]) {
               $p= sizeof($parameters)- 1;
               $default[$p]= '';
             } else if (T_WHITESPACE !== $tokens[$i][0] && isset($default[$p])) {
