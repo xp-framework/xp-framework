@@ -67,6 +67,8 @@ Bugfixes
 
 Features
 ~~~~~~~~
+- Simplified enum declaration - see pull request #229
+  (friebe)
 - Implemented rest of pull request #166 and changed all classes depending
   on xml.Node and xml.Tree to use new accessor methods.
   (kiesel)
