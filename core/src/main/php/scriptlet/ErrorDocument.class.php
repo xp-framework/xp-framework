@@ -66,7 +66,7 @@
       $this->language= $language;
       $this->message= $message;
       $this->filename= (empty($filename) 
-        ? dirname(__FILE__).'/static/'.$this->language.'/error'.$this->statusCode.'.html'
+        ? __DIR__.'/static/'.$this->language.'/error'.$this->statusCode.'.html'
         : $filename
       );
       
