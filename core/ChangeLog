@@ -8,6 +8,8 @@ Git commit: ?????
 
 Heads up!
 ~~~~~~~~~
+- Minimum PHP version requirement is now PHP 5.3.0!
+  (friebe)
 - Removed deprecated package mapping registration via packageMapping() in
   remote.protocol.Serializer
   (friebe)
@@ -33,6 +35,8 @@ Heads up!
 
 RFCs
 ~~~~
+- Implemented RFC #0265: Bump PHP requirement to PHP 5.3.0 minimum
+  (friebe)
 - Implemented RFC #0220: Modules - Classpath meta information & initializers
   (friebe)
 - Implemented RFC #0210: Separate contrib & framework versions
