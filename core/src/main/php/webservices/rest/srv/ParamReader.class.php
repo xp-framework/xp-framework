@@ -101,14 +101,5 @@
      *
      */
     public abstract function read($name, $type, $route, $request);
-
-    /**
-     * Values method
-     *
-     * @return lang.Enum[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
   }
 ?>

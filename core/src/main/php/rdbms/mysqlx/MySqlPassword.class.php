@@ -70,16 +70,6 @@
       }');
     }
     
-    
-    /**
-     * Returns all enum members
-     *
-     * @return  lang.Enum[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
-    
     /**
      * Scrambles a given password
      *
