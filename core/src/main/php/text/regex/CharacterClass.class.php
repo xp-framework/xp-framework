@@ -42,7 +42,7 @@
       self::$LOWER= new self(new Scanner('%[a-z]'));
       self::$PRINT= new self(new Scanner("%[\x20-\x7E]"));
       self::$PUNCT= new self(new Scanner('%[]!"#$%&\'()*+,./:;<=>?@[^_`{|}~-]'));
-      self::$SPACE= new self(new Scanner("%[ \t\r\n\v\f"));
+      self::$SPACE= new self(new Scanner("%[ \t\r\n\v\f]"));
       self::$UPPER= new self(new Scanner('%[A-Z]'));
       self::$XDIGIT= new self(new Scanner('%[0-9a-fA-F]'));
     }
