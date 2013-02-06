@@ -9,17 +9,17 @@
     'net.xp_framework.unittest.core.Coin',
     'net.xp_framework.unittest.core.Profiling',
     'net.xp_framework.unittest.core.Operation',
-    'net.xp_framework.unittest.core.WeekDay'
+    'net.xp_framework.unittest.core.Weekday'
   );
 
   /**
    * TestCase for enumerations
    *
-   * @see      xp://net.xp_framework.unittest.core.Coin
-   * @see      xp://net.xp_framework.unittest.core.Operation
-   * @see      xp://lang.Enum
-   * @see      http://xp-framework.net/rfc/0132
-   * @purpose  Unittest
+   * @see   xp://net.xp_framework.unittest.core.Coin
+   * @see   xp://net.xp_framework.unittest.core.Operation
+   * @see   xp://net.xp_framework.unittest.core.Weekday
+   * @see   xp://lang.Enum
+   * @see   http://xp-framework.net/rfc/0132
    */
   class EnumTest extends TestCase {
 
@@ -456,8 +456,8 @@
     #[@test]
     public function enumValuesMethodProvided() {
       $this->assertEquals(
-        array(WeekDay::$MON, WeekDay::$TUE, WeekDay::$WED, WeekDay::$THU, WeekDay::$FRI, WeekDay::$SAT, WeekDay::$SUN),
-        WeekDay::values()
+        array(Weekday::$MON, Weekday::$TUE, Weekday::$WED, Weekday::$THU, Weekday::$FRI, Weekday::$SAT, Weekday::$SUN),
+        Weekday::values()
       );
     }
 
@@ -467,7 +467,7 @@
      */
     #[@test]
     public function enumValueInitializedToDeclaration() {
-      $this->assertEquals(1, WeekDay::$MON->ordinal());
+      $this->assertEquals(1, Weekday::$MON->ordinal());
     }
   }
 ?>
