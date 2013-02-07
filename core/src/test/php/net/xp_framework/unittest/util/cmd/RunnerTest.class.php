@@ -906,7 +906,7 @@
       $this->runWith(array($command->getClassName()), '', array(new RegisteredPropertySource('debug', Properties::fromString('[section]
 key=overwritten_value'
         )),
-        new FilesystemPropertySource(dirname(__FILE__))
+        new FilesystemPropertySource(__DIR__)
       ));
       $this->assertEquals('', $this->err->getBytes());
       $this->assertEquals('Have overwritten_value', $this->out->getBytes());

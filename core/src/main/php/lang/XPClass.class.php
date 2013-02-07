@@ -65,11 +65,6 @@
     protected $_class= NULL;
     public $_reflect= NULL;
     
-    private static $DECLARING_CLASS_BUG= FALSE;
-    static function __static() {
-      self::$DECLARING_CLASS_BUG= version_compare(PHP_VERSION, '5.2.10', 'lt');
-    }
-      
     /**
      * Constructor
      *
@@ -180,16 +175,9 @@
      */
     public function getDeclaredMethods() {
       $list= array();
-      if (self::$DECLARING_CLASS_BUG) {
-        foreach ($this->_reflect->getMethods() as $m) {
-          if (0 == strncmp('__', $m->getName(), 2) || $m->getDeclaringClass()->getName() !== $this->_reflect->name) continue;
-          $list[]= new Method($this->_class, $m);
-        }
-      } else {
-        foreach ($this->_reflect->getMethods() as $m) {
-          if (0 == strncmp('__', $m->getName(), 2) || $m->class !== $this->_reflect->name) continue;
-          $list[]= new Method($this->_class, $m);
-        }
+      foreach ($this->_reflect->getMethods() as $m) {
+        if (0 == strncmp('__', $m->getName(), 2) || $m->class !== $this->_reflect->name) continue;
+        $list[]= new Method($this->_class, $m);
       }
       return $list;
     }
@@ -271,16 +259,9 @@
      */
     public function getDeclaredFields() {
       $list= array();
-      if (self::$DECLARING_CLASS_BUG) {
-        foreach ($this->_reflect->getProperties() as $p) {
-          if ('__id' === $p->name || $p->getDeclaringClass()->getName() !== $this->_reflect->name) continue;
-          $list[]= new Field($this->_class, $p);
-        }
-      } else {
-        foreach ($this->_reflect->getProperties() as $p) {
-          if ('__id' === $p->name || $p->class !== $this->_reflect->name) continue;
-          $list[]= new Field($this->_class, $p);
-        }
+      foreach ($this->_reflect->getProperties() as $p) {
+        if ('__id' === $p->name || $p->class !== $this->_reflect->name) continue;
+        $list[]= new Field($this->_class, $p);
       }
       return $list;
     }

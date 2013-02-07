@@ -19,12 +19,6 @@
     public
       $_reflect   = NULL;
 
-    protected static $SETACCESSIBLE_AVAILABLE;
-
-    static function __static() {
-      self::$SETACCESSIBLE_AVAILABLE= method_exists('ReflectionMethod', 'setAccessible');
-    }
-
     /**
      * Constructor
      *
@@ -169,7 +163,7 @@
         if ($m & MODIFIER_PROTECTED) {
           $allow= $t[1]['class'] === $decl || is_subclass_of($t[1]['class'], $decl);
         } else {
-          $allow= $t[1]['class'] === $decl && self::$SETACCESSIBLE_AVAILABLE;
+          $allow= $t[1]['class'] === $decl;
         }
         if (!$allow) {
           throw new IllegalAccessException(sprintf(
@@ -182,21 +176,9 @@
         }
       }
 
-      // For non-public methods: Use setAccessible() / invokeArgs() combination
-      // if possible, resort to __get() / __getStatic() workaround.
       try {
-        if ($public) {
-          return $this->_reflect->getValue($instance);
-        }
-
-        if (self::$SETACCESSIBLE_AVAILABLE) {
-          $this->_reflect->setAccessible(TRUE);
-          return $this->_reflect->getValue($instance);
-        } else if ($m & MODIFIER_STATIC) {
-          return call_user_func(array($this->_class, '__getStatic'), "\7".$this->_reflect->getName());
-        } else {
-          return $instance->__get("\7".$this->_reflect->getName());
-        }
+        $public || $this->_reflect->setAccessible(TRUE);
+        return $this->_reflect->getValue($instance);
       } catch (Throwable $e) {
         throw $e;
       } catch (Exception $e) {
@@ -233,7 +215,7 @@
         if ($m & MODIFIER_PROTECTED) {
           $allow= $t[1]['class'] === $decl || is_subclass_of($t[1]['class'], $decl);
         } else {
-          $allow= $t[1]['class'] === $decl && self::$SETACCESSIBLE_AVAILABLE;
+          $allow= $t[1]['class'] === $decl;
         }
         if (!$allow) {
           throw new IllegalAccessException(sprintf(
@@ -246,22 +228,9 @@
         }
       }
 
-      // For non-public methods: Use setAccessible() / invokeArgs() combination
-      // if possible, resort to __set() / __setStatic() workaround.
       try {
-        if ($public) {
-          $this->_reflect->setValue($instance, $value);
-          return;
-        }
-
-        if (self::$SETACCESSIBLE_AVAILABLE) {
-          $this->_reflect->setAccessible(TRUE);
-          $this->_reflect->setValue($instance, $value);
-        } else if ($m & MODIFIER_STATIC) {
-          call_user_func(array($this->_class, '__setStatic'), "\7".$this->_reflect->getName(), $value);
-        } else {
-          $instance->__set("\7".$this->_reflect->getName(), $value);
-        }
+        $public || $this->_reflect->setAccessible(TRUE);
+        $this->_reflect->setValue($instance, $value);
       } catch (Throwable $e) {
         throw $e;
       } catch (Exception $e) {
@@ -287,9 +256,6 @@
      * @return  lang.reflect.Routine this
      */
     public function setAccessible($flag) {
-      if (!self::$SETACCESSIBLE_AVAILABLE && $this->_reflect->isPrivate()) {
-        throw new IllegalAccessException('Cannot make private fields accessible');
-      }
       $this->accessible= $flag;
       return $this;
     }

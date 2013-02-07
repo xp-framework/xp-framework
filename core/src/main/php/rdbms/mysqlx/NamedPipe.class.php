@@ -58,13 +58,6 @@
     public function newInstance($socket= NULL) {
       if (NULL === $socket) $socket= $this->locate();
 
-      // Workaround for PHP bug #29005: "fopen() can't open NT named pipes on local
-      // computer". This seems to have been fixed in PHP 5.3 but we still support
-      // PHP 5.2.10+ in 5.8-SERIES and 5.9-SERIES.
-      if (0 === strncmp('\\\\.', $socket, 3)) {
-        $socket= '\\\\127.0.0.1'.substr($socket, 3);
-      }
-
       if (!($fd= fopen($socket, 'r+'))) {
         $e= new IOException('Cannot open pipe "'.$socket.'"');
         xp::gc(__FILE__);

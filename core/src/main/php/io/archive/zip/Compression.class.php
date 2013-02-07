@@ -85,15 +85,6 @@
     }
     
     /**
-     * Returns all enum members
-     *
-     * @return  lang.Enum[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
-
-    /**
      * Gets compression stream. Implemented in members.
      *
      * @param   io.streams.OutputStream out

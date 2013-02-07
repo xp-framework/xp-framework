@@ -15,10 +15,10 @@
    * PHP itself and will also rely on the API docs being consistent and 
    * correct.
    *
-   * @test     xp://net.xp_framework.unittest.reflection.ReflectionTest
-   * @see      xp://lang.reflect.Method
-   * @see      xp://lang.reflect.Constructor
-   * @purpose  Reflection
+   * @test  xp://net.xp_framework.unittest.reflection.ReflectionTest
+   * @see   xp://lang.reflect.Method
+   * @see   xp://lang.reflect.Constructor
+   * @see   http://de3.php.net/manual/en/reflectionmethod.setaccessible.php
    */
   class Routine extends Object {
     protected
@@ -28,7 +28,7 @@
     public 
       $_reflect   = NULL;
 
-    protected static $SETACCESSIBLE_AVAILABLE;
+    protected static $SETACCESSIBLE_AVAILABLE;    // 5.3.0 .. 5.3.2
 
     static function __static() {
       self::$SETACCESSIBLE_AVAILABLE= method_exists('ReflectionMethod', 'setAccessible');

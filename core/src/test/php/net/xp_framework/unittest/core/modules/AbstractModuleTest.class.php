@@ -43,7 +43,7 @@
      */
     public function setUp() {
       $this->fixture= ClassLoader::getDefault()->registerPath(
-        dirname(__FILE__).'/../../../../../modules/'.$this->moduleName()
+        __DIR__.'/../../../../../modules/'.$this->moduleName()
       );
     }
 

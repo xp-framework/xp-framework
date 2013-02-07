@@ -53,7 +53,7 @@
       
       $s= new Server('127.0.0.1', 0);
       try {
-        $protocol= new EascProtocol(new FileSystemScanner(dirname(__FILE__).DIRECTORY_SEPARATOR.'deploy'.DIRECTORY_SEPARATOR));
+        $protocol= new EascProtocol(new FileSystemScanner(__DIR__.DIRECTORY_SEPARATOR.'deploy'.DIRECTORY_SEPARATOR));
         $protocol->initialize();
 
         $s->setProtocol($protocol);
