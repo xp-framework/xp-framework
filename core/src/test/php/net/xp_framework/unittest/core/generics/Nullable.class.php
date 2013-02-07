@@ -34,9 +34,10 @@
     }
 
     /**
-     * Returns value
+     * Sets value
      *
      * @param   T value
+     * @return  self this instance
      */
     #[@generic(params= 'T')]
     public function set($value= NULL) {
