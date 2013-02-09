@@ -1,0 +1,22 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses('rdbms2.Driver', 'rdbms2.Drivers');
+
+  /**
+   * Pluggable database module
+   *
+   */
+  module rdbms(2.0) {
+    static function __static() {
+      rdbms2·Drivers::register('default', newinstance('rdbms2.Driver', array(), '{
+        public function newConnection($dsn) {
+          return "DefaultConnection<".$dsn.">";
+        }
+      }'));
+    }
+  }
+?>
