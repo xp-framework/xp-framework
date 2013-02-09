@@ -74,7 +74,7 @@
     }
 
     /**
-     * Test getClassLoader()
+     * Test getDelegate()
      *
      */
     #[@test]
@@ -83,7 +83,7 @@
     }
 
     /**
-     * Test getClassLoader()
+     * Test getDelegate()
      *
      */
     #[@test]

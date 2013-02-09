@@ -41,12 +41,30 @@
     }
 
     /**
-     * Test getClassLoader()
+     * Test getDelegate()
+     *
+     */
+    #[@test]
+    public function default_delegate() {
+      $this->assertInstanceOf('lang.IClassLoader', $this->parent->getDelegate(NULL));
+    }
+
+    /**
+     * Test getDelegate()
      *
      */
     #[@test]
     public function delegate_named_sybase_ct() {
       $this->assertInstanceOf('lang.IClassLoader', $this->parent->getDelegate('sybase_ct'));
+    }
+
+    /**
+     * Test getDelegate()
+     *
+     */
+    #[@test]
+    public function default_and_sybase_ct_delegates_are_different_delegates() {
+      $this->assertNotEquals($this->parent->getDelegate(NULL), $this->parent->getDelegate('sybase_ct'));
     }
 
     /**
