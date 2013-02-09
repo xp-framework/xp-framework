@@ -4,15 +4,15 @@
  * $Id$
  */
 
-  uses('rdbms.sybase_ct.Driver');
+  uses('rdbms2.sybase_ct.Driver', 'rdbms2.Drivers');
 
   /**
    * Sybase module
    *
    */
-  module sybase_ct(1.7.12RC1) {
+  module sybase_ct(2.7.12RC1) extends rdbms provides rbms2.sybase_ct {
     static function __static() {
-      rdbms·sybase_ct·Driver::$instance->registered= array(self::$name, self::$version);
+      rdbms2·Drivers::register(strtr(self::$name, '_', '+'), new rdbms2·sybase_ct·Driver(self::$version));
     }
   }
 ?>

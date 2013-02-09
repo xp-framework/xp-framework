@@ -11,6 +11,7 @@
   /**
    * Pluggable database module
    *
+   * @see   xp://net.xp_framework.unittest.core.modules.ModuleWithStaticInitializerTest
    */
   class rdbms2·Drivers extends Object {
     public static $impl= array();
