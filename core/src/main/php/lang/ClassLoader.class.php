@@ -132,12 +132,6 @@
         $provides= array(NULL);
       }
 
-      // Check for a module to be extended
-      if (isset($m[5]) && '' !== $m[5]) {
-        Module::forName($m[5])->addDelegate($m[1], $l, $provides);
-        return NULL;
-      }
-
       // Declare module
       $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
       $version= isset($m[2]) && $m[2] !== '' ? $m[3] : NULL;
@@ -162,6 +156,12 @@
       }
       if ($class->hasMethod('initialize')) {
         $class->getMethod('initialize')->invoke(NULL, array($l));
+      }
+
+      // Check for a module to be extended
+      if (isset($m[5]) && '' !== $m[5]) {
+        Module::forName($m[5])->addDelegate($m[1], $l, $provides);
+        return NULL;
       }
 
       $m= new Module($class, $m[1], $version);
