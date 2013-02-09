@@ -83,6 +83,15 @@
     }
 
     /**
+     * Test getClassLoader()
+     *
+     */
+    #[@test]
+    public function default_module_delegate() {
+      $this->assertInstanceOf('lang.IClassLoader', $this->fixture->getDelegate(NULL));
+    }
+
+    /**
      * Test toString()
      *
      */
