@@ -12,11 +12,21 @@
    */
   module rdbms(2.0) {
     static function __static() {
-      rdbms2·Drivers::register('default', newinstance('rdbms2.Driver', array(), '{
+      self::registerDriver('default', newinstance('rdbms2.Driver', array(), '{
         public function newConnection($dsn) {
           return "DefaultConnection<".$dsn.">";
         }
       }'));
+    }
+
+    /**
+     * Register a driver
+     * 
+     * @param  string name
+     * @param  rdbms2.Driver impl
+     */
+    protected static function registerDriver($name, rdbms2·Driver $impl) {
+      rdbms2·Drivers::register(strtr($name, '_', '+'), $impl);
     }
   }
 ?>

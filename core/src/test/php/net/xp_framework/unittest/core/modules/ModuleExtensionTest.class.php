@@ -28,8 +28,8 @@
      *
      */
     public function setUp() {
-      $this->parent= ClassLoader::getDefault()->registerPath($this->modulePath('rdbms'));
-      ClassLoader::getDefault()->registerPath($this->modulePath('sybase_ct'));
+      $this->parent= ClassLoader::registerPath($this->modulePath('rdbms'));
+      ClassLoader::registerPath($this->modulePath('sybase_ct'));
     }
 
     /**

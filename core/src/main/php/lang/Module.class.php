@@ -158,6 +158,15 @@
       }
       throw new ElementNotFoundException('Cannot find resource '.$string);
     }
+
+    /**
+     * Returns module definition
+     *
+     * @return  lang.XPClass
+     */
+    public function getDefinition() {
+      return $this->definition;
+    }
     
     /**
      * Returns module name

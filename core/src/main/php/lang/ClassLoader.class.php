@@ -132,8 +132,21 @@
         $provides= array(NULL);
       }
 
+      // Check for a module to be extended. If so, the definition will extend the 
+      // parent definition, e.g. `class __Child_ParentModule extends __ParentModule`.
+      // Otherwise, the parent class will be lang.Object.
+      if (isset($m[5]) && '' !== $m[5]) {
+        $parent= Module::forName($m[5]);
+        $base= $parent->getDefinition()->literal();
+        $kind= substr($base, 1);
+      } else {
+        $parent= NULL;
+        $base= 'Object';
+        $kind= 'Module';
+      }
+
       // Declare module
-      $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
+      $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).$kind;
       $version= isset($m[2]) && $m[2] !== '' ? $m[3] : NULL;
 
       // Remove PHP tags if existant
@@ -143,7 +156,7 @@
       // Load class and register
       array_unshift(self::$delegates, $l);
       $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends Object {'.
+      $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends '.$base.' {'.
         'public static $name= "'.$m[1].'";'.
         'public static $version= '.var_export($version, TRUE).';'
       )));
@@ -158,15 +171,15 @@
         $class->getMethod('initialize')->invoke(NULL, array($l));
       }
 
-      // Check for a module to be extended
-      if (isset($m[5]) && '' !== $m[5]) {
-        Module::forName($m[5])->addDelegate($m[1], $l, $provides);
-        return NULL;
+      // Return declared module, or NULL if this was an extension module
+      if (NULL !== $parent) {
+        $parent->addDelegate($m[1], $l, $provides);
+        $declared= NULL;
+      } else {
+        $declared= new Module($class, $m[1], $version);
+        $declared->addDelegate(NULL, $l, $provides);
       }
-
-      $m= new Module($class, $m[1], $version);
-      $m->addDelegate(NULL, $l, $provides);
-      return $m;
+      return $declared;
     }
 
     /**
