@@ -27,6 +27,15 @@
      * @return  string
      */
     protected abstract function moduleVersion();
+
+    /**
+     * Return packages provided by module. Nulls 
+     *
+     * @return  string[]
+     */
+    protected function moduleProvides() {
+      return array('**');
+    }
   
     /**
      * Register module path. This will actually trigger loading it.
@@ -65,12 +74,21 @@
     }
 
     /**
-     * Test getClassLoader()
+     * Test getDelegate()
      *
      */
     #[@test]
-    public function modules_loader() {
-      $this->assertInstanceOf('lang.IClassLoader', $this->fixture->getClassLoader());
+    public function modules_delegates() {
+      $this->assertInstanceOf('lang.IClassLoader[]', $this->fixture->getDelegates());
+    }
+
+    /**
+     * Test getDelegate()
+     *
+     */
+    #[@test]
+    public function default_module_delegate() {
+      $this->assertInstanceOf('lang.IClassLoader', $this->fixture->getDelegate(NULL));
     }
 
     /**
@@ -79,8 +97,11 @@
      */
     #[@test]
     public function string_representation() {
+      $v= $this->moduleVersion();
       $this->assertEquals(
-        'Module<'.$this->moduleName().':'.$this->moduleVersion().', '.$this->fixture->getClassLoader()->toString().'>',
+        'Module<'.$this->moduleName().(NULL === $v ? '' : ':'.$v).">@{\n".
+        '  '.implode(', ', $this->moduleProvides()).' @'.$this->fixture->getDelegate(NULL)->toString()."\n".
+        '}',
         $this->fixture->toString()
       );
     }
@@ -95,16 +116,6 @@
         'module@'.$this->moduleName().$this->moduleVersion(),
         $this->fixture->hashCode()
       );
-    }
-
-
-    /**
-     * Test equals()
-     *
-     */
-    #[@test]
-    public function differing_modules_not_equal() {
-      $this->assertNotEquals(Module::forName('core'), $this->fixture);
     }
   }
 ?>

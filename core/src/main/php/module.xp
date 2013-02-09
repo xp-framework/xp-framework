@@ -1,0 +1,13 @@
+<?php
+/* This file is part of the XP Framework
+ *
+ * $Id$
+ */
+
+ /**
+  * The XP Framework core
+  */
+  module xp-framework/core(5.9.0-dev) {
+
+  }
+?>
