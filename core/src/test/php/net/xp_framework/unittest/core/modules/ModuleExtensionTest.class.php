@@ -39,7 +39,16 @@
     public function tearDown() {
       ClassLoader::removeLoader($this->parent);
     }
-    
+
+    /**
+     * Test getClassLoader()
+     *
+     */
+    #[@test]
+    public function delegate_named_sybase_ct() {
+      $this->assertInstanceOf('lang.IClassLoader', $this->parent->getDelegate('sybase_ct'));
+    }
+
     /**
      * Test
      *
@@ -48,7 +57,7 @@
     public function initializer_has_run() {
       $class= $this->parent->loadClass('rdbms2.Drivers');
       $this->assertEquals(
-        'SybaseCtConnection<sybase+ct://user:password@host, 2.7.11RC2>',
+        'SybaseCtConnection<sybase+ct://user:password@host, 2.7.12RC1>',
         $class->getMethod('newConnection')->invoke(NULL, array('sybase+ct://user:password@host'))
       );
     }
