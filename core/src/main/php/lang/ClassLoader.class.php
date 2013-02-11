@@ -55,13 +55,6 @@
     static function __static() {
       xp::$registry['loader']= new self();
       
-      // Declare core module
-      $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes('__CoreModule', 'class __CoreModule extends Object { }');
-      xp::$registry['modules']= array(
-        'core' => new Module(xp::$registry['loader'], $dyn->loadClass('__CoreModule'), NULL, 'core', xp::version())
-      );
-
       // Scan include-path, setting up classloaders for each element
       foreach (xp::$registry['classpath'] as $element) {
         if ('!' === $element{0}) {
@@ -122,15 +115,39 @@
      *
      * @param   lang.IClassLoader l
      * @throws  lang.ClassFormatException
-     * @return  lang.reflect.Module
+     * @return  lang.Module
      */
     public static function declareModule($l) {
-      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?\s(provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
+      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?( extends ([^{ ]+))?( provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
         raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
       }
 
+      // Parse provided packages
+      if (isset($m[7])) {
+        $provides= array();
+        foreach (explode(',', $m[7]) as $package) {
+          $provides[]= trim($package);
+        }
+      } else {
+        $provides= array(NULL);
+      }
+
+      // Check for a module to be extended. If so, the definition will extend the 
+      // parent definition, e.g. `class __Child_ParentModule extends __ParentModule`.
+      // Otherwise, the parent class will be lang.Object.
+      if (isset($m[5]) && '' !== $m[5]) {
+        $parent= Module::forName($m[5]);
+        $base= $parent->getDefinition()->literal();
+        $kind= substr($base, 1);
+      } else {
+        $parent= NULL;
+        $base= 'Object';
+        $kind= 'Module';
+      }
+
       // Declare module
-      $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).'Module';
+      $module= '__'.ucfirst(strtr($m[1], '.-/', '·»¦')).$kind;
+      $version= isset($m[2]) && $m[2] !== '' ? $m[3] : NULL;
 
       // Remove PHP tags if existant
       if ('<?php' === substr($moduleInfo, 0, 5)) $moduleInfo= substr($moduleInfo, 5);
@@ -139,9 +156,9 @@
       // Load class and register
       array_unshift(self::$delegates, $l);
       $dyn= DynamicClassLoader::instanceFor('modules');
-      $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends Object {'.
+      $dyn->setClassBytes($module, strtr($moduleInfo, array($m[0] => 'class '.$module.' extends '.$base.' {'.
         'public static $name= "'.$m[1].'";'.
-        'public static $version= '.(isset($m[2]) ? '"'.$m[3].'"' : 'NULL').';'
+        'public static $version= '.var_export($version, TRUE).';'
       )));
       try {
         $class= $dyn->loadClass($module);
@@ -154,25 +171,23 @@
         $class->getMethod('initialize')->invoke(NULL, array($l));
       }
 
-      // Parse provided packages
-      if (isset($m[5])) {
-        $provides= array();
-        foreach (explode(',', $m[5]) as $package) {
-          $provides[]= trim($package);
-        }
+      // Return declared module, or NULL if this was an extension module
+      if (NULL !== $parent) {
+        $parent->addDelegate($m[1], $l, $provides);
+        $declared= NULL;
       } else {
-        $provides= NULL;
+        $declared= new Module($class, $m[1], $version);
+        $declared->addDelegate(NULL, $l, $provides);
       }
-
-      return new Module($l, $class, $provides, $m[1], isset($m[2]) ? $m[3] : NULL);
+      return $declared;
     }
 
     /**
      * Register module
      * 
-     * @param  lang.reflect.Module m
+     * @param  lang.Module m
      * @throws lang.IllegalStateException 
-     * @return lang.reflect.Module m
+     * @return lang.Module m
      */
     public static function registerModule($m) {
       $name= $m->getName();
@@ -187,7 +202,7 @@
     /**
      * Unregister a module
      * 
-     * @param  lang.reflect.Module m
+     * @param  lang.Module m
      */
     public static function removeModule($m) {
       unset(xp::$registry['modules'][$m->getName()]);
@@ -202,7 +217,8 @@
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
       if ($l->providesResource('module.xp')) {
-        $l= self::registerModule(self::declareModule($l));
+        if (NULL === ($m= self::declareModule($l))) return;   // Extended module
+        $l= self::registerModule($m);
       }
 
       if ($before) {

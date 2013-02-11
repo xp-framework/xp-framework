@@ -18,7 +18,7 @@
      * @return  string
      */
     protected function moduleName() {
-      return 'sybase_ct';
+      return 'rdbms';
     }
 
     /**
@@ -27,7 +27,7 @@
      * @return  string
      */
     protected function moduleVersion() {
-      return '1.7.12RC1';
+      return '2.0';
     }
 
     /**
@@ -36,7 +36,7 @@
      */
     #[@test]
     public function uses_has_executed() {
-      $this->assertTrue($this->fixture->providesClass('rdbms.sybase_ct.Driver'));
+      $this->assertTrue($this->fixture->providesClass('rdbms2.Driver'));
     }
     
     /**
@@ -45,10 +45,10 @@
      */
     #[@test]
     public function initializer_has_run() {
-      $class= $this->fixture->loadClass('rdbms.sybase_ct.Driver');
+      $class= $this->fixture->loadClass('rdbms2.Drivers');
       $this->assertEquals(
-        array($this->moduleName(), $this->moduleVersion()),
-        $class->getField('registered')->get($class->getField('instance')->get(NULL))
+        'DefaultConnection<default://user:password@host>',
+        $class->getMethod('newConnection')->invoke(NULL, array('default://user:password@host'))
       );
     }
   }

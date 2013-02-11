@@ -31,12 +31,22 @@
     }
 
     /**
-     * Injects a class loader into the fixture
+     * Return packages provided by module. Nulls 
+     *
+     * @return  string[]
+     */
+    protected function moduleProvides() {
+      return array('imaging.tests.unittest', 'imaging.tests.integration');
+    }
+
+    /**
+     * Exchange fixture's class loader
      *
      * @param  lang.ClassLoader cl
      */
     protected function useClassLoader($cl) {
-      $this->fixture->getClass()->getField('loader')->setAccessible(TRUE)->set($this->fixture, $cl);
+      $delegates= $this->fixture->getClass()->getField('delegates')->setAccessible(TRUE);
+      $delegates->set($this->fixture, array(NULL => $cl));
     }
 
     /**
