@@ -11,6 +11,18 @@
   define('MODIFIER_PROTECTED',  512);
   define('MODIFIER_PRIVATE',   1024);
 
+  // {{{ final class import
+  final class import {
+    function __construct($str) {
+      $class= xp::$registry['loader']->loadClass0($str);
+      $trace= debug_backtrace();
+      $scope= $trace[2]['args'][0];
+      xp::$registry['cl.inv'][]= function() use ($class, $scope) {
+        call_user_func(array($class, '__import'), xp::reflect($scope));
+      };
+    }
+  }
+  // }}}
 
   // {{{ final class xp
   final class xp {
