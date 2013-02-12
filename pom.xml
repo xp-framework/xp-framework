@@ -57,7 +57,7 @@
       <plugin>
         <groupId>net.xp-forge.maven.plugins</groupId>
         <artifactId>xp-maven-plugin</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.9</version>
         <extensions>true</extensions>
         <configuration>
 
