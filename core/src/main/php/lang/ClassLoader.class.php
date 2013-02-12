@@ -114,12 +114,13 @@
      * Declare a module
      *
      * @param   lang.IClassLoader l
+     * @param   string name
      * @throws  lang.ClassFormatException
      * @return  lang.Module
      */
-    public static function declareModule($l) {
-      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?( extends ([^{ ]+))?( provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource('module.xp')), $m)) {
-        raise('lang.ClassFormatException', 'Cannot parse module.xp in '.$l->toString());
+    public static function declareModule($l, $name= 'module.xp') {
+      if (!preg_match('/module ([a-z][a-z0-9_\/\.-]*)(\(([^\)]+)\))?( extends ([^{ ]+))?( provides ([^{]+))?\s*{/', $moduleInfo= trim($l->getResource($name)), $m)) {
+        raise('lang.ClassFormatException', 'Cannot parse '.$name.' in '.$l->toString());
       }
 
       // Parse provided packages
@@ -216,17 +217,38 @@
      * @return  lang.IClassLoader the registered loader
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
-      if ($l->providesResource('module.xp')) {
-        if (NULL === ($m= self::declareModule($l))) return;   // Extended module
-        $l= self::registerModule($m);
+      $registered= FALSE; $ml= NULL;
+
+      foreach ($l->packageContents(NULL) as $name) {
+        if ('.xp' === substr($name, -3)) {
+          if (NULL === ($m= self::declareModule($l, $name))) continue;   // Extended module
+          $ml= self::registerModule($m);
+
+          self::registerDelegate($ml, $before);
+          $registered= TRUE;
+        }
       }
 
+      if (!$registered) {
+        self::registerDelegate($l, $before);
+        return $l;
+      }
+
+      return $ml;
+    }
+
+    /**
+     * Register a delegate classloader
+     *
+     * @param   lang.IClassLoader l
+     * @param   bool before
+     */
+    protected static function registerDelegate(IClassLoader $l, $before) {
       if ($before) {
         self::$delegates= array_merge(array($l->instanceId() => $l), self::$delegates);
       } else {
         self::$delegates[$l->instanceId()]= $l;
       }
-      return $l;
     }
 
     /**
