@@ -124,6 +124,7 @@
                 <resource>
                   <directory>src/main/php/</directory>
                   <includes>
+                    <include>*.xp</include>
                     <include>**/package-info.xp</include>
                     <include>sapi/**/*.sapi.php</include>
                     <include>sapi/scriptlet/*.html</include>
@@ -131,6 +132,25 @@
                     <include>xp/scriptlet/xpws.txt</include>
                     <include>xp/scriptlet/*.html</include>
                     <include>xp/codegen/**/*.xsl</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>copy-test-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/test/php/</directory>
+                  <includes>
+                    <include>**/*.xp</include>
                   </includes>
                 </resource>
               </resources>
