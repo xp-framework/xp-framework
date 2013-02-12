@@ -217,7 +217,7 @@
      * @return  lang.IClassLoader the registered loader
      */
     public static function registerLoader(IClassLoader $l, $before= FALSE) {
-      $registered= FALSE;
+      $registered= FALSE; $ml= NULL;
 
       foreach ($l->packageContents(NULL) as $name) {
         if ('.xp' === substr($name, -3)) {
@@ -229,8 +229,12 @@
         }
       }
 
-      if (!$registered) self::registerDelegate($l, $before);
-      return $l;
+      if (!$registered) {
+        self::registerDelegate($l, $before);
+        return $l;
+      }
+
+      return $ml;
     }
 
     /**
