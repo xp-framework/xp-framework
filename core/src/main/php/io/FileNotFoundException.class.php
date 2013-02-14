@@ -16,11 +16,11 @@
     /**
      * Constructor
      *
-     * @param   string file
+     * @param   string msg The exception message
      * @param   lang.Throwable cause default NULL
      */
-    public function __construct($file, $cause= NULL) {
-      parent::__construct('File "'.$file.'" not found', $cause);
+    public function __construct($msg, $cause= NULL) {
+      parent::__construct($msg, $cause);
     }
   }
 ?>
