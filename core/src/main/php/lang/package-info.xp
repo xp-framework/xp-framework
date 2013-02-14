@@ -94,7 +94,7 @@
  *
  * lang.NullPointerException, lang.IllegalAccessException, 
  * lang.IllegalArgumentException, lang.IllegalStateException, 
- * lang.FormatException, lang.ClassNotFoundException, 
+ * lang.FormatException, lang.ClassNotFoundException
  * 
  * @see      http://news.xp-framework.net/article/11/2004/11/23/
  * @see      xp://lang.Throwable

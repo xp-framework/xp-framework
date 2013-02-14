@@ -26,7 +26,7 @@
      */
     protected function decode($xml) {
       return create(new XmlRpcDecoder())->decode(
-        Tree::fromString('<?xml version="1.0" encoding="utf-8"?><value>'.$xml.'</value>')->root
+        Tree::fromString('<?xml version="1.0" encoding="utf-8"?><value>'.$xml.'</value>')->root()
       );
     }
   

@@ -39,8 +39,8 @@
       parent::__construct('xsl:stylesheet');
       
       // Add attributes for root node
-      $this->root->setAttribute('version', $version);
-      $this->root->setAttribute('xmlns:xsl', XSL_NAMESPACE);
+      $this->root()->setAttribute('version', $version);
+      $this->root()->setAttribute('xmlns:xsl', XSL_NAMESPACE);
     }
 
     /**
@@ -54,7 +54,7 @@
      * @param   string encoding default NULL
      */
     public function setOutputMethod($method, $indent= TRUE, $encoding= NULL) {
-      with ($n= $this->root->addChild(new Node('xsl:output'))); {
+      with ($n= $this->root()->addChild(new Node('xsl:output'))); {
         $n->setAttribute('method', $method);
         $n->setAttribute('encoding', $encoding ? $encoding : $this->getEncoding());
         $n->setAttribute('indent', $indent ? 'yes' : 'no');
@@ -84,7 +84,7 @@
      * @return  xml.Node the added node
      */
     public function addImport($import) {
-      with ($n= $this->root->addChild(new Node('xsl:import'))); {
+      with ($n= $this->root()->addChild(new Node('xsl:import'))); {
         $n->setAttribute('href', $import);
       }
       return $n;
@@ -108,7 +108,7 @@
      * @return  xml.Node the added node
      */
     public function addInclude($include) {
-      with ($n= $this->root->addChild(new Node('xsl:include'))); {
+      with ($n= $this->root()->addChild(new Node('xsl:include'))); {
         $n->setAttribute('href', $include);
       }
       return $n;
@@ -132,7 +132,7 @@
      * @return  xml.Node the added node
      */
     public function addParam($name) {
-      with ($n= $this->root->addChild(new Node('xsl:param'))); {
+      with ($n= $this->root()->addChild(new Node('xsl:param'))); {
         $n->setAttribute('name', $name);
       }
       return $n;
@@ -156,7 +156,7 @@
      * @return  xml.Node the added node
      */
     public function addVariable($name) {
-      with ($n= $this->root->addChild(new Node('xsl:variable'))); {
+      with ($n= $this->root()->addChild(new Node('xsl:variable'))); {
         $n->setAttribute('name', $name);
       }
       return $n;
@@ -180,7 +180,7 @@
      * @return  xml.XslTemplate the added template
      */
     public function addTemplate(XslTemplate $t) {
-      $this->root->addChild($t);
+      $this->root()->addChild($t);
       return $t;
     }
 
@@ -191,7 +191,7 @@
      * @return  xml.Stylesheet this
      */
     public function withTemplate(XslTemplate $t) {
-      $this->root->addChild($t);
+      $this->root()->addChild($t);
       return $this;
     }
     

@@ -198,7 +198,7 @@
     #[@test]
     public function setXSLTree() {
       $t= new Tree('xsl:stylesheet');
-      $t->root->setAttribute('xmlns:xsl', 'http://www.w3.org/1999/XSL/Transform');
+      $t->root()->setAttribute('xmlns:xsl', 'http://www.w3.org/1999/XSL/Transform');
       $this->processor->setXSLTree($t);
     }
 
@@ -227,7 +227,7 @@
      */
     #[@test]
     public function baseAccessors() {
-      $path= rtrim(realpath(dirname(__FILE__).'/../xml/'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+      $path= rtrim(realpath(__DIR__.'/../xml/'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
       $this->processor->setBase($path);
       $this->assertEquals($path, $this->processor->getBase());
     }
@@ -238,7 +238,7 @@
      */
     #[@test]
     public function setBaseAddsTrailingDirectorySeparator() {
-      $path= rtrim(realpath(dirname(__FILE__).'/../xml/'), DIRECTORY_SEPARATOR);
+      $path= rtrim(realpath(__DIR__.'/../xml/'), DIRECTORY_SEPARATOR);
       $this->processor->setBase($path);
       $this->assertEquals($path.DIRECTORY_SEPARATOR, $this->processor->getBase());
     }

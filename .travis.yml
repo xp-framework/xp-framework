@@ -4,7 +4,6 @@
 language: php
 
 php:
-  - 5.2
   - 5.3
   - 5.4
   - 5.5
@@ -16,4 +15,4 @@ before_script:
   - echo "date.timezone=Europe/Berlin" >> xp.ini
 
 script:
-  - (EXCD=0; for i in core/src/test/resources/*.ini; do echo "---> $i"; ./unittest $i; RES=$?; if [ $RES -ne 0 ]; then EXCD=$RES; fi; done; exit $EXCD;)
+  - (EXCD=0; for i in core/src/test/config/unittest/*.ini; do echo "---> $i"; ./unittest $i; RES=$?; if [ $RES -ne 0 ]; then EXCD=$RES; fi; done; exit $EXCD;)

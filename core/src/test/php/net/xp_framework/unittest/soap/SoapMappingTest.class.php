@@ -87,11 +87,11 @@
       $body= $msg->_bodyElement();
       $this->assertEquals(
         'http://net.xp_framework/soap/types', 
-        $body->children[0]->children[0]->attribute['xmlns:ns1']
+        $body->nodeAt(0)->nodeAt(0)->getAttribute('xmlns:ns1')
       );
       $this->assertEquals(
         'ns1:SoapTestType', 
-        $body->children[0]->children[0]->attribute['xsi:type']
+        $body->nodeAt(0)->nodeAt(0)->getAttribute('xsi:type')
       );
     }
   }

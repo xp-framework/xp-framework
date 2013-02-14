@@ -1,0 +1,18 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$
+ */
+
+  uses('rdbms2.sybase_ct.Driver');
+
+  /**
+   * Sybase module
+   *
+   */
+  module sybase_ct(2.7.12RC1) extends rdbms provides rbms2.sybase_ct {
+    static function __static() {
+      parent::registerDriver(self::$name, new rdbms2·sybase_ct·Driver(self::$version));
+    }
+  }
+?>

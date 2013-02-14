@@ -74,6 +74,7 @@
     /**
      * Read from a file
      *
+     * @deprecated  Use img.io.MetaDataReader instead
      * @param   io.File file
      * @param   var default default void what should be returned in case no data is found
      * @return  img.util.ExifData
@@ -93,6 +94,7 @@
           'Cannot get EXIF information from '.$file->getURI().' (no APP1 marker)' 
         );
       }
+
       if (!($info= exif_read_data($file->getURI(), 'COMPUTED,FILE,IFD0,EXIF,COMMENT,MAKERNOTE', TRUE, FALSE))) {
         throw new FormatException('Cannot get EXIF information from '.$file->getURI());
       }
@@ -889,6 +891,36 @@
         $this->whitebalance,
         $this->isoSpeedRatings,
         $this->focalLength
+      );
+    }
+
+    /**
+     * Returns whether another ExifData instance is equal to this
+     *
+     * @param  var cmp
+     * @return bool
+     */
+    public function equals($cmp) {
+      return (
+        $cmp instanceof self &&
+        $cmp->width === $this->width &&
+        $cmp->height === $this->height &&
+        $cmp->mimeType === $this->mimeType &&
+        $cmp->fileName === $this->fileName &&
+        $cmp->fileSize === $this->fileSize &&
+        $cmp->make === $this->make &&
+        $cmp->model === $this->model &&
+        $cmp->software === $this->software &&
+        $cmp->flash === $this->flash &&
+        $cmp->orientation === $this->orientation &&
+        (NULL === $cmp->dateTime ? NULL === $this->dateTime : $cmp->dateTime->equals($this->dateTime)) &&
+        $cmp->apertureFNumber === $this->apertureFNumber &&
+        $cmp->exposureTime === $this->exposureTime &&
+        $cmp->exposureProgram === $this->exposureProgram &&
+        $cmp->meteringMode === $this->meteringMode &&
+        $cmp->whitebalance === $this->whitebalance &&
+        $cmp->isoSpeedRatings === $this->isoSpeedRatings &&
+        $cmp->focalLength === $this->focalLength
       );
     }
   }

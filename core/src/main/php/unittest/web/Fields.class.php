@@ -51,15 +51,6 @@
     public abstract function newInstance($test, $node);
 
     /**
-     * Return all values
-     *
-     * @return  lang.Enum[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
-
-    /**
      * Return a field type
      *
      * @return  unittest.web.Fields

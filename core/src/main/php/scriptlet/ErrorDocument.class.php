@@ -3,7 +3,7 @@
  *
  * $Id$
  */
-  uses('io.File');
+  uses('io.FileUtil', 'io.File');
   
   /**
    * Base class representing an error document
@@ -66,7 +66,7 @@
       $this->language= $language;
       $this->message= $message;
       $this->filename= (empty($filename) 
-        ? dirname(__FILE__).'/static/'.$this->language.'/error'.$this->statusCode.'.html'
+        ? __DIR__.'/static/'.$this->language.'/error'.$this->statusCode.'.html'
         : $filename
       );
       
@@ -78,11 +78,8 @@
      * @return  string content
      */
     public function getContent() {
-      $f= new File($this->filename);
       try {
-        $f->open(FILE_MODE_READ);
-        $contents= $f->read($f->size());
-        $f->close();
+        $contents= FileUtil::getContents(new File($this->filename));
       } catch (Exception $e) {
         $this->message.= $e->toString();
         $contents= '<xp:value-of select="reason"/>';

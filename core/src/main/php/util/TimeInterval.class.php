@@ -29,14 +29,5 @@
       self::$MINUTES= new self(4, 'minutes');
       self::$SECONDS= new self(5, 'seconds');
     }
-    
-    /**
-     * Retrieve enum members
-     *
-     * @return  util.TimeInterval[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
   }
 ?>

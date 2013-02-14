@@ -42,10 +42,10 @@
      */    
     public static function createFromDatabase($adapter, $database) {
       $g= new self();
-      $g->doc->root->setAttribute('created_at', date('r'));
-      $g->doc->root->setAttribute('created_by', System::getProperty('user.name'));
+      $g->doc->root()->setAttribute('created_at', date('r'));
+      $g->doc->root()->setAttribute('created_by', System::getProperty('user.name'));
       
-      $g->doc->root->addChild(new Node('database', NULL, array(
+      $g->doc->root()->addChild(new Node('database', NULL, array(
         'database' => $database
       )));
       
@@ -61,7 +61,7 @@
     public function getTree() {
       foreach ($this->tables as $t) {
         $constKeyList= array();
-        $tn= $this->doc->root->children[0]->addChild(new Node('table', NULL, array(
+        $tn= $this->doc->root()->nodeAt(0)->addChild(new Node('table', NULL, array(
           'name' => $t->name,
         )));
 

@@ -7,6 +7,7 @@
   uses(
     'unittest.TestCase',
     'util.PropertyManager',
+    'util.ResourcePropertySource',
     'lang.ClassLoader'
   );
 
@@ -16,6 +17,7 @@
    * @see   xp://util.PropertyManager
    */
   class PropertyManagerTest extends TestCase {
+    const RESOURCE_PATH = 'net/xp_framework/unittest/util/';
 
     /**
      * Creates a fixrture
@@ -40,7 +42,7 @@
      */
     private function preconfigured() {
       $f= $this->fixture();
-      $f->configure(dirname(__FILE__));
+      $f->appendSource(new ResourcePropertySource(self::RESOURCE_PATH));
       return $f;
     }
 
@@ -86,10 +88,7 @@
      */
     #[@test]
     public function hasConfiguredSourceProperties() {
-      $fixture= $this->fixture();
-      $fixture->configure(dirname(__FILE__));
-      
-      $this->assertTrue($fixture->hasProperties('example'));
+      $this->assertTrue($this->preconfigured()->hasProperties('example'));
     }
     
     /**
@@ -162,7 +161,7 @@
      */
     #[@test]
     public function hasSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $this->assertFalse($fixture->hasSource($path));
     }
@@ -173,7 +172,7 @@
      */
     #[@test]
     public function hasAppendedSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $fixture->appendSource($path);
       $this->assertTrue($fixture->hasSource($path));
@@ -185,7 +184,7 @@
      */
     #[@test]
     public function removeSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $this->assertFalse($fixture->removeSource($path));
     }
@@ -196,7 +195,7 @@
      */
     #[@test]
     public function removeAppendedSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $fixture->appendSource($path);
       $this->assertTrue($fixture->removeSource($path));
@@ -209,9 +208,8 @@
      */
     #[@test]
     public function getPropertiesFromSecondSource() {
-      $fixture= $this->fixture();
-      $fixture->configure(dirname(__FILE__).'/..');
-      $fixture->appendSource(new FilesystemPropertySource(dirname(__FILE__).'/.'));
+      $fixture= $this->preconfigured();
+      $fixture->appendSource(new ResourcePropertySource('net/xp_framework/unittest/'));
 
       $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
     }
@@ -255,8 +253,7 @@
      */
     #[@test]
     public function getCompositeProperties() {
-      $fixture= $this->fixture();
-      $fixture->configure(dirname(__FILE__));
+      $fixture= $this->preconfigured();
 
       // Register new Properties, with some value in existing section
       $fixture->register('example', Properties::fromString('[section]
@@ -279,8 +276,7 @@ dynamic-value=whatever'));
      */
     #[@test]
     public function memoryPropertiesAlwaysHavePrecendenceInCompositeProperties() {
-      $fixture= $this->fixture();
-      $fixture->configure(dirname(__FILE__));
+      $fixture= $this->preconfigured();
 
       $this->assertEquals('value', $fixture->getProperties('example')->readString('section', 'key'));
 
@@ -296,8 +292,8 @@ key="overwritten value"'));
     #[@test]
     public function appendingSourcesOnlyAddsNewSources() {
       $fixture= $this->fixture();
-      $fixture->appendSource(new FilesystemPropertySource(dirname(__FILE__)));
-      $fixture->appendSource(new FilesystemPropertySource(dirname(__FILE__)));
+      $fixture->appendSource(new ResourcePropertySource(self::RESOURCE_PATH));
+      $fixture->appendSource(new ResourcePropertySource(self::RESOURCE_PATH));
 
       $this->assertInstanceOf('util.Properties', $fixture->getProperties('example'));
     }

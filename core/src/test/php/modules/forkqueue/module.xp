@@ -1,0 +1,15 @@
+<?php
+/* This file is part of the XP framework
+ *
+ * $Id$ 
+ */
+
+  /**
+   * A forked queue for parallel processing
+   *
+   */
+  #[@author(id= 1, name= 'timm')]
+  module forkqueue {
+  
+  }
+?>

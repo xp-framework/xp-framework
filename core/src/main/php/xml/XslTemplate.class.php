@@ -32,7 +32,7 @@
      * @return  xml.XslTemplate this
      */
     public function matching($expression) {
-      $this->attribute['match']= $expression;
+      $this->setAttribute('match', $expression);
       return $this;
     }
 
@@ -43,7 +43,7 @@
      * @return  xml.XslTemplate this
      */
     public function named($name) {
-      $this->attribute['name']= $name;
+      $this->setAttribute('name', $name);
       return $this;
     }
   }

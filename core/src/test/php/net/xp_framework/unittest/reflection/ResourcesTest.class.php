@@ -13,11 +13,25 @@
    * @purpose  Unittest
    */
   class ResourcesTest extends TestCase {
+    private $cl= NULL;
 
-    static function __static() {
-      ClassLoader::registerLoader(new ArchiveClassLoader(
-        new Archive(new File(dirname(__FILE__).'/lib/three-and-four.xar'))
+    /**
+     * Sets up class loader
+     */
+    public function setUp() {
+      $this->cl= ClassLoader::registerLoader(new ArchiveClassLoader(new Archive($this
+        ->getClass()
+        ->getPackage()
+        ->getPackage('lib')
+        ->getResourceAsStream('three-and-four.xar'))
       ));
+    }
+
+    /**
+     * Removes class loader
+     */
+    public function tearDown() {
+      ClassLoader::removeLoader($this->cl);
     }
 
     /**

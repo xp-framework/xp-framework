@@ -4,7 +4,7 @@
  * $Id$ 
  */
  
-  uses('security.checksum.Checksum');
+  uses('security.checksum.Checksum', 'io.FileUtil');
   
   /**
    * HMAC_MD5 checksum
@@ -54,10 +54,7 @@
      * @return  security.checksum.HMAC_MD5
      */
     public static function fromFile($file, $key= NULL) {
-      $file->open(FILE_MODE_READ);
-      $str= $file->read($file->size());
-      $file->close();
-      return new HMAC_MD5(HMAC_MD5::hash($str, $key));
+      return new HMAC_MD5(HMAC_MD5::hash(FileUtil::getContents($file), $key));
     }
   }
 ?>
