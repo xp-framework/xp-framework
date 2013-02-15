@@ -43,7 +43,8 @@
      * @return  bool
      */
     public function providesClass($class) {
-      return is_file($this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT);
+      $f= $this->path.strtr($class, '.', DIRECTORY_SEPARATOR).xp::CLASS_FILE_EXT;
+      return $f === realpath($f);
     }
     
     /**
