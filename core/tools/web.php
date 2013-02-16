@@ -80,7 +80,7 @@
   set_include_path(rtrim(scanpath($paths, $webroot), PATH_SEPARATOR));
   
   // Bootstrap 
-  if (!include(dirname(__FILE__).DIRECTORY_SEPARATOR.'lang.base.php')) {
+  if (!include(__DIR__.DIRECTORY_SEPARATOR.'lang.base.php')) {
     trigger_error('[bootstrap] Cannot determine boot class path', E_USER_ERROR);
     exit(0x3d);
   }

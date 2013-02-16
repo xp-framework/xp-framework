@@ -55,14 +55,5 @@
     public function newInstance(OutputStreamWriter $out) {
       return $this->getImplementation()->newInstance($out);
     }
-    
-    /**
-     * Returns all enum members
-     *
-     * @return  lang.Enum[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
   }
 ?>

@@ -8,17 +8,18 @@
     'unittest.TestCase',
     'net.xp_framework.unittest.core.Coin',
     'net.xp_framework.unittest.core.Profiling',
-    'net.xp_framework.unittest.core.Operation'
+    'net.xp_framework.unittest.core.Operation',
+    'net.xp_framework.unittest.core.Weekday'
   );
 
   /**
    * TestCase for enumerations
    *
-   * @see      xp://net.xp_framework.unittest.core.Coin
-   * @see      xp://net.xp_framework.unittest.core.Operation
-   * @see      xp://lang.Enum
-   * @see      http://xp-framework.net/rfc/0132
-   * @purpose  Unittest
+   * @see   xp://net.xp_framework.unittest.core.Coin
+   * @see   xp://net.xp_framework.unittest.core.Operation
+   * @see   xp://net.xp_framework.unittest.core.Weekday
+   * @see   xp://lang.Enum
+   * @see   http://xp-framework.net/rfc/0132
    */
   class EnumTest extends TestCase {
 
@@ -446,6 +447,27 @@
         Profiling::values()
       );
       Profiling::$fixture= NULL;
+    }
+
+    /**
+     * Test Enum::values()
+     *
+     */
+    #[@test]
+    public function enumValuesMethodProvided() {
+      $this->assertEquals(
+        array(Weekday::$MON, Weekday::$TUE, Weekday::$WED, Weekday::$THU, Weekday::$FRI, Weekday::$SAT, Weekday::$SUN),
+        Weekday::values()
+      );
+    }
+
+    /**
+     * Test enum member initialization
+     *
+     */
+    #[@test]
+    public function enumValueInitializedToDeclaration() {
+      $this->assertEquals(1, Weekday::$MON->ordinal());
     }
   }
 ?>

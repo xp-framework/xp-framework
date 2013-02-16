@@ -169,7 +169,7 @@
     public function findThisClass() {
       $this->assertEquals(
         $this->getClass()->getClassLoader(),
-        ClassLoader::getDefault()->findClass($this->getClassName())
+        ClassLoader::getDefault()->findClass($this->getClassName())->getDelegate('tests')
       );
     }
 
@@ -308,7 +308,5 @@
     public function doesNotProvideAPackage() {
       $this->assertFalse($this->libraryLoader->providesPackage('net.xp_frame'));
     }
-    
-    
   }
 ?>

@@ -73,7 +73,7 @@
      */
     #[@test]
     public function differentFoldersAreNotEqual() {
-      $this->assertNotEquals(new Folder($this->temp), new Folder(dirname(__FILE__)));
+      $this->assertNotEquals(new Folder($this->temp), new Folder(__DIR__));
     }
 
     /**

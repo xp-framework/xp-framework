@@ -142,7 +142,13 @@
      * @return  string
      */
     public function toString() {
-      return str_replace('ClassLoader', 'CL', $this->getClass()->getSimpleName()).'<'.$this->path.'>';
+      $segments= explode(DIRECTORY_SEPARATOR, $this->path);
+      if (sizeof($segments) > 6) {
+        $path= '...'.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, array_slice($segments, -6));
+      } else {
+        $path= $this->path;
+      }
+      return str_replace('ClassLoader', 'CL', $this->getClass()->getSimpleName()).'<'.$path.'>';
     }
   }
 ?>

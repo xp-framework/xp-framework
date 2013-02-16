@@ -213,15 +213,6 @@
       self::$ZMK= new self(169, 'ZMK');
       self::$ZWD= new self(170, 'ZWD');
     }
-
-    /**
-     * Returns all enum members
-     *
-     * @return  lang.Enum[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
     
     /**
      * Gets the currency instance for a given currency code

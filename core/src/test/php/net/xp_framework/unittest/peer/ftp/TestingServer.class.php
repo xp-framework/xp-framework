@@ -40,7 +40,7 @@
      * @param   string[] args
      */
     public static function main(array $args) {
-      $stor= new FilesystemStorage(dirname(__FILE__).DIRECTORY_SEPARATOR.'ftproot'.DIRECTORY_SEPARATOR);
+      $stor= new FilesystemStorage(__DIR__.DIRECTORY_SEPARATOR.'ftproot'.DIRECTORY_SEPARATOR);
 
       $auth= newinstance('lang.Object', array(), '{
         public function authenticate($user, $password) {

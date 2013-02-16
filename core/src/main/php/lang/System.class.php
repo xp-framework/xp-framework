@@ -74,15 +74,7 @@
           break;
         
         case 'host.name': 
-          if (extension_loaded('posix')) {
-            $uname= posix_uname();
-            $prop[$name]= $uname['nodename'].(isset ($uname['domainname'])
-              ? '.'.$uname['domainname']
-              : ''
-            );
-            break;
-          }
-          $prop[$name]= self::_env('HOSTNAME', 'COMPUTERNAME');
+          $prop[$name]= gethostname();
           break;
 
         case 'host.arch':

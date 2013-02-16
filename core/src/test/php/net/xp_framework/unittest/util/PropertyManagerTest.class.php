@@ -161,7 +161,7 @@
      */
     #[@test]
     public function hasSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $this->assertFalse($fixture->hasSource($path));
     }
@@ -172,7 +172,7 @@
      */
     #[@test]
     public function hasAppendedSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $fixture->appendSource($path);
       $this->assertTrue($fixture->hasSource($path));
@@ -184,7 +184,7 @@
      */
     #[@test]
     public function removeSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $this->assertFalse($fixture->removeSource($path));
     }
@@ -195,7 +195,7 @@
      */
     #[@test]
     public function removeAppendedSource() {
-      $path= new FilesystemPropertySource(dirname(__FILE__).'/..');
+      $path= new FilesystemPropertySource(__DIR__.'/..');
       $fixture= $this->fixture();
       $fixture->appendSource($path);
       $this->assertTrue($fixture->removeSource($path));

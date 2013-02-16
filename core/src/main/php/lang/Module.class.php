@@ -13,27 +13,25 @@
    * @test  xp://net.xp_framework.unittest.core.modules.ModuleTest
    * @test  xp://net.xp_framework.unittest.core.modules.ModuleWithStaticInitializerTest
    * @see   https://github.com/xp-framework/rfc/issues/220
+   * @see   https://gist.github.com/4701515
    */
   class Module extends Object implements IClassLoader {
-    protected $loader;
+    private $lookup= array();
+
+    protected $delegates= array();
     protected $definition;
     protected $name;
-    protected $provides;
     protected $version;
 
     /**
      * Creates a new instance of a module with a given name.
      *
-     * @param  lang.IClassLoader loader
      * @param  lang.XPClass definition
-     * @param  string[] provides
      * @param  string name
      * @param  string version
      */
-    public function __construct($loader, $definition, $provides= NULL, $name= NULL, $version= NULL) {
-      $this->loader= $loader;
+    public function __construct($definition, $name= NULL, $version= NULL) {
       $this->definition= $definition;
-      $this->provides= $provides;
 
       // This is a bit redundant, name and version are also static fields inside the
       // class represented by $definition, but retrieving them reflectively is a 
@@ -49,9 +47,11 @@
      * @return  bool
      */
     public function providesClass($class) {
-      if (NULL === $this->provides) return $this->loader->providesClass($class);
-      foreach ($this->provides as $package) {
-        if (0 === strncmp($class, $package, strlen($package))) return $this->loader->providesClass($class);
+      foreach ($this->lookup as $l) {
+        if (
+          (isset($l[1]) || 0 === strncmp($class, $l[1], strlen($l[1]))) &&
+          $l[0]->providesClass($class)
+        ) return TRUE;
       }
       return FALSE;
     }
@@ -63,10 +63,12 @@
      * @return  bool
      */
     public function providesResource($filename) {
-      if (NULL === $this->provides) return $this->loader->providesResource($filename);
       $cmp= strtr($filename, '/', '.');
-      foreach ($this->provides as $package) {
-        if (0 === strncmp($cmp, $package, strlen($package))) return $this->loader->providesResource($filename);
+      foreach ($this->lookup as $l) {
+        if (
+          (isset($l[1]) || 0 === strncmp($cmp, $l[1], strlen($l[1]))) &&
+          $l[0]->providesResource($filename)
+        ) return TRUE;
       }
       return FALSE;
     }
@@ -78,9 +80,11 @@
      * @return  bool
      */
     public function providesPackage($name) {
-      if (NULL === $this->provides) return $this->loader->providesPackage($name);
-      foreach ($this->provides as $package) {
-        if (0 === strncmp($name, $package, strlen($package))) return $this->loader->providesPackage($name);
+      foreach ($this->lookup as $l) {
+        if (
+          (isset($l[1]) || 0 === strncmp($name, $l[1], strlen($l[1]))) &&
+          $l[0]->providesPackage($name)
+        ) return TRUE;
       }
       return FALSE;
     }
@@ -92,7 +96,11 @@
      * @return  string[] filenames
      */
     public function packageContents($package) {
-      return $this->loader->packageContents($package);
+      $contents= array();
+      foreach ($this->delegates as $l) {
+        $contents= array_merge($contents, $l->packageContents($package));
+      }
+      return $contents;
     }
 
     /**
@@ -103,7 +111,10 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass($class) {
-      return $this->loader->loadClass($class);
+      foreach ($this->delegates as $l) {
+        if ($l->providesClass($class)) return $l->loadClass($class);
+      }
+      throw new ClassNotFoundException('Cannot find class '.$class);
     }
 
     /**
@@ -114,7 +125,10 @@
      * @throws  lang.ClassNotFoundException in case the class can not be found
      */
     public function loadClass0($class) {
-      return $this->loader->loadClass0($class);
+      foreach ($this->delegates as $l) {
+        if ($l->providesClass($class)) return $l->loadClass0($class);
+      }
+      throw new ClassNotFoundException('Cannot find class '.$class);
     }
 
     /**
@@ -125,7 +139,10 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResource($string) {
-      return $this->loader->getResource($string);
+      foreach ($this->delegates as $l) {
+        if ($l->providesResource($string)) return $l->getResource($string);
+      }
+      throw new ElementNotFoundException('Cannot find resource '.$string);
     }
 
     /**
@@ -136,7 +153,19 @@
      * @throws  lang.ElementNotFoundException in case the resource cannot be found
      */
     public function getResourceAsStream($string) {
-      return $this->loader->getResourceAsStream($string);
+      foreach ($this->delegates as $l) {
+        if ($l->providesResource($string)) return $l->getResourceAsStream($string);
+      }
+      throw new ElementNotFoundException('Cannot find resource '.$string);
+    }
+
+    /**
+     * Returns module definition
+     *
+     * @return  lang.XPClass
+     */
+    public function getDefinition() {
+      return $this->definition;
     }
     
     /**
@@ -208,12 +237,40 @@
     }
 
     /**
-     * Retrieve class loader associated with this module
+     * Retrieve class loaders associated with this module
      *
+     * @param   string name The delegate
      * @return  lang.IClassLoader
+     * @throws  lang.IllegalArgumentException If no delegate with the specified name exists
      */
-    public function getClassLoader() {
-      return $this->loader;
+    public function getDelegate($name) {
+      if (!isset($this->delegates[$name])) {
+        throw new IllegalArgumentException('No delegate named "'.$name.'"');
+      }
+      return $this->delegates[$name];
+    }
+
+    /**
+     * Retrieve class loaders associated with this module
+     *
+     * @return  [:lang.IClassLoader]
+     */
+    public function getDelegates() {
+      return $this->delegates;
+    }
+
+    /**
+     * Add a class loader to the class loader lookup associated with this module
+     *
+     * @param   string name
+     * @param   lang.IClassLoader l
+     * @param   string[] provides
+     */
+    public function addDelegate($name, $l, $provides) {
+      $this->delegates[$name]= $l;
+      foreach ($provides as $package) {
+        $this->lookup[]= array($l, $package);
+      }
     }
 
     /**
@@ -264,11 +321,19 @@
      * @return  string
      */
     public function toString() {
+      $lookup= '';
+      foreach ($this->delegates as $name => $delegate) {
+        $provides= '';
+        foreach ($this->lookup as $l) {
+          if ($l[0]->equals($delegate)) $provides.= ', '.($l[1] ? $l[1] : '**');
+        }
+        $lookup.= '  '.($name ? $name.': ' : '').substr($provides, 2).' @'.$delegate->toString()."\n";
+      }
       return sprintf(
-        'Module<%s%s, %s>',
+        "Module<%s%s>@{\n%s}",
         $this->name,
         NULL === $this->version ? '' : ':'.$this->version,
-        $this->loader->toString()
+        $lookup
       );
     }
 
@@ -287,7 +352,7 @@
      * @return  string
      */
     public function instanceId() {
-      return $this->loader->instanceId();
+      return $this->delegates[NULL]->instanceId();
     }
   }
 ?>

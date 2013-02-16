@@ -42,7 +42,7 @@
       self::$LOWER= new self(new Scanner('%[a-z]'));
       self::$PRINT= new self(new Scanner("%[\x20-\x7E]"));
       self::$PUNCT= new self(new Scanner('%[]!"#$%&\'()*+,./:;<=>?@[^_`{|}~-]'));
-      self::$SPACE= new self(new Scanner("%[ \t\r\n\x0B\x0C]"));     // \v and \f only defined in PHP >= 5.2.6
+      self::$SPACE= new self(new Scanner("%[ \t\r\n\v\f]"));
       self::$UPPER= new self(new Scanner('%[A-Z]'));
       self::$XDIGIT= new self(new Scanner('%[0-9a-fA-F]'));
     }

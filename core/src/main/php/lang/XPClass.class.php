@@ -65,11 +65,6 @@
     protected $_class= NULL;
     public $_reflect= NULL;
     
-    private static $DECLARING_CLASS_BUG= FALSE;
-    static function __static() {
-      self::$DECLARING_CLASS_BUG= version_compare(PHP_VERSION, '5.2.10', 'lt');
-    }
-      
     /**
      * Constructor
      *
@@ -180,16 +175,9 @@
      */
     public function getDeclaredMethods() {
       $list= array();
-      if (self::$DECLARING_CLASS_BUG) {
-        foreach ($this->_reflect->getMethods() as $m) {
-          if (0 == strncmp('__', $m->getName(), 2) || $m->getDeclaringClass()->getName() !== $this->_reflect->name) continue;
-          $list[]= new Method($this->_class, $m);
-        }
-      } else {
-        foreach ($this->_reflect->getMethods() as $m) {
-          if (0 == strncmp('__', $m->getName(), 2) || $m->class !== $this->_reflect->name) continue;
-          $list[]= new Method($this->_class, $m);
-        }
+      foreach ($this->_reflect->getMethods() as $m) {
+        if (0 == strncmp('__', $m->getName(), 2) || $m->class !== $this->_reflect->name) continue;
+        $list[]= new Method($this->_class, $m);
       }
       return $list;
     }
@@ -271,16 +259,9 @@
      */
     public function getDeclaredFields() {
       $list= array();
-      if (self::$DECLARING_CLASS_BUG) {
-        foreach ($this->_reflect->getProperties() as $p) {
-          if ('__id' === $p->name || $p->getDeclaringClass()->getName() !== $this->_reflect->name) continue;
-          $list[]= new Field($this->_class, $p);
-        }
-      } else {
-        foreach ($this->_reflect->getProperties() as $p) {
-          if ('__id' === $p->name || $p->class !== $this->_reflect->name) continue;
-          $list[]= new Field($this->_class, $p);
-        }
+      foreach ($this->_reflect->getProperties() as $p) {
+        if ('__id' === $p->name || $p->class !== $this->_reflect->name) continue;
+        $list[]= new Field($this->_class, $p);
       }
       return $list;
     }
@@ -1052,10 +1033,11 @@
           } else if (1 === $state[0]) {             // Class body
             if (T_FUNCTION === $tokens[$i][0]) {
               $braces= 0;
-              $parameters= array();
+              $parameters= $default= array();
               array_unshift($state, 3);
               array_unshift($state, 2);
               $m= $tokens[$i+ 2][1];
+              $p= 0;
               $annotations= array($meta[1][$m][DETAIL_ANNOTATIONS], $meta[1][$m][DETAIL_TARGET_ANNO]);
             } else if ('}' === $tokens[$i][0]) {
               $src.= '}';
@@ -1068,9 +1050,19 @@
               $braces++;
             } else if (')' === $tokens[$i][0]) {
               $braces--;
-              if (0 === $braces) array_shift($state);
-            } else if (T_VARIABLE === $tokens[$i][0]) {
+              if (0 === $braces) {
+                array_shift($state);
+                $src.= ')';
+                continue;
+              }
+            }
+            if (T_VARIABLE === $tokens[$i][0]) {
               $parameters[]= $tokens[$i][1];
+            } else if ('=' === $tokens[$i][0]) {
+              $p= sizeof($parameters)- 1;
+              $default[$p]= '';
+            } else if (T_WHITESPACE !== $tokens[$i][0] && isset($default[$p])) {
+              $default[$p].= is_array($tokens[$i]) ? $tokens[$i][1] : $tokens[$i];
             }
           } else if (3 === $state[0]) {             // Method body
             if (';' === $tokens[$i][0]) {
@@ -1095,7 +1087,6 @@
                     $generic[$j]= $replaced;
                   }
                 }
-
                 foreach ($generic as $j => $type) {
                   if (NULL === $type) {
                     continue;
@@ -1109,7 +1100,8 @@
                     );
                   } else {
                     $src.= (
-                      ' if (!is(\''.$generic[$j].'\', '.$parameters[$j].')) throw new IllegalArgumentException('.
+                      ' if ('.(isset($default[$j]) ? '('.$default[$j].' !== '.$parameters[$j].') && ' : '').
+                      '!is(\''.$generic[$j].'\', '.$parameters[$j].')) throw new IllegalArgumentException('.
                       '"Argument '.($j + 1).' passed to ".__METHOD__."'.
                       ' must be of '.$type.', ".xp::typeOf('.$parameters[$j].')." given"'.
                       ');'

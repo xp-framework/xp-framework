@@ -57,14 +57,6 @@
     const T_PACKAGE             = 0x1001;
     const T_DEFINE              = 0x1002;
 
-    static function __static() {
-
-      // For parsing backwards compatibility in PHP 5.2
-      if (!defined('T_NAMESPACE')) {
-        define('T_NAMESPACE', 377);
-      }
-    }
-    
     /**
      * Constructor
      *

@@ -58,40 +58,15 @@
     }
 
     /**
-     * Static field read handler
-     *
-     */
-    public static function __getStatic($name) {
-      if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        return eval('return '.$t[1]['args'][0][0].'::$'.substr($name, 1).';');
-      }
-      return NULL;
-    }
-
-    /**
-     * Static field read handler
-     *
-     */
-    public static function __setStatic($name, $value) {
-      if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        eval($t[1]['args'][0][0].'::$'.substr($name, 1).'= $value;');
-        return;
-      }
-    }
-
-    /**
      * Static method handler
      *
      */
     public static function __callStatic($name, $args) {
+      $self= get_called_class();
       if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
+        return call_user_func_array(array($self, substr($name, 1)), $args);
       }
-      $t= debug_backtrace();
-      throw new Error('Call to undefined method '.$t[1]['class'].'::'.$name);
+      throw new Error('Call to undefined method '.$self.'::'.$name);
     }
 
     /**
@@ -99,9 +74,6 @@
      *
      */
     public function __get($name) {
-      if ("\7" === $name{0}) {
-        return $this->{substr($name, 1)};
-      }
       return NULL;
     }
 
@@ -110,10 +82,6 @@
      *
      */
     public function __set($name, $value) {
-      if ("\7" === $name{0}) {
-        $this->{substr($name, 1)}= $value;
-        return;
-      }
       $this->{$name}= $value;
     }
     
@@ -125,18 +93,27 @@
       if ("\7" === $name{0}) {
         return call_user_func_array(array($this, substr($name, 1)), $args);
       }
+
       $t= debug_backtrace();
+
+      // Get self
       $i= 1; $s= sizeof($t);
-      while ($i++ < $s && !isset($t[$i]['class'])) { }
-      $scope= $t[$i]['class'];
-      if (isset(xp::$registry['ext'][$scope])) {
+      while (!isset($t[$i]['class']) && $i++ < $s) { }
+      $self= $t[$i]['class'];
+
+      // Get scope
+      $i++;
+      while (!isset($t[$i]['class']) && $i++ < $s) { }
+      $scope= isset($t[$i]['class']) ? $t[$i]['class'] : NULL;
+
+      if (NULL != $scope && isset(xp::$registry['ext'][$scope])) {
         foreach (xp::$registry['ext'][$scope] as $type => $class) {
           if (!$this instanceof $type || !method_exists($class, $name)) continue;
           array_unshift($args, $this);
           return call_user_func_array(array($class, $name), $args);
         }
       }
-      throw new Error('Call to undefined method '.$this->getClassName().'::'.$name.'() from scope '.xp::nameOf($scope));
+      throw new Error('Call to undefined method '.xp::nameOf($self).'::'.$name.'() from scope '.xp::nameOf($scope));
     }
 
     /**

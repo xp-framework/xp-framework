@@ -26,40 +26,15 @@
     }
 
     /**
-     * Static field read handler
-     *
-     */
-    public static function __getStatic($name) {
-      if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        return eval('return '.$t[1]['args'][0][0].'::$'.substr($name, 1).';');
-      }
-      return NULL;
-    }
-
-    /**
-     * Static field read handler
-     *
-     */
-    public static function __setStatic($name, $value) {
-      if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        eval($t[1]['args'][0][0].'::$'.substr($name, 1).'= $value;');
-        return;
-      }
-    }
-
-    /**
      * Static method handler
      *
      */
     public static function __callStatic($name, $args) {
+      $self= get_called_class();
       if ("\7" === $name{0}) {
-        $t= debug_backtrace();
-        return call_user_func_array(array($t[1]['args'][0][0], substr($name, 1)), $args);
+        return call_user_func_array(array($self, substr($name, 1)), $args);
       }
-      $t= debug_backtrace();
-      throw new Error('Call to undefined method '.$t[1]['class'].'::'.$name);
+      throw new Error('Call to undefined method '.$self.'::'.$name);
     }
 
     /**
@@ -67,9 +42,6 @@
      *
      */
     public function __get($name) {
-      if ("\7" === $name{0}) {
-        return $this->{substr($name, 1)};
-      }
       return NULL;
     }
 
@@ -78,10 +50,6 @@
      *
      */
     public function __set($name, $value) {
-      if ("\7" === $name{0}) {
-        $this->{substr($name, 1)}= $value;
-        return;
-      }
       $this->{$name}= $value;
     }
     

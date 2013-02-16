@@ -85,14 +85,5 @@
         return self::$UNKNOWN;
       }
     }
-
-    /**
-     * Values method
-     *
-     * @return lang.Enum[]
-     */
-    public static function values() {
-      return parent::membersOf(__CLASS__);
-    }
   }
 ?>
