@@ -97,6 +97,7 @@
         }
       } else {
         $name= strtr($class, '.', '·');
+        class_alias($name, strtr($class, '.', '\\'));
       }
 
       xp::$registry['class.'.$name]= $class;

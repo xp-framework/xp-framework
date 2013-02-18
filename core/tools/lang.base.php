@@ -69,6 +69,7 @@
           }
         } else {
           $name= strtr($class, '.', '·');
+          class_alias($name, strtr($class, '.', '\\'));
         }
         xp::$registry['class.'.$name]= $class;
         method_exists($name, '__static') && xp::$registry['cl.inv'][]= array($name, '__static');

@@ -79,5 +79,14 @@
       $this->assertTrue(class_exists('net\xp_framework\unittest\core\NamespaceAliasAutoloadedNamespacedFixture', FALSE));
     }
 
+    /**
+     * Tests autoload functionality with fully qualified class
+     *
+     */
+    #[@test]
+    public function autoloaded_fq_class_exists() {
+      new \net\xp_framework\unittest\core\NamespaceAliasAutoloadedFQFixture();    // Triggers autoloader
+      $this->assertTrue(class_exists('net\xp_framework\unittest\core\NamespaceAliasAutoloadedFQFixture', FALSE));
+    }
   }
 ?>
