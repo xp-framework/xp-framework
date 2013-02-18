@@ -80,11 +80,10 @@
       }
       
       // Register it
-      $name= NULL;
-      if (NULL !== $package) {
-        $name= strtr($package, '.', '·').'·'.substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
-      } else {
+      if (NULL === $package) {
         $name= substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
+      } else {
+        $name= strtr($package, '.', '·').'·'.substr($class, (FALSE === ($p= strrpos($class, '.')) ? 0 : $p + 1));
       }
 
       if (!class_exists($name, FALSE) && !interface_exists($name, FALSE)) {
